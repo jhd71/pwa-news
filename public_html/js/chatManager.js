@@ -631,43 +631,61 @@ async loadExistingMessages() {
 }
    async setupPushNotifications() {
     try {
-        console.log('Début setup notifications');
-        if (!('Notification' in window)) {
-            console.log('Notifications non supportées');
-            throw new Error('Les notifications ne sont pas supportées');
+        // 1. Vérifier le support
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+            throw new Error('Notifications non supportées');
         }
 
-        let permission = Notification.permission;
-        console.log('Permission actuelle:', permission);
+        // 2. Attendre que le service worker soit actif
+        const swRegistration = await navigator.serviceWorker.ready;
+        console.log('Service worker prêt:', swRegistration);
 
-        if (permission === 'default') {
-            console.log('Demande permission...');
-            permission = await Notification.requestPermission();
-            console.log('Nouvelle permission:', permission);
-        }
-
+        // 3. Demander la permission
+        const permission = await Notification.requestPermission();
         if (permission !== 'granted') {
-            console.log('Permission refusée');
-            throw new Error('Permission refusée pour les notifications');
+            throw new Error('Permission refusée');
         }
 
-        console.log('Tentative souscription...');
-        const success = await this.pushManager.subscribe();
-        console.log('Résultat souscription:', success);
+        // 4. S'abonner aux notifications
+        const pushSubscription = await swRegistration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: this.urlBase64ToUint8Array('BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck')
+        });
 
-        if (success) {
-            this.notificationsEnabled = true;
-            localStorage.setItem('notificationsEnabled', 'true');
-            this.updateNotificationButton();
-            this.showNotification('Notifications activées', 'success');
-            this.playSound('success');
-        }
+        // 5. Sauvegarder dans Supabase
+        const { error } = await this.supabase.from('push_subscriptions').upsert([
+            { 
+                pseudo: this.pseudo, 
+                subscription: JSON.stringify(pushSubscription) 
+            }
+        ]);
+
+        if (error) throw error;
+
+        this.notificationsEnabled = true;
+        localStorage.setItem('notificationsEnabled', 'true');
+        this.updateNotificationButton();
+        this.playSound('success');
+        return true;
     } catch (error) {
-        console.error('Erreur notifications:', error);
+        console.error('Erreur setup notifications:', error);
         this.showNotification(error.message, 'error');
         this.playSound('error');
         return false;
     }
+}
+
+urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/-/g, '+')
+        .replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
 }
 
    async unsubscribeFromPushNotifications() {
