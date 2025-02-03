@@ -631,44 +631,25 @@ async loadExistingMessages() {
 }
    async setupPushNotifications() {
     try {
-        // Vérifier le support des notifications
-        if (!('Notification' in window) || !('serviceWorker' in navigator)) {
-            throw new Error('Les notifications ne sont pas supportées');
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+            throw new Error('Push notifications non supportées');
         }
 
-        // Demander la permission
-        const permission = await Notification.requestPermission();
-        if (permission !== 'granted') {
-            throw new Error('Permission refusée');
-        }
+        const sw = await navigator.serviceWorker.register('/service-worker.js');
+        await navigator.serviceWorker.ready;
 
-        // S'assurer que le service worker est enregistré
-        const registration = await navigator.serviceWorker.getRegistration('/');
-        if (!registration) {
-            throw new Error('Service Worker non enregistré');
-        }
-
-        // Convertir la clé VAPID en Uint8Array
-        const vapidPublicKey = 'BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck';
-        const convertedKey = new Uint8Array(vapidPublicKey.split('').map(char => char.charCodeAt(0)));
-
-        // Souscrire aux notifications
-        const subscription = await registration.pushManager.subscribe({
+        const pushSubscription = await sw.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: convertedKey
+            applicationServerKey: this.urlBase64ToUint8Array('BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck')
         });
 
-        // Sauvegarder dans Supabase
-        const { error } = await this.supabase.from('push_subscriptions').upsert([
-            { pseudo: this.pseudo, subscription: JSON.stringify(subscription) }
+        await this.supabase.from('push_subscriptions').upsert([
+            { pseudo: this.pseudo, subscription: pushSubscription }
         ]);
-
-        if (error) throw error;
 
         this.notificationsEnabled = true;
         localStorage.setItem('notificationsEnabled', 'true');
         this.updateNotificationButton();
-        this.showNotification('Notifications activées', 'success');
         return true;
     } catch (error) {
         console.error('Erreur notifications:', error);
@@ -677,16 +658,13 @@ async loadExistingMessages() {
     }
 }
 
-// Ajoutez cette méthode d'aide
 urlBase64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - base64String.length % 4) % 4);
     const base64 = (base64String + padding)
-        .replace(/\-/g, '+')
+        .replace(/-/g, '+')
         .replace(/_/g, '/');
-
     const rawData = window.atob(base64);
     const outputArray = new Uint8Array(rawData.length);
-
     for (let i = 0; i < rawData.length; ++i) {
         outputArray[i] = rawData.charCodeAt(i);
     }
