@@ -134,7 +134,7 @@ setupRealtimeSubscription() {
     this.scrollToBottom();
     
     // Si le message vient d'un autre utilisateur
-    if (message.pseudo !== this.pseudo) {
+        if (message.pseudo !== this.pseudo) {
         this.playSound('message');
         
         // Si le chat n'est pas ouvert
@@ -172,12 +172,13 @@ setupRealtimeSubscription() {
     }
 }
 
-this.isOpen = chatOpen;
-} else {
-    this.playSound('sent');
 }
-
- updateUnreadBadgeAndBubble() {
+       this.isOpen = chatOpen;
+    } else {
+        this.playSound('sent');
+    }
+  
+   this.updateUnreadBadgeAndBubble();
     console.log('Début updateUnreadBadgeAndBubble:', {
         unreadCount: this.unreadCount,
         isOpen: this.isOpen,
