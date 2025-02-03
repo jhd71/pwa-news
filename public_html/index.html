@@ -249,7 +249,7 @@
 
         // Initialiser ChatManager
         console.log('Chargement de ChatManager...');
-        const chatModule = await import('./js/chatManager.js');
+        const chatModule = await import('/js/chatManager.js');
         window.chatManager = new chatModule.default();
         await window.chatManager.init();
         console.log('Chat Manager initialisé');
