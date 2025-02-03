@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /js/
+Disallow: /css/
+Disallow: /sounds/
+Sitemap: https://jhd71.fr/sitemap.xml

@@ -1,0 +1,8 @@
+{
+  "name": "infos-push",
+  "version": "1.0.0",
+  "dependencies": {
+    "web-push": "^3.6.6",
+    "@supabase/supabase-js": "^2.39.3"
+  }
+}
