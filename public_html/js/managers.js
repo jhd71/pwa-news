@@ -1,521 +1,1138 @@
-// managers.js
-export class EventEmitter {
+// Importer directement le gestionnaire de sons
+import soundManager from '/js/sounds.js';
+
+class ChatManager {
     constructor() {
-        this.events = new Map();
-    }
-
-    on(event, callback) {
-        if (!this.events.has(event)) {
-            this.events.set(event, new Set());
-        }
-        this.events.get(event).add(callback);
-    }
-
-    emit(event, data) {
-        if (this.events.has(event)) {
-            for (const callback of this.events.get(event)) {
-                callback(data);
-            }
-        }
-    }
-}
-
-export class WidgetManager extends EventEmitter {
-    constructor() {
-        super();
-        this.widgets = new Map();
-        this.draggedElement = null;
-        this.isDragging = false;
+        this.supabase = supabase.createClient(
+            'https://aqedqlzsguvkopucyqbb.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxZWRxbHpzZ3V2a29wdWN5cWJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY1MDAxNzUsImV4cCI6MjA1MjA3NjE3NX0.tjdnqCIW0dgmzn3VYx0ugCrISLPFMLhOQJBnnC5cfoo'
+        );
+    
+        this.initialized = false;
+        this.container = null;
+        this.pseudo = localStorage.getItem('chatPseudo');
+        this.isAdmin = localStorage.getItem('isAdmin') === 'true';
+        this.lastMessageId = 0;
+        this.soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+        this.sounds = new Map();
+        this.bannedWords = new Set();
+        this.notificationsEnabled = localStorage.getItem('notificationsEnabled') === 'true';
+        this.subscription = null;
+        this.adminPanelOpen = false;
+        this.isOpen = localStorage.getItem('chatOpen') === 'true';
+        this.unreadCount = parseInt(localStorage.getItem('unreadCount') || '0');
     }
 
     async init() {
-        console.log('Initialisation WidgetManager...');
-        await this.loadWidgets();
-        this.setupDragAndDrop();
-        this.setupEventListeners();
-    }
-
-    async loadWidgets() {
-        const savedWidgets = localStorage.getItem('widgets');
-        if (savedWidgets) {
-            try {
-                const widgetConfig = JSON.parse(savedWidgets);
-                // Vider d'abord le container
-                const container = document.getElementById('tileContainer');
-                if (container) {
-                    container.innerHTML = '';
-                }
-                for (const [id, config] of Object.entries(widgetConfig)) {
-                    await this.createWidget(id, config);
-                }
-            } catch (error) {
-                console.error('Erreur lors du chargement des widgets:', error);
-                await this.createDefaultWidgets();
-            }
-        } else {
-            await this.createDefaultWidgets();
-        }
-    }async createDefaultWidgets() {
-        const container = document.getElementById('tileContainer');
-        if (container) {
-            container.innerHTML = '';
-        }
-
-        // Sites d'actualités locales
-        const localNews = [
-            {
-                id: 'montceau-news',
-                title: 'Montceau News',
-                url: 'https://montceau-news.com/',
-                mobileUrl: 'https://montceau-news.com/',
-                color: '#1a237e',
-                isDefault: true,
-                section: 'local'
-            },
-            {
-                id: 'linformateur',
-                title: 'L\'Informateur de Bourgogne',
-                url: 'https://linformateurdebourgogne.com/',
-                mobileUrl: 'https://linformateurdebourgogne.com/',
-                color: '#1a237e',
-                isDefault: true,
-                section: 'local'
-            },
-            {
-                id: 'le-jsl',
-                title: 'Le JSL',
-                url: 'https://www.lejsl.com/edition-montceau-les-mines',
-                mobileUrl: 'https://www.lejsl.com/edition-montceau-les-mines',
-                color: '#1a237e',
-                isDefault: true,
-                section: 'local'
-            },
-            {
-                id: 'creusot-infos',
-                title: 'Creusot Infos',
-                url: 'https://www.creusot-infos.com',
-                mobileUrl: 'https://www.creusot-infos.com/?m=1',
-                color: '#1a237e',
-                isDefault: true,
-                section: 'local'
-            }
-        ];
-
-        // Créer les sites locaux
-        for (const widget of localNews) {
-            await this.createWidget(widget.id, widget);
-        }
-
-        // Ajouter le séparateur
-        const separator = document.createElement('div');
-        separator.className = 'separator';
-        separator.textContent = '⎯⎯⎯  Autres sites  ⎯⎯⎯';
-        container.appendChild(separator);
-
-        // Sites généraux
-        const generalSites = [
-            {
-                id: 'radio-sans-pub',
-                title: 'Radio Sans Pub',
-                url: 'https://www.radio-en-ligne.fr/radio-sans-pub/',
-                mobileUrl: 'https://www.radio-en-ligne.fr/radio-sans-pub/',
-                color: '#1a237e',
-                isDefault: true,
-                section: 'general'
-            },
-            {
-                id: 'morandini',
-                title: 'Jean-Marc Morandini',
-                url: 'https://www.jeanmarcmorandini.com/',
-                mobileUrl: 'https://www.jeanmarcmorandini.com/',
-                color: '#1a237e',
-                isDefault: true,
-                section: 'general'
-            }
-        ];
-
-        // Créer les sites généraux
-        for (const widget of generalSites) {
-            await this.createWidget(widget.id, widget);
-        }
-
-        this.saveWidgets();
-    }
-
-    getMobileUrl(config) {
-        return config.mobileUrl || config.url;
-    }
-
-    async createWidget(id, config) {
-        const tile = document.createElement('div');
-        tile.className = 'tile';
-        tile.draggable = true;
-        tile.id = `widget-${id}`;
-        tile.dataset.widgetId = id;
-        tile.style.backgroundColor = config.color || '#1a237e';
-        
-        tile.innerHTML = `
-            <div class="tile-content">
-                <div class="tile-title">${config.title}</div>
-            </div>
-        `;
-
-        tile.addEventListener('click', (e) => {
-            if (!this.isDragging) {
-                e.preventDefault();
-                window.open(this.getMobileUrl(config), '_blank');
-            }
-        });
-
-        const container = document.getElementById('tileContainer');
-        if (container) {
-            container.appendChild(tile);
-        }
-        this.widgets.set(id, { element: tile, config });
-        
-        return tile;
-    }setupDragAndDrop() {
-        const container = document.getElementById('tileContainer');
-
-        container.addEventListener('dragstart', (e) => {
-            const tile = e.target.closest('.tile');
-            if (!tile) return;
+        try {
+            await this.loadBannedWords();
             
-            const section = this.getWidgetSection(tile);
-            const separator = container.querySelector('.separator');
-            if (!separator) return;
+            this.container = document.createElement('div');
+            this.container.className = 'chat-widget';
 
-            // Stocker la section dans le dataTransfer
-            e.dataTransfer.setData('text/plain', section);
-            
-            this.draggedElement = tile;
-            this.isDragging = true;
-            tile.classList.add('dragging');
-            e.dataTransfer.effectAllowed = 'move';
-        });
-
-        container.addEventListener('dragend', (e) => {
-            const tile = e.target.closest('.tile');
-            if (!tile) return;
-            
-            tile.classList.remove('dragging');
-            this.draggedElement = null;
-            this.isDragging = false;
-            this.saveWidgets();
-        });
-
-        container.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            if (!this.draggedElement) return;
-
-            // Vérifier la section du widget en cours de déplacement
-            const section = this.getWidgetSection(this.draggedElement);
-            const separator = container.querySelector('.separator');
-            const sepRect = separator.getBoundingClientRect();
-
-            // Empêcher le passage à travers le séparateur
-            if ((section === 'local' && e.clientY > sepRect.bottom) ||
-                (section === 'general' && e.clientY < sepRect.top)) {
-                return;
-            }
-
-            const afterElement = this.getDragAfterElement(container, e.clientY);
-            if (afterElement) {
-                container.insertBefore(this.draggedElement, afterElement);
+            if (this.pseudo) {
+                this.container.innerHTML = this.getChatHTML();
+                console.log('HTML du chat pour utilisateur connecté:', this.container.innerHTML);
             } else {
-                container.appendChild(this.draggedElement);
+                this.container.innerHTML = this.getPseudoHTML();
+                console.log('HTML du chat pour connexion:', this.container.innerHTML);
             }
+
+            const chatContainer = this.container.querySelector('.chat-container');
+            console.log('État initial:', {
+                isOpen: this.isOpen,
+                chatContainerExists: !!chatContainer,
+                materialIconsVisible: !!this.container.querySelector('.material-icons')
+            });
+            
+            if (this.isOpen && chatContainer) {
+                chatContainer.classList.add('open');
+            }
+            
+            console.log('HTML généré:', this.container.innerHTML);
+            document.body.appendChild(this.container);
+
+            await this.loadSounds();
+
+            // Nouvelle initialisation des notifications
+            if ('serviceWorker' in navigator && 'PushManager' in window) {
+                try {
+                    const registration = await navigator.serviceWorker.ready;
+                    const subscription = await registration.pushManager.getSubscription();
+                    if (subscription) {
+                        this.subscription = subscription;
+                        this.notificationsEnabled = true;
+                        console.log('Notifications push déjà activées');
+                    }
+                } catch (error) {
+                    console.error('Erreur initialisation push notifications:', error);
+                }
+            }
+
+            this.setupListeners();
+            this.setupRealtimeSubscription();
+
+            if (this.pseudo) {
+                await this.loadExistingMessages();
+                this.updateUnreadBadgeAndBubble();
+            }
+
+            this.initialized = true;
+            console.log("Chat initialisé avec succès");
+        } catch (error) {
+            console.error('Erreur initialisation:', error);
+            if (!document.querySelector('.chat-widget')) {
+                document.body.appendChild(this.container);
+            }
+        }
+    }
+
+setupRealtimeSubscription() {
+   const channel = this.supabase.channel('messages');
+   channel
+       .on('postgres_changes', 
+           { event: 'INSERT', schema: 'public', table: 'messages' },
+           (payload) => {
+               console.log('Nouveau message:', payload);
+               this.handleNewMessage(payload.new);
+           }
+       )
+       .on('postgres_changes',
+           { event: 'DELETE', schema: 'public', table: 'messages' },
+           (payload) => {
+               console.log('Message supprimé:', payload);
+               const messageElement = this.container.querySelector(`[data-message-id="${payload.old.id}"]`);
+               if (messageElement) messageElement.remove();
+           }
+       )
+       .subscribe();
+}
+
+  async handleNewMessage(message) {
+    if (!message) return;
+    
+    const chatContainer = this.container.querySelector('.chat-container');
+    const chatOpen = chatContainer && chatContainer.classList.contains('open');
+    
+    console.log('État initial du message:', {
+        chatOpen,
+        isOpen: this.isOpen,
+        messageFrom: message.pseudo,
+        myPseudo: this.pseudo,
+        notificationsEnabled: this.notificationsEnabled,
+        pushManagerReady: !!this.pushManager?.subscription
+    });
+
+    const messagesContainer = this.container.querySelector('.chat-messages');
+    if (!messagesContainer) return;
+
+    const existingMessage = messagesContainer.querySelector(`[data-message-id="${message.id}"]`);
+    if (existingMessage) return;
+
+    const messageElement = this.createMessageElement(message);
+    messagesContainer.appendChild(messageElement);
+    this.scrollToBottom();
+    
+    // Si le message vient d'un autre utilisateur
+    if (message.pseudo !== this.pseudo) {
+        this.playSound('message');
+        
+        // Si le chat n'est pas ouvert
+        if (!chatOpen) {
+            this.unreadCount++;
+            localStorage.setItem('unreadCount', this.unreadCount.toString());
+            
+            // Mise à jour visuelle
+            const badge = this.container.querySelector('.notification-badge');
+            if (badge) {
+                badge.textContent = this.unreadCount;
+                badge.classList.remove('hidden');
+            }
+            
+            this.updateUnreadBadgeAndBubble();
+
+            // Envoi de la notification push
+            if (this.notificationsEnabled && this.pushManager) {
+                try {
+                    console.log('Tentative envoi notification push');
+                    await this.pushManager.sendMessageNotification({
+                        title: 'Nouveau message',
+                        body: `${message.pseudo}: ${message.content}`,
+                        from: message.pseudo
+                    });
+                } catch (error) {
+                    console.error('Erreur envoi notification:', error);
+                }
+            }
+        }
+    } else {
+        this.playSound('sent');
+    }
+    
+    this.isOpen = chatOpen;
+}
+
+ updateUnreadBadgeAndBubble() {
+    console.log('Début updateUnreadBadgeAndBubble:', {
+        unreadCount: this.unreadCount,
+        isOpen: this.isOpen,
+        messages: this.unreadMessages
+    });
+
+    // Mise à jour du badge
+    const badge = this.container.querySelector('.notification-badge');
+    if (badge) {
+        badge.textContent = this.unreadCount > 0 ? this.unreadCount : '';
+        badge.classList.toggle('hidden', this.unreadCount === 0);
+        console.log('Badge mis à jour:', badge.outerHTML);
+    }
+
+    // Mise à jour de l'info-bulle
+    const chatToggle = this.container.querySelector('.chat-toggle');
+    const existingBubble = chatToggle.querySelector('.info-bubble');
+
+    if (existingBubble) {
+        console.log('Suppression ancienne bulle');
+        existingBubble.remove();
+    }
+      console.log('Vérification de la condition !this.isOpen : ', !this.isOpen);
+    if (!this.isOpen && this.unreadCount > 0 ) {
+        console.log('Création nouvelle bulle');
+        const bubble = document.createElement('div');
+        bubble.className = 'info-bubble show';
+
+        const header = document.createElement('div');
+        header.style.fontWeight = 'bold';
+        header.textContent = `${this.unreadCount} nouveau(x) message(s)`;
+        bubble.appendChild(header);
+
+        chatToggle.appendChild(bubble);
+        console.log('Bulle créée:', bubble.outerHTML);
+    } else if (this.isOpen){
+     console.log('Le chat est ouvert, pas de bulle');
+    } else {
+       console.log('Pas de bulle à afficher');
+    }
+}
+
+createMessageElement(message) {
+    const div = document.createElement('div');
+    div.className = `message ${message.pseudo === this.pseudo ? 'sent' : 'received'}`;
+    div.dataset.messageId = message.id;
+
+    div.innerHTML = `
+        <div class="message-author">${message.pseudo}</div>
+        <div class="message-content">${this.escapeHtml(message.content)}</div>
+        <div class="message-time">${new Date(message.created_at).toLocaleTimeString()}</div>
+    `;
+
+    if (this.isAdmin || message.pseudo === this.pseudo) {
+        // Clic droit sur PC
+        div.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            this.showMessageOptions(message, e.clientX, e.clientY);
         });
 
-        // Gestion des appuis longs sur mobile
-        let longPressTimer;
-        let touchStartY;
-
-        container.addEventListener('touchstart', (e) => {
-            const tile = e.target.closest('.tile');
-            if (!tile) return;
-
-            touchStartY = e.touches[0].clientY;
-            longPressTimer = setTimeout(() => {
-                this.showTileMenu(tile, e.touches[0].clientX, e.touches[0].clientY);
+        // Toucher long sur mobile
+        let touchTimeout;
+        div.addEventListener('touchstart', (e) => {
+            touchTimeout = setTimeout(() => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                this.showMessageOptions(message, touch.clientX, touch.clientY);
             }, 500);
         });
 
-        container.addEventListener('touchend', () => {
-            clearTimeout(longPressTimer);
+        div.addEventListener('touchend', () => {
+            clearTimeout(touchTimeout);
         });
 
-        container.addEventListener('touchmove', (e) => {
-            if (Math.abs(e.touches[0].clientY - touchStartY) > 10) {
-                clearTimeout(longPressTimer);
-            }
+        div.addEventListener('touchmove', () => {
+            clearTimeout(touchTimeout);
         });
     }
 
-    getWidgetSection(tile) {
-        const widgetId = tile.dataset.widgetId;
-        const widget = this.widgets.get(widgetId);
-        return widget?.config.section || 'general';
+    return div;
+}
+
+async loadExistingMessages() {
+    try {
+        const { data: messages, error } = await this.supabase
+            .from('messages')
+            .select('*')
+            .order('created_at', { ascending: true });
+
+        if (error) throw error;
+
+        const container = this.container.querySelector('.chat-messages');
+        if (container && messages) {
+            container.innerHTML = '';
+            messages.forEach(msg => {
+                container.appendChild(this.createMessageElement(msg));
+            });
+            this.scrollToBottom();
+        }
+    } catch (error) {
+        console.error('Erreur chargement messages:', error);
+        this.showNotification('Erreur chargement messages', 'error');
     }
+}
 
-    getDragAfterElement(container, y) {
-        const draggableElements = [...container.querySelectorAll('.tile:not(.dragging)')];
-        
-        return draggableElements.reduce((closest, child) => {
-            const box = child.getBoundingClientRect();
-            const offset = y - box.top - box.height / 2;
-            
-            if (offset < 0 && offset > closest.offset) {
-                return { offset: offset, element: child };
-            } else {
-                return closest;
-            }
-        }, { offset: Number.NEGATIVE_INFINITY }).element;
-    }setupEventListeners() {
-        // Menu contextuel au clic droit
-        document.addEventListener('contextmenu', (e) => {
-            const tile = e.target.closest('.tile');
-            if (tile) {
-                e.preventDefault();
-                this.showTileMenu(tile, e.clientX, e.clientY);
-            }
-        });
+   async loadSounds() {
+    const soundFiles = {
+        'message': '/sounds/message.mp3',
+        'sent': '/sounds/sent.mp3',  // Ajoutez ce son si ce n'est pas déjà fait
+        'notification': '/sounds/notification.mp3',
+        'click': '/sounds/click.mp3',
+        'error': '/sounds/erreur.mp3',
+        'success': '/sounds/success.mp3'
+    };
 
-        // Bouton d'ajout
-        const addButton = document.getElementById('addSiteBtn');
-        if (addButton) {
-            addButton.addEventListener('click', () => this.showAddTileDialog());
-        }
-    }
-
-    showTileMenu(tile, x, y) {
-        const existingMenu = document.querySelector('.tile-menu');
-        if (existingMenu) {
-            existingMenu.remove();
-        }
-
-        const widgetId = tile.dataset.widgetId;
-        const widget = this.widgets.get(widgetId);
-        
-        const menu = document.createElement('div');
-        menu.className = 'tile-menu';
-
-        if (widget && widget.config.isDefault) {
-            // Menu pour les tuiles par défaut
-            menu.innerHTML = `
-                <button class="menu-item">
-                    <span class="material-icons">info</span>
-                    Site par défaut
-                </button>
-                <button class="menu-item open-mobile">
-                    <span class="material-icons">phone_android</span>
-                    Version mobile
-                </button>
-                <button class="menu-item open-desktop">
-                    <span class="material-icons">computer</span>
-                    Version bureau
-                </button>
-            `;
-        } else {
-            // Menu pour les tuiles personnalisées
-            menu.innerHTML = `
-                <button class="menu-item edit">
-                    <span class="material-icons">edit</span>
-                    Modifier
-                </button>
-                <button class="menu-item delete">
-                    <span class="material-icons">delete</span>
-                    Supprimer
-                </button>
-                <button class="menu-item open-mobile">
-                    <span class="material-icons">phone_android</span>
-                    Version mobile
-                </button>
-                <button class="menu-item open-desktop">
-                    <span class="material-icons">computer</span>
-                    Version bureau
-                </button>
-            `;
-        }
-
-        // Ajuster la position pour éviter de sortir de l'écran
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-
-        menu.style.position = 'fixed';
-        document.body.appendChild(menu);
-
-        const menuRect = menu.getBoundingClientRect();
-        let menuX = Math.min(x, viewportWidth - menuRect.width - 10);
-        let menuY = Math.min(y, viewportHeight - menuRect.height - 10);
-        
-        menuX = Math.max(10, menuX);
-        menuY = Math.max(10, menuY);
-
-        menu.style.left = `${menuX}px`;
-        menu.style.top = `${menuY}px`;
-
-        menu.addEventListener('click', (e) => {
-            const button = e.target.closest('button');
-            if (!button) return;
-
-            if (button.classList.contains('edit')) {
-                this.editTile(tile);
-            } else if (button.classList.contains('delete')) {
-                this.deleteTile(tile);
-            } else if (button.classList.contains('open-mobile')) {
-                window.open(this.getMobileUrl(widget.config), '_blank');
-            } else if (button.classList.contains('open-desktop')) {
-                window.open(widget.config.url, '_blank');
-            }
-            menu.remove();
-        });
-
-        // Fermer au clic en dehors
-        document.addEventListener('click', (e) => {
-            if (!menu.contains(e.target)) {
-                menu.remove();
-            }
-        }, { once: true });
-
-        // Fermer au scroll
-        document.addEventListener('scroll', () => {
-            menu.remove();
-        }, { once: true });
-    }
-
-    async showAddTileDialog() {
-        const title = prompt('Nom du site :');
-        if (!title) return;
-        
-        let url = prompt('URL du site :');
-        if (!url) return;
-
-        // Ajouter http:// ou https:// si nécessaire
-        if (!url.startsWith('http://') && !url.startsWith('https://')) {
-            url = 'https://' + url;
-        }
-
-        let mobileUrl = prompt('URL version mobile (optionnel, appuyez sur Annuler pour utiliser l\'URL principale) :');
-        if (mobileUrl) {
-            if (!mobileUrl.startsWith('http://') && !mobileUrl.startsWith('https://')) {
-                mobileUrl = 'https://' + mobileUrl;
-            }
-        }
-
+    for (const [name, path] of Object.entries(soundFiles)) {
         try {
-            const id = `widget-${Date.now()}`;
-            const config = {
-                id,
-                title: title,
-                url: url,
-                mobileUrl: mobileUrl || url,
-                color: '#1a237e',
-                isDefault: false,
-                section: 'general'
-            };
-            
-            // Trouver l'emplacement correct après le séparateur
-            const container = document.getElementById('tileContainer');
-            const separator = container.querySelector('.separator');
-            const newTile = await this.createWidget(id, config);
-            
-            // Positionner après le séparateur
-            if (separator && separator.nextSibling) {
-                container.insertBefore(newTile, separator.nextSibling);
-            } else if (separator) {
-                container.appendChild(newTile);
-            }
-            
-            this.saveWidgets();
-            this.showToast('Site ajouté avec succès');
+            console.log(`Chargement du son: ${name} depuis ${path}`);
+            const audio = new Audio(path);
+            await audio.load();
+            this.sounds.set(name, audio);
+            console.log(`Son ${name} chargé avec succès`);
         } catch (error) {
-            console.error('Erreur lors de l\'ajout du site:', error);
-            this.showToast('Erreur : Impossible d\'ajouter ce site');
+            console.error(`Erreur chargement son ${name}:`, error);
+        }
+    }
+}
+
+   playSound(soundName) {
+       if (this.soundEnabled && this.sounds.has(soundName)) {
+           try {
+               const sound = this.sounds.get(soundName).cloneNode();
+               sound.volume = 0.5;
+               const playPromise = sound.play();
+               
+               if (playPromise !== undefined) {
+                   playPromise.catch(error => {
+                       if (error.name !== 'NotAllowedError') {
+                           console.warn(`Erreur lecture son ${soundName}:`, error);
+                       }
+                   });
+               }
+           } catch (error) {
+               // Ignore silently
+           }
+       }
+   }
+
+   getPseudoHTML() {
+    return `
+        <button class="chat-toggle" title="Ouvrir le chat">
+    <i class="material-icons">chat</i>
+    <span class="notification-badge hidden">${this.unreadCount}</span>
+</button>
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="header-title">Connexion au chat</div>
+                <div class="header-buttons">
+                    <button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
+                        <span class="material-icons">${this.soundEnabled ? 'volume_up' : 'volume_off'}</span>
+                    </button>
+                    <button class="close-chat" title="Fermer">
+                        <span class="material-icons">close</span>
+                    </button>
+                </div>
+            </div>
+               <div class="chat-login">
+                   <input type="text" 
+                          id="pseudoInput" 
+                          placeholder="Entrez votre pseudo (3-20 caractères)" 
+                          maxlength="20">
+                   <input type="password" 
+                          id="adminPassword" 
+                          placeholder="Mot de passe admin (jhd71)" 
+                          style="display: none;">
+                   <div class="login-buttons">
+                       <button id="confirmPseudo">Confirmer</button>
+                   </div>
+               </div>
+           </div>
+       `;
+   }
+
+   getChatHTML() {
+    return `
+    <button class="chat-toggle" title="Ouvrir le chat">
+    <span class="material-icons">chat</span>
+    <span class="notification-badge hidden">${this.unreadCount}</span>
+</button>
+           <div class="chat-container">
+               <div class="chat-header">
+                   <div class="header-title">Chat - ${this.pseudo}</div>
+                   <div class="header-buttons">
+                       ${this.isAdmin ? `
+                           <button class="admin-panel-btn" title="Panel Admin">
+                               <span class="material-icons">admin_panel_settings</span>
+                           </button>
+                       ` : ''}
+                       <button class="notifications-btn ${this.notificationsEnabled ? 'enabled' : ''}" title="Notifications">
+                           <span class="material-icons">${this.notificationsEnabled ? 'notifications_active' : 'notifications_off'}</span>
+                       </button>
+                       <button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
+                           <span class="material-icons">${this.soundEnabled ? 'volume_up' : 'volume_off'}</span>
+                       </button>
+                       <button class="close-chat" title="Fermer">
+                           <span class="material-icons">close</span>
+                       </button>
+                   </div>
+               </div>
+               <div class="chat-messages"></div>
+               <div class="chat-input">
+                   <input type="text" 
+                          placeholder="Votre message..." 
+                          maxlength="500">
+                   <button title="Envoyer">
+                       <span class="material-icons">send</span>
+                   </button>
+               </div>
+           </div>
+       `;
+   }
+
+   setupListeners() {
+    const toggle = this.container.querySelector('.chat-toggle');
+    const closeBtn = this.container.querySelector('.close-chat');
+    const chatContainer = this.container.querySelector('.chat-container');
+    const soundBtn = this.container.querySelector('.sound-btn');
+    const notificationsBtn = this.container.querySelector('.notifications-btn');
+    const adminBtn = this.container.querySelector('.admin-panel-btn');
+
+    if (toggle) {
+    toggle.addEventListener('click', () => {
+        const chatContainer = this.container.querySelector('.chat-container');
+        this.isOpen = !this.isOpen;
+        
+        if (this.isOpen) {
+            chatContainer?.classList.add('open');
+            // Réinitialiser les compteurs et notifications
+            this.unreadCount = 0;
+            this.unreadMessages = [];
+            localStorage.setItem('unreadCount', '0');
+            localStorage.setItem('unreadMessages', JSON.stringify([]));
+            
+            // Mise à jour du badge
+            const badge = this.container.querySelector('.notification-badge');
+            if (badge) {
+                badge.textContent = '0';
+                badge.classList.add('hidden');
+            }
+            
+            // Mise à jour de l'info-bulle
+            this.updateUnreadBadgeAndBubble();
+            this.scrollToBottom();
+        } else {
+            chatContainer?.classList.remove('open');
+        }
+        
+        localStorage.setItem('chatOpen', this.isOpen);
+        this.playSound('click');
+    });
+}
+
+    if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+        this.isOpen = false;
+        localStorage.setItem('chatOpen', 'false');
+        chatContainer?.classList.remove('open');
+        this.playSound('click');
+    });
+}
+
+       if (soundBtn) {
+           soundBtn.addEventListener('click', () => {
+               this.soundEnabled = !this.soundEnabled;
+               localStorage.setItem('soundEnabled', this.soundEnabled);
+               soundBtn.classList.toggle('enabled', this.soundEnabled);
+               if (this.soundEnabled) {
+                   soundBtn.querySelector('.material-icons').textContent = 'volume_up';
+                   this.playSound('click');
+               } else {
+                   soundBtn.querySelector('.material-icons').textContent = 'volume_off';
+               }
+           });
+       }
+
+       if (notificationsBtn) {
+           notificationsBtn.addEventListener('click', async () => {
+               try {
+                   if (this.notificationsEnabled) {
+                       await this.unsubscribeFromPushNotifications();
+                   } else {
+                       await this.setupPushNotifications();
+                   }
+                   this.playSound('click');
+               } catch (error) {
+                   console.error('Erreur gestion notifications:', error);
+                   this.showNotification('Erreur avec les notifications', 'error');
+               }
+           });
+       }
+
+       if (adminBtn && this.isAdmin) {
+           adminBtn.addEventListener('click', () => {
+               this.showAdminPanel();
+               this.playSound('click');
+           });
+       }
+
+       if (!this.pseudo) {
+           this.setupAuthListeners();
+       } else {
+           this.setupChatListeners();
+       }
+   }
+
+    setupAuthListeners() {
+        const pseudoInput = this.container.querySelector('#pseudoInput');
+        const adminPasswordInput = this.container.querySelector('#adminPassword');
+        const confirmButton = this.container.querySelector('#confirmPseudo');
+
+        if (pseudoInput) {
+            pseudoInput.addEventListener('input', () => {
+                if (pseudoInput.value.trim() === 'jhd71') {
+                    adminPasswordInput.style.display = 'block';
+                } else {
+                    adminPasswordInput.style.display = 'none';
+                    adminPasswordInput.value = '';
+                }
+            });
+        }
+
+        if (confirmButton) {
+            confirmButton.addEventListener('click', async () => {
+                const pseudo = pseudoInput?.value.trim();
+                const adminPassword = adminPasswordInput?.value;
+
+                if (!pseudo || pseudo.length < 3) {
+                    this.showNotification('Le pseudo doit faire au moins 3 caractères', 'error');
+                    this.playSound('error');
+                    return;
+                }
+
+                if (pseudo === 'jhd71' && adminPassword === 'admin2024') {
+                    this.isAdmin = true;
+                } else {
+                    this.isAdmin = false;
+                }
+
+                this.pseudo = pseudo;
+                localStorage.setItem('chatPseudo', pseudo);
+                localStorage.setItem('isAdmin', this.isAdmin);
+
+                 this.container.innerHTML = this.getChatHTML();
+                  const chatContainer = this.container.querySelector('.chat-container');
+                 if (chatContainer) {
+                   chatContainer.classList.add('open');
+                   this.isOpen = true;
+                   localStorage.setItem('chatOpen', 'true');
+                 }
+                this.setupListeners();
+                await this.loadExistingMessages();
+                this.playSound('success');
+            });
         }
     }
 
-    editTile(tile) {
-        const widgetId = tile.dataset.widgetId;
-        const widget = this.widgets.get(widgetId);
-        if (!widget || widget.config.isDefault) return;
+   setupChatListeners() {
+       const input = this.container.querySelector('.chat-input input');
+       const sendBtn = this.container.querySelector('.chat-input button');
 
-        const newTitle = prompt('Nouveau titre :', widget.config.title);
-        if (!newTitle) return;
+       if (input && sendBtn) {
+           const sendMessage = async () => {
+               const content = input.value.trim();
+               if (content) {
+                   if (await this.checkForBannedWords(content)) {
+                       this.showNotification('Message contient des mots interdits', 'error');
+                       this.playSound('error');
+                       return;
+                   }
 
-        let newUrl = prompt('Nouvelle URL :', widget.config.url);
-        if (!newUrl) return;
+                   const success = await this.sendMessage(content);
+                   if (success) {
+                       input.value = '';
+                       input.focus();
+                       this.playSound('message');
+                   } else {
+                       this.playSound('error');
+                   }
+               }
+           };
 
-        if (!newUrl.startsWith('http://') && !newUrl.startsWith('https://')) {
-            newUrl = 'https://' + newUrl;
-        }
+           sendBtn.addEventListener('click', sendMessage);
+           input.addEventListener('keypress', (e) => {
+               if (e.key === 'Enter' && !e.shiftKey) {
+                   e.preventDefault();
+                   sendMessage();
+               }
+           });
+       }
+   }
+	
+   async loadBannedWords() {
+    try {
+        const { data: words, error } = await this.supabase
+            .from('banned_words')
+            .select('*')
+            .order('added_at', { ascending: true });
 
-        let newMobileUrl = prompt('Nouvelle URL mobile (optionnel) :', widget.config.mobileUrl);
-        if (newMobileUrl) {
-            if (!newMobileUrl.startsWith('http://') && !newMobileUrl.startsWith('https://')) {
-                newMobileUrl = 'https://' + newMobileUrl;
+        if (!error && words) {
+            // Stocker les mots bannis dans un Set
+            this.bannedWords = new Set(words.map(w => w.word.toLowerCase()));
+
+            // Mettre à jour la liste HTML si elle existe
+            const list = document.querySelector('.banned-words-list');
+            if (list) {
+                list.innerHTML = words.map(w => `
+                    <div class="banned-word">
+                        ${w.word}
+                        <button class="remove-word" data-word="${w.word}">×</button>
+                    </div>
+                `).join('');
+
+                list.querySelectorAll('.remove-word').forEach(btn => {
+                    btn.addEventListener('click', () => this.removeBannedWord(btn.dataset.word));
+                });
             }
         }
+    } catch (error) {
+        console.error('Erreur loadBannedWords:', error);
+        this.bannedWords = new Set();
+    }
+}
 
-        widget.config.title = newTitle;
-        widget.config.url = newUrl;
-        widget.config.mobileUrl = newMobileUrl || newUrl;
-        
-        tile.querySelector('.tile-title').textContent = newTitle;
-        
-        this.saveWidgets();
-        this.showToast('Site modifié avec succès');
+   async checkForBannedWords(content) {
+    console.log('Vérification des mots bannis...');
+    // Recharger la liste à jour des mots bannis
+    const { data: bannedWordsData, error } = await this.supabase
+        .from('banned_words')
+        .select('word');
+    
+    if (error) {
+        console.error('Erreur chargement mots bannis:', error);
+        return false;
     }
 
-    deleteTile(tile) {
-        const widgetId = tile.dataset.widgetId;
-        const widget = this.widgets.get(widgetId);
-        
-        if (widget && widget.config.isDefault) {
-            this.showToast('Les sites par défaut ne peuvent pas être supprimés');
-            return;
+    // Mettre à jour le Set avec les mots bannis
+    this.bannedWords = new Set(bannedWordsData.map(item => item.word.toLowerCase()));
+    
+    const words = content.toLowerCase().split(/\s+/);
+    const foundBannedWord = words.some(word => this.bannedWords.has(word));
+    
+    console.log('Mots bannis actuels:', [...this.bannedWords]);
+    console.log('Mot interdit trouvé:', foundBannedWord);
+    
+    return foundBannedWord;
+}
+   async setupPushNotifications() {
+    try {
+        if (!('Notification' in window)) {
+            throw new Error('Les notifications ne sont pas supportées');
         }
 
-        if (confirm('Voulez-vous vraiment supprimer ce site ?')) {
-            this.widgets.delete(widgetId);
-            tile.remove();
-            this.saveWidgets();
-            this.showToast('Site supprimé');
+        let permission = Notification.permission;
+        if (permission === 'default') {
+            permission = await Notification.requestPermission();
         }
+
+        if (permission !== 'granted') {
+            throw new Error('Permission refusée');
+        }
+
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: 'BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck'
+        });
+
+        const { error } = await this.supabase
+            .from('push_subscriptions')
+            .upsert([{
+                pseudo: this.pseudo,
+                subscription: subscription
+            }]);
+
+        if (error) throw error;
+
+        this.notificationsEnabled = true;
+        localStorage.setItem('notificationsEnabled', 'true');
+        this.updateNotificationButton();
+        this.showNotification('Notifications activées', 'success');
+        return true;
+    } catch (error) {
+        console.error('Erreur notifications:', error);
+        this.showNotification(error.message, 'error');
+        return false;
     }
+}
 
-    showToast(message) {
-        const existingToast = document.querySelector('.toast');
-        if (existingToast) {
-            existingToast.remove();
+   async unsubscribeFromPushNotifications() {
+    try {
+        const success = await this.pushManager.unsubscribe();
+        if (success) {
+            this.notificationsEnabled = false;
+            localStorage.setItem('notificationsEnabled', 'false');
+            this.updateNotificationButton();
+            this.showNotification('Notifications désactivées', 'success');
+            this.playSound('success');
         }
+        return success;
+    } catch (error) {
+        console.error('Erreur désactivation notifications:', error);
+        this.showNotification('Erreur de désactivation', 'error');
+        return false;
+    }
+}
 
-        const toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.textContent = message;
-        document.body.appendChild(toast);
+    updateNotificationButton() {
+    const notifBtn = this.container.querySelector('.notifications-btn');
+    if (notifBtn) {
+        notifBtn.classList.toggle('enabled', this.notificationsEnabled);
+        notifBtn.querySelector('.material-icons').textContent =
+            this.notificationsEnabled ? 'notifications_active' : 'notifications_off';
 
-        setTimeout(() => {
-            toast.classList.add('fade-out');
+        // Ajouter une animation manuellement si nécessaire
+        if (this.notificationsEnabled) {
+            notifBtn.querySelector('.material-icons').classList.add('animate');
             setTimeout(() => {
-                toast.remove();
-            }, 300);
+                notifBtn.querySelector('.material-icons').classList.remove('animate');
+            }, 1000); // Durée de l’animation (1s ici)
+        }
+    }
+}
+
+	
+showAdminPanel() {
+    if (!this.isAdmin) return;
+
+    const existingPanel = document.querySelector('.admin-panel');
+    if (existingPanel) {
+        existingPanel.remove();
+        return;
+    }
+
+    const panel = document.createElement('div');
+    panel.className = 'admin-panel';
+    panel.innerHTML = `
+        <div class="panel-header">
+            <h3>Panel Admin</h3>
+            <button class="close-panel">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="panel-content">
+            <div class="section">
+                <h4>Mots bannis</h4>
+                <div class="add-word">
+                    <input type="text" placeholder="Nouveau mot à bannir">
+                    <button class="add-word-btn">Ajouter</button>
+                </div>
+                <div class="banned-words-list"></div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(panel);
+    this.loadBannedWords();
+
+    const addWordBtn = panel.querySelector('.add-word-btn');
+    const wordInput = panel.querySelector('.add-word input');
+
+    addWordBtn.addEventListener('click', async () => {
+        const word = wordInput.value.trim().toLowerCase();
+        if (word) {
+            await this.addBannedWord(word);
+            wordInput.value = '';
+            await this.loadBannedWords();
+        }
+    });
+
+    panel.querySelector('.close-panel').addEventListener('click', () => panel.remove());
+}
+
+async addBannedWord(word) {
+    const { error } = await this.supabase
+        .from('banned_words')
+        .insert({ word: word });
+
+    if (!error) {
+        this.bannedWords.add(word);
+        this.showNotification('Mot ajouté avec succès', 'success');
+    }
+}
+
+async removeBannedWord(word) {
+    const { error } = await this.supabase
+        .from('banned_words')
+        .delete()
+        .eq('word', word);
+
+    if (!error) {
+        this.bannedWords.delete(word);
+        this.showNotification('Mot supprimé avec succès', 'success');
+        await this.loadBannedWords();
+    }
+}
+
+async loadBannedList() {
+    try {
+        const { data: bannedIPs, error } = await this.supabase
+            .from('banned_ips')
+            .select('*')
+            .order('banned_at', { ascending: false });
+
+        if (error) throw error;
+
+        const bannedIPsList = document.querySelector('.banned-ips-list');
+        if (bannedIPsList && bannedIPs) {
+            bannedIPsList.innerHTML = bannedIPs.map(ban => `
+                <div class="banned-ip-item">
+                    <div class="ip-info">
+                        <div class="ip">${ban.ip}</div>
+                        <div class="reason">${ban.reason || 'Aucune raison'}</div>
+                        <div class="banned-by">Par ${ban.banned_by}</div>
+                        <div class="date">Le ${new Date(ban.banned_at).toLocaleString()}</div>
+                    </div>
+                    <button class="unban-btn" data-ip="${ban.ip}">Débannir</button>
+                </div>
+            `).join('');
+        }
+
+        // Ajouter les gestionnaires d'événements pour les boutons de débannissement
+        bannedIPsList?.querySelectorAll('.unban-btn').forEach(btn => {
+            btn.addEventListener('click', () => this.unbanIP(btn.dataset.ip));
+        });
+    } catch (error) {
+        console.error('Erreur chargement liste bannis:', error);
+    }
+}
+
+    async sendMessage(content) {
+    try {
+        const ip = await this.getClientIP();
+        const isBanned = await this.checkBannedIP(ip);
+        
+        if (isBanned) {
+            this.showNotification('Vous êtes banni du chat', 'error');
+            return false;
+        }
+
+        const message = {
+            pseudo: this.pseudo,
+            content: content,
+            ip: ip,
+            created_at: new Date().toISOString()
+        };
+
+        const { data, error } = await this.supabase
+            .from('messages')
+            .insert(message)
+            .select()
+            .single();
+
+        if (error) throw error;
+
+        // Envoyer une notification push à tous les autres utilisateurs
+        try {
+            const notificationPayload = {
+                type: 'chat_message',
+                from: this.pseudo,
+                content: content
+            };
+
+            await this.supabase.rpc('send_push_notification_to_all', {
+                payload: JSON.stringify(notificationPayload),
+                exclude_pseudo: this.pseudo // Ne pas envoyer à l'expéditeur
+            });
+        } catch (notifError) {
+            console.error('Erreur envoi notification:', notifError);
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Erreur sendMessage:', error);
+        return false;
+    }
+}
+
+async checkBannedIP(ip) {
+    const { data, error } = await this.supabase
+        .from('banned_ips')
+        .select('*')
+        .eq('ip', ip)
+        .maybeSingle();
+
+    if (error) {
+        console.error('Erreur vérification IP:', error);
+        return false;
+    }
+
+    if (data) {
+        if (!data.expires_at || new Date(data.expires_at) > new Date()) {
+            return true;
+        }
+    }
+    return false;
+}
+
+    async deleteMessage(messageId) {
+		console.log('deleteMessage appelé:', messageId);
+    try {
+        const { error } = await this.supabase
+            .from('messages')
+            .delete()
+            .eq('id', messageId);
+
+        if (error) {
+            console.error('Erreur SQL:', error);
+            throw error;
+        }
+
+        // Suppression de l'élément DOM
+        const messageElement = this.container.querySelector(`[data-message-id="${messageId}"]`);
+        if (messageElement) {
+            messageElement.classList.add('fade-out');
+            setTimeout(() => messageElement.remove(), 300);
+            this.showNotification('Message supprimé', 'success');
+        }
+    } catch (error) {
+        console.error('Erreur suppression:', error);
+        this.showNotification('Erreur lors de la suppression', 'error');
+    }
+}
+
+showMessageOptions(message, x, y) {
+   console.log('showMessageOptions appelé:', message);
+   document.querySelectorAll('.message-options').forEach(el => el.remove());
+
+   const options = document.createElement('div');
+   options.className = 'message-options';
+   
+   let posX = x;
+   let posY = y;
+   
+   options.innerHTML = `
+       <div class="options-content">
+           <button class="delete-option">
+               <span class="material-icons">delete</span> Supprimer
+           </button>
+           ${this.isAdmin ? `
+               <button class="ban-option">
+                   <span class="material-icons">block</span> Bannir IP
+               </button>
+           ` : ''}
+       </div>
+   `;
+
+   document.body.appendChild(options);
+
+   const chatContainer = this.container.querySelector('.chat-container');
+   const chatBounds = chatContainer.getBoundingClientRect();
+   const optionsRect = options.getBoundingClientRect();
+
+   if (posX + optionsRect.width > chatBounds.right) {
+       posX = chatBounds.right - optionsRect.width - 10;
+   }
+   if (posX < chatBounds.left) {
+       posX = chatBounds.left + 10;
+   }
+   if (posY + optionsRect.height > chatBounds.bottom) {
+       posY = chatBounds.bottom - optionsRect.height - 10;
+   }
+   if (posY < chatBounds.top) {
+       posY = chatBounds.top + 10;
+   }
+
+   options.style.left = `${posX}px`;
+   options.style.top = `${posY}px`;
+
+   // Ajout des événements pour les boutons
+   options.querySelector('.delete-option')?.addEventListener('click', async () => {
+       console.log('Delete clicked:', message.id);
+       await this.deleteMessage(message.id);
+       options.remove();
+   });
+
+   options.querySelector('.ban-option')?.addEventListener('click', () => {
+       console.log('Ban clicked:', message);
+       this.showBanDialog(message);
+       options.remove();
+   });
+
+   // Gestion de la fermeture
+   const closeMenu = (e) => {
+       if (!options.contains(e.target)) {
+           options.remove();
+           document.removeEventListener('click', closeMenu);
+       }
+   };
+
+   setTimeout(() => {
+       document.addEventListener('click', closeMenu);
+   }, 0);
+}
+
+    showBanDialog(message) {
+    console.log('showBanDialog starting');
+    
+    const dialogHTML = `
+        <div class="ban-dialog" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1200;">
+            <div class="ban-content" style="background: var(--chat-gradient); padding: 20px; border-radius: 12px; width: 90%; max-width: 400px; color: white;">
+                <h3>Bannir ${message.pseudo}</h3>
+                <p>IP: ${message.ip}</p>
+                <input type="text" class="ban-reason" placeholder="Raison du ban" style="width: 100%; padding: 10px; margin: 10px 0; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: white;">
+                <select class="ban-duration" style="width: 100%; padding: 10px; margin: 10px 0; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: white;">
+                    <option value="">Ban permanent</option>
+                    <option value="3600000">1 heure</option>
+                    <option value="86400000">24 heures</option>
+                    <option value="604800000">1 semaine</option>
+                </select>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="confirm-ban" style="flex: 1; padding: 10px; border-radius: 8px; border: none; cursor: pointer; background: var(--chat-error); color: white;">Bannir</button>
+                    <button class="cancel-ban" style="flex: 1; padding: 10px; border-radius: 8px; border: none; cursor: pointer; background: rgba(255,255,255,0.2); color: white;">Annuler</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', dialogHTML);
+    
+    const dialog = document.querySelector('.ban-dialog');
+    dialog.querySelector('.confirm-ban').addEventListener('click', async () => {
+        const reason = dialog.querySelector('.ban-reason').value;
+        const duration = dialog.querySelector('.ban-duration').value;
+        await this.banUser(message.ip, reason, duration ? parseInt(duration) : null);
+        dialog.remove();
+    });
+
+    dialog.querySelector('.cancel-ban').addEventListener('click', () => {
+        dialog.remove();
+    });
+}
+
+    async banUser(ip, reason = '', duration = null) {
+		console.log('banUser appelé:', { ip, reason, duration });
+        try {
+            const expiresAt = duration ? new Date(Date.now() + duration).toISOString() : null;
+            
+            const { error } = await this.supabase
+                .from('banned_ips')
+                .insert({
+                    ip: ip,
+                    banned_by: this.pseudo,
+                    reason: reason,
+                    banned_at: new Date().toISOString(),
+                    expires_at: expiresAt
+                });
+
+            if (error) throw error;
+
+            this.showNotification('IP bannie avec succès', 'success');
+            this.playSound('success');
+            return true;
+        } catch (error) {
+            console.error('Erreur bannissement:', error);
+            this.showNotification('Erreur lors du bannissement', 'error');
+            return false;
+        }
+    }
+
+    async unbanIP(ip) {
+        try {
+            const { error } = await this.supabase
+                .from('banned_ips')
+                .delete()
+                .eq('ip', ip);
+
+            if (error) throw error;
+
+            this.showNotification('IP débannie avec succès', 'success');
+            this.playSound('success');
+            return true;
+        } catch (error) {
+            console.error('Erreur débannissement:', error);
+            this.showNotification('Erreur lors du débannissement', 'error');
+            return false;
+        }
+    }
+
+    async getClientIP() {
+    try {
+        // Au lieu d'utiliser ipify, on retourne simplement une chaîne unique
+        return `${this.pseudo}-${Date.now()}`;
+    } catch {
+        return 'unknown';
+    }
+}
+
+    showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification-popup ${type}`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
         }, 3000);
     }
 
-    saveWidgets() {
-        const widgets = {};
-        document.querySelectorAll('.tile').forEach((tile, index) => {
-            const widgetId = tile.dataset.widgetId;
-            const widget = this.widgets.get(widgetId);
-            if (widget) {
-                widgets[widgetId] = {
-                    ...widget.config,
-                    order: index
-                };
+    escapeHtml(unsafe) {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    scrollToBottom() {
+        const messagesContainer = this.container.querySelector('.chat-messages');
+        if (messagesContainer) {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+             }   // Nouvelle méthode ici, avant la dernière accolade de la classe
+async testNotification() {
+        try {
+            console.log('Début du test de notification...');
+            if (!this.pushManager) {
+                throw new Error('PushManager non initialisé');
             }
+            // D'abord s'assurer qu'on est souscrit
+            if (!this.notificationsEnabled) {
+                console.log('Souscription aux notifications...');
+                await this.setupPushNotifications();
+            }
+            console.log('Envoi notification test...');
+            const success = await this.pushManager.sendTestPushMessage();
+            
+            if (success) {
+                this.showNotification('Test notification envoyé', 'success');
+                this.playSound('success');
+            } else {
+                throw new Error('Échec envoi notification');
+            }
+        } catch (error) {
+            console.error('Erreur test notification:', error);
+            this.showNotification('Erreur: ' + error.message, 'error');
+            this.playSound('error');
+        }
+    }
+
+    // Ajouter la nouvelle méthode ici, avant la dernière accolade
+    async checkNotificationStatus() {
+        console.log('État des notifications:', {
+            permission: Notification.permission,
+            serviceWorkerRegistered: !!await navigator.serviceWorker.getRegistration(),
+            pushManagerSupported: 'PushManager' in window,
+            notificationsEnabled: this.notificationsEnabled,
+            pushManagerSubscribed: !!(await (await navigator.serviceWorker.ready).pushManager.getSubscription())
         });
-        localStorage.setItem('widgets', JSON.stringify(widgets));
-        this.emit('widgetsUpdated', widgets);
     }
 }
+
+export default ChatManager;
