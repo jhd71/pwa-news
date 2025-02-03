@@ -631,30 +631,28 @@ async loadExistingMessages() {
 }
    async setupPushNotifications() {
     try {
-        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-            throw new Error('Push notifications non supportées');
-        }
+        if (!('serviceWorker' in navigator)) throw new Error('Service Worker non supporté');
 
-        const sw = await navigator.serviceWorker.register('/service-worker.js');
-        await navigator.serviceWorker.ready;
+        const swReg = await navigator.serviceWorker.register('/service-worker.js', {
+            scope: '/'
+        });
 
-        const pushSubscription = await sw.pushManager.subscribe({
+        const subscription = await swReg.pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: this.urlBase64ToUint8Array('BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck')
         });
 
         await this.supabase.from('push_subscriptions').upsert([
-            { pseudo: this.pseudo, subscription: pushSubscription }
+            { pseudo: this.pseudo, subscription }
         ]);
 
         this.notificationsEnabled = true;
         localStorage.setItem('notificationsEnabled', 'true');
         this.updateNotificationButton();
-        return true;
+        this.showNotification('Notifications activées', 'success');
     } catch (error) {
         console.error('Erreur notifications:', error);
         this.showNotification(error.message, 'error');
-        return false;
     }
 }
 
