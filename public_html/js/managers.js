@@ -631,37 +631,36 @@ async loadExistingMessages() {
 }
    async setupPushNotifications() {
     try {
+        // Vérifier le support des notifications
         if (!('Notification' in window) || !('serviceWorker' in navigator)) {
             throw new Error('Les notifications ne sont pas supportées');
         }
 
+        // Demander la permission
         const permission = await Notification.requestPermission();
         if (permission !== 'granted') {
             throw new Error('Permission refusée');
         }
 
-        // Attendre que le service worker soit actif
-        let registration;
-        try {
-            registration = await navigator.serviceWorker.getRegistration();
-            if (!registration) {
-                registration = await navigator.serviceWorker.register('/service-worker.js');
-            }
-            await navigator.serviceWorker.ready;
-        } catch (error) {
-            throw new Error('Erreur d\'initialisation du service worker');
+        // S'assurer que le service worker est enregistré
+        const registration = await navigator.serviceWorker.getRegistration('/');
+        if (!registration) {
+            throw new Error('Service Worker non enregistré');
         }
 
+        // Convertir la clé VAPID en Uint8Array
         const vapidPublicKey = 'BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck';
-        const convertedKey = this.urlBase64ToUint8Array(vapidPublicKey);
+        const convertedKey = new Uint8Array(vapidPublicKey.split('').map(char => char.charCodeAt(0)));
 
+        // Souscrire aux notifications
         const subscription = await registration.pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: convertedKey
         });
 
+        // Sauvegarder dans Supabase
         const { error } = await this.supabase.from('push_subscriptions').upsert([
-            { pseudo: this.pseudo, subscription }
+            { pseudo: this.pseudo, subscription: JSON.stringify(subscription) }
         ]);
 
         if (error) throw error;
