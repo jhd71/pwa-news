@@ -139,37 +139,42 @@ setupRealtimeSubscription() {
         
         // Si le chat n'est pas ouvert
         if (!chatOpen) {
-            this.unreadCount++;
-            localStorage.setItem('unreadCount', this.unreadCount.toString());
-            
-            // Mise à jour visuelle
-            const badge = this.container.querySelector('.notification-badge');
-            if (badge) {
-                badge.textContent = this.unreadCount;
-                badge.classList.remove('hidden');
-            }
-            
-            this.updateUnreadBadgeAndBubble();
-
-            // Envoi de la notification push
-            if (this.notificationsEnabled && this.pushManager) {
-                try {
-                    console.log('Tentative envoi notification push');
-                    await this.pushManager.sendMessageNotification({
-                        title: 'Nouveau message',
-                        body: `${message.pseudo}: ${message.content}`,
-                        from: message.pseudo
-                    });
-                } catch (error) {
-                    console.error('Erreur envoi notification:', error);
-                }
-            }
-        }
-    } else {
-        this.playSound('sent');
+    this.unreadCount++;
+    localStorage.setItem('unreadCount', this.unreadCount.toString());
+    
+    const badge = this.container.querySelector('.notification-badge');
+    if (badge) {
+        badge.textContent = this.unreadCount;
+        badge.classList.remove('hidden');
     }
     
-    this.isOpen = chatOpen;
+    this.updateUnreadBadgeAndBubble();
+
+    // Nouvelle gestion des notifications
+    if (this.notificationsEnabled) {
+    try {
+        const response = await fetch('/api/sendPush', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                content: message.content,
+                from: message.pseudo,
+                toUser: this.pseudo,
+                type: 'chat_message'
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error('Erreur envoi notification');
+        }
+    } catch (error) {
+        console.error('Erreur envoi notification:', error);
+    }
+}
+
+this.isOpen = chatOpen;
+} else {
+    this.playSound('sent');
 }
 
  updateUnreadBadgeAndBubble() {
