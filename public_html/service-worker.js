@@ -85,25 +85,20 @@ self.addEventListener('fetch', (event) => {
 });
 
 // Notifications push
-self.addEventListener('activate', event => {
-    event.waitUntil(clients.claim());
-});
-
-self.addEventListener('push', event => {
-    const payload = event.data ? event.data.json() : {};
-    
+self.addEventListener('push', function(event) {
     const options = {
-        body: payload.content || 'Nouveau message',
-        icon: '/images/INFOS.png',
-        badge: '/images/INFOS.png',
+        body: 'Nouveau message reçu',
+        icon: '/images/icon-192x192.png',
+        badge: '/images/badge-72x72.png',
         vibrate: [200, 100, 200],
-        tag: 'chat-message',
-        data: payload,
-        requireInteraction: true
+        tag: 'chat-notification',
+        renotify: true,
+        requireInteraction: true,
+        data: { url: self.registration.scope }
     };
 
     event.waitUntil(
-        self.registration.showNotification(`Message de ${payload.from || 'Chat JHD71'}`, options)
+        self.registration.showNotification('INFOS Chat', options)
     );
 });
 
