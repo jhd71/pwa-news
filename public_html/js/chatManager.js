@@ -668,15 +668,22 @@ urlBase64ToUint8Array(base64String) {
 
    async unsubscribeFromPushNotifications() {
     try {
-        const success = await this.pushManager.unsubscribe();
-        if (success) {
-            this.notificationsEnabled = false;
-            localStorage.setItem('notificationsEnabled', 'false');
-            this.updateNotificationButton();
-            this.showNotification('Notifications désactivées', 'success');
-            this.playSound('success');
+        const registration = await navigator.serviceWorker.getRegistration();
+        const subscription = await registration.pushManager.getSubscription();
+        
+        if (subscription) {
+            await subscription.unsubscribe();
+            await this.supabase
+                .from('push_subscriptions')
+                .delete()
+                .eq('pseudo', this.pseudo);
         }
-        return success;
+        
+        this.notificationsEnabled = false;
+        localStorage.setItem('notificationsEnabled', 'false');
+        this.updateNotificationButton();
+        this.showNotification('Notifications désactivées', 'success');
+        return true;
     } catch (error) {
         console.error('Erreur désactivation notifications:', error);
         this.showNotification('Erreur de désactivation', 'error');
