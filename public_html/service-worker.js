@@ -87,18 +87,13 @@ self.addEventListener('fetch', (event) => {
 // Notifications push
 self.addEventListener('push', function(event) {
     const options = {
-        body: 'Nouveau message reçu',
+        body: event.data ? event.data.text() : 'Nouveau message',
         icon: '/images/icon-192x192.png',
-        badge: '/images/badge-72x72.png',
-        vibrate: [200, 100, 200],
-        tag: 'chat-notification',
-        renotify: true,
-        requireInteraction: true,
-        data: { url: self.registration.scope }
+        badge: '/images/badge-72x72.png'
     };
 
     event.waitUntil(
-        self.registration.showNotification('INFOS Chat', options)
+        self.registration.showNotification('Nouveau message', options)
     );
 });
 
