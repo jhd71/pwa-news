@@ -631,34 +631,31 @@ async loadExistingMessages() {
 }
    async setupPushNotifications() {
     try {
-        if (!('Notification' in window)) {
+        if (!('Notification' in window) || !('serviceWorker' in navigator)) {
             throw new Error('Les notifications ne sont pas supportées');
         }
 
-        let permission = Notification.permission;
-        if (permission === 'default') {
-            permission = await Notification.requestPermission();
-        }
-
+        const permission = await Notification.requestPermission();
         if (permission !== 'granted') {
             throw new Error('Permission refusée');
         }
 
-        const registration = await navigator.serviceWorker.ready;
-        const subscription = await registration.pushManager.subscribe({
+        const swRegistration = await navigator.serviceWorker.ready;
+        if (!swRegistration.pushManager) {
+            throw new Error('Push API non supportée');
+        }
+
+        const subscription = await swRegistration.pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: 'BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck'
         });
 
-        const { error } = await this.supabase
-            .from('push_subscriptions')
-            .upsert([{
-                pseudo: this.pseudo,
-                subscription: subscription
-            }]);
+        const { error } = await this.supabase.from('push_subscriptions').upsert([
+            { pseudo: this.pseudo, subscription }
+        ]);
 
         if (error) throw error;
-
+        
         this.notificationsEnabled = true;
         localStorage.setItem('notificationsEnabled', 'true');
         this.updateNotificationButton();
