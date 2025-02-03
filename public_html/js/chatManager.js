@@ -631,47 +631,25 @@ async loadExistingMessages() {
 }
    async setupPushNotifications() {
     try {
-        // 1. Vérifier le support
-        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-            throw new Error('Notifications non supportées');
-        }
+        const swRegistration = await navigator.serviceWorker.register('/service-worker.js');
+        await navigator.serviceWorker.ready;
 
-        // 2. Attendre que le service worker soit actif
-        const swRegistration = await navigator.serviceWorker.ready;
-        console.log('Service worker prêt:', swRegistration);
-
-        // 3. Demander la permission
-        const permission = await Notification.requestPermission();
-        if (permission !== 'granted') {
-            throw new Error('Permission refusée');
-        }
-
-        // 4. S'abonner aux notifications
-        const pushSubscription = await swRegistration.pushManager.subscribe({
+        const subscription = await swRegistration.pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: this.urlBase64ToUint8Array('BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck')
         });
 
-        // 5. Sauvegarder dans Supabase
-        const { error } = await this.supabase.from('push_subscriptions').upsert([
-            { 
-                pseudo: this.pseudo, 
-                subscription: JSON.stringify(pushSubscription) 
-            }
+        await this.supabase.from('push_subscriptions').upsert([
+            { pseudo: this.pseudo, subscription: JSON.stringify(subscription) }
         ]);
-
-        if (error) throw error;
 
         this.notificationsEnabled = true;
         localStorage.setItem('notificationsEnabled', 'true');
         this.updateNotificationButton();
-        this.playSound('success');
-        return true;
+        this.showNotification('Notifications activées', 'success');
     } catch (error) {
-        console.error('Erreur setup notifications:', error);
+        console.error('Erreur notifications:', error);
         this.showNotification(error.message, 'error');
-        this.playSound('error');
-        return false;
     }
 }
 
