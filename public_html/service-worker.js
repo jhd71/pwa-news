@@ -90,15 +90,20 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('push', event => {
+    const payload = event.data ? event.data.json() : {};
+    
     const options = {
-        body: event.data ? event.data.text() : 'Nouveau message',
+        body: payload.content || 'Nouveau message',
         icon: '/images/INFOS.png',
         badge: '/images/INFOS.png',
-        vibrate: [200, 100, 200]
+        vibrate: [200, 100, 200],
+        tag: 'chat-message',
+        data: payload,
+        requireInteraction: true
     };
 
     event.waitUntil(
-        self.registration.showNotification('Chat JHD71', options)
+        self.registration.showNotification(`Message de ${payload.from || 'Chat JHD71'}`, options)
     );
 });
 
