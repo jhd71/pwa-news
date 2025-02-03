@@ -640,14 +640,24 @@ async loadExistingMessages() {
             throw new Error('Permission refusée');
         }
 
-        const swRegistration = await navigator.serviceWorker.ready;
-        if (!swRegistration.pushManager) {
-            throw new Error('Push API non supportée');
+        // Attendre que le service worker soit actif
+        let registration;
+        try {
+            registration = await navigator.serviceWorker.getRegistration();
+            if (!registration) {
+                registration = await navigator.serviceWorker.register('/service-worker.js');
+            }
+            await navigator.serviceWorker.ready;
+        } catch (error) {
+            throw new Error('Erreur d\'initialisation du service worker');
         }
 
-        const subscription = await swRegistration.pushManager.subscribe({
+        const vapidPublicKey = 'BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck';
+        const convertedKey = this.urlBase64ToUint8Array(vapidPublicKey);
+
+        const subscription = await registration.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: 'BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck'
+            applicationServerKey: convertedKey
         });
 
         const { error } = await this.supabase.from('push_subscriptions').upsert([
@@ -655,7 +665,7 @@ async loadExistingMessages() {
         ]);
 
         if (error) throw error;
-        
+
         this.notificationsEnabled = true;
         localStorage.setItem('notificationsEnabled', 'true');
         this.updateNotificationButton();
@@ -666,6 +676,22 @@ async loadExistingMessages() {
         this.showNotification(error.message, 'error');
         return false;
     }
+}
+
+// Ajoutez cette méthode d'aide
+urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
 }
 
    async unsubscribeFromPushNotifications() {
