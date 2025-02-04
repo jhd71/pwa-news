@@ -180,20 +180,25 @@ setupRealtimeSubscription() {
     
     // Si le message vient d'un autre utilisateur
         if (message.pseudo !== this.pseudo) {
-        this.playSound('message');
-        
-        // Si le chat n'est pas ouvert
-        if (!chatOpen) {
-    this.unreadCount++;
-    localStorage.setItem('unreadCount', this.unreadCount.toString());
+    this.playSound('message');
     
-    const badge = this.container.querySelector('.notification-badge');
-    if (badge) {
-        badge.textContent = this.unreadCount;
-        badge.classList.remove('hidden');
+    // Si le chat n'est pas ouvert
+    if (!chatOpen) {
+        this.unreadCount++;
+        localStorage.setItem('unreadCount', this.unreadCount.toString());
+        
+        // Ajout du code de notification
+        if (this.notificationsEnabled) {
+            try {
+                await this.sendNotificationToUser(message);
+            } catch (error) {
+                console.error('Erreur notification:', error);
+            }
+        }
     }
     
     this.updateUnreadBadgeAndBubble();
+}
 
     // Nouvelle gestion des notifications
     if (this.notificationsEnabled) {
