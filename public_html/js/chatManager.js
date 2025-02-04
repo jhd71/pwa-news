@@ -22,7 +22,69 @@ class ChatManager {
         this.isOpen = localStorage.getItem('chatOpen') === 'true';
         this.unreadCount = parseInt(localStorage.getItem('unreadCount') || '0');
     }
+	
+async init() {
+    try {
+        await this.loadBannedWords();
+        
+        this.container = document.createElement('div');
+        this.container.className = 'chat-widget';
 
+        if (this.pseudo) {
+            this.container.innerHTML = this.getChatHTML();
+            console.log('HTML du chat pour utilisateur connecté:', this.container.innerHTML);
+        } else {
+            this.container.innerHTML = this.getPseudoHTML();
+            console.log('HTML du chat pour connexion:', this.container.innerHTML);
+        }
+
+        const chatContainer = this.container.querySelector('.chat-container');
+        console.log('État initial:', {
+            isOpen: this.isOpen,
+            chatContainerExists: !!chatContainer,
+            materialIconsVisible: !!this.container.querySelector('.material-icons')
+        });
+        
+        if (this.isOpen && chatContainer) {
+            chatContainer.classList.add('open');
+        }
+        
+        console.log('HTML généré:', this.container.innerHTML);
+        document.body.appendChild(this.container);
+
+        await this.loadSounds();
+
+        if ('serviceWorker' in navigator && 'PushManager' in window) {
+            try {
+                const registration = await navigator.serviceWorker.ready;
+                const subscription = await registration.pushManager.getSubscription();
+                if (subscription) {
+                    this.subscription = subscription;
+                    this.notificationsEnabled = true;
+                    console.log('Notifications push déjà activées');
+                }
+            } catch (error) {
+                console.error('Erreur initialisation push notifications:', error);
+            }
+        }
+
+        this.setupListeners();
+        this.setupRealtimeSubscription();
+
+        if (this.pseudo) {
+            await this.loadExistingMessages();
+            this.updateUnreadBadgeAndBubble();
+        }
+
+        this.initialized = true;
+        console.log("Chat initialisé avec succès");
+    } catch (error) {
+        console.error('Erreur initialisation:', error);
+        if (!document.querySelector('.chat-widget')) {
+            document.body.appendChild(this.container);
+        }
+    }
+}
     updateUnreadBadgeAndBubble() {
         const badge = this.container.querySelector('.notification-badge');
         if (badge) {
@@ -69,98 +131,47 @@ class ChatManager {
     }
 
     async handleNewMessage(message) {
-        if (!message) return;
+    // ... reste du code ...
+    if (message.pseudo !== this.pseudo) {
+        this.playSound('message');
         
-        const chatContainer = this.container.querySelector('.chat-container');
-        const chatOpen = chatContainer && chatContainer.classList.contains('open');
-        
-        console.log('État initial du message:', {
-            chatOpen,
-            isOpen: this.isOpen,
-            messageFrom: message.pseudo,
-            myPseudo: this.pseudo,
-            notificationsEnabled: this.notificationsEnabled
-        });
-
-        const messagesContainer = this.container.querySelector('.chat-messages');
-        if (!messagesContainer) return;
-
-        const existingMessage = messagesContainer.querySelector(`[data-message-id="${message.id}"]`);
-        if (existingMessage) return;
-
-        const messageElement = this.createMessageElement(message);
-        messagesContainer.appendChild(messageElement);
-        this.scrollToBottom();
-        
-        if (message.pseudo !== this.pseudo) {
-            this.playSound('message');
+        if (!chatOpen) {
+            this.unreadCount++;
+            localStorage.setItem('unreadCount', this.unreadCount.toString());
             
-            if (!chatOpen) {
-                this.unreadCount++;
-                localStorage.setItem('unreadCount', this.unreadCount.toString());
-                
-                if (this.notificationsEnabled) {
-                    try {
-                        await this.sendNotificationToUser(message);
-                    } catch (error) {
-                        console.error('Erreur notification:', error);
-                    }
+            if (this.notificationsEnabled) {
+                try {
+                    await this.sendNotificationToUser(message);
+                } catch (error) {
+                    console.error('Erreur notification:', error);
                 }
             }
             
             this.updateUnreadBadgeAndBubble();
         }
     }
+}  // fin de handleNewMessage
 
-    setupRealtimeSubscription() {
-        const channel = this.supabase.channel('messages');
-        channel
-            .on('postgres_changes', 
-                { event: 'INSERT', schema: 'public', table: 'messages' },
-                (payload) => {
-                    console.log('Nouveau message:', payload);
-                    this.handleNewMessage(payload.new);
-                }
-            )
-            .on('postgres_changes',
-                { event: 'DELETE', schema: 'public', table: 'messages' },
-                (payload) => {
-                    console.log('Message supprimé:', payload);
-                    const messageElement = this.container.querySelector(`[data-message-id="${payload.old.id}"]`);
-                    if (messageElement) messageElement.remove();
-                }
-            )
-            .subscribe();
-    }
-    // Nouvelle gestion des notifications
-    if (this.notificationsEnabled) {
-    try {
-        const response = await fetch('/api/sendPush', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                content: message.content,
-                from: message.pseudo,
-                toUser: this.pseudo,
-                type: 'chat_message'
-            })
-        });
-        
-        if (!response.ok) {
-            throw new Error('Erreur envoi notification');
-        }
-    } catch (error) {
-        console.error('Erreur envoi notification:', error);
-    }
+setupRealtimeSubscription() {
+    const channel = this.supabase.channel('messages');
+    channel
+        .on('postgres_changes', 
+            { event: 'INSERT', schema: 'public', table: 'messages' },
+            (payload) => {
+                console.log('Nouveau message:', payload);
+                this.handleNewMessage(payload.new);
+            }
+        )
+        .on('postgres_changes',
+            { event: 'DELETE', schema: 'public', table: 'messages' },
+            (payload) => {
+                console.log('Message supprimé:', payload);
+                const messageElement = this.container.querySelector(`[data-message-id="${payload.old.id}"]`);
+                if (messageElement) messageElement.remove();
+            }
+        )
+        .subscribe();
 }
-
-}
-       this.isOpen = chatOpen;
-    } else {
-        this.playSound('sent');
-    }
-
-    // Mise à jour du badge
     const badge = this.container.querySelector('.notification-badge');
     if (badge) {
         badge.textContent = this.unreadCount > 0 ? this.unreadCount : '';
