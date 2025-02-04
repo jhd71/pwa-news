@@ -657,22 +657,28 @@ if (toggle) {
         }
 
         // Enregistrement simplifié dans Supabase
-        const { error } = await this.supabase
-            .from('push_subscriptions')
-            .upsert({
-                pseudo: this.pseudo,
-                subscription: JSON.stringify(subscription)
-            });
+        // Remplacez le bloc upsert par celui-ci
+const { error } = await this.supabase
+    .from('push_subscriptions')
+    .upsert(
+        {
+            pseudo: this.pseudo,
+            subscription: JSON.stringify(subscription)
+        },
+        {
+            onConflict: 'pseudo',
+            ignoreDuplicates: false
+        }
+    );
 
-        if (error) throw error;
+if (error) throw error;
+this.notificationsEnabled = true;
+localStorage.setItem('notificationsEnabled', 'true');
+this.updateNotificationButton();
+this.showNotification('Notifications activées', 'success');
+this.playSound('success');
 
-        this.notificationsEnabled = true;
-        localStorage.setItem('notificationsEnabled', 'true');
-        this.updateNotificationButton();
-        this.showNotification('Notifications activées', 'success');
-        this.playSound('success');
-        
-        return true;
+return true;
     } catch (error) {
         console.error('Erreur activation notifications:', error);
         this.showNotification(
