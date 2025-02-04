@@ -635,25 +635,57 @@ if (toggle) {
 }
    async setupPushNotifications() {
     try {
-        const swRegistration = await navigator.serviceWorker.register('/service-worker.js');
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+            throw new Error('Les notifications push ne sont pas supportées');
+        }
+
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+            throw new Error('Permission refusée pour les notifications');
+        }
+
+        // S'assurer que le service worker est enregistré
+        const registration = await navigator.serviceWorker.register('/service-worker.js');
         await navigator.serviceWorker.ready;
 
-        const subscription = await swRegistration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: this.urlBase64ToUint8Array('BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck')
-        });
+        // Vérifier si une souscription existe déjà
+        let subscription = await registration.pushManager.getSubscription();
+        
+        if (!subscription) {
+            // Créer une nouvelle souscription
+            subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: this.urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY)
+            });
+        }
 
-        await this.supabase.from('push_subscriptions').upsert([
-            { pseudo: this.pseudo, subscription: JSON.stringify(subscription) }
-        ]);
+        // Sauvegarder dans Supabase
+        const { error } = await this.supabase
+            .from('push_subscriptions')
+            .upsert({
+                pseudo: this.pseudo,
+                subscription: JSON.stringify(subscription),
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            });
+
+        if (error) throw error;
 
         this.notificationsEnabled = true;
         localStorage.setItem('notificationsEnabled', 'true');
         this.updateNotificationButton();
         this.showNotification('Notifications activées', 'success');
+        this.playSound('success');
+        
+        return true;
     } catch (error) {
-        console.error('Erreur notifications:', error);
-        this.showNotification(error.message, 'error');
+        console.error('Erreur activation notifications:', error);
+        this.showNotification(
+            'Erreur : ' + (error.message || 'Activation impossible'), 
+            'error'
+        );
+        this.playSound('error');
+        throw error;
     }
 }
 
