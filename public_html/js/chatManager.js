@@ -164,8 +164,7 @@ setupRealtimeSubscription() {
         isOpen: this.isOpen,
         messageFrom: message.pseudo,
         myPseudo: this.pseudo,
-        notificationsEnabled: this.notificationsEnabled,
-        pushManagerReady: !!this.pushManager?.subscription
+        notificationsEnabled: this.notificationsEnabled
     });
 
     const messagesContainer = this.container.querySelector('.chat-messages');
@@ -178,26 +177,24 @@ setupRealtimeSubscription() {
     messagesContainer.appendChild(messageElement);
     this.scrollToBottom();
     
-    // Si le message vient d'un autre utilisateur
-        if (message.pseudo !== this.pseudo) {
-    this.playSound('message');
-    
-    // Si le chat n'est pas ouvert
-    if (!chatOpen) {
-        this.unreadCount++;
-        localStorage.setItem('unreadCount', this.unreadCount.toString());
+    if (message.pseudo !== this.pseudo) {
+        this.playSound('message');
         
-        // Ajout du code de notification
-        if (this.notificationsEnabled) {
-            try {
-                await this.sendNotificationToUser(message);
-            } catch (error) {
-                console.error('Erreur notification:', error);
+        if (!chatOpen) {
+            this.unreadCount++;
+            localStorage.setItem('unreadCount', this.unreadCount.toString());
+            
+            if (this.notificationsEnabled) {
+                try {
+                    await this.sendNotificationToUser(message);
+                } catch (error) {
+                    console.error('Erreur notification:', error);
+                }
             }
         }
+        
+        this.updateUnreadBadgeAndBubble();
     }
-    
-    this.updateUnreadBadgeAndBubble();
 }
 
     // Nouvelle gestion des notifications
