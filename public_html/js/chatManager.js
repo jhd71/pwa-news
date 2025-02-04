@@ -22,7 +22,37 @@ class ChatManager {
         this.isOpen = localStorage.getItem('chatOpen') === 'true';
         this.unreadCount = parseInt(localStorage.getItem('unreadCount') || '0');
     }
+async loadBannedWords() {
+    try {
+        const { data: words, error } = await this.supabase
+            .from('banned_words')
+            .select('*')
+            .order('added_at', { ascending: true });
 
+        if (!error && words) {
+            // Stocker les mots bannis dans un Set
+            this.bannedWords = new Set(words.map(w => w.word.toLowerCase()));
+
+            // Mettre à jour la liste HTML si elle existe
+            const list = document.querySelector('.banned-words-list');
+            if (list) {
+                list.innerHTML = words.map(w => `
+                    <div class="banned-word">
+                        ${w.word}
+                        <button class="remove-word" data-word="${w.word}">×</button>
+                    </div>
+                `).join('');
+
+                list.querySelectorAll('.remove-word').forEach(btn => {
+                    btn.addEventListener('click', () => this.removeBannedWord(btn.dataset.word));
+                });
+            }
+        }
+    } catch (error) {
+        console.error('Erreur loadBannedWords:', error);
+        this.bannedWords = new Set();
+    }
+}
     async init() {
         try {
             await this.loadBannedWords();
