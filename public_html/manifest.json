@@ -34,6 +34,8 @@
             "purpose": "badge"
         }
     ],
+	"background_fetch": true,
+    "background_push": true,
     "shortcuts": [
         {
             "name": "Rechercher",
