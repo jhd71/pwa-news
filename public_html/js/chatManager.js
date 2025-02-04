@@ -644,29 +644,24 @@ if (toggle) {
             throw new Error('Permission refusée pour les notifications');
         }
 
-        // S'assurer que le service worker est enregistré
         const registration = await navigator.serviceWorker.register('/service-worker.js');
         await navigator.serviceWorker.ready;
 
-        // Vérifier si une souscription existe déjà
         let subscription = await registration.pushManager.getSubscription();
         
         if (!subscription) {
-            // Utiliser la clé VAPID publique directement
             subscription = await registration.pushManager.subscribe({
                 userVisibleOnly: true,
                 applicationServerKey: this.urlBase64ToUint8Array('BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck')
             });
         }
 
-        // Sauvegarder dans Supabase
+        // Enregistrement simplifié dans Supabase
         const { error } = await this.supabase
             .from('push_subscriptions')
             .upsert({
                 pseudo: this.pseudo,
-                subscription: JSON.stringify(subscription),
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString()
+                subscription: JSON.stringify(subscription)
             });
 
         if (error) throw error;
