@@ -86,6 +86,7 @@ self.addEventListener('fetch', (event) => {
 
 // Notifications push
 // Remplacez le gestionnaire d'événement push existant par celui-ci
+// Remplacez l'événement push existant par celui-ci dans service-worker.js
 self.addEventListener('push', function(event) {
     if (!event.data) return;
 
@@ -116,6 +117,14 @@ self.addEventListener('push', function(event) {
         );
     } catch (error) {
         console.error('Erreur traitement notification push:', error);
+        event.waitUntil(
+            self.registration.showNotification('INFOS Chat', {
+                body: 'Nouveau message reçu',
+                icon: '/images/INFOS-192.png',
+                badge: '/images/badge-72x72.png',
+                vibrate: [200, 100, 200]
+            })
+        );
     }
 });
 
