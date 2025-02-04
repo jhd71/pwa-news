@@ -86,6 +86,27 @@ class ChatManager {
             }
         }
     }
+	
+updateUnreadBadgeAndBubble() {
+    const badge = this.container.querySelector('.notification-badge');
+    if (badge) {
+        badge.textContent = this.unreadCount || '';
+        badge.classList.toggle('hidden', this.unreadCount === 0);
+    }
+
+    const chatToggle = this.container.querySelector('.chat-toggle');
+    const existingBubble = chatToggle.querySelector('.info-bubble');
+    if (existingBubble) {
+        existingBubble.remove();
+    }
+
+    if (!this.isOpen && this.unreadCount > 0) {
+        const bubble = document.createElement('div');
+        bubble.className = 'info-bubble show';
+        bubble.innerHTML = `<div style="font-weight: bold;">${this.unreadCount} nouveau(x) message(s)</div>`;
+        chatToggle.appendChild(bubble);
+    }
+}
 
 setupRealtimeSubscription() {
    const channel = this.supabase.channel('messages');
@@ -657,28 +678,22 @@ if (toggle) {
         }
 
         // Enregistrement simplifié dans Supabase
-        // Remplacez le bloc upsert par celui-ci
-const { error } = await this.supabase
-    .from('push_subscriptions')
-    .upsert(
-        {
-            pseudo: this.pseudo,
-            subscription: JSON.stringify(subscription)
-        },
-        {
-            onConflict: 'pseudo',
-            ignoreDuplicates: false
-        }
-    );
+        const { error } = await this.supabase
+            .from('push_subscriptions')
+            .upsert({
+                pseudo: this.pseudo,
+                subscription: JSON.stringify(subscription)
+            });
 
-if (error) throw error;
-this.notificationsEnabled = true;
-localStorage.setItem('notificationsEnabled', 'true');
-this.updateNotificationButton();
-this.showNotification('Notifications activées', 'success');
-this.playSound('success');
+        if (error) throw error;
 
-return true;
+        this.notificationsEnabled = true;
+        localStorage.setItem('notificationsEnabled', 'true');
+        this.updateNotificationButton();
+        this.showNotification('Notifications activées', 'success');
+        this.playSound('success');
+        
+        return true;
     } catch (error) {
         console.error('Erreur activation notifications:', error);
         this.showNotification(
