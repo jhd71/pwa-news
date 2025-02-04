@@ -119,38 +119,15 @@ async sendNotificationToUser(message) {
                 toUser: this.pseudo
             })
         });
-
         if (!response.ok) {
             const errorData = await response.json();
             throw new Error(errorData.error || 'Erreur envoi notification');
         }
-
         return await response.json();
     } catch (error) {
         console.error('Erreur envoi notification:', error);
         throw error;
     }
-}
-
-setupRealtimeSubscription() {
-   const channel = this.supabase.channel('messages');
-   channel
-       .on('postgres_changes', 
-           { event: 'INSERT', schema: 'public', table: 'messages' },
-           (payload) => {
-               console.log('Nouveau message:', payload);
-               this.handleNewMessage(payload.new);
-           }
-       )
-       .on('postgres_changes',
-           { event: 'DELETE', schema: 'public', table: 'messages' },
-           (payload) => {
-               console.log('Message supprimé:', payload);
-               const messageElement = this.container.querySelector(`[data-message-id="${payload.old.id}"]`);
-               if (messageElement) messageElement.remove();
-           }
-       )
-       .subscribe();
 }
 
   async handleNewMessage(message) {
@@ -197,6 +174,26 @@ setupRealtimeSubscription() {
     }
 }
 
+setupRealtimeSubscription() {
+   const channel = this.supabase.channel('messages');
+   channel
+       .on('postgres_changes', 
+           { event: 'INSERT', schema: 'public', table: 'messages' },
+           (payload) => {
+               console.log('Nouveau message:', payload);
+               this.handleNewMessage(payload.new);
+           }
+       )
+       .on('postgres_changes',
+           { event: 'DELETE', schema: 'public', table: 'messages' },
+           (payload) => {
+               console.log('Message supprimé:', payload);
+               const messageElement = this.container.querySelector(`[data-message-id="${payload.old.id}"]`);
+               if (messageElement) messageElement.remove();
+           }
+       )
+       .subscribe();
+}
     // Nouvelle gestion des notifications
     if (this.notificationsEnabled) {
     try {
