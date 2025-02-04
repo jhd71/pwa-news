@@ -23,177 +23,115 @@ class ChatManager {
         this.unreadCount = parseInt(localStorage.getItem('unreadCount') || '0');
     }
 
-    async init() {
+    updateUnreadBadgeAndBubble() {
+        const badge = this.container.querySelector('.notification-badge');
+        if (badge) {
+            badge.textContent = this.unreadCount || '';
+            badge.classList.toggle('hidden', this.unreadCount === 0);
+        }
+
+        const chatToggle = this.container.querySelector('.chat-toggle');
+        const existingBubble = chatToggle.querySelector('.info-bubble');
+        if (existingBubble) {
+            existingBubble.remove();
+        }
+
+        if (!this.isOpen && this.unreadCount > 0) {
+            const bubble = document.createElement('div');
+            bubble.className = 'info-bubble show';
+            bubble.innerHTML = `<div style="font-weight: bold;">${this.unreadCount} nouveau(x) message(s)</div>`;
+            chatToggle.appendChild(bubble);
+        }
+    }
+
+    async sendNotificationToUser(message) {
         try {
-            await this.loadBannedWords();
-            
-            this.container = document.createElement('div');
-            this.container.className = 'chat-widget';
-
-            if (this.pseudo) {
-                this.container.innerHTML = this.getChatHTML();
-                console.log('HTML du chat pour utilisateur connecté:', this.container.innerHTML);
-            } else {
-                this.container.innerHTML = this.getPseudoHTML();
-                console.log('HTML du chat pour connexion:', this.container.innerHTML);
-            }
-
-            const chatContainer = this.container.querySelector('.chat-container');
-            console.log('État initial:', {
-                isOpen: this.isOpen,
-                chatContainerExists: !!chatContainer,
-                materialIconsVisible: !!this.container.querySelector('.material-icons')
+            const response = await fetch('/api/sendPush', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: message.content,
+                    fromUser: message.pseudo,
+                    toUser: this.pseudo
+                })
             });
-            
-            if (this.isOpen && chatContainer) {
-                chatContainer.classList.add('open');
-            }
-            
-            console.log('HTML généré:', this.container.innerHTML);
-            document.body.appendChild(this.container);
 
-            await this.loadSounds();
-
-            // Nouvelle initialisation des notifications
-            if ('serviceWorker' in navigator && 'PushManager' in window) {
-                try {
-                    const registration = await navigator.serviceWorker.ready;
-                    const subscription = await registration.pushManager.getSubscription();
-                    if (subscription) {
-                        this.subscription = subscription;
-                        this.notificationsEnabled = true;
-                        console.log('Notifications push déjà activées');
-                    }
-                } catch (error) {
-                    console.error('Erreur initialisation push notifications:', error);
-                }
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Erreur envoi notification');
             }
 
-            this.setupListeners();
-            this.setupRealtimeSubscription();
-
-            if (this.pseudo) {
-                await this.loadExistingMessages();
-                this.updateUnreadBadgeAndBubble();
-            }
-
-            this.initialized = true;
-            console.log("Chat initialisé avec succès");
+            return await response.json();
         } catch (error) {
-            console.error('Erreur initialisation:', error);
-            if (!document.querySelector('.chat-widget')) {
-                document.body.appendChild(this.container);
-            }
+            console.error('Erreur envoi notification:', error);
+            throw error;
         }
     }
-	
-updateUnreadBadgeAndBubble() {
-    const badge = this.container.querySelector('.notification-badge');
-    if (badge) {
-        badge.textContent = this.unreadCount || '';
-        badge.classList.toggle('hidden', this.unreadCount === 0);
-    }
 
-    const chatToggle = this.container.querySelector('.chat-toggle');
-    const existingBubble = chatToggle.querySelector('.info-bubble');
-    if (existingBubble) {
-        existingBubble.remove();
-    }
-
-    if (!this.isOpen && this.unreadCount > 0) {
-        const bubble = document.createElement('div');
-        bubble.className = 'info-bubble show';
-        bubble.innerHTML = `<div style="font-weight: bold;">${this.unreadCount} nouveau(x) message(s)</div>`;
-        chatToggle.appendChild(bubble);
-    }
-}
-
-async sendNotificationToUser(message) {
-    try {
-        const response = await fetch('/api/sendPush', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                message: message.content,
-                fromUser: message.pseudo,
-                toUser: this.pseudo
-            })
-        });
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Erreur envoi notification');
-        }
-        return await response.json();
-    } catch (error) {
-        console.error('Erreur envoi notification:', error);
-        throw error;
-    }
-}
-
-  async handleNewMessage(message) {
-    if (!message) return;
-    
-    const chatContainer = this.container.querySelector('.chat-container');
-    const chatOpen = chatContainer && chatContainer.classList.contains('open');
-    
-    console.log('État initial du message:', {
-        chatOpen,
-        isOpen: this.isOpen,
-        messageFrom: message.pseudo,
-        myPseudo: this.pseudo,
-        notificationsEnabled: this.notificationsEnabled
-    });
-
-    const messagesContainer = this.container.querySelector('.chat-messages');
-    if (!messagesContainer) return;
-
-    const existingMessage = messagesContainer.querySelector(`[data-message-id="${message.id}"]`);
-    if (existingMessage) return;
-
-    const messageElement = this.createMessageElement(message);
-    messagesContainer.appendChild(messageElement);
-    this.scrollToBottom();
-    
-    if (message.pseudo !== this.pseudo) {
-        this.playSound('message');
+    async handleNewMessage(message) {
+        if (!message) return;
         
-        if (!chatOpen) {
-            this.unreadCount++;
-            localStorage.setItem('unreadCount', this.unreadCount.toString());
+        const chatContainer = this.container.querySelector('.chat-container');
+        const chatOpen = chatContainer && chatContainer.classList.contains('open');
+        
+        console.log('État initial du message:', {
+            chatOpen,
+            isOpen: this.isOpen,
+            messageFrom: message.pseudo,
+            myPseudo: this.pseudo,
+            notificationsEnabled: this.notificationsEnabled
+        });
+
+        const messagesContainer = this.container.querySelector('.chat-messages');
+        if (!messagesContainer) return;
+
+        const existingMessage = messagesContainer.querySelector(`[data-message-id="${message.id}"]`);
+        if (existingMessage) return;
+
+        const messageElement = this.createMessageElement(message);
+        messagesContainer.appendChild(messageElement);
+        this.scrollToBottom();
+        
+        if (message.pseudo !== this.pseudo) {
+            this.playSound('message');
             
-            if (this.notificationsEnabled) {
-                try {
-                    await this.sendNotificationToUser(message);
-                } catch (error) {
-                    console.error('Erreur notification:', error);
+            if (!chatOpen) {
+                this.unreadCount++;
+                localStorage.setItem('unreadCount', this.unreadCount.toString());
+                
+                if (this.notificationsEnabled) {
+                    try {
+                        await this.sendNotificationToUser(message);
+                    } catch (error) {
+                        console.error('Erreur notification:', error);
+                    }
                 }
             }
+            
+            this.updateUnreadBadgeAndBubble();
         }
-        
-        this.updateUnreadBadgeAndBubble();
     }
-}
 
-setupRealtimeSubscription() {
-   const channel = this.supabase.channel('messages');
-   channel
-       .on('postgres_changes', 
-           { event: 'INSERT', schema: 'public', table: 'messages' },
-           (payload) => {
-               console.log('Nouveau message:', payload);
-               this.handleNewMessage(payload.new);
-           }
-       )
-       .on('postgres_changes',
-           { event: 'DELETE', schema: 'public', table: 'messages' },
-           (payload) => {
-               console.log('Message supprimé:', payload);
-               const messageElement = this.container.querySelector(`[data-message-id="${payload.old.id}"]`);
-               if (messageElement) messageElement.remove();
-           }
-       )
-       .subscribe();
-}
+    setupRealtimeSubscription() {
+        const channel = this.supabase.channel('messages');
+        channel
+            .on('postgres_changes', 
+                { event: 'INSERT', schema: 'public', table: 'messages' },
+                (payload) => {
+                    console.log('Nouveau message:', payload);
+                    this.handleNewMessage(payload.new);
+                }
+            )
+            .on('postgres_changes',
+                { event: 'DELETE', schema: 'public', table: 'messages' },
+                (payload) => {
+                    console.log('Message supprimé:', payload);
+                    const messageElement = this.container.querySelector(`[data-message-id="${payload.old.id}"]`);
+                    if (messageElement) messageElement.remove();
+                }
+            )
+            .subscribe();
+    }
     // Nouvelle gestion des notifications
     if (this.notificationsEnabled) {
     try {
