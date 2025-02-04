@@ -177,13 +177,6 @@ setupRealtimeSubscription() {
     } else {
         this.playSound('sent');
     }
-  
-   this.updateUnreadBadgeAndBubble();
-    console.log('Début updateUnreadBadgeAndBubble:', {
-        unreadCount: this.unreadCount,
-        isOpen: this.isOpen,
-        messages: this.unreadMessages
-    });
 
     // Mise à jour du badge
     const badge = this.container.querySelector('.notification-badge');
@@ -409,7 +402,7 @@ async loadExistingMessages() {
     const notificationsBtn = this.container.querySelector('.notifications-btn');
     const adminBtn = this.container.querySelector('.admin-panel-btn');
 
-    if (toggle) {
+if (toggle) {
     toggle.addEventListener('click', () => {
         const chatContainer = this.container.querySelector('.chat-container');
         this.isOpen = !this.isOpen;
@@ -429,8 +422,13 @@ async loadExistingMessages() {
                 badge.classList.add('hidden');
             }
             
-            // Mise à jour de l'info-bulle
-            this.updateUnreadBadgeAndBubble();
+            // Gérer l'info-bulle
+            const chatToggle = this.container.querySelector('.chat-toggle');
+            const existingBubble = chatToggle?.querySelector('.info-bubble');
+            if (existingBubble) {
+                existingBubble.remove();
+            }
+            
             this.scrollToBottom();
         } else {
             chatContainer?.classList.remove('open');
