@@ -85,38 +85,45 @@ self.addEventListener('fetch', (event) => {
 });
 
 // Notifications push
+// Remplacez le gestionnaire d'événement push existant par celui-ci
 self.addEventListener('push', function(event) {
-    const options = {
-        body: 'Nouveau message reçu',
-        icon: '/images/icon-192x192.png',
-        badge: '/images/badge-72x72.png',
-        vibrate: [200, 100, 200],
-        tag: 'chat-notification',
-        renotify: true,
-        requireInteraction: true,
-        data: { url: self.registration.scope }
-    };
+    if (!event.data) return;
 
-    event.waitUntil(
-        self.registration.showNotification('INFOS Chat', options)
-    );
-});
+    try {
+        const data = event.data.json();
+        const options = {
+            body: data.body || 'Nouveau message reçu',
+            icon: data.icon || '/images/INFOS-192.png',
+            badge: data.badge || '/images/badge-72x72.png',
+            vibrate: [200, 100, 200],
+            tag: 'chat-notification',
+            renotify: true,
+            requireInteraction: true,
+            data: data.data || { url: self.registration.scope }
+        };
 
-self.addEventListener('notificationclick', function(event) {
-    event.notification.close();
-
-    event.waitUntil(
-        clients.matchAll({ type: 'window', includeUncontrolled: true })
-            .then(function(clientList) {
-                if (clientList.length > 0) {
-                    return clientList[0].focus();
-                }
-                return clients.openWindow(self.registration.scope);
+        event.waitUntil(
+            self.registration.showNotification(data.title || 'INFOS Chat', options)
+        );
+    } catch (error) {
+        console.error('Erreur traitement notification push:', error);
+        // Fallback en cas d'erreur de parsing
+        event.waitUntil(
+            self.registration.showNotification('INFOS Chat', {
+                body: 'Nouveau message reçu',
+                icon: '/images/INFOS-192.png',
+                badge: '/images/badge-72x72.png',
+                vibrate: [200, 100, 200]
             })
-    );
+        );
+    }
 });
 
 // Gestion des événements de fermeture de notification
 self.addEventListener('notificationclose', function(event) {
-    console.log('SW: Notification fermée', event);
+    console.log('SW: Notification fermée', {
+        tag: event.notification.tag,
+        timestamp: new Date().toISOString(),
+        data: event.notification.data
+    });
 });
