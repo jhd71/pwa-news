@@ -26,6 +26,12 @@
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any"
+        },
+        {
+            "src": "images/badge-72x72.png",
+            "sizes": "72x72",
+            "type": "image/png",
+            "purpose": "badge"
         }
     ],
     "shortcuts": [
@@ -35,23 +41,27 @@
             "description": "Effectuer une recherche",
             "url": "/?action=search",
             "icons": [{ "src": "images/INFOS.png", "sizes": "96x96" }]
+        },
+        {
+            "name": "Chat",
+            "short_name": "Chat",
+            "description": "Ouvrir le chat",
+            "url": "/?action=openchat",
+            "icons": [{ "src": "images/INFOS-96.png", "sizes": "96x96" }]
         }
     ],
-    "categories": ["news"],
+    "categories": ["news", "social"],
     "prefer_related_applications": false,
-    "display_override": ["standalone"],
+    "display_override": ["standalone", "minimal-ui"],
     "serviceworker": {
         "src": "/service-worker.js",
         "scope": "/",
-        "type": "module",
+        "use_cache": false,
         "update_via_cache": "none"
     },
     "permissions": [
-        "notifications",
-        "background"
+        "notifications"
     ],
-    "gcm_sender_id": "103953800507",
-    "related_applications": [],
     "protocol_handlers": [
         {
             "protocol": "web+chat",
@@ -65,6 +75,11 @@
             "title": "title",
             "text": "text",
             "url": "url"
+        }
+    },
+    "notification_interactions": {
+        "default": {
+            "action": "/?action=openchat"
         }
     }
 }
