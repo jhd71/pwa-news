@@ -108,6 +108,30 @@ updateUnreadBadgeAndBubble() {
     }
 }
 
+async sendNotificationToUser(message) {
+    try {
+        const response = await fetch('/api/sendPush', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: message.content,
+                fromUser: message.pseudo,
+                toUser: this.pseudo
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Erreur envoi notification');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Erreur envoi notification:', error);
+        throw error;
+    }
+}
+
 setupRealtimeSubscription() {
    const channel = this.supabase.channel('messages');
    channel
