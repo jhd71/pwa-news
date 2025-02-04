@@ -652,10 +652,10 @@ if (toggle) {
         let subscription = await registration.pushManager.getSubscription();
         
         if (!subscription) {
-            // Créer une nouvelle souscription
+            // Utiliser la clé VAPID publique directement
             subscription = await registration.pushManager.subscribe({
                 userVisibleOnly: true,
-                applicationServerKey: this.urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY)
+                applicationServerKey: this.urlBase64ToUint8Array('BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck')
             });
         }
 
