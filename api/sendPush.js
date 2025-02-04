@@ -2,21 +2,16 @@
 import webpush from 'web-push';
 import { createClient } from '@supabase/supabase-js';
 
-// Vos clés VAPID que nous avons générées précédemment
+// Configuration des clés VAPID
 const vapidKeys = {
-  publicKey: process.env.VAPID_PUBLIC_KEY,
+  publicKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
   privateKey: process.env.VAPID_PRIVATE_KEY
 };
 
+// Configuration Supabase avec variables d'environnement
 const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_KEY
-);
-
-// Configuration Supabase
-const supabase = createClient(
-  'https://aqedqlzsguvkopucyqbb.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxZWRxbHpzZ3V2a29wdWN5cWJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY1MDAxNzUsImV4cCI6MjA1MjA3NjE3NX0.tjdnqCIW0dgmzn3VYx0ugCrISLPFMLhOQJBnnC5cfoo'
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
 export default async function handler(req, res) {
@@ -34,26 +29,61 @@ export default async function handler(req, res) {
 
     const { message, fromUser, toUser } = req.body;
 
-    // Récupérer la souscription depuis Supabase
-    const { data: subscriptions } = await supabase
+    // Récupérer toutes les souscriptions de l'utilisateur
+    const { data: subscriptions, error } = await supabase
       .from('push_subscriptions')
       .select('subscription')
       .eq('pseudo', toUser);
+
+    if (error) throw error;
 
     if (!subscriptions || subscriptions.length === 0) {
       return res.status(404).json({ message: 'No subscription found' });
     }
 
-    // Envoyer la notification
-    await webpush.sendNotification(
-      subscriptions[0].subscription,
-      JSON.stringify({
-        title: `Message de ${fromUser}`,
-        body: message
+    // Envoyer la notification à toutes les souscriptions
+    const notificationPayload = JSON.stringify({
+      title: `Nouveau message de ${fromUser}`,
+      body: message,
+      icon: '/images/INFOS-192.png',
+      badge: '/images/badge-72x72.png',
+      data: {
+        url: '/?action=openchat'
+      }
+    });
+
+    // Envoyer à toutes les souscriptions et gérer les erreurs
+    const results = await Promise.allSettled(
+      subscriptions.map(async ({ subscription }) => {
+        try {
+          const parsedSubscription = typeof subscription === 'string' 
+            ? JSON.parse(subscription) 
+            : subscription;
+            
+          await webpush.sendNotification(
+            parsedSubscription,
+            notificationPayload
+          );
+          return true;
+        } catch (error) {
+          if (error.statusCode === 410) {
+            // Supprimer les souscriptions expirées
+            await supabase
+              .from('push_subscriptions')
+              .delete()
+              .eq('subscription', subscription);
+          }
+          throw error;
+        }
       })
     );
 
-    res.status(200).json({ message: 'Notification sent' });
+    const successful = results.filter(r => r.status === 'fulfilled').length;
+    const failed = results.filter(r => r.status === 'rejected').length;
+
+    res.status(200).json({ 
+      message: `Notifications sent: ${successful} successful, ${failed} failed`
+    });
   } catch (error) {
     console.error('Error sending push:', error);
     res.status(500).json({ error: error.message });
