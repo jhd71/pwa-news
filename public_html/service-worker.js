@@ -93,13 +93,22 @@ self.addEventListener('push', function(event) {
         const data = event.data.json();
         const options = {
             body: data.body || 'Nouveau message reçu',
-            icon: data.icon || '/images/INFOS-192.png',
-            badge: data.badge || '/images/badge-72x72.png',
+            icon: '/images/INFOS-192.png',
+            badge: '/images/badge-72x72.png',
             vibrate: [200, 100, 200],
-            tag: 'chat-notification',
+            tag: 'chat-message',
             renotify: true,
             requireInteraction: true,
-            data: data.data || { url: self.registration.scope }
+            actions: [
+                {
+                    action: 'open',
+                    title: 'Ouvrir',
+                    icon: '/images/INFOS-96.png'
+                }
+            ],
+            data: {
+                url: self.registration.scope
+            }
         };
 
         event.waitUntil(
@@ -107,15 +116,6 @@ self.addEventListener('push', function(event) {
         );
     } catch (error) {
         console.error('Erreur traitement notification push:', error);
-        // Fallback en cas d'erreur de parsing
-        event.waitUntil(
-            self.registration.showNotification('INFOS Chat', {
-                body: 'Nouveau message reçu',
-                icon: '/images/INFOS-192.png',
-                badge: '/images/badge-72x72.png',
-                vibrate: [200, 100, 200]
-            })
-        );
     }
 });
 
