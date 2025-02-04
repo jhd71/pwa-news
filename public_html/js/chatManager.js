@@ -131,7 +131,29 @@ async init() {
     }
 
     async handleNewMessage(message) {
-    // ... reste du code ...
+    if (!message) return;
+    
+    const chatContainer = this.container.querySelector('.chat-container');
+    const chatOpen = chatContainer && chatContainer.classList.contains('open');
+    
+    console.log('État initial du message:', {
+        chatOpen,
+        isOpen: this.isOpen,
+        messageFrom: message.pseudo,
+        myPseudo: this.pseudo,
+        notificationsEnabled: this.notificationsEnabled
+    });
+
+    const messagesContainer = this.container.querySelector('.chat-messages');
+    if (!messagesContainer) return;
+
+    const existingMessage = messagesContainer.querySelector(`[data-message-id="${message.id}"]`);
+    if (existingMessage) return;
+
+    const messageElement = this.createMessageElement(message);
+    messagesContainer.appendChild(messageElement);
+    this.scrollToBottom();
+    
     if (message.pseudo !== this.pseudo) {
         this.playSound('message');
         
@@ -150,7 +172,7 @@ async init() {
             this.updateUnreadBadgeAndBubble();
         }
     }
-}  // fin de handleNewMessage
+}
 
 setupRealtimeSubscription() {
     const channel = this.supabase.channel('messages');
