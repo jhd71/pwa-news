@@ -135,7 +135,169 @@ async loadBannedWords() {
             chatToggle.appendChild(bubble);
         }
     }
+	
+createMessageElement(message) {
+    const div = document.createElement('div');
+    div.className = `message ${message.pseudo === this.pseudo ? 'sent' : 'received'}`;
+    div.dataset.messageId = message.id;
 
+    div.innerHTML = `
+        <div class="message-author">${message.pseudo}</div>
+        <div class="message-content">${this.escapeHtml(message.content)}</div>
+        <div class="message-time">${new Date(message.created_at).toLocaleTimeString()}</div>
+    `;
+
+    if (this.isAdmin || message.pseudo === this.pseudo) {
+        // Clic droit sur PC
+        div.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            this.showMessageOptions(message, e.clientX, e.clientY);
+        });
+
+        // Toucher long sur mobile
+        let touchTimeout;
+        div.addEventListener('touchstart', (e) => {
+            touchTimeout = setTimeout(() => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                this.showMessageOptions(message, touch.clientX, touch.clientY);
+            }, 500);
+        });
+
+        div.addEventListener('touchend', () => {
+            clearTimeout(touchTimeout);
+        });
+
+        div.addEventListener('touchmove', () => {
+            clearTimeout(touchTimeout);
+        });
+    }
+
+    return div;
+}
+async loadExistingMessages() {
+        try {
+            const { data: messages, error } = await this.supabase
+                .from('messages')
+                .select('*')
+                .order('created_at', { ascending: true });
+
+            if (error) throw error;
+
+            const container = this.container.querySelector('.chat-messages');
+            if (container && messages) {
+                container.innerHTML = '';
+                messages.forEach(msg => {
+                    container.appendChild(this.createMessageElement(msg));
+                });
+                this.scrollToBottom();
+            }
+        } catch (error) {
+            console.error('Erreur chargement messages:', error);
+            this.showNotification('Erreur chargement messages', 'error');
+        }
+    }
+
+    updateNotificationButton() {
+        const notifBtn = this.container.querySelector('.notifications-btn');
+        if (notifBtn) {
+            notifBtn.classList.toggle('enabled', this.notificationsEnabled);
+            notifBtn.querySelector('.material-icons').textContent =
+                this.notificationsEnabled ? 'notifications_active' : 'notifications_off';
+
+            if (this.notificationsEnabled) {
+                notifBtn.querySelector('.material-icons').classList.add('animate');
+                setTimeout(() => {
+                    notifBtn.querySelector('.material-icons').classList.remove('animate');
+                }, 1000);
+            }
+        }
+    }
+
+    showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification-popup ${type}`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+
+    async unsubscribeFromPushNotifications() {
+        try {
+            const registration = await navigator.serviceWorker.getRegistration();
+            const subscription = await registration.pushManager.getSubscription();
+            
+            if (subscription) {
+                await subscription.unsubscribe();
+                await this.supabase
+                    .from('push_subscriptions')
+                    .delete()
+                    .eq('pseudo', this.pseudo);
+            }
+            
+            this.notificationsEnabled = false;
+            localStorage.setItem('notificationsEnabled', 'false');
+            this.updateNotificationButton();
+            this.showNotification('Notifications désactivées', 'success');
+            return true;
+        } catch (error) {
+            console.error('Erreur désactivation notifications:', error);
+            this.showNotification('Erreur de désactivation', 'error');
+            return false;
+        }
+    }
+
+    showAdminPanel() {
+        if (!this.isAdmin) return;
+
+        const existingPanel = document.querySelector('.admin-panel');
+        if (existingPanel) {
+            existingPanel.remove();
+            return;
+        }
+
+        const panel = document.createElement('div');
+        panel.className = 'admin-panel';
+        panel.innerHTML = `
+            <div class="panel-header">
+                <h3>Panel Admin</h3>
+                <button class="close-panel">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <div class="panel-content">
+                <div class="section">
+                    <h4>Mots bannis</h4>
+                    <div class="add-word">
+                        <input type="text" placeholder="Nouveau mot à bannir">
+                        <button class="add-word-btn">Ajouter</button>
+                    </div>
+                    <div class="banned-words-list"></div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(panel);
+        this.loadBannedWords();
+
+        const addWordBtn = panel.querySelector('.add-word-btn');
+        const wordInput = panel.querySelector('.add-word input');
+
+        addWordBtn.addEventListener('click', async () => {
+            const word = wordInput.value.trim().toLowerCase();
+            if (word) {
+                await this.addBannedWord(word);
+                wordInput.value = '';
+                await this.loadBannedWords();
+            }
+        });
+
+        panel.querySelector('.close-panel').addEventListener('click', () => panel.remove());
+    }
+	
     setupRealtimeSubscription() {
         const channel = this.supabase.channel('messages');
         channel
