@@ -290,5 +290,8 @@
             startApp();
         }
     </script>
+	setTimeout(() => {
+    window.dispatchEvent(new Event('beforeinstallprompt'));
+}, 5000);
 </body>
 </html>
