@@ -6,7 +6,6 @@
     "scope": "/",
     "display": "standalone",
     "display_override": ["standalone"],
-    "id": "pwa-infos-v1",
     "orientation": "portrait",
     "background_color": "#1a237e",
     "theme_color": "#1a237e",
@@ -33,7 +32,7 @@
             "src": "images/badge-72x72.png",
             "sizes": "72x72",
             "type": "image/png",
-            "purpose": "badge"
+            "purpose": "badge notification"
         }
     ],
     "shortcuts": [
@@ -47,6 +46,8 @@
     ],
     "categories": ["news", "social"],
     "prefer_related_applications": false,
+    "dir": "ltr",
+    "lang": "fr",
     "serviceworker": {
         "src": "/service-worker.js",
         "scope": "/",
@@ -54,11 +55,7 @@
         "update_via_cache": "none"
     },
     "permissions": ["notifications"],
-    "related_applications": [],
-    "dir": "ltr",
-    "lang": "fr",
-    "iarc_rating_id": "",
-    "id": "/",
+    "id": "pwa-infos-v1",
     "edge_side_panel": {
         "preferred_width": 400
     }
