@@ -13,19 +13,19 @@
             "src": "images/INFOS-96.png",
             "sizes": "96x96",
             "type": "image/png",
-            "purpose": "any"
+            "purpose": "any maskable"
         },
         {
             "src": "images/INFOS-192.png",
             "sizes": "192x192",
             "type": "image/png",
-            "purpose": "any"
+            "purpose": "any maskable"
         },
         {
             "src": "images/INFOS.png",
             "sizes": "512x512",
             "type": "image/png",
-            "purpose": "any"
+            "purpose": "any maskable"
         },
         {
             "src": "images/badge-72x72.png",
@@ -34,8 +34,6 @@
             "purpose": "badge"
         }
     ],
-	"background_fetch": true,
-    "background_push": true,
     "shortcuts": [
         {
             "name": "Rechercher",
@@ -54,7 +52,7 @@
     ],
     "categories": ["news", "social"],
     "prefer_related_applications": false,
-    "display_override": ["standalone", "minimal-ui"],
+    "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
     "serviceworker": {
         "src": "/service-worker.js",
         "scope": "/",
@@ -83,5 +81,10 @@
         "default": {
             "action": "/?action=openchat"
         }
-    }
+    },
+    "handle_links": "preferred",
+    "launch_handler": {
+        "client_mode": "navigate-existing"
+    },
+    "id": "pwa-news-infos"
 }
