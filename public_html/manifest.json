@@ -5,6 +5,8 @@
     "start_url": "/",
     "scope": "/",
     "display": "standalone",
+    "display_override": ["standalone"],
+    "id": "pwa-infos-v1",
     "orientation": "portrait",
     "background_color": "#1a237e",
     "theme_color": "#1a237e",
