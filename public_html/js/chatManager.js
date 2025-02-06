@@ -22,37 +22,7 @@ class ChatManager {
         this.isOpen = localStorage.getItem('chatOpen') === 'true';
         this.unreadCount = parseInt(localStorage.getItem('unreadCount') || '0');
     }
-async loadBannedWords() {
-    try {
-        const { data: words, error } = await this.supabase
-            .from('banned_words')
-            .select('*')
-            .order('added_at', { ascending: true });
 
-        if (!error && words) {
-            // Stocker les mots bannis dans un Set
-            this.bannedWords = new Set(words.map(w => w.word.toLowerCase()));
-
-            // Mettre à jour la liste HTML si elle existe
-            const list = document.querySelector('.banned-words-list');
-            if (list) {
-                list.innerHTML = words.map(w => `
-                    <div class="banned-word">
-                        ${w.word}
-                        <button class="remove-word" data-word="${w.word}">×</button>
-                    </div>
-                `).join('');
-
-                list.querySelectorAll('.remove-word').forEach(btn => {
-                    btn.addEventListener('click', () => this.removeBannedWord(btn.dataset.word));
-                });
-            }
-        }
-    } catch (error) {
-        console.error('Erreur loadBannedWords:', error);
-        this.bannedWords = new Set();
-    }
-}
     async init() {
         try {
             await this.loadBannedWords();
@@ -135,169 +105,7 @@ async loadBannedWords() {
             chatToggle.appendChild(bubble);
         }
     }
-	
-createMessageElement(message) {
-    const div = document.createElement('div');
-    div.className = `message ${message.pseudo === this.pseudo ? 'sent' : 'received'}`;
-    div.dataset.messageId = message.id;
 
-    div.innerHTML = `
-        <div class="message-author">${message.pseudo}</div>
-        <div class="message-content">${this.escapeHtml(message.content)}</div>
-        <div class="message-time">${new Date(message.created_at).toLocaleTimeString()}</div>
-    `;
-
-    if (this.isAdmin || message.pseudo === this.pseudo) {
-        // Clic droit sur PC
-        div.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-            this.showMessageOptions(message, e.clientX, e.clientY);
-        });
-
-        // Toucher long sur mobile
-        let touchTimeout;
-        div.addEventListener('touchstart', (e) => {
-            touchTimeout = setTimeout(() => {
-                e.preventDefault();
-                const touch = e.touches[0];
-                this.showMessageOptions(message, touch.clientX, touch.clientY);
-            }, 500);
-        });
-
-        div.addEventListener('touchend', () => {
-            clearTimeout(touchTimeout);
-        });
-
-        div.addEventListener('touchmove', () => {
-            clearTimeout(touchTimeout);
-        });
-    }
-
-    return div;
-}
-async loadExistingMessages() {
-        try {
-            const { data: messages, error } = await this.supabase
-                .from('messages')
-                .select('*')
-                .order('created_at', { ascending: true });
-
-            if (error) throw error;
-
-            const container = this.container.querySelector('.chat-messages');
-            if (container && messages) {
-                container.innerHTML = '';
-                messages.forEach(msg => {
-                    container.appendChild(this.createMessageElement(msg));
-                });
-                this.scrollToBottom();
-            }
-        } catch (error) {
-            console.error('Erreur chargement messages:', error);
-            this.showNotification('Erreur chargement messages', 'error');
-        }
-    }
-
-    updateNotificationButton() {
-        const notifBtn = this.container.querySelector('.notifications-btn');
-        if (notifBtn) {
-            notifBtn.classList.toggle('enabled', this.notificationsEnabled);
-            notifBtn.querySelector('.material-icons').textContent =
-                this.notificationsEnabled ? 'notifications_active' : 'notifications_off';
-
-            if (this.notificationsEnabled) {
-                notifBtn.querySelector('.material-icons').classList.add('animate');
-                setTimeout(() => {
-                    notifBtn.querySelector('.material-icons').classList.remove('animate');
-                }, 1000);
-            }
-        }
-    }
-
-    showNotification(message, type = 'info') {
-        const notification = document.createElement('div');
-        notification.className = `notification-popup ${type}`;
-        notification.textContent = message;
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-            notification.remove();
-        }, 3000);
-    }
-
-    async unsubscribeFromPushNotifications() {
-        try {
-            const registration = await navigator.serviceWorker.getRegistration();
-            const subscription = await registration.pushManager.getSubscription();
-            
-            if (subscription) {
-                await subscription.unsubscribe();
-                await this.supabase
-                    .from('push_subscriptions')
-                    .delete()
-                    .eq('pseudo', this.pseudo);
-            }
-            
-            this.notificationsEnabled = false;
-            localStorage.setItem('notificationsEnabled', 'false');
-            this.updateNotificationButton();
-            this.showNotification('Notifications désactivées', 'success');
-            return true;
-        } catch (error) {
-            console.error('Erreur désactivation notifications:', error);
-            this.showNotification('Erreur de désactivation', 'error');
-            return false;
-        }
-    }
-
-    showAdminPanel() {
-        if (!this.isAdmin) return;
-
-        const existingPanel = document.querySelector('.admin-panel');
-        if (existingPanel) {
-            existingPanel.remove();
-            return;
-        }
-
-        const panel = document.createElement('div');
-        panel.className = 'admin-panel';
-        panel.innerHTML = `
-            <div class="panel-header">
-                <h3>Panel Admin</h3>
-                <button class="close-panel">
-                    <span class="material-icons">close</span>
-                </button>
-            </div>
-            <div class="panel-content">
-                <div class="section">
-                    <h4>Mots bannis</h4>
-                    <div class="add-word">
-                        <input type="text" placeholder="Nouveau mot à bannir">
-                        <button class="add-word-btn">Ajouter</button>
-                    </div>
-                    <div class="banned-words-list"></div>
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(panel);
-        this.loadBannedWords();
-
-        const addWordBtn = panel.querySelector('.add-word-btn');
-        const wordInput = panel.querySelector('.add-word input');
-
-        addWordBtn.addEventListener('click', async () => {
-            const word = wordInput.value.trim().toLowerCase();
-            if (word) {
-                await this.addBannedWord(word);
-                wordInput.value = '';
-                await this.loadBannedWords();
-            }
-        });
-
-        panel.querySelector('.close-panel').addEventListener('click', () => panel.remove());
-    }
-	
     setupRealtimeSubscription() {
         const channel = this.supabase.channel('messages');
         channel
@@ -614,6 +422,123 @@ async loadExistingMessages() {
             });
         }
     }
+	createMessageElement(message) {
+        const div = document.createElement('div');
+        div.className = `message ${message.pseudo === this.pseudo ? 'sent' : 'received'}`;
+        div.dataset.messageId = message.id;
+
+        div.innerHTML = `
+            <div class="message-author">${message.pseudo}</div>
+            <div class="message-content">${this.escapeHtml(message.content)}</div>
+            <div class="message-time">${new Date(message.created_at).toLocaleTimeString()}</div>
+        `;
+
+        if (this.isAdmin || message.pseudo === this.pseudo) {
+            // Clic droit sur PC
+            div.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                this.showMessageOptions(message, e.clientX, e.clientY);
+            });
+
+            // Toucher long sur mobile
+            let touchTimeout;
+            div.addEventListener('touchstart', (e) => {
+                touchTimeout = setTimeout(() => {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    this.showMessageOptions(message, touch.clientX, touch.clientY);
+                }, 500);
+            });
+
+            div.addEventListener('touchend', () => {
+                clearTimeout(touchTimeout);
+            });
+
+            div.addEventListener('touchmove', () => {
+                clearTimeout(touchTimeout);
+            });
+        }
+
+        return div;
+    }
+
+    showMessageOptions(message, x, y) {
+        console.log('showMessageOptions appelé:', message);
+        document.querySelectorAll('.message-options').forEach(el => el.remove());
+
+        const options = document.createElement('div');
+        options.className = 'message-options';
+        
+        let posX = x;
+        let posY = y;
+        
+        options.innerHTML = `
+            <div class="options-content">
+                <button class="delete-option">
+                    <span class="material-icons">delete</span> Supprimer
+                </button>
+                ${this.isAdmin ? `
+                    <button class="ban-option">
+                        <span class="material-icons">block</span> Bannir IP
+                    </button>
+                ` : ''}
+            </div>
+        `;
+
+        document.body.appendChild(options);
+
+        const chatContainer = this.container.querySelector('.chat-container');
+        const chatBounds = chatContainer.getBoundingClientRect();
+        const optionsRect = options.getBoundingClientRect();
+
+        if (posX + optionsRect.width > chatBounds.right) {
+            posX = chatBounds.right - optionsRect.width - 10;
+        }
+        if (posX < chatBounds.left) {
+            posX = chatBounds.left + 10;
+        }
+        if (posY + optionsRect.height > chatBounds.bottom) {
+            posY = chatBounds.bottom - optionsRect.height - 10;
+        }
+        if (posY < chatBounds.top) {
+            posY = chatBounds.top + 10;
+        }
+
+        options.style.left = `${posX}px`;
+        options.style.top = `${posY}px`;
+
+        options.querySelector('.delete-option')?.addEventListener('click', async () => {
+            console.log('Delete clicked:', message.id);
+            await this.deleteMessage(message.id);
+            options.remove();
+        });
+
+        options.querySelector('.ban-option')?.addEventListener('click', () => {
+            console.log('Ban clicked:', message);
+            this.showBanDialog(message);
+            options.remove();
+        });
+
+        const closeMenu = (e) => {
+            if (!options.contains(e.target)) {
+                options.remove();
+                document.removeEventListener('click', closeMenu);
+            }
+        };
+
+        setTimeout(() => {
+            document.addEventListener('click', closeMenu);
+        }, 0);
+    }
+
+    escapeHtml(unsafe) {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
 	async sendNotificationToUser(message) {
         try {
             const response = await fetch('/api/sendPush', {
@@ -744,7 +669,381 @@ async loadExistingMessages() {
         return outputArray;
     }
 
-    // [Reste de vos méthodes ici sans modification]
+    async sendNotificationToUser(message) {
+        try {
+            const response = await fetch('/api/sendPush', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: message.content,
+                    fromUser: message.pseudo,
+                    toUser: this.pseudo
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Erreur envoi notification');
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Erreur envoi notification:', error);
+            throw error;
+        }
+    }
+
+    async loadSounds() {
+        const soundFiles = {
+            'message': '/sounds/message.mp3',
+            'sent': '/sounds/sent.mp3',
+            'notification': '/sounds/notification.mp3',
+            'click': '/sounds/click.mp3',
+            'error': '/sounds/erreur.mp3',
+            'success': '/sounds/success.mp3'
+        };
+
+        for (const [name, path] of Object.entries(soundFiles)) {
+            try {
+                console.log(`Chargement du son: ${name} depuis ${path}`);
+                const audio = new Audio(path);
+                await audio.load();
+                this.sounds.set(name, audio);
+                console.log(`Son ${name} chargé avec succès`);
+            } catch (error) {
+                console.error(`Erreur chargement son ${name}:`, error);
+            }
+        }
+    }
+
+    playSound(soundName) {
+        if (this.soundEnabled && this.sounds.has(soundName)) {
+            try {
+                const sound = this.sounds.get(soundName).cloneNode();
+                sound.volume = 0.5;
+                const playPromise = sound.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        if (error.name !== 'NotAllowedError') {
+                            console.warn(`Erreur lecture son ${soundName}:`, error);
+                        }
+                    });
+                }
+            } catch (error) {
+                // Ignore silently
+            }
+        }
+    }
+
+    async setupPushNotifications() {
+        try {
+            if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+                throw new Error('Les notifications push ne sont pas supportées');
+            }
+
+            const permission = await Notification.requestPermission();
+            if (permission !== 'granted') {
+                throw new Error('Permission refusée pour les notifications');
+            }
+
+            const registration = await navigator.serviceWorker.register('/service-worker.js');
+            await navigator.serviceWorker.ready;
+
+            let subscription = await registration.pushManager.getSubscription();
+            
+            if (!subscription) {
+                subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: this.urlBase64ToUint8Array('BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck')
+                });
+            }
+
+            const { error } = await this.supabase
+                .from('push_subscriptions')
+                .upsert({
+                    pseudo: this.pseudo,
+                    subscription: JSON.stringify(subscription)
+                });
+
+            if (error) throw error;
+
+            this.notificationsEnabled = true;
+            localStorage.setItem('notificationsEnabled', 'true');
+            this.updateNotificationButton();
+            this.showNotification('Notifications activées', 'success');
+            this.playSound('success');
+            
+            return true;
+        } catch (error) {
+            console.error('Erreur activation notifications:', error);
+            this.showNotification(
+                'Erreur : ' + (error.message || 'Activation impossible'), 
+                'error'
+            );
+            this.playSound('error');
+            throw error;
+        }
+    }
+
+    urlBase64ToUint8Array(base64String) {
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding)
+            .replace(/-/g, '+')
+            .replace(/_/g, '/');
+        const rawData = window.atob(base64);
+        const outputArray = new Uint8Array(rawData.length);
+        for (let i = 0; i < rawData.length; ++i) {
+            outputArray[i] = rawData.charCodeAt(i);
+        }
+        return outputArray;
+    }
+
+    async sendMessage(content) {
+        try {
+            const ip = await this.getClientIP();
+            const isBanned = await this.checkBannedIP(ip);
+            
+            if (isBanned) {
+                this.showNotification('Vous êtes banni du chat', 'error');
+                return false;
+            }
+
+            const message = {
+                pseudo: this.pseudo,
+                content: content,
+                ip: ip,
+                created_at: new Date().toISOString()
+            };
+
+            const { data, error } = await this.supabase
+                .from('messages')
+                .insert(message)
+                .select()
+                .single();
+
+            if (error) throw error;
+            return true;
+        } catch (error) {
+            console.error('Erreur sendMessage:', error);
+            return false;
+        }
+    }
+
+    async checkBannedIP(ip) {
+        const { data, error } = await this.supabase
+            .from('banned_ips')
+            .select('*')
+            .eq('ip', ip)
+            .maybeSingle();
+
+        if (error) {
+            console.error('Erreur vérification IP:', error);
+            return false;
+        }
+
+        if (data) {
+            if (!data.expires_at || new Date(data.expires_at) > new Date()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    async getClientIP() {
+        try {
+            return `${this.pseudo}-${Date.now()}`;
+        } catch {
+            return 'unknown';
+        }
+    }
+
+    async banUser(ip, reason = '', duration = null) {
+        console.log('banUser appelé:', { ip, reason, duration });
+        try {
+            const expiresAt = duration ? new Date(Date.now() + duration).toISOString() : null;
+            
+            const { error } = await this.supabase
+                .from('banned_ips')
+                .insert({
+                    ip: ip,
+                    banned_by: this.pseudo,
+                    reason: reason,
+                    banned_at: new Date().toISOString(),
+                    expires_at: expiresAt
+                });
+
+            if (error) throw error;
+
+            this.showNotification('IP bannie avec succès', 'success');
+            this.playSound('success');
+            return true;
+        } catch (error) {
+            console.error('Erreur bannissement:', error);
+            this.showNotification('Erreur lors du bannissement', 'error');
+            return false;
+        }
+    }
+
+    showBanDialog(message) {
+        console.log('showBanDialog starting');
+        
+        const dialogHTML = `
+            <div class="ban-dialog" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1200;">
+                <div class="ban-content" style="background: var(--chat-gradient); padding: 20px; border-radius: 12px; width: 90%; max-width: 400px; color: white;">
+                    <h3>Bannir ${message.pseudo}</h3>
+                    <p>IP: ${message.ip}</p>
+                    <input type="text" class="ban-reason" placeholder="Raison du ban" style="width: 100%; padding: 10px; margin: 10px 0; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: white;">
+                    <select class="ban-duration" style="width: 100%; padding: 10px; margin: 10px 0; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: white;">
+                        <option value="">Ban permanent</option>
+                        <option value="3600000">1 heure</option>
+                        <option value="86400000">24 heures</option>
+                        <option value="604800000">1 semaine</option>
+                    </select>
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button class="confirm-ban" style="flex: 1; padding: 10px; border-radius: 8px; border: none; cursor: pointer; background: var(--chat-error); color: white;">Bannir</button>
+                        <button class="cancel-ban" style="flex: 1; padding: 10px; border-radius: 8px; border: none; cursor: pointer; background: rgba(255,255,255,0.2); color: white;">Annuler</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', dialogHTML);
+        
+        const dialog = document.querySelector('.ban-dialog');
+        dialog.querySelector('.confirm-ban').addEventListener('click', async () => {
+            const reason = dialog.querySelector('.ban-reason').value;
+            const duration = dialog.querySelector('.ban-duration').value;
+            await this.banUser(message.ip, reason, duration ? parseInt(duration) : null);
+            dialog.remove();
+        });
+
+        dialog.querySelector('.cancel-ban').addEventListener('click', () => {
+            dialog.remove();
+        });
+    }
+async loadExistingMessages() {
+        try {
+            const { data: messages, error } = await this.supabase
+                .from('messages')
+                .select('*')
+                .order('created_at', { ascending: true });
+
+            if (error) throw error;
+
+            const container = this.container.querySelector('.chat-messages');
+            if (container && messages) {
+                container.innerHTML = '';
+                messages.forEach(msg => {
+                    container.appendChild(this.createMessageElement(msg));
+                });
+                this.scrollToBottom();
+            }
+        } catch (error) {
+            console.error('Erreur chargement messages:', error);
+            this.showNotification('Erreur chargement messages', 'error');
+        }
+    }
+
+    updateNotificationButton() {
+        const notifBtn = this.container.querySelector('.notifications-btn');
+        if (notifBtn) {
+            notifBtn.classList.toggle('enabled', this.notificationsEnabled);
+            notifBtn.querySelector('.material-icons').textContent =
+                this.notificationsEnabled ? 'notifications_active' : 'notifications_off';
+
+            if (this.notificationsEnabled) {
+                notifBtn.querySelector('.material-icons').classList.add('animate');
+                setTimeout(() => {
+                    notifBtn.querySelector('.material-icons').classList.remove('animate');
+                }, 1000);
+            }
+        }
+    }
+
+    showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification-popup ${type}`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+
+    async unsubscribeFromPushNotifications() {
+        try {
+            const registration = await navigator.serviceWorker.getRegistration();
+            const subscription = await registration.pushManager.getSubscription();
+            
+            if (subscription) {
+                await subscription.unsubscribe();
+                await this.supabase
+                    .from('push_subscriptions')
+                    .delete()
+                    .eq('pseudo', this.pseudo);
+            }
+            
+            this.notificationsEnabled = false;
+            localStorage.setItem('notificationsEnabled', 'false');
+            this.updateNotificationButton();
+            this.showNotification('Notifications désactivées', 'success');
+            return true;
+        } catch (error) {
+            console.error('Erreur désactivation notifications:', error);
+            this.showNotification('Erreur de désactivation', 'error');
+            return false;
+        }
+    }
+
+    showAdminPanel() {
+        if (!this.isAdmin) return;
+
+        const existingPanel = document.querySelector('.admin-panel');
+        if (existingPanel) {
+            existingPanel.remove();
+            return;
+        }
+
+        const panel = document.createElement('div');
+        panel.className = 'admin-panel';
+        panel.innerHTML = `
+            <div class="panel-header">
+                <h3>Panel Admin</h3>
+                <button class="close-panel">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <div class="panel-content">
+                <div class="section">
+                    <h4>Mots bannis</h4>
+                    <div class="add-word">
+                        <input type="text" placeholder="Nouveau mot à bannir">
+                        <button class="add-word-btn">Ajouter</button>
+                    </div>
+                    <div class="banned-words-list"></div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(panel);
+        this.loadBannedWords();
+
+        const addWordBtn = panel.querySelector('.add-word-btn');
+        const wordInput = panel.querySelector('.add-word input');
+
+        addWordBtn.addEventListener('click', async () => {
+            const word = wordInput.value.trim().toLowerCase();
+            if (word) {
+                await this.addBannedWord(word);
+                wordInput.value = '';
+                await this.loadBannedWords();
+            }
+        });
+
+        panel.querySelector('.close-panel').addEventListener('click', () => panel.remove());
+    }
 
     scrollToBottom() {
         const messagesContainer = this.container.querySelector('.chat-messages');
