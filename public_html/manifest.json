@@ -45,13 +45,6 @@
             "icons": [{ "src": "images/INFOS-96.png", "sizes": "96x96" }]
         }
     ],
-    "screenshots": [
-        {
-            "src": "images/screenshot1.png",
-            "sizes": "1280x720",
-            "type": "image/png",
-            "form_factor": "wide"
-        },
         {
             "src": "images/screenshot2.png",
             "sizes": "720x1280",
