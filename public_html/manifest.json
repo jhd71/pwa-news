@@ -46,7 +46,7 @@
             "sizes": "720x1280",
             "type": "image/png"
         }
-    ],  <-- **Virgule ajoutée ici**
+    ],
     "shortcuts": [
         {
             "name": "Chat",
