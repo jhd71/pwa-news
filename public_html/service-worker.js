@@ -32,17 +32,16 @@ self.addEventListener('message', event => {
 });
 
 // Activation
-self.addEventListener('activate', (event) => {
+self.addEventListener('activate', event => {
     event.waitUntil(
-        (async () => {
-            const cacheKeys = await caches.keys();
-            await Promise.all(
-                cacheKeys
-                    .filter(key => key !== CACHE_NAME)
-                    .map(key => caches.delete(key))
-            );
-            await clients.claim();
-        })()
+        Promise.all([
+            self.clients.claim(),
+            self.registration.pushManager.getSubscription().then(subscription => {
+                if (subscription) {
+                    return subscription.unsubscribe();
+                }
+            })
+        ])
     );
 });
 
