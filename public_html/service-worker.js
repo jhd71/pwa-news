@@ -86,7 +86,6 @@ self.addEventListener('fetch', (event) => {
 
 // Notifications push
 // Remplacez le gestionnaire d'événement push existant par celui-ci
-// Remplacez l'événement push existant par celui-ci dans service-worker.js
 self.addEventListener('push', function(event) {
     if (!event.data) return;
 
@@ -94,22 +93,13 @@ self.addEventListener('push', function(event) {
         const data = event.data.json();
         const options = {
             body: data.body || 'Nouveau message reçu',
-            icon: '/images/INFOS-192.png',
-            badge: '/images/badge-72x72.png',
+            icon: data.icon || '/images/INFOS-192.png',
+            badge: data.badge || '/images/badge-72x72.png',
             vibrate: [200, 100, 200],
-            tag: 'chat-message',
+            tag: 'chat-notification',
             renotify: true,
             requireInteraction: true,
-            actions: [
-                {
-                    action: 'open',
-                    title: 'Ouvrir',
-                    icon: '/images/INFOS-96.png'
-                }
-            ],
-            data: {
-                url: self.registration.scope
-            }
+            data: data.data || { url: self.registration.scope }
         };
 
         event.waitUntil(
@@ -117,6 +107,7 @@ self.addEventListener('push', function(event) {
         );
     } catch (error) {
         console.error('Erreur traitement notification push:', error);
+        // Fallback en cas d'erreur de parsing
         event.waitUntil(
             self.registration.showNotification('INFOS Chat', {
                 body: 'Nouveau message reçu',
@@ -128,6 +119,18 @@ self.addEventListener('push', function(event) {
     }
 });
 
+self.addEventListener('notificationclick', function(event) {
+    event.notification.close();
+    event.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true })
+            .then(function(clientList) {
+                if (clientList.length > 0) {
+                    return clientList[0].focus();
+                }
+                return clients.openWindow('/?action=openchat');
+            })
+    );
+});
 // Gestion des événements de fermeture de notification
 self.addEventListener('notificationclose', function(event) {
     console.log('SW: Notification fermée', {
