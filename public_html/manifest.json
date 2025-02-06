@@ -2,7 +2,7 @@
     "name": "INFOS",
     "short_name": "INFOS",
     "description": "Votre portail d'actualités local",
-    "start_url": "/?source=pwa",
+    "start_url": "/",
     "scope": "/",
     "display": "standalone",
     "orientation": "portrait",
@@ -36,13 +36,6 @@
     ],
     "shortcuts": [
         {
-            "name": "Rechercher",
-            "short_name": "Recherche",
-            "description": "Effectuer une recherche",
-            "url": "/?action=search",
-            "icons": [{ "src": "images/INFOS.png", "sizes": "96x96" }]
-        },
-        {
             "name": "Chat",
             "short_name": "Chat",
             "description": "Ouvrir le chat",
@@ -50,9 +43,23 @@
             "icons": [{ "src": "images/INFOS-96.png", "sizes": "96x96" }]
         }
     ],
+    "screenshots": [
+        {
+            "src": "images/screenshot1.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide"
+        },
+        {
+            "src": "images/screenshot2.png",
+            "sizes": "720x1280",
+            "type": "image/png",
+            "form_factor": "narrow"
+        }
+    ],
     "categories": ["news", "social"],
     "prefer_related_applications": false,
-    "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+    "display_override": ["standalone"],
     "serviceworker": {
         "src": "/service-worker.js",
         "scope": "/",
@@ -62,29 +69,12 @@
     "permissions": [
         "notifications"
     ],
-    "protocol_handlers": [
-        {
-            "protocol": "web+chat",
-            "url": "/?chat=%s"
-        }
-    ],
-    "share_target": {
-        "action": "/share-target",
-        "method": "GET",
-        "params": {
-            "title": "title",
-            "text": "text",
-            "url": "url"
-        }
-    },
-    "notification_interactions": {
-        "default": {
-            "action": "/?action=openchat"
-        }
-    },
-    "handle_links": "preferred",
-    "launch_handler": {
-        "client_mode": "navigate-existing"
-    },
-    "id": "pwa-news-infos"
+    "related_applications": [],
+    "dir": "ltr",
+    "lang": "fr",
+    "iarc_rating_id": "",
+    "id": "/",
+    "edge_side_panel": {
+        "preferred_width": 400
+    }
 }
