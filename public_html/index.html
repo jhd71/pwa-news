@@ -1,294 +1,80 @@
-<!DOCTYPE html>
-<html lang="fr" data-theme="light" data-font-size="normal">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#1a237e">
-    <meta name="description" content="INFOS">
-    <title>INFOS</title>
-    <!-- PWA -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="INFOS">
-    <link rel="apple-touch-icon" href="images/INFOS-192.png">
-    
-    <!-- Ajoutez ces métas -->
-    <meta name="application-name" content="INFOS">
-    <meta name="msapplication-navbutton-color" content="#1a237e">
-    <meta name="msapplication-starturl" content="/">
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#1a237e">
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1a237e">
-    <link rel="icon" type="image/png" sizes="192x192" href="images/INFOS-192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="images/INFOS.png">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Microsoft Meta Tags -->
-    <meta name="msapplication-TileImage" content="images/INFOS-192.png">
-    <meta name="msapplication-TileColor" content="#1a237e">
-
-    <!-- Styles -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/chat-styles.css">
-
-    <!-- Style temporaire pour le chat -->
-    <style>
-        .chat-widget {
-            position: fixed;
-            right: 20px;
-            bottom: 80px;
-            z-index: 997;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-
-        .chat-toggle {
-            background: linear-gradient(145deg, #1a237e, #283593);
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.3s ease;
-        }
-
-        .chat-toggle:hover {
-            transform: scale(1.05);
-        }
-
-        .chat-toggle .material-icons {
-            font-size: 24px;
-        }
-    </style>
-
-    <!-- Notifications -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</head>
-<body>
-    <!-- Header avec recherche et menu -->
-    <header class="app-header">
-        <button type="button" id="menuButton" class="menu-button" aria-label="Menu">
-            <span class="material-icons">menu</span>
-        </button>
-        <div class="search-container">
-            <form id="searchForm" action="https://www.google.com/search" method="get" target="_blank">
-                <input type="text" id="searchInput" name="q" placeholder="Rechercher sur Google...">
-                <button type="submit" id="searchButton" aria-label="Rechercher">
-                    <span class="material-icons">search</span>
-                </button>
-            </form>
-        </div>
-        <button type="button" id="settingsButton" class="settings-button" aria-label="Paramètres">
-            <span class="material-icons">settings</span>
-        </button>
-    </header>
-
-    <!-- Menu latéral -->
-    <aside id="sidebar" class="sidebar">
-        <div class="sidebar-header">
-            <h2>Menu</h2>
-            <button type="button" class="close-btn" aria-label="Fermer">
-                <span class="material-icons">close</span>
-            </button>
-        </div>
-        <div class="menu-item">
-            <a href="https://www.flashscore.fr/football/france/ligue-1/resultats/" target="_blank">
-                <span class="material-icons">sports_soccer</span>
-                Résultats Sportifs
-            </a>
-        </div>
-        <div class="menu-item">
-            <a href="https://jhd71.fr/meteo.html" target="_blank">
-                <span class="material-icons">wb_sunny</span>
-                Prévisions météo à 3 jours
-            </a>
-        </div>
-        <div class="menu-item">
-            <a href="https://www.swisstransfer.com/fr-ch" target="_blank">
-                <span class="material-icons">upload</span>
-                swiss_transfer
-            </a>
-        </div>
-        <div class="menu-item">
-            <a href="https://transfert.free.fr/upload" target="_blank">
-                <span class="material-icons">upload</span>
-                Free_Transfert
-            </a>
-        </div>
-        <div class="menu-item">
-            <a href="mailto:infos@jhd71.fr" target="_blank">
-                <span class="material-icons">email</span>
-                Contact
-            </a>
-        </div>
-        <div class="menu-item">
-            <a href="#" id="menuInstall">
-                <span class="material-icons">download</span>
-                Installer l'application
-            </a>
-        </div>
-        <div class="menu-item">
-            <span class="material-icons">copyright</span>
-            2025 Actu & Média
-        </div>
-    </aside>
-
-    <!-- Conteneur principal des tuiles -->
-    <main>
-        <div id="tileContainer" class="tile-container grid"></div>
-    </main>
-
-    <!-- Navigation du bas -->
-    <nav class="bottom-nav">
-        <button class="nav-item" id="darkModeToggle">
-            <span class="material-icons">dark_mode</span>
-            <span>Sombre</span>
-        </button>
-        <button class="nav-item" id="addSiteBtn">
-            <span class="material-icons">add_circle</span>
-            <span>Ajouter</span>
-        </button>
-        <button class="nav-item" id="layoutToggle">
-            <span class="material-icons">grid_view</span>
-            <span>Vue</span>
-        </button>
-        <button class="nav-item" id="helpBtn">
-            <span class="material-icons">help</span>
-            <span>Aide</span>
-        </button>
-    </nav>
-
-    <!-- Modal d'aide -->
-    <div id="helpModal" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Aide</h2>
-                <button class="close-btn">
-                    <span class="material-icons">close</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <h3>Fonctionnalités</h3>
-                <ul>
-                    <li>Cliquez sur une tuile pour ouvrir le site en version mobile</li>
-                    <li>Appui long sur une tuile pour plus d'options</li>
-                    <li>Ajoutez vos propres sites avec le bouton "+"</li>
-                </ul>
-                <h3>Navigation</h3>
-                <ul>
-                    <li>Mode sombre/clair disponible</li>
-                    <li>3 types d'affichage : grille, grandes tuiles, liste</li>
-                    <li>Taille de texte ajustable dans les paramètres</li>
-                    <li>Recherche Google intégrée</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <!-- Module principal -->
-    <script type="module">
-        // Service Worker Registration
-        if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js', {
-        scope: '/',
-        updateViaCache: 'none',
-        immediate: true  // Force le démarrage immédiat
-    }).then(async registration => {
-        console.log('ServiceWorker registration successful:', registration);
-        
-        // Forcer l'activation immédiate
-        if (registration.waiting) {
-            registration.waiting.postMessage({type: 'SKIP_WAITING'});
-        }
-        
-        // S'assurer que le service worker est actif
-        if (registration.active) {
-            console.log('Service Worker actif');
-        } else {
-            await registration.ready;
-            console.log('Service Worker prêt après attente');
-        }
-    }).catch(err => {
-        console.error('ServiceWorker registration failed:', err);
-    });
-
-    // Écouter les changements d'état
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-        console.log('Service Worker controller changed');
-    });
-}
-       // PWA Installation
-        let deferredPrompt;
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-            const installMenuItem = document.getElementById('menuInstall');
-        if (installMenuItem) {
-            installMenuItem.addEventListener('click', async (e) => {
-                e.preventDefault();
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    console.log(`Installation PWA: ${outcome}`);
-                    deferredPrompt = null;
-                    
-                    // Cache le lien après l'installation
-                    if (outcome === 'accepted') {
-                        installMenuItem.style.display = 'none';
-                    }
-                }
-            });
-        }
-    });
-
-    window.addEventListener('appinstalled', () => {
-        deferredPrompt = null;
-        console.log('PWA installée');
-        // Cache le lien d'installation après l'installation réussie
-        const installMenuItem = document.getElementById('menuInstall');
-        if (installMenuItem) {
-            installMenuItem.style.display = 'none';
-        }
-    });
-        // App Initialization
-        async function startApp() {
-    try {
-        // Initialiser ContentManager
-        console.log('Chargement de ContentManager...');
-        const contentModule = await import('./js/content.js');
-        window.contentManager = new contentModule.default();
-        await window.contentManager.init();
-        console.log('Content Manager initialisé');
-
-        // Initialiser ChatManager
-        console.log('Chargement de ChatManager...');
-        const chatModule = await import('/js/chatManager.js');
-        window.chatManager = new chatModule.default();
-        await window.chatManager.init();
-        console.log('Chat Manager initialisé');
-    } catch (error) {
-        console.error('Erreur d\'initialisation détaillée:', error);
-        if (error.stack) {
-            console.error('Stack trace:', error.stack);
-        }
+{
+    "name": "INFOS",
+    "short_name": "INFOS",
+    "description": "Votre portail d'actualités local",
+    "start_url": "/index.html"
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#1a237e",
+    "theme_color": "#1a237e",
+    "icons": [
+    {
+        "src": "/images/INFOS-96.png",
+        "sizes": "96x96",
+        "type": "image/png",
+        "purpose": "any"
+    },
+    {
+        "src": "/images/INFOS-maskable-96.png",
+        "sizes": "96x96",
+        "type": "image/png",
+        "purpose": "maskable"
+    },
+    {
+        "src": "/images/INFOS-192.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any"
+    },
+    {
+        "src": "/images/INFOS-maskable-192.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "maskable"
+    },
+    {
+        "src": "/images/INFOS-512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any"
+    },
+    {
+        "src": "/images/INFOS-maskable-512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "maskable"
+    },
+    {
+        "src": "/images/badge-72x72.png",
+        "sizes": "72x72",
+        "type": "image/png",
+        "purpose": "any"
     }
-}
-       // Démarrer l'application quand le DOM est prêt
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', startApp);
-        } else {
-            startApp();
+    ],
+    "screenshots": [
+        {
+            "src": "/images/screenshot-wide.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide"
+        },
+        {
+            "src": "/images/screenshot-mobile.png",
+            "sizes": "720x1280",
+            "type": "image/png"
         }
-    </script>
-</body>
-</html>
+    ],
+    "shortcuts": [
+        {
+            "name": "Chat",
+            "short_name": "Chat",
+            "description": "Ouvrir le chat",
+            "url": "/?action=openchat",
+            "icons": [{ "src": "/images/INFOS-96.png", "sizes": "96x96" }]
+        }
+    ],
+    "categories": ["news", "social"],
+    "prefer_related_applications": false,
+    "id": "pwa-infos-v1"
+}
