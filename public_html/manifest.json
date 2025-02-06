@@ -9,30 +9,44 @@
     "orientation": "portrait",
     "background_color": "#1a237e",
     "theme_color": "#1a237e",
+    "screenshots": [
+        {
+            "src": "images/INFOS-wide.png",
+            "sizes": "2048x1152",
+            "type": "image/png",
+            "form_factor": "wide"
+        },
+        {
+            "src": "images/INFOS-narrow.png",
+            "sizes": "1152x2048",
+            "type": "image/png",
+            "form_factor": "narrow"
+        }
+    ],
     "icons": [
         {
             "src": "images/INFOS-96.png",
             "sizes": "96x96",
             "type": "image/png",
-            "purpose": "any maskable"
+            "purpose": "maskable"
         },
         {
             "src": "images/INFOS-192.png",
             "sizes": "192x192",
             "type": "image/png",
-            "purpose": "any maskable"
+            "purpose": "maskable"
         },
         {
             "src": "images/INFOS.png",
             "sizes": "512x512",
             "type": "image/png",
-            "purpose": "any maskable"
+            "purpose": "maskable"
         },
         {
             "src": "images/badge-72x72.png",
             "sizes": "72x72",
             "type": "image/png",
-            "purpose": "badge notification"
+            "purpose": "notification"
         }
     ],
     "shortcuts": [
@@ -48,15 +62,5 @@
     "prefer_related_applications": false,
     "dir": "ltr",
     "lang": "fr",
-    "serviceworker": {
-        "src": "/service-worker.js",
-        "scope": "/",
-        "use_cache": false,
-        "update_via_cache": "none"
-    },
-    "permissions": ["notifications"],
-    "id": "pwa-infos-v1",
-    "edge_side_panel": {
-        "preferred_width": 400
-    }
+    "id": "pwa-infos-v1"
 }
