@@ -571,7 +571,30 @@ class ChatManager {
             throw error;
         }
     }
-
+async unsubscribeFromPushNotifications() {
+        try {
+            const registration = await navigator.serviceWorker.getRegistration();
+            const subscription = await registration.pushManager.getSubscription();
+            
+            if (subscription) {
+                await subscription.unsubscribe();
+                await this.supabase
+                    .from('push_subscriptions')
+                    .delete()
+                    .eq('pseudo', this.pseudo);
+            }
+            
+            this.notificationsEnabled = false;
+            localStorage.setItem('notificationsEnabled', 'false');
+            this.updateNotificationButton();
+            this.showNotification('Notifications désactivées', 'success');
+            return true;
+        } catch (error) {
+            console.error('Erreur désactivation notifications:', error);
+            this.showNotification('Erreur de désactivation', 'error');
+            return false;
+        }
+    }
     async sendNotificationToUser(message) {
         try {
             const response = await fetch('/api/sendPush', {
