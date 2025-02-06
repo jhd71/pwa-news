@@ -10,32 +10,37 @@ const STATIC_RESOURCES = [
     '/js/chatManager.js',
     '/js/content.js',
     '/manifest.json',
+    '/images/INFOS-96.png',
+    '/images/INFOS-192.png',
+    '/images/INFOS.png',
+    '/images/badge-72x72.png',
     OFFLINE_URL
 ];
 
 // Installation
 self.addEventListener('install', event => {
     console.log('Service Worker installing...');
+    event.waitUntil(
+        caches.open(CACHE_NAME).then(cache => {
+            return cache.addAll(STATIC_RESOURCES);
+        })
+    );
     self.skipWaiting();
 });
 
+// Activation unifiée
 self.addEventListener('activate', event => {
     console.log('Service Worker activating...');
-    event.waitUntil(clients.claim());
-});
-
-// Écouter le message pour SKIP_WAITING
-self.addEventListener('message', event => {
-    if (event.data && event.data.type === 'SKIP_WAITING') {
-        self.skipWaiting();
-    }
-});
-
-// Activation
-self.addEventListener('activate', event => {
     event.waitUntil(
         Promise.all([
-            self.clients.claim(),
+            clients.claim(),
+            caches.keys().then(cacheNames => {
+                return Promise.all(
+                    cacheNames
+                        .filter(cacheName => cacheName !== CACHE_NAME)
+                        .map(cacheName => caches.delete(cacheName))
+                );
+            }),
             self.registration.pushManager.getSubscription().then(subscription => {
                 if (subscription) {
                     return subscription.unsubscribe();
@@ -43,6 +48,13 @@ self.addEventListener('activate', event => {
             })
         ])
     );
+});
+
+// Écouter le message pour SKIP_WAITING
+self.addEventListener('message', event => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
 });
 
 // Stratégie de cache modifiée
@@ -84,7 +96,6 @@ self.addEventListener('fetch', (event) => {
 });
 
 // Notifications push
-// Remplacez le gestionnaire d'événement push existant par celui-ci
 self.addEventListener('push', function(event) {
     if (!event.data) return;
 
@@ -95,10 +106,19 @@ self.addEventListener('push', function(event) {
             icon: data.icon || '/images/INFOS-192.png',
             badge: data.badge || '/images/badge-72x72.png',
             vibrate: [200, 100, 200],
-            tag: 'chat-notification',
+            tag: 'chat-message',
             renotify: true,
             requireInteraction: true,
-            data: data.data || { url: self.registration.scope }
+            actions: [
+                {
+                    action: 'open',
+                    title: 'Ouvrir',
+                    icon: '/images/INFOS-96.png'
+                }
+            ],
+            data: {
+                url: '/?action=openchat'
+            }
         };
 
         event.waitUntil(
@@ -106,7 +126,6 @@ self.addEventListener('push', function(event) {
         );
     } catch (error) {
         console.error('Erreur traitement notification push:', error);
-        // Fallback en cas d'erreur de parsing
         event.waitUntil(
             self.registration.showNotification('INFOS Chat', {
                 body: 'Nouveau message reçu',
@@ -130,6 +149,7 @@ self.addEventListener('notificationclick', function(event) {
             })
     );
 });
+
 // Gestion des événements de fermeture de notification
 self.addEventListener('notificationclose', function(event) {
     console.log('SW: Notification fermée', {
@@ -137,4 +157,13 @@ self.addEventListener('notificationclose', function(event) {
         timestamp: new Date().toISOString(),
         data: event.notification.data
     });
+});
+
+// Gestionnaires d'erreurs globaux
+self.addEventListener('error', function(e) {
+    console.error('Service Worker error:', e.filename, e.lineno, e.colno, e.message);
+});
+
+self.addEventListener('unhandledrejection', function(e) {
+    console.error('Service Worker unhandled rejection:', e.reason);
 });
