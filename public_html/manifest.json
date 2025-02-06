@@ -2,7 +2,7 @@
     "name": "INFOS",
     "short_name": "INFOS",
     "description": "Votre portail d'actualités local",
-    "start_url": "/index.html"
+    "start_url": "/",
     "scope": "/",
     "display": "standalone",
     "orientation": "portrait",
@@ -13,25 +13,25 @@
             "src": "images/INFOS-96.png",
             "sizes": "96x96",
             "type": "image/png",
-            "purpose": "any"
+            "purpose": "any maskable"
         },
         {
             "src": "images/INFOS-192.png",
             "sizes": "192x192",
             "type": "image/png",
-            "purpose": "any"
+            "purpose": "any maskable"
         },
         {
             "src": "images/INFOS.png",
             "sizes": "512x512",
             "type": "image/png",
-            "purpose": "any"
+            "purpose": "any maskable"
         },
         {
             "src": "images/badge-72x72.png",
             "sizes": "72x72",
             "type": "image/png",
-            "purpose": "any"
+            "purpose": "any maskable"
         }
     ],
     "shortcuts": [
