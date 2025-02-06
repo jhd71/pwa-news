@@ -763,7 +763,225 @@ class ChatManager {
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
     }
+showAdminPanel() {
+        if (!this.isAdmin) return;
 
+        const existingPanel = document.querySelector('.admin-panel');
+        if (existingPanel) {
+            existingPanel.remove();
+            return;
+        }
+
+        const panel = document.createElement('div');
+        panel.className = 'admin-panel';
+        panel.innerHTML = `
+            <div class="panel-header">
+                <h3>Panel Admin</h3>
+                <button class="close-panel">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <div class="panel-content">
+                <div class="section">
+                    <h4>Mots bannis</h4>
+                    <div class="add-word">
+                        <input type="text" placeholder="Nouveau mot à bannir">
+                        <button class="add-word-btn">Ajouter</button>
+                    </div>
+                    <div class="banned-words-list"></div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(panel);
+        this.loadBannedWords();
+
+        const addWordBtn = panel.querySelector('.add-word-btn');
+        const wordInput = panel.querySelector('.add-word input');
+
+        addWordBtn.addEventListener('click', async () => {
+            const word = wordInput.value.trim().toLowerCase();
+            if (word) {
+                await this.addBannedWord(word);
+                wordInput.value = '';
+                await this.loadBannedWords();
+            }
+        });
+
+        panel.querySelector('.close-panel').addEventListener('click', () => panel.remove());
+    }
+
+    async addBannedWord(word) {
+        const { error } = await this.supabase
+            .from('banned_words')
+            .insert({ word: word });
+
+        if (!error) {
+            this.bannedWords.add(word);
+            this.showNotification('Mot ajouté avec succès', 'success');
+        }
+    }
+
+    async removeBannedWord(word) {
+        const { error } = await this.supabase
+            .from('banned_words')
+            .delete()
+            .eq('word', word);
+
+        if (!error) {
+            this.bannedWords.delete(word);
+            this.showNotification('Mot supprimé avec succès', 'success');
+            await this.loadBannedWords();
+        }
+    }
+
+    showMessageOptions(message, x, y) {
+        console.log('showMessageOptions appelé:', message);
+        document.querySelectorAll('.message-options').forEach(el => el.remove());
+
+        const options = document.createElement('div');
+        options.className = 'message-options';
+        
+        let posX = x;
+        let posY = y;
+        
+        options.innerHTML = `
+            <div class="options-content">
+                <button class="delete-option">
+                    <span class="material-icons">delete</span> Supprimer
+                </button>
+                ${this.isAdmin ? `
+                    <button class="ban-option">
+                        <span class="material-icons">block</span> Bannir IP
+                    </button>
+                ` : ''}
+            </div>
+        `;
+
+        document.body.appendChild(options);
+
+        const chatContainer = this.container.querySelector('.chat-container');
+        const chatBounds = chatContainer.getBoundingClientRect();
+        const optionsRect = options.getBoundingClientRect();
+
+        // Ajustement de la position
+        if (posX + optionsRect.width > chatBounds.right) {
+            posX = chatBounds.right - optionsRect.width - 10;
+        }
+        if (posX < chatBounds.left) {
+            posX = chatBounds.left + 10;
+        }
+        if (posY + optionsRect.height > chatBounds.bottom) {
+            posY = chatBounds.bottom - optionsRect.height - 10;
+        }
+        if (posY < chatBounds.top) {
+            posY = chatBounds.top + 10;
+        }
+
+        options.style.left = `${posX}px`;
+        options.style.top = `${posY}px`;
+
+        options.querySelector('.delete-option')?.addEventListener('click', async () => {
+            await this.deleteMessage(message.id);
+            options.remove();
+        });
+
+        options.querySelector('.ban-option')?.addEventListener('click', () => {
+            this.showBanDialog(message);
+            options.remove();
+        });
+
+        setTimeout(() => {
+            document.addEventListener('click', (e) => {
+                if (!options.contains(e.target)) {
+                    options.remove();
+                }
+            }, { once: true });
+        }, 0);
+    }
+
+    async deleteMessage(messageId) {
+        try {
+            const { error } = await this.supabase
+                .from('messages')
+                .delete()
+                .eq('id', messageId);
+
+            if (error) throw error;
+
+            const messageElement = this.container.querySelector(`[data-message-id="${messageId}"]`);
+            if (messageElement) {
+                messageElement.classList.add('fade-out');
+                setTimeout(() => messageElement.remove(), 300);
+                this.showNotification('Message supprimé', 'success');
+            }
+        } catch (error) {
+            console.error('Erreur suppression:', error);
+            this.showNotification('Erreur lors de la suppression', 'error');
+        }
+    }
+
+    showBanDialog(message) {
+        const dialogHTML = `
+            <div class="ban-dialog" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1200;">
+                <div class="ban-content" style="background: var(--chat-gradient); padding: 20px; border-radius: 12px; width: 90%; max-width: 400px; color: white;">
+                    <h3>Bannir ${message.pseudo}</h3>
+                    <p>IP: ${message.ip}</p>
+                    <input type="text" class="ban-reason" placeholder="Raison du ban" style="width: 100%; padding: 10px; margin: 10px 0; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: white;">
+                    <select class="ban-duration" style="width: 100%; padding: 10px; margin: 10px 0; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: white;">
+                        <option value="">Ban permanent</option>
+                        <option value="3600000">1 heure</option>
+                        <option value="86400000">24 heures</option>
+                        <option value="604800000">1 semaine</option>
+                    </select>
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button class="confirm-ban" style="flex: 1; padding: 10px; border-radius: 8px; border: none; cursor: pointer; background: var(--chat-error); color: white;">Bannir</button>
+                        <button class="cancel-ban" style="flex: 1; padding: 10px; border-radius: 8px; border: none; cursor: pointer; background: rgba(255,255,255,0.2); color: white;">Annuler</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', dialogHTML);
+        
+        const dialog = document.querySelector('.ban-dialog');
+        dialog.querySelector('.confirm-ban').addEventListener('click', async () => {
+            const reason = dialog.querySelector('.ban-reason').value;
+            const duration = dialog.querySelector('.ban-duration').value;
+            await this.banUser(message.ip, reason, duration ? parseInt(duration) : null);
+            dialog.remove();
+        });
+
+        dialog.querySelector('.cancel-ban').addEventListener('click', () => {
+            dialog.remove();
+        });
+    }
+
+    async banUser(ip, reason = '', duration = null) {
+        try {
+            const expiresAt = duration ? new Date(Date.now() + duration).toISOString() : null;
+            
+            const { error } = await this.supabase
+                .from('banned_ips')
+                .insert({
+                    ip: ip,
+                    banned_by: this.pseudo,
+                    reason: reason,
+                    banned_at: new Date().toISOString(),
+                    expires_at: expiresAt
+                });
+
+            if (error) throw error;
+
+            this.showNotification('IP bannie avec succès', 'success');
+            this.playSound('success');
+            return true;
+        } catch (error) {
+            console.error('Erreur bannissement:', error);
+            this.showNotification('Erreur lors du bannissement', 'error');
+            return false;
+        }
+    }
     async checkNotificationStatus() {
         console.log('État des notifications:', {
             permission: Notification.permission,
