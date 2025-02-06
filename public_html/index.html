@@ -227,25 +227,39 @@
     });
 }
        // PWA Installation
-        let deferredPrompt = null;
-        window.addEventListener('beforeinstallprompt', function(e) {
-            e.preventDefault();
-            deferredPrompt = e;
-            const menuInstall = document.getElementById('menuInstall');
-            if (menuInstall) {
-                menuInstall.style.display = 'flex';
-            }
-        });
+        let deferredPrompt;
 
-        if (document.getElementById('menuInstall')) {
-            document.getElementById('menuInstall').addEventListener('click', function() {
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+            const installMenuItem = document.getElementById('menuInstall');
+        if (installMenuItem) {
+            installMenuItem.addEventListener('click', async (e) => {
+                e.preventDefault();
                 if (deferredPrompt) {
                     deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    console.log(`Installation PWA: ${outcome}`);
                     deferredPrompt = null;
+                    
+                    // Cache le lien après l'installation
+                    if (outcome === 'accepted') {
+                        installMenuItem.style.display = 'none';
+                    }
                 }
             });
         }
+    });
 
+    window.addEventListener('appinstalled', () => {
+        deferredPrompt = null;
+        console.log('PWA installée');
+        // Cache le lien d'installation après l'installation réussie
+        const installMenuItem = document.getElementById('menuInstall');
+        if (installMenuItem) {
+            installMenuItem.style.display = 'none';
+        }
+    });
         // App Initialization
         async function startApp() {
     try {
