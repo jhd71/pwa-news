@@ -245,7 +245,11 @@
                 }
             });
         }
-
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    const deferredPrompt = e;
+    window.deferredPrompt = deferredPrompt;
+});
         // App Initialization
         async function startApp() {
     try {
