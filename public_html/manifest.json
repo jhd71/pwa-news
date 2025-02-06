@@ -2,7 +2,7 @@
     "name": "INFOS",
     "short_name": "INFOS",
     "description": "Votre portail d'actualités local",
-    "start_url": "/",
+    "start_url": "/index.html"
     "scope": "/",
     "display": "standalone",
     "orientation": "portrait",
