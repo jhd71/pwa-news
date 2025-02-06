@@ -14,28 +14,34 @@ const STATIC_RESOURCES = [
 ];
 
 // Installation
-self.addEventListener('install', (event) => {
-    event.waitUntil(
-        (async () => {
-            const cache = await caches.open(CACHE_NAME);
-            await cache.addAll(STATIC_RESOURCES);
-            await self.skipWaiting();
-        })()
-    );
+self.addEventListener('install', event => {
+    console.log('Service Worker installing...');
+    self.skipWaiting();
+});
+
+self.addEventListener('activate', event => {
+    console.log('Service Worker activating...');
+    event.waitUntil(clients.claim());
+});
+
+// Écouter le message pour SKIP_WAITING
+self.addEventListener('message', event => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
 });
 
 // Activation
-self.addEventListener('activate', (event) => {
+self.addEventListener('activate', event => {
     event.waitUntil(
-        (async () => {
-            const cacheKeys = await caches.keys();
-            await Promise.all(
-                cacheKeys
-                    .filter(key => key !== CACHE_NAME)
-                    .map(key => caches.delete(key))
-            );
-            await clients.claim();
-        })()
+        Promise.all([
+            self.clients.claim(),
+            self.registration.pushManager.getSubscription().then(subscription => {
+                if (subscription) {
+                    return subscription.unsubscribe();
+                }
+            })
+        ])
     );
 });
 
@@ -78,21 +84,36 @@ self.addEventListener('fetch', (event) => {
 });
 
 // Notifications push
-self.addEventListener('push', async function(event) {
-    if (event.data) {
-        const data = await event.data.json();
+// Remplacez le gestionnaire d'événement push existant par celui-ci
+self.addEventListener('push', function(event) {
+    if (!event.data) return;
+
+    try {
+        const data = event.data.json();
         const options = {
-            body: data.body,
-            icon: data.icon,
-            badge: '/images/badge.png',
-            vibrate: [100, 50, 100],
-            data: {
-                url: self.registration.scope
-            }
+            body: data.body || 'Nouveau message reçu',
+            icon: data.icon || '/images/INFOS-192.png',
+            badge: data.badge || '/images/badge-72x72.png',
+            vibrate: [200, 100, 200],
+            tag: 'chat-notification',
+            renotify: true,
+            requireInteraction: true,
+            data: data.data || { url: self.registration.scope }
         };
 
         event.waitUntil(
-            self.registration.showNotification(data.title, options)
+            self.registration.showNotification(data.title || 'INFOS Chat', options)
+        );
+    } catch (error) {
+        console.error('Erreur traitement notification push:', error);
+        // Fallback en cas d'erreur de parsing
+        event.waitUntil(
+            self.registration.showNotification('INFOS Chat', {
+                body: 'Nouveau message reçu',
+                icon: '/images/INFOS-192.png',
+                badge: '/images/badge-72x72.png',
+                vibrate: [200, 100, 200]
+            })
         );
     }
 });
@@ -100,32 +121,20 @@ self.addEventListener('push', async function(event) {
 self.addEventListener('notificationclick', function(event) {
     event.notification.close();
     event.waitUntil(
-        clients.openWindow(event.notification.data.url)
+        clients.matchAll({ type: 'window', includeUncontrolled: true })
+            .then(function(clientList) {
+                if (clientList.length > 0) {
+                    return clientList[0].focus();
+                }
+                return clients.openWindow('/?action=openchat');
+            })
     );
 });
-
-self.addEventListener('notificationclick', function(event) {
-    event.notification.close();
-
-    if (event.action === 'close') {
-        return;
-    }
-
-    event.waitUntil(
-        clients.matchAll({
-            type: 'window',
-            includeUncontrolled: true
-        }).then(function(clientList) {
-            // Si une fenêtre est déjà ouverte, l'utiliser
-            for (let client of clientList) {
-                if (client.url === event.notification.data.url && 'focus' in client) {
-                    return client.focus();
-                }
-            }
-            // Sinon, ouvrir une nouvelle fenêtre
-            if (clients.openWindow) {
-                return clients.openWindow(event.notification.data.url);
-            }
-        })
-    );
+// Gestion des événements de fermeture de notification
+self.addEventListener('notificationclose', function(event) {
+    console.log('SW: Notification fermée', {
+        tag: event.notification.tag,
+        timestamp: new Date().toISOString(),
+        data: event.notification.data
+    });
 });
