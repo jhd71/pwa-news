@@ -33,7 +33,7 @@
             "src": "images/badge-72x72.png",
             "sizes": "72x72",
             "type": "image/png",
-            "purpose": "any maskable"
+            "purpose": "badge"
         }
     ],
     "shortcuts": [
@@ -45,25 +45,15 @@
             "icons": [{ "src": "images/INFOS-96.png", "sizes": "96x96" }]
         }
     ],
-        {
-            "src": "images/screenshot2.png",
-            "sizes": "720x1280",
-            "type": "image/png",
-            "form_factor": "narrow"
-        }
-    ],
     "categories": ["news", "social"],
     "prefer_related_applications": false,
-    "display_override": ["standalone"],
     "serviceworker": {
         "src": "/service-worker.js",
         "scope": "/",
         "use_cache": false,
         "update_via_cache": "none"
     },
-    "permissions": [
-        "notifications"
-    ],
+    "permissions": ["notifications"],
     "related_applications": [],
     "dir": "ltr",
     "lang": "fr",
