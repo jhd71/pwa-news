@@ -523,54 +523,84 @@ class ChatManager {
     }
 
     async setupPushNotifications() {
-        try {
-            if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-                throw new Error('Les notifications push ne sont pas supportées');
-            }
-
-            const permission = await Notification.requestPermission();
-            if (permission !== 'granted') {
-                throw new Error('Permission refusée pour les notifications');
-            }
-
-            const registration = await navigator.serviceWorker.register('/service-worker.js');
-            await navigator.serviceWorker.ready;
-
-            let subscription = await registration.pushManager.getSubscription();
-            
-            if (!subscription) {
-                subscription = await registration.pushManager.subscribe({
-                    userVisibleOnly: true,
-                    applicationServerKey: this.urlBase64ToUint8Array('BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck')
-                });
-            }
-
-            const { error } = await this.supabase
-                .from('push_subscriptions')
-                .upsert({
-                    pseudo: this.pseudo,
-                    subscription: JSON.stringify(subscription)
-                });
-
-            if (error) throw error;
-
-            this.notificationsEnabled = true;
-            localStorage.setItem('notificationsEnabled', 'true');
-            this.updateNotificationButton();
-            this.showNotification('Notifications activées', 'success');
-            this.playSound('success');
-            
-            return true;
-        } catch (error) {
-            console.error('Erreur activation notifications:', error);
-            this.showNotification(
-                'Erreur : ' + (error.message || 'Activation impossible'), 
-                'error'
-            );
-            this.playSound('error');
-            throw error;
+    try {
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+            throw new Error('Les notifications push ne sont pas supportées');
         }
+
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+            throw new Error('Permission refusée pour les notifications');
+        }
+
+        // S'assurer que le service worker est enregistré et actif
+        const registration = await navigator.serviceWorker.ready;
+        console.log('Service Worker prêt pour les notifications');
+
+        let subscription = await registration.pushManager.getSubscription();
+        
+        if (!subscription) {
+            const vapidPublicKey = 'BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck';
+            subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: this.urlBase64ToUint8Array(vapidPublicKey)
+            });
+            
+            console.log('Nouvelle souscription créée:', subscription);
+        }
+
+        // Stocker la souscription dans Supabase avec plus d'informations
+        const { error } = await this.supabase
+            .from('push_subscriptions')
+            .upsert({
+                pseudo: this.pseudo,
+                subscription: JSON.stringify(subscription),
+                device_type: this.getDeviceType(),
+                last_updated: new Date().toISOString(),
+                active: true
+            });
+
+        if (error) throw error;
+
+        this.notificationsEnabled = true;
+        localStorage.setItem('notificationsEnabled', 'true');
+        this.updateNotificationButton();
+        this.showNotification('Notifications activées', 'success');
+        this.playSound('success');
+        
+        return true;
+    } catch (error) {
+        console.error('Erreur activation notifications:', error);
+        this.showNotification(
+            'Erreur : ' + (error.message || 'Activation impossible'), 
+            'error'
+        );
+        this.playSound('error');
+        throw error;
     }
+}
+
+// Méthode utilitaire pour détecter le type d'appareil
+getDeviceType() {
+    const ua = navigator.userAgent;
+    if (/android/i.test(ua)) {
+        return 'android';
+    } else if (/iPad|iPhone|iPod/.test(ua)) {
+        return 'ios';
+    } else {
+        return 'desktop';
+    }
+}
+getDeviceType() {
+    const ua = navigator.userAgent;
+    if (/android/i.test(ua)) {
+        return 'android';
+    } else if (/iPad|iPhone|iPod/.test(ua)) {
+        return 'ios';
+    } else {
+        return 'desktop';
+    }
+}
 async unsubscribeFromPushNotifications() {
         try {
             const registration = await navigator.serviceWorker.getRegistration();
