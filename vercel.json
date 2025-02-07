@@ -1,18 +1,75 @@
 {
   "version": 2,
-  "buildCommand": "",
-  "outputDirectory": "public_html",
+  "builds": [
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "public_html/**/*",
+      "use": "@vercel/static"
+    }
+  ],
   "routes": [
+    {
+      "src": "/service-worker.js",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate",
+        "Service-Worker-Allowed": "/"
+      },
+      "dest": "/public_html/service-worker.js"
+    },
     {
       "src": "/api/(.*)",
       "dest": "/api/$1"
     },
     {
-      "handle": "filesystem"
+      "src": "/(.*)",
+      "dest": "/public_html/$1",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "X-Requested-With, Content-Type, Accept"
+      }
+    }
+  ],
+  "headers": [
+    {
+      "source": "/service-worker.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/"
+        }
+      ]
     },
     {
-      "src": "/(.*)",
-      "dest": "/public_html/$1"
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
     }
-  ]
+  ],
+  "env": {
+    "NEXT_PUBLIC_VAPID_PUBLIC_KEY": "@next_public_vapid_public_key",
+    "VAPID_PRIVATE_KEY": "@vapid_private_key",
+    "NEXT_PUBLIC_SUPABASE_URL": "@next_public_supabase_url",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@next_public_supabase_anon_key",
+    "SUPABASE_SERVICE_ROLE_KEY": "@supabase_service_role_key"
+  }
 }
