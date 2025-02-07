@@ -1,5 +1,4 @@
 const CACHE_NAME = 'infos-pwa-v2';
-const APP_VERSION = '2.0.0';
 const OFFLINE_URL = '/offline.html';
 
 const STATIC_RESOURCES = [
@@ -15,6 +14,11 @@ const STATIC_RESOURCES = [
     '/images/INFOS-192.png',
     '/images/INFOS.png',
     '/images/badge-72x72.png',
+    '/sounds/message.mp3',
+    '/sounds/notification.mp3',
+    '/sounds/click.mp3',
+    '/sounds/erreur.mp3',
+    '/sounds/success.mp3',
     OFFLINE_URL
 ];
 
@@ -27,43 +31,38 @@ self.addEventListener('install', event => {
                 console.log('[Service Worker] Mise en cache des ressources');
                 return cache.addAll(STATIC_RESOURCES);
             }),
-            // Force l'activation immédiate
             self.skipWaiting()
         ])
     );
 });
 
-// Activation unifiée
+// Activation
 self.addEventListener('activate', event => {
     console.log('[Service Worker] Activation...');
     event.waitUntil(
         Promise.all([
-            // Prend le contrôle immédiatement
             clients.claim(),
-            
-            // Nettoie les anciens caches
             caches.keys().then(cacheNames => {
                 return Promise.all(
-                    cacheNames.map(cacheName => {
-                        if (cacheName !== CACHE_NAME) {
+                    cacheNames.filter(cacheName => cacheName !== CACHE_NAME)
+                        .map(cacheName => {
                             console.log('[Service Worker] Suppression ancien cache:', cacheName);
                             return caches.delete(cacheName);
-                        }
-                    })
+                        })
                 );
             })
         ])
     );
 });
 
-// Écouter le message pour SKIP_WAITING
+// Message handling
 self.addEventListener('message', event => {
     if (event.data && event.data.type === 'SKIP_WAITING') {
         self.skipWaiting();
     }
 });
 
-// Stratégie de cache modifiée
+// Stratégie de cache
 self.addEventListener('fetch', (event) => {
     // Ignorer les requêtes non GET
     if (event.request.method !== 'GET') return;
@@ -80,7 +79,7 @@ self.addEventListener('fetch', (event) => {
             try {
                 // Essayer d'abord le réseau
                 const response = await fetch(event.request);
-                // Ne mettre en cache que les réponses réussies et complètes
+                // Ne mettre en cache que les réponses réussies
                 if (response.ok && response.status !== 206) {
                     await cache.put(event.request, response.clone());
                 }
@@ -101,78 +100,135 @@ self.addEventListener('fetch', (event) => {
     );
 });
 
-// Notifications push
+// Gestion des notifications push
 self.addEventListener('push', function(event) {
-    if (!event.data) return;
-
+    console.log('[Service Worker] Push Reçu');
+    
     try {
-        const pushData = event.data.json();
+        const data = event.data.json();
+        console.log('[Service Worker] Données Push:', data);
+        
         const options = {
-            body: pushData.message || 'Nouveau message',
+            body: data.message || 'Nouveau message',
             icon: '/images/INFOS-192.png',
             badge: '/images/badge-72x72.png',
-            vibrate: [200, 100, 200],
+            tag: 'chat-message-' + Date.now(),
+            vibrate: [100, 50, 100],
             data: {
-                url: '/?action=openchat'
+                url: '/?action=openchat',
+                messageId: data.messageId,
+                timestamp: Date.now()
             },
             requireInteraction: true,
             renotify: true,
-            tag: 'chat-message'
+            silent: false,
+            actions: [
+                {
+                    action: 'open',
+                    title: 'Ouvrir le chat',
+                    icon: '/images/INFOS-96.png'
+                }
+            ]
         };
 
         event.waitUntil(
-            self.registration.showNotification('INFOS Chat', options)
+            Promise.all([
+                // Afficher la notification
+                self.registration.showNotification('INFOS Chat', options),
+                
+                // Notifier tous les clients ouverts
+                self.clients.matchAll({
+                    type: 'window',
+                    includeUncontrolled: true
+                }).then(function(clients) {
+                    clients.forEach(function(client) {
+                        client.postMessage({
+                            type: 'PUSH_RECEIVED',
+                            message: data
+                        });
+                    });
+                })
+            ])
         );
     } catch (error) {
-        console.error('Erreur notification push:', error);
+        console.error('[Service Worker] Erreur push:', error);
+        // Fallback notification si le parse JSON échoue
         event.waitUntil(
             self.registration.showNotification('INFOS Chat', {
                 body: 'Nouveau message reçu',
                 icon: '/images/INFOS-192.png',
-                badge: '/images/badge-72x72.png'
+                badge: '/images/badge-72x72.png',
+                requireInteraction: true
             })
         );
     }
 });
 
+// Gestion des clics sur les notifications
 self.addEventListener('notificationclick', function(event) {
+    console.log('[Service Worker] Notification cliquée');
+    
     event.notification.close();
-    event.waitUntil(
-        clients.matchAll({ type: 'window', includeUncontrolled: true })
-            .then(function(clientList) {
-                for (let client of clientList) {
-                    if (client.url.includes('pwa-news-two.vercel.app') && 'focus' in client) {
-                        return client.focus();
-                    }
-                }
-                return clients.openWindow('/?action=openchat');
-            })
-    );
+    
+    // URL à ouvrir avec le paramètre d'action
+    const urlToOpen = new URL('/?action=openchat', self.location.origin).href;
+    
+    const promiseChain = clients.matchAll({
+        type: 'window',
+        includeUncontrolled: true
+    })
+    .then((windowClients) => {
+        // Chercher si une fenêtre de l'app est déjà ouverte
+        for (const client of windowClients) {
+            if (client.url === urlToOpen) {
+                return client.focus();
+            }
+        }
+        // Si aucune fenêtre n'est ouverte, en ouvrir une nouvelle
+        return clients.openWindow(urlToOpen);
+    });
+
+    event.waitUntil(promiseChain);
 });
 
-// Gestion des événements de fermeture de notification
+// Gestion de la fermeture des notifications
 self.addEventListener('notificationclose', function(event) {
-    console.log('SW: Notification fermée', {
+    console.log('[Service Worker] Notification fermée', {
         tag: event.notification.tag,
-        timestamp: new Date().toISOString(),
         data: event.notification.data
     });
 });
-// Ajoutez cette fonction pour la gestion des notifications
+
+// Gestion du changement de souscription
 self.addEventListener('pushsubscriptionchange', function(event) {
     console.log('[Service Worker] PushSubscriptionChange');
     event.waitUntil(
-        Promise.all([
-            self.registration.pushManager.subscribe({ userVisibleOnly: true }),
-            // Ici vous pouvez ajouter la logique pour mettre à jour la subscription sur votre serveur
-        ])
+        self.registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: 'BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck'
+        })
+        .then(function(newSubscription) {
+            console.log('[Service Worker] Nouvelle souscription:', newSubscription);
+            
+            // Envoyer la nouvelle souscription au serveur
+            return fetch('/api/updateSubscription', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    subscription: newSubscription
+                })
+            });
+        })
     );
 });
+
 // Gestionnaires d'erreurs globaux
 self.addEventListener('error', function(e) {
-    console.error('Service Worker error:', e.filename, e.lineno, e.colno, e.message);
+    console.error('[Service Worker] Erreur:', e.filename, e.lineno, e.colno, e.message);
 });
 
 self.addEventListener('unhandledrejection', function(e) {
-    console.error('Service Worker unhandled rejection:', e.reason);
+    console.error('[Service Worker] Rejet non géré:', e.reason);
 });
