@@ -196,99 +196,139 @@
 
     <!-- Module principal -->
     <script type="module">
-        // Service Worker Registration
-        if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js', {
-        scope: '/',
-        updateViaCache: 'none',
-        immediate: true  // Force le démarrage immédiat
-    }).then(async registration => {
-        console.log('ServiceWorker registration successful:', registration);
-        
-        // Forcer l'activation immédiate
-        if (registration.waiting) {
-            registration.waiting.postMessage({type: 'SKIP_WAITING'});
-        }
-        
-        // S'assurer que le service worker est actif
-        if (registration.active) {
-            console.log('Service Worker actif');
-        } else {
-            await registration.ready;
-            console.log('Service Worker prêt après attente');
-        }
-    }).catch(err => {
-        console.error('ServiceWorker registration failed:', err);
-    });
-
-    // Écouter les changements d'état
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-        console.log('Service Worker controller changed');
-    });
-}
-       // PWA Installation
-        let deferredPrompt;
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-            const installMenuItem = document.getElementById('menuInstall');
-        if (installMenuItem) {
-            installMenuItem.addEventListener('click', async (e) => {
-                e.preventDefault();
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    console.log(`Installation PWA: ${outcome}`);
-                    deferredPrompt = null;
-                    
-                    // Cache le lien après l'installation
-                    if (outcome === 'accepted') {
-                        installMenuItem.style.display = 'none';
-                    }
-                }
+// Service Worker Registration
+async function registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        try {
+            const registration = await navigator.serviceWorker.register('/service-worker.js', {
+                scope: '/',
+                updateViaCache: 'none'
             });
-        }
-    });
 
-    window.addEventListener('appinstalled', () => {
-        deferredPrompt = null;
-        console.log('PWA installée');
-        // Cache le lien d'installation après l'installation réussie
-        const installMenuItem = document.getElementById('menuInstall');
-        if (installMenuItem) {
-            installMenuItem.style.display = 'none';
-        }
-    });
-        // App Initialization
-        async function startApp() {
-    try {
-        // Initialiser ContentManager
-        console.log('Chargement de ContentManager...');
-        const contentModule = await import('./js/content.js');
-        window.contentManager = new contentModule.default();
-        await window.contentManager.init();
-        console.log('Content Manager initialisé');
+            console.log('ServiceWorker enregistré avec succès:', registration);
 
-        // Initialiser ChatManager
-        console.log('Chargement de ChatManager...');
-        const chatModule = await import('/js/chatManager.js');
-        window.chatManager = new chatModule.default();
-        await window.chatManager.init();
-        console.log('Chat Manager initialisé');
-    } catch (error) {
-        console.error('Erreur d\'initialisation détaillée:', error);
-        if (error.stack) {
+            // Gestion de la mise à jour du Service Worker
+            registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                console.log('Nouveau service worker en installation');
+
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        console.log('Nouveau Service Worker installé');
+                        if (registration.waiting) {
+                            registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                        }
+                    }
+                });
+            });
+
+            // Écouter les changements d'état
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                console.log('Service Worker mis à jour');
+                window.location.reload();
+            });
+
+            return registration;
+        } catch (error) {
+            console.error('Erreur d\'enregistrement du ServiceWorker:', error);
+            throw error;
+        }
+    }
+}
+
+// PWA Installation
+class PWAInstaller {
+    constructor() {
+        this.deferredPrompt = null;
+        this.installButton = document.getElementById('menuInstall');
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        // Masquer le bouton par défaut
+        if (this.installButton) {
+            this.installButton.style.display = 'none';
+        }
+
+        window.addEventListener('beforeinstallprompt', this.handleBeforeInstallPrompt.bind(this));
+        window.addEventListener('appinstalled', this.handleAppInstalled.bind(this));
+    }
+
+    async handleBeforeInstallPrompt(event) {
+        event.preventDefault();
+        this.deferredPrompt = event;
+
+        if (this.installButton) {
+            this.installButton.style.display = 'block';
+            this.installButton.addEventListener('click', this.handleInstallClick.bind(this), { once: true });
+        }
+    }
+
+    async handleInstallClick(event) {
+        event.preventDefault();
+        if (!this.deferredPrompt) return;
+
+        try {
+            const result = await this.deferredPrompt.prompt();
+            console.log('Résultat de l\'installation:', result);
+            
+            if (result.outcome === 'accepted') {
+                console.log('PWA installée avec succès');
+                this.installButton.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Erreur lors de l\'installation:', error);
+        } finally {
+            this.deferredPrompt = null;
+        }
+    }
+
+    handleAppInstalled() {
+        console.log('PWA installée avec succès');
+        if (this.installButton) {
+            this.installButton.style.display = 'none';
+        }
+        this.deferredPrompt = null;
+    }
+}
+
+// App Initialization
+class AppInitializer {
+    static async init() {
+        try {
+            // Enregistrer le Service Worker
+            await registerServiceWorker();
+
+            // Initialiser l'installateur PWA
+            new PWAInstaller();
+
+            // Initialiser ContentManager
+            console.log('Chargement de ContentManager...');
+            const contentModule = await import('./js/content.js');
+            window.contentManager = new contentModule.default();
+            await window.contentManager.init();
+            console.log('Content Manager initialisé');
+
+            // Initialiser ChatManager
+            console.log('Chargement de ChatManager...');
+            const chatModule = await import('/js/chatManager.js');
+            window.chatManager = new chatModule.default();
+            await window.chatManager.init();
+            console.log('Chat Manager initialisé');
+
+        } catch (error) {
+            console.error('Erreur d\'initialisation:', error);
             console.error('Stack trace:', error.stack);
         }
     }
 }
-       // Démarrer l'application quand le DOM est prêt
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', startApp);
-        } else {
-            startApp();
-        }
-    </script>
+
+// Démarrer l'application quand le DOM est prêt
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => AppInitializer.init());
+} else {
+    AppInitializer.init();
+}
+</script>
 </body>
 </html>
