@@ -1,8 +1,5 @@
 {
   "version": 2,
-  "buildCommand": "",
-  "devCommand": "",
-  "installCommand": "",
   "builds": [
     {
       "src": "api/**/*.js",
@@ -15,16 +12,9 @@
   ],
   "routes": [
     {
-      "src": "/service-worker.js",
-      "headers": {
-        "cache-control": "public, max-age=0, must-revalidate",
-        "Service-Worker-Allowed": "/"
-      },
-      "dest": "/public_html/service-worker.js"
-    },
-    {
       "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "dest": "/api/$1",
+      "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     },
     {
       "src": "/(.*)",
