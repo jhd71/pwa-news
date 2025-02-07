@@ -1,4 +1,5 @@
-const CACHE_NAME = 'infos-pwa-v1';
+const CACHE_NAME = 'infos-pwa-v2';
+const APP_VERSION = '2.0.0';
 const OFFLINE_URL = '/offline.html';
 
 const STATIC_RESOURCES = [
@@ -19,32 +20,37 @@ const STATIC_RESOURCES = [
 
 // Installation
 self.addEventListener('install', event => {
-    console.log('Service Worker installing...');
+    console.log('[Service Worker] Installation...');
     event.waitUntil(
-        caches.open(CACHE_NAME).then(cache => {
-            return cache.addAll(STATIC_RESOURCES);
-        })
+        Promise.all([
+            caches.open(CACHE_NAME).then(cache => {
+                console.log('[Service Worker] Mise en cache des ressources');
+                return cache.addAll(STATIC_RESOURCES);
+            }),
+            // Force l'activation immédiate
+            self.skipWaiting()
+        ])
     );
-    self.skipWaiting();
 });
 
 // Activation unifiée
 self.addEventListener('activate', event => {
-    console.log('Service Worker activating...');
+    console.log('[Service Worker] Activation...');
     event.waitUntil(
         Promise.all([
+            // Prend le contrôle immédiatement
             clients.claim(),
+            
+            // Nettoie les anciens caches
             caches.keys().then(cacheNames => {
                 return Promise.all(
-                    cacheNames
-                        .filter(cacheName => cacheName !== CACHE_NAME)
-                        .map(cacheName => caches.delete(cacheName))
+                    cacheNames.map(cacheName => {
+                        if (cacheName !== CACHE_NAME) {
+                            console.log('[Service Worker] Suppression ancien cache:', cacheName);
+                            return caches.delete(cacheName);
+                        }
+                    })
                 );
-            }),
-            self.registration.pushManager.getSubscription().then(subscription => {
-                if (subscription) {
-                    return subscription.unsubscribe();
-                }
             })
         ])
     );
@@ -100,38 +106,30 @@ self.addEventListener('push', function(event) {
     if (!event.data) return;
 
     try {
-        const data = event.data.json();
+        const pushData = event.data.json();
         const options = {
-            body: data.body || 'Nouveau message reçu',
-            icon: data.icon || '/images/INFOS-192.png',
-            badge: data.badge || '/images/badge-72x72.png',
+            body: pushData.message || 'Nouveau message',
+            icon: '/images/INFOS-192.png',
+            badge: '/images/badge-72x72.png',
             vibrate: [200, 100, 200],
-            tag: 'chat-message',
-            renotify: true,
-            requireInteraction: true,
-            actions: [
-                {
-                    action: 'open',
-                    title: 'Ouvrir',
-                    icon: '/images/INFOS-96.png'
-                }
-            ],
             data: {
                 url: '/?action=openchat'
-            }
+            },
+            requireInteraction: true,
+            renotify: true,
+            tag: 'chat-message'
         };
 
         event.waitUntil(
-            self.registration.showNotification(data.title || 'INFOS Chat', options)
+            self.registration.showNotification('INFOS Chat', options)
         );
     } catch (error) {
-        console.error('Erreur traitement notification push:', error);
+        console.error('Erreur notification push:', error);
         event.waitUntil(
             self.registration.showNotification('INFOS Chat', {
                 body: 'Nouveau message reçu',
                 icon: '/images/INFOS-192.png',
-                badge: '/images/badge-72x72.png',
-                vibrate: [200, 100, 200]
+                badge: '/images/badge-72x72.png'
             })
         );
     }
@@ -142,8 +140,10 @@ self.addEventListener('notificationclick', function(event) {
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true })
             .then(function(clientList) {
-                if (clientList.length > 0) {
-                    return clientList[0].focus();
+                for (let client of clientList) {
+                    if (client.url.includes('pwa-news-two.vercel.app') && 'focus' in client) {
+                        return client.focus();
+                    }
                 }
                 return clients.openWindow('/?action=openchat');
             })
@@ -158,7 +158,16 @@ self.addEventListener('notificationclose', function(event) {
         data: event.notification.data
     });
 });
-
+// Ajoutez cette fonction pour la gestion des notifications
+self.addEventListener('pushsubscriptionchange', function(event) {
+    console.log('[Service Worker] PushSubscriptionChange');
+    event.waitUntil(
+        Promise.all([
+            self.registration.pushManager.subscribe({ userVisibleOnly: true }),
+            // Ici vous pouvez ajouter la logique pour mettre à jour la subscription sur votre serveur
+        ])
+    );
+});
 // Gestionnaires d'erreurs globaux
 self.addEventListener('error', function(e) {
     console.error('Service Worker error:', e.filename, e.lineno, e.colno, e.message);
