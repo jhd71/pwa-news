@@ -1,1 +1,11 @@
-
+{
+  "name": "pwa-news",
+  "version": "1.0.0",
+  "engines": {
+    "node": "18.x"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.x",
+    "web-push": "^3.x"
+  }
+}
