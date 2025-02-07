@@ -626,28 +626,34 @@ async unsubscribeFromPushNotifications() {
         }
     }
     async sendNotificationToUser(message) {
-        try {
-            const response = await fetch('/api/sendPush', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    message: message.content,
-                    fromUser: message.pseudo,
-                    toUser: this.pseudo
-                })
-            });
+    try {
+        const response = await fetch('/api/sendPush', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message: message.content,
+                fromUser: message.pseudo,
+                toUser: this.pseudo,
+                timestamp: new Date().toISOString(),
+                type: 'chat_message'
+            })
+        });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Erreur envoi notification');
-            }
-
-            return await response.json();
-        } catch (error) {
-            console.error('Erreur envoi notification:', error);
-            throw error;
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Erreur envoi notification');
         }
+
+        const result = await response.json();
+        console.log('Résultat envoi notification:', result);
+        return result;
+    } catch (error) {
+        console.error('Erreur envoi notification:', error);
+        throw error;
     }
+}
 	async loadSounds() {
         const soundFiles = {
             'message': '/sounds/message.mp3',
