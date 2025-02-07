@@ -536,3 +536,26 @@ img {
     max-width: 200px;
     height: auto;
 }
+
+/* Styles PWA Installation */
+#menuInstall {
+    display: none; /* Caché par défaut */
+    cursor: pointer;
+    padding: 8px 16px;
+    margin: 8px 0;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    color: inherit;
+}
+
+#menuInstall:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+}
+
+#menuInstall.visible {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+}
