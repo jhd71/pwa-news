@@ -1,5 +1,8 @@
 {
   "version": 2,
+  "buildCommand": "",
+  "devCommand": "",
+  "installCommand": "",
   "builds": [
     {
       "src": "api/**/*.js",
@@ -14,7 +17,7 @@
     {
       "src": "/service-worker.js",
       "headers": {
-        "cache-control": "no-cache, no-store, must-revalidate",
+        "cache-control": "public, max-age=0, must-revalidate",
         "Service-Worker-Allowed": "/"
       },
       "dest": "/public_html/service-worker.js"
@@ -25,44 +28,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/public_html/$1",
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-        "Access-Control-Allow-Headers": "X-Requested-With, Content-Type, Accept"
-      }
-    }
-  ],
-  "headers": [
-    {
-      "source": "/service-worker.js",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate"
-        },
-        {
-          "key": "Service-Worker-Allowed",
-          "value": "/"
-        }
-      ]
-    },
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        }
-      ]
+      "dest": "/public_html/$1"
     }
   ],
   "env": {
