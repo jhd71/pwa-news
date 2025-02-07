@@ -1,5 +1,3 @@
-
-// Importer directement le gestionnaire de sons
 import soundManager from '/js/sounds.js';
 
 class ChatManager {
@@ -628,6 +626,7 @@ async unsubscribeFromPushNotifications() {
     }
     async sendNotificationToUser(message) {
     try {
+        console.log('Envoi notification à:', message);
         const response = await fetch('/api/sendPush', {
             method: 'POST',
             headers: {
@@ -637,13 +636,13 @@ async unsubscribeFromPushNotifications() {
                 message: message.content,
                 fromUser: message.pseudo,
                 toUser: this.pseudo,
-                timestamp: new Date().toISOString(),
-                type: 'chat_message'
+                timestamp: new Date().toISOString()
             })
         });
 
         if (!response.ok) {
             const errorData = await response.json();
+            console.error('Erreur réponse API:', await response.text());
             throw new Error(errorData.error || 'Erreur envoi notification');
         }
 
@@ -652,6 +651,7 @@ async unsubscribeFromPushNotifications() {
         return result;
     } catch (error) {
         console.error('Erreur envoi notification:', error);
+        console.error('Stack trace:', error.stack);
         throw error;
     }
 }
