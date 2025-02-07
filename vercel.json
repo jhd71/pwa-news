@@ -30,12 +30,5 @@
       "src": "/(.*)",
       "dest": "/public_html/$1"
     }
-  ],
-  "env": {
-    "NEXT_PUBLIC_VAPID_PUBLIC_KEY": "@next_public_vapid_public_key",
-    "VAPID_PRIVATE_KEY": "@vapid_private_key",
-    "NEXT_PUBLIC_SUPABASE_URL": "@next_public_supabase_url",
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@next_public_supabase_anon_key",
-    "SUPABASE_SERVICE_ROLE_KEY": "@supabase_service_role_key"
-  }
+  ]
 }
