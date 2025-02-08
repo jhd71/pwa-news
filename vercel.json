@@ -3,31 +3,20 @@
   "builds": [
     {
       "src": "pages/api/**/*.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "runtime": "nodejs18.x"
+      }
     },
     {
       "src": "public_html/**/*",
       "use": "@vercel/static"
     }
   ],
-  "rewrites": [
-    { "source": "/api/:path*", "destination": "/api/:path*" }
-  ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/pages/api/$1",
-      "methods": ["GET", "POST", "OPTIONS"],
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type"
-      }
-    },
-    {
-      "src": "/api/sendPush",
-      "methods": ["POST", "OPTIONS"],
-      "dest": "/pages/api/sendPush.js"
+      "dest": "/pages/api/$1"
     },
     {
       "src": "/(.*)",
