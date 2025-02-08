@@ -1,3 +1,4 @@
+// pages/api/sendPush.js
 const webpush = require('web-push');
 const { createClient } = require('@supabase/supabase-js');
 
@@ -7,13 +8,25 @@ const supabase = createClient(
 );
 
 // Fonction d'API simple pour Vercel
-export default async function (req, res) {
+module.exports = async function (req, res) {
+  console.log('API SendPush appelée - URL:', req.url);
+  console.log('Méthode:', req.method);
+  console.log('Headers:', req.headers);
+  console.log('Body:', req.body);
+
+  // CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
   if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+    res.status(200).end();
+    return;
   }
 
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
   }
 
   try {
@@ -24,19 +37,29 @@ export default async function (req, res) {
     );
 
     const { message, fromUser, toUser } = req.body;
+    console.log('Données reçues:', { message, fromUser, toUser });
 
-    const { data: subscriptions, error } = await supabase
+    const { data: subscriptions, error: supabaseError } = await supabase
       .from('push_subscriptions')
-      .select('subscription')
-      .eq('pseudo', toUser);
+      .select('subscription, device_type')
+      .eq('pseudo', toUser)
+      .eq('active', true);
 
-    if (error) throw error;
-
-    if (!subscriptions || subscriptions.length === 0) {
-      return res.status(404).json({ error: 'No subscription found' });
+    if (supabaseError) {
+      console.error('Erreur Supabase:', supabaseError);
+      throw supabaseError;
     }
 
-    const notifications = subscriptions.map(async ({ subscription }) => {
+    console.log('Souscriptions trouvées:', subscriptions?.length || 0);
+
+    if (!subscriptions || subscriptions.length === 0) {
+      return res.status(404).json({ 
+        error: 'No subscription found',
+        user: toUser 
+      });
+    }
+
+    const notifications = await Promise.all(subscriptions.map(async ({ subscription }) => {
       const parsedSubscription = typeof subscription === 'string' 
         ? JSON.parse(subscription) 
         : subscription;
@@ -49,23 +72,31 @@ export default async function (req, res) {
             body: message
           })
         );
+        console.log('Notification envoyée avec succès à:', toUser);
         return true;
       } catch (error) {
-        console.error('Error sending notification:', error);
+        console.error('Erreur envoi notification:', error);
         return false;
       }
+    }));
+
+    const successful = notifications.filter(Boolean).length;
+    console.log('Résultat des notifications:', {
+      success: true,
+      sent: successful,
+      total: subscriptions.length
     });
 
-    const results = await Promise.all(notifications);
-    const successful = results.filter(Boolean).length;
-
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
       sent: successful,
       total: subscriptions.length
     });
   } catch (error) {
-    console.error('Error in push notification handler:', error);
-    return res.status(500).json({ error: error.message });
+    console.error('Erreur générale:', error);
+    res.status(500).json({ 
+      error: error.message,
+      stack: error.stack
+    });
   }
 }
