@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "pages/api/**/*.js",
+      "src": "pages/api/*.js",
       "use": "@vercel/node",
       "config": {
         "runtime": "nodejs18.x"
@@ -16,7 +16,14 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/pages/api/$1"
+      "dest": "/pages/api/$1",
+      "methods": ["GET", "POST", "OPTIONS"],
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Cache-Control": "no-store"
+      }
     },
     {
       "src": "/(.*)",
