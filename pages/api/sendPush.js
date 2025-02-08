@@ -58,16 +58,23 @@ module.exports = async function handler(req, res) {
       .eq('pseudo', toUser)
       .eq('active', true);
 
-    if (error) throw error;
+    if (error) throw new Error(`Database error: ${error.message}`);
 
     if (!subscriptions || subscriptions.length === 0) {
       return res.status(404).json({ error: 'No subscription found' });
     }
 
-    const notifications = subscriptions.map(({ subscription, device_type }) => ({
-      subscription: typeof subscription === 'string' ? JSON.parse(subscription) : subscription,
-      device_type
-    }));
+    const notifications = subscriptions.map(({ subscription, device_type }) => {
+      try {
+        return {
+          subscription: typeof subscription === 'string' ? JSON.parse(subscription) : subscription,
+          device_type
+        };
+      } catch (parseError) {
+        console.error('Subscription parsing error:', parseError);
+        return null;
+      }
+    }).filter(Boolean);
 
     const results = await Promise.all(notifications.map(async ({ subscription }) => {
       const notificationPayload = {
@@ -110,6 +117,6 @@ module.exports = async function handler(req, res) {
     });
   } catch (error) {
     console.error('Global error:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: `Server error: ${error.message}` });
   }
 };
