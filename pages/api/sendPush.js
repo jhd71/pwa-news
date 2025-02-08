@@ -1,6 +1,11 @@
-// api/sendPush.js
 const webpush = require('web-push');
 const { createClient } = require('@supabase/supabase-js');
+
+// Configuration pour Vercel
+export const config = {
+  runtime: 'nodejs18',
+  regions: ['iad1'],
+};
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -8,16 +13,20 @@ const supabase = createClient(
 );
 
 module.exports = async function handler(req, res) {
-  // Log de la requête reçue
-  console.log('Requête reçue:', {
-    body: req.body,
-    headers: req.headers,
-    method: req.method,
-    url: req.url
-  });
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,DELETE,PATCH,POST,PUT');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+  );
+
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
 
   if (req.method !== 'POST') {
-    console.log('Méthode non autorisée:', req.method);
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
@@ -29,7 +38,7 @@ module.exports = async function handler(req, res) {
     );
 
     const { message, fromUser, toUser } = req.body;
-    console.log('Données extraites:', { message, fromUser, toUser });
+    console.log('Données reçues:', { message, fromUser, toUser });
 
     const { data: subscriptions, error } = await supabase
       .from('push_subscriptions')
@@ -37,20 +46,11 @@ module.exports = async function handler(req, res) {
       .eq('pseudo', toUser)
       .eq('active', true);
 
-    if (error) {
-      console.error('Erreur Supabase:', error);
-      throw error;
-    }
+    if (error) throw error;
 
     if (!subscriptions || subscriptions.length === 0) {
-      console.log('Aucune souscription trouvée pour:', toUser);
-      return res.status(404).json({ 
-        error: 'No subscription found',
-        user: toUser 
-      });
+      return res.status(404).json({ error: 'No subscription found' });
     }
-
-    console.log(`${subscriptions.length} souscriptions trouvées pour:`, toUser);
 
     const notifications = subscriptions.map(async ({ subscription, device_type }) => {
       const parsedSubscription = typeof subscription === 'string' 
@@ -78,35 +78,14 @@ module.exports = async function handler(req, res) {
           parsedSubscription,
           JSON.stringify(notificationPayload)
         );
-        console.log('Notification envoyée avec succès à:', toUser);
-
-        await supabase
-          .from('push_subscriptions')
-          .update({ 
-            last_notification: new Date().toISOString(),
-            notification_count: supabase.sql`notification_count + 1`
-          })
-          .match({ 
-            pseudo: toUser, 
-            subscription: typeof subscription === 'string' ? subscription : JSON.stringify(subscription)
-          });
-
         return true;
       } catch (error) {
         console.error('Erreur envoi notification:', error);
-        
-        if (error.statusCode === 410 || error.statusCode === 404) {
+        if (error.statusCode === 410) {
           await supabase
             .from('push_subscriptions')
-            .update({ 
-              active: false, 
-              error_message: error.message,
-              last_updated: new Date().toISOString()
-            })
-            .match({ 
-              pseudo: toUser,
-              subscription: typeof subscription === 'string' ? subscription : JSON.stringify(subscription)
-            });
+            .update({ active: false })
+            .match({ pseudo: toUser });
         }
         return false;
       }
@@ -118,20 +97,10 @@ module.exports = async function handler(req, res) {
     res.status(200).json({
       success: true,
       sent: successful,
-      total: subscriptions.length,
-      failed: subscriptions.length - successful,
-      timestamp: new Date().toISOString()
+      total: subscriptions.length
     });
   } catch (error) {
-    console.error('Erreur globale handler:', {
-      error: error.message,
-      stack: error.stack,
-      timestamp: new Date().toISOString()
-    });
-    
-    res.status(500).json({ 
-      error: error.message,
-      timestamp: new Date().toISOString()
-    });
+    console.error('Erreur globale:', error);
+    res.status(500).json({ error: error.message });
   }
 };
