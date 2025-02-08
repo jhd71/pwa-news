@@ -1,21 +1,12 @@
-// pages/api/sendPush.js
-
 const webpush = require('web-push');
 const { createClient } = require('@supabase/supabase-js');
-
-// Configuration pour Vercel
-module.exports = {
-  config: {
-    runtime: 'nodejs18',
-    regions: ['iad1'],
-  }
-};
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+// Un seul module.exports pour la fonction handler
 module.exports = async function handler(req, res) {
   console.log('API appelée:', {
     method: req.method,
