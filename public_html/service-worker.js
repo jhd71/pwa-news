@@ -100,67 +100,68 @@ self.addEventListener('fetch', (event) => {
     );
 });
 
-// Modifiez l'événement push ainsi
+// Gestion des notifications push
 self.addEventListener('push', function(event) {
-    console.log('[Service Worker] Push Reçu', event.data?.text());
+    console.log('[Service Worker] Push Reçu');
     
-    // S'assurer que le service worker reste actif jusqu'à ce que la notification soit envoyée
-    event.waitUntil((async () => {
-        try {
-            let data;
-            try {
-                data = event.data.json();
-            } catch (e) {
-                data = {
-                    title: 'INFOS Chat',
-                    body: event.data.text()
-                };
-            }
+    try {
+        const data = event.data.json();
+        console.log('[Service Worker] Données Push:', data);
+        
+        const options = {
+            body: data.message || 'Nouveau message',
+            icon: '/images/INFOS-192.png',
+            badge: '/images/badge-72x72.png',
+            tag: 'chat-message-' + Date.now(),
+            vibrate: [100, 50, 100],
+            data: {
+                url: '/?action=openchat',
+                messageId: data.messageId,
+                timestamp: Date.now()
+            },
+            requireInteraction: true,
+            renotify: true,
+            silent: false,
+            actions: [
+                {
+                    action: 'open',
+                    title: 'Ouvrir le chat',
+                    icon: '/images/INFOS-96.png'
+                }
+            ]
+        };
 
-            const clientList = await clients.matchAll({
-                type: 'window',
-                includeUncontrolled: true
-            });
-
-            const windowClient = clientList.find(client => 
-                client.visibilityState === 'visible'
-            );
-
-            // Si l'application n'est pas visible ou est fermée, montrer une notification
-            if (!windowClient) {
-                const options = {
-                    body: data.body || 'Nouveau message',
-                    icon: '/images/INFOS-192.png',
-                    badge: '/images/badge-72x72.png',
-                    tag: 'chat-message-' + Date.now(),
-                    vibrate: [100, 50, 100],
-                    data: {
-                        url: '/?action=openchat',
-                        timestamp: Date.now()
-                    },
-                    actions: [{
-                        action: 'open',
-                        title: 'Ouvrir le chat'
-                    }],
-                    requireInteraction: true,
-                    renotify: true,
-                    silent: false
-                };
-
-                await self.registration.showNotification('INFOS Chat', options);
-                console.log('[Service Worker] Notification envoyée');
-            }
-        } catch (error) {
-            console.error('[Service Worker] Erreur dans push:', error);
-            // Notification de secours
-            await self.registration.showNotification('INFOS Chat', {
+        event.waitUntil(
+            Promise.all([
+                // Afficher la notification
+                self.registration.showNotification('INFOS Chat', options),
+                
+                // Notifier tous les clients ouverts
+                self.clients.matchAll({
+                    type: 'window',
+                    includeUncontrolled: true
+                }).then(function(clients) {
+                    clients.forEach(function(client) {
+                        client.postMessage({
+                            type: 'PUSH_RECEIVED',
+                            message: data
+                        });
+                    });
+                })
+            ])
+        );
+    } catch (error) {
+        console.error('[Service Worker] Erreur push:', error);
+        // Fallback notification si le parse JSON échoue
+        event.waitUntil(
+            self.registration.showNotification('INFOS Chat', {
                 body: 'Nouveau message reçu',
                 icon: '/images/INFOS-192.png',
                 badge: '/images/badge-72x72.png',
                 requireInteraction: true
-            });
-        }
-    })());
+            })
+        );
+    }
 });
 
 // Gestion des clics sur les notifications
