@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/*.js",
+      "src": "api/sendPush.js",
       "use": "@vercel/node"
     },
     {
@@ -10,18 +10,11 @@
       "use": "@vercel/static"
     }
   ],
-  "rewrites": [
-    { "source": "/api/:path*", "destination": "/api/:path*" }
-  ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type"
-      },
-      "continue": true
+      "src": "/api/sendPush",
+      "dest": "/api/sendPush.js",
+      "methods": ["GET", "POST", "OPTIONS"]
     },
     {
       "src": "/(.*)",
