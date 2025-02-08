@@ -17,6 +17,12 @@ const supabase = createClient(
 );
 
 module.exports = async function handler(req, res) {
+  console.log('API appelée:', {
+    method: req.method,
+    headers: req.headers,
+    body: req.body
+  });
+
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
