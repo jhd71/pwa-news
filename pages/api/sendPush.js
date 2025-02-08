@@ -1,10 +1,14 @@
+// pages/api/sendPush.js
+
 const webpush = require('web-push');
 const { createClient } = require('@supabase/supabase-js');
 
 // Configuration pour Vercel
-export const config = {
-  runtime: 'nodejs18',
-  regions: ['iad1'],
+module.exports = {
+  config: {
+    runtime: 'nodejs18',
+    regions: ['iad1'],
+  }
 };
 
 const supabase = createClient(
@@ -13,17 +17,13 @@ const supabase = createClient(
 );
 
 module.exports = async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Credentials', true);
+  // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,DELETE,PATCH,POST,PUT');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-  );
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
+    return res.status(200).end();
   }
 
   if (req.method !== 'POST') {
@@ -38,13 +38,11 @@ module.exports = async function handler(req, res) {
     );
 
     const { message, fromUser, toUser } = req.body;
-    console.log('Données reçues:', { message, fromUser, toUser });
 
     const { data: subscriptions, error } = await supabase
       .from('push_subscriptions')
-      .select('subscription, device_type')
-      .eq('pseudo', toUser)
-      .eq('active', true);
+      .select('subscription')
+      .eq('pseudo', toUser);
 
     if (error) throw error;
 
@@ -52,41 +50,22 @@ module.exports = async function handler(req, res) {
       return res.status(404).json({ error: 'No subscription found' });
     }
 
-    const notifications = subscriptions.map(async ({ subscription, device_type }) => {
+    const notifications = subscriptions.map(async ({ subscription }) => {
       const parsedSubscription = typeof subscription === 'string' 
         ? JSON.parse(subscription) 
         : subscription;
       
-      const notificationPayload = {
-        title: `Nouveau message de ${fromUser}`,
-        body: message,
-        icon: '/images/INFOS-192.png',
-        badge: '/images/badge-72x72.png',
-        data: {
-          url: '/?action=openchat',
-          fromUser,
-          timestamp: new Date().toISOString()
-        },
-        vibrate: [100, 50, 100],
-        requireInteraction: true,
-        renotify: true,
-        tag: 'chat-message-' + Date.now()
-      };
-
       try {
         await webpush.sendNotification(
           parsedSubscription,
-          JSON.stringify(notificationPayload)
+          JSON.stringify({
+            title: `Nouveau message de ${fromUser}`,
+            body: message
+          })
         );
         return true;
       } catch (error) {
-        console.error('Erreur envoi notification:', error);
-        if (error.statusCode === 410) {
-          await supabase
-            .from('push_subscriptions')
-            .update({ active: false })
-            .match({ pseudo: toUser });
-        }
+        console.error('Error sending notification:', error);
         return false;
       }
     });
@@ -100,7 +79,7 @@ module.exports = async function handler(req, res) {
       total: subscriptions.length
     });
   } catch (error) {
-    console.error('Erreur globale:', error);
+    console.error('Error in push notification handler:', error);
     res.status(500).json({ error: error.message });
   }
-};
+}
