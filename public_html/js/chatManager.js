@@ -637,7 +637,7 @@ async unsubscribeFromPushNotifications() {
         });
         console.log('Body de la requête:', body);
 
-        const response = await fetch(url, {
+        const response = await fetch('https://pwa-news-two.vercel.app/api/sendPush', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
