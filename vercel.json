@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "pages/api/**/*.js",
+      "src": "api/**/*.js",
       "use": "@vercel/node"
     },
     {
@@ -10,14 +10,21 @@
       "use": "@vercel/static"
     }
   ],
-  "rewrites": [
-    { 
-      "source": "/api/:path*",
-      "destination": "/pages/api/:path*" 
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1",
+      "methods": ["GET", "POST", "OPTIONS"],
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Cache-Control": "no-store"
+      }
     },
-    { 
-      "source": "/(.*)", 
-      "destination": "/public_html/$1" 
+    {
+      "src": "/(.*)",
+      "dest": "/public_html/$1"
     }
   ]
 }
