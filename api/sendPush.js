@@ -6,10 +6,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-export default async function handler(req, res) {
-
-// Fonction d'API simple pour Vercel
-module.exports = async function (req, res) {
+module.exports = async (req, res) => {
   console.log('API SendPush appelée - URL:', req.url);
   console.log('Méthode:', req.method);
   console.log('Headers:', req.headers);
@@ -17,17 +14,15 @@ module.exports = async function (req, res) {
 
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
+    return res.status(200).end();
   }
 
   if (req.method !== 'POST') {
-    res.status(405).json({ error: 'Method not allowed' });
-    return;
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
@@ -88,16 +83,16 @@ module.exports = async function (req, res) {
       total: subscriptions.length
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       sent: successful,
       total: subscriptions.length
     });
   } catch (error) {
     console.error('Erreur générale:', error);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       error: error.message,
       stack: error.stack
     });
   }
-}
+};
