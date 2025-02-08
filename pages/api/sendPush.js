@@ -6,8 +6,15 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// Un seul module.exports pour la fonction handler
-module.exports = async function handler(req, res) {
+// Configuration Vercel
+exports.config = {
+  api: {
+    bodyParser: true,
+  },
+};
+
+// Handler principal
+exports.default = async function(req, res) {
   console.log('API appelée:', {
     method: req.method,
     headers: req.headers,
@@ -79,4 +86,4 @@ module.exports = async function handler(req, res) {
     console.error('Error in push notification handler:', error);
     res.status(500).json({ error: error.message });
   }
-}
+};
