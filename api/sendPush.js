@@ -1,4 +1,3 @@
-// pages/api/sendPush.js
 const webpush = require('web-push');
 const { createClient } = require('@supabase/supabase-js');
 
@@ -6,6 +5,8 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
+
+export default async function handler(req, res) {
 
 // Fonction d'API simple pour Vercel
 module.exports = async function (req, res) {
