@@ -627,7 +627,7 @@ async unsubscribeFromPushNotifications() {
     async sendNotificationToUser(message) {
     try {
         console.log('Envoi notification à:', message);
-        const response = await fetch('/images/api/sendPush', {
+        const response = await fetch('/api/sendPush', {  // Changez ceci
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
