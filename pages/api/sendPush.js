@@ -1,7 +1,7 @@
 const webpush = require('web-push');
 const { createClient } = require('@supabase/supabase-js');
 
-// Configuration pour Vercel
+// Configuration for Vercel
 export const config = {
   runtime: 'nodejs18',
   regions: ['iad1'],
@@ -12,7 +12,8 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-module.exports = async function handler(req, res) {
+// CORS Middleware
+const setCorsHeaders = (res) => {
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,DELETE,PATCH,POST,PUT');
@@ -20,6 +21,10 @@ module.exports = async function handler(req, res) {
     'Access-Control-Allow-Headers',
     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
   );
+};
+
+module.exports = async function handler(req, res) {
+  setCorsHeaders(res);
 
   if (req.method === 'OPTIONS') {
     res.status(200).end();
@@ -30,15 +35,22 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  try {
-    webpush.setVapidDetails(
-      'mailto:infos@jhd71.fr',
-      process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-      process.env.VAPID_PRIVATE_KEY
-    );
+  const {
+    NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+    VAPID_PRIVATE_KEY,
+    NEXT_PUBLIC_SUPABASE_URL,
+    SUPABASE_SERVICE_ROLE_KEY
+  } = process.env;
 
+  webpush.setVapidDetails(
+    'mailto:infos@jhd71.fr',
+    NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+    VAPID_PRIVATE_KEY
+  );
+
+  try {
     const { message, fromUser, toUser } = req.body;
-    console.log('Données reçues:', { message, fromUser, toUser });
+    console.log('Received data:', { message, fromUser, toUser });
 
     const { data: subscriptions, error } = await supabase
       .from('push_subscriptions')
@@ -52,13 +64,14 @@ module.exports = async function handler(req, res) {
       return res.status(404).json({ error: 'No subscription found' });
     }
 
-    const notifications = subscriptions.map(async ({ subscription, device_type }) => {
-      const parsedSubscription = typeof subscription === 'string' 
-        ? JSON.parse(subscription) 
-        : subscription;
-      
+    const notifications = subscriptions.map(({ subscription, device_type }) => ({
+      subscription: typeof subscription === 'string' ? JSON.parse(subscription) : subscription,
+      device_type
+    }));
+
+    const results = await Promise.all(notifications.map(async ({ subscription }) => {
       const notificationPayload = {
-        title: `Nouveau message de ${fromUser}`,
+        title: `New message from ${fromUser}`,
         body: message,
         icon: '/images/INFOS-192.png',
         badge: '/images/badge-72x72.png',
@@ -74,13 +87,10 @@ module.exports = async function handler(req, res) {
       };
 
       try {
-        await webpush.sendNotification(
-          parsedSubscription,
-          JSON.stringify(notificationPayload)
-        );
+        await webpush.sendNotification(subscription, JSON.stringify(notificationPayload));
         return true;
       } catch (error) {
-        console.error('Erreur envoi notification:', error);
+        console.error('Notification send error:', error);
         if (error.statusCode === 410) {
           await supabase
             .from('push_subscriptions')
@@ -89,9 +99,8 @@ module.exports = async function handler(req, res) {
         }
         return false;
       }
-    });
+    }));
 
-    const results = await Promise.all(notifications);
     const successful = results.filter(Boolean).length;
 
     res.status(200).json({
@@ -100,7 +109,7 @@ module.exports = async function handler(req, res) {
       total: subscriptions.length
     });
   } catch (error) {
-    console.error('Erreur globale:', error);
+    console.error('Global error:', error);
     res.status(500).json({ error: error.message });
   }
 };
