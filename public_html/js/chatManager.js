@@ -637,7 +637,7 @@ async unsubscribeFromPushNotifications() {
         });
         console.log('Body de la requête:', body);
 
-        const response = await fetch('/api/sendPush', {
+        const response = await fetch(window.location.origin + '/api/sendPush', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
