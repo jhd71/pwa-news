@@ -6,7 +6,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-async function handler(req, res) {
+async function sendPushNotification(req, res) {
   console.log('API appelée:', {
     method: req.method,
     headers: req.headers,
@@ -80,4 +80,4 @@ async function handler(req, res) {
   }
 }
 
-module.exports = handler;
+module.exports = sendPushNotification;
