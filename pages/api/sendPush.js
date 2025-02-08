@@ -6,26 +6,8 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// Configuration Vercel
-exports.config = {
-  api: {
-    bodyParser: true,
-  },
-};
-
-// Handler principal
-exports.default = async function(req, res) {
-  console.log('API appelée:', {
-    method: req.method,
-    headers: req.headers,
-    body: req.body
-  });
-
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
+// Fonction d'API simple pour Vercel
+export default async function (req, res) {
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -77,13 +59,13 @@ exports.default = async function(req, res) {
     const results = await Promise.all(notifications);
     const successful = results.filter(Boolean).length;
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       sent: successful,
       total: subscriptions.length
     });
   } catch (error) {
     console.error('Error in push notification handler:', error);
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
-};
+}
