@@ -627,27 +627,36 @@ async unsubscribeFromPushNotifications() {
     async sendNotificationToUser(message) {
     try {
         console.log('Envoi notification à:', message);
-        const response = await fetch('/api/sendPush', {  // Changez ceci
+        const url = '/api/sendPush';
+        console.log('URL API:', url);
+        const body = JSON.stringify({
+            message: message.content,
+            fromUser: message.pseudo,
+            toUser: this.pseudo,
+            timestamp: new Date().toISOString()
+        });
+        console.log('Body de la requête:', body);
+
+        const response = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                message: message.content,
-                fromUser: message.pseudo,
-                toUser: this.pseudo,
-                timestamp: new Date().toISOString()
-            })
+            body: body
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            console.error('Erreur réponse API:', await response.text());
-            throw new Error(errorData.error || 'Erreur envoi notification');
+            const text = await response.text();
+            console.error('Réponse API erreur:', {
+                status: response.status,
+                statusText: response.statusText,
+                body: text
+            });
+            throw new Error(`Erreur API: ${response.status} ${text}`);
         }
 
         const result = await response.json();
-        console.log('Résultat envoi notification:', result);
+        console.log('Réponse API succès:', result);
         return result;
     } catch (error) {
         console.error('Erreur envoi notification:', error);
