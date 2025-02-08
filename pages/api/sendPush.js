@@ -1,7 +1,7 @@
 const webpush = require('web-push');
 const { createClient } = require('@supabase/supabase-js');
 
-// Configuration for Vercel
+// Configuration pour Vercel
 export const config = {
   runtime: 'nodejs18',
   regions: ['iad1'],
@@ -12,8 +12,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// CORS Middleware
-const setCorsHeaders = (res) => {
+module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,DELETE,PATCH,POST,PUT');
@@ -21,10 +20,6 @@ const setCorsHeaders = (res) => {
     'Access-Control-Allow-Headers',
     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
   );
-};
-
-module.exports = async function handler(req, res) {
-  setCorsHeaders(res);
 
   if (req.method === 'OPTIONS') {
     res.status(200).end();
@@ -35,22 +30,15 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const {
-    NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-    VAPID_PRIVATE_KEY,
-    NEXT_PUBLIC_SUPABASE_URL,
-    SUPABASE_SERVICE_ROLE_KEY
-  } = process.env;
-
-  webpush.setVapidDetails(
-    'mailto:infos@jhd71.fr',
-    NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-    VAPID_PRIVATE_KEY
-  );
-
   try {
+    webpush.setVapidDetails(
+      'mailto:infos@jhd71.fr',
+      process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+      process.env.VAPID_PRIVATE_KEY
+    );
+
     const { message, fromUser, toUser } = req.body;
-    console.log('Received data:', { message, fromUser, toUser });
+    console.log('Données reçues:', { message, fromUser, toUser });
 
     const { data: subscriptions, error } = await supabase
       .from('push_subscriptions')
@@ -58,27 +46,19 @@ module.exports = async function handler(req, res) {
       .eq('pseudo', toUser)
       .eq('active', true);
 
-    if (error) throw new Error(`Database error: ${error.message}`);
+    if (error) throw error;
 
     if (!subscriptions || subscriptions.length === 0) {
       return res.status(404).json({ error: 'No subscription found' });
     }
 
-    const notifications = subscriptions.map(({ subscription, device_type }) => {
-      try {
-        return {
-          subscription: typeof subscription === 'string' ? JSON.parse(subscription) : subscription,
-          device_type
-        };
-      } catch (parseError) {
-        console.error('Subscription parsing error:', parseError);
-        return null;
-      }
-    }).filter(Boolean);
-
-    const results = await Promise.all(notifications.map(async ({ subscription }) => {
+    const notifications = subscriptions.map(async ({ subscription, device_type }) => {
+      const parsedSubscription = typeof subscription === 'string' 
+        ? JSON.parse(subscription) 
+        : subscription;
+      
       const notificationPayload = {
-        title: `New message from ${fromUser}`,
+        title: `Nouveau message de ${fromUser}`,
         body: message,
         icon: '/images/INFOS-192.png',
         badge: '/images/badge-72x72.png',
@@ -94,10 +74,13 @@ module.exports = async function handler(req, res) {
       };
 
       try {
-        await webpush.sendNotification(subscription, JSON.stringify(notificationPayload));
+        await webpush.sendNotification(
+          parsedSubscription,
+          JSON.stringify(notificationPayload)
+        );
         return true;
       } catch (error) {
-        console.error('Notification send error:', error);
+        console.error('Erreur envoi notification:', error);
         if (error.statusCode === 410) {
           await supabase
             .from('push_subscriptions')
@@ -106,8 +89,9 @@ module.exports = async function handler(req, res) {
         }
         return false;
       }
-    }));
+    });
 
+    const results = await Promise.all(notifications);
     const successful = results.filter(Boolean).length;
 
     res.status(200).json({
@@ -116,7 +100,7 @@ module.exports = async function handler(req, res) {
       total: subscriptions.length
     });
   } catch (error) {
-    console.error('Global error:', error);
-    res.status(500).json({ error: `Server error: ${error.message}` });
+    console.error('Erreur globale:', error);
+    res.status(500).json({ error: error.message });
   }
 };
