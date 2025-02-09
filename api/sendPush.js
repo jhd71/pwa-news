@@ -6,12 +6,63 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+async function cleanExpiredSubscriptions(supabase) {
+  try {
+    const { data: subscriptions } = await supabase
+      .from('push_subscriptions')
+      .select('*')
+      .eq('active', true);
+
+    for (const sub of subscriptions || []) {
+      try {
+        const parsedSubscription = typeof sub.subscription === 'string' 
+          ? JSON.parse(sub.subscription) 
+          : sub.subscription;
+
+        await webpush.sendNotification(
+          parsedSubscription,
+          JSON.stringify({ type: 'ping' })
+        );
+      } catch (error) {
+        if (error.statusCode === 410) {
+          console.log('Suppression souscription expirée pour:', sub.pseudo);
+          await supabase
+            .from('push_subscriptions')
+            .delete()
+            .match({ 
+              pseudo: sub.pseudo,
+              subscription: typeof sub.subscription === 'string' 
+                ? sub.subscription 
+                : JSON.stringify(sub.subscription)
+            });
+
+          await supabase
+            .from('push_notification_log')
+            .insert({
+              from_user: 'system',
+              to_user: sub.pseudo,
+              status: 'error',
+              error_message: 'Subscription expired and deleted',
+              subscription: sub.subscription
+            });
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Erreur nettoyage souscriptions:', error);
+  }
+}
+
 module.exports = async (req, res) => {
   try {
-    const { message, fromUser, toUser } = req.body;
+    // Nettoyer les souscriptions expirées
+    await cleanExpiredSubscriptions(supabase);
 
-    // Log initial de la tentative
-    const { data: logEntry, error: logError } = await supabase
+    const { message, fromUser, toUser } = req.body;
+    console.log('Données reçues:', { message, fromUser, toUser });
+
+    // Log initial
+    const { data: logEntry } = await supabase
       .from('push_notification_log')
       .insert({
         from_user: fromUser,
@@ -21,8 +72,6 @@ module.exports = async (req, res) => {
       })
       .select()
       .single();
-
-    if (logError) console.error('Erreur création log:', logError);
 
     webpush.setVapidDetails(
       'mailto:infos@jhd71.fr',
@@ -39,7 +88,6 @@ module.exports = async (req, res) => {
     if (supabaseError) throw supabaseError;
 
     if (!subscriptions || subscriptions.length === 0) {
-      // Log - Pas de souscription
       await supabase
         .from('push_notification_log')
         .update({
@@ -66,7 +114,6 @@ module.exports = async (req, res) => {
           })
         );
 
-        // Log du succès
         await supabase
           .from('push_notification_log')
           .insert({
@@ -83,16 +130,16 @@ module.exports = async (req, res) => {
         console.error('Erreur envoi notification:', error);
         
         if (error.statusCode === 410) {
-          // Supprimer la souscription expirée
           await supabase
             .from('push_subscriptions')
             .delete()
             .match({ 
               pseudo: toUser,
-              subscription: JSON.stringify(parsedSubscription)
+              subscription: typeof subscription === 'string' 
+                ? subscription 
+                : JSON.stringify(subscription)
             });
 
-          // Logger l'erreur
           await supabase
             .from('push_notification_log')
             .insert({
@@ -101,7 +148,7 @@ module.exports = async (req, res) => {
               message: message,
               status: 'error',
               error_message: 'Subscription expired',
-              subscription: parsedSubscription,
+              subscription: subscription,
               device_type
             });
         }
@@ -115,6 +162,15 @@ module.exports = async (req, res) => {
     }));
 
     const successful = notifications.filter(r => r.success).length;
+
+    // Mise à jour finale du log
+    await supabase
+      .from('push_notification_log')
+      .update({
+        status: successful > 0 ? 'success' : 'error',
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', logEntry.id);
 
     return res.status(200).json({
       success: true,
