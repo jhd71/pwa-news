@@ -7,8 +7,6 @@ const supabase = createClient(
 );
 
 module.exports = async (req, res) => {
-  console.log('API SendPush appelée - URL:', req.url);
-  
   try {
     const { message, fromUser, toUser } = req.body;
 
@@ -41,7 +39,7 @@ module.exports = async (req, res) => {
     if (supabaseError) throw supabaseError;
 
     if (!subscriptions || subscriptions.length === 0) {
-      // Mise à jour du log - Pas de souscription
+      // Log - Pas de souscription
       await supabase
         .from('push_notification_log')
         .update({
@@ -54,78 +52,69 @@ module.exports = async (req, res) => {
       return res.status(404).json({ error: 'No subscription found' });
     }
 
-    const results = await Promise.all(subscriptions.map(async ({ subscription, device_type }) => {
+    const notifications = await Promise.all(subscriptions.map(async ({ subscription, device_type }) => {
       const parsedSubscription = typeof subscription === 'string' 
         ? JSON.parse(subscription) 
         : subscription;
       
       try {
-    await webpush.sendNotification(
-        parsedSubscription,
-        JSON.stringify({
+        await webpush.sendNotification(
+          parsedSubscription,
+          JSON.stringify({
             title: `Nouveau message de ${fromUser}`,
             body: message
-        })
-    );
+          })
+        );
 
-    // Log du succès dans push_notification_log
-    await supabase
-        .from('push_notification_log')
-        .insert({
+        // Log du succès
+        await supabase
+          .from('push_notification_log')
+          .insert({
             from_user: fromUser,
             to_user: toUser,
             message: message,
             status: 'success',
             subscription: parsedSubscription,
             device_type
-        });
+          });
 
-    return { success: true, device_type };
-} catch (error) {
-    console.error('Erreur envoi notification:', error);
-    
-    if (error.statusCode === 410) {
-        // Supprimer la souscription expirée (au lieu de la désactiver)
-        await supabase
+        return { success: true, device_type };
+      } catch (error) {
+        console.error('Erreur envoi notification:', error);
+        
+        if (error.statusCode === 410) {
+          // Supprimer la souscription expirée
+          await supabase
             .from('push_subscriptions')
             .delete()
             .match({ 
-                pseudo: toUser,
-                subscription: JSON.stringify(parsedSubscription)
+              pseudo: toUser,
+              subscription: JSON.stringify(parsedSubscription)
             });
 
-        // Logger l'erreur dans push_notification_log
-        await supabase
+          // Logger l'erreur
+          await supabase
             .from('push_notification_log')
             .insert({
-                from_user: fromUser,
-                to_user: toUser,
-                message: message,
-                status: 'error',
-                error_message: 'Subscription expired',
-                subscription: parsedSubscription,
-                device_type
+              from_user: fromUser,
+              to_user: toUser,
+              message: message,
+              status: 'error',
+              error_message: 'Subscription expired',
+              subscription: parsedSubscription,
+              device_type
             });
-    }
-    
-    return { 
-        success: false, 
-        error: error.message,
-        device_type 
-    };
-}
+        }
+        
+        return { 
+          success: false, 
+          error: error.message,
+          device_type 
+        };
+      }
+    }));
 
-    // Mise à jour finale du log
-    await supabase
-      .from('push_notification_log')
-      .update({
-        status: successful > 0 ? 'success' : 'error',
-        error_message: successful === 0 ? 'All notifications failed' : null,
-        subscription: subscriptions[0].subscription,
-        device_type: subscriptions[0].device_type,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', logEntry.id);
+    const successful = notifications.filter(r => r.success).length;
 
     return res.status(200).json({
       success: true,
@@ -135,19 +124,6 @@ module.exports = async (req, res) => {
 
   } catch (error) {
     console.error('Erreur générale:', error);
-    
-    // Log de l'erreur générale si on a un logEntry
-    if (logEntry) {
-      await supabase
-        .from('push_notification_log')
-        .update({
-          status: 'error',
-          error_message: error.message,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', logEntry.id);
-    }
-
     return res.status(500).json({ error: error.message });
   }
 };
