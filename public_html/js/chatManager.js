@@ -578,7 +578,49 @@ class ChatManager {
         throw error;
     }
 }
+async renewPushSubscription() {
+    try {
+        const registration = await navigator.serviceWorker.ready;
+        
+        // Supprimer l'ancienne souscription
+        const oldSubscription = await registration.pushManager.getSubscription();
+        if (oldSubscription) {
+            await oldSubscription.unsubscribe();
+            
+            // Supprimer l'ancienne souscription de Supabase
+            await this.supabase
+                .from('push_subscriptions')
+                .delete()
+                .match({ 
+                    pseudo: this.pseudo,
+                    subscription: JSON.stringify(oldSubscription)
+                });
+        }
 
+        // Créer une nouvelle souscription
+        const newSubscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: this.urlBase64ToUint8Array('VOTRE_CLE_VAPID_PUBLIQUE')
+        });
+
+        // Sauvegarder la nouvelle souscription
+        await this.supabase
+            .from('push_subscriptions')
+            .insert({
+                pseudo: this.pseudo,
+                subscription: JSON.stringify(newSubscription),
+                device_type: this.getDeviceType(),
+                active: true,
+                last_updated: new Date().toISOString()
+            });
+
+        console.log('Souscription push renouvelée avec succès');
+        return true;
+    } catch (error) {
+        console.error('Erreur renouvellement souscription:', error);
+        return false;
+    }
+}
 // Méthode utilitaire pour détecter le type d'appareil
 getDeviceType() {
     const ua = navigator.userAgent;
