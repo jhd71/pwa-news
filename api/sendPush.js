@@ -149,9 +149,7 @@ module.exports = async (req, res) => {
       .from('push_subscriptions')
       .select('subscription, device_type')
       .eq('pseudo', toUser)
-.eq('active', true)
-.not('subscription', 'is', null);
-
+      .eq('active', true);
 
     if (supabaseError) {
       console.error('Erreur Supabase:', supabaseError);
