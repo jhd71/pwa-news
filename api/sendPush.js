@@ -5,27 +5,57 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
-
+// Ajouter au début du fichier
+async function sendNotificationWithRetry(subscription, payload, maxRetries = 2) {
+  for (let i = 0; i <= maxRetries; i++) {
+    try {
+      await webpush.sendNotification(subscription, JSON.stringify(payload));
+      return true;
+    } catch (error) {
+      if (error.statusCode === 410 || i === maxRetries) {
+        throw error;
+      }
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Attendre 1s entre les tentatives
+    }
+  }
+  return false;
+}
 async function cleanExpiredSubscriptions(supabase) {
   try {
-    const { data: subscriptions } = await supabase
+    console.log('Début du nettoyage des souscriptions...');
+    
+    // Récupérer toutes les souscriptions actives
+    const { data: subscriptions, error } = await supabase
       .from('push_subscriptions')
       .select('*')
       .eq('active', true);
 
+    if (error) {
+      console.error('Erreur récupération souscriptions:', error);
+      return;
+    }
+
+    console.log(`${subscriptions?.length || 0} souscriptions actives trouvées`);
+
     for (const sub of subscriptions || []) {
       try {
+        // Tenter un ping sur chaque souscription
         const parsedSubscription = typeof sub.subscription === 'string' 
           ? JSON.parse(sub.subscription) 
           : sub.subscription;
 
+        // Si le ping échoue, une erreur sera levée
         await webpush.sendNotification(
           parsedSubscription,
-          JSON.stringify({ type: 'ping' })
+          JSON.stringify({ type: 'ping', timestamp: Date.now() })
         );
+        
+        console.log(`Souscription valide pour ${sub.pseudo}`);
       } catch (error) {
         if (error.statusCode === 410) {
-          console.log('Suppression souscription expirée pour:', sub.pseudo);
+          console.log(`Suppression de la souscription expirée pour ${sub.pseudo}`);
+          
+          // Supprimer la souscription
           await supabase
             .from('push_subscriptions')
             .delete()
@@ -36,20 +66,25 @@ async function cleanExpiredSubscriptions(supabase) {
                 : JSON.stringify(sub.subscription)
             });
 
+          // Logger la suppression
           await supabase
             .from('push_notification_log')
             .insert({
               from_user: 'system',
               to_user: sub.pseudo,
               status: 'error',
-              error_message: 'Subscription expired and deleted',
-              subscription: sub.subscription
+              error_message: `Subscription expired and deleted: ${error.body}`,
+              subscription: sub.subscription,
+              device_type: sub.device_type || 'unknown'
             });
+        } else {
+          console.error(`Erreur test souscription pour ${sub.pseudo}:`, error);
         }
       }
     }
+    console.log('Nettoyage des souscriptions terminé');
   } catch (error) {
-    console.error('Erreur nettoyage souscriptions:', error);
+    console.error('Erreur globale nettoyage souscriptions:', error);
   }
 }
 
@@ -106,27 +141,29 @@ module.exports = async (req, res) => {
         : subscription;
       
       try {
-        await webpush.sendNotification(
-          parsedSubscription,
-          JSON.stringify({
-            title: `Nouveau message de ${fromUser}`,
-            body: message
-          })
-        );
+  const success = await sendNotificationWithRetry(
+    parsedSubscription,
+    {
+      title: `Nouveau message de ${fromUser}`,
+      body: message
+    }
+  );
 
-        await supabase
-          .from('push_notification_log')
-          .insert({
-            from_user: fromUser,
-            to_user: toUser,
-            message: message,
-            status: 'success',
-            subscription: parsedSubscription,
-            device_type
-          });
+  if (success) {
+    await supabase
+      .from('push_notification_log')
+      .insert({
+        from_user: fromUser,
+        to_user: toUser,
+        message: message,
+        status: 'success',
+        subscription: parsedSubscription,
+        device_type
+      });
+  }
 
-        return { success: true, device_type };
-      } catch (error) {
+  return { success, device_type };
+} catch (error) {
         console.error('Erreur envoi notification:', error);
         
         if (error.statusCode === 410) {
