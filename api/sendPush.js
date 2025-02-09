@@ -60,40 +60,60 @@ module.exports = async (req, res) => {
         : subscription;
       
       try {
-        await webpush.sendNotification(
-          parsedSubscription,
-          JSON.stringify({
+    await webpush.sendNotification(
+        parsedSubscription,
+        JSON.stringify({
             title: `Nouveau message de ${fromUser}`,
             body: message
-          })
-        );
+        })
+    );
 
-        // Log du succès
-        return { success: true, device_type };
-      } catch (error) {
-        // Log de l'erreur
-        console.error('Erreur envoi notification:', error);
-        
-        if (error.statusCode === 410) {
-          // Désactiver la souscription expirée
-          await supabase
+    // Log du succès dans push_notification_log
+    await supabase
+        .from('push_notification_log')
+        .insert({
+            from_user: fromUser,
+            to_user: toUser,
+            message: message,
+            status: 'success',
+            subscription: parsedSubscription,
+            device_type
+        });
+
+    return { success: true, device_type };
+} catch (error) {
+    console.error('Erreur envoi notification:', error);
+    
+    if (error.statusCode === 410) {
+        // Supprimer la souscription expirée (au lieu de la désactiver)
+        await supabase
             .from('push_subscriptions')
-            .update({ active: false })
+            .delete()
             .match({ 
-              pseudo: toUser,
-              subscription: JSON.stringify(parsedSubscription)
+                pseudo: toUser,
+                subscription: JSON.stringify(parsedSubscription)
             });
-        }
-        
-        return { 
-          success: false, 
-          error: error.message,
-          device_type 
-        };
-      }
-    }));
 
-    const successful = results.filter(r => r.success).length;
+        // Logger l'erreur dans push_notification_log
+        await supabase
+            .from('push_notification_log')
+            .insert({
+                from_user: fromUser,
+                to_user: toUser,
+                message: message,
+                status: 'error',
+                error_message: 'Subscription expired',
+                subscription: parsedSubscription,
+                device_type
+            });
+    }
+    
+    return { 
+        success: false, 
+        error: error.message,
+        device_type 
+    };
+}
 
     // Mise à jour finale du log
     await supabase
