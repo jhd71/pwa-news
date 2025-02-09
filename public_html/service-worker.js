@@ -211,26 +211,25 @@ self.addEventListener('notificationclose', function(event) {
 });
 
 // Gestion du changement de souscription
-self.addEventListener('pushsubscriptionchange', function(event) {
+self.addEventListener('pushsubscriptionchange', async function(event) {
     console.log('[Service Worker] PushSubscriptionChange');
-    event.waitUntil(
-        self.registration.pushManager.subscribe({
+    try {
+        const newSubscription = await self.registration.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: 'BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck'
-        })
-        .then(function(newSubscription) {
-            console.log('[Service Worker] Nouvelle souscription:', newSubscription);
-            return fetch('/api/updateSubscription', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    subscription: newSubscription
-                })
+            applicationServerKey: 'VOTRE_CLE_VAPID_PUBLIQUE'
+        });
+
+        // Informer l'application du changement
+        const clients = await self.clients.matchAll();
+        clients.forEach(client => {
+            client.postMessage({
+                type: 'SUBSCRIPTION_CHANGED',
+                subscription: newSubscription
             });
-        })
-    );
+        });
+    } catch (error) {
+        console.error('[Service Worker] Erreur renouvellement souscription:', error);
+    }
 });
 
 // Gestionnaires d'erreurs globaux
