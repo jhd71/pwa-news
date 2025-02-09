@@ -23,66 +23,80 @@ class ChatManager {
     }
 
     async init() {
-        try {
-            await this.loadBannedWords();
-            
-            this.container = document.createElement('div');
-            this.container.className = 'chat-widget';
+    try {
+        await this.loadBannedWords();
+        
+        this.container = document.createElement('div');
+        this.container.className = 'chat-widget';
 
-            if (this.pseudo) {
-                this.container.innerHTML = this.getChatHTML();
-                console.log('HTML du chat pour utilisateur connecté:', this.container.innerHTML);
-            } else {
-                this.container.innerHTML = this.getPseudoHTML();
-                console.log('HTML du chat pour connexion:', this.container.innerHTML);
-            }
+        if (this.pseudo) {
+            this.container.innerHTML = this.getChatHTML();
+            console.log('HTML du chat pour utilisateur connecté:', this.container.innerHTML);
+        } else {
+            this.container.innerHTML = this.getPseudoHTML();
+            console.log('HTML du chat pour connexion:', this.container.innerHTML);
+        }
 
-            const chatContainer = this.container.querySelector('.chat-container');
-            console.log('État initial:', {
-                isOpen: this.isOpen,
-                chatContainerExists: !!chatContainer,
-                materialIconsVisible: !!this.container.querySelector('.material-icons')
-            });
-            
-            if (this.isOpen && chatContainer) {
-                chatContainer.classList.add('open');
-            }
-            
-            document.body.appendChild(this.container);
+        const chatContainer = this.container.querySelector('.chat-container');
+        console.log('État initial:', {
+            isOpen: this.isOpen,
+            chatContainerExists: !!chatContainer,
+            materialIconsVisible: !!this.container.querySelector('.material-icons')
+        });
+        
+        if (this.isOpen && chatContainer) {
+            chatContainer.classList.add('open');
+        }
+        
+        document.body.appendChild(this.container);
+        await this.loadSounds();
 
-            await this.loadSounds();
+        // Gestion des notifications push
+        if ('serviceWorker' in navigator && 'PushManager' in window) {
+            try {
+                const registration = await navigator.serviceWorker.ready;
+                const subscription = await registration.pushManager.getSubscription();
+                
+                if (subscription) {
+                    this.subscription = subscription;
+                    this.notificationsEnabled = true;
+                    console.log('Notifications push déjà activées');
 
-            if ('serviceWorker' in navigator && 'PushManager' in window) {
-                try {
-                    const registration = await navigator.serviceWorker.ready;
-                    const subscription = await registration.pushManager.getSubscription();
-                    if (subscription) {
-                        this.subscription = subscription;
-                        this.notificationsEnabled = true;
-                        console.log('Notifications push déjà activées');
-                    }
-                } catch (error) {
-                    console.error('Erreur initialisation push notifications:', error);
+                    // Vérification périodique de la souscription
+                    setInterval(async () => {
+                        try {
+                            const currentSubscription = await registration.pushManager.getSubscription();
+                            if (!currentSubscription) {
+                                console.log('Renouvellement de la souscription nécessaire');
+                                await this.renewPushSubscription();
+                            }
+                        } catch (error) {
+                            console.error('Erreur vérification souscription:', error);
+                        }
+                    }, 3600000); // Vérification toutes les heures
                 }
-            }
-
-            this.setupListeners();
-            this.setupRealtimeSubscription();
-
-            if (this.pseudo) {
-                await this.loadExistingMessages();
-                this.updateUnreadBadgeAndBubble();
-            }
-
-            this.initialized = true;
-            console.log("Chat initialisé avec succès");
-        } catch (error) {
-            console.error('Erreur initialisation:', error);
-            if (!document.querySelector('.chat-widget')) {
-                document.body.appendChild(this.container);
+            } catch (error) {
+                console.error('Erreur initialisation push notifications:', error);
             }
         }
+
+        this.setupListeners();
+        this.setupRealtimeSubscription();
+
+        if (this.pseudo) {
+            await this.loadExistingMessages();
+            this.updateUnreadBadgeAndBubble();
+        }
+
+        this.initialized = true;
+        console.log("Chat initialisé avec succès");
+    } catch (error) {
+        console.error('Erreur initialisation:', error);
+        if (!document.querySelector('.chat-widget')) {
+            document.body.appendChild(this.container);
+        }
     }
+}
 
     async loadBannedWords() {
         try {
@@ -523,40 +537,36 @@ class ChatManager {
 
     async setupPushNotifications() {
     try {
-        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-            throw new Error('Les notifications push ne sont pas supportées');
-        }
-
-        const permission = await Notification.requestPermission();
-        if (permission !== 'granted') {
-            throw new Error('Permission refusée pour les notifications');
-        }
-
-        // S'assurer que le service worker est enregistré et actif
         const registration = await navigator.serviceWorker.ready;
-        console.log('Service Worker prêt pour les notifications');
-
-        let subscription = await registration.pushManager.getSubscription();
         
-        if (!subscription) {
-            const vapidPublicKey = 'BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck';
-            subscription = await registration.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: this.urlBase64ToUint8Array(vapidPublicKey)
-            });
-            
-            console.log('Nouvelle souscription créée:', subscription);
+        // Vérifier les souscriptions existantes
+        const oldSubscription = await registration.pushManager.getSubscription();
+        if (oldSubscription) {
+            await oldSubscription.unsubscribe();
+            await this.supabase
+                .from('push_subscriptions')
+                .delete()
+                .match({ 
+                    pseudo: this.pseudo,
+                    subscription: JSON.stringify(oldSubscription)
+                });
         }
 
-        // Stocker la souscription dans Supabase avec plus d'informations
+        // Créer une nouvelle souscription
+        const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: this.urlBase64ToUint8Array('BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck')
+        });
+
+        // Enregistrer la nouvelle souscription
         const { error } = await this.supabase
             .from('push_subscriptions')
-            .upsert({
+            .insert({
                 pseudo: this.pseudo,
                 subscription: JSON.stringify(subscription),
                 device_type: this.getDeviceType(),
-                last_updated: new Date().toISOString(),
-                active: true
+                active: true,
+                last_updated: new Date().toISOString()
             });
 
         if (error) throw error;
@@ -564,17 +574,9 @@ class ChatManager {
         this.notificationsEnabled = true;
         localStorage.setItem('notificationsEnabled', 'true');
         this.updateNotificationButton();
-        this.showNotification('Notifications activées', 'success');
-        this.playSound('success');
-        
         return true;
     } catch (error) {
         console.error('Erreur activation notifications:', error);
-        this.showNotification(
-            'Erreur : ' + (error.message || 'Activation impossible'), 
-            'error'
-        );
-        this.playSound('error');
         throw error;
     }
 }
