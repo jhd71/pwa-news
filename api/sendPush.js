@@ -37,7 +37,6 @@ async function cleanExpiredSubscriptions(supabase) {
   try {
     console.log('Début du nettoyage des souscriptions expirées...');
 
-    // Récupérer toutes les souscriptions actives
     const { data: subscriptions, error } = await supabase
       .from('push_subscriptions')
       .select('*')
@@ -50,12 +49,9 @@ async function cleanExpiredSubscriptions(supabase) {
 
     console.log(`${subscriptions?.length || 0} souscriptions actives trouvées`);
 
-    // Tester chaque subscription pour voir si elle est encore valide
     for (const sub of subscriptions || []) {
       try {
-        const parsedSubscription = typeof sub.subscription === 'string'
-          ? JSON.parse(sub.subscription)
-          : sub.subscription;
+        const parsedSubscription = sub.subscription; // Pas besoin de re-parser, c'est déjà un objet
 
         // Envoyer une notification de "ping" pour tester la validité
         await webpush.sendNotification(
@@ -65,9 +61,12 @@ async function cleanExpiredSubscriptions(supabase) {
 
         console.log(`Souscription valide pour ${sub.pseudo}`);
       } catch (error) {
-        // Si la subscription est invalide (410), la supprimer
         if (error.statusCode === 410) {
           console.warn(`Suppression de la souscription expirée pour ${sub.pseudo}:`, error);
+
+          // Log des objets subscription pour vérification
+          console.log('Subscription en base de données:', sub.subscription);
+          console.log('Subscription causant l\'erreur:', error.endpoint);
 
           // Supprimer la subscription de la base de données
           const { error: deleteError } = await supabase
@@ -75,13 +74,11 @@ async function cleanExpiredSubscriptions(supabase) {
             .delete()
             .match({
               pseudo: sub.pseudo,
-              //Important: S'assurer que la subscription est exactement la même
-              subscription: sub.subscription //On compare directement les strings
+              subscription: sub.subscription, // Utiliser l'objet directement
             });
 
           if (deleteError) {
             console.error('Erreur suppression subscription:', deleteError);
-            //Continuer, même si la suppression a échoué
           }
 
           // Log de la suppression
@@ -92,7 +89,7 @@ async function cleanExpiredSubscriptions(supabase) {
               to_user: sub.pseudo,
               status: 'error',
               error_message: `Subscription expired and deleted: ${error.body}`,
-              subscription: sub.subscription,
+              subscription: JSON.stringify(sub.subscription), // Sérialiser pour le log
               device_type: sub.device_type || 'unknown'
             });
 
@@ -176,9 +173,7 @@ module.exports = async (req, res) => {
     const notifications = await Promise.all(
       subscriptions.map(async ({ subscription, device_type }) => {
         try {
-          const parsedSubscription = typeof subscription === 'string'
-            ? JSON.parse(subscription)
-            : subscription;
+          const parsedSubscription = subscription;
 
           // Tentative d'envoi avec retry
           const success = await sendNotificationWithRetry(
@@ -217,7 +212,7 @@ module.exports = async (req, res) => {
               .delete()
               .match({
                  pseudo: toUser,
-                 subscription: subscription //On compare directement les strings
+                 subscription: subscription,
               });
 
             if (deleteError) {
