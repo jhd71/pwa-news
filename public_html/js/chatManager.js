@@ -557,7 +557,18 @@ class ChatManager {
             userVisibleOnly: true,
             applicationServerKey: this.urlBase64ToUint8Array('BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck')
         });
+// *** AJOUTEZ CE LOG ICI : ***
+      console.log('Subscription à enregistrer:', subscription);
 
+      const { error } = await this.supabase
+        .from('push_subscriptions')
+        .upsert({
+          pseudo: this.pseudo,
+          subscription: JSON.stringify(subscription), // <-- Vérifiez cette ligne
+          device_type: this.getDeviceType(),
+          last_updated: new Date().toISOString(),
+          active: true
+        });
         // Enregistrer la nouvelle souscription
         const { error } = await this.supabase
             .from('push_subscriptions')
