@@ -56,9 +56,27 @@ self.addEventListener('activate', event => {
 });
 
 // Message handling
-self.addEventListener('message', event => {
+self.addEventListener('message', async (event) => {
     if (event.data && event.data.type === 'SKIP_WAITING') {
         self.skipWaiting();
+    }
+    // Ajout de la gestion de la visibilité
+    if (event.data && event.data.type === 'CHECK_VISIBILITY') {
+        const clientList = await clients.matchAll({
+            type: 'window',
+            includeUncontrolled: true
+        });
+        
+        const isVisible = clientList.some(
+            client => client.visibilityState === 'visible'
+        );
+        
+        if (event.ports && event.ports[0]) {
+            event.ports[0].postMessage({
+                type: 'VISIBILITY_RESULT',
+                isVisible
+            });
+        }
     }
 });
 
@@ -100,11 +118,10 @@ self.addEventListener('fetch', (event) => {
     );
 });
 
-// Modifiez l'événement push ainsi
+// Gestion des notifications push
 self.addEventListener('push', function(event) {
     console.log('[Service Worker] Push Reçu', event.data?.text());
     
-    // S'assurer que le service worker reste actif jusqu'à ce que la notification soit envoyée
     event.waitUntil((async () => {
         try {
             let data;
@@ -126,7 +143,6 @@ self.addEventListener('push', function(event) {
                 client.visibilityState === 'visible'
             );
 
-            // Si l'application n'est pas visible ou est fermée, montrer une notification
             if (!windowClient) {
                 const options = {
                     body: data.body || 'Nouveau message',
@@ -152,7 +168,6 @@ self.addEventListener('push', function(event) {
             }
         } catch (error) {
             console.error('[Service Worker] Erreur dans push:', error);
-            // Notification de secours
             await self.registration.showNotification('INFOS Chat', {
                 body: 'Nouveau message reçu',
                 icon: '/images/INFOS-192.png',
@@ -169,7 +184,6 @@ self.addEventListener('notificationclick', function(event) {
     
     event.notification.close();
     
-    // URL à ouvrir avec le paramètre d'action
     const urlToOpen = new URL('/?action=openchat', self.location.origin).href;
     
     const promiseChain = clients.matchAll({
@@ -177,13 +191,11 @@ self.addEventListener('notificationclick', function(event) {
         includeUncontrolled: true
     })
     .then((windowClients) => {
-        // Chercher si une fenêtre de l'app est déjà ouverte
         for (const client of windowClients) {
             if (client.url === urlToOpen) {
                 return client.focus();
             }
         }
-        // Si aucune fenêtre n'est ouverte, en ouvrir une nouvelle
         return clients.openWindow(urlToOpen);
     });
 
@@ -208,8 +220,6 @@ self.addEventListener('pushsubscriptionchange', function(event) {
         })
         .then(function(newSubscription) {
             console.log('[Service Worker] Nouvelle souscription:', newSubscription);
-            
-            // Envoyer la nouvelle souscription au serveur
             return fetch('/api/updateSubscription', {
                 method: 'POST',
                 headers: {
