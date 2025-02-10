@@ -163,7 +163,61 @@
             <span>Aide</span>
         </button>
     </nav>
+<!-- Modal des paramètres -->
+<div id="settingsModal" class="modal hidden">
+    <div class="modal-content settings-content">
+        <div class="modal-header">
+            <h2>Paramètres</h2>
+            <button class="close-btn">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        
+        <!-- Taille du texte -->
+        <div class="settings-section">
+            <h3>Taille du texte</h3>
+            <div class="text-size-options">
+                <button class="size-option" data-size="small">
+                    <span class="material-icons">text_decrease</span>
+                    <span>Petit</span>
+                </button>
+                <button class="size-option" data-size="normal">
+                    <span class="material-icons">text_fields</span>
+                    <span>Normal</span>
+                </button>
+                <button class="size-option" data-size="large">
+                    <span class="material-icons">text_increase</span>
+                    <span>Grand</span>
+                </button>
+            </div>
+        </div>
 
+        <!-- Thème -->
+        <div class="settings-section">
+            <h3>Thème</h3>
+            <div class="theme-options">
+                <button class="theme-option" data-theme="light">
+                    <span class="material-icons">light_mode</span>
+                    <span>Clair</span>
+                </button>
+                <button class="theme-option" data-theme="dark">
+                    <span class="material-icons">dark_mode</span>
+                    <span>Sombre</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- À propos -->
+        <div class="settings-section">
+            <h3>À propos</h3>
+            <div class="about-info">
+                <p>Version 1.2</p>
+                <img src="qr-code.png" alt="QR Code" class="qr-code">
+                <p>© 2025 Actu & Média</p>
+            </div>
+        </div>
+    </div>
+</div>
     <!-- Modal d'aide -->
     <div id="helpModal" class="modal hidden">
         <div class="modal-content">
