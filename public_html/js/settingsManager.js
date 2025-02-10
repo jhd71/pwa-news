@@ -27,9 +27,14 @@ export class SettingsManager {
                 desktop: true
             }
         };
-
+        
         this.settings = this.loadSettings();
         this.initializeSettings();
+
+        // Ajouter ces lignes ici
+        document.getElementById('settingsButton').addEventListener('click', () => {
+            this.showSettings();
+        });
     }
 
     loadSettings() {
