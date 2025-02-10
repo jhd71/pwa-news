@@ -197,7 +197,10 @@ module.exports = async (req, res) => {
 
           // Si la subscription est expirée, la supprimer
           if (error.statusCode === 410) {
-            console.warn('Subscription expirée, suppression:', subscription);
+            console.log('🔄 Planification renouvellement pour:', {
+    utilisateur: toUser,
+    appareil: device_type || 'inconnu'
+  });
             const { error: deleteError } = await supabase
               .from('push_subscriptions')
               .delete()
@@ -229,11 +232,11 @@ module.exports = async (req, res) => {
     const successful = notifications.filter(r => r.success).length;
     const errors = notifications.filter(r => !r.success);
 
-    console.log('Résultats des notifications:', {
-      success: successful,
-      errors: errors.map(e => e.error),
-      total: subscriptions.length
-    });
+    console.log('📊 Bilan des notifications:', {
+  '✅ Envoyées': successful,
+  '🔄 À renouveler': errors.length,
+  '📱 Total appareils': subscriptions.length
+});
 
     //Répondre avec le statut des envois
     return res.status(200).json({
