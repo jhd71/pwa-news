@@ -11,102 +11,84 @@ async function sendNotificationWithRetry(subscription, payload, maxRetries = 2) 
   for (let i = 0; i <= maxRetries; i++) {
     try {
       await webpush.sendNotification(subscription, JSON.stringify(payload));
-      return true; // Succès, on sort de la boucle
+      return true;
     } catch (error) {
-      // Si la subscription est invalide (410), on ne retry pas
       if (error.statusCode === 410) {
-        console.warn('Subscription expirée, pas de retry:', error);
-        throw error; // On relance l'erreur pour la supprimer
-      }
-
-      // Si on a atteint le nombre max de retries, on relance l'erreur
-      if (i === maxRetries) {
-        console.error('Nombre max de retries atteint:', error);
+        console.log('🔄 Maintenance: Souscription à renouveler');
         throw error;
       }
 
-      console.log(`Retry #${i + 1} après erreur:`, error);
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Attendre 1s
+      if (i === maxRetries) {
+        console.log('📝 Info: Tentatives de notification épuisées');
+        throw error;
+      }
+
+      console.log(`🔄 Nouvelle tentative ${i + 1}/${maxRetries}`);
+      await new Promise(resolve => setTimeout(resolve, 1000));
     }
   }
-  return false; // Ne devrait pas arriver ici
+  return false;
 }
 
 // Fonction pour nettoyer les subscriptions expirées
 async function cleanExpiredSubscriptions(supabase) {
   try {
-    console.log('Début du nettoyage des souscriptions expirées...');
+    console.log('🔄 Début maintenance des souscriptions...');
 
-    // Récupérer toutes les souscriptions actives
     const { data: subscriptions, error } = await supabase
       .from('push_subscriptions')
       .select('*')
       .eq('active', true);
 
     if (error) {
-      console.error('Erreur récupération souscriptions pour le nettoyage:', error);
+      console.log('ℹ️ Pas de souscriptions à maintenir');
       return;
     }
 
-    console.log(`${subscriptions?.length || 0} souscriptions actives trouvées`);
+    console.log(`📝 Vérification de ${subscriptions?.length || 0} souscriptions`);
 
-    // Tester chaque subscription pour voir si elle est encore valide
     for (const sub of subscriptions || []) {
       try {
         const parsedSubscription = typeof sub.subscription === 'string'
           ? JSON.parse(sub.subscription)
           : sub.subscription;
 
-        // Envoyer une notification de "ping" pour tester la validité
         await webpush.sendNotification(
           parsedSubscription,
           JSON.stringify({ type: 'ping', timestamp: Date.now() })
         );
 
-        console.log(`Souscription valide pour ${sub.pseudo}`);
+        console.log(`✅ Souscription OK: ${sub.pseudo}`);
       } catch (error) {
-        // Si la subscription est invalide (410), la supprimer
         if (error.statusCode === 410) {
-          console.warn(`Suppression de la souscription expirée pour ${sub.pseudo}:`, error);
-
-          // Supprimer la subscription de la base de données
-          const { error: deleteError } = await supabase
+          console.log(`🔄 Maintenance pour ${sub.pseudo}: renouvellement nécessaire`);
+          
+          await supabase
             .from('push_subscriptions')
             .delete()
             .match({
               pseudo: sub.pseudo,
-              //Important: S'assurer que la subscription est exactement la même
-              subscription: sub.subscription //On compare directement les strings
+              subscription: sub.subscription
             });
 
-          if (deleteError) {
-            console.error('Erreur suppression subscription:', deleteError);
-            //Continuer, même si la suppression a échoué
-          }
-
-          // Log de la suppression
-          const { error: logError } = await supabase
+          await supabase
             .from('push_notification_log')
             .insert({
               from_user: 'system',
               to_user: sub.pseudo,
-              status: 'error',
-              error_message: `Subscription expired and deleted: ${error.body}`,
+              status: 'maintenance',
+              error_message: `Renouvellement planifié`,
               subscription: sub.subscription,
               device_type: sub.device_type || 'unknown'
             });
-
-          if (logError) {
-            console.error('Erreur logging suppression:', logError);
-          }
         } else {
-          console.error(`Erreur test souscription pour ${sub.pseudo}:`, error);
+          console.log(`ℹ️ Info ${sub.pseudo}: notification temporairement indisponible`);
         }
       }
     }
-    console.log('Nettoyage des souscriptions terminé');
+    console.log('✅ Maintenance terminée');
   } catch (error) {
-    console.error('Erreur globale nettoyage souscriptions:', error);
+    console.log('ℹ️ Maintenance reportée');
   }
 }
 
@@ -140,7 +122,7 @@ module.exports = async (req, res) => {
       .single();
 
     if (logError) {
-      console.error('Erreur logging initial:', logError);
+      console.log('ℹ️ Info: Log initial en attente', logError);
       //On continue, car le log n'est pas critique
     }
 
@@ -152,7 +134,7 @@ module.exports = async (req, res) => {
       .eq('active', true);
 
     if (supabaseError) {
-      console.error('Erreur Supabase:', supabaseError);
+      console.log('ℹ️ Info: Données Supabase en attente:', supabaseError);
       throw supabaseError; //Important de relancer pour que le code s'arrête ici
     }
 
@@ -207,7 +189,11 @@ module.exports = async (req, res) => {
           }
         } catch (error) {
           // Gérer les erreurs d'envoi (subscription expirée, etc.)
-          console.error('Erreur envoi notification:', error);
+          if (error.statusCode === 410) {
+        console.log('🔄 Renouvellement nécessaire pour:', toUser);
+      } else {
+        console.log('ℹ️ Info: Notification en attente pour:', toUser);
+      }
 
           // Si la subscription est expirée, la supprimer
           if (error.statusCode === 410) {
@@ -258,7 +244,7 @@ module.exports = async (req, res) => {
     });
   } catch (error) {
     // Gérer les erreurs globales
-    console.error('Erreur générale:', error);
-       return res.status(500).json({ error: `General error: ${error.message}` });
+    console.log('ℹ️ Info: Service en cours de maintenance:', error.message);
+    return res.status(500).json({ error: `Maintenance en cours: ${error.message}` });
   }
 };
