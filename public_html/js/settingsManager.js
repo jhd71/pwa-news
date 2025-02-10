@@ -108,127 +108,114 @@ export class SettingsManager {
     }
 
     createSettingsModalContent() {
-        return `
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>Paramètres</h3>
-                    <button class="modal-close">×</button>
+    return `
+        <div class="modal-content settings-content">
+            <div class="modal-header">
+                <h2>Paramètres</h2>
+                <button class="close-btn">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+
+            <!-- Thème -->
+            <div class="settings-section">
+                <h3>Thème et apparence</h3>
+                <div class="theme-options">
+                    <button class="theme-option" data-theme="light">
+                        <span class="material-icons">light_mode</span>
+                        <span>Clair</span>
+                    </button>
+                    <button class="theme-option" data-theme="dark">
+                        <span class="material-icons">dark_mode</span>
+                        <span>Sombre</span>
+                    </button>
+                    <button class="theme-option" data-theme="system">
+                        <span class="material-icons">settings_suggest</span>
+                        <span>Système</span>
+                    </button>
                 </div>
-                <div class="settings-content">
-                    <section class="settings-section">
-                        <h4>Thème</h4>
-                        <div class="color-picker">
-                            <label>
-                                Couleur principale
-                                <input type="color" id="primaryColor" value="${this.settings.theme.colors.primary}">
-                            </label>
-                            <label>
-                                Dégradé début
-                                <input type="color" id="gradientStart" value="${this.settings.theme.colors.gradientStart}">
-                            </label>
-                            <label>
-                                Dégradé fin
-                                <input type="color" id="gradientEnd" value="${this.settings.theme.colors.gradientEnd}">
-                            </label>
-                        </div>
-                        <div class="theme-mode">
-                            <label>
-                                <input type="radio" name="themeMode" value="light" 
-                                    ${this.settings.theme.mode === 'light' ? 'checked' : ''}>
-                                Clair
-                            </label>
-                            <label>
-                                <input type="radio" name="themeMode" value="dark" 
-                                    ${this.settings.theme.mode === 'dark' ? 'checked' : ''}>
-                                Sombre
-                            </label>
-                            <label>
-                                <input type="radio" name="themeMode" value="system" 
-                                    ${!localStorage.getItem('theme') ? 'checked' : ''}>
-                                Système
-                            </label>
-                        </div>
-                    </section>
-
-                    <section class="settings-section">
-                        <h4>Affichage</h4>
-                        <label>
-                            <input type="checkbox" id="showFavorites" 
-                                ${this.settings.display.showFavorites ? 'checked' : ''}>
-                            Afficher les favoris
+                
+                <div class="color-options">
+                    <h4>Couleur principale</h4>
+                    <div class="color-pickers">
+                        <label class="color-option">
+                            <input type="color" id="primaryColor" value="${this.settings.theme.colors.primary}">
+                            <span>Principal</span>
                         </label>
-                        <label>
-                            <input type="checkbox" id="showRecent" 
-                                ${this.settings.display.showRecent ? 'checked' : ''}>
-                            Afficher les sites récents
+                        <label class="color-option">
+                            <input type="color" id="gradientStart" value="${this.settings.theme.colors.gradientStart}">
+                            <span>Dégradé début</span>
                         </label>
-                        <label>
-                            <input type="checkbox" id="compactMode" 
-                                ${this.settings.display.compactMode ? 'checked' : ''}>
-                            Mode compact
+                        <label class="color-option">
+                            <input type="color" id="gradientEnd" value="${this.settings.theme.colors.gradientEnd}">
+                            <span>Dégradé fin</span>
                         </label>
-                        <div class="font-size-select">
-                            <label>Taille du texte</label>
-                            <select id="fontSize">
-                                <option value="small" ${this.settings.theme.fontSize === 'small' ? 'selected' : ''}>
-                                    Petit
-                                </option>
-                                <option value="normal" ${this.settings.theme.fontSize === 'normal' ? 'selected' : ''}>
-                                    Normal
-                                </option>
-                                <option value="large" ${this.settings.theme.fontSize === 'large' ? 'selected' : ''}>
-                                    Grand
-                                </option>
-                            </select>
-                        </div>
-                    </section>
-
-                    <section class="settings-section">
-                        <h4>Accessibilité</h4>
-                        <label>
-                            <input type="checkbox" id="reducedMotion" 
-                                ${this.settings.accessibility.reducedMotion ? 'checked' : ''}>
-                            Réduire les animations
-                        </label>
-                        <label>
-                            <input type="checkbox" id="highContrast" 
-                                ${this.settings.accessibility.highContrast ? 'checked' : ''}>
-                            Contraste élevé
-                        </label>
-                    </section>
-
-                    <section class="settings-section">
-                        <h4>Notifications</h4>
-                        <label>
-                            <input type="checkbox" id="notificationsEnabled" 
-                                ${this.settings.notifications.enabled ? 'checked' : ''}>
-                            Activer les notifications
-                        </label>
-                        <label>
-                            <input type="checkbox" id="notificationsSound" 
-                                ${this.settings.notifications.sound ? 'checked' : ''}>
-                            Son de notification
-                        </label>
-                        <label>
-                            <input type="checkbox" id="notificationsDesktop" 
-                                ${this.settings.notifications.desktop ? 'checked' : ''}>
-                            Notifications bureau
-                        </label>
-                    </section>
-
-                    <section class="settings-section">
-                        <h4>Données</h4>
-                        <div class="settings-buttons">
-                            <button id="exportSettings">Exporter les paramètres</button>
-                            <button id="importSettings">Importer les paramètres</button>
-                            <button id="resetSettings">Réinitialiser les paramètres</button>
-                        </div>
-                        <input type="file" id="importInput" accept=".json" hidden>
-                    </section>
+                    </div>
                 </div>
             </div>
-        `;
-    }
+
+            <!-- Taille du texte -->
+            <div class="settings-section">
+                <h3>Taille du texte</h3>
+                <div class="text-size-options">
+                    <button class="size-option" data-size="small">
+                        <span class="material-icons">text_decrease</span>
+                        <span>Petit</span>
+                    </button>
+                    <button class="size-option" data-size="normal">
+                        <span class="material-icons">text_fields</span>
+                        <span>Normal</span>
+                    </button>
+                    <button class="size-option" data-size="large">
+                        <span class="material-icons">text_increase</span>
+                        <span>Grand</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Accessibilité -->
+            <div class="settings-section">
+                <h3>Accessibilité</h3>
+                <div class="settings-options">
+                    <label class="setting-option">
+                        <input type="checkbox" id="reducedMotion" 
+                            ${this.settings.accessibility.reducedMotion ? 'checked' : ''}>
+                        <span>Réduire les animations</span>
+                    </label>
+                    <label class="setting-option">
+                        <input type="checkbox" id="highContrast" 
+                            ${this.settings.accessibility.highContrast ? 'checked' : ''}>
+                        <span>Contraste élevé</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- À propos -->
+            <div class="settings-section">
+                <h3>À propos</h3>
+                <div class="about-info">
+                    <p>Version 1.2</p>
+                    <img src="qr-code.png" alt="QR Code" class="qr-code">
+                    <p>© 2025 Actu & Média</p>
+                    <div class="settings-buttons">
+                        <button id="exportSettings" class="settings-btn">
+                            <span class="material-icons">file_download</span>
+                            Exporter
+                        </button>
+                        <button id="importSettings" class="settings-btn">
+                            <span class="material-icons">file_upload</span>
+                            Importer
+                        </button>
+                        <button id="resetSettings" class="settings-btn">
+                            <span class="material-icons">refresh</span>
+                            Réinitialiser
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
 
     setupSettingsEventListeners(modal) {
         // Fermeture de la modale
