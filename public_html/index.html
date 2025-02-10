@@ -370,6 +370,12 @@ class AppInitializer {
             await window.chatManager.init();
             console.log('Chat Manager initialisé');
 
+            // Initialiser SettingsManager
+            console.log('Chargement de SettingsManager...');
+            const settingsModule = await import('./js/settingsManager.js');
+            window.settingsManager = new settingsModule.SettingsManager(); // Notez le .SettingsManager ici
+            console.log('Settings Manager initialisé');
+
         } catch (error) {
             console.error('Erreur d\'initialisation:', error);
             console.error('Stack trace:', error.stack);
