@@ -73,21 +73,32 @@
 <body>
     <!-- Header avec recherche et menu -->
     <header class="app-header">
-        <button type="button" id="menuButton" class="menu-button" aria-label="Menu">
-            <span class="material-icons">menu</span>
+    <button type="button" id="menuButton" class="menu-button" aria-label="Menu">
+        <span class="material-icons">menu</span>
+    </button>
+    
+    <h1 class="site-title">Actu & Média</h1>
+    
+    <div class="search-container">
+    <form id="searchForm" action="https://www.google.com/search" method="get" target="_blank">
+        <input 
+            type="search" 
+            id="searchInput" 
+            name="q" 
+            placeholder="Rechercher sur Google" 
+            inputmode="search"
+        >
+        <button type="submit" id="searchButton">
+            <span class="material-icons">search</span>
         </button>
-        <div class="search-container">
-            <form id="searchForm" action="https://www.google.com/search" method="get" target="_blank">
-                <input type="text" id="searchInput" name="q" placeholder="Rechercher sur Google...">
-                <button type="submit" id="searchButton" aria-label="Rechercher">
-                    <span class="material-icons">search</span>
-                </button>
-            </form>
-        </div>
-        <button type="button" id="settingsButton" class="settings-button" aria-label="Paramètres">
-            <span class="material-icons">settings</span>
-        </button>
-    </header>
+    </form>
+</div>
+</header>
+
+<!-- Bouton paramètres en dehors du header -->
+<button type="button" id="settingsButton" class="settings-button" aria-label="Paramètres">
+    <span class="material-icons">settings</span>
+</button>
 
     <!-- Menu latéral -->
     <aside id="sidebar" class="sidebar">
@@ -128,15 +139,17 @@
             </a>
         </div>
         <div class="menu-item">
-            <a href="#" id="menuInstall">
-                <span class="material-icons">download</span>
-                Installer l'application
-            </a>
-        </div>
+    <div class="install-app">
+        <span class="material-icons">download</span>
+        <span>Installer l'application</span>
+    </div>
+</div>
         <div class="menu-item">
-            <span class="material-icons">copyright</span>
-            2025 Actu & Média
-        </div>
+    <div class="copyright-text">
+        <span class="material-icons">copyright</span>
+        <span>2025 Actu & Média</span>
+    </div>
+</div>
     </aside>
 
     <!-- Conteneur principal des tuiles -->
@@ -164,32 +177,53 @@
         </button>
     </nav>
 
-    <!-- Modal d'aide -->
-    <div id="helpModal" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Aide</h2>
-                <button class="close-btn">
-                    <span class="material-icons">close</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <h3>Fonctionnalités</h3>
-                <ul>
-                    <li>Cliquez sur une tuile pour ouvrir le site en version mobile</li>
-                    <li>Appui long sur une tuile pour plus d'options</li>
-                    <li>Ajoutez vos propres sites avec le bouton "+"</li>
-                </ul>
-                <h3>Navigation</h3>
-                <ul>
-                    <li>Mode sombre/clair disponible</li>
-                    <li>3 types d'affichage : grille, grandes tuiles, liste</li>
-                    <li>Taille de texte ajustable dans les paramètres</li>
-                    <li>Recherche Google intégrée</li>
-                </ul>
-            </div>
+<!-- Modal d'aide -->
+<div id="helpModal" class="modal hidden">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Aide</h2>
+            <button class="close-btn">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <h3>À Propos</h3>
+            <ul>
+                <li>Portail d'actualités locales regroupant les principaux médias de la région</li>
+                <li>Application installable sur votre appareil pour un accès rapide</li>
+            </ul>
+
+            <h3>Sites & Navigation</h3>
+            <ul>
+                <li>Cliquez sur une tuile pour ouvrir le site en version mobile</li>
+                <li>Appui long sur une tuile pour accéder aux options (version bureau, modification, suppression)</li>
+                <li>Ajoutez vos propres sites avec le bouton "+" en bas de l'écran</li>
+            </ul>
+
+            <h3>Personnalisation</h3>
+            <ul>
+                <li>Choisissez entre mode sombre et clair avec le bouton lune/soleil</li>
+                <li>Alternez entre trois vues : grille, grandes tuiles, ou liste</li>
+                <li>Ajustez la taille du texte dans les paramètres selon vos préférences</li>
+            </ul>
+
+            <h3>Chat en Direct</h3>
+            <ul>
+                <li>Accédez au chat via le bouton flottant en bas à droite</li>
+                <li>Échangez en temps réel avec d'autres utilisateurs</li>
+                <li>Recevez des notifications pour les nouveaux messages (activables dans les paramètres)</li>
+                <li>La conversation est sauvegardée et synchronisée entre vos appareils</li>
+            </ul>
+
+            <h3>Fonctionnalités Pratiques</h3>
+            <ul>
+                <li>Barre de recherche Google intégrée pour des recherches rapides</li>
+                <li>Menu latéral pour accéder aux liens utiles (météo, sports, etc.)</li>
+                <li>Installation possible sur l'écran d'accueil via le menu latéral</li>
+            </ul>
         </div>
     </div>
+</div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
