@@ -151,37 +151,25 @@ export class SettingsManager {
                     </section>
 
                     <section class="settings-section">
-                        <h4>Affichage</h4>
-                        <label>
-                            <input type="checkbox" id="showFavorites" 
-                                ${this.settings.display.showFavorites ? 'checked' : ''}>
-                            Afficher les favoris
-                        </label>
-                        <label>
-                            <input type="checkbox" id="showRecent" 
-                                ${this.settings.display.showRecent ? 'checked' : ''}>
-                            Afficher les sites récents
-                        </label>
-                        <label>
-                            <input type="checkbox" id="compactMode" 
-                                ${this.settings.display.compactMode ? 'checked' : ''}>
-                            Mode compact
-                        </label>
-                        <div class="font-size-select">
-                            <label>Taille du texte</label>
-                            <select id="fontSize">
-                                <option value="small" ${this.settings.theme.fontSize === 'small' ? 'selected' : ''}>
-                                    Petit
-                                </option>
-                                <option value="normal" ${this.settings.theme.fontSize === 'normal' ? 'selected' : ''}>
-                                    Normal
-                                </option>
-                                <option value="large" ${this.settings.theme.fontSize === 'large' ? 'selected' : ''}>
-                                    Grand
-                                </option>
-                            </select>
-                        </div>
-                    </section>
+    <h4 style="text-align: center;">Taille du texte</h4>
+    <div class="settings-tiles-container">
+        <div class="font-size-tile ${this.settings.theme.fontSize === 'small' ? 'active' : ''}" 
+             data-size="small">
+            <span class="material-icons">text_decrease</span>
+            <span>S</span>
+        </div>
+        <div class="font-size-tile ${this.settings.theme.fontSize === 'normal' ? 'active' : ''}" 
+             data-size="normal">
+            <span class="material-icons">text_fields</span>
+            <span>M</span>
+        </div>
+        <div class="font-size-tile ${this.settings.theme.fontSize === 'large' ? 'active' : ''}" 
+             data-size="large">
+            <span class="material-icons">text_increase</span>
+            <span>L</span>
+        </div>
+    </div>
+</section>
 
                     <section class="settings-section">
                         <h4>Accessibilité</h4>
@@ -260,7 +248,25 @@ export class SettingsManager {
                 this.saveSettings();
             });
         });
+// Gestion des tuiles de taille de police
+modal.querySelectorAll('.font-size-tile').forEach(tile => {
+    tile.addEventListener('click', () => {
+        const size = tile.dataset.size;
+        this.settings.theme.fontSize = size;
+        // Mettre à jour l'UI
+        modal.querySelectorAll('.font-size-tile').forEach(t => 
+            t.classList.toggle('active', t.dataset.size === size)
+        );
+        this.saveSettings();
+    });
+});
 
+// Fermeture au clic à l'extérieur
+document.addEventListener('click', (e) => {
+    if (!modal.contains(e.target) && !e.target.matches('#settingsButton, #settingsButton *')) {
+        modal.remove();
+    }
+}, { once: true });
         // Affichage
         ['showFavorites', 'showRecent', 'compactMode'].forEach(id => {
             const input = modal.querySelector(`#${id}`);
