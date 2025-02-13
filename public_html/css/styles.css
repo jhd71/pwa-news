@@ -1,3 +1,4 @@
+/* Variables racines */
 :root {
     --primary-color: #1a237e;
     --background-color: #ffffff;
@@ -9,39 +10,8 @@
     --header-height: 60px;
     --bottom-nav-height: 60px;
 }
-/* Styles pour les tuiles de taille de police */
-.font-size-tile {
-    width: 80px;
-    height: 80px;
-    border-radius: 12px;
-    background-color: var(--card-background);
-    border: 2px solid transparent;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
 
-.font-size-tile.active {
-    border-color: white;
-    background-color: #2a337e;
-}
-
-.font-size-tile:hover {
-    transform: translateY(-2px);
-    background-color: #2a337e;
-}
-
-.settings-tiles-container {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    margin: 15px 0;
-}
-/* Font size variables */
+/* Variables de taille de police */
 [data-font-size="small"] {
     --tile-title-size: 14px;
     --menu-text-size: 13px;
@@ -60,6 +30,7 @@
     --modal-text-size: 17px;
 }
 
+/* Thème sombre */
 [data-theme="dark"] {
     --background-color: #1a1a1a;
     --text-color: #ffffff;
@@ -69,6 +40,7 @@
     --shadow-color: rgba(0, 0, 0, 0.3);
 }
 
+/* Styles de base */
 * {
     margin: 0;
     padding: 0;
@@ -84,7 +56,11 @@ body {
     position: relative;
 }
 
-/* Header styles */
+.material-icons {
+    font-size: 24px;
+}
+
+/* Header et navigation */
 .app-header {
     position: fixed;
     top: 0;
@@ -95,12 +71,21 @@ body {
     color: white;
     display: flex;
     align-items: center;
-    padding: 0 5px;
+    padding: 0 10px;
     z-index: 1000;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.menu-button, .settings-button {
+.site-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.menu-button {
     background: none;
     border: none;
     color: white;
@@ -115,32 +100,136 @@ body {
     transition: background-color 0.2s;
 }
 
+/* Bouton paramètres */
+.settings-button {
+    position: fixed;
+    top: 8px;
+    right: 8px;
+    width: 44px;
+    height: 44px;
+    background: none;
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 1002;
+    padding: 10px;
+}
+
 .menu-button:hover, .settings-button:hover {
     background-color: var(--hover-color);
 }
+/* Styles communs pour tous les boutons de fermeture */
+.close-btn {
+    background: none;
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+}
 
-/* Search container */
+.close-btn:hover {
+    background-color: var(--hover-color);
+}
+
+/* Styles spécifiques pour le menu paramètres */
+.settings-header .close-btn {
+    padding: 0;
+    margin: -8px;
+}
+
+.settings-header {
+    padding: 15px;
+    background-color: var(--primary-color);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Mise à jour du bouton paramètres */
+.settings-button {
+    position: fixed;
+    top: 8px;
+    right: 8px;
+    width: 44px;
+    height: 44px;
+    background: none;
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 1002;
+    transition: background-color 0.2s;
+}
+
+.settings-button:hover,
+.close-btn:hover {
+    background-color: var(--hover-color);
+}
+/* Pour le chat */
+.chat-widget {
+    position: fixed;
+    right: 20px;
+    bottom: 80px;
+    z-index: 1002;
+}
+
+.chat-toggle {
+    width: 60px;
+    height: 60px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+/* Barre de recherche */
 .search-container {
     flex: 1;
-    margin: 0 8px;
-    max-width: calc(100% - 110px);
-}#searchForm {
+    margin: 0 50px 0 10px;
+    max-width: 250px;
+    position: relative;
+}
+
+#searchForm {
     display: flex;
-    background: white;
+    background-color: #ffffff;
     border-radius: 24px;
-    overflow: hidden;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 #searchInput {
     flex: 1;
-    padding: 12px 16px;
+    padding: 8px 16px;
     border: none;
     outline: none;
-    font-size: var(--menu-text-size);
-    min-width: 200px;
+    font-size: 16px;
     height: 40px;
-    width: 100%;
+    background-color: #ffffff;
+    color: #000000;
+    -webkit-appearance: none;
+    border-radius: 24px;
+}
+
+#searchInput::placeholder {
+    color: #666666;
+    opacity: 1;
 }
 
 #searchButton {
@@ -153,8 +242,24 @@ body {
     align-items: center;
     justify-content: center;
 }
+/* Style de la croix de fermeture */
+.sidebar .close-btn {
+    background: none;
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+}
 
-/* Sidebar */
+.sidebar .close-btn:hover {
+    background-color: var(--hover-color);
+}
+/* Menu latéral */
 .sidebar {
     position: fixed;
     top: var(--header-height);
@@ -172,7 +277,7 @@ body {
 }
 
 .sidebar-header {
-    padding: 20px;
+    padding: 15px 20px;
     background-color: var(--primary-color);
     color: white;
     display: flex;
@@ -189,23 +294,44 @@ body {
     padding: 5px 15px;
 }
 
-.menu-item a {
-    color: white;
-    text-decoration: none;
+.menu-item a, 
+.install-app {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px;
+    color: white;
+    text-decoration: none;
+    padding: 15px;
     border-radius: 8px;
     transition: background-color 0.2s;
-    font-size: var(--menu-text-size);
 }
 
-.menu-item a:hover {
+.menu-item .material-icons {
+    width: 24px;
+    display: flex;
+    justify-content: center;
+}
+
+.menu-item a:hover,
+#menuInstall:hover {
     background-color: var(--hover-color);
 }
+/* Ajoutez le nouveau style ici */
+.copyright-text {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    color: white;
+    margin-top: auto;
+    gap: 12px;
+}
 
-/* Main content */
+.copyright-text .material-icons {
+    width: 24px;
+    display: flex;
+    justify-content: center;
+}
+/* Contenu principal */
 main {
     margin-top: calc(var(--header-height) + 10px);
     margin-bottom: calc(var(--bottom-nav-height) + 10px);
@@ -213,7 +339,7 @@ main {
     min-height: calc(100vh - var(--header-height) - var(--bottom-nav-height));
 }
 
-/* Tile container */
+/* Conteneur de tuiles */
 .tile-container {
     display: grid;
     gap: 15px;
@@ -221,16 +347,19 @@ main {
 }
 
 .tile-container.grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
 }
 
 .tile-container.large {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Réduit de 200px à 160px */
 }
 
 .tile-container.list {
     grid-template-columns: 1fr;
-}/* Separator */
+}
+
+/* Séparateur */
 .separator {
     grid-column: 1 / -1;
     text-align: center;
@@ -242,7 +371,7 @@ main {
     border-radius: 8px;
 }
 
-/* Tile styles */
+/* Styles des tuiles */
 .tile {
     background-color: var(--card-background);
     border-radius: 12px;
@@ -250,14 +379,18 @@ main {
     transition: transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
     box-shadow: 0 2px 5px var(--shadow-color);
-    height: 80px;
+    height: 70px; /* Réduit de 80px à 70px */
     display: flex;
     align-items: center;
     justify-content: center;
 }
+.tile-container {
+    margin-top: calc(var(--header-height) + 10px);
+    padding-bottom: 70px;
+}
 
 .tile-container.large .tile {
-    height: 120px;
+    height: 100px; /* Réduit de 120px à 100px */
 }
 
 .tile-container.list .tile {
@@ -283,7 +416,7 @@ main {
     text-align: center;
 }
 
-/* Settings Menu */
+/* Menu Paramètres */
 .settings-menu {
     position: fixed;
     top: var(--header-height);
@@ -299,6 +432,33 @@ main {
     flex-direction: column;
     animation: slideIn 0.3s ease;
 }
+
+.settings-header {
+    padding: 15px;
+    background-color: var(--primary-color);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.settings-content {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.settings-section {
+    margin-bottom: 20px;
+}
+
+.settings-section h4 {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 10px;
+    font-size: var(--menu-text-size);
+    text-align: center;
+}
+
 /* Tuiles de taille de police */
 .font-size-tiles {
     display: flex;
@@ -335,84 +495,13 @@ main {
     font-size: var(--menu-text-size);
 }
 
-/* Ajustements pour le header des paramètres */
-.settings-header h3 {
-    flex: 1;
-    text-align: center;
-    margin: 0;
-    font-size: 1.2em;
-}
-
-.settings-header .close-btn {
-    background: none;
-    border: none;
-    color: white;
-    padding: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-}
-
-.settings-header .close-btn:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* Centrage des titres de section */
-.settings-section h4 {
-    text-align: center;
-    margin-bottom: 15px;
-}
-
-/* Style pour la version */
 .version-text {
     text-align: center;
     color: rgba(255, 255, 255, 0.9);
     margin: 10px 0;
 }
-.settings-header {
-    padding: 15px;
-    background-color: var(--primary-color);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
 
-.settings-content {
-    flex: 1;
-    padding: 15px;
-    overflow-y: auto;
-}
-
-.settings-section {
-    margin-bottom: 20px;
-}
-
-.settings-section h4 {
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 10px;
-    font-size: var(--menu-text-size);
-}
-
-.settings-button {
-    background: none;
-    border: none;
-    color: white;
-    padding: 12px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: background-color 0.2s;
-}
-
-.settings-button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-/* Bottom Navigation */
+/* Navigation du bas */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -449,7 +538,7 @@ main {
     margin-top: 4px;
 }
 
-/* Context Menu */
+/* Menu contextuel */
 .tile-menu {
     position: fixed;
     background-color: var(--card-background);
@@ -539,24 +628,7 @@ main {
 .modal-body li {
     padding: 8px 0;
     font-size: var(--modal-text-size);
-}
-
-.close-btn {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-}
-
-.close-btn:hover {
-    background-color: var(--hover-color);
-}
+	/* Suite des styles Modal */
 
 /* Toast */
 .toast {
@@ -595,30 +667,12 @@ main {
     }
 }
 
-/* Responsive Design */
-@media (max-width: 600px) {
-    .search-container {
-        margin: 0 8px;
-    }
-
-    .tile-container {
-        gap: 10px;
-    }
-
-    .settings-menu {
-        width: 100%;
-    }
-}
-
-.material-icons {
-    font-size: 24px;
-}
-
+/* PayPal */
 .paypal-donate {
     position: fixed;
     bottom: calc(var(--bottom-nav-height) + 1px);
     left: 10px;
-    z-index: 10; /* Définit un z-index plus bas */
+    z-index: 10;
 }
 
 .paypal-donate form {
@@ -626,40 +680,130 @@ main {
 }
 
 .paypal-donate input[type="image"] {
-    max-width: 200px; /* Augmenter si nécessaire */
+    max-width: 200px;
     height: auto;
     transition: transform 0.2s ease-in-out;
 }
 
 .paypal-donate input[type="image"]:hover {
-    transform: scale(1.05); /* Effet de survol */
+    transform: scale(1.05);
 }
 
-/* QR Code */
+/* Images */
 img {
     max-width: 200px;
     height: auto;
 }
 
-/* Styles PWA Installation */
+/* PWA Installation */
 #menuInstall {
-    display: none; /* Caché par défaut */
+    display: none;
     cursor: pointer;
-    padding: 8px 16px;
-    margin: 8px 0;
     width: 100%;
-    text-align: left;
-    background: transparent;
-    border: none;
-    color: inherit;
-}
-
-#menuInstall:hover {
-    background-color: rgba(0, 0, 0, 0.04);
+    color: white !important;
 }
 
 #menuInstall.visible {
     display: flex !important;
     align-items: center;
-    gap: 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    /* Header et Navigation */
+    .site-title {
+        font-size: 16px;
+    }
+
+    .menu-button,
+    .settings-button {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+    }
+
+    /* Barre de recherche */
+    .search-container {
+        margin: 0 48px;
+        max-width: calc(100% - 96px);
+    }
+	
+.settings-button {
+        right: 4px;
+        top: 8px;
+        width: 40px;
+        height: 40px;
+    }
+	
+    #searchInput {
+        width: 100%;
+        color: black;
+        background: white;
+    }
+    
+    #searchButton {
+        padding: 0 12px;
+    }
+
+    /* Menu latéral */
+    .sidebar {
+        width: 100%;
+        left: -100%;
+    }
+
+    .menu-item a, 
+    .install-app {
+        padding: 12px 15px;
+    }
+
+    .menu-item .material-icons {
+        font-size: 22px;
+    }
+
+    /* Menu paramètres */
+    .settings-menu {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Conteneur de tuiles */
+    .tile-container {
+        gap: 10px;
+    }
+	
+.tile-container.grid {
+        grid-template-columns: repeat(2, 1fr); /* Force 2 colonnes sur mobile */
+        gap: 10px;
+    }
+    /* Éléments supplémentaires */
+    .paypal-donate {
+        display: none;
+    }
+
+    .chat-widget {
+        bottom: 70px;
+        right: 10px;
+    }
+}
+
+/* Très petits écrans */
+@media (max-width: 360px) {
+    .site-title {
+        font-size: 14px;
+    }
+
+    .search-container {
+        margin: 0 40px;
+    }
+
+    #searchInput {
+        font-size: 13px;
+    }
+
+    .menu-button,
+    .settings-button {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+    }
 }
