@@ -115,75 +115,127 @@ class ContentManager {
     }
 
     showSettings() {
-        // Supprimer le menu existant s'il y en a un
-        const existingPanel = document.querySelector('.settings-menu');
-        if (existingPanel) {
-            existingPanel.remove();
-        }
+    const existingPanel = document.querySelector('.settings-menu');
+    if (existingPanel) {
+        existingPanel.remove();
+    }
 
-        // Créer le nouveau menu
-        const panel = document.createElement('div');
-        panel.className = 'settings-menu';
-        panel.innerHTML = `
-            <div class="settings-header">
-                <h3>Paramètres</h3>
-                <button type="button" class="close-btn">
-                    <span class="material-icons">close</span>
-                </button>
-            </div>
-            <div class="settings-content">
-                <div class="settings-section">
-                    <h4>Taille du texte</h4>
-                    <button type="button" class="settings-button" data-font-size="small">
-                        <span class="material-icons">text_decrease</span>
+    const panel = document.createElement('div');
+    panel.className = 'settings-menu';
+    panel.innerHTML = `
+        <div class="settings-header">
+            <h3>Paramètres</h3>
+            <button type="button" class="close-btn">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="settings-content">
+            <div class="settings-section">
+                <h4>Taille du texte</h4>
+                <div class="font-size-tiles">
+                    <div class="font-size-tile ${this.fontSize === 'small' ? 'active' : ''}" data-font-size="small">
                         <span>Petit</span>
-                    </button>
-                    <button type="button" class="settings-button" data-font-size="normal">
-                        <span class="material-icons">text_fields</span>
+                    </div>
+                    <div class="font-size-tile ${this.fontSize === 'normal' ? 'active' : ''}" data-font-size="normal">
                         <span>Normal</span>
-                    </button>
-                    <button type="button" class="settings-button" data-font-size="large">
-                        <span class="material-icons">text_increase</span>
+                    </div>
+                    <div class="font-size-tile ${this.fontSize === 'large' ? 'active' : ''}" data-font-size="large">
                         <span>Grand</span>
-                    </button>
-                </div>
-                <div class="settings-section">
-                    <h4>À propos</h4>
-                    <p style="color: white; padding: 10px;">Version 1.2</p>
-                    <div style="text-align: center; padding: 15px;">
-                        <img src="images/qrcode.png" alt="QR Code" style="max-width: 200px; width: 100%; height: auto;">
                     </div>
                 </div>
             </div>
-        `;
+            <div class="settings-section">
+                <h4>À propos</h4>
+                <p class="version-text">Version 1.2</p>
+                <div style="text-align: center; padding: 15px;">
+    <img src="images/qrcode.png" alt="QR Code" style="max-width: 200px; width: 100%; height: auto;">
+</div>
+            </div>
+        </div>
+    `;
 
-        // [Reste du code inchangé...]
+    document.body.appendChild(panel);
 
-        // Ajouter le menu au document
-        document.body.appendChild(panel);
+    // Gestionnaire pour la fermeture
+    const closeBtn = panel.querySelector('.close-btn');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => panel.remove());
+    }
 
-        // Gestion du bouton fermer
-        const closeBtn = panel.querySelector('.close-btn');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', () => panel.remove());
-        }
-
-        // Gestion des boutons de taille de police
-        panel.querySelectorAll('[data-font-size]').forEach(button => {
-            button.addEventListener('click', () => {
-                const size = button.dataset.fontSize;
-                this.changeFontSize(size);
-                panel.remove();
+    // Gestionnaire pour les tuiles de taille
+    panel.querySelectorAll('.font-size-tile').forEach(tile => {
+        tile.addEventListener('click', () => {
+            const size = tile.dataset.fontSize;
+            this.changeFontSize(size);
+            // Mettre à jour l'état actif des tuiles
+            panel.querySelectorAll('.font-size-tile').forEach(t => {
+                t.classList.toggle('active', t.dataset.fontSize === size);
             });
         });
+    });
 
-        // Fermer au clic en dehors
-        document.addEventListener('click', (e) => {
-            if (!panel.contains(e.target) && !e.target.closest('#settingsButton')) {
-                panel.remove();
-            }
-        }, { once: true });
+    // Fermeture lors du clic en dehors
+    document.addEventListener('click', (e) => {
+        if (!panel.contains(e.target) && !e.target.closest('#settingsButton')) {
+            panel.remove();
+        }
+    }, { capture: true });
+}
+
+// Assurez-vous que ces méthodes sont présentes dans votre classe
+toggleDarkMode() {
+    this.isDarkMode = !this.isDarkMode;
+    const newTheme = this.isDarkMode ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    this.updateThemeIcon(this.isDarkMode);
+    this.showToast(`Mode ${this.isDarkMode ? 'sombre' : 'clair'} activé`);
+}
+
+updateThemeIcon(isDark) {
+    const themeButton = document.getElementById('darkModeToggle');
+    if (themeButton) {
+        const icon = themeButton.querySelector('.material-icons');
+        const text = themeButton.querySelector('span:not(.material-icons)');
+        if (icon) icon.textContent = isDark ? 'light_mode' : 'dark_mode';
+        if (text) text.textContent = isDark ? 'Clair' : 'Sombre';
     }
+}
+
+changeFontSize(size) {
+    this.fontSize = size;
+    localStorage.setItem('fontSize', size);
+    document.documentElement.setAttribute('data-font-size', size);
+    this.showToast(`Taille de texte : ${
+        size === 'small' ? 'petite' :
+        size === 'normal' ? 'normale' :
+        'grande'
+    }`);
+}
+
+updateLayoutIcon(layout) {
+    const layoutButton = document.getElementById('layoutToggle');
+    if (layoutButton) {
+        const icon = layoutButton.querySelector('.material-icons');
+        const text = layoutButton.querySelector('span:not(.material-icons)');
+        if (icon && text) {
+            switch (layout) {
+                case 'grid':
+                    icon.textContent = 'grid_view';
+                    text.textContent = 'Grille';
+                    break;
+                case 'large':
+                    icon.textContent = 'view_module';
+                    text.textContent = 'Grandes';
+                    break;
+                case 'list':
+                    icon.textContent = 'view_list';
+                    text.textContent = 'Liste';
+                    break;
+            }
+        }
+    }
+}
 setupTiles() {
         if (!this.tileContainer) return;
 
