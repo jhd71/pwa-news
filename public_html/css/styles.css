@@ -9,7 +9,38 @@
     --header-height: 60px;
     --bottom-nav-height: 60px;
 }
+/* Styles pour les tuiles de taille de police */
+.font-size-tile {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    background-color: var(--card-background);
+    border: 2px solid transparent;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
 
+.font-size-tile.active {
+    border-color: white;
+    background-color: #2a337e;
+}
+
+.font-size-tile:hover {
+    transform: translateY(-2px);
+    background-color: #2a337e;
+}
+
+.settings-tiles-container {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 15px 0;
+}
 /* Font size variables */
 [data-font-size="small"] {
     --tile-title-size: 14px;
@@ -268,7 +299,78 @@ main {
     flex-direction: column;
     animation: slideIn 0.3s ease;
 }
+/* Tuiles de taille de police */
+.font-size-tiles {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 15px 0;
+}
 
+.font-size-tile {
+    min-width: 80px;
+    padding: 12px 20px;
+    background-color: var(--card-background);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.font-size-tile:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.font-size-tile.active {
+    border-color: white;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.font-size-tile span {
+    font-size: var(--menu-text-size);
+}
+
+/* Ajustements pour le header des paramètres */
+.settings-header h3 {
+    flex: 1;
+    text-align: center;
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.settings-header .close-btn {
+    background: none;
+    border: none;
+    color: white;
+    padding: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.settings-header .close-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Centrage des titres de section */
+.settings-section h4 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Style pour la version */
+.version-text {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 10px 0;
+}
 .settings-header {
     padding: 15px;
     background-color: var(--primary-color);
@@ -295,14 +397,16 @@ main {
 }
 
 .settings-button {
-    position: relative;
-    flex: 0 0 auto;
-    margin-left: auto; /* Pour le pousser à droite */
-    padding: 0 15px;
-    height: var(--header-height);
-    border-radius: 0;
-    min-width: 60px;
-    background: rgba(255, 255, 255, 0.05);
+    background: none;
+    border: none;
+    color: white;
+    padding: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s;
 }
 
 .settings-button:hover {
