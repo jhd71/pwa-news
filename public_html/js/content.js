@@ -117,7 +117,11 @@ class ContentManager {
     showSettings() {
     const existingPanel = document.querySelector('.settings-menu');
     if (existingPanel) {
-        existingPanel.remove();
+        existingPanel.classList.remove('open');
+        setTimeout(() => {
+            existingPanel.remove();
+        }, 300);
+        return;
     }
 
     const panel = document.createElement('div');
@@ -148,18 +152,28 @@ class ContentManager {
                 <h4>À propos</h4>
                 <p class="version-text">Version 1.2</p>
                 <div style="text-align: center; padding: 15px;">
-    <img src="images/qrcode.png" alt="QR Code" style="max-width: 200px; width: 100%; height: auto;">
-</div>
+                    <img src="images/qrcode.png" alt="QR Code" style="max-width: 200px; width: 100%; height: auto;">
+                </div>
             </div>
         </div>
     `;
 
     document.body.appendChild(panel);
+    
+    // Ajouter la classe open après un court délai pour déclencher l'animation
+    requestAnimationFrame(() => {
+        panel.classList.add('open');
+    });
 
     // Gestionnaire pour la fermeture
     const closeBtn = panel.querySelector('.close-btn');
     if (closeBtn) {
-        closeBtn.addEventListener('click', () => panel.remove());
+        closeBtn.addEventListener('click', () => {
+            panel.classList.remove('open');
+            setTimeout(() => {
+                panel.remove();
+            }, 300);
+        });
     }
 
     // Gestionnaire pour les tuiles de taille
@@ -167,7 +181,6 @@ class ContentManager {
         tile.addEventListener('click', () => {
             const size = tile.dataset.fontSize;
             this.changeFontSize(size);
-            // Mettre à jour l'état actif des tuiles
             panel.querySelectorAll('.font-size-tile').forEach(t => {
                 t.classList.toggle('active', t.dataset.fontSize === size);
             });
@@ -177,7 +190,10 @@ class ContentManager {
     // Fermeture lors du clic en dehors
     document.addEventListener('click', (e) => {
         if (!panel.contains(e.target) && !e.target.closest('#settingsButton')) {
-            panel.remove();
+            panel.classList.remove('open');
+            setTimeout(() => {
+                panel.remove();
+            }, 300);
         }
     }, { capture: true });
 }
@@ -617,27 +633,7 @@ editSite(site) {
             this.updateLayoutIcon(layout);
         }
     }
-
-    showHelp() {
-        const helpModal = document.getElementById('helpModal');
-        if (helpModal) {
-            helpModal.classList.remove('hidden');
-            
-            const closeBtn = helpModal.querySelector('.close-btn');
-            if (closeBtn) {
-                closeBtn.addEventListener('click', () => {
-                    helpModal.classList.add('hidden');
-                });
-            }
-
-            window.onclick = (event) => {
-                if (event.target === helpModal) {
-                    helpModal.classList.add('hidden');
-                }
-            };
-        }
-    }
-
+	
     changeFontSize(size) {
         this.fontSize = size;
         localStorage.setItem('fontSize', size);
