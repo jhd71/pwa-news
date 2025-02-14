@@ -69,36 +69,24 @@
 
     <!-- Notifications -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</head>
-<body>
-    <!-- Header avec recherche et menu -->
-    <header class="app-header">
+<header class="app-header">
     <button type="button" id="menuButton" class="menu-button" aria-label="Menu">
         <span class="material-icons">menu</span>
     </button>
-    
+ <button type="button" id="settingsButton" class="settings-button" aria-label="Paramètres">
+    <span class="material-icons">settings</span>
+</button>   
     <h1 class="site-title">Actu & Média</h1>
-    
-    <div class="search-container">
-    <form id="searchForm" action="https://www.google.com/search" method="get" target="_blank">
-        <input 
-            type="search" 
-            id="searchInput" 
-            name="q" 
-            placeholder="Rechercher sur Google" 
-            inputmode="search"
-        >
-        <button type="submit" id="searchButton">
-            <span class="material-icons">search</span>
-        </button>
-    </form>
-</div>
 </header>
 
 <!-- Bouton paramètres en dehors du header -->
-<button type="button" id="settingsButton" class="settings-button" aria-label="Paramètres">
-    <span class="material-icons">settings</span>
-</button>
+
+<div class="search-container">
+    <a href="https://www.google.com" target="_blank" class="google-link">
+        <span class="material-icons">search</span>
+        <span>Google</span>
+    </a>
+</div>
 
     <!-- Menu latéral -->
     <aside id="sidebar" class="sidebar">
@@ -159,71 +147,23 @@
 
     <!-- Navigation du bas -->
     <nav class="bottom-nav">
-        <button class="nav-item" id="darkModeToggle">
-            <span class="material-icons">dark_mode</span>
-            <span>Sombre</span>
-        </button>
-        <button class="nav-item" id="addSiteBtn">
-            <span class="material-icons">add_circle</span>
-            <span>Ajouter</span>
-        </button>
-        <button class="nav-item" id="layoutToggle">
-            <span class="material-icons">grid_view</span>
-            <span>Vue</span>
-        </button>
-        <button class="nav-item" id="helpBtn">
-            <span class="material-icons">help</span>
-            <span>Aide</span>
-        </button>
-    </nav>
-
-<!-- Modal d'aide -->
-<div id="helpModal" class="modal hidden">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>Aide</h2>
-            <button class="close-btn">
-                <span class="material-icons">close</span>
-            </button>
-        </div>
-        <div class="modal-body">
-            <h3>À Propos</h3>
-            <ul>
-                <li>Portail d'actualités locales regroupant les principaux médias de la région</li>
-                <li>Application installable sur votre appareil pour un accès rapide</li>
-            </ul>
-
-            <h3>Sites & Navigation</h3>
-            <ul>
-                <li>Cliquez sur une tuile pour ouvrir le site en version mobile</li>
-                <li>Appui long sur une tuile pour accéder aux options (version bureau, modification, suppression)</li>
-                <li>Ajoutez vos propres sites avec le bouton "+" en bas de l'écran</li>
-            </ul>
-
-            <h3>Personnalisation</h3>
-            <ul>
-                <li>Choisissez entre mode sombre et clair avec le bouton lune/soleil</li>
-                <li>Alternez entre trois vues : grille, grandes tuiles, ou liste</li>
-                <li>Ajustez la taille du texte dans les paramètres selon vos préférences</li>
-            </ul>
-
-            <h3>Chat en Direct</h3>
-            <ul>
-                <li>Accédez au chat via le bouton flottant en bas à droite</li>
-                <li>Échangez en temps réel avec d'autres utilisateurs</li>
-                <li>Recevez des notifications pour les nouveaux messages (activables dans les paramètres)</li>
-                <li>La conversation est sauvegardée et synchronisée entre vos appareils</li>
-            </ul>
-
-            <h3>Fonctionnalités Pratiques</h3>
-            <ul>
-                <li>Barre de recherche Google intégrée pour des recherches rapides</li>
-                <li>Menu latéral pour accéder aux liens utiles (météo, sports, etc.)</li>
-                <li>Installation possible sur l'écran d'accueil via le menu latéral</li>
-            </ul>
-        </div>
-    </div>
-</div>
+    <button class="nav-item" id="darkModeToggle">
+        <span class="material-icons">dark_mode</span>
+        <span>Sombre</span>
+    </button>
+    <button class="nav-item" id="addSiteBtn">
+        <span class="material-icons">add_circle</span>
+        <span>Ajouter</span>
+    </button>
+    <button class="nav-item" id="layoutToggle">
+        <span class="material-icons">grid_view</span>
+        <span>Vue</span>
+    </button>
+    <a href="https://www.google.com" target="_blank" class="nav-item">
+        <span class="material-icons">search</span>
+        <span>Google</span>
+    </a>
+</nav>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
