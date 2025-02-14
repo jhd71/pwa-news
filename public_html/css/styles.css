@@ -76,13 +76,16 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Style par défaut pour PC */
 .site-title {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 20px;
+    font-size: 30px;
     font-weight: bold;
     white-space: nowrap;
+    color: white;
+    text-shadow: 1px 1px 0 black, -1px 1px 0 black, 1px -1px 0 black, -1px -1px 0 black;
 }
 
 .menu-button {
@@ -198,49 +201,6 @@ body {
     justify-content: center;
     cursor: pointer;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-/* Barre de recherche */
-.search-container {
-    flex: 1;
-    margin: 0 50px 0 10px;
-    max-width: 250px;
-    position: relative;
-}
-
-#searchForm {
-    display: flex;
-    background-color: #ffffff;
-    border-radius: 24px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-#searchInput {
-    flex: 1;
-    padding: 8px 16px;
-    border: none;
-    outline: none;
-    font-size: 16px;
-    height: 40px;
-    background-color: #ffffff;
-    color: #000000;
-    -webkit-appearance: none;
-    border-radius: 24px;
-}
-
-#searchInput::placeholder {
-    color: #666666;
-    opacity: 1;
-}
-
-#searchButton {
-    background: none;
-    border: none;
-    padding: 0 16px;
-    color: var(--primary-color);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 /* Style de la croix de fermeture */
 .sidebar .close-btn {
@@ -420,7 +380,7 @@ main {
 .settings-menu {
     position: fixed;
     top: var(--header-height);
-    right: 0;
+    right: -280px; /* Au lieu de 0 */
     width: 280px;
     max-width: 90%;
     height: calc(100vh - var(--header-height));
@@ -430,7 +390,11 @@ main {
     box-shadow: -2px 0 5px var(--shadow-color);
     display: flex;
     flex-direction: column;
-    animation: slideIn 0.3s ease;
+    transition: right 0.3s ease; /* Ajout de la transition */
+}
+
+.settings-menu.open {
+    right: 0;
 }
 
 .settings-header {
@@ -527,6 +491,7 @@ main {
     cursor: pointer;
     transition: background-color 0.2s;
     flex: 1;
+    text-decoration: none; /* Pour le lien Google */
 }
 
 .nav-item:hover {
@@ -723,29 +688,26 @@ img {
     }
 
     /* Barre de recherche */
-    .search-container {
-        margin: 0 48px;
-        max-width: calc(100% - 96px);
+    /* Version desktop : affiche le texte */
+@media (min-width: 601px) {
+    .google-link {
+        border-radius: 24px;
+        padding: 8px 16px;
     }
-	
+
+/* Version mobile : cache le texte */
+@media (max-width: 600px) {
+    .google-text {
+        display: none;
+    }
+  
 .settings-button {
         right: 4px;
         top: 8px;
         width: 40px;
         height: 40px;
     }
-	
-    #searchInput {
-        width: 100%;
-        color: black;
-        background: white;
-    }
-    
-    #searchButton {
-        padding: 0 12px;
-    }
-
-    /* Menu latéral */
+	   /* Menu latéral */
     .sidebar {
         width: 100%;
         left: -100%;
@@ -792,16 +754,9 @@ img {
         font-size: 14px;
     }
 
-    .search-container {
-        margin: 0 40px;
-    }
-
-    #searchInput {
-        font-size: 13px;
-    }
-
     .menu-button,
-    .settings-button {
+    .settings-button,
+    .google-link {  /* Ajout de google-link pour cohérence */
         width: 36px;
         height: 36px;
         min-width: 36px;
