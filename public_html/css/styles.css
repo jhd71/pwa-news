@@ -1,17 +1,31 @@
 /* Variables racines */
 :root {
-    --primary-color: #1a237e;
-    --background-color: #ffffff;
+    --primary-color: #7E57C2;          /* Violet plus doux */
+    --background-color: #EFF1FF;       /* Fond très légèrement bleuté */
     --text-color: #333333;
-    --card-background: #1a237e;
-    --border-color: #e0e0e0;
-    --hover-color: rgba(255, 255, 255, 0.1);
-    --shadow-color: rgba(0, 0, 0, 0.1);
+    --border-color: #E5E7F4;
+    --hover-color: rgba(126, 87, 194, 0.1);
+    --shadow-color: rgba(0, 0, 0, 0.08);
     --header-height: 60px;
     --bottom-nav-height: 60px;
 }
 
-/* Variables de taille de police */
+[data-theme="dark"] {
+    --primary-color: #1a237e;
+    --background-color: #121212;
+    --text-color: #ffffff;
+    --border-color: #404040;
+    --hover-color: rgba(255, 255, 255, 0.1);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Pour le texte en mode clair */
+[data-theme="light"] .sidebar,
+[data-theme="light"] .settings-menu,
+[data-theme="light"] .modal-content {
+    color: white !important;
+}
+/* Font size variables (garder cette partie inchangée) */
 [data-font-size="small"] {
     --tile-title-size: 14px;
     --menu-text-size: 13px;
@@ -32,9 +46,9 @@
 
 /* Thème sombre */
 [data-theme="dark"] {
-    --background-color: #1a1a1a;
+    --primary-color: #1a237e;
+    --background-color: #121212;
     --text-color: #ffffff;
-    --card-background: #1a237e;
     --border-color: #404040;
     --hover-color: rgba(255, 255, 255, 0.1);
     --shadow-color: rgba(0, 0, 0, 0.3);
@@ -189,18 +203,33 @@ body {
     z-index: 1002;
 }
 
+/* Style du bouton chat */
 .chat-toggle {
+    background-color: var(--primary-color);
+    color: white;
     width: 60px;
     height: 60px;
-    background: var(--primary-color);
     border-radius: 50%;
     border: none;
-    color: white;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+[data-theme="light"] .chat-toggle {
+    background: linear-gradient(145deg, #7E57C2, #9575CD);
+}
+
+[data-theme="dark"] .chat-toggle {
+    background: linear-gradient(145deg, #1a237e, #283593);
+}
+
+.chat-toggle:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 /* Style de la croix de fermeture */
 .sidebar .close-btn {
@@ -219,14 +248,14 @@ body {
 .sidebar .close-btn:hover {
     background-color: var(--hover-color);
 }
-/* Menu latéral */
+/* Pour le menu latéral */
 .sidebar {
     position: fixed;
     top: var(--header-height);
     left: -280px;
     width: 280px;
     height: calc(100vh - var(--header-height));
-    background-color: var(--card-background);
+    background-color: var(--primary-color) !important;
     transition: left 0.3s ease;
     z-index: 999;
     box-shadow: 2px 0 5px var(--shadow-color);
@@ -250,20 +279,24 @@ body {
     padding: 10px 0;
 }
 
+/* Styles du menu latéral */
 .menu-item {
     padding: 5px 15px;
 }
 
 .menu-item a, 
+.menu-link,
 .install-app {
     display: flex;
     align-items: center;
     gap: 12px;
-    color: white;
+    width: 100%;
+    color: white !important;
     text-decoration: none;
-    padding: 15px;
+    padding: 12px 15px;
     border-radius: 8px;
     transition: background-color 0.2s;
+    font-size: var(--menu-text-size);
 }
 
 .menu-item .material-icons {
@@ -273,8 +306,21 @@ body {
 }
 
 .menu-item a:hover,
+.menu-link:hover,
 #menuInstall:hover {
     background-color: var(--hover-color);
+}
+
+#menuInstall {
+    display: none;
+    border: none;
+    background: none;
+    cursor: pointer;
+    text-align: left;
+}
+
+#menuInstall.visible {
+    display: flex;
 }
 /* Ajoutez le nouveau style ici */
 .copyright-text {
@@ -315,8 +361,33 @@ main {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Réduit de 200px à 160px */
 }
 
+/* Styles spécifiques pour le mode liste */
 .tile-container.list {
     grid-template-columns: 1fr;
+    max-width: 800px;
+    margin: 0 auto;
+    gap: 12px;
+}
+
+.tile-container.list .tile {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tile-container.list .tile-content {
+    width: 100%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+.tile-container.list .tile-title {
+    width: 100%;
+    text-align: center;
+    font-size: var(--tile-title-size);
+    font-weight: 500;
 }
 
 /* Séparateur */
@@ -331,7 +402,7 @@ main {
     border-radius: 8px;
 }
 
-/* Styles des tuiles */
+/* Styles des tuiles avec une palette plus harmonieuse */
 .tile {
     background-color: var(--card-background);
     border-radius: 12px;
@@ -339,34 +410,49 @@ main {
     transition: transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
     box-shadow: 0 2px 5px var(--shadow-color);
-    height: 70px; /* Réduit de 80px à 70px */
+    height: 80px;
     display: flex;
     align-items: center;
     justify-content: center;
-}
-.tile-container {
-    margin-top: calc(var(--header-height) + 10px);
-    padding-bottom: 70px;
+    user-select: none; /* Empêche la sélection du texte */
+    -webkit-user-select: none; /* Pour Safari */
+    -webkit-tap-highlight-color: transparent; /* Supprime le highlight sur mobile */
 }
 
+/* Nouvelle palette de couleurs pour les tuiles en mode clair */
+.tile:nth-child(10n + 1) { background-color: #7E57C2; }  /* Violet */
+.tile:nth-child(10n + 2) { background-color: #26A69A; }  /* Teal */
+.tile:nth-child(10n + 3) { background-color: #5C6BC0; }  /* Indigo */
+.tile:nth-child(10n + 4) { background-color: #66BB6A; }  /* Vert */
+.tile:nth-child(10n + 5) { background-color: #EC407A; }  /* Rose */
+.tile:nth-child(10n + 6) { background-color: #42A5F5; }  /* Bleu */
+.tile:nth-child(10n + 7) { background-color: #FFA726; }  /* Orange */
+.tile:nth-child(10n + 8) { background-color: #AB47BC; }  /* Violet foncé */
+.tile:nth-child(10n + 9) { background-color: #26C6DA; }  /* Cyan */
+.tile:nth-child(10n + 0) { background-color: #8D6E63; }  /* Brun */
+
+/* Mode sombre pour les tuiles */
+[data-theme="dark"] .tile {
+    background-color: var(--primary-color);
+}
+
+/* Reste des styles tuiles */
 .tile-container.large .tile {
-    height: 100px; /* Réduit de 120px à 100px */
+    height: 120px;
 }
 
-.tile-container.list .tile {
-    height: 60px;
-}
-
+/* Effets de survol améliorés */
 .tile:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px var(--shadow-color);
-    background-color: #2a337e;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    filter: brightness(1.05);
 }
 
 .tile-content {
     padding: 10px;
     text-align: center;
     width: 100%;
+    pointer-events: none; /* Empêche les interactions avec le texte */
 }
 
 .tile-title {
@@ -374,23 +460,24 @@ main {
     font-weight: 500;
     color: white;
     text-align: center;
+    width: 100%;
 }
 
-/* Menu Paramètres */
+/* Pour le menu paramètres */
 .settings-menu {
     position: fixed;
     top: var(--header-height);
-    right: -280px; /* Au lieu de 0 */
+    right: -280px;
     width: 280px;
     max-width: 90%;
     height: calc(100vh - var(--header-height));
-    background-color: var(--card-background);
-    color: white;
+    background-color: var(--primary-color) !important;
+    color: white !important;
     z-index: 999;
     box-shadow: -2px 0 5px var(--shadow-color);
     display: flex;
     flex-direction: column;
-    transition: right 0.3s ease; /* Ajout de la transition */
+    transition: right 0.3s ease;
 }
 
 .settings-menu.open {
@@ -472,12 +559,22 @@ main {
     left: 0;
     right: 0;
     height: var(--bottom-nav-height);
-    background-color: var(--card-background);
+    background-color: var(--primary-color);
     display: flex;
     justify-content: space-around;
     align-items: center;
     box-shadow: 0 -2px 5px var(--shadow-color);
     z-index: 998;
+}
+
+/* Ajoutez ces styles spécifiques pour le mode clair */
+[data-theme="light"] .bottom-nav {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+[data-theme="light"] .nav-item {
+    color: white;
 }
 
 .nav-item {
@@ -506,14 +603,14 @@ main {
 /* Menu contextuel */
 .tile-menu {
     position: fixed;
-    background-color: var(--card-background);
+    background-color: var(--primary-color) !important;
     border-radius: 8px;
-    box-shadow: 0 2px 8px var(--shadow-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     overflow: hidden;
     z-index: 1000;
     min-width: 200px;
-    animation: fadeIn 0.2s ease;
     max-width: 90%;
+    opacity: 1 !important;
 }
 
 .tile-menu button {
@@ -522,17 +619,28 @@ main {
     padding: 12px 16px;
     border: none;
     background: none;
-    color: white;
-    text-align: left;
+    color: white !important;
     cursor: pointer;
     align-items: center;
     gap: 12px;
-    transition: background-color 0.2s;
     font-size: var(--menu-text-size);
+    transition: background-color 0.2s;
+}
+
+.tile-menu button .material-icons {
+    width: 24px;
+    display: flex;
+    justify-content: center;
 }
 
 .tile-menu button:hover {
-    background-color: var(--hover-color);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Force le texte blanc dans les deux thèmes */
+[data-theme="light"] .tile-menu button,
+[data-theme="dark"] .tile-menu button {
+    color: white !important;
 }
 
 /* Modal */
@@ -553,8 +661,24 @@ main {
     display: none;
 }
 
+/* Ajoutez le code de l'overlay ici */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    display: none;
+}
+
+.overlay.active {
+    display: block;
+}
+
 .modal-content {
-    background-color: var(--card-background);
+    background-color: var(--primary-color) !important;
     border-radius: 12px;
     width: 90%;
     max-width: 500px;
@@ -666,11 +790,20 @@ img {
     cursor: pointer;
     width: 100%;
     color: white !important;
+    text-decoration: none;
+    padding: 12px;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+    font-size: var(--menu-text-size);
 }
 
 #menuInstall.visible {
     display: flex !important;
     align-items: center;
+}
+
+#menuInstall:hover {
+    background-color: var(--hover-color);
 }
 
 /* Responsive Design */
@@ -713,15 +846,6 @@ img {
         left: -100%;
     }
 
-    .menu-item a, 
-    .install-app {
-        padding: 12px 15px;
-    }
-
-    .menu-item .material-icons {
-        font-size: 22px;
-    }
-
     /* Menu paramètres */
     .settings-menu {
         width: 100%;
@@ -743,9 +867,11 @@ img {
     }
 
     .chat-widget {
-        bottom: 70px;
-        right: 10px;
-    }
+    position: fixed;
+    right: 20px;
+    bottom: 80px;
+    z-index: 1001;
+}
 }
 
 /* Très petits écrans */
