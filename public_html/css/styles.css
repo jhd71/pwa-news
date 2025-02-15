@@ -295,7 +295,7 @@ body {
     text-decoration: none;
     padding: 12px 15px;
     border-radius: 8px;
-    transition: background-color 0.2s;
+    transition: all 0.3s ease; /* Changé pour une transition plus fluide */
     font-size: var(--menu-text-size);
 }
 
@@ -303,12 +303,21 @@ body {
     width: 24px;
     display: flex;
     justify-content: center;
+    transition: transform 0.3s ease; /* Animation pour l'icône */
 }
 
 .menu-item a:hover,
 .menu-link:hover,
 #menuInstall:hover {
     background-color: var(--hover-color);
+    transform: translateX(5px); /* Effet de décalage */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.menu-item a:hover .material-icons,
+.menu-link:hover .material-icons,
+#menuInstall:hover .material-icons {
+    transform: scale(1.1); /* Légère mise en avant de l'icône */
 }
 
 #menuInstall {
@@ -345,61 +354,99 @@ main {
     min-height: calc(100vh - var(--header-height) - var(--bottom-nav-height));
 }
 
-/* Conteneur de tuiles */
+/* Conteneur de tuiles - Base */
 .tile-container {
     display: grid;
     gap: 15px;
-    padding-bottom: 20px;
+    padding: 10px 15px;
+    margin: 0 auto;
 }
 
+/* Configuration des vues */
 .tile-container.grid {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    max-width: 1200px;
 }
 
 .tile-container.large {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Réduit de 200px à 160px */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    max-width: 1400px;
 }
 
-/* Styles spécifiques pour le mode liste */
 .tile-container.list {
     grid-template-columns: 1fr;
     max-width: 800px;
-    margin: 0 auto;
-    gap: 12px;
+    gap: 10px;
+}
+
+/* Tuile de base */
+.tile {
+    background-color: var(--primary-color);
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 2px 5px var(--shadow-color);
+}
+
+/* Dimensions des tuiles selon la vue */
+.tile-container.grid .tile {
+    height: 80px;
+}
+
+.tile-container.large .tile {
+    height: 120px;
 }
 
 .tile-container.list .tile {
     height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
-.tile-container.list .tile-content {
-    width: 100%;
-    text-align: center;
-    display: flex;
-    justify-content: center;
+/* Effets de survol selon la vue */
+.tile-container.grid .tile:hover,
+.tile-container.large .tile:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.tile-container.list .tile-title {
+.tile-container.list .tile:hover {
+    transform: translateX(10px);
+    box-shadow: -4px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Contenu des tuiles */
+.tile-content {
     width: 100%;
     text-align: center;
-    font-size: var(--tile-title-size);
+    pointer-events: none;
+}
+
+.tile-title {
+    color: white;
     font-weight: 500;
+    font-size: var(--tile-title-size);
 }
 
 /* Séparateur */
 .separator {
     grid-column: 1 / -1;
     text-align: center;
-    color: rgba(255, 255, 255, 0.7);
-    padding: 15px 0;
+    color: rgba(255, 255, 255, 0.9);
+    padding: 12px 0;
     font-size: var(--menu-text-size);
-    margin: 10px 0;
+    margin: 5px 0;
     background-color: var(--primary-color);
     border-radius: 8px;
+}
+
+/* Mode sombre */
+[data-theme="dark"] .tile {
+    background-color: var(--primary-color);
 }
 
 /* Styles des tuiles avec une palette plus harmonieuse */
@@ -419,26 +466,21 @@ main {
     -webkit-tap-highlight-color: transparent; /* Supprime le highlight sur mobile */
 }
 
-/* Nouvelle palette de couleurs pour les tuiles en mode clair */
-.tile:nth-child(10n + 1) { background-color: #7E57C2; }  /* Violet */
-.tile:nth-child(10n + 2) { background-color: #26A69A; }  /* Teal */
-.tile:nth-child(10n + 3) { background-color: #5C6BC0; }  /* Indigo */
-.tile:nth-child(10n + 4) { background-color: #66BB6A; }  /* Vert */
-.tile:nth-child(10n + 5) { background-color: #EC407A; }  /* Rose */
-.tile:nth-child(10n + 6) { background-color: #42A5F5; }  /* Bleu */
-.tile:nth-child(10n + 7) { background-color: #FFA726; }  /* Orange */
-.tile:nth-child(10n + 8) { background-color: #AB47BC; }  /* Violet foncé */
-.tile:nth-child(10n + 9) { background-color: #26C6DA; }  /* Cyan */
-.tile:nth-child(10n + 0) { background-color: #8D6E63; }  /* Brun */
+/* Couleurs des tuiles */
+.tile:nth-child(10n + 1) { background-color: #9675CD; }  /* Violet */
+.tile:nth-child(10n + 2) { background-color: #4DB6AC; }  /* Vert d'eau */
+.tile:nth-child(10n + 3) { background-color: #7986CB; }  /* Bleu */
+.tile:nth-child(10n + 4) { background-color: #81C784; }  /* Vert */
+.tile:nth-child(10n + 5) { background-color: #F06292; }  /* Rose */
+.tile:nth-child(10n + 6) { background-color: #64B5F6; }  /* Bleu clair */
+.tile:nth-child(10n + 7) { background-color: #FFB74D; }  /* Orange */
+.tile:nth-child(10n + 8) { background-color: #BA68C8; }  /* Violet foncé */
+.tile:nth-child(10n + 9) { background-color: #4DD0E1; }  /* Turquoise */
+.tile:nth-child(10n + 0) { background-color: #A1887F; }  /* Brun */
 
-/* Mode sombre pour les tuiles */
+/* En mode sombre, assombrir légèrement */
 [data-theme="dark"] .tile {
-    background-color: var(--primary-color);
-}
-
-/* Reste des styles tuiles */
-.tile-container.large .tile {
-    height: 120px;
+    filter: brightness(0.85);
 }
 
 /* Effets de survol améliorés */
