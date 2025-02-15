@@ -7,35 +7,86 @@ class App {
     constructor() {
         // Sites par défaut - ne peuvent pas être supprimés
         this.defaultSites = [
+            // Actualités locales
             {
                 title: 'Montceau News',
                 url: 'https://montceau-news.com',
                 icon: 'images/INFOS.png',
-                isDefault: true
+                isDefault: true,
+                section: 'news'
             },
             {
                 title: "L'Informateur",
                 url: 'https://linformateurdebourgogne.com',
                 icon: 'images/INFOS.png',
-                isDefault: true
+                isDefault: true,
+                section: 'news'
             },
             {
                 title: 'Le JSL',
                 url: 'https://www.lejsl.com/edition-montceau-les-mines',
                 icon: 'images/INFOS.png',
-                isDefault: true
+                isDefault: true,
+                section: 'news'
             },
             {
                 title: 'Creusot Infos',
                 url: 'https://www.creusot-infos.com',
                 icon: 'images/INFOS.png',
-                isDefault: true
+                isDefault: true,
+                section: 'news'
+            },
+            // Section Radio
+            {
+                title: 'France Bleu Bourgogne',
+                url: 'https://www.radio-en-ligne.fr/france-bleu-bourgogne',
+                icon: 'images/INFOS.png',
+                isDefault: true,
+                section: 'radio'
             },
             {
                 title: 'Radio Sans Pub',
                 url: 'https://www.radio-en-ligne.fr/radio-sans-pub',
                 icon: 'images/INFOS.png',
-                isDefault: true
+                isDefault: true,
+                section: 'radio'
+            },
+            // Section TV en Direct
+            {
+                title: 'France 3 Bourgogne',
+                url: 'https://www.francebleu.fr/tv/direct/bourgogne',
+                icon: 'images/INFOS.png',
+                isDefault: true,
+                section: 'tv'
+            },
+            {
+                title: 'BFMTV',
+                url: 'https://www.bfmtv.com/en-direct/',
+                icon: 'images/INFOS.png',
+                isDefault: true,
+                section: 'tv'
+            },
+            {
+                title: 'FranceTV Info',
+                url: 'https://www.francetvinfo.fr/en-direct/tv.html',
+                icon: 'images/INFOS.png',
+                isDefault: true,
+                section: 'tv'
+            },
+            // Section Réseaux Sociaux
+            {
+                title: 'YouTube',
+                url: 'https://www.youtube.com/feed/trending',
+                icon: 'images/INFOS.png',
+                isDefault: true,
+                section: 'social'
+            },
+            {
+                title: 'TikTok',
+                url: 'https://www.tiktok.com/discover?lang=fr',
+                icon: 'images/INFOS.png',
+                isDefault: true,
+                section: 'social'
             }
         ];
 
