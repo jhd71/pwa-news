@@ -135,72 +135,153 @@ class ContentManager {
     }
 
     setupTiles() {
-        if (!this.tileContainer) return;
+    if (!this.tileContainer) return;
 
-        this.tileContainer.innerHTML = '';
+    this.tileContainer.innerHTML = '';
 
-        // Sites par défaut
-        const defaultSites = [
-            {
-                title: 'Montceau News',
-                url: 'https://montceau-news.com/',
-                mobileUrl: 'https://montceau-news.com/',
-                isDefault: true
-            },
-            {
-                title: 'L\'Informateur de Bourgogne',
-                url: 'https://linformateurdebourgogne.com/',
-                mobileUrl: 'https://linformateurdebourgogne.com/',
-                isDefault: true
-            },
-            {
-                title: 'Le JSL',
-                url: 'https://www.lejsl.com/edition-montceau-les-mines',
-                mobileUrl: 'https://www.lejsl.com/edition-montceau-les-mines',
-                isDefault: true
-            },
-            {
-                title: 'Creusot Infos',
-                url: 'https://www.creusot-infos.com',
-                mobileUrl: 'https://www.creusot-infos.com/?m=1',
-                isDefault: true
-            },
-            {
-                title: 'Radio Sans Pub',
-                url: 'https://www.radio-en-ligne.fr/radio-sans-pub/',
-                mobileUrl: 'https://www.radio-en-ligne.fr/radio-sans-pub/',
-                isDefault: true
-            }
-        ];
-
-        // Créer les tuiles par défaut
-        defaultSites.forEach(site => {
-            const tile = this.createTile(site);
-            this.tileContainer.appendChild(tile);
-        });
-
-        // Charger les sites personnalisés
-        try {
-            const saved = localStorage.getItem('customSites');
-            if (saved) {
-                const customSites = JSON.parse(saved);
-                if (Array.isArray(customSites) && customSites.length > 0) {
-                    const separator = document.createElement('div');
-                    separator.className = 'separator';
-                    separator.textContent = '⎯⎯⎯  Autres sites  ⎯⎯⎯';
-                    this.tileContainer.appendChild(separator);
-
-                    customSites.forEach(site => {
-                        const tile = this.createTile({...site, isDefault: false});
-                        this.tileContainer.appendChild(tile);
-                    });
-                }
-            }
-        } catch (error) {
-            console.error('Erreur chargement sites personnalisés:', error);
-            this.showToast('Erreur lors du chargement des sites personnalisés');
+    // Actualités locales
+    const newsDefaultSites = [
+        {
+            title: 'Montceau News',
+            url: 'https://montceau-news.com/',
+            mobileUrl: 'https://montceau-news.com/',
+            isDefault: true
+        },
+        {
+            title: 'L\'Informateur de Bourgogne',
+            url: 'https://linformateurdebourgogne.com/',
+            mobileUrl: 'https://linformateurdebourgogne.com/',
+            isDefault: true
+        },
+        {
+            title: 'Le JSL',
+            url: 'https://www.lejsl.com/edition-montceau-les-mines',
+            mobileUrl: 'https://www.lejsl.com/edition-montceau-les-mines',
+            isDefault: true
+        },
+        {
+            title: 'Creusot Infos',
+            url: 'https://www.creusot-infos.com',
+            mobileUrl: 'https://www.creusot-infos.com/?m=1',
+            isDefault: true
         }
+    ];
+
+    // Créer les tuiles d'actualités
+    newsDefaultSites.forEach(site => {
+        const tile = this.createTile(site);
+        this.tileContainer.appendChild(tile);
+    });
+
+    // Séparateur Radio
+    const separator1 = document.createElement('div');
+    separator1.className = 'separator';
+    separator1.textContent = '⎯⎯⎯  Radio  ⎯⎯⎯';
+    this.tileContainer.appendChild(separator1);
+
+    // Section Radio
+    const radioSites = [
+        {
+            title: 'France Bleu Bourgogne',
+            url: 'https://www.radio-en-ligne.fr/france-bleu-bourgogne',
+            mobileUrl: 'https://www.radio-en-ligne.fr/france-bleu-bourgogne',
+            isDefault: true
+        },
+        {
+            title: 'Radio Sans Pub',
+            url: 'https://www.radio-en-ligne.fr/radio-sans-pub/',
+            mobileUrl: 'https://www.radio-en-ligne.fr/radio-sans-pub/',
+            isDefault: true
+        }
+    ];
+
+    radioSites.forEach(site => {
+        const tile = this.createTile(site);
+        this.tileContainer.appendChild(tile);
+    });
+
+    // Séparateur TV
+    const separator2 = document.createElement('div');
+    separator2.className = 'separator';
+    separator2.textContent = '⎯⎯⎯  TV en Direct  ⎯⎯⎯';
+    this.tileContainer.appendChild(separator2);
+
+    // Section TV
+    const tvSites = [
+        {
+            title: 'France 3 Bourgogne',
+            url: 'https://www.francebleu.fr/tv/direct/bourgogne',
+            mobileUrl: 'https://www.francebleu.fr/tv/direct/bourgogne',
+            isDefault: true
+        },
+        {
+            title: 'BFMTV',
+            url: 'https://www.bfmtv.com/en-direct/',
+            mobileUrl: 'https://www.bfmtv.com/en-direct/',
+            isDefault: true
+        },
+        {
+            title: 'FranceTV Info',
+            url: 'https://www.francetvinfo.fr/en-direct/tv.html',
+            mobileUrl: 'https://www.francetvinfo.fr/en-direct/tv.html',
+            isDefault: true
+        }
+    ];
+
+    tvSites.forEach(site => {
+        const tile = this.createTile(site);
+        this.tileContainer.appendChild(tile);
+    });
+
+    // Séparateur Réseaux Sociaux
+    const separator3 = document.createElement('div');
+    separator3.className = 'separator';
+    separator3.textContent = '⎯⎯⎯  Réseaux Sociaux  ⎯⎯⎯';
+    this.tileContainer.appendChild(separator3);
+
+    // Section Réseaux Sociaux
+    const socialSites = [
+        {
+            title: 'YouTube',
+            url: 'https://www.youtube.com/feed/trending',
+            mobileUrl: 'https://www.youtube.com/feed/trending',
+            isDefault: true
+        },
+        {
+            title: 'TikTok',
+            url: 'https://www.tiktok.com/discover?lang=fr',
+            mobileUrl: 'https://www.tiktok.com/discover?lang=fr',
+            isDefault: true
+        }
+    ];
+
+    socialSites.forEach(site => {
+        const tile = this.createTile(site);
+        this.tileContainer.appendChild(tile);
+    });
+
+    // Sites personnalisés
+    try {
+        const saved = localStorage.getItem('customSites');
+        if (saved) {
+            const customSites = JSON.parse(saved);
+            if (Array.isArray(customSites) && customSites.length > 0) {
+                const separator = document.createElement('div');
+                separator.className = 'separator';
+                separator.textContent = '⎯⎯⎯  Sites Personnalisés  ⎯⎯⎯';
+                this.tileContainer.appendChild(separator);
+
+                customSites.forEach(site => {
+                    const tile = this.createTile({...site, isDefault: false});
+                    this.tileContainer.appendChild(tile);
+                });
+            }
+        }
+    } catch (error) {
+        console.error('Erreur chargement sites personnalisés:', error);
+        this.showToast('Erreur lors du chargement des sites personnalisés');
     }
+}
 
     createTile(site) {
         const tile = document.createElement('div');
