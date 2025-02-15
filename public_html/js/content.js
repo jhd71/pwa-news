@@ -3,6 +3,7 @@ class ContentManager {
         this.tileContainer = null;
         this.isDarkMode = localStorage.getItem('theme') === 'dark';
         this.fontSize = localStorage.getItem('fontSize') || 'normal';
+        this.deferredPrompt = null;
     }
 
     init() {
@@ -19,7 +20,7 @@ class ContentManager {
             console.error('Container de tuiles non trouvé');
             return;
         }
-        
+
         this.setupEventListeners();
         this.setupLayout();
         this.setupTheme();
@@ -31,10 +32,10 @@ class ContentManager {
         // Gestion du menu
         const menuButton = document.getElementById('menuButton');
         const sidebar = document.getElementById('sidebar');
-        
+
         if (menuButton && sidebar) {
             const sidebarCloseBtn = sidebar.querySelector('.close-btn');
-            
+
             menuButton.addEventListener('click', () => {
                 sidebar.classList.toggle('open');
             });
@@ -47,26 +48,22 @@ class ContentManager {
 
             document.addEventListener('click', (e) => {
                 if (sidebar.classList.contains('open') &&
-                    !sidebar.contains(e.target) && 
+                    !sidebar.contains(e.target) &&
                     !menuButton.contains(e.target)) {
                     sidebar.classList.remove('open');
                 }
             });
         }
-// Gestion des boutons
+
+        // Boutons de navigation
         const darkModeToggle = document.getElementById('darkModeToggle');
         if (darkModeToggle) {
-            darkModeToggle.addEventListener('click', () => this.toggleDarkMode());
+            darkModeToggle.addEventListener('click', this.toggleDarkMode.bind(this));
         }
 
         const layoutToggle = document.getElementById('layoutToggle');
         if (layoutToggle) {
-            layoutToggle.addEventListener('click', () => this.toggleLayout());
-        }
-
-        const helpBtn = document.getElementById('helpBtn');
-        if (helpBtn) {
-            helpBtn.addEventListener('click', () => this.showHelp());
+            layoutToggle.addEventListener('click', this.toggleLayout.bind(this));
         }
 
         const settingsButton = document.getElementById('settingsButton');
@@ -74,22 +71,53 @@ class ContentManager {
             settingsButton.addEventListener('click', () => {
                 const existingPanel = document.querySelector('.settings-menu');
                 if (existingPanel) {
-                    existingPanel.remove();
+                    existingPanel.classList.remove('open');
+                    setTimeout(() => {
+                        existingPanel.remove();
+                    }, 300);
                 }
                 this.showSettings();
             });
         }
 
-        const searchForm = document.getElementById('searchForm');
-        if (searchForm) {
-            searchForm.addEventListener('submit', (e) => this.handleSearch(e));
-        }
-
         const addSiteBtn = document.getElementById('addSiteBtn');
         if (addSiteBtn) {
-            addSiteBtn.addEventListener('click', () => this.showAddSiteDialog());
+            addSiteBtn.addEventListener('click', this.showAddSiteDialog.bind(this));
         }
-    }
+
+        // Installation PWA
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            this.deferredPrompt = e;
+            const menuInstall = document.getElementById('menuInstall');
+            if (menuInstall) {
+                menuInstall.classList.add('visible');
+                menuInstall.addEventListener('click', () => {
+                    if (this.deferredPrompt) {
+                        this.deferredPrompt.prompt();
+                        this.deferredPrompt.userChoice.then((choiceResult) => {
+                            if (choiceResult.outcome === 'accepted') {
+                                console.log('Application installée');
+                                menuInstall.classList.remove('visible');
+                            }
+                            this.deferredPrompt = null;
+                        }).catch((error) => {
+                            console.error('Erreur lors du choix de l\'utilisateur:', error);
+                            this.showToast('Erreur lors de l\'installation de l\'application');
+                        });
+                    }
+                });
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            this.deferredPrompt = null;
+            const menuInstall = document.getElementById('menuInstall');
+            if (menuInstall) {
+                menuInstall.classList.remove('visible');
+            }
+        });
+    } // <-- Ajout de l'accolade fermante
 
     setupLayout() {
         const savedLayout = localStorage.getItem('layout') || 'grid';
@@ -106,153 +134,7 @@ class ContentManager {
         document.documentElement.setAttribute('data-font-size', this.fontSize);
     }
 
-    handleSearch(e) {
-        const searchInput = document.getElementById('searchInput');
-        if (!searchInput.value.trim()) {
-            e.preventDefault();
-            this.showToast('Veuillez saisir un terme de recherche');
-        }
-    }
-
-    showSettings() {
-    const existingPanel = document.querySelector('.settings-menu');
-    if (existingPanel) {
-        existingPanel.classList.remove('open');
-        setTimeout(() => {
-            existingPanel.remove();
-        }, 300);
-        return;
-    }
-
-    const panel = document.createElement('div');
-    panel.className = 'settings-menu';
-    panel.innerHTML = `
-        <div class="settings-header">
-            <h3>Paramètres</h3>
-            <button type="button" class="close-btn">
-                <span class="material-icons">close</span>
-            </button>
-        </div>
-        <div class="settings-content">
-            <div class="settings-section">
-                <h4>Taille du texte</h4>
-                <div class="font-size-tiles">
-                    <div class="font-size-tile ${this.fontSize === 'small' ? 'active' : ''}" data-font-size="small">
-                        <span>Petit</span>
-                    </div>
-                    <div class="font-size-tile ${this.fontSize === 'normal' ? 'active' : ''}" data-font-size="normal">
-                        <span>Normal</span>
-                    </div>
-                    <div class="font-size-tile ${this.fontSize === 'large' ? 'active' : ''}" data-font-size="large">
-                        <span>Grand</span>
-                    </div>
-                </div>
-            </div>
-            <div class="settings-section">
-                <h4>À propos</h4>
-                <p class="version-text">Version 1.2</p>
-                <div style="text-align: center; padding: 15px;">
-                    <img src="images/qrcode.png" alt="QR Code" style="max-width: 200px; width: 100%; height: auto;">
-                </div>
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(panel);
-    
-    // Ajouter la classe open après un court délai pour déclencher l'animation
-    requestAnimationFrame(() => {
-        panel.classList.add('open');
-    });
-
-    // Gestionnaire pour la fermeture
-    const closeBtn = panel.querySelector('.close-btn');
-    if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
-            panel.classList.remove('open');
-            setTimeout(() => {
-                panel.remove();
-            }, 300);
-        });
-    }
-
-    // Gestionnaire pour les tuiles de taille
-    panel.querySelectorAll('.font-size-tile').forEach(tile => {
-        tile.addEventListener('click', () => {
-            const size = tile.dataset.fontSize;
-            this.changeFontSize(size);
-            panel.querySelectorAll('.font-size-tile').forEach(t => {
-                t.classList.toggle('active', t.dataset.fontSize === size);
-            });
-        });
-    });
-
-    // Fermeture lors du clic en dehors
-    document.addEventListener('click', (e) => {
-        if (!panel.contains(e.target) && !e.target.closest('#settingsButton')) {
-            panel.classList.remove('open');
-            setTimeout(() => {
-                panel.remove();
-            }, 300);
-        }
-    }, { capture: true });
-}
-
-// Assurez-vous que ces méthodes sont présentes dans votre classe
-toggleDarkMode() {
-    this.isDarkMode = !this.isDarkMode;
-    const newTheme = this.isDarkMode ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    this.updateThemeIcon(this.isDarkMode);
-    this.showToast(`Mode ${this.isDarkMode ? 'sombre' : 'clair'} activé`);
-}
-
-updateThemeIcon(isDark) {
-    const themeButton = document.getElementById('darkModeToggle');
-    if (themeButton) {
-        const icon = themeButton.querySelector('.material-icons');
-        const text = themeButton.querySelector('span:not(.material-icons)');
-        if (icon) icon.textContent = isDark ? 'light_mode' : 'dark_mode';
-        if (text) text.textContent = isDark ? 'Clair' : 'Sombre';
-    }
-}
-
-changeFontSize(size) {
-    this.fontSize = size;
-    localStorage.setItem('fontSize', size);
-    document.documentElement.setAttribute('data-font-size', size);
-    this.showToast(`Taille de texte : ${
-        size === 'small' ? 'petite' :
-        size === 'normal' ? 'normale' :
-        'grande'
-    }`);
-}
-
-updateLayoutIcon(layout) {
-    const layoutButton = document.getElementById('layoutToggle');
-    if (layoutButton) {
-        const icon = layoutButton.querySelector('.material-icons');
-        const text = layoutButton.querySelector('span:not(.material-icons)');
-        if (icon && text) {
-            switch (layout) {
-                case 'grid':
-                    icon.textContent = 'grid_view';
-                    text.textContent = 'Grille';
-                    break;
-                case 'large':
-                    icon.textContent = 'view_module';
-                    text.textContent = 'Grandes';
-                    break;
-                case 'list':
-                    icon.textContent = 'view_list';
-                    text.textContent = 'Liste';
-                    break;
-            }
-        }
-    }
-}
-setupTiles() {
+    setupTiles() {
         if (!this.tileContainer) return;
 
         this.tileContainer.innerHTML = '';
@@ -303,13 +185,11 @@ setupTiles() {
             if (saved) {
                 const customSites = JSON.parse(saved);
                 if (Array.isArray(customSites) && customSites.length > 0) {
-                    // Ajouter le séparateur
                     const separator = document.createElement('div');
                     separator.className = 'separator';
                     separator.textContent = '⎯⎯⎯  Autres sites  ⎯⎯⎯';
                     this.tileContainer.appendChild(separator);
 
-                    // Ajouter les sites personnalisés
                     customSites.forEach(site => {
                         const tile = this.createTile({...site, isDefault: false});
                         this.tileContainer.appendChild(tile);
@@ -322,61 +202,7 @@ setupTiles() {
         }
     }
 
-    async showAddSiteDialog() {
-        // Demander le titre
-        const title = prompt('Nom du site :');
-        if (!title || title.trim() === '') {
-            this.showToast('Le nom du site est obligatoire');
-            return;
-        }
-
-        // Demander et valider l'URL principale
-        let url = prompt('URL du site (doit commencer par https://) :');
-        if (!this.validateUrl(url)) {
-            this.showToast('URL invalide. L\'URL doit commencer par https://');
-            return;
-        }
-
-        // URL mobile optionnelle
-        let mobileUrl = prompt('URL version mobile (optionnel, doit commencer par https://) :');
-        if (mobileUrl && !this.validateUrl(mobileUrl)) {
-            this.showToast('URL mobile invalide. L\'URL doit commencer par https://');
-            return;
-        }
-
-        try {
-            // Charger les sites existants
-            let customSites = [];
-            const saved = localStorage.getItem('customSites');
-            if (saved) {
-                customSites = JSON.parse(saved);
-            }
-            if (!Array.isArray(customSites)) {
-                customSites = [];
-            }
-
-            // Créer le nouveau site
-            const newSite = {
-                title: title.trim(),
-                url: url.trim(),
-                mobileUrl: (mobileUrl || url).trim(),
-                isDefault: false,
-                timestamp: Date.now()
-            };
-
-            // Ajouter et sauvegarder
-            customSites.push(newSite);
-            localStorage.setItem('customSites', JSON.stringify(customSites));
-
-            // Rafraîchir l'affichage
-            this.setupTiles();
-            this.showToast('Site ajouté avec succès');
-        } catch (error) {
-            console.error('Erreur ajout site:', error);
-            this.showToast('Erreur lors de l\'ajout du site');
-        }
-    }
-createTile(site) {
+    createTile(site) {
         const tile = document.createElement('div');
         tile.className = 'tile';
         tile.innerHTML = `
@@ -423,20 +249,6 @@ createTile(site) {
         return tile;
     }
 
-    validateUrl(url) {
-        if (!url) return false;
-        url = url.trim();
-        if (!url.startsWith('https://')) {
-            return false;
-        }
-        try {
-            new URL(url);
-            return true;
-        } catch {
-            return false;
-        }
-    }
-
     showTileMenu(tile, site, x, y) {
         const existingMenu = document.querySelector('.tile-menu');
         if (existingMenu) {
@@ -471,10 +283,9 @@ createTile(site) {
                 Version bureau
             </button>
         `;
-
         document.body.appendChild(menu);
 
-        // Ajuster la position du menu
+        // Position du menu
         const menuRect = menu.getBoundingClientRect();
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
@@ -489,17 +300,17 @@ createTile(site) {
         menu.style.left = `${menuX}px`;
         menu.style.top = `${menuY}px`;
 
-        // Gestionnaire d'événements du menu
-        menu.addEventListener('click', async (e) => {
+        // Gestionnaire d'événements
+        menu.addEventListener('click', (e) => {
             const button = e.target.closest('button');
             if (!button) return;
 
             menu.remove();
 
             if (button.classList.contains('edit')) {
-                await this.editSite(site);
+                this.editSite(site);
             } else if (button.classList.contains('delete')) {
-                await this.deleteSite(site);
+                this.deleteSite(site);
             } else if (button.classList.contains('open-mobile')) {
                 window.open(site.mobileUrl || site.url, '_blank');
             } else if (button.classList.contains('open-desktop')) {
@@ -507,14 +318,14 @@ createTile(site) {
             }
         });
 
-        // Fermer au clic en dehors
         document.addEventListener('click', (e) => {
             if (!menu.contains(e.target)) {
                 menu.remove();
             }
         }, { once: true });
     }
-editSite(site) {
+
+    editSite(site) {
         if (site.isDefault) {
             this.showToast('Les sites par défaut ne peuvent pas être modifiés');
             return;
@@ -537,7 +348,6 @@ editSite(site) {
             this.showToast('URL mobile invalide. L\'URL doit commencer par https://');
             return;
         }
-
         try {
             const customSites = JSON.parse(localStorage.getItem('customSites') || '[]');
             const siteIndex = customSites.findIndex(s => s.url === site.url && s.title === site.title);
@@ -572,7 +382,7 @@ editSite(site) {
 
         try {
             const customSites = JSON.parse(localStorage.getItem('customSites') || '[]');
-            const updatedSites = customSites.filter(s => 
+            const updatedSites = customSites.filter(s =>
                 !(s.url === site.url && s.title === site.title)
             );
 
@@ -582,6 +392,20 @@ editSite(site) {
         } catch (error) {
             console.error('Erreur lors de la suppression:', error);
             this.showToast('Erreur lors de la suppression du site');
+        }
+    }
+
+    validateUrl(url) {
+        if (!url) return false;
+        url = url.trim();
+        if (!url.startsWith('https://')) {
+            return false;
+        }
+        try {
+            new URL(url);
+            return true;
+        } catch {
+            return false;
         }
     }
 
@@ -602,6 +426,107 @@ editSite(site) {
         }, 3000);
     }
 
+    showSettings() {
+        const existingPanel = document.querySelector('.settings-menu');
+        if (existingPanel) {
+            existingPanel.classList.remove('open');
+            setTimeout(() => {
+                existingPanel.remove();
+            }, 300);
+            return;
+        }
+
+        const panel = document.createElement('div');
+        panel.className = 'settings-menu';
+        panel.innerHTML = `
+            <div class="settings-header">
+                <h3>Paramètres</h3>
+                <button type="button" class="close-btn">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <div class="settings-content">
+                <div class="settings-section">
+                    <h4>Taille du texte</h4>
+                    <div class="font-size-tiles">
+                        <div class="font-size-tile ${this.fontSize === 'small' ? 'active' : ''}" data-font-size="small">
+                            <span>Petit</span>
+                        </div>
+                        <div class="font-size-tile ${this.fontSize === 'normal' ? 'active' : ''}" data-font-size="normal">
+                            <span>Normal</span>
+                        </div>
+                        <div class="font-size-tile ${this.fontSize === 'large' ? 'active' : ''}" data-font-size="large">
+                            <span>Grand</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h4>À propos</h4>
+                    <p class="version-text">Version 1.2</p>
+                    <div style="text-align: center; padding: 15px;">
+                        <img src="images/qrcode.png" alt="QR Code" style="max-width: 200px; width: 100%; height: auto;">
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(panel);
+        setTimeout(() => panel.classList.add('open'), 10);
+
+        const closeBtn = panel.querySelector('.close-btn');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                panel.classList.remove('open');
+                setTimeout(() => panel.remove(), 300);
+            });
+        }
+
+        panel.querySelectorAll('.font-size-tile').forEach(tile => {
+            tile.addEventListener('click', () => {
+                const size = tile.dataset.fontSize;
+                this.changeFontSize(size);
+                panel.querySelectorAll('.font-size-tile').forEach(t => {
+                    t.classList.toggle('active', t.dataset.fontSize === size);
+                });
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!panel.contains(e.target) && !e.target.closest('#settingsButton')) {
+                panel.classList.remove('open');
+                setTimeout(() => panel.remove(), 300);
+            }
+        }, { capture: true });
+    }
+
+    handleInstall() {
+        if (this.deferredPrompt) {
+            this.deferredPrompt.prompt();
+            this.deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('L\'utilisateur a accepté l\'installation');
+                    const menuInstall = document.getElementById('menuInstall');
+                    if (menuInstall) {
+                        menuInstall.classList.remove('visible');
+                    }
+                    this.showToast('Application installée avec succès');
+                }
+                this.deferredPrompt = null;
+            });
+        }
+    }
+
+    changeFontSize(size) {
+        this.fontSize = size;
+        localStorage.setItem('fontSize', size);
+        document.documentElement.setAttribute('data-font-size', size);
+        this.showToast(`Taille de texte : ${
+            size === 'small' ? 'petite' :
+            size === 'normal' ? 'normale' :
+            'grande'
+        }`);
+    }
+
     toggleDarkMode() {
         this.isDarkMode = !this.isDarkMode;
         const newTheme = this.isDarkMode ? 'dark' : 'light';
@@ -616,11 +541,11 @@ editSite(site) {
         const currentLayout = localStorage.getItem('layout') || 'grid';
         const currentIndex = layouts.indexOf(currentLayout);
         const nextLayout = layouts[(currentIndex + 1) % layouts.length];
-        
+
         this.setLayout(nextLayout);
         this.showToast(`Vue : ${
-            nextLayout === 'grid' ? 'grille' : 
-            nextLayout === 'large' ? 'grandes tuiles' : 
+            nextLayout === 'grid' ? 'grille' :
+            nextLayout === 'large' ? 'grandes tuiles' :
             'liste'
         }`);
     }
@@ -632,17 +557,6 @@ editSite(site) {
             localStorage.setItem('layout', layout);
             this.updateLayoutIcon(layout);
         }
-    }
-	
-    changeFontSize(size) {
-        this.fontSize = size;
-        localStorage.setItem('fontSize', size);
-        document.documentElement.setAttribute('data-font-size', size);
-        this.showToast(`Taille de texte : ${
-            size === 'small' ? 'petite' :
-            size === 'normal' ? 'normale' :
-            'grande'
-        }`);
     }
 
     updateLayoutIcon(layout) {
@@ -676,6 +590,53 @@ editSite(site) {
             const text = themeButton.querySelector('span:not(.material-icons)');
             if (icon) icon.textContent = isDark ? 'light_mode' : 'dark_mode';
             if (text) text.textContent = isDark ? 'Clair' : 'Sombre';
+        }
+    }
+
+    async showAddSiteDialog() {
+        const title = prompt('Nom du site :');
+        if (!title || title.trim() === '') {
+            this.showToast('Le nom du site est obligatoire');
+            return;
+        }
+
+        let url = prompt('URL du site (doit commencer par https://) :');
+        if (!this.validateUrl(url)) {
+            this.showToast('URL invalide. L\'URL doit commencer par https://');
+            return;
+        }
+
+        let mobileUrl = prompt('URL version mobile (optionnel, doit commencer par https://) :');
+        if (mobileUrl && !this.validateUrl(mobileUrl)) {
+            this.showToast('URL mobile invalide. L\'URL doit commencer par https://');
+            return;
+        }
+
+        try {
+            let customSites = [];
+            const saved = localStorage.getItem('customSites');
+            if (saved) {
+                customSites = JSON.parse(saved);
+            }
+            if (!Array.isArray(customSites)) {
+                customSites = [];
+            }
+
+            const newSite = {
+                title: title.trim(),
+                url: url.trim(),
+                mobileUrl: (mobileUrl || url).trim(),
+                isDefault: false,
+                timestamp: Date.now()
+            };
+
+            customSites.push(newSite);
+            localStorage.setItem('customSites', JSON.stringify(customSites));
+            this.setupTiles();
+            this.showToast('Site ajouté avec succès');
+        } catch (error) {
+            console.error('Erreur ajout site:', error);
+            this.showToast('Erreur lors de l\'ajout du site');
         }
     }
 }
