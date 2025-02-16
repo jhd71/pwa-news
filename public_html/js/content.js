@@ -303,31 +303,44 @@ class ContentManager {
             this.showTileMenu(tile, site, e.clientX, e.clientY);
         });
 
-        // Gestion de l'appui long sur mobile
-        let longPressTimer;
-        let isLongPress = false;
+        // Gestion de l'appui long sur mobile avec détection du scroll
+let longPressTimer;
+let isLongPress = false;
+let isScrolling = false;
 
-        tile.addEventListener('touchstart', (e) => {
-            isLongPress = false;
-            longPressTimer = setTimeout(() => {
-                isLongPress = true;
-                const touch = e.touches[0];
-                this.showTileMenu(tile, site, touch.clientX, touch.clientY);
-            }, 500);
-        });
+// Détection du scroll (empêche l'affichage du menu si l'utilisateur scrolle)
+window.addEventListener('scroll', () => {
+    isScrolling = true;
+    setTimeout(() => { isScrolling = false; }, 200); // Réactive après 200ms
+});
 
-        tile.addEventListener('touchend', (e) => {
-            clearTimeout(longPressTimer);
-            if (isLongPress) {
-                e.preventDefault();
-            }
-        });
+tile.addEventListener('touchstart', (e) => {
+    isLongPress = false;
 
-        tile.addEventListener('touchmove', () => {
-            clearTimeout(longPressTimer);
-        });
+    // Démarre le timer SEULEMENT si l'utilisateur ne scrolle pas
+    longPressTimer = setTimeout(() => {
+        if (!isScrolling) { // Vérifie si l'utilisateur est en train de scroller
+            isLongPress = true;
+            const touch = e.touches[0];
+            this.showTileMenu(tile, site, touch.clientX, touch.clientY);
+        }
+    }, 500); // Temps d'appui long avant affichage du menu
+});
 
-        return tile;
+tile.addEventListener('touchend', (e) => {
+    clearTimeout(longPressTimer);
+    if (isLongPress) {
+        e.preventDefault();
+    }
+});
+
+tile.addEventListener('touchmove', () => {
+    clearTimeout(longPressTimer);
+    isScrolling = true; // Empêche le menu si l'utilisateur bouge le doigt
+});
+
+// Retourne l'élément modifié
+return tile;
     }
 
     showTileMenu(tile, site, x, y) {
