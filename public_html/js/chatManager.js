@@ -443,43 +443,80 @@ class ChatManager {
         }
     }
 
-    createMessageElement(message) {
-        const div = document.createElement('div');
-        div.className = `message ${message.pseudo === this.pseudo ? 'sent' : 'received'}`;
-        div.dataset.messageId = message.id;
+    formatMessageTime(timestamp) {
+    const date = new Date(timestamp);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
 
-        div.innerHTML = `
-            <div class="message-author">${message.pseudo}</div>
-            <div class="message-content">${this.escapeHtml(message.content)}</div>
-            <div class="message-time">${new Date(message.created_at).toLocaleTimeString()}</div>
-        `;
+    // Format de l'heure
+    const time = date.toLocaleTimeString('fr-FR', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
 
-        if (this.isAdmin || message.pseudo === this.pseudo) {
-            div.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
-                this.showMessageOptions(message, e.clientX, e.clientY);
-            });
-
-            let touchTimeout;
-            div.addEventListener('touchstart', (e) => {
-                touchTimeout = setTimeout(() => {
-                    e.preventDefault();
-                    const touch = e.touches[0];
-                    this.showMessageOptions(message, touch.clientX, touch.clientY);
-                }, 500);
-            });
-
-            div.addEventListener('touchend', () => {
-                clearTimeout(touchTimeout);
-            });
-
-            div.addEventListener('touchmove', () => {
-                clearTimeout(touchTimeout);
-            });
-        }
-
-        return div;
+    let dateText, icon;
+    
+    // Si c'est aujourd'hui
+    if (date.toDateString() === today.toDateString()) {
+        dateText = "Aujourd'hui";
+        icon = "today";
     }
+    // Si c'est hier
+    else if (date.toDateString() === yesterday.toDateString()) {
+        dateText = "Hier";
+        icon = "history";
+    }
+    // Pour les autres jours
+    else {
+        dateText = date.toLocaleDateString('fr-FR');
+        icon = "calendar_today";
+    }
+
+    return `
+        <span class="material-icons">${icon}</span>
+        <span class="date">${dateText}</span>
+        <span class="time">${time}</span>
+    `;
+}
+
+createMessageElement(message) {
+    const div = document.createElement('div');
+    div.className = `message ${message.pseudo === this.pseudo ? 'sent' : 'received'}`;
+    div.dataset.messageId = message.id;
+
+    div.innerHTML = `
+        <div class="message-author">${message.pseudo}</div>
+        <div class="message-content">${this.escapeHtml(message.content)}</div>
+        <div class="message-time">${this.formatMessageTime(message.created_at)}</div>
+    `;
+
+    if (this.isAdmin || message.pseudo === this.pseudo) {
+        div.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            this.showMessageOptions(message, e.clientX, e.clientY);
+        });
+
+        let touchTimeout;
+        div.addEventListener('touchstart', (e) => {
+            touchTimeout = setTimeout(() => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                this.showMessageOptions(message, touch.clientX, touch.clientY);
+            }, 500);
+        });
+
+        div.addEventListener('touchend', () => {
+            clearTimeout(touchTimeout);
+        });
+
+        div.addEventListener('touchmove', () => {
+            clearTimeout(touchTimeout);
+        });
+    }
+
+    return div;
+}
 
     async loadExistingMessages() {
         try {
