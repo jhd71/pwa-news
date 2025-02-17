@@ -1,8 +1,6 @@
-/* ==========================================================================
-    Variables de base
-    ========================================================================== */
+/* Variables de base */
 :root {
-    --chat-gradient: linear-gradient(145deg, #1a237e, #283593);
+    --chat-gradient: linear-gradient(145deg, #7E57C2, #9575CD);
     --chat-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
     --chat-border: 1px solid rgba(255, 255, 255, 0.1);
     --chat-input-bg: rgba(255, 255, 255, 0.1);
@@ -12,6 +10,11 @@
     --chat-error: #f44336;
     --chat-success: #4CAF50;
     --chat-warning: #ff9800;
+}
+
+/* Mode sombre */
+[data-theme="dark"] {
+    --chat-gradient: linear-gradient(145deg, #1a237e, #283593);
 }
 /* ==========================================================================
     Styles globaux et utilitaires
@@ -380,10 +383,11 @@ font-smooth: always;
 }
 
 .message-author {
-    font-size: 0.8rem;
-    opacity: 0.8;
+    font-size: 0.9rem;
+    color: #f0ff67; /* Même couleur que l'horodatage pour la cohérence */
     margin-bottom: 4px;
     font-weight: 500;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
 }
 
 .message.received {
@@ -400,10 +404,28 @@ font-smooth: always;
 }
 
 .message-time {
-    font-size: 0.7rem;
-    opacity: 0.7;
+    font-size: 0.8rem; /* Légèrement plus grand */
     margin-top: 4px;
     text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    color: rgba(255, 255, 255, 0.9); /* Texte plus blanc et plus opaque */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Ombre pour améliorer la lisibilité */
+}
+
+.message-time .date {
+    color: #f0ff67; /* Orange clair pour la date */
+}
+
+.message-time .time {
+    color: #81D4FA; /* Bleu clair pour l'heure */
+}
+
+.message-time .material-icons {
+    font-size: 14px;
+    opacity: 0.9;
 }
 
 /* Zone de saisie */
@@ -418,13 +440,19 @@ font-smooth: always;
 
 .chat-input input {
     flex: 1;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 25px;
     padding: 12px 20px;
     color: white;
     outline: none;
-    transition: all 0.3s ease;
+    min-height: 45px; /* Hauteur minimale */
+    max-height: 80px; /* Hauteur maximale */
+    overflow-y: auto; /* Permet le défilement */
+    resize: none; /* Empêche le redimensionnement manuel */
+    line-height: 1.4; /* Meilleur espacement des lignes */
+    white-space: pre-wrap; /* Préserve les sauts de ligne */
+    word-wrap: break-word; /* Permet le retour à la ligne des mots longs */
 }
 
 .chat-input input::placeholder {
@@ -501,15 +529,49 @@ font-smooth: always;
     width: 80%;
     max-width: 500px;
     max-height: 70vh;
-    background: var(--chat-gradient); /* Utilise le thème défini */
-    border-radius: 16px; /* Coins arrondis */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25); /* Ombre plus marquée */
-    color: white; /* Couleur du texte */
+    background: var(--chat-gradient);
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    color: white;
     z-index: 1010;
-    padding: 20px; /* Marges internes */
-    overflow-y: auto; /* Permet de scroller si le contenu dépasse */
-    border: 1px solid rgba(255, 255, 255, 0.2); /* Bordure subtile */
-    animation: fadeIn 0.3s ease; /* Animation d'apparition */
+    padding: 20px;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: fadeIn 0.3s ease;
+}
+
+/* Tous les inputs du panel admin */
+.admin-panel input,
+.admin-panel select,
+.admin-panel textarea {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+
+/* Labels et textes */
+.admin-panel label,
+.admin-panel h3,
+.admin-panel .panel-text {
+    color: white;
+    opacity: 0.9;
+}
+
+/* Boutons du panel */
+.admin-panel button {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.admin-panel button:hover {
+    background: rgba(255, 255, 255, 0.3);
 }
 
 /* Animation pour l'apparition */
@@ -876,7 +938,7 @@ body.admin-panel-open::before {
 
 /* États actifs des boutons */
 .header-buttons button.enabled {
-    background: var(--chat-message-sent);
+    background: var(--chat-success);
 }
 
 /* Styles pour le panel admin */
@@ -889,10 +951,21 @@ body.admin-panel-open::before {
 .add-word input {
     flex: 1;
     padding: 8px 12px;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Bordure plus visible */
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.15); /* Fond légèrement plus clair */
+    color: white; /* Texte en blanc */
+}
+
+.add-word input::placeholder {
+    color: rgba(255, 255, 255, 0.7); /* Placeholder plus visible */
+    opacity: 1; /* Assure la visibilité du placeholder */
+}
+
+.add-word input:focus {
+    outline: none;
+    border-color: white;
+    background: rgba(255, 255, 255, 0.2); /* Fond encore plus clair au focus */
 }
 
 .add-word button {
