@@ -81,7 +81,7 @@ body {
     left: 0;
     right: 0;
     height: var(--header-height);
-    background-color: var(--primary-color);
+    background-color: var(--primary-color); /* Utilisera la couleur du thème */
     color: white;
     display: flex;
     align-items: center;
@@ -100,6 +100,12 @@ body {
     white-space: nowrap;
     color: white;
     text-shadow: 1px 1px 0 black, -1px 1px 0 black, 1px -1px 0 black, -1px -1px 0 black;
+}
+
+.site-logo {
+    height: 80px; /* Ajustez selon vos besoins */
+    width: auto;
+    filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.3));
 }
 
 .menu-button {
@@ -430,12 +436,31 @@ main {
 .separator {
     grid-column: 1 / -1;
     text-align: center;
-    color: rgba(255, 255, 255, 0.9);
-    padding: 12px 0;
-    font-size: var(--menu-text-size);
-    margin: 5px 0;
+    padding: 2px 0;
+    margin: 3px 0;
     background-color: var(--primary-color);
-    border-radius: 8px;
+    border-radius: 12px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--menu-text-size);
+}
+
+.separator::before,
+.separator::after {
+    content: '';
+    height: 1px;
+    background-color: white;
+    flex: 1;
+    margin: 0 15px;
+}
+
+/* Ajoutez ces nouvelles règles ici */
+.separator img {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
 }
 
 /* Mode sombre */
@@ -498,13 +523,14 @@ main {
 }
 
 .tile-title {
-    font-size: var(--tile-title-size);
-    font-weight: 500;
+    font-size: 20px; /* Réduit de la taille actuelle */
+    font-weight: 600; /* Un peu plus gras */
     color: white;
     text-align: center;
     width: 100%;
-	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7), 
-                 -1px -1px 3px rgba(255, 255, 255, 0.3);
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5); /* Ombre plus subtile */
+    line-height: 1.2; /* Meilleur espacement entre les lignes */
+    padding: 0 8px; /* Espacement sur les côtés */
 }
 
 /* Pour le menu paramètres */
@@ -852,11 +878,20 @@ img {
 
 /* Responsive Design */
 @media (max-width: 600px) {
-    /* Header et Navigation */
-    .site-title {
-        font-size: 16px;
+    .site-logo {
+        height: 30px;
     }
-
+	
+@media (max-width: 600px) {
+    .tile-title {
+        font-size: 16px;
+    }	
+	
+@media (max-width: 600px) {
+    .separator img {
+        height: 20px;
+    }
+	
     .menu-button,
     .settings-button {
         width: 40px;
