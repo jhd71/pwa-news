@@ -138,7 +138,11 @@ class ContentManager {
     if (!this.tileContainer) return;
 
     this.tileContainer.innerHTML = '';
-
+// Séparateur Actualités
+const separator0 = document.createElement('div');
+separator0.className = 'separator';
+separator0.innerHTML = `<img src="images/ActualitesLocales.png" alt="Actualités Locales" class="separator-img">`;
+this.tileContainer.appendChild(separator0);
     // Actualités locales
     const newsDefaultSites = [
         {
@@ -174,10 +178,10 @@ class ContentManager {
     });
 
     // Séparateur Radio
-    const separator1 = document.createElement('div');
-    separator1.className = 'separator';
-    separator1.textContent = '⎯⎯⎯  Radio  ⎯⎯⎯';
-    this.tileContainer.appendChild(separator1);
+const separator1 = document.createElement('div');
+separator1.className = 'separator';
+separator1.innerHTML = `<img src="images/Radio.png" alt="Radio" class="separator-img">`;
+this.tileContainer.appendChild(separator1);
 
     // Section Radio
     const radioSites = [
@@ -201,10 +205,10 @@ class ContentManager {
     });
 
     // Séparateur TV
-    const separator2 = document.createElement('div');
-    separator2.className = 'separator';
-    separator2.textContent = '⎯⎯⎯  TV en Direct  ⎯⎯⎯';
-    this.tileContainer.appendChild(separator2);
+const separator2 = document.createElement('div');
+separator2.className = 'separator';
+separator2.innerHTML = `<img src="images/TVenDirect.png" alt="TV en Direct" class="separator-img">`;
+this.tileContainer.appendChild(separator2);
 
     // Section TV
     const tvSites = [
@@ -234,10 +238,10 @@ class ContentManager {
     });
 
     // Séparateur Réseaux Sociaux
-    const separator3 = document.createElement('div');
-    separator3.className = 'separator';
-    separator3.textContent = '⎯⎯⎯  Réseaux Sociaux  ⎯⎯⎯';
-    this.tileContainer.appendChild(separator3);
+const separator3 = document.createElement('div');
+separator3.className = 'separator';
+separator3.innerHTML = `<img src="images/ReseauxSociaux.png" alt="Réseaux Sociaux" class="separator-img">`;
+this.tileContainer.appendChild(separator3);
 
     // Section Réseaux Sociaux
     const socialSites = [
