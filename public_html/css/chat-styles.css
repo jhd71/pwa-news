@@ -32,7 +32,6 @@
     word-wrap: normal;
     direction: ltr;
     /* ✅ Version standard */
-font-smooth: always;
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
@@ -673,7 +672,7 @@ body.admin-panel-open::before {
 }
 
 .ban-duration {
-    background-color: var(--chat-gradient) !important;
+    background: var(--chat-gradient) !important; /* Utilise `background` au lieu de `background-color` */
     color: white !important;
 }
 
@@ -907,8 +906,8 @@ body.admin-panel-open::before {
 
     .notification-popup {
         left: 20px;
-        right: 20px
-        max-width none;
+        right: 20px;
+        max-width: none;
     }
 
     .moderate-menu {
