@@ -11,7 +11,6 @@
     --chat-success: #4CAF50;
     --chat-warning: #ff9800;
 }
-
 /* Mode sombre */
 [data-theme="dark"] {
     --chat-gradient: linear-gradient(145deg, #1a237e, #283593);
@@ -329,6 +328,7 @@ font-smooth: always;
     gap: 10px;
     background: rgba(0, 0, 0, 0.2);
     scroll-behavior: smooth;
+	color: white !important; /* Force le texte en blanc */
 }
 
 .chat-messages::-webkit-scrollbar {
@@ -390,17 +390,18 @@ font-smooth: always;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
 }
 
+/* Messages des autres utilisateurs */
 .message.received {
-    background: #2e7d32; /* Fond vert plus sombre */
-    color: white; /* Texte blanc */
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* Amélioration de la lisibilité */
+    background: #4a148c; /* Violet foncé */
+    align-self: flex-start;
+    margin-right: 20%;
 }
 
+/* Vos messages */
 .message.sent {
-    background: #2e7d32;
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.2); /* Bordure claire */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Ombre subtile */
+    background: #2e7d32; /* Vert */
+    align-self: flex-end;
+    margin-left: 20%;
 }
 
 .message-time {
@@ -438,7 +439,7 @@ font-smooth: always;
     align-items: center;
 }
 
-.chat-input input {
+.chat-input textarea {
     flex: 1;
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -446,16 +447,16 @@ font-smooth: always;
     padding: 12px 20px;
     color: white;
     outline: none;
-    min-height: 45px; /* Hauteur minimale */
-    max-height: 80px; /* Hauteur maximale */
-    overflow-y: auto; /* Permet le défilement */
-    resize: none; /* Empêche le redimensionnement manuel */
-    line-height: 1.4; /* Meilleur espacement des lignes */
-    white-space: pre-wrap; /* Préserve les sauts de ligne */
-    word-wrap: break-word; /* Permet le retour à la ligne des mots longs */
+    min-height: 45px;
+    max-height: 120px; /* Empêche un champ trop grand */
+    overflow-y: auto; /* Active le défilement si le texte devient trop long */
+    resize: none; /* Empêche l'utilisateur de redimensionner */
+    line-height: 1.4; /* Espacement des lignes */
+    white-space: pre-wrap; /* Préserve les retours à la ligne */
+    word-wrap: break-word; /* Permet le retour à la ligne automatique */
 }
 
-.chat-input input::placeholder {
+.chat-input textarea::placeholder {
     color: rgba(255, 255, 255, 0.5);
 }
 
