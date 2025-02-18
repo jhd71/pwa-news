@@ -162,43 +162,44 @@ class ChatManager {
     }
 
     getChatHTML() {
-        return `
-            <button class="chat-toggle" title="Ouvrir le chat">
-                <span class="material-icons">chat</span>
-                <span class="notification-badge hidden">${this.unreadCount}</span>
-            </button>
-            <div class="chat-container">
-                <div class="chat-header">
-                    <div class="header-title">Chat - ${this.pseudo}</div>
-                    <div class="header-buttons">
-                        ${this.isAdmin ? `
-                            <button class="admin-panel-btn" title="Panel Admin">
-                                <span class="material-icons">admin_panel_settings</span>
-                            </button>
-                        ` : ''}
-                        <button class="notifications-btn ${this.notificationsEnabled ? 'enabled' : ''}" title="Notifications">
-                            <span class="material-icons">${this.notificationsEnabled ? 'notifications_active' : 'notifications_off'}</span>
+    return `
+        <button class="chat-toggle" title="Ouvrir le chat">
+            <span class="material-icons">chat</span>
+            <span class="notification-badge hidden">${this.unreadCount}</span>
+        </button>
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="header-title">Chat - ${this.pseudo}</div>
+                <div class="header-buttons">
+                    ${this.isAdmin ? `
+                        <button class="admin-panel-btn" title="Panel Admin">
+                            <span class="material-icons">admin_panel_settings</span>
                         </button>
-                        <button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
-                            <span class="material-icons">${this.soundEnabled ? 'volume_up' : 'volume_off'}</span>
-                        </button>
-                        <button class="close-chat" title="Fermer">
-                            <span class="material-icons">close</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="chat-messages"></div>
-                <div class="chat-input">
-                    <input type="text" 
-                           placeholder="Votre message..." 
-                           maxlength="500">
-                    <button title="Envoyer">
-                        <span class="material-icons">send</span>
+                    ` : ''}
+                    <button class="notifications-btn ${this.notificationsEnabled ? 'enabled' : ''}" title="Notifications">
+                        <span class="material-icons">${this.notificationsEnabled ? 'notifications_active' : 'notifications_off'}</span>
+                    </button>
+                    <button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
+                        <span class="material-icons">${this.soundEnabled ? 'volume_up' : 'volume_off'}</span>
+                    </button>
+                    <button class="close-chat" title="Fermer">
+                        <span class="material-icons">close</span>
                     </button>
                 </div>
             </div>
-        `;
-    }
+            <div class="chat-messages"></div>
+            <div class="chat-input">
+                <textarea 
+                    placeholder="Votre message..." 
+                    maxlength="500" 
+                    rows="2"></textarea>
+                <button title="Envoyer">
+                    <span class="material-icons">send</span>
+                </button>
+            </div>
+        </div>
+    `;
+}
 
     setupListeners() {
         const toggle = this.container.querySelector('.chat-toggle');
@@ -345,39 +346,41 @@ class ChatManager {
     }
 
     setupChatListeners() {
-        const input = this.container.querySelector('.chat-input input');
-        const sendBtn = this.container.querySelector('.chat-input button');
+    const input = this.container.querySelector('.chat-input textarea'); // Correction ici
+    const sendBtn = this.container.querySelector('.chat-input button');
 
-        if (input && sendBtn) {
-            const sendMessage = async () => {
-                const content = input.value.trim();
-                if (content) {
-                    if (await this.checkForBannedWords(content)) {
-                        this.showNotification('Message contient des mots interdits', 'error');
-                        this.playSound('error');
-                        return;
-                    }
-
-                    const success = await this.sendMessage(content);
-                    if (success) {
-                        input.value = '';
-                        input.focus();
-                        this.playSound('message');
-                    } else {
-                        this.playSound('error');
-                    }
+    if (input && sendBtn) {
+        const sendMessage = async () => {
+            const content = input.value.trim();
+            if (content) {
+                if (await this.checkForBannedWords(content)) {
+                    this.showNotification('Message contient des mots interdits', 'error');
+                    this.playSound('error');
+                    return;
                 }
-            };
 
-            sendBtn.addEventListener('click', sendMessage);
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
+                const success = await this.sendMessage(content);
+                if (success) {
+                    input.value = '';
+                    input.focus();
+                    this.playSound('message');
+                } else {
+                    this.playSound('error');
                 }
-            });
-        }
+            }
+        };
+
+        sendBtn.addEventListener('click', sendMessage);
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
     }
+}
+
 	setupRealtimeSubscription() {
         const channel = this.supabase.channel('messages');
         channel
