@@ -20,7 +20,7 @@ class ContentManager {
             console.error('Container de tuiles non trouvé');
             return;
         }
-
+document.documentElement.setAttribute('data-font-size', this.fontSize);
         this.setupEventListeners();
         this.setupLayout();
         this.setupTheme();
@@ -315,7 +315,7 @@ let isScrolling = false;
 // Détection du scroll (empêche l'affichage du menu si l'utilisateur scrolle)
 window.addEventListener('scroll', () => {
     isScrolling = true;
-    setTimeout(() => { isScrolling = false; }, 200); // Réactive après 200ms
+    setTimeout(() => { isScrolling = false; }, 400); // Réactive après 400ms
 });
 
 tile.addEventListener('touchstart', (e) => {
@@ -596,7 +596,27 @@ return tile;
             }
         }, { capture: true });
     }
-
+	
+changeFontSize(size) {
+    // Sauvegarder la nouvelle taille
+    this.fontSize = size;
+    localStorage.setItem('fontSize', size);
+    
+    // Appliquer la taille au document
+    document.documentElement.setAttribute('data-font-size', size);
+    
+    // Rafraîchir l'affichage
+    this.setupTiles();
+    
+    // Notification du changement
+    if (this.showToast) {
+        this.showToast(`Taille de texte : ${
+            size === 'small' ? 'petite' :
+            size === 'normal' ? 'normale' :
+            'grande'
+        }`);
+    }
+}
     handleInstall() {
         if (this.deferredPrompt) {
             this.deferredPrompt.prompt();
@@ -612,17 +632,6 @@ return tile;
                 this.deferredPrompt = null;
             });
         }
-    }
-
-    changeFontSize(size) {
-        this.fontSize = size;
-        localStorage.setItem('fontSize', size);
-        document.documentElement.setAttribute('data-font-size', size);
-        this.showToast(`Taille de texte : ${
-            size === 'small' ? 'petite' :
-            size === 'normal' ? 'normale' :
-            'grande'
-        }`);
     }
 
     toggleDarkMode() {
