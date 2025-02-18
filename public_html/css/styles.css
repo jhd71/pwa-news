@@ -806,6 +806,7 @@ main {
 .modal-body li {
     padding: 8px 0;
     font-size: var(--modal-text-size);
+}
 	/* Suite des styles Modal */
 
 /* Toast */
