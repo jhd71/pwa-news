@@ -8,6 +8,15 @@
     --shadow-color: rgba(0, 0, 0, 0.08);
     --header-height: 60px;
     --bottom-nav-height: 60px;
+	--tile-title-size: 20px;
+    --menu-text-size: 15px;
+    --separator-text-size: 15px;
+    --message-text-size: 15px;
+    --header-text-size: 20px;
+}
+/* Transition globale */
+* {
+    transition: font-size 0.3s ease;
 }
 
 [data-theme="dark"] {
@@ -25,23 +34,29 @@
 [data-theme="light"] .modal-content {
     color: white !important;
 }
-/* Font size variables (garder cette partie inchangée) */
+/* Tailles pour différentes options */
 [data-font-size="small"] {
-    --tile-title-size: 18px;
+    --tile-title-size: 16px;
     --menu-text-size: 13px;
-    --modal-text-size: 13px;
+    --separator-text-size: 13px;
+    --message-text-size: 13px;
+    --header-text-size: 18px;
 }
 
 [data-font-size="normal"] {
-    --tile-title-size: 20px;
+    --tile-title-size: 18px;
     --menu-text-size: 15px;
-    --modal-text-size: 15px;
+    --separator-text-size: 15px;
+    --message-text-size: 15px;
+    --header-text-size: 20px;
 }
 
 [data-font-size="large"] {
-    --tile-title-size: 22px;
+    --tile-title-size: 20px;
     --menu-text-size: 17px;
-    --modal-text-size: 17px;
+    --separator-text-size: 17px;
+    --message-text-size: 17px;
+    --header-text-size: 24px;
 }
 
 /* Thème sombre */
@@ -95,13 +110,16 @@ body {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 30px;
+    font-size: var(--header-text-size);
     font-weight: bold;
     white-space: nowrap;
     color: white;
     text-shadow: 1px 1px 0 black, -1px 1px 0 black, 1px -1px 0 black, -1px -1px 0 black;
 }
-
+/* Transition globale */
+* {
+    transition: font-size 0.3s ease;
+}
 .site-logo {
     height: 80px; /* Ajustez selon vos besoins */
     width: auto;
@@ -523,7 +541,7 @@ main {
 }
 
 .tile-title {
-    font-size: 20px; /* Réduit de la taille actuelle */
+    font-size: var(--tile-title-size); /* Réduit de la taille actuelle */
     font-weight: 600; /* Un peu plus gras */
     color: white;
     text-align: center;
@@ -603,13 +621,14 @@ main {
 }
 
 .font-size-tile:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
     transform: translateY(-2px);
 }
 
 .font-size-tile.active {
+    background: rgba(255, 255, 255, 0.2);
     border-color: white;
-    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
 }
 
 .font-size-tile span {
