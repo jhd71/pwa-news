@@ -644,51 +644,43 @@ changeFontSize(size) {
     }
 
     toggleLayout() {
-        const layouts = ['grid', 'large', 'list'];
-        const currentLayout = localStorage.getItem('layout') || 'grid';
-        const currentIndex = layouts.indexOf(currentLayout);
-        const nextLayout = layouts[(currentIndex + 1) % layouts.length];
+    // Simplifier avec seulement deux modes
+    const currentLayout = localStorage.getItem('layout') || 'grid';
+    const nextLayout = currentLayout === 'grid' ? 'list' : 'grid';
+    this.setLayout(nextLayout);
+    this.showToast(`Vue : ${nextLayout === 'grid' ? 'grille' : 'liste'}`);
+}
 
-        this.setLayout(nextLayout);
-        this.showToast(`Vue : ${
-            nextLayout === 'grid' ? 'grille' :
-            nextLayout === 'large' ? 'grandes tuiles' :
-            'liste'
-        }`);
+setLayout(layout) {
+    if (this.tileContainer) {
+        // Enlever 'large' des classes à supprimer
+        this.tileContainer.classList.remove('grid', 'list');
+        this.tileContainer.classList.add(layout);
+        localStorage.setItem('layout', layout);
+        this.updateLayoutIcon(layout);
     }
+}
 
-    setLayout(layout) {
-        if (this.tileContainer) {
-            this.tileContainer.classList.remove('grid', 'large', 'list');
-            this.tileContainer.classList.add(layout);
-            localStorage.setItem('layout', layout);
-            this.updateLayoutIcon(layout);
-        }
-    }
-
-    updateLayoutIcon(layout) {
-        const layoutButton = document.getElementById('layoutToggle');
-        if (layoutButton) {
-            const icon = layoutButton.querySelector('.material-icons');
-            const text = layoutButton.querySelector('span:not(.material-icons)');
-            if (icon && text) {
-                switch (layout) {
-                    case 'grid':
-                        icon.textContent = 'grid_view';
-                        text.textContent = 'Grille';
-                        break;
-                    case 'large':
-                        icon.textContent = 'view_module';
-                        text.textContent = 'Grandes';
-                        break;
-                    case 'list':
-                        icon.textContent = 'view_list';
-                        text.textContent = 'Liste';
-                        break;
-                }
+updateLayoutIcon(layout) {
+    const layoutButton = document.getElementById('layoutToggle');
+    if (layoutButton) {
+        const icon = layoutButton.querySelector('.material-icons');
+        const text = layoutButton.querySelector('span:not(.material-icons)');
+        if (icon && text) {
+            // Simplifier le switch avec seulement deux cas
+            switch (layout) {
+                case 'grid':
+                    icon.textContent = 'grid_view';
+                    text.textContent = 'Grille';
+                    break;
+                case 'list':
+                    icon.textContent = 'view_list';
+                    text.textContent = 'Liste';
+                    break;
             }
         }
     }
+}
 
     updateThemeIcon(isDark) {
         const themeButton = document.getElementById('darkModeToggle');
