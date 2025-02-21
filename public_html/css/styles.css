@@ -36,7 +36,7 @@
 }
 /* Tailles pour différentes options */
 [data-font-size="small"] {
-    --tile-title-size: 16px;
+    --tile-title-size: 17px;
     --menu-text-size: 13px;
     --separator-text-size: 13px;
     --message-text-size: 13px;
@@ -44,7 +44,7 @@
 }
 
 [data-font-size="normal"] {
-    --tile-title-size: 18px;
+    --tile-title-size: 19px;
     --menu-text-size: 15px;
     --separator-text-size: 15px;
     --message-text-size: 15px;
@@ -52,7 +52,7 @@
 }
 
 [data-font-size="large"] {
-    --tile-title-size: 20px;
+    --tile-title-size: 21px;
     --menu-text-size: 17px;
     --separator-text-size: 17px;
     --message-text-size: 17px;
@@ -96,13 +96,14 @@ body {
     left: 0;
     right: 0;
     height: var(--header-height);
-    background-color: var(--primary-color); /* Utilisera la couleur du thème */
+    background-color: var(--primary-color);
     color: white;
     display: flex;
     align-items: center;
     padding: 0 10px;
     z-index: 1000;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: visible; /* Permet au logo de déborder */
 }
 
 /* Style par défaut pour PC */
@@ -120,10 +121,36 @@ body {
 * {
     transition: font-size 0.3s ease;
 }
+
+/* Style du logo */
 .site-logo {
-    height: 80px; /* Ajustez selon vos besoins */
+    height: 140px; /* Plus grand sur PC */
     width: auto;
+    margin-top: 30px;
+    position: relative;
+    z-index: 1001;
     filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.3));
+    object-fit: contain;
+}
+
+@media (max-width: 600px) {
+    .site-logo {
+        height: 80px !important; /* ✅ Assure une grande taille */
+        width: auto !important; /* ✅ Garde les proportions */
+        max-width: none !important; /* ✅ Enlève toute restriction */
+        display: block !important;
+        margin: 0 auto !important; /* ✅ Centre horizontalement */
+        object-fit: contain !important; /* ✅ Évite toute déformation */
+    }
+
+    .header {
+        height: 380px !important; /* ✅ Augmente la place pour le logo */
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        overflow: visible !important; /* ✅ Assure que rien ne bloque */
+    }
 }
 
 .menu-button {
@@ -277,7 +304,9 @@ body {
     position: fixed;
     top: var(--header-height);
     left: -280px;
-    width: 280px;
+    width: 30%; /* Réduire à 30% de la largeur sur PC */
+    max-width: 350px; /* Largeur maximale sur grands écrans */
+    min-width: 280px; /* Largeur minimale */
     height: calc(100vh - var(--header-height));
     background-color: var(--primary-color) !important;
     transition: left 0.3s ease;
@@ -386,17 +415,13 @@ main {
     margin: 0 auto;
 }
 
-/* Configuration des vues */
+/* Vue grille */
 .tile-container.grid {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     max-width: 1200px;
 }
 
-.tile-container.large {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    max-width: 1400px;
-}
-
+/* Vue liste */
 .tile-container.list {
     grid-template-columns: 1fr;
     max-width: 800px;
@@ -423,17 +448,12 @@ main {
     height: 80px;
 }
 
-.tile-container.large .tile {
-    height: 120px;
-}
-
 .tile-container.list .tile {
     height: 40px;
 }
 
 /* Effets de survol selon la vue */
-.tile-container.grid .tile:hover,
-.tile-container.large .tile:hover {
+.tile-container.grid .tile:hover {
     transform: translateY(-3px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
@@ -450,11 +470,11 @@ main {
     pointer-events: none;
 }
 
-/* Séparateur */
+/* ✅ Version par défaut (Mobile) */
 .separator {
     grid-column: 1 / -1;
     text-align: center;
-    padding: 2px 0;
+    padding: 2px 5px; /* Compact pour mobile */
     margin: 3px 0;
     background-color: var(--primary-color);
     border-radius: 12px;
@@ -463,8 +483,10 @@ main {
     align-items: center;
     justify-content: center;
     font-size: var(--menu-text-size);
+    gap: 1px;
 }
 
+/* ✅ Lignes avant/après le texte */
 .separator::before,
 .separator::after {
     content: '';
@@ -474,11 +496,24 @@ main {
     margin: 0 15px;
 }
 
-/* Ajoutez ces nouvelles règles ici */
+/* ✅ Si une image est présente, on enlève les lignes */
+.separator img + span::before,
+.separator img + span::after {
+    content: none;
+}
+
+/* ✅ Images dans le séparateur */
 .separator img {
-    height: 40px;
+    height: 26px;
+    max-height: 32px;
     width: auto;
     object-fit: contain;
+}
+
+/* ✅ Texte seul */
+.separator span {
+    display: inline-block;
+    font-weight: bold;
 }
 
 /* Mode sombre */
@@ -551,13 +586,14 @@ main {
     padding: 0 8px; /* Espacement sur les côtés */
 }
 
-/* Pour le menu paramètres */
+/* Menu paramètres - version corrigée */
 .settings-menu {
     position: fixed;
     top: var(--header-height);
     right: -280px;
-    width: 280px;
-    max-width: 90%;
+    width: 30%;
+    max-width: 280px;
+    min-width: 280px;
     height: calc(100vh - var(--header-height));
     background-color: var(--primary-color) !important;
     color: white !important;
@@ -568,8 +604,21 @@ main {
     transition: right 0.3s ease;
 }
 
+/* Mobile uniquement */
+@media (max-width: 600px) {
+    .settings-menu {
+        width: 100%;
+        max-width: 75%;
+        min-width: unset;
+    }
+}
+
 .settings-menu.open {
     right: 0;
+}
+
+.settings-content {
+    max-width: 280px; /* Limite aussi le contenu */
 }
 
 .settings-header {
@@ -812,17 +861,16 @@ main {
 /* Toast */
 .toast {
     position: fixed;
-    bottom: calc(var(--bottom-nav-height) + 20px);
+    bottom: 80px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: var(--card-background);
+    background-color: var(--primary-color);
     color: white;
     padding: 12px 24px;
-    border-radius: 24px;
-    box-shadow: 0 2px 8px var(--shadow-color);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-    font-size: var(--menu-text-size);
-    animation: fadeIn 0.3s ease;
+    animation: slideUp 0.3s ease;
 }
 
 /* Animations */
@@ -868,12 +916,6 @@ main {
     transform: scale(1.05);
 }
 
-/* Images */
-img {
-    max-width: 200px;
-    height: auto;
-}
-
 /* PWA Installation */
 #menuInstall {
     display: none;
@@ -896,22 +938,15 @@ img {
     background-color: var(--hover-color);
 }
 
-/* Responsive Design */
-@media (max-width: 600px) {
-    .site-logo {
-        height: 30px;
-    }
-	
-@media (max-width: 600px) {
-    .tile-title {
-        font-size: 16px;
-    }	
-	
-@media (max-width: 600px) {
+/* Regroupement de toutes les media queries */
+    /* Séparateurs */
     .separator img {
-        height: 20px;
-    }
-	
+    height: 40px; /* ✅ Augmente la taille de l'image */
+    max-height: 50px; /* ✅ Limite la taille pour éviter qu'elle devienne trop grande */
+    width: auto; /* ✅ Garde les proportions */
+}
+
+    /* Boutons */
     .menu-button,
     .settings-button {
         width: 40px;
@@ -919,53 +954,57 @@ img {
         min-width: 40px;
     }
 
-    /* Version mobile : cache le texte */
+    .settings-button {
+        right: 4px;
+        top: 8px;
+    }
+
+    /* Navigation */
     .google-text {
         display: none;
     }
 
-    .settings-button {
-        right: 4px;
-        top: 8px;
-        width: 40px;
-        height: 40px;
-    }
-
-    /* Menu latéral */
+    /* Menus */
     .sidebar {
-        width: 100%;
+        width: 70%;
         left: -100%;
     }
 
-    /* Menu paramètres */
-    .settings-menu {
-        width: 100%;
-        max-width: 100%;
-    }
-
-    /* Conteneur de tuiles */
+/* Configuration des vues - Mobile */
+@media (max-width: 600px) {
+    /* Tuiles */
     .tile-container {
         gap: 10px;
     }
 
+    /* Vue grille */
     .tile-container.grid {
-        grid-template-columns: repeat(2, 1fr); /* Force 2 colonnes sur mobile */
+        grid-template-columns: repeat(2, 1fr);
         gap: 10px;
+		padding-left: 0px; /* center le texte */
     }
 
-    /* ✅ Correction : Ajustement des grandes tuiles sur mobile */
-    .tile-container.large .tile {
-        height: 60px; /* Réduit la hauteur sur mobile */
+    /* Vue liste */
+    .tile-container.list {
+        grid-template-columns: 1fr;
+        padding: 5px;
+		gap: 3px; /* Réduit l’espace entre les tuiles */
     }
-.tile-container.large {
-        padding: 5px; /* Moins d’espace autour des tuiles */
+
+    /* Vue liste - réduire la hauteur */
+    .tile-container.list .tile {
+        height: 45px; /* Plus compact */
+        margin: 3px 0;
+        text-align: left; /* Aligner le texte à gauche */
+        padding-left: 0px; /* center le texte */
     }
-    
+
+    /* Style commun aux tuiles */
     .tile {
-        margin: 4px 0; /* Réduit l’espacement vertical */
+        margin: 4px 0;
     }
-	
-    /* Éléments supplémentaires */
+
+    /* Autres éléments */
     .paypal-donate {
         display: none;
     }
@@ -983,7 +1022,7 @@ img {
     .site-title {
         font-size: 14px;
     }
-
+    
     .menu-button,
     .settings-button,
     .google-link {
