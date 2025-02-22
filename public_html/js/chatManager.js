@@ -127,15 +127,16 @@ class ChatManager {
         }
     }
 	getPseudoHTML() {
-        return `
-            <button class="chat-toggle" title="Ouvrir le chat">
-                <i class="material-icons">chat</i>
-                <span class="notification-badge hidden">${this.unreadCount}</span>
-            </button>
-            <div class="chat-container">
-                <div class="chat-header">
-                    <div class="header-title">Connexion au chat</div>
-                    <div class="header-buttons">
+    return `
+        <button class="chat-toggle" title="Ouvrir le chat">
+            <i class="material-icons">chat</i>
+            <span class="notification-badge hidden">${this.unreadCount}</span>
+            <div class="info-bubble">Ouvrir le chat</div>
+        </button>
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="header-title">Connexion au chat</div>
+                <div class="header-buttons">
                         <button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
                             <span class="material-icons">${this.soundEnabled ? 'volume_up' : 'volume_off'}</span>
                         </button>
@@ -166,6 +167,7 @@ class ChatManager {
         <button class="chat-toggle" title="Ouvrir le chat">
             <span class="material-icons">chat</span>
             <span class="notification-badge hidden">${this.unreadCount}</span>
+            <div class="info-bubble">Ouvrir le chat</div>
         </button>
         <div class="chat-container">
             <div class="chat-header">
