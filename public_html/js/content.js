@@ -307,28 +307,33 @@ this.tileContainer.appendChild(separator3);
             this.showTileMenu(tile, site, e.clientX, e.clientY);
         });
 
-        // Gestion de l'appui long sur mobile avec détection du scroll
+        // Gestion de l'appui long sur mobile avec prévention du scroll
 let longPressTimer;
 let isLongPress = false;
-let isScrolling = false;
+let lastScrollTime = 0;
 
-// Détection du scroll (empêche l'affichage du menu si l'utilisateur scrolle)
+// Détection du scroll (mémorise le moment du dernier scroll)
 window.addEventListener('scroll', () => {
-    isScrolling = true;
-    setTimeout(() => { isScrolling = false; }, 400); // Réactive après 400ms
+    lastScrollTime = Date.now(); // Enregistre le moment du scroll
 });
 
 tile.addEventListener('touchstart', (e) => {
     isLongPress = false;
 
-    // Démarre le timer SEULEMENT si l'utilisateur ne scrolle pas
+    // Vérifie si le scroll a eu lieu récemment (moins d'1 seconde)
+    if (Date.now() - lastScrollTime < 1000) {
+        return; // Ignore l'appui long si on vient de scroller
+    }
+
     longPressTimer = setTimeout(() => {
-        if (!isScrolling) { // Vérifie si l'utilisateur est en train de scroller
-            isLongPress = true;
-            const touch = e.touches[0];
-            this.showTileMenu(tile, site, touch.clientX, touch.clientY);
-        }
-    }, 500); // Temps d'appui long avant affichage du menu
+        isLongPress = true;
+        const touch = e.touches[0];
+        this.showTileMenu(tile, site, touch.clientX, touch.clientY);
+    }, 800); // ✅ Augmenté à 800ms pour éviter l'apparition trop rapide
+});
+
+tile.addEventListener('touchmove', () => {
+    clearTimeout(longPressTimer); // ✅ Annule l’appui long si le doigt bouge (scroll détecté)
 });
 
 tile.addEventListener('touchend', (e) => {
