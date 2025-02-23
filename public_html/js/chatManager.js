@@ -610,7 +610,7 @@ createMessageElement(message) {
         console.error('Erreur sendMessage:', error);
         return false;
     }
-};
+}
 
     async setupPushNotifications() {
     try {
@@ -755,21 +755,23 @@ async unsubscribeFromPushNotifications() {
             console.log('Token FCM obtenu:', token);
 
             // Enregistrer le token dans Supabase
-            const { data, error } = await this.supabase
-        .from('fcm_tokens')
-        .upsert({
-            user_id: this.pseudo,
-            token: token,
-            updated_at: new Date().toISOString()
-        });
+            await this.supabase
+                .from('fcm_tokens')
+                .upsert({
+                    user_id: this.pseudo,
+                    token: token,
+                    updated_at: new Date().toISOString()
+                });
 
-    if (error) {
-        console.error('Erreur Supabase détaillée:', error);
-    } else {
-        console.log('Token enregistré avec succès:', data);
+            // Écouter les messages entrants au lieu du rafraîchissement du token
+            this.messaging.onMessage((payload) => {
+                console.log('Message reçu :', payload);
+                this.showNotification(payload.notification.title, 'info');
+            });
+        }
+    } catch (error) {
+        console.error('Erreur initialisation Firebase Messaging:', error);
     }
-} catch (error) {
-    console.error('Erreur complète:', error);
 }
 	
     async sendNotificationToUser(message) {
