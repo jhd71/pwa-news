@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#1a237e">
-    <meta name="description" content="Actu&Média">
-    <title>Actu&Média</title>
+    <meta name="description" content="ActuMédia">
+    <title>ActuMédia</title>
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
@@ -34,6 +34,26 @@
 
     <!-- Notifications -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	<!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"></script>
+
+    <script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyDGC0jBKzFYpv2dSsgrKAZlzMirTjqKjpk",
+        authDomain: "jhd71-fbe56.firebaseapp.com",
+        projectId: "jhd71-fbe56",
+        storageBucket: "jhd71-fbe56.firebasestorage.app",
+        messagingSenderId: "669167096860",
+        appId: "1:669167096860:web:d46d695cd8a56571ee3bd9",
+        measurementId: "G-E61V8DTJ2W"
+    };
+
+    // Initialiser Firebase
+    firebase.initializeApp(firebaseConfig);
+    </script>
+</head>
+<body>
 <header class="app-header">
     <button type="button" id="menuButton" class="menu-button" aria-label="Menu">
         <span class="material-icons">menu</span>
@@ -42,7 +62,7 @@
     <span class="material-icons">settings</span>
 </button>   
     <h1 class="site-title">
-    <img src="images/Actu&Media.png" alt="Actu & Média" class="site-logo">
+    <img src="images/ActuMedia.png" alt="Actu & Média" class="site-logo">
 </h1>
 </header>
 
@@ -237,6 +257,9 @@ class PWAInstaller {
 class AppInitializer {
     static async init() {
         try {
+            // Gestion du bouton retour et fermeture de l'application
+            this.setupBackButtonHandling();
+            
             // Enregistrer le Service Worker
             await registerServiceWorker();
 
@@ -261,6 +284,29 @@ class AppInitializer {
             console.error('Erreur d\'initialisation:', error);
             console.error('Stack trace:', error.stack);
         }
+    }
+
+    static setupBackButtonHandling() {
+        // Ajouter l'état initial dans l'historique
+        history.pushState(null, '', window.location.pathname);
+
+        window.addEventListener('popstate', async (e) => {
+            e.preventDefault();
+            
+            // Si le chat est ouvert, le fermer
+            if (window.chatManager && window.chatManager.isOpen) {
+                window.chatManager.closeChat();
+                history.pushState(null, '', window.location.pathname);
+                return;
+            }
+            
+            // Si le chat n'est pas ouvert, quitter l'application
+            if (confirm('Voulez-vous vraiment quitter l\'application ?')) {
+                window.close();
+            } else {
+                history.pushState(null, '', window.location.pathname);
+            }
+        });
     }
 }
 
