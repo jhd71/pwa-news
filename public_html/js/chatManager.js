@@ -753,31 +753,30 @@ async unsubscribeFromPushNotifications() {
                 vapidKey: 'BApNrfnS3PmDhWU0g21VynEMx6mpDfgpWWUlw15qObjjJ3F0G_KElbyU38YAOtNXScP4_khAPuJG0RSfZeV37mU',
                 serviceWorkerRegistration: registration
             });
-                
-                this.fcmToken = token;
-                console.log('Token FCM obtenu:', token);
+            
+            this.fcmToken = token;
+            console.log('Token FCM obtenu:', token);
 
-                // Enregistrer le token dans Supabase
-                await this.supabase
-                    .from('fcm_tokens')
-                    .upsert({
-                        user_id: this.pseudo,
+            // Enregistrer le token dans Supabase
+            await this.supabase
+                .from('fcm_tokens')
+                .upsert({
+                    user_id: this.pseudo,
+                    token: token,
+                    created_at: new Date().toISOString()
+                }, {
+                    onConflict: 'user_id',
+                    update: {
                         token: token,
-                        created_at: new Date().toISOString()
-                    }, {
-                        onConflict: 'user_id',
-                        update: {
-                            token: token,
-                            updated_at: new Date().toISOString()
-                        }
-                    });
-
-                // Écouter les changements de token
-                this.messaging.onTokenRefresh(async () => {
-                    const newToken = await this.messaging.getToken();
-                    await this.updateFCMToken(newToken);
+                        updated_at: new Date().toISOString()
+                    }
                 });
-            }
+
+            // Écouter les changements de token
+            this.messaging.onTokenRefresh(async () => {
+                const newToken = await this.messaging.getToken();
+                await this.updateFCMToken(newToken);
+            });
         }
     } catch (error) {
         console.error('Erreur initialisation Firebase Messaging:', error);
