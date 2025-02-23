@@ -738,16 +738,21 @@ async unsubscribeFromPushNotifications() {
     }
 	// Ajouter la nouvelle méthode ici
     async initializeFirebaseMessaging() {
-        try {
-            this.messaging = firebase.messaging();
-            
-            // Demander la permission pour les notifications
-            const permission = await Notification.requestPermission();
-            if (permission === 'granted') {
-                // Obtenir le token FCM
-                const token = await this.messaging.getToken({
-                    vapidKey: 'BApNrfnS3PmDhWU0g21VynEMx6mpDfgpWWUlw15qObjjJ3F0G_KElbyU38YAOtNXScP4_khAPuJG0RSfZeV37mU'
-                });
+    try {
+        // Attendre que le service worker soit prêt
+        const registration = await navigator.serviceWorker.ready;
+        console.log('Service Worker prêt pour Firebase');
+
+        this.messaging = firebase.messaging();
+        
+        // Demander la permission pour les notifications
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+            // Obtenir le token FCM
+            const token = await this.messaging.getToken({
+                vapidKey: 'BApNrfnS3PmDhWU0g21VynEMx6mpDfgpWWUlw15qObjjJ3F0G_KElbyU38YAOtNXScP4_khAPuJG0RSfZeV37mU',
+                serviceWorkerRegistration: registration
+            });
                 
                 this.fcmToken = token;
                 console.log('Token FCM obtenu:', token);
@@ -773,10 +778,11 @@ async unsubscribeFromPushNotifications() {
                     await this.updateFCMToken(newToken);
                 });
             }
-        } catch (error) {
-            console.error('Erreur initialisation Firebase Messaging:', error);
         }
+    } catch (error) {
+        console.error('Erreur initialisation Firebase Messaging:', error);
     }
+}
 	
     async sendNotificationToUser(message) {
     try {
