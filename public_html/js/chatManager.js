@@ -739,16 +739,13 @@ async unsubscribeFromPushNotifications() {
 	// Ajouter la nouvelle méthode ici
     async initializeFirebaseMessaging() {
     try {
-        // Attendre que le service worker soit prêt
         const registration = await navigator.serviceWorker.ready;
         console.log('Service Worker prêt pour Firebase');
 
         this.messaging = firebase.messaging();
         
-        // Demander la permission pour les notifications
         const permission = await Notification.requestPermission();
         if (permission === 'granted') {
-            // Obtenir le token FCM
             const token = await this.messaging.getToken({
                 vapidKey: 'BApNrfnS3PmDhWU0g21VynEMx6mpDfgpWWUlw15qObjjJ3F0G_KElbyU38YAOtNXScP4_khAPuJG0RSfZeV37mU',
                 serviceWorkerRegistration: registration
@@ -763,19 +760,13 @@ async unsubscribeFromPushNotifications() {
                 .upsert({
                     user_id: this.pseudo,
                     token: token,
-                    created_at: new Date().toISOString()
-                }, {
-                    onConflict: 'user_id',
-                    update: {
-                        token: token,
-                        updated_at: new Date().toISOString()
-                    }
+                    updated_at: new Date().toISOString()
                 });
 
-            // Écouter les changements de token
-            this.messaging.onTokenRefresh(async () => {
-                const newToken = await this.messaging.getToken();
-                await this.updateFCMToken(newToken);
+            // Écouter les messages entrants au lieu du rafraîchissement du token
+            this.messaging.onMessage((payload) => {
+                console.log('Message reçu :', payload);
+                this.showNotification(payload.notification.title, 'info');
             });
         }
     } catch (error) {
