@@ -36,7 +36,7 @@
 }
 /* Tailles pour différentes options */
 [data-font-size="small"] {
-    --tile-title-size: 14px;
+    --tile-title-size: 17px;
     --menu-text-size: 13px;
     --separator-text-size: 13px;
     --message-text-size: 13px;
@@ -44,7 +44,7 @@
 }
 
 [data-font-size="normal"] {
-    --tile-title-size: 16px;
+    --tile-title-size: 19px;
     --menu-text-size: 15px;
     --separator-text-size: 15px;
     --message-text-size: 15px;
@@ -52,7 +52,7 @@
 }
 
 [data-font-size="large"] {
-    --tile-title-size: 18px;
+    --tile-title-size: 21px;
     --menu-text-size: 17px;
     --separator-text-size: 17px;
     --message-text-size: 17px;
@@ -185,10 +185,6 @@ body {
     border-radius: 50%;
     z-index: 1002;
     padding: 10px;
-/* Ajout des effets */
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s ease;
 }
 
 .menu-button:hover, .settings-button:hover {
@@ -246,29 +242,6 @@ body {
     transition: background-color 0.2s;
 }
 
-/* Effet au survol */
-.settings-button:hover,
-.menu-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-/* Effet au clic */
-.settings-button:active,
-.menu-button:active {
-    transform: scale(0.95);
-}
-
-/* Effet d'icône */
-.settings-button .material-icons,
-.menu-button .material-icons {
-    transition: transform 0.3s ease;
-}
-
-.settings-button:hover .material-icons,
-.menu-button:hover .material-icons {
-    transform: rotate(15deg) scale(1.1);
-}
-
 .settings-button:hover,
 .close-btn:hover {
     background-color: var(--hover-color);
@@ -283,6 +256,8 @@ body {
 
 /* Style du bouton chat */
 .chat-toggle {
+    background-color: var(--primary-color);
+    color: white;
     width: 60px;
     height: 60px;
     border-radius: 50%;
@@ -292,12 +267,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Thèmes du bouton chat */
 [data-theme="light"] .chat-toggle {
     background: linear-gradient(145deg, #7E57C2, #9575CD);
 }
@@ -306,122 +278,10 @@ body {
     background: linear-gradient(145deg, #1a237e, #283593);
 }
 
-/* Effet de brillance du bouton */
-.chat-toggle::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(
-        to bottom right,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0.1) 50%,
-        rgba(255, 255, 255, 0) 100%
-    );
-    transform: rotate(45deg);
-    transition: transform 0.6s ease;
-}
-
-/* Effets de survol du bouton */
 .chat-toggle:hover {
     transform: scale(1.05);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
-
-.chat-toggle:hover::before {
-    transform: rotate(45deg) translate(50%, 50%);
-}
-
-/* Style et animation de l'icône */
-.chat-toggle .material-icons {
-    color: white;
-    font-size: 24px;
-    transition: transform 0.3s ease;
-}
-
-.chat-toggle:hover .material-icons {
-    transform: scale(1.1) rotate(15deg);
-}
-
-/* Info-bulle du chat */
-.info-bubble {
-    position: absolute;
-    right: 70px; /* Ajusté pour être à côté du bouton */
-    top: 50%;
-    transform: translateY(-50%);
-    background: white;
-    color: black;
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 14px;
-    white-space: nowrap;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
-}
-
-/* Style spécifique de l'info-bulle */
-.chat-toggle .info-bubble {
-    position: absolute;
-    right: 70px;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: white;
-    color: black;
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 14px;
-    white-space: nowrap;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    opacity: 0;
-    pointer-events: none;
-    visibility: hidden;
-    transition: all 0.2s ease;
-}
-
-/* Animation au survol */
-.chat-toggle:hover .info-bubble {
-    opacity: 1;
-    visibility: visible;
-}
-
-/* Thèmes de l'info-bulle */
-[data-theme="light"] .info-bubble {
-    background: linear-gradient(145deg, #7E57C2, #9575CD);
-}
-
-[data-theme="dark"] .info-bubble {
-    background: linear-gradient(145deg, #1a237e, #283593);
-}
-
-/* Flèche de l'info-bulle */
-.info-bubble::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    right: 28px;
-    width: 8px;
-    height: 8px;
-    background: inherit;
-    transform: rotate(45deg);
-}
-
-/* Animation d'apparition */
-.info-bubble.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Apparition de l'info-bulle au survol */
-.chat-toggle:hover .info-bubble {
-    opacity: 1;
-    transform: translateY(0);
-    visibility: visible;
-}
-
 /* Style de la croix de fermeture */
 .sidebar .close-btn {
     background: none;
@@ -439,7 +299,6 @@ body {
 .sidebar .close-btn:hover {
     background-color: var(--hover-color);
 }
-
 /* Pour le menu latéral */
 .sidebar {
     position: fixed;
@@ -481,7 +340,6 @@ body {
 .menu-item a, 
 .menu-link,
 .install-app {
-    /* Garder vos styles existants */
     display: flex;
     align-items: center;
     gap: 12px;
@@ -490,51 +348,8 @@ body {
     text-decoration: none;
     padding: 12px 15px;
     border-radius: 8px;
+    transition: all 0.3s ease; /* Changé pour une transition plus fluide */
     font-size: var(--menu-text-size);
-    
-    /* Ajout de l'effet de brillance comme les tuiles */
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-/* Effet de brillance */
-.menu-item a::before, 
-.menu-link::before,
-.install-app::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(
-        to right,
-        transparent 0%,
-        rgba(255, 255, 255, 0.1) 50%,
-        transparent 100%
-    );
-    transform: skewX(-25deg);
-    transition: left 0.5s ease;
-}
-
-.menu-item a:hover::before,
-.menu-link:hover::before,
-.install-app:hover::before {
-    left: 150%;
-}
-
-/* Effet sur le texte */
-.menu-item a span:not(.material-icons),
-.menu-link span:not(.material-icons),
-.install-app span:not(.material-icons) {
-    transition: transform 0.3s ease;
-}
-
-.menu-item a:hover span:not(.material-icons),
-.menu-link:hover span:not(.material-icons),
-.install-app:hover span:not(.material-icons) {
-    transform: scale(1.05);
 }
 
 .menu-item .material-icons {
@@ -632,48 +447,15 @@ main {
     -webkit-user-select: none;
     -webkit-tap-highlight-color: transparent;
     box-shadow: 0 2px 5px var(--shadow-color);
-	transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-/* Effet de brillance amélioré (fusion avec l'existant) */
-.tile::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(
-        to right,
-        transparent 0%,
-        rgba(255, 255, 255, 0.1) 50%,
-        transparent 100%
-    );
-    transform: skewX(-25deg);
-    transition: left 0.5s ease;
-    pointer-events: none;
-}
-
-.tile:hover::before {
-    left: 150%;
-}
-
-/* Animation de transition entre les vues (nouveau) */
-.tile-container {
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Dimensions des tuiles selon la vue */
 .tile-container.grid .tile {
     height: 80px;
-	animation: fadeInScale 0.3s ease forwards;
 }
 
 .tile-container.list .tile {
     height: 40px;
-	animation: slideInRight 0.3s ease forwards;
 }
 
 /* Effets de survol selon la vue */
@@ -696,55 +478,23 @@ main {
 
 /* Style de base des séparateurs */
 .separator {
-    /* Structure de base */
     grid-column: 1 / -1;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 35px;
+    height: 35px; /* Encore plus petit */
     margin: 4px 0;
+    background-color: var(--primary-color);
     border-radius: 12px;
     position: relative;
-    text-align: center;
-    font-weight: 600;
-    
-    /* Effets visuels de base */
-    backdrop-filter: blur(8px);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    padding: 10px;
-}
-
-/* Mode clair - Violet */
-[data-theme="light"] .separator {
-    background: linear-gradient(90deg, 
-        rgba(126, 87, 194, 0.3) 0%, 
-        rgba(126, 87, 194, 0.8) 50%, 
-        rgba(126, 87, 194, 0.3) 100%
-    );
-}
-
-/* Mode sombre - Bleu */
-[data-theme="dark"] .separator {
-    background: linear-gradient(90deg, 
-        rgba(26, 35, 126, 0.3) 0%, 
-        rgba(26, 35, 126, 0.8) 50%, 
-        rgba(26, 35, 126, 0.3) 100%
-    );
 }
 
 /* Style de l'image */
 .separator img {
-    height: 50px;
+    height: 50px; /* Plus grand */
     width: auto;
     position: relative;
     z-index: 2;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-    transition: transform 0.3s ease;
-}
-
-.separator:hover img {
-    transform: scale(1.1);
 }
 
 /* Lignes décoratives */
@@ -752,9 +502,9 @@ main {
 .separator::after {
     content: '';
     position: absolute;
-    height: 0.5px;
+    height: 0.5px; /* Plus fin */
     width: calc(50% - 100px);
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.3); /* Plus subtil */
     top: 50%;
 }
 
@@ -766,13 +516,9 @@ main {
     right: 20px;
 }
 
-/* Mode clair (gardé de votre code avec ajustement) */
 [data-theme="light"] .separator {
-    background: linear-gradient(90deg, 
-        rgba(126, 87, 194, 0.5) 0%, 
-        rgba(126, 87, 194, 0.9) 50%, 
-        rgba(126, 87, 194, 0.5) 100%
-    );
+    background-color: rgba(126, 87, 194, 0.8); /* Plus transparent */
+    backdrop-filter: blur(5px); /* Effet légèrement flouté */
 }
 
 [data-theme="dark"] .tile {
@@ -789,24 +535,19 @@ main {
 
 /* Styles des tuiles avec une palette plus harmonieuse */
 .tile {
-    /* Styles de base existants */
     background-color: var(--card-background);
     border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
+    box-shadow: 0 2px 5px var(--shadow-color);
+    height: 80px;
     display: flex;
     align-items: center;
     justify-content: center;
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-tap-highlight-color: transparent;
-    box-shadow: 0 2px 5px var(--shadow-color);
-    height: 80px;
-    overflow: hidden;
-    position: relative;
-
-    /* Transition améliorée */
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    transform-origin: center;
+    user-select: none; /* Empêche la sélection du texte */
+    -webkit-user-select: none; /* Pour Safari */
+    -webkit-tap-highlight-color: transparent; /* Supprime le highlight sur mobile */
 }
 
 /* Couleurs des tuiles */
@@ -827,41 +568,11 @@ main {
     text-shadow: 2px 2px 6px rgba(0, 0, 0, 1); /* Ombre plus foncée */
 }
 
-/* Animations (nouvelles) */
-@keyframes fadeInScale {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-@keyframes slideInRight {
-    from {
-        opacity: 0;
-        transform: translateX(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-/* Effets au survol améliorés (fusion avec l'existant) */
+/* Effets de survol améliorés */
 .tile:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     filter: brightness(1.05);
-}
-
-/* Effet au clic (nouveau) */
-.tile:active {
-    transform: scale(0.98);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: all 0.1s ease;
 }
 
 .tile-content {
@@ -872,20 +583,14 @@ main {
 }
 
 .tile-title {
-    font-size: var(--tile-title-size);
-    font-weight: 600;
+    font-size: var(--tile-title-size); /* Réduit de la taille actuelle */
+    font-weight: 600; /* Un peu plus gras */
     color: white;
     text-align: center;
     width: 100%;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-    line-height: 1.2;
-    padding: 0 8px;
-    transition: transform 0.3s ease; /* Ajout de la transition */
-}
-
-/* Effet d'agrandissement du titre au survol */
-.tile:hover .tile-title {
-    transform: scale(1.05); /* Légère augmentation de la taille */
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5); /* Ombre plus subtile */
+    line-height: 1.2; /* Meilleur espacement entre les lignes */
+    padding: 0 8px; /* Espacement sur les côtés */
 }
 
 /* Menu paramètres - version corrigée */
@@ -994,108 +699,55 @@ main {
 
 /* Navigation du bas */
 .bottom-nav {
-    /* Styles de base */
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
     height: var(--bottom-nav-height);
+    background-color: var(--primary-color);
     display: flex;
     justify-content: space-around;
     align-items: center;
-    z-index: 998;
-    backdrop-filter: blur(10px);
-    padding: 8px 0;
     box-shadow: 0 -2px 5px var(--shadow-color);
+    z-index: 998;
 }
 
-/* Mode clair - Violet */
+/* Ajoutez ces styles spécifiques pour le mode clair */
 [data-theme="light"] .bottom-nav {
-    background: linear-gradient(
-        to bottom,
-        rgba(126, 87, 194, 0.95),
-        rgba(126, 87, 194, 0.98)
-    );
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: var(--primary-color);
+    color: white;
 }
 
-/* Mode sombre - Bleu */
-[data-theme="dark"] .bottom-nav {
-    background: linear-gradient(
-        to bottom,
-        rgba(26, 35, 126, 0.95),
-        rgba(26, 35, 126, 0.98)
-    );
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+[data-theme="light"] .nav-item {
+    color: white;
 }
 
-/* Le reste des styles reste inchangé */
 .nav-item {
-    /* Styles de base */
+    background: none;
+    border: none;
     color: white;
     padding: 8px;
     display: flex;
     flex-direction: column;
     align-items: center;
     cursor: pointer;
+    transition: all 0.3s ease;
     flex: 1;
-    text-decoration: none;
-    position: relative;
-    overflow: hidden;
-    border: none;
-    
-    /* Fond avec gradient */
-    background: linear-gradient(
-        to bottom,
-        transparent,
-        transparent
-    );
-    
-    /* Une seule transition pour tout */
-    transition: all 0.3s ease;
-}
-
-.nav-item::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 0;
-    height: 2px;
-    background: white;
-    transition: all 0.3s ease;
-    transform: translateX(-50%);
-}
-
-.nav-item:hover::after {
-    width: 50%;
+    text-decoration: none; /* Pour le lien Google */
 }
 
 .nav-item:hover {
-    background: linear-gradient(
-        to bottom,
-        rgba(255, 255, 255, 0.1),
-        transparent
-    );
+    transform: translateY(-4px);
 }
 
-/* Animation de l'icône */
-.nav-item .material-icons {
-    transition: transform 0.3s ease;
+.nav-item span:not(.material-icons) {
+    font-size: var(--menu-text-size);
+    margin-top: 4px;
 }
 
 .nav-item:hover .material-icons {
-    transform: translateY(-2px) scale(1.1);
-}
-
-/* Animation du texte */
-.nav-item span:not(.material-icons) {
-    transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.nav-item:hover span:not(.material-icons) {
-    transform: scale(1.05);
-    opacity: 0.9;
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
 }
 
 /* Menu contextuel */
