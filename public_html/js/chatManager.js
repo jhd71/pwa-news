@@ -20,12 +20,15 @@ class ChatManager {
         this.adminPanelOpen = false;
         this.isOpen = localStorage.getItem('chatOpen') === 'true';
         this.unreadCount = parseInt(localStorage.getItem('unreadCount') || '0');
+		this.messaging = null;
+        this.fcmToken = null;
     }
 
     async init() {
     try {
         await this.loadBannedWords();
-        
+        await this.initializeFirebaseMessaging();
+		
         this.container = document.createElement('div');
         this.container.className = 'chat-widget';
 
@@ -344,6 +347,16 @@ class ChatManager {
             });
         }
     }
+    
+closeChat() {
+    this.isOpen = false;
+    localStorage.setItem('chatOpen', 'false');
+    const chatContainer = this.container.querySelector('.chat-container');
+    if (chatContainer) {
+        chatContainer.classList.remove('open');
+        this.playSound('click');
+    }
+}
 
     setupChatListeners() {
     const input = this.container.querySelector('.chat-input textarea'); // Correction ici
@@ -545,35 +558,65 @@ createMessageElement(message) {
     }
 
     async sendMessage(content) {
-        try {
-            const ip = await this.getClientIP();
-            const isBanned = await this.checkBannedIP(ip);
-            
-            if (isBanned) {
-                this.showNotification('Vous êtes banni du chat', 'error');
-                return false;
-            }
-
-            const message = {
-                pseudo: this.pseudo,
-                content: content,
-                ip: ip,
-                created_at: new Date().toISOString()
-            };
-
-            const { data, error } = await this.supabase
-                .from('messages')
-                .insert(message)
-                .select()
-                .single();
-
-            if (error) throw error;
-            return true;
-        } catch (error) {
-            console.error('Erreur sendMessage:', error);
+    try {
+        console.log('Début envoi message');
+        const ip = await this.getClientIP();
+        const isBanned = await this.checkBannedIP(ip);
+        
+        if (isBanned) {
+            this.showNotification('Vous êtes banni du chat', 'error');
             return false;
         }
+
+        const message = {
+            pseudo: this.pseudo,
+            content: content,
+            ip: ip,
+            created_at: new Date().toISOString()
+        };
+
+        const { data, error } = await this.supabase
+            .from('messages')
+            .insert(message)
+            .select()
+            .single();
+
+        if (error) throw error;
+        console.log('Message enregistré dans Supabase:', data);
+
+        // Déclencher une notification via Firebase
+        if (this.messaging) {
+            try {
+                console.log('Tentative envoi notification Firebase');
+                // Utiliser directement l'API de messaging de Firebase
+                await this.messaging.send({
+                    notification: {
+                        title: `Message de ${this.pseudo}`,
+                        body: content
+                    },
+                    webpush: {
+                        notification: {
+                            icon: '/images/INFOS-192.png',
+                            badge: '/images/badge-72x72.png',
+                            vibrate: [100, 50, 100]
+                        }
+                    }
+                });
+                console.log('Notification Firebase envoyée avec succès');
+            } catch (firebaseError) {
+                console.error('Erreur envoi notification Firebase:', firebaseError);
+                console.error('Détails erreur:', firebaseError.message);
+            }
+        } else {
+            console.log('Firebase Messaging non initialisé');
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Erreur sendMessage:', error);
+        return false;
     }
+}
 
     async setupPushNotifications() {
     try {
@@ -674,16 +717,7 @@ getDeviceType() {
         return 'desktop';
     }
 }
-getDeviceType() {
-    const ua = navigator.userAgent;
-    if (/android/i.test(ua)) {
-        return 'android';
-    } else if (/iPad|iPhone|iPod/.test(ua)) {
-        return 'ios';
-    } else {
-        return 'desktop';
-    }
-}
+
 async unsubscribeFromPushNotifications() {
         try {
             const registration = await navigator.serviceWorker.getRegistration();
@@ -708,6 +742,48 @@ async unsubscribeFromPushNotifications() {
             return false;
         }
     }
+	// Ajouter la nouvelle méthode ici
+    async initializeFirebaseMessaging() {
+        try {
+            this.messaging = firebase.messaging();
+            
+            // Demander la permission pour les notifications
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+                // Obtenir le token FCM
+                const token = await this.messaging.getToken({
+                    vapidKey: 'BApNrfnS3PmDhWU0g21VynEMx6mpDfgpWWUlw15qObjjJ3F0G_KElbyU38YAOtNXScP4_khAPuJG0RSfZeV37mU'
+                });
+                
+                this.fcmToken = token;
+                console.log('Token FCM obtenu:', token);
+
+                // Enregistrer le token dans Supabase
+                await this.supabase
+                    .from('fcm_tokens')
+                    .upsert({
+                        user_id: this.pseudo,
+                        token: token,
+                        created_at: new Date().toISOString()
+                    }, {
+                        onConflict: 'user_id',
+                        update: {
+                            token: token,
+                            updated_at: new Date().toISOString()
+                        }
+                    });
+
+                // Écouter les changements de token
+                this.messaging.onTokenRefresh(async () => {
+                    const newToken = await this.messaging.getToken();
+                    await this.updateFCMToken(newToken);
+                });
+            }
+        } catch (error) {
+            console.error('Erreur initialisation Firebase Messaging:', error);
+        }
+    }
+	
     async sendNotificationToUser(message) {
     try {
         console.log('Envoi notification à:', message);
