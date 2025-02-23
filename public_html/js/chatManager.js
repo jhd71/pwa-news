@@ -586,35 +586,26 @@ createMessageElement(message) {
 
         // Déclencher une notification via Firebase
         if (this.messaging) {
-            try {
-                console.log('Tentative envoi notification Firebase');
-                // Utiliser directement l'API de messaging de Firebase
-                await this.messaging.send({
-                    notification: {
-                        title: `Message de ${this.pseudo}`,
-                        body: content
-                    },
-                    webpush: {
-                        notification: {
-                            icon: '/images/INFOS-192.png',
-                            badge: '/images/badge-72x72.png',
-                            vibrate: [100, 50, 100]
-                        }
-                    }
-                });
-                console.log('Notification Firebase envoyée avec succès');
-            } catch (firebaseError) {
-                console.error('Erreur envoi notification Firebase:', firebaseError);
-                console.error('Détails erreur:', firebaseError.message);
-            }
-        } else {
-            console.log('Firebase Messaging non initialisé');
-        }
-
-        return true;
-    } catch (error) {
-        console.error('Erreur sendMessage:', error);
-        return false;
+    try {
+        console.log('Tentative envoi notification Firebase');
+        await fetch('https://fcm.googleapis.com/fcm/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `key=${this.fcmServerKey}`
+            },
+            body: JSON.stringify({
+                to: '/topics/all', // ou au token spécifique
+                notification: {
+                    title: `Message de ${this.pseudo}`,
+                    body: content
+                }
+            })
+        });
+        console.log('Notification Firebase envoyée avec succès');
+    } catch (firebaseError) {
+        console.error('Erreur envoi notification Firebase:', firebaseError);
+        console.error('Détails erreur:', firebaseError.message);
     }
 }
 
