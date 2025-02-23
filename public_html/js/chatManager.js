@@ -567,47 +567,50 @@ createMessageElement(message) {
             this.showNotification('Vous êtes banni du chat', 'error');
             return false;
         }
-
         const message = {
             pseudo: this.pseudo,
             content: content,
             ip: ip,
             created_at: new Date().toISOString()
         };
-
         const { data, error } = await this.supabase
             .from('messages')
             .insert(message)
             .select()
             .single();
-
         if (error) throw error;
         console.log('Message enregistré dans Supabase:', data);
-
+        
         // Déclencher une notification via Firebase
         if (this.messaging) {
-    try {
-        console.log('Tentative envoi notification Firebase');
-        await fetch('https://fcm.googleapis.com/fcm/send', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `key=${this.fcmServerKey}`
-            },
-            body: JSON.stringify({
-                to: '/topics/all', // ou au token spécifique
-                notification: {
-                    title: `Message de ${this.pseudo}`,
-                    body: content
-                }
-            })
-        });
-        console.log('Notification Firebase envoyée avec succès');
-    } catch (firebaseError) {
-        console.error('Erreur envoi notification Firebase:', firebaseError);
-        console.error('Détails erreur:', firebaseError.message);
+            try {
+                console.log('Tentative envoi notification Firebase');
+                await fetch('https://fcm.googleapis.com/fcm/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `key=${this.fcmServerKey}`
+                    },
+                    body: JSON.stringify({
+                        to: '/topics/all', // ou au token spécifique
+                        notification: {
+                            title: `Message de ${this.pseudo}`,
+                            body: content
+                        }
+                    })
+                });
+                console.log('Notification Firebase envoyée avec succès');
+            } catch (firebaseError) {
+                console.error('Erreur envoi notification Firebase:', firebaseError);
+                console.error('Détails erreur:', firebaseError.message);
+            }
+        }
+        return true;
+    } catch (error) {
+        console.error('Erreur sendMessage:', error);
+        return false;
     }
-}
+};
 
     async setupPushNotifications() {
     try {
