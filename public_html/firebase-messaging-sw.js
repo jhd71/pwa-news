@@ -12,7 +12,12 @@ self.addEventListener('message', (event) => {
             const notificationTitle = payload.notification.title;
             const notificationOptions = {
                 body: payload.notification.body,
-                icon: '/images/INFOS-192.png'
+                icon: '/images/INFOS-192.png',
+                badge: '/images/badge-72x72.png',
+                vibrate: [100, 50, 100],
+                data: payload.data,
+                tag: 'chat-message-' + Date.now(),
+                requireInteraction: true
             };
 
             return self.registration.showNotification(notificationTitle, notificationOptions);
