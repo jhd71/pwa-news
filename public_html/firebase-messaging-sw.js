@@ -41,6 +41,14 @@ messaging.onBackgroundMessage((payload) => {
     return self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then(registration => {
+        console.log('Service Worker actif pour Firebase Messaging');
+    }).catch(error => {
+        console.error('Service Worker non disponible :', error);
+    });
+}
+
 // 📌 Gérer le clic sur la notification
 self.addEventListener('notificationclick', (event) => {
     console.log('🔔 Notification cliquée :', event.notification);
