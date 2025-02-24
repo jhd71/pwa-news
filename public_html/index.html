@@ -37,50 +37,29 @@
 	<!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"></script>
+<script>
+// Chargement des configurations depuis les variables d'environnement
+const firebaseConfig = {
+    apiKey: process.env.VITE_FIREBASE_API_KEY,
+    authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN, 
+    projectId: process.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.VITE_FIREBASE_APP_ID,
+    measurementId: process.env.VITE_FIREBASE_MEASUREMENT_ID
+};
 
-    <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging.js";
-
-    const firebaseConfig = {
-        apiKey: process.env.VITE_FIREBASE_API_KEY,
-        authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN,
-        projectId: process.env.VITE_FIREBASE_PROJECT_ID,
-        storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET,
-        messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-        appId: process.env.VITE_FIREBASE_APP_ID,
-        measurementId: process.env.VITE_FIREBASE_MEASUREMENT_ID
-    };
-
-    // Initialisation de Firebase
-    const app = initializeApp(firebaseConfig);
-    const messaging = getMessaging(app);
-
-    // Enregistrement du service worker pour les notifications push
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/firebase-messaging-sw.js')
-            .then((registration) => {
-                console.log('Service Worker Firebase enregistré avec succès');
-            }).catch((error) => {
-                console.error('Erreur d’enregistrement du Service Worker Firebase :', error);
-            });
-    }
-
-    // Demander la permission de recevoir les notifications push
-    Notification.requestPermission().then(permission => {
-        if (permission === 'granted') {
-            getToken(messaging, { vapidKey: process.env.VITE_FIREBASE_API_KEY }).then(token => {
-                console.log('Token FCM obtenu :', token);
-            }).catch(err => {
-                console.error('Erreur lors de l’obtention du token Firebase :', err);
-            });
+// Initialisation Firebase globale
+if (typeof firebase !== 'undefined') {
+    try {
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+            console.log('Firebase initialisé globalement');
         }
-    });
-
-    // Gestion des messages reçus
-    onMessage(messaging, (payload) => {
-        console.log('Message reçu :', payload);
-    });
+    } catch (error) {
+        console.error('Erreur initialisation Firebase:', error);
+    }
+}
 </script>
 </head>
 <body>
@@ -305,16 +284,22 @@ class AppInitializer {
 
             // Initialiser ChatManager
             console.log('Chargement de ChatManager...');
-            const chatModule = await import('/js/chatManager.js');
-            window.chatManager = new chatModule.default();
-            await window.chatManager.init();
-            console.log('Chat Manager initialisé');
+            try {
+                const chatModule = await import('/js/chatManager.js');
+                console.log('Module ChatManager chargé:', chatModule);
+                window.chatManager = new chatModule.default();
+                await window.chatManager.init();
+                console.log('Chat Manager initialisé');
+            } catch (chatError) {
+                console.error('Erreur spécifique ChatManager:', chatError);
+                console.error('Stack trace:', chatError.stack);
+            }
 
         } catch (error) {
             console.error('Erreur d\'initialisation:', error);
             console.error('Stack trace:', error.stack);
         }
-    }
+    }  // Fermeture de init()
 
     static setupBackButtonHandling() {
         // Ajouter l'état initial dans l'historique
@@ -338,8 +323,7 @@ class AppInitializer {
             }
         });
     }
-}
-
+} 
 // Démarrer l'application quand le DOM est prêt
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => AppInitializer.init());
@@ -347,5 +331,8 @@ if (document.readyState === 'loading') {
     AppInitializer.init();
 }
 </script>
+
+<!-- Script Firebase indépendant -->
+<script src="/js/firebase-init.js"></script>
 </body>
 </html>
