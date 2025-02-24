@@ -40,34 +40,47 @@
 
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging.js";
 
     const firebaseConfig = {
-        apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-        authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-        projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-        storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-        messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-        appId: import.meta.env.VITE_FIREBASE_APP_ID,
-        measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+        apiKey: process.env.VITE_FIREBASE_API_KEY,
+        authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN,
+        projectId: process.env.VITE_FIREBASE_PROJECT_ID,
+        storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET,
+        messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+        appId: process.env.VITE_FIREBASE_APP_ID,
+        measurementId: process.env.VITE_FIREBASE_MEASUREMENT_ID
     };
 
-    // Initialiser Firebase
+    // Initialisation de Firebase
     const app = initializeApp(firebaseConfig);
-	if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.ready.then((registration) => {
-        registration.active?.postMessage({
-            firebaseConfig: {
-                apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-                authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-                projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-                storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-                messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-                appId: import.meta.env.VITE_FIREBASE_APP_ID,
-                measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
-            }
-        });
+    const messaging = getMessaging(app);
+
+    // Enregistrement du service worker pour les notifications push
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/firebase-messaging-sw.js')
+            .then((registration) => {
+                console.log('Service Worker Firebase enregistré avec succès');
+            }).catch((error) => {
+                console.error('Erreur d’enregistrement du Service Worker Firebase :', error);
+            });
+    }
+
+    // Demander la permission de recevoir les notifications push
+    Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+            getToken(messaging, { vapidKey: process.env.VITE_FIREBASE_API_KEY }).then(token => {
+                console.log('Token FCM obtenu :', token);
+            }).catch(err => {
+                console.error('Erreur lors de l’obtention du token Firebase :', err);
+            });
+        }
     });
-}
+
+    // Gestion des messages reçus
+    onMessage(messaging, (payload) => {
+        console.log('Message reçu :', payload);
+    });
 </script>
 </head>
 <body>
