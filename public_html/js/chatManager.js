@@ -373,55 +373,79 @@ async initializeFirebaseMessaging() {
     }
 
     setupAuthListeners() {
-        const pseudoInput = this.container.querySelector('#pseudoInput');
-        const adminPasswordInput = this.container.querySelector('#adminPassword');
-        const confirmButton = this.container.querySelector('#confirmPseudo');
-
-        if (pseudoInput) {
-            pseudoInput.addEventListener('input', () => {
-                if (pseudoInput.value.trim() === 'jhd71') {
-                    adminPasswordInput.style.display = 'block';
-                } else {
-                    adminPasswordInput.style.display = 'none';
-                    adminPasswordInput.value = '';
-                }
-            });
-        }
-
-        if (confirmButton) {
-            confirmButton.addEventListener('click', async () => {
-                const pseudo = pseudoInput?.value.trim();
-                const adminPassword = adminPasswordInput?.value;
-
-                if (!pseudo || pseudo.length < 3) {
-                    this.showNotification('Le pseudo doit faire au moins 3 caractères', 'error');
-                    this.playSound('error');
-                    return;
-                }
-
-                if (pseudo === 'jhd71' && adminPassword === 'admin2024') {
-                    this.isAdmin = true;
-                } else {
-                    this.isAdmin = false;
-                }
-
-                this.pseudo = pseudo;
-                localStorage.setItem('chatPseudo', pseudo);
-                localStorage.setItem('isAdmin', this.isAdmin);
-
-                this.container.innerHTML = this.getChatHTML();
-                const chatContainer = this.container.querySelector('.chat-container');
-                if (chatContainer) {
-                    chatContainer.classList.add('open');
-                    this.isOpen = true;
-                    localStorage.setItem('chatOpen', 'true');
-                }
-                this.setupListeners();
-                await this.loadExistingMessages();
-                this.playSound('success');
-            });
-        }
+    const pseudoInput = this.container.querySelector('#pseudoInput');
+    const adminPasswordInput = this.container.querySelector('#adminPassword');
+    const confirmButton = this.container.querySelector('#confirmPseudo');
+    
+    if (pseudoInput) {
+        pseudoInput.addEventListener('input', () => {
+            if (pseudoInput.value.trim() === 'jhd71') {
+                adminPasswordInput.style.display = 'block';
+            } else {
+                adminPasswordInput.style.display = 'none';
+                adminPasswordInput.value = '';
+            }
+        });
     }
+    
+    if (confirmButton) {
+        confirmButton.addEventListener('click', async () => {
+            const pseudo = pseudoInput?.value.trim();
+            const adminPassword = adminPasswordInput?.value;
+            
+            if (!pseudo || pseudo.length < 3) {
+                this.showNotification('Le pseudo doit faire au moins 3 caractères', 'error');
+                this.playSound('error');
+                return;
+            }
+            
+            if (pseudo === 'jhd71' && adminPassword === 'admin2024') {
+                this.isAdmin = true;
+            } else {
+                this.isAdmin = false;
+            }
+            
+            this.pseudo = pseudo;
+            localStorage.setItem('chatPseudo', pseudo);
+            localStorage.setItem('isAdmin', this.isAdmin);
+            
+            // Enregistrer le token FCM si disponible
+            const fcmToken = localStorage.getItem('fcmToken');
+            if (fcmToken) {
+                try {
+                    const { error } = await this.supabase
+                        .from('fcm_tokens')
+                        .upsert({
+                            user_id: this.pseudo,
+                            token: fcmToken,
+                            created_at: new Date().toISOString(),
+                            updated_at: new Date().toISOString()
+                        }, {
+                            onConflict: 'user_id'
+                        });
+                    
+                    if (!error) {
+                        console.log('Token FCM enregistré pour', this.pseudo);
+                    }
+                } catch (err) {
+                    console.error('Erreur enregistrement token FCM:', err);
+                }
+            }
+            
+            this.container.innerHTML = this.getChatHTML();
+            const chatContainer = this.container.querySelector('.chat-container');
+            if (chatContainer) {
+                chatContainer.classList.add('open');
+                this.isOpen = true;
+                localStorage.setItem('chatOpen', 'true');
+            }
+            
+            this.setupListeners();
+            await this.loadExistingMessages();
+            this.playSound('success');
+        });
+    }
+}
 
     setupChatListeners() {
     const input = this.container.querySelector('.chat-input textarea'); // Correction ici
@@ -789,17 +813,18 @@ async unsubscribeFromPushNotifications() {
     async sendNotificationToUser(message) {
     try {
         console.log('Envoi notification à:', message);
-        const url = '/api/sendPush';
-        console.log('URL API:', url);
+        
+        // Préparer les données pour l'API
         const body = JSON.stringify({
             message: message.content,
             fromUser: message.pseudo,
-            toUser: this.pseudo,
-            timestamp: new Date().toISOString()
+            toUser: this.pseudo
         });
+        
         console.log('Body de la requête:', body);
 
-        const response = await fetch(window.location.origin + '/api/sendPush', {
+        // Appeler l'API sendPush
+        const response = await fetch('/api/sendPush', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -822,8 +847,7 @@ async unsubscribeFromPushNotifications() {
         return result;
     } catch (error) {
         console.error('Erreur envoi notification:', error);
-        console.error('Stack trace:', error.stack);
-        throw error;
+        return null;
     }
 }
 	async loadSounds() {
