@@ -20,15 +20,12 @@ class ChatManager {
         this.adminPanelOpen = false;
         this.isOpen = localStorage.getItem('chatOpen') === 'true';
         this.unreadCount = parseInt(localStorage.getItem('unreadCount') || '0');
-		this.messaging = null;
-        this.fcmToken = null;
     }
 
     async init() {
     try {
+        await this.loadBannedWords();
         
-        await this.initializeFirebaseMessaging();
-		
         this.container = document.createElement('div');
         this.container.className = 'chat-widget';
 
@@ -53,7 +50,7 @@ class ChatManager {
         
         document.body.appendChild(this.container);
         await this.loadSounds();
-        await this.initializeFirebaseMessaging();
+
         // Gestion des notifications push
         if ('serviceWorker' in navigator && 'PushManager' in window) {
             try {
@@ -100,7 +97,6 @@ class ChatManager {
         }
     }
 }
-
 // Nouvelle méthode pour configurer le service worker Firebase
 async setupFirebaseServiceWorker() {
     if ('serviceWorker' in navigator) {
@@ -180,6 +176,34 @@ async initializeFirebaseMessaging() {
         return null;
     }
 }
+    async loadBannedWords() {
+        try {
+            const { data: words, error } = await this.supabase
+                .from('banned_words')
+                .select('*')
+                .order('added_at', { ascending: true });
+
+            if (!error && words) {
+                this.bannedWords = new Set(words.map(w => w.word.toLowerCase()));
+                const list = document.querySelector('.banned-words-list');
+                if (list) {
+                    list.innerHTML = words.map(w => `
+                        <div class="banned-word">
+                            ${w.word}
+                            <button class="remove-word" data-word="${w.word}">×</button>
+                        </div>
+                    `).join('');
+
+                    list.querySelectorAll('.remove-word').forEach(btn => {
+                        btn.addEventListener('click', () => this.removeBannedWord(btn.dataset.word));
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('Erreur loadBannedWords:', error);
+            this.bannedWords = new Set();
+        }
+    }
 	getPseudoHTML() {
         return `
             <button class="chat-toggle" title="Ouvrir le chat">
@@ -398,16 +422,6 @@ async initializeFirebaseMessaging() {
             });
         }
     }
-    
-closeChat() {
-    this.isOpen = false;
-    localStorage.setItem('chatOpen', 'false');
-    const chatContainer = this.container.querySelector('.chat-container');
-    if (chatContainer) {
-        chatContainer.classList.remove('open');
-        this.playSound('click');
-    }
-}
 
     setupChatListeners() {
     const input = this.container.querySelector('.chat-input textarea'); // Correction ici
@@ -609,66 +623,38 @@ createMessageElement(message) {
     }
 
     async sendMessage(content) {
-    try {
-        console.log('Début envoi message');
-        const ip = await this.getClientIP();
-        const isBanned = await this.checkBannedIP(ip);
-        
-        if (isBanned) {
-            this.showNotification('Vous êtes banni du chat', 'error');
+        try {
+            const ip = await this.getClientIP();
+            const isBanned = await this.checkBannedIP(ip);
+            
+            if (isBanned) {
+                this.showNotification('Vous êtes banni du chat', 'error');
+                return false;
+            }
+
+            const message = {
+                pseudo: this.pseudo,
+                content: content,
+                ip: ip,
+                created_at: new Date().toISOString()
+            };
+
+            const { data, error } = await this.supabase
+                .from('messages')
+                .insert(message)
+                .select()
+                .single();
+
+            if (error) throw error;
+            return true;
+        } catch (error) {
+            console.error('Erreur sendMessage:', error);
             return false;
         }
-        const message = {
-            pseudo: this.pseudo,
-            content: content,
-            ip: ip,
-            created_at: new Date().toISOString()
-        };
-        const { data, error } = await this.supabase
-            .from('messages')
-            .insert(message)
-            .select()
-            .single();
-        if (error) throw error;
-        console.log('Message enregistré dans Supabase:', data);
-        
-        // Déclencher une notification via Firebase
-        if (this.messaging) {
-            try {
-                console.log('Tentative envoi notification Firebase');
-                await fetch('https://fcm.googleapis.com/fcm/send', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `key=${this.fcmServerKey}`
-                    },
-                    body: JSON.stringify({
-                        to: '/topics/all', // ou au token spécifique
-                        notification: {
-                            title: `Message de ${this.pseudo}`,
-                            body: content
-                        }
-                    })
-                });
-                console.log('Notification Firebase envoyée avec succès');
-            } catch (firebaseError) {
-                console.error('Erreur envoi notification Firebase:', firebaseError);
-                console.error('Détails erreur:', firebaseError.message);
-            }
-        }
-        return true;
-    } catch (error) {
-        console.error('Erreur sendMessage:', error);
-        return false;
     }
-}
 
     async setupPushNotifications() {
     try {
-        // D'abord, initialiser Firebase si ce n'est pas déjà fait
-        const fcmToken = await this.initializeFirebaseMessaging();
-        
-        // Ensuite, configurer la souscription WebPush standard
         const registration = await navigator.serviceWorker.ready;
         
         // Vérifier les souscriptions existantes
@@ -690,35 +676,25 @@ createMessageElement(message) {
             applicationServerKey: this.urlBase64ToUint8Array('BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck')
         });
 
-        // Préparer les données pour Supabase
-        const subscriptionData = {
-            pseudo: this.pseudo,
-            subscription: JSON.stringify(subscription),
-            device_type: this.getDeviceType(),
-            active: true,
-            last_updated: new Date().toISOString()
-        };
-
-        // Ajouter le token FCM si disponible
-        if (fcmToken) {
-            subscriptionData.fcm_token = fcmToken;
-        }
-
-        // Enregistrer dans Supabase
+        // Enregistrer la nouvelle souscription
         const { error } = await this.supabase
             .from('push_subscriptions')
-            .insert(subscriptionData);
+            .insert({
+                pseudo: this.pseudo,
+                subscription: JSON.stringify(subscription),
+                device_type: this.getDeviceType(),
+                active: true,
+                last_updated: new Date().toISOString()
+            });
 
         if (error) throw error;
 
         this.notificationsEnabled = true;
         localStorage.setItem('notificationsEnabled', 'true');
         this.updateNotificationButton();
-        this.showNotification('Notifications activées', 'success');
         return true;
     } catch (error) {
         console.error('Erreur activation notifications:', error);
-        this.showNotification('Erreur d\'activation des notifications', 'error');
         throw error;
     }
 }
@@ -776,7 +752,16 @@ getDeviceType() {
         return 'desktop';
     }
 }
-
+getDeviceType() {
+    const ua = navigator.userAgent;
+    if (/android/i.test(ua)) {
+        return 'android';
+    } else if (/iPad|iPhone|iPod/.test(ua)) {
+        return 'ios';
+    } else {
+        return 'desktop';
+    }
+}
 async unsubscribeFromPushNotifications() {
         try {
             const registration = await navigator.serviceWorker.getRegistration();
@@ -801,58 +786,6 @@ async unsubscribeFromPushNotifications() {
             return false;
         }
     }
-	// Ajouter la nouvelle méthode ici
-    async initializeFirebaseMessaging() {
-    try {
-        await this.setupFirebaseServiceWorker();
-        
-        // Utiliser window.firebase au lieu de firebase
-        if (typeof window.firebase === 'undefined' || !window.firebase.apps.length) {
-            console.error('Firebase n\'est pas disponible. Vérifiez que le script est chargé.');
-            return null;
-        }
-        
-        console.log('Service Worker prêt pour Firebase');
-        
-        // Initialiser Firebase Messaging avec window.firebase
-        const messaging = window.firebase.messaging();
-        
-        // Demander la permission pour les notifications
-        if (Notification.permission === 'granted') {
-            try {
-                const token = await messaging.getToken({
-                    vapidKey: "BApNrfnS3PmDhWU0g21VynEMx6mpDfgpWWUlw15qObjjJ3F0G_KElbyU38YAOtNXScP4_khAPuJG0RSfZeV37mU"
-                });
-                
-                console.log('Token FCM obtenu:', token);
-                
-                // Configurer les messages en premier plan
-                messaging.onMessage((payload) => {
-                    console.log('Message reçu en premier plan:', payload);
-                    if (payload.notification) {
-                        this.showNotification(
-                            payload.notification.title || 'Nouveau message',
-                            payload.notification.body || '',
-                            'message'
-                        );
-                    }
-                });
-                
-                return token;
-            } catch (tokenError) {
-                console.error('Erreur récupération token Firebase:', tokenError);
-                return null;
-            }
-        }
-        
-        return null;
-    } catch (error) {
-        console.error('Erreur initialisation Firebase Messaging:', error);
-        // Ne pas bloquer l'initialisation du chat si Firebase échoue
-        return null;
-    }
-}
-	
     async sendNotificationToUser(message) {
     try {
         console.log('Envoi notification à:', message);
@@ -1109,32 +1042,27 @@ showAdminPanel() {
         panel.querySelector('.close-panel').addEventListener('click', () => panel.remove());
     }
 
-    async loadBannedWords() {
-        try {
-            const { data: words, error } = await this.supabase
-                .from('banned_words')
-                .select('*')
-                .order('added_at', { ascending: true });
+    async addBannedWord(word) {
+        const { error } = await this.supabase
+            .from('banned_words')
+            .insert({ word: word });
 
-            if (!error && words) {
-                this.bannedWords = new Set(words.map(w => w.word.toLowerCase()));
-                const list = document.querySelector('.banned-words-list');
-                if (list) {
-                    list.innerHTML = words.map(w => `
-                        <div class="banned-word">
-                            ${w.word}
-                            <button class="remove-word" data-word="${w.word}">×</button>
-                        </div>
-                    `).join('');
+        if (!error) {
+            this.bannedWords.add(word);
+            this.showNotification('Mot ajouté avec succès', 'success');
+        }
+    }
 
-                    list.querySelectorAll('.remove-word').forEach(btn => {
-                        btn.addEventListener('click', () => this.removeBannedWord(btn.dataset.word));
-                    });
-                }
-            }
-        } catch (error) {
-            console.error('Erreur loadBannedWords:', error);
-            this.bannedWords = new Set();
+    async removeBannedWord(word) {
+        const { error } = await this.supabase
+            .from('banned_words')
+            .delete()
+            .eq('word', word);
+
+        if (!error) {
+            this.bannedWords.delete(word);
+            this.showNotification('Mot supprimé avec succès', 'success');
+            await this.loadBannedWords();
         }
     }
 
