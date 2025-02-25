@@ -1,17 +1,13 @@
 {
-  "version": 2,
   "builds": [
     {
       "src": "api/*.js",
       "use": "@vercel/node"
     },
     {
-      "src": "public_html/**/*",
+      "src": "public/**/*",
       "use": "@vercel/static"
     }
-  ],
-  "rewrites": [
-    { "source": "/api/:path*", "destination": "/api/:path*" }
   ],
   "routes": [
     {
@@ -25,7 +21,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/public_html/$1"
+      "dest": "/public/$1"
     }
   ],
   "headers": [
