@@ -1,4 +1,4 @@
-// api/sendPush.js
+// /api/sendPush.js
 const admin = require('firebase-admin');
 const { createClient } = require('@supabase/supabase-js');
 
