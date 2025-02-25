@@ -1109,27 +1109,32 @@ showAdminPanel() {
         panel.querySelector('.close-panel').addEventListener('click', () => panel.remove());
     }
 
-    async addBannedWord(word) {
-        const { error } = await this.supabase
-            .from('banned_words')
-            .insert({ word: word });
+    async loadBannedWords() {
+        try {
+            const { data: words, error } = await this.supabase
+                .from('banned_words')
+                .select('*')
+                .order('added_at', { ascending: true });
 
-        if (!error) {
-            this.bannedWords.add(word);
-            this.showNotification('Mot ajouté avec succès', 'success');
-        }
-    }
+            if (!error && words) {
+                this.bannedWords = new Set(words.map(w => w.word.toLowerCase()));
+                const list = document.querySelector('.banned-words-list');
+                if (list) {
+                    list.innerHTML = words.map(w => `
+                        <div class="banned-word">
+                            ${w.word}
+                            <button class="remove-word" data-word="${w.word}">×</button>
+                        </div>
+                    `).join('');
 
-    async removeBannedWord(word) {
-        const { error } = await this.supabase
-            .from('banned_words')
-            .delete()
-            .eq('word', word);
-
-        if (!error) {
-            this.bannedWords.delete(word);
-            this.showNotification('Mot supprimé avec succès', 'success');
-            await this.loadBannedWords();
+                    list.querySelectorAll('.remove-word').forEach(btn => {
+                        btn.addEventListener('click', () => this.removeBannedWord(btn.dataset.word));
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('Erreur loadBannedWords:', error);
+            this.bannedWords = new Set();
         }
     }
 
