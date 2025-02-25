@@ -1,6 +1,8 @@
-// /api/sendPush.js
 const admin = require('firebase-admin');
 const { createClient } = require('@supabase/supabase-js');
+
+// Chargement direct du fichier de compte de service avec le nom exact
+const serviceAccount = require('../config/jhd71-fbe56-58e7d4d404ec.json');
 
 // Configuration de Supabase
 const supabase = createClient(
@@ -8,45 +10,20 @@ const supabase = createClient(
     process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// Fonction pour s'assurer que la clé privée est correctement formatée
-function formatPrivateKey(key) {
-    // Si la clé ne commence pas par -----BEGIN PRIVATE KEY-----, c'est qu'elle est déjà formatée
-    if (!key.includes('-----BEGIN PRIVATE KEY-----')) return key;
-    
-    // Sinon, on s'assure que les \n sont transformés en vrais sauts de ligne
-    return key.replace(/\\n/g, '\n');
-}
-
-// Initialiser Firebase Admin SDK avec le compte de service
+// Initialiser Firebase Admin SDK
 if (!admin.apps.length) {
     try {
-        // Préparer la clé privée
-        const privateKey = formatPrivateKey(process.env.FIREBASE_PRIVATE_KEY);
-        
-        const serviceAccount = {
-            projectId: process.env.FIREBASE_PROJECT_ID,
-            clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-            privateKey: privateKey
-        };
-        
         admin.initializeApp({
             credential: admin.credential.cert(serviceAccount)
         });
-        
         console.log('Firebase Admin initialisé avec succès');
     } catch (error) {
         console.error('Erreur initialisation Firebase Admin:', error);
-        console.error('Détails:', error.stack);
     }
 }
 
 // Handler principal de l'API
 module.exports = async (req, res) => {
-    // Vérifier si Firebase Admin est correctement initialisé
-    if (!admin.apps.length) {
-        return res.status(500).json({ error: 'Firebase Admin non initialisé' });
-    }
-    
     try {
         const { message, fromUser, toUser } = req.body;
         console.log('📨 Envoi de message:', { message, fromUser, toUser });
@@ -63,7 +40,7 @@ module.exports = async (req, res) => {
             return res.status(404).json({ error: 'Aucun token FCM disponible.' });
         }
 
-        console.log('✅ Token trouvé pour', toUser, ':', userToken.token.substring(0, 20) + '...');
+        console.log('✅ Token trouvé pour', toUser);
 
         // Envoyer la notification via Firebase Admin SDK
         try {
