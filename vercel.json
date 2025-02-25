@@ -26,10 +26,21 @@
     {
       "src": "/(.*)",
       "dest": "/public_html/$1"
-    },
+    }
+  ],
+  "headers": [
     {
-      "src": "/js/env.js",
-      "status": 403
+      "source": "/js/env.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
     }
   ]
 }
