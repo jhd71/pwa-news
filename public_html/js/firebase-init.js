@@ -65,30 +65,31 @@ document.addEventListener('DOMContentLoaded', async () => {
               // Si l'utilisateur est connecté, enregistrez le token dans Supabase
               if (window.chatManager && window.chatManager.pseudo) {
                 try {
-                  const { error } = await window.chatManager.supabase
-                    .from('fcm_tokens')
-                    .upsert({
-                      user_id: window.chatManager.pseudo,
-                      token: token,
-                      created_at: new Date().toISOString(),
-                      updated_at: new Date().toISOString()
-                    }, {
-                      onConflict: 'user_id'
-                    });
-                  
-                  if (!error) {
-                    console.log('Token FCM enregistré dans Supabase');
-                  }
-                } catch (err) {
-                  console.error('Erreur enregistrement token:', err);
-                }
-              }
-            } catch (tokenError) {
-              console.error('Erreur obtention token:', tokenError);
-            }
-          } else {
-            console.warn('Permission de notification non accordée');
-          }
+                  try {
+  // D'abord, supprimez les anciennes entrées pour cet utilisateur
+  await window.chatManager.supabase
+    .from('fcm_tokens')
+    .delete()
+    .eq('user_id', window.chatManager.pseudo);
+    
+  // Ensuite, insérez un nouveau token
+  const { error } = await window.chatManager.supabase
+    .from('fcm_tokens')
+    .insert({
+      user_id: window.chatManager.pseudo,
+      token: token,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    });
+    
+  if (!error) {
+    console.log('Token FCM enregistré dans Supabase');
+  } else {
+    throw error;
+  }
+} catch (err) {
+  console.error('Erreur enregistrement token:', err);
+}
           
           // Écouter les messages en premier plan
           messaging.onMessage(payload => {
