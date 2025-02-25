@@ -32,7 +32,7 @@ messaging.onBackgroundMessage((payload) => {
         notificationOptions
     );
 });
-const CACHE_NAME = 'infos-pwa-v2';
+const CACHE_NAME = 'infos-pwa-v3';
 const OFFLINE_URL = '/offline.html';
 
 const STATIC_RESOURCES = [
