@@ -1,42 +1,24 @@
 {
+  "version": 2,
   "builds": [
     {
-      "src": "api/*.js",
+      "src": "api/sendPush.js",
       "use": "@vercel/node"
     },
     {
-      "src": "public/**/*",
+      "src": "public_html/**/*",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type"
-      },
-      "continue": true
+      "src": "/api/sendPush",
+      "dest": "/api/sendPush.js",
+      "methods": ["GET", "POST", "OPTIONS"]
     },
     {
       "src": "/(.*)",
-      "dest": "/public/$1"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/js/env.js",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-store"
-        },
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        }
-      ]
+      "dest": "/public_html/$1"
     }
   ]
 }
