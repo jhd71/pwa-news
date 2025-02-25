@@ -10,15 +10,21 @@ const supabase = createClient(
 
 // Initialiser Firebase Admin SDK avec le compte de service
 if (!admin.apps.length) {
-    const serviceAccount = {
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
-    };
-
-    admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount)
-    });
+    try {
+        // S'assurer que la clé privée est correctement formatée
+        const privateKey = process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n');
+        
+        admin.initializeApp({
+            credential: admin.credential.cert({
+                projectId: process.env.FIREBASE_PROJECT_ID,
+                clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+                privateKey: privateKey
+            })
+        });
+        console.log('Firebase Admin initialisé avec succès');
+    } catch (error) {
+        console.error('Erreur initialisation Firebase Admin:', error);
+    }
 }
 
 // Handler principal de l'API
@@ -35,30 +41,32 @@ module.exports = async (req, res) => {
             .single();
 
         if (error || !userToken || !userToken.token) {
-            console.error('❌ Aucun token FCM trouvé pour cet utilisateur.');
+            console.error('❌ Aucun token FCM trouvé pour cet utilisateur:', toUser);
             return res.status(404).json({ error: 'Aucun token FCM disponible.' });
         }
 
-        // Envoyer la notification via Firebase Admin SDK
-        const messagePayload = {
-            token: userToken.token,
-            notification: {
-                title: `Message de ${fromUser}`,
-                body: message
-            },
-            webpush: {
-                notification: {
-                    icon: '/images/INFOS-192.png',
-                    badge: '/images/badge-72x72.png',
-                    vibrate: [100, 50, 100]
-                },
-                fcmOptions: {
-                    link: `https://jhd71.fr/?action=openchat`
-                }
-            }
-        };
+        console.log('✅ Token trouvé pour', toUser, ':', userToken.token.substring(0, 20) + '...');
 
+        // Envoyer la notification via Firebase Admin SDK
         try {
+            const messagePayload = {
+                token: userToken.token,
+                notification: {
+                    title: `Message de ${fromUser}`,
+                    body: message
+                },
+                webpush: {
+                    notification: {
+                        icon: '/images/INFOS-192.png',
+                        badge: '/images/badge-72x72.png',
+                        vibrate: [100, 50, 100]
+                    },
+                    fcmOptions: {
+                        link: 'https://pwa-news-two.vercel.app/?action=openchat'
+                    }
+                }
+            };
+
             const response = await admin.messaging().send(messagePayload);
             console.log('✅ Notification envoyée avec succès:', response);
             return res.status(200).json({ success: true, messageId: response });
