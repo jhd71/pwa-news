@@ -1,71 +1,113 @@
 // Vérifier si Firebase est déjà chargé
 document.addEventListener('DOMContentLoaded', async () => {
-  try {
-    // Charger les scripts Firebase si absents
-    if (typeof firebase === 'undefined') {
-      console.log('Chargement des scripts Firebase...');
-      await loadScript('https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js');
-      await loadScript('https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js');
-    }
+  // Attendre un peu pour éviter les conflits avec le service worker principal
+  setTimeout(async () => {
+    try {
+      // Charger les scripts Firebase si absents
+      if (typeof firebase === 'undefined') {
+        console.log('Chargement des scripts Firebase...');
+        await loadScript('https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js');
+        await loadScript('https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js');
+      }
 
-    // Charger la configuration Firebase depuis les variables d'environnement
-    const firebaseConfig = {
-      apiKey: window.env.VITE_FIREBASE_API_KEY,
-      authDomain: window.env.VITE_FIREBASE_AUTH_DOMAIN,
-      projectId: window.env.VITE_FIREBASE_PROJECT_ID,
-      storageBucket: window.env.VITE_FIREBASE_STORAGE_BUCKET,
-      messagingSenderId: window.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-      appId: window.env.VITE_FIREBASE_APP_ID,
-      measurementId: window.env.VITE_FIREBASE_MEASUREMENT_ID
-    };
+      // Configuration Firebase avec des valeurs en dur pour éviter les problèmes
+      const firebaseConfig = {
+        apiKey: "AIzaSyDGC0jBKzFYpv2dSsgrKAZlzMirTjqKjpk",
+        authDomain: "jhd71-fbe56.firebaseapp.com",
+        projectId: "jhd71-fbe56",
+        storageBucket: "jhd71-fbe56.firebasestorage.app",
+        messagingSenderId: "669167096860",
+        appId: "1:669167096860:web:d46d695cd8a56571ee3bd9",
+        measurementId: "G-E61V8DTJ2W"
+      };
 
-    // Initialiser Firebase si ce n'est pas déjà fait
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-      console.log('Firebase initialisé');
-    }
+      // Initialiser Firebase si ce n'est pas déjà fait
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+        console.log('Firebase initialisé');
+      }
 
-    // Enregistrer le Service Worker pour Firebase Messaging
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/firebase-messaging-sw.js')
-        .then(registration => {
-          console.log('Service Worker Firebase enregistré:', registration);
-
-          // Envoyer la config Firebase au SW
-          if (registration.active) {
-            registration.active.postMessage({ firebaseConfig });
-            console.log('Configuration Firebase envoyée au service worker');
+      // Service worker unique - vérifier si un service worker principal est déjà enregistré
+      if ('serviceWorker' in navigator) {
+        try {
+          // Utiliser le service worker principal si déjà enregistré
+          const existingRegistration = await navigator.serviceWorker.ready;
+          
+          // Envoyer la config Firebase au service worker existant
+          if (existingRegistration.active) {
+            existingRegistration.active.postMessage({ 
+              type: 'FIREBASE_CONFIG',
+              firebaseConfig: firebaseConfig 
+            });
+            console.log('Configuration Firebase envoyée au service worker existant');
           }
-        })
-        .catch(error => console.error('Erreur Service Worker Firebase:', error));
+        } catch (error) {
+          console.warn('Aucun service worker actif trouvé, enregistrement reporté');
+        }
+      }
+
+      // Initialisation des notifications si Firebase est chargé
+      if (typeof firebase !== 'undefined' && firebase.messaging) {
+        try {
+          const messaging = firebase.messaging();
+          
+          // Demander la permission pour recevoir les notifications
+          if (Notification.permission === 'granted') {
+            try {
+              const token = await messaging.getToken({ 
+                vapidKey: "BApNrfnS3PmDhWU0g21VynEMx6mpDfgpWWUlw15qObjjJ3F0G_KElbyU38YAOtNXScP4_khAPuJG0RSfZeV37mU" 
+              });
+              console.log('Token FCM obtenu :', token);
+              
+              // Stocker le token dans le localStorage
+              localStorage.setItem('fcmToken', token);
+              
+              // Si l'utilisateur est connecté, enregistrez le token dans Supabase
+              if (window.chatManager && window.chatManager.pseudo) {
+                try {
+                  const { error } = await window.chatManager.supabase
+                    .from('fcm_tokens')
+                    .upsert({
+                      user_id: window.chatManager.pseudo,
+                      token: token,
+                      created_at: new Date().toISOString(),
+                      updated_at: new Date().toISOString()
+                    }, {
+                      onConflict: 'user_id'
+                    });
+                  
+                  if (!error) {
+                    console.log('Token FCM enregistré dans Supabase');
+                  }
+                } catch (err) {
+                  console.error('Erreur enregistrement token:', err);
+                }
+              }
+            } catch (tokenError) {
+              console.error('Erreur obtention token:', tokenError);
+            }
+          } else {
+            console.warn('Permission de notification non accordée');
+          }
+          
+          // Écouter les messages en premier plan
+          messaging.onMessage(payload => {
+            console.log('Message reçu en premier plan:', payload);
+            if (payload.notification) {
+              new Notification(payload.notification.title, {
+                body: payload.notification.body,
+                icon: '/images/INFOS-192.png'
+              });
+            }
+          });
+        } catch (messagingError) {
+          console.error('Erreur Firebase Messaging:', messagingError);
+        }
+      }
+    } catch (error) {
+      console.error('Erreur initialisation Firebase:', error);
     }
-
-    // Initialisation des notifications
-    const messaging = firebase.messaging();
-
-    // Demander la permission pour recevoir les notifications
-    const permission = await Notification.requestPermission();
-    if (permission === 'granted') {
-      const token = await messaging.getToken({ vapidKey: window.env.VITE_FIREBASE_VAPID_PUBLIC_KEY });
-      console.log('Token FCM obtenu :', token);
-      
-      // TODO: Enregistrer le token dans Supabase si besoin
-    } else {
-      console.warn('Permission de notification refusée.');
-    }
-
-    // Écouter les messages en premier plan
-    messaging.onMessage(payload => {
-      console.log('Message reçu en premier plan:', payload);
-      new Notification(payload.notification.title, {
-        body: payload.notification.body,
-        icon: '/images/INFOS-192.png'
-      });
-    });
-
-  } catch (error) {
-    console.error('Erreur initialisation Firebase:', error);
-  }
+  }, 2000); // Délai de 2 secondes
 });
 
 // Fonction pour charger un script dynamiquement
