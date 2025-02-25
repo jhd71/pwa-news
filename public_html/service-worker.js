@@ -56,33 +56,30 @@ const STATIC_RESOURCES = [
     OFFLINE_URL
 ];
 
-// Installation
-self.addEventListener('install', event => {
+self.addEventListener('install', (event) => {
     console.log('[Service Worker] Installation...');
     event.waitUntil(
-        Promise.all([
-            caches.open(CACHE_NAME).then(cache => {
-                console.log('[Service Worker] Mise en cache des ressources');
-                return cache.addAll(STATIC_RESOURCES);
-            }),
-            self.skipWaiting()
-        ])
+        caches.open(CACHE_NAME).then((cache) => {
+            console.log('[Service Worker] Mise en cache des ressources');
+            return cache.addAll(STATIC_RESOURCES);
+        })
     );
+    self.skipWaiting(); // Forcer l'activation immédiate du Service Worker
 });
 
-// Activation
-self.addEventListener('activate', event => {
+self.addEventListener('activate', (event) => {
     console.log('[Service Worker] Activation...');
     event.waitUntil(
         Promise.all([
-            clients.claim(),
+            clients.claim(), // Prendre immédiatement le contrôle des pages
             caches.keys().then(cacheNames => {
                 return Promise.all(
-                    cacheNames.filter(cacheName => cacheName !== CACHE_NAME)
-                        .map(cacheName => {
-                            console.log('[Service Worker] Suppression ancien cache:', cacheName);
-                            return caches.delete(cacheName);
-                        })
+                    cacheNames.map(cache => {
+                        if (cache !== CACHE_NAME) {
+                            console.log('[Service Worker] Suppression de l\'ancien cache', cache);
+                            return caches.delete(cache);
+                        }
+                    })
                 );
             })
         ])
