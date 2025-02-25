@@ -71,7 +71,7 @@ self.addEventListener('activate', (event) => {
     console.log('[Service Worker] Activation...');
     event.waitUntil(
         Promise.all([
-            clients.claim(), // Prendre immédiatement le contrôle des pages
+            clients.claim(), // Prendre immédiatement le contrôle des pages ouvertes
             caches.keys().then(cacheNames => {
                 return Promise.all(
                     cacheNames.map(cache => {
