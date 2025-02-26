@@ -1,61 +1,25 @@
-# Variables d'environnement et secrets
+# Fichiers de configuration sensibles
 .env
-.env.*
-!.env.example
+.env.local
+.env.development
+.env.test
+.env.production
 
-# Dépendances
+# Dépendances Node.js
 /node_modules
-/.pnp
-.pnp.js
-
-# Testing
-/coverage
-
-# Production et build
-/dist
-/build
-.vercel
-.next
-.cache
-.output
-
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
+npm-debug.log
+yarn-debug.log
+yarn-error.log
 
 # Fichiers système
 .DS_Store
 Thumbs.db
-*.pem
 
-# IDE et éditeurs
-.idea/
-.vscode/
-*.swp
-*.swo
-.vs/
-*.sublime-workspace
-*.sublime-project
+# Fichiers de build et temporaires
+.vercel
+.next
+.cache
+dist/
 
-# Firebase
-.firebase/
-firebase-debug.log
-serviceAccountKey.json
-
-# Supabase
-/supabase/.temp
-
-# PWA
-**/public/workbox-*.js
-**/public/sw.js
-**/public/fallback-*.js
-
-# Fichiers temporaires
-*.tmp
-*.temp
-.temp/
-.tmp/
+# Logs
+*.log
