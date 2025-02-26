@@ -4,8 +4,7 @@
   "private": true,
   "dependencies": {
     "@supabase/supabase-js": "^2.39.3",
-    "web-push": "^3.6.6",
-    "firebase-admin": "^11.10.1"
+    "web-push": "^3.6.6"
   },
   "engines": {
     "node": ">=18.0.0"

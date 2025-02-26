@@ -34,52 +34,6 @@
 
     <!-- Notifications -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-	<!-- Firebase Scripts -->
-    <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging.js";
-
-    const firebaseConfig = {
-    apiKey: window.env.VITE_FIREBASE_API_KEY,
-    authDomain: window.env.VITE_FIREBASE_AUTH_DOMAIN,
-    projectId: window.env.VITE_FIREBASE_PROJECT_ID,
-    storageBucket: window.env.VITE_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: window.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-    appId: window.env.VITE_FIREBASE_APP_ID,
-    measurementId: window.env.VITE_FIREBASE_MEASUREMENT_ID
-};
-
-    // Initialiser Firebase
-    const app = initializeApp(firebaseConfig);
-    const messaging = getMessaging(app);
-
-    // Fonction pour obtenir un token
-    async function requestNotificationPermission() {
-        try {
-            const permission = await Notification.requestPermission();
-            if (permission === 'granted') {
-                const token = await getToken(messaging, { vapidKey: 'TA_VAPID_KEY' });
-                console.log('Token Firebase:', token);
-            } else {
-                console.warn('Permission de notification refusée.');
-            }
-        } catch (error) {
-            console.error('Erreur lors de l\'obtention du token Firebase:', error);
-        }
-    }
-
-    // Demander la permission au chargement
-    requestNotificationPermission();
-
-    // Réception de messages
-    onMessage(messaging, (payload) => {
-        console.log('Message reçu:', payload);
-        new Notification(payload.notification.title, {
-            body: payload.notification.body,
-            icon: '/images/INFOS-192.png'
-        });
-    });
-</script>
 </head>
 <body>
 <header class="app-header">
@@ -90,7 +44,7 @@
     <span class="material-icons">settings</span>
 </button>   
     <h1 class="site-title">
-    <img src="images/Actu&Média.png" alt="Actu&Média" class="site-logo">
+    <img src="images/Actu&Media.png" alt="Actu & Média" class="site-logo">
 </h1>
 </header>
 
@@ -150,7 +104,7 @@
         <div class="menu-item">
     <div class="copyright-text">
         <span class="material-icons">copyright</span>
-        <span>2025 Actu&Média</span>
+        <span>2025 Actu & Média</span>
     </div>
 </div>
     </aside>
@@ -285,9 +239,6 @@ class PWAInstaller {
 class AppInitializer {
     static async init() {
         try {
-            // Gestion du bouton retour et fermeture de l'application
-            this.setupBackButtonHandling();
-            
             // Enregistrer le Service Worker
             await registerServiceWorker();
 
@@ -303,46 +254,18 @@ class AppInitializer {
 
             // Initialiser ChatManager
             console.log('Chargement de ChatManager...');
-            try {
-                const chatModule = await import('/js/chatManager.js');
-                console.log('Module ChatManager chargé:', chatModule);
-                window.chatManager = new chatModule.default();
-                await window.chatManager.init();
-                console.log('Chat Manager initialisé');
-            } catch (chatError) {
-                console.error('Erreur spécifique ChatManager:', chatError);
-                console.error('Stack trace:', chatError.stack);
-            }
+            const chatModule = await import('/js/chatManager.js');
+            window.chatManager = new chatModule.default();
+            await window.chatManager.init();
+            console.log('Chat Manager initialisé');
 
         } catch (error) {
             console.error('Erreur d\'initialisation:', error);
             console.error('Stack trace:', error.stack);
         }
-    }  // Fermeture de init()
-
-    static setupBackButtonHandling() {
-        // Ajouter l'état initial dans l'historique
-        history.pushState(null, '', window.location.pathname);
-
-        window.addEventListener('popstate', async (e) => {
-            e.preventDefault();
-            
-            // Si le chat est ouvert, le fermer
-            if (window.chatManager && window.chatManager.isOpen) {
-                window.chatManager.closeChat();
-                history.pushState(null, '', window.location.pathname);
-                return;
-            }
-            
-            // Si le chat n'est pas ouvert, quitter l'application
-            if (confirm('Voulez-vous vraiment quitter l\'application ?')) {
-                window.close();
-            } else {
-                history.pushState(null, '', window.location.pathname);
-            }
-        });
     }
-} 
+}
+
 // Démarrer l'application quand le DOM est prêt
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => AppInitializer.init());
@@ -350,9 +273,5 @@ if (document.readyState === 'loading') {
     AppInitializer.init();
 }
 </script>
-
-<!-- Charger les variables d'environnement -->
-<script src="/js/env.js"></script>
-<script src="/js/firebase-init.js"></script>
 </body>
 </html>

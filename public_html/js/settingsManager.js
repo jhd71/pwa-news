@@ -170,8 +170,7 @@ export class SettingsManager {
         </div>
     </div>
 </section>
-
-                    <section class="settings-section">
+<section class="settings-section">
                         <h4>Accessibilité</h4>
                         <label>
                             <input type="checkbox" id="reducedMotion" 

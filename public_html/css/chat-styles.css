@@ -168,54 +168,30 @@
 /* Info-bulle */
 .info-bubble {
     position: absolute;
-    bottom: 70px;
+    bottom: 60px;
     right: 0;
     background: var(--chat-gradient);
     color: white;
-    padding: 10px 15px;
-    border-radius: 8px;
+    padding: 15px;
+    border-radius: 12px;
     box-shadow: var(--chat-shadow);
+    margin-bottom: 10px;
     width: 250px;
     z-index: 1001;
     display: none;
-    font-size: 14px;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    opacity: 0;
-    transform: translateY(10px);
-}
-
-.info-bubble.show {
-    display: block;
-    opacity: 1;
-    transform: translateY(0);
-    animation: fadeIn 0.3s ease;
-}
-
-.info-bubble::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    right: 20px;
-    width: 8px;
-    height: 8px;
-    background: inherit;
-    transform: rotate(45deg);
-    z-index: -1;
 }
 
 .info-bubble .message-preview {
     margin-top: 8px;
-    padding: 6px 10px;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 6px;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
     font-size: 12px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
 }
 
-[data-theme="dark"] .info-bubble {
-    background: var(--chat-gradient);
+.info-bubble.show {
+    display: block;
+    animation: fadeIn 0.3s ease;
 }
 
 /* Container principal du chat */
