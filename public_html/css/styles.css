@@ -1,0 +1,1030 @@
+/* Variables racines */
+:root {
+    --primary-color: #7E57C2;          /* Violet plus doux */
+    --background-color: #EFF1FF;       /* Fond très légèrement bleuté */
+    --text-color: #333333;
+    --border-color: #E5E7F4;
+    --hover-color: rgba(126, 87, 194, 0.1);
+    --shadow-color: rgba(0, 0, 0, 0.08);
+    --header-height: 60px;
+    --bottom-nav-height: 60px;
+	--tile-title-size: 20px;
+    --menu-text-size: 15px;
+    --separator-text-size: 15px;
+    --message-text-size: 15px;
+    --header-text-size: 20px;
+}
+/* Transition globale */
+* {
+    transition: font-size 0.3s ease;
+}
+
+[data-theme="dark"] {
+    --primary-color: #1a237e;
+    --background-color: #121212;
+    --text-color: #ffffff;
+    --border-color: #404040;
+    --hover-color: rgba(255, 255, 255, 0.1);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Pour le texte en mode clair */
+[data-theme="light"] .sidebar,
+[data-theme="light"] .settings-menu,
+[data-theme="light"] .modal-content {
+    color: white !important;
+}
+/* Tailles pour différentes options */
+[data-font-size="small"] {
+    --tile-title-size: 17px;
+    --menu-text-size: 13px;
+    --separator-text-size: 13px;
+    --message-text-size: 13px;
+    --header-text-size: 18px;
+}
+
+[data-font-size="normal"] {
+    --tile-title-size: 19px;
+    --menu-text-size: 15px;
+    --separator-text-size: 15px;
+    --message-text-size: 15px;
+    --header-text-size: 20px;
+}
+
+[data-font-size="large"] {
+    --tile-title-size: 21px;
+    --menu-text-size: 17px;
+    --separator-text-size: 17px;
+    --message-text-size: 17px;
+    --header-text-size: 24px;
+}
+
+/* Thème sombre */
+[data-theme="dark"] {
+    --primary-color: #1a237e;
+    --background-color: #121212;
+    --text-color: #ffffff;
+    --border-color: #404040;
+    --hover-color: rgba(255, 255, 255, 0.1);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Styles de base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+    min-height: 100vh;
+    position: relative;
+}
+
+.material-icons {
+    font-size: 24px;
+}
+
+/* Header et navigation */
+.app-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--header-height);
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: visible; /* Permet au logo de déborder */
+}
+
+/* Style par défaut pour PC */
+.site-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: var(--header-text-size);
+    font-weight: bold;
+    white-space: nowrap;
+    color: white;
+    text-shadow: 1px 1px 0 black, -1px 1px 0 black, 1px -1px 0 black, -1px -1px 0 black;
+}
+/* Transition globale */
+* {
+    transition: font-size 0.3s ease;
+}
+
+/* Style du logo */
+.site-logo {
+    height: 140px; /* Plus grand sur PC */
+    width: auto;
+    margin-top: 30px;
+    position: relative;
+    z-index: 1001;
+    filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.3));
+    object-fit: contain;
+}
+
+@media (max-width: 600px) {
+    .site-logo {
+        height: 80px !important; /* ✅ Assure une grande taille */
+        width: auto !important; /* ✅ Garde les proportions */
+        max-width: none !important; /* ✅ Enlève toute restriction */
+        display: block !important;
+        margin: 0 auto !important; /* ✅ Centre horizontalement */
+        object-fit: contain !important; /* ✅ Évite toute déformation */
+    }
+
+    .header {
+        height: 380px !important; /* ✅ Augmente la place pour le logo */
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        overflow: visible !important; /* ✅ Assure que rien ne bloque */
+    }
+}
+
+.menu-button {
+    background: none;
+    border: none;
+    color: white;
+    min-width: 48px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+/* Bouton paramètres */
+.settings-button {
+    position: fixed;
+    top: 8px;
+    right: 8px;
+    width: 44px;
+    height: 44px;
+    background: none;
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 1002;
+    padding: 10px;
+}
+
+.menu-button:hover, .settings-button:hover {
+    background-color: var(--hover-color);
+}
+/* Styles communs pour tous les boutons de fermeture */
+.close-btn {
+    background: none;
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.close-btn:hover {
+    background-color: var(--hover-color);
+}
+
+/* Styles spécifiques pour le menu paramètres */
+.settings-header .close-btn {
+    padding: 0;
+    margin: -8px;
+}
+
+.settings-header {
+    padding: 15px;
+    background-color: var(--primary-color);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Mise à jour du bouton paramètres */
+.settings-button {
+    position: fixed;
+    top: 8px;
+    right: 8px;
+    width: 44px;
+    height: 44px;
+    background: none;
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 1002;
+    transition: background-color 0.2s;
+}
+
+.settings-button:hover,
+.close-btn:hover {
+    background-color: var(--hover-color);
+}
+/* Pour le chat */
+.chat-widget {
+    position: fixed;
+    right: 20px;
+    bottom: 80px;
+    z-index: 1002;
+}
+
+/* Style du bouton chat */
+.chat-toggle {
+    background-color: var(--primary-color);
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+[data-theme="light"] .chat-toggle {
+    background: linear-gradient(145deg, #7E57C2, #9575CD);
+}
+
+[data-theme="dark"] .chat-toggle {
+    background: linear-gradient(145deg, #1a237e, #283593);
+}
+
+.chat-toggle:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+/* Style de la croix de fermeture */
+.sidebar .close-btn {
+    background: none;
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.sidebar .close-btn:hover {
+    background-color: var(--hover-color);
+}
+/* Pour le menu latéral */
+.sidebar {
+    position: fixed;
+    top: var(--header-height);
+    left: -280px;
+    width: 30%; /* Réduire à 30% de la largeur sur PC */
+    max-width: 350px; /* Largeur maximale sur grands écrans */
+    min-width: 280px; /* Largeur minimale */
+    height: calc(100vh - var(--header-height));
+    background-color: var(--primary-color) !important;
+    transition: left 0.3s ease;
+    z-index: 999;
+    box-shadow: 2px 0 5px var(--shadow-color);
+}
+
+.sidebar.open {
+    left: 0;
+}
+
+.sidebar-header {
+    padding: 15px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-content {
+    padding: 10px 0;
+}
+
+/* Styles du menu latéral */
+.menu-item {
+    padding: 5px 15px;
+}
+
+.menu-item a, 
+.menu-link,
+.install-app {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    color: white !important;
+    text-decoration: none;
+    padding: 12px 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease; /* Changé pour une transition plus fluide */
+    font-size: var(--menu-text-size);
+}
+
+.menu-item .material-icons {
+    width: 24px;
+    display: flex;
+    justify-content: center;
+    transition: transform 0.3s ease; /* Animation pour l'icône */
+}
+
+.menu-item a:hover,
+.menu-link:hover,
+#menuInstall:hover {
+    background-color: var(--hover-color);
+    transform: translateX(5px); /* Effet de décalage */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.menu-item a:hover .material-icons,
+.menu-link:hover .material-icons,
+#menuInstall:hover .material-icons {
+    transform: scale(1.1); /* Légère mise en avant de l'icône */
+}
+
+#menuInstall {
+    display: none;
+    border: none;
+    background: none;
+    cursor: pointer;
+    text-align: left;
+}
+
+#menuInstall.visible {
+    display: flex;
+}
+/* Ajoutez le nouveau style ici */
+.copyright-text {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    color: white;
+    margin-top: auto;
+    gap: 12px;
+}
+
+.copyright-text .material-icons {
+    width: 24px;
+    display: flex;
+    justify-content: center;
+}
+/* Contenu principal */
+main {
+    margin-top: calc(var(--header-height) + 10px);
+    margin-bottom: calc(var(--bottom-nav-height) + 10px);
+    padding: 0 10px;
+    min-height: calc(100vh - var(--header-height) - var(--bottom-nav-height));
+}
+
+/* Conteneur de tuiles - Base */
+.tile-container {
+    display: grid;
+    gap: 8px;
+    padding: 8px 12px;
+    margin: 0 auto;
+}
+
+/* Vue grille */
+.tile-container.grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    max-width: 1200px;
+}
+
+/* Vue liste */
+.tile-container.list {
+    grid-template-columns: 1fr;
+    max-width: 800px;
+    gap: 6px;
+}
+/* Ajustement mobile */
+@media (max-width: 600px) {
+    .tile-container.list {
+        gap: 4px; /* Encore plus compact sur mobile */
+    }
+}
+
+/* Tuile de base */
+.tile {
+    background-color: var(--primary-color);
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 2px 5px var(--shadow-color);
+}
+
+/* Dimensions des tuiles selon la vue */
+.tile-container.grid .tile {
+    height: 80px;
+}
+
+.tile-container.list .tile {
+    height: 40px;
+}
+
+/* Effets de survol selon la vue */
+.tile-container.grid .tile:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.tile-container.list .tile:hover {
+    transform: translateX(10px);
+    box-shadow: -4px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Contenu des tuiles */
+.tile-content {
+    width: 100%;
+    text-align: center;
+    pointer-events: none;
+}
+
+/* Style de base des séparateurs */
+.separator {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 35px; /* Encore plus petit */
+    margin: 4px 0;
+    background-color: var(--primary-color);
+    border-radius: 12px;
+    position: relative;
+}
+
+/* Style de l'image */
+.separator img {
+    height: 50px; /* Plus grand */
+    width: auto;
+    position: relative;
+    z-index: 2;
+}
+
+/* Lignes décoratives */
+.separator::before,
+.separator::after {
+    content: '';
+    position: absolute;
+    height: 0.5px; /* Plus fin */
+    width: calc(50% - 100px);
+    background-color: rgba(255, 255, 255, 0.3); /* Plus subtil */
+    top: 50%;
+}
+
+.separator::before {
+    left: 20px;
+}
+
+.separator::after {
+    right: 20px;
+}
+
+[data-theme="light"] .separator {
+    background-color: rgba(126, 87, 194, 0.8); /* Plus transparent */
+    backdrop-filter: blur(5px); /* Effet légèrement flouté */
+}
+
+[data-theme="dark"] .tile {
+    opacity: 0.85;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .tile:hover {
+    opacity: 1;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Styles des tuiles avec une palette plus harmonieuse */
+.tile {
+    background-color: var(--card-background);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    box-shadow: 0 2px 5px var(--shadow-color);
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none; /* Empêche la sélection du texte */
+    -webkit-user-select: none; /* Pour Safari */
+    -webkit-tap-highlight-color: transparent; /* Supprime le highlight sur mobile */
+}
+
+/* Couleurs des tuiles */
+.tile:nth-child(10n + 1) { background-color: #9675CD; }  /* Violet */
+.tile:nth-child(10n + 2) { background-color: #4DB6AC; }  /* Vert d'eau */
+.tile:nth-child(10n + 3) { background-color: #7986CB; }  /* Bleu */
+.tile:nth-child(10n + 4) { background-color: #81C784; }  /* Vert */
+.tile:nth-child(10n + 5) { background-color: #F06292; }  /* Rose */
+.tile:nth-child(10n + 6) { background-color: #64B5F6; }  /* Bleu clair */
+.tile:nth-child(10n + 7) { background-color: #FFB74D; }  /* Orange */
+.tile:nth-child(10n + 8) { background-color: #BA68C8; }  /* Violet foncé */
+.tile:nth-child(10n + 9) { background-color: #4DD0E1; }  /* Turquoise */
+.tile:nth-child(10n + 0) { background-color: #A1887F; }  /* Brun */
+/* Renforcement de l'ombre sur les tuiles claires */
+.tile:nth-child(10n + 2) .tile-title, /* Vert d'eau */
+.tile:nth-child(10n + 6) .tile-title, /* Bleu clair */
+.tile:nth-child(10n + 9) .tile-title { /* Turquoise */
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 1); /* Ombre plus foncée */
+}
+
+/* Effets de survol améliorés */
+.tile:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    filter: brightness(1.05);
+}
+
+.tile-content {
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+    pointer-events: none; /* Empêche les interactions avec le texte */
+}
+
+.tile-title {
+    font-size: var(--tile-title-size); /* Réduit de la taille actuelle */
+    font-weight: 600; /* Un peu plus gras */
+    color: white;
+    text-align: center;
+    width: 100%;
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5); /* Ombre plus subtile */
+    line-height: 1.2; /* Meilleur espacement entre les lignes */
+    padding: 0 8px; /* Espacement sur les côtés */
+}
+
+/* Menu paramètres - version corrigée */
+.settings-menu {
+    position: fixed;
+    top: var(--header-height);
+    right: -280px;
+    width: 30%;
+    max-width: 280px;
+    min-width: 280px;
+    height: calc(100vh - var(--header-height));
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    z-index: 999;
+    box-shadow: -2px 0 5px var(--shadow-color);
+    display: flex;
+    flex-direction: column;
+    transition: right 0.3s ease;
+}
+
+/* Mobile uniquement */
+@media (max-width: 600px) {
+    .settings-menu {
+        width: 100%;
+        max-width: 75%;
+        min-width: unset;
+    }
+}
+
+.settings-menu.open {
+    right: 0;
+}
+
+.settings-content {
+    max-width: 280px; /* Limite aussi le contenu */
+}
+
+.settings-header {
+    padding: 15px;
+    background-color: var(--primary-color);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.settings-content {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.settings-section {
+    margin-bottom: 20px;
+}
+
+.settings-section h4 {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 10px;
+    font-size: var(--menu-text-size);
+    text-align: center;
+}
+
+/* Tuiles de taille de police */
+.font-size-tiles {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.font-size-tile {
+    min-width: 80px;
+    padding: 12px 20px;
+    background-color: var(--card-background);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.font-size-tile:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.font-size-tile.active {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: white;
+    transform: scale(1.05);
+}
+
+.font-size-tile span {
+    font-size: var(--menu-text-size);
+}
+
+.version-text {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 10px 0;
+}
+
+/* Navigation du bas */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--bottom-nav-height);
+    background-color: var(--primary-color);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 -2px 5px var(--shadow-color);
+    z-index: 998;
+}
+
+/* Ajoutez ces styles spécifiques pour le mode clair */
+[data-theme="light"] .bottom-nav {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+[data-theme="light"] .nav-item {
+    color: white;
+}
+
+.nav-item {
+    background: none;
+    border: none;
+    color: white;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex: 1;
+    text-decoration: none; /* Pour le lien Google */
+}
+
+.nav-item:hover {
+    transform: translateY(-4px);
+}
+
+.nav-item span:not(.material-icons) {
+    font-size: var(--menu-text-size);
+    margin-top: 4px;
+}
+
+.nav-item:hover .material-icons {
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
+}
+
+/* Menu contextuel */
+.tile-menu {
+    position: fixed;
+    background-color: var(--primary-color) !important;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    z-index: 1000;
+    min-width: 200px;
+    max-width: 90%;
+    opacity: 1 !important;
+}
+
+.tile-menu button {
+    display: flex;
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    background: none;
+    color: white !important;
+    cursor: pointer;
+    align-items: center;
+    gap: 12px;
+    font-size: var(--menu-text-size);
+    transition: background-color 0.2s;
+}
+
+.tile-menu button .material-icons {
+    width: 24px;
+    display: flex;
+    justify-content: center;
+}
+
+.tile-menu button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Force le texte blanc dans les deux thèmes */
+[data-theme="light"] .tile-menu button,
+[data-theme="dark"] .tile-menu button {
+    color: white !important;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+/* Ajoutez le code de l'overlay ici */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    display: none;
+}
+
+.overlay.active {
+    display: block;
+}
+
+.modal-content {
+    background-color: var(--primary-color) !important;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    color: white;
+    font-size: calc(var(--modal-text-size) + 4px);
+}
+
+.modal-body {
+    padding: 20px;
+    color: white;
+}
+
+.modal-body h3 {
+    margin: 16px 0 8px;
+    font-size: calc(var(--modal-text-size) + 2px);
+}
+
+.modal-body ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.modal-body li {
+    padding: 8px 0;
+    font-size: var(--modal-text-size);
+}
+	/* Suite des styles Modal */
+
+/* Toast */
+.toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--primary-color);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    animation: slideUp 0.3s ease;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 20px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* PayPal */
+.paypal-donate {
+    position: fixed;
+    bottom: calc(var(--bottom-nav-height) + 1px);
+    left: 10px;
+    z-index: 10;
+}
+
+.paypal-donate form {
+    margin: 0;
+}
+
+.paypal-donate input[type="image"] {
+    max-width: 200px;
+    height: auto;
+    transition: transform 0.2s ease-in-out;
+}
+
+.paypal-donate input[type="image"]:hover {
+    transform: scale(1.05);
+}
+
+/* PWA Installation */
+#menuInstall {
+    display: none;
+    cursor: pointer;
+    width: 100%;
+    color: white !important;
+    text-decoration: none;
+    padding: 12px;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+    font-size: var(--menu-text-size);
+}
+
+#menuInstall.visible {
+    display: flex !important;
+    align-items: center;
+}
+
+#menuInstall:hover {
+    background-color: var(--hover-color);
+}
+
+    /* Boutons */
+    .menu-button,
+    .settings-button {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+    }
+
+    .settings-button {
+        right: 4px;
+        top: 8px;
+    }
+
+    /* Navigation */
+    .google-text {
+        display: none;
+    }
+
+    /* Menus */
+    .sidebar {
+        width: 70%;
+        left: -100%;
+    }
+
+/* Configuration des vues - Mobile */
+@media (max-width: 600px) {
+    /* Tuiles */
+    .tile-container {
+        gap: 10px;
+    }
+
+    /* Vue grille */
+    .tile-container.grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+		padding-left: 0px; /* center le texte */
+    }
+
+    /* Vue liste - réduire la hauteur */
+    .tile-container.list .tile {
+        height: 45px; /* Plus compact */
+        margin: 3px 0;
+        text-align: left; /* Aligner le texte à gauche */
+        padding-left: 0px; /* center le texte */
+    }
+
+    /* Style commun aux tuiles */
+    .tile {
+        margin: 4px 0;
+    }
+
+    /* Autres éléments */
+    .paypal-donate {
+        display: none;
+    }
+
+    .chat-widget {
+        position: fixed;
+        right: 20px;
+        bottom: 80px;
+        z-index: 1001;
+    }
+}
+
+/* Très petits écrans */
+@media (max-width: 360px) {
+    .site-title {
+        font-size: 14px;
+    }
+    
+    .menu-button,
+    .settings-button,
+    .google-link {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+    }
+}

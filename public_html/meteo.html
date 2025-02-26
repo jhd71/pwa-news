@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prévisions météo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #87CEEB, #FFFFFF);
+            color: #333;
+            text-align: center;
+            padding: 20px;
+        }
+        #weather img {
+            width: 50px;
+            height: 50px;
+        }
+        .error {
+            color: red;
+        }
+        .forecast-day {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Prévisions météo</h1>
+    <div id="weather">Chargement des données météo...</div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const apiKey = "4b79472c165b42f690790252242112";
+            const city = "Montceau-les-Mines";
+            const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${city}&days=3&lang=fr`;
+
+            const weatherContainer = document.getElementById("weather");
+
+            fetch(url)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Erreur : " + response.status);
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    const location = data.location;
+                    const forecast = data.forecast.forecastday;
+
+                    let forecastHTML = `
+                        <h2>${location.name}, ${location.region} (${location.country})</h2>
+                        <h3>Prévisions pour les prochains jours :</h3>
+                    `;
+
+                    forecast.forEach((day) => {
+                        forecastHTML += `
+                            <div class="forecast-day">
+                                <h4>${new Date(day.date).toLocaleDateString("fr-FR", { weekday: 'long', day: 'numeric', month: 'long' })}</h4>
+                                <img src="https:${day.day.condition.icon}" alt="${day.day.condition.text}">
+                                <p><strong>Condition :</strong> ${day.day.condition.text}</p>
+                                <p><strong>Température max :</strong> ${day.day.maxtemp_c}°C</p>
+                                <p><strong>Température min :</strong> ${day.day.mintemp_c}°C</p>
+                                <p><strong>Précipitations :</strong> ${day.day.totalprecip_mm} mm</p>
+                                <p><strong>Humidité :</strong> ${day.day.avghumidity}%</p>
+                            </div>
+                        `;
+                    });
+
+                    weatherContainer.innerHTML = forecastHTML;
+                })
+                .catch((error) => {
+                    weatherContainer.innerHTML = `<p class="error">${error.message}</p>`;
+                });
+        });
+    </script>
+</body>
+</html>
