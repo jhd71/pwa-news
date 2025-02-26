@@ -13,7 +13,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="INFOS">
     <link rel="apple-touch-icon" href="images/INFOS-192.png">
-    
+
     <!-- Ajoutez ces métas -->
     <meta name="application-name" content="INFOS">
     <meta name="msapplication-navbutton-color" content="#1a237e">
@@ -36,26 +36,25 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-<header class="app-header">
-    <button type="button" id="menuButton" class="menu-button" aria-label="Menu">
-        <span class="material-icons">menu</span>
-    </button>
- <button type="button" id="settingsButton" class="settings-button" aria-label="Paramètres">
-    <span class="material-icons">settings</span>
-</button>   
-    <h1 class="site-title">
-    <img src="images/Actu&Media.png" alt="Actu & Média" class="site-logo">
-</h1>
-</header>
+    <header class="app-header">
+        <button type="button" id="menuButton" class="menu-button" aria-label="Menu">
+            <span class="material-icons">menu</span>
+        </button>
+        <button type="button" id="settingsButton" class="settings-button" aria-label="Paramètres">
+            <span class="material-icons">settings</span>
+        </button>
+        <h1 class="site-title">
+            <img src="images/Actu&Media.png" alt="Actu & Média" class="site-logo">
+        </h1>
+    </header>
 
-<!-- Bouton paramètres en dehors du header -->
-
-<div class="search-container">
-    <a href="https://www.google.com" target="_blank" class="google-link">
-        <span class="material-icons">search</span>
-        <span>Google</span>
-    </a>
-</div>
+    <!-- Bouton paramètres en dehors du header -->
+    <div class="search-container">
+        <a href="https://www.google.com" target="_blank" class="google-link">
+            <span class="material-icons">search</span>
+            <span>Google</span>
+        </a>
+    </div>
 
     <!-- Menu latéral -->
     <aside id="sidebar" class="sidebar">
@@ -96,17 +95,17 @@
             </a>
         </div>
         <div class="menu-item">
-    <button id="menuInstall" class="menu-link">
-        <span class="material-icons">download</span>
-        <span>Installer l'application</span>
-    </button>
-</div>
+            <button id="menuInstall" class="menu-link">
+                <span class="material-icons">download</span>
+                <span>Installer l'application</span>
+            </button>
+        </div>
         <div class="menu-item">
-    <div class="copyright-text">
-        <span class="material-icons">copyright</span>
-        <span>2025 Actu & Média</span>
-    </div>
-</div>
+            <div class="copyright-text">
+                <span class="material-icons">copyright</span>
+                <span>2025 Actu & Média</span>
+            </div>
+        </div>
     </aside>
 
     <!-- Conteneur principal des tuiles -->
@@ -116,162 +115,162 @@
 
     <!-- Navigation du bas -->
     <nav class="bottom-nav">
-    <button class="nav-item" id="darkModeToggle">
-        <span class="material-icons">dark_mode</span>
-        <span>Sombre</span>
-    </button>
-    <button class="nav-item" id="addSiteBtn">
-        <span class="material-icons">add_circle</span>
-        <span>Ajouter</span>
-    </button>
-    <button class="nav-item" id="layoutToggle">
-        <span class="material-icons">grid_view</span>
-        <span>Vue</span>
-    </button>
-    <a href="https://www.google.com" target="_blank" class="nav-item">
-        <span class="material-icons">search</span>
-        <span>Google</span>
-    </a>
-</nav>
+        <button class="nav-item" id="darkModeToggle">
+            <span class="material-icons">dark_mode</span>
+            <span>Sombre</span>
+        </button>
+        <button class="nav-item" id="addSiteBtn">
+            <span class="material-icons">add_circle</span>
+            <span>Ajouter</span>
+        </button>
+        <button class="nav-item" id="layoutToggle">
+            <span class="material-icons">grid_view</span>
+            <span>Vue</span>
+        </button>
+        <a href="https://www.google.com" target="_blank" class="nav-item">
+            <span class="material-icons">search</span>
+            <span>Google</span>
+        </a>
+    </nav>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <!-- Module principal -->
     <script type="module">
-// Service Worker Registration
-async function registerServiceWorker() {
-    if ('serviceWorker' in navigator) {
-        try {
-            const registration = await navigator.serviceWorker.register('/service-worker.js', {
-                scope: '/',
-                updateViaCache: 'none'
-            });
+        // Service Worker Registration
+        async function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.register('/service-worker.js', {
+                        scope: '/',
+                        updateViaCache: 'none'
+                    });
 
-            console.log('ServiceWorker enregistré avec succès:', registration);
+                    console.log('ServiceWorker enregistré avec succès:', registration);
 
-            // Gestion de la mise à jour du Service Worker
-            registration.addEventListener('updatefound', () => {
-                const newWorker = registration.installing;
-                console.log('Nouveau service worker en installation');
+                    // Gestion de la mise à jour du Service Worker
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        console.log('Nouveau service worker en installation');
 
-                newWorker.addEventListener('statechange', () => {
-                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                        console.log('Nouveau Service Worker installé');
-                        if (registration.waiting) {
-                            registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-                        }
-                    }
-                });
-            });
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                console.log('Nouveau Service Worker installé');
+                                if (registration.waiting) {
+                                    registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                                }
+                            }
+                        });
+                    });
 
-            // Écouter les changements d'état
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                console.log('Service Worker mis à jour');
-                window.location.reload();
-            });
+                    // Écouter les changements d'état
+                    navigator.serviceWorker.addEventListener('controllerchange', () => {
+                        console.log('Service Worker mis à jour');
+                        window.location.reload();
+                    });
 
-            return registration;
-        } catch (error) {
-            console.error('Erreur d\'enregistrement du ServiceWorker:', error);
-            throw error;
-        }
-    }
-}
-
-// PWA Installation
-class PWAInstaller {
-    constructor() {
-        this.deferredPrompt = null;
-        this.installButton = document.getElementById('menuInstall');
-        this.setupEventListeners();
-    }
-
-    setupEventListeners() {
-        // Masquer le bouton par défaut
-        if (this.installButton) {
-            this.installButton.style.display = 'none';
-        }
-
-        window.addEventListener('beforeinstallprompt', this.handleBeforeInstallPrompt.bind(this));
-        window.addEventListener('appinstalled', this.handleAppInstalled.bind(this));
-    }
-
-    async handleBeforeInstallPrompt(event) {
-        event.preventDefault();
-        this.deferredPrompt = event;
-
-        if (this.installButton) {
-            this.installButton.style.display = 'block';
-            this.installButton.addEventListener('click', this.handleInstallClick.bind(this), { once: true });
-        }
-    }
-
-    async handleInstallClick(event) {
-        event.preventDefault();
-        if (!this.deferredPrompt) return;
-
-        try {
-            const result = await this.deferredPrompt.prompt();
-            console.log('Résultat de l\'installation:', result);
-            
-            if (result.outcome === 'accepted') {
-                console.log('PWA installée avec succès');
-                this.installButton.style.display = 'none';
+                    return registration;
+                } catch (error) {
+                    console.error('Erreur d\'enregistrement du ServiceWorker:', error);
+                    throw error;
+                }
             }
-        } catch (error) {
-            console.error('Erreur lors de l\'installation:', error);
-        } finally {
-            this.deferredPrompt = null;
         }
-    }
 
-    handleAppInstalled() {
-        console.log('PWA installée avec succès');
-        if (this.installButton) {
-            this.installButton.style.display = 'none';
+        // PWA Installation
+        class PWAInstaller {
+            constructor() {
+                this.deferredPrompt = null;
+                this.installButton = document.getElementById('menuInstall');
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                // Masquer le bouton par défaut
+                if (this.installButton) {
+                    this.installButton.style.display = 'none';
+                }
+
+                window.addEventListener('beforeinstallprompt', this.handleBeforeInstallPrompt.bind(this));
+                window.addEventListener('appinstalled', this.handleAppInstalled.bind(this));
+            }
+
+            async handleBeforeInstallPrompt(event) {
+                //event.preventDefault(); // Supprime cette ligne pour afficher la bannière d'installation par défaut
+                this.deferredPrompt = event;
+
+                if (this.installButton) {
+                    this.installButton.style.display = 'block';
+                    this.installButton.addEventListener('click', this.handleInstallClick.bind(this), { once: true });
+                }
+            }
+
+            async handleInstallClick(event) {
+                event.preventDefault();
+                if (!this.deferredPrompt) return;
+
+                try {
+                    const result = await this.deferredPrompt.prompt();
+                    console.log('Résultat de l\'installation:', result);
+
+                    if (result.outcome === 'accepted') {
+                        console.log('PWA installée avec succès');
+                        this.installButton.style.display = 'none';
+                    }
+                } catch (error) {
+                    console.error('Erreur lors de l\'installation:', error);
+                } finally {
+                    this.deferredPrompt = null;
+                }
+            }
+
+            handleAppInstalled() {
+                console.log('PWA installée avec succès');
+                if (this.installButton) {
+                    this.installButton.style.display = 'none';
+                }
+                this.deferredPrompt = null;
+            }
         }
-        this.deferredPrompt = null;
-    }
-}
 
-// App Initialization
-class AppInitializer {
-    static async init() {
-        try {
-            // Enregistrer le Service Worker
-            await registerServiceWorker();
+        // App Initialization
+        class AppInitializer {
+            static async init() {
+                try {
+                    // Enregistrer le Service Worker
+                    await registerServiceWorker();
 
-            // Initialiser l'installateur PWA
-            new PWAInstaller();
+                    // Initialiser l'installateur PWA
+                    new PWAInstaller();
 
-            // Initialiser ContentManager
-            console.log('Chargement de ContentManager...');
-            const contentModule = await import('./js/content.js');
-            window.contentManager = new contentModule.default();
-            await window.contentManager.init();
-            console.log('Content Manager initialisé');
+                    // Initialiser ContentManager
+                    console.log('Chargement de ContentManager...');
+                    const contentModule = await import('./js/content.js');
+                    window.contentManager = new contentModule.default();
+                    await window.contentManager.init();
+                    console.log('Content Manager initialisé');
 
-            // Initialiser ChatManager
-            console.log('Chargement de ChatManager...');
-            const chatModule = await import('/js/chatManager.js');
-            window.chatManager = new chatModule.default();
-            await window.chatManager.init();
-            console.log('Chat Manager initialisé');
+                    // Initialiser ChatManager
+                    console.log('Chargement de ChatManager...');
+                    const chatModule = await import('/js/chatManager.js');
+                    window.chatManager = new chatModule.default();
+                    await window.chatManager.init();
+                    console.log('Chat Manager initialisé');
 
-        } catch (error) {
-            console.error('Erreur d\'initialisation:', error);
-            console.error('Stack trace:', error.stack);
+                } catch (error) {
+                    console.error('Erreur d\'initialisation:', error);
+                    console.error('Stack trace:', error.stack);
+                }
+            }
         }
-    }
-}
 
-// Démarrer l'application quand le DOM est prêt
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => AppInitializer.init());
-} else {
-    AppInitializer.init();
-}
-</script>
+        // Démarrer l'application quand le DOM est prêt
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => AppInitializer.init());
+        } else {
+            AppInitializer.init();
+        }
+    </script>
 </body>
 </html>
