@@ -34,28 +34,6 @@
 
     <!-- Notifications -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-	<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-  // Vérifier si le script OneSignal est chargé
-  console.log("Script OneSignal inclus dans le HTML");
-  
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    console.log("Début de l'initialisation OneSignal");
-    try {
-      await OneSignal.init({
-        appId: "b9a9b301-c4ff-4ea6-98f3-f8802c229794",
-        safari_web_id: "web.onesignal.auto.36762c33-c595-4251-8e66-ea9a822d3713",
-        notifyButton: {
-          enable: false,
-        },
-      });
-      console.log("OneSignal initialisé avec succès");
-    } catch (error) {
-      console.error("Erreur d'initialisation OneSignal:", error);
-    }
-  });
-</script>
 </head>
 <body>
 <header class="app-header">
@@ -294,59 +272,6 @@ if (document.readyState === 'loading') {
 } else {
     AppInitializer.init();
 }
-</script>
-	<script>
-  // Attendre que la page soit complètement chargée
-  window.addEventListener('load', function() {
-    // Créer le bouton de test
-    const testBtn = document.createElement('button');
-    testBtn.textContent = 'Tester OneSignal';
-    testBtn.style.position = 'fixed';
-    testBtn.style.bottom = '20px';
-    testBtn.style.right = '20px';
-    testBtn.style.zIndex = '9999';
-    testBtn.style.padding = '10px';
-    testBtn.style.background = '#4285f4';
-    testBtn.style.color = 'white';
-    testBtn.style.border = 'none';
-    testBtn.style.borderRadius = '5px';
-    testBtn.style.cursor = 'pointer';
-    
-    testBtn.addEventListener('click', async () => {
-      console.log("Test OneSignal");
-      
-      if (window.OneSignal) {
-        try {
-          // Tester la permission
-          const permission = await OneSignal.Notifications.permission;
-          console.log("Permission actuelle:", permission);
-          
-          // Demander la permission si pas encore accordée
-          if (permission !== 'granted') {
-            const result = await OneSignal.Notifications.requestPermission();
-            console.log("Résultat de la demande:", result);
-          }
-          
-          // Essayer d'utiliser l'API native du navigateur comme solution de repli
-          if (Notification.permission === 'granted') {
-            new Notification("Test de notification", {
-              body: "Ceci est un test de notification via l'API native",
-              icon: "/icons/icon-192x192.png"
-            });
-            console.log("Notification de test envoyée via l'API native");
-          } else {
-            console.log("Permission non accordée pour les notifications natives");
-          }
-        } catch (error) {
-          console.error("Erreur lors du test:", error);
-        }
-      } else {
-        console.error("OneSignal n'est pas initialisé");
-      }
-    });
-    
-    document.body.appendChild(testBtn);
-  });
 </script>
 </body>
 </html>
