@@ -592,30 +592,27 @@ createMessageElement(message) {
 
     async setupPushNotifications() {
     try {
+        console.log("Tentative d'activation des notifications...");
+        
         if (!window.OneSignal) {
             console.error('OneSignal n\'est pas initialisé');
             this.showNotification('Service de notification non disponible', 'error');
             return false;
         }
         
-        // Vérifier si les notifications sont déjà activées
-        const isPushEnabled = await OneSignal.Notifications.permission;
-        if (isPushEnabled === 'granted') {
-            console.log('Les notifications sont déjà activées');
-            this.notificationsEnabled = true;
-            localStorage.setItem('notificationsEnabled', 'true');
-            this.updateNotificationButton();
-            return true;
-        }
+        console.log("OneSignal disponible:", window.OneSignal);
         
-        // Demander l'autorisation pour les notifications
+        // Afficher directement la boîte de dialogue de demande de permission
         const result = await OneSignal.Notifications.requestPermission();
         console.log('Résultat de la demande de permission:', result);
         
-        // Vérifier si l'utilisateur a accepté
         if (result) {
-            // Associer le pseudo de l'utilisateur pour le ciblage personnalisé
+            // L'utilisateur a accepté
+            console.log("Permission accordée, configuration des tags...");
+            
+            // Ajouter un tag avec le nom d'utilisateur
             await OneSignal.User.addTag("username", this.pseudo);
+            console.log(`Tag username=${this.pseudo} ajouté`);
             
             this.notificationsEnabled = true;
             localStorage.setItem('notificationsEnabled', 'true');
@@ -624,11 +621,14 @@ createMessageElement(message) {
             this.playSound('success');
             return true;
         } else {
+            // L'utilisateur a refusé
+            console.log("Permission refusée par l'utilisateur");
             this.showNotification('Notifications non autorisées', 'error');
             return false;
         }
     } catch (error) {
         console.error('Erreur activation notifications:', error);
+        console.error('Stack trace:', error.stack);
         this.showNotification('Erreur d\'activation des notifications', 'error');
         return false;
     }
