@@ -106,7 +106,14 @@ module.exports = async (req, res) => {
     await cleanExpiredSubscriptions(supabase);
 
     // Récupérer les données du body de la requête
-    const { message, fromUser, toUser } = req.body;
+    const { message, fromUser, toUser } = req.body || {}; // <-- Ajout de la vérification
+
+    // Vérifier si req.body est défini et si message, fromUser et toUser existent
+    if (!req.body || !message || !fromUser || !toUser) {
+      console.error("Corps de requête incomplet :", req.body);
+      return res.status(400).json({ error: "Corps de requête incomplet : Les champs 'message', 'fromUser' et 'toUser' sont obligatoires." });
+    }
+
     console.log('Données reçues:', { message, fromUser, toUser });
 
     // Log initial de la tentative d'envoi
@@ -138,7 +145,7 @@ module.exports = async (req, res) => {
       throw supabaseError; //Important de relancer pour que le code s'arrête ici
     }
 
-    if (!subscriptions || subscriptions.length === 0) {
+      if (!subscriptions || !Array.isArray(subscriptions) || subscriptions.length === 0) {
       // Mettre à jour le log avec l'erreur
       if (logEntry) {
         await supabase
