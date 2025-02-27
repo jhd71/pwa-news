@@ -569,21 +569,19 @@ createMessageElement(message) {
 
         if (error) throw error;
 
-        // Ajoutez cette partie pour les notifications OneSignal
-        try {
-            await fetch("/api/oneSignalSend.js", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    message: content,
-                    fromUser: this.pseudo,
-                    toUser: "all" // ou un pseudo spécifique
-                })
-            });
-            console.log("✅ Notification OneSignal envoyée");
-        } catch (error) {
-            console.error("❌ Erreur lors de l'envoi de la notification OneSignal:", error);
-        }
+        // Envoi de la notification
+        await fetch("/api/sendPush.js", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                message: content,
+                fromUser: this.pseudo,
+                toUser: "all"
+            })
+        })
+        .then(response => response.json())
+        .then(data => console.log("✅ Notification envoyée :", data))
+        .catch(err => console.error("❌ Erreur lors de l'envoi de la notification :", err));
 
         return true;
     } catch (error) {
@@ -601,8 +599,8 @@ createMessageElement(message) {
         }
         
         // Vérifier si les notifications sont déjà activées
-        const isPushEnabled = await OneSignal.isPushNotificationsEnabled();
-        if (isPushEnabled) {
+        const isPushEnabled = await OneSignal.Notifications.permission;
+        if (isPushEnabled === 'granted') {
             console.log('Les notifications sont déjà activées');
             this.notificationsEnabled = true;
             localStorage.setItem('notificationsEnabled', 'true');
@@ -611,15 +609,13 @@ createMessageElement(message) {
         }
         
         // Demander l'autorisation pour les notifications
-        const result = await OneSignal.showNativePrompt();
+        const result = await OneSignal.Notifications.requestPermission();
         console.log('Résultat de la demande de permission:', result);
         
         // Vérifier si l'utilisateur a accepté
-        const isEnabled = await OneSignal.isPushNotificationsEnabled();
-        if (isEnabled) {
+        if (result) {
             // Associer le pseudo de l'utilisateur pour le ciblage personnalisé
-            await OneSignal.setExternalUserId(this.pseudo);
-            await OneSignal.sendTag("username", this.pseudo);
+            await OneSignal.User.addTag("username", this.pseudo);
             
             this.notificationsEnabled = true;
             localStorage.setItem('notificationsEnabled', 'true');
@@ -709,10 +705,10 @@ async unsubscribeFromPushNotifications() {
         }
         
         // Désactiver les notifications
-        await OneSignal.setSubscription(false);
+        await OneSignal.User.Category.slidedown.disable();
         
-        // Supprimer l'identifiant utilisateur
-        await OneSignal.removeExternalUserId();
+        // Supprimer le tag utilisateur
+        await OneSignal.User.removeTag("username");
         
         this.notificationsEnabled = false;
         localStorage.setItem('notificationsEnabled', 'false');
@@ -727,21 +723,37 @@ async unsubscribeFromPushNotifications() {
 }
     async sendNotificationToUser(message) {
     try {
-        // Cette fonction n'est plus nécessaire pour les notifications externes
-        // car OneSignal s'en charge automatiquement via son dashboard ou l'API
+        console.log('Envoi notification à:', message);
         
-        // Pour les notifications locales (lorsque l'app est ouverte)
-        if (window.OneSignal && this.notificationsEnabled) {
-            console.log('Affichage d\'une notification locale pour:', message);
-            
-            // Utiliser la fonctionnalité de notification locale OneSignal
-            OneSignal.Notifications.showSlidedownPrompt();
+        const response = await fetch("/api/sendPush.js", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: message.content,
+                fromUser: message.pseudo,
+                toUser: this.pseudo
+            })
+        });
+
+        if (!response.ok) {
+            const text = await response.text();
+            console.error('Réponse API erreur:', {
+                status: response.status,
+                statusText: response.statusText,
+                body: text
+            });
+            throw new Error(`Erreur API: ${response.status} ${text}`);
         }
-        
-        return true;
+
+        const result = await response.json();
+        console.log('Réponse API succès:', result);
+        return result;
     } catch (error) {
-        console.error('Erreur notification locale:', error);
-        return false;
+        console.error('Erreur envoi notification:', error);
+        console.error('Stack trace:', error.stack);
+        throw error;
     }
 }
 	async loadSounds() {
