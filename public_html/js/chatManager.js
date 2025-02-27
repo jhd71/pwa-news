@@ -569,19 +569,8 @@ createMessageElement(message) {
 
         if (error) throw error;
 
-        // Envoi de la notification
-        await fetch("/api/sendPush.js", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                message: content,
-                fromUser: this.pseudo,
-                toUser: "all"
-            })
-        })
-        .then(response => response.json())
-        .then(data => console.log("✅ Notification envoyée :", data))
-        .catch(err => console.error("❌ Erreur lors de l'envoi de la notification :", err));
+        // Ne plus utiliser l'API sendPush.js qui génère des erreurs
+        // Nous utilisons maintenant l'API native pour les notifications
 
         return true;
     } catch (error) {
@@ -594,55 +583,44 @@ createMessageElement(message) {
     try {
         console.log("Tentative d'activation des notifications...");
         
-        if (!window.OneSignal) {
-            console.error('OneSignal n\'est pas initialisé');
-            this.showNotification('Service de notification non disponible', 'error');
-            return false;
-        }
-        
-        console.log("OneSignal disponible:", window.OneSignal);
-        
-        // Vérifier si les permissions sont déjà bloquées
-        const permission = await OneSignal.Notifications.permission;
-        console.log("Permission actuelle:", permission);
-        
-        if (permission === 'denied') {
-            this.showNotification('Notifications bloquées par le navigateur. Veuillez modifier les paramètres de site.', 'error');
-            
-            // Ouvrir les paramètres du navigateur (fonctionne uniquement sur certains navigateurs)
-            if (typeof Notification !== 'undefined' && Notification.requestPermission) {
-                this.showNotification('Ouvrez les paramètres pour autoriser les notifications', 'info');
-            }
+        // Vérifier la permission actuelle
+        if (Notification.permission === 'granted') {
+            console.log("Notifications déjà activées");
+            this.notificationsEnabled = true;
+            localStorage.setItem('notificationsEnabled', 'true');
+            this.updateNotificationButton();
+            this.showNotification('Notifications déjà activées', 'success');
+            return true;
+        } else if (Notification.permission === 'denied') {
+            console.log("Notifications bloquées par le navigateur");
+            this.showNotification('Notifications bloquées. Vérifiez les paramètres du navigateur.', 'error');
             return false;
         }
         
         // Demander la permission
-        try {
-            const result = await OneSignal.Notifications.requestPermission();
-            console.log("Résultat de la demande de permission:", result);
+        const permission = await Notification.requestPermission();
+        console.log("Résultat de la demande:", permission);
+        
+        if (permission === 'granted') {
+            this.notificationsEnabled = true;
+            localStorage.setItem('notificationsEnabled', 'true');
+            this.updateNotificationButton();
+            this.showNotification('Notifications activées avec succès', 'success');
+            this.playSound('success');
             
-            if (result) {
-                this.notificationsEnabled = true;
-                localStorage.setItem('notificationsEnabled', 'true');
-                this.updateNotificationButton();
-                this.showNotification('Notifications activées avec succès', 'success');
-                return true;
-            } else {
-                this.showNotification('Notifications refusées', 'error');
-                return false;
-            }
-        } catch (error) {
-            console.error("Erreur lors de la demande:", error);
-            // Vérifier si l'erreur est due au blocage des permissions
-            if (error.message && error.message.includes('blocked')) {
-                this.showNotification('Notifications bloquées. Vérifiez les paramètres du navigateur.', 'error');
-            } else {
-                this.showNotification('Erreur d\'activation des notifications', 'error');
-            }
+            // Envoyer une notification de confirmation
+            new Notification('Notifications activées', {
+                body: 'Vous recevrez désormais des notifications pour les nouveaux messages',
+                icon: '/icons/icon-192x192.png'
+            });
+            
+            return true;
+        } else {
+            this.showNotification('Notifications refusées par l\'utilisateur', 'error');
             return false;
         }
     } catch (error) {
-        console.error('Erreur globale:', error);
+        console.error('Erreur activation notifications:', error);
         this.showNotification('Erreur d\'activation des notifications', 'error');
         return false;
     }
@@ -739,41 +717,31 @@ async unsubscribeFromPushNotifications() {
     try {
         console.log('Envoi notification à:', message);
         
-        // Vérifier si OneSignal est disponible
-        if (window.OneSignal && window.OneSignal.Notifications) {
-            try {
-                // Vérifier si l'utilisateur a accepté les notifications
-                if (await OneSignal.Notifications.permission === 'granted') {
-                    console.log("Envoi d'une notification pour un nouveau message");
-                    
-                    // Option 1: Utiliser l'API native du navigateur comme solution de repli
-                    if (Notification.permission === 'granted') {
-                        new Notification(`Nouveau message de ${message.pseudo}`, {
-                            body: message.content,
-                            icon: "/icons/icon-192x192.png"
-                        });
-                        console.log("Notification envoyée via l'API native du navigateur");
-                    }
-                    
-                    // Option 2: Utiliser l'API OneSignal si disponible
-                    await OneSignal.User.PushSubscription.optIn();
-                    console.log("Notification opt-in effectué via OneSignal");
-                    
-                    return true;
-                } else {
-                    console.log("L'utilisateur n'a pas accordé la permission pour les notifications");
-                    return false;
-                }
-            } catch (error) {
-                console.error("Erreur lors de l'envoi de notification:", error);
-                return false;
+        // Utiliser l'API native du navigateur comme solution de repli
+        if (Notification.permission === 'granted') {
+            new Notification(`Nouveau message de ${message.pseudo}`, {
+                body: message.content,
+                icon: "/icons/icon-192x192.png"
+            });
+            console.log("Notification envoyée via l'API native du navigateur");
+            return true;
+        } else if (Notification.permission !== 'denied') {
+            // Si l'utilisateur n'a pas encore pris de décision
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+                new Notification(`Nouveau message de ${message.pseudo}`, {
+                    body: message.content,
+                    icon: "/icons/icon-192x192.png"
+                });
+                console.log("Notification envoyée via l'API native après autorisation");
+                return true;
             }
-        } else {
-            console.log("OneSignal non disponible pour les notifications");
-            return false;
         }
+        
+        console.log("Impossible d'envoyer une notification - permission non accordée");
+        return false;
     } catch (error) {
-        console.error('Erreur globale notification:', error);
+        console.error('Erreur notification:', error);
         return false;
     }
 }
