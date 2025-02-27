@@ -167,6 +167,15 @@ body {
     border-radius: 50%;
     transition: background-color 0.2s;
 }
+@keyframes rotateMenu {
+    0% { transform: rotate(0deg); }
+    30% { transform: rotate(20deg); }
+    100% { transform: rotate(0deg); }
+}
+
+.menu-button:active {
+    animation: rotateMenu 0.5s ease;
+}
 
 /* Bouton paramètres */
 .settings-button {
@@ -185,6 +194,27 @@ body {
     border-radius: 50%;
     z-index: 1002;
     padding: 10px;
+}
+
+@keyframes changeSettings {
+    0% {
+        transform: scale(1);
+        background-color: var(--primary-color);
+    }
+    50% {
+        transform: scale(1.2);
+        background-color: #ffffff;
+        color: var(--primary-color);
+    }
+    100% {
+        transform: scale(1);
+        background-color: var(--primary-color);
+        color: white;
+    }
+}
+
+.settings-button:active {
+    animation: changeSettings 0.5s ease;
 }
 
 .menu-button:hover, .settings-button:hover {
