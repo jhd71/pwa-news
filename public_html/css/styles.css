@@ -8,17 +8,19 @@
     --shadow-color: rgba(0, 0, 0, 0.08);
     --header-height: 60px;
     --bottom-nav-height: 60px;
-	--tile-title-size: 20px;
+    --tile-title-size: 20px;
     --menu-text-size: 15px;
     --separator-text-size: 15px;
     --message-text-size: 15px;
     --header-text-size: 20px;
 }
-/* Transition globale */
+
+/* Transition globale unique */
 * {
     transition: font-size 0.3s ease;
 }
 
+/* Thème sombre */
 [data-theme="dark"] {
     --primary-color: #1a237e;
     --background-color: #121212;
@@ -34,6 +36,7 @@
 [data-theme="light"] .modal-content {
     color: white !important;
 }
+
 /* Tailles pour différentes options */
 [data-font-size="small"] {
     --tile-title-size: 17px;
@@ -57,16 +60,6 @@
     --separator-text-size: 17px;
     --message-text-size: 17px;
     --header-text-size: 24px;
-}
-
-/* Thème sombre */
-[data-theme="dark"] {
-    --primary-color: #1a237e;
-    --background-color: #121212;
-    --text-color: #ffffff;
-    --border-color: #404040;
-    --hover-color: rgba(255, 255, 255, 0.1);
-    --shadow-color: rgba(0, 0, 0, 0.3);
 }
 
 /* Styles de base */
@@ -104,6 +97,7 @@ body {
     z-index: 1000;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     overflow: visible; /* Permet au logo de déborder */
+    animation: fadeIn 0.5s ease;
 }
 
 /* Style par défaut pour PC */
@@ -117,10 +111,6 @@ body {
     color: white;
     text-shadow: 1px 1px 0 black, -1px 1px 0 black, 1px -1px 0 black, -1px -1px 0 black;
 }
-/* Transition globale */
-* {
-    transition: font-size 0.3s ease;
-}
 
 /* Style du logo */
 .site-logo {
@@ -131,25 +121,26 @@ body {
     z-index: 1001;
     filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.3));
     object-fit: contain;
+    animation: fadeIn 0.7s ease;
 }
 
 @media (max-width: 600px) {
     .site-logo {
-        height: 80px !important; /* ✅ Assure une grande taille */
-        width: auto !important; /* ✅ Garde les proportions */
-        max-width: none !important; /* ✅ Enlève toute restriction */
+        height: 80px !important;
+        width: auto !important;
+        max-width: none !important;
         display: block !important;
-        margin: 0 auto !important; /* ✅ Centre horizontalement */
-        object-fit: contain !important; /* ✅ Évite toute déformation */
+        margin: 0 auto !important;
+        object-fit: contain !important;
     }
 
     .header {
-        height: 380px !important; /* ✅ Augmente la place pour le logo */
+        height: 380px !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         text-align: center !important;
-        overflow: visible !important; /* ✅ Assure que rien ne bloque */
+        overflow: visible !important;
     }
 }
 
@@ -166,15 +157,6 @@ body {
     cursor: pointer;
     border-radius: 50%;
     transition: background-color 0.2s;
-}
-@keyframes rotateMenu {
-    0% { transform: rotate(0deg); }
-    30% { transform: rotate(20deg); }
-    100% { transform: rotate(0deg); }
-}
-
-.menu-button:active {
-    animation: rotateMenu 0.5s ease;
 }
 
 /* Bouton paramètres */
@@ -196,30 +178,10 @@ body {
     padding: 10px;
 }
 
-@keyframes changeSettings {
-    0% {
-        transform: scale(1);
-        background-color: var(--primary-color);
-    }
-    50% {
-        transform: scale(1.2);
-        background-color: #ffffff;
-        color: var(--primary-color);
-    }
-    100% {
-        transform: scale(1);
-        background-color: var(--primary-color);
-        color: white;
-    }
-}
-
-.settings-button:active {
-    animation: changeSettings 0.5s ease;
-}
-
 .menu-button:hover, .settings-button:hover {
     background-color: var(--hover-color);
 }
+
 /* Styles communs pour tous les boutons de fermeture */
 .close-btn {
     background: none;
@@ -276,6 +238,7 @@ body {
 .close-btn:hover {
     background-color: var(--hover-color);
 }
+
 /* Pour le chat */
 .chat-widget {
     position: fixed;
@@ -311,7 +274,10 @@ body {
 .chat-toggle:hover {
     transform: scale(1.05);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    /* Optionnel : appliquer une animation pulse en hover */
+    /* animation: pulse 1s infinite; */
 }
+
 /* Style de la croix de fermeture */
 .sidebar .close-btn {
     background: none;
@@ -329,6 +295,7 @@ body {
 .sidebar .close-btn:hover {
     background-color: var(--hover-color);
 }
+
 /* Pour le menu latéral */
 .sidebar {
     position: fixed;
@@ -378,7 +345,7 @@ body {
     text-decoration: none;
     padding: 12px 15px;
     border-radius: 8px;
-    transition: all 0.3s ease; /* Changé pour une transition plus fluide */
+    transition: all 0.3s ease;
     font-size: var(--menu-text-size);
 }
 
@@ -386,21 +353,21 @@ body {
     width: 24px;
     display: flex;
     justify-content: center;
-    transition: transform 0.3s ease; /* Animation pour l'icône */
+    transition: transform 0.3s ease;
 }
 
 .menu-item a:hover,
 .menu-link:hover,
 #menuInstall:hover {
     background-color: var(--hover-color);
-    transform: translateX(5px); /* Effet de décalage */
+    transform: translateX(5px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .menu-item a:hover .material-icons,
 .menu-link:hover .material-icons,
 #menuInstall:hover .material-icons {
-    transform: scale(1.1); /* Légère mise en avant de l'icône */
+    transform: scale(1.1);
 }
 
 #menuInstall {
@@ -414,7 +381,8 @@ body {
 #menuInstall.visible {
     display: flex;
 }
-/* Ajoutez le nouveau style ici */
+
+/* Styles pour le copyright */
 .copyright-text {
     display: flex;
     align-items: center;
@@ -429,6 +397,7 @@ body {
     display: flex;
     justify-content: center;
 }
+
 /* Contenu principal */
 main {
     margin-top: calc(var(--header-height) + 10px);
@@ -457,10 +426,11 @@ main {
     max-width: 800px;
     gap: 6px;
 }
+
 /* Ajustement mobile */
 @media (max-width: 600px) {
     .tile-container.list {
-        gap: 4px; /* Encore plus compact sur mobile */
+        gap: 4px;
     }
 }
 
@@ -472,11 +442,20 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition: transform 0.2s, box-shadow 0.2s;
     user-select: none;
     -webkit-user-select: none;
     -webkit-tap-highlight-color: transparent;
     box-shadow: 0 2px 5px var(--shadow-color);
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ajout d'un état active pour un léger effet de "pressage" */
+.tile:active {
+    transform: scale(0.95);
 }
 
 /* Dimensions des tuiles selon la vue */
@@ -504,123 +483,19 @@ main {
     width: 100%;
     text-align: center;
     pointer-events: none;
-}
-
-/* Style de base des séparateurs */
-.separator {
-    grid-column: 1 / -1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 35px; /* Encore plus petit */
-    margin: 4px 0;
-    background-color: var(--primary-color);
-    border-radius: 12px;
-    position: relative;
-}
-
-/* Style de l'image */
-.separator img {
-    height: 50px; /* Plus grand */
-    width: auto;
-    position: relative;
-    z-index: 2;
-}
-
-/* Lignes décoratives */
-.separator::before,
-.separator::after {
-    content: '';
-    position: absolute;
-    height: 0.5px; /* Plus fin */
-    width: calc(50% - 100px);
-    background-color: rgba(255, 255, 255, 0.3); /* Plus subtil */
-    top: 50%;
-}
-
-.separator::before {
-    left: 20px;
-}
-
-.separator::after {
-    right: 20px;
-}
-
-[data-theme="light"] .separator {
-    background-color: rgba(126, 87, 194, 0.8); /* Plus transparent */
-    backdrop-filter: blur(5px); /* Effet légèrement flouté */
-}
-
-[data-theme="dark"] .tile {
-    opacity: 0.85;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-}
-
-[data-theme="dark"] .tile:hover {
-    opacity: 1;
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-/* Styles des tuiles avec une palette plus harmonieuse */
-.tile {
-    background-color: var(--card-background);
-    border-radius: 12px;
-    overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
-    cursor: pointer;
-    box-shadow: 0 2px 5px var(--shadow-color);
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    user-select: none; /* Empêche la sélection du texte */
-    -webkit-user-select: none; /* Pour Safari */
-    -webkit-tap-highlight-color: transparent; /* Supprime le highlight sur mobile */
-}
-
-/* Couleurs des tuiles */
-.tile:nth-child(10n + 1) { background-color: #9675CD; }  /* Violet */
-.tile:nth-child(10n + 2) { background-color: #4DB6AC; }  /* Vert d'eau */
-.tile:nth-child(10n + 3) { background-color: #7986CB; }  /* Bleu */
-.tile:nth-child(10n + 4) { background-color: #81C784; }  /* Vert */
-.tile:nth-child(10n + 5) { background-color: #F06292; }  /* Rose */
-.tile:nth-child(10n + 6) { background-color: #64B5F6; }  /* Bleu clair */
-.tile:nth-child(10n + 7) { background-color: #FFB74D; }  /* Orange */
-.tile:nth-child(10n + 8) { background-color: #BA68C8; }  /* Violet foncé */
-.tile:nth-child(10n + 9) { background-color: #4DD0E1; }  /* Turquoise */
-.tile:nth-child(10n + 0) { background-color: #A1887F; }  /* Brun */
-/* Renforcement de l'ombre sur les tuiles claires */
-.tile:nth-child(10n + 2) .tile-title, /* Vert d'eau */
-.tile:nth-child(10n + 6) .tile-title, /* Bleu clair */
-.tile:nth-child(10n + 9) .tile-title { /* Turquoise */
-    text-shadow: 2px 2px 6px rgba(0, 0, 0, 1); /* Ombre plus foncée */
-}
-
-/* Effets de survol améliorés */
-.tile:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    filter: brightness(1.05);
-}
-
-.tile-content {
     padding: 10px;
-    text-align: center;
-    width: 100%;
-    pointer-events: none; /* Empêche les interactions avec le texte */
 }
 
+/* Style de la tuile titre */
 .tile-title {
-    font-size: var(--tile-title-size); /* Réduit de la taille actuelle */
-    font-weight: 600; /* Un peu plus gras */
+    font-size: var(--tile-title-size);
+    font-weight: 600;
     color: white;
     text-align: center;
     width: 100%;
-    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5); /* Ombre plus subtile */
-    line-height: 1.2; /* Meilleur espacement entre les lignes */
-    padding: 0 8px; /* Espacement sur les côtés */
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+    line-height: 1.2;
+    padding: 0 8px;
 }
 
 /* Menu paramètres - version corrigée */
@@ -641,7 +516,6 @@ main {
     transition: right 0.3s ease;
 }
 
-/* Mobile uniquement */
 @media (max-width: 600px) {
     .settings-menu {
         width: 100%;
@@ -655,7 +529,7 @@ main {
 }
 
 .settings-content {
-    max-width: 280px; /* Limite aussi le contenu */
+    max-width: 280px;
 }
 
 .settings-header {
@@ -695,7 +569,7 @@ main {
 .font-size-tile {
     min-width: 80px;
     padding: 12px 20px;
-    background-color: var(--card-background);
+    background-color: var(--primary-color);
     border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     color: white;
@@ -727,7 +601,7 @@ main {
     margin: 10px 0;
 }
 
-/* Style de base pour la barre de navigation */
+/* Navigation du bas */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -742,7 +616,6 @@ main {
     z-index: 998;
 }
 
-/* Ajoutez ces styles spécifiques pour le mode clair */
 [data-theme="light"] .bottom-nav {
     background-color: var(--primary-color);
     color: white;
@@ -752,7 +625,6 @@ main {
     color: white;
 }
 
-/* Style de base des éléments de navigation (boutons) */
 .nav-item {
     background: none;
     border: none;
@@ -765,32 +637,6 @@ main {
     transition: all 0.3s ease;
     flex: 1;
     text-decoration: none;
-    position: relative; /* Important pour le positionnement du pseudo-élément */
-    overflow: hidden;     /* Important pour cacher la ligne au départ */
-}
-
-/* Ajout du nouvel effet au survol */
-.nav-item::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: -100%;  /* Initialement hors de l'écran */
-  width: 100%;
-  height: 2px;    /* Épaisseur de la ligne */
-  background-color: #fff;  /* Couleur de la ligne */
-  transition: left 0.3s ease; /* Animation de déplacement */
-}
-
-/* Configuration de l'animation au survol */
-.nav-item:hover::before {
-  left: 0;  /* La ligne se déplace vers la droite */
-}
-
-/* Styles pour améliorer les éléments de texte */
-.nav-item span:not(.material-icons) {
-    font-size: var(--menu-text-size);
-    margin-top: 4px;
-    transition: color 0.3s ease; /* Transition de couleur */
 }
 
 .nav-item:hover {
@@ -817,7 +663,8 @@ main {
     z-index: 1000;
     min-width: 200px;
     max-width: 90%;
-    opacity: 1 !important;
+    /* Ajout d'une animation fadeIn */
+    animation: fadeIn 0.3s ease;
 }
 
 .tile-menu button {
@@ -862,13 +709,14 @@ main {
     align-items: center;
     justify-content: center;
     z-index: 1001;
+    animation: fadeIn 0.4s ease;
 }
 
 .modal.hidden {
     display: none;
 }
 
-/* Ajoutez le code de l'overlay ici */
+/* Overlay */
 .overlay {
     position: fixed;
     top: 0;
@@ -925,7 +773,6 @@ main {
     padding: 8px 0;
     font-size: var(--modal-text-size);
 }
-	/* Suite des styles Modal */
 
 /* Toast */
 .toast {
@@ -939,23 +786,45 @@ main {
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-    animation: slideUp 0.3s ease, breathe 3s ease infinite; /* Ajout de l'animation "breathe" */
+    animation: slideUp 0.3s ease;
 }
 
-/* Animation de respiration */
-@keyframes breathe {
-    0% {
-        transform: translateX(-50%) scale(1);
-        opacity: 0.9; /* Légèrement transparent au début */
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
     }
-    50% {
-        transform: translateX(-50%) scale(1.05);
-        opacity: 1; /* Pleinement visible au milieu */
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
-    100% {
-        transform: translateX(-50%) scale(1);
-        opacity: 0.9; /* Retour à la transparence initiale */
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
     }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
 }
 
 /* PayPal */
@@ -1002,62 +871,52 @@ main {
     background-color: var(--hover-color);
 }
 
-    /* Boutons */
-    .menu-button,
-    .settings-button {
-        width: 40px;
-        height: 40px;
-        min-width: 40px;
-    }
+/* Boutons */
+.menu-button,
+.settings-button {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+}
 
-    .settings-button {
-        right: 4px;
-        top: 8px;
-    }
+.settings-button {
+    right: 4px;
+    top: 8px;
+}
 
-    /* Navigation */
-    .google-text {
-        display: none;
-    }
+/* Navigation */
+.google-text {
+    display: none;
+}
 
-    /* Menus */
-    .sidebar {
-        width: 70%;
-        left: -100%;
-    }
+/* Menus */
+.sidebar {
+    width: 70%;
+    left: -100%;
+}
 
 /* Configuration des vues - Mobile */
 @media (max-width: 600px) {
-    /* Tuiles */
     .tile-container {
         gap: 10px;
     }
-
-    /* Vue grille */
     .tile-container.grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
-		padding-left: 0px; /* center le texte */
+        padding-left: 0;
     }
-
-    /* Vue liste - réduire la hauteur */
     .tile-container.list .tile {
-        height: 45px; /* Plus compact */
+        height: 45px;
         margin: 3px 0;
-        text-align: left; /* Aligner le texte à gauche */
-        padding-left: 0px; /* center le texte */
+        text-align: left;
+        padding-left: 0;
     }
-
-    /* Style commun aux tuiles */
     .tile {
         margin: 4px 0;
     }
-
-    /* Autres éléments */
     .paypal-donate {
         display: none;
     }
-
     .chat-widget {
         position: fixed;
         right: 20px;
