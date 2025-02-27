@@ -776,7 +776,7 @@ main {
   bottom: 0;
   left: -100%;  /* Initialement hors de l'écran */
   width: 100%;
-  height: 1px;    /* Épaisseur de la ligne */
+  height: 2px;    /* Épaisseur de la ligne */
   background-color: #fff;  /* Couleur de la ligne */
   transition: left 0.3s ease; /* Animation de déplacement */
 }
