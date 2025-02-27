@@ -711,8 +711,11 @@ async unsubscribeFromPushNotifications() {
     async sendNotificationToUser(message) {
     try {
         console.log('Envoi notification à:', message);
+        console.log('message.content:', message.content);
+        console.log('message.pseudo:', message.pseudo);
+        console.log('this.pseudo:', this.pseudo);
+
         const url = '/api/sendPush';
-        console.log('URL API:', url);
         const body = JSON.stringify({
             message: message.content,
             fromUser: message.pseudo,
