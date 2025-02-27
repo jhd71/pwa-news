@@ -758,26 +758,6 @@ async unsubscribeFromPushNotifications() {
         throw error;
     }
 }
-
-        if (!response.ok) {
-            const text = await response.text();
-            console.error('Réponse API erreur:', {
-                status: response.status,
-                statusText: response.statusText,
-                body: text
-            });
-            throw new Error(`Erreur API: ${response.status} ${text}`);
-        }
-
-        const result = await response.json();
-        console.log('Réponse API succès:', result);
-        return result;
-    } catch (error) {
-        console.error('Erreur envoi notification:', error);
-        console.error('Stack trace:', error.stack);
-        throw error;
-    }
-}
 	async loadSounds() {
         const soundFiles = {
             'message': '/sounds/message.mp3',
