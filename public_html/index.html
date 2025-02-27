@@ -36,25 +36,25 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 	<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
+  // Vérifier si le script OneSignal est chargé
+  console.log("Script OneSignal inclus dans le HTML");
+  
   window.OneSignalDeferred = window.OneSignalDeferred || [];
   OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "b9a9b301-c4ff-4ea6-98f3-f8802c229794",
-      safari_web_id: "web.onesignal.auto.36762c33-c595-4251-8e66-ea9a822d3713",
-      notifyButton: {
-        enable: false,
-      },
-    });
-  });
-  
-  // Vérification de l'initialisation de OneSignal
-  setTimeout(() => {
-    if (window.OneSignal) {
-      console.log('OneSignal est correctement initialisé');
-    } else {
-      console.error('OneSignal n\'est pas initialisé après 3 secondes');
+    console.log("Début de l'initialisation OneSignal");
+    try {
+      await OneSignal.init({
+        appId: "b9a9b301-c4ff-4ea6-98f3-f8802c229794",
+        safari_web_id: "web.onesignal.auto.36762c33-c595-4251-8e66-ea9a822d3713",
+        notifyButton: {
+          enable: false,
+        },
+      });
+      console.log("OneSignal initialisé avec succès");
+    } catch (error) {
+      console.error("Erreur d'initialisation OneSignal:", error);
     }
-  }, 3000);
+  });
 </script>
 </head>
 <body>
