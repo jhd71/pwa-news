@@ -1,26 +1,24 @@
-/* Variables racines (inchangées) */
+/* Variables racines */
 :root {
-    --primary-color: #7E57C2;
-    --background-color: #EFF1FF;
+    --primary-color: #7E57C2;          /* Violet plus doux */
+    --background-color: #EFF1FF;       /* Fond très légèrement bleuté */
     --text-color: #333333;
     --border-color: #E5E7F4;
     --hover-color: rgba(126, 87, 194, 0.1);
     --shadow-color: rgba(0, 0, 0, 0.08);
     --header-height: 60px;
     --bottom-nav-height: 60px;
-    --tile-title-size: 20px;
+	--tile-title-size: 20px;
     --menu-text-size: 15px;
     --separator-text-size: 15px;
     --message-text-size: 15px;
     --header-text-size: 20px;
 }
-
-/* Transition globale (améliorée) */
+/* Transition globale */
 * {
-    transition: all 0.2s ease-in-out; /* Plus de propriétés, plus fluide */
+    transition: font-size 0.3s ease;
 }
 
-/* Thèmes (inchangés) */
 [data-theme="dark"] {
     --primary-color: #1a237e;
     --background-color: #121212;
@@ -30,14 +28,13 @@
     --shadow-color: rgba(0, 0, 0, 0.3);
 }
 
-/* Pour le texte en mode clair (inchangé) */
+/* Pour le texte en mode clair */
 [data-theme="light"] .sidebar,
 [data-theme="light"] .settings-menu,
 [data-theme="light"] .modal-content {
     color: white !important;
 }
-
-/* Tailles de texte (inchangées) */
+/* Tailles pour différentes options */
 [data-font-size="small"] {
     --tile-title-size: 17px;
     --menu-text-size: 13px;
@@ -62,7 +59,23 @@
     --header-text-size: 24px;
 }
 
-/* Styles de base (inchangés) */
+/* Thème sombre */
+[data-theme="dark"] {
+    --primary-color: #1a237e;
+    --background-color: #121212;
+    --text-color: #ffffff;
+    --border-color: #404040;
+    --hover-color: rgba(255, 255, 255, 0.1);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Styles de base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background-color: var(--background-color);
@@ -104,23 +117,43 @@ body {
     color: white;
     text-shadow: 1px 1px 0 black, -1px 1px 0 black, 1px -1px 0 black, -1px -1px 0 black;
 }
-/* Style du logo - version de base */
-.site-logo {
-    height: 50px;
-    width: auto;
-    display: block;
-    margin: 0 auto;
-    transition: height 0.4s ease; /* Animation douce pour le changement de hauteur */
+/* Transition globale */
+* {
+    transition: font-size 0.3s ease;
 }
 
-/* ✅ Ajout media query (grand écran) */
-@media (min-width: 768px) {
+/* Style du logo */
+.site-logo {
+    height: 140px; /* Plus grand sur PC */
+    width: auto;
+    margin-top: 30px;
+    position: relative;
+    z-index: 1001;
+    filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.3));
+    object-fit: contain;
+}
+
+@media (max-width: 600px) {
     .site-logo {
-        height: 80px;
+        height: 80px !important; /* ✅ Assure une grande taille */
+        width: auto !important; /* ✅ Garde les proportions */
+        max-width: none !important; /* ✅ Enlève toute restriction */
+        display: block !important;
+        margin: 0 auto !important; /* ✅ Centre horizontalement */
+        object-fit: contain !important; /* ✅ Évite toute déformation */
+    }
+
+    .header {
+        height: 380px !important; /* ✅ Augmente la place pour le logo */
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        overflow: visible !important; /* ✅ Assure que rien ne bloque */
     }
 }
-.menu-button,
-.settings-button {
+
+.menu-button {
     background: none;
     border: none;
     color: white;
@@ -132,14 +165,32 @@ body {
     justify-content: center;
     cursor: pointer;
     border-radius: 50%;
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* ✅ Animation ici */
+    transition: background-color 0.2s;
 }
 
-.menu-button:hover,
-.settings-button:hover {
-    transform: scale(1.1); /* ✅ Agrandissement au survol */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* ✅ Ombre au survol */
+/* Bouton paramètres */
+.settings-button {
+    position: fixed;
+    top: 8px;
+    right: 8px;
+    width: 44px;
+    height: 44px;
+    background: none;
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 1002;
+    padding: 10px;
 }
+
+.menu-button:hover, .settings-button:hover {
+    background-color: var(--hover-color);
+}
+/* Styles communs pour tous les boutons de fermeture */
 .close-btn {
     background: none;
     border: none;
@@ -151,7 +202,6 @@ body {
     justify-content: center;
     cursor: pointer;
     border-radius: 50%;
-    transition: background-color 0.2s;
 }
 
 .close-btn:hover {
@@ -189,24 +239,7 @@ body {
     cursor: pointer;
     border-radius: 50%;
     z-index: 1002;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Ajout de l'effet de pulsation */
-.heartbeat {
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
+    transition: background-color 0.2s;
 }
 
 .settings-button:hover,
@@ -266,44 +299,23 @@ body {
 .sidebar .close-btn:hover {
     background-color: var(--hover-color);
 }
-
-/* Animations d’entrée et de sortie */
-@keyframes slideIn {
-    from { transform: translateX(-100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
-
-@keyframes slideOut {
-    from { transform: translateX(0); opacity: 1; }
-    to { transform: translateX(-100%); opacity: 0; }
-}
-
-/* Menu latéral */
+/* Pour le menu latéral */
 .sidebar {
     position: fixed;
     top: var(--header-height);
-    left: -280px; /* Initialement hors de l'écran */
-    width: 30%;
-    max-width: 350px;
-    min-width: 280px;
+    left: -280px;
+    width: 30%; /* Réduire à 30% de la largeur sur PC */
+    max-width: 350px; /* Largeur maximale sur grands écrans */
+    min-width: 280px; /* Largeur minimale */
     height: calc(100vh - var(--header-height));
     background-color: var(--primary-color) !important;
     transition: left 0.3s ease;
     z-index: 999;
     box-shadow: 2px 0 5px var(--shadow-color);
-    animation: slideOut 0.3s forwards;
 }
 
 .sidebar.open {
-    animation: slideIn 0.3s forwards;
     left: 0;
-}
-
-@media (max-width: 600px) {
-    .sidebar {
-        width: 80%; /* Prend la largeur sur mobile */
-        max-width: none; /* Permet de s’étendre */
-    }
 }
 
 .sidebar-header {
@@ -340,29 +352,19 @@ body {
     font-size: var(--menu-text-size);
 }
 
-/* Ajout des effets au hover */
-.menu-item a:hover,
-.menu-link:hover,
-#menuInstall:hover {
-    background-color: var(--hover-color);
-    transform: translateX(5px); /* Effet de décalage */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Augmentation de l'ombre */
-}
-
-/* Pour les écrans plus larges on augmente encore l’effet de décalage */
-@media (min-width: 768px) {
-    .menu-item a:hover,
-    .menu-link:hover,
-    #menuInstall:hover {
-        transform: translateX(10px); /* Augmente le décalage */
-    }
-}
-
 .menu-item .material-icons {
     width: 24px;
     display: flex;
     justify-content: center;
     transition: transform 0.3s ease; /* Animation pour l'icône */
+}
+
+.menu-item a:hover,
+.menu-link:hover,
+#menuInstall:hover {
+    background-color: var(--hover-color);
+    transform: translateX(5px); /* Effet de décalage */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .menu-item a:hover .material-icons,
@@ -380,8 +382,7 @@ body {
 }
 
 #menuInstall.visible {
-    display: flex !important;
-    align-items: center;
+    display: flex;
 }
 /* Ajoutez le nouveau style ici */
 .copyright-text {
@@ -414,23 +415,19 @@ main {
     margin: 0 auto;
 }
 
-/* Configuration des vues */
+/* Vue grille */
 .tile-container.grid {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     max-width: 1200px;
 }
 
-.tile-container.large {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    max-width: 1400px;
-}
-
+/* Vue liste */
 .tile-container.list {
     grid-template-columns: 1fr;
     max-width: 800px;
     gap: 6px;
 }
-
+/* Ajustement mobile */
 @media (max-width: 600px) {
     .tile-container.list {
         gap: 4px; /* Encore plus compact sur mobile */
@@ -449,6 +446,7 @@ main {
     user-select: none;
     -webkit-user-select: none;
     -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 2px 5px var(--shadow-color);
 }
 
 /* Dimensions des tuiles selon la vue */
@@ -478,28 +476,6 @@ main {
     pointer-events: none;
 }
 
-.tile-title {
-    font-size: var(--tile-title-size); /* Réduit de la taille actuelle */
-    font-weight: 600; /* Un peu plus gras */
-    color: white;
-    text-align: center;
-    width: 100%;
-    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5); /* Ombre plus subtile */
-    line-height: 1.2; /* Meilleur espacement entre les lignes */
-    padding: 0 8px; /* Espacement sur les côtés */
-}
-/* Ajout des transitions à chaque propriété des tuiles */
-.tile {
-    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease, filter 0.3s ease;
-}
-
-/* Amélioration de la subtilité des effets */
-.tile:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    filter: brightness(1.05); /* Légère accentuation au survol */
-}
-
 /* Style de base des séparateurs */
 .separator {
     grid-column: 1 / -1;
@@ -511,42 +487,25 @@ main {
     background-color: var(--primary-color);
     border-radius: 12px;
     position: relative;
-    transition: all 0.3s ease;
 }
 
-/* ✅ Style de l'image */
+/* Style de l'image */
 .separator img {
-    height: 26px;
-    max-height: 32px;
+    height: 50px; /* Plus grand */
     width: auto;
     position: relative;
     z-index: 2;
-    filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.4)); /* ✅ Ajout d’une légère ombre */
-    transition: transform 0.3s ease; /* ✅ Ajout de la transition */
 }
 
-.separator:hover img {
-    transform: scale(1.05); /* ✅ Légèrement agrandi au survol */
-}
-
-/* ✅ Lignes avant/après le texte */
+/* Lignes décoratives */
 .separator::before,
 .separator::after {
     content: '';
     position: absolute;
-    height: 1px;
+    height: 0.5px; /* Plus fin */
     width: calc(50% - 100px);
     background-color: rgba(255, 255, 255, 0.3); /* Plus subtil */
     top: 50%;
-}
-
-/* ✅ Ajustement de la position des lignes en hover */
-.separator:hover::before {
-    left: 20px;
-}
-
-.separator:hover::after {
-    right: 20px;
 }
 
 .separator::before {
@@ -557,52 +516,84 @@ main {
     right: 20px;
 }
 
-/* ✅ Style au theme light */
 [data-theme="light"] .separator {
     background-color: rgba(126, 87, 194, 0.8); /* Plus transparent */
     backdrop-filter: blur(5px); /* Effet légèrement flouté */
 }
 
-@media (min-width: 600px) {
-    body {
-        padding: 20px;
-    }
-
-    h1 {
-        font-size: 2.5rem;
-    }
-}
-/* Mode sombre (inchangé) */
 [data-theme="dark"] .tile {
-    background-color: var(--primary-color);
-    transition: background-color 0.3s ease, opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-    opacity: 0.85; /* Légère transparence */
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2); /* Ombre plus subtile */
+    opacity: 0.85;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
 }
 
-/* Ajout de la transition pour un survol plus doux */
-.font-size-tiles .font-size-tile:not(.active) {
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease; /* Transition plus compléte */
+[data-theme="dark"] .tile:hover {
+    opacity: 1;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-@keyframes subtleGlow {
-    0%, 100% { box-shadow: 0 4px 10px rgba(0,0,0,0.1); transform: translateY(0); }
-    50% { box-shadow: 0 8px 15px rgba(0,0,0,0.2); transform: translateY(-2px); }
+/* Styles des tuiles avec une palette plus harmonieuse */
+.tile {
+    background-color: var(--card-background);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    box-shadow: 0 2px 5px var(--shadow-color);
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none; /* Empêche la sélection du texte */
+    -webkit-user-select: none; /* Pour Safari */
+    -webkit-tap-highlight-color: transparent; /* Supprime le highlight sur mobile */
 }
 
-/* Ajout du nouvel effet */
-.font-size-tiles .font-size-tile:not(.active):hover {
-  animation: subtleGlow 1.5s ease infinite alternate;
+/* Couleurs des tuiles */
+.tile:nth-child(10n + 1) { background-color: #9675CD; }  /* Violet */
+.tile:nth-child(10n + 2) { background-color: #4DB6AC; }  /* Vert d'eau */
+.tile:nth-child(10n + 3) { background-color: #7986CB; }  /* Bleu */
+.tile:nth-child(10n + 4) { background-color: #81C784; }  /* Vert */
+.tile:nth-child(10n + 5) { background-color: #F06292; }  /* Rose */
+.tile:nth-child(10n + 6) { background-color: #64B5F6; }  /* Bleu clair */
+.tile:nth-child(10n + 7) { background-color: #FFB74D; }  /* Orange */
+.tile:nth-child(10n + 8) { background-color: #BA68C8; }  /* Violet foncé */
+.tile:nth-child(10n + 9) { background-color: #4DD0E1; }  /* Turquoise */
+.tile:nth-child(10n + 0) { background-color: #A1887F; }  /* Brun */
+/* Renforcement de l'ombre sur les tuiles claires */
+.tile:nth-child(10n + 2) .tile-title, /* Vert d'eau */
+.tile:nth-child(10n + 6) .tile-title, /* Bleu clair */
+.tile:nth-child(10n + 9) .tile-title { /* Turquoise */
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 1); /* Ombre plus foncée */
 }
 
-/* Ajout d’un style spécifique pour une zone de paramètres plus élégante */
-.settings-menu .font-size-tiles {
-    border-radius: 15px;
-    padding: 25px 15px;
-    background-color: rgba(0, 0, 0, 0.2); /* Un fond gris léger pour la zone des paramètres */
+/* Effets de survol améliorés */
+.tile:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    filter: brightness(1.05);
 }
 
+.tile-content {
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+    pointer-events: none; /* Empêche les interactions avec le texte */
+}
+
+.tile-title {
+    font-size: var(--tile-title-size); /* Réduit de la taille actuelle */
+    font-weight: 600; /* Un peu plus gras */
+    color: white;
+    text-align: center;
+    width: 100%;
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5); /* Ombre plus subtile */
+    line-height: 1.2; /* Meilleur espacement entre les lignes */
+    padding: 0 8px; /* Espacement sur les côtés */
+}
+
+/* Menu paramètres - version corrigée */
 .settings-menu {
     position: fixed;
     top: var(--header-height);
@@ -612,13 +603,12 @@ main {
     min-width: 280px;
     height: calc(100vh - var(--header-height));
     background-color: var(--primary-color) !important;
-    transition: right 0.3s ease;
+    color: white !important;
     z-index: 999;
-    box-shadow: 2px 0 5px var(--shadow-color);
-}
-
-.settings-menu.open {
-    right: 0;
+    box-shadow: -2px 0 5px var(--shadow-color);
+    display: flex;
+    flex-direction: column;
+    transition: right 0.3s ease;
 }
 
 /* Mobile uniquement */
@@ -628,6 +618,14 @@ main {
         max-width: 75%;
         min-width: unset;
     }
+}
+
+.settings-menu.open {
+    right: 0;
+}
+
+.settings-content {
+    max-width: 280px; /* Limite aussi le contenu */
 }
 
 .settings-header {
@@ -714,22 +712,12 @@ main {
     z-index: 998;
 }
 
-/* Ajout de l'effet de translation et d'opacité au hover */
-.nav-item:hover {
-  transform: translateY(-3px); /* Léger décalage vers le haut */
-  opacity: 0.8; /* Léger effet de transparence */
+/* Ajoutez ces styles spécifiques pour le mode clair */
+[data-theme="light"] .bottom-nav {
+    background-color: var(--primary-color);
+    color: white;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 [data-theme="light"] .nav-item {
     color: white;
 }
@@ -748,11 +736,21 @@ main {
     text-decoration: none; /* Pour le lien Google */
 }
 
+.nav-item:hover {
+    transform: translateY(-4px);
+}
+
 .nav-item span:not(.material-icons) {
     font-size: var(--menu-text-size);
     margin-top: 4px;
 }
 
+.nav-item:hover .material-icons {
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
+}
+
+/* Menu contextuel */
 .tile-menu {
     position: fixed;
     background-color: var(--primary-color) !important;
@@ -763,11 +761,6 @@ main {
     min-width: 200px;
     max-width: 90%;
     opacity: 1 !important;
-}
-
-/* Ajout d'une transition discréte lors de l'affichage du menu */
-.tile-menu {
-  animation: fadeIn 0.2s ease;
 }
 
 .tile-menu button {
@@ -896,11 +889,11 @@ main {
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translate(-50%, 20px);
     }
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translate(-50%, 0);
     }
 }
 
@@ -933,12 +926,6 @@ main {
 
 .paypal-donate input[type="image"]:hover {
     transform: scale(1.05);
-}
-
-/* Images */
-img {
-    max-width: 200px;
-    height: auto;
 }
 
 /* PWA Installation */
@@ -983,6 +970,61 @@ img {
 
     /* Menus */
     .sidebar {
-	            width: 70%;
+        width: 70%;
         left: -100%;
     }
+
+/* Configuration des vues - Mobile */
+@media (max-width: 600px) {
+    /* Tuiles */
+    .tile-container {
+        gap: 10px;
+    }
+
+    /* Vue grille */
+    .tile-container.grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+		padding-left: 0px; /* center le texte */
+    }
+
+    /* Vue liste - réduire la hauteur */
+    .tile-container.list .tile {
+        height: 45px; /* Plus compact */
+        margin: 3px 0;
+        text-align: left; /* Aligner le texte à gauche */
+        padding-left: 0px; /* center le texte */
+    }
+
+    /* Style commun aux tuiles */
+    .tile {
+        margin: 4px 0;
+    }
+
+    /* Autres éléments */
+    .paypal-donate {
+        display: none;
+    }
+
+    .chat-widget {
+        position: fixed;
+        right: 20px;
+        bottom: 80px;
+        z-index: 1001;
+    }
+}
+
+/* Très petits écrans */
+@media (max-width: 360px) {
+    .site-title {
+        font-size: 14px;
+    }
+    
+    .menu-button,
+    .settings-button,
+    .google-link {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+    }
+}
