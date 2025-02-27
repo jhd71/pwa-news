@@ -1,5 +1,6 @@
 const webpush = require('web-push');
 const { createClient } = require('@supabase/supabase-js');
+console.log("📨 sendPush.js a été exécuté !");
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
