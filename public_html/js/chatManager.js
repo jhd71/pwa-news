@@ -711,11 +711,8 @@ async unsubscribeFromPushNotifications() {
     async sendNotificationToUser(message) {
     try {
         console.log('Envoi notification à:', message);
-        console.log('message.content:', message.content);
-        console.log('message.pseudo:', message.pseudo);
-        console.log('this.pseudo:', this.pseudo);
-
         const url = '/api/sendPush';
+        console.log('URL API:', url);
         const body = JSON.stringify({
             message: message.content,
             fromUser: message.pseudo,
@@ -724,13 +721,13 @@ async unsubscribeFromPushNotifications() {
         });
         console.log('Body de la requête:', body);
 
-        const response = await fetch(window.location.origin + '/api/sendPush', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: body
-        });
+        const response = await fetch("/api/sendPush.js", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ message: "Nouveau message dans le chat !" })
+});
 
         if (!response.ok) {
             const text = await response.text();
