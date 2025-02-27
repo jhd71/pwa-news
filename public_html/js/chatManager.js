@@ -569,19 +569,21 @@ createMessageElement(message) {
 
         if (error) throw error;
 
-        // Envoi de la notification
-        await fetch("/api/sendPush.js", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                message: content,
-                fromUser: this.pseudo,
-                toUser: "all"
-            })
-        })
-        .then(response => response.json())
-        .then(data => console.log("✅ Notification envoyée :", data))
-        .catch(err => console.error("❌ Erreur lors de l'envoi de la notification :", err));
+        // Ajoutez cette partie pour les notifications OneSignal
+        try {
+            await fetch("/api/oneSignalSend.js", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    message: content,
+                    fromUser: this.pseudo,
+                    toUser: "all" // ou un pseudo spécifique
+                })
+            });
+            console.log("✅ Notification OneSignal envoyée");
+        } catch (error) {
+            console.error("❌ Erreur lors de l'envoi de la notification OneSignal:", error);
+        }
 
         return true;
     } catch (error) {
@@ -592,47 +594,47 @@ createMessageElement(message) {
 
     async setupPushNotifications() {
     try {
-        const registration = await navigator.serviceWorker.ready;
-        
-        // Vérifier les souscriptions existantes
-        const oldSubscription = await registration.pushManager.getSubscription();
-        if (oldSubscription) {
-            await oldSubscription.unsubscribe();
-            await this.supabase
-                .from('push_subscriptions')
-                .delete()
-                .match({ 
-                    pseudo: this.pseudo,
-                    subscription: JSON.stringify(oldSubscription)
-                });
+        if (!window.OneSignal) {
+            console.error('OneSignal n\'est pas initialisé');
+            this.showNotification('Service de notification non disponible', 'error');
+            return false;
         }
-
-        // Créer une nouvelle souscription
-        const subscription = await registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: this.urlBase64ToUint8Array('BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck')
-        });
-
-        // Enregistrer la nouvelle souscription
-        const { error } = await this.supabase
-            .from('push_subscriptions')
-            .insert({
-                pseudo: this.pseudo,
-                subscription: JSON.stringify(subscription),
-                device_type: this.getDeviceType(),
-                active: true,
-                last_updated: new Date().toISOString()
-            });
-
-        if (error) throw error;
-
-        this.notificationsEnabled = true;
-        localStorage.setItem('notificationsEnabled', 'true');
-        this.updateNotificationButton();
-        return true;
+        
+        // Vérifier si les notifications sont déjà activées
+        const isPushEnabled = await OneSignal.isPushNotificationsEnabled();
+        if (isPushEnabled) {
+            console.log('Les notifications sont déjà activées');
+            this.notificationsEnabled = true;
+            localStorage.setItem('notificationsEnabled', 'true');
+            this.updateNotificationButton();
+            return true;
+        }
+        
+        // Demander l'autorisation pour les notifications
+        const result = await OneSignal.showNativePrompt();
+        console.log('Résultat de la demande de permission:', result);
+        
+        // Vérifier si l'utilisateur a accepté
+        const isEnabled = await OneSignal.isPushNotificationsEnabled();
+        if (isEnabled) {
+            // Associer le pseudo de l'utilisateur pour le ciblage personnalisé
+            await OneSignal.setExternalUserId(this.pseudo);
+            await OneSignal.sendTag("username", this.pseudo);
+            
+            this.notificationsEnabled = true;
+            localStorage.setItem('notificationsEnabled', 'true');
+            this.updateNotificationButton();
+            this.showNotification('Notifications activées avec succès', 'success');
+            this.playSound('success');
+            return true;
+        } else {
+            this.showNotification('Notifications non autorisées', 'error');
+            return false;
+        }
     } catch (error) {
         console.error('Erreur activation notifications:', error);
-        throw error;
+        this.showNotification('Erreur d\'activation des notifications', 'error');
+        return false;
     }
 }
 async renewPushSubscription() {
@@ -700,62 +702,46 @@ getDeviceType() {
     }
 }
 async unsubscribeFromPushNotifications() {
-        try {
-            const registration = await navigator.serviceWorker.getRegistration();
-            const subscription = await registration.pushManager.getSubscription();
-            
-            if (subscription) {
-                await subscription.unsubscribe();
-                await this.supabase
-                    .from('push_subscriptions')
-                    .delete()
-                    .eq('pseudo', this.pseudo);
-            }
-            
-            this.notificationsEnabled = false;
-            localStorage.setItem('notificationsEnabled', 'false');
-            this.updateNotificationButton();
-            this.showNotification('Notifications désactivées', 'success');
-            return true;
-        } catch (error) {
-            console.error('Erreur désactivation notifications:', error);
-            this.showNotification('Erreur de désactivation', 'error');
+    try {
+        if (!window.OneSignal) {
+            console.error('OneSignal n\'est pas initialisé');
             return false;
         }
+        
+        // Désactiver les notifications
+        await OneSignal.setSubscription(false);
+        
+        // Supprimer l'identifiant utilisateur
+        await OneSignal.removeExternalUserId();
+        
+        this.notificationsEnabled = false;
+        localStorage.setItem('notificationsEnabled', 'false');
+        this.updateNotificationButton();
+        this.showNotification('Notifications désactivées', 'success');
+        return true;
+    } catch (error) {
+        console.error('Erreur désactivation notifications:', error);
+        this.showNotification('Erreur lors de la désactivation', 'error');
+        return false;
     }
+}
     async sendNotificationToUser(message) {
     try {
-        console.log('Envoi notification à:', message);
+        // Cette fonction n'est plus nécessaire pour les notifications externes
+        // car OneSignal s'en charge automatiquement via son dashboard ou l'API
         
-        const response = await fetch("/api/sendPush.js", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                message: message.content,
-                fromUser: message.pseudo,
-                toUser: this.pseudo
-            })
-        });
-
-        if (!response.ok) {
-            const text = await response.text();
-            console.error('Réponse API erreur:', {
-                status: response.status,
-                statusText: response.statusText,
-                body: text
-            });
-            throw new Error(`Erreur API: ${response.status} ${text}`);
+        // Pour les notifications locales (lorsque l'app est ouverte)
+        if (window.OneSignal && this.notificationsEnabled) {
+            console.log('Affichage d\'une notification locale pour:', message);
+            
+            // Utiliser la fonctionnalité de notification locale OneSignal
+            OneSignal.Notifications.showSlidedownPrompt();
         }
-
-        const result = await response.json();
-        console.log('Réponse API succès:', result);
-        return result;
+        
+        return true;
     } catch (error) {
-        console.error('Erreur envoi notification:', error);
-        console.error('Stack trace:', error.stack);
-        throw error;
+        console.error('Erreur notification locale:', error);
+        return false;
     }
 }
 	async loadSounds() {
