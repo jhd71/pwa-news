@@ -569,8 +569,19 @@ createMessageElement(message) {
 
         if (error) throw error;
 
-        // Ne plus utiliser l'API sendPush.js qui génère des erreurs
-        // Nous utilisons maintenant l'API native pour les notifications
+        // Envoi de la notification
+        await fetch("/api/sendPush.js", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                message: content,
+                fromUser: this.pseudo,
+                toUser: "all"
+            })
+        })
+        .then(response => response.json())
+        .then(data => console.log("✅ Notification envoyée :", data))
+        .catch(err => console.error("❌ Erreur lors de l'envoi de la notification :", err));
 
         return true;
     } catch (error) {
@@ -581,48 +592,47 @@ createMessageElement(message) {
 
     async setupPushNotifications() {
     try {
-        console.log("Tentative d'activation des notifications...");
+        const registration = await navigator.serviceWorker.ready;
         
-        // Vérifier la permission actuelle
-        if (Notification.permission === 'granted') {
-            console.log("Notifications déjà activées");
-            this.notificationsEnabled = true;
-            localStorage.setItem('notificationsEnabled', 'true');
-            this.updateNotificationButton();
-            this.showNotification('Notifications déjà activées', 'success');
-            return true;
-        } else if (Notification.permission === 'denied') {
-            console.log("Notifications bloquées par le navigateur");
-            this.showNotification('Notifications bloquées. Vérifiez les paramètres du navigateur.', 'error');
-            return false;
+        // Vérifier les souscriptions existantes
+        const oldSubscription = await registration.pushManager.getSubscription();
+        if (oldSubscription) {
+            await oldSubscription.unsubscribe();
+            await this.supabase
+                .from('push_subscriptions')
+                .delete()
+                .match({ 
+                    pseudo: this.pseudo,
+                    subscription: JSON.stringify(oldSubscription)
+                });
         }
-        
-        // Demander la permission
-        const permission = await Notification.requestPermission();
-        console.log("Résultat de la demande:", permission);
-        
-        if (permission === 'granted') {
-            this.notificationsEnabled = true;
-            localStorage.setItem('notificationsEnabled', 'true');
-            this.updateNotificationButton();
-            this.showNotification('Notifications activées avec succès', 'success');
-            this.playSound('success');
-            
-            // Envoyer une notification de confirmation
-            new Notification('Notifications activées', {
-                body: 'Vous recevrez désormais des notifications pour les nouveaux messages',
-                icon: '/icons/icon-192x192.png'
+
+        // Créer une nouvelle souscription
+        const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: this.urlBase64ToUint8Array('BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck')
+        });
+
+        // Enregistrer la nouvelle souscription
+        const { error } = await this.supabase
+            .from('push_subscriptions')
+            .insert({
+                pseudo: this.pseudo,
+                subscription: JSON.stringify(subscription),
+                device_type: this.getDeviceType(),
+                active: true,
+                last_updated: new Date().toISOString()
             });
-            
-            return true;
-        } else {
-            this.showNotification('Notifications refusées par l\'utilisateur', 'error');
-            return false;
-        }
+
+        if (error) throw error;
+
+        this.notificationsEnabled = true;
+        localStorage.setItem('notificationsEnabled', 'true');
+        this.updateNotificationButton();
+        return true;
     } catch (error) {
         console.error('Erreur activation notifications:', error);
-        this.showNotification('Erreur d\'activation des notifications', 'error');
-        return false;
+        throw error;
     }
 }
 async renewPushSubscription() {
@@ -690,59 +700,62 @@ getDeviceType() {
     }
 }
 async unsubscribeFromPushNotifications() {
-    try {
-        if (!window.OneSignal) {
-            console.error('OneSignal n\'est pas initialisé');
+        try {
+            const registration = await navigator.serviceWorker.getRegistration();
+            const subscription = await registration.pushManager.getSubscription();
+            
+            if (subscription) {
+                await subscription.unsubscribe();
+                await this.supabase
+                    .from('push_subscriptions')
+                    .delete()
+                    .eq('pseudo', this.pseudo);
+            }
+            
+            this.notificationsEnabled = false;
+            localStorage.setItem('notificationsEnabled', 'false');
+            this.updateNotificationButton();
+            this.showNotification('Notifications désactivées', 'success');
+            return true;
+        } catch (error) {
+            console.error('Erreur désactivation notifications:', error);
+            this.showNotification('Erreur de désactivation', 'error');
             return false;
         }
-        
-        // Désactiver les notifications
-        await OneSignal.User.Category.slidedown.disable();
-        
-        // Supprimer le tag utilisateur
-        await OneSignal.User.removeTag("username");
-        
-        this.notificationsEnabled = false;
-        localStorage.setItem('notificationsEnabled', 'false');
-        this.updateNotificationButton();
-        this.showNotification('Notifications désactivées', 'success');
-        return true;
-    } catch (error) {
-        console.error('Erreur désactivation notifications:', error);
-        this.showNotification('Erreur lors de la désactivation', 'error');
-        return false;
     }
-}
     async sendNotificationToUser(message) {
     try {
         console.log('Envoi notification à:', message);
         
-        // Utiliser l'API native du navigateur comme solution de repli
-        if (Notification.permission === 'granted') {
-            new Notification(`Nouveau message de ${message.pseudo}`, {
-                body: message.content,
-                icon: "/icons/icon-192x192.png"
+        const response = await fetch("/api/sendPush.js", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: message.content,
+                fromUser: message.pseudo,
+                toUser: this.pseudo
+            })
+        });
+
+        if (!response.ok) {
+            const text = await response.text();
+            console.error('Réponse API erreur:', {
+                status: response.status,
+                statusText: response.statusText,
+                body: text
             });
-            console.log("Notification envoyée via l'API native du navigateur");
-            return true;
-        } else if (Notification.permission !== 'denied') {
-            // Si l'utilisateur n'a pas encore pris de décision
-            const permission = await Notification.requestPermission();
-            if (permission === 'granted') {
-                new Notification(`Nouveau message de ${message.pseudo}`, {
-                    body: message.content,
-                    icon: "/icons/icon-192x192.png"
-                });
-                console.log("Notification envoyée via l'API native après autorisation");
-                return true;
-            }
+            throw new Error(`Erreur API: ${response.status} ${text}`);
         }
-        
-        console.log("Impossible d'envoyer une notification - permission non accordée");
-        return false;
+
+        const result = await response.json();
+        console.log('Réponse API succès:', result);
+        return result;
     } catch (error) {
-        console.error('Erreur notification:', error);
-        return false;
+        console.error('Erreur envoi notification:', error);
+        console.error('Stack trace:', error.stack);
+        throw error;
     }
 }
 	async loadSounds() {
