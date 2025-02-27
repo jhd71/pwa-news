@@ -882,7 +882,23 @@ main {
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-    animation: slideUp 0.3s ease;
+    animation: slideUp 0.3s ease, breathe 3s ease infinite; /* Ajout de l'animation "breathe" */
+}
+
+/* Animation de respiration */
+@keyframes breathe {
+    0% {
+        transform: translateX(-50%) scale(1);
+        opacity: 0.9; /* Légèrement transparent au début */
+    }
+    50% {
+        transform: translateX(-50%) scale(1.05);
+        opacity: 1; /* Pleinement visible au milieu */
+    }
+    100% {
+        transform: translateX(-50%) scale(1);
+        opacity: 0.9; /* Retour à la transparence initiale */
+    }
 }
 
 /* Animations */
