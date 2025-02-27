@@ -727,7 +727,7 @@ main {
     margin: 10px 0;
 }
 
-/* Navigation du bas */
+/* Style de base pour la barre de navigation */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -752,6 +752,7 @@ main {
     color: white;
 }
 
+/* Style de base des éléments de navigation (boutons) */
 .nav-item {
     background: none;
     border: none;
@@ -763,7 +764,33 @@ main {
     cursor: pointer;
     transition: all 0.3s ease;
     flex: 1;
-    text-decoration: none; /* Pour le lien Google */
+    text-decoration: none;
+    position: relative; /* Important pour le positionnement du pseudo-élément */
+    overflow: hidden;     /* Important pour cacher la ligne au départ */
+}
+
+/* Ajout du nouvel effet au survol */
+.nav-item::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -100%;  /* Initialement hors de l'écran */
+  width: 100%;
+  height: 3px;    /* Épaisseur de la ligne */
+  background-color: #fff;  /* Couleur de la ligne */
+  transition: left 0.3s ease; /* Animation de déplacement */
+}
+
+/* Configuration de l'animation au survol */
+.nav-item:hover::before {
+  left: 0;  /* La ligne se déplace vers la droite */
+}
+
+/* Styles pour améliorer les éléments de texte */
+.nav-item span:not(.material-icons) {
+    font-size: var(--menu-text-size);
+    margin-top: 4px;
+    transition: color 0.3s ease; /* Transition de couleur */
 }
 
 .nav-item:hover {
