@@ -569,14 +569,14 @@ createMessageElement(message) {
 
         if (error) throw error;
 
-        // Version corrigée pour l'appel à l'API de notification
+        // Envoi de la notification
         await fetch("/api/sendPush.js", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 message: content,
                 fromUser: this.pseudo,
-                toUser: "all"  // Si c'est un message global
+                toUser: "all"
             })
         })
         .then(response => response.json())
