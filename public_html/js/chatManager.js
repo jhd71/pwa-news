@@ -569,13 +569,14 @@ createMessageElement(message) {
 
         if (error) throw error;
 
-        // ✅ Appel de l'API sendPush.js après l’envoi du message
+        // Version corrigée pour l'appel à l'API de notification
         await fetch("/api/sendPush.js", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                message: content, 
-                pseudo: this.pseudo
+                message: content,
+                fromUser: this.pseudo,
+                toUser: "all"  // Si c'est un message global
             })
         })
         .then(response => response.json())
@@ -653,10 +654,10 @@ async renewPushSubscription() {
                 });
         }
 
-        // Créer une nouvelle souscription
+        // Créer une nouvelle souscription - utiliser la même clé que dans setupPushNotifications()
         const newSubscription = await registration.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: this.urlBase64ToUint8Array('VOTRE_CLE_VAPID_PUBLIQUE')
+            applicationServerKey: this.urlBase64ToUint8Array('BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck')
         });
 
         // Sauvegarder la nouvelle souscription
@@ -725,23 +726,38 @@ async unsubscribeFromPushNotifications() {
     async sendNotificationToUser(message) {
     try {
         console.log('Envoi notification à:', message);
-        const url = '/api/sendPush';
-        console.log('URL API:', url);
-        const body = JSON.stringify({
-            message: message.content,
-            fromUser: message.pseudo,
-            toUser: this.pseudo,
-            timestamp: new Date().toISOString()
-        });
-        console.log('Body de la requête:', body);
-
+        
         const response = await fetch("/api/sendPush.js", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ message: "Nouveau message dans le chat !" })
-});
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: message.content,
+                fromUser: message.pseudo,
+                toUser: this.pseudo
+            })
+        });
+
+        if (!response.ok) {
+            const text = await response.text();
+            console.error('Réponse API erreur:', {
+                status: response.status,
+                statusText: response.statusText,
+                body: text
+            });
+            throw new Error(`Erreur API: ${response.status} ${text}`);
+        }
+
+        const result = await response.json();
+        console.log('Réponse API succès:', result);
+        return result;
+    } catch (error) {
+        console.error('Erreur envoi notification:', error);
+        console.error('Stack trace:', error.stack);
+        throw error;
+    }
+}
 
         if (!response.ok) {
             const text = await response.text();
