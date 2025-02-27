@@ -544,36 +544,50 @@ createMessageElement(message) {
         }
     }
 
-    async sendMessage(content) {
-        try {
-            const ip = await this.getClientIP();
-            const isBanned = await this.checkBannedIP(ip);
-            
-            if (isBanned) {
-                this.showNotification('Vous êtes banni du chat', 'error');
-                return false;
-            }
-
-            const message = {
-                pseudo: this.pseudo,
-                content: content,
-                ip: ip,
-                created_at: new Date().toISOString()
-            };
-
-            const { data, error } = await this.supabase
-                .from('messages')
-                .insert(message)
-                .select()
-                .single();
-
-            if (error) throw error;
-            return true;
-        } catch (error) {
-            console.error('Erreur sendMessage:', error);
+    async sendMessage(content) { 
+    try {
+        const ip = await this.getClientIP();
+        const isBanned = await this.checkBannedIP(ip);
+        
+        if (isBanned) {
+            this.showNotification('Vous êtes banni du chat', 'error');
             return false;
         }
+
+        const message = {
+            pseudo: this.pseudo,
+            content: content,
+            ip: ip,
+            created_at: new Date().toISOString()
+        };
+
+        const { data, error } = await this.supabase
+            .from('messages')
+            .insert(message)
+            .select()
+            .single();
+
+        if (error) throw error;
+
+        // ✅ Appel de l'API sendPush.js après l’envoi du message
+        await fetch("/api/sendPush.js", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                message: content, 
+                pseudo: this.pseudo
+            })
+        })
+        .then(response => response.json())
+        .then(data => console.log("✅ Notification envoyée :", data))
+        .catch(err => console.error("❌ Erreur lors de l'envoi de la notification :", err));
+
+        return true;
+    } catch (error) {
+        console.error('Erreur sendMessage:', error);
+        return false;
     }
+}
 
     async setupPushNotifications() {
     try {
