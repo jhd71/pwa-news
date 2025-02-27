@@ -602,37 +602,47 @@ createMessageElement(message) {
         
         console.log("OneSignal disponible:", window.OneSignal);
         
-        // Vérifier l'objet Notifications
-        if (!window.OneSignal.Notifications) {
-            console.error("API OneSignal.Notifications non disponible");
-            this.showNotification('API de notification non disponible', 'error');
+        // Vérifier si les permissions sont déjà bloquées
+        const permission = await OneSignal.Notifications.permission;
+        console.log("Permission actuelle:", permission);
+        
+        if (permission === 'denied') {
+            this.showNotification('Notifications bloquées par le navigateur. Veuillez modifier les paramètres de site.', 'error');
+            
+            // Ouvrir les paramètres du navigateur (fonctionne uniquement sur certains navigateurs)
+            if (typeof Notification !== 'undefined' && Notification.requestPermission) {
+                this.showNotification('Ouvrez les paramètres pour autoriser les notifications', 'info');
+            }
             return false;
         }
         
-        // Afficher la boîte de dialogue native
+        // Demander la permission
         try {
-            const result = await window.OneSignal.Notifications.requestPermission();
+            const result = await OneSignal.Notifications.requestPermission();
             console.log("Résultat de la demande de permission:", result);
             
             if (result) {
-                // Mettre à jour l'interface
                 this.notificationsEnabled = true;
                 localStorage.setItem('notificationsEnabled', 'true');
                 this.updateNotificationButton();
-                this.showNotification('Notifications activées', 'success');
-                this.playSound('success');
+                this.showNotification('Notifications activées avec succès', 'success');
                 return true;
             } else {
                 this.showNotification('Notifications refusées', 'error');
                 return false;
             }
         } catch (error) {
-            console.error("Erreur lors de la demande de permission:", error);
-            this.showNotification('Erreur d\'autorisation', 'error');
+            console.error("Erreur lors de la demande:", error);
+            // Vérifier si l'erreur est due au blocage des permissions
+            if (error.message && error.message.includes('blocked')) {
+                this.showNotification('Notifications bloquées. Vérifiez les paramètres du navigateur.', 'error');
+            } else {
+                this.showNotification('Erreur d\'activation des notifications', 'error');
+            }
             return false;
         }
     } catch (error) {
-        console.error('Erreur activation notifications:', error);
+        console.error('Erreur globale:', error);
         this.showNotification('Erreur d\'activation des notifications', 'error');
         return false;
     }
