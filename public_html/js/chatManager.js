@@ -602,33 +602,37 @@ createMessageElement(message) {
         
         console.log("OneSignal disponible:", window.OneSignal);
         
-        // Afficher directement la boîte de dialogue de demande de permission
-        const result = await OneSignal.Notifications.requestPermission();
-        console.log('Résultat de la demande de permission:', result);
+        // Vérifier l'objet Notifications
+        if (!window.OneSignal.Notifications) {
+            console.error("API OneSignal.Notifications non disponible");
+            this.showNotification('API de notification non disponible', 'error');
+            return false;
+        }
         
-        if (result) {
-            // L'utilisateur a accepté
-            console.log("Permission accordée, configuration des tags...");
+        // Afficher la boîte de dialogue native
+        try {
+            const result = await window.OneSignal.Notifications.requestPermission();
+            console.log("Résultat de la demande de permission:", result);
             
-            // Ajouter un tag avec le nom d'utilisateur
-            await OneSignal.User.addTag("username", this.pseudo);
-            console.log(`Tag username=${this.pseudo} ajouté`);
-            
-            this.notificationsEnabled = true;
-            localStorage.setItem('notificationsEnabled', 'true');
-            this.updateNotificationButton();
-            this.showNotification('Notifications activées avec succès', 'success');
-            this.playSound('success');
-            return true;
-        } else {
-            // L'utilisateur a refusé
-            console.log("Permission refusée par l'utilisateur");
-            this.showNotification('Notifications non autorisées', 'error');
+            if (result) {
+                // Mettre à jour l'interface
+                this.notificationsEnabled = true;
+                localStorage.setItem('notificationsEnabled', 'true');
+                this.updateNotificationButton();
+                this.showNotification('Notifications activées', 'success');
+                this.playSound('success');
+                return true;
+            } else {
+                this.showNotification('Notifications refusées', 'error');
+                return false;
+            }
+        } catch (error) {
+            console.error("Erreur lors de la demande de permission:", error);
+            this.showNotification('Erreur d\'autorisation', 'error');
             return false;
         }
     } catch (error) {
         console.error('Erreur activation notifications:', error);
-        console.error('Stack trace:', error.stack);
         this.showNotification('Erreur d\'activation des notifications', 'error');
         return false;
     }
