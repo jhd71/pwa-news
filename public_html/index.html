@@ -295,5 +295,61 @@ if (document.readyState === 'loading') {
     AppInitializer.init();
 }
 </script>
+	<script>
+  // Attendre que la page soit complètement chargée
+  window.addEventListener('load', function() {
+    // Créer le bouton de test
+    const testBtn = document.createElement('button');
+    testBtn.textContent = 'Tester OneSignal';
+    testBtn.style.position = 'fixed';
+    testBtn.style.bottom = '20px';
+    testBtn.style.right = '20px';
+    testBtn.style.zIndex = '9999';
+    testBtn.style.padding = '10px';
+    testBtn.style.background = '#4285f4';
+    testBtn.style.color = 'white';
+    testBtn.style.border = 'none';
+    testBtn.style.borderRadius = '5px';
+    testBtn.style.cursor = 'pointer';
+    
+    testBtn.addEventListener('click', async () => {
+      console.log("Test OneSignal");
+      
+      if (window.OneSignal) {
+        try {
+          // Tester la permission
+          const permission = await OneSignal.Notifications.permission;
+          console.log("Permission actuelle:", permission);
+          
+          // Demander la permission si pas encore accordée
+          if (permission !== 'granted') {
+            const result = await OneSignal.Notifications.requestPermission();
+            console.log("Résultat de la demande:", result);
+          }
+          
+          // Envoyer une notification de test
+          if (typeof OneSignal.Notifications.sendSelfNotification === 'function') {
+            OneSignal.Notifications.sendSelfNotification(
+              "Notification de test",
+              "Ceci est un test de notification OneSignal",
+              window.location.origin,
+              '/icons/icon-192x192.png'
+            );
+            console.log("Notification de test envoyée");
+          } else {
+            console.error("La méthode sendSelfNotification n'existe pas");
+            console.log("API disponible:", OneSignal.Notifications);
+          }
+        } catch (error) {
+          console.error("Erreur lors du test:", error);
+        }
+      } else {
+        console.error("OneSignal n'est pas initialisé");
+      }
+    });
+    
+    document.body.appendChild(testBtn);
+  });
+</script>
 </body>
 </html>
