@@ -296,44 +296,57 @@ if (document.readyState === 'loading') {
 }
 </script>
 	<script>
-  testBtn.addEventListener('click', async () => {
-    console.log("Test OneSignal");
+  // Attendre que la page soit complètement chargée
+  window.addEventListener('load', function() {
+    // Créer le bouton de test
+    const testBtn = document.createElement('button');
+    testBtn.textContent = 'Tester OneSignal';
+    testBtn.style.position = 'fixed';
+    testBtn.style.bottom = '20px';
+    testBtn.style.right = '20px';
+    testBtn.style.zIndex = '9999';
+    testBtn.style.padding = '10px';
+    testBtn.style.background = '#4285f4';
+    testBtn.style.color = 'white';
+    testBtn.style.border = 'none';
+    testBtn.style.borderRadius = '5px';
+    testBtn.style.cursor = 'pointer';
     
-    if (window.OneSignal) {
+    testBtn.addEventListener('click', async () => {
+      console.log("Test OneSignal");
+      
+      if (window.OneSignal) {
         try {
-            // Tester la permission
-            const permission = await OneSignal.Notifications.permission;
-            console.log("Permission actuelle:", permission);
-            
-            // Demander la permission si pas encore accordée
-            if (permission !== 'granted') {
-                const result = await OneSignal.Notifications.requestPermission();
-                console.log("Résultat de la demande:", result);
-            }
-            
-            // Envoyer une notification de test via l'API native
-            if (Notification.permission === 'granted') {
-                new Notification("Test de notification", {
-                    body: "Ceci est un test de notification via l'API native",
-                    icon: "/icons/icon-192x192.png"
-                });
-                console.log("Notification de test envoyée via l'API native");
-            } else {
-                console.log("Permission non accordée pour les notifications");
-            }
-            
-            // Essayer d'utiliser OneSignal pour s'abonner
-            if (permission === 'granted') {
-                await OneSignal.User.PushSubscription.optIn();
-                console.log("Abonnement aux notifications OneSignal activé");
-            }
+          // Tester la permission
+          const permission = await OneSignal.Notifications.permission;
+          console.log("Permission actuelle:", permission);
+          
+          // Demander la permission si pas encore accordée
+          if (permission !== 'granted') {
+            const result = await OneSignal.Notifications.requestPermission();
+            console.log("Résultat de la demande:", result);
+          }
+          
+          // Essayer d'utiliser l'API native du navigateur comme solution de repli
+          if (Notification.permission === 'granted') {
+            new Notification("Test de notification", {
+              body: "Ceci est un test de notification via l'API native",
+              icon: "/icons/icon-192x192.png"
+            });
+            console.log("Notification de test envoyée via l'API native");
+          } else {
+            console.log("Permission non accordée pour les notifications natives");
+          }
         } catch (error) {
-            console.error("Erreur lors du test:", error);
+          console.error("Erreur lors du test:", error);
         }
-    } else {
+      } else {
         console.error("OneSignal n'est pas initialisé");
-    }
-});
+      }
+    });
+    
+    document.body.appendChild(testBtn);
+  });
 </script>
 </body>
 </html>
