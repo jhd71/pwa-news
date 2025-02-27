@@ -34,6 +34,19 @@
 
     <!-- Notifications -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "b9a9b301-c4ff-4ea6-98f3-f8802c229794",
+      safari_web_id: "web.onesignal.auto.36762c33-c595-4251-8e66-ea9a822d3713",
+      notifyButton: {
+        enable: false,  // Changé à false pour utiliser votre propre bouton de notification
+      },
+    });
+  });
+</script>
 </head>
 <body>
 <header class="app-header">
