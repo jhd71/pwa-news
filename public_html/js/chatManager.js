@@ -739,35 +739,42 @@ async unsubscribeFromPushNotifications() {
     try {
         console.log('Envoi notification à:', message);
         
-        const response = await fetch("/api/sendPush.js", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                message: message.content,
-                fromUser: message.pseudo,
-                toUser: this.pseudo
-            })
-        });
-
-        if (!response.ok) {
-            const text = await response.text();
-            console.error('Réponse API erreur:', {
-                status: response.status,
-                statusText: response.statusText,
-                body: text
-            });
-            throw new Error(`Erreur API: ${response.status} ${text}`);
+        // Vérifier si OneSignal est disponible
+        if (window.OneSignal && window.OneSignal.Notifications) {
+            try {
+                // Vérifier si l'utilisateur a accepté les notifications
+                if (await OneSignal.Notifications.permission === 'granted') {
+                    console.log("Envoi d'une notification pour un nouveau message");
+                    
+                    // Option 1: Utiliser l'API native du navigateur comme solution de repli
+                    if (Notification.permission === 'granted') {
+                        new Notification(`Nouveau message de ${message.pseudo}`, {
+                            body: message.content,
+                            icon: "/icons/icon-192x192.png"
+                        });
+                        console.log("Notification envoyée via l'API native du navigateur");
+                    }
+                    
+                    // Option 2: Utiliser l'API OneSignal si disponible
+                    await OneSignal.User.PushSubscription.optIn();
+                    console.log("Notification opt-in effectué via OneSignal");
+                    
+                    return true;
+                } else {
+                    console.log("L'utilisateur n'a pas accordé la permission pour les notifications");
+                    return false;
+                }
+            } catch (error) {
+                console.error("Erreur lors de l'envoi de notification:", error);
+                return false;
+            }
+        } else {
+            console.log("OneSignal non disponible pour les notifications");
+            return false;
         }
-
-        const result = await response.json();
-        console.log('Réponse API succès:', result);
-        return result;
     } catch (error) {
-        console.error('Erreur envoi notification:', error);
-        console.error('Stack trace:', error.stack);
-        throw error;
+        console.error('Erreur globale notification:', error);
+        return false;
     }
 }
 	async loadSounds() {
