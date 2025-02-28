@@ -264,17 +264,18 @@ this.tileContainer.appendChild(separator3);
         this.tileContainer.appendChild(tile);
     });
 
-    // Sites personnalisés
+     // Sites personnalisés
     try {
+        // Créer le séparateur même s'il n'y a pas de sites
+        const separator = document.createElement('div');
+        separator.className = 'separator';
+        separator.innerHTML = `<img src="images/Sites-Personnalise.png" alt="Sites personnalisés">`;
+        this.tileContainer.appendChild(separator);
+
         const saved = localStorage.getItem('customSites');
         if (saved) {
             const customSites = JSON.parse(saved);
             if (Array.isArray(customSites) && customSites.length > 0) {
-                const separator = document.createElement('div');
-                separator.className = 'separator';
-                separator.textContent = '⎯⎯⎯  Sites Personnalisés  ⎯⎯⎯';
-                this.tileContainer.appendChild(separator);
-
                 customSites.forEach(site => {
                     const tile = this.createTile({...site, isDefault: false});
                     this.tileContainer.appendChild(tile);
