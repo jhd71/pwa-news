@@ -24,6 +24,24 @@ class ChatManager {
 
     async init() {
     try {
+		console.log("🔹 Initialisation du ChatManager...");
+
+    if ('serviceWorker' in navigator) {
+        const registration = await navigator.serviceWorker.register('/service-worker.js');
+        console.log('✅ Service Worker enregistré:', registration);
+
+        // Initialisation de Pusher Beams
+        const beamsClient = new PusherPushNotifications.Client({
+            instanceId: '45504c0f-3679-4c5d-a269-c58f17a74b4e',
+        });
+
+        await beamsClient.start();
+        await beamsClient.addDeviceInterest('chat-messages');
+        console.log('✅ Utilisateur inscrit aux notifications Pusher Beams');
+    }
+} catch (error) {
+    console.error('❌ Erreur d’initialisation de Pusher Beams:', error);
+}
         await this.loadBannedWords();
         
         this.container = document.createElement('div');
