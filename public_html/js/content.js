@@ -698,51 +698,52 @@ updateLayoutIcon(layout) {
     }
 
     async showAddSiteDialog() {
-        const title = prompt('Nom du site :');
-        if (!title || title.trim() === '') {
-            this.showToast('Le nom du site est obligatoire');
-            return;
-        }
-
-        let url = prompt('URL du site (doit commencer par https://) :');
-        if (!this.validateUrl(url)) {
-            this.showToast('URL invalide. L\'URL doit commencer par https://');
-            return;
-        }
-
-        let mobileUrl = prompt('URL version mobile (optionnel, doit commencer par https://) :');
-        if (mobileUrl && !this.validateUrl(mobileUrl)) {
-            this.showToast('URL mobile invalide. L\'URL doit commencer par https://');
-            return;
-        }
-
-        try {
-            let customSites = [];
-            const saved = localStorage.getItem('customSites');
-            if (saved) {
-                customSites = JSON.parse(saved);
-            }
-            if (!Array.isArray(customSites)) {
-                customSites = [];
-            }
-
-            const newSite = {
-                title: title.trim(),
-                url: url.trim(),
-                mobileUrl: (mobileUrl || url).trim(),
-                isDefault: false,
-                timestamp: Date.now()
-            };
-
-            customSites.push(newSite);
-            localStorage.setItem('customSites', JSON.stringify(customSites));
-            this.setupTiles();
-            this.showToast('Site ajouté avec succès');
-        } catch (error) {
-            console.error('Erreur ajout site:', error);
-            this.showToast('Erreur lors de l\'ajout du site');
-        }
+    const title = prompt('Nom du site :');
+    if (!title || title.trim() === '') {
+        this.showToast('Le nom du site est obligatoire');
+        return;
     }
+
+    // Message modifié pour indiquer le format attendu
+    let url = prompt('Ajouter votre site (ex : https://www.votresite.com) :');
+    if (!this.validateUrl(url)) {
+        this.showToast('URL invalide. L\'URL doit commencer par https://');
+        return;
+    }
+
+    let mobileUrl = prompt('URL version mobile (optionnel, doit commencer par https://) :');
+    if (mobileUrl && !this.validateUrl(mobileUrl)) {
+        this.showToast('URL mobile invalide. L\'URL doit commencer par https://');
+        return;
+    }
+
+    try {
+        let customSites = [];
+        const saved = localStorage.getItem('customSites');
+        if (saved) {
+            customSites = JSON.parse(saved);
+        }
+        if (!Array.isArray(customSites)) {
+            customSites = [];
+        }
+
+        const newSite = {
+            title: title.trim(),
+            url: url.trim(),
+            mobileUrl: (mobileUrl || url).trim(),
+            isDefault: false,
+            timestamp: Date.now()
+        };
+
+        customSites.push(newSite);
+        localStorage.setItem('customSites', JSON.stringify(customSites));
+        this.setupTiles();
+        this.showToast('Site ajouté avec succès');
+    } catch (error) {
+        console.error('Erreur ajout site:', error);
+        this.showToast('Erreur lors de l\'ajout du site');
+    }
+ }
 }
 
 export default ContentManager;
