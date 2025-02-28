@@ -36,7 +36,7 @@
 }
 /* Tailles pour différentes options */
 [data-font-size="small"] {
-    --tile-title-size: 17px;
+    --tile-title-size: 15px;
     --menu-text-size: 13px;
     --separator-text-size: 13px;
     --message-text-size: 13px;
@@ -44,7 +44,7 @@
 }
 
 [data-font-size="normal"] {
-    --tile-title-size: 19px;
+    --tile-title-size: 17px;
     --menu-text-size: 15px;
     --separator-text-size: 15px;
     --message-text-size: 15px;
@@ -52,7 +52,7 @@
 }
 
 [data-font-size="large"] {
-    --tile-title-size: 21px;
+    --tile-title-size: 19px;
     --menu-text-size: 17px;
     --separator-text-size: 17px;
     --message-text-size: 17px;
@@ -168,6 +168,19 @@ body {
     transition: background-color 0.2s;
 }
 
+/* Animation rotation Menu */
+@keyframes rotateMenu {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(180deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ✅ Style pour l’animation de rotation au clic */
+.menu-button:active {
+    animation: rotateMenu 1s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Augmenter l’ombre */
+}
+
 /* Bouton paramètres */
 .settings-button {
     position: fixed;
@@ -185,6 +198,18 @@ body {
     border-radius: 50%;
     z-index: 1002;
     padding: 10px;
+}
+
+/* Animation rotation Settings */
+@keyframes rotateSettings {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(-180deg); }
+    100% { transform: rotate(-360deg); }
+}
+/* ✅ Style pour l’animation de rotation au clic */
+.settings-button:active {
+    animation: rotateSettings 1s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Augmenter l’ombre */
 }
 
 .menu-button:hover, .settings-button:hover {
@@ -538,7 +563,9 @@ main {
     background-color: var(--card-background);
     border-radius: 12px;
     overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
+	opacity: 0.85; /* Ajoute cette ligne */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2); /* Ajoute cette ligne */
+	transition: all 0.3s ease;
     cursor: pointer;
     box-shadow: 0 2px 5px var(--shadow-color);
     height: 80px;
@@ -697,7 +724,7 @@ main {
     margin: 10px 0;
 }
 
-/* Navigation du bas */
+/* Style de base pour la barre de navigation */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -722,6 +749,7 @@ main {
     color: white;
 }
 
+/* Style de base des éléments de navigation (boutons) */
 .nav-item {
     background: none;
     border: none;
@@ -733,7 +761,33 @@ main {
     cursor: pointer;
     transition: all 0.3s ease;
     flex: 1;
-    text-decoration: none; /* Pour le lien Google */
+    text-decoration: none;
+    position: relative; /* Important pour le positionnement du pseudo-élément */
+    overflow: hidden;     /* Important pour cacher la ligne au départ */
+}
+
+/* Ajout du nouvel effet au survol */
+.nav-item::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -100%;  /* Initialement hors de l'écran */
+  width: 100%;
+  height: 2px;    /* Épaisseur de la ligne */
+  background-color: #fff;  /* Couleur de la ligne */
+  transition: left 0.3s ease; /* Animation de déplacement */
+}
+
+/* Configuration de l'animation au survol */
+.nav-item:hover::before {
+  left: 0;  /* La ligne se déplace vers la droite */
+}
+
+/* Styles pour améliorer les éléments de texte */
+.nav-item span:not(.material-icons) {
+    font-size: var(--menu-text-size);
+    margin-top: 4px;
+    transition: color 0.3s ease; /* Transition de couleur */
 }
 
 .nav-item:hover {
@@ -882,27 +936,22 @@ main {
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-    animation: slideUp 0.3s ease;
+    animation: slideUp 0.3s ease, breathe 3s ease infinite; /* Ajout de l'animation "breathe" */
 }
 
-/* Animations */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translate(-50%, 20px);
+/* Animation de respiration */
+@keyframes breathe {
+    0% {
+        transform: translateX(-50%) scale(1);
+        opacity: 0.9; /* Légèrement transparent au début */
     }
-    to {
-        opacity: 1;
-        transform: translate(-50%, 0);
+    50% {
+        transform: translateX(-50%) scale(1.05);
+        opacity: 1; /* Pleinement visible au milieu */
     }
-}
-
-@keyframes slideIn {
-    from {
-        transform: translateX(100%);
-    }
-    to {
-        transform: translateX(0);
+    100% {
+        transform: translateX(-50%) scale(1);
+        opacity: 0.9; /* Retour à la transparence initiale */
     }
 }
 
