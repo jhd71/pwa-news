@@ -116,61 +116,38 @@ self.addEventListener('fetch', (event) => {
 
 // Gestion des notifications push
 self.addEventListener('push', function(event) {
-    console.log('[Service Worker] Push Reçu', event.data?.text());
-    
+    console.log('[Service Worker] Push Reçu', event.data ? event.data.text() : 'Pas de données');
+
     event.waitUntil((async () => {
+        let data;
         try {
-            let data;
-            try {
-                data = event.data.json();
-            } catch (e) {
-                data = {
-                    title: 'INFOS Chat',
-                    body: event.data.text()
-                };
-            }
-
-            const clientList = await clients.matchAll({
-                type: 'window',
-                includeUncontrolled: true
-            });
-
-            const windowClient = clientList.find(client => 
-                client.visibilityState === 'visible'
-            );
-
-            if (!windowClient) {
-                const options = {
-                    body: data.body || 'Nouveau message',
-                    icon: '/images/INFOS-192.png',
-                    badge: '/images/badge-72x72.png',
-                    tag: 'chat-message-' + Date.now(),
-                    vibrate: [100, 50, 100],
-                    data: {
-                        url: '/?action=openchat',
-                        timestamp: Date.now()
-                    },
-                    actions: [{
-                        action: 'open',
-                        title: 'Ouvrir le chat'
-                    }],
-                    requireInteraction: true,
-                    renotify: true,
-                    silent: false
-                };
-
-                await self.registration.showNotification('INFOS Chat', options);
-                console.log('[Service Worker] Notification envoyée');
-            }
-        } catch (error) {
-            console.error('[Service Worker] Erreur dans push:', error);
-            await self.registration.showNotification('INFOS Chat', {
-                body: 'Nouveau message reçu',
-                icon: '/images/INFOS-192.png',
-                badge: '/images/badge-72x72.png',
-                requireInteraction: true
-            });
+            data = event.data ? event.data.json() : { title: "Nouveau message", body: "Vous avez un nouveau message" };
+        } catch (e) {
+            console.error('[Service Worker] Erreur de parsing des données:', e);
+            data = { title: "Nouveau message", body: "Vous avez un nouveau message" };
         }
+
+        const options = {
+            body: data.body,
+            icon: "/images/INFOS-192.png",
+            badge: "/images/badge-72x72.png",
+            vibrate: [100, 50, 100],
+            tag: 'chat-message-' + Date.now(),
+            data: {
+                url: '/?action=openchat'
+            },
+            actions: [
+                {
+                    action: 'open',
+                    title: 'Ouvrir le chat'
+                }
+            ],
+            requireInteraction: true,
+            renotify: true,
+            silent: false
+        };
+
+        await self.registration.showNotification(data.title, options);
     })());
 });
 
