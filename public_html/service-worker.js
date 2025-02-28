@@ -1,5 +1,5 @@
-self.pushHandlers = {};
 importScripts("https://js.pusher.com/beams/service-worker.js");
+
 const CACHE_NAME = 'infos-pwa-v2';
 const OFFLINE_URL = '/offline.html';
 
@@ -124,6 +124,22 @@ self.addEventListener('fetch', (event) => {
 self.addEventListener('push', function(event) {
     console.log('[Service Worker] Push Reçu', event.data?.text());
     
+    // Vérifier si c'est une notification Pusher Beams
+    if (event.data) {
+        try {
+            const data = event.data.json();
+            // Si la notification contient des données spécifiques à Pusher Beams
+            if (data.pusher && data.pusher.instanceId) {
+                console.log('[Service Worker] Notification Pusher Beams détectée - laissez Pusher la gérer');
+                return; // Laisser Pusher Beams gérer cette notification
+            }
+        } catch (e) {
+            // Ce n'est pas une notification Pusher Beams au format JSON
+            console.log('[Service Worker] Pas une notification Pusher Beams JSON');
+        }
+    }
+    
+    // Pour vos propres notifications
     event.waitUntil((async () => {
         try {
             let data;
@@ -135,16 +151,13 @@ self.addEventListener('push', function(event) {
                     body: event.data.text()
                 };
             }
-
             const clientList = await clients.matchAll({
                 type: 'window',
                 includeUncontrolled: true
             });
-
             const windowClient = clientList.find(client => 
                 client.visibilityState === 'visible'
             );
-
             if (!windowClient) {
                 const options = {
                     body: data.body || 'Nouveau message',
@@ -164,7 +177,6 @@ self.addEventListener('push', function(event) {
                     renotify: true,
                     silent: false
                 };
-
                 await self.registration.showNotification('INFOS Chat', options);
                 console.log('[Service Worker] Notification envoyée');
             }
