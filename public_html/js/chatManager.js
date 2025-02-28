@@ -53,32 +53,32 @@ class ChatManager {
 
         // Gestion des notifications push
         if ('serviceWorker' in navigator && 'PushManager' in window) {
-            try {
-                const registration = await navigator.serviceWorker.ready;
-                const subscription = await registration.pushManager.getSubscription();
-                
-                if (subscription) {
-                    this.subscription = subscription;
-                    this.notificationsEnabled = true;
-                    console.log('Notifications push déjà activées');
+    navigator.serviceWorker.ready
+        .then(registration => registration.pushManager.getSubscription())
+        .then(subscription => {
+            if (subscription) {
+                this.subscription = subscription;
+                this.notificationsEnabled = true;
+                console.log('✅ Notifications push déjà activées');
 
-                    // Vérification périodique de la souscription
-                    setInterval(async () => {
-                        try {
-                            const currentSubscription = await registration.pushManager.getSubscription();
-                            if (!currentSubscription) {
-                                console.log('Renouvellement de la souscription nécessaire');
-                                await this.renewPushSubscription();
-                            }
-                        } catch (error) {
-                            console.error('Erreur vérification souscription:', error);
+                // Vérification périodique de la souscription
+                setInterval(async () => {
+                    try {
+                        const currentSubscription = await navigator.serviceWorker.ready
+                            .then(reg => reg.pushManager.getSubscription());
+
+                        if (!currentSubscription) {
+                            console.log('♻️ Renouvellement de la souscription nécessaire');
+                            await this.renewPushSubscription();
                         }
-                    }, 3600000); // Vérification toutes les heures
-                }
-            } catch (error) {
-                console.error('Erreur initialisation push notifications:', error);
+                    } catch (error) {
+                        console.error('⚠️ Erreur vérification souscription:', error);
+                    }
+                }, 3600000); // Vérification toutes les heures
             }
-        }
+        })
+        .catch(error => console.error('❌ Erreur initialisation push notifications:', error));
+}
 
         this.setupListeners();
         this.setupRealtimeSubscription();
