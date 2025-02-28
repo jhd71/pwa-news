@@ -573,6 +573,7 @@ if (!error) {
             "Content-Type": "application/json",
             "Authorization": "B84509887E8CB5726B16FC454DBDA65D4FF4DBD9E014A695D31F44446E440DFE"
         },
+		mode: "cors",  // ✅ Ajoute cette ligne
         body: JSON.stringify({
             interests: ["chat-messages"],
             web: {
