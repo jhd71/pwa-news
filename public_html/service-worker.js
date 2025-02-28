@@ -1,3 +1,4 @@
+importScripts("https://js.pusher.com/beams/service-worker.js");
 const CACHE_NAME = 'infos-pwa-v2';
 const OFFLINE_URL = '/offline.html';
 
