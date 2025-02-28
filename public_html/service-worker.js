@@ -28,32 +28,26 @@ const STATIC_RESOURCES = [
 self.addEventListener('install', event => {
     console.log('[Service Worker] Installation...');
     event.waitUntil(
-        Promise.all([
-            caches.open(CACHE_NAME).then(cache => {
-                console.log('[Service Worker] Mise en cache des ressources');
-                return cache.addAll(STATIC_RESOURCES);
-            }),
-            self.skipWaiting()
-        ])
-    );
+    caches.open(CACHE_NAME).then(cache => {
+        console.log('[Service Worker] Mise en cache des ressources');
+        return cache.addAll(STATIC_RESOURCES);
+    })
+);
 });
 
 // Activation
 self.addEventListener('activate', event => {
     console.log('[Service Worker] Activation...');
     event.waitUntil(
-        Promise.all([
-            clients.claim(),
-            caches.keys().then(cacheNames => {
-                return Promise.all(
-                    cacheNames.filter(cacheName => cacheName !== CACHE_NAME)
-                        .map(cacheName => {
-                            console.log('[Service Worker] Suppression ancien cache:', cacheName);
-                            return caches.delete(cacheName);
-                        })
-                );
-            })
-        ])
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.filter(cacheName => cacheName !== CACHE_NAME)
+                    .map(cacheName => {
+                        console.log('[Service Worker] Suppression ancien cache:', cacheName);
+                        return caches.delete(cacheName);
+                    })
+            );
+        })
     );
 });
 
