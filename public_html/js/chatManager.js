@@ -21,24 +21,6 @@ class ChatManager {
         this.isOpen = localStorage.getItem('chatOpen') === 'true';
         this.unreadCount = parseInt(localStorage.getItem('unreadCount') || '0');
     }
-	
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js')
-        .then(registration => {
-            console.log('✅ Service Worker enregistré avec succès:', registration);
-
-            // Initialisation de Pusher Beams
-            const beamsClient = new PusherPushNotifications.Client({
-                instanceId: '45504c0f-3679-4c5d-a269-c58f17a74b4e',
-            });
-
-            beamsClient.start()
-                .then(() => beamsClient.addDeviceInterest('chat-messages'))
-                .then(() => console.log('✅ Utilisateur inscrit aux notifications !'))
-                .catch(error => console.error('❌ Erreur lors de l\'inscription aux notifications:', error));
-        })
-        .catch(error => console.error('❌ Erreur d’enregistrement du Service Worker:', error));
-}
 
     async init() {
     try {
