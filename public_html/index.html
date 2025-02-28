@@ -160,17 +160,17 @@ async function registerServiceWorker() {
                     if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                         console.log('Nouveau Service Worker installé');
                         if (registration.waiting) {
-                            registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-                        }
+    console.log("ℹ️ Un nouveau Service Worker est prêt, mais n'est pas forcé immédiatement.");
+}
                     }
                 });
             });
 
             // Écouter les changements d'état
             navigator.serviceWorker.addEventListener('controllerchange', () => {
-                console.log('Service Worker mis à jour');
-                window.location.reload();
-            });
+    console.log('⚠️ Un nouveau Service Worker est actif. Rechargement manuel recommandé.');
+});
+
 
             return registration;
         } catch (error) {
