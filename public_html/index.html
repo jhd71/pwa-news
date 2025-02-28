@@ -273,5 +273,24 @@ if (document.readyState === 'loading') {
     AppInitializer.init();
 }
 </script>
+<script src="https://js.pusher.com/beams/1.0/push-notifications-cdn.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+            console.log('✅ Service Worker enregistré avec succès:', registration);
+
+            const beamsClient = new PusherPushNotifications.Client({
+                instanceId: '45504c0f-3679-4c5d-a269-c58f17a74b4e',
+            });
+
+            beamsClient.start()
+                .then(() => beamsClient.addDeviceInterest('chat-messages'))
+                .then(() => console.log('✅ Utilisateur inscrit aux notifications Pusher Beams'))
+                .catch(error => console.error('❌ Erreur d’inscription aux notifications:', error));
+        })
+        .catch(error => console.error('❌ Erreur d’enregistrement du Service Worker:', error));
+}
+</script>
 </body>
 </html>
