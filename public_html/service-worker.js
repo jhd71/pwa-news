@@ -238,3 +238,4 @@ self.addEventListener('error', function(e) {
 self.addEventListener('unhandledrejection', function(e) {
     console.error('[Service Worker] Rejet non géré:', e.reason);
 });
+console.log("[Service Worker] Chargement terminé !");
