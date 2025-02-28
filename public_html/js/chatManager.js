@@ -566,6 +566,27 @@ createMessageElement(message) {
             .insert(message)
             .select()
             .single();
+if (!error) {
+    fetch("https://45504c0f-3679-4c5d-a269-c58f17a74b4e.pushnotifications.pusher.com/publish_api/v1/instances/45504c0f-3679-4c5d-a269-c58f17a74b4e/publishes", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "B84509887E8CB5726B16FC454DBDA65D4FF4DBD9E014A695D31F44446E440DFE"
+        },
+        body: JSON.stringify({
+            interests: ["chat-messages"],
+            web: {
+                notification: {
+                    title: "Nouveau message",
+                    body: message.content
+                }
+            }
+        })
+    })
+    .then(response => response.json())
+    .then(data => console.log("✅ Notification envoyée à Pusher Beams :", data))
+    .catch(err => console.error("❌ Erreur lors de l'envoi de la notification à Pusher Beams :", err));
+}
 
         if (error) throw error;
 
