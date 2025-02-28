@@ -38,20 +38,18 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
     console.log('[Service Worker] Activation...');
     event.waitUntil(
-        Promise.all([
-            clients.claim(),
-            caches.keys().then(cacheNames => {
-                return Promise.all(
-                    cacheNames.filter(cacheName => cacheName !== CACHE_NAME)
-                        .map(cacheName => {
-                            console.log('[Service Worker] Suppression ancien cache:', cacheName);
-                            return caches.delete(cacheName);
-                        })
-                );
-            })
-        ])
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.filter(cacheName => cacheName !== CACHE_NAME)
+                    .map(cacheName => {
+                        console.log('[Service Worker] Suppression ancien cache:', cacheName);
+                        return caches.delete(cacheName);
+                    })
+            );
+        })
     );
 });
+
 
 // Message handling
 self.addEventListener('message', async (event) => {
@@ -238,4 +236,3 @@ self.addEventListener('error', function(e) {
 self.addEventListener('unhandledrejection', function(e) {
     console.error('[Service Worker] Rejet non géré:', e.reason);
 });
-console.log("[Service Worker] Chargement terminé !");
