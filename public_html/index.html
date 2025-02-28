@@ -33,7 +33,6 @@
     <link rel="stylesheet" href="css/chat-styles.css">
 
     <!-- Notifications -->
-	<script src="https://js.pusher.com/beams/1.0/push-notifications-cdn.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -160,17 +159,17 @@ async function registerServiceWorker() {
                     if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                         console.log('Nouveau Service Worker installé');
                         if (registration.waiting) {
-    console.log("ℹ️ Un nouveau Service Worker est prêt, mais n'est pas forcé immédiatement.");
-}
+                            registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                        }
                     }
                 });
             });
 
             // Écouter les changements d'état
             navigator.serviceWorker.addEventListener('controllerchange', () => {
-    console.log('⚠️ Un nouveau Service Worker est actif. Rechargement manuel recommandé.');
-});
-
+                console.log('Service Worker mis à jour');
+                window.location.reload();
+            });
 
             return registration;
         } catch (error) {
@@ -241,23 +240,7 @@ class AppInitializer {
     static async init() {
         try {
             // Enregistrer le Service Worker
-            const registration = await registerServiceWorker();
-
-            // Initialisation de Pusher Beams
-            if (window.PusherPushNotifications) {
-                try {
-                    const beamsClient = new PusherPushNotifications.Client({
-                        instanceId: '45504c0f-3679-4c5d-a269-c58f17a74b4e',
-                    });
-                    
-                    beamsClient.start()
-                        .then(() => beamsClient.addDeviceInterest('chat-messages'))
-                        .then(() => console.log('✅ Utilisateur inscrit aux notifications Pusher Beams'))
-                        .catch(error => console.error('❌ Erreur d\'inscription aux notifications:', error));
-                } catch (error) {
-                    console.error('❌ Erreur d\'initialisation Pusher Beams:', error);
-                }
-            }
+            await registerServiceWorker();
 
             // Initialiser l'installateur PWA
             new PWAInstaller();
