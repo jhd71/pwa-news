@@ -1,3 +1,4 @@
+self.pushHandlers = {};
 importScripts("https://js.pusher.com/beams/service-worker.js");
 const CACHE_NAME = 'infos-pwa-v2';
 const OFFLINE_URL = '/offline.html';
@@ -27,29 +28,34 @@ const STATIC_RESOURCES = [
 self.addEventListener('install', event => {
     console.log('[Service Worker] Installation...');
     event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-        console.log('[Service Worker] Mise en cache des ressources');
-        return cache.addAll(STATIC_RESOURCES);
-    })
-);
+        Promise.all([
+            caches.open(CACHE_NAME).then(cache => {
+                console.log('[Service Worker] Mise en cache des ressources');
+                return cache.addAll(STATIC_RESOURCES);
+            }),
+            self.skipWaiting()
+        ])
+    );
 });
 
 // Activation
 self.addEventListener('activate', event => {
     console.log('[Service Worker] Activation...');
     event.waitUntil(
-        caches.keys().then(cacheNames => {
-            return Promise.all(
-                cacheNames.filter(cacheName => cacheName !== CACHE_NAME)
-                    .map(cacheName => {
-                        console.log('[Service Worker] Suppression ancien cache:', cacheName);
-                        return caches.delete(cacheName);
-                    })
-            );
-        })
+        Promise.all([
+            clients.claim(),
+            caches.keys().then(cacheNames => {
+                return Promise.all(
+                    cacheNames.filter(cacheName => cacheName !== CACHE_NAME)
+                        .map(cacheName => {
+                            console.log('[Service Worker] Suppression ancien cache:', cacheName);
+                            return caches.delete(cacheName);
+                        })
+                );
+            })
+        ])
     );
 });
-
 
 // Message handling
 self.addEventListener('message', async (event) => {
@@ -116,38 +122,61 @@ self.addEventListener('fetch', (event) => {
 
 // Gestion des notifications push
 self.addEventListener('push', function(event) {
-    console.log('[Service Worker] Push Reçu', event.data ? event.data.text() : 'Pas de données');
-
+    console.log('[Service Worker] Push Reçu', event.data?.text());
+    
     event.waitUntil((async () => {
-        let data;
         try {
-            data = event.data ? event.data.json() : { title: "Nouveau message", body: "Vous avez un nouveau message" };
-        } catch (e) {
-            console.error('[Service Worker] Erreur de parsing des données:', e);
-            data = { title: "Nouveau message", body: "Vous avez un nouveau message" };
+            let data;
+            try {
+                data = event.data.json();
+            } catch (e) {
+                data = {
+                    title: 'INFOS Chat',
+                    body: event.data.text()
+                };
+            }
+
+            const clientList = await clients.matchAll({
+                type: 'window',
+                includeUncontrolled: true
+            });
+
+            const windowClient = clientList.find(client => 
+                client.visibilityState === 'visible'
+            );
+
+            if (!windowClient) {
+                const options = {
+                    body: data.body || 'Nouveau message',
+                    icon: '/images/INFOS-192.png',
+                    badge: '/images/badge-72x72.png',
+                    tag: 'chat-message-' + Date.now(),
+                    vibrate: [100, 50, 100],
+                    data: {
+                        url: '/?action=openchat',
+                        timestamp: Date.now()
+                    },
+                    actions: [{
+                        action: 'open',
+                        title: 'Ouvrir le chat'
+                    }],
+                    requireInteraction: true,
+                    renotify: true,
+                    silent: false
+                };
+
+                await self.registration.showNotification('INFOS Chat', options);
+                console.log('[Service Worker] Notification envoyée');
+            }
+        } catch (error) {
+            console.error('[Service Worker] Erreur dans push:', error);
+            await self.registration.showNotification('INFOS Chat', {
+                body: 'Nouveau message reçu',
+                icon: '/images/INFOS-192.png',
+                badge: '/images/badge-72x72.png',
+                requireInteraction: true
+            });
         }
-
-        const options = {
-            body: data.body,
-            icon: "/images/INFOS-192.png",
-            badge: "/images/badge-72x72.png",
-            vibrate: [100, 50, 100],
-            tag: 'chat-message-' + Date.now(),
-            data: {
-                url: '/?action=openchat'
-            },
-            actions: [
-                {
-                    action: 'open',
-                    title: 'Ouvrir le chat'
-                }
-            ],
-            requireInteraction: true,
-            renotify: true,
-            silent: false
-        };
-
-        await self.registration.showNotification(data.title, options);
     })());
 });
 
