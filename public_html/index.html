@@ -33,6 +33,7 @@
     <link rel="stylesheet" href="css/chat-styles.css">
 
     <!-- Notifications -->
+	<script src="https://js.pusher.com/beams/1.0/push-notifications-cdn.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -240,25 +241,28 @@ class AppInitializer {
     static async init() {
         try {
             // Enregistrer le Service Worker
-            await registerServiceWorker();
+            const registration = await registerServiceWorker();
 
-            // Initialiser l'installateur PWA
+            // AJOUTEZ CE BLOC ICI - Initialisation de Pusher Beams
+            if (window.PusherPushNotifications) {
+                try {
+                    const beamsClient = new PusherPushNotifications.Client({
+                        instanceId: '45504c0f-3679-4c5d-a269-c58f17a74b4e',
+                    });
+                    
+                    beamsClient.start()
+                        .then(() => beamsClient.addDeviceInterest('chat-messages'))
+                        .then(() => console.log('✅ Utilisateur inscrit aux notifications Pusher Beams'))
+                        .catch(error => console.error('❌ Erreur d\'inscription aux notifications:', error));
+                } catch (error) {
+                    console.error('❌ Erreur d\'initialisation Pusher Beams:', error);
+                }
+            }
+
+            // Le reste de votre code d'initialisation existant
             new PWAInstaller();
-
-            // Initialiser ContentManager
             console.log('Chargement de ContentManager...');
-            const contentModule = await import('./js/content.js');
-            window.contentManager = new contentModule.default();
-            await window.contentManager.init();
-            console.log('Content Manager initialisé');
-
-            // Initialiser ChatManager
-            console.log('Chargement de ChatManager...');
-            const chatModule = await import('/js/chatManager.js');
-            window.chatManager = new chatModule.default();
-            await window.chatManager.init();
-            console.log('Chat Manager initialisé');
-
+            // etc.
         } catch (error) {
             console.error('Erreur d\'initialisation:', error);
             console.error('Stack trace:', error.stack);
@@ -271,25 +275,6 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => AppInitializer.init());
 } else {
     AppInitializer.init();
-}
-</script>
-<script src="https://js.pusher.com/beams/1.0/push-notifications-cdn.js"></script>
-<script>
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js')
-        .then(registration => {
-            console.log('✅ Service Worker enregistré avec succès:', registration);
-
-            const beamsClient = new PusherPushNotifications.Client({
-                instanceId: '45504c0f-3679-4c5d-a269-c58f17a74b4e',
-            });
-
-            beamsClient.start()
-                .then(() => beamsClient.addDeviceInterest('chat-messages'))
-                .then(() => console.log('✅ Utilisateur inscrit aux notifications Pusher Beams'))
-                .catch(error => console.error('❌ Erreur d’inscription aux notifications:', error));
-        })
-        .catch(error => console.error('❌ Erreur d’enregistrement du Service Worker:', error));
 }
 </script>
 </body>
