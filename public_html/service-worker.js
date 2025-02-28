@@ -32,6 +32,7 @@ self.addEventListener('install', event => {
         return cache.addAll(STATIC_RESOURCES);
     })
 );
+});
 
 // Activation
 self.addEventListener('activate', event => {
