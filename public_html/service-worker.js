@@ -27,15 +27,11 @@ const STATIC_RESOURCES = [
 self.addEventListener('install', event => {
     console.log('[Service Worker] Installation...');
     event.waitUntil(
-        Promise.all([
-            caches.open(CACHE_NAME).then(cache => {
-                console.log('[Service Worker] Mise en cache des ressources');
-                return cache.addAll(STATIC_RESOURCES);
-            }),
-            self.skipWaiting()
-        ])
-    );
-});
+    caches.open(CACHE_NAME).then(cache => {
+        console.log('[Service Worker] Mise en cache des ressources');
+        return cache.addAll(STATIC_RESOURCES);
+    })
+);
 
 // Activation
 self.addEventListener('activate', event => {
