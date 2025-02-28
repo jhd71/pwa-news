@@ -30,17 +30,14 @@ class ChatManager {
             const registration = await navigator.serviceWorker.register('/service-worker.js');
             console.log('✅ Service Worker enregistré:', registration);
 
-                            // Initialisation de Pusher Beams
-                const beamsClient = new PusherPushNotifications.Client({
-                    instanceId: '45504c0f-3679-4c5d-a269-c58f17a74b4e',
-                });
+            // Initialisation de Pusher Beams
+            const beamsClient = new PusherPushNotifications.Client({
+                instanceId: '45504c0f-3679-4c5d-a269-c58f17a74b4e',
+            });
 
-                beamsClient.start()
-                    .then(() => beamsClient.addDeviceInterest('chat-messages'))
-                    .then(() => console.log('✅ Utilisateur inscrit aux notifications !'))
-                    .catch(error => console.error('❌ Erreur lors de l\'inscription aux notifications:', error));
-            })
-    .catch(error => console.error('❌ Erreur d’enregistrement du Service Worker:', error));
+            await beamsClient.start();
+            await beamsClient.addDeviceInterest('chat-messages');
+            console.log('✅ Utilisateur inscrit aux notifications Pusher Beams');
         }
 
         await this.loadBannedWords();
