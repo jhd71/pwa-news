@@ -243,7 +243,7 @@ class AppInitializer {
             // Enregistrer le Service Worker
             const registration = await registerServiceWorker();
 
-            // AJOUTEZ CE BLOC ICI - Initialisation de Pusher Beams
+            // Initialisation de Pusher Beams
             if (window.PusherPushNotifications) {
                 try {
                     const beamsClient = new PusherPushNotifications.Client({
@@ -259,10 +259,23 @@ class AppInitializer {
                 }
             }
 
-            // Le reste de votre code d'initialisation existant
+            // Initialiser l'installateur PWA
             new PWAInstaller();
+
+            // Initialiser ContentManager
             console.log('Chargement de ContentManager...');
-            // etc.
+            const contentModule = await import('./js/content.js');
+            window.contentManager = new contentModule.default();
+            await window.contentManager.init();
+            console.log('Content Manager initialisé');
+
+            // Initialiser ChatManager
+            console.log('Chargement de ChatManager...');
+            const chatModule = await import('/js/chatManager.js');
+            window.chatManager = new chatModule.default();
+            await window.chatManager.init();
+            console.log('Chat Manager initialisé');
+
         } catch (error) {
             console.error('Erreur d\'initialisation:', error);
             console.error('Stack trace:', error.stack);
