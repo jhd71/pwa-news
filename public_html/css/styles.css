@@ -787,6 +787,18 @@ main {
 .tile:nth-child(10n + 9) { background: linear-gradient(135deg, #4DD0E1, #26C6DA); }
 .tile:nth-child(10n + 0) { background: linear-gradient(135deg, #A1887F, #8D6E63); }
 
+/* Nouvelles couleurs */
+.tile:nth-child(10n + 11) { background: linear-gradient(135deg, #E57373, #EF5350); } /* Rouge */
+.tile:nth-child(10n + 12) { background: linear-gradient(135deg, #F06292, #EC407A); } /* Rose plus clair */
+.tile:nth-child(10n + 13) { background: linear-gradient(135deg, #AB47BC, #9C27B0); } /* Violet plus foncé */
+.tile:nth-child(10n + 14) { background: linear-gradient(135deg, #7986CB, #5C6BC0); } /* Bleu plus clair */
+.tile:nth-child(10n + 15) { background: linear-gradient(135deg, #4DB6AC, #26A69A); } /* Vert d'eau plus foncé */
+.tile:nth-child(10n + 16) { background: linear-gradient(135deg, #81C784, #66BB6A); } /* Vert plus clair */
+.tile:nth-child(10n + 17) { background: linear-gradient(135deg, #FFB74D, #FFA726); } /* Orange plus clair */
+.tile:nth-child(10n + 18) { background: linear-gradient(135deg, #A1887F, #8D6E63); } /* Brun plus foncé */
+.tile:nth-child(10n + 19) { background: linear-gradient(135deg, #64B5F6, #42A5F5); } /* Bleu encore plus clair */
+.tile:nth-child(10n + 20) { background: linear-gradient(135deg, #4DD0E1, #26C6DA); } /* Turquoise plus clair */
+
 /* Texte sur tuiles claires */
 .tile:nth-child(10n + 2) .tile-title,
 .tile:nth-child(10n + 6) .tile-title,
@@ -794,7 +806,7 @@ main {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6); /* Ombre renforcée */
 }
 
-/* Animations (nouvelles) */
+/* Animations */
 @keyframes fadeInScale {
     from {
         opacity: 0;
@@ -817,7 +829,22 @@ main {
     }
 }
 
-/* Effets au survol améliorés (fusion avec l'existant) */
+/* Effets des tuiles au survol */
+.tile {
+    transition: transform 0.2s, box-shadow 0.2s, filter 0.2s, background-color 0.2s; /* Ajout de la transition de couleur */
+}
+
+/* ✅ Agrandit et modifie l’ombre en version desktop */
+@media (min-width: 600px) {
+    /* ✅ Effets au survol plus discrets */
+    .tile:hover {
+        transform: translateY(-5px) scale(1.02); /* ✅ Léger déplacement */
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* ✅ Ombre subtile */
+        filter: brightness(1.05); /* ✅ Accentue la lumière */
+    }
+}
+
+/* Effets de survol améliorés */
 .tile:hover {
     transform: translateY(-5px) scale(1.02);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
