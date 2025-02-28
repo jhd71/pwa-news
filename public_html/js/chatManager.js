@@ -24,24 +24,22 @@ class ChatManager {
 
     async init() {
     try {
-		console.log("🔹 Initialisation du ChatManager...");
+        console.log("🔹 Initialisation du ChatManager...");
 
-    if ('serviceWorker' in navigator) {
-        const registration = await navigator.serviceWorker.register('/service-worker.js');
-        console.log('✅ Service Worker enregistré:', registration);
+        if ('serviceWorker' in navigator) {
+            const registration = await navigator.serviceWorker.register('/service-worker.js');
+            console.log('✅ Service Worker enregistré:', registration);
 
-        // Initialisation de Pusher Beams
-        const beamsClient = new PusherPushNotifications.Client({
-            instanceId: '45504c0f-3679-4c5d-a269-c58f17a74b4e',
-        });
+            // Initialisation de Pusher Beams
+            const beamsClient = new PusherPushNotifications.Client({
+                instanceId: '45504c0f-3679-4c5d-a269-c58f17a74b4e',
+            });
 
-        await beamsClient.start();
-        await beamsClient.addDeviceInterest('chat-messages');
-        console.log('✅ Utilisateur inscrit aux notifications Pusher Beams');
-    }
-} catch (error) {
-    console.error('❌ Erreur d’initialisation de Pusher Beams:', error);
-}
+            await beamsClient.start();
+            await beamsClient.addDeviceInterest('chat-messages');
+            console.log('✅ Utilisateur inscrit aux notifications Pusher Beams');
+        }
+
         await this.loadBannedWords();
         
         this.container = document.createElement('div');
@@ -97,6 +95,23 @@ class ChatManager {
                 console.error('Erreur initialisation push notifications:', error);
             }
         }
+
+        this.setupListeners();
+        this.setupRealtimeSubscription();
+
+        if (this.pseudo) {
+            await this.loadExistingMessages();
+            this.updateUnreadBadgeAndBubble();
+        }
+
+        this.initialized = true;
+        console.log("Chat initialisé avec succès");
+
+    } catch (error) {
+        console.error('❌ Erreur d’initialisation du ChatManager:', error);
+    }
+}
+
 
         this.setupListeners();
         this.setupRealtimeSubscription();
