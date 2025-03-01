@@ -31,29 +31,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/chat-styles.css">
-<!-- Script OneSignal -->
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
-      window.OneSignalDeferred = window.OneSignalDeferred || [];
-      OneSignalDeferred.push(async function(OneSignal) {
-        await OneSignal.init({
-          appId: "c6f05eab-77b3-473e-83c1-aeb9b15d3489",
-          safari_web_id: "web.onesignal.auto.05255d72-c150-4ea5-804e-422907370478",
-          notifyButton: {
-            enable: false,
-          },
-        });
-      });
-      
-      // Test de connexion aux serveurs OneSignal
-      fetch('https://onesignal.com/api/v1/apps/c6f05eab-77b3-473e-83c1-aeb9b15d3489')
-        .then(response => {
-          console.log('Test de connexion OneSignal réussi:', response.status);
-        })
-        .catch(error => {
-          console.error('Échec de connexion OneSignal:', error);
-        });
-    </script>
+
     <!-- Notifications -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
