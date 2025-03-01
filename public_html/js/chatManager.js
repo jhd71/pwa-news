@@ -585,6 +585,11 @@ createMessageElement(message) {
 .catch(error => console.error("❌ Erreur réseau avec ntfy.sh :", error));
 
 return true;
+    } catch (error) {
+        console.error('Erreur sendMessage:', error);
+        return false;
+    }
+}
 
     async setupPushNotifications() {
     try {
