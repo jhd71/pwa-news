@@ -544,95 +544,65 @@ createMessageElement(message) {
         }
     }
 
-    async sendMessage(content) { 
-    try {
-        const ip = await this.getClientIP();
-        const isBanned = await this.checkBannedIP(ip);
-        
-        if (isBanned) {
-            this.showNotification('Vous êtes banni du chat', 'error');
+    async sendMessage(content) {
+        try {
+            const ip = await this.getClientIP();
+            const isBanned = await this.checkBannedIP(ip);
+            
+            if (isBanned) {
+                this.showNotification('Vous êtes banni du chat', 'error');
+                return false;
+            }
+
+            const message = {
+                pseudo: this.pseudo,
+                content: content,
+                ip: ip,
+                created_at: new Date().toISOString()
+            };
+
+            const { data, error } = await this.supabase
+                .from('messages')
+                .insert(message)
+                .select()
+                .single();
+
+            if (error) throw error;
+            return true;
+        } catch (error) {
+            console.error('Erreur sendMessage:', error);
             return false;
         }
-
-        const message = {
-            pseudo: this.pseudo,
-            content: content,
-            ip: ip,
-            created_at: new Date().toISOString()
-        };
-
-        const { data, error } = await this.supabase
-            .from('messages')
-            .insert(message)
-            .select()
-            .single();
-
-        if (error) throw error;
-
-        // Envoi de la notification
-        await fetch("/api/sendPush.js", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                message: content,
-                fromUser: this.pseudo,
-                toUser: "all"
-            })
-        })
-        .then(response => response.json())
-        .then(data => console.log("✅ Notification envoyée :", data))
-        .catch(err => console.error("❌ Erreur lors de l'envoi de la notification :", err));
-
-        return true;
-    } catch (error) {
-        console.error('Erreur sendMessage:', error);
-        return false;
     }
-}
 
     async setupPushNotifications() {
     try {
-        const registration = await navigator.serviceWorker.ready;
+        console.log("Tentative d'activation des notifications...");
         
-        // Vérifier les souscriptions existantes
-        const oldSubscription = await registration.pushManager.getSubscription();
-        if (oldSubscription) {
-            await oldSubscription.unsubscribe();
-            await this.supabase
-                .from('push_subscriptions')
-                .delete()
-                .match({ 
-                    pseudo: this.pseudo,
-                    subscription: JSON.stringify(oldSubscription)
-                });
+        if (!window.OneSignal) {
+            console.error('OneSignal n\'est pas initialisé');
+            this.showNotification('Service de notification non disponible', 'error');
+            return false;
         }
-
-        // Créer une nouvelle souscription
-        const subscription = await registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: this.urlBase64ToUint8Array('BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck')
-        });
-
-        // Enregistrer la nouvelle souscription
-        const { error } = await this.supabase
-            .from('push_subscriptions')
-            .insert({
-                pseudo: this.pseudo,
-                subscription: JSON.stringify(subscription),
-                device_type: this.getDeviceType(),
-                active: true,
-                last_updated: new Date().toISOString()
-            });
-
-        if (error) throw error;
-
+        
+        // Demander l'autorisation pour les notifications
+        await OneSignal.Notifications.requestPermission();
+        
+        // Ajouter un tag avec le nom d'utilisateur pour pouvoir cibler cet utilisateur
+        await OneSignal.User.addTag("username", this.pseudo);
+        
+        // Mettre à jour l'état des notifications
         this.notificationsEnabled = true;
         localStorage.setItem('notificationsEnabled', 'true');
         this.updateNotificationButton();
+        this.showNotification('Notifications activées avec succès', 'success');
+        this.playSound('success');
+        
         return true;
     } catch (error) {
         console.error('Erreur activation notifications:', error);
-        throw error;
+        this.showNotification('Erreur d\'activation des notifications', 'error');
+        return false;
     }
 }
 async renewPushSubscription() {
@@ -654,10 +624,10 @@ async renewPushSubscription() {
                 });
         }
 
-        // Créer une nouvelle souscription - utiliser la même clé que dans setupPushNotifications()
+        // Créer une nouvelle souscription
         const newSubscription = await registration.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: this.urlBase64ToUint8Array('BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck')
+            applicationServerKey: this.urlBase64ToUint8Array('VOTRE_CLE_VAPID_PUBLIQUE')
         });
 
         // Sauvegarder la nouvelle souscription
@@ -700,43 +670,48 @@ getDeviceType() {
     }
 }
 async unsubscribeFromPushNotifications() {
-        try {
-            const registration = await navigator.serviceWorker.getRegistration();
-            const subscription = await registration.pushManager.getSubscription();
-            
-            if (subscription) {
-                await subscription.unsubscribe();
-                await this.supabase
-                    .from('push_subscriptions')
-                    .delete()
-                    .eq('pseudo', this.pseudo);
-            }
-            
-            this.notificationsEnabled = false;
-            localStorage.setItem('notificationsEnabled', 'false');
-            this.updateNotificationButton();
-            this.showNotification('Notifications désactivées', 'success');
-            return true;
-        } catch (error) {
-            console.error('Erreur désactivation notifications:', error);
-            this.showNotification('Erreur de désactivation', 'error');
+    try {
+        if (!window.OneSignal) {
+            console.error('OneSignal n\'est pas initialisé');
             return false;
         }
+        
+        // Désactiver les notifications
+        await OneSignal.User.Category.slidedown.disable();
+        
+        // Supprimer le tag d'utilisateur
+        await OneSignal.User.removeTag("username");
+        
+        this.notificationsEnabled = false;
+        localStorage.setItem('notificationsEnabled', 'false');
+        this.updateNotificationButton();
+        this.showNotification('Notifications désactivées', 'success');
+        return true;
+    } catch (error) {
+        console.error('Erreur désactivation notifications:', error);
+        this.showNotification('Erreur lors de la désactivation', 'error');
+        return false;
     }
+}
     async sendNotificationToUser(message) {
     try {
         console.log('Envoi notification à:', message);
-        
-        const response = await fetch("/api/sendPush.js", {
-            method: "POST",
+        const url = '/api/sendPush';
+        console.log('URL API:', url);
+        const body = JSON.stringify({
+            message: message.content,
+            fromUser: message.pseudo,
+            toUser: this.pseudo,
+            timestamp: new Date().toISOString()
+        });
+        console.log('Body de la requête:', body);
+
+        const response = await fetch(window.location.origin + '/api/sendPush', {
+            method: 'POST',
             headers: {
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                message: message.content,
-                fromUser: message.pseudo,
-                toUser: this.pseudo
-            })
+            body: body
         });
 
         if (!response.ok) {
