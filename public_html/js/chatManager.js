@@ -569,14 +569,8 @@ createMessageElement(message) {
 
         if (error) throw error;
 
-        // Envoi de la notification avec log
-console.log("📤 Envoi de notification avec :", {
-    message: content,
-    fromUser: this.pseudo,
-    toUser: "all"
-});
-
-await fetch("/api/sendPush.js", {
+        // Envoi de la notification
+        await fetch("/api/sendPush", { // Au lieu de "/api/sendPush.js"
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -585,9 +579,10 @@ await fetch("/api/sendPush.js", {
         toUser: "all"
     })
 })
-.then(response => response.json())
-.then(data => console.log("✅ Notification envoyée :", data))
-.catch(err => console.error("❌ Erreur lors de l'envoi de la notification :", err));
+
+        .then(response => response.json())
+        .then(data => console.log("✅ Notification envoyée :", data))
+        .catch(err => console.error("❌ Erreur lors de l'envoi de la notification :", err));
 
         return true;
     } catch (error) {
