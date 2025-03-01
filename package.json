@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@supabase/supabase-js": "^2.39.3",
+    "rss-parser": "^3.13.0",
     "web-push": "^3.6.6"
   },
   "engines": {
