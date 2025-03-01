@@ -570,16 +570,15 @@ createMessageElement(message) {
         if (error) throw error;
 
         // Envoi de la notification
-        await fetch("/api/sendPush", { // Au lieu de "/api/sendPush.js"
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-        message: content,
-        fromUser: this.pseudo,
-        toUser: "all"
-    })
-})
-
+        await fetch("/api/sendPush.js", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                message: content,
+                fromUser: this.pseudo,
+                toUser: "all"
+            })
+        })
         .then(response => response.json())
         .then(data => console.log("✅ Notification envoyée :", data))
         .catch(err => console.error("❌ Erreur lors de l'envoi de la notification :", err));
