@@ -36,30 +36,22 @@ self.addEventListener('install', event => {
     );
 });
 
-self.addEventListener("activate", (event) => {
-    console.log("[Service Worker] Activation...");
+// Activation
+self.addEventListener('activate', event => {
+    console.log('[Service Worker] Activation...');
     event.waitUntil(
-        (async () => {
-            const clientsList = await clients.matchAll();
-            if (clientsList.length > 0) {
-                console.log("[Service Worker] Clients détectés, prise de contrôle.");
-                await clients.claim();
-            } else {
-                console.log("[Service Worker] Aucun client actif, attente.");
-            }
-
-            await caches.keys().then(cacheNames => {
+        Promise.all([
+            clients.claim(),
+            caches.keys().then(cacheNames => {
                 return Promise.all(
                     cacheNames.filter(cacheName => cacheName !== CACHE_NAME)
                         .map(cacheName => {
-                            console.log("[Service Worker] Suppression ancien cache:", cacheName);
+                            console.log('[Service Worker] Suppression ancien cache:', cacheName);
                             return caches.delete(cacheName);
                         })
                 );
-            });
-
-            console.log("[Service Worker] Activation terminée.");
-        })()
+            })
+        ])
     );
 });
 
