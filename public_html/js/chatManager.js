@@ -585,20 +585,34 @@ createMessageElement(message) {
             return false;
         }
         
-        // Demander l'autorisation pour les notifications
-        await OneSignal.Notifications.requestPermission();
+        // Vérifier si OneSignal est correctement chargé
+        console.log("État de OneSignal:", window.OneSignal);
         
-        // Ajouter un tag avec le nom d'utilisateur pour pouvoir cibler cet utilisateur
-        await OneSignal.User.addTag("username", this.pseudo);
-        
-        // Mettre à jour l'état des notifications
-        this.notificationsEnabled = true;
-        localStorage.setItem('notificationsEnabled', 'true');
-        this.updateNotificationButton();
-        this.showNotification('Notifications activées avec succès', 'success');
-        this.playSound('success');
-        
-        return true;
+        try {
+            // Version simplifiée - juste demander la permission
+            const result = await window.OneSignal.Notifications.requestPermission();
+            console.log("Résultat de la demande:", result);
+            
+            if (result) {
+                this.notificationsEnabled = true;
+                localStorage.setItem('notificationsEnabled', 'true');
+                this.updateNotificationButton();
+                this.showNotification('Notifications activées', 'success');
+                return true;
+            } else {
+                this.showNotification('Notifications refusées', 'error');
+                return false;
+            }
+        } catch (innerError) {
+            console.error("Erreur spécifique:", innerError);
+            
+            // Méthode alternative si la première échoue
+            await window.OneSignal.showNativePrompt();
+            this.notificationsEnabled = true;
+            localStorage.setItem('notificationsEnabled', 'true');
+            this.updateNotificationButton();
+            return true;
+        }
     } catch (error) {
         console.error('Erreur activation notifications:', error);
         this.showNotification('Erreur d\'activation des notifications', 'error');
