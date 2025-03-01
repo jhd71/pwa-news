@@ -569,12 +569,14 @@ createMessageElement(message) {
 
         if (error) throw error;
 
-        // Envoi de la notification
+        // Ne pas appeler l'API des notifications qui n'existe pas
+        // Commentez ou supprimez les lignes ci-dessous
+        /*
         await fetch("/api/sendPush.js", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                message: content,
+                message: content, 
                 fromUser: this.pseudo,
                 toUser: "all"
             })
@@ -582,6 +584,7 @@ createMessageElement(message) {
         .then(response => response.json())
         .then(data => console.log("✅ Notification envoyée :", data))
         .catch(err => console.error("❌ Erreur lors de l'envoi de la notification :", err));
+        */
 
         return true;
     } catch (error) {
