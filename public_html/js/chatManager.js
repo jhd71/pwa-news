@@ -570,25 +570,25 @@ createMessageElement(message) {
         if (error) throw error;
 
         // Envoi de la notification
-        await fetch("https://ntfy.sh/mon-chat", {
-    method: "POST",
-    headers: { "Content-Type": "text/plain" },
-    body: `💬 Nouveau message de ${this.pseudo}: ${content}`
+        await fetch("/api/sendPush.js", {
+method: "POST",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify({
+message: content,
+fromUser: this.pseudo,
+toUser: "all"
 })
-.then(response => {
-    if (response.ok) {
-        console.log("✅ Notification envoyée via ntfy.sh !");
-    } else {
-        console.error("❌ Erreur lors de l'envoi de la notification.");
-    }
 })
-.catch(error => console.error("❌ Erreur réseau avec ntfy.sh :", error));
+.then(response => response.json())
+.then(data => console.log("✅ Notification envoyée :", data))
+.catch(err => console.error("❌ Erreur lors de l'envoi de la notification :", err));
 
-return true;
-    } catch (error) {
-        console.error('Erreur sendMessage:', error);
-        return false;
-    }
+return true;  
+} catch (error) {  
+    console.error('Erreur sendMessage:', error);  
+    return false;  
+}
+
 }
 
     async setupPushNotifications() {
