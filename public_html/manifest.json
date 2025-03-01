@@ -1,7 +1,7 @@
 {
-    "name": "INFOS",
-    "short_name": "INFOS",
-    "description": "Votre portail d'actualités local",
+    "name": "Actu&Média",
+    "short_name": "Actu&Média",
+    "description": "Votre portail d'informations locales",
     "start_url": "/index.html",
     "scope": "/",
     "display": "standalone",
