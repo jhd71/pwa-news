@@ -1,5 +1,4 @@
-// Script pour récupérer et afficher les actualités
-// Script pour récupérer et afficher les actualités
+// Modifiez la fonction loadNewsTickerItems
 async function loadNewsTickerItems() {
   try {
     console.log("Tentative de récupération des actualités...");
