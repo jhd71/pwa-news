@@ -24,50 +24,73 @@ module.exports = async (req, res) => {
     
     // URLs des flux RSS
     const feeds = [
-      { name: 'Montceau News', url: 'https://montceau-news.com/feed/' },
-      { name: 'L\'Informateur', url: 'http://www.linformateurdebourgogne.com/feed/' },
-      { name: 'Le JSL', url: 'https://www.lejsl.com/rss' },
-      { name: 'BFM TV', url: 'https://www.bfmtv.com/rss/news-24-7/' },
-      { name: 'France Bleu', url: 'https://www.francebleu.fr/rss/bourgogne.xml' }
+      { name: 'Montceau News', url: 'https://montceau-news.com/feed/', max: 2 },
+      { name: 'L\'Informateur', url: 'http://www.linformateurdebourgogne.com/feed/', max: 2 },
+      { name: 'Le JSL', url: 'https://www.lejsl.com/rss', max: 2 },
+      { name: 'BFM TV', url: 'https://www.bfmtv.com/rss/news-24-7/', max: 2 },
+      { name: 'France Bleu', url: 'https://www.francebleu.fr/rss/bourgogne.xml', max: 2 }
     ];
     
+    // Récupérer les articles de chaque flux
     const allArticles = [];
-    const feedPromises = feeds.map(async (feed) => {
+    
+    for (const feed of feeds) {
       try {
         console.log(`Tentative pour ${feed.name}...`);
         const feedData = await parser.parseURL(feed.url);
         console.log(`Succès pour ${feed.name}, ${feedData.items.length} articles trouvés`);
         
-        // Extraire jusqu'à 4 articles
-        const articles = feedData.items.slice(0, 4).map(item => ({
+        // Limiter au nombre maximum défini pour chaque source
+        const articles = feedData.items.slice(0, feed.max).map(item => ({
           title: item.title,
           link: item.link,
           date: item.pubDate || item.isoDate,
           source: feed.name
         }));
         
-        return articles;
+        allArticles.push(...articles);
       } catch (feedError) {
         console.error(`Erreur avec ${feed.name}:`, feedError.message);
-        return []; // Retourner un tableau vide en cas d'erreur
+        continue;
       }
-    });
+    }
     
-    // Attendre que tous les flux soient traités, même ceux en erreur
-    const results = await Promise.allSettled(feedPromises);
-    
-    // Traiter les résultats
-    results.forEach(result => {
-      if (result.status === 'fulfilled') {
-        allArticles.push(...result.value);
+    // Mélanger légèrement les articles au lieu de juste les trier par date
+    // pour éviter d'avoir toutes les sources regroupées
+    const shuffleAndSortArticles = (articles) => {
+      // Regrouper par source
+      const bySource = {};
+      articles.forEach(article => {
+        if (!bySource[article.source]) {
+          bySource[article.source] = [];
+        }
+        bySource[article.source].push(article);
+      });
+      
+      // Prendre un article de chaque source à tour de rôle
+      const result = [];
+      let sourcesWithArticles = Object.keys(bySource);
+      
+      while (sourcesWithArticles.length > 0) {
+        for (let i = 0; i < sourcesWithArticles.length; i++) {
+          const source = sourcesWithArticles[i];
+          if (bySource[source].length > 0) {
+            result.push(bySource[source].shift());
+          }
+          if (bySource[source].length === 0) {
+            sourcesWithArticles = sourcesWithArticles.filter(s => s !== source);
+            i--; // Ajustement pour la boucle
+          }
+        }
       }
-    });
+      
+      return result;
+    };
     
-    // Trier les articles par date
-    allArticles.sort((a, b) => new Date(b.date) - new Date(a.date));
+    const mixedArticles = shuffleAndSortArticles(allArticles);
     
-    // Limiter à 15 articles au total
-    return res.status(200).json(allArticles.slice(0, 15));
+    // Renvoyer les articles (maximum 10)
+    return res.status(200).json(mixedArticles.slice(0, 10));
     
   } catch (error) {
     console.error('Erreur générale:', error.message);
