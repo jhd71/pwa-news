@@ -1,15 +1,5 @@
-// Dans api/getNews.js, ajoutez en début de fonction :
-module.exports = async (req, res) => {
-  // Ajouter les en-têtes CORS
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
-  
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-  
+// Script pour récupérer et afficher les actualités
+async function loadNewsTickerItems() {
   try {
     console.log("Tentative de récupération des actualités...");
     
@@ -69,3 +59,37 @@ module.exports = async (req, res) => {
     }
   }
 }
+
+// Données de test (à utiliser si l'API ne fonctionne pas)
+function loadTestData() {
+  const testArticles = [
+    { title: 'Article de test 1', link: '#', date: new Date().toISOString(), source: 'Test Source' },
+    { title: 'Article de test 2', link: '#', date: new Date().toISOString(), source: 'Test Source' }
+  ];
+  
+  const tickerElement = document.getElementById('newsTicker');
+  if (tickerElement) {
+    tickerElement.innerHTML = '';
+    testArticles.forEach(article => {
+      const item = document.createElement('div');
+      item.className = 'ticker-item';
+      item.innerHTML = `
+        <span class="ticker-source">[${article.source}]</span>
+        <a href="${article.link}" target="_blank">${article.title}</a>
+      `;
+      tickerElement.appendChild(item);
+    });
+  }
+}
+
+// Charger les actualités au chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+  // Décommentez la ligne suivante pour tester avec des données fictives
+  // loadTestData();
+  
+  // Commentez cette ligne si vous utilisez loadTestData
+  loadNewsTickerItems();
+  
+  // Rafraîchir les actualités toutes les 5 minutes
+  setInterval(loadNewsTickerItems, 5 * 60 * 1000);
+});
