@@ -1,18 +1,35 @@
 // Script pour récupérer et afficher les actualités
+// Script pour récupérer et afficher les actualités
 async function loadNewsTickerItems() {
   try {
+    console.log("Tentative de récupération des actualités...");
+    
     const response = await fetch('/api/getNews');
-    if (!response.ok) throw new Error('Erreur lors de la récupération des actualités');
+    console.log("Statut de la réponse:", response.status);
+    
+    if (!response.ok) {
+      console.error("Erreur de réponse:", response.status, response.statusText);
+      throw new Error('Erreur lors de la récupération des actualités');
+    }
     
     const articles = await response.json();
-    const tickerElement = document.getElementById('newsTicker');
+    console.log("Articles récupérés:", articles);
     
-    if (tickerElement && articles.length > 0) {
+    const tickerElement = document.getElementById('newsTicker');
+    if (!tickerElement) {
+      console.error("Élément #newsTicker non trouvé dans le DOM");
+      return;
+    }
+    
+    if (articles && articles.length > 0) {
+      console.log(`Affichage de ${articles.length} articles`);
       // Vider le ticker
       tickerElement.innerHTML = '';
       
       // Ajouter les articles
-      articles.forEach(article => {
+      articles.forEach((article, index) => {
+        console.log(`Traitement de l'article ${index}:`, article.title);
+        
         const item = document.createElement('div');
         item.className = 'ticker-item';
         
@@ -31,14 +48,15 @@ async function loadNewsTickerItems() {
         
         tickerElement.appendChild(item);
       });
+    } else {
+      console.warn("Aucun article récupéré ou tableau vide");
+      tickerElement.innerHTML = '<div class="ticker-item">Aucune actualité disponible pour le moment</div>';
     }
   } catch (error) {
-    console.error('Erreur:', error);
+    console.error('Erreur complète:', error);
+    const tickerElement = document.getElementById('newsTicker');
+    if (tickerElement) {
+      tickerElement.innerHTML = `<div class="ticker-item">Erreur: ${error.message}</div>`;
+    }
   }
 }
-
-// Charger les actualités au chargement de la page
-document.addEventListener('DOMContentLoaded', loadNewsTickerItems);
-
-// Rafraîchir les actualités toutes les 5 minutes
-setInterval(loadNewsTickerItems, 5 * 60 * 1000);
