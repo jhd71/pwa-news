@@ -108,32 +108,28 @@ body {
 
 .ticker-wrapper {
   display: flex;
-  animation: ticker 30s linear infinite;
+  animation: ticker 60s linear infinite; /* Augmentation du temps à 60 secondes */
   white-space: nowrap;
 }
 
 .ticker-item {
-  padding: 10px 20px;
+  padding: 10px 30px; /* Plus d'espace entre les éléments */
   font-weight: bold;
+  position: relative;
 }
 
-.ticker-item a {
-  color: white;
-  text-decoration: none;
-}
-
-.ticker-item a:hover {
-  text-decoration: underline;
-}
-
-.ticker-source {
+/* Ajouter un séparateur entre les articles */
+.ticker-item:not(:last-child)::after {
+  content: "•";
+  position: absolute;
+  right: 10px;
   color: #4CAF50;
-  margin-right: 5px;
 }
 
+/* Animation plus fluide */
 @keyframes ticker {
   0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
+  100% { transform: translateX(-200%); } /* Valeur plus grande pour un défilement complet */
 }
 
 /* Header et navigation */
