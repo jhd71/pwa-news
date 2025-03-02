@@ -2,21 +2,32 @@ const Parser = require('rss-parser');
 const parser = new Parser();
 
 module.exports = async (req, res) => {
+  // Ajouter les en-têtes CORS
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
+  
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
   try {
-    // URLs des flux RSS identifiés
-const feeds = [
-  { name: 'Montceau News', url: 'https://montceau-news.com/feed' },
-  { name: 'L\'Informateur de Bourgogne', url: 'http://www.linformateurdebourgogne.com/feed/' },
-  { name: 'Le JSL', url: 'https://www.lejsl.com/edition-montceau/rss' },
-  { name: 'BFM TV', url: 'https://www.bfmtv.com/rss/news-24-7/' },
-  { name: 'France Bleu Bourgogne', url: 'https://www.francebleu.fr/rss/bourgogne.xml' }
-];
+    // URLs des flux RSS
+    const feeds = [
+      { name: 'Montceau News', url: 'https://montceau-news.com/feed' },
+      { name: 'L\'Informateur de Bourgogne', url: 'http://www.linformateurdebourgogne.com/feed/' },
+      { name: 'Le JSL', url: 'https://www.lejsl.com/edition-montceau/rss' },
+      { name: 'BFM TV', url: 'https://www.bfmtv.com/rss/news-24-7/' },
+      { name: 'France Bleu Bourgogne', url: 'https://www.francebleu.fr/rss/bourgogne.xml' }
+    ];
     
     // Récupérer les articles de chaque flux
     const allArticles = [];
     
     for (const feed of feeds) {
       try {
+        console.log(`Tentative de récupération du flux: ${feed.name}`);
         const feedData = await parser.parseURL(feed.url);
         
         // Extraire les 3 derniers articles
@@ -30,6 +41,8 @@ const feeds = [
         allArticles.push(...articles);
       } catch (feedError) {
         console.error(`Erreur avec le flux ${feed.name}:`, feedError);
+        // Continuer avec les autres flux sans échouer
+        continue;
       }
     }
     
