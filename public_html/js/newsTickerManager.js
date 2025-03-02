@@ -11,7 +11,7 @@ async function loadNewsTickerItems() {
     }
     
     const articles = await response.json();
-    console.log("Articles récupérés:", articles);
+    console.log("Articles récupérés:", articles, "Total:", articles.length);
     
     const tickerElement = document.getElementById('newsTicker');
     if (!tickerElement) {
@@ -20,32 +20,41 @@ async function loadNewsTickerItems() {
     }
     
     if (articles && articles.length > 0) {
-      console.log(`Affichage de ${articles.length} articles`);
       // Vider le ticker
       tickerElement.innerHTML = '';
       
       // Ajouter les articles
       articles.forEach((article, index) => {
-        console.log(`Traitement de l'article ${index}:`, article.title);
+        const title = article.title || 'Article sans titre';
+        
+        // Nettoyer le titre si nécessaire (enlever HTML, etc.)
+        const cleanTitle = title.replace(/<\/?[^>]+(>|$)/g, "");
         
         const item = document.createElement('div');
         item.className = 'ticker-item';
         
         // Formater la date
-        const date = new Date(article.date);
-        const formattedDate = date.toLocaleTimeString('fr-FR', { 
-          hour: '2-digit', 
-          minute: '2-digit' 
-        });
+        let dateStr = '';
+        try {
+          const date = new Date(article.date);
+          dateStr = date.toLocaleTimeString('fr-FR', { 
+            hour: '2-digit', 
+            minute: '2-digit'
+          });
+        } catch (e) {
+          dateStr = '';
+        }
         
         item.innerHTML = `
           <span class="ticker-source">[${article.source}]</span>
-          <a href="${article.link}" target="_blank">${article.title}</a>
-          <span class="ticker-time">${formattedDate}</span>
+          <a href="${article.link}" target="_blank">${cleanTitle}</a>
+          ${dateStr ? `<span class="ticker-time">${dateStr}</span>` : ''}
         `;
         
         tickerElement.appendChild(item);
       });
+      
+      console.log("Affichage terminé pour", articles.length, "articles");
     } else {
       console.warn("Aucun article récupéré ou tableau vide");
       tickerElement.innerHTML = '<div class="ticker-item">Aucune actualité disponible pour le moment</div>';
