@@ -93,13 +93,13 @@ body {
 .material-icons {
     font-size: 24px;
 }
-/* Style pour le ticker d'actualités */
+/* Style pour le ticker d'actualités - Meilleure visibilité */
 .news-ticker {
   position: fixed;
   bottom: 60px; /* Au-dessus de votre barre de navigation */
   left: 0;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.85); /* Fond plus foncé pour meilleur contraste */
   color: white;
   overflow: hidden;
   height: 40px;
@@ -108,28 +108,54 @@ body {
 
 .ticker-wrapper {
   display: flex;
-  animation: ticker 60s linear infinite; /* Augmentation du temps à 60 secondes */
+  animation: ticker 90s linear infinite; /* Animation plus lente - 90 secondes */
   white-space: nowrap;
 }
 
 .ticker-item {
-  padding: 10px 30px; /* Plus d'espace entre les éléments */
+  padding: 10px 40px; /* Plus d'espace entre les éléments */
   font-weight: bold;
   position: relative;
 }
 
-/* Ajouter un séparateur entre les articles */
+/* Séparateur entre les articles */
 .ticker-item:not(:last-child)::after {
   content: "•";
   position: absolute;
-  right: 10px;
+  right: 15px;
   color: #4CAF50;
 }
 
-/* Animation plus fluide */
+/* Meilleure visibilité des liens */
+.ticker-item a {
+  color: white; /* Texte blanc pour meilleure lisibilité */
+  text-decoration: none;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Ombre pour lisibilité */
+}
+
+.ticker-item a:hover {
+  text-decoration: underline;
+}
+
+.ticker-source {
+  color: #7FFF7F; /* Vert plus clair pour meilleure visibilité */
+  margin-right: 8px;
+  font-weight: bold;
+}
+
+/* Animation plus lente et défilement complet */
 @keyframes ticker {
   0% { transform: translateX(100%); }
-  100% { transform: translateX(-200%); } /* Valeur plus grande pour un défilement complet */
+  100% { transform: translateX(-300%); } /* Valeur beaucoup plus grande pour un défilement complet */
+}
+
+/* Adaptation aux thèmes clair/sombre */
+[data-theme="light"] .news-ticker {
+  background-color: rgba(30, 30, 80, 0.9);
+}
+
+[data-theme="dark"] .news-ticker {
+  background-color: rgba(0, 0, 0, 0.85);
 }
 
 /* Header et navigation */
