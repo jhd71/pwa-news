@@ -1,5 +1,15 @@
-// Modifiez la fonction loadNewsTickerItems
-async function loadNewsTickerItems() {
+// Dans api/getNews.js, ajoutez en début de fonction :
+module.exports = async (req, res) => {
+  // Ajouter les en-têtes CORS
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
+  
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
   try {
     console.log("Tentative de récupération des actualités...");
     
