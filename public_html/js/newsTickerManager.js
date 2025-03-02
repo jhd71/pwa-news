@@ -1,9 +1,8 @@
-// Script pour récupérer et afficher les actualités
 async function loadNewsTickerItems() {
   try {
     console.log("Tentative de récupération des actualités...");
     
-    const response = await fetch('/api/getNews');
+    const response = await fetch('/api/getNews.js');
     console.log("Statut de la réponse:", response.status);
     
     if (!response.ok) {
