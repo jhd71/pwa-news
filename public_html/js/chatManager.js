@@ -202,44 +202,38 @@ class ChatManager {
 }
 
     setupListeners() {
-        const toggle = this.container.querySelector('.chat-toggle');
+		const chatToggleBtn = document.getElementById('chatToggleBtn');
         const closeBtn = this.container.querySelector('.close-chat');
         const chatContainer = this.container.querySelector('.chat-container');
+        const toggle = this.container.querySelector('.chat-toggle');
         const soundBtn = this.container.querySelector('.sound-btn');
         const notificationsBtn = this.container.querySelector('.notifications-btn');
         const adminBtn = this.container.querySelector('.admin-panel-btn');
 
-        if (toggle) {
-            toggle.addEventListener('click', () => {
-                const chatContainer = this.container.querySelector('.chat-container');
-                this.isOpen = !this.isOpen;
+        if (chatToggleBtn) {
+        chatToggleBtn.addEventListener('click', () => {
+            this.isOpen = !this.isOpen;
+            
+            if (this.isOpen) {
+                chatContainer?.classList.add('open');
+                this.unreadCount = 0;
+                localStorage.setItem('unreadCount', '0');
                 
-                if (this.isOpen) {
-                    chatContainer?.classList.add('open');
-                    this.unreadCount = 0;
-                    localStorage.setItem('unreadCount', '0');
-                    
-                    const badge = this.container.querySelector('.notification-badge');
-                    if (badge) {
-                        badge.textContent = '0';
-                        badge.classList.add('hidden');
-                    }
-                    
-                    const chatToggle = this.container.querySelector('.chat-toggle');
-                    const existingBubble = chatToggle?.querySelector('.info-bubble');
-                    if (existingBubble) {
-                        existingBubble.remove();
-                    }
-                    
-                    this.scrollToBottom();
-                } else {
-                    chatContainer?.classList.remove('open');
+                const badge = chatToggleBtn.querySelector('.chat-notification-badge');
+                if (badge) {
+                    badge.textContent = '0';
+                    badge.classList.add('hidden');
                 }
                 
-                localStorage.setItem('chatOpen', this.isOpen);
-                this.playSound('click');
-            });
-        }
+                this.scrollToBottom();
+            } else {
+                chatContainer?.classList.remove('open');
+            }
+            
+            localStorage.setItem('chatOpen', this.isOpen);
+            this.playSound('click');
+        });
+    }
 
         if (closeBtn) {
             closeBtn.addEventListener('click', () => {
@@ -890,26 +884,41 @@ async unsubscribeFromPushNotifications() {
         }
     }
 
-    updateUnreadBadgeAndBubble() {
-        const badge = this.container.querySelector('.notification-badge');
+    // Mettez à jour la fonction qui gère les notifications
+updateUnreadBadgeAndBubble() {
+    // Mettre à jour le badge sur le bouton de la barre de navigation
+    const chatToggleBtn = document.getElementById('chatToggleBtn');
+    if (chatToggleBtn) {
+        const badge = chatToggleBtn.querySelector('.chat-notification-badge');
         if (badge) {
             badge.textContent = this.unreadCount || '';
             badge.classList.toggle('hidden', this.unreadCount === 0);
         }
+    }
 
+    // Mettre à jour aussi le badge sur le bouton flottant si vous le conservez
+    const badge = this.container.querySelector('.notification-badge');
+    if (badge) {
+        badge.textContent = this.unreadCount || '';
+        badge.classList.toggle('hidden', this.unreadCount === 0);
+    }
+
+    // Afficher une info-bulle si le chat est fermé et il y a des messages non lus
+    if (!this.isOpen && this.unreadCount > 0) {
         const chatToggle = this.container.querySelector('.chat-toggle');
-        const existingBubble = chatToggle.querySelector('.info-bubble');
+        const existingBubble = chatToggle?.querySelector('.info-bubble');
         if (existingBubble) {
             existingBubble.remove();
         }
 
-        if (!this.isOpen && this.unreadCount > 0) {
+        if (chatToggle) {
             const bubble = document.createElement('div');
             bubble.className = 'info-bubble show';
             bubble.innerHTML = `<div style="font-weight: bold;">${this.unreadCount} nouveau(x) message(s)</div>`;
             chatToggle.appendChild(bubble);
         }
     }
+}
 
     escapeHtml(unsafe) {
         return unsafe
