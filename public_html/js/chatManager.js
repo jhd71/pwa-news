@@ -26,24 +26,26 @@ class ChatManager {
     try {
         await this.loadBannedWords();
         
+        // Créer le conteneur mais ne pas ajouter le bouton flottant si on utilise le bouton de la barre de navigation
         this.container = document.createElement('div');
         this.container.className = 'chat-widget';
 
         if (this.pseudo) {
-            this.container.innerHTML = this.getChatHTML();
-            console.log('HTML du chat pour utilisateur connecté:', this.container.innerHTML);
+            // Ne pas inclure le bouton toggle dans le HTML si on utilise déjà le bouton de la barre de navigation
+            if (document.getElementById('chatToggleBtn')) {
+                this.container.innerHTML = this.getChatHTMLWithoutToggle();
+            } else {
+                this.container.innerHTML = this.getChatHTML();
+            }
         } else {
-            this.container.innerHTML = this.getPseudoHTML();
-            console.log('HTML du chat pour connexion:', this.container.innerHTML);
+            if (document.getElementById('chatToggleBtn')) {
+                this.container.innerHTML = this.getPseudoHTMLWithoutToggle();
+            } else {
+                this.container.innerHTML = this.getPseudoHTML();
+            }
         }
 
         const chatContainer = this.container.querySelector('.chat-container');
-        console.log('État initial:', {
-            isOpen: this.isOpen,
-            chatContainerExists: !!chatContainer,
-            materialIconsVisible: !!this.container.querySelector('.material-icons')
-        });
-        
         if (this.isOpen && chatContainer) {
             chatContainer.classList.add('open');
         }
@@ -126,47 +128,39 @@ class ChatManager {
             this.bannedWords = new Set();
         }
     }
-	getPseudoHTML() {
-        return `
-            <button class="chat-toggle" title="Ouvrir le chat">
-                <i class="material-icons">chat</i>
-                <span class="notification-badge hidden">${this.unreadCount}</span>
-            </button>
-            <div class="chat-container">
-                <div class="chat-header">
-                    <div class="header-title">Connexion au chat</div>
-                    <div class="header-buttons">
-                        <button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
-                            <span class="material-icons">${this.soundEnabled ? 'volume_up' : 'volume_off'}</span>
-                        </button>
-                        <button class="close-chat" title="Fermer">
-                            <span class="material-icons">close</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="chat-login">
-                    <input type="text" 
-                           id="pseudoInput" 
-                           placeholder="Entrez votre pseudo (3-20 caractères)" 
-                           maxlength="20">
-                    <input type="password" 
-                           id="adminPassword" 
-                           placeholder="Mot de passe admin (jhd71)" 
-                           style="display: none;">
-                    <div class="login-buttons">
-                        <button id="confirmPseudo">Confirmer</button>
-                    </div>
+	getPseudoHTMLWithoutToggle() {
+    return `
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="header-title">Connexion au chat</div>
+                <div class="header-buttons">
+                    <button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
+                        <span class="material-icons">${this.soundEnabled ? 'volume_up' : 'volume_off'}</span>
+                    </button>
+                    <button class="close-chat" title="Fermer">
+                        <span class="material-icons">close</span>
+                    </button>
                 </div>
             </div>
-        `;
-    }
+            <div class="chat-login">
+                <input type="text" 
+                       id="pseudoInput" 
+                       placeholder="Entrez votre pseudo (3-20 caractères)" 
+                       maxlength="20">
+                <input type="password" 
+                       id="adminPassword" 
+                       placeholder="Mot de passe admin (jhd71)" 
+                       style="display: none;">
+                <div class="login-buttons">
+                    <button id="confirmPseudo">Confirmer</button>
+                </div>
+            </div>
+        </div>
+    `;
+}
 
-    getChatHTML() {
+getChatHTMLWithoutToggle() {
     return `
-        <button class="chat-toggle" title="Ouvrir le chat">
-            <span class="material-icons">chat</span>
-            <span class="notification-badge hidden">${this.unreadCount}</span>
-        </button>
         <div class="chat-container">
             <div class="chat-header">
                 <div class="header-title">Chat - ${this.pseudo}</div>
@@ -202,15 +196,15 @@ class ChatManager {
 }
 
     setupListeners() {
-		const chatToggleBtn = document.getElementById('chatToggleBtn');
-        const closeBtn = this.container.querySelector('.close-chat');
-        const chatContainer = this.container.querySelector('.chat-container');
-        const toggle = this.container.querySelector('.chat-toggle');
-        const soundBtn = this.container.querySelector('.sound-btn');
-        const notificationsBtn = this.container.querySelector('.notifications-btn');
-        const adminBtn = this.container.querySelector('.admin-panel-btn');
+    const chatToggleBtn = document.getElementById('chatToggleBtn');
+    const closeBtn = this.container.querySelector('.close-chat');
+    const chatContainer = this.container.querySelector('.chat-container');
+    const toggle = this.container.querySelector('.chat-toggle');
+    const soundBtn = this.container.querySelector('.sound-btn');
+    const notificationsBtn = this.container.querySelector('.notifications-btn');
+    const adminBtn = this.container.querySelector('.admin-panel-btn');
 
-        if (chatToggleBtn) {
+    if (chatToggleBtn) {
         chatToggleBtn.addEventListener('click', () => {
             this.isOpen = !this.isOpen;
             
@@ -894,13 +888,6 @@ updateUnreadBadgeAndBubble() {
             badge.textContent = this.unreadCount || '';
             badge.classList.toggle('hidden', this.unreadCount === 0);
         }
-    }
-
-    // Mettre à jour aussi le badge sur le bouton flottant si vous le conservez
-    const badge = this.container.querySelector('.notification-badge');
-    if (badge) {
-        badge.textContent = this.unreadCount || '';
-        badge.classList.toggle('hidden', this.unreadCount === 0);
     }
 
     // Afficher une info-bulle si le chat est fermé et il y a des messages non lus
