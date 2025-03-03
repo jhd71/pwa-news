@@ -215,9 +215,24 @@ body .site-title {
 }
 /* Animation plus lente et défilement complet */
 @keyframes ticker {
-    0% { transform: translate3d(100%, 0, 0); }
-    100% { transform: translate3d(-300%, 0, 0); } /* Valeur beaucoup plus grande pour un défilement complet */
+    0% { transform: translate3d(100vw, 0, 0); } 
+    100% { transform: translate3d(-100vw, 0, 0); } /* Utilisation de vw pour une meilleure adaptation */
 }
+
+/* Ajustement de la durée sur mobile */
+@media (max-width: 600px) {
+    .ticker-wrapper {
+        animation: ticker 30s linear infinite; /* ✅ Accélère le défilement sur mobile */
+    }
+}
+
+/* Ajustement de la durée sur grand écran */
+@media (min-width: 601px) {
+    .ticker-wrapper {
+        animation: ticker 60s linear infinite; /* ✅ Garde un défilement fluide sur PC */
+    }
+}
+
 
 /* Adaptation aux thèmes clair/sombre */
 [data-theme="light"] .news-ticker {
