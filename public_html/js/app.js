@@ -159,21 +159,18 @@ class App {
     }
 
     setupEventListeners() {
-    // Menu et paramètres
-    document.getElementById('menuButton')?.addEventListener('click', () => this.toggleMenu());
-    document.getElementById('settingsButton')?.addEventListener('click', () => this.toggleSettings());
-    
-    // Recherche Google
-    document.getElementById('searchForm')?.addEventListener('submit', (e) => this.handleSearch(e));
-
-    // Bouton du chat à côté de la recherche Google
-    document.getElementById('chatBtn')?.addEventListener('click', () => this.toggleChat());
-
-    // Navigation du bas
-    document.getElementById('darkModeToggle')?.addEventListener('click', () => this.toggleDarkMode());
-    document.getElementById('addSiteBtn')?.addEventListener('click', () => this.showAddSiteModal());
-    document.getElementById('layoutToggle')?.addEventListener('click', () => this.showLayoutMenu());
-}
+        // Menu et paramètres
+        document.getElementById('menuButton')?.addEventListener('click', () => this.toggleMenu());
+        document.getElementById('settingsButton')?.addEventListener('click', () => this.toggleSettings());
+        
+        // Recherche Google
+        document.getElementById('searchForm')?.addEventListener('submit', (e) => this.handleSearch(e));
+        
+        // Navigation du bas
+        document.getElementById('darkModeToggle')?.addEventListener('click', () => this.toggleDarkMode());
+        document.getElementById('addSiteBtn')?.addEventListener('click', () => this.showAddSiteModal());
+        document.getElementById('layoutToggle')?.addEventListener('click', () => this.showLayoutMenu());
+    }
 
     renderTiles() {
         const container = document.getElementById('tileContainer');
