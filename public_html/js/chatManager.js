@@ -211,7 +211,7 @@ class ChatManager {
 
         if (toggle) {
             toggle.addEventListener('click', () => {
-                const chatContainer = this.container.querySelector('.chat-container');
+                const chatContainer = document.querySelector('.chat-container'); // Corrigé
                 this.isOpen = !this.isOpen;
                 
                 if (this.isOpen) {
