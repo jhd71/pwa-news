@@ -163,11 +163,7 @@ class ChatManager {
 
     getChatHTML() {
     return `
-        <button class="chat-toggle" title="Ouvrir le chat">
-            <span class="material-icons">chat</span>
-            <span class="notification-badge hidden">${this.unreadCount}</span>
-        </button>
-        <div class="chat-container">
+        <div class="chat-container closed">
             <div class="chat-header">
                 <div class="header-title">Chat - ${this.pseudo}</div>
                 <div class="header-buttons">
