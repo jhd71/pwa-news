@@ -370,18 +370,15 @@ body {
 
 /* Style du bouton chat */
 .chat-toggle {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
+    background: transparent;
     border: none;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    color: white; /* Ajuste selon ton thème */
+    font-size: 14px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
+    cursor: pointer;
 }
 
 /* Thèmes du bouton chat */
@@ -1416,6 +1413,21 @@ main {
         right: 20px;
         bottom: 80px;
         z-index: 1001;
+    }
+}
+
+/* Ajustements pour les petits écrans */
+@media (max-width: 480px) {
+    .bottom-nav .nav-item span:not(.material-icons) {
+        font-size: 12px;
+    }
+    
+    .chat-notification-badge {
+        top: -3px;
+        right: -3px;
+        font-size: 10px;
+        min-width: 16px;
+        height: 16px;
     }
 }
 
