@@ -110,7 +110,7 @@ body {
 
 .ticker-wrapper {
   display: flex;
-  animation: ticker 80s linear infinite; /* Bonne vitesse pour PC */
+  animation: ticker 80s linear infinite;
   white-space: nowrap;
   will-change: transform;
   backface-visibility: hidden;
@@ -166,7 +166,7 @@ body {
   content: "🎙️ ";
 }
 
-/* Animation de base pour desktop - montrer toutes les 10 infos */
+/* Animation de base pour desktop */
 @keyframes ticker {
   0% { transform: translateX(100%); }
   100% { transform: translateX(-300%); }
@@ -175,37 +175,35 @@ body {
 /* Optimisations pour les appareils mobiles */
 @media (max-width: 768px) {
   .ticker-wrapper {
-    animation: ticker-mobile 60s linear infinite; /* Plus lent pour lire sur mobile */
-  }
-  
-  .ticker-item {
-    padding: 10px 20px; /* Espacement réduit pour voir plus d'éléments */
+    animation: ticker-tablet 60s linear infinite;
   }
   
   @keyframes ticker-tablet {
     0% { transform: translateX(100%); }
-    100% { transform: translateX(-1000%); } /* Distance augmentée pour voir plus d'infos */
-  }
-}
-
-/* Optimisations pour les très petits écrans */
-@media (max-width: 480px) {
-  .ticker-wrapper {
-    animation: ticker-mobile 30s linear infinite; /* Plus lent qu'avant */
+    100% { transform: translateX(-1500%); } /* Distance considérablement augmentée */
   }
   
   .ticker-item {
-    padding: 10px 15px;
+    padding: 10px 20px; /* Espacement réduit */
   }
-  
-  .ticker-item:not(:last-child)::after {
-    right: 5px;
+}
+
+/* Optimisations pour les très petits écrans */ 
+@media (max-width: 480px) {
+  .ticker-wrapper {
+    animation: ticker-mobile 50s linear infinite;
   }
   
   @keyframes ticker-mobile {
     0% { transform: translateX(100%); }
-    100% { transform: translateX(-500%); } /* Ajusté pour 10 éléments */
+    100% { transform: translateX(-2000%); } /* Distance encore plus grande */
   }
+  
+  .ticker-item {
+    padding: 10px 15px;
+    font-size: 0.9em; /* Texte légèrement plus petit */
+  }
+}
   
   /* Option pour réduire légèrement la taille du texte sur mobile */
   .ticker-item a, .ticker-source {
