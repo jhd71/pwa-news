@@ -93,23 +93,28 @@ body {
 .material-icons {
     font-size: 24px;
 }
-/* Style pour le ticker d'actualités - Meilleure visibilité */
+* Style pour le ticker d'actualités - Meilleure visibilité */
 .news-ticker {
   position: fixed;
   bottom: 60px; /* Au-dessus de votre barre de navigation */
   left: 0;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.85); /* Fond plus foncé pour meilleur contraste */
+  background-color: rgba(0, 0, 0, 0.85);
   color: white;
   overflow: hidden;
   height: 40px;
   z-index: 1000;
+  transform: translateZ(0); /* Force l'accélération matérielle */
+  -webkit-transform: translateZ(0);
 }
 
 .ticker-wrapper {
   display: flex;
-  animation: ticker 90s linear infinite; /* Animation plus lente - 90 secondes */
+  animation: ticker 90s linear infinite;
   white-space: nowrap;
+  will-change: transform; /* Optimise l'animation */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .ticker-item {
@@ -161,10 +166,42 @@ body {
   content: "🎙️ ";
 }
 
-/* Animation plus lente et défilement complet */
+/* Animation adaptée selon le type d'appareil */
 @keyframes ticker {
   0% { transform: translateX(100%); }
-  100% { transform: translateX(-300%); } /* Valeur beaucoup plus grande pour un défilement complet */
+  100% { transform: translateX(-300%); }
+}
+
+/* Optimisations pour les appareils mobiles */
+@media (max-width: 768px) {
+  .ticker-wrapper {
+    animation: ticker 45s linear infinite; /* Deux fois plus rapide sur mobile */
+  }
+  
+  @keyframes ticker {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-200%); } /* Distance réduite */
+  }
+  
+  .ticker-item {
+    padding: 10px 25px; /* Espacement réduit */
+  }
+}
+
+/* Optimisations pour les très petits écrans */
+@media (max-width: 480px) {
+  .ticker-wrapper {
+    animation: ticker 30s linear infinite; /* Encore plus rapide */
+  }
+  
+  .ticker-item {
+    padding: 10px 15px; /* Espacement encore plus réduit */
+  }
+  
+  /* Simplifie certains éléments pour améliorer les performances */
+  .ticker-item:not(:last-child)::after {
+    right: 5px;
+  }
 }
 
 /* Adaptation aux thèmes clair/sombre */
