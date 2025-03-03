@@ -137,10 +137,28 @@ body {
   text-decoration: underline;
 }
 
+/* Style de base pour la source */
 .ticker-source {
   color: #7FFF7F; /* Vert plus clair pour meilleure visibilité */
   margin-right: 8px;
   font-weight: bold;
+}
+
+/* Icônes pour chaque source */
+.ticker-source[data-source="BFM TV"]::before {
+  content: "📺 ";
+}
+.ticker-source[data-source="Le JSL"]::before {
+  content: "📰 ";
+}
+.ticker-source[data-source="Montceau News"]::before {
+  content: "🏙️ ";
+}
+.ticker-source[data-source="L'Informateur"]::before {
+  content: "📝 ";
+}
+.ticker-source[data-source="France Bleu"]::before {
+  content: "🎙️ ";
 }
 
 /* Animation plus lente et défilement complet */
