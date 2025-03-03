@@ -26,23 +26,16 @@ class ChatManager {
     try {
         await this.loadBannedWords();
         
-        // Créer le conteneur mais ne pas ajouter le bouton flottant si on utilise le bouton de la barre de navigation
         this.container = document.createElement('div');
         this.container.className = 'chat-widget';
 
+        // Vérifier si on utilise le bouton de la barre de navigation
+        const useNavButton = document.getElementById('chatToggleBtn') !== null;
+
         if (this.pseudo) {
-            // Ne pas inclure le bouton toggle dans le HTML si on utilise déjà le bouton de la barre de navigation
-            if (document.getElementById('chatToggleBtn')) {
-                this.container.innerHTML = this.getChatHTMLWithoutToggle();
-            } else {
-                this.container.innerHTML = this.getChatHTML();
-            }
+            this.container.innerHTML = useNavButton ? this.getChatHTMLWithoutToggle() : this.getChatHTML();
         } else {
-            if (document.getElementById('chatToggleBtn')) {
-                this.container.innerHTML = this.getPseudoHTMLWithoutToggle();
-            } else {
-                this.container.innerHTML = this.getPseudoHTML();
-            }
+            this.container.innerHTML = useNavButton ? this.getPseudoHTMLWithoutToggle() : this.getPseudoHTML();
         }
 
         const chatContainer = this.container.querySelector('.chat-container');
@@ -128,7 +121,42 @@ class ChatManager {
             this.bannedWords = new Set();
         }
     }
-	getPseudoHTMLWithoutToggle() {
+	getPseudoHTML() {
+    return `
+        <button class="chat-toggle" title="Ouvrir le chat">
+            <i class="material-icons">chat</i>
+            <span class="notification-badge hidden">${this.unreadCount}</span>
+        </button>
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="header-title">Connexion au chat</div>
+                <div class="header-buttons">
+                    <button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
+                        <span class="material-icons">${this.soundEnabled ? 'volume_up' : 'volume_off'}</span>
+                    </button>
+                    <button class="close-chat" title="Fermer">
+                        <span class="material-icons">close</span>
+                    </button>
+                </div>
+            </div>
+            <div class="chat-login">
+                <input type="text" 
+                       id="pseudoInput" 
+                       placeholder="Entrez votre pseudo (3-20 caractères)" 
+                       maxlength="20">
+                <input type="password" 
+                       id="adminPassword" 
+                       placeholder="Mot de passe admin (jhd71)" 
+                       style="display: none;">
+                <div class="login-buttons">
+                    <button id="confirmPseudo">Confirmer</button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+getPseudoHTMLWithoutToggle() {
     return `
         <div class="chat-container">
             <div class="chat-header">
@@ -154,6 +182,46 @@ class ChatManager {
                 <div class="login-buttons">
                     <button id="confirmPseudo">Confirmer</button>
                 </div>
+            </div>
+        </div>
+    `;
+}
+
+getChatHTML() {
+    return `
+        <button class="chat-toggle" title="Ouvrir le chat">
+            <span class="material-icons">chat</span>
+            <span class="notification-badge hidden">${this.unreadCount}</span>
+        </button>
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="header-title">Chat - ${this.pseudo}</div>
+                <div class="header-buttons">
+                    ${this.isAdmin ? `
+                        <button class="admin-panel-btn" title="Panel Admin">
+                            <span class="material-icons">admin_panel_settings</span>
+                        </button>
+                    ` : ''}
+                    <button class="notifications-btn ${this.notificationsEnabled ? 'enabled' : ''}" title="Notifications">
+                        <span class="material-icons">${this.notificationsEnabled ? 'notifications_active' : 'notifications_off'}</span>
+                    </button>
+                    <button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
+                        <span class="material-icons">${this.soundEnabled ? 'volume_up' : 'volume_off'}</span>
+                    </button>
+                    <button class="close-chat" title="Fermer">
+                        <span class="material-icons">close</span>
+                    </button>
+                </div>
+            </div>
+            <div class="chat-messages"></div>
+            <div class="chat-input">
+                <textarea 
+                    placeholder="Votre message..." 
+                    maxlength="500" 
+                    rows="2"></textarea>
+                <button title="Envoyer">
+                    <span class="material-icons">send</span>
+                </button>
             </div>
         </div>
     `;
@@ -283,55 +351,61 @@ getChatHTMLWithoutToggle() {
     }
 
     setupAuthListeners() {
-        const pseudoInput = this.container.querySelector('#pseudoInput');
-        const adminPasswordInput = this.container.querySelector('#adminPassword');
-        const confirmButton = this.container.querySelector('#confirmPseudo');
+    const pseudoInput = this.container.querySelector('#pseudoInput');
+    const adminPasswordInput = this.container.querySelector('#adminPassword');
+    const confirmButton = this.container.querySelector('#confirmPseudo');
 
-        if (pseudoInput) {
-            pseudoInput.addEventListener('input', () => {
-                if (pseudoInput.value.trim() === 'jhd71') {
-                    adminPasswordInput.style.display = 'block';
-                } else {
-                    adminPasswordInput.style.display = 'none';
-                    adminPasswordInput.value = '';
-                }
-            });
-        }
-
-        if (confirmButton) {
-            confirmButton.addEventListener('click', async () => {
-                const pseudo = pseudoInput?.value.trim();
-                const adminPassword = adminPasswordInput?.value;
-
-                if (!pseudo || pseudo.length < 3) {
-                    this.showNotification('Le pseudo doit faire au moins 3 caractères', 'error');
-                    this.playSound('error');
-                    return;
-                }
-
-                if (pseudo === 'jhd71' && adminPassword === 'admin2024') {
-                    this.isAdmin = true;
-                } else {
-                    this.isAdmin = false;
-                }
-
-                this.pseudo = pseudo;
-                localStorage.setItem('chatPseudo', pseudo);
-                localStorage.setItem('isAdmin', this.isAdmin);
-
-                this.container.innerHTML = this.getChatHTML();
-                const chatContainer = this.container.querySelector('.chat-container');
-                if (chatContainer) {
-                    chatContainer.classList.add('open');
-                    this.isOpen = true;
-                    localStorage.setItem('chatOpen', 'true');
-                }
-                this.setupListeners();
-                await this.loadExistingMessages();
-                this.playSound('success');
-            });
-        }
+    if (pseudoInput) {
+        pseudoInput.addEventListener('input', () => {
+            if (pseudoInput.value.trim() === 'jhd71') {
+                adminPasswordInput.style.display = 'block';
+            } else {
+                adminPasswordInput.style.display = 'none';
+                adminPasswordInput.value = '';
+            }
+        });
     }
+
+    if (confirmButton) {
+        confirmButton.addEventListener('click', async () => {
+            const pseudo = pseudoInput?.value.trim();
+            const adminPassword = adminPasswordInput?.value;
+
+            if (!pseudo || pseudo.length < 3) {
+                this.showNotification('Le pseudo doit faire au moins 3 caractères', 'error');
+                this.playSound('error');
+                return;
+            }
+
+            if (pseudo === 'jhd71' && adminPassword === 'admin2024') {
+                this.isAdmin = true;
+            } else {
+                this.isAdmin = false;
+            }
+
+            this.pseudo = pseudo;
+            localStorage.setItem('chatPseudo', pseudo);
+            localStorage.setItem('isAdmin', this.isAdmin);
+
+            // Utilise la bonne méthode en fonction de la présence du bouton de navigation
+            if (document.getElementById('chatToggleBtn')) {
+                this.container.innerHTML = this.getChatHTMLWithoutToggle();
+            } else {
+                this.container.innerHTML = this.getChatHTML();
+            }
+            
+            const chatContainer = this.container.querySelector('.chat-container');
+            if (chatContainer) {
+                chatContainer.classList.add('open');
+                this.isOpen = true;
+                localStorage.setItem('chatOpen', 'true');
+            }
+            this.setupListeners();
+            await this.loadExistingMessages();
+            this.playSound('success');
+        });
+    }
+}
 
     setupChatListeners() {
     const input = this.container.querySelector('.chat-input textarea'); // Correction ici
