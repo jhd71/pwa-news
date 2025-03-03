@@ -174,7 +174,7 @@ body {
   
   @keyframes ticker {
     0% { transform: translateX(100%); }
-    100% { transform: translateX(-250%); } /* Augmenter cette valeur pour voir plus d'infos */
+    100% { transform: translateX(-650%); } /* Augmenter cette valeur pour voir plus d'infos */
   }
 }
 
@@ -186,7 +186,7 @@ body {
   
   @keyframes ticker {
     0% { transform: translateX(100%); }
-    100% { transform: translateX(-250%); } /* Même valeur pour cohérence */
+    100% { transform: translateX(-650%); } /* Même valeur pour cohérence */
   }
 }
 
