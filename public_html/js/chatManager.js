@@ -202,7 +202,7 @@ class ChatManager {
 }
 
     setupListeners() {
-        const toggle = this.container.querySelector('.chat-toggle');
+        const toggle = document.getElementById('chatBtn'); // Utilise maintenant #chatBtn
         const closeBtn = this.container.querySelector('.close-chat');
         const chatContainer = this.container.querySelector('.chat-container');
         const soundBtn = this.container.querySelector('.sound-btn');
@@ -210,36 +210,45 @@ class ChatManager {
         const adminBtn = this.container.querySelector('.admin-panel-btn');
 
         if (toggle) {
-            toggle.addEventListener('click', () => {
-                const chatContainer = this.container.querySelector('.chat-container');
+    toggle.addEventListener('click', () => {
+        const chatContainer = document.querySelector('.chat-container'); // Corrigé
                 this.isOpen = !this.isOpen;
                 
-                if (this.isOpen) {
-                    chatContainer?.classList.add('open');
-                    this.unreadCount = 0;
-                    localStorage.setItem('unreadCount', '0');
-                    
-                    const badge = this.container.querySelector('.notification-badge');
-                    if (badge) {
-                        badge.textContent = '0';
-                        badge.classList.add('hidden');
-                    }
-                    
-                    const chatToggle = this.container.querySelector('.chat-toggle');
-                    const existingBubble = chatToggle?.querySelector('.info-bubble');
-                    if (existingBubble) {
-                        existingBubble.remove();
-                    }
-                    
-                    this.scrollToBottom();
-                } else {
-                    chatContainer?.classList.remove('open');
-                }
-                
-                localStorage.setItem('chatOpen', this.isOpen);
-                this.playSound('click');
-            });
+                if (toggle) {
+    toggle.addEventListener('click', () => {
+        const chatContainer = document.querySelector('.chat-container'); // Sélectionne correctement le chat
+        if (!chatContainer) {
+            console.error("⚠️ Erreur : Impossible de trouver '.chat-container'");
+            return;
         }
+
+        this.isOpen = !this.isOpen;
+        chatContainer.classList.toggle('open');
+        localStorage.setItem('chatOpen', this.isOpen);
+
+        if (this.isOpen) {
+            this.unreadCount = 0;
+            localStorage.setItem('unreadCount', '0');
+
+            const badge = document.querySelector('#chatBtn .notification-badge');
+            if (badge) {
+                badge.textContent = '0';
+                badge.classList.add('hidden');
+            }
+
+            const existingBubble = toggle.querySelector('.info-bubble');
+            if (existingBubble) {
+                existingBubble.remove();
+            }
+
+            this.scrollToBottom();
+        } else {
+            chatContainer.classList.remove('open');
+        }
+
+        this.playSound('click');
+    });
+}
 
         if (closeBtn) {
             closeBtn.addEventListener('click', () => {
