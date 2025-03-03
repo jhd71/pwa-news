@@ -361,19 +361,6 @@ body {
     background-color: var(--hover-color);
 }
 /* Pour le chat */
-.chat-button {
-    background: transparent;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    margin-left: 10px; /* Espacement avec la barre de recherche */
-    color: white; /* Ajuste selon le thème */
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
 .chat-widget {
     position: fixed;
     right: 20px;
@@ -1429,6 +1416,21 @@ main {
         right: 20px;
         bottom: 80px;
         z-index: 1001;
+    }
+}
+
+/* Ajustements pour les petits écrans */
+@media (max-width: 480px) {
+    .bottom-nav .nav-item span:not(.material-icons) {
+        font-size: 12px;
+    }
+    
+    .chat-notification-badge {
+        top: -3px;
+        right: -3px;
+        font-size: 10px;
+        min-width: 16px;
+        height: 16px;
     }
 }
 
