@@ -110,7 +110,7 @@ body {
 
 .ticker-wrapper {
   display: flex;
-  animation: ticker 90s linear infinite;
+  animation: ticker 70s linear infinite; /* Plus rapide que 90s mais pas trop */
   white-space: nowrap;
   will-change: transform;
   backface-visibility: hidden;
@@ -169,13 +169,13 @@ body {
 /* Animation de base pour desktop */
 @keyframes ticker {
   0% { transform: translateX(100%); }
-  100% { transform: translateX(-300%); }
+  100% { transform: translateX(-400%); }
 }
 
 /* Optimisations pour les appareils mobiles */
 @media (max-width: 768px) {
   .ticker-wrapper {
-    animation: ticker-tablet 25s linear infinite;
+    animation: ticker-tablet 35s linear infinite; /* Moins rapide pour voir plus d'infos */
   }
   
   .ticker-item {
@@ -184,14 +184,14 @@ body {
   
   @keyframes ticker-tablet {
     0% { transform: translateX(100%); }
-    100% { transform: translateX(-800%); }
+    100% { transform: translateX(-1000%); } /* Distance augmentée pour voir plus d'infos */
   }
 }
 
 /* Optimisations pour les très petits écrans */
 @media (max-width: 480px) {
   .ticker-wrapper {
-    animation: ticker-mobile 15s linear infinite;
+    animation: ticker-mobile 30s linear infinite; /* Plus lent qu'avant */
   }
   
   .ticker-item {
@@ -204,7 +204,7 @@ body {
   
   @keyframes ticker-mobile {
     0% { transform: translateX(100%); }
-    100% { transform: translateX(-800%); }
+    100% { transform: translateX(-1000%); } /* Distance augmentée */
   }
 }
 /* Adaptation aux thèmes clair/sombre */
