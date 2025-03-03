@@ -110,9 +110,16 @@
     </aside>
 
     <!-- Conteneur principal des tuiles -->
-    <main>
-        <div id="tileContainer" class="tile-container grid"></div>
-    </main>
+<main>
+    <div id="tileContainer" class="tile-container grid"></div>
+</main>
+
+<!-- Ticker d'actualités -->
+<div class="news-ticker">
+  <div class="ticker-wrapper" id="newsTicker">
+    <div class="ticker-item">Chargement des actualités...</div>
+  </div>
+</div>
 
     <!-- Navigation du bas -->
     <nav class="bottom-nav">
@@ -273,11 +280,6 @@ if (document.readyState === 'loading') {
     AppInitializer.init();
 }
 </script>
-<div class="news-ticker">
-  <div class="ticker-wrapper" id="newsTicker">
-    <div class="ticker-item">Chargement des actualités...</div>
-  </div>
-</div>
 <script src="/js/newsTickerManager.js"></script>
 </body>
 </html>
