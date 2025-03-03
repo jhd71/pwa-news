@@ -96,7 +96,7 @@ body {
 /* Style pour le ticker d'actualités - Meilleure visibilité */
 .news-ticker {
   position: fixed;
-  bottom: 60px; /* Au-dessus de votre barre de navigation */
+  bottom: 60px; 
   left: 0;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.85);
@@ -104,7 +104,7 @@ body {
   overflow: hidden;
   height: 40px;
   z-index: 1000;
-  transform: translateZ(0); /* Force l'accélération matérielle */
+  transform: translateZ(0);
   -webkit-transform: translateZ(0);
 }
 
@@ -112,13 +112,13 @@ body {
   display: flex;
   animation: ticker 90s linear infinite;
   white-space: nowrap;
-  will-change: transform; /* Optimise l'animation */
+  will-change: transform;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
 
 .ticker-item {
-  padding: 10px 40px; /* Plus d'espace entre les éléments */
+  padding: 10px 40px;
   font-weight: bold;
   position: relative;
 }
@@ -133,9 +133,9 @@ body {
 
 /* Meilleure visibilité des liens */
 .ticker-item a {
-  color: white; /* Texte blanc pour meilleure lisibilité */
+  color: white;
   text-decoration: none;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Ombre pour lisibilité */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 .ticker-item a:hover {
@@ -144,7 +144,7 @@ body {
 
 /* Style de base pour la source */
 .ticker-source {
-  color: #7FFF7F; /* Vert plus clair pour meilleure visibilité */
+  color: #7FFF7F;
   margin-right: 8px;
   font-weight: bold;
 }
@@ -166,58 +166,47 @@ body {
   content: "🎙️ ";
 }
 
+/* Animation de base pour desktop */
+@keyframes ticker {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-300%); }
+}
+
 /* Optimisations pour les appareils mobiles */
 @media (max-width: 768px) {
   .ticker-wrapper {
-    animation: ticker 25s linear infinite; /* Vitesse ajustée */
-  }
-  
-  @keyframes ticker {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-650%); } /* Augmenter cette valeur pour voir plus d'infos */
-  }
-}
-
-/* Optimisations pour les très petits écrans */
-@media (max-width: 480px) {
-  .ticker-wrapper {
-    animation: ticker 15s linear infinite; /* Vitesse rapide */
-  }
-  
-  @keyframes ticker {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-650%); } /* Même valeur pour cohérence */
-  }
-}
-
-/* Optimisations pour les très petits écrans */
-@media (max-width: 480px) {
-  .ticker-wrapper {
-    animation: ticker 15s linear infinite; /* Durée réduite à 15 secondes au lieu de 30 */
-  }
-}
-  
-  .ticker-item {
-    padding: 10px 25px; /* Espacement réduit */
-  }
-}
-
-/* Optimisations pour les très petits écrans */
-@media (max-width: 480px) {
-  .ticker-wrapper {
-    animation: ticker 30s linear infinite; /* Encore plus rapide */
+    animation: ticker-tablet 25s linear infinite;
   }
   
   .ticker-item {
-    padding: 10px 15px; /* Espacement encore plus réduit */
+    padding: 10px 25px;
   }
   
-  /* Simplifie certains éléments pour améliorer les performances */
+  @keyframes ticker-tablet {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-800%); }
+  }
+}
+
+/* Optimisations pour les très petits écrans */
+@media (max-width: 480px) {
+  .ticker-wrapper {
+    animation: ticker-mobile 15s linear infinite;
+  }
+  
+  .ticker-item {
+    padding: 10px 15px;
+  }
+  
   .ticker-item:not(:last-child)::after {
     right: 5px;
   }
+  
+  @keyframes ticker-mobile {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-800%); }
+  }
 }
-
 /* Adaptation aux thèmes clair/sombre */
 [data-theme="light"] .news-ticker {
   background-color: rgba(30, 30, 80, 0.9);
