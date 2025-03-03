@@ -110,7 +110,7 @@ body {
 
 .ticker-wrapper {
   display: flex;
-  animation: ticker 70s linear infinite; /* Plus rapide que 90s mais pas trop */
+  animation: ticker 80s linear infinite; /* Bonne vitesse pour PC */
   white-space: nowrap;
   will-change: transform;
   backface-visibility: hidden;
@@ -166,20 +166,20 @@ body {
   content: "🎙️ ";
 }
 
-/* Animation de base pour desktop */
+/* Animation de base pour desktop - montrer toutes les 10 infos */
 @keyframes ticker {
   0% { transform: translateX(100%); }
-  100% { transform: translateX(-400%); }
+  100% { transform: translateX(-300%); }
 }
 
 /* Optimisations pour les appareils mobiles */
 @media (max-width: 768px) {
   .ticker-wrapper {
-    animation: ticker-tablet 35s linear infinite; /* Moins rapide pour voir plus d'infos */
+    animation: ticker-mobile 60s linear infinite; /* Plus lent pour lire sur mobile */
   }
   
   .ticker-item {
-    padding: 10px 25px;
+    padding: 10px 20px; /* Espacement réduit pour voir plus d'éléments */
   }
   
   @keyframes ticker-tablet {
@@ -204,7 +204,12 @@ body {
   
   @keyframes ticker-mobile {
     0% { transform: translateX(100%); }
-    100% { transform: translateX(-1000%); } /* Distance augmentée */
+    100% { transform: translateX(-500%); } /* Ajusté pour 10 éléments */
+  }
+  
+  /* Option pour réduire légèrement la taille du texte sur mobile */
+  .ticker-item a, .ticker-source {
+    font-size: 0.95em;
   }
 }
 /* Adaptation aux thèmes clair/sombre */
