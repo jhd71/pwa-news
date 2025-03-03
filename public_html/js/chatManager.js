@@ -128,7 +128,7 @@ class ChatManager {
     }
 	getPseudoHTML() {
         return `
-            <button class="chat-toggle" title="Ouvrir le chat">
+        <div class="chat-container">           
                 <i class="material-icons">chat</i>
                 <span class="notification-badge hidden">${this.unreadCount}</span>
             </button>
@@ -891,25 +891,29 @@ async unsubscribeFromPushNotifications() {
     }
 
     updateUnreadBadgeAndBubble() {
-        const badge = this.container.querySelector('.notification-badge');
-        if (badge) {
-            badge.textContent = this.unreadCount || '';
-            badge.classList.toggle('hidden', this.unreadCount === 0);
-        }
-
-        const chatToggle = this.container.querySelector('.chat-toggle');
-        const existingBubble = chatToggle.querySelector('.info-bubble');
-        if (existingBubble) {
-            existingBubble.remove();
-        }
-
-        if (!this.isOpen && this.unreadCount > 0) {
-            const bubble = document.createElement('div');
-            bubble.className = 'info-bubble show';
-            bubble.innerHTML = `<div style="font-weight: bold;">${this.unreadCount} nouveau(x) message(s)</div>`;
-            chatToggle.appendChild(bubble);
-        }
+    // Sélectionne le badge de notification dans le nouveau bouton de chat
+    const badge = document.querySelector('#chatBtn .notification-badge');
+    
+    if (badge) {
+        badge.textContent = this.unreadCount || '';
+        badge.classList.toggle('hidden', this.unreadCount === 0);
     }
+
+    // Supprime la bulle d'info flottante (ancienne notification)
+    const chatBtn = document.getElementById('chatBtn');
+    const existingBubble = chatBtn?.querySelector('.info-bubble');
+    if (existingBubble) {
+        existingBubble.remove();
+    }
+
+    // Affiche une bulle d'info si des messages sont non lus
+    if (!this.isOpen && this.unreadCount > 0) {
+        const bubble = document.createElement('div');
+        bubble.className = 'info-bubble show';
+        bubble.innerHTML = `<div style="font-weight: bold;">${this.unreadCount} nouveau(x) message(s)</div>`;
+        chatBtn?.appendChild(bubble);
+    }
+}
 
     escapeHtml(unsafe) {
         return unsafe
