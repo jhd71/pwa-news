@@ -368,8 +368,9 @@ body {
 /* Repositionner le badge de notification plus près de l'icône chat */
 .chat-notification-badge {
     position: absolute;
-    top: -5px;           /* Position plus haute */
-    right: -5px;         /* Position plus à droite */
+    top: -5px;
+    left: 15px;         /* Position par rapport au bord gauche */
+    right: auto;        /* Désactiver le positionnement par rapport à la droite */
     background-color: #ff4757;
     color: white;
     font-size: 12px;
