@@ -166,21 +166,27 @@ body {
   content: "🎙️ ";
 }
 
-/* Animation adaptée selon le type d'appareil */
-@keyframes ticker {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-300%); }
-}
-
 /* Optimisations pour les appareils mobiles */
 @media (max-width: 768px) {
   .ticker-wrapper {
-    animation: ticker 25s linear infinite; /* Durée réduite à 25 secondes au lieu de 45 */
+    animation: ticker 25s linear infinite; /* Vitesse ajustée */
   }
   
   @keyframes ticker {
     0% { transform: translateX(100%); }
-    100% { transform: translateX(-200%); }
+    100% { transform: translateX(-250%); } /* Augmenter cette valeur pour voir plus d'infos */
+  }
+}
+
+/* Optimisations pour les très petits écrans */
+@media (max-width: 480px) {
+  .ticker-wrapper {
+    animation: ticker 15s linear infinite; /* Vitesse rapide */
+  }
+  
+  @keyframes ticker {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-250%); } /* Même valeur pour cohérence */
   }
 }
 
