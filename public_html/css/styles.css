@@ -95,188 +95,85 @@ body {
 }
 /* Style pour le ticker d'actualités - Meilleure visibilité */
 .news-ticker {
-    position: fixed;
-    bottom: 60px; /* Au-dessus de votre barre de navigation */
-    left: 0;
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.85); /* Fond plus foncé pour meilleur contraste */
-    color: white;
-    overflow: hidden;
-    height: 40px;
-    z-index: 1000;
+  position: fixed;
+  bottom: 60px; /* Au-dessus de votre barre de navigation */
+  left: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.85); /* Fond plus foncé pour meilleur contraste */
+  color: white;
+  overflow: hidden;
+  height: 40px;
+  z-index: 1000;
 }
 
 .ticker-wrapper {
-    display: flex;
-    animation: ticker 60s linear infinite; /* Animation plus lente - 60 secondes */
-    white-space: nowrap;
+  display: flex;
+  animation: ticker 90s linear infinite; /* Animation plus lente - 90 secondes */
+  white-space: nowrap;
 }
 
 .ticker-item {
-    padding: 10px 40px; /* Plus d'espace entre les éléments */
-    font-weight: bold;
-    position: relative;
-    transition: transform 0.3s ease; /* Transition pour un effet plus doux */
+  padding: 10px 40px; /* Plus d'espace entre les éléments */
+  font-weight: bold;
+  position: relative;
 }
- /* Réduire l’espace entre les éléments du ticker sur mobile */
-@media (max-width: 600px) {
-    .ticker-item {
-        padding: 10px 20px; /* ✅ Moins d’espace sur mobile */
-    }
-}
+
 /* Séparateur entre les articles */
 .ticker-item:not(:last-child)::after {
-    content: "•";
-    position: absolute;
-    right: 15px;
-    color: #4CAF50;
+  content: "•";
+  position: absolute;
+  right: 15px;
+  color: #4CAF50;
 }
 
 /* Meilleure visibilité des liens */
 .ticker-item a {
-    color: white; /* Texte blanc pour meilleure lisibilité */
-    text-decoration: none;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Ombre pour lisibilité */
+  color: white; /* Texte blanc pour meilleure lisibilité */
+  text-decoration: none;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Ombre pour lisibilité */
 }
 
 .ticker-item a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 /* Style de base pour la source */
 .ticker-source {
-    color: #7FFF7F; /* Vert plus clair pour meilleure visibilité */
-    margin-right: 8px;
-    font-weight: bold;
+  color: #7FFF7F; /* Vert plus clair pour meilleure visibilité */
+  margin-right: 8px;
+  font-weight: bold;
 }
 
 /* Icônes pour chaque source */
 .ticker-source[data-source="BFM TV"]::before {
-    content: "📺 ";
+  content: "📺 ";
 }
 .ticker-source[data-source="Le JSL"]::before {
-    content: "📰 ";
+  content: "📰 ";
 }
 .ticker-source[data-source="Montceau News"]::before {
-    content: "🏙️ ";
+  content: "🏙️ ";
 }
 .ticker-source[data-source="L'Informateur"]::before {
-    content: "📝 ";
+  content: "📝 ";
 }
 .ticker-source[data-source="France Bleu"]::before {
-    content: "🎙️ ";
-}
-.ticker-wrapper::before,
-.ticker-wrapper::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 50px; /* ✅ Largeur dégradé */
-  pointer-events: none; /* ✅ Pour que le défilement ne soit pas interrompu */
+  content: "🎙️ ";
 }
 
-/* Effet de dégradé à gauche */
-.ticker-wrapper::before {
-  left: 0;
-  background: linear-gradient(to left, rgba(0,0,0,0), rgba(0,0,0,0.8)); /* ✅ Couleur adaptative */
-}
-
-/* Effet de dégradé à droite */
-.ticker-wrapper::after {
-  right: 0;
-  background: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.8)); /* ✅ Couleur adaptative */
-}
-/* Amélioration du style de base du titre */
-body .site-title {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-
-	position: absolute;
-	top: 10px; /* 	Redescendre légèrement */
-	left: 0; /* Remplir toute la largeur */
-	right: 0;
-	margin: auto;
-	transform: none; /* Annule la translation */
-	height: 50px; /* Fixer une taille */
-	text-align: center; /* Centrage horizontal du texte */
-}
-
-/* Media query pour mobile */
-@media (max-width: 600px) {
-    body .site-title {
-        font-size: 1.5rem; /* Réduit la taille */
-        height: 40px;
-        white-space: normal; /* Autorise le retour à la ligne si nécessaire */
-        padding: 5px; /* Ajout de padding */
-        text-overflow: ellipsis; /* Coupe le texte qui dépasse */
-    }
-}
 /* Animation plus lente et défilement complet */
 @keyframes ticker {
-    0% { transform: translate3d(100vw, 0, 0); } 
-    100% { transform: translate3d(-100vw, 0, 0); } /* Utilisation de vw pour une meilleure adaptation */
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-300%); } /* Valeur beaucoup plus grande pour un défilement complet */
 }
-
-/* Ajustement de la durée sur mobile */
-@media (max-width: 600px) {
-    .ticker-wrapper {
-        animation: ticker 30s linear infinite; /* ✅ Accélère le défilement sur mobile */
-    }
-}
-
-/* Ajustement de la durée sur grand écran */
-@media (min-width: 601px) {
-    .ticker-wrapper {
-        animation: ticker 60s linear infinite; /* ✅ Garde un défilement fluide sur PC */
-    }
-}
-
 
 /* Adaptation aux thèmes clair/sombre */
 [data-theme="light"] .news-ticker {
-    background-color: rgba(30, 30, 80, 0.9);
+  background-color: rgba(30, 30, 80, 0.9);
 }
 
 [data-theme="dark"] .news-ticker {
-    background-color: rgba(0, 0, 0, 0.85);
-}
-/* ✅ On ajoute le style dans les thèmes */
-[data-theme="light"] body {
-    background: linear-gradient(to bottom, #FFFFFF, #D4E0E5);
-    color: #333;
-}
-
-[data-theme="dark"] body {
-    background: linear-gradient(to bottom, #303030, #000000);
-    color: #eee;
-}
-/* Améliore le texte */
-p {
-    letter-spacing: 0.08em;
-    line-height: 1.6em;
-}
-
-a {
-    color: inherit;
-    text-decoration: none;
-}
-
-a:hover {
-    color: rgba(255,255,255,0.55);
-}
-h1, h2, h3 {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-weight: normal;
-}
-
-h1 {
-    letter-spacing: 0.18em;
-}
-/* ✅ Amélioration de l'effet de la transparence */
-[data-theme="light"] #siteHeader h1:hover {
-  background-color: rgba(196, 175, 220, 0.17);
+  background-color: rgba(0, 0, 0, 0.85);
 }
 
 /* Header et navigation */
