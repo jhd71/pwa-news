@@ -93,7 +93,7 @@ body {
 .material-icons {
     font-size: 24px;
 }
-* Style pour le ticker d'actualités - Meilleure visibilité */
+/* Style pour le ticker d'actualités - Meilleure visibilité */
 .news-ticker {
   position: fixed;
   bottom: 60px; /* Au-dessus de votre barre de navigation */
