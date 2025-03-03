@@ -361,17 +361,11 @@ body {
     background-color: var(--hover-color);
 }
 /* Pour le chat */
-.chat-button {
-    background: transparent;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    margin-left: 10px; /* Espacement avec la barre de recherche */
-    color: white; /* Ajuste selon le thème */
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
+.chat-widget {
+    position: fixed;
+    right: 20px;
+    bottom: 80px;
+    z-index: 1002;
 }
 
 /* Style du bouton chat */
