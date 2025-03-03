@@ -369,8 +369,8 @@ body {
 .chat-notification-badge {
     position: absolute;
     top: -5px;
-    left: 15px;         /* Position par rapport au bord gauche */
-    right: auto;        /* Désactiver le positionnement par rapport à la droite */
+    left: 65%;          /* Placer le badge à 65% de la largeur de l'icône */
+    transform: translateX(-50%); /* Ajustement du centrage */
     background-color: #ff4757;
     color: white;
     font-size: 12px;
@@ -383,7 +383,7 @@ body {
     align-items: center;
     justify-content: center;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    z-index: 1001;       /* S'assurer qu'il apparaît au-dessus */
+    z-index: 1001;
 }
 
 .chat-notification-badge.hidden {
