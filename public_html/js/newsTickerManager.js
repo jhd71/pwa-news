@@ -46,10 +46,10 @@ async function loadNewsTickerItems() {
         }
         
         item.innerHTML = `
-          <span class="ticker-source">[${article.source}]</span>
-          <a href="${article.link}" target="_blank">${cleanTitle}</a>
-          ${dateStr ? `<span class="ticker-time">${dateStr}</span>` : ''}
-        `;
+  <span class="ticker-source" data-source="${article.source}">[${article.source}]</span>
+  <a href="${article.link}" target="_blank">${cleanTitle}</a>
+  ${dateStr ? `<span class="ticker-time">${dateStr}</span>` : ''}
+`;
         
         tickerElement.appendChild(item);
       });
