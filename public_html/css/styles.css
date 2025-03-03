@@ -175,13 +175,21 @@ body {
 /* Optimisations pour les appareils mobiles */
 @media (max-width: 768px) {
   .ticker-wrapper {
-    animation: ticker 45s linear infinite; /* Deux fois plus rapide sur mobile */
+    animation: ticker 25s linear infinite; /* Durée réduite à 25 secondes au lieu de 45 */
   }
   
   @keyframes ticker {
     0% { transform: translateX(100%); }
-    100% { transform: translateX(-200%); } /* Distance réduite */
+    100% { transform: translateX(-200%); }
   }
+}
+
+/* Optimisations pour les très petits écrans */
+@media (max-width: 480px) {
+  .ticker-wrapper {
+    animation: ticker 15s linear infinite; /* Durée réduite à 15 secondes au lieu de 30 */
+  }
+}
   
   .ticker-item {
     padding: 10px 25px; /* Espacement réduit */
