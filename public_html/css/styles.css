@@ -160,9 +160,6 @@ body {
 .ticker-source[data-source="France Bleu"]::before {
   content: "🎙️ ";
 }
-.ticker-source[data-source="Creusot Infos"]::before {
-  content: "🌍 "; /* Icône pour Creusot Infos */
-}
 
 /* Animation plus lente et défilement complet */
 @keyframes ticker {
