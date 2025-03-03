@@ -225,8 +225,7 @@ class ChatManager {
                         badge.classList.add('hidden');
                     }
                     
-                    const chatToggle = this.container.querySelector('.chat-toggle');
-                    const existingBubble = chatToggle?.querySelector('.info-bubble');
+                    const existingBubble = toggle.querySelector('.info-bubble');
                     if (existingBubble) {
                         existingBubble.remove();
                     }
