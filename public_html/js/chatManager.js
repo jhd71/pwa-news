@@ -205,6 +205,7 @@ class ChatManager {
 		const chatToggleBtn = document.getElementById('chatToggleBtn');
         const closeBtn = this.container.querySelector('.close-chat');
         const chatContainer = this.container.querySelector('.chat-container');
+        const toggle = this.container.querySelector('.chat-toggle');
         const soundBtn = this.container.querySelector('.sound-btn');
         const notificationsBtn = this.container.querySelector('.notifications-btn');
         const adminBtn = this.container.querySelector('.admin-panel-btn');
@@ -1113,6 +1114,7 @@ showAdminPanel() {
             </div>
         `;
 
+        document.body.insertAdjacentHTML('beforeend', dialogHTML);
         
         const dialog = document.querySelector('.ban-dialog');
         dialog.querySelector('.confirm-ban').addEventListener('click', async () => {
