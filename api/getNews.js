@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
       { name: 'L\'Informateur', url: 'http://www.linformateurdebourgogne.com/feed/', max: 2 },
       { name: 'Le JSL', url: 'https://www.lejsl.com/rss', max: 2 },
       { name: 'BFM TV', url: 'https://www.bfmtv.com/rss/news-24-7/', max: 2 },
-      { name: 'France Bleu', url: 'https://www.francebleu.fr/rss/bourgogne/a-la-une.xml', max: 2 }
+      { name: 'France Bleu', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/infos.xml', max: 2 }
     ];
     
     // Récupérer les articles de chaque flux
