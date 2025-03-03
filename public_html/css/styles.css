@@ -203,7 +203,7 @@ body {
 
 .ticker-wrapper {
     display: flex;
-    animation: ticker 60s linear infinite; /* Animation plus lente - 60 secondes */
+    animation: ticker 120s linear infinite; /* Animation plus lente - 60 secondes */
     white-space: nowrap;
 }
 
