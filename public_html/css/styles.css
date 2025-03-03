@@ -360,25 +360,43 @@ body {
 .close-btn:hover {
     background-color: var(--hover-color);
 }
-/* Pour le chat */
-.chat-widget {
-    position: fixed;
-    right: 20px;
-    bottom: 80px;
-    z-index: 1002;
+/* Style pour le bouton de chat dans la barre de navigation */
+.chat-toggle-btn {
+    position: relative;
 }
 
-/* Style du bouton chat */
-.chat-toggle {
-    background: transparent;
-    border: none;
-    color: white; /* Ajuste selon ton thème */
-    font-size: 14px;
+.chat-notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #ff4757;
+    color: white;
+    font-size: 12px;
+    padding: 3px 6px;
+    border-radius: 50%;
+    min-width: 18px;
+    height: 18px;
+    text-align: center;
+    line-height: 12px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
+}
+
+.chat-notification-badge.hidden {
+    display: none;
+}
+
+/* Animation de pulsation pour attirer l'attention */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.chat-notification-badge:not(.hidden) {
+    animation: pulse 2s infinite;
 }
 
 /* Thèmes du bouton chat */
@@ -1413,21 +1431,6 @@ main {
         right: 20px;
         bottom: 80px;
         z-index: 1001;
-    }
-}
-
-/* Ajustements pour les petits écrans */
-@media (max-width: 480px) {
-    .bottom-nav .nav-item span:not(.material-icons) {
-        font-size: 12px;
-    }
-    
-    .chat-notification-badge {
-        top: -3px;
-        right: -3px;
-        font-size: 10px;
-        min-width: 16px;
-        height: 16px;
     }
 }
 
