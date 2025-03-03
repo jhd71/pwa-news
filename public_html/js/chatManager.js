@@ -202,7 +202,7 @@ class ChatManager {
 }
 
     setupListeners() {
-        const toggle = document.getElementById('chatBtn'); // Sélectionne le bon bouton
+        const toggle = this.container.querySelector('.chat-toggle');
         const closeBtn = this.container.querySelector('.close-chat');
         const chatContainer = this.container.querySelector('.chat-container');
         const soundBtn = this.container.querySelector('.sound-btn');
@@ -211,7 +211,7 @@ class ChatManager {
 
         if (toggle) {
             toggle.addEventListener('click', () => {
-                const chatContainer = document.querySelector('.chat-container'); // Corrigé
+                const chatContainer = this.container.querySelector('.chat-container');
                 this.isOpen = !this.isOpen;
                 
                 if (this.isOpen) {
@@ -225,7 +225,8 @@ class ChatManager {
                         badge.classList.add('hidden');
                     }
                     
-                    const existingBubble = toggle.querySelector('.info-bubble');
+                    const chatToggle = this.container.querySelector('.chat-toggle');
+                    const existingBubble = chatToggle?.querySelector('.info-bubble');
                     if (existingBubble) {
                         existingBubble.remove();
                     }
