@@ -175,29 +175,31 @@ body {
 /* Optimisations pour les appareils mobiles */
 @media (max-width: 768px) {
   .ticker-wrapper {
-    animation: ticker-tablet 60s linear infinite;
+    animation: ticker-tablet 70s linear infinite; /* Augmenté de 60s à 70s */
   }
   
   @keyframes ticker-tablet {
     0% { transform: translateX(100%); }
-    100% { transform: translateX(-1500%); } /* Distance considérablement augmentée */
+    100% { transform: translateX(-1500%); }
   }
+}
   
   .ticker-item {
     padding: 10px 20px; /* Espacement réduit */
   }
 }
 
-/* Optimisations pour les très petits écrans */ 
+/* Optimisations pour les très petits écrans */
 @media (max-width: 480px) {
   .ticker-wrapper {
-    animation: ticker-mobile 50s linear infinite;
+    animation: ticker-mobile 65s linear infinite; /* Augmenté de 50s à 65s */
   }
   
   @keyframes ticker-mobile {
     0% { transform: translateX(100%); }
-    100% { transform: translateX(-2000%); } /* Distance encore plus grande */
+    100% { transform: translateX(-2000%); }
   }
+}
   
   .ticker-item {
     padding: 10px 15px;
