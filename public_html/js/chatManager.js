@@ -202,7 +202,7 @@ class ChatManager {
 }
 
     setupListeners() {
-        const toggle = this.container.querySelector('.chat-toggle');
+        const toggle = document.getElementById('chatBtn'); // Sélectionne le bon bouton
         const closeBtn = this.container.querySelector('.close-chat');
         const chatContainer = this.container.querySelector('.chat-container');
         const soundBtn = this.container.querySelector('.sound-btn');
