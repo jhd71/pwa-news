@@ -105,6 +105,10 @@ body {
   height: 40px;
   z-index: 1000;
 }
+/* Ajout d'une marge sous le séparateur pour éviter le chevauchement */
+.sites-personnalises-separator {
+    margin-bottom: 50px; /* Ajuste cette valeur si nécessaire */
+}
 
 .ticker-wrapper {
   display: flex;
