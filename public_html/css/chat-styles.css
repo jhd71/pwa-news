@@ -465,6 +465,7 @@
     align-items: center;
 }
 
+/* Augmenter la taille du texte dans la zone de saisie */
 .chat-input textarea {
     flex: 1;
     background: rgba(255, 255, 255, 0.15);
@@ -474,16 +475,20 @@
     color: white;
     outline: none;
     min-height: 45px;
-    max-height: 120px; /* Empêche un champ trop grand */
-    overflow-y: auto; /* Active le défilement si le texte devient trop long */
-    resize: none; /* Empêche l'utilisateur de redimensionner */
-    line-height: 1.4; /* Espacement des lignes */
-    white-space: pre-wrap; /* Préserve les retours à la ligne */
-    word-wrap: break-word; /* Permet le retour à la ligne automatique */
+    max-height: 120px;
+    overflow-y: auto;
+    resize: none;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 16px;       /* Augmenter la taille de la police */
+    font-weight: 400;      /* Police un peu plus grasse pour meilleure lisibilité */
 }
 
+/* S'assurer que le placeholder a aussi une bonne taille */
 .chat-input textarea::placeholder {
     color: rgba(255, 255, 255, 0.5);
+    font-size: 16px;       /* Taille cohérente pour le placeholder */
 }
 
 .chat-input input:focus {
