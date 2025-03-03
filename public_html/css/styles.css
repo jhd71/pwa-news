@@ -365,23 +365,24 @@ body {
     position: relative;
 }
 
+/* Repositionner le badge de notification plus près de l'icône chat */
 .chat-notification-badge {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: -5px;           /* Position plus haute */
+    right: -5px;         /* Position plus à droite */
     background-color: #ff4757;
     color: white;
     font-size: 12px;
-    padding: 3px 6px;
+    padding: 3px;
     border-radius: 50%;
     min-width: 18px;
     height: 18px;
     text-align: center;
-    line-height: 12px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 1001;       /* S'assurer qu'il apparaît au-dessus */
 }
 
 .chat-notification-badge.hidden {
