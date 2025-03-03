@@ -100,4 +100,13 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Rafraîchir les actualités toutes les 5 minutes
   setInterval(loadNewsTickerItems, 5 * 60 * 1000);
+  
+  // Ajustement de l'espace sous <main> pour éviter le chevauchement du ticker
+  let newsTicker = document.querySelector(".news-ticker");
+  let mainContent = document.querySelector("main");
+
+  if (newsTicker && mainContent) {
+      let tickerHeight = newsTicker.offsetHeight;
+      mainContent.style.paddingBottom = `${tickerHeight + 20}px`;
+  }
 });
