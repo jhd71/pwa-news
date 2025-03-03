@@ -105,10 +105,6 @@ body {
   height: 40px;
   z-index: 1000;
 }
-/* Ajoute un espace sous le contenu principal pour éviter que la barre d'infos ne chevauche le reste */
-main {
-    padding-bottom: 60px; /* Ajuste cette valeur si nécessaire */
-}
 
 .ticker-wrapper {
   display: flex;
@@ -1420,6 +1416,23 @@ main {
         right: 20px;
         bottom: 80px;
         z-index: 1001;
+    }
+}
+
+@media (max-width: 600px) {
+    /* Ajoute un espace sous tout le contenu pour éviter que la barre d'infos ne masque quoi que ce soit */
+    body {
+        padding-bottom: 120px !important; /* Ajuste cette valeur si nécessaire */
+    }
+
+    /* Augmente aussi l'espace sous le séparateur */
+    .sites-personnalises-separator {
+        margin-bottom: 100px !important;
+    }
+
+    /* Assure que la barre d'infos ne gêne pas */
+    .news-ticker {
+        z-index: 9999 !important; /* S'assure qu'elle est au-dessus du bon contenu */
     }
 }
 
