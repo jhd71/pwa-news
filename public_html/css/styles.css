@@ -1433,7 +1433,20 @@ main {
         z-index: 1001;
     }
 }
-
+/* Ajustements pour les petits écrans */
+@media (max-width: 480px) {
+    .bottom-nav .nav-item span:not(.material-icons) {
+        font-size: 12px;
+    }
+    
+    .chat-notification-badge {
+        top: -3px;
+        right: -3px;
+        font-size: 10px;
+        min-width: 16px;
+        height: 16px;
+    }
+}
 /* Très petits écrans */
 @media (max-width: 360px) {
     .site-title {
