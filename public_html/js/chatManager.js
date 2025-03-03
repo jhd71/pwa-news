@@ -128,7 +128,7 @@ class ChatManager {
     }
 	getPseudoHTML() {
         return `
-        <div class="chat-container">           
+            <button class="chat-toggle" title="Ouvrir le chat">
                 <i class="material-icons">chat</i>
                 <span class="notification-badge hidden">${this.unreadCount}</span>
             </button>
@@ -163,7 +163,11 @@ class ChatManager {
 
     getChatHTML() {
     return `
-        <div class="chat-container closed">
+        <button class="chat-toggle" title="Ouvrir le chat">
+            <span class="material-icons">chat</span>
+            <span class="notification-badge hidden">${this.unreadCount}</span>
+        </button>
+        <div class="chat-container">
             <div class="chat-header">
                 <div class="header-title">Chat - ${this.pseudo}</div>
                 <div class="header-buttons">
@@ -198,7 +202,7 @@ class ChatManager {
 }
 
     setupListeners() {
-        const toggle = document.getElementById('chatBtn'); // Sélectionne le bon bouton
+        const toggle = this.container.querySelector('.chat-toggle');
         const closeBtn = this.container.querySelector('.close-chat');
         const chatContainer = this.container.querySelector('.chat-container');
         const soundBtn = this.container.querySelector('.sound-btn');
@@ -887,29 +891,25 @@ async unsubscribeFromPushNotifications() {
     }
 
     updateUnreadBadgeAndBubble() {
-    // Sélectionne le badge de notification dans le nouveau bouton de chat
-    const badge = document.querySelector('#chatBtn .notification-badge');
-    
-    if (badge) {
-        badge.textContent = this.unreadCount || '';
-        badge.classList.toggle('hidden', this.unreadCount === 0);
-    }
+        const badge = this.container.querySelector('.notification-badge');
+        if (badge) {
+            badge.textContent = this.unreadCount || '';
+            badge.classList.toggle('hidden', this.unreadCount === 0);
+        }
 
-    // Supprime la bulle d'info flottante (ancienne notification)
-    const chatBtn = document.getElementById('chatBtn');
-    const existingBubble = chatBtn?.querySelector('.info-bubble');
-    if (existingBubble) {
-        existingBubble.remove();
-    }
+        const chatToggle = this.container.querySelector('.chat-toggle');
+        const existingBubble = chatToggle.querySelector('.info-bubble');
+        if (existingBubble) {
+            existingBubble.remove();
+        }
 
-    // Affiche une bulle d'info si des messages sont non lus
-    if (!this.isOpen && this.unreadCount > 0) {
-        const bubble = document.createElement('div');
-        bubble.className = 'info-bubble show';
-        bubble.innerHTML = `<div style="font-weight: bold;">${this.unreadCount} nouveau(x) message(s)</div>`;
-        chatBtn?.appendChild(bubble);
+        if (!this.isOpen && this.unreadCount > 0) {
+            const bubble = document.createElement('div');
+            bubble.className = 'info-bubble show';
+            bubble.innerHTML = `<div style="font-weight: bold;">${this.unreadCount} nouveau(x) message(s)</div>`;
+            chatToggle.appendChild(bubble);
+        }
     }
-}
 
     escapeHtml(unsafe) {
         return unsafe
