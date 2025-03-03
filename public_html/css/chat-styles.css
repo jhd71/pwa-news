@@ -101,6 +101,19 @@
     z-index: 997;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
+@media (max-width: 600px) {
+    .chat-widget {
+        bottom: 120px !important; /* Était 80px, on le remonte pour éviter le chevauchement */
+        right: 20px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .chat-widget {
+        bottom: 50px !important; /* Ajuste cette valeur si nécessaire */
+        right: 30px;  /* Assure une bonne position */
+    }
+}
 
 /* Bouton de toggle du chat */
 .chat-toggle {
