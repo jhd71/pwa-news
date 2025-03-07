@@ -18,18 +18,22 @@ async function fetchNationalNews() {
                 const slide = document.createElement('div');
                 slide.className = 'swiper-slide';
 
+                let imageUrl = article.image ? article.image : "images/default-news.jpg"; // Image par défaut si pas d'image
+
                 slide.innerHTML = `
-                    <a href="${article.link}" target="_blank" style="color:white; text-decoration:none; padding:10px; display:flex; align-items:center; justify-content:center; text-align:center; flex-direction:column; height:100%;">
-                        ${article.image ? `<img src="${article.image}" alt="${article.title}" style="max-width:100%; height:auto; border-radius:10px; margin-bottom:10px;">` : ''}
-                        <div style="font-weight:bold; font-size:14px; margin-bottom:8px;">${article.title}</div>
-                        <div style="font-size:12px; opacity:0.8; color:#ff9800;">${article.source || 'Source inconnue'}</div>
+                    <a href="${article.link}" target="_blank">
+                        <img src="${imageUrl}" alt="${article.title}" class="news-image">
+                        <div class="news-text">
+                            <h3>${article.title}</h3>
+                            <p class="news-source">(${article.source || 'Source inconnue'})</p>
+                        </div>
                     </a>
                 `;
                 swiperWrapper.appendChild(slide);
             }
         });
 
-        // Réinitialisation Swiper
+        // Réinitialisation Swiper après ajout dynamique
         new Swiper('.swiper', {
             loop: false,
             autoplay: {
