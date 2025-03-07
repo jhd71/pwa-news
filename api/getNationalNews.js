@@ -12,10 +12,8 @@ const parser = new Parser({
 module.exports = async (req, res) => {
   try {
     const feeds = [
-      { name: 'Morandini', url: 'https://www.jeanmarcmorandini.com/rss.php', max: 3 },
-      { name: 'Pure People', url: 'https://www.purepeople.com/rss/news_t0.xml', max: 3 },
-      { name: 'Terra Femina', url: 'https://www.terrafemina.com/rss.xml', max: 3 },
-      { name: 'BFMTV', url: 'https://www.bfmtv.com/rss/actualites/', max: 3 },
+      { name: 'Morandini', url: 'http://www.jeanmarcmorandini.com/rss.php', max: 3 },
+      { name: 'BFMTV', url: 'https://www.bfmtv.com/rss/news-24-7/', max: 3 },
       { name: 'France Info', url: 'https://www.francetvinfo.fr/titres.rss', max: 3 }
     ];
 
@@ -27,13 +25,18 @@ module.exports = async (req, res) => {
         const feedData = await parser.parseURL(feed.url);
         console.log(`Succès : ${feed.name} - ${feedData.items.length} articles trouvés`);
 
-        const articles = feedData.items.slice(0, feed.max).map(item => ({
-          title: item.title,
-          link: item.link,
-          date: item.pubDate || item.isoDate,
-          image: item.enclosure?.url || item['media:content']?.url || null,
-          source: feed.name
-        }));
+        const articles = feedData.items.slice(0, feed.max).map(item => {
+          // Affichage des données brutes pour vérification
+          console.log("Article trouvé :", item);
+
+          return {
+            title: item.title,
+            link: item.link,
+            date: item.pubDate || item.isoDate,
+            image: item.enclosure?.url || item['media:content']?.url || item.image || item.thumbnail || null,
+            source: feed.name
+          };
+        });
 
         allArticles.push(...articles);
       } catch (feedError) {
