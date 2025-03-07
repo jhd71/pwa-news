@@ -425,7 +425,7 @@ async function loadTopNews() {
     swiperWrapper.innerHTML = '';
     
     if (articles.length === 0) {
-      swiperWrapper.innerHTML = '<div class="swiper-slide"><p>Aucune actualité disponible pour le moment.</p></div>';
+      swiperWrapper.innerHTML = '<div class="swiper-slide"><div class="slide-content"><p>Aucune actualité disponible pour le moment.</p></div></div>';
       return;
     }
     
@@ -438,9 +438,7 @@ async function loadTopNews() {
         slide.className = 'swiper-slide';
         
         // Créer le contenu de la slide avec l'image si disponible
-        let slideContent = `
-          <a href="${article.link}" target="_blank">
-        `;
+        let slideContent = `<a href="${article.link}" target="_blank">`;
         
         // Ajouter l'image si disponible
         if (article.image && article.image !== "images/default-news.jpg") {
@@ -467,7 +465,7 @@ async function loadTopNews() {
     }
     
     window.swiper = new Swiper('.swiper', {
-      loop: limitedArticles.length > 1, // Activer le loop seulement s'il y a plus d'un slide
+      loop: limitedArticles.length > 1, 
       autoplay: { 
         delay: 5000,
         disableOnInteraction: false
@@ -481,7 +479,7 @@ async function loadTopNews() {
         prevEl: '.swiper-button-prev'
       },
       slidesPerView: 1,
-      spaceBetween: 20,
+      spaceBetween: 0, // Changé de 20 à 0 pour éviter les espaces vides
       on: {
         init: function() {
           console.log('Swiper initialisé avec succès');
@@ -491,7 +489,7 @@ async function loadTopNews() {
     
   } catch (error) {
     console.error('Erreur chargement actualités:', error);
-    swiperWrapper.innerHTML = '<div class="swiper-slide"><p>Erreur lors du chargement des actualités.</p></div>';
+    swiperWrapper.innerHTML = '<div class="swiper-slide"><div class="slide-content"><p>Erreur lors du chargement des actualités.</p></div></div>';
   }
 }
 
