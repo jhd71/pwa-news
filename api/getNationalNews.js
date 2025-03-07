@@ -4,7 +4,6 @@ const parser = new Parser();
 module.exports = async (req, res) => {
   try {
     const feeds = [
-      { name: 'Morandini', url: 'http://www.jeanmarcmorandini.com/rss.php', max: 3 },
       { name: 'BFMTV', url: 'https://www.bfmtv.com/rss/news-24-7/', max: 3 },
       { name: 'France Info', url: 'https://www.francetvinfo.fr/titres.rss', max: 3 }
     ];
