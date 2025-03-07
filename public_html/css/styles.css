@@ -1467,12 +1467,12 @@ main {
 /* Positionnement correct de l'image */
 .swiper-slide img {
   position: absolute;
-  top: -20px; /* Décalage vers le haut pour éviter la coupure */
+  top: -40px; /* Décalage important vers le haut */
   left: 0;
   width: 100%;
-  height: calc(100% + 20px); /* Compensation pour le décalage */
+  height: calc(100% + 40px); /* Compensation pour éviter les zones vides */
   object-fit: cover;
-  object-position: center 30%; /* Priorité au contenu principal */
+  object-position: center 20%; /* Favoriser le haut de l'image */
   z-index: 1;
 }
 
