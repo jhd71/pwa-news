@@ -1,6 +1,6 @@
 async function fetchNationalNews() {
     try {
-        const response = await fetch('/api/getNationalNews.js');
+        const response = await fetch('/api/getNationalNews');
         const newsData = await response.json();
 
         const swiperWrapper = document.querySelector('.swiper-wrapper');
