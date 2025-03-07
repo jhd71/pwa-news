@@ -5,7 +5,7 @@ const parser = new Parser({
   },
   timeout: 5000,
   customFields: {
-    item: ['media:content', 'enclosure']
+    item: ['media:content', 'enclosure', 'image', 'thumbnail']
   }
 });
 
@@ -21,26 +21,30 @@ module.exports = async (req, res) => {
 
     for (const feed of feeds) {
       try {
-        console.log(`Tentative récupération de ${feed.name}...`);
+        console.log(`Récupération des articles de ${feed.name}...`);
         const feedData = await parser.parseURL(feed.url);
-        console.log(`Succès : ${feed.name} - ${feedData.items.length} articles trouvés`);
+        console.log(`✅ ${feed.name} - ${feedData.items.length} articles trouvés`);
 
         const articles = feedData.items.slice(0, feed.max).map(item => {
-          // Affichage des données brutes pour vérification
-          console.log("Article trouvé :", item);
+          let imageUrl =
+            item.enclosure?.url ||
+            item['media:content']?.url ||
+            item.image ||
+            item.thumbnail ||
+            null;
 
           return {
             title: item.title,
             link: item.link,
             date: item.pubDate || item.isoDate,
-            image: item.enclosure?.url || item['media:content']?.url || item.image || item.thumbnail || null,
+            image: imageUrl,
             source: feed.name
           };
         });
 
         allArticles.push(...articles);
       } catch (feedError) {
-        console.error(`Erreur avec ${feed.name}:`, feedError.message);
+        console.error(`❌ Erreur avec ${feed.name}:`, feedError.message);
       }
     }
 
@@ -50,7 +54,7 @@ module.exports = async (req, res) => {
 
     res.status(200).json(allArticles);
   } catch (error) {
-    console.error('Erreur serveur:', error.message);
+    console.error('❌ Erreur serveur:', error.message);
     res.status(500).json({ error: 'Erreur interne du serveur' });
   }
 };
