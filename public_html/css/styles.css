@@ -1418,7 +1418,7 @@ main {
   cursor: pointer;
 }
 
-/* Styles améliorés pour le Swiper */
+/* Styles améliorés pour le Swiper - correction de la hauteur et du positionnement */
 .swiper-container {
   width: 100%;
   display: flex;
@@ -1429,11 +1429,11 @@ main {
 .swiper {
   width: 90%;
   max-width: 1200px;
-  height: 250px; /* Hauteur fixe pour éviter le redimensionnement */
+  height: 320px; /* Augmentation de la hauteur pour accommoder les images */
   border-radius: 15px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   overflow: hidden;
-  background-color: var(--primary-color);
+  background-color: var(--primary-color, #1a237e);
 }
 
 .swiper-slide {
@@ -1450,22 +1450,43 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between; /* Changé de center à space-between */
   width: 100%;
   height: 100%;
   color: white;
   text-decoration: none;
-  padding: 15px;
+  padding: 10px;
   box-sizing: border-box;
 }
 
 .swiper-slide img {
   width: 100%;
-  max-height: 150px;
+  max-height: 180px; /* Augmentation de la hauteur maximale */
   object-fit: cover;
   border-radius: 10px;
   margin-bottom: 10px;
-  display: block; /* Assure que l'image est toujours affichée en tant que bloc */
+  display: block;
+}
+
+/* Conteneur du titre et de la source */
+.swiper-slide .slide-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0 5px;
+}
+
+.swiper-slide .slide-title {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.swiper-slide .slide-source {
+  font-size: 14px;
+  opacity: 0.8;
+  color: #ff9800;
 }
 
 /* Adaptation pour le thème sombre/clair */
