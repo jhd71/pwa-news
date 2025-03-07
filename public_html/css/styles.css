@@ -1570,16 +1570,16 @@ main {
   }
   
   .separator {
-    margin: 10px 0 !important;
+    margin: 5px 0 !important;
   }
 }
 
 /* Adaptations pour mobiles */
 @media (max-width: 767px) {
   .swiper-container {
-    margin-top: 10px !important; /* Moins d'espace en haut sur mobile */
-    margin-bottom: 2px !important; /* Moins d'espace en bas sur mobile */
-  }
+  margin-top: 50px !important; /* Baisse encore si besoin */
+  margin-bottom: 5px !important; /* Moins d'espace entre le carrousel et le séparateur */
+}
   
   .swiper {
     height: 250px; /* Hauteur réduite sur mobile */
