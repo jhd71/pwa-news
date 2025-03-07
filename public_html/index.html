@@ -14,10 +14,10 @@
     <meta name="apple-mobile-web-app-title" content="Actu&Média">
     <link rel="apple-touch-icon" href="images/INFOS-192.png">
     <!-- Swiper CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
-<!-- SwiperJS -->
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <!-- SwiperJS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <!-- Ajoutez ces métas -->
     <meta name="application-name" content="Actu&Média">
     <meta name="msapplication-navbutton-color" content="#1a237e">
@@ -26,24 +26,24 @@
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1a237e">
     <link rel="icon" type="image/png" sizes="192x192" href="images/INFOS-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="images/INFOS.png">
-	<!-- SEO meta tags -->
-<meta name="description" content="Actu & Média - Votre source d'actualités locales et médias en Saône-et-Loire. Informations locales, radio et TV en direct.">
-<meta name="keywords" content="actualités, Saône-et-Loire, Montceau News, Le JSL, L'Informateur, Creusot Infos, France Bleu, BFM TV, médias locaux">
-<meta name="author" content="Actu & Média">
+    <!-- SEO meta tags -->
+    <meta name="description" content="Actu & Média - Votre source d'actualités locales et médias en Saône-et-Loire. Informations locales, radio et TV en direct.">
+    <meta name="keywords" content="actualités, Saône-et-Loire, Montceau News, Le JSL, L'Informateur, Creusot Infos, France Bleu, BFM TV, médias locaux">
+    <meta name="author" content="Actu & Média">
 
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://jhd71.fr/">
-<meta property="og:title" content="Actu & Média - Actualités et médias locaux">
-<meta property="og:description" content="Votre source d'actualités locales et médias en Saône-et-Loire. Informations locales, radio et TV en direct.">
-<meta property="og:image" content="https://jhd71.fr/images/INFOS.png">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jhd71.fr/">
+    <meta property="og:title" content="Actu & Média - Actualités et médias locaux">
+    <meta property="og:description" content="Votre source d'actualités locales et médias en Saône-et-Loire. Informations locales, radio et TV en direct.">
+    <meta property="og:image" content="https://jhd71.fr/images/INFOS.png">
 
-<!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:url" content="https://jhd71.fr/">
-<meta property="twitter:title" content="Actu & Média - Actualités et médias locaux">
-<meta property="twitter:description" content="Votre source d'actualités locales et médias en Saône-et-Loire. Informations locales, radio et TV en direct.">
-<meta property="twitter:image" content="https://jhd71.fr/images/INFOS.png">
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://jhd71.fr/">
+    <meta property="twitter:title" content="Actu & Média - Actualités et médias locaux">
+    <meta property="twitter:description" content="Votre source d'actualités locales et médias en Saône-et-Loire. Informations locales, radio et TV en direct.">
+    <meta property="twitter:image" content="https://jhd71.fr/images/INFOS.png">
 
     <!-- Microsoft Meta Tags -->
     <meta name="msapplication-TileImage" content="images/INFOS-192.png">
@@ -54,6 +54,91 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/chat-styles.css">
     <link rel="stylesheet" href="css/news-panel.css">
+    
+    <!-- Styles Swiper corrigés (à ajouter ou mettre dans votre fichier CSS) -->
+    <style>
+        /* Styles améliorés pour le Swiper */
+        .swiper-container {
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          margin-bottom: 20px;
+        }
+
+        .swiper {
+          width: 90%;
+          max-width: 1200px;
+          height: 250px; /* Hauteur fixe pour éviter le redimensionnement */
+          border-radius: 15px;
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+          overflow: hidden;
+          background-color: var(--primary-color, #1a237e);
+        }
+
+        .swiper-slide {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100%;
+          text-align: center;
+          padding: 10px;
+          box-sizing: border-box;
+        }
+
+        .swiper-slide a {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          height: 100%;
+          color: white;
+          text-decoration: none;
+          padding: 15px;
+          box-sizing: border-box;
+        }
+
+        .swiper-slide img {
+          width: 100%;
+          max-height: 150px;
+          object-fit: cover;
+          border-radius: 10px;
+          margin-bottom: 10px;
+          display: block; /* Assure que l'image est toujours affichée en tant que bloc */
+        }
+
+        /* Adaptation pour le thème sombre/clair */
+        [data-theme="dark"] .swiper {
+          background: rgba(60, 40, 130, 0.9);
+        }
+
+        [data-theme="light"] .swiper {
+          background: rgba(120, 100, 210, 0.9);
+        }
+
+        /* Boutons de navigation */
+        .swiper-button-next,
+        .swiper-button-prev {
+          color: white !important;
+          opacity: 0.7;
+          transition: opacity 0.3s;
+        }
+
+        .swiper-button-next:hover,
+        .swiper-button-prev:hover {
+          opacity: 1;
+        }
+
+        /* Pagination */
+        .swiper-pagination-bullet {
+          background: rgba(255, 255, 255, 0.6);
+        }
+
+        .swiper-pagination-bullet-active {
+          background: white;
+        }
+    </style>
+    
     <!-- Notifications -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -62,18 +147,21 @@
     <button type="button" id="menuButton" class="menu-button" aria-label="Menu">
         <span class="material-icons">menu</span>
     </button>
- <button type="button" id="settingsButton" class="settings-button" aria-label="Paramètres">
-    <span class="material-icons">settings</span>
-</button>   
+    <button type="button" id="settingsButton" class="settings-button" aria-label="Paramètres">
+        <span class="material-icons">settings</span>
+    </button>   
     <h1 class="site-title">
-    <img src="images/Actu&Media.png" alt="Actu & Média" class="site-logo">
-</h1>
+        <img src="images/Actu&Media.png" alt="Actu & Média" class="site-logo">
+    </h1>
 </header>
 <!-- Slider SwiperJS -->
 <div class="swiper-container">
   <div class="swiper">
     <div class="swiper-wrapper" id="swiperWrapper">
       <!-- Les actualités seront injectées ici par JS -->
+      <div class="swiper-slide">
+        <p>Chargement des actualités...</p>
+      </div>
     </div>
     <!-- Pagination -->
     <div class="swiper-pagination"></div>
@@ -83,75 +171,65 @@
   </div>
 </div>
 
-<!-- Bouton paramètres en dehors du header -->
-
-<!--
-<div class="search-container">
-    <a href="https://www.google.com" target="_blank" class="google-link">
-        <span class="material-icons">search</span>
-        <span>Google</span>
-    </a>
-</div>
-
-    <!-- Menu latéral -->
-    <aside id="sidebar" class="sidebar">
-        <div class="sidebar-header">
-            <h2>Menu</h2>
-            <button type="button" class="close-btn" aria-label="Fermer">
-                <span class="material-icons">close</span>
-            </button>
-        </div>
-        <div class="menu-item">
-            <a href="https://www.footmercato.net/live/" target="_blank">
-                <span class="material-icons">sports_soccer</span>
-                Foot-Live
-            </a>
-        </div>
-		<div class="menu-item">
-            <a href="https://www.footmercato.net/club/fc-montceau-bourgogne/classement" target="_blank">
-                <span class="material-icons">sports_soccer</span>
-                FC Montceau-Bourgogne
-            </a>
-        </div>
-        <div class="menu-item">
-            <a href="https://jhd71.fr/meteo.html" target="_blank">
-                <span class="material-icons">wb_sunny</span>
-                Prévisions météo à 3 jours
-            </a>
-        </div>
-        <div class="menu-item">
-            <a href="https://www.swisstransfer.com/fr-ch" target="_blank">
-                <span class="material-icons">upload</span>
-                Swiss_Transfer
-            </a>
-        </div>
-        <div class="menu-item">
-            <a href="https://transfert.free.fr/upload" target="_blank">
-                <span class="material-icons">upload</span>
-                Free_Transfert
-            </a>
-        </div>
-        <div class="menu-item">
-            <a href="mailto:infos@jhd71.fr" target="_blank">
-                <span class="material-icons">email</span>
-                Contact
-            </a>
-        </div>
-        <div class="menu-item">
-    <button id="menuInstall" class="menu-link">
-        <span class="material-icons">download</span>
-        <span>Installer l'application</span>
-    </button>
-</div>
-        <div class="menu-item">
-    <div class="copyright-text">
-        <span class="material-icons">copyright</span>
-        <span>2025 Actu & Média</span>
+<!-- Menu latéral -->
+<aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+        <h2>Menu</h2>
+        <button type="button" class="close-btn" aria-label="Fermer">
+            <span class="material-icons">close</span>
+        </button>
     </div>
-</div>
-    </aside>
+    <div class="menu-item">
+        <a href="https://www.footmercato.net/live/" target="_blank">
+            <span class="material-icons">sports_soccer</span>
+            Foot-Live
+        </a>
+    </div>
+    <div class="menu-item">
+        <a href="https://www.footmercato.net/club/fc-montceau-bourgogne/classement" target="_blank">
+            <span class="material-icons">sports_soccer</span>
+            FC Montceau-Bourgogne
+        </a>
+    </div>
+    <div class="menu-item">
+        <a href="https://jhd71.fr/meteo.html" target="_blank">
+            <span class="material-icons">wb_sunny</span>
+            Prévisions météo à 3 jours
+        </a>
+    </div>
+    <div class="menu-item">
+        <a href="https://www.swisstransfer.com/fr-ch" target="_blank">
+            <span class="material-icons">upload</span>
+            Swiss_Transfer
+        </a>
+    </div>
+    <div class="menu-item">
+        <a href="https://transfert.free.fr/upload" target="_blank">
+            <span class="material-icons">upload</span>
+            Free_Transfert
+        </a>
+    </div>
+    <div class="menu-item">
+        <a href="mailto:infos@jhd71.fr" target="_blank">
+            <span class="material-icons">email</span>
+            Contact
+        </a>
+    </div>
+    <div class="menu-item">
+        <button id="menuInstall" class="menu-link">
+            <span class="material-icons">download</span>
+            <span>Installer l'application</span>
+        </button>
+    </div>
+    <div class="menu-item">
+        <div class="copyright-text">
+            <span class="material-icons">copyright</span>
+            <span>2025 Actu & Média</span>
+        </div>
+    </div>
+</aside>
 
-    <!-- Conteneur principal des tuiles -->
+<!-- Conteneur principal des tuiles -->
 <main>
     <div id="tileContainer" class="tile-container grid"></div>
 </main>
@@ -163,7 +241,7 @@
   </div>
 </div>
 
-    <!-- Barre de navigation du bas -->
+<!-- Barre de navigation du bas -->
 <nav class="bottom-nav">
     <button class="nav-item" id="darkModeToggle">
         <span class="material-icons">dark_mode</span>
@@ -189,149 +267,245 @@
     </button>
 </nav>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- Module principal -->
-    <script type="module">
-// Service Worker Registration
-async function registerServiceWorker() {
-    if ('serviceWorker' in navigator) {
-        try {
-            const registration = await navigator.serviceWorker.register('/service-worker.js', {
-                scope: '/',
-                updateViaCache: 'none'
-            });
-
-            console.log('ServiceWorker enregistré avec succès:', registration);
-
-            // Gestion de la mise à jour du Service Worker
-            registration.addEventListener('updatefound', () => {
-                const newWorker = registration.installing;
-                console.log('Nouveau service worker en installation');
-
-                newWorker.addEventListener('statechange', () => {
-                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                        console.log('Nouveau Service Worker installé');
-                        if (registration.waiting) {
-                            registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-                        }
-                    }
+<!-- Module principal -->
+<script type="module">
+    // Service Worker Registration
+    async function registerServiceWorker() {
+        if ('serviceWorker' in navigator) {
+            try {
+                const registration = await navigator.serviceWorker.register('/service-worker.js', {
+                    scope: '/',
+                    updateViaCache: 'none'
                 });
-            });
 
-            // Écouter les changements d'état
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                console.log('Service Worker mis à jour');
-                window.location.reload();
-            });
+                console.log('ServiceWorker enregistré avec succès:', registration);
 
-            return registration;
-        } catch (error) {
-            console.error('Erreur d\'enregistrement du ServiceWorker:', error);
-            throw error;
-        }
-    }
-}
+                // Gestion de la mise à jour du Service Worker
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    console.log('Nouveau service worker en installation');
 
-// PWA Installation
-class PWAInstaller {
-    constructor() {
-        this.deferredPrompt = null;
-        this.installButton = document.getElementById('menuInstall');
-        this.setupEventListeners();
-    }
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            console.log('Nouveau Service Worker installé');
+                            if (registration.waiting) {
+                                registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                            }
+                        }
+                    });
+                });
 
-    setupEventListeners() {
-        // Masquer le bouton par défaut
-        if (this.installButton) {
-            this.installButton.style.display = 'none';
-        }
+                // Écouter les changements d'état
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    console.log('Service Worker mis à jour');
+                    window.location.reload();
+                });
 
-        window.addEventListener('beforeinstallprompt', this.handleBeforeInstallPrompt.bind(this));
-        window.addEventListener('appinstalled', this.handleAppInstalled.bind(this));
-    }
-
-    async handleBeforeInstallPrompt(event) {
-        event.preventDefault();
-        this.deferredPrompt = event;
-
-        if (this.installButton) {
-            this.installButton.style.display = 'block';
-            this.installButton.addEventListener('click', this.handleInstallClick.bind(this), { once: true });
+                return registration;
+            } catch (error) {
+                console.error('Erreur d\'enregistrement du ServiceWorker:', error);
+                throw error;
+            }
         }
     }
 
-    async handleInstallClick(event) {
-        event.preventDefault();
-        if (!this.deferredPrompt) return;
+    // PWA Installation
+    class PWAInstaller {
+        constructor() {
+            this.deferredPrompt = null;
+            this.installButton = document.getElementById('menuInstall');
+            this.setupEventListeners();
+        }
 
-        try {
-            const result = await this.deferredPrompt.prompt();
-            console.log('Résultat de l\'installation:', result);
-            
-            if (result.outcome === 'accepted') {
-                console.log('PWA installée avec succès');
+        setupEventListeners() {
+            // Masquer le bouton par défaut
+            if (this.installButton) {
                 this.installButton.style.display = 'none';
             }
-        } catch (error) {
-            console.error('Erreur lors de l\'installation:', error);
-        } finally {
+
+            window.addEventListener('beforeinstallprompt', this.handleBeforeInstallPrompt.bind(this));
+            window.addEventListener('appinstalled', this.handleAppInstalled.bind(this));
+        }
+
+        async handleBeforeInstallPrompt(event) {
+            event.preventDefault();
+            this.deferredPrompt = event;
+
+            if (this.installButton) {
+                this.installButton.style.display = 'block';
+                this.installButton.addEventListener('click', this.handleInstallClick.bind(this), { once: true });
+            }
+        }
+
+        async handleInstallClick(event) {
+            event.preventDefault();
+            if (!this.deferredPrompt) return;
+
+            try {
+                const result = await this.deferredPrompt.prompt();
+                console.log('Résultat de l\'installation:', result);
+                
+                if (result.outcome === 'accepted') {
+                    console.log('PWA installée avec succès');
+                    this.installButton.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Erreur lors de l\'installation:', error);
+            } finally {
+                this.deferredPrompt = null;
+            }
+        }
+
+        handleAppInstalled() {
+            console.log('PWA installée avec succès');
+            if (this.installButton) {
+                this.installButton.style.display = 'none';
+            }
             this.deferredPrompt = null;
         }
     }
 
-    handleAppInstalled() {
-        console.log('PWA installée avec succès');
-        if (this.installButton) {
-            this.installButton.style.display = 'none';
-        }
-        this.deferredPrompt = null;
-    }
-}
+    // App Initialization
+    class AppInitializer {
+        static async init() {
+            try {
+                // Enregistrer le Service Worker
+                await registerServiceWorker();
 
-// App Initialization
-class AppInitializer {
-    static async init() {
-        try {
-            // Enregistrer le Service Worker
-            await registerServiceWorker();
+                // Initialiser l'installateur PWA
+                new PWAInstaller();
 
-            // Initialiser l'installateur PWA
-            new PWAInstaller();
+                // Initialiser ContentManager
+                console.log('Chargement de ContentManager...');
+                const contentModule = await import('./js/content.js');
+                window.contentManager = new contentModule.default();
+                await window.contentManager.init();
+                console.log('Content Manager initialisé');
 
-            // Initialiser ContentManager
-            console.log('Chargement de ContentManager...');
-            const contentModule = await import('./js/content.js');
-            window.contentManager = new contentModule.default();
-            await window.contentManager.init();
-            console.log('Content Manager initialisé');
+                // Initialiser ChatManager
+                console.log('Chargement de ChatManager...');
+                const chatModule = await import('/js/chatManager.js');
+                window.chatManager = new chatModule.default();
+                await window.chatManager.init();
+                console.log('Chat Manager initialisé');
 
-            // Initialiser ChatManager
-            console.log('Chargement de ChatManager...');
-            const chatModule = await import('/js/chatManager.js');
-            window.chatManager = new chatModule.default();
-            await window.chatManager.init();
-            console.log('Chat Manager initialisé');
-
-        } catch (error) {
-            console.error('Erreur d\'initialisation:', error);
-            console.error('Stack trace:', error.stack);
+            } catch (error) {
+                console.error('Erreur d\'initialisation:', error);
+                console.error('Stack trace:', error.stack);
+            }
         }
     }
-}
 
-// Démarrer l'application quand le DOM est prêt
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => AppInitializer.init());
-} else {
-    AppInitializer.init();
-}
+    // Démarrer l'application quand le DOM est prêt
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => AppInitializer.init());
+    } else {
+        AppInitializer.init();
+    }
 </script>
 <script src="/js/newsTickerManager.js"></script>
 <script src="js/newsPanel.js"></script>
-<script src="js/newsManager.js"></script>
-	
+
+<!-- NOUVEAU CODE POUR LE CARROUSEL D'ACTUALITÉS -->
+<script>
+async function loadTopNews() {
+  const swiperWrapper = document.getElementById('swiperWrapper');
+  
+  try {
+    const response = await fetch('/api/getNationalNews.js');
+    
+    if (!response.ok) {
+      throw new Error(`Erreur HTTP: ${response.status}`);
+    }
+    
+    const articles = await response.json();
+    swiperWrapper.innerHTML = '';
+    
+    if (articles.length === 0) {
+      swiperWrapper.innerHTML = '<div class="swiper-slide"><p>Aucune actualité disponible pour le moment.</p></div>';
+      return;
+    }
+    
+    // Limiter à 5 articles pour éviter l'avertissement de loop
+    const limitedArticles = articles.slice(0, 5);
+    
+    limitedArticles.forEach(article => {
+      if (article.title && article.link) {
+        const slide = document.createElement('div');
+        slide.className = 'swiper-slide';
+        
+        // Créer le contenu de la slide avec l'image si disponible
+        let slideContent = `
+          <a href="${article.link}" target="_blank" style="color:white; text-decoration:none; padding:15px; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+        `;
+        
+        // Ajouter l'image si disponible
+        if (article.image && article.image !== "images/default-news.jpg") {
+          slideContent += `<img src="${article.image}" alt="${article.title}" style="width:100%; max-height:150px; object-fit:cover; border-radius:10px; margin-bottom:10px;">`;
+        }
+        
+        // Ajouter le titre et la source
+        slideContent += `
+            <div style="font-weight:bold; font-size:16px; margin-bottom:8px; text-align:center;">${article.title}</div>
+            <div style="font-size:14px; opacity:0.8; color:#ff9800;">${article.source || 'Source'}</div>
+          </a>
+        `;
+        
+        slide.innerHTML = slideContent;
+        swiperWrapper.appendChild(slide);
+      }
+    });
+    
+    // Réinitialiser Swiper après ajout dynamique
+    if (window.swiper) {
+      window.swiper.destroy(true, true);
+    }
+    
+    window.swiper = new Swiper('.swiper', {
+      loop: limitedArticles.length > 1, // Activer le loop seulement s'il y a plus d'un slide
+      autoplay: { 
+        delay: 5000,
+        disableOnInteraction: false
+      },
+      pagination: { 
+        el: '.swiper-pagination', 
+        clickable: true 
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev'
+      },
+      slidesPerView: 1,
+      spaceBetween: 20,
+      on: {
+        init: function() {
+          console.log('Swiper initialisé avec succès');
+        }
+      }
+    });
+    
+  } catch (error) {
+    console.error('Erreur chargement actualités:', error);
+    swiperWrapper.innerHTML = '<div class="swiper-slide"><p>Erreur lors du chargement des actualités.</p></div>';
+  }
+}
+
+// Charger les actualités au chargement de la page
+document.addEventListener('DOMContentLoaded', loadTopNews);
+
+// Ajouter une fonction pour recharger les actualités
+function refreshNews() {
+  console.log('Actualisation des nouvelles...');
+  loadTopNews();
+}
+
+// Exposer la fonction pour pouvoir l'appeler depuis d'autres scripts
+window.refreshNews = refreshNews;
+</script>
+
 <!-- Bouton Infos en direct -->
 <button id="newsButton" class="news-button">
   <span class="material-icons">feed</span>
@@ -360,82 +534,23 @@ if (document.readyState === 'loading') {
   </button>
 </div>
 <script src="js/ios-install.js"></script>
+
+<!-- Supprimer l'initialisation de Swiper existante et utiliser celle de loadTopNews à la place -->
 <script>
-  const swiper = new Swiper('.swiper', {
-  loop: true,
-  autoplay: {
-    delay: 5000, // Augmente légèrement le délai pour assurer le chargement des images
-    disableOnInteraction: false
-  },
-  pagination: {
-    el: '.swiper-pagination',
-    clickable: true
-  },
-  navigation: {
-    nextEl: '.swiper-button-next',
-    prevEl: '.swiper-button-prev',
-  },
-  slidesPerView: 1, // S'assure qu'une seule slide est visible à la fois
-  spaceBetween: 20,
-  effect: 'slide', // Remplace 'fade' par 'slide' pour éviter le bug de disparition
-});
-</script>
-<script>
-async function loadTopNews() {
-  const swiperWrapper = document.getElementById('swiperWrapper');
-  try {
-    // Utiliser temporairement votre API existante qui fonctionne
-    const response = await fetch('/api/getNationalNews.js');
-    const articles = await response.json();
-    swiperWrapper.innerHTML = '';
+  // Chargement différé des actualités pour s'assurer que le DOM est prêt
+  document.addEventListener('DOMContentLoaded', () => {
+    // Le loadTopNews sera appelé par l'event listener dans le script ci-dessus
     
-    if (articles.length === 0) {
-      swiperWrapper.innerHTML = '<div class="swiper-slide"><p>Aucune actualité disponible pour le moment.</p></div>';
-      return;
+    // Ajouter un gestionnaire d'événements pour le bouton de rafraîchissement
+    const refreshButton = document.getElementById('refreshButton');
+    if (refreshButton) {
+      refreshButton.addEventListener('click', () => {
+        if (window.refreshNews) {
+          window.refreshNews();
+        }
+      });
     }
-    
-    // Limiter à 5 articles pour éviter l'avertissement de loop
-    const limitedArticles = articles.slice(0, 5);
-    
-    limitedArticles.forEach(article => {
-      if (article.title && article.link) {
-        const slide = document.createElement('div');
-        slide.className = 'swiper-slide';
-        
-        slide.innerHTML = `
-          <a href="${article.link}" target="_blank" style="color:white; text-decoration:none; padding:15px; display:flex; align-items:center; justify-content:center; text-align:center; flex-direction:column; height:100%;">
-            <div style="font-weight:bold; font-size:16px; margin-bottom:8px;">${article.title}</div>
-            <div style="font-size:14px; opacity:0.8; color:#ff9800;">${article.source || 'Source'}</div>
-          </a>
-        `;
-        swiperWrapper.appendChild(slide);
-      }
-    });
-    
-    // Réinitialiser Swiper après ajout dynamique
-    new Swiper('.swiper', {
-      loop: false, // Désactiver le loop pour éviter l'avertissement
-      autoplay: { 
-        delay: 5000,
-        disableOnInteraction: false
-      },
-      pagination: { 
-        el: '.swiper-pagination', 
-        clickable: true 
-      },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev'
-      },
-      slidesPerView: 1, // Réduire à 1 pour éviter l'avertissement de loop
-      spaceBetween: 20
-    });
-  } catch (error) {
-    console.error('Erreur chargement actualités:', error);
-    swiperWrapper.innerHTML = '<div class="swiper-slide"><p>Erreur lors du chargement des actualités.</p></div>';
-  }
-}
-document.addEventListener('DOMContentLoaded', loadTopNews);
+  });
 </script>
 </body>
 </html>
