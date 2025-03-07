@@ -18,7 +18,7 @@ async function fetchNationalNews() {
                 const slide = document.createElement('div');
                 slide.className = 'swiper-slide';
 
-                let imageUrl = article.image ? article.image : "images/default-news.jpg"; // Image par défaut si pas d'image
+                let imageUrl = article.image ? article.image : "images/default-news.jpg"; // Image par défaut si manquante
 
                 slide.innerHTML = `
                     <a href="${article.link}" target="_blank">
@@ -35,7 +35,7 @@ async function fetchNationalNews() {
 
         // Réinitialisation Swiper après ajout dynamique
         new Swiper('.swiper', {
-            loop: false,
+            loop: true, // Active le loop
             autoplay: {
                 delay: 5000,
                 disableOnInteraction: false
