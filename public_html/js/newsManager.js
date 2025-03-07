@@ -22,9 +22,8 @@ async function loadTopNews() {
         const imageSrc = article.image ? article.image : 'images/default-news.jpg';
 
         slide.innerHTML = `
-          slide.innerHTML = `
   <a href="${article.link}" target="_blank" style="color:white; text-decoration:none; padding:15px; display:flex; align-items:center; justify-content:center; text-align:center; flex-direction:column; height:100%;">
-    ${article.image ? `<img src="${article.image}" alt="Image" style="width: 100%; height: 150px; object-fit: cover; border-radius: 10px; margin-bottom: 10px;">` : ''}
+    ${article.image ? `<img src="${article.image}" alt="Image de l'actualité" class="news-image">` : ''}
     <div style="font-weight:bold; font-size:16px; margin-bottom:8px;">${article.title}</div>
     <div style="font-size:14px; opacity:0.8; color:#ff9800;">${article.source || 'Source'}</div>
   </a>
