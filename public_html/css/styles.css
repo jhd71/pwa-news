@@ -1588,3 +1588,38 @@ main {
   grid-column: 1 / -1;
   margin: 5px 0 !important;
 }
+/* Réduire l'espace entre le carrousel et le premier séparateur */
+
+/* Réduire les marges du conteneur swiper */
+.swiper-container {
+  margin-bottom: 5px !important; /* Réduire drastiquement la marge inférieure */
+}
+
+/* Forcer la réduction de l'espace entre le carrousel et le séparateur */
+.swiper-container + .separator,
+#tileContainer > .separator:first-child {
+  margin-top: 20px !important; /* Ajustez cette valeur selon vos besoins */
+}
+
+/* S'assurer que le séparateur est bien visible avec un margin réduit */
+.separator {
+  margin: 5px 0 !important;
+}
+
+/* Réduire les espaces vides dans main */
+main {
+  padding-top: 0 !important; /* Supprime tout padding en haut */
+}
+
+/* Si le problème persiste, ajouter cette règle plus agressive */
+.swiper-container::after {
+  content: '';
+  display: block;
+  height: 0;
+  clear: both;
+}
+
+/* Forcer une hauteur maximale pour main avant le premier séparateur */
+main > *:not(.separator):first-child {
+  margin-bottom: 0 !important;
+}
