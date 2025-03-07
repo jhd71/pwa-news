@@ -362,20 +362,23 @@ if (document.readyState === 'loading') {
 <script src="js/ios-install.js"></script>
 <script>
   const swiper = new Swiper('.swiper', {
-    loop: true,
-    autoplay: {
-      delay: 4000,
-    },
-    pagination: {
-      el: '.swiper-pagination',
-      clickable: true
-    },
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    },
-    effect: 'fade', // effets possibles : 'slide', 'fade', 'cube', etc.
-  });
+  loop: true,
+  autoplay: {
+    delay: 5000, // Augmente légèrement le délai pour assurer le chargement des images
+    disableOnInteraction: false
+  },
+  pagination: {
+    el: '.swiper-pagination',
+    clickable: true
+  },
+  navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+  slidesPerView: 1, // S'assure qu'une seule slide est visible à la fois
+  spaceBetween: 20,
+  effect: 'slide', // Remplace 'fade' par 'slide' pour éviter le bug de disparition
+});
 </script>
 <script>
 async function loadTopNews() {
