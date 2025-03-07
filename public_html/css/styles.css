@@ -1418,88 +1418,100 @@ main {
   cursor: pointer;
 }
 
-/* Styles améliorés pour le Swiper - correction des problèmes de débordement */
+/* Réinitialisation complète des styles Swiper pour éviter les interférences */
 .swiper-container {
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
+  margin: 30px 0; /* Plus d'espace autour du carrousel */
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .swiper {
   width: 90%;
   max-width: 1200px;
-  height: 320px;
+  height: 300px; /* Hauteur fixe */
   border-radius: 15px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   overflow: hidden;
+  position: relative;
+  z-index: 1; /* Assurez-vous que le slider a un z-index correct */
   background-color: var(--primary-color);
-  position: relative;
 }
 
+/* Conteneur de slide sans flexbox */
 .swiper-slide {
-  position: relative;
   height: 100%;
   width: 100%;
-  overflow: hidden; /* Important: empêche le débordement du contenu */
+  overflow: hidden;
+  position: relative;
 }
 
+/* Conteneur de lien sans flexbox */
 .swiper-slide a {
-  display: block;
   width: 100%;
   height: 100%;
+  display: block;
   color: white;
   text-decoration: none;
   position: relative;
 }
 
-/* Image plein écran avec position absolue */
+/* Image fixée en arrière-plan */
 .swiper-slide img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center; /* Centre l'image */
-  display: block;
+  object-position: center;
+  z-index: 1;
 }
 
-/* Overlay pour le texte */
+/* Overlay complet en position fixe */
 .slide-content {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
+  padding: 15px;
   background: rgba(0, 0, 0, 0.7);
-  padding: 15px; /* Plus d'espace pour le texte */
+  z-index: 2;
   width: 100%;
   box-sizing: border-box;
 }
 
+/* Styles de texte */
 .slide-title {
   font-weight: bold;
   font-size: 16px;
   margin-bottom: 8px;
   text-align: center;
-  line-height: 1.3; /* Meilleur espacement des lignes */
+  line-height: 1.4;
 }
 
 .slide-source {
   font-size: 14px;
   opacity: 0.8;
   color: #ff9800;
-  margin-top: 5px; /* Espace supplémentaire après le titre */
+  text-align: center;
 }
 
-/* Pour les slides sans image */
+/* Style pour les slides sans image */
 .swiper-slide:not(:has(img)) .slide-content {
-  position: static;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
   background: var(--primary-color);
 }
 
-/* Adaptation pour le thème sombre/clair */
+/* Thèmes sombre/clair */
 [data-theme="dark"] .swiper {
   background: rgba(60, 40, 130, 0.9);
 }
@@ -1508,7 +1520,6 @@ main {
   background: rgba(120, 100, 210, 0.9);
 }
 
-/* Support de thème pour les slides sans image */
 [data-theme="dark"] .swiper-slide:not(:has(img)) .slide-content {
   background: rgba(60, 40, 130, 0.9);
 }
@@ -1523,6 +1534,7 @@ main {
   color: white !important;
   opacity: 0.7;
   transition: opacity 0.3s;
+  z-index: 10;
 }
 
 .swiper-button-next:hover,
@@ -1531,6 +1543,12 @@ main {
 }
 
 /* Pagination */
+.swiper-pagination {
+  position: absolute;
+  bottom: 5px;
+  z-index: 10;
+}
+
 .swiper-pagination-bullet {
   background: rgba(255, 255, 255, 0.6);
 }
