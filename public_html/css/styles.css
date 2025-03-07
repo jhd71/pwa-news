@@ -1577,8 +1577,8 @@ main {
 /* Adaptations pour mobiles */
 @media (max-width: 767px) {
   .swiper-container {
-    margin-top: 40px !important; /* Moins d'espace en haut sur mobile */
-    margin-bottom: 5px !important; /* Moins d'espace en bas sur mobile */
+    margin-top: 10px !important; /* Moins d'espace en haut sur mobile */
+    margin-bottom: 1px !important; /* Moins d'espace en bas sur mobile */
   }
   
   .swiper {
