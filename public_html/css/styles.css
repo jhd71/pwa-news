@@ -1592,7 +1592,7 @@ main {
 
 /* Réduire les marges du conteneur swiper */
 .swiper-container {
-  margin-bottom: 5px !important; /* Réduire drastiquement la marge inférieure */
+  margin-bottom: 20px !important; /* Réduire drastiquement la marge inférieure */
 }
 
 /* Forcer la réduction de l'espace entre le carrousel et le séparateur */
@@ -1622,4 +1622,66 @@ main {
 /* Forcer une hauteur maximale pour main avant le premier séparateur */
 main > *:not(.separator):first-child {
   margin-bottom: 0 !important;
+}
+/* Réduction de l'espace pour les écrans de PC */
+@media (min-width: 768px) {
+  .swiper-container {
+    margin-bottom: 15px !important; /* Un peu moins d'espace sur PC */
+  }
+  
+  .swiper-container + .separator,
+  #tileContainer > .separator:first-child {
+    margin-top: 10px !important;
+  }
+}
+
+/* Réduction drastique de l'espace pour les mobiles */
+@media (max-width: 767px) {
+  .swiper-container {
+    margin-bottom: 0 !important; /* Pas d'espace en bas sur mobile */
+  }
+  
+  .swiper-container + .separator,
+  #tileContainer > .separator:first-child {
+    margin-top: 5px !important; /* Très peu d'espace sur mobile */
+  }
+  
+  /* Suppression de tout espace supplémentaire sur mobile */
+  main {
+    padding-top: 0 !important;
+  }
+  
+  /* Correction spécifique pour mobile */
+  .separator {
+    margin: 3px 0 !important;
+  }
+  
+  /* Force la réduction des espaces vides sur mobile */
+  .swiper::after,
+  .swiper-container::after {
+    content: '';
+    display: block;
+    height: 0;
+    clear: both;
+  }
+}
+
+/* Solution agressive pour les cas extrêmes sur mobile */
+@media (max-width: 480px) {
+  /* Réduction encore plus drastique sur petits écrans */
+  .swiper-container {
+    margin-bottom: 0 !important;
+  }
+  
+  .swiper-container ~ .separator,
+  .swiper-container + * + .separator,
+  .swiper-container + div,
+  #tileContainer > div:first-of-type {
+    margin-top: 0 !important;
+  }
+  
+  /* Correction de tous les espaces potentiellement problématiques */
+  body main > div {
+    margin-bottom: 0 !important;
+  }
 }
