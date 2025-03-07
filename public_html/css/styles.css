@@ -1685,8 +1685,3 @@ main > *:not(.separator):first-child {
     margin-bottom: 0 !important;
   }
 }
-@media (max-width: 767px) {
-  .swiper-container ~ *:not(.tile-container) {
-    display: none !important;
-  }
-}
