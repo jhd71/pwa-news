@@ -437,35 +437,35 @@ async function loadTopNews() {
         const slide = document.createElement('div');
         slide.className = 'swiper-slide';
         
-        // Créer le contenu de la slide avec l'image si disponible
-        let slideContent = `<a href="${article.link}" target="_blank">`;
+        // Structure HTML simplifiée et robuste
+        let slideHTML = `<a href="${article.link}" target="_blank">`;
         
         // Ajouter l'image si disponible
         if (article.image && article.image !== "images/default-news.jpg") {
-          slideContent += `<img src="${article.image}" alt="${article.title}">`;
+          slideHTML += `<img src="${article.image}" alt="${article.title}">`;
         }
         
-        // Ajouter le titre et la source dans une div conteneur
-        slideContent += `
-            <div class="slide-content">
-              <div class="slide-title">${article.title}</div>
-              <div class="slide-source">${article.source || 'Source'}</div>
-            </div>
-          </a>
-        `;
+        // Overlay avec titre et source
+        slideHTML += `
+          <div class="slide-content">
+            <div class="slide-title">${article.title}</div>
+            <div class="slide-source">${article.source || 'Source'}</div>
+          </div>
+        </a>`;
         
-        slide.innerHTML = slideContent;
+        slide.innerHTML = slideHTML;
         swiperWrapper.appendChild(slide);
       }
     });
     
-    // Réinitialiser Swiper après ajout dynamique
+    // Détruire l'instance précédente si elle existe
     if (window.swiper) {
       window.swiper.destroy(true, true);
     }
     
+    // Initialiser le nouveau Swiper avec des paramètres optimisés
     window.swiper = new Swiper('.swiper', {
-      loop: limitedArticles.length > 1, 
+      loop: limitedArticles.length > 1,
       autoplay: { 
         delay: 5000,
         disableOnInteraction: false
@@ -479,7 +479,8 @@ async function loadTopNews() {
         prevEl: '.swiper-button-prev'
       },
       slidesPerView: 1,
-      spaceBetween: 0, // Changé de 20 à 0 pour éviter les espaces vides
+      spaceBetween: 0, // Pas d'espace entre les slides
+      grabCursor: true, // Indique que le contenu est navigable
       on: {
         init: function() {
           console.log('Swiper initialisé avec succès');
@@ -496,7 +497,7 @@ async function loadTopNews() {
 // Charger les actualités au chargement de la page
 document.addEventListener('DOMContentLoaded', loadTopNews);
 
-// Ajouter une fonction pour recharger les actualités
+// Fonction pour recharger les actualités
 function refreshNews() {
   console.log('Actualisation des nouvelles...');
   loadTopNews();
