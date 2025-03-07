@@ -1418,12 +1418,12 @@ main {
   cursor: pointer;
 }
 
-/* Swiper slider personnalisé */
+/* Ajustement de la taille du carrousel */
 .swiper {
-  margin-top: 100px; /* Réduction de l'espace */
+  margin-top: 80px;
   width: 90%;
   max-width: 1200px;
-  height: auto; /* Hauteur ajustable */
+  height: auto;
   overflow: hidden;
   position: relative;
   background-color: var(--primary-color);
@@ -1432,7 +1432,7 @@ main {
   box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 
-/* Taille des slides */
+/* Ajustement des slides */
 .swiper-slide {
   display: flex;
   flex-direction: column;
@@ -1441,9 +1441,9 @@ main {
   text-align: center;
   font-size: 18px;
   font-weight: bold;
-  padding: 10px;
-  min-height: 220px; /* Réduction de la hauteur */
-  max-height: 300px; /* Limite la hauteur max */
+  padding: 8px;
+  min-height: 180px; /* Réduction de la hauteur */
+  max-height: 280px;
 }
 
 /* Style des liens */
@@ -1459,22 +1459,22 @@ main {
   padding: 10px;
 }
 
-/* Image dans les news */
+/* Taille et affichage des images */
 .news-image {
   width: 100%;
   max-width: 90%;
-  height: 120px; /* Ajuste la hauteur */
+  height: 100px; /* Réduit la taille de l'image */
   object-fit: cover;
-  border-radius: 10px;
-  margin-bottom: 8px;
+  border-radius: 8px;
+  margin-bottom: 6px;
 }
 
-/* Texte et source */
+/* Texte des actualités */
 .news-text h3 {
   font-size: 16px;
   font-weight: bold;
   color: white;
-  margin: 8px 0;
+  margin: 6px 0;
   text-align: center;
 }
 
@@ -1485,7 +1485,7 @@ main {
   text-align: center;
 }
 
-/* Pagination en bas centrée */
+/* Pagination */
 .swiper-pagination-bullet-active {
   background: white;
 }
