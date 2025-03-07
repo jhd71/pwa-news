@@ -1,79 +1,53 @@
-const axios = require('axios');
-const cheerio = require('cheerio');
+const Parser = require('rss-parser');
+const parser = new Parser({
+  headers: {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36',
+  },
+  timeout: 5000,
+  customFields: {
+    item: ['media:content', 'enclosure']
+  }
+});
 
 module.exports = async (req, res) => {
   try {
-    const sources = [
-      {
-        url: 'https://www.jeanmarcmorandini.com/',
-        selector: 'article.news-block',
-        titleSelector: 'h2 a',
-        linkSelector: 'h2 a',
-        imageSelector: '.wp-post-image',
-        name: 'Morandini'
-      },
-      {
-        url: 'https://www.purepeople.com/',
-        selector: '.c-card',
-        titleSelector: '.c-card__title a',
-        linkSelector: '.c-card__title a',
-        imageSelector: '.c-card__image img',
-        name: 'Pure People'
-      },
-      {
-        url: 'https://www.terrafemina.com/',
-        selector: 'article.post',
-        titleSelector: 'h3.entry-title a',
-        linkSelector: 'h3.entry-title a',
-        imageSelector: '.entry-media img',
-        name: 'Terra Femina'
-      }
+    const feeds = [
+      { name: 'Morandini', url: 'https://www.jeanmarcmorandini.com/rss.php', max: 3 },
+      { name: 'Pure People', url: 'https://www.purepeople.com/rss/news_t0.xml', max: 3 },
+      { name: 'Terra Femina', url: 'https://www.terrafemina.com/rss.xml', max: 3 },
+      { name: 'BFMTV', url: 'https://www.bfmtv.com/rss/actualites/', max: 3 },
+      { name: 'France Info', url: 'https://www.francetvinfo.fr/titres.rss', max: 3 }
     ];
-    
-    const articles = [];
 
-    for (const source of sources) {
+    const allArticles = [];
+
+    for (const feed of feeds) {
       try {
-        // Ajout d'un User-Agent pour éviter les blocages
-        const response = await axios.get(source.url, {
-          headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36'
-          }
-        });
+        console.log(`Tentative récupération de ${feed.name}...`);
+        const feedData = await parser.parseURL(feed.url);
+        console.log(`Succès : ${feed.name} - ${feedData.items.length} articles trouvés`);
 
-        const $ = cheerio.load(response.data);
-        
-        $(source.selector).slice(0, 3).each((i, el) => {
-          const title = $(el).find(source.titleSelector).text().trim();
-          let link = $(el).find(source.linkSelector).attr('href');
-          
-          let image = $(el).find(source.imageSelector).attr('src') || $(el).find(source.imageSelector).attr('data-src');
-          
-          if (title && link) {
-            // Vérification si l'URL est complète
-            if (!link.startsWith('http')) {
-              link = new URL(link, source.url).href;
-            }
-            
-            articles.push({
-              title,
-              link,
-              image: image || null, // Empêche undefined
-              source: source.name,
-              date: new Date().toISOString()
-            });
-          }
-        });
-      } catch (error) {
-        console.error(`Erreur récupération ${source.name}:`, error.message);
+        const articles = feedData.items.slice(0, feed.max).map(item => ({
+          title: item.title,
+          link: item.link,
+          date: item.pubDate || item.isoDate,
+          image: item.enclosure?.url || item['media:content']?.url || null,
+          source: feed.name
+        }));
+
+        allArticles.push(...articles);
+      } catch (feedError) {
+        console.error(`Erreur avec ${feed.name}:`, feedError.message);
       }
     }
-    
-    const shuffledArticles = articles.sort(() => 0.5 - Math.random());
-    
-    res.status(200).json(shuffledArticles.slice(0, 10));
+
+    if (allArticles.length === 0) {
+      return res.status(500).json({ error: 'Aucun article trouvé' });
+    }
+
+    res.status(200).json(allArticles);
   } catch (error) {
-    console.error('Erreur globale:', error.message);
-    res.status(500).json({ error: 'Erreur serveur' });
+    console.error('Erreur serveur:', error.message);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
   }
 };
