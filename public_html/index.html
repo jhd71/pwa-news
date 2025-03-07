@@ -55,90 +55,6 @@
     <link rel="stylesheet" href="css/chat-styles.css">
     <link rel="stylesheet" href="css/news-panel.css">
     
-    <!-- Styles Swiper corrigés (à ajouter ou mettre dans votre fichier CSS) -->
-    <style>
-        /* Styles améliorés pour le Swiper */
-        .swiper-container {
-          width: 100%;
-          display: flex;
-          justify-content: center;
-          margin-bottom: 20px;
-        }
-
-        .swiper {
-          width: 90%;
-          max-width: 1200px;
-          height: 250px; /* Hauteur fixe pour éviter le redimensionnement */
-          border-radius: 15px;
-          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-          overflow: hidden;
-          background-color: var(--primary-color, #1a237e);
-        }
-
-        .swiper-slide {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          height: 100%;
-          text-align: center;
-          padding: 10px;
-          box-sizing: border-box;
-        }
-
-        .swiper-slide a {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          width: 100%;
-          height: 100%;
-          color: white;
-          text-decoration: none;
-          padding: 15px;
-          box-sizing: border-box;
-        }
-
-        .swiper-slide img {
-          width: 100%;
-          max-height: 150px;
-          object-fit: cover;
-          border-radius: 10px;
-          margin-bottom: 10px;
-          display: block; /* Assure que l'image est toujours affichée en tant que bloc */
-        }
-
-        /* Adaptation pour le thème sombre/clair */
-        [data-theme="dark"] .swiper {
-          background: rgba(60, 40, 130, 0.9);
-        }
-
-        [data-theme="light"] .swiper {
-          background: rgba(120, 100, 210, 0.9);
-        }
-
-        /* Boutons de navigation */
-        .swiper-button-next,
-        .swiper-button-prev {
-          color: white !important;
-          opacity: 0.7;
-          transition: opacity 0.3s;
-        }
-
-        .swiper-button-next:hover,
-        .swiper-button-prev:hover {
-          opacity: 1;
-        }
-
-        /* Pagination */
-        .swiper-pagination-bullet {
-          background: rgba(255, 255, 255, 0.6);
-        }
-
-        .swiper-pagination-bullet-active {
-          background: white;
-        }
-    </style>
-    
     <!-- Notifications -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -154,13 +70,15 @@
         <img src="images/Actu&Media.png" alt="Actu & Média" class="site-logo">
     </h1>
 </header>
-<!-- Slider SwiperJS -->
+<!-- Structure HTML optimisée pour le Swiper -->
 <div class="swiper-container">
   <div class="swiper">
     <div class="swiper-wrapper" id="swiperWrapper">
       <!-- Les actualités seront injectées ici par JS -->
       <div class="swiper-slide">
-        <p>Chargement des actualités...</p>
+        <div class="slide-content">
+          <p>Chargement des actualités...</p>
+        </div>
       </div>
     </div>
     <!-- Pagination -->
