@@ -1417,39 +1417,34 @@ main {
   cursor: pointer;
 }
 
-/* Solution complète pour le carrousel Swiper */
+/* CSS propre et optimisé pour le carrousel Swiper */
 
-/* Augmenter la marge supérieure du conteneur swiper */
+/* Conteneur principal du Swiper */
 .swiper-container {
-  margin-top: 70px !important; /* Espace suffisant après le header */
-  margin-bottom: 10px !important; /* Espace réduit avant le séparateur */
   width: 100%;
   display: flex;
   justify-content: center;
+  margin-top: 70px !important; /* Espace après le header */
+  margin-bottom: 15px !important; /* Espace avant le séparateur sur PC */
   padding: 0;
   box-sizing: border-box;
+  position: relative;
+  z-index: 2;
 }
 
-/* Ajuster la position de main pour faire de la place */
-main {
-  margin-top: calc(var(--header-height) + 10px) !important;
-  padding-top: 60px !important; /* Ajouter un padding supplémentaire en haut */
-}
-
-/* Ajuster la hauteur du Swiper */
+/* Style du Swiper */
 .swiper {
   width: 90%;
   max-width: 1200px;
-  height: 290px; /* Hauteur ajustée */
+  height: 290px;
   border-radius: 15px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   overflow: hidden;
   position: relative;
-  z-index: 1;
   background-color: var(--primary-color);
 }
 
-/* Reset complet des slides */
+/* Reset des slides */
 .swiper-slide {
   position: relative;
   width: 100%;
@@ -1460,7 +1455,7 @@ main {
   display: block;
 }
 
-/* Lien dans les slides */
+/* Liens dans les slides */
 .swiper-slide a {
   display: block;
   width: 100%;
@@ -1470,24 +1465,19 @@ main {
   text-decoration: none;
 }
 
-/* Position du slide pour éviter la coupure en haut */
+/* Images dans les slides */
 .swiper-slide img {
   position: absolute;
-  top: 0 !important; /* Ne pas décaler l'image vers le haut */
+  top: 0;
   left: 0;
   width: 100%;
-  height: 100%; /* Hauteur normale */
+  height: 100%;
   object-fit: cover;
-  object-position: center; /* Centrer l'image */
+  object-position: center;
   z-index: 1;
 }
 
-/* Fix pour s'assurer que le header reste visible */
-.app-header {
-  z-index: 1005 !important; /* Valeur supérieure pour s'assurer qu'il reste au-dessus */
-}
-
-/* Overlay de texte au bas de l'image */
+/* Overlay de texte */
 .slide-content {
   position: absolute;
   bottom: 0;
@@ -1553,19 +1543,15 @@ main {
   background: white;
 }
 
-/* Ajustement pour les petits écrans */
-@media (max-width: 600px) {
-  .swiper {
-    height: 250px;
-  }
-  
-  .slide-title {
-    font-size: 14px;
-  }
-  
-  .slide-source {
-    font-size: 12px;
-  }
+/* Style du séparateur */
+.separator {
+  grid-column: 1 / -1;
+  margin: 10px 0 !important;
+}
+
+/* S'assurer que le header reste au-dessus */
+.app-header {
+  z-index: 1005 !important;
 }
 
 /* Support des thèmes */
@@ -1576,182 +1562,55 @@ main {
 [data-theme="light"] .swiper {
   background: rgba(126, 87, 194, 0.9);
 }
-/* Forcer l'espace entre le carrousel et le premier séparateur */
-.separator:first-of-type {
-  margin-top: 15px !important; /* Espace fixe après le carrousel */
-}
 
-/* S'assurer que le séparateur est correctement positionné */
-.separator {
-  grid-column: 1 / -1;
-  margin: 5px 0 !important;
-}
-/* Réduire l'espace entre le carrousel et le premier séparateur */
-
-/* Réduire les marges du conteneur swiper */
-.swiper-container {
-  margin-bottom: 20px !important; /* Réduire drastiquement la marge inférieure */
-}
-
-/* Séparateur après le carrousel */
-.swiper-container + .separator,
-#tileContainer > .separator:first-child {
-  margin-top: 5px !important; /* Très peu d'espace après le carrousel */
-}
-
-/* S'assurer que le séparateur est bien visible avec un margin réduit */
-.separator {
-  margin: 5px 0 !important;
-}
-
-/* Réduire les espaces vides dans main */
-main {
-  padding-top: 0 !important; /* Supprime tout padding en haut */
-}
-
-/* Si le problème persiste, ajouter cette règle plus agressive */
-.swiper-container::after {
-  content: '';
-  display: block;
-  height: 0;
-  clear: both;
-}
-
-/* Forcer une hauteur maximale pour main avant le premier séparateur */
-main > *:not(.separator):first-child {
-  margin-bottom: 0 !important;
-}
-/* Réduction de l'espace pour les écrans de PC */
+/* Adaptations pour écrans PC */
 @media (min-width: 768px) {
   .swiper-container {
-    margin-bottom: 15px !important; /* Un peu moins d'espace sur PC */
+    margin-bottom: 15px !important;
   }
   
-  .swiper-container + .separator,
-  #tileContainer > .separator:first-child {
-    margin-top: 10px !important;
-  }
-}
-
-/* Version mobile */
-@media (max-width: 767px) {
-  .swiper-container {
-    margin-top: 60px !important; /* Légèrement moins d'espace en haut sur mobile */
-    margin-bottom: 5px !important; /* Encore moins d'espace en bas sur mobile */
-  }
-  
-  /* Ajustement spécifique pour le premier séparateur sur mobile */
-  .separator:first-of-type {
-    margin-top: 0 !important;
-  }
-  
-  /* Correction de tous les espaces sur mobile */
-  main {
-    padding-top: 0 !important;
-  }
-}
- /* Reset des styles qui pourraient causer des problèmes */
-.swiper-container::before,
-.swiper-container::after {
-  content: none !important;
-} 
-  .swiper-container + .separator,
-  #tileContainer > .separator:first-child {
-    margin-top: 5px !important; /* Très peu d'espace sur mobile */
-  }
-  
-  /* Suppression de tout espace supplémentaire sur mobile */
-  main {
-    padding-top: 0 !important;
-  }
-  
-  /* Correction spécifique pour mobile */
   .separator {
-    margin: 3px 0 !important;
-  }
-  
-  /* Force la réduction des espaces vides sur mobile */
-  .swiper::after,
-  .swiper-container::after {
-    content: '';
-    display: block;
-    height: 0;
-    clear: both;
+    margin: 10px 0 !important;
   }
 }
 
-/* Solution agressive pour les cas extrêmes sur mobile */
-@media (max-width: 480px) {
-  /* Réduction encore plus drastique sur petits écrans */
-  .swiper-container {
-    margin-bottom: 0 !important;
-  }
-  
-  .swiper-container ~ .separator,
-  .swiper-container + * + .separator,
-  .swiper-container + div,
-  #tileContainer > div:first-of-type {
-    margin-top: 0 !important;
-  }
-  
-  /* Correction de tous les espaces potentiellement problématiques */
-  body main > div {
-    margin-bottom: 0 !important;
-  }
-}
-/* Solution ultra-agressive pour éliminer l'espace sur mobile */
-
-/* Version mobile */
+/* Adaptations pour mobiles */
 @media (max-width: 767px) {
   .swiper-container {
-    margin-top: 60px !important; /* Légèrement moins d'espace en haut sur mobile */
-    margin-bottom: 5px !important; /* Encore moins d'espace en bas sur mobile */
+    margin-top: 60px !important; /* Moins d'espace en haut sur mobile */
+    margin-bottom: 5px !important; /* Moins d'espace en bas sur mobile */
   }
   
-  /* Suppression de tous les espaces blancs entre les éléments */
-  .swiper-container,
-  .swiper,
-  main > *,
-  #tileContainer,
-  .separator,
-  main > div,
-  body > div {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
+  .swiper {
+    height: 250px; /* Hauteur réduite sur mobile */
   }
   
-  /* Solution hack: insérer un élément qui va "tirer" le contenu vers le haut */
-  .swiper-container::after {
-    content: '';
-    display: block;
-    height: 0;
-    margin-bottom: -30px !important; /* Valeur négative plus importante */
-    position: relative;
-    z-index: 1;
+  .slide-title {
+    font-size: 14px;
   }
   
-  /* Correction spécifique pour les marges héritées */
+  .slide-source {
+    font-size: 12px;
+  }
+  
+  .separator {
+    margin: 5px 0 !important;
+  }
+  
+  /* Ajustement pour éviter que le carrousel soit coupé */
   main {
-    margin-top: 0 !important;
     padding-top: 0 !important;
-  }
-  
-  /* Garantir que les éléments se suivent sans espace */
-  * + * {
-    margin-top: 0 !important;
   }
 }
 
-/* Pour les très petits écrans mobiles */
+/* Adaptations pour très petits écrans */
 @media (max-width: 480px) {
-  /* Augmenter les valeurs négatives pour les petits écrans */
-  .swiper-container::after {
-    margin-bottom: -40px !important;
+  .swiper-container {
+    margin-top: 55px !important;
+    margin-bottom: 3px !important;
   }
   
-  .separator:first-of-type {
-    margin-top: -15px !important;
+  .swiper {
+    height: 220px;
   }
 }
