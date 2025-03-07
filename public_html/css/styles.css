@@ -1420,10 +1420,10 @@ main {
 
 /* Swiper slider personnalisé */
 .swiper {
-  margin-top: 120px; /* Ajuste cette valeur pour ne pas chevaucher ton titre */
+  margin-top: 100px; /* Réduction de l'espace */
   width: 90%;
   max-width: 1200px;
-  height: 250px;
+  height: auto; /* Hauteur ajustable */
   overflow: hidden;
   position: relative;
   background-color: var(--primary-color);
@@ -1432,6 +1432,21 @@ main {
   box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 
+/* Taille des slides */
+.swiper-slide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 10px;
+  min-height: 220px; /* Réduction de la hauteur */
+  max-height: 300px; /* Limite la hauteur max */
+}
+
+/* Style des liens */
 .swiper-slide a {
   display: flex;
   flex-direction: column;
@@ -1440,37 +1455,34 @@ main {
   text-align: center;
   color: white;
   text-decoration: none;
-  padding: 20px;
+  width: 100%;
+  padding: 10px;
 }
 
-.swiper-slide small {
-  font-size: 14px;
-  opacity: 0.8;
-  margin-top: 10px;
+/* Image dans les news */
+.news-image {
+  width: 100%;
+  max-width: 90%;
+  height: 120px; /* Ajuste la hauteur */
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 8px;
 }
 
-.swiper-slide {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
+/* Texte et source */
+.news-text h3 {
+  font-size: 16px;
   font-weight: bold;
-}
-
-/* Adaptation au thème sombre/clair */
-[data-theme="dark"] .swiper-slide {
-  background: rgba(60, 40, 130, 0.8);
-}
-
-[data-theme="light"] .swiper-slide {
-  background: rgba(120, 100, 210, 0.8);
-}
-
-/* Correction position des flèches de navigation */
-.swiper-button-prev,
-.swiper-button-next {
   color: white;
-  transform: scale(0.8);
+  margin: 8px 0;
+  text-align: center;
+}
+
+.news-source {
+  font-size: 13px;
+  color: #ff9800;
+  opacity: 0.8;
+  text-align: center;
 }
 
 /* Pagination en bas centrée */
@@ -1481,32 +1493,11 @@ main {
 .swiper-pagination-bullet {
   background: rgba(255, 255, 255, 0.6);
 }
-.news-slide {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    background: var(--primary-color);
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+/* Adaptation au thème sombre/clair */
+[data-theme="dark"] .swiper-slide {
+  background: rgba(60, 40, 130, 0.8);
 }
 
-.news-image {
-    width: 100%;
-    height: 150px; /* Ajuste selon besoin */
-    object-fit: cover;
-    border-radius: 10px;
-}
-
-.news-text h3 {
-    font-size: 18px;
-    font-weight: bold;
-    color: white;
-    margin: 10px 0;
-}
-
-.news-source {
-    font-size: 14px;
-    color: #ddd;
+[data-theme="light"] .swiper-slide {
+  background: rgba(120, 100, 210, 0.8);
 }
