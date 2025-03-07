@@ -1425,16 +1425,16 @@ main {
   width: 100%;
   display: flex;
   justify-content: center;
-  margin: 10px 0 10px 0;
+  margin: 10px 0 0 0; /* IMPORTANT: Marge inférieure à 0 */
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Style principal du Swiper */
+/* Ajuster la hauteur du Swiper */
 .swiper {
   width: 90%;
   max-width: 1200px;
-  height: 280px;
+  height: 290px; /* Hauteur ajustée */
   border-radius: 15px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   overflow: hidden;
@@ -1466,14 +1466,13 @@ main {
 
 /* Positionnement correct de l'image */
 .swiper-slide img {
-  display: block;
   position: absolute;
-  top: 0;
+  top: -20px; /* Décalage vers le haut pour éviter la coupure */
   left: 0;
   width: 100%;
-  height: 100%;
+  height: calc(100% + 20px); /* Compensation pour le décalage */
   object-fit: cover;
-  object-position: center 25%; /* Légèrement plus haut pour voir les visages */
+  object-position: center 30%; /* Priorité au contenu principal */
   z-index: 1;
 }
 
@@ -1565,4 +1564,14 @@ main {
 
 [data-theme="light"] .swiper {
   background: rgba(126, 87, 194, 0.9);
+}
+/* Forcer l'espace entre le carrousel et le premier séparateur */
+.separator:first-of-type {
+  margin-top: 15px !important; /* Espace fixe après le carrousel */
+}
+
+/* S'assurer que le séparateur est correctement positionné */
+.separator {
+  grid-column: 1 / -1;
+  margin: 5px 0 !important;
 }
