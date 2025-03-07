@@ -1,3 +1,7 @@
+/**
+ * newsManager.js - Gère le chargement et l'affichage des actualités dans le carrousel
+ */
+
 async function loadTopNews() {
   const swiperWrapper = document.getElementById('swiperWrapper');
   
@@ -80,14 +84,25 @@ async function loadTopNews() {
   }
 }
 
-// Charger les actualités au chargement de la page
-document.addEventListener('DOMContentLoaded', loadTopNews);
-
-// Ajouter une fonction pour recharger les actualités
+// Exposer la fonction pour pouvoir l'appeler depuis d'autres scripts
 function refreshNews() {
   console.log('Actualisation des nouvelles...');
   loadTopNews();
 }
 
-// Exposer la fonction pour pouvoir l'appeler depuis d'autres scripts
+// Exposer la fonction au contexte global
 window.refreshNews = refreshNews;
+
+// Charger les actualités au chargement de la page
+document.addEventListener('DOMContentLoaded', loadTopNews);
+
+// Désactiver l'initialisation manuelle du Swiper dans l'index.html
+document.addEventListener('DOMContentLoaded', () => {
+  // Ajouter un gestionnaire d'événements pour le bouton de rafraîchissement
+  const refreshButton = document.getElementById('refreshButton');
+  if (refreshButton) {
+    refreshButton.addEventListener('click', () => {
+      refreshNews();
+    });
+  }
+});
