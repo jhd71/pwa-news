@@ -10,7 +10,7 @@ async function loadTopNews() {
       return;
     }
 
-    // Limiter à 5 articles pour éviter l'avertissement de loop
+    // Limiter à 5 articles maximum
     const limitedArticles = articles.slice(0, 5);
 
     limitedArticles.forEach(article => {
@@ -18,9 +18,12 @@ async function loadTopNews() {
         const slide = document.createElement('div');
         slide.className = 'swiper-slide';
 
+        // Vérification si l'image est bien présente
+        const imageSrc = article.image ? article.image : 'images/default-news.jpg';
+
         slide.innerHTML = `
           <a href="${article.link}" target="_blank" class="news-slide">
-            <img src="${article.image || 'images/default-news.jpg'}" class="news-image" alt="Image de l'actualité">
+            <img src="${imageSrc}" class="news-image" alt="Image de l'actualité">
             <div class="news-text">
               <h3>${article.title}</h3>
               <div class="news-source">${article.source || 'Source inconnue'}</div>
