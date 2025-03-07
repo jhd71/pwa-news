@@ -1459,12 +1459,11 @@ main {
 /* Taille et affichage des images */
 .news-image {
   width: 100%;
-  height: 180px; /* Ajuste selon besoin */
+  max-height: 160px; /* Ajuster selon besoin */
   object-fit: cover;
   border-radius: 10px;
 }
 
-/* Texte des actualités */
 .news-text h3 {
   font-size: 18px;
   font-weight: bold;
