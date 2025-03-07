@@ -1418,7 +1418,7 @@ main {
   cursor: pointer;
 }
 
-/* Styles améliorés pour le Swiper - avec overlay et support de thème */
+/* Styles améliorés pour le Swiper - correction des problèmes de débordement */
 .swiper-container {
   width: 100%;
   display: flex;
@@ -1438,35 +1438,27 @@ main {
 }
 
 .swiper-slide {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  height: 100%;
-  text-align: center;
-  padding: 0;
-  box-sizing: border-box;
   position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* Important: empêche le débordement du contenu */
 }
 
 .swiper-slide a {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
+  display: block;
   width: 100%;
   height: 100%;
   color: white;
   text-decoration: none;
-  padding: 0;
-  box-sizing: border-box;
   position: relative;
 }
 
+/* Image plein écran avec position absolue */
 .swiper-slide img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  margin: 0;
+  object-position: center; /* Centre l'image */
   display: block;
 }
 
@@ -1477,7 +1469,7 @@ main {
   left: 0;
   right: 0;
   background: rgba(0, 0, 0, 0.7);
-  padding: 10px;
+  padding: 15px; /* Plus d'espace pour le texte */
   width: 100%;
   box-sizing: border-box;
 }
@@ -1485,14 +1477,16 @@ main {
 .slide-title {
   font-weight: bold;
   font-size: 16px;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   text-align: center;
+  line-height: 1.3; /* Meilleur espacement des lignes */
 }
 
 .slide-source {
   font-size: 14px;
   opacity: 0.8;
   color: #ff9800;
+  margin-top: 5px; /* Espace supplémentaire après le titre */
 }
 
 /* Pour les slides sans image */
