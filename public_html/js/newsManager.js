@@ -1,49 +1,59 @@
 async function fetchNationalNews() {
     try {
         const response = await fetch('/api/getNationalNews');
-        const newsData = await response.json();
+        const articles = await response.json();
+        const swiperWrapper = document.getElementById('swiperWrapper');
+        
+        swiperWrapper.innerHTML = '';
 
-        const swiperWrapper = document.querySelector('.swiper-wrapper');
-        swiperWrapper.innerHTML = ''; // Vide l'ancien contenu
+        if (articles.length === 0) {
+            swiperWrapper.innerHTML = '<div class="swiper-slide"><p>Aucune actualité disponible.</p></div>';
+            return;
+        }
 
-        newsData.forEach(news => {
-            const slide = document.createElement('div');
-            slide.className = 'swiper-slide';
+        // Limiter à 5 articles
+        const limitedArticles = articles.slice(0, 5);
 
-            slide.innerHTML = `
-                <div class="news-slide">
-                    ${news.image ? `<img src="${news.image}" alt="${news.title}" class="news-image">` : ''}
-                    <div class="news-text">
-                        <h3>${news.title}</h3>
-                        <a href="${news.link}" target="_blank" class="news-source">(${news.source})</a>
-                    </div>
-                </div>
-            `;
+        limitedArticles.forEach(article => {
+            if (article.title && article.link) {
+                const slide = document.createElement('div');
+                slide.className = 'swiper-slide';
 
-            swiperWrapper.appendChild(slide);
+                slide.innerHTML = `
+                    <a href="${article.link}" target="_blank" style="color:white; text-decoration:none; padding:15px; display:flex; align-items:center; justify-content:center; text-align:center; flex-direction:column; height:100%;">
+                        ${article.image ? `<img src="${article.image}" alt="${article.title}" style="max-width:90%; height:auto; border-radius:8px; margin-bottom:10px;">` : ''}
+                        <div style="font-weight:bold; font-size:16px; margin-bottom:8px;">${article.title}</div>
+                        <div style="font-size:14px; opacity:0.8; color:#ff9800;">${article.source || 'Source inconnue'}</div>
+                    </a>
+                `;
+                swiperWrapper.appendChild(slide);
+            }
         });
 
-        // ✅ Réinitialise Swiper après avoir ajouté les slides
-        new Swiper('.swiper-container', {
-            loop: true,
+        // Réinitialisation Swiper
+        new Swiper('.swiper', {
+            loop: false, // Désactiver loop si moins de 5 articles
             autoplay: {
                 delay: 5000,
-                disableOnInteraction: false,
+                disableOnInteraction: false
             },
             pagination: {
                 el: '.swiper-pagination',
-                clickable: true,
+                clickable: true
             },
             navigation: {
                 nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
+                prevEl: '.swiper-button-prev'
             },
+            slidesPerView: 1,
+            spaceBetween: 20
         });
 
     } catch (error) {
-        console.error('Erreur lors du chargement des actualités nationales:', error);
+        console.error('Erreur de chargement des actualités:', error);
+        document.getElementById('swiperWrapper').innerHTML = '<div class="swiper-slide"><p>Erreur lors du chargement des actualités.</p></div>';
     }
 }
 
-// ✅ Appeler la fonction au chargement de la page
+// Charger les actualités au chargement de la page
 document.addEventListener('DOMContentLoaded', fetchNationalNews);
