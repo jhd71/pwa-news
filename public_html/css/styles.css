@@ -1605,7 +1605,6 @@ main {
 			max-height: 40px;
 		}
 	}
-}
 @media (max-width: 480px) {
     .swiper-container {
         margin-top: 0 !important;
