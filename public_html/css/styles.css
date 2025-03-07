@@ -1600,6 +1600,7 @@ main {
         padding-bottom: 30px;
         line-height: 1.4;
     }
+}
 	@media (max-width: 600px) {
 		.site-logo {
 			max-height: 40px;
