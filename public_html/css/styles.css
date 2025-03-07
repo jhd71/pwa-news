@@ -1420,14 +1420,23 @@ main {
 
 /* Solution complète pour le carrousel Swiper */
 
-/* Réinitialisation des styles pour éviter les conflits */
+/* Augmenter la marge supérieure du conteneur swiper */
 .swiper-container {
+  margin-top: 80px !important; /* Valeur à ajuster selon la hauteur de votre header */
+  margin-bottom: 20px;
   width: 100%;
   display: flex;
   justify-content: center;
-  margin: 10px 0 0 0; /* IMPORTANT: Marge inférieure à 0 */
   padding: 0;
   box-sizing: border-box;
+  position: relative;
+  z-index: 1; /* S'assurer que le z-index est inférieur à celui du header */
+}
+
+/* Ajuster la position de main pour faire de la place */
+main {
+  margin-top: calc(var(--header-height) + 10px) !important;
+  padding-top: 60px !important; /* Ajouter un padding supplémentaire en haut */
 }
 
 /* Ajuster la hauteur du Swiper */
@@ -1464,16 +1473,21 @@ main {
   text-decoration: none;
 }
 
-/* Positionnement correct de l'image */
+/* Position du slide pour éviter la coupure en haut */
 .swiper-slide img {
   position: absolute;
-  top: -40px; /* Décalage important vers le haut */
+  top: -30px; /* Décalage vers le haut */
   left: 0;
   width: 100%;
-  height: calc(100% + 40px); /* Compensation pour éviter les zones vides */
+  height: calc(100% + 30px); /* Compensation pour éviter les espaces vides */
   object-fit: cover;
-  object-position: center 20%; /* Favoriser le haut de l'image */
+  object-position: center 30%; /* Priorité au contenu principal */
   z-index: 1;
+}
+
+/* Fix pour s'assurer que le header reste visible */
+.app-header {
+  z-index: 1005 !important; /* Valeur supérieure pour s'assurer qu'il reste au-dessus */
 }
 
 /* Overlay de texte au bas de l'image */
