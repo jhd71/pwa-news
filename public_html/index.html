@@ -412,6 +412,12 @@ async function loadTopNews() {
   }
 }
 
+// Exposer la fonction pour pouvoir l'appeler depuis d'autres scripts
+window.refreshNews = function() {
+  console.log('Actualisation des nouvelles...');
+  loadTopNews();
+}
+
 // Charger les actualités au chargement de la page
 document.addEventListener('DOMContentLoaded', loadTopNews);
 
