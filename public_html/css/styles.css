@@ -1468,9 +1468,19 @@ main {
 /* Taille et affichage des images */
 .news-image {
   width: 100%;
-  max-height: 160px; /* Ajuster selon besoin */
+  height: 180px; /* Ajuste selon besoin */
   object-fit: cover;
   border-radius: 10px;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Fixe les dimensions des slides pour éviter les bugs */
+.swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 250px; /* Ajuste selon besoin */
 }
 
 .news-text h3 {
