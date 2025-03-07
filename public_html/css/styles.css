@@ -1456,6 +1456,15 @@ main {
   padding: 10px;
 }
 
+.swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
 /* Taille et affichage des images */
 .news-image {
   width: 100%;
