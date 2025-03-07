@@ -1418,96 +1418,83 @@ main {
   cursor: pointer;
 }
 
-/* Styles du slider Swiper */
+/* Styles améliorés pour le Swiper */
+.swiper-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
 .swiper {
-  margin-top: 20px;
   width: 90%;
   max-width: 1200px;
-  height: 300px;
-  overflow: hidden;
-  position: relative;
-  background-color: var(--primary-color);
-  color: white;
+  height: 250px; /* Hauteur fixe pour éviter le redimensionnement */
   border-radius: 15px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  background-color: var(--primary-color);
 }
 
-.news-slide {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  background: var(--primary-color);
-  padding: 10px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-/* Style des liens */
-.swiper-slide a {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  color: white;
-  text-decoration: none;
-  width: 100%;
-  padding: 10px;
-}
-
-.swiper-slide img {
-    display: block;
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 10px;
-    margin-bottom: 10px;
-}
-
-/* Taille et affichage des images */
-.news-image {
-  width: 100%;
-  height: 180px; /* Ajuste selon besoin */
-  object-fit: cover;
-  border-radius: 10px;
-  transition: opacity 0.3s ease-in-out;
-}
-
-/* Fixe les dimensions des slides pour éviter les bugs */
 .swiper-slide {
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 100%;
   text-align: center;
-  height: 250px; /* Ajuste selon besoin */
+  padding: 10px;
+  box-sizing: border-box;
 }
 
-.news-text h3 {
-  font-size: 18px;
-  font-weight: bold;
+.swiper-slide a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
   color: white;
-  margin: 10px 0;
+  text-decoration: none;
+  padding: 15px;
+  box-sizing: border-box;
 }
 
-.news-source {
-  font-size: 14px;
-  color: #ddd;
+.swiper-slide img {
+  width: 100%;
+  max-height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  display: block; /* Assure que l'image est toujours affichée en tant que bloc */
+}
+
+/* Adaptation pour le thème sombre/clair */
+[data-theme="dark"] .swiper {
+  background: rgba(60, 40, 130, 0.9);
+}
+
+[data-theme="light"] .swiper {
+  background: rgba(120, 100, 210, 0.9);
+}
+
+/* Boutons de navigation */
+.swiper-button-next,
+.swiper-button-prev {
+  color: white !important;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  opacity: 1;
 }
 
 /* Pagination */
-.swiper-pagination-bullet-active {
-  background: white;
-}
-
 .swiper-pagination-bullet {
   background: rgba(255, 255, 255, 0.6);
 }
-/* Adaptation au thème sombre/clair */
-[data-theme="dark"] .swiper-slide {
-  background: rgba(60, 40, 130, 0.8);
-}
 
-[data-theme="light"] .swiper-slide {
-  background: rgba(120, 100, 210, 0.8);
+.swiper-pagination-bullet-active {
+  background: white;
 }
