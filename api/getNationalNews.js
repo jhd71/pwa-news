@@ -1,8 +1,7 @@
-// /api/getNationalNews.js
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   try {
     const sources = [
       {
@@ -13,7 +12,6 @@ export default async function handler(req, res) {
         imageSelector: '.wp-post-image',
         name: 'Morandini'
       },
-      // Vous pouvez ajouter d'autres sources nationales ici
       {
         url: 'https://www.purepeople.com/',
         selector: '.c-card',
@@ -33,47 +31,49 @@ export default async function handler(req, res) {
     ];
     
     const articles = [];
-    
-    // Pour chaque source, récupérer quelques articles
+
     for (const source of sources) {
       try {
-        const response = await axios.get(source.url);
+        // Ajout d'un User-Agent pour éviter les blocages
+        const response = await axios.get(source.url, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36'
+          }
+        });
+
         const $ = cheerio.load(response.data);
         
         $(source.selector).slice(0, 3).each((i, el) => {
           const title = $(el).find(source.titleSelector).text().trim();
-          const link = $(el).find(source.linkSelector).attr('href');
+          let link = $(el).find(source.linkSelector).attr('href');
           
-          // Récupérer l'image si disponible
-          let image = $(el).find(source.imageSelector).attr('src');
-          if (!image) {
-            image = $(el).find(source.imageSelector).attr('data-src');
-          }
+          let image = $(el).find(source.imageSelector).attr('src') || $(el).find(source.imageSelector).attr('data-src');
           
           if (title && link) {
-            // S'assurer que l'URL est absolue
-            const finalLink = link.startsWith('http') ? link : `${new URL(source.url).origin}${link}`;
+            // Vérification si l'URL est complète
+            if (!link.startsWith('http')) {
+              link = new URL(link, source.url).href;
+            }
             
             articles.push({
               title,
-              link: finalLink,
-              image,
+              link,
+              image: image || null, // Empêche undefined
               source: source.name,
               date: new Date().toISOString()
             });
           }
         });
       } catch (error) {
-        console.error(`Erreur récupération ${source.name}:`, error);
+        console.error(`Erreur récupération ${source.name}:`, error.message);
       }
     }
     
-    // Mélanger les articles des différentes sources
     const shuffledArticles = articles.sort(() => 0.5 - Math.random());
     
     res.status(200).json(shuffledArticles.slice(0, 10));
   } catch (error) {
-    console.error('Erreur globale:', error);
+    console.error('Erreur globale:', error.message);
     res.status(500).json({ error: 'Erreur serveur' });
   }
-}
+};
