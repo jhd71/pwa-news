@@ -1,44 +1,35 @@
 const Parser = require('rss-parser');
+const parser = new Parser();
 
 module.exports = async (req, res) => {
   try {
-    const parser = new Parser({
-      customFields: {
-        item: ['media:content', 'enclosure']
-      }
-    });
-
     const feeds = [
       { name: 'Morandini', url: 'http://www.jeanmarcmorandini.com/rss.php', max: 3 },
       { name: 'BFMTV', url: 'https://www.bfmtv.com/rss/news-24-7/', max: 3 },
       { name: 'France Info', url: 'https://www.francetvinfo.fr/titres.rss', max: 3 }
     ];
 
-    const allArticles = [];
+    const articles = [];
 
     for (const feed of feeds) {
       try {
         const feedData = await parser.parseURL(feed.url);
-
-        const articles = feedData.items.slice(0, feed.max).map(item => ({
+        const fetchedArticles = feedData.items.slice(0, feed.max).map(item => ({
           title: item.title,
           link: item.link,
-          date: item.pubDate || item.isoDate,
-          source: feed.name,
-          image: item['media:content'] ? item['media:content'].url :
-                 item.enclosure ? item.enclosure.url : null
+          image: item.enclosure?.url || "images/default-news.jpg", // Image par défaut
+          source: feed.name
         }));
 
-        allArticles.push(...articles);
+        articles.push(...fetchedArticles);
       } catch (error) {
         console.error(`Erreur avec ${feed.name}:`, error.message);
       }
     }
 
-    res.status(200).json(allArticles.slice(0, 10));
-
+    return res.status(200).json(articles.slice(0, 10));
   } catch (error) {
     console.error('Erreur générale:', error.message);
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: 'Erreur serveur' });
   }
 };
