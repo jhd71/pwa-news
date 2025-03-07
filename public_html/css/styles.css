@@ -1685,3 +1685,66 @@ main > *:not(.separator):first-child {
     margin-bottom: 0 !important;
   }
 }
+/* Solution ultra-agressive pour éliminer l'espace sur mobile */
+
+/* Spécifiquement pour mobile */
+@media (max-width: 767px) {
+  /* Réinitialisation complète des espaces */
+  .swiper-container {
+    margin-bottom: -20px !important; /* Valeur négative pour compenser les espaces */
+  }
+  
+  /* Suppression de tous les espaces blancs entre les éléments */
+  .swiper-container,
+  .swiper,
+  main > *,
+  #tileContainer,
+  .separator,
+  main > div,
+  body > div {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  
+  /* Force la suppression de tous les espaces potentiels */
+  .separator:first-of-type {
+    margin-top: -10px !important; /* Valeur négative pour "remonter" le séparateur */
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Solution hack: insérer un élément qui va "tirer" le contenu vers le haut */
+  .swiper-container::after {
+    content: '';
+    display: block;
+    height: 0;
+    margin-bottom: -30px !important; /* Valeur négative plus importante */
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Correction spécifique pour les marges héritées */
+  main {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  
+  /* Garantir que les éléments se suivent sans espace */
+  * + * {
+    margin-top: 0 !important;
+  }
+}
+
+/* Pour les très petits écrans mobiles */
+@media (max-width: 480px) {
+  /* Augmenter les valeurs négatives pour les petits écrans */
+  .swiper-container::after {
+    margin-bottom: -40px !important;
+  }
+  
+  .separator:first-of-type {
+    margin-top: -15px !important;
+  }
+}
