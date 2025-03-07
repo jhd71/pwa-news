@@ -1418,7 +1418,7 @@ main {
   cursor: pointer;
 }
 
-/* Styles améliorés pour le Swiper - correction de la hauteur et du positionnement */
+/* Styles améliorés pour le Swiper - avec overlay et support de thème */
 .swiper-container {
   width: 100%;
   display: flex;
@@ -1429,64 +1429,80 @@ main {
 .swiper {
   width: 90%;
   max-width: 1200px;
-  height: 320px; /* Augmentation de la hauteur pour accommoder les images */
+  height: 320px;
   border-radius: 15px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   overflow: hidden;
-  background-color: var(--primary-color, #1a237e);
+  background-color: var(--primary-color);
+  position: relative;
 }
 
 .swiper-slide {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   height: 100%;
   text-align: center;
-  padding: 10px;
+  padding: 0;
   box-sizing: border-box;
+  position: relative;
 }
 
 .swiper-slide a {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between; /* Changé de center à space-between */
+  justify-content: flex-start;
   width: 100%;
   height: 100%;
   color: white;
   text-decoration: none;
-  padding: 10px;
+  padding: 0;
   box-sizing: border-box;
+  position: relative;
 }
 
 .swiper-slide img {
   width: 100%;
-  max-height: 180px; /* Augmentation de la hauteur maximale */
+  height: 100%;
   object-fit: cover;
-  border-radius: 10px;
-  margin-bottom: 10px;
+  margin: 0;
   display: block;
 }
 
-/* Conteneur du titre et de la source */
-.swiper-slide .slide-content {
-  display: flex;
-  flex-direction: column;
+/* Overlay pour le texte */
+.slide-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 10px;
   width: 100%;
-  padding: 0 5px;
+  box-sizing: border-box;
 }
 
-.swiper-slide .slide-title {
+.slide-title {
   font-weight: bold;
   font-size: 16px;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
   text-align: center;
 }
 
-.swiper-slide .slide-source {
+.slide-source {
   font-size: 14px;
   opacity: 0.8;
   color: #ff9800;
+}
+
+/* Pour les slides sans image */
+.swiper-slide:not(:has(img)) .slide-content {
+  position: static;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--primary-color);
 }
 
 /* Adaptation pour le thème sombre/clair */
@@ -1495,6 +1511,15 @@ main {
 }
 
 [data-theme="light"] .swiper {
+  background: rgba(120, 100, 210, 0.9);
+}
+
+/* Support de thème pour les slides sans image */
+[data-theme="dark"] .swiper-slide:not(:has(img)) .slide-content {
+  background: rgba(60, 40, 130, 0.9);
+}
+
+[data-theme="light"] .swiper-slide:not(:has(img)) .slide-content {
   background: rgba(120, 100, 210, 0.9);
 }
 
