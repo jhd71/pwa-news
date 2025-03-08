@@ -1470,9 +1470,10 @@ main {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: 100%; /* Garde la largeur complète */
+  height: auto; /* Ajuste automatiquement la hauteur */
+  max-height: 200px; /* Limite la hauteur (ajuste cette valeur selon ton besoin) */
+  object-fit: cover; /* Garde une bonne mise en page */
   object-position: center;
   z-index: 1;
 }
