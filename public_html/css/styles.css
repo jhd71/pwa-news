@@ -1477,7 +1477,6 @@ main {
   width: 100%; /* Garde la largeur complète */
   height: 100% !important;
   max-height: 220px; /* Taille ajustée */
-  object-fit: contain; /* Évite que l’image soit coupée */
   object-fit: cover; /* Remplissage propre */
   object-position: center; /* Centrage */
   z-index: 1;
