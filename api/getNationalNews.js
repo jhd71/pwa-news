@@ -3,20 +3,19 @@ const parser = new Parser();
 
 // 🔄 Mélange aléatoire des articles
 function shuffleArticles(articles) {
-  for (let i = articles.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [articles[i], articles[j]] = [articles[j], articles[i]];
-  }
-  return articles;
+    let mixed = [];
+    while (articles.length) {
+        let index = Math.floor(Math.random() * articles.length);
+        mixed.push(articles.splice(index, 1)[0]);
+    }
+    return mixed;
 }
 
 module.exports = async (req, res) => {
   try {
     const feeds = [
       { name: 'BFMTV', url: 'https://www.bfmtv.com/rss/news-24-7/', max: 3 },
-      { name: 'France Info', url: 'https://www.francetvinfo.fr/titres.rss', max: 3 },
-      { name: '20 Minutes', url: 'https://www.20minutes.fr/rss/actu-france.xml', max: 3 },
-      { name: 'Le Monde', url: 'https://www.lemonde.fr/rss/une.xml', max: 3 }
+      { name: 'France Info', url: 'https://www.francetvinfo.fr/titres.rss', max: 3 }
     ];
 
     let articles = [];
