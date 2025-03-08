@@ -1,84 +1,145 @@
-/* PANNEAU D'ACTUALITÉS ET TICKER D'INFOS
-   Fichier séparé pour les fonctionnalités liées aux actualités
-   ========================================================== */
-
-/* Solution pour supprimer le carrousel sur mobile mais conserver le bouton existant */
-@media (max-width: 767px) {
-  /* Masquer le carrousel sur mobile */
-  .swiper-container {
-    display: none !important;
-  }
-  
-  /* Ajuster l'espacement pour le premier séparateur */
-  .separator:first-of-type {
-    margin-top: 80px !important; /* Espace suffisant après le header */
-  }
-  
-  /* Améliorer la visibilité du bouton existant */
-  .news-button {
-    position: fixed !important;
-    top: 70px !important;
-    right: 50% !important;
-    transform: translateX(50%) !important;
-    width: 80% !important;
-    max-width: 300px !important;
-    padding: 10px 15px !important;
-    border-radius: 10px !important;
-    text-align: center !important;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
-    animation: pulse 2s infinite !important; /* Conserver l'animation existante */
-    z-index: 996 !important;
-  }
+/* Styles de base du bouton - s'appliquent à tous les écrans */
+.news-button {
+    position: fixed;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    z-index: 995;
+    font-weight: 700;
+    font-size: 17px;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    transform-origin: center;
 }
 
-/* Style spécifique pour les écrans plus grands (PC) */
-@media (min-width: 1024px) {
-    .news-button {
-        padding: 7px 14px; /* Padding réduit */
-        font-size: 14px; /* Texte plus petit */
-        max-width: 175px; /* Largeur maximale réduite */
-        border-radius: 10px; /* Coins légèrement moins arrondis */
-        top: 65px; /* Position ajustée */
-    }
-    
-    /* Réduire la taille de l'icône également */
-    .news-button .material-icons {
-        font-size: 16px;
-    }
+/* Animation de pulsation pour tous les écrans */
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.9; }
+    50% { transform: scale(1.07); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.9; }
 }
 
-.news-button:hover {
-    transform: translateY(-2px) scale(1.05); /* Rehausser et agrandir au survol */
-    box-shadow: 0 7px 20px rgba(0, 0, 0, 0.4);
+.news-button {
+    animation: pulse 2s infinite;
 }
 
+/* Taille de l'icône de base */
 .news-button .material-icons {
     font-size: 22px;
 }
 
-/* ✅ Animations plus fluides pour l’état actif */
+/* Effets au survol et au clic - pour tous les écrans */
+.news-button:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 7px 20px rgba(0, 0, 0, 0.4);
+}
+
 .news-button:active {
     transform: scale(0.95);
     box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
     opacity: 0.8;
 }
 
-/*✅ Amélioration de l’animation pulse */
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-        opacity: 0.9;
+/* Styles pour les écrans PC */
+@media (min-width: 768px) {
+    .news-button {
+        top: 65px;
+        right: 15px;
+        padding: 7px 14px;
+        font-size: 16px;
+        max-width: 175px;
+        border-radius: 10px;
     }
+    
+    .news-button .material-icons {
+        font-size: 18px;
+    }
+}
 
-    50% {
-        transform: scale(1.07);
-        opacity: 1;
-    }
+/* Animation de pulsation de taille pour mobile (centré) */
+@keyframes pulseCenter {
+    0% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(1.05); }
+    100% { transform: translateX(-50%) scale(1); }
+}
 
-    100% {
-        transform: scale(1);
-        opacity: 0.9;
+/* Animation de pulsation de taille pour desktop */
+@keyframes pulseSize {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Styles pour mobile */
+@media (max-width: 767px) {
+    /* Masquer le carrousel sur mobile */
+    .swiper-container {
+        display: none !important;
     }
+    
+    /* Ajuster l'espacement pour le premier séparateur */
+    .separator:first-of-type {
+        margin-top: 50px !important;
+    }
+    
+    /* Style du bouton sur mobile */
+.news-button {
+    position: fixed !important;
+    top: 70px !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%);
+    background-color: var(--primary-color) !important;
+    width: auto !important; /* Ajuste automatiquement à la taille du contenu */
+    max-width: 250px !important; /* Limite la largeur */
+    padding: 10px 20px !important; /* Ajuste le padding */
+    padding: 10px 15px !important;
+    text-align: center !important;
+    animation: pulseCenter 2s infinite !important;
+    font-weight: 700; /* 700 = bold, 800 = extra-bold */
+    letter-spacing: 0.5px; /* Espace légèrement les lettres */
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2); /* Ajoute une ombre légère */
+    font-size: 15px !important; /* AJOUTEZ CETTE LIGNE pour agrandir le texte */
+	animation: pulseCenter 2s infinite !important;
+	border-radius: 20px !important; /* Plus la valeur est grande, plus c'est arrondi */
+}
+    
+    /* Effets au survol et au clic sur mobile */
+    .news-button:hover {
+        transform: translateX(-50%) translateY(-2px) !important;
+        box-shadow: 0 7px 20px rgba(0, 0, 0, 0.4) !important;
+    }
+    
+    .news-button:active {
+        transform: translateX(-50%) scale(0.95) !important;
+        box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3) !important;
+    }
+}
+
+/* Styles pour desktop */
+@media (min-width: 768px) {
+    .news-button {
+        position: fixed !important;
+        top: 65px !important;
+        right: 15px !important;
+        background-color: var(--primary-color) !important;
+        padding: 7px 14px !important;
+        font-size: 16px !important;
+        animation: pulseSize 2s infinite !important;
+    }
+}
+
+/* Assurer que le bouton conserve sa couleur de thème */
+[data-theme="dark"] .news-button,
+[data-theme="light"] .news-button {
+    background-color: var(--primary-color) !important;
 }
 /* ✅ Ajout z-index pour le menu */
 
