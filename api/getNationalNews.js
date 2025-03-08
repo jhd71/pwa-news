@@ -6,7 +6,7 @@ module.exports = async (req, res) => {
     const feeds = [
       { name: 'BFMTV', url: 'https://www.bfmtv.com/rss/news-24-7/', max: 3 },
       { name: 'France Info', url: 'https://www.francetvinfo.fr/titres.rss', max: 3 },
-      { name: 'Foot Mercato', url: 'https://rss.app/feeds/G2kPAILpRT1dRmh1.xml', max: 3 }
+      { name: 'Football', url: 'https://cdn.feedcontrol.net/8812/14710-FgCHmHgYLMfDf.xml', max: 3 }
     ];
 
     const allArticles = [];
