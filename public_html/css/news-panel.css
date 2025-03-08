@@ -2,30 +2,33 @@
    Fichier séparé pour les fonctionnalités liées aux actualités
    ========================================================== */
 
-/* Bouton Infos en direct - Style de base (mobile) */
-.news-button {
-    position: fixed;
-    top: 70px;
-    right: 15px;
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
-    z-index: 995;
-    font-weight: 700;
-    animation: pulse 2s infinite;
-    font-size: 17px;
-    max-width: 200px;
-    bottom: auto !important;
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    transform-origin: center;
+/* Solution pour supprimer le carrousel sur mobile mais conserver le bouton existant */
+@media (max-width: 767px) {
+  /* Masquer le carrousel sur mobile */
+  .swiper-container {
+    display: none !important;
+  }
+  
+  /* Ajuster l'espacement pour le premier séparateur */
+  .separator:first-of-type {
+    margin-top: 80px !important; /* Espace suffisant après le header */
+  }
+  
+  /* Améliorer la visibilité du bouton existant */
+  .news-button {
+    position: fixed !important;
+    top: 70px !important;
+    right: 50% !important;
+    transform: translateX(50%) !important;
+    width: 80% !important;
+    max-width: 300px !important;
+    padding: 10px 15px !important;
+    border-radius: 10px !important;
+    text-align: center !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+    animation: pulse 2s infinite !important; /* Conserver l'animation existante */
+    z-index: 996 !important;
+  }
 }
 
 /* Style spécifique pour les écrans plus grands (PC) */
