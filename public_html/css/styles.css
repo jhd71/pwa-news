@@ -1474,7 +1474,7 @@ main {
   height: auto; /* Ajuste automatiquement la hauteur */
   max-height: 200px; /* Limite la hauteur (ajuste cette valeur selon ton besoin) */
   object-fit: cover; /* Garde une bonne mise en page */
-  object-position: center;
+  object-position: center bottom;
   z-index: 1;
 }
 
