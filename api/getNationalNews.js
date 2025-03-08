@@ -9,56 +9,51 @@ module.exports = async (req, res) => {
       { name: 'jeux_video', url: 'https://cdn.feedcontrol.net/8812/14715-umH6LQsvsXz0D.xml', max: 3 }
     ];
 
-    const allArticles = [];
+    const articles = [];
 
     for (const feed of feeds) {
       try {
+        console.log(`Récupération de ${feed.name}...`);
         const feedData = await parser.parseURL(feed.url);
+        console.log(`Articles trouvés pour ${feed.name}:`, feedData.items.length);
 
-        const articles = feedData.items.slice(0, feed.max).map(item => {
-          let image = item.enclosure?.url || null;
+        const fetchedArticles = feedData.items.slice(0, feed.max).map(item => {
+          let image = item.enclosure?.url || null; // Vérifie d'abord si une image est déjà dans enclosure
 
-          // Récupère l'image depuis plusieurs sources possibles
-let image = item.enclosure?.url || 
-            item["media:content"]?.url || 
-            item.image || 
-            item.thumbnail || 
-            "https://via.placeholder.com/400x200?text=Pas+d'image";
+          // Tentative d'extraction depuis content
+          if (!image && item.content) {
+            const imgMatch = item.content.match(/<img[^>]+src="([^">]+)"/);
+            if (imgMatch) {
+              image = imgMatch[1];
+            }
+          }
 
-// Si l'image n'est toujours pas trouvée, essaie de l'extraire du contenu HTML
-if (!image && item.content) {
-  const imgMatch = item.content.match(/<img[^>]+src="([^">]+)"/);
-  if (imgMatch) {
-    image = imgMatch[1];
-  }
-}
+          // Si aucune image trouvée, utilise une image par défaut
+          if (!image) {
+            image = "/images/default-news.jpg"; // Assurez-vous d'avoir cette image sur votre serveur
+          }
 
           return {
-            title: item.title || "Titre non disponible",
-            link: item.link || "#",
-            image: image || "/images/default-news.jpg",
+            title: item.title,
+            link: item.link,
+            image,
             source: feed.name
           };
         });
 
-        allArticles.push(...articles);
+        articles.push(...fetchedArticles);
       } catch (error) {
         console.error(`Erreur avec ${feed.name}:`, error.message);
       }
     }
 
-    // **🔀 Mélange et équilibre les articles**
-    const shuffledArticles = [];
-    while (allArticles.length > 0) {
-      for (let i = 0; i < feeds.length; i++) {
-        const articleIndex = allArticles.findIndex(a => a.source === feeds[i].name);
-        if (articleIndex !== -1) {
-          shuffledArticles.push(allArticles.splice(articleIndex, 1)[0]);
-        }
-      }
+    // Si aucun article n'a été récupéré, renvoyer une erreur pour éviter un JSON vide
+    if (articles.length === 0) {
+      console.error("Aucun article récupéré, vérifiez les flux RSS !");
+      return res.status(500).json({ error: "Aucun article récupéré" });
     }
 
-    return res.status(200).json(shuffledArticles.slice(0, 5)); // ✅ Prend 5 articles sans répétition
+    return res.status(200).json(articles.slice(0, 10));
   } catch (error) {
     console.error('Erreur générale:', error.message);
     return res.status(500).json({ error: 'Erreur serveur' });
