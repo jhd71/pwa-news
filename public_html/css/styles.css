@@ -1436,22 +1436,24 @@ main {
 .swiper {
   width: 90%;
   max-width: 1200px;
-  height: 290px;
+  height: 200px !important; /* Ajuste selon besoin */
   border-radius: 15px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   overflow: hidden;
   position: relative;
   background-color: var(--primary-color);
+  display: flex;
+  align-items: center; /* Centre le contenu verticalement */
 }
 
 /* Reset des slides */
 .swiper-slide {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: auto !important;
   overflow: hidden;
-  padding: 0;
-  margin: 0;
+  padding: 0 !important;
+  margin: 0 !important;
   display: block;
 }
 
@@ -1472,8 +1474,8 @@ main {
   left: 0;
   width: 100%; /* Garde la largeur complète */
   height: auto; /* Ajuste automatiquement la hauteur */
-  max-height: 200px; /* Limite la hauteur (ajuste cette valeur selon ton besoin) */
-  object-fit: cover; /* Garde une bonne mise en page */
+  max-height: 180px; /* Diminue la hauteur pour éviter l'effet géant */
+  object-fit: contain; /* Évite que l’image soit coupée */
   object-position: bottom; /* L’image se positionne plus bas */
   z-index: 1;
   padding-top: 20px; /* Ajuste la hauteur selon ton besoin */
