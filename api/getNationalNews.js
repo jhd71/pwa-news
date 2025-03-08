@@ -18,13 +18,20 @@ module.exports = async (req, res) => {
         const articles = feedData.items.slice(0, feed.max).map(item => {
           let image = item.enclosure?.url || null;
 
-          // Vérifie si l'image est dans le contenu
-          if (!image && item.content) {
-            const imgMatch = item.content.match(/<img[^>]+src="([^">]+)"/);
-            if (imgMatch) {
-              image = imgMatch[1];
-            }
-          }
+          // Récupère l'image depuis plusieurs sources possibles
+let image = item.enclosure?.url || 
+            item["media:content"]?.url || 
+            item.image || 
+            item.thumbnail || 
+            "https://via.placeholder.com/400x200?text=Pas+d'image";
+
+// Si l'image n'est toujours pas trouvée, essaie de l'extraire du contenu HTML
+if (!image && item.content) {
+  const imgMatch = item.content.match(/<img[^>]+src="([^">]+)"/);
+  if (imgMatch) {
+    image = imgMatch[1];
+  }
+}
 
           return {
             title: item.title || "Titre non disponible",
