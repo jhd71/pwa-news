@@ -1424,9 +1424,9 @@ main {
     width: 100%;
     display: flex;
     justify-content: center;
-    margin-top: 80px !important; /* Espace après le header */
-    margin-bottom: 1px !important; /* Espace avant le séparateur sur PC */
-    padding: 0;
+    margin-top: 90px !important; /* Espace après le header */
+    margin-bottom: 10px !important; /* Espace avant le séparateur sur PC */
+    padding: 5;
     box-sizing: border-box;
     position: relative;
     z-index: 2;
