@@ -1436,7 +1436,8 @@ main {
 .swiper {
   width: 90%;
   max-width: 1200px;
-  height: 200px !important; /* Ajuste selon besoin */
+  height: auto !important; /* Ajuste la hauteur au contenu */
+  max-height: 220px !important; /* Empêche d’être trop grand */
   border-radius: 15px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   overflow: hidden;
@@ -1444,6 +1445,7 @@ main {
   background-color: var(--primary-color);
   display: flex;
   align-items: center; /* Centre le contenu verticalement */
+  justify-content: center;
 }
 
 /* Reset des slides */
@@ -1473,10 +1475,11 @@ main {
   top: 0;
   left: 0;
   width: 100%; /* Garde la largeur complète */
-  height: auto; /* Ajuste automatiquement la hauteur */
-  max-height: 180px; /* Diminue la hauteur pour éviter l'effet géant */
+  height: 100% !important;
+  max-height: 220px; /* Taille ajustée */
   object-fit: contain; /* Évite que l’image soit coupée */
-  object-position: bottom; /* L’image se positionne plus bas */
+  object-fit: cover; /* Remplissage propre */
+  object-position: center; /* Centrage */
   z-index: 1;
   padding-top: 20px; /* Ajuste la hauteur selon ton besoin */
 }
