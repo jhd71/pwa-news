@@ -1418,31 +1418,6 @@ main {
 }
 
 /* CSS propre et optimisé pour le carrousel Swiper */
-/* Fond stylisé uniquement derrière le carrousel */
-.carousel-background {
-  position: absolute;
-  top: 50px; /* Ajuste cet espace pour descendre le fond */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  max-width: 1200px;
-  height: 350px; /* Hauteur ajustée */
-  border-radius: 15px;
-  z-index: -1; /* Derrière le carrousel */
-  filter: blur(20px); /* Effet de flou */
-}
-
-/* Thème sombre */
-[data-theme="dark"] .carousel-background {
-  background: linear-gradient(135deg, #121212, #1a237e);
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-}
-
-/* Thème clair */
-[data-theme="light"] .carousel-background {
-  background: linear-gradient(135deg, #d1c4e9, #9575cd);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-}
  /* Conteneur principal du Swiper */
 .swiper-container {
     width: 100%;
