@@ -1434,18 +1434,17 @@ main {
 
 /* Style du Swiper */
 .swiper {
-  width: 90%;
-  max-width: 1200px;
-  height: auto !important; /* Ajuste la hauteur au contenu */
-  max-height: 220px !important; /* Empêche d’être trop grand */
-  border-radius: 15px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
-  position: relative;
-  background-color: var(--primary-color);
-  display: flex;
-  align-items: center; /* Centre le contenu verticalement */
-  justify-content: center;
+    width: 90%;
+    max-width: 1200px;
+    height: 250px !important; /* Hauteur raisonnable */
+    border-radius: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    position: relative;
+    background-color: var(--primary-color);
+    display: flex;
+    align-items: center; /* Centre le contenu verticalement */
+    justify-content: center;
 }
 
 /* Reset des slides */
@@ -1471,16 +1470,11 @@ main {
 
 /* Images dans les slides */
 .swiper-slide img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%; /* Garde la largeur complète */
-  height: 100% !important;
-  max-height: 220px; /* Taille ajustée */
-  object-fit: cover; /* Remplissage propre */
-  object-position: center; /* Centrage */
-  z-index: 1;
-  padding-top: 20px; /* Ajuste la hauteur selon ton besoin */
+    width: 100%; /* Garde la largeur complète */
+    height: 100% !important; /* Remplit tout l’espace */
+    object-fit: cover; /* Ajuste proprement l’image */
+    object-position: center; /* Centre l’image */
+    z-index: 1;
 }
 
 /* Overlay de texte */
