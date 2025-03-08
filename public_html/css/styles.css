@@ -1435,7 +1435,7 @@ main {
 /* Style du Swiper */
 .swiper {
     width: 90%;
-    max-width: 1200px;
+    max-width: 600px;
     border-radius: 15px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     overflow: hidden;
