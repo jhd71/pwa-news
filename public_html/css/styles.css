@@ -1425,7 +1425,7 @@ main {
     display: flex;
     justify-content: center;
     margin-top: 80px !important; /* Espace après le header */
-    margin-bottom: 20px !important; /* Espace avant le séparateur sur PC */
+    margin-bottom: 1px !important; /* Espace avant le séparateur sur PC */
     padding: 0;
     box-sizing: border-box;
     position: relative;
