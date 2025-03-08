@@ -1476,6 +1476,7 @@ main {
   object-fit: cover; /* Garde une bonne mise en page */
   object-position: bottom; /* L’image se positionne plus bas */
   z-index: 1;
+  padding-top: 20px; /* Ajuste la hauteur selon ton besoin */
 }
 
 /* Overlay de texte */
