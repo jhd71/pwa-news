@@ -1,6 +1,15 @@
 const Parser = require('rss-parser');
 const parser = new Parser();
 
+// 🔄 Mélange aléatoire des articles
+function shuffleArticles(articles) {
+  for (let i = articles.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [articles[i], articles[j]] = [articles[j], articles[i]];
+  }
+  return articles;
+}
+
 module.exports = async (req, res) => {
   try {
     const feeds = [
@@ -51,10 +60,9 @@ module.exports = async (req, res) => {
       return res.status(500).json({ error: "Aucun article récupéré" });
     }
 
-    // ✅ Mélange aléatoire des articles avant de les afficher
-    articles = articles.sort(() => Math.random() - 0.5);
+    // ✅ Appliquer le mélange aléatoire AVANT de renvoyer les données
+    return res.status(200).json(shuffleArticles(articles).slice(0, 10));
 
-    return res.status(200).json(articles.slice(0, 10));
   } catch (error) {
     console.error('Erreur générale:', error.message);
     return res.status(500).json({ error: 'Erreur serveur' });
