@@ -1465,9 +1465,16 @@ main {
   font-size: 12px;
   line-height: 1.2;
 }
+/* Support des thèmes */
+[data-theme="dark"] .weather {
+    background: rgba(26, 35, 126, 0.9);
+}
 
+[data-theme="light"] .weather {
+    background: rgba(126, 87, 194, 0.9);
+}
 /* ===== SWIPER STYLES ===== */
-/* Conteneur global du Swiper */
+/* Conteneur principal du Swiper */
 .swiper-container {
     width: 100%;
     display: flex;
@@ -1480,7 +1487,7 @@ main {
     z-index: 2;
 }
 
-/* Ajustement de la taille et du format du Swiper */
+/* Style du Swiper */
 .swiper {
     width: 100%;
     max-width: 600px;
@@ -1494,27 +1501,28 @@ main {
     justify-content: center;
 }
 
-/* Ajustement des slides */
+/* Reset des slides */
 .swiper-slide {
-  position: relative;
-  width: 100%;
-  height: 100% !important;
-  overflow: hidden;
-  padding: 0 !important;
-  margin: 0 !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    position: relative;
+    width: 90%;
+    height: auto!important;
+    overflow: hidden;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block;
 }
 
 /* Liens dans les slides */
 .swiper-slide a {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    color: white;
+    text-decoration: none;
 }
 
-/* Correction du format d'image */
+/* Images dans les slides */
 .swiper-slide img {
     width: 100%; /* Garde la largeur complète */
     height: 100% !important; /* Remplit tout l’espace */
@@ -1523,185 +1531,140 @@ main {
     z-index: 1;
 }
 
-/* Positionnement du texte */
+/* Overlay de texte */
 .slide-content {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 15px;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 2;
-  height: auto; /* Hauteur automatique basée sur le contenu */
-  min-height: 80px; /* Hauteur minimale pour le texte */
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    z-index: 2;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Style du titre */
 .slide-title {
-  color: white;
-  font-weight: bold;
-  font-size: 16px;
-  margin: 0 0 5px 0;
-  padding: 0;
-  text-align: center;
-  line-height: 1.4;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0 0 5px 0;
+    padding: 0;
+    text-align: center;
+    line-height: 1.4;
 }
 
 /* Style de la source */
 .slide-source {
-  font-size: 14px;
-  color: #ff9800;
-  opacity: 0.8;
-  margin: 0;
-  padding: 0;
-  text-align: center;
+    font-size: 14px;
+    color: #ff9800;
+    opacity: 0.8;
+    margin: 0;
+    padding: 0;
+    text-align: center;
 }
 
-/* Assurer que les boutons de navigation sont bien visibles */
+/* Boutons de navigation */
 .swiper-button-next,
 .swiper-button-prev {
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 50%;
-  width: 40px !important;
-  height: 40px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+    color: white !important;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+    z-index: 10;
 }
 
-.swiper-button-next:after,
-.swiper-button-prev:after {
-  font-size: 20px !important;
-}
 .swiper-button-next:hover,
 .swiper-button-prev:hover {
-  opacity: 1;
+    opacity: 1;
 }
 
 /* Pagination */
 .swiper-pagination {
-  position: absolute;
-  bottom: 8px;
-  left: 0;
-  right: 0;
-  z-index: 10;
+    position: absolute;
+    bottom: 8px;
+    left: 0;
+    right: 0;
+    z-index: 10;
 }
 
 .swiper-pagination-bullet {
-  background: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.6);
 }
 
 .swiper-pagination-bullet-active {
-  background: white;
+    background: white;
 }
 
-/* ===== SÉPARATEURS ET TUILES ===== */
 /* Style du séparateur */
 .separator {
-  grid-column: 1 / -1;
-  margin: 10px 0 !important;
+    grid-column: 1 / -1;
+    margin: 10px 0 !important;
 }
 
 /* S'assurer que le header reste au-dessus */
 .app-header {
-  z-index: 1005 !important;
+    z-index: 1005 !important;
 }
 
 /* Support des thèmes */
 [data-theme="dark"] .swiper {
-  background: rgba(26, 35, 126, 0.9);
+    background: rgba(26, 35, 126, 0.9);
 }
 
 [data-theme="light"] .swiper {
-  background: rgba(126, 87, 194, 0.9);
+    background: rgba(126, 87, 194, 0.9);
 }
 
-/* ===== MEDIA QUERIES ===== */
-/* Masquer le Swiper sur mobile */
+/* Adaptations pour écrans PC */
+@media (min-width: 768px) {
+    .swiper-container {
+        margin-bottom: 15px !important;
+    }
+
+    .separator {
+        margin: 10px 0 !important;
+    }
+}
+
+/* Adaptations pour mobiles */
 @media (max-width: 767px) {
-  .swiper-container {
-    display: none !important;
-  }
-  
-  .weather-sidebar {
-    display: none !important;
-  }
-  
-  /* Ajuster l'espacement pour le premier séparateur quand le Swiper est masqué */
-  .separator:first-of-type {
-    margin-top: 60px !important;
-  }
-  
-  .tile-container {
-    width: 95% !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
+    .swiper-container {
+        margin-top: 60px !important; /* Moins d'espace en haut sur mobile */
+        margin-bottom: 5px !important; /* Moins d'espace en bas sur mobile */
+    }
+
+    .swiper {
+        height: 250px; /* Hauteur réduite sur mobile */
+    }
+
+    .slide-title {
+        font-size: 14px;
+    }
+
+    .slide-source {
+        font-size: 12px;
+    }
+
+    .separator {
+        margin: 5px 0 !important;
+    }
+
+    /* Ajustement pour éviter que le carrousel soit coupé */
+    main {
+        padding-top: 0 !important;
+    }
 }
 
-/* Tablettes */
-@media (min-width: 768px) and (max-width: 1199px) {
-  .weather-sidebar {
-    display: none !important;
-  }
-  
-  .swiper-container {
-    margin-bottom: 15px !important;
-    width: 90% !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
-  
-  .tile-container {
-    width: 90% !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
-  
-  .separator {
-    margin: 10px 0 !important;
-  }
-}
-
-/* Desktop */
-@media (min-width: 1200px) {
-  .weather-sidebar {
-    display: block !important;
-  }
-  
-  .swiper-container {
-    width: calc(100% - 190px) !important;
-    max-width: 800px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
-  
-  .swiper {
-    max-width: 800px !important;
-    height: 250px !important;
-  }
-  
-  .tile-container {
-    width: calc(100% - 190px) !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    max-width: 1400px;
-  }
-  
-  .tile-container.grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  }
-}
-
-/* Très petits écrans */
+/* Adaptations pour très petits écrans */
 @media (max-width: 480px) {
-  .separator:first-of-type {
-    margin-top: 55px !important;
-  }
-  
-  .tile-container {
-    padding: 0 5px !important;
-  }
+    .swiper-container {
+        margin-top: 55px !important;
+        margin-bottom: 3px !important;
+    }
+
+    .swiper {
+        height: 220px;
+    }
 }
