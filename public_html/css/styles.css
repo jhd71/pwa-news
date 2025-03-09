@@ -1466,6 +1466,11 @@ main {
   line-height: 1.2;
 }
 
+/* Mode sombre - Correction du texte des prévisions */
+[data-theme="dark"] .weather-day p {
+  color: black !important; /* Force le texte en noir */
+}
+
 /* ===== SWIPER STYLES ===== */
 /* Conteneur principal du Swiper */
 .swiper-container {
