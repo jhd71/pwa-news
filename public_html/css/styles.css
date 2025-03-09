@@ -1526,7 +1526,7 @@ main {
 /* Images dans les slides */
 .swiper-slide img {
   width: 100%;
-  height: 220px !important; /* Limiter la hauteur de l'image */
+  height: 200px !important; /* Limiter la hauteur de l'image */
   object-fit: cover !important; /* Utiliser 'cover' pour remplir l'espace */
   object-position: center 30%; /* Ajuster pour voir plus du haut de l'image */
   display: block;
