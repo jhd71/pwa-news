@@ -1572,7 +1572,7 @@ main {
   margin: 0;
   padding: 0;
   text-align: center;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); /* Ombre noire pour améliorer la lisibilité */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 1); /* Ombre noire pour améliorer la lisibilité */
 }
 
 /* Boutons de navigation */
