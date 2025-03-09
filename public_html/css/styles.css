@@ -1470,7 +1470,7 @@ main {
 /* Conteneur global du Swiper */
 .swiper-container {
   width: 100%;
-  max-width: 800px !important; /* Assurer que le conteneur a la même largeur max */
+  max-width: 600px !important; /* Assurer que le conteneur a la même largeur max */
   margin-left: auto !important;
   margin-right: auto !important;
   margin-top: 120px !important; /* Augmenter la marge en haut pour éviter le chevauchement avec l'en-tête */
