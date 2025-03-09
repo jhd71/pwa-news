@@ -1471,7 +1471,7 @@ main {
     width: 100%;
     display: flex;
     justify-content: center;
-    margin-top: 90px !important; /* Espace après le header */
+    margin-top: 70px !important; /* Espace après le header */
     margin-bottom: 5px !important; /* Espace avant le séparateur sur PC */
     padding: 5;
     box-sizing: border-box;
@@ -1516,7 +1516,7 @@ main {
 /* Images dans les slides */
 .swiper-slide img {
     width: 100%; /* Garde la largeur complète */
-    height: 90% !important; /* Remplit tout l’espace */
+    height: 100% !important; /* Remplit tout l’espace */
     object-fit: contain; /* Ajuste proprement l’image */
     object-position: center; /* Centre l’image */
     z-index: 1;
