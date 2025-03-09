@@ -1472,7 +1472,7 @@ main {
 }
 
 /* Mode sombre - Correction du texte du titre de la ville */
-[data-theme="dark"] .weather-sidebar h4 {
+[data-theme="dark"] .weather {
   color: black !important; /* Force le texte en noir */
 }
 
