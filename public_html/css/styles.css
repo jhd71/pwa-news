@@ -1550,12 +1550,15 @@ main {
 
 /* Style de la source */
 .slide-source {
-    font-size: 14px;
-    color: #ff9800;
-    opacity: 0.8;
-    margin: 0;
-    padding: 0;
-    text-align: center;
+    font-size: 15px; /* 🔹 Augmente légèrement la taille du texte */
+    color: #ffcc00; /* 🎨 Change la couleur pour un jaune clair plus lisible */
+    font-weight: bold; /* 🔹 Rend le texte plus visible */
+    text-transform: uppercase; /* 🔹 Met en majuscule pour un effet plus stylé */
+    opacity: 1; /* 🔹 Assure une lisibilité optimale */
+    margin-top: -10px; /* ⬆️ Remonte légèrement la source */
+    text-align: center; /* 🎯 Centre le texte */
+    position: relative; /* 🏗️ Assure un positionnement précis */
+    letter-spacing: 0.5px; /* 🔹 Ajoute un léger espacement pour améliorer la lisibilité */
 }
 
 /* Boutons de navigation */
