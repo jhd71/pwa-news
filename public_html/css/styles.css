@@ -1483,7 +1483,7 @@ main {
 .swiper {
     width: 100%;
     max-width: 600px;
-    border-radius: 15px;
+    border-radius: 10px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     overflow: hidden;
     position: relative;
@@ -1560,11 +1560,7 @@ main {
     position: relative; /* 🏗️ Assure un positionnement précis */
     letter-spacing: 0.5px; /* 🔹 Ajoute un léger espacement pour améliorer la lisibilité */
 }
-.slide-source:hover {
-    color: #ffd700; /* 🌟 Passe à un jaune doré au survol */
-    transform: scale(1.05); /* 🔍 Légère augmentation de taille pour un effet dynamique */
-    transition: all 0.3s ease-in-out; /* ⏳ Ajoute une transition fluide */
-}
+
 /* Boutons de navigation */
 .swiper-button-next,
 .swiper-button-prev {
