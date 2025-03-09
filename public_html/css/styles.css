@@ -1695,12 +1695,6 @@ main {
     height: 200px !important;
   }
 
-  .swiper-slide img {
-  width: 100%;
-  height: 100%; /* S'assure que l'image prend toute la hauteur */
-  object-fit: cover; /* Ajuste l'image pour éviter les déformations */
-}
-
   .tile-container {
     width: calc(100% - 190px) !important;
     margin-left: auto !important;
