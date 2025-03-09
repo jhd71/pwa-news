@@ -1567,7 +1567,7 @@ main {
 /* Style de la source */
 .slide-source {
   font-size: 14px;
-  color: #ff9800;
+  color: #ffcc00; /* 🎨 Change la couleur pour un jaune clair plus lisible */
   opacity: 1; /* Augmente la visibilité */
   margin: 0;
   padding: 0;
