@@ -1469,13 +1469,15 @@ main {
 /* ===== SWIPER STYLES ===== */
 /* Conteneur global du Swiper */
 .swiper-container {
-  width: 100%;
-  max-width: 600px !important; /* Assurer que le conteneur a la même largeur max */
-  margin-left: auto !important;
-  margin-right: auto !important;
-  margin-top: 120px !important; /* Augmenter la marge en haut pour éviter le chevauchement avec l'en-tête */
-  margin-bottom: 5px !important;
-  padding: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 90px !important; /* Espace après le header */
+    margin-bottom: 5px !important; /* Espace avant le séparateur sur PC */
+    padding: 5;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 2;
 }
 
 /* Ajustement de la taille et du format du Swiper */
@@ -1511,11 +1513,11 @@ main {
 
 /* Correction du format d'image */
 .swiper-slide img {
-  width: 100%;
-  height: 220px !important; /* Limiter la hauteur de l'image */
-  object-fit: cover !important; /* Utiliser 'cover' pour remplir l'espace */
-  object-position: center 30%; /* Ajuster pour voir plus du haut de l'image */
-  display: block;
+    width: 100%; /* Garde la largeur complète */
+    height: 100% !important; /* Remplit tout l’espace */
+    object-fit: contain; /* Ajuste proprement l’image */
+    object-position: center; /* Centre l’image */
+    z-index: 1;
 }
 
 /* Positionnement du texte */
