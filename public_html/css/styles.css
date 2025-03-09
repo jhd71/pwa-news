@@ -1525,13 +1525,16 @@ main {
 
 /* Overlay de texte */
 .slide-content {
-    padding-bottom: 25px; /* 🔹 Ajoute un espace en bas pour ne pas que la source chevauche d'autres éléments */
-    background: rgba(0, 0, 0, 0.6); /* 🎨 Ajoute un fond légèrement assombri pour améliorer le contraste */
-    border-radius: 8px; /* 🟦 Arrondit légèrement les bords du fond */
-    padding: 15px; /* 📏 Augmente l’espace intérieur du texte */
-    display: flex; /* 🏗️ Active le flexbox pour mieux organiser les éléments */
-    flex-direction: column; /* 📌 Aligne les éléments verticalement */
-    align-items: center; /* 🎯 Centre le contenu */
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    z-index: 2;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Style du titre */
@@ -1557,7 +1560,11 @@ main {
     position: relative; /* 🏗️ Assure un positionnement précis */
     letter-spacing: 0.5px; /* 🔹 Ajoute un léger espacement pour améliorer la lisibilité */
 }
-
+.slide-source:hover {
+    color: #ffd700; /* 🌟 Passe à un jaune doré au survol */
+    transform: scale(1.05); /* 🔍 Légère augmentation de taille pour un effet dynamique */
+    transition: all 0.3s ease-in-out; /* ⏳ Ajoute une transition fluide */
+}
 /* Boutons de navigation */
 .swiper-button-next,
 .swiper-button-prev {
