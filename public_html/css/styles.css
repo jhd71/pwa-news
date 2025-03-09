@@ -1482,13 +1482,16 @@ main {
 
 /* Ajustement de la taille et du format du Swiper */
 .swiper {
-  width: 100%;
-  max-width: 800px !important;
-  height: 300px !important; /* Augmenter légèrement la hauteur */
-  border-radius: 15px;
-  overflow: hidden;
-  position: relative;
-  background-color: var(--primary-color);
+    width: 100%;
+    max-width: 600px;
+    border-radius: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    position: relative;
+    background-color: var(--primary-color);
+    display: flex;
+    align-items: center; /* Centre le contenu verticalement */
+    justify-content: center;
 }
 
 /* Ajustement des slides */
