@@ -1496,7 +1496,7 @@ main {
 /* Reset des slides */
 .swiper-slide {
     position: relative;
-    width: 90%;
+    width: 100%;
     height: auto!important;
     overflow: hidden;
     padding: 0 !important;
