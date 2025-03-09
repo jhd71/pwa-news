@@ -1481,14 +1481,23 @@ main {
 
 /* Style du Swiper */
 .swiper {
-  right: 1rem;
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    max-width: 600px;
+    border-radius: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    position: relative;
+    background-color: var(--primary-color);
+    display: flex;
+    align-items: center; /* Centre le contenu verticalement */
+    justify-content: center;
 }
+
 .swiper-slide {
   text-align: center;
   font-size: 18px;
 }
+
 .swiper-slide img {
   width: auto;
   height: auto;
