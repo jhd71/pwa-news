@@ -1465,197 +1465,255 @@ main {
   font-size: 12px;
   line-height: 1.2;
 }
-/* Style du Swiper */
+
+/* ===== SWIPER STYLES ===== */
 /* Conteneur principal du Swiper */
 .swiper-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-top: 90px !important; /* Espace après le header */
-    margin-bottom: 2px !important; /* Espace avant le séparateur sur PC */
-    padding: 15;
-    box-sizing: border-box;
-    position: relative;
-    z-index: 2;
+  width: 100%;
+  max-width: 800px !important; /* Assurer que le conteneur a la même largeur max */
+  margin-left: auto !important;
+  margin-right: auto !important;
+  margin-bottom: 20px !important;
+  display: flex;
+  justify-content: center;
+  margin-top: 120px !important;
+  margin-bottom: 20px !important; /* Plus d'espace après le Swiper */
+  padding: 0;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 2;
 }
 
+/* Style du Swiper */
 .swiper {
-    width: 100%;
-    max-width: 600px;
-    border-radius: 5px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    overflow: hidden;
-    position: relative;
-    background-color: var(--primary-color);
-    display: flex;
-    align-items: center; /* Centre le contenu verticalement */
-    justify-content: center;
+  width: 100%;
+  max-width: 800px !important; /* Réduire la largeur maximale */
+  height: 300px !important; /* Hauteur réduite */
+  border-radius: 15px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  position: relative;
+  background-color: var(--primary-color);
+  margin: 0 auto; /* Centrer le swiper */
 }
 
-/* Reset des slides */
+/* Ajustement des slides */
 .swiper-slide {
-    position: relative;
-    width: 90%;
-    height: auto!important;
-    overflow: hidden;
-    padding: 0 !important;
-    margin: 0 !important;
-    display: block;
+  position: relative;
+  width: 100%;
+  height: 100% !important;
+  overflow: hidden;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Liens dans les slides */
 .swiper-slide a {
-    display: block;
-    width: 100%;
-    height: 100%;
-    position: relative;
-    color: white;
-    text-decoration: none;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  color: white;
+  text-decoration: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Images dans les slides */
 .swiper-slide img {
-    width: 100%; /* Garde la largeur complète */
-    height: 100% !important; /* Remplit tout l’espace */
-    object-fit: contain; /* Ajuste proprement l’image */
-    object-position: center; /* Centre l’image */
-    z-index: 1;
+  width: 100%;
+  height: 220px !important; /* Limiter la hauteur de l'image */
+  object-fit: cover !important; /* Utiliser 'cover' pour remplir l'espace */
+  object-position: center 30%; /* Ajuster pour voir plus du haut de l'image */
+  display: block;
+  z-index: 1;
+  max-height: 200px !important; /* Limiter la hauteur des images */
 }
 
-/* Overlay de texte */
+/* Positionnement du texte */
 .slide-content {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 15px;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    z-index: 2;
-    width: 100%;
-    box-sizing: border-box;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 2;
+  height: auto; /* Hauteur automatique basée sur le contenu */
+  min-height: 80px; /* Hauteur minimale pour le texte */
 }
 
 /* Style du titre */
 .slide-title {
-    color: white;
-    font-weight: bold;
-    font-size: 16px;
-    margin: 0 0 5px 0;
-    padding: 0;
-    text-align: center;
-    line-height: 1.4;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  margin: 0 0 5px 0;
+  padding: 0;
+  text-align: center;
+  line-height: 1.4;
 }
 
 /* Style de la source */
 .slide-source {
-    font-size: 14px;
-    color: #ff9800;
-    opacity: 0.8;
-    margin-top: -10px; /* ⬆️ Remonte légèrement la source */
-    padding: 0;
-    text-align: center;
+  font-size: 14px;
+  color: #ff9800;
+  opacity: 0.8;
+  margin: 0;
+  padding: 0;
+  text-align: center;
 }
 
 /* Boutons de navigation */
 .swiper-button-next,
 .swiper-button-prev {
-    color: white !important;
-    opacity: 0.7;
-    transition: opacity 0.3s;
-    z-index: 10;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  background: white;
+  border-radius: 50%;
+  width: 40px !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+  font-size: 20px !important;
 }
 
 .swiper-button-next:hover,
 .swiper-button-prev:hover {
-    opacity: 1;
+  opacity: 1;
 }
 
 /* Pagination */
 .swiper-pagination {
-    position: absolute;
-    bottom: 8px;
-    left: 0;
-    right: 0;
-    z-index: 10;
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  z-index: 10;
 }
 
 .swiper-pagination-bullet {
-    background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.6);
 }
 
 .swiper-pagination-bullet-active {
-    background: white;
+  background: white;
 }
 
+/* ===== SÉPARATEURS ET TUILES ===== */
 /* Style du séparateur */
 .separator {
-    grid-column: 1 / -1;
-    margin: 10px 0 !important;
+  grid-column: 1 / -1;
+  margin: 10px 0 !important;
 }
 
 /* S'assurer que le header reste au-dessus */
 .app-header {
-    z-index: 1005 !important;
+  z-index: 1005 !important;
 }
 
 /* Support des thèmes */
 [data-theme="dark"] .swiper {
-    background: rgba(26, 35, 126, 0.9);
+  background: rgba(26, 35, 126, 0.9);
 }
 
 [data-theme="light"] .swiper {
-    background: rgba(126, 87, 194, 0.9);
+  background: rgba(126, 87, 194, 0.9);
 }
 
-/* Adaptations pour écrans PC */
-@media (min-width: 768px) {
-    .swiper-container {
-        margin-bottom: 5px !important;
-    }
-
-    .separator {
-        margin: 5px 0 !important;
-    }
-}
-
-/* Adaptations pour mobiles */
+/* ===== MEDIA QUERIES ===== */
+/* Masquer le Swiper sur mobile */
 @media (max-width: 767px) {
-    .swiper-container {
-        margin-top: 60px !important; /* Moins d'espace en haut sur mobile */
-        margin-bottom: 5px !important; /* Moins d'espace en bas sur mobile */
-    }
-
-    .swiper {
-        height: 250px; /* Hauteur réduite sur mobile */
-    }
-
-    .slide-title {
-        font-size: 14px;
-    }
-
-    .slide-source {
-        font-size: 12px;
-    }
-
-    .separator {
-        margin: 5px 0 !important;
-    }
-
-    /* Ajustement pour éviter que le carrousel soit coupé */
-    main {
-        padding-top: 0 !important;
-    }
+  .swiper-container {
+    display: none !important;
+  }
+  
+  .weather-sidebar {
+    display: none !important;
+  }
+  
+  /* Ajuster l'espacement pour le premier séparateur quand le Swiper est masqué */
+  .separator:first-of-type {
+    margin-top: 60px !important;
+  }
+  
+  .tile-container {
+    width: 95% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
 }
 
-/* Adaptations pour très petits écrans */
-@media (max-width: 480px) {
-    .swiper-container {
-        margin-top: 55px !important;
-        margin-bottom: 3px !important;
-    }
+/* Tablettes */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .weather-sidebar {
+    display: none !important;
+  }
+  
+  .swiper-container {
+    margin-bottom: 15px !important;
+    width: 90% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  
+  .tile-container {
+    width: 90% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  
+  .separator {
+    margin: 10px 0 !important;
+  }
+}
 
-    .swiper {
-        height: 220px;
-    }
+/* Desktop */
+@media (min-width: 1200px) {
+  .weather-sidebar {
+    display: block !important;
+  }
+  
+  .swiper-container {
+    width: calc(100% - 190px) !important;
+    max-width: 800px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  
+  .swiper {
+    max-width: 800px !important;
+    height: 250px !important;
+  }
+  
+  .tile-container {
+    width: calc(100% - 190px) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 1400px;
+  }
+  
+  .tile-container.grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+/* Très petits écrans */
+@media (max-width: 480px) {
+  .separator:first-of-type {
+    margin-top: 55px !important;
+  }
+  
+  .tile-container {
+    padding: 0 5px !important;
+  }
 }
