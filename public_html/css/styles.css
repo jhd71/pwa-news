@@ -1466,14 +1466,9 @@ main {
   line-height: 1.2;
 }
 
-/* Mode sombre - Correction du texte des prévisions */
-[data-theme="dark"] .weather-day p {
-  color: black !important; /* Force le texte en noir */
-}
-
-/* Mode sombre - Correction du texte du titre de la ville */
-[data-theme="dark"] .weather {
-  color: black !important; /* Force le texte en noir */
+/* Appliquer une couleur noire au texte en mode sombre */
+[data-theme="dark"] .weather-sidebar * {
+    color: black !important; /* Force le texte en noir */
 }
 
 /* ===== SWIPER STYLES ===== */
