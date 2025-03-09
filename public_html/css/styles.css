@@ -1568,6 +1568,7 @@ main {
 .slide-source {
   font-size: 14px;
   color: #ffcc00; /* 🎨 Change la couleur pour un jaune clair plus lisible */
+  font-weight: bold;
   opacity: 1; /* Augmente la visibilité */
   margin: 0;
   padding: 0;
