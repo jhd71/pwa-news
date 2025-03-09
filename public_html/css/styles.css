@@ -1416,7 +1416,95 @@ main {
   border-radius: 5px;
   cursor: pointer;
 }
+/* Styles améliorés pour le widget météo */
+.weather-sidebar {
+  position: fixed; /* Revenir à fixed pour qu'il reste visible */
+  top: 100px; /* Ajuster selon votre header */
+  left: 10px;
+  width: 170px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  z-index: 4; /* Juste en dessous du header et du menu */
+  background: rgba(255, 255, 255, 0.85); /* Plus transparent */
+  backdrop-filter: blur(5px); /* Effet de flou derrière (fonctionne sur la plupart des navigateurs modernes) */
+}
 
+.weather-sidebar h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: var(--primary-color);
+  text-align: center;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Style plus compact pour les jours */
+.weather-day {
+  padding: 5px;
+  margin-bottom: 8px;
+  background: rgba(240, 240, 250, 0.5);
+  border-radius: 8px;
+}
+
+.weather-day h4 {
+  margin: 0 0 3px 0;
+  font-size: 14px;
+  color: #444;
+}
+
+.weather-day img {
+  width: 35px;
+  height: 35px;
+  margin: 0 auto;
+  display: block;
+}
+
+.weather-day p {
+  margin: 2px 0;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+/* Modifier l'affichage selon les tailles d'écran */
+@media (min-width: 1200px) {
+  .tile-container {
+    margin-left: 190px !important; /* Laisser de la place pour le widget */
+    width: calc(100% - 200px) !important; /* Ajuster la largeur */
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1400px) {
+  .weather-sidebar {
+    width: 150px; /* Plus étroit sur les écrans moyens */
+    left: 5px;
+  }
+}
+  
+  /* Ajuster la largeur du carrousel pour compenser */
+  .swiper-container {
+    width: 75% !important;
+    margin-right: 10px;
+    margin-left: auto; /* Pour déplacer vers la droite */
+  }
+  
+  /* Centrer le reste du contenu */
+  .tile-container {
+    width: 80%;
+    margin: 0 auto;
+  }
+}
+@media (min-width: 768px) {
+  .tile-container.grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    max-width: 1400px;
+  }
+  
+  .swiper {
+    max-width: 1400px;
+  }
+}
 /* CSS propre et optimisé pour le carrousel Swiper */
  /* Conteneur principal du Swiper */
 .swiper-container {
