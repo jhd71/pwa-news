@@ -1473,7 +1473,7 @@ main {
     justify-content: center;
     margin-top: 90px !important; /* Espace après le header */
     margin-bottom: 2px !important; /* Espace avant le séparateur sur PC */
-    padding: 5;
+    padding: 15;
     box-sizing: border-box;
     position: relative;
     z-index: 2;
@@ -1481,7 +1481,7 @@ main {
 
 .swiper {
     width: 100%;
-    max-width: 610px;
+    max-width: 600px;
     border-radius: 15px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     overflow: hidden;
