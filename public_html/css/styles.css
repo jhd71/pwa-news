@@ -1516,7 +1516,7 @@ main {
 /* Images dans les slides */
 .swiper-slide img {
     width: 100%; /* Garde la largeur complète */
-    height: 100% !important; /* Remplit tout l’espace */
+    height: 90% !important; /* Remplit tout l’espace */
     object-fit: contain; /* Ajuste proprement l’image */
     object-position: center; /* Centre l’image */
     z-index: 1;
