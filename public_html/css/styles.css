@@ -1473,14 +1473,14 @@ main {
   display: flex;
   justify-content: center;
   margin-top: 90px !important;
-  margin-bottom: 5px !important;
+  margin-bottom: 20px !important; /* Plus d'espace après le Swiper */
   padding: 0;
   box-sizing: border-box;
   position: relative;
   z-index: 2;
 }
 
-/* Style du Swiper */
+/* Ajustement de la taille du Swiper */
 .swiper {
   width: 100%;
   max-width: 1000px;
@@ -1489,13 +1489,13 @@ main {
   overflow: hidden;
   position: relative;
   background-color: var(--primary-color);
+  height: 300px !important; /* Hauteur fixe plus raisonnable */
 }
 
-/* Reset des slides */
 .swiper-slide {
   position: relative;
   width: 100%;
-  height: auto !important;
+  height: 100% !important; /* Forcer la hauteur à 100% du conteneur */
   overflow: hidden;
   padding: 0 !important;
   margin: 0 !important;
@@ -1504,33 +1504,28 @@ main {
 
 /* Liens dans les slides */
 .swiper-slide a {
-  display: block;
-  width: 100%;
   height: 100%;
-  position: relative;
-  color: white;
-  text-decoration: none;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Images dans les slides */
 .swiper-slide img {
   width: 100%;
   height: 100% !important;
-  object-fit: contain;
-  object-position: center;
+  object-fit: cover !important; /* Changé de contain à cover pour mieux remplir l'espace */
+  object-position: center center;
   z-index: 1;
 }
 
-/* Overlay de texte */
+/* Positionnement du texte */
 .slide-content {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 15px;
+  padding: 12px;
   background: rgba(0, 0, 0, 0.7);
-  color: white;
-  z-index: 2;
   width: 100%;
   box-sizing: border-box;
 }
