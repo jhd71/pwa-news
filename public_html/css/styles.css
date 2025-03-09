@@ -1547,6 +1547,7 @@ main {
   right: 0;
   padding: 15px;
   background: none !important; /* Supprime le fond noir */
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 1); /* Ombre plus visible */
   z-index: 2;
   height: auto; /* Hauteur automatique basée sur le contenu */
   min-height: 80px; /* Hauteur minimale pour le texte */
