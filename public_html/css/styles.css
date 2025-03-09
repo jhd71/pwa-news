@@ -1482,7 +1482,7 @@ main {
 /* Style du Swiper */
 .swiper {
     width: 100%;
-    max-width: 800px;
+    max-width: 600px;
     border-radius: 15px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     overflow: hidden;
@@ -1506,12 +1506,12 @@ main {
 
 /* Liens dans les slides */
 .swiper-slide a {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
+  display: block;
   width: 100%;
+  height: 100%;
+  position: relative;
+  color: white;
+  text-decoration: none;
 }
 
 /* Images dans les slides */
