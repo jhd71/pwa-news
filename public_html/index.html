@@ -443,10 +443,33 @@ window.refreshNews = refreshNews;
   <span>Infos en direct</span>
 </button>
 <!-- Ajouter ce code après le bouton "Infos en direct" dans index.html -->
-<div class="highlight-news">
-  <h3>À la une</h3>
-  <div id="topNews" class="top-news">
-    <div class="news-loading">Chargement des actualités...</div>
+<div class="quick-links">
+  <h3>Liens rapides</h3>
+  <div class="links-grid">
+    <a href="https://www.montceaulesmines.fr/" class="quick-link" target="_blank">
+      <span class="material-icons">location_city</span>
+      <span>Ville de Montceau</span>
+    </a>
+    <a href="https://www.inforoute71.fr/" class="quick-link" target="_blank">
+      <span class="material-icons">directions_car</span>
+      <span>Info Routes</span>
+    </a>
+    <a href="https://www.ter.sncf.com/bourgogne-franche-comte" class="quick-link" target="_blank">
+      <span class="material-icons">train</span>
+      <span>Horaires TER</span>
+    </a>
+    <a href="https://www.monreseaumobile.fr/" class="quick-link" target="_blank">
+      <span class="material-icons">signal_cellular_alt</span>
+      <span>Couverture mobile</span>
+    </a>
+    <a href="https://www.impots.gouv.fr/" class="quick-link" target="_blank">
+      <span class="material-icons">receipt_long</span>
+      <span>Impôts</span>
+    </a>
+    <a href="https://www.service-public.fr/" class="quick-link" target="_blank">
+      <span class="material-icons">public</span>
+      <span>Service Public</span>
+    </a>
   </div>
 </div>
 <!-- Menu déroulant des actualités -->
@@ -489,6 +512,5 @@ window.refreshNews = refreshNews;
     }
   });
 </script>
-<script src="js/highlightNews.js"></script>
 </body>
 </html>
