@@ -1479,6 +1479,20 @@ main {
   line-height: 1.3;
 }
 
+/* Corriger le texte transparent en mode sombre */
+[data-theme="dark"] .weather-sidebar {
+  background: rgba(255, 255, 255, 0.85); /* Fond blanc semi-transparent */
+}
+
+[data-theme="dark"] .weather-sidebar * {
+  color: black !important; /* Force le texte en noir */
+  opacity: 1 !important; /* Assure une opacité totale */
+}
+
+[data-theme="dark"] .weather-day {
+  background: rgba(240, 240, 250, 0.7); /* Fond légèrement plus opaque */
+}
+
 /* Ajustement pour éviter que le widget touche le séparateur */
 @media (min-width: 1200px) {
   .separator:first-of-type {
@@ -1774,22 +1788,20 @@ main {
 }
 
 /* Ajouter ces styles dans votre styles.css */
-.highlight-news {
+.quick-links {
   position: fixed;
-  top: 90px; /* Aligné avec le widget météo */
+  top: 90px;
   right: 10px;
-  width: 270px; /* Même largeur que le widget météo */
+  width: 270px;
   background: rgba(255, 255, 255, 0.85);
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   padding: 12px;
   z-index: 4;
   backdrop-filter: blur(5px);
-  max-height: 300px; /* Limiter la hauteur */
-  overflow-y: auto;
 }
 
-.highlight-news h3 {
+.quick-links h3 {
   margin: 0 0 12px 0;
   font-size: 16px;
   color: var(--primary-color);
@@ -1798,54 +1810,53 @@ main {
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.top-news {
-  font-size: 14px;
+.links-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
 }
 
-.news-loading {
+.quick-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
   padding: 10px;
-  color: #666;
-  font-style: italic;
-}
-
-.news-item {
-  display: block;
-  padding: 8px 10px;
-  margin-bottom: 8px;
-  border-radius: 8px;
   background: rgba(240, 240, 250, 0.5);
-  color: #333;
+  border-radius: 8px;
   text-decoration: none;
-  transition: all 0.2s ease;
+  color: #333;
+  transition: transform 0.2s, background 0.2s;
 }
 
-.news-item:hover {
-  background: rgba(240, 240, 250, 0.8);
+.quick-link:hover {
   transform: translateY(-2px);
+  background: rgba(240, 240, 250, 0.8);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.news-item p {
-  margin: 0;
-  line-height: 1.3;
+.quick-link .material-icons {
+  color: var(--primary-color);
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.quick-link span:not(.material-icons) {
+  font-size: 12px;
 }
 
 /* Support du thème sombre */
-[data-theme="dark"] .highlight-news * {
+[data-theme="dark"] .quick-links * {
   color: black !important;
+}
+
+[data-theme="dark"] .quick-link .material-icons {
+  color: var(--primary-color) !important;
 }
 
 /* Responsive */
 @media (max-width: 1199px) {
-  .highlight-news {
+  .quick-links {
     display: none !important;
-  }
-}
-
-/* Ajustement sur écrans moyens */
-@media (max-width: 1400px) and (min-width: 1200px) {
-  .highlight-news {
-    width: 230px;
   }
 }
