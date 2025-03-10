@@ -1277,3 +1277,77 @@ body.admin-panel-open::before {
 .context-menu button:hover {
    background: rgba(255, 255, 255, 0.1);
 }
+
+/* Styles pour le menu d'options sur mobile */
+.message-options.mobile-options {
+    width: 200px;
+    z-index: 1500;
+    position: fixed;
+    animation: scaleIn 0.2s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.message-options.mobile-options .options-content {
+    background: var(--chat-gradient);
+    border-radius: 12px;
+}
+
+.message-options.mobile-options button {
+    padding: 15px;
+    margin: 4px 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+}
+
+.message-options.mobile-options button .material-icons {
+    margin-right: 10px;
+    font-size: 20px;
+}
+
+/* Renforcer la prévention de sélection de texte sur mobile */
+.message {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    touch-action: manipulation;
+}
+
+/* Améliorer le retour visuel pour l'appui long */
+.message:active {
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+/* Styles pour bloquer les interactions indésirables pendant l'appui long */
+body.long-press-active {
+    pointer-events: none;
+}
+
+body.long-press-active .message-options {
+    pointer-events: auto;
+}
+
+.message-options.mobile-options {
+    /* Amélioration de l'apparence */
+    width: 220px;
+    padding: 5px;
+    transform: translateY(-10px); /* Déplacer légèrement vers le haut */
+}
+
+.message-options.mobile-options .options-content {
+    padding: 8px;
+    overflow: hidden; /* Pour les coins arrondis */
+}
+
+.message-options.mobile-options button {
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.message-options.mobile-options button:active {
+    background-color: rgba(255, 255, 255, 0.3);
+}
