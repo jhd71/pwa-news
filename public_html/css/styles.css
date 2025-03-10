@@ -1790,7 +1790,7 @@ main {
 /* Ajouter ces styles dans votre styles.css */
 .quick-links {
   position: fixed;
-  top: 90px;
+  top: 110px;
   right: 10px;
   width: 270px;
   background: rgba(255, 255, 255, 0.85);
@@ -1817,16 +1817,16 @@ main {
 }
 
 .quick-link {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 10px;
-  background: rgba(240, 240, 250, 0.5);
-  border-radius: 8px;
-  text-decoration: none;
-  color: #333;
-  transition: transform 0.2s, background 0.2s;
+  display: flex;                /* Utilise le modèle flexbox pour l'organisation */
+  flex-direction: column;       /* Organise les éléments en colonne (icône au-dessus du texte) */
+  align-items: center;          /* Centre les éléments horizontalement dans le conteneur */
+  text-align: center;           /* Centre le texte */
+  padding: 10px;                /* Ajoute de l'espace à l'intérieur des liens */
+  background: rgba(240, 240, 250, 0.5);  /* Fond légèrement bleuté semi-transparent */
+  border-radius: 8px;           /* Coins arrondis */
+  text-decoration: none;        /* Supprime le soulignement des liens */
+  color: #333;                  /* Couleur du texte gris foncé */
+  transition: transform 0.2s, background 0.2s;  /* Animation douce pour les effets de survol */
 }
 
 .quick-link:hover {
