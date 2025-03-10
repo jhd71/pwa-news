@@ -442,7 +442,13 @@ window.refreshNews = refreshNews;
   <span class="material-icons">feed</span>
   <span>Infos en direct</span>
 </button>
-
+<!-- Ajouter ce code après le bouton "Infos en direct" dans index.html -->
+<div class="highlight-news">
+  <h3>À la une</h3>
+  <div id="topNews" class="top-news">
+    <div class="news-loading">Chargement des actualités...</div>
+  </div>
+</div>
 <!-- Menu déroulant des actualités -->
 <div class="news-panel" id="newsPanel">
   <div class="panel-header">
@@ -483,5 +489,6 @@ window.refreshNews = refreshNews;
     }
   });
 </script>
+<script src="js/highlightNews.js"></script>
 </body>
 </html>
