@@ -282,53 +282,66 @@ getChatHTMLWithoutToggle() {
     const adminBtn = this.container.querySelector('.admin-panel-btn');
     const logoutBtn = this.container.querySelector('.logout-btn');
 
-    if (chatToggleBtn) {
-        chatToggleBtn.addEventListener('click', () => {
-            this.isOpen = !this.isOpen;
+    // Fonction réutilisable pour basculer l'état du chat
+    const toggleChat = () => {
+        this.isOpen = !this.isOpen;
+        
+        if (this.isOpen) {
+            chatContainer?.classList.add('open');
+            this.unreadCount = 0;
+            localStorage.setItem('unreadCount', '0');
             
-            if (this.isOpen) {
-                chatContainer?.classList.add('open');
-                this.unreadCount = 0;
-                localStorage.setItem('unreadCount', '0');
-                
-                const badge = chatToggleBtn.querySelector('.chat-notification-badge');
-                if (badge) {
-                    badge.textContent = '0';
-                    badge.classList.add('hidden');
-                }
-                
-                this.scrollToBottom();
-            } else {
-                chatContainer?.classList.remove('open');
+            const badge = chatToggleBtn?.querySelector('.chat-notification-badge');
+            if (badge) {
+                badge.textContent = '0';
+                badge.classList.add('hidden');
             }
             
-            localStorage.setItem('chatOpen', this.isOpen);
+            this.scrollToBottom();
+        } else {
+            chatContainer?.classList.remove('open');
+        }
+        
+        localStorage.setItem('chatOpen', this.isOpen);
+        this.playSound('click');
+    };
+
+    if (chatToggleBtn) {
+        // Supprimer les anciens écouteurs d'événements pour éviter les duplications
+        const newChatToggleBtn = chatToggleBtn.cloneNode(true);
+        chatToggleBtn.parentNode.replaceChild(newChatToggleBtn, chatToggleBtn);
+        
+        // Ajouter le nouvel écouteur
+        newChatToggleBtn.addEventListener('click', toggleChat);
+    }
+
+    if (toggle) {
+        toggle.addEventListener('click', toggleChat);
+    }
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            this.isOpen = false;
+            localStorage.setItem('chatOpen', 'false');
+            chatContainer?.classList.remove('open');
             this.playSound('click');
         });
     }
 
-        if (closeBtn) {
-            closeBtn.addEventListener('click', () => {
-                this.isOpen = false;
-                localStorage.setItem('chatOpen', 'false');
-                chatContainer?.classList.remove('open');
+    // Le reste de votre code pour setupListeners reste inchangé...
+    if (soundBtn) {
+        soundBtn.addEventListener('click', () => {
+            this.soundEnabled = !this.soundEnabled;
+            localStorage.setItem('soundEnabled', this.soundEnabled);
+            soundBtn.classList.toggle('enabled', this.soundEnabled);
+            if (this.soundEnabled) {
+                soundBtn.querySelector('.material-icons').textContent = 'volume_up';
                 this.playSound('click');
-            });
-        }
-
-        if (soundBtn) {
-            soundBtn.addEventListener('click', () => {
-                this.soundEnabled = !this.soundEnabled;
-                localStorage.setItem('soundEnabled', this.soundEnabled);
-                soundBtn.classList.toggle('enabled', this.soundEnabled);
-                if (this.soundEnabled) {
-                    soundBtn.querySelector('.material-icons').textContent = 'volume_up';
-                    this.playSound('click');
-                } else {
-                    soundBtn.querySelector('.material-icons').textContent = 'volume_off';
-                }
-            });
-        }
+            } else {
+                soundBtn.querySelector('.material-icons').textContent = 'volume_off';
+            }
+        });
+    }
 
         if (notificationsBtn) {
             notificationsBtn.addEventListener('click', async () => {
@@ -721,26 +734,61 @@ createMessageElement(message) {
     `;
 
     if (this.isAdmin || message.pseudo === this.pseudo) {
+        // Variables pour gérer l'appui long et prévenir les actions indésirables
+        let touchTimer;
+        let longPressActive = false;
+        let lastTouchEnd = 0;
+        
+        // Gestion du clic droit sur PC
         div.addEventListener('contextmenu', (e) => {
             e.preventDefault();
             this.showMessageOptions(message, e.clientX, e.clientY);
         });
 
-        let touchTimeout;
+        // Gérer le toucher qui commence (touchstart)
         div.addEventListener('touchstart', (e) => {
-            touchTimeout = setTimeout(() => {
-                e.preventDefault();
+            // Ne pas démarrer un nouveau timer si un appui long a été récemment détecté
+            if (Date.now() - lastTouchEnd < 1000) {
+                return;
+            }
+            
+            // Démarrer le timer pour l'appui long
+            touchTimer = setTimeout(() => {
+                longPressActive = true;
                 const touch = e.touches[0];
                 this.showMessageOptions(message, touch.clientX, touch.clientY);
-            }, 500);
+                
+                // Ajouter une vibration si disponible
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+            }, 800);
         });
-
-        div.addEventListener('touchend', () => {
-            clearTimeout(touchTimeout);
-        });
-
+        
+        // Annuler l'appui long si le doigt bouge
         div.addEventListener('touchmove', () => {
-            clearTimeout(touchTimeout);
+            clearTimeout(touchTimer);
+        });
+        
+        // Gérer la fin du toucher
+        div.addEventListener('touchend', (e) => {
+            clearTimeout(touchTimer);
+            
+            // Si c'était un appui long, empêcher toute autre action
+            if (longPressActive) {
+                e.preventDefault();
+                e.stopPropagation();
+                longPressActive = false;
+                
+                // Enregistrer le moment où l'appui long s'est terminé
+                lastTouchEnd = Date.now();
+            }
+        });
+        
+        // S'assurer que le timer est annulé si le toucher est annulé
+        div.addEventListener('touchcancel', () => {
+            clearTimeout(touchTimer);
+            longPressActive = false;
         });
     }
 
@@ -1289,13 +1337,18 @@ showAdminPanel() {
 
     showMessageOptions(message, x, y) {
     console.log('showMessageOptions appelé:', message);
+    
+    // Supprimer tout menu existant
     document.querySelectorAll('.message-options').forEach(el => el.remove());
 
     const options = document.createElement('div');
     options.className = 'message-options';
     
-    let posX = x;
-    let posY = y;
+    // Détection du mobile
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+        options.classList.add('mobile-options');
+    }
     
     options.innerHTML = `
         <div class="options-content">
@@ -1310,12 +1363,6 @@ showAdminPanel() {
         </div>
     `;
 
-    // Empêcher la sélection de texte
-    options.addEventListener('touchstart', e => e.preventDefault());
-    options.addEventListener('touchmove', e => e.preventDefault());
-    options.addEventListener('touchend', e => e.preventDefault());
-    options.addEventListener('mousedown', e => e.preventDefault());
-
     document.body.appendChild(options);
 
     const chatContainer = this.container.querySelector('.chat-container');
@@ -1323,46 +1370,73 @@ showAdminPanel() {
     const optionsRect = options.getBoundingClientRect();
 
     // Ajustement de la position
-    if (posX + optionsRect.width > chatBounds.right) {
-        posX = chatBounds.right - optionsRect.width - 10;
-    }
-    if (posX < chatBounds.left) {
-        posX = chatBounds.left + 10;
-    }
-    if (posY + optionsRect.height > chatBounds.bottom) {
-        posY = chatBounds.bottom - optionsRect.height - 10;
-    }
-    if (posY < chatBounds.top) {
-        posY = chatBounds.top + 10;
+    let posX = x;
+    let posY = y;
+    
+    // Positionnement amélioré sur mobile
+    if (isMobile) {
+        // Centrer horizontalement
+        posX = chatBounds.left + (chatBounds.width / 2) - (optionsRect.width / 2);
+        
+        // Positionner plus haut dans la zone visible
+        posY = chatBounds.top + (chatBounds.height * 0.3);
+    } else {
+        // Ajustements pour écran de bureau
+        if (posX + optionsRect.width > chatBounds.right) {
+            posX = chatBounds.right - optionsRect.width - 10;
+        }
+        if (posX < chatBounds.left) {
+            posX = chatBounds.left + 10;
+        }
+        if (posY + optionsRect.height > chatBounds.bottom) {
+            posY = chatBounds.bottom - optionsRect.height - 10;
+        }
+        if (posY < chatBounds.top) {
+            posY = chatBounds.top + 10;
+        }
     }
 
     options.style.left = `${posX}px`;
     options.style.top = `${posY}px`;
 
-    // Empêcher également la sélection de texte dans les options
-    const buttons = options.querySelectorAll('button');
-    buttons.forEach(button => {
-        button.addEventListener('touchstart', e => e.stopPropagation());
-        button.addEventListener('mousedown', e => e.stopPropagation());
-    });
+    // Protection contre les événements indésirables
+    const preventPropagation = (e) => {
+        e.stopPropagation();
+    };
+    
+    // Appliquer à tous les types d'événements
+    options.addEventListener('click', preventPropagation);
+    options.addEventListener('touchstart', preventPropagation);
+    options.addEventListener('touchend', preventPropagation);
+    options.addEventListener('touchmove', preventPropagation);
 
-    options.querySelector('.delete-option')?.addEventListener('click', async () => {
+    // Gestionnaire pour supprimer un message
+    options.querySelector('.delete-option')?.addEventListener('click', async (e) => {
+        e.stopPropagation();
         await this.deleteMessage(message.id);
         options.remove();
     });
 
-    options.querySelector('.ban-option')?.addEventListener('click', () => {
+    // Gestionnaire pour bannir un utilisateur
+    options.querySelector('.ban-option')?.addEventListener('click', (e) => {
+        e.stopPropagation();
         this.showBanDialog(message);
         options.remove();
     });
 
+    // Fermer le menu si on clique ailleurs, avec un délai
     setTimeout(() => {
-        document.addEventListener('click', (e) => {
+        const closeHandler = (e) => {
             if (!options.contains(e.target)) {
                 options.remove();
+                document.removeEventListener('click', closeHandler);
+                document.removeEventListener('touchstart', closeHandler);
             }
-        }, { once: true });
-    }, 0);
+        };
+        
+        document.addEventListener('click', closeHandler);
+        document.addEventListener('touchstart', closeHandler);
+    }, 300); // Délai plus long pour éviter la fermeture accidentelle
 }
 
     async deleteMessage(messageId) {
