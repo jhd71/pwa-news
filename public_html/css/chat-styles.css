@@ -1496,11 +1496,14 @@ body.long-press-active .message-options {
 }
 /* Empêcher le scroll de traverser la fenêtre de chat */
 .chat-container.open {
-    overscroll-behavior: contain; /* Empêche le défilement de se propager à l'élément parent */
-    touch-action: pan-y; /* Limite les actions tactiles au défilement vertical */
+    overscroll-behavior: contain !important; /* Empêche le défilement de se propager à l'élément parent */
+    touch-action: pan-y !important; /* Limite les actions tactiles au défilement vertical */
 }
 
+/* S'assure que le chat ne cause pas de scrolling sur la page */
 .chat-messages {
-    overscroll-behavior: contain; /* Empêche le défilement de se propager à l'élément parent */
-    -webkit-overflow-scrolling: touch; /* Améliore le défilement sur iOS */
+    overscroll-behavior: contain !important; /* Empêche le défilement de se propager à l'élément parent */
+    -webkit-overflow-scrolling: touch !important; /* Améliore le défilement sur iOS */
+    max-height: 100vh !important; /* S'assure que le chat ne dépasse pas l'écran */
+    overflow-y: auto !important; /* Active le défilement interne */
 }
