@@ -348,13 +348,7 @@ body:has(.chat-container.open) .news-ticker {
 .header-buttons button:active {
     transform: scale(0.95);
 }
-/* ✅ Empêcher le scroll de la page quand le chat est ouvert */
-body.no-scroll {
-    overflow: hidden;
-    height: 100vh;
-}
-
-/* ✅ Zone des messages */
+/* Zone des messages */
 .chat-messages {
     flex: 1;
     padding: 20px;
@@ -364,34 +358,7 @@ body.no-scroll {
     gap: 10px;
     background: rgba(0, 0, 0, 0.2);
     scroll-behavior: smooth;
-    color: white !important;
-    
-    min-height: 250px; /* Empêche que le chat soit trop petit */
-    max-height: 60vh; /* Empêche qu'il prenne toute la hauteur */
-    overscroll-behavior: contain; /* ✅ Bloque la propagation du scroll */
-    -webkit-overflow-scrolling: touch; /* ✅ Améliore le défilement mobile */
-    touch-action: pan-y; /* ✅ Limite les actions tactiles au scroll vertical */
-}
-/* ✅ Empêcher le scroll global quand le chat est ouvert */
-body.no-scroll {
-    overflow: hidden !important;
-    height: 100vh;
-}
-
-/* ✅ Empêcher le scroll du chat de traverser */
-.chat-messages {
-    overflow-y: auto;
-    max-height: 60vh;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y;
-}
-
-/* ✅ Ajout d’un espace en bas pour forcer le scroll */
-.chat-messages::after {
-    content: "";
-    display: block;
-    height: 50px; /* Ajoute un espace artificiel en bas */
+	color: white !important; /* Force le texte en blanc */
 }
 
 .chat-messages::-webkit-scrollbar {
@@ -1526,4 +1493,21 @@ body.long-press-active .message-options {
         animation: none;
         transform: scale(1.1);
     }
+}
+/* Empêcher le scroll du body quand le chat est ouvert */
+.no-scroll {
+    overflow: hidden !important;
+    height: 100vh;
+    touch-action: none;
+}
+
+/* Empêcher le scroll de traverser la fenêtre de chat */
+.chat-container.open {
+    overscroll-behavior: contain; /* Empêche le défilement de se propager à l'élément parent */
+    touch-action: pan-y; /* Limite les actions tactiles au défilement vertical */
+}
+
+.chat-messages {
+    overscroll-behavior: contain; /* Empêche le défilement de se propager */
+    -webkit-overflow-scrolling: touch; /* Améliore le défilement sur iOS */
 }
