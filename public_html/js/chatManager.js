@@ -85,7 +85,46 @@ class ChatManager {
             await this.loadExistingMessages();
             this.updateUnreadBadgeAndBubble();
         }
-
+// Détection du clavier mobile et gestion de l'affichage
+try {
+    const chatContainer = this.container.querySelector('.chat-container');
+    const inputField = this.container.querySelector('input[type="text"], textarea');
+    
+    if (inputField && chatContainer) {
+        // Quand le champ de saisie obtient le focus (clavier ouvert)
+        inputField.addEventListener('focus', () => {
+            chatContainer.classList.add('keyboard-open');
+            
+            // Faire défiler pour voir les derniers messages
+            setTimeout(() => {
+                const chatMessages = chatContainer.querySelector('.chat-messages');
+                if (chatMessages) {
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+            }, 300);
+        });
+        
+        // Quand le champ de saisie perd le focus (clavier fermé)
+        inputField.addEventListener('blur', () => {
+            chatContainer.classList.remove('keyboard-open');
+        });
+    }
+    
+    // Détecter le redimensionnement de la fenêtre (ouverture/fermeture du clavier)
+    const originalWindowHeight = window.innerHeight;
+    window.addEventListener('resize', () => {
+        if (!chatContainer) return;
+        
+        // Si la hauteur de fenêtre diminue significativement, le clavier est probablement ouvert
+        if (window.innerHeight < originalWindowHeight * 0.8) {
+            chatContainer.classList.add('keyboard-open');
+        } else {
+            chatContainer.classList.remove('keyboard-open');
+        }
+    });
+} catch (error) {
+    console.error('Erreur lors de la configuration du clavier mobile:', error);
+}
         this.initialized = true;
         console.log("Chat initialisé avec succès");
     } catch (error) {
