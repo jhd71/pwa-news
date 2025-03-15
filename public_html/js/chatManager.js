@@ -385,30 +385,36 @@ getChatHTMLWithoutToggle() {
         this.setupChatListeners();
     }
 // Ajoutez le nouveau code ici
-    // Remplacer le code existant par celui-ci
+// Ajouter à votre méthode d'initialisation dans chatManager.js
 const chatMessages = this.container.querySelector('.chat-messages');
 if (chatMessages) {
-    // Utiliser une approche différente qui permet le défilement normal du chat
-    chatMessages.addEventListener('touchmove', (e) => {
-        // Ne pas stopper la propagation - permettre le défilement normal
-        e.stopPropagation(); // Ceci empêche l'événement de remonter à la page principale
-    }, { passive: true });
-    
-    // Empêcher le rebond aux extrémités qui cause souvent le défilement de la page
-    chatMessages.addEventListener('scroll', () => {
-        const scrollTop = chatMessages.scrollTop;
-        const scrollHeight = chatMessages.scrollHeight;
-        const clientHeight = chatMessages.clientHeight;
-        
-        // Ajuster légèrement les valeurs pour éviter les problèmes de "bounce"
-        if (scrollTop <= 1) {
-            chatMessages.scrollTop = 1;
-        } else if (scrollTop + clientHeight >= scrollHeight - 1) {
-            chatMessages.scrollTop = scrollHeight - clientHeight - 1;
+    // Pour prévenir le défilement de la page quand on est aux limites du chat
+    chatMessages.addEventListener('touchstart', function(e) {
+        if (e.target.closest('.chat-messages')) {
+            e.stopPropagation();
         }
-    }, { passive: true });
+    }, { passive: false });
+    
+    // Assurer que le focus dans la zone de chat ne provoque pas de défilement de la page
+    const inputField = this.container.querySelector('input, textarea');
+    if (inputField) {
+        inputField.addEventListener('focus', function() {
+            // Petit délai pour laisser le temps au clavier de s'ouvrir
+            setTimeout(function() {
+                // Faire défiler vers le bas au besoin
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                // Empêcher temporairement le scroll du document
+                document.body.style.overflow = 'hidden';
+            }, 300);
+        });
+        
+        inputField.addEventListener('blur', function() {
+            // Rétablir le défilement normal quand on quitte le champ
+            document.body.style.overflow = '';
+        });
+    }
 }
-  }  
+}	    
 setupAuthListeners() {
     const pseudoInput = this.container.querySelector('#pseudoInput');
     const adminPasswordInput = this.container.querySelector('#adminPassword');
