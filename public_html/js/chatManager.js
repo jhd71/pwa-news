@@ -386,28 +386,29 @@ getChatHTMLWithoutToggle() {
     }
 // Ajoutez le nouveau code ici
     // Remplacer le code existant par celui-ci
-const chatContainer = document.querySelector('.chat-container');
-const chatMessages = document.querySelector('.chat-messages');
-
-if (chatContainer) {
-    // ✅ Bloquer le scroll de l'arrière-plan quand le chat est ouvert
-    chatContainer.addEventListener('mouseenter', () => {
-        document.body.classList.add('no-scroll');
-    });
-
-    // ✅ Réactiver le scroll quand le chat est fermé
-    chatContainer.addEventListener('mouseleave', () => {
-        document.body.classList.remove('no-scroll');
-    });
-}
-
-// ✅ Bloquer le scroll global même en touchant les messages
+const chatMessages = this.container.querySelector('.chat-messages');
 if (chatMessages) {
+    // Utiliser une approche différente qui permet le défilement normal du chat
     chatMessages.addEventListener('touchmove', (e) => {
-        e.stopPropagation();
+        // Ne pas stopper la propagation - permettre le défilement normal
+        e.stopPropagation(); // Ceci empêche l'événement de remonter à la page principale
     }, { passive: true });
-}  
-  
+    
+    // Empêcher le rebond aux extrémités qui cause souvent le défilement de la page
+    chatMessages.addEventListener('scroll', () => {
+        const scrollTop = chatMessages.scrollTop;
+        const scrollHeight = chatMessages.scrollHeight;
+        const clientHeight = chatMessages.clientHeight;
+        
+        // Ajuster légèrement les valeurs pour éviter les problèmes de "bounce"
+        if (scrollTop <= 1) {
+            chatMessages.scrollTop = 1;
+        } else if (scrollTop + clientHeight >= scrollHeight - 1) {
+            chatMessages.scrollTop = scrollHeight - clientHeight - 1;
+        }
+    }, { passive: true });
+}
+  }  
 setupAuthListeners() {
     const pseudoInput = this.container.querySelector('#pseudoInput');
     const adminPasswordInput = this.container.querySelector('#adminPassword');
