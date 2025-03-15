@@ -384,49 +384,31 @@ getChatHTMLWithoutToggle() {
     } else {
         this.setupChatListeners();
     }
-	
-// Solution améliorée pour chatManager.js
-// Solution radicale pour chatManager.js
+// Ajoutez le nouveau code ici
+    // Remplacer le code existant par celui-ci
 const chatMessages = this.container.querySelector('.chat-messages');
 if (chatMessages) {
-    // Ajouter un style spécifique au conteneur de chat pour isoler son comportement de défilement
-    chatMessages.style.overscrollBehavior = 'contain';
+    // Utiliser une approche différente qui permet le défilement normal du chat
+    chatMessages.addEventListener('touchmove', (e) => {
+        // Ne pas stopper la propagation - permettre le défilement normal
+        e.stopPropagation(); // Ceci empêche l'événement de remonter à la page principale
+    }, { passive: true });
     
-    // Prévenir complètement la propagation des événements tactiles au document parent
-    const preventPropagation = (e) => {
-        e.stopPropagation();
-    };
-    
-    // Appliquer à tous les événements tactiles
-    chatMessages.addEventListener('touchstart', preventPropagation, { passive: false });
-    chatMessages.addEventListener('touchmove', preventPropagation, { passive: false });
-    chatMessages.addEventListener('touchend', preventPropagation, { passive: false });
-    
-    // Gérer aussi les événements de souris pour être complet
-    chatMessages.addEventListener('mousedown', preventPropagation, { passive: false });
-    chatMessages.addEventListener('mousemove', preventPropagation, { passive: false });
-    chatMessages.addEventListener('mouseup', preventPropagation, { passive: false });
-    
-    // Ajouter une fonction spéciale pour gérer le défilement du chat
-    chatMessages.addEventListener('wheel', (e) => {
-        e.stopPropagation();
-        // Permettre le défilement dans le chat
-        chatMessages.scrollTop += e.deltaY;
-    }, { passive: false });
-    
-    // Ajout d'une détection de l'ouverture du clavier
-    const inputField = this.container.querySelector('input, textarea');
-    if (inputField) {
-        inputField.addEventListener('focus', () => {
-            // Faire défiler jusqu'au dernier message après un court délai
-            setTimeout(() => {
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 300);
-        });
-    }
- }
+    // Empêcher le rebond aux extrémités qui cause souvent le défilement de la page
+    chatMessages.addEventListener('scroll', () => {
+        const scrollTop = chatMessages.scrollTop;
+        const scrollHeight = chatMessages.scrollHeight;
+        const clientHeight = chatMessages.clientHeight;
+        
+        // Ajuster légèrement les valeurs pour éviter les problèmes de "bounce"
+        if (scrollTop <= 1) {
+            chatMessages.scrollTop = 1;
+        } else if (scrollTop + clientHeight >= scrollHeight - 1) {
+            chatMessages.scrollTop = scrollHeight - clientHeight - 1;
+        }
+    }, { passive: true });
 }
-
+  }  
 setupAuthListeners() {
     const pseudoInput = this.container.querySelector('#pseudoInput');
     const adminPasswordInput = this.container.querySelector('#adminPassword');
