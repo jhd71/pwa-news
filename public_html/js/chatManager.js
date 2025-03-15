@@ -640,7 +640,10 @@ extractPseudoFromEmail(email) {
                 const success = await this.sendMessage(content);
                 if (success) {
                     input.value = '';
-                    input.focus();
+                    
+                    // AJOUTEZ CETTE LIGNE POUR FERMER LE CLAVIER
+                    input.blur();
+                    
                     this.playSound('message');
                 } else {
                     this.playSound('error');
