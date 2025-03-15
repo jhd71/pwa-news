@@ -409,6 +409,29 @@ if (chatMessages) {
     }, { passive: true });
 }
   }  
+  
+  const chatContainer = document.querySelector('.chat-container');
+const chatMessages = document.querySelector('.chat-messages');
+
+if (chatContainer) {
+    // ✅ Bloquer le scroll de l'arrière-plan quand le chat est ouvert
+    chatContainer.addEventListener('mouseenter', () => {
+        document.body.classList.add('no-scroll');
+    });
+
+    // ✅ Réactiver le scroll quand le chat est fermé
+    chatContainer.addEventListener('mouseleave', () => {
+        document.body.classList.remove('no-scroll');
+    });
+}
+
+// ✅ Bloquer le scroll global même en touchant les messages
+if (chatMessages) {
+    chatMessages.addEventListener('touchmove', (e) => {
+        e.stopPropagation();
+    }, { passive: true });
+}
+
 setupAuthListeners() {
     const pseudoInput = this.container.querySelector('#pseudoInput');
     const adminPasswordInput = this.container.querySelector('#adminPassword');
