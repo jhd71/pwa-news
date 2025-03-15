@@ -637,17 +637,26 @@ extractPseudoFromEmail(email) {
                     return;
                 }
 
+                // Vider l'entrée avant d'envoyer pour éviter double envoi
+                input.value = '';
+                
+                // Fermer le clavier immédiatement
+                input.blur();
+                
+                // Empêcher de regagner le focus pendant quelques secondes
+                input.disabled = true;
+                
                 const success = await this.sendMessage(content);
                 if (success) {
-                    input.value = '';
-                    
-                    // AJOUTEZ CETTE LIGNE POUR FERMER LE CLAVIER
-                    input.blur();
-                    
                     this.playSound('message');
                 } else {
                     this.playSound('error');
                 }
+                
+                // Réactiver l'input après un délai
+                setTimeout(() => {
+                    input.disabled = false;
+                }, 1500); // Attendre 1.5 seconde
             }
         };
 
