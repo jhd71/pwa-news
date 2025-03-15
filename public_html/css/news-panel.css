@@ -426,6 +426,33 @@
   margin: 20px 0;
 }
 
+.news-ticker {
+  width: 100%;
+  height: 40px;
+  background-color: rgba(126, 87, 194, 0.95); /* En mode clair */
+  overflow: hidden;
+  position: fixed;
+  bottom: var(--bottom-nav-height);
+  left: 0;
+  right: 0;
+  z-index: 997;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.ticker-wrapper {
+  display: inline-flex;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 15px;
+  color: white;
+  font-size: 14px;
+}
+
 /* Media queries - Adaptations mobiles */
 @media (max-width: 768px) {
   .news-button {
