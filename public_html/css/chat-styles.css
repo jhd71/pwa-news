@@ -358,7 +358,20 @@ body:has(.chat-container.open) .news-ticker {
     gap: 10px;
     background: rgba(0, 0, 0, 0.2);
     scroll-behavior: smooth;
-	color: white !important; /* Force le texte en blanc */
+    color: white !important; /* Force le texte en blanc */
+    
+    /* ✅ Ajouts importants */
+    min-height: 250px; /* Empêche que le chat soit trop petit */
+    max-height: 60vh; /* Empêche qu'il prenne toute la hauteur */
+    overscroll-behavior: contain; /* Empêche le scroll de se propager */
+    -webkit-overflow-scrolling: touch; /* Améliore le défilement sur iOS */
+}
+
+/* ✅ Forcer un léger scroll même quand il y a peu de messages */
+.chat-messages::after {
+    content: "";
+    display: block;
+    height: 50px; /* Crée un espace artificiel pour activer le scroll */
 }
 
 .chat-messages::-webkit-scrollbar {
