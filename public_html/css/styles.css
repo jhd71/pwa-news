@@ -1860,3 +1860,8 @@ main {
     display: none !important;
   }
 }
+
+body.no-scroll {
+    overflow: hidden !important;
+    touch-action: none !important;
+}
