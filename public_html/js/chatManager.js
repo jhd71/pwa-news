@@ -385,41 +385,89 @@ getChatHTMLWithoutToggle() {
         this.setupChatListeners();
     }
 // Remplacer le code précédent par celui-ci dans chatManager.js
+// Solution améliorée pour chatManager.js
 const chatMessages = this.container.querySelector('.chat-messages');
 if (chatMessages) {
-    // Utiliser une approche qui détecte si le défilement doit être dans le chat ou la page
+    let touchStartY = 0;
+    let touchStartX = 0;
+    let isHandlingScroll = false;
+    
+    // Détecter le début du toucher
     chatMessages.addEventListener('touchstart', function(e) {
-        // Mémoriser la position de départ
-        this.startY = e.touches[0].pageY;
-        this.scrollTop = this.scrollTop;
-        this.scrollHeight = this.scrollHeight;
-        this.clientHeight = this.clientHeight;
-        this.canScrollUp = this.scrollTop > 0;
-        this.canScrollDown = this.scrollTop < (this.scrollHeight - this.clientHeight);
+        touchStartY = e.touches[0].pageY;
+        touchStartX = e.touches[0].pageX;
+        isHandlingScroll = false;
     }, { passive: true });
-
+    
+    // Gérer le déplacement du toucher
     chatMessages.addEventListener('touchmove', function(e) {
-        // Calculer la direction du défilement
-        const deltaY = this.startY - e.touches[0].pageY;
-        const isScrollingUp = deltaY < 0;
-        const isScrollingDown = deltaY > 0;
-
-        // Ne pas empêcher le défilement de la page principale sauf si nécessaire
-        if ((isScrollingUp && this.canScrollUp) || 
-            (isScrollingDown && this.canScrollDown)) {
-            // Le chat peut défiler dans cette direction, empêcher la page de défiler
-            e.stopPropagation();
-        } else {
-            // Le chat est à sa limite, permettre à la page de défiler
-            // Ne rien faire - laisser l'événement se propager naturellement
+        if (e.touches.length !== 1) return;
+        
+        const touchY = e.touches[0].pageY;
+        const touchX = e.touches[0].pageX;
+        
+        // Calculer le déplacement vertical et horizontal
+        const deltaY = touchStartY - touchY;
+        const deltaX = touchStartX - touchX;
+        
+        // Si le déplacement vertical est plus important que le déplacement horizontal
+        // et que nous n'avons pas encore décidé de gérer ce défilement
+        if (!isHandlingScroll && Math.abs(deltaY) > Math.abs(deltaX) * 1.5) {
+            isHandlingScroll = true;
+            
+            // Déterminer si le chat peut défiler dans cette direction
+            const scrollTop = this.scrollTop;
+            const scrollHeight = this.scrollHeight;
+            const clientHeight = this.clientHeight;
+            
+            const isScrollingUp = deltaY < 0;
+            const isScrollingDown = deltaY > 0;
+            
+            const canScrollUp = scrollTop > 0;
+            const canScrollDown = scrollTop < (scrollHeight - clientHeight - 2); // Marge d'erreur de 2px
+            
+            // Si le chat peut défiler dans la direction demandée, empêcher la page de défiler
+            if ((isScrollingUp && canScrollUp) || (isScrollingDown && canScrollDown)) {
+                e.stopPropagation();
+            }
+        } else if (isHandlingScroll) {
+            // Si nous avons déjà décidé de gérer ce défilement, continuer à empêcher la propagation
+            // seulement si nécessaire (vérifier à nouveau les limites)
+            const scrollTop = this.scrollTop;
+            const scrollHeight = this.scrollHeight;
+            const clientHeight = this.clientHeight;
+            
+            const isScrollingUp = deltaY < 0;
+            const isScrollingDown = deltaY > 0;
+            
+            const canScrollUp = scrollTop > 0;
+            const canScrollDown = scrollTop < (scrollHeight - clientHeight - 2);
+            
+            if ((isScrollingUp && canScrollUp) || (isScrollingDown && canScrollDown)) {
+                e.stopPropagation();
+            }
         }
     }, { passive: false });
-
-    // Supprimer l'écouteur d'événement scroll qui empêchait le rebond
-    // Ce n'est pas nécessaire et peut causer des problèmes
-} 
+    
+    // Réagir aux événements de redimensionnement de la fenêtre (comme l'ouverture/fermeture du clavier)
+    window.addEventListener('resize', function() {
+        // Réinitialiser les variables de suivi quand la taille de fenêtre change
+        isHandlingScroll = false;
+    }, { passive: true });
+    
+    // Réagir spécifiquement aux événements de focus pour les champs de saisie
+    const inputField = document.querySelector('.chat-input textarea, .chat-input input');
+    if (inputField) {
+        inputField.addEventListener('focus', function() {
+            // Donner un peu de temps au clavier pour s'ouvrir complètement
+            setTimeout(() => {
+                // Faire défiler jusqu'au bas du chat après l'ouverture du clavier
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 300);
+        });
+    }
 }
-
+}
 setupAuthListeners() {
     const pseudoInput = this.container.querySelector('#pseudoInput');
     const adminPasswordInput = this.container.querySelector('#adminPassword');
