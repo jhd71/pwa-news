@@ -357,35 +357,74 @@
 }
 
 /* Ticker d'actualités */
+.news-ticker {
+  position: fixed;
+  bottom: 60px; 
+  left: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  color: white;
+  overflow: hidden;
+  height: 40px;
+  z-index: 1000;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+.ticker-wrapper {
+  display: flex;
+  animation: ticker 80s linear infinite;
+  white-space: nowrap;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+/* Animation de base pour desktop - plus rapide */
+@media (min-width: 1024px) {
+  .ticker-wrapper {
+    animation: ticker-desktop 60s linear infinite; /* Réduire de 80s à 60s pour accélérer */
+  }
+  
+  @keyframes ticker-desktop {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-300%); }
+  }
+}
+
+/* Conserver les animations existantes pour mobile */
+@media (max-width: 768px) {
+  .ticker-wrapper {
+    animation: ticker-tablet 70s linear infinite;
+  }
+  
+  @keyframes ticker-tablet {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-1500%); }
+  }
+}
+
+@media (max-width: 480px) {
+  .ticker-wrapper {
+    animation: ticker-mobile 65s linear infinite;
+  }
+  
+  @keyframes ticker-mobile {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-2000%); }
+  }
+}
+
+.ticker-item {
+  padding: 10px 40px;
+  font-weight: bold;
+  position: relative;
+}
 
 .ticker-item:not(:last-child)::after {
   content: "•";
   position: absolute;
   right: 15px;
   color: #4CAF50;
-}
-
-/* Animation de base pour le ticker */
-.ticker-wrapper {
-  animation: ticker 60s linear infinite;
-}
-
-@keyframes ticker {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-300%); }
-}
-
-/* Adaptations selon les appareils */
-@media (max-width: 768px) {
-  .ticker-wrapper {
-    animation-duration: 70s;
-  }
-}
-
-@media (max-width: 480px) {
-  .ticker-wrapper {
-    animation-duration: 65s;
-  }
 }
 /* Séparateur entre les articles - correction pour mobile */
 @media (max-width: 768px) {
@@ -413,6 +452,22 @@
     padding-right: 20px; /* Ajuster l'espace */
   }
 }
+  
+.ticker-item a {
+  color: white;
+  text-decoration: none;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.ticker-item a:hover {
+  text-decoration: underline;
+}
+
+.ticker-source {
+  color: #7FFF7F;
+  margin-right: 8px;
+  font-weight: bold;
+}
 
 /* Icônes pour les sources */
 .ticker-source[data-source="BFM TV"]::before { content: "📺 "; }
@@ -422,7 +477,12 @@
 .ticker-source[data-source="France Bleu"]::before { content: "🎙️ "; }
 .ticker-source[data-source="Creusot Infos"]::before { content: "🏭 "; } /* Icône pour Creusot Infos */
 
-/* Garder ces animations car elles sont utilisées ailleurs */
+/* Animations */
+@keyframes ticker {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-300%); }
+}
+
 @keyframes pulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.05); }
@@ -448,33 +508,6 @@
   margin: 20px 0;
 }
 
-.news-ticker {
-  width: 100%;
-  height: 40px;
-  background-color: rgba(126, 87, 194, 0.95); /* En mode clair */
-  overflow: hidden;
-  position: fixed;
-  bottom: var(--bottom-nav-height);
-  left: 0;
-  right: 0;
-  z-index: 997;
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.ticker-wrapper {
-  display: inline-flex;
-  white-space: nowrap;
-  will-change: transform;
-}
-
-.ticker-item {
-  display: inline-flex;
-  align-items: center;
-  padding: 0 15px;
-  color: white;
-  font-size: 14px;
-}
-
 /* Media queries - Adaptations mobiles */
 @media (max-width: 768px) {
   .news-button {
@@ -489,6 +522,9 @@
     font-size: 16px;
   }
   
+  .ticker-item {
+    padding: 10px 20px;
+  }
   
   .news-panel {
     width: 80%;
@@ -513,6 +549,19 @@
   
   .news-button .material-icons {
     font-size: 14px;
+  }
+  
+  .ticker-item {
+    padding: 10px 15px;
+    font-size: 1.05em;
+  }
+  
+  .ticker-source {
+    font-size: 1.05em;
+  }
+  
+  .ticker-item a {
+    font-size: 1.05em;
   }
   
   .news-panel {
