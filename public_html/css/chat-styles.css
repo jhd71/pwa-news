@@ -348,7 +348,7 @@ body:has(.chat-container.open) .news-ticker {
 .header-buttons button:active {
     transform: scale(0.95);
 }
-/* Zone des messages */
+/* Zone des messages - modification proposée */
 .chat-messages {
     flex: 1;
     padding: 20px;
@@ -358,20 +358,41 @@ body:has(.chat-container.open) .news-ticker {
     gap: 10px;
     background: rgba(0, 0, 0, 0.2);
     scroll-behavior: smooth;
-	color: white !important; /* Force le texte en blanc */
+    color: white !important; /* Force le texte en blanc */
+    
+    /* Ajouts pour contrôler le défilement */
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    position: relative;
+    z-index: 10;
 }
 
+/* Conserver vos styles de scrollbar existants */
 .chat-messages::-webkit-scrollbar {
     width: 6px;
 }
-
 .chat-messages::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.1);
 }
-
 .chat-messages::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.2);
     border-radius: 3px;
+}
+
+/* Ajouter ces styles pour le conteneur principal du chat */
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    isolation: isolate; /* Crée un contexte d'empilement pour isoler le chat */
+}
+
+/* Si vous avez une zone d'entrée sous les messages */
+.chat-input {
+    position: relative;
+    z-index: 11;
+    background: inherit; /* Assurez-vous qu'elle a un fond */
 }
 
 /* Style des messages */
