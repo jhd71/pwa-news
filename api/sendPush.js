@@ -1,3 +1,4 @@
+require('dotenv').config();
 const webpush = require('web-push');
 const { createClient } = require('@supabase/supabase-js');
 console.log("📨 sendPush.js a été exécuté !");
