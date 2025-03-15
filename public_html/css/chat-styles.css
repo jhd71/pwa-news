@@ -232,26 +232,35 @@ body:has(.chat-container.open) .news-ticker {
     z-index: 1100;
 }
 
-/* Styles pour mobile */
+/* Remplacez complètement les styles médias pour mobile */
 @media (max-width: 600px) {
     .chat-container {
-        width: 95%; /* Presque toute la largeur de l'écran */
-        max-width: 350px;
-        height: 70vh; /* Plus grand sur mobile */
-        left: 50%; /* Centrer horizontalement */
-        transform: translateX(-50%); /* Centrer horizontalement */
-        right: auto; /* Annuler la position droite */
-        bottom: 80px; /* Un peu plus bas sur mobile */
+        width: 90%; /* Largeur en pourcentage de l'écran */
+        left: 5%; /* 5% de marge de chaque côté */
+        right: 5%; /* 5% de marge de chaque côté */
+        max-width: none; /* Supprimer la limite max-width */
+        height: 70vh;
+        bottom: 80px;
+        transform: none; /* Supprimer toute transformation */
     }
     
     /* Quand le clavier est ouvert */
     .chat-container.keyboard-open {
-        height: 50vh; /* Réduire la hauteur pour faire place au clavier */
-        bottom: 260px; /* Déplacer vers le haut pour être au-dessus du clavier */
-        transition: bottom 0.3s ease; /* Animation fluide */
-        /* IMPORTANT: Ne pas changer la position horizontale */
-        left: 50%; /* Garder centré */
-        transform: translateX(-50%); /* Garder centré */
+        height: 50vh;
+        bottom: 260px; /* Au-dessus du clavier */
+        transition: bottom 0.3s ease;
+        /* Ne pas modifier left/right pour maintenir la position horizontale */
+    }
+    
+    /* S'assurer que le chat-widget suit le même positionnement */
+    .chat-widget {
+        width: 100%;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 120px;
+        display: flex;
+        justify-content: center; /* Centrer horizontalement */
     }
 }
 
