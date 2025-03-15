@@ -384,31 +384,42 @@ getChatHTMLWithoutToggle() {
     } else {
         this.setupChatListeners();
     }
-// Ajoutez le nouveau code ici
-    // Remplacer le code existant par celui-ci
+// Remplacer le code précédent par celui-ci dans chatManager.js
 const chatMessages = this.container.querySelector('.chat-messages');
 if (chatMessages) {
-    // Utiliser une approche différente qui permet le défilement normal du chat
-    chatMessages.addEventListener('touchmove', (e) => {
-        // Ne pas stopper la propagation - permettre le défilement normal
-        e.stopPropagation(); // Ceci empêche l'événement de remonter à la page principale
+    // Utiliser une approche qui détecte si le défilement doit être dans le chat ou la page
+    chatMessages.addEventListener('touchstart', function(e) {
+        // Mémoriser la position de départ
+        this.startY = e.touches[0].pageY;
+        this.scrollTop = this.scrollTop;
+        this.scrollHeight = this.scrollHeight;
+        this.clientHeight = this.clientHeight;
+        this.canScrollUp = this.scrollTop > 0;
+        this.canScrollDown = this.scrollTop < (this.scrollHeight - this.clientHeight);
     }, { passive: true });
-    
-    // Empêcher le rebond aux extrémités qui cause souvent le défilement de la page
-    chatMessages.addEventListener('scroll', () => {
-        const scrollTop = chatMessages.scrollTop;
-        const scrollHeight = chatMessages.scrollHeight;
-        const clientHeight = chatMessages.clientHeight;
-        
-        // Ajuster légèrement les valeurs pour éviter les problèmes de "bounce"
-        if (scrollTop <= 1) {
-            chatMessages.scrollTop = 1;
-        } else if (scrollTop + clientHeight >= scrollHeight - 1) {
-            chatMessages.scrollTop = scrollHeight - clientHeight - 1;
+
+    chatMessages.addEventListener('touchmove', function(e) {
+        // Calculer la direction du défilement
+        const deltaY = this.startY - e.touches[0].pageY;
+        const isScrollingUp = deltaY < 0;
+        const isScrollingDown = deltaY > 0;
+
+        // Ne pas empêcher le défilement de la page principale sauf si nécessaire
+        if ((isScrollingUp && this.canScrollUp) || 
+            (isScrollingDown && this.canScrollDown)) {
+            // Le chat peut défiler dans cette direction, empêcher la page de défiler
+            e.stopPropagation();
+        } else {
+            // Le chat est à sa limite, permettre à la page de défiler
+            // Ne rien faire - laisser l'événement se propager naturellement
         }
-    }, { passive: true });
+    }, { passive: false });
+
+    // Supprimer l'écouteur d'événement scroll qui empêchait le rebond
+    // Ce n'est pas nécessaire et peut causer des problèmes
+} 
 }
-  }  
+
 setupAuthListeners() {
     const pseudoInput = this.container.querySelector('#pseudoInput');
     const adminPasswordInput = this.container.querySelector('#adminPassword');
