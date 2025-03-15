@@ -1,4 +1,3 @@
-require('dotenv').config();
 const webpush = require('web-push');
 const { createClient } = require('@supabase/supabase-js');
 console.log("📨 sendPush.js a été exécuté !");
@@ -7,8 +6,6 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
-console.log("🔑 VAPID_PUBLIC_KEY:", process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY);
-console.log("🔒 VAPID_PRIVATE_KEY:", process.env.VAPID_PRIVATE_KEY);
 
 // Fonction utilitaire pour envoyer une notification avec retry
 async function sendNotificationWithRetry(subscription, payload, maxRetries = 2) {
