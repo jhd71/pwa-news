@@ -1494,34 +1494,3 @@ body.long-press-active .message-options {
         transform: scale(1.1);
     }
 }
-/* Remplacez complètement les styles médias pour mobile */
-@media (max-width: 600px) {
-    .chat-container {
-        width: 90%; /* Largeur en pourcentage de l'écran */
-        left: 5%; /* 5% de marge de chaque côté */
-        right: 5%; /* 5% de marge de chaque côté */
-        max-width: none; /* Supprimer la limite max-width */
-        height: 70vh;
-        bottom: 80px;
-        transform: none; /* Supprimer toute transformation */
-    }
-    
-    /* Quand le clavier est ouvert */
-    .chat-container.keyboard-open {
-        height: 50vh;
-        bottom: 260px; /* Au-dessus du clavier */
-        transition: bottom 0.3s ease;
-        /* Ne pas modifier left/right pour maintenir la position horizontale */
-    }
-    
-    /* S'assurer que le chat-widget suit le même positionnement */
-    .chat-widget {
-        width: 100%;
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 120px;
-        display: flex;
-        justify-content: center; /* Centrer horizontalement */
-    }
-}
