@@ -232,35 +232,10 @@ body:has(.chat-container.open) .news-ticker {
     z-index: 1100;
 }
 
-/* Remplacez complètement les styles médias pour mobile */
 @media (max-width: 600px) {
-    .chat-container {
-        width: 90%; /* Largeur en pourcentage de l'écran */
-        left: 5%; /* 5% de marge de chaque côté */
-        right: 5%; /* 5% de marge de chaque côté */
-        max-width: none; /* Supprimer la limite max-width */
-        height: 70vh;
-        bottom: 80px;
-        transform: none; /* Supprimer toute transformation */
-    }
-    
-    /* Quand le clavier est ouvert */
-    .chat-container.keyboard-open {
-        height: 50vh;
-        bottom: 260px; /* Au-dessus du clavier */
-        transition: bottom 0.3s ease;
-        /* Ne pas modifier left/right pour maintenir la position horizontale */
-    }
-    
-    /* S'assurer que le chat-widget suit le même positionnement */
     .chat-widget {
-        width: 100%;
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 120px;
-        display: flex;
-        justify-content: center; /* Centrer horizontalement */
+        bottom: 120px !important; /* Était 80px, on le remonte pour éviter le chevauchement */
+        right: 20px;
     }
 }
 
@@ -274,35 +249,6 @@ body:has(.chat-container.open) .news-ticker {
 .chat-container.open {
     display: flex;
 }
-
-/* Zone des messages - modifier pour mieux gérer le défilement */
-.chat-messages {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background: rgba(0, 0, 0, 0.2);
-    scroll-behavior: smooth;
-    color: white !important;
-    
-    /* Ajouts importants pour le défilement mobile */
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y;
-}
-
-/* Wrapper pour la zone de saisie */
-.chat-input-wrapper {
-    position: sticky;
-    bottom: 0;
-    background: inherit;
-    z-index: 100;
-    padding: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 /* Fenêtre de connexion */
 .chat-login {
     padding: 20px;
