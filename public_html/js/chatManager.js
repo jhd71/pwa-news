@@ -384,90 +384,49 @@ getChatHTMLWithoutToggle() {
     } else {
         this.setupChatListeners();
     }
-// Remplacer le code précédent par celui-ci dans chatManager.js
+	
 // Solution améliorée pour chatManager.js
+// Solution radicale pour chatManager.js
 const chatMessages = this.container.querySelector('.chat-messages');
 if (chatMessages) {
-    let touchStartY = 0;
-    let touchStartX = 0;
-    let isHandlingScroll = false;
+    // Ajouter un style spécifique au conteneur de chat pour isoler son comportement de défilement
+    chatMessages.style.overscrollBehavior = 'contain';
     
-    // Détecter le début du toucher
-    chatMessages.addEventListener('touchstart', function(e) {
-        touchStartY = e.touches[0].pageY;
-        touchStartX = e.touches[0].pageX;
-        isHandlingScroll = false;
-    }, { passive: true });
+    // Prévenir complètement la propagation des événements tactiles au document parent
+    const preventPropagation = (e) => {
+        e.stopPropagation();
+    };
     
-    // Gérer le déplacement du toucher
-    chatMessages.addEventListener('touchmove', function(e) {
-        if (e.touches.length !== 1) return;
-        
-        const touchY = e.touches[0].pageY;
-        const touchX = e.touches[0].pageX;
-        
-        // Calculer le déplacement vertical et horizontal
-        const deltaY = touchStartY - touchY;
-        const deltaX = touchStartX - touchX;
-        
-        // Si le déplacement vertical est plus important que le déplacement horizontal
-        // et que nous n'avons pas encore décidé de gérer ce défilement
-        if (!isHandlingScroll && Math.abs(deltaY) > Math.abs(deltaX) * 1.5) {
-            isHandlingScroll = true;
-            
-            // Déterminer si le chat peut défiler dans cette direction
-            const scrollTop = this.scrollTop;
-            const scrollHeight = this.scrollHeight;
-            const clientHeight = this.clientHeight;
-            
-            const isScrollingUp = deltaY < 0;
-            const isScrollingDown = deltaY > 0;
-            
-            const canScrollUp = scrollTop > 0;
-            const canScrollDown = scrollTop < (scrollHeight - clientHeight - 2); // Marge d'erreur de 2px
-            
-            // Si le chat peut défiler dans la direction demandée, empêcher la page de défiler
-            if ((isScrollingUp && canScrollUp) || (isScrollingDown && canScrollDown)) {
-                e.stopPropagation();
-            }
-        } else if (isHandlingScroll) {
-            // Si nous avons déjà décidé de gérer ce défilement, continuer à empêcher la propagation
-            // seulement si nécessaire (vérifier à nouveau les limites)
-            const scrollTop = this.scrollTop;
-            const scrollHeight = this.scrollHeight;
-            const clientHeight = this.clientHeight;
-            
-            const isScrollingUp = deltaY < 0;
-            const isScrollingDown = deltaY > 0;
-            
-            const canScrollUp = scrollTop > 0;
-            const canScrollDown = scrollTop < (scrollHeight - clientHeight - 2);
-            
-            if ((isScrollingUp && canScrollUp) || (isScrollingDown && canScrollDown)) {
-                e.stopPropagation();
-            }
-        }
+    // Appliquer à tous les événements tactiles
+    chatMessages.addEventListener('touchstart', preventPropagation, { passive: false });
+    chatMessages.addEventListener('touchmove', preventPropagation, { passive: false });
+    chatMessages.addEventListener('touchend', preventPropagation, { passive: false });
+    
+    // Gérer aussi les événements de souris pour être complet
+    chatMessages.addEventListener('mousedown', preventPropagation, { passive: false });
+    chatMessages.addEventListener('mousemove', preventPropagation, { passive: false });
+    chatMessages.addEventListener('mouseup', preventPropagation, { passive: false });
+    
+    // Ajouter une fonction spéciale pour gérer le défilement du chat
+    chatMessages.addEventListener('wheel', (e) => {
+        e.stopPropagation();
+        // Permettre le défilement dans le chat
+        chatMessages.scrollTop += e.deltaY;
     }, { passive: false });
     
-    // Réagir aux événements de redimensionnement de la fenêtre (comme l'ouverture/fermeture du clavier)
-    window.addEventListener('resize', function() {
-        // Réinitialiser les variables de suivi quand la taille de fenêtre change
-        isHandlingScroll = false;
-    }, { passive: true });
-    
-    // Réagir spécifiquement aux événements de focus pour les champs de saisie
-    const inputField = document.querySelector('.chat-input textarea, .chat-input input');
+    // Ajout d'une détection de l'ouverture du clavier
+    const inputField = this.container.querySelector('input, textarea');
     if (inputField) {
-        inputField.addEventListener('focus', function() {
-            // Donner un peu de temps au clavier pour s'ouvrir complètement
+        inputField.addEventListener('focus', () => {
+            // Faire défiler jusqu'au dernier message après un court délai
             setTimeout(() => {
-                // Faire défiler jusqu'au bas du chat après l'ouverture du clavier
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }, 300);
         });
     }
+ }
 }
-}
+
 setupAuthListeners() {
     const pseudoInput = this.container.querySelector('#pseudoInput');
     const adminPasswordInput = this.container.querySelector('#adminPassword');
