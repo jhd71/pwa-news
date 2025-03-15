@@ -232,10 +232,23 @@ body:has(.chat-container.open) .news-ticker {
     z-index: 1100;
 }
 
+/* Styles pour mobile */
 @media (max-width: 600px) {
-    .chat-widget {
-        bottom: 120px !important; /* Était 80px, on le remonte pour éviter le chevauchement */
-        right: 20px;
+    .chat-container {
+        width: 90%; /* Occuper plus de place sur mobile */
+        max-width: 350px;
+        height: 70vh; /* Plus grand sur mobile */
+        left: 50%; /* Centrer horizontalement */
+        transform: translateX(-50%); /* Centrer horizontalement */
+        right: auto; /* Annuler la position droite */
+        bottom: 80px; /* Un peu plus bas sur mobile */
+    }
+    
+    /* Quand le clavier est ouvert */
+    .chat-container.keyboard-open {
+        height: 50vh; /* Réduire la hauteur pour faire place au clavier */
+        bottom: 260px; /* Déplacer vers le haut pour être au-dessus du clavier */
+        transition: bottom 0.3s ease; /* Animation fluide */
     }
 }
 
@@ -249,6 +262,35 @@ body:has(.chat-container.open) .news-ticker {
 .chat-container.open {
     display: flex;
 }
+
+/* Zone des messages - modifier pour mieux gérer le défilement */
+.chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    scroll-behavior: smooth;
+    color: white !important;
+    
+    /* Ajouts importants pour le défilement mobile */
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+}
+
+/* Wrapper pour la zone de saisie */
+.chat-input-wrapper {
+    position: sticky;
+    bottom: 0;
+    background: inherit;
+    z-index: 100;
+    padding: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 /* Fenêtre de connexion */
 .chat-login {
     padding: 20px;
