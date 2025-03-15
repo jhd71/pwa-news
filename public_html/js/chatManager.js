@@ -385,8 +385,8 @@ getChatHTMLWithoutToggle() {
         this.setupChatListeners();
     }
 // Ajoutez le nouveau code ici
-    // Empêcher le scroll de traverser sur les appareils tactiles
-    const chatMessages = this.container.querySelector('.chat-messages');
+    // Remplacer le code existant par celui-ci
+const chatMessages = this.container.querySelector('.chat-messages');
 if (chatMessages) {
     // Utiliser une approche différente qui permet le défilement normal du chat
     chatMessages.addEventListener('touchmove', (e) => {
@@ -407,7 +407,7 @@ if (chatMessages) {
             chatMessages.scrollTop = scrollHeight - clientHeight - 1;
         }
     }, { passive: true });
-   }
+}
   }  
 setupAuthListeners() {
     const pseudoInput = this.container.querySelector('#pseudoInput');
@@ -498,22 +498,31 @@ setupAuthListeners() {
                 localStorage.setItem('isAdmin', isAdmin);
 
                 // Actualiser l'interface
-                if (document.getElementById('chatToggleBtn')) {
-                    this.container.innerHTML = this.getChatHTMLWithoutToggle();
-                } else {
-                    this.container.innerHTML = this.getChatHTML();
-                }
-                
-                const chatContainer = this.container.querySelector('.chat-container');
-                if (chatContainer) {
-                    chatContainer.classList.add('open');
-                    this.isOpen = true;
-                    localStorage.setItem('chatOpen', 'true');
-                }
-                
-                this.setupListeners();
-                await this.loadExistingMessages();
-                this.playSound('success');
+if (document.getElementById('chatToggleBtn')) {
+    this.container.innerHTML = this.getChatHTMLWithoutToggle();
+} else {
+    this.container.innerHTML = this.getChatHTML();
+}
+
+const chatContainer = this.container.querySelector('.chat-container');
+if (chatContainer) {
+    chatContainer.classList.add('open');
+    this.isOpen = true;
+    localStorage.setItem('chatOpen', 'true');
+
+    // Désactiver le scroll global quand le chat est ouvert
+    document.body.classList.add('no-scroll');
+
+    // Réactiver le scroll global quand le chat se ferme
+    chatContainer.addEventListener('touchend', () => {
+        document.body.classList.remove('no-scroll');
+    });
+}
+
+this.setupListeners();
+await this.loadExistingMessages();
+this.playSound('success');
+
                 
             } catch (error) {
                 console.error('Erreur d\'authentification:', error);
