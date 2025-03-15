@@ -365,6 +365,28 @@
   color: #4CAF50;
 }
 
+/* Animation de base pour le ticker */
+.ticker-wrapper {
+  animation: ticker 60s linear infinite;
+}
+
+@keyframes ticker {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-300%); }
+}
+
+/* Adaptations selon les appareils */
+@media (max-width: 768px) {
+  .ticker-wrapper {
+    animation-duration: 70s;
+  }
+}
+
+@media (max-width: 480px) {
+  .ticker-wrapper {
+    animation-duration: 65s;
+  }
+}
 /* Séparateur entre les articles - correction pour mobile */
 @media (max-width: 768px) {
   .ticker-item:not(:last-child)::after {
