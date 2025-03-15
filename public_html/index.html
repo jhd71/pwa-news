@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light" data-font-size="normal">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a237e">
+    <meta name="description" content="Actu&Média">
+    <title>Actu&Média</title>
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Actu&Média">
+    <link rel="apple-touch-icon" href="images/INFOS-192.png">
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <!-- SwiperJS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <!-- Ajoutez ces métas -->
+    <meta name="application-name" content="Actu&Média">
+    <meta name="msapplication-navbutton-color" content="#1a237e">
+    <meta name="msapplication-starturl" content="/">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#1a237e">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1a237e">
+    <link rel="icon" type="image/png" sizes="192x192" href="images/INFOS-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="images/INFOS.png">
+    <!-- SEO meta tags -->
+    <meta name="description" content="Actu & Média - Votre source d'actualités locales et médias en Saône-et-Loire. Informations locales, radio et TV en direct.">
+    <meta name="keywords" content="actualités, Saône-et-Loire, Montceau News, Le JSL, L'Informateur, Creusot Infos, France Bleu, BFM TV, médias locaux">
+    <meta name="author" content="Actu & Média">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jhd71.fr/">
+    <meta property="og:title" content="Actu & Média - Actualités et médias locaux">
+    <meta property="og:description" content="Votre source d'actualités locales et médias en Saône-et-Loire. Informations locales, radio et TV en direct.">
+    <meta property="og:image" content="https://jhd71.fr/images/INFOS.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://jhd71.fr/">
+    <meta property="twitter:title" content="Actu & Média - Actualités et médias locaux">
+    <meta property="twitter:description" content="Votre source d'actualités locales et médias en Saône-et-Loire. Informations locales, radio et TV en direct.">
+    <meta property="twitter:image" content="https://jhd71.fr/images/INFOS.png">
+
+    <!-- Microsoft Meta Tags -->
+    <meta name="msapplication-TileImage" content="images/INFOS-192.png">
+    <meta name="msapplication-TileColor" content="#1a237e">
+
+    <!-- Styles -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/chat-styles.css">
+    <link rel="stylesheet" href="css/news-panel.css">
+    
+    <!-- Notifications -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<header class="app-header">
+    <button type="button" id="menuButton" class="menu-button" aria-label="Menu">
+        <span class="material-icons">menu</span>
+    </button>
+    <button type="button" id="settingsButton" class="settings-button" aria-label="Paramètres">
+        <span class="material-icons">settings</span>
+    </button>   
+    <h1 class="site-title">
+        <img src="images/Actu&Media.png" alt="Actu & Média" class="site-logo">
+    </h1>
+</header>
+<!-- Ajouter après le header, avant le carrousel -->
+<div class="weather-sidebar" id="weatherSidebar">
+  <h3>Météo locale</h3>
+  <div id="weather-widget">Chargement...</div>
+</div>
+<!-- Structure HTML optimisée pour le Swiper et les séparateurs -->
+<div class="swiper-container">
+  <div class="swiper">
+    <div class="swiper-wrapper" id="swiperWrapper">
+      <!-- Les actualités seront injectées ici par JS -->
+      <div class="swiper-slide">
+        <div class="slide-content">
+          <p>Chargement des actualités...</p>
+        </div>
+      </div>
+    </div>
+    <!-- Pagination -->
+    <div class="swiper-pagination"></div>
+    <!-- Flèches de navigation -->
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
+  </div>
+</div>
+
+<!-- Menu latéral -->
+<aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+        <h2>Menu</h2>
+        <button type="button" class="close-btn" aria-label="Fermer">
+            <span class="material-icons">close</span>
+        </button>
+    </div>
+    <div class="menu-item">
+        <a href="https://www.footmercato.net/live/" target="_blank">
+            <span class="material-icons">sports_soccer</span>
+            Foot-Live
+        </a>
+    </div>
+    <div class="menu-item">
+        <a href="https://www.footmercato.net/club/fc-montceau-bourgogne/classement" target="_blank">
+            <span class="material-icons">sports_soccer</span>
+            FC Montceau-Bourgogne
+        </a>
+    </div>
+    <div class="menu-item">
+        <a href="https://jhd71.fr/meteo.html" target="_blank">
+            <span class="material-icons">wb_sunny</span>
+            Prévisions météo à 3 jours
+        </a>
+    </div>
+    <div class="menu-item">
+        <a href="https://www.swisstransfer.com/fr-ch" target="_blank">
+            <span class="material-icons">upload</span>
+            Swiss_Transfer
+        </a>
+    </div>
+    <div class="menu-item">
+        <a href="https://transfert.free.fr/upload" target="_blank">
+            <span class="material-icons">upload</span>
+            Free_Transfert
+        </a>
+    </div>
+    <div class="menu-item">
+        <a href="mailto:infos@jhd71.fr" target="_blank">
+            <span class="material-icons">email</span>
+            Contact
+        </a>
+    </div>
+    <div class="menu-item">
+        <button id="menuInstall" class="menu-link">
+            <span class="material-icons">download</span>
+            <span>Installer l'application</span>
+        </button>
+    </div>
+    <div class="menu-item">
+        <div class="copyright-text">
+            <span class="material-icons">copyright</span>
+            <span>2025 Actu & Média</span>
+        </div>
+    </div>
+</aside>
+
+<!-- Conteneur principal des tuiles -->
+<main>
+    <div id="tileContainer" class="tile-container grid"></div>
+</main>
+
+<!-- Ticker d'actualités -->
+<div class="news-ticker">
+  <div class="ticker-wrapper" id="newsTicker">
+    <div class="ticker-item">Chargement des actualités...</div>
+  </div>
+</div>
+
+<!-- Barre de navigation du bas -->
+<nav class="bottom-nav">
+    <button class="nav-item" id="darkModeToggle">
+        <span class="material-icons">dark_mode</span>
+        <span>Sombre</span>
+    </button>
+    <button class="nav-item" id="addSiteBtn">
+        <span class="material-icons">add_circle</span>
+        <span>Ajouter</span>
+    </button>
+    <button class="nav-item" id="layoutToggle">
+        <span class="material-icons">grid_view</span>
+        <span>Vue</span>
+    </button>
+    <a href="https://www.google.com" target="_blank" class="nav-item">
+        <span class="material-icons">search</span>
+        <span>Google</span>
+    </a>
+    <!-- Bouton de chat intégré dans la barre -->
+    <button class="nav-item chat-toggle-btn" id="chatToggleBtn">
+        <span class="material-icons">chat</span>
+        <span>Chat</span>
+        <span class="chat-notification-badge hidden">0</span>
+    </button>
+</nav>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Module principal -->
+<script type="module">
+    // Service Worker Registration
+    async function registerServiceWorker() {
+        if ('serviceWorker' in navigator) {
+            try {
+                const registration = await navigator.serviceWorker.register('/service-worker.js', {
+                    scope: '/',
+                    updateViaCache: 'none'
+                });
+
+                console.log('ServiceWorker enregistré avec succès:', registration);
+
+                // Gestion de la mise à jour du Service Worker
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    console.log('Nouveau service worker en installation');
+
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            console.log('Nouveau Service Worker installé');
+                            if (registration.waiting) {
+                                registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                            }
+                        }
+                    });
+                });
+
+                // Écouter les changements d'état
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    console.log('Service Worker mis à jour');
+                    window.location.reload();
+                });
+
+                return registration;
+            } catch (error) {
+                console.error('Erreur d\'enregistrement du ServiceWorker:', error);
+                throw error;
+            }
+        }
+    }
+
+    // PWA Installation
+    class PWAInstaller {
+        constructor() {
+            this.deferredPrompt = null;
+            this.installButton = document.getElementById('menuInstall');
+            this.setupEventListeners();
+        }
+
+        setupEventListeners() {
+            // Masquer le bouton par défaut
+            if (this.installButton) {
+                this.installButton.style.display = 'none';
+            }
+
+            window.addEventListener('beforeinstallprompt', this.handleBeforeInstallPrompt.bind(this));
+            window.addEventListener('appinstalled', this.handleAppInstalled.bind(this));
+        }
+
+        async handleBeforeInstallPrompt(event) {
+            event.preventDefault();
+            this.deferredPrompt = event;
+
+            if (this.installButton) {
+                this.installButton.style.display = 'block';
+                this.installButton.addEventListener('click', this.handleInstallClick.bind(this), { once: true });
+            }
+        }
+
+        async handleInstallClick(event) {
+            event.preventDefault();
+            if (!this.deferredPrompt) return;
+
+            try {
+                const result = await this.deferredPrompt.prompt();
+                console.log('Résultat de l\'installation:', result);
+                
+                if (result.outcome === 'accepted') {
+                    console.log('PWA installée avec succès');
+                    this.installButton.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Erreur lors de l\'installation:', error);
+            } finally {
+                this.deferredPrompt = null;
+            }
+        }
+
+        handleAppInstalled() {
+            console.log('PWA installée avec succès');
+            if (this.installButton) {
+                this.installButton.style.display = 'none';
+            }
+            this.deferredPrompt = null;
+        }
+    }
+
+    // App Initialization
+    class AppInitializer {
+        static async init() {
+            try {
+                // Enregistrer le Service Worker
+                await registerServiceWorker();
+
+                // Initialiser l'installateur PWA
+                new PWAInstaller();
+
+                // Initialiser ContentManager
+                console.log('Chargement de ContentManager...');
+                const contentModule = await import('./js/content.js');
+                window.contentManager = new contentModule.default();
+                await window.contentManager.init();
+                console.log('Content Manager initialisé');
+
+                // Initialiser ChatManager
+                console.log('Chargement de ChatManager...');
+                const chatModule = await import('/js/chatManager.js');
+                window.chatManager = new chatModule.default();
+                await window.chatManager.init();
+                console.log('Chat Manager initialisé');
+
+            } catch (error) {
+                console.error('Erreur d\'initialisation:', error);
+                console.error('Stack trace:', error.stack);
+            }
+        }
+    }
+
+    // Démarrer l'application quand le DOM est prêt
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => AppInitializer.init());
+    } else {
+        AppInitializer.init();
+    }
+</script>
+<script src="/js/newsTickerManager.js"></script>
+<script src="js/newsPanel.js"></script>
+
+<!-- NOUVEAU CODE POUR LE CARROUSEL D'ACTUALITÉS -->
+<script>
+async function loadTopNews() {
+  const swiperWrapper = document.getElementById('swiperWrapper');
+  
+  try {
+    const response = await fetch('/api/getNationalNews.js');
+    
+    if (!response.ok) {
+      throw new Error(`Erreur HTTP: ${response.status}`);
+    }
+    
+    const articles = await response.json();
+    swiperWrapper.innerHTML = '';
+    
+    if (articles.length === 0) {
+      swiperWrapper.innerHTML = '<div class="swiper-slide"><div class="slide-content"><p>Aucune actualité disponible pour le moment.</p></div></div>';
+      return;
+    }
+    
+    // Limiter à 5 articles pour éviter l'avertissement de loop
+    const limitedArticles = articles.slice(0, 5);
+    
+    limitedArticles.forEach(article => {
+      if (article.title && article.link) {
+        const slide = document.createElement('div');
+        slide.className = 'swiper-slide';
+        
+        // Structure HTML simplifiée et robuste
+        let slideHTML = `<a href="${article.link}" target="_blank">`;
+        
+        // Ajouter l'image si disponible
+        if (article.image && article.image !== "images/default-news.jpg") {
+          slideHTML += `<img src="${article.image}" alt="${article.title}">`;
+        }
+        
+        // Overlay avec titre et source
+        slideHTML += `
+          <div class="slide-content">
+            <div class="slide-title">${article.title}</div>
+            <div class="slide-source">${article.source || 'Source'}</div>
+          </div>
+        </a>`;
+        
+        slide.innerHTML = slideHTML;
+        swiperWrapper.appendChild(slide);
+      }
+    });
+    
+    // Détruire l'instance précédente si elle existe
+    if (window.swiper) {
+      window.swiper.destroy(true, true);
+    }
+    
+    // Initialiser le nouveau Swiper avec des paramètres optimisés
+    window.swiper = new Swiper('.swiper', {
+      loop: limitedArticles.length > 1,
+      autoplay: { 
+        delay: 5000,
+        disableOnInteraction: false
+      },
+      pagination: { 
+        el: '.swiper-pagination', 
+        clickable: true 
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev'
+      },
+      slidesPerView: 1,
+      spaceBetween: 0, // Pas d'espace entre les slides
+      grabCursor: true, // Indique que le contenu est navigable
+      on: {
+        init: function() {
+          console.log('Swiper initialisé avec succès');
+        }
+      }
+    });
+    
+  } catch (error) {
+    console.error('Erreur chargement actualités:', error);
+    swiperWrapper.innerHTML = '<div class="swiper-slide"><div class="slide-content"><p>Erreur lors du chargement des actualités.</p></div></div>';
+  }
+}
+
+// Exposer la fonction pour pouvoir l'appeler depuis d'autres scripts
+window.refreshNews = function() {
+  console.log('Actualisation des nouvelles...');
+  loadTopNews();
+}
+
+// Charger les actualités au chargement de la page
+document.addEventListener('DOMContentLoaded', loadTopNews);
+
+// Fonction pour recharger les actualités
+function refreshNews() {
+  console.log('Actualisation des nouvelles...');
+  loadTopNews();
+}
+
+// Exposer la fonction pour pouvoir l'appeler depuis d'autres scripts
+window.refreshNews = refreshNews;
+</script>
+
+<!-- Bouton Infos en direct -->
+<button id="newsButton" class="news-button">
+  <span class="material-icons">feed</span>
+  <span>Infos en direct</span>
+</button>
+<!-- Ajouter ce code après le bouton "Infos en direct" dans index.html -->
+<div class="quick-links">
+  <h3>Liens rapides</h3>
+  <div class="links-grid">
+    <a href="https://www.montceaulesmines.fr/" class="quick-link" target="_blank">
+      <span class="material-icons">location_city</span>
+      <span>Ville de Montceau</span>
+    </a>
+    <a href="https://www.inforoute71.fr/" class="quick-link" target="_blank">
+      <span class="material-icons">directions_car</span>
+      <span>Info Routes</span>
+    </a>
+    <a href="https://www.ter.sncf.com/bourgogne-franche-comte" class="quick-link" target="_blank">
+      <span class="material-icons">train</span>
+      <span>Horaires TER</span>
+    </a>
+    <a href="https://www.doctolib.fr/medecin-generaliste/montceau-les-mines" class="quick-link" target="_blank">
+      <span class="material-icons">medical_services</span>
+      <span>Médecins</span>
+    </a>
+    <a href="https://www.impots.gouv.fr/" class="quick-link" target="_blank">
+      <span class="material-icons">receipt_long</span>
+      <span>Impôts</span>
+    </a>
+    <a href="https://www.service-public.fr/" class="quick-link" target="_blank">
+      <span class="material-icons">public</span>
+      <span>Service Public</span>
+    </a>
+  </div>
+</div>
+<!-- Menu déroulant des actualités -->
+<div class="news-panel" id="newsPanel">
+  <div class="panel-header">
+    <h3>Actualités en direct</h3>
+    <button class="close-panel">
+      <span class="material-icons">close</span>
+    </button>
+  </div>
+  <div class="panel-content" id="newsPanelContent">
+    <!-- Les actualités vont ici -->
+  </div>
+  <!-- Bouton de fermeture flottant (visible uniquement sur mobile) -->
+<button class="mobile-close-panel" id="mobileClosePanel">
+  <span class="material-icons">keyboard_arrow_down</span>
+  <span>Fermer</span>
+</button>
+  <button class="refresh-button" id="refreshButton">
+    <span class="material-icons">refresh</span> 
+    Actualiser les infos
+  </button>
+</div>
+<script src="js/ios-install.js"></script>
+<script src="js/weather-widget.js"></script>
+<!-- Supprimer l'initialisation de Swiper existante et utiliser celle de loadTopNews à la place -->
+<script>
+  // Chargement différé des actualités pour s'assurer que le DOM est prêt
+  document.addEventListener('DOMContentLoaded', () => {
+    // Le loadTopNews sera appelé par l'event listener dans le script ci-dessus
+    
+    // Ajouter un gestionnaire d'événements pour le bouton de rafraîchissement
+    const refreshButton = document.getElementById('refreshButton');
+    if (refreshButton) {
+      refreshButton.addEventListener('click', () => {
+        if (window.refreshNews) {
+          window.refreshNews();
+        }
+      });
+    }
+  });
+</script>
+</body>
+</html>

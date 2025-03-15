@@ -1,0 +1,16 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "fr.jhd71.twa",
+      "sha256_cert_fingerprints": [
+        "80:06:52:4D:E6:C2:CE:AD:8C:FD:71:EF:7D:2A:A6:8E:EF:01:49:05:6B:DD:50:AA:26:43:65:A7:15:DE:08:25",
+        "70:73:0E:86:40:18:CE:7F:B2:63:D1:FB:48:9E:3B:D4:BC:F8:C0:75:5A:20:49:78:74:70:2E:A6:65:EA:CF:6E"
+      ]
+    }
+  }
+]

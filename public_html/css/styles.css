@@ -1,0 +1,1862 @@
+/* Variables racines */
+:root {
+    --primary-color: #7E57C2;
+    --background-color: #EFF1FF;
+    --text-color: #333333;
+    --border-color: #E5E7F4;
+    --hover-color: rgba(126, 87, 194, 0.1);
+    --shadow-color: rgba(0, 0, 0, 0.08);
+    --header-height: 60px;
+    --bottom-nav-height: 60px;
+    --tile-title-size: 20px;
+    --menu-text-size: 15px;
+    --separator-text-size: 15px;
+    --message-text-size: 15px;
+    --header-text-size: 20px;
+    --modal-text-size: 16px;
+    --card-background: var(--primary-color);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: font-size 0.3s ease;
+}
+
+[data-theme="dark"] {
+    --primary-color: #1a237e;
+    --background-color: #121212;
+    --text-color: #ffffff;
+    --border-color: #404040;
+    --hover-color: rgba(255, 255, 255, 0.1);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Pour le texte en mode clair */
+[data-theme="light"] .sidebar,
+[data-theme="light"] .settings-menu,
+[data-theme="light"] .modal-content {
+    color: white !important;
+}
+/* Tailles pour différentes options */
+[data-font-size="small"] {
+    --tile-title-size: 14px;
+    --menu-text-size: 13px;
+    --separator-text-size: 13px;
+    --message-text-size: 13px;
+    --header-text-size: 18px;
+}
+
+[data-font-size="normal"] {
+    --tile-title-size: 16px;
+    --menu-text-size: 15px;
+    --separator-text-size: 15px;
+    --message-text-size: 15px;
+    --header-text-size: 20px;
+}
+
+[data-font-size="large"] {
+    --tile-title-size: 18px;
+    --menu-text-size: 17px;
+    --separator-text-size: 17px;
+    --message-text-size: 17px;
+    --header-text-size: 24px;
+}
+
+/* Thème sombre */
+[data-theme="dark"] {
+    --primary-color: #1a237e;
+    --background-color: #121212;
+    --text-color: #ffffff;
+    --border-color: #404040;
+    --hover-color: rgba(255, 255, 255, 0.1);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Styles de base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+    min-height: 100vh;
+    position: relative;
+}
+
+.material-icons {
+    font-size: 24px;
+}
+
+/* Header et navigation */
+.app-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--header-height);
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: visible; /* Permet au logo de déborder */
+}
+
+/* Style par défaut pour PC */
+.site-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: var(--header-text-size);
+    font-weight: bold;
+    white-space: nowrap;
+    color: white;
+    text-shadow: 1px 1px 0 black, -1px 1px 0 black, 1px -1px 0 black, -1px -1px 0 black;
+}
+/* Transition globale */
+* {
+    transition: font-size 0.3s ease;
+}
+
+/* Style du logo */
+.site-logo {
+    height: 140px; /* Plus grand sur PC */
+    width: auto;
+    margin-top: 30px;
+    position: relative;
+    z-index: 1001;
+    filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.3));
+    object-fit: contain;
+}
+
+@media (max-width: 600px) {
+    .site-logo {
+        height: 80px !important; /* ✅ Assure une grande taille */
+        width: auto !important; /* ✅ Garde les proportions */
+        max-width: none !important; /* ✅ Enlève toute restriction */
+        display: block !important;
+        margin: 0 auto !important; /* ✅ Centre horizontalement */
+        object-fit: contain !important; /* ✅ Évite toute déformation */
+    }
+
+    .header {
+        height: 380px !important; /* ✅ Augmente la place pour le logo */
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        overflow: visible !important; /* ✅ Assure que rien ne bloque */
+    }
+}
+
+.menu-button {
+    background: none;
+    border: none;
+    color: white;
+    min-width: 48px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+/* Bouton paramètres */
+.settings-button {
+    position: fixed;
+    top: 8px;
+    right: 8px;
+    width: 44px;
+    height: 44px;
+    background: none;
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 1002;
+    padding: 10px;
+/* Ajout des effets */
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.menu-button:hover, .settings-button:hover {
+    background-color: var(--hover-color);
+}
+/* Styles communs pour tous les boutons de fermeture */
+.close-btn {
+    background: none;
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.close-btn:hover {
+    background-color: var(--hover-color);
+}
+
+/* Styles spécifiques pour le menu paramètres */
+.settings-header .close-btn {
+    padding: 0;
+    margin: -8px;
+}
+
+.settings-header {
+    padding: 15px;
+    background-color: var(--primary-color);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Mise à jour du bouton paramètres */
+.settings-button {
+    position: fixed;
+    top: 8px;
+    right: 8px;
+    width: 44px;
+    height: 44px;
+    background: none;
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 1002;
+    transition: background-color 0.2s;
+}
+
+/* Effet au survol */
+.settings-button:hover,
+.menu-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Effet au clic */
+.settings-button:active,
+.menu-button:active {
+    transform: scale(0.95);
+}
+
+/* Effet d'icône */
+.settings-button .material-icons,
+.menu-button .material-icons {
+    transition: transform 0.3s ease;
+}
+
+.settings-button:hover .material-icons,
+.menu-button:hover .material-icons {
+    transform: rotate(15deg) scale(1.1);
+}
+
+.settings-button:hover,
+.close-btn:hover {
+    background-color: var(--hover-color);
+}
+/* Style pour le bouton de chat dans la barre de navigation */
+.chat-toggle-btn {
+    position: relative;
+}
+
+/* Repositionner le badge de notification plus près de l'icône chat */
+.chat-notification-badge {
+    position: absolute;
+    top: 2px;            /* Moins haut que -5px */
+    left: 50%;           /* Un peu moins à droite que 65% */
+    transform: translateX(-50%); /* Maintient l'ajustement du centrage */
+    background-color: #ff4757;
+    color: white;
+    font-size: 12px;
+    padding: 3px;
+    border-radius: 50%;
+    min-width: 18px;
+    height: 18px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 1001;
+}
+
+.chat-notification-badge.hidden {
+    display: none;
+}
+
+/* Animation de pulsation pour attirer l'attention */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.chat-notification-badge:not(.hidden) {
+    animation: pulse 2s infinite;
+}
+
+/* Thèmes du bouton chat */
+[data-theme="light"] .chat-toggle {
+    background: linear-gradient(145deg, #7E57C2, #9575CD);
+}
+
+[data-theme="dark"] .chat-toggle {
+    background: linear-gradient(145deg, #1a237e, #283593);
+}
+
+/* Effet de brillance du bouton */
+.chat-toggle::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(45deg);
+    transition: transform 0.6s ease;
+}
+
+/* Effets de survol du bouton */
+.chat-toggle:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.chat-toggle:hover::before {
+    transform: rotate(45deg) translate(50%, 50%);
+}
+
+/* Style et animation de l'icône */
+.chat-toggle .material-icons {
+    color: white;
+    font-size: 24px;
+    transition: transform 0.3s ease;
+}
+
+.chat-toggle:hover .material-icons {
+    transform: scale(1.1) rotate(15deg);
+}
+
+/* Style de base pour le toast */
+.toast {
+    position: fixed;
+    bottom: 90px;
+    left: 0;           /* Démarre du bord gauche */
+    right: 0;          /* S'étend jusqu'au bord droit */
+    margin-left: auto;   /* Centre horizontalement */
+    margin-right: auto;  /* Centre horizontalement */
+    width: fit-content; /* Adapte la largeur au contenu */
+    max-width: 90%;    /* Limite pour petits écrans */
+    background: linear-gradient(145deg, var(--primary-color), #9575CD);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    text-align: center;
+    font-size: var(--message-text-size);
+    animation: slideUp 0.4s ease, pulse 1.5s infinite;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px); /* Décalage vertical au début */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Effet de "respiration" */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05); /* Léger zoom */
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+/* Gestion du thème sombre */
+[data-theme="dark"] .toast {
+    background: linear-gradient(145deg, #1a237e, #283593); /* Fond sombre */
+}
+
+@media (max-width: 600px) {
+    .toast {
+        max-width: 95%;  /* ✅ Prend moins de place */
+    }
+}
+
+/* Style de la croix de fermeture */
+.sidebar .close-btn {
+    background: none;
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.sidebar .close-btn:hover {
+    background-color: var(--hover-color);
+}
+
+/* Pour le menu latéral */
+.sidebar {
+    position: fixed;
+    top: var(--header-height);
+    left: -280px;
+    width: 30%; /* Réduire à 30% de la largeur sur PC */
+    max-width: 350px; /* Largeur maximale sur grands écrans */
+    min-width: 280px; /* Largeur minimale */
+    height: calc(100vh - var(--header-height));
+    background-color: var(--primary-color) !important;
+    transition: left 0.3s ease;
+    z-index: 999;
+    box-shadow: 2px 0 5px var(--shadow-color);
+}
+
+.sidebar.open {
+    left: 0;
+}
+
+.sidebar-header {
+    padding: 15px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-content {
+    padding: 10px 0;
+}
+
+/* Styles du menu latéral */
+.menu-item {
+    padding: 5px 15px;
+}
+
+.menu-item a, 
+.menu-link,
+.install-app {
+    /* Garder vos styles existants */
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    color: white !important;
+    text-decoration: none;
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-size: var(--menu-text-size);
+    
+    /* Ajout de l'effet de brillance comme les tuiles */
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+/* Effet de brillance */
+.menu-item a::before, 
+.menu-link::before,
+.install-app::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 100%
+    );
+    transform: skewX(-25deg);
+    transition: left 0.5s ease;
+}
+
+.menu-item a:hover::before,
+.menu-link:hover::before,
+.install-app:hover::before {
+    left: 150%;
+}
+
+/* Effet sur le texte */
+.menu-item a span:not(.material-icons),
+.menu-link span:not(.material-icons),
+.install-app span:not(.material-icons) {
+    transition: transform 0.3s ease;
+}
+
+.menu-item a:hover span:not(.material-icons),
+.menu-link:hover span:not(.material-icons),
+.install-app:hover span:not(.material-icons) {
+    transform: scale(1.05);
+}
+
+.menu-item .material-icons {
+    width: 24px;
+    display: flex;
+    justify-content: center;
+    transition: transform 0.3s ease; /* Animation pour l'icône */
+}
+
+.menu-item a:hover,
+.menu-link:hover,
+#menuInstall:hover {
+    background-color: var(--hover-color);
+    transform: translateX(5px); /* Effet de décalage */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.menu-item a:hover .material-icons,
+.menu-link:hover .material-icons,
+#menuInstall:hover .material-icons {
+    transform: scale(1.1); /* Légère mise en avant de l'icône */
+}
+
+#menuInstall {
+    display: none;
+    border: none;
+    background: none;
+    cursor: pointer;
+    text-align: left;
+}
+
+#menuInstall.visible {
+    display: flex;
+}
+/* Ajoutez le nouveau style ici */
+.copyright-text {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    color: white;
+    margin-top: auto;
+    gap: 12px;
+}
+
+.copyright-text .material-icons {
+    width: 24px;
+    display: flex;
+    justify-content: center;
+}
+/* Contenu principal */
+main {
+    margin-top: calc(var(--header-height) + 10px);
+    margin-bottom: calc(var(--bottom-nav-height) + 10px);
+    padding: 0 10px;
+    min-height: calc(100dvh - var(--header-height) - var(--bottom-nav-height)); /* Utilisation de dvh pour une meilleure gestion mobile */
+}
+
+/* Conteneur de tuiles - Base */
+.tile-container {
+    display: grid;
+    gap: 8px;
+    padding: 8px 12px;
+    margin: 0 auto;
+}
+
+/* Vue grille */
+.tile-container.grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    max-width: 1200px;
+}
+
+/* Vue liste */
+.tile-container.list {
+    grid-template-columns: 1fr;
+    max-width: 800px;
+    gap: 6px;
+}
+/* Ajustement mobile */
+@media (max-width: 600px) {
+    .tile-container.list {
+        gap: 4px; /* Encore plus compact sur mobile */
+    }
+}
+
+/* Tuile de base */
+.tile {
+    background-color: var(--primary-color);
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 2px 5px var(--shadow-color);
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Effet de brillance amélioré (fusion avec l'existant) */
+.tile::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 100%
+    );
+    transform: skewX(-25deg);
+    transition: left 0.5s ease;
+    pointer-events: none;
+}
+
+.tile:hover::before {
+    left: 150%;
+}
+
+/* Animation de transition entre les vues (nouveau) */
+.tile-container {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dimensions des tuiles selon la vue */
+.tile-container.grid .tile {
+    height: 80px;
+	animation: fadeInScale 0.3s ease forwards;
+}
+
+.tile-container.list .tile {
+    height: 40px;
+	animation: slideInRight 0.3s ease forwards;
+}
+
+/* Effets de survol selon la vue */
+.tile-container.grid .tile:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.tile-container.list .tile:hover {
+    transform: translateX(10px);
+    box-shadow: -4px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Contenu des tuiles */
+.tile-content {
+    width: 100%;
+    text-align: center;
+    pointer-events: none;
+}
+
+/* Style de base des séparateurs */
+.separator {
+    /* Structure de base */
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 35px;
+    margin: 4px 0;
+    border-radius: 12px;
+    position: relative;
+    text-align: center;
+    font-weight: 600;
+    
+    /* Effets visuels de base */
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    padding: 10px;
+}
+
+/* Mode clair - Violet */
+[data-theme="light"] .separator {
+    background: linear-gradient(90deg, 
+        rgba(126, 87, 194, 0.3) 0%, 
+        rgba(126, 87, 194, 0.8) 50%, 
+        rgba(126, 87, 194, 0.3) 100%
+    );
+}
+
+/* Mode sombre - Bleu */
+[data-theme="dark"] .separator {
+    background: linear-gradient(90deg, 
+        rgba(26, 35, 126, 0.3) 0%, 
+        rgba(26, 35, 126, 0.8) 50%, 
+        rgba(26, 35, 126, 0.3) 100%
+    );
+}
+
+/* Style de l'image */
+.separator img {
+    height: 50px;
+    width: auto;
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    transition: transform 0.3s ease;
+}
+
+.separator:hover img {
+    transform: scale(1.1);
+}
+
+/* Lignes décoratives */
+.separator::before,
+.separator::after {
+    content: '';
+    position: absolute;
+    height: 0.5px;
+    width: calc(50% - 100px);
+    background-color: rgba(255, 255, 255, 0.3);
+    top: 50%;
+}
+
+.separator::before {
+    left: 20px;
+}
+
+.separator::after {
+    right: 20px;
+}
+
+/* Mode clair (gardé de votre code avec ajustement) */
+[data-theme="light"] .separator {
+    background: linear-gradient(90deg, 
+        rgba(126, 87, 194, 0.5) 0%, 
+        rgba(126, 87, 194, 0.9) 50%, 
+        rgba(126, 87, 194, 0.5) 100%
+    );
+}
+
+[data-theme="dark"] .tile {
+    opacity: 0.85;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .tile:hover {
+    opacity: 1;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Styles des tuiles avec une palette plus harmonieuse */
+.tile {
+    /* Styles de base existants */
+    background-color: var(--card-background);
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 2px 5px var(--shadow-color);
+    height: 80px;
+    overflow: hidden;
+    position: relative;
+
+    /* Transition améliorée */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+}
+
+/* Couleurs des tuiles dynamiques */
+.tile:nth-child(10n + 1) { background: linear-gradient(135deg, #9675CD, #7E57C2); }
+.tile:nth-child(10n + 2) { background: linear-gradient(135deg, #4DB6AC, #26A69A); }
+.tile:nth-child(10n + 3) { background: linear-gradient(135deg, #7986CB, #5C6BC0); }
+.tile:nth-child(10n + 4) { background: linear-gradient(135deg, #81C784, #66BB6A); }
+.tile:nth-child(10n + 5) { background: linear-gradient(135deg, #F06292, #EC407A); }
+.tile:nth-child(10n + 6) { background: linear-gradient(135deg, #64B5F6, #42A5F5); }
+.tile:nth-child(10n + 7) { background: linear-gradient(135deg, #FFB74D, #FFA726); }
+.tile:nth-child(10n + 8) { background: linear-gradient(135deg, #BA68C8, #AB47BC); }
+.tile:nth-child(10n + 9) { background: linear-gradient(135deg, #4DD0E1, #26C6DA); }
+.tile:nth-child(10n + 0) { background: linear-gradient(135deg, #A1887F, #8D6E63); }
+
+/* Nouvelles couleurs */
+.tile:nth-child(10n + 11) { background: linear-gradient(135deg, #E57373, #EF5350); } /* Rouge */
+.tile:nth-child(10n + 12) { background: linear-gradient(135deg, #F06292, #EC407A); } /* Rose plus clair */
+.tile:nth-child(10n + 13) { background: linear-gradient(135deg, #AB47BC, #9C27B0); } /* Violet plus foncé */
+.tile:nth-child(10n + 14) { background: linear-gradient(135deg, #7986CB, #5C6BC0); } /* Bleu plus clair */
+.tile:nth-child(10n + 15) { background: linear-gradient(135deg, #4DB6AC, #26A69A); } /* Vert d'eau plus foncé */
+.tile:nth-child(10n + 16) { background: linear-gradient(135deg, #81C784, #66BB6A); } /* Vert plus clair */
+.tile:nth-child(10n + 17) { background: linear-gradient(135deg, #FFB74D, #FFA726); } /* Orange plus clair */
+.tile:nth-child(10n + 18) { background: linear-gradient(135deg, #A1887F, #8D6E63); } /* Brun plus foncé */
+.tile:nth-child(10n + 19) { background: linear-gradient(135deg, #64B5F6, #42A5F5); } /* Bleu encore plus clair */
+.tile:nth-child(10n + 20) { background: linear-gradient(135deg, #4DD0E1, #26C6DA); } /* Turquoise plus clair */
+
+/* Texte sur tuiles claires */
+.tile:nth-child(10n + 2) .tile-title,
+.tile:nth-child(10n + 6) .tile-title,
+.tile:nth-child(10n + 9) .tile-title {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6); /* Ombre renforcée */
+}
+
+/* Animations */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Effets des tuiles au survol */
+.tile {
+    transition: transform 0.2s, box-shadow 0.2s, filter 0.2s, background-color 0.2s; /* Ajout de la transition de couleur */
+}
+
+/* ✅ Agrandit et modifie l’ombre en version desktop */
+@media (min-width: 600px) {
+    /* ✅ Effets au survol plus discrets */
+    .tile:hover {
+        transform: translateY(-5px) scale(1.02); /* ✅ Léger déplacement */
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* ✅ Ombre subtile */
+        filter: brightness(1.05); /* ✅ Accentue la lumière */
+    }
+}
+
+/* Effets de survol améliorés */
+.tile:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    filter: brightness(1.05);
+}
+
+/* Effet au clic (nouveau) */
+.tile:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.1s ease;
+}
+
+.tile-content {
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+    pointer-events: none; /* Empêche les interactions avec le texte */
+}
+
+.tile-title {
+    font-size: var(--tile-title-size);
+    font-weight: 600;
+    color: white;
+    text-align: center;
+    width: 100%;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    line-height: 1.2;
+    padding: 0 8px;
+    transition: transform 0.3s ease; /* Ajout de la transition */
+}
+
+/* Effet d'agrandissement du titre au survol */
+.tile:hover .tile-title {
+    transform: scale(1.05); /* Légère augmentation de la taille */
+}
+
+/* Menu paramètres - version corrigée */
+.settings-menu {
+    position: fixed;
+    top: var(--header-height);
+    right: -280px;
+    width: 30%;
+    max-width: 280px;
+    min-width: 280px;
+    height: calc(100vh - var(--header-height));
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    z-index: 999;
+    box-shadow: -2px 0 5px var(--shadow-color);
+    display: flex;
+    flex-direction: column;
+    transition: right 0.3s ease;
+}
+
+/* Mobile uniquement */
+@media (max-width: 600px) {
+    .settings-menu {
+        width: 100%;
+        max-width: 75%;
+        min-width: unset;
+    }
+}
+
+.settings-menu.open {
+    right: 0;
+}
+
+.settings-content {
+    max-width: 280px; /* Limite aussi le contenu */
+}
+
+.settings-header {
+    padding: 15px;
+    background-color: var(--primary-color);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.settings-content {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.settings-section {
+    margin-bottom: 20px;
+}
+
+.settings-section h4 {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 10px;
+    font-size: var(--menu-text-size);
+    text-align: center;
+}
+
+/* Tuiles de taille de police */
+.font-size-tiles {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.font-size-tile {
+    min-width: 80px;
+    padding: 12px 20px;
+    background-color: var(--card-background);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.font-size-tile:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.font-size-tile.active {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: white;
+    transform: scale(1.05);
+}
+
+.font-size-tile span {
+    font-size: var(--menu-text-size);
+}
+
+.version-text {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 10px 0;
+}
+
+/* Navigation du bas */
+.bottom-nav {
+    /* Styles de base */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--bottom-nav-height);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 998;
+    backdrop-filter: blur(10px);
+    padding: 8px 0;
+    box-shadow: 0 -2px 5px var(--shadow-color);
+}
+
+/* Mode clair - Violet */
+[data-theme="light"] .bottom-nav {
+    background: linear-gradient(
+        to bottom,
+        rgba(126, 87, 194, 0.95),
+        rgba(126, 87, 194, 0.98)
+    );
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Mode sombre - Bleu */
+[data-theme="dark"] .bottom-nav {
+    background: linear-gradient(
+        to bottom,
+        rgba(26, 35, 126, 0.95),
+        rgba(26, 35, 126, 0.98)
+    );
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Le reste des styles reste inchangé */
+.nav-item {
+    /* Styles de base */
+    color: white;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    flex: 1;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    border: none;
+    
+    /* Fond avec gradient */
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        transparent
+    );
+    
+    /* Une seule transition pour tout */
+    transition: all 0.3s ease;
+}
+
+.nav-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: white;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-item:hover::after {
+    width: 50%;
+}
+
+.nav-item:hover {
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+}
+
+/* Animation de l'icône */
+.nav-item .material-icons {
+    transition: transform 0.3s ease;
+}
+
+.nav-item:hover .material-icons {
+    transform: translateY(-2px) scale(1.1);
+}
+
+/* Animation du texte */
+.nav-item span:not(.material-icons) {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.nav-item:hover span:not(.material-icons) {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+/* Menu contextuel */
+.tile-menu {
+    position: fixed;
+    background-color: var(--primary-color) !important;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    z-index: 1000;
+    min-width: 200px;
+    max-width: 90%;
+    opacity: 1 !important;
+}
+
+.tile-menu button {
+    display: flex;
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    background: none;
+    color: white !important;
+    cursor: pointer;
+    align-items: center;
+    gap: 12px;
+    font-size: var(--menu-text-size);
+    transition: background-color 0.2s;
+}
+
+.tile-menu button .material-icons {
+    width: 24px;
+    display: flex;
+    justify-content: center;
+}
+
+.tile-menu button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Force le texte blanc dans les deux thèmes */
+[data-theme="light"] .tile-menu button,
+[data-theme="dark"] .tile-menu button {
+    color: white !important;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+/* Ajoutez le code de l'overlay ici */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    display: none;
+}
+
+.overlay.active {
+    display: block;
+}
+
+.modal-content {
+    background-color: var(--primary-color) !important;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    color: white;
+    font-size: calc(var(--modal-text-size) + 4px);
+}
+
+.modal-body {
+    padding: 20px;
+    color: white;
+}
+
+.modal-body h3 {
+    margin: 16px 0 8px;
+    font-size: calc(var(--modal-text-size) + 2px);
+}
+
+.modal-body ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.modal-body li {
+    padding: 8px 0;
+    font-size: var(--modal-text-size);
+}
+
+/* PayPal */
+.paypal-donate {
+    position: fixed;
+    bottom: calc(var(--bottom-nav-height) + 1px);
+    left: 10px;
+    z-index: 10;
+}
+
+.paypal-donate form {
+    margin: 0;
+}
+
+.paypal-donate input[type="image"] {
+    max-width: 200px;
+    height: auto;
+    transition: transform 0.2s ease-in-out;
+}
+
+.paypal-donate input[type="image"]:hover {
+    transform: scale(1.05);
+}
+
+/* PWA Installation */
+#menuInstall {
+    display: none;
+    cursor: pointer;
+    width: 100%;
+    color: white !important;
+    text-decoration: none;
+    padding: 12px;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+    font-size: var(--menu-text-size);
+}
+
+#menuInstall.visible {
+    display: flex !important;
+    align-items: center;
+}
+
+#menuInstall:hover {
+    background-color: var(--hover-color);
+}
+
+    /* Boutons */
+    .menu-button,
+    .settings-button {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+    }
+
+    .settings-button {
+        right: 4px;
+        top: 8px;
+    }
+
+    /* Navigation */
+    .google-text {
+        display: none;
+    }
+
+    /* Menus */
+    .sidebar {
+        width: 70%;
+        left: -100%;
+    }
+
+/* Configuration des vues - Mobile */
+@media (max-width: 600px) {
+    /* Tuiles */
+    .tile-container {
+        gap: 10px;
+    }
+
+    /* Vue grille */
+    .tile-container.grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+		padding-left: 0px; /* center le texte */
+    }
+
+    /* Vue liste - réduire la hauteur */
+    .tile-container.list .tile {
+        height: 45px; /* Plus compact */
+        margin: 3px 0;
+        text-align: left; /* Aligner le texte à gauche */
+        padding-left: 0px; /* center le texte */
+    }
+
+    /* Style commun aux tuiles */
+    .tile {
+        margin: 4px 0;
+    }
+
+    /* Autres éléments */
+    .paypal-donate {
+        display: none;
+    }
+
+    .chat-widget {
+        position: fixed;
+        right: 20px;
+        bottom: 80px;
+        z-index: 1001;
+    }
+}
+/* Ajustements pour les petits écrans */
+@media (max-width: 480px) {
+    .bottom-nav .nav-item span:not(.material-icons) {
+        font-size: 12px;
+    }
+    
+    .chat-notification-badge {
+        top: -3px;
+        right: -3px;
+        font-size: 10px;
+        min-width: 16px;
+        height: 16px;
+    }
+}
+/* Très petits écrans */
+@media (max-width: 360px) {
+    .site-title {
+        font-size: 14px;
+    }
+    
+    .menu-button,
+    .settings-button,
+    .google-link {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+    }
+}
+
+.ios-prompt {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  background: var(--primary-color);
+  padding: 15px;
+  border-radius: 10px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  animation: slideUp 0.3s ease;
+}
+
+.ios-prompt-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ios-prompt-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ios-prompt-close {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+/* ===== WIDGET MÉTÉO ===== */
+.weather-sidebar {
+  position: fixed;
+  top: 90px; /* On conserve cette valeur */
+  left: 10px;
+  width: 270px; /* Largeur augmentée pour mieux utiliser l'espace */
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 12px; /* Un peu plus de padding */
+  z-index: 4;
+  backdrop-filter: blur(5px);
+  margin-bottom: 20px; /* Ajouter de la marge en bas */
+}
+
+.weather-sidebar h3 {
+  margin: 0 0 12px 0; /* Plus d'espace en bas */
+  font-size: 16px;
+  color: var(--primary-color);
+  text-align: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Ajustement de l'espacement du contenu */
+#weather-widget {
+  padding-bottom: 8px; /* Ajouter un peu d'espace en bas */
+}
+
+/* Style pour les jours de la météo avec meilleur espacement */
+.weather-day {
+  padding: 8px;
+  margin-bottom: 10px; /* Plus d'espace entre les jours */
+  background: rgba(240, 240, 250, 0.5);
+  border-radius: 8px;
+  transition: transform 0.2s ease; /* Animation au survol */
+}
+
+.weather-day:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.weather-day h4 {
+  margin: 0 0 5px 0;
+  font-size: 14px;
+  color: #444;
+  font-weight: bold;
+}
+
+.weather-day img {
+  width: 38px; /* Légèrement plus grand */
+  height: 38px;
+  margin: 0 auto;
+  display: block;
+}
+
+.weather-day p {
+  margin: 3px 0; /* Plus d'espace entre les paragraphes */
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+/* Corriger le texte transparent en mode sombre */
+[data-theme="dark"] .weather-sidebar {
+  background: rgba(255, 255, 255, 0.85); /* Fond blanc semi-transparent */
+}
+
+[data-theme="dark"] .weather-sidebar * {
+  color: black !important; /* Force le texte en noir */
+  opacity: 1 !important; /* Assure une opacité totale */
+}
+
+[data-theme="dark"] .weather-day {
+  background: rgba(240, 240, 250, 0.7); /* Fond légèrement plus opaque */
+}
+
+/* Ajustement pour éviter que le widget touche le séparateur */
+@media (min-width: 1200px) {
+  .separator:first-of-type {
+    margin-top: 20px !important; /* Plus d'espace au-dessus du premier séparateur */
+  }
+  
+  .swiper-container {
+    margin-top: 130px !important; /* Ajuster la marge supérieure du swiper */
+  }
+}
+
+/* Responsive pour éviter les chevauchements */
+@media (max-width: 1400px) and (min-width: 1200px) {
+  .weather-sidebar {
+    width: 230px; /* Un peu plus petit sur les écrans moyens */
+  }
+}
+
+/* ===== SWIPER STYLES ===== */
+/* Conteneur principal du Swiper */
+.swiper-container {
+  width: 100%;
+  max-width: 800px !important; /* Assurer que le conteneur a la même largeur max */
+  margin-left: auto !important;
+  margin-right: auto !important;
+  margin-bottom: 20px !important;
+  display: flex;
+  justify-content: center;
+  margin-top: 120px !important;
+  margin-bottom: 20px !important; /* Plus d'espace après le Swiper */
+  padding: 0;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 2;
+}
+
+/* Style du Swiper */
+.swiper {
+  width: 100%;
+  max-width: 800px !important; /* Réduire la largeur maximale */
+  height: 300px !important; /* Hauteur réduite */
+  border-radius: 15px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  position: relative;
+  background-color: var(--primary-color);
+  margin: 0 auto; /* Centrer le swiper */
+}
+
+/* Ajustement des slides */
+.swiper-slide {
+  position: relative;
+  width: 100%;
+  height: 100% !important;
+  overflow: hidden;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Liens dans les slides */
+.swiper-slide a {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  color: white;
+  text-decoration: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Images dans les slides */
+.swiper-slide img {
+  width: 100%;
+  height: 220px !important; /* Limiter la hauteur de l'image */
+  object-fit: cover !important; /* Utiliser 'cover' pour remplir l'espace */
+  object-position: center 30%; /* Ajuster pour voir plus du haut de l'image */
+  display: block;
+  z-index: 1;
+  max-height: 200px !important; /* Limiter la hauteur des images */
+}
+
+/* Positionnement du texte */
+.slide-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 15px;
+  background: none !important; /* Supprime le fond noir */
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 1); /* Ombre plus visible */
+  z-index: 2;
+  height: auto; /* Hauteur automatique basée sur le contenu */
+  min-height: 80px; /* Hauteur minimale pour le texte */
+}
+
+/* Style du titre */
+.slide-title {
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  margin: 0 0 5px 0;
+  padding: 0;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* Style de la source */
+.slide-source {
+  font-size: 14px;
+  color: #ffcc00; /* 🎨 Change la couleur pour un jaune clair plus lisible */
+  font-weight: bold;
+  opacity: 1; /* Augmente la visibilité */
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 1); /* Ombre noire pour améliorer la lisibilité */
+}
+
+/* Boutons de navigation */
+.swiper-button-next,
+.swiper-button-prev {
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  background: white;
+  border-radius: 50%;
+  width: 40px !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+  font-size: 20px !important;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  opacity: 1;
+}
+
+/* Pagination */
+.swiper-pagination {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.swiper-pagination-bullet {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.swiper-pagination-bullet-active {
+  background: white;
+}
+
+/* ===== SÉPARATEURS ET TUILES ===== */
+/* Style du séparateur */
+.separator {
+  grid-column: 1 / -1;
+  margin: 10px 0 !important;
+}
+
+/* S'assurer que le header reste au-dessus */
+.app-header {
+  z-index: 1005 !important;
+}
+
+/* Support des thèmes */
+[data-theme="dark"] .swiper {
+  background: rgba(26, 35, 126, 0.9);
+}
+
+[data-theme="light"] .swiper {
+  background: rgba(126, 87, 194, 0.9);
+}
+
+/* ===== MEDIA QUERIES ===== */
+/* Masquer le Swiper sur mobile */
+@media (max-width: 767px) {
+  .swiper-container {
+    display: none !important;
+  }
+  
+  .weather-sidebar {
+    display: none !important;
+  }
+  
+  /* Ajuster l'espacement pour le premier séparateur quand le Swiper est masqué */
+  .separator:first-of-type {
+    margin-top: 60px !important;
+  }
+  
+  .tile-container {
+    width: 95% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+/* Tablettes */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .weather-sidebar {
+    display: none !important;
+  }
+  
+  .swiper-container {
+    margin-bottom: 15px !important;
+    width: 90% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  
+  .tile-container {
+    width: 90% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  
+  .separator {
+    margin: 10px 0 !important;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1200px) {
+  .weather-sidebar {
+    display: block !important;
+  }
+  
+  .swiper-container {
+    width: calc(100% - 190px) !important;
+    max-width: 800px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  
+  .swiper {
+    max-width: 800px !important;
+    height: 200px !important;
+  }
+
+  .tile-container {
+    width: calc(100% - 190px) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 1400px;
+  }
+  
+  .tile-container.grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+@media (min-width: 1200px) {
+  .swiper-container {
+    width: calc(100% - 580px) !important; /* Tenir compte des deux widgets */
+    max-width: 800px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  
+  .tile-container {
+    width: calc(100% - 580px) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 1200px;
+  }
+  
+  /* Assurer que le widget météo ne chevauche pas le contenu */
+  .separator:first-of-type {
+    margin-top: 20px !important;
+  }
+}
+
+/* Très petits écrans */
+@media (max-width: 480px) {
+  .separator:first-of-type {
+    margin-top: 55px !important;
+  }
+  
+  .tile-container {
+    padding: 0 5px !important;
+  }
+}
+
+/* Ajouter ces styles dans votre styles.css */
+.quick-links {
+  position: fixed;
+  top: 110px;
+  right: 10px;
+  width: 270px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 12px;
+  z-index: 4;
+  backdrop-filter: blur(5px);
+}
+
+.quick-links h3 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  color: var(--primary-color);
+  text-align: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.links-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.quick-link {
+  display: flex;                /* Utilise le modèle flexbox pour l'organisation */
+  flex-direction: column;       /* Organise les éléments en colonne (icône au-dessus du texte) */
+  align-items: center;          /* Centre les éléments horizontalement dans le conteneur */
+  text-align: center;           /* Centre le texte */
+  padding: 10px;                /* Ajoute de l'espace à l'intérieur des liens */
+  background: rgba(240, 240, 250, 0.5);  /* Fond légèrement bleuté semi-transparent */
+  border-radius: 8px;           /* Coins arrondis */
+  text-decoration: none;        /* Supprime le soulignement des liens */
+  color: #333;                  /* Couleur du texte gris foncé */
+  transition: transform 0.2s, background 0.2s;  /* Animation douce pour les effets de survol */
+}
+
+.quick-link:hover {
+  transform: translateY(-2px);
+  background: rgba(240, 240, 250, 0.8);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.quick-link .material-icons {
+  color: var(--primary-color);
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.quick-link span:not(.material-icons) {
+  font-size: 12px;
+}
+
+/* Support du thème sombre */
+[data-theme="dark"] .quick-links * {
+  color: black !important;
+}
+
+[data-theme="dark"] .quick-link .material-icons {
+  color: var(--primary-color) !important;
+}
+
+/* Responsive */
+@media (max-width: 1199px) {
+  .quick-links {
+    display: none !important;
+  }
+}
