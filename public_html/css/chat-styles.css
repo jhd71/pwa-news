@@ -372,6 +372,20 @@ body.no-scroll {
     -webkit-overflow-scrolling: touch; /* ✅ Améliore le défilement mobile */
     touch-action: pan-y; /* ✅ Limite les actions tactiles au scroll vertical */
 }
+/* ✅ Empêcher le scroll global quand le chat est ouvert */
+body.no-scroll {
+    overflow: hidden !important;
+    height: 100vh;
+}
+
+/* ✅ Empêcher le scroll du chat de traverser */
+.chat-messages {
+    overflow-y: auto;
+    max-height: 60vh;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+}
 
 /* ✅ Ajout d’un espace en bas pour forcer le scroll */
 .chat-messages::after {
