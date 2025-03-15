@@ -1494,20 +1494,34 @@ body.long-press-active .message-options {
         transform: scale(1.1);
     }
 }
-/* Empêcher le scroll du body quand le chat est ouvert */
-.no-scroll {
-    overflow: hidden !important;
-    height: 100vh;
-    touch-action: none;
-}
-
-/* Empêcher le scroll de traverser la fenêtre de chat */
-.chat-container.open {
-    overscroll-behavior: contain; /* Empêche le défilement de se propager à l'élément parent */
-    touch-action: pan-y; /* Limite les actions tactiles au défilement vertical */
-}
-
-.chat-messages {
-    overscroll-behavior: contain; /* Empêche le défilement de se propager */
-    -webkit-overflow-scrolling: touch; /* Améliore le défilement sur iOS */
+/* Remplacez complètement les styles médias pour mobile */
+@media (max-width: 600px) {
+    .chat-container {
+        width: 90%; /* Largeur en pourcentage de l'écran */
+        left: 5%; /* 5% de marge de chaque côté */
+        right: 5%; /* 5% de marge de chaque côté */
+        max-width: none; /* Supprimer la limite max-width */
+        height: 70vh;
+        bottom: 80px;
+        transform: none; /* Supprimer toute transformation */
+    }
+    
+    /* Quand le clavier est ouvert */
+    .chat-container.keyboard-open {
+        height: 50vh;
+        bottom: 260px; /* Au-dessus du clavier */
+        transition: bottom 0.3s ease;
+        /* Ne pas modifier left/right pour maintenir la position horizontale */
+    }
+    
+    /* S'assurer que le chat-widget suit le même positionnement */
+    .chat-widget {
+        width: 100%;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 120px;
+        display: flex;
+        justify-content: center; /* Centrer horizontalement */
+    }
 }
