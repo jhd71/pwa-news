@@ -294,14 +294,14 @@ getChatHTMLWithoutToggle() {
     
     if (this.isOpen) {
         chatContainer?.classList.add('open');
+        // Sur mobile, on active le mode plein écran
         if (/Mobi|Android/i.test(navigator.userAgent)) {
             chatContainer.classList.add('full-screen');
         }
-        // Réinitialisation du compteur et mise à jour du badge
+        // Réinitialiser le compteur des messages non lus et mettre à jour l'interface
         this.unreadCount = 0;
         localStorage.setItem('unreadCount', '0');
         this.updateUnreadBadgeAndBubble();
-
         this.scrollToBottom();
         if (!/Mobi|Android/i.test(navigator.userAgent)) {
             const inputField = this.container.querySelector('.chat-input textarea');
@@ -1389,27 +1389,34 @@ async unsubscribeFromPushNotifications() {
 
     // Mettez à jour la fonction qui gère les notifications
 updateUnreadBadgeAndBubble() {
-    const chatToggleBtn = document.getElementById('chatToggleBtn');
-    if (chatToggleBtn) {
-        const badge = chatToggleBtn.querySelector('.notification-badge');
+    // On récupère l'élément qui sert de bouton pour ouvrir le chat
+    const chatToggle = this.container.querySelector('.chat-toggle');
+    if (chatToggle) {
+        // Mise à jour du badge de notification
+        const badge = chatToggle.querySelector('.notification-badge');
         if (badge) {
             badge.textContent = this.unreadCount || '';
             badge.classList.toggle('hidden', this.unreadCount === 0);
         }
-    }
-
-    if (!this.isOpen && this.unreadCount > 0) {
-        const chatToggle = this.container.querySelector('.chat-toggle');
-        const existingBubble = chatToggle?.querySelector('.info-bubble');
-        if (existingBubble) {
-            existingBubble.remove();
-        }
-
-        if (chatToggle) {
+        
+        // Si le chat est fermé et qu'il y a des messages non lus, afficher la bulle d'info
+        if (!this.isOpen && this.unreadCount > 0) {
+            // Supprime toute bulle existante pour éviter les doublons
+            const existingBubble = chatToggle.querySelector('.info-bubble');
+            if (existingBubble) {
+                existingBubble.remove();
+            }
+            // Crée et ajoute la bulle d'info
             const bubble = document.createElement('div');
             bubble.className = 'info-bubble show';
             bubble.innerHTML = `<div style="font-weight: bold;">${this.unreadCount} nouveau(x) message(s)</div>`;
             chatToggle.appendChild(bubble);
+        } else {
+            // Si le chat est ouvert ou qu'il n'y a pas de messages non lus, retirer toute bulle existante
+            const existingBubble = chatToggle.querySelector('.info-bubble');
+            if (existingBubble) {
+                existingBubble.remove();
+            }
         }
     }
 }
