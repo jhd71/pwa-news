@@ -293,39 +293,20 @@ getChatHTMLWithoutToggle() {
         this.isOpen = !this.isOpen;
         
         if (this.isOpen) {
-    chatContainer?.classList.add('open');
-    this.unreadCount = 0;
-    localStorage.setItem('unreadCount', '0');
-    
-    const badge = chatToggleBtn?.querySelector('.chat-notification-badge');
-    if (badge) {
-        badge.textContent = '0';
-        badge.classList.add('hidden');
-    }
-    
-    // Mode plein écran ajusté sur mobile
-    if (window.innerWidth <= 768) {
-        document.body.style.overflow = 'hidden'; // Empêcher le défilement
-        
-        // Recalculer les positions tenant compte de la bannière
-        const bannerHeight = document.querySelector('header')?.offsetHeight || 60;
-        
-        if (chatContainer) {
-            chatContainer.style.top = bannerHeight + 'px';
-            chatContainer.style.height = `calc(100% - ${bannerHeight}px)`;
-        }
-        
-        // S'assurer que les éléments sont visibles
-        setTimeout(() => {
+            chatContainer?.classList.add('open');
+            this.unreadCount = 0;
+            localStorage.setItem('unreadCount', '0');
+            
+            const badge = chatToggleBtn?.querySelector('.chat-notification-badge');
+            if (badge) {
+                badge.textContent = '0';
+                badge.classList.add('hidden');
+            }
+            
             this.scrollToBottom();
-        }, 100);
-    }
-    
-    this.scrollToBottom();
-} else {
-    chatContainer?.classList.remove('open');
-    document.body.style.overflow = ''; // Réactiver le défilement
-}
+        } else {
+            chatContainer?.classList.remove('open');
+        }
         
         localStorage.setItem('chatOpen', this.isOpen);
         this.playSound('click');
@@ -688,14 +669,20 @@ extractPseudoFromEmail(email) {
             }
         });
     }
-
+    
+    // Ajout du gestionnaire pour le bouton emoji
+    if (emojiBtn) {
+        emojiBtn.addEventListener('click', () => {
+            this.toggleEmojiPanel();
+        });
+    }
 }
 
 // Nouvelle méthode pour gérer le panneau d'emojis
 toggleEmojiPanel() {
     let panel = this.container.querySelector('.emoji-panel');
     
-    // Si le panneau existe déjà, on le supprime (permettant de le fermer manuellement)
+    // Si le panneau existe déjà, on le supprime
     if (panel) {
         panel.remove();
         return;
@@ -705,7 +692,7 @@ toggleEmojiPanel() {
     panel = document.createElement('div');
     panel.className = 'emoji-panel';
     
-    // Liste des emojis populaires
+    // Liste des emojis populaires (ajout de plus d'emojis)
 const emojis = [
   '😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', 
   '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙', '😋', '😛', '😜', '😝', 
@@ -761,7 +748,7 @@ const emojis = [
   '0️⃣', '🔢', '🔠', '🔡'
 ];
     
-    // Ajout des emojis au panneau
+    // Ajouter les emojis au panneau
     emojis.forEach(emoji => {
         const span = document.createElement('span');
         span.textContent = emoji;
@@ -775,18 +762,17 @@ const emojis = [
                 textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
                 textarea.focus();
             }
-            // La ligne suivante a été supprimée pour éviter de fermer le panneau automatiquement
-            // panel.remove();
+            panel.remove();
             this.playSound('click');
         });
         panel.appendChild(span);
     });
     
-    // Ajout du panneau au conteneur de chat
+    // Ajouter le panneau au conteneur de chat
     const chatContainer = this.container.querySelector('.chat-container');
     chatContainer.appendChild(panel);
     
-    // Ferme le panneau si on clique en dehors, mais il reste ouvert si l'utilisateur clique sur un emoji
+    // Fermer le panneau si on clique ailleurs
     document.addEventListener('click', (e) => {
         if (!panel.contains(e.target) && e.target !== this.container.querySelector('.emoji-btn') && !this.container.querySelector('.emoji-btn').contains(e.target)) {
             panel.remove();
