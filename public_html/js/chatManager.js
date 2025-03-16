@@ -21,7 +21,11 @@ class ChatManager {
         this.isOpen = localStorage.getItem('chatOpen') === 'true';
         this.unreadCount = parseInt(localStorage.getItem('unreadCount') || '0');
     }
-
+// Ajouter une classe pour détecter Android
+    if (/Android/i.test(navigator.userAgent)) {
+        document.documentElement.classList.add('android');
+    }
+}
     async init() {
     try {
         await this.loadBannedWords();
@@ -632,45 +636,70 @@ extractPseudoFromEmail(email) {
     // Dans setupChatListeners(), remplacer la déclaration existante de sendMessage par celle-ci :
 const sendMessage = async () => {
     const content = input.value.trim();
-    if (content) {
-        if (await this.checkForBannedWords(content)) {
-            this.showNotification('Message contient des mots interdits', 'error');
-            this.playSound('error');
-            return;
-        }
-
-        const success = await this.sendMessage(content);
-        if (success) {
-            input.value = '';
-            
-            // Gestion spécifique pour Android
-            if (/Android/i.test(navigator.userAgent)) {
-                // Forcer la disparition du clavier
-                document.activeElement.blur();
-                // S'assurer que le champ reste visible
-                setTimeout(() => {
-                    input.style.visibility = 'visible';
-                    input.style.display = 'block';
-                    this.scrollToBottom();
-                }, 300);
-            } else {
-                // Comportement normal sur autres appareils
-                input.focus();
-            }
-            
-            this.playSound('message');
-        } else {
-            this.playSound('error');
+    if (!content) return;
+    
+    // Créer un élément de message temporaire (pour feedback immédiat)
+    const tempMessage = {
+        id: 'temp-' + Date.now(),
+        pseudo: this.pseudo,
+        content: content,
+        created_at: new Date().toISOString()
+    };
+    
+    // Ajouter le message temporaire immédiatement
+    const messagesContainer = this.container.querySelector('.chat-messages');
+    if (messagesContainer) {
+        const messageElement = this.createMessageElement(tempMessage);
+        messageElement.style.opacity = '0.7'; // Style pour indiquer que c'est en cours d'envoi
+        messagesContainer.appendChild(messageElement);
+        this.scrollToBottom();
+    }
+    
+    // Vider l'input immédiatement
+    input.value = '';
+    
+    // Sur Android, gérer le clavier et l'affichage
+    if (/Android/i.test(navigator.userAgent)) {
+        document.activeElement.blur();
+        
+        // S'assurer que l'interface reste utilisable
+        setTimeout(() => {
+            input.style.visibility = 'visible';
+            input.style.display = 'block';
+            this.scrollToBottom();
+        }, 300);
+    }
+    
+    // Vérifier les mots bannis
+    if (await this.checkForBannedWords(content)) {
+        // Supprimer le message temporaire
+        const tempElement = messagesContainer.querySelector(`[data-message-id="${tempMessage.id}"]`);
+        if (tempElement) tempElement.remove();
+        
+        this.showNotification('Message contient des mots interdits', 'error');
+        this.playSound('error');
+        return;
+    }
+    
+    // Envoyer le message au serveur
+    const success = await this.sendMessage(content);
+    
+    // Si l'envoi échoue, notifier l'utilisateur
+    if (!success) {
+        this.playSound('error');
+        
+        // Supprimer le message temporaire
+        const tempElement = messagesContainer.querySelector(`[data-message-id="${tempMessage.id}"]`);
+        if (tempElement) tempElement.remove();
+    } else {
+        this.playSound('message');
+        
+        // Comportement normal sur autres appareils (non-Android)
+        if (!/Android/i.test(navigator.userAgent)) {
+            input.focus();
         }
     }
 };
-
-    if (/Mobi|Android/i.test(navigator.userAgent)) {
-        sendBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            sendMessage();
-        });
     } else {
         sendBtn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -698,6 +727,7 @@ const sendMessage = async () => {
 gererClavierMobile() {
   // Cibler les éléments nécessaires
   const chatInput = this.container.querySelector('.chat-input textarea');
+  const chatInputContainer = this.container.querySelector('.chat-input');
   const sendBtn = this.container.querySelector('.send-btn');
   const messagesContainer = this.container.querySelector('.chat-messages');
   const chatContainer = this.container.querySelector('.chat-container');
@@ -708,43 +738,59 @@ gererClavierMobile() {
   if (/Android/i.test(navigator.userAgent)) {
     // Quand on clique sur le bouton d'envoi
     sendBtn.addEventListener('touchend', (e) => {
+      e.preventDefault(); // Empêcher le comportement par défaut
+      
       // Forcer la disparition du clavier
+      document.activeElement.blur();
+      
+      // Faire défiler le chat pour voir l'input ET les derniers messages
       setTimeout(() => {
-        document.activeElement.blur();
-        // S'assurer que le champ reste visible
-        chatInput.style.visibility = 'visible';
-        chatInput.style.display = 'block';
-        // Défiler vers le bas
-        this.scrollToBottom();
-      }, 100);
-    });
-    
-    // Lors du focus sur le champ de saisie
-    chatInput.addEventListener('focus', () => {
-      // Défiler vers le champ de saisie
-      setTimeout(() => {
-        chatInput.scrollIntoView({ behavior: 'smooth' });
+        // S'assurer que la zone d'input est visible
+        chatInputContainer.style.visibility = 'visible';
+        chatInputContainer.style.display = 'flex';
+        
+        // Défiler pour voir à la fois la zone d'input et les derniers messages
+        if (chatContainer) {
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        // Force le chat à remonter pour montrer la zone de saisie
+        chatInput.scrollIntoView({ behavior: 'instant', block: 'end' });
+        
+        // Forcer une mise à jour de l'affichage
+        window.requestAnimationFrame(() => {
+          this.scrollToBottom();
+        });
       }, 300);
     });
     
-    // Lors de la perte de focus
-    chatInput.addEventListener('blur', () => {
-      // Rétablir la visibilité et s'assurer que l'input reste à sa place
-      setTimeout(() => {
-        chatInput.style.visibility = 'visible';
-        chatInput.style.display = 'block';
-        // Défiler vers le bas des messages
+    // Gérer l'événement resize (quand le clavier apparaît/disparaît)
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      
+      // Utiliser un délai pour éviter des mises à jour trop fréquentes
+      resizeTimeout = setTimeout(() => {
+        // S'assurer que l'input est visible
+        chatInputContainer.style.visibility = 'visible';
+        chatInputContainer.style.display = 'flex';
+        
+        // Forcer le scroll vers l'input
+        chatInput.scrollIntoView({ behavior: 'instant', block: 'end' });
+        
+        // Défiler vers le bas
         this.scrollToBottom();
-      }, 100);
+      }, 300);
     });
     
-    // Gérer le redimensionnement (qui se produit quand le clavier apparaît/disparaît)
-    window.addEventListener('resize', () => {
-      // Assurer que l'input reste visible
-      chatInput.style.visibility = 'visible';
-      chatInput.style.display = 'block';
-      // Défiler vers le bas
-      this.scrollToBottom();
+    // Ajout d'un gestionnaire pour les clics dans la zone des messages
+    messagesContainer.addEventListener('click', () => {
+      // S'assurer que l'input est visible après un clic dans les messages
+      setTimeout(() => {
+        chatInputContainer.style.visibility = 'visible';
+        chatInputContainer.style.display = 'flex';
+        chatInput.scrollIntoView({ behavior: 'instant', block: 'end' });
+      }, 100);
     });
   }
 }
@@ -1490,11 +1536,30 @@ updateUnreadBadgeAndBubble() {
     }
 
     scrollToBottom() {
-        const messagesContainer = this.container.querySelector('.chat-messages');
-        if (messagesContainer) {
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
+    const messagesContainer = this.container.querySelector('.chat-messages');
+    const chatInput = this.container.querySelector('.chat-input');
+    const chatContainer = this.container.querySelector('.chat-container');
+    
+    if (messagesContainer) {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
+    
+    // Sur mobile, s'assurer que l'input reste visible
+    if (/Android/i.test(navigator.userAgent) && chatInput && chatContainer) {
+        // Faire défiler le conteneur principal pour s'assurer que tout est visible
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+        
+        // Assurer la visibilité de l'input
+        chatInput.style.visibility = 'visible';
+        chatInput.style.display = 'flex';
+        
+        // Utiliser requestAnimationFrame pour s'assurer que le DOM est mis à jour
+        window.requestAnimationFrame(() => {
+            chatInput.scrollIntoView({ behavior: 'instant', block: 'end' });
+        });
+    }
+}
+
 showAdminPanel() {
         if (!this.isAdmin) return;
 
