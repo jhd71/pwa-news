@@ -297,43 +297,78 @@ getChatHTMLWithoutToggle() {
 const toggleChat = () => {
     this.isOpen = !this.isOpen;
     
-    if (this.isOpen) {
-        chatContainer?.classList.add('open');
-        this.unreadCount = 0;
-        localStorage.setItem('unreadCount', '0');
+    // Dans votre fonction toggleChat
+if (this.isOpen) {
+    chatContainer?.classList.add('open');
+    this.unreadCount = 0;
+    localStorage.setItem('unreadCount', '0');
+    
+    const badge = chatToggleBtn?.querySelector('.chat-notification-badge');
+    if (badge) {
+        badge.textContent = '0';
+        badge.classList.add('hidden');
+    }
+    
+    // Gestion du mode plein écran sur mobile
+    if (window.innerWidth <= 768) {
+        document.body.style.overflow = 'hidden'; // Empêcher le scroll
         
-        const badge = chatToggleBtn?.querySelector('.chat-notification-badge');
-        if (badge) {
-            badge.textContent = '0';
-            badge.classList.add('hidden');
-        }
-        
-        // Ajouter ceci pour le mode plein écran sur mobile
-        if (window.innerWidth <= 768) {
-            document.body.style.overflow = 'hidden'; // Empêcher le défilement de la page
-            
-            // S'assurer que tous les éléments du chat sont visibles
+        // Forcer l'affichage correct de tous les éléments
+        setTimeout(() => {
+            // Garantir que tous les éléments sont visibles
             const header = chatContainer.querySelector('.chat-header');
+            const headerButtons = chatContainer.querySelector('.header-buttons');
             const messages = chatContainer.querySelector('.chat-messages');
             const inputArea = chatContainer.querySelector('.chat-input');
+            const textarea = inputArea?.querySelector('textarea');
+            const sendButton = inputArea?.querySelector('.send-btn');
             
-            if (header) header.style.display = 'flex';
-            if (messages) messages.style.display = 'flex';
-            if (inputArea) inputArea.style.display = 'flex';
+            // Appliquer les styles directement
+            if (header) {
+                header.style.display = 'flex';
+                header.style.flexDirection = 'row';
+                header.style.width = '100%';
+            }
             
-            // Forcer le défilement en bas
-            setTimeout(() => {
-                if (messages) {
-                    messages.scrollTop = messages.scrollHeight;
-                }
-            }, 100);
-        }
-        
-        this.scrollToBottom();
-    } else {
-        chatContainer?.classList.remove('open');
-        document.body.style.overflow = ''; // Réactiver le défilement de la page
+            if (headerButtons) {
+                headerButtons.style.display = 'flex';
+                headerButtons.style.flexDirection = 'row';
+            }
+            
+            if (messages) {
+                messages.style.flex = '1';
+                messages.style.overflowY = 'auto';
+                messages.style.display = 'block';
+                messages.scrollTop = messages.scrollHeight;
+            }
+            
+            if (inputArea) {
+                inputArea.style.display = 'flex';
+                inputArea.style.flexDirection = 'row';
+                inputArea.style.width = '100%';
+                inputArea.style.position = 'relative';
+                inputArea.style.bottom = '0';
+            }
+            
+            if (textarea) {
+                textarea.style.display = 'block';
+                textarea.style.flex = '1';
+            }
+            
+            if (sendButton) {
+                sendButton.style.display = 'flex';
+            }
+            
+            // Faire défiler jusqu'en bas
+            this.scrollToBottom();
+        }, 100);
     }
+    
+    this.scrollToBottom();
+} else {
+    chatContainer?.classList.remove('open');
+    document.body.style.overflow = ''; // Réactiver le scroll
+}
     
     localStorage.setItem('chatOpen', this.isOpen);
     this.playSound('click');
