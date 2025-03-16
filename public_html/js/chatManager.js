@@ -290,27 +290,25 @@ getChatHTMLWithoutToggle() {
 
     // Fonction réutilisable pour basculer l'état du chat
     const toggleChat = () => {
-        this.isOpen = !this.isOpen;
+    this.isOpen = !this.isOpen;
+    
+    if (this.isOpen) {
+        chatContainer?.classList.add('open');
+        // Réinitialisation du compteur
+        this.unreadCount = 0;
+        localStorage.setItem('unreadCount', '0');
         
-        if (this.isOpen) {
-            chatContainer?.classList.add('open');
-            this.unreadCount = 0;
-            localStorage.setItem('unreadCount', '0');
-            
-            const badge = chatToggleBtn?.querySelector('.chat-notification-badge');
-            if (badge) {
-                badge.textContent = '0';
-                badge.classList.add('hidden');
-            }
-            
-            this.scrollToBottom();
-        } else {
-            chatContainer?.classList.remove('open');
-        }
+        // Mettre à jour le badge ET l'info-bulle
+        this.updateUnreadBadgeAndBubble();
         
-        localStorage.setItem('chatOpen', this.isOpen);
-        this.playSound('click');
-    };
+        this.scrollToBottom();
+    } else {
+        chatContainer?.classList.remove('open');
+    }
+    
+    localStorage.setItem('chatOpen', this.isOpen);
+    this.playSound('click');
+};
 
     if (chatToggleBtn) {
         // Supprimer les anciens écouteurs d'événements pour éviter les duplications
