@@ -293,6 +293,7 @@ getChatHTMLWithoutToggle() {
     const logoutBtn = this.container.querySelector('.logout-btn');
 
     // Fonction réutilisable pour basculer l'état du chat
+// Fonction réutilisable pour basculer l'état du chat
 const toggleChat = () => {
     this.isOpen = !this.isOpen;
     
@@ -311,11 +312,19 @@ const toggleChat = () => {
         if (window.innerWidth <= 768) {
             document.body.style.overflow = 'hidden'; // Empêcher le défilement de la page
             
-            // Forcer le défilement en bas lors de l'ouverture
+            // S'assurer que tous les éléments du chat sont visibles
+            const header = chatContainer.querySelector('.chat-header');
+            const messages = chatContainer.querySelector('.chat-messages');
+            const inputArea = chatContainer.querySelector('.chat-input');
+            
+            if (header) header.style.display = 'flex';
+            if (messages) messages.style.display = 'flex';
+            if (inputArea) inputArea.style.display = 'flex';
+            
+            // Forcer le défilement en bas
             setTimeout(() => {
-                const messagesContainer = chatContainer.querySelector('.chat-messages');
-                if (messagesContainer) {
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                if (messages) {
+                    messages.scrollTop = messages.scrollHeight;
                 }
             }, 100);
         }
