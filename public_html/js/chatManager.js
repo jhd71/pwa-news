@@ -293,39 +293,20 @@ getChatHTMLWithoutToggle() {
         this.isOpen = !this.isOpen;
         
         if (this.isOpen) {
-    chatContainer?.classList.add('open');
-    this.unreadCount = 0;
-    localStorage.setItem('unreadCount', '0');
-    
-    const badge = chatToggleBtn?.querySelector('.chat-notification-badge');
-    if (badge) {
-        badge.textContent = '0';
-        badge.classList.add('hidden');
-    }
-    
-    // Mode plein écran ajusté sur mobile
-    if (window.innerWidth <= 768) {
-        document.body.style.overflow = 'hidden'; // Empêcher le défilement
-        
-        // Recalculer les positions tenant compte de la bannière
-        const bannerHeight = document.querySelector('header')?.offsetHeight || 60;
-        
-        if (chatContainer) {
-            chatContainer.style.top = bannerHeight + 'px';
-            chatContainer.style.height = `calc(100% - ${bannerHeight}px)`;
-        }
-        
-        // S'assurer que les éléments sont visibles
-        setTimeout(() => {
+            chatContainer?.classList.add('open');
+            this.unreadCount = 0;
+            localStorage.setItem('unreadCount', '0');
+            
+            const badge = chatToggleBtn?.querySelector('.chat-notification-badge');
+            if (badge) {
+                badge.textContent = '0';
+                badge.classList.add('hidden');
+            }
+            
             this.scrollToBottom();
-        }, 100);
-    }
-    
-    this.scrollToBottom();
-} else {
-    chatContainer?.classList.remove('open');
-    document.body.style.overflow = ''; // Réactiver le défilement
-}
+        } else {
+            chatContainer?.classList.remove('open');
+        }
         
         localStorage.setItem('chatOpen', this.isOpen);
         this.playSound('click');
