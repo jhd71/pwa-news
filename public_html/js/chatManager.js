@@ -980,9 +980,6 @@ createMessageElement(message) {
 
     async sendMessage(content) { 
     try {
-		// Ajouter dans votre fonction sendMessage pour le débogage
-const { data: userTest } = await this.supabase.rpc('get_current_user');
-console.log("Utilisateur courant défini:", userTest);
         // Code existant pour obtenir l'IP et vérifier le bannissement
         const ip = await this.getClientIP();
         const isBanned = await this.checkBannedIP(ip);
