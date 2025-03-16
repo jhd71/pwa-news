@@ -1807,3 +1807,122 @@ html.android .chat-header {
 html.android .chat-messages {
   padding-bottom: 80px !important;
 }
+
+/* CSS RESET POUR LE CHAT */
+#chatOverride {
+    all: initial;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+#chatOverride * {
+    box-sizing: border-box;
+}
+
+/* Style ultra basique du chat */
+#chatOverride .chat-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #6441a5;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    z-index: 99999;
+}
+
+#chatOverride .chat-header {
+    height: 60px;
+    padding: 0 15px;
+    background-color: #4a2b9b;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid rgba(255,255,255,0.2);
+}
+
+#chatOverride .header-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#chatOverride .close-chat {
+    width: 40px;
+    height: 40px;
+    background-color: #ff3366;
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#chatOverride .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+#chatOverride .chat-input {
+    height: 70px;
+    padding: 10px 15px;
+    background-color: #4a2b9b;
+    display: flex;
+    align-items: center;
+    border-top: 2px solid rgba(255,255,255,0.2);
+}
+
+#chatOverride .chat-input textarea {
+    flex: 1;
+    height: 46px;
+    padding: 10px 15px;
+    border-radius: 23px;
+    border: none;
+    background-color: rgba(255,255,255,0.2);
+    color: white;
+    font-size: 16px;
+    resize: none;
+    margin-right: 10px;
+}
+
+#chatOverride .send-btn {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+}
+
+#chatOverride .message {
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: 15px;
+    max-width: 80%;
+}
+
+#chatOverride .message.sent {
+    background-color: #4CAF50;
+    align-self: flex-end;
+    margin-left: auto;
+}
+
+#chatOverride .message.received {
+    background-color: rgba(255,255,255,0.2);
+    align-self: flex-start;
+}
+
+#chatOverride .message-content {
+    word-break: break-word;
+}
+
+#chatOverride .message-time {
+    margin-top: 5px;
+    font-size: 12px;
+    opacity: 0.8;
+    text-align: right;
+}
