@@ -296,23 +296,22 @@ getChatHTMLWithoutToggle() {
             chatContainer?.classList.add('open');
             this.unreadCount = 0;
             localStorage.setItem('unreadCount', '0');
-    }
+            
             const badge = chatToggleBtn?.querySelector('.chat-notification-badge');
             if (badge) {
                 badge.textContent = '0';
                 badge.classList.add('hidden');
             }
             
-            // Ajouter seulement cette ligne pour le mode mobile
-    if (window.innerWidth <= 768) {
-        document.body.style.overflow = 'hidden'; // Empêcher le défilement de la page
-    }
-    
-    this.scrollToBottom();
-} else {
-    chatContainer?.classList.remove('open');
-    document.body.style.overflow = ''; // Réactiver le défilement
-}
+			// Ajouter ces 3 lignes pour le mode plein écran sur mobile
+        if (window.innerWidth <= 768) {
+            document.body.style.overflow = 'hidden'; // Empêcher le défilement de la page
+        }
+		
+            this.scrollToBottom();
+        } else {
+            chatContainer?.classList.remove('open');
+        }
         
         localStorage.setItem('chatOpen', this.isOpen);
         this.playSound('click');
