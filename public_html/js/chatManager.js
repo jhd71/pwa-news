@@ -688,17 +688,15 @@ extractPseudoFromEmail(email) {
 toggleEmojiPanel() {
     let panel = this.container.querySelector('.emoji-panel');
     
-    // Si le panneau existe déjà, on le supprime (permettant de le fermer manuellement)
+    // Si le panneau existe déjà, on le ferme en cliquant sur l'icône
     if (panel) {
         panel.remove();
         return;
     }
     
-    // Sinon, on crée le panneau
     panel = document.createElement('div');
     panel.className = 'emoji-panel';
     
-    // Liste des emojis populaires
     const emojis = [
   '😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', 
   '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙', '😋', '😛', '😜', '😝', 
@@ -754,7 +752,6 @@ toggleEmojiPanel() {
   '0️⃣', '🔢', '🔠', '🔡'
 ];
     
-    // Ajout des emojis au panneau
     emojis.forEach(emoji => {
         const span = document.createElement('span');
         span.textContent = emoji;
@@ -766,22 +763,23 @@ toggleEmojiPanel() {
                 const text = textarea.value;
                 textarea.value = text.substring(0, start) + emoji + text.substring(end);
                 textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
-                textarea.focus();
+                // Ne pas redonner le focus sur mobile pour éviter l'ouverture du clavier
+                if (!/Mobi|Android/i.test(navigator.userAgent)) {
+                    textarea.focus();
+                }
             }
-            // La ligne suivante a été supprimée pour éviter de fermer le panneau automatiquement
-            // panel.remove();
             this.playSound('click');
         });
         panel.appendChild(span);
     });
     
-    // Ajout du panneau au conteneur de chat
     const chatContainer = this.container.querySelector('.chat-container');
     chatContainer.appendChild(panel);
     
-    // Ferme le panneau si on clique en dehors, mais il reste ouvert si l'utilisateur clique sur un emoji
     document.addEventListener('click', (e) => {
-        if (!panel.contains(e.target) && e.target !== this.container.querySelector('.emoji-btn') && !this.container.querySelector('.emoji-btn').contains(e.target)) {
+        if (!panel.contains(e.target) &&
+            e.target !== this.container.querySelector('.emoji-btn') &&
+            !this.container.querySelector('.emoji-btn').contains(e.target)) {
             panel.remove();
         }
     }, { once: true });
