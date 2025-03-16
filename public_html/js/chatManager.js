@@ -682,7 +682,6 @@ class ChatManager {
 
     async sendMessage(content) { 
     try {
-        // Code existant pour obtenir l'IP et vérifier le bannissement
         const ip = await this.getClientIP();
         const isBanned = await this.checkBannedIP(ip);
         
@@ -691,40 +690,22 @@ class ChatManager {
             return false;
         }
 
-        // IMPORTANT: Ajouter cette ligne pour définir l'utilisateur courant
-        await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
-        
-        // Reste de la fonction inchangé
         const message = {
             pseudo: this.pseudo,
             content: content,
             ip: ip,
             created_at: new Date().toISOString()
         };
-// Ajouter dans votre fonction sendMessage pour le débogage
-const { data: userTest } = await this.supabase.rpc('get_current_user');
-console.log("Utilisateur courant défini:", userTest);
-        const { data, error } = await this.supabase
+
+        // Utilisation de returning minimal pour accélérer l'insertion
+        const { error } = await this.supabase
             .from('messages')
-            .insert(message)
-            .select()
-            .single();
+            .insert(message, { returning: 'minimal' });
 
         if (error) throw error;
 
-        // Envoi de la notification
-        await fetch("/api/sendPush.js", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                message: content,
-                fromUser: this.pseudo,
-                toUser: "all"
-            })
-        })
-        .then(response => response.json())
-        .then(data => console.log("✅ Notification envoyée :", data))
-        .catch(err => console.error("❌ Erreur lors de l'envoi de la notification :", err));
+        // Suppression de l'appel fetch ici pour éviter d'envoyer une notification en double
+        // La notification sera déclenchée via handleNewMessage sur l'autre support
 
         return true;
     } catch (error) {
