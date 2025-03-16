@@ -302,42 +302,57 @@ body:has(.chat-container.open) .news-ticker {
     background: #45a049;
 }
 
-/* Header du chat */
+/* Amélioration de la barre du haut */
 .chat-header {
-    padding: 15px 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 20px 20px 0 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: var(--chat-border);
+  background: linear-gradient(145deg, #7E57C2, #5E35B1) !important;
+  padding: 15px !important;
+  border-radius: 20px 20px 0 0 !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  z-index: 1001 !important;
+  position: sticky !important;
+  top: 0 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
 }
 
+/* Titre du chat */
 .header-title {
-    color: white;
-    font-weight: 500;
-    font-size: 1.1rem;
+  font-size: 18px !important;
+  font-weight: bold !important;
+  color: white !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
 }
 
 .header-buttons {
-    display: flex;
-    gap: 10px;
+    display: flex !important;
+    gap: 5px !important; /* Réduire légèrement l'écart sur mobile */
+    align-items: center !important;
+    flex-wrap: nowrap !important;
 }
 
+/* Boutons de la barre du haut */
 .header-buttons button {
-    background: var(--chat-input-bg);
-    border: none;
-    color: white;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    position: relative;
-    overflow: hidden;
+  margin-left: 5px !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: none !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Mode sombre */
+[data-theme="dark"] .chat-header {
+  background: linear-gradient(145deg, #1a237e, #283593) !important;
+}
+
+[data-theme="dark"] .header-buttons button {
+  background: rgba(255, 255, 255, 0.15) !important;
 }
 
 .header-buttons button:hover {
@@ -1494,22 +1509,29 @@ body.long-press-active .message-options {
         transform: scale(1.1);
     }
 }
-/* Base styles pour la compatibilité mobile */
-@media (max-width: 480px) {
+
   /* Style général du chat sur mobile */
+  @media (max-width: 480px) {
   .chat-container {
-    height: calc(100vh - 80px) !important;
-    display: flex !important;
-    flex-direction: column !important;
-    max-height: none !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    z-index: 9999 !important;
   }
   
-  /* Zone des messages */
+  .chat-header {
+    border-radius: 0 !important;
+  }
+  
   .chat-messages {
-    flex: 1 !important;
-    max-height: calc(100vh - 200px) !important;
-    padding-bottom: 20px !important;
-    overflow-y: auto !important;
+    height: calc(100vh - 160px) !important;
   }
   
   /* Augmenter la taille du bouton de fermeture et le rendre plus visible */
@@ -1536,17 +1558,37 @@ body.long-press-active .message-options {
   }
   
   /* Zone de saisie */
+  /* Zone de saisie - Thème clair */
+.chat-input {
+  background: linear-gradient(145deg, #7E57C2, #9575CD) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.chat-input textarea {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Zone de saisie - Thème sombre */
+[data-theme="dark"] .chat-input {
+  background: linear-gradient(145deg, #1a237e, #283593) !important;
+}
+
+[data-theme="dark"] .chat-input textarea {
+  background: rgba(0, 0, 0, 0.3) !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
   .chat-input {
-    position: sticky !important;
+    position: fixed !important;
     bottom: 0 !important;
-    z-index: 1000 !important;
-    background: linear-gradient(145deg, #1a237e, #283593) !important;
-    border-top: 2px solid rgba(255, 255, 255, 0.3) !important;
-    padding: 15px !important;
-    display: flex !important;
-    visibility: visible !important;
-    transform: translateZ(0) !important;
-    margin-top: auto !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    padding: 10px !important;
+    box-sizing: border-box !important;
+    z-index: 10000 !important;
   }
   
   /* Champ de saisie */
@@ -1586,10 +1628,4 @@ html.android .chat-input {
 
 html.android .chat-messages {
   padding-bottom: 60px !important; /* Plus d'espace au bas pour Android */
-}
-
-/* Style spécifique pour bouton de fermeture */
-.chat-header .close-chat {
-  position: relative !important;
-  z-index: 2000 !important;
 }
