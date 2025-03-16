@@ -1495,7 +1495,7 @@ body.long-press-active .message-options {
     }
 }
 
-/* Ajoutez ces styles à votre chat-styles.css */
+/* Modifiez ces styles dans votre chat-styles.css */
 @media (max-width: 768px) {
   .chat-container.open {
     position: fixed;
@@ -1510,21 +1510,29 @@ body.long-press-active .message-options {
     z-index: 9999;
     animation: none;
     transform: none;
+    display: flex;
+    flex-direction: column;
   }
   
   .chat-container.open .chat-header {
     border-radius: 0;
+    flex-shrink: 0;
   }
   
   .chat-container.open .chat-messages {
-    max-height: calc(100vh - 130px); /* Ajuster en fonction de la hauteur de votre header et zone de saisie */
+    flex: 1;
+    max-height: none;
+    overflow-y: auto;
   }
   
   .chat-container.open .chat-input {
-    position: absolute;
+    position: relative; /* Changé de absolute à relative */
+    flex-shrink: 0;
     bottom: 0;
     left: 0;
     right: 0;
     background: inherit;
+    padding: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
 }
