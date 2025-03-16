@@ -626,47 +626,52 @@ extractPseudoFromEmail(email) {
     const emojiBtn = this.container.querySelector('.emoji-btn');
 
     if (input && sendBtn) {
-        const sendMessage = async () => {
-            const content = input.value.trim();
-            if (content) {
-                if (await this.checkForBannedWords(content)) {
-                    this.showNotification('Message contient des mots interdits', 'error');
-                    this.playSound('error');
-                    return;
-                }
+    const sendMessage = async () => {
+        const content = input.value.trim();
+        if (content) {
+            if (await this.checkForBannedWords(content)) {
+                this.showNotification('Message contient des mots interdits', 'error');
+                this.playSound('error');
+                return;
+            }
 
-                // Vider l'entrée avant d'envoyer pour éviter double envoi
+            const success = await this.sendMessage(content);
+            if (success) {
                 input.value = '';
-                
-                // Fermer le clavier immédiatement
-                input.blur();
-                
-                // Empêcher de regagner le focus pendant quelques secondes
-                input.disabled = true;
-                
-                const success = await this.sendMessage(content);
-                if (success) {
-                    this.playSound('message');
-                } else {
-                    this.playSound('error');
+                // Ne pas redonner le focus sur mobile afin d’éviter que le clavier ne refasse son apparition
+                if (!/Mobi|Android/i.test(navigator.userAgent)) {
+                    input.focus();
                 }
-                
-                // Réactiver l'input après un délai
-                setTimeout(() => {
-                    input.disabled = false;
-                }, 1500); // Attendre 1.5 seconde
+                this.playSound('message');
+            } else {
+                this.playSound('error');
             }
-        };
+        }
+    };
 
-        sendBtn.addEventListener('click', sendMessage);
-
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
+    // Pour les mobiles, utiliser "touchstart" pour envoyer immédiatement
+    if (/Mobi|Android/i.test(navigator.userAgent)) {
+        sendBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            sendMessage();
+        });
+    } else {
+        sendBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            sendMessage();
         });
     }
+
+    // Envoi via la touche "Enter"
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+}
     
     // Ajout du gestionnaire pour le bouton emoji
     if (emojiBtn) {
