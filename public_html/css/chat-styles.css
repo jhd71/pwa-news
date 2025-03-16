@@ -1508,6 +1508,47 @@ body.long-press-active .message-options {
     max-height: none !important;
     border-radius: 0 !important;
     margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
     z-index: 9999 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  /* Assurer que l'en-tête est visible */
+  .chat-container.open .chat-header {
+    display: flex !important;
+    width: 100% !important;
+    flex-shrink: 0 !important;
+    min-height: 60px !important;
+  }
+  
+  /* Assurer que la zone des messages s'étend correctement */
+  .chat-container.open .chat-messages {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    height: auto !important;
+    min-height: 100px !important;
+  }
+  
+  /* Assurer que la zone de saisie est visible */
+  .chat-container.open .chat-input {
+    display: flex !important;
+    width: 100% !important;
+    flex-shrink: 0 !important;
+    min-height: 60px !important;
+    background: inherit !important;
+    padding: 10px !important;
+  }
+  
+  /* S'assurer que le textarea est visible */
+  .chat-container.open .chat-input textarea {
+    flex: 1 !important;
+    display: block !important;
+  }
+  
+  /* S'assurer que le bouton d'envoi est visible */
+  .chat-container.open .send-btn {
+    display: flex !important;
   }
 }
