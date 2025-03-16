@@ -701,7 +701,9 @@ class ChatManager {
             ip: ip,
             created_at: new Date().toISOString()
         };
-
+// Ajouter dans votre fonction sendMessage pour le débogage
+const { data: userTest } = await this.supabase.rpc('get_current_user');
+console.log("Utilisateur courant défini:", userTest);
         const { data, error } = await this.supabase
             .from('messages')
             .insert(message)
