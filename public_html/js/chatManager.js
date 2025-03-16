@@ -1381,21 +1381,25 @@ async unsubscribeFromPushNotifications() {
 
     // Mettez à jour la fonction qui gère les notifications
 updateUnreadBadgeAndBubble() {
-    if (typeof document === 'undefined') return; // Ne rien faire côté serveur
-
+    // On récupère le bouton de chat via son ID
     const chatToggleBtn = document.getElementById('chatToggleBtn');
     if (chatToggleBtn) {
+        // Met à jour le badge de notification
         const badge = chatToggleBtn.querySelector('.chat-notification-badge');
         if (badge) {
             badge.textContent = this.unreadCount || '';
             badge.classList.toggle('hidden', this.unreadCount === 0);
         }
+
+        // On récupère la bulle si elle existe déjà
         const existingBubble = chatToggleBtn.querySelector('.info-bubble');
+        // Si le chat est ouvert ou s'il n'y a pas de messages non lus, on supprime la bulle
         if (this.isOpen || this.unreadCount === 0) {
             if (existingBubble) {
                 existingBubble.remove();
             }
         } else {
+            // Sinon, on la met à jour
             if (existingBubble) {
                 existingBubble.remove();
             }
