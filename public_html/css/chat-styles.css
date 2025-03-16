@@ -1482,36 +1482,9 @@ body.long-press-active .message-options {
     }
 }
 
-/* Animation de pulsation pour le bouton de fermeture */
-@keyframes pulse-close {
-    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.3); }
-    70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
-    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
-}
-
-/* Appliquer l'animation au bouton de fermeture sur mobile */
+/* RÉINITIALISATION COMPLÈTE DES STYLES DU CHAT SUR MOBILE */
 @media (max-width: 480px) {
-    .close-chat {
-        /* Taille standard comme les autres boutons */
-        width: 36px !important;
-        height: 36px !important;
-        background: rgba(150, 60, 150, 0.8) !important; /* Fond violet-rouge */
-        animation: pulse-close 2s infinite; /* Animation de pulsation répétée */
-    }
-    
-    .close-chat .material-icons {
-        font-size: 24px !important; /* Taille standard comme les autres icônes */
-    }
-    
-    /* Lorsque le bouton est survolé ou actif, arrêter l'animation */
-    .close-chat:hover, .close-chat:active {
-        animation: none;
-        transform: scale(1.1);
-    }
-}
-
-  /* Style général du chat sur mobile */
-  @media (max-width: 480px) {
+  /* Structure générale */
   .chat-container {
     position: fixed !important;
     top: 0 !important;
@@ -1524,53 +1497,156 @@ body.long-press-active .message-options {
     margin: 0 !important;
     border-radius: 0 !important;
     z-index: 9999 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
   }
   
+  /* En-tête du chat - PROBLÈME PRINCIPAL */
   .chat-header {
+    background: linear-gradient(145deg, #7E57C2, #5E35B1) !important;
+    padding: 15px 20px !important;
     border-radius: 0 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    z-index: 10001 !important; /* Augmenté pour s'assurer qu'il est au-dessus */
+    position: relative !important;
+    top: 0 !important;
+    height: auto !important;
+    min-height: 60px !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
   }
   
-  .chat-messages {
-    height: calc(100vh - 160px) !important;
+  /* Titre du chat */
+  .header-title {
+    font-size: 18px !important;
+    font-weight: bold !important;
+    color: white !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+    flex-grow: 1 !important;
   }
   
-  /* Augmenter la taille du bouton de fermeture et le rendre plus visible */
+  /* Boutons d'en-tête */
+  .header-buttons {
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .header-buttons button {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: none !important;
+    color: white !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    margin: 0 2px !important;
+  }
+  
+  /* Bouton de fermeture */
   .close-chat {
-    width: 44px !important;
-    height: 44px !important;
-    background-color: rgba(255, 80, 100, 0.8) !important;
+    width: 40px !important;
+    height: 40px !important;
+    background-color: rgba(255, 50, 80, 0.9) !important;
     border-radius: 50% !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
-    z-index: 1001 !important;
-  }
-  
-  .close-chat:active, .close-chat:hover {
-    background-color: rgba(255, 50, 80, 1) !important;
-    transform: scale(1.1) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+    z-index: 10002 !important;
+    position: relative !important;
+    margin-left: 5px !important;
+    animation: pulse-close 2s infinite !important;
   }
   
   .close-chat .material-icons {
-    font-size: 28px !important;
+    font-size: 26px !important;
     color: white !important;
   }
   
-  /* Zone de saisie */
-  /* Zone de saisie - Thème clair */
-.chat-input {
-  background: linear-gradient(145deg, #7E57C2, #9575CD) !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
+  .close-chat:active, .close-chat:hover {
+    background-color: rgba(255, 20, 60, 1) !important;
+    transform: scale(1.1) !important;
+    animation: none !important;
+  }
+  
+  /* Zone des messages */
+  .chat-messages {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+    padding: 15px !important;
+    padding-bottom: 80px !important; /* Espace pour que le dernier message soit visible au-dessus de l'input */
+  }
+  
+  /* Zone de saisie - Problème de visibilité */
+  .chat-input {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    padding: 10px 15px !important;
+    box-sizing: border-box !important;
+    background: linear-gradient(145deg, #7E57C2, #9575CD) !important;
+    border-top: 2px solid rgba(255, 255, 255, 0.3) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    z-index: 10000 !important;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3) !important;
+  }
+  
+  /* Textarea */
+  .chat-input textarea {
+    flex: 1 !important;
+    min-height: 48px !important;
+    max-height: 120px !important;
+    padding: 12px 15px !important;
+    font-size: 16px !important;
+    border-radius: 24px !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    resize: none !important;
+    outline: none !important;
+  }
+  
+  /* Bouton d'envoi */
+  .send-btn {
+    min-width: 48px !important;
+    min-height: 48px !important;
+    border-radius: 50% !important;
+    background-color: #4CAF50 !important;
+    color: white !important;
+    border: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
+  }
 }
 
-.chat-input textarea {
-  background: rgba(255, 255, 255, 0.15) !important;
-  color: white !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+/* Animation de pulsation */
+@keyframes pulse-close {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 50, 80, 0.4); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(255, 50, 80, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 50, 80, 0); }
 }
 
-/* Zone de saisie - Thème sombre */
+/* Mode sombre */
+[data-theme="dark"] .chat-header {
+  background: linear-gradient(145deg, #1a237e, #283593) !important;
+}
+
 [data-theme="dark"] .chat-input {
   background: linear-gradient(145deg, #1a237e, #283593) !important;
 }
@@ -1580,52 +1656,17 @@ body.long-press-active .message-options {
   color: white !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
-  .chat-input {
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
-    padding: 10px !important;
-    box-sizing: border-box !important;
-    z-index: 10000 !important;
-  }
-  
-  /* Champ de saisie */
-  .chat-input textarea {
-    min-height: 48px !important;
-    padding: 12px 15px !important;
-    font-size: 16px !important;
-    border-radius: 20px !important;
-    visibility: visible !important;
-    display: block !important;
-    flex: 1 !important;
-    color: white !important;
-  }
-  
-  /* Bouton d'envoi */
-  .send-btn {
-    min-width: 48px !important;
-    min-height: 48px !important;
-    background-color: #4CAF50 !important;
-    margin-left: 8px !important;
-  }
-  
-  /* Ajustement quand le clavier est visible */
-  body.keyboard-visible .chat-input {
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
-  }
-}
 
 /* Spécifique pour Android */
 html.android .chat-input {
-  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3) !important;
+  padding-bottom: 15px !important;
+  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.4) !important;
+}
+
+html.android .chat-header {
+  padding-top: 20px !important; /* Espace supplémentaire pour la barre d'état */
 }
 
 html.android .chat-messages {
-  padding-bottom: 60px !important; /* Plus d'espace au bas pour Android */
+  padding-bottom: 80px !important;
 }
