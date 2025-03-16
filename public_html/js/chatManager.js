@@ -681,47 +681,55 @@ class ChatManager {
     }
 
     async sendMessage(content) { 
-        try {
-            const ip = await this.getClientIP();
-            const isBanned = await this.checkBannedIP(ip);
-            
-            if (isBanned) {
-                this.showNotification('Vous êtes banni du chat', 'error');
-                return false;
-            }
-
-            const message = {
-                pseudo: this.pseudo,
-                content: content,
-                ip: ip,
-                created_at: new Date().toISOString()
-            };
-
-            // Utilisation de returning minimal pour accélérer l'insertion
-            const { error } = await this.supabase
-                .from('messages')
-                .insert(message, { returning: 'minimal' });
-
-            if (error) throw error;
-
-            // Envoi de la notification en asynchrone sans attendre
-            fetch("/api/sendPush.js", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    message: content,
-                    fromUser: this.pseudo,
-                    toUser: "all"
-                })
-            })
-            .catch(err => console.error("❌ Erreur lors de l'envoi de la notification :", err));
-
-            return true;
-        } catch (error) {
-            console.error('Erreur sendMessage:', error);
+    try {
+        // Code existant pour obtenir l'IP et vérifier le bannissement
+        const ip = await this.getClientIP();
+        const isBanned = await this.checkBannedIP(ip);
+        
+        if (isBanned) {
+            this.showNotification('Vous êtes banni du chat', 'error');
             return false;
         }
+
+        // IMPORTANT: Ajouter cette ligne pour définir l'utilisateur courant
+        await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
+        
+        // Reste de la fonction inchangé
+        const message = {
+            pseudo: this.pseudo,
+            content: content,
+            ip: ip,
+            created_at: new Date().toISOString()
+        };
+
+        const { data, error } = await this.supabase
+            .from('messages')
+            .insert(message)
+            .select()
+            .single();
+
+        if (error) throw error;
+
+        // Envoi de la notification
+        await fetch("/api/sendPush.js", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                message: content,
+                fromUser: this.pseudo,
+                toUser: "all"
+            })
+        })
+        .then(response => response.json())
+        .then(data => console.log("✅ Notification envoyée :", data))
+        .catch(err => console.error("❌ Erreur lors de l'envoi de la notification :", err));
+
+        return true;
+    } catch (error) {
+        console.error('Erreur sendMessage:', error);
+        return false;
     }
+}
 
     async loadExistingMessages() {
         try {
