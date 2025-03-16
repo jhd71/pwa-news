@@ -30,27 +30,25 @@ class ChatManager {
     try {
         await this.loadBannedWords();
         
-        this.container = document.createElement('div');
-        this.container.className = 'chat-widget';
-
-        // Vérifier l'état d'authentification
-        const isAuthenticated = await this.checkAuthState();
-
-        // Vérifier si on utilise le bouton de la barre de navigation
-        const useNavButton = document.getElementById('chatToggleBtn') !== null;
-
-        if (isAuthenticated && this.pseudo) {
-            this.container.innerHTML = useNavButton ? this.getChatHTMLWithoutToggle() : this.getChatHTML();
-        } else {
-            this.container.innerHTML = useNavButton ? this.getPseudoHTMLWithoutToggle() : this.getPseudoHTML();
+        if (document.getElementById('chatToggleBtn')) {
+    // Si le bouton de navigation existe, utiliser cette approche
+    this.setupChatToggleBtn();
+    
+    if (this.isOpen) {
+        this.resetChatUI();
+    }
+} else {
+    // Sinon, utiliser l'approche par défaut avec resetChatUI
+    this.resetChatUI();
+    
+    // Si le chat ne doit pas être ouvert initialement
+    if (!this.isOpen) {
+        const chatOverride = document.getElementById('chatOverride');
+        if (chatOverride) {
+            chatOverride.style.display = 'none';
         }
-
-        const chatContainer = this.container.querySelector('.chat-container');
-        if (this.isOpen && chatContainer) {
-            chatContainer.classList.add('open');
-        }
-        
-        document.body.appendChild(this.container);
+    }
+}
         this.fixCloseButton();
         this.forceMobileLayout(); // Ajoutez cette ligne
         await this.loadSounds();
@@ -206,39 +204,16 @@ getChatHTML() {
             <span class="notification-badge hidden">${this.unreadCount}</span>
         </button>
         <div class="chat-container">
-            <div class="chat-header" style="display: flex !important; min-height: 60px !important; background: #4a2b9b !important;">
-                <div class="header-title" style="color: white !important; font-weight: bold !important;">Chat - ${this.pseudo}</div>
-                <div class="header-buttons" style="display: flex !important; gap: 8px !important;">
-                    ${this.isAdmin ? `
-                        <button class="admin-panel-btn" title="Panel Admin">
-                            <span class="material-icons">admin_panel_settings</span>
-                        </button>
-                    ` : ''}
-                    <button class="emoji-btn" title="Emojis">
-                        <span class="material-icons">emoji_emotions</span>
-                    </button>
-                    <button class="notifications-btn ${this.notificationsEnabled ? 'enabled' : ''}" title="Notifications">
-                        <span class="material-icons">${this.notificationsEnabled ? 'notifications_active' : 'notifications_off'}</span>
-                    </button>
-                    <button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
-                        <span class="material-icons">${this.soundEnabled ? 'volume_up' : 'volume_off'}</span>
-                    </button>
-                    <button class="logout-btn" title="Déconnexion">
-                        <span class="material-icons">logout</span>
-                    </button>
-                    <button class="close-chat" style="background: #ff3366 !important; width: 44px !important; height: 44px !important; border: 2px solid white !important;" title="Fermer">
-                        <span class="material-icons">close</span>
-                    </button>
+            <div class="chat-header">
+                <div class="header-title">Chat - ${this.pseudo}</div>
+                <div class="header-buttons">
+                    <button class="close-chat" title="Fermer">✕</button>
                 </div>
             </div>
             <div class="chat-messages"></div>
-            <div class="chat-input" style="position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; background: #4a2b9b !important; height: 70px !important; padding: 10px 15px !important;">
-                <textarea 
-                    placeholder="Votre message..." 
-                    maxlength="500" 
-                    rows="1"
-                    style="height: 48px !important; background: rgba(255, 255, 255, 0.2) !important; color: white !important;"></textarea>
-                <button class="send-btn" title="Envoyer" style="width: 48px !important; height: 48px !important; background: #4CAF50 !important;">
+            <div class="chat-input">
+                <textarea placeholder="Votre message..." maxlength="500" rows="1"></textarea>
+                <button class="send-btn" title="Envoyer">
                     <span class="material-icons">send</span>
                 </button>
             </div>
@@ -249,39 +224,16 @@ getChatHTML() {
 getChatHTMLWithoutToggle() {
     return `
         <div class="chat-container">
-            <div class="chat-header" style="display: flex !important; min-height: 60px !important; background: #4a2b9b !important;">
-                <div class="header-title" style="color: white !important; font-weight: bold !important;">Chat - ${this.pseudo}</div>
-                <div class="header-buttons" style="display: flex !important; gap: 8px !important;">
-                    ${this.isAdmin ? `
-                        <button class="admin-panel-btn" title="Panel Admin">
-                            <span class="material-icons">admin_panel_settings</span>
-                        </button>
-                    ` : ''}
-                    <button class="emoji-btn" title="Emojis">
-                        <span class="material-icons">emoji_emotions</span>
-                    </button>
-                    <button class="notifications-btn ${this.notificationsEnabled ? 'enabled' : ''}" title="Notifications">
-                        <span class="material-icons">${this.notificationsEnabled ? 'notifications_active' : 'notifications_off'}</span>
-                    </button>
-                    <button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
-                        <span class="material-icons">${this.soundEnabled ? 'volume_up' : 'volume_off'}</span>
-                    </button>
-                    <button class="logout-btn" title="Déconnexion">
-                        <span class="material-icons">logout</span>
-                    </button>
-                    <button class="close-chat" style="background: #ff3366 !important; width: 44px !important; height: 44px !important; border: 2px solid white !important;" title="Fermer">
-                        <span class="material-icons">close</span>
-                    </button>
+            <div class="chat-header">
+                <div class="header-title">Chat - ${this.pseudo}</div>
+                <div class="header-buttons">
+                    <button class="close-chat" title="Fermer">✕</button>
                 </div>
             </div>
             <div class="chat-messages"></div>
-            <div class="chat-input" style="position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; background: #4a2b9b !important; height: 70px !important; padding: 10px 15px !important;">
-                <textarea 
-                    placeholder="Votre message..." 
-                    maxlength="500" 
-                    rows="1"
-                    style="height: 48px !important; background: rgba(255, 255, 255, 0.2) !important; color: white !important;"></textarea>              
-                <button class="send-btn" title="Envoyer" style="width: 48px !important; height: 48px !important; background: #4CAF50 !important;">
+            <div class="chat-input">
+                <textarea placeholder="Votre message..." maxlength="500" rows="1"></textarea>
+                <button class="send-btn" title="Envoyer">
                     <span class="material-icons">send</span>
                 </button>
             </div>
@@ -2003,6 +1955,110 @@ forceMobileLayout() {
     console.error("Erreur lors du forçage de la mise en page mobile:", error);
   }
 }
+resetChatUI() {
+    try {
+        console.log("Réinitialisation complète de l'interface du chat");
+        
+        // Supprimer l'ancien conteneur s'il existe
+        const oldContainer = document.getElementById('chatOverride');
+        if (oldContainer) {
+            oldContainer.remove();
+        }
+        
+        // Créer un nouveau conteneur avec un ID unique
+        const newContainer = document.createElement('div');
+        newContainer.id = 'chatOverride';
+        
+        // Insérer le HTML du chat
+        newContainer.innerHTML = `
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div class="header-title">Chat - ${this.pseudo || 'Invité'}</div>
+                    <div class="header-buttons">
+                        <button class="close-chat" title="Fermer">✕</button>
+                    </div>
+                </div>
+                <div class="chat-messages"></div>
+                <div class="chat-input">
+                    <textarea placeholder="Votre message..." maxlength="500" rows="1"></textarea>
+                    <button class="send-btn" title="Envoyer">➤</button>
+                </div>
+            </div>
+        `;
+        
+        // Ajouter le conteneur au document
+        document.body.appendChild(newContainer);
+        this.container = newContainer;
+        
+        // Ajouter les écouteurs d'événements
+        const closeBtn = newContainer.querySelector('.close-chat');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                console.log("Bouton fermeture cliqué");
+                newContainer.style.display = 'none';
+                this.isOpen = false;
+            });
+        }
+        
+        const sendBtn = newContainer.querySelector('.send-btn');
+        const textarea = newContainer.querySelector('textarea');
+        
+        if (sendBtn && textarea) {
+            sendBtn.addEventListener('click', async () => {
+                console.log("Bouton envoi cliqué");
+                const message = textarea.value.trim();
+                if (message) {
+                    await this.sendMessage(message);
+                    textarea.value = '';
+                }
+            });
+            
+            textarea.addEventListener('keydown', async (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const message = textarea.value.trim();
+                    if (message) {
+                        await this.sendMessage(message);
+                        textarea.value = '';
+                    }
+                }
+            });
+        }
+        
+        // Charger les messages
+        this.loadExistingMessages();
+        
+        console.log("Interface du chat réinitialisée avec succès");
+        return true;
+    } catch (error) {
+        console.error("Erreur lors de la réinitialisation de l'interface:", error);
+        return false;
+    }
+}
+
+// Ajoutez la méthode setupChatToggleBtn ici aussi
+setupChatToggleBtn() {
+    const chatToggleBtn = document.getElementById('chatToggleBtn');
+    if (chatToggleBtn) {
+        chatToggleBtn.addEventListener('click', () => {
+            console.log("Bouton de chat de la barre de navigation cliqué");
+            const chatOverride = document.getElementById('chatOverride');
+            if (chatOverride) {
+                if (chatOverride.style.display === 'none') {
+                    chatOverride.style.display = 'block';
+                    this.isOpen = true;
+                } else {
+                    chatOverride.style.display = 'none';
+                    this.isOpen = false;
+                }
+            } else {
+                this.resetChatUI();
+                this.isOpen = true;
+            }
+        });
+    }
+}
+
 }
 
 export default ChatManager;
