@@ -1494,3 +1494,21 @@ body.long-press-active .message-options {
         transform: scale(1.1);
     }
 }
+/* Ajouter à la fin du fichier CSS */
+/* Empêcher la disparition du champ de saisie sur mobile */
+@media (max-width: 480px) {
+  .chat-input {
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 10 !important;
+    transition: none !important;
+    transform: translateZ(0) !important;
+    visibility: visible !important;
+    display: flex !important;
+  }
+  
+  .chat-input textarea {
+    visibility: visible !important;
+    display: block !important;
+  }
+}
