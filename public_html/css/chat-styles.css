@@ -1495,7 +1495,6 @@ body.long-press-active .message-options {
     }
 }
 
-/* Modifiez ces styles dans votre chat-styles.css */
 @media (max-width: 768px) {
   .chat-container.open {
     position: fixed;
@@ -1508,31 +1507,47 @@ body.long-press-active .message-options {
     max-height: 100vh;
     border-radius: 0;
     z-index: 9999;
-    animation: none;
-    transform: none;
-    display: flex;
-    flex-direction: column;
+    display: flex !important; /* Utiliser !important pour s'assurer que la propriété est appliquée */
+    flex-direction: column !important;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
   
   .chat-container.open .chat-header {
-    border-radius: 0;
+    display: flex !important;
     flex-shrink: 0;
+    width: 100%;
+    border-radius: 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
   }
   
   .chat-container.open .chat-messages {
-    flex: 1;
-    max-height: none;
+    flex: 1 1 auto;
+    height: calc(100vh - 120px); /* Ajuster cette valeur en fonction de vos en-têtes/pieds de page */
     overflow-y: auto;
+    padding: 10px;
+    box-sizing: border-box;
   }
   
   .chat-container.open .chat-input {
-    position: relative; /* Changé de absolute à relative */
     flex-shrink: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: inherit;
+    width: 100%;
     padding: 10px;
+    box-sizing: border-box;
+    position: sticky;
+    bottom: 0;
+    background: inherit;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex !important;
+  }
+  
+  /* S'assurer que les boutons d'action restent visibles */
+  .chat-container.open .header-buttons,
+  .chat-container.open .chat-input textarea,
+  .chat-container.open .send-btn {
+    display: block !important;
   }
 }
