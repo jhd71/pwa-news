@@ -1496,58 +1496,111 @@ body.long-press-active .message-options {
 }
 
 @media (max-width: 768px) {
+  /* Reset complet pour le conteneur principal */
   .chat-container.open {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100vh;
-    max-height: 100vh;
-    border-radius: 0;
-    z-index: 9999;
-    display: flex !important; /* Utiliser !important pour s'assurer que la propriété est appliquée */
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: none !important;
+    border-radius: 0 !important;
+    z-index: 9999 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    display: flex !important;
     flex-direction: column !important;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    background: var(--chat-gradient) !important;
   }
   
+  /* En-tête du chat */
   .chat-container.open .chat-header {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 60px !important;
+    padding: 10px !important;
     display: flex !important;
-    flex-shrink: 0;
-    width: 100%;
-    border-radius: 0;
-    position: sticky;
-    top: 0;
-    z-index: 10;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
   }
   
+  /* Titre du chat dans l'en-tête */
+  .chat-container.open .header-title {
+    flex: 1 !important;
+    text-align: left !important;
+  }
+  
+  /* Boutons dans l'en-tête */
+  .chat-container.open .header-buttons {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+  }
+  
+  /* Chaque bouton dans l'en-tête */
+  .chat-container.open .header-buttons button {
+    margin: 0 3px !important;
+    padding: 5px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  /* Zone des messages */
   .chat-container.open .chat-messages {
-    flex: 1 1 auto;
-    height: calc(100vh - 120px); /* Ajuster cette valeur en fonction de vos en-têtes/pieds de page */
-    overflow-y: auto;
-    padding: 10px;
-    box-sizing: border-box;
-  }
-  
-  .chat-container.open .chat-input {
-    flex-shrink: 0;
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-    position: sticky;
-    bottom: 0;
-    background: inherit;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex !important;
-  }
-  
-  /* S'assurer que les boutons d'action restent visibles */
-  .chat-container.open .header-buttons,
-  .chat-container.open .chat-input textarea,
-  .chat-container.open .send-btn {
+    flex: 1 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow-y: auto !important;
+    padding: 10px !important;
     display: block !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+  }
+  
+  /* Zone de saisie */
+  .chat-container.open .chat-input {
+    width: 100% !important;
+    min-height: 60px !important;
+    padding: 10px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: var(--chat-gradient) !important;
+    position: relative !important;
+    bottom: 0 !important;
+  }
+  
+  /* Textarea dans la zone de saisie */
+  .chat-container.open .chat-input textarea {
+    flex: 1 !important;
+    padding: 8px !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 8px !important;
+    color: white !important;
+    margin-right: 8px !important;
+    min-height: 40px !important;
+    display: block !important;
+  }
+  
+  /* Bouton d'envoi */
+  .chat-container.open .send-btn {
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--chat-message-sent) !important;
+    border-radius: 50% !important;
+    margin-left: 8px !important;
   }
 }
