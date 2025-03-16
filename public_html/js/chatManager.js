@@ -296,9 +296,6 @@ getChatHTMLWithoutToggle() {
             chatContainer?.classList.add('open');
             this.unreadCount = 0;
             localStorage.setItem('unreadCount', '0');
-            // Ajouter seulement cette ligne pour le mode mobile
-    if (window.innerWidth <= 768) {
-        document.body.style.overflow = 'hidden'; // Empêcher le défilement de la page
     }
             const badge = chatToggleBtn?.querySelector('.chat-notification-badge');
             if (badge) {
@@ -306,10 +303,16 @@ getChatHTMLWithoutToggle() {
                 badge.classList.add('hidden');
             }
             
-            this.scrollToBottom();
-        } else {
-            chatContainer?.classList.remove('open');
-        }
+            // Ajouter seulement cette ligne pour le mode mobile
+    if (window.innerWidth <= 768) {
+        document.body.style.overflow = 'hidden'; // Empêcher le défilement de la page
+    }
+    
+    this.scrollToBottom();
+} else {
+    chatContainer?.classList.remove('open');
+    document.body.style.overflow = ''; // Réactiver le défilement
+}
         
         localStorage.setItem('chatOpen', this.isOpen);
         this.playSound('click');
