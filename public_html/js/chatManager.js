@@ -1874,69 +1874,79 @@ showAdminPanel() {
     
     // Ajouter cette nouvelle méthode ici
     fixCloseButton() {
-        const closeBtn = this.container.querySelector('.close-chat');
-        if (!closeBtn) return;
-        
-        // Supprimer les anciens écouteurs d'événements
-        const newCloseBtn = closeBtn.cloneNode(true);
-        closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
-        
-        // Ajouter les nouveaux écouteurs
-        newCloseBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Close button clicked');
-            
-            // Fermer le chat
-            this.isOpen = false;
-            localStorage.setItem('chatOpen', 'false');
-            
-            // Trouver le conteneur du chat
-            const chatContainer = this.container.querySelector('.chat-container');
-            if (chatContainer) {
-                chatContainer.classList.remove('open');
-                console.log('Chat container closed');
-            } else {
-                console.log('Chat container not found');
-            }
-            
-            this.playSound('click');
-        });
-        
-        // Ajouter un événement tactile spécifique
-        newCloseBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Close button touch start');
-            
-            // Ajouter une classe visuelle pour le feedback
-            newCloseBtn.classList.add('touching');
-        });
-        
-        newCloseBtn.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Close button touch end');
-            
-            // Supprimer la classe visuelle
-            newCloseBtn.classList.remove('touching');
-            
-            // Fermer le chat
-            this.isOpen = false;
-            localStorage.setItem('chatOpen', 'false');
-            
-            // Trouver le conteneur du chat
-            const chatContainer = this.container.querySelector('.chat-container');
-            if (chatContainer) {
-                chatContainer.classList.remove('open');
-                console.log('Chat container closed');
-            } else {
-                console.log('Chat container not found');
-            }
-            
-            this.playSound('click');
-        });
+  // Créer un nouveau bouton de fermeture plutôt que de cloner l'existant
+  const chatHeader = this.container.querySelector('.chat-header');
+  const headerButtons = this.container.querySelector('.header-buttons');
+  
+  if (!chatHeader || !headerButtons) return;
+  
+  // Supprimer l'ancien bouton s'il existe
+  const oldCloseBtn = headerButtons.querySelector('.close-chat');
+  if (oldCloseBtn) {
+    oldCloseBtn.remove();
+  }
+  
+  // Créer un nouveau bouton
+  const newCloseBtn = document.createElement('button');
+  newCloseBtn.className = 'close-chat';
+  newCloseBtn.title = 'Fermer';
+  newCloseBtn.innerHTML = '<span class="material-icons">close</span>';
+  newCloseBtn.style.cssText = `
+    background-color: rgba(255, 50, 80, 0.8) !important;
+    color: white !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    border: none !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 2000 !important;
+    position: relative !important;
+  `;
+  
+  // Ajouter le nouveau bouton à la fin des boutons
+  headerButtons.appendChild(newCloseBtn);
+  
+  // Fonction de fermeture du chat
+  const closeChat = (e) => {
+    console.log('Tentative de fermeture du chat');
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Fermer le chat
+    this.isOpen = false;
+    localStorage.setItem('chatOpen', 'false');
+    
+    // Récupérer le conteneur du chat
+    const chatContainer = this.container.querySelector('.chat-container');
+    if (chatContainer) {
+      chatContainer.classList.remove('open');
+      console.log('Chat fermé avec succès');
+    } else {
+      console.error('Conteneur du chat non trouvé');
     }
+    
+    // Jouer le son de clic si activé
+    if (this.soundEnabled) {
+      this.playSound('click');
+    }
+  };
+  
+  // Ajouter les écouteurs d'événements de manière directe
+  newCloseBtn.onclick = closeChat;
+  newCloseBtn.ontouchstart = (e) => {
+    e.preventDefault();
+    newCloseBtn.style.backgroundColor = 'rgba(255, 50, 80, 1) !important';
+    newCloseBtn.style.transform = 'scale(1.1)';
+  };
+  newCloseBtn.ontouchend = (e) => {
+    closeChat(e);
+    newCloseBtn.style.backgroundColor = 'rgba(255, 50, 80, 0.8) !important';
+    newCloseBtn.style.transform = 'scale(1)';
+  };
+}
 }
 
 export default ChatManager;
