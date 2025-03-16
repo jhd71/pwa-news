@@ -688,7 +688,7 @@ extractPseudoFromEmail(email) {
 toggleEmojiPanel() {
     let panel = this.container.querySelector('.emoji-panel');
     
-    // Si le panneau existe déjà, on le supprime
+    // Si le panneau existe déjà, on le supprime (permettant de le fermer manuellement)
     if (panel) {
         panel.remove();
         return;
@@ -698,8 +698,8 @@ toggleEmojiPanel() {
     panel = document.createElement('div');
     panel.className = 'emoji-panel';
     
-    // Liste des emojis populaires (ajout de plus d'emojis)
-const emojis = [
+    // Liste des emojis populaires
+    const emojis = [
   '😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', 
   '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙', '😋', '😛', '😜', '😝', 
   '🤑', '🤗', '🤭', '🤫', '🤔', '🤐', '🤨', '😐', '😑', '😶', '😏', '😒', 
@@ -754,7 +754,7 @@ const emojis = [
   '0️⃣', '🔢', '🔠', '🔡'
 ];
     
-    // Ajouter les emojis au panneau
+    // Ajout des emojis au panneau
     emojis.forEach(emoji => {
         const span = document.createElement('span');
         span.textContent = emoji;
@@ -768,17 +768,18 @@ const emojis = [
                 textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
                 textarea.focus();
             }
-            panel.remove();
+            // La ligne suivante a été supprimée pour éviter de fermer le panneau automatiquement
+            // panel.remove();
             this.playSound('click');
         });
         panel.appendChild(span);
     });
     
-    // Ajouter le panneau au conteneur de chat
+    // Ajout du panneau au conteneur de chat
     const chatContainer = this.container.querySelector('.chat-container');
     chatContainer.appendChild(panel);
     
-    // Fermer le panneau si on clique ailleurs
+    // Ferme le panneau si on clique en dehors, mais il reste ouvert si l'utilisateur clique sur un emoji
     document.addEventListener('click', (e) => {
         if (!panel.contains(e.target) && e.target !== this.container.querySelector('.emoji-btn') && !this.container.querySelector('.emoji-btn').contains(e.target)) {
             panel.remove();
