@@ -1,63 +1,121 @@
+// /api/getNationalNews.js
+const axios = require('axios');
+const cheerio = require('cheerio');
 const Parser = require('rss-parser');
-const parser = new Parser();
+
+// Durée du cache en millisecondes (15 minutes)
+const CACHE_DURATION = 15 * 60 * 1000;
+
+// Variable pour stocker les données en cache
+let cachedData = null;
+let lastFetchTime = null;
 
 module.exports = async (req, res) => {
   try {
-    const feeds = [
-      { name: 'BFMTV', url: 'https://www.bfmtv.com/rss/news-24-7/', max: 3 },
-      { name: 'France Info', url: 'https://www.francetvinfo.fr/titres.rss', max: 3 },
-      { name: 'JeuxVideo.com', url: 'https://www.jeuxvideo.com/rss/rss.xml', max: 3 },
-      { name: 'ActuGaming', url: 'https://www.actugaming.net/feed/', max: 3 }
-    ];
+    // Configuration CORS
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-    let articles = [];
-
-    for (const feed of feeds) {
-      try {
-        console.log(`📡 Récupération de ${feed.name}...`);
-        const feedData = await parser.parseURL(feed.url);
-        console.log(`✅ ${feed.name}: ${feedData.items.length} articles trouvés`);
-
-        const fetchedArticles = feedData.items.slice(0, feed.max).map(item => {
-          let image = item.enclosure?.url || item['media:content']?.url || null;
-
-          if (!image && item.content) {
-            const imgMatch = item.content.match(/<img[^>]+src="([^">]+)"/);
-            if (imgMatch) {
-              image = imgMatch[1];
-            }
-          }
-
-          if (!image) {
-            image = "/images/default-news.jpg"; // Assurez-vous d'avoir cette image sur votre serveur
-          }
-
-          return {
-            title: item.title,
-            link: item.link,
-            image,
-            source: feed.name
-          };
-        });
-
-        articles.push(...fetchedArticles);
-      } catch (error) {
-        console.error(`❌ Erreur avec ${feed.name}:`, error.message);
-      }
+    // Gérer les requêtes OPTIONS (CORS preflight)
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end();
     }
 
-    if (articles.length === 0) {
-      console.error("⚠️ Aucun article récupéré, vérifiez les flux RSS !");
-      return res.status(500).json({ error: "Aucun article récupéré" });
+    // Vérifier si les données sont en cache et encore valides
+    const now = Date.now();
+    if (cachedData && lastFetchTime && (now - lastFetchTime < CACHE_DURATION)) {
+      console.log('Retour des données en cache pour les actualités nationales');
+      return res.status(200).json(cachedData);
     }
 
-    // ✅ Mélanger les articles avant de renvoyer
-    articles.sort(() => Math.random() - 0.5);
+    // Définir un timeout pour l'ensemble de l'opération
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Timeout dépassé')), 8000)
+    );
 
-    return res.status(200).json(articles.slice(0, 10));
-
+    // Récupération des actualités avec timeout
+    const fetchNewsPromise = fetchNationalNews();
+    
+    // Utiliser Promise.race pour limiter le temps d'attente
+    const news = await Promise.race([fetchNewsPromise, timeoutPromise]);
+    
+    // Mise en cache des données
+    cachedData = news;
+    lastFetchTime = now;
+    
+    return res.status(200).json(news);
   } catch (error) {
-    console.error('❌ Erreur générale:', error.message);
-    return res.status(500).json({ error: 'Erreur serveur' });
+    console.error('Erreur API getNationalNews:', error);
+    return res.status(500).json({ 
+      success: false, 
+      error: 'Erreur lors de la récupération des actualités nationales',
+      details: error.message
+    });
   }
 };
+
+async function fetchNationalNews() {
+  const parser = new Parser({
+    timeout: 5000, // 5 secondes de timeout pour le parser
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (compatible; PWANewsBot/1.0)'
+    },
+  });
+
+  try {
+    // Vous pouvez essayer plusieurs sources en parallèle et prendre la première qui répond
+    const sources = [
+      'https://www.francetvinfo.fr/france.rss',
+      'https://www.lemonde.fr/rss/une.xml',
+      'https://www.lefigaro.fr/rss/figaro_actualites.xml'
+    ];
+    
+    // Créer un tableau de promesses avec timeout individuel
+    const promises = sources.map(source => {
+      return axios.get(source, { 
+        timeout: 5000,
+        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; PWANewsBot/1.0)' }
+      })
+      .then(response => {
+        return parser.parseString(response.data);
+      })
+      .catch(err => {
+        console.log(`Erreur avec la source ${source}:`, err.message);
+        return null; // Retourner null en cas d'erreur pour ne pas bloquer les autres sources
+      });
+    });
+    
+    // Attendre que toutes les promesses soient résolues
+    const results = await Promise.allSettled(promises);
+    
+    // Traiter les résultats et ignorer les erreurs
+    const feeds = results
+      .filter(result => result.status === 'fulfilled' && result.value)
+      .map(result => result.value);
+    
+    if (feeds.length === 0) {
+      throw new Error('Aucune source d\'actualités n\'a répondu');
+    }
+    
+    // Utiliser le premier flux qui a répondu
+    const feed = feeds[0];
+    
+    // Formater les articles
+    const articles = feed.items.slice(0, 10).map(item => ({
+      title: item.title,
+      link: item.link,
+      pubDate: item.pubDate || item.isoDate,
+      source: feed.title || 'Actualités Nationales'
+    }));
+    
+    return {
+      success: true,
+      source: feed.title || 'Actualités Nationales',
+      articles: articles
+    };
+  } catch (error) {
+    console.error('Erreur fetchNationalNews:', error);
+    throw error;
+  }
+}
