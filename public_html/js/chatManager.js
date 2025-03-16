@@ -290,46 +290,44 @@ getChatHTMLWithoutToggle() {
 
     // Fonction réutilisable pour basculer l'état du chat
     const toggleChat = () => {
-        this.isOpen = !this.isOpen;
-        
-        if (this.isOpen) {
-    chatContainer?.classList.add('open');
-    this.unreadCount = 0;
-    localStorage.setItem('unreadCount', '0');
+    this.isOpen = !this.isOpen;
     
-    const badge = chatToggleBtn?.querySelector('.chat-notification-badge');
-    if (badge) {
-        badge.textContent = '0';
-        badge.classList.add('hidden');
-    }
-    
-    // Mode plein écran ajusté sur mobile
-    if (window.innerWidth <= 768) {
-        document.body.style.overflow = 'hidden'; // Empêcher le défilement
+    if (this.isOpen) {
+        chatContainer?.classList.add('open');
+        // Réinitialisation du compteur
+        this.unreadCount = 0;
+        localStorage.setItem('unreadCount', '0');
         
-        // Recalculer les positions tenant compte de la bannière
-        const bannerHeight = document.querySelector('header')?.offsetHeight || 60;
-        
-        if (chatContainer) {
-            chatContainer.style.top = bannerHeight + 'px';
-            chatContainer.style.height = `calc(100% - ${bannerHeight}px)`;
+        // Mise à jour ou suppression de l'info-bulle
+        const badge = chatToggleBtn?.querySelector('.chat-notification-badge');
+        if (badge) {
+            badge.textContent = '';
+            badge.classList.add('hidden');
+        }
+        // On s'assure aussi de retirer une éventuelle info-bulle restante
+        const chatToggle = this.container.querySelector('.chat-toggle');
+        const existingBubble = chatToggle?.querySelector('.info-bubble');
+        if (existingBubble) {
+            existingBubble.remove();
         }
         
-        // S'assurer que les éléments sont visibles
-        setTimeout(() => {
-            this.scrollToBottom();
-        }, 100);
+        this.scrollToBottom();
+        if (!/Mobi|Android/i.test(navigator.userAgent)) {
+            const inputField = this.container.querySelector('.chat-input textarea');
+            if (inputField) {
+                inputField.focus();
+            }
+        }
+    } else {
+        chatContainer?.classList.remove('open');
+        if (/Mobi|Android/i.test(navigator.userAgent)) {
+            chatContainer.classList.remove('full-screen');
+        }
     }
     
-    this.scrollToBottom();
-} else {
-    chatContainer?.classList.remove('open');
-    document.body.style.overflow = ''; // Réactiver le défilement
-}
-        
-        localStorage.setItem('chatOpen', this.isOpen);
-        this.playSound('click');
-    };
+    localStorage.setItem('chatOpen', this.isOpen);
+    this.playSound('click');
+};
 
     if (chatToggleBtn) {
         // Supprimer les anciens écouteurs d'événements pour éviter les duplications
