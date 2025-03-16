@@ -51,6 +51,7 @@ class ChatManager {
         }
         
         document.body.appendChild(this.container);
+		this.fixCloseButton(); // Ajouter cette ligne ici
         await this.loadSounds();
 
         // Gestion des notifications push
@@ -1868,6 +1869,72 @@ showAdminPanel() {
             pushManagerSupported: 'PushManager' in window,
             notificationsEnabled: this.notificationsEnabled,
             pushManagerSubscribed: !!(await (await navigator.serviceWorker.ready).pushManager.getSubscription())
+        });
+    }
+    
+    // Ajouter cette nouvelle méthode ici
+    fixCloseButton() {
+        const closeBtn = this.container.querySelector('.close-chat');
+        if (!closeBtn) return;
+        
+        // Supprimer les anciens écouteurs d'événements
+        const newCloseBtn = closeBtn.cloneNode(true);
+        closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
+        
+        // Ajouter les nouveaux écouteurs
+        newCloseBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Close button clicked');
+            
+            // Fermer le chat
+            this.isOpen = false;
+            localStorage.setItem('chatOpen', 'false');
+            
+            // Trouver le conteneur du chat
+            const chatContainer = this.container.querySelector('.chat-container');
+            if (chatContainer) {
+                chatContainer.classList.remove('open');
+                console.log('Chat container closed');
+            } else {
+                console.log('Chat container not found');
+            }
+            
+            this.playSound('click');
+        });
+        
+        // Ajouter un événement tactile spécifique
+        newCloseBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Close button touch start');
+            
+            // Ajouter une classe visuelle pour le feedback
+            newCloseBtn.classList.add('touching');
+        });
+        
+        newCloseBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Close button touch end');
+            
+            // Supprimer la classe visuelle
+            newCloseBtn.classList.remove('touching');
+            
+            // Fermer le chat
+            this.isOpen = false;
+            localStorage.setItem('chatOpen', 'false');
+            
+            // Trouver le conteneur du chat
+            const chatContainer = this.container.querySelector('.chat-container');
+            if (chatContainer) {
+                chatContainer.classList.remove('open');
+                console.log('Chat container closed');
+            } else {
+                console.log('Chat container not found');
+            }
+            
+            this.playSound('click');
         });
     }
 }
