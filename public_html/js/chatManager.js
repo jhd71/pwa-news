@@ -24,10 +24,6 @@ class ChatManager {
 
     async init() {
     try {
-		// Activer l'auto-refresh des sessions pour éviter les timeouts
-        this.supabase.auth.onAuthStateChange(() => {
-            console.log('État d\'authentification mis à jour');
-        });
         await this.loadBannedWords();
         
         this.container = document.createElement('div');
@@ -293,87 +289,31 @@ getChatHTMLWithoutToggle() {
     const logoutBtn = this.container.querySelector('.logout-btn');
 
     // Fonction réutilisable pour basculer l'état du chat
-// Fonction réutilisable pour basculer l'état du chat
-const toggleChat = () => {
-    this.isOpen = !this.isOpen;
-    
-    // Dans votre fonction toggleChat
-if (this.isOpen) {
-    chatContainer?.classList.add('open');
-    this.unreadCount = 0;
-    localStorage.setItem('unreadCount', '0');
-    
-    // Gestion spéciale pour le mode mobile
-    if (window.innerWidth <= 768) {
-        // Empêcher le défilement de la page
-        document.body.style.overflow = 'hidden';
+    const toggleChat = () => {
+        this.isOpen = !this.isOpen;
         
-        // S'assurer que les éléments sont dans le bon ordre et visibles
-        setTimeout(() => {
-            // Récupérer tous les éléments principaux
-            const header = chatContainer.querySelector('.chat-header');
-            const messages = chatContainer.querySelector('.chat-messages');
-            const inputArea = chatContainer.querySelector('.chat-input');
-            
-            // Si un élément est manquant, reconstruire la structure
-            if (!header || !messages || !inputArea || 
-                !window.getComputedStyle(header).display || 
-                !window.getComputedStyle(inputArea).display) {
-                
-                console.log("Reconstruction du chat en mode mobile");
-                
-                // Sauvegarder le contenu
-                const headerContent = header ? header.innerHTML : '';
-                const messagesContent = messages ? messages.innerHTML : '';
-                const inputContent = inputArea ? inputArea.innerHTML : '';
-                
-                // Vider et reconstruire
-                chatContainer.innerHTML = '';
-                
-                // Recréer la structure
-                if (headerContent) {
-                    const newHeader = document.createElement('div');
-                    newHeader.className = 'chat-header';
-                    newHeader.innerHTML = headerContent;
-                    newHeader.style.display = 'flex';
-                    chatContainer.appendChild(newHeader);
-                }
-                
-                if (messagesContent) {
-                    const newMessages = document.createElement('div');
-                    newMessages.className = 'chat-messages';
-                    newMessages.innerHTML = messagesContent;
-                    newMessages.style.flex = '1';
-                    newMessages.style.overflowY = 'auto';
-                    chatContainer.appendChild(newMessages);
-                }
-                
-                if (inputContent) {
-                    const newInput = document.createElement('div');
-                    newInput.className = 'chat-input';
-                    newInput.innerHTML = inputContent;
-                    newInput.style.display = 'flex';
-                    chatContainer.appendChild(newInput);
-                }
-                
-                // Réinitialiser les écouteurs d'événements
-                this.setupListeners();
+        if (this.isOpen) {
+            chatContainer?.classList.add('open');
+            this.unreadCount = 0;
+            localStorage.setItem('unreadCount', '0');
+            // Ajouter seulement cette ligne pour le mode mobile
+    if (window.innerWidth <= 768) {
+        document.body.style.overflow = 'hidden'; // Empêcher le défilement de la page
+    }
+            const badge = chatToggleBtn?.querySelector('.chat-notification-badge');
+            if (badge) {
+                badge.textContent = '0';
+                badge.classList.add('hidden');
             }
             
-            // Faire défiler jusqu'en bas
             this.scrollToBottom();
-        }, 50);
-    }
-    
-    this.scrollToBottom();
-} else {
-    chatContainer?.classList.remove('open');
-    document.body.style.overflow = '';
-}
-    
-    localStorage.setItem('chatOpen', this.isOpen);
-    this.playSound('click');
-};
+        } else {
+            chatContainer?.classList.remove('open');
+        }
+        
+        localStorage.setItem('chatOpen', this.isOpen);
+        this.playSound('click');
+    };
 
     if (chatToggleBtn) {
         // Supprimer les anciens écouteurs d'événements pour éviter les duplications
@@ -694,65 +634,32 @@ extractPseudoFromEmail(email) {
         const sendMessage = async () => {
             const content = input.value.trim();
             if (content) {
-                // Afficher un indicateur de chargement
-                sendBtn.classList.add('sending');
-                
-                // Vider le champ immédiatement pour donner un sentiment de réactivité
-                const messageToSend = content;
-                input.value = '';
-                
-                // Fermer le clavier tout de suite
-                input.blur();
-                
-                // Vérification des mots bannis
-                if (await this.checkForBannedWords(messageToSend)) {
-                    sendBtn.classList.remove('sending');
+                if (await this.checkForBannedWords(content)) {
                     this.showNotification('Message contient des mots interdits', 'error');
                     this.playSound('error');
-                    input.value = messageToSend; // Restaurer le message
                     return;
                 }
 
-                try {
-                    // Créer une version locale temporaire du message
-                    const tempId = 'temp-' + Date.now();
-                    const tempMessage = {
-                        id: tempId,
-                        pseudo: this.pseudo,
-                        content: messageToSend,
-                        created_at: new Date().toISOString()
-                    };
-                    
-                    // Afficher immédiatement le message avec un style "en cours d'envoi"
-                    const messagesContainer = this.container.querySelector('.chat-messages');
-                    if (messagesContainer) {
-                        const tempElement = this.createMessageElement(tempMessage);
-                        tempElement.classList.add('sending');
-                        messagesContainer.appendChild(tempElement);
-                        this.scrollToBottom();
-                    }
-                    
-                    // Envoyer le message en arrière-plan
-                    const success = await this.sendMessage(messageToSend);
-                    
-                    // Supprimer l'indicateur de chargement
-                    sendBtn.classList.remove('sending');
-                    
-                    if (!success) {
-                        // En cas d'échec, marquer le message comme échoué
-                        const tempElement = messagesContainer?.querySelector(`[data-message-id="${tempId}"]`);
-                        if (tempElement) {
-                            tempElement.classList.remove('sending');
-                            tempElement.classList.add('failed');
-                        }
-                        this.playSound('error');
-                    } else {
-                        this.playSound('message');
-                    }
-                } catch (error) {
-                    console.error('Erreur envoi:', error);
-                    sendBtn.classList.remove('sending');
+                // Vider l'entrée avant d'envoyer pour éviter double envoi
+                input.value = '';
+                
+                // Fermer le clavier immédiatement
+                input.blur();
+                
+                // Empêcher de regagner le focus pendant quelques secondes
+                input.disabled = true;
+                
+                const success = await this.sendMessage(content);
+                if (success) {
+                    this.playSound('message');
+                } else {
+                    this.playSound('error');
                 }
+                
+                // Réactiver l'input après un délai
+                setTimeout(() => {
+                    input.disabled = false;
+                }, 1500); // Attendre 1.5 seconde
             }
         };
 
@@ -766,6 +673,7 @@ extractPseudoFromEmail(email) {
         });
     }
     
+    // Ajout du gestionnaire pour le bouton emoji
     if (emojiBtn) {
         emojiBtn.addEventListener('click', () => {
             this.toggleEmojiPanel();
@@ -1083,7 +991,7 @@ createMessageElement(message) {
             return false;
         }
 
-        // Créer le message localement
+        // Ne pas utiliser supabase.auth.getUser()
         const message = {
             pseudo: this.pseudo,
             content: content,
@@ -1091,7 +999,6 @@ createMessageElement(message) {
             created_at: new Date().toISOString()
         };
 
-        // Insertion dans Supabase
         const { data, error } = await this.supabase
             .from('messages')
             .insert(message)
@@ -1100,8 +1007,8 @@ createMessageElement(message) {
 
         if (error) throw error;
 
-        // Envoyer la notification en parallèle plutôt qu'attendre sa complétion
-        fetch("/api/sendPush.js", {
+        // Envoi de la notification
+        await fetch("/api/sendPush.js", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -1407,35 +1314,33 @@ async unsubscribeFromPushNotifications() {
     }
 
     async getClientIP() {
-    // Cette fonction prend beaucoup de temps si elle fait un appel réseau
-    // Utilisons une approche plus simple et rapide
-    return `${this.pseudo}-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
-}
+        try {
+            return `${this.pseudo}-${Date.now()}`;
+        } catch {
+            return 'unknown';
+        }
+    }
 
     async checkForBannedWords(content) {
-    // Mettre les mots bannis en cache pour éviter d'appeler Supabase à chaque message
-    if (this.bannedWords.size === 0) {
-        try {
-            const { data: bannedWordsData, error } = await this.supabase
-                .from('banned_words')
-                .select('word');
-            
-            if (error) {
-                console.error('Erreur chargement mots bannis:', error);
-                return false;
-            }
-    
-            this.bannedWords = new Set(bannedWordsData.map(item => item.word.toLowerCase()));
-        } catch (error) {
+        console.log('Vérification des mots bannis...');
+        const { data: bannedWordsData, error } = await this.supabase
+            .from('banned_words')
+            .select('word');
+        
+        if (error) {
             console.error('Erreur chargement mots bannis:', error);
             return false;
         }
+
+        this.bannedWords = new Set(bannedWordsData.map(item => item.word.toLowerCase()));
+        const words = content.toLowerCase().split(/\s+/);
+        const foundBannedWord = words.some(word => this.bannedWords.has(word));
+        
+        console.log('Mots bannis actuels:', [...this.bannedWords]);
+        console.log('Mot interdit trouvé:', foundBannedWord);
+        
+        return foundBannedWord;
     }
-    
-    // Vérification simplifiée
-    const words = content.toLowerCase().split(/\s+/);
-    return words.some(word => this.bannedWords.has(word));
-}
 
     urlBase64ToUint8Array(base64String) {
         const padding = '='.repeat((4 - base64String.length % 4) % 4);
