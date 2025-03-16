@@ -980,7 +980,6 @@ createMessageElement(message) {
 
     async sendMessage(content) { 
     try {
-        // Code existant pour obtenir l'IP et vérifier le bannissement
         const ip = await this.getClientIP();
         const isBanned = await this.checkBannedIP(ip);
         
@@ -989,10 +988,7 @@ createMessageElement(message) {
             return false;
         }
 
-        // IMPORTANT: Ajouter cette ligne pour définir l'utilisateur courant
-        await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
-        
-        // Reste de la fonction inchangé
+        // Ne pas utiliser supabase.auth.getUser()
         const message = {
             pseudo: this.pseudo,
             content: content,
