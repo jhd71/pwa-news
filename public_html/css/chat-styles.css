@@ -1497,30 +1497,36 @@ body.long-press-active .message-options {
 
 /* Ajoutez ce CSS à votre chat-styles.css */
 @media (max-width: 768px) {
+  /* Ajuster le conteneur principal pour laisser de l'espace pour la bannière */
   .chat-container.open {
     position: fixed !important;
-    top: 0 !important;
+    /* Laisser de l'espace en haut pour la bannière */
+    top: 60px !important; /* Ajustez cette valeur selon la hauteur exacte de votre bannière */
     left: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
     width: 100% !important;
-    height: 100% !important;
+    height: calc(100% - 60px) !important; /* Soustraire la hauteur de la bannière */
     max-height: none !important;
     border-radius: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
     box-sizing: border-box !important;
-    z-index: 9999 !important;
+    z-index: 999 !important; /* Juste en dessous de la bannière */
     display: flex !important;
     flex-direction: column !important;
+    overflow: hidden !important;
   }
   
-  /* Assurer que l'en-tête est visible */
+  /* Assurer que l'en-tête est visible en haut */
   .chat-container.open .chat-header {
     display: flex !important;
     width: 100% !important;
     flex-shrink: 0 !important;
     min-height: 60px !important;
+    position: relative !important;
+    top: 0 !important;
+    z-index: 1000 !important;
   }
   
   /* Assurer que la zone des messages s'étend correctement */
@@ -1528,27 +1534,19 @@ body.long-press-active .message-options {
     flex: 1 !important;
     overflow-y: auto !important;
     height: auto !important;
-    min-height: 100px !important;
+    width: 100% !important;
   }
   
-  /* Assurer que la zone de saisie est visible */
+  /* Fixer la zone de saisie en bas */
   .chat-container.open .chat-input {
     display: flex !important;
     width: 100% !important;
     flex-shrink: 0 !important;
     min-height: 60px !important;
+    position: relative !important;
+    bottom: 0 !important;
     background: inherit !important;
     padding: 10px !important;
-  }
-  
-  /* S'assurer que le textarea est visible */
-  .chat-container.open .chat-input textarea {
-    flex: 1 !important;
-    display: block !important;
-  }
-  
-  /* S'assurer que le bouton d'envoi est visible */
-  .chat-container.open .send-btn {
-    display: flex !important;
+    z-index: 1000 !important;
   }
 }
