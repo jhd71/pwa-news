@@ -638,8 +638,13 @@ extractPseudoFromEmail(email) {
             const success = await this.sendMessage(content);
             if (success) {
                 input.value = '';
-                // Ne pas redonner le focus sur mobile afin d’éviter que le clavier ne refasse son apparition
-                if (!/Mobi|Android/i.test(navigator.userAgent)) {
+                // Sur mobile, ne pas forcer le focus (ce qui fait apparaître le clavier),
+                // mais on force le scroll pour garder l'input visible.
+                if (/Mobi|Android/i.test(navigator.userAgent)) {
+                    setTimeout(() => {
+                        input.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 100);
+                } else {
                     input.focus();
                 }
                 this.playSound('message');
@@ -649,7 +654,6 @@ extractPseudoFromEmail(email) {
         }
     };
 
-    // Pour les mobiles, utiliser "touchstart" pour envoyer immédiatement
     if (/Mobi|Android/i.test(navigator.userAgent)) {
         sendBtn.addEventListener('touchstart', (e) => {
             e.preventDefault();
@@ -664,7 +668,6 @@ extractPseudoFromEmail(email) {
         });
     }
 
-    // Envoi via la touche "Enter"
     input.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
