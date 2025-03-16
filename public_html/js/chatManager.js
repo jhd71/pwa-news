@@ -85,7 +85,10 @@ class ChatManager {
             await this.loadExistingMessages();
             this.updateUnreadBadgeAndBubble();
         }
-
+// Dans la méthode init(), juste avant this.initialized = true;
+if (/Android/i.test(navigator.userAgent)) {
+  this.gererClavierMobile();
+}
         this.initialized = true;
         console.log("Chat initialisé avec succès");
     } catch (error) {
@@ -626,33 +629,41 @@ extractPseudoFromEmail(email) {
     const emojiBtn = this.container.querySelector('.emoji-btn');
 
     if (input && sendBtn) {
-    const sendMessage = async () => {
-        const content = input.value.trim();
-        if (content) {
-            if (await this.checkForBannedWords(content)) {
-                this.showNotification('Message contient des mots interdits', 'error');
-                this.playSound('error');
-                return;
-            }
-
-            const success = await this.sendMessage(content);
-            if (success) {
-                input.value = '';
-                // Sur mobile, ne pas forcer le focus (ce qui fait apparaître le clavier),
-                // mais on force le scroll pour garder l'input visible.
-                if (/Mobi|Android/i.test(navigator.userAgent)) {
-                    setTimeout(() => {
-                        input.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    }, 100);
-                } else {
-                    input.focus();
-                }
-                this.playSound('message');
-            } else {
-                this.playSound('error');
-            }
+    // Dans setupChatListeners(), remplacer la déclaration existante de sendMessage par celle-ci :
+const sendMessage = async () => {
+    const content = input.value.trim();
+    if (content) {
+        if (await this.checkForBannedWords(content)) {
+            this.showNotification('Message contient des mots interdits', 'error');
+            this.playSound('error');
+            return;
         }
-    };
+
+        const success = await this.sendMessage(content);
+        if (success) {
+            input.value = '';
+            
+            // Gestion spécifique pour Android
+            if (/Android/i.test(navigator.userAgent)) {
+                // Forcer la disparition du clavier
+                document.activeElement.blur();
+                // S'assurer que le champ reste visible
+                setTimeout(() => {
+                    input.style.visibility = 'visible';
+                    input.style.display = 'block';
+                    this.scrollToBottom();
+                }, 300);
+            } else {
+                // Comportement normal sur autres appareils
+                input.focus();
+            }
+            
+            this.playSound('message');
+        } else {
+            this.playSound('error');
+        }
+    }
+};
 
     if (/Mobi|Android/i.test(navigator.userAgent)) {
         sendBtn.addEventListener('touchstart', (e) => {
@@ -683,7 +694,60 @@ extractPseudoFromEmail(email) {
         });
     }
 }
-
+// Insérer après la fin de setupChatListeners()
+gererClavierMobile() {
+  // Cibler les éléments nécessaires
+  const chatInput = this.container.querySelector('.chat-input textarea');
+  const sendBtn = this.container.querySelector('.send-btn');
+  const messagesContainer = this.container.querySelector('.chat-messages');
+  const chatContainer = this.container.querySelector('.chat-container');
+  
+  if (!chatInput || !sendBtn) return;
+  
+  // Pour les appareils Android uniquement
+  if (/Android/i.test(navigator.userAgent)) {
+    // Quand on clique sur le bouton d'envoi
+    sendBtn.addEventListener('touchend', (e) => {
+      // Forcer la disparition du clavier
+      setTimeout(() => {
+        document.activeElement.blur();
+        // S'assurer que le champ reste visible
+        chatInput.style.visibility = 'visible';
+        chatInput.style.display = 'block';
+        // Défiler vers le bas
+        this.scrollToBottom();
+      }, 100);
+    });
+    
+    // Lors du focus sur le champ de saisie
+    chatInput.addEventListener('focus', () => {
+      // Défiler vers le champ de saisie
+      setTimeout(() => {
+        chatInput.scrollIntoView({ behavior: 'smooth' });
+      }, 300);
+    });
+    
+    // Lors de la perte de focus
+    chatInput.addEventListener('blur', () => {
+      // Rétablir la visibilité et s'assurer que l'input reste à sa place
+      setTimeout(() => {
+        chatInput.style.visibility = 'visible';
+        chatInput.style.display = 'block';
+        // Défiler vers le bas des messages
+        this.scrollToBottom();
+      }, 100);
+    });
+    
+    // Gérer le redimensionnement (qui se produit quand le clavier apparaît/disparaît)
+    window.addEventListener('resize', () => {
+      // Assurer que l'input reste visible
+      chatInput.style.visibility = 'visible';
+      chatInput.style.display = 'block';
+      // Défiler vers le bas
+      this.scrollToBottom();
+    });
+  }
+}
 // Nouvelle méthode pour gérer le panneau d'emojis
 toggleEmojiPanel() {
     let panel = this.container.querySelector('.emoji-panel');
