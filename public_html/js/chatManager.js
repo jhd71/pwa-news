@@ -980,6 +980,10 @@ createMessageElement(message) {
 
     async sendMessage(content) { 
     try {
+		// Ajouter dans votre fonction sendMessage pour le débogage
+const { data: userTest } = await this.supabase.rpc('get_current_user');
+console.log("Utilisateur courant défini:", userTest);
+        // Code existant pour obtenir l'IP et vérifier le bannissement
         const ip = await this.getClientIP();
         const isBanned = await this.checkBannedIP(ip);
         
@@ -988,7 +992,10 @@ createMessageElement(message) {
             return false;
         }
 
-        // Ne pas utiliser supabase.auth.getUser()
+        // IMPORTANT: Ajouter cette ligne pour définir l'utilisateur courant
+        await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
+        
+        // Reste de la fonction inchangé
         const message = {
             pseudo: this.pseudo,
             content: content,
