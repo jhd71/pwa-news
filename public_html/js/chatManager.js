@@ -51,7 +51,8 @@ class ChatManager {
         }
         
         document.body.appendChild(this.container);
-		this.fixCloseButton(); // Ajouter cette ligne ici
+        this.fixCloseButton();
+        this.forceMobileLayout(); // Ajoutez cette ligne
         await this.loadSounds();
 
         // Gestion des notifications push
@@ -205,9 +206,9 @@ getChatHTML() {
             <span class="notification-badge hidden">${this.unreadCount}</span>
         </button>
         <div class="chat-container">
-            <div class="chat-header">
-                <div class="header-title">Chat - ${this.pseudo}</div>
-                <div class="header-buttons">
+            <div class="chat-header" style="display: flex !important; min-height: 60px !important; background: #4a2b9b !important;">
+                <div class="header-title" style="color: white !important; font-weight: bold !important;">Chat - ${this.pseudo}</div>
+                <div class="header-buttons" style="display: flex !important; gap: 8px !important;">
                     ${this.isAdmin ? `
                         <button class="admin-panel-btn" title="Panel Admin">
                             <span class="material-icons">admin_panel_settings</span>
@@ -225,18 +226,19 @@ getChatHTML() {
                     <button class="logout-btn" title="Déconnexion">
                         <span class="material-icons">logout</span>
                     </button>
-                    <button class="close-chat" title="Fermer">
+                    <button class="close-chat" style="background: #ff3366 !important; width: 44px !important; height: 44px !important; border: 2px solid white !important;" title="Fermer">
                         <span class="material-icons">close</span>
                     </button>
                 </div>
             </div>
             <div class="chat-messages"></div>
-            <div class="chat-input">
+            <div class="chat-input" style="position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; background: #4a2b9b !important; height: 70px !important; padding: 10px 15px !important;">
                 <textarea 
                     placeholder="Votre message..." 
                     maxlength="500" 
-                    rows="2"></textarea>
-                <button class="send-btn" title="Envoyer">
+                    rows="1"
+                    style="height: 48px !important; background: rgba(255, 255, 255, 0.2) !important; color: white !important;"></textarea>
+                <button class="send-btn" title="Envoyer" style="width: 48px !important; height: 48px !important; background: #4CAF50 !important;">
                     <span class="material-icons">send</span>
                 </button>
             </div>
@@ -247,17 +249,17 @@ getChatHTML() {
 getChatHTMLWithoutToggle() {
     return `
         <div class="chat-container">
-            <div class="chat-header">
-                <div class="header-title">Chat - ${this.pseudo}</div>
-                <div class="header-buttons">
+            <div class="chat-header" style="display: flex !important; min-height: 60px !important; background: #4a2b9b !important;">
+                <div class="header-title" style="color: white !important; font-weight: bold !important;">Chat - ${this.pseudo}</div>
+                <div class="header-buttons" style="display: flex !important; gap: 8px !important;">
                     ${this.isAdmin ? `
                         <button class="admin-panel-btn" title="Panel Admin">
                             <span class="material-icons">admin_panel_settings</span>
                         </button>
                     ` : ''}
-					<button class="emoji-btn" title="Emojis">
-                    <span class="material-icons">emoji_emotions</span>
-                </button>
+                    <button class="emoji-btn" title="Emojis">
+                        <span class="material-icons">emoji_emotions</span>
+                    </button>
                     <button class="notifications-btn ${this.notificationsEnabled ? 'enabled' : ''}" title="Notifications">
                         <span class="material-icons">${this.notificationsEnabled ? 'notifications_active' : 'notifications_off'}</span>
                     </button>
@@ -267,18 +269,19 @@ getChatHTMLWithoutToggle() {
                     <button class="logout-btn" title="Déconnexion">
                         <span class="material-icons">logout</span>
                     </button>
-                    <button class="close-chat" title="Fermer">
+                    <button class="close-chat" style="background: #ff3366 !important; width: 44px !important; height: 44px !important; border: 2px solid white !important;" title="Fermer">
                         <span class="material-icons">close</span>
                     </button>
                 </div>
             </div>
             <div class="chat-messages"></div>
-            <div class="chat-input">
+            <div class="chat-input" style="position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; background: #4a2b9b !important; height: 70px !important; padding: 10px 15px !important;">
                 <textarea 
                     placeholder="Votre message..." 
                     maxlength="500" 
-                    rows="2"></textarea>              
-                <button class="send-btn" title="Envoyer">
+                    rows="1"
+                    style="height: 48px !important; background: rgba(255, 255, 255, 0.2) !important; color: white !important;"></textarea>              
+                <button class="send-btn" title="Envoyer" style="width: 48px !important; height: 48px !important; background: #4CAF50 !important;">
                     <span class="material-icons">send</span>
                 </button>
             </div>
@@ -1936,6 +1939,68 @@ showAdminPanel() {
     console.log('Close button setup complete');
   } catch (error) {
     console.error('Error in fixCloseButton:', error);
+  }
+}
+
+forceMobileLayout() {
+  if (!/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    return; // Ne rien faire sur les appareils non-mobiles
+  }
+  
+  console.log("Forçage de la mise en page mobile...");
+  
+  try {
+    // Récupérer les éléments
+    const chatContainer = this.container.querySelector('.chat-container');
+    if (!chatContainer) return;
+    
+    // Forcer les styles du conteneur
+    chatContainer.style.position = 'fixed';
+    chatContainer.style.top = '0';
+    chatContainer.style.left = '0';
+    chatContainer.style.right = '0';
+    chatContainer.style.bottom = '0';
+    chatContainer.style.width = '100vw';
+    chatContainer.style.height = '100vh';
+    chatContainer.style.zIndex = '9999';
+    chatContainer.style.display = 'flex';
+    chatContainer.style.flexDirection = 'column';
+    chatContainer.style.background = '#6441a5';
+    
+    // S'assurer que l'en-tête est visible
+    const header = chatContainer.querySelector('.chat-header');
+    if (header) {
+      header.style.minHeight = '60px';
+      header.style.background = '#4a2b9b';
+      header.style.display = 'flex';
+      header.style.padding = '10px 15px';
+      header.style.zIndex = '10001';
+    }
+    
+    // S'assurer que la zone de saisie est visible
+    const inputArea = chatContainer.querySelector('.chat-input');
+    if (inputArea) {
+      inputArea.style.position = 'fixed';
+      inputArea.style.bottom = '0';
+      inputArea.style.left = '0';
+      inputArea.style.right = '0';
+      inputArea.style.height = '70px';
+      inputArea.style.background = '#4a2b9b';
+      inputArea.style.padding = '10px 15px';
+      inputArea.style.zIndex = '10000';
+      inputArea.style.display = 'flex';
+    }
+    
+    // S'assurer que la zone des messages a le bon padding
+    const messagesArea = chatContainer.querySelector('.chat-messages');
+    if (messagesArea) {
+      messagesArea.style.paddingBottom = '80px';
+      messagesArea.style.flex = '1';
+    }
+    
+    console.log("Mise en page mobile forcée avec succès");
+  } catch (error) {
+    console.error("Erreur lors du forçage de la mise en page mobile:", error);
   }
 }
 }
