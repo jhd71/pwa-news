@@ -1538,3 +1538,46 @@ html.android textarea {
     visibility: visible !important;
     display: block !important;
 }
+
+/* Styles pour améliorer l'affichage sur mobile */
+@media (max-width: 480px) {
+    /* Augmenter la taille du bouton de fermeture */
+    .close-chat {
+        width: 40px !important;
+        height: 40px !important;
+        background-color: rgba(255, 0, 100, 0.2) !important;
+        border-radius: 50% !important;
+    }
+    
+    .close-chat:active {
+        background-color: rgba(255, 0, 100, 0.5) !important;
+        transform: scale(1.1) !important;
+    }
+    
+    /* Assurer que la zone de saisie reste visible */
+    .chat-input {
+        padding-bottom: 15px !important;
+        padding-top: 15px !important;
+        background: linear-gradient(145deg, #1a237e, #283593) !important;
+        border-top: 2px solid rgba(255, 255, 255, 0.3) !important;
+    }
+    
+    /* S'assurer que le textarea est bien visible */
+    .chat-input textarea {
+        min-height: 44px !important;
+        padding: 12px 15px !important;
+        font-size: 16px !important;
+        border-radius: 20px !important;
+    }
+    
+    /* Augmenter la taille du bouton d'envoi */
+    .send-btn {
+        min-width: 44px !important;
+        min-height: 44px !important;
+    }
+    
+    /* Espace pour éviter que le clavier ne cache des éléments */
+    .chat-messages {
+        padding-bottom: 20px !important;
+    }
+}
