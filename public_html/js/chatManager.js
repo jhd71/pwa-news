@@ -303,71 +303,72 @@ if (this.isOpen) {
     this.unreadCount = 0;
     localStorage.setItem('unreadCount', '0');
     
-    const badge = chatToggleBtn?.querySelector('.chat-notification-badge');
-    if (badge) {
-        badge.textContent = '0';
-        badge.classList.add('hidden');
-    }
-    
-    // Gestion du mode plein écran sur mobile
+    // Gestion spéciale pour le mode mobile
     if (window.innerWidth <= 768) {
-        document.body.style.overflow = 'hidden'; // Empêcher le scroll
+        // Empêcher le défilement de la page
+        document.body.style.overflow = 'hidden';
         
-        // Forcer l'affichage correct de tous les éléments
+        // S'assurer que les éléments sont dans le bon ordre et visibles
         setTimeout(() => {
-            // Garantir que tous les éléments sont visibles
+            // Récupérer tous les éléments principaux
             const header = chatContainer.querySelector('.chat-header');
-            const headerButtons = chatContainer.querySelector('.header-buttons');
             const messages = chatContainer.querySelector('.chat-messages');
             const inputArea = chatContainer.querySelector('.chat-input');
-            const textarea = inputArea?.querySelector('textarea');
-            const sendButton = inputArea?.querySelector('.send-btn');
             
-            // Appliquer les styles directement
-            if (header) {
-                header.style.display = 'flex';
-                header.style.flexDirection = 'row';
-                header.style.width = '100%';
-            }
-            
-            if (headerButtons) {
-                headerButtons.style.display = 'flex';
-                headerButtons.style.flexDirection = 'row';
-            }
-            
-            if (messages) {
-                messages.style.flex = '1';
-                messages.style.overflowY = 'auto';
-                messages.style.display = 'block';
-                messages.scrollTop = messages.scrollHeight;
-            }
-            
-            if (inputArea) {
-                inputArea.style.display = 'flex';
-                inputArea.style.flexDirection = 'row';
-                inputArea.style.width = '100%';
-                inputArea.style.position = 'relative';
-                inputArea.style.bottom = '0';
-            }
-            
-            if (textarea) {
-                textarea.style.display = 'block';
-                textarea.style.flex = '1';
-            }
-            
-            if (sendButton) {
-                sendButton.style.display = 'flex';
+            // Si un élément est manquant, reconstruire la structure
+            if (!header || !messages || !inputArea || 
+                !window.getComputedStyle(header).display || 
+                !window.getComputedStyle(inputArea).display) {
+                
+                console.log("Reconstruction du chat en mode mobile");
+                
+                // Sauvegarder le contenu
+                const headerContent = header ? header.innerHTML : '';
+                const messagesContent = messages ? messages.innerHTML : '';
+                const inputContent = inputArea ? inputArea.innerHTML : '';
+                
+                // Vider et reconstruire
+                chatContainer.innerHTML = '';
+                
+                // Recréer la structure
+                if (headerContent) {
+                    const newHeader = document.createElement('div');
+                    newHeader.className = 'chat-header';
+                    newHeader.innerHTML = headerContent;
+                    newHeader.style.display = 'flex';
+                    chatContainer.appendChild(newHeader);
+                }
+                
+                if (messagesContent) {
+                    const newMessages = document.createElement('div');
+                    newMessages.className = 'chat-messages';
+                    newMessages.innerHTML = messagesContent;
+                    newMessages.style.flex = '1';
+                    newMessages.style.overflowY = 'auto';
+                    chatContainer.appendChild(newMessages);
+                }
+                
+                if (inputContent) {
+                    const newInput = document.createElement('div');
+                    newInput.className = 'chat-input';
+                    newInput.innerHTML = inputContent;
+                    newInput.style.display = 'flex';
+                    chatContainer.appendChild(newInput);
+                }
+                
+                // Réinitialiser les écouteurs d'événements
+                this.setupListeners();
             }
             
             // Faire défiler jusqu'en bas
             this.scrollToBottom();
-        }, 100);
+        }, 50);
     }
     
     this.scrollToBottom();
 } else {
     chatContainer?.classList.remove('open');
-    document.body.style.overflow = ''; // Réactiver le scroll
+    document.body.style.overflow = '';
 }
     
     localStorage.setItem('chatOpen', this.isOpen);
