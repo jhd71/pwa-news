@@ -1497,49 +1497,70 @@ body.long-press-active .message-options {
 
 /* Ajoutez ce CSS à votre chat-styles.css */
 @media (max-width: 768px) {
-  /* Rendre la zone de saisie plus visible et accessible */
+  /* Conteneur principal du chat - légèrement plus grand */
+  .chat-container.open {
+    position: fixed !important;
+    top: 60px !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: calc(100% - 50px) !important; /* Légèrement plus haut */
+    max-height: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    z-index: 9999 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  /* Zone des messages */
+  .chat-container.open .chat-messages {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding: 10px !important;
+    margin-bottom: 10px !important; /* Espace avant la zone de saisie */
+  }
+  
+  /* Zone de saisie - avec le thème bleu */
   .chat-container.open .chat-input {
     display: flex !important;
     width: 100% !important;
-    min-height: 70px !important; /* Augmenter légèrement la hauteur */
+    min-height: 70px !important;
     padding: 12px !important;
-    background: rgba(138, 43, 226, 0.9) !important; /* Fond violet légèrement transparent */
-    border-top: 2px solid rgba(255, 255, 255, 0.2) !important; /* Bordure subtile */
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1) !important; /* Ombre légère */
+    background: rgba(31, 41, 128, 0.9) !important; /* Bleu foncé pour correspondre au thème */
+    border-top: 2px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2) !important;
     position: sticky !important;
-    bottom: 0 !important;
+    bottom: 10px !important; /* Remonter légèrement */
     z-index: 1010 !important;
     margin: 0 !important;
+    border-radius: 10px 10px 0 0 !important; /* Coins arrondis en haut */
   }
   
-  /* S'assurer que le champ de texte est bien visible */
+  /* Champ de texte */
   .chat-container.open .chat-input textarea {
     flex: 1 !important;
     padding: 10px !important;
-    min-height: 40px !important;
+    min-height: 45px !important;
     border-radius: 20px !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
     color: white !important;
-    font-size: 16px !important; /* Taille de police légèrement plus grande */
+    font-size: 16px !important;
+    resize: none !important; /* Empêcher le redimensionnement */
   }
   
-  /* S'assurer que le bouton d'envoi est bien visible */
+  /* Bouton d'envoi - garder la couleur verte */
   .chat-container.open .send-btn {
-    width: 45px !important;
-    height: 45px !important;
+    width: 50px !important;
+    height: 50px !important;
     margin-left: 10px !important;
-    background: #4CAF50 !important; /* Couleur verte pour le bouton */
+    background: #4CAF50 !important;
     border-radius: 50% !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
-  }
-  
-  /* Pour l'icône dans le bouton d'envoi */
-  .chat-container.open .send-btn .material-icons {
-    color: white !important;
-    font-size: 24px !important;
   }
 }
