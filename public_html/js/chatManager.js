@@ -294,23 +294,14 @@ getChatHTMLWithoutToggle() {
     
     if (this.isOpen) {
         chatContainer?.classList.add('open');
-        // Réinitialisation du compteur
+        if (/Mobi|Android/i.test(navigator.userAgent)) {
+            chatContainer.classList.add('full-screen');
+        }
+        // Réinitialisation du compteur et mise à jour du badge
         this.unreadCount = 0;
         localStorage.setItem('unreadCount', '0');
-        
-        // Mise à jour ou suppression de l'info-bulle
-        const badge = chatToggleBtn?.querySelector('.chat-notification-badge');
-        if (badge) {
-            badge.textContent = '';
-            badge.classList.add('hidden');
-        }
-        // On s'assure aussi de retirer une éventuelle info-bulle restante
-        const chatToggle = this.container.querySelector('.chat-toggle');
-        const existingBubble = chatToggle?.querySelector('.info-bubble');
-        if (existingBubble) {
-            existingBubble.remove();
-        }
-        
+        this.updateUnreadBadgeAndBubble();
+
         this.scrollToBottom();
         if (!/Mobi|Android/i.test(navigator.userAgent)) {
             const inputField = this.container.querySelector('.chat-input textarea');
@@ -1398,17 +1389,15 @@ async unsubscribeFromPushNotifications() {
 
     // Mettez à jour la fonction qui gère les notifications
 updateUnreadBadgeAndBubble() {
-    // Mettre à jour le badge sur le bouton de la barre de navigation
     const chatToggleBtn = document.getElementById('chatToggleBtn');
     if (chatToggleBtn) {
-        const badge = chatToggleBtn.querySelector('.chat-notification-badge');
+        const badge = chatToggleBtn.querySelector('.notification-badge');
         if (badge) {
             badge.textContent = this.unreadCount || '';
             badge.classList.toggle('hidden', this.unreadCount === 0);
         }
     }
 
-    // Afficher une info-bulle si le chat est fermé et il y a des messages non lus
     if (!this.isOpen && this.unreadCount > 0) {
         const chatToggle = this.container.querySelector('.chat-toggle');
         const existingBubble = chatToggle?.querySelector('.info-bubble');
