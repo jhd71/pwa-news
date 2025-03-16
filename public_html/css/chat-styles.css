@@ -1494,90 +1494,102 @@ body.long-press-active .message-options {
         transform: scale(1.1);
     }
 }
-/* Ajouter à la fin du fichier CSS */
-/* Empêcher la disparition du champ de saisie sur mobile */
+/* Base styles pour la compatibilité mobile */
 @media (max-width: 480px) {
+  /* Style général du chat sur mobile */
+  .chat-container {
+    height: calc(100vh - 80px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    max-height: none !important;
+  }
+  
+  /* Zone des messages */
+  .chat-messages {
+    flex: 1 !important;
+    max-height: calc(100vh - 200px) !important;
+    padding-bottom: 20px !important;
+    overflow-y: auto !important;
+  }
+  
+  /* Augmenter la taille du bouton de fermeture et le rendre plus visible */
+  .close-chat {
+    width: 44px !important;
+    height: 44px !important;
+    background-color: rgba(255, 80, 100, 0.8) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
+    z-index: 1001 !important;
+  }
+  
+  .close-chat:active, .close-chat:hover {
+    background-color: rgba(255, 50, 80, 1) !important;
+    transform: scale(1.1) !important;
+  }
+  
+  .close-chat .material-icons {
+    font-size: 28px !important;
+    color: white !important;
+  }
+  
+  /* Zone de saisie */
   .chat-input {
     position: sticky !important;
     bottom: 0 !important;
-    z-index: 10 !important;
-    transition: none !important;
-    transform: translateZ(0) !important;
-    visibility: visible !important;
+    z-index: 1000 !important;
+    background: linear-gradient(145deg, #1a237e, #283593) !important;
+    border-top: 2px solid rgba(255, 255, 255, 0.3) !important;
+    padding: 15px !important;
     display: flex !important;
+    visibility: visible !important;
+    transform: translateZ(0) !important;
+    margin-top: auto !important;
   }
   
+  /* Champ de saisie */
   .chat-input textarea {
+    min-height: 48px !important;
+    padding: 12px 15px !important;
+    font-size: 16px !important;
+    border-radius: 20px !important;
     visibility: visible !important;
     display: block !important;
+    flex: 1 !important;
+    color: white !important;
+  }
+  
+  /* Bouton d'envoi */
+  .send-btn {
+    min-width: 48px !important;
+    min-height: 48px !important;
+    background-color: #4CAF50 !important;
+    margin-left: 8px !important;
+  }
+  
+  /* Ajustement quand le clavier est visible */
+  body.keyboard-visible .chat-input {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
   }
 }
-/* Style spécifique pour Android */
-html.android .chat-input {
-    position: sticky !important;
-    bottom: 0 !important;
-    z-index: 100 !important;
-    background: var(--chat-gradient) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
-    padding: 15px !important;
-    margin-top: 10px !important;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2) !important;
-}
 
-html.android .chat-container {
-    display: flex !important;
-    flex-direction: column !important;
+/* Spécifique pour Android */
+html.android .chat-input {
+  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3) !important;
 }
 
 html.android .chat-messages {
-    flex: 1 !important;
-    max-height: calc(70vh - 120px) !important;
+  padding-bottom: 60px !important; /* Plus d'espace au bas pour Android */
 }
 
-html.android textarea {
-    visibility: visible !important;
-    display: block !important;
-}
-
-/* Styles pour améliorer l'affichage sur mobile */
-@media (max-width: 480px) {
-    /* Augmenter la taille du bouton de fermeture */
-    .close-chat {
-        width: 40px !important;
-        height: 40px !important;
-        background-color: rgba(255, 0, 100, 0.2) !important;
-        border-radius: 50% !important;
-    }
-    
-    .close-chat:active {
-        background-color: rgba(255, 0, 100, 0.5) !important;
-        transform: scale(1.1) !important;
-    }
-    
-    /* Assurer que la zone de saisie reste visible */
-    .chat-input {
-        padding-bottom: 15px !important;
-        padding-top: 15px !important;
-        background: linear-gradient(145deg, #1a237e, #283593) !important;
-        border-top: 2px solid rgba(255, 255, 255, 0.3) !important;
-    }
-    
-    /* S'assurer que le textarea est bien visible */
-    .chat-input textarea {
-        min-height: 44px !important;
-        padding: 12px 15px !important;
-        font-size: 16px !important;
-        border-radius: 20px !important;
-    }
-    
-    /* Augmenter la taille du bouton d'envoi */
-    .send-btn {
-        min-width: 44px !important;
-        min-height: 44px !important;
-    }
-    
-    /* Espace pour éviter que le clavier ne cache des éléments */
-    .chat-messages {
-        padding-bottom: 20px !important;
-    }
+/* Style spécifique pour bouton de fermeture */
+.chat-header .close-chat {
+  position: relative !important;
+  z-index: 2000 !important;
 }
