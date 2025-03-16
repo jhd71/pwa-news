@@ -858,18 +858,18 @@ console.log("Utilisateur courant défini:", userTest);
 
     // Méthode toggleEmojiPanel modifiée pour ne pas fermer automatiquement le panneau après la sélection d'un emoji
     toggleEmojiPanel() {
-        let panel = this.container.querySelector('.emoji-panel');
-        
-        // Si le panneau existe déjà, on le ferme en cliquant sur l'icône
-        if (panel) {
-            panel.remove();
-            return;
-        }
-        
-        panel = document.createElement('div');
-        panel.className = 'emoji-panel';
-        
-        const emojis = [
+    let panel = this.container.querySelector('.emoji-panel');
+    
+    // Si le panneau existe déjà, on le ferme en cliquant sur l'icône
+    if (panel) {
+        panel.remove();
+        return;
+    }
+    
+    panel = document.createElement('div');
+    panel.className = 'emoji-panel';
+    
+    const emojis = [
   '😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', 
   '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙', '😋', '😛', '😜', '😝', 
   '🤑', '🤗', '🤭', '🤫', '🤔', '🤐', '🤨', '😐', '😑', '😶', '😏', '😒', 
@@ -925,34 +925,37 @@ console.log("Utilisateur courant défini:", userTest);
 ];
         
         emojis.forEach(emoji => {
-            const span = document.createElement('span');
-            span.textContent = emoji;
-            span.addEventListener('click', () => {
-                const textarea = this.container.querySelector('.chat-input textarea');
-                if (textarea) {
-                    const start = textarea.selectionStart;
-                    const end = textarea.selectionEnd;
-                    const text = textarea.value;
-                    textarea.value = text.substring(0, start) + emoji + text.substring(end);
-                    textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
+        const span = document.createElement('span');
+        span.textContent = emoji;
+        span.addEventListener('click', () => {
+            const textarea = this.container.querySelector('.chat-input textarea');
+            if (textarea) {
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                const text = textarea.value;
+                textarea.value = text.substring(0, start) + emoji + text.substring(end);
+                textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
+                // Ne pas redonner le focus sur mobile pour éviter l'ouverture du clavier
+                if (!/Mobi|Android/i.test(navigator.userAgent)) {
                     textarea.focus();
                 }
-                // On ne ferme pas le panneau ici afin de pouvoir choisir plusieurs emojis
-                this.playSound('click');
-            });
-            panel.appendChild(span);
-        });
-        
-        const chatContainer = this.container.querySelector('.chat-container');
-        chatContainer.appendChild(panel);
-        
-        // Ferme le panneau si on clique en dehors
-        document.addEventListener('click', (e) => {
-            if (!panel.contains(e.target) && e.target !== this.container.querySelector('.emoji-btn') && !this.container.querySelector('.emoji-btn').contains(e.target)) {
-                panel.remove();
             }
-        }, { once: true });
-    }
+            this.playSound('click');
+        });
+        panel.appendChild(span);
+    });
+    
+    const chatContainer = this.container.querySelector('.chat-container');
+    chatContainer.appendChild(panel);
+    
+    document.addEventListener('click', (e) => {
+        if (!panel.contains(e.target) &&
+            e.target !== this.container.querySelector('.emoji-btn') &&
+            !this.container.querySelector('.emoji-btn').contains(e.target)) {
+            panel.remove();
+        }
+    }, { once: true });
+}
 
     setupRealtimeSubscription() {
         const channel = this.supabase.channel('messages');
