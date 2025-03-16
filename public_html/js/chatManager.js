@@ -331,28 +331,31 @@ getChatHTMLWithoutToggle() {
     }
 
     if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
-            this.isOpen = false;
-            localStorage.setItem('chatOpen', 'false');
-            chatContainer?.classList.remove('open');
-            this.playSound('click');
-        });
-    }
-
-    // Le reste de votre code pour setupListeners reste inchangé...
-    if (soundBtn) {
-        soundBtn.addEventListener('click', () => {
-            this.soundEnabled = !this.soundEnabled;
-            localStorage.setItem('soundEnabled', this.soundEnabled);
-            soundBtn.classList.toggle('enabled', this.soundEnabled);
-            if (this.soundEnabled) {
-                soundBtn.querySelector('.material-icons').textContent = 'volume_up';
-                this.playSound('click');
-            } else {
-                soundBtn.querySelector('.material-icons').textContent = 'volume_off';
-            }
-        });
-    }
+    closeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.isOpen = false;
+        localStorage.setItem('chatOpen', 'false');
+        if (chatContainer) {
+            chatContainer.classList.remove('open');
+        }
+        this.playSound('click');
+        console.log("Chat fermé via bouton closeBtn");
+    });
+    
+    // Ajouter un événement touchend pour les appareils mobiles
+    closeBtn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.isOpen = false;
+        localStorage.setItem('chatOpen', 'false');
+        if (chatContainer) {
+            chatContainer.classList.remove('open');
+        }
+        this.playSound('click');
+        console.log("Chat fermé via touchend sur closeBtn");
+    });
+}
 
         if (notificationsBtn) {
             notificationsBtn.addEventListener('click', async () => {
@@ -772,23 +775,45 @@ gererClavierMobile() {
       }, 300);
     });
     
-    // Gérer l'événement resize (quand le clavier apparaît/disparaît)
-    let resizeTimeout;
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeTimeout);
-      
-      // Utiliser un délai pour éviter des mises à jour trop fréquentes
-      resizeTimeout = setTimeout(() => {
-        // S'assurer que l'input est visible
-        chatInputContainer.style.visibility = 'visible';
-        chatInputContainer.style.display = 'flex';
+    // Écouter l'événement focus sur le textarea pour déplacer la vue
+    chatInput.addEventListener('focus', () => {
+      // Retarder légèrement pour laisser le clavier apparaître
+      setTimeout(() => {
+        // Calculer la hauteur visible de la fenêtre
+        const windowHeight = window.innerHeight;
+        // Position verticale absolue de l'input par rapport au haut de la page
+        const inputTop = chatInput.getBoundingClientRect().top;
+        // Calculer le déplacement nécessaire pour que l'input soit visible
+        const scrollY = Math.max(0, inputTop - windowHeight * 0.3);
         
-        // Forcer le scroll vers l'input
-        chatInput.scrollIntoView({ behavior: 'instant', block: 'end' });
-        
-        // Défiler vers le bas
-        this.scrollToBottom();
+        // Faire défiler la page pour voir l'input
+        window.scrollTo(0, scrollY);
+        // Vérifier si l'application est dans une webview Android
+        if (window.AndroidInterface || /Android/i.test(navigator.userAgent)) {
+          chatInputContainer.style.position = 'relative';
+          chatInputContainer.style.bottom = '0';
+          chatInputContainer.style.zIndex = '1000';
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
       }, 300);
+    });
+
+    // Ajuster la position lors de l'apparition du clavier
+    window.addEventListener('resize', () => {
+      if (document.activeElement === chatInput) {
+        // Si le clavier est ouvert (détecté par la réduction de la hauteur)
+        if (window.innerHeight < window.outerHeight * 0.8) {
+          chatInputContainer.style.position = 'relative';
+          chatInputContainer.style.bottom = '0';
+          chatInputContainer.style.zIndex = '1000';
+          // Faire défiler la page pour voir l'input
+          window.scrollTo(0, document.body.scrollHeight);
+        } else {
+          // Clavier fermé
+          chatInputContainer.style.position = 'sticky';
+          chatInputContainer.style.bottom = '0';
+        }
+      }
     });
     
     // Ajout d'un gestionnaire pour les clics dans la zone des messages
@@ -1553,18 +1578,21 @@ updateUnreadBadgeAndBubble() {
     }
     
     // Sur mobile, s'assurer que l'input reste visible
-    if (/Android/i.test(navigator.userAgent) && chatInput && chatContainer) {
-        // Faire défiler le conteneur principal pour s'assurer que tout est visible
+    if (/Android|iPhone|iPad/i.test(navigator.userAgent) && chatInput && chatContainer) {
+        // Défiler le chat
         chatContainer.scrollTop = chatContainer.scrollHeight;
         
-        // Assurer la visibilité de l'input
-        chatInput.style.visibility = 'visible';
-        chatInput.style.display = 'flex';
-        
-        // Utiliser requestAnimationFrame pour s'assurer que le DOM est mis à jour
-        window.requestAnimationFrame(() => {
-            chatInput.scrollIntoView({ behavior: 'instant', block: 'end' });
-        });
+        // Si le clavier est visible (détecté par la hauteur de fenêtre)
+        if (window.innerHeight < window.outerHeight * 0.8) {
+            // Forcer le défilement de la page entière
+            window.scrollTo(0, document.body.scrollHeight);
+            
+            // Sur Android spécifiquement
+            if (/Android/i.test(navigator.userAgent)) {
+                // Position supplémentaire si le chat est intégré dans une page
+                chatInput.scrollIntoView({ behavior: 'instant', block: 'end' });
+            }
+        }
     }
 }
 
