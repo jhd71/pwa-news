@@ -23,82 +23,78 @@ class ChatManager {
     }
 
     async init() {
-        try {
-            await this.loadBannedWords();
-            
-            this.container = document.createElement('div');
-            this.container.className = 'chat-widget';
+    try {
+        await this.loadBannedWords();
+        
+        this.container = document.createElement('div');
+        this.container.className = 'chat-widget';
 
-            // Vérifier l'état d'authentification
-            const isAuthenticated = await this.checkAuthState();
+        // Vérifier l'état d'authentification
+        const isAuthenticated = await this.checkAuthState();
 
-            // Vérifier si on utilise le bouton de la barre de navigation
-            const useNavButton = document.getElementById('chatToggleBtn') !== null;
+        // Vérifier si on utilise le bouton de la barre de navigation
+        const useNavButton = document.getElementById('chatToggleBtn') !== null;
 
-            if (isAuthenticated && this.pseudo) {
-                this.container.innerHTML = useNavButton ? this.getChatHTMLWithoutToggle() : this.getChatHTML();
-            } else {
-                this.container.innerHTML = useNavButton ? this.getPseudoHTMLWithoutToggle() : this.getPseudoHTML();
-            }
+        if (isAuthenticated && this.pseudo) {
+            this.container.innerHTML = useNavButton ? this.getChatHTMLWithoutToggle() : this.getChatHTML();
+        } else {
+            this.container.innerHTML = useNavButton ? this.getPseudoHTMLWithoutToggle() : this.getPseudoHTML();
+        }
 
-            const chatContainer = this.container.querySelector('.chat-container');
-            if (this.isOpen && chatContainer) {
-                chatContainer.classList.add('open');
-                // Sur mobile, on ajoute la classe full-screen pour occuper tout l'écran
-                if (/Mobi|Android/i.test(navigator.userAgent)) {
-                    chatContainer.classList.add('full-screen');
-                }
-            }
-            
-            document.body.appendChild(this.container);
-            await this.loadSounds();
+        const chatContainer = this.container.querySelector('.chat-container');
+        if (this.isOpen && chatContainer) {
+            chatContainer.classList.add('open');
+        }
+        
+        document.body.appendChild(this.container);
+        await this.loadSounds();
 
-            // Gestion des notifications push
-            if ('serviceWorker' in navigator && 'PushManager' in window) {
-                try {
-                    const registration = await navigator.serviceWorker.ready;
-                    const subscription = await registration.pushManager.getSubscription();
-                    
-                    if (subscription) {
-                        this.subscription = subscription;
-                        this.notificationsEnabled = true;
-                        console.log('Notifications push déjà activées');
+        // Gestion des notifications push
+        if ('serviceWorker' in navigator && 'PushManager' in window) {
+            try {
+                const registration = await navigator.serviceWorker.ready;
+                const subscription = await registration.pushManager.getSubscription();
+                
+                if (subscription) {
+                    this.subscription = subscription;
+                    this.notificationsEnabled = true;
+                    console.log('Notifications push déjà activées');
 
-                        // Vérification périodique de la souscription
-                        setInterval(async () => {
-                            try {
-                                const currentSubscription = await registration.pushManager.getSubscription();
-                                if (!currentSubscription) {
-                                    console.log('Renouvellement de la souscription nécessaire');
-                                    await this.renewPushSubscription();
-                                }
-                            } catch (error) {
-                                console.error('Erreur vérification souscription:', error);
+                    // Vérification périodique de la souscription
+                    setInterval(async () => {
+                        try {
+                            const currentSubscription = await registration.pushManager.getSubscription();
+                            if (!currentSubscription) {
+                                console.log('Renouvellement de la souscription nécessaire');
+                                await this.renewPushSubscription();
                             }
-                        }, 3600000); // Vérification toutes les heures
-                    }
-                } catch (error) {
-                    console.error('Erreur initialisation push notifications:', error);
+                        } catch (error) {
+                            console.error('Erreur vérification souscription:', error);
+                        }
+                    }, 3600000); // Vérification toutes les heures
                 }
-            }
-
-            this.setupListeners();
-            this.setupRealtimeSubscription();
-
-            if (this.pseudo) {
-                await this.loadExistingMessages();
-                this.updateUnreadBadgeAndBubble();
-            }
-
-            this.initialized = true;
-            console.log("Chat initialisé avec succès");
-        } catch (error) {
-            console.error('Erreur initialisation:', error);
-            if (!document.querySelector('.chat-widget')) {
-                document.body.appendChild(this.container);
+            } catch (error) {
+                console.error('Erreur initialisation push notifications:', error);
             }
         }
+
+        this.setupListeners();
+        this.setupRealtimeSubscription();
+
+        if (this.pseudo) {
+            await this.loadExistingMessages();
+            this.updateUnreadBadgeAndBubble();
+        }
+
+        this.initialized = true;
+        console.log("Chat initialisé avec succès");
+    } catch (error) {
+        console.error('Erreur initialisation:', error);
+        if (!document.querySelector('.chat-widget')) {
+            document.body.appendChild(this.container);
+        }
     }
+}
 
     async loadBannedWords() {
         try {
@@ -128,9 +124,8 @@ class ChatManager {
             this.bannedWords = new Set();
         }
     }
-
-    getPseudoHTML() {
-        return `
+	getPseudoHTML() {
+    return `
         <button class="chat-toggle" title="Ouvrir le chat">
             <i class="material-icons">chat</i>
             <span class="notification-badge hidden">${this.unreadCount}</span>
@@ -162,10 +157,10 @@ class ChatManager {
             </div>
         </div>
     `;
-    }
+}
 
-    getPseudoHTMLWithoutToggle() {
-        return `
+getPseudoHTMLWithoutToggle() {
+    return `
         <div class="chat-container">
             <div class="chat-header">
                 <div class="header-title">Connexion au chat</div>
@@ -193,10 +188,10 @@ class ChatManager {
             </div>
         </div>
     `;
-    }
+}
 
-    getChatHTML() {
-        return `
+getChatHTML() {
+    return `
         <button class="chat-toggle" title="Ouvrir le chat">
             <span class="material-icons">chat</span>
             <span class="notification-badge hidden">${this.unreadCount}</span>
@@ -239,10 +234,10 @@ class ChatManager {
             </div>
         </div>
     `;
-    }
+}
 
-    getChatHTMLWithoutToggle() {
-        return `
+getChatHTMLWithoutToggle() {
+    return `
         <div class="chat-container">
             <div class="chat-header">
                 <div class="header-title">Chat - ${this.pseudo}</div>
@@ -252,9 +247,9 @@ class ChatManager {
                             <span class="material-icons">admin_panel_settings</span>
                         </button>
                     ` : ''}
-                    <button class="emoji-btn" title="Emojis">
-                        <span class="material-icons">emoji_emotions</span>
-                    </button>
+					<button class="emoji-btn" title="Emojis">
+                    <span class="material-icons">emoji_emotions</span>
+                </button>
                     <button class="notifications-btn ${this.notificationsEnabled ? 'enabled' : ''}" title="Notifications">
                         <span class="material-icons">${this.notificationsEnabled ? 'notifications_active' : 'notifications_off'}</span>
                     </button>
@@ -281,92 +276,97 @@ class ChatManager {
             </div>
         </div>
     `;
-    }
+}
 
     setupListeners() {
-        const chatToggleBtn = document.getElementById('chatToggleBtn');
-        const closeBtn = this.container.querySelector('.close-chat');
-        const chatContainer = this.container.querySelector('.chat-container');
-        const toggle = this.container.querySelector('.chat-toggle');
-        const soundBtn = this.container.querySelector('.sound-btn');
-        const notificationsBtn = this.container.querySelector('.notifications-btn');
-        const adminBtn = this.container.querySelector('.admin-panel-btn');
-        const logoutBtn = this.container.querySelector('.logout-btn');
+    const chatToggleBtn = document.getElementById('chatToggleBtn');
+    const closeBtn = this.container.querySelector('.close-chat');
+    const chatContainer = this.container.querySelector('.chat-container');
+    const toggle = this.container.querySelector('.chat-toggle');
+    const soundBtn = this.container.querySelector('.sound-btn');
+    const notificationsBtn = this.container.querySelector('.notifications-btn');
+    const adminBtn = this.container.querySelector('.admin-panel-btn');
+    const logoutBtn = this.container.querySelector('.logout-btn');
 
-        // Fonction réutilisable pour basculer l'état du chat
-        const toggleChat = () => {
-            this.isOpen = !this.isOpen;
-            
-            if (this.isOpen) {
-                chatContainer?.classList.add('open');
-                // Sur mobile, passer en mode plein écran
-                if (/Mobi|Android/i.test(navigator.userAgent)) {
-                    chatContainer.classList.add('full-screen');
-                }
-                this.unreadCount = 0;
-                localStorage.setItem('unreadCount', '0');
-                
-                const badge = chatToggleBtn?.querySelector('.chat-notification-badge');
-                if (badge) {
-                    badge.textContent = '0';
-                    badge.classList.add('hidden');
-                }
-                
-                this.scrollToBottom();
-                // Donner le focus sur desktop uniquement
-                setTimeout(() => {
-                    const inputField = this.container.querySelector('.chat-input textarea');
-                    if (inputField && !/Mobi|Android/i.test(navigator.userAgent)) {
-                        inputField.focus();
-                    }
-                }, 100);
-            } else {
-                chatContainer?.classList.remove('open');
-                if (/Mobi|Android/i.test(navigator.userAgent)) {
-                    chatContainer.classList.remove('full-screen');
-                }
-            }
-            
-            localStorage.setItem('chatOpen', this.isOpen);
+    // Fonction réutilisable pour basculer l'état du chat
+    const toggleChat = () => {
+        this.isOpen = !this.isOpen;
+        
+        if (this.isOpen) {
+    chatContainer?.classList.add('open');
+    this.unreadCount = 0;
+    localStorage.setItem('unreadCount', '0');
+    
+    const badge = chatToggleBtn?.querySelector('.chat-notification-badge');
+    if (badge) {
+        badge.textContent = '0';
+        badge.classList.add('hidden');
+    }
+    
+    // Mode plein écran ajusté sur mobile
+    if (window.innerWidth <= 768) {
+        document.body.style.overflow = 'hidden'; // Empêcher le défilement
+        
+        // Recalculer les positions tenant compte de la bannière
+        const bannerHeight = document.querySelector('header')?.offsetHeight || 60;
+        
+        if (chatContainer) {
+            chatContainer.style.top = bannerHeight + 'px';
+            chatContainer.style.height = `calc(100% - ${bannerHeight}px)`;
+        }
+        
+        // S'assurer que les éléments sont visibles
+        setTimeout(() => {
+            this.scrollToBottom();
+        }, 100);
+    }
+    
+    this.scrollToBottom();
+} else {
+    chatContainer?.classList.remove('open');
+    document.body.style.overflow = ''; // Réactiver le défilement
+}
+        
+        localStorage.setItem('chatOpen', this.isOpen);
+        this.playSound('click');
+    };
+
+    if (chatToggleBtn) {
+        // Supprimer les anciens écouteurs d'événements pour éviter les duplications
+        const newChatToggleBtn = chatToggleBtn.cloneNode(true);
+        chatToggleBtn.parentNode.replaceChild(newChatToggleBtn, chatToggleBtn);
+        
+        // Ajouter le nouvel écouteur
+        newChatToggleBtn.addEventListener('click', toggleChat);
+    }
+
+    if (toggle) {
+        toggle.addEventListener('click', toggleChat);
+    }
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            this.isOpen = false;
+            localStorage.setItem('chatOpen', 'false');
+            chatContainer?.classList.remove('open');
             this.playSound('click');
-        };
+        });
+    }
 
-        if (chatToggleBtn) {
-            // Supprimer les anciens écouteurs pour éviter les doublons
-            const newChatToggleBtn = chatToggleBtn.cloneNode(true);
-            chatToggleBtn.parentNode.replaceChild(newChatToggleBtn, chatToggleBtn);
-            newChatToggleBtn.addEventListener('click', toggleChat);
-        }
-
-        if (toggle) {
-            toggle.addEventListener('click', toggleChat);
-        }
-
-        if (closeBtn) {
-            closeBtn.addEventListener('click', () => {
-                this.isOpen = false;
-                localStorage.setItem('chatOpen', 'false');
-                chatContainer?.classList.remove('open');
-                if (/Mobi|Android/i.test(navigator.userAgent)) {
-                    chatContainer.classList.remove('full-screen');
-                }
+    // Le reste de votre code pour setupListeners reste inchangé...
+    if (soundBtn) {
+        soundBtn.addEventListener('click', () => {
+            this.soundEnabled = !this.soundEnabled;
+            localStorage.setItem('soundEnabled', this.soundEnabled);
+            soundBtn.classList.toggle('enabled', this.soundEnabled);
+            if (this.soundEnabled) {
+                soundBtn.querySelector('.material-icons').textContent = 'volume_up';
                 this.playSound('click');
-            });
-        }
-
-        if (soundBtn) {
-            soundBtn.addEventListener('click', () => {
-                this.soundEnabled = !this.soundEnabled;
-                localStorage.setItem('soundEnabled', this.soundEnabled);
-                soundBtn.classList.toggle('enabled', this.soundEnabled);
-                if (this.soundEnabled) {
-                    soundBtn.querySelector('.material-icons').textContent = 'volume_up';
-                    this.playSound('click');
-                } else {
-                    soundBtn.querySelector('.material-icons').textContent = 'volume_off';
-                }
-            });
-        }
+            } else {
+                soundBtn.querySelector('.material-icons').textContent = 'volume_off';
+            }
+        });
+    }
 
         if (notificationsBtn) {
             notificationsBtn.addEventListener('click', async () => {
@@ -390,467 +390,329 @@ class ChatManager {
                 this.playSound('click');
             });
         }
+// Ajoutez ici le code pour le bouton de déconnexion
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+            await this.logout();
+            this.playSound('click');
+        });
+    }
 
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', async () => {
-                await this.logout();
-                this.playSound('click');
-            });
-        }
-
-        if (!this.pseudo) {
-            this.setupAuthListeners();
-        } else {
-            this.setupChatListeners();
-        }
-
-        // Empêcher le scroll de traverser sur les appareils tactiles
-        const chatMessages = this.container.querySelector('.chat-messages');
-        if (chatMessages) {
-            chatMessages.addEventListener('touchmove', (e) => {
-                e.stopPropagation();
-            }, { passive: true });
-            
-            chatMessages.addEventListener('scroll', () => {
-                const scrollTop = chatMessages.scrollTop;
-                const scrollHeight = chatMessages.scrollHeight;
-                const clientHeight = chatMessages.clientHeight;
-                
-                if (scrollTop <= 1) {
-                    chatMessages.scrollTop = 1;
-                } else if (scrollTop + clientHeight >= scrollHeight - 1) {
-                    chatMessages.scrollTop = scrollHeight - clientHeight - 1;
-                }
-            }, { passive: true });
-        }
-    }  
-
-    setupAuthListeners() {
-        const pseudoInput = this.container.querySelector('#pseudoInput');
-        const adminPasswordInput = this.container.querySelector('#adminPassword');
-        const confirmButton = this.container.querySelector('#confirmPseudo');
-
-        if (pseudoInput) {
-            pseudoInput.addEventListener('input', () => {
-                console.log('Pseudo input:', pseudoInput.value.trim());
-                if (pseudoInput.value.trim() === 'jhd71') {
-                    console.log('Affichage du champ mot de passe admin');
-                    adminPasswordInput.style.display = 'block';
-                } else {
-                    adminPasswordInput.style.display = 'none';
-                    adminPasswordInput.value = '';
-                }
-            });
-        }
+    if (!this.pseudo) {
+        this.setupAuthListeners();
+    } else {
+        this.setupChatListeners();
+    }
+// Ajoutez le nouveau code ici
+    // Remplacer le code existant par celui-ci
+const chatMessages = this.container.querySelector('.chat-messages');
+if (chatMessages) {
+    // Utiliser une approche différente qui permet le défilement normal du chat
+    chatMessages.addEventListener('touchmove', (e) => {
+        // Ne pas stopper la propagation - permettre le défilement normal
+        e.stopPropagation(); // Ceci empêche l'événement de remonter à la page principale
+    }, { passive: true });
+    
+    // Empêcher le rebond aux extrémités qui cause souvent le défilement de la page
+    chatMessages.addEventListener('scroll', () => {
+        const scrollTop = chatMessages.scrollTop;
+        const scrollHeight = chatMessages.scrollHeight;
+        const clientHeight = chatMessages.clientHeight;
         
-        if (confirmButton) {
-            confirmButton.addEventListener('click', async () => {
-                const pseudo = pseudoInput?.value.trim();
-                const adminPassword = adminPasswordInput?.value;
-
-                console.log('Tentative de connexion avec pseudo:', pseudo);
-
-                if (!pseudo || pseudo.length < 3) {
-                    this.showNotification('Le pseudo doit faire au moins 3 caractères', 'error');
-                    this.playSound('error');
-                    return;
-                }
-
-                try {
-                    let isAdmin = false;
-                    if (pseudo === 'jhd71') {
-                        console.log('Tentative connexion admin');
-                        
-                        if (adminPassword !== 'admin2024') {
-                            this.showNotification('Mot de passe administrateur incorrect', 'error');
-                            this.playSound('error');
-                            return;
-                        }
-                        
-                        isAdmin = true;
-                    } else {
-                        console.log('Tentative connexion utilisateur normal');
-                    }
-
-                    const { data: existingUser, error: queryError } = await this.supabase
-                        .from('users')
-                        .select('*')
-                        .eq('pseudo', pseudo)
-                        .single();
-                    
-                    console.log('Résultat recherche utilisateur:', existingUser, queryError);
-                    
-                    if (!existingUser || (queryError && queryError.code === 'PGRST116')) {
-                        console.log('Création d\'un nouvel utilisateur');
-                        
-                        const { data: newUser, error: insertError } = await this.supabase
-                            .from('users')
-                            .insert([
-                                { 
-                                    pseudo: pseudo,
-                                    last_active: new Date().toISOString(),
-                                    is_admin: isAdmin,
-                                    requires_password: true
-                                }
-                            ])
-                            .select();
-                        
-                        if (insertError) {
-                            console.error('Erreur création utilisateur:', insertError);
-                            throw insertError;
-                        }
-                        
-                        console.log('Utilisateur créé avec succès:', newUser);
-                    }
-
-                    this.pseudo = pseudo;
-                    this.isAdmin = isAdmin;
-                    localStorage.setItem('chatPseudo', pseudo);
-                    localStorage.setItem('isAdmin', isAdmin);
-
-                    if (document.getElementById('chatToggleBtn')) {
-                        this.container.innerHTML = this.getChatHTMLWithoutToggle();
-                    } else {
-                        this.container.innerHTML = this.getChatHTML();
-                    }
-                    
-                    const chatContainer = this.container.querySelector('.chat-container');
-                    if (chatContainer) {
-                        chatContainer.classList.add('open');
-                        this.isOpen = true;
-                        localStorage.setItem('chatOpen', 'true');
-                    }
-                    
-                    this.setupListeners();
-                    await this.loadExistingMessages();
-                    this.playSound('success');
-                    
-                } catch (error) {
-                    console.error('Erreur d\'authentification:', error);
-                    this.showNotification('Erreur lors de la connexion: ' + error.message, 'error');
-                    this.playSound('error');
-                }
-            });
+        // Ajuster légèrement les valeurs pour éviter les problèmes de "bounce"
+        if (scrollTop <= 1) {
+            chatMessages.scrollTop = 1;
+        } else if (scrollTop + clientHeight >= scrollHeight - 1) {
+            chatMessages.scrollTop = scrollHeight - clientHeight - 1;
         }
-    }
+    }, { passive: true });
+}
+  }  
+setupAuthListeners() {
+    const pseudoInput = this.container.querySelector('#pseudoInput');
+    const adminPasswordInput = this.container.querySelector('#adminPassword');
+    const confirmButton = this.container.querySelector('#confirmPseudo');
 
-    async registerUser(pseudo, password, isAdmin = false) {
-        try {
-            console.log('Tentative d\'inscription de l\'utilisateur:', pseudo, 'admin:', isAdmin);
-            
-            const { data, error: insertError } = await this.supabase
-                .from('users')
-                .insert([
-                    { 
-                        pseudo: pseudo,
-                        last_active: new Date().toISOString(),
-                        is_admin: isAdmin,
-                        requires_password: true
-                    }
-                ])
-                .select();
-            
-            if (insertError) {
-                console.error('Erreur insertion table users:', insertError);
-                throw insertError;
-            }
-            
-            console.log('Utilisateur enregistré avec succès:', pseudo);
-            this.showNotification('Inscription réussie!', 'success');
-            return { success: true, user: data?.[0] };
-        } catch (error) {
-            console.error('Erreur d\'inscription:', error);
-            this.showNotification('Erreur lors de l\'inscription: ' + error.message, 'error');
-            throw error;
-        }
-    }
-
-    async checkAuthState() {
-        try {
-            if (this.pseudo) {
-                const { data: userData, error } = await this.supabase
-                    .from('users')
-                    .select('*')
-                    .eq('pseudo', this.pseudo)
-                    .single();
-                
-                if (error && error.code !== 'PGRST116') {
-                    throw error;
-                }
-                
-                if (userData) {
-                    this.isAdmin = userData.is_admin || false;
-                    localStorage.setItem('isAdmin', this.isAdmin);
-                    return true;
-                }
-            }
-            
-            return false;
-        } catch (error) {
-            console.error('Erreur vérification auth:', error);
-            return false;
-        }
-    }
-
-    async logout() {
-        try {
-            this.pseudo = null;
-            this.isAdmin = false;
-            localStorage.removeItem('chatPseudo');
-            localStorage.removeItem('isAdmin');
-            
-            if (document.getElementById('chatToggleBtn')) {
-                this.container.innerHTML = this.getPseudoHTMLWithoutToggle();
+    if (pseudoInput) {
+        pseudoInput.addEventListener('input', () => {
+            console.log('Pseudo input:', pseudoInput.value.trim());
+            if (pseudoInput.value.trim() === 'jhd71') {
+                console.log('Affichage du champ mot de passe admin');
+                adminPasswordInput.style.display = 'block';
             } else {
-                this.container.innerHTML = this.getPseudoHTML();
+                adminPasswordInput.style.display = 'none';
+                adminPasswordInput.value = '';
             }
-            
-            this.setupListeners();
-            this.showNotification('Déconnexion réussie', 'success');
-            return true;
-        } catch (error) {
-            console.error('Erreur déconnexion:', error);
-            this.showNotification('Erreur lors de la déconnexion', 'error');
-            return false;
-        }
+        });
     }
+    
+    if (confirmButton) {
+        confirmButton.addEventListener('click', async () => {
+            const pseudo = pseudoInput?.value.trim();
+            const adminPassword = adminPasswordInput?.value;
 
-    extractPseudoFromEmail(email) {
-        return email.split('@')[0];
-    }
+            console.log('Tentative de connexion avec pseudo:', pseudo);
 
-    setupChatListeners() {
-        const input = this.container.querySelector('.chat-input textarea');
-        const sendBtn = this.container.querySelector('.send-btn');
-        const emojiBtn = this.container.querySelector('.emoji-btn');
+            if (!pseudo || pseudo.length < 3) {
+                this.showNotification('Le pseudo doit faire au moins 3 caractères', 'error');
+                this.playSound('error');
+                return;
+            }
 
-        if (input && sendBtn) {
-            const sendMessage = async () => {
-                const content = input.value.trim();
-                if (content) {
-                    if (await this.checkForBannedWords(content)) {
-                        this.showNotification('Message contient des mots interdits', 'error');
+            try {
+                // Cas administrateur
+                let isAdmin = false;
+                if (pseudo === 'jhd71') {
+                    console.log('Tentative connexion admin');
+                    
+                    if (adminPassword !== 'admin2024') {
+                        this.showNotification('Mot de passe administrateur incorrect', 'error');
                         this.playSound('error');
                         return;
                     }
+                    
+                    isAdmin = true;
+                } else {
+                    console.log('Tentative connexion utilisateur normal');
+                }
 
-                    const success = await this.sendMessage(content);
-                    if (success) {
-                        input.value = '';
-                        // Sur mobile, ne pas redonner le focus automatiquement pour éviter que la fenêtre se baisse
-                        if (!/Mobi|Android/i.test(navigator.userAgent)) {
-                            input.focus();
-                        }
-                        this.playSound('message');
-                    } else {
-                        this.playSound('error');
+                // Vérifier si l'utilisateur existe déjà
+                const { data: existingUser, error: queryError } = await this.supabase
+                    .from('users')
+                    .select('*')
+                    .eq('pseudo', pseudo)
+                    .single();
+                
+                console.log('Résultat recherche utilisateur:', existingUser, queryError);
+                
+                                // Si l'utilisateur n'existe pas ou erreur "not found", le créer
+                if (!existingUser || (queryError && queryError.code === 'PGRST116')) {
+                    console.log('Création d\'un nouvel utilisateur');
+                    
+                    // Insérer directement dans users
+                    const { data: newUser, error: insertError } = await this.supabase
+                        .from('users')
+                        .insert([
+                            { 
+                                pseudo: pseudo,
+                                last_active: new Date().toISOString(),
+                                is_admin: isAdmin,
+                                requires_password: true
+                            }
+                        ])
+                        .select();
+                    
+                    if (insertError) {
+                        console.error('Erreur création utilisateur:', insertError);
+                        throw insertError;
                     }
+                    
+                    console.log('Utilisateur créé avec succès:', newUser);
                 }
-            };
 
-            // Ajout de preventDefault et stopPropagation pour éviter les comportements indésirables sur mobile
-            sendBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                sendMessage();
-            });
+                // Définir les variables de session
+                this.pseudo = pseudo;
+                this.isAdmin = isAdmin;
+                localStorage.setItem('chatPseudo', pseudo);
+                localStorage.setItem('isAdmin', isAdmin);
 
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-        }
-        
-        if (emojiBtn) {
-            emojiBtn.addEventListener('click', () => {
-                this.toggleEmojiPanel();
-            });
-        }
+                // Actualiser l'interface
+if (document.getElementById('chatToggleBtn')) {
+    this.container.innerHTML = this.getChatHTMLWithoutToggle();
+} else {
+    this.container.innerHTML = this.getChatHTML();
+}
+
+const chatContainer = this.container.querySelector('.chat-container');
+if (chatContainer) {
+    chatContainer.classList.add('open');
+    this.isOpen = true;
+    localStorage.setItem('chatOpen', 'true');
+
+    // Désactiver le scroll global quand le chat est ouvert
+    document.body.classList.add('no-scroll');
+
+    // Réactiver le scroll global quand le chat se ferme
+    chatContainer.addEventListener('touchend', () => {
+        document.body.classList.remove('no-scroll');
+    });
+}
+
+this.setupListeners();
+await this.loadExistingMessages();
+this.playSound('success');
+
+                
+            } catch (error) {
+                console.error('Erreur d\'authentification:', error);
+                this.showNotification('Erreur lors de la connexion: ' + error.message, 'error');
+                this.playSound('error');
+            }
+        });
     }
-
-    // Utilisation du cache this.bannedWords pour la vérification
-    async checkForBannedWords(content) {
-        console.log('Vérification des mots bannis...');
-        const words = content.toLowerCase().split(/\s+/);
-        const foundBannedWord = words.some(word => this.bannedWords.has(word));
-        console.log('Mots bannis actuels:', [...this.bannedWords]);
-        console.log('Mot interdit trouvé:', foundBannedWord);
-        return foundBannedWord;
-    }
-
-    async sendMessage(content) { 
+}
+async registerUser(pseudo, password, isAdmin = false) {
     try {
-        const ip = await this.getClientIP();
-        const isBanned = await this.checkBannedIP(ip);
+        console.log('Tentative d\'inscription de l\'utilisateur:', pseudo, 'admin:', isAdmin);
         
-        if (isBanned) {
-            this.showNotification('Vous êtes banni du chat', 'error');
-            return false;
+        // Insérer directement dans votre table users
+        const { data, error: insertError } = await this.supabase
+            .from('users')
+            .insert([
+                { 
+                    pseudo: pseudo,
+                    last_active: new Date().toISOString(),
+                    is_admin: isAdmin,
+                    requires_password: true
+                }
+            ])
+            .select();
+        
+        if (insertError) {
+            console.error('Erreur insertion table users:', insertError);
+            throw insertError;
         }
-
-        const message = {
-            pseudo: this.pseudo,
-            content: content,
-            ip: ip,
-            created_at: new Date().toISOString()
-        };
-
-        // Utilisation de returning minimal pour accélérer l'insertion
-        const { error } = await this.supabase
-            .from('messages')
-            .insert(message, { returning: 'minimal' });
-
-        if (error) throw error;
-
-        // Suppression de l'appel fetch ici pour éviter d'envoyer une notification en double
-        // La notification sera déclenchée via handleNewMessage sur l'autre support
-
-        return true;
+        
+        console.log('Utilisateur enregistré avec succès:', pseudo);
+        this.showNotification('Inscription réussie!', 'success');
+        return { success: true, user: data?.[0] };
     } catch (error) {
-        console.error('Erreur sendMessage:', error);
+        console.error('Erreur d\'inscription:', error);
+        this.showNotification('Erreur lors de l\'inscription: ' + error.message, 'error');
+        throw error;
+    }
+}
+
+async checkAuthState() {
+    try {
+        // Vérifier si le pseudo est stocké localement
+        if (this.pseudo) {
+            // Vérifier si l'utilisateur existe dans la base de données
+            const { data: userData, error } = await this.supabase
+                .from('users')
+                .select('*')
+                .eq('pseudo', this.pseudo)
+                .single();
+            
+            if (error && error.code !== 'PGRST116') {
+                throw error;
+            }
+            
+            // Si l'utilisateur existe, mettre à jour les informations
+            if (userData) {
+                this.isAdmin = userData.is_admin || false;
+                localStorage.setItem('isAdmin', this.isAdmin);
+                return true;
+            }
+        }
+        
+        return false;
+    } catch (error) {
+        console.error('Erreur vérification auth:', error);
         return false;
     }
 }
 
-    async loadExistingMessages() {
-        try {
-            const { data: messages, error } = await this.supabase
-                .from('messages')
-                .select('*')
-                .order('created_at', { ascending: true });
-
-            if (error) throw error;
-
-            const container = this.container.querySelector('.chat-messages');
-            if (container && messages) {
-                container.innerHTML = '';
-                messages.forEach(msg => {
-                    container.appendChild(this.createMessageElement(msg));
-                });
-                this.scrollToBottom();
-            }
-        } catch (error) {
-            console.error('Erreur chargement messages:', error);
-            this.showNotification('Erreur chargement messages', 'error');
+async logout() {
+    try {
+        // Nettoyer les données locales
+        this.pseudo = null;
+        this.isAdmin = false;
+        localStorage.removeItem('chatPseudo');
+        localStorage.removeItem('isAdmin');
+        
+        // Actualiser l'interface
+        if (document.getElementById('chatToggleBtn')) {
+            this.container.innerHTML = this.getPseudoHTMLWithoutToggle();
+        } else {
+            this.container.innerHTML = this.getPseudoHTML();
         }
+        
+        this.setupListeners();
+        this.showNotification('Déconnexion réussie', 'success');
+        return true;
+    } catch (error) {
+        console.error('Erreur déconnexion:', error);
+        this.showNotification('Erreur lors de la déconnexion', 'error');
+        return false;
     }
+}
 
-    createMessageElement(message) {
-        const div = document.createElement('div');
-        div.className = `message ${message.pseudo === this.pseudo ? 'sent' : 'received'}`;
-        div.dataset.messageId = message.id;
+extractPseudoFromEmail(email) {
+    return email.split('@')[0];
+}
+    setupChatListeners() {
+    const input = this.container.querySelector('.chat-input textarea');
+    const sendBtn = this.container.querySelector('.send-btn');
+    const emojiBtn = this.container.querySelector('.emoji-btn');
 
-        div.innerHTML = `
-            <div class="message-author">${message.pseudo}</div>
-            <div class="message-content">${this.escapeHtml(message.content)}</div>
-            <div class="message-time">${this.formatMessageTime(message.created_at)}</div>
-        `;
-
-        if (this.isAdmin || message.pseudo === this.pseudo) {
-            let touchTimer;
-            let longPressActive = false;
-            let lastTouchEnd = 0;
-            
-            div.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
-                this.showMessageOptions(message, e.clientX, e.clientY);
-            });
-
-            div.addEventListener('touchstart', (e) => {
-                if (Date.now() - lastTouchEnd < 1000) {
+    if (input && sendBtn) {
+        const sendMessage = async () => {
+            const content = input.value.trim();
+            if (content) {
+                if (await this.checkForBannedWords(content)) {
+                    this.showNotification('Message contient des mots interdits', 'error');
+                    this.playSound('error');
                     return;
                 }
+
+                // Vider l'entrée avant d'envoyer pour éviter double envoi
+                input.value = '';
                 
-                touchTimer = setTimeout(() => {
-                    longPressActive = true;
-                    const touch = e.touches[0];
-                    this.showMessageOptions(message, touch.clientX, touch.clientY);
-                    
-                    if (navigator.vibrate) {
-                        navigator.vibrate(50);
-                    }
-                }, 800);
-            });
-            
-            div.addEventListener('touchmove', () => {
-                clearTimeout(touchTimer);
-            });
-            
-            div.addEventListener('touchend', (e) => {
-                clearTimeout(touchTimer);
-                if (longPressActive) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    longPressActive = false;
-                    lastTouchEnd = Date.now();
+                // Fermer le clavier immédiatement
+                input.blur();
+                
+                // Empêcher de regagner le focus pendant quelques secondes
+                input.disabled = true;
+                
+                const success = await this.sendMessage(content);
+                if (success) {
+                    this.playSound('message');
+                } else {
+                    this.playSound('error');
                 }
-            });
-            
-            div.addEventListener('touchcancel', () => {
-                clearTimeout(touchTimer);
-                longPressActive = false;
-            });
-        }
+                
+                // Réactiver l'input après un délai
+                setTimeout(() => {
+                    input.disabled = false;
+                }, 1500); // Attendre 1.5 seconde
+            }
+        };
 
-        return div;
-    }
+        sendBtn.addEventListener('click', sendMessage);
 
-    formatMessageTime(timestamp) {
-        const date = new Date(timestamp);
-        const today = new Date();
-        const yesterday = new Date(today);
-        yesterday.setDate(yesterday.getDate() - 1);
-
-        const time = date.toLocaleTimeString('fr-FR', {
-            hour: '2-digit',
-            minute: '2-digit'
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
         });
-
-        let dateText, icon;
-        
-        if (date.toDateString() === today.toDateString()) {
-            dateText = "Aujourd'hui";
-            icon = "today";
-        }
-        else if (date.toDateString() === yesterday.toDateString()) {
-            dateText = "Hier";
-            icon = "history";
-        }
-        else {
-            dateText = date.toLocaleDateString('fr-FR');
-            icon = "calendar_today";
-        }
-
-        return `
-            <span class="material-icons">${icon}</span>
-            <span class="date">${dateText}</span>
-            <span class="time">${time}</span>
-        `;
     }
-
-    scrollToBottom() {
-        const messagesContainer = this.container.querySelector('.chat-messages');
-        if (messagesContainer) {
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
+    
+    // Ajout du gestionnaire pour le bouton emoji
+    if (emojiBtn) {
+        emojiBtn.addEventListener('click', () => {
+            this.toggleEmojiPanel();
+        });
     }
+}
 
-    // Méthode toggleEmojiPanel modifiée pour ne pas fermer automatiquement le panneau après la sélection d'un emoji
-    toggleEmojiPanel() {
+// Nouvelle méthode pour gérer le panneau d'emojis
+toggleEmojiPanel() {
     let panel = this.container.querySelector('.emoji-panel');
     
-    // Si le panneau existe déjà, on le ferme en cliquant sur l'icône
+    // Si le panneau existe déjà, on le supprime
     if (panel) {
         panel.remove();
         return;
     }
     
+    // Sinon, on crée le panneau
     panel = document.createElement('div');
     panel.className = 'emoji-panel';
     
-    const emojis = [
+    // Liste des emojis populaires (ajout de plus d'emojis)
+const emojis = [
   '😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', 
   '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙', '😋', '😛', '😜', '😝', 
   '🤑', '🤗', '🤭', '🤫', '🤔', '🤐', '🤨', '😐', '😑', '😶', '😏', '😒', 
@@ -904,8 +766,9 @@ class ChatManager {
   '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟', 
   '0️⃣', '🔢', '🔠', '🔡'
 ];
-        
-        emojis.forEach(emoji => {
+    
+    // Ajouter les emojis au panneau
+    emojis.forEach(emoji => {
         const span = document.createElement('span');
         span.textContent = emoji;
         span.addEventListener('click', () => {
@@ -916,29 +779,27 @@ class ChatManager {
                 const text = textarea.value;
                 textarea.value = text.substring(0, start) + emoji + text.substring(end);
                 textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
-                // Ne pas redonner le focus sur mobile pour éviter l'ouverture du clavier
-                if (!/Mobi|Android/i.test(navigator.userAgent)) {
-                    textarea.focus();
-                }
+                textarea.focus();
             }
+            panel.remove();
             this.playSound('click');
         });
         panel.appendChild(span);
     });
     
+    // Ajouter le panneau au conteneur de chat
     const chatContainer = this.container.querySelector('.chat-container');
     chatContainer.appendChild(panel);
     
+    // Fermer le panneau si on clique ailleurs
     document.addEventListener('click', (e) => {
-        if (!panel.contains(e.target) &&
-            e.target !== this.container.querySelector('.emoji-btn') &&
-            !this.container.querySelector('.emoji-btn').contains(e.target)) {
+        if (!panel.contains(e.target) && e.target !== this.container.querySelector('.emoji-btn') && !this.container.querySelector('.emoji-btn').contains(e.target)) {
             panel.remove();
         }
     }, { once: true });
 }
 
-    setupRealtimeSubscription() {
+	setupRealtimeSubscription() {
         const channel = this.supabase.channel('messages');
         channel
             .on('postgres_changes', 
@@ -1003,156 +864,352 @@ class ChatManager {
         }
     }
 
-    async setupPushNotifications() {
+    formatMessageTime(timestamp) {
+    const date = new Date(timestamp);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    // Format de l'heure
+    const time = date.toLocaleTimeString('fr-FR', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
+    let dateText, icon;
+    
+    // Si c'est aujourd'hui
+    if (date.toDateString() === today.toDateString()) {
+        dateText = "Aujourd'hui";
+        icon = "today";
+    }
+    // Si c'est hier
+    else if (date.toDateString() === yesterday.toDateString()) {
+        dateText = "Hier";
+        icon = "history";
+    }
+    // Pour les autres jours
+    else {
+        dateText = date.toLocaleDateString('fr-FR');
+        icon = "calendar_today";
+    }
+
+    return `
+        <span class="material-icons">${icon}</span>
+        <span class="date">${dateText}</span>
+        <span class="time">${time}</span>
+    `;
+}
+
+createMessageElement(message) {
+    const div = document.createElement('div');
+    div.className = `message ${message.pseudo === this.pseudo ? 'sent' : 'received'}`;
+    div.dataset.messageId = message.id;
+
+    div.innerHTML = `
+        <div class="message-author">${message.pseudo}</div>
+        <div class="message-content">${this.escapeHtml(message.content)}</div>
+        <div class="message-time">${this.formatMessageTime(message.created_at)}</div>
+    `;
+
+    if (this.isAdmin || message.pseudo === this.pseudo) {
+        // Variables pour gérer l'appui long et prévenir les actions indésirables
+        let touchTimer;
+        let longPressActive = false;
+        let lastTouchEnd = 0;
+        
+        // Gestion du clic droit sur PC
+        div.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            this.showMessageOptions(message, e.clientX, e.clientY);
+        });
+
+        // Gérer le toucher qui commence (touchstart)
+        div.addEventListener('touchstart', (e) => {
+            // Ne pas démarrer un nouveau timer si un appui long a été récemment détecté
+            if (Date.now() - lastTouchEnd < 1000) {
+                return;
+            }
+            
+            // Démarrer le timer pour l'appui long
+            touchTimer = setTimeout(() => {
+                longPressActive = true;
+                const touch = e.touches[0];
+                this.showMessageOptions(message, touch.clientX, touch.clientY);
+                
+                // Ajouter une vibration si disponible
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+            }, 800);
+        });
+        
+        // Annuler l'appui long si le doigt bouge
+        div.addEventListener('touchmove', () => {
+            clearTimeout(touchTimer);
+        });
+        
+        // Gérer la fin du toucher
+        div.addEventListener('touchend', (e) => {
+            clearTimeout(touchTimer);
+            
+            // Si c'était un appui long, empêcher toute autre action
+            if (longPressActive) {
+                e.preventDefault();
+                e.stopPropagation();
+                longPressActive = false;
+                
+                // Enregistrer le moment où l'appui long s'est terminé
+                lastTouchEnd = Date.now();
+            }
+        });
+        
+        // S'assurer que le timer est annulé si le toucher est annulé
+        div.addEventListener('touchcancel', () => {
+            clearTimeout(touchTimer);
+            longPressActive = false;
+        });
+    }
+
+    return div;
+}
+
+    async loadExistingMessages() {
         try {
-            const permissionGranted = await this.requestNotificationPermission();
-            if (!permissionGranted) {
-                return false;
-            }
-            
-            await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
-            
-            const registration = await navigator.serviceWorker.ready;
-            
-            const oldSubscription = await registration.pushManager.getSubscription();
-            if (oldSubscription) {
-                await oldSubscription.unsubscribe();
-                await this.supabase
-                    .from('push_subscriptions')
-                    .delete()
-                    .match({ 
-                        pseudo: this.pseudo,
-                        subscription: JSON.stringify(oldSubscription)
-                    });
-            }
-
-            const subscription = await registration.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: this.urlBase64ToUint8Array('BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck')
-            });
-
-            const { error } = await this.supabase
-                .from('push_subscriptions')
-                .insert({
-                    pseudo: this.pseudo,
-                    subscription: JSON.stringify(subscription),
-                    device_type: this.getDeviceType(),
-                    active: true,
-                    last_updated: new Date().toISOString()
-                });
+            const { data: messages, error } = await this.supabase
+                .from('messages')
+                .select('*')
+                .order('created_at', { ascending: true });
 
             if (error) throw error;
 
+            const container = this.container.querySelector('.chat-messages');
+            if (container && messages) {
+                container.innerHTML = '';
+                messages.forEach(msg => {
+                    container.appendChild(this.createMessageElement(msg));
+                });
+                this.scrollToBottom();
+            }
+        } catch (error) {
+            console.error('Erreur chargement messages:', error);
+            this.showNotification('Erreur chargement messages', 'error');
+        }
+    }
+
+    async sendMessage(content) { 
+    try {
+        const ip = await this.getClientIP();
+        const isBanned = await this.checkBannedIP(ip);
+        
+        if (isBanned) {
+            this.showNotification('Vous êtes banni du chat', 'error');
+            return false;
+        }
+
+        // Ne pas utiliser supabase.auth.getUser()
+        const message = {
+            pseudo: this.pseudo,
+            content: content,
+            ip: ip,
+            created_at: new Date().toISOString()
+        };
+
+        const { data, error } = await this.supabase
+            .from('messages')
+            .insert(message)
+            .select()
+            .single();
+
+        if (error) throw error;
+
+        // Envoi de la notification
+        await fetch("/api/sendPush.js", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                message: content,
+                fromUser: this.pseudo,
+                toUser: "all"
+            })
+        })
+        .then(response => response.json())
+        .then(data => console.log("✅ Notification envoyée :", data))
+        .catch(err => console.error("❌ Erreur lors de l'envoi de la notification :", err));
+
+        return true;
+    } catch (error) {
+        console.error('Erreur sendMessage:', error);
+        return false;
+    }
+}
+
+    async setupPushNotifications() {
+    try {
+        // Demander d'abord la permission des notifications
+        const permissionGranted = await this.requestNotificationPermission();
+        if (!permissionGranted) {
+            return false;
+        }
+        
+        // Définir l'utilisateur courant pour les vérifications RLS
+        await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
+        
+        const registration = await navigator.serviceWorker.ready;
+        
+        // Vérifier les souscriptions existantes
+        const oldSubscription = await registration.pushManager.getSubscription();
+        if (oldSubscription) {
+            await oldSubscription.unsubscribe();
+            await this.supabase
+                .from('push_subscriptions')
+                .delete()
+                .match({ 
+                    pseudo: this.pseudo,
+                    subscription: JSON.stringify(oldSubscription)
+                });
+        }
+
+        // Créer une nouvelle souscription
+        const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: this.urlBase64ToUint8Array('BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck')
+        });
+
+        // Enregistrer la nouvelle souscription
+        const { error } = await this.supabase
+            .from('push_subscriptions')
+            .insert({
+                pseudo: this.pseudo,
+                subscription: JSON.stringify(subscription),
+                device_type: this.getDeviceType(),
+                active: true,
+                last_updated: new Date().toISOString()
+            });
+
+        if (error) throw error;
+
+        this.notificationsEnabled = true;
+        localStorage.setItem('notificationsEnabled', 'true');
+        this.updateNotificationButton();
+        
+        // Afficher une notification de test
+        this.showNotification('Notifications activées!', 'success');
+        
+        // Envoyer une notification de test
+        this.sendTestNotification();
+        
+        return true;
+    } catch (error) {
+        console.error('Erreur activation notifications:', error);
+        this.showNotification('Erreur: ' + error.message, 'error');
+        return false;
+    }
+}
+
+async sendTestNotification() {
+    try {
+        // Vérifier si les notifications sont supportées
+        if (!('Notification' in window)) return;
+        
+        // Créer une notification de test
+        new Notification('Notification de test', {
+            body: 'Les notifications fonctionnent correctement!',
+            icon: '/icons/icon-192x192.png' // Remplacez par le chemin de votre icône
+        });
+    } catch (error) {
+        console.error('Erreur notification test:', error);
+    }
+}
+// Ajoutez cette nouvelle méthode ici
+async requestNotificationPermission() {
+    try {
+        // Vérifier si les notifications sont supportées
+        if (!('Notification' in window)) {
+            this.showNotification('Les notifications ne sont pas supportées par ce navigateur', 'error');
+            return false;
+        }
+        
+        // Demander la permission
+        const permission = await Notification.requestPermission();
+        
+        if (permission === 'granted') {
+            this.showNotification('Notifications activées avec succès!', 'success');
             this.notificationsEnabled = true;
             localStorage.setItem('notificationsEnabled', 'true');
             this.updateNotificationButton();
-            
-            this.showNotification('Notifications activées!', 'success');
-            this.sendTestNotification();
-            
             return true;
-        } catch (error) {
-            console.error('Erreur activation notifications:', error);
-            this.showNotification('Erreur: ' + error.message, 'error');
+        } else {
+            this.showNotification('Permission de notification refusée', 'error');
             return false;
         }
+    } catch (error) {
+        console.error('Erreur lors de la demande de permission:', error);
+        this.showNotification('Erreur lors de l\'activation des notifications', 'error');
+        return false;
     }
-
-    async sendTestNotification() {
-        try {
-            if (!('Notification' in window)) return;
+}
+async renewPushSubscription() {
+    try {
+        const registration = await navigator.serviceWorker.ready;
+        
+        // Supprimer l'ancienne souscription
+        const oldSubscription = await registration.pushManager.getSubscription();
+        if (oldSubscription) {
+            await oldSubscription.unsubscribe();
             
-            new Notification('Notification de test', {
-                body: 'Les notifications fonctionnent correctement!',
-                icon: '/icons/icon-192x192.png'
-            });
-        } catch (error) {
-            console.error('Erreur notification test:', error);
-        }
-    }
-
-    async requestNotificationPermission() {
-        try {
-            if (!('Notification' in window)) {
-                this.showNotification('Les notifications ne sont pas supportées par ce navigateur', 'error');
-                return false;
-            }
-            
-            const permission = await Notification.requestPermission();
-            
-            if (permission === 'granted') {
-                this.showNotification('Notifications activées avec succès!', 'success');
-                this.notificationsEnabled = true;
-                localStorage.setItem('notificationsEnabled', 'true');
-                this.updateNotificationButton();
-                return true;
-            } else {
-                this.showNotification('Permission de notification refusée', 'error');
-                return false;
-            }
-        } catch (error) {
-            console.error('Erreur lors de la demande de permission:', error);
-            this.showNotification('Erreur lors de l\'activation des notifications', 'error');
-            return false;
-        }
-    }
-
-    async renewPushSubscription() {
-        try {
-            const registration = await navigator.serviceWorker.ready;
-            
-            const oldSubscription = await registration.pushManager.getSubscription();
-            if (oldSubscription) {
-                await oldSubscription.unsubscribe();
-                
-                await this.supabase
-                    .from('push_subscriptions')
-                    .delete()
-                    .match({ 
-                        pseudo: this.pseudo,
-                        subscription: JSON.stringify(oldSubscription)
-                    });
-            }
-
-            const newSubscription = await registration.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: this.urlBase64ToUint8Array('BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck')
-            });
-
+            // Supprimer l'ancienne souscription de Supabase
             await this.supabase
                 .from('push_subscriptions')
-                .insert({
+                .delete()
+                .match({ 
                     pseudo: this.pseudo,
-                    subscription: JSON.stringify(newSubscription),
-                    device_type: this.getDeviceType(),
-                    active: true,
-                    last_updated: new Date().toISOString()
+                    subscription: JSON.stringify(oldSubscription)
                 });
-
-            console.log('Souscription push renouvelée avec succès');
-            return true;
-        } catch (error) {
-            console.error('Erreur renouvellement souscription:', error);
-            return false;
         }
-    }
 
-    getDeviceType() {
-        const ua = navigator.userAgent;
-        if (/android/i.test(ua)) {
-            return 'android';
-        } else if (/iPad|iPhone|iPod/.test(ua)) {
-            return 'ios';
-        } else {
-            return 'desktop';
-        }
-    }
+        // Créer une nouvelle souscription - utiliser la même clé que dans setupPushNotifications()
+        const newSubscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: this.urlBase64ToUint8Array('BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck')
+        });
 
-    async unsubscribeFromPushNotifications() {
-        try {
-            await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
-            
-            const registration = await navigator.serviceWorker.getRegistration();
+        // Sauvegarder la nouvelle souscription
+        await this.supabase
+            .from('push_subscriptions')
+            .insert({
+                pseudo: this.pseudo,
+                subscription: JSON.stringify(newSubscription),
+                device_type: this.getDeviceType(),
+                active: true,
+                last_updated: new Date().toISOString()
+            });
+
+        console.log('Souscription push renouvelée avec succès');
+        return true;
+    } catch (error) {
+        console.error('Erreur renouvellement souscription:', error);
+        return false;
+    }
+}
+// Méthode utilitaire pour détecter le type d'appareil
+getDeviceType() {
+    const ua = navigator.userAgent;
+    if (/android/i.test(ua)) {
+        return 'android';
+    } else if (/iPad|iPhone|iPod/.test(ua)) {
+        return 'ios';
+    } else {
+        return 'desktop';
+    }
+}
+
+async unsubscribeFromPushNotifications() {
+    try {
+        // Définir l'utilisateur courant pour les vérifications RLS
+        await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
+        
+        const registration = await navigator.serviceWorker.getRegistration();
             const subscription = await registration.pushManager.getSubscription();
             
             if (subscription) {
@@ -1174,44 +1231,42 @@ class ChatManager {
             return false;
         }
     }
-
     async sendNotificationToUser(message) {
-        try {
-            console.log('Envoi notification à:', message);
-            
-            const response = await fetch("/api/sendPush.js", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    message: message.content,
-                    fromUser: message.pseudo,
-                    toUser: this.pseudo
-                })
+    try {
+        console.log('Envoi notification à:', message);
+        
+        const response = await fetch("/api/sendPush.js", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: message.content,
+                fromUser: message.pseudo,
+                toUser: this.pseudo
+            })
+        });
+
+        if (!response.ok) {
+            const text = await response.text();
+            console.error('Réponse API erreur:', {
+                status: response.status,
+                statusText: response.statusText,
+                body: text
             });
-
-            if (!response.ok) {
-                const text = await response.text();
-                console.error('Réponse API erreur:', {
-                    status: response.status,
-                    statusText: response.statusText,
-                    body: text
-                });
-                throw new Error(`Erreur API: ${response.status} ${text}`);
-            }
-
-            const result = await response.json();
-            console.log('Réponse API succès:', result);
-            return result;
-        } catch (error) {
-            console.error('Erreur envoi notification:', error);
-            console.error('Stack trace:', error.stack);
-            throw error;
+            throw new Error(`Erreur API: ${response.status} ${text}`);
         }
-    }
 
-    async loadSounds() {
+        const result = await response.json();
+        console.log('Réponse API succès:', result);
+        return result;
+    } catch (error) {
+        console.error('Erreur envoi notification:', error);
+        console.error('Stack trace:', error.stack);
+        throw error;
+    }
+}
+	async loadSounds() {
         const soundFiles = {
             'message': '/sounds/message.mp3',
             'sent': '/sounds/sent.mp3',
@@ -1249,7 +1304,7 @@ class ChatManager {
                     });
                 }
             } catch (error) {
-                // Ignorer silencieusement
+                // Ignore silently
             }
         }
     }
@@ -1280,6 +1335,27 @@ class ChatManager {
         } catch {
             return 'unknown';
         }
+    }
+
+    async checkForBannedWords(content) {
+        console.log('Vérification des mots bannis...');
+        const { data: bannedWordsData, error } = await this.supabase
+            .from('banned_words')
+            .select('word');
+        
+        if (error) {
+            console.error('Erreur chargement mots bannis:', error);
+            return false;
+        }
+
+        this.bannedWords = new Set(bannedWordsData.map(item => item.word.toLowerCase()));
+        const words = content.toLowerCase().split(/\s+/);
+        const foundBannedWord = words.some(word => this.bannedWords.has(word));
+        
+        console.log('Mots bannis actuels:', [...this.bannedWords]);
+        console.log('Mot interdit trouvé:', foundBannedWord);
+        
+        return foundBannedWord;
     }
 
     urlBase64ToUint8Array(base64String) {
@@ -1322,31 +1398,34 @@ class ChatManager {
         }
     }
 
-    updateUnreadBadgeAndBubble() {
-        const chatToggleBtn = document.getElementById('chatToggleBtn');
-        if (chatToggleBtn) {
-            const badge = chatToggleBtn.querySelector('.chat-notification-badge');
-            if (badge) {
-                badge.textContent = this.unreadCount || '';
-                badge.classList.toggle('hidden', this.unreadCount === 0);
-            }
-        }
-
-        if (!this.isOpen && this.unreadCount > 0) {
-            const chatToggle = this.container.querySelector('.chat-toggle');
-            const existingBubble = chatToggle?.querySelector('.info-bubble');
-            if (existingBubble) {
-                existingBubble.remove();
-            }
-
-            if (chatToggle) {
-                const bubble = document.createElement('div');
-                bubble.className = 'info-bubble show';
-                bubble.innerHTML = `<div style="font-weight: bold;">${this.unreadCount} nouveau(x) message(s)</div>`;
-                chatToggle.appendChild(bubble);
-            }
+    // Mettez à jour la fonction qui gère les notifications
+updateUnreadBadgeAndBubble() {
+    // Mettre à jour le badge sur le bouton de la barre de navigation
+    const chatToggleBtn = document.getElementById('chatToggleBtn');
+    if (chatToggleBtn) {
+        const badge = chatToggleBtn.querySelector('.chat-notification-badge');
+        if (badge) {
+            badge.textContent = this.unreadCount || '';
+            badge.classList.toggle('hidden', this.unreadCount === 0);
         }
     }
+
+    // Afficher une info-bulle si le chat est fermé et il y a des messages non lus
+    if (!this.isOpen && this.unreadCount > 0) {
+        const chatToggle = this.container.querySelector('.chat-toggle');
+        const existingBubble = chatToggle?.querySelector('.info-bubble');
+        if (existingBubble) {
+            existingBubble.remove();
+        }
+
+        if (chatToggle) {
+            const bubble = document.createElement('div');
+            bubble.className = 'info-bubble show';
+            bubble.innerHTML = `<div style="font-weight: bold;">${this.unreadCount} nouveau(x) message(s)</div>`;
+            chatToggle.appendChild(bubble);
+        }
+    }
+}
 
     escapeHtml(unsafe) {
         return unsafe
@@ -1357,7 +1436,13 @@ class ChatManager {
             .replace(/'/g, "&#039;");
     }
 
-    showAdminPanel() {
+    scrollToBottom() {
+        const messagesContainer = this.container.querySelector('.chat-messages');
+        if (messagesContainer) {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+    }
+showAdminPanel() {
         if (!this.isAdmin) return;
 
         const existingPanel = document.querySelector('.admin-panel');
@@ -1430,118 +1515,133 @@ class ChatManager {
     }
 
     showMessageOptions(message, x, y) {
-        console.log('showMessageOptions appelé:', message);
-        
-        document.querySelectorAll('.message-options').forEach(el => el.remove());
+    console.log('showMessageOptions appelé:', message);
+    
+    // Supprimer tout menu existant
+    document.querySelectorAll('.message-options').forEach(el => el.remove());
 
-        const options = document.createElement('div');
-        options.className = 'message-options';
-        
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        if (isMobile) {
-            options.classList.add('mobile-options');
-        }
-        
-        options.innerHTML = `
-            <div class="options-content">
-                <button class="delete-option">
-                    <span class="material-icons">delete</span> Supprimer
+    const options = document.createElement('div');
+    options.className = 'message-options';
+    
+    // Détection du mobile
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+        options.classList.add('mobile-options');
+    }
+    
+    options.innerHTML = `
+        <div class="options-content">
+            <button class="delete-option">
+                <span class="material-icons">delete</span> Supprimer
+            </button>
+            ${this.isAdmin ? `
+                <button class="ban-option">
+                    <span class="material-icons">block</span> Bannir IP
                 </button>
-                ${this.isAdmin ? `
-                    <button class="ban-option">
-                        <span class="material-icons">block</span> Bannir IP
-                    </button>
-                ` : ''}
-            </div>
-        `;
+            ` : ''}
+        </div>
+    `;
 
-        document.body.appendChild(options);
+    document.body.appendChild(options);
 
-        const chatContainer = this.container.querySelector('.chat-container');
-        const chatBounds = chatContainer.getBoundingClientRect();
-        const optionsRect = options.getBoundingClientRect();
+    const chatContainer = this.container.querySelector('.chat-container');
+    const chatBounds = chatContainer.getBoundingClientRect();
+    const optionsRect = options.getBoundingClientRect();
 
-        let posX = x;
-        let posY = y;
+    // Ajustement de la position
+    let posX = x;
+    let posY = y;
+    
+    // Positionnement amélioré sur mobile
+    if (isMobile) {
+        // Centrer horizontalement
+        posX = chatBounds.left + (chatBounds.width / 2) - (optionsRect.width / 2);
         
-        if (isMobile) {
-            posX = chatBounds.left + (chatBounds.width / 2) - (optionsRect.width / 2);
-            posY = chatBounds.top + (chatBounds.height * 0.3);
-        } else {
-            if (posX + optionsRect.width > chatBounds.right) {
-                posX = chatBounds.right - optionsRect.width - 10;
-            }
-            if (posX < chatBounds.left) {
-                posX = chatBounds.left + 10;
-            }
-            if (posY + optionsRect.height > chatBounds.bottom) {
-                posY = chatBounds.bottom - optionsRect.height - 10;
-            }
-            if (posY < chatBounds.top) {
-                posY = chatBounds.top + 10;
-            }
+        // Positionner plus haut dans la zone visible
+        posY = chatBounds.top + (chatBounds.height * 0.3);
+    } else {
+        // Ajustements pour écran de bureau
+        if (posX + optionsRect.width > chatBounds.right) {
+            posX = chatBounds.right - optionsRect.width - 10;
         }
+        if (posX < chatBounds.left) {
+            posX = chatBounds.left + 10;
+        }
+        if (posY + optionsRect.height > chatBounds.bottom) {
+            posY = chatBounds.bottom - optionsRect.height - 10;
+        }
+        if (posY < chatBounds.top) {
+            posY = chatBounds.top + 10;
+        }
+    }
 
-        options.style.left = `${posX}px`;
-        options.style.top = `${posY}px`;
+    options.style.left = `${posX}px`;
+    options.style.top = `${posY}px`;
 
-        const preventPropagation = (e) => {
-            e.stopPropagation();
+    // Protection contre les événements indésirables
+    const preventPropagation = (e) => {
+        e.stopPropagation();
+    };
+    
+    // Appliquer à tous les types d'événements
+    options.addEventListener('click', preventPropagation);
+    options.addEventListener('touchstart', preventPropagation);
+    options.addEventListener('touchend', preventPropagation);
+    options.addEventListener('touchmove', preventPropagation);
+
+    // Gestionnaire pour supprimer un message
+    options.querySelector('.delete-option')?.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        await this.deleteMessage(message.id);
+        options.remove();
+    });
+
+    // Gestionnaire pour bannir un utilisateur
+    options.querySelector('.ban-option')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.showBanDialog(message);
+        options.remove();
+    });
+
+    // Fermer le menu si on clique ailleurs, avec un délai
+    setTimeout(() => {
+        const closeHandler = (e) => {
+            if (!options.contains(e.target)) {
+                options.remove();
+                document.removeEventListener('click', closeHandler);
+                document.removeEventListener('touchstart', closeHandler);
+            }
         };
         
-        options.addEventListener('click', preventPropagation);
-        options.addEventListener('touchstart', preventPropagation);
-        options.addEventListener('touchend', preventPropagation);
-        options.addEventListener('touchmove', preventPropagation);
-
-        options.querySelector('.delete-option')?.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            await this.deleteMessage(message.id);
-            options.remove();
-        });
-
-        options.querySelector('.ban-option')?.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.showBanDialog(message);
-            options.remove();
-        });
-
-        setTimeout(() => {
-            const closeHandler = (e) => {
-                if (!options.contains(e.target)) {
-                    options.remove();
-                    document.removeEventListener('click', closeHandler);
-                    document.removeEventListener('touchstart', closeHandler);
-                }
-            };
-            
-            document.addEventListener('click', closeHandler);
-            document.addEventListener('touchstart', closeHandler);
-        }, 300);
-    }
+        document.addEventListener('click', closeHandler);
+        document.addEventListener('touchstart', closeHandler);
+    }, 300); // Délai plus long pour éviter la fermeture accidentelle
+}
 
     async deleteMessage(messageId) {
-        try {
-            await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
-            
-            const { error } = await this.supabase
-                .from('messages')
-                .delete()
-                .eq('id', messageId);
+    try {
+        // Définir l'utilisateur courant pour les vérifications RLS
+        await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
+        
+        // Ensuite effectuer la suppression
+        const { error } = await this.supabase
+            .from('messages')
+            .delete()
+            .eq('id', messageId);
 
-            if (error) throw error;
+        if (error) throw error;
 
-            const messageElement = this.container.querySelector(`[data-message-id="${messageId}"]`);
-            if (messageElement) {
-                messageElement.classList.add('fade-out');
-                setTimeout(() => messageElement.remove(), 300);
-                this.showNotification('Message supprimé', 'success');
-            }
-        } catch (error) {
-            console.error('Erreur suppression:', error);
-            this.showNotification('Erreur lors de la suppression', 'error');
+        const messageElement = this.container.querySelector(`[data-message-id="${messageId}"]`);
+        if (messageElement) {
+            messageElement.classList.add('fade-out');
+            setTimeout(() => messageElement.remove(), 300);
+            this.showNotification('Message supprimé', 'success');
         }
+    } catch (error) {
+        console.error('Erreur suppression:', error);
+        this.showNotification('Erreur lors de la suppression', 'error');
     }
+}
 
     showBanDialog(message) {
         const dialogHTML = `
@@ -1580,33 +1680,33 @@ class ChatManager {
     }
 
     async banUser(ip, reason = '', duration = null) {
-        try {
-            await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
-            
-            const expiresAt = duration ? new Date(Date.now() + duration).toISOString() : null;
-            
-            const { error } = await this.supabase
-                .from('banned_ips')
-                .insert({
-                    ip: ip,
-                    banned_by: this.pseudo,
-                    reason: reason,
-                    banned_at: new Date().toISOString(),
-                    expires_at: expiresAt
-                });
+    try {
+        // Définir l'utilisateur courant pour les vérifications RLS
+        await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
+        
+        const expiresAt = duration ? new Date(Date.now() + duration).toISOString() : null;
+        
+        const { error } = await this.supabase
+            .from('banned_ips')
+            .insert({
+                ip: ip,
+                banned_by: this.pseudo,
+                reason: reason,
+                banned_at: new Date().toISOString(),
+                expires_at: expiresAt
+            });
 
-            if (error) throw error;
+        if (error) throw error;
 
-            this.showNotification('IP bannie avec succès', 'success');
-            this.playSound('success');
-            return true;
-        } catch (error) {
-            console.error('Erreur bannissement:', error);
-            this.showNotification('Erreur lors du bannissement', 'error');
-            return false;
-        }
+        this.showNotification('IP bannie avec succès', 'success');
+        this.playSound('success');
+        return true;
+    } catch (error) {
+        console.error('Erreur bannissement:', error);
+        this.showNotification('Erreur lors du bannissement', 'error');
+        return false;
     }
-
+}
     async checkNotificationStatus() {
         console.log('État des notifications:', {
             permission: Notification.permission,
