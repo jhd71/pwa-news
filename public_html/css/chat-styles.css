@@ -1483,6 +1483,143 @@ body.long-press-active .message-options {
 }
 
 /* RÉINITIALISATION COMPLÈTE DES STYLES DU CHAT SUR MOBILE */
+/* Réparation URGENTE pour la vue mobile */
+@media (max-width: 767px) {
+  .chat-container {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 9999 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: #6441a5 !important; /* Fond violet */
+    border-radius: 0 !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* HEADER FORCÉ - à rendre très visible */
+  .chat-header {
+    min-height: 60px !important;
+    max-height: 60px !important;
+    width: 100% !important;
+    padding: 10px 15px !important;
+    background: #4a2b9b !important; /* Couleur plus foncée pour le header */
+    color: white !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 10001 !important;
+  }
+
+  .header-title {
+    font-size: 18px !important;
+    font-weight: bold !important;
+    color: white !important;
+    flex: 1 !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  .header-buttons {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 8px !important;
+  }
+
+  /* BOUTON FERMER ULTRA VISIBLE */
+  .close-chat {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 50% !important;
+    background-color: #ff3366 !important; /* Rouge vif */
+    color: white !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 2px solid white !important;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5) !important;
+    z-index: 10002 !important;
+  }
+
+  .close-chat .material-icons {
+    font-size: 28px !important;
+    color: white !important;
+  }
+
+  /* MESSAGES AREA */
+  .chat-messages {
+    flex: 1 !important;
+    width: 100% !important;
+    overflow-y: auto !important;
+    padding: 15px !important;
+    padding-bottom: 80px !important; /* Laisser de l'espace pour l'input */
+    background: rgba(0, 0, 0, 0.1) !important;
+  }
+
+  /* INPUT AREA - FORCÉ VISIBLE */
+  .chat-input {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 70px !important;
+    min-height: 70px !important;
+    width: 100% !important;
+    padding: 10px 15px !important;
+    background: #4a2b9b !important; /* Même couleur que le header */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    border-top: 2px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3) !important;
+    z-index: 10000 !important;
+  }
+
+  .chat-input textarea {
+    flex: 1 !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+    padding: 12px 15px !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 24px !important;
+    color: white !important;
+    font-size: 16px !important;
+    margin-right: 10px !important;
+  }
+
+  .send-btn {
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    border-radius: 50% !important;
+    background-color: #4CAF50 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: none !important;
+  }
+
+  .send-btn .material-icons {
+    font-size: 24px !important;
+    color: white !important;
+  }
+}
+
 @media (max-width: 480px) {
   /* Structure générale */
   .chat-container {
