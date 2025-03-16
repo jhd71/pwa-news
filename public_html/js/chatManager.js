@@ -688,13 +688,7 @@ extractPseudoFromEmail(email) {
             }
         });
     }
-    
-    // Ajout du gestionnaire pour le bouton emoji
-    if (emojiBtn) {
-        emojiBtn.addEventListener('click', () => {
-            this.toggleEmojiPanel();
-        });
-    }
+
 }
 
 // Nouvelle méthode pour gérer le panneau d'emojis
