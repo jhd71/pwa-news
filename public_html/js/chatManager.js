@@ -2,26 +2,26 @@ import soundManager from '/js/sounds.js';
 
 class ChatManager {
     constructor() {
-        this.supabase = supabase.createClient(
-            'https://aqedqlzsguvkopucyqbb.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxZWRxbHpzZ3V2a29wdWN5cWJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY1MDAxNzUsImV4cCI6MjA1MjA3NjE3NX0.tjdnqCIW0dgmzn3VYx0ugCrISLPFMLhOQJBnnC5cfoo'
-        );
+    this.supabase = supabase.createClient(
+        'https://aqedqlzsguvkopucyqbb.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxZWRxbHpzZ3V2a29wdWN5cWJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY1MDAxNzUsImV4cCI6MjA1MjA3NjE3NX0.tjdnqCIW0dgmzn3VYx0ugCrISLPFMLhOQJBnnC5cfoo'
+    );
+
+    this.initialized = false;
+    this.container = null;
+    this.pseudo = localStorage.getItem('chatPseudo');
+    this.isAdmin = localStorage.getItem('isAdmin') === 'true';
+    this.lastMessageId = 0;
+    this.soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+    this.sounds = new Map();
+    this.bannedWords = new Set();
+    this.notificationsEnabled = localStorage.getItem('notificationsEnabled') === 'true';
+    this.subscription = null;
+    this.adminPanelOpen = false;
+    this.isOpen = localStorage.getItem('chatOpen') === 'true';
+    this.unreadCount = parseInt(localStorage.getItem('unreadCount') || '0');
     
-        this.initialized = false;
-        this.container = null;
-        this.pseudo = localStorage.getItem('chatPseudo');
-        this.isAdmin = localStorage.getItem('isAdmin') === 'true';
-        this.lastMessageId = 0;
-        this.soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
-        this.sounds = new Map();
-        this.bannedWords = new Set();
-        this.notificationsEnabled = localStorage.getItem('notificationsEnabled') === 'true';
-        this.subscription = null;
-        this.adminPanelOpen = false;
-        this.isOpen = localStorage.getItem('chatOpen') === 'true';
-        this.unreadCount = parseInt(localStorage.getItem('unreadCount') || '0');
-    }
-// Ajouter une classe pour détecter Android
+    // Ajouter une classe pour détecter Android
     if (/Android/i.test(navigator.userAgent)) {
         document.documentElement.classList.add('android');
     }
@@ -633,88 +633,96 @@ extractPseudoFromEmail(email) {
     const emojiBtn = this.container.querySelector('.emoji-btn');
 
     if (input && sendBtn) {
-    // Dans setupChatListeners(), remplacer la déclaration existante de sendMessage par celle-ci :
-const sendMessage = async () => {
-    const content = input.value.trim();
-    if (!content) return;
-    
-    // Créer un élément de message temporaire (pour feedback immédiat)
-    const tempMessage = {
-        id: 'temp-' + Date.now(),
-        pseudo: this.pseudo,
-        content: content,
-        created_at: new Date().toISOString()
-    };
-    
-    // Ajouter le message temporaire immédiatement
-    const messagesContainer = this.container.querySelector('.chat-messages');
-    if (messagesContainer) {
-        const messageElement = this.createMessageElement(tempMessage);
-        messageElement.style.opacity = '0.7'; // Style pour indiquer que c'est en cours d'envoi
-        messagesContainer.appendChild(messageElement);
-        this.scrollToBottom();
-    }
-    
-    // Vider l'input immédiatement
-    input.value = '';
-    
-    // Sur Android, gérer le clavier et l'affichage
-    if (/Android/i.test(navigator.userAgent)) {
-        document.activeElement.blur();
-        
-        // S'assurer que l'interface reste utilisable
-        setTimeout(() => {
-            input.style.visibility = 'visible';
-            input.style.display = 'block';
-            this.scrollToBottom();
-        }, 300);
-    }
-    
-    // Vérifier les mots bannis
-    if (await this.checkForBannedWords(content)) {
-        // Supprimer le message temporaire
-        const tempElement = messagesContainer.querySelector(`[data-message-id="${tempMessage.id}"]`);
-        if (tempElement) tempElement.remove();
-        
-        this.showNotification('Message contient des mots interdits', 'error');
-        this.playSound('error');
-        return;
-    }
-    
-    // Envoyer le message au serveur
-    const success = await this.sendMessage(content);
-    
-    // Si l'envoi échoue, notifier l'utilisateur
-    if (!success) {
-        this.playSound('error');
-        
-        // Supprimer le message temporaire
-        const tempElement = messagesContainer.querySelector(`[data-message-id="${tempMessage.id}"]`);
-        if (tempElement) tempElement.remove();
-    } else {
-        this.playSound('message');
-        
-        // Comportement normal sur autres appareils (non-Android)
-        if (!/Android/i.test(navigator.userAgent)) {
-            input.focus();
+        // Définition de sendMessage
+        const sendMessage = async () => {
+            const content = input.value.trim();
+            if (!content) return;
+            
+            // Créer un élément de message temporaire (pour feedback immédiat)
+            const tempMessage = {
+                id: 'temp-' + Date.now(),
+                pseudo: this.pseudo,
+                content: content,
+                created_at: new Date().toISOString()
+            };
+            
+            // Ajouter le message temporaire immédiatement
+            const messagesContainer = this.container.querySelector('.chat-messages');
+            if (messagesContainer) {
+                const messageElement = this.createMessageElement(tempMessage);
+                messageElement.style.opacity = '0.7'; // Style pour indiquer que c'est en cours d'envoi
+                messagesContainer.appendChild(messageElement);
+                this.scrollToBottom();
+            }
+            
+            // Vider l'input immédiatement
+            input.value = '';
+            
+            // Sur Android, gérer le clavier et l'affichage
+            if (/Android/i.test(navigator.userAgent)) {
+                document.activeElement.blur();
+                
+                // S'assurer que l'interface reste utilisable
+                setTimeout(() => {
+                    input.style.visibility = 'visible';
+                    input.style.display = 'block';
+                    this.scrollToBottom();
+                }, 300);
+            }
+            
+            // Vérifier les mots bannis
+            if (await this.checkForBannedWords(content)) {
+                // Supprimer le message temporaire
+                const tempElement = messagesContainer.querySelector(`[data-message-id="${tempMessage.id}"]`);
+                if (tempElement) tempElement.remove();
+                
+                this.showNotification('Message contient des mots interdits', 'error');
+                this.playSound('error');
+                return;
+            }
+            
+            // Envoyer le message au serveur
+            const success = await this.sendMessage(content);
+            
+            // Si l'envoi échoue, notifier l'utilisateur
+            if (!success) {
+                this.playSound('error');
+                
+                // Supprimer le message temporaire
+                const tempElement = messagesContainer.querySelector(`[data-message-id="${tempMessage.id}"]`);
+                if (tempElement) tempElement.remove();
+            } else {
+                this.playSound('message');
+                
+                // Comportement normal sur autres appareils (non-Android)
+                if (!/Android/i.test(navigator.userAgent)) {
+                    input.focus();
+                }
+            }
+        };
+
+        // Ajouter les écouteurs d'événements
+        if (/Mobi|Android/i.test(navigator.userAgent)) {
+            sendBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                sendMessage();
+            });
+        } else {
+            sendBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                sendMessage();
+            });
         }
-    }
-};
-    } else {
-        sendBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            sendMessage();
+        
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
         });
     }
-
-    input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
-        }
-    });
-}
     
     // Ajout du gestionnaire pour le bouton emoji
     if (emojiBtn) {
