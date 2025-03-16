@@ -293,25 +293,44 @@ getChatHTMLWithoutToggle() {
         this.isOpen = !this.isOpen;
         
         if (this.isOpen) {
-            chatContainer?.classList.add('open');
-            this.unreadCount = 0;
-            localStorage.setItem('unreadCount', '0');
+    chatContainer?.classList.add('open');
+    this.unreadCount = 0;
+    localStorage.setItem('unreadCount', '0');
+    
+    const badge = chatToggleBtn?.querySelector('.chat-notification-badge');
+    if (badge) {
+        badge.textContent = '0';
+        badge.classList.add('hidden');
+    }
+    
+    // Mode plein écran sur mobile
+    if (window.innerWidth <= 768) {
+        document.body.style.overflow = 'hidden'; // Empêcher le défilement
+        
+        // S'assurer que la mise en page est correcte
+        setTimeout(() => {
+            // Forcer le repositionnement des éléments si nécessaire
+            const header = chatContainer.querySelector('.chat-header');
+            const messages = chatContainer.querySelector('.chat-messages');
+            const inputArea = chatContainer.querySelector('.chat-input');
             
-            const badge = chatToggleBtn?.querySelector('.chat-notification-badge');
-            if (badge) {
-                badge.textContent = '0';
-                badge.classList.add('hidden');
+            if (header) header.style.display = 'flex';
+            if (messages) {
+                messages.style.flex = '1';
+                messages.style.overflowY = 'auto';
             }
+            if (inputArea) inputArea.style.display = 'flex';
             
-			// Ajouter ces 3 lignes pour le mode plein écran sur mobile
-        if (window.innerWidth <= 768) {
-            document.body.style.overflow = 'hidden'; // Empêcher le défilement de la page
-        }
-		
+            // Faire défiler jusqu'en bas
             this.scrollToBottom();
-        } else {
-            chatContainer?.classList.remove('open');
-        }
+        }, 100);
+    }
+    
+    this.scrollToBottom();
+} else {
+    chatContainer?.classList.remove('open');
+    document.body.style.overflow = ''; // Réactiver le défilement
+}
         
         localStorage.setItem('chatOpen', this.isOpen);
         this.playSound('click');
