@@ -303,25 +303,20 @@ getChatHTMLWithoutToggle() {
         badge.classList.add('hidden');
     }
     
-    // Mode plein écran sur mobile
+    // Mode plein écran ajusté sur mobile
     if (window.innerWidth <= 768) {
         document.body.style.overflow = 'hidden'; // Empêcher le défilement
         
-        // S'assurer que la mise en page est correcte
+        // Recalculer les positions tenant compte de la bannière
+        const bannerHeight = document.querySelector('header')?.offsetHeight || 60;
+        
+        if (chatContainer) {
+            chatContainer.style.top = bannerHeight + 'px';
+            chatContainer.style.height = `calc(100% - ${bannerHeight}px)`;
+        }
+        
+        // S'assurer que les éléments sont visibles
         setTimeout(() => {
-            // Forcer le repositionnement des éléments si nécessaire
-            const header = chatContainer.querySelector('.chat-header');
-            const messages = chatContainer.querySelector('.chat-messages');
-            const inputArea = chatContainer.querySelector('.chat-input');
-            
-            if (header) header.style.display = 'flex';
-            if (messages) {
-                messages.style.flex = '1';
-                messages.style.overflowY = 'auto';
-            }
-            if (inputArea) inputArea.style.display = 'flex';
-            
-            // Faire défiler jusqu'en bas
             this.scrollToBottom();
         }, 100);
     }
