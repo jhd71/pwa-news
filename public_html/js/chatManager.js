@@ -31,21 +31,23 @@ class ChatManager {
         await this.loadBannedWords();
         
         if (document.getElementById('chatToggleBtn')) {
-    // Si le bouton de navigation existe, utiliser cette approche
     this.setupChatToggleBtn();
     
     if (this.isOpen) {
         this.resetChatUI();
+    } else {
+        // Ne pas ouvrir le chat automatiquement
+        console.log("Chat fermé par défaut");
     }
 } else {
-    // Sinon, utiliser l'approche par défaut avec resetChatUI
+    // Créer l'interface mais la masquer si elle ne doit pas être ouverte
     this.resetChatUI();
     
-    // Si le chat ne doit pas être ouvert initialement
     if (!this.isOpen) {
         const chatOverride = document.getElementById('chatOverride');
         if (chatOverride) {
             chatOverride.style.display = 'none';
+            console.log("Chat créé mais masqué");
         }
     }
 }
@@ -1588,63 +1590,85 @@ updateUnreadBadgeAndBubble() {
 }
 
 showAdminPanel() {
-        if (!this.isAdmin) return;
+    if (!this.isAdmin) return;
 
-        const existingPanel = document.querySelector('.admin-panel');
-        if (existingPanel) {
-            existingPanel.remove();
-            return;
-        }
+    const existingPanel = document.querySelector('.admin-panel');
+    if (existingPanel) {
+        existingPanel.remove();
+        return;
+    }
 
-        const panel = document.createElement('div');
-        panel.className = 'admin-panel';
-        panel.innerHTML = `
-            <div class="panel-header">
-                <h3>Panel Admin</h3>
-                <button class="close-panel">
-                    <span class="material-icons">close</span>
-                </button>
-            </div>
-            <div class="panel-content">
-                <div class="section">
-                    <h4>Mots bannis</h4>
-                    <div class="add-word">
-                        <input type="text" placeholder="Nouveau mot à bannir">
-                        <button class="add-word-btn">Ajouter</button>
-                    </div>
-                    <div class="banned-words-list"></div>
+    const panel = document.createElement('div');
+    panel.className = 'admin-panel';
+    panel.style.zIndex = "9999999"; // Forcez un z-index élevé
+    
+    panel.innerHTML = `
+        <div class="panel-header">
+            <h3>Panel Admin</h3>
+            <button class="close-panel">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="panel-content">
+            <div class="section">
+                <h4>Mots bannis</h4>
+                <div class="add-word">
+                    <input type="text" placeholder="Nouveau mot à bannir">
+                    <button class="add-word-btn">Ajouter</button>
                 </div>
+                <div class="banned-words-list"></div>
             </div>
-        `;
+        </div>
+    `;
 
-        document.body.appendChild(panel);
-        this.loadBannedWords();
+    document.body.appendChild(panel);
+    this.loadBannedWords();
 
-        const addWordBtn = panel.querySelector('.add-word-btn');
-        const wordInput = panel.querySelector('.add-word input');
+    const addWordBtn = panel.querySelector('.add-word-btn');
+    const wordInput = panel.querySelector('.add-word input');
 
+    if (addWordBtn && wordInput) {
         addWordBtn.addEventListener('click', async () => {
             const word = wordInput.value.trim().toLowerCase();
             if (word) {
+                console.log("Tentative d'ajout du mot:", word);
                 await this.addBannedWord(word);
                 wordInput.value = '';
                 await this.loadBannedWords();
             }
         });
-
-        panel.querySelector('.close-panel').addEventListener('click', () => panel.remove());
     }
 
+    panel.querySelector('.close-panel').addEventListener('click', () => panel.remove());
+}
+
     async addBannedWord(word) {
-        const { error } = await this.supabase
+    try {
+        console.log("Ajout du mot banni:", word);
+        
+        // Définir l'utilisateur courant pour les vérifications RLS
+        await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
+        
+        const { data, error } = await this.supabase
             .from('banned_words')
             .insert({ word: word });
 
-        if (!error) {
-            this.bannedWords.add(word);
-            this.showNotification('Mot ajouté avec succès', 'success');
+        if (error) {
+            console.error("Erreur ajout mot banni:", error);
+            alert("Erreur lors de l'ajout du mot: " + error.message);
+            return false;
         }
+
+        this.bannedWords.add(word);
+        this.showNotification('Mot ajouté avec succès', 'success');
+        console.log("Mot ajouté avec succès");
+        return true;
+    } catch (error) {
+        console.error("Exception lors de l'ajout du mot:", error);
+        alert("Erreur lors de l'ajout du mot: " + error.message);
+        return false;
     }
+}
 
     async removeBannedWord(word) {
         const { error } = await this.supabase
