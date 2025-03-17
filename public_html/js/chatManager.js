@@ -1005,7 +1005,7 @@ createMessageElement(message) {
         if (error) throw error;
 
         // Envoi de la notification
-        await fetch("/api/sendPush.js", {
+        await fetch("/api/sendPush", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -1216,7 +1216,7 @@ async unsubscribeFromPushNotifications() {
     try {
         console.log('Envoi notification à:', message);
         
-        const response = await fetch("/api/sendPush.js", {
+        const response = await fetch("/api/sendPush", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -1389,13 +1389,6 @@ updateUnreadBadgeAndBubble() {
             badge.textContent = this.unreadCount || '';
             badge.classList.toggle('hidden', this.unreadCount === 0);
         }
-    }
-
-    // Mettre à jour aussi le badge sur le bouton flottant si vous le conservez
-    const badge = this.container.querySelector('.notification-badge');
-    if (badge) {
-        badge.textContent = this.unreadCount || '';
-        badge.classList.toggle('hidden', this.unreadCount === 0);
     }
 
     // Afficher une info-bulle si le chat est fermé et il y a des messages non lus
