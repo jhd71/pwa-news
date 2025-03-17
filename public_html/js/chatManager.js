@@ -1005,7 +1005,7 @@ createMessageElement(message) {
         if (error) throw error;
 
         // Envoi de la notification
-        await fetch("/api/sendPush", {
+        await fetch("/api/sendPush.js", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -1216,7 +1216,7 @@ async unsubscribeFromPushNotifications() {
     try {
         console.log('Envoi notification à:', message);
         
-        const response = await fetch("/api/sendPush", {
+        const response = await fetch("/api/sendPush.js", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
