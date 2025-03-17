@@ -2,86 +2,51 @@ import soundManager from '/js/sounds.js';
 
 class ChatManager {
     constructor() {
-    this.supabase = supabase.createClient(
-        'https://aqedqlzsguvkopucyqbb.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxZWRxbHpzZ3V2a29wdWN5cWJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY1MDAxNzUsImV4cCI6MjA1MjA3NjE3NX0.tjdnqCIW0dgmzn3VYx0ugCrISLPFMLhOQJBnnC5cfoo'
-    );
-
-    this.initialized = false;
-    this.container = null;
-    this.pseudo = localStorage.getItem('chatPseudo');
-    this.isAdmin = localStorage.getItem('isAdmin') === 'true';
-    this.lastMessageId = 0;
-    this.soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
-    this.sounds = new Map();
-    this.bannedWords = new Set();
-    this.notificationsEnabled = localStorage.getItem('notificationsEnabled') === 'true';
-    this.subscription = null;
-    this.adminPanelOpen = false;
-    this.isOpen = localStorage.getItem('chatOpen') === 'true';
-    this.unreadCount = parseInt(localStorage.getItem('unreadCount') || '0');
+        this.supabase = supabase.createClient(
+            'https://aqedqlzsguvkopucyqbb.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxZWRxbHpzZ3V2a29wdWN5cWJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY1MDAxNzUsImV4cCI6MjA1MjA3NjE3NX0.tjdnqCIW0dgmzn3VYx0ugCrISLPFMLhOQJBnnC5cfoo'
+        );
     
-    // Ajouter une classe pour détecter Android
-    if (/Android/i.test(navigator.userAgent)) {
-        document.documentElement.classList.add('android');
+        this.initialized = false;
+        this.container = null;
+        this.pseudo = localStorage.getItem('chatPseudo');
+        this.isAdmin = localStorage.getItem('isAdmin') === 'true';
+        this.lastMessageId = 0;
+        this.soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+        this.sounds = new Map();
+        this.bannedWords = new Set();
+        this.notificationsEnabled = localStorage.getItem('notificationsEnabled') === 'true';
+        this.subscription = null;
+        this.adminPanelOpen = false;
+        this.isOpen = localStorage.getItem('chatOpen') === 'true';
+        this.unreadCount = parseInt(localStorage.getItem('unreadCount') || '0');
     }
-}
+
     async init() {
     try {
         await this.loadBannedWords();
         
-		// Préparer mais ne pas insérer encore le container
         this.container = document.createElement('div');
         this.container.className = 'chat-widget';
 
         // Vérifier l'état d'authentification
         const isAuthenticated = await this.checkAuthState();
-        
-        // Ne pas tenter d'utiliser setupListeners() immédiatement
-        // Au lieu de cela, utiliser resetChatUI() qui créera les éléments correctement
-        
-        // Configurer la connexion Realtime
-        this.setupRealtimeSubscription();
-        
-        // Uniquement pour le débogage - tester si Realtime fonctionne
-        this.testRealtimeConnection();
-        
-        console.log("Chat initialisé avec succès");
-        this.initialized = true;
-        
-        // Si le bouton dans la barre de navigation existe, configurer son écouteur
-        const chatToggleBtn = document.getElementById('chatToggleBtn');
-        if (chatToggleBtn) {
-            this.setupChatToggleBtn();
+
+        // Vérifier si on utilise le bouton de la barre de navigation
+        const useNavButton = document.getElementById('chatToggleBtn') !== null;
+
+        if (isAuthenticated && this.pseudo) {
+            this.container.innerHTML = useNavButton ? this.getChatHTMLWithoutToggle() : this.getChatHTML();
+        } else {
+            this.container.innerHTML = useNavButton ? this.getPseudoHTMLWithoutToggle() : this.getPseudoHTML();
+        }
+
+        const chatContainer = this.container.querySelector('.chat-container');
+        if (this.isOpen && chatContainer) {
+            chatContainer.classList.add('open');
         }
         
-    } catch (error) {
-        console.error('Erreur initialisation:', error);
-    }
-}
-        if (document.getElementById('chatToggleBtn')) {
-    this.setupChatToggleBtn();
-    
-    if (this.isOpen) {
-        this.resetChatUI();
-    } else {
-        // Ne pas ouvrir le chat automatiquement
-        console.log("Chat fermé par défaut");
-    }
-} else {
-    // Créer l'interface mais la masquer si elle ne doit pas être ouverte
-    this.resetChatUI();
-    
-    if (!this.isOpen) {
-        const chatOverride = document.getElementById('chatOverride');
-        if (chatOverride) {
-            chatOverride.style.display = 'none';
-            console.log("Chat créé mais masqué");
-        }
-    }
-}
-        this.fixCloseButton();
-        this.forceMobileLayout(); // Ajoutez cette ligne
+        document.body.appendChild(this.container);
         await this.loadSounds();
 
         // Gestion des notifications push
@@ -115,16 +80,12 @@ class ChatManager {
 
         this.setupListeners();
         this.setupRealtimeSubscription();
-		this.testRealtimeConnection();
 
         if (this.pseudo) {
             await this.loadExistingMessages();
             this.updateUnreadBadgeAndBubble();
         }
-// Dans la méthode init(), juste avant this.initialized = true;
-if (/Android/i.test(navigator.userAgent)) {
-  this.gererClavierMobile();
-}
+
         this.initialized = true;
         console.log("Chat initialisé avec succès");
     } catch (error) {
@@ -239,12 +200,34 @@ getChatHTML() {
             <div class="chat-header">
                 <div class="header-title">Chat - ${this.pseudo}</div>
                 <div class="header-buttons">
-                    <button class="close-chat" title="Fermer">✕</button>
+                    ${this.isAdmin ? `
+                        <button class="admin-panel-btn" title="Panel Admin">
+                            <span class="material-icons">admin_panel_settings</span>
+                        </button>
+                    ` : ''}
+                    <button class="emoji-btn" title="Emojis">
+                        <span class="material-icons">emoji_emotions</span>
+                    </button>
+                    <button class="notifications-btn ${this.notificationsEnabled ? 'enabled' : ''}" title="Notifications">
+                        <span class="material-icons">${this.notificationsEnabled ? 'notifications_active' : 'notifications_off'}</span>
+                    </button>
+                    <button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
+                        <span class="material-icons">${this.soundEnabled ? 'volume_up' : 'volume_off'}</span>
+                    </button>
+                    <button class="logout-btn" title="Déconnexion">
+                        <span class="material-icons">logout</span>
+                    </button>
+                    <button class="close-chat" title="Fermer">
+                        <span class="material-icons">close</span>
+                    </button>
                 </div>
             </div>
             <div class="chat-messages"></div>
             <div class="chat-input">
-                <textarea placeholder="Votre message..." maxlength="500" rows="1"></textarea>
+                <textarea 
+                    placeholder="Votre message..." 
+                    maxlength="500" 
+                    rows="2"></textarea>
                 <button class="send-btn" title="Envoyer">
                     <span class="material-icons">send</span>
                 </button>
@@ -259,12 +242,34 @@ getChatHTMLWithoutToggle() {
             <div class="chat-header">
                 <div class="header-title">Chat - ${this.pseudo}</div>
                 <div class="header-buttons">
-                    <button class="close-chat" title="Fermer">✕</button>
+                    ${this.isAdmin ? `
+                        <button class="admin-panel-btn" title="Panel Admin">
+                            <span class="material-icons">admin_panel_settings</span>
+                        </button>
+                    ` : ''}
+					<button class="emoji-btn" title="Emojis">
+                    <span class="material-icons">emoji_emotions</span>
+                </button>
+                    <button class="notifications-btn ${this.notificationsEnabled ? 'enabled' : ''}" title="Notifications">
+                        <span class="material-icons">${this.notificationsEnabled ? 'notifications_active' : 'notifications_off'}</span>
+                    </button>
+                    <button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
+                        <span class="material-icons">${this.soundEnabled ? 'volume_up' : 'volume_off'}</span>
+                    </button>
+                    <button class="logout-btn" title="Déconnexion">
+                        <span class="material-icons">logout</span>
+                    </button>
+                    <button class="close-chat" title="Fermer">
+                        <span class="material-icons">close</span>
+                    </button>
                 </div>
             </div>
             <div class="chat-messages"></div>
             <div class="chat-input">
-                <textarea placeholder="Votre message..." maxlength="500" rows="1"></textarea>
+                <textarea 
+                    placeholder="Votre message..." 
+                    maxlength="500" 
+                    rows="2"></textarea>              
                 <button class="send-btn" title="Envoyer">
                     <span class="material-icons">send</span>
                 </button>
@@ -285,25 +290,27 @@ getChatHTMLWithoutToggle() {
 
     // Fonction réutilisable pour basculer l'état du chat
     const toggleChat = () => {
-    this.isOpen = !this.isOpen;
-    
-    if (this.isOpen) {
-        chatContainer?.classList.add('open');
-        // Réinitialisation du compteur
-        this.unreadCount = 0;
-        localStorage.setItem('unreadCount', '0');
+        this.isOpen = !this.isOpen;
         
-        // Mettre à jour le badge ET l'info-bulle
-        this.updateUnreadBadgeAndBubble();
+        if (this.isOpen) {
+            chatContainer?.classList.add('open');
+            this.unreadCount = 0;
+            localStorage.setItem('unreadCount', '0');
+            
+            const badge = chatToggleBtn?.querySelector('.chat-notification-badge');
+            if (badge) {
+                badge.textContent = '0';
+                badge.classList.add('hidden');
+            }
+            
+            this.scrollToBottom();
+        } else {
+            chatContainer?.classList.remove('open');
+        }
         
-        this.scrollToBottom();
-    } else {
-        chatContainer?.classList.remove('open');
-    }
-    
-    localStorage.setItem('chatOpen', this.isOpen);
-    this.playSound('click');
-};
+        localStorage.setItem('chatOpen', this.isOpen);
+        this.playSound('click');
+    };
 
     if (chatToggleBtn) {
         // Supprimer les anciens écouteurs d'événements pour éviter les duplications
@@ -319,31 +326,28 @@ getChatHTMLWithoutToggle() {
     }
 
     if (closeBtn) {
-    closeBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        this.isOpen = false;
-        localStorage.setItem('chatOpen', 'false');
-        if (chatContainer) {
-            chatContainer.classList.remove('open');
-        }
-        this.playSound('click');
-        console.log("Chat fermé via bouton closeBtn");
-    });
-    
-    // Ajouter un événement touchend pour les appareils mobiles
-    closeBtn.addEventListener('touchend', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        this.isOpen = false;
-        localStorage.setItem('chatOpen', 'false');
-        if (chatContainer) {
-            chatContainer.classList.remove('open');
-        }
-        this.playSound('click');
-        console.log("Chat fermé via touchend sur closeBtn");
-    });
-}
+        closeBtn.addEventListener('click', () => {
+            this.isOpen = false;
+            localStorage.setItem('chatOpen', 'false');
+            chatContainer?.classList.remove('open');
+            this.playSound('click');
+        });
+    }
+
+    // Le reste de votre code pour setupListeners reste inchangé...
+    if (soundBtn) {
+        soundBtn.addEventListener('click', () => {
+            this.soundEnabled = !this.soundEnabled;
+            localStorage.setItem('soundEnabled', this.soundEnabled);
+            soundBtn.classList.toggle('enabled', this.soundEnabled);
+            if (this.soundEnabled) {
+                soundBtn.querySelector('.material-icons').textContent = 'volume_up';
+                this.playSound('click');
+            } else {
+                soundBtn.querySelector('.material-icons').textContent = 'volume_off';
+            }
+        });
+    }
 
         if (notificationsBtn) {
             notificationsBtn.addEventListener('click', async () => {
@@ -598,17 +602,15 @@ async logout() {
         localStorage.removeItem('chatPseudo');
         localStorage.removeItem('isAdmin');
         
-        // Nettoyer l'interface
-        if (document.getElementById('chatOverride')) {
-            document.getElementById('chatOverride').remove();
+        // Actualiser l'interface
+        if (document.getElementById('chatToggleBtn')) {
+            this.container.innerHTML = this.getPseudoHTMLWithoutToggle();
+        } else {
+            this.container.innerHTML = this.getPseudoHTML();
         }
         
+        this.setupListeners();
         this.showNotification('Déconnexion réussie', 'success');
-        
-        // Forcer un rechargement de la page pour nettoyer complètement l'état
-        // Commentez cette ligne si vous préférez ne pas recharger automatiquement
-        // window.location.reload();
-        
         return true;
     } catch (error) {
         console.error('Erreur déconnexion:', error);
@@ -626,89 +628,40 @@ extractPseudoFromEmail(email) {
     const emojiBtn = this.container.querySelector('.emoji-btn');
 
     if (input && sendBtn) {
-        // Définition de sendMessage
         const sendMessage = async () => {
             const content = input.value.trim();
-            if (!content) return;
-            
-            // Créer un élément de message temporaire (pour feedback immédiat)
-            const tempMessage = {
-                id: 'temp-' + Date.now(),
-                pseudo: this.pseudo,
-                content: content,
-                created_at: new Date().toISOString()
-            };
-            
-            // Ajouter le message temporaire immédiatement
-            const messagesContainer = this.container.querySelector('.chat-messages');
-            if (messagesContainer) {
-                const messageElement = this.createMessageElement(tempMessage);
-                messageElement.style.opacity = '0.7'; // Style pour indiquer que c'est en cours d'envoi
-                messagesContainer.appendChild(messageElement);
-                this.scrollToBottom();
-            }
-            
-            // Vider l'input immédiatement
-            input.value = '';
-            
-            // Sur Android, gérer le clavier et l'affichage
-            if (/Android/i.test(navigator.userAgent)) {
-                document.activeElement.blur();
-                
-                // S'assurer que l'interface reste utilisable
-                setTimeout(() => {
-                    input.style.visibility = 'visible';
-                    input.style.display = 'block';
-                    this.scrollToBottom();
-                }, 300);
-            }
-            
-            // Vérifier les mots bannis
-            if (await this.checkForBannedWords(content)) {
-                // Supprimer le message temporaire
-                const tempElement = messagesContainer.querySelector(`[data-message-id="${tempMessage.id}"]`);
-                if (tempElement) tempElement.remove();
-                
-                this.showNotification('Message contient des mots interdits', 'error');
-                this.playSound('error');
-                return;
-            }
-            
-            // Envoyer le message au serveur
-            const success = await this.sendMessage(content);
-            
-            // Si l'envoi échoue, notifier l'utilisateur
-            if (!success) {
-                this.playSound('error');
-                
-                // Supprimer le message temporaire
-                const tempElement = messagesContainer.querySelector(`[data-message-id="${tempMessage.id}"]`);
-                if (tempElement) tempElement.remove();
-            } else {
-                this.playSound('message');
-                
-                // Comportement normal sur autres appareils (non-Android)
-                if (!/Android/i.test(navigator.userAgent)) {
-                    input.focus();
+            if (content) {
+                if (await this.checkForBannedWords(content)) {
+                    this.showNotification('Message contient des mots interdits', 'error');
+                    this.playSound('error');
+                    return;
                 }
+
+                // Vider l'entrée avant d'envoyer pour éviter double envoi
+                input.value = '';
+                
+                // Fermer le clavier immédiatement
+                input.blur();
+                
+                // Empêcher de regagner le focus pendant quelques secondes
+                input.disabled = true;
+                
+                const success = await this.sendMessage(content);
+                if (success) {
+                    this.playSound('message');
+                } else {
+                    this.playSound('error');
+                }
+                
+                // Réactiver l'input après un délai
+                setTimeout(() => {
+                    input.disabled = false;
+                }, 1500); // Attendre 1.5 seconde
             }
         };
 
-        // Ajouter les écouteurs d'événements
-        if (/Mobi|Android/i.test(navigator.userAgent)) {
-            sendBtn.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                sendMessage();
-            });
-        } else {
-            sendBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                sendMessage();
-            });
-        }
-        
+        sendBtn.addEventListener('click', sendMessage);
+
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -724,113 +677,23 @@ extractPseudoFromEmail(email) {
         });
     }
 }
-// Insérer après la fin de setupChatListeners()
-gererClavierMobile() {
-  // Cibler les éléments nécessaires
-  const chatInput = this.container.querySelector('.chat-input textarea');
-  const chatInputContainer = this.container.querySelector('.chat-input');
-  const sendBtn = this.container.querySelector('.send-btn');
-  const messagesContainer = this.container.querySelector('.chat-messages');
-  const chatContainer = this.container.querySelector('.chat-container');
-  
-  if (!chatInput || !sendBtn) return;
-  
-  // Pour les appareils Android uniquement
-  if (/Android/i.test(navigator.userAgent)) {
-    // Quand on clique sur le bouton d'envoi
-    sendBtn.addEventListener('touchend', (e) => {
-      e.preventDefault(); // Empêcher le comportement par défaut
-      
-      // Forcer la disparition du clavier
-      document.activeElement.blur();
-      
-      // Faire défiler le chat pour voir l'input ET les derniers messages
-      setTimeout(() => {
-        // S'assurer que la zone d'input est visible
-        chatInputContainer.style.visibility = 'visible';
-        chatInputContainer.style.display = 'flex';
-        
-        // Défiler pour voir à la fois la zone d'input et les derniers messages
-        if (chatContainer) {
-          chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-        
-        // Force le chat à remonter pour montrer la zone de saisie
-        chatInput.scrollIntoView({ behavior: 'instant', block: 'end' });
-        
-        // Forcer une mise à jour de l'affichage
-        window.requestAnimationFrame(() => {
-          this.scrollToBottom();
-        });
-      }, 300);
-    });
-    
-    // Écouter l'événement focus sur le textarea pour déplacer la vue
-    chatInput.addEventListener('focus', () => {
-      // Retarder légèrement pour laisser le clavier apparaître
-      setTimeout(() => {
-        // Calculer la hauteur visible de la fenêtre
-        const windowHeight = window.innerHeight;
-        // Position verticale absolue de l'input par rapport au haut de la page
-        const inputTop = chatInput.getBoundingClientRect().top;
-        // Calculer le déplacement nécessaire pour que l'input soit visible
-        const scrollY = Math.max(0, inputTop - windowHeight * 0.3);
-        
-        // Faire défiler la page pour voir l'input
-        window.scrollTo(0, scrollY);
-        // Vérifier si l'application est dans une webview Android
-        if (window.AndroidInterface || /Android/i.test(navigator.userAgent)) {
-          chatInputContainer.style.position = 'relative';
-          chatInputContainer.style.bottom = '0';
-          chatInputContainer.style.zIndex = '1000';
-          chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-      }, 300);
-    });
 
-    // Ajuster la position lors de l'apparition du clavier
-    window.addEventListener('resize', () => {
-      if (document.activeElement === chatInput) {
-        // Si le clavier est ouvert (détecté par la réduction de la hauteur)
-        if (window.innerHeight < window.outerHeight * 0.8) {
-          chatInputContainer.style.position = 'relative';
-          chatInputContainer.style.bottom = '0';
-          chatInputContainer.style.zIndex = '1000';
-          // Faire défiler la page pour voir l'input
-          window.scrollTo(0, document.body.scrollHeight);
-        } else {
-          // Clavier fermé
-          chatInputContainer.style.position = 'sticky';
-          chatInputContainer.style.bottom = '0';
-        }
-      }
-    });
-    
-    // Ajout d'un gestionnaire pour les clics dans la zone des messages
-    messagesContainer.addEventListener('click', () => {
-      // S'assurer que l'input est visible après un clic dans les messages
-      setTimeout(() => {
-        chatInputContainer.style.visibility = 'visible';
-        chatInputContainer.style.display = 'flex';
-        chatInput.scrollIntoView({ behavior: 'instant', block: 'end' });
-      }, 100);
-    });
-  }
-}
 // Nouvelle méthode pour gérer le panneau d'emojis
 toggleEmojiPanel() {
     let panel = this.container.querySelector('.emoji-panel');
     
-    // Si le panneau existe déjà, on le ferme en cliquant sur l'icône
+    // Si le panneau existe déjà, on le supprime
     if (panel) {
         panel.remove();
         return;
     }
     
+    // Sinon, on crée le panneau
     panel = document.createElement('div');
     panel.className = 'emoji-panel';
     
-    const emojis = [
+    // Liste des emojis populaires (ajout de plus d'emojis)
+const emojis = [
   '😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', 
   '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙', '😋', '😛', '😜', '😝', 
   '🤑', '🤗', '🤭', '🤫', '🤔', '🤐', '🤨', '😐', '😑', '😶', '😏', '😒', 
@@ -885,6 +748,7 @@ toggleEmojiPanel() {
   '0️⃣', '🔢', '🔠', '🔡'
 ];
     
+    // Ajouter les emojis au panneau
     emojis.forEach(emoji => {
         const span = document.createElement('span');
         span.textContent = emoji;
@@ -896,172 +760,90 @@ toggleEmojiPanel() {
                 const text = textarea.value;
                 textarea.value = text.substring(0, start) + emoji + text.substring(end);
                 textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
-                // Ne pas redonner le focus sur mobile pour éviter l'ouverture du clavier
-                if (!/Mobi|Android/i.test(navigator.userAgent)) {
-                    textarea.focus();
-                }
+                textarea.focus();
             }
+            panel.remove();
             this.playSound('click');
         });
         panel.appendChild(span);
     });
     
+    // Ajouter le panneau au conteneur de chat
     const chatContainer = this.container.querySelector('.chat-container');
     chatContainer.appendChild(panel);
     
+    // Fermer le panneau si on clique ailleurs
     document.addEventListener('click', (e) => {
-        if (!panel.contains(e.target) &&
-            e.target !== this.container.querySelector('.emoji-btn') &&
-            !this.container.querySelector('.emoji-btn').contains(e.target)) {
+        if (!panel.contains(e.target) && e.target !== this.container.querySelector('.emoji-btn') && !this.container.querySelector('.emoji-btn').contains(e.target)) {
             panel.remove();
         }
     }, { once: true });
 }
 
 	setupRealtimeSubscription() {
-    try {
-        console.log("Configuration de la souscription Realtime...");
-        
-        // S'assurer qu'on n'a pas déjà un canal actif
-        if (this.realtimeChannel) {
-            this.supabase.removeChannel(this.realtimeChannel);
-        }
-        
-        this.realtimeChannel = this.supabase
-            .channel('realtime:messages')
-            .on('postgres_changes', {
-                event: '*',  // INSERT, UPDATE, DELETE
-                schema: 'public',
-                table: 'messages'
-            }, (payload) => {
-                console.log('Changement détecté via Realtime:', payload);
-                
-                if (payload.eventType === 'INSERT') {
-                    console.log('Nouveau message reçu:', payload.new);
+        const channel = this.supabase.channel('messages');
+        channel
+            .on('postgres_changes', 
+                { event: 'INSERT', schema: 'public', table: 'messages' },
+                (payload) => {
+                    console.log('Nouveau message:', payload);
                     this.handleNewMessage(payload.new);
-                } 
-                else if (payload.eventType === 'DELETE') {
-                    console.log('Message supprimé:', payload.old);
-                    // Supprimer le message de l'interface
-                    const msgElement = document.querySelector(`[data-message-id="${payload.old.id}"]`);
-                    if (msgElement) msgElement.remove();
                 }
-            })
-            .subscribe((status) => {
-                console.log('Statut de l\'abonnement:', status);
-                
-                if (status === 'SUBSCRIBED') {
-                    console.log('✅ Abonnement Realtime actif!');
-                } else if (status === 'CHANNEL_ERROR') {
-                    console.error('❌ Erreur d\'abonnement au canal');
+            )
+            .on('postgres_changes',
+                { event: 'DELETE', schema: 'public', table: 'messages' },
+                (payload) => {
+                    console.log('Message supprimé:', payload);
+                    const messageElement = this.container.querySelector(`[data-message-id="${payload.old.id}"]`);
+                    if (messageElement) messageElement.remove();
                 }
-            });
-            
-        console.log("Souscription Realtime configurée");
-    } catch (error) {
-        console.error("Erreur configuration Realtime:", error);
+            )
+            .subscribe();
     }
-}
-// Ajoutez la nouvelle méthode ici
-testRealtimeConnection() {
-    console.log("Test de la connexion Realtime...");
-    
-    try {
-        const testChannel = this.supabase.channel('diagnostics')
-            .on('broadcast', { event: 'test' }, (payload) => {
-                console.log('✅ Message de test reçu via broadcast:', payload);
-            })
-            .subscribe(status => {
-                console.log('Statut canal de test:', status);
-                
-                if (status === 'SUBSCRIBED') {
-                    console.log('Canal de test actif');
-                    
-                    // Envoyer un message de test après un court délai
-                    setTimeout(() => {
-                        console.log('Envoi message de test broadcast...');
-                        testChannel.send({
-                            type: 'broadcast',
-                            event: 'test',
-                            payload: { message: 'Test de connection', timestamp: new Date().toISOString() }
-                        });
-                    }, 3000);
-                    
-                    // Après un délai plus long, insérer un message dans la table
-                    setTimeout(async () => {
-                        console.log('Envoi message de test via DB...');
-                        try {
-                            const { data, error } = await this.supabase
-                                .from('messages')
-                                .insert({
-                                    pseudo: 'SYSTEM_TEST',
-                                    content: 'Test de Realtime à ' + new Date().toLocaleTimeString(),
-                                    ip: '127.0.0.1',
-                                    created_at: new Date().toISOString()
-                                })
-                                .select();
-                                
-                            if (error) {
-                                console.error('Erreur test DB:', error);
-                            } else {
-                                console.log('Message de test inséré:', data);
-                            }
-                        } catch (err) {
-                            console.error('Exception test DB:', err);
-                        }
-                    }, 6000);
-                }
-            });
-    } catch (error) {
-        console.error('Erreur test Realtime:', error);
-    }
-}
 
     async handleNewMessage(message) {
-    if (!message) {
-        console.log("Message vide reçu, ignoré");
-        return;
-    }
-    
-    console.log("Traitement du nouveau message:", message);
-    
-    // Vérifier si le conteneur du chat existe
-    const chatContainer = document.getElementById('chatOverride');
-    if (!chatContainer) {
-        console.log("Conteneur du chat non trouvé");
-        return;
-    }
-    
-    const messagesContainer = chatContainer.querySelector('.chat-messages');
-    if (!messagesContainer) {
-        console.log("Conteneur des messages non trouvé");
-        return;
-    }
-
-    // Vérifier si ce message existe déjà (par ID ou contenu identique)
-    const existingMessage = messagesContainer.querySelector(`[data-message-id="${message.id}"]`);
-    if (existingMessage) {
-        console.log("Message déjà affiché:", message.id);
-        return;
-    }
-
-    // Créer et ajouter le message
-    const messageElement = this.createMessageElement(message);
-    messagesContainer.appendChild(messageElement);
-    this.scrollToBottom();
-    
-    // Jouer un son si le message vient d'un autre utilisateur
-    if (message.pseudo !== this.pseudo) {
-        this.playSound('message');
+        if (!message) return;
         
-        // Incrémenter le compteur de messages non lus si le chat n'est pas ouvert
-        if (!this.isOpen) {
-            this.unreadCount++;
-            localStorage.setItem('unreadCount', this.unreadCount.toString());
-            this.updateUnreadBadgeAndBubble();
+        const chatContainer = this.container.querySelector('.chat-container');
+        const chatOpen = chatContainer && chatContainer.classList.contains('open');
+        
+        console.log('État initial du message:', {
+            chatOpen,
+            isOpen: this.isOpen,
+            messageFrom: message.pseudo,
+            myPseudo: this.pseudo,
+            notificationsEnabled: this.notificationsEnabled
+        });
+
+        const messagesContainer = this.container.querySelector('.chat-messages');
+        if (!messagesContainer) return;
+
+        const existingMessage = messagesContainer.querySelector(`[data-message-id="${message.id}"]`);
+        if (existingMessage) return;
+
+        const messageElement = this.createMessageElement(message);
+        messagesContainer.appendChild(messageElement);
+        this.scrollToBottom();
+        
+        if (message.pseudo !== this.pseudo) {
+            this.playSound('message');
+            
+            if (!chatOpen) {
+                this.unreadCount++;
+                localStorage.setItem('unreadCount', this.unreadCount.toString());
+                
+                if (this.notificationsEnabled) {
+                    try {
+                        await this.sendNotificationToUser(message);
+                    } catch (error) {
+                        console.error('Erreur notification:', error);
+                    }
+                }
+                
+                this.updateUnreadBadgeAndBubble();
+            }
         }
     }
-}
 
     formatMessageTime(timestamp) {
     const date = new Date(timestamp);
@@ -1174,51 +956,31 @@ createMessageElement(message) {
 }
 
     async loadExistingMessages() {
-    try {
-        console.log("Chargement des messages...");
-        
-        const { data: messages, error } = await this.supabase
-            .from('messages')
-            .select('*')
-            .order('created_at', { ascending: true });
-            
-        if (error) throw error;
-        
-        const container = this.container.querySelector('.chat-messages');
-        if (container) {
-            container.innerHTML = '';
-            
-            if (!messages || messages.length === 0) {
-                // Ajouter un message quand le chat est vide
-                const emptyState = document.createElement('div');
-                emptyState.className = 'empty-chat-state';
-                emptyState.innerHTML = `
-                    <div class="empty-icon">💬</div>
-                    <div class="empty-title">Aucun message</div>
-                    <div class="empty-text">Soyez le premier à envoyer un message!</div>
-                `;
-                container.appendChild(emptyState);
-            } else {
-                // Ajouter les messages normalement
+        try {
+            const { data: messages, error } = await this.supabase
+                .from('messages')
+                .select('*')
+                .order('created_at', { ascending: true });
+
+            if (error) throw error;
+
+            const container = this.container.querySelector('.chat-messages');
+            if (container && messages) {
+                container.innerHTML = '';
                 messages.forEach(msg => {
                     container.appendChild(this.createMessageElement(msg));
                 });
+                this.scrollToBottom();
             }
-            
-            this.scrollToBottom();
+        } catch (error) {
+            console.error('Erreur chargement messages:', error);
+            this.showNotification('Erreur chargement messages', 'error');
         }
-    } catch (error) {
-        console.error('Erreur chargement messages:', error);
-        this.showNotification('Erreur chargement messages', 'error');
     }
-}
 
     async sendMessage(content) { 
     try {
-        // Obtenir l'IP du client
         const ip = await this.getClientIP();
-        
-        // Vérifier si l'IP est bannie
         const isBanned = await this.checkBannedIP(ip);
         
         if (isBanned) {
@@ -1226,7 +988,7 @@ createMessageElement(message) {
             return false;
         }
 
-        // Créer l'objet message avec l'IP
+        // Ne pas utiliser supabase.auth.getUser()
         const message = {
             pseudo: this.pseudo,
             content: content,
@@ -1234,41 +996,31 @@ createMessageElement(message) {
             created_at: new Date().toISOString()
         };
 
-        // Envoyer le message à Supabase
         const { data, error } = await this.supabase
             .from('messages')
             .insert(message)
             .select()
             .single();
 
-        if (error) {
-            console.error('Erreur insertion message:', error);
-            throw error;
-        }
+        if (error) throw error;
 
-        // Envoi de la notification push si configurée
-        try {
-            await fetch("/api/sendPush.js", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    message: content,
-                    fromUser: this.pseudo,
-                    toUser: "all"
-                })
+        // Envoi de la notification
+        await fetch("/api/sendPush.js", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                message: content,
+                fromUser: this.pseudo,
+                toUser: "all"
             })
-            .then(response => response.json())
-            .then(data => console.log("✅ Notification envoyée :", data))
-            .catch(err => console.error("❌ Erreur lors de l'envoi de la notification :", err));
-        } catch (notifError) {
-            // Ne pas faire échouer l'envoi du message si la notification échoue
-            console.error("Erreur notification:", notifError);
-        }
+        })
+        .then(response => response.json())
+        .then(data => console.log("✅ Notification envoyée :", data))
+        .catch(err => console.error("❌ Erreur lors de l'envoi de la notification :", err));
 
         return true;
     } catch (error) {
         console.error('Erreur sendMessage:', error);
-        this.showNotification('Erreur lors de l\'envoi du message: ' + error.message, 'error');
         return false;
     }
 }
@@ -1600,40 +1352,16 @@ async unsubscribeFromPushNotifications() {
         return outputArray;
     }
 
-    // Modifiez la méthode showNotification pour utiliser votre propre système 
-// au lieu des alertes standards
-showNotification(message, type = 'info') {
-    // Empêcher les notifications du système (alert)
-    if (message.includes("Message contient des mots interdits")) {
-        // Créer une notification stylisée
+    showNotification(message, type = 'info') {
         const notification = document.createElement('div');
         notification.className = `notification-popup ${type}`;
         notification.textContent = message;
         document.body.appendChild(notification);
         
-        // Supprimer après 3 secondes
         setTimeout(() => {
             notification.remove();
         }, 3000);
-        
-        // Jouer un son si activé
-        if (this.soundEnabled) {
-            this.playSound('error');
-        }
-        
-        return;
     }
-    
-    // Notification standard pour les autres messages
-    const notification = document.createElement('div');
-    notification.className = `notification-popup ${type}`;
-    notification.textContent = message;
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.remove();
-    }, 3000);
-}
 
     updateNotificationButton() {
         const notifBtn = this.container.querySelector('.notifications-btn');
@@ -1653,32 +1381,29 @@ showNotification(message, type = 'info') {
 
     // Mettez à jour la fonction qui gère les notifications
 updateUnreadBadgeAndBubble() {
-    // On récupère le bouton de chat via son ID
+    // Mettre à jour le badge sur le bouton de la barre de navigation
     const chatToggleBtn = document.getElementById('chatToggleBtn');
     if (chatToggleBtn) {
-        // Met à jour le badge de notification
         const badge = chatToggleBtn.querySelector('.chat-notification-badge');
         if (badge) {
             badge.textContent = this.unreadCount || '';
             badge.classList.toggle('hidden', this.unreadCount === 0);
         }
+    }
 
-        // On récupère la bulle si elle existe déjà
-        const existingBubble = chatToggleBtn.querySelector('.info-bubble');
-        // Si le chat est ouvert ou s'il n'y a pas de messages non lus, on supprime la bulle
-        if (this.isOpen || this.unreadCount === 0) {
-            if (existingBubble) {
-                existingBubble.remove();
-            }
-        } else {
-            // Sinon, on la met à jour
-            if (existingBubble) {
-                existingBubble.remove();
-            }
+    // Afficher une info-bulle si le chat est fermé et il y a des messages non lus
+    if (!this.isOpen && this.unreadCount > 0) {
+        const chatToggle = this.container.querySelector('.chat-toggle');
+        const existingBubble = chatToggle?.querySelector('.info-bubble');
+        if (existingBubble) {
+            existingBubble.remove();
+        }
+
+        if (chatToggle) {
             const bubble = document.createElement('div');
             bubble.className = 'info-bubble show';
             bubble.innerHTML = `<div style="font-weight: bold;">${this.unreadCount} nouveau(x) message(s)</div>`;
-            chatToggleBtn.appendChild(bubble);
+            chatToggle.appendChild(bubble);
         }
     }
 }
@@ -1693,114 +1418,69 @@ updateUnreadBadgeAndBubble() {
     }
 
     scrollToBottom() {
-    const messagesContainer = this.container.querySelector('.chat-messages');
-    const chatInput = this.container.querySelector('.chat-input');
-    const chatContainer = this.container.querySelector('.chat-container');
-    
-    if (messagesContainer) {
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-    
-    // Sur mobile, s'assurer que l'input reste visible
-    if (/Android|iPhone|iPad/i.test(navigator.userAgent) && chatInput && chatContainer) {
-        // Défiler le chat
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-        
-        // Si le clavier est visible (détecté par la hauteur de fenêtre)
-        if (window.innerHeight < window.outerHeight * 0.8) {
-            // Forcer le défilement de la page entière
-            window.scrollTo(0, document.body.scrollHeight);
-            
-            // Sur Android spécifiquement
-            if (/Android/i.test(navigator.userAgent)) {
-                // Position supplémentaire si le chat est intégré dans une page
-                chatInput.scrollIntoView({ behavior: 'instant', block: 'end' });
-            }
+        const messagesContainer = this.container.querySelector('.chat-messages');
+        if (messagesContainer) {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
     }
-}
-
 showAdminPanel() {
-    if (!this.isAdmin) return;
+        if (!this.isAdmin) return;
 
-    const existingPanel = document.querySelector('.admin-panel');
-    if (existingPanel) {
-        existingPanel.remove();
-        return;
-    }
+        const existingPanel = document.querySelector('.admin-panel');
+        if (existingPanel) {
+            existingPanel.remove();
+            return;
+        }
 
-    const panel = document.createElement('div');
-    panel.className = 'admin-panel';
-    panel.style.zIndex = "9999999"; // Forcez un z-index élevé
-    
-    panel.innerHTML = `
-        <div class="panel-header">
-            <h3>Panel Admin</h3>
-            <button class="close-panel">
-                <span class="material-icons">close</span>
-            </button>
-        </div>
-        <div class="panel-content">
-            <div class="section">
-                <h4>Mots bannis</h4>
-                <div class="add-word">
-                    <input type="text" placeholder="Nouveau mot à bannir">
-                    <button class="add-word-btn">Ajouter</button>
-                </div>
-                <div class="banned-words-list"></div>
+        const panel = document.createElement('div');
+        panel.className = 'admin-panel';
+        panel.innerHTML = `
+            <div class="panel-header">
+                <h3>Panel Admin</h3>
+                <button class="close-panel">
+                    <span class="material-icons">close</span>
+                </button>
             </div>
-        </div>
-    `;
+            <div class="panel-content">
+                <div class="section">
+                    <h4>Mots bannis</h4>
+                    <div class="add-word">
+                        <input type="text" placeholder="Nouveau mot à bannir">
+                        <button class="add-word-btn">Ajouter</button>
+                    </div>
+                    <div class="banned-words-list"></div>
+                </div>
+            </div>
+        `;
 
-    document.body.appendChild(panel);
-    this.loadBannedWords();
+        document.body.appendChild(panel);
+        this.loadBannedWords();
 
-    const addWordBtn = panel.querySelector('.add-word-btn');
-    const wordInput = panel.querySelector('.add-word input');
+        const addWordBtn = panel.querySelector('.add-word-btn');
+        const wordInput = panel.querySelector('.add-word input');
 
-    if (addWordBtn && wordInput) {
         addWordBtn.addEventListener('click', async () => {
             const word = wordInput.value.trim().toLowerCase();
             if (word) {
-                console.log("Tentative d'ajout du mot:", word);
                 await this.addBannedWord(word);
                 wordInput.value = '';
                 await this.loadBannedWords();
             }
         });
+
+        panel.querySelector('.close-panel').addEventListener('click', () => panel.remove());
     }
 
-    panel.querySelector('.close-panel').addEventListener('click', () => panel.remove());
-}
+    async addBannedWord(word) {
+        const { error } = await this.supabase
+            .from('banned_words')
+            .insert({ word: word });
 
-    // Modifiez la méthode addBannedWord() pour inclure l'authentification admin explicite
-async addBannedWord(word) {
-    try {
-        console.log("Ajout du mot banni:", word);
-        
-        // Utiliser une fonction RPC spéciale que vous créerez dans Supabase
-        // Cette fonction ignorera les restrictions RLS
-        const { data, error } = await this.supabase.rpc('admin_add_banned_word', {
-            word_to_add: word,
-            admin_pseudo: this.pseudo
-        });
-
-        if (error) {
-            console.error("Erreur ajout mot banni:", error);
-            this.showNotification('Erreur lors de l\'ajout du mot: ' + error.message, 'error');
-            return false;
+        if (!error) {
+            this.bannedWords.add(word);
+            this.showNotification('Mot ajouté avec succès', 'success');
         }
-
-        this.bannedWords.add(word);
-        this.showNotification('Mot ajouté avec succès', 'success');
-        console.log("Mot ajouté avec succès");
-        return true;
-    } catch (error) {
-        console.error("Exception lors de l'ajout du mot:", error);
-        this.showNotification('Erreur lors de l\'ajout du mot: ' + error.message, 'error');
-        return false;
     }
-}
 
     async removeBannedWord(word) {
         const { error } = await this.supabase
@@ -2017,480 +1697,6 @@ async addBannedWord(word) {
             pushManagerSubscribed: !!(await (await navigator.serviceWorker.ready).pushManager.getSubscription())
         });
     }
-    
-    // Ajouter cette nouvelle méthode ici
-    fixCloseButton() {
-    try {
-        console.log("Exécution de fixCloseButton");
-        
-        // Vérifier si le container existe
-        if (!this.container) {
-            console.log("Container not available for fixCloseButton");
-            return;
-        }
-        
-        // Trouver la barre d'en-tête et les boutons
-        const chatHeader = this.container.querySelector('.chat-header');
-        if (!chatHeader) {
-            console.log("Chat header not found");
-            return;
-        }
-        
-        const headerButtons = chatHeader.querySelector('.header-buttons');
-        if (!headerButtons) {
-            console.log("Header buttons container not found");
-            return;
-        }
-        
-        // Supprimer l'ancien bouton s'il existe
-        const oldCloseBtn = headerButtons.querySelector('.close-chat');
-        if (oldCloseBtn) {
-            oldCloseBtn.remove();
-            console.log("Removed old close button");
-        }
-        
-        // Créer un nouveau bouton de fermeture
-        const newCloseBtn = document.createElement('button');
-        newCloseBtn.className = 'close-chat';
-        newCloseBtn.setAttribute('title', 'Fermer');
-        newCloseBtn.innerHTML = '<span class="material-icons">close</span>';
-        
-        // Ajouter le bouton à la barre d'en-tête
-        headerButtons.appendChild(newCloseBtn);
-        console.log("Added new close button");
-        
-        // Définir le gestionnaire de fermeture
-        const closeChat = (e) => {
-            console.log("Close button clicked/touched");
-            e.preventDefault();
-            e.stopPropagation();
-            
-            this.isOpen = false;
-            localStorage.setItem('chatOpen', 'false');
-            
-            const chatContainer = this.container.querySelector('.chat-container');
-            if (chatContainer) {
-                chatContainer.classList.remove('open');
-                console.log("Chat container closed");
-            } else {
-                console.error("Chat container not found");
-            }
-            
-            this.playSound('click');
-        };
-        
-        // Ajouter des gestionnaires d'événements directs
-        newCloseBtn.addEventListener('click', closeChat, { capture: true });
-        newCloseBtn.addEventListener('touchend', closeChat, { capture: true });
-        
-        // Ajouter une trace visuelle pour le débogage
-        console.log("Close button setup complete");
-    } catch (error) {
-        console.error("Error in fixCloseButton:", error);
-    }
-}
-
-forceMobileLayout() {
-  if (!/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-    return; // Ne rien faire sur les appareils non-mobiles
-  }
-  
-  console.log("Forçage de la mise en page mobile...");
-  
-  try {
-    // Récupérer les éléments
-    const chatContainer = this.container.querySelector('.chat-container');
-    if (!chatContainer) return;
-    
-    // Forcer les styles du conteneur
-    chatContainer.style.position = 'fixed';
-    chatContainer.style.top = '0';
-    chatContainer.style.left = '0';
-    chatContainer.style.right = '0';
-    chatContainer.style.bottom = '0';
-    chatContainer.style.width = '100vw';
-    chatContainer.style.height = '100vh';
-    chatContainer.style.zIndex = '9999';
-    chatContainer.style.display = 'flex';
-    chatContainer.style.flexDirection = 'column';
-    chatContainer.style.background = '#6441a5';
-    
-    // S'assurer que l'en-tête est visible
-    const header = chatContainer.querySelector('.chat-header');
-    if (header) {
-      header.style.minHeight = '60px';
-      header.style.background = '#4a2b9b';
-      header.style.display = 'flex';
-      header.style.padding = '10px 15px';
-      header.style.zIndex = '10001';
-    }
-    
-    // S'assurer que la zone de saisie est visible
-    const inputArea = chatContainer.querySelector('.chat-input');
-    if (inputArea) {
-      inputArea.style.position = 'fixed';
-      inputArea.style.bottom = '0';
-      inputArea.style.left = '0';
-      inputArea.style.right = '0';
-      inputArea.style.height = '70px';
-      inputArea.style.background = '#4a2b9b';
-      inputArea.style.padding = '10px 15px';
-      inputArea.style.zIndex = '10000';
-      inputArea.style.display = 'flex';
-    }
-    
-    // S'assurer que la zone des messages a le bon padding
-    const messagesArea = chatContainer.querySelector('.chat-messages');
-    if (messagesArea) {
-      messagesArea.style.paddingBottom = '80px';
-      messagesArea.style.flex = '1';
-    }
-    
-    console.log("Mise en page mobile forcée avec succès");
-  } catch (error) {
-    console.error("Erreur lors du forçage de la mise en page mobile:", error);
-  }
-}
-resetChatUI() {
-    try {
-        console.log("Réinitialisation complète de l'interface du chat");
-        
-        // Supprimer l'ancien conteneur s'il existe
-        const oldContainer = document.getElementById('chatOverride');
-        if (oldContainer) {
-            oldContainer.remove();
-        }
-        
-        // Vérifier si l'utilisateur est authentifié
-        if (!this.pseudo) {
-            console.log("L'utilisateur n'est pas authentifié, affichage de l'écran de connexion");
-            // Créer l'interface de connexion
-            const loginContainer = document.createElement('div');
-            loginContainer.id = 'chatOverride';
-            
-            loginContainer.innerHTML = `
-                <div class="chat-container">
-                    <div class="chat-header">
-                        <div class="header-title">Connexion au chat</div>
-                        <div class="header-buttons">
-                            <button class="close-chat" title="Fermer">✕</button>
-                        </div>
-                    </div>
-                    <div class="chat-login">
-                        <input type="text" id="pseudoInput" placeholder="Entrez votre pseudo (3-20 caractères)" maxlength="20">
-                        <input type="password" id="adminPassword" placeholder="Mot de passe admin (jhd71)" style="display: none;">
-                        <div class="login-buttons">
-                            <button id="confirmPseudo">Confirmer</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(loginContainer);
-            this.container = loginContainer;
-            
-            // Ajouter les écouteurs d'événements pour l'interface de connexion
-            const closeBtn = loginContainer.querySelector('.close-chat');
-            if (closeBtn) {
-                closeBtn.addEventListener('click', () => {
-                    console.log("Bouton fermeture de login cliqué");
-                    loginContainer.style.display = 'none';
-                    this.isOpen = false;
-                });
-            }
-            
-            const pseudoInput = loginContainer.querySelector('#pseudoInput');
-            const adminPasswordInput = loginContainer.querySelector('#adminPassword');
-            const confirmButton = loginContainer.querySelector('#confirmPseudo');
-            
-            if (pseudoInput) {
-                pseudoInput.addEventListener('input', () => {
-                    if (pseudoInput.value.trim() === 'jhd71') {
-                        adminPasswordInput.style.display = 'block';
-                    } else {
-                        adminPasswordInput.style.display = 'none';
-                        adminPasswordInput.value = '';
-                    }
-                });
-            }
-            
-            if (confirmButton) {
-                confirmButton.addEventListener('click', async () => {
-                    const pseudo = pseudoInput?.value.trim();
-                    const adminPassword = adminPasswordInput?.value;
-                    
-                    if (!pseudo || pseudo.length < 3) {
-                        alert('Le pseudo doit faire au moins 3 caractères');
-                        return;
-                    }
-                    
-                    try {
-                        // Cas administrateur
-                        let isAdmin = false;
-                        if (pseudo === 'jhd71') {
-                            if (adminPassword !== 'admin2024') {
-                                alert('Mot de passe administrateur incorrect');
-                                return;
-                            }
-                            isAdmin = true;
-                        }
-                        
-                        // Vérifier si l'utilisateur existe déjà
-                        const { data: existingUser, error: queryError } = await this.supabase
-                            .from('users')
-                            .select('*')
-                            .eq('pseudo', pseudo)
-                            .single();
-                        
-                        // Si l'utilisateur n'existe pas, le créer
-                        if (!existingUser || (queryError && queryError.code === 'PGRST116')) {
-                            const { data: newUser, error: insertError } = await this.supabase
-                                .from('users')
-                                .insert([
-                                    { 
-                                        pseudo: pseudo,
-                                        last_active: new Date().toISOString(),
-                                        is_admin: isAdmin,
-                                        requires_password: true
-                                    }
-                                ])
-                                .select();
-                            
-                            if (insertError) {
-                                throw insertError;
-                            }
-                        }
-                        
-                        // Définir les variables de session
-                        this.pseudo = pseudo;
-                        this.isAdmin = isAdmin;
-                        localStorage.setItem('chatPseudo', pseudo);
-                        localStorage.setItem('isAdmin', isAdmin);
-                        
-                        // Fermer l'interface de connexion et ouvrir le chat
-                        loginContainer.remove();
-                        this.resetChatUI();
-                    } catch (error) {
-                        console.error('Erreur d\'authentification:', error);
-                        alert('Erreur lors de la connexion: ' + error.message);
-                    }
-                });
-            }
-            
-            return true;
-        }
-        
-        // Créer le conteneur de chat avec l'interface complète pour un utilisateur authentifié
-        const chatContainer = document.createElement('div');
-        chatContainer.id = 'chatOverride';
-        
-        // Insérer le HTML du chat avec tous les boutons
-        chatContainer.innerHTML = `
-            <div class="chat-container">
-                <div class="chat-header">
-                    <div class="header-title">Chat - ${this.pseudo}</div>
-                    <div class="header-buttons">
-                        ${this.isAdmin ? `
-                            <button class="admin-panel-btn" title="Panel Admin">
-                                <span class="material-icons">admin_panel_settings</span>
-                            </button>
-                        ` : ''}
-                        <button class="emoji-btn" title="Emojis">
-                            <span class="material-icons">emoji_emotions</span>
-                        </button>
-                        <button class="notifications-btn ${this.notificationsEnabled ? 'enabled' : ''}" title="Notifications">
-                            <span class="material-icons">${this.notificationsEnabled ? 'notifications_active' : 'notifications_off'}</span>
-                        </button>
-                        <button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
-                            <span class="material-icons">${this.soundEnabled ? 'volume_up' : 'volume_off'}</span>
-                        </button>
-                        <button class="logout-btn" title="Déconnexion">
-                            <span class="material-icons">logout</span>
-                        </button>
-                        <button class="close-chat" title="Fermer">
-                            <span class="material-icons">close</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="chat-messages"></div>
-                <div class="chat-input">
-                    <textarea placeholder="Votre message..." maxlength="500" rows="1"></textarea>
-                    <button class="send-btn" title="Envoyer">
-                        <span class="material-icons">send</span>
-                    </button>
-                </div>
-            </div>
-        `;
-        
-        // Ajouter le conteneur au document
-        document.body.appendChild(chatContainer);
-        this.container = chatContainer;
-        
-        // Gérer le bouton de fermeture
-        const closeBtn = chatContainer.querySelector('.close-chat');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', () => {
-                console.log("Bouton fermeture cliqué");
-                chatContainer.style.display = 'none';
-                this.isOpen = false;
-                localStorage.setItem('chatOpen', 'false');
-            });
-        }
-        
-        // Gérer le bouton d'émojis
-        const emojiBtn = chatContainer.querySelector('.emoji-btn');
-        if (emojiBtn) {
-            emojiBtn.addEventListener('click', () => {
-                this.toggleEmojiPanel();
-            });
-        }
-        
-        // Gérer le bouton de son
-        const soundBtn = chatContainer.querySelector('.sound-btn');
-        if (soundBtn) {
-            soundBtn.addEventListener('click', () => {
-                this.soundEnabled = !this.soundEnabled;
-                localStorage.setItem('soundEnabled', this.soundEnabled);
-                soundBtn.classList.toggle('enabled', this.soundEnabled);
-                soundBtn.querySelector('.material-icons').textContent = 
-                    this.soundEnabled ? 'volume_up' : 'volume_off';
-                if (this.soundEnabled) {
-                    this.playSound('click');
-                }
-            });
-        }
-        
-        // Gérer le bouton de notifications
-        const notificationsBtn = chatContainer.querySelector('.notifications-btn');
-        if (notificationsBtn) {
-            notificationsBtn.addEventListener('click', async () => {
-                try {
-                    if (this.notificationsEnabled) {
-                        await this.unsubscribeFromPushNotifications();
-                    } else {
-                        await this.setupPushNotifications();
-                    }
-                    this.playSound('click');
-                } catch (error) {
-                    console.error('Erreur gestion notifications:', error);
-                    alert('Erreur avec les notifications: ' + error.message);
-                }
-            });
-        }
-        
-        // Gérer le bouton admin
-        const adminBtn = chatContainer.querySelector('.admin-panel-btn');
-        if (adminBtn && this.isAdmin) {
-            adminBtn.addEventListener('click', () => {
-                this.showAdminPanel();
-                this.playSound('click');
-            });
-        }
-        
-        // Gérer le bouton de déconnexion
-        const logoutBtn = chatContainer.querySelector('.logout-btn');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', async () => {
-                await this.logout();
-                this.playSound('click');
-                // Fermer le chat après la déconnexion
-                chatContainer.remove();
-            });
-        }
-        
-        // Gérer l'envoi de messages
-        const sendBtn = chatContainer.querySelector('.send-btn');
-        const textarea = chatContainer.querySelector('textarea');
-        
-        if (sendBtn && textarea) {
-            sendBtn.addEventListener('click', async () => {
-                console.log("Bouton envoi cliqué");
-                const content = textarea.value.trim();
-                if (content) {
-                    // Créer un message temporaire pour feedback immédiat
-                    const tempMessage = {
-                        id: 'temp-' + Date.now(),
-                        pseudo: this.pseudo,
-                        content: content,
-                        created_at: new Date().toISOString()
-                    };
-                    
-                    const messagesContainer = chatContainer.querySelector('.chat-messages');
-                    if (messagesContainer) {
-                        const messageElement = this.createMessageElement(tempMessage);
-                        messageElement.style.opacity = '0.7';
-                        messagesContainer.appendChild(messageElement);
-                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                    }
-                    
-                    // Vider l'input immédiatement
-                    textarea.value = '';
-                    
-                    // Vérifier les mots bannis et envoyer le message
-                    if (await this.checkForBannedWords(content)) {
-                        // Supprimer le message temporaire
-                        const tempElement = messagesContainer.querySelector(`[data-message-id="${tempMessage.id}"]`);
-                        if (tempElement) tempElement.remove();
-                        alert('Message contient des mots interdits');
-                        this.playSound('error');
-                    } else {
-                        // Envoyer le message
-                        const success = await this.sendMessage(content);
-                        if (!success) {
-                            // Supprimer le message temporaire en cas d'échec
-                            const tempElement = messagesContainer.querySelector(`[data-message-id="${tempMessage.id}"]`);
-                            if (tempElement) tempElement.remove();
-                            alert('Erreur lors de l\'envoi du message');
-                            this.playSound('error');
-                        } else {
-                            this.playSound('message');
-                        }
-                    }
-                }
-            });
-            
-            textarea.addEventListener('keydown', async (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    // Simuler un clic sur le bouton d'envoi
-                    sendBtn.click();
-                }
-            });
-        }
-        
-        // Charger les messages existants
-        this.loadExistingMessages();
-        
-        console.log("Interface du chat réinitialisée avec succès");
-        return true;
-    } catch (error) {
-        console.error("Erreur lors de la réinitialisation de l'interface:", error);
-        return false;
-    }
-}
-
-setupChatToggleBtn() {
-    const chatToggleBtn = document.getElementById('chatToggleBtn');
-    if (chatToggleBtn) {
-        chatToggleBtn.addEventListener('click', () => {
-            console.log("Bouton de chat de la barre de navigation cliqué");
-            const chatOverride = document.getElementById('chatOverride');
-            if (chatOverride) {
-                if (chatOverride.style.display === 'none') {
-                    chatOverride.style.display = 'block';
-                    this.isOpen = true;
-                } else {
-                    chatOverride.style.display = 'none';
-                    this.isOpen = false;
-                }
-            } else {
-                this.resetChatUI();
-                this.isOpen = true;
-            }
-        });
-    }
-}
-
 }
 
 export default ChatManager;
