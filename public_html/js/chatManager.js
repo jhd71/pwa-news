@@ -568,15 +568,17 @@ async logout() {
         localStorage.removeItem('chatPseudo');
         localStorage.removeItem('isAdmin');
         
-        // Actualiser l'interface
-        if (document.getElementById('chatToggleBtn')) {
-            this.container.innerHTML = this.getPseudoHTMLWithoutToggle();
-        } else {
-            this.container.innerHTML = this.getPseudoHTML();
+        // Nettoyer l'interface
+        if (document.getElementById('chatOverride')) {
+            document.getElementById('chatOverride').remove();
         }
         
-        this.setupListeners();
         this.showNotification('Déconnexion réussie', 'success');
+        
+        // Forcer un rechargement de la page pour nettoyer complètement l'état
+        // Commentez cette ligne si vous préférez ne pas recharger automatiquement
+        // window.location.reload();
+        
         return true;
     } catch (error) {
         console.error('Erreur déconnexion:', error);
@@ -1103,7 +1105,10 @@ createMessageElement(message) {
 
     async sendMessage(content) { 
     try {
+        // Obtenir l'IP du client
         const ip = await this.getClientIP();
+        
+        // Vérifier si l'IP est bannie
         const isBanned = await this.checkBannedIP(ip);
         
         if (isBanned) {
@@ -1111,7 +1116,7 @@ createMessageElement(message) {
             return false;
         }
 
-        // Ne pas utiliser supabase.auth.getUser()
+        // Créer l'objet message avec l'IP
         const message = {
             pseudo: this.pseudo,
             content: content,
@@ -1119,31 +1124,41 @@ createMessageElement(message) {
             created_at: new Date().toISOString()
         };
 
+        // Envoyer le message à Supabase
         const { data, error } = await this.supabase
             .from('messages')
             .insert(message)
             .select()
             .single();
 
-        if (error) throw error;
+        if (error) {
+            console.error('Erreur insertion message:', error);
+            throw error;
+        }
 
-        // Envoi de la notification
-        await fetch("/api/sendPush.js", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                message: content,
-                fromUser: this.pseudo,
-                toUser: "all"
+        // Envoi de la notification push si configurée
+        try {
+            await fetch("/api/sendPush.js", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    message: content,
+                    fromUser: this.pseudo,
+                    toUser: "all"
+                })
             })
-        })
-        .then(response => response.json())
-        .then(data => console.log("✅ Notification envoyée :", data))
-        .catch(err => console.error("❌ Erreur lors de l'envoi de la notification :", err));
+            .then(response => response.json())
+            .then(data => console.log("✅ Notification envoyée :", data))
+            .catch(err => console.error("❌ Erreur lors de l'envoi de la notification :", err));
+        } catch (notifError) {
+            // Ne pas faire échouer l'envoi du message si la notification échoue
+            console.error("Erreur notification:", notifError);
+        }
 
         return true;
     } catch (error) {
         console.error('Erreur sendMessage:', error);
+        this.showNotification('Erreur lors de l\'envoi du message: ' + error.message, 'error');
         return false;
     }
 }
@@ -1895,69 +1910,74 @@ async addBannedWord(word) {
     
     // Ajouter cette nouvelle méthode ici
     fixCloseButton() {
-  console.log('Exécution de fixCloseButton');
-  
-  try {
-    // Trouver la barre d'en-tête et les boutons
-    const chatHeader = this.container.querySelector('.chat-header');
-    const headerButtons = this.container.querySelector('.header-buttons');
-    
-    if (!chatHeader) {
-      console.error('Chat header not found');
-      return;
+    try {
+        console.log("Exécution de fixCloseButton");
+        
+        // Vérifier si le container existe
+        if (!this.container) {
+            console.log("Container not available for fixCloseButton");
+            return;
+        }
+        
+        // Trouver la barre d'en-tête et les boutons
+        const chatHeader = this.container.querySelector('.chat-header');
+        if (!chatHeader) {
+            console.log("Chat header not found");
+            return;
+        }
+        
+        const headerButtons = chatHeader.querySelector('.header-buttons');
+        if (!headerButtons) {
+            console.log("Header buttons container not found");
+            return;
+        }
+        
+        // Supprimer l'ancien bouton s'il existe
+        const oldCloseBtn = headerButtons.querySelector('.close-chat');
+        if (oldCloseBtn) {
+            oldCloseBtn.remove();
+            console.log("Removed old close button");
+        }
+        
+        // Créer un nouveau bouton de fermeture
+        const newCloseBtn = document.createElement('button');
+        newCloseBtn.className = 'close-chat';
+        newCloseBtn.setAttribute('title', 'Fermer');
+        newCloseBtn.innerHTML = '<span class="material-icons">close</span>';
+        
+        // Ajouter le bouton à la barre d'en-tête
+        headerButtons.appendChild(newCloseBtn);
+        console.log("Added new close button");
+        
+        // Définir le gestionnaire de fermeture
+        const closeChat = (e) => {
+            console.log("Close button clicked/touched");
+            e.preventDefault();
+            e.stopPropagation();
+            
+            this.isOpen = false;
+            localStorage.setItem('chatOpen', 'false');
+            
+            const chatContainer = this.container.querySelector('.chat-container');
+            if (chatContainer) {
+                chatContainer.classList.remove('open');
+                console.log("Chat container closed");
+            } else {
+                console.error("Chat container not found");
+            }
+            
+            this.playSound('click');
+        };
+        
+        // Ajouter des gestionnaires d'événements directs
+        newCloseBtn.addEventListener('click', closeChat, { capture: true });
+        newCloseBtn.addEventListener('touchend', closeChat, { capture: true });
+        
+        // Ajouter une trace visuelle pour le débogage
+        console.log("Close button setup complete");
+    } catch (error) {
+        console.error("Error in fixCloseButton:", error);
     }
-    
-    if (!headerButtons) {
-      console.error('Header buttons container not found');
-      return;
-    }
-    
-    // Supprimer l'ancien bouton s'il existe
-    const oldCloseBtn = headerButtons.querySelector('.close-chat');
-    if (oldCloseBtn) {
-      oldCloseBtn.remove();
-      console.log('Removed old close button');
-    }
-    
-    // Créer un nouveau bouton de fermeture
-    const newCloseBtn = document.createElement('button');
-    newCloseBtn.className = 'close-chat';
-    newCloseBtn.setAttribute('title', 'Fermer');
-    newCloseBtn.innerHTML = '<span class="material-icons">close</span>';
-    
-    // Ajouter le bouton à la barre d'en-tête
-    headerButtons.appendChild(newCloseBtn);
-    console.log('Added new close button');
-    
-    // Définir le gestionnaire de fermeture
-    const closeChat = (e) => {
-      console.log('Close button clicked/touched');
-      e.preventDefault();
-      e.stopPropagation();
-      
-      this.isOpen = false;
-      localStorage.setItem('chatOpen', 'false');
-      
-      const chatContainer = this.container.querySelector('.chat-container');
-      if (chatContainer) {
-        chatContainer.classList.remove('open');
-        console.log('Chat container closed');
-      } else {
-        console.error('Chat container not found');
-      }
-      
-      this.playSound('click');
-    };
-    
-    // Ajouter des gestionnaires d'événements directs
-    newCloseBtn.addEventListener('click', closeChat, { capture: true });
-    newCloseBtn.addEventListener('touchend', closeChat, { capture: true });
-    
-    // Ajouter une trace visuelle pour le débogage
-    console.log('Close button setup complete');
-  } catch (error) {
-    console.error('Error in fixCloseButton:', error);
-  }
 }
 
 forceMobileLayout() {
