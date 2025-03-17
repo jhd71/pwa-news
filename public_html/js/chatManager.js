@@ -1060,27 +1060,62 @@ createMessageElement(message) {
 }
 
     async loadExistingMessages() {
+    try {
+        console.log("Chargement des messages...");
+        
+        // Vérifier que le container est correctement initialisé
+        if (!this.container) {
+            console.error("Container non initialisé");
+            return;
+        }
+        
+        const { data: messages, error } = await this.supabase
+            .from('messages')
+            .select('*')
+            .order('created_at', { ascending: true });
+            
+        if (error) {
+            console.error("Erreur Supabase:", error);
+            throw error;
+        }
+        
+        console.log(`${messages ? messages.length : 0} messages récupérés:`, messages);
+        
+        const container = this.container.querySelector('.chat-messages');
+        if (!container) {
+            console.error("Conteneur de messages non trouvé dans:", this.container);
+            return;
+        }
+        
+        if (messages && messages.length > 0) {
+            container.innerHTML = '';
+            
+            messages.forEach(msg => {
+                try {
+                    const element = this.createMessageElement(msg);
+                    container.appendChild(element);
+                } catch (msgError) {
+                    console.error(`Erreur création message ${msg.id}:`, msgError);
+                }
+            });
+            
+            console.log("Messages chargés avec succès");
+            this.scrollToBottom();
+        } else {
+            console.log("Aucun message à afficher");
+        }
+    } catch (error) {
+        console.error('Erreur chargement messages:', error);
+        // Utiliser alert() en cas de panne de la méthode showNotification
         try {
-            const { data: messages, error } = await this.supabase
-                .from('messages')
-                .select('*')
-                .order('created_at', { ascending: true });
-
-            if (error) throw error;
-
-            const container = this.container.querySelector('.chat-messages');
-            if (container && messages) {
-                container.innerHTML = '';
-                messages.forEach(msg => {
-                    container.appendChild(this.createMessageElement(msg));
-                });
-                this.scrollToBottom();
-            }
-        } catch (error) {
-            console.error('Erreur chargement messages:', error);
             this.showNotification('Erreur chargement messages', 'error');
+        } catch (notifError) {
+            console.error("Erreur affichage notification:", notifError);
+            // En dernier recours, utiliser alert
+            alert('Erreur lors du chargement des messages');
         }
     }
+}
 
     async sendMessage(content) { 
     try {
@@ -1965,67 +2000,304 @@ resetChatUI() {
             oldContainer.remove();
         }
         
-        // Créer un nouveau conteneur avec un ID unique
-        const newContainer = document.createElement('div');
-        newContainer.id = 'chatOverride';
+        // Vérifier si l'utilisateur est authentifié
+        if (!this.pseudo) {
+            console.log("L'utilisateur n'est pas authentifié, affichage de l'écran de connexion");
+            // Créer l'interface de connexion
+            const loginContainer = document.createElement('div');
+            loginContainer.id = 'chatOverride';
+            
+            loginContainer.innerHTML = `
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <div class="header-title">Connexion au chat</div>
+                        <div class="header-buttons">
+                            <button class="close-chat" title="Fermer">✕</button>
+                        </div>
+                    </div>
+                    <div class="chat-login">
+                        <input type="text" id="pseudoInput" placeholder="Entrez votre pseudo (3-20 caractères)" maxlength="20">
+                        <input type="password" id="adminPassword" placeholder="Mot de passe admin (jhd71)" style="display: none;">
+                        <div class="login-buttons">
+                            <button id="confirmPseudo">Confirmer</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(loginContainer);
+            this.container = loginContainer;
+            
+            // Ajouter les écouteurs d'événements pour l'interface de connexion
+            const closeBtn = loginContainer.querySelector('.close-chat');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    console.log("Bouton fermeture de login cliqué");
+                    loginContainer.style.display = 'none';
+                    this.isOpen = false;
+                });
+            }
+            
+            const pseudoInput = loginContainer.querySelector('#pseudoInput');
+            const adminPasswordInput = loginContainer.querySelector('#adminPassword');
+            const confirmButton = loginContainer.querySelector('#confirmPseudo');
+            
+            if (pseudoInput) {
+                pseudoInput.addEventListener('input', () => {
+                    if (pseudoInput.value.trim() === 'jhd71') {
+                        adminPasswordInput.style.display = 'block';
+                    } else {
+                        adminPasswordInput.style.display = 'none';
+                        adminPasswordInput.value = '';
+                    }
+                });
+            }
+            
+            if (confirmButton) {
+                confirmButton.addEventListener('click', async () => {
+                    const pseudo = pseudoInput?.value.trim();
+                    const adminPassword = adminPasswordInput?.value;
+                    
+                    if (!pseudo || pseudo.length < 3) {
+                        alert('Le pseudo doit faire au moins 3 caractères');
+                        return;
+                    }
+                    
+                    try {
+                        // Cas administrateur
+                        let isAdmin = false;
+                        if (pseudo === 'jhd71') {
+                            if (adminPassword !== 'admin2024') {
+                                alert('Mot de passe administrateur incorrect');
+                                return;
+                            }
+                            isAdmin = true;
+                        }
+                        
+                        // Vérifier si l'utilisateur existe déjà
+                        const { data: existingUser, error: queryError } = await this.supabase
+                            .from('users')
+                            .select('*')
+                            .eq('pseudo', pseudo)
+                            .single();
+                        
+                        // Si l'utilisateur n'existe pas, le créer
+                        if (!existingUser || (queryError && queryError.code === 'PGRST116')) {
+                            const { data: newUser, error: insertError } = await this.supabase
+                                .from('users')
+                                .insert([
+                                    { 
+                                        pseudo: pseudo,
+                                        last_active: new Date().toISOString(),
+                                        is_admin: isAdmin,
+                                        requires_password: true
+                                    }
+                                ])
+                                .select();
+                            
+                            if (insertError) {
+                                throw insertError;
+                            }
+                        }
+                        
+                        // Définir les variables de session
+                        this.pseudo = pseudo;
+                        this.isAdmin = isAdmin;
+                        localStorage.setItem('chatPseudo', pseudo);
+                        localStorage.setItem('isAdmin', isAdmin);
+                        
+                        // Fermer l'interface de connexion et ouvrir le chat
+                        loginContainer.remove();
+                        this.resetChatUI();
+                    } catch (error) {
+                        console.error('Erreur d\'authentification:', error);
+                        alert('Erreur lors de la connexion: ' + error.message);
+                    }
+                });
+            }
+            
+            return true;
+        }
         
-        // Insérer le HTML du chat
-        newContainer.innerHTML = `
+        // Créer le conteneur de chat avec l'interface complète pour un utilisateur authentifié
+        const chatContainer = document.createElement('div');
+        chatContainer.id = 'chatOverride';
+        
+        // Insérer le HTML du chat avec tous les boutons
+        chatContainer.innerHTML = `
             <div class="chat-container">
                 <div class="chat-header">
-                    <div class="header-title">Chat - ${this.pseudo || 'Invité'}</div>
+                    <div class="header-title">Chat - ${this.pseudo}</div>
                     <div class="header-buttons">
-                        <button class="close-chat" title="Fermer">✕</button>
+                        ${this.isAdmin ? `
+                            <button class="admin-panel-btn" title="Panel Admin">
+                                <span class="material-icons">admin_panel_settings</span>
+                            </button>
+                        ` : ''}
+                        <button class="emoji-btn" title="Emojis">
+                            <span class="material-icons">emoji_emotions</span>
+                        </button>
+                        <button class="notifications-btn ${this.notificationsEnabled ? 'enabled' : ''}" title="Notifications">
+                            <span class="material-icons">${this.notificationsEnabled ? 'notifications_active' : 'notifications_off'}</span>
+                        </button>
+                        <button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
+                            <span class="material-icons">${this.soundEnabled ? 'volume_up' : 'volume_off'}</span>
+                        </button>
+                        <button class="logout-btn" title="Déconnexion">
+                            <span class="material-icons">logout</span>
+                        </button>
+                        <button class="close-chat" title="Fermer">
+                            <span class="material-icons">close</span>
+                        </button>
                     </div>
                 </div>
                 <div class="chat-messages"></div>
                 <div class="chat-input">
                     <textarea placeholder="Votre message..." maxlength="500" rows="1"></textarea>
-                    <button class="send-btn" title="Envoyer">➤</button>
+                    <button class="send-btn" title="Envoyer">
+                        <span class="material-icons">send</span>
+                    </button>
                 </div>
             </div>
         `;
         
         // Ajouter le conteneur au document
-        document.body.appendChild(newContainer);
-        this.container = newContainer;
+        document.body.appendChild(chatContainer);
+        this.container = chatContainer;
         
-        // Ajouter les écouteurs d'événements
-        const closeBtn = newContainer.querySelector('.close-chat');
+        // Gérer le bouton de fermeture
+        const closeBtn = chatContainer.querySelector('.close-chat');
         if (closeBtn) {
             closeBtn.addEventListener('click', () => {
                 console.log("Bouton fermeture cliqué");
-                newContainer.style.display = 'none';
+                chatContainer.style.display = 'none';
                 this.isOpen = false;
+                localStorage.setItem('chatOpen', 'false');
             });
         }
         
-        const sendBtn = newContainer.querySelector('.send-btn');
-        const textarea = newContainer.querySelector('textarea');
+        // Gérer le bouton d'émojis
+        const emojiBtn = chatContainer.querySelector('.emoji-btn');
+        if (emojiBtn) {
+            emojiBtn.addEventListener('click', () => {
+                this.toggleEmojiPanel();
+            });
+        }
+        
+        // Gérer le bouton de son
+        const soundBtn = chatContainer.querySelector('.sound-btn');
+        if (soundBtn) {
+            soundBtn.addEventListener('click', () => {
+                this.soundEnabled = !this.soundEnabled;
+                localStorage.setItem('soundEnabled', this.soundEnabled);
+                soundBtn.classList.toggle('enabled', this.soundEnabled);
+                soundBtn.querySelector('.material-icons').textContent = 
+                    this.soundEnabled ? 'volume_up' : 'volume_off';
+                if (this.soundEnabled) {
+                    this.playSound('click');
+                }
+            });
+        }
+        
+        // Gérer le bouton de notifications
+        const notificationsBtn = chatContainer.querySelector('.notifications-btn');
+        if (notificationsBtn) {
+            notificationsBtn.addEventListener('click', async () => {
+                try {
+                    if (this.notificationsEnabled) {
+                        await this.unsubscribeFromPushNotifications();
+                    } else {
+                        await this.setupPushNotifications();
+                    }
+                    this.playSound('click');
+                } catch (error) {
+                    console.error('Erreur gestion notifications:', error);
+                    alert('Erreur avec les notifications: ' + error.message);
+                }
+            });
+        }
+        
+        // Gérer le bouton admin
+        const adminBtn = chatContainer.querySelector('.admin-panel-btn');
+        if (adminBtn && this.isAdmin) {
+            adminBtn.addEventListener('click', () => {
+                this.showAdminPanel();
+                this.playSound('click');
+            });
+        }
+        
+        // Gérer le bouton de déconnexion
+        const logoutBtn = chatContainer.querySelector('.logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', async () => {
+                await this.logout();
+                this.playSound('click');
+                // Fermer le chat après la déconnexion
+                chatContainer.remove();
+            });
+        }
+        
+        // Gérer l'envoi de messages
+        const sendBtn = chatContainer.querySelector('.send-btn');
+        const textarea = chatContainer.querySelector('textarea');
         
         if (sendBtn && textarea) {
             sendBtn.addEventListener('click', async () => {
                 console.log("Bouton envoi cliqué");
-                const message = textarea.value.trim();
-                if (message) {
-                    await this.sendMessage(message);
+                const content = textarea.value.trim();
+                if (content) {
+                    // Créer un message temporaire pour feedback immédiat
+                    const tempMessage = {
+                        id: 'temp-' + Date.now(),
+                        pseudo: this.pseudo,
+                        content: content,
+                        created_at: new Date().toISOString()
+                    };
+                    
+                    const messagesContainer = chatContainer.querySelector('.chat-messages');
+                    if (messagesContainer) {
+                        const messageElement = this.createMessageElement(tempMessage);
+                        messageElement.style.opacity = '0.7';
+                        messagesContainer.appendChild(messageElement);
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    }
+                    
+                    // Vider l'input immédiatement
                     textarea.value = '';
+                    
+                    // Vérifier les mots bannis et envoyer le message
+                    if (await this.checkForBannedWords(content)) {
+                        // Supprimer le message temporaire
+                        const tempElement = messagesContainer.querySelector(`[data-message-id="${tempMessage.id}"]`);
+                        if (tempElement) tempElement.remove();
+                        alert('Message contient des mots interdits');
+                        this.playSound('error');
+                    } else {
+                        // Envoyer le message
+                        const success = await this.sendMessage(content);
+                        if (!success) {
+                            // Supprimer le message temporaire en cas d'échec
+                            const tempElement = messagesContainer.querySelector(`[data-message-id="${tempMessage.id}"]`);
+                            if (tempElement) tempElement.remove();
+                            alert('Erreur lors de l\'envoi du message');
+                            this.playSound('error');
+                        } else {
+                            this.playSound('message');
+                        }
+                    }
                 }
             });
             
             textarea.addEventListener('keydown', async (e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
-                    const message = textarea.value.trim();
-                    if (message) {
-                        await this.sendMessage(message);
-                        textarea.value = '';
-                    }
+                    // Simuler un clic sur le bouton d'envoi
+                    sendBtn.click();
                 }
             });
         }
         
-        // Charger les messages
+        // Charger les messages existants
         this.loadExistingMessages();
         
         console.log("Interface du chat réinitialisée avec succès");
@@ -2036,8 +2308,7 @@ resetChatUI() {
     }
 }
 
-// Ajoutez la méthode setupChatToggleBtn ici aussi
-setupChatToggleBtn() {
+/setupChatToggleBtn() {
     const chatToggleBtn = document.getElementById('chatToggleBtn');
     if (chatToggleBtn) {
         chatToggleBtn.addEventListener('click', () => {
