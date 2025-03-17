@@ -1642,16 +1642,25 @@ showAdminPanel() {
     panel.querySelector('.close-panel').addEventListener('click', () => panel.remove());
 }
 
-    async addBannedWord(word) {
+    // Modifiez la méthode addBannedWord() pour inclure l'authentification admin explicite
+async addBannedWord(word) {
     try {
         console.log("Ajout du mot banni:", word);
         
-        // Définir l'utilisateur courant pour les vérifications RLS
-        await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
+        // Définir l'utilisateur courant comme admin
+        await this.supabase.rpc('set_current_user', { 
+            user_pseudo: this.pseudo,
+            is_admin: true  // Indiquer explicitement que c'est un admin
+        });
         
+        // Insérer le mot avec l'information de l'utilisateur qui l'a ajouté
         const { data, error } = await this.supabase
             .from('banned_words')
-            .insert({ word: word });
+            .insert({ 
+                word: word,
+                added_by: this.pseudo,
+                added_at: new Date().toISOString()
+            });
 
         if (error) {
             console.error("Erreur ajout mot banni:", error);
