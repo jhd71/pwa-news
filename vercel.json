@@ -13,7 +13,7 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "continue": true
+      "dest": "/api/$1"
     },
     {
       "src": "/(.*)",
