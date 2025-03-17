@@ -1,14 +1,4 @@
 const webpush = require('web-push');
-if (
-  !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-  !process.env.SUPABASE_SERVICE_ROLE_KEY ||
-  !process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ||
-  !process.env.VAPID_PRIVATE_KEY
-) {
-  console.error('Erreur : Une ou plusieurs variables d\'environnement sont manquantes.');
-  process.exit(1);
-}
-
 const { createClient } = require('@supabase/supabase-js');
 console.log("📨 sendPush.js a été exécuté !");
 
