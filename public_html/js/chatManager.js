@@ -1391,6 +1391,13 @@ updateUnreadBadgeAndBubble() {
         }
     }
 
+    // Mettre à jour aussi le badge sur le bouton flottant si vous le conservez
+    const badge = this.container.querySelector('.notification-badge');
+    if (badge) {
+        badge.textContent = this.unreadCount || '';
+        badge.classList.toggle('hidden', this.unreadCount === 0);
+    }
+
     // Afficher une info-bulle si le chat est fermé et il y a des messages non lus
     if (!this.isOpen && this.unreadCount > 0) {
         const chatToggle = this.container.querySelector('.chat-toggle');
