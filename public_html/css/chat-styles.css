@@ -590,11 +590,10 @@ body:has(.chat-container.open) .news-ticker {
     border-radius: 16px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
     color: white;
-    z-index: 1010;
+    z-index: 9999999; /* Augmentez cette valeur pour qu'elle soit supérieure à celle du chat */
     padding: 20px;
     overflow-y: auto;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    animation: fadeIn 0.3s ease;
 }
 
 /* Tous les inputs du panel admin */
