@@ -27,6 +27,7 @@ const feeds = [
     { name: 'Montceau News', url: 'https://www.lejsl.com/edition-montceau-les-mines/rss', max: 2 },
     { name: 'L\'Informateur', url: 'http://www.linformateurdebourgogne.com/feed/', max: 2 },
     { name: 'Le JSL', url: 'https://www.lejsl.com/rss', max: 2 },
+	{ name: 'Creusot Infos', url: 'https://feedfry.com/rss/11efff26ac956eefbaabff65220eef5c', max: 2 },
     { name: 'France Bleu', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/infos.xml', max: 2 },
     // ajoute d'autres sources ici si besoin
   ];
