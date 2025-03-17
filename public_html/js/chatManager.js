@@ -1005,7 +1005,7 @@ createMessageElement(message) {
         if (error) throw error;
 
         // Envoi de la notification
-        await fetch("/api/sendPush.js", {
+        await fetch("/api/sendPush", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
