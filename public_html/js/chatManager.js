@@ -889,25 +889,52 @@ toggleEmojiPanel() {
 }
 
 	setupRealtimeSubscription() {
-        const channel = this.supabase.channel('messages');
-        channel
+    try {
+        console.log("Configuration de l'abonnement Realtime...");
+        
+        // Désabonnez-vous de tout canal existant
+        if (this.realtimeChannel) {
+            this.supabase.removeChannel(this.realtimeChannel);
+        }
+        
+        // Créez un nouvel abonnement
+        this.realtimeChannel = this.supabase.channel('messages-channel')
             .on('postgres_changes', 
-                { event: 'INSERT', schema: 'public', table: 'messages' },
+                { 
+                    event: 'INSERT', 
+                    schema: 'public', 
+                    table: 'messages'
+                },
                 (payload) => {
-                    console.log('Nouveau message:', payload);
+                    console.log('Nouveau message reçu:', payload);
                     this.handleNewMessage(payload.new);
                 }
             )
             .on('postgres_changes',
-                { event: 'DELETE', schema: 'public', table: 'messages' },
+                { 
+                    event: 'DELETE', 
+                    schema: 'public', 
+                    table: 'messages'
+                },
                 (payload) => {
                     console.log('Message supprimé:', payload);
                     const messageElement = this.container.querySelector(`[data-message-id="${payload.old.id}"]`);
                     if (messageElement) messageElement.remove();
                 }
             )
-            .subscribe();
+            .subscribe((status) => {
+                console.log("Statut de l'abonnement Realtime:", status);
+                
+                if (status === 'SUBSCRIBED') {
+                    console.log("Abonnement aux messages en temps réel réussi");
+                }
+            });
+            
+        console.log("Configuration Realtime terminée");
+    } catch (error) {
+        console.error("Erreur lors de la configuration Realtime:", error);
     }
+}
 
     async handleNewMessage(message) {
         if (!message) return;
