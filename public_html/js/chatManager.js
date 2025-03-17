@@ -2308,7 +2308,7 @@ resetChatUI() {
     }
 }
 
-/setupChatToggleBtn() {
+setupChatToggleBtn() {
     const chatToggleBtn = document.getElementById('chatToggleBtn');
     if (chatToggleBtn) {
         chatToggleBtn.addEventListener('click', () => {
