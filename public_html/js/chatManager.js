@@ -1391,15 +1391,16 @@ updateUnreadBadgeAndBubble() {
         }
     }
 
-    // Afficher une info-bulle si le chat est fermé et il y a des messages non lus
-    if (!this.isOpen && this.unreadCount > 0) {
-        const chatToggle = this.container.querySelector('.chat-toggle');
-        const existingBubble = chatToggle?.querySelector('.info-bubble');
+    // Toujours supprimer l'info-bulle existante
+    const chatToggle = this.container.querySelector('.chat-toggle');
+    if (chatToggle) {
+        const existingBubble = chatToggle.querySelector('.info-bubble');
         if (existingBubble) {
             existingBubble.remove();
         }
 
-        if (chatToggle) {
+        // Afficher une info-bulle si le chat est fermé et il y a des messages non lus
+        if (!this.isOpen && this.unreadCount > 0) {
             const bubble = document.createElement('div');
             bubble.className = 'info-bubble show';
             bubble.innerHTML = `<div style="font-weight: bold;">${this.unreadCount} nouveau(x) message(s)</div>`;
