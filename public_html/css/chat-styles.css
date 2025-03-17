@@ -1808,6 +1808,35 @@ html.android .chat-messages {
 }
 
 /* RESET et styles de base pour le chat override */
+/* Style pour l'état vide du chat */
+#chatOverride .empty-chat-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  height: 100%;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+#chatOverride .empty-icon {
+  font-size: 48px;
+  margin-bottom: 15px;
+  opacity: 0.8;
+}
+
+#chatOverride .empty-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+#chatOverride .empty-text {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
 #chatOverride {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: white;
@@ -2078,4 +2107,41 @@ html.android .chat-messages {
         right: 10px;
         grid-template-columns: repeat(6, 1fr);
     }
+}
+
+/* Ajoutez ces styles pour réduire la taille sur les grands écrans */
+@media (min-width: 768px) {
+  #chatOverride .chat-container {
+    position: fixed;
+    top: auto;
+    left: auto;
+    right: 20px;
+    bottom: 20px;
+    width: 380px;
+    height: 500px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  }
+  
+  #chatOverride .chat-messages {
+    max-height: calc(500px - 130px);
+  }
+  
+  /* Assurer que le header a la bonne taille */
+  #chatOverride .chat-header {
+    border-radius: 12px 12px 0 0;
+  }
+}
+
+/* Taille plein écran uniquement sur mobile */
+@media (max-width: 767px) {
+  #chatOverride .chat-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+  }
 }
