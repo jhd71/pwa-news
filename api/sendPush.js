@@ -1,3 +1,5 @@
+require('dotenv').config();  // Charger les variables d'environnement dès le début
+
 const webpush = require('web-push');
 const { createClient } = require('@supabase/supabase-js');
 console.log("📨 sendPush.js a été exécuté !");
@@ -5,6 +7,13 @@ console.log("📨 sendPush.js a été exécuté !");
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
+// Configuration des clés VAPID
+webpush.setVapidDetails(
+  'mailto:infos@jhd71.fr',
+  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+  process.env.VAPID_PRIVATE_KEY
 );
 
 // Fonction utilitaire pour envoyer une notification avec retry
