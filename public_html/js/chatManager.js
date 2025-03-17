@@ -290,27 +290,30 @@ getChatHTMLWithoutToggle() {
 
     // Fonction réutilisable pour basculer l'état du chat
     const toggleChat = () => {
-        this.isOpen = !this.isOpen;
+    this.isOpen = !this.isOpen;
+    
+    if (this.isOpen) {
+        chatContainer?.classList.add('open');
+        this.unreadCount = 0;
+        localStorage.setItem('unreadCount', '0');
         
-        if (this.isOpen) {
-            chatContainer?.classList.add('open');
-            this.unreadCount = 0;
-            localStorage.setItem('unreadCount', '0');
-            
-            const badge = chatToggleBtn?.querySelector('.chat-notification-badge');
-            if (badge) {
-                badge.textContent = '0';
-                badge.classList.add('hidden');
-            }
-            
-            this.scrollToBottom();
-        } else {
-            chatContainer?.classList.remove('open');
+        const badge = chatToggleBtn?.querySelector('.chat-notification-badge');
+        if (badge) {
+            badge.textContent = '0';
+            badge.classList.add('hidden');
         }
         
-        localStorage.setItem('chatOpen', this.isOpen);
-        this.playSound('click');
-    };
+        // Appeler updateUnreadBadgeAndBubble pour s'assurer que l'info-bulle est retirée
+        this.updateUnreadBadgeAndBubble();
+        
+        this.scrollToBottom();
+    } else {
+        chatContainer?.classList.remove('open');
+    }
+    
+    localStorage.setItem('chatOpen', this.isOpen);
+    this.playSound('click');
+};
 
     if (chatToggleBtn) {
         // Supprimer les anciens écouteurs d'événements pour éviter les duplications
