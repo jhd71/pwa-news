@@ -1,4 +1,6 @@
-require('dotenv').config();  // Charger les variables d'environnement dès le début
+if (process.env.NODE_ENV !== "production") {
+  require('dotenv').config();
+}
 
 const webpush = require('web-push');
 const { createClient } = require('@supabase/supabase-js');
