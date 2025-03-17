@@ -784,7 +784,7 @@ body.admin-panel-open::before {
     border-radius: 12px;
     box-shadow: var(--chat-shadow);
     animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
-    z-index: 1002;
+    z-index: 9999;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -917,41 +917,41 @@ body.admin-panel-open::before {
         height: 70vh;
         bottom: 60px;
     }
-
+    
     .admin-panel-content {
-    width: 100%; /* S'adapte à la largeur du parent */
-    height: auto; /* Hauteur en fonction du contenu */
-    max-height: 70vh; /* Limite la hauteur */
-    margin: 10px 0; /* Marges verticales */
-    overflow-y: auto; /* Ajoute un scroll si nécessaire */
-    padding: 10px; /* Espace interne */
-}
-
+        width: 100%;
+        height: auto;
+        max-height: 70vh;
+        margin: 10px 0;
+        overflow-y: auto;
+        padding: 10px;
+    }
+    
     .banned-user {
         flex-direction: column;
         gap: 10px;
     }
-
+    
     .unban-btn {
         width: 100%;
         justify-content: center;
     }
-
+    
     .chat-login {
         padding: 15px;
     }
-
+    
     .login-buttons button {
         padding: 10px 20px;
         font-size: 14px;
     }
-
+    
     .notification-popup {
         left: 20px;
         right: 20px;
         max-width: none;
     }
-
+    
     .moderate-menu {
         position: fixed;
         left: 10px;
@@ -960,21 +960,70 @@ body.admin-panel-open::before {
         top: auto;
         margin: 0;
     }
-
+    
     .sound-test {
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     }
-
+    
     .tab-content {
         min-height: 250px;
     }
-
+    
     .chat-messages {
-        padding: 15px;
+        padding: 15px 10px;
     }
-
+    
+    /* Modifications pour élargir les messages sur mobile */
     .message {
-        max-width: 85%;
+        max-width: 95% !important;
+        padding: 15px 18px !important;
+        margin-bottom: 12px !important;
+        border-radius: 18px !important;
+    }
+    
+    .message.sent {
+        margin-left: 5% !important;
+    }
+    
+    .message.received {
+        margin-right: 5% !important;
+    }
+    
+    .message-content {
+        font-size: 16px !important;
+        line-height: 1.4 !important;
+        font-weight: 500 !important;
+    }
+    
+    .message-author {
+        font-size: 1rem !important;
+        margin-bottom: 6px !important;
+        font-weight: 600 !important;
+    }
+    
+    .message-time {
+        font-size: 0.9rem !important;
+        margin-top: 6px !important;
+    }
+    
+    .message-time .date,
+    .message-time .time {
+        font-size: 0.95rem !important;
+    }
+    
+    .message-time .material-icons {
+        font-size: 16px !important;
+    }
+    
+    /* Style spécifique pour le panneau d'emojis sur mobile */
+    .emoji-panel {
+        position: fixed;
+        bottom: 70px;
+        top: auto;
+        left: 10px;
+        right: 10px;
+        max-height: 40vh;
+        grid-template-columns: repeat(6, 1fr);
     }
 }
 
@@ -1276,4 +1325,172 @@ body.admin-panel-open::before {
 
 .context-menu button:hover {
    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Styles pour le menu d'options sur mobile */
+.message-options.mobile-options {
+    width: 200px;
+    z-index: 1500;
+    position: fixed;
+    animation: scaleIn 0.2s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.message-options.mobile-options .options-content {
+    background: var(--chat-gradient);
+    border-radius: 12px;
+}
+
+.message-options.mobile-options button {
+    padding: 15px;
+    margin: 4px 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+}
+
+.message-options.mobile-options button .material-icons {
+    margin-right: 10px;
+    font-size: 20px;
+}
+
+/* Renforcer la prévention de sélection de texte sur mobile */
+.message {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    touch-action: manipulation;
+}
+
+/* Améliorer le retour visuel pour l'appui long */
+.message:active {
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+/* Styles pour bloquer les interactions indésirables pendant l'appui long */
+body.long-press-active {
+    pointer-events: none;
+}
+
+body.long-press-active .message-options {
+    pointer-events: auto;
+}
+
+.message-options.mobile-options {
+    /* Amélioration de l'apparence */
+    width: 220px;
+    padding: 5px;
+    transform: translateY(-10px); /* Déplacer légèrement vers le haut */
+}
+
+.message-options.mobile-options .options-content {
+    padding: 8px;
+    overflow: hidden; /* Pour les coins arrondis */
+}
+
+.message-options.mobile-options button {
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.message-options.mobile-options button:active {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Panneau principal d'emojis - définit la position et l'apparence générale */
+.emoji-panel {
+    position: absolute;        /* Positionnement absolu par rapport au conteneur parent */
+    top: 70px;                 /* Distance depuis le haut du conteneur parent */
+    left: 10px;                /* Distance depuis la gauche du conteneur parent */
+    right: 10px;               /* Distance depuis la droite du conteneur parent */
+    background: var(--chat-gradient);  /* Utilise le dégradé défini dans les variables CSS */
+    border-radius: 12px;       /* Coins arrondis */
+    box-shadow: var(--chat-shadow);    /* Ombre portée définie dans les variables */
+    padding: 10px;             /* Espace interne */
+    
+    /* Configuration de la grille pour les emojis */
+    display: grid;             /* Utilise un affichage en grille */
+    grid-template-columns: repeat(5, 1fr);  /* 5 colonnes de taille égale */
+    gap: 8px;                 /* Espacement entre les éléments de la grille */
+    
+    z-index: 1200;             /* Niveau d'empilement (plus élevé = plus au-dessus) */
+    max-height: 70%;           /* Hauteur maximale par rapport au conteneur parent */
+    overflow-y: auto;          /* Ajoute un défilement vertical si nécessaire */
+}
+
+/* Style pour chaque emoji individuel dans le panneau */
+.emoji-panel span {
+    font-size: 24px;           /* Taille du texte (emoji) */
+    cursor: pointer;           /* Change le curseur en pointeur au survol */
+    padding: 8px;             /* Espace interne */
+    text-align: center;        /* Centre le texte horizontalement */
+    border-radius: 8px;        /* Coins arrondis */
+    transition: background 0.2s; /* Animation de transition pour le survol */
+}
+
+/* Effet au survol sur les emojis */
+.emoji-panel span:hover {
+    background: var(--chat-hover);  /* Change la couleur de fond au survol */
+}
+
+/* Personnalisation de la barre de défilement - fonctionne sur Chrome, Edge, Safari */
+.emoji-panel::-webkit-scrollbar {
+    width: 8px;                /* Largeur de la barre de défilement */
+}
+
+/* Piste de la barre de défilement (la partie en arrière-plan) */
+.emoji-panel::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);  /* Couleur de fond semi-transparente */
+    border-radius: 4px;        /* Coins arrondis */
+}
+
+/* Poignée de la barre de défilement (la partie qu'on peut faire glisser) */
+.emoji-panel::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);  /* Couleur de fond semi-transparente */
+    border-radius: 4px;        /* Coins arrondis */
+}
+
+/* Effet au survol sur la poignée de défilement */
+.emoji-panel::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);  /* Couleur plus claire au survol */
+}
+
+/* Adaptation pour les écrans mobiles */
+@media (max-width: 480px) {
+    .emoji-panel {
+        grid-template-columns: repeat(4, 1fr);  /* Réduire à 4 colonnes sur petits écrans */
+        gap: 8px;              /* Réduire légèrement l'espacement sur petits écrans */
+    }
+}
+
+/* Animation de pulsation pour le bouton de fermeture */
+@keyframes pulse-close {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.3); }
+    70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+}
+
+/* Appliquer l'animation au bouton de fermeture sur mobile */
+@media (max-width: 480px) {
+    .close-chat {
+        /* Taille standard comme les autres boutons */
+        width: 36px !important;
+        height: 36px !important;
+        background: rgba(150, 60, 150, 0.8) !important; /* Fond violet-rouge */
+        animation: pulse-close 2s infinite; /* Animation de pulsation répétée */
+    }
+    
+    .close-chat .material-icons {
+        font-size: 24px !important; /* Taille standard comme les autres icônes */
+    }
+    
+    /* Lorsque le bouton est survolé ou actif, arrêter l'animation */
+    .close-chat:hover, .close-chat:active {
+        animation: none;
+        transform: scale(1.1);
+    }
 }
