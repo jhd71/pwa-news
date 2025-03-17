@@ -1065,57 +1065,39 @@ createMessageElement(message) {
     try {
         console.log("Chargement des messages...");
         
-        // Vérifier que le container est correctement initialisé
-        if (!this.container) {
-            console.error("Container non initialisé");
-            return;
-        }
-        
         const { data: messages, error } = await this.supabase
             .from('messages')
             .select('*')
             .order('created_at', { ascending: true });
             
-        if (error) {
-            console.error("Erreur Supabase:", error);
-            throw error;
-        }
-        
-        console.log(`${messages ? messages.length : 0} messages récupérés:`, messages);
+        if (error) throw error;
         
         const container = this.container.querySelector('.chat-messages');
-        if (!container) {
-            console.error("Conteneur de messages non trouvé dans:", this.container);
-            return;
-        }
-        
-        if (messages && messages.length > 0) {
+        if (container) {
             container.innerHTML = '';
             
-            messages.forEach(msg => {
-                try {
-                    const element = this.createMessageElement(msg);
-                    container.appendChild(element);
-                } catch (msgError) {
-                    console.error(`Erreur création message ${msg.id}:`, msgError);
-                }
-            });
+            if (!messages || messages.length === 0) {
+                // Ajouter un message quand le chat est vide
+                const emptyState = document.createElement('div');
+                emptyState.className = 'empty-chat-state';
+                emptyState.innerHTML = `
+                    <div class="empty-icon">💬</div>
+                    <div class="empty-title">Aucun message</div>
+                    <div class="empty-text">Soyez le premier à envoyer un message!</div>
+                `;
+                container.appendChild(emptyState);
+            } else {
+                // Ajouter les messages normalement
+                messages.forEach(msg => {
+                    container.appendChild(this.createMessageElement(msg));
+                });
+            }
             
-            console.log("Messages chargés avec succès");
             this.scrollToBottom();
-        } else {
-            console.log("Aucun message à afficher");
         }
     } catch (error) {
         console.error('Erreur chargement messages:', error);
-        // Utiliser alert() en cas de panne de la méthode showNotification
-        try {
-            this.showNotification('Erreur chargement messages', 'error');
-        } catch (notifError) {
-            console.error("Erreur affichage notification:", notifError);
-            // En dernier recours, utiliser alert
-            alert('Erreur lors du chargement des messages');
-        }
+        this.showNotification('Erreur chargement messages', 'error');
     }
 }
 
