@@ -632,36 +632,40 @@ extractPseudoFromEmail(email) {
 
     if (input && sendBtn) {
         const sendMessage = async () => {
-            const content = input.value.trim();
-            if (content) {
-                if (await this.checkForBannedWords(content)) {
-                    this.showNotification('Message contient des mots interdits', 'error');
-                    this.playSound('error');
-                    return;
-                }
+    const content = input.value.trim();
+    if (content) {
+        if (await this.checkForBannedWords(content)) {
+            this.showNotification('Message contient des mots interdits', 'error');
+            this.playSound('error');
+            return;
+        }
 
-                // Vider l'entrée avant d'envoyer pour éviter double envoi
-                input.value = '';
-                
-                // Fermer le clavier immédiatement
-                input.blur();
-                
-                // Empêcher de regagner le focus pendant quelques secondes
-                input.disabled = true;
-                
-                const success = await this.sendMessage(content);
-                if (success) {
-                    this.playSound('message');
-                } else {
-                    this.playSound('error');
-                }
-                
-                // Réactiver l'input après un délai
-                setTimeout(() => {
-                    input.disabled = false;
-                }, 1500); // Attendre 1.5 seconde
-            }
-        };
+        // Vider l'entrée pour éviter les doubles envois
+        input.value = '';
+        
+        // Ne fermer le clavier que sur desktop
+        if (!/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+            input.blur();
+        }
+        
+        // Empêcher temporairement la saisie
+        input.disabled = true;
+        
+        const success = await this.sendMessage(content);
+        if (success) {
+            this.playSound('message');
+        } else {
+            this.playSound('error');
+        }
+        
+        // Réactiver l'input, redonner le focus et faire défiler la vue pour garder le clavier ouvert
+        setTimeout(() => {
+            input.disabled = false;
+            input.focus();
+            input.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 1500);
+    }
+};
 
         sendBtn.addEventListener('click', sendMessage);
 
