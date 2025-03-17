@@ -97,33 +97,38 @@ class ChatManager {
 }
 
     async loadBannedWords() {
-        try {
-            const { data: words, error } = await this.supabase
-                .from('banned_words')
-                .select('*')
-                .order('added_at', { ascending: true });
+    try {
+        const { data: words, error } = await this.supabase
+            .from('banned_words')
+            .select('*')
+            .order('added_at', { ascending: true });
 
-            if (!error && words) {
-                this.bannedWords = new Set(words.map(w => w.word.toLowerCase()));
-                const list = document.querySelector('.banned-words-list');
-                if (list) {
-                    list.innerHTML = words.map(w => `
-                        <div class="banned-word">
-                            ${w.word}
-                            <button class="remove-word" data-word="${w.word}">×</button>
-                        </div>
-                    `).join('');
+        if (!error && words) {
+            this.bannedWords = new Set(words.map(w => w.word.toLowerCase()));
 
-                    list.querySelectorAll('.remove-word').forEach(btn => {
-                        btn.addEventListener('click', () => this.removeBannedWord(btn.dataset.word));
-                    });
-                }
+            // 🚀 Vérification des mots récupérés
+            console.log("🔍 Mots bannis récupérés:", Array.from(this.bannedWords));
+
+            const list = document.querySelector('.banned-words-list');
+            if (list) {
+                list.innerHTML = words.map(w => `
+                    <div class="banned-word">
+                        ${w.word}
+                        <button class="remove-word" data-word="${w.word}">×</button>
+                    </div>
+                `).join('');
+
+                list.querySelectorAll('.remove-word').forEach(btn => {
+                    btn.addEventListener('click', () => this.removeBannedWord(btn.dataset.word));
+                });
             }
-        } catch (error) {
-            console.error('Erreur loadBannedWords:', error);
-            this.bannedWords = new Set();
         }
+    } catch (error) {
+        console.error('Erreur loadBannedWords:', error);
+        this.bannedWords = new Set();
     }
+}
+
 	getPseudoHTML() {
     return `
         <button class="chat-toggle" title="Ouvrir le chat">
