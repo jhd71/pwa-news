@@ -97,38 +97,33 @@ class ChatManager {
 }
 
     async loadBannedWords() {
-    try {
-        const { data: words, error } = await this.supabase
-            .from('banned_words')
-            .select('*')
-            .order('added_at', { ascending: true });
+        try {
+            const { data: words, error } = await this.supabase
+                .from('banned_words')
+                .select('*')
+                .order('added_at', { ascending: true });
 
-        if (!error && words) {
-            this.bannedWords = new Set(words.map(w => w.word.toLowerCase()));
+            if (!error && words) {
+                this.bannedWords = new Set(words.map(w => w.word.toLowerCase()));
+                const list = document.querySelector('.banned-words-list');
+                if (list) {
+                    list.innerHTML = words.map(w => `
+                        <div class="banned-word">
+                            ${w.word}
+                            <button class="remove-word" data-word="${w.word}">×</button>
+                        </div>
+                    `).join('');
 
-            // 🚀 Vérification des mots récupérés
-            console.log("🔍 Mots bannis récupérés:", Array.from(this.bannedWords));
-
-            const list = document.querySelector('.banned-words-list');
-            if (list) {
-                list.innerHTML = words.map(w => `
-                    <div class="banned-word">
-                        ${w.word}
-                        <button class="remove-word" data-word="${w.word}">×</button>
-                    </div>
-                `).join('');
-
-                list.querySelectorAll('.remove-word').forEach(btn => {
-                    btn.addEventListener('click', () => this.removeBannedWord(btn.dataset.word));
-                });
+                    list.querySelectorAll('.remove-word').forEach(btn => {
+                        btn.addEventListener('click', () => this.removeBannedWord(btn.dataset.word));
+                    });
+                }
             }
+        } catch (error) {
+            console.error('Erreur loadBannedWords:', error);
+            this.bannedWords = new Set();
         }
-    } catch (error) {
-        console.error('Erreur loadBannedWords:', error);
-        this.bannedWords = new Set();
     }
-}
-
 	getPseudoHTML() {
     return `
         <button class="chat-toggle" title="Ouvrir le chat">
@@ -295,27 +290,25 @@ getChatHTMLWithoutToggle() {
 
     // Fonction réutilisable pour basculer l'état du chat
     const toggleChat = () => {
-        this.isOpen = !this.isOpen;
+    this.isOpen = !this.isOpen;
+    
+    if (this.isOpen) {
+        chatContainer?.classList.add('open');
+        // Réinitialisation du compteur
+        this.unreadCount = 0;
+        localStorage.setItem('unreadCount', '0');
         
-        if (this.isOpen) {
-            chatContainer?.classList.add('open');
-            this.unreadCount = 0;
-            localStorage.setItem('unreadCount', '0');
-            
-            const badge = chatToggleBtn?.querySelector('.chat-notification-badge');
-            if (badge) {
-                badge.textContent = '0';
-                badge.classList.add('hidden');
-            }
-            
-            this.scrollToBottom();
-        } else {
-            chatContainer?.classList.remove('open');
-        }
+        // Mettre à jour le badge ET l'info-bulle
+        this.updateUnreadBadgeAndBubble();
         
-        localStorage.setItem('chatOpen', this.isOpen);
-        this.playSound('click');
-    };
+        this.scrollToBottom();
+    } else {
+        chatContainer?.classList.remove('open');
+    }
+    
+    localStorage.setItem('chatOpen', this.isOpen);
+    this.playSound('click');
+};
 
     if (chatToggleBtn) {
         // Supprimer les anciens écouteurs d'événements pour éviter les duplications
@@ -633,47 +626,55 @@ extractPseudoFromEmail(email) {
     const emojiBtn = this.container.querySelector('.emoji-btn');
 
     if (input && sendBtn) {
-        const sendMessage = async () => {
-            const content = input.value.trim();
-            if (content) {
-                if (await this.checkForBannedWords(content)) {
-                    this.showNotification('Message contient des mots interdits', 'error');
-                    this.playSound('error');
-                    return;
-                }
+    const sendMessage = async () => {
+        const content = input.value.trim();
+        if (content) {
+            if (await this.checkForBannedWords(content)) {
+                this.showNotification('Message contient des mots interdits', 'error');
+                this.playSound('error');
+                return;
+            }
 
-                // Vider l'entrée avant d'envoyer pour éviter double envoi
+            const success = await this.sendMessage(content);
+            if (success) {
                 input.value = '';
-                
-                // Fermer le clavier immédiatement
-                input.blur();
-                
-                // Empêcher de regagner le focus pendant quelques secondes
-                input.disabled = true;
-                
-                const success = await this.sendMessage(content);
-                if (success) {
-                    this.playSound('message');
+                // Sur mobile, ne pas forcer le focus (ce qui fait apparaître le clavier),
+                // mais on force le scroll pour garder l'input visible.
+                if (/Mobi|Android/i.test(navigator.userAgent)) {
+                    setTimeout(() => {
+                        input.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 100);
                 } else {
-                    this.playSound('error');
+                    input.focus();
                 }
-                
-                // Réactiver l'input après un délai
-                setTimeout(() => {
-                    input.disabled = false;
-                }, 1500); // Attendre 1.5 seconde
+                this.playSound('message');
+            } else {
+                this.playSound('error');
             }
-        };
+        }
+    };
 
-        sendBtn.addEventListener('click', sendMessage);
-
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
+    if (/Mobi|Android/i.test(navigator.userAgent)) {
+        sendBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            sendMessage();
+        });
+    } else {
+        sendBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            sendMessage();
         });
     }
+
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+}
     
     // Ajout du gestionnaire pour le bouton emoji
     if (emojiBtn) {
@@ -687,18 +688,16 @@ extractPseudoFromEmail(email) {
 toggleEmojiPanel() {
     let panel = this.container.querySelector('.emoji-panel');
     
-    // Si le panneau existe déjà, on le supprime
+    // Si le panneau existe déjà, on le ferme en cliquant sur l'icône
     if (panel) {
         panel.remove();
         return;
     }
     
-    // Sinon, on crée le panneau
     panel = document.createElement('div');
     panel.className = 'emoji-panel';
     
-    // Liste des emojis populaires (ajout de plus d'emojis)
-const emojis = [
+    const emojis = [
   '😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', 
   '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙', '😋', '😛', '😜', '😝', 
   '🤑', '🤗', '🤭', '🤫', '🤔', '🤐', '🤨', '😐', '😑', '😶', '😏', '😒', 
@@ -753,7 +752,6 @@ const emojis = [
   '0️⃣', '🔢', '🔠', '🔡'
 ];
     
-    // Ajouter les emojis au panneau
     emojis.forEach(emoji => {
         const span = document.createElement('span');
         span.textContent = emoji;
@@ -765,21 +763,23 @@ const emojis = [
                 const text = textarea.value;
                 textarea.value = text.substring(0, start) + emoji + text.substring(end);
                 textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
-                textarea.focus();
+                // Ne pas redonner le focus sur mobile pour éviter l'ouverture du clavier
+                if (!/Mobi|Android/i.test(navigator.userAgent)) {
+                    textarea.focus();
+                }
             }
-            panel.remove();
             this.playSound('click');
         });
         panel.appendChild(span);
     });
     
-    // Ajouter le panneau au conteneur de chat
     const chatContainer = this.container.querySelector('.chat-container');
     chatContainer.appendChild(panel);
     
-    // Fermer le panneau si on clique ailleurs
     document.addEventListener('click', (e) => {
-        if (!panel.contains(e.target) && e.target !== this.container.querySelector('.emoji-btn') && !this.container.querySelector('.emoji-btn').contains(e.target)) {
+        if (!panel.contains(e.target) &&
+            e.target !== this.container.querySelector('.emoji-btn') &&
+            !this.container.querySelector('.emoji-btn').contains(e.target)) {
             panel.remove();
         }
     }, { once: true });
@@ -1386,29 +1386,32 @@ async unsubscribeFromPushNotifications() {
 
     // Mettez à jour la fonction qui gère les notifications
 updateUnreadBadgeAndBubble() {
-    // Mettre à jour le badge sur le bouton de la barre de navigation
+    // On récupère le bouton de chat via son ID
     const chatToggleBtn = document.getElementById('chatToggleBtn');
     if (chatToggleBtn) {
+        // Met à jour le badge de notification
         const badge = chatToggleBtn.querySelector('.chat-notification-badge');
         if (badge) {
             badge.textContent = this.unreadCount || '';
             badge.classList.toggle('hidden', this.unreadCount === 0);
         }
-    }
 
-    // Afficher une info-bulle si le chat est fermé et il y a des messages non lus
-    if (!this.isOpen && this.unreadCount > 0) {
-        const chatToggle = this.container.querySelector('.chat-toggle');
-        const existingBubble = chatToggle?.querySelector('.info-bubble');
-        if (existingBubble) {
-            existingBubble.remove();
-        }
-
-        if (chatToggle) {
+        // On récupère la bulle si elle existe déjà
+        const existingBubble = chatToggleBtn.querySelector('.info-bubble');
+        // Si le chat est ouvert ou s'il n'y a pas de messages non lus, on supprime la bulle
+        if (this.isOpen || this.unreadCount === 0) {
+            if (existingBubble) {
+                existingBubble.remove();
+            }
+        } else {
+            // Sinon, on la met à jour
+            if (existingBubble) {
+                existingBubble.remove();
+            }
             const bubble = document.createElement('div');
             bubble.className = 'info-bubble show';
             bubble.innerHTML = `<div style="font-weight: bold;">${this.unreadCount} nouveau(x) message(s)</div>`;
-            chatToggle.appendChild(bubble);
+            chatToggleBtn.appendChild(bubble);
         }
     }
 }
