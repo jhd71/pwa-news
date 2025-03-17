@@ -1493,16 +1493,40 @@ async unsubscribeFromPushNotifications() {
         return outputArray;
     }
 
-    showNotification(message, type = 'info') {
+    // Modifiez la méthode showNotification pour utiliser votre propre système 
+// au lieu des alertes standards
+showNotification(message, type = 'info') {
+    // Empêcher les notifications du système (alert)
+    if (message.includes("Message contient des mots interdits")) {
+        // Créer une notification stylisée
         const notification = document.createElement('div');
         notification.className = `notification-popup ${type}`;
         notification.textContent = message;
         document.body.appendChild(notification);
         
+        // Supprimer après 3 secondes
         setTimeout(() => {
             notification.remove();
         }, 3000);
+        
+        // Jouer un son si activé
+        if (this.soundEnabled) {
+            this.playSound('error');
+        }
+        
+        return;
     }
+    
+    // Notification standard pour les autres messages
+    const notification = document.createElement('div');
+    notification.className = `notification-popup ${type}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
 
     updateNotificationButton() {
         const notifBtn = this.container.querySelector('.notifications-btn');
@@ -1647,24 +1671,16 @@ async addBannedWord(word) {
     try {
         console.log("Ajout du mot banni:", word);
         
-        // Définir l'utilisateur courant comme admin
-        await this.supabase.rpc('set_current_user', { 
-            user_pseudo: this.pseudo,
-            is_admin: true  // Indiquer explicitement que c'est un admin
+        // Utiliser une fonction RPC spéciale que vous créerez dans Supabase
+        // Cette fonction ignorera les restrictions RLS
+        const { data, error } = await this.supabase.rpc('admin_add_banned_word', {
+            word_to_add: word,
+            admin_pseudo: this.pseudo
         });
-        
-        // Insérer le mot avec l'information de l'utilisateur qui l'a ajouté
-        const { data, error } = await this.supabase
-            .from('banned_words')
-            .insert({ 
-                word: word,
-                added_by: this.pseudo,
-                added_at: new Date().toISOString()
-            });
 
         if (error) {
             console.error("Erreur ajout mot banni:", error);
-            alert("Erreur lors de l'ajout du mot: " + error.message);
+            this.showNotification('Erreur lors de l\'ajout du mot: ' + error.message, 'error');
             return false;
         }
 
@@ -1674,7 +1690,7 @@ async addBannedWord(word) {
         return true;
     } catch (error) {
         console.error("Exception lors de l'ajout du mot:", error);
-        alert("Erreur lors de l'ajout du mot: " + error.message);
+        this.showNotification('Erreur lors de l\'ajout du mot: ' + error.message, 'error');
         return false;
     }
 }
