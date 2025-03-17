@@ -30,6 +30,35 @@ class ChatManager {
     try {
         await this.loadBannedWords();
         
+		// Préparer mais ne pas insérer encore le container
+        this.container = document.createElement('div');
+        this.container.className = 'chat-widget';
+
+        // Vérifier l'état d'authentification
+        const isAuthenticated = await this.checkAuthState();
+        
+        // Ne pas tenter d'utiliser setupListeners() immédiatement
+        // Au lieu de cela, utiliser resetChatUI() qui créera les éléments correctement
+        
+        // Configurer la connexion Realtime
+        this.setupRealtimeSubscription();
+        
+        // Uniquement pour le débogage - tester si Realtime fonctionne
+        this.testRealtimeConnection();
+        
+        console.log("Chat initialisé avec succès");
+        this.initialized = true;
+        
+        // Si le bouton dans la barre de navigation existe, configurer son écouteur
+        const chatToggleBtn = document.getElementById('chatToggleBtn');
+        if (chatToggleBtn) {
+            this.setupChatToggleBtn();
+        }
+        
+    } catch (error) {
+        console.error('Erreur initialisation:', error);
+    }
+}
         if (document.getElementById('chatToggleBtn')) {
     this.setupChatToggleBtn();
     
@@ -891,36 +920,44 @@ toggleEmojiPanel() {
 
 	setupRealtimeSubscription() {
     try {
-        console.log("Configuration de l'abonnement Realtime...");
+        console.log("Configuration de la souscription Realtime...");
         
-        // Créer un canal pour les messages
-        const channel = this.supabase.channel('public:messages')
-            .on('postgres_changes', 
-                { 
-                    event: 'INSERT', 
-                    schema: 'public', 
-                    table: 'messages'
-                },
-                (payload) => {
-                    console.log('Nouveau message reçu via Realtime:', payload);
+        // S'assurer qu'on n'a pas déjà un canal actif
+        if (this.realtimeChannel) {
+            this.supabase.removeChannel(this.realtimeChannel);
+        }
+        
+        this.realtimeChannel = this.supabase
+            .channel('realtime:messages')
+            .on('postgres_changes', {
+                event: '*',  // INSERT, UPDATE, DELETE
+                schema: 'public',
+                table: 'messages'
+            }, (payload) => {
+                console.log('Changement détecté via Realtime:', payload);
+                
+                if (payload.eventType === 'INSERT') {
+                    console.log('Nouveau message reçu:', payload.new);
                     this.handleNewMessage(payload.new);
+                } 
+                else if (payload.eventType === 'DELETE') {
+                    console.log('Message supprimé:', payload.old);
+                    // Supprimer le message de l'interface
+                    const msgElement = document.querySelector(`[data-message-id="${payload.old.id}"]`);
+                    if (msgElement) msgElement.remove();
                 }
-            )
-            .on('postgres_changes',
-                { 
-                    event: 'DELETE', 
-                    schema: 'public', 
-                    table: 'messages'
-                },
-                (payload) => {
-                    console.log('Message supprimé via Realtime:', payload);
-                    const messageElement = document.querySelector(`[data-message-id="${payload.old.id}"]`);
-                    if (messageElement) messageElement.remove();
+            })
+            .subscribe((status) => {
+                console.log('Statut de l\'abonnement:', status);
+                
+                if (status === 'SUBSCRIBED') {
+                    console.log('✅ Abonnement Realtime actif!');
+                } else if (status === 'CHANNEL_ERROR') {
+                    console.error('❌ Erreur d\'abonnement au canal');
                 }
-            )
-            .subscribe();
+            });
             
-        console.log("Abonnement Realtime configuré");
+        console.log("Souscription Realtime configurée");
     } catch (error) {
         console.error("Erreur configuration Realtime:", error);
     }
@@ -929,25 +966,55 @@ toggleEmojiPanel() {
 testRealtimeConnection() {
     console.log("Test de la connexion Realtime...");
     
-    // Créer un canal de test
-    const channel = this.supabase.channel('test-channel')
-        .on('broadcast', { event: 'test' }, (payload) => {
-            console.log('✅ Message broadcast reçu:', payload);
-        })
-        .subscribe((status) => {
-            console.log("Statut canal test:", status);
-            if (status === 'SUBSCRIBED') {
-                // Envoyer un message de test
-                setTimeout(() => {
-                    console.log("Envoi d'un message de test...");
-                    channel.send({
-                        type: 'broadcast',
-                        event: 'test',
-                        payload: { message: 'Test', timestamp: Date.now() }
-                    });
-                }, 2000);
-            }
-        });
+    try {
+        const testChannel = this.supabase.channel('diagnostics')
+            .on('broadcast', { event: 'test' }, (payload) => {
+                console.log('✅ Message de test reçu via broadcast:', payload);
+            })
+            .subscribe(status => {
+                console.log('Statut canal de test:', status);
+                
+                if (status === 'SUBSCRIBED') {
+                    console.log('Canal de test actif');
+                    
+                    // Envoyer un message de test après un court délai
+                    setTimeout(() => {
+                        console.log('Envoi message de test broadcast...');
+                        testChannel.send({
+                            type: 'broadcast',
+                            event: 'test',
+                            payload: { message: 'Test de connection', timestamp: new Date().toISOString() }
+                        });
+                    }, 3000);
+                    
+                    // Après un délai plus long, insérer un message dans la table
+                    setTimeout(async () => {
+                        console.log('Envoi message de test via DB...');
+                        try {
+                            const { data, error } = await this.supabase
+                                .from('messages')
+                                .insert({
+                                    pseudo: 'SYSTEM_TEST',
+                                    content: 'Test de Realtime à ' + new Date().toLocaleTimeString(),
+                                    ip: '127.0.0.1',
+                                    created_at: new Date().toISOString()
+                                })
+                                .select();
+                                
+                            if (error) {
+                                console.error('Erreur test DB:', error);
+                            } else {
+                                console.log('Message de test inséré:', data);
+                            }
+                        } catch (err) {
+                            console.error('Exception test DB:', err);
+                        }
+                    }, 6000);
+                }
+            });
+    } catch (error) {
+        console.error('Erreur test Realtime:', error);
+    }
 }
 
     async handleNewMessage(message) {
