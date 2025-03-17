@@ -86,6 +86,7 @@ class ChatManager {
 
         this.setupListeners();
         this.setupRealtimeSubscription();
+		this.testRealtimeConnection();
 
         if (this.pseudo) {
             await this.loadExistingMessages();
@@ -892,13 +893,8 @@ toggleEmojiPanel() {
     try {
         console.log("Configuration de l'abonnement Realtime...");
         
-        // Désabonnez-vous de tout canal existant
-        if (this.realtimeChannel) {
-            this.supabase.removeChannel(this.realtimeChannel);
-        }
-        
-        // Créez un nouvel abonnement
-        this.realtimeChannel = this.supabase.channel('messages-channel')
+        // Créer un canal pour les messages
+        const channel = this.supabase.channel('public:messages')
             .on('postgres_changes', 
                 { 
                     event: 'INSERT', 
@@ -906,7 +902,7 @@ toggleEmojiPanel() {
                     table: 'messages'
                 },
                 (payload) => {
-                    console.log('Nouveau message reçu:', payload);
+                    console.log('Nouveau message reçu via Realtime:', payload);
                     this.handleNewMessage(payload.new);
                 }
             )
@@ -917,68 +913,88 @@ toggleEmojiPanel() {
                     table: 'messages'
                 },
                 (payload) => {
-                    console.log('Message supprimé:', payload);
-                    const messageElement = this.container.querySelector(`[data-message-id="${payload.old.id}"]`);
+                    console.log('Message supprimé via Realtime:', payload);
+                    const messageElement = document.querySelector(`[data-message-id="${payload.old.id}"]`);
                     if (messageElement) messageElement.remove();
                 }
             )
-            .subscribe((status) => {
-                console.log("Statut de l'abonnement Realtime:", status);
-                
-                if (status === 'SUBSCRIBED') {
-                    console.log("Abonnement aux messages en temps réel réussi");
-                }
-            });
+            .subscribe();
             
-        console.log("Configuration Realtime terminée");
+        console.log("Abonnement Realtime configuré");
     } catch (error) {
-        console.error("Erreur lors de la configuration Realtime:", error);
+        console.error("Erreur configuration Realtime:", error);
     }
+}
+// Ajoutez la nouvelle méthode ici
+testRealtimeConnection() {
+    console.log("Test de la connexion Realtime...");
+    
+    // Créer un canal de test
+    const channel = this.supabase.channel('test-channel')
+        .on('broadcast', { event: 'test' }, (payload) => {
+            console.log('✅ Message broadcast reçu:', payload);
+        })
+        .subscribe((status) => {
+            console.log("Statut canal test:", status);
+            if (status === 'SUBSCRIBED') {
+                // Envoyer un message de test
+                setTimeout(() => {
+                    console.log("Envoi d'un message de test...");
+                    channel.send({
+                        type: 'broadcast',
+                        event: 'test',
+                        payload: { message: 'Test', timestamp: Date.now() }
+                    });
+                }, 2000);
+            }
+        });
 }
 
     async handleNewMessage(message) {
-        if (!message) return;
-        
-        const chatContainer = this.container.querySelector('.chat-container');
-        const chatOpen = chatContainer && chatContainer.classList.contains('open');
-        
-        console.log('État initial du message:', {
-            chatOpen,
-            isOpen: this.isOpen,
-            messageFrom: message.pseudo,
-            myPseudo: this.pseudo,
-            notificationsEnabled: this.notificationsEnabled
-        });
+    if (!message) {
+        console.log("Message vide reçu, ignoré");
+        return;
+    }
+    
+    console.log("Traitement du nouveau message:", message);
+    
+    // Vérifier si le conteneur du chat existe
+    const chatContainer = document.getElementById('chatOverride');
+    if (!chatContainer) {
+        console.log("Conteneur du chat non trouvé");
+        return;
+    }
+    
+    const messagesContainer = chatContainer.querySelector('.chat-messages');
+    if (!messagesContainer) {
+        console.log("Conteneur des messages non trouvé");
+        return;
+    }
 
-        const messagesContainer = this.container.querySelector('.chat-messages');
-        if (!messagesContainer) return;
+    // Vérifier si ce message existe déjà (par ID ou contenu identique)
+    const existingMessage = messagesContainer.querySelector(`[data-message-id="${message.id}"]`);
+    if (existingMessage) {
+        console.log("Message déjà affiché:", message.id);
+        return;
+    }
 
-        const existingMessage = messagesContainer.querySelector(`[data-message-id="${message.id}"]`);
-        if (existingMessage) return;
-
-        const messageElement = this.createMessageElement(message);
-        messagesContainer.appendChild(messageElement);
-        this.scrollToBottom();
+    // Créer et ajouter le message
+    const messageElement = this.createMessageElement(message);
+    messagesContainer.appendChild(messageElement);
+    this.scrollToBottom();
+    
+    // Jouer un son si le message vient d'un autre utilisateur
+    if (message.pseudo !== this.pseudo) {
+        this.playSound('message');
         
-        if (message.pseudo !== this.pseudo) {
-            this.playSound('message');
-            
-            if (!chatOpen) {
-                this.unreadCount++;
-                localStorage.setItem('unreadCount', this.unreadCount.toString());
-                
-                if (this.notificationsEnabled) {
-                    try {
-                        await this.sendNotificationToUser(message);
-                    } catch (error) {
-                        console.error('Erreur notification:', error);
-                    }
-                }
-                
-                this.updateUnreadBadgeAndBubble();
-            }
+        // Incrémenter le compteur de messages non lus si le chat n'est pas ouvert
+        if (!this.isOpen) {
+            this.unreadCount++;
+            localStorage.setItem('unreadCount', this.unreadCount.toString());
+            this.updateUnreadBadgeAndBubble();
         }
     }
+}
 
     formatMessageTime(timestamp) {
     const date = new Date(timestamp);
