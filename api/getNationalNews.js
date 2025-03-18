@@ -1,4 +1,3 @@
-// /api/getNationalNews.js
 const Parser = require('rss-parser');
 const axios = require('axios');
 
