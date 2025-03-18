@@ -1,4 +1,3 @@
-// Dans api/getNews.js
 module.exports = async (req, res) => {
   // En-têtes CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
