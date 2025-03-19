@@ -207,31 +207,6 @@
     animation: fadeIn 0.3s ease;
 }
 
-/* Amélioration de la visibilité de l'info-bulle sur mobile */
-@media (max-width: 768px) {
-  .info-bubble {
-    position: fixed !important;
-    bottom: 80px !important;
-    left: 20px !important;
-    right: auto !important;
-    width: auto !important; /* Ajuster la largeur automatiquement */
-    max-width: 250px !important;
-    transform: none !important;
-    z-index: 2000 !important;
-  }
-  
-  /* Redéfinir l'animation pour mobile */
-  .info-bubble.show {
-    display: block !important;
-    animation: bubblePop 0.5s ease-out !important;
-  }
-  
-  @keyframes bubblePop {
-    0% { transform: scale(0.8); opacity: 0; }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); opacity: 1; }
-  }
-}
 /* Masquer le ticker quand le chat est ouvert */
 .chat-container.open + .news-ticker,
 .chat-container.open ~ .news-ticker,
@@ -1557,7 +1532,35 @@ body.long-press-active .message-options {
     }
 }
 
-
+/* Info-bulle pour mobile */
+@media (max-width: 768px) {
+  .info-bubble-mobile {
+    position: fixed !important;
+    bottom: 80px !important;
+    left: 20px !important;
+    right: auto !important;
+    width: auto !important;
+    max-width: 250px !important;
+    z-index: 2000 !important;
+    background: linear-gradient(135deg, #6a3093 0%, #a044ff 100%) !important;
+    color: white !important;
+    padding: 15px !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
+    border: 2px solid rgba(255,255,255,0.3) !important;
+    cursor: pointer !important;
+  }
+  
+  .info-bubble-mobile.show {
+    animation: bubblePop 0.5s ease-out !important;
+  }
+  
+  @keyframes bubblePop {
+    0% { transform: scale(0.8); opacity: 0; }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+}
 /* Styles spécifiques pour les PWA */
 @media (display-mode: standalone) {
     .chat-container {
