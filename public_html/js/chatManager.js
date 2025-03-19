@@ -837,48 +837,53 @@ toggleEmojiPanel() {
     }
 
     async handleNewMessage(message) {
-        if (!message) return;
+    if (!message) return;
+    
+    const chatContainer = this.container.querySelector('.chat-container');
+    const chatOpen = chatContainer && chatContainer.classList.contains('open');
+    
+    console.log('État initial du message:', {
+        chatOpen,
+        isOpen: this.isOpen,
+        messageFrom: message.pseudo,
+        myPseudo: this.pseudo,
+        notificationsEnabled: this.notificationsEnabled
+    });
+    
+    const messagesContainer = this.container.querySelector('.chat-messages');
+    if (!messagesContainer) return;
+    
+    const existingMessage = messagesContainer.querySelector(`[data-message-id="${message.id}"]`);
+    if (existingMessage) return;
+    
+    const messageElement = this.createMessageElement(message);
+    messagesContainer.appendChild(messageElement);
+    this.scrollToBottom();
+    
+    if (message.pseudo !== this.pseudo) {
+        this.playSound('message');
         
-        const chatContainer = this.container.querySelector('.chat-container');
-        const chatOpen = chatContainer && chatContainer.classList.contains('open');
-        
-        console.log('État initial du message:', {
-            chatOpen,
-            isOpen: this.isOpen,
-            messageFrom: message.pseudo,
-            myPseudo: this.pseudo,
-            notificationsEnabled: this.notificationsEnabled
-        });
-
-        const messagesContainer = this.container.querySelector('.chat-messages');
-        if (!messagesContainer) return;
-
-        const existingMessage = messagesContainer.querySelector(`[data-message-id="${message.id}"]`);
-        if (existingMessage) return;
-
-        const messageElement = this.createMessageElement(message);
-        messagesContainer.appendChild(messageElement);
-        this.scrollToBottom();
-        
-        if (message.pseudo !== this.pseudo) {
-            this.playSound('message');
+        if (!chatOpen) {
+            this.unreadCount++;
+            localStorage.setItem('unreadCount', this.unreadCount.toString());
             
-            if (!chatOpen) {
-                this.unreadCount++;
-                localStorage.setItem('unreadCount', this.unreadCount.toString());
-                
-                if (this.notificationsEnabled) {
-                    try {
-                        await this.sendNotificationToUser(message);
-                    } catch (error) {
-                        console.error('Erreur notification:', error);
+            if (this.notificationsEnabled) {
+                try {
+                    // Utiliser le résultat mais ne pas propager d'erreur
+                    const notificationResult = await this.sendNotificationToUser(message);
+                    if (!notificationResult?.success) {
+                        console.warn('Notification non envoyée:', notificationResult?.error || 'Raison inconnue');
                     }
+                } catch (error) {
+                    // En cas d'erreur, simplement logger mais ne pas interrompre
+                    console.warn('Erreur notification ignorée:', error.message);
                 }
-                
-                this.updateUnreadBadgeAndBubble();
             }
+            
+            this.updateUnreadBadgeAndBubble();
         }
     }
+}
 
     formatMessageTime(timestamp) {
     const date = new Date(timestamp);
@@ -1273,14 +1278,13 @@ async unsubscribeFromPushNotifications() {
         
         if (!response.ok) {
             const text = await response.text();
-            console.error('Réponse API erreur:', {
+            console.warn('Réponse API erreur:', {
                 status: response.status,
                 statusText: response.statusText,
                 body: text
             });
             
             // Ne pas bloquer l'interface utilisateur avec une erreur de notification
-            console.warn(`Erreur API: ${response.status} ${text}`);
             return { success: false, error: text };
         }
         
@@ -1288,8 +1292,6 @@ async unsubscribeFromPushNotifications() {
         console.log('Réponse API succès:', result);
         return result;
     } catch (error) {
-        console.error('Erreur envoi notification:', error);
-        
         // Gérer spécifiquement les erreurs d'abandon
         if (error.name === 'AbortError') {
             console.warn('La requête de notification a été abandonnée (timeout)');
@@ -1297,8 +1299,7 @@ async unsubscribeFromPushNotifications() {
         }
         
         // Pour les autres erreurs, on log mais on ne propage pas l'erreur
-        // afin de ne pas perturber l'expérience utilisateur
-        console.error('Stack trace:', error.stack);
+        console.warn('Erreur envoi notification:', error.message);
         return { success: false, error: error.message };
     }
 }
