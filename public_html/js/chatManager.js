@@ -1465,17 +1465,8 @@ updateUnreadBadgeAndBubble() {
         const isMobile = window.innerWidth <= 768;
         
         if (isMobile) {
-            // Positionner en bas à gauche pour mobile
-            bubble.style.position = 'fixed';
-            bubble.style.bottom = '80px';
-            bubble.style.left = '20px';
-            bubble.style.right = 'auto';
-            bubble.style.width = 'auto';
-            bubble.style.maxWidth = '250px';
-            bubble.style.zIndex = '2000';
-            bubble.style.border = '2px solid rgba(255,255,255,0.3)';
-            bubble.style.background = 'linear-gradient(135deg, #6a3093 0%, #a044ff 100%)';
-            bubble.style.boxShadow = '0 4px 10px rgba(0,0,0,0.3)';
+            // Utiliser la classe CSS au lieu des styles inline
+            bubble.className = 'info-bubble info-bubble-mobile show';
             
             // Ajouter au body
             document.body.appendChild(bubble);
@@ -1500,23 +1491,23 @@ updateUnreadBadgeAndBubble() {
             chatToggleBtn.appendChild(bubble);
         }
     }
+} // Cette accolade fermante était mal placée
+
+escapeHtml(unsafe) {
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
-    escapeHtml(unsafe) {
-        return unsafe
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+scrollToBottom() {
+    const messagesContainer = this.container.querySelector('.chat-messages');
+    if (messagesContainer) {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
-
-    scrollToBottom() {
-        const messagesContainer = this.container.querySelector('.chat-messages');
-        if (messagesContainer) {
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-    }
+}
 	
 	ensureChatInputVisible() {
     if (/Mobi|Android/i.test(navigator.userAgent)) {
