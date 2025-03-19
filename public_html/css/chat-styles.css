@@ -230,6 +230,12 @@ body:has(.chat-container.open) .news-ticker {
     animation: slideUp 0.3s ease;
     overflow: hidden;
     z-index: 1100;
+    
+    /* Nouvelles propriétés pour améliorer le comportement mobile/PWA */
+    -webkit-overflow-scrolling: touch;
+    transform: translateZ(0); /* Force le hardware acceleration */
+    will-change: transform; /* Optimisation des performances */
+    overscroll-behavior: contain; /* Empêche le scroll de la page en arrière-plan */
 }
 
 @media (max-width: 600px) {
@@ -358,17 +364,21 @@ body:has(.chat-container.open) .news-ticker {
     gap: 10px;
     background: rgba(0, 0, 0, 0.2);
     scroll-behavior: smooth;
-	color: white !important; /* Force le texte en blanc */
+    color: white !important; /* Force le texte en blanc */
+    
+    /* Nouvelles propriétés pour améliorer le comportement mobile/PWA */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    height: 100%;
+    min-height: 0; /* Important pour que flex fonctionne correctement */
 }
 
 .chat-messages::-webkit-scrollbar {
     width: 6px;
 }
-
 .chat-messages::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.1);
 }
-
 .chat-messages::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.2);
     border-radius: 3px;
@@ -467,6 +477,13 @@ body:has(.chat-container.open) .news-ticker {
     display: flex;
     gap: 10px;
     align-items: center;
+    
+    /* Nouvelles propriétés pour le maintenir visible */
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    margin-top: auto; /* Pousse la zone de saisie vers le bas */
+    padding-bottom: env(safe-area-inset-bottom, 15px); /* Support pour les iPhones avec encoche */
 }
 
 /* Augmenter la taille du texte dans la zone de saisie */
@@ -1492,5 +1509,50 @@ body.long-press-active .message-options {
     .close-chat:hover, .close-chat:active {
         animation: none;
         transform: scale(1.1);
+    }
+}
+
+/* Styles spécifiques pour les mobiles */
+@media (max-width: 768px) {
+    .chat-container {
+        width: 100%;
+        height: 80vh; /* Plus grand sur mobile */
+        max-height: 80vh;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        border-radius: 20px 20px 0 0; /* Arrondi seulement en haut */
+    }
+    
+    /* Assurer que le textarea a une taille minimale adéquate */
+    .chat-input textarea {
+        min-height: 48px; /* Plus grand pour faciliter la frappe */
+        font-size: 16px; /* Évite le zoom sur iOS */
+    }
+}
+
+/* Styles spécifiques pour les PWA */
+@media (display-mode: standalone) {
+    .chat-container {
+        /* Garantir que le container prend toute la hauteur disponible */
+        height: 80vh;
+        max-height: calc(100vh - 120px);
+        bottom: 60px;
+    }
+    
+    /* S'assurer que le focus reste visible */
+    .chat-input textarea:focus {
+        position: relative;
+        z-index: 11;
+    }
+    
+    /* Comportement spécial après envoi de message */
+    .message.sent {
+        animation: highlight 1s ease;
+    }
+    
+    @keyframes highlight {
+        0%, 100% { background-color: transparent; }
+        50% { background-color: rgba(255, 255, 255, 0.1); }
     }
 }
