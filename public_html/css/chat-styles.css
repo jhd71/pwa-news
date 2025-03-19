@@ -1558,26 +1558,28 @@ body.long-press-active .message-options {
 }
 
 @media (max-width: 768px) {
-    /* Pour les appareils mobiles */
     .chat-container {
-        display: flex !important;
-        flex-direction: column !important;
+        /* Diminuer la hauteur pour laisser plus d'espace au clavier */
+        height: 65vh !important; 
+        max-height: 65vh !important;
+        /* Positionner plus haut dans l'écran */
+        bottom: 15vh !important;
     }
     
-    .chat-messages {
-        flex: 1 1 auto !important;
-        max-height: calc(100% - 80px) !important; /* Réserver espace pour input */
-        overflow-y: auto !important;
-    }
-    
+    /* S'assurer que l'input reste toujours visible */
     .chat-input {
         position: sticky !important;
         bottom: 0 !important;
-        width: 100% !important;
-        flex-shrink: 0 !important; /* Ne pas réduire */
-        z-index: 1000 !important;
-        padding-bottom: 10px !important;
-        padding-top: 10px !important;
+        z-index: 1500 !important; /* Z-index très élevé */
+        padding: 10px !important;
         background: var(--chat-input-bg) !important;
+        border-radius: 0 0 20px 20px !important;
+        box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.2) !important; /* Ombre subtile pour le séparer */
+        margin-top: auto !important;
+    }
+    
+    /* Réduire la hauteur des messages pour laisser de la place à l'input */
+    .chat-messages {
+        max-height: calc(65vh - 90px) !important;
     }
 }
