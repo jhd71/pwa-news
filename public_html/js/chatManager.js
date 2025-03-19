@@ -627,40 +627,48 @@ extractPseudoFromEmail(email) {
 
     if (input && sendBtn) {
     const sendMessage = async () => {
-        const content = input.value.trim();
-        if (content) {
-            if (await this.checkForBannedWords(content)) {
-                this.showNotification('Message contient des mots interdits', 'error');
-                this.playSound('error');
-                return;
-            }
-
-            const success = await this.sendMessage(content);
-            if (success) {
-                input.value = '';
-                
-                // Fermer le clavier sur mobile après envoi
-                if (/Mobi|Android/i.test(navigator.userAgent)) {
-                    input.blur(); // Retirez le focus pour fermer le clavier
-                    
-                    // Utiliser un délai court pour laisser le temps au clavier de se fermer
-                    setTimeout(() => {
-                        // Scroll vers la zone de saisie pour la rendre visible
-                        const chatInput = this.container.querySelector('.chat-input');
-                        if (chatInput) {
-                            chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
-                        }
-                    }, 300);
-                } else {
-                    input.focus();
-                }
-                
-                this.playSound('message');
-            } else {
-                this.playSound('error');
-            }
+    const content = input.value.trim();
+    if (content) {
+        if (await this.checkForBannedWords(content)) {
+            this.showNotification('Message contient des mots interdits', 'error');
+            this.playSound('error');
+            return;
         }
-    };
+
+        // Fermer le clavier immédiatement sur mobile
+        if (/Mobi|Android/i.test(navigator.userAgent)) {
+            input.blur();
+        }
+        
+        // Stocker la valeur actuelle puis vider l'input
+        const messageContent = content;
+        input.value = '';
+        
+        // Envoyer le message
+        const success = await this.sendMessage(messageContent);
+        
+        if (success) {
+            this.playSound('message');
+            
+            // Attendre que les opérations Supabase soient terminées
+            // puis repositionner la vue
+            if (/Mobi|Android/i.test(navigator.userAgent)) {
+                // Délai plus long pour tenir compte de la latence Supabase
+                setTimeout(() => {
+                    this.scrollToBottom();
+                    const chatInput = this.container.querySelector('.chat-input');
+                    if (chatInput) {
+                        chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                    }
+                }, 3500); // 3.5 secondes pour être sûr
+            } else {
+                input.focus();
+            }
+        } else {
+            this.playSound('error');
+        }
+    }
+};
 
     if (/Mobi|Android/i.test(navigator.userAgent)) {
         sendBtn.addEventListener('touchstart', (e) => {
@@ -815,48 +823,56 @@ toggleEmojiPanel() {
     }
 
     async handleNewMessage(message) {
-        if (!message) return;
-        
-        const chatContainer = this.container.querySelector('.chat-container');
-        const chatOpen = chatContainer && chatContainer.classList.contains('open');
-        
-        console.log('État initial du message:', {
-            chatOpen,
-            isOpen: this.isOpen,
-            messageFrom: message.pseudo,
-            myPseudo: this.pseudo,
-            notificationsEnabled: this.notificationsEnabled
-        });
+    if (!message) return;
+    
+    const chatContainer = this.container.querySelector('.chat-container');
+    const chatOpen = chatContainer && chatContainer.classList.contains('open');
+    
+    console.log('État initial du message:', {
+        chatOpen,
+        isOpen: this.isOpen,
+        messageFrom: message.pseudo,
+        myPseudo: this.pseudo,
+        notificationsEnabled: this.notificationsEnabled
+    });
 
-        const messagesContainer = this.container.querySelector('.chat-messages');
-        if (!messagesContainer) return;
+    const messagesContainer = this.container.querySelector('.chat-messages');
+    if (!messagesContainer) return;
 
-        const existingMessage = messagesContainer.querySelector(`[data-message-id="${message.id}"]`);
-        if (existingMessage) return;
+    const existingMessage = messagesContainer.querySelector(`[data-message-id="${message.id}"]`);
+    if (existingMessage) return;
 
-        const messageElement = this.createMessageElement(message);
-        messagesContainer.appendChild(messageElement);
-        this.scrollToBottom();
-        
-        if (message.pseudo !== this.pseudo) {
-            this.playSound('message');
-            
-            if (!chatOpen) {
-                this.unreadCount++;
-                localStorage.setItem('unreadCount', this.unreadCount.toString());
-                
-                if (this.notificationsEnabled) {
-                    try {
-                        await this.sendNotificationToUser(message);
-                    } catch (error) {
-                        console.error('Erreur notification:', error);
-                    }
-                }
-                
-                this.updateUnreadBadgeAndBubble();
-            }
+    const messageElement = this.createMessageElement(message);
+    messagesContainer.appendChild(messageElement);
+    this.scrollToBottom();
+    
+    // Si c'est votre propre message sur mobile, rendre la zone de saisie visible
+    if (message.pseudo === this.pseudo && /Mobi|Android/i.test(navigator.userAgent)) {
+        const chatInput = this.container.querySelector('.chat-input');
+        if (chatInput) {
+            chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
         }
     }
+    
+    if (message.pseudo !== this.pseudo) {
+        this.playSound('message');
+        
+        if (!chatOpen) {
+            this.unreadCount++;
+            localStorage.setItem('unreadCount', this.unreadCount.toString());
+            
+            if (this.notificationsEnabled) {
+                try {
+                    await this.sendNotificationToUser(message);
+                } catch (error) {
+                    console.error('Erreur notification:', error);
+                }
+            }
+            
+            this.updateUnreadBadgeAndBubble();
+        }
+    }
+}
 
     formatMessageTime(timestamp) {
     const date = new Date(timestamp);
@@ -1437,11 +1453,25 @@ updateUnreadBadgeAndBubble() {
     const messagesContainer = this.container.querySelector('.chat-messages');
     if (messagesContainer) {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+}
+
+// Ajouter votre nouvelle méthode ici
+ensureChatInputVisible() {
+    if (/Mobi|Android/i.test(navigator.userAgent)) {
+        // Appliquer cette vérification périodiquement après l'envoi d'un message
+        const chatInput = this.container.querySelector('.chat-input');
+        const messagesContainer = this.container.querySelector('.chat-messages');
         
-        // Assurez-vous que la zone de saisie est visible sur mobile
-        if (/Mobi|Android/i.test(navigator.userAgent)) {
-            const chatInput = this.container.querySelector('.chat-input');
-            if (chatInput) {
+        if (chatInput && messagesContainer) {
+            // Vérifier si la zone de saisie est visible dans la fenêtre
+            const inputRect = chatInput.getBoundingClientRect();
+            const isVisible = (
+                inputRect.top >= 0 &&
+                inputRect.bottom <= window.innerHeight
+            );
+            
+            if (!isVisible) {
                 chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
             }
         }
@@ -1449,7 +1479,7 @@ updateUnreadBadgeAndBubble() {
 }
 
 showAdminPanel() {
-        if (!this.isAdmin) return;
+    if (!this.isAdmin) return;
 
         const existingPanel = document.querySelector('.admin-panel');
         if (existingPanel) {
