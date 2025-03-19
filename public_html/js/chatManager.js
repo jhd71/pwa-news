@@ -626,71 +626,70 @@ extractPseudoFromEmail(email) {
     const emojiBtn = this.container.querySelector('.emoji-btn');
 
     if (input && sendBtn) {
-    const sendMessage = async () => {
-    const content = input.value.trim();
-    if (content) {
-        if (await this.checkForBannedWords(content)) {
-            this.showNotification('Message contient des mots interdits', 'error');
-            this.playSound('error');
-            return;
-        }
-
-        // Fermer le clavier immédiatement sur mobile
-        if (/Mobi|Android/i.test(navigator.userAgent)) {
-            input.blur();
-        }
-        
-        // Stocker la valeur actuelle puis vider l'input
-        const messageContent = content;
-        input.value = '';
-        
-        // Envoyer le message
-        const success = await this.sendMessage(messageContent);
-        
-        if (success) {
-            this.playSound('message');
-            
-            // Attendre que les opérations Supabase soient terminées
-            // puis repositionner la vue
-            if (/Mobi|Android/i.test(navigator.userAgent)) {
-                // Délai plus long pour tenir compte de la latence Supabase
-                setTimeout(() => {
-                    this.scrollToBottom();
-                    const chatInput = this.container.querySelector('.chat-input');
-                    if (chatInput) {
-                        chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        const sendMessage = async () => {
+            const content = input.value.trim();
+            if (content) {
+                if (await this.checkForBannedWords(content)) {
+                    this.showNotification('Message contient des mots interdits', 'error');
+                    this.playSound('error');
+                    return;
+                }
+                
+                // Fermer le clavier immédiatement
+                input.blur();
+                
+                // Stocker la valeur puis vider l'input
+                const messageContent = content;
+                input.value = '';
+                
+                // Envoyer le message
+                const success = await this.sendMessage(messageContent);
+                
+                if (success) {
+                    this.playSound('message');
+                    
+                    // Utiliser plusieurs tentatives pour s'assurer que la zone de saisie est visible
+                    // après l'envoi du message, spécialement pour la PWA
+                    if (/Mobi|Android/i.test(navigator.userAgent)) {
+                        // Première tentative immédiate
+                        this.ensureChatInputVisible();
+                        
+                        // Série de tentatives avec délai progressif
+                        [500, 1000, 2000, 3500, 5000].forEach(delay => {
+                            setTimeout(() => {
+                                this.ensureChatInputVisible();
+                            }, delay);
+                        });
+                    } else {
+                        input.focus();
                     }
-                }, 3500); // 3.5 secondes pour être sûr
-            } else {
-                input.focus();
+                } else {
+                    this.playSound('error');
+                }
             }
+        };
+
+        if (/Mobi|Android/i.test(navigator.userAgent)) {
+            sendBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                sendMessage();
+            });
         } else {
-            this.playSound('error');
+            sendBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                sendMessage();
+            });
         }
-    }
-};
 
-    if (/Mobi|Android/i.test(navigator.userAgent)) {
-        sendBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            sendMessage();
-        });
-    } else {
-        sendBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            sendMessage();
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
         });
     }
-
-    input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
-        }
-    });
-}
     
     // Ajout du gestionnaire pour le bouton emoji
     if (emojiBtn) {
@@ -823,56 +822,48 @@ toggleEmojiPanel() {
     }
 
     async handleNewMessage(message) {
-    if (!message) return;
-    
-    const chatContainer = this.container.querySelector('.chat-container');
-    const chatOpen = chatContainer && chatContainer.classList.contains('open');
-    
-    console.log('État initial du message:', {
-        chatOpen,
-        isOpen: this.isOpen,
-        messageFrom: message.pseudo,
-        myPseudo: this.pseudo,
-        notificationsEnabled: this.notificationsEnabled
-    });
-
-    const messagesContainer = this.container.querySelector('.chat-messages');
-    if (!messagesContainer) return;
-
-    const existingMessage = messagesContainer.querySelector(`[data-message-id="${message.id}"]`);
-    if (existingMessage) return;
-
-    const messageElement = this.createMessageElement(message);
-    messagesContainer.appendChild(messageElement);
-    this.scrollToBottom();
-    
-    // Si c'est votre propre message sur mobile, rendre la zone de saisie visible
-    if (message.pseudo === this.pseudo && /Mobi|Android/i.test(navigator.userAgent)) {
-        const chatInput = this.container.querySelector('.chat-input');
-        if (chatInput) {
-            chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        }
-    }
-    
-    if (message.pseudo !== this.pseudo) {
-        this.playSound('message');
+        if (!message) return;
         
-        if (!chatOpen) {
-            this.unreadCount++;
-            localStorage.setItem('unreadCount', this.unreadCount.toString());
+        const chatContainer = this.container.querySelector('.chat-container');
+        const chatOpen = chatContainer && chatContainer.classList.contains('open');
+        
+        console.log('État initial du message:', {
+            chatOpen,
+            isOpen: this.isOpen,
+            messageFrom: message.pseudo,
+            myPseudo: this.pseudo,
+            notificationsEnabled: this.notificationsEnabled
+        });
+
+        const messagesContainer = this.container.querySelector('.chat-messages');
+        if (!messagesContainer) return;
+
+        const existingMessage = messagesContainer.querySelector(`[data-message-id="${message.id}"]`);
+        if (existingMessage) return;
+
+        const messageElement = this.createMessageElement(message);
+        messagesContainer.appendChild(messageElement);
+        this.scrollToBottom();
+        
+        if (message.pseudo !== this.pseudo) {
+            this.playSound('message');
             
-            if (this.notificationsEnabled) {
-                try {
-                    await this.sendNotificationToUser(message);
-                } catch (error) {
-                    console.error('Erreur notification:', error);
+            if (!chatOpen) {
+                this.unreadCount++;
+                localStorage.setItem('unreadCount', this.unreadCount.toString());
+                
+                if (this.notificationsEnabled) {
+                    try {
+                        await this.sendNotificationToUser(message);
+                    } catch (error) {
+                        console.error('Erreur notification:', error);
+                    }
                 }
+                
+                this.updateUnreadBadgeAndBubble();
             }
-            
-            this.updateUnreadBadgeAndBubble();
         }
     }
-}
 
     formatMessageTime(timestamp) {
     const date = new Date(timestamp);
@@ -1450,36 +1441,42 @@ updateUnreadBadgeAndBubble() {
     }
 
     scrollToBottom() {
-    const messagesContainer = this.container.querySelector('.chat-messages');
-    if (messagesContainer) {
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        const messagesContainer = this.container.querySelector('.chat-messages');
+        if (messagesContainer) {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
     }
-}
-
-// Ajouter votre nouvelle méthode ici
-ensureChatInputVisible() {
+	
+	ensureChatInputVisible() {
     if (/Mobi|Android/i.test(navigator.userAgent)) {
-        // Appliquer cette vérification périodiquement après l'envoi d'un message
+        const chatContainer = this.container.querySelector('.chat-container');
         const chatInput = this.container.querySelector('.chat-input');
         const messagesContainer = this.container.querySelector('.chat-messages');
         
-        if (chatInput && messagesContainer) {
-            // Vérifier si la zone de saisie est visible dans la fenêtre
-            const inputRect = chatInput.getBoundingClientRect();
-            const isVisible = (
-                inputRect.top >= 0 &&
-                inputRect.bottom <= window.innerHeight
-            );
+        if (chatInput && chatContainer) {
+            // Méthode 1: Scroll direct vers l'élément
+            chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
             
-            if (!isVisible) {
-                chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            // Méthode 2: Forcer le repositionnement du conteneur
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            // Méthode 3: Ajuster le scroll des messages
+            if (messagesContainer) {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
+            
+            // Méthode 4 (spécifique PWA): Forcer un reflow pour que le navigateur recalcule les positions
+            const height = chatContainer.offsetHeight;
+            chatContainer.style.height = `${height + 1}px`;
+            setTimeout(() => {
+                chatContainer.style.height = `${height}px`;
+            }, 50);
         }
     }
 }
 
 showAdminPanel() {
-    if (!this.isAdmin) return;
+        if (!this.isAdmin) return;
 
         const existingPanel = document.querySelector('.admin-panel');
         if (existingPanel) {
