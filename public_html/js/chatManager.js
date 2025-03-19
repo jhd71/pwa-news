@@ -88,16 +88,6 @@ class ChatManager {
 
         this.initialized = true;
         console.log("Chat initialisé avec succès");
-    // Ajouter le ResizeObserver ici
-        const resizeObserver = new ResizeObserver(entries => {
-            for (let entry of entries) {
-                if (entry.target === document.documentElement) { // ou un autre élément de référence, comme this.container
-                    this.ensureChatInputVisible(); // Ré-exécuter la logique de défilement
-                }
-            }
-        });
-        resizeObserver.observe(document.documentElement); // Observer l'élément racine, ou this.container si plus approprié
-
     } catch (error) {
         console.error('Erreur initialisation:', error);
         if (!document.querySelector('.chat-widget')) {
