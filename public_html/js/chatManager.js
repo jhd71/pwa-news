@@ -625,7 +625,6 @@ extractPseudoFromEmail(email) {
     const sendBtn = this.container.querySelector('.send-btn');
     const chatContainer = this.container.querySelector('.chat-container');
     const messagesContainer = this.container.querySelector('.chat-messages');
-    const emojiBtn = this.container.querySelector('.emoji-btn');
 
     if (input && sendBtn) {
         // Gestion du focus et du clavier
@@ -671,14 +670,32 @@ extractPseudoFromEmail(email) {
                 if (success) {
                     this.playSound('message');
                     
-                    // Assurer que la zone de saisie reste visible
-                    setTimeout(() => {
-                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                        if (/Mobi|Android/i.test(navigator.userAgent)) {
-                            input.focus();
+                    if (/Mobi|Android/i.test(navigator.userAgent)) {
+                        // Fermer le clavier
+                        input.blur();
+                        
+                        // Attendre que le clavier soit fermé puis repositionner le chat
+                        setTimeout(() => {
+                            // Forcer le scroll en haut
                             window.scrollTo(0, 0);
-                        }
-                    }, 100);
+                            
+                            // Remonter le chat
+                            if (chatContainer) {
+                                chatContainer.style.transform = 'translateY(0)';
+                            }
+                            
+                            // Scroll jusqu'au dernier message
+                            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                            
+                            // Réactiver le focus sur l'input avec un délai
+                            setTimeout(() => {
+                                input.focus();
+                            }, 300);
+                        }, 100);
+                    } else {
+                        input.focus();
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    }
                 } else {
                     this.playSound('error');
                 }
@@ -686,19 +703,11 @@ extractPseudoFromEmail(email) {
         };
 
         // Gestion de l'envoi par bouton
-        if (/Mobi|Android/i.test(navigator.userAgent)) {
-            sendBtn.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                sendMessage();
-            });
-        } else {
-            sendBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                sendMessage();
-            });
-        }
+        sendBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            sendMessage();
+        });
 
         // Gestion de l'envoi par touche Entrée
         input.addEventListener('keydown', (e) => {
@@ -714,7 +723,7 @@ extractPseudoFromEmail(email) {
             input.style.height = input.scrollHeight + 'px';
         });
     }
-    
+
     // Empêcher le rebond du scroll
     if (messagesContainer) {
         messagesContainer.addEventListener('touchmove', (e) => {
@@ -727,6 +736,7 @@ extractPseudoFromEmail(email) {
             }
         }, { passive: false });
     }
+}
     
     // Ajout du gestionnaire pour le bouton emoji
     if (emojiBtn) {
