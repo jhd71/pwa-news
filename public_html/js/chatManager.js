@@ -1251,6 +1251,10 @@ async unsubscribeFromPushNotifications() {
     try {
         console.log('Envoi notification à:', message);
         
+        // Créer un contrôleur d'abandon avec un timeout plus long
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 secondes
+        
         const response = await fetch("/api/sendPush.js", {
             method: "POST",
             headers: {
@@ -1260,9 +1264,13 @@ async unsubscribeFromPushNotifications() {
                 message: message.content,
                 fromUser: message.pseudo,
                 toUser: this.pseudo
-            })
+            }),
+            signal: controller.signal // Ajouter le signal d'abandon
         });
-
+        
+        // Annuler le timeout une fois la réponse reçue
+        clearTimeout(timeoutId);
+        
         if (!response.ok) {
             const text = await response.text();
             console.error('Réponse API erreur:', {
@@ -1270,16 +1278,28 @@ async unsubscribeFromPushNotifications() {
                 statusText: response.statusText,
                 body: text
             });
-            throw new Error(`Erreur API: ${response.status} ${text}`);
+            
+            // Ne pas bloquer l'interface utilisateur avec une erreur de notification
+            console.warn(`Erreur API: ${response.status} ${text}`);
+            return { success: false, error: text };
         }
-
+        
         const result = await response.json();
         console.log('Réponse API succès:', result);
         return result;
     } catch (error) {
         console.error('Erreur envoi notification:', error);
+        
+        // Gérer spécifiquement les erreurs d'abandon
+        if (error.name === 'AbortError') {
+            console.warn('La requête de notification a été abandonnée (timeout)');
+            return { success: false, error: 'timeout' };
+        }
+        
+        // Pour les autres erreurs, on log mais on ne propage pas l'erreur
+        // afin de ne pas perturber l'expérience utilisateur
         console.error('Stack trace:', error.stack);
-        throw error;
+        return { success: false, error: error.message };
     }
 }
 	async loadSounds() {
