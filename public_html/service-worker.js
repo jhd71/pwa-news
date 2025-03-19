@@ -216,7 +216,8 @@ self.addEventListener('pushsubscriptionchange', async function(event) {
     try {
         const newSubscription = await self.registration.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: 'VOTRE_CLE_VAPID_PUBLIQUE'
+            applicationServerKey: self.registration.pushManager.getSubscription()
+                       .then(sub => sub.options.applicationServerKey)
         });
 
         // Informer l'application du changement
