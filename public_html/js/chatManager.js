@@ -623,9 +623,32 @@ extractPseudoFromEmail(email) {
     setupChatListeners() {
     const input = this.container.querySelector('.chat-input textarea');
     const sendBtn = this.container.querySelector('.send-btn');
+    const chatContainer = this.container.querySelector('.chat-container');
+    const messagesContainer = this.container.querySelector('.chat-messages');
     const emojiBtn = this.container.querySelector('.emoji-btn');
 
     if (input && sendBtn) {
+        // Gestion du focus et du clavier
+        input.addEventListener('focus', () => {
+            if (/Mobi|Android/i.test(navigator.userAgent)) {
+                document.body.classList.add('keyboard-open');
+                setTimeout(() => {
+                    window.scrollTo(0, 0);
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, 100);
+            }
+        });
+
+        input.addEventListener('blur', () => {
+            if (/Mobi|Android/i.test(navigator.userAgent)) {
+                document.body.classList.remove('keyboard-open');
+                setTimeout(() => {
+                    window.scrollTo(0, 0);
+                }, 100);
+            }
+        });
+
+        // Gestion de l'envoi des messages
         const sendMessage = async () => {
             const content = input.value.trim();
             if (content) {
@@ -635,12 +658,12 @@ extractPseudoFromEmail(email) {
                     return;
                 }
                 
-                // Fermer le clavier immédiatement
-                input.blur();
-                
                 // Stocker la valeur puis vider l'input
                 const messageContent = content;
                 input.value = '';
+                
+                // Ajuster la hauteur de l'input
+                input.style.height = 'auto';
                 
                 // Envoyer le message
                 const success = await this.sendMessage(messageContent);
@@ -648,27 +671,21 @@ extractPseudoFromEmail(email) {
                 if (success) {
                     this.playSound('message');
                     
-                    // Utiliser plusieurs tentatives pour s'assurer que la zone de saisie est visible
-                    // après l'envoi du message, spécialement pour la PWA
-                    if (/Mobi|Android/i.test(navigator.userAgent)) {
-                        // Première tentative immédiate
-                        this.ensureChatInputVisible();
-                        
-                        // Série de tentatives avec délai progressif
-                        [500, 1000, 2000, 3500, 5000].forEach(delay => {
-                            setTimeout(() => {
-                                this.ensureChatInputVisible();
-                            }, delay);
-                        });
-                    } else {
-                        input.focus();
-                    }
+                    // Assurer que la zone de saisie reste visible
+                    setTimeout(() => {
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                        if (/Mobi|Android/i.test(navigator.userAgent)) {
+                            input.focus();
+                            window.scrollTo(0, 0);
+                        }
+                    }, 100);
                 } else {
                     this.playSound('error');
                 }
             }
         };
 
+        // Gestion de l'envoi par bouton
         if (/Mobi|Android/i.test(navigator.userAgent)) {
             sendBtn.addEventListener('touchstart', (e) => {
                 e.preventDefault();
@@ -683,12 +700,32 @@ extractPseudoFromEmail(email) {
             });
         }
 
+        // Gestion de l'envoi par touche Entrée
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage();
             }
         });
+
+        // Ajustement automatique de la hauteur de l'input
+        input.addEventListener('input', () => {
+            input.style.height = 'auto';
+            input.style.height = input.scrollHeight + 'px';
+        });
+    }
+    
+    // Empêcher le rebond du scroll
+    if (messagesContainer) {
+        messagesContainer.addEventListener('touchmove', (e) => {
+            const isAtTop = messagesContainer.scrollTop === 0;
+            const isAtBottom = messagesContainer.scrollHeight - messagesContainer.scrollTop === messagesContainer.clientHeight;
+            
+            if ((isAtTop && e.touches[0].clientY > 0) || 
+                (isAtBottom && e.touches[0].clientY < 0)) {
+                e.preventDefault();
+            }
+        }, { passive: false });
     }
     
     // Ajout du gestionnaire pour le bouton emoji
@@ -1447,30 +1484,28 @@ updateUnreadBadgeAndBubble() {
         }
     }
 	
-	ensureChatInputVisible() {
+	// Mise à jour de la méthode ensureChatInputVisible
+ensureChatInputVisible() {
     if (/Mobi|Android/i.test(navigator.userAgent)) {
         const chatContainer = this.container.querySelector('.chat-container');
-        const chatInput = this.container.querySelector('.chat-input');
+        const chatInput = this.container.querySelector('.chat-input textarea');
         const messagesContainer = this.container.querySelector('.chat-messages');
         
-        if (chatInput && chatContainer) {
-            // Méthode 1: Scroll direct vers l'élément
-            chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        if (chatInput && chatContainer && messagesContainer) {
+            // Forcer le scroll au bas des messages
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
             
-            // Méthode 2: Forcer le repositionnement du conteneur
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            // Réinitialiser le scroll de la page
+            window.scrollTo(0, 0);
             
-            // Méthode 3: Ajuster le scroll des messages
-            if (messagesContainer) {
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }
+            // Assurer que le conteneur est bien positionné
+            chatContainer.style.bottom = '0';
             
-            // Méthode 4 (spécifique PWA): Forcer un reflow pour que le navigateur recalcule les positions
-            const height = chatContainer.offsetHeight;
-            chatContainer.style.height = `${height + 1}px`;
+            // Focus sur l'input avec un léger délai
             setTimeout(() => {
-                chatContainer.style.height = `${height}px`;
-            }, 50);
+                chatInput.focus();
+                window.scrollTo(0, 0);
+            }, 300);
         }
     }
 }
