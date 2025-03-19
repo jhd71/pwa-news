@@ -1,6 +1,6 @@
 {
     "name": "Actu&Média",
-    "short_name": "Actu&Média",
+    "short_name": "A&M",
     "description": "Votre portail d'informations locales",
     "start_url": "/index.html",
     "scope": "/",
@@ -9,6 +9,7 @@
     "background_color": "#1a237e",
     "theme_color": "#1a237e",
     "prefer_related_applications": false,
+	"splash_pages": null,
     "icons": [
     {
         "src": "/images/INFOS-96.png",
