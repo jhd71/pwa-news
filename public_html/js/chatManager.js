@@ -638,15 +638,23 @@ extractPseudoFromEmail(email) {
             const success = await this.sendMessage(content);
             if (success) {
                 input.value = '';
-                // Sur mobile, ne pas forcer le focus (ce qui fait apparaître le clavier),
-                // mais on force le scroll pour garder l'input visible.
+                
+                // Fermer le clavier sur mobile après envoi
                 if (/Mobi|Android/i.test(navigator.userAgent)) {
+                    input.blur(); // Retirez le focus pour fermer le clavier
+                    
+                    // Utiliser un délai court pour laisser le temps au clavier de se fermer
                     setTimeout(() => {
-                        input.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    }, 100);
+                        // Scroll vers la zone de saisie pour la rendre visible
+                        const chatInput = this.container.querySelector('.chat-input');
+                        if (chatInput) {
+                            chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                        }
+                    }, 300);
                 } else {
                     input.focus();
                 }
+                
                 this.playSound('message');
             } else {
                 this.playSound('error');
@@ -1426,11 +1434,20 @@ updateUnreadBadgeAndBubble() {
     }
 
     scrollToBottom() {
-        const messagesContainer = this.container.querySelector('.chat-messages');
-        if (messagesContainer) {
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    const messagesContainer = this.container.querySelector('.chat-messages');
+    if (messagesContainer) {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        // Assurez-vous que la zone de saisie est visible sur mobile
+        if (/Mobi|Android/i.test(navigator.userAgent)) {
+            const chatInput = this.container.querySelector('.chat-input');
+            if (chatInput) {
+                chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            }
         }
     }
+}
+
 showAdminPanel() {
         if (!this.isAdmin) return;
 
