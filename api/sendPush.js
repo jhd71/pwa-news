@@ -10,8 +10,6 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
-
-supabase.functions.setInvocationCount(1); // Limiter à une seule tentative
 // Configuration des clés VAPID
 webpush.setVapidDetails(
   'mailto:infos@jhd71.fr',
