@@ -1556,3 +1556,28 @@ body.long-press-active .message-options {
         50% { background-color: rgba(255, 255, 255, 0.1); }
     }
 }
+
+@media (max-width: 768px) {
+    /* Pour les appareils mobiles */
+    .chat-container {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    
+    .chat-messages {
+        flex: 1 1 auto !important;
+        max-height: calc(100% - 80px) !important; /* Réserver espace pour input */
+        overflow-y: auto !important;
+    }
+    
+    .chat-input {
+        position: sticky !important;
+        bottom: 0 !important;
+        width: 100% !important;
+        flex-shrink: 0 !important; /* Ne pas réduire */
+        z-index: 1000 !important;
+        padding-bottom: 10px !important;
+        padding-top: 10px !important;
+        background: var(--chat-input-bg) !important;
+    }
+}
