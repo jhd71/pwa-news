@@ -28,19 +28,15 @@ class ChatManager {
         
         this.container = document.createElement('div');
         this.container.className = 'chat-widget';
-
         // Vérifier l'état d'authentification
         const isAuthenticated = await this.checkAuthState();
-
         // Vérifier si on utilise le bouton de la barre de navigation
         const useNavButton = document.getElementById('chatToggleBtn') !== null;
-
         if (isAuthenticated && this.pseudo) {
             this.container.innerHTML = useNavButton ? this.getChatHTMLWithoutToggle() : this.getChatHTML();
         } else {
             this.container.innerHTML = useNavButton ? this.getPseudoHTMLWithoutToggle() : this.getPseudoHTML();
         }
-
         const chatContainer = this.container.querySelector('.chat-container');
         if (this.isOpen && chatContainer) {
             chatContainer.classList.add('open');
@@ -48,7 +44,6 @@ class ChatManager {
         
         document.body.appendChild(this.container);
         await this.loadSounds();
-
         // Gestion des notifications push
         if ('serviceWorker' in navigator && 'PushManager' in window) {
             try {
@@ -59,7 +54,6 @@ class ChatManager {
                     this.subscription = subscription;
                     this.notificationsEnabled = true;
                     console.log('Notifications push déjà activées');
-
                     // Vérification périodique de la souscription
                     setInterval(async () => {
                         try {
@@ -77,15 +71,49 @@ class ChatManager {
                 console.error('Erreur initialisation push notifications:', error);
             }
         }
-
         this.setupListeners();
         this.setupRealtimeSubscription();
-
         if (this.pseudo) {
             await this.loadExistingMessages();
             this.updateUnreadBadgeAndBubble();
         }
-
+        
+        // AJOUTER CE CODE ICI - Début du nouveau code
+        // Pour gérer spécifiquement les problèmes de PWA
+        if (/Mobi|Android/i.test(navigator.userAgent)) {
+            // Détecter si nous sommes dans une PWA
+            const isPWA = window.matchMedia('(display-mode: standalone)').matches || 
+                         window.navigator.standalone;
+                         
+            if (isPWA) {
+                console.log("Mode PWA détecté - Activation des ajustements spécifiques");
+                
+                // Observer les changements de visibilité de la page
+                document.addEventListener('visibilitychange', () => {
+                    if (document.visibilityState === 'visible') {
+                        setTimeout(() => {
+                            this.ensureChatInputVisible();
+                        }, 500);
+                    }
+                });
+                
+                // Ajouter un gestionnaire pour les changements d'orientation
+                window.addEventListener('orientationchange', () => {
+                    setTimeout(() => {
+                        this.ensureChatInputVisible();
+                    }, 500);
+                });
+                
+                // Ajouter un gestionnaire pour le changement de focus
+                window.addEventListener('focus', () => {
+                    setTimeout(() => {
+                        this.ensureChatInputVisible();
+                    }, 300);
+                });
+            }
+        }
+        // AJOUTER CE CODE ICI - Fin du nouveau code
+        
         this.initialized = true;
         console.log("Chat initialisé avec succès");
     } catch (error) {
@@ -1452,25 +1480,46 @@ updateUnreadBadgeAndBubble() {
         const chatContainer = this.container.querySelector('.chat-container');
         const chatInput = this.container.querySelector('.chat-input');
         const messagesContainer = this.container.querySelector('.chat-messages');
+        const messagesList = messagesContainer?.querySelectorAll('.message');
+        
+        // PWA Detection
+        const isPWA = window.matchMedia('(display-mode: standalone)').matches || 
+                     window.navigator.standalone;
         
         if (chatInput && chatContainer) {
-            // Méthode 1: Scroll direct vers l'élément
-            chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            // Force le clavier à se fermer d'abord
+            document.activeElement?.blur();
             
-            // Méthode 2: Forcer le repositionnement du conteneur
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-            
-            // Méthode 3: Ajuster le scroll des messages
-            if (messagesContainer) {
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            // Pour les PWA, utiliser une approche plus agressive
+            if (isPWA) {
+                // Forcer un redimensionnement du conteneur de chat
+                const originalHeight = chatContainer.style.height;
+                chatContainer.style.height = '99%';
+                setTimeout(() => {
+                    chatContainer.style.height = originalHeight || '100%';
+                    
+                    // Scroll jusqu'au dernier message d'abord
+                    if (messagesList && messagesList.length > 0) {
+                        const lastMessage = messagesList[messagesList.length - 1];
+                        lastMessage.scrollIntoView({ behavior: 'auto', block: 'end' });
+                    }
+                    
+                    // Puis scroll jusqu'à la zone de saisie
+                    chatInput.scrollIntoView({ behavior: 'auto', block: 'end' });
+                    
+                    // Faire défiler les messages jusqu'en bas
+                    if (messagesContainer) {
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    }
+                }, 100);
+            } else {
+                // Approche normale pour non-PWA
+                chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                
+                if (messagesContainer) {
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }
             }
-            
-            // Méthode 4 (spécifique PWA): Forcer un reflow pour que le navigateur recalcule les positions
-            const height = chatContainer.offsetHeight;
-            chatContainer.style.height = `${height + 1}px`;
-            setTimeout(() => {
-                chatContainer.style.height = `${height}px`;
-            }, 50);
         }
     }
 }
