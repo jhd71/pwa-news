@@ -88,6 +88,15 @@ class ChatManager {
 
         this.initialized = true;
         console.log("Chat initialisé avec succès");
+		const resizeObserver = new ResizeObserver(entries => {
+            for (let entry of entries) {
+                if (entry.target === document.documentElement) { // ou un autre élément de référence, comme this.container
+                    this.ensureChatInputVisible(); // Ré-exécuter la logique de défilement
+                }
+            }
+        });
+        resizeObserver.observe(document.documentElement); // Observer l'élément racine, ou this.container si plus approprié
+
     } catch (error) {
         console.error('Erreur initialisation:', error);
         if (!document.querySelector('.chat-widget')) {
@@ -1452,25 +1461,32 @@ updateUnreadBadgeAndBubble() {
         const chatContainer = this.container.querySelector('.chat-container');
         const chatInput = this.container.querySelector('.chat-input');
         const messagesContainer = this.container.querySelector('.chat-messages');
-        
+
         if (chatInput && chatContainer) {
-            // Méthode 1: Scroll direct vers l'élément
-            chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
-            
-            // Méthode 2: Forcer le repositionnement du conteneur
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-            
-            // Méthode 3: Ajuster le scroll des messages
-            if (messagesContainer) {
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }
-            
-            // Méthode 4 (spécifique PWA): Forcer un reflow pour que le navigateur recalcule les positions
-            const height = chatContainer.offsetHeight;
-            chatContainer.style.height = `${height + 1}px`;
-            setTimeout(() => {
-                chatContainer.style.height = `${height}px`;
-            }, 50);
+            setTimeout(() => { // Ajouter un délai de 100ms
+                // Méthode 1: Scroll direct vers l'élément
+                chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                chatInput.focus(); // Ajout du focus
+
+                // Méthode 2: Forcer le repositionnement du conteneur
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+
+                // Méthode 3: Ajuster le scroll des messages
+                if (messagesContainer) {
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }
+
+                // Méthode 4 (spécifique PWA): Forcer un reflow pour que le navigateur recalcule les positions
+                const height = chatContainer.offsetHeight;
+                chatContainer.style.height = `${height + 1}px`;
+                setTimeout(() => {
+                    chatContainer.style.height = `${height}px`;
+					// Retarder blur après le repositionnement
+					setTimeout(() => {
+						chatInput.blur();
+					}, 50);
+                }, 50);
+            }, 100);
         }
     }
 }
