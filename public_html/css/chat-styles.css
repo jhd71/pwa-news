@@ -1559,9 +1559,9 @@ body.long-press-active .message-options {
 
 @media (max-width: 768px) {
     .chat-container {
-        height: 70vh !important; /* Augmenté de 65vh à 70vh */
-        max-height: 70vh !important;
-        bottom: 12vh !important; /* Légèrement remonté de 15vh à 12vh */
+        height: 75vh !important; /* Encore plus grand */
+        max-height: 75vh !important;
+        bottom: 10vh !important; /* Encore plus remonté */
     }
     
     /* S'assurer que l'input reste toujours visible */
@@ -1569,16 +1569,19 @@ body.long-press-active .message-options {
         position: sticky !important;
         bottom: 0 !important;
         z-index: 1500 !important; /* Z-index très élevé */
-        padding: 10px !important;
+        padding: 12px !important;
         background: var(--chat-input-bg) !important;
         border-radius: 0 0 20px 20px !important;
         box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.2) !important; /* Ombre subtile pour le séparer */
         margin-top: auto !important;
     }
     
+	.chat-input textarea {
+        min-height: 45px !important; /* Zone de texte légèrement plus grande */
+    }
     /* Réduire la hauteur des messages pour laisser de la place à l'input */
     .chat-messages {
-        max-height: calc(70vh - 80px) !important; /* Ajusté pour la nouvelle hauteur */
+        max-height: calc(75vh - 80px) !important;
     }
 }
 
