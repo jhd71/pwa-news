@@ -206,6 +206,32 @@
     display: block;
     animation: fadeIn 0.3s ease;
 }
+
+/* Amélioration de la visibilité de l'info-bulle sur mobile */
+@media (max-width: 768px) {
+  .info-bubble {
+    position: fixed !important;
+    bottom: 80px !important;
+    left: 20px !important;
+    right: auto !important;
+    width: auto !important; /* Ajuster la largeur automatiquement */
+    max-width: 250px !important;
+    transform: none !important;
+    z-index: 2000 !important;
+  }
+  
+  /* Redéfinir l'animation pour mobile */
+  .info-bubble.show {
+    display: block !important;
+    animation: bubblePop 0.5s ease-out !important;
+  }
+  
+  @keyframes bubblePop {
+    0% { transform: scale(0.8); opacity: 0; }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+}
 /* Masquer le ticker quand le chat est ouvert */
 .chat-container.open + .news-ticker,
 .chat-container.open ~ .news-ticker,
@@ -1531,35 +1557,6 @@ body.long-press-active .message-options {
     }
 }
 
-/* Amélioration de la visibilité de l'info-bulle sur mobile */
-@media (max-width: 768px) {
-  .info-bubble {
-    position: fixed !important;
-    bottom: 80px !important; /* Position plus basse */
-    left: 20px !important; /* Position à gauche */
-    right: auto !important; /* Annuler l'alignement à droite s'il existe */
-    transform: none !important; /* Annuler tout transform qui pourrait la centrer */
-    z-index: 2000 !important; /* S'assurer qu'elle est au-dessus de tout */
-    background-color: rgba(255, 255, 255, 0.9) !important; /* Fond plus visible */
-    padding: 10px 15px !important; /* Plus d'espace intérieur */
-    border-radius: 12px !important; /* Coins arrondis */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important; /* Ombre portée plus visible */
-    max-width: 70% !important; /* Limiter la largeur */
-    font-size: 14px !important; /* Taille de police lisible */
-    border-left: 4px solid #4CAF50 !important; /* Bordure verte à gauche */
-  }
-  
-  /* Animation d'apparition pour attirer l'attention */
-  .info-bubble.show {
-    animation: bubblePop 0.5s ease-out !important;
-  }
-  
-  @keyframes bubblePop {
-    0% { transform: scale(0.8); opacity: 0; }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); opacity: 1; }
-  }
-}
 
 /* Styles spécifiques pour les PWA */
 @media (display-mode: standalone) {
