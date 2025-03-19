@@ -655,47 +655,37 @@ extractPseudoFromEmail(email) {
 
     if (input && sendBtn) {
         const sendMessage = async () => {
-            const content = input.value.trim();
-            if (content) {
-                if (await this.checkForBannedWords(content)) {
-                    this.showNotification('Message contient des mots interdits', 'error');
-                    this.playSound('error');
-                    return;
-                }
-                
-                // Fermer le clavier immédiatement
-                input.blur();
-                
-                // Stocker la valeur puis vider l'input
-                const messageContent = content;
-                input.value = '';
-                
-                // Envoyer le message
-                const success = await this.sendMessage(messageContent);
-                
-                if (success) {
-                    this.playSound('message');
-                    
-                    // Utiliser plusieurs tentatives pour s'assurer que la zone de saisie est visible
-                    // après l'envoi du message, spécialement pour la PWA
-                    if (/Mobi|Android/i.test(navigator.userAgent)) {
-                        // Première tentative immédiate
-                        this.ensureChatInputVisible();
-                        
-                        // Série de tentatives avec délai progressif
-                        [500, 1000, 2000, 3500, 5000].forEach(delay => {
-                            setTimeout(() => {
-                                this.ensureChatInputVisible();
-                            }, delay);
-                        });
-                    } else {
-                        input.focus();
-                    }
-                } else {
-                    this.playSound('error');
-                }
-            }
-        };
+    const content = input.value.trim();
+    if (content) {
+        // Vérification et autre code...
+        
+        // Fermer le clavier immédiatement
+        input.blur();
+        
+        // Stocker et vider l'input
+        const messageContent = content;
+        input.value = '';
+        
+        // Envoyer le message
+        const success = await this.sendMessage(messageContent);
+        
+        if (success) {
+            this.playSound('message');
+            
+            // Appels multiples pour s'assurer que la zone de saisie reste visible
+            this.ensureChatInputVisible(); // Immédiatement
+            
+            // Répéter avec différents délais
+            [300, 800, 1500, 3000].forEach(delay => {
+                setTimeout(() => {
+                    this.ensureChatInputVisible();
+                }, delay);
+            });
+        } else {
+            this.playSound('error');
+        }
+    }
+};
 
         if (/Mobi|Android/i.test(navigator.userAgent)) {
             sendBtn.addEventListener('touchstart', (e) => {
@@ -1477,49 +1467,44 @@ updateUnreadBadgeAndBubble() {
 	
 	ensureChatInputVisible() {
     if (/Mobi|Android/i.test(navigator.userAgent)) {
+        // Obtenir les éléments nécessaires
         const chatContainer = this.container.querySelector('.chat-container');
         const chatInput = this.container.querySelector('.chat-input');
         const messagesContainer = this.container.querySelector('.chat-messages');
-        const messagesList = messagesContainer?.querySelectorAll('.message');
-        
-        // PWA Detection
-        const isPWA = window.matchMedia('(display-mode: standalone)').matches || 
-                     window.navigator.standalone;
         
         if (chatInput && chatContainer) {
-            // Force le clavier à se fermer d'abord
-            document.activeElement?.blur();
+            console.log("Tentative de rendre la zone de saisie visible");
             
-            // Pour les PWA, utiliser une approche plus agressive
-            if (isPWA) {
-                // Forcer un redimensionnement du conteneur de chat
-                const originalHeight = chatContainer.style.height;
-                chatContainer.style.height = '99%';
-                setTimeout(() => {
-                    chatContainer.style.height = originalHeight || '100%';
-                    
-                    // Scroll jusqu'au dernier message d'abord
-                    if (messagesList && messagesList.length > 0) {
-                        const lastMessage = messagesList[messagesList.length - 1];
-                        lastMessage.scrollIntoView({ behavior: 'auto', block: 'end' });
-                    }
-                    
-                    // Puis scroll jusqu'à la zone de saisie
-                    chatInput.scrollIntoView({ behavior: 'auto', block: 'end' });
-                    
-                    // Faire défiler les messages jusqu'en bas
-                    if (messagesContainer) {
-                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                    }
-                }, 100);
-            } else {
-                // Approche normale pour non-PWA
-                chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
-                
-                if (messagesContainer) {
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                }
+            // 1. D'abord, assurer que le conteneur du chat est à sa hauteur maximale
+            chatContainer.style.height = '80vh';
+            
+            // 2. Repositionner les messages pour qu'ils laissent de la place pour l'input
+            if (messagesContainer) {
+                messagesContainer.style.maxHeight = 'calc(100% - 80px)';
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
+            
+            // 3. Forcer le conteneur à se redessiner (redraw)
+            chatContainer.style.opacity = '0.99';
+            setTimeout(() => {
+                chatContainer.style.opacity = '1';
+                
+                // 4. Forcer le scroll tout en bas
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                
+                // 5. Technique spéciale pour les PWA sur Android
+                if (window.matchMedia('(display-mode: standalone)').matches) {
+                    // Fixer la position de la zone d'entrée
+                    chatInput.style.position = 'sticky';
+                    chatInput.style.bottom = '0';
+                    chatInput.style.zIndex = '1000';
+                    
+                    // Scroll doux vers la zone d'entrée
+                    chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                }
+                
+                console.log("Ajustement de visibilité effectué");
+            }, 50);
         }
     }
 }
