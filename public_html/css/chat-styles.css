@@ -1531,6 +1531,36 @@ body.long-press-active .message-options {
     }
 }
 
+/* Amélioration de la visibilité de l'info-bulle sur mobile */
+@media (max-width: 768px) {
+  .info-bubble {
+    position: fixed !important;
+    bottom: 80px !important; /* Position plus basse */
+    left: 20px !important; /* Position à gauche */
+    right: auto !important; /* Annuler l'alignement à droite s'il existe */
+    transform: none !important; /* Annuler tout transform qui pourrait la centrer */
+    z-index: 2000 !important; /* S'assurer qu'elle est au-dessus de tout */
+    background-color: rgba(255, 255, 255, 0.9) !important; /* Fond plus visible */
+    padding: 10px 15px !important; /* Plus d'espace intérieur */
+    border-radius: 12px !important; /* Coins arrondis */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important; /* Ombre portée plus visible */
+    max-width: 70% !important; /* Limiter la largeur */
+    font-size: 14px !important; /* Taille de police lisible */
+    border-left: 4px solid #4CAF50 !important; /* Bordure verte à gauche */
+  }
+  
+  /* Animation d'apparition pour attirer l'attention */
+  .info-bubble.show {
+    animation: bubblePop 0.5s ease-out !important;
+  }
+  
+  @keyframes bubblePop {
+    0% { transform: scale(0.8); opacity: 0; }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+}
+
 /* Styles spécifiques pour les PWA */
 @media (display-mode: standalone) {
     .chat-container {
@@ -1559,9 +1589,11 @@ body.long-press-active .message-options {
 
 @media (max-width: 768px) {
     .chat-container {
-        height: 75vh !important; /* Encore plus grand */
-        max-height: 75vh !important;
-        bottom: 10vh !important; /* Encore plus remonté */
+        /* Diminuer la hauteur pour laisser plus d'espace au clavier */
+        height: 65vh !important; 
+        max-height: 65vh !important;
+        /* Positionner plus haut dans l'écran */
+        bottom: 15vh !important;
     }
     
     /* S'assurer que l'input reste toujours visible */
@@ -1569,19 +1601,16 @@ body.long-press-active .message-options {
         position: sticky !important;
         bottom: 0 !important;
         z-index: 1500 !important; /* Z-index très élevé */
-        padding: 12px !important;
+        padding: 10px !important;
         background: var(--chat-input-bg) !important;
         border-radius: 0 0 20px 20px !important;
         box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.2) !important; /* Ombre subtile pour le séparer */
         margin-top: auto !important;
     }
     
-	.chat-input textarea {
-        min-height: 45px !important; /* Zone de texte légèrement plus grande */
-    }
     /* Réduire la hauteur des messages pour laisser de la place à l'input */
     .chat-messages {
-        max-height: calc(75vh - 80px) !important;
+        max-height: calc(65vh - 90px) !important;
     }
 }
 
