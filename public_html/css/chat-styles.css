@@ -1583,3 +1583,21 @@ body.long-press-active .message-options {
         max-height: calc(65vh - 90px) !important;
     }
 }
+
+/* Ajustements pour les écrans plus grands (PC) */
+@media (min-width: 769px) {
+    .chat-container {
+        height: 70vh !important; /* Légèrement plus grand sur PC */
+        max-height: 70vh !important;
+    }
+    
+    .chat-input {
+        padding: 15px !important; /* Un peu plus d'espace pour la zone de saisie */
+        margin-top: auto !important; /* La pousse vers le bas */
+    }
+    
+    .chat-input textarea {
+        min-height: 50px !important; /* Zone de texte un peu plus haute */
+        max-height: 150px !important; /* Peut s'agrandir davantage */
+    }
+}
