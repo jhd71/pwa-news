@@ -1446,22 +1446,57 @@ updateUnreadBadgeAndBubble() {
             badge.textContent = this.unreadCount || '';
             badge.classList.toggle('hidden', this.unreadCount === 0);
         }
-
-        // On récupère la bulle si elle existe déjà
-        const existingBubble = chatToggleBtn.querySelector('.info-bubble');
-        // Si le chat est ouvert ou s'il n'y a pas de messages non lus, on supprime la bulle
+        
+        // Supprimer toute bulle existante dans le document pour éviter les doublons
+        const existingBubbles = document.querySelectorAll('.info-bubble');
+        existingBubbles.forEach(bubble => bubble.remove());
+        
+        // Si le chat est ouvert ou s'il n'y a pas de messages non lus, on ne crée pas de bulle
         if (this.isOpen || this.unreadCount === 0) {
-            if (existingBubble) {
-                existingBubble.remove();
-            }
+            return;
+        }
+        
+        // Créer une nouvelle bulle
+        const bubble = document.createElement('div');
+        bubble.className = 'info-bubble show';
+        bubble.innerHTML = `<div style="font-weight: bold;">${this.unreadCount} nouveau(x) message(s)</div>`;
+        
+        // Sur mobile, on attache la bulle au body pour un positionnement absolu
+        const isMobile = window.innerWidth <= 768;
+        
+        if (isMobile) {
+            // Positionner en bas à gauche pour mobile
+            bubble.style.position = 'fixed';
+            bubble.style.bottom = '80px';
+            bubble.style.left = '20px';
+            bubble.style.right = 'auto';
+            bubble.style.width = 'auto';
+            bubble.style.maxWidth = '250px';
+            bubble.style.zIndex = '2000';
+            bubble.style.border = '2px solid rgba(255,255,255,0.3)';
+            bubble.style.background = 'linear-gradient(135deg, #6a3093 0%, #a044ff 100%)';
+            bubble.style.boxShadow = '0 4px 10px rgba(0,0,0,0.3)';
+            
+            // Ajouter au body
+            document.body.appendChild(bubble);
+            
+            // Ajouter un gestionnaire de clic pour ouvrir le chat
+            bubble.addEventListener('click', () => {
+                this.isOpen = true;
+                localStorage.setItem('chatOpen', 'true');
+                const chatContainer = this.container.querySelector('.chat-container');
+                if (chatContainer) {
+                    chatContainer.classList.add('open');
+                }
+                this.unreadCount = 0;
+                localStorage.setItem('unreadCount', '0');
+                this.updateUnreadBadgeAndBubble();
+                this.scrollToBottom();
+                this.playSound('click');
+                bubble.remove();
+            });
         } else {
-            // Sinon, on la met à jour
-            if (existingBubble) {
-                existingBubble.remove();
-            }
-            const bubble = document.createElement('div');
-            bubble.className = 'info-bubble show';
-            bubble.innerHTML = `<div style="font-weight: bold;">${this.unreadCount} nouveau(x) message(s)</div>`;
+            // Comportement normal sur desktop
             chatToggleBtn.appendChild(bubble);
         }
     }
