@@ -122,8 +122,20 @@ module.exports = async function handler(req, res) {
   .select('subscription, device_type')
   .or(`pseudo.eq.${toUser},pseudo.eq.all`)
   .eq('active', true);
+let subscriptionsQuery = supabase
+  .from('push_subscriptions')
+  .select('subscription, device_type')
+  .eq('active', true);
+
+if (toUser !== "all") {
+  subscriptionsQuery = subscriptionsQuery.eq('pseudo', toUser);
+}
+
+const { data: subscriptions, error: supabaseError } = await subscriptionsQuery;
 
     console.log("🔍 Souscriptions trouvées :", subscriptions);
+console.log("🛑 Erreur Supabase :", supabaseError);
+
 
     if (supabaseError) {
       console.log('⚠️ Erreur Supabase :', supabaseError);
