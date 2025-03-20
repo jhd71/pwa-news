@@ -22,6 +22,28 @@ class ChatManager {
         this.unreadCount = parseInt(localStorage.getItem('unreadCount') || '0');
     }
 
+async setCurrentUserForRLS() {
+        try {
+            if (!this.pseudo) return false;
+            
+            console.log(`Définition de l'utilisateur courant pour RLS: ${this.pseudo}`);
+            const { error } = await this.supabase.rpc('set_current_user', { 
+                user_pseudo: this.pseudo 
+            });
+            
+            if (error) {
+                console.error('Erreur définition utilisateur RLS:', error);
+                return false;
+            }
+            
+            console.log('Utilisateur RLS défini avec succès');
+            return true;
+        } catch (error) {
+            console.error('Erreur RLS:', error);
+            return false;
+        }
+    }
+	
     async init() {
     try {
         await this.loadBannedWords();
@@ -1028,7 +1050,7 @@ createMessageElement(message) {
             return false;
         }
         
-        // Définir explicitement l'utilisateur courant pour RLS
+        // Définir l'utilisateur courant pour RLS
         const rlsSuccess = await this.setCurrentUserForRLS();
         if (!rlsSuccess) {
             console.error("Échec de la définition de l'utilisateur pour RLS");
@@ -1036,7 +1058,6 @@ createMessageElement(message) {
             return false;
         }
         
-        // Ne pas utiliser supabase.auth.getUser()
         const message = {
             pseudo: this.pseudo,
             content: content,
