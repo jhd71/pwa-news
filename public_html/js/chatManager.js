@@ -1387,24 +1387,52 @@ async unsubscribeFromPushNotifications() {
     }
 
     async checkBannedIP(ip) {
-        const { data, error } = await this.supabase
+    try {
+        console.log(`Vérification de l'IP: ${ip}`);
+        
+        // Extraire le pseudo de l'IP (car vous utilisez 'pseudo-timestamp' comme format)
+        const pseudo = ip.split('-')[0];
+        
+        // Vérifier d'abord les bannissements exacts
+        const { data: exactMatch, error: exactError } = await this.supabase
             .from('banned_ips')
             .select('*')
             .eq('ip', ip)
             .maybeSingle();
-
-        if (error) {
-            console.error('Erreur vérification IP:', error);
-            return false;
+            
+        if (exactError) {
+            console.error('Erreur vérification IP exacte:', exactError);
         }
-
-        if (data) {
-            if (!data.expires_at || new Date(data.expires_at) > new Date()) {
+        
+        // Vérifier ensuite les bannissements par pseudo
+        const { data: pseudoMatches, error: pseudoError } = await this.supabase
+            .from('banned_ips')
+            .select('*')
+            .ilike('ip', `${pseudo}-%`);
+            
+        if (pseudoError) {
+            console.error('Erreur vérification IP par pseudo:', pseudoError);
+        }
+        
+        // Combiner les résultats
+        const allBans = [...(exactMatch ? [exactMatch] : []), ...(pseudoMatches || [])];
+        
+        // Vérifier si l'un des bannissements est valide
+        for (const ban of allBans) {
+            // Si pas de date d'expiration ou date future
+            if (!ban.expires_at || new Date(ban.expires_at) > new Date()) {
+                console.log(`IP bannies trouvée: ${ip}, détails:`, ban);
                 return true;
             }
         }
+        
+        console.log(`Aucun bannissement actif trouvé pour: ${ip}`);
         return false;
+    } catch (error) {
+        console.error('Erreur vérification IP:', error);
+        return false; // Par sécurité, ne pas bloquer en cas d'erreur
     }
+}
 
     async getClientIP() {
         try {
