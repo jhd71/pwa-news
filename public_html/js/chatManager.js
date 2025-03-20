@@ -1379,6 +1379,14 @@ getDeviceType() {
     }
 }
 
+isTablet() {
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(userAgent);
+    const isIPad = /ipad/.test(userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    
+    return isTablet || isIPad || (window.innerWidth >= 600 && window.innerWidth <= 1024);
+}
+
 async unsubscribeFromPushNotifications() {
     try {
         // Définir l'utilisateur courant pour les vérifications RLS
@@ -1724,13 +1732,7 @@ scrollToBottom() {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 }
-	isTablet() {
-    const userAgent = navigator.userAgent.toLowerCase();
-    const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(userAgent);
-    const isIPad = /ipad/.test(userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    
-    return isTablet || isIPad || (window.innerWidth >= 600 && window.innerWidth <= 1024);
-}
+	
 	ensureChatInputVisible() {
     if (/Mobi|Android/i.test(navigator.userAgent)) {
         // Obtenir les éléments nécessaires
