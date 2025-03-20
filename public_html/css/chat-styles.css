@@ -1635,8 +1635,8 @@ body.long-press-active .message-options {
 @media (min-width: 600px) and (max-width: 1024px) {
     .chat-container {
         width: 90% !important;
-        height: 75vh !important;
-        max-height: 75vh !important;
+        height: 55vh !important;
+        max-height: 55vh !important;
         bottom: 20vh !important;
         left: 5% !important;
         right: 5% !important;
