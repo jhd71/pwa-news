@@ -21,10 +21,33 @@ class ChatManager {
         this.isOpen = localStorage.getItem('chatOpen') === 'true';
         this.unreadCount = parseInt(localStorage.getItem('unreadCount') || '0');
     }
-
+async setCurrentUserForRLS() {
+    try {
+        if (this.pseudo) {
+            // Appeler la fonction RPC qui définit l'utilisateur actuel pour les politiques de sécurité
+            const { error } = await this.supabase.rpc('set_current_user', { 
+                user_pseudo: this.pseudo 
+            });
+            
+            if (error) {
+                console.error('Erreur définition utilisateur RLS:', error);
+                return false;
+            }
+            return true;
+        }
+        return false;
+    } catch (error) {
+        console.error('Erreur RLS:', error);
+        return false;
+    }
+}
     async init() {
     try {
         await this.loadBannedWords();
+		// Si l'utilisateur est déjà authentifié, définir pour RLS
+if (this.pseudo) {
+    await this.setCurrentUserForRLS();
+}
         
         this.container = document.createElement('div');
         this.container.className = 'chat-widget';
@@ -1019,27 +1042,30 @@ createMessageElement(message) {
 }
 
     async loadExistingMessages() {
-        try {
-            const { data: messages, error } = await this.supabase
-                .from('messages')
-                .select('*')
-                .order('created_at', { ascending: true });
+    try {
+        // Définir l'utilisateur courant pour RLS
+        await this.setCurrentUserForRLS();
+        
+        const { data: messages, error } = await this.supabase
+            .from('messages')
+            .select('*')
+            .order('created_at', { ascending: true });
 
-            if (error) throw error;
+        if (error) throw error;
 
-            const container = this.container.querySelector('.chat-messages');
-            if (container && messages) {
-                container.innerHTML = '';
-                messages.forEach(msg => {
-                    container.appendChild(this.createMessageElement(msg));
-                });
-                this.scrollToBottom();
-            }
-        } catch (error) {
-            console.error('Erreur chargement messages:', error);
-            this.showNotification('Erreur chargement messages', 'error');
+        const container = this.container.querySelector('.chat-messages');
+        if (container && messages) {
+            container.innerHTML = '';
+            messages.forEach(msg => {
+                container.appendChild(this.createMessageElement(msg));
+            });
+            this.scrollToBottom();
         }
+    } catch (error) {
+        console.error('Erreur chargement messages:', error);
+        this.showNotification('Erreur chargement messages', 'error');
     }
+}
 
     async sendMessage(content) { 
     try {
@@ -1051,7 +1077,9 @@ createMessageElement(message) {
             return false;
         }
 
-        // Ne pas utiliser supabase.auth.getUser()
+        // Définir l'utilisateur courant pour RLS avant d'insérer le message
+        await this.setCurrentUserForRLS();
+        
         const message = {
             pseudo: this.pseudo,
             content: content,
@@ -1844,7 +1872,7 @@ showAdminPanel() {
     async deleteMessage(messageId) {
     try {
         // Définir l'utilisateur courant pour les vérifications RLS
-        await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
+        await this.setCurrentUserForRLS();
         
         // Ensuite effectuer la suppression
         const { error } = await this.supabase
