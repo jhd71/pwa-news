@@ -1049,7 +1049,12 @@ createMessageElement(message) {
             this.showNotification('Vous êtes banni du chat', 'error');
             return false;
         }
-        
+        // AJOUTER CETTE VÉRIFICATION DES MOTS BANNIS
+        const containsBannedWord = await this.checkForBannedWords(content);
+        if (containsBannedWord) {
+            this.showNotification('Votre message contient des mots interdits', 'error');
+            return false;
+        }
         // Définir l'utilisateur courant pour RLS
         const rlsSuccess = await this.setCurrentUserForRLS();
         if (!rlsSuccess) {
@@ -1410,25 +1415,31 @@ async unsubscribeFromPushNotifications() {
     }
 
     async checkForBannedWords(content) {
-        console.log('Vérification des mots bannis...');
-        const { data: bannedWordsData, error } = await this.supabase
-            .from('banned_words')
-            .select('word');
-        
-        if (error) {
-            console.error('Erreur chargement mots bannis:', error);
-            return false;
+    try {
+        // Recharger les mots bannis si nécessaire
+        if (this.bannedWords.size === 0) {
+            await this.loadBannedWords();
         }
-
-        this.bannedWords = new Set(bannedWordsData.map(item => item.word.toLowerCase()));
-        const words = content.toLowerCase().split(/\s+/);
-        const foundBannedWord = words.some(word => this.bannedWords.has(word));
         
-        console.log('Mots bannis actuels:', [...this.bannedWords]);
-        console.log('Mot interdit trouvé:', foundBannedWord);
+        // Normaliser le contenu pour une meilleure détection
+        const normalizedContent = content.toLowerCase()
+            .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
+            .replace(/\s+/g, ' ');
         
-        return foundBannedWord;
+        // Vérifier chaque mot banni
+        for (const bannedWord of this.bannedWords) {
+            if (normalizedContent.includes(bannedWord.toLowerCase())) {
+                console.log(`Mot banni détecté: "${bannedWord}" dans "${content}"`);
+                return true;
+            }
+        }
+        
+        return false;
+    } catch (error) {
+        console.error('Erreur vérification mots bannis:', error);
+        return false; // Par sécurité, on ne bloque pas le message en cas d'erreur
     }
+}
 
     urlBase64ToUint8Array(base64String) {
         const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -1931,18 +1942,21 @@ showAdminPanel() {
 
     async banUser(ip, reason = '', duration = null) {
     try {
-        // Définir l'utilisateur courant pour les vérifications RLS
-        await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
+        // Définir l'utilisateur courant pour RLS
+        await this.setCurrentUserForRLS();
         
         const expiresAt = duration ? new Date(Date.now() + duration).toISOString() : null;
         
+        // Vérifier quelles colonnes existent réellement dans votre table
         const { error } = await this.supabase
             .from('banned_ips')
             .insert({
                 ip: ip,
                 banned_by: this.pseudo,
                 reason: reason,
-                banned_at: new Date().toISOString(),
+                // Utiliser les colonnes qui existent dans votre table
+                // Si banned_at n'existe pas, vous pouvez l'omettre
+                // banned_at: new Date().toISOString(),
                 expires_at: expiresAt
             });
 
