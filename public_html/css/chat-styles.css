@@ -1634,10 +1634,10 @@ body.long-press-active .message-options {
 /* Styles spécifiques pour les tablettes */
 @media (min-width: 600px) and (max-width: 1024px) {
     .chat-container {
-        width: 60% !important;
+        width: 65% !important;
         height: 55vh !important;
         max-height: 55vh !important;
-        bottom: 20vh !important;
+        bottom: 30vh !important;
         left: 5% !important;
         right: 5% !important;
         margin: 0 auto !important;
