@@ -1638,9 +1638,9 @@ body.long-press-active .message-options {
         height: 55vh !important;
         max-height: 55vh !important;
         bottom: 20vh !important;
-        left: 1% !important;
+        left: 5% !important;
         right: 5% !important;
-        margin: 0 auto !important;
+        margin: 10 auto !important;
     }
     
     .chat-input {
