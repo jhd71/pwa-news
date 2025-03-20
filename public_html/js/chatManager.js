@@ -148,7 +148,12 @@ if (this.pseudo) {
     this.startBanMonitoring();
 }
 
-    this.initialized = true;
+    // Ajouter à la fin avant this.initialized = true
+  if (/Mobi|Android|iPad|tablet/i.test(navigator.userAgent)) {
+    this.optimizeForLowEndDevices();
+  }
+  
+  this.initialized = true;
         console.log("Chat initialisé avec succès");
     } catch (error) {
         console.error('Erreur initialisation:', error);
@@ -1417,6 +1422,35 @@ isTablet() {
     const isIPad = /ipad/.test(userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     
     return isTablet || isIPad || (window.innerWidth >= 600 && window.innerWidth <= 1024);
+}
+
+optimizeForLowEndDevices() {
+    // Détecter si l'appareil est une tablette peu puissante
+    const isLowPerfDevice = this.isTablet() && (navigator.hardwareConcurrency <= 4 || !navigator.hardwareConcurrency);
+    
+    if (isLowPerfDevice) {
+        console.log("Optimisations pour appareil à performances limitées activées");
+        
+        // Simplifier les animations
+        document.documentElement.style.setProperty('--chat-animation-duration', '0.2s');
+        
+        // Limiter le nombre de messages affichés
+        const messagesContainer = this.container.querySelector('.chat-messages');
+        if (messagesContainer && messagesContainer.children.length > 30) {
+            // Garder seulement les 30 derniers messages
+            while (messagesContainer.children.length > 30) {
+                messagesContainer.removeChild(messagesContainer.firstChild);
+            }
+        }
+        
+        // Simplifier les gradients
+        const elements = this.container.querySelectorAll('.chat-container, .message, .chat-header, .chat-input');
+        elements.forEach(el => {
+            if (el) {
+                el.style.backgroundImage = 'none';
+            }
+        });
+    }
 }
 
 async unsubscribeFromPushNotifications() {
