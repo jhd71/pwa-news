@@ -10,10 +10,29 @@
     --chat-error: #f44336;
     --chat-success: #4CAF50;
     --chat-warning: #ff9800;
+    --info-bubble-bg: linear-gradient(135deg, #6a3093 0%, #a044ff 100%);
+    --info-bubble-text: white;
+    --info-bubble-border: rgba(255, 255, 255, 0.3);
+    --info-bubble-shadow: rgba(0, 0, 0, 0.3);
 }
 /* Mode sombre */
 [data-theme="dark"] {
     --chat-gradient: linear-gradient(145deg, #1a237e, #283593);
+}
+/* Thème sombre */
+.dark-theme {
+  --info-bubble-bg: linear-gradient(135deg, #222232 0%, #444464 100%);
+  --info-bubble-text: #f0f0f0;
+  --info-bubble-border: rgba(100, 100, 255, 0.3);
+  --info-bubble-shadow: rgba(0, 0, 0, 0.5);
+}
+
+/* Thème clair - si vous avez une classe pour le thème clair */
+.light-theme {
+  --info-bubble-bg: linear-gradient(135deg, #8a40b8 0%, #c066ff 100%);
+  --info-bubble-text: white;
+  --info-bubble-border: rgba(255, 255, 255, 0.5);
+  --info-bubble-shadow: rgba(0, 0, 0, 0.2);
 }
 /* ==========================================================================
     Styles globaux et utilitaires
@@ -1542,12 +1561,12 @@ body.long-press-active .message-options {
     width: auto !important;
     max-width: 250px !important;
     z-index: 2000 !important;
-    background: linear-gradient(135deg, #6a3093 0%, #a044ff 100%) !important;
-    color: white !important;
+    background: var(--info-bubble-bg, linear-gradient(135deg, #6a3093 0%, #a044ff 100%)) !important;
+    color: var(--info-bubble-text, white) !important;
     padding: 15px !important;
     border-radius: 12px !important;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
-    border: 2px solid rgba(255,255,255,0.3) !important;
+    box-shadow: 0 4px 10px var(--info-bubble-shadow, rgba(0,0,0,0.3)) !important;
+    border: 2px solid var(--info-bubble-border, rgba(255,255,255,0.3)) !important;
     cursor: pointer !important;
   }
   
@@ -1659,5 +1678,25 @@ body.long-press-active .message-options {
     
     .chat-container.keyboard-open .chat-messages {
         max-height: calc(40vh - 90px) !important;
+    }
+    
+    /* Améliorations pour le défilement fluide */
+    .chat-messages {
+        -webkit-overflow-scrolling: touch !important;
+        scroll-behavior: smooth !important;
+        will-change: transform !important;
+        transform: translateZ(0) !important;
+        backface-visibility: hidden !important;
+    }
+    
+    .message {
+        will-change: transform !important;
+        transform: translateZ(0) !important;
+    }
+    
+    /* Désactiver les animations pendant le défilement */
+    .chat-messages.scrolling * {
+        animation-play-state: paused !important;
+        transition: none !important;
     }
 }
