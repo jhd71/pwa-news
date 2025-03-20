@@ -129,6 +129,20 @@ export default async function handler(req, res) {
     }
 
     console.log('Données reçues:', { message, fromUser, toUser });
+// ⚡ Répondre rapidement à Vercel et exécuter le reste en arrière-plan
+res.status(202).json({ success: true, message: "Envoi en cours..." });
+
+setTimeout(async () => {
+    try {
+        await cleanExpiredSubscriptions(supabase);
+        await sendAllNotifications();
+        console.log("📨 Notifications envoyées !");
+    } catch (error) {
+        console.error("❌ Erreur dans sendPush.js:", error);
+    }
+}, 500);
+
+return;
 
     // Log initial de la tentative d'envoi
     const { data: logEntry, error: logError } = await supabase
@@ -174,8 +188,16 @@ console.log("🛑 Erreur Supabase :", supabaseError);
           .eq('id', logEntry.id);
       }
 
-      return res.status(404).json({ error: 'No subscription found' });
-    }
+      // 🗑️ Si aucune souscription trouvée, supprimer l'entrée expirée
+await supabase
+    .from('push_subscriptions')
+    .delete()
+    .eq('pseudo', toUser);
+
+console.log(`🗑️ Suppression de la souscription expirée pour ${toUser}`);
+
+return res.status(404).json({ error: 'No subscription found' });
+
 
     // Envoyer les notifications à toutes les subscriptions
     const notifications = await Promise.all(
