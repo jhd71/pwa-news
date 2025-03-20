@@ -1700,3 +1700,33 @@ body.long-press-active .message-options {
         transition: none !important;
     }
 }
+/* Optimisations spécifiques pour tablettes à performances limitées */
+@media (min-width: 600px) and (max-width: 1024px) {
+  /* Réduire la charge de rendu */
+  .chat-messages {
+    /* Accélération matérielle */
+    transform: translate3d(0, 0, 0);
+  }
+  
+  /* Simplifier les animations pendant le défilement */
+  .chat-messages.scrolling * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+  
+  /* Simplifier les messages pendant le défilement */
+  .chat-messages.scrolling .message {
+    opacity: 0.95;
+    border-width: 1px;
+  }
+  
+  /* Réduire le coût CPU des gradients sur les appareils moins puissants */
+  .chat-messages.scrolling .info-bubble,
+  .chat-messages.scrolling .message,
+  .chat-messages.scrolling .chat-header, 
+  .chat-messages.scrolling .chat-input {
+    background-image: none !important;
+  }
+}
