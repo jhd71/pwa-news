@@ -1542,8 +1542,8 @@ body.long-press-active .message-options {
   .info-bubble-mobile {
     position: fixed !important;
     bottom: 80px !important;
-    left: 20px !important;
-    right: auto !important;
+    left: auto !important;   /* Modifier cette ligne */
+    right: 20px !important;  /* Modifier cette ligne */
     width: auto !important;
     max-width: 250px !important;
     z-index: 2000 !important;
@@ -1569,18 +1569,18 @@ body.long-press-active .message-options {
 
 /* Thème sombre */
 .dark-theme {
-  --info-bubble-bg: linear-gradient(135deg, #222232 0%, #444464 100%);
-  --info-bubble-text: #f0f0f0;
-  --info-bubble-border: rgba(100, 100, 255, 0.3);
-  --info-bubble-shadow: rgba(0, 0, 0, 0.5);
+  --info-bubble-mobile-bg: linear-gradient(135deg, #222232 0%, #444464 100%);
+  --info-bubble-mobile-text: #f0f0f0;
+  --info-bubble-mobile-border: rgba(100, 100, 255, 0.3);
+  --info-bubble-mobile-shadow: rgba(0, 0, 0, 0.5);
 }
 
 /* Thème clair - si vous avez une classe pour le thème clair */
 .light-theme {
-  --info-bubble-bg: linear-gradient(135deg, #8a40b8 0%, #c066ff 100%);
-  --info-bubble-text: white;
-  --info-bubble-border: rgba(255, 255, 255, 0.5);
-  --info-bubble-shadow: rgba(0, 0, 0, 0.2);
+  --info-bubble-mobile-bg: linear-gradient(135deg, #8a40b8 0%, #c066ff 100%);
+  --info-bubble-mobile-text: white;
+  --info-bubble-mobile-border: rgba(255, 255, 255, 0.5);
+  --info-bubble-mobile-shadow: rgba(0, 0, 0, 0.2);
 }
 
 /* Styles spécifiques pour les PWA */
