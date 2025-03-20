@@ -22,9 +22,47 @@ class ChatManager {
         this.unreadCount = parseInt(localStorage.getItem('unreadCount') || '0');
     }
 
+async setCurrentUserForRLS() {
+        try {
+            if (!this.pseudo) return false;
+            
+            console.log(`Définition de l'utilisateur courant pour RLS: ${this.pseudo}`);
+            const { error } = await this.supabase.rpc('set_current_user', { 
+                user_pseudo: this.pseudo 
+            });
+            
+            if (error) {
+                console.error('Erreur définition utilisateur RLS:', error);
+                return false;
+            }
+            
+            console.log('Utilisateur RLS défini avec succès');
+            return true;
+        } catch (error) {
+            console.error('Erreur RLS:', error);
+            return false;
+        }
+    }
+	
     async init() {
     try {
         await this.loadBannedWords();
+        
+        // Vérifier si l'utilisateur est banni avant de continuer
+        if (this.pseudo) {
+            const isBanned = await this.checkBannedIP(this.pseudo);
+            if (isBanned) {
+                // Forcer la déconnexion si l'utilisateur est banni
+                this.pseudo = null;
+                this.isAdmin = false;
+                localStorage.removeItem('chatPseudo');
+                localStorage.removeItem('isAdmin');
+                this.showNotification('Vous êtes banni du chat', 'error');
+            } else {
+                // Seulement si l'utilisateur n'est pas banni
+                await this.setCurrentUserForRLS();
+            }
+        }
         
         this.container = document.createElement('div');
         this.container.className = 'chat-widget';
@@ -102,7 +140,14 @@ class ChatManager {
             });
         }
     }
-    
+
+if (this.pseudo) {
+    this.setupBanChecker();
+}
+if (this.pseudo) {
+    this.startBanMonitoring();
+}
+
     this.initialized = true;
         console.log("Chat initialisé avec succès");
     } catch (error) {
@@ -511,6 +556,7 @@ setupAuthListeners() {
                 this.isAdmin = isAdmin;
                 localStorage.setItem('chatPseudo', pseudo);
                 localStorage.setItem('isAdmin', isAdmin);
+				this.startBanMonitoring();
 
                 // Actualiser l'interface
 if (document.getElementById('chatToggleBtn')) {
@@ -611,6 +657,14 @@ async checkAuthState() {
 
 async logout() {
     try {
+		if (this.banMonitorInterval) {
+            clearInterval(this.banMonitorInterval);
+        }
+        // Nettoyer l'intervalle de vérification des bannissements
+        if (this.banCheckInterval) {
+            clearInterval(this.banCheckInterval);
+        }
+        
         // Nettoyer les données locales
         this.pseudo = null;
         this.isAdmin = false;
@@ -816,26 +870,54 @@ toggleEmojiPanel() {
 }
 
 	setupRealtimeSubscription() {
-        const channel = this.supabase.channel('messages');
-        channel
-            .on('postgres_changes', 
-                { event: 'INSERT', schema: 'public', table: 'messages' },
-                (payload) => {
-                    console.log('Nouveau message:', payload);
-                    this.handleNewMessage(payload.new);
+    const channel = this.supabase.channel('public:changes');
+    channel
+        .on('postgres_changes', 
+            { event: 'INSERT', schema: 'public', table: 'messages' },
+            (payload) => {
+                console.log('Nouveau message:', payload);
+                this.handleNewMessage(payload.new);
+            }
+        )
+        .on('postgres_changes',
+            { event: 'DELETE', schema: 'public', table: 'messages' },
+            (payload) => {
+                console.log('Message supprimé:', payload);
+                const messageElement = this.container.querySelector(`[data-message-id="${payload.old.id}"]`);
+                if (messageElement) messageElement.remove();
+            }
+        )
+        .on('postgres_changes',
+            { event: '*', schema: 'public', table: 'banned_ips' },
+            async (payload) => {
+                console.log('Changement dans les bannissements:', payload);
+                // Si l'utilisateur courant est banni, le déconnecter
+                if (this.pseudo && payload.new && payload.new.ip === this.pseudo) {
+                    console.log('Vous avez été banni du chat');
+                    this.showNotification('Vous avez été banni du chat', 'error');
+                    await this.logout();
                 }
-            )
-            .on('postgres_changes',
-                { event: 'DELETE', schema: 'public', table: 'messages' },
-                (payload) => {
-                    console.log('Message supprimé:', payload);
-                    const messageElement = this.container.querySelector(`[data-message-id="${payload.old.id}"]`);
-                    if (messageElement) messageElement.remove();
-                }
-            )
-            .subscribe();
-    }
+            }
+        )
+        .subscribe((status) => {
+            console.log('Statut de la souscription temps réel:', status);
+        });
+}
 
+setupBanChecker() {
+    // Vérifier le bannissement toutes les 30 secondes
+    this.banCheckInterval = setInterval(async () => {
+        if (this.pseudo) {
+            const isBanned = await this.checkBannedIP(this.pseudo);
+            if (isBanned) {
+                console.log('Bannissement détecté, déconnexion...');
+                this.showNotification('Vous avez été banni du chat', 'error');
+                clearInterval(this.banCheckInterval);
+                await this.logout();
+            }
+        }
+    }, 30000);
+}
     async handleNewMessage(message) {
     if (!message) return;
     
@@ -996,84 +1078,146 @@ createMessageElement(message) {
 }
 
     async loadExistingMessages() {
-        try {
-            const { data: messages, error } = await this.supabase
-                .from('messages')
-                .select('*')
-                .order('created_at', { ascending: true });
-
-            if (error) throw error;
-
-            const container = this.container.querySelector('.chat-messages');
-            if (container && messages) {
-                container.innerHTML = '';
-                messages.forEach(msg => {
-                    container.appendChild(this.createMessageElement(msg));
-                });
-                this.scrollToBottom();
-            }
-        } catch (error) {
-            console.error('Erreur chargement messages:', error);
-            this.showNotification('Erreur chargement messages', 'error');
+    try {
+        // Définir l'utilisateur courant pour RLS
+        const rlsSuccess = await this.setCurrentUserForRLS();
+        if (!rlsSuccess) {
+            console.warn('Échec de la définition de l\'utilisateur pour RLS');
         }
+        
+        // Obtenir la liste des utilisateurs bannis avec une requête plus simple
+        const { data: bannedUsers, error: bannedError } = await this.supabase
+            .from('banned_ips')
+            .select('ip, expires_at');
+            
+        // Filtrer les bannissements non expirés
+        const now = new Date();
+        const bannedUsersList = bannedUsers 
+            ? bannedUsers
+                .filter(ban => !ban.expires_at || new Date(ban.expires_at) > now)
+                .map(ban => ban.ip)
+            : [];
+            
+        console.log('Utilisateurs bannis:', bannedUsersList);
+        
+        const { data: messages, error } = await this.supabase
+            .from('messages')
+            .select('*')
+            .order('created_at', { ascending: true });
+
+        if (error) throw error;
+
+        const container = this.container.querySelector('.chat-messages');
+        if (container && messages) {
+            container.innerHTML = '';
+            
+            messages.forEach(msg => {
+                // Extraire le pseudo du format 'pseudo-timestamp'
+                const pseudoFromIP = msg.ip.split('-')[0];
+                
+                // Ne pas afficher les messages des utilisateurs bannis
+                if (!bannedUsersList.includes(pseudoFromIP) && !bannedUsersList.includes(msg.pseudo)) {
+                    container.appendChild(this.createMessageElement(msg));
+                } else {
+                    console.log(`Message de l'utilisateur banni ${msg.pseudo} ignoré`);
+                }
+            });
+            
+            this.scrollToBottom();
+        }
+    } catch (error) {
+        console.error('Erreur chargement messages:', error);
+        this.showNotification('Erreur chargement messages', 'error');
     }
+}
 
     async sendMessage(content) { 
-        try {
-            const ip = await this.getClientIP();
-            const isBanned = await this.checkBannedIP(ip);
-            
-            if (isBanned) {
-                this.showNotification('Vous êtes banni du chat', 'error');
-                return false;
-            }
-
-            const message = {
-                pseudo: this.pseudo,
-                content: content,
-                ip: ip,
-                created_at: new Date().toISOString()
-            };
-
-            const { data, error } = await this.supabase
-                .from('messages')
-                .insert(message)
-                .select()
-                .single();
-
-            if (error) throw error;
-
-            // Envoi de la notification push
-            try {
-                const response = await fetch("/api/sendPush", {
-                    method: "POST",
-                    headers: { 
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        message: content,
-                        fromUser: this.pseudo,
-                        toUser: "all"
-                    })
-                });
-
-                if (!response.ok) {
-                    console.warn(`Notification non envoyée: ${response.status}`);
-                } else {
-                    const result = await response.json();
-                    console.log("✅ Notification envoyée:", result);
-                }
-            } catch (notifError) {
-                console.warn("Erreur notification ignorée:", notifError);
-                // On continue même si la notification échoue
-            }
-
-            return true;
-        } catch (error) {
-            console.error('Erreur sendMessage:', error);
+    try {
+        // Utiliser directement this.pseudo comme identifiant
+        const isBanned = await this.checkBannedIP(this.pseudo);
+        
+        if (isBanned) {
+            console.log(`Message rejeté - utilisateur banni: ${this.pseudo}`);
+            this.showNotification('Vous êtes banni du chat', 'error');
+            // Déconnecter l'utilisateur banni
+            await this.logout();
             return false;
         }
+        
+        // Vérifier les mots bannis
+        const containsBannedWord = await this.checkForBannedWords(content);
+        if (containsBannedWord) {
+            this.showNotification('Votre message contient des mots interdits', 'error');
+            return false;
+        }
+        
+        // Définir l'utilisateur courant pour RLS
+        const rlsSuccess = await this.setCurrentUserForRLS();
+        if (!rlsSuccess) {
+            console.error("Échec de la définition de l'utilisateur pour RLS");
+            this.showNotification('Erreur d\'authentification', 'error');
+            return false;
+        }
+        
+        // Créer l'identifiant unique pour ce message
+        const messageIp = `${this.pseudo}-${Date.now()}`;
+        
+        // Construire le message avec l'identifiant
+        const message = {
+            pseudo: this.pseudo,
+            content: content,
+            ip: messageIp,
+            created_at: new Date().toISOString()
+        };
+        
+        // Insérer le message
+        const { data: messageData, error } = await this.supabase
+            .from('messages')
+            .insert(message)
+            .select()
+            .single();
+            
+        if (error) throw error;
+        
+        // Envoi de la notification
+        try {
+            const response = await fetch("/api/sendPush", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    message: content,
+                    fromUser: this.pseudo,
+                    toUser: "all"
+                })
+            });
+            
+            // Vérifier si la réponse est OK
+            if (!response.ok) {
+                console.warn("Erreur API:", response.status, response.statusText);
+                return true; // Continuer car l'envoi de message a réussi
+            }
+            
+            // Lire la réponse UNIQUEMENT UNE FOIS
+            const responseText = await response.text();
+            
+            // Essayer de parser comme JSON
+            try {
+                const data = JSON.parse(responseText);
+                console.log("✅ Notification envoyée :", data);
+            } catch (jsonError) {
+                console.error("❌ Erreur JSON:", responseText);
+            }
+        } catch (notifError) {
+            console.error("❌ Erreur lors de l'envoi de la notification :", notifError);
+        }
+        
+        return true; // Retourner true si le message a été envoyé avec succès
+        
+    } catch (error) {
+        console.error('Erreur sendMessage:', error);
+        return false;
     }
+}
 
     async setupPushNotifications() {
     try {
@@ -1270,7 +1414,7 @@ async unsubscribeFromPushNotifications() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 secondes
         
-        const response = await fetch("/api/sendPush.js", {
+        const response = await fetch("/api/sendPush", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -1357,53 +1501,115 @@ async unsubscribeFromPushNotifications() {
     }
 
     async checkBannedIP(ip) {
+    try {
+        // Extraire le pseudo de l'IP (format: pseudo-timestamp)
+        const pseudo = ip.split('-')[0];
+        console.log(`Vérification bannissement pour pseudo: ${pseudo}`);
+        
+        // Requête plus simple et directe
         const { data, error } = await this.supabase
             .from('banned_ips')
             .select('*')
-            .eq('ip', ip)
+            .eq('ip', pseudo)
             .maybeSingle();
 
         if (error) {
-            console.error('Erreur vérification IP:', error);
+            console.error('Erreur vérification bannissement:', error);
             return false;
         }
+        
+        // Si pas de bannissement, retourner false
+        if (!data) {
+            console.log(`Aucun bannissement trouvé pour: ${pseudo}`);
+            return false;
+        }
+        
+        console.log('Bannissement trouvé:', data);
+        
+        // Vérifier si le bannissement est expiré
+        if (data.expires_at && new Date(data.expires_at) < new Date()) {
+            console.log(`Bannissement expiré pour: ${pseudo}`);
+            // Supprimer le bannissement expiré
+            await this.supabase
+                .from('banned_ips')
+                .delete()
+                .eq('ip', pseudo);
+            return false;
+        }
+        
+        console.log(`Utilisateur ${pseudo} est banni!`);
+        return true;
+    } catch (error) {
+        console.error('Erreur vérification bannissement:', error);
+        return false;
+    }
+}
 
-        if (data) {
-            if (!data.expires_at || new Date(data.expires_at) > new Date()) {
+    async getClientIP() {
+    try {
+        // Utiliser uniquement le pseudo comme identifiant pour le bannissement
+        return this.pseudo || 'anonymous';
+    } catch {
+        return 'anonymous';
+    }
+}
+
+startBanMonitoring() {
+    console.log(`Démarrage de la surveillance des bannissements pour ${this.pseudo}`);
+    
+    // Vérifier immédiatement
+    this.checkBannedStatus();
+    
+    // Puis vérifier toutes les 10 secondes
+    this.banMonitorInterval = setInterval(() => {
+        this.checkBannedStatus();
+    }, 10000);
+}
+
+async checkBannedStatus() {
+    if (!this.pseudo) return;
+    
+    const isBanned = await this.checkBannedIP(this.pseudo);
+    if (isBanned) {
+        console.log(`Bannissement détecté pour ${this.pseudo}, déconnexion...`);
+        this.showNotification('Vous avez été banni du chat', 'error');
+        
+        // Arrêter la surveillance
+        if (this.banMonitorInterval) {
+            clearInterval(this.banMonitorInterval);
+        }
+        
+        // Déconnecter l'utilisateur
+        await this.logout();
+    }
+}
+
+    async checkForBannedWords(content) {
+    try {
+        // Recharger les mots bannis si nécessaire
+        if (this.bannedWords.size === 0) {
+            await this.loadBannedWords();
+        }
+        
+        // Normaliser le contenu pour une meilleure détection
+        const normalizedContent = content.toLowerCase()
+            .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
+            .replace(/\s+/g, ' ');
+        
+        // Vérifier chaque mot banni
+        for (const bannedWord of this.bannedWords) {
+            if (normalizedContent.includes(bannedWord.toLowerCase())) {
+                console.log(`Mot banni détecté: "${bannedWord}" dans "${content}"`);
                 return true;
             }
         }
+        
         return false;
+    } catch (error) {
+        console.error('Erreur vérification mots bannis:', error);
+        return false; // Par sécurité, on ne bloque pas le message en cas d'erreur
     }
-
-    async getClientIP() {
-        try {
-            return `${this.pseudo}-${Date.now()}`;
-        } catch {
-            return 'unknown';
-        }
-    }
-
-    async checkForBannedWords(content) {
-        console.log('Vérification des mots bannis...');
-        const { data: bannedWordsData, error } = await this.supabase
-            .from('banned_words')
-            .select('word');
-        
-        if (error) {
-            console.error('Erreur chargement mots bannis:', error);
-            return false;
-        }
-
-        this.bannedWords = new Set(bannedWordsData.map(item => item.word.toLowerCase()));
-        const words = content.toLowerCase().split(/\s+/);
-        const foundBannedWord = words.some(word => this.bannedWords.has(word));
-        
-        console.log('Mots bannis actuels:', [...this.bannedWords]);
-        console.log('Mot interdit trouvé:', foundBannedWord);
-        
-        return foundBannedWord;
-    }
+}
 
     urlBase64ToUint8Array(base64String) {
         const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -1906,25 +2112,55 @@ showAdminPanel() {
 
     async banUser(ip, reason = '', duration = null) {
     try {
-        // Définir l'utilisateur courant pour les vérifications RLS
-        await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
+        // Définir l'utilisateur courant pour RLS
+        await this.setCurrentUserForRLS();
         
-        const expiresAt = duration ? new Date(Date.now() + duration).toISOString() : null;
+        // Extraire le pseudo de l'IP (format actuel: pseudo-timestamp)
+        const pseudo = ip.split('-')[0];
         
-        const { error } = await this.supabase
+        const expiresAt = duration ? new Date(Date.now() + parseInt(duration)).toISOString() : null;
+        
+        // Vérifier d'abord si l'utilisateur est déjà banni
+        const { data: existingBan } = await this.supabase
             .from('banned_ips')
-            .insert({
-                ip: ip,
-                banned_by: this.pseudo,
-                reason: reason,
-                banned_at: new Date().toISOString(),
+            .select('*')
+            .eq('ip', pseudo)
+            .maybeSingle();
+            
+        if (existingBan) {
+            console.log('Utilisateur déjà banni, mise à jour du bannissement');
+            
+            // Mettre à jour le bannissement existant
+            const { error: updateError } = await this.supabase
+                .from('banned_ips')
+                .update({
+                    expires_at: expiresAt
+                })
+                .eq('ip', pseudo);
+                
+            if (updateError) throw updateError;
+        } else {
+            // Créer un nouveau bannissement
+            const banData = {
+                ip: pseudo,
                 expires_at: expiresAt
-            });
+            };
+            
+            console.log('Bannissement de l\'utilisateur avec données:', banData);
+            
+            const { error: insertError } = await this.supabase
+                .from('banned_ips')
+                .insert(banData);
+                
+            if (insertError) throw insertError;
+        }
 
-        if (error) throw error;
-
-        this.showNotification('IP bannie avec succès', 'success');
+        this.showNotification(`Utilisateur "${pseudo}" banni avec succès`, 'success');
         this.playSound('success');
+        
+        // Actualiser immédiatement les messages
+        await this.loadExistingMessages();
+        
         return true;
     } catch (error) {
         console.error('Erreur bannissement:', error);
