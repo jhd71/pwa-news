@@ -1640,7 +1640,7 @@ body.long-press-active .message-options {
         bottom: 20vh !important;
         left: 5% !important;
         right: 5% !important;
-        margin: 10 auto !important;
+        margin: 0 auto !important;
     }
     
     .chat-input {
