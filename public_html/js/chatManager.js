@@ -102,8 +102,17 @@ class ChatManager {
             });
         }
     }
-    
+    if (this.isAdmin) {
+    // Effectuer des tâches de maintenance si l'utilisateur est administrateur
+    await this.performMaintenanceTasks();
+}
     this.initialized = true;
+	// Listener pour mettre à jour le statut en ligne/hors ligne
+window.addEventListener('beforeunload', () => {
+    if (this.pseudo) {
+        this.updateUserStatus(false);
+    }
+});
         console.log("Chat initialisé avec succès");
     } catch (error) {
         console.error('Erreur initialisation:', error);
@@ -537,7 +546,7 @@ if (chatContainer) {
 this.setupListeners();
 await this.loadExistingMessages();
 this.playSound('success');
-
+this.updateUserStatus(true);
                 
             } catch (error) {
                 console.error('Erreur d\'authentification:', error);
@@ -606,6 +615,20 @@ async checkAuthState() {
     } catch (error) {
         console.error('Erreur vérification auth:', error);
         return false;
+    }
+}
+
+async updateUserStatus(isOnline = true) {
+    try {
+        await this.supabase
+            .from('users')
+            .update({ 
+                is_online: isOnline,
+                last_active: new Date().toISOString()
+            })
+            .eq('pseudo', this.pseudo);
+    } catch (error) {
+        console.error('Erreur mise à jour statut:', error);
     }
 }
 
@@ -1254,51 +1277,36 @@ async unsubscribeFromPushNotifications() {
     }
     async sendNotificationToUser(message) {
     try {
-        console.log('Envoi notification à:', message);
+        // Version simplifiée qui utilise directement les abonnements
+        const { data: subscriptions, error } = await this.supabase
+            .from('push_subscriptions')
+            .select('subscription')
+            .eq('active', true);
         
-        // Créer un contrôleur d'abandon avec un timeout plus long
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 secondes
+        if (error) throw error;
         
+        // Utiliser une requête unique à votre API
         const response = await fetch("/api/sendPush.js", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
                 message: message.content,
                 fromUser: message.pseudo,
                 toUser: this.pseudo
-            }),
-            signal: controller.signal // Ajouter le signal d'abandon
+            })
         });
-        
-        // Annuler le timeout une fois la réponse reçue
-        clearTimeout(timeoutId);
         
         if (!response.ok) {
             const text = await response.text();
-            console.warn('Réponse API erreur:', {
-                status: response.status,
-                statusText: response.statusText,
-                body: text
-            });
-            
-            // Ne pas bloquer l'interface utilisateur avec une erreur de notification
             return { success: false, error: text };
         }
         
         const result = await response.json();
-        console.log('Réponse API succès:', result);
         return result;
     } catch (error) {
-        // Gérer spécifiquement les erreurs d'abandon
         if (error.name === 'AbortError') {
-            console.warn('La requête de notification a été abandonnée (timeout)');
             return { success: false, error: 'timeout' };
         }
-        
-        // Pour les autres erreurs, on log mais on ne propage pas l'erreur
         console.warn('Erreur envoi notification:', error.message);
         return { success: false, error: error.message };
     }
@@ -1375,25 +1383,25 @@ async unsubscribeFromPushNotifications() {
     }
 
     async checkForBannedWords(content) {
-        console.log('Vérification des mots bannis...');
-        const { data: bannedWordsData, error } = await this.supabase
-            .from('banned_words')
-            .select('word');
-        
-        if (error) {
-            console.error('Erreur chargement mots bannis:', error);
-            return false;
-        }
-
-        this.bannedWords = new Set(bannedWordsData.map(item => item.word.toLowerCase()));
-        const words = content.toLowerCase().split(/\s+/);
-        const foundBannedWord = words.some(word => this.bannedWords.has(word));
-        
-        console.log('Mots bannis actuels:', [...this.bannedWords]);
-        console.log('Mot interdit trouvé:', foundBannedWord);
-        
-        return foundBannedWord;
+    if (this.bannedWords.size === 0) {
+        await this.loadBannedWords();
     }
+    
+    // Version plus robuste qui détecte les mots même avec des caractères spéciaux
+    const normalizedContent = content.toLowerCase()
+        .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
+        .replace(/\s+/g, ' ');
+    
+    // Vérifier chaque mot banni
+    for (const bannedWord of this.bannedWords) {
+        const regex = new RegExp(`\\b${bannedWord}\\b|${bannedWord.replace(/\s+/g, '\\s*')}`, 'i');
+        if (regex.test(normalizedContent)) {
+            return true;
+        }
+    }
+    
+    return false;
+}
 
     urlBase64ToUint8Array(base64String) {
         const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -1931,6 +1939,31 @@ showAdminPanel() {
             pushManagerSubscribed: !!(await (await navigator.serviceWorker.ready).pushManager.getSubscription())
         });
     }
+	async performMaintenanceTasks() {
+    try {
+        if (!this.isAdmin) return;
+        
+        // Nettoyer les anciens bans expirés
+        await this.supabase
+            .from('banned_ips')
+            .delete()
+            .lt('expires_at', new Date().toISOString())
+            .not('expires_at', 'is', null);
+        
+        // Nettoyer les anciennes souscriptions
+        const threeMonthsAgo = new Date();
+        threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+        
+        await this.supabase
+            .from('push_subscriptions')
+            .delete()
+            .lt('last_updated', threeMonthsAgo.toISOString());
+            
+        console.log('Maintenance effectuée avec succès');
+    } catch (error) {
+        console.error('Erreur maintenance:', error);
+    }
+}
 }
 
 export default ChatManager;
