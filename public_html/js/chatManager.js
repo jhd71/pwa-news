@@ -1019,62 +1019,61 @@ createMessageElement(message) {
     }
 
     async sendMessage(content) { 
-    try {
-        const ip = await this.getClientIP();
-        const isBanned = await this.checkBannedIP(ip);
-        
-        if (isBanned) {
-            this.showNotification('Vous êtes banni du chat', 'error');
+        try {
+            const ip = await this.getClientIP();
+            const isBanned = await this.checkBannedIP(ip);
+            
+            if (isBanned) {
+                this.showNotification('Vous êtes banni du chat', 'error');
+                return false;
+            }
+
+            const message = {
+                pseudo: this.pseudo,
+                content: content,
+                ip: ip,
+                created_at: new Date().toISOString()
+            };
+
+            const { data, error } = await this.supabase
+                .from('messages')
+                .insert(message)
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            // Envoi de la notification push
+            try {
+                const response = await fetch("/api/sendPush", {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        message: content,
+                        fromUser: this.pseudo,
+                        toUser: "all"
+                    })
+                });
+
+                if (!response.ok) {
+                    console.warn(`Notification non envoyée: ${response.status}`);
+                } else {
+                    const result = await response.json();
+                    console.log("✅ Notification envoyée:", result);
+                }
+            } catch (notifError) {
+                console.warn("Erreur notification ignorée:", notifError);
+                // On continue même si la notification échoue
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Erreur sendMessage:', error);
             return false;
         }
-
-        const message = {
-            pseudo: this.pseudo,
-            content: content,
-            ip: ip,
-            created_at: new Date().toISOString()
-        };
-
-        const { data, error } = await this.supabase
-            .from('messages')
-            .insert(message)
-            .select()
-            .single();
-
-        if (error) throw error;
-
-        // Correction du chemin de l'API pour les notifications push
-        await fetch("/api/sendPush", {  // Retiré le .js de l'URL
-            method: "POST",
-            headers: { 
-                "Content-Type": "application/json",
-                // Ajout des headers d'autorisation si nécessaire
-                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`
-            },
-            body: JSON.stringify({
-                message: content,
-                fromUser: this.pseudo,
-                toUser: "all"
-            })
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => console.log("✅ Notification envoyée :", data))
-        .catch(err => {
-            console.error("❌ Erreur lors de l'envoi de la notification :", err);
-            // Ne pas bloquer l'envoi du message si la notification échoue
-        });
-
-        return true;
-    } catch (error) {
-        console.error('Erreur sendMessage:', error);
-        return false;
     }
-}
 
     async setupPushNotifications() {
     try {
