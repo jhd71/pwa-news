@@ -260,6 +260,10 @@ console.log("🛑 Erreur Supabase :", supabaseError);
       '🔄 À renouveler': errors.length,
       '📱 Total appareils': subscriptions.length
     });
+console.time("NotificationTime");
+
+// Avant de répondre, mesurer le temps de traitement
+console.timeEnd("NotificationTime");
 
     //Répondre avec le statut des envois
     return res.status(200).json({
