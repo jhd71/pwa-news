@@ -1085,14 +1085,19 @@ createMessageElement(message) {
             console.warn('Échec de la définition de l\'utilisateur pour RLS');
         }
         
-        // Obtenir la liste des utilisateurs bannis
-        const { data: bannedUsers } = await this.supabase
+        // Obtenir la liste des utilisateurs bannis avec une requête plus simple
+        const { data: bannedUsers, error: bannedError } = await this.supabase
             .from('banned_ips')
-            .select('ip')
-            .is('expires_at', null)
-            .or(`expires_at.gt.${new Date().toISOString()}`);
+            .select('ip, expires_at');
             
-        const bannedUsersList = bannedUsers ? bannedUsers.map(b => b.ip) : [];
+        // Filtrer les bannissements non expirés
+        const now = new Date();
+        const bannedUsersList = bannedUsers 
+            ? bannedUsers
+                .filter(ban => !ban.expires_at || new Date(ban.expires_at) > now)
+                .map(ban => ban.ip)
+            : [];
+            
         console.log('Utilisateurs bannis:', bannedUsersList);
         
         const { data: messages, error } = await this.supabase
@@ -1105,15 +1110,19 @@ createMessageElement(message) {
         const container = this.container.querySelector('.chat-messages');
         if (container && messages) {
             container.innerHTML = '';
+            
             messages.forEach(msg => {
-                // Ne pas afficher les messages des utilisateurs bannis
+                // Extraire le pseudo du format 'pseudo-timestamp'
                 const pseudoFromIP = msg.ip.split('-')[0];
+                
+                // Ne pas afficher les messages des utilisateurs bannis
                 if (!bannedUsersList.includes(pseudoFromIP) && !bannedUsersList.includes(msg.pseudo)) {
                     container.appendChild(this.createMessageElement(msg));
                 } else {
                     console.log(`Message de l'utilisateur banni ${msg.pseudo} ignoré`);
                 }
             });
+            
             this.scrollToBottom();
         }
     } catch (error) {
