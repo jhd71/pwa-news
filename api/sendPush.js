@@ -117,12 +117,7 @@ module.exports = async function handler(req, res) {
     console.log('📩 Données reçues:', { message, fromUser, toUser });
 
     // Vérifier les souscriptions de l'utilisateur
-    const { data: subscriptions, error: supabaseError } = await supabase
-  .from('push_subscriptions')
-  .select('subscription, device_type')
-  .or(`pseudo.eq.${toUser},pseudo.eq.all`)
-  .eq('active', true);
-let subscriptionsQuery = supabase
+   let subscriptionsQuery = supabase
   .from('push_subscriptions')
   .select('subscription, device_type')
   .eq('active', true);
@@ -131,9 +126,18 @@ if (toUser !== "all") {
   subscriptionsQuery = subscriptionsQuery.eq('pseudo', toUser);
 }
 
-const { data: subscriptions, error: supabaseError } = await subscriptionsQuery;
+// ✅ Correction : on ne redéclare PAS 'subscriptions'
+const { data, error: supabaseError } = await subscriptionsQuery;
 
-    console.log("🔍 Souscriptions trouvées :", subscriptions);
+if (supabaseError) {
+  console.error("🛑 Erreur Supabase :", supabaseError);
+  return res.status(500).json({ error: "Erreur lors de la récupération des souscriptions." });
+}
+
+// ✅ On stocke les résultats dans 'subscriptions'
+const subscriptions = data;
+
+console.log("🔍 Souscriptions trouvées :", subscriptions);
 console.log("🛑 Erreur Supabase :", supabaseError);
 
 
