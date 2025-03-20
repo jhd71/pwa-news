@@ -444,7 +444,39 @@ getChatHTMLWithoutToggle() {
     } else {
         this.setupChatListeners();
     }
-// Ajoutez le nouveau code ici
+	// Ajouter la détection de défilement pour optimiser le rendu
+const messagesContainer = this.container.querySelector('.chat-messages');
+if (messagesContainer) {
+    let scrollTimeout;
+    
+    messagesContainer.addEventListener('scroll', () => {
+        // Ajouter une classe pendant le défilement
+        messagesContainer.classList.add('scrolling');
+        
+        // Nettoyer le timeout précédent
+        clearTimeout(scrollTimeout);
+        
+        // Définir un nouveau timeout
+        scrollTimeout = setTimeout(() => {
+            messagesContainer.classList.remove('scrolling');
+        }, 150); // Attendre que le défilement s'arrête
+    }, { passive: true });
+}
+// Détection du clavier virtuel sur tablette
+if (this.isTablet()) {
+    const textarea = this.container.querySelector('.chat-input textarea');
+    if (textarea && chatContainer) {
+        textarea.addEventListener('focus', () => {
+            chatContainer.classList.add('keyboard-open');
+        });
+        
+        textarea.addEventListener('blur', () => {
+            setTimeout(() => {
+                chatContainer.classList.remove('keyboard-open');
+            }, 300);
+        });
+    }
+}
     // Remplacer le code existant par celui-ci
 const chatMessages = this.container.querySelector('.chat-messages');
 if (chatMessages) {
