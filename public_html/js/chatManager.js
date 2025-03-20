@@ -48,6 +48,22 @@ async setCurrentUserForRLS() {
     try {
         await this.loadBannedWords();
         
+        // Vérifier si l'utilisateur est banni avant de continuer
+        if (this.pseudo) {
+            const isBanned = await this.checkBannedIP(this.pseudo);
+            if (isBanned) {
+                // Forcer la déconnexion si l'utilisateur est banni
+                this.pseudo = null;
+                this.isAdmin = false;
+                localStorage.removeItem('chatPseudo');
+                localStorage.removeItem('isAdmin');
+                this.showNotification('Vous êtes banni du chat', 'error');
+            } else {
+                // Seulement si l'utilisateur n'est pas banni
+                await this.setCurrentUserForRLS();
+            }
+        }
+        
         this.container = document.createElement('div');
         this.container.className = 'chat-widget';
         // Vérifier l'état d'authentification
@@ -1042,19 +1058,25 @@ createMessageElement(message) {
 
     async sendMessage(content) { 
     try {
-        const ip = await this.getClientIP();
+        // Utiliser le pseudo comme identifiant pour le bannissement
+        const ip = await this.getClientIP(); // Cette méthode devrait maintenant renvoyer simplement this.pseudo
+        
+        // Vérifier si l'utilisateur est banni
         const isBanned = await this.checkBannedIP(ip);
         
         if (isBanned) {
+            console.log(`Message rejeté - utilisateur banni: ${ip}`);
             this.showNotification('Vous êtes banni du chat', 'error');
             return false;
         }
-        // AJOUTER CETTE VÉRIFICATION DES MOTS BANNIS
+        
+        // Vérifier les mots bannis
         const containsBannedWord = await this.checkForBannedWords(content);
         if (containsBannedWord) {
             this.showNotification('Votre message contient des mots interdits', 'error');
             return false;
         }
+        
         // Définir l'utilisateur courant pour RLS
         const rlsSuccess = await this.setCurrentUserForRLS();
         if (!rlsSuccess) {
@@ -1062,6 +1084,8 @@ createMessageElement(message) {
             this.showNotification('Erreur d\'authentification', 'error');
             return false;
         }
+        
+        // Continuer avec le reste de votre code...
         
         const message = {
             pseudo: this.pseudo,
@@ -1388,59 +1412,49 @@ async unsubscribeFromPushNotifications() {
 
     async checkBannedIP(ip) {
     try {
-        console.log(`Vérification de l'IP: ${ip}`);
+        console.log(`Vérification du bannissement pour: ${ip}`);
         
-        // Extraire le pseudo de l'IP (car vous utilisez 'pseudo-timestamp' comme format)
-        const pseudo = ip.split('-')[0];
-        
-        // Vérifier d'abord les bannissements exacts
-        const { data: exactMatch, error: exactError } = await this.supabase
+        // Dans ce cas, ip est simplement le pseudo de l'utilisateur
+        const { data, error } = await this.supabase
             .from('banned_ips')
             .select('*')
             .eq('ip', ip)
             .maybeSingle();
-            
-        if (exactError) {
-            console.error('Erreur vérification IP exacte:', exactError);
+
+        if (error) {
+            console.error('Erreur vérification bannissement:', error);
+            return false;
         }
         
-        // Vérifier ensuite les bannissements par pseudo
-        const { data: pseudoMatches, error: pseudoError } = await this.supabase
-            .from('banned_ips')
-            .select('*')
-            .ilike('ip', `${pseudo}-%`);
-            
-        if (pseudoError) {
-            console.error('Erreur vérification IP par pseudo:', pseudoError);
+        // Si aucun bannissement trouvé
+        if (!data) {
+            console.log(`Aucun bannissement trouvé pour: ${ip}`);
+            return false;
         }
         
-        // Combiner les résultats
-        const allBans = [...(exactMatch ? [exactMatch] : []), ...(pseudoMatches || [])];
-        
-        // Vérifier si l'un des bannissements est valide
-        for (const ban of allBans) {
-            // Si pas de date d'expiration ou date future
-            if (!ban.expires_at || new Date(ban.expires_at) > new Date()) {
-                console.log(`IP bannies trouvée: ${ip}, détails:`, ban);
-                return true;
-            }
+        // Vérifier si le bannissement est expiré
+        if (data.expires_at && new Date(data.expires_at) < new Date()) {
+            console.log(`Bannissement expiré pour: ${ip}`);
+            return false;
         }
         
-        console.log(`Aucun bannissement actif trouvé pour: ${ip}`);
-        return false;
+        // Si on arrive ici, l'utilisateur est banni
+        console.log(`Utilisateur banni détecté: ${ip}`);
+        return true;
     } catch (error) {
-        console.error('Erreur vérification IP:', error);
-        return false; // Par sécurité, ne pas bloquer en cas d'erreur
+        console.error('Erreur vérification bannissement:', error);
+        return false;
     }
 }
 
     async getClientIP() {
-        try {
-            return `${this.pseudo}-${Date.now()}`;
-        } catch {
-            return 'unknown';
-        }
+    try {
+        // Utiliser uniquement le pseudo comme identifiant pour le bannissement
+        return this.pseudo || 'anonymous';
+    } catch {
+        return 'anonymous';
     }
+}
 
     async checkForBannedWords(content) {
     try {
@@ -1973,25 +1987,33 @@ showAdminPanel() {
         // Définir l'utilisateur courant pour RLS
         await this.setCurrentUserForRLS();
         
-        const expiresAt = duration ? new Date(Date.now() + duration).toISOString() : null;
+        // Extraire le pseudo de l'IP (format actuel: pseudo-timestamp)
+        const pseudo = ip.split('-')[0];
         
-        // Vérifier quelles colonnes existent réellement dans votre table
+        // Utiliser uniquement le pseudo comme identifiant de bannissement
+        const banData = {
+            ip: pseudo
+        };
+        
+        // Ajouter la date d'expiration si une durée est spécifiée
+        if (duration) {
+            banData.expires_at = new Date(Date.now() + parseInt(duration)).toISOString();
+        }
+        
+        console.log('Bannissement de l\'utilisateur avec données:', banData);
+        
         const { error } = await this.supabase
             .from('banned_ips')
-            .insert({
-                ip: ip,
-                banned_by: this.pseudo,
-                reason: reason,
-                // Utiliser les colonnes qui existent dans votre table
-                // Si banned_at n'existe pas, vous pouvez l'omettre
-                // banned_at: new Date().toISOString(),
-                expires_at: expiresAt
-            });
+            .insert(banData);
 
         if (error) throw error;
 
-        this.showNotification('IP bannie avec succès', 'success');
+        this.showNotification(`Utilisateur "${pseudo}" banni avec succès`, 'success');
         this.playSound('success');
+        
+        // Actualiser immédiatement les messages pour masquer ceux de l'utilisateur banni
+        await this.loadExistingMessages();
+        
         return true;
     } catch (error) {
         console.error('Erreur bannissement:', error);
