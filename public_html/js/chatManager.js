@@ -1724,7 +1724,13 @@ scrollToBottom() {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 }
-	
+	isTablet() {
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(userAgent);
+    const isIPad = /ipad/.test(userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    
+    return isTablet || isIPad || (window.innerWidth >= 600 && window.innerWidth <= 1024);
+}
 	ensureChatInputVisible() {
     if (/Mobi|Android/i.test(navigator.userAgent)) {
         // Obtenir les éléments nécessaires
@@ -1782,13 +1788,7 @@ handleKeyboardVisibility() {
     // Détecter si c'est une tablette
     const isTablet = this.isTablet();
     // Dans votre méthode de détection d'appareil, ajoutez cette fonction
-isTablet() {
-    const userAgent = navigator.userAgent.toLowerCase();
-    const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(userAgent);
-    const isIPad = /ipad/.test(userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    
-    return isTablet || isIPad || (window.innerWidth >= 600 && window.innerWidth <= 1024);
-}
+
     // Détecter l'ouverture du clavier virtuel
     textarea.addEventListener('focus', () => {
         console.log("Clavier virtuel ouvert");
