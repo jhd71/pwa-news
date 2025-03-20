@@ -655,6 +655,9 @@ async logout() {
         // Nettoyer l'intervalle de vérification des bannissements
         if (this.banCheckInterval) {
             clearInterval(this.banCheckInterval);
+        }
+        
+        // Nettoyer les données locales
         this.pseudo = null;
         this.isAdmin = false;
         localStorage.removeItem('chatPseudo');
