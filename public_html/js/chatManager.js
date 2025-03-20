@@ -140,10 +140,14 @@ async setCurrentUserForRLS() {
             });
         }
     }
-    // À la fin de votre méthode init(), juste avant this.initialized = true;
+
 if (this.pseudo) {
     this.setupBanChecker();
 }
+if (this.pseudo) {
+    this.startBanMonitoring();
+}
+
     this.initialized = true;
         console.log("Chat initialisé avec succès");
     } catch (error) {
@@ -552,6 +556,7 @@ setupAuthListeners() {
                 this.isAdmin = isAdmin;
                 localStorage.setItem('chatPseudo', pseudo);
                 localStorage.setItem('isAdmin', isAdmin);
+				this.startBanMonitoring();
 
                 // Actualiser l'interface
 if (document.getElementById('chatToggleBtn')) {
@@ -652,6 +657,9 @@ async checkAuthState() {
 
 async logout() {
     try {
+		if (this.banMonitorInterval) {
+            clearInterval(this.banMonitorInterval);
+        }
         // Nettoyer l'intervalle de vérification des bannissements
         if (this.banCheckInterval) {
             clearInterval(this.banCheckInterval);
@@ -1116,15 +1124,14 @@ createMessageElement(message) {
 
     async sendMessage(content) { 
     try {
-        // Utiliser le pseudo comme identifiant pour le bannissement
-        const ip = await this.getClientIP(); // Cette méthode devrait maintenant renvoyer simplement this.pseudo
-        
-        // Vérifier si l'utilisateur est banni
-        const isBanned = await this.checkBannedIP(ip);
+        // Vérifier si l'utilisateur est banni AVANT tout
+        const isBanned = await this.checkBannedIP(this.pseudo);
         
         if (isBanned) {
-            console.log(`Message rejeté - utilisateur banni: ${ip}`);
+            console.log(`Message rejeté - utilisateur banni: ${this.pseudo}`);
             this.showNotification('Vous êtes banni du chat', 'error');
+            // Déconnecter l'utilisateur banni
+            await this.logout();
             return false;
         }
         
@@ -1470,13 +1477,15 @@ async unsubscribeFromPushNotifications() {
 
     async checkBannedIP(ip) {
     try {
-        console.log(`Vérification du bannissement pour: ${ip}`);
+        // Extraire le pseudo de l'IP (format: pseudo-timestamp)
+        const pseudo = ip.split('-')[0];
+        console.log(`Vérification bannissement pour pseudo: ${pseudo}`);
         
-        // Forcer l'actualisation depuis la base de données (pas de cache)
+        // Requête plus simple et directe
         const { data, error } = await this.supabase
             .from('banned_ips')
             .select('*')
-            .eq('ip', ip)
+            .eq('ip', pseudo)
             .maybeSingle();
 
         if (error) {
@@ -1484,23 +1493,26 @@ async unsubscribeFromPushNotifications() {
             return false;
         }
         
+        // Si pas de bannissement, retourner false
         if (!data) {
-            console.log(`Aucun bannissement trouvé pour: ${ip}`);
+            console.log(`Aucun bannissement trouvé pour: ${pseudo}`);
             return false;
         }
         
+        console.log('Bannissement trouvé:', data);
+        
         // Vérifier si le bannissement est expiré
         if (data.expires_at && new Date(data.expires_at) < new Date()) {
-            console.log(`Bannissement expiré pour: ${ip}, suppression...`);
+            console.log(`Bannissement expiré pour: ${pseudo}`);
             // Supprimer le bannissement expiré
             await this.supabase
                 .from('banned_ips')
                 .delete()
-                .eq('ip', ip);
+                .eq('ip', pseudo);
             return false;
         }
         
-        console.log(`Utilisateur banni confirmé: ${ip}, jusqu'à: ${data.expires_at || 'indéfiniment'}`);
+        console.log(`Utilisateur ${pseudo} est banni!`);
         return true;
     } catch (error) {
         console.error('Erreur vérification bannissement:', error);
@@ -1514,6 +1526,36 @@ async unsubscribeFromPushNotifications() {
         return this.pseudo || 'anonymous';
     } catch {
         return 'anonymous';
+    }
+}
+
+startBanMonitoring() {
+    console.log(`Démarrage de la surveillance des bannissements pour ${this.pseudo}`);
+    
+    // Vérifier immédiatement
+    this.checkBannedStatus();
+    
+    // Puis vérifier toutes les 10 secondes
+    this.banMonitorInterval = setInterval(() => {
+        this.checkBannedStatus();
+    }, 10000);
+}
+
+async checkBannedStatus() {
+    if (!this.pseudo) return;
+    
+    const isBanned = await this.checkBannedIP(this.pseudo);
+    if (isBanned) {
+        console.log(`Bannissement détecté pour ${this.pseudo}, déconnexion...`);
+        this.showNotification('Vous avez été banni du chat', 'error');
+        
+        // Arrêter la surveillance
+        if (this.banMonitorInterval) {
+            clearInterval(this.banMonitorInterval);
+        }
+        
+        // Déconnecter l'utilisateur
+        await this.logout();
     }
 }
 
