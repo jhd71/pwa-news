@@ -552,11 +552,23 @@ setupAuthListeners() {
                 }
 
                 // Définir les variables de session
-                this.pseudo = pseudo;
-                this.isAdmin = isAdmin;
-                localStorage.setItem('chatPseudo', pseudo);
-                localStorage.setItem('isAdmin', isAdmin);
-				this.startBanMonitoring();
+this.pseudo = pseudo;
+this.isAdmin = isAdmin;
+localStorage.setItem('chatPseudo', pseudo);
+localStorage.setItem('isAdmin', isAdmin);
+this.startBanMonitoring();
+
+// 🔹 Récupérer l'IP de l'utilisateur
+const ip = await this.getUserIP();
+if (ip) {
+    console.log(`IP détectée pour ${pseudo}: ${ip}`);
+
+    // 🔹 Mettre à jour l'IP dans Supabase
+    await this.supabase
+        .from('users')
+        .update({ ip: ip })
+        .eq('pseudo', pseudo);
+}
 
                 // Actualiser l'interface
 if (document.getElementById('chatToggleBtn')) {
@@ -2169,13 +2181,23 @@ showAdminPanel() {
     }
 }
     async checkNotificationStatus() {
-        console.log('État des notifications:', {
-            permission: Notification.permission,
-            serviceWorkerRegistered: !!await navigator.serviceWorker.getRegistration(),
-            pushManagerSupported: 'PushManager' in window,
-            notificationsEnabled: this.notificationsEnabled,
-            pushManagerSubscribed: !!(await (await navigator.serviceWorker.ready).pushManager.getSubscription())
-        });
+    console.log('État des notifications:', {
+        permission: Notification.permission,
+        serviceWorkerRegistered: !!await navigator.serviceWorker.getRegistration(),
+        pushManagerSupported: 'PushManager' in window,
+        notificationsEnabled: this.notificationsEnabled,
+        pushManagerSubscribed: !!(await (await navigator.serviceWorker.ready).pushManager.getSubscription())
+    });
+}
+
+async getUserIP() {
+    try {
+        const response = await fetch("https://api64.ipify.org?format=json");
+        const data = await response.json();
+        return data.ip;
+    } catch (error) {
+        console.error("❌ Impossible de récupérer l'IP :", error);
+        return null;
     }
 }
 
