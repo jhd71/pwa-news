@@ -2124,38 +2124,41 @@ showAdminPanel() {
 
     async banUser(ip, reason = '', duration = null) {
     try {
-        // Définir l'utilisateur courant pour RLS
-        await this.setCurrentUserForRLS();
-        
-        // Extraire le pseudo de l'IP (format actuel: pseudo-timestamp)
-        const pseudo = ip.split('-')[0];
+        // 🔹 Récupérer l'IP réelle de l'utilisateur
+        const userIP = await this.getUserIP();
+        if (!userIP) {
+            console.error("Impossible de récupérer l'IP de l'utilisateur");
+            return false;
+        }
         
         const expiresAt = duration ? new Date(Date.now() + parseInt(duration)).toISOString() : null;
         
-        // Vérifier d'abord si l'utilisateur est déjà banni
+        // Vérifier d'abord si l'IP est déjà bannie
         const { data: existingBan } = await this.supabase
             .from('banned_ips')
             .select('*')
-            .eq('ip', pseudo)
+            .eq('ip', userIP)
             .maybeSingle();
             
         if (existingBan) {
-            console.log('Utilisateur déjà banni, mise à jour du bannissement');
+            console.log('IP déjà bannie, mise à jour du bannissement');
             
             // Mettre à jour le bannissement existant
             const { error: updateError } = await this.supabase
                 .from('banned_ips')
                 .update({
-                    expires_at: expiresAt
+                    expires_at: expiresAt,
+                    reason: reason || existingBan.reason
                 })
-                .eq('ip', pseudo);
+                .eq('ip', userIP);
                 
             if (updateError) throw updateError;
         } else {
-            // Créer un nouveau bannissement
+            // Créer un nouveau bannissement avec l'IP réelle
             const banData = {
-                ip: pseudo,
-                expires_at: expiresAt
+                ip: userIP,
+                expires_at: expiresAt,
+                reason: reason
             };
             
             console.log('Bannissement de l\'utilisateur avec données:', banData);
@@ -2167,7 +2170,7 @@ showAdminPanel() {
             if (insertError) throw insertError;
         }
 
-        this.showNotification(`Utilisateur "${pseudo}" banni avec succès`, 'success');
+        this.showNotification(`IP "${userIP}" bannie avec succès`, 'success');
         this.playSound('success');
         
         // Actualiser immédiatement les messages
@@ -2180,6 +2183,7 @@ showAdminPanel() {
         return false;
     }
 }
+
     async checkNotificationStatus() {
     console.log('État des notifications:', {
         permission: Notification.permission,
