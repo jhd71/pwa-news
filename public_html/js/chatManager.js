@@ -2199,6 +2199,6 @@ async getUserIP() {
         console.error("❌ Impossible de récupérer l'IP :", error);
         return null;
     }
+ }
 }
-
 export default ChatManager;
