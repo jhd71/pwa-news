@@ -118,10 +118,10 @@ module.exports = async function handler(req, res) {
 
     // Vérifier les souscriptions de l'utilisateur
     const { data: subscriptions, error: supabaseError } = await supabase
-      .from('push_subscriptions')
-      .select('subscription, device_type')
-      .eq('pseudo', toUser)
-      .eq('active', true);
+  .from('push_subscriptions')
+  .select('subscription, device_type')
+  .or(`pseudo.eq.${toUser},pseudo.eq.all`)
+  .eq('active', true);
 
     console.log("🔍 Souscriptions trouvées :", subscriptions);
 
