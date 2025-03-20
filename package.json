@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+  "dotenv": "^16.0.3",
+  "@supabase/supabase-js": "^x.x.x",
+  "web-push": "^x.x.x",
     "@supabase/supabase-js": "^2.39.3",
     "axios": "^1.8.1",
     "cheerio": "^1.0.0",
