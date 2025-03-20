@@ -1124,7 +1124,7 @@ createMessageElement(message) {
 
     async sendMessage(content) { 
     try {
-        // Vérifier si l'utilisateur est banni AVANT tout
+        // Utiliser directement this.pseudo comme identifiant
         const isBanned = await this.checkBannedIP(this.pseudo);
         
         if (isBanned) {
@@ -1150,15 +1150,18 @@ createMessageElement(message) {
             return false;
         }
         
-        // Continuer avec le reste de votre code...
+        // Créer l'identifiant unique pour ce message
+        const messageIp = `${this.pseudo}-${Date.now()}`;
         
+        // Construire le message avec l'identifiant
         const message = {
             pseudo: this.pseudo,
             content: content,
-            ip: ip,
+            ip: messageIp,
             created_at: new Date().toISOString()
         };
         
+        // Insérer le message
         const { data: messageData, error } = await this.supabase
             .from('messages')
             .insert(message)
