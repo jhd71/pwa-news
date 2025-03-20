@@ -1770,21 +1770,46 @@ scrollToBottom() {
 }
 
 handleKeyboardVisibility() {
-    if (!/Mobi|Android/i.test(navigator.userAgent)) return;
+    if (!/Mobi|Android|iPad|tablet/i.test(navigator.userAgent)) return;
     
     const chatContainer = this.container.querySelector('.chat-container');
     const chatInput = this.container.querySelector('.chat-input');
     const textarea = chatInput?.querySelector('textarea');
+    const messagesContainer = this.container.querySelector('.chat-messages');
     
     if (!chatContainer || !chatInput || !textarea) return;
     
+    // Détecter si c'est une tablette
+    const isTablet = this.isTablet();
+    // Dans votre méthode de détection d'appareil, ajoutez cette fonction
+isTablet() {
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(userAgent);
+    const isIPad = /ipad/.test(userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    
+    return isTablet || isIPad || (window.innerWidth >= 600 && window.innerWidth <= 1024);
+}
     // Détecter l'ouverture du clavier virtuel
     textarea.addEventListener('focus', () => {
         console.log("Clavier virtuel ouvert");
         
-        // Réduire la hauteur du conteneur de chat pour laisser de la place au clavier
-        chatContainer.style.height = '50vh';
-        chatContainer.style.maxHeight = '50vh';
+        if (isTablet) {
+            // Sur tablette, réduire davantage la hauteur pour laisser plus de place au clavier
+            chatContainer.style.height = '40vh';
+            chatContainer.style.maxHeight = '40vh';
+            
+            // Réduire la hauteur des messages pour laisser plus de place à l'input
+            if (messagesContainer) {
+                messagesContainer.style.maxHeight = 'calc(40vh - 90px)';
+            }
+            
+            // Déplacer le chat plus haut
+            chatContainer.style.bottom = '50vh';
+        } else {
+            // Sur smartphone, ajustements standards
+            chatContainer.style.height = '50vh';
+            chatContainer.style.maxHeight = '50vh';
+        }
         
         // S'assurer que la zone de saisie reste visible
         setTimeout(() => {
@@ -1798,8 +1823,18 @@ handleKeyboardVisibility() {
         
         // Restaurer la hauteur normale
         setTimeout(() => {
-            chatContainer.style.height = '65vh';
-            chatContainer.style.maxHeight = '65vh';
+            if (isTablet) {
+                chatContainer.style.height = '65vh';
+                chatContainer.style.maxHeight = '65vh';
+                chatContainer.style.bottom = '20vh';
+                
+                if (messagesContainer) {
+                    messagesContainer.style.maxHeight = 'calc(65vh - 90px)';
+                }
+            } else {
+                chatContainer.style.height = '65vh';
+                chatContainer.style.maxHeight = '65vh';
+            }
             
             // S'assurer que la zone de saisie est visible
             chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
