@@ -1631,3 +1631,33 @@ body.long-press-active .message-options {
         max-height: 150px !important; /* Peut s'agrandir davantage */
     }
 }
+/* Styles spécifiques pour les tablettes */
+@media (min-width: 600px) and (max-width: 1024px) {
+    .chat-container {
+        width: 90% !important;
+        height: 65vh !important;
+        max-height: 65vh !important;
+        bottom: 20vh !important;
+        left: 5% !important;
+        right: 5% !important;
+        margin: 0 auto !important;
+    }
+    
+    .chat-input {
+        position: sticky !important;
+        bottom: 0 !important;
+        z-index: 1000 !important;
+        padding: 15px !important;
+    }
+    
+    /* Quand le clavier est ouvert */
+    .chat-container.keyboard-open {
+        height: 40vh !important;
+        max-height: 40vh !important;
+        bottom: 50vh !important;
+    }
+    
+    .chat-container.keyboard-open .chat-messages {
+        max-height: calc(40vh - 90px) !important;
+    }
+}
