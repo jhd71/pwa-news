@@ -19,21 +19,7 @@
 [data-theme="dark"] {
     --chat-gradient: linear-gradient(145deg, #1a237e, #283593);
 }
-/* Thème sombre */
-.dark-theme {
-  --info-bubble-bg: linear-gradient(135deg, #222232 0%, #444464 100%);
-  --info-bubble-text: #f0f0f0;
-  --info-bubble-border: rgba(100, 100, 255, 0.3);
-  --info-bubble-shadow: rgba(0, 0, 0, 0.5);
-}
 
-/* Thème clair - si vous avez une classe pour le thème clair */
-.light-theme {
-  --info-bubble-bg: linear-gradient(135deg, #8a40b8 0%, #c066ff 100%);
-  --info-bubble-text: white;
-  --info-bubble-border: rgba(255, 255, 255, 0.5);
-  --info-bubble-shadow: rgba(0, 0, 0, 0.2);
-}
 /* ==========================================================================
     Styles globaux et utilitaires
    ========================================================================== */
@@ -1580,6 +1566,23 @@ body.long-press-active .message-options {
     100% { transform: scale(1); opacity: 1; }
   }
 }
+
+/* Thème sombre */
+.dark-theme {
+  --info-bubble-bg: linear-gradient(135deg, #222232 0%, #444464 100%);
+  --info-bubble-text: #f0f0f0;
+  --info-bubble-border: rgba(100, 100, 255, 0.3);
+  --info-bubble-shadow: rgba(0, 0, 0, 0.5);
+}
+
+/* Thème clair - si vous avez une classe pour le thème clair */
+.light-theme {
+  --info-bubble-bg: linear-gradient(135deg, #8a40b8 0%, #c066ff 100%);
+  --info-bubble-text: white;
+  --info-bubble-border: rgba(255, 255, 255, 0.5);
+  --info-bubble-shadow: rgba(0, 0, 0, 0.2);
+}
+
 /* Styles spécifiques pour les PWA */
 @media (display-mode: standalone) {
     .chat-container {
