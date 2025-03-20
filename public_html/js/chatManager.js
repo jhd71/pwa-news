@@ -1414,7 +1414,7 @@ async unsubscribeFromPushNotifications() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 secondes
         
-        const response = await fetch("/api/sendPush.js", {
+        const response = await fetch("/api/sendPush", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
