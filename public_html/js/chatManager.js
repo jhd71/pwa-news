@@ -21,35 +21,10 @@ class ChatManager {
         this.isOpen = localStorage.getItem('chatOpen') === 'true';
         this.unreadCount = parseInt(localStorage.getItem('unreadCount') || '0');
     }
-async setCurrentUserForRLS() {
-    try {
-        if (!this.pseudo) return false;
-        
-        console.log(`Définition de l'utilisateur courant pour RLS: ${this.pseudo}`);
-        const { error } = await this.supabase.rpc('set_current_user', { 
-            user_pseudo: this.pseudo 
-        });
-        
-        if (error) {
-            console.error('Erreur définition utilisateur RLS:', error);
-            return false;
-        }
-        
-        console.log('Utilisateur RLS défini avec succès');
-        return true;
-    } catch (error) {
-        console.error('Erreur RLS:', error);
-        return false;
-    }
-}
+
     async init() {
     try {
         await this.loadBannedWords();
-		// Si l'utilisateur est déjà authentifié, définir pour RLS
-        if (this.pseudo) {
-            const rlsSuccess = await this.setCurrentUserForRLS();
-            console.log('Initialisation RLS:', rlsSuccess ? 'Succès' : 'Échec');
-        }
         
         this.container = document.createElement('div');
         this.container.className = 'chat-widget';
@@ -127,17 +102,8 @@ async setCurrentUserForRLS() {
             });
         }
     }
-    if (this.isAdmin) {
-    // Effectuer des tâches de maintenance si l'utilisateur est administrateur
-    await this.performMaintenanceTasks();
-}
+    
     this.initialized = true;
-	// Listener pour mettre à jour le statut en ligne/hors ligne
-window.addEventListener('beforeunload', () => {
-    if (this.pseudo) {
-        this.updateUserStatus(false);
-    }
-});
         console.log("Chat initialisé avec succès");
     } catch (error) {
         console.error('Erreur initialisation:', error);
@@ -541,16 +507,12 @@ setupAuthListeners() {
                 }
 
                 // Définir les variables de session
-this.pseudo = pseudo;
-this.isAdmin = isAdmin;
-localStorage.setItem('chatPseudo', pseudo);
-localStorage.setItem('isAdmin', isAdmin);
+                this.pseudo = pseudo;
+                this.isAdmin = isAdmin;
+                localStorage.setItem('chatPseudo', pseudo);
+                localStorage.setItem('isAdmin', isAdmin);
 
-// Définir immédiatement l'utilisateur pour RLS
-const rlsSuccess = await this.setCurrentUserForRLS();
-console.log('RLS après connexion:', rlsSuccess ? 'Succès' : 'Échec');
-
-// Actualiser l'interface
+                // Actualiser l'interface
 if (document.getElementById('chatToggleBtn')) {
     this.container.innerHTML = this.getChatHTMLWithoutToggle();
 } else {
@@ -575,7 +537,7 @@ if (chatContainer) {
 this.setupListeners();
 await this.loadExistingMessages();
 this.playSound('success');
-this.updateUserStatus(true);
+
                 
             } catch (error) {
                 console.error('Erreur d\'authentification:', error);
@@ -644,20 +606,6 @@ async checkAuthState() {
     } catch (error) {
         console.error('Erreur vérification auth:', error);
         return false;
-    }
-}
-
-async updateUserStatus(isOnline = true) {
-    try {
-        await this.supabase
-            .from('users')
-            .update({ 
-                is_online: isOnline,
-                last_active: new Date().toISOString()
-            })
-            .eq('pseudo', this.pseudo);
-    } catch (error) {
-        console.error('Erreur mise à jour statut:', error);
     }
 }
 
@@ -1048,35 +996,27 @@ createMessageElement(message) {
 }
 
     async loadExistingMessages() {
-    try {
-        // Définir explicitement l'utilisateur courant pour RLS
-        const rlsSuccess = await this.setCurrentUserForRLS();
-        if (!rlsSuccess) {
-            console.warn('Échec de la définition de l\'utilisateur pour RLS');
-            // Continuer quand même pour les opérations de lecture
-            // Mais vous pourriez vouloir échouer pour les opérations d'écriture
-        }
-        
-        const { data: messages, error } = await this.supabase
-            .from('messages')
-            .select('*')
-            .order('created_at', { ascending: true });
+        try {
+            const { data: messages, error } = await this.supabase
+                .from('messages')
+                .select('*')
+                .order('created_at', { ascending: true });
 
-        if (error) throw error;
+            if (error) throw error;
 
-        const container = this.container.querySelector('.chat-messages');
-        if (container && messages) {
-            container.innerHTML = '';
-            messages.forEach(msg => {
-                container.appendChild(this.createMessageElement(msg));
-            });
-            this.scrollToBottom();
+            const container = this.container.querySelector('.chat-messages');
+            if (container && messages) {
+                container.innerHTML = '';
+                messages.forEach(msg => {
+                    container.appendChild(this.createMessageElement(msg));
+                });
+                this.scrollToBottom();
+            }
+        } catch (error) {
+            console.error('Erreur chargement messages:', error);
+            this.showNotification('Erreur chargement messages', 'error');
         }
-    } catch (error) {
-        console.error('Erreur chargement messages:', error);
-        this.showNotification('Erreur chargement messages', 'error');
     }
-}
 
     async sendMessage(content) { 
     try {
@@ -1087,39 +1027,34 @@ createMessageElement(message) {
             this.showNotification('Vous êtes banni du chat', 'error');
             return false;
         }
-
-        // Définir explicitement l'utilisateur courant pour RLS AVANT chaque opération
+        
+        // Définir explicitement l'utilisateur courant pour RLS
         const rlsSuccess = await this.setCurrentUserForRLS();
         if (!rlsSuccess) {
-            console.error('Échec de la définition de l'utilisateur pour RLS');
+            console.error("Échec de la définition de l'utilisateur pour RLS");
             this.showNotification('Erreur d\'authentification', 'error');
             return false;
         }
         
+        // Ne pas utiliser supabase.auth.getUser()
         const message = {
             pseudo: this.pseudo,
             content: content,
             ip: ip,
             created_at: new Date().toISOString()
         };
-
-        console.log('Tentative d\'envoi de message avec RLS:', message);
-        const { data, error } = await this.supabase
+        
+        const { data: messageData, error } = await this.supabase
             .from('messages')
             .insert(message)
             .select()
             .single();
-
-        if (error) {
-            console.error('Erreur insertion message:', error);
-            throw error;
-        }
-
-        console.log('Message envoyé avec succès:', data);
-
+            
+        if (error) throw error;
+        
         // Envoi de la notification
         try {
-            const notifResponse = await fetch("/api/sendPush.js", {
+            const response = await fetch("/api/sendPush.js", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -1129,14 +1064,15 @@ createMessageElement(message) {
                 })
             });
             
-            const notifData = await notifResponse.json();
+            const notifData = await response.json();
             console.log("✅ Notification envoyée :", notifData);
         } catch (notifError) {
             console.error("❌ Erreur lors de l'envoi de la notification :", notifError);
             // Ne pas bloquer le flux principal si l'envoi de notification échoue
         }
-
+        
         return true;
+        
     } catch (error) {
         console.error('Erreur sendMessage:', error);
         return false;
@@ -1332,36 +1268,51 @@ async unsubscribeFromPushNotifications() {
     }
     async sendNotificationToUser(message) {
     try {
-        // Version simplifiée qui utilise directement les abonnements
-        const { data: subscriptions, error } = await this.supabase
-            .from('push_subscriptions')
-            .select('subscription')
-            .eq('active', true);
+        console.log('Envoi notification à:', message);
         
-        if (error) throw error;
+        // Créer un contrôleur d'abandon avec un timeout plus long
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 secondes
         
-        // Utiliser une requête unique à votre API
         const response = await fetch("/api/sendPush.js", {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify({
                 message: message.content,
                 fromUser: message.pseudo,
                 toUser: this.pseudo
-            })
+            }),
+            signal: controller.signal // Ajouter le signal d'abandon
         });
+        
+        // Annuler le timeout une fois la réponse reçue
+        clearTimeout(timeoutId);
         
         if (!response.ok) {
             const text = await response.text();
+            console.warn('Réponse API erreur:', {
+                status: response.status,
+                statusText: response.statusText,
+                body: text
+            });
+            
+            // Ne pas bloquer l'interface utilisateur avec une erreur de notification
             return { success: false, error: text };
         }
         
         const result = await response.json();
+        console.log('Réponse API succès:', result);
         return result;
     } catch (error) {
+        // Gérer spécifiquement les erreurs d'abandon
         if (error.name === 'AbortError') {
+            console.warn('La requête de notification a été abandonnée (timeout)');
             return { success: false, error: 'timeout' };
         }
+        
+        // Pour les autres erreurs, on log mais on ne propage pas l'erreur
         console.warn('Erreur envoi notification:', error.message);
         return { success: false, error: error.message };
     }
@@ -1438,25 +1389,25 @@ async unsubscribeFromPushNotifications() {
     }
 
     async checkForBannedWords(content) {
-    if (this.bannedWords.size === 0) {
-        await this.loadBannedWords();
-    }
-    
-    // Version plus robuste qui détecte les mots même avec des caractères spéciaux
-    const normalizedContent = content.toLowerCase()
-        .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
-        .replace(/\s+/g, ' ');
-    
-    // Vérifier chaque mot banni
-    for (const bannedWord of this.bannedWords) {
-        const regex = new RegExp(`\\b${bannedWord}\\b|${bannedWord.replace(/\s+/g, '\\s*')}`, 'i');
-        if (regex.test(normalizedContent)) {
-            return true;
+        console.log('Vérification des mots bannis...');
+        const { data: bannedWordsData, error } = await this.supabase
+            .from('banned_words')
+            .select('word');
+        
+        if (error) {
+            console.error('Erreur chargement mots bannis:', error);
+            return false;
         }
+
+        this.bannedWords = new Set(bannedWordsData.map(item => item.word.toLowerCase()));
+        const words = content.toLowerCase().split(/\s+/);
+        const foundBannedWord = words.some(word => this.bannedWords.has(word));
+        
+        console.log('Mots bannis actuels:', [...this.bannedWords]);
+        console.log('Mot interdit trouvé:', foundBannedWord);
+        
+        return foundBannedWord;
     }
-    
-    return false;
-}
 
     urlBase64ToUint8Array(base64String) {
         const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -1898,13 +1849,8 @@ showAdminPanel() {
 
     async deleteMessage(messageId) {
     try {
-        // Définir explicitement l'utilisateur courant pour RLS
-        const rlsSuccess = await this.setCurrentUserForRLS();
-        if (!rlsSuccess) {
-            console.warn('Échec de la définition de l\'utilisateur pour RLS');
-            // Continuer quand même pour les opérations de lecture
-            // Mais vous pourriez vouloir échouer pour les opérations d'écriture
-        }
+        // Définir l'utilisateur courant pour les vérifications RLS
+        await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
         
         // Ensuite effectuer la suppression
         const { error } = await this.supabase
@@ -1999,31 +1945,6 @@ showAdminPanel() {
             pushManagerSubscribed: !!(await (await navigator.serviceWorker.ready).pushManager.getSubscription())
         });
     }
-	async performMaintenanceTasks() {
-    try {
-        if (!this.isAdmin) return;
-        
-        // Nettoyer les anciens bans expirés
-        await this.supabase
-            .from('banned_ips')
-            .delete()
-            .lt('expires_at', new Date().toISOString())
-            .not('expires_at', 'is', null);
-        
-        // Nettoyer les anciennes souscriptions
-        const threeMonthsAgo = new Date();
-        threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-        
-        await this.supabase
-            .from('push_subscriptions')
-            .delete()
-            .lt('last_updated', threeMonthsAgo.toISOString());
-            
-        console.log('Maintenance effectuée avec succès');
-    } catch (error) {
-        console.error('Erreur maintenance:', error);
-    }
-}
 }
 
 export default ChatManager;
