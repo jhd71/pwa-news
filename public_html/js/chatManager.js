@@ -1145,14 +1145,13 @@ createMessageElement(message) {
 
     async sendMessage(content) { 
     try {
-        // Utiliser directement this.pseudo comme identifiant
+        // 🔴 Vérifier si l'utilisateur est banni avant d'envoyer un message
         const isBanned = await this.checkBannedIP(this.pseudo);
         
         if (isBanned) {
-            console.log(`Message rejeté - utilisateur banni: ${this.pseudo}`);
+            console.warn(`⛔ Message bloqué - utilisateur banni: ${this.pseudo}`);
             this.showNotification('Vous êtes banni du chat', 'error');
-            // Déconnecter l'utilisateur banni
-            await this.logout();
+            await this.logout(); // Déconnecter l'utilisateur banni
             return false;
         }
         
@@ -1182,54 +1181,29 @@ createMessageElement(message) {
             created_at: new Date().toISOString()
         };
         
-        // Insérer le message
-        const { data: messageData, error } = await this.supabase
-            .from('messages')
-            .insert(message)
-            .select()
-            .single();
-            
-        if (error) throw error;
-        
-        // Envoi de la notification
-        try {
-            const response = await fetch("/api/sendPush", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    message: content,
-                    fromUser: this.pseudo,
-                    toUser: "all"
-                })
-            });
-            
-            // Vérifier si la réponse est OK
-            if (!response.ok) {
-                console.warn("Erreur API:", response.status, response.statusText);
-                return true; // Continuer car l'envoi de message a réussi
-            }
-            
-            // Lire la réponse UNIQUEMENT UNE FOIS
-            const responseText = await response.text();
-            
-            // Essayer de parser comme JSON
-            try {
-                const data = JSON.parse(responseText);
-                console.log("✅ Notification envoyée :", data);
-            } catch (jsonError) {
-                console.error("❌ Erreur JSON:", responseText);
-            }
-        } catch (notifError) {
-            console.error("❌ Erreur lors de l'envoi de la notification :", notifError);
+        // 🔥 Empêcher l’insertion du message si l’utilisateur est banni
+        const isBannedCheck = await this.checkBannedIP(this.pseudo);
+        if (isBannedCheck) {
+            console.warn(`⛔ Message rejeté car ${this.pseudo} est toujours banni`);
+            return false;
         }
-        
-        return true; // Retourner true si le message a été envoyé avec succès
-        
+
+        // Insérer le message
+        const { error } = await this.supabase
+            .from('messages')
+            .insert(message);
+
+        if (error) throw error;
+
+        console.log(`📩 Message envoyé par ${this.pseudo}`);
+
+        return true;
     } catch (error) {
         console.error('Erreur sendMessage:', error);
         return false;
     }
 }
+
 
     async setupPushNotifications() {
     try {
@@ -1549,6 +1523,39 @@ async unsubscribeFromPushNotifications() {
             return false;
         }
         
+        console.log(`Utilisateur ${pseudo} est banni!`);
+        return true;
+    } catch (error) {
+        console.error('Erreur vérification bannissement:', error);
+        return false;
+    }
+}
+async checkBannedIP(pseudo) {
+    try {
+        // Vérifier si le pseudo est banni
+        const { data: banData, error } = await this.supabase
+            .from('banned_ips')
+            .select('*')
+            .eq('ip', pseudo)
+            .maybeSingle();
+
+        if (error) {
+            console.error('Erreur vérification bannissement:', error);
+            return false;
+        }
+
+        if (!banData) {
+            console.log(`Utilisateur ${pseudo} n'est PAS banni`);
+            return false;
+        }
+
+        // Vérifier si le bannissement est expiré
+        if (banData.expires_at && new Date(banData.expires_at) < new Date()) {
+            console.log(`Bannissement expiré pour: ${pseudo}`);
+            await this.supabase.from('banned_ips').delete().eq('ip', pseudo);
+            return false;
+        }
+
         console.log(`Utilisateur ${pseudo} est banni!`);
         return true;
     } catch (error) {
