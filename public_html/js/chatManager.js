@@ -23,19 +23,20 @@ class ChatManager {
     }
 async setCurrentUserForRLS() {
     try {
-        if (this.pseudo) {
-            // Appeler la fonction RPC qui définit l'utilisateur actuel pour les politiques de sécurité
-            const { error } = await this.supabase.rpc('set_current_user', { 
-                user_pseudo: this.pseudo 
-            });
-            
-            if (error) {
-                console.error('Erreur définition utilisateur RLS:', error);
-                return false;
-            }
-            return true;
+        if (!this.pseudo) return false;
+        
+        console.log(`Définition de l'utilisateur courant pour RLS: ${this.pseudo}`);
+        const { error } = await this.supabase.rpc('set_current_user', { 
+            user_pseudo: this.pseudo 
+        });
+        
+        if (error) {
+            console.error('Erreur définition utilisateur RLS:', error);
+            return false;
         }
-        return false;
+        
+        console.log('Utilisateur RLS défini avec succès');
+        return true;
     } catch (error) {
         console.error('Erreur RLS:', error);
         return false;
@@ -45,9 +46,10 @@ async setCurrentUserForRLS() {
     try {
         await this.loadBannedWords();
 		// Si l'utilisateur est déjà authentifié, définir pour RLS
-if (this.pseudo) {
-    await this.setCurrentUserForRLS();
-}
+        if (this.pseudo) {
+            const rlsSuccess = await this.setCurrentUserForRLS();
+            console.log('Initialisation RLS:', rlsSuccess ? 'Succès' : 'Échec');
+        }
         
         this.container = document.createElement('div');
         this.container.className = 'chat-widget';
@@ -539,12 +541,16 @@ setupAuthListeners() {
                 }
 
                 // Définir les variables de session
-                this.pseudo = pseudo;
-                this.isAdmin = isAdmin;
-                localStorage.setItem('chatPseudo', pseudo);
-                localStorage.setItem('isAdmin', isAdmin);
+this.pseudo = pseudo;
+this.isAdmin = isAdmin;
+localStorage.setItem('chatPseudo', pseudo);
+localStorage.setItem('isAdmin', isAdmin);
 
-                // Actualiser l'interface
+// Définir immédiatement l'utilisateur pour RLS
+const rlsSuccess = await this.setCurrentUserForRLS();
+console.log('RLS après connexion:', rlsSuccess ? 'Succès' : 'Échec');
+
+// Actualiser l'interface
 if (document.getElementById('chatToggleBtn')) {
     this.container.innerHTML = this.getChatHTMLWithoutToggle();
 } else {
@@ -1043,8 +1049,13 @@ createMessageElement(message) {
 
     async loadExistingMessages() {
     try {
-        // Définir l'utilisateur courant pour RLS
-        await this.setCurrentUserForRLS();
+        // Définir explicitement l'utilisateur courant pour RLS
+        const rlsSuccess = await this.setCurrentUserForRLS();
+        if (!rlsSuccess) {
+            console.warn('Échec de la définition de l\'utilisateur pour RLS');
+            // Continuer quand même pour les opérations de lecture
+            // Mais vous pourriez vouloir échouer pour les opérations d'écriture
+        }
         
         const { data: messages, error } = await this.supabase
             .from('messages')
@@ -1077,8 +1088,13 @@ createMessageElement(message) {
             return false;
         }
 
-        // Définir l'utilisateur courant pour RLS avant d'insérer le message
-        await this.setCurrentUserForRLS();
+        // Définir explicitement l'utilisateur courant pour RLS AVANT chaque opération
+        const rlsSuccess = await this.setCurrentUserForRLS();
+        if (!rlsSuccess) {
+            console.error('Échec de la définition de l'utilisateur pour RLS');
+            this.showNotification('Erreur d\'authentification', 'error');
+            return false;
+        }
         
         const message = {
             pseudo: this.pseudo,
@@ -1087,27 +1103,38 @@ createMessageElement(message) {
             created_at: new Date().toISOString()
         };
 
+        console.log('Tentative d\'envoi de message avec RLS:', message);
         const { data, error } = await this.supabase
             .from('messages')
             .insert(message)
             .select()
             .single();
 
-        if (error) throw error;
+        if (error) {
+            console.error('Erreur insertion message:', error);
+            throw error;
+        }
+
+        console.log('Message envoyé avec succès:', data);
 
         // Envoi de la notification
-        await fetch("/api/sendPush.js", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                message: content,
-                fromUser: this.pseudo,
-                toUser: "all"
-            })
-        })
-        .then(response => response.json())
-        .then(data => console.log("✅ Notification envoyée :", data))
-        .catch(err => console.error("❌ Erreur lors de l'envoi de la notification :", err));
+        try {
+            const notifResponse = await fetch("/api/sendPush.js", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    message: content,
+                    fromUser: this.pseudo,
+                    toUser: "all"
+                })
+            });
+            
+            const notifData = await notifResponse.json();
+            console.log("✅ Notification envoyée :", notifData);
+        } catch (notifError) {
+            console.error("❌ Erreur lors de l'envoi de la notification :", notifError);
+            // Ne pas bloquer le flux principal si l'envoi de notification échoue
+        }
 
         return true;
     } catch (error) {
@@ -1871,8 +1898,13 @@ showAdminPanel() {
 
     async deleteMessage(messageId) {
     try {
-        // Définir l'utilisateur courant pour les vérifications RLS
-        await this.setCurrentUserForRLS();
+        // Définir explicitement l'utilisateur courant pour RLS
+        const rlsSuccess = await this.setCurrentUserForRLS();
+        if (!rlsSuccess) {
+            console.warn('Échec de la définition de l\'utilisateur pour RLS');
+            // Continuer quand même pour les opérations de lecture
+            // Mais vous pourriez vouloir échouer pour les opérations d'écriture
+        }
         
         // Ensuite effectuer la suppression
         const { error } = await this.supabase
