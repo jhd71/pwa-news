@@ -116,44 +116,53 @@ async setCurrentUserForRLS() {
             this.updateUnreadBadgeAndBubble();
         }
         
-        // AJOUTER CE CODE ICI - Début du nouveau code
         // Pour gérer spécifiquement les problèmes de PWA
         if (/Mobi|Android/i.test(navigator.userAgent)) {
-        // Détecter si nous sommes dans une PWA
-        const isPWA = window.matchMedia('(display-mode: standalone)').matches || 
-                     window.navigator.standalone;
-                     
-        if (isPWA) {
-            console.log("Mode PWA détecté - Activation des ajustements spécifiques");
-            
-            // Ajouter le bouton d'accès à la zone de saisie
-            this.accessButton = this.addInputAccessButton();
-            
-            // Gérer la visibilité du clavier
-            this.handleKeyboardVisibility();
-            
-            // Observer les changements d'orientation
-            window.addEventListener('orientationchange', () => {
-                setTimeout(() => {
-                    this.ensureChatInputVisible();
-                }, 500);
-            });
+            // Détecter si nous sommes dans une PWA
+            const isPWA = window.matchMedia('(display-mode: standalone)').matches || 
+                         window.navigator.standalone;
+                         
+            if (isPWA) {
+                console.log("Mode PWA détecté - Activation des ajustements spécifiques");
+                
+                // Ajouter le bouton d'accès à la zone de saisie
+                this.accessButton = this.addInputAccessButton();
+                
+                // Gérer la visibilité du clavier
+                this.handleKeyboardVisibility();
+                
+                // Observer les changements d'orientation
+                window.addEventListener('orientationchange', () => {
+                    setTimeout(() => {
+                        this.ensureChatInputVisible();
+                    }, 500);
+                });
+            }
+        } // <-- CETTE ACCOLADE MANQUAIT
+
+        if (this.pseudo) {
+            this.setupBanChecker();
         }
-    }
+        if (this.pseudo) {
+            this.startBanMonitoring();
+        }
 
-if (this.pseudo) {
-    this.setupBanChecker();
-}
-if (this.pseudo) {
-    this.startBanMonitoring();
-}
+        // AJOUTEZ L'ÉCOUTEUR DE THÈME ICI
+        // Écouter les changements de thème
+        const themeObserver = new MutationObserver(() => {
+            this.updateUnreadBadgeAndBubble();
+        });
 
-    // Ajouter à la fin avant this.initialized = true
-  if (/Mobi|Android|iPad|tablet/i.test(navigator.userAgent)) {
-    this.optimizeForLowEndDevices();
-  }
-  
-  this.initialized = true;
+        // Observer les changements de classe sur le body et l'élément html
+        themeObserver.observe(document.body, { attributes: true, attributeFilter: ['class', 'data-theme'] });
+        themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+        // Optimisations pour appareils à performances limitées
+        if (/Mobi|Android|iPad|tablet/i.test(navigator.userAgent)) {
+            this.optimizeForLowEndDevices();
+        }
+        
+        this.initialized = true;
         console.log("Chat initialisé avec succès");
     } catch (error) {
         console.error('Erreur initialisation:', error);
@@ -1746,6 +1755,11 @@ updateUnreadBadgeAndBubble() {
             return;
         }
         
+        // Déterminer le thème actuel
+        const isDarkTheme = document.body.classList.contains('dark-theme') || 
+                          document.documentElement.classList.contains('dark-theme') ||
+                          document.body.getAttribute('data-theme') === 'dark';
+        
         // Créer une nouvelle bulle
         const bubble = document.createElement('div');
         bubble.className = 'info-bubble show';
@@ -1755,8 +1769,19 @@ updateUnreadBadgeAndBubble() {
         const isMobile = window.innerWidth <= 768;
         
         if (isMobile) {
-            // Utiliser la classe CSS au lieu des styles inline
+            // Utiliser la classe CSS de base
             bubble.className = 'info-bubble info-bubble-mobile show';
+            
+            // Appliquer les styles en fonction du thème
+            if (isDarkTheme) {
+                bubble.style.background = 'linear-gradient(135deg, #222232 0%, #444464 100%)';
+                bubble.style.color = '#f0f0f0';
+                bubble.style.border = '2px solid rgba(100, 100, 255, 0.3)';
+            } else {
+                bubble.style.background = 'linear-gradient(135deg, #8a40b8 0%, #c066ff 100%)';
+                bubble.style.color = 'white';
+                bubble.style.border = '2px solid rgba(255, 255, 255, 0.5)';
+            }
             
             // Ajouter au body
             document.body.appendChild(bubble);
@@ -1781,7 +1806,7 @@ updateUnreadBadgeAndBubble() {
             chatToggleBtn.appendChild(bubble);
         }
     }
-} // Cette accolade fermante était mal placée
+}
 
 escapeHtml(unsafe) {
     return unsafe
