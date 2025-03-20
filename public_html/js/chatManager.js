@@ -552,23 +552,11 @@ setupAuthListeners() {
                 }
 
                 // Définir les variables de session
-this.pseudo = pseudo;
-this.isAdmin = isAdmin;
-localStorage.setItem('chatPseudo', pseudo);
-localStorage.setItem('isAdmin', isAdmin);
-this.startBanMonitoring();
-
-// 🔹 Récupérer l'IP de l'utilisateur
-const ip = await this.getUserIP();
-if (ip) {
-    console.log(`IP détectée pour ${pseudo}: ${ip}`);
-
-    // 🔹 Mettre à jour l'IP dans Supabase
-    await this.supabase
-        .from('users')
-        .update({ ip: ip })
-        .eq('pseudo', pseudo);
-}
+                this.pseudo = pseudo;
+                this.isAdmin = isAdmin;
+                localStorage.setItem('chatPseudo', pseudo);
+                localStorage.setItem('isAdmin', isAdmin);
+				this.startBanMonitoring();
 
                 // Actualiser l'interface
 if (document.getElementById('chatToggleBtn')) {
@@ -1145,13 +1133,14 @@ createMessageElement(message) {
 
     async sendMessage(content) { 
     try {
-        // 🔴 Vérifier si l'utilisateur est banni avant d'envoyer un message
+        // Utiliser directement this.pseudo comme identifiant
         const isBanned = await this.checkBannedIP(this.pseudo);
         
         if (isBanned) {
-            console.warn(`⛔ Message bloqué - utilisateur banni: ${this.pseudo}`);
+            console.log(`Message rejeté - utilisateur banni: ${this.pseudo}`);
             this.showNotification('Vous êtes banni du chat', 'error');
-            await this.logout(); // Déconnecter l'utilisateur banni
+            // Déconnecter l'utilisateur banni
+            await this.logout();
             return false;
         }
         
@@ -1181,23 +1170,49 @@ createMessageElement(message) {
             created_at: new Date().toISOString()
         };
         
-        // 🔥 Empêcher l’insertion du message si l’utilisateur est banni
-        const isBannedCheck = await this.checkBannedIP(this.pseudo);
-        if (isBannedCheck) {
-            console.warn(`⛔ Message rejeté car ${this.pseudo} est toujours banni`);
-            return false;
-        }
-
         // Insérer le message
-        const { error } = await this.supabase
+        const { data: messageData, error } = await this.supabase
             .from('messages')
-            .insert(message);
-
+            .insert(message)
+            .select()
+            .single();
+            
         if (error) throw error;
-
-        console.log(`📩 Message envoyé par ${this.pseudo}`);
-
-        return true;
+        
+        // Envoi de la notification
+        try {
+            const response = await fetch("/api/sendPush", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    message: content,
+                    fromUser: this.pseudo,
+                    toUser: "all"
+                })
+            });
+            
+            // Vérifier si la réponse est OK
+            if (!response.ok) {
+                console.warn("Erreur API:", response.status, response.statusText);
+                return true; // Continuer car l'envoi de message a réussi
+            }
+            
+            // Lire la réponse UNIQUEMENT UNE FOIS
+            const responseText = await response.text();
+            
+            // Essayer de parser comme JSON
+            try {
+                const data = JSON.parse(responseText);
+                console.log("✅ Notification envoyée :", data);
+            } catch (jsonError) {
+                console.error("❌ Erreur JSON:", responseText);
+            }
+        } catch (notifError) {
+            console.error("❌ Erreur lors de l'envoi de la notification :", notifError);
+        }
+        
+        return true; // Retourner true si le message a été envoyé avec succès
+        
     } catch (error) {
         console.error('Erreur sendMessage:', error);
         return false;
@@ -1522,39 +1537,6 @@ async unsubscribeFromPushNotifications() {
             return false;
         }
         
-        console.log(`Utilisateur ${pseudo} est banni!`);
-        return true;
-    } catch (error) {
-        console.error('Erreur vérification bannissement:', error);
-        return false;
-    }
-}
-async checkBannedIP(pseudo) {
-    try {
-        // Vérifier si le pseudo est banni
-        const { data: banData, error } = await this.supabase
-            .from('banned_ips')
-            .select('*')
-            .eq('ip', pseudo)
-            .maybeSingle();
-
-        if (error) {
-            console.error('Erreur vérification bannissement:', error);
-            return false;
-        }
-
-        if (!banData) {
-            console.log(`Utilisateur ${pseudo} n'est PAS banni`);
-            return false;
-        }
-
-        // Vérifier si le bannissement est expiré
-        if (banData.expires_at && new Date(banData.expires_at) < new Date()) {
-            console.log(`Bannissement expiré pour: ${pseudo}`);
-            await this.supabase.from('banned_ips').delete().eq('ip', pseudo);
-            return false;
-        }
-
         console.log(`Utilisateur ${pseudo} est banni!`);
         return true;
     } catch (error) {
@@ -2130,41 +2112,38 @@ showAdminPanel() {
 
     async banUser(ip, reason = '', duration = null) {
     try {
-        // 🔹 Récupérer l'IP réelle de l'utilisateur
-        const userIP = await this.getUserIP();
-        if (!userIP) {
-            console.error("Impossible de récupérer l'IP de l'utilisateur");
-            return false;
-        }
+        // Définir l'utilisateur courant pour RLS
+        await this.setCurrentUserForRLS();
+        
+        // Extraire le pseudo de l'IP (format actuel: pseudo-timestamp)
+        const pseudo = ip.split('-')[0];
         
         const expiresAt = duration ? new Date(Date.now() + parseInt(duration)).toISOString() : null;
         
-        // Vérifier d'abord si l'IP est déjà bannie
+        // Vérifier d'abord si l'utilisateur est déjà banni
         const { data: existingBan } = await this.supabase
             .from('banned_ips')
             .select('*')
-            .eq('ip', userIP)
+            .eq('ip', pseudo)
             .maybeSingle();
             
         if (existingBan) {
-            console.log('IP déjà bannie, mise à jour du bannissement');
+            console.log('Utilisateur déjà banni, mise à jour du bannissement');
             
             // Mettre à jour le bannissement existant
             const { error: updateError } = await this.supabase
                 .from('banned_ips')
                 .update({
-                    expires_at: expiresAt,
-                    reason: reason || existingBan.reason
+                    expires_at: expiresAt
                 })
-                .eq('ip', userIP);
+                .eq('ip', pseudo);
                 
             if (updateError) throw updateError;
         } else {
-            // Créer un nouveau bannissement avec l'IP réelle
+            // Créer un nouveau bannissement
             const banData = {
-                ip: userIP,
-                expires_at: expiresAt,
-                reason: reason
+                ip: pseudo,
+                expires_at: expiresAt
             };
             
             console.log('Bannissement de l\'utilisateur avec données:', banData);
@@ -2176,7 +2155,7 @@ showAdminPanel() {
             if (insertError) throw insertError;
         }
 
-        this.showNotification(`IP "${userIP}" bannie avec succès`, 'success');
+        this.showNotification(`Utilisateur "${pseudo}" banni avec succès`, 'success');
         this.playSound('success');
         
         // Actualiser immédiatement les messages
@@ -2189,26 +2168,15 @@ showAdminPanel() {
         return false;
     }
 }
-
     async checkNotificationStatus() {
-    console.log('État des notifications:', {
-        permission: Notification.permission,
-        serviceWorkerRegistered: !!await navigator.serviceWorker.getRegistration(),
-        pushManagerSupported: 'PushManager' in window,
-        notificationsEnabled: this.notificationsEnabled,
-        pushManagerSubscribed: !!(await (await navigator.serviceWorker.ready).pushManager.getSubscription())
-    });
+        console.log('État des notifications:', {
+            permission: Notification.permission,
+            serviceWorkerRegistered: !!await navigator.serviceWorker.getRegistration(),
+            pushManagerSupported: 'PushManager' in window,
+            notificationsEnabled: this.notificationsEnabled,
+            pushManagerSubscribed: !!(await (await navigator.serviceWorker.ready).pushManager.getSubscription())
+        });
+    }
 }
 
-async getUserIP() {
-    try {
-        const response = await fetch("https://api64.ipify.org?format=json");
-        const data = await response.json();
-        return data.ip;
-    } catch (error) {
-        console.error("❌ Impossible de récupérer l'IP :", error);
-        return null;
-    }
- }
-}
 export default ChatManager;
