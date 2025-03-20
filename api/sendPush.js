@@ -107,7 +107,8 @@ async function cleanExpiredSubscriptions(supabase) {
 }
 
 // Handler principal de l'API - converti en export default pour Next.js
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
+
   try {
     // S'assurer que les clés VAPID sont configurées
     webpush.setVapidDetails(
