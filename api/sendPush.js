@@ -153,6 +153,8 @@ export default async function handler(req, res) {
       .select('subscription, device_type')
       .eq('pseudo', toUser)
       .eq('active', true);
+console.log("🔍 Souscriptions trouvées :", subscriptions);
+console.log("🛑 Erreur Supabase :", supabaseError);
 
     if (supabaseError) {
       console.log('ℹ️ Info: Données Supabase en attente:', supabaseError);
