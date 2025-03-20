@@ -1204,7 +1204,6 @@ createMessageElement(message) {
     }
 }
 
-
     async setupPushNotifications() {
     try {
         // Demander d'abord la permission des notifications
