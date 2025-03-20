@@ -1181,7 +1181,7 @@ createMessageElement(message) {
         
         // Envoi de la notification
         try {
-            const response = await fetch("/api/sendPush.js", {
+            const response = await fetch("/api/sendPush", { // Notez que j'ai retiré l'extension .js
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -1191,14 +1191,19 @@ createMessageElement(message) {
                 })
             });
             
-            const notifData = await response.json();
-            console.log("✅ Notification envoyée :", notifData);
+            // Gérer correctement la réponse, même en cas d'erreur
+            try {
+                const data = await response.json();
+                console.log("✅ Notification envoyée :", data);
+            } catch (jsonError) {
+                const text = await response.text();
+                console.error("❌ Erreur JSON:", text);
+            }
         } catch (notifError) {
             console.error("❌ Erreur lors de l'envoi de la notification :", notifError);
-            // Ne pas bloquer le flux principal si l'envoi de notification échoue
         }
         
-        return true;
+        return true; // Retourner true si le message a été envoyé avec succès
         
     } catch (error) {
         console.error('Erreur sendMessage:', error);
