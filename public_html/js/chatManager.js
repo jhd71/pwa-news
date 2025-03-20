@@ -140,7 +140,10 @@ async setCurrentUserForRLS() {
             });
         }
     }
-    
+    // À la fin de votre méthode init(), juste avant this.initialized = true;
+if (this.pseudo) {
+    this.setupBanChecker();
+}
     this.initialized = true;
         console.log("Chat initialisé avec succès");
     } catch (error) {
@@ -649,7 +652,9 @@ async checkAuthState() {
 
 async logout() {
     try {
-        // Nettoyer les données locales
+        // Nettoyer l'intervalle de vérification des bannissements
+        if (this.banCheckInterval) {
+            clearInterval(this.banCheckInterval);
         this.pseudo = null;
         this.isAdmin = false;
         localStorage.removeItem('chatPseudo');
@@ -854,26 +859,54 @@ toggleEmojiPanel() {
 }
 
 	setupRealtimeSubscription() {
-        const channel = this.supabase.channel('messages');
-        channel
-            .on('postgres_changes', 
-                { event: 'INSERT', schema: 'public', table: 'messages' },
-                (payload) => {
-                    console.log('Nouveau message:', payload);
-                    this.handleNewMessage(payload.new);
+    const channel = this.supabase.channel('public:changes');
+    channel
+        .on('postgres_changes', 
+            { event: 'INSERT', schema: 'public', table: 'messages' },
+            (payload) => {
+                console.log('Nouveau message:', payload);
+                this.handleNewMessage(payload.new);
+            }
+        )
+        .on('postgres_changes',
+            { event: 'DELETE', schema: 'public', table: 'messages' },
+            (payload) => {
+                console.log('Message supprimé:', payload);
+                const messageElement = this.container.querySelector(`[data-message-id="${payload.old.id}"]`);
+                if (messageElement) messageElement.remove();
+            }
+        )
+        .on('postgres_changes',
+            { event: '*', schema: 'public', table: 'banned_ips' },
+            async (payload) => {
+                console.log('Changement dans les bannissements:', payload);
+                // Si l'utilisateur courant est banni, le déconnecter
+                if (this.pseudo && payload.new && payload.new.ip === this.pseudo) {
+                    console.log('Vous avez été banni du chat');
+                    this.showNotification('Vous avez été banni du chat', 'error');
+                    await this.logout();
                 }
-            )
-            .on('postgres_changes',
-                { event: 'DELETE', schema: 'public', table: 'messages' },
-                (payload) => {
-                    console.log('Message supprimé:', payload);
-                    const messageElement = this.container.querySelector(`[data-message-id="${payload.old.id}"]`);
-                    if (messageElement) messageElement.remove();
-                }
-            )
-            .subscribe();
-    }
+            }
+        )
+        .subscribe((status) => {
+            console.log('Statut de la souscription temps réel:', status);
+        });
+}
 
+setupBanChecker() {
+    // Vérifier le bannissement toutes les 30 secondes
+    this.banCheckInterval = setInterval(async () => {
+        if (this.pseudo) {
+            const isBanned = await this.checkBannedIP(this.pseudo);
+            if (isBanned) {
+                console.log('Bannissement détecté, déconnexion...');
+                this.showNotification('Vous avez été banni du chat', 'error');
+                clearInterval(this.banCheckInterval);
+                await this.logout();
+            }
+        }
+    }, 30000);
+}
     async handleNewMessage(message) {
     if (!message) return;
     
@@ -1414,7 +1447,7 @@ async unsubscribeFromPushNotifications() {
     try {
         console.log(`Vérification du bannissement pour: ${ip}`);
         
-        // Dans ce cas, ip est simplement le pseudo de l'utilisateur
+        // Forcer l'actualisation depuis la base de données (pas de cache)
         const { data, error } = await this.supabase
             .from('banned_ips')
             .select('*')
@@ -1426,7 +1459,6 @@ async unsubscribeFromPushNotifications() {
             return false;
         }
         
-        // Si aucun bannissement trouvé
         if (!data) {
             console.log(`Aucun bannissement trouvé pour: ${ip}`);
             return false;
@@ -1434,12 +1466,16 @@ async unsubscribeFromPushNotifications() {
         
         // Vérifier si le bannissement est expiré
         if (data.expires_at && new Date(data.expires_at) < new Date()) {
-            console.log(`Bannissement expiré pour: ${ip}`);
+            console.log(`Bannissement expiré pour: ${ip}, suppression...`);
+            // Supprimer le bannissement expiré
+            await this.supabase
+                .from('banned_ips')
+                .delete()
+                .eq('ip', ip);
             return false;
         }
         
-        // Si on arrive ici, l'utilisateur est banni
-        console.log(`Utilisateur banni détecté: ${ip}`);
+        console.log(`Utilisateur banni confirmé: ${ip}, jusqu'à: ${data.expires_at || 'indéfiniment'}`);
         return true;
     } catch (error) {
         console.error('Erreur vérification bannissement:', error);
