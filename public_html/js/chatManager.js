@@ -1070,27 +1070,49 @@ createMessageElement(message) {
 }
 
     async loadExistingMessages() {
-        try {
-            const { data: messages, error } = await this.supabase
-                .from('messages')
-                .select('*')
-                .order('created_at', { ascending: true });
-
-            if (error) throw error;
-
-            const container = this.container.querySelector('.chat-messages');
-            if (container && messages) {
-                container.innerHTML = '';
-                messages.forEach(msg => {
-                    container.appendChild(this.createMessageElement(msg));
-                });
-                this.scrollToBottom();
-            }
-        } catch (error) {
-            console.error('Erreur chargement messages:', error);
-            this.showNotification('Erreur chargement messages', 'error');
+    try {
+        // Définir l'utilisateur courant pour RLS
+        const rlsSuccess = await this.setCurrentUserForRLS();
+        if (!rlsSuccess) {
+            console.warn('Échec de la définition de l\'utilisateur pour RLS');
         }
+        
+        // Obtenir la liste des utilisateurs bannis
+        const { data: bannedUsers } = await this.supabase
+            .from('banned_ips')
+            .select('ip')
+            .is('expires_at', null)
+            .or(`expires_at.gt.${new Date().toISOString()}`);
+            
+        const bannedUsersList = bannedUsers ? bannedUsers.map(b => b.ip) : [];
+        console.log('Utilisateurs bannis:', bannedUsersList);
+        
+        const { data: messages, error } = await this.supabase
+            .from('messages')
+            .select('*')
+            .order('created_at', { ascending: true });
+
+        if (error) throw error;
+
+        const container = this.container.querySelector('.chat-messages');
+        if (container && messages) {
+            container.innerHTML = '';
+            messages.forEach(msg => {
+                // Ne pas afficher les messages des utilisateurs bannis
+                const pseudoFromIP = msg.ip.split('-')[0];
+                if (!bannedUsersList.includes(pseudoFromIP) && !bannedUsersList.includes(msg.pseudo)) {
+                    container.appendChild(this.createMessageElement(msg));
+                } else {
+                    console.log(`Message de l'utilisateur banni ${msg.pseudo} ignoré`);
+                }
+            });
+            this.scrollToBottom();
+        }
+    } catch (error) {
+        console.error('Erreur chargement messages:', error);
+        this.showNotification('Erreur chargement messages', 'error');
     }
+}
 
     async sendMessage(content) { 
     try {
@@ -2029,28 +2051,47 @@ showAdminPanel() {
         // Extraire le pseudo de l'IP (format actuel: pseudo-timestamp)
         const pseudo = ip.split('-')[0];
         
-        // Utiliser uniquement le pseudo comme identifiant de bannissement
-        const banData = {
-            ip: pseudo
-        };
+        const expiresAt = duration ? new Date(Date.now() + parseInt(duration)).toISOString() : null;
         
-        // Ajouter la date d'expiration si une durée est spécifiée
-        if (duration) {
-            banData.expires_at = new Date(Date.now() + parseInt(duration)).toISOString();
-        }
-        
-        console.log('Bannissement de l\'utilisateur avec données:', banData);
-        
-        const { error } = await this.supabase
+        // Vérifier d'abord si l'utilisateur est déjà banni
+        const { data: existingBan } = await this.supabase
             .from('banned_ips')
-            .insert(banData);
-
-        if (error) throw error;
+            .select('*')
+            .eq('ip', pseudo)
+            .maybeSingle();
+            
+        if (existingBan) {
+            console.log('Utilisateur déjà banni, mise à jour du bannissement');
+            
+            // Mettre à jour le bannissement existant
+            const { error: updateError } = await this.supabase
+                .from('banned_ips')
+                .update({
+                    expires_at: expiresAt
+                })
+                .eq('ip', pseudo);
+                
+            if (updateError) throw updateError;
+        } else {
+            // Créer un nouveau bannissement
+            const banData = {
+                ip: pseudo,
+                expires_at: expiresAt
+            };
+            
+            console.log('Bannissement de l\'utilisateur avec données:', banData);
+            
+            const { error: insertError } = await this.supabase
+                .from('banned_ips')
+                .insert(banData);
+                
+            if (insertError) throw insertError;
+        }
 
         this.showNotification(`Utilisateur "${pseudo}" banni avec succès`, 'success');
         this.playSound('success');
         
-        // Actualiser immédiatement les messages pour masquer ceux de l'utilisateur banni
+        // Actualiser immédiatement les messages
         await this.loadExistingMessages();
         
         return true;
