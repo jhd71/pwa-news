@@ -1632,7 +1632,7 @@ body.long-press-active .message-options {
     }
 }
 /* Styles spécifiques pour les tablettes */
-@media (min-width: 600px) {
+@media (min-width: 600px) and (max-width: 1024px) {
     .chat-container {
         width: 90% !important;
         height: 65vh !important;
