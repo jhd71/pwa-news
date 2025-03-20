@@ -1,6 +1,6 @@
-import dotenv from 'dotenv';
-import webpush from 'web-push';
-import { createClient } from '@supabase/supabase-js';
+const dotenv = require('dotenv');
+const webpush = require('web-push');
+const { createClient } = require('@supabase/supabase-js');
 
 if (process.env.NODE_ENV !== "production") {
   dotenv.config();
