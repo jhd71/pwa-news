@@ -21,6 +21,8 @@ class ChatManager {
         this.isOpen = localStorage.getItem('chatOpen') === 'true';
         this.unreadCount = parseInt(localStorage.getItem('unreadCount') || '0');
         this.banDetails = null;
+		this.localMessages = []; // Cache local des messages
+        this.maxCachedMessages = 50; // Nombre maximum de messages en cache
     }
 	async setCurrentUserForRLS() {
         try {
@@ -46,6 +48,15 @@ class ChatManager {
 	
     async init() {
         try {
+			const cachedMessages = localStorage.getItem('chatMessages');
+        if (cachedMessages) {
+            try {
+                this.localMessages = JSON.parse(cachedMessages);
+            } catch (e) {
+                console.warn('Erreur lors du chargement du cache local des messages:', e);
+                this.localMessages = [];
+            }
+        }
             await this.loadBannedWords();
             
             // Vérification de bannissement par IP réelle
@@ -1123,7 +1134,14 @@ class ChatManager {
                         console.warn('Erreur notification ignorée:', error.message);
                     }
                 }
-                
+                 this.localMessages.push(message);
+				 // Limiter la taille du cache
+    if (this.localMessages.length > this.maxCachedMessages) {
+        this.localMessages = this.localMessages.slice(-this.maxCachedMessages);
+    }
+    
+    // Sauvegarder localement pour une récupération rapide en cas de rechargement
+    localStorage.setItem('chatMessages', JSON.stringify(this.localMessages));
                 this.updateUnreadBadgeAndBubble();
             }
         }
@@ -1305,11 +1323,20 @@ class ChatManager {
                 created_at: new Date().toISOString()
             };
             
-            const { data: messageData, error } = await this.supabase
-                .from('messages')
-                .insert(message)
-                .select()
-                .single();
+			// Ajouter le message localement AVANT l'envoi au serveur
+        this.handleNewMessage(message);
+		
+            // Envoi au serveur ensuite
+        const { data: messageData, error } = await this.supabase
+            .from('messages')
+            .insert({
+                pseudo: this.pseudo,
+                content: content,
+                ip: messageIp,
+                created_at: new Date().toISOString()
+            })
+            .select()
+            .single();
                 
             if (error) throw error;
             
