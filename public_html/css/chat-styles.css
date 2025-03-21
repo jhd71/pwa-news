@@ -219,10 +219,10 @@ body:has(.chat-container.open) .news-ticker {
   display: none !important;
 }
 /* Container principal du chat */
-/* Amélioration de la visibilité des panneaux */
+/* Améliorations de visibilité pour tous les panneaux */
 .chat-container, .admin-panel {
+    background-color: rgba(76, 87, 194, 0.95) !important;
     backdrop-filter: blur(10px);
-    background-color: rgba(80, 70, 150, 0.9) !important; /* Fond plus opaque */
     z-index: 1100; /* Assurer que le chat est au-dessus d'autres éléments */
 }
 
@@ -445,6 +445,8 @@ body:has(.chat-container.open) .news-ticker {
 
 /* Messages des autres utilisateurs */
 .message.received {
+    background-color: #4A148C !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     background: #4a148c; /* Violet foncé */
     align-self: flex-start;
     margin-right: 20%;
@@ -452,6 +454,8 @@ body:has(.chat-container.open) .news-ticker {
 
 /* Vos messages */
 .message.sent {
+    background-color: #2E7D32 !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     background: #2e7d32; /* Vert */
     align-self: flex-end;
     margin-left: 20%;
@@ -791,6 +795,8 @@ body:has(.chat-container.open) .news-ticker {
     }
     
     .message-content {
+        color: white;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
         font-size: 16px !important;
         line-height: 1.4 !important;
         font-weight: 500 !important;
@@ -1148,11 +1154,12 @@ body.long-press-active .message-options {
     max-width: 250px !important;
     z-index: 1090 !important;
     background: linear-gradient(135deg, #8a40b8 0%, #c066ff 100%) !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
     color: white !important;
     opacity: 0.95 !important;
     padding: 15px !important;
     border-radius: 12px !important;
-    box-shadow: 0 4px 10px var(--info-bubble-shadow, rgba(0,0,0,0.3)) !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3) !important;
     border: 2px solid var(--info-bubble-border, rgba(255,255,255,0.3)) !important;
     cursor: pointer !important;
   }
@@ -1329,11 +1336,12 @@ body.long-press-active .message-options {
     max-width: 600px; /* Augmenter la largeur maximale (était 500px) */
     height: auto;
     max-height: 80vh;
-    background: var(--chat-gradient, linear-gradient(135deg, #1a237e, #283593));
+    background: linear-gradient(145deg, #303F9F, #3949AB) !important;
     border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+	color: white;
     overflow: hidden;
-    z-index: 1200;
+    z-index: 1500;
 }
 
 .panel-header {
@@ -1345,9 +1353,11 @@ body.long-press-active .message-options {
     color: white;
 }
 
-.panel-header h3 {
-    margin: 0;
-    font-size: 18px;
+.panel-header h3,
+.chat-header .header-title {
+    color: white;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    font-weight: bold;
 }
 
 .panel-content {
@@ -1427,6 +1437,13 @@ button:hover {
     border: 1px solid #eee;
     border-radius: 8px;
     padding: 10px;
+}
+/* Rendre les boutons plus visibles */
+.banned-user,
+.banned-word,
+.header-buttons button {
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 .banned-word, .banned-user {
