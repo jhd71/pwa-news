@@ -1339,41 +1339,42 @@ body.dark-mode .admin-panel {
     font-weight: bold;
     color: var(--tab-text-color);
     transition: all 0.3s ease;
-    text-shadow: none;
     border-radius: 8px 8px 0 0;
+    text-shadow: none !important; /* Supprime tout flou possible */
 }
 
-/* Effet subtil au survol - clair */
+/* Survol - clair */
 .tab-btn:hover {
-    background: rgba(66, 133, 244, 0.08); /* léger effet */
+    background: rgba(0, 0, 0, 0.05); /* plus neutre que le bleu */
     color: var(--chat-primary);
+    text-shadow: none !important;
 }
 
-/* Onglet actif - clair */
+/* Actif - clair */
 .tab-btn.active {
-    background: rgba(66, 133, 244, 0.15);
+    background: rgba(0, 0, 0, 0.07);
     color: var(--chat-primary);
     border-bottom-color: var(--chat-primary);
+    text-shadow: none !important;
 }
 
 /* 🌙 Mode sombre */
 body.dark-mode .tab-btn {
     color: #ccc;
+    text-shadow: none !important;
 }
 
 body.dark-mode .tab-btn:hover {
     background: rgba(255, 255, 255, 0.05);
     color: #90caf9;
+    text-shadow: none !important;
 }
 
 body.dark-mode .tab-btn.active {
     background: rgba(255, 255, 255, 0.08);
     color: #90caf9;
     border-bottom-color: #90caf9;
-}
-
-.tab-btn {
-    transition: background 0.3s ease, color 0.3s ease, border-bottom-color 0.3s ease;
+    text-shadow: none !important;
 }
 
 .tab-content {
