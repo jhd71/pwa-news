@@ -10,23 +10,39 @@ export default class ModerationPanel {
     }
 
     async init() {
-        // Vérifier l'authentification et les permissions
-        const { data: { user } } = await supabase.auth.getUser();
-        this.currentUser = user;
+  try {
+    // Récupérer l'utilisateur actuel
+    const { data: { user } } = await supabase.auth.getUser();
 
-        if (!this.currentUser) {
-            console.error('Utilisateur non connecté');
-            return;
-        }
+    // Vérifier si l'utilisateur est modérateur
+    const { data: moderatorData, error } = await supabase
+      .from('moderators')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('is_active', true)
+      .single();
 
-        // Initialiser le gestionnaire de modération
-        await this.moderationManager.init();
+    if (error || !moderatorData) {
+      alert('Vous n\'avez pas les droits de modération');
+      return false;
+    }
 
-        // Vérifier les permissions de modération
-        if (!this.moderationManager.isModerator) {
-            console.error('Accès refusé');
-            return;
-        }
+    // Continuer l'initialisation si modérateur
+    this.setupEventListeners();
+    return true;
+
+  } catch (error) {
+    console.error('Erreur d\'initialisation:', error);
+    alert('Erreur de connexion');
+    return false;
+  }
+}
+
+show() {
+  if (!this.isModerator) {
+    alert('Accès refusé. Vous n\'avez pas les droits de modération.');
+    return;
+  }
 
         // Créer le panneau de modération
         this.createModerationPanel();
