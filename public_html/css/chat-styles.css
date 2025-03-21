@@ -1377,6 +1377,7 @@ body.dark-mode .tab-btn.active {
     margin-top: 0;
     margin-bottom: 10px;
     font-size: 16px;
+	color: var(--tab-text-color);
 }
 
 .add-word, .banned-users-controls {
@@ -1531,6 +1532,7 @@ button:hover {
 
 .ban-message h3 {
     margin-top: 0;
+	color: var(--tab-text-color);
 }
 
 .ban-message .reason {
