@@ -12,6 +12,10 @@
   ],
   "routes": [
     {
+      "src": "/api/sendPush",
+      "dest": "/api/sendPush.js"
+    },
+    {
       "src": "/api/([^\\.]+)$",
       "dest": "/api/$1.js"
     },
