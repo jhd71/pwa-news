@@ -5,11 +5,5 @@
       "src": "next.config.js",
       "use": "@vercel/next"
     }
-  ],
-  "routes": [
-    {
-      "src": "/api/sendPush",
-      "dest": "/pages/api/sendPush.js"
-    }
   ]
 }
