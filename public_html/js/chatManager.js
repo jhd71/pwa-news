@@ -1542,24 +1542,46 @@ showAdminPanel() {
     this.loadBannedWords();
     
     // Ajouter les gestionnaires d'événements pour les onglets
-    const tabBtns = panel.querySelectorAll('.tab-btn');
-    tabBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Désactiver tous les onglets et leur contenu
-            tabBtns.forEach(b => b.classList.remove('active'));
-            panel.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            
-            // Activer l'onglet cliqué
-            btn.classList.add('active');
-            const tabId = btn.getAttribute('data-tab') + '-tab';
-            panel.querySelector(`#${tabId}`).classList.add('active');
-            
-            // Charger les données spécifiques à l'onglet
-            if (tabId === 'banned-users-tab') {
-                this.loadBannedUsers();
-            }
-        });
+const tabBtns = panel.querySelectorAll('.tab-btn');
+const indicator = panel.querySelector('.tab-indicator');
+
+function updateIndicator(el) {
+    const tabRect = el.getBoundingClientRect();
+    const parentRect = el.parentElement.getBoundingClientRect();
+    indicator.style.left = `${tabRect.left - parentRect.left}px`;
+    indicator.style.width = `${tabRect.width}px`;
+}
+
+// Initialisation
+const activeTab = panel.querySelector('.tab-btn.active');
+if (activeTab) updateIndicator(activeTab);
+
+tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Désactiver tous les onglets et leur contenu
+        tabBtns.forEach(b => b.classList.remove('active'));
+        panel.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        
+        // Activer l'onglet cliqué
+        btn.classList.add('active');
+        const tabId = btn.getAttribute('data-tab') + '-tab';
+        panel.querySelector(`#${tabId}`).classList.add('active');
+
+        // Mettre à jour le curseur animé
+        updateIndicator(btn);
+
+        // Charger les données spécifiques à l'onglet
+        if (tabId === 'banned-users-tab') {
+            this.loadBannedUsers();
+        }
     });
+});
+
+// Repositionner à chaque redimensionnement
+window.addEventListener('resize', () => {
+    const current = panel.querySelector('.tab-btn.active');
+    if (current) updateIndicator(current);
+});
     
     // Gestionnaire pour les mots bannis
     const addWordBtn = panel.querySelector('.add-word-btn');
