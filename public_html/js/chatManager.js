@@ -11,23 +11,26 @@ export default class ChatManager {
     }
 
     async init() {
-        // Vérifier l'authentification
-        try {
-            const { data: { user } } = await supabase.auth.getUser();
-            this.currentUser = user;
-
-            if (this.currentUser) {
-                this.setupChatToggle();
-                this.setupChatContainer();
-                this.setupMessageListener();
-            } else {
-                this.handleUnauthenticated();
-            }
-        } catch (error) {
-            console.error('Erreur d\'initialisation du chat:', error);
-            this.handleUnauthenticated();
-        }
+  try {
+    // Vérifier l'authentification
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      // Désactiver le bouton de chat
+      this.chatToggleBtn.disabled = true;
+      this.chatToggleBtn.title = 'Connexion requise';
+      return;
     }
+
+    // Configurer le chat si l'utilisateur est connecté
+    this.setupChatContainer();
+    this.setupEventListeners();
+    this.setupRealtimeSubscription();
+
+  } catch (error) {
+    console.error('Erreur d\'initialisation du chat:', error);
+  }
+}
 
     setupChatToggle() {
         if (this.chatToggleBtn) {
