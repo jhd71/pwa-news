@@ -1246,44 +1246,21 @@ body.long-press-active .message-options {
 }
 
 /* Styles pour le panneau d'administration amélioré */
-.chat-container, .admin-panel {
-    background-color: rgba(76, 87, 194, 0.95) !important;
-    backdrop-filter: blur(10px);
-}
-
 .admin-panel {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 90%;
+    width: 80%;
     max-width: 500px;
-    max-height: 80vh;
-    background: linear-gradient(145deg, #303F9F, #3949AB) !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    color: white;
+    max-height: 70vh;
+    background: var(--chat-background, #fff);
     border-radius: 12px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-    z-index: 1500;
+    z-index: 1100;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-}
-
-/* Améliorer la visibilité des en-têtes et boutons */
-.panel-header h3,
-.chat-header .header-title {
-    color: white;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-    font-weight: bold;
-}
-
-/* Rendre les boutons plus visibles */
-.banned-user,
-.banned-word,
-.header-buttons button {
-    background-color: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 .panel-header {
