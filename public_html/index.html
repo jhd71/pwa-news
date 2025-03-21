@@ -68,7 +68,7 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/chat-styles.css">
     <link rel="stylesheet" href="css/news-panel.css">
-    
+    <link rel="stylesheet" href="css/moderation-panel.css">
     <!-- Notifications -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -93,7 +93,6 @@
   <h3>Météo locale</h3>
   <div id="weather-widget">Chargement...</div>
 </div>
-
 <!-- Structure HTML optimisée pour le Swiper et les séparateurs -->
 <div class="swiper-container">
   <div class="swiper">
@@ -206,6 +205,11 @@
         <span class="material-icons">chat</span>
         <span>Chat</span>
         <span class="chat-notification-badge hidden">0</span>
+    </button>
+    <!-- Nouveau bouton de modération -->
+    <button class="nav-item" id="openModerationPanel">
+        <span class="material-icons">admin_panel_settings</span>
+        <span>Modération</span>
     </button>
 </nav>
 
@@ -334,6 +338,21 @@
                 await window.chatManager.init();
                 console.log('Chat Manager initialisé');
 
+// NOUVEAU : Initialiser ModerationPanel
+                console.log('Chargement du Panneau de Modération...');
+                const moderationPanelModule = await import('/js/moderationPanel.js');
+                window.moderationPanel = new moderationPanelModule.default();
+                await window.moderationPanel.init();
+                console.log('Panneau de Modération initialisé');
+
+                // NOUVEAU : Ajouter l'écouteur pour ouvrir le panneau
+                const openModerationPanelBtn = document.getElementById('openModerationPanel');
+                if (openModerationPanelBtn) {
+                    openModerationPanelBtn.addEventListener('click', () => {
+                        window.moderationPanel.show();
+                    });
+                }
+				
             } catch (error) {
                 console.error('Erreur d\'initialisation:', error);
                 console.error('Stack trace:', error.stack);
