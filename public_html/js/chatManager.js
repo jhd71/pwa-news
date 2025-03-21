@@ -24,6 +24,7 @@ class ChatManager {
 		this.localMessages = []; // Cache local des messages
         this.maxCachedMessages = 50; // Nombre maximum de messages en cache
     }
+	
 	async setCurrentUserForRLS() {
         try {
             if (!this.pseudo) return false;
@@ -46,6 +47,21 @@ class ChatManager {
         }
     }
 	
+	// Ajouter cette méthode à votre classe ChatManager
+setupConnectionMonitor() {
+    // Vérifier l'état de connexion
+    window.addEventListener('online', () => {
+        console.log('Connexion internet rétablie');
+        this.showNotification('Connexion internet rétablie', 'success');
+        this.loadExistingMessages(); // Recharger les messages
+    });
+    
+    window.addEventListener('offline', () => {
+        console.log('Connexion internet perdue');
+        this.showNotification('Connexion internet perdue. Les messages seront envoyés quand la connexion sera rétablie.', 'warning');
+    });
+}
+
     async init() {
         try {
 			const cachedMessages = localStorage.getItem('chatMessages');
@@ -166,6 +182,7 @@ class ChatManager {
             
             this.setupListeners();
             this.setupRealtimeSubscription();
+			this.setupConnectionMonitor();
             
             if (this.pseudo) {
                 await this.loadExistingMessages();
@@ -971,33 +988,46 @@ class ChatManager {
 
     async getClientIP() {
     try {
-        // Essayer plusieurs services pour obtenir l'IP
+        // Essayer d'obtenir l'IP via le service principal
         try {
-            const response = await fetch('https://api.ipify.org?format=json', { 
-                timeout: 5000,
-                mode: 'cors'
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 secondes de timeout
+            
+            const response = await fetch('https://api.ipify.org/?format=json', {
+                signal: controller.signal
             });
+            
+            clearTimeout(timeoutId);
+            
             if (response.ok) {
                 const data = await response.json();
                 return data.ip;
             }
         } catch (err) {
-            console.warn('Service IP primaire non disponible, essai du service secondaire');
+            console.warn('Service principal IP non disponible:', err.name || err);
         }
         
+        // Essayer le service de secours
         try {
-            const backupResponse = await fetch('https://api.db-ip.com/v2/free/self', { 
-                timeout: 5000 
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000);
+            
+            const response = await fetch('https://api.db-ip.com/v2/free/self', {
+                signal: controller.signal
             });
-            if (backupResponse.ok) {
-                const backupData = await backupResponse.json();
-                return backupData.ipAddress;
+            
+            clearTimeout(timeoutId);
+            
+            if (response.ok) {
+                const data = await response.json();
+                return data.ipAddress;
             }
         } catch (err) {
-            console.warn('Service IP secondaire non disponible');
+            console.warn('Service de secours IP non disponible:', err.name || err);
         }
         
-        // Si aucun service ne répond, utiliser le pseudo comme identifiant unique
+        // Fallback: utiliser un identifiant basé sur le pseudo
+        console.log("Utilisation du pseudo comme identifiant en l'absence d'IP");
         return this.pseudo || 'anonymous';
     } catch (error) {
         console.warn('Erreur récupération IP:', error);
@@ -1112,6 +1142,7 @@ class ChatManager {
             console.error('Erreur traitement bannissement:', error);
         }
     }
+	
 	async handleNewMessage(message) {
     if (!message) return;
     
@@ -1121,31 +1152,50 @@ class ChatManager {
     const messagesContainer = this.container.querySelector('.chat-messages');
     if (!messagesContainer) return;
     
+    // Vérifier si le message existe déjà dans le cache local
+    const existingIndex = this.localMessages.findIndex(m => 
+        m.id === message.id || 
+        (m.pseudo === message.pseudo && m.created_at === message.created_at)
+    );
+    
+    // Vérifier également si le message existe déjà dans l'interface
     const existingMessage = messagesContainer.querySelector(`[data-message-id="${message.id}"]`);
     if (existingMessage) return;
     
+    // Gestion du cache local
+    if (existingIndex >= 0) {
+        // Mettre à jour le message existant si nécessaire
+        this.localMessages[existingIndex] = message;
+    } else {
+        // Ajouter le nouveau message au cache
+        this.localMessages.push(message);
+        
+        // Limiter la taille du cache
+        if (this.localMessages.length > this.maxCachedMessages) {
+            this.localMessages = this.localMessages.slice(-this.maxCachedMessages);
+        }
+        
+        // Sauvegarder dans localStorage
+        try {
+            localStorage.setItem('chatMessages', JSON.stringify(this.localMessages));
+        } catch (e) {
+            console.warn('Erreur lors de la sauvegarde du cache:', e);
+        }
+    }
+    
+    // Afficher le message dans l'interface
     const messageElement = this.createMessageElement(message);
     messagesContainer.appendChild(messageElement);
     this.scrollToBottom();
-
-    // 🔹 Ajouter le message au cache local
-    this.localMessages.push(message);
-
-    // 🔹 Limiter la taille du cache
-    if (this.localMessages.length > this.maxCachedMessages) {
-        this.localMessages = this.localMessages.slice(-this.maxCachedMessages);
-    }
-
-    // 🔹 Sauvegarder dans le localStorage
-    localStorage.setItem('chatMessages', JSON.stringify(this.localMessages));
-
+    
+    // Gestion des notifications et des compteurs
     if (message.pseudo !== this.pseudo) {
         this.playSound('message');
-
+        
         if (!chatOpen) {
             this.unreadCount++;
             localStorage.setItem('unreadCount', this.unreadCount.toString());
-
+            
             if (this.notificationsEnabled) {
                 try {
                     const notificationResult = await this.sendNotificationToUser(message);
@@ -1156,7 +1206,7 @@ class ChatManager {
                     console.warn('Erreur notification ignorée:', error.message);
                 }
             }
-
+            
             this.updateUnreadBadgeAndBubble();
         }
     }
@@ -1307,50 +1357,42 @@ class ChatManager {
     }
 
     async sendMessage(content) { 
-        try {
-            const isBanned = await this.checkBannedIP(this.pseudo);
-            
-            if (isBanned) {
-                console.log(`Message rejeté - utilisateur banni: ${this.pseudo}`);
-                this.showNotification('Vous êtes banni du chat', 'error');
-                await this.logout();
-                return false;
-            }
-            
-            const containsBannedWord = await this.checkForBannedWords(content);
-            if (containsBannedWord) {
-                this.showNotification('Votre message contient des mots interdits', 'error');
-                return false;
-            }
-            
-            const rlsSuccess = await this.setCurrentUserForRLS();
-            if (!rlsSuccess) {
-                console.error("Échec de la définition de l'utilisateur pour RLS");
-                this.showNotification('Erreur d\'authentification', 'error');
-                return false;
-            }
-            
-            const messageIp = `${this.pseudo}-${Date.now()}`;
-            
-            const message = {
-                pseudo: this.pseudo,
-                content: content,
-                ip: messageIp,
-                created_at: new Date().toISOString()
-            };
-            
-			// Ajouter le message localement AVANT l'envoi au serveur
+    try {
+        const isBanned = await this.checkBannedIP(this.pseudo);
+        
+        if (isBanned) {
+            console.log(`Message rejeté - utilisateur banni: ${this.pseudo}`);
+            this.showNotification('Vous êtes banni du chat', 'error');
+            await this.logout();
+            return false;
+        }
+        
+        const containsBannedWord = await this.checkForBannedWords(content);
+        if (containsBannedWord) {
+            this.showNotification('Votre message contient des mots interdits', 'error');
+            return false;
+        }
+        
+        const rlsSuccess = await this.setCurrentUserForRLS();
+        if (!rlsSuccess) {
+            console.error("Échec de la définition de l'utilisateur pour RLS");
+            this.showNotification('Erreur d\'authentification', 'error');
+            return false;
+        }
+        
         const messageIp = `${this.pseudo}-${Date.now()}`;
-        const message = {
-            id: `local-${Date.now()}`, // ID temporaire
+        
+        // Créer un message temporaire avec un ID unique
+        const tempMessage = {
+            id: `temp-${Date.now()}`,
             pseudo: this.pseudo,
             content: content,
             ip: messageIp,
             created_at: new Date().toISOString()
         };
         
-        // Afficher localement immédiatement
-        this.handleNewMessage(message);
+        // Ajouter immédiatement le message localement pour l'affichage instantané
+        this.handleNewMessage(tempMessage);
         
         // Ensuite envoyer au serveur
         const { data: messageData, error } = await this.supabase
@@ -1363,44 +1405,54 @@ class ChatManager {
             })
             .select()
             .single();
-                
-            if (error) throw error;
+        
+        if (error) throw error;
+        
+        // Si vous recevez une confirmation du serveur, vous pouvez mettre à jour le message temporaire
+        // avec l'ID réel de la base de données (optionnel)
+        if (messageData) {
+            const messageElement = this.container.querySelector(`[data-message-id="${tempMessage.id}"]`);
+            if (messageElement) {
+                messageElement.dataset.messageId = messageData.id;
+            }
+        }
+        
+        try {
+            const response = await fetch("/api/sendPush", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    message: content,
+                    fromUser: this.pseudo,
+                    toUser: "all"
+                })
+            });
             
-            try {
-                const response = await fetch("/api/sendPush", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        message: content,
-                        fromUser: this.pseudo,
-                        toUser: "all"
-                    })
-                });
-                
-                if (!response.ok) {
-                    console.warn("Erreur API:", response.status, response.statusText);
-                    return true;
-                }
-                
-                const responseText = await response.text();
-                
-                try {
-                    const data = JSON.parse(responseText);
-                    console.log("✅ Notification envoyée :", data);
-                } catch (jsonError) {
-                    console.error("❌ Erreur JSON:", responseText);
-                }
-            } catch (notifError) {
-                console.error("❌ Erreur lors de l'envoi de la notification :", notifError);
+            if (!response.ok) {
+                console.warn("Erreur API:", response.status, response.statusText);
+                return true; // Continuer malgré l'erreur de notification
             }
             
-            return true;
+            const responseText = await response.text();
             
-        } catch (error) {
-            console.error('Erreur sendMessage:', error);
-            return false;
+            try {
+                const data = JSON.parse(responseText);
+                console.log("✅ Notification envoyée :", data);
+            } catch (jsonError) {
+                console.error("❌ Erreur JSON:", responseText);
+            }
+        } catch (notifError) {
+            console.error("❌ Erreur lors de l'envoi de la notification :", notifError);
         }
+        
+        return true;
+        
+    } catch (error) {
+        console.error('Erreur sendMessage:', error);
+        return false;
     }
+}
+
 	async checkForBannedWords(content) {
         try {
             if (this.bannedWords.size === 0) {
