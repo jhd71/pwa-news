@@ -1244,3 +1244,58 @@ body.long-press-active .message-options {
     background-image: none !important;
   }
 }
+/* Améliorations de visibilité pour tous les panneaux */
+.chat-container, .admin-panel {
+    background-color: rgba(76, 87, 194, 0.95) !important;
+    backdrop-filter: blur(10px);
+}
+
+/* Correction du panel admin pour qu'il soit bien visible */
+.admin-panel {
+    z-index: 1500;
+    background: linear-gradient(145deg, #303F9F, #3949AB) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    color: white;
+}
+
+/* Améliorer la visibilité des en-têtes et boutons */
+.panel-header h3,
+.chat-header .header-title {
+    color: white;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    font-weight: bold;
+}
+
+/* Rendre les boutons plus visibles */
+.banned-user,
+.banned-word,
+.header-buttons button {
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+/* Améliorer la visibilité des messages */
+.message.sent {
+    background-color: #2E7D32 !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.message.received {
+    background-color: #4A148C !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Assurer que les messages sont bien lisibles */
+.message-content {
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    font-weight: 500;
+}
+
+/* Correction des notifications */
+.info-bubble-mobile {
+    background: linear-gradient(135deg, #8a40b8 0%, #c066ff 100%) !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    color: white !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3) !important;
+}
