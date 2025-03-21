@@ -1278,6 +1278,36 @@ body.long-press-active .message-options {
     flex-direction: column;
     overflow: hidden;
 }
+/* Animation d’apparition fluide */
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.admin-panel {
+  animation: fadeInScale 0.3s ease forwards;
+}
+
+@keyframes fadeOutScale {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+}
+
+.admin-panel.fade-out {
+  animation: fadeOutScale 0.25s ease forwards;
+}
 
 /* 🌙 Mode sombre : adoucissement */
 body.dark-mode .admin-panel {
