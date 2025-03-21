@@ -1102,50 +1102,55 @@ class ChatManager {
         }
     }
 	async handleNewMessage(message) {
-        if (!message) return;
-        
-        const chatContainer = this.container.querySelector('.chat-container');
-        const chatOpen = chatContainer && chatContainer.classList.contains('open');
-        
-        const messagesContainer = this.container.querySelector('.chat-messages');
-        if (!messagesContainer) return;
-        
-        const existingMessage = messagesContainer.querySelector(`[data-message-id="${message.id}"]`);
-        if (existingMessage) return;
-        
-        const messageElement = this.createMessageElement(message);
-        messagesContainer.appendChild(messageElement);
-        this.scrollToBottom();
-        
-        if (message.pseudo !== this.pseudo) {
-            this.playSound('message');
-            
-            if (!chatOpen) {
-                this.unreadCount++;
-                localStorage.setItem('unreadCount', this.unreadCount.toString());
-                
-                if (this.notificationsEnabled) {
-                    try {
-                        const notificationResult = await this.sendNotificationToUser(message);
-                        if (!notificationResult?.success) {
-                            console.warn('Notification non envoyée:', notificationResult?.error || 'Raison inconnue');
-                        }
-                    } catch (error) {
-                        console.warn('Erreur notification ignorée:', error.message);
-                    }
-                }
-                 this.localMessages.push(message);
-				 // Limiter la taille du cache
+    if (!message) return;
+    
+    const chatContainer = this.container.querySelector('.chat-container');
+    const chatOpen = chatContainer && chatContainer.classList.contains('open');
+    
+    const messagesContainer = this.container.querySelector('.chat-messages');
+    if (!messagesContainer) return;
+    
+    const existingMessage = messagesContainer.querySelector(`[data-message-id="${message.id}"]`);
+    if (existingMessage) return;
+    
+    const messageElement = this.createMessageElement(message);
+    messagesContainer.appendChild(messageElement);
+    this.scrollToBottom();
+
+    // 🔹 Ajouter le message au cache local
+    this.localMessages.push(message);
+
+    // 🔹 Limiter la taille du cache
     if (this.localMessages.length > this.maxCachedMessages) {
         this.localMessages = this.localMessages.slice(-this.maxCachedMessages);
     }
-    
-    // Sauvegarder localement pour une récupération rapide en cas de rechargement
+
+    // 🔹 Sauvegarder dans le localStorage
     localStorage.setItem('chatMessages', JSON.stringify(this.localMessages));
-                this.updateUnreadBadgeAndBubble();
+
+    if (message.pseudo !== this.pseudo) {
+        this.playSound('message');
+
+        if (!chatOpen) {
+            this.unreadCount++;
+            localStorage.setItem('unreadCount', this.unreadCount.toString());
+
+            if (this.notificationsEnabled) {
+                try {
+                    const notificationResult = await this.sendNotificationToUser(message);
+                    if (!notificationResult?.success) {
+                        console.warn('Notification non envoyée:', notificationResult?.error || 'Raison inconnue');
+                    }
+                } catch (error) {
+                    console.warn('Erreur notification ignorée:', error.message);
+                }
             }
+
+            this.updateUnreadBadgeAndBubble();
         }
     }
+}
+
     
     formatMessageTime(timestamp) {
         const date = new Date(timestamp);
