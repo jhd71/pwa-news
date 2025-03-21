@@ -7,17 +7,82 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// Configuration des clés VAPID
+// Configuration des clés VAPID une seule fois
 webpush.setVapidDetails(
   'mailto:infos@jhd71.fr',
   process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
   process.env.VAPID_PRIVATE_KEY
 );
 
-// Tout le reste de votre code...
+// Fonction utilitaire pour envoyer une notification avec retry
+async function sendNotificationWithRetry(subscription, payload, maxRetries = 2) {
+  for (let i = 0; i <= maxRetries; i++) {
+    try {
+      await webpush.sendNotification(subscription, JSON.stringify(payload));
+      return true;
+    } catch (error) {
+      if (error.statusCode === 410) {
+        console.log('🔄 Maintenance: Souscription expirée');
+        throw error;
+      }
 
-// TRÈS IMPORTANT: Ajoutez cette ligne à la fin du fichier
-// C'est la fonction handler principale qui sera appelée par Vercel
+      if (i === maxRetries) {
+        console.log('📝 Info: Tentatives épuisées');
+        throw error;
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+    }
+  }
+  return false;
+}
+
+// Fonction pour nettoyer les subscriptions expirées
+async function cleanExpiredSubscriptions() {
+  try {
+    const { data: subscriptions, error } = await supabase
+      .from('push_subscriptions')
+      .select('*')
+      .eq('active', true);
+
+    if (error) throw error;
+
+    for (const sub of subscriptions || []) {
+      try {
+        const parsedSubscription = typeof sub.subscription === 'string'
+          ? JSON.parse(sub.subscription)
+          : sub.subscription;
+
+        await webpush.sendNotification(
+          parsedSubscription,
+          JSON.stringify({ type: 'ping', timestamp: Date.now() })
+        );
+      } catch (error) {
+        if (error.statusCode === 410) {
+          await supabase
+            .from('push_subscriptions')
+            .update({ active: false })
+            .eq('id', sub.id);
+
+          await supabase
+            .from('push_notification_log')
+            .insert({
+              from_user: 'system',
+              to_user: sub.pseudo,
+              status: 'expired',
+              error_message: 'Subscription expired',
+              subscription: sub.subscription,
+              device_type: sub.device_type || 'unknown'
+            });
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Erreur nettoyage subscriptions:', error);
+  }
+}
+
+// Handler API Next.js
 export default async function handler(req, res) {
   // Vérifier la méthode HTTP
   if (req.method !== 'POST') {
@@ -34,13 +99,92 @@ export default async function handler(req, res) {
       });
     }
 
-    // Votre logique existante...
-    
-    // Assurez-vous de retourner une réponse appropriée
+    // Log initial
+    const { data: logEntry } = await supabase
+      .from('push_notification_log')
+      .insert({
+        from_user: fromUser,
+        to_user: toUser,
+        message: message,
+        status: 'pending'
+      })
+      .select()
+      .single();
+
+    // Nettoyage des subscriptions expirées
+    await cleanExpiredSubscriptions();
+
+    // Récupération des subscriptions actives
+    const { data: subscriptions, error: subError } = await supabase
+      .from('push_subscriptions')
+      .select('*')
+      .eq('pseudo', toUser)
+      .eq('active', true);
+
+    if (subError) throw subError;
+
+    if (!subscriptions?.length) {
+      await supabase
+        .from('push_notification_log')
+        .update({
+          status: 'error',
+          error_message: 'No active subscriptions',
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', logEntry?.id);
+
+      return res.status(404).json({ error: 'No active subscriptions found' });
+    }
+
+    // Envoi des notifications
+    const results = await Promise.all(
+      subscriptions.map(async (sub) => {
+        try {
+          const parsedSubscription = typeof sub.subscription === 'string'
+            ? JSON.parse(sub.subscription)
+            : sub.subscription;
+
+          const success = await sendNotificationWithRetry(
+            parsedSubscription,
+            {
+              title: `Message de ${fromUser}`,
+              body: message
+            }
+          );
+
+          return { success, device: sub.device_type };
+        } catch (error) {
+          return { 
+            success: false, 
+            error: error.message, 
+            device: sub.device_type 
+          };
+        }
+      })
+    );
+
+    // Mise à jour du log
+    if (logEntry) {
+      await supabase
+        .from('push_notification_log')
+        .update({
+          status: 'completed',
+          success_count: results.filter(r => r.success).length,
+          error_count: results.filter(r => !r.success).length,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', logEntry.id);
+    }
+
     return res.status(200).json({
       success: true,
-      // autres données de réponse...
+      results: {
+        total: subscriptions.length,
+        successful: results.filter(r => r.success).length,
+        failed: results.filter(r => !r.success).length
+      }
     });
+
   } catch (error) {
     console.error('Erreur serveur:', error);
     return res.status(500).json({ 
