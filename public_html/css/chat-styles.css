@@ -1340,10 +1340,15 @@ body.long-press-active .message-options {
 
 /* Onglet actif */
 .tab-btn.active {
-    background: var(--tab-active-bg, #e0e0e0); /* clair par défaut */
-    border-bottom-color: var(--chat-primary, #4285f4);
-    color: var(--chat-primary, #4285f4);
-	box-shadow: inset 0 -3px 0 var(--chat-primary, #4285f4);
+    background-color: var(--tab-active-bg);
+    color: var(--tab-text-color);
+    border-bottom: 2px solid var(--chat-primary);
+    border-radius: 6px 6px 0 0;
+}
+
+.tab-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--tab-text-color);
 }
 
 /* Mode sombre */
