@@ -1244,58 +1244,304 @@ body.long-press-active .message-options {
     background-image: none !important;
   }
 }
-/* Améliorations de visibilité pour tous les panneaux */
-.chat-container, .admin-panel {
-    background-color: rgba(76, 87, 194, 0.95) !important;
-    backdrop-filter: blur(10px);
-}
 
-/* Correction du panel admin pour qu'il soit bien visible */
+/* Styles pour le panneau d'administration amélioré */
 .admin-panel {
-    z-index: 1500;
-    background: linear-gradient(145deg, #303F9F, #3949AB) !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    background: var(--chat-background, #fff);
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    z-index: 1100;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: var(--chat-gradient, linear-gradient(135deg, #8a40b8, #4285f4));
     color: white;
 }
 
-/* Améliorer la visibilité des en-têtes et boutons */
-.panel-header h3,
-.chat-header .header-title {
-    color: white;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+.panel-header h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.panel-content {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.panel-tabs {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 15px;
+}
+
+.tab-btn {
+    padding: 8px 15px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
     font-weight: bold;
+    color: #555;
+    transition: all 0.3s;
 }
 
-/* Rendre les boutons plus visibles */
-.banned-user,
-.banned-word,
-.header-buttons button {
-    background-color: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.25);
+.tab-btn.active {
+    color: var(--chat-primary, #4285f4);
+    border-bottom-color: var(--chat-primary, #4285f4);
 }
 
-/* Améliorer la visibilité des messages */
-.message.sent {
-    background-color: #2E7D32 !important;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+.tab-content {
+    display: none;
 }
 
-.message.received {
-    background-color: #4A148C !important;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+.tab-content.active {
+    display: block;
 }
 
-/* Assurer que les messages sont bien lisibles */
-.message-content {
+.section {
+    margin-bottom: 20px;
+}
+
+.section h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.add-word, .banned-users-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.add-word input, 
+.banned-users-controls input,
+.banned-users-controls select {
+    flex-grow: 1;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+button {
+    padding: 8px 15px;
+    background: var(--chat-primary, #4285f4);
     color: white;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
 }
 
-/* Correction des notifications */
-.info-bubble-mobile {
-    background: linear-gradient(135deg, #8a40b8 0%, #c066ff 100%) !important;
-    border: 2px solid rgba(255, 255, 255, 0.3) !important;
-    color: white !important;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3) !important;
+button:hover {
+    background: var(--chat-primary-dark, #3367d6);
+}
+
+.banned-words-list, .banned-users-list {
+    max-height: 30vh;
+    overflow-y: auto;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.banned-word, .banned-user {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    margin-bottom: 5px;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 5px;
+}
+
+.banned-user {
+    margin-bottom: 10px;
+    padding: 12px;
+}
+
+.banned-user.expired {
+    opacity: 0.6;
+}
+
+.ban-info {
+    flex-grow: 1;
+}
+
+.ban-user {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.ban-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 12px;
+    color: #666;
+}
+
+.ban-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ban-expires {
+    font-size: 12px;
+    font-weight: bold;
+    color: #e53935;
+}
+
+.ban-expired {
+    color: #999;
+}
+
+.unban-btn {
+    background: #e53935;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.unban-btn:hover {
+    background: #c62828;
+}
+
+.unban-btn .material-icons {
+    font-size: 18px;
+}
+
+.remove-word {
+    background: #e53935;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.loading-spinner, .no-items, .error {
+    padding: 15px;
+    text-align: center;
+    color: #666;
+}
+
+.error {
+    color: #e53935;
+}
+
+/* Style pour le message d'utilisateur banni */
+.ban-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(229, 57, 53, 0.95);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    z-index: 1100;
+    text-align: center;
+    max-width: 90%;
+}
+
+.ban-message h3 {
+    margin-top: 0;
+}
+
+.ban-message .reason {
+    margin: 15px 0;
+    font-style: italic;
+}
+
+.ban-message .expires {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* Styles pour la notification améliorée */
+.notification-popup {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    z-index: 1200;
+    animation: fadeInUp 0.3s ease-out, fadeOut 0.3s ease-out 2.7s;
+    max-width: 80%;
+}
+
+.notification-popup.success {
+    background: rgba(76, 175, 80, 0.9);
+}
+
+.notification-popup.error {
+    background: rgba(229, 57, 53, 0.9);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* Style pour le bouton d'accès à la zone de saisie */
+#chat-input-access {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: translateX(-50%) scale(1);
+    }
+    50% {
+        transform: translateX(-50%) scale(1.05);
+    }
+    100% {
+        transform: translateX(-50%) scale(1);
+    }
 }
