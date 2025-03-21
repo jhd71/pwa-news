@@ -1311,22 +1311,21 @@ body.long-press-active .message-options {
   }
 }
 
-/* Styles pour le panneau d'administration amélioré */
+/* Amélioration du panneau d'administration */
 .admin-panel {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 90%;
-    max-width: 500px;
+    width: 90%; /* Augmenter la largeur relative */
+    max-width: 600px; /* Augmenter la largeur maximale (était 500px) */
+    height: auto;
     max-height: 80vh;
-    background: var(--chat-background, #fff);
+    background: var(--chat-gradient, linear-gradient(135deg, #1a237e, #283593));
     border-radius: 12px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-    z-index: 1100;
-    display: flex;
-    flex-direction: column;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
     overflow: hidden;
+    z-index: 1100;
 }
 
 .panel-header {
@@ -1349,21 +1348,17 @@ body.long-press-active .message-options {
     overflow-y: auto;
 }
 
+/* Style des onglets pour qu'ils soient plus larges */
 .panel-tabs {
     display: flex;
-    border-bottom: 1px solid #ddd;
-    margin-bottom: 15px;
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .tab-btn {
-    padding: 8px 15px;
-    background: none;
-    border: none;
-    border-bottom: 3px solid transparent;
-    cursor: pointer;
-    font-weight: bold;
-    color: #555;
-    transition: all 0.3s;
+    flex: 1; /* Prend toute la largeur disponible */
+    padding: 12px 0;
+    text-align: center;
 }
 
 .tab-btn.active {
@@ -1436,9 +1431,15 @@ button:hover {
     border-radius: 5px;
 }
 
+/* Ajuster la liste des utilisateurs bannis */
 .banned-user {
-    margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap; /* Permettre le retour à la ligne */
+    justify-content: space-between;
     padding: 12px;
+    margin-bottom: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
 }
 
 .banned-user.expired {
@@ -1446,7 +1447,7 @@ button:hover {
 }
 
 .ban-info {
-    flex-grow: 1;
+    width: 65%;
 }
 
 .ban-user {
@@ -1463,9 +1464,11 @@ button:hover {
 }
 
 .ban-status {
+    width: 30%;
     display: flex;
-    align-items: center;
-    gap: 10px;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
 }
 
 .ban-expires {
