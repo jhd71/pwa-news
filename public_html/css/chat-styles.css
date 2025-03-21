@@ -14,6 +14,20 @@
     --info-bubble-text: white;
     --info-bubble-border: rgba(255, 255, 255, 0.3);
     --info-bubble-shadow: rgba(0, 0, 0, 0.3);
+	--chat-primary: #4285f4;
+    --chat-primary-dark: #3367d6;
+    --tab-text-color: #222;
+    --tab-active-bg: #e0e0e0;
+	--chat-gradient: linear-gradient(145deg, #1a237e, #283593);
+}
+
+body.dark-mode {
+    --chat-primary: #90caf9;
+    --chat-primary-dark: #64b5f6;
+    --tab-text-color: #ccc;
+    --tab-active-bg: rgba(255, 255, 255, 0.08);
+    --chat-input-bg: rgba(255, 255, 255, 0.05);
+    --chat-message-received: rgba(255, 255, 255, 0.1);
 }
 /* Mode sombre */
 [data-theme="dark"] {
@@ -1313,19 +1327,43 @@ body.long-press-active .message-options {
 }
 
 .tab-btn {
-    padding: 8px 15px;
-    background: none;
+    padding: 10px 16px;
+    background: transparent;
     border: none;
     border-bottom: 3px solid transparent;
     cursor: pointer;
     font-weight: bold;
-    color: #555;
-    transition: all 0.3s;
+    color: var(--tab-text-color, #333); /* couleur texte par défaut */
+    transition: background 0.3s, color 0.3s, border-bottom-color 0.3s;
+    border-radius: 6px 6px 0 0;
 }
 
+/* Effet au survol */
+.tab-btn:hover {
+    background: rgba(100, 100, 100, 0.1); /* doux gris transparent */
+}
+
+/* Onglet actif */
 .tab-btn.active {
-    color: var(--chat-primary, #4285f4);
+    background: var(--tab-active-bg, #e0e0e0); /* clair par défaut */
     border-bottom-color: var(--chat-primary, #4285f4);
+    color: var(--chat-primary, #4285f4);
+	box-shadow: inset 0 -3px 0 var(--chat-primary, #4285f4);
+}
+
+/* Mode sombre */
+body.dark-mode .tab-btn {
+    color: #ccc;
+}
+
+body.dark-mode .tab-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .tab-btn.active {
+    background: rgba(255, 255, 255, 0.08);
+    color: #90caf9;
+    border-bottom-color: #90caf9;
 }
 
 .tab-content {
