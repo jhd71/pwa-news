@@ -1331,30 +1331,47 @@ body.dark-mode .admin-panel {
 }
 
 .tab-btn {
+    position: relative;
     padding: 8px 15px;
-    background: transparent;
+    background: none;
     border: none;
-    border-bottom: 3px solid transparent;
     cursor: pointer;
     font-weight: bold;
     color: var(--tab-text-color);
-    transition: all 0.3s ease;
-    border-radius: 8px 8px 0 0;
-    text-shadow: none !important; /* Supprime tout flou possible */
+    transition: color 0.3s;
+    text-shadow: none;
 }
 
-body.dark-mode .tab-btn:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: #90caf9;
-    text-shadow: none !important;
+.tab-btn::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0%;
+    height: 2px;
+    background-color: var(--chat-primary);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.tab-btn:hover::after,
+.tab-btn.active::after {
+    width: 80%;
+}
+
+/* Mode sombre */
+body.dark-mode .tab-btn {
+    color: #ccc;
 }
 
 body.dark-mode .tab-btn.active {
-    background: rgba(255, 255, 255, 0.08);
     color: #90caf9;
-    border-bottom-color: #90caf9;
-    text-shadow: none !important;
 }
+
+body.dark-mode .tab-btn::after {
+    background-color: #90caf9;
+}
+
 .tab-content {
     display: none;
 }
