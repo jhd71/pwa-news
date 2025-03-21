@@ -970,29 +970,40 @@ class ChatManager {
     }
 
     async getClientIP() {
+    try {
+        // Essayer plusieurs services pour obtenir l'IP
         try {
-            const response = await fetch('https://api.ipify.org?format=json');
+            const response = await fetch('https://api.ipify.org?format=json', { 
+                timeout: 5000,
+                mode: 'cors'
+            });
             if (response.ok) {
                 const data = await response.json();
                 return data.ip;
             }
-            
-            try {
-                const backupResponse = await fetch('https://api.db-ip.com/v2/free/self');
-                if (backupResponse.ok) {
-                    const backupData = await backupResponse.json();
-                    return backupData.ipAddress;
-                }
-            } catch (err) {
-                console.warn('Fallback IP service error:', err);
-            }
-            
-            return this.pseudo || 'anonymous';
-        } catch (error) {
-            console.warn('Erreur récupération IP:', error);
-            return this.pseudo || 'anonymous';
+        } catch (err) {
+            console.warn('Service IP primaire non disponible, essai du service secondaire');
         }
+        
+        try {
+            const backupResponse = await fetch('https://api.db-ip.com/v2/free/self', { 
+                timeout: 5000 
+            });
+            if (backupResponse.ok) {
+                const backupData = await backupResponse.json();
+                return backupData.ipAddress;
+            }
+        } catch (err) {
+            console.warn('Service IP secondaire non disponible');
+        }
+        
+        // Si aucun service ne répond, utiliser le pseudo comme identifiant unique
+        return this.pseudo || 'anonymous';
+    } catch (error) {
+        console.warn('Erreur récupération IP:', error);
+        return this.pseudo || 'anonymous';
     }
+}
 
     startBanMonitoring() {
         console.log(`Démarrage de la surveillance des bannissements pour ${this.pseudo}`);
@@ -1329,9 +1340,19 @@ class ChatManager {
             };
             
 			// Ajouter le message localement AVANT l'envoi au serveur
+        const messageIp = `${this.pseudo}-${Date.now()}`;
+        const message = {
+            id: `local-${Date.now()}`, // ID temporaire
+            pseudo: this.pseudo,
+            content: content,
+            ip: messageIp,
+            created_at: new Date().toISOString()
+        };
+        
+        // Afficher localement immédiatement
         this.handleNewMessage(message);
-		
-            // Envoi au serveur ensuite
+        
+        // Ensuite envoyer au serveur
         const { data: messageData, error } = await this.supabase
             .from('messages')
             .insert({
