@@ -1331,33 +1331,22 @@ body.dark-mode .admin-panel {
 }
 
 .tab-btn {
-    padding: 10px 16px;
-    background: transparent;
+    padding: 8px 15px;
+    background: none;
     border: none;
     border-bottom: 3px solid transparent;
     cursor: pointer;
     font-weight: bold;
-    color: var(--tab-text-color, #333); /* couleur texte par défaut */
-    transition: background 0.3s, color 0.3s, border-bottom-color 0.3s;
-    border-radius: 6px 6px 0 0;
+    color: var(--tab-text-color);
+    transition: all 0.3s;
+    text-shadow: none; /* Retirer l'effet de flou */
 }
 
-/* Effet au survol */
-.tab-btn:hover {
-    background: rgba(100, 100, 100, 0.1); /* doux gris transparent */
-}
-
-/* Onglet actif */
+.tab-btn:hover,
 .tab-btn.active {
-    background-color: var(--tab-active-bg);
-    color: var(--tab-text-color);
-    border-bottom: 2px solid var(--chat-primary);
-    border-radius: 6px 6px 0 0;
-}
-
-.tab-btn:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-    color: var(--tab-text-color);
+    color: var(--chat-primary);
+    border-bottom-color: var(--chat-primary);
+    text-shadow: none; /* Toujours pas de flou sur hover */
 }
 
 /* Mode sombre */
