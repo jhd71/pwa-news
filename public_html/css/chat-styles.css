@@ -18,16 +18,11 @@
     --chat-primary-dark: #3367d6;
     --tab-text-color: #222;
     --tab-active-bg: #e0e0e0;
-	--chat-gradient: linear-gradient(145deg, #1a237e, #283593);
 }
 
 body.dark-mode {
-    --chat-primary: #90caf9;
-    --chat-primary-dark: #64b5f6;
     --tab-text-color: #ccc;
     --tab-active-bg: rgba(255, 255, 255, 0.08);
-    --chat-input-bg: rgba(255, 255, 255, 0.05);
-    --chat-message-received: rgba(255, 255, 255, 0.1);
 }
 /* Mode sombre */
 [data-theme="dark"] {
