@@ -1251,9 +1251,13 @@ body.long-press-active .message-options {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 80%;
-    max-width: 500px;
-    max-height: 70vh;
+    
+    /* Largeur améliorée et responsive */
+    width: 95vw;              /* Plus large par défaut */
+    max-width: 800px;         /* Plus grand sur desktop */
+    min-width: 300px;         /* Sécurité pour petits écrans */
+    
+    max-height: 80vh;
     background: var(--chat-background, #fff);
     border-radius: 12px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
@@ -1261,6 +1265,25 @@ body.long-press-active .message-options {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+}
+
+.banned-word,
+.banned-user {
+    color: #000 !important;
+}
+
+.ban-user,
+.ban-details,
+.ban-expires,
+.ban-expired {
+    color: #000 !important;
+}
+
+@media (max-width: 600px) {
+  .admin-panel {
+    width: 90vw;
+    max-width: 95vw;
+  }
 }
 
 .panel-header {
