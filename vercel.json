@@ -16,7 +16,7 @@
       "dest": "/api/sendPush.js"
     },
     {
-      "src": "/api/([^\\.]+)$",
+      "src": "/api/([^/.]+)",
       "dest": "/api/$1.js"
     },
     {
