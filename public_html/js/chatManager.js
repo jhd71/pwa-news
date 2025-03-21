@@ -6,7 +6,7 @@ class ChatManager {
             'https://aqedqlzsguvkopucyqbb.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxZWRxbHpzZ3V2a29wdWN5cWJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY1MDAxNzUsImV4cCI6MjA1MjA3NjE3NX0.tjdnqCIW0dgmzn3VYx0ugCrISLPFMLhOQJBnnC5cfoo'
         );
-
+    
         this.initialized = false;
         this.container = null;
         this.pseudo = localStorage.getItem('chatPseudo');
@@ -25,17 +25,17 @@ class ChatManager {
 async setCurrentUserForRLS() {
         try {
             if (!this.pseudo) return false;
-
-            console.log(Définition de l'utilisateur courant pour RLS: ${this.pseudo});
+            
+            console.log(`Définition de l'utilisateur courant pour RLS: ${this.pseudo}`);
             const { error } = await this.supabase.rpc('set_current_user', { 
                 user_pseudo: this.pseudo 
             });
-
+            
             if (error) {
                 console.error('Erreur définition utilisateur RLS:', error);
                 return false;
             }
-
+            
             console.log('Utilisateur RLS défini avec succès');
             return true;
         } catch (error) {
@@ -43,11 +43,11 @@ async setCurrentUserForRLS() {
             return false;
         }
     }
-
+	
     async init() {
     try {
         await this.loadBannedWords();
-
+        
         // Vérifier si l'utilisateur est banni avant de continuer
         if (this.pseudo) {
             const isBanned = await this.checkBannedIP(this.pseudo);
@@ -63,7 +63,7 @@ async setCurrentUserForRLS() {
                 await this.setCurrentUserForRLS();
             }
         }
-
+        
         this.container = document.createElement('div');
         this.container.className = 'chat-widget';
         // Vérifier l'état d'authentification
@@ -79,7 +79,7 @@ async setCurrentUserForRLS() {
         if (this.isOpen && chatContainer) {
             chatContainer.classList.add('open');
         }
-
+        
         document.body.appendChild(this.container);
         await this.loadSounds();
         // Gestion des notifications push
@@ -87,7 +87,7 @@ async setCurrentUserForRLS() {
             try {
                 const registration = await navigator.serviceWorker.ready;
                 const subscription = await registration.pushManager.getSubscription();
-
+                
                 if (subscription) {
                     this.subscription = subscription;
                     this.notificationsEnabled = true;
@@ -115,22 +115,22 @@ async setCurrentUserForRLS() {
             await this.loadExistingMessages();
             this.updateUnreadBadgeAndBubble();
         }
-
+        
         // Pour gérer spécifiquement les problèmes de PWA
         if (/Mobi|Android/i.test(navigator.userAgent)) {
             // Détecter si nous sommes dans une PWA
             const isPWA = window.matchMedia('(display-mode: standalone)').matches || 
                          window.navigator.standalone;
-
+                         
             if (isPWA) {
                 console.log("Mode PWA détecté - Activation des ajustements spécifiques");
-
+                
                 // Ajouter le bouton d'accès à la zone de saisie
                 this.accessButton = this.addInputAccessButton();
-
+                
                 // Gérer la visibilité du clavier
                 this.handleKeyboardVisibility();
-
+                
                 // Observer les changements d'orientation
                 window.addEventListener('orientationchange', () => {
                     setTimeout(() => {
@@ -161,7 +161,7 @@ async setCurrentUserForRLS() {
         if (/Mobi|Android|iPad|tablet/i.test(navigator.userAgent)) {
             this.optimizeForLowEndDevices();
         }
-
+        
         this.initialized = true;
         console.log("Chat initialisé avec succès");
     } catch (error) {
@@ -183,12 +183,12 @@ async setCurrentUserForRLS() {
                 this.bannedWords = new Set(words.map(w => w.word.toLowerCase()));
                 const list = document.querySelector('.banned-words-list');
                 if (list) {
-                    list.innerHTML = words.map(w => 
+                    list.innerHTML = words.map(w => `
                         <div class="banned-word">
                             ${w.word}
                             <button class="remove-word" data-word="${w.word}">×</button>
                         </div>
-                    ).join('');
+                    `).join('');
 
                     list.querySelectorAll('.remove-word').forEach(btn => {
                         btn.addEventListener('click', () => this.removeBannedWord(btn.dataset.word));
@@ -200,8 +200,8 @@ async setCurrentUserForRLS() {
             this.bannedWords = new Set();
         }
     }
-    getPseudoHTML() {
-    return 
+	getPseudoHTML() {
+    return `
         <button class="chat-toggle" title="Ouvrir le chat">
             <i class="material-icons">chat</i>
             <span class="notification-badge hidden">${this.unreadCount}</span>
@@ -232,11 +232,11 @@ async setCurrentUserForRLS() {
                 </div>
             </div>
         </div>
-    ;
+    `;
 }
 
 getPseudoHTMLWithoutToggle() {
-    return 
+    return `
         <div class="chat-container">
             <div class="chat-header">
                 <div class="header-title">Connexion au chat</div>
@@ -263,11 +263,11 @@ getPseudoHTMLWithoutToggle() {
                 </div>
             </div>
         </div>
-    ;
+    `;
 }
 
 getChatHTML() {
-    return 
+    return `
         <button class="chat-toggle" title="Ouvrir le chat">
             <span class="material-icons">chat</span>
             <span class="notification-badge hidden">${this.unreadCount}</span>
@@ -276,11 +276,11 @@ getChatHTML() {
             <div class="chat-header">
                 <div class="header-title">Chat - ${this.pseudo}</div>
                 <div class="header-buttons">
-                    ${this.isAdmin ? 
+                    ${this.isAdmin ? `
                         <button class="admin-panel-btn" title="Panel Admin">
                             <span class="material-icons">admin_panel_settings</span>
                         </button>
-                     : ''}
+                    ` : ''}
                     <button class="emoji-btn" title="Emojis">
                         <span class="material-icons">emoji_emotions</span>
                     </button>
@@ -309,21 +309,21 @@ getChatHTML() {
                 </button>
             </div>
         </div>
-    ;
+    `;
 }
 
 getChatHTMLWithoutToggle() {
-    return 
+    return `
         <div class="chat-container">
             <div class="chat-header">
                 <div class="header-title">Chat - ${this.pseudo}</div>
                 <div class="header-buttons">
-                    ${this.isAdmin ? 
+                    ${this.isAdmin ? `
                         <button class="admin-panel-btn" title="Panel Admin">
                             <span class="material-icons">admin_panel_settings</span>
                         </button>
-                     : ''}
-                    <button class="emoji-btn" title="Emojis">
+                    ` : ''}
+					<button class="emoji-btn" title="Emojis">
                     <span class="material-icons">emoji_emotions</span>
                 </button>
                     <button class="notifications-btn ${this.notificationsEnabled ? 'enabled' : ''}" title="Notifications">
@@ -351,7 +351,7 @@ getChatHTMLWithoutToggle() {
                 </button>
             </div>
         </div>
-    ;
+    `;
 }
 
     setupListeners() {
@@ -367,21 +367,21 @@ getChatHTMLWithoutToggle() {
     // Fonction réutilisable pour basculer l'état du chat
     const toggleChat = () => {
     this.isOpen = !this.isOpen;
-
+    
     if (this.isOpen) {
         chatContainer?.classList.add('open');
         // Réinitialisation du compteur
         this.unreadCount = 0;
         localStorage.setItem('unreadCount', '0');
-
+        
         // Mettre à jour le badge ET l'info-bulle
         this.updateUnreadBadgeAndBubble();
-
+        
         this.scrollToBottom();
     } else {
         chatContainer?.classList.remove('open');
     }
-
+    
     localStorage.setItem('chatOpen', this.isOpen);
     this.playSound('click');
 };
@@ -390,7 +390,7 @@ getChatHTMLWithoutToggle() {
         // Supprimer les anciens écouteurs d'événements pour éviter les duplications
         const newChatToggleBtn = chatToggleBtn.cloneNode(true);
         chatToggleBtn.parentNode.replaceChild(newChatToggleBtn, chatToggleBtn);
-
+        
         // Ajouter le nouvel écouteur
         newChatToggleBtn.addEventListener('click', toggleChat);
     }
@@ -458,18 +458,18 @@ getChatHTMLWithoutToggle() {
     } else {
         this.setupChatListeners();
     }
-    // Ajouter la détection de défilement pour optimiser le rendu
+	// Ajouter la détection de défilement pour optimiser le rendu
 const messagesContainer = this.container.querySelector('.chat-messages');
 if (messagesContainer) {
     let scrollTimeout;
-
+    
     messagesContainer.addEventListener('scroll', () => {
         // Ajouter une classe pendant le défilement
         messagesContainer.classList.add('scrolling');
-
+        
         // Nettoyer le timeout précédent
         clearTimeout(scrollTimeout);
-
+        
         // Définir un nouveau timeout
         scrollTimeout = setTimeout(() => {
             messagesContainer.classList.remove('scrolling');
@@ -483,7 +483,7 @@ if (this.isTablet()) {
         textarea.addEventListener('focus', () => {
             chatContainer.classList.add('keyboard-open');
         });
-
+        
         textarea.addEventListener('blur', () => {
             setTimeout(() => {
                 chatContainer.classList.remove('keyboard-open');
@@ -499,13 +499,13 @@ if (chatMessages) {
         // Ne pas stopper la propagation - permettre le défilement normal
         e.stopPropagation(); // Ceci empêche l'événement de remonter à la page principale
     }, { passive: true });
-
+    
     // Empêcher le rebond aux extrémités qui cause souvent le défilement de la page
     chatMessages.addEventListener('scroll', () => {
         const scrollTop = chatMessages.scrollTop;
         const scrollHeight = chatMessages.scrollHeight;
         const clientHeight = chatMessages.clientHeight;
-
+        
         // Ajuster légèrement les valeurs pour éviter les problèmes de "bounce"
         if (scrollTop <= 1) {
             chatMessages.scrollTop = 1;
@@ -532,7 +532,7 @@ setupAuthListeners() {
             }
         });
     }
-
+    
     if (confirmButton) {
         confirmButton.addEventListener('click', async () => {
             const pseudo = pseudoInput?.value.trim();
@@ -551,13 +551,13 @@ setupAuthListeners() {
                 let isAdmin = false;
                 if (pseudo === 'jhd71') {
                     console.log('Tentative connexion admin');
-
+                    
                     if (adminPassword !== 'admin2024') {
                         this.showNotification('Mot de passe administrateur incorrect', 'error');
                         this.playSound('error');
                         return;
                     }
-
+                    
                     isAdmin = true;
                 } else {
                     console.log('Tentative connexion utilisateur normal');
@@ -569,13 +569,13 @@ setupAuthListeners() {
                     .select('*')
                     .eq('pseudo', pseudo)
                     .single();
-
+                
                 console.log('Résultat recherche utilisateur:', existingUser, queryError);
-
+                
                                 // Si l'utilisateur n'existe pas ou erreur "not found", le créer
                 if (!existingUser || (queryError && queryError.code === 'PGRST116')) {
                     console.log('Création d\'un nouvel utilisateur');
-
+                    
                     // Insérer directement dans users
                     const { data: newUser, error: insertError } = await this.supabase
                         .from('users')
@@ -588,12 +588,12 @@ setupAuthListeners() {
                             }
                         ])
                         .select();
-
+                    
                     if (insertError) {
                         console.error('Erreur création utilisateur:', insertError);
                         throw insertError;
                     }
-
+                    
                     console.log('Utilisateur créé avec succès:', newUser);
                 }
 
@@ -602,7 +602,7 @@ setupAuthListeners() {
                 this.isAdmin = isAdmin;
                 localStorage.setItem('chatPseudo', pseudo);
                 localStorage.setItem('isAdmin', isAdmin);
-                this.startBanMonitoring();
+				this.startBanMonitoring();
 
                 // Actualiser l'interface
 if (document.getElementById('chatToggleBtn')) {
@@ -630,6 +630,7 @@ this.setupListeners();
 await this.loadExistingMessages();
 this.playSound('success');
 
+                
             } catch (error) {
                 console.error('Erreur d\'authentification:', error);
                 this.showNotification('Erreur lors de la connexion: ' + error.message, 'error');
@@ -641,7 +642,7 @@ this.playSound('success');
 async registerUser(pseudo, password, isAdmin = false) {
     try {
         console.log('Tentative d\'inscription de l\'utilisateur:', pseudo, 'admin:', isAdmin);
-
+        
         // Insérer directement dans votre table users
         const { data, error: insertError } = await this.supabase
             .from('users')
@@ -654,12 +655,12 @@ async registerUser(pseudo, password, isAdmin = false) {
                 }
             ])
             .select();
-
+        
         if (insertError) {
             console.error('Erreur insertion table users:', insertError);
             throw insertError;
         }
-
+        
         console.log('Utilisateur enregistré avec succès:', pseudo);
         this.showNotification('Inscription réussie!', 'success');
         return { success: true, user: data?.[0] };
@@ -680,11 +681,11 @@ async checkAuthState() {
                 .select('*')
                 .eq('pseudo', this.pseudo)
                 .single();
-
+            
             if (error && error.code !== 'PGRST116') {
                 throw error;
             }
-
+            
             // Si l'utilisateur existe, mettre à jour les informations
             if (userData) {
                 this.isAdmin = userData.is_admin || false;
@@ -692,7 +693,7 @@ async checkAuthState() {
                 return true;
             }
         }
-
+        
         return false;
     } catch (error) {
         console.error('Erreur vérification auth:', error);
@@ -702,27 +703,27 @@ async checkAuthState() {
 
 async logout() {
     try {
-        if (this.banMonitorInterval) {
+		if (this.banMonitorInterval) {
             clearInterval(this.banMonitorInterval);
         }
         // Nettoyer l'intervalle de vérification des bannissements
         if (this.banCheckInterval) {
             clearInterval(this.banCheckInterval);
         }
-
+        
         // Nettoyer les données locales
         this.pseudo = null;
         this.isAdmin = false;
         localStorage.removeItem('chatPseudo');
         localStorage.removeItem('isAdmin');
-
+        
         // Actualiser l'interface
         if (document.getElementById('chatToggleBtn')) {
             this.container.innerHTML = this.getPseudoHTMLWithoutToggle();
         } else {
             this.container.innerHTML = this.getPseudoHTML();
         }
-
+        
         this.setupListeners();
         this.showNotification('Déconnexion réussie', 'success');
         return true;
@@ -746,23 +747,23 @@ extractPseudoFromEmail(email) {
     const content = input.value.trim();
     if (content) {
         // Vérification et autre code...
-
+        
         // Fermer le clavier immédiatement
         input.blur();
-
+        
         // Stocker et vider l'input
         const messageContent = content;
         input.value = '';
-
+        
         // Envoyer le message
         const success = await this.sendMessage(messageContent);
-
+        
         if (success) {
             this.playSound('message');
             // Montrer le bouton d'accès après l'envoi
         if (this.accessButton) {
             this.accessButton.style.display = 'block';
-
+            
             // Le cacher automatiquement après 5 secondes
             setTimeout(() => {
                 this.accessButton.style.display = 'none';
@@ -770,7 +771,7 @@ extractPseudoFromEmail(email) {
         }
             // Appels multiples pour s'assurer que la zone de saisie reste visible
             this.ensureChatInputVisible(); // Immédiatement
-
+            
             // Répéter avec différents délais
             [300, 800, 1500, 3000].forEach(delay => {
                 setTimeout(() => {
@@ -804,7 +805,7 @@ extractPseudoFromEmail(email) {
             }
         });
     }
-
+    
     // Ajout du gestionnaire pour le bouton emoji
     if (emojiBtn) {
         emojiBtn.addEventListener('click', () => {
@@ -816,16 +817,16 @@ extractPseudoFromEmail(email) {
 // Nouvelle méthode pour gérer le panneau d'emojis
 toggleEmojiPanel() {
     let panel = this.container.querySelector('.emoji-panel');
-
+    
     // Si le panneau existe déjà, on le ferme en cliquant sur l'icône
     if (panel) {
         panel.remove();
         return;
     }
-
+    
     panel = document.createElement('div');
     panel.className = 'emoji-panel';
-
+    
     const emojis = [
   '😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', 
   '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙', '😋', '😛', '😜', '😝', 
@@ -875,12 +876,12 @@ toggleEmojiPanel() {
   '🆗', '🅿️', '🆘', '🆙', '🆚', '🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬', '🇭', 
   '🇮', '🇯', '🇰', '🇱', '🇲', '🇳', '🇴', '🇵', '🇶', '🇷', '🇸', '🇹', '🇺', 
   '🇻', '🇼', '🇽', '🇾', '🇿', 
-
+	
  // 🔢 Chiffres en emoji
   '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟', 
   '0️⃣', '🔢', '🔠', '🔡'
 ];
-
+    
     emojis.forEach(emoji => {
         const span = document.createElement('span');
         span.textContent = emoji;
@@ -901,10 +902,10 @@ toggleEmojiPanel() {
         });
         panel.appendChild(span);
     });
-
+    
     const chatContainer = this.container.querySelector('.chat-container');
     chatContainer.appendChild(panel);
-
+    
     document.addEventListener('click', (e) => {
         if (!panel.contains(e.target) &&
             e.target !== this.container.querySelector('.emoji-btn') &&
@@ -914,7 +915,7 @@ toggleEmojiPanel() {
     }, { once: true });
 }
 
-    setupRealtimeSubscription() {
+	setupRealtimeSubscription() {
     const channel = this.supabase.channel('public:changes');
     channel
         .on('postgres_changes', 
@@ -928,7 +929,7 @@ toggleEmojiPanel() {
             { event: 'DELETE', schema: 'public', table: 'messages' },
             (payload) => {
                 console.log('Message supprimé:', payload);
-                const messageElement = this.container.querySelector([data-message-id="${payload.old.id}"]);
+                const messageElement = this.container.querySelector(`[data-message-id="${payload.old.id}"]`);
                 if (messageElement) messageElement.remove();
             }
         )
@@ -965,10 +966,10 @@ setupBanChecker() {
 }
     async handleNewMessage(message) {
     if (!message) return;
-
+    
     const chatContainer = this.container.querySelector('.chat-container');
     const chatOpen = chatContainer && chatContainer.classList.contains('open');
-
+    
     console.log('État initial du message:', {
         chatOpen,
         isOpen: this.isOpen,
@@ -976,24 +977,24 @@ setupBanChecker() {
         myPseudo: this.pseudo,
         notificationsEnabled: this.notificationsEnabled
     });
-
+    
     const messagesContainer = this.container.querySelector('.chat-messages');
     if (!messagesContainer) return;
-
-    const existingMessage = messagesContainer.querySelector([data-message-id="${message.id}"]);
+    
+    const existingMessage = messagesContainer.querySelector(`[data-message-id="${message.id}"]`);
     if (existingMessage) return;
-
+    
     const messageElement = this.createMessageElement(message);
     messagesContainer.appendChild(messageElement);
     this.scrollToBottom();
-
+    
     if (message.pseudo !== this.pseudo) {
         this.playSound('message');
-
+        
         if (!chatOpen) {
             this.unreadCount++;
             localStorage.setItem('unreadCount', this.unreadCount.toString());
-
+            
             if (this.notificationsEnabled) {
                 try {
                     // Utiliser le résultat mais ne pas propager d'erreur
@@ -1006,7 +1007,7 @@ setupBanChecker() {
                     console.warn('Erreur notification ignorée:', error.message);
                 }
             }
-
+            
             this.updateUnreadBadgeAndBubble();
         }
     }
@@ -1025,7 +1026,7 @@ setupBanChecker() {
     });
 
     let dateText, icon;
-
+    
     // Si c'est aujourd'hui
     if (date.toDateString() === today.toDateString()) {
         dateText = "Aujourd'hui";
@@ -1042,30 +1043,30 @@ setupBanChecker() {
         icon = "calendar_today";
     }
 
-    return 
+    return `
         <span class="material-icons">${icon}</span>
         <span class="date">${dateText}</span>
         <span class="time">${time}</span>
-    ;
+    `;
 }
 
 createMessageElement(message) {
     const div = document.createElement('div');
-    div.className = message ${message.pseudo === this.pseudo ? 'sent' : 'received'};
+    div.className = `message ${message.pseudo === this.pseudo ? 'sent' : 'received'}`;
     div.dataset.messageId = message.id;
 
-    div.innerHTML = 
+    div.innerHTML = `
         <div class="message-author">${message.pseudo}</div>
         <div class="message-content">${this.escapeHtml(message.content)}</div>
         <div class="message-time">${this.formatMessageTime(message.created_at)}</div>
-    ;
+    `;
 
     if (this.isAdmin || message.pseudo === this.pseudo) {
         // Variables pour gérer l'appui long et prévenir les actions indésirables
         let touchTimer;
         let longPressActive = false;
         let lastTouchEnd = 0;
-
+        
         // Gestion du clic droit sur PC
         div.addEventListener('contextmenu', (e) => {
             e.preventDefault();
@@ -1078,40 +1079,40 @@ createMessageElement(message) {
             if (Date.now() - lastTouchEnd < 1000) {
                 return;
             }
-
+            
             // Démarrer le timer pour l'appui long
             touchTimer = setTimeout(() => {
                 longPressActive = true;
                 const touch = e.touches[0];
                 this.showMessageOptions(message, touch.clientX, touch.clientY);
-
+                
                 // Ajouter une vibration si disponible
                 if (navigator.vibrate) {
                     navigator.vibrate(50);
                 }
             }, 800);
         });
-
+        
         // Annuler l'appui long si le doigt bouge
         div.addEventListener('touchmove', () => {
             clearTimeout(touchTimer);
         });
-
+        
         // Gérer la fin du toucher
         div.addEventListener('touchend', (e) => {
             clearTimeout(touchTimer);
-
+            
             // Si c'était un appui long, empêcher toute autre action
             if (longPressActive) {
                 e.preventDefault();
                 e.stopPropagation();
                 longPressActive = false;
-
+                
                 // Enregistrer le moment où l'appui long s'est terminé
                 lastTouchEnd = Date.now();
             }
         });
-
+        
         // S'assurer que le timer est annulé si le toucher est annulé
         div.addEventListener('touchcancel', () => {
             clearTimeout(touchTimer);
@@ -1129,12 +1130,12 @@ createMessageElement(message) {
         if (!rlsSuccess) {
             console.warn('Échec de la définition de l\'utilisateur pour RLS');
         }
-
+        
         // Obtenir la liste des utilisateurs bannis avec une requête plus simple
         const { data: bannedUsers, error: bannedError } = await this.supabase
             .from('banned_ips')
             .select('ip, expires_at');
-
+            
         // Filtrer les bannissements non expirés
         const now = new Date();
         const bannedUsersList = bannedUsers 
@@ -1142,9 +1143,9 @@ createMessageElement(message) {
                 .filter(ban => !ban.expires_at || new Date(ban.expires_at) > now)
                 .map(ban => ban.ip)
             : [];
-
+            
         console.log('Utilisateurs bannis:', bannedUsersList);
-
+        
         const { data: messages, error } = await this.supabase
             .from('messages')
             .select('*')
@@ -1155,19 +1156,19 @@ createMessageElement(message) {
         const container = this.container.querySelector('.chat-messages');
         if (container && messages) {
             container.innerHTML = '';
-
+            
             messages.forEach(msg => {
                 // Extraire le pseudo du format 'pseudo-timestamp'
                 const pseudoFromIP = msg.ip.split('-')[0];
-
+                
                 // Ne pas afficher les messages des utilisateurs bannis
                 if (!bannedUsersList.includes(pseudoFromIP) && !bannedUsersList.includes(msg.pseudo)) {
                     container.appendChild(this.createMessageElement(msg));
                 } else {
-                    console.log(Message de l'utilisateur banni ${msg.pseudo} ignoré);
+                    console.log(`Message de l'utilisateur banni ${msg.pseudo} ignoré`);
                 }
             });
-
+            
             this.scrollToBottom();
         }
     } catch (error) {
@@ -1180,22 +1181,22 @@ createMessageElement(message) {
     try {
         // Utiliser directement this.pseudo comme identifiant
         const isBanned = await this.checkBannedIP(this.pseudo);
-
+        
         if (isBanned) {
-            console.log(Message rejeté - utilisateur banni: ${this.pseudo});
+            console.log(`Message rejeté - utilisateur banni: ${this.pseudo}`);
             this.showNotification('Vous êtes banni du chat', 'error');
             // Déconnecter l'utilisateur banni
             await this.logout();
             return false;
         }
-
+        
         // Vérifier les mots bannis
         const containsBannedWord = await this.checkForBannedWords(content);
         if (containsBannedWord) {
             this.showNotification('Votre message contient des mots interdits', 'error');
             return false;
         }
-
+        
         // Définir l'utilisateur courant pour RLS
         const rlsSuccess = await this.setCurrentUserForRLS();
         if (!rlsSuccess) {
@@ -1203,10 +1204,10 @@ createMessageElement(message) {
             this.showNotification('Erreur d\'authentification', 'error');
             return false;
         }
-
+        
         // Créer l'identifiant unique pour ce message
-        const messageIp = ${this.pseudo}-${Date.now()};
-
+        const messageIp = `${this.pseudo}-${Date.now()}`;
+        
         // Construire le message avec l'identifiant
         const message = {
             pseudo: this.pseudo,
@@ -1214,16 +1215,16 @@ createMessageElement(message) {
             ip: messageIp,
             created_at: new Date().toISOString()
         };
-
+        
         // Insérer le message
         const { data: messageData, error } = await this.supabase
             .from('messages')
             .insert(message)
             .select()
             .single();
-
+            
         if (error) throw error;
-
+        
         // Envoi de la notification
         try {
             const response = await fetch("/api/sendPush", {
@@ -1235,16 +1236,16 @@ createMessageElement(message) {
                     toUser: "all"
                 })
             });
-
+            
             // Vérifier si la réponse est OK
             if (!response.ok) {
                 console.warn("Erreur API:", response.status, response.statusText);
                 return true; // Continuer car l'envoi de message a réussi
             }
-
+            
             // Lire la réponse UNIQUEMENT UNE FOIS
             const responseText = await response.text();
-
+            
             // Essayer de parser comme JSON
             try {
                 const data = JSON.parse(responseText);
@@ -1255,9 +1256,9 @@ createMessageElement(message) {
         } catch (notifError) {
             console.error("❌ Erreur lors de l'envoi de la notification :", notifError);
         }
-
+        
         return true; // Retourner true si le message a été envoyé avec succès
-
+        
     } catch (error) {
         console.error('Erreur sendMessage:', error);
         return false;
@@ -1271,12 +1272,12 @@ createMessageElement(message) {
         if (!permissionGranted) {
             return false;
         }
-
+        
         // Définir l'utilisateur courant pour les vérifications RLS
         await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
-
+        
         const registration = await navigator.serviceWorker.ready;
-
+        
         // Vérifier les souscriptions existantes
         const oldSubscription = await registration.pushManager.getSubscription();
         if (oldSubscription) {
@@ -1312,13 +1313,13 @@ createMessageElement(message) {
         this.notificationsEnabled = true;
         localStorage.setItem('notificationsEnabled', 'true');
         this.updateNotificationButton();
-
+        
         // Afficher une notification de test
         this.showNotification('Notifications activées!', 'success');
-
+        
         // Envoyer une notification de test
         this.sendTestNotification();
-
+        
         return true;
     } catch (error) {
         console.error('Erreur activation notifications:', error);
@@ -1331,7 +1332,7 @@ async sendTestNotification() {
     try {
         // Vérifier si les notifications sont supportées
         if (!('Notification' in window)) return;
-
+        
         // Créer une notification de test
         new Notification('Notification de test', {
             body: 'Les notifications fonctionnent correctement!',
@@ -1349,10 +1350,10 @@ async requestNotificationPermission() {
             this.showNotification('Les notifications ne sont pas supportées par ce navigateur', 'error');
             return false;
         }
-
+        
         // Demander la permission
         const permission = await Notification.requestPermission();
-
+        
         if (permission === 'granted') {
             this.showNotification('Notifications activées avec succès!', 'success');
             this.notificationsEnabled = true;
@@ -1372,12 +1373,12 @@ async requestNotificationPermission() {
 async renewPushSubscription() {
     try {
         const registration = await navigator.serviceWorker.ready;
-
+        
         // Supprimer l'ancienne souscription
         const oldSubscription = await registration.pushManager.getSubscription();
         if (oldSubscription) {
             await oldSubscription.unsubscribe();
-
+            
             // Supprimer l'ancienne souscription de Supabase
             await this.supabase
                 .from('push_subscriptions')
@@ -1426,22 +1427,22 @@ getDeviceType() {
 
 isTablet() {
     const userAgent = navigator.userAgent.toLowerCase();
-    const isTablet = /(ipad|tablet|(android(?!.mobile))|(windows(?!.phone)(.touch))|kindle|playbook|silk|(puffin(?!.(IP|AP|WP))))/.test(userAgent);
+    const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(userAgent);
     const isIPad = /ipad/.test(userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-
+    
     return isTablet || isIPad || (window.innerWidth >= 600 && window.innerWidth <= 1024);
 }
 
 optimizeForLowEndDevices() {
     // Détecter si l'appareil est une tablette peu puissante
     const isLowPerfDevice = this.isTablet() && (navigator.hardwareConcurrency <= 4 || !navigator.hardwareConcurrency);
-
+    
     if (isLowPerfDevice) {
         console.log("Optimisations pour appareil à performances limitées activées");
-
+        
         // Simplifier les animations
         document.documentElement.style.setProperty('--chat-animation-duration', '0.2s');
-
+        
         // Limiter le nombre de messages affichés
         const messagesContainer = this.container.querySelector('.chat-messages');
         if (messagesContainer && messagesContainer.children.length > 30) {
@@ -1450,7 +1451,7 @@ optimizeForLowEndDevices() {
                 messagesContainer.removeChild(messagesContainer.firstChild);
             }
         }
-
+        
         // Simplifier les gradients
         const elements = this.container.querySelectorAll('.chat-container, .message, .chat-header, .chat-input');
         elements.forEach(el => {
@@ -1465,10 +1466,10 @@ async unsubscribeFromPushNotifications() {
     try {
         // Définir l'utilisateur courant pour les vérifications RLS
         await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
-
+        
         const registration = await navigator.serviceWorker.getRegistration();
             const subscription = await registration.pushManager.getSubscription();
-
+            
             if (subscription) {
                 await subscription.unsubscribe();
                 await this.supabase
@@ -1476,7 +1477,7 @@ async unsubscribeFromPushNotifications() {
                     .delete()
                     .eq('pseudo', this.pseudo);
             }
-
+            
             this.notificationsEnabled = false;
             localStorage.setItem('notificationsEnabled', 'false');
             this.updateNotificationButton();
@@ -1491,11 +1492,11 @@ async unsubscribeFromPushNotifications() {
     async sendNotificationToUser(message) {
     try {
         console.log('Envoi notification à:', message);
-
+        
         // Créer un contrôleur d'abandon avec un timeout plus long
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 secondes
-
+        
         const response = await fetch("/api/sendPush", {
             method: "POST",
             headers: {
@@ -1508,10 +1509,10 @@ async unsubscribeFromPushNotifications() {
             }),
             signal: controller.signal // Ajouter le signal d'abandon
         });
-
+        
         // Annuler le timeout une fois la réponse reçue
         clearTimeout(timeoutId);
-
+        
         if (!response.ok) {
             const text = await response.text();
             console.warn('Réponse API erreur:', {
@@ -1519,11 +1520,11 @@ async unsubscribeFromPushNotifications() {
                 statusText: response.statusText,
                 body: text
             });
-
+            
             // Ne pas bloquer l'interface utilisateur avec une erreur de notification
             return { success: false, error: text };
         }
-
+        
         const result = await response.json();
         console.log('Réponse API succès:', result);
         return result;
@@ -1533,13 +1534,13 @@ async unsubscribeFromPushNotifications() {
             console.warn('La requête de notification a été abandonnée (timeout)');
             return { success: false, error: 'timeout' };
         }
-
+        
         // Pour les autres erreurs, on log mais on ne propage pas l'erreur
         console.warn('Erreur envoi notification:', error.message);
         return { success: false, error: error.message };
     }
 }
-    async loadSounds() {
+	async loadSounds() {
         const soundFiles = {
             'message': '/sounds/message.mp3',
             'sent': '/sounds/sent.mp3',
@@ -1551,13 +1552,13 @@ async unsubscribeFromPushNotifications() {
 
         for (const [name, path] of Object.entries(soundFiles)) {
             try {
-                console.log(Chargement du son: ${name} depuis ${path});
+                console.log(`Chargement du son: ${name} depuis ${path}`);
                 const audio = new Audio(path);
                 await audio.load();
                 this.sounds.set(name, audio);
-                console.log(Son ${name} chargé avec succès);
+                console.log(`Son ${name} chargé avec succès`);
             } catch (error) {
-                console.error(Erreur chargement son ${name}:, error);
+                console.error(`Erreur chargement son ${name}:`, error);
             }
         }
     }
@@ -1568,11 +1569,11 @@ async unsubscribeFromPushNotifications() {
                 const sound = this.sounds.get(soundName).cloneNode();
                 sound.volume = 0.5;
                 const playPromise = sound.play();
-
+                
                 if (playPromise !== undefined) {
                     playPromise.catch(error => {
                         if (error.name !== 'NotAllowedError') {
-                            console.warn(Erreur lecture son ${soundName}:, error);
+                            console.warn(`Erreur lecture son ${soundName}:`, error);
                         }
                     });
                 }
@@ -1586,8 +1587,8 @@ async unsubscribeFromPushNotifications() {
     try {
         // Extraire le pseudo de l'IP (format: pseudo-timestamp)
         const pseudo = ip.split('-')[0];
-        console.log(Vérification bannissement pour pseudo: ${pseudo});
-
+        console.log(`Vérification bannissement pour pseudo: ${pseudo}`);
+        
         // Requête plus simple et directe
         const { data, error } = await this.supabase
             .from('banned_ips')
@@ -1599,18 +1600,18 @@ async unsubscribeFromPushNotifications() {
             console.error('Erreur vérification bannissement:', error);
             return false;
         }
-
+        
         // Si pas de bannissement, retourner false
         if (!data) {
-            console.log(Aucun bannissement trouvé pour: ${pseudo});
+            console.log(`Aucun bannissement trouvé pour: ${pseudo}`);
             return false;
         }
-
+        
         console.log('Bannissement trouvé:', data);
-
+        
         // Vérifier si le bannissement est expiré
         if (data.expires_at && new Date(data.expires_at) < new Date()) {
-            console.log(Bannissement expiré pour: ${pseudo});
+            console.log(`Bannissement expiré pour: ${pseudo}`);
             // Supprimer le bannissement expiré
             await this.supabase
                 .from('banned_ips')
@@ -1618,8 +1619,8 @@ async unsubscribeFromPushNotifications() {
                 .eq('ip', pseudo);
             return false;
         }
-
-        console.log(Utilisateur ${pseudo} est banni!);
+        
+        console.log(`Utilisateur ${pseudo} est banni!`);
         return true;
     } catch (error) {
         console.error('Erreur vérification bannissement:', error);
@@ -1637,11 +1638,11 @@ async unsubscribeFromPushNotifications() {
 }
 
 startBanMonitoring() {
-    console.log(Démarrage de la surveillance des bannissements pour ${this.pseudo});
-
+    console.log(`Démarrage de la surveillance des bannissements pour ${this.pseudo}`);
+    
     // Vérifier immédiatement
     this.checkBannedStatus();
-
+    
     // Puis vérifier toutes les 10 secondes
     this.banMonitorInterval = setInterval(() => {
         this.checkBannedStatus();
@@ -1650,17 +1651,17 @@ startBanMonitoring() {
 
 async checkBannedStatus() {
     if (!this.pseudo) return;
-
+    
     const isBanned = await this.checkBannedIP(this.pseudo);
     if (isBanned) {
-        console.log(Bannissement détecté pour ${this.pseudo}, déconnexion...);
+        console.log(`Bannissement détecté pour ${this.pseudo}, déconnexion...`);
         this.showNotification('Vous avez été banni du chat', 'error');
-
+        
         // Arrêter la surveillance
         if (this.banMonitorInterval) {
             clearInterval(this.banMonitorInterval);
         }
-
+        
         // Déconnecter l'utilisateur
         await this.logout();
     }
@@ -1672,20 +1673,20 @@ async checkBannedStatus() {
         if (this.bannedWords.size === 0) {
             await this.loadBannedWords();
         }
-
+        
         // Normaliser le contenu pour une meilleure détection
         const normalizedContent = content.toLowerCase()
             .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
             .replace(/\s+/g, ' ');
-
+        
         // Vérifier chaque mot banni
         for (const bannedWord of this.bannedWords) {
             if (normalizedContent.includes(bannedWord.toLowerCase())) {
-                console.log(Mot banni détecté: "${bannedWord}" dans "${content}");
+                console.log(`Mot banni détecté: "${bannedWord}" dans "${content}"`);
                 return true;
             }
         }
-
+        
         return false;
     } catch (error) {
         console.error('Erreur vérification mots bannis:', error);
@@ -1708,10 +1709,10 @@ async checkBannedStatus() {
 
     showNotification(message, type = 'info') {
         const notification = document.createElement('div');
-        notification.className = notification-popup ${type};
+        notification.className = `notification-popup ${type}`;
         notification.textContent = message;
         document.body.appendChild(notification);
-
+        
         setTimeout(() => {
             notification.remove();
         }, 3000);
@@ -1744,33 +1745,33 @@ updateUnreadBadgeAndBubble() {
             badge.textContent = this.unreadCount || '';
             badge.classList.toggle('hidden', this.unreadCount === 0);
         }
-
+        
         // Supprimer toute bulle existante dans le document pour éviter les doublons
         const existingBubbles = document.querySelectorAll('.info-bubble');
         existingBubbles.forEach(bubble => bubble.remove());
-
+        
         // Si le chat est ouvert ou s'il n'y a pas de messages non lus, on ne crée pas de bulle
         if (this.isOpen || this.unreadCount === 0) {
             return;
         }
-
+        
         // Déterminer le thème actuel
         const isDarkTheme = document.body.classList.contains('dark-theme') || 
                           document.documentElement.classList.contains('dark-theme') ||
                           document.body.getAttribute('data-theme') === 'dark';
-
+        
         // Créer une nouvelle bulle
         const bubble = document.createElement('div');
         bubble.className = 'info-bubble show';
-        bubble.innerHTML = <div style="font-weight: bold;">${this.unreadCount} nouveau(x) message(s)</div>;
-
+        bubble.innerHTML = `<div style="font-weight: bold;">${this.unreadCount} nouveau(x) message(s)</div>`;
+        
         // Sur mobile, on attache la bulle au body pour un positionnement absolu
         const isMobile = window.innerWidth <= 768;
-
+        
         if (isMobile) {
             // Utiliser la classe CSS de base
             bubble.className = 'info-bubble info-bubble-mobile show';
-
+            
             // Appliquer les styles en fonction du thème
             if (isDarkTheme) {
                 bubble.style.background = 'linear-gradient(135deg, #222232 0%, #444464 100%)';
@@ -1781,10 +1782,10 @@ updateUnreadBadgeAndBubble() {
                 bubble.style.color = 'white';
                 bubble.style.border = '2px solid rgba(255, 255, 255, 0.5)';
             }
-
+            
             // Ajouter au body
             document.body.appendChild(bubble);
-
+            
             // Ajouter un gestionnaire de clic pour ouvrir le chat
             bubble.addEventListener('click', () => {
                 this.isOpen = true;
@@ -1822,45 +1823,45 @@ scrollToBottom() {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 }
-
-    ensureChatInputVisible() {
+	
+	ensureChatInputVisible() {
     if (/Mobi|Android/i.test(navigator.userAgent)) {
         // Obtenir les éléments nécessaires
         const chatContainer = this.container.querySelector('.chat-container');
         const chatInput = this.container.querySelector('.chat-input');
         const messagesContainer = this.container.querySelector('.chat-messages');
-
+        
         if (chatInput && chatContainer) {
             console.log("Tentative de rendre la zone de saisie visible");
-
+            
             // 1. D'abord, assurer que le conteneur du chat est à sa hauteur maximale
             chatContainer.style.height = '80vh';
-
+            
             // 2. Repositionner les messages pour qu'ils laissent de la place pour l'input
             if (messagesContainer) {
                 messagesContainer.style.maxHeight = 'calc(100% - 80px)';
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
-
+            
             // 3. Forcer le conteneur à se redessiner (redraw)
             chatContainer.style.opacity = '0.99';
             setTimeout(() => {
                 chatContainer.style.opacity = '1';
-
+                
                 // 4. Forcer le scroll tout en bas
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
+                
                 // 5. Technique spéciale pour les PWA sur Android
                 if (window.matchMedia('(display-mode: standalone)').matches) {
                     // Fixer la position de la zone d'entrée
                     chatInput.style.position = 'sticky';
                     chatInput.style.bottom = '0';
                     chatInput.style.zIndex = '1000';
-
+                    
                     // Scroll doux vers la zone d'entrée
                     chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
                 }
-
+                
                 console.log("Ajustement de visibilité effectué");
             }, 50);
         }
@@ -1869,14 +1870,14 @@ scrollToBottom() {
 
 handleKeyboardVisibility() {
     if (!/Mobi|Android|iPad|tablet/i.test(navigator.userAgent)) return;
-
+    
     const chatContainer = this.container.querySelector('.chat-container');
     const chatInput = this.container.querySelector('.chat-input');
     const textarea = chatInput?.querySelector('textarea');
     const messagesContainer = this.container.querySelector('.chat-messages');
-
+    
     if (!chatContainer || !chatInput || !textarea) return;
-
+    
     // Détecter si c'est une tablette
     const isTablet = this.isTablet();
     // Dans votre méthode de détection d'appareil, ajoutez cette fonction
@@ -1884,17 +1885,17 @@ handleKeyboardVisibility() {
     // Détecter l'ouverture du clavier virtuel
     textarea.addEventListener('focus', () => {
         console.log("Clavier virtuel ouvert");
-
+        
         if (isTablet) {
             // Sur tablette, réduire davantage la hauteur pour laisser plus de place au clavier
             chatContainer.style.height = '40vh';
             chatContainer.style.maxHeight = '40vh';
-
+            
             // Réduire la hauteur des messages pour laisser plus de place à l'input
             if (messagesContainer) {
                 messagesContainer.style.maxHeight = 'calc(40vh - 90px)';
             }
-
+            
             // Déplacer le chat plus haut
             chatContainer.style.bottom = '50vh';
         } else {
@@ -1902,24 +1903,24 @@ handleKeyboardVisibility() {
             chatContainer.style.height = '50vh';
             chatContainer.style.maxHeight = '50vh';
         }
-
+        
         // S'assurer que la zone de saisie reste visible
         setTimeout(() => {
             textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 300);
     });
-
+    
     // Détecter la fermeture du clavier virtuel
     textarea.addEventListener('blur', () => {
         console.log("Clavier virtuel fermé");
-
+        
         // Restaurer la hauteur normale
         setTimeout(() => {
             if (isTablet) {
                 chatContainer.style.height = '65vh';
                 chatContainer.style.maxHeight = '65vh';
                 chatContainer.style.bottom = '20vh';
-
+                
                 if (messagesContainer) {
                     messagesContainer.style.maxHeight = 'calc(65vh - 90px)';
                 }
@@ -1927,7 +1928,7 @@ handleKeyboardVisibility() {
                 chatContainer.style.height = '65vh';
                 chatContainer.style.maxHeight = '65vh';
             }
-
+            
             // S'assurer que la zone de saisie est visible
             chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
         }, 300);
@@ -1938,22 +1939,22 @@ handleKeyboardVisibility() {
 addInputAccessButton() {
     // Ne l'ajouter que sur mobile
     if (!/Mobi|Android/i.test(navigator.userAgent)) return;
-
+    
     // Vérifier si on est dans une PWA
     const isPWA = window.matchMedia('(display-mode: standalone)').matches || 
                  window.navigator.standalone;
-
+    
     if (!isPWA) return;
-
+    
     // Supprimer le bouton existant s'il y en a un
     const existingButton = document.getElementById('chat-input-access');
     if (existingButton) existingButton.remove();
-
+    
     // Créer le bouton d'accès
     const accessButton = document.createElement('button');
     accessButton.id = 'chat-input-access';
     accessButton.textContent = '⬆️ Zone de saisie';
-    accessButton.style.cssText = 
+    accessButton.style.cssText = `
         position: fixed;
         bottom: 10px;
         left: 50%;
@@ -1967,17 +1968,17 @@ addInputAccessButton() {
         font-weight: bold;
         box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         display: none;
-    ;
-
+    `;
+    
     document.body.appendChild(accessButton);
-
+    
     // Afficher le bouton après l'envoi d'un message
     accessButton.addEventListener('click', () => {
         const chatInput = this.container.querySelector('.chat-input');
         if (chatInput) {
             // Fermer le clavier s'il est ouvert
             document.activeElement?.blur();
-
+            
             // Attendre que le clavier se ferme
             setTimeout(() => {
                 // Ajuster la position du chat container
@@ -1986,16 +1987,16 @@ addInputAccessButton() {
                     chatContainer.style.height = '65vh';
                     chatContainer.style.bottom = '15vh';
                 }
-
+                
                 // Faire défiler jusqu'à la zone de saisie
                 chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
-
+                
                 // Cacher le bouton après utilisation
                 accessButton.style.display = 'none';
             }, 300);
         }
     });
-
+    
     // Montrer le bouton après l'envoi d'un message
     return accessButton;
 }
@@ -2011,7 +2012,7 @@ showAdminPanel() {
 
         const panel = document.createElement('div');
         panel.className = 'admin-panel';
-        panel.innerHTML = 
+        panel.innerHTML = `
             <div class="panel-header">
                 <h3>Panel Admin</h3>
                 <button class="close-panel">
@@ -2028,7 +2029,7 @@ showAdminPanel() {
                     <div class="banned-words-list"></div>
                 </div>
             </div>
-        ;
+        `;
 
         document.body.appendChild(panel);
         this.loadBannedWords();
@@ -2074,31 +2075,31 @@ showAdminPanel() {
 
     showMessageOptions(message, x, y) {
     console.log('showMessageOptions appelé:', message);
-
+    
     // Supprimer tout menu existant
     document.querySelectorAll('.message-options').forEach(el => el.remove());
 
     const options = document.createElement('div');
     options.className = 'message-options';
-
+    
     // Détection du mobile
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     if (isMobile) {
         options.classList.add('mobile-options');
     }
-
-    options.innerHTML = 
+    
+    options.innerHTML = `
         <div class="options-content">
             <button class="delete-option">
                 <span class="material-icons">delete</span> Supprimer
             </button>
-            ${this.isAdmin ? 
+            ${this.isAdmin ? `
                 <button class="ban-option">
                     <span class="material-icons">block</span> Bannir IP
                 </button>
-             : ''}
+            ` : ''}
         </div>
-    ;
+    `;
 
     document.body.appendChild(options);
 
@@ -2109,12 +2110,12 @@ showAdminPanel() {
     // Ajustement de la position
     let posX = x;
     let posY = y;
-
+    
     // Positionnement amélioré sur mobile
     if (isMobile) {
         // Centrer horizontalement
         posX = chatBounds.left + (chatBounds.width / 2) - (optionsRect.width / 2);
-
+        
         // Positionner plus haut dans la zone visible
         posY = chatBounds.top + (chatBounds.height * 0.3);
     } else {
@@ -2133,14 +2134,14 @@ showAdminPanel() {
         }
     }
 
-    options.style.left = ${posX}px;
-    options.style.top = ${posY}px;
+    options.style.left = `${posX}px`;
+    options.style.top = `${posY}px`;
 
     // Protection contre les événements indésirables
     const preventPropagation = (e) => {
         e.stopPropagation();
     };
-
+    
     // Appliquer à tous les types d'événements
     options.addEventListener('click', preventPropagation);
     options.addEventListener('touchstart', preventPropagation);
@@ -2170,7 +2171,7 @@ showAdminPanel() {
                 document.removeEventListener('touchstart', closeHandler);
             }
         };
-
+        
         document.addEventListener('click', closeHandler);
         document.addEventListener('touchstart', closeHandler);
     }, 300); // Délai plus long pour éviter la fermeture accidentelle
@@ -2180,7 +2181,7 @@ showAdminPanel() {
     try {
         // Définir l'utilisateur courant pour les vérifications RLS
         await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
-
+        
         // Ensuite effectuer la suppression
         const { error } = await this.supabase
             .from('messages')
@@ -2189,7 +2190,7 @@ showAdminPanel() {
 
         if (error) throw error;
 
-        const messageElement = this.container.querySelector([data-message-id="${messageId}"]);
+        const messageElement = this.container.querySelector(`[data-message-id="${messageId}"]`);
         if (messageElement) {
             messageElement.classList.add('fade-out');
             setTimeout(() => messageElement.remove(), 300);
@@ -2202,7 +2203,7 @@ showAdminPanel() {
 }
 
     showBanDialog(message) {
-        const dialogHTML = 
+        const dialogHTML = `
             <div class="ban-dialog" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1200;">
                 <div class="ban-content" style="background: var(--chat-gradient); padding: 20px; border-radius: 12px; width: 90%; max-width: 400px; color: white;">
                     <h3>Bannir ${message.pseudo}</h3>
@@ -2220,10 +2221,10 @@ showAdminPanel() {
                     </div>
                 </div>
             </div>
-        ;
+        `;
 
         document.body.insertAdjacentHTML('beforeend', dialogHTML);
-
+        
         const dialog = document.querySelector('.ban-dialog');
         dialog.querySelector('.confirm-ban').addEventListener('click', async () => {
             const reason = dialog.querySelector('.ban-reason').value;
@@ -2241,22 +2242,22 @@ showAdminPanel() {
     try {
         // Définir l'utilisateur courant pour RLS
         await this.setCurrentUserForRLS();
-
+        
         // Extraire le pseudo de l'IP (format actuel: pseudo-timestamp)
         const pseudo = ip.split('-')[0];
-
+        
         const expiresAt = duration ? new Date(Date.now() + parseInt(duration)).toISOString() : null;
-
+        
         // Vérifier d'abord si l'utilisateur est déjà banni
         const { data: existingBan } = await this.supabase
             .from('banned_ips')
             .select('*')
             .eq('ip', pseudo)
             .maybeSingle();
-
+            
         if (existingBan) {
             console.log('Utilisateur déjà banni, mise à jour du bannissement');
-
+            
             // Mettre à jour le bannissement existant
             const { error: updateError } = await this.supabase
                 .from('banned_ips')
@@ -2264,7 +2265,7 @@ showAdminPanel() {
                     expires_at: expiresAt
                 })
                 .eq('ip', pseudo);
-
+                
             if (updateError) throw updateError;
         } else {
             // Créer un nouveau bannissement
@@ -2272,22 +2273,22 @@ showAdminPanel() {
                 ip: pseudo,
                 expires_at: expiresAt
             };
-
+            
             console.log('Bannissement de l\'utilisateur avec données:', banData);
-
+            
             const { error: insertError } = await this.supabase
                 .from('banned_ips')
                 .insert(banData);
-
+                
             if (insertError) throw insertError;
         }
 
-        this.showNotification(Utilisateur "${pseudo}" banni avec succès, 'success');
+        this.showNotification(`Utilisateur "${pseudo}" banni avec succès`, 'success');
         this.playSound('success');
-
+        
         // Actualiser immédiatement les messages
         await this.loadExistingMessages();
-
+        
         return true;
     } catch (error) {
         console.error('Erreur bannissement:', error);
