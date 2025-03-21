@@ -1,192 +1,183 @@
 import { createClient } from '@supabase/supabase-js';
 import webpush from 'web-push';
 
-// Création du client Supabase avec les variables d'environnement
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+// Configuration et validation des variables d'environnement
+const requiredEnvVars = [
+  'NEXT_PUBLIC_SUPABASE_URL',
+  'SUPABASE_SERVICE_ROLE_KEY',
+  'NEXT_PUBLIC_VAPID_PUBLIC_KEY',
+  'VAPID_PRIVATE_KEY'
+];
 
-// Configuration des clés VAPID une seule fois
-webpush.setVapidDetails(
-  'mailto:infos@jhd71.fr',
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-  process.env.VAPID_PRIVATE_KEY
-);
+// Fonction de validation des variables d'environnement
+function validateEnvironment() {
+  const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+  
+  if (missingVars.length > 0) {
+    console.error('⚠️ Variables d\'environnement manquantes:', missingVars);
+    throw new Error(`Variables d'environnement manquantes : ${missingVars.join(', ')}`);
+  }
+}
 
-// Fonction utilitaire pour envoyer une notification avec retry
+// Initialisation sécurisée
+let supabase;
+let vapidPublicKey;
+let vapidPrivateKey;
+
+try {
+  validateEnvironment();
+
+  // Création du client Supabase
+  supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
+
+  // Configuration des clés VAPID
+  vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+  vapidPrivateKey = process.env.VAPID_PRIVATE_KEY;
+
+  webpush.setVapidDetails(
+    'mailto:infos@jhd71.fr',
+    vapidPublicKey,
+    vapidPrivateKey
+  );
+} catch (error) {
+  console.error('Erreur d\'initialisation:', error);
+}
+
+// Fonction utilitaire pour envoyer une notification avec gestion des erreurs
 async function sendNotificationWithRetry(subscription, payload, maxRetries = 2) {
-  for (let i = 0; i <= maxRetries; i++) {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       await webpush.sendNotification(subscription, JSON.stringify(payload));
       return true;
     } catch (error) {
+      console.error(`Tentative ${attempt + 1} échouée:`, error);
+
+      // Gestion des abonnements expirés
       if (error.statusCode === 410) {
-        console.log('🔄 Maintenance: Souscription expirée');
-        throw error;
+        console.log('Abonnement expiré');
+        return false;
       }
 
-      if (i === maxRetries) {
-        console.log('📝 Info: Tentatives épuisées');
-        throw error;
+      // Attente entre les tentatives
+      if (attempt < maxRetries) {
+        await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
       }
-
-      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
     }
   }
   return false;
 }
 
-// Fonction pour nettoyer les subscriptions expirées
+// Fonction de nettoyage des abonnements expirés
 async function cleanExpiredSubscriptions() {
   try {
     const { data: subscriptions, error } = await supabase
       .from('push_subscriptions')
-      .select('*')
-      .eq('active', true);
+      .select('*');
 
     if (error) throw error;
 
     for (const sub of subscriptions || []) {
       try {
-        const parsedSubscription = typeof sub.subscription === 'string'
-          ? JSON.parse(sub.subscription)
-          : sub.subscription;
+        const parsedSubscription = typeof sub.keys === 'string' 
+          ? JSON.parse(sub.keys) 
+          : sub.keys;
 
         await webpush.sendNotification(
-          parsedSubscription,
-          JSON.stringify({ type: 'ping', timestamp: Date.now() })
+          parsedSubscription, 
+          JSON.stringify({ type: 'ping' })
         );
       } catch (error) {
         if (error.statusCode === 410) {
+          // Supprimer l'abonnement expiré
           await supabase
             .from('push_subscriptions')
-            .update({ active: false })
+            .delete()
             .eq('id', sub.id);
-
-          await supabase
-            .from('push_notification_log')
-            .insert({
-              from_user: 'system',
-              to_user: sub.pseudo,
-              status: 'expired',
-              error_message: 'Subscription expired',
-              subscription: sub.subscription,
-              device_type: sub.device_type || 'unknown'
-            });
         }
       }
     }
   } catch (error) {
-    console.error('Erreur nettoyage subscriptions:', error);
+    console.error('Erreur de nettoyage des subscriptions:', error);
   }
 }
 
-// Handler API Next.js
 export default async function handler(req, res) {
-  // Vérifier la méthode HTTP
+  // Log de débogage
+  console.log('Requête reçue:', {
+    method: req.method,
+    body: req.body
+  });
+
+  // Vérification de la méthode
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(405).json({ error: 'Méthode non autorisée' });
   }
 
   try {
+    // Validation des données
     const { message, fromUser, toUser } = req.body;
 
-    // Validation des données requises
     if (!message || !fromUser || !toUser) {
       return res.status(400).json({ 
-        error: "Les champs 'message', 'fromUser' et 'toUser' sont requis" 
+        error: 'Données de notification incomplètes' 
       });
     }
 
-    // Log initial
-    const { data: logEntry } = await supabase
-      .from('push_notification_log')
-      .insert({
-        from_user: fromUser,
-        to_user: toUser,
-        message: message,
-        status: 'pending'
-      })
-      .select()
-      .single();
-
-    // Nettoyage des subscriptions expirées
+    // Nettoyage des abonnements
     await cleanExpiredSubscriptions();
 
-    // Récupération des subscriptions actives
+    // Récupération des abonnements
     const { data: subscriptions, error: subError } = await supabase
       .from('push_subscriptions')
-      .select('*')
-      .eq('pseudo', toUser)
-      .eq('active', true);
+      .select('*');
 
     if (subError) throw subError;
 
     if (!subscriptions?.length) {
-      await supabase
-        .from('push_notification_log')
-        .update({
-          status: 'error',
-          error_message: 'No active subscriptions',
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', logEntry?.id);
-
-      return res.status(404).json({ error: 'No active subscriptions found' });
+      return res.status(404).json({ error: 'Aucun abonnement actif' });
     }
 
     // Envoi des notifications
-    const results = await Promise.all(
-      subscriptions.map(async (sub) => {
-        try {
-          const parsedSubscription = typeof sub.subscription === 'string'
-            ? JSON.parse(sub.subscription)
-            : sub.subscription;
+    const notificationPromises = subscriptions.map(async (sub) => {
+      try {
+        const parsedSubscription = typeof sub.keys === 'string' 
+          ? JSON.parse(sub.keys) 
+          : sub.keys;
 
-          const success = await sendNotificationWithRetry(
-            parsedSubscription,
-            {
-              title: `Message de ${fromUser}`,
-              body: message
-            }
-          );
+        return await sendNotificationWithRetry(
+          parsedSubscription, 
+          {
+            title: `Message de ${fromUser}`,
+            body: message,
+            icon: '/images/AM-192-v2.png'
+          }
+        );
+      } catch (error) {
+        console.error('Erreur lors de l\'envoi:', error);
+        return false;
+      }
+    });
 
-          return { success, device: sub.device_type };
-        } catch (error) {
-          return { 
-            success: false, 
-            error: error.message, 
-            device: sub.device_type 
-          };
-        }
-      })
-    );
+    // Attendre toutes les notifications
+    const results = await Promise.all(notificationPromises);
 
-    // Mise à jour du log
-    if (logEntry) {
-      await supabase
-        .from('push_notification_log')
-        .update({
-          status: 'completed',
-          success_count: results.filter(r => r.success).length,
-          error_count: results.filter(r => !r.success).length,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', logEntry.id);
-    }
+    // Analyser les résultats
+    const successCount = results.filter(Boolean).length;
+    const failureCount = results.length - successCount;
 
     return res.status(200).json({
       success: true,
-      results: {
-        total: subscriptions.length,
-        successful: results.filter(r => r.success).length,
-        failed: results.filter(r => !r.success).length
-      }
+      total: subscriptions.length,
+      sent: successCount,
+      failed: failureCount
     });
 
   } catch (error) {
     console.error('Erreur serveur:', error);
+    
     return res.status(500).json({ 
       error: 'Erreur serveur', 
       message: error.message 
