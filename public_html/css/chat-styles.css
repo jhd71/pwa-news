@@ -1343,40 +1343,6 @@ body.dark-mode .admin-panel {
     text-shadow: none !important; /* Supprime tout flou possible */
 }
 
-/* Survol - clair */
-.tab-btn:hover {
-    background: rgba(0, 0, 0, 0.05); /* plus neutre que le bleu */
-    color: var(--chat-primary);
-    text-shadow: none !important;
-}
-
-/* Actif - clair */
-.tab-btn.active {
-    background: rgba(0, 0, 0, 0.07);
-    color: var(--chat-primary);
-    border-bottom-color: var(--chat-primary);
-    text-shadow: none !important;
-}
-
-/* 🌙 Mode sombre */
-body.dark-mode .tab-btn {
-    color: #ccc;
-    text-shadow: none !important;
-}
-
-body.dark-mode .tab-btn:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: #90caf9;
-    text-shadow: none !important;
-}
-
-body.dark-mode .tab-btn.active {
-    background: rgba(255, 255, 255, 0.08);
-    color: #90caf9;
-    border-bottom-color: #90caf9;
-    text-shadow: none !important;
-}
-
 .tab-content {
     display: none;
 }
