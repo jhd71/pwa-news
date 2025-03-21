@@ -1418,6 +1418,8 @@ setupConnectionMonitor() {
         }
         
         try {
+			// Log pour débogage
+    console.log("Tentative d'envoi de notification à:", "/api/sendPush");
             const response = await fetch("/api/sendPush", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -1427,7 +1429,8 @@ setupConnectionMonitor() {
                     toUser: "all"
                 })
             });
-            
+             // Log détaillé de la réponse
+    console.log("Réponse API:", response.status, response.statusText);
             if (!response.ok) {
                 console.warn("Erreur API:", response.status, response.statusText);
                 return true; // Continuer malgré l'erreur de notification
