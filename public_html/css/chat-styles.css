@@ -1268,12 +1268,21 @@ body.long-press-active .message-options {
     
     max-height: 80vh;
     background: var(--chat-background, #fff);
-    border-radius: 12px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), inset 0 0 10px rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
     z-index: 1100;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+}
+
+/* 🌙 Mode sombre : adoucissement */
+body.dark-mode .admin-panel {
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 .banned-word,
@@ -1383,6 +1392,7 @@ body.dark-mode .tab-btn.active {
     margin-bottom: 10px;
     font-size: 16px;
 	color: var(--tab-text-color);
+	transition: color 0.3s ease;
 }
 
 .add-word, .banned-users-controls {
@@ -1538,6 +1548,7 @@ button:hover {
 .ban-message h3 {
     margin-top: 0;
 	color: var(--tab-text-color);
+	transition: color 0.3s ease;
 }
 
 .ban-message .reason {
