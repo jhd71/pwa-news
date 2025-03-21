@@ -219,6 +219,13 @@ body:has(.chat-container.open) .news-ticker {
   display: none !important;
 }
 /* Container principal du chat */
+/* Amélioration de la visibilité des panneaux */
+.chat-container, .admin-panel {
+    backdrop-filter: blur(10px);
+    background-color: rgba(80, 70, 150, 0.9) !important; /* Fond plus opaque */
+    z-index: 1100; /* Assurer que le chat est au-dessus d'autres éléments */
+}
+
 .chat-container {
     position: fixed;
     right: 20px;
@@ -1139,9 +1146,10 @@ body.long-press-active .message-options {
     right: 20px !important;  /* Modifier cette ligne */
     width: auto !important;
     max-width: 250px !important;
-    z-index: 2000 !important;
-    background: var(--info-bubble-bg, linear-gradient(135deg, #6a3093 0%, #a044ff 100%)) !important;
-    color: var(--info-bubble-text, white) !important;
+    z-index: 1090 !important;
+    background: linear-gradient(135deg, #8a40b8 0%, #c066ff 100%) !important;
+    color: white !important;
+    opacity: 0.95 !important;
     padding: 15px !important;
     border-radius: 12px !important;
     box-shadow: 0 4px 10px var(--info-bubble-shadow, rgba(0,0,0,0.3)) !important;
@@ -1325,7 +1333,7 @@ body.long-press-active .message-options {
     border-radius: 12px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
     overflow: hidden;
-    z-index: 1100;
+    z-index: 1200;
 }
 
 .panel-header {
