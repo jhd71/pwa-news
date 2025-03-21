@@ -1278,6 +1278,28 @@ body.long-press-active .message-options {
     flex-direction: column;
     overflow: hidden;
 }
+.panel-tabs {
+  position: relative;
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 15px;
+}
+
+/* Curseur animé */
+.tab-indicator {
+  position: absolute;
+  bottom: 0;
+  height: 3px;
+  width: 0;
+  background-color: var(--chat-primary);
+  transition: left 0.3s ease, width 0.3s ease;
+  border-radius: 2px;
+}
+
+/* Optionnel pour les thèmes */
+body.dark-mode .tab-indicator {
+  background-color: #90caf9;
+}
 
 /* 🌙 Mode sombre : adoucissement */
 body.dark-mode .admin-panel {
