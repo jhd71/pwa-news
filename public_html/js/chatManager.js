@@ -1407,7 +1407,7 @@ setupConnectionMonitor() {
             .single();
         
         if (error) throw error;
-        
+        console.error("Erreur d'envoi au serveur:", error);
         // Si vous recevez une confirmation du serveur, vous pouvez mettre à jour le message temporaire
         // avec l'ID réel de la base de données (optionnel)
         if (messageData) {
@@ -1418,8 +1418,6 @@ setupConnectionMonitor() {
         }
         
         try {
-			// Log pour débogage
-    console.log("Tentative d'envoi de notification à:", "/api/sendPush");
             const response = await fetch("/api/sendPush", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -1429,8 +1427,7 @@ setupConnectionMonitor() {
                     toUser: "all"
                 })
             });
-             // Log détaillé de la réponse
-    console.log("Réponse API:", response.status, response.statusText);
+            
             if (!response.ok) {
                 console.warn("Erreur API:", response.status, response.statusText);
                 return true; // Continuer malgré l'erreur de notification
