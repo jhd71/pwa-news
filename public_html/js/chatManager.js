@@ -950,6 +950,117 @@ toggleEmojiPanel() {
         });
 }
 
+// Ajouter cette fonction améliorée à votre ChatManager pour une meilleure surveillance des bannissements
+
+startBanMonitoring() {
+    console.log(`Démarrage de la surveillance des bannissements pour ${this.pseudo}`);
+    
+    // Vérifier immédiatement
+    this.checkBannedStatus();
+    
+    // Puis vérifier toutes les 30 secondes (moins fréquent pour économiser les ressources)
+    this.banMonitorInterval = setInterval(() => {
+        this.checkBannedStatus();
+    }, 30000);
+    
+    // S'abonner aux changements en temps réel sur la table banned_ips
+    this.setupBanSubscription();
+}
+
+async checkBannedStatus() {
+    if (!this.pseudo) return;
+    
+    try {
+        // Obtenir l'IP réelle si possible
+        const clientIP = await this.getClientIP();
+        
+        // Vérifier le bannissement par pseudo ET par IP réelle
+        const isBannedByPseudo = await this.checkBannedIP(this.pseudo);
+        const isBannedByIP = clientIP !== 'anonymous' && await this.checkBannedIP(clientIP);
+        
+        if (isBannedByPseudo || isBannedByIP) {
+            console.log(`Bannissement détecté pour ${this.pseudo}, déconnexion...`);
+            this.showNotification(`Vous avez été banni du chat: ${this.banDetails?.reason || ''}`, 'error');
+            
+            // Stocker le bannissement dans localStorage
+            localStorage.setItem('chatBanned', 'true');
+            localStorage.setItem('chatBanReason', this.banDetails?.reason || '');
+            localStorage.setItem('chatBanExpires', this.banDetails?.expiresAt || '');
+            
+            // Arrêter la surveillance
+            if (this.banMonitorInterval) {
+                clearInterval(this.banMonitorInterval);
+            }
+            
+            // Déconnecter l'utilisateur
+            await this.logout();
+        }
+    } catch (error) {
+        console.error('Erreur vérification de bannissement:', error);
+    }
+}
+
+setupBanSubscription() {
+    // S'abonner aux changements en temps réel dans la table banned_ips
+    const banChannel = this.supabase.channel('public:banned_ips');
+    
+    banChannel
+        .on('postgres_changes', 
+            { event: 'INSERT', schema: 'public', table: 'banned_ips' },
+            this.handleBanChange.bind(this)
+        )
+        .on('postgres_changes', 
+            { event: 'UPDATE', schema: 'public', table: 'banned_ips' },
+            this.handleBanChange.bind(this)
+        )
+        .subscribe();
+}
+
+async handleBanChange(payload) {
+    try {
+        console.log('Changement détecté dans les bannissements:', payload);
+        
+        // Obtenir les détails du ban
+        const banData = payload.new;
+        if (!banData) return;
+        
+        // Vérifier si ce ban nous concerne
+        const clientIP = await this.getClientIP();
+        
+        if (
+            (banData.ip === this.pseudo) || 
+            (banData.pseudo === this.pseudo) ||
+            (clientIP !== 'anonymous' && banData.ip === clientIP)
+        ) {
+            console.log('Ban détecté qui concerne cet utilisateur!');
+            
+            // Stocker les détails du ban
+            this.banDetails = {
+                reason: banData.reason || "Raison non spécifiée",
+                expiresAt: banData.expires_at,
+                bannedBy: banData.banned_by
+            };
+            
+            // Notification et déconnexion
+            this.showNotification(`Vous avez été banni du chat: ${this.banDetails.reason}`, 'error');
+            
+            // Stocker dans localStorage
+            localStorage.setItem('chatBanned', 'true');
+            localStorage.setItem('chatBanReason', this.banDetails.reason);
+            localStorage.setItem('chatBanExpires', this.banDetails.expiresAt || '');
+            
+            // Arrêter la surveillance et déconnecter
+            if (this.banMonitorInterval) {
+                clearInterval(this.banMonitorInterval);
+            }
+            
+            await this.logout();
+        }
+    } catch (error) {
+        console.error('Erreur traitement bannissement:', error);
+    }
+}
+
 setupBanChecker() {
     // Vérifier le bannissement toutes les 30 secondes
     this.banCheckInterval = setInterval(async () => {
@@ -1583,17 +1694,18 @@ async unsubscribeFromPushNotifications() {
         }
     }
 
-    async checkBannedIP(ip) {
+    // 1. Remplacer la fonction checkBannedIP dans votre ChatManager
+async checkBannedIP(pseudo) {
     try {
-        // Extraire le pseudo de l'IP (format: pseudo-timestamp)
-        const pseudo = ip.split('-')[0];
-        console.log(`Vérification bannissement pour pseudo: ${pseudo}`);
+        if (!pseudo) return false;
         
-        // Requête plus simple et directe
+        console.log(`Vérification bannissement pour: ${pseudo}`);
+        
+        // Vérification plus complète qui vérifie à la fois l'IP et le pseudo
         const { data, error } = await this.supabase
             .from('banned_ips')
             .select('*')
-            .eq('ip', pseudo)
+            .or(`ip.eq.${pseudo},pseudo.eq.${pseudo}`)
             .maybeSingle();
 
         if (error) {
@@ -1603,11 +1715,8 @@ async unsubscribeFromPushNotifications() {
         
         // Si pas de bannissement, retourner false
         if (!data) {
-            console.log(`Aucun bannissement trouvé pour: ${pseudo}`);
             return false;
         }
-        
-        console.log('Bannissement trouvé:', data);
         
         // Vérifier si le bannissement est expiré
         if (data.expires_at && new Date(data.expires_at) < new Date()) {
@@ -1616,15 +1725,267 @@ async unsubscribeFromPushNotifications() {
             await this.supabase
                 .from('banned_ips')
                 .delete()
-                .eq('ip', pseudo);
+                .eq('id', data.id);
             return false;
         }
         
         console.log(`Utilisateur ${pseudo} est banni!`);
+        
+        // Enregistrer les détails du bannissement pour information
+        this.banDetails = {
+            reason: data.reason || "Raison non spécifiée",
+            expiresAt: data.expires_at,
+            bannedBy: data.banned_by
+        };
+        
         return true;
     } catch (error) {
         console.error('Erreur vérification bannissement:', error);
         return false;
+    }
+}
+
+// 2. Modifier la fonction d'initialisation pour vérifier le bannissement avant connexion
+async init() {
+    try {
+        await this.loadBannedWords();
+        
+        // ***NOUVELLE PARTIE: Vérification de bannissement par IP réelle***
+        // Cette vérification se fait avant de consulter le pseudo local
+        const clientIP = await this.getClientIP();
+        if (clientIP && clientIP !== 'anonymous') {
+            const isBannedByIP = await this.checkBannedIP(clientIP);
+            if (isBannedByIP) {
+                // Forcer la déconnexion
+                this.pseudo = null;
+                this.isAdmin = false;
+                localStorage.removeItem('chatPseudo');
+                localStorage.removeItem('isAdmin');
+                this.showNotification(`Vous êtes banni du chat: ${this.banDetails?.reason || ''}`, 'error');
+                
+                // Stocker dans localStorage pour empêcher les tentatives répétées
+                localStorage.setItem('chatBanned', 'true');
+                localStorage.setItem('chatBanReason', this.banDetails?.reason || '');
+                localStorage.setItem('chatBanExpires', this.banDetails?.expiresAt || '');
+            }
+        }
+        
+        // Si l'utilisateur est marqué comme banni dans localStorage, bloquer immédiatement
+        if (localStorage.getItem('chatBanned') === 'true') {
+            const banExpires = localStorage.getItem('chatBanExpires');
+            if (!banExpires || new Date(banExpires) > new Date()) {
+                this.pseudo = null;
+                this.isAdmin = false;
+                this.showNotification(`Vous êtes banni du chat: ${localStorage.getItem('chatBanReason') || ''}`, 'error');
+                // Continuer l'initialisation mais sans permettre la connexion
+            } else {
+                // Bannissement expiré, nettoyer le localStorage
+                localStorage.removeItem('chatBanned');
+                localStorage.removeItem('chatBanReason');
+                localStorage.removeItem('chatBanExpires');
+            }
+        }
+        
+        // Vérifier si l'utilisateur est banni par son pseudo
+        if (this.pseudo) {
+            const isBanned = await this.checkBannedIP(this.pseudo);
+            if (isBanned) {
+                // Forcer la déconnexion
+                this.pseudo = null;
+                this.isAdmin = false;
+                localStorage.removeItem('chatPseudo');
+                localStorage.removeItem('isAdmin');
+                this.showNotification(`Vous êtes banni du chat: ${this.banDetails?.reason || ''}`, 'error');
+                
+                // Stocker dans localStorage pour empêcher les tentatives répétées
+                localStorage.setItem('chatBanned', 'true');
+                localStorage.setItem('chatBanReason', this.banDetails?.reason || '');
+                localStorage.setItem('chatBanExpires', this.banDetails?.expiresAt || '');
+            } else {
+                // Seulement si l'utilisateur n'est pas banni
+                await this.setCurrentUserForRLS();
+            }
+        }
+        
+        // Le reste du code init reste le même...
+        this.container = document.createElement('div');
+        this.container.className = 'chat-widget';
+        // ...
+    } catch (error) {
+        console.error('Erreur initialisation:', error);
+        // ...
+    }
+}
+
+// 3. Améliorer la fonction d'authentification pour vérifier le bannissement
+setupAuthListeners() {
+    const pseudoInput = this.container.querySelector('#pseudoInput');
+    const adminPasswordInput = this.container.querySelector('#adminPassword');
+    const confirmButton = this.container.querySelector('#confirmPseudo');
+
+    if (pseudoInput) {
+        pseudoInput.addEventListener('input', () => {
+            console.log('Pseudo input:', pseudoInput.value.trim());
+            if (pseudoInput.value.trim() === 'jhd71') {
+                console.log('Affichage du champ mot de passe admin');
+                adminPasswordInput.style.display = 'block';
+            } else {
+                adminPasswordInput.style.display = 'none';
+                adminPasswordInput.value = '';
+            }
+        });
+    }
+    
+    if (confirmButton) {
+        confirmButton.addEventListener('click', async () => {
+            const pseudo = pseudoInput?.value.trim();
+            const adminPassword = adminPasswordInput?.value;
+
+            console.log('Tentative de connexion avec pseudo:', pseudo);
+
+            if (!pseudo || pseudo.length < 3) {
+                this.showNotification('Le pseudo doit faire au moins 3 caractères', 'error');
+                this.playSound('error');
+                return;
+            }
+            
+            // NOUVELLE PARTIE: Vérifier d'abord si l'utilisateur est banni
+            // Vérification 1: Bannissement stocké localement
+            if (localStorage.getItem('chatBanned') === 'true') {
+                const banExpires = localStorage.getItem('chatBanExpires');
+                if (!banExpires || new Date(banExpires) > new Date()) {
+                    this.showNotification(`Vous êtes banni du chat: ${localStorage.getItem('chatBanReason') || ''}`, 'error');
+                    this.playSound('error');
+                    return;
+                } else {
+                    // Bannissement expiré, nettoyer le localStorage
+                    localStorage.removeItem('chatBanned');
+                    localStorage.removeItem('chatBanReason');
+                    localStorage.removeItem('chatBanExpires');
+                }
+            }
+            
+            // Vérification 2: Vérifier le bannissement dans la base de données
+            const isBanned = await this.checkBannedIP(pseudo);
+            if (isBanned) {
+                this.showNotification(`Ce pseudo est banni: ${this.banDetails?.reason || ''}`, 'error');
+                this.playSound('error');
+                
+                // Stocker le ban dans localStorage
+                localStorage.setItem('chatBanned', 'true');
+                localStorage.setItem('chatBanReason', this.banDetails?.reason || '');
+                localStorage.setItem('chatBanExpires', this.banDetails?.expiresAt || '');
+                return;
+            }
+
+            try {
+                // Cas administrateur
+                let isAdmin = false;
+                // ... Reste du code inchangé
+            } catch (error) {
+                console.error('Erreur d\'authentification:', error);
+                this.showNotification('Erreur lors de la connexion: ' + error.message, 'error');
+                this.playSound('error');
+            }
+        });
+    }
+}
+
+// 4. Améliorez la fonction banUser pour bannir efficacement
+async banUser(ip, reason = '', duration = null) {
+    try {
+        // Définir l'utilisateur courant pour RLS
+        await this.setCurrentUserForRLS();
+        
+        // Extraire le pseudo de l'IP (format actuel: pseudo-timestamp)
+        const pseudo = ip.split('-')[0];
+        
+        const expiresAt = duration ? new Date(Date.now() + parseInt(duration)).toISOString() : null;
+        
+        // Obtenir l'IP réelle si possible, sinon utiliser le pseudo
+        const clientIP = await this.getClientIP();
+        const ipToUse = clientIP !== 'anonymous' ? clientIP : pseudo;
+        
+        // Vérifier d'abord si l'utilisateur est déjà banni
+        const { data: existingBan } = await this.supabase
+            .from('banned_ips')
+            .select('*')
+            .eq('ip', ipToUse)
+            .maybeSingle();
+            
+        if (existingBan) {
+            console.log('Utilisateur déjà banni, mise à jour du bannissement');
+            
+            // Mettre à jour le bannissement existant
+            const { error: updateError } = await this.supabase
+                .from('banned_ips')
+                .update({
+                    expires_at: expiresAt,
+                    reason: reason || existingBan.reason,
+                    banned_by: this.pseudo
+                })
+                .eq('id', existingBan.id);
+                
+            if (updateError) throw updateError;
+        } else {
+            // Créer un nouveau bannissement
+            const banData = {
+                ip: ipToUse,
+                pseudo: pseudo,
+                reason: reason,
+                expires_at: expiresAt,
+                banned_by: this.pseudo
+            };
+            
+            console.log('Bannissement de l\'utilisateur avec données:', banData);
+            
+            const { error: insertError } = await this.supabase
+                .from('banned_ips')
+                .insert(banData);
+                
+            if (insertError) throw insertError;
+        }
+
+        this.showNotification(`Utilisateur "${pseudo}" banni avec succès`, 'success');
+        this.playSound('success');
+        
+        // Actualiser immédiatement les messages
+        await this.loadExistingMessages();
+        
+        return true;
+    } catch (error) {
+        console.error('Erreur bannissement:', error);
+        this.showNotification('Erreur lors du bannissement', 'error');
+        return false;
+    }
+}
+
+// 5. Améliorer la méthode pour obtenir l'IP client réelle
+async getClientIP() {
+    try {
+        // Tenter d'obtenir l'IP réelle via un service externe
+        const response = await fetch('https://api.ipify.org?format=json');
+        if (response.ok) {
+            const data = await response.json();
+            return data.ip;
+        }
+        
+        // Fallback 1: autre service
+        try {
+            const backupResponse = await fetch('https://api.db-ip.com/v2/free/self');
+            if (backupResponse.ok) {
+                const backupData = await backupResponse.json();
+                return backupData.ipAddress;
+            }
+        } catch (err) {
+            console.warn('Fallback IP service error:', err);
+        }
+        
+        // Si tout échoue, utiliser le pseudo comme identifiant de fallback
+        return this.pseudo || 'anonymous';
+    } catch (error) {
+        console.warn('Erreur récupération IP:', error);
+        return this.pseudo || 'anonymous';
     }
 }
 
@@ -2001,25 +2362,33 @@ addInputAccessButton() {
     return accessButton;
 }
 
+// Améliorez votre fonction showAdminPanel pour inclure la gestion des bannissements
+
 showAdminPanel() {
-        if (!this.isAdmin) return;
+    if (!this.isAdmin) return;
 
-        const existingPanel = document.querySelector('.admin-panel');
-        if (existingPanel) {
-            existingPanel.remove();
-            return;
-        }
+    const existingPanel = document.querySelector('.admin-panel');
+    if (existingPanel) {
+        existingPanel.remove();
+        return;
+    }
 
-        const panel = document.createElement('div');
-        panel.className = 'admin-panel';
-        panel.innerHTML = `
-            <div class="panel-header">
-                <h3>Panel Admin</h3>
-                <button class="close-panel">
-                    <span class="material-icons">close</span>
-                </button>
+    const panel = document.createElement('div');
+    panel.className = 'admin-panel';
+    panel.innerHTML = `
+        <div class="panel-header">
+            <h3>Panel Admin</h3>
+            <button class="close-panel">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="panel-content">
+            <div class="panel-tabs">
+                <button class="tab-btn active" data-tab="banned-words">Mots bannis</button>
+                <button class="tab-btn" data-tab="banned-users">Utilisateurs bannis</button>
             </div>
-            <div class="panel-content">
+            
+            <div class="tab-content active" id="banned-words-tab">
                 <div class="section">
                     <h4>Mots bannis</h4>
                     <div class="add-word">
@@ -2029,14 +2398,59 @@ showAdminPanel() {
                     <div class="banned-words-list"></div>
                 </div>
             </div>
-        `;
+            
+            <div class="tab-content" id="banned-users-tab">
+                <div class="section">
+                    <h4>Utilisateurs bannis</h4>
+                    <div class="banned-users-controls">
+                        <input type="text" id="ban-user-input" placeholder="Pseudo à bannir">
+                        <select id="ban-duration">
+                            <option value="">Ban permanent</option>
+                            <option value="3600000">1 heure</option>
+                            <option value="86400000">24 heures</option>
+                            <option value="604800000">1 semaine</option>
+                        </select>
+                        <input type="text" id="ban-reason" placeholder="Raison du ban">
+                        <button id="manual-ban-btn">Bannir</button>
+                    </div>
+                    <div class="banned-users-list">
+                        <div class="loading-spinner">Chargement...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
 
-        document.body.appendChild(panel);
-        this.loadBannedWords();
+    document.body.appendChild(panel);
+    
+    // Charger les mots bannis
+    this.loadBannedWords();
+    
+    // Ajouter les gestionnaires d'événements pour les onglets
+    const tabBtns = panel.querySelectorAll('.tab-btn');
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Désactiver tous les onglets et leur contenu
+            tabBtns.forEach(b => b.classList.remove('active'));
+            panel.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            
+            // Activer l'onglet cliqué
+            btn.classList.add('active');
+            const tabId = btn.getAttribute('data-tab') + '-tab';
+            panel.querySelector(`#${tabId}`).classList.add('active');
+            
+            // Charger les données spécifiques à l'onglet
+            if (tabId === 'banned-users-tab') {
+                this.loadBannedUsers();
+            }
+        });
+    });
+    
+    // Gestionnaire pour les mots bannis
+    const addWordBtn = panel.querySelector('.add-word-btn');
+    const wordInput = panel.querySelector('.add-word input');
 
-        const addWordBtn = panel.querySelector('.add-word-btn');
-        const wordInput = panel.querySelector('.add-word input');
-
+    if (addWordBtn && wordInput) {
         addWordBtn.addEventListener('click', async () => {
             const word = wordInput.value.trim().toLowerCase();
             if (word) {
@@ -2045,9 +2459,162 @@ showAdminPanel() {
                 await this.loadBannedWords();
             }
         });
-
-        panel.querySelector('.close-panel').addEventListener('click', () => panel.remove());
     }
+    
+    // Gestionnaire pour bannir un utilisateur manuellement
+    const manualBanBtn = panel.querySelector('#manual-ban-btn');
+    if (manualBanBtn) {
+        manualBanBtn.addEventListener('click', async () => {
+            const pseudo = panel.querySelector('#ban-user-input').value.trim();
+            const duration = panel.querySelector('#ban-duration').value;
+            const reason = panel.querySelector('#ban-reason').value.trim();
+            
+            if (!pseudo) {
+                this.showNotification('Veuillez saisir un pseudo', 'error');
+                return;
+            }
+            
+            await this.banUser(pseudo, reason, duration);
+            panel.querySelector('#ban-user-input').value = '';
+            panel.querySelector('#ban-reason').value = '';
+            this.loadBannedUsers();
+        });
+    }
+
+    panel.querySelector('.close-panel').addEventListener('click', () => panel.remove());
+}
+
+// Ajouter cette méthode pour charger les utilisateurs bannis
+async loadBannedUsers() {
+    try {
+        const panel = document.querySelector('.admin-panel');
+        if (!panel) return;
+        
+        const listContainer = panel.querySelector('.banned-users-list');
+        if (!listContainer) return;
+        
+        // Afficher le chargement
+        listContainer.innerHTML = '<div class="loading-spinner">Chargement...</div>';
+        
+        // Définir l'utilisateur courant pour RLS
+        await this.setCurrentUserForRLS();
+        
+        // Charger les utilisateurs bannis
+        const { data: bannedUsers, error } = await this.supabase
+            .from('banned_ips')
+            .select('*')
+            .order('banned_at', { ascending: false });
+            
+        if (error) throw error;
+        
+        if (!bannedUsers || bannedUsers.length === 0) {
+            listContainer.innerHTML = '<div class="no-items">Aucun utilisateur banni</div>';
+            return;
+        }
+        
+        // Formater la liste
+        const now = new Date();
+        const usersList = bannedUsers.map(ban => {
+            const isExpired = ban.expires_at && new Date(ban.expires_at) < now;
+            const expiryText = !ban.expires_at ? 'Permanent' :
+                               isExpired ? 'Expiré' :
+                               this.formatRemainingTime(new Date(ban.expires_at) - now);
+            
+            return `
+                <div class="banned-user ${isExpired ? 'expired' : ''}">
+                    <div class="ban-info">
+                        <div class="ban-user">${ban.pseudo || ban.ip}</div>
+                        <div class="ban-details">
+                            <span class="ban-reason">${ban.reason || 'Aucune raison spécifiée'}</span>
+                            <span class="ban-by">par ${ban.banned_by || 'Admin'}</span>
+                            <span class="ban-date">${this.formatDate(ban.banned_at)}</span>
+                        </div>
+                    </div>
+                    <div class="ban-status">
+                        <span class="ban-expires">${expiryText}</span>
+                        <button class="unban-btn" data-ban-id="${ban.id}">
+                            <span class="material-icons">delete</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        listContainer.innerHTML = usersList;
+        
+        // Ajouter des écouteurs pour les boutons de débannissement
+        const unbanBtns = listContainer.querySelectorAll('.unban-btn');
+        unbanBtns.forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const banId = btn.getAttribute('data-ban-id');
+                await this.unbanUser(banId);
+                this.loadBannedUsers();
+            });
+        });
+        
+    } catch (error) {
+        console.error('Erreur chargement utilisateurs bannis:', error);
+        const listContainer = document.querySelector('.admin-panel .banned-users-list');
+        if (listContainer) {
+            listContainer.innerHTML = '<div class="error">Erreur lors du chargement des utilisateurs bannis</div>';
+        }
+    }
+}
+
+// Méthode pour débannir un utilisateur
+async unbanUser(banId) {
+    try {
+        // Définir l'utilisateur courant pour RLS
+        await this.setCurrentUserForRLS();
+        
+        const { error } = await this.supabase
+            .from('banned_ips')
+            .delete()
+            .eq('id', banId);
+            
+        if (error) throw error;
+        
+        this.showNotification('Utilisateur débanni avec succès', 'success');
+        return true;
+    } catch (error) {
+        console.error('Erreur débannissement:', error);
+        this.showNotification('Erreur lors du débannissement', 'error');
+        return false;
+    }
+}
+
+// Méthodes utilitaires pour le formatage
+formatDate(dateStr) {
+    if (!dateStr) return 'N/A';
+    
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('fr-FR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+formatRemainingTime(milliseconds) {
+    if (milliseconds <= 0) return 'Expiré';
+    
+    const seconds = Math.floor(milliseconds / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    
+    if (days > 0) {
+        return `${days} jour${days > 1 ? 's' : ''}`;
+    } else if (hours > 0) {
+        return `${hours} heure${hours > 1 ? 's' : ''}`;
+    } else if (minutes > 0) {
+        return `${minutes} minute${minutes > 1 ? 's' : ''}`;
+    } else {
+        return `${seconds} seconde${seconds > 1 ? 's' : ''}`;
+    }
+}
 
     async addBannedWord(word) {
         const { error } = await this.supabase
