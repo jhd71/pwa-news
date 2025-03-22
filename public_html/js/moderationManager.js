@@ -1,8 +1,7 @@
-// js/moderationPanel.js
+/// moderationManager.js
 import { supabase } from './supabase-client.js';
-import ModerationManager from './moderationManager.js';
 
-export default class ModerationPanel {
+export default class ModerationManager {
     constructor() {
         this.moderationManager = new ModerationManager();
         this.panelContainer = null;
@@ -10,6 +9,27 @@ export default class ModerationPanel {
         this.isModerator = false;
     }
 
+async checkModeratorStatus() {
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+            
+            if (!user) return false;
+            
+            const { data, error } = await supabase
+                .from('moderators')
+                .select('*')
+                .eq('user_id', user.id)
+                .eq('is_active', true)
+                .single();
+                
+            this.isModerator = Boolean(data && !error);
+            return this.isModerator;
+        } catch (error) {
+            console.error('Erreur de vérification du statut de modérateur:', error);
+            return false;
+        }
+    }
+	
     async init() {
         try {
             // Récupérer l'utilisateur actuel
