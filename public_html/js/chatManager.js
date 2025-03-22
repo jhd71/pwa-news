@@ -200,6 +200,82 @@ async setCurrentUserForRLS() {
             this.bannedWords = new Set();
         }
     }
+	
+	async loadBannedIPs() {
+    try {
+        const { data: ips, error } = await this.supabase
+            .from('banned_ips')
+            .select('*')
+            .order('banned_at', { ascending: false });
+
+        if (error) throw error;
+
+        const list = document.querySelector('.banned-ips-list');
+        if (list) {
+            if (!ips || ips.length === 0) {
+                list.innerHTML = '<div class="no-data">Aucune IP bannie</div>';
+                return;
+            }
+
+            list.innerHTML = ips.map(ip => {
+                // Formater la date d'expiration ou indiquer permanent
+                let expires = 'Ban permanent';
+                if (ip.expires_at) {
+                    const expiryDate = new Date(ip.expires_at);
+                    const now = new Date();
+                    
+                    if (expiryDate < now) {
+                        expires = 'Expiré';
+                    } else {
+                        expires = `Expire le ${expiryDate.toLocaleDateString('fr-FR')} à ${expiryDate.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'})}`;
+                    }
+                }
+                
+                return `
+                    <div class="banned-ip">
+                        <div class="ip-info">
+                            <div class="ip-pseudo">${ip.ip}</div>
+                            <div class="ip-expiry">${expires}</div>
+                        </div>
+                        <button class="remove-ban" data-ip="${ip.ip}">×</button>
+                    </div>
+                `;
+            }).join('');
+
+            // Ajouter les listeners pour les boutons de suppression
+            list.querySelectorAll('.remove-ban').forEach(btn => {
+                btn.addEventListener('click', () => this.unbanIP(btn.dataset.ip));
+            });
+        }
+    } catch (error) {
+        console.error('Erreur loadBannedIPs:', error);
+        const list = document.querySelector('.banned-ips-list');
+        if (list) {
+            list.innerHTML = '<div class="error">Erreur lors du chargement des IPs bannies</div>';
+        }
+    }
+}
+
+async unbanIP(ip) {
+    try {
+        // Définir l'utilisateur courant pour les vérifications RLS
+        await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
+        
+        const { error } = await this.supabase
+            .from('banned_ips')
+            .delete()
+            .eq('ip', ip);
+
+        if (error) throw error;
+
+        this.showNotification(`IP ${ip} débannie avec succès`, 'success');
+        this.loadBannedIPs(); // Recharger la liste
+    } catch (error) {
+        console.error('Erreur unbanIP:', error);
+        this.showNotification('Erreur lors du débannissement', 'error');
+    }
+}
+
 	getPseudoHTML() {
     return `
         <button class="chat-toggle" title="Ouvrir le chat">
@@ -2002,52 +2078,78 @@ addInputAccessButton() {
 }
 
 showAdminPanel() {
-        if (!this.isAdmin) return;
+    if (!this.isAdmin) return;
 
-        const existingPanel = document.querySelector('.admin-panel');
-        if (existingPanel) {
-            existingPanel.remove();
-            return;
-        }
+    const existingPanel = document.querySelector('.admin-panel');
+    if (existingPanel) {
+        existingPanel.remove();
+        return;
+    }
 
-        const panel = document.createElement('div');
-        panel.className = 'admin-panel';
-        panel.innerHTML = `
-            <div class="panel-header">
-                <h3>Panel Admin</h3>
-                <button class="close-panel">
-                    <span class="material-icons">close</span>
-                </button>
+    const panel = document.createElement('div');
+    panel.className = 'admin-panel';
+    panel.innerHTML = `
+        <div class="panel-header">
+            <h3>Panel Admin</h3>
+            <button class="close-panel">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="panel-tabs">
+            <button class="tab-btn active" data-tab="banned-words">Mots bannis</button>
+            <button class="tab-btn" data-tab="banned-ips">IPs bannies</button>
+        </div>
+        <div class="panel-content">
+            <div class="tab-section active" id="banned-words-section">
+                <h4>Mots bannis</h4>
+                <div class="add-word">
+                    <input type="text" placeholder="Nouveau mot à bannir">
+                    <button class="add-word-btn">Ajouter</button>
+                </div>
+                <div class="banned-words-list"></div>
             </div>
-            <div class="panel-content">
-                <div class="section">
-                    <h4>Mots bannis</h4>
-                    <div class="add-word">
-                        <input type="text" placeholder="Nouveau mot à bannir">
-                        <button class="add-word-btn">Ajouter</button>
-                    </div>
-                    <div class="banned-words-list"></div>
+            <div class="tab-section" id="banned-ips-section">
+                <h4>IPs bannies</h4>
+                <div class="banned-ips-list">
+                    <div class="loading-ips">Chargement des IPs bannies...</div>
                 </div>
             </div>
-        `;
+        </div>
+    `;
 
-        document.body.appendChild(panel);
-        this.loadBannedWords();
+    document.body.appendChild(panel);
+    this.loadBannedWords();
+    this.loadBannedIPs();
 
-        const addWordBtn = panel.querySelector('.add-word-btn');
-        const wordInput = panel.querySelector('.add-word input');
-
-        addWordBtn.addEventListener('click', async () => {
-            const word = wordInput.value.trim().toLowerCase();
-            if (word) {
-                await this.addBannedWord(word);
-                wordInput.value = '';
-                await this.loadBannedWords();
-            }
+    // Gestion des onglets
+    const tabBtns = panel.querySelectorAll('.tab-btn');
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Désactiver tous les onglets
+            tabBtns.forEach(b => b.classList.remove('active'));
+            panel.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+            
+            // Activer l'onglet cliqué
+            btn.classList.add('active');
+            const tabId = btn.dataset.tab + '-section';
+            panel.querySelector(`#${tabId}`).classList.add('active');
         });
+    });
 
-        panel.querySelector('.close-panel').addEventListener('click', () => panel.remove());
-    }
+    const addWordBtn = panel.querySelector('.add-word-btn');
+    const wordInput = panel.querySelector('.add-word input');
+
+    addWordBtn.addEventListener('click', async () => {
+        const word = wordInput.value.trim().toLowerCase();
+        if (word) {
+            await this.addBannedWord(word);
+            wordInput.value = '';
+            await this.loadBannedWords();
+        }
+    });
+
+    panel.querySelector('.close-panel').addEventListener('click', () => panel.remove());
+}
 
     async addBannedWord(word) {
         const { error } = await this.supabase
