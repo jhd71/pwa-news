@@ -1,11 +1,12 @@
 // js/moderationPanel.js
-import { supabase } from './supabase-client.js';
-import ModerationManager from './moderationManager.js';
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const supabaseUrl = 'https://aqedqlzsguvkopucyqbb.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxZWRxbHpzZ3V2a29wdWN5cWJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY1MDAxNzUsImV4cCI6MjA1MjA3NjE3NX0.tjdnqCIW0dgmzn3VYx0ugCrISLPFMLhOQJBnnC5cfoo';
 
 export default class ModerationPanel {
     constructor() {
-        this.moderationManager = new ModerationManager();
-        this.panelContainer = null;
+        this.supabase = createClient(supabaseUrl, supabaseAnonKey);
         this.currentUser = null;
         this.isModerator = false;
     }
@@ -13,61 +14,73 @@ export default class ModerationPanel {
     async init() {
         try {
             // Récupérer l'utilisateur actuel
-            const { data: { user } } = await supabase.auth.getUser();
+            const { data: { user } } = await this.supabase.auth.getUser();
 
             if (!user) {
                 console.log('Aucun utilisateur connecté');
                 return false;
             }
 
-            this.currentUser = user;
-
-            // Vérifier si l'utilisateur est modérateur
-            const { data: moderatorData, error } = await supabase
-              .from('moderators')
-              .select('*')
-              .eq('user_id', user.id)
-              .eq('is_active', true)
-              .single();
+            // Vérifier les droits de modération
+            const { data: moderatorData, error } = await this.supabase
+                .from('moderators')
+                .select('*')
+                .eq('user_id', user.id)
+                .eq('is_active', true)
+                .single();
 
             if (error || !moderatorData) {
-                console.log('Vous n\'avez pas les droits de modération');
+                console.log('Pas de droits de modération');
                 return false;
             }
 
-            // Marquer l'utilisateur comme modérateur
+            // L'utilisateur est un modérateur
+            this.currentUser = user;
             this.isModerator = true;
 
-            // Continuer l'initialisation si modérateur
-            this.createModerationPanel();
+            // Configurer les écouteurs d'événements
             this.setupEventListeners();
+
             return true;
 
         } catch (error) {
-            console.error('Erreur d\'initialisation:', error);
-            alert('Erreur de connexion');
+            console.error('Erreur d\'initialisation du panneau de modération:', error);
             return false;
         }
     }
 
-    // Méthode pour afficher le panneau de modération
+    setupEventListeners() {
+        const openModerationPanelBtn = document.getElementById('openModerationPanel');
+        const chatToggleBtn = document.getElementById('chatToggleBtn');
+
+        if (openModerationPanelBtn) {
+            openModerationPanelBtn.disabled = false;
+            openModerationPanelBtn.addEventListener('click', () => this.show());
+        }
+
+        if (chatToggleBtn) {
+            chatToggleBtn.disabled = false;
+        }
+    }
+
     show() {
         if (!this.isModerator) {
-            alert('Accès refusé. Vous n\'avez pas les droits de modération.');
+            alert('Vous n\'avez pas les droits de modération');
             return;
         }
 
-        if (this.panelContainer) {
-            this.panelContainer.classList.remove('hidden');
-            
-            // Recharger les données
-            this.loadForbiddenWords();
-            this.loadBannedUsers();
-            this.loadModerationLogs();
-        } else {
-            // Si le panneau n'existe pas encore, le créer
-            this.createModerationPanel();
-        }
+        // Logique pour afficher le panneau de modération
+        console.log('Ouverture du panneau de modération');
+        // Vous pouvez ajouter ici la logique pour ouvrir un modal ou rediriger
+    }
+}
+  if (!this.isModerator) {
+    alert('Accès refusé. Vous n\'avez pas les droits de modération.');
+    return;
+  }
+
+        // Créer le panneau de modération
+        this.createModerationPanel();
     }
 
     createModerationPanel() {
@@ -150,6 +163,9 @@ export default class ModerationPanel {
         // Ajouter au DOM
         document.body.appendChild(this.panelContainer);
 
+        // Configurer les événements
+        this.setupEventListeners();
+
         // Charger les données initiales
         this.loadForbiddenWords();
         this.loadBannedUsers();
@@ -157,15 +173,10 @@ export default class ModerationPanel {
     }
 
     setupEventListeners() {
-        if (!this.panelContainer) return;
-
         // Fermeture du panneau
-        const closeButton = document.getElementById('closeModerationPanel');
-        if (closeButton) {
-            closeButton.addEventListener('click', () => {
-                this.hide();
-            });
-        }
+        document.getElementById('closeModerationPanel').addEventListener('click', () => {
+            this.panelContainer.classList.add('hidden');
+        });
 
         // Gestion des onglets
         const tabButtons = this.panelContainer.querySelectorAll('.tab-btn');
@@ -183,56 +194,58 @@ export default class ModerationPanel {
 
         // Formulaire d'ajout de mots interdits
         const addWordForm = document.getElementById('addForbiddenWordForm');
-        if (addWordForm) {
-            addWordForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const wordInput = document.getElementById('forbiddenWordInput');
-                try {
-                    await this.moderationManager.addForbiddenWord(wordInput.value);
-                    wordInput.value = '';
-                    this.loadForbiddenWords();
-                } catch (error) {
-                    alert('Erreur : ' + error.message);
-                }
-            });
-        }
+        addWordForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const wordInput = document.getElementById('forbiddenWordInput');
+            try {
+                await this.moderationManager.addForbiddenWord(wordInput.value);
+                wordInput.value = '';
+                this.loadForbiddenWords();
+            } catch (error) {
+                alert('Erreur : ' + error.message);
+            }
+        });
 
         // Formulaire de bannissement
         const banUserForm = document.getElementById('banUserForm');
-        if (banUserForm) {
-            banUserForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const userSelect = document.getElementById('userSelect');
-                const banReason = document.getElementById('banReason');
-                const banDuration = document.getElementById('banDuration');
+        banUserForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userSelect = document.getElementById('userSelect');
+            const banReason = document.getElementById('banReason');
+            const banDuration = document.getElementById('banDuration');
 
-                try {
-                    await this.moderationManager.banUser(
-                        userSelect.value, 
-                        banReason.value,
-                        banDuration.value ? parseInt(banDuration.value) : null
-                    );
-                    banReason.value = '';
-                    this.loadBannedUsers();
-                } catch (error) {
-                    alert('Erreur : ' + error.message);
-                }
-            });
-        }
+            try {
+                await this.moderationManager.banUser(
+                    userSelect.value, 
+                    banReason.value,
+                    banDuration.value ? parseInt(banDuration.value) : null
+                );
+                banReason.value = '';
+                this.loadBannedUsers();
+            } catch (error) {
+                alert('Erreur : ' + error.message);
+            }
+        });
     }
 
     async loadForbiddenWords() {
-        const wordsList = document.getElementById('forbiddenWordsList');
-        if (!wordsList) return;
-        
-        wordsList.innerHTML = ''; // Vider la liste
+    const wordsList = document.getElementById('forbiddenWordsList');
+    if (!wordsList) return;
+    
+    wordsList.innerHTML = ''; // Vider la liste
 
+    try {
         const { data, error } = await supabase
             .from('forbidden_words')
             .select('*');
 
         if (error) {
             console.error('Erreur de chargement des mots interdits:', error);
+            return;
+        }
+
+        if (!data || data.length === 0) {
+            wordsList.innerHTML = '<li>Aucun mot interdit configuré</li>';
             return;
         }
 
@@ -248,21 +261,32 @@ export default class ModerationPanel {
         // Ajouter des écouteurs pour supprimer des mots
         wordsList.querySelectorAll('.remove-word').forEach(btn => {
             btn.addEventListener('click', async () => {
-                const wordId = btn.dataset.id;
-                await supabase
-                    .from('forbidden_words')
-                    .delete()
-                    .eq('id', wordId);
-                this.loadForbiddenWords();
+                try {
+                    const wordId = btn.dataset.id;
+                    const { error } = await supabase
+                        .from('forbidden_words')
+                        .delete()
+                        .eq('id', wordId);
+                        
+                    if (error) throw error;
+                    
+                    // Rafraîchir la liste
+                    this.loadForbiddenWords();
+                } catch (e) {
+                    console.error('Erreur lors de la suppression du mot:', e);
+                    alert('Erreur lors de la suppression');
+                }
             });
         });
+    } catch (e) {
+        console.error('Erreur générale:', e);
+        wordsList.innerHTML = '<li>Erreur de chargement</li>';
     }
+}
 
     async loadBannedUsers() {
         const bannedUsersList = document.getElementById('bannedUsersList');
         const userSelect = document.getElementById('userSelect');
-        if (!bannedUsersList || !userSelect) return;
-        
         bannedUsersList.innerHTML = '';
         userSelect.innerHTML = '<option value="">Sélectionner un utilisateur</option>';
 
@@ -319,8 +343,6 @@ export default class ModerationPanel {
 
     async loadModerationLogs() {
         const logsBody = document.getElementById('moderationLogsBody');
-        if (!logsBody) return;
-        
         logsBody.innerHTML = ''; // Vider les logs existants
 
         const { data, error } = await supabase
@@ -344,6 +366,23 @@ export default class ModerationPanel {
             `;
             logsBody.appendChild(row);
         });
+    }
+
+    // Méthode pour afficher le panneau de modération
+    show() {
+        if (!this.moderationManager.isModerator) {
+            alert('Accès refusé. Vous n\'avez pas les droits de modération.');
+            return;
+        }
+
+        if (this.panelContainer) {
+            this.panelContainer.classList.remove('hidden');
+            
+            // Recharger les données
+            this.loadForbiddenWords();
+            this.loadBannedUsers();
+            this.loadModerationLogs();
+        }
     }
 
     // Méthode pour masquer le panneau de modération
