@@ -350,10 +350,13 @@
 
 // NOUVEAU : Initialiser ModerationPanel
                 console.log('Chargement du Panneau de Modération...');
-                const moderationPanelModule = await import('/js/moderationPanel.js');
-                window.moderationPanel = new moderationPanelModule.default();
-                await window.moderationPanel.init();
-                console.log('Panneau de Modération initialisé');
+                try {
+    const moderationPanel = new ModerationPanel();
+    const initResult = await moderationPanel.init();
+    console.log("Initialisation du panneau de modération:", initResult ? "réussie" : "échouée");
+} catch (error) {
+    console.error("Erreur lors de l'initialisation du panneau de modération:", error);
+}
 
                 // NOUVEAU : Ajouter l'écouteur pour ouvrir le panneau
                 const openModerationPanelBtn = document.getElementById('openModerationPanel');
@@ -661,5 +664,8 @@ supabase.auth.onAuthStateChange((event, session) => {
     checkAuthStatus();
 });
 </script>
+<!-- À ajouter à la fin, juste avant </body> -->
+<script src="js/debug.js"></script>
+</body>
 </body>
 </html>
