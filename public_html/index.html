@@ -218,12 +218,11 @@
         <span>Chat</span>
         <span class="chat-notification-badge hidden">0</span>
     </button>
-    <!-- Remplacez le bouton Modération en bas par celui-ci -->
-<button id="signupBtn" class="nav-button">
+    <!-- Bouton d'inscription -->
+    <button class="signup-btn">
     <span class="material-icons">person_add</span>
-    <span>S'inscrire</span>
-</button>
-</a>
+        <span>S'inscrire</span>
+    </button>
 </nav>
 
 <!-- Scripts -->
@@ -631,7 +630,7 @@ window.refreshNews = refreshNews;
     // Vérifier l'état de connexion au chargement
     checkAuthStatus();
 
-    ddocument.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
     // Ajout de listeners manuels pour le bouton de chat
     const chatBtn = document.getElementById('chatToggleBtn');
     const chatContainer = document.getElementById('chat-container');
@@ -796,5 +795,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+<script src="js/ui-fixes.js"></script>
 </body>
 </html>
