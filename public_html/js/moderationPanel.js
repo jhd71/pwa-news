@@ -1,8 +1,12 @@
 // js/moderationPanel.js
-import { supabase } from './supabase-client.js';
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const supabaseUrl = 'https://aqedqlzsguvkopucyqbb.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxZWRxbHpzZ3V2a29wdWN5cWJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY1MDAxNzUsImV4cCI6MjA1MjA3NjE3NX0.tjdnqCIW0dgmzn3VYx0ugCrISLPFMLhOQJBnnC5cfoo';
 
 export default class ModerationPanel {
     constructor() {
+        this.supabase = createClient(supabaseUrl, supabaseAnonKey);
         this.currentUser = null;
         this.isModerator = false;
     }
@@ -10,7 +14,7 @@ export default class ModerationPanel {
     async init() {
         try {
             // Récupérer l'utilisateur actuel
-            const { data: { user } } = await supabase.auth.getUser();
+            const { data: { user } } = await this.supabase.auth.getUser();
 
             if (!user) {
                 console.log('Aucun utilisateur connecté');
@@ -18,7 +22,7 @@ export default class ModerationPanel {
             }
 
             // Vérifier les droits de modération
-            const { data: moderatorData, error } = await supabase
+            const { data: moderatorData, error } = await this.supabase
                 .from('moderators')
                 .select('*')
                 .eq('user_id', user.id)
@@ -70,6 +74,10 @@ export default class ModerationPanel {
         // Vous pouvez ajouter ici la logique pour ouvrir un modal ou rediriger
     }
 }
+  if (!this.isModerator) {
+    alert('Accès refusé. Vous n\'avez pas les droits de modération.');
+    return;
+  }
 
         // Créer le panneau de modération
         this.createModerationPanel();
