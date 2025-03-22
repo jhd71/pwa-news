@@ -1,15 +1,13 @@
-/// moderationManager.js
+// js/moderationManager.js
 import { supabase } from './supabase-client.js';
 
 export default class ModerationManager {
     constructor() {
-        this.moderationManager = new ModerationManager();
-        this.panelContainer = null;
-        this.currentUser = null;
+        // NE PAS créer une instance de ModerationPanel ici
         this.isModerator = false;
     }
 
-async checkModeratorStatus() {
+    async checkModeratorStatus() {
         try {
             const { data: { user } } = await supabase.auth.getUser();
             
@@ -29,6 +27,44 @@ async checkModeratorStatus() {
             return false;
         }
     }
+
+    async addForbiddenWord(word) {
+        if (!word) return;
+        
+        try {
+            const { error } = await supabase
+                .from('forbidden_words')
+                .insert({ word: word.toLowerCase() });
+                
+            if (error) throw error;
+            return true;
+        } catch (error) {
+            console.error('Erreur lors de l\'ajout du mot interdit:', error);
+            throw error;
+        }
+    }
+
+    async banUser(userId, reason, duration) {
+        if (!userId) return;
+        
+        try {
+            const { error } = await supabase
+                .from('banned_users')
+                .insert({
+                    user_id: userId,
+                    reason,
+                    banned_until: duration ? new Date(Date.now() + duration).toISOString() : null,
+                    banned_by: (await supabase.auth.getUser()).data.user?.id
+                });
+                
+            if (error) throw error;
+            return true;
+        } catch (error) {
+            console.error('Erreur lors du bannissement de l\'utilisateur:', error);
+            throw error;
+        }
+    }
+}
 	
     async init() {
         try {
