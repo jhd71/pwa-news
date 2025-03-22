@@ -59,14 +59,13 @@
     <link rel="stylesheet" href="css/news-panel.css">
     <link rel="stylesheet" href="css/moderation-panel.css">
     <!-- Notifications -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" id="supabaseClient"></script>
 </head>
 <body>
 <div id="splash-screen">
     <div class="splash-text">Actu&Média</div>
 </div>
 <script src="js/splash-screen.js"></script>
-<script src="js/supabase-client.js"></script>
 <script src="js/debug.js"></script>
 <header class="app-header">
     <button type="button" id="menuButton" class="menu-button" aria-label="Menu">
@@ -790,6 +789,7 @@ supabase.auth.onAuthStateChange((event, session) => {
   }
 });
 </script>
+<script src="js/supabase-client.js"></script>
 <script src="js/ui-fixes.js"></script>
 </body>
 </html>
