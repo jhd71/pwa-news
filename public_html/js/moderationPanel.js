@@ -1,5 +1,6 @@
 // js/moderationPanel.js
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import ModerationManager from './moderationManager.js';
 
 const supabaseUrl = 'https://aqedqlzsguvkopucyqbb.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxZWRxbHpzZ3V2a29wdWN5cWJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY1MDAxNzUsImV4cCI6MjA1MjA3NjE3NX0.tjdnqCIW0dgmzn3VYx0ugCrISLPFMLhOQJBnnC5cfoo';
@@ -9,18 +10,18 @@ export default class ModerationPanel {
         this.supabase = createClient(supabaseUrl, supabaseAnonKey);
         this.currentUser = null;
         this.isModerator = false;
+        this.moderationManager = new ModerationManager(); // Créer l'instance ici
+        this.panelContainer = null;
     }
-
+    
     async init() {
         try {
             // Récupérer l'utilisateur actuel
             const { data: { user } } = await this.supabase.auth.getUser();
-
             if (!user) {
                 console.log('Aucun utilisateur connecté');
                 return false;
             }
-
             // Vérifier les droits de modération
             const { data: moderatorData, error } = await this.supabase
                 .from('moderators')
@@ -28,21 +29,20 @@ export default class ModerationPanel {
                 .eq('user_id', user.id)
                 .eq('is_active', true)
                 .single();
-
             if (error || !moderatorData) {
                 console.log('Pas de droits de modération');
                 return false;
             }
-
             // L'utilisateur est un modérateur
             this.currentUser = user;
             this.isModerator = true;
-
+            
+            // Créer le panneau
+            this.createModerationPanel();
+            
             // Configurer les écouteurs d'événements
             this.setupEventListeners();
-
             return true;
-
         } catch (error) {
             console.error('Erreur d\'initialisation du panneau de modération:', error);
             return false;
