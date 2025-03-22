@@ -121,7 +121,7 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 300px;
+            max-width: 90%;
             margin: auto;
         }
         
@@ -141,6 +141,7 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             box-sizing: border-box;
+            font-size: 16px; /* Plus grand pour mobile */
         }
         
         .submit-btn {
@@ -153,6 +154,33 @@
             cursor: pointer;
             font-size: 16px;
         }
+        
+        /* Styles adaptés pour mobile */
+        @media (max-width: 600px) {
+            .login-form {
+                max-width: 95%;
+                padding: 15px;
+            }
+            
+            .form-group label {
+                font-size: 16px;
+            }
+            
+            .form-group input {
+                padding: 12px;
+                font-size: 16px;
+            }
+            
+            .submit-btn {
+                padding: 12px;
+                font-size: 18px;
+            }
+            
+            /* Ajuster la taille de la fenêtre pour qu'elle s'adapte à l'écran */
+            #login-form-container {
+                padding: 10px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -163,11 +191,11 @@
     
     <div class="chat-messages" id="messages">
         <div class="message received">
-            <div class="message-content">Bienvenue dans le chat! Connectez-vous pour participer à la discussion.</div>
+            <div class="message-content">Bienvenue dans le chat! Commencez à écrire pour discuter.</div>
             <div class="message-timestamp">12:00</div>
         </div>
         
-        <div class="login-overlay" id="login-overlay">
+        <div class="login-overlay" id="login-overlay" style="display: none;">
             <h2>Connectez-vous pour accéder au chat</h2>
             <p>Vous devez être connecté pour envoyer des messages</p>
             <button class="login-btn" id="show-login-form">Se connecter</button>
@@ -202,8 +230,23 @@
     </div>
     
     <script>
-        // Simuler l'état de connexion (à remplacer par votre logique d'authentification)
-        let isLoggedIn = false;
+        // Vérifier si l'utilisateur est déjà connecté (via un cookie ou localStorage)
+        function checkLoginStatus() {
+            // Vérifier localement si connecté
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            // Mettre à jour l'interface en fonction de l'état de connexion
+            if (isLoggedIn) {
+                document.getElementById('login-overlay').style.display = 'none';
+            } else {
+                document.getElementById('login-overlay').style.display = 'block';
+            }
+            
+            return isLoggedIn;
+        }
+        
+        // État de connexion initial
+        let isLoggedIn = checkLoginStatus();
         
         // Écouteurs d'événements
         document.getElementById('message-form').addEventListener('submit', function(e) {
@@ -221,7 +264,11 @@
                 addMessage(message, true);
                 input.value = '';
                 
-                // Ici, vous ajouteriez le code pour envoyer le message à votre serveur/Supabase
+                // Envoyer le message (simulation)
+                setTimeout(() => {
+                    // Simuler une réponse
+                    addMessage("Message reçu!", false);
+                }, 1000);
             }
         });
         
@@ -240,8 +287,11 @@
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             
-            // Simuler une connexion réussie (à remplacer par votre code d'authentification)
+            // Simuler une connexion réussie
             isLoggedIn = true;
+            // Stocker l'état de connexion
+            localStorage.setItem('isLoggedIn', 'true');
+            
             document.getElementById('login-form-container').style.display = 'none';
             document.getElementById('login-overlay').style.display = 'none';
             
@@ -260,6 +310,20 @@
             
             messagesContainer.appendChild(messageEl);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // Détecter si on est sur mobile
+        function isMobileDevice() {
+            return (window.innerWidth <= 800) || ('ontouchstart' in window);
+        }
+        
+        // Adapter l'interface pour mobile
+        if (isMobileDevice()) {
+            document.querySelector('.login-form').style.maxWidth = '90%';
+            document.querySelectorAll('.form-group input').forEach(input => {
+                input.style.padding = '12px';
+                input.style.fontSize = '16px';
+            });
         }
     </script>
 </body>
