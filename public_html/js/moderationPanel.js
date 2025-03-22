@@ -1,62 +1,58 @@
 // js/moderationPanel.js
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-import ModerationManager from './moderationManager.js';
-
-const supabaseUrl = 'https://aqedqlzsguvkopucyqbb.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxZWRxbHpzZ3V2a29wdWN5cWJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY1MDAxNzUsImV4cCI6MjA1MjA3NjE3NX0.tjdnqCIW0dgmzn3VYx0ugCrISLPFMLhOQJBnnC5cfoo';
-
-export default class ModerationPanel {
+class ModerationPanel {
     constructor() {
-        this.supabase = createClient(supabaseUrl, supabaseAnonKey);
         this.currentUser = null;
         this.isModerator = false;
-        this.moderationManager = new ModerationManager(); // Créer l'instance ici
         this.panelContainer = null;
     }
     
     async init() {
-  try {
-    // Récupérer l'utilisateur actuel
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-      console.log('Aucun utilisateur connecté');
-      return false;
-    }
+        try {
+            // Vérifier si Supabase est disponible
+            if (!window.supabase) {
+                console.error('Supabase n\'est pas disponible');
+                return false;
+            }
+            
+            // Récupérer l'utilisateur actuel
+            const { data: { user } } = await window.supabase.auth.getUser();
+            
+            if (!user) {
+                console.log('Aucun utilisateur connecté');
+                return false;
+            }
 
-    console.log("ID de l'utilisateur connecté:", user.id);
-    
-    // Une requête plus simple pour vérifier les droits de modération
-    const { data, error } = await supabase
-      .from('moderators')
-      .select('*')
-      .eq('user_id', user.id);
-    
-    console.log("Résultat de la requête moderators:", data, error);
-    
-    if (error) {
-      console.error('Erreur lors de la vérification des droits de modération:', error);
-      return false;
-    }
-    
-    // Vérifier si l'utilisateur est un modérateur actif
-    const isModerator = data && data.length > 0 && data[0].is_active === true;
-    
-    if (!isModerator) {
-      console.log('Utilisateur non modérateur ou inactif');
-      return false;
-    }
-    
-    // L'utilisateur est un modérateur actif
-    this.currentUser = user;
-    this.isModerator = true;
-    console.log("Droits de modération confirmés");
+            console.log("ID de l'utilisateur connecté:", user.id);
             
-            // Créer le panneau
-            this.createModerationPanel();
+            // Vérifier les droits de modération
+            const { data, error } = await window.supabase
+                .from('moderators')
+                .select('*')
+                .eq('user_id', user.id);
             
-            // Configurer les écouteurs d'événements
+            console.log("Résultat de la requête moderators:", data, error);
+            
+            if (error) {
+                console.error('Erreur lors de la vérification des droits de modération:', error);
+                return false;
+            }
+            
+            // Vérifier si l'utilisateur est un modérateur actif
+            const isModerator = data && data.length > 0 && data[0].is_active === true;
+            
+            if (!isModerator) {
+                console.log('Utilisateur non modérateur ou inactif');
+                return false;
+            }
+            
+            // L'utilisateur est un modérateur actif
+            this.currentUser = user;
+            this.isModerator = true;
+            console.log("Droits de modération confirmés");
+            
+            // Activer les boutons
             this.setupEventListeners();
+            
             return true;
         } catch (error) {
             console.error('Erreur d\'initialisation du panneau de modération:', error);
@@ -84,17 +80,14 @@ export default class ModerationPanel {
             return;
         }
 
-        // Logique pour afficher le panneau de modération
-        console.log('Ouverture du panneau de modération');
-        // Vous pouvez ajouter ici la logique pour ouvrir un modal ou rediriger
-    }
-}
-  if (!this.isModerator) {
-    alert('Accès refusé. Vous n\'avez pas les droits de modération.');
-    return;
-  }
+        // Si le panneau existe déjà, l'afficher
+        if (this.panelContainer) {
+            this.panelContainer.classList.remove('hidden');
+            this.refreshData();
+            return;
+        }
 
-        // Créer le panneau de modération
+        // Sinon créer le panneau
         this.createModerationPanel();
     }
 
@@ -102,75 +95,45 @@ export default class ModerationPanel {
         // Créer le conteneur du panneau
         this.panelContainer = document.createElement('div');
         this.panelContainer.id = 'moderation-panel';
-        this.panelContainer.className = 'moderation-panel hidden';
+        this.panelContainer.className = 'moderation-panel';
+        this.panelContainer.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        `;
+        
         this.panelContainer.innerHTML = `
-            <div class="moderation-panel-header">
-                <h2>Panneau de Modération</h2>
-                <button id="closeModerationPanel" class="close-btn">
-                    <span class="material-icons">close</span>
-                </button>
+            <div style="background: #6a4fab; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="margin: 0;">Panneau de Modération</h2>
+                <button id="closeModerationPanel" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">×</button>
             </div>
 
-            <div class="moderation-panel-content">
-                <!-- Onglets de modération -->
-                <div class="moderation-tabs">
-                    <button class="tab-btn active" data-tab="forbidden-words">Mots Interdits</button>
-                    <button class="tab-btn" data-tab="banned-users">Utilisateurs Bannis</button>
-                    <button class="tab-btn" data-tab="moderation-logs">Logs</button>
-                </div>
-
-                <!-- Contenu des onglets -->
-                <div class="tab-content" id="forbidden-words-tab">
+            <div style="padding: 20px; flex: 1; overflow-y: auto;">
+                <div style="margin-bottom: 20px;">
                     <h3>Gestion des Mots Interdits</h3>
-                    <form id="addForbiddenWordForm">
+                    <form id="addForbiddenWordForm" style="display: flex; margin-bottom: 15px;">
                         <input 
                             type="text" 
                             id="forbiddenWordInput" 
                             placeholder="Ajouter un mot interdit" 
+                            style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"
                             required
                         >
-                        <button type="submit">Ajouter</button>
+                        <button type="submit" style="background: #6a4fab; color: white; border: none; padding: 8px 15px; margin-left: 10px; border-radius: 4px; cursor: pointer;">Ajouter</button>
                     </form>
-                    <ul id="forbiddenWordsList"></ul>
+                    <ul id="forbiddenWordsList" style="list-style: none; padding: 0;"></ul>
                 </div>
 
-                <div class="tab-content hidden" id="banned-users-tab">
-                    <h3>Utilisateurs Bannis</h3>
-                    <form id="banUserForm">
-                        <select id="userSelect" required>
-                            <!-- Options d'utilisateurs seront remplies dynamiquement -->
-                        </select>
-                        <input 
-                            type="text" 
-                            id="banReason" 
-                            placeholder="Raison du bannissement" 
-                            required
-                        >
-                        <select id="banDuration">
-                            <option value="">Durée du bannissement</option>
-                            <option value="3600000">1 heure</option>
-                            <option value="86400000">1 jour</option>
-                            <option value="604800000">1 semaine</option>
-                            <option value="2592000000">1 mois</option>
-                        </select>
-                        <button type="submit">Bannir</button>
-                    </form>
-                    <ul id="bannedUsersList"></ul>
-                </div>
-
-                <div class="tab-content hidden" id="moderation-logs-tab">
-                    <h3>Logs de Modération</h3>
-                    <table id="moderationLogsTable">
-                        <thead>
-                            <tr>
-                                <th>Action</th>
-                                <th>Cible</th>
-                                <th>Modérateur</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody id="moderationLogsBody"></tbody>
-                    </table>
+                <div style="margin-bottom: 20px;">
+                    <h3>Utilisateurs</h3>
+                    <p>Fonctionnalité en développement</p>
                 </div>
             </div>
         `;
@@ -178,230 +141,111 @@ export default class ModerationPanel {
         // Ajouter au DOM
         document.body.appendChild(this.panelContainer);
 
-        // Configurer les événements
-        this.setupEventListeners();
-
-        // Charger les données initiales
-        this.loadForbiddenWords();
-        this.loadBannedUsers();
-        this.loadModerationLogs();
-    }
-
-    setupEventListeners() {
-        // Fermeture du panneau
+        // Ajouter les écouteurs d'événements
         document.getElementById('closeModerationPanel').addEventListener('click', () => {
-            this.panelContainer.classList.add('hidden');
+            this.hide();
         });
 
-        // Gestion des onglets
-        const tabButtons = this.panelContainer.querySelectorAll('.tab-btn');
-        tabButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Désactiver tous les onglets
-                tabButtons.forEach(b => b.classList.remove('active'));
-                this.panelContainer.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
-
-                // Activer l'onglet sélectionné
-                btn.classList.add('active');
-                document.getElementById(`${btn.dataset.tab}-tab`).classList.remove('hidden');
-            });
-        });
-
-        // Formulaire d'ajout de mots interdits
-        const addWordForm = document.getElementById('addForbiddenWordForm');
-        addWordForm.addEventListener('submit', async (e) => {
+        // Configurer le formulaire d'ajout de mots interdits
+        document.getElementById('addForbiddenWordForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const wordInput = document.getElementById('forbiddenWordInput');
+            const word = wordInput.value.trim();
+            
+            if (!word) return;
+            
             try {
-                await this.moderationManager.addForbiddenWord(wordInput.value);
+                const { error } = await window.supabase
+                    .from('forbidden_words')
+                    .insert({ word: word.toLowerCase() });
+                    
+                if (error) throw error;
+                
                 wordInput.value = '';
                 this.loadForbiddenWords();
+                alert('Mot interdit ajouté');
             } catch (error) {
-                alert('Erreur : ' + error.message);
+                console.error('Erreur lors de l\'ajout du mot interdit:', error);
+                alert('Erreur: ' + error.message);
             }
         });
 
-        // Formulaire de bannissement
-        const banUserForm = document.getElementById('banUserForm');
-        banUserForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const userSelect = document.getElementById('userSelect');
-            const banReason = document.getElementById('banReason');
-            const banDuration = document.getElementById('banDuration');
+        // Charger les données initiales
+        this.refreshData();
+    }
 
-            try {
-                await this.moderationManager.banUser(
-                    userSelect.value, 
-                    banReason.value,
-                    banDuration.value ? parseInt(banDuration.value) : null
-                );
-                banReason.value = '';
-                this.loadBannedUsers();
-            } catch (error) {
-                alert('Erreur : ' + error.message);
-            }
-        });
+    refreshData() {
+        this.loadForbiddenWords();
     }
 
     async loadForbiddenWords() {
-    const wordsList = document.getElementById('forbiddenWordsList');
-    if (!wordsList) return;
-    
-    wordsList.innerHTML = ''; // Vider la liste
+        const wordsList = document.getElementById('forbiddenWordsList');
+        if (!wordsList) return;
+        
+        wordsList.innerHTML = '<li style="padding: 10px;">Chargement...</li>';
 
-    try {
-        const { data, error } = await supabase
-            .from('forbidden_words')
-            .select('*');
+        try {
+            const { data, error } = await window.supabase
+                .from('forbidden_words')
+                .select('*');
 
-        if (error) {
-            console.error('Erreur de chargement des mots interdits:', error);
-            return;
-        }
+            if (error) {
+                console.error('Erreur de chargement des mots interdits:', error);
+                wordsList.innerHTML = '<li style="color: red;">Erreur de chargement</li>';
+                return;
+            }
 
-        if (!data || data.length === 0) {
-            wordsList.innerHTML = '<li>Aucun mot interdit configuré</li>';
-            return;
-        }
-
-        data.forEach(word => {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                ${word.word}
-                <button class="remove-word" data-id="${word.id}">Supprimer</button>
-            `;
-            wordsList.appendChild(li);
-        });
-
-        // Ajouter des écouteurs pour supprimer des mots
-        wordsList.querySelectorAll('.remove-word').forEach(btn => {
-            btn.addEventListener('click', async () => {
-                try {
-                    const wordId = btn.dataset.id;
-                    const { error } = await supabase
-                        .from('forbidden_words')
-                        .delete()
-                        .eq('id', wordId);
-                        
-                    if (error) throw error;
-                    
-                    // Rafraîchir la liste
-                    this.loadForbiddenWords();
-                } catch (e) {
-                    console.error('Erreur lors de la suppression du mot:', e);
-                    alert('Erreur lors de la suppression');
-                }
-            });
-        });
-    } catch (e) {
-        console.error('Erreur générale:', e);
-        wordsList.innerHTML = '<li>Erreur de chargement</li>';
-    }
-}
-
-    async loadBannedUsers() {
-        const bannedUsersList = document.getElementById('bannedUsersList');
-        const userSelect = document.getElementById('userSelect');
-        bannedUsersList.innerHTML = '';
-        userSelect.innerHTML = '<option value="">Sélectionner un utilisateur</option>';
-
-        // Récupérer tous les utilisateurs
-        const { data: users, error: userError } = await supabase
-            .from('users')
-            .select('id, email');
-
-        if (userError) {
-            console.error('Erreur de chargement des utilisateurs:', userError);
-            return;
-        }
-
-        // Récupérer les utilisateurs bannis
-        const { data: bannedUsers, error } = await supabase
-            .from('banned_users')
-            .select('*, user:users(email)');
-
-        if (error) {
-            console.error('Erreur de chargement des utilisateurs bannis:', error);
-            return;
-        }
-
-        // Peupler la liste des utilisateurs à bannir
-        users.forEach(user => {
-            const option = document.createElement('option');
-            option.value = user.id;
-            option.textContent = user.email;
-            userSelect.appendChild(option);
-        });
-
-        // Afficher les utilisateurs bannis
-        bannedUsers.forEach(ban => {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                ${ban.user.email} - Raison: ${ban.reason || 'Non spécifiée'}
-                <button class="unban-user" data-id="${ban.user_id}">Débannir</button>
-            `;
-            bannedUsersList.appendChild(li);
-        });
-
-        // Ajouter des écouteurs pour débannir
-        bannedUsersList.querySelectorAll('.unban-user').forEach(btn => {
-            btn.addEventListener('click', async () => {
-                const userId = btn.dataset.id;
-                await supabase
-                    .from('banned_users')
-                    .delete()
-                    .eq('user_id', userId);
-                this.loadBannedUsers();
-            });
-        });
-    }
-
-    async loadModerationLogs() {
-    const logsBody = document.getElementById('moderationLogsBody');
-    logsBody.innerHTML = ''; // Vider les logs existants
-    const { data, error } = await supabase
-        .from('moderation_logs')
-        .select('*, moderator:profiles(email), target:profiles(email)')
-        .order('created_at', { ascending: false })
-        .limit(50);
-    if (error) {
-        console.error('Erreur de chargement des logs:', error);
-        return;
-    }
-
-        data.forEach(log => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${log.action_type}</td>
-                <td>${log.target?.email || 'N/A'}</td>
-                <td>${log.moderator?.email || 'Système'}</td>
-                <td>${new Date(log.created_at).toLocaleString()}</td>
-            `;
-            logsBody.appendChild(row);
-        });
-    }
-
-    // Méthode pour afficher le panneau de modération
-    show() {
-        if (!this.moderationManager.isModerator) {
-            alert('Accès refusé. Vous n\'avez pas les droits de modération.');
-            return;
-        }
-
-        if (this.panelContainer) {
-            this.panelContainer.classList.remove('hidden');
+            wordsList.innerHTML = '';
             
-            // Recharger les données
-            this.loadForbiddenWords();
-            this.loadBannedUsers();
-            this.loadModerationLogs();
+            if (!data || data.length === 0) {
+                wordsList.innerHTML = '<li style="padding: 10px;">Aucun mot interdit configuré</li>';
+                return;
+            }
+
+            data.forEach(word => {
+                const li = document.createElement('li');
+                li.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 8px; margin-bottom: 5px; background: #f5f5f5; border-radius: 4px;';
+                li.innerHTML = `
+                    <span>${word.word}</span>
+                    <button class="remove-word" data-id="${word.id}" style="background: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Supprimer</button>
+                `;
+                wordsList.appendChild(li);
+            });
+
+            // Ajouter des écouteurs pour supprimer des mots
+            wordsList.querySelectorAll('.remove-word').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    if (!confirm('Voulez-vous vraiment supprimer ce mot?')) return;
+                    
+                    try {
+                        const wordId = btn.dataset.id;
+                        const { error } = await window.supabase
+                            .from('forbidden_words')
+                            .delete()
+                            .eq('id', wordId);
+                            
+                        if (error) throw error;
+                        
+                        // Rafraîchir la liste
+                        this.loadForbiddenWords();
+                    } catch (e) {
+                        console.error('Erreur lors de la suppression du mot:', e);
+                        alert('Erreur lors de la suppression');
+                    }
+                });
+            });
+        } catch (e) {
+            console.error('Erreur générale:', e);
+            wordsList.innerHTML = '<li style="color: red;">Erreur de chargement</li>';
         }
     }
 
-    // Méthode pour masquer le panneau de modération
     hide() {
         if (this.panelContainer) {
-            this.panelContainer.classList.add('hidden');
+            this.panelContainer.style.display = 'none';
         }
     }
 }
+
+// Exposer globalement
+window.ModerationPanel = ModerationPanel;
