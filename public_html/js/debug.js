@@ -1,4 +1,6 @@
 // js/debug.js
+// Importer supabase au début du fichier
+import { supabase } from './supabase-client.js';
 console.log("Script de débogage chargé");
 
 document.addEventListener('DOMContentLoaded', function() {
