@@ -1,6 +1,3 @@
-// api/sendPush.js
-// Ce fichier doit être placé dans le dossier /api à la racine de votre projet pour Vercel
-
 import { createClient } from '@supabase/supabase-js';
 import webpush from 'web-push';
 
