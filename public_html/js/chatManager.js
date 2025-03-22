@@ -201,32 +201,31 @@ export default class ChatManager {
     }
 
     toggleChat() {
-        // Vérifier l'authentification
-        const user = supabase.auth.user();
-        
+    // Vérifier l'authentification avec la nouvelle API
+    window.supabase.auth.getUser().then(({ data: { user } }) => {
         if (!user) {
-            // Si l'utilisateur n'est pas connecté, afficher le formulaire de connexion
-            this.showLoginForm();
+            this.showLoginPrompt();
             return;
         }
 
-        // Si l'utilisateur est connecté
-        this.currentUser = user; // S'assurer que l'utilisateur est défini
-        
-        // S'assurer que le conteneur du chat est créé
-        this.setupChatContainer();
-        
-        // Afficher/masquer le chat
         const chatContainer = document.getElementById('chat-container');
         if (chatContainer) {
             chatContainer.classList.toggle('hidden');
             
-            // Si le chat est affiché, charger les messages
+            // Réinitialiser le badge de notification quand le chat est ouvert
             if (!chatContainer.classList.contains('hidden')) {
-                this.loadMessages();
+                this.resetNotificationBadge();
             }
         }
-    }
+    }).catch(error => {
+        console.error("Erreur lors de la vérification de l'utilisateur:", error);
+        // Afficher quand même le chat en cas d'erreur
+        const chatContainer = document.getElementById('chat-container');
+        if (chatContainer) {
+            chatContainer.classList.toggle('hidden');
+        }
+    });
+}
 
     // Nouvelle méthode pour afficher le formulaire de connexion
     showLoginForm() {
