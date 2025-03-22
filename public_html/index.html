@@ -217,10 +217,10 @@
         <span class="chat-notification-badge hidden">0</span>
     </button>
     <!-- Nouveau bouton de modération -->
-    <button class="nav-item" id="openModerationPanel">
-        <span class="material-icons">admin_panel_settings</span>
-        <span>Modération</span>
-    </button>
+    <a href="/moderation.html" class="nav-item" id="openModerationPanel">
+    <span class="material-icons">admin_panel_settings</span>
+    <span>Modération</span>
+</a>
 </nav>
 
 <!-- Scripts -->
@@ -614,34 +614,13 @@ window.refreshNews = refreshNews;
     }
 
     // Ouvrir le panneau de modération
-const moderationButton = document.getElementById('openModerationPanel');
-if (moderationButton) {
-    moderationButton.addEventListener('click', async () => {
-        // Vérifier si l'utilisateur est modérateur
-        const { data: { user } } = await supabase.auth.getUser();
-        
-        if (!user) {
-            alert('Veuillez vous connecter');
-            return;
-        }
-
-        // Vérifier les droits de modération
-        const { data: moderatorData, error } = await supabase
-            .from('moderators')
-            .select('*')
-            .eq('user_id', user.id)
-            .eq('is_active', true)
-            .single();
-
-        if (error || !moderatorData) {
-            alert('Vous n\'avez pas les droits de modération');
-            return;
-        }
-
-        // Si modérateur, rediriger ou ouvrir le panneau
-        window.location.href = '/moderation.html'; // ou utiliser un modal
-    });
-}
+    const moderationButton = document.getElementById('openModerationPanel');
+    if (moderationButton) {
+        moderationButton.addEventListener('click', async () => {
+            // Vous pouvez ajouter ici la logique pour ouvrir le panneau de modération
+            window.location.href = '/moderation.html'; // ou utiliser un modal
+        });
+    }
 
     // Vérifier l'état de connexion au chargement
     checkAuthStatus();
