@@ -14,6 +14,12 @@ export default class ModerationPanel {
     // Récupérer l'utilisateur actuel
     const { data: { user } } = await supabase.auth.getUser();
 
+    // Vérifier si l'utilisateur existe
+    if (!user) {
+      console.error('Aucun utilisateur connecté');
+      return false;
+    }
+
     // Vérifier si l'utilisateur est modérateur
     const { data: moderatorData, error } = await supabase
       .from('moderators')
@@ -23,7 +29,7 @@ export default class ModerationPanel {
       .single();
 
     if (error || !moderatorData) {
-      alert('Vous n\'avez pas les droits de modération');
+      console.error('Pas de droits de modération', error);
       return false;
     }
 
@@ -33,12 +39,21 @@ export default class ModerationPanel {
 
   } catch (error) {
     console.error('Erreur d\'initialisation:', error);
-    alert('Erreur de connexion');
     return false;
   }
 }
 
+setupEventListeners() {
+  const openModerationPanelBtn = document.getElementById('openModerationPanel');
+  if (openModerationPanelBtn) {
+    openModerationPanelBtn.addEventListener('click', () => this.show());
+  }
+}
+
 show() {
+  // Logique pour afficher le panneau
+  console.log('Ouverture du panneau de modération');
+}
   if (!this.isModerator) {
     alert('Accès refusé. Vous n\'avez pas les droits de modération.');
     return;
