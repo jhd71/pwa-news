@@ -342,19 +342,17 @@ export default class ModerationPanel {
     }
 
     async loadModerationLogs() {
-        const logsBody = document.getElementById('moderationLogsBody');
-        logsBody.innerHTML = ''; // Vider les logs existants
-
-        const { data, error } = await supabase
-            .from('moderation_logs')
-            .select('*, moderator:users(email), target:users(email)')
-            .order('created_at', { ascending: false })
-            .limit(50);
-
-        if (error) {
-            console.error('Erreur de chargement des logs:', error);
-            return;
-        }
+    const logsBody = document.getElementById('moderationLogsBody');
+    logsBody.innerHTML = ''; // Vider les logs existants
+    const { data, error } = await supabase
+        .from('moderation_logs')
+        .select('*, moderator:profiles(email), target:profiles(email)')
+        .order('created_at', { ascending: false })
+        .limit(50);
+    if (error) {
+        console.error('Erreur de chargement des logs:', error);
+        return;
+    }
 
         data.forEach(log => {
             const row = document.createElement('tr');
