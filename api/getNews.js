@@ -1,4 +1,12 @@
-module.exports = async (req, res) => {
+// api/getNews.js
+import Parser from 'rss-parser';
+
+// Durée du cache en millisecondes (10 minutes)
+const CACHE_DURATION = 10 * 60 * 1000;
+let cachedArticles = null;
+let lastFetchTime = null;
+
+export default async function handler(req, res) {
   // En-têtes CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -8,9 +16,15 @@ module.exports = async (req, res) => {
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
+
+  // Vérifier si des données sont en cache et valides
+  const now = Date.now();
+  if (cachedArticles && lastFetchTime && (now - lastFetchTime < CACHE_DURATION)) {
+    console.log('📡 Retour des données locales en cache');
+    return res.status(200).json(cachedArticles);
+  }
   
   try {
-    const Parser = require('rss-parser');
     const parser = new Parser({
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36',
@@ -22,36 +36,79 @@ module.exports = async (req, res) => {
     });
     
     // URLs des flux RSS
-const feeds = [
-    { name: 'Montceau News', url: 'https://www.lejsl.com/edition-montceau-les-mines/rss', max: 2 },
-    { name: 'L\'Informateur', url: 'http://www.linformateurdebourgogne.com/feed/', max: 2 },
-    { name: 'Le JSL', url: 'https://www.lejsl.com/rss', max: 2 },
-    { name: 'France Bleu', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/infos.xml', max: 2 },
-    // ajoute d'autres sources ici si besoin
-  ];
+    const feeds = [
+        { name: 'Montceau News', url: 'https://www.lejsl.com/edition-montceau-les-mines/rss', max: 2 },
+        { name: 'L\'Informateur', url: 'http://www.linformateurdebourgogne.com/feed/', max: 2 },
+        { name: 'Le JSL', url: 'https://www.lejsl.com/rss', max: 2 },
+        { name: 'France Bleu', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/infos.xml', max: 2 },
+        // ajoute d'autres sources ici si besoin
+    ];
     
-    // Récupérer les articles de chaque flux
-    const allArticles = [];
+    // Récupérer les articles de chaque flux avec gestion des promesses
+    const fetchPromises = feeds.map(feed => {
+      return new Promise(async (resolve) => {
+        try {
+          console.log(`📡 Tentative pour ${feed.name}...`);
+          const feedData = await parser.parseURL(feed.url);
+          console.log(`✅ ${feed.name}: ${feedData.items.length} articles trouvés`);
+          
+          // Traiter les articles
+          const articles = feedData.items.slice(0, feed.max).map(item => {
+            let image = item.enclosure?.url || item['media:content']?.url || null;
+            if (!image && item.content) {
+              const imgMatch = item.content.match(/<img[^>]+src="([^">]+)"/);
+              if (imgMatch) {
+                image = imgMatch[1];
+              }
+            }
+            if (!image) {
+              image = "/images/default-news.jpg"; // Image par défaut
+            }
+            
+            return {
+              title: item.title,
+              link: item.link,
+              image,
+              date: item.pubDate || item.isoDate,
+              source: feed.name
+            };
+          });
+          
+          resolve(articles);
+        } catch (feedError) {
+          console.error(`❌ Erreur avec ${feed.name}:`, feedError.message);
+          resolve([]); // Tableau vide en cas d'erreur
+        }
+      });
+    });
+
+    // Définir un timeout global
+    const timeoutPromise = new Promise((resolve) => {
+      setTimeout(() => {
+        console.log('⚠️ Timeout global atteint pour les actualités locales');
+        resolve([]);
+      }, 8000); // 8 secondes de timeout global
+    });
     
-    for (const feed of feeds) {
-      try {
-        console.log(`Tentative pour ${feed.name}...`);
-        const feedData = await parser.parseURL(feed.url);
-        console.log(`Succès pour ${feed.name}, ${feedData.items.length} articles trouvés`);
-        
-        // Limiter au nombre maximum défini pour chaque source
-        const articles = feedData.items.slice(0, feed.max).map(item => ({
-          title: item.title,
-          link: item.link,
-          date: item.pubDate || item.isoDate,
-          source: feed.name
-        }));
-        
-        allArticles.push(...articles);
-      } catch (feedError) {
-        console.error(`Erreur avec ${feed.name}:`, feedError.message);
-        continue;
+    // Exécuter toutes les promesses
+    const results = await Promise.race([
+      Promise.all(fetchPromises),
+      timeoutPromise.then(() => feeds.map(() => []))
+    ]);
+    
+    // Aplatir les résultats
+    const allArticles = results.flat();
+    
+    if (allArticles.length === 0) {
+      console.error("⚠️ Aucun article local récupéré, vérifiez les flux RSS !");
+      
+      // Si le cache existe mais est périmé, mieux vaut retourner des données périmées que rien
+      if (cachedArticles) {
+        console.log('📡 Utilisation du cache local périmé en dernier recours');
+        return res.status(200).json(cachedArticles);
       }
+      
+      return res.status(500).json({ error: "Aucun article récupéré" });
     }
     
     // Mélanger légèrement les articles au lieu de juste les trier par date
@@ -88,11 +145,25 @@ const feeds = [
     
     const mixedArticles = shuffleAndSortArticles(allArticles);
     
-    // Renvoyer les articles (maximum 10)
-    return res.status(200).json(mixedArticles.slice(0, 10));
+    // Limiter à 10 articles
+    const finalArticles = mixedArticles.slice(0, 10);
+    
+    // Mettre à jour le cache
+    cachedArticles = finalArticles;
+    lastFetchTime = now;
+    
+    // Renvoyer les articles
+    return res.status(200).json(finalArticles);
     
   } catch (error) {
-    console.error('Erreur générale:', error.message);
+    console.error('❌ Erreur générale dans getNews:', error.message);
+    
+    // Si le cache existe en cas d'erreur, l'utiliser
+    if (cachedArticles) {
+      console.log('📡 Utilisation du cache local en cas d\'erreur');
+      return res.status(200).json(cachedArticles);
+    }
+    
     return res.status(500).json({ error: error.message });
   }
-};
+}
