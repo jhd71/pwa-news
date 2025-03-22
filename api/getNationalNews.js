@@ -1,12 +1,13 @@
-const Parser = require('rss-parser');
-const axios = require('axios');
+// api/getNationalNews.js
+import Parser from 'rss-parser';
+import axios from 'axios';
 
 // Durée du cache en millisecondes (10 minutes)
 const CACHE_DURATION = 10 * 60 * 1000;
 let cachedArticles = null;
 let lastFetchTime = null;
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   try {
     // Configuration CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -132,4 +133,4 @@ module.exports = async (req, res) => {
     
     return res.status(500).json({ error: 'Erreur serveur' });
   }
-};
+}
