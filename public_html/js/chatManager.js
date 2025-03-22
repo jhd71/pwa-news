@@ -74,6 +74,25 @@ export default class ChatManager {
         }
     }
 
+setupEventListeners() {
+    // Bouton de toggle du chat
+    if (this.chatToggleBtn) {
+        this.chatToggleBtn.addEventListener('click', () => this.toggleChat());
+    }
+
+    // Fermeture du chat
+    const closeChatBtn = document.getElementById('closeChatBtn');
+    if (closeChatBtn) {
+        closeChatBtn.addEventListener('click', () => this.toggleChat());
+    }
+
+    // Formulaire d'envoi de message
+    const chatForm = document.getElementById('chatForm');
+    if (chatForm) {
+        chatForm.addEventListener('submit', (e) => this.sendMessage(e));
+    }
+}
+
     handleUnauthenticated() {
         // Désactiver le bouton de chat ou montrer un message de connexion
         if (this.chatToggleBtn) {
@@ -137,24 +156,33 @@ export default class ChatManager {
     }
 
     setupMessageListener() {
-        // Écouter les nouveaux messages en temps réel
-        supabase
-            .channel('public:messages')
-            .on(
-                'postgres_changes', 
-                { event: 'INSERT', schema: 'public', table: 'messages' },
-                (payload) => {
+    // Vérifier que Supabase est initialisé
+    if (!this.supabase) {
+        console.error('Supabase non initialisé');
+        return;
+    }
+
+    // Écouter les nouveaux messages en temps réel
+    this.supabase
+        .channel('public:messages')
+        .on(
+            'postgres_changes', 
+            { event: 'INSERT', schema: 'public', table: 'messages' },
+            (payload) => {
+                // Ne pas afficher ses propres messages
+                if (payload.new.user_id !== this.currentUser.id) {
                     this.displayMessage(payload.new);
                     
                     // Incrémenter les messages non lus si le chat est fermé
                     const chatContainer = document.getElementById('chat-container');
-                    if (chatContainer.classList.contains('hidden')) {
+                    if (chatContainer && chatContainer.classList.contains('hidden')) {
                         this.incrementUnreadMessages();
                     }
                 }
-            )
-            .subscribe();
-    }
+            }
+        )
+        .subscribe();
+}
 
     displayMessage(message) {
         const messagesContainer = document.getElementById('chatMessages');
