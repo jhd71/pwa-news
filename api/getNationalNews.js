@@ -1,136 +1,122 @@
 // api/getNationalNews.js
 import Parser from 'rss-parser';
-import axios from 'axios';
 
-// Durée du cache en millisecondes (10 minutes)
-const CACHE_DURATION = 10 * 60 * 1000;
-let cachedArticles = null;
-let lastFetchTime = null;
+// Cache en mémoire
+let memoryCache = {
+  data: null,
+  timestamp: null
+};
 
 export default async function handler(req, res) {
+  // Configuration CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
   try {
-    // Configuration CORS
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    
-    if (req.method === 'OPTIONS') {
-      return res.status(200).end();
-    }
-    
-    // Vérifier si des données sont en cache et valides
+    // Vérifier le cache (10 minutes)
     const now = Date.now();
-    if (cachedArticles && lastFetchTime && (now - lastFetchTime < CACHE_DURATION)) {
+    if (memoryCache.data && memoryCache.timestamp && now - memoryCache.timestamp < 10 * 60 * 1000) {
       console.log('📡 Retour des données en cache');
-      return res.status(200).json(cachedArticles);
+      return res.status(200).json(memoryCache.data);
     }
     
-    const parser = new Parser({
-      timeout: 5000, // 5 secondes de timeout
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; PWANewsBot/1.0)'
-      },
-    });
-
+    const parser = new Parser();
+    
+    // Limiter à quelques flux fiables
     const feeds = [
       { name: 'BFMTV', url: 'https://www.bfmtv.com/rss/news-24-7/', max: 3 },
       { name: 'France Info', url: 'https://www.francetvinfo.fr/titres.rss', max: 3 },
       { name: 'JeuxVideo.com', url: 'https://www.jeuxvideo.com/rss/rss.xml', max: 3 },
       { name: 'ActuGaming', url: 'https://www.actugaming.net/feed/', max: 3 }
     ];
-
-    // Créer des promesses pour toutes les sources avec timeout individuel
-    const fetchPromises = feeds.map(feed => {
-      return new Promise(async (resolve) => {
-        try {
-          console.log(`📡 Récupération de ${feed.name}...`);
-          
-          // Utiliser axios avec timeout
-          const response = await axios.get(feed.url, {
-            timeout: 5000,
-            headers: { 'User-Agent': 'Mozilla/5.0 (compatible; PWANewsBot/1.0)' }
-          });
-          
-          const feedData = await parser.parseString(response.data);
-          console.log(`✅ ${feed.name}: ${feedData.items.length} articles trouvés`);
-          
-          const fetchedArticles = feedData.items.slice(0, feed.max).map(item => {
-            let image = item.enclosure?.url || item['media:content']?.url || null;
-            if (!image && item.content) {
-              const imgMatch = item.content.match(/<img[^>]+src="([^">]+)"/);
-              if (imgMatch) {
-                image = imgMatch[1];
-              }
-            }
-            if (!image) {
-              image = "/images/default-news.jpg"; // Image par défaut
-            }
-            
-            return {
-              title: item.title,
-              link: item.link,
-              image,
-              source: feed.name
-            };
-          });
-          
-          resolve(fetchedArticles);
-        } catch (error) {
-          console.error(`❌ Erreur avec ${feed.name}:`, error.message);
-          resolve([]); // Retourner un tableau vide en cas d'erreur
-        }
-      });
-    });
-
-    // Définir un timeout global pour l'ensemble de l'opération
-    const timeoutPromise = new Promise((resolve) => {
-      setTimeout(() => {
-        console.log('⚠️ Timeout global atteint');
-        resolve([]);
-      }, 8000); // 8 secondes de timeout global
-    });
-
-    // Exécuter toutes les promesses avec un timeout global
-    const results = await Promise.race([
-      Promise.all(fetchPromises),
-      timeoutPromise.then(() => feeds.map(() => [])) // En cas de timeout, retourner des tableaux vides
-    ]);
     
-    // Aplatir les résultats
-    let articles = results.flat();
-
+    let articles = [];
+    
+    // Approche séquentielle pour plus de fiabilité
+    for (const feed of feeds) {
+      try {
+        console.log(`📡 Récupération de ${feed.name}...`);
+        
+        // Utiliser fetch au lieu d'axios
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 secondes timeout
+        
+        const response = await fetch(feed.url, {
+          headers: { 
+            'User-Agent': 'Mozilla/5.0 (compatible; NewsApp/1.0)'
+          },
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.text();
+        const feedData = await parser.parseString(data);
+        console.log(`✅ ${feed.name}: ${feedData.items.length} articles trouvés`);
+        
+        const fetchedArticles = feedData.items.slice(0, feed.max).map(item => {
+          // Extraction d'image simplifiée
+          let image = "/images/default-news.jpg"; // Image par défaut
+          
+          if (item.enclosure && item.enclosure.url) {
+            image = item.enclosure.url;
+          } else if (item['media:content'] && item['media:content'].url) {
+            image = item['media:content'].url;
+          }
+          
+          return {
+            title: item.title,
+            link: item.link,
+            image,
+            source: feed.name
+          };
+        });
+        
+        articles = [...articles, ...fetchedArticles];
+      } catch (error) {
+        console.error(`❌ Erreur avec ${feed.name}:`, error.message);
+        // Continuer avec les autres flux
+      }
+    }
+    
     if (articles.length === 0) {
-      console.error("⚠️ Aucun article récupéré, vérifiez les flux RSS !");
+      console.error("⚠️ Aucun article récupéré");
       
-      // Si le cache existe mais est périmé, mieux vaut retourner des données périmées que rien
-      if (cachedArticles) {
+      if (memoryCache.data) {
         console.log('📡 Utilisation du cache périmé en dernier recours');
-        return res.status(200).json(cachedArticles);
+        return res.status(200).json(memoryCache.data);
       }
       
       return res.status(500).json({ error: "Aucun article récupéré" });
     }
-
-    // Mélanger les articles avant de renvoyer
+    
+    // Mélanger légèrement les articles
     articles.sort(() => Math.random() - 0.5);
     
-    // Limiter à 10 articles
-    const finalArticles = articles.slice(0, 10);
-    
     // Mettre à jour le cache
-    cachedArticles = finalArticles;
-    lastFetchTime = now;
+    memoryCache = {
+      data: articles,
+      timestamp: now
+    };
     
-    return res.status(200).json(finalArticles);
+    return res.status(200).json(articles);
   } catch (error) {
     console.error('❌ Erreur générale:', error.message);
     
-    // Si le cache existe en cas d'erreur, l'utiliser
-    if (cachedArticles) {
+    if (memoryCache.data) {
       console.log('📡 Utilisation du cache en cas d\'erreur');
-      return res.status(200).json(cachedArticles);
+      return res.status(200).json(memoryCache.data);
     }
     
-    return res.status(500).json({ error: 'Erreur serveur' });
+    return res.status(500).json({ error: 'Erreur serveur', message: error.message });
   }
 }
