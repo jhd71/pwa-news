@@ -15,27 +15,42 @@ export default class ModerationPanel {
     }
     
     async init() {
-        try {
-            // Récupérer l'utilisateur actuel
-            const { data: { user } } = await this.supabase.auth.getUser();
-            if (!user) {
-                console.log('Aucun utilisateur connecté');
-                return false;
-            }
-            // Vérifier les droits de modération
-            const { data: moderatorData, error } = await this.supabase
-                .from('moderators')
-                .select('*')
-                .eq('user_id', user.id)
-                .eq('is_active', true)
-                .single();
-            if (error || !moderatorData) {
-                console.log('Pas de droits de modération');
-                return false;
-            }
-            // L'utilisateur est un modérateur
-            this.currentUser = user;
-            this.isModerator = true;
+  try {
+    // Récupérer l'utilisateur actuel
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      console.log('Aucun utilisateur connecté');
+      return false;
+    }
+
+    console.log("ID de l'utilisateur connecté:", user.id);
+    
+    // Une requête plus simple pour vérifier les droits de modération
+    const { data, error } = await supabase
+      .from('moderators')
+      .select('*')
+      .eq('user_id', user.id);
+    
+    console.log("Résultat de la requête moderators:", data, error);
+    
+    if (error) {
+      console.error('Erreur lors de la vérification des droits de modération:', error);
+      return false;
+    }
+    
+    // Vérifier si l'utilisateur est un modérateur actif
+    const isModerator = data && data.length > 0 && data[0].is_active === true;
+    
+    if (!isModerator) {
+      console.log('Utilisateur non modérateur ou inactif');
+      return false;
+    }
+    
+    // L'utilisateur est un modérateur actif
+    this.currentUser = user;
+    this.isModerator = true;
+    console.log("Droits de modération confirmés");
             
             // Créer le panneau
             this.createModerationPanel();
