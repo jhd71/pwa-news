@@ -68,40 +68,52 @@ export default class ChatManager {
     }
 
     setupChatContainer() {
-        // Créer le conteneur de chat s'il n'existe pas
-        if (!document.getElementById('chat-container')) {
-            this.chatContainer = document.createElement('div');
-            this.chatContainer.id = 'chat-container';
-            this.chatContainer.className = 'chat-container hidden';
-            this.chatContainer.innerHTML = `
-                <div class="chat-header">
-                    <h3>Chat Actu&Média</h3>
-                    <button id="closeChatBtn" class="close-chat-btn">
-                        <span class="material-icons">close</span>
+    // Créer le conteneur de chat s'il n'existe pas
+    if (!document.getElementById('chat-container')) {
+        this.chatContainer = document.createElement('div');
+        this.chatContainer.id = 'chat-container';
+        this.chatContainer.className = 'chat-container hidden';
+        this.chatContainer.innerHTML = `
+            <div class="chat-header">
+                <h3>Chat Actu&Média</h3>
+                <button id="closeChatBtn" class="close-chat-btn">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <div class="chat-content">
+                <div id="chatMessages" class="chat-messages"></div>
+                <form id="chatForm" class="chat-input-form">
+                    <input 
+                        type="text" 
+                        id="chatInput" 
+                        placeholder="Écrivez un message..." 
+                        required
+                    >
+                    <button type="submit">
+                        <span class="material-icons">send</span>
                     </button>
-                </div>
-                <div class="chat-content">
-                    <div id="chatMessages" class="chat-messages"></div>
-                    <form id="chatForm" class="chat-input-form">
-                        <input 
-                            type="text" 
-                            id="chatInput" 
-                            placeholder="Écrivez un message..." 
-                            required
-                        >
-                        <button type="submit">
-                            <span class="material-icons">send</span>
-                        </button>
-                    </form>
-                </div>
-            `;
-            document.body.appendChild(this.chatContainer);
+                </form>
+            </div>
+        `;
+        document.body.appendChild(this.chatContainer);
 
-            // Configurer les événements
-            document.getElementById('closeChatBtn').addEventListener('click', () => this.toggleChat());
-            document.getElementById('chatForm').addEventListener('submit', (e) => this.sendMessage(e));
+        // Configurer les événements
+        document.getElementById('closeChatBtn').addEventListener('click', () => this.toggleChat());
+        document.getElementById('chatForm').addEventListener('submit', (e) => this.sendMessage(e));
+        
+        // Ajouter un message de bienvenue
+        const chatMessages = document.getElementById('chatMessages');
+        if (chatMessages) {
+            const welcomeMessage = document.createElement('div');
+            welcomeMessage.classList.add('chat-message', 'received');
+            welcomeMessage.innerHTML = `
+                <div class="message-content">Bienvenue dans le chat Actu&Média ! Commencez à écrire pour discuter.</div>
+                <div class="message-timestamp">${new Date().toLocaleTimeString()}</div>
+            `;
+            chatMessages.appendChild(welcomeMessage);
         }
     }
+}
 
     setupEventListeners() {
         // Bouton de toggle du chat
