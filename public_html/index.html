@@ -73,7 +73,25 @@
     </button>
     <button type="button" id="settingsButton" class="settings-button" aria-label="Paramètres">
         <span class="material-icons">settings</span>
-    </button>   
+    </button>  
+	<button id="mainLoginBtn" style="background-color: #6a4fab; color: white; border: none; border-radius: 4px; padding: 8px 15px; cursor: pointer; display: flex; align-items: center; margin-left: 10px;">
+    <span class="material-icons" style="margin-right: 5px;">login</span>
+    <span>Connexion</span>
+</button>
+
+<script>
+// Ajouter un écouteur d'événements au bouton de connexion principal
+document.getElementById('mainLoginBtn').addEventListener('click', function() {
+    // Ouvrir votre formulaire de connexion existant ou rediriger vers la page de connexion
+    const loginMenuItem = document.getElementById('loginMenuItem');
+    if (loginMenuItem && loginMenuItem.querySelector('a')) {
+        loginMenuItem.querySelector('a').click();
+    } else {
+        // Fallback si le menu item n'est pas trouvé
+        window.location.href = '/login.html';
+    }
+});
+</script>
     <h1 class="site-title">
         <img src="images/Actu&Media.png" alt="Actu & Média" class="site-logo">
     </h1>
@@ -212,11 +230,11 @@
         <span>Google</span>
     </a>
     <!-- Bouton de chat intégré dans la barre -->
-    <button class="nav-item chat-toggle-btn" id="chatToggleBtn">
-        <span class="material-icons">chat</span>
-        <span>Chat</span>
-        <span class="chat-notification-badge hidden">0</span>
-    </button>
+    <button class="nav-item chat-toggle-btn" id="chatToggleBtn" onclick="window.open('chat-with-login.html', 'ChatActuMedia', 'width=350,height=500')">
+    <span class="material-icons">chat</span>
+    <span>Chat</span>
+    <span class="chat-notification-badge hidden">0</span>
+</button>
     <!-- Bouton d'inscription -->
     <button id="signupBtn" class="nav-item">
         <span class="material-icons">person_add</span>
