@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Actu&Media</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            background-color: #6a4fab;
+            color: white;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chat-header h1 {
+            margin: 0;
+            font-size: 18px;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background-color: #f5f5f5;
+        }
+        
+        .message {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            max-width: 80%;
+        }
+        
+        .message.received {
+            background-color: white;
+            align-self: flex-start;
+        }
+        
+        .message.sent {
+            background-color: #e3f2fd;
+            margin-left: auto;
+        }
+        
+        .message-timestamp {
+            font-size: 0.7em;
+            color: #888;
+            text-align: right;
+            margin-top: 5px;
+        }
+        
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            background-color: white;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .send-btn {
+            background-color: #6a4fab;
+            color: white;
+            border: none;
+            padding: 0 15px;
+            margin-left: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-header">
+        <h1>Chat Actu&Media</h1>
+        <button class="close-btn" onclick="window.close()">&times;</button>
+    </div>
+    
+    <div class="chat-messages" id="messages">
+        <div class="message received">
+            <div class="message-content">Bienvenue dans le chat! Commencez à écrire pour discuter.</div>
+            <div class="message-timestamp">12:00</div>
+        </div>
+    </div>
+    
+    <form class="chat-input" id="message-form">
+        <input type="text" id="message-input" placeholder="Écrivez un message..." required>
+        <button type="submit" class="send-btn">
+            <span class="material-icons">send</span>
+        </button>
+    </form>
+    
+    <script>
+        document.getElementById('message-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const input = document.getElementById('message-input');
+            const message = input.value.trim();
+            
+            if (message) {
+                addMessage(message, true);
+                input.value = '';
+            }
+        });
+        
+        function addMessage(text, isSent) {
+            const messagesContainer = document.getElementById('messages');
+            const messageEl = document.createElement('div');
+            messageEl.className = `message ${isSent ? 'sent' : 'received'}`;
+            
+            messageEl.innerHTML = `
+                <div class="message-content">${text}</div>
+                <div class="message-timestamp">${new Date().toLocaleTimeString()}</div>
+            `;
+            
+            messagesContainer.appendChild(messageEl);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+    </script>
+</body>
+</html>
