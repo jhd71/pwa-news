@@ -11,26 +11,55 @@ export default class ChatManager {
     }
 
     async init() {
-  try {
-    // Vérifier l'authentification
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-      // Désactiver le bouton de chat
-      this.chatToggleBtn.disabled = true;
-      this.chatToggleBtn.title = 'Connexion requise';
-      return;
+        try {
+            // Vérifier l'authentification
+            const { data: { user } } = await supabase.auth.getUser();
+            
+            if (!user) {
+                // Désactiver le bouton de chat
+                this.chatToggleBtn.disabled = true;
+                this.chatToggleBtn.title = 'Connexion requise';
+                return;
+            }
+
+            // Stocker l'utilisateur actuel
+            this.currentUser = user;
+
+            // Configurer le chat si l'utilisateur est connecté
+            this.setupChatContainer();
+            this.setupEventListeners();
+            // Ajout de la fonction manquante
+            this.setupRealtimeSubscription = () => {
+                console.log('Configuration de l\'abonnement en temps réel...');
+                // Écouter les nouveaux messages en temps réel
+                supabase
+                    .channel('public:messages')
+                    .on(
+                        'postgres_changes', 
+                        { event: 'INSERT', schema: 'public', table: 'messages' },
+                        (payload) => {
+                            // Ne pas afficher ses propres messages
+                            if (payload.new.user_id !== this.currentUser.id) {
+                                this.displayMessage(payload.new);
+                                
+                                // Incrémenter les messages non lus si le chat est fermé
+                                const chatContainer = document.getElementById('chat-container');
+                                if (chatContainer && chatContainer.classList.contains('hidden')) {
+                                    this.incrementUnreadMessages();
+                                }
+                            }
+                        }
+                    )
+                    .subscribe();
+            };
+            
+            // Maintenant on peut l'appeler
+            this.setupRealtimeSubscription();
+
+        } catch (error) {
+            console.error('Erreur d\'initialisation du chat:', error);
+        }
     }
-
-    // Configurer le chat si l'utilisateur est connecté
-    this.setupChatContainer();
-    this.setupEventListeners();
-    this.setupRealtimeSubscription();
-
-  } catch (error) {
-    console.error('Erreur d\'initialisation du chat:', error);
-  }
-}
 
     setupChatToggle() {
         if (this.chatToggleBtn) {
@@ -74,24 +103,24 @@ export default class ChatManager {
         }
     }
 
-setupEventListeners() {
-    // Bouton de toggle du chat
-    if (this.chatToggleBtn) {
-        this.chatToggleBtn.addEventListener('click', () => this.toggleChat());
-    }
+    setupEventListeners() {
+        // Bouton de toggle du chat
+        if (this.chatToggleBtn) {
+            this.chatToggleBtn.addEventListener('click', () => this.toggleChat());
+        }
 
-    // Fermeture du chat
-    const closeChatBtn = document.getElementById('closeChatBtn');
-    if (closeChatBtn) {
-        closeChatBtn.addEventListener('click', () => this.toggleChat());
-    }
+        // Fermeture du chat
+        const closeChatBtn = document.getElementById('closeChatBtn');
+        if (closeChatBtn) {
+            closeChatBtn.addEventListener('click', () => this.toggleChat());
+        }
 
-    // Formulaire d'envoi de message
-    const chatForm = document.getElementById('chatForm');
-    if (chatForm) {
-        chatForm.addEventListener('submit', (e) => this.sendMessage(e));
+        // Formulaire d'envoi de message
+        const chatForm = document.getElementById('chatForm');
+        if (chatForm) {
+            chatForm.addEventListener('submit', (e) => this.sendMessage(e));
+        }
     }
-}
 
     handleUnauthenticated() {
         // Désactiver le bouton de chat ou montrer un message de connexion
@@ -155,34 +184,11 @@ setupEventListeners() {
         }
     }
 
+    // Cette méthode existait mais utilisait this.supabase qui n'est pas défini
+    // Nous l'avons remplacée par la définition dans setupRealtimeSubscription
     setupMessageListener() {
-    // Vérifier que Supabase est initialisé
-    if (!this.supabase) {
-        console.error('Supabase non initialisé');
-        return;
+        console.warn('Méthode obsolète, utiliser setupRealtimeSubscription à la place');
     }
-
-    // Écouter les nouveaux messages en temps réel
-    this.supabase
-        .channel('public:messages')
-        .on(
-            'postgres_changes', 
-            { event: 'INSERT', schema: 'public', table: 'messages' },
-            (payload) => {
-                // Ne pas afficher ses propres messages
-                if (payload.new.user_id !== this.currentUser.id) {
-                    this.displayMessage(payload.new);
-                    
-                    // Incrémenter les messages non lus si le chat est fermé
-                    const chatContainer = document.getElementById('chat-container');
-                    if (chatContainer && chatContainer.classList.contains('hidden')) {
-                        this.incrementUnreadMessages();
-                    }
-                }
-            }
-        )
-        .subscribe();
-}
 
     displayMessage(message) {
         const messagesContainer = document.getElementById('chatMessages');
