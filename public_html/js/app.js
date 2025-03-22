@@ -2,6 +2,7 @@
 import { showToast } from './utils.js';
 import ChatManager from './chatManager.js';
 import ContentManager from './content.js';
+import AuthManager from './auth.js';
 
 class App {
     constructor() {
@@ -100,23 +101,28 @@ class App {
     }
 
     async initManagers() {
-        try {
-            // Initialiser Content Manager
-            this.contentManager = new ContentManager();
-            await this.contentManager.init();
-            console.log('Content Manager initialisé');
+    try {
+        // Initialiser Content Manager
+        this.contentManager = new ContentManager();
+        await this.contentManager.init();
+        console.log('Content Manager initialisé');
 
-            // Initialiser Chat Manager
-            this.chatManager = new ChatManager();
-            await this.chatManager.init();
-            console.log('Chat Manager initialisé');
+        // Initialiser Chat Manager
+        this.chatManager = new ChatManager();
+        await this.chatManager.init();
+        console.log('Chat Manager initialisé');
 
-            // Une fois les managers initialisés, continuer avec le reste
-            await this.init();
-        } catch (error) {
-            console.error('Erreur initialisation managers:', error);
-        }
+        // Initialiser Auth Manager (AJOUTEZ CETTE PARTIE)
+        this.authManager = new AuthManager();
+        await this.authManager.init();
+        console.log('Auth Manager initialisé');
+
+        // Une fois les managers initialisés, continuer avec le reste
+        await this.init();
+    } catch (error) {
+        console.error('Erreur initialisation managers:', error);
     }
+}
 
     async init() {
         try {
