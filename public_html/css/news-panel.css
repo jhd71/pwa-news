@@ -1,0 +1,809 @@
+/* Styles de base du bouton - s'appliquent à tous les écrans */
+.news-button {
+    position: fixed;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    z-index: 995;
+    font-weight: 700;
+    font-size: 17px;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    transform-origin: center;
+}
+
+/* Animation de pulsation pour tous les écrans */
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.9; }
+    50% { transform: scale(1.07); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.9; }
+}
+
+.news-button {
+    animation: pulse 2s infinite;
+}
+
+/* Taille de l'icône de base */
+.news-button .material-icons {
+    font-size: 22px;
+}
+
+/* Effets au survol et au clic - pour tous les écrans */
+.news-button:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 7px 20px rgba(0, 0, 0, 0.4);
+}
+
+.news-button:active {
+    transform: scale(0.95);
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+    opacity: 0.8;
+}
+
+/* Styles pour les écrans PC */
+@media (min-width: 768px) {
+    .news-button {
+        top: 65px;
+        right: 15px;
+        padding: 7px 14px;
+        font-size: 16px;
+        max-width: 175px;
+        border-radius: 10px;
+    }
+    
+    .news-button .material-icons {
+        font-size: 18px;
+    }
+}
+
+/* Animation de pulsation de taille pour mobile (centré) */
+@keyframes pulseCenter {
+    0% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(1.05); }
+    100% { transform: translateX(-50%) scale(1); }
+}
+
+/* Animation de pulsation de taille pour desktop */
+@keyframes pulseSize {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Styles pour mobile */
+@media (max-width: 767px) {
+    /* Masquer le carrousel sur mobile */
+    .swiper-container {
+        display: none !important;
+    }
+    
+    /* Ajuster l'espacement pour le premier séparateur */
+    .separator:first-of-type {
+        margin-top: 50px !important;
+    }
+    
+    /* Style du bouton sur mobile */
+.news-button {
+    position: fixed !important;
+    top: 70px !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%);
+    background-color: var(--primary-color) !important;
+    width: auto !important; /* Ajuste automatiquement à la taille du contenu */
+    max-width: 250px !important; /* Limite la largeur */
+    padding: 10px 20px !important; /* Ajuste le padding */
+    padding: 10px 15px !important;
+    text-align: center !important;
+    animation: pulseCenter 2s infinite !important;
+    font-weight: 700; /* 700 = bold, 800 = extra-bold */
+    letter-spacing: 0.5px; /* Espace légèrement les lettres */
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2); /* Ajoute une ombre légère */
+    font-size: 15px !important; /* AJOUTEZ CETTE LIGNE pour agrandir le texte */
+	animation: pulseCenter 2s infinite !important;
+	border-radius: 20px !important; /* Plus la valeur est grande, plus c'est arrondi */
+}
+    
+    /* Effets au survol et au clic sur mobile */
+    .news-button:hover {
+        transform: translateX(-50%) translateY(-2px) !important;
+        box-shadow: 0 7px 20px rgba(0, 0, 0, 0.4) !important;
+    }
+    
+    .news-button:active {
+        transform: translateX(-50%) scale(0.95) !important;
+        box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3) !important;
+    }
+}
+
+/* Styles pour desktop */
+@media (min-width: 768px) {
+    .news-button {
+        position: fixed !important;
+        top: 65px !important;
+        right: 15px !important;
+        background-color: var(--primary-color) !important;
+        padding: 7px 14px !important;
+        font-size: 16px !important;
+        animation: pulseSize 2s infinite !important;
+    }
+}
+
+/* Assurer que le bouton conserve sa couleur de thème */
+[data-theme="dark"] .news-button,
+[data-theme="light"] .news-button {
+    background-color: var(--primary-color) !important;
+}
+/* ✅ Ajout z-index pour le menu */
+
+/* Menu des actualités */
+.news-panel {
+  position: fixed;
+  top: var(--header-height);
+  right: -350px;
+  width: 350px;
+  max-width: 90%;
+  height: calc(100vh - var(--header-height));
+  background-color: var(--primary-color);
+  color: white;
+  z-index: 998;
+  box-shadow: -2px 0 5px var(--shadow-color);
+  transition: right 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding-bottom: 50px !important;
+}
+
+.news-item-date {
+  font-size: 0.9em;
+  color: #f0ff67;
+  margin: 5px 0;
+  font-style: italic;
+}
+
+.news-panel.open {
+  right: 0;
+    bottom: 60px !important; /* Maintenir l'espace pour la barre de navigation */
+  }
+
+.panel-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.close-panel {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.close-panel:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Ajustement de la hauteur du panneau sur mobile */
+@media (max-width: 768px) {
+  .news-panel {
+    height: calc(100vh - var(--header-height) - 60px) !important;
+    max-height: calc(100vh - var(--header-height) - 60px) !important;
+    bottom: 60px !important;
+    top: auto !important;
+  }
+  
+  .news-panel.open {
+    right: 0;
+    bottom: 60px !important;
+  }
+}
+
+/* Articles dans le panel */
+.news-item {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.news-item-source {
+  color: #7FFF7F;
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.news-item-title {
+  font-size: 1.1em;
+  margin-bottom: 10px;
+}
+
+.news-item-link {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-top: 5px;
+  transition: background-color 0.2s;
+}
+
+.news-item-link:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Bouton d'actualisation - styles de base */
+.refresh-button {
+  position: fixed !important;
+  bottom: 60px !important; /* Position juste au-dessus de la barre de navigation */
+  left: 0 !important;
+  width: 100% !important;
+  padding: 12px !important;
+  background: #5cb85c !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  color: white !important;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  z-index: 1050 !important; /* Z-index élevé pour être au-dessus des autres éléments */
+  border-left: none !important;
+  border-right: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Styles sur desktop */
+@media (min-width: 769px) {
+  .refresh-button {
+    position: sticky !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    margin-top: auto !important;
+    border-bottom-left-radius: 20px !important;
+    border-bottom-right-radius: 20px !important;
+  }
+
+  .news-panel {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - var(--header-height) - 60px) !important;
+    max-height: calc(100vh - var(--header-height) - 60px) !important;
+  }
+}
+
+/* Styles sur mobile - priorité plus élevée */
+@media (max-width: 768px) {
+  .refresh-button {
+    position: fixed !important;
+    bottom: 60px !important; /* Ajusté pour être juste au-dessus de la barre de navigation */
+    left: 0 !important;
+    width: 100% !important;
+    padding: 10px !important;
+    font-size: 14px;
+    border-radius: 0 !important;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2) !important;
+  }
+  
+  /* Cachez le bouton s'il n'est pas dans un panneau ouvert */
+  .refresh-button:not(.news-panel.open .refresh-button) {
+    display: none !important;
+  }
+}
+
+/* Effet au survol */
+.refresh-button:hover {
+  background: #4cae4c !important;
+}
+
+/* Taille d'icône */
+.refresh-button .material-icons {
+  font-size: 18px;
+}
+
+.refresh-button.refreshing .material-icons {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Assurer que le chat reste visible */
+.bottom-nav .chat-toggle-btn {
+  z-index: 1100 !important;
+}
+
+/* Ajout pour s'assurer que le bouton n'est visible que quand le panneau est ouvert sur mobile */
+@media (max-width: 768px) {
+  .news-panel:not(.open) .refresh-button {
+    display: none !important;
+  }
+}
+/* Indicateur de chargement */
+.loading-indicator {
+  padding: 20px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Ticker d'actualités */
+.news-ticker {
+  position: fixed;
+  bottom: 60px; 
+  left: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  color: white;
+  overflow: hidden;
+  height: 40px;
+  z-index: 1000;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+.ticker-wrapper {
+  display: flex;
+  animation: ticker 80s linear infinite;
+  white-space: nowrap;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+/* Animation de base pour desktop - plus rapide */
+@media (min-width: 1024px) {
+  .ticker-wrapper {
+    animation: ticker-desktop 60s linear infinite; /* Réduire de 80s à 60s pour accélérer */
+  }
+  
+  @keyframes ticker-desktop {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-300%); }
+  }
+}
+
+/* Conserver les animations existantes pour mobile */
+@media (max-width: 768px) {
+  .ticker-wrapper {
+    animation: ticker-tablet 70s linear infinite;
+  }
+  
+  @keyframes ticker-tablet {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-1500%); }
+  }
+}
+
+@media (max-width: 480px) {
+  .ticker-wrapper {
+    animation: ticker-mobile 65s linear infinite;
+  }
+  
+  @keyframes ticker-mobile {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-2000%); }
+  }
+}
+
+.ticker-item {
+  padding: 10px 40px;
+  font-weight: bold;
+  position: relative;
+}
+
+.ticker-item:not(:last-child)::after {
+  content: "•";
+  position: absolute;
+  right: 15px;
+  color: #4CAF50;
+}
+/* Séparateur entre les articles - correction pour mobile */
+@media (max-width: 768px) {
+  .ticker-item:not(:last-child)::after {
+    content: "•";
+    position: absolute;
+    right: 10px; /* Réduire la distance par rapport à la droite */
+    color: #4CAF50;
+    margin-left: 5px; /* Ajouter une marge à gauche */
+  }
+  
+  /* Ajouter plus d'espace à droite du texte pour éviter la superposition */
+  .ticker-item {
+    padding-right: 25px; /* Augmenter l'espace à droite */
+  }
+}
+
+/* Pour les très petits écrans */
+@media (max-width: 480px) {
+  .ticker-item:not(:last-child)::after {
+    right: 7px; /* Encore moins à droite pour les petits écrans */
+  }
+  
+  .ticker-item {
+    padding-right: 20px; /* Ajuster l'espace */
+  }
+}
+  
+.ticker-item a {
+  color: white;
+  text-decoration: none;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.ticker-item a:hover {
+  text-decoration: underline;
+}
+
+.ticker-source {
+  color: #7FFF7F;
+  margin-right: 8px;
+  font-weight: bold;
+}
+
+/* Icônes pour les sources */
+.ticker-source[data-source="BFM TV"]::before { content: "📺 "; }
+.ticker-source[data-source="Le JSL"]::before { content: "📰 "; }
+.ticker-source[data-source="Montceau News"]::before { content: "🏙️ "; }
+.ticker-source[data-source="L'Informateur"]::before { content: "📝 "; }
+.ticker-source[data-source="France Bleu"]::before { content: "🎙️ "; }
+.ticker-source[data-source="Creusot Infos"]::before { content: "🏭 "; } /* Icône pour Creusot Infos */
+
+/* Animations */
+@keyframes ticker {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-300%); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.refresh-button:active .material-icons {
+  animation: spin 0.5s linear;
+}
+
+/* Style pour les messages d'erreur */
+.error-message {
+  background: rgba(255, 0, 0, 0.2);
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  margin: 20px 0;
+}
+
+/* Media queries - Adaptations mobiles */
+@media (max-width: 768px) {
+  .news-button {
+    top: 70px;
+    right: 10px;
+    padding: 6px 10px;
+    font-size: 13px;
+    bottom: auto !important;
+  }
+  
+  .news-button .material-icons {
+    font-size: 16px;
+  }
+  
+  .ticker-item {
+    padding: 10px 20px;
+  }
+  
+  .news-panel {
+    width: 80%;
+    max-width: 300px;
+  }
+  
+  .refresh-button {
+    width: 300px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .news-button {
+    top: 70px;
+    right: 10px;
+    padding: 5px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    max-width: 120px;
+    bottom: auto !important;
+  }
+  
+  .news-button .material-icons {
+    font-size: 14px;
+  }
+  
+  .ticker-item {
+    padding: 10px 15px;
+    font-size: 1.05em;
+  }
+  
+  .ticker-source {
+    font-size: 1.05em;
+  }
+  
+  .ticker-item a {
+    font-size: 1.05em;
+  }
+  
+  .news-panel {
+    width: 100%;
+    max-width: 100%;
+    right: -100%;
+  }
+  
+  .refresh-button {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 12px !important;
+    font-size: 14px;
+  }
+}
+/* Animation spécifique pour tablettes 8 pouces */
+@media (min-width: 768px) and (max-width: 820px) {
+  .ticker-wrapper {
+    animation: ticker-tablet-8-inch 90s linear infinite; /* Animation plus lente */
+  }
+  
+  @keyframes ticker-tablet-8-inch {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-500%); } /* Distance réduite */
+  }
+}
+
+/* Animation normale pour autres tablettes */
+@media (min-width: 601px) and (max-width: 767px), (min-width: 821px) and (max-width: 1024px) {
+  .ticker-wrapper {
+    animation: ticker-tablet 70s linear infinite;
+  }
+  
+  @keyframes ticker-tablet {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-1500%); }
+  }
+}
+/* Adaptation aux thèmes */
+[data-theme="light"] .news-ticker {
+  background-color: rgba(30, 30, 80, 0.9);
+}
+
+[data-theme="dark"] .news-ticker {
+  background-color: rgba(0, 0, 0, 0.85);
+}
+
+[data-theme="dark"] .news-panel {
+  background: linear-gradient(145deg, #1a237e, #283593);
+}
+
+[data-theme="light"] .news-panel {
+  background: linear-gradient(145deg, #7E57C2, #9575CD);
+}
+/* Bouton de fermeture pour mobile */
+.mobile-close-panel {
+  display: none; /* Caché par défaut */
+  position: fixed;
+  bottom: 120px; /* Au-dessus du bouton d'actualisation */
+  right: 15px; /* On le colle au bord droit de l’écran */
+  left: auto;    /* On annule l’effet de left */
+  transform: translateX(0); /* On enlève la translation */
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  z-index: 1060;
+  cursor: pointer;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ✅ Pour qu’il ne s’affiche que sur mobile */
+@media (max-width: 768px) {
+  .news-panel.open .mobile-close-panel {
+    display: flex;
+  }
+}
+
+/* Animation au survol/clic */
+.mobile-close-panel:hover, 
+.mobile-close-panel:active {
+  background: rgba(0, 0, 0, 0.8);
+}
+/* Styles pour les boutons de partage */
+.news-item-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.share-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.share-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: background 0.2s;
+}
+
+.share-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Modal de partage */
+.share-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+
+.share-modal-content {
+  background: var(--primary-color);
+  border-radius: 12px;
+  padding: 20px;
+  width: 90%;
+  max-width: 320px;
+  color: white;
+}
+
+.share-modal-content h3 {
+  margin-top: 0;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+/* Style de base pour les options de partage */
+.share-option {
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    padding: 16px;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.15);
+    color: white;
+    text-decoration: none;
+    font-size: 1.1em;
+    cursor: pointer;
+    border: none;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Aide au centrage */
+}
+.share-option span:not(.material-icons) {
+    flex-grow: 1;
+    text-align: center;
+    margin-right: 10px; /* Compense la marge de l'icône */
+}
+/* ✅ Ajout des effets au survol */
+.share-option:hover,
+.share-option:active {
+    background-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px); /* ✅ Décalage */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* ✅ Accentue l’ombre */
+}
+
+/* Style pour les icônes (icone + marge) */
+.share-option .material-icons {
+    margin-right: 10px; /* Réduit la marge */
+}
+
+/* ✅ Léger zoom au survol de l’icône */
+.share-option:hover .material-icons {
+    transform: scale(1.1);
+}
+
+/* Style des boutons de partage (centré et visible) */
+.share-close {
+    display: flex;
+    justify-content: center; /* ✅ Centraliser horizontalement */
+    align-items: center;
+    width: 100%; /* ✅ Permet l’utilisation de flexbox */
+    padding: 16px; /* ✅ Espace interne */
+    border-radius: 12px; /* ✅ Bords arrondis */
+    background-color: #4CAF50;
+    color: white;
+    font-size: 1.1em; /* ✅ Police plus grande */
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3); /* ✅ Ombre pour la clarté */
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.2); /* ✅ Ombre légère */
+}
+/* Ajout de l'icone à gauche sur mobile */
+@media (max-width: 600px) {
+    #share .share-option{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: row;
+        text-align: center;
+    }
+}
+ /* ✅ Améliore l’effet au survol */
+.share-close:hover,
+.share-close:active {
+    background-color: #388E3C;
+    transform: scale(1.02); /* ✅ Léger agrandissement au clic */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* ✅ Accentuer l’ombre au survol */
+}
+
+/* Adaptation aux thèmes */
+[data-theme="dark"] .share-modal-content {
+  background: linear-gradient(145deg, #1a237e, #283593);
+}
+
+[data-theme="light"] .share-modal-content {
+  background: linear-gradient(145deg, #7E57C2, #9575CD);
+}
+
+/* Responsive pour mobile */
+@media (max-width: 480px) {
+  .share-modal-content {
+    width: 95%;
+    padding: 15px;
+  }
+  
+  .share-option, .copy-link {
+    padding: 12px;
+  }
+}
