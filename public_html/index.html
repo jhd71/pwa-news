@@ -625,10 +625,71 @@ window.refreshNews = refreshNews;
     // Vérifier l'état de connexion au chargement
     checkAuthStatus();
 
-    // Écouter les changements d'authentification
-    supabase.auth.onAuthStateChange((event, session) => {
-        checkAuthStatus();
+    document.addEventListener('DOMContentLoaded', function() {
+    // Ajout de listeners manuels pour le bouton de chat
+    const chatBtn = document.getElementById('chatToggleBtn');
+    const chatContainer = document.getElementById('chat-container');
+    
+    if (chatBtn) {
+        console.log('Bouton de chat trouvé, ajout d\'un écouteur de débogage');
+        chatBtn.addEventListener('click', function(e) {
+            console.log('Clic sur le bouton de chat détecté');
+            
+            // Vérifier si le conteneur du chat existe
+            if (chatContainer) {
+                console.log('Conteneur de chat trouvé, toggle de la classe hidden');
+                chatContainer.classList.toggle('hidden');
+            } else {
+                console.error('Conteneur de chat non trouvé!');
+            }
+        });
+    } else {
+        console.error('Bouton de chat non trouvé!');
+    }
+    
+    // Vérifier les éléments critiques
+    console.log('Éléments de chat:', {
+        bouton: document.getElementById('chatToggleBtn'),
+        conteneur: document.getElementById('chat-container'),
+        messages: document.getElementById('chatMessages'),
+        formulaire: document.getElementById('chatForm')
     });
+    
+    // Modification du bouton de modération
+    const moderationBtn = document.getElementById('moderationBtn');
+    
+    if (moderationBtn) {
+        console.log('Bouton de modération trouvé, modification du comportement');
+        
+        // Remplacer l'écouteur existant
+        const newModBtn = moderationBtn.cloneNode(true);
+        moderationBtn.parentNode.replaceChild(newModBtn, moderationBtn);
+        
+        // Ajouter le nouvel écouteur
+        newModBtn.addEventListener('click', function(e) {
+            e.preventDefault(); // Empêcher la navigation par défaut
+            console.log('Clic sur le bouton de modération');
+            
+            // Vérifier si nous sommes déjà sur la page de modération
+            if (window.location.pathname.includes('moderation.html')) {
+                console.log('Déjà sur la page de modération');
+                return;
+            }
+            
+            // Rediriger vers la page de modération avec une URL relative
+            const baseUrl = window.location.origin;
+            window.location.href = `${baseUrl}/moderation.html`;
+        });
+    }
+    
+    // Appeler la fonction de vérification de la base de données après un délai
+    setTimeout(verifierBaseDeDonnees, 2000);
+});
+
+// Écouter les changements d'authentification
+supabase.auth.onAuthStateChange((event, session) => {
+    checkAuthStatus();
+});
 </script>
 </body>
 </html>
