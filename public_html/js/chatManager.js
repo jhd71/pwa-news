@@ -55,7 +55,7 @@ export default class ChatManager {
             
             // Maintenant on peut l'appeler
             this.setupRealtimeSubscription();
-
+            await this.loadMessages();
         } catch (error) {
             console.error('Erreur d\'initialisation du chat:', error);
         }
@@ -146,6 +146,36 @@ export default class ChatManager {
     }
 }
 
+async loadMessages() {
+        try {
+            const { data, error } = await supabase
+                .from('messages')
+                .select('*')
+                .order('created_at', { ascending: true })
+                .limit(50);
+                
+            if (error) throw error;
+            
+            if (data && data.length > 0) {
+                // Vider d'abord la liste des messages
+                const chatMessages = document.getElementById('chatMessages');
+                if (chatMessages) {
+                    chatMessages.innerHTML = '';
+                    
+                    // Afficher chaque message
+                    data.forEach(message => {
+                        this.displayMessage(message);
+                    });
+                    
+                    // Faire défiler vers le bas
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+            }
+        } catch (error) {
+            console.error('Erreur lors du chargement des messages:', error);
+        }
+    }
+
     handleUnauthenticated() {
         // Désactiver le bouton de chat ou montrer un message de connexion
         if (this.chatToggleBtn) {
@@ -155,122 +185,173 @@ export default class ChatManager {
     }
 
     toggleChat() {
-    if (!this.currentUser) {
-        // Créer une fenêtre de connexion si elle n'existe pas déjà
-        if (!document.getElementById('login-modal')) {
-            const loginModal = document.createElement('div');
-            loginModal.id = 'login-modal';
-            loginModal.className = 'login-modal';
-            loginModal.innerHTML = `
-                <div class="login-modal-content">
-                    <div class="login-header">
-                        <h3>Connexion requise</h3>
-                        <button id="closeLoginBtn" class="close-login-btn">×</button>
-                    </div>
-                    <div class="login-body">
-                        <p>Vous devez être connecté pour accéder au chat.</p>
-                        <div class="login-buttons">
-                            <button id="loginBtn" class="login-btn">Se connecter</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(loginModal);
-            
-            // Ajouter du style pour la fenêtre de connexion
-            if (!document.getElementById('login-modal-style')) {
-                const style = document.createElement('style');
-                style.id = 'login-modal-style';
-                style.textContent = `
-                    .login-modal {
-                        display: flex;
-                        position: fixed;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        background-color: rgba(0, 0, 0, 0.5);
-                        justify-content: center;
-                        align-items: center;
-                        z-index: 1001;
-                    }
-                    
-                    .login-modal-content {
-                        background-color: white;
-                        border-radius: 10px;
-                        width: 90%;
-                        max-width: 400px;
-                        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-                    }
-                    
-                    .login-header {
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                        padding: 15px;
-                        background: #1a237e;
-                        color: white;
-                        border-radius: 10px 10px 0 0;
-                    }
-                    
-                    .close-login-btn {
-                        background: none;
-                        border: none;
-                        color: white;
-                        font-size: 24px;
-                        cursor: pointer;
-                    }
-                    
-                    .login-body {
-                        padding: 20px;
-                        text-align: center;
-                    }
-                    
-                    .login-buttons {
-                        margin-top: 20px;
-                    }
-                    
-                    .login-btn {
-                        background-color: #4051b5;
-                        color: white;
-                        border: none;
-                        border-radius: 4px;
-                        padding: 10px 20px;
-                        cursor: pointer;
-                    }
-                `;
-                document.head.appendChild(style);
-            }
-            
-            // Ajouter les écouteurs d'événements
-            document.getElementById('closeLoginBtn').addEventListener('click', () => {
-                const modal = document.getElementById('login-modal');
-                if (modal) modal.remove();
-            });
-            
-            document.getElementById('loginBtn').addEventListener('click', () => {
-                // Redirection vers la page de connexion
-                window.location.href = '/login.html'; // Adapter selon votre structure
-                
-                // Ou utiliser le modal de connexion de Supabase
-                // supabase.auth.signIn();
-            });
-        } else {
-            // Afficher la fenêtre si elle existe déjà
-            document.getElementById('login-modal').style.display = 'flex';
-        }
+    // Vérifier l'authentification
+    const user = supabase.auth.user();
+    
+    if (!user) {
+        // Si l'utilisateur n'est pas connecté, afficher le formulaire de connexion
+        this.showLoginForm();
         return;
     }
 
-    // Si l'utilisateur est connecté, continuer avec le comportement normal
+    // Si l'utilisateur est connecté
+    this.currentUser = user; // S'assurer que l'utilisateur est défini
+    
+    // S'assurer que le conteneur du chat est créé
+    this.setupChatContainer();
+    
+    // Afficher/masquer le chat
     const chatContainer = document.getElementById('chat-container');
     if (chatContainer) {
         chatContainer.classList.toggle('hidden');
         
-        // Réinitialiser le badge de notification quand le chat est ouvert
+        // Si le chat est affiché, charger les messages
         if (!chatContainer.classList.contains('hidden')) {
-            this.resetNotificationBadge();
+            this.loadMessages();
         }
+    }
+}
+
+// Nouvelle méthode pour afficher le formulaire de connexion
+showLoginForm() {
+    // Créer le formulaire de connexion s'il n'existe pas
+    if (!document.getElementById('login-form-container')) {
+        const loginContainer = document.createElement('div');
+        loginContainer.id = 'login-form-container';
+        loginContainer.className = 'login-form-container';
+        loginContainer.innerHTML = `
+            <div class="login-form-content">
+                <div class="login-header">
+                    <h3>Connexion</h3>
+                    <button id="closeLoginBtn" class="close-login-btn">×</button>
+                </div>
+                <div class="login-body">
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" required placeholder="Votre email">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Mot de passe</label>
+                            <input type="password" id="password" required placeholder="Votre mot de passe">
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="submit-btn">Se connecter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        `;
+        
+        // Ajouter des styles pour le formulaire
+        const style = document.createElement('style');
+        style.textContent = `
+            .login-form-container {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            }
+            
+            .login-form-content {
+                background-color: white;
+                border-radius: 10px;
+                width: 90%;
+                max-width: 400px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            }
+            
+            .login-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px;
+                background: #1a237e;
+                color: white;
+                border-radius: 10px 10px 0 0;
+            }
+            
+            .close-login-btn {
+                background: none;
+                border: none;
+                color: white;
+                font-size: 24px;
+                cursor: pointer;
+            }
+            
+            .login-body {
+                padding: 20px;
+            }
+            
+            .form-group {
+                margin-bottom: 15px;
+            }
+            
+            .form-group label {
+                display: block;
+                margin-bottom: 5px;
+            }
+            
+            .form-group input {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+            }
+            
+            .submit-btn {
+                background-color: #1a237e;
+                color: white;
+                border: none;
+                padding: 10px 15px;
+                border-radius: 4px;
+                cursor: pointer;
+                width: 100%;
+            }
+        `;
+        
+        document.head.appendChild(style);
+        document.body.appendChild(loginContainer);
+        
+        // Gérer la fermeture du formulaire
+        document.getElementById('closeLoginBtn').addEventListener('click', () => {
+            const container = document.getElementById('login-form-container');
+            if (container) {
+                container.remove();
+            }
+        });
+        
+        // Gérer la soumission du formulaire
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const { error } = await supabase.auth.signIn({ email, password });
+                
+                if (error) throw error;
+                
+                // Fermer le formulaire
+                const container = document.getElementById('login-form-container');
+                if (container) {
+                    container.remove();
+                }
+                
+                // Rafraîchir la page ou initialiser le chat
+                window.location.reload();
+            } catch (error) {
+                console.error('Erreur de connexion:', error);
+                alert('Erreur de connexion: ' + error.message);
+            }
+        });
     }
 }
 
