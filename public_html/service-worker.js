@@ -1,219 +1,264 @@
-// service-worker.js
-// Ce fichier doit être placé à la racine de votre projet
+const CACHE_NAME = 'infos-pwa-v3'; // Incrémentez la version
+const OFFLINE_URL = '/offline.html';
 
-const CACHE_NAME = 'actu-media-v1.5';
-const urlsToCache = [
-  '/',
-  '/index.html',
-  '/css/styles.css',
-  '/css/chat-styles.css',
-  '/css/news-panel.css',
-  '/js/content.js',
-  '/js/chatManager.js',
-  '/js/sounds.js',
-  '/js/newsTickerManager.js',
-  '/js/newsPanel.js',
-  '/js/weather-widget.js',
-  '/js/splash-screen.js',
-  '/js/ios-install.js',
-  '/images/Actu&Media.png',
-  '/images/AM-192-v2.png',
-  '/images/AM-512-v2.png',
-  '/sounds/message.mp3',
-  '/sounds/sent.mp3',
-  '/sounds/notification.mp3',
-  '/sounds/click.mp3',
-  '/sounds/erreur.mp3',
-  '/sounds/success.mp3'
+const STATIC_RESOURCES = [
+    '/',
+    '/index.html',
+    '/css/styles.css',
+    '/css/chat-styles.css',
+    '/js/app.js',
+    '/js/chatManager.js',
+    '/js/content.js',
+    '/manifest.json',
+    '/images/INFOS-96.png',
+    '/images/INFOS-192.png',
+    '/images/INFOS.png',
+    '/images/AM-192-v2.png',
+    '/images/badge-72x72.png',
+    '/sounds/message.mp3',
+    '/sounds/notification.mp3',
+    '/sounds/click.mp3',
+    '/sounds/erreur.mp3',
+    '/sounds/success.mp3',
+    OFFLINE_URL
 ];
 
-// Installation du Service Worker
+// Installation
 self.addEventListener('install', event => {
-  console.log('[ServiceWorker] Installation');
-  self.skipWaiting();
-  
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('[ServiceWorker] Mise en cache globale');
-        return cache.addAll(urlsToCache);
-      })
-      .catch(error => {
-        console.error('[ServiceWorker] Erreur de mise en cache:', error);
-      })
-  );
-});
-
-// Activation et nettoyage des caches obsolètes
-self.addEventListener('activate', event => {
-  console.log('[ServiceWorker] Activation');
-  
-  event.waitUntil(
-    caches.keys()
-      .then(cacheNames => {
-        return Promise.all(
-          cacheNames.filter(cacheName => {
-            return cacheName !== CACHE_NAME;
-          }).map(cacheName => {
-            console.log('[ServiceWorker] Suppression de l\'ancien cache:', cacheName);
-            return caches.delete(cacheName);
-          })
-        );
-      })
-      .then(() => {
-        console.log('[ServiceWorker] Revendication des clients');
-        return self.clients.claim();
-      })
-  );
-});
-
-// Stratégie de cache : Network First, fallback to Cache
-self.addEventListener('fetch', event => {
-  // Pour les requêtes d'API, toujours aller au réseau
-  if (event.request.url.includes('/api/')) {
-    event.respondWith(
-      fetch(event.request)
-        .catch(error => {
-          console.error('[ServiceWorker] Erreur de récupération API:', error);
-          return new Response(JSON.stringify({ 
-            error: 'Réseau indisponible',
-            offline: true 
-          }), {
-            headers: { 'Content-Type': 'application/json' }
-          });
-        })
+    console.log('[ServiceWorker] Installation');
+    event.waitUntil(
+        Promise.all([
+            caches.open(CACHE_NAME).then(cache => {
+                console.log('[ServiceWorker] Mise en cache globale');
+                return cache.addAll(STATIC_RESOURCES);
+            }),
+            self.skipWaiting()
+        ])
     );
-    return;
-  }
+});
 
-  // Pour les autres ressources, essayer le réseau d'abord, puis le cache
-  event.respondWith(
-    fetch(event.request)
-      .then(response => {
-        // Si la réponse est valide, la mettre en cache
-        if (response && response.status === 200 && response.type === 'basic') {
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME)
-            .then(cache => {
-              cache.put(event.request, responseToCache);
+// Activation
+self.addEventListener('activate', event => {
+    console.log('[ServiceWorker] Activation');
+    event.waitUntil(
+        Promise.all([
+            clients.claim(),
+            caches.keys().then(cacheNames => {
+                return Promise.all(
+                    cacheNames.filter(cacheName => cacheName !== CACHE_NAME)
+                        .map(cacheName => {
+                            console.log('[ServiceWorker] Suppression de l\'ancien cache:', cacheName);
+                            return caches.delete(cacheName);
+                        })
+                );
+            })
+        ])
+    );
+});
+
+// Message handling
+self.addEventListener('message', async (event) => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
+    // Ajout de la gestion de la visibilité
+    if (event.data && event.data.type === 'CHECK_VISIBILITY') {
+        const clientList = await clients.matchAll({
+            type: 'window',
+            includeUncontrolled: true
+        });
+        
+        const isVisible = clientList.some(
+            client => client.visibilityState === 'visible'
+        );
+        
+        if (event.ports && event.ports[0]) {
+            event.ports[0].postMessage({
+                type: 'VISIBILITY_RESULT',
+                isVisible
             });
         }
-        return response;
-      })
-      .catch(() => {
-        // En cas d'échec du réseau, essayer le cache
-        return caches.match(event.request)
-          .then(cachedResponse => {
-            if (cachedResponse) {
-              return cachedResponse;
+    }
+});
+
+// Stratégie de cache améliorée
+self.addEventListener('fetch', (event) => {
+    // Ignorer les requêtes non GET
+    if (event.request.method !== 'GET') return;
+
+    // Ignorer les URLs non HTTP/HTTPS
+    const url = new URL(event.request.url);
+    if (!url.protocol.startsWith('http')) return;
+
+    // Ignorer les requêtes vers Supabase
+    if (event.request.url.includes('supabase.co')) return;
+
+    // Traitement spécial pour les requêtes d'API
+    if (event.request.url.includes('/api/')) {
+        event.respondWith(
+            fetch(event.request)
+                .catch(error => {
+                    console.error('[ServiceWorker] Erreur de récupération API:', error);
+                    return new Response(JSON.stringify({ 
+                        error: 'Réseau indisponible',
+                        offline: true 
+                    }), {
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                })
+        );
+        return;
+    }
+
+    event.respondWith(
+        (async () => {
+            const cache = await caches.open(CACHE_NAME);
+            try {
+                // Essayer d'abord le réseau
+                const networkResponse = await fetch(event.request);
+                // Ne mettre en cache que les réponses réussies et complètes
+                if (networkResponse.ok && networkResponse.status !== 206) {
+                    cache.put(event.request, networkResponse.clone());
+                }
+                return networkResponse;
+            } catch (error) {
+                // Si hors ligne, essayer le cache
+                const cachedResponse = await cache.match(event.request);
+                if (cachedResponse) {
+                    return cachedResponse;
+                }
+                // Si c'est une navigation vers une page, retourner la page hors ligne
+                if (event.request.mode === 'navigate') {
+                    return cache.match(OFFLINE_URL);
+                }
+                throw error;
             }
-            
-            // Fallback pour les pages HTML
-            if (event.request.mode === 'navigate') {
-              return caches.match('/index.html');
-            }
-            
-            // Si la ressource n'est pas dans le cache, retourner une erreur
-            return new Response('Ressource non disponible hors ligne', {
-              status: 503,
-              statusText: 'Service indisponible'
-            });
-          });
-      })
-  );
+        })()
+    );
 });
 
 // Gestion des notifications push
-self.addEventListener('push', event => {
-  console.log('[Service Worker] Notification push reçue', event);
-  
-  if (!event.data) {
-    console.log('[Service Worker] Pas de données dans l\'événement push');
-    return;
-  }
-  
-  try {
-    const data = event.data.json();
+self.addEventListener('push', function(event) {
+    console.log('[ServiceWorker] Push Reçu', event.data?.text());
     
-    const options = {
-      body: data.body || 'Nouveau message',
-      icon: data.icon || '/images/AM-192-v2.png',
-      badge: data.badge || '/images/AM-192-v2.png',
-      vibrate: [100, 50, 100, 50, 100, 50, 100],
-      data: data.data || {},
-      actions: [
-        {
-          action: 'open',
-          title: 'Ouvrir',
-          icon: '/images/AM-192-v2.png'
+    event.waitUntil((async () => {
+        try {
+            let data;
+            try {
+                data = event.data.json();
+            } catch (e) {
+                data = {
+                    title: 'Actu&Média Chat',
+                    body: event.data.text()
+                };
+            }
+
+            const clientList = await clients.matchAll({
+                type: 'window',
+                includeUncontrolled: true
+            });
+
+            const windowClient = clientList.find(client => 
+                client.visibilityState === 'visible'
+            );
+
+            if (!windowClient) {
+                const options = {
+                    body: data.body || 'Nouveau message',
+                    icon: '/images/AM-192-v2.png',
+                    badge: '/images/badge-72x72.png',
+                    tag: 'chat-message-' + Date.now(),
+                    vibrate: [100, 50, 100],
+                    data: {
+                        url: '/?action=openchat',
+                        timestamp: Date.now()
+                    },
+                    actions: [{
+                        action: 'open',
+                        title: 'Ouvrir le chat'
+                    }],
+                    requireInteraction: true,
+                    renotify: true,
+                    silent: false
+                };
+
+                await self.registration.showNotification('Actu&Média Chat', options);
+                console.log('[ServiceWorker] Notification envoyée');
+            }
+        } catch (error) {
+            console.error('[ServiceWorker] Erreur dans push:', error);
+            await self.registration.showNotification('Actu&Média Chat', {
+                body: 'Nouveau message reçu',
+                icon: '/images/AM-192-v2.png',
+                badge: '/images/badge-72x72.png',
+                requireInteraction: true
+            });
         }
-      ],
-      // Fermer automatiquement après 5 secondes pour éviter l'accumulation de notifications
-      requireInteraction: false,
-      tag: 'chat-message'
-    };
-    
-    event.waitUntil(
-      self.registration.showNotification(data.title || 'Actu & Média', options)
-    );
-  } catch (error) {
-    console.error('[Service Worker] Erreur traitement notification:', error);
-    
-    // Fallback en cas d'erreur de parsing
-    event.waitUntil(
-      self.registration.showNotification('Nouveau message', {
-        body: 'Vous avez reçu un nouveau message dans le chat',
-        icon: '/images/AM-192-v2.png',
-        badge: '/images/AM-192-v2.png'
-      })
-    );
-  }
+    })());
 });
 
 // Gestion des clics sur les notifications
-self.addEventListener('notificationclick', event => {
-  console.log('[Service Worker] Notification cliquée', event);
-  
-  event.notification.close();
-  
-  // Action par défaut: ouvrir l'application
-  let targetUrl = '/';
-  
-  // Si des données personnalisées sont présentes, utiliser l'URL spécifiée
-  if (event.notification.data && event.notification.data.url) {
-    targetUrl = event.notification.data.url;
-  }
-  
-  // Gérer les différentes actions disponibles
-  if (event.action === 'open') {
-    targetUrl = '/';
-  }
-  
-  // Ouvrir ou réutiliser une fenêtre existante
-  event.waitUntil(
-    clients.matchAll({ type: 'window' })
-      .then(clientList => {
-        // Vérifier s'il y a une fenêtre ouverte et la réutiliser
-        for (const client of clientList) {
-          if (client.url.includes(self.location.origin) && 'focus' in client) {
-            // Revenir à la fenêtre existante
-            client.navigate(targetUrl);
-            return client.focus();
-          }
+self.addEventListener('notificationclick', function(event) {
+    console.log('[ServiceWorker] Notification cliquée');
+    
+    event.notification.close();
+    
+    const urlToOpen = new URL('/?action=openchat', self.location.origin).href;
+    
+    const promiseChain = clients.matchAll({
+        type: 'window',
+        includeUncontrolled: true
+    })
+    .then((windowClients) => {
+        for (const client of windowClients) {
+            if (client.url === urlToOpen) {
+                return client.focus();
+            }
         }
-        
-        // Sinon, ouvrir une nouvelle fenêtre
-        if (clients.openWindow) {
-          return clients.openWindow(targetUrl);
-        }
-      })
-  );
+        return clients.openWindow(urlToOpen);
+    });
+
+    event.waitUntil(promiseChain);
 });
 
-// Gérer SKIP_WAITING pour mise à jour immédiate
-self.addEventListener('message', event => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    console.log('[ServiceWorker] Skip waiting demandé');
-    self.skipWaiting();
-  }
+// Gestion de la fermeture des notifications
+self.addEventListener('notificationclose', function(event) {
+    console.log('[ServiceWorker] Notification fermée', {
+        tag: event.notification.tag,
+        data: event.notification.data
+    });
+});
+
+// Gestion du changement de souscription
+self.addEventListener('pushsubscriptionchange', async function(event) {
+    console.log('[ServiceWorker] PushSubscriptionChange');
+    try {
+        const oldSubscription = event.oldSubscription || await self.registration.pushManager.getSubscription();
+        const applicationServerKey = oldSubscription.options.applicationServerKey;
+        
+        const newSubscription = await self.registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: applicationServerKey
+        });
+
+        // Informer l'application du changement
+        const clients = await self.clients.matchAll();
+        clients.forEach(client => {
+            client.postMessage({
+                type: 'SUBSCRIPTION_CHANGED',
+                subscription: newSubscription
+            });
+        });
+    } catch (error) {
+        console.error('[ServiceWorker] Erreur renouvellement souscription:', error);
+    }
+});
+
+// Gestionnaires d'erreurs globaux
+self.addEventListener('error', function(e) {
+    console.error('[ServiceWorker] Erreur:', e.filename, e.lineno, e.colno, e.message);
+});
+
+self.addEventListener('unhandledrejection', function(e) {
+    console.error('[ServiceWorker] Rejet non géré:', e.reason);
 });
