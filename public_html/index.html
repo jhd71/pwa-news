@@ -219,8 +219,8 @@
         <span class="chat-notification-badge hidden">0</span>
     </button>
     <!-- Bouton d'inscription -->
-    <button class="signup-btn">
-    <span class="material-icons">person_add</span>
+    <button id="signupBtn" class="nav-item">
+        <span class="material-icons">person_add</span>
         <span>S'inscrire</span>
     </button>
 </nav>
@@ -667,11 +667,6 @@ supabase.auth.onAuthStateChange((event, session) => {
 });
 </script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Corriger le bouton Chat
-  const chatButton = document.querySelector('.nav-button:has(span:contains("Chat"))') || 
-                    document.querySelector('button[aria-label="Chat"]') ||
-                    document.querySelector('[href="#chat"]');
                     
   if (chatButton) {
     chatButton.addEventListener('click', function(e) {
