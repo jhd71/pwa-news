@@ -1,5 +1,5 @@
-// js/chatManager.js
-import { supabase } from './supabase-client.js';
+// Utiliser l'instance globale de Supabase
+const supabase = window.supabase;
 
 export default class ChatManager {
     constructor() {
