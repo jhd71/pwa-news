@@ -50,18 +50,7 @@
     <meta name="msapplication-TileColor" content="#1a237e">
 <!-- Ajoutez ce code dans la section <head> de votre index.html -->
 
-<!-- Écrans de démarrage pour iOS -->
-<link rel="apple-touch-startup-image" href="images/splash-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-<link rel="apple-touch-startup-image" href="images/splash-1668x2388.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-<link rel="apple-touch-startup-image" href="images/splash-1536x2048.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-<link rel="apple-touch-startup-image" href="images/splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-<link rel="apple-touch-startup-image" href="images/splash-1242x2688.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-<link rel="apple-touch-startup-image" href="images/splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-<link rel="apple-touch-startup-image" href="images/splash-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-
 <!-- Améliorations des meta tags -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <!-- Styles -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -168,6 +157,27 @@
             <span>2025 Actu & Média</span>
         </div>
     </div>
+	<!-- Dans votre aside ou menu -->
+<div class="menu-item" id="loginMenuItem">
+    <a href="/login.html" class="menu-link">
+        <span class="material-icons">login</span>
+        <span>Connexion</span>
+    </a>
+</div>
+
+<div class="menu-item" id="moderationMenuItem" style="display:none;">
+    <button id="openModerationPanel" class="menu-link">
+        <span class="material-icons">admin_panel_settings</span>
+        <span>Panneau de Modération</span>
+    </button>
+</div>
+
+<div class="menu-item" id="logoutMenuItem" style="display:none;">
+    <button id="logoutButton" class="menu-link">
+        <span class="material-icons">logout</span>
+        <span>Déconnexion</span>
+    </button>
+</div>
 </aside>
 
 <!-- Conteneur principal des tuiles -->
@@ -548,6 +558,77 @@ window.refreshNews = refreshNews;
       });
     }
   });
+</script>
+<script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+    // Configuration Supabase
+    const supabaseUrl = 'https://aqedqlzsguvkopucyqbb.supabase.co';
+    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxZWRxbHpzZ3V2a29wdWN5cWJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY1MDAxNzUsImV4cCI6MjA1MjA3NjE3NX0.tjdnqCIW0dgmzn3VYx0ugCrISLPFMLhOQJBnnC5cfoo';
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+    // Fonction pour vérifier l'état de connexion
+    async function checkAuthStatus() {
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        const loginItem = document.getElementById('loginMenuItem');
+        const moderationItem = document.getElementById('moderationMenuItem');
+        const logoutItem = document.getElementById('logoutMenuItem');
+
+        if (user) {
+            // Vérifier si l'utilisateur est modérateur
+            const { data: moderatorData, error } = await supabase
+                .from('moderators')
+                .select('*')
+                .eq('user_id', user.id)
+                .eq('is_active', true)
+                .single();
+
+            if (moderatorData) {
+                // Utilisateur modérateur
+                loginItem.style.display = 'none';
+                moderationItem.style.display = 'block';
+                logoutItem.style.display = 'block';
+            } else {
+                // Utilisateur connecté mais pas modérateur
+                loginItem.style.display = 'none';
+                moderationItem.style.display = 'none';
+                logoutItem.style.display = 'block';
+            }
+        } else {
+            // Utilisateur non connecté
+            loginItem.style.display = 'block';
+            moderationItem.style.display = 'none';
+            logoutItem.style.display = 'none';
+        }
+    }
+
+    // Gestion de la déconnexion
+    const logoutButton = document.getElementById('logoutButton');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', async () => {
+            await supabase.auth.signOut();
+            window.location.reload();
+        });
+    }
+
+    // Ouvrir le panneau de modération
+    const moderationButton = document.getElementById('openModerationPanel');
+    if (moderationButton) {
+        moderationButton.addEventListener('click', async () => {
+            // Vous pouvez ajouter ici la logique pour ouvrir le panneau de modération
+            window.location.href = '/moderation.html'; // ou utiliser un modal
+        });
+    }
+
+    // Vérifier l'état de connexion au chargement
+    checkAuthStatus();
+
+    // Écouter les changements d'authentification
+    supabase.auth.onAuthStateChange((event, session) => {
+        checkAuthStatus();
+    });
 </script>
 </body>
 </html>
