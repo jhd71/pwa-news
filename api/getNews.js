@@ -26,10 +26,6 @@ export default async function handler(req, res) {
   
   try {
     const parser = new Parser({
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36',
-      },
-      timeout: 5000, // 5 secondes de timeout
       customFields: {
         item: ['media:content', 'enclosure']
       }
@@ -41,7 +37,6 @@ export default async function handler(req, res) {
         { name: 'L\'Informateur', url: 'http://www.linformateurdebourgogne.com/feed/', max: 2 },
         { name: 'Le JSL', url: 'https://www.lejsl.com/rss', max: 2 },
         { name: 'France Bleu', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/infos.xml', max: 2 },
-        // ajoute d'autres sources ici si besoin
     ];
     
     // Récupérer les articles de chaque flux avec gestion des promesses
@@ -49,7 +44,27 @@ export default async function handler(req, res) {
       return new Promise(async (resolve) => {
         try {
           console.log(`📡 Tentative pour ${feed.name}...`);
-          const feedData = await parser.parseURL(feed.url);
+          
+          // Remplacer axios par fetch avec timeout
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 5000);
+          
+          const response = await fetch(feed.url, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36'
+            },
+            signal: controller.signal
+          });
+          
+          clearTimeout(timeoutId);
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
+          const data = await response.text();
+          const feedData = await parser.parseString(data);
+          
           console.log(`✅ ${feed.name}: ${feedData.items.length} articles trouvés`);
           
           // Traiter les articles
@@ -62,7 +77,8 @@ export default async function handler(req, res) {
               }
             }
             if (!image) {
-              image = "/images/default-news.jpg"; // Image par défaut
+              // Modifiez le chemin d'image par défaut pour utiliser une image existante
+              image = "/images/AM-192-v2.png"; // Utilisez une image que vous avez déjà
             }
             
             return {
