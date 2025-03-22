@@ -1,63 +1,75 @@
 // js/moderationPanel.js
 import { supabase } from './supabase-client.js';
-import ModerationManager from './moderationManager.js';
 
 export default class ModerationPanel {
     constructor() {
-        this.moderationManager = new ModerationManager();
-        this.panelContainer = null;
         this.currentUser = null;
+        this.isModerator = false;
     }
 
     async init() {
-  try {
-    // Récupérer l'utilisateur actuel
-    const { data: { user } } = await supabase.auth.getUser();
+        try {
+            // Récupérer l'utilisateur actuel
+            const { data: { user } } = await supabase.auth.getUser();
 
-    // Vérifier si l'utilisateur existe
-    if (!user) {
-      console.error('Aucun utilisateur connecté');
-      return false;
+            if (!user) {
+                console.log('Aucun utilisateur connecté');
+                return false;
+            }
+
+            // Vérifier les droits de modération
+            const { data: moderatorData, error } = await supabase
+                .from('moderators')
+                .select('*')
+                .eq('user_id', user.id)
+                .eq('is_active', true)
+                .single();
+
+            if (error || !moderatorData) {
+                console.log('Pas de droits de modération');
+                return false;
+            }
+
+            // L'utilisateur est un modérateur
+            this.currentUser = user;
+            this.isModerator = true;
+
+            // Configurer les écouteurs d'événements
+            this.setupEventListeners();
+
+            return true;
+
+        } catch (error) {
+            console.error('Erreur d\'initialisation du panneau de modération:', error);
+            return false;
+        }
     }
 
-    // Vérifier si l'utilisateur est modérateur
-    const { data: moderatorData, error } = await supabase
-      .from('moderators')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('is_active', true)
-      .single();
+    setupEventListeners() {
+        const openModerationPanelBtn = document.getElementById('openModerationPanel');
+        const chatToggleBtn = document.getElementById('chatToggleBtn');
 
-    if (error || !moderatorData) {
-      console.error('Pas de droits de modération', error);
-      return false;
+        if (openModerationPanelBtn) {
+            openModerationPanelBtn.disabled = false;
+            openModerationPanelBtn.addEventListener('click', () => this.show());
+        }
+
+        if (chatToggleBtn) {
+            chatToggleBtn.disabled = false;
+        }
     }
 
-    // Continuer l'initialisation si modérateur
-    this.setupEventListeners();
-    return true;
+    show() {
+        if (!this.isModerator) {
+            alert('Vous n\'avez pas les droits de modération');
+            return;
+        }
 
-  } catch (error) {
-    console.error('Erreur d\'initialisation:', error);
-    return false;
-  }
+        // Logique pour afficher le panneau de modération
+        console.log('Ouverture du panneau de modération');
+        // Vous pouvez ajouter ici la logique pour ouvrir un modal ou rediriger
+    }
 }
-
-setupEventListeners() {
-  const openModerationPanelBtn = document.getElementById('openModerationPanel');
-  if (openModerationPanelBtn) {
-    openModerationPanelBtn.addEventListener('click', () => this.show());
-  }
-}
-
-show() {
-  // Logique pour afficher le panneau
-  console.log('Ouverture du panneau de modération');
-}
-  if (!this.isModerator) {
-    alert('Accès refusé. Vous n\'avez pas les droits de modération.');
-    return;
-  }
 
         // Créer le panneau de modération
         this.createModerationPanel();
