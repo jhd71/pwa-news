@@ -230,11 +230,26 @@ document.getElementById('mainLoginBtn').addEventListener('click', function() {
         <span>Google</span>
     </a>
     <!-- Bouton de chat intégré dans la barre -->
-    <button class="nav-item chat-toggle-btn" id="chatToggleBtn" onclick="window.open('chat-with-login.html', 'ChatActuMedia', 'width=350,height=500')">
+    <button class="nav-item chat-toggle-btn" id="chatToggleBtn">
     <span class="material-icons">chat</span>
     <span>Chat</span>
     <span class="chat-notification-badge hidden">0</span>
 </button>
+
+<script>
+// Écouteur pour le bouton chat
+document.getElementById('chatToggleBtn').addEventListener('click', function() {
+    const isMobile = ('ontouchstart' in window) || window.innerWidth <= 800;
+    
+    if (isMobile) {
+        // Sur mobile, ouvrir dans une nouvelle page plein écran
+        window.location.href = 'chat-with-login.html';
+    } else {
+        // Sur desktop, ouvrir dans une fenêtre pop-up
+        window.open('chat-with-login.html', 'ChatActuMedia', 'width=350,height=500');
+    }
+});
+</script>
     <!-- Bouton d'inscription -->
     <button id="signupBtn" class="nav-item">
         <span class="material-icons">person_add</span>
