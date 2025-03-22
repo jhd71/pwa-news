@@ -2,20 +2,19 @@
 const supabaseUrl = 'https://aqedqlzsguvkopucyqbb.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxZWRxbHpzZ3V2a29wdWN5cWJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY1MDAxNzUsImV4cCI6MjA1MjA3NjE3NX0.tjdnqCIW0dgmzn3VYx0ugCrISLPFMLhOQJBnnC5cfoo';
 
-// Créer le client Supabase
-const supabase = supabaseClient.createClient(supabaseUrl, supabaseAnonKey);
+// S'assurer que la bibliothèque Supabase est disponible
+if (typeof supabase === 'undefined') {
+  console.error('La bibliothèque Supabase n\'est pas chargée correctement');
+}
 
-// Exporter pour utilisation dans d'autres scripts
-window.supabase = supabase;
-// Fonctions utilitaires d'authentification
-export async function signInWithEmail(email, password) {
-    const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-    });
-
-    if (error) throw error;
-    return data;
+// Créer une instance Supabase si elle n'existe pas déjà
+try {
+  if (typeof window.supabaseInstance === 'undefined') {
+    window.supabaseInstance = supabase.createClient(supabaseUrl, supabaseAnonKey);
+    console.log('Client Supabase initialisé');
+  }
+} catch (error) {
+  console.error('Erreur lors de l\'initialisation de Supabase:', error);
 }
 
 export async function signOut() {
