@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://jhd71.fr/sitemap.xml
