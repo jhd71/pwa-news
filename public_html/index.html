@@ -349,16 +349,6 @@
                 await window.chatManager.init();
                 console.log('Chat Manager initialisé');
 
-// NOUVEAU : Initialiser ModerationPanel
-                console.log('Chargement du Panneau de Modération...');
-                try {
-    const moderationPanel = new ModerationPanel();
-    const initResult = await moderationPanel.init();
-    console.log("Initialisation du panneau de modération:", initResult ? "réussie" : "échouée");
-} catch (error) {
-    console.error("Erreur lors de l'initialisation du panneau de modération:", error);
-}
-
                 // NOUVEAU : Ajouter l'écouteur pour ouvrir le panneau
                 const openModerationPanelBtn = document.getElementById('openModerationPanel');
                 if (openModerationPanelBtn) {
@@ -774,21 +764,19 @@ supabase.auth.onAuthStateChange((event, session) => {
       
       document.body.appendChild(signupForm);
       
-      // Ajouter la fonctionnalité de fermeture
-      document.getElementById('closeSignup').addEventListener('click', function() {
-        signupForm.remove();
-      });
+// Ajouter la fonctionnalité de fermeture
+document.getElementById('closeSignup').addEventListener('click', function() {
+  signupForm.remove();
+});
       
-      // Gérer la soumission du formulaire
-      document.getElementById('userSignupForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        alert('Fonctionnalité d\'inscription à implémenter');
-        signupForm.remove();
-      });
-    });
-  }
+// Gérer la soumission du formulaire
+document.getElementById('userSignupForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  alert('Fonctionnalité d\'inscription à implémenter');
+  signupForm.remove();
 });
 </script>
+<script src="js/moderationPanel.js"></script>
 <script src="js/supabase-client.js"></script>
 <script src="js/simple-chat.js"></script>
 </body>
