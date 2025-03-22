@@ -427,4 +427,3 @@ export default class ModerationManager {
             this.panelContainer.classList.add('hidden');
         }
     }
-}
