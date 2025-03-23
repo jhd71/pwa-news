@@ -1717,3 +1717,100 @@ body.long-press-active .message-options {
     background-image: none !important;
   }
 }
+
+/* Styles pour le panneau d'administration - Onglets et IPs bannies */
+.panel-tabs {
+    display: flex;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 15px;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 0.3s;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.tab-btn.active {
+    opacity: 1;
+    border-bottom: 2px solid white;
+}
+
+.tab-section {
+    display: none;
+}
+
+.tab-section.active {
+    display: block;
+}
+
+/* Styles pour la liste des IPs bannies */
+.banned-ips-list {
+    margin-top: 15px;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.banned-ip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    margin-bottom: 8px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.banned-ip:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.ip-info {
+    flex: 1;
+}
+
+.ip-pseudo {
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+
+.ip-expiry {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.remove-ban {
+    background: rgba(255, 0, 0, 0.2);
+    border: none;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: background 0.2s;
+}
+
+.remove-ban:hover {
+    background: rgba(255, 0, 0, 0.4);
+}
+
+.loading-ips, .no-data, .error {
+    text-align: center;
+    padding: 15px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.error {
+    color: #ff6b6b;
+}
