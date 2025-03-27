@@ -202,10 +202,10 @@
         <span class="material-icons">grid_view</span>
         <span>Vue</span>
     </button>
-    <a href="https://www.google.com" target="_blank" class="nav-item">
-        <span class="material-icons">search</span>
-        <span>Google</span>
-    </a>
+    <button class="nav-item" id="donateBtn">
+    <span class="material-icons">volunteer_activism</span>
+    <span>Soutenir</span>
+</button>
     <!-- Bouton de chat intégré dans la barre -->
     <button class="nav-item chat-toggle-btn" id="chatToggleBtn">
         <span class="material-icons">chat</span>
@@ -534,6 +534,24 @@ window.refreshNews = refreshNews;
       });
     }
   });
+</script>
+	<script>
+document.getElementById('donateBtn').addEventListener('click', function() {
+    const form = document.createElement('form');
+    form.method = 'post';
+    form.action = 'https://www.paypal.com/donate';
+    form.target = '_blank';
+    
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'hosted_button_id';
+    input.value = 'FKJPST5LWBUGG';
+    
+    form.appendChild(input);
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+});
 </script>
 </body>
 </html>
