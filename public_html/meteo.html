@@ -1,88 +1,460 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prévisions météo</title>
+    <title>Prévisions météo - Actu&Média</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #7E57C2;
+            --primary-dark: #1a237e;
+            --text-color: #333;
+            --bg-color: #f9f9ff;
+            --card-bg: #fff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        [data-theme="dark"] {
+            --primary-color: #1a237e;
+            --primary-dark: #0d147a;
+            --text-color: #f0f0f0;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s, color 0.5s, transform 0.3s, box-shadow 0.3s;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to bottom, #87CEEB, #FFFFFF);
-            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background 0.8s ease;
+        }
+        
+        header {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 0 10px;
+        }
+        
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.2s, transform 0.2s;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-3px);
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin: 0 auto 20px;
+            font-size: 28px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(15deg);
+        }
+        
+        .theme-toggle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .theme-toggle:active::after {
+            width: 150%;
+            height: 150%;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s forwards;
+        }
+        
+        .location {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        .weather-days-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .weather-day {
+            background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.2));
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .weather-day:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .weather-day h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            text-transform: capitalize;
+        }
+        
+        .weather-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 10px;
+            transition: transform 0.3s;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .weather-day:hover .weather-icon {
+            transform: scale(1.2);
+        }
+        
+        .weather-day-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .weather-conditions {
+            text-align: center;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .temp-range {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        
+        .min-temp {
+            color: #64B5F6;
+        }
+        
+        .max-temp {
+            color: #FF8A65;
+        }
+        
+        .weather-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            width: 100%;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .detail-item .material-icons {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+        
+        .error {
+            color: #f44336;
             text-align: center;
             padding: 20px;
+            background: rgba(244, 67, 54, 0.1);
+            border-radius: 10px;
         }
-        #weather img {
-            width: 50px;
-            height: 50px;
+        
+        footer {
+            margin-top: auto;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            padding: 20px 0;
         }
-        .error {
-            color: red;
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .forecast-day {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 10px;
-            border-radius: 5px;
-            background-color: #f9f9f9;
+        
+        .weather-day {
+            animation: fadeIn 0.5s forwards;
+            animation-delay: calc(var(--i, 0) * 0.1s);
+            opacity: 0;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes themeFade {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        html[data-theme] {
+            animation: themeFade 0.5s forwards;
+        }
+        
+        /* Dark theme specific styles */
+        [data-theme="dark"] .location {
+            color: #a991e5; /* Violet plus clair pour un meilleur contraste */
+        }
+        
+        [data-theme="dark"] .weather-day h4 {
+            color: #a991e5; /* Même couleur pour les jours */
+        }
+        
+        [data-theme="dark"] .min-temp {
+            color: #90CAF9; /* Bleu plus clair pour température minimale */
+        }
+        
+        [data-theme="dark"] .max-temp {
+            color: #FFAB91; /* Orange plus clair pour température maximale */
+        }
+        
+        /* Style existant pour le fond en mode sombre */
+       [data-theme="dark"] .weather-day {
+            background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.3));
+        }
+
+      /* Nouvelles règles pour la séparation visuelle */
+      [data-theme="light"] .weather-day {
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin: 5px;
+        }
+
+      [data-theme="dark"] .weather-day {
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+           margin: 5px;
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 24px;
+            }
+            
+            .card {
+                padding: 15px;
+            }
+            
+            .weather-days-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .weather-details {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
+    <header>
+        <a href="index.html" class="back-btn">
+            <span class="material-icons">arrow_back</span>
+            <span>Retour</span>
+        </a>
+        <button id="themeToggle" class="theme-toggle">
+            <span class="material-icons">dark_mode</span>
+        </button>
+    </header>
+    
     <h1>Prévisions météo</h1>
-    <div id="weather">Chargement des données météo...</div>
-
+    
+    <div class="card" id="weather">Chargement des données météo...</div>
+    
+    <footer>
+        Données fournies par WeatherAPI.com
+    </footer>
+    
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-    const apiKey = "4b79472c165b42f690790252242112";
-    const city = "Montceau-les-Mines";
-    const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${city}&days=3&lang=fr`;
-
-    const weatherContainer = document.getElementById("weather");
-
-    fetch(url)
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Erreur : " + response.status);
+            // Gestion du thème
+            const themeToggle = document.getElementById('themeToggle');
+            const htmlEl = document.documentElement;
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            // Définir le thème initial
+            if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && prefersDark)) {
+                htmlEl.setAttribute('data-theme', 'dark');
+                themeToggle.querySelector('.material-icons').textContent = 'light_mode';
             }
-            return response.json();
-        })
-        .then((data) => {
-            const location = data.location;
-            const forecast = data.forecast.forecastday;
-
-            let forecastHTML = `
-                <h2>${location.name}, ${location.region}</h2>
-                <h3>Prévisions pour les prochains jours :</h3>
-            `;
-
-            // Structure modifiée pour un affichage en grille
-            forecastHTML += `<div class="weather-days-container">`;
+            
+            // Basculer le thème avec animation
+            themeToggle.addEventListener('click', function() {
+                // Désactiver temporairement l'animation pour éviter les effets indésirables
+                htmlEl.style.animation = 'none';
                 
-            forecast.forEach((day) => {
-                const date = new Date(day.date);
-                forecastHTML += `
-                    <div class="weather-day">
-                        <h4>${date.toLocaleDateString("fr-FR", { weekday: 'long', day: 'numeric' })}</h4>
-                        <div class="weather-day-content">
-                            <img src="https:${day.day.condition.icon}" alt="${day.day.condition.text}">
-                            <div class="weather-day-details">
-                                <p>${day.day.condition.text}</p>
-                                <p><strong>${day.day.mintemp_c}°C</strong> / <strong>${day.day.maxtemp_c}°C</strong></p>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                const currentTheme = htmlEl.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                // Forcer une re-flow pour appliquer le changement de style
+                void htmlEl.offsetWidth;
+                
+                // Restaurer l'animation
+                htmlEl.style.animation = '';
+                
+                // Animer la rotation du bouton
+                themeToggle.style.transform = 'rotate(360deg)';
+                setTimeout(() => {
+                    themeToggle.style.transform = '';
+                }, 600);
+                
+                htmlEl.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                
+                themeToggle.querySelector('.material-icons').textContent = 
+                    newTheme === 'dark' ? 'light_mode' : 'dark_mode';
             });
             
-            forecastHTML += `</div>`;
-
-            weatherContainer.innerHTML = forecastHTML;
-        })
-        .catch((error) => {
-            weatherContainer.innerHTML = `<p class="error">${error.message}</p>`;
+            // Chargement des données météo
+            const apiKey = "4b79472c165b42f690790252242112";
+            const city = "Montceau-les-Mines";
+            const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${city}&days=3&lang=fr`;
+            const weatherContainer = document.getElementById("weather");
+            
+            fetch(url)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Erreur : " + response.status);
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    console.log(data); // Pour débogage
+                    const location = data.location;
+                    const forecast = data.forecast.forecastday;
+                    const current = data.current;
+                    
+                    // Formatage des données
+                    let weatherHTML = `
+                        <div class="location">${location.name}, ${location.region}</div>
+                        <div class="weather-days-container">
+                    `;
+                    
+                    forecast.forEach((day, index) => {
+                        const date = new Date(day.date);
+                        const dayData = day.day;
+                        const airQuality = dayData.air_quality ? Math.round(dayData.air_quality.pm10) : 'N/A';
+                        
+                        weatherHTML += `
+                            <div class="weather-day" style="--i:${index}">
+                                <h4>${date.toLocaleDateString("fr-FR", { weekday: 'long', day: 'numeric' })}</h4>
+                                <div class="weather-day-content">
+                                    <img src="https:${dayData.condition.icon}" alt="${dayData.condition.text}" class="weather-icon">
+                                    <div class="weather-conditions">${dayData.condition.text}</div>
+                                    
+                                    <div class="temp-range">
+                                        <span class="min-temp">${Math.round(dayData.mintemp_c)}°</span>
+                                        <span class="max-temp">${Math.round(dayData.maxtemp_c)}°</span>
+                                    </div>
+                                    
+                                    <div class="weather-details">
+                                        <div class="detail-item">
+                                            <span class="material-icons">water_drop</span>
+                                            <span>Humidité: ${dayData.avghumidity}%</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="material-icons">air</span>
+                                            <span>Vent: ${dayData.maxwind_kph} km/h</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="material-icons">wb_sunny</span>
+                                            <span>UV: ${dayData.uv}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="material-icons">water</span>
+                                            <span>Pluie: ${dayData.daily_chance_of_rain}%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    weatherHTML += `</div>`;
+                    weatherContainer.innerHTML = weatherHTML;
+                })
+                .catch((error) => {
+                    weatherContainer.innerHTML = `<p class="error">${error.message}</p>`;
+                });
         });
-});
     </script>
 </body>
 </html>
