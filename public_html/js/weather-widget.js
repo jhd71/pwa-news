@@ -22,22 +22,21 @@ function loadWeatherWidget() {
       const forecast = data.forecast.forecastday;
       
       // Version simplifiée pour le widget
-      // Dans votre fonction qui génère le HTML météo
-let forecastHTML = `<p style="text-align:center; margin: 0 0 5px 0;"><strong>${location.name}</strong></p>`;
+      let forecastHTML = `<p style="text-align:center; margin: 0 0 5px 0;"><strong>${location.name}</strong></p>`;
 
-forecast.slice(0, 3).forEach((day) => {
-  const date = new Date(day.date);
-  const dayName = date.toLocaleDateString("fr-FR", { weekday: 'short' });
-  
-  forecastHTML += `
-    <div class="weather-day">
-      <h4>${dayName}</h4>
-      <img src="https:${day.day.condition.icon}" alt="${day.day.condition.text}">
-      <p>${day.day.condition.text}</p>
-      <p>${Math.round(day.day.mintemp_c)}°C - ${Math.round(day.day.maxtemp_c)}°C</p>
-    </div>
-  `;
-});
+      forecast.slice(0, 3).forEach((day) => {
+        const date = new Date(day.date);
+        const dayName = date.toLocaleDateString("fr-FR", { weekday: 'short' });
+        
+        forecastHTML += `
+          <div class="weather-day">
+            <h4>${dayName}</h4>
+            <img src="https:${day.day.condition.icon}" alt="${day.day.condition.text}">
+            <p>${day.day.condition.text}</p>
+            <p>${Math.round(day.day.mintemp_c)}°C - ${Math.round(day.day.maxtemp_c)}°C</p>
+          </div>
+        `;
+      });
       
       weatherContainer.innerHTML = forecastHTML;
     })
@@ -48,4 +47,42 @@ forecast.slice(0, 3).forEach((day) => {
 }
 
 // Charger la météo au chargement de la page
-document.addEventListener("DOMContentLoaded", loadWeatherWidget);
+document.addEventListener("DOMContentLoaded", function() {
+  loadWeatherWidget();
+  setupWeatherToggle();
+});
+
+// Fonction pour configurer le basculement du widget météo
+function setupWeatherToggle() {
+  const weatherSidebar = document.getElementById('weatherSidebar');
+  const weatherToggle = document.querySelector('.weather-toggle');
+  const weatherShowBtn = document.getElementById('weatherShowBtn');
+  
+  if (!weatherSidebar || !weatherToggle || !weatherShowBtn) {
+    console.error("Éléments manquants pour la bascule météo");
+    return;
+  }
+  
+  // Vérifier si l'état est enregistré
+  const weatherHidden = localStorage.getItem('weatherHidden') === 'true';
+  
+  // Appliquer l'état initial
+  if (weatherHidden) {
+    weatherSidebar.classList.add('hidden');
+    weatherShowBtn.classList.add('visible');
+  }
+  
+  // Gérer le clic sur le bouton masquer
+  weatherToggle.addEventListener('click', function() {
+    weatherSidebar.classList.add('hidden');
+    weatherShowBtn.classList.add('visible');
+    localStorage.setItem('weatherHidden', 'true');
+  });
+  
+  // Gérer le clic sur le bouton afficher
+  weatherShowBtn.addEventListener('click', function() {
+    weatherSidebar.classList.remove('hidden');
+    weatherShowBtn.classList.remove('visible');
+    localStorage.setItem('weatherHidden', 'false');
+  });
+}

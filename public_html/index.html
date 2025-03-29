@@ -94,11 +94,19 @@
         <img src="images/Actu&Media.png" alt="Actu & Média" class="site-logo">
     </h1>
 </header>
-<!-- Ajouter après le header, avant le carrousel -->
+<!-- Widget météo avec bouton de fermeture -->
 <div class="weather-sidebar" id="weatherSidebar">
+  <button class="weather-toggle" title="Masquer la météo">
+    <span class="material-icons">close</span>
+  </button>
   <h3>Météo locale</h3>
   <div id="weather-widget">Chargement...</div>
 </div>
+
+<!-- Bouton pour réafficher le widget (en dehors du sidebar) -->
+<button class="weather-show-btn" id="weatherShowBtn" title="Afficher la météo">
+  <span class="material-icons">wb_sunny</span>
+</button>
 <!-- Structure HTML optimisée pour le Swiper et les séparateurs -->
 <div class="swiper-container">
   <div class="swiper">
@@ -558,6 +566,37 @@ document.getElementById('donateBtn').addEventListener('click', function() {
     document.body.appendChild(form);
     form.submit();
     document.body.removeChild(form);
+});
+</script>
+<script>
+// Gestion du widget météo
+document.addEventListener('DOMContentLoaded', function() {
+  const weatherSidebar = document.querySelector('.weather-sidebar');
+  const weatherToggle = document.querySelector('.weather-toggle');
+  const weatherShowBtn = document.getElementById('weatherShowBtn');
+  
+  // Vérifier si l'état est enregistré
+  const weatherHidden = localStorage.getItem('weatherHidden') === 'true';
+  
+  // Appliquer l'état initial
+  if (weatherHidden) {
+    weatherSidebar.classList.add('hidden');
+    weatherShowBtn.classList.add('visible');
+  }
+  
+  // Gérer le clic sur le bouton masquer
+  weatherToggle.addEventListener('click', function() {
+    weatherSidebar.classList.add('hidden');
+    weatherShowBtn.classList.add('visible');
+    localStorage.setItem('weatherHidden', 'true');
+  });
+  
+  // Gérer le clic sur le bouton afficher
+  weatherShowBtn.addEventListener('click', function() {
+    weatherSidebar.classList.remove('hidden');
+    weatherShowBtn.classList.remove('visible');
+    localStorage.setItem('weatherHidden', 'false');
+  });
 });
 </script>
 </body>
