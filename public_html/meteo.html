@@ -322,6 +322,67 @@
                 grid-template-columns: 1fr;
             }
         }
+		
+		/* Optimisations pour mobile - Vue plus compacte */
+@media (max-width: 600px) {
+  .card {
+    padding: 12px;
+  }
+  
+  .weather-days-container {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .weather-day {
+    padding: 10px;
+    margin: 3px;
+  }
+  
+  .weather-day h4 {
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+  
+  .weather-icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 5px;
+  }
+  
+  .weather-conditions {
+    font-size: 14px;
+  }
+  
+  .temp-range {
+    margin: 5px 0;
+  }
+  
+  .weather-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+    font-size: 12px;
+  }
+  
+  .detail-item {
+    margin-bottom: 0;
+  }
+  
+  .detail-item .material-icons {
+    font-size: 14px;
+  }
+  
+  .location {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  h1 {
+    font-size: 22px;
+    margin-bottom: 15px;
+  }
+}
     </style>
 </head>
 <body>
