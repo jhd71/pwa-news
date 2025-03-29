@@ -237,6 +237,45 @@ this.tileContainer.appendChild(separator2);
         this.tileContainer.appendChild(tile);
     });
 
+// Séparateur Football
+const footballSeparator = document.createElement('div');
+footballSeparator.className = 'separator';
+footballSeparator.innerHTML = `<img src="images/Football.png" alt="Football" class="separator-img">`;
+this.tileContainer.appendChild(footballSeparator);
+
+// Section Football
+const footballSites = [
+    {
+        title: 'Ligue 1',
+        url: 'https://www.ligue1.fr',
+        mobileUrl: 'https://www.ligue1.fr',
+        isDefault: true
+    },
+    {
+        title: 'Ligue 2',
+        url: 'https://www.ligue2.fr',
+        mobileUrl: 'https://www.ligue2.fr',
+        isDefault: true
+    },
+    {
+        title: 'FC Montceau-Bourgogne',
+        url: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
+        mobileUrl: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
+        isDefault: true
+    },
+    {
+        title: 'Foot-Live',
+        url: 'https://www.footmercato.net/live/',
+        mobileUrl: 'https://www.footmercato.net/live/',
+        isDefault: true
+    }
+];
+
+footballSites.forEach(site => {
+    const tile = this.createTile(site);
+    this.tileContainer.appendChild(tile);
+});
+
     // Séparateur Réseaux Sociaux
 const separator3 = document.createElement('div');
 separator3.className = 'separator';
