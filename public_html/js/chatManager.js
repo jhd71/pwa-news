@@ -1568,8 +1568,16 @@ async unsubscribeFromPushNotifications() {
 
     const registration = await navigator.serviceWorker.ready;
 
-    if (!registration || !registration.pushManager) {
-      throw new Error("PushManager non disponible.");
+    if (!registration) {
+      console.warn("Service worker non prêt ou indisponible");
+      this.showNotification("Service worker indisponible", "error");
+      return;
+    }
+
+    if (!registration.pushManager) {
+      console.warn("PushManager indisponible sur ce navigateur");
+      this.showNotification("PushManager non supporté", "error");
+      return;
     }
 
     const subscription = await registration.pushManager.getSubscription();
