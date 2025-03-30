@@ -16,25 +16,8 @@
       "dest": "/api/$1.js"
     },
     {
-      "src": "/index.html",
-      "dest": "/"
-    },
-    {
-      "src": "/meteo.html",
-      "dest": "/meteo"
-    },
-    {
-      "src": "/meteo",
-      "dest": "/public_html/meteo.html"
-    },
-    {
-      "src": "/(.*)\\.html$",
-      "dest": "/$1"
-    },
-    {
       "src": "/(.*)",
       "dest": "/public_html/$1"
     }
-  ],
-  "cleanUrls": true
+  ]
 }
