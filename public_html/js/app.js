@@ -157,6 +157,7 @@ class App {
     initializeUI() {
         // Créer les tuiles
         this.renderTiles();
+		console.log("Liste des tuiles chargées :", this.sites);
         
         // Appliquer le layout actuel
         this.applyLayout(this.currentLayout);
