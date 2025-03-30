@@ -30,33 +30,53 @@ export default class PollManager {
     }
   }
 
-  renderPoll() {
-    if (!this.poll || !this.container) return;
+  renderPoll(poll) {
+  const tile = document.createElement('div');
+  tile.className = 'tile poll-tile';
 
-    this.container.innerHTML = `
-      <div class="poll-tile">
-        <h3>${this.poll.question}</h3>
-        <form id="pollForm">
-          ${this.poll.options
-            .map(
-              (option, index) => `
-            <label>
-              <input type="radio" name="option" value="${option}">
-              ${option}
-            </label>
-          `
-            )
-            .join("")}
-          <button type="submit">Voter</button>
-        </form>
-        <div id="pollMessage"></div>
-      </div>
-    `;
+  const questionEl = document.createElement('h3');
+  questionEl.textContent = poll.question;
+  tile.appendChild(questionEl);
 
-    document
-      .getElementById("pollForm")
-      .addEventListener("submit", (e) => this.handleVote(e));
-  }
+  const form = document.createElement('form');
+
+  poll.options.forEach((option, index) => {
+    const label = document.createElement('label');
+    const radio = document.createElement('input');
+    radio.type = 'radio';
+    radio.name = 'pollOption';
+    radio.value = option;
+
+    label.appendChild(radio);
+    label.appendChild(document.createTextNode(option));
+    form.appendChild(label);
+  });
+
+  const voteBtn = document.createElement('button');
+  voteBtn.type = 'button';
+  voteBtn.className = 'vote-btn';
+  voteBtn.textContent = 'Voter';
+
+  const message = document.createElement('div');
+  message.className = 'vote-message';
+
+  voteBtn.addEventListener('click', () => {
+    const selected = form.querySelector('input[name="pollOption"]:checked');
+    if (selected) {
+      message.textContent = `Merci pour votre vote : ${selected.value}`;
+      voteBtn.disabled = true;
+      form.querySelectorAll('input').forEach(input => input.disabled = true);
+    } else {
+      message.textContent = "Veuillez sélectionner une option.";
+    }
+  });
+
+  form.appendChild(voteBtn);
+  tile.appendChild(form);
+  tile.appendChild(message);
+
+  return tile;
+}
 
   async handleVote(event) {
     event.preventDefault();
