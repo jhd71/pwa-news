@@ -16,8 +16,34 @@
       "dest": "/api/$1.js"
     },
     {
+      "src": "/index.html",
+      "status": 308,
+      "headers": { "Location": "/" }
+    },
+    {
+      "src": "/meteo.html",
+      "status": 308,
+      "headers": { "Location": "/meteo" }
+    },
+    {
+      "src": "/meteo$",
+      "dest": "/public_html/meteo.html"
+    },
+    {
+      "src": "/(.*)\\.html$",
+      "status": 308,
+      "headers": { "Location": "/$1" }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public_html/$1.html",
+      "check": true
+    },
+    {
       "src": "/(.*)",
       "dest": "/public_html/$1"
     }
-  ]
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false
 }
