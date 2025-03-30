@@ -16,14 +16,13 @@
       "dest": "/api/$1.js"
     },
     {
-      "src": "/index.html",
-      "status": 308,
+      "src": "/index$",
+      "status": 301,
       "headers": { "Location": "/" }
     },
     {
-      "src": "/meteo.html",
-      "status": 308,
-      "headers": { "Location": "/meteo" }
+      "src": "^/$",
+      "dest": "/public_html/index.html"
     },
     {
       "src": "/meteo$",
@@ -31,19 +30,12 @@
     },
     {
       "src": "/(.*)\\.html$",
-      "status": 308,
+      "status": 301,
       "headers": { "Location": "/$1" }
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/public_html/$1.html",
-      "check": true
     },
     {
       "src": "/(.*)",
       "dest": "/public_html/$1"
     }
-  ],
-  "cleanUrls": true,
-  "trailingSlash": false
+  ]
 }
