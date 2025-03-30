@@ -1980,14 +1980,14 @@ main {
 }
 
 .poll-widget-container {
+  background-color: #f1f1f1; /* Fond clair fixe */
+  color: #1a237e; /* Texte foncé */
   max-width: 600px;
   margin: 20px auto;
   padding: 16px;
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
   font-size: 16px;
-  background-color: #ffffff;
-  color: #1a237e;
 }
 
 /* Thème sombre */
@@ -2054,10 +2054,5 @@ main {
   background-color: #1a237e;
   transition: width 0.5s ease-in-out;
 }
-
-[data-theme="dark"] {
-  --poll-text: #ffffff;
-}
-
 
 
