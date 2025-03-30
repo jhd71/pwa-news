@@ -1598,6 +1598,14 @@ async unsubscribeFromPushNotifications() {
   }
 }
 
+updateNotificationUI(enabled) {
+  const btn = this.container?.querySelector(".notifications-btn");
+  if (!btn) return;
+
+  btn.textContent = enabled ? "🔔 Notifications activées" : "🔕 Notifications désactivées";
+  btn.classList.toggle("enabled", enabled);
+}
+
     async sendNotificationToUser(message) {
     try {
         console.log('Envoi notification à:', message);
