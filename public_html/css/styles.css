@@ -2032,3 +2032,23 @@ main {
   --poll-bg: #1a237e;
   --poll-text: #ffffff;
 }
+
+.poll-widget {
+    color: var(--poll-text-color, #fff);
+}
+
+[data-theme="dark"] .poll-widget {
+    --poll-text-color: #fff;
+}
+
+[data-theme="light"] .poll-widget {
+    --poll-text-color: #1a237e;
+}
+
+.poll-results {
+  margin-top: 10px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 0.9em;
+}

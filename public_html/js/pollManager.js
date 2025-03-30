@@ -31,55 +31,111 @@ export default class PollManager {
     }
   }
 
-  renderPoll() {
-  if (!this.container || !this.poll) return;
+  renderPoll(poll) {
+  const tile = document.getElementById("pollTile");
+  tile.innerHTML = ""; // Nettoyer l'ancienne tuile
 
-  this.container.innerHTML = ''; // Nettoyer le conteneur
+  const alreadyVoted = localStorage.getItem(`voted_${poll.id}`);
 
-  const title = document.createElement('h4');
-  title.textContent = this.poll.question;
-  title.style.marginBottom = '10px';
-  this.container.appendChild(title);
+  const questionEl = document.createElement("h3");
+  questionEl.textContent = poll.question;
+  tile.appendChild(questionEl);
 
-  const form = document.createElement('form');
-  form.className = 'poll-form';
+  if (alreadyVoted) {
+    const message = document.createElement("div");
+    message.textContent = "Vous avez déjà voté. Voici les résultats :";
+    message.style.marginBottom = "10px";
+    tile.appendChild(message);
 
-  this.poll.options.forEach(option => {
-    const label = document.createElement('label');
-    label.className = 'poll-option';
+    showResults(poll.id, tile); // 👈 Affiche les résultats
+    return;
+  }
 
-    const input = document.createElement('input');
-    input.type = 'radio';
-    input.name = 'pollOption';
-    input.value = option;
+  const form = document.createElement("form");
 
-    label.appendChild(input);
+  poll.options.forEach((option) => {
+    const label = document.createElement("label");
+    const radio = document.createElement("input");
+    radio.type = "radio";
+    radio.name = "pollOption";
+    radio.value = option;
+
+    label.appendChild(radio);
     label.appendChild(document.createTextNode(option));
     form.appendChild(label);
   });
 
-  const voteBtn = document.createElement('button');
-  voteBtn.type = 'button';
-  voteBtn.textContent = 'Voter';
-  voteBtn.className = 'vote-btn';
+  const voteBtn = document.createElement("button");
+  voteBtn.type = "button";
+  voteBtn.className = "vote-btn";
+  voteBtn.textContent = "Voter";
 
-  const message = document.createElement('div');
-  message.className = 'vote-message';
+  const message = document.createElement("div");
+  message.className = "vote-message";
 
-  voteBtn.addEventListener('click', () => {
+  voteBtn.addEventListener("click", async () => {
     const selected = form.querySelector('input[name="pollOption"]:checked');
     if (selected) {
+      // Enregistrer le vote dans Supabase
+      const ip = await this.getIP();
+      const { error } = await supabase.from("votes").insert({
+        poll_id: poll.id,
+        option: selected.value,
+        ip_address: ip,
+      });
+
+      if (error) {
+        message.textContent = "Erreur lors du vote. Réessayez.";
+        return;
+      }
+
+      // Enregistrer dans localStorage
+      localStorage.setItem(`voted_${poll.id}`, selected.value);
+
       message.textContent = `Merci pour votre vote : ${selected.value}`;
       voteBtn.disabled = true;
-      form.querySelectorAll('input').forEach(input => input.disabled = true);
+      form.querySelectorAll("input").forEach((i) => (i.disabled = true));
+
+      form.remove(); // On peut aussi faire : tile.innerHTML = "" puis showResults
+      showResults(poll.id, tile);
     } else {
       message.textContent = "Veuillez sélectionner une option.";
     }
   });
 
   form.appendChild(voteBtn);
-  this.container.appendChild(form);
-  this.container.appendChild(message);
+  tile.appendChild(form);
+  tile.appendChild(message);
+}
+
+async function showResults(pollId, container) {
+  const { data: votes, error } = await supabase
+    .from("votes")
+    .select("option")
+    .eq("poll_id", pollId);
+
+  if (error) {
+    console.error("Erreur chargement résultats :", error);
+    return;
+  }
+
+  const results = {};
+  votes.forEach(v => {
+    results[v.option] = (results[v.option] || 0) + 1;
+  });
+
+  const totalVotes = votes.length;
+  const resultsEl = document.createElement("div");
+  resultsEl.className = "poll-results";
+
+  Object.entries(results).forEach(([option, count]) => {
+    const percent = ((count / totalVotes) * 100).toFixed(1);
+    const item = document.createElement("div");
+    item.innerHTML = `<strong>${option}</strong> — ${count} vote(s) (${percent}%)`;
+    resultsEl.appendChild(item);
+  });
+
+  container.appendChild(resultsEl);
 }
 
   async handleVote(event) {
