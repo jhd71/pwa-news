@@ -183,7 +183,8 @@ class App {
   const container = document.getElementById('tileContainer');
   container.innerHTML = '';
 
-  console.log("Liste des tuiles chargées :", this.sites); // ← Important
+  console.log("renderTiles() appelé");
+  console.log("Liste des tuiles chargées :", this.sites);
 
   this.sites.forEach((site) => {
     if (site.isPoll) {
