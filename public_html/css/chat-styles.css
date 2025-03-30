@@ -813,6 +813,11 @@ body.admin-panel-open::before {
     gap: 10px;
     min-width: 250px;
     max-width: 350px;
+    
+    /* Amélioration de la lisibilité */
+    color: white !important;
+    font-weight: 600;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .notifications-btn { 
@@ -867,16 +872,31 @@ body.admin-panel-open::before {
     display: none; /* Pas de barre supplémentaire */
 }
 
-.notification-popup.success {
-    background: var(--chat-success);
-}
-
+/* Style spécifique pour les erreurs */
 .notification-popup.error {
-    background: var(--chat-error);
+    background: linear-gradient(135deg, #d32f2f, #f44336) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white !important;
+    font-weight: bold;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
+/* Style spécifique pour les succès */
+.notification-popup.success {
+    background: linear-gradient(135deg, #388e3c, #4caf50) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white !important;
+    font-weight: bold;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Style spécifique pour les warnings */
 .notification-popup.warning {
-    background: var(--chat-warning);
+    background: linear-gradient(135deg, #f57c00, #ff9800) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white !important;
+    font-weight: bold;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 /* Animations */
