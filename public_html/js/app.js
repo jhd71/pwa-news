@@ -1,4 +1,5 @@
 // app.js - Version optimisée
+// Note: Importez les modules en utilisant le chemin correct selon votre structure de projet
 import ChatManager from './chatManager.js';
 import ContentManager from './content.js';
 
@@ -19,6 +20,16 @@ class App {
             this.chatManager = new ChatManager();
             await this.chatManager.init();
             console.log('Chat Manager initialisé');
+            
+            // Initialiser PollManager si présent
+            try {
+                const PollManager = (await import('./pollManager.js')).default;
+                this.pollManager = new PollManager("pollTile");
+                await this.pollManager.init();
+                console.log("Poll Manager initialisé");
+            } catch (error) {
+                console.warn('PollManager non disponible:', error);
+            }
 
             // Service Worker et PWA
             this.setupServiceWorker();
@@ -64,13 +75,5 @@ class App {
     }
 }
 
-// Initialiser l'application au chargement
-window.addEventListener('load', () => {
-    try {
-        window.app = new App();
-    } catch (error) {
-        console.error('Erreur lors du démarrage de l\'application:', error);
-    }
-});
-
+// Exposer la classe App
 export default App;

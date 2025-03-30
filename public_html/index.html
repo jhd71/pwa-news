@@ -309,28 +309,53 @@
         }
     }
 
-    // App Initialization
-    class AppInitializer {
-        static async init() {
-            try {
-                // Charger app.js
-                console.log('Chargement de l\'application principale...');
-                const appModule = await import('./app.js');
-                window.app = new appModule.default();
-                console.log('Application principale initialisée');
+    // Application Initialization
+    async function initApp() {
+        try {
+            // Initialiser ContentManager
+            console.log('Chargement de ContentManager...');
+            const contentModule = await import('./js/content.js');
+            window.contentManager = new contentModule.default();
+            await window.contentManager.init();
+            console.log('Content Manager initialisé');
 
-            } catch (error) {
-                console.error('Erreur d\'initialisation:', error);
-                console.error('Stack trace:', error.stack);
+            // Initialiser ChatManager
+            console.log('Chargement de ChatManager...');
+            const chatModule = await import('./js/chatManager.js');
+            window.chatManager = new chatModule.default();
+            await window.chatManager.init();
+            console.log('Chat Manager initialisé');
+            
+            // Initialiser PollManager si présent
+            console.log("Chargement de PollManager...");
+            const pollModule = await import("./js/pollManager.js");
+            window.pollManager = new pollModule.default("pollTile");
+            await window.pollManager.init();
+            console.log("Poll Manager initialisé");
+            
+            // Initialiser le Service Worker
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.register('/service-worker.js', {
+                        scope: '/',
+                        updateViaCache: 'none'
+                    });
+                    console.log('ServiceWorker enregistré avec succès:', registration);
+                } catch (error) {
+                    console.error('Erreur d\'enregistrement du ServiceWorker:', error);
+                }
             }
+        } catch (error) {
+            console.error('Erreur d\'initialisation:', error);
+            console.error('Stack trace:', error.stack);
         }
     }
 
     // Démarrer l'application quand le DOM est prêt
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => AppInitializer.init());
+        document.addEventListener('DOMContentLoaded', initApp);
     } else {
-        AppInitializer.init();
+        initApp();
     }
 </script>
 <script src="/js/newsTickerManager.js"></script>
