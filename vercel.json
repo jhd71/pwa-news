@@ -16,9 +16,21 @@
       "dest": "/api/$1.js"
     },
     {
+      "src": "/index$",
+      "dest": "/public_html/index.html"
+    },
+    {
+      "src": "/meteo$",
+      "dest": "/public_html/meteo.html"
+    },
+    {
+      "src": "/(.*)\\.html$",
+      "status": 301,
+      "headers": { "Location": "/$1" }
+    },
+    {
       "src": "/(.*)",
       "dest": "/public_html/$1"
     }
-  ],
-  "cleanUrls": true
+  ]
 }
