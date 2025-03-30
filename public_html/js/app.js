@@ -157,7 +157,6 @@ class App {
     initializeUI() {
         // Créer les tuiles
         this.renderTiles();
-		console.log("Liste des tuiles chargées :", this.sites);
         
         // Appliquer le layout actuel
         this.applyLayout(this.currentLayout);
@@ -181,33 +180,35 @@ class App {
     }
 
     renderTiles() {
-    const container = document.getElementById('tileContainer');
-    container.innerHTML = ''; // Nettoyer le conteneur
+  const container = document.getElementById('tileContainer');
+  container.innerHTML = '';
 
-    this.sites.forEach((site, index) => {
-        if (site.isPoll) {
-            const pollDiv = document.createElement("div");
-            pollDiv.className = "tile";
-            pollDiv.innerHTML = `
-              <div class="poll-tile" id="pollTile">
-                <h3>${site.title}</h3>
-                <p>Chargement du sondage...</p>
-              </div>
-            `;
-            container.appendChild(pollDiv);
-            return;
-        }
+  console.log("Liste des tuiles chargées :", this.sites); // ← Important
 
-        const tile = document.createElement('div');
-        tile.className = `tile${site.isDefault ? '' : ' removable'}`;
-        tile.innerHTML = `
-            <a href="${site.url}" target="_blank" class="tile-content">
-                <img src="${site.icon}" alt="${site.title}" class="tile-icon">
-                <div class="tile-title">${site.title}</div>
-            </a>
-        `;
-        container.appendChild(tile);
-    });
+  this.sites.forEach((site) => {
+    if (site.isPoll) {
+      const pollDiv = document.createElement("div");
+      pollDiv.className = "tile";
+      pollDiv.innerHTML = `
+        <div class="poll-tile" id="pollTile">
+          <h3>${site.title}</h3>
+          <p>Chargement du sondage...</p>
+        </div>
+      `;
+      container.appendChild(pollDiv);
+      return;
+    }
+
+    const tile = document.createElement("div");
+    tile.className = `tile${site.isDefault ? '' : ' removable'}`;
+    tile.innerHTML = `
+      <a href="${site.url}" target="_blank" class="tile-content">
+        <img src="${site.icon}" alt="${site.title}" class="tile-icon">
+        <div class="tile-title">${site.title}</div>
+      </a>
+    `;
+    container.appendChild(tile);
+  });
 }
 
     setupModalListeners() {
