@@ -75,8 +75,6 @@ async setCurrentUserForRLS() {
         } else {
             this.container.innerHTML = useNavButton ? this.getPseudoHTMLWithoutToggle() : this.getPseudoHTML();
         }
-		this.setupAuthListeners(); // 👈 Important pour gérer les clics de connexion
-
         const chatContainer = this.container.querySelector('.chat-container');
         if (this.isOpen && chatContainer) {
             chatContainer.classList.add('open');
@@ -441,7 +439,7 @@ getChatHTMLWithoutToggle() {
     const notificationsBtn = this.container.querySelector('.notifications-btn');
     const adminBtn = this.container.querySelector('.admin-panel-btn');
     const logoutBtn = this.container.querySelector('.logout-btn');
-    
+
     // Fonction réutilisable pour basculer l'état du chat
     const toggleChat = () => {
     this.isOpen = !this.isOpen;
@@ -593,26 +591,6 @@ if (chatMessages) {
     }, { passive: true });
 }
   }  
-  
-  toggleChat() {
-  const chatContainer = this.container?.querySelector('.chat-container');
-
-  this.isOpen = !this.isOpen;
-
-  if (this.isOpen) {
-    chatContainer?.classList.add('open');
-    this.unreadCount = 0;
-    localStorage.setItem('unreadCount', '0');
-    this.updateUnreadBadgeAndBubble?.();
-    this.scrollToBottom?.();
-  } else {
-    chatContainer?.classList.remove('open');
-  }
-
-  localStorage.setItem('chatOpen', this.isOpen);
-  this.playSound?.('click');
-}
-
 setupAuthListeners() {
     const pseudoInput = this.container.querySelector('#pseudoInput');
     const adminPasswordInput = this.container.querySelector('#adminPassword');
@@ -1561,51 +1539,32 @@ optimizeForLowEndDevices() {
 }
 
 async unsubscribeFromPushNotifications() {
-  try {
-    if (!('serviceWorker' in navigator)) {
-      throw new Error("Service Worker non supporté.");
+    try {
+        // Définir l'utilisateur courant pour les vérifications RLS
+        await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
+        
+        const registration = await navigator.serviceWorker.getRegistration();
+            const subscription = await registration.pushManager.getSubscription();
+            
+            if (subscription) {
+                await subscription.unsubscribe();
+                await this.supabase
+                    .from('push_subscriptions')
+                    .delete()
+                    .eq('pseudo', this.pseudo);
+            }
+            
+            this.notificationsEnabled = false;
+            localStorage.setItem('notificationsEnabled', 'false');
+            this.updateNotificationButton();
+            this.showNotification('Notifications désactivées', 'success');
+            return true;
+        } catch (error) {
+            console.error('Erreur désactivation notifications:', error);
+            this.showNotification('Erreur de désactivation', 'error');
+            return false;
+        }
     }
-
-    const registration = await navigator.serviceWorker.ready;
-
-    if (!registration) {
-      console.warn("Service worker non prêt ou indisponible");
-      this.showNotification("Service worker indisponible", "error");
-      return;
-    }
-
-    if (!registration.pushManager) {
-      console.warn("PushManager indisponible sur ce navigateur");
-      this.showNotification("PushManager non supporté", "error");
-      return;
-    }
-
-    const subscription = await registration.pushManager.getSubscription();
-
-    if (subscription) {
-      await subscription.unsubscribe();
-      this.subscription = null;
-      this.notificationsEnabled = false;
-      localStorage.removeItem("pushSubscription");
-      this.showNotification("Notifications désactivées", "success");
-      this.updateNotificationUI(false);
-    } else {
-      this.showNotification("Pas de notification active", "info");
-    }
-  } catch (error) {
-    console.error("Erreur désactivation notifications:", error);
-    this.showNotification("Erreur lors de la désactivation des notifications", "error");
-  }
-}
-
-updateNotificationUI(enabled) {
-  const btn = this.container?.querySelector(".notifications-btn");
-  if (!btn) return;
-
-  btn.textContent = enabled ? "🔔 Notifications activées" : "🔕 Notifications désactivées";
-  btn.classList.toggle("enabled", enabled);
-}
-
     async sendNotificationToUser(message) {
     try {
         console.log('Envoi notification à:', message);

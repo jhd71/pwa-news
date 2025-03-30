@@ -313,31 +313,11 @@
     class AppInitializer {
         static async init() {
             try {
-                // Enregistrer le Service Worker
-                await registerServiceWorker();
-
-                // Initialiser l'installateur PWA
-                new PWAInstaller();
-
-                // Initialiser ContentManager
-                console.log('Chargement de ContentManager...');
-                const contentModule = await import('./js/content.js');
-                window.contentManager = new contentModule.default();
-                await window.contentManager.init();
-                console.log('Content Manager initialisé');
-
-                // Initialiser ChatManager
-                console.log('Chargement de ChatManager...');
-                const chatModule = await import('/js/chatManager.js');
-                window.chatManager = new chatModule.default();
-                await window.chatManager.init();
-                console.log('Chat Manager initialisé');
-				console.log("Chargement de PollManager...");
-const pollModule = await import("/js/pollManager.js");
-window.pollManager = new pollModule.default("pollTile"); // pollTile = id de la tuile vide
-await window.pollManager.init();
-console.log("Poll Manager initialisé");
-
+                // Charger app.js
+                console.log('Chargement de l\'application principale...');
+                const appModule = await import('./app.js');
+                window.app = new appModule.default();
+                console.log('Application principale initialisée');
 
             } catch (error) {
                 console.error('Erreur d\'initialisation:', error);

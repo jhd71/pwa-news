@@ -6,6 +6,7 @@ const STATIC_RESOURCES = [
     '/index.html',
     '/css/styles.css',
     '/css/chat-styles.css',
+    '/js/app.js',
     '/js/chatManager.js',
     '/js/content.js',
     '/manifest.json',
