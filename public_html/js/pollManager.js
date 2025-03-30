@@ -13,7 +13,22 @@ export default class PollManager {
   }
 
   async init() {
-    // ...
+    try {
+      const { data, error } = await supabase
+        .from("polls")
+        .select("*")
+        .eq("active", true)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+
+      if (error) throw error;
+      this.poll = data;
+      console.log("Sondage récupéré :", this.poll);
+      await this.renderPoll(this.poll);
+    } catch (err) {
+      console.error("Erreur chargement du sondage :", err.message);
+    }
   }
 
   async renderPoll(poll) {
@@ -32,7 +47,6 @@ export default class PollManager {
       message.style.marginBottom = "10px";
       tile.appendChild(message);
 
-      // ✅ Appel à la méthode définie plus bas
       await this.showResults(poll.id, tile);
       return;
     }
@@ -45,7 +59,6 @@ export default class PollManager {
       radio.type = "radio";
       radio.name = "pollOption";
       radio.value = option;
-
       label.appendChild(radio);
       label.appendChild(document.createTextNode(option));
       form.appendChild(label);
@@ -75,12 +88,12 @@ export default class PollManager {
         }
 
         localStorage.setItem(`voted_${poll.id}`, selected.value);
+
         message.textContent = `Merci pour votre vote : ${selected.value}`;
         voteBtn.disabled = true;
         form.querySelectorAll("input").forEach((i) => (i.disabled = true));
         form.remove();
 
-        // ✅ Appel correct à une méthode de classe
         await this.showResults(poll.id, tile);
       } else {
         message.textContent = "Veuillez sélectionner une option.";
@@ -92,7 +105,7 @@ export default class PollManager {
     tile.appendChild(message);
   }
 
-  // ✅ Cette méthode doit être séparée, au même niveau que renderPoll
+  // ✅ METHODE déplacée en dehors
   async showResults(pollId, container) {
     const { data: votes, error } = await supabase
       .from("votes")
@@ -121,38 +134,6 @@ export default class PollManager {
     });
 
     container.appendChild(resultsEl);
-  }
-
-  async handleVote(event) {
-    event.preventDefault();
-    const form = event.target;
-    const selectedOption = form.option.value;
-
-    if (!selectedOption) {
-      this.showMessage("Veuillez sélectionner une option.", "error");
-      return;
-    }
-
-    const ip = await this.getIP();
-
-    const { error } = await supabase.from("votes").insert({
-      poll_id: this.poll.id,
-      option: selectedOption,
-      ip_address: ip,
-    });
-
-    if (error) {
-      this.showMessage("Erreur lors du vote. Réessayez.", "error");
-    } else {
-      this.showMessage("Merci pour votre vote ! ✅", "success");
-      form.remove();
-    }
-  }
-
-  showMessage(text, type) {
-    const msgDiv = document.getElementById("pollMessage");
-    msgDiv.textContent = text;
-    msgDiv.style.color = type === "success" ? "green" : "red";
   }
 
   async getIP() {
