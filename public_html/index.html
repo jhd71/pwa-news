@@ -213,46 +213,6 @@
 
 <!-- Module principal -->
 <script type="module">
-    // Service Worker Registration
-    async function registerServiceWorker() {
-        if ('serviceWorker' in navigator) {
-            try {
-                const registration = await navigator.serviceWorker.register('/service-worker.js', {
-                    scope: '/',
-                    updateViaCache: 'none'
-                });
-
-                console.log('ServiceWorker enregistré avec succès:', registration);
-
-                // Gestion de la mise à jour du Service Worker
-                registration.addEventListener('updatefound', () => {
-                    const newWorker = registration.installing;
-                    console.log('Nouveau service worker en installation');
-
-                    newWorker.addEventListener('statechange', () => {
-                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            console.log('Nouveau Service Worker installé');
-                            if (registration.waiting) {
-                                registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-                            }
-                        }
-                    });
-                });
-
-                // Écouter les changements d'état
-                navigator.serviceWorker.addEventListener('controllerchange', () => {
-                    console.log('Service Worker mis à jour');
-                    window.location.reload();
-                });
-
-                return registration;
-            } catch (error) {
-                console.error('Erreur d\'enregistrement du ServiceWorker:', error);
-                throw error;
-            }
-        }
-    }
-
     // PWA Installation
     class PWAInstaller {
         constructor() {
@@ -309,9 +269,71 @@
         }
     }
 
+    // Fonction pour enregistrer le Service Worker
+    async function registerServiceWorker() {
+        if ('serviceWorker' in navigator) {
+            try {
+                const registration = await navigator.serviceWorker.register('/service-worker.js', {
+                    scope: '/'
+                });
+                
+                console.log('Service Worker enregistré avec succès, scope:', registration.scope);
+                
+                // Gestion de la mise à jour
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    console.log('Service Worker en installation...');
+                    
+                    newWorker.addEventListener('statechange', () => {
+                        console.log('Changement d\'état du Service Worker:', newWorker.state);
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            console.log('Nouveau Service Worker installé');
+                        }
+                    });
+                });
+                
+                // Écouter les changements d'état
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    console.log('Service Worker contrôleur a changé');
+                });
+                
+                return registration;
+            } catch (error) {
+                console.error('Erreur d\'enregistrement du Service Worker:', error);
+            }
+        } else {
+            console.warn('Service Workers non supportés par ce navigateur');
+        }
+    }
+
+    // Fonction pour configurer le bouton du chat
+    function setupChatButton() {
+        const chatToggleBtn = document.getElementById('chatToggleBtn');
+        if (chatToggleBtn) {
+            console.log('Configuration du bouton de chat...');
+            chatToggleBtn.addEventListener('click', function() {
+                console.log('Bouton de chat cliqué');
+                if (window.chatManager) {
+                    console.log('Tentative d\'ouverture du chat');
+                    window.chatManager.toggleChat();
+                } else {
+                    console.error('ChatManager non disponible');
+                }
+            });
+        } else {
+            console.error('Bouton de chat non trouvé dans le DOM');
+        }
+    }
+
     // Application Initialization
     async function initApp() {
         try {
+            // Enregistrer le Service Worker
+            await registerServiceWorker();
+            
+            // Initialiser l'installateur PWA
+            new PWAInstaller();
+            
             // Initialiser ContentManager
             console.log('Chargement de ContentManager...');
             const contentModule = await import('./js/content.js');
@@ -326,25 +348,20 @@
             await window.chatManager.init();
             console.log('Chat Manager initialisé');
             
-            // Initialiser PollManager si présent
-            console.log("Chargement de PollManager...");
-            const pollModule = await import("./js/pollManager.js");
-            window.pollManager = new pollModule.default("pollTile");
-            await window.pollManager.init();
-            console.log("Poll Manager initialisé");
+            // Configurer le bouton du chat
+            setupChatButton();
             
-            // Initialiser le Service Worker
-            if ('serviceWorker' in navigator) {
-                try {
-                    const registration = await navigator.serviceWorker.register('/service-worker.js', {
-                        scope: '/',
-                        updateViaCache: 'none'
-                    });
-                    console.log('ServiceWorker enregistré avec succès:', registration);
-                } catch (error) {
-                    console.error('Erreur d\'enregistrement du ServiceWorker:', error);
-                }
+            // Initialiser PollManager si présent
+            try {
+                console.log("Chargement de PollManager...");
+                const pollModule = await import("./js/pollManager.js");
+                window.pollManager = new pollModule.default("pollTile");
+                await window.pollManager.init();
+                console.log("Poll Manager initialisé");
+            } catch (pollError) {
+                console.warn("Erreur lors de l'initialisation de PollManager:", pollError);
             }
+            
         } catch (error) {
             console.error('Erreur d\'initialisation:', error);
             console.error('Stack trace:', error.stack);
