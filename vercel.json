@@ -17,6 +17,11 @@
     },
     {
       "src": "/index$",
+      "status": 301,
+      "headers": { "Location": "/" }
+    },
+    {
+      "src": "^/$",
       "dest": "/public_html/index.html"
     },
     {
