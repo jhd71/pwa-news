@@ -1561,32 +1561,35 @@ optimizeForLowEndDevices() {
 }
 
 async unsubscribeFromPushNotifications() {
-    try {
-        // Définir l'utilisateur courant pour les vérifications RLS
-        await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
-        
-        const registration = await navigator.serviceWorker.getRegistration();
-            const subscription = await registration.pushManager.getSubscription();
-            
-            if (subscription) {
-                await subscription.unsubscribe();
-                await this.supabase
-                    .from('push_subscriptions')
-                    .delete()
-                    .eq('pseudo', this.pseudo);
-            }
-            
-            this.notificationsEnabled = false;
-            localStorage.setItem('notificationsEnabled', 'false');
-            this.updateNotificationButton();
-            this.showNotification('Notifications désactivées', 'success');
-            return true;
-        } catch (error) {
-            console.error('Erreur désactivation notifications:', error);
-            this.showNotification('Erreur de désactivation', 'error');
-            return false;
-        }
+  try {
+    if (!('serviceWorker' in navigator)) {
+      throw new Error("Service Worker non supporté.");
     }
+
+    const registration = await navigator.serviceWorker.ready;
+
+    if (!registration || !registration.pushManager) {
+      throw new Error("PushManager non disponible.");
+    }
+
+    const subscription = await registration.pushManager.getSubscription();
+
+    if (subscription) {
+      await subscription.unsubscribe();
+      this.subscription = null;
+      this.notificationsEnabled = false;
+      localStorage.removeItem("pushSubscription");
+      this.showNotification("Notifications désactivées", "success");
+      this.updateNotificationUI(false);
+    } else {
+      this.showNotification("Pas de notification active", "info");
+    }
+  } catch (error) {
+    console.error("Erreur désactivation notifications:", error);
+    this.showNotification("Erreur lors de la désactivation des notifications", "error");
+  }
+}
+
     async sendNotificationToUser(message) {
     try {
         console.log('Envoi notification à:', message);
