@@ -1,60 +1,83 @@
+// content.js
+import ChatManager from './chatManager.js';
+
 class ContentManager {
-    constructor() {
-        this.tileContainer = null;
-        this.isDarkMode = localStorage.getItem('theme') === 'dark';
-        this.fontSize = localStorage.getItem('fontSize') || 'normal';
-        this.deferredPrompt = null;
+  constructor() {
+    this.tileContainer = null;
+    this.isDarkMode = localStorage.getItem('theme') === 'dark';
+    this.fontSize = localStorage.getItem('fontSize') || 'normal';
+    this.deferredPrompt = null;
+    this.chatManager = null; // 👈 Ajouté
+  }
+
+  async init() {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => this.setup());
+    } else {
+      this.setup();
     }
 
-    init() {
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => this.setup());
-        } else {
-            this.setup();
-        }
+    // Initialiser le chat
+    try {
+      this.chatManager = new ChatManager();
+      await this.chatManager.init();
+      console.log('✅ Chat Manager initialisé depuis content.js');
+    } catch (error) {
+      console.error('❌ Erreur lors de l\'initialisation du ChatManager :', error);
+    }
+  }
+
+  setup() {
+    this.tileContainer = document.getElementById('tileContainer');
+    if (!this.tileContainer) {
+      console.error('Container de tuiles non trouvé');
+      return;
     }
 
-    setup() {
-        this.tileContainer = document.getElementById('tileContainer');
-        if (!this.tileContainer) {
-            console.error('Container de tuiles non trouvé');
-            return;
-        }
-document.documentElement.setAttribute('data-font-size', this.fontSize);
-        this.setupEventListeners();
-        this.setupLayout();
-        this.setupTheme();
-        this.setupFontSize();
-        this.setupTiles();
+    document.documentElement.setAttribute('data-font-size', this.fontSize);
+    this.setupEventListeners();
+    this.setupLayout();
+    this.setupTheme();
+    this.setupFontSize();
+    this.setupTiles();
+  }
+
+  setupEventListeners() {
+  // Bouton Chat
+  const chatBtn = document.getElementById("chatToggleBtn");
+  if (chatBtn) {
+    chatBtn.addEventListener("click", () => {
+      if (this.chatManager) {
+        this.chatManager.toggleChat(); // 👈 Ouvre ou ferme le chat
+      }
+    });
+  }
+
+  // Gestion du menu
+  const menuButton = document.getElementById('menuButton');
+  const sidebar = document.getElementById('sidebar');
+
+  if (menuButton && sidebar) {
+    const sidebarCloseBtn = sidebar.querySelector('.close-btn');
+
+    menuButton.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+    });
+
+    if (sidebarCloseBtn) {
+      sidebarCloseBtn.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+      });
     }
 
-    setupEventListeners() {
-        // Gestion du menu
-        const menuButton = document.getElementById('menuButton');
-        const sidebar = document.getElementById('sidebar');
-
-        if (menuButton && sidebar) {
-            const sidebarCloseBtn = sidebar.querySelector('.close-btn');
-
-            menuButton.addEventListener('click', () => {
-                sidebar.classList.toggle('open');
-            });
-
-            if (sidebarCloseBtn) {
-                sidebarCloseBtn.addEventListener('click', () => {
-                    sidebar.classList.remove('open');
-                });
-            }
-
-            document.addEventListener('click', (e) => {
-                if (sidebar.classList.contains('open') &&
-                    !sidebar.contains(e.target) &&
-                    !menuButton.contains(e.target)) {
-                    sidebar.classList.remove('open');
-                }
-            });
-        }
-
+    document.addEventListener('click', (e) => {
+      if (sidebar.classList.contains('open') &&
+          !sidebar.contains(e.target) &&
+          !menuButton.contains(e.target)) {
+        sidebar.classList.remove('open');
+      }
+    });
+  }
         // Boutons de navigation
         const darkModeToggle = document.getElementById('darkModeToggle');
         if (darkModeToggle) {

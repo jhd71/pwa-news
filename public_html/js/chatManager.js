@@ -75,6 +75,8 @@ async setCurrentUserForRLS() {
         } else {
             this.container.innerHTML = useNavButton ? this.getPseudoHTMLWithoutToggle() : this.getPseudoHTML();
         }
+		this.setupAuthListeners(); // 👈 Important pour gérer les clics de connexion
+
         const chatContainer = this.container.querySelector('.chat-container');
         if (this.isOpen && chatContainer) {
             chatContainer.classList.add('open');
@@ -439,7 +441,7 @@ getChatHTMLWithoutToggle() {
     const notificationsBtn = this.container.querySelector('.notifications-btn');
     const adminBtn = this.container.querySelector('.admin-panel-btn');
     const logoutBtn = this.container.querySelector('.logout-btn');
-
+    
     // Fonction réutilisable pour basculer l'état du chat
     const toggleChat = () => {
     this.isOpen = !this.isOpen;
@@ -591,6 +593,26 @@ if (chatMessages) {
     }, { passive: true });
 }
   }  
+  
+  toggleChat() {
+  const chatContainer = this.container?.querySelector('.chat-container');
+
+  this.isOpen = !this.isOpen;
+
+  if (this.isOpen) {
+    chatContainer?.classList.add('open');
+    this.unreadCount = 0;
+    localStorage.setItem('unreadCount', '0');
+    this.updateUnreadBadgeAndBubble?.();
+    this.scrollToBottom?.();
+  } else {
+    chatContainer?.classList.remove('open');
+  }
+
+  localStorage.setItem('chatOpen', this.isOpen);
+  this.playSound?.('click');
+}
+
 setupAuthListeners() {
     const pseudoInput = this.container.querySelector('#pseudoInput');
     const adminPasswordInput = this.container.querySelector('#adminPassword');
