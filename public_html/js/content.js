@@ -302,6 +302,22 @@ this.tileContainer.appendChild(separator3);
         const tile = this.createTile(site);
         this.tileContainer.appendChild(tile);
     });
+// Séparateur Sondage
+const separatorPoll = document.createElement('div');
+separatorPoll.className = 'separator';
+separatorPoll.innerHTML = `<img src="images/sondage.png" alt="Sondage" class="separator-img">`;
+this.tileContainer.appendChild(separatorPoll);
+
+// Tuile du sondage
+const pollTileWrapper = document.createElement('div');
+pollTileWrapper.className = 'tile';
+pollTileWrapper.innerHTML = `
+  <div class="poll-tile" id="pollTile">
+    <h3>Sondage : votre avis</h3>
+    <p>Chargement...</p>
+  </div>
+`;
+this.tileContainer.appendChild(pollTileWrapper);
 
      // Sites personnalisés
     try {

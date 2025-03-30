@@ -50,7 +50,7 @@ class App {
                 icon: 'images/INFOS.png',
                 isDefault: true,
                 section: 'radio'
-            },			
+            },
             // Section TV en Direct
             {
                 title: 'France 3 Bourgogne',
@@ -82,19 +82,12 @@ class App {
                 section: 'social'
             },
             {
-               title: 'TikTok',
-               url: 'https://www.tiktok.com/?lang=fr',
-               icon: 'images/INFOS.png',
-               isDefault: true,
-               section: 'social'
-            },
-            {
-              title: "Sondage : votre avis",
-              icon: "images/INFOS.png",
-              isDefault: true,
-              section: "social",
-              isPoll: true
-            }      
+                title: 'TikTok',
+                url: 'https://www.tiktok.com/?lang=fr',
+                icon: 'images/INFOS.png',
+                isDefault: true,
+                section: 'social'
+            }
         ];
 
         // État de l'application
@@ -180,37 +173,21 @@ class App {
     }
 
     renderTiles() {
-  const container = document.getElementById('tileContainer');
-  container.innerHTML = '';
+        const container = document.getElementById('tileContainer');
+        container.innerHTML = ''; // Nettoyer le conteneur
 
-  console.log("renderTiles() appelé");
-  console.log("Liste des tuiles chargées :", this.sites);
-
-  this.sites.forEach((site) => {
-    if (site.isPoll) {
-      const pollDiv = document.createElement("div");
-      pollDiv.className = "tile";
-      pollDiv.innerHTML = `
-        <div class="poll-tile" id="pollTile">
-          <h3>${site.title}</h3>
-          <p>Chargement du sondage...</p>
-        </div>
-      `;
-      container.appendChild(pollDiv);
-      return;
+        this.sites.forEach((site, index) => {
+            const tile = document.createElement('div');
+            tile.className = `tile${site.isDefault ? '' : ' removable'}`;
+            tile.innerHTML = `
+                <a href="${site.url}" target="_blank" class="tile-content">
+                    <img src="${site.icon}" alt="${site.title}" class="tile-icon">
+                    <div class="tile-title">${site.title}</div>
+                </a>
+            `;
+            container.appendChild(tile);
+        });
     }
-
-    const tile = document.createElement("div");
-    tile.className = `tile${site.isDefault ? '' : ' removable'}`;
-    tile.innerHTML = `
-      <a href="${site.url}" target="_blank" class="tile-content">
-        <img src="${site.icon}" alt="${site.title}" class="tile-icon">
-        <div class="tile-title">${site.title}</div>
-      </a>
-    `;
-    container.appendChild(tile);
-  });
-}
 
     setupModalListeners() {
         // Modal d'ajout de site
