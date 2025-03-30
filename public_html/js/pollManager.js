@@ -31,7 +31,7 @@ export default class PollManager {
     }
   }
 
-  renderPoll(poll) {
+   async renderPoll(poll) {
   const tile = document.getElementById("pollTile");
   tile.innerHTML = ""; // Nettoyer l'ancienne tuile
 
@@ -96,7 +96,8 @@ export default class PollManager {
     form.querySelectorAll("input").forEach((i) => (i.disabled = true));
 
     form.remove();
-    await this.showResults(poll.id); // ⬅️ appel à la méthode de classe
+    await this.showResults(poll.id, tile);
+ // ⬅️ appel à la méthode de classe
   } else {
     message.textContent = "Veuillez sélectionner une option.";
   }
@@ -105,9 +106,8 @@ export default class PollManager {
   form.appendChild(voteBtn);
   tile.appendChild(form);
   tile.appendChild(message);
-}
-
-async showResults(pollId, container) {
+  
+  async showResults(pollId, container) {
   const { data: votes, error } = await supabase
     .from("votes")
     .select("option")
@@ -130,19 +130,14 @@ async showResults(pollId, container) {
   Object.entries(results).forEach(([option, count]) => {
     const percent = ((count / totalVotes) * 100).toFixed(1);
 
-    const resultBar = document.createElement("div");
-    resultBar.innerHTML = `
-      <div style="font-weight: bold;">${option}</div>
-      <div style="background: #ccc; border-radius: 6px; overflow: hidden; margin: 4px 0;">
-        <div style="background: #1a237e; width: ${percent}%; padding: 4px 6px; color: white;">
-          ${count} vote(s) — ${percent}%
-        </div>
-      </div>
-    `;
-    resultsEl.appendChild(resultBar);
+    const item = document.createElement("div");
+    item.innerHTML = `<strong>${option}</strong> — ${count} vote(s) (${percent}%)`;
+    resultsEl.appendChild(item);
   });
 
   container.appendChild(resultsEl);
+}
+
 }
 
   async handleVote(event) {
