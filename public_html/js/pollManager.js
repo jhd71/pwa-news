@@ -31,32 +31,37 @@ export default class PollManager {
     }
   }
 
-  renderPoll(poll) {
-  const tile = document.createElement('div');
-  tile.className = 'tile poll-tile';
+  renderPoll() {
+  if (!this.container || !this.poll) return;
 
-  const questionEl = document.createElement('h3');
-  questionEl.textContent = poll.question;
-  tile.appendChild(questionEl);
+  this.container.innerHTML = ''; // Nettoyer le conteneur
+
+  const title = document.createElement('h4');
+  title.textContent = this.poll.question;
+  title.style.marginBottom = '10px';
+  this.container.appendChild(title);
 
   const form = document.createElement('form');
+  form.className = 'poll-form';
 
-  poll.options.forEach((option, index) => {
+  this.poll.options.forEach(option => {
     const label = document.createElement('label');
-    const radio = document.createElement('input');
-    radio.type = 'radio';
-    radio.name = 'pollOption';
-    radio.value = option;
+    label.className = 'poll-option';
 
-    label.appendChild(radio);
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = 'pollOption';
+    input.value = option;
+
+    label.appendChild(input);
     label.appendChild(document.createTextNode(option));
     form.appendChild(label);
   });
 
   const voteBtn = document.createElement('button');
   voteBtn.type = 'button';
-  voteBtn.className = 'vote-btn';
   voteBtn.textContent = 'Voter';
+  voteBtn.className = 'vote-btn';
 
   const message = document.createElement('div');
   message.className = 'vote-message';
@@ -73,13 +78,8 @@ export default class PollManager {
   });
 
   form.appendChild(voteBtn);
-  tile.appendChild(form);
-  tile.appendChild(message);
-
-  return tile;
-  this.container.innerHTML = '';
-this.container.appendChild(tile);
-
+  this.container.appendChild(form);
+  this.container.appendChild(message);
 }
 
   async handleVote(event) {

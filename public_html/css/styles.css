@@ -1979,66 +1979,56 @@ main {
     text-align: center;
 }
 
-.poll-tile {
-  background: linear-gradient(135deg, #ffffff, #f3f3f3);
-  border: 2px solid #ccc;
+.poll-widget-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 16px;
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  padding: 15px 20px;
-  font-family: "Arial", sans-serif;
-  max-width: 100%;
-  transition: box-shadow 0.3s ease;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  font-size: 16px;
+  background-color: var(--poll-bg);
+  color: var(--poll-text);
 }
 
-.poll-tile:hover {
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+.poll-widget-container h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
 }
 
-.poll-tile h3 {
-  text-align: center;
-  margin-bottom: 12px;
-  font-size: 1.2em;
-  color: #1a237e;
-}
-
-.poll-tile label {
-  display: flex;
-  align-items: center;
-  padding: 8px 10px;
-  border-radius: 6px;
-  margin-bottom: 6px;
-  background-color: #f8f9fa;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.poll-tile label:hover {
-  background-color: #e0e0e0;
-}
-
-.poll-tile input[type="radio"] {
-  margin-right: 10px;
-}
-
-.poll-tile .vote-btn {
+.poll-widget-container label {
   display: block;
-  margin: 12px auto 0;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.poll-widget-container input[type="radio"] {
+  margin-right: 8px;
+}
+
+.poll-widget-container .vote-btn {
+  margin-top: 10px;
   padding: 8px 16px;
-  border: none;
   background-color: #1a237e;
   color: white;
+  border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.poll-tile .vote-btn:hover {
-  background-color: #0d164d;
-}
-
-.poll-tile .vote-message {
-  text-align: center;
-  margin-top: 10px;
-  color: #1a237e;
   font-weight: bold;
+}
+
+.poll-widget-container .vote-message {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+/* Thème clair */
+[data-theme="light"] {
+  --poll-bg: #ffffff;
+  --poll-text: #1a237e;
+}
+
+/* Thème sombre */
+[data-theme="dark"] {
+  --poll-bg: #1a237e;
+  --poll-text: #ffffff;
 }
