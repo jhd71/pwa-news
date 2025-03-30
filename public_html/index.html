@@ -332,6 +332,12 @@
                 window.chatManager = new chatModule.default();
                 await window.chatManager.init();
                 console.log('Chat Manager initialisé');
+				console.log("Chargement de PollManager...");
+const pollModule = await import("/js/pollManager.js");
+window.pollManager = new pollModule.default("pollTile"); // pollTile = id de la tuile vide
+await window.pollManager.init();
+console.log("Poll Manager initialisé");
+
 
             } catch (error) {
                 console.error('Erreur d\'initialisation:', error);

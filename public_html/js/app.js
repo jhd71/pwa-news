@@ -87,6 +87,13 @@ class App {
                 icon: 'images/INFOS.png',
                 isDefault: true,
                 section: 'social'
+            },
+            {
+               title: "Sondage : votre avis",
+               icon: "images/INFOS.png",
+               isDefault: true,
+               section: "news", // ou autre
+               isPoll: true
             }
         ];
 
