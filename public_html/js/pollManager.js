@@ -24,7 +24,8 @@ export default class PollManager {
 
       if (error) throw error;
       this.poll = data;
-      this.renderPoll();
+	  console.log("Sondage récupéré :", this.poll);
+      this.renderPoll(this.poll);
     } catch (err) {
       console.error("Erreur chargement du sondage :", err.message);
     }
