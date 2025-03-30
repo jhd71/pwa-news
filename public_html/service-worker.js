@@ -1,9 +1,8 @@
-const CACHE_NAME = 'infos-pwa-v3'; // Incrémentez la version
+const CACHE_NAME = 'infos-pwa-v4'; // Incrémentez la version
 const OFFLINE_URL = '/offline.html';
 
 const STATIC_RESOURCES = [
     '/',
-    '/index.html',
     '/css/styles.css',
     '/css/chat-styles.css',
     '/js/app.js',
@@ -27,13 +26,26 @@ const STATIC_RESOURCES = [
 self.addEventListener('install', event => {
     console.log('[ServiceWorker] Installation');
     event.waitUntil(
-        Promise.all([
-            caches.open(CACHE_NAME).then(cache => {
+        caches.open(CACHE_NAME)
+            .then(cache => {
                 console.log('[ServiceWorker] Mise en cache globale');
-                return cache.addAll(STATIC_RESOURCES);
-            }),
-            self.skipWaiting()
-        ])
+                // Mise en cache individuellement pour détecter les erreurs spécifiques
+                return Promise.all(
+                    STATIC_RESOURCES.map(url => {
+                        return cache.add(url).catch(error => {
+                            console.error(`[ServiceWorker] Échec de mise en cache: ${url}`, error);
+                            // Continue malgré l'erreur
+                            return Promise.resolve();
+                        });
+                    })
+                );
+            })
+            .then(() => self.skipWaiting())
+            .catch(error => {
+                console.error('[ServiceWorker] Erreur d\'installation:', error);
+                // Continue l'installation même en cas d'erreur
+                return self.skipWaiting();
+            })
     );
 });
 
