@@ -74,41 +74,39 @@ export default class PollManager {
   message.className = "vote-message";
 
   voteBtn.addEventListener("click", async () => {
-    const selected = form.querySelector('input[name="pollOption"]:checked');
-    if (selected) {
-      // Enregistrer le vote dans Supabase
-      const ip = await this.getIP();
-      const { error } = await supabase.from("votes").insert({
-        poll_id: poll.id,
-        option: selected.value,
-        ip_address: ip,
-      });
+  const selected = form.querySelector('input[name="pollOption"]:checked');
+  if (selected) {
+    const ip = await this.getIP();
+    const { error } = await supabase.from("votes").insert({
+      poll_id: poll.id,
+      option: selected.value,
+      ip_address: ip,
+    });
 
-      if (error) {
-        message.textContent = "Erreur lors du vote. Réessayez.";
-        return;
-      }
-
-      // Enregistrer dans localStorage
-      localStorage.setItem(`voted_${poll.id}`, selected.value);
-
-      message.textContent = `Merci pour votre vote : ${selected.value}`;
-      voteBtn.disabled = true;
-      form.querySelectorAll("input").forEach((i) => (i.disabled = true));
-
-      form.remove(); // On peut aussi faire : tile.innerHTML = "" puis showResults
-      showResults(poll.id, tile);
-    } else {
-      message.textContent = "Veuillez sélectionner une option.";
+    if (error) {
+      message.textContent = "Erreur lors du vote. Réessayez.";
+      return;
     }
-  });
+
+    localStorage.setItem(`voted_${poll.id}`, selected.value);
+
+    message.textContent = `Merci pour votre vote : ${selected.value}`;
+    voteBtn.disabled = true;
+    form.querySelectorAll("input").forEach((i) => (i.disabled = true));
+
+    form.remove();
+    await this.showResults(poll.id); // ⬅️ appel à la méthode de classe
+  } else {
+    message.textContent = "Veuillez sélectionner une option.";
+  }
+});
 
   form.appendChild(voteBtn);
   tile.appendChild(form);
   tile.appendChild(message);
 }
 
-async function showResults(pollId, container) {
+async showResults(pollId) {
   const { data: votes, error } = await supabase
     .from("votes")
     .select("option")
@@ -135,7 +133,7 @@ async function showResults(pollId, container) {
     resultsEl.appendChild(item);
   });
 
-  container.appendChild(resultsEl);
+  this.container.appendChild(resultsEl); // 👈 tu peux aussi passer un `tile` si besoin
 }
 
   async handleVote(event) {
