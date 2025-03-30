@@ -50,14 +50,7 @@ class App {
                 icon: 'images/INFOS.png',
                 isDefault: true,
                 section: 'radio'
-            },
-			{
-               title: "Sondage : votre avis",
-               icon: "images/INFOS.png",
-               isDefault: true,
-               section: 'radio' // ou autre
-               isPoll: true
-            },
+            },			
             // Section TV en Direct
             {
                 title: 'France 3 Bourgogne',
@@ -89,12 +82,19 @@ class App {
                 section: 'social'
             },
             {
-                title: 'TikTok',
-                url: 'https://www.tiktok.com/?lang=fr',
-                icon: 'images/INFOS.png',
-                isDefault: true,
-                section: 'social'
-            }         
+               title: 'TikTok',
+               url: 'https://www.tiktok.com/?lang=fr',
+               icon: 'images/INFOS.png',
+               isDefault: true,
+               section: 'social'
+            },
+            {
+              title: "Sondage : votre avis",
+              icon: "images/INFOS.png",
+              isDefault: true,
+              section: "social",
+              isPoll: true
+            }      
         ];
 
         // État de l'application
