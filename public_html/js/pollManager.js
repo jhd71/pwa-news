@@ -42,14 +42,15 @@ export default class PollManager {
   tile.appendChild(questionEl);
 
   if (alreadyVoted) {
-    const message = document.createElement("div");
-    message.textContent = "Vous avez déjà voté. Voici les résultats :";
-    message.style.marginBottom = "10px";
-    tile.appendChild(message);
+  const message = document.createElement("div");
+  message.textContent = "Vous avez déjà voté. Voici les résultats :";
+  message.style.marginBottom = "10px";
+  tile.appendChild(message);
 
-    showResults(poll.id, tile); // 👈 Affiche les résultats
-    return;
-  }
+  // On affiche les résultats si le vote est déjà effectué
+  await this.showResults(poll.id, tile);
+  return;
+}
 
   const form = document.createElement("form");
 
@@ -106,7 +107,7 @@ export default class PollManager {
   tile.appendChild(message);
 }
 
-async showResults(pollId) {
+async showResults(pollId, container) {
   const { data: votes, error } = await supabase
     .from("votes")
     .select("option")
@@ -118,7 +119,7 @@ async showResults(pollId) {
   }
 
   const results = {};
-  votes.forEach(v => {
+  votes.forEach((v) => {
     results[v.option] = (results[v.option] || 0) + 1;
   });
 
@@ -128,12 +129,20 @@ async showResults(pollId) {
 
   Object.entries(results).forEach(([option, count]) => {
     const percent = ((count / totalVotes) * 100).toFixed(1);
-    const item = document.createElement("div");
-    item.innerHTML = `<strong>${option}</strong> — ${count} vote(s) (${percent}%)`;
-    resultsEl.appendChild(item);
+
+    const resultBar = document.createElement("div");
+    resultBar.innerHTML = `
+      <div style="font-weight: bold;">${option}</div>
+      <div style="background: #ccc; border-radius: 6px; overflow: hidden; margin: 4px 0;">
+        <div style="background: #1a237e; width: ${percent}%; padding: 4px 6px; color: white;">
+          ${count} vote(s) — ${percent}%
+        </div>
+      </div>
+    `;
+    resultsEl.appendChild(resultBar);
   });
 
-  this.container.appendChild(resultsEl); // 👈 tu peux aussi passer un `tile` si besoin
+  container.appendChild(resultsEl);
 }
 
   async handleVote(event) {
