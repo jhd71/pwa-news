@@ -17,33 +17,24 @@
     },
     {
       "src": "/index.html",
-      "status": 308,
-      "headers": { "Location": "/" }
+      "dest": "/"
     },
     {
       "src": "/meteo.html",
-      "status": 308,
-      "headers": { "Location": "/meteo" }
+      "dest": "/meteo"
     },
     {
-      "src": "/meteo$",
+      "src": "/meteo",
       "dest": "/public_html/meteo.html"
     },
     {
       "src": "/(.*)\\.html$",
-      "status": 308,
-      "headers": { "Location": "/$1" }
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/public_html/$1.html",
-      "check": true
+      "dest": "/$1"
     },
     {
       "src": "/(.*)",
       "dest": "/public_html/$1"
     }
   ],
-  "cleanUrls": true,
-  "trailingSlash": false
+  "cleanUrls": true
 }
