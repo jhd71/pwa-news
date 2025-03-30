@@ -77,6 +77,9 @@ export default class PollManager {
   tile.appendChild(message);
 
   return tile;
+  this.container.innerHTML = '';
+this.container.appendChild(tile);
+
 }
 
   async handleVote(event) {
