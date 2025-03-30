@@ -309,13 +309,22 @@
     // Fonction pour configurer le bouton du chat
     function setupChatButton() {
         const chatToggleBtn = document.getElementById('chatToggleBtn');
+        
         if (chatToggleBtn) {
             console.log('Configuration du bouton de chat...');
-            chatToggleBtn.addEventListener('click', function() {
+            
+            // Supprimer les gestionnaires existants pour éviter les doublons
+            const newChatToggleBtn = chatToggleBtn.cloneNode(true);
+            chatToggleBtn.parentNode.replaceChild(newChatToggleBtn, chatToggleBtn);
+            
+            // Ajouter le nouveau gestionnaire
+            newChatToggleBtn.addEventListener('click', () => {
                 console.log('Bouton de chat cliqué');
+                
                 if (window.chatManager) {
                     console.log('Tentative d\'ouverture du chat');
-                    window.chatManager.toggleChat();
+                    // Appeler la méthode toggleChatPanel que nous avons ajoutée
+                    window.chatManager.toggleChatPanel();
                 } else {
                     console.error('ChatManager non disponible');
                 }
@@ -345,6 +354,31 @@
             console.log('Chargement de ChatManager...');
             const chatModule = await import('./js/chatManager.js');
             window.chatManager = new chatModule.default();
+            
+            // Ajouter la méthode toggleChatPanel à ChatManager
+            window.chatManager.toggleChatPanel = function() {
+                const chatContainer = this.container.querySelector('.chat-container');
+                
+                this.isOpen = !this.isOpen;
+                
+                if (this.isOpen) {
+                    chatContainer?.classList.add('open');
+                    // Réinitialisation du compteur
+                    this.unreadCount = 0;
+                    localStorage.setItem('unreadCount', '0');
+                    
+                    // Mettre à jour le badge ET l'info-bulle
+                    this.updateUnreadBadgeAndBubble();
+                    
+                    this.scrollToBottom();
+                } else {
+                    chatContainer?.classList.remove('open');
+                }
+                
+                localStorage.setItem('chatOpen', this.isOpen);
+                this.playSound('click');
+            };
+            
             await window.chatManager.init();
             console.log('Chat Manager initialisé');
             
