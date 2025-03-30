@@ -19,5 +19,6 @@
       "src": "/(.*)",
       "dest": "/public_html/$1"
     }
-  ]
+  ],
+  "cleanUrls": true
 }
