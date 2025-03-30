@@ -1990,12 +1990,6 @@ main {
   font-size: 16px;
 }
 
-/* Thème sombre */
-[data-theme="dark"] .poll-widget-container {
-  background-color: #1a237e;
-  color: #ffffff;
-}
-
 .poll-widget-container h3 {
   font-size: 18px;
   margin-bottom: 10px;
