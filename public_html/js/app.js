@@ -180,21 +180,34 @@ class App {
     }
 
     renderTiles() {
-        const container = document.getElementById('tileContainer');
-        container.innerHTML = ''; // Nettoyer le conteneur
+    const container = document.getElementById('tileContainer');
+    container.innerHTML = ''; // Nettoyer le conteneur
 
-        this.sites.forEach((site, index) => {
-            const tile = document.createElement('div');
-            tile.className = `tile${site.isDefault ? '' : ' removable'}`;
-            tile.innerHTML = `
-                <a href="${site.url}" target="_blank" class="tile-content">
-                    <img src="${site.icon}" alt="${site.title}" class="tile-icon">
-                    <div class="tile-title">${site.title}</div>
-                </a>
+    this.sites.forEach((site, index) => {
+        if (site.isPoll) {
+            const pollDiv = document.createElement("div");
+            pollDiv.className = "tile";
+            pollDiv.innerHTML = `
+              <div class="poll-tile" id="pollTile">
+                <h3>${site.title}</h3>
+                <p>Chargement du sondage...</p>
+              </div>
             `;
-            container.appendChild(tile);
-        });
-    }
+            container.appendChild(pollDiv);
+            return;
+        }
+
+        const tile = document.createElement('div');
+        tile.className = `tile${site.isDefault ? '' : ' removable'}`;
+        tile.innerHTML = `
+            <a href="${site.url}" target="_blank" class="tile-content">
+                <img src="${site.icon}" alt="${site.title}" class="tile-icon">
+                <div class="tile-title">${site.title}</div>
+            </a>
+        `;
+        container.appendChild(tile);
+    });
+}
 
     setupModalListeners() {
         // Modal d'ajout de site
