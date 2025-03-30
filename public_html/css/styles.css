@@ -2028,23 +2028,36 @@ main {
   color: #1a237e;
 }
 
-.poll-widget-container .vote-message {
-  margin-top: 10px;
-  font-size: 14px;
-}
-
 .poll-results {
-  margin-top: 10px;
-  font-size: 0.9em;
+  margin-top: 12px;
 }
 
-.poll-results div {
-  padding: 3px 0;
-  color: #1a237e;
+.result-item {
+  margin-bottom: 12px;
 }
 
-[data-theme="dark"] .poll-results div {
-  color: #ffffff;
+.result-label {
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: var(--poll-text);
 }
+
+.result-bar {
+  background-color: #ddd;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.result-fill {
+  height: 100%;
+  background-color: #1a237e;
+  transition: width 0.5s ease-in-out;
+}
+
+[data-theme="dark"] {
+  --poll-text: #ffffff;
+}
+
 
 

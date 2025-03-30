@@ -107,34 +107,42 @@ export default class PollManager {
 
   // ✅ METHODE déplacée en dehors
   async showResults(pollId, container) {
-    const { data: votes, error } = await supabase
-      .from("votes")
-      .select("option")
-      .eq("poll_id", pollId);
+  const { data: votes, error } = await supabase
+    .from("votes")
+    .select("option")
+    .eq("poll_id", pollId);
 
-    if (error) {
-      console.error("Erreur chargement résultats :", error);
-      return;
-    }
-
-    const results = {};
-    votes.forEach((v) => {
-      results[v.option] = (results[v.option] || 0) + 1;
-    });
-
-    const totalVotes = votes.length;
-    const resultsEl = document.createElement("div");
-    resultsEl.className = "poll-results";
-
-    Object.entries(results).forEach(([option, count]) => {
-      const percent = ((count / totalVotes) * 100).toFixed(1);
-      const item = document.createElement("div");
-      item.innerHTML = `<strong>${option}</strong> — ${count} vote(s) (${percent}%)`;
-      resultsEl.appendChild(item);
-    });
-
-    container.appendChild(resultsEl);
+  if (error) {
+    console.error("Erreur chargement résultats :", error);
+    return;
   }
+
+  const results = {};
+  votes.forEach((v) => {
+    results[v.option] = (results[v.option] || 0) + 1;
+  });
+
+  const totalVotes = votes.length;
+  const resultsEl = document.createElement("div");
+  resultsEl.className = "poll-results";
+
+  Object.entries(results).forEach(([option, count]) => {
+    const percent = ((count / totalVotes) * 100).toFixed(1);
+
+    const resultItem = document.createElement("div");
+    resultItem.className = "result-item";
+    resultItem.innerHTML = `
+      <div class="result-label"><strong>${option}</strong> — ${count} vote(s) (${percent}%)</div>
+      <div class="result-bar">
+        <div class="result-fill" style="width: ${percent}%;"></div>
+      </div>
+    `;
+
+    resultsEl.appendChild(resultItem);
+  });
+
+  container.appendChild(resultsEl);
+}
 
   async getIP() {
     try {
