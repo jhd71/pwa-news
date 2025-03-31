@@ -1,5 +1,5 @@
-const CACHE_NAME = 'infos-pwa-v5'; // Incrémentez la version
-const OFFLINE_URL = './offline.html'; // Utilisez un chemin relatif avec le point
+const CACHE_NAME = 'infos-pwa-v4'; // Incrémentez la version
+// Suppression de const OFFLINE_URL = '/offline.html';
 
 const STATIC_RESOURCES = [
     '/',
@@ -18,9 +18,71 @@ const STATIC_RESOURCES = [
     '/sounds/notification.mp3',
     '/sounds/click.mp3',
     '/sounds/erreur.mp3',
-    '/sounds/success.mp3',
-    OFFLINE_URL
+    '/sounds/success.mp3'
+    // OFFLINE_URL supprimé ici
 ];
+
+// Contenu HTML de la page hors ligne (nouvelle variable)
+const OFFLINE_HTML = `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hors ligne - Actu&Média</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #6e46c9 0%, #8a5adf 100%);
+      color: white;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+    }
+    .container {
+      max-width: 500px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    h1 {
+      margin-top: 0;
+    }
+    .icon {
+      font-size: 60px;
+      margin-bottom: 20px;
+    }
+    .action {
+      margin-top: 30px;
+      background: rgba(255,255,255,0.2);
+      border: 2px solid white;
+      color: white;
+      padding: 10px 25px;
+      border-radius: 25px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .action:hover {
+      background: rgba(255,255,255,0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">📶</div>
+    <h1>Vous êtes hors ligne</h1>
+    <p>Impossible de charger le contenu demandé car votre appareil n'est pas connecté à Internet.</p>
+    <p>Certaines fonctionnalités de l'application restent disponibles hors ligne.</p>
+    <button class="action" onclick="window.location.reload()">Réessayer</button>
+  </div>
+</body>
+</html>`;
 
 // Installation
 self.addEventListener('install', event => {
@@ -79,11 +141,11 @@ self.addEventListener('message', async (event) => {
             type: 'window',
             includeUncontrolled: true
         });
-        
+
         const isVisible = clientList.some(
             client => client.visibilityState === 'visible'
         );
-        
+
         if (event.ports && event.ports[0]) {
             event.ports[0].postMessage({
                 type: 'VISIBILITY_RESULT',
@@ -111,9 +173,9 @@ self.addEventListener('fetch', (event) => {
             fetch(event.request)
                 .catch(error => {
                     console.error('[ServiceWorker] Erreur de récupération API:', error);
-                    return new Response(JSON.stringify({ 
+                    return new Response(JSON.stringify({
                         error: 'Réseau indisponible',
-                        offline: true 
+                        offline: true
                     }), {
                         headers: { 'Content-Type': 'application/json' }
                     });
@@ -135,94 +197,28 @@ self.addEventListener('fetch', (event) => {
                 return networkResponse;
             } catch (error) {
                 // Si hors ligne, essayer le cache
+                // Si hors ligne, essayer le cache
                 const cachedResponse = await cache.match(event.request);
                 if (cachedResponse) {
                     return cachedResponse;
                 }
-                
-                // Si c'est une navigation vers une page, gérer l'état hors ligne
+
+                // Si c'est une navigation vers une page, retourner directement la page hors ligne intégrée
                 if (event.request.mode === 'navigate') {
-                    try {
-                        // Essayer d'obtenir la page offline.html du cache
-                        const offlinePage = await cache.match('./offline.html');
-                        if (offlinePage) {
-                            return offlinePage;
-                        } else {
-                            // Si la page n'est pas trouvée, retourner une réponse HTML simple
-                            return new Response(
-                                `<!DOCTYPE html>
-                                <html>
-                                <head>
-                                    <meta charset="UTF-8">
-                                    <title>Hors ligne - Actu&Média</title>
-                                    <style>
-                                        body {
-                                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                                            background: linear-gradient(135deg, #6e46c9 0%, #8a5adf 100%);
-                                            color: white;
-                                            height: 100vh;
-                                            margin: 0;
-                                            display: flex;
-                                            flex-direction: column;
-                                            align-items: center;
-                                            justify-content: center;
-                                            text-align: center;
-                                            padding: 20px;
-                                        }
-                                        .container {
-                                            max-width: 500px;
-                                            background: rgba(0,0,0,0.2);
-                                            border-radius: 15px;
-                                            padding: 30px;
-                                            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-                                        }
-                                        h1 { margin-top: 0; }
-                                        .action {
-                                            margin-top: 30px;
-                                            background: rgba(255,255,255,0.2);
-                                            border: 2px solid white;
-                                            color: white;
-                                            padding: 10px 25px;
-                                            border-radius: 25px;
-                                            font-size: 16px;
-                                            cursor: pointer;
-                                        }
-                                    </style>
-                                </head>
-                                <body>
-                                    <div class="container">
-                                        <h1>Vous êtes hors ligne</h1>
-                                        <p>Impossible de charger le contenu demandé car votre appareil n'est pas connecté à Internet.</p>
-                                        <p>Certaines fonctionnalités de l'application restent disponibles hors ligne.</p>
-                                        <button class="action" onclick="window.location.reload()">Réessayer</button>
-                                    </div>
-                                </body>
-                                </html>`,
-                                {
-                                    headers: {
-                                        'Content-Type': 'text/html; charset=utf-8'
-                                    }
-                                }
-                            );
-                        }
-                    } catch (e) {
-                        // En cas d'erreur, génèrer une page simple
-                        return new Response('Vous êtes hors ligne', {
-                            headers: { 'Content-Type': 'text/plain' }
-                        });
-                    }
-                }
-                
+                    return new Response(OFFLINE_HTML, {
+                        headers: { 'Content-Type': 'text/html; charset=utf-8' }
+                    });
+			}
+
                 throw error;
             }
         })()
     );
 });
-
 // Gestion des notifications push
 self.addEventListener('push', function(event) {
     console.log('[ServiceWorker] Push Reçu', event.data?.text());
-    
+
     event.waitUntil((async () => {
         try {
             let data;
@@ -240,7 +236,7 @@ self.addEventListener('push', function(event) {
                 includeUncontrolled: true
             });
 
-            const windowClient = clientList.find(client => 
+            const windowClient = clientList.find(client =>
                 client.visibilityState === 'visible'
             );
 
@@ -282,11 +278,11 @@ self.addEventListener('push', function(event) {
 // Gestion des clics sur les notifications
 self.addEventListener('notificationclick', function(event) {
     console.log('[ServiceWorker] Notification cliquée');
-    
+
     event.notification.close();
-    
+
     const urlToOpen = new URL('/?action=openchat', self.location.origin).href;
-    
+
     const promiseChain = clients.matchAll({
         type: 'window',
         includeUncontrolled: true
@@ -317,7 +313,7 @@ self.addEventListener('pushsubscriptionchange', async function(event) {
     try {
         const oldSubscription = event.oldSubscription || await self.registration.pushManager.getSubscription();
         const applicationServerKey = oldSubscription.options.applicationServerKey;
-        
+
         const newSubscription = await self.registration.pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: applicationServerKey
