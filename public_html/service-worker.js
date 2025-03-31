@@ -139,10 +139,80 @@ self.addEventListener('fetch', (event) => {
                 if (cachedResponse) {
                     return cachedResponse;
                 }
-                // Si c'est une navigation vers une page, retourner la page hors ligne
+                
+                // Si c'est une navigation vers une page, gérer l'état hors ligne
                 if (event.request.mode === 'navigate') {
-                    return cache.match(OFFLINE_URL);
+                    try {
+                        // Essayer d'obtenir la page offline.html du cache
+                        const offlinePage = await cache.match('./offline.html');
+                        if (offlinePage) {
+                            return offlinePage;
+                        } else {
+                            // Si la page n'est pas trouvée, retourner une réponse HTML simple
+                            return new Response(
+                                `<!DOCTYPE html>
+                                <html>
+                                <head>
+                                    <meta charset="UTF-8">
+                                    <title>Hors ligne - Actu&Média</title>
+                                    <style>
+                                        body {
+                                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                                            background: linear-gradient(135deg, #6e46c9 0%, #8a5adf 100%);
+                                            color: white;
+                                            height: 100vh;
+                                            margin: 0;
+                                            display: flex;
+                                            flex-direction: column;
+                                            align-items: center;
+                                            justify-content: center;
+                                            text-align: center;
+                                            padding: 20px;
+                                        }
+                                        .container {
+                                            max-width: 500px;
+                                            background: rgba(0,0,0,0.2);
+                                            border-radius: 15px;
+                                            padding: 30px;
+                                            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                                        }
+                                        h1 { margin-top: 0; }
+                                        .action {
+                                            margin-top: 30px;
+                                            background: rgba(255,255,255,0.2);
+                                            border: 2px solid white;
+                                            color: white;
+                                            padding: 10px 25px;
+                                            border-radius: 25px;
+                                            font-size: 16px;
+                                            cursor: pointer;
+                                        }
+                                    </style>
+                                </head>
+                                <body>
+                                    <div class="container">
+                                        <h1>Vous êtes hors ligne</h1>
+                                        <p>Impossible de charger le contenu demandé car votre appareil n'est pas connecté à Internet.</p>
+                                        <p>Certaines fonctionnalités de l'application restent disponibles hors ligne.</p>
+                                        <button class="action" onclick="window.location.reload()">Réessayer</button>
+                                    </div>
+                                </body>
+                                </html>`,
+                                {
+                                    headers: {
+                                        'Content-Type': 'text/html; charset=utf-8'
+                                    }
+                                }
+                            );
+                        }
+                    } catch (e) {
+                        // En cas d'erreur, génèrer une page simple
+                        return new Response('Vous êtes hors ligne', {
+                            headers: { 'Content-Type': 'text/plain' }
+                        });
+                    }
                 }
+                
                 throw error;
             }
         })()
