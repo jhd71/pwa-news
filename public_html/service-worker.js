@@ -1,5 +1,5 @@
 const CACHE_NAME = 'infos-pwa-v5'; // Incrémentez la version
-const OFFLINE_URL = '/offline.html';
+const OFFLINE_URL = './offline.html'; // Utilisez un chemin relatif avec le point
 
 const STATIC_RESOURCES = [
     '/',
