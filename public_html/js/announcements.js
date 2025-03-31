@@ -520,18 +520,18 @@ if (contact && contact.includes('@')) {
             imageUrl = publicUrl;
         }
         
-        // Préparer les données de l'annonce
-        const announcementData = {
-            title,
-            description,
-            category,
-            price,
-            location,
-            contact,
-            user_id: currentUser,
-            status: 'approved', // Pour que les annonces soient immédiatement visibles
-            expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // Expire dans 30 jours
-        };
+       // Préparer les données de l'annonce
+const announcementData = {
+    title,
+    description,
+    category,
+    price,
+    location,
+    contact,
+    user_id: currentUser,
+    status: 'pending', // Statut "en attente" par défaut
+    expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // Expire dans 30 jours
+};
         
         if (imageUrl) {
             announcementData.image_url = imageUrl;
@@ -555,7 +555,8 @@ if (contact && contact.includes('@')) {
                 .insert(announcementData)
                 .select();
                 
-            showToast('Annonce publiée avec succès');
+            // Dans la fonction handleFormSubmit, après la soumission réussie
+showToast('Annonce soumise avec succès. Elle sera publiée après validation par un administrateur.', 'success');
         }
         
         if (result.error) throw result.error;

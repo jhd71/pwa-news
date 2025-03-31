@@ -33,6 +33,10 @@
       "dest": "/public_html/annonces.html"
     },
     {
+      "src": "/admin-annonces$",
+      "dest": "/public_html/admin-annonces.html"
+    },
+    {
       "src": "/annonce/([^/]+)$",
       "dest": "/public_html/announcement-detail.html?id=$1"
     },
