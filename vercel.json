@@ -11,6 +11,7 @@
     }
   ],
   "routes": [
+  { "src": "/api/creusot-infos", "dest": "/api/creusot-infos.js" },
     {
       "src": "/api/([^\\.]+)$",
       "dest": "/api/$1.js"

@@ -1,6 +1,5 @@
 // api/getNews.js
 import Parser from 'rss-parser';
-import * as cheerio from 'cheerio'; // 👈 ajoute ceci pour le scraping
 
 // Durée du cache en millisecondes (10 minutes)
 const CACHE_DURATION = 10 * 60 * 1000;
@@ -34,95 +33,88 @@ export default async function handler(req, res) {
     
     // URLs des flux RSS
     const feeds = [
-  { name: 'Montceau News', url: 'https://www.lejsl.com/edition-montceau-les-mines/rss', max: 2 },
-  { name: 'L\'Informateur', url: 'http://www.linformateurdebourgogne.com/feed/', max: 2 },
-  { name: 'Le JSL', url: 'https://www.lejsl.com/rss', max: 2 },
-  { name: 'France Bleu', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/infos.xml', max: 2 },
-  { name: 'Creusot Infos', custom: true, max: 2 } // ⬅️ Ajoute cette ligne
+        { name: 'Montceau News', url: 'https://www.lejsl.com/edition-montceau-les-mines/rss', max: 2 },
+        { name: 'L\'Informateur', url: 'http://www.linformateurdebourgogne.com/feed/', max: 2 },
+        { name: 'Le JSL', url: 'https://www.lejsl.com/rss', max: 2 },
+        { name: 'France Bleu', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/infos.xml', max: 2 },
     ];
     
-	export async function scrapeCreusotInfos(max = 2) {
-  const articles = [];
-
+	async function getCreusotInfos() {
   try {
-    const response = await fetch('https://www.creusot-infos.com/news/faits-divers/', {
-      headers: {
-        'User-Agent': 'Mozilla/5.0'
-      }
-    });
-
-    const html = await response.text();
-    const $ = cheerio.load(html);
-
-    $('div.catItemView').each((i, element) => {
-      if (i >= max) return;
-
-      const title = $(element).find('h3.catItemTitle a').text().trim();
-      const link = $(element).find('h3.catItemTitle a').attr('href');
-      const image = $(element).find('.catItemImage img').attr('src') || '/images/AM-192-v2.png';
-
-      if (title && link) {
-        articles.push({
-          title,
-          link: link.startsWith('http') ? link : `https://www.creusot-infos.com${link}`,
-          image: image.startsWith('http') ? image : `https://www.creusot-infos.com${image}`,
-          date: new Date().toISOString(),
-          source: 'Creusot Infos'
-        });
-      }
-    });
-
-    console.log("✅ Articles Creusot Infos :", articles);
-  } catch (err) {
-    console.error("❌ Erreur scraping Creusot Infos:", err.message);
+    const response = await fetch('/api/creusot-infos');
+    const data = await response.json();
+    
+    if (data.success && data.articles.length > 0) {
+      // Traiter les articles ici
+      console.log('Articles de Creusot-Infos:', data.articles);
+      return data.articles;
+    } else {
+      console.error('Aucun article trouvé');
+      return [];
+    }
+  } catch (error) {
+    console.error('Erreur lors de la récupération des articles:', error);
+    return [];
   }
-
-  return articles;
 }
-
     // Récupérer les articles de chaque flux avec gestion des promesses
     const fetchPromises = feeds.map(feed => {
-  if (feed.custom) {
-    return scrapeCreusotInfos(feed.max || 2);
-  }
-
-  return new Promise(async (resolve) => {
-    try {
-      console.log(`📡 Tentative pour ${feed.name}...`);
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
-      const response = await fetch(feed.url, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0'
-        },
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
-      if (!response.ok) throw new Error(`HTTP error ${response.status}`);
-      const data = await response.text();
-      const feedData = await parser.parseString(data);
-      const articles = feedData.items.slice(0, feed.max).map(item => {
-        let image = item.enclosure?.url || item['media:content']?.url || null;
-        if (!image && item.content) {
-          const match = item.content.match(/<img[^>]+src="([^">]+)"/);
-          if (match) image = match[1];
+      return new Promise(async (resolve) => {
+        try {
+          console.log(`📡 Tentative pour ${feed.name}...`);
+          
+          // Remplacer axios par fetch avec timeout
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 5000);
+          
+          const response = await fetch(feed.url, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36'
+            },
+            signal: controller.signal
+          });
+          
+          clearTimeout(timeoutId);
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
+          const data = await response.text();
+          const feedData = await parser.parseString(data);
+          
+          console.log(`✅ ${feed.name}: ${feedData.items.length} articles trouvés`);
+          
+          // Traiter les articles
+          const articles = feedData.items.slice(0, feed.max).map(item => {
+            let image = item.enclosure?.url || item['media:content']?.url || null;
+            if (!image && item.content) {
+              const imgMatch = item.content.match(/<img[^>]+src="([^">]+)"/);
+              if (imgMatch) {
+                image = imgMatch[1];
+              }
+            }
+            if (!image) {
+              // Modifiez le chemin d'image par défaut pour utiliser une image existante
+              image = "/images/AM-192-v2.png"; // Utilisez une image que vous avez déjà
+            }
+            
+            return {
+              title: item.title,
+              link: item.link,
+              image,
+              date: item.pubDate || item.isoDate,
+              source: feed.name
+            };
+          });
+          
+          resolve(articles);
+        } catch (feedError) {
+          console.error(`❌ Erreur avec ${feed.name}:`, feedError.message);
+          resolve([]); // Tableau vide en cas d'erreur
         }
-        if (!image) image = "/images/AM-192-v2.png";
-        return {
-          title: item.title,
-          link: item.link,
-          image,
-          date: item.pubDate || item.isoDate,
-          source: feed.name
-        };
       });
-      resolve(articles);
-    } catch (error) {
-      console.error(`❌ Erreur avec ${feed.name}:`, error.message);
-      resolve([]);
-    }
-  });
-});
+    });
 
     // Définir un timeout global
     const timeoutPromise = new Promise((resolve) => {
