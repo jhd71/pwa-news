@@ -6,6 +6,25 @@ const CACHE_DURATION = 10 * 60 * 1000;
 let cachedArticles = null;
 let lastFetchTime = null;
 
+async function getCreusotInfos() {
+  try {
+    const response = await fetch('/api/creusot-infos');
+    const data = await response.json();
+    
+    if (data.success && data.articles.length > 0) {
+      // Traiter les articles ici
+      console.log('Articles de Creusot-Infos:', data.articles);
+      return data.articles;
+    } else {
+      console.error('Aucun article trouvé');
+      return [];
+    }
+  } catch (error) {
+    console.error('Erreur lors de la récupération des articles:', error);
+    return [];
+  }
+}
+
 export default async function handler(req, res) {
   // En-têtes CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -61,24 +80,7 @@ export default async function handler(req, res) {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
-          async function getCreusotInfos() {
-  try {
-    const response = await fetch('/api/creusot-infos');
-    const data = await response.json();
     
-    if (data.success && data.articles.length > 0) {
-      // Traiter les articles ici
-      console.log('Articles de Creusot-Infos:', data.articles);
-      return data.articles;
-    } else {
-      console.error('Aucun article trouvé');
-      return [];
-    }
-  } catch (error) {
-    console.error('Erreur lors de la récupération des articles:', error);
-    return [];
-  }
-}
           const data = await response.text();
           const feedData = await parser.parseString(data);
           
