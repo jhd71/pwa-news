@@ -1,5 +1,6 @@
 // api/getNews.js
 import Parser from 'rss-parser';
+import * as cheerio from 'cheerio'; // 👈 ajoute ceci pour le scraping
 
 // Durée du cache en millisecondes (10 minutes)
 const CACHE_DURATION = 10 * 60 * 1000;
@@ -40,27 +41,31 @@ export default async function handler(req, res) {
   { name: 'Creusot Infos', custom: true, max: 2 } // ⬅️ Ajoute cette ligne
     ];
     
-	async function scrapeCreusotInfos(max = 2) {
+	export async function scrapeCreusotInfos(max = 2) {
   const articles = [];
+
   try {
     const response = await fetch('https://www.creusot-infos.com/news/faits-divers/');
     const html = await response.text();
 
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
+    const $ = cheerio.load(html);
 
-    const items = doc.querySelectorAll('.catItemBody'); // Ajuste selon la structure du site
-
-    items.forEach((item, i) => {
+    $('.catItemBody').each((i, element) => {
       if (i >= max) return;
 
-      const title = item.querySelector('h3 a')?.textContent?.trim();
-      const link = item.querySelector('h3 a')?.href;
-      const image = item.querySelector('img')?.src || '/images/AM-192-v2.png';
-      const date = new Date().toISOString(); // Pas de date précise dispo
+      const title = $(element).find('h3 a').text().trim();
+      const link = $(element).find('h3 a').attr('href');
+      const image = $(element).find('img').attr('src') || '/images/AM-192-v2.png';
+      const date = new Date().toISOString(); // Pas de vraie date sur le site
 
       if (title && link) {
-        articles.push({ title, link, image, date, source: 'Creusot Infos' });
+        articles.push({
+          title,
+          link: link.startsWith('http') ? link : `https://www.creusot-infos.com${link}`,
+          image: image.startsWith('http') ? image : `https://www.creusot-infos.com${image}`,
+          date,
+          source: 'Creusot Infos'
+        });
       }
     });
   } catch (err) {
