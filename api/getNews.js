@@ -41,7 +41,7 @@ export default async function handler(req, res) {
   { name: 'Creusot Infos', custom: true, max: 2 } // ⬅️ Ajoute cette ligne
     ];
     
-	export async function scrapeCreusotInfos(max = 2) {
+	async function scrapeCreusotInfos(max = 2) {
   const articles = [];
 
   try {
