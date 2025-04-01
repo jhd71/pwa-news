@@ -2,30 +2,24 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 
 async function fetchCreusotInfos(req, res) {
-  console.log("API Creusot-Infos appelée");
+  console.log("API Creusot-Infos appelée - utilisant allorigins");
   
-  // Activer CORS
+  // En-têtes CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept');
 
   if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
+    return res.status(200).end();
   }
 
   try {
-    console.log("Tentative de fetch sur Creusot-Infos");
-    // URL de la page des faits divers
-    const url = 'https://www.creusot-infos.com/news/faits-divers/';
+    const url = encodeURIComponent('https://www.creusot-infos.com/news/faits-divers/');
+    const proxyUrl = `https://api.allorigins.win/raw?url=${url}`;
     
-    // Utiliser un User-Agent pour éviter d'être bloqué
-    const { data } = await axios.get(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36'
-      },
-      timeout: 10000 // 10 secondes de timeout
+    const { data } = await axios.get(proxyUrl, {
+      timeout: 10000
     });
     
     console.log("HTML récupéré, taille:", data.length);
