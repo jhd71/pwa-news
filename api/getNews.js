@@ -41,37 +41,42 @@ export default async function handler(req, res) {
   { name: 'Creusot Infos', custom: true, max: 2 } // ⬅️ Ajoute cette ligne
     ];
     
-	async function scrapeCreusotInfos(max = 2) {
+	export async function scrapeCreusotInfos(max = 2) {
   const articles = [];
 
   try {
-    const response = await fetch('https://www.creusot-infos.com/news/faits-divers/');
-    const html = await response.text();
+    const response = await fetch('https://www.creusot-infos.com/news/faits-divers/', {
+      headers: {
+        'User-Agent': 'Mozilla/5.0'
+      }
+    });
 
+    const html = await response.text();
     const $ = cheerio.load(html);
 
-    $('.catItemBody').each((i, element) => {
+    $('div.catItemView').each((i, element) => {
       if (i >= max) return;
 
-      const title = $(element).find('h3 a').text().trim();
-      const link = $(element).find('h3 a').attr('href');
-      const image = $(element).find('img').attr('src') || '/images/AM-192-v2.png';
-      const date = new Date().toISOString(); // Pas de vraie date sur le site
+      const title = $(element).find('h3.catItemTitle a').text().trim();
+      const link = $(element).find('h3.catItemTitle a').attr('href');
+      const image = $(element).find('.catItemImage img').attr('src') || '/images/AM-192-v2.png';
 
       if (title && link) {
         articles.push({
           title,
           link: link.startsWith('http') ? link : `https://www.creusot-infos.com${link}`,
           image: image.startsWith('http') ? image : `https://www.creusot-infos.com${image}`,
-          date,
+          date: new Date().toISOString(),
           source: 'Creusot Infos'
         });
       }
     });
+
+    console.log("✅ Articles Creusot Infos :", articles);
   } catch (err) {
     console.error("❌ Erreur scraping Creusot Infos:", err.message);
   }
-console.log("✅ Articles Creusot Infos :", articles);
+
   return articles;
 }
 
