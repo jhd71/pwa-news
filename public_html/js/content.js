@@ -26,6 +26,7 @@ document.documentElement.setAttribute('data-font-size', this.fontSize);
         this.setupTheme();
         this.setupFontSize();
         this.setupTiles();
+		this.handlePWAInstallPrompt();
     }
 
     setupEventListeners() {
@@ -85,39 +86,62 @@ document.documentElement.setAttribute('data-font-size', this.fontSize);
             addSiteBtn.addEventListener('click', this.showAddSiteDialog.bind(this));
         }
 
-        // Installation PWA
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            this.deferredPrompt = e;
-            const menuInstall = document.getElementById('menuInstall');
-            if (menuInstall) {
-                menuInstall.classList.add('visible');
-                menuInstall.addEventListener('click', () => {
+        handlePWAInstallPrompt() {
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        this.deferredPrompt = e; // 🔁 stocké dans l'instance
+
+        const menuInstall = document.getElementById('menuInstall');
+        if (menuInstall) {
+            menuInstall.classList.add('visible');
+
+            // Pour éviter les doublons d'écouteurs si l'utilisateur reclique plusieurs fois
+            menuInstall.onclick = async () => {
+                try {
                     if (this.deferredPrompt) {
                         this.deferredPrompt.prompt();
-                        this.deferredPrompt.userChoice.then((choiceResult) => {
-                            if (choiceResult.outcome === 'accepted') {
-                                console.log('Application installée');
-                                menuInstall.classList.remove('visible');
-                            }
-                            this.deferredPrompt = null;
-                        }).catch((error) => {
-                            console.error('Erreur lors du choix de l\'utilisateur:', error);
-                            this.showToast('Erreur lors de l\'installation de l\'application');
-                        });
-                    }
-                });
-            }
-        });
 
-        window.addEventListener('appinstalled', () => {
-            this.deferredPrompt = null;
-            const menuInstall = document.getElementById('menuInstall');
-            if (menuInstall) {
-                menuInstall.classList.remove('visible');
-            }
-        });
-    } // <-- Ajout de l'accolade fermante
+                        const { outcome } = await this.deferredPrompt.userChoice;
+                        if (outcome === 'accepted') {
+                            console.log("✅ PWA installée !");
+                            this.showToast("Application installée !");
+                            menuInstall.classList.remove('visible');
+                        } else {
+                            console.log("❌ Installation refusée");
+                        }
+                        this.deferredPrompt = null;
+                    }
+                } catch (err) {
+                    console.error("Erreur installation PWA :", err);
+                    this.showToast("Erreur lors de l'installation");
+                }
+            };
+        }
+    });
+
+    window.addEventListener('appinstalled', () => {
+    console.log("📲 Application PWA installée !");
+    
+    const menuInstall = document.getElementById('menuInstall');
+    if (menuInstall) menuInstall.classList.remove('visible');
+
+    // ✅ Afficher le badge animé
+    const badge = document.getElementById('installBadge');
+    if (badge) {
+        badge.classList.remove('hidden');
+        badge.classList.add('show');
+
+        // Retirer après 3 secondes
+        setTimeout(() => {
+            badge.classList.remove('show');
+            badge.classList.add('hidden');
+        }, 3000);
+    }
+
+    this.showToast("Application installée !");
+        this.deferredPrompt = null;
+    });
+}
 
     setupLayout() {
         const savedLayout = localStorage.getItem('layout') || 'grid';

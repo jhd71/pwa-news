@@ -1946,3 +1946,60 @@ main {
     overscroll-behavior: contain; /* Empêche le défilement de se propager à l'élément parent */
     -webkit-overflow-scrolling: touch; /* Améliore le défilement sur iOS */
 }
+.install-btn.hidden {
+  display: none;
+}
+
+.install-btn.visible {
+  display: block;
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 999;
+  background-color: #1a237e;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#menuInstall {
+  display: none;
+}
+
+#menuInstall.visible {
+  display: inline-flex;
+}
+
+#menuInstall.hidden {
+  display: none !important;
+}
+
+.install-badge {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #4caf50;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-weight: bold;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease, bottom 0.5s ease;
+  z-index: 9999;
+}
+
+.install-badge.show {
+  opacity: 1;
+  bottom: 40px;
+}
+
+.install-badge.hidden {
+  display: none;
+}
