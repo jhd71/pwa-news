@@ -142,7 +142,7 @@ document.documentElement.setAttribute('data-font-size', this.fontSize);
         this.deferredPrompt = null;
     });
 }
-
+}
     setupLayout() {
         const savedLayout = localStorage.getItem('layout') || 'grid';
         this.setLayout(savedLayout);
