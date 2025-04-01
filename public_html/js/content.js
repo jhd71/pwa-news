@@ -801,6 +801,7 @@ updateLayoutIcon(layout) {
         this.deferredPrompt = null;
         });
   }
+ }
 }
 
 export default ContentManager;
