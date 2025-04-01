@@ -1,26 +1,34 @@
 // api/getNews.js
 import Parser from 'rss-parser';
+import fetch from 'node-fetch'; // Assurez-vous d'avoir cette dépendance
 
 // Durée du cache en millisecondes (10 minutes)
 const CACHE_DURATION = 10 * 60 * 1000;
 let cachedArticles = null;
 let lastFetchTime = null;
 
+// Fonction pour récupérer les articles de Creusot-Infos via notre API
 async function getCreusotInfos() {
   try {
-    const response = await fetch('/api/creusot-infos');
+    // Utiliser l'URL absolue en dev, ou relative en prod
+    const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+    const response = await fetch(`${baseUrl}/api/creusot-infos`);
+    
+    if (!response.ok) {
+      throw new Error(`Erreur HTTP: ${response.status}`);
+    }
+    
     const data = await response.json();
     
     if (data.success && data.articles.length > 0) {
-      // Traiter les articles ici
-      console.log('Articles de Creusot-Infos:', data.articles);
-      return data.articles;
+      console.log(`✅ Creusot-Infos: ${data.articles.length} articles trouvés`);
+      return data.articles.slice(0, 2); // Limiter à 2 articles comme les autres sources
     } else {
-      console.error('Aucun article trouvé');
+      console.error('❌ Aucun article trouvé sur Creusot-Infos');
       return [];
     }
   } catch (error) {
-    console.error('Erreur lors de la récupération des articles:', error);
+    console.error('❌ Erreur avec Creusot-Infos:', error.message);
     return [];
   }
 }
@@ -117,6 +125,9 @@ export default async function handler(req, res) {
       });
     });
 
+    // Ajouter la promesse pour Creusot-Infos
+    fetchPromises.push(getCreusotInfos());
+
     // Définir un timeout global
     const timeoutPromise = new Promise((resolve) => {
       setTimeout(() => {
@@ -128,7 +139,7 @@ export default async function handler(req, res) {
     // Exécuter toutes les promesses
     const results = await Promise.race([
       Promise.all(fetchPromises),
-      timeoutPromise.then(() => feeds.map(() => []))
+      timeoutPromise.then(() => [...feeds, { name: 'Creusot-Infos' }].map(() => []))
     ]);
     
     // Aplatir les résultats
