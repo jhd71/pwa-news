@@ -30,16 +30,8 @@ export default async function handler(req, res) {
         item: ['media:content', 'enclosure']
       }
     });
-    
-    // URLs des flux RSS
-    const feeds = [
-        { name: 'Montceau News', url: 'https://www.lejsl.com/edition-montceau-les-mines/rss', max: 2 },
-        { name: 'L\'Informateur', url: 'http://www.linformateurdebourgogne.com/feed/', max: 2 },
-        { name: 'Le JSL', url: 'https://www.lejsl.com/rss', max: 2 },
-        { name: 'France Bleu', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/infos.xml', max: 2 },
-    ];
-    
-	async function getCreusotInfos() {
+	
+    async function getCreusotInfos() {
   try {
     const response = await fetch('/api/creusot-infos');
     const data = await response.json();
@@ -57,6 +49,14 @@ export default async function handler(req, res) {
     return [];
   }
 }
+    // URLs des flux RSS
+    const feeds = [
+        { name: 'Montceau News', url: 'https://www.lejsl.com/edition-montceau-les-mines/rss', max: 2 },
+        { name: 'L\'Informateur', url: 'http://www.linformateurdebourgogne.com/feed/', max: 2 },
+        { name: 'Le JSL', url: 'https://www.lejsl.com/rss', max: 2 },
+        { name: 'France Bleu', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/infos.xml', max: 2 },
+    ];
+    
     // Récupérer les articles de chaque flux avec gestion des promesses
     const fetchPromises = feeds.map(feed => {
       return new Promise(async (resolve) => {
