@@ -79,10 +79,6 @@
     <script src="https://ekjgfiyhkythqcnmhzea.supabase.co"></script>
 </head>
 <body>
-<div id="splash-screen">
-    <div class="splash-text">Actu&Média</div>
-</div>
-<script src="js/splash-screen.js"></script>
 <header class="app-header">
     <button type="button" id="menuButton" class="menu-button" aria-label="Menu">
         <span class="material-icons">menu</span>
@@ -385,17 +381,6 @@
             // Configurer le bouton du chat
             setupChatButton();
             
-            // Initialiser PollManager si présent
-            try {
-                console.log("Chargement de PollManager...");
-                const pollModule = await import("./js/pollManager.js");
-                window.pollManager = new pollModule.default("pollTile");
-                await window.pollManager.init();
-                console.log("Poll Manager initialisé");
-            } catch (pollError) {
-                console.warn("Erreur lors de l'initialisation de PollManager:", pollError);
-            }
-            
         } catch (error) {
             console.error('Erreur d\'initialisation:', error);
             console.error('Stack trace:', error.stack);
@@ -559,10 +544,6 @@ window.refreshNews = refreshNews;
       <span>Service Public</span>
     </a>
   </div>
-  <!-- Sondage Widget -->
-<div id="pollWidget" class="poll-widget-container">
-  <h3 class="poll-title">Sondage : votre avis</h3>
-  <div id="pollTile" class="poll-tile">Chargement...</div>
 </div>
 </div>
 <!-- Menu déroulant des actualités -->
