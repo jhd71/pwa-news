@@ -4,7 +4,7 @@ async function loadNewsTickerItems() {
     console.log("Tentative de récupération des actualités pour le ticker...");
     
     // Utiliser la même API que pour le panel d'actualités
-    const response = await fetch('/api/getNews.js');
+    const response = await fetch('/api/getNews');
     console.log("Statut de la réponse:", response.status);
     
     if (!response.ok) {
