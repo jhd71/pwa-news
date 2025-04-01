@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
       newsPanelContent.innerHTML = '<div class="loading-indicator">Chargement des actualités...</div>';
     }
     
-    fetch('/api/getNews.js')
+    fetch('/api/getNews')
       .then(response => {
         if (!response.ok) {
           throw new Error('Erreur de réponse: ' + response.status);
