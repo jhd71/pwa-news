@@ -71,7 +71,7 @@ export default async function handler(req, res) {
   } catch (err) {
     console.error("❌ Erreur scraping Creusot Infos:", err.message);
   }
-
+console.log("✅ Articles Creusot Infos :", articles);
   return articles;
 }
 
