@@ -2,6 +2,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 
 async function fetchCreusotInfos(req, res) {
+	console.log("API Creusot-Infos appelée");
   // Activer CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -14,14 +15,32 @@ async function fetchCreusotInfos(req, res) {
   }
 
   try {
+    console.log("Tentative de fetch sur Creusot-Infos");
     // URL de la page des faits divers
     const url = 'https://www.creusot-infos.com/news/faits-divers/';
     
     // Récupérer le contenu HTML de la page
     const { data } = await axios.get(url);
+    console.log("HTML récupéré, taille:", data.length);
     
     // Charger le HTML dans cheerio (similaire à jQuery)
     const $ = cheerio.load(data);
+    
+    // Débogage : Vérifier les sélecteurs principaux
+    console.log("Nombre d'éléments .content_area trouvés:", $('.content_area').length);
+    console.log("Nombre d'éléments .content_zone trouvés:", $('.content_zone').length);
+    console.log("Nombre d'éléments .sujet trouvés:", $('.sujet').length);
+    
+    // Si les sélecteurs ci-dessus ne trouvent rien, essayons des sélecteurs plus génériques
+    if ($('.sujet').length === 0) {
+      console.log("Recherche d'articles avec des sélecteurs alternatifs");
+      console.log("Nombre d'éléments article trouvés:", $('article').length);
+      console.log("Nombre d'éléments .article trouvés:", $('.article').length);
+      console.log("Nombre d'éléments .news-item trouvés:", $('.news-item').length);
+      
+      // Récupérer le HTML des premières sections pour analyse
+      console.log("Extrait du HTML pour analyse:", data.substring(0, 1000));
+    }
     
     // Tableau pour stocker les articles
     const articles = [];
