@@ -799,7 +799,8 @@ updateLayoutIcon(layout) {
 
         this.showToast("Application installée !");
         this.deferredPrompt = null;
-    });
+        });
+  }
 }
 
 export default ContentManager;
