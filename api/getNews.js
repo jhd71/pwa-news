@@ -35,7 +35,7 @@ export default async function handler(req, res) {
     const feeds = [
         { name: 'Montceau News', url: 'https://www.lejsl.com/edition-montceau-les-mines/rss', max: 2 },
         { name: 'L\'Informateur', url: 'http://www.linformateurdebourgogne.com/feed/', max: 2 },
-        { name: 'Le JSL', url: 'https://www.lejsl.com/rss', max: 2 },
+        { name: 'Le JSL', url: 'https://www.lejsl.com/edition-montceau-les-mines/rss', max: 2 },
         { name: 'France Bleu', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/infos.xml', max: 2 },
     ];
     
