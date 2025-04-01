@@ -1,6 +1,7 @@
 {
   "name": "actu-media",
   "version": "1.5.0",
+  "type": "module",
   "description": "Application d'actualités locales avec chat intégré",
   "scripts": {
     "dev": "next dev",
