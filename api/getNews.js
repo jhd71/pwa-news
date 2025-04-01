@@ -36,7 +36,7 @@ export default async function handler(req, res) {
         { name: 'Montceau News', url: 'https://www.lejsl.com/edition-montceau-les-mines/rss', max: 2 },
         { name: 'L\'Informateur', url: 'http://www.linformateurdebourgogne.com/feed/', max: 2 },
         { name: 'Le JSL', url: 'https://www.lejsl.com/rss', max: 2 },
-		{ name: 'Creusot-Infos', url: 'https://feedfry.com/rss/11f00e8fa1fecf14ad10aa4b3f6979de', max: 2 },
+		{ name: 'Creusot-Infos', url: 'https://feedfry.com/rss/11f00e90ef387582b4a9892cc717d190', max: 2 },
         { name: 'France Bleu', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/infos.xml', max: 2 },
     ];
     
