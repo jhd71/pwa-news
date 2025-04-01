@@ -1946,60 +1946,107 @@ main {
     overscroll-behavior: contain; /* Empêche le défilement de se propager à l'élément parent */
     -webkit-overflow-scrolling: touch; /* Améliore le défilement sur iOS */
 }
-.install-btn.hidden {
-  display: none;
+
+#splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #1a237e;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease-out;
 }
 
-.install-btn.visible {
+#splash-screen img.splash-logo {
+    /* Changez ces propriétés */
+    width: auto;
+    height: auto;
+    max-width: 80%;
+    max-height: 50%;
+    object-fit: contain;
+    margin-bottom: 20px;
+}
+
+#splash-screen .splash-text {
+    color: white;
+    font-size: 36px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.poll-widget-container {
+  background-color: #f1f1f1; /* Fond clair fixe */
+  color: #1a237e; /* Texte foncé */
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  font-size: 16px;
+}
+
+.poll-widget-container h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.poll-widget-container label {
   display: block;
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  z-index: 999;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.poll-widget-container input[type="radio"] {
+  margin-right: 8px;
+}
+
+.poll-widget-container .vote-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
   background-color: #1a237e;
   color: white;
   border: none;
-  padding: 10px 14px;
   border-radius: 6px;
+  cursor: pointer;
   font-weight: bold;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-#menuInstall {
-  display: none;
+/* Bouton en mode sombre (pour contraste) */
+[data-theme="dark"] .poll-widget-container .vote-btn {
+  background-color: #ffffff;
+  color: #1a237e;
 }
 
-#menuInstall.visible {
-  display: inline-flex;
+.poll-results {
+  margin-top: 12px;
 }
 
-#menuInstall.hidden {
-  display: none !important;
+.result-item {
+  margin-bottom: 12px;
 }
 
-.install-badge {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #4caf50;
-  color: #fff;
-  padding: 12px 24px;
-  border-radius: 30px;
-  font-weight: bold;
-  font-size: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.5s ease, bottom 0.5s ease;
-  z-index: 9999;
+.result-label {
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: var(--poll-text);
 }
 
-.install-badge.show {
-  opacity: 1;
-  bottom: 40px;
+.result-bar {
+  background-color: #ddd;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
-.install-badge.hidden {
-  display: none;
+.result-fill {
+  height: 100%;
+  background-color: #1a237e;
+  transition: width 0.5s ease-in-out;
 }
+
+
