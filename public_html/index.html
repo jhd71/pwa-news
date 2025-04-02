@@ -331,8 +331,8 @@
         }
     }
 
-    // Application Initialization
-    async function initApp() {
+		// Application Initialization
+		async function initApp() {
         try {
             // Enregistrer le Service Worker
             await registerServiceWorker();
@@ -341,11 +341,11 @@
             new PWAInstaller();
             
 			        // Initialiser le Lazy Loading
-        console.log('Chargement de LazyLoader...');
-        const lazyModule = await import('./js/lazyLoading.js');
-        window.lazyLoader = new lazyModule.default();
-        window.lazyLoader.init();
-        console.log('LazyLoader initialisé');
+			console.log('Chargement de LazyLoader...');
+			const lazyModule = await import('./js/lazyLoading.js');
+			window.lazyLoader = new lazyModule.default();
+			window.lazyLoader.init();
+			console.log('LazyLoader initialisé');
 		
             // Initialiser ContentManager
             console.log('Chargement de ContentManager...');
@@ -385,14 +385,6 @@
             
             await window.chatManager.init();
             console.log('Chat Manager initialisé');
-            
-        
-        // Initialiser LazyLoader (si vous l'ajoutez également)
-        console.log('Chargement de LazyLoader...');
-        const lazyModule = await import('./js/lazyLoading.js');
-        window.lazyLoader = new lazyModule.default();
-        window.lazyLoader.init();
-        console.log('LazyLoader initialisé');
         
         // Configurer le bouton du chat
             setupChatButton();
@@ -409,17 +401,17 @@
     } else {
         initApp();
     }
-</script>
-<script src="/js/newsTickerManager.js"></script>
-<script src="js/newsPanel.js"></script>
+	</script>
+	<script src="/js/newsTickerManager.js"></script>
+	<script src="js/newsPanel.js"></script>
 
-<!-- NOUVEAU CODE POUR LE CARROUSEL D'ACTUALITÉS -->
-<script>
-// Modification de la fonction loadTopNews
-async function loadTopNews() {
-  const swiperWrapper = document.getElementById('swiperWrapper');
+	<!-- NOUVEAU CODE POUR LE CARROUSEL D'ACTUALITÉS -->
+	<script>
+	// Modification de la fonction loadTopNews
+	async function loadTopNews() {
+	const swiperWrapper = document.getElementById('swiperWrapper');
   
-  try {
+	try {
     const response = await fetch('/api/getNationalNews.js');
     
     if (!response.ok) {
