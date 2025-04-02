@@ -1072,13 +1072,15 @@ async loadFootballData(panel) {
         } else {
             // Pas de matchs en direct - afficher un contenu plus attractif
             liveSection.innerHTML = `
-                <div class="no-matches-container">
-                    <img src="images/football.svg" alt="Football" class="football-image" style="max-width: 150px; margin-bottom: 20px;">
-                    <h3>Aucun match en direct actuellement</h3>
-                    <p>Consultez les prochains matchs ou les classements en utilisant les onglets ci-dessus.</p>
-                    <p class="next-match-info">Prochain match de Ligue 1: ${this.getNextMatchInfo(upcomingData)}</p>
-                </div>
-            `;
+    <div class="no-matches-container">
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iYmxhY2siLz48cGF0aCBkPSJNNTAgMTVsOC43IDE3LjYgMTkuNSAyLjgtMTQuMSAxMy43IDMuMyAxOS40TDUwIDU5LjQgMzIuNiA2OC41bDMuMy0xOS40TDIxLjggMzUuNGwxOS41LTIuOHoiIGZpbGw9IndoaXRlIi8+PC9zdmc+" 
+             alt="Football" 
+             style="width: 100px; height: 100px;">
+        <h3>Aucun match en direct actuellement</h3>
+        <p>Consultez les prochains matchs ou les classements en utilisant les onglets ci-dessus.</p>
+        <p class="next-match-info">Prochain match de Ligue 1: ${this.getNextMatchInfo(upcomingData)}</p>
+    </div>
+`;
         }
         
         // Charger les matchs à venir
