@@ -268,6 +268,12 @@ const footballSites = [
         url: 'https://www.footmercato.net/live/',
         mobileUrl: 'https://www.footmercato.net/live/',
         isDefault: true
+    },
+	{
+        title: 'Scores en direct',
+        customAction: 'showFootballScores',
+        icon: 'sports_soccer',
+        isDefault: true
     }
 ];
 
@@ -328,18 +334,27 @@ this.tileContainer.appendChild(separator3);
 }
 
     createTile(site) {
-        const tile = document.createElement('div');
-        tile.className = 'tile';
-        tile.innerHTML = `
-            <div class="tile-content">
-                <div class="tile-title">${site.title}</div>
-            </div>
-        `;
+    const tile = document.createElement('div');
+    tile.className = 'tile';
+    
+    // Contenu de base de la tuile
+    tile.innerHTML = `
+        <div class="tile-content">
+            ${site.icon ? `<span class="material-icons">${site.icon}</span>` : ''}
+            <div class="tile-title">${site.title}</div>
+        </div>
+    `;
 
-        // Gestion du clic normal
-        tile.addEventListener('click', () => {
+    // Gestion du clic normal
+    tile.addEventListener('click', () => {
+        if (site.customAction) {
+            if (site.customAction === 'showFootballScores') {
+                this.showFootballScores();
+            }
+        } else {
             window.open(site.mobileUrl || site.url, '_blank');
-        });
+        }
+    });
 
         // Menu contextuel (clic droit)
         tile.addEventListener('contextmenu', (e) => {
@@ -784,6 +799,419 @@ updateLayoutIcon(layout) {
         this.showToast('Erreur lors de l\'ajout du site');
     }
  }
+ 
+ async showFootballScores() {
+    // Supprimer tout panneau existant pour éviter les doublons
+    const existingPanel = document.querySelector('.football-scores-panel');
+    if (existingPanel) {
+        existingPanel.remove();
+    }
+    
+    // Créer le panneau
+    const panel = document.createElement('div');
+    panel.className = 'football-scores-panel';
+    panel.innerHTML = `
+        <div class="panel-header">
+            <h3>Résultats Football</h3>
+            <button class="close-panel">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="panel-tabs">
+            <button class="tab-btn active" data-tab="live">En direct</button>
+            <button class="tab-btn" data-tab="upcoming">À venir</button>
+            <button class="tab-btn" data-tab="standings">Classements</button>
+        </div>
+        <div class="panel-content">
+            <div class="tab-section active" id="live-section">
+                <div class="loading">Chargement des matchs en direct...</div>
+            </div>
+            <div class="tab-section" id="upcoming-section">
+                <div class="loading">Chargement des prochains matchs...</div>
+            </div>
+            <div class="tab-section" id="standings-section">
+                <div class="loading">Chargement des classements...</div>
+            </div>
+        </div>
+        <!-- Bouton de retour fixe en bas du panneau -->
+        <button class="back-to-home-btn">
+            <span class="material-icons">home</span>
+            Retour à l'accueil
+        </button>
+    `;
+
+    // Styles pour le panneau
+    panel.style.position = 'fixed';
+    panel.style.top = '0';
+    panel.style.left = '0';
+    panel.style.width = '100%';
+    panel.style.height = '100%';
+    panel.style.backgroundColor = 'var(--bg-color, white)';
+    panel.style.zIndex = '1000';
+    panel.style.display = 'flex';
+    panel.style.flexDirection = 'column';
+    panel.style.overflow = 'hidden';
+
+    // Style pour le bouton de retour
+    const backBtn = panel.querySelector('.back-to-home-btn');
+    if (backBtn) {
+        backBtn.style.position = 'fixed';
+        backBtn.style.bottom = '20px';
+        backBtn.style.left = '50%';
+        backBtn.style.transform = 'translateX(-50%)';
+        backBtn.style.padding = '10px 20px';
+        backBtn.style.backgroundColor = 'var(--primary-color, #1a237e)';
+        backBtn.style.color = 'white';
+        backBtn.style.border = 'none';
+        backBtn.style.borderRadius = '20px';
+        backBtn.style.display = 'flex';
+        backBtn.style.alignItems = 'center';
+        backBtn.style.gap = '5px';
+        backBtn.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+        backBtn.style.zIndex = '1001';
+    }
+
+    // Styles pour l'en-tête
+    const header = panel.querySelector('.panel-header');
+    if (header) {
+        header.style.display = 'flex';
+        header.style.justifyContent = 'space-between';
+        header.style.alignItems = 'center';
+        header.style.padding = '10px 15px';
+        header.style.backgroundColor = 'var(--primary-color, #1a237e)';
+        header.style.color = 'white';
+        header.style.position = 'sticky';
+        header.style.top = '0';
+        header.style.zIndex = '1002';
+    }
+
+    // Styles pour le bouton de fermeture
+    const closeBtn = panel.querySelector('.close-panel');
+    if (closeBtn) {
+        closeBtn.style.background = 'none';
+        closeBtn.style.border = 'none';
+        closeBtn.style.color = 'white';
+        closeBtn.style.fontSize = '24px';
+        closeBtn.style.cursor = 'pointer';
+        closeBtn.style.padding = '5px';
+    }
+    
+    // Styles pour les onglets
+    const tabs = panel.querySelector('.panel-tabs');
+    if (tabs) {
+        tabs.style.display = 'flex';
+        tabs.style.background = 'var(--bg-color-light, #f0f0f0)';
+        tabs.style.borderBottom = '1px solid var(--border-color, #ddd)';
+    }
+    
+    const tabButtons = panel.querySelectorAll('.tab-btn');
+    tabButtons.forEach(btn => {
+        btn.style.flex = '1';
+        btn.style.padding = '12px';
+        btn.style.border = 'none';
+        btn.style.background = 'none';
+        btn.style.cursor = 'pointer';
+        btn.style.textAlign = 'center';
+        btn.style.fontWeight = 'bold';
+    });
+    
+    // Styles pour le contenu
+    const content = panel.querySelector('.panel-content');
+    if (content) {
+        content.style.flex = '1';
+        content.style.overflow = 'auto';
+        content.style.padding = '15px';
+    }
+    
+    const tabSections = panel.querySelectorAll('.tab-section');
+    tabSections.forEach(section => {
+        if (!section.classList.contains('active')) {
+            section.style.display = 'none';
+        }
+    });
+
+    // Ajouter au document
+    document.body.appendChild(panel);
+    
+    // IMPORTANT: S'assurer que les éléments d'interface restent accessibles
+    const appHeader = document.querySelector('.app-header');
+    if (appHeader) {
+        appHeader.style.zIndex = '1003'; // Plus haut que le panneau
+    }
+    
+    // Multiple gestionnaires pour la fermeture
+    const closePanelAndCleanup = () => {
+        panel.remove();
+        // Restaurer tout style modifié
+        if (appHeader) {
+            appHeader.style.zIndex = '';
+        }
+        this.showToast('Football scores fermé');
+    };
+    
+    // Configurer les boutons
+    const closeButtons = [
+        panel.querySelector('.close-panel'),
+        panel.querySelector('.back-to-home-btn')
+    ];
+    
+    closeButtons.forEach(btn => {
+        if (btn) {
+            btn.addEventListener('click', closePanelAndCleanup);
+        }
+    });
+    
+    // Permettre de fermer avec la touche Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closePanelAndCleanup();
+        }
+    }, { once: true });
+    
+    // Gestion des onglets
+    const tabBtns = panel.querySelectorAll('.tab-btn');
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tabBtns.forEach(b => b.classList.remove('active'));
+            panel.querySelectorAll('.tab-section').forEach(s => {
+                s.style.display = 'none';
+            });
+            
+            btn.classList.add('active');
+            const tabId = btn.dataset.tab + '-section';
+            const section = panel.querySelector(`#${tabId}`);
+            section.style.display = 'block';
+        });
+    });
+    
+    // Charger les données
+    this.loadFootballData(panel);
 }
 
-export default ContentManager;
+async loadFootballData(panel) {
+    try {
+        // Importer dynamiquement l'API de football
+        const { default: FootballAPI } = await import('./football-api.js');
+        const api = new FootballAPI();
+        
+        // Charger les matchs en direct
+        const liveSection = panel.querySelector('#live-section');
+        liveSection.innerHTML = '<div class="loading">Chargement des matchs en direct...</div>';
+        
+        const liveData = await api.getLiveMatches();
+        
+        if (liveData.matches && liveData.matches.length > 0) {
+            liveSection.innerHTML = `
+                <h4>Matchs en direct</h4>
+                <div class="matches-grid">
+                    ${liveData.matches.map(match => `
+                        <div class="match-card">
+                            <div class="match-competition">${match.competition?.name || 'Match'}</div>
+                            <div class="match-teams">
+                                <div class="team home-team">${match.homeTeam.name}</div>
+                                <div class="score">${match.score.fullTime.home ?? 0} - ${match.score.fullTime.away ?? 0}</div>
+                                <div class="team away-team">${match.awayTeam.name}</div>
+                            </div>
+                            <div class="match-status">${match.minute ? match.minute + "'" : 'En cours'}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        } else {
+            liveSection.innerHTML = '<p class="no-data">Aucun match en direct actuellement</p>';
+        }
+        
+        // Charger les matchs à venir
+        const upcomingSection = panel.querySelector('#upcoming-section');
+        upcomingSection.innerHTML = '<div class="loading">Chargement des prochains matchs...</div>';
+        
+        const upcomingData = await api.getUpcomingMatches();
+        
+        if (upcomingData.matches && upcomingData.matches.length > 0) {
+            upcomingSection.innerHTML = `
+                <h4>Prochains matchs</h4>
+                <div class="matches-grid">
+                    ${upcomingData.matches.map(match => {
+                        const matchDate = new Date(match.utcDate);
+                        const formattedDate = matchDate.toLocaleDateString('fr-FR');
+                        const formattedTime = matchDate.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
+                        
+                        return `
+                            <div class="match-card upcoming">
+                                <div class="match-competition">${match.competition?.name || 'Match'}</div>
+                                <div class="match-teams">
+                                    <div class="team home-team">${match.homeTeam.name}</div>
+                                    <div class="vs">VS</div>
+                                    <div class="team away-team">${match.awayTeam.name}</div>
+                                </div>
+                                <div class="match-date">${formattedDate} - ${formattedTime}</div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        } else {
+            upcomingSection.innerHTML = '<p class="no-data">Aucun match à venir disponible</p>';
+        }
+        
+        // Charger les classements
+        const standingsSection = panel.querySelector('#standings-section');
+        standingsSection.innerHTML = '<div class="loading">Chargement des classements...</div>';
+        
+        const standingsData = await api.getLeagueStandings();
+        
+        if (standingsData.standings && standingsData.standings.length > 0) {
+            const mainStanding = standingsData.standings[0]; // Prendre le premier classement
+            
+            standingsSection.innerHTML = `
+                <h4>${standingsData.competition?.name || 'Classement'}</h4>
+                <div class="standings-table-container">
+                    <table class="standings-table">
+                        <thead>
+                            <tr>
+                                <th>Pos</th>
+                                <th class="team-column">Équipe</th>
+                                <th>J</th>
+                                <th>G</th>
+                                <th>N</th>
+                                <th>P</th>
+                                <th>BP</th>
+                                <th>BC</th>
+                                <th>Diff</th>
+                                <th>Pts</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${mainStanding.table.map(entry => `
+                                <tr>
+                                    <td>${entry.position}</td>
+                                    <td class="team-column">${entry.team.name}</td>
+                                    <td>${entry.playedGames}</td>
+                                    <td>${entry.won}</td>
+                                    <td>${entry.draw}</td>
+                                    <td>${entry.lost}</td>
+                                    <td>${entry.goalsFor}</td>
+                                    <td>${entry.goalsAgainst}</td>
+                                    <td>${entry.goalDifference}</td>
+                                    <td><strong>${entry.points}</strong></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        } else {
+            standingsSection.innerHTML = '<p class="no-data">Aucun classement disponible</p>';
+        }
+        
+        // Ajouter quelques styles pour les cartes de matchs et le tableau
+        const style = document.createElement('style');
+        style.textContent = `
+            .matches-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 15px;
+                margin-top: 15px;
+            }
+            
+            .match-card {
+                background-color: var(--card-bg, #f9f9f9);
+                border-radius: 8px;
+                padding: 15px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            
+            .match-competition {
+                font-size: 14px;
+                color: var(--text-secondary, #666);
+                margin-bottom: 8px;
+            }
+            
+            .match-teams {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+            
+            .team {
+                font-weight: bold;
+                flex: 1;
+            }
+            
+            .home-team {
+                text-align: left;
+            }
+            
+            .away-team {
+                text-align: right;
+            }
+            
+            .score, .vs {
+                font-weight: bold;
+                padding: 0 10px;
+                color: var(--primary-color, #1a237e);
+            }
+            
+            .match-status, .match-date {
+                font-size: 12px;
+                color: var(--text-secondary, #666);
+                text-align: center;
+            }
+            
+            .standings-table-container {
+                overflow-x: auto;
+                margin-top: 15px;
+            }
+            
+            .standings-table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            
+            .standings-table th, .standings-table td {
+                padding: 8px;
+                text-align: center;
+                border-bottom: 1px solid var(--border-color, #ddd);
+            }
+            
+            .standings-table th {
+                background-color: var(--bg-color-light, #f5f5f5);
+                font-weight: bold;
+                position: sticky;
+                top: 0;
+            }
+            
+            .team-column {
+                text-align: left;
+                min-width: 150px;
+            }
+            
+            .no-data {
+                text-align: center;
+                padding: 20px;
+                color: var(--text-secondary, #666);
+            }
+            
+            .loading {
+                text-align: center;
+                padding: 20px;
+                color: var(--text-secondary, #666);
+            }
+            
+            .panel-tabs .tab-btn.active {
+                border-bottom: 3px solid var(--primary-color, #1a237e);
+                color: var(--primary-color, #1a237e);
+            }
+        `;
+        document.head.appendChild(style);
+        
+    } catch (error) {
+        console.error('Erreur chargement données football:', error);
+        const sections = panel.querySelectorAll('.loading');
+        sections.forEach(el => {
+            el.innerHTML = 'Erreur lors du chargement des données';
+        });
+    }
+}
+	export default ContentManager;
