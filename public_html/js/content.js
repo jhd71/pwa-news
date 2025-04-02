@@ -1001,25 +1001,51 @@ async loadFootballData(panel) {
         const liveData = await api.getLiveMatches();
         
         if (liveData.matches && liveData.matches.length > 0) {
-            liveSection.innerHTML = `
-                <h4>Matchs en direct</h4>
-                <div class="matches-grid">
-                    ${liveData.matches.map(match => `
-                        <div class="match-card">
-                            <div class="match-competition">${match.competition?.name || 'Match'}</div>
-                            <div class="match-teams">
-                                <div class="team home-team">${match.homeTeam.name}</div>
-                                <div class="score">${match.score.fullTime.home ?? 0} - ${match.score.fullTime.away ?? 0}</div>
-                                <div class="team away-team">${match.awayTeam.name}</div>
-                            </div>
-                            <div class="match-status">${match.minute ? match.minute + "'" : 'En cours'}</div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        } else {
-            liveSection.innerHTML = '<p class="no-data">Aucun match en direct actuellement</p>';
-        }
+  // Vérifier si des matchs sont de Ligue 1 ou 2
+  const frenchMatches = liveData.matches.filter(match => 
+    match.competition?.name?.includes('Ligue 1') || 
+    match.competition?.name?.includes('Ligue 2')
+  );
+  
+  if (frenchMatches.length > 0) {
+    // Afficher les matchs français en premier
+    liveSection.innerHTML = `
+      <h4>Matchs de Ligue 1 & Ligue 2 en direct</h4>
+      <div class="matches-grid">
+        ${frenchMatches.map(match => `
+          <div class="match-card">
+            <!-- contenu du match -->
+          </div>
+        `).join('')}
+      </div>
+      
+      <h4 style="margin-top: 20px;">Autres matchs en direct</h4>
+      <div class="matches-grid">
+        ${liveData.matches.filter(m => !frenchMatches.includes(m)).map(match => `
+          <div class="match-card">
+            <!-- contenu du match -->
+          </div>
+        `).join('')}
+      </div>
+    `;
+  } else {
+    // Aucun match français, mais d'autres matchs en direct
+    liveSection.innerHTML = `
+      <p class="no-data">Aucun match de Ligue 1 ou Ligue 2 en direct actuellement</p>
+      
+      <h4 style="margin-top: 20px;">Autres matchs en direct</h4>
+      <div class="matches-grid">
+        ${liveData.matches.map(match => `
+          <div class="match-card">
+            <!-- contenu du match -->
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+} else {
+  liveSection.innerHTML = '<p class="no-data">Aucun match en direct actuellement</p>';
+}
         
         // Charger les matchs à venir
         const upcomingSection = panel.querySelector('#upcoming-section');

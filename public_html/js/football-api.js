@@ -5,20 +5,29 @@ class FootballAPI {
   }
 
   async getLiveMatches() {
-    try {
-      const response = await fetch(`${this.baseUrl}?endpoint=matches?status=LIVE`);
-      
-      if (!response.ok) {
-        throw new Error(`Erreur HTTP: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('Erreur lors de la récupération des matchs en direct:', error);
-      return { matches: [] };
+  try {
+    const response = await fetch(`${this.baseUrl}?endpoint=matches?status=LIVE`);
+    
+    if (!response.ok) {
+      throw new Error(`Erreur HTTP: ${response.status}`);
     }
+    
+    const data = await response.json();
+    
+    // Ajouter des informations sur la compétition française
+    if (data.matches && data.matches.length === 0) {
+      return {
+        matches: [],
+        noFrenchMatches: true
+      };
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des matchs en direct:', error);
+    return { matches: [] };
   }
+}
 
   async getUpcomingMatches(limit = 10) {
     try {
