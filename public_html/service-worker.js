@@ -1,11 +1,9 @@
-const CACHE_NAME = 'infos-pwa-v5'; // Incrémentez la version
+const CACHE_NAME = 'infos-pwa-v6'; // Incrémentez la version
 
 const STATIC_RESOURCES = [
     '/',
     '/css/styles.css',
     '/css/chat-styles.css',
-	'/css/news-panel.css',
-	'/css/lazy-loading.css',
     '/js/app.js',
     '/js/chatManager.js',
     '/js/content.js',
