@@ -1,5 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v4'; // Incrémentez la version
-// Suppression de const OFFLINE_URL = '/offline.html';
+const CACHE_NAME = 'infos-pwa-v5'; // Incrémentez la version
 
 const STATIC_RESOURCES = [
     '/',
@@ -8,6 +7,7 @@ const STATIC_RESOURCES = [
     '/js/app.js',
     '/js/chatManager.js',
     '/js/content.js',
+	'/js/lazyLoading.js',
     '/manifest.json',
     '/images/INFOS-96.png',
     '/images/INFOS-192.png',
@@ -19,7 +19,6 @@ const STATIC_RESOURCES = [
     '/sounds/click.mp3',
     '/sounds/erreur.mp3',
     '/sounds/success.mp3'
-    // OFFLINE_URL supprimé ici
 ];
 
 // Contenu HTML de la page hors ligne (nouvelle variable)
