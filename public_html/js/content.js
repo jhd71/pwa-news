@@ -1214,4 +1214,5 @@ async loadFootballData(panel) {
         });
     }
 }
-	export default ContentManager;
+}
+export default ContentManager;
