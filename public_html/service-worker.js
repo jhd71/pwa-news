@@ -20,7 +20,7 @@ const STATIC_RESOURCES = [
     '/sounds/notification.mp3',
     '/sounds/click.mp3',
     '/sounds/erreur.mp3',
-    '/sounds/success.mp3'
+    '/sounds/success.mp3',
 	'/sounds/sent.mp3'
 ];
 
