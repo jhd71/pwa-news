@@ -20,7 +20,7 @@ class ContentManager {
             console.error('Container de tuiles non trouvé');
             return;
         }
-document.documentElement.setAttribute('data-font-size', this.fontSize);
+	document.documentElement.setAttribute('data-font-size', this.fontSize);
         this.setupEventListeners();
         this.setupLayout();
         this.setupTheme();
@@ -138,11 +138,11 @@ document.documentElement.setAttribute('data-font-size', this.fontSize);
     if (!this.tileContainer) return;
 
     this.tileContainer.innerHTML = '';
-// Séparateur Actualités
-const separator0 = document.createElement('div');
-separator0.className = 'separator';
-separator0.innerHTML = `<img src="images/ActualitesLocales.png" alt="Actualités Locales" class="separator-img">`;
-this.tileContainer.appendChild(separator0);
+	// Séparateur Actualités
+	const separator0 = document.createElement('div');
+	separator0.className = 'separator';
+	separator0.innerHTML = `<img src="images/ActualitesLocales.png" alt="Actualités Locales" class="separator-img" loading="lazy">`;
+	this.tileContainer.appendChild(separator0);
     // Actualités locales
     const newsDefaultSites = [
         {
@@ -178,10 +178,10 @@ this.tileContainer.appendChild(separator0);
     });
 
     // Séparateur Radio
-const separator1 = document.createElement('div');
-separator1.className = 'separator';
-separator1.innerHTML = `<img src="images/Radio.png" alt="Radio" class="separator-img">`;
-this.tileContainer.appendChild(separator1);
+	const separator1 = document.createElement('div');
+	separator1.className = 'separator';
+	separator1.innerHTML = `<img src="images/Radio.png" alt="Radio" class="separator-img" loading="lazy">`;
+	this.tileContainer.appendChild(separator1);
 
     // Section Radio
     const radioSites = [
@@ -205,10 +205,10 @@ this.tileContainer.appendChild(separator1);
     });
 
     // Séparateur TV
-const separator2 = document.createElement('div');
-separator2.className = 'separator';
-separator2.innerHTML = `<img src="images/TVenDirect.png" alt="TV en Direct" class="separator-img">`;
-this.tileContainer.appendChild(separator2);
+	const separator2 = document.createElement('div');
+	separator2.className = 'separator';
+	separator2.innerHTML = `<img src="images/TVenDirect.png" alt="TV en Direct" class="separator-img" loading="lazy">`;
+	this.tileContainer.appendChild(separator2);
 
     // Section TV
     const tvSites = [
@@ -237,14 +237,14 @@ this.tileContainer.appendChild(separator2);
         this.tileContainer.appendChild(tile);
     });
 
-// Séparateur Football
-const footballSeparator = document.createElement('div');
-footballSeparator.className = 'separator';
-footballSeparator.innerHTML = `<img src="images/Football.png" alt="Football" class="separator-img">`;
-this.tileContainer.appendChild(footballSeparator);
+	// Séparateur Football
+	const footballSeparator = document.createElement('div');
+	footballSeparator.className = 'separator';
+	footballSeparator.innerHTML = `<img src="images/Football.png" alt="Football" class="separator-img" loading="lazy">`;
+	this.tileContainer.appendChild(footballSeparator);
 
-// Section Football
-const footballSites = [
+	// Section Football
+	const footballSites = [
     {
         title: 'Ligue 1',
         url: 'https://www.ligue1.fr',
@@ -269,18 +269,18 @@ const footballSites = [
         mobileUrl: 'https://www.footmercato.net/live/',
         isDefault: true
     }
-];
+	];
 
-footballSites.forEach(site => {
+	footballSites.forEach(site => {
     const tile = this.createTile(site);
     this.tileContainer.appendChild(tile);
-});
+	});
 
     // Séparateur Réseaux Sociaux
-const separator3 = document.createElement('div');
-separator3.className = 'separator';
-separator3.innerHTML = `<img src="images/ReseauxSociaux.png" alt="Réseaux Sociaux" class="separator-img">`;
-this.tileContainer.appendChild(separator3);
+	const separator3 = document.createElement('div');
+	separator3.className = 'separator';
+	separator3.innerHTML = `<img src="images/ReseauxSociaux.png" alt="Réseaux Sociaux" class="separator-img" loading="lazy">`;
+	this.tileContainer.appendChild(separator3);
 
     // Section Réseaux Sociaux
     const socialSites = [
@@ -308,7 +308,7 @@ this.tileContainer.appendChild(separator3);
         // Créer le séparateur même s'il n'y a pas de sites
         const separator = document.createElement('div');
         separator.className = 'separator';
-        separator.innerHTML = `<img src="images/Sites-Personnalise.png" alt="Sites personnalisés">`;
+        separator.innerHTML = `<img src="images/Sites-Personnalise.png" alt="Sites personnalisés" loading="lazy">`;
         this.tileContainer.appendChild(separator);
 
         const saved = localStorage.getItem('customSites');
@@ -325,21 +325,7 @@ this.tileContainer.appendChild(separator3);
         console.error('Erreur chargement sites personnalisés:', error);
         this.showToast('Erreur lors du chargement des sites personnalisés');
     }
-}
-
-    createTile(site) {
-        const tile = document.createElement('div');
-        tile.className = 'tile';
-        tile.innerHTML = `
-            <div class="tile-content">
-                <div class="tile-title">${site.title}</div>
-            </div>
-        `;
-
-        // Gestion du clic normal
-        tile.addEventListener('click', () => {
-            window.open(site.mobileUrl || site.url, '_blank');
-        });
+	}
 
         // Menu contextuel (clic droit)
         tile.addEventListener('contextmenu', (e) => {
@@ -348,16 +334,16 @@ this.tileContainer.appendChild(separator3);
         });
 
         // Gestion de l'appui long sur mobile avec prévention du scroll
-let longPressTimer;
-let isLongPress = false;
-let lastScrollTime = 0;
+	let longPressTimer;
+	let isLongPress = false;
+	let lastScrollTime = 0;
 
-// Détection du scroll (mémorise le moment du dernier scroll)
-window.addEventListener('scroll', () => {
+	// Détection du scroll (mémorise le moment du dernier scroll)
+	window.addEventListener('scroll', () => {
     lastScrollTime = Date.now(); // Enregistre le moment du scroll
-});
+	});
 
-tile.addEventListener('touchstart', (e) => {
+	tile.addEventListener('touchstart', (e) => {
     isLongPress = false;
 
     // Vérifie si le scroll a eu lieu récemment (moins d'1 seconde)
@@ -370,27 +356,27 @@ tile.addEventListener('touchstart', (e) => {
         const touch = e.touches[0];
         this.showTileMenu(tile, site, touch.clientX, touch.clientY);
     }, 800); // ✅ Augmenté à 800ms pour éviter l'apparition trop rapide
-});
+	});
 
-tile.addEventListener('touchmove', () => {
+	tile.addEventListener('touchmove', () => {
     clearTimeout(longPressTimer); // ✅ Annule l’appui long si le doigt bouge (scroll détecté)
-});
+	});
 
-tile.addEventListener('touchend', (e) => {
+	tile.addEventListener('touchend', (e) => {
     clearTimeout(longPressTimer);
     if (isLongPress) {
         e.preventDefault();
     }
-});
+	});
 
-tile.addEventListener('touchmove', () => {
+	tile.addEventListener('touchmove', () => {
     clearTimeout(longPressTimer);
     isScrolling = true; // Empêche le menu si l'utilisateur bouge le doigt
-});
+	});
 
-// Retourne l'élément modifié
-return tile;
-    }
+	// Retourne l'élément modifié
+	return tile;
+	}
 
     showTileMenu(tile, site, x, y) {
         const existingMenu = document.querySelector('.tile-menu');

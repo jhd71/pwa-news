@@ -74,6 +74,7 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/chat-styles.css">
     <link rel="stylesheet" href="css/news-panel.css">
+	<link rel="stylesheet" href="css/lazy-loading.css">
     
     <!-- Notifications -->
     <script src="https://ekjgfiyhkythqcnmhzea.supabase.co"></script>
@@ -147,7 +148,7 @@
         <span class="material-icons">email</span>
         Contact
     </a>
-</div>
+	</div>
     <div class="menu-item">
         <button id="menuInstall" class="menu-link">
             <span class="material-icons">download</span>
@@ -160,23 +161,23 @@
             <span>2025 Actu & Média</span>
         </div>
     </div>
-</aside>
+	</aside>
 
-<!-- Conteneur principal des tuiles -->
-<main>
+	<!-- Conteneur principal des tuiles -->
+	<main>
     <div id="tileContainer" class="tile-container grid"></div>
-</main>
+	</main>
 
-<!-- Ticker d'actualités -->
-<div class="news-ticker">
+	<!-- Ticker d'actualités -->
+	<div class="news-ticker">
   <div class="ticker-wrapper" id="newsTicker">
     <div class="ticker-item">Chargement des actualités...</div>
   </div>
-</div>
+	</div>
 
-<!-- Barre de navigation du bas -->
-<nav class="bottom-nav">
-    <button class="nav-item" id="darkModeToggle">
+	<!-- Barre de navigation du bas -->
+	<nav class="bottom-nav">
+	<button class="nav-item" id="darkModeToggle">
         <span class="material-icons">dark_mode</span>
         <span>Sombre</span>
     </button>
@@ -195,14 +196,14 @@
     <button class="nav-item" id="donateBtn">
     <span class="material-icons">volunteer_activism</span>
     <span>Soutenir</span>
-</button>
+	</button>
     <!-- Bouton de chat intégré dans la barre -->
     <button class="nav-item chat-toggle-btn" id="chatToggleBtn">
         <span class="material-icons">chat</span>
         <span>Chat</span>
         <span class="chat-notification-badge hidden">0</span>
     </button>
-</nav>
+	</nav>
 
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -378,7 +379,15 @@
             await window.chatManager.init();
             console.log('Chat Manager initialisé');
             
-            // Configurer le bouton du chat
+        
+        // Initialiser LazyLoader (si vous l'ajoutez également)
+        console.log('Chargement de LazyLoader...');
+        const lazyModule = await import('./js/lazyLoading.js');
+        window.lazyLoader = new lazyModule.default();
+        window.lazyLoader.init();
+        console.log('LazyLoader initialisé');
+        
+        // Configurer le bouton du chat
             setupChatButton();
             
         } catch (error) {
@@ -399,6 +408,7 @@
 
 <!-- NOUVEAU CODE POUR LE CARROUSEL D'ACTUALITÉS -->
 <script>
+// Modification de la fonction loadTopNews
 async function loadTopNews() {
   const swiperWrapper = document.getElementById('swiperWrapper');
   
@@ -428,9 +438,14 @@ async function loadTopNews() {
         // Structure HTML simplifiée et robuste
         let slideHTML = `<a href="${article.link}" target="_blank">`;
         
-        // Ajouter l'image si disponible
+        // Ajouter l'image si disponible, avec lazy loading
         if (article.image && article.image !== "images/default-news.jpg") {
-          slideHTML += `<img src="${article.image}" alt="${article.title}">`;
+          // Utiliser data-src pour le lazy loading
+          slideHTML += `<img 
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" 
+            data-src="${article.image}" 
+            alt="${article.title}"
+            loading="lazy">`;
         }
         
         // Overlay avec titre et source
@@ -469,12 +484,25 @@ async function loadTopNews() {
       slidesPerView: 1,
       spaceBetween: 0, // Pas d'espace entre les slides
       grabCursor: true, // Indique que le contenu est navigable
+      lazy: {
+        loadPrevNext: true, // Charger aussi les slides adjacentes
+        loadOnTransitionStart: true
+      },
       on: {
         init: function() {
           console.log('Swiper initialisé avec succès');
+        },
+        lazyImageReady: function(slideEl, imageEl) {
+          // Callback quand une image lazy est chargée
+          console.log('Image chargée');
         }
       }
     });
+    
+    // Rafraîchir le lazyLoader pour les nouvelles images
+    if (window.lazyLoader) {
+      setTimeout(() => window.lazyLoader.init(), 100);
+    }
     
   } catch (error) {
     console.error('Erreur chargement actualités:', error);
