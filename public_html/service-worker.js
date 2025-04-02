@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v6'; // Incrémentez la version
+const CACHE_NAME = 'infos-pwa-v4'; // Incrémentez la version
 
 const STATIC_RESOURCES = [
     '/',

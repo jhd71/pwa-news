@@ -409,9 +409,9 @@
 	<script>
 	// Modification de la fonction loadTopNews
 	async function loadTopNews() {
-	const swiperWrapper = document.getElementById('swiperWrapper');
+  const swiperWrapper = document.getElementById('swiperWrapper');
   
-	try {
+  try {
     const response = await fetch('/api/getNationalNews.js');
     
     if (!response.ok) {
@@ -439,12 +439,13 @@
         
         // Ajouter l'image si disponible, avec lazy loading
         if (article.image && article.image !== "images/default-news.jpg") {
-          // Utiliser data-src pour le lazy loading
+          // Utiliser la classe swiper-lazy pour le lazy loading de Swiper
           slideHTML += `<img 
-            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" 
-            data-src="${article.image}" 
-            alt="${article.title}"
-            loading="lazy">`;
+            src="${article.image}" 
+            alt="${article.title}" 
+            loading="lazy" 
+            class="swiper-lazy">
+          <div class="swiper-lazy-preloader"></div>`;
         }
         
         // Overlay avec titre et source
@@ -481,27 +482,19 @@
         prevEl: '.swiper-button-prev'
       },
       slidesPerView: 1,
-      spaceBetween: 0, // Pas d'espace entre les slides
-      grabCursor: true, // Indique que le contenu est navigable
+      spaceBetween: 0,
+      grabCursor: true,
+      // Configurer le lazy loading natif de Swiper
       lazy: {
-        loadPrevNext: true, // Charger aussi les slides adjacentes
-        loadOnTransitionStart: true
+        loadPrevNext: true,
+        loadPrevNextAmount: 2
       },
       on: {
         init: function() {
           console.log('Swiper initialisé avec succès');
-        },
-        lazyImageReady: function(slideEl, imageEl) {
-          // Callback quand une image lazy est chargée
-          console.log('Image chargée');
         }
       }
     });
-    
-    // Rafraîchir le lazyLoader pour les nouvelles images
-    if (window.lazyLoader) {
-      setTimeout(() => window.lazyLoader.init(), 100);
-    }
     
   } catch (error) {
     console.error('Erreur chargement actualités:', error);
