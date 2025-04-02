@@ -308,7 +308,7 @@ class ContentManager {
         // Créer le séparateur même s'il n'y a pas de sites
         const separator = document.createElement('div');
         separator.className = 'separator';
-        separator.innerHTML = `<img src="images/Sites-Personnalise.png" alt="Sites personnalisés" loading="lazy">`;
+        separator.innerHTML = `<img src="images/Sites-Personnalise.png" alt="Sites personnalisés">`;
         this.tileContainer.appendChild(separator);
 
         const saved = localStorage.getItem('customSites');
@@ -325,7 +325,21 @@ class ContentManager {
         console.error('Erreur chargement sites personnalisés:', error);
         this.showToast('Erreur lors du chargement des sites personnalisés');
     }
-	}
+}
+
+    createTile(site) {
+        const tile = document.createElement('div');
+        tile.className = 'tile';
+        tile.innerHTML = `
+            <div class="tile-content">
+                <div class="tile-title">${site.title}</div>
+            </div>
+        `;
+
+        // Gestion du clic normal
+        tile.addEventListener('click', () => {
+            window.open(site.mobileUrl || site.url, '_blank');
+        });
 
         // Menu contextuel (clic droit)
         tile.addEventListener('contextmenu', (e) => {
