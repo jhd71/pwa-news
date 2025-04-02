@@ -340,6 +340,13 @@
             // Initialiser l'installateur PWA
             new PWAInstaller();
             
+			        // Initialiser le Lazy Loading
+        console.log('Chargement de LazyLoader...');
+        const lazyModule = await import('./js/lazyLoading.js');
+        window.lazyLoader = new lazyModule.default();
+        window.lazyLoader.init();
+        console.log('LazyLoader initialisé');
+		
             // Initialiser ContentManager
             console.log('Chargement de ContentManager...');
             const contentModule = await import('./js/content.js');
