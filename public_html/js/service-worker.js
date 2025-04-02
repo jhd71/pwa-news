@@ -1,5 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v5'; // Incrémentez la version
-// Suppression de const OFFLINE_URL = '/offline.html';
+const CACHE_NAME = 'infos-pwa-v4';
 
 const STATIC_RESOURCES = [
     '/',
