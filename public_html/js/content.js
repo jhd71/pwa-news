@@ -994,88 +994,135 @@ async loadFootballData(panel) {
         const { default: FootballAPI } = await import('./football-api.js');
         const api = new FootballAPI();
         
+        // Charger les trois types de données en parallèle pour être plus efficace
+        const [liveData, upcomingData, standingsData] = await Promise.all([
+            api.getLiveMatches(),
+            api.getUpcomingMatches(),
+            api.getLeagueStandings()
+        ]);
+        
         // Charger les matchs en direct
         const liveSection = panel.querySelector('#live-section');
         liveSection.innerHTML = '<div class="loading">Chargement des matchs en direct...</div>';
         
-        const liveData = await api.getLiveMatches();
+        let hasLiveMatches = false;
         
         if (liveData.matches && liveData.matches.length > 0) {
-  // Vérifier si des matchs sont de Ligue 1 ou 2
-  const frenchMatches = liveData.matches.filter(match => 
-    match.competition?.name?.includes('Ligue 1') || 
-    match.competition?.name?.includes('Ligue 2')
-  );
-  
-  if (frenchMatches.length > 0) {
-    // Afficher les matchs français en premier
-    liveSection.innerHTML = `
-      <h4>Matchs de Ligue 1 & Ligue 2 en direct</h4>
-      <div class="matches-grid">
-        ${frenchMatches.map(match => `
-          <div class="match-card">
-            <!-- contenu du match -->
-          </div>
-        `).join('')}
-      </div>
-      
-      <h4 style="margin-top: 20px;">Autres matchs en direct</h4>
-      <div class="matches-grid">
-        ${liveData.matches.filter(m => !frenchMatches.includes(m)).map(match => `
-          <div class="match-card">
-            <!-- contenu du match -->
-          </div>
-        `).join('')}
-      </div>
-    `;
-  } else {
-    // Aucun match français, mais d'autres matchs en direct
-    liveSection.innerHTML = `
-      <p class="no-data">Aucun match de Ligue 1 ou Ligue 2 en direct actuellement</p>
-      
-      <h4 style="margin-top: 20px;">Autres matchs en direct</h4>
-      <div class="matches-grid">
-        ${liveData.matches.map(match => `
-          <div class="match-card">
-            <!-- contenu du match -->
-          </div>
-        `).join('')}
-      </div>
-    `;
-  }
-} else {
-  liveSection.innerHTML = '<p class="no-data">Aucun match en direct actuellement</p>';
-}
+            // Filtrer pour les matchs français
+            const frenchMatches = liveData.matches.filter(match => 
+                match.competition?.name?.includes('Ligue 1') || 
+                match.competition?.name?.includes('Ligue 2')
+            );
+            
+            const otherMatches = liveData.matches.filter(match => 
+                !match.competition?.name?.includes('Ligue 1') && 
+                !match.competition?.name?.includes('Ligue 2')
+            );
+            
+            let liveHTML = '';
+            
+            if (frenchMatches.length > 0) {
+                hasLiveMatches = true;
+                liveHTML += `
+                    <h4>Matchs de Ligue 1 & Ligue 2 en direct</h4>
+                    <div class="matches-grid">
+                        ${frenchMatches.map(match => `
+                            <div class="match-card">
+                                <div class="match-competition">${match.competition?.name || 'Match'}</div>
+                                <div class="match-teams">
+                                    <div class="team home-team">${match.homeTeam.name}</div>
+                                    <div class="score">${match.score.fullTime.home ?? 0} - ${match.score.fullTime.away ?? 0}</div>
+                                    <div class="team away-team">${match.awayTeam.name}</div>
+                                </div>
+                                <div class="match-status">${match.minute ? match.minute + "'" : 'En cours'}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                liveHTML += `
+                    <div class="no-matches-card">
+                        <h4>Aucun match de Ligue 1 ou Ligue 2 en direct actuellement</h4>
+                        <p>Consultez les prochains matchs ou les classements.</p>
+                    </div>
+                `;
+            }
+            
+            if (otherMatches.length > 0) {
+                hasLiveMatches = true;
+                liveHTML += `
+                    <h4 class="section-title">Autres matchs en direct</h4>
+                    <div class="matches-grid">
+                        ${otherMatches.map(match => `
+                            <div class="match-card">
+                                <div class="match-competition">${match.competition?.name || 'Match'}</div>
+                                <div class="match-teams">
+                                    <div class="team home-team">${match.homeTeam.name}</div>
+                                    <div class="score">${match.score.fullTime.home ?? 0} - ${match.score.fullTime.away ?? 0}</div>
+                                    <div class="team away-team">${match.awayTeam.name}</div>
+                                </div>
+                                <div class="match-status">${match.minute ? match.minute + "'" : 'En cours'}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            liveSection.innerHTML = liveHTML;
+        } else {
+            // Pas de matchs en direct - afficher un contenu plus attractif
+            liveSection.innerHTML = `
+                <div class="no-matches-container">
+                    <img src="images/football.svg" alt="Football" class="football-image" style="max-width: 150px; margin-bottom: 20px;">
+                    <h3>Aucun match en direct actuellement</h3>
+                    <p>Consultez les prochains matchs ou les classements en utilisant les onglets ci-dessus.</p>
+                    <p class="next-match-info">Prochain match de Ligue 1: ${this.getNextMatchInfo(upcomingData)}</p>
+                </div>
+            `;
+        }
         
         // Charger les matchs à venir
         const upcomingSection = panel.querySelector('#upcoming-section');
         upcomingSection.innerHTML = '<div class="loading">Chargement des prochains matchs...</div>';
         
-        const upcomingData = await api.getUpcomingMatches();
-        
         if (upcomingData.matches && upcomingData.matches.length > 0) {
-            upcomingSection.innerHTML = `
-                <h4>Prochains matchs</h4>
-                <div class="matches-grid">
-                    ${upcomingData.matches.map(match => {
-                        const matchDate = new Date(match.utcDate);
-                        const formattedDate = matchDate.toLocaleDateString('fr-FR');
-                        const formattedTime = matchDate.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
-                        
-                        return `
-                            <div class="match-card upcoming">
-                                <div class="match-competition">${match.competition?.name || 'Match'}</div>
-                                <div class="match-teams">
-                                    <div class="team home-team">${match.homeTeam.name}</div>
-                                    <div class="vs">VS</div>
-                                    <div class="team away-team">${match.awayTeam.name}</div>
+            // Filtrer pour les matchs français
+            const frenchMatches = upcomingData.matches.filter(match => 
+                match.competition?.name?.includes('Ligue 1') || 
+                match.competition?.name?.includes('Ligue 2')
+            );
+            
+            if (frenchMatches.length > 0) {
+                upcomingSection.innerHTML = `
+                    <h4>Prochains matchs de Ligue 1 & Ligue 2</h4>
+                    <div class="matches-grid">
+                        ${frenchMatches.map(match => {
+                            const matchDate = new Date(match.utcDate);
+                            const formattedDate = matchDate.toLocaleDateString('fr-FR');
+                            const formattedTime = matchDate.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
+                            
+                            return `
+                                <div class="match-card upcoming">
+                                    <div class="match-competition">${match.competition?.name || 'Match'}</div>
+                                    <div class="match-teams">
+                                        <div class="team home-team">${match.homeTeam.name}</div>
+                                        <div class="vs">VS</div>
+                                        <div class="team away-team">${match.awayTeam.name}</div>
+                                    </div>
+                                    <div class="match-date">${formattedDate} - ${formattedTime}</div>
                                 </div>
-                                <div class="match-date">${formattedDate} - ${formattedTime}</div>
-                            </div>
-                        `;
-                    }).join('')}
-                </div>
-            `;
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            } else {
+                upcomingSection.innerHTML = `
+                    <div class="no-matches-card">
+                        <h4>Aucun match de Ligue 1 ou Ligue 2 à venir prochainement</h4>
+                        <p>Vérifiez plus tard pour les mises à jour du calendrier.</p>
+                    </div>
+                `;
+            }
         } else {
             upcomingSection.innerHTML = '<p class="no-data">Aucun match à venir disponible</p>';
         }
@@ -1083,8 +1130,6 @@ async loadFootballData(panel) {
         // Charger les classements
         const standingsSection = panel.querySelector('#standings-section');
         standingsSection.innerHTML = '<div class="loading">Chargement des classements...</div>';
-        
-        const standingsData = await api.getLeagueStandings();
         
         if (standingsData.standings && standingsData.standings.length > 0) {
             const mainStanding = standingsData.standings[0]; // Prendre le premier classement
@@ -1127,110 +1172,61 @@ async loadFootballData(panel) {
                 </div>
             `;
         } else {
-            standingsSection.innerHTML = '<p class="no-data">Aucun classement disponible</p>';
+            standingsSection.innerHTML = `
+                <div class="no-data-card">
+                    <h4>Classement non disponible</h4>
+                    <p>Les données de classement ne sont pas disponibles pour le moment.</p>
+                </div>
+            `;
         }
         
-        // Ajouter quelques styles pour les cartes de matchs et le tableau
+        // Ajouter quelques styles pour les cartes et le tableau
         const style = document.createElement('style');
         style.textContent = `
-            .matches-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-                gap: 15px;
-                margin-top: 15px;
-            }
-            
-            .match-card {
-                background-color: var(--card-bg, #f9f9f9);
-                border-radius: 8px;
-                padding: 15px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            }
-            
-            .match-competition {
-                font-size: 14px;
-                color: var(--text-secondary, #666);
-                margin-bottom: 8px;
-            }
-            
-            .match-teams {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 10px;
-            }
-            
-            .team {
-                font-weight: bold;
-                flex: 1;
-            }
-            
-            .home-team {
-                text-align: left;
-            }
-            
-            .away-team {
-                text-align: right;
-            }
-            
-            .score, .vs {
-                font-weight: bold;
-                padding: 0 10px;
-                color: var(--primary-color, #1a237e);
-            }
-            
-            .match-status, .match-date {
-                font-size: 12px;
-                color: var(--text-secondary, #666);
+            .no-matches-container {
                 text-align: center;
-            }
-            
-            .standings-table-container {
-                overflow-x: auto;
-                margin-top: 15px;
-            }
-            
-            .standings-table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-            
-            .standings-table th, .standings-table td {
-                padding: 8px;
-                text-align: center;
-                border-bottom: 1px solid var(--border-color, #ddd);
-            }
-            
-            .standings-table th {
+                padding: 30px;
                 background-color: var(--bg-color-light, #f5f5f5);
+                border-radius: 10px;
+                margin: 20px 0;
+            }
+            
+            .no-matches-card {
+                background-color: var(--bg-color-light, #f5f5f5);
+                padding: 20px;
+                border-radius: 8px;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            
+            .no-matches-card h4 {
+                margin-top: 0;
+                color: var(--text-primary, #333);
+            }
+            
+            .section-title {
+                margin-top: 30px;
+                margin-bottom: 15px;
+                border-bottom: 1px solid var(--border-color, #ddd);
+                padding-bottom: 8px;
+            }
+            
+            .next-match-info {
+                margin-top: 15px;
                 font-weight: bold;
-                position: sticky;
-                top: 0;
-            }
-            
-            .team-column {
-                text-align: left;
-                min-width: 150px;
-            }
-            
-            .no-data {
-                text-align: center;
-                padding: 20px;
-                color: var(--text-secondary, #666);
-            }
-            
-            .loading {
-                text-align: center;
-                padding: 20px;
-                color: var(--text-secondary, #666);
-            }
-            
-            .panel-tabs .tab-btn.active {
-                border-bottom: 3px solid var(--primary-color, #1a237e);
                 color: var(--primary-color, #1a237e);
             }
         `;
         document.head.appendChild(style);
+        
+        // Si pas de matchs en direct, basculer automatiquement vers l'onglet classements
+        if (!hasLiveMatches) {
+            // Trouver l'onglet des classements et simuler un clic
+            const standingsTab = panel.querySelector('.tab-btn[data-tab="standings"]');
+            if (standingsTab) {
+                standingsTab.click();
+            }
+        }
         
     } catch (error) {
         console.error('Erreur chargement données football:', error);
@@ -1239,6 +1235,28 @@ async loadFootballData(panel) {
             el.innerHTML = 'Erreur lors du chargement des données';
         });
     }
+}
+
+// Méthode d'aide pour obtenir l'info du prochain match
+getNextMatchInfo(upcomingData) {
+    if (upcomingData.matches && upcomingData.matches.length > 0) {
+        // Filtrer pour les matchs français et prendre le premier
+        const frenchMatches = upcomingData.matches.filter(match => 
+            match.competition?.name?.includes('Ligue 1') || 
+            match.competition?.name?.includes('Ligue 2')
+        );
+        
+        if (frenchMatches.length > 0) {
+            const nextMatch = frenchMatches[0];
+            const matchDate = new Date(nextMatch.utcDate);
+            const formattedDate = matchDate.toLocaleDateString('fr-FR');
+            const formattedTime = matchDate.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
+            
+            return `${nextMatch.homeTeam.name} vs ${nextMatch.awayTeam.name} le ${formattedDate} à ${formattedTime}`;
+        }
+    }
+    
+    return "Aucune information disponible";
 }
 }
 export default ContentManager;
