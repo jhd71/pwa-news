@@ -74,7 +74,6 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/chat-styles.css">
     <link rel="stylesheet" href="css/news-panel.css">
-	<link rel="stylesheet" href="css/lazy-loading.css">
     
     <!-- Notifications -->
     <script src="https://ekjgfiyhkythqcnmhzea.supabase.co"></script>
@@ -148,7 +147,7 @@
         <span class="material-icons">email</span>
         Contact
     </a>
-	</div>
+</div>
     <div class="menu-item">
         <button id="menuInstall" class="menu-link">
             <span class="material-icons">download</span>
@@ -161,23 +160,23 @@
             <span>2025 Actu & Média</span>
         </div>
     </div>
-	</aside>
+</aside>
 
-	<!-- Conteneur principal des tuiles -->
-	<main>
+<!-- Conteneur principal des tuiles -->
+<main>
     <div id="tileContainer" class="tile-container grid"></div>
-	</main>
+</main>
 
-	<!-- Ticker d'actualités -->
-	<div class="news-ticker">
+<!-- Ticker d'actualités -->
+<div class="news-ticker">
   <div class="ticker-wrapper" id="newsTicker">
     <div class="ticker-item">Chargement des actualités...</div>
   </div>
-	</div>
+</div>
 
-	<!-- Barre de navigation du bas -->
-	<nav class="bottom-nav">
-	<button class="nav-item" id="darkModeToggle">
+<!-- Barre de navigation du bas -->
+<nav class="bottom-nav">
+    <button class="nav-item" id="darkModeToggle">
         <span class="material-icons">dark_mode</span>
         <span>Sombre</span>
     </button>
@@ -196,14 +195,14 @@
     <button class="nav-item" id="donateBtn">
     <span class="material-icons">volunteer_activism</span>
     <span>Soutenir</span>
-	</button>
+</button>
     <!-- Bouton de chat intégré dans la barre -->
     <button class="nav-item chat-toggle-btn" id="chatToggleBtn">
         <span class="material-icons">chat</span>
         <span>Chat</span>
         <span class="chat-notification-badge hidden">0</span>
     </button>
-	</nav>
+</nav>
 
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -331,8 +330,8 @@
         }
     }
 
-		// Application Initialization
-		async function initApp() {
+    // Application Initialization
+    async function initApp() {
         try {
             // Enregistrer le Service Worker
             await registerServiceWorker();
@@ -340,13 +339,6 @@
             // Initialiser l'installateur PWA
             new PWAInstaller();
             
-			        // Initialiser le Lazy Loading
-			console.log('Chargement de LazyLoader...');
-			const lazyModule = await import('./js/lazyLoading.js');
-			window.lazyLoader = new lazyModule.default();
-			window.lazyLoader.init();
-			console.log('LazyLoader initialisé');
-		
             // Initialiser ContentManager
             console.log('Chargement de ContentManager...');
             const contentModule = await import('./js/content.js');
@@ -385,8 +377,8 @@
             
             await window.chatManager.init();
             console.log('Chat Manager initialisé');
-        
-        // Configurer le bouton du chat
+            
+            // Configurer le bouton du chat
             setupChatButton();
             
         } catch (error) {
@@ -401,14 +393,13 @@
     } else {
         initApp();
     }
-	</script>
-	<script src="/js/newsTickerManager.js"></script>
-	<script src="js/newsPanel.js"></script>
+</script>
+<script src="/js/newsTickerManager.js"></script>
+<script src="js/newsPanel.js"></script>
 
-	<!-- NOUVEAU CODE POUR LE CARROUSEL D'ACTUALITÉS -->
-	<script>
-	// Modification de la fonction loadTopNews
-	async function loadTopNews() {
+<!-- NOUVEAU CODE POUR LE CARROUSEL D'ACTUALITÉS -->
+<script>
+async function loadTopNews() {
   const swiperWrapper = document.getElementById('swiperWrapper');
   
   try {
@@ -434,22 +425,19 @@
         const slide = document.createElement('div');
         slide.className = 'swiper-slide';
         
-        // Structure HTML avec styles inline pour forcer l'affichage de l'image
-        let slideHTML = `<a href="${article.link}" target="_blank" style="display: block; position: relative; height: 100%;">`;
+        // Structure HTML simplifiée et robuste
+        let slideHTML = `<a href="${article.link}" target="_blank">`;
         
-        // Ajouter l'image si disponible avec styles forcés
+        // Ajouter l'image si disponible
         if (article.image && article.image !== "images/default-news.jpg") {
-          slideHTML += `<img 
-            src="${article.image}" 
-            alt="${article.title}" 
-            style="display: block !important; visibility: visible !important; opacity: 1 !important; width: 100%; height: auto; object-fit: cover; max-height: 200px;">`;
+          slideHTML += `<img src="${article.image}" alt="${article.title}">`;
         }
         
         // Overlay avec titre et source
         slideHTML += `
-          <div class="slide-content" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); color: white; padding: 10px;">
-            <div class="slide-title" style="font-weight: bold; margin-bottom: 5px;">${article.title}</div>
-            <div class="slide-source" style="font-size: 0.8em;">${article.source || 'Source'}</div>
+          <div class="slide-content">
+            <div class="slide-title">${article.title}</div>
+            <div class="slide-source">${article.source || 'Source'}</div>
           </div>
         </a>`;
         
@@ -463,7 +451,7 @@
       window.swiper.destroy(true, true);
     }
     
-    // Initialiser le nouveau Swiper avec des paramètres basiques
+    // Initialiser le nouveau Swiper avec des paramètres optimisés
     window.swiper = new Swiper('.swiper', {
       loop: limitedArticles.length > 1,
       autoplay: { 
@@ -479,24 +467,14 @@
         prevEl: '.swiper-button-prev'
       },
       slidesPerView: 1,
-      spaceBetween: 0,
-      grabCursor: true,
-      // Désactiver explicitement le lazy loading de Swiper
-      preloadImages: true,
-      updateOnImagesReady: true,
+      spaceBetween: 0, // Pas d'espace entre les slides
+      grabCursor: true, // Indique que le contenu est navigable
       on: {
         init: function() {
           console.log('Swiper initialisé avec succès');
         }
       }
     });
-    
-    // Force une mise à jour du Swiper après un court délai
-    setTimeout(() => {
-      if (window.swiper) {
-        window.swiper.update();
-      }
-    }, 500);
     
   } catch (error) {
     console.error('Erreur chargement actualités:', error);
