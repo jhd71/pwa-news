@@ -4,6 +4,8 @@ const STATIC_RESOURCES = [
     '/',
     '/css/styles.css',
     '/css/chat-styles.css',
+	'/css/news-panel.css',
+	'/css/lazy-loading.css',
     '/js/app.js',
     '/js/chatManager.js',
     '/js/content.js',
@@ -19,6 +21,7 @@ const STATIC_RESOURCES = [
     '/sounds/click.mp3',
     '/sounds/erreur.mp3',
     '/sounds/success.mp3'
+	'/sounds/sent.mp3'
 ];
 
 // Contenu HTML de la page hors ligne (nouvelle variable)
