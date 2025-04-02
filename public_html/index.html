@@ -434,18 +434,12 @@
         const slide = document.createElement('div');
         slide.className = 'swiper-slide';
         
-        // Structure HTML simplifiée et robuste
+        // Structure HTML simplifiée sans lazy loading
         let slideHTML = `<a href="${article.link}" target="_blank">`;
         
-        // Ajouter l'image si disponible, avec lazy loading
+        // Ajouter l'image directement si disponible
         if (article.image && article.image !== "images/default-news.jpg") {
-          // Utiliser la classe swiper-lazy pour le lazy loading de Swiper
-          slideHTML += `<img 
-            src="${article.image}" 
-            alt="${article.title}" 
-            loading="lazy" 
-            class="swiper-lazy">
-          <div class="swiper-lazy-preloader"></div>`;
+          slideHTML += `<img src="${article.image}" alt="${article.title}">`;
         }
         
         // Overlay avec titre et source
@@ -466,7 +460,7 @@
       window.swiper.destroy(true, true);
     }
     
-    // Initialiser le nouveau Swiper avec des paramètres optimisés
+    // Initialiser le nouveau Swiper avec des paramètres simplifiés
     window.swiper = new Swiper('.swiper', {
       loop: limitedArticles.length > 1,
       autoplay: { 
@@ -484,11 +478,6 @@
       slidesPerView: 1,
       spaceBetween: 0,
       grabCursor: true,
-      // Configurer le lazy loading natif de Swiper
-      lazy: {
-        loadPrevNext: true,
-        loadPrevNextAmount: 2
-      },
       on: {
         init: function() {
           console.log('Swiper initialisé avec succès');
