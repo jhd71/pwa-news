@@ -84,116 +84,178 @@
 	</html>`;
 
 	// Installation
-	self.addEventListener('install', event => {
-	  event.waitUntil(
-		caches.open(CACHE_NAME)
-		  .then(cache => cache.addAll(STATIC_ASSETS))
-	  );
-	});
+self.addEventListener('install', event => {
+    console.log('[ServiceWorker] Installation');
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then(cache => {
+                console.log('[ServiceWorker] Mise en cache globale');
+                // Mise en cache individuellement pour détecter les erreurs spécifiques
+                return Promise.all(
+                    STATIC_RESOURCES.map(url => {
+                        return cache.add(url).catch(error => {
+                            console.error(`[ServiceWorker] Échec de mise en cache: ${url}`, error);
+                            // Continue malgré l'erreur
+                            return Promise.resolve();
+                        });
+                    })
+                );
+            })
+            .then(() => self.skipWaiting())
+            .catch(error => {
+                console.error('[ServiceWorker] Erreur d\'installation:', error);
+                // Continue l'installation même en cas d'erreur
+                return self.skipWaiting();
+            })
+    );
+});
 
-	// Stratégie Cache First pour les ressources statiques
+// Activation
+self.addEventListener('activate', event => {
+    console.log('[ServiceWorker] Activation');
+    event.waitUntil(
+        Promise.all([
+            clients.claim(),
+            caches.keys().then(cacheNames => {
+                return Promise.all(
+                    cacheNames.filter(cacheName => cacheName !== CACHE_NAME)
+                        .map(cacheName => {
+                            console.log('[ServiceWorker] Suppression de l\'ancien cache:', cacheName);
+                            return caches.delete(cacheName);
+                        })
+                );
+            })
+        ])
+    );
+});
+
+// Message handling
+self.addEventListener('message', async (event) => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
+    // Ajout de la gestion de la visibilité
+    if (event.data && event.data.type === 'CHECK_VISIBILITY') {
+        const clientList = await clients.matchAll({
+            type: 'window',
+            includeUncontrolled: true
+        });
+
+        const isVisible = clientList.some(
+            client => client.visibilityState === 'visible'
+        );
+
+        if (event.ports && event.ports[0]) {
+            event.ports[0].postMessage({
+                type: 'VISIBILITY_RESULT',
+                isVisible
+            });
+        }
+    }
+});
+
 	// Stratégie de cache améliorée
-	self.addEventListener('fetch', (event) => {
-		// Ignorer les requêtes non GET
-		if (event.request.method !== 'GET') return;
+self.addEventListener('fetch', (event) => {
+    // Ignorer les requêtes non GET
+    if (event.request.method !== 'GET') return;
 
-		// Ignorer les URLs non HTTP/HTTPS
-		const url = new URL(event.request.url);
-		if (!url.protocol.startsWith('http')) return;
+    // Ignorer les URLs non HTTP/HTTPS
+    const url = new URL(event.request.url);
+    if (!url.protocol.startsWith('http')) return;
 
-		// Ignorer les requêtes vers Supabase
-		if (event.request.url.includes('supabase.co')) return;
+    // Ignorer les requêtes vers Supabase
+    if (event.request.url.includes('supabase.co')) return;
 
-		// AJOUT: Traitement spécial pour les images
-		if (
-			event.request.url.match(/\.(jpg|jpeg|png|gif|webp|svg)$/) ||
-			event.request.url.includes('/images/')
-		) {
-			event.respondWith(
-				caches.match(event.request).then(cachedResponse => {
-					// Si trouvé dans le cache, retourner directement
-					if (cachedResponse) {
-						return cachedResponse;
-					}
+    // AJOUT: Traitement spécial pour les images
+    if (
+        event.request.url.match(/\.(jpg|jpeg|png|gif|webp|svg)$/) ||
+        event.request.url.includes('/images/')
+    ) {
+        event.respondWith(
+            caches.match(event.request).then(cachedResponse => {
+                // Si trouvé dans le cache, retourner directement
+                if (cachedResponse) {
+                    return cachedResponse;
+                }
 
-					// Sinon faire la requête réseau
-					return fetch(event.request).then(networkResponse => {
-						// Ne mettre en cache que les réponses OK
-						if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-							return networkResponse;
-						}
+                // Sinon faire la requête réseau
+                return fetch(event.request).then(networkResponse => {
+                    // Ne mettre en cache que les réponses OK
+                    if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+                        return networkResponse;
+                    }
 
-						// Mettre en cache pour la prochaine fois
-						const responseToCache = networkResponse.clone();
-						caches.open(CACHE_NAME).then(cache => {
-							cache.put(event.request, responseToCache);
-						});
+                    // Mettre en cache pour la prochaine fois
+                    const responseToCache = networkResponse.clone();
+                    caches.open(CACHE_NAME).then(cache => {
+                        cache.put(event.request, responseToCache);
+                    });
 
-						return networkResponse;
-					}).catch(() => {
-						// Si ni réseau ni cache, retourner une image placeholder
-						return new Response(
-							`<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150" viewBox="0 0 200 150">
-								<rect width="100%" height="100%" fill="#f0f0f0"/>
-								<text x="50%" y="50%" font-family="sans-serif" font-size="12" text-anchor="middle" fill="#999">Image non disponible</text>
-							</svg>`,
-							{
-								headers: { 'Content-Type': 'image/svg+xml' }
-							}
-						);
-					});
-				})
-			);
-			return;
-		}
+                    return networkResponse;
+                }).catch(() => {
+                    // Si ni réseau ni cache, retourner une image placeholder
+                    return new Response(
+                        `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150" viewBox="0 0 200 150">
+                            <rect width="100%" height="100%" fill="#f0f0f0"/>
+                            <text x="50%" y="50%" font-family="sans-serif" font-size="12" text-anchor="middle" fill="#999">Image non disponible</text>
+                        </svg>`,
+                        {
+                            headers: { 'Content-Type': 'image/svg+xml' }
+                        }
+                    );
+                });
+            })
+        );
+        return;
+    }
 
-		// Traitement spécial pour les requêtes d'API
-		if (event.request.url.includes('/api/')) {
-			event.respondWith(
-				fetch(event.request)
-					.catch(error => {
-						console.error('[ServiceWorker] Erreur de récupération API:', error);
-						return new Response(JSON.stringify({
-							error: 'Réseau indisponible',
-							offline: true
-						}), {
-							headers: { 'Content-Type': 'application/json' }
-						});
-					})
-			);
-			return;
-		}
+    // Traitement spécial pour les requêtes d'API
+    if (event.request.url.includes('/api/')) {
+        event.respondWith(
+            fetch(event.request)
+                .catch(error => {
+                    console.error('[ServiceWorker] Erreur de récupération API:', error);
+                    return new Response(JSON.stringify({
+                        error: 'Réseau indisponible',
+                        offline: true
+                    }), {
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                })
+        );
+        return;
+    }
 
-		event.respondWith(
-			(async () => {
-				const cache = await caches.open(CACHE_NAME);
-				try {
-					// Essayer d'abord le réseau
-					const networkResponse = await fetch(event.request);
-					// Ne mettre en cache que les réponses réussies et complètes
-					if (networkResponse.ok && networkResponse.status !== 206) {
-						cache.put(event.request, networkResponse.clone());
-					}
-					return networkResponse;
-				} catch (error) {
-					// Si hors ligne, essayer le cache
-					const cachedResponse = await cache.match(event.request);
-					if (cachedResponse) {
-						return cachedResponse;
-					}
+    event.respondWith(
+        (async () => {
+            const cache = await caches.open(CACHE_NAME);
+            try {
+                // Essayer d'abord le réseau
+                const networkResponse = await fetch(event.request);
+                // Ne mettre en cache que les réponses réussies et complètes
+                if (networkResponse.ok && networkResponse.status !== 206) {
+                    cache.put(event.request, networkResponse.clone());
+                }
+                return networkResponse;
+            } catch (error) {
+                // Si hors ligne, essayer le cache
+                const cachedResponse = await cache.match(event.request);
+                if (cachedResponse) {
+                    return cachedResponse;
+                }
 
-					// Si c'est une navigation vers une page, retourner directement la page hors ligne intégrée
-					if (event.request.mode === 'navigate') {
-						return new Response(OFFLINE_HTML, {
-							headers: { 'Content-Type': 'text/html; charset=utf-8' }
-						});
-					}
+                // Si c'est une navigation vers une page, retourner directement la page hors ligne intégrée
+                if (event.request.mode === 'navigate') {
+                    return new Response(OFFLINE_HTML, {
+                        headers: { 'Content-Type': 'text/html; charset=utf-8' }
+                    });
+                }
 
-					throw error;
-				}
-			})()
-		);
-	});
+                throw error;
+            }
+        })()
+    );
+});
 
 	// Activation
 	self.addEventListener('activate', event => {
