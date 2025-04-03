@@ -1305,7 +1305,7 @@ if (standingsData.standings && standingsData.standings.length > 0) {
         }
     }, 0);
 }
-
+}
 // Méthode d'aide pour obtenir l'info du prochain match
 getNextMatchInfo(upcomingData) {
     if (upcomingData.matches && upcomingData.matches.length > 0) {
