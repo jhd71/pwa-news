@@ -51,41 +51,35 @@ class FootballAPI {
   }
 }
 
-  async getLeagueStandings(leagueId = 2015) { // 2015 est l'ID pour la Ligue 1
+  async getLeagueStandings() {
   try {
-    // Récupérer la Ligue 1
-    const response1 = await fetch(`${this.baseUrl}?endpoint=competitions/${leagueId}/standings`);
+    // Récupérer la Ligue 1 (ID 2015)
+    const responseLigue1 = await fetch(`${this.baseUrl}?endpoint=competitions/2015/standings`);
+    let dataLigue1 = { standings: [] };
     
-    if (!response1.ok) {
-      throw new Error(`Erreur HTTP: ${response1.status}`);
+    if (responseLigue1.ok) {
+      dataLigue1 = await responseLigue1.json();
     }
     
-    const data1 = await response1.json();
+    // Récupérer la Ligue 2 (ID 2142)
+    const responseLigue2 = await fetch(`${this.baseUrl}?endpoint=competitions/2142/standings`);
+    let dataLigue2 = { standings: [] };
     
-    // Récupérer aussi la Ligue 2 (ID 2142)
-    const response2 = await fetch(`${this.baseUrl}?endpoint=competitions/2142/standings`);
-    let data2 = { standings: [] };
-    
-    if (response2.ok) {
-      data2 = await response2.json();
+    if (responseLigue2.ok) {
+      dataLigue2 = await responseLigue2.json();
     }
     
-    // Combiner les deux résultats
     return {
-      competitions: [
-        data1.competition || { name: 'Ligue 1' },
-        data2.competition || { name: 'Ligue 2' }
-      ],
-      standings: [
-        ...(data1.standings || []),
-        ...(data2.standings || [])
-      ]
+      ligue1: dataLigue1,
+      ligue2: dataLigue2
     };
   } catch (error) {
     console.error('Erreur lors de la récupération des classements:', error);
-    return { standings: [] };
+    return { 
+      ligue1: { standings: [] },
+      ligue2: { standings: [] }
+    };
   }
 }
 }
-
 export default FootballAPI;

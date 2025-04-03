@@ -184,8 +184,27 @@
 }
 
 /* Correction pour le mode sombre */
+[data-theme="dark"] .football-scores-panel {
+  background-color: #222;
+  color: #fff;
+}
+
+[data-theme="dark"] .panel-tabs {
+  background-color: #333;
+  border-color: #444;
+}
+
+[data-theme="dark"] .tab-btn {
+  color: #ddd;
+}
+
 [data-theme="dark"] .tab-btn:not(.active) {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+[data-theme="dark"] .tab-btn.active {
+  color: white;
+  border-bottom-color: #8b5cf6;
 }
 
 [data-theme="dark"] .no-matches-container,
@@ -202,9 +221,69 @@
 [data-theme="dark"] .standings-table th {
   background-color: #333;
   color: white;
+  border-color: #444;
 }
 
 [data-theme="dark"] .standings-table td {
   color: white;
   border-color: #444;
+}
+
+[data-theme="dark"] .match-card,
+[data-theme="dark"] .no-matches-card {
+  background-color: #333;
+  color: white;
+  border: 1px solid #444;
+}
+
+[data-theme="dark"] .match-date,
+[data-theme="dark"] .match-competition {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Ajout dans vos styles */
+.football-scores-panel {
+  font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+}
+
+.panel-header h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.tab-btn {
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.tab-btn.active {
+  font-weight: 700;
+}
+
+.standings-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+.standings-table th {
+  position: sticky;
+  top: 100px; /* Ajuster selon votre mise en page */
+  background-color: var(--bg-color-light, #f5f5f5);
+  z-index: 1;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .standings-table {
+    font-size: 0.8rem;
+  }
+  
+  .standings-table th, .standings-table td {
+    padding: 6px 4px;
+  }
+  
+  .team-column {
+    min-width: 120px;
+  }
 }

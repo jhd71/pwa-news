@@ -905,6 +905,29 @@ updateLayoutIcon(layout) {
         tabs.style.borderBottom = '1px solid var(--border-color, #ddd)';
     }
     
+	// Assurer que les onglets ont suffisamment d'espace (éviter chevauchement avec la bannière)
+	// Remplacer le contenu HTML des onglets
+	const panelTabs = panel.querySelector('.panel-tabs');
+	if (panelTabs) {
+    panelTabs.innerHTML = `
+        <button class="tab-btn active" data-tab="live">En direct</button>
+        <button class="tab-btn" data-tab="upcoming">À venir</button>
+        <button class="tab-btn" data-tab="standings1">Ligue 1</button>
+        <button class="tab-btn" data-tab="standings2">Ligue 2</button>
+    `;
+	}
+
+	// Ajouter un conteneur pour le classement de Ligue 2
+	const panelContent = panel.querySelector('.panel-content');
+	if (panelContent) {
+    const standings2Section = document.createElement('div');
+    standings2Section.id = 'standings2-section';
+    standings2Section.className = 'tab-section';
+    standings2Section.style.display = 'none';
+    standings2Section.innerHTML = '<div class="loading">Chargement du classement de Ligue 2...</div>';
+    panelContent.appendChild(standings2Section);
+	}
+	
     const tabButtons = panel.querySelectorAll('.tab-btn');
     tabButtons.forEach(btn => {
         btn.style.flex = '1';
@@ -975,7 +998,7 @@ updateLayoutIcon(layout) {
         }
     }, { once: true });
     
-    // Gestion des onglets
+    // Mettre à jour la gestion des onglets
 const tabBtns = panel.querySelectorAll('.tab-btn');
 tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -989,7 +1012,17 @@ tabBtns.forEach(btn => {
         
         // Activer l'onglet cliqué
         btn.classList.add('active');
-        const tabId = btn.dataset.tab + '-section';
+        
+        // Gestion spéciale pour les onglets de classement
+        let tabId = btn.dataset.tab;
+        if (tabId === 'standings1') {
+            tabId = 'standings1-section';
+        } else if (tabId === 'standings2') {
+            tabId = 'standings2-section';
+        } else {
+            tabId = tabId + '-section';
+        }
+        
         const section = panel.querySelector(`#${tabId}`);
         if (section) {
             section.style.display = 'block';
@@ -1053,15 +1086,15 @@ async loadFootballData(panel) {
         console.log('Données des matchs en direct (détaillées):', JSON.stringify(liveData));
         
         // Pour les matchs à venir
-const upcomingSection = panel.querySelector('#upcoming-section');
-showLoading(upcomingSection, 'Chargement des prochains matchs...');
+	const upcomingSection = panel.querySelector('#upcoming-section');
+	showLoading(upcomingSection, 'Chargement des prochains matchs...');
         
         console.log('Chargement des matchs à venir...');
         const upcomingData = await api.getUpcomingMatches();
         console.log('Données des matchs à venir:', upcomingData);
         
         const standingsSection = panel.querySelector('#standings-section');
-showLoading(standingsSection, 'Chargement des classements...');
+	showLoading(standingsSection, 'Chargement des classements...');
         
         console.log('Chargement des classements...');
         const standingsData = await api.getLeagueStandings();
@@ -1141,75 +1174,134 @@ showLoading(standingsSection, 'Chargement des classements...');
             }
         } else {
             // Pas de matchs à venir disponibles
-upcomingSection.innerHTML = `
+	upcomingSection.innerHTML = `
     <div class="no-data-container" style="text-align: center; padding: 30px; background-color: #f5f5f5; border-radius: 10px; margin: 20px 0;">
         <div style="font-size: 40px; margin-bottom: 15px;">📅</div>
         <h4>Aucun match à venir disponible</h4>
         <p>Les données des prochains matchs de Ligue 1 et Ligue 2 ne sont pas disponibles pour le moment.</p>
     </div>
-`;
+	`;
         }
         
-        // Traiter les classements
-if (standingsData.standings && standingsData.standings.length > 0) {
-    let standingsHTML = '';
+        // Ajouter un conteneur pour le classement de Ligue 2
+const panelContent = panel.querySelector('.panel-content');
+if (panelContent) {
+    const standings2Section = document.createElement('div');
+    standings2Section.id = 'standings2-section';
+    standings2Section.className = 'tab-section';
+    standings2Section.style.display = 'none';
+    standings2Section.innerHTML = '<div class="loading">Chargement du classement de Ligue 2...</div>';
+    panelContent.appendChild(standings2Section);
+}
+
+// Dans la partie où vous traitez les données de classement
+const standings1Section = panel.querySelector('#standings-section');
+standings1Section.id = 'standings1-section'; // Renommer pour cohérence
+const standings2Section = panel.querySelector('#standings2-section');
+
+// Traiter le classement de Ligue 1
+if (standingsData.ligue1 && standingsData.ligue1.standings && standingsData.ligue1.standings.length > 0) {
+    const mainStanding = standingsData.ligue1.standings[0];
     
-    // Regrouper par compétition
-    standingsData.competitions.forEach((competition, index) => {
-        if (standingsData.standings[index]) {
-            standingsHTML += `
-                <h4>${competition.name || 'Classement'}</h4>
-                <div class="standings-table-container">
-                    <table class="standings-table">
-                        <thead>
-                            <tr>
-                                <th>Pos</th>
-                                <th class="team-column">Équipe</th>
-                                <th>J</th>
-                                <th>G</th>
-                                <th>N</th>
-                                <th>P</th>
-                                <th>BP</th>
-                                <th>BC</th>
-                                <th>Diff</th>
-                                <th>Pts</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${standingsData.standings[index].table.map(entry => `
-                                <tr>
-                                    <td>${entry.position}</td>
-                                    <td class="team-column">${entry.team.name}</td>
-                                    <td>${entry.playedGames}</td>
-                                    <td>${entry.won}</td>
-                                    <td>${entry.draw}</td>
-                                    <td>${entry.lost}</td>
-                                    <td>${entry.goalsFor}</td>
-                                    <td>${entry.goalsAgainst}</td>
-                                    <td>${entry.goalDifference}</td>
-                                    <td><strong>${entry.points}</strong></td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-                <div style="margin-bottom: 30px;"></div>
-            `;
-        }
-    });
-    
-    standingsSection.innerHTML = standingsHTML;
+    standings1Section.innerHTML = `
+        <h4>${standingsData.ligue1.competition?.name || 'Ligue 1'}</h4>
+        <div class="standings-table-container">
+            <table class="standings-table">
+                <thead>
+                    <tr>
+                        <th>Pos</th>
+                        <th class="team-column">Équipe</th>
+                        <th>J</th>
+                        <th>G</th>
+                        <th>N</th>
+                        <th>P</th>
+                        <th>BP</th>
+                        <th>BC</th>
+                        <th>Diff</th>
+                        <th>Pts</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${mainStanding.table.map(entry => `
+                        <tr>
+                            <td>${entry.position}</td>
+                            <td class="team-column">${entry.team.name}</td>
+                            <td>${entry.playedGames}</td>
+                            <td>${entry.won}</td>
+                            <td>${entry.draw}</td>
+                            <td>${entry.lost}</td>
+                            <td>${entry.goalsFor}</td>
+                            <td>${entry.goalsAgainst}</td>
+                            <td>${entry.goalDifference}</td>
+                            <td><strong>${entry.points}</strong></td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
 } else {
-            // Pas de classements disponibles
-        standingsSection.innerHTML = `
-            <div class="no-data-container" style="text-align: center; padding: 30px; background-color: #f5f5f5; border-radius: 10px; margin: 20px 0;">
-                <div style="font-size: 40px; margin-bottom: 15px;">🏆</div>
-                <h4>Classement non disponible</h4>
-                <p>Les données de classement de Ligue 1 et Ligue 2 ne sont pas disponibles pour le moment.</p>
-                <p style="font-size: 14px; margin-top: 20px; color: #666;">Réessayez ultérieurement ou consultez le site officiel de la Ligue 1.</p>
-            </div>
-        `;
-    }
+    standings1Section.innerHTML = `
+        <div class="no-data-container" style="text-align: center; padding: 30px; background-color: #f5f5f5; border-radius: 10px; margin: 20px 0;">
+            <div style="font-size: 40px; margin-bottom: 15px;">🏆</div>
+            <h4>Classement Ligue 1 non disponible</h4>
+            <p>Les données de classement de Ligue 1 ne sont pas disponibles pour le moment.</p>
+            <p style="font-size: 14px; margin-top: 20px; color: #666;">Réessayez ultérieurement ou consultez le site officiel de la Ligue 1.</p>
+        </div>
+    `;
+}
+
+// Traiter le classement de Ligue 2
+if (standingsData.ligue2 && standingsData.ligue2.standings && standingsData.ligue2.standings.length > 0) {
+    const mainStanding = standingsData.ligue2.standings[0];
+    
+    standings2Section.innerHTML = `
+        <h4>${standingsData.ligue2.competition?.name || 'Ligue 2'}</h4>
+        <div class="standings-table-container">
+            <table class="standings-table">
+                <thead>
+                    <tr>
+                        <th>Pos</th>
+                        <th class="team-column">Équipe</th>
+                        <th>J</th>
+                        <th>G</th>
+                        <th>N</th>
+                        <th>P</th>
+                        <th>BP</th>
+                        <th>BC</th>
+                        <th>Diff</th>
+                        <th>Pts</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${mainStanding.table.map(entry => `
+                        <tr>
+                            <td>${entry.position}</td>
+                            <td class="team-column">${entry.team.name}</td>
+                            <td>${entry.playedGames}</td>
+                            <td>${entry.won}</td>
+                            <td>${entry.draw}</td>
+                            <td>${entry.lost}</td>
+                            <td>${entry.goalsFor}</td>
+                            <td>${entry.goalsAgainst}</td>
+                            <td>${entry.goalDifference}</td>
+                            <td><strong>${entry.points}</strong></td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
+} else {
+    standings2Section.innerHTML = `
+        <div class="no-data-container" style="text-align: center; padding: 30px; background-color: #f5f5f5; border-radius: 10px; margin: 20px 0;">
+            <div style="font-size: 40px; margin-bottom: 15px;">🏆</div>
+            <h4>Classement Ligue 2 non disponible</h4>
+            <p>Les données de classement de Ligue 2 ne sont pas disponibles pour le moment.</p>
+            <p style="font-size: 14px; margin-top: 20px; color: #666;">Réessayez ultérieurement ou consultez le site officiel de la Ligue 2.</p>
+        </div>
+    `;
+}
     
     // Ajouter un bouton de rafraîchissement (placé ici pour qu'il apparaisse dans tous les cas)
         standingsSection.innerHTML += `
