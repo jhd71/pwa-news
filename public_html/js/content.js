@@ -627,7 +627,8 @@ return tile;
                 </div>
             </div>
         `;
-
+// Ajouter cet élément dans le HTML pour un message d'erreur
+panel.innerHTML += '<div id="football-error" style="display: none; padding: 20px; background-color: #ffebee; color: #c62828; border-radius: 8px; margin: 20px;"></div>';
         document.body.appendChild(panel);
         setTimeout(() => panel.classList.add('open'), 10);
 
@@ -932,7 +933,13 @@ updateLayoutIcon(layout) {
 
     // Ajouter au document
     document.body.appendChild(panel);
-    
+    const showError = (message) => {
+    const errorEl = panel.querySelector('#football-error');
+    if (errorEl) {
+        errorEl.textContent = `Erreur: ${message}`;
+        errorEl.style.display = 'block';
+    }
+};
     // IMPORTANT: S'assurer que les éléments d'interface restent accessibles
     const appHeader = document.querySelector('.app-header');
     if (appHeader) {
@@ -1008,8 +1015,21 @@ async loadFootballData(panel) {
         liveSection.innerHTML = '<div class="loading">Chargement des matchs en direct...</div>';
         
         console.log('Chargement des matchs en direct...');
-        const liveData = await api.getLiveMatches();
-        console.log('Données des matchs en direct:', liveData);
+        
+        // Ajouter un timeout pour éviter que l'utilisateur attende trop longtemps
+        const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error("Délai d'attente dépassé")), 10000)
+        );
+        
+        // Charger les données avec un timeout
+        const liveData = await Promise.race([
+            api.getLiveMatches(),
+            timeoutPromise
+        ]);
+        
+        // Maintenant que liveData est défini, on peut l'afficher
+        console.log('Réponse brute de l\'API:', JSON.stringify(liveData));
+        console.log('Données des matchs en direct (détaillées):', JSON.stringify(liveData));
         
         // Charger les matchs à venir
         const upcomingSection = panel.querySelector('#upcoming-section');
@@ -1028,7 +1048,7 @@ async loadFootballData(panel) {
         console.log('Données des classements:', standingsData);
         
         // Traiter les matchs en direct
-        if (liveData.matches && liveData.matches.length > 0) {
+        if (liveData && liveData.matches && Array.isArray(liveData.matches) && liveData.matches.length > 0) {
             // Votre code existant pour les matchs en direct
         } else {
             liveSection.innerHTML = `
@@ -1100,39 +1120,14 @@ async loadFootballData(panel) {
                 `;
             }
         } else {
-            // Pas de matchs à venir du tout - afficher des données statiques
-            upcomingSection.innerHTML = `
-                <h4>Calendrier Ligue 1 - 2024/2025</h4>
-                <div class="matches-grid">
-                    <div class="match-card upcoming">
-                        <div class="match-competition">Ligue 1</div>
-                        <div class="match-teams">
-                            <div class="team home-team">Paris Saint-Germain</div>
-                            <div class="vs">VS</div>
-                            <div class="team away-team">Olympique de Marseille</div>
-                        </div>
-                        <div class="match-date">21/04/2025 - 20:45</div>
-                    </div>
-                    <div class="match-card upcoming">
-                        <div class="match-competition">Ligue 1</div>
-                        <div class="match-teams">
-                            <div class="team home-team">Lyon</div>
-                            <div class="vs">VS</div>
-                            <div class="team away-team">Monaco</div>
-                        </div>
-                        <div class="match-date">22/04/2025 - 19:00</div>
-                    </div>
-                    <div class="match-card upcoming">
-                        <div class="match-competition">Ligue 2</div>
-                        <div class="match-teams">
-                            <div class="team home-team">Saint-Étienne</div>
-                            <div class="vs">VS</div>
-                            <div class="team away-team">Ajaccio</div>
-                        </div>
-                        <div class="match-date">20/04/2025 - 19:00</div>
-                    </div>
-                </div>
-            `;
+            // Pas de matchs à venir disponibles
+upcomingSection.innerHTML = `
+    <div class="no-data-container" style="text-align: center; padding: 30px; background-color: #f5f5f5; border-radius: 10px; margin: 20px 0;">
+        <div style="font-size: 40px; margin-bottom: 15px;">📅</div>
+        <h4>Aucun match à venir disponible</h4>
+        <p>Les données des prochains matchs de Ligue 1 et Ligue 2 ne sont pas disponibles pour le moment.</p>
+    </div>
+`;
         }
         
         // Traiter les classements
@@ -1177,74 +1172,41 @@ async loadFootballData(panel) {
                 </div>
             `;
         } else {
-            // Pas de classements - afficher des données statiques
-            standingsSection.innerHTML = `
-                <h4>Classement Ligue 1 - 2024/2025</h4>
-                <div class="standings-table-container">
-                    <table class="standings-table">
-                        <thead>
-                            <tr>
-                                <th>Pos</th>
-                                <th class="team-column">Équipe</th>
-                                <th>J</th>
-                                <th>G</th>
-                                <th>N</th>
-                                <th>P</th>
-                                <th>Pts</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td class="team-column">Paris Saint-Germain</td>
-                                <td>10</td>
-                                <td>8</td>
-                                <td>1</td>
-                                <td>1</td>
-                                <td><strong>25</strong></td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td class="team-column">Marseille</td>
-                                <td>10</td>
-                                <td>7</td>
-                                <td>2</td>
-                                <td>1</td>
-                                <td><strong>23</strong></td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td class="team-column">Monaco</td>
-                                <td>10</td>
-                                <td>6</td>
-                                <td>3</td>
-                                <td>1</td>
-                                <td><strong>21</strong></td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td class="team-column">Lyon</td>
-                                <td>10</td>
-                                <td>6</td>
-                                <td>1</td>
-                                <td>3</td>
-                                <td><strong>19</strong></td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td class="team-column">Lille</td>
-                                <td>10</td>
-                                <td>5</td>
-                                <td>3</td>
-                                <td>2</td>
-                                <td><strong>18</strong></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            `;
+            // Pas de classements disponibles
+        standingsSection.innerHTML = `
+            <div class="no-data-container" style="text-align: center; padding: 30px; background-color: #f5f5f5; border-radius: 10px; margin: 20px 0;">
+                <div style="font-size: 40px; margin-bottom: 15px;">🏆</div>
+                <h4>Classement non disponible</h4>
+                <p>Les données de classement de Ligue 1 et Ligue 2 ne sont pas disponibles pour le moment.</p>
+                <p style="font-size: 14px; margin-top: 20px; color: #666;">Réessayez ultérieurement ou consultez le site officiel de la Ligue 1.</p>
+            </div>
+        `;
+    }
+    
+    // Ajouter un bouton de rafraîchissement (placé ici pour qu'il apparaisse dans tous les cas)
+    standingsSection.innerHTML += `
+        <div style="text-align: center; margin-top: 20px;">
+            <button id="refresh-football-data" style="padding: 8px 16px; background-color: var(--primary-color, #1a237e); color: white; border: none; border-radius: 20px; cursor: pointer;">
+                <span class="material-icons" style="vertical-align: middle; margin-right: 5px;">refresh</span>
+                Actualiser les données
+            </button>
+        </div>
+    `;
+    
+    // Ajouter l'écouteur d'événement après avoir inséré le HTML
+    setTimeout(() => {
+        const refreshBtn = panel.querySelector('#refresh-football-data');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', () => {
+                this.loadFootballData(panel);
+            });
         }
-        
+    }, 0);
+    
+} catch (error) {
+    // Gestion des erreurs...
+}
+
         // Ajouter styles pour les cartes et le tableau
         const style = document.createElement('style');
         style.textContent = `
