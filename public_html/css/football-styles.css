@@ -182,3 +182,29 @@
   padding: 20px;
   color: var(--text-secondary, #666);
 }
+
+/* Correction pour le mode sombre */
+[data-theme="dark"] .tab-btn:not(.active) {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="dark"] .no-matches-container,
+[data-theme="dark"] .no-data-container {
+  background-color: #333;
+  color: white;
+}
+
+[data-theme="dark"] .no-matches-container p,
+[data-theme="dark"] .no-data-container p {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="dark"] .standings-table th {
+  background-color: #333;
+  color: white;
+}
+
+[data-theme="dark"] .standings-table td {
+  color: white;
+  border-color: #444;
+}

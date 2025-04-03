@@ -812,17 +812,17 @@ updateLayoutIcon(layout) {
     const panel = document.createElement('div');
     panel.className = 'football-scores-panel';
     panel.innerHTML = `
-        <div class="panel-header">
-            <h3>Résultats Football</h3>
-            <button class="close-panel">
-                <span class="material-icons">close</span>
-            </button>
-        </div>
-        <div class="panel-tabs">
-            <button class="tab-btn active" data-tab="live">En direct</button>
-            <button class="tab-btn" data-tab="upcoming">À venir</button>
-            <button class="tab-btn" data-tab="standings">Classements</button>
-        </div>
+    <div class="panel-header">
+        <h3>Résultats Football</h3>
+        <button class="close-panel">
+            <span class="material-icons">close</span>
+        </button>
+    </div>
+    <div class="panel-tabs">
+        <button class="tab-btn active" data-tab="live">En direct</button>
+        <button class="tab-btn" data-tab="upcoming">À venir</button>
+        <button class="tab-btn" data-tab="standings">Classements</button>
+    </div>
         <div class="panel-content">
             <div class="tab-section active" id="live-section">
                 <div class="loading">Chargement des matchs en direct...</div>
@@ -1005,6 +1005,27 @@ tabBtns.forEach(btn => {
 }
 
 async loadFootballData(panel) {
+    // Fonction pour afficher un indicateur de chargement
+    const showLoading = (section, message) => {
+        section.innerHTML = `
+            <div class="loading">${message}</div>
+            <div style="display: flex; justify-content: center; margin: 20px 0;">
+                <div class="loading-spinner" style="width: 40px; height: 40px; border: 4px solid rgba(0,0,0,0.1); border-left-color: var(--primary-color, #1a237e); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            </div>
+        `;
+    };
+    
+    // Fonction pour afficher une erreur
+    const showError = (message, section, suggestion = '') => {
+        section.innerHTML = `
+            <div style="padding: 15px; background-color: #ffebee; color: #c62828; border-radius: 8px; margin: 15px 0;">
+                <h4 style="margin-top: 0;">Erreur</h4>
+                <p>${message}</p>
+                ${suggestion ? `<p style="font-size: 14px; color: #666;">${suggestion}</p>` : ''}
+            </div>
+        `;
+    };
+    
     try {
         // Importer dynamiquement l'API de football
         const { default: FootballAPI } = await import('./football-api.js');
@@ -1012,7 +1033,7 @@ async loadFootballData(panel) {
         
         // Charger les matchs en direct
         const liveSection = panel.querySelector('#live-section');
-        liveSection.innerHTML = '<div class="loading">Chargement des matchs en direct...</div>';
+        showLoading(liveSection, 'Chargement des matchs en direct...');
         
         console.log('Chargement des matchs en direct...');
         
@@ -1031,17 +1052,16 @@ async loadFootballData(panel) {
         console.log("Réponse brute de l'API:", JSON.stringify(liveData));
         console.log('Données des matchs en direct (détaillées):', JSON.stringify(liveData));
         
-        // Charger les matchs à venir
-        const upcomingSection = panel.querySelector('#upcoming-section');
-        upcomingSection.innerHTML = '<div class="loading">Chargement des prochains matchs...</div>';
+        // Pour les matchs à venir
+const upcomingSection = panel.querySelector('#upcoming-section');
+showLoading(upcomingSection, 'Chargement des prochains matchs...');
         
         console.log('Chargement des matchs à venir...');
         const upcomingData = await api.getUpcomingMatches();
         console.log('Données des matchs à venir:', upcomingData);
         
-        // Charger les classements
         const standingsSection = panel.querySelector('#standings-section');
-        standingsSection.innerHTML = '<div class="loading">Chargement des classements...</div>';
+showLoading(standingsSection, 'Chargement des classements...');
         
         console.log('Chargement des classements...');
         const standingsData = await api.getLeagueStandings();
@@ -1131,11 +1151,14 @@ upcomingSection.innerHTML = `
         }
         
         // Traiter les classements
-        if (standingsData.standings && standingsData.standings.length > 0) {
-            const mainStanding = standingsData.standings[0]; // Prendre le premier classement
-            
-            standingsSection.innerHTML = `
-                <h4>${standingsData.competition?.name || 'Classement'}</h4>
+if (standingsData.standings && standingsData.standings.length > 0) {
+    let standingsHTML = '';
+    
+    // Regrouper par compétition
+    standingsData.competitions.forEach((competition, index) => {
+        if (standingsData.standings[index]) {
+            standingsHTML += `
+                <h4>${competition.name || 'Classement'}</h4>
                 <div class="standings-table-container">
                     <table class="standings-table">
                         <thead>
@@ -1153,7 +1176,7 @@ upcomingSection.innerHTML = `
                             </tr>
                         </thead>
                         <tbody>
-                            ${mainStanding.table.map(entry => `
+                            ${standingsData.standings[index].table.map(entry => `
                                 <tr>
                                     <td>${entry.position}</td>
                                     <td class="team-column">${entry.team.name}</td>
@@ -1170,8 +1193,13 @@ upcomingSection.innerHTML = `
                         </tbody>
                     </table>
                 </div>
+                <div style="margin-bottom: 30px;"></div>
             `;
-        } else {
+        }
+    });
+    
+    standingsSection.innerHTML = standingsHTML;
+} else {
             // Pas de classements disponibles
         standingsSection.innerHTML = `
             <div class="no-data-container" style="text-align: center; padding: 30px; background-color: #f5f5f5; border-radius: 10px; margin: 20px 0;">
@@ -1246,48 +1274,36 @@ upcomingSection.innerHTML = `
         }
         
     } catch (error) {
-        console.error('Erreur chargement données football:', error);
-        
-        // Afficher l'erreur dans le panneau d'erreur
-        const errorEl = panel.querySelector('#football-error');
-        if (errorEl) {
-            errorEl.textContent = `Erreur: ${error.message || "Impossible de charger les données"}`;
-            errorEl.style.display = 'block';
+    console.error('Erreur chargement données football:', error);
+    
+    // Pour les différentes sections
+    const liveSection = panel.querySelector('#live-section');
+    const upcomingSection = panel.querySelector('#upcoming-section');
+    const standingsSection = panel.querySelector('#standings-section');
+    
+    showError('Impossible de charger les données de football', liveSection, 'Vérifiez votre connexion internet et réessayez plus tard.');
+    showError('Impossible de charger les prochains matchs', upcomingSection);
+    showError('Impossible de charger les classements', standingsSection, 'Vous pouvez consulter les classements sur le site officiel de la ligue.');
+    
+    // Ajouter un bouton pour réessayer
+    standingsSection.innerHTML += `
+        <div style="text-align: center; margin-top: 20px;">
+            <button id="refresh-football-data" style="padding: 8px 16px; background-color: var(--primary-color, #1a237e); color: white; border: none; border-radius: 20px; cursor: pointer;">
+                <span class="material-icons" style="vertical-align: middle; margin-right: 5px;">refresh</span>
+                Réessayer
+            </button>
+        </div>
+    `;
+    
+    // Ajouter l'écouteur d'événement pour le bouton
+    setTimeout(() => {
+        const refreshBtn = panel.querySelector('#refresh-football-data');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', () => {
+                this.loadFootballData(panel);
+            });
         }
-        
-        // Mettre à jour les sections de chargement
-        const sections = panel.querySelectorAll('.loading');
-        sections.forEach(el => {
-            el.innerHTML = 'Erreur lors du chargement des données';
-        });
-        
-        // Optionnel: Afficher un message d'erreur dans la section des classements
-        const standingsSection = panel.querySelector('#standings-section');
-        if (standingsSection) {
-            standingsSection.innerHTML = `
-                <div style="padding: 20px; background-color: #ffebee; color: #c62828; border-radius: 8px; margin: 20px;">
-                    <h4>Erreur lors du chargement des données</h4>
-                    <p>${error.message || "Impossible de récupérer les informations"}</p>
-                </div>
-                <div style="text-align: center; margin-top: 20px;">
-                    <button id="refresh-football-data" style="padding: 8px 16px; background-color: var(--primary-color, #1a237e); color: white; border: none; border-radius: 20px; cursor: pointer;">
-                        <span class="material-icons" style="vertical-align: middle; margin-right: 5px;">refresh</span>
-                        Réessayer
-                    </button>
-                </div>
-            `;
-            
-            // Ajouter l'écouteur d'événement pour le bouton de réessai
-            setTimeout(() => {
-                const refreshBtn = panel.querySelector('#refresh-football-data');
-                if (refreshBtn) {
-                    refreshBtn.addEventListener('click', () => {
-                        this.loadFootballData(panel);
-                    });
-                }
-            }, 0);
-        }
-    }
+    }, 0);
 }
 
 // Méthode d'aide pour obtenir l'info du prochain match
