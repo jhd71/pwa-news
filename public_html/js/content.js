@@ -913,19 +913,7 @@ updateLayoutIcon(layout) {
         <button class="tab-btn active" data-tab="live">En direct</button>
         <button class="tab-btn" data-tab="upcoming">À venir</button>
         <button class="tab-btn" data-tab="standings1">Ligue 1</button>
-        <button class="tab-btn" data-tab="standings2">Ligue 2</button>
     `;
-	}
-
-	// Ajouter un conteneur pour le classement de Ligue 2
-	const panelContent = panel.querySelector('.panel-content');
-	if (panelContent) {
-    const standings2Section = document.createElement('div');
-    standings2Section.id = 'standings2-section';
-    standings2Section.className = 'tab-section';
-    standings2Section.style.display = 'none';
-    standings2Section.innerHTML = '<div class="loading">Chargement du classement de Ligue 2...</div>';
-    panelContent.appendChild(standings2Section);
 	}
 	
     const tabButtons = panel.querySelectorAll('.tab-btn');
@@ -1093,114 +1081,77 @@ async loadFootballData(panel) {
         const upcomingData = await api.getUpcomingMatches();
         console.log('Données des matchs à venir:', upcomingData);
         
-        const standingsSection = panel.querySelector('#standings-section');
-	showLoading(standingsSection, 'Chargement des classements...');
-        
-        console.log('Chargement des classements...');
-        const standingsData = await api.getLeagueStandings();
-        console.log('Données des classements:', standingsData);
-        
-        // Traiter les matchs en direct
-        if (liveData && liveData.matches && Array.isArray(liveData.matches) && liveData.matches.length > 0) {
-            // Votre code existant pour les matchs en direct
-        } else {
-            liveSection.innerHTML = `
-                <div class="no-matches-container">
-                    <div style="font-size: 60px; margin-bottom: 20px;">⚽</div>
-                    <h3>Aucun match de Ligue 1 ou Ligue 2 en direct actuellement</h3>
-                    <p>Consultez les prochains matchs ou les classements.</p>
-                </div>
-            `;
-        }
-        
-        // Traiter les matchs à venir
-        if (upcomingData.matches && upcomingData.matches.length > 0) {
-            // Filtrer pour les matchs français
-            const frenchMatches = upcomingData.matches.filter(match => 
-                match.competition?.name?.includes('Ligue 1') || 
-                match.competition?.name?.includes('Ligue 2')
-            );
-            
-            if (frenchMatches.length > 0) {
-                upcomingSection.innerHTML = `
-                    <h4>Prochains matchs de Ligue 1 & Ligue 2</h4>
-                    <div class="matches-grid">
-                        ${frenchMatches.map(match => {
-                            const matchDate = new Date(match.utcDate);
-                            const formattedDate = matchDate.toLocaleDateString('fr-FR');
-                            const formattedTime = matchDate.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
-                            
-                            return `
-                                <div class="match-card upcoming">
-                                    <div class="match-competition">${match.competition?.name || 'Match'}</div>
-                                    <div class="match-teams">
-                                        <div class="team home-team">${match.homeTeam.name}</div>
-                                        <div class="vs">VS</div>
-                                        <div class="team away-team">${match.awayTeam.name}</div>
-                                    </div>
-                                    <div class="match-date">${formattedDate} - ${formattedTime}</div>
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                `;
-            } else {
-                // Aucun match français à venir, mais peut-être d'autres matchs
-                upcomingSection.innerHTML = `
-                    <div class="no-matches-card">
-                        <h4>Aucun match de Ligue 1 ou Ligue 2 à venir prochainement</h4>
-                        <p>Voici quelques matchs internationaux à venir</p>
-                    </div>
-                    <div class="matches-grid">
-                        ${upcomingData.matches.slice(0, 4).map(match => {
-                            const matchDate = new Date(match.utcDate);
-                            const formattedDate = matchDate.toLocaleDateString('fr-FR');
-                            const formattedTime = matchDate.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
-                            
-                            return `
-                                <div class="match-card upcoming">
-                                    <div class="match-competition">${match.competition?.name || 'Match'}</div>
-                                    <div class="match-teams">
-                                        <div class="team home-team">${match.homeTeam.name}</div>
-                                        <div class="vs">VS</div>
-                                        <div class="team away-team">${match.awayTeam.name}</div>
-                                    </div>
-                                    <div class="match-date">${formattedDate} - ${formattedTime}</div>
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                `;
-            }
+        // Traiter les classements
+const standingsSection = panel.querySelector('#standings-section');
+if (standingsData.standings && standingsData.standings.length > 0) {
+    const mainStanding = standingsData.standings[0];
+    
+    standingsSection.innerHTML = `
+        <h4>${standingsData.competition?.name || 'Classement'}</h4>
+        <div class="standings-table-container">
+            <table class="standings-table">
+                <thead>
+                    <tr>
+                        <th>Pos</th>
+                        <th class="team-column">Équipe</th>
+                        <th>J</th>
+                        <th>G</th>
+                        <th>N</th>
+                        <th>P</th>
+                        <th>BP</th>
+                        <th>BC</th>
+                        <th>Diff</th>
+                        <th>Pts</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${mainStanding.table.map(entry => `
+                        <tr>
+                            <td>${entry.position}</td>
+                            <td class="team-column">${entry.team.name}</td>
+                            <td>${entry.playedGames}</td>
+                            <td>${entry.won}</td>
+                            <td>${entry.draw}</td>
+                            <td>${entry.lost}</td>
+                            <td>${entry.goalsFor}</td>
+                            <td>${entry.goalsAgainst}</td>
+                            <td>${entry.goalDifference}</td>
+                            <td><strong>${entry.points}</strong></td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
+	} else {
+    standingsSection.innerHTML = `
+        <div class="no-data-container" style="text-align: center; padding: 30px; background-color: #f5f5f5; border-radius: 10px; margin: 20px 0;">
+            <div style="font-size: 40px; margin-bottom: 15px;">🏆</div>
+            <h4>Classement non disponible</h4>
+            <p>Les données de classement ne sont pas disponibles pour le moment.</p>
+            <p style="font-size: 14px; margin-top: 20px; color: #666;">Réessayez ultérieurement ou consultez le site officiel.</p>
+        </div>
+    `;
+	}
         } else {
             // Pas de matchs à venir disponibles
 	upcomingSection.innerHTML = `
     <div class="no-data-container" style="text-align: center; padding: 30px; background-color: #f5f5f5; border-radius: 10px; margin: 20px 0;">
         <div style="font-size: 40px; margin-bottom: 15px;">📅</div>
         <h4>Aucun match à venir disponible</h4>
-        <p>Les données des prochains matchs de Ligue 1 et Ligue 2 ne sont pas disponibles pour le moment.</p>
+        <p>Les données des prochains matchs de Ligue 1 ne sont pas disponibles pour le moment.</p>
     </div>
 	`;
         }
         
-        // Ajouter un conteneur pour le classement de Ligue 2
-const panelContent = panel.querySelector('.panel-content');
-if (panelContent) {
-    const standings2Section = document.createElement('div');
-    standings2Section.id = 'standings2-section';
-    standings2Section.className = 'tab-section';
-    standings2Section.style.display = 'none';
-    standings2Section.innerHTML = '<div class="loading">Chargement du classement de Ligue 2...</div>';
-    panelContent.appendChild(standings2Section);
-}
 
-// Dans la partie où vous traitez les données de classement
-const standings1Section = panel.querySelector('#standings-section');
-standings1Section.id = 'standings1-section'; // Renommer pour cohérence
-const standings2Section = panel.querySelector('#standings2-section');
+	// Dans la partie où vous traitez les données de classement
+	const standings1Section = panel.querySelector('#standings-section');
+	standings1Section.id = 'standings1-section'; // Renommer pour cohérence
+	const standings2Section = panel.querySelector('#standings2-section');
 
-// Traiter le classement de Ligue 1
-if (standingsData.ligue1 && standingsData.ligue1.standings && standingsData.ligue1.standings.length > 0) {
+	// Traiter le classement de Ligue 1
+	if (standingsData.ligue1 && standingsData.ligue1.standings && standingsData.ligue1.standings.length > 0) {
     const mainStanding = standingsData.ligue1.standings[0];
     
     standings1Section.innerHTML = `
@@ -1249,60 +1200,7 @@ if (standingsData.ligue1 && standingsData.ligue1.standings && standingsData.ligu
             <p style="font-size: 14px; margin-top: 20px; color: #666;">Réessayez ultérieurement ou consultez le site officiel de la Ligue 1.</p>
         </div>
     `;
-}
-
-// Traiter le classement de Ligue 2
-if (standingsData.ligue2 && standingsData.ligue2.standings && standingsData.ligue2.standings.length > 0) {
-    const mainStanding = standingsData.ligue2.standings[0];
-    
-    standings2Section.innerHTML = `
-        <h4>${standingsData.ligue2.competition?.name || 'Ligue 2'}</h4>
-        <div class="standings-table-container">
-            <table class="standings-table">
-                <thead>
-                    <tr>
-                        <th>Pos</th>
-                        <th class="team-column">Équipe</th>
-                        <th>J</th>
-                        <th>G</th>
-                        <th>N</th>
-                        <th>P</th>
-                        <th>BP</th>
-                        <th>BC</th>
-                        <th>Diff</th>
-                        <th>Pts</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${mainStanding.table.map(entry => `
-                        <tr>
-                            <td>${entry.position}</td>
-                            <td class="team-column">${entry.team.name}</td>
-                            <td>${entry.playedGames}</td>
-                            <td>${entry.won}</td>
-                            <td>${entry.draw}</td>
-                            <td>${entry.lost}</td>
-                            <td>${entry.goalsFor}</td>
-                            <td>${entry.goalsAgainst}</td>
-                            <td>${entry.goalDifference}</td>
-                            <td><strong>${entry.points}</strong></td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-        </div>
-    `;
-} else {
-    standings2Section.innerHTML = `
-        <div class="no-data-container" style="text-align: center; padding: 30px; background-color: #f5f5f5; border-radius: 10px; margin: 20px 0;">
-            <div style="font-size: 40px; margin-bottom: 15px;">🏆</div>
-            <h4>Classement Ligue 2 non disponible</h4>
-            <p>Les données de classement de Ligue 2 ne sont pas disponibles pour le moment.</p>
-            <p style="font-size: 14px; margin-top: 20px; color: #666;">Réessayez ultérieurement ou consultez le site officiel de la Ligue 2.</p>
-        </div>
-    `;
-}
-    
+	}
     // Ajouter un bouton de rafraîchissement (placé ici pour qu'il apparaisse dans tous les cas)
         standingsSection.innerHTML += `
             <div style="text-align: center; margin-top: 20px;">
@@ -1369,23 +1267,23 @@ if (standingsData.ligue2 && standingsData.ligue2.standings && standingsData.ligu
     console.error('Erreur chargement données football:', error);
     
     // Pour les différentes sections
-    const liveSection = panel.querySelector('#live-section');
-    const upcomingSection = panel.querySelector('#upcoming-section');
-    const standingsSection = panel.querySelector('#standings-section');
-    
-    showError('Impossible de charger les données de football', liveSection, 'Vérifiez votre connexion internet et réessayez plus tard.');
-    showError('Impossible de charger les prochains matchs', upcomingSection);
-    showError('Impossible de charger les classements', standingsSection, 'Vous pouvez consulter les classements sur le site officiel de la ligue.');
-    
-    // Ajouter un bouton pour réessayer
-    standingsSection.innerHTML += `
-        <div style="text-align: center; margin-top: 20px;">
-            <button id="refresh-football-data" style="padding: 8px 16px; background-color: var(--primary-color, #1a237e); color: white; border: none; border-radius: 20px; cursor: pointer;">
-                <span class="material-icons" style="vertical-align: middle; margin-right: 5px;">refresh</span>
-                Réessayer
-            </button>
-        </div>
-    `;
+const liveSection = panel.querySelector('#live-section');
+const upcomingSection = panel.querySelector('#upcoming-section');
+const standingsSection = panel.querySelector('#standings-section');
+
+showError('Impossible de charger les données de football', liveSection, 'Vérifiez votre connexion internet et réessayez plus tard.');
+showError('Impossible de charger les prochains matchs', upcomingSection);
+showError('Impossible de charger les classements', standingsSection, 'Vous pouvez consulter les classements sur le site officiel de la Ligue 1.');
+
+// Ajouter un bouton pour réessayer
+standingsSection.innerHTML += `
+    <div style="text-align: center; margin-top: 20px;">
+        <button id="refresh-football-data" style="padding: 8px 16px; background-color: var(--primary-color, #1a237e); color: white; border: none; border-radius: 20px; cursor: pointer;">
+            <span class="material-icons" style="vertical-align: middle; margin-right: 5px;">refresh</span>
+            Réessayer
+        </button>
+    </div>
+`;
     
     // Ajouter l'écouteur d'événement pour le bouton
     setTimeout(() => {
@@ -1401,10 +1299,9 @@ if (standingsData.ligue2 && standingsData.ligue2.standings && standingsData.ligu
 // Méthode d'aide pour obtenir l'info du prochain match
 getNextMatchInfo(upcomingData) {
     if (upcomingData.matches && upcomingData.matches.length > 0) {
-        // Filtrer pour les matchs français et prendre le premier
+        // Filtrer pour les matchs de Ligue 1 seulement
         const frenchMatches = upcomingData.matches.filter(match => 
-            match.competition?.name?.includes('Ligue 1') || 
-            match.competition?.name?.includes('Ligue 2')
+            match.competition?.name?.includes('Ligue 1')
         );
         
         if (frenchMatches.length > 0) {
