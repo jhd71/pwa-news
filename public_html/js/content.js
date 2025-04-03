@@ -1295,7 +1295,7 @@ standingsSection.innerHTML += `
         }
     }, 0);
 }
-}
+
 // Méthode d'aide pour obtenir l'info du prochain match
 getNextMatchInfo(upcomingData) {
     if (upcomingData.matches && upcomingData.matches.length > 0) {
