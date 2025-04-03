@@ -51,7 +51,29 @@ img.swiper-lazy-loaded {
   object-fit: cover;
 }
 
-/* Style spécifique pour le swiper */
-.swiper-slide img {
-  min-height: 150px; /* Hauteur minimale pour éviter les sauts de mise en page */
-}
+/* Forcer l'affichage des images dans le Swiper */
+  .swiper img {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  
+  /* Définir une hauteur minimale pour les slides */
+  .swiper-slide {
+    min-height: 200px;
+  }
+  
+  /* Centrer le contenu si pas d'image */
+  .swiper-slide .slide-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 10px;
+    z-index: 10;
+  }
