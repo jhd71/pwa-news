@@ -1,15 +1,5 @@
 {
   "version": 2,
-  "functions": {
-    "api/creusot.js": {
-      "memory": 1024,
-      "maxDuration": 15
-    },
-    "api/getNews.js": {
-      "memory": 1024,
-      "maxDuration": 15
-    }
-  },
   "builds": [
     {
       "src": "api/*.js",
@@ -28,9 +18,7 @@
     {
       "src": "/index$",
       "status": 301,
-      "headers": {
-        "Location": "/"
-      }
+      "headers": { "Location": "/" }
     },
     {
       "src": "^/$",
@@ -43,9 +31,7 @@
     {
       "src": "/(.*)\\.html$",
       "status": 301,
-      "headers": {
-        "Location": "/$1"
-      }
+      "headers": { "Location": "/$1" }
     },
     {
       "src": "/(.*)",
