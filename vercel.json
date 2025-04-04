@@ -1,5 +1,15 @@
 {
   "version": 2,
+  "functions": {
+    "api/creusot.js": {
+      "memory": 1024,
+      "maxDuration": 15
+    },
+    "api/getNews.js": {
+      "memory": 1024,
+      "maxDuration": 15
+    }
+  },
   "builds": [
     {
       "src": "api/*.js",

@@ -1,17 +1,14 @@
 import chromium from 'chrome-aws-lambda';
 import puppeteer from 'puppeteer-core';
 
-export async function scrapeCreusotInfos(max = 3) {
+export async function scrapeCreusotInfos(max = 5) {
+  let browser = null;
   const articles = [];
 
-  let browser = null;
-
   try {
-    const executablePath = await chromium.executablePath;
-
     browser = await puppeteer.launch({
       args: chromium.args,
-      executablePath,
+      executablePath: await chromium.executablePath,
       headless: chromium.headless,
       defaultViewport: chromium.defaultViewport,
     });
@@ -19,21 +16,24 @@ export async function scrapeCreusotInfos(max = 3) {
     const page = await browser.newPage();
     await page.goto('https://www.creusot-infos.com/news/faits-divers/', {
       waitUntil: 'domcontentloaded',
-      timeout: 20000
+      timeout: 15000,
     });
 
-    const data = await page.evaluate((max) => {
-      const items = Array.from(document.querySelectorAll('h3 a'));
-      const results = [];
+    await page.waitForSelector('h3 > a', { timeout: 10000 });
 
-      items.slice(0, max).forEach((el) => {
-        const title = el.textContent.trim();
+    const results = await page.evaluate((maxArticles) => {
+      const nodes = document.querySelectorAll('h3 > a');
+      const data = [];
+
+      nodes.forEach((el, index) => {
+        if (index >= maxArticles) return;
+
+        const title = el.innerText.trim();
         const link = el.href;
-        const imageEl = el.closest('.catItemBody')?.querySelector('img');
-        const image = imageEl ? imageEl.src : 'https://www.creusot-infos.com/images/logo.png';
+        const image = el.closest('.catItemBody')?.querySelector('img')?.src || null;
 
         if (title && link) {
-          results.push({
+          data.push({
             title,
             link,
             image,
@@ -43,14 +43,16 @@ export async function scrapeCreusotInfos(max = 3) {
         }
       });
 
-      return results;
+      return data;
     }, max);
 
-    articles.push(...data);
+    articles.push(...results);
   } catch (err) {
     console.error('❌ Erreur scraping Creusot Infos :', err.message);
   } finally {
-    if (browser) await browser.close();
+    if (browser !== null) {
+      await browser.close();
+    }
   }
 
   return articles;
