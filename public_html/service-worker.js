@@ -7,7 +7,6 @@
 		'/js/app.js',
 		'/js/chatManager.js',
 		'/js/content.js',
-		'/js/lazyLoading.js',
 		'/manifest.json',
 		'/images/INFOS-96.png',
 		'/images/INFOS-192.png',
