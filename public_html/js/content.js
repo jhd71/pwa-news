@@ -141,7 +141,7 @@
 	// Séparateur Actualités
 	const separator0 = document.createElement('div');
 	separator0.className = 'separator';
-	separator0.innerHTML = `<img src="images/ActualitesLocales.png" alt="Actualités Locales" class="separator-img" loading="lazy">`;
+	separator0.innerHTML = `<img src="images/ActualitesLocales.png" alt="Actualités Locales" class="separator-img">`;
 	this.tileContainer.appendChild(separator0);
 		// Actualités locales
 		const newsDefaultSites = [
