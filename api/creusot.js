@@ -1,39 +1,53 @@
-// api/creusot.js
-const puppeteer = require('puppeteer');
+import chromium from 'chrome-aws-lambda';
+import puppeteer from 'puppeteer-core';
 
-async function scrapeCreusotInfos(max = 2) {
+export async function scrapeCreusotInfos(max = 5) {
+  const articles = [];
+
   try {
     const browser = await puppeteer.launch({
-      headless: 'new',
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless,
     });
 
     const page = await browser.newPage();
     await page.goto('https://www.creusot-infos.com/news/faits-divers/', {
       waitUntil: 'domcontentloaded',
-      timeout: 15000
+      timeout: 20000,
     });
 
-    // Attente du bon sélecteur
-    await page.waitForSelector('h3 > a', { timeout: 15000 });
+    await page.waitForSelector('.catItemBody', { timeout: 15000 });
 
-    const articles = await page.evaluate((max) => {
-      const nodes = Array.from(document.querySelectorAll('h3 > a')).slice(0, max);
-      return nodes.map((link) => ({
-        title: link.innerText.trim(),
-        link: link.href,
-        image: 'https://www.creusot-infos.com/img/logo.png', // ou mieux si image dispo
-        date: new Date().toISOString(),
-        source: 'Creusot Infos'
-      }));
-    }, max);
+    const data = await page.evaluate(() => {
+      const results = [];
+      const items = document.querySelectorAll('.catItemBody');
+
+      items.forEach((item) => {
+        const title = item.querySelector('h3 a')?.innerText?.trim();
+        const link = item.querySelector('h3 a')?.href;
+        const image = item.querySelector('img')?.src;
+        const date = new Date().toISOString();
+
+        if (title && link) {
+          results.push({
+            title,
+            link: link.startsWith('http') ? link : `https://www.creusot-infos.com${link}`,
+            image: image || 'https://actuetmedia.fr/images/AM-192-v2.png',
+            date,
+            source: 'Creusot Infos',
+          });
+        }
+      });
+
+      return results;
+    });
 
     await browser.close();
-    return articles;
+    return data.slice(0, max);
   } catch (err) {
     console.error('❌ Erreur scraping Creusot Infos :', err.message);
     return [];
   }
 }
-
-module.exports = { scrapeCreusotInfos };
