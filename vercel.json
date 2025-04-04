@@ -28,7 +28,9 @@
     {
       "src": "/index$",
       "status": 301,
-      "headers": { "Location": "/" }
+      "headers": {
+        "Location": "/"
+      }
     },
     {
       "src": "^/$",
@@ -41,7 +43,9 @@
     {
       "src": "/(.*)\\.html$",
       "status": 301,
-      "headers": { "Location": "/$1" }
+      "headers": {
+        "Location": "/$1"
+      }
     },
     {
       "src": "/(.*)",
