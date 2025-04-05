@@ -6,6 +6,9 @@ const CACHE_DURATION = 10 * 60 * 1000;
 let cachedArticles = null;
 let lastFetchTime = null;
 
+// URL de votre service Render pour Creusot Infos
+const CREUSOT_API_URL = 'https://creusot.onrender.com/api/news';
+
 export default async function handler(req, res) {
   // En-têtes CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -36,7 +39,7 @@ export default async function handler(req, res) {
         { name: 'Montceau News', url: 'https://www.lejsl.com/edition-montceau-les-mines/rss', max: 2 },
         { name: 'L\'Informateur', url: 'http://www.linformateurdebourgogne.com/feed/', max: 2 },
         { name: 'Le JSL', url: 'https://www.lejsl.com/edition-montceau-les-mines/rss', max: 2 },
-		    { name: 'Creusot-Infos', url: 'https://cdn.feedcontrol.net/9291/15643-KqR63qxTWWVzU.xml', max: 2 },
+        // Nous retirons Creusot-Infos de la liste des flux RSS car nous le récupérons via Render
         { name: 'France Bleu', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/infos.xml', max: 2 },
     ];
     
@@ -78,8 +81,8 @@ export default async function handler(req, res) {
               }
             }
             if (!image) {
-              // Modifiez le chemin d'image par défaut pour utiliser une image existante
-              image = "/images/AM-192-v2.png"; // Utilisez une image que vous avez déjà
+              // Image par défaut
+              image = "/images/AM-192-v2.png";
             }
             
             return {
@@ -99,18 +102,55 @@ export default async function handler(req, res) {
       });
     });
 
+    // Ajouter une promesse pour récupérer les articles de Creusot Infos depuis l'API Render
+    fetchPromises.push(new Promise(async (resolve) => {
+      try {
+        console.log(`📡 Tentative pour Creusot Infos via API Render...`);
+        
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 6000);
+        
+        const response = await fetch(CREUSOT_API_URL, {
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Vérifier la structure de la réponse
+        const creusotArticles = data.articles || data;
+        console.log(`✅ Creusot Infos (API): ${creusotArticles.length || 0} articles trouvés`);
+        
+        // Assurer que les articles ont le bon format et la bonne source
+        const formattedArticles = creusotArticles.slice(0, 2).map(article => ({
+          ...article,
+          source: 'Creusot Infos'
+        }));
+        
+        resolve(formattedArticles);
+      } catch (error) {
+        console.error(`❌ Erreur avec Creusot Infos (API):`, error.message);
+        resolve([]);
+      }
+    }));
+
     // Définir un timeout global
     const timeoutPromise = new Promise((resolve) => {
       setTimeout(() => {
         console.log('⚠️ Timeout global atteint pour les actualités locales');
         resolve([]);
-      }, 8000); // 8 secondes de timeout global
+      }, 10000); // 10 secondes de timeout global
     });
     
     // Exécuter toutes les promesses
     const results = await Promise.race([
       Promise.all(fetchPromises),
-      timeoutPromise.then(() => feeds.map(() => []))
+      timeoutPromise.then(() => [...feeds, {name: 'Creusot Infos'}].map(() => []))
     ]);
     
     // Aplatir les résultats
