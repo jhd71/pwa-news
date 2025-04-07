@@ -211,6 +211,14 @@ const mixedArticles = shuffleAndSortArticles(allArticles);
 
 // Limiter à 10 articles
 const finalArticles = mixedArticles.slice(0, 10);
+
+// Marquer les articles récents comme "nouveaux" et envoyer les notifications
+finalArticles.forEach(article => {
+  if (article.isNew) {
+    // Si l'article est récent, on envoie une notification
+    notifyNewArticle(article.title, article.link);  // Envoi de la notification
+  }
+});
 finalArticles.forEach((article, index) => {
   console.log('Traitement de l\'article:', article); // Log pour chaque article
   
@@ -227,14 +235,6 @@ finalArticles.forEach((article, index) => {
 
   // Ajouter l'article à l'élément du panneau
   newsPanelElement.appendChild(item);
-});
-
-// Marquer les articles récents comme "nouveaux" et envoyer les notifications
-finalArticles.forEach(article => {
-  if (article.isNew) {
-    // Si l'article est récent, on envoie une notification
-    notifyNewArticle(article.title, article.link);  // Envoi de la notification
-  }
 });
 
 // Mettre à jour le cache
