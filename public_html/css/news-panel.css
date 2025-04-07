@@ -809,21 +809,22 @@
 }
 /* Modifié pour la lisibilité dans la barre défilante */
 .new-article {
-  background-color: #0066cc; /* Bleu foncé pour plus de contraste */
+  background-color: #007bff; /* Bleu vif pour un bon contraste avec texte blanc */
   color: #ffffff; /* Texte blanc pour bien ressortir */
-  animation: blink 2s ease-in-out infinite; /* Animation plus douce */
+  animation: blink 2s ease-in-out infinite; /* Animation de pulsation */
+  font-weight: bold; /* Mettre en gras le texte des nouvelles */
 }
 
-/* Animation de pulsation */
+/* Animation de pulsation (douce et visible) */
 @keyframes blink {
-  0% { background-color: #0066cc; }
-  50% { background-color: #004499; } /* Variation de bleu */
-  100% { background-color: #0066cc; }
+  0% { background-color: #007bff; }
+  50% { background-color: #0056b3; } /* Bleu plus foncé pour la pulsation */
+  100% { background-color: #007bff; }
 }
 
-/* Badge "Nouveau" */
+/* Badge "Nouveau" (un peu plus visible) */
 .new-badge {
-  background-color: #ff5722; /* Rouge moins agressif */
+  background-color: #ff5722; /* Rouge pour un fort contraste */
   color: white;
   padding: 0.2em 0.5em;
   font-size: 0.8em;
@@ -831,3 +832,12 @@
   font-weight: bold;
 }
 
+/* Pour les thèmes sombres : ajuster la lisibilité */
+@media (prefers-color-scheme: dark) {
+  .new-article {
+    background-color: #0066cc; /* Un bleu plus clair mais bien contrasté sur fond sombre */
+  }
+  .new-badge {
+    background-color: #ff3d00; /* Rouge plus vif pour un bon contraste en mode sombre */
+  }
+}
