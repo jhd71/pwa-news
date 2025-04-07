@@ -854,8 +854,9 @@
   animation: pulseEffect 2s infinite ease-in-out;  /* Animation pour pulsation */
 }
 
+/* Animation de pulsation plus subtile */
 @keyframes pulseEffect {
-  0% { background-color: #fffc00; }
-  50% { background-color: #ffffff; }
-  100% { background-color: #fffc00; }
+  0% { background-color: #fffc00; color: #333333; }  /* Jaune clair avec texte foncé */
+  50% { background-color: #ffec80; color: #333333; }  /* Jaune légèrement plus clair */
+  100% { background-color: #fffc00; color: #333333; }  /* Retour au jaune clair avec texte foncé */
 }
