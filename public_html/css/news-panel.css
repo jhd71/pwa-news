@@ -844,19 +844,40 @@
 
 /* Mettre en valeur les dernières actualités */
 .latest-article {
-  background-color: #fffc00;  /* Jaune clair pour attirer l'attention */
-  color: #333333; /* Texte sombre pour une bonne lisibilité */
-  font-weight: bold;  /* Mettre en gras le texte */
-  border: 2px solid #333;  /* Ajouter une bordure pour plus de contraste */
+  background-color: #f3f3a0;  /* Jaune pastel doux pour ne pas trop contraster avec le texte */
+  color: #333333; /* Texte sombre (gris foncé) pour une meilleure lisibilité */
+  font-weight: bold;  /* Mettre le texte en gras pour attirer l'attention */
+  border: 2px solid #333;  /* Bordure sombre pour ajouter du contraste */
   padding: 10px;
-  margin-bottom: 10px;  /* Espacement pour séparer des autres articles */
-  border-radius: 5px;  /* Bords arrondis */
-  animation: pulseEffect 2s infinite ease-in-out;  /* Animation pour pulsation */
+  margin-bottom: 10px;  /* Espacement entre les articles */
+  border-radius: 5px;  /* Bords arrondis pour une apparence moderne */
+  animation: pulseEffect 2s infinite ease-in-out;  /* Animation de pulsation */
 }
 
-/* Animation de pulsation plus subtile */
+/* Animation de pulsation plus douce */
 @keyframes pulseEffect {
-  0% { background-color: #fffc00; color: #333333; }  /* Jaune clair avec texte foncé */
-  50% { background-color: #ffec80; color: #333333; }  /* Jaune légèrement plus clair */
-  100% { background-color: #fffc00; color: #333333; }  /* Retour au jaune clair avec texte foncé */
+  0% { 
+    background-color: #f3f3a0;  /* Couleur de fond jaune pâle */
+    color: #333333; /* Texte sombre pour garantir la lisibilité */
+  }
+  50% { 
+    background-color: #f3e76b;  /* Jaune plus doux */
+    color: #333333;  /* Le texte reste sombre */
+  }
+  100% { 
+    background-color: #f3f3a0;  /* Retour au jaune pâle */
+    color: #333333; /* Texte toujours lisible */
+  }
 }
+
+/* Style des liens pour améliorer la lisibilité */
+.latest-article a {
+  color: #0066cc;  /* Un bleu plus foncé pour les liens */
+  font-weight: normal;  /* Pour éviter que les liens soient trop imposants */
+  text-decoration: none;  /* Retirer le soulignement si nécessaire */
+}
+
+.latest-article a:hover {
+  text-decoration: underline;  /* Soulignement au survol pour rendre le lien interactif */
+}
+
