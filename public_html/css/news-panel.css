@@ -809,7 +809,7 @@
 }
 /* Modifié pour la lisibilité dans la barre défilante */
 .new-article {
-  background-color: #007bff; /* Bleu vif pour un bon contraste avec texte blanc */
+  background-color: #054080; /* Bleu vif pour un bon contraste avec texte blanc */
   color: #ffffff; /* Texte blanc pour bien ressortir */
   animation: blink 2s ease-in-out infinite; /* Animation de pulsation */
   font-weight: bold; /* Mettre en gras le texte des nouvelles */
