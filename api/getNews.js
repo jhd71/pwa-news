@@ -176,7 +176,15 @@ const shuffleAndSortArticles = (articles) => {
   
   // Combiner les 3 dernières publications et les autres mélangées
   const finalResult = [...latestArticles, ...result];
-  
+
+  // Ajouter la classe .new-article aux articles récents
+  finalResult.forEach(article => {
+    // Si l'article est dans les 3 derniers, appliquer l'animation de pulsation
+    if (latestArticles.includes(article)) {
+      article.isNew = true;  // Marquer comme récent
+    }
+  });
+
   return finalResult;
 };
 
