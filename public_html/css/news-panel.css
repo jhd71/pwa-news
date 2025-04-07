@@ -832,26 +832,27 @@
   font-weight: bold;
 }
 
-/* Mettre en valeur les dernières actualités avec une pulsation subtile */
+/* Style modifié pour les articles récents */
 .latest-article {
-  background-color: #7a040e;  /* Couleur de fond (actuelle ou autre) */
-  color: #ffffff; /* Texte en blanc pour un bon contraste */
+  background-color: #8c0a0a;  /* Rouge un peu moins vif */
+  color: #ffffff;             /* Texte en blanc pour le contraste */
+  font-weight: normal;        /* Moins gras */
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 5px;
-  animation: blink 2s infinite ease-in-out;  /* Animation de pulsation subtile */
+  animation: pulseEffect 2s infinite ease-in-out;  /* Animation de pulsation */
 }
 
-/* Animation de pulsation (douce et visible) */
-@keyframes blink {
+/* Animation de pulsation ajustée */
+@keyframes pulseEffect {
   0% { 
-    background-color: #7a040e; /* Rouge foncé initial */
+    background-color: #8c0a0a;
   }
   50% { 
-    background-color: #9e0b1d; /* Légèrement plus clair à mi-temps */
+    background-color: #a11b1b;  /* Légèrement plus clair à mi-animation */
   }
   100% { 
-    background-color: #7a040e; /* Retour au rouge foncé */
+    background-color: #8c0a0a;
   }
 }
 
