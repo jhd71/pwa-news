@@ -211,26 +211,24 @@ const mixedArticles = shuffleAndSortArticles(allArticles);
 
 // Limiter à 10 articles
 const finalArticles = mixedArticles.slice(0, 10);
-// Assurez-vous que `newsPanelElement` est bien défini avant de l'utiliser
-const newsPanelElement = document.getElementById('newsPanel'); // Modifie l'ID selon ton code
-
-// Créer un élément HTML pour chaque article et appliquer la classe 'latest-article' aux 3 derniers
 finalArticles.forEach((article, index) => {
-  // Créer un élément div pour l'article
+  console.log('Traitement de l\'article:', article); // Log pour chaque article
+  
   const item = document.createElement('div');
   item.className = 'news-item';  // Classe générale pour tous les articles
 
-  // Si c'est un des 3 derniers articles, ajouter la classe 'latest-article'
+  // Appliquer la classe 'latest-article' aux 3 premiers articles
   if (index < 3) {
     item.classList.add('latest-article');  // Appliquer la classe pour les articles récents
   }
 
-  // Ajouter le titre de l'article à l'élément
+  // Ajouter le titre de l'article
   item.textContent = article.title;
 
   // Ajouter l'article à l'élément du panneau
   newsPanelElement.appendChild(item);
 });
+
 // Marquer les articles récents comme "nouveaux" et envoyer les notifications
 finalArticles.forEach(article => {
   if (article.isNew) {
