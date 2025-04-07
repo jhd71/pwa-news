@@ -817,9 +817,9 @@
 
 /* Animation de pulsation (douce et visible) */
 @keyframes blink {
-  0% { background-color: var(--primary-color); }
-  50% { background-color: var(--primary-color); } /* Bleu plus foncé pour la pulsation */
-  100% { background-color: var(--primary-color); }
+  0% { background-color: #7a040e; }
+  50% { background-color: #5e030a; } /* Bleu plus foncé pour la pulsation */
+  100% { background-color: #400207; }
 }
 
 /* Badge "Nouveau" (un peu plus visible) */
@@ -836,7 +836,6 @@
 .latest-article {
   background-color: var(--primary-color);  /* Couleur de fond (actuelle ou autre) */
   color: #ffffff; /* Texte en blanc pour un bon contraste */
-  font-weight: bold;  /* Texte en gras */
   border: 2px solid #333;  /* Bordure sombre pour plus de contraste */
   padding: 10px;
   margin-bottom: 10px;
