@@ -188,8 +188,16 @@ const shuffleAndSortArticles = (articles) => {
   return finalResult;
 };
 
-// Utilisation de la fonction
+// Mélanger et trier les articles
 const mixedArticles = shuffleAndSortArticles(allArticles);
+
+// Marquer les 3 derniers articles comme "nouveaux" (isNew = true)
+mixedArticles.forEach(article => {
+  if (article.isNew) {
+    // Marquer l'article comme récent
+    article.isNew = true;
+  }
+});
 
 // Limiter à 10 articles
 const finalArticles = mixedArticles.slice(0, 10);
@@ -198,7 +206,7 @@ const finalArticles = mixedArticles.slice(0, 10);
 cachedArticles = finalArticles;
 lastFetchTime = now;
 
-// Renvoyer les articles
+// Renvoyer les articles avec la propriété isNew
 return res.status(200).json(finalArticles);
 		
 	  } catch (error) {
