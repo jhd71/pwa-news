@@ -151,7 +151,27 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // Fonction pour charger le contenu
+// Définir la durée de pulsation à 1h30 (90 minutes = 5400 secondes)
+const pulsationDuration = 5400 * 1000; // 1h30 en millisecondes
+
+// Fonction pour appliquer l'animation de pulsation aux articles récents
+function applyPulsationEffect() {
+  const articles = document.querySelectorAll('.latest-article');
+
+  // Appliquer la pulsation à tous les articles récents dans le panneau
+  articles.forEach(article => {
+    article.classList.add('pulsating'); // Ajouter la pulsation
+  });
+
+  // Après 1h30, retirer l'animation et le fond rouge
+  setTimeout(() => {
+    articles.forEach(article => {
+      article.classList.remove('pulsating'); // Supprimer l'animation
+      article.style.backgroundColor = ''; // Réinitialiser la couleur de fond
+    });
+  }, pulsationDuration);
+}
+
   // Fonction pour charger et afficher les articles dans le panneau d'actualités
 function loadNewsPanelContent() {
   if (newsPanelContent) {

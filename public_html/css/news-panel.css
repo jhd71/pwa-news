@@ -854,3 +854,28 @@
     background-color: #7a040e; /* Retour au rouge foncé */
   }
 }
+
+/* Classe pour les articles récents avec pulsation */
+.pulsating {
+  background-color: #7a040e;  /* Rouge foncé initial */
+  color: #ffffff; /* Texte en blanc pour une bonne lisibilité */
+  font-weight: bold;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  animation: blink 2s infinite ease-in-out;  /* Animation de pulsation douce */
+}
+
+/* Animation de pulsation */
+@keyframes blink {
+  0% { 
+    background-color: #7a040e; /* Rouge foncé initial */
+  }
+  50% { 
+    background-color: #9e0b1d; /* Légèrement plus clair à mi-temps */
+  }
+  100% { 
+    background-color: #7a040e; /* Retour au rouge foncé */
+  }
+}
+
