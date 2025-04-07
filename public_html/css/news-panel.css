@@ -844,13 +844,13 @@
 
 /* Mettre en valeur les dernières actualités avec un fond plus doux */
 .latest-article {
-  background-color: #f0e68c;  /* Jaune pâle plus doux pour un meilleur contraste */
+  background-color: #BFEFFF;  /* Bleu pastel doux pour un fond apaisant */
   color: #333333; /* Texte sombre pour garantir une bonne lisibilité */
-  font-weight: bold;  /* Texte en gras pour attirer l'attention */
-  border: 2px solid #333;  /* Bordure sombre pour ajouter du contraste */
+  font-weight: bold;  /* Mettre le texte en gras pour le rendre plus visible */
+  border: 2px solid #333;  /* Ajouter une bordure sombre pour plus de contraste */
   padding: 10px;
   margin-bottom: 10px;  /* Espacement entre les articles */
-  border-radius: 5px;  /* Bords arrondis pour un look moderne */
+  border-radius: 5px;  /* Bords arrondis pour une apparence moderne */
   animation: pulseEffect 2s infinite ease-in-out;  /* Animation de pulsation */
 }
 
