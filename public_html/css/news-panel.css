@@ -809,7 +809,7 @@
 }
 /* Modifié pour la lisibilité dans la barre défilante */
 .new-article {
-  background-color: #054080; /* Bleu vif pour un bon contraste avec texte blanc */
+  background-color: var(--primary-color); /* Bleu vif pour un bon contraste avec texte blanc */
   color: #ffffff; /* Texte blanc pour bien ressortir */
   animation: blink 2s ease-in-out infinite; /* Animation de pulsation */
   font-weight: bold; /* Mettre en gras le texte des nouvelles */
@@ -817,17 +817,42 @@
 
 /* Animation de pulsation (douce et visible) */
 @keyframes blink {
-  0% { background-color: #007bff; }
-  50% { background-color: #03254a; } /* Bleu plus foncé pour la pulsation */
-  100% { background-color: #007bff; }
+  0% { background-color: var(--primary-color); }
+  50% { background-color: var(--primary-color); } /* Bleu plus foncé pour la pulsation */
+  100% { background-color: var(--primary-color); }
 }
 
 /* Badge "Nouveau" (un peu plus visible) */
 .new-badge {
-  background-color: #ff5722; /* Rouge pour un fort contraste */
+  background-color: var(--primary-color);
   color: white;
   padding: 0.2em 0.5em;
   font-size: 0.8em;
   border-radius: 3px;
   font-weight: bold;
+}
+
+/* Mettre en valeur les dernières actualités avec une pulsation subtile */
+.latest-article {
+  background-color: var(--primary-color);  /* Couleur de fond (actuelle ou autre) */
+  color: #ffffff; /* Texte en blanc pour un bon contraste */
+  font-weight: bold;  /* Texte en gras */
+  border: 2px solid #333;  /* Bordure sombre pour plus de contraste */
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  animation: pulseEffect 2s infinite ease-in-out;  /* Animation de pulsation subtile */
+}
+
+/* Animation de pulsation */
+@keyframes pulseEffect {
+  0% {
+    background-color: var(--primary-color); /* Couleur initiale */
+  }
+  50% {
+    background-color: var(--primary-color); /* Légère teinte plus claire */
+  }
+  100% {
+    background-color: var(--primary-color); /* Retour à la couleur de départ */
+  }
 }
