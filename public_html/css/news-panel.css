@@ -841,3 +841,21 @@
     background-color: #ff3d00; /* Rouge plus vif pour un bon contraste en mode sombre */
   }
 }
+
+/* Mettre en valeur les dernières actualités */
+.latest-article {
+  background-color: #fffc00;  /* Jaune clair pour attirer l'attention */
+  color: #333333; /* Texte sombre pour une bonne lisibilité */
+  font-weight: bold;  /* Mettre en gras le texte */
+  border: 2px solid #333;  /* Ajouter une bordure pour plus de contraste */
+  padding: 10px;
+  margin-bottom: 10px;  /* Espacement pour séparer des autres articles */
+  border-radius: 5px;  /* Bords arrondis */
+  animation: pulseEffect 2s infinite ease-in-out;  /* Animation pour pulsation */
+}
+
+@keyframes pulseEffect {
+  0% { background-color: #fffc00; }
+  50% { background-color: #ffffff; }
+  100% { background-color: #fffc00; }
+}
