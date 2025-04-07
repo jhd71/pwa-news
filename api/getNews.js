@@ -211,6 +211,9 @@ const mixedArticles = shuffleAndSortArticles(allArticles);
 
 // Limiter à 10 articles
 const finalArticles = mixedArticles.slice(0, 10);
+// Assurez-vous que `newsPanelElement` est bien défini avant de l'utiliser
+const newsPanelElement = document.getElementById('newsPanel'); // Modifie l'ID selon ton code
+
 // Créer un élément HTML pour chaque article et appliquer la classe 'latest-article' aux 3 derniers
 finalArticles.forEach((article, index) => {
   // Créer un élément div pour l'article
