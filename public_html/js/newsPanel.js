@@ -152,68 +152,74 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   // Fonction pour charger le contenu
-  function loadNewsPanelContent() {
-    if (newsPanelContent) {
-      newsPanelContent.innerHTML = '<div class="loading-indicator">Chargement des actualités...</div>';
-    }
-    
-    fetch('/api/getNews')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Erreur de réponse: ' + response.status);
-        }
-        return response.json();
-      })
-      .then(articles => {
-        if (!newsPanelContent) return;
-        
-        newsPanelContent.innerHTML = '';
-        
-        if (articles && articles.length > 0) {
-          articles.forEach(article => {
-            const newsItem = document.createElement('div');
-            newsItem.className = 'news-item';
-            
-            let sourceIcon = '📰';
-            switch(article.source) {
-              case 'BFM TV': sourceIcon = '📺'; break;
-              case 'Le JSL': sourceIcon = '📰'; break;
-              case 'Montceau News': sourceIcon = '🏙️'; break;
-              case "L'Informateur": sourceIcon = '📝'; break;
-              case 'France Bleu': sourceIcon = '🎙️'; break;
-              case 'Creusot Infos': sourceIcon = '🏭'; break;
-            }
-            
-            newsItem.innerHTML = `
-              <div class="news-item-source">${sourceIcon} ${article.source}</div>
-              <div class="news-item-title">${article.title}</div>
-              <div class="news-item-date">${formatDate(article.date)}</div>
-              <div class="news-item-actions">
-                <a href="${article.link}" target="_blank" class="news-item-link">Lire l'article</a>
-                <div class="share-buttons">
-                  <button class="share-btn" data-url="${article.link}" data-title="${article.title}">
-                    <span class="material-icons">share</span>
-                  </button>
-                </div>
-              </div>
-            `;
-            
-            newsPanelContent.appendChild(newsItem);
-          });
-          
-          // Initialiser les boutons de partage
-          setupShareButtons();
-        } else {
-          newsPanelContent.innerHTML = '<div class="error-message">Aucune actualité disponible</div>';
-        }
-      })
-      .catch(error => {
-        console.error('Erreur lors du chargement des actualités:', error);
-        if (newsPanelContent) {
-          newsPanelContent.innerHTML = '<div class="error-message">Impossible de charger les actualités: ' + error.message + '</div>';
-        }
-      });
+  // Fonction pour charger et afficher les articles dans le panneau d'actualités
+function loadNewsPanelContent() {
+  if (newsPanelContent) {
+    newsPanelContent.innerHTML = '<div class="loading-indicator">Chargement des actualités...</div>';
   }
+  
+  fetch('/api/getNews')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Erreur de réponse: ' + response.status);
+      }
+      return response.json();
+    })
+    .then(articles => {
+      if (!newsPanelContent) return;
+      
+      newsPanelContent.innerHTML = '';
+      
+      if (articles && articles.length > 0) {
+        articles.forEach((article, index) => {
+          const newsItem = document.createElement('div');
+          newsItem.className = 'news-item';
+          
+          // Si c'est un des 3 derniers articles, ajouter la classe 'latest-article'
+          if (index < 3) {
+            newsItem.classList.add('latest-article');  // Appliquer la classe pour les articles récents
+          }
+          
+          let sourceIcon = '📰';
+          switch(article.source) {
+            case 'BFM TV': sourceIcon = '📺'; break;
+            case 'Le JSL': sourceIcon = '📰'; break;
+            case 'Montceau News': sourceIcon = '🏙️'; break;
+            case "L'Informateur": sourceIcon = '📝'; break;
+            case 'France Bleu': sourceIcon = '🎙️'; break;
+            case 'Creusot Infos': sourceIcon = '🏭'; break;
+          }
+          
+          newsItem.innerHTML = `
+            <div class="news-item-source">${sourceIcon} ${article.source}</div>
+            <div class="news-item-title">${article.title}</div>
+            <div class="news-item-date">${formatDate(article.date)}</div>
+            <div class="news-item-actions">
+              <a href="${article.link}" target="_blank" class="news-item-link">Lire l'article</a>
+              <div class="share-buttons">
+                <button class="share-btn" data-url="${article.link}" data-title="${article.title}">
+                  <span class="material-icons">share</span>
+                </button>
+              </div>
+            </div>
+          `;
+          
+          newsPanelContent.appendChild(newsItem);
+        });
+        
+        // Initialiser les boutons de partage
+        setupShareButtons();
+      } else {
+        newsPanelContent.innerHTML = '<div class="error-message">Aucune actualité disponible</div>';
+      }
+    })
+    .catch(error => {
+      console.error('Erreur lors du chargement des actualités:', error);
+      if (newsPanelContent) {
+        newsPanelContent.innerHTML = '<div class="error-message">Impossible de charger les actualités: ' + error.message + '</div>';
+      }
+    });
+}
   
   // Événements de clic
   if (newsButton) {
