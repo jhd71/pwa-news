@@ -212,20 +212,18 @@ const mixedArticles = shuffleAndSortArticles(allArticles);
 // Limiter à 10 articles
 const finalArticles = mixedArticles.slice(0, 10);
 
-// Créer un élément pour chaque article et appliquer la classe pour les 3 derniers
+// Mettre en valeur les 3 derniers articles
 finalArticles.forEach((article, index) => {
-  // Créer un élément div pour l'article
-  const item = document.createElement('div');
-  item.className = 'news-item';  // Classe générale pour tous les articles
-
-  // Si c'est un des 3 derniers articles, ajouter la classe 'latest-article'
   if (index < 3) {
-    item.classList.add('latest-article');  // Appliquer la classe pour les articles récents
+    // Appliquer la classe 'latest-article' aux 3 derniers articles
+    article.classList.add('latest-article');
   }
 
-  // Ajouter le titre de l'article à l'élément
+  // Rendu de l'article dans le panneau
+  const item = document.createElement('div');
+  item.className = 'news-item'; // Classe générale pour les articles
   item.textContent = article.title;
-
+  // Ajouter le contenu et les actions (comme un lien ou une image)
   // Ajouter l'article à l'élément du panneau
   newsPanelElement.appendChild(item);
 });
@@ -244,16 +242,16 @@ lastFetchTime = now;
 
 // Renvoyer les articles avec la propriété isNew
 return res.status(200).json(finalArticles);
-
+		
 } catch (error) {
   console.error('❌ Erreur générale dans getNews:', error.message);
-
+  
   // Si le cache existe en cas d'erreur, l'utiliser
   if (cachedArticles) {
     console.log('📡 Utilisation du cache local en cas d\'erreur');
     return res.status(200).json(cachedArticles);
   }
-
+  
   return res.status(500).json({ error: error.message });
 }
 	}
