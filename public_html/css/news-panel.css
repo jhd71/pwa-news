@@ -807,3 +807,14 @@
     padding: 12px;
   }
 }
+/* Indicateur de nouvelle actu */
+.new-article {
+  background-color: #fffc00; /* Jaune pour attirer l'attention */
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0% { background-color: #fffc00; }
+  50% { background-color: #ffffff; }
+  100% { background-color: #fffc00; }
+}
