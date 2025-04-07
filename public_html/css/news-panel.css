@@ -844,10 +844,6 @@
 
 /* Mettre en valeur les dernières actualités avec une pulsation subtile */
 .latest-article {
-  border: 2px solid #333;  /* Bordure sombre pour plus de contraste */
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
   animation: pulseEffect 2s infinite ease-in-out;  /* Animation de pulsation subtile */
 }
 
