@@ -836,7 +836,6 @@
 .latest-article {
   background-color: var(--primary-color);  /* Couleur de fond (actuelle ou autre) */
   color: #ffffff; /* Texte en blanc pour un bon contraste */
-  border: 2px solid #333;  /* Bordure sombre pour plus de contraste */
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 5px;
