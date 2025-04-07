@@ -807,18 +807,18 @@
     padding: 12px;
   }
 }
-/* Indicateur de nouvelle actu avec un fond bleu clair et texte noir */
+/* Modifié pour la lisibilité dans la barre défilante */
 .new-article {
-  background-color: #88c7ff; /* Bleu clair pour attirer l'attention */
-  color: #333333; /* Texte noir pour un bon contraste */
+  background-color: #0066cc; /* Bleu foncé pour plus de contraste */
+  color: #ffffff; /* Texte blanc pour bien ressortir */
   animation: blink 2s ease-in-out infinite; /* Animation plus douce */
 }
 
 /* Animation de pulsation */
 @keyframes blink {
-  0% { background-color: #88c7ff; }
-  50% { background-color: #ffffff; }
-  100% { background-color: #88c7ff; }
+  0% { background-color: #0066cc; }
+  50% { background-color: #004499; } /* Variation de bleu */
+  100% { background-color: #0066cc; }
 }
 
 /* Badge "Nouveau" */
