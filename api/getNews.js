@@ -227,7 +227,6 @@ finalArticles.forEach((article, index) => {
   // Ajouter l'article à l'élément du panneau
   newsPanelElement.appendChild(item);
 });
-
 // Marquer les articles récents comme "nouveaux" et envoyer les notifications
 finalArticles.forEach(article => {
   if (article.isNew) {
