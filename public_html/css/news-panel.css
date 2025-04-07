@@ -841,3 +841,28 @@
     background-color: #ff3d00; /* Rouge plus vif pour un bon contraste en mode sombre */
   }
 }
+
+/* Mettre en valeur les dernières actualités avec une pulsation subtile */
+.latest-article {
+  background-color: #9c27b0;  /* Couleur de fond (actuelle ou autre) */
+  color: #ffffff; /* Texte en blanc pour un bon contraste */
+  font-weight: bold;  /* Texte en gras */
+  border: 2px solid #333;  /* Bordure sombre pour plus de contraste */
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  animation: pulseEffect 2s infinite ease-in-out;  /* Animation de pulsation subtile */
+}
+
+/* Animation de pulsation */
+@keyframes pulseEffect {
+  0% {
+    background-color: #9c27b0; /* Couleur initiale */
+  }
+  50% {
+    background-color: #ab47bc; /* Légère teinte plus claire */
+  }
+  100% {
+    background-color: #9c27b0; /* Retour à la couleur de départ */
+  }
+}
