@@ -824,38 +824,10 @@
 
 /* Badge "Nouveau" (un peu plus visible) */
 .new-badge {
-  background-color: #3d0408; /* Rouge pour un fort contraste */
+  background-color: #ff5722; /* Rouge pour un fort contraste */
   color: white;
   padding: 0.2em 0.5em;
   font-size: 0.8em;
   border-radius: 3px;
   font-weight: bold;
-}
-
-/* Pour les thèmes sombres : ajuster la lisibilité */
-@media (prefers-color-scheme: dark) {
-  .new-article {
-    background-color: #0066cc; /* Un bleu plus clair mais bien contrasté sur fond sombre */
-  }
-  .new-badge {
-    background-color: #ff3d00; /* Rouge plus vif pour un bon contraste en mode sombre */
-  }
-}
-
-/* Mettre en valeur les dernières actualités avec une pulsation subtile */
-.latest-article {
-  animation: pulseEffect 2s infinite ease-in-out;  /* Animation de pulsation subtile */
-}
-
-/* Animation de pulsation */
-@keyframes pulseEffect {
-  0% {
-    background-color: #9c27b0; /* Couleur initiale */
-  }
-  50% {
-    background-color: #ab47bc; /* Légère teinte plus claire */
-  }
-  100% {
-    background-color: #9c27b0; /* Retour à la couleur de départ */
-  }
 }
