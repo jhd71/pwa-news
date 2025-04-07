@@ -212,21 +212,7 @@ const mixedArticles = shuffleAndSortArticles(allArticles);
 // Limiter à 10 articles
 const finalArticles = mixedArticles.slice(0, 10);
 
-// Mettre en valeur les 3 derniers articles
-finalArticles.forEach((article, index) => {
-  if (index < 3) {
-    // Appliquer la classe 'latest-article' aux 3 derniers articles
-    article.classList.add('latest-article');
-  }
 
-  // Rendu de l'article dans le panneau
-  const item = document.createElement('div');
-  item.className = 'news-item'; // Classe générale pour les articles
-  item.textContent = article.title;
-  // Ajouter le contenu et les actions (comme un lien ou une image)
-  // Ajouter l'article à l'élément du panneau
-  newsPanelElement.appendChild(item);
-});
 // Marquer les articles récents comme "nouveaux" et envoyer les notifications
 finalArticles.forEach(article => {
   if (article.isNew) {
