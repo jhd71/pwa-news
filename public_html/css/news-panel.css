@@ -824,7 +824,7 @@
 
 /* Badge "Nouveau" (un peu plus visible) */
 .new-badge {
-  background-color: #ff5722; /* Rouge pour un fort contraste */
+  background-color: #3d0408; /* Rouge pour un fort contraste */
   color: white;
   padding: 0.2em 0.5em;
   font-size: 0.8em;
@@ -838,7 +838,7 @@
     background-color: #0066cc; /* Un bleu plus clair mais bien contrasté sur fond sombre */
   }
   .new-badge {
-    background-color: #3d0408; /* Rouge plus vif pour un bon contraste en mode sombre */
+    background-color: #ff3d00; /* Rouge plus vif pour un bon contraste en mode sombre */
   }
 }
 
