@@ -839,7 +839,7 @@
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 5px;
-  animation: pulseEffect 2s infinite ease-in-out;  /* Animation de pulsation subtile */
+  animation: blink 2s infinite ease-in-out;  /* Animation de pulsation subtile */
 }
 
 /* Animation de pulsation (douce et visible) */
