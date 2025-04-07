@@ -138,49 +138,60 @@
 		  return res.status(500).json({ error: "Aucun article récupéré" });
 		}
 		
-		// Mélanger légèrement les articles au lieu de juste les trier par date
-		// pour éviter d'avoir toutes les sources regroupées
-		const shuffleAndSortArticles = (articles) => {
-		  // Regrouper par source
-		  const bySource = {};
-		  articles.forEach(article => {
-			if (!bySource[article.source]) {
-			  bySource[article.source] = [];
-			}
-			bySource[article.source].push(article);
-		  });
-		  
-		  // Prendre un article de chaque source à tour de rôle
-		  const result = [];
-		  let sourcesWithArticles = Object.keys(bySource);
-		  
-		  while (sourcesWithArticles.length > 0) {
-			for (let i = 0; i < sourcesWithArticles.length; i++) {
-			  const source = sourcesWithArticles[i];
-			  if (bySource[source].length > 0) {
-				result.push(bySource[source].shift());
-			  }
-			  if (bySource[source].length === 0) {
-				sourcesWithArticles = sourcesWithArticles.filter(s => s !== source);
-				i--; // Ajustement pour la boucle
-			  }
-			}
-		  }
-		  
-		  return result;
-		};
-		
-		const mixedArticles = shuffleAndSortArticles(allArticles);
-		
-		// Limiter à 10 articles
-		const finalArticles = mixedArticles.slice(0, 10);
-		
-		// Mettre à jour le cache
-		cachedArticles = finalArticles;
-		lastFetchTime = now;
-		
-		// Renvoyer les articles
-		return res.status(200).json(finalArticles);
+		// Mélanger légèrement les articles et placer les 3 derniers en haut
+const shuffleAndSortArticles = (articles) => {
+  // Trier par date pour récupérer les 3 dernières publications
+  articles.sort((a, b) => new Date(b.date) - new Date(a.date)); // Tri décroissant par date
+  
+  // Récupérer les 3 dernières publications
+  const latestArticles = articles.slice(0, 3); 
+  const remainingArticles = articles.slice(3); // Le reste des articles
+  
+  // Regrouper les articles par source pour éviter trop de répétition
+  const bySource = {};
+  remainingArticles.forEach(article => {
+    if (!bySource[article.source]) {
+      bySource[article.source] = [];
+    }
+    bySource[article.source].push(article);
+  });
+  
+  // Mélanger les articles restants
+  const result = [];
+  let sourcesWithArticles = Object.keys(bySource);
+  
+  // Mélanger les articles de chaque source pour éviter les répétitions
+  while (sourcesWithArticles.length > 0) {
+    for (let i = 0; i < sourcesWithArticles.length; i++) {
+      const source = sourcesWithArticles[i];
+      if (bySource[source].length > 0) {
+        result.push(bySource[source].shift());
+      }
+      if (bySource[source].length === 0) {
+        sourcesWithArticles = sourcesWithArticles.filter(s => s !== source);
+        i--; // Ajuster l'index pour ne pas sauter une source
+      }
+    }
+  }
+  
+  // Combiner les 3 dernières publications et les autres mélangées
+  const finalResult = [...latestArticles, ...result];
+  
+  return finalResult;
+};
+
+// Utilisation de la fonction
+const mixedArticles = shuffleAndSortArticles(allArticles);
+
+// Limiter à 10 articles
+const finalArticles = mixedArticles.slice(0, 10);
+
+// Mettre à jour le cache
+cachedArticles = finalArticles;
+lastFetchTime = now;
+
+// Renvoyer les articles
+return res.status(200).json(finalArticles);
 		
 	  } catch (error) {
 		console.error('❌ Erreur générale dans getNews:', error.message);

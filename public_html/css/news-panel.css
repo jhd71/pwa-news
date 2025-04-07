@@ -807,22 +807,27 @@
     padding: 12px;
   }
 }
-/* Indicateur de nouvelle actu */
+/* Indicateur de nouvelle actu avec un fond bleu clair et texte noir */
 .new-article {
-  background-color: #fffc00; /* Jaune pour attirer l'attention */
-  animation: blink 1s infinite;
+  background-color: #88c7ff; /* Bleu clair pour attirer l'attention */
+  color: #333333; /* Texte noir pour un bon contraste */
+  animation: blink 2s ease-in-out infinite; /* Animation plus douce */
 }
 
+/* Animation de pulsation */
 @keyframes blink {
-  0% { background-color: #fffc00; }
+  0% { background-color: #88c7ff; }
   50% { background-color: #ffffff; }
-  100% { background-color: #fffc00; }
+  100% { background-color: #88c7ff; }
 }
 
+/* Badge "Nouveau" */
 .new-badge {
-  background-color: #ff0000;
+  background-color: #ff5722; /* Rouge moins agressif */
   color: white;
   padding: 0.2em 0.5em;
   font-size: 0.8em;
   border-radius: 3px;
+  font-weight: bold;
 }
+
