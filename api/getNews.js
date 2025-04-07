@@ -187,6 +187,23 @@ const shuffleAndSortArticles = (articles) => {
 
   return finalResult;
 };
+finalArticles.forEach((article, index) => {
+  console.log('Traitement de l\'article:', article); // Log pour chaque article
+  
+  const item = document.createElement('div');
+  item.className = 'news-item';  // Classe générale pour tous les articles
+
+  // Appliquer la classe 'latest-article' aux 3 premiers articles
+  if (index < 3) {
+    item.classList.add('latest-article');  // Appliquer la classe pour les articles récents
+  }
+
+  // Ajouter le titre de l'article
+  item.textContent = article.title;
+
+  // Ajouter l'article à l'élément du panneau
+  newsPanelElement.appendChild(item);
+});
 
 // 1. Fonction pour envoyer la notification via ntfy
 const notifyNewArticle = (title, link) => { 
@@ -218,23 +235,6 @@ finalArticles.forEach(article => {
     // Si l'article est récent, on envoie une notification
     notifyNewArticle(article.title, article.link);  // Envoi de la notification
   }
-});
-finalArticles.forEach((article, index) => {
-  console.log('Traitement de l\'article:', article); // Log pour chaque article
-  
-  const item = document.createElement('div');
-  item.className = 'news-item';  // Classe générale pour tous les articles
-
-  // Appliquer la classe 'latest-article' aux 3 premiers articles
-  if (index < 3) {
-    item.classList.add('latest-article');  // Appliquer la classe pour les articles récents
-  }
-
-  // Ajouter le titre de l'article
-  item.textContent = article.title;
-
-  // Ajouter l'article à l'élément du panneau
-  newsPanelElement.appendChild(item);
 });
 
 // Mettre à jour le cache
