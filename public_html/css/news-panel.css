@@ -807,43 +807,18 @@
     padding: 12px;
   }
 }
-/* Modifié pour la lisibilité dans la barre défilante */
-.new-article {
-  background-color: var(--primary-color); /* Bleu vif pour un bon contraste avec texte blanc */
-  color: #ffffff; /* Texte blanc pour bien ressortir */
-  animation: blink 2s ease-in-out infinite; /* Animation de pulsation */
-  font-weight: bold; /* Mettre en gras le texte des nouvelles */
-}
-
-/* Animation de pulsation (douce et visible) */
-@keyframes blink {
-  0% { background-color: #7a040e; }
-  50% { background-color: #9e0b1d; } /* Bleu plus foncé pour la pulsation */
-  100% { background-color: #7a040e; }
-}
-
-/* Badge "Nouveau" (un peu plus visible) */
-.new-badge {
-  background-color: var(--primary-color);
-  color: white;
-  padding: 0.2em 0.5em;
-  font-size: 0.8em;
-  border-radius: 3px;
-  font-weight: bold;
-}
-
-/* Style modifié pour les articles récents */
+/* Style unifié pour les articles récents (pour barre défilante et panneau) */
 .latest-article {
-  background-color: #8c0a0a;  /* Rouge un peu moins vif */
-  color: #ffffff;             /* Texte en blanc pour le contraste */
-  font-weight: normal;        /* Moins gras */
+  background-color: #8c0a0a;  /* Rouge moins vif */
+  color: #ffffff;             /* Texte en blanc */
+  font-weight: normal;        /* Texte normal (pas en gras) */
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 5px;
   animation: pulseEffect 2s infinite ease-in-out;  /* Animation de pulsation */
 }
 
-/* Animation de pulsation ajustée */
+/* Animation de pulsation pour les articles récents */
 @keyframes pulseEffect {
   0% { 
     background-color: #8c0a0a;
@@ -856,21 +831,14 @@
   }
 }
 
-/* Classe pour les articles récents avec pulsation */
-.pulsating {
-  background-color: #7a040e;  /* Rouge foncé initial */
-  color: #ffffff; /* Texte en blanc pour une bonne lisibilité */
-  font-weight: bold;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  animation: blink 2s infinite ease-in-out;  /* Animation de pulsation douce */
+/* Style pour le badge "Nouveau" si tu l'utilises */
+.new-badge {
+  background-color: #8c0a0a;
+  color: #ffffff;
+  padding: 0.2em 0.5em;
+  font-size: 0.8em;
+  border-radius: 3px;
+  font-weight: normal;
 }
 
-/* Animation de pulsation */
-@keyframes pulseEffect {
-  0% { background-color: #7a040e; }
-  50% { background-color: #9e0b1d; }
-  100% { background-color: #7a040e; }
-}
 
