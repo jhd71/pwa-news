@@ -168,7 +168,7 @@ function applyPulsationEffect() {
   setTimeout(() => {
     articles.forEach(article => {
       article.classList.remove('pulsating');
-      article.style.backgroundColor = ''; // Réinitialise la couleur de fond
+      article.style.backgroundColor = ''; // Réinitialise la couleur de fond (elle se remettra aux styles par défaut)
     });
   }, pulsationDuration);
 }
@@ -192,54 +192,50 @@ function applyPulsationEffect() {
       newsPanelContent.innerHTML = '';
       
       if (articles && articles.length > 0) {
-  articles.forEach((article, index) => {
-    const newsItem = document.createElement('div');
-    newsItem.className = 'news-item';
+        articles.forEach((article, index) => {
+          const newsItem = document.createElement('div');
+          newsItem.className = 'news-item';
 
-    // Définir la durée considérée comme "récent" : ici 90 minutes (en millisecondes)
-	const pulsationDuration = 90 * 60 * 1000; // 90 minutes
+          // Vérifier si l'article a été publié il y a moins de 90 minutes
+          if (Date.now() - new Date(article.date).getTime() < pulsationDuration) {
+            newsItem.classList.add('latest-article');
+          }
 
-	// Vérifier si l'article a été publié il y a moins de 90 minutes
-	if (Date.now() - new Date(article.date).getTime() < pulsationDuration) {
-	newsItem.classList.add('latest-article');
-	}
+          let sourceIcon = '📰';
+          switch(article.source) {
+            case 'BFM TV': sourceIcon = '📺'; break;
+            case 'Le JSL': sourceIcon = '📰'; break;
+            case 'Montceau News': sourceIcon = '🏙️'; break;
+            case "L'Informateur": sourceIcon = '📝'; break;
+            case 'France Bleu': sourceIcon = '🎙️'; break;
+            case 'Creusot Infos': sourceIcon = '🏭'; break;
+          }
 
+          newsItem.innerHTML = `
+            <div class="news-item-source">${sourceIcon} ${article.source}</div>
+            <div class="news-item-title">${article.title}</div>
+            <div class="news-item-date">${formatDate(article.date)}</div>
+            <div class="news-item-actions">
+              <a href="${article.link}" target="_blank" class="news-item-link">Lire l'article</a>
+              <div class="share-buttons">
+                <button class="share-btn" data-url="${article.link}" data-title="${article.title}">
+                  <span class="material-icons">share</span>
+                </button>
+              </div>
+            </div>
+          `;
 
-    let sourceIcon = '📰';
-    switch(article.source) {
-      case 'BFM TV': sourceIcon = '📺'; break;
-      case 'Le JSL': sourceIcon = '📰'; break;
-      case 'Montceau News': sourceIcon = '🏙️'; break;
-      case "L'Informateur": sourceIcon = '📝'; break;
-      case 'France Bleu': sourceIcon = '🎙️'; break;
-      case 'Creusot Infos': sourceIcon = '🏭'; break;
-    }
+          newsPanelContent.appendChild(newsItem);
+        });
+        
+        // Initialiser les boutons de partage
+        setupShareButtons();
 
-    newsItem.innerHTML = `
-      <div class="news-item-source">${sourceIcon} ${article.source}</div>
-      <div class="news-item-title">${article.title}</div>
-      <div class="news-item-date">${formatDate(article.date)}</div>
-      <div class="news-item-actions">
-        <a href="${article.link}" target="_blank" class="news-item-link">Lire l'article</a>
-        <div class="share-buttons">
-          <button class="share-btn" data-url="${article.link}" data-title="${article.title}">
-            <span class="material-icons">share</span>
-          </button>
-        </div>
-      </div>
-    `;
-    
-    newsPanelContent.appendChild(newsItem);
-  });
-  
-  // Initialiser les boutons de partage
-  setupShareButtons();
-
-  // JUSTE ICI, après setupShareButtons(), applique l'effet de pulsation
-  applyPulsationEffect();
-} else {
-  newsPanelContent.innerHTML = '<div class="error-message">Aucune actualité disponible</div>';
-}
+        // Appliquer l'effet de pulsation aux articles récents
+        applyPulsationEffect();
+      } else {
+        newsPanelContent.innerHTML = '<div class="error-message">Aucune actualité disponible</div>';
+      }
     })
     .catch(error => {
       console.error('Erreur lors du chargement des actualités:', error);
