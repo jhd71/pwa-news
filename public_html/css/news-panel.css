@@ -428,6 +428,7 @@
   margin: 0 5px;
   /* Optionnel : ajouter un fond léger ou une bordure peut aider à séparer visuellement les éléments */
   /* border-right: 1px solid rgba(255,255,255,0.3); */
+	border-radius: 5px;   /* Ceci arrondit légèrement les coins de chaque article */
 }
 
 /* Pour ajouter une séparation visuelle entre les articles, on utilise un pseudo-élément */
