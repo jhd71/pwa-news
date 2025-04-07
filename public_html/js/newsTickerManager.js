@@ -28,8 +28,28 @@ async function loadNewsTickerItems() {
       const now = Date.now();
       const newArticleThreshold = 60 * 60 * 1000; // 1 heure en millisecondes
 
-      // Ajouter les articles
-      articles.forEach((article, index) => {
+      // Trier par date de publication (les plus récents en premier)
+      articles.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      // Mettre les 3 dernières publications en haut
+      const latestArticles = articles.slice(0, 3);
+      const remainingArticles = articles.slice(3);
+
+      // Mélanger le reste des articles
+      const shuffleArray = (array) => {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]]; // Échange les éléments
+        }
+      };
+      
+      shuffleArray(remainingArticles); // Mélanger les autres articles
+
+      // Ajouter les 3 dernières publications en haut
+      const allArticles = [...latestArticles, ...remainingArticles];
+      
+      // Ajouter les articles dans le ticker
+      allArticles.forEach((article, index) => {
         const title = article.title || 'Article sans titre';
         
         // Nettoyer le titre si nécessaire (enlever HTML, etc.)
@@ -64,7 +84,7 @@ async function loadNewsTickerItems() {
         tickerElement.appendChild(item);
       });
       
-      console.log("Affichage terminé pour", articles.length, "articles dans le ticker");
+      console.log("Affichage terminé pour", allArticles.length, "articles dans le ticker");
     } else {
       console.warn("Aucun article récupéré ou tableau vide pour le ticker");
       tickerElement.innerHTML = '<div class="ticker-item">Aucune actualité disponible pour le moment</div>';
