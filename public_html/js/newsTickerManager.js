@@ -25,6 +25,9 @@ async function loadNewsTickerItems() {
       // Vider le ticker
       tickerElement.innerHTML = '';
       
+      const now = Date.now();
+      const newArticleThreshold = 60 * 60 * 1000; // 1 heure en millisecondes
+
       // Ajouter les articles
       articles.forEach((article, index) => {
         const title = article.title || 'Article sans titre';
@@ -34,6 +37,11 @@ async function loadNewsTickerItems() {
         
         const item = document.createElement('div');
         item.className = 'ticker-item';
+        
+        // Vérifier si l'article est récent (moins d'une heure)
+        if (now - new Date(article.date).getTime() < newArticleThreshold) {
+          item.classList.add('new-article'); // Ajouter la classe pour l'effet
+        }
         
         // Formater la date
         let dateStr = '';
@@ -48,10 +56,10 @@ async function loadNewsTickerItems() {
         }
         
         item.innerHTML = `
-  <span class="ticker-source" data-source="${article.source}">[${article.source}]</span>
-  <a href="${article.link}" target="_blank">${cleanTitle}</a>
-  ${dateStr ? `<span class="ticker-time">${dateStr}</span>` : ''}
-`;
+          <span class="ticker-source" data-source="${article.source}">[${article.source}]</span>
+          <a href="${article.link}" target="_blank">${cleanTitle}</a>
+          ${dateStr ? `<span class="ticker-time">${dateStr}</span>` : ''}
+        `;
         
         tickerElement.appendChild(item);
       });
