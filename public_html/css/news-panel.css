@@ -818,3 +818,11 @@
   50% { background-color: #ffffff; }
   100% { background-color: #fffc00; }
 }
+
+.new-badge {
+  background-color: #ff0000;
+  color: white;
+  padding: 0.2em 0.5em;
+  font-size: 0.8em;
+  border-radius: 3px;
+}
