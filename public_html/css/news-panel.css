@@ -818,8 +818,8 @@
 /* Animation de pulsation (douce et visible) */
 @keyframes blink {
   0% { background-color: #7a040e; }
-  50% { background-color: #5e030a; } /* Bleu plus foncé pour la pulsation */
-  100% { background-color: #400207; }
+  50% { background-color: #9e0b1d; } /* Bleu plus foncé pour la pulsation */
+  100% { background-color: #7a040e; }
 }
 
 /* Badge "Nouveau" (un peu plus visible) */
@@ -842,15 +842,15 @@
   animation: pulseEffect 2s infinite ease-in-out;  /* Animation de pulsation subtile */
 }
 
-/* Animation de pulsation */
-@keyframes pulseEffect {
-  0% {
-    background-color: var(--primary-color); /* Couleur initiale */
+/* Animation de pulsation (douce et visible) */
+@keyframes blink {
+  0% { 
+    background-color: #7a040e; /* Rouge foncé initial */
   }
-  50% {
-    background-color: var(--primary-color); /* Légère teinte plus claire */
+  50% { 
+    background-color: #9e0b1d; /* Légèrement plus clair à mi-temps */
   }
-  100% {
-    background-color: var(--primary-color); /* Retour à la couleur de départ */
+  100% { 
+    background-color: #7a040e; /* Retour au rouge foncé */
   }
 }
