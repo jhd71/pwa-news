@@ -834,7 +834,7 @@
 
 /* Mettre en valeur les dernières actualités avec une pulsation subtile */
 .latest-article {
-  background-color: var(--primary-color);  /* Couleur de fond (actuelle ou autre) */
+  background-color: #7a040e;  /* Couleur de fond (actuelle ou autre) */
   color: #ffffff; /* Texte en blanc pour un bon contraste */
   padding: 10px;
   margin-bottom: 10px;
