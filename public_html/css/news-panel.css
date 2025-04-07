@@ -867,15 +867,9 @@
 }
 
 /* Animation de pulsation */
-@keyframes blink {
-  0% { 
-    background-color: #7a040e; /* Rouge foncé initial */
-  }
-  50% { 
-    background-color: #9e0b1d; /* Légèrement plus clair à mi-temps */
-  }
-  100% { 
-    background-color: #7a040e; /* Retour au rouge foncé */
-  }
+@keyframes pulseEffect {
+  0% { background-color: #7a040e; }
+  50% { background-color: #9e0b1d; }
+  100% { background-color: #7a040e; }
 }
 
