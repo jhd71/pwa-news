@@ -356,7 +356,7 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
-/* Ticker d'actualités */
+/* Conteneur principal du ticker d'actualités */
 .news-ticker {
   position: fixed;
   bottom: 60px; 
@@ -369,8 +369,11 @@
   z-index: 1000;
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
+  border-radius: 8px;         /* Bords arrondis du conteneur */
+  padding: 0 10px;            /* Un peu d'espace intérieur sur les côtés */
 }
 
+/* Conteneur interne qui gère le défilement */
 .ticker-wrapper {
   display: flex;
   animation: ticker 80s linear infinite;
@@ -379,10 +382,11 @@
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
+
 /* Animation de base pour desktop - plus rapide */
 @media (min-width: 1024px) {
   .ticker-wrapper {
-    animation: ticker-desktop 60s linear infinite; /* Réduire de 80s à 60s pour accélérer */
+    animation: ticker-desktop 60s linear infinite; /* Réduit de 80s à 60s pour accélérer */
   }
   
   @keyframes ticker-desktop {
@@ -391,7 +395,7 @@
   }
 }
 
-/* Conserver les animations existantes pour mobile */
+/* Animations pour tablette et mobile restent inchangées */
 @media (max-width: 768px) {
   .ticker-wrapper {
     animation: ticker-tablet 70s linear infinite;
@@ -414,45 +418,54 @@
   }
 }
 
+/* Styles pour chaque article du ticker */
 .ticker-item {
   padding: 10px 40px;
   font-weight: bold;
   position: relative;
+  display: inline-block;
+  /* On ajoute une légère marge verticale et horizontale pour espacer les articles */
+  margin: 0 5px;
+  /* Optionnel : ajouter un fond léger ou une bordure peut aider à séparer visuellement les éléments */
+  /* border-right: 1px solid rgba(255,255,255,0.3); */
 }
 
+/* Pour ajouter une séparation visuelle entre les articles, on utilise un pseudo-élément */
 .ticker-item:not(:last-child)::after {
-  content: "•";
+  content: "•";                /* Point séparateur */
   position: absolute;
   right: 15px;
-  color: #4CAF50;
+  color: #4CAF50;              /* Couleur du séparateur */
 }
-/* Séparateur entre les articles - correction pour mobile */
+
+/* Ajustements pour mobile sur le pseudo-élément */
 @media (max-width: 768px) {
   .ticker-item:not(:last-child)::after {
     content: "•";
     position: absolute;
-    right: 10px; /* Réduire la distance par rapport à la droite */
+    right: 10px;             /* Réduit la distance */
     color: #4CAF50;
-    margin-left: 5px; /* Ajouter une marge à gauche */
+    margin-left: 5px;
   }
   
-  /* Ajouter plus d'espace à droite du texte pour éviter la superposition */
+  /* Augmenter l'espace à droite du texte pour éviter la superposition */
   .ticker-item {
-    padding-right: 25px; /* Augmenter l'espace à droite */
+    padding-right: 25px;
   }
 }
 
 /* Pour les très petits écrans */
 @media (max-width: 480px) {
   .ticker-item:not(:last-child)::after {
-    right: 7px; /* Encore moins à droite pour les petits écrans */
+    right: 7px;
   }
   
   .ticker-item {
-    padding-right: 20px; /* Ajuster l'espace */
+    padding-right: 20px;
   }
 }
-  
+
+/* Styles pour les liens dans le ticker */
 .ticker-item a {
   color: white;
   text-decoration: none;
@@ -463,26 +476,28 @@
   text-decoration: underline;
 }
 
+/* Style de la source affichée dans le ticker */
 .ticker-source {
   color: #7FFF7F;
   margin-right: 8px;
   font-weight: bold;
 }
 
-/* Icônes pour les sources */
+/* Icônes pour les sources spécifiques */
 .ticker-source[data-source="BFM TV"]::before { content: "📺 "; }
 .ticker-source[data-source="Le JSL"]::before { content: "📰 "; }
 .ticker-source[data-source="Montceau News"]::before { content: "🏙️ "; }
 .ticker-source[data-source="L'Informateur"]::before { content: "📝 "; }
 .ticker-source[data-source="France Bleu"]::before { content: "🎙️ "; }
-.ticker-source[data-source="Creusot Infos"]::before { content: "🏭 "; } /* Icône pour Creusot Infos */
+.ticker-source[data-source="Creusot Infos"]::before { content: "🏭 "; }
 
-/* Animations */
+/* Animation globale du ticker */
 @keyframes ticker {
   0% { transform: translateX(100%); }
   100% { transform: translateX(-300%); }
 }
 
+/* Animations supplémentaires (pulse et spin) restent inchangées */
 @keyframes pulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.05); }
