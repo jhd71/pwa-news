@@ -188,19 +188,37 @@ const shuffleAndSortArticles = (articles) => {
   return finalResult;
 };
 
+// 1. Fonction pour envoyer la notification via ntfy
+const notifyNewArticle = (title, link) => { 
+  fetch('https://ntfy.sh/actu-local', {
+    method: 'POST',
+    body: JSON.stringify({
+      message: `Nouvelle actu : ${title}`,
+      title: 'Nouveau contenu sur Actu & Média',
+      priority: 'high', // Priorité de la notification
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  .then(response => response.json())
+  .then(data => console.log("Notification envoyée avec succès", data))
+  .catch(error => console.error("Erreur lors de l'envoi de la notification", error));
+};
+
 // Mélanger et trier les articles
 const mixedArticles = shuffleAndSortArticles(allArticles);
 
-// Marquer les 3 derniers articles comme "nouveaux" (isNew = true)
-mixedArticles.forEach(article => {
-  if (article.isNew) {
-    // Marquer l'article comme récent
-    article.isNew = true;
-  }
-});
-
 // Limiter à 10 articles
 const finalArticles = mixedArticles.slice(0, 10);
+
+// Marquer les articles récents comme "nouveaux" et envoyer les notifications
+finalArticles.forEach(article => {
+  if (article.isNew) {
+    // Si l'article est récent, on envoie une notification
+    notifyNewArticle(article.title, article.link);  // Envoi de la notification
+  }
+});
 
 // Mettre à jour le cache
 cachedArticles = finalArticles;
@@ -209,15 +227,16 @@ lastFetchTime = now;
 // Renvoyer les articles avec la propriété isNew
 return res.status(200).json(finalArticles);
 		
-	  } catch (error) {
-		console.error('❌ Erreur générale dans getNews:', error.message);
-		
-		// Si le cache existe en cas d'erreur, l'utiliser
-		if (cachedArticles) {
-		  console.log('📡 Utilisation du cache local en cas d\'erreur');
-		  return res.status(200).json(cachedArticles);
-		}
-		
-		return res.status(500).json({ error: error.message });
-	  }
+} catch (error) {
+  console.error('❌ Erreur générale dans getNews:', error.message);
+  
+  // Si le cache existe en cas d'erreur, l'utiliser
+  if (cachedArticles) {
+    console.log('📡 Utilisation du cache local en cas d\'erreur');
+    return res.status(200).json(cachedArticles);
+  }
+  
+  return res.status(500).json({ error: error.message });
+}
+
 	}
