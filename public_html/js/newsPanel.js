@@ -174,7 +174,7 @@ function applyPulsationEffect() {
 }
 
   // Fonction pour charger et afficher les articles dans le panneau d'actualités
-function loadNewsPanelContent() {
+	function loadNewsPanelContent() {
   if (newsPanelContent) {
     newsPanelContent.innerHTML = '<div class="loading-indicator">Chargement des actualités...</div>';
   }
@@ -196,10 +196,14 @@ function loadNewsPanelContent() {
     const newsItem = document.createElement('div');
     newsItem.className = 'news-item';
 
-    // Si c'est un des 3 premiers articles (les plus récents), ajouter la classe "latest-article"
-    if (index < 3) {
-      newsItem.classList.add('latest-article');
-    }
+    // Définir la durée considérée comme "récent" : ici 90 minutes (en millisecondes)
+	const pulsationDuration = 90 * 60 * 1000; // 90 minutes
+
+	// Vérifier si l'article a été publié il y a moins de 90 minutes
+	if (Date.now() - new Date(article.date).getTime() < pulsationDuration) {
+	newsItem.classList.add('latest-article');
+	}
+
 
     let sourceIcon = '📰';
     switch(article.source) {
