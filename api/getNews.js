@@ -187,55 +187,12 @@ const shuffleAndSortArticles = (articles) => {
 
   return finalResult;
 };
-finalArticles.forEach((article, index) => {
-  console.log('Traitement de l\'article:', article); // Log pour chaque article
-  
-  const item = document.createElement('div');
-  item.className = 'news-item';  // Classe générale pour tous les articles
-
-  // Appliquer la classe 'latest-article' aux 3 premiers articles
-  if (index < 3) {
-    item.classList.add('latest-article');  // Appliquer la classe pour les articles récents
-  }
-
-  // Ajouter le titre de l'article
-  item.textContent = article.title;
-
-  // Ajouter l'article à l'élément du panneau
-  newsPanelElement.appendChild(item);
-});
-
-// 1. Fonction pour envoyer la notification via ntfy
-const notifyNewArticle = (title, link) => { 
-  fetch('https://ntfy.sh/actu-local', {
-    method: 'POST',
-    body: JSON.stringify({
-      message: `Nouvelle actu : ${title}`,
-      title: 'Nouveau contenu sur Actu & Média',
-      priority: 'high', // Priorité de la notification
-    }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-  .then(response => response.json())
-  .then(data => console.log("Notification envoyée avec succès", data))
-  .catch(error => console.error("Erreur lors de l'envoi de la notification", error));
-};
 
 // Mélanger et trier les articles
 const mixedArticles = shuffleAndSortArticles(allArticles);
 
 // Limiter à 10 articles
 const finalArticles = mixedArticles.slice(0, 10);
-
-// Marquer les articles récents comme "nouveaux" et envoyer les notifications
-finalArticles.forEach(article => {
-  if (article.isNew) {
-    // Si l'article est récent, on envoie une notification
-    notifyNewArticle(article.title, article.link);  // Envoi de la notification
-  }
-});
 
 // Mettre à jour le cache
 cachedArticles = finalArticles;
