@@ -18,9 +18,9 @@
 <!--[if IE]>
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 <![endif]-->
-<script src="https://web.cmp.usercentrics.eu/modules/autoblocker.js"></script>
-<script id="usercentrics-cmp" src="https://web.cmp.usercentrics.eu/ui/loader.js" data-settings-id="KjWuTp2eqksj0X" async></script>
 
+    <script src="https://web.cmp.usercentrics.eu/modules/autoblocker.js"></script>
+    <script id="usercentrics-cmp" src="https://web.cmp.usercentrics.eu/ui/loader.js" data-settings-id="KjWuTp2eqksj0X" async></script>
     <link rel="apple-touch-icon" sizes="192x192" href="/images/AM-192-v2.png">
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
@@ -645,17 +645,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
   gtag('config', 'G-WG06MF5ZVP');
 </script>
-<script src="chatWidget.js"></script>
-  
-  <!-- Code pour masquer le widget de Usercentrics après consentement -->
-  <script>
-    Usercentrics.onConsentChanged(function(consentState) {
-      if (consentState && consentState.consentGiven) {
-        if (Usercentrics.UI && typeof Usercentrics.UI.hide === 'function') {
-          Usercentrics.UI.hide();
-        }
-      }
-    });
-  </script>
 </body>
 </html>
