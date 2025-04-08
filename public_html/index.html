@@ -645,5 +645,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
   gtag('config', 'G-WG06MF5ZVP');
 </script>
+<script src="chatWidget.js"></script>
+  
+  <!-- Code pour masquer le widget de Usercentrics après consentement -->
+  <script>
+    Usercentrics.onConsentChanged(function(consentState) {
+      if (consentState && consentState.consentGiven) {
+        if (Usercentrics.UI && typeof Usercentrics.UI.hide === 'function') {
+          Usercentrics.UI.hide();
+        }
+      }
+    });
+  </script>
 </body>
 </html>
