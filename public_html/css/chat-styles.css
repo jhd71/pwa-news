@@ -1490,3 +1490,22 @@ body.long-press-active .message-options {
     height: 28px;
   }
 }
+
+.ban-dialog .ban-reason {
+  /* Si vous utilisez toujours .ban-reason */
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: white;
+  font-size: 0.95rem; /* Légèrement plus grand */
+  padding: 10px;
+  margin: 10px 0;
+  width: 100%;
+}
+
+/* Rendre le placeholder plus lisible */
+.ban-dialog .ban-reason::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+  /* Vous pouvez aussi ajuster la taille */
+  font-size: 0.95rem; 
+}
