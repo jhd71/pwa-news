@@ -219,50 +219,78 @@ body:has(.chat-container.open) .news-ticker {
   display: none !important;
 }
 /* Container principal du chat */
-.chat-container {
-    position: fixed;
-    right: 20px;
-    width: 350px;
-    height: 60vh;
-    max-height: calc(100vh - 180px);
-    border: 1px solid var(--secondary-text);
-  background-color: var(--secondary-bg);
-  padding: 1rem;
-  border-radius: 5px;
-    box-shadow: var(--chat-shadow);
-    border: var(--chat-border);
-    backdrop-filter: blur(10px);
-    display: none;
-    flex-direction: column;
-    bottom: 100px;
-    animation: slideUp 0.3s ease;
-    overflow: hidden;
-    z-index: 1100;
-    
-    /* Nouvelles propriétés pour améliorer le comportement mobile/PWA */
-    -webkit-overflow-scrolling: touch;
-    transform: translateZ(0); /* Force le hardware acceleration */
-    will-change: transform; /* Optimisation des performances */
-    overscroll-behavior: contain; /* Empêche le scroll de la page en arrière-plan */
+/* ===========================================
+   Fenêtre de Chat - Style Amélioré
+=========================================== */
+.chat-container { 
+  position: fixed;
+  right: 20px;
+  bottom: 100px;
+  width: 350px;
+  height: 60vh;
+  max-height: calc(100vh - 180px);
+
+  /* Couleur de fond avec une valeur de secours si la variable n'est pas définie */
+  background: var(--chat-gradient, linear-gradient(135deg, #ffffff, #f0f0f0));
+
+  border-radius: 20px;
+  box-shadow: var(--chat-shadow, 0 4px 8px rgba(0,0,0,0.2));
+  border: var(--chat-border, 1px solid rgba(0,0,0,0.1));
+  
+  backdrop-filter: blur(10px);
+  display: none; /* Affichage caché par défaut */
+  flex-direction: column;
+  animation: slideUp 0.3s ease;
+  overflow: hidden;
+  z-index: 1100;
+  
+  /* Propriétés d’optimisation pour le mobile et la performance */
+  -webkit-overflow-scrolling: touch;
+  transform: translateZ(0);  /* Déclenche l'accélération matérielle */
+  will-change: transform;     /* Indique au navigateur qu'une transformation va se produire */
+  overscroll-behavior: contain; /* Empêche le défilement du fond lors du scroll dans le chat */
+
+  /* Ajout d'une transition pour tout changement de transformation */
+  transition: transform 0.3s ease;
 }
 
+/* Animation de slideUp pour une entrée en douceur */
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Media queries pour adapter la position et la taille sur mobile et desktop */
+
+/* Pour les écrans étroits (mobile) */
 @media (max-width: 600px) {
-    .chat-widget {
-        bottom: 120px !important; /* Était 80px, on le remonte pour éviter le chevauchement */
-        right: 20px;
-    }
+  .chat-container {
+    right: 10px;         /* Réduction de l'espace sur la droite */
+    width: 90%;          /* Utilisation d'une largeur relative pour une meilleure adaptation */
+    bottom: 120px;       /* Ajustement pour éviter les chevauchements (par exemple avec d'autres éléments) */
+  }
 }
 
+/* Pour les écrans larges (desktop) */
 @media (min-width: 1024px) {
-    .chat-widget {
-        bottom: 50px !important; /* Ajuste cette valeur si nécessaire */
-        right: 30px;  /* Assure une bonne position */
-    }
+  .chat-container {
+    right: 30px;         /* Plus d'espace sur la droite */
+    bottom: 50px;        /* Position plus haute si nécessaire */
+    width: 350px;        /* Conserver la largeur fixée */
+  }
 }
 
+/* Classe pour ouvrir le chat */
 .chat-container.open {
-    display: flex;
+  display: flex;
 }
+
 /* Fenêtre de connexion */
 .chat-login {
     padding: 20px;
