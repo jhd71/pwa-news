@@ -74,13 +74,6 @@
     --shadow-color: rgba(0, 0, 0, 0.3);
 }
 
-/* Styles de base */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background-color: var(--background-color);
@@ -195,10 +188,6 @@ body {
     overflow: hidden;
     transition: all 0.3s ease;
 }
-
-.menu-button:hover, .settings-button:hover {
-    background-color: var(--hover-color);
-}
 /* Styles communs pour tous les boutons de fermeture */
 .close-btn {
     background: none;
@@ -308,13 +297,6 @@ body {
     display: none;
 }
 
-/* Animation de pulsation pour attirer l'attention */
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
-}
-
 .chat-notification-badge:not(.hidden) {
     animation: pulse 2s infinite;
 }
@@ -386,31 +368,6 @@ body {
     text-align: center;
     font-size: var(--message-text-size);
     animation: slideUp 0.4s ease, pulse 1.5s infinite;
-}
-
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px); /* Décalage vertical au début */
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-/* Effet de "respiration" */
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.05); /* Léger zoom */
-    }
-
-    100% {
-        transform: scale(1);
-    }
 }
 /* Gestion du thème sombre */
 [data-theme="dark"] .toast {
@@ -851,29 +808,6 @@ main {
 .tile:nth-child(30n + 15) .tile-title,
 .tile:nth-child(30n + 20) .tile-title {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
-}
-
-/* Animations */
-@keyframes fadeInScale {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-@keyframes slideInRight {
-    from {
-        opacity: 0;
-        transform: translateX(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
 }
 
 /* Effets des tuiles au survol */
@@ -1945,4 +1879,95 @@ main {
 .chat-messages {
     overscroll-behavior: contain; /* Empêche le défilement de se propager à l'élément parent */
     -webkit-overflow-scrolling: touch; /* Améliore le défilement sur iOS */
+}
+
+/* ==========================================================================
+   ANIMATIONS
+   ========================================================================== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(100px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(20px); }
+}
+
+@keyframes pulse-close {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.3); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+}
+
+@keyframes highlight {
+  0%, 100% { background-color: transparent; }
+  50% { background-color: rgba(255, 255, 255, 0.1); }
+}
+
+@keyframes bellRing {
+  0%, 100% { transform: rotate(0); }
+  20%, 60% { transform: rotate(25deg); }
+  40%, 80% { transform: rotate(-25deg); }
+}
+
+@keyframes bubblePop {
+    0% { transform: scale(0.8); opacity: 0; }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px); /* Décalage vertical au début */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animations */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
