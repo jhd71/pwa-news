@@ -225,8 +225,10 @@ body:has(.chat-container.open) .news-ticker {
     width: 350px;
     height: 60vh;
     max-height: calc(100vh - 180px);
-    background: var(--chat-gradient);
-    border-radius: 20px;
+    border: 1px solid var(--secondary-text);
+  background-color: var(--secondary-bg);
+  padding: 1rem;
+  border-radius: 5px;
     box-shadow: var(--chat-shadow);
     border: var(--chat-border);
     backdrop-filter: blur(10px);
