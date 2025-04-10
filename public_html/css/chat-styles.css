@@ -582,171 +582,7 @@ body:has(.chat-container.open) .news-ticker {
   font-size: 20px;
 }
 
-/* Panel Admin */
-.admin-panel {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 80%;
-  max-width: 500px;
-  max-height: 70vh;
-  background: var(--chat-gradient);
-  border-radius: 16px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-  color: white;
-  z-index: 1010;
-  padding: 20px;
-  overflow-y: auto;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  animation: fadeIn 0.3s ease;
-}
 
-.admin-panel input,
-.admin-panel select,
-.admin-panel textarea {
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
-  padding: 8px 12px;
-  border-radius: 6px;
-}
-
-.admin-panel label,
-.admin-panel h3,
-.admin-panel .panel-text {
-  color: white;
-  opacity: 0.9;
-}
-
-.admin-panel button {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.admin-panel button:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.admin-panel .add-word button {
-  background: #4CAF50;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 5px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
-}
-
-.admin-panel .add-word button:hover {
-  background: #45a049;
-  transform: scale(1.05);
-}
-
-.admin-panel .add-word input {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 8px;
-  font-size: 14px;
-  margin-right: 10px;
-  width: calc(100% - 100px);
-  box-sizing: border-box;
-}
-
-.admin-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  border-bottom: var(--chat-border);
-}
-
-.admin-content {
-  padding: 15px;
-}
-
-.banned-words-list {
-  max-height: 200px;
-  overflow-y: auto;
-  margin-bottom: 15px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 10px;
-}
-
-.banned-word {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  color: white;
-}
-
-.ban-duration {
-  background: var(--chat-gradient) !important;
-  color: white !important;
-}
-
-.ban-duration option {
-  background-color: #283593;
-  color: white;
-  padding: 8px;
-}
-
-.ban-reason {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-  color: white !important;
-}
-
-.add-word-form {
-  display: flex;
-  gap: 10px;
-  margin-top: 15px;
-}
-
-.add-word-form input {
-  flex: 1;
-  padding: 8px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-}
-
-.add-word-form input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.add-word-btn {
-  padding: 8px;
-  background: var(--chat-message-sent);
-  border: none;
-  border-radius: 6px;
-  color: white;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.add-word-btn:hover {
-  background: var(--chat-success);
-}
-
-.remove-word {
-  background: none;
-  border: none;
-  color: var(--chat-error);
-  cursor: pointer;
-  padding: 2px;
-}
 
 /* ==========================================================================
    NOTIFICATIONS
@@ -1377,4 +1213,280 @@ body.long-press-active .message-options {
   background-color: #4CAF50 !important;
   color: #fff !important;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* ========================
+   PANEL ADMIN - Amélioré
+======================== */
+.admin-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 600px; /* plus large sur PC */
+  max-height: 80vh; /* laisse de la place en hauteur */
+  background: var(--chat-gradient); 
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  color: white;
+  z-index: 1010;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: fadeIn 0.3s ease; /* anim d’apparition */
+}
+
+.admin-panel .panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.admin-panel .panel-header h3 {
+  color: white;
+  margin: 0;
+  font-size: 1.2rem; /* un peu plus grand */
+  font-weight: 600;
+}
+
+.admin-panel .close-panel {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 5px;
+  font-size: 24px;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.admin-panel .close-panel:hover {
+  transform: scale(1.2);
+  color: #ff5555;
+}
+
+.panel-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  margin: 0 1rem; /* un peu d'espace horizontal */
+}
+
+.tab-btn {
+  flex: 1; 
+  background: transparent;
+  border: none;
+  color: white;
+  padding: 0.75rem 0;
+  cursor: pointer;
+  opacity: 0.7;
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.3s;
+  border-bottom: 2px solid transparent;
+}
+.tab-btn:hover {
+  opacity: 1;
+}
+.tab-btn.active {
+  opacity: 1;
+  border-bottom-color: #fff; /* ligne blanche sous l’onglet actif */
+}
+
+.panel-content {
+  flex: 1; 
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+/* Section Mots bannis et IPs bannies */
+.tab-section {
+  display: none;
+}
+.tab-section.active {
+  display: block;
+}
+
+/* ===========================
+   Mots bannis
+=========================== */
+#banned-words-section h4,
+#banned-ips-section h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.add-word {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+.add-word input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  font-size: 0.9rem;
+}
+.add-word input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+.add-word button {
+  background: var(--chat-message-sent);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+.add-word button:hover {
+  background: #45a049;
+  transform: scale(1.05);
+}
+
+.banned-words-list {
+  max-height: 200px;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+/* Chaque mot banni */
+.banned-word {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 10px;
+  margin-bottom: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  color: white;
+  font-size: 0.95rem;
+}
+.banned-word button {
+  background: none;
+  border: none;
+  color: var(--chat-error);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 50%;
+  font-size: 1rem;
+  transition: background 0.2s, transform 0.2s;
+}
+.banned-word button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+/* ===========================
+   IPs bannies
+=========================== */
+.banned-ips-list {
+  margin-top: 0.5rem;
+  max-height: 200px;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 10px;
+}
+.banned-ip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+.banned-ip:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.remove-ban {
+  background: none;
+  border: none;
+  color: var(--chat-error);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: background 0.2s, transform 0.2s;
+}
+.remove-ban:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.ip-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ip-pseudo {
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+.ip-expiry {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+/* ============================
+   Responsive design
+============================ */
+/* Pour écrans moyens/petits */
+@media (max-width: 600px) {
+  .admin-panel {
+    width: 95%;
+    max-width: 95%;
+    max-height: 85vh;
+    border-radius: 14px;
+  }
+  
+  .admin-panel .panel-header h3 {
+    font-size: 1.1rem;
+  }
+  
+  .panel-tabs {
+    margin: 0 0.5rem;
+  }
+  
+  .tab-btn {
+    font-size: 0.85rem;
+  }
+  
+  .panel-content {
+    padding: 0.75rem;
+  }
+  
+  .banned-word {
+    padding: 5px;
+  }
+  .banned-word button {
+    font-size: 1rem;
+  }
+  
+  .banned-ip {
+    padding: 6px 8px;
+  }
+  .remove-ban {
+    font-size: 1.1rem;
+    width: 28px;
+    height: 28px;
+  }
 }
