@@ -3,6 +3,7 @@
    ========================================================================== */
 :root {
   /* Variables générales du chat */
+  --chat-gradient: linear-gradient(145deg, #7E57C2, #9575CD);
   --chat-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   --chat-border: 1px solid rgba(255, 255, 255, 0.1);
   --chat-input-bg: rgba(255, 255, 255, 0.1);
@@ -21,6 +22,13 @@
 /* Mode sombre */
 [data-theme="dark"] {
   --chat-gradient: linear-gradient(145deg, #1a237e, #283593);
+}
+
+/* Reset de base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 /* ==========================================================================
@@ -574,7 +582,202 @@ body:has(.chat-container.open) .news-ticker {
   font-size: 20px;
 }
 
+/* Panel Admin */
+.admin-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 600px; /* plus large sur PC */
+  max-height: 80vh; /* laisse de la place en hauteur */
+  background: var(--chat-gradient); 
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  color: white;
+  z-index: 1010;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: fadeIn 0.3s ease; /* anim d’apparition */
+}
 
+.admin-panel .panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.admin-panel .panel-header h3 {
+  color: white;
+  margin: 0;
+  font-size: 1.2rem; /* un peu plus grand */
+  font-weight: 600;
+}
+
+.admin-panel .close-panel {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 5px;
+  font-size: 24px;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.admin-panel .close-panel:hover {
+  transform: scale(1.2);
+  color: #ff5555;
+}
+
+.admin-panel input,
+.admin-panel select,
+.admin-panel textarea {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.admin-panel label,
+.admin-panel h3,
+.admin-panel .panel-text {
+  color: white;
+  opacity: 0.9;
+}
+
+.admin-panel button {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.admin-panel button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.admin-panel .add-word button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.admin-panel .add-word button:hover {
+  background: #45a049;
+  transform: scale(1.05);
+}
+
+.admin-panel .add-word input {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 8px;
+  font-size: 14px;
+  margin-right: 10px;
+  width: calc(100% - 100px);
+  box-sizing: border-box;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-bottom: var(--chat-border);
+}
+
+.admin-content {
+  padding: 15px;
+}
+
+.banned-words-list {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.banned-word {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.ban-duration {
+  background: var(--chat-gradient) !important;
+  color: white !important;
+}
+
+.ban-duration option {
+  background-color: #283593;
+  color: white;
+  padding: 8px;
+}
+
+.ban-reason {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+}
+
+.add-word-form {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.add-word-form input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.add-word-form input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.add-word-btn {
+  padding: 8px;
+  background: var(--chat-message-sent);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-word-btn:hover {
+  background: var(--chat-success);
+}
+
+.remove-word {
+  background: none;
+  border: none;
+  color: var(--chat-error);
+  cursor: pointer;
+  padding: 2px;
+}
 
 /* ==========================================================================
    NOTIFICATIONS
@@ -1108,161 +1311,6 @@ body.long-press-active .message-options {
 .panel-tabs {
   display: flex;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  margin-bottom: 15px;
-}
-
-.tab-btn {
-  background: transparent;
-  border: none;
-  color: white;
-  padding: 10px 15px;
-  cursor: pointer;
-  opacity: 0.7;
-  transition: all 0.3s;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.tab-btn.active {
-  opacity: 1;
-  border-bottom: 2px solid white;
-}
-
-.tab-section {
-  display: none;
-}
-
-.tab-section.active {
-  display: block;
-}
-
-/* Liste des IPs bannies */
-.banned-ips-list {
-  margin-top: 15px;
-  max-height: 250px;
-  overflow-y: auto;
-}
-
-.banned-ip {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.1);
-  margin-bottom: 8px;
-  padding: 10px 15px;
-  border-radius: 8px;
-  transition: background 0.2s;
-}
-
-.banned-ip:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-.ip-info {
-  flex: 1;
-}
-
-.ip-pseudo {
-  font-weight: 500;
-  margin-bottom: 2px;
-}
-
-.ip-expiry {
-  font-size: 12px;
-  opacity: 0.8;
-}
-
-.remove-ban {
-  background: rgba(255, 0, 0, 0.2);
-  border: none;
-  color: white;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  transition: background 0.2s;
-}
-
-.remove-ban:hover {
-  background: rgba(255, 0, 0, 0.4);
-}
-
-.loading-ips, .no-data, .error {
-  text-align: center;
-  padding: 15px;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.error {
-  color: #ff6b6b;
-}
-
-.chat-header .header-buttons button.enabled {
-  background-color: #4CAF50 !important;
-  color: #fff !important;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2) !important;
-}
-
-/* ========================
-   PANEL ADMIN - Amélioré
-======================== */
-.admin-panel {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 90%;
-  max-width: 600px; /* plus large sur PC */
-  max-height: 80vh; /* laisse de la place en hauteur */
-  background: var(--chat-gradient); 
-  border-radius: 16px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-  color: white;
-  z-index: 1010;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  animation: fadeIn 0.3s ease; /* anim d’apparition */
-}
-
-.admin-panel .panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 1.25rem;
-  background: rgba(255, 255, 255, 0.1);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.admin-panel .panel-header h3 {
-  color: white;
-  margin: 0;
-  font-size: 1.2rem; /* un peu plus grand */
-  font-weight: 600;
-}
-
-.admin-panel .close-panel {
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-  padding: 5px;
-  font-size: 24px;
-  transition: transform 0.2s ease, color 0.2s ease;
-}
-.admin-panel .close-panel:hover {
-  transform: scale(1.2);
-  color: #ff5555;
-}
-
-.panel-tabs {
-  display: flex;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   margin: 0 1rem; /* un peu d'espace horizontal */
 }
 
@@ -1483,6 +1531,12 @@ body.long-press-active .message-options {
   }
 }
 
+.chat-header .header-buttons button.enabled {
+  background-color: #4CAF50 !important;
+  color: #fff !important;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2) !important;
+}
+
 .ban-dialog .ban-reason {
   /* Si vous utilisez toujours .ban-reason */
   background: rgba(255, 255, 255, 0.1);
@@ -1502,8 +1556,20 @@ body.long-press-active .message-options {
   font-size: 0.95rem; 
 }
 
-/* Cible toutes les <option> dans le sélecteur */
-.ban-dialog .ban-duration option {
-  background: #3a3a3a !important; /* Même couleur de fond */
-  color: #fff !important;         /* Texte blanc */
+/* Cible le <select> ayant la classe .ban-duration */
+.ban-dialog .ban-duration {
+  background: #3a3a3a !important; /* Couleur de fond sombre */
+  color: #fff !important;         /* Texte en blanc */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  appearance: none;        /* Pour supprimer l'apparence native */
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
+
+.ban-dialog .ban-duration option {
+  background: #3a3a3a !important;
+  color: #fff !important;
+}
+
