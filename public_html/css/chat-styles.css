@@ -340,6 +340,13 @@ body:has(.chat-container.open) .news-ticker {
   gap: 10px;
 }
 
+.header-buttons button.enabled {
+  background-color: #4CAF50; /* Vert Material Design */
+  color: #fff;
+  /* Vous pouvez aussi ajouter un bord, une ombre, etc. */
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
 .header-buttons button {
   background: var(--chat-input-bg);
   border: none;
