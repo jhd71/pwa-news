@@ -1509,3 +1509,9 @@ body.long-press-active .message-options {
   /* Vous pouvez aussi ajuster la taille */
   font-size: 0.95rem; 
 }
+
+/* Cible toutes les <option> dans le sélecteur */
+.ban-dialog .ban-duration option {
+  background: #3a3a3a !important; /* Même couleur de fond */
+  color: #fff !important;         /* Texte blanc */
+}
