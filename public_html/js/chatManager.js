@@ -486,20 +486,12 @@ getChatHTMLWithoutToggle() {
 
     // Le reste de votre code pour setupListeners reste inchangé...
     if (soundBtn) {
-    soundBtn.addEventListener('click', () => {
-        this.soundEnabled = !this.soundEnabled;
-        localStorage.setItem('soundEnabled', this.soundEnabled);
-        soundBtn.classList.toggle('enabled', this.soundEnabled);
-        // Force le reflow pour que le style soit appliqué immédiatement sur mobile
-        soundBtn.offsetHeight;  
-        
-        if (this.soundEnabled) {
-            soundBtn.querySelector('.material-icons').textContent = 'volume_up';
-            this.playSound('click');
-        } else {
-            soundBtn.querySelector('.material-icons').textContent = 'volume_off';
-        }
-    });
+  soundBtn.addEventListener('click', () => {
+    this.soundEnabled = !this.soundEnabled;
+    localStorage.setItem('soundEnabled', this.soundEnabled);
+    this.updateSoundButton();
+    this.playSound('click');
+  });
 }
 
         if (notificationsBtn) {
@@ -1812,6 +1804,23 @@ async checkBannedStatus() {
             }
         }
     }
+
+updateSoundButton() {
+  const soundBtn = this.container.querySelector('.sound-btn');
+  if (soundBtn) {
+    if (this.soundEnabled) {
+      soundBtn.classList.add('enabled');
+      soundBtn.querySelector('.material-icons').textContent = 'volume_up';
+    } else {
+      soundBtn.classList.remove('enabled');
+      soundBtn.querySelector('.material-icons').textContent = 'volume_off';
+    }
+    // Optionnel : forcer le reflow via requestAnimationFrame
+    requestAnimationFrame(() => {
+      soundBtn.getBoundingClientRect();
+    });
+  }
+}
 
     // Mettez à jour la fonction qui gère les notifications
 updateUnreadBadgeAndBubble() {
