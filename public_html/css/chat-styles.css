@@ -3,7 +3,6 @@
    ========================================================================== */
 :root {
   /* Variables générales du chat */
-  --chat-gradient: linear-gradient(145deg, #7E57C2, #9575CD);
   --chat-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   --chat-border: 1px solid rgba(255, 255, 255, 0.1);
   --chat-input-bg: rgba(255, 255, 255, 0.1);
@@ -22,13 +21,6 @@
 /* Mode sombre */
 [data-theme="dark"] {
   --chat-gradient: linear-gradient(145deg, #1a237e, #283593);
-}
-
-/* Reset de base */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
 }
 
 /* ==========================================================================
