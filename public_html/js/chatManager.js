@@ -486,18 +486,21 @@ getChatHTMLWithoutToggle() {
 
     // Le reste de votre code pour setupListeners reste inchangé...
     if (soundBtn) {
-        soundBtn.addEventListener('click', () => {
-            this.soundEnabled = !this.soundEnabled;
-            localStorage.setItem('soundEnabled', this.soundEnabled);
-            soundBtn.classList.toggle('enabled', this.soundEnabled);
-            if (this.soundEnabled) {
-                soundBtn.querySelector('.material-icons').textContent = 'volume_up';
-                this.playSound('click');
-            } else {
-                soundBtn.querySelector('.material-icons').textContent = 'volume_off';
-            }
-        });
-    }
+    soundBtn.addEventListener('click', () => {
+        this.soundEnabled = !this.soundEnabled;
+        localStorage.setItem('soundEnabled', this.soundEnabled);
+        soundBtn.classList.toggle('enabled', this.soundEnabled);
+        // Force le reflow pour que le style soit appliqué immédiatement sur mobile
+        soundBtn.offsetHeight;  
+        
+        if (this.soundEnabled) {
+            soundBtn.querySelector('.material-icons').textContent = 'volume_up';
+            this.playSound('click');
+        } else {
+            soundBtn.querySelector('.material-icons').textContent = 'volume_off';
+        }
+    });
+}
 
         if (notificationsBtn) {
             notificationsBtn.addEventListener('click', async () => {
