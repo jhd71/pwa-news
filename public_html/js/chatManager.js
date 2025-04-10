@@ -486,29 +486,18 @@ getChatHTMLWithoutToggle() {
 
     // Le reste de votre code pour setupListeners reste inchangé...
     if (soundBtn) {
-  soundBtn.addEventListener('click', () => {
-    this.soundEnabled = !this.soundEnabled;
-    localStorage.setItem('soundEnabled', this.soundEnabled);
-    
-    // On bascule la classe "enabled"
-    soundBtn.classList.toggle('enabled', this.soundEnabled);
-    
-    // Forcer le reflow en masquant puis réaffichant le bouton
-    const originalDisplay = soundBtn.style.display;
-    soundBtn.style.display = 'none';
-    // Lecture d'une propriété pour forcer le reflow
-    soundBtn.offsetHeight;
-    soundBtn.style.display = originalDisplay;
-    
-    // Mise à jour de l'icône selon l'état
-    if (this.soundEnabled) {
-      soundBtn.querySelector('.material-icons').textContent = 'volume_up';
-      this.playSound('click');
-    } else {
-      soundBtn.querySelector('.material-icons').textContent = 'volume_off';
+        soundBtn.addEventListener('click', () => {
+            this.soundEnabled = !this.soundEnabled;
+            localStorage.setItem('soundEnabled', this.soundEnabled);
+            soundBtn.classList.toggle('enabled', this.soundEnabled);
+            if (this.soundEnabled) {
+                soundBtn.querySelector('.material-icons').textContent = 'volume_up';
+                this.playSound('click');
+            } else {
+                soundBtn.querySelector('.material-icons').textContent = 'volume_off';
+            }
+        });
     }
-  });
-}
 
         if (notificationsBtn) {
             notificationsBtn.addEventListener('click', async () => {
@@ -1820,23 +1809,6 @@ async checkBannedStatus() {
             }
         }
     }
-
-updateSoundButton() {
-  const soundBtn = this.container.querySelector('.sound-btn');
-  if (soundBtn) {
-    if (this.soundEnabled) {
-      soundBtn.classList.add('enabled');
-      soundBtn.querySelector('.material-icons').textContent = 'volume_up';
-    } else {
-      soundBtn.classList.remove('enabled');
-      soundBtn.querySelector('.material-icons').textContent = 'volume_off';
-    }
-    // Optionnel : forcer le reflow via requestAnimationFrame
-    requestAnimationFrame(() => {
-      soundBtn.getBoundingClientRect();
-    });
-  }
-}
 
     // Mettez à jour la fonction qui gère les notifications
 updateUnreadBadgeAndBubble() {
