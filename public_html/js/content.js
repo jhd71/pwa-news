@@ -247,14 +247,14 @@ this.tileContainer.appendChild(footballSeparator);
 const footballSites = [
     {
         title: 'Ligue 1',
-        url: 'https://www.ligue1.fr',
-        mobileUrl: 'https://www.ligue1.fr',
+        url: 'https://ligue1.fr/fr/competitions/ligue1mcdonalds?tab=news&ranking=scorers',
+        mobileUrl: 'https://ligue1.fr/fr/competitions/ligue1mcdonalds?tab=news&ranking=scorers',
         isDefault: true
     },
     {
         title: 'Ligue 2',
-        url: 'https://www.ligue2.fr',
-        mobileUrl: 'https://www.ligue2.fr',
+        url: 'https://ligue1.fr/fr/competitions/ligue2bkt?tab=news',
+        mobileUrl: 'https://ligue1.fr/fr/competitions/ligue2bkt?tab=news',
         isDefault: true
     },
     {
