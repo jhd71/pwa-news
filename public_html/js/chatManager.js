@@ -489,8 +489,24 @@ getChatHTMLWithoutToggle() {
   soundBtn.addEventListener('click', () => {
     this.soundEnabled = !this.soundEnabled;
     localStorage.setItem('soundEnabled', this.soundEnabled);
-    this.updateSoundButton();
-    this.playSound('click');
+    
+    // On bascule la classe "enabled"
+    soundBtn.classList.toggle('enabled', this.soundEnabled);
+    
+    // Forcer le reflow en masquant puis réaffichant le bouton
+    const originalDisplay = soundBtn.style.display;
+    soundBtn.style.display = 'none';
+    // Lecture d'une propriété pour forcer le reflow
+    soundBtn.offsetHeight;
+    soundBtn.style.display = originalDisplay;
+    
+    // Mise à jour de l'icône selon l'état
+    if (this.soundEnabled) {
+      soundBtn.querySelector('.material-icons').textContent = 'volume_up';
+      this.playSound('click');
+    } else {
+      soundBtn.querySelector('.material-icons').textContent = 'volume_off';
+    }
   });
 }
 
