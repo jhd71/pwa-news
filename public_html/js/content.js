@@ -27,24 +27,6 @@ document.documentElement.setAttribute('data-font-size', this.fontSize);
         this.setupFontSize();
         this.setupTiles();
     }
-	
-	// Fonction utilitaire pour naviguer sans empiler l'historique
-function navigateTo(url, stateData = {}) {
-  window.history.replaceState(stateData, '', url);
-  // Ici, vous pouvez également déclencher votre fonction de mise à jour du contenu
-  // par exemple, loadContent(url);
-}
-
-// Gestion du bouton retour
-window.addEventListener('popstate', (e) => {
-  // Si l'état est vide ou que vous décidez que c'est la fin de la navigation,
-  // redirigez l'utilisateur vers l'écran d'accueil ou fermez la PWA en affichant un message.
-  if (!e.state || e.state.page === 'home') {
-    // Ici, on pourrait rediriger vers l'accueil
-    window.location.href = '/';
-  }
-});
-
 
     setupEventListeners() {
         // Gestion du menu
