@@ -6,6 +6,19 @@
   <title>Prévisions météo - Actu&Média</title>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
+  footer {
+      margin-top: auto;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 14px;
+      padding: 20px 0;
+      white-space: nowrap; /* Empêche le retour à la ligne */
+    }
+    
+    [data-theme="dark"] footer {
+      color: rgba(255, 255, 255, 0.7) !important;
+    }
+	
     /* Variables */
     :root {
       --primary-color: #7E57C2;
@@ -230,17 +243,17 @@
       font-size: 14px;
     }
     .temp-range {
-  display: flex;
-  justify-content: space-around;
-  width: 100%;
-  font-size: 18px;
-  margin: 10px 0;
-}
+	display: flex;
+	justify-content: space-around;
+	width: 100%;
+	font-size: 18px;
+	margin: 10px 0;
+	}
 
-.min-temp, .max-temp {
-  font-size: 18px; /* Changez cette valeur selon vos besoins */
-  font-weight: bold; /* Optionnel: pour renforcer la lisibilité */
-}
+	.min-temp, .max-temp {
+	font-size: 18px; /* Changez cette valeur selon vos besoins */
+	font-weight: bold; /* Optionnel: pour renforcer la lisibilité */
+	}
 
     .min-temp {
       color: #64B5F6;
@@ -337,7 +350,7 @@
   <footer>
     Données fournies par WeatherAPI.com
   </footer>
-  
+
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       // Gestion du thème
