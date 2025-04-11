@@ -14,12 +14,13 @@
       --bg-color: #f9f9ff;
       --card-bg: #fff;
       --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      --city-color-dark: #d3c4ff;  /* Couleur de la ville en mode sombre */
-      --day-color-dark: #c9b6ff;   /* Couleur du jour en mode sombre */
-      --tile-border-light: rgba(0, 0, 0, 0.1); /* Bordure tuiles mode clair */
-      --tile-border-dark: rgba(255, 255, 255, 0.2); /* Bordure tuiles mode sombre */
+      /* Couleurs adaptées pour le mode sombre */
+      --city-color-dark: #d3c4ff;
+      --day-color-dark: #c9b6ff;
+      /* Bordures pour séparer les tuiles */
+      --tile-border-light: rgba(0, 0, 0, 0.15);
+      --tile-border-dark: rgba(255, 255, 255, 0.3);
     }
-
     [data-theme="dark"] {
       --primary-color: #1a237e;
       --primary-dark: #0d147a;
@@ -86,7 +87,7 @@
       color: white;
       text-align: center;
       margin: 0 auto 20px;
-      font-size: 28px;
+      font-size: 26px;
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
     .theme-toggle {
@@ -148,76 +149,72 @@
       margin-bottom: 15px;
       color: var(--primary-color);
     }
-    /* Couleur plus claire en mode sombre pour la location */
     [data-theme="dark"] .location {
       color: var(--city-color-dark);
     }
 
-    /* Conteneur des cartes météo */
+    /* Conteneur des tuiles météo */
     .weather-days-container {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
     }
 
-    /* Carte météo (jour) avec animation */
+    /* Tuiles météo plus compactes */
     .weather-day {
       background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.2));
-      border-radius: 12px;
-      padding: 15px;
+      border-radius: 10px;
+      padding: 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      animation: fadeInSlide 0.6s forwards;
+      animation: fadeInSlide 0.5s forwards;
       opacity: 0;
-      /* Le délai est défini via la variable custom "--i" */
       animation-delay: calc(var(--i, 0) * 0.15s);
       border: 1px solid transparent;
     }
     @keyframes fadeInSlide {
-      from { opacity: 0; transform: translateY(20px); }
+      from { opacity: 0; transform: translateY(15px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Séparation visible des tuiles en mode clair */
+    /* Bordures pour séparer les tuiles */
     [data-theme="light"] .weather-day {
       border: 1px solid var(--tile-border-light);
     }
-    /* Séparation visible des tuiles en mode sombre */
     [data-theme="dark"] .weather-day {
       border: 1px solid var(--tile-border-dark);
     }
 
     .weather-day:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
     }
     .weather-day h4 {
-      font-size: 18px;
-      margin-bottom: 10px;
+      font-size: 16px;
+      margin-bottom: 8px;
       color: var(--primary-color);
       text-transform: capitalize;
     }
-    /* Couleur plus claire en mode sombre pour le jour */
     [data-theme="dark"] .weather-day h4 {
       color: var(--day-color-dark);
     }
 
-    /* Icône météo avec animation de flottement */
+    /* Icône météo redimensionnée pour des tuiles plus compactes */
     .weather-icon {
-      width: 80px;
-      height: 80px;
-      margin-bottom: 10px;
+      width: 60px;
+      height: 60px;
+      margin-bottom: 8px;
       animation: float 3s ease-in-out infinite;
       transition: transform 0.3s;
     }
     @keyframes float {
       0% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
+      50% { transform: translateY(-3px); }
       100% { transform: translateY(0); }
     }
     .weather-day:hover .weather-icon {
-      transform: scale(1.15);
+      transform: scale(1.1);
     }
 
     .weather-day-content {
@@ -228,15 +225,16 @@
     }
     .weather-conditions {
       text-align: center;
-      margin-bottom: 8px;
+      margin-bottom: 5px;
       font-weight: 500;
+      font-size: 14px;
     }
     .temp-range {
       display: flex;
       justify-content: space-around;
       width: 100%;
-      font-size: 18px;
-      margin: 10px 0;
+      font-size: 16px;
+      margin: 5px 0;
     }
     .min-temp {
       color: #64B5F6;
@@ -247,22 +245,22 @@
     .weather-details {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      gap: 5px;
       width: 100%;
-      margin-top: 10px;
-      font-size: 14px;
+      margin-top: 5px;
+      font-size: 12px;
     }
     .detail-item {
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 3px;
     }
     .detail-item .material-icons {
-      font-size: 16px;
+      font-size: 14px;
       opacity: 0.8;
     }
 
-    /* Responsive et optimisations pour mobile */
+    /* Responsive pour mobile */
     @media (max-width: 600px) {
       h1 {
         font-size: 24px;
@@ -273,26 +271,23 @@
       .weather-days-container {
         grid-template-columns: 1fr;
       }
-      .weather-details {
-        grid-template-columns: 1fr;
-      }
       .weather-day {
-        padding: 10px;
-        margin: 5px;
+        padding: 8px;
+        margin: 4px;
       }
       .weather-day h4 {
-        font-size: 16px;
+        font-size: 14px;
+        margin-bottom: 5px;
       }
       .weather-icon {
-        width: 60px;
-        height: 60px;
+        width: 50px;
+        height: 50px;
       }
       .temp-range {
-        font-size: 16px;
+        font-size: 14px;
       }
       .weather-details {
-        font-size: 12px;
-        gap: 5px;
+        font-size: 10px;
       }
       .location {
         font-size: 18px;
@@ -302,8 +297,8 @@
         margin-bottom: 15px;
       }
     }
-
-    /* Transition pour le thème */
+    
+    /* Transition du thème */
     html[data-theme] {
       animation: themeFade 0.5s forwards;
     }
@@ -347,25 +342,17 @@
       
       // Basculer le thème
       themeToggle.addEventListener('click', function() {
-        // Désactiver temporairement l'animation
         htmlEl.style.animation = 'none';
-        
         const currentTheme = htmlEl.getAttribute('data-theme');
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
         void htmlEl.offsetWidth;
-        
-        // Réactiver l'animation
         htmlEl.style.animation = '';
-        
-        // Animer la rotation du bouton
         themeToggle.style.transform = 'rotate(360deg)';
         setTimeout(() => {
           themeToggle.style.transform = '';
         }, 600);
-        
         htmlEl.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
-        
         themeToggle.querySelector('.material-icons').textContent =
           newTheme === 'dark' ? 'light_mode' : 'dark_mode';
       });
@@ -386,7 +373,6 @@
         .then((data) => {
           const location = data.location;
           const forecast = data.forecast.forecastday;
-          const current = data.current;
           
           let weatherHTML = `
             <div class="location">${location.name}, ${location.region}</div>
