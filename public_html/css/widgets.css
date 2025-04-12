@@ -409,11 +409,12 @@
     display: none;
   }
   
+  @media (max-width: 767px) {
   .weather-sidebar {
     width: 85%;
     max-width: 300px;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
+    left: 0 !important;            /* Aligner à gauche */
+    transform: none !important;     /* Supprimer le décalage horizontal */
     top: 100px;
     z-index: 1500 !important;
     padding: 15px;
@@ -422,7 +423,7 @@
   }
   
   .weather-sidebar.hidden {
-    transform: translateX(-50%) translateY(-120%) !important;
+    transform: translateY(-120%) !important;  /* Masquer verticalement */
     opacity: 0;
     pointer-events: none;
   }
@@ -431,7 +432,7 @@
     display: none;
   }
   
-  /* Styles pour s'assurer que le widget est visible lorsqu'il est affiché */
+  /* S'assurer que le widget est visible lorsqu'il n'est pas masqué */
   .weather-sidebar:not(.hidden) {
     opacity: 1 !important;
     visibility: visible !important;
