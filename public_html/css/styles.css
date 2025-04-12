@@ -2002,6 +2002,44 @@ main {
   }
 }
 
+/* Ajustements pour mobile */
+@media (max-width: 767px) {
+  /* Position de l'icône (bouton) */
+  .quick-links-show-btn {
+    top: 140px; /* Remonté par rapport à la position desktop */
+    right: 15px;
+    width: 44px; /* Légèrement plus grand sur mobile */
+    height: 44px;
+    z-index: 1000; /* S'assurer qu'il reste au-dessus des autres éléments */
+  }
+  
+  /* Taille et position de la fenêtre ouverte */
+  .quick-links-sidebar {
+    top: 140px;
+    right: 10px;
+    width: 300px; /* Plus large sur mobile */
+    max-width: 85%; /* Ne pas dépasser 85% de la largeur de l'écran */
+    padding: 15px; /* Plus de padding */
+    z-index: 999;
+  }
+  
+  /* Grille à une seule colonne sur les très petits écrans */
+  @media (max-width: 350px) {
+    .links-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  /* Augmenter la taille des icônes et du texte */
+  .quick-link .material-icons {
+    font-size: 28px;
+  }
+  
+  .quick-link span:not(.material-icons) {
+    font-size: 14px;
+  }
+}
+
 /* Empêcher le scroll de traverser la fenêtre de chat */
 .chat-container.open {
     overscroll-behavior: contain; /* Empêche le défilement de se propager à l'élément parent */

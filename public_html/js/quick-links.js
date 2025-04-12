@@ -1,18 +1,25 @@
-// Ajoutez ce code JavaScript à votre fichier principal ou créez un nouveau fichier quick-links.js
-
-// Gestion du widget de liens rapides
+// Modifier votre code JavaScript pour les liens rapides
 document.addEventListener('DOMContentLoaded', function() {
   const quickLinksSidebar = document.querySelector('.quick-links-sidebar');
   const quickLinksToggle = document.querySelector('.quick-links-toggle');
   const quickLinksShowBtn = document.getElementById('quickLinksShowBtn');
   
-  // Vérifier si l'état est enregistré
-  const quickLinksHidden = localStorage.getItem('quickLinksHidden') === 'true';
+  // Vérifier si on est sur mobile
+  const isMobile = window.innerWidth < 768;
   
-  // Appliquer l'état initial
-  if (quickLinksHidden) {
+  // Sur mobile, toujours commencer avec le widget fermé
+  if (isMobile) {
     quickLinksSidebar.classList.add('hidden');
     quickLinksShowBtn.classList.add('visible');
+    localStorage.setItem('quickLinksHidden', 'true');
+  } else {
+    // Sur desktop, vérifier l'état enregistré
+    const quickLinksHidden = localStorage.getItem('quickLinksHidden') === 'true';
+    
+    if (quickLinksHidden) {
+      quickLinksSidebar.classList.add('hidden');
+      quickLinksShowBtn.classList.add('visible');
+    }
   }
   
   // Gérer le clic sur le bouton masquer
