@@ -79,7 +79,7 @@
 <body>
 <body>
 <!-- Bouton météo mobile -->
-<button class="weather-mobile-btn" id="weatherMobileBtn" title="Météo" onclick="showWeatherWidget()">
+<button class="weather-mobile-btn" id="weatherMobileBtn" title="Météo" onclick="window.showWeatherWidget()">
   <span class="material-icons">wb_sunny</span>
 </button>
 <header class="app-header">
@@ -578,7 +578,6 @@ window.refreshNews = refreshNews;
   </button>
 </div>
 <script src="js/ios-install.js"></script>
-<script src="js/weather-widget.js"></script>
 <!-- Supprimer l'initialisation de Swiper existante et utiliser celle de loadTopNews à la place -->
 <script>
   // Chargement différé des actualités pour s'assurer que le DOM est prêt
@@ -614,6 +613,7 @@ document.getElementById('donateBtn').addEventListener('click', function() {
     document.body.removeChild(form);
 });
 </script>
+<script src="js/weather-widget.js"></script>
 <script src="js/quick-links.js"></script>
 </body>
 </html>
