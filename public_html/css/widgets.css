@@ -1,14 +1,14 @@
 /* Styles pour le widget de liens rapides (harmonisé avec météo) */
 .quick-links-sidebar {
   position: fixed;
-  top: 120px; /* Même hauteur que la météo */
+  top: 140px; /* Même hauteur que la météo */
   right: 10px; /* Aligné à droite au lieu de gauche */
-  width: 270px; /* Même largeur que la météo */
+  width: 290px; /* Même largeur que la météo */
   background: rgba(255, 255, 255, 0.85);
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   padding: 12px;
-  z-index: 1;
+  z-index: 4;
   backdrop-filter: blur(5px);
   margin-bottom: 20px;
   transition: transform 0.3s, opacity 0.3s;
