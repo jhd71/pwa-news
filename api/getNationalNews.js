@@ -32,6 +32,7 @@ export default async function handler(req, res) {
       { name: 'BFMTV', url: 'https://www.bfmtv.com/rss/news-24-7/', max: 3 },
       { name: 'France Info', url: 'https://www.francetvinfo.fr/titres.rss', max: 3 },
       { name: 'JeuxVideo.com', url: 'https://www.jeuxvideo.com/rss/rss-news.xml', max: 3 },
+	  { name: 'phoenixjp', url: 'https://feeds.feedburner.com/phoenixjp/rXiW', max: 3 },
       { name: 'ActuGaming', url: 'https://www.actugaming.net/feed/', max: 3 }
     ];
     
