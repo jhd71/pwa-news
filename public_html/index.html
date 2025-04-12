@@ -780,28 +780,37 @@ function showWeatherWidget() {
 }
 </script>
 <script>
-// Solution d'urgence pour le bouton météo
+// Solution pour le bouton météo mobile
 document.addEventListener('DOMContentLoaded', function() {
-  const weatherMobileBtn = document.getElementById('weatherMobileBtn');
-  const weatherSidebar = document.querySelector('.weather-sidebar');
-  
-  if (weatherMobileBtn && weatherSidebar) {
-    weatherMobileBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      console.log("Clic bouton météo (solution d'urgence)");
+  // Attendre un court instant pour s'assurer que tout est chargé
+  setTimeout(function() {
+    const weatherMobileBtn = document.getElementById('weatherMobileBtn');
+    const weatherSidebar = document.querySelector('.weather-sidebar');
+    
+    if (weatherMobileBtn && weatherSidebar) {
+      // Ajouter un gestionnaire d'événements directement
+      weatherMobileBtn.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("Bouton météo mobile cliqué (solution directe)");
+        
+        // Forcer l'affichage du widget
+        weatherSidebar.style.cssText = "display: block !important; opacity: 1 !important; transform: none !important; visibility: visible !important;";
+        weatherSidebar.classList.remove('hidden');
+        
+        // Charger les données météo
+        if (typeof loadWeatherWidget === 'function') {
+          loadWeatherWidget(true);
+        }
+        
+        return false;
+      };
       
-      // Forcer l'affichage
-      weatherSidebar.style.display = 'block';
-      weatherSidebar.style.opacity = '1';
-      weatherSidebar.style.transform = 'none';
-      weatherSidebar.classList.remove('hidden');
-      
-      // Charger les données si nécessaire
-      if (typeof loadWeatherWidget === 'function') {
-        loadWeatherWidget(true);
-      }
-    });
-  }
+      console.log("Solution directe pour le bouton météo mobile appliquée");
+    } else {
+      console.error("Éléments météo introuvables pour la solution directe");
+    }
+  }, 500);
 });
 </script>
 </body>
