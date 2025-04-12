@@ -77,6 +77,11 @@
     <script src="https://ekjgfiyhkythqcnmhzea.supabase.co"></script>
 </head>
 <body>
+<body>
+<!-- Bouton météo mobile -->
+<button class="weather-mobile-btn" id="weatherMobileBtn" title="Météo">
+  <span class="material-icons">wb_sunny</span>
+</button>
 <header class="app-header">
     <button type="button" id="menuButton" class="menu-button" aria-label="Menu">
         <span class="material-icons">menu</span>
@@ -603,19 +608,81 @@ document.getElementById('donateBtn').addEventListener('click', function() {
 });
 </script>
 <script>
-// Gestion du widget météo
-document.addEventListener('DOMContentLoaded', function() {
+// Fonction pour charger la météo
+function loadWeatherWidget(forceLoad = false) {
+  // Ne charger automatiquement que sur desktop, sauf si forceLoad est true
+  if (window.innerWidth < 1200 && !forceLoad) return;
+  
+  const apiKey = "4b79472c165b42f690790252242112";
+  const city = "Montceau-les-Mines";
+  const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${city}&days=3&lang=fr`;
+  
+  const weatherContainer = document.getElementById("weather-widget");
+  if (!weatherContainer) {
+    console.error("Conteneur météo introuvable");
+    return;
+  }
+  
+  fetch(url)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Erreur : " + response.status);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      const location = data.location;
+      const forecast = data.forecast.forecastday;
+      
+      // Version simplifiée pour le widget
+      let forecastHTML = `<p style="text-align:center; margin: 0 0 5px 0;"><strong>${location.name}</strong></p>`;
+      forecast.slice(0, 3).forEach((day) => {
+        const date = new Date(day.date);
+        const dayName = date.toLocaleDateString("fr-FR", { weekday: 'short' });
+        
+        forecastHTML += `
+          <div class="weather-day">
+            <h4>${dayName}</h4>
+            <img src="https:${day.day.condition.icon}" alt="${day.day.condition.text}">
+            <p>${day.day.condition.text}</p>
+            <p>${Math.round(day.day.mintemp_c)}°C - ${Math.round(day.day.maxtemp_c)}°C</p>
+          </div>
+        `;
+      });
+      
+      weatherContainer.innerHTML = forecastHTML;
+    })
+    .catch((error) => {
+      weatherContainer.innerHTML = `<p class="error">Erreur météo: ${error.message}</p>`;
+      console.error("Erreur météo:", error);
+    });
+}
+
+// Fonction pour configurer le basculement du widget météo
+function setupWeatherToggle() {
   const weatherSidebar = document.querySelector('.weather-sidebar');
   const weatherToggle = document.querySelector('.weather-toggle');
   const weatherShowBtn = document.getElementById('weatherShowBtn');
+  const weatherMobileBtn = document.getElementById('weatherMobileBtn');
   
-  // Vérifier si l'état est enregistré
-  const weatherHidden = localStorage.getItem('weatherHidden') === 'true';
+  if (!weatherSidebar || !weatherToggle || !weatherShowBtn) {
+    console.error("Éléments manquants pour la bascule météo");
+    return;
+  }
   
-  // Appliquer l'état initial
-  if (weatherHidden) {
+  // Sur mobile, masquer le widget par défaut
+  if (window.innerWidth < 768) {
     weatherSidebar.classList.add('hidden');
     weatherShowBtn.classList.add('visible');
+    localStorage.setItem('weatherHidden', 'true');
+  } else {
+    // Sur desktop, vérifier l'état enregistré
+    const weatherHidden = localStorage.getItem('weatherHidden') === 'true';
+    
+    if (weatherHidden) {
+      weatherSidebar.classList.add('hidden');
+      weatherShowBtn.classList.add('visible');
+    }
   }
   
   // Gérer le clic sur le bouton masquer
@@ -630,8 +697,46 @@ document.addEventListener('DOMContentLoaded', function() {
     weatherSidebar.classList.remove('hidden');
     weatherShowBtn.classList.remove('visible');
     localStorage.setItem('weatherHidden', 'false');
+    
+    // Charger les données météo si ce n'est pas déjà fait
+    loadWeatherWidget(true);
   });
+  
+  // Correction pour le bouton météo mobile
+  if (weatherMobileBtn) {
+    console.log("Bouton météo mobile trouvé, ajout de l'événement de clic");
+    weatherMobileBtn.addEventListener('click', function() {
+      console.log("Clic sur le bouton météo mobile");
+      // Afficher le widget météo
+      weatherSidebar.classList.remove('hidden');
+      
+      // S'assurer que le bouton de réaffichage est masqué
+      if (weatherShowBtn) {
+        weatherShowBtn.classList.remove('visible');
+      }
+      
+      // Sauvegarder l'état
+      localStorage.setItem('weatherHidden', 'false');
+      
+      // Forcer le chargement des données météo
+      loadWeatherWidget(true);
+      
+      // Déboguer l'état du widget après le clic
+      console.log("État du widget après clic:", 
+        weatherSidebar.classList.contains('hidden') ? "caché" : "visible");
+    });
+  } else {
+    console.error("Bouton météo mobile introuvable");
+  }
+} // <-- Accolade fermante MANQUANTE pour setupWeatherToggle()
+
+// Initialisation après le chargement du DOM
+document.addEventListener("DOMContentLoaded", function() {
+  console.log("Initialisation météo...");
+  loadWeatherWidget();
+  setupWeatherToggle();
 });
 </script>
+<script src="js/quick-links.js"></script>
 </body>
 </html>
