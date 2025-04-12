@@ -113,13 +113,16 @@
       <div class="swiper-slide">
         <div class="slide-content">
           <p>Chargement des actualités...</p>
-	</div>
+        </div>
+      </div>
+    </div>
     <!-- Pagination -->
     <div class="swiper-pagination"></div>
     <!-- Flèches de navigation -->
     <div class="swiper-button-prev"></div>
     <div class="swiper-button-next"></div>
   </div>
+</div>
 
 <!-- Menu latéral -->
 <aside id="sidebar" class="sidebar">
@@ -171,6 +174,7 @@
   <div class="ticker-wrapper" id="newsTicker">
     <div class="ticker-item">Chargement des actualités...</div>
   </div>
+</div>
 
 <!-- Barre de navigation du bas -->
 <nav class="bottom-nav">
@@ -482,132 +486,4 @@ async function loadTopNews() {
 
 // Exposer la fonction pour pouvoir l'appeler depuis d'autres scripts
 window.refreshNews = function() {
-  console.log('Actualisation des nouvelles...');
-  loadTopNews();
-}
-
-// Charger les actualités au chargement de la page
-document.addEventListener('DOMContentLoaded', loadTopNews);
-
-// Fonction pour recharger les actualités
-function refreshNews() {
-  console.log('Actualisation des nouvelles...');
-  loadTopNews();
-}
-
-// Exposer la fonction pour pouvoir l'appeler depuis d'autres scripts
-window.refreshNews = refreshNews;
-</script>
-
-<!-- Bouton Infos en direct -->
-<div class="button-group" style="display: flex; justify-content: center; gap: 10px; margin: 20px 0;">
-  <!-- Bouton existant -->
-  <button id="newsButton" class="news-button">
-    <span class="material-icons">feed</span>
-    <span>Infos en direct</span>
-  </button>
-  
-  <!-- Widget météo avec une classe différente -->
-  <a href="meteo.html" id="tempWidget" style="display: flex; align-items: center; background: rgba(255, 255, 255, 0.2); border-radius: 20px; padding: 5px 12px; color: white; text-decoration: none; font-size: 14px;">
-    <span class="material-icons" style="font-size: 18px; margin-right: 4px;">wb_sunny</span>
-    <span>Météo</span>
-  </a>
-</div>
-<!-- Widget liens rapides avec bouton de fermeture -->
-<div class="quick-links-sidebar" id="quickLinksSidebar">
-  <button class="quick-links-toggle" title="Masquer les liens rapides">
-    <span class="material-icons">close</span>
-  </button>
-  <h3>Liens rapides</h3>
-  <div class="links-grid">
-    <a href="https://www.montceaulesmines.fr/" class="quick-link" target="_blank">
-      <span class="material-icons">location_city</span>
-      <span>Ville de Montceau</span>
-    </a>
-    <a href="https://www.inforoute71.fr/" class="quick-link" target="_blank">
-      <span class="material-icons">directions_car</span>
-      <span>Info Routes</span>
-    </a>
-    <a href="https://www.ter.sncf.com/bourgogne-franche-comte" class="quick-link" target="_blank">
-      <span class="material-icons">train</span>
-      <span>Horaires TER</span>
-    </a>
-    <a href="https://www.doctolib.fr/medecin-generaliste/montceau-les-mines" class="quick-link" target="_blank">
-      <span class="material-icons">medical_services</span>
-      <span>Médecins</span>
-    </a>
-    <a href="https://www.impots.gouv.fr/" class="quick-link" target="_blank">
-      <span class="material-icons">receipt_long</span>
-      <span>Impôts</span>
-    </a>
-    <a href="https://www.service-public.fr/" class="quick-link" target="_blank">
-      <span class="material-icons">public</span>
-      <span>Service Public</span>
-    </a>
-  </div>
-
-<!-- Bouton pour réafficher le widget des liens rapides -->
-<button class="quick-links-show-btn" id="quickLinksShowBtn" title="Afficher les liens rapides">
-  <span class="material-icons">link</span>
-</button>
-<!-- Menu déroulant des actualités -->
-<div class="news-panel" id="newsPanel">
-  <div class="panel-header">
-    <h3>Actualités en direct</h3>
-    <button class="close-panel">
-      <span class="material-icons">close</span>
-    </button>
-  </div>
-  <div class="panel-content" id="newsPanelContent">
-    <!-- Les actualités vont ici -->
-  </div>
-  <!-- Bouton de fermeture flottant (visible uniquement sur mobile) -->
-<button class="mobile-close-panel" id="mobileClosePanel">
-  <span class="material-icons">keyboard_arrow_down</span>
-  <span>Fermer</span>
-</button>
-  <button class="refresh-button" id="refreshButton">
-    <span class="material-icons">refresh</span> 
-    Actualiser les infos
-  </button>
-</div>
-<script src="js/ios-install.js"></script>
-<!-- Supprimer l'initialisation de Swiper existante et utiliser celle de loadTopNews à la place -->
-<script>
-  // Chargement différé des actualités pour s'assurer que le DOM est prêt
-  document.addEventListener('DOMContentLoaded', () => {
-    // Le loadTopNews sera appelé par l'event listener dans le script ci-dessus
-    
-    // Ajouter un gestionnaire d'événements pour le bouton de rafraîchissement
-    const refreshButton = document.getElementById('refreshButton');
-    if (refreshButton) {
-      refreshButton.addEventListener('click', () => {
-        if (window.refreshNews) {
-          window.refreshNews();
-        }
-      });
-    }
-  });
-</script>
-	<script>
-document.getElementById('donateBtn').addEventListener('click', function() {
-    const form = document.createElement('form');
-    form.method = 'post';
-    form.action = 'https://www.paypal.com/donate';
-    form.target = '_blank';
-    
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = 'hosted_button_id';
-    input.value = 'FKJPST5LWBUGG';
-    
-    form.appendChild(input);
-    document.body.appendChild(form);
-    form.submit();
-    document.body.removeChild(form);
-});
-</script>
-<script src="js/weather-widget.js"></script>
-<script src="js/quick-links.js"></script>
-</body>
-</html>
+  console.log('Actualisation des n
