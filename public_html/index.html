@@ -615,9 +615,9 @@ document.getElementById('donateBtn').addEventListener('click', function() {
 });
 </script>
 <script>
-  // Fonction pour charger la météo
+  // Fonction pour charger les données météo via WeatherAPI
   function loadWeatherWidget(forceLoad = false) {
-    // Ne charger automatiquement que sur desktop, sauf si forceLoad est true
+    // Sur mobile, ne charger automatiquement que si forceLoad est true (pour forcer le chargement à l'ouverture)
     if (window.innerWidth < 1200 && !forceLoad) return;
     
     const apiKey = "4b79472c165b42f690790252242112";
@@ -641,6 +641,7 @@ document.getElementById('donateBtn').addEventListener('click', function() {
         const location = data.location;
         const forecast = data.forecast.forecastday;
         
+        // Construction d'un HTML simplifié pour le widget météo
         let forecastHTML = `<p style="text-align:center; margin: 0 0 5px 0;"><strong>${location.name}</strong></p>`;
         forecast.slice(0, 3).forEach((day) => {
           const date = new Date(day.date);
@@ -664,26 +665,26 @@ document.getElementById('donateBtn').addEventListener('click', function() {
       });
   }
 
-  // Fonction pour configurer le basculement du widget météo
+  // Fonction pour configurer l'ouverture/fermeture du widget météo
   function setupWeatherToggle() {
-    // Sélection des éléments par leur ID ou classe
+    // Sélection des éléments du widget
     const weatherSidebar = document.getElementById('weatherSidebar');
-    const weatherToggle = weatherSidebar.querySelector('.weather-toggle');
-    const weatherShowBtn = document.getElementById('weatherShowBtn');
-    const weatherMobileBtn = document.getElementById('weatherMobileBtn');
+    const weatherToggle = weatherSidebar.querySelector('.weather-toggle'); // Bouton "croix"
+    const weatherShowBtn = document.getElementById('weatherShowBtn');       // Bouton pour réafficher le widget
+    const weatherMobileBtn = document.getElementById('weatherMobileBtn');   // Bouton météo mobile dédié
 
-    // Vérifier que tous les éléments existent
     if (!weatherSidebar || !weatherToggle || !weatherShowBtn || !weatherMobileBtn) {
       console.error("Un ou plusieurs éléments du widget météo sont introuvables.");
       return;
     }
 
-    // Sur mobile, masquer le widget par défaut
+    // Gestion de l'état initial : sur mobile, masquer le widget par défaut
     if (window.innerWidth < 768) {
       weatherSidebar.classList.add('hidden');
       weatherShowBtn.classList.add('visible');
       localStorage.setItem('weatherHidden', 'true');
     } else {
+      // Sur desktop, on peut lire l'état depuis localStorage
       const weatherHidden = localStorage.getItem('weatherHidden') === 'true';
       if (weatherHidden) {
         weatherSidebar.classList.add('hidden');
@@ -691,7 +692,7 @@ document.getElementById('donateBtn').addEventListener('click', function() {
       }
     }
 
-    // Gérer la fermeture du widget via le bouton "croix"
+    // Événement du bouton de fermeture (la croix)
     weatherToggle.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
@@ -701,7 +702,7 @@ document.getElementById('donateBtn').addEventListener('click', function() {
       console.log("Widget météo fermé via la croix.");
     });
 
-    // Gérer l'ouverture via le bouton d'affichage (pour desktop ou widget masqué)
+    // Événement du bouton de réaffichage (pour desktop ou lorsque le widget est masqué)
     weatherShowBtn.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
@@ -712,7 +713,7 @@ document.getElementById('donateBtn').addEventListener('click', function() {
       console.log("Widget météo ouvert via le bouton d'affichage.");
     });
 
-    // Gérer l'ouverture via le bouton météo mobile dédié
+    // Événement du bouton météo mobile dédié
     weatherMobileBtn.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
@@ -723,8 +724,8 @@ document.getElementById('donateBtn').addEventListener('click', function() {
       console.log("Widget météo ouvert via le bouton mobile.");
     });
   }
-  
-  // Initialisation après le chargement du DOM
+
+  // Initialisation du widget après le chargement complet du DOM
   document.addEventListener("DOMContentLoaded", function() {
     console.log("Initialisation du widget météo...");
     loadWeatherWidget();
