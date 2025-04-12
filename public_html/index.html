@@ -779,5 +779,30 @@ function showWeatherWidget() {
   }
 }
 </script>
+<script>
+// Solution d'urgence pour le bouton météo
+document.addEventListener('DOMContentLoaded', function() {
+  const weatherMobileBtn = document.getElementById('weatherMobileBtn');
+  const weatherSidebar = document.querySelector('.weather-sidebar');
+  
+  if (weatherMobileBtn && weatherSidebar) {
+    weatherMobileBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      console.log("Clic bouton météo (solution d'urgence)");
+      
+      // Forcer l'affichage
+      weatherSidebar.style.display = 'block';
+      weatherSidebar.style.opacity = '1';
+      weatherSidebar.style.transform = 'none';
+      weatherSidebar.classList.remove('hidden');
+      
+      // Charger les données si nécessaire
+      if (typeof loadWeatherWidget === 'function') {
+        loadWeatherWidget(true);
+      }
+    });
+  }
+});
+</script>
 </body>
 </html>
