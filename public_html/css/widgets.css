@@ -409,14 +409,6 @@
     display: none;
   }
   
-  @media (max-width: 600px) {
-  .weather-sidebar {
-    left: 5px;
-    width: calc(100% - 10px);
-    max-width: calc(100% - 10px);
-  }
-  }
-  
   .weather-sidebar {
     width: 85%;
     max-width: 300px;
