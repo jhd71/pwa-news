@@ -1422,6 +1422,248 @@ main {
   cursor: pointer;
 }
 
+/* ===== WIDGET MÉTÉO ===== */
+.weather-sidebar {
+  position: fixed;
+  top: 120px;
+  left: 10px;
+  width: 270px;
+  max-height: 80vh; /* Limite la hauteur à 80% de la hauteur de la fenêtre */
+  overflow-y: auto; /* Ajoute un défilement si nécessaire */
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  padding: 10px; /* Réduit le padding */
+  z-index: 100;
+  backdrop-filter: blur(5px);
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+.weather-sidebar h3 {
+  margin: 0 0 8px 0; /* Moins d'espace */
+  font-size: 16px; /* Plus petit */
+  color: var(--primary-color);
+  text-align: center;
+  font-weight: bold;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#weather-widget {
+  padding-bottom: 5px;
+}
+
+.weather-day {
+  padding: 8px; /* Moins de padding */
+  margin-bottom: 8px; /* Moins d'espace */
+  background: rgba(240, 240, 250, 0.7);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.weather-day:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.weather-day h4 {
+  margin: 0 0 5px 0;
+  font-size: 14px; /* Plus petit */
+  color: #333;
+  font-weight: bold;
+}
+
+.weather-day img {
+  width: 36px; /* Plus petit */
+  height: 36px;
+  margin: 3px auto;
+  display: block;
+}
+
+.weather-day p {
+  margin: 3px 0;
+  font-size: 13px; /* Plus petit */
+  line-height: 1.3;
+  color: #333;
+}
+
+/* Bouton de fermeture du widget */
+.weather-toggle {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 50%;
+  color: #333;
+  cursor: pointer;
+  font-size: 18px;
+  opacity: 0.8;
+  transition: opacity 0.3s, background 0.3s;
+  z-index: 101;
+  padding: 3px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.weather-toggle:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+/* Bouton pour réafficher le widget */
+.weather-show-btn {
+  position: fixed;
+  top: 120px;
+  left: 10px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+  z-index: 99;
+  opacity: 0;
+  transform: scale(0);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.weather-show-btn.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* État caché pour le widget météo (desktop) */
+.weather-sidebar.hidden {
+  transform: translateX(-120%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Bouton météo pour mobile */
+.weather-mobile-btn {
+  position: fixed;
+  top: 66px;
+  left: 15px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  z-index: 990;
+}
+
+/* Support du thème sombre */
+[data-theme="dark"] .weather-sidebar {
+  background: rgba(50, 50, 70, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .weather-sidebar h3 {
+  color: rgba(255, 255, 255, 0.9);
+  border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .weather-day {
+  background: rgba(60, 60, 80, 0.7);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .weather-day h4 {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+[data-theme="dark"] .weather-day p {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="dark"] .weather-toggle {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+[data-theme="dark"] .weather-toggle:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+[data-theme="dark"] .weather-mobile-btn {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+[data-theme="dark"] .weather-mobile-btn:hover {
+  opacity: 0.9;
+}
+
+/* Media queries pour les différents appareils */
+
+/* Grand desktop */
+@media (min-width: 1400px) {
+  .weather-sidebar {
+    display: block;
+  }
+}
+
+/* Desktop moyen */
+@media (min-width: 1200px) and (max-width: 1399px) {
+  .weather-sidebar {
+    width: 240px;
+    display: block;
+  }
+}
+
+/* Tablettes */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .weather-sidebar {
+    display: none;
+  }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .weather-mobile-btn {
+    display: flex;
+  }
+  
+  .bottom-nav .nav-item[href="meteo.html"] {
+    display: none;
+  }
+  
+  .weather-sidebar {
+    width: 80%;
+    max-width: 280px; /* Plus petit */
+    left: 50%;
+    transform: translateX(-50%);
+    top: 90px; /* Un peu plus haut */
+    z-index: 1000;
+    padding: 10px;
+    max-height: 70vh; /* Plus petit sur mobile */
+  }
+  
+  .weather-sidebar.hidden {
+    transform: translateX(-50%) translateY(-150%);
+    opacity: 0;
+  }
+  
+  .weather-show-btn {
+    display: none;
+  }
+}
 
 /* Ajustement pour éviter que le widget touche le séparateur */
 @media (min-width: 1200px) {
@@ -1887,258 +2129,4 @@ main {
 .chat-messages {
     overscroll-behavior: contain; /* Empêche le défilement de se propager à l'élément parent */
     -webkit-overflow-scrolling: touch; /* Améliore le défilement sur iOS */
-}
-
-/* ===== WIDGET MÉTÉO ===== */
-.weather-sidebar {
-  position: fixed;
-  top: 120px;
-  left: 10px;
-  width: 270px;
-  background: rgba(255, 255, 255, 0.9); /* Plus opaque pour meilleure lisibilité */
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Ombre plus prononcée */
-  padding: 15px; /* Padding légèrement augmenté */
-  z-index: 100;
-  backdrop-filter: blur(5px);
-  transition: transform 0.3s, opacity 0.3s;
-}
-
-.weather-sidebar h3 {
-  margin: 0 0 12px 0;
-  font-size: 18px; /* Taille de police augmentée */
-  color: var(--primary-color);
-  text-align: center;
-  font-weight: bold;
-  padding-bottom: 10px;
-  border-bottom: 2px solid rgba(0, 0, 0, 0.1); /* Bordure plus visible */
-}
-
-#weather-widget {
-  padding-bottom: 10px;
-}
-
-.weather-day {
-  padding: 12px; /* Plus d'espace intérieur */
-  margin-bottom: 12px; /* Plus d'espace entre les jours */
-  background: rgba(240, 240, 250, 0.7); /* Fond plus opaque */
-  border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.1); /* Bordure subtile pour mieux délimiter */
-  transition: transform 0.2s ease;
-}
-
-.weather-day:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-}
-
-.weather-day h4 {
-  margin: 0 0 8px 0;
-  font-size: 16px; /* Taille de police augmentée */
-  color: #333; /* Couleur plus sombre pour meilleure lisibilité */
-  font-weight: bold;
-}
-
-.weather-day img {
-  width: 44px; /* Icônes météo plus grandes */
-  height: 44px;
-  margin: 5px auto;
-  display: block;
-}
-
-.weather-day p {
-  margin: 5px 0; /* Plus d'espace */
-  font-size: 14px; /* Taille de police augmentée */
-  line-height: 1.4;
-  color: #333; /* Couleur plus sombre */
-}
-
-/* Bouton de fermeture du widget */
-.weather-toggle {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(0, 0, 0, 0.1); /* Fond subtil pour le bouton */
-  border: none;
-  border-radius: 50%;
-  color: #333;
-  cursor: pointer;
-  font-size: 20px; /* Légèrement plus grand */
-  opacity: 0.8;
-  transition: opacity 0.3s, background 0.3s;
-  z-index: 101;
-  padding: 4px;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.weather-toggle:hover {
-  opacity: 1;
-  background: rgba(0, 0, 0, 0.15);
-}
-
-/* Bouton pour réafficher le widget */
-.weather-show-btn {
-  position: fixed;
-  top: 120px;
-  left: 10px;
-  background: var(--primary-color);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 40px; /* Légèrement plus grand */
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-  z-index: 99;
-  opacity: 0;
-  transform: scale(0);
-  transition: opacity 0.3s, transform 0.3s;
-}
-
-.weather-show-btn.visible {
-  opacity: 1;
-  transform: scale(1);
-}
-
-/* État caché pour le widget météo (desktop) */
-.weather-sidebar.hidden {
-  transform: translateX(-120%);
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* Bouton météo pour mobile */
-.weather-mobile-btn {
-  position: fixed;
-  top: 66px;
-  left: 15px;
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 44px;
-  height: 44px;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3); /* Ombre plus prononcée */
-  z-index: 990;
-}
-
-/* Support du thème sombre */
-[data-theme="dark"] .weather-sidebar {
-  background: rgba(50, 50, 70, 0.85); /* Fond sombre mais pas noir */
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="dark"] .weather-sidebar h3 {
-  color: rgba(255, 255, 255, 0.9); /* Presque blanc */
-  border-bottom-color: rgba(255, 255, 255, 0.2);
-}
-
-[data-theme="dark"] .weather-day {
-  background: rgba(60, 60, 80, 0.7); /* Fond sombre pour les jours */
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="dark"] .weather-day h4 {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-[data-theme="dark"] .weather-day p {
-  color: rgba(255, 255, 255, 0.8);
-}
-
-[data-theme="dark"] .weather-toggle {
-  background: rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.9);
-}
-
-[data-theme="dark"] .weather-toggle:hover {
-  background: rgba(255, 255, 255, 0.25);
-}
-
-[data-theme="dark"] .weather-mobile-btn {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-[data-theme="dark"] .weather-mobile-btn:hover {
-  opacity: 0.9;
-}
-
-/* Media queries pour les différents appareils */
-
-/* Grand desktop */
-@media (min-width: 1400px) {
-  .weather-sidebar {
-    display: block;
-  }
-}
-
-/* Desktop moyen */
-@media (min-width: 1200px) and (max-width: 1399px) {
-  .weather-sidebar {
-    width: 240px;
-    display: block;
-  }
-}
-
-/* Tablettes */
-@media (min-width: 768px) and (max-width: 1199px) {
-  .weather-sidebar {
-    display: none;
-  }
-}
-
-/* Mobile */
-@media (max-width: 767px) {
-  .weather-mobile-btn {
-    display: flex;
-  }
-  
-  .bottom-nav .nav-item[href="meteo.html"] {
-    display: none;
-  }
-  
-  .weather-sidebar {
-    width: 85%;
-    max-width: 320px; /* Légèrement plus large */
-    left: 50%;
-    transform: translateX(-50%);
-    top: 100px;
-    z-index: 1000;
-    padding: 15px;
-  }
-  
-  .weather-sidebar.hidden {
-    transform: translateX(-50%) translateY(-150%);
-    opacity: 0;
-  }
-  
-  .weather-show-btn {
-    display: none;
-  }
-  
-  /* Augmenter la taille pour mobile */
-  .weather-day h4 {
-    font-size: 17px;
-  }
-  
-  .weather-day p {
-    font-size: 15px;
-  }
-  
-  .weather-day img {
-    width: 48px;
-    height: 48px;
-  }
 }
