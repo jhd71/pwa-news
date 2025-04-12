@@ -1567,6 +1567,12 @@ main {
   display: none;
 }
 
+@media (max-width: 768px) {
+  .weather-show-btn { 
+    display: none;
+  }
+}
+
 @media (max-width: 767px) {
   .weather-mobile-btn {
 	top: 66px; 
