@@ -1,12 +1,11 @@
 // Fonction globale pour être accessible via l'attribut onclick
-window.showWeatherWidget = function() {
-  console.log("Fonction globale showWeatherWidget appelée");
+function showWeatherWidget() {
   if (window.weatherWidget) {
     window.weatherWidget.showWidget();
   } else {
     console.error("Widget météo non initialisé");
   }
-};
+}
 
 // Classe de gestion du widget météo
 class WeatherWidget {
@@ -42,93 +41,62 @@ class WeatherWidget {
   
   addEventListeners() {
     // Bouton de fermeture du widget
-    this.toggleBtn.addEventListener('click', () => {
+    this.toggleBtn.addEventListener('click', (e) => {
       console.log("Bouton de fermeture météo cliqué");
+      e.preventDefault(); // CORRIGÉ: Empêcher le comportement par défaut
+      e.stopPropagation(); // CORRIGÉ: Arrêter la propagation
       this.hideWidget();
     });
     
     // Bouton d'affichage du widget
-    this.showBtn.addEventListener('click', () => {
+    this.showBtn.addEventListener('click', (e) => {
       console.log("Bouton d'affichage météo cliqué");
+      e.preventDefault(); // CORRIGÉ: Empêcher le comportement par défaut
+      e.stopPropagation(); // CORRIGÉ: Arrêter la propagation
       this.showWidget();
     });
     
-    // Bouton mobile (si présent) - ajouter un écouteur même s'il y a déjà un onclick
+    // Bouton mobile (si présent)
     if (this.mobileBtn) {
       this.mobileBtn.addEventListener('click', (e) => {
-        console.log("Bouton météo mobile cliqué via addEventListener");
-        // Ne pas empêcher le comportement par défaut pour permettre à l'attribut onclick de fonctionner
+        console.log("Bouton météo mobile cliqué");
+        e.preventDefault(); // Empêcher le comportement par défaut
+        e.stopPropagation(); // CORRIGÉ: Arrêter la propagation
+        this.showWidget();
       });
     }
     
-    // Écouter les événements d'ouverture du panel d'actualités et du chat
-    document.addEventListener('panelOpened', () => this.handlePanelOpened());
-    document.addEventListener('panelClosed', () => this.handlePanelClosed());
-    
-    // Surveiller les changements de classe sur les éléments qui peuvent s'ouvrir en plein écran
-    this.observeFullscreenElements();
+    // CORRIGÉ: S'assurer qu'un seul bouton est visible à la fois
+    window.addEventListener('resize', () => {
+      this.adjustButtonsVisibility();
+    });
   }
   
-  observeFullscreenElements() {
-    // Éléments qui peuvent s'ouvrir en plein écran
-    const newsPanel = document.getElementById('newsPanel');
-    const chatContainer = document.querySelector('.chat-container');
-    
-    // Observer les changements de classe
-    if (newsPanel) {
-      const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          if (mutation.attributeName === 'class') {
-            if (newsPanel.classList.contains('open')) {
-              this.handlePanelOpened();
-            } else {
-              this.handlePanelClosed();
-            }
-          }
-        });
-      });
+  // CORRIGÉ: Nouvelle méthode pour s'assurer qu'un seul bouton est visible
+  adjustButtonsVisibility() {
+    if (window.innerWidth <= 767) {
+      // Sur mobile, cacher le bouton standard et afficher le bouton mobile
+      if (this.showBtn) this.showBtn.style.display = 'none';
+      if (this.mobileBtn) this.mobileBtn.style.display = 'flex';
+    } else {
+      // Sur desktop, afficher le bouton standard si le widget est caché
+      if (this.sidebar && this.sidebar.classList.contains('hidden')) {
+        if (this.showBtn) this.showBtn.style.display = 'flex';
+      } else {
+        if (this.showBtn) this.showBtn.style.display = 'none';
+      }
       
-      observer.observe(newsPanel, { attributes: true });
-    }
-    
-    if (chatContainer) {
-      const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          if (mutation.attributeName === 'class') {
-            if (chatContainer.classList.contains('open')) {
-              this.handlePanelOpened();
-            } else {
-              this.handlePanelClosed();
-            }
-          }
-        });
-      });
-      
-      observer.observe(chatContainer, { attributes: true });
-    }
-  }
-  
-  handlePanelOpened() {
-    // Réduire le z-index des boutons de widget
-    if (this.showBtn) this.showBtn.style.zIndex = '10';
-    if (this.mobileBtn) this.mobileBtn.style.zIndex = '10';
-    if (window.quickLinksWidget && window.quickLinksWidget.showBtn) {
-      window.quickLinksWidget.showBtn.style.zIndex = '10';
-    }
-  }
-  
-  handlePanelClosed() {
-    // Restaurer le z-index des boutons de widget
-    if (this.showBtn) this.showBtn.style.zIndex = '999';
-    if (this.mobileBtn) this.mobileBtn.style.zIndex = '990';
-    if (window.quickLinksWidget && window.quickLinksWidget.showBtn) {
-      window.quickLinksWidget.showBtn.style.zIndex = '999';
+      // Toujours cacher le bouton mobile sur desktop
+      if (this.mobileBtn) this.mobileBtn.style.display = 'none';
     }
   }
   
   loadInitialState() {
     // Toujours masquer le widget au démarrage
     this.hideWidget();
+    
+    // CORRIGÉ: Ajuster la visibilité des boutons
+    this.adjustButtonsVisibility();
   }
   
   showWidget() {
@@ -136,9 +104,6 @@ class WeatherWidget {
     if (window.quickLinksWidget) {
       window.quickLinksWidget.hideWidget();
     }
-    
-    // Cacher aussi les panels plein écran si ouverts
-    this.closeFullscreenPanels();
     
     // Afficher le widget météo
     if (this.sidebar) {
@@ -149,11 +114,14 @@ class WeatherWidget {
       this.sidebar.style.display = 'block';
       this.sidebar.style.opacity = '1';
       this.sidebar.style.visibility = 'visible';
-      this.sidebar.style.pointerEvents = 'auto';
       
-      // Masquer le bouton d'affichage
-      if (this.showBtn) {
-        this.showBtn.classList.remove('visible');
+      // CORRIGÉ: Ajuster la visibilité des boutons
+      if (window.innerWidth > 767) {
+        // Sur desktop, cacher le bouton d'affichage
+        if (this.showBtn) {
+          this.showBtn.classList.remove('visible');
+          this.showBtn.style.display = 'none';
+        }
       }
       
       // Sauvegarder l'état
@@ -169,29 +137,17 @@ class WeatherWidget {
       this.sidebar.classList.add('hidden');
       this.sidebar.classList.remove('visible');
       
-      // Afficher le bouton pour réafficher
-      if (this.showBtn) {
-        this.showBtn.classList.add('visible');
+      // CORRIGÉ: Ajuster la visibilité des boutons
+      if (window.innerWidth > 767) {
+        // Sur desktop, afficher le bouton pour réafficher
+        if (this.showBtn) {
+          this.showBtn.classList.add('visible');
+          this.showBtn.style.display = 'flex';
+        }
       }
       
       // Sauvegarder l'état
       localStorage.setItem('weatherHidden', 'true');
-    }
-  }
-  
-  closeFullscreenPanels() {
-    // Fermer le panel d'actualités s'il est ouvert
-    const newsPanel = document.getElementById('newsPanel');
-    if (newsPanel && newsPanel.classList.contains('open')) {
-      const closeBtn = newsPanel.querySelector('.close-panel');
-      if (closeBtn) closeBtn.click();
-    }
-    
-    // Fermer le chat s'il est ouvert
-    const chatContainer = document.querySelector('.chat-container');
-    if (chatContainer && chatContainer.classList.contains('open')) {
-      const chatToggleBtn = document.getElementById('chatToggleBtn');
-      if (chatToggleBtn) chatToggleBtn.click();
     }
   }
   
@@ -223,7 +179,7 @@ class WeatherWidget {
         const forecast = data.forecast.forecastday;
         
         // Version simplifiée pour le widget
-        let forecastHTML = `<p style="text-align:center; margin: 0 0 5px 0;"><strong>${location.name}</strong></p>`;
+        let forecastHTML = `<p style="text-align:center; margin: 0 0 5px 0; font-size: 16px;"><strong>${location.name}</strong></p>`;
         forecast.slice(0, 3).forEach((day) => {
           const date = new Date(day.date);
           const dayName = date.toLocaleDateString("fr-FR", { weekday: 'short' });
