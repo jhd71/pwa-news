@@ -1572,6 +1572,13 @@ main {
     display: none;
   }
 }
+@media (max-width: 768px) {
+  .weather-sidebar {
+    left: 0; /* pour s'assurer qu'il n'est pas décalé hors écran */
+    right: 0;
+    width: 100%;
+  }
+}
 
 @media (max-width: 767px) {
   .weather-mobile-btn {
