@@ -667,57 +667,64 @@ document.getElementById('donateBtn').addEventListener('click', function() {
 
   // Fonction pour configurer le basculement du widget météo
   function setupWeatherToggle() {
-    // Assurez-vous d'utiliser des sélecteurs bien ciblés
-    const weatherSidebar = document.getElementById('weatherSidebar');
-    if (!weatherSidebar) {
-      console.error("Le conteneur météo (#weatherSidebar) est introuvable.");
-      return;
-    }
-    const weatherToggle = weatherSidebar.querySelector('.weather-toggle');
-    const weatherShowBtn = document.getElementById('weatherShowBtn');
-    let weatherMobileBtn = document.getElementById('weatherMobileBtn');
-    
-    if (!weatherToggle || !weatherShowBtn) {
-      console.error("Éléments nécessaires pour la bascule météo manquants.");
-      return;
-    }
-    
-    // Sur mobile, masquer le widget par défaut
-    if (window.innerWidth < 768) {
+  // Récupération des éléments
+  const weatherSidebar = document.getElementById('weatherSidebar');
+  const weatherToggle = weatherSidebar.querySelector('.weather-toggle');
+  const weatherShowBtn = document.getElementById('weatherShowBtn');
+  const weatherMobileBtn = document.getElementById('weatherMobileBtn');
+
+  // Vérifier que tous les éléments existent
+  if (!weatherSidebar || !weatherToggle || !weatherShowBtn || !weatherMobileBtn) {
+    console.error("Un ou plusieurs éléments du widget météo sont introuvables.");
+    return;
+  }
+
+  // Masquer le widget par défaut sur mobile
+  if (window.innerWidth < 768) {
+    weatherSidebar.classList.add('hidden');
+    weatherShowBtn.classList.add('visible');
+    localStorage.setItem('weatherHidden', 'true');
+  } else {
+    // Sur desktop, lire l'état enregistré
+    const weatherHidden = localStorage.getItem('weatherHidden') === 'true';
+    if (weatherHidden) {
       weatherSidebar.classList.add('hidden');
       weatherShowBtn.classList.add('visible');
-      localStorage.setItem('weatherHidden', 'true');
-    } else {
-      // Sur desktop, vérifier l'état enregistré
-      const weatherHidden = localStorage.getItem('weatherHidden') === 'true';
-      if (weatherHidden) {
-        weatherSidebar.classList.add('hidden');
-        weatherShowBtn.classList.add('visible');
-      }
     }
-    
-    // Gérer le clic sur le bouton de fermeture (la croix)
-    weatherToggle.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      // Supprimer d'éventuels styles en ligne afin de reprendre les styles par défaut
-      weatherSidebar.style.cssText = "";
-      weatherSidebar.classList.add('hidden');
-      weatherShowBtn.classList.add('visible');
-      localStorage.setItem('weatherHidden', 'true');
-      console.log("Widget météo fermé via la croix.");
-    });
-    
-    // Gérer le clic sur le bouton d'affichage
-    weatherShowBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      weatherSidebar.classList.remove('hidden');
-      weatherShowBtn.classList.remove('visible');
-      localStorage.setItem('weatherHidden', 'false');
-      loadWeatherWidget(true);
-      console.log("Widget météo ouvert via le bouton d'affichage.");
-    });
+  }
+
+  // Gérer la fermeture du widget via le bouton (la croix)
+  weatherToggle.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    weatherSidebar.classList.add('hidden');
+    weatherShowBtn.classList.add('visible');
+    localStorage.setItem('weatherHidden', 'true');
+    console.log("Widget fermé via la croix.");
+  });
+
+  // Gérer l'ouverture via le bouton d'affichage (pour desktop ou quand le widget est masqué)
+  weatherShowBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    weatherSidebar.classList.remove('hidden');
+    weatherShowBtn.classList.remove('visible');
+    localStorage.setItem('weatherHidden', 'false');
+    loadWeatherWidget(true);
+    console.log("Widget ouvert via le bouton d'affichage.");
+  });
+
+  // Gérer l'ouverture via le bouton météo mobile dédié
+  weatherMobileBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    weatherSidebar.classList.remove('hidden');
+    weatherShowBtn.classList.remove('visible');
+    localStorage.setItem('weatherHidden', 'false');
+    loadWeatherWidget(true);
+    console.log("Widget ouvert via le bouton mobile.");
+  });
+}
     
     // Pour le bouton météo mobile dédié
     if (weatherMobileBtn) {
