@@ -2110,3 +2110,25 @@ main {
     overscroll-behavior: contain; /* Empêche le défilement de se propager à l'élément parent */
     -webkit-overflow-scrolling: touch; /* Améliore le défilement sur iOS */
 }
+
+/* Styles de débogage pour le widget météo mobile */
+@media (max-width: 767px) {
+  .weather-sidebar {
+    /* Rendre le widget très visible pour le débogage */
+    background-color: rgba(255, 0, 0, 0.3) !important; /* Rouge semi-transparent */
+    border: 2px solid red !important;
+    z-index: 9999 !important; /* S'assurer qu'il est au-dessus de tout */
+    transform: none !important; /* Annuler toute transformation */
+    opacity: 1 !important; /* Forcer l'opacité */
+    display: block !important; /* Forcer l'affichage */
+    left: 10px !important; /* Position fixe */
+    top: 120px !important; /* Position fixe */
+    width: 90% !important; /* Largeur fixe */
+    max-width: 300px !important;
+    pointer-events: auto !important; /* S'assurer que les clics fonctionnent */
+  }
+  
+  .weather-sidebar.hidden {
+    display: none !important; /* S'assurer qu'il est vraiment caché quand nécessaire */
+  }
+}
