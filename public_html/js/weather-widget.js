@@ -41,14 +41,18 @@ class WeatherWidget {
   
   addEventListeners() {
     // Bouton de fermeture du widget
-    this.toggleBtn.addEventListener('click', () => {
+    this.toggleBtn.addEventListener('click', (e) => {
       console.log("Bouton de fermeture météo cliqué");
+      e.preventDefault(); // CORRIGÉ: Empêcher le comportement par défaut
+      e.stopPropagation(); // CORRIGÉ: Arrêter la propagation
       this.hideWidget();
     });
     
     // Bouton d'affichage du widget
-    this.showBtn.addEventListener('click', () => {
+    this.showBtn.addEventListener('click', (e) => {
       console.log("Bouton d'affichage météo cliqué");
+      e.preventDefault(); // CORRIGÉ: Empêcher le comportement par défaut
+      e.stopPropagation(); // CORRIGÉ: Arrêter la propagation
       this.showWidget();
     });
     
@@ -57,14 +61,42 @@ class WeatherWidget {
       this.mobileBtn.addEventListener('click', (e) => {
         console.log("Bouton météo mobile cliqué");
         e.preventDefault(); // Empêcher le comportement par défaut
+        e.stopPropagation(); // CORRIGÉ: Arrêter la propagation
         this.showWidget();
       });
+    }
+    
+    // CORRIGÉ: S'assurer qu'un seul bouton est visible à la fois
+    window.addEventListener('resize', () => {
+      this.adjustButtonsVisibility();
+    });
+  }
+  
+  // CORRIGÉ: Nouvelle méthode pour s'assurer qu'un seul bouton est visible
+  adjustButtonsVisibility() {
+    if (window.innerWidth <= 767) {
+      // Sur mobile, cacher le bouton standard et afficher le bouton mobile
+      if (this.showBtn) this.showBtn.style.display = 'none';
+      if (this.mobileBtn) this.mobileBtn.style.display = 'flex';
+    } else {
+      // Sur desktop, afficher le bouton standard si le widget est caché
+      if (this.sidebar && this.sidebar.classList.contains('hidden')) {
+        if (this.showBtn) this.showBtn.style.display = 'flex';
+      } else {
+        if (this.showBtn) this.showBtn.style.display = 'none';
+      }
+      
+      // Toujours cacher le bouton mobile sur desktop
+      if (this.mobileBtn) this.mobileBtn.style.display = 'none';
     }
   }
   
   loadInitialState() {
     // Toujours masquer le widget au démarrage
     this.hideWidget();
+    
+    // CORRIGÉ: Ajuster la visibilité des boutons
+    this.adjustButtonsVisibility();
   }
   
   showWidget() {
@@ -83,9 +115,13 @@ class WeatherWidget {
       this.sidebar.style.opacity = '1';
       this.sidebar.style.visibility = 'visible';
       
-      // Masquer le bouton d'affichage
-      if (this.showBtn) {
-        this.showBtn.classList.remove('visible');
+      // CORRIGÉ: Ajuster la visibilité des boutons
+      if (window.innerWidth > 767) {
+        // Sur desktop, cacher le bouton d'affichage
+        if (this.showBtn) {
+          this.showBtn.classList.remove('visible');
+          this.showBtn.style.display = 'none';
+        }
       }
       
       // Sauvegarder l'état
@@ -101,9 +137,13 @@ class WeatherWidget {
       this.sidebar.classList.add('hidden');
       this.sidebar.classList.remove('visible');
       
-      // Afficher le bouton pour réafficher
-      if (this.showBtn) {
-        this.showBtn.classList.add('visible');
+      // CORRIGÉ: Ajuster la visibilité des boutons
+      if (window.innerWidth > 767) {
+        // Sur desktop, afficher le bouton pour réafficher
+        if (this.showBtn) {
+          this.showBtn.classList.add('visible');
+          this.showBtn.style.display = 'flex';
+        }
       }
       
       // Sauvegarder l'état
@@ -139,7 +179,7 @@ class WeatherWidget {
         const forecast = data.forecast.forecastday;
         
         // Version simplifiée pour le widget
-        let forecastHTML = `<p style="text-align:center; margin: 0 0 5px 0;"><strong>${location.name}</strong></p>`;
+        let forecastHTML = `<p style="text-align:center; margin: 0 0 5px 0; font-size: 16px;"><strong>${location.name}</strong></p>`;
         forecast.slice(0, 3).forEach((day) => {
           const date = new Date(day.date);
           const dayName = date.toLocaleDateString("fr-FR", { weekday: 'short' });
