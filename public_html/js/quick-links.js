@@ -28,14 +28,18 @@ class QuickLinksWidget {
   
   addEventListeners() {
     // Bouton de fermeture du widget
-    this.toggleBtn.addEventListener('click', () => {
+    this.toggleBtn.addEventListener('click', (e) => {
       console.log("Bouton de fermeture liens rapides cliqué");
+      e.preventDefault(); // CORRIGÉ: Empêcher le comportement par défaut
+      e.stopPropagation(); // CORRIGÉ: Arrêter la propagation
       this.hideWidget();
     });
     
     // Bouton d'affichage du widget
-    this.showBtn.addEventListener('click', () => {
+    this.showBtn.addEventListener('click', (e) => {
       console.log("Bouton d'affichage liens rapides cliqué");
+      e.preventDefault(); // CORRIGÉ: Empêcher le comportement par défaut
+      e.stopPropagation(); // CORRIGÉ: Arrêter la propagation
       this.showWidget();
     });
   }
@@ -55,6 +59,10 @@ class QuickLinksWidget {
     if (this.sidebar) {
       this.sidebar.classList.remove('hidden');
       this.sidebar.classList.add('visible');
+      
+      // CORRIGÉ: S'assurer que le widget s'ouvre du bon côté
+      this.sidebar.style.right = '10px';
+      this.sidebar.style.left = 'auto';
       
       // Masquer le bouton d'affichage
       if (this.showBtn) {
