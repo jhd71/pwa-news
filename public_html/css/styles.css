@@ -1547,6 +1547,60 @@ main {
   pointer-events: none;
 }
 
+/* Bouton météo pour mobile */
+.weather-mobile-btn {
+  position: fixed;
+  top: 100px;
+  left: 15px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  z-index: 990;
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .weather-mobile-btn {
+    display: flex;
+  }
+  
+  .bottom-nav .nav-item[href="meteo.html"] {
+    display: none;
+  }
+
+  .weather-sidebar {
+    width: 85%;
+    max-width: 300px;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 100px;
+  }
+
+  .weather-show-btn {
+    top: 100px;
+    left: 15px;
+  }
+}
+
+/* Support du thème sombre pour le bouton météo mobile */
+[data-theme="dark"] .weather-mobile-btn {
+  background-color: var(--primary-color); /* Conserve la couleur principale */
+  color: white; /* Texte blanc */
+}
+
+/* Si vous avez besoin de styles spécifiques pour le hover en mode sombre */
+[data-theme="dark"] .weather-mobile-btn:hover {
+  opacity: 0.9;
+}
+
 /* Corriger le texte transparent en mode sombre */
 [data-theme="dark"] .weather-sidebar {
   background: rgba(255, 255, 255, 0.85); /* Fond blanc semi-transparent */

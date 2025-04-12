@@ -44,7 +44,7 @@ function loadWeatherWidget(forceLoad = false) {
     });
 }
 
-<!-- Bouton météo mobile -->
+<!-- Bouton météo mobile - placez-le après l'ouverture de la balise body -->
 <button class="weather-mobile-btn" id="weatherMobileBtn" title="Météo">
   <span class="material-icons">wb_sunny</span>
 </button>
@@ -107,49 +107,5 @@ function setupWeatherToggle() {
       // Optionnel : faire défiler vers le haut si nécessaire
       window.scrollTo({top: 0, behavior: 'smooth'});
     });
-  }
-}
-
-/* Bouton météo pour mobile */
-.weather-mobile-btn {
-  position: fixed;
-  top: 66px; /* Même hauteur que votre bouton liens rapides */
-  left: 15px;
-  background-color: var(--primary-color); /* Votre couleur primaire (violet) */
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-  z-index: 990;
-  display: none; /* Caché par défaut */
-}
-
-/* Afficher uniquement sur mobile */
-@media (max-width: 767px) {
-  .weather-mobile-btn {
-    display: flex;
-  }
-  
-  .bottom-nav .nav-item[href="meteo.html"] {
-    display: none;
-  }
-
-  .weather-sidebar {
-    width: 85%;
-    max-width: 300px;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 100px;
-  }
-
-  .weather-show-btn {
-    top: 100px;
-    left: 15px;
   }
 }
