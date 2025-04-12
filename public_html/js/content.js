@@ -296,6 +296,12 @@ this.tileContainer.appendChild(separator3);
             mobileUrl: 'https://www.youtube.com/feed/trending',
             isDefault: true
         },
+		{
+            title: 'Twitch',
+            url: 'https://www.twitch.tv/',
+            mobileUrl: 'https://www.twitch.tv/',
+            isDefault: true
+        },
         {
             title: 'TikTok',
             url: 'https://www.tiktok.com/discover?lang=fr',
