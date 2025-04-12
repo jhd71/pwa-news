@@ -2,7 +2,7 @@
 .weather-sidebar,
 .quick-links-sidebar {
   position: fixed;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   padding: 15px;
@@ -11,9 +11,9 @@
   z-index: 1000;
 }
 
-/* Position des widgets */
+/* Position des widgets - CORRIGÉ: aligner côtés corrects */
 .weather-sidebar {
-  top: 150px;
+  top: 90px; /* CORRIGÉ: Aligné avec le bouton Infos */
   left: 10px;
   width: 300px;
   max-height: 80vh;
@@ -21,8 +21,8 @@
 }
 
 .quick-links-sidebar {
-  top: 150px;
-  right: 10px;
+  top: 90px; /* CORRIGÉ: Aligné avec le bouton Infos */
+  right: 10px; /* CORRIGÉ: bien à droite */
   width: 300px;
 }
 
@@ -30,11 +30,12 @@
 .weather-sidebar h3,
 .quick-links-sidebar h3 {
   margin: 0 0 12px 0;
-  font-size: 16px;
+  font-size: 18px; /* CORRIGÉ: Plus grand */
   color: var(--primary-color);
   text-align: center;
   padding-bottom: 8px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  font-weight: bold;
 }
 
 /* Boutons de fermeture */
@@ -48,9 +49,9 @@
   border-radius: 50%;
   color: #333;
   cursor: pointer;
-  font-size: 18px;
-  width: 30px;
-  height: 30px;
+  font-size: 20px; /* CORRIGÉ: Plus grand */
+  width: 34px; /* CORRIGÉ: Plus grand */
+  height: 34px; /* CORRIGÉ: Plus grand */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -63,7 +64,7 @@
   background: rgba(0, 0, 0, 0.1);
 }
 
-/* Boutons pour réafficher */
+/* Boutons pour réafficher - CORRIGÉ: position alignée */
 .weather-show-btn,
 .quick-links-show-btn {
   position: fixed;
@@ -71,27 +72,34 @@
   color: white;
   border: none;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 46px; /* CORRIGÉ: Plus grand */
+  height: 46px; /* CORRIGÉ: Plus grand */
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-  z-index: 999;  /* Par défaut, valeur élevée */
+  z-index: 999;
   opacity: 0;
   transform: scale(0);
   transition: opacity 0.3s, transform 0.3s;
 }
 
+/* CORRIGÉ: Alignement avec bouton Infos en direct */
 .weather-show-btn {
-  top: 120px;
+  top: 75px; /* CORRIGÉ: Aligné avec le bouton Infos */
   left: 10px;
 }
 
 .quick-links-show-btn {
-  top: 120px;
-  right: 10px;
+  top: 75px; /* CORRIGÉ: Aligné avec le bouton Infos */
+  right: 10px; /* CORRIGÉ: bien à droite */
+}
+
+/* CORRIGÉ: Icônes plus grandes */
+.weather-show-btn .material-icons,
+.quick-links-show-btn .material-icons {
+  font-size: 26px;
 }
 
 /* État visible/caché */
@@ -101,16 +109,16 @@
   transform: scale(1);
 }
 
-.weather-sidebar.hidden,
-.quick-links-sidebar.hidden {
+.weather-sidebar.hidden {
   transform: translateX(-120%);
   opacity: 0;
   pointer-events: none;
-  visibility: hidden;
 }
 
 .quick-links-sidebar.hidden {
   transform: translateX(120%); /* Direction opposée */
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* Contenu du widget météo */
@@ -119,8 +127,8 @@
 }
 
 .weather-day {
-  padding: 8px;
-  margin-bottom: 10px;
+  padding: 12px; /* CORRIGÉ: Plus grand */
+  margin-bottom: 12px; /* CORRIGÉ: Plus grand */
   background: rgba(240, 240, 250, 0.7);
   border-radius: 8px;
   border: 1px solid rgba(0, 0, 0, 0.1);
@@ -133,23 +141,23 @@
 }
 
 .weather-day h4 {
-  margin: 0 0 5px 0;
-  font-size: 14px;
+  margin: 0 0 8px 0; /* CORRIGÉ: Plus grand */
+  font-size: 16px; /* CORRIGÉ: Plus grand */
   color: #333;
   font-weight: bold;
 }
 
 .weather-day img {
-  width: 36px;
-  height: 36px;
-  margin: 3px auto;
+  width: 48px; /* CORRIGÉ: Plus grand */
+  height: 48px; /* CORRIGÉ: Plus grand */
+  margin: 5px auto;
   display: block;
 }
 
 .weather-day p {
-  margin: 3px 0;
-  font-size: 13px;
-  line-height: 1.3;
+  margin: 5px 0;
+  font-size: 15px; /* CORRIGÉ: Plus grand */
+  line-height: 1.4;
   color: #333;
 }
 
@@ -157,14 +165,14 @@
 .links-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 12px; /* CORRIGÉ: Plus d'espace */
 }
 
 .quick-link {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 12px 8px;
+  padding: 14px 10px; /* CORRIGÉ: Plus grand */
   background: rgba(240, 240, 250, 0.5);
   border-radius: 8px;
   color: #444;
@@ -179,50 +187,45 @@
 }
 
 .quick-link .material-icons {
-  margin-bottom: 5px;
-  font-size: 24px;
+  margin-bottom: 8px; /* CORRIGÉ: Plus d'espace */
+  font-size: 28px; /* CORRIGÉ: Plus grand */
   color: var(--primary-color);
 }
 
 .quick-link span:not(.material-icons) {
-  font-size: 12px;
+  font-size: 14px; /* CORRIGÉ: Plus grand */
   line-height: 1.3;
+  font-weight: 500; /* CORRIGÉ: Un peu plus gras */
 }
 
 /* Bouton météo mobile */
 .weather-mobile-btn {
   position: fixed;
-  top: 66px;
+  top: 75px; /* CORRIGÉ: Aligné avec le bouton Infos */
   left: 15px;
   background-color: var(--primary-color);
   color: white;
   border: none;
   border-radius: 50%;
-  width: 44px;
-  height: 44px;
+  width: 46px; /* CORRIGÉ: Plus grand */
+  height: 46px; /* CORRIGÉ: Plus grand */
   display: none;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-  z-index: 990;  /* Par défaut, valeur élevée */
+  z-index: 990;
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Modification du z-index quand les panneaux plein écran sont ouverts */
-.news-panel.open ~ .weather-show-btn,
-.news-panel.open ~ .quick-links-show-btn,
-.news-panel.open ~ .weather-mobile-btn,
-.chat-container.open ~ .weather-show-btn,
-.chat-container.open ~ .quick-links-show-btn,
-.chat-container.open ~ .weather-mobile-btn {
-  z-index: 10 !important;  /* Priorité faible quand un panneau est ouvert */
+.weather-mobile-btn .material-icons {
+  font-size: 26px; /* CORRIGÉ: Plus grand */
 }
 
-/* Support du thème sombre */
+/* CORRIGÉ: Support du thème sombre avec bleu nuit */
 [data-theme="dark"] .weather-sidebar,
 [data-theme="dark"] .quick-links-sidebar {
-  background: rgba(40, 40, 60, 0.95);
+  background: rgba(26, 35, 126, 0.85); /* CORRIGÉ: Bleu nuit */
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -234,18 +237,18 @@
 
 [data-theme="dark"] .weather-day,
 [data-theme="dark"] .quick-link {
-  background: rgba(60, 60, 80, 0.7);
+  background: rgba(30, 40, 140, 0.7); /* CORRIGÉ: Bleu nuit plus clair */
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 [data-theme="dark"] .weather-day h4,
-[data-theme="dark"] .quick-link .material-icons {
+[data-theme="dark"] .weather-day p,
+[data-theme="dark"] .quick-link span:not(.material-icons) {
   color: white;
 }
 
-[data-theme="dark"] .weather-day p,
-[data-theme="dark"] .quick-link span:not(.material-icons) {
-  color: rgba(255, 255, 255, 0.9);
+[data-theme="dark"] .quick-link .material-icons {
+  color: #ffffff; /* CORRIGÉ: Icônes blanches en mode sombre */
 }
 
 [data-theme="dark"] .weather-toggle,
@@ -258,14 +261,14 @@
 @media (min-width: 1400px) {
   .weather-sidebar,
   .quick-links-sidebar {
-    width: 300px;
+    width: 320px; /* CORRIGÉ: Plus large */
   }
 }
 
 @media (min-width: 1200px) and (max-width: 1399px) {
   .weather-sidebar,
   .quick-links-sidebar {
-    width: 240px;
+    width: 280px; /* CORRIGÉ: Plus large */
   }
 }
 
@@ -285,8 +288,8 @@
   .weather-sidebar,
   .quick-links-sidebar {
     width: 85%;
-    max-width: 300px;
-    top: 100px;
+    max-width: 320px; /* CORRIGÉ: Plus large */
+    top: 90px; /* CORRIGÉ: Aligné avec le bouton Infos */
     max-height: 75vh;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
     z-index: 1500;
@@ -307,38 +310,18 @@
   /* États cachés pour mobile - déplacer verticalement */
   .weather-sidebar.hidden {
     transform: translateY(-120%);
-    opacity: 0;
-    visibility: hidden;
   }
   
   .quick-links-sidebar.hidden {
     transform: translateY(120%);
-    opacity: 0;
-    visibility: hidden;
   }
   
   /* États visibles pour mobile */
   .weather-sidebar.visible {
     transform: translateY(0);
-    opacity: 1;
-    visibility: visible;
   }
   
   .quick-links-sidebar.visible {
     transform: translateY(0);
-    opacity: 1;
-    visibility: visible;
-  }
-  
-  /* Grille à 3 colonnes sur mobile */
-  .links-grid {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-  
-  /* Écrans très petits : 2 colonnes */
-  @media (max-width: 350px) {
-    .links-grid {
-      grid-template-columns: 1fr 1fr;
-    }
   }
 }
