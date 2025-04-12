@@ -53,60 +53,13 @@ class WeatherWidget {
       this.showWidget();
     });
     
-    // Bouton mobile (si présent) - ajout d'un gestionnaire direct en plus de onclick
+    // Bouton mobile (ajouter un écouteur supplémentaire même s'il y a déjà onclick)
     if (this.mobileBtn) {
       this.mobileBtn.addEventListener('click', (e) => {
         console.log("Bouton météo mobile cliqué via addEventListener");
+        // Ne pas appeler preventDefault() pour permettre à l'attribut onclick de fonctionner aussi
         this.showWidget();
       });
-    }
-    
-    // Écouter les événements de changement de visibilité des panels
-    document.addEventListener('panel-opened', () => {
-      this.hideMobileButtons();
-    });
-    
-    document.addEventListener('panel-closed', () => {
-      this.showMobileButtons();
-    });
-    
-    // Écouter les événements de chat
-    document.addEventListener('chat-opened', () => {
-      this.hideMobileButtons();
-    });
-    
-    document.addEventListener('chat-closed', () => {
-      this.showMobileButtons();
-    });
-  }
-  
-  hideMobileButtons() {
-    // Cacher les boutons mobiles
-    if (this.mobileBtn) {
-      this.mobileBtn.style.display = 'none';
-    }
-    if (this.showBtn) {
-      this.showBtn.style.display = 'none';
-    }
-    // Informer l'autre widget
-    if (window.quickLinksWidget) {
-      window.quickLinksWidget.hideMobileButtons();
-    }
-  }
-  
-  showMobileButtons() {
-    // Réafficher les boutons mobiles (sauf si le widget est visible)
-    if (this.sidebar && !this.sidebar.classList.contains('visible')) {
-      if (this.mobileBtn) {
-        this.mobileBtn.style.display = 'flex';
-      }
-      if (this.showBtn) {
-        this.showBtn.style.display = 'flex';
-      }
-    }
-    // Informer l'autre widget
-    if (window.quickLinksWidget) {
-      window.quickLinksWidget.showMobileButtons();
     }
   }
   
@@ -116,6 +69,8 @@ class WeatherWidget {
   }
   
   showWidget() {
+    console.log("Méthode showWidget appelée");
+    
     // Cacher l'autre widget (communication inter-widget)
     if (window.quickLinksWidget) {
       window.quickLinksWidget.hideWidget();
@@ -123,24 +78,28 @@ class WeatherWidget {
     
     // Afficher le widget météo
     if (this.sidebar) {
-      console.log("Affichage du widget météo");
+      // Retirer la classe hidden et ajouter visible
       this.sidebar.classList.remove('hidden');
       this.sidebar.classList.add('visible');
       
-      // Pour le mobile, forcer l'affichage
+      // Pour le mobile, forcer l'affichage avec des styles inline
       this.sidebar.style.display = 'block';
       this.sidebar.style.opacity = '1';
       this.sidebar.style.visibility = 'visible';
       
+      // Pour s'assurer que la transformation CSS est correcte
+      if (window.innerWidth <= 767) {
+        this.sidebar.style.transform = 'translateY(0)';
+      } else {
+        this.sidebar.style.transform = 'translateX(0)';
+      }
+      
       // Masquer le bouton d'affichage
       if (this.showBtn) {
         this.showBtn.classList.remove('visible');
-        this.showBtn.style.display = 'none';
-      }
-      
-      // Masquer aussi le bouton mobile quand le widget est ouvert
-      if (this.mobileBtn) {
-        this.mobileBtn.style.display = 'none';
+        // Pour être sûr, aussi avec style
+        this.showBtn.style.opacity = '0';
+        this.showBtn.style.transform = 'scale(0)';
       }
       
       // Sauvegarder l'état
@@ -153,24 +112,16 @@ class WeatherWidget {
   
   hideWidget() {
     if (this.sidebar) {
-      console.log("Masquage du widget météo");
+      // Ajouter la classe hidden et retirer visible
       this.sidebar.classList.add('hidden');
       this.sidebar.classList.remove('visible');
       
-      // Afficher le bouton pour réafficher (sauf si un panel est ouvert)
-      const isPanelOpen = document.querySelector('.news-panel.open') || 
-                         document.querySelector('.chat-container.open');
-      
-      if (!isPanelOpen) {
-        if (this.showBtn) {
-          this.showBtn.classList.add('visible');
-          this.showBtn.style.display = 'flex';
-        }
-        
-        // Réafficher aussi le bouton mobile
-        if (this.mobileBtn) {
-          this.mobileBtn.style.display = 'flex';
-        }
+      // Afficher le bouton pour réafficher
+      if (this.showBtn) {
+        this.showBtn.classList.add('visible');
+        // Pour être sûr, aussi avec style
+        this.showBtn.style.opacity = '1';
+        this.showBtn.style.transform = 'scale(1)';
       }
       
       // Sauvegarder l'état
@@ -232,6 +183,7 @@ class WeatherWidget {
 
 // Initialiser le widget au chargement du DOM
 document.addEventListener('DOMContentLoaded', () => {
+  console.log("DOM chargé, initialisation du widget météo");
   // Créer l'instance et l'exposer globalement
   window.weatherWidget = new WeatherWidget();
 });
