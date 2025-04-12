@@ -88,12 +88,12 @@
 /* Position sur desktop */
 @media (min-width: 768px) {
   .weather-show-btn {
-    top: 80px; /* Ajustez cette valeur selon vos besoins */
+    top: 150px; /* Ajustez cette valeur selon vos besoins */
     left: 10px;
   }
   
   .quick-links-show-btn {
-    top: 80px; /* Ajustez cette valeur selon vos besoins */
+    top: 150px; /* Ajustez cette valeur selon vos besoins */
     right: 10px;
   }
 }
