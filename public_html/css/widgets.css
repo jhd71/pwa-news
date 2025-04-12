@@ -325,3 +325,9 @@
     transform: translateY(0);
   }
 }
+
+/* Règle de sécurité pour empêcher le chevauchement */
+.weather-mobile-btn:nth-of-type(n+2) {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
