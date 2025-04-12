@@ -1,3 +1,7 @@
+// Au début de weather-widget.js
+if (window.weatherWidget) {
+  console.log("Instance de weatherWidget déjà existante, initialisation ignorée");
+} else {
 // Fonction globale explicitement attachée à window pour être accessible via l'attribut onclick
 window.showWeatherWidget = function() {
   console.log("Fonction globale showWeatherWidget appelée");
