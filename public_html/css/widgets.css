@@ -194,7 +194,7 @@
   border-radius: 12px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   padding: 10px; /* Réduit le padding */
-  z-index: 1000; /* Augmenté pour être au-dessus d'autres éléments */
+  z-index: 100;
   backdrop-filter: blur(5px);
   transition: transform 0.3s, opacity 0.3s;
 }
@@ -253,15 +253,15 @@
   position: absolute;
   top: 8px;
   right: 8px;
-  background: rgba(255, 255, 255, 0.2) !important;
+  background: rgba(0, 0, 0, 0.1);
   border: none;
   border-radius: 50%;
-  color: #333 !important;
+  color: #333;
   cursor: pointer;
   font-size: 18px;
   opacity: 0.8;
   transition: opacity 0.3s, background 0.3s;
-  z-index: 1001; /* Légèrement supérieur au widget */
+  z-index: 101;
   padding: 3px;
   width: 24px;
   height: 24px;
@@ -272,7 +272,7 @@
 
 .weather-toggle:hover {
   opacity: 1;
-  background: rgba(255, 255, 255, 0.3) !important;
+  background: rgba(0, 0, 0, 0.15);
 }
 
 /* Bouton pour réafficher le widget */
@@ -291,7 +291,7 @@
   justify-content: center;
   cursor: pointer;
   box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-  z-index: 999;
+  z-index: 99;
   opacity: 0;
   transform: scale(0);
   transition: opacity 0.3s, transform 0.3s;
@@ -329,43 +329,36 @@
 }
 
 /* Support du thème sombre */
-[data-theme="dark"] .weather-sidebar,
-[data-theme="dark"] .quick-links-sidebar {
-  background: rgba(40, 40, 60, 0.95) !important;
+[data-theme="dark"] .weather-sidebar {
+  background: rgba(50, 50, 70, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-[data-theme="dark"] .weather-sidebar h3,
-[data-theme="dark"] .quick-links-sidebar h3 {
-  color: white !important;
+[data-theme="dark"] .weather-sidebar h3 {
+  color: rgba(255, 255, 255, 0.9);
   border-bottom-color: rgba(255, 255, 255, 0.2);
 }
 
-[data-theme="dark"] .weather-day,
-[data-theme="dark"] .quick-link {
-  background: rgba(60, 60, 80, 0.7) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+[data-theme="dark"] .weather-day {
+  background: rgba(60, 60, 80, 0.7);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
-[data-theme="dark"] .weather-day h4,
-[data-theme="dark"] .quick-link .material-icons {
-  color: white !important;
+[data-theme="dark"] .weather-day h4 {
+  color: rgba(255, 255, 255, 0.9);
 }
 
-[data-theme="dark"] .weather-day p,
-[data-theme="dark"] .quick-link span:not(.material-icons) {
-  color: rgba(255, 255, 255, 0.9) !important;
+[data-theme="dark"] .weather-day p {
+  color: rgba(255, 255, 255, 0.8);
 }
 
-[data-theme="dark"] .weather-toggle,
-[data-theme="dark"] .quick-links-toggle {
-  background: rgba(255, 255, 255, 0.25) !important;
-  color: white !important;
+[data-theme="dark"] .weather-toggle {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.9);
 }
 
-[data-theme="dark"] .weather-toggle:hover,
-[data-theme="dark"] .quick-links-toggle:hover {
-  background: rgba(255, 255, 255, 0.35) !important;
+[data-theme="dark"] .weather-toggle:hover {
+  background: rgba(255, 255, 255, 0.25);
 }
 
 [data-theme="dark"] .weather-mobile-btn {
@@ -404,7 +397,7 @@
 /* Mobile */
 @media (max-width: 767px) {
   .weather-mobile-btn {
-    display: flex !important;
+    display: flex;
   }
   
   .bottom-nav .nav-item[href="meteo.html"] {
@@ -412,31 +405,22 @@
   }
   
   .weather-sidebar {
-    width: 85%;
-    max-width: 300px;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    top: 100px;
-    z-index: 1500 !important;
-    padding: 15px;
-    max-height: 75vh;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    width: 80%;
+    max-width: 280px; /* Plus petit */
+    left: 50%;
+    transform: translateX(-50%);
+    top: 90px; /* Un peu plus haut */
+    z-index: 1000;
+    padding: 10px;
+    max-height: 70vh; /* Plus petit sur mobile */
   }
   
   .weather-sidebar.hidden {
-    transform: translateX(-50%) translateY(-120%) !important;
+    transform: translateX(-50%) translateY(-150%);
     opacity: 0;
-    pointer-events: none;
   }
   
   .weather-show-btn {
     display: none;
-  }
-  
-  /* Styles pour s'assurer que le widget est visible lorsqu'il est affiché */
-  .weather-sidebar:not(.hidden) {
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
   }
 }
