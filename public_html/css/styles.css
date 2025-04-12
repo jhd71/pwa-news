@@ -2006,7 +2006,7 @@ main {
 @media (max-width: 767px) {
   /* Position de l'icône (bouton) */
   .quick-links-show-btn {
-    top: 63px; /* Remonté par rapport à la position desktop */
+    top: 64px; /* Remonté par rapport à la position desktop */
     right: 15px;
     width: 44px; /* Légèrement plus grand sur mobile */
     height: 44px;
