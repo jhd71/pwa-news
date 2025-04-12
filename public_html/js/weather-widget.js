@@ -6,7 +6,7 @@ window.showWeatherWidget = function() {
   } else {
     console.error("Widget météo non initialisé");
   }
-}
+};
 
 // Classe de gestion du widget météo
 class WeatherWidget {
@@ -53,13 +53,76 @@ class WeatherWidget {
       this.showWidget();
     });
     
-    // Bouton mobile (ajouter un écouteur supplémentaire même s'il y a déjà onclick)
+    // Bouton mobile (si présent) - ajouter un écouteur même s'il y a déjà un onclick
     if (this.mobileBtn) {
       this.mobileBtn.addEventListener('click', (e) => {
         console.log("Bouton météo mobile cliqué via addEventListener");
-        // Ne pas appeler preventDefault() pour permettre à l'attribut onclick de fonctionner aussi
-        this.showWidget();
+        // Ne pas empêcher le comportement par défaut pour permettre à l'attribut onclick de fonctionner
       });
+    }
+    
+    // Écouter les événements d'ouverture du panel d'actualités et du chat
+    document.addEventListener('panelOpened', () => this.handlePanelOpened());
+    document.addEventListener('panelClosed', () => this.handlePanelClosed());
+    
+    // Surveiller les changements de classe sur les éléments qui peuvent s'ouvrir en plein écran
+    this.observeFullscreenElements();
+  }
+  
+  observeFullscreenElements() {
+    // Éléments qui peuvent s'ouvrir en plein écran
+    const newsPanel = document.getElementById('newsPanel');
+    const chatContainer = document.querySelector('.chat-container');
+    
+    // Observer les changements de classe
+    if (newsPanel) {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.attributeName === 'class') {
+            if (newsPanel.classList.contains('open')) {
+              this.handlePanelOpened();
+            } else {
+              this.handlePanelClosed();
+            }
+          }
+        });
+      });
+      
+      observer.observe(newsPanel, { attributes: true });
+    }
+    
+    if (chatContainer) {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.attributeName === 'class') {
+            if (chatContainer.classList.contains('open')) {
+              this.handlePanelOpened();
+            } else {
+              this.handlePanelClosed();
+            }
+          }
+        });
+      });
+      
+      observer.observe(chatContainer, { attributes: true });
+    }
+  }
+  
+  handlePanelOpened() {
+    // Réduire le z-index des boutons de widget
+    if (this.showBtn) this.showBtn.style.zIndex = '10';
+    if (this.mobileBtn) this.mobileBtn.style.zIndex = '10';
+    if (window.quickLinksWidget && window.quickLinksWidget.showBtn) {
+      window.quickLinksWidget.showBtn.style.zIndex = '10';
+    }
+  }
+  
+  handlePanelClosed() {
+    // Restaurer le z-index des boutons de widget
+    if (this.showBtn) this.showBtn.style.zIndex = '999';
+    if (this.mobileBtn) this.mobileBtn.style.zIndex = '990';
+    if (window.quickLinksWidget && window.quickLinksWidget.showBtn) {
+      window.quickLinksWidget.showBtn.style.zIndex = '999';
     }
   }
   
@@ -69,37 +132,28 @@ class WeatherWidget {
   }
   
   showWidget() {
-    console.log("Méthode showWidget appelée");
-    
     // Cacher l'autre widget (communication inter-widget)
     if (window.quickLinksWidget) {
       window.quickLinksWidget.hideWidget();
     }
     
+    // Cacher aussi les panels plein écran si ouverts
+    this.closeFullscreenPanels();
+    
     // Afficher le widget météo
     if (this.sidebar) {
-      // Retirer la classe hidden et ajouter visible
       this.sidebar.classList.remove('hidden');
       this.sidebar.classList.add('visible');
       
-      // Pour le mobile, forcer l'affichage avec des styles inline
+      // Pour le mobile, forcer l'affichage
       this.sidebar.style.display = 'block';
       this.sidebar.style.opacity = '1';
       this.sidebar.style.visibility = 'visible';
-      
-      // Pour s'assurer que la transformation CSS est correcte
-      if (window.innerWidth <= 767) {
-        this.sidebar.style.transform = 'translateY(0)';
-      } else {
-        this.sidebar.style.transform = 'translateX(0)';
-      }
+      this.sidebar.style.pointerEvents = 'auto';
       
       // Masquer le bouton d'affichage
       if (this.showBtn) {
         this.showBtn.classList.remove('visible');
-        // Pour être sûr, aussi avec style
-        this.showBtn.style.opacity = '0';
-        this.showBtn.style.transform = 'scale(0)';
       }
       
       // Sauvegarder l'état
@@ -112,20 +166,32 @@ class WeatherWidget {
   
   hideWidget() {
     if (this.sidebar) {
-      // Ajouter la classe hidden et retirer visible
       this.sidebar.classList.add('hidden');
       this.sidebar.classList.remove('visible');
       
       // Afficher le bouton pour réafficher
       if (this.showBtn) {
         this.showBtn.classList.add('visible');
-        // Pour être sûr, aussi avec style
-        this.showBtn.style.opacity = '1';
-        this.showBtn.style.transform = 'scale(1)';
       }
       
       // Sauvegarder l'état
       localStorage.setItem('weatherHidden', 'true');
+    }
+  }
+  
+  closeFullscreenPanels() {
+    // Fermer le panel d'actualités s'il est ouvert
+    const newsPanel = document.getElementById('newsPanel');
+    if (newsPanel && newsPanel.classList.contains('open')) {
+      const closeBtn = newsPanel.querySelector('.close-panel');
+      if (closeBtn) closeBtn.click();
+    }
+    
+    // Fermer le chat s'il est ouvert
+    const chatContainer = document.querySelector('.chat-container');
+    if (chatContainer && chatContainer.classList.contains('open')) {
+      const chatToggleBtn = document.getElementById('chatToggleBtn');
+      if (chatToggleBtn) chatToggleBtn.click();
     }
   }
   
@@ -183,7 +249,6 @@ class WeatherWidget {
 
 // Initialiser le widget au chargement du DOM
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("DOM chargé, initialisation du widget météo");
   // Créer l'instance et l'exposer globalement
   window.weatherWidget = new WeatherWidget();
 });
