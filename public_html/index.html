@@ -578,7 +578,6 @@ window.refreshNews = refreshNews;
   </button>
 </div>
 <script src="js/ios-install.js"></script>
-<script src="js/weather-widget.js"></script>
 <script src="js/quick-links.js"></script>
 <!-- Supprimer l'initialisation de Swiper existante et utiliser celle de loadTopNews à la place -->
 <script>
@@ -615,6 +614,7 @@ document.getElementById('donateBtn').addEventListener('click', function() {
     document.body.removeChild(form);
 });
 </script>
+<script>
 <script>
 // Fonction pour charger la météo
 function loadWeatherWidget(forceLoad = false) {
@@ -711,31 +711,32 @@ function setupWeatherToggle() {
   });
   
   // Correction pour le bouton météo mobile
-if (weatherMobileBtn) {
-  console.log("Bouton météo mobile trouvé, ajout de l'événement de clic");
-  weatherMobileBtn.addEventListener('click', function() {
-    console.log("Clic sur le bouton météo mobile");
-    // Afficher le widget météo
-    weatherSidebar.classList.remove('hidden');
-    
-    // S'assurer que le bouton de réaffichage est masqué
-    if (weatherShowBtn) {
-      weatherShowBtn.classList.remove('visible');
-    }
-    
-    // Sauvegarder l'état
-    localStorage.setItem('weatherHidden', 'false');
-    
-    // Forcer le chargement des données météo
-    loadWeatherWidget(true);
-    
-    // Déboguer l'état du widget après le clic
-    console.log("État du widget après clic:", 
-      weatherSidebar.classList.contains('hidden') ? "caché" : "visible");
-  });
-} else {
-  console.error("Bouton météo mobile introuvable");
-}
+  if (weatherMobileBtn) {
+    console.log("Bouton météo mobile trouvé, ajout de l'événement de clic");
+    weatherMobileBtn.addEventListener('click', function() {
+      console.log("Clic sur le bouton météo mobile");
+      // Afficher le widget météo
+      weatherSidebar.classList.remove('hidden');
+      
+      // S'assurer que le bouton de réaffichage est masqué
+      if (weatherShowBtn) {
+        weatherShowBtn.classList.remove('visible');
+      }
+      
+      // Sauvegarder l'état
+      localStorage.setItem('weatherHidden', 'false');
+      
+      // Forcer le chargement des données météo
+      loadWeatherWidget(true);
+      
+      // Déboguer l'état du widget après le clic
+      console.log("État du widget après clic:", 
+        weatherSidebar.classList.contains('hidden') ? "caché" : "visible");
+    });
+  } else {
+    console.error("Bouton météo mobile introuvable");
+  }
+} // <-- Accolade fermante MANQUANTE pour setupWeatherToggle()
 
 // Initialisation après le chargement du DOM
 document.addEventListener("DOMContentLoaded", function() {
