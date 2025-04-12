@@ -439,3 +439,16 @@
     pointer-events: auto !important;
   }
 }
+  
+@media (max-width: 767px) {
+  .weather-sidebar.hidden {
+    transform: translateY(-120%) !important;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .weather-sidebar:not(.hidden) {
+    transform: none !important;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  }
