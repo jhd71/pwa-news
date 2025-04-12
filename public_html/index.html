@@ -709,20 +709,31 @@ function setupWeatherToggle() {
     loadWeatherWidget(true);
   });
   
-  // Configuration du bouton météo mobile
-  if (weatherMobileBtn) {
-    weatherMobileBtn.addEventListener('click', function() {
-      // Afficher le widget météo
-      weatherSidebar.classList.remove('hidden');
+  // Correction pour le bouton météo mobile
+if (weatherMobileBtn) {
+  console.log("Bouton météo mobile trouvé, ajout de l'événement de clic");
+  weatherMobileBtn.addEventListener('click', function() {
+    console.log("Clic sur le bouton météo mobile");
+    // Afficher le widget météo
+    weatherSidebar.classList.remove('hidden');
+    
+    // S'assurer que le bouton de réaffichage est masqué
+    if (weatherShowBtn) {
       weatherShowBtn.classList.remove('visible');
-      localStorage.setItem('weatherHidden', 'false');
-      
-      // Charger les données météo
-      loadWeatherWidget(true);
-    });
-  } else {
-    console.error("Bouton météo mobile introuvable");
-  }
+    }
+    
+    // Sauvegarder l'état
+    localStorage.setItem('weatherHidden', 'false');
+    
+    // Forcer le chargement des données météo
+    loadWeatherWidget(true);
+    
+    // Déboguer l'état du widget après le clic
+    console.log("État du widget après clic:", 
+      weatherSidebar.classList.contains('hidden') ? "caché" : "visible");
+  });
+} else {
+  console.error("Bouton météo mobile introuvable");
 }
 
 // Initialisation après le chargement du DOM
