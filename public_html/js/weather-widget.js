@@ -44,11 +44,6 @@ function loadWeatherWidget(forceLoad = false) {
     });
 }
 
-<!-- Bouton météo mobile - placez-le après l'ouverture de la balise body -->
-<button class="weather-mobile-btn" id="weatherMobileBtn" title="Météo">
-  <span class="material-icons">wb_sunny</span>
-</button>
-
 // Fonction modifiée pour configurer le basculement du widget météo
 function setupWeatherToggle() {
   const weatherSidebar = document.getElementById('weatherSidebar');
