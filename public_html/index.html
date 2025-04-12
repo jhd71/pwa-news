@@ -513,8 +513,11 @@ window.refreshNews = refreshNews;
     <span>Météo</span>
   </a>
 </div>
-<!-- Ajouter ce code après le bouton "Infos en direct" dans index.html -->
-<div class="quick-links">
+<!-- Remplacez votre bloc de liens rapides actuel par ce code -->
+<div class="quick-links-sidebar" id="quickLinksSidebar">
+  <button class="quick-links-toggle" title="Masquer les liens rapides">
+    <span class="material-icons">close</span>
+  </button>
   <h3>Liens rapides</h3>
   <div class="links-grid">
     <a href="https://www.montceaulesmines.fr/" class="quick-link" target="_blank">
@@ -543,6 +546,11 @@ window.refreshNews = refreshNews;
     </a>
   </div>
 </div>
+
+<!-- Bouton pour réafficher les liens rapides (sera visible quand le widget est masqué) -->
+<button class="quick-links-show-btn" id="quickLinksShowBtn" title="Afficher les liens rapides">
+  <span class="material-icons">link</span>
+</button>
 </div>
 <!-- Menu déroulant des actualités -->
 <div class="news-panel" id="newsPanel">
@@ -633,5 +641,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 </script>
+<script src="js/quick-links.js"></script>
 </body>
 </html>

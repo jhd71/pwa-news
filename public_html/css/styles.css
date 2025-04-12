@@ -1855,78 +1855,140 @@ main {
   }
 }
 
-/* Ajouter ces styles dans votre styles.css */
-.quick-links {
+/* Styles pour le widget de liens rapides */
+.quick-links-sidebar {
   position: fixed;
-  top: 110px;
-  right: 10px;
-  width: 270px;
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  padding: 12px;
-  z-index: 4;
-  backdrop-filter: blur(5px);
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 240px;
+  background-color: rgba(26, 35, 126, 0.9);
+  border-radius: 15px;
+  padding: 15px;
+  color: white;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  z-index: 100;
 }
 
-.quick-links h3 {
-  margin: 0 0 12px 0;
-  font-size: 16px;
-  color: var(--primary-color);
+.quick-links-sidebar h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 18px;
   text-align: center;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.quick-links-sidebar.hidden {
+  transform: translateX(300px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.quick-links-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 0;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quick-links-show-btn {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(26, 35, 126, 0.9);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+  z-index: 99;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.quick-links-show-btn.visible {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .links-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
 
 .quick-link {
-  display: flex;                /* Utilise le modèle flexbox pour l'organisation */
-  flex-direction: column;       /* Organise les éléments en colonne (icône au-dessus du texte) */
-  align-items: center;          /* Centre les éléments horizontalement dans le conteneur */
-  text-align: center;           /* Centre le texte */
-  padding: 10px;                /* Ajoute de l'espace à l'intérieur des liens */
-  background: rgba(240, 240, 250, 0.5);  /* Fond légèrement bleuté semi-transparent */
-  border-radius: 8px;           /* Coins arrondis */
-  text-decoration: none;        /* Supprime le soulignement des liens */
-  color: #333;                  /* Couleur du texte gris foncé */
-  transition: transform 0.2s, background 0.2s;  /* Animation douce pour les effets de survol */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: white;
+  text-decoration: none;
+  text-align: center;
+  transition: background-color 0.2s;
 }
 
 .quick-link:hover {
-  transform: translateY(-2px);
-  background: rgba(240, 240, 250, 0.8);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .quick-link .material-icons {
-  color: var(--primary-color);
-  font-size: 24px;
   margin-bottom: 5px;
+  font-size: 24px;
 }
 
 .quick-link span:not(.material-icons) {
-  font-size: 12px;
+  font-size: 13px;
+}
+
+/* Adaptation pour les écrans mobiles */
+@media (max-width: 768px) {
+  .quick-links-sidebar {
+    right: 10px;
+    width: 200px;
+  }
+  
+  .quick-links-show-btn {
+    right: 10px;
+  }
+  
+  .links-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Support du thème sombre */
-[data-theme="dark"] .quick-links * {
-  color: black !important;
+[data-theme="dark"] .quick-links-sidebar {
+  background-color: rgba(50, 50, 50, 0.9);
 }
 
-[data-theme="dark"] .quick-link .material-icons {
-  color: var(--primary-color) !important;
+[data-theme="dark"] .quick-links-show-btn {
+  background-color: rgba(50, 50, 50, 0.9);
 }
 
-/* Responsive */
-@media (max-width: 1199px) {
-  .quick-links {
-    display: none !important;
-  }
+[data-theme="dark"] .quick-link {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .quick-link:hover {
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 /* Empêcher le scroll de traverser la fenêtre de chat */
