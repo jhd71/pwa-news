@@ -2111,24 +2111,32 @@ main {
     -webkit-overflow-scrolling: touch; /* Améliore le défilement sur iOS */
 }
 
-/* Styles de débogage pour le widget météo mobile */
+/* Styles pour le widget météo sur mobile */
 @media (max-width: 767px) {
   .weather-sidebar {
-    /* Rendre le widget très visible pour le débogage */
-    background-color: rgba(255, 0, 0, 0.3) !important; /* Rouge semi-transparent */
-    border: 2px solid red !important;
-    z-index: 9999 !important; /* S'assurer qu'il est au-dessus de tout */
-    transform: none !important; /* Annuler toute transformation */
-    opacity: 1 !important; /* Forcer l'opacité */
-    display: block !important; /* Forcer l'affichage */
-    left: 10px !important; /* Position fixe */
-    top: 120px !important; /* Position fixe */
-    width: 90% !important; /* Largeur fixe */
-    max-width: 300px !important;
-    pointer-events: auto !important; /* S'assurer que les clics fonctionnent */
+    width: 80%;
+    max-width: 280px;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 90px;
+    z-index: 100;
+    max-height: 70vh;
+    overflow-y: auto;
+    background-color: rgba(255, 0, 0, 0.3); /* Rouge pour le débogage */
+    border: 1px solid red; /* Bordure rouge */
   }
   
   .weather-sidebar.hidden {
-    display: none !important; /* S'assurer qu'il est vraiment caché quand nécessaire */
+    transform: translateX(-50%) translateY(-150%);
+    opacity: 0;
+  }
+  
+  .weather-mobile-btn {
+    display: flex;
+    top: 66px;
+  }
+  
+  .bottom-nav .nav-item[href="meteo.html"] {
+    display: none;
   }
 }
