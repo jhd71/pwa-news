@@ -452,3 +452,7 @@
     pointer-events: auto;
   }
   }
+  
+.hidden {
+  display: none !important;
+}
