@@ -1,5 +1,6 @@
 // Fonction globale pour être accessible via l'attribut onclick
-function showWeatherWidget() {
+window.showWeatherWidget = function() {
+  console.log("Fonction globale showWeatherWidget appelée");
   if (window.weatherWidget) {
     window.weatherWidget.showWidget();
   } else {
@@ -41,62 +42,77 @@ class WeatherWidget {
   
   addEventListeners() {
     // Bouton de fermeture du widget
-    this.toggleBtn.addEventListener('click', (e) => {
+    this.toggleBtn.addEventListener('click', () => {
       console.log("Bouton de fermeture météo cliqué");
-      e.preventDefault(); // CORRIGÉ: Empêcher le comportement par défaut
-      e.stopPropagation(); // CORRIGÉ: Arrêter la propagation
       this.hideWidget();
     });
     
     // Bouton d'affichage du widget
-    this.showBtn.addEventListener('click', (e) => {
+    this.showBtn.addEventListener('click', () => {
       console.log("Bouton d'affichage météo cliqué");
-      e.preventDefault(); // CORRIGÉ: Empêcher le comportement par défaut
-      e.stopPropagation(); // CORRIGÉ: Arrêter la propagation
       this.showWidget();
     });
     
-    // Bouton mobile (si présent)
+    // Bouton mobile (si présent) - ajout d'un gestionnaire direct en plus de onclick
     if (this.mobileBtn) {
       this.mobileBtn.addEventListener('click', (e) => {
-        console.log("Bouton météo mobile cliqué");
-        e.preventDefault(); // Empêcher le comportement par défaut
-        e.stopPropagation(); // CORRIGÉ: Arrêter la propagation
+        console.log("Bouton météo mobile cliqué via addEventListener");
         this.showWidget();
       });
     }
     
-    // CORRIGÉ: S'assurer qu'un seul bouton est visible à la fois
-    window.addEventListener('resize', () => {
-      this.adjustButtonsVisibility();
+    // Écouter les événements de changement de visibilité des panels
+    document.addEventListener('panel-opened', () => {
+      this.hideMobileButtons();
+    });
+    
+    document.addEventListener('panel-closed', () => {
+      this.showMobileButtons();
+    });
+    
+    // Écouter les événements de chat
+    document.addEventListener('chat-opened', () => {
+      this.hideMobileButtons();
+    });
+    
+    document.addEventListener('chat-closed', () => {
+      this.showMobileButtons();
     });
   }
   
-  // CORRIGÉ: Nouvelle méthode pour s'assurer qu'un seul bouton est visible
-  adjustButtonsVisibility() {
-    if (window.innerWidth <= 767) {
-      // Sur mobile, cacher le bouton standard et afficher le bouton mobile
-      if (this.showBtn) this.showBtn.style.display = 'none';
-      if (this.mobileBtn) this.mobileBtn.style.display = 'flex';
-    } else {
-      // Sur desktop, afficher le bouton standard si le widget est caché
-      if (this.sidebar && this.sidebar.classList.contains('hidden')) {
-        if (this.showBtn) this.showBtn.style.display = 'flex';
-      } else {
-        if (this.showBtn) this.showBtn.style.display = 'none';
+  hideMobileButtons() {
+    // Cacher les boutons mobiles
+    if (this.mobileBtn) {
+      this.mobileBtn.style.display = 'none';
+    }
+    if (this.showBtn) {
+      this.showBtn.style.display = 'none';
+    }
+    // Informer l'autre widget
+    if (window.quickLinksWidget) {
+      window.quickLinksWidget.hideMobileButtons();
+    }
+  }
+  
+  showMobileButtons() {
+    // Réafficher les boutons mobiles (sauf si le widget est visible)
+    if (this.sidebar && !this.sidebar.classList.contains('visible')) {
+      if (this.mobileBtn) {
+        this.mobileBtn.style.display = 'flex';
       }
-      
-      // Toujours cacher le bouton mobile sur desktop
-      if (this.mobileBtn) this.mobileBtn.style.display = 'none';
+      if (this.showBtn) {
+        this.showBtn.style.display = 'flex';
+      }
+    }
+    // Informer l'autre widget
+    if (window.quickLinksWidget) {
+      window.quickLinksWidget.showMobileButtons();
     }
   }
   
   loadInitialState() {
     // Toujours masquer le widget au démarrage
     this.hideWidget();
-    
-    // CORRIGÉ: Ajuster la visibilité des boutons
-    this.adjustButtonsVisibility();
   }
   
   showWidget() {
@@ -107,6 +123,7 @@ class WeatherWidget {
     
     // Afficher le widget météo
     if (this.sidebar) {
+      console.log("Affichage du widget météo");
       this.sidebar.classList.remove('hidden');
       this.sidebar.classList.add('visible');
       
@@ -115,13 +132,15 @@ class WeatherWidget {
       this.sidebar.style.opacity = '1';
       this.sidebar.style.visibility = 'visible';
       
-      // CORRIGÉ: Ajuster la visibilité des boutons
-      if (window.innerWidth > 767) {
-        // Sur desktop, cacher le bouton d'affichage
-        if (this.showBtn) {
-          this.showBtn.classList.remove('visible');
-          this.showBtn.style.display = 'none';
-        }
+      // Masquer le bouton d'affichage
+      if (this.showBtn) {
+        this.showBtn.classList.remove('visible');
+        this.showBtn.style.display = 'none';
+      }
+      
+      // Masquer aussi le bouton mobile quand le widget est ouvert
+      if (this.mobileBtn) {
+        this.mobileBtn.style.display = 'none';
       }
       
       // Sauvegarder l'état
@@ -134,15 +153,23 @@ class WeatherWidget {
   
   hideWidget() {
     if (this.sidebar) {
+      console.log("Masquage du widget météo");
       this.sidebar.classList.add('hidden');
       this.sidebar.classList.remove('visible');
       
-      // CORRIGÉ: Ajuster la visibilité des boutons
-      if (window.innerWidth > 767) {
-        // Sur desktop, afficher le bouton pour réafficher
+      // Afficher le bouton pour réafficher (sauf si un panel est ouvert)
+      const isPanelOpen = document.querySelector('.news-panel.open') || 
+                         document.querySelector('.chat-container.open');
+      
+      if (!isPanelOpen) {
         if (this.showBtn) {
           this.showBtn.classList.add('visible');
           this.showBtn.style.display = 'flex';
+        }
+        
+        // Réafficher aussi le bouton mobile
+        if (this.mobileBtn) {
+          this.mobileBtn.style.display = 'flex';
         }
       }
       
@@ -179,7 +206,7 @@ class WeatherWidget {
         const forecast = data.forecast.forecastday;
         
         // Version simplifiée pour le widget
-        let forecastHTML = `<p style="text-align:center; margin: 0 0 5px 0; font-size: 16px;"><strong>${location.name}</strong></p>`;
+        let forecastHTML = `<p style="text-align:center; margin: 0 0 5px 0;"><strong>${location.name}</strong></p>`;
         forecast.slice(0, 3).forEach((day) => {
           const date = new Date(day.date);
           const dayName = date.toLocaleDateString("fr-FR", { weekday: 'short' });
