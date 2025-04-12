@@ -224,6 +224,12 @@ this.tileContainer.appendChild(separator2);
             mobileUrl: 'https://www.bfmtv.com/en-direct/',
             isDefault: true
         },
+		{
+            title: 'CNews',
+            url: 'https://www.cnews.fr/le-direct',
+            mobileUrl: 'https://www.cnews.fr/le-direct',
+            isDefault: true
+        },
         {
             title: 'FranceTV Info',
             url: 'https://www.francetvinfo.fr/en-direct/tv.html',
