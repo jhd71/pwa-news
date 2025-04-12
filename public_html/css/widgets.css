@@ -85,6 +85,32 @@
   transition: opacity 0.3s, transform 0.3s;
 }
 
+/* Position sur desktop */
+@media (min-width: 768px) {
+  .weather-show-btn {
+    top: 100px; /* Ajustez cette valeur selon vos besoins */
+    left: 10px;
+  }
+  
+  .quick-links-show-btn {
+    top: 100px; /* Ajustez cette valeur selon vos besoins */
+    right: 10px;
+  }
+}
+
+/* Position sur mobile */
+@media (max-width: 767px) {
+  .weather-show-btn {
+    top: 120px; /* Ajustez cette valeur selon vos besoins */
+    left: 10px;
+  }
+  
+  .quick-links-show-btn {
+    top: 120px; /* Ajustez cette valeur selon vos besoins */
+    right: 10px;
+  }
+}
+
 /* CORRIGÉ: Alignement avec bouton Infos en direct */
 .weather-show-btn {
   top: 75px; /* CORRIGÉ: Aligné avec le bouton Infos */
