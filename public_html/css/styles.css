@@ -1424,7 +1424,7 @@ main {
 /* ===== WIDGET MÉTÉO ===== */
 .weather-sidebar {
   position: fixed;
-  top: 90px; /* On conserve cette valeur */
+  top: 120px; /* On conserve cette valeur */
   left: 10px;
   width: 270px; /* Largeur augmentée pour mieux utiliser l'espace */
   background: rgba(255, 255, 255, 0.85);
@@ -1512,7 +1512,7 @@ main {
 /* Bouton pour réafficher le widget */
 .weather-show-btn {
   position: fixed;
-  top: 90px;
+  top: 120px;
   left: 10px;
   background: var(--primary-color);
   color: white;
@@ -1858,7 +1858,7 @@ main {
 /* Styles pour le widget de liens rapides (harmonisé avec météo) */
 .quick-links-sidebar {
   position: fixed;
-  top: 90px; /* Même hauteur que la météo */
+  top: 120px; /* Même hauteur que la météo */
   right: 10px; /* Aligné à droite au lieu de gauche */
   width: 270px; /* Même largeur que la météo */
   background: rgba(255, 255, 255, 0.85);
@@ -1912,7 +1912,7 @@ main {
 
 .quick-links-show-btn {
   position: fixed;
-  top: 90px; /* Même hauteur que la météo */
+  top: 120px; /* Même hauteur que la météo */
   right: 10px;
   background: var(--primary-color);
   color: white;
