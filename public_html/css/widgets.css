@@ -501,3 +501,101 @@
     right: 10px;
   }
 }
+
+/* Styles pour les icônes météo animées */
+.animated-icon {
+  width: 60px;
+  height: 60px;
+  position: relative;
+  margin: 8px auto;
+  background-size: contain !important;
+}
+
+/* Animation Soleil */
+.animated-icon.sunny {
+  background: url('../images/weather-svg/sun.svg') no-repeat center;
+  animation: rotate 20s infinite linear;
+}
+
+/* Animation Pluie */
+.animated-icon.rain {
+  background: url('../images/weather-svg/rain.svg') no-repeat center;
+  animation: rain-fall 2s infinite linear;
+}
+
+/* Animation Neige */
+.animated-icon.snow {
+  background: url('../images/weather-svg/snow.svg') no-repeat center;
+  animation: float 3s infinite ease-in-out;
+}
+
+/* Animation Orage */
+.animated-icon.thunderstorm {
+  background: url('../images/weather-svg/thunderstorm.svg') no-repeat center;
+  animation: flash 3s infinite;
+}
+
+/* Animation Nuages */
+.animated-icon.cloudy {
+  background: url('../images/weather-svg/cloud.svg') no-repeat center;
+  animation: float 5s infinite ease-in-out;
+}
+
+/* Animation Brouillard */
+.animated-icon.fog {
+  background: url('../images/weather-svg/fog.svg') no-repeat center;
+  animation: fade 4s infinite alternate;
+}
+
+/* Animation Partiellement nuageux */
+.animated-icon.partly_cloudy {
+  background: url('../images/weather-svg/partly_cloudy.svg') no-repeat center;
+  animation: float 6s infinite ease-in-out;
+}
+
+/* Animation par défaut */
+.animated-icon.default {
+  background: url('../images/weather-svg/weather.svg') no-repeat center;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+/* Définition des animations */
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes rain-fall {
+  0% { background-position: center 0; }
+  100% { background-position: center 10px; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes flash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+  55% { opacity: 1; }
+  60% { opacity: 0.7; }
+}
+
+@keyframes fade {
+  0% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Ajustement de la mise en page pour les icônes animées */
+.weather-day {
+  padding: 12px;
+  margin-bottom: 15px;
+  text-align: center;
+}
