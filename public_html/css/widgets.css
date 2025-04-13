@@ -85,29 +85,15 @@
   transition: opacity 0.3s, transform 0.3s;
 }
 
-/* Position sur desktop */
 @media (min-width: 768px) {
   .weather-show-btn {
-    top: 150px; /* Ajustez cette valeur selon vos besoins */
-    left: 10px;
+    top: 110px !important;
+    left: 10px !important;
   }
   
   .quick-links-show-btn {
-    top: 150px; /* Ajustez cette valeur selon vos besoins */
-    right: 10px;
-  }
-}
-
-/* Position sur mobile */
-@media (max-width: 767px) {
-  .weather-show-btn {
-    top: 120px; /* Ajustez cette valeur selon vos besoins */
-    left: 10px;
-  }
-  
-  .quick-links-show-btn {
-    top: 120px; /* Ajustez cette valeur selon vos besoins */
-    right: 10px;
+    top: 110px !important;
+    right: 10px !important;
   }
 }
 
@@ -167,10 +153,19 @@
 }
 
 .weather-day h4 {
-  margin: 0 0 8px 0; /* CORRIGÉ: Plus grand */
-  font-size: 16px; /* CORRIGÉ: Plus grand */
+  margin: 0 0 8px 0; /* Conservé de l'original */
+  font-size: 16px; /* Taille par défaut */
   color: #333;
   font-weight: bold;
+  white-space: normal; /* Nouveau - permet le retour à la ligne */
+  height: auto; /* Nouveau - ajuste la hauteur au contenu */
+  line-height: 1.2; /* Nouveau - espacement des lignes serré */
+}
+
+@media (min-width: 768px) {
+  .weather-day h4 {
+    font-size: 13px; /* Taille réduite sur desktop */
+  }
 }
 
 .weather-day img {
@@ -227,7 +222,7 @@
 /* Bouton météo mobile */
 .weather-mobile-btn {
   position: fixed;
-  top: 75px; /* CORRIGÉ: Aligné avec le bouton Infos */
+  top: 65px; /* CORRIGÉ: Aligné avec le bouton Infos */
   left: 15px;
   background-color: var(--primary-color);
   color: white;
@@ -243,6 +238,7 @@
   z-index: 990;
   -webkit-tap-highlight-color: transparent;
 }
+
 
 .weather-mobile-btn .material-icons {
   font-size: 26px; /* CORRIGÉ: Plus grand */
@@ -314,40 +310,194 @@
   .weather-sidebar,
   .quick-links-sidebar {
     width: 85%;
-    max-width: 320px; /* CORRIGÉ: Plus large */
-    top: 90px; /* CORRIGÉ: Aligné avec le bouton Infos */
+    max-width: 320px;
+    top: 90px;
     max-height: 75vh;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
     z-index: 1500;
   }
   
-  /* Centrer le widget météo sur mobile */
+  /* Centrer les deux widgets sur mobile */
   .weather-sidebar {
-    left: 50%;
-    transform: translateX(-50%);
+    left: 50% !important;
+    transform: translateX(-50%) !important;
   }
   
-  /* Centrer le widget liens rapides sur mobile */
   .quick-links-sidebar {
-    right: 50%;
-    transform: translateX(50%);
+    right: auto !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
   }
   
   /* États cachés pour mobile - déplacer verticalement */
   .weather-sidebar.hidden {
-    transform: translateY(-120%);
+    transform: translateY(-120%) !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
   }
   
   .quick-links-sidebar.hidden {
-    transform: translateY(120%);
+    transform: translateY(120%) !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
   }
   
   /* États visibles pour mobile */
-  .weather-sidebar.visible {
-    transform: translateY(0);
+  .weather-sidebar.visible,
+  .quick-links-sidebar.visible {
+    transform: translateX(-50%) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+}
+
+/* Pour écrans mobiles : réduire la hauteur du widget météo et ses éléments */
+@media (max-width: 767px) {
+  .weather-sidebar {
+    width: 110%;
+    max-width: 300px;
+    left: 50% !important;               /* Centrer horizontalement */
+    transform: translateX(-50%) !important;  /* Déplacer pour centrer précisément */
+    top: 120px;
+    z-index: 1500 !important;
+    padding: 15px;
+    height: 540px !important;           /* Augmente légèrement la hauteur */
+    max-height: 75vh !important;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
   }
   
-  .quick-links-sidebar.visible {
-    transform: translateY(0);
+  /* Pour masquer le widget sur mobile lorsqu'il est fermé */
+  .weather-sidebar.hidden {
+    transform: translateX(-50%) translateY(-120%) !important;
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  /* Le bouton pour réafficher le widget sera masqué sur mobile */
+  .weather-show-btn {
+    display: none;
+  }
+  
+  /* S'assurer que le widget visible est interactif */
+  .weather-sidebar:not(.hidden) {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+
+  
+  /* Le conteneur interne ajuste sa hauteur */
+  #weather-widget {
+    height: auto !important;
+    max-height: none !important;
+  }
+  
+  /* Réduction des espacements dans chaque carte météo, mais avec des textes plus lisibles */
+  .weather-day {
+    padding: 4px !important;
+    margin-bottom: 4px !important;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Agrandissement du titre du widget (nom de la ville) */
+  /* Textes plus grands dans le widget météo */
+.weather-sidebar h3 {
+  font-size: 17px; /* Titre du widget plus grand */
+  font-weight: bold;
+}
+
+.weather-day h4 {
+  font-size: 14px; /* Jour de la semaine plus grand */
+  margin-bottom: 8px;
+}
+
+.weather-day p {
+  font-size: 15px; /* Description et températures plus grandes */
+  margin: 4px 0;
+}
+
+/* Icônes météo plus grandes */
+.weather-day img {
+  width: 55px; /* Icône météo plus grande */
+  height: 55px;
+  margin: 5px auto;
+}
+
+/* Nom de la ville plus grand */
+.weather-sidebar p strong {
+  font-size: 16px;
+}
+}
+
+
+@media (min-width: 768px) {
+  /* Réduire la taille des textes dans le widget météo sur PC */
+  .weather-sidebar h3, 
+  .quick-links-sidebar h3 {
+    font-size: 15px;
+  }
+  
+  .weather-day h4 {
+    font-size: 13px;
+  }
+  
+  .weather-day p {
+    font-size: 12px;
+    margin: 2px 0;
+  }
+  
+  .weather-sidebar p strong {
+    font-size: 14px;
+  }
+  
+  /* Réduire la taille des textes dans les liens rapides */
+  .quick-link .material-icons {
+    font-size: 22px;
+    margin-bottom: 4px;
+  }
+  
+  .quick-link span:not(.material-icons) {
+    font-size: 11px;
+  }
+}
+
+
+ /* Position des fenêtres de widgets ouvertes sur desktop */
+@media (min-width: 768px) {
+  .weather-sidebar {
+    top: 130px !important; /* Ajustez cette valeur pour descendre la fenêtre */
+    left: 20px !important;
+  }
+  
+  .quick-links-sidebar {
+    top: 130px !important; /* Ajustez cette valeur pour descendre la fenêtre */
+    right: 20px !important;
+  }
+}
+
+/* Panel d'infos avec un z-index élevé */
+.news-panel, 
+#newsPanel, 
+.panel-open {
+    z-index: 1500 !important;
+}
+
+/* CSS pour cacher les boutons derrière le panel quand il est ouvert */
+.news-panel.open ~ .weather-show-btn,
+.news-panel.open ~ .quick-links-show-btn,
+.news-panel.open ~ .weather-mobile-btn {
+    z-index: 10 !important; /* Valeur faible pour rester derrière le panel */
+}
+
+/* Position sur mobile */
+@media (max-width: 767px) {
+  .weather-show-btn {
+    top: 100px; /* Ajustez cette valeur selon vos besoins */
+    left: 10px;
+  }
+  
+  .quick-links-show-btn {
+    top: 66px; /* Ajustez cette valeur selon vos besoins */
+    right: 10px;
   }
 }
