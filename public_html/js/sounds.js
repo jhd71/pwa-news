@@ -22,6 +22,7 @@ class SoundManager {
             'notification': '/sounds/notification.mp3',
             'click': '/sounds/click.mp3',
             'error': '/sounds/erreur.mp3',
+            'sent': '/sounds/sent.mp3',
             'success': '/sounds/success.mp3'
         };
 
