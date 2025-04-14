@@ -636,7 +636,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.body.appendChild(weatherBtn);
   
   // Fonction pour charger les données météo
-// Fonction modifiée pour charger les données météo avec icônes animées
+// Fonction modifiée pour charger les données météo avec des GIF animés
 async function loadWeatherData() {
   console.log("Chargement des données météo");
   
@@ -661,17 +661,15 @@ async function loadWeatherData() {
     
     forecast.slice(0, 3).forEach((day) => {
       const date = new Date(day.date);
-      const dayName = date.toLocaleDateString("fr-FR", { weekday: 'long', day: 'numeric' });
+      const dayName = date.toLocaleDateString("fr-FR", { weekday: 'long', day: 'numeric', month: 'long' });
       
-      // Déterminer la classe pour l'animation en fonction de la condition météo
-      const weatherClass = getAnimatedClass(day.day.condition.text);
+      // Obtenir le GIF animé correspondant à la condition météo
+      const animatedGif = getAnimatedGif(day.day.condition.text);
       
-      // Création du template HTML pour chaque jour, incluant les températures en couleur
-      // et l'icône SVG animée
       forecastHTML += `
         <div class="weather-day">
           <h4>${dayName}</h4>
-          <div class="animated-icon ${weatherClass}" title="${day.day.condition.text}"></div>
+          <img src="${animatedGif}" alt="${day.day.condition.text}" class="weather-gif">
           <p>${day.day.condition.text}</p>
           <p>
             <span class="min-temp" style="color: #64B5F6;"><strong>${Math.round(day.day.mintemp_c)}°C</strong></span> - 
@@ -692,26 +690,26 @@ async function loadWeatherData() {
   }
 }
 
-// Fonction pour déterminer la classe CSS d'animation en fonction de la condition météo
-function getAnimatedClass(condition) {
+// Fonction pour obtenir le GIF animé correspondant à la condition météo
+function getAnimatedGif(condition) {
   const conditionLower = condition.toLowerCase();
   
   if (conditionLower.includes('pluie') || conditionLower.includes('averse'))
-    return "rain";
+    return "images/weather-gifs/rain.gif";
   else if (conditionLower.includes('neige'))
-    return "snow";
+    return "images/weather-gifs/snow.gif";
   else if (conditionLower.includes('orage'))
-    return "thunderstorm";
+    return "images/weather-gifs/thunderstorm.gif";
   else if (conditionLower.includes('nuage') || conditionLower.includes('couvert'))
-    return "cloudy";
+    return "images/weather-gifs/cloudy.gif";
   else if (conditionLower.includes('soleil') || conditionLower.includes('ensoleillé') || conditionLower.includes('clair'))
-    return "sunny";
+    return "images/weather-gifs/sunny.gif";
   else if (conditionLower.includes('brouillard') || conditionLower.includes('brume'))
-    return "fog";
+    return "images/weather-gifs/fog.gif";
   else if (conditionLower.includes('partiellement'))
-    return "partly_cloudy";
+    return "images/weather-gifs/partly_cloudy.gif";
   else
-    return "default";
+    return "images/weather-gifs/default.gif";
 }
 
   

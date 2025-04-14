@@ -294,139 +294,142 @@
   }
 }
 
-/* Adaptation mobile */
+/* Adaptation mobile - Styles communs pour tous les widgets mobiles */
 @media (max-width: 767px) {
-  /* Afficher le bouton météo mobile */
+  /* Afficher/masquer les éléments de navigation */
   .weather-mobile-btn {
     display: flex;
   }
   
-  /* Cacher le lien météo dans la barre de navigation */
   .bottom-nav .nav-item[href="meteo.html"] {
     display: none;
   }
   
-  /* Ajuster les widgets pour mobile */
+  /* Styles de base communs aux deux widgets */
   .weather-sidebar,
   .quick-links-sidebar {
     width: 85%;
-    max-width: 320px;
-    top: 90px;
-    max-height: 75vh;
+    max-width: 300px;
+    top: 120px;             /* Position depuis le haut unifiée */
+    z-index: 1500 !important;
+    padding: 15px;
+    max-height: 75vh !important;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-    z-index: 1500;
-  }
-  
-  /* Centrer les deux widgets sur mobile */
-  .weather-sidebar {
+    
+    /* Centrage horizontal pour les deux widgets */
     left: 50% !important;
     transform: translateX(-50%) !important;
   }
   
-  .quick-links-sidebar {
-    right: auto !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-  }
-  
-  /* États cachés pour mobile - déplacer verticalement */
-  .weather-sidebar.hidden {
-    transform: translateY(-120%) !important;
+  /* État caché pour les deux widgets */
+  .weather-sidebar.hidden,
+  .quick-links-sidebar.hidden {
     opacity: 0 !important;
     visibility: hidden !important;
+    pointer-events: none;
+  }
+  
+  /* Direction de disparition spécifique à chaque widget */
+  .weather-sidebar.hidden {
+    transform: translateX(-50%) translateY(-120%) !important;
   }
   
   .quick-links-sidebar.hidden {
-    transform: translateY(120%) !important;
-    opacity: 0 !important;
-    visibility: hidden !important;
+    transform: translateX(-50%) translateY(120%) !important;
   }
   
-  /* États visibles pour mobile */
+  /* État visible pour les deux widgets */
   .weather-sidebar.visible,
   .quick-links-sidebar.visible {
     transform: translateX(-50%) !important;
     opacity: 1 !important;
     visibility: visible !important;
-  }
-}
-
-/* Pour écrans mobiles : réduire la hauteur du widget météo et ses éléments */
-@media (max-width: 767px) {
-  .weather-sidebar {
-    width: 110%;
-    max-width: 300px;
-    left: 50% !important;               /* Centrer horizontalement */
-    transform: translateX(-50%) !important;  /* Déplacer pour centrer précisément */
-    top: 120px;
-    z-index: 1500 !important;
-    padding: 15px;
-    height: 540px !important;           /* Augmente légèrement la hauteur */
-    max-height: 75vh !important;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    pointer-events: auto !important;
   }
   
-  /* Pour masquer le widget sur mobile lorsqu'il est fermé */
-  .weather-sidebar.hidden {
-    transform: translateX(-50%) translateY(-120%) !important;
-    opacity: 0;
-    pointer-events: none;
-  }
-  
-  /* Le bouton pour réafficher le widget sera masqué sur mobile */
+  /* Le bouton pour réafficher le widget météo est masqué sur mobile */
   .weather-show-btn {
     display: none;
   }
   
-  /* S'assurer que le widget visible est interactif */
-  .weather-sidebar:not(.hidden) {
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
+  /* Styles spécifiques au widget météo */
+  .weather-sidebar {
+    height: auto !important; /* Au lieu de 520px fixe */
+    max-height: 70vh !important; /* Un peu moins que 75vh */
   }
-
   
-  /* Le conteneur interne ajuste sa hauteur */
   #weather-widget {
     height: auto !important;
     max-height: none !important;
   }
   
-  /* Réduction des espacements dans chaque carte météo, mais avec des textes plus lisibles */
+  /* Réduction des espacements dans chaque carte météo */
   .weather-day {
-    padding: 4px !important;
-    margin-bottom: 4px !important;
+    padding: 3px !important;
+    margin-bottom: 2px !important; /* Réduit de 4px à 3px */
     border: 1px solid rgba(0, 0, 0, 0.1);
   }
   
-  /* Agrandissement du titre du widget (nom de la ville) */
-  /* Textes plus grands dans le widget météo */
-.weather-sidebar h3 {
-  font-size: 17px; /* Titre du widget plus grand */
+  /* Styles typographiques et d'icônes optimisés */
+  .weather-sidebar h3 {
+    font-size: 17px;
+    font-weight: bold;
+  }
+  
+  .weather-day h4 {
+	background-color: rgba(70, 104, 185, 0.15); /* Fond bleu très léger */
+    padding: 2px 5px;
+    border-radius: 4px;
+    display: inline-block;
+    color: #a8c6ff !important; /* Bleu clair pour les dates */
+    font-weight: bold;
+    font-size: 16px;         /* Réduit pour accommoder le mois */
+    margin-bottom: 6px;      /* Réduit de 8px à 6px */
+    line-height: 1.2;        /* Assure que le texte plus long s'affiche bien */
+  }
+  
+  /* Amélioration de la visibilité des dates selon le thème */
+	[data-theme="light"] .weather-day h4 {
+  color: #4668b9 !important; /* Bleu plus foncé pour le mode clair */
   font-weight: bold;
+  text-shadow: none; /* Pas besoin d'ombre en mode clair */
 }
 
+	[data-theme="dark"] .weather-day h4 {
+  color: #a8c6ff !important; /* Garder le bleu clair pour le mode sombre */
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Pour renforcer la lisibilité générale */
 .weather-day h4 {
-  font-size: 14px; /* Jour de la semaine plus grand */
-  margin-bottom: 8px;
+  font-size: 14px;
+  letter-spacing: 0.5px; /* Espacement légèrement accru entre les lettres */
+  margin-bottom: 4px;
 }
 
-.weather-day p {
-  font-size: 15px; /* Description et températures plus grandes */
-  margin: 4px 0;
+  /* Ajouter un légère ombre au texte pour améliorer la lisibilité */
+.weather-day h4,
+.weather-day p:not(:has(span)) {
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-/* Icônes météo plus grandes */
-.weather-day img {
-  width: 55px; /* Icône météo plus grande */
-  height: 55px;
-  margin: 5px auto;
-}
-
-/* Nom de la ville plus grand */
-.weather-sidebar p strong {
-  font-size: 16px;
-}
+  .weather-day p {
+    font-size: 14px;         /* Légèrement réduit de 15px à 14px */
+    margin: 2px 0;           /* Réduit de 4px à 3px */
+    line-height: 1.1;        /* Optimise l'espacement vertical */
+  }
+  
+  .weather-day img,
+  .weather-gif {
+    width: 45px;             /* Réduit de 55px à 50px */
+    height: 45px;
+    margin: 2px auto;        /* Réduit de 5px à 3px */
+  }
+  
+  .weather-sidebar p strong {
+    font-size: 16px;
+  }
 }
 
 
@@ -502,100 +505,10 @@
   }
 }
 
-/* Styles pour les icônes météo animées */
-.animated-icon {
-  width: 60px;
-  height: 60px;
-  position: relative;
-  margin: 8px auto;
-  background-size: contain !important;
-}
-
-/* Animation Soleil */
-.animated-icon.sunny {
-  background: url('../images/weather-svg/sun.svg') no-repeat center;
-  animation: rotate 20s infinite linear;
-}
-
-/* Animation Pluie */
-.animated-icon.rain {
-  background: url('../images/weather-svg/rain.svg') no-repeat center;
-  animation: rain-fall 2s infinite linear;
-}
-
-/* Animation Neige */
-.animated-icon.snow {
-  background: url('../images/weather-svg/snow.svg') no-repeat center;
-  animation: float 3s infinite ease-in-out;
-}
-
-/* Animation Orage */
-.animated-icon.thunderstorm {
-  background: url('../images/weather-svg/thunderstorm.svg') no-repeat center;
-  animation: flash 3s infinite;
-}
-
-/* Animation Nuages */
-.animated-icon.cloudy {
-  background: url('../images/weather-svg/cloud.svg') no-repeat center;
-  animation: float 5s infinite ease-in-out;
-}
-
-/* Animation Brouillard */
-.animated-icon.fog {
-  background: url('../images/weather-svg/fog.svg') no-repeat center;
-  animation: fade 4s infinite alternate;
-}
-
-/* Animation Partiellement nuageux */
-.animated-icon.partly_cloudy {
-  background: url('../images/weather-svg/partly_cloudy.svg') no-repeat center;
-  animation: float 6s infinite ease-in-out;
-}
-
-/* Animation par défaut */
-.animated-icon.default {
-  background: url('../images/weather-svg/weather.svg') no-repeat center;
-  animation: pulse 2s infinite ease-in-out;
-}
-
-/* Définition des animations */
-@keyframes rotate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-@keyframes rain-fall {
-  0% { background-position: center 0; }
-  100% { background-position: center 10px; }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
-}
-
-@keyframes flash {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
-  55% { opacity: 1; }
-  60% { opacity: 0.7; }
-}
-
-@keyframes fade {
-  0% { opacity: 0.7; }
-  100% { opacity: 1; }
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-
-/* Ajustement de la mise en page pour les icônes animées */
-.weather-day {
-  padding: 12px;
-  margin-bottom: 15px;
-  text-align: center;
+.weather-gif {
+  width: 64px;
+  height: 64px;
+  margin: 5px auto;
+  display: block;
+  object-fit: contain;
 }
