@@ -106,14 +106,16 @@
   }
   
   /* ===== WIDGETS ===== */
-  /* Agrandissement du widget météo sur tablette */
-@media (min-width: 768px) and (max-width: 1024px) {
   /* Widget météo plus grand */
   .weather-sidebar {
     width: 450px !important;
     max-width: 85% !important;
     padding: 20px !important;
     border-radius: 16px !important;
+    position: fixed !important;
+    top: 100px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
   }
   
   /* Titre plus grand */
@@ -159,10 +161,7 @@
   .weather-detail-item {
     font-size: 15px !important;
   }
-}
-
-  /* Correction de la croix de fermeture */
-@media (min-width: 768px) and (max-width: 1024px) {
+  
   /* Bouton de fermeture plus grand et mieux positionné */
   .weather-toggle,
   .quick-links-toggle {
@@ -182,31 +181,18 @@
   .quick-links-toggle .material-icons {
     font-size: 28px !important;
   }
-}
-
-/* Garantir le bon positionnement du widget sur tablette */
-@media (min-width: 768px) and (max-width: 1024px) {
-  /* Positionnement précis pour l'affichage tablette */
-  .weather-sidebar {
-    position: fixed !important;
-    top: 100px !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-  }
   
-  /* Style visible */
+  /* Style visible et caché pour le widget météo */
   .weather-sidebar.visible {
     opacity: 1 !important;
     visibility: visible !important;
   }
   
-  /* Style caché */
   .weather-sidebar.hidden {
     opacity: 0 !important;
     visibility: hidden !important;
     transform: translateX(-50%) translateY(-120%) !important;
   }
-}
 
   /* Widget liens rapides */
   .quick-links-sidebar {
@@ -296,16 +282,6 @@
     margin: 0 5px !important;
   }
   
-  /* Fix pour repositionner le chat après fermeture du clavier */
-  @supports (-webkit-touch-callout: none) {
-    /* Spécifique aux appareils iOS */
-    .chat-container.open {
-      position: fixed !important;
-      bottom: 75px !important; /* Au-dessus de la barre de navigation */
-      transition: transform 0.3s, opacity 0.3s !important;
-    }
-  }
-  
   /* ===== MENU LATÉRAL ET PARAMÈTRES ===== */
   .sidebar,
   .settings-menu {
@@ -388,6 +364,13 @@
 @supports (-webkit-touch-callout: none) {
   input, textarea, select {
     font-size: 16px !important; /* Empêche le zoom sur les champs de saisie */
+  }
+  
+  /* Spécifique aux appareils iOS */
+  .chat-container.open {
+    position: fixed !important;
+    bottom: 75px !important; /* Au-dessus de la barre de navigation */
+    transition: transform 0.3s, opacity 0.3s !important;
   }
 }
 
