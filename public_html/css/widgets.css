@@ -330,15 +330,23 @@
   }
 }
 
+@media (min-width: 1200px) {
+  .weather-sidebar {
+    top: 105px !important; /* Par exemple, descendre un peu */
+    left: 20px !important;
+  }
+
+  .quick-links-sidebar {
+    top: 105px !important;
+    right: 20px !important;
+  }
+}
+
 /* Adaptation mobile - Styles communs pour tous les widgets mobiles */
 @media (max-width: 767px) {
   /* Afficher/masquer les éléments de navigation */
   .weather-mobile-btn {
     display: flex;
-  }
-  
-  .bottom-nav .nav-item[href="meteo.html"] {
-    display: none;
   }
   
   /* Styles de base communs aux deux widgets */
@@ -522,10 +530,14 @@
 
 
  /* Position des fenêtres de widgets ouvertes sur desktop */
-@media (min-width: 768px) {
+@media (min-width: 768px) and (max-width: 1100px) {
   .weather-sidebar {
-    top: 130px !important; /* Ajustez cette valeur pour descendre la fenêtre */
-    left: 20px !important;
+    top: 50% !important; /* Modification définitive */
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    max-width: 400px !important;
+    max-height: 70vh !important;
+    overflow-y: auto !important;
   }
   
   .quick-links-sidebar {
@@ -580,5 +592,48 @@
   .weather-gif {
     width: 35px !important;
     height: 35px !important;
+  }
+}
+
+/* Réduction de la taille du widget météo sur PC */
+@media (min-width: 1100px) {
+  .weather-sidebar {
+    width: 250px !important; /* Réduire la largeur */
+    max-width: 250px !important;
+    font-size: 0.9em !important; /* Réduire légèrement la taille de police */
+  }
+  
+  /* Ajuster les éléments internes */
+  .weather-sidebar h3 {
+    font-size: 14px !important;
+    margin-bottom: 8px !important;
+  }
+  
+  .weather-day {
+    padding: 8px !important;
+    margin-bottom: 8px !important;
+  }
+  
+  .weather-day h4 {
+    font-size: 12px !important;
+  }
+  
+  .weather-day p {
+    font-size: 11px !important;
+    margin: 2px 0 !important;
+  }
+  
+  .weather-gif,
+  .weather-day img {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  
+  .weather-details-row {
+    margin-bottom: 1px !important;
+  }
+  
+  .weather-detail-item {
+    font-size: 10px !important;
   }
 }
