@@ -486,8 +486,8 @@
   /* Réduire la taille des icônes */
   .weather-day img,
   .weather-gif {
-    width: 40px !important; /* Réduit de 45px à 40px */
-    height: 40px !important;
+    width: 48px !important; /* Réduit de 45px à 40px */
+    height: 48px !important;
     margin: 1px auto !important; /* Réduit de 2px à 1px */
   }
   
