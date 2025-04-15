@@ -12,7 +12,7 @@
   }
   
   .tile {
-    height: 100px !important;
+    height: 10px !important;
     margin-bottom: 12px !important;
   }
   
@@ -108,7 +108,7 @@
   /* ===== WIDGETS ===== */
   /* Widget météo plus grand */
   .weather-sidebar {
-    width: 850px !important;
+    width: 450px !important;
     max-width: 85% !important;
     padding: 20px !important;
     border-radius: 16px !important;
