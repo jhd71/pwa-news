@@ -356,8 +356,8 @@
     max-width: 300px;
     top: 120px;             /* Position depuis le haut unifiée */
     z-index: 1500 !important;
-    padding: 25px;
-    max-height: 85vh !important;
+    padding: 15px;
+    max-height: 75vh !important;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
     
     /* Centrage horizontal pour les deux widgets */
@@ -399,8 +399,8 @@
   /* Styles spécifiques au widget météo */
   .weather-sidebar {
     height: auto !important; /* Au lieu de 520px fixe */
-    max-height: 65vh !important; /* Réduit de 70vh à 65vh */
-    padding: 10px !important; /* Réduit de 15px à 10px */
+    max-height: 75vh !important; /* Réduit de 70vh à 65vh */
+    padding: 20px !important; /* Réduit de 15px à 10px */
   }
   
   #weather-widget {
