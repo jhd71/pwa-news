@@ -108,7 +108,7 @@
   /* ===== WIDGETS ===== */
   /* Widget météo plus grand */
   .weather-sidebar {
-    width: 450px !important;
+    width: 850px !important;
     max-width: 85% !important;
     padding: 20px !important;
     border-radius: 16px !important;
@@ -386,5 +386,3 @@
     max-height: calc(80vh - 140px) !important;
   }
 }
-
-body { border: 5px solid red !important; }
