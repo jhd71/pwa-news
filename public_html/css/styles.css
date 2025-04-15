@@ -1701,30 +1701,31 @@ main {
     -webkit-overflow-scrolling: touch; /* Améliore le défilement sur iOS */
 }
 
-/* 🚩 DERNIÈRE CORRECTION TABLETTE PORTRAIT 🚩 */
+/* 🚨 CORRECTION PRIORITAIRE FINALE TABLETTE PORTRAIT 🚨 */
 @media (min-width: 600px) and (max-width: 1100px) and (orientation: portrait) {
 
-  /* 🔥 Force le widget météo parfaitement centré (résout conflit actuel) */
+  /* Force absolue : Widget météo parfaitement centré */
   .weather-sidebar {
     position: fixed !important;
-    top: 50% !important; /* Force la position verticale centrée */
-    left: 50% !important; /* Force la position horizontale centrée */
-    transform: translate(-50%, -50%) !important; /* Ajustement parfait au centre */
+    top: 50% !important;            /* Force la position verticale */
+    left: 50% !important;           /* Force la position horizontale */
+    transform: translate(-50%, -50%) !important;
     width: 80vw !important;
-    max-width: 450px !important;
+    max-width: 400px !important;    /* Largeur réduite comme souhaité */
+    height: auto !important;
     max-height: 70vh !important;
     overflow-y: auto !important;
-    z-index: 30000 !important; /* Très élevé pour être au-dessus de tout */
     padding: 15px !important;
     border-radius: 15px !important;
+    z-index: 35000 !important;      /* z-index supérieur aux anciens */
   }
 
-  /* ✅ Bouton fermer météo parfaitement accessible */
+  /* Bouton fermeture parfaitement accessible */
   .weather-toggle {
     position: absolute !important;
     top: 8px !important;
     right: 8px !important;
-    z-index: 30001 !important;
+    z-index: 35001 !important;
     width: 40px !important;
     height: 40px !important;
     background-color: rgba(0,0,0,0.3) !important;
@@ -1740,26 +1741,25 @@ main {
     color: white !important;
   }
 
-  /* ✅ Espacement nécessaire pour éviter chevauchement séparateur et boutons haut */
+  /* Séparateur Actualités locales déplacé sous boutons haut */
   main {
-    margin-top: 100px !important; /* Ajoute de l'espace pour éviter conflit en haut */
+    margin-top: 100px !important; /* espace sous boutons pour éviter chevauchement */
     padding-top: 0 !important;
   }
 
-  /* ✅ Séparateurs précisément placés sous boutons haut */
   .separator {
     margin-top: 20px !important;
     z-index: 1 !important;
     position: relative !important;
   }
 
-  /* ✅ Position et taille du panel infos (validé précédemment) */
+  /* Panel infos à droite (déjà correct) */
   .news-panel {
     position: fixed !important;
     top: 0 !important;
     right: 0 !important;
     width: 80vw !important;
-    max-width: 450px !important;
+    max-width: 400px !important;
     height: 100vh !important;
     overflow-y: auto !important;
     display: none !important;
@@ -1771,13 +1771,13 @@ main {
     display: block !important;
   }
 
-  /* ✅ Bouton actualiser précisément fixé */
+  /* Bouton actualiser fixé en bas */
   #refreshButton, .refresh-button {
     position: fixed !important;
     bottom: 60px !important;
     right: 0 !important;
     width: 80vw !important;
-    max-width: 450px !important;
+    max-width: 400px !important;
     padding: 15px !important;
     background-color: #4CAF50 !important;
     color: white !important;
@@ -1785,19 +1785,19 @@ main {
     z-index: 25001 !important;
   }
 
-  /* ✅ Plus aucun chevauchement de texte */
+  /* Plus de chevauchement */
   .panel-content {
     padding-bottom: 100px !important;
   }
 
-  /* ✅ Swiper visible pleine largeur sans débordement */
+  /* Swiper pleine largeur */
   .swiper-container {
     display: block !important;
     visibility: visible !important;
     width: 100vw !important;
   }
 
-  /* ✅ Aucun débordement latéral */
+  /* Aucun débordement latéral */
   html, body {
     overflow-x: hidden !important;
   }
