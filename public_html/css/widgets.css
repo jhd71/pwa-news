@@ -356,7 +356,7 @@
     max-width: 300px;
     top: 120px;             /* Position depuis le haut unifiée */
     z-index: 1500 !important;
-    padding: 25px;
+    padding: 15px;
     max-height: 75vh !important;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
     
