@@ -1,0 +1,340 @@
+/* ======================================================
+   OPTIMISATIONS POUR TABLETTES (8 et 10 pouces)
+   ====================================================== */
+
+/* Styles généraux pour tablettes (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* ===== TUILES ET GRILLE ===== */
+  .tile-container.grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
+    gap: 12px !important;
+    padding: 12px !important;
+  }
+  
+  .tile {
+    height: 100px !important;
+    margin-bottom: 12px !important;
+  }
+  
+  .tile-content {
+    padding: 15px !important;
+  }
+  
+  .tile-title {
+    font-size: 18px !important;
+  }
+  
+  /* ===== ÉLÉMENTS D'INTERFACE ===== */
+  button, 
+  .nav-item, 
+  .menu-item,
+  a.quick-link {
+    min-height: 48px !important; /* Taille minimale pour meilleure tactilité */
+  }
+  
+  .material-icons {
+    font-size: 26px !important; /* Icônes plus grandes */
+  }
+  
+  /* ===== NAVIGATION DU BAS ===== */
+  .bottom-nav {
+    height: 70px !important; /* Barre de navigation plus haute */
+    padding: 5px 0 !important;
+  }
+  
+  .bottom-nav .nav-item {
+    flex: 1 1 auto !important;
+  }
+  
+  .bottom-nav .material-icons {
+    font-size: 28px !important;
+  }
+  
+  .bottom-nav span:not(.material-icons) {
+    font-size: 15px !important;
+    margin-top: 4px !important;
+  }
+  
+  /* ===== ACTUALITÉS ===== */
+  /* Bouton d'actualisation */
+  #refreshButton,
+  .refresh-button,
+  button:has(.material-icons:contains("refresh")) {
+    width: 100% !important;
+    margin: 0 auto !important;
+    justify-content: center !important;
+    padding: 12px !important;
+    font-size: 16px !important;
+  }
+  
+  /* Swiper et slider */
+  .swiper-container {
+    height: 220px !important;
+  }
+  
+  .swiper-slide img {
+    max-height: 220px !important;
+  }
+  
+  .slide-title {
+    font-size: 18px !important;
+    line-height: 1.3 !important;
+  }
+  
+  /* News panel */
+  .news-panel {
+    width: 90% !important;
+    max-width: 600px !important;
+    left: 5% !important;
+    border-radius: 15px 15px 0 0 !important;
+  }
+  
+  .panel-content {
+    max-height: 65vh !important;
+  }
+  
+  .news-item {
+    padding: 15px !important;
+  }
+  
+  .news-item h3 {
+    font-size: 18px !important;
+  }
+  
+  .news-item p {
+    font-size: 15px !important;
+  }
+  
+  /* ===== WIDGETS ===== */
+  /* Widget météo */
+  .weather-sidebar {
+    width: 380px !important;
+    max-width: 80% !important;
+    padding: 15px !important;
+    border-radius: 15px !important;
+    max-height: 70vh !important;
+  }
+  
+  .weather-sidebar h3 {
+    font-size: 20px !important;
+    margin-bottom: 12px !important;
+  }
+  
+  .weather-day {
+    padding: 8px !important;
+    margin-bottom: 10px !important;
+    border-radius: 10px !important;
+  }
+  
+  .weather-day h4 {
+    font-size: 18px !important;
+    margin-bottom: 8px !important;
+  }
+  
+  .weather-day p {
+    font-size: 16px !important;
+    margin: 5px 0 !important;
+    line-height: 1.3 !important;
+  }
+  
+  .weather-day img {
+    width: 60px !important;
+    height: 60px !important;
+    margin: 5px auto !important;
+  }
+  
+  /* Widget liens rapides */
+  .quick-links-sidebar {
+    width: 380px !important;
+    max-width: 80% !important;
+    padding: 15px !important;
+    border-radius: 15px !important;
+  }
+  
+  .quick-links-sidebar h3 {
+    font-size: 20px !important;
+    margin-bottom: 12px !important;
+  }
+  
+  .links-grid {
+    gap: 12px !important;
+  }
+  
+  .quick-link .material-icons {
+    font-size: 28px !important;
+    margin-bottom: 8px !important;
+  }
+  
+  .quick-link span:not(.material-icons) {
+    font-size: 15px !important;
+  }
+  
+  /* ===== CHAT ===== */
+  .chat-container {
+    width: 450px !important; /* Plus large sur tablette */
+    max-width: 85% !important;
+    height: 70vh !important; /* Plus haut */
+    border-radius: 15px !important;
+  }
+  
+  .chat-header {
+    padding: 15px !important;
+    border-radius: 15px 15px 0 0 !important;
+  }
+  
+  .chat-header h3 {
+    font-size: 18px !important;
+  }
+  
+  .chat-messages {
+    padding: 15px !important;
+    max-height: calc(70vh - 140px) !important; /* Ajuster en fonction de la hauteur du conteneur */
+  }
+  
+  .chat-message {
+    padding: 12px 15px !important;
+    margin-bottom: 12px !important;
+    border-radius: 12px !important;
+    font-size: 16px !important;
+    max-width: 80% !important;
+  }
+  
+  .message-time {
+    font-size: 13px !important;
+  }
+  
+  .chat-input-container {
+    padding: 12px !important;
+    min-height: 60px !important;
+  }
+  
+  .chat-input {
+    font-size: 16px !important;
+    padding: 12px 15px !important;
+    border-radius: 25px !important;
+    height: 50px !important;
+  }
+  
+  .chat-send-btn {
+    width: 50px !important;
+    height: 50px !important;
+    margin-left: 10px !important;
+  }
+  
+  .chat-controls {
+    padding: 10px !important;
+  }
+  
+  .chat-controls button {
+    width: 45px !important;
+    height: 45px !important;
+    margin: 0 5px !important;
+  }
+  
+  /* Fix pour repositionner le chat après fermeture du clavier */
+  @supports (-webkit-touch-callout: none) {
+    /* Spécifique aux appareils iOS */
+    .chat-container.open {
+      position: fixed !important;
+      bottom: 75px !important; /* Au-dessus de la barre de navigation */
+      transition: transform 0.3s, opacity 0.3s !important;
+    }
+  }
+  
+  /* ===== MENU LATÉRAL ET PARAMÈTRES ===== */
+  .sidebar,
+  .settings-menu {
+    width: 320px !important;
+    max-width: 65% !important;
+  }
+  
+  .sidebar-header,
+  .settings-header {
+    padding: 15px !important;
+  }
+  
+  .sidebar-header h2,
+  .settings-header h3 {
+    font-size: 20px !important;
+  }
+  
+  .menu-item,
+  .settings-section {
+    padding: 12px 15px !important;
+  }
+  
+  .menu-item a,
+  .menu-item button {
+    font-size: 16px !important;
+  }
+  
+  .settings-section h4 {
+    font-size: 18px !important;
+    margin-bottom: 12px !important;
+  }
+  
+  .font-size-tile {
+    padding: 12px !important;
+    min-height: 50px !important;
+  }
+  
+  /* QR Code plus petit */
+  .settings-content img {
+    max-width: 200px !important;
+    width: 85% !important;
+    height: auto !important;
+    margin: 10px auto !important;
+  }
+  
+  /* ===== MASQUER LES WIDGETS EN CAS DE PANELS OUVERTS ===== */
+  .sidebar.open ~ .weather-mobile-btn,
+  .settings-menu.open ~ .weather-mobile-btn,
+  .chat-container.open ~ .weather-mobile-btn,
+  .news-panel.open ~ .weather-mobile-btn {
+    display: none !important;
+  }
+}
+
+/* Ajustements spécifiques pour tablettes 8 pouces (768px - 900px) */
+@media (min-width: 768px) and (max-width: 900px) {
+  /* Réduire légèrement les tailles pour petit écran */
+  .sidebar,
+  .settings-menu {
+    width: 300px !important;
+    max-width: 60% !important;
+  }
+  
+  .chat-container {
+    width: 400px !important;
+    max-width: 80% !important;
+  }
+  
+  .weather-sidebar,
+  .quick-links-sidebar {
+    width: 350px !important;
+  }
+  
+  .tile-container.grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
+  }
+}
+
+/* Fix pour empêcher le zoom sur les inputs sur iOS */
+@supports (-webkit-touch-callout: none) {
+  input, textarea, select {
+    font-size: 16px !important; /* Empêche le zoom sur les champs de saisie */
+  }
+}
+
+/* Correction pour le comportement du clavier virtuel sur tous les appareils */
+@media screen and (max-height: 600px) {
+  /* Quand le clavier est ouvert (détecté par la hauteur réduite) */
+  .chat-container.open {
+    height: 80vh !important;
+    bottom: 10px !important;
+  }
+  
+  .chat-messages {
+    max-height: calc(80vh - 140px) !important;
+  }
+}

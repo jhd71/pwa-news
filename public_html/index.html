@@ -73,6 +73,7 @@
     <link rel="stylesheet" href="css/chat-styles.css">
     <link rel="stylesheet" href="css/news-panel.css">
     <link rel="stylesheet" href="css/widgets.css">
+	<link rel="stylesheet" href="css/tablet.css">
     <!-- Notifications -->
     <script src="https://ekjgfiyhkythqcnmhzea.supabase.co"></script>
 </head>
@@ -181,10 +182,6 @@
         <span class="material-icons">grid_view</span>
         <span>Vue</span>
     </button>
-	<a href="meteo.html" class="nav-item">
-        <span class="material-icons">wb_sunny</span>
-        <span>Météo</span>
-    </a>
     <button class="nav-item" id="donateBtn">
     <span class="material-icons">volunteer_activism</span>
     <span>Soutenir</span>
@@ -667,17 +664,26 @@ async function loadWeatherData() {
       const animatedGif = getAnimatedGif(day.day.condition.text);
       
       forecastHTML += `
-        <div class="weather-day">
-          <h4>${dayName}</h4>
-          <img src="${animatedGif}" alt="${day.day.condition.text}" class="weather-gif">
-          <p>${day.day.condition.text}</p>
-          <p>
-            <span class="min-temp" style="color: #64B5F6;"><strong>${Math.round(day.day.mintemp_c)}°C</strong></span> - 
-            <span class="max-temp" style="color: #FF8A65;"><strong>${Math.round(day.day.maxtemp_c)}°C</strong></span>
-          </p>
-          <p>Vent : ${Math.round(day.day.maxwind_kph)} km/h, UV : ${day.day.uv}</p>
-        </div>
-      `;
+  <div class="weather-day">
+    <h4>${dayName}</h4>
+    <img src="${getAnimatedGif(day.day.condition.text)}" alt="${day.day.condition.text}" class="weather-gif">
+    <p>${day.day.condition.text}</p>
+    <p>
+      <span class="min-temp" style="color: #64B5F6;"><strong>${Math.round(day.day.mintemp_c)}°C</strong></span> - 
+      <span class="max-temp" style="color: #FF8A65;"><strong>${Math.round(day.day.maxtemp_c)}°C</strong></span>
+    </p>
+    <div class="weather-details">
+      <div class="weather-details-row">
+        <div class="weather-detail-item">Vent: ${Math.round(day.day.maxwind_kph)} km/h</div>
+        <div class="weather-detail-item">UV: ${day.day.uv}</div>
+      </div>
+      <div class="weather-details-row">
+        <div class="weather-detail-item">Humidité: ${day.day.avghumidity}%</div>
+        <div class="weather-detail-item">Pluie: ${day.day.daily_chance_of_rain}%</div>
+      </div>
+    </div>
+  </div>
+`;
     });
     
     // Injecte le contenu HTML dans le widget météo
@@ -845,5 +851,22 @@ function getAnimatedGif(condition) {
   console.log("Configuration du widget météo terminée");
 });
 </script>
+<script>
+  // S'exécute quand le DOM est prêt
+  document.addEventListener('DOMContentLoaded', function() {
+  // Changer l'icône du bouton d'affichage du widget météo (bouton PC)
+  const weatherShowBtnIcon = document.querySelector('.weather-show-btn .material-icons');
+  if (weatherShowBtnIcon) {
+    weatherShowBtnIcon.textContent = 'cloudy_snowing';
+  }
+  
+  // Changer également l'icône du bouton météo mobile (si présent)
+  const weatherMobileBtnIcon = document.querySelector('.weather-mobile-btn .material-icons');
+  if (weatherMobileBtnIcon) {
+    weatherMobileBtnIcon.textContent = 'cloudy_snowing';
+  }
+});
+</script>
+<script src="js/chat-keyboard-fix.js" defer></script>
 </body>
 </html>
