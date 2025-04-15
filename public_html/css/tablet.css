@@ -386,3 +386,5 @@
     max-height: calc(80vh - 140px) !important;
   }
 }
+
+body { border: 5px solid red !important; }
