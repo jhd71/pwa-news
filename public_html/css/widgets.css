@@ -399,8 +399,8 @@
   /* Styles spécifiques au widget météo */
   .weather-sidebar {
     height: auto !important; /* Au lieu de 520px fixe */
-    max-height: 65vh !important; /* Réduit de 70vh à 65vh */
-    padding: 10px !important; /* Réduit de 15px à 10px */
+    max-height: 75vh !important; /* Réduit de 70vh à 65vh */
+    padding: 15px !important; /* Réduit de 15px à 10px */
   }
   
   #weather-widget {
@@ -431,7 +431,7 @@
     display: inline-block;
     color: #a8c6ff !important; /* Bleu clair pour les dates */
     font-weight: bold;
-    font-size: 13px !important; /* Réduit de 14px à 13px */
+    font-size: 15px !important; /* Réduit de 14px à 13px */
     margin-bottom: 2px !important; /* Réduit de 4px à 2px */
     line-height: 1.1 !important;
   }
@@ -451,7 +451,7 @@
 
 /* Pour renforcer la lisibilité générale */
 .weather-day h4 {
-  font-size: 14px;
+  font-size: 15px;
   letter-spacing: 0.5px; /* Espacement légèrement accru entre les lettres */
   margin-bottom: 4px;
 }
@@ -472,15 +472,15 @@
   }
   
   .weather-detail-item {
-    font-size: 12px !important;
+    font-size: 13px !important;
     line-height: 1.1 !important;
   }
   
   /* Réduire la taille du texte de description météo */
   .weather-day p {
-    font-size: 13px !important; /* Réduit de 14px à 13px */
+    font-size: 14px !important; /* Réduit de 14px à 13px */
     margin: 1px 0 !important; /* Réduit de 2px à 1px */
-    line-height: 1 !important; /* Réduit de 1.1 à 1 */
+    line-height: 1.3 !important; /* Réduit de 1.1 à 1 */
   }
   
   /* Réduire la taille des icônes */
