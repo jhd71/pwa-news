@@ -106,43 +106,108 @@
   }
   
   /* ===== WIDGETS ===== */
-  /* Widget météo */
+  /* Agrandissement du widget météo sur tablette */
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* Widget météo plus grand */
   .weather-sidebar {
-    width: 380px !important;
-    max-width: 80% !important;
-    padding: 15px !important;
-    border-radius: 15px !important;
-    max-height: 70vh !important;
+    width: 450px !important;
+    max-width: 85% !important;
+    padding: 20px !important;
+    border-radius: 16px !important;
   }
   
+  /* Titre plus grand */
   .weather-sidebar h3 {
-    font-size: 20px !important;
-    margin-bottom: 12px !important;
+    font-size: 22px !important;
+    margin-bottom: 15px !important;
   }
   
+  /* Jours météo plus grands */
   .weather-day {
-    padding: 8px !important;
-    margin-bottom: 10px !important;
-    border-radius: 10px !important;
+    padding: 12px !important;
+    margin-bottom: 15px !important;
+    border-radius: 12px !important;
   }
   
+  /* Date plus visible */
   .weather-day h4 {
     font-size: 18px !important;
-    margin-bottom: 8px !important;
+    padding: 3px 8px !important;
+    margin-bottom: 10px !important;
   }
   
+  /* Icônes plus grandes */
+  .weather-day img,
+  .weather-gif {
+    width: 70px !important;
+    height: 70px !important;
+    margin: 8px auto !important;
+  }
+  
+  /* Texte plus grand */
   .weather-day p {
     font-size: 16px !important;
     margin: 5px 0 !important;
     line-height: 1.3 !important;
   }
   
-  .weather-day img {
-    width: 60px !important;
-    height: 60px !important;
-    margin: 5px auto !important;
+  /* Informations météo supplémentaires plus grandes */
+  .weather-details-row {
+    margin-bottom: 5px !important;
   }
   
+  .weather-detail-item {
+    font-size: 15px !important;
+  }
+}
+
+  /* Correction de la croix de fermeture */
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* Bouton de fermeture plus grand et mieux positionné */
+  .weather-toggle,
+  .quick-links-toggle {
+    top: 15px !important;
+    right: 15px !important;
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: rgba(0, 0, 0, 0.1) !important;
+    border-radius: 50% !important;
+  }
+  
+  /* Icône de fermeture plus grande */
+  .weather-toggle .material-icons,
+  .quick-links-toggle .material-icons {
+    font-size: 28px !important;
+  }
+}
+
+/* Garantir le bon positionnement du widget sur tablette */
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* Positionnement précis pour l'affichage tablette */
+  .weather-sidebar {
+    position: fixed !important;
+    top: 100px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+  
+  /* Style visible */
+  .weather-sidebar.visible {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  
+  /* Style caché */
+  .weather-sidebar.hidden {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateX(-50%) translateY(-120%) !important;
+  }
+}
+
   /* Widget liens rapides */
   .quick-links-sidebar {
     width: 380px !important;
