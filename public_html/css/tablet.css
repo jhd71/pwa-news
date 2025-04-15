@@ -57,15 +57,13 @@
   
   /* ===== ACTUALITÉS ===== */
   /* Bouton d'actualisation */
-  #refreshButton,
-  .refresh-button,
-  button:has(.material-icons:contains("refresh")) {
-    width: 100% !important;
-    margin: 0 auto !important;
-    justify-content: center !important;
-    padding: 12px !important;
-    font-size: 16px !important;
-  }
+  /* Bouton actualiser centré précisément */
+#refreshButton, .refresh-button {
+    display: block !important;
+    margin: 0 auto !important; /* Centrage horizontal automatique */
+    width: auto !important;
+    padding: 12px 20px !important; /* Confort visuel et tactile */
+}
   
   /* Swiper et slider */
   .swiper-container {
@@ -106,17 +104,40 @@
   }
   
   /* ===== WIDGETS ===== */
-  /* Widget météo plus grand */
-  .weather-sidebar {
-    width: 450px !important;
-    max-width: 85% !important;
+/* Widget météo tablette : grand et centré */
+.weather-sidebar {
+    width: 450px !important; /* largeur élargie */
+    max-width: 85% !important; /* adaptatif à l'écran */
     padding: 20px !important;
     border-radius: 16px !important;
     position: fixed !important;
-    top: 100px !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-  }
+    top: 50% !important; /* centrer verticalement */
+    left: 50% !important; /* centrer horizontalement */
+    transform: translate(-50%, -50%) !important; /* ajustement précis */
+    z-index: 9999 !important; /* s'assurer qu'il est toujours au-dessus */
+}
+
+/* Bouton fermeture bien placé en haut à droite */
+.weather-toggle {
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: rgba(0, 0, 0, 0.2) !important;
+    border-radius: 50% !important;
+    cursor: pointer !important;
+}
+
+/* Icône fermeture */
+.weather-toggle .material-icons {
+    font-size: 28px !important;
+    color: white !important;
+}
+
   
   /* Titre plus grand */
   .weather-sidebar h3 {
