@@ -2,8 +2,8 @@
    OPTIMISATIONS POUR TABLETTES (8 et 10 pouces)
    ====================================================== */
 
-/* Styles généraux pour tablettes (768px - 1024px) */
-@media (min-width: 768px) and (max-width: 1024px) {
+/* Styles généraux pour tablettes (750px - 1024px) */
+@media (min-width: 750px) and (max-width: 1024px) {
   /* ===== TUILES ET GRILLE ===== */
   .tile-container.grid {
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
@@ -357,8 +357,8 @@
   }
 }
 
-/* Ajustements spécifiques pour tablettes 8 pouces (768px - 900px) */
-@media (min-width: 768px) and (max-width: 900px) {
+/* Ajustements spécifiques pour tablettes 8 pouces (750px - 900px) */
+@media (min-width: 750px) and (max-width: 900px) {
   /* Réduire légèrement les tailles pour petit écran */
   .sidebar,
   .settings-menu {

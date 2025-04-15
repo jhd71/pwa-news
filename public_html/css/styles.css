@@ -1609,7 +1609,7 @@ main {
 }
 
 /* Tablettes */
-@media (min-width: 768px) and (max-width: 1199px) {
+@media (min-width: 750px) and (max-width: 1199px) {
   .swiper-container {
     margin-bottom: 15px !important;
     width: 90% !important;
@@ -1699,4 +1699,60 @@ main {
 .chat-messages {
     overscroll-behavior: contain; /* Empêche le défilement de se propager à l'élément parent */
     -webkit-overflow-scrolling: touch; /* Améliore le défilement sur iOS */
+}
+
+/* === CORRECTIF TABLETTE (750px à 1024px) === */
+@media (min-width: 750px) and (max-width: 1024px) {
+  
+  /* Vérification visuelle immédiate (tu peux le supprimer après test) */
+  body {
+    border: 3px dashed blue !important; /* bordure bleue temporaire pour vérification */
+  }
+
+  /* Widget météo agrandi et centré correctement */
+  .weather-sidebar {
+    width: 90vw !important;
+    max-width: 550px !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 9999 !important;
+    padding: 15px !important;
+    overflow-y: auto !important;
+    max-height: 80vh !important;
+  }
+
+  /* Bouton fermeture bien positionné */
+  .weather-toggle {
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+    z-index: 10000 !important; /* toujours accessible */
+    cursor: pointer !important;
+  }
+
+  /* Panel infos (ne pas ouvrir automatiquement) */
+  .news-panel {
+    display: none !important; /* cache par défaut pour éviter ouverture automatique */
+  }
+
+  .news-panel.open {
+    display: block !important; /* affiché seulement via JS (bouton) */
+    z-index: 9000 !important; /* inférieur au widget météo */
+  }
+
+  /* Bouton Actualiser centré correctement */
+  #refreshButton, .refresh-button {
+    display: block !important;
+    margin: 10px auto !important;
+    width: 80% !important;
+    padding: 12px !important;
+  }
+
+  /* Swiper (toujours visible sur tablette) */
+  .swiper-container {
+    display: block !important;
+    visibility: visible !important;
+  }
+
 }
