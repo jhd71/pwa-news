@@ -258,7 +258,7 @@
 /* Bouton météo mobile */
 .weather-mobile-btn {
   position: fixed;
-  top: 85px; /* CORRIGÉ: Aligné avec le bouton Infos */
+  top: 65px; /* CORRIGÉ: Aligné avec le bouton Infos */
   left: 15px;
   background-color: var(--primary-color);
   color: white;
