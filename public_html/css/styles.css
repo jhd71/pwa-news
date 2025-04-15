@@ -1701,25 +1701,26 @@ main {
     -webkit-overflow-scrolling: touch; /* Améliore le défilement sur iOS */
 }
 
-/* 🌟 CORRECTION ULTIME TABLETTE PORTRAIT 🌟 */
+/* 🔥 CSS DÉFINITIF TABLETTE PORTRAIT 🔥 */
 @media (min-width: 600px) and (max-width: 1100px) and (orientation: portrait) {
 
-  /* 📌 Widget météo parfaitement centré */
+  /* ✅ Widget météo centré verticalement et horizontalement, moins large */
   .weather-sidebar {
     position: fixed !important;
     top: 50% !important;
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
-    width: 90vw !important;
-    max-width: 550px !important;
-    max-height: 80vh !important;
+    width: 80vw !important; /* réduit la largeur */
+    max-width: 450px !important;
+    height: auto !important;
+    max-height: 70vh !important; /* ajuste la hauteur */
     overflow-y: auto !important;
-    z-index: 20000 !important; /* très élevé pour éviter conflits */
-    padding: 20px !important;
+    z-index: 20000 !important; /* priorité maximale */
+    padding: 15px !important;
     border-radius: 15px !important;
   }
 
-  /* ❌ Bouton fermer météo accessible */
+  /* ✅ Bouton fermer parfaitement positionné */
   .weather-toggle {
     position: absolute !important;
     top: 8px !important;
@@ -1727,7 +1728,7 @@ main {
     z-index: 20001 !important;
     width: 40px !important;
     height: 40px !important;
-    background-color: rgba(0,0,0,0.3) !important;
+    background-color: rgba(0,0,0,0.2) !important;
     border-radius: 50% !important;
     display: flex !important;
     align-items: center !important;
@@ -1740,30 +1741,33 @@ main {
     color: white !important;
   }
 
-  /* 📌 Panel infos 100% plein écran */
+  /* ✅ Panel infos à droite avec largeur ajustée */
   .news-panel {
     position: fixed !important;
     top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
+    right: 0 !important; /* à droite comme demandé */
+    left: auto !important;
+    width: 80vw !important; /* largeur raisonnable */
+    max-width: 450px !important;
     height: 100vh !important;
     overflow-y: auto !important;
     display: none !important;
     z-index: 15000 !important;
-    padding-bottom: 60px !important; /* espace pour le bouton actualiser */
+    padding-bottom: 60px !important;
   }
 
   .news-panel.open {
     display: block !important;
   }
 
-  /* ✅ Bouton actualiser parfaitement fixe en bas du panel */
+  /* ✅ Bouton actualiser infos parfaitement fixé */
   #refreshButton, .refresh-button {
     position: fixed !important;
-    bottom: 60px !important; /* juste au-dessus de la barre navigation bas */
-    left: 0 !important;
-    width: 100% !important;
-    margin: 0 !important;
+    bottom: 60px !important;
+    left: auto !important;
+    right: 0 !important;
+    width: 80vw !important;
+    max-width: 450px !important;
     padding: 15px !important;
     background-color: #4CAF50 !important;
     color: white !important;
@@ -1771,26 +1775,25 @@ main {
     z-index: 15001 !important;
   }
 
-  /* ✅ Plus aucun texte passant derrière */
+  /* ✅ Empêche chevauchement texte derrière bouton */
   .panel-content {
-    padding-bottom: 100px !important; /* suffisamment d'espace pour éviter chevauchements */
+    padding-bottom: 100px !important;
   }
 
-  /* ✅ Swiper visible pleine largeur sans débordement */
+  /* ✅ Swiper pleine largeur sans débordement */
   .swiper-container {
     display: block !important;
     visibility: visible !important;
     width: 100vw !important;
   }
 
-  /* ❌ Supprime les bandes latérales inutiles */
+  /* ✅ Supprime définitivement tout débordement latéral */
+  html, body {
+    overflow-x: hidden !important;
+  }
+
   main {
     padding: 0 !important;
     margin: 0 !important;
-  }
-
-  /* ❌ Aucun débordement latéral */
-  html, body {
-    overflow-x: hidden !important;
   }
 }
