@@ -258,7 +258,7 @@
 /* Bouton météo mobile */
 .weather-mobile-btn {
   position: fixed;
-  top: 65px; /* CORRIGÉ: Aligné avec le bouton Infos */
+  top: 85px; /* CORRIGÉ: Aligné avec le bouton Infos */
   left: 15px;
   background-color: var(--primary-color);
   color: white;
@@ -353,7 +353,7 @@
   .weather-sidebar,
   .quick-links-sidebar {
     width: 85%;
-    max-width: 400px;
+    max-width: 300px;
     top: 120px;             /* Position depuis le haut unifiée */
     z-index: 1500 !important;
     padding: 15px;
