@@ -638,8 +638,8 @@
   }
 }
 .weather-day {
-  padding-bottom: 16px; /* espace intérieur en bas */
-  margin-bottom: 16px;  /* espace entre les blocs */
+  padding-bottom: 20px; /* espace intérieur en bas */
+  margin-bottom: 20px;  /* espace entre les blocs */
   border-bottom: 1px solid var(--separator-color); /* fine ligne déjà en place */
 }
 
