@@ -352,11 +352,11 @@
   /* Styles de base communs aux deux widgets */
   .weather-sidebar,
   .quick-links-sidebar {
-    width: 95%;
+    width: 85%;
     max-width: 300px;
     top: 120px;             /* Position depuis le haut unifiée */
     z-index: 1500 !important;
-    padding: 15px;
+    padding: 25px;
     max-height: 75vh !important;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
     
