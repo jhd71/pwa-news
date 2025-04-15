@@ -1701,34 +1701,33 @@ main {
     -webkit-overflow-scrolling: touch; /* Améliore le défilement sur iOS */
 }
 
-/* 🔥 CSS DÉFINITIF TABLETTE PORTRAIT 🔥 */
+/* 🚩 DERNIÈRE CORRECTION TABLETTE PORTRAIT 🚩 */
 @media (min-width: 600px) and (max-width: 1100px) and (orientation: portrait) {
 
-  /* ✅ Widget météo centré verticalement et horizontalement, moins large */
+  /* 🔥 Force le widget météo parfaitement centré (résout conflit actuel) */
   .weather-sidebar {
     position: fixed !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    width: 80vw !important; /* réduit la largeur */
+    top: 50% !important; /* Force la position verticale centrée */
+    left: 50% !important; /* Force la position horizontale centrée */
+    transform: translate(-50%, -50%) !important; /* Ajustement parfait au centre */
+    width: 80vw !important;
     max-width: 450px !important;
-    height: auto !important;
-    max-height: 70vh !important; /* ajuste la hauteur */
+    max-height: 70vh !important;
     overflow-y: auto !important;
-    z-index: 20000 !important; /* priorité maximale */
+    z-index: 30000 !important; /* Très élevé pour être au-dessus de tout */
     padding: 15px !important;
     border-radius: 15px !important;
   }
 
-  /* ✅ Bouton fermer parfaitement positionné */
+  /* ✅ Bouton fermer météo parfaitement accessible */
   .weather-toggle {
     position: absolute !important;
     top: 8px !important;
     right: 8px !important;
-    z-index: 20001 !important;
+    z-index: 30001 !important;
     width: 40px !important;
     height: 40px !important;
-    background-color: rgba(0,0,0,0.2) !important;
+    background-color: rgba(0,0,0,0.3) !important;
     border-radius: 50% !important;
     display: flex !important;
     align-items: center !important;
@@ -1741,18 +1740,30 @@ main {
     color: white !important;
   }
 
-  /* ✅ Panel infos à droite avec largeur ajustée */
+  /* ✅ Espacement nécessaire pour éviter chevauchement séparateur et boutons haut */
+  main {
+    margin-top: 100px !important; /* Ajoute de l'espace pour éviter conflit en haut */
+    padding-top: 0 !important;
+  }
+
+  /* ✅ Séparateurs précisément placés sous boutons haut */
+  .separator {
+    margin-top: 20px !important;
+    z-index: 1 !important;
+    position: relative !important;
+  }
+
+  /* ✅ Position et taille du panel infos (validé précédemment) */
   .news-panel {
     position: fixed !important;
     top: 0 !important;
-    right: 0 !important; /* à droite comme demandé */
-    left: auto !important;
-    width: 80vw !important; /* largeur raisonnable */
+    right: 0 !important;
+    width: 80vw !important;
     max-width: 450px !important;
     height: 100vh !important;
     overflow-y: auto !important;
     display: none !important;
-    z-index: 15000 !important;
+    z-index: 25000 !important;
     padding-bottom: 60px !important;
   }
 
@@ -1760,11 +1771,10 @@ main {
     display: block !important;
   }
 
-  /* ✅ Bouton actualiser infos parfaitement fixé */
+  /* ✅ Bouton actualiser précisément fixé */
   #refreshButton, .refresh-button {
     position: fixed !important;
     bottom: 60px !important;
-    left: auto !important;
     right: 0 !important;
     width: 80vw !important;
     max-width: 450px !important;
@@ -1772,28 +1782,23 @@ main {
     background-color: #4CAF50 !important;
     color: white !important;
     font-size: 16px !important;
-    z-index: 15001 !important;
+    z-index: 25001 !important;
   }
 
-  /* ✅ Empêche chevauchement texte derrière bouton */
+  /* ✅ Plus aucun chevauchement de texte */
   .panel-content {
     padding-bottom: 100px !important;
   }
 
-  /* ✅ Swiper pleine largeur sans débordement */
+  /* ✅ Swiper visible pleine largeur sans débordement */
   .swiper-container {
     display: block !important;
     visibility: visible !important;
     width: 100vw !important;
   }
 
-  /* ✅ Supprime définitivement tout débordement latéral */
+  /* ✅ Aucun débordement latéral */
   html, body {
     overflow-x: hidden !important;
-  }
-
-  main {
-    padding: 0 !important;
-    margin: 0 !important;
   }
 }
