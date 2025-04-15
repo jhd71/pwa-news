@@ -637,3 +637,12 @@
     font-size: 10px !important;
   }
 }
+.weather-day {
+  padding-bottom: 12px; /* espace intérieur en bas */
+  margin-bottom: 12px;  /* espace entre les blocs */
+  border-bottom: 1px solid var(--separator-color); /* fine ligne déjà en place */
+}
+
+.weather-day:last-child {
+  border-bottom: none;
+}
