@@ -546,7 +546,7 @@
 @media (max-width: 1100px) {
   .weather-day img,
   .weather-gif {
-    margin-left: -4px;   /* décalage vers la gauche */
-    margin-right: 6px;   /* espace avec le texte */
+    margin-left: -12px !important;  /* plus décalé vers la gauche */
+    margin-right: 6px !important;   /* garde un petit espace avec le texte */
   }
 }
