@@ -480,22 +480,22 @@
   .weather-day {
     padding: 6px 0;
     margin-bottom: 6px;
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .weather-day h4 {
-    font-size: 13.5px;
+    font-size: 12.5px;
     margin-bottom: 2px;
   }
 
   .weather-day p {
-    font-size: 13px;
+    font-size: 12px;
     line-height: 1.2;
     margin-bottom: 1px;
   }
 
   .weather-detail-item {
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .weather-day img,
@@ -505,17 +505,17 @@
   }
 
   .min-max-wrapper {
-    font-size: 13px;
+    font-size: 12px;
     margin-bottom: 4px;
   }
 
   .min-max-wrapper i {
-    font-size: 16px;
+    font-size: 15px;
     margin-right: 2px;
   }
 
   .min-max-wrapper strong {
-    font-size: 13px;
+    font-size: 12px;
   }
 }
 
