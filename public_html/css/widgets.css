@@ -459,50 +459,62 @@
   font-weight: 500;
 }
 
-/* ✅ Widget météo : mobile uniquement */
+/* ✅ Widget météo : mobile uniquement (compacté) */
 @media (max-width: 600px) {
   .weather-sidebar {
     position: fixed !important;
     top: 50% !important;
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
-    width: 90% !important;
-    max-width: 320px !important;
-    max-height: 70vh !important; /* limite la hauteur à 70% de l’écran */
+    width: 92% !important;
+    max-width: 310px !important;
+    max-height: 70vh !important;
     overflow-y: auto !important;
-    padding: 15px !important;
+    padding: 10px !important;
     z-index: 9999 !important;
-    border-radius: 16px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+    border-radius: 16px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     background: white;
-	border-radius: 20px !important;
   }
-  
+
   .weather-day {
-  padding: 8px 0;
-  margin-bottom: 8px;
-  font-size: 14px;
-}
+    padding: 6px 0;
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
 
-.weather-day h4 {
-  font-size: 15px;
-  margin-bottom: 4px;
-}
+  .weather-day h4 {
+    font-size: 13.5px;
+    margin-bottom: 2px;
+  }
 
-.weather-day p {
-  font-size: 14px;
-  line-height: 1.3;
-  margin-bottom: 2px;
-}
+  .weather-day p {
+    font-size: 13px;
+    line-height: 1.2;
+    margin-bottom: 1px;
+  }
 
-.weather-detail-item {
-  font-size: 13px;
-}
+  .weather-detail-item {
+    font-size: 12px;
+  }
 
-.weather-day img,
-.weather-gif {
-  width: 36px;
-  height: 36px;
-}
+  .weather-day img,
+  .weather-gif {
+    width: 30px;
+    height: 30px;
+  }
 
+  .min-max-wrapper {
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  .min-max-wrapper i {
+    font-size: 16px;
+    margin-right: 2px;
+  }
+
+  .min-max-wrapper strong {
+    font-size: 13px;
+  }
 }
