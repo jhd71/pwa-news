@@ -344,6 +344,12 @@
     top: 70px !important;
     right: 10px !important;
   }
+  
+  .weather-day img,
+  .weather-gif {
+    width: 40px;
+    height: 40px;
+  }
 }
 
 /* Mobile - position des boutons et widgets */
@@ -502,8 +508,8 @@
 
   .weather-day img,
   .weather-gif {
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
   }
 
   .min-max-wrapper {
