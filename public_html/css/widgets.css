@@ -508,8 +508,8 @@
 
   .weather-day img,
   .weather-gif {
-    width: 35px;
-    height: 35px;
+    width: 32px;
+    height: 32px;
   }
 
   .min-max-wrapper {
