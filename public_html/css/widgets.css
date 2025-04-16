@@ -541,3 +541,12 @@
     transform: translate(-50%, -50%) !important;
   }
 }
+
+/* Mobile + tablette : décalage de l’icône météo vers la gauche */
+@media (max-width: 1100px) {
+  .weather-day img,
+  .weather-gif {
+    margin-left: -4px;   /* décalage vers la gauche */
+    margin-right: 6px;   /* espace avec le texte */
+  }
+}
