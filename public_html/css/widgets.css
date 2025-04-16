@@ -469,7 +469,7 @@
     width: 92% !important;
     max-width: 310px !important;
     max-height: 70vh !important;
-    overflow-y: auto !important;
+    overflow-y: hidden !important;
     padding: 10px !important;
     z-index: 9999 !important;
     border-radius: 16px !important;
