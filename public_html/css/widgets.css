@@ -381,6 +381,12 @@
   .weather-show-btn {
     display: none !important;
   }
+  
+  .weather-day img,
+  .weather-gif {
+    width: 40px;
+    height: 40px;
+  }
 }
 
 /* Corrections finales pour les widgets */
