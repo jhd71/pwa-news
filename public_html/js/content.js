@@ -86,29 +86,34 @@ document.documentElement.setAttribute('data-font-size', this.fontSize);
         }
 
         // Installation PWA
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            this.deferredPrompt = e;
-            const menuInstall = document.getElementById('menuInstall');
-            if (menuInstall) {
-                menuInstall.classList.add('visible');
-                menuInstall.addEventListener('click', () => {
-                    if (this.deferredPrompt) {
-                        this.deferredPrompt.prompt();
-                        this.deferredPrompt.userChoice.then((choiceResult) => {
-                            if (choiceResult.outcome === 'accepted') {
-                                console.log('Application installée');
-                                menuInstall.classList.remove('visible');
-                            }
-                            this.deferredPrompt = null;
-                        }).catch((error) => {
-                            console.error('Erreur lors du choix de l\'utilisateur:', error);
-                            this.showToast('Erreur lors de l\'installation de l\'application');
-                        });
+window.addEventListener('beforeinstallprompt', (e) => {
+    // e.preventDefault(); <-- COMMENTEZ CETTE LIGNE
+    this.deferredPrompt = e;
+    
+    // Ajouter cette ligne pour afficher notre bannière personnalisée
+    this.showInstallBanner();
+    
+    // Conserver le code existant pour le bouton du menu
+    const menuInstall = document.getElementById('menuInstall');
+    if (menuInstall) {
+        menuInstall.classList.add('visible');
+        menuInstall.addEventListener('click', () => {
+            if (this.deferredPrompt) {
+                this.deferredPrompt.prompt();
+                this.deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('Application installée');
+                        menuInstall.classList.remove('visible');
                     }
+                    this.deferredPrompt = null;
+                }).catch((error) => {
+                    console.error('Erreur lors du choix de l\'utilisateur:', error);
+                    this.showToast('Erreur lors de l\'installation de l\'application');
                 });
             }
         });
+    }
+});
 
         window.addEventListener('appinstalled', () => {
             this.deferredPrompt = null;
@@ -690,6 +695,90 @@ changeFontSize(size) {
             });
         }
     }
+
+// Ajoutez cette méthode à votre classe ContentManager
+showInstallBanner() {
+    // Vérifier si on a déjà montré la bannière récemment
+    const lastShown = localStorage.getItem('installBannerLastShown');
+    if (lastShown && (Date.now() - parseInt(lastShown)) < 7 * 24 * 60 * 60 * 1000) {
+        return; // Ne pas montrer si la bannière a été affichée dans les 7 derniers jours
+    }
+    
+    // Créer la bannière
+    const banner = document.createElement('div');
+    banner.className = 'install-banner';
+    banner.innerHTML = `
+        <div class="install-content">
+            <p>Installez Actu&Média sur votre appareil !</p>
+            <button id="installBtnBanner">Installer</button>
+            <button id="closeBannerBtn">✕</button>
+        </div>
+    `;
+    
+    // Ajouter les styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .install-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--primary-color);
+            color: white;
+            padding: 12px;
+            z-index: 9999;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            animation: slideDown 0.5s ease;
+        }
+        
+        .install-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .install-banner button {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        #installBtnBanner {
+            background: white;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        #closeBannerBtn {
+            background: transparent;
+            color: white;
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+    `;
+    
+    document.head.appendChild(style);
+    document.body.prepend(banner);
+    
+    // Gérer les clics
+    document.getElementById('installBtnBanner').addEventListener('click', () => {
+        if (this.deferredPrompt) {
+            this.deferredPrompt.prompt();
+        }
+        banner.remove();
+    });
+    
+    document.getElementById('closeBannerBtn').addEventListener('click', () => {
+        banner.remove();
+        localStorage.setItem('installBannerLastShown', Date.now());
+    });
+}
 
     toggleDarkMode() {
         this.isDarkMode = !this.isDarkMode;
