@@ -1,3 +1,8 @@
+/**
+ * SettingsManager - Gère les préférences utilisateur pour Actu&Média
+ * Responsable de la sauvegarde, du chargement et de l'application des paramètres de thème, 
+ * d'accessibilité et d'affichage
+ */
 export class SettingsManager {
     constructor() {
         this.defaultSettings = {
@@ -32,6 +37,10 @@ export class SettingsManager {
         this.initializeSettings();
     }
 
+    /**
+     * Charge les paramètres depuis le stockage local
+     * @returns {Object} Les paramètres chargés, fusionnés avec les paramètres par défaut
+     */
     loadSettings() {
         try {
             const savedSettings = localStorage.getItem('settings');
@@ -42,16 +51,25 @@ export class SettingsManager {
         }
     }
 
+    /**
+     * Sauvegarde les paramètres dans le stockage local et les applique
+     */
     saveSettings() {
         localStorage.setItem('settings', JSON.stringify(this.settings));
         this.applySettings();
     }
 
+    /**
+     * Initialise les paramètres et configure les préférences système
+     */
     initializeSettings() {
         this.applySettings();
         this.setupSystemPreferences();
     }
 
+    /**
+     * Configure les écouteurs pour les préférences système (thème sombre, mouvement réduit)
+     */
     setupSystemPreferences() {
         // Écouter les changements de thème système
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
@@ -70,6 +88,9 @@ export class SettingsManager {
         });
     }
 
+    /**
+     * Applique les paramètres actuels au DOM
+     */
     applySettings() {
         // Appliquer le thème
         document.documentElement.dataset.theme = this.settings.theme.mode;
@@ -96,17 +117,41 @@ export class SettingsManager {
 
         // Appliquer les paramètres d'affichage
         document.body.classList.toggle('compact', this.settings.display.compactMode);
+        
+        // Émettre un événement personnalisé pour informer les autres composants
+        window.dispatchEvent(new CustomEvent('settings-updated', {
+            detail: { settings: this.settings }
+        }));
     }
 
+    /**
+     * Affiche la modale des paramètres
+     */
     showSettings() {
+        // Supprimer la modale existante si elle existe
+        const existingModal = document.querySelector('.settings-modal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+        
         const modal = document.createElement('div');
-        modal.className = 'modal';
+        modal.className = 'modal settings-modal';
         modal.innerHTML = this.createSettingsModalContent();
         
         document.body.appendChild(modal);
+        
+        // Animation d'entrée
+        setTimeout(() => {
+            modal.classList.add('show');
+        }, 10);
+        
         this.setupSettingsEventListeners(modal);
     }
 
+    /**
+     * Crée le contenu HTML de la modale des paramètres
+     * @returns {string} Le contenu HTML
+     */
     createSettingsModalContent() {
         return `
             <div class="modal-content">
@@ -151,64 +196,89 @@ export class SettingsManager {
                     </section>
 
                     <section class="settings-section">
-    <h4 style="text-align: center;">Taille du texte</h4>
-    <div class="settings-tiles-container">
-        <div class="font-size-tile ${this.settings.theme.fontSize === 'small' ? 'active' : ''}" 
-             data-size="small">
-            <span class="material-icons">text_decrease</span>
-            <span>S</span>
-        </div>
-        <div class="font-size-tile ${this.settings.theme.fontSize === 'normal' ? 'active' : ''}" 
-             data-size="normal">
-            <span class="material-icons">text_fields</span>
-            <span>M</span>
-        </div>
-        <div class="font-size-tile ${this.settings.theme.fontSize === 'large' ? 'active' : ''}" 
-             data-size="large">
-            <span class="material-icons">text_increase</span>
-            <span>L</span>
-        </div>
-    </div>
-</section>
-<section class="settings-section">
+                        <h4 style="text-align: center;">Taille du texte</h4>
+                        <div class="settings-tiles-container">
+                            <div class="font-size-tile ${this.settings.theme.fontSize === 'small' ? 'active' : ''}" 
+                                data-size="small">
+                                <span class="material-icons">text_decrease</span>
+                                <span>S</span>
+                            </div>
+                            <div class="font-size-tile ${this.settings.theme.fontSize === 'normal' ? 'active' : ''}" 
+                                data-size="normal">
+                                <span class="material-icons">text_fields</span>
+                                <span>M</span>
+                            </div>
+                            <div class="font-size-tile ${this.settings.theme.fontSize === 'large' ? 'active' : ''}" 
+                                data-size="large">
+                                <span class="material-icons">text_increase</span>
+                                <span>L</span>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section class="settings-section">
                         <h4>Accessibilité</h4>
-                        <label>
-                            <input type="checkbox" id="reducedMotion" 
-                                ${this.settings.accessibility.reducedMotion ? 'checked' : ''}>
-                            Réduire les animations
+                        <label class="switch-label">
+                            <span>Réduire les animations</span>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="reducedMotion" 
+                                    ${this.settings.accessibility.reducedMotion ? 'checked' : ''}>
+                                <span class="toggle-slider"></span>
+                            </div>
                         </label>
-                        <label>
-                            <input type="checkbox" id="highContrast" 
-                                ${this.settings.accessibility.highContrast ? 'checked' : ''}>
-                            Contraste élevé
+                        <label class="switch-label">
+                            <span>Contraste élevé</span>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="highContrast" 
+                                    ${this.settings.accessibility.highContrast ? 'checked' : ''}>
+                                <span class="toggle-slider"></span>
+                            </div>
                         </label>
                     </section>
 
                     <section class="settings-section">
                         <h4>Notifications</h4>
-                        <label>
-                            <input type="checkbox" id="notificationsEnabled" 
-                                ${this.settings.notifications.enabled ? 'checked' : ''}>
-                            Activer les notifications
+                        <label class="switch-label">
+                            <span>Activer les notifications</span>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="notificationsEnabled" 
+                                    ${this.settings.notifications.enabled ? 'checked' : ''}>
+                                <span class="toggle-slider"></span>
+                            </div>
                         </label>
-                        <label>
-                            <input type="checkbox" id="notificationsSound" 
-                                ${this.settings.notifications.sound ? 'checked' : ''}>
-                            Son de notification
+                        <label class="switch-label">
+                            <span>Son de notification</span>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="notificationsSound" 
+                                    ${this.settings.notifications.sound ? 'checked' : ''}>
+                                <span class="toggle-slider"></span>
+                            </div>
                         </label>
-                        <label>
-                            <input type="checkbox" id="notificationsDesktop" 
-                                ${this.settings.notifications.desktop ? 'checked' : ''}>
-                            Notifications bureau
+                        <label class="switch-label">
+                            <span>Notifications bureau</span>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="notificationsDesktop" 
+                                    ${this.settings.notifications.desktop ? 'checked' : ''}>
+                                <span class="toggle-slider"></span>
+                            </div>
                         </label>
                     </section>
 
                     <section class="settings-section">
                         <h4>Données</h4>
                         <div class="settings-buttons">
-                            <button id="exportSettings">Exporter les paramètres</button>
-                            <button id="importSettings">Importer les paramètres</button>
-                            <button id="resetSettings">Réinitialiser les paramètres</button>
+                            <button id="exportSettings" class="btn primary">
+                                <span class="material-icons">download</span>
+                                Exporter les paramètres
+                            </button>
+                            <button id="importSettings" class="btn secondary">
+                                <span class="material-icons">upload</span>
+                                Importer les paramètres
+                            </button>
+                            <button id="resetSettings" class="btn danger">
+                                <span class="material-icons">refresh</span>
+                                Réinitialiser
+                            </button>
                         </div>
                         <input type="file" id="importInput" accept=".json" hidden>
                     </section>
@@ -217,11 +287,25 @@ export class SettingsManager {
         `;
     }
 
+    /**
+     * Configure les écouteurs d'événements pour la modale des paramètres
+     * @param {HTMLElement} modal - L'élément modal
+     */
     setupSettingsEventListeners(modal) {
         // Fermeture de la modale
-        modal.querySelector('.modal-close').addEventListener('click', () => modal.remove());
+        const closeModal = () => {
+            modal.classList.remove('show');
+            setTimeout(() => modal.remove(), 300);
+        };
+        
+        modal.querySelector('.modal-close').addEventListener('click', closeModal);
         modal.addEventListener('click', (e) => {
-            if (e.target === modal) modal.remove();
+            if (e.target === modal) closeModal();
+        });
+        
+        // Touche Echap pour fermer
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
         });
 
         // Couleurs
@@ -247,38 +331,18 @@ export class SettingsManager {
                 this.saveSettings();
             });
         });
-// Gestion des tuiles de taille de police
-modal.querySelectorAll('.font-size-tile').forEach(tile => {
-    tile.addEventListener('click', () => {
-        const size = tile.dataset.size;
-        this.settings.theme.fontSize = size;
-        // Mettre à jour l'UI
-        modal.querySelectorAll('.font-size-tile').forEach(t => 
-            t.classList.toggle('active', t.dataset.size === size)
-        );
-        this.saveSettings();
-    });
-});
 
-// Fermeture au clic à l'extérieur
-document.addEventListener('click', (e) => {
-    if (!modal.contains(e.target) && !e.target.matches('#settingsButton, #settingsButton *')) {
-        modal.remove();
-    }
-}, { once: true });
-        // Affichage
-        ['showFavorites', 'showRecent', 'compactMode'].forEach(id => {
-            const input = modal.querySelector(`#${id}`);
-            input.addEventListener('change', () => {
-                this.settings.display[id] = input.checked;
+        // Gestion des tuiles de taille de police
+        modal.querySelectorAll('.font-size-tile').forEach(tile => {
+            tile.addEventListener('click', () => {
+                const size = tile.dataset.size;
+                this.settings.theme.fontSize = size;
+                // Mettre à jour l'UI
+                modal.querySelectorAll('.font-size-tile').forEach(t => 
+                    t.classList.toggle('active', t.dataset.size === size)
+                );
                 this.saveSettings();
             });
-        });
-
-        // Taille de police
-        modal.querySelector('#fontSize').addEventListener('change', (e) => {
-            this.settings.theme.fontSize = e.target.value;
-            this.saveSettings();
         });
 
         // Accessibilité
@@ -295,7 +359,7 @@ document.addEventListener('click', (e) => {
             const input = modal.querySelector(`#${id}`);
             input.addEventListener('change', () => {
                 const key = id.replace('notifications', '').toLowerCase();
-                this.settings.notifications[key] = input.checked;
+                this.settings.notifications[key === 'enabled' ? key : key.toLowerCase()] = input.checked;
                 this.saveSettings();
             });
         });
@@ -311,11 +375,14 @@ document.addEventListener('click', (e) => {
         modal.querySelector('#resetSettings').addEventListener('click', () => {
             if (confirm('Voulez-vous vraiment réinitialiser tous les paramètres ?')) {
                 this.resetSettings();
-                modal.remove();
+                closeModal();
             }
         });
     }
 
+    /**
+     * Exporte les paramètres dans un fichier JSON
+     */
     async exportSettings() {
         const settingsBlob = new Blob([JSON.stringify(this.settings, null, 2)], {
             type: 'application/json'
@@ -323,46 +390,163 @@ document.addEventListener('click', (e) => {
         const url = URL.createObjectURL(settingsBlob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `jhd71-settings-${new Date().toISOString().split('T')[0]}.json`;
+        a.download = `actuetmedia-settings-${new Date().toISOString().split('T')[0]}.json`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
     }
 
+    /**
+     * Importe les paramètres depuis un fichier JSON
+     * @param {File} file - Le fichier à importer
+     */
     async importSettings(file) {
         try {
             const text = await file.text();
             const newSettings = JSON.parse(text);
             this.settings = { ...this.defaultSettings, ...newSettings };
             this.saveSettings();
-            location.reload();
+            
+            // Feedback visuel
+            const notification = document.createElement('div');
+            notification.className = 'toast-notification success';
+            notification.textContent = 'Paramètres importés avec succès';
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.classList.add('show');
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }, 10);
+            
+            setTimeout(() => location.reload(), 1000);
         } catch (error) {
             console.error('Erreur lors de l\'importation des paramètres:', error);
-            alert('Erreur lors de l\'importation des paramètres');
+            
+            // Feedback d'erreur
+            const notification = document.createElement('div');
+            notification.className = 'toast-notification error';
+            notification.textContent = 'Erreur lors de l\'importation des paramètres';
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.classList.add('show');
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }, 10);
         }
     }
 
+    /**
+     * Réinitialise les paramètres aux valeurs par défaut
+     */
     resetSettings() {
         this.settings = { ...this.defaultSettings };
         this.saveSettings();
-        location.reload();
+        
+        // Feedback visuel
+        const notification = document.createElement('div');
+        notification.className = 'toast-notification info';
+        notification.textContent = 'Paramètres réinitialisés';
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }, 10);
+        
+        setTimeout(() => location.reload(), 1000);
     }
 
-    // Getters
+    /**
+     * Retourne le thème actuel
+     * @returns {string} Le mode de thème ('light' ou 'dark')
+     */
     getTheme() {
         return this.settings.theme.mode;
     }
 
+    /**
+     * Indique si le mode motion réduit est activé
+     * @returns {boolean} 
+     */
     isReducedMotion() {
         return this.settings.accessibility.reducedMotion;
     }
 
+    /**
+     * Indique si le mode contraste élevé est activé
+     * @returns {boolean}
+     */
     isHighContrast() {
         return this.settings.accessibility.highContrast;
     }
 
+    /**
+     * Indique si les notifications sont activées
+     * @returns {boolean}
+     */
     areNotificationsEnabled() {
         return this.settings.notifications.enabled;
     }
 }
+
+// Code pour initialiser automatiquement le gestionnaire de paramètres
+// et associer le bouton de paramètres
+document.addEventListener('DOMContentLoaded', () => {
+    // Créer une instance du gestionnaire
+    window.settingsManager = new SettingsManager();
+    
+    // Associer le bouton de paramètres
+    const settingsButton = document.getElementById('settingsButton');
+    if (settingsButton) {
+        settingsButton.addEventListener('click', () => {
+            window.settingsManager.showSettings();
+        });
+    }
+    
+    // Associer le bouton de mode sombre dans la barre de navigation
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener('click', () => {
+            // Inverser le thème actuel
+            const currentTheme = window.settingsManager.getTheme();
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            // Mettre à jour les paramètres
+            window.settingsManager.settings.theme.mode = newTheme;
+            localStorage.setItem('theme', newTheme);
+            window.settingsManager.saveSettings();
+            
+            // Mettre à jour l'icône et le texte du bouton
+            const icon = darkModeToggle.querySelector('.material-icons');
+            const text = darkModeToggle.querySelector('span:not(.material-icons)');
+            
+            if (icon) {
+                icon.textContent = newTheme === 'dark' ? 'light_mode' : 'dark_mode';
+            }
+            
+            if (text) {
+                text.textContent = newTheme === 'dark' ? 'Clair' : 'Sombre';
+            }
+        });
+        
+        // Initialiser le texte et l'icône du bouton en fonction du thème actuel
+        const currentTheme = window.settingsManager.getTheme();
+        const icon = darkModeToggle.querySelector('.material-icons');
+        const text = darkModeToggle.querySelector('span:not(.material-icons)');
+        
+        if (icon) {
+            icon.textContent = currentTheme === 'dark' ? 'light_mode' : 'dark_mode';
+        }
+        
+        if (text) {
+            text.textContent = currentTheme === 'dark' ? 'Clair' : 'Sombre';
+        }
+    }
+});
