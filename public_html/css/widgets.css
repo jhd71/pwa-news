@@ -528,90 +528,66 @@
   }
 }
 
-/* Ajustement de la position des icônes météo et centrage des prévisions */
-@media (max-width: 1100px) {
-  /* Conteneur des infos météo et de l'icône */
-  .weather-day .weather-main-info {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    padding: 0 5px;
-  }
-  
-  /* Décalage de l'icône vers la gauche */
-  .weather-day .weather-gif {
-    margin-right: 10px !important;
-    margin-left: 0 !important;
-    width: 42px !important;
-    height: 42px !important;
-  }
-  
-  /* Centrage du texte des prévisions */
-  .weather-day .weather-condition {
-    flex: 1;
-    text-align: center;
-    font-size: 14px;
-    padding-left: 10px;
-  }
-  
-  /* Centrage des autres éléments */
-  .weather-day h4,
-  .temperature-container {
-    text-align: center;
-    width: 100%;
-  }
+/* Solution pour décaler les icônes météo et augmenter la taille du texte des prévisions */
+
+/* Forcer l'affichage des icônes à gauche en surchargeant les styles existants */
+.weather-gif,
+.weather-day img {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  float: right !important;
+  width: 45px !important;
+  height: 45px !important;
+}
+
+/* Style direct pour le texte des conditions météo */
+.weather-condition,
+.weather-day div[style*="flex: 1"] {
+  text-align: center !important;
+  font-size: 17px !important;
+  font-weight: 500 !important;
+  padding-right: 45px !important; /* Espace pour l'icône */
+  width: 100% !important;
+}
+
+/* Spécifique pour la structure HTML de votre widget */
+.weather-day div[style*="display: flex"] {
+  position: relative !important;
+  display: block !important; /* Forcer l'affichage en bloc */
+  text-align: center !important;
+  padding: 0 !important;
 }
 
 /* Ajustements spécifiques pour mobile */
 @media (max-width: 767px) {
-  .weather-day .weather-main-info {
-    padding: 0 2px;
+  .weather-gif,
+  .weather-day img {
+    width: 40px !important;
+    height: 40px !important;
+    position: absolute !important;
+    right: 5px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
   }
   
-  .weather-day .weather-gif {
-    width: 38px !important;
-    height: 38px !important;
-  }
-  
-  .weather-day .weather-condition {
-    font-size: 13px;
-  }
-}
-
-/* Augmenter la taille du texte des prévisions sur tablette et mobile */
-@media (max-width: 1100px) {
-  /* Texte des prévisions météo */
-  .weather-day .weather-condition {
+  .weather-condition,
+  .weather-day div[style*="flex: 1"] {
     font-size: 16px !important;
-    font-weight: 500 !important;
-    padding-left: 10px;
+    padding-right: 40px !important;
   }
 }
 
-/* Ajustements spécifiques pour les tablettes */
-@media (min-width: 768px) and (max-width: 1100px) {
-  .weather-day .weather-condition {
-    font-size: 17px !important;  /* Plus grand sur tablette */
-  }
-  
-  /* Adapter la taille de l'icône pour équilibrer */
-  .weather-day .weather-gif {
-    width: 45px !important;
-    height: 45px !important;
-  }
+/* Modifier la structure spécifique pour votre HTML */
+.weather-day div[style*="display: flex; align-items: center; margin-bottom: 8px;"] {
+  display: block !important;
+  position: relative !important;
 }
 
-/* Ajustements spécifiques pour les mobiles */
-@media (max-width: 767px) {
-  .weather-day .weather-condition {
-    font-size: 15px !important;  /* Un peu plus petit sur mobile */
-    padding-left: 5px;  /* Moins d'espace sur petit écran */
-  }
-  
-  /* S'assurer que le texte ne déborde pas */
-  .weather-day .weather-main-info {
-    padding: 0 2px;
-    align-items: center;
-  }
+/* Forcer le style des conditions quels que soient les attributs style */
+div[style*="flex: 1; text-align: center;"] {
+  text-align: center !important;
+  font-size: 17px !important;
+  font-weight: 500 !important;
+  width: 100% !important;
+  display: block !important;
 }
