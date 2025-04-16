@@ -310,8 +310,8 @@
 @media (min-width: 768px) and (max-width: 1100px) {
 /* Tablette - taille et position des widgets */	
   .weather-sidebar {
-    width: 300px !important;
-    max-width: 300px !important;
+    width: 340px !important;
+    max-width: 340px !important;
     top: 50% !important;
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
@@ -319,8 +319,8 @@
   
   /* Taille des widgets sur tous les supports */
   .quick-links-sidebar {
-    width: 320px !important;
-    max-width: 320px !important;
+    width: 360px !important;
+    max-width: 360px !important;
     top: 80px !important;
     right: 10px !important;
   }
@@ -516,5 +516,14 @@
 
   .min-max-wrapper strong {
     font-size: 13px;
+  }
+}
+
+/* Centrer les liens rapides au milieu de l'écran sur mobile et tablette */
+@media (max-width: 1100px) {
+  .quick-links-sidebar {
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
   }
 }
