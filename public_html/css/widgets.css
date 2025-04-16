@@ -521,32 +521,43 @@
 
 /* Ajustements pour la météo sur mobile et tablette */
 @media (max-width: 1100px) {
+  /* Structure de la journée météo */
+  .weather-day {
+    position: relative !important;
+    padding-bottom: 5px !important;
+  }
+  
   /* Augmenter la taille du texte des prévisions */
-  .weather-day > div:nth-child(2) {
+  .weather-day > div[style*="flex: 1"] {
     font-size: 18px !important;
     font-weight: 500 !important;
     text-align: center !important;
-    margin-bottom: 8px !important;
+    margin-bottom: 5px !important;
+    display: block !important;
+    width: 80% !important; /* Pour laisser de la place à l'icône */
   }
   
   /* Positionnement de l'image météo */
-  .weather-day > img {
-    float: right !important;
-    margin-top: -28px !important; /* Remonter l'image */
-    margin-right: 10px !important;
+  .weather-day > img.weather-gif,
+  .weather-day img[src*="images/weather-gifs"] {
+    position: absolute !important;
+    top: 45px !important; /* Ajuster la hauteur */
+    right: 10px !important;
     width: 45px !important;
     height: 45px !important;
+    margin: 0 !important;
   }
   
   /* Adaptation pour les différentes tailles d'écran */
   @media (max-width: 767px) {
-    .weather-day > div:nth-child(2) {
+    .weather-day > div[style*="flex: 1"] {
       font-size: 16px !important;
     }
     
-    .weather-day > img {
+    .weather-day img[src*="images/weather-gifs"] {
       width: 40px !important;
       height: 40px !important;
+      top: 42px !important;
     }
   }
 }
