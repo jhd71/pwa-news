@@ -542,11 +542,14 @@
   }
 }
 
-/* Mobile + tablette : décalage de l’icône météo vers la gauche */
+  /* ✅ Décalage vers la gauche des icônes météo (sur mobile/tablette) */
 @media (max-width: 1100px) {
-  .weather-day img,
   .weather-gif {
-    margin-left: -12px !important;  /* plus décalé vers la gauche */
-    margin-right: 6px !important;   /* garde un petit espace avec le texte */
+    margin-left: -12px !important; /* ou -16px si tu veux plus */
   }
+  
+  .weather-day > div {
+  width: 100%;
+}
+
 }
