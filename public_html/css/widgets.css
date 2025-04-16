@@ -560,4 +560,10 @@
       top: 42px !important;
     }
   }
+  
+}@media (max-width: 767px) {
+  .weather-sidebar {
+    width: 92% !important;
+    max-width: 350px !important;
+  }
 }
