@@ -468,7 +468,7 @@
     transform: translate(-50%, -50%) !important;
     width: 90% !important;
     max-width: 320px !important;
-    max-height: 60vh !important; /* limite la hauteur à 70% de l’écran */
+    max-height: 80vh !important; /* limite la hauteur à 70% de l’écran */
     overflow-y: auto !important;
     padding: 15px !important;
     z-index: 9999 !important;
