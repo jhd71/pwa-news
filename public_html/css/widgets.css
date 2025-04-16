@@ -519,75 +519,34 @@
   }
 }
 
-/* Centrer les liens rapides au milieu de l'écran sur mobile et tablette */
+/* Ajustements pour la météo sur mobile et tablette */
 @media (max-width: 1100px) {
-  .quick-links-sidebar {
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-  }
-}
-
-/* Solution pour décaler les icônes météo et augmenter la taille du texte des prévisions */
-
-/* Forcer l'affichage des icônes à gauche en surchargeant les styles existants */
-.weather-gif,
-.weather-day img {
-  margin-left: 0 !important;
-  margin-right: auto !important;
-  float: right !important;
-  width: 45px !important;
-  height: 45px !important;
-}
-
-/* Style direct pour le texte des conditions météo */
-.weather-condition,
-.weather-day div[style*="flex: 1"] {
-  text-align: center !important;
-  font-size: 17px !important;
-  font-weight: 500 !important;
-  padding-right: 45px !important; /* Espace pour l'icône */
-  width: 100% !important;
-}
-
-/* Spécifique pour la structure HTML de votre widget */
-.weather-day div[style*="display: flex"] {
-  position: relative !important;
-  display: block !important; /* Forcer l'affichage en bloc */
-  text-align: center !important;
-  padding: 0 !important;
-}
-
-/* Ajustements spécifiques pour mobile */
-@media (max-width: 767px) {
-  .weather-gif,
-  .weather-day img {
-    width: 40px !important;
-    height: 40px !important;
-    position: absolute !important;
-    right: 5px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
+  /* Augmenter la taille du texte des prévisions */
+  .weather-day > div:nth-child(2) {
+    font-size: 18px !important;
+    font-weight: 500 !important;
+    text-align: center !important;
+    margin-bottom: 8px !important;
   }
   
-  .weather-condition,
-  .weather-day div[style*="flex: 1"] {
-    font-size: 16px !important;
-    padding-right: 40px !important;
+  /* Positionnement de l'image météo */
+  .weather-day > img {
+    float: right !important;
+    margin-top: -28px !important; /* Remonter l'image */
+    margin-right: 10px !important;
+    width: 45px !important;
+    height: 45px !important;
   }
-}
-
-/* Modifier la structure spécifique pour votre HTML */
-.weather-day div[style*="display: flex; align-items: center; margin-bottom: 8px;"] {
-  display: block !important;
-  position: relative !important;
-}
-
-/* Forcer le style des conditions quels que soient les attributs style */
-div[style*="flex: 1; text-align: center;"] {
-  text-align: center !important;
-  font-size: 17px !important;
-  font-weight: 500 !important;
-  width: 100% !important;
-  display: block !important;
+  
+  /* Adaptation pour les différentes tailles d'écran */
+  @media (max-width: 767px) {
+    .weather-day > div:nth-child(2) {
+      font-size: 16px !important;
+    }
+    
+    .weather-day > img {
+      width: 40px !important;
+      height: 40px !important;
+    }
+  }
 }
