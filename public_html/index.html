@@ -604,7 +604,7 @@ window.refreshNews = refreshNews;
   </button>
   <!-- Bouton pour réafficher le widget (en dehors du sidebar) -->
 <button class="weather-show-btn" id="weatherShowBtn" title="Afficher la météo">
-  <span class="material-icons">wb_sunny</span>
+  <span class="material-icons">cloudy_snowing</span>
 </button>
   
 </div>
@@ -703,8 +703,6 @@ document.getElementById('donateBtn').addEventListener('click', function() {
     document.body.removeChild(form);
 });
 </script>
-<script src="js/quick-links.js"></script>
-
 <script>
 // Solution complète pour le widget météo qui force le chargement des données
 document.addEventListener('DOMContentLoaded', function() {
@@ -736,8 +734,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Ajouter au body
   document.body.appendChild(weatherBtn);
   
-  // Fonction pour charger les données météo
-// Fonction modifiée pour charger les données météo avec des GIF animés
+// Fonction complète pour charger les données météo avec la nouvelle mise en page
 async function loadWeatherData() {
   console.log("Chargement des données météo");
   
@@ -745,7 +742,7 @@ async function loadWeatherData() {
   if (!weatherWidget) return;
   
   try {
-    const apiKey = "4b79472c165b42f690790252242112";
+    const apiKey = "4b79472c165b42f690790252242112"; // Votre clé API existante
     const city = "Montceau-les-Mines";
     const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${city}&days=3&lang=fr`;
     
@@ -768,26 +765,40 @@ async function loadWeatherData() {
       const animatedGif = getAnimatedGif(day.day.condition.text);
       
       forecastHTML += `
-  <div class="weather-day">
-    <h4>${dayName}</h4>
-    <img src="${getAnimatedGif(day.day.condition.text)}" alt="${day.day.condition.text}" class="weather-gif">
-    <p>${day.day.condition.text}</p>
-    <p>
-      <span class="min-temp" style="color: #64B5F6;"><strong>${Math.round(day.day.mintemp_c)}°C</strong></span> - 
-      <span class="max-temp" style="color: #FF8A65;"><strong>${Math.round(day.day.maxtemp_c)}°C</strong></span>
-    </p>
-    <div class="weather-details">
-      <div class="weather-details-row">
-        <div class="weather-detail-item">Vent: ${Math.round(day.day.maxwind_kph)} km/h</div>
-        <div class="weather-detail-item">UV: ${day.day.uv}</div>
+      <div class="weather-day">
+        <h4>${dayName}</h4>
+        
+        <div class="weather-main-info">
+          <div class="weather-condition">${day.day.condition.text}</div>
+          <img src="${animatedGif}" alt="${day.day.condition.text}" class="weather-gif">
+        </div>
+        
+        <div class="temperature-container">
+          <span class="min-temp">${Math.round(day.day.mintemp_c)}°C</span>
+          <span style="font-weight: bold;">-</span>
+          <span class="max-temp">${Math.round(day.day.maxtemp_c)}°C</span>
+        </div>
+        
+        <div class="weather-details">
+          <div class="weather-detail-item">
+            <span class="detail-label">Vent:</span>
+            <span class="detail-value">${Math.round(day.day.maxwind_kph)} km/h</span>
+          </div>
+          <div class="weather-detail-item">
+            <span class="detail-label">UV:</span>
+            <span class="detail-value">${day.day.uv}</span>
+          </div>
+          <div class="weather-detail-item">
+            <span class="detail-label">Humidité:</span>
+            <span class="detail-value">${day.day.avghumidity}%</span>
+          </div>
+          <div class="weather-detail-item">
+            <span class="detail-label">Pluie:</span>
+            <span class="detail-value">${day.day.daily_chance_of_rain}%</span>
+          </div>
+        </div>
       </div>
-      <div class="weather-details-row">
-        <div class="weather-detail-item">Humidité: ${day.day.avghumidity}%</div>
-        <div class="weather-detail-item">Pluie: ${day.day.daily_chance_of_rain}%</div>
-      </div>
-    </div>
-  </div>
-`;
+      `;
     });
     
     // Injecte le contenu HTML dans le widget météo
@@ -822,12 +833,30 @@ function getAnimatedGif(condition) {
     return "images/weather-gifs/default.gif";
 }
 
+// Gestionnaire complet du widget météo responsif
+document.addEventListener('DOMContentLoaded', function() {
+  console.log("Initialisation du widget météo responsif");
+  
+  // Sélection des éléments du DOM
+  const weatherSidebar = document.getElementById('weatherSidebar');
+  const weatherShowBtn = document.getElementById('weatherShowBtn');
+  const closeBtn = document.querySelector('.weather-toggle');
+  
+  // Vérifier si le bouton météo mobile existe déjà, sinon le créer
+  let weatherBtn = document.getElementById('weatherMobileBtn');
+  
+  if (!weatherBtn) {
+    weatherBtn = document.createElement('button');
+    weatherBtn.className = 'weather-mobile-btn';
+    weatherBtn.id = 'weatherMobileBtn';
+    weatherBtn.title = 'Météo';
+    weatherBtn.innerHTML = '<span class="material-icons">cloudy_snowing</span>';
+    document.body.appendChild(weatherBtn);
+  }
   
   // Fonction pour afficher le widget météo
   function showWeatherWidget() {
     console.log("Affichage du widget météo");
-    const weatherSidebar = document.getElementById('weatherSidebar');
-    const weatherShowBtn = document.getElementById('weatherShowBtn');
     
     if (weatherSidebar) {
       // Toujours charger/recharger les données météo
@@ -841,16 +870,10 @@ function getAnimatedGif(condition) {
       weatherSidebar.classList.add('visible');
       
       // Positionner correctement selon l'appareil
-      if (window.innerWidth < 768) {
-        weatherSidebar.style.left = '50%';
-        weatherSidebar.style.transform = 'translateX(-50%)';
-      } else {
-        weatherSidebar.style.left = '10px';
-        weatherSidebar.style.transform = 'none';
-      }
+      adjustWeatherWidgetPosition();
       
       // Cacher le bouton mobile
-      weatherBtn.style.display = 'none';
+      if (weatherBtn) weatherBtn.style.display = 'none';
       
       // Cacher le bouton desktop si présent
       if (weatherShowBtn) {
@@ -863,91 +886,121 @@ function getAnimatedGif(condition) {
   // Fonction pour masquer le widget météo
   function hideWeatherWidget() {
     console.log("Masquage du widget météo");
-    const weatherSidebar = document.getElementById('weatherSidebar');
-    const weatherShowBtn = document.getElementById('weatherShowBtn');
     
     if (weatherSidebar) {
       // Masquer le widget
-      weatherSidebar.style.display = 'none';
-      weatherSidebar.style.visibility = 'hidden';
       weatherSidebar.style.opacity = '0';
       weatherSidebar.classList.add('hidden');
       weatherSidebar.classList.remove('visible');
       
+      // Après la transition, cacher complètement
+      setTimeout(() => {
+        weatherSidebar.style.display = 'none';
+        weatherSidebar.style.visibility = 'hidden';
+      }, 300);
+      
       // Afficher les boutons appropriés selon l'appareil
-      if (window.innerWidth < 768) {
-        weatherBtn.style.display = 'flex';
-        if (weatherShowBtn) weatherShowBtn.style.display = 'none';
-      } else {
-        weatherBtn.style.display = 'none';
-        if (weatherShowBtn) {
-          weatherShowBtn.style.display = 'flex';
-          weatherShowBtn.classList.add('visible');
-        }
+      adjustButtonsVisibility();
+    }
+  }
+  
+  // Fonction pour ajuster la position du widget selon le type d'appareil
+  function adjustWeatherWidgetPosition() {
+    const windowWidth = window.innerWidth;
+    
+    if (windowWidth < 768) {
+      // Mobile: Centré en haut
+      weatherSidebar.style.left = '50%';
+      weatherSidebar.style.transform = 'translateX(-50%)';
+      weatherSidebar.style.top = '120px';
+    } 
+    else if (windowWidth >= 768 && windowWidth <= 1100) {
+      // Tablette: Centré au milieu
+      weatherSidebar.style.top = '50%';
+      weatherSidebar.style.left = '50%';
+      weatherSidebar.style.transform = 'translate(-50%, -50%)';
+      weatherSidebar.style.maxWidth = '400px';
+      weatherSidebar.style.width = '90%';
+    } 
+    else {
+      // Desktop: Côté gauche en haut
+      weatherSidebar.style.left = '10px';
+      weatherSidebar.style.transform = 'none';
+      weatherSidebar.style.top = '90px';
+    }
+  }
+  
+  // Fonction pour ajuster la visibilité des boutons selon le type d'appareil
+  function adjustButtonsVisibility() {
+    const windowWidth = window.innerWidth;
+    
+    if (windowWidth < 768) {
+      // Mobile: Afficher le bouton mobile, cacher le bouton desktop
+      if (weatherBtn) weatherBtn.style.display = 'flex';
+      if (weatherShowBtn) weatherShowBtn.style.display = 'none';
+    } 
+    else {
+      // Desktop/Tablette: Cacher le bouton mobile, afficher le bouton desktop
+      if (weatherBtn) weatherBtn.style.display = 'none';
+      if (weatherShowBtn) {
+        weatherShowBtn.style.display = 'flex';
+        weatherShowBtn.classList.add('visible');
       }
     }
   }
   
   // Ajouter les écouteurs d'événements
-  weatherBtn.addEventListener('click', showWeatherWidget);
+  if (weatherBtn) {
+    // Supprimer tous les écouteurs précédents
+    const newWeatherBtn = weatherBtn.cloneNode(true);
+    weatherBtn.parentNode.replaceChild(newWeatherBtn, weatherBtn);
+    weatherBtn = newWeatherBtn;
+    
+    // Ajouter le nouvel écouteur
+    weatherBtn.addEventListener('click', showWeatherWidget);
+  }
   
-  // Configurer le bouton de fermeture
-  const closeBtn = document.querySelector('.weather-toggle');
   if (closeBtn) {
-    // Remplacer l'élément pour supprimer tous les écouteurs précédents
+    // Supprimer tous les écouteurs précédents
     const newCloseBtn = closeBtn.cloneNode(true);
     closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
     
-    // Ajouter l'écouteur d'événement
+    // Ajouter le nouvel écouteur
     newCloseBtn.addEventListener('click', hideWeatherWidget);
   }
   
-  // Configurer le bouton d'affichage desktop
-  const weatherShowBtn = document.getElementById('weatherShowBtn');
   if (weatherShowBtn) {
-    weatherShowBtn.addEventListener('click', showWeatherWidget);
+    // Supprimer tous les écouteurs précédents
+    const newWeatherShowBtn = weatherShowBtn.cloneNode(true);
+    weatherShowBtn.parentNode.replaceChild(newWeatherShowBtn, weatherShowBtn);
+    
+    // Ajouter le nouvel écouteur
+    newWeatherShowBtn.addEventListener('click', showWeatherWidget);
   }
   
-  // Gestion du redimensionnement
+  // Gérer le redimensionnement de la fenêtre
   window.addEventListener('resize', function() {
-    const isMobile = window.innerWidth < 768;
-    
-    // Mise à jour de l'affichage des boutons selon l'appareil
-    const weatherSidebar = document.getElementById('weatherSidebar');
-    const isWidgetVisible = weatherSidebar && 
-                          !weatherSidebar.classList.contains('hidden') && 
-                          weatherSidebar.classList.contains('visible');
-    
-    if (!isWidgetVisible) {
-      if (isMobile) {
-        weatherBtn.style.display = 'flex';
-        if (weatherShowBtn) weatherShowBtn.style.display = 'none';
-      } else {
-        weatherBtn.style.display = 'none';
-        if (weatherShowBtn) weatherShowBtn.style.display = 'flex';
-      }
-    } else {
-      // Widget visible, cacher les boutons
-      weatherBtn.style.display = 'none';
-      if (weatherShowBtn) weatherShowBtn.style.display = 'none';
-      
-      // Ajuster la position du widget
-      if (weatherSidebar) {
-        if (isMobile) {
-          weatherSidebar.style.left = '50%';
-          weatherSidebar.style.transform = 'translateX(-50%)';
-        } else {
-          weatherSidebar.style.left = '10px';
-          weatherSidebar.style.transform = 'none';
-        }
-      }
+    // Si le widget est visible, ajuster sa position
+    if (weatherSidebar && 
+        !weatherSidebar.classList.contains('hidden') && 
+        weatherSidebar.style.display !== 'none') {
+      adjustWeatherWidgetPosition();
+    } 
+    else {
+      // Sinon, ajuster la visibilité des boutons
+      adjustButtonsVisibility();
     }
   });
   
-  // Configuration initiale
-  hideWeatherWidget();
+  // Configuration initiale: masquer le widget et afficher les boutons appropriés
+  if (weatherSidebar) {
+    weatherSidebar.style.display = 'none';
+    weatherSidebar.classList.add('hidden');
+  }
   
-  // Exposer globalement
+  adjustButtonsVisibility();
+  
+  // Exposer globalement les fonctions pour pouvoir les appeler ailleurs
   window.showWeatherWidget = showWeatherWidget;
   window.hideWeatherWidget = hideWeatherWidget;
   window.loadWeatherData = loadWeatherData;
@@ -971,6 +1024,8 @@ function getAnimatedGif(condition) {
   }
 });
 </script>
+<script src="js/weather-widget.js"></script>
+<script src="js/quick-links.js"></script>
 <script src="js/chat-keyboard-fix.js" defer></script>
 <script src="js/tablet-fixes.js"></script>
 </body>
