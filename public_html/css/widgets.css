@@ -561,9 +561,64 @@
     }
   }
   
-}@media (max-width: 767px) {
+}
+/* Optimisation du widget météo pour tous les écrans mobiles */
+@media (max-width: 767px) {
+  /* Taille adaptative du widget */
   .weather-sidebar {
     width: 92% !important;
-    max-width: 350px !important;
+    max-width: 380px !important;
+    padding: 10px 12px !important;
+  }
+  
+  /* Titre de la ville */
+  .weather-sidebar h3 {
+    font-size: 17px !important;
+    margin-bottom: 8px !important;
+  }
+  
+  /* Jours de la semaine */
+  .weather-day h4 {
+    font-size: 15px !important;
+    padding: 6px 0 !important;
+  }
+  
+  /* Texte des prévisions */
+  .weather-day > div:nth-child(2),
+  .weather-condition {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    margin: 8px 0 !important;
+  }
+  
+  /* Températures */
+  .min-temp, .max-temp {
+    font-size: 18px !important;
+  }
+  
+  /* Détails météo */
+  .weather-detail-item {
+    font-size: 13px !important;
+    padding: 4px 8px !important;
+  }
+  
+  /* Adaptation pour les très petits écrans (moins de 360px) */
+  @media (max-width: 360px) {
+    .weather-sidebar {
+      width: 95% !important;
+      padding: 8px 10px !important;
+    }
+    
+    .weather-day h4 {
+      font-size: 14px !important;
+    }
+    
+    .weather-condition {
+      font-size: 15px !important;
+    }
+    
+    .min-temp, .max-temp {
+      font-size: 16px !important;
+    }
   }
 }
