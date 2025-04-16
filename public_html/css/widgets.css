@@ -578,3 +578,40 @@
     font-size: 13px;
   }
 }
+
+/* Augmenter la taille du texte des prévisions sur tablette et mobile */
+@media (max-width: 1100px) {
+  /* Texte des prévisions météo */
+  .weather-day .weather-condition {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    padding-left: 10px;
+  }
+}
+
+/* Ajustements spécifiques pour les tablettes */
+@media (min-width: 768px) and (max-width: 1100px) {
+  .weather-day .weather-condition {
+    font-size: 17px !important;  /* Plus grand sur tablette */
+  }
+  
+  /* Adapter la taille de l'icône pour équilibrer */
+  .weather-day .weather-gif {
+    width: 45px !important;
+    height: 45px !important;
+  }
+}
+
+/* Ajustements spécifiques pour les mobiles */
+@media (max-width: 767px) {
+  .weather-day .weather-condition {
+    font-size: 15px !important;  /* Un peu plus petit sur mobile */
+    padding-left: 5px;  /* Moins d'espace sur petit écran */
+  }
+  
+  /* S'assurer que le texte ne déborde pas */
+  .weather-day .weather-main-info {
+    padding: 0 2px;
+    align-items: center;
+  }
+}
