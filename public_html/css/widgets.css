@@ -310,8 +310,8 @@
 @media (min-width: 768px) and (max-width: 1100px) {
 /* Tablette - taille et position des widgets */	
   .weather-sidebar {
-    width: 340px !important;
-    max-width: 340px !important;
+    width: 360px !important;
+    max-width: 360px !important;
     top: 50% !important;
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
@@ -319,8 +319,8 @@
   
   /* Taille des widgets sur tous les supports */
   .quick-links-sidebar {
-    width: 360px !important;
-    max-width: 360px !important;
+    width: 380px !important;
+    max-width: 380px !important;
     top: 80px !important;
     right: 10px !important;
   }
