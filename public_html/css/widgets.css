@@ -547,9 +547,4 @@
   .weather-gif {
     margin-left: -12px !important; /* ou -16px si tu veux plus */
   }
-  
-  .weather-day > div {
-  width: 100%;
-}
-
 }
