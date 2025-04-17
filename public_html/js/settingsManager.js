@@ -3,6 +3,8 @@
  * Responsable de la sauvegarde, du chargement et de l'application des paramètres de thème, 
  * d'accessibilité et d'affichage
  */
+import { showToast, isSystemDarkMode, debounce, animateElement } from './utils.js';
+
 export class SettingsManager {
     constructor() {
         this.defaultSettings = {
@@ -79,6 +81,11 @@ export class SettingsManager {
             }
         });
 
+        // Utiliser le thème système si aucun n'est défini
+        if (!localStorage.getItem('theme')) {
+            this.settings.theme.mode = isSystemDarkMode() ? 'dark' : 'light';
+        }
+
         // Écouter les préférences de mouvement réduit
         window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', (e) => {
             if (!localStorage.getItem('reducedMotion')) {
@@ -140,10 +147,11 @@ export class SettingsManager {
         
         document.body.appendChild(modal);
         
-        // Animation d'entrée
-        setTimeout(() => {
-            modal.classList.add('show');
-        }, 10);
+        // Animation d'entrée avec la fonction utilitaire
+        animateElement(modal, {
+            opacity: '1',
+            visibility: 'visible'
+        }, 300);
         
         this.setupSettingsEventListeners(modal);
     }
@@ -292,10 +300,14 @@ export class SettingsManager {
      * @param {HTMLElement} modal - L'élément modal
      */
     setupSettingsEventListeners(modal) {
-        // Fermeture de la modale
+        // Fermeture de la modale avec animation
         const closeModal = () => {
-            modal.classList.remove('show');
-            setTimeout(() => modal.remove(), 300);
+            animateElement(modal, {
+                opacity: '0',
+                visibility: 'hidden'
+            }, 300).then(() => {
+                modal.remove();
+            });
         };
         
         modal.querySelector('.modal-close').addEventListener('click', closeModal);
@@ -304,9 +316,13 @@ export class SettingsManager {
         });
         
         // Touche Echap pour fermer
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
-        });
+        const escKeyHandler = (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+                document.removeEventListener('keydown', escKeyHandler);
+            }
+        };
+        document.addEventListener('keydown', escKeyHandler);
 
         // Couleurs
         ['primaryColor', 'gradientStart', 'gradientEnd'].forEach(id => {
@@ -322,8 +338,7 @@ export class SettingsManager {
             input.addEventListener('change', () => {
                 if (input.value === 'system') {
                     localStorage.removeItem('theme');
-                    this.settings.theme.mode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 
-                        'dark' : 'light';
+                    this.settings.theme.mode = isSystemDarkMode() ? 'dark' : 'light';
                 } else {
                     this.settings.theme.mode = input.value;
                     localStorage.setItem('theme', input.value);
@@ -332,9 +347,9 @@ export class SettingsManager {
             });
         });
 
-        // Gestion des tuiles de taille de police
+        // Gestion des tuiles de taille de police avec debounce pour éviter les multiples déclenchements
         modal.querySelectorAll('.font-size-tile').forEach(tile => {
-            tile.addEventListener('click', () => {
+            tile.addEventListener('click', debounce(() => {
                 const size = tile.dataset.size;
                 this.settings.theme.fontSize = size;
                 // Mettre à jour l'UI
@@ -342,7 +357,7 @@ export class SettingsManager {
                     t.classList.toggle('active', t.dataset.size === size)
                 );
                 this.saveSettings();
-            });
+            }, 300));
         });
 
         // Accessibilité
@@ -408,35 +423,15 @@ export class SettingsManager {
             this.settings = { ...this.defaultSettings, ...newSettings };
             this.saveSettings();
             
-            // Feedback visuel
-            const notification = document.createElement('div');
-            notification.className = 'toast-notification success';
-            notification.textContent = 'Paramètres importés avec succès';
-            document.body.appendChild(notification);
-            setTimeout(() => {
-                notification.classList.add('show');
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                    setTimeout(() => notification.remove(), 300);
-                }, 3000);
-            }, 10);
+            // Feedback visuel avec la fonction utilitaire
+            showToast('Paramètres importés avec succès', 3000, 'success');
             
             setTimeout(() => location.reload(), 1000);
         } catch (error) {
             console.error('Erreur lors de l\'importation des paramètres:', error);
             
-            // Feedback d'erreur
-            const notification = document.createElement('div');
-            notification.className = 'toast-notification error';
-            notification.textContent = 'Erreur lors de l\'importation des paramètres';
-            document.body.appendChild(notification);
-            setTimeout(() => {
-                notification.classList.add('show');
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                    setTimeout(() => notification.remove(), 300);
-                }, 3000);
-            }, 10);
+            // Feedback d'erreur avec la fonction utilitaire
+            showToast('Erreur lors de l\'importation des paramètres', 3000, 'error');
         }
     }
 
@@ -447,18 +442,8 @@ export class SettingsManager {
         this.settings = { ...this.defaultSettings };
         this.saveSettings();
         
-        // Feedback visuel
-        const notification = document.createElement('div');
-        notification.className = 'toast-notification info';
-        notification.textContent = 'Paramètres réinitialisés';
-        document.body.appendChild(notification);
-        setTimeout(() => {
-            notification.classList.add('show');
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }, 10);
+        // Feedback visuel avec la fonction utilitaire
+        showToast('Paramètres réinitialisés', 3000, 'info');
         
         setTimeout(() => location.reload(), 1000);
     }
