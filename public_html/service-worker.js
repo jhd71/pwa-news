@@ -5,10 +5,23 @@ const STATIC_RESOURCES = [
     '/',
     '/css/styles.css',
     '/css/chat-styles.css',
+    '/css/news-panel.css',
+    '/css/widgets.css',
+    '/css/settings-styles.css',
     '/js/app.js',
     '/js/chatManager.js',
+    '/js/chat-keyboard-fix.js',
     '/js/content.js',
-    '/js/lazyLoading.js',
+    '/js/ios-install.js',
+    '/js/newsPanel.js',
+    '/js/newsTickerManager.js',
+    '/js/quick-links.js',
+    '/js/service-worker.js',
+    '/js/settingsManager.js',
+    '/js/sounds.js',
+    '/js/tablet-fixes.js',
+    '/js/utils.js',
+    '/js/weather-widget.js',
     '/manifest.json',
     '/images/INFOS-96.png',
     '/images/INFOS-192.png',
@@ -19,7 +32,8 @@ const STATIC_RESOURCES = [
     '/sounds/notification.mp3',
     '/sounds/click.mp3',
     '/sounds/erreur.mp3',
-    '/sounds/success.mp3'
+    '/sounds/success.mp3',
+    '/sounds/sent.mp3'
 ];
 
 // Contenu HTML de la page hors ligne
