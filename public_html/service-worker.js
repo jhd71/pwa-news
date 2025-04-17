@@ -87,25 +87,43 @@ const OFFLINE_HTML = `<!DOCTYPE html>
 // Configuration du timeout pour les requêtes réseau
 const NETWORK_TIMEOUT = 5000; // 5 secondes
 
-// Installation optimisée
+// Installation
 self.addEventListener('install', event => {
     console.log('[ServiceWorker] Installation');
     event.waitUntil(
         (async () => {
             try {
                 const cache = await caches.open(CACHE_NAME);
-                // Utilisation de addAll pour une meilleure performance
                 console.log('[ServiceWorker] Mise en cache globale');
-                await cache.addAll(STATIC_RESOURCES);
                 
-                // Précharger les ressources critiques supplémentaires
-                await precacheAdditionalResources();
+                // Au lieu d'utiliser addAll qui échoue si une seule ressource échoue,
+                // on met en cache chaque ressource individuellement
+                const successfulCaches = [];
+                const failedCaches = [];
+                
+                for (const url of STATIC_RESOURCES) {
+                    try {
+                        await cache.add(url);
+                        successfulCaches.push(url);
+                    } catch (error) {
+                        // Logger l'erreur mais continuer avec les autres ressources
+                        console.warn(`[ServiceWorker] Échec de mise en cache: ${url}`, error);
+                        failedCaches.push(url);
+                    }
+                }
+                
+                console.log(`[ServiceWorker] Mise en cache réussie pour ${successfulCaches.length} ressources`);
+                if (failedCaches.length > 0) {
+                    console.warn(`[ServiceWorker] Échec de mise en cache pour ${failedCaches.length} ressources`);
+                }
                 
                 await self.skipWaiting();
+                return;
             } catch (error) {
                 console.error('[ServiceWorker] Erreur d\'installation:', error);
                 // Continue l'installation même en cas d'erreur
                 await self.skipWaiting();
+                return;
             }
         })()
     );
