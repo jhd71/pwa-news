@@ -1573,8 +1573,9 @@ body.long-press-active .message-options {
   color: #fff !important;
 }
 
-/* === Admin > onglet « Notifications » =========== */
-#notificationForm #notif-urgent:checked ~ button[type="submit"]{
-  background:#d32f2f;      /* rouge quand “urgent” est coché */
-  color:#fff;
+/* Bouton rouge quand l’option “urgente” est cochée */
+#notificationForm button[type="submit"].urgent{
+  background:#d32f2f !important;   /* rouge soutenu */
+  border-color:#b71c1c !important;
+  color:#fff !important;
 }
