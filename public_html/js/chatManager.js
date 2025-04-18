@@ -2048,6 +2048,7 @@ showAdminPanel() {
         <div class="panel-tabs">
             <button class="tab-btn active" data-tab="banned-words">Mots bannis</button>
             <button class="tab-btn" data-tab="banned-ips">IPs bannies</button>
+            <button class="tab-btn" data-tab="notifications">Notifications</button>
         </div>
         <div class="panel-content">
             <div class="tab-section active" id="banned-words-section">
@@ -2058,11 +2059,27 @@ showAdminPanel() {
                 </div>
                 <div class="banned-words-list"></div>
             </div>
+
             <div class="tab-section" id="banned-ips-section">
                 <h4>IPs bannies</h4>
                 <div class="banned-ips-list">
                     <div class="loading-ips">Chargement des IPs bannies...</div>
                 </div>
+            </div>
+
+            <div class="tab-section" id="notifications-section">
+                <h4>📢 Envoyer une notification importante</h4>
+                <form id="notificationForm">
+                    <label>Titre :</label><br>
+                    <input type="text" id="notif-title" required><br><br>
+                    <label>Message :</label><br>
+                    <textarea id="notif-body" required></textarea><br><br>
+                    <label>URL (facultatif) :</label><br>
+                    <input type="text" id="notif-url" placeholder="/actualites"><br><br>
+                    <label><input type="checkbox" id="notif-urgent"> Notification urgente</label><br><br>
+                    <button type="submit">📤 Envoyer</button>
+                </form>
+                <p id="result" style="margin-top:10px;"></p>
             </div>
         </div>
     `;
@@ -2075,17 +2092,15 @@ showAdminPanel() {
     const tabBtns = panel.querySelectorAll('.tab-btn');
     tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            // Désactiver tous les onglets
             tabBtns.forEach(b => b.classList.remove('active'));
             panel.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
-            
-            // Activer l'onglet cliqué
             btn.classList.add('active');
             const tabId = btn.dataset.tab + '-section';
             panel.querySelector(`#${tabId}`).classList.add('active');
         });
     });
 
+    // Bouton ajout de mot banni
     const addWordBtn = panel.querySelector('.add-word-btn');
     const wordInput = panel.querySelector('.add-word input');
 
@@ -2098,6 +2113,31 @@ showAdminPanel() {
         }
     });
 
+    // Formulaire notification
+    panel.querySelector('#notificationForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const title = document.getElementById("notif-title").value;
+        const body = document.getElementById("notif-body").value;
+        const url = document.getElementById("notif-url").value || "/actualites";
+        const urgent = document.getElementById("notif-urgent").checked;
+
+        const response = await fetch("/api/send-important-notification", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-API-Key": "TA_CLE_ADMIN_ICI" // 🔐 Mets ta clé ADMIN_API_KEY ici
+            },
+            body: JSON.stringify({ title, body, url, urgent })
+        });
+
+        const result = await response.json();
+        document.getElementById("result").innerText = response.ok
+            ? "✅ Notification envoyée avec succès"
+            : "❌ Erreur : " + (result.error || "inconnue");
+    });
+
+    // Fermer le panneau
     panel.querySelector('.close-panel').addEventListener('click', () => panel.remove());
 }
 
