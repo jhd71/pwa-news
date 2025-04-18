@@ -2,12 +2,12 @@
 import { createClient } from '@supabase/supabase-js';
 import webpush from 'web-push';
 
-// Initialiser le client Supabase
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Configurer les clés VAPID pour les notifications Web Push
+// Config Web Push
 webpush.setVapidDetails(
   `mailto:${process.env.VAPID_CONTACT_EMAIL || 'contact@actuetmedia.fr'}`,
   process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
