@@ -41,67 +41,53 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Titre et corps du message requis' });
     }
 
-    // Préparer les données de notification (format enveloppé)
+// Préparer la payload « enveloppée »
 const notificationPayload = {
-  /* 👇  tout ce qui sera reçu côté Service‑Worker */
   notification: {
     title,
     body,
-    icon: imageUrl || '/images/AM-192-v2.png',
+    icon : imageUrl || '/images/AM-192-v2.png',
     badge: '/images/badge-72x72.png',
-    data: {
-      /* l’URL que tu veux ouvrir au clic */
-      url: url || '/',
-      type: 'important',
+    data : {
+      url   : url || 'https://actuetmedia.fr/',   // ← toujours ABSOLUE
+      type  : 'important',
       urgent: !!urgent
     }
   }
 };
 
+/* ------------------------------------------------------------------ */
+/*  Envoi à chaque abonnement                                         */
+/* ------------------------------------------------------------------ */
 
-    // Récupérer tous les abonnements
-    const { data: subscriptions, error } = await supabase
-      .from('push_subscriptions')
-      .select('*');
+const results = await Promise.allSettled(
+  subscriptions.map(async (subscription) => {
+    try {
+      // S’assurer que c’est bien un objet
+      let pushSubscription = subscription.subscription;
+      if (typeof pushSubscription === 'string') {
+        pushSubscription = JSON.parse(pushSubscription);
+      }
 
-    if (error) {
-      throw error;
+      // ⬇️  ICI : on utilise pushSubscription
+      await webpush.sendNotification(
+        pushSubscription,
+        JSON.stringify(notificationPayload)
+      );
+
+      return { success: true, endpoint: pushSubscription.endpoint };
+    } catch (error) {
+      // 410 : endpoint expiré → on le supprime
+      if (error.statusCode === 410) {
+        await supabase
+          .from('push_subscriptions')
+          .delete()
+          .eq('endpoint', subscription.endpoint);
+      }
+      return { success: false, endpoint: subscription.endpoint, error: error.message };
     }
-
-    if (!subscriptions || subscriptions.length === 0) {
-      return res.status(404).json({ error: 'Aucun abonnement trouvé' });
-    }
-
-    console.log(`Envoi de notification importante à ${subscriptions.length} abonnés`);
-
-    // Envoyer les notifications
-    const results = await Promise.allSettled(
-      subscriptions.map(async (subscription) => {
-        try {
-          // S'assurer que la subscription est un objet et non une chaîne JSON
-          let pushSubscription = subscription.subscription;
-          if (typeof pushSubscription === 'string') {
-            pushSubscription = JSON.parse(pushSubscription);
-          }
-          
-          await webpush.sendNotification(
-  pushSubscription,
-  JSON.stringify(notificationPayload)    // ⬅️ on stringify ici
+  })
 );
-
-          return { success: true, endpoint: pushSubscription.endpoint };
-        } catch (error) {
-          // Si l'abonnement n'est plus valide, le supprimer
-          if (error.statusCode === 410) {
-            await supabase
-              .from('push_subscriptions')
-              .delete()
-              .eq('endpoint', subscription.endpoint);
-          }
-          return { success: false, endpoint: subscription.endpoint, error: error.message };
-        }
-      })
-    );
 
     // Compter les succès et les échecs
     const successful = results.filter(r => r.status === 'fulfilled' && r.value.success).length;

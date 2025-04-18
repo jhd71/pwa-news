@@ -561,42 +561,34 @@ function handleDefaultRequest(event) {
     );
 }
 
-/*  ===== Service‑worker – réception des push =====  */
+/* ---------------------- PUSH ------------------------------------------ */
 self.addEventListener('push', event => {
   console.log('[SW] Push reçu ➜', event.data ? event.data.text() : '');
 
   event.waitUntil((async () => {
     try {
-      /* 1) Décodage de la payload --------------------------------------- */
+      /* 1) Payload ------------------------------------------------------- */
       let raw;
-      try {
-        // Si la charge utile est du JSON
-        raw = event.data ? event.data.json() : {};
-      } catch {
-        // Sinon, fallback texte brut
-        raw = { title: 'Actu&Média', body: event.data ? event.data.text() : '' };
-      }
+      try   { raw = event.data ? event.data.json() : {}; }
+      catch { raw = { title:'Actu&Média', body: event.data?.text() || '' }; }
 
-      // Certains back‑ends rangent le vrai contenu dans raw.notification
-      const data = raw.notification ? raw.notification : raw;
+      // si vous avez enveloppé dans {notification:{…}} on récupère la vraie partie
+      const data = raw.notification ?? raw;
 
-      /* 2) Si l’appli est déjà visible ----------------------------------- */
+      /* 2) Appli visible ? ---------------------------------------------- */
       const clientsList = await self.clients.matchAll({
-        type: 'window',
-        includeUncontrolled: true
+        type:'window', includeUncontrolled:true
       });
-
       const visibleClient = clientsList.find(c => c.visibilityState === 'visible');
 
       if (visibleClient && data.data?.type === 'chat') {
-        // Pas de spam : on transmet juste le message à la page
-        visibleClient.postMessage({ type: 'PUSH_RECEIVED', data });
+        visibleClient.postMessage({ type:'PUSH_RECEIVED', data });
         console.log('[SW] App visible → message relayé, pas de notif');
-        return;                                     // stop ici
+        return;
       }
 
-      /* 3) Options de notification -------------------------------------- */
-      const urgent = data.data?.urgent === true;    // ← flag urgent
+      /* 3) Construction des options ------------------------------------- */
+      const urgent  = data.data?.urgent === true;     // flag urgent
 
       const options = {
         body : data.body  || 'Nouvelle notification',
@@ -604,72 +596,59 @@ self.addEventListener('push', event => {
         badge: data.badge || '/images/badge-72x72.png',
         tag  : data.tag   || `notification-${Date.now()}`,
 
-        /* -- Différenciation urgente / normale -- */
-        requireInteraction: urgent,                 // reste à l’écran si urgent
-        renotify         : urgent,                 // heads‑up si déjà affichée
-        silent           : !urgent,                // son seulement si urgent
-        vibrate          : urgent
-                       ? [200, 100, 200, 100, 200] // pattern plus long
-                       : [100, 50, 100],
+        requireInteraction : urgent,          // reste affichée si urgent
+        renotify           : urgent,          // heads‑up si déjà affichée
+        silent             : !urgent,         // pas de son si NON urgent
+        vibrate            : urgent ?         // ► vibrations UNIQUEMENT si son
+                         [200,100,200,100,200] : undefined,
 
-        data: {
-          url      : data.data?.url || '/',        // URL cible
+        data : {
+          url   : data.data?.url || '/',      // toujours ABSOLUE côté serveur
           urgent,
           ...data.data
         },
 
-        actions: [{
-          action: 'open',
-          title : urgent ? 'Ouvrir (urgent)' : 'Voir'
+        actions : [{
+          action : 'open',
+          title  : urgent ? 'Ouvrir (urgent)' : 'Voir'
         }]
       };
 
-if (urgent) {
-  /* même tag pour toutes les urgentes → même « canal » Android */
-  options.tag      = 'important-alert';
-  options.renotify = true;        // heads‑up si déjà affichée
-}
-
-      /* 4) Affichage ----------------------------------------------------- */
+      /* 4) Affiche ------------------------------------------------------- */
       await self.registration.showNotification(
-        urgent ? `🚨 ${data.title}` : data.title || 'Actu&Média',
+        data.title || 'Actu&Média',
         options
       );
       console.log('[SW] Notification affichée');
-    } catch (err) {
+    } catch(err){
       console.error('[SW] Erreur push :', err);
-      // Fallback minimal
-      await self.registration.showNotification('Actu&Média', {
+      await self.registration.showNotification('Actu&Média',{
         body : 'Nouvelle notification',
         icon : '/images/AM-192-v2.png',
-        badge: '/images/badge-72x72.png',
-        requireInteraction: true
+        badge: '/images/badge-72x72.png'
       });
     }
   })());
 });
 
-/* ---------------------------------------------------------- */
-/*  Ouverture de l’URL cible quand on clique sur la notification
-/* ---------------------------------------------------------- */
+/* ------------------ CLICK sur la notification ------------------------- */
 self.addEventListener('notificationclick', event => {
   event.notification.close();
 
-  /* si l’URL n’est pas absolue on la résout sur l’origine du SW */
-  const raw = event.notification.data?.url || '/';
-  const targetURL = raw.match(/^https?:\/\//)
-      ? raw                                // déjà absolue
-      : new URL(raw, self.location.origin).href;  // on la complète
+  // action ‘open’ OU clic sur le corps
+  if (event.action !== 'open' && event.action !== '') return;
+
+  const targetURL = event.notification.data?.url || '/';
 
   event.waitUntil(
-    self.clients.matchAll({ type: 'window', includeUncontrolled: true })
-      .then(clientsArr => {
-        /* si déjà ouvert → focus */
-        for (const c of clientsArr) {
-          if ('focus' in c && c.url === targetURL) return c.focus();
+    self.clients.matchAll({ type:'window', includeUncontrolled:true })
+      .then(list => {
+        // focus si onglet déjà ouvert
+        for (const client of list){
+          if (client.url === targetURL && 'focus' in client) return client.focus();
         }
-        /* sinon → nouvel onglet/fenêtre */
-        return self.clients.openWindow ? self.clients.openWindow(targetURL) : null;
+        // sinon nouvelle fenêtre/onglet
+        if (self.clients.openWindow) return self.clients.openWindow(targetURL);
       })
   );
 });
