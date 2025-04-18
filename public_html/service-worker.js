@@ -627,33 +627,24 @@ self.addEventListener('push', event => {
   })());
 });
 
-/* ───────────── Notification CLICK ───────────── */
+/* ------------------ CLICK sur la notification ------------------------- */
 self.addEventListener('notificationclick', event => {
-  event.notification.close();            // on ferme la notif
+  event.notification.close();
 
-  // 1) URL cible : priorité à event.notification.data.url
-  const targetURL = event.notification?.data?.url || '/';
+  // action ‘open’ OU clic sur le corps
+  if (event.action !== 'open' && event.action !== '') return;
 
-  // 2) Si on a cliqué sur l’action “open”, on traite pareil que le clic normal
-  //    (tu pourrais mettre un autre comportement pour d’autres actions)
-  if (event.action && event.action !== 'open') {
-    return; // dans ton cas il n’y a qu’une action => on ne gère que 'open'
-  }
+  const targetURL = event.notification.data?.url || '/';
 
-  // 3) Ouvrir / focuser la bonne fenêtre
   event.waitUntil(
-    self.clients.matchAll({ type: 'window', includeUncontrolled: true })
-      .then(windowClients => {
-        // a) un onglet vers cette URL est déjà ouvert → focus
-        for (const client of windowClients) {
-          if ('focus' in client && client.url.includes(targetURL)) {
-            return client.focus();
-          }
+    self.clients.matchAll({ type:'window', includeUncontrolled:true })
+      .then(list => {
+        // focus si onglet déjà ouvert
+        for (const client of list){
+          if (client.url === targetURL && 'focus' in client) return client.focus();
         }
-        // b) sinon → nouvelle fenêtre / nouvel onglet
-        if (self.clients.openWindow) {
-          return self.clients.openWindow(targetURL);
-        }
+        // sinon nouvelle fenêtre/onglet
+        if (self.clients.openWindow) return self.clients.openWindow(targetURL);
       })
   );
 });
