@@ -2134,10 +2134,14 @@ if (urgentChk && submitBtn){          // sécurité
     panel.querySelector('#notificationForm').addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const title = document.getElementById("notif-title").value;
-        const body = document.getElementById("notif-body").value;
-        const url = document.getElementById("notif-url").value || "/actualites";
-        const urgent = document.getElementById("notif-urgent").checked;
+			const title  = document.getElementById("notif-title").value.trim();
+	const body   = document.getElementById("notif-body").value.trim();
+
+	const raw    = document.getElementById("notif-url").value.trim();
+	const url    = raw === '' ? '' : raw;           // plus de « /actualites »
+
+	const urgent = document.getElementById("notif-urgent").checked;
+
 
         const response = await fetch("/api/send-important-notification", {
             method: "POST",
