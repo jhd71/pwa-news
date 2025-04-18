@@ -2087,6 +2087,15 @@ showAdminPanel() {
     document.body.appendChild(panel);
     this.loadBannedWords();
     this.loadBannedIPs();
+// ─── Script pour colorer le bouton quand « urgente » est cochée ───
+const urgentChk = panel.querySelector('#notif-urgent');
+const submitBtn = panel.querySelector('#notificationForm button[type="submit"]');
+
+if (urgentChk && submitBtn){          // sécurité
+  urgentChk.addEventListener('change', () => {
+    submitBtn.classList.toggle('urgent', urgentChk.checked);
+  });
+}
 
     // Gestion des onglets
     const tabBtns = panel.querySelectorAll('.tab-btn');
