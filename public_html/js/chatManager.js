@@ -1,4 +1,5 @@
 import soundManager from '/js/sounds.js';
+import notificationManager from '/js/notification-manager.js';
 
 class ChatManager {
     constructor() {
@@ -1302,107 +1303,92 @@ createMessageElement(message) {
         if (error) throw error;
         
         // Envoi de la notification
-        try {
-            const response = await fetch("/api/sendPush", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    message: content,
-                    fromUser: this.pseudo,
-                    toUser: "all"
-                })
-            });
-            
-            // Vérifier si la réponse est OK
-            if (!response.ok) {
-                console.warn("Erreur API:", response.status, response.statusText);
-                return true; // Continuer car l'envoi de message a réussi
+        if (messageData) {
+                try {
+                    // On utilise notre nouveau gestionnaire de notifications via API
+                    const response = await fetch("/api/send-notification.js", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            title: `Message de ${this.pseudo}`,
+                            body: content,
+                            chatMessage: true,
+                            icon: '/images/AM-192-v2.png',
+                            data: {
+                                type: 'chat',
+                                messageId: messageData.id,
+                                senderId: this.pseudo,
+                                timestamp: Date.now()
+                            },
+                            sendToAll: true
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        const result = await response.json();
+                        console.log("✅ Notification envoyée :", result);
+                    } else {
+                        console.warn("❌ Erreur API notifications:", response.status);
+                    }
+                } catch (notifError) {
+                    console.error("❌ Erreur notification push:", notifError);
+                    // Continuer malgré l'erreur
+                }
             }
             
-            // Lire la réponse UNIQUEMENT UNE FOIS
-            const responseText = await response.text();
-            
-            // Essayer de parser comme JSON
-            try {
-                const data = JSON.parse(responseText);
-                console.log("✅ Notification envoyée :", data);
-            } catch (jsonError) {
-                console.error("❌ Erreur JSON:", responseText);
-            }
-        } catch (notifError) {
-            console.error("❌ Erreur lors de l'envoi de la notification :", notifError);
-        }
-        
-        return true; // Retourner true si le message a été envoyé avec succès
-        
-    } catch (error) {
-        console.error('Erreur sendMessage:', error);
-        return false;
-    }
-}
-
-    async setupPushNotifications() {
-    try {
-        // Demander d'abord la permission des notifications
-        const permissionGranted = await this.requestNotificationPermission();
-        if (!permissionGranted) {
+            return true;
+        } catch (error) {
+            console.error('Erreur sendMessage:', error);
             return false;
         }
-        
-        // Définir l'utilisateur courant pour les vérifications RLS
-        await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
-        
-        const registration = await navigator.serviceWorker.ready;
-        
-        // Vérifier les souscriptions existantes
-        const oldSubscription = await registration.pushManager.getSubscription();
-        if (oldSubscription) {
-            await oldSubscription.unsubscribe();
-            await this.supabase
-                .from('push_subscriptions')
-                .delete()
-                .match({ 
-                    pseudo: this.pseudo,
-                    subscription: JSON.stringify(oldSubscription)
-                });
-        }
-
-        // Créer une nouvelle souscription
-        const subscription = await registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: this.urlBase64ToUint8Array('BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck')
-        });
-
-        // Enregistrer la nouvelle souscription
-        const { error } = await this.supabase
-            .from('push_subscriptions')
-            .insert({
-                pseudo: this.pseudo,
-                subscription: JSON.stringify(subscription),
-                device_type: this.getDeviceType(),
-                active: true,
-                last_updated: new Date().toISOString()
-            });
-
-        if (error) throw error;
-
-        this.notificationsEnabled = true;
-        localStorage.setItem('notificationsEnabled', 'true');
-        this.updateNotificationButton();
-        
-        // Afficher une notification de test
-        this.showNotification('Notifications activées!', 'success');
-        
-        // Envoyer une notification de test
-        this.sendTestNotification();
-        
-        return true;
-    } catch (error) {
-        console.error('Erreur activation notifications:', error);
-        this.showNotification('Erreur: ' + error.message, 'error');
-        return false;
     }
-}
+
+    // Remplacez votre méthode setupPushNotifications par celle-ci:
+    async setupPushNotifications() {
+        try {
+            // Initialiser le gestionnaire de notifications
+            await notificationManager.init({
+                supabase: this.supabase,
+                showNotification: this.showNotification.bind(this),
+                pseudo: this.pseudo,
+                isAdmin: this.isAdmin
+            });
+            
+            // Demander la permission et s'abonner
+            const subscription = await notificationManager.requestPermissionAndSubscribe();
+            
+            if (subscription) {
+                this.subscription = subscription;
+                this.notificationsEnabled = true;
+                localStorage.setItem('notificationsEnabled', 'true');
+                this.updateNotificationButton();
+                
+                // Afficher une notification de test
+                this.showNotification('Notifications activées!', 'success');
+                
+                // Vérification périodique de la souscription
+                setInterval(async () => {
+                    try {
+                        const isSubscribed = await notificationManager.checkSubscription();
+                        if (!isSubscribed) {
+                            console.log('Renouvellement de la souscription nécessaire');
+                            await notificationManager.subscribeToPush();
+                        }
+                    } catch (error) {
+                        console.error('Erreur vérification souscription:', error);
+                    }
+                }, 3600000); // Vérification toutes les heures
+                
+                return true;
+            } else {
+                return false;
+            }
+        } catch (error) {
+            console.error('Erreur activation notifications:', error);
+            this.showNotification('Erreur: ' + error.message, 'error');
+            return false;
+        }
+    }
 
 async sendTestNotification() {
     try {
@@ -1538,84 +1524,48 @@ optimizeForLowEndDevices() {
     }
 }
 
-async unsubscribeFromPushNotifications() {
-    try {
-        // Définir l'utilisateur courant pour les vérifications RLS
-        await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
-        
-        const registration = await navigator.serviceWorker.getRegistration();
-            const subscription = await registration.pushManager.getSubscription();
+// Remplacez votre méthode unsubscribeFromPushNotifications par celle-ci:
+    async unsubscribeFromPushNotifications() {
+        try {
+            const result = await notificationManager.unsubscribe();
             
-            if (subscription) {
-                await subscription.unsubscribe();
-                await this.supabase
-                    .from('push_subscriptions')
-                    .delete()
-                    .eq('pseudo', this.pseudo);
+            if (result) {
+                this.notificationsEnabled = false;
+                localStorage.setItem('notificationsEnabled', 'false');
+                this.updateNotificationButton();
+                this.showNotification('Notifications désactivées', 'success');
             }
             
-            this.notificationsEnabled = false;
-            localStorage.setItem('notificationsEnabled', 'false');
-            this.updateNotificationButton();
-            this.showNotification('Notifications désactivées', 'success');
-            return true;
+            return result;
         } catch (error) {
             console.error('Erreur désactivation notifications:', error);
             this.showNotification('Erreur de désactivation', 'error');
             return false;
         }
     }
+	
+    // Remplacez votre méthode sendNotificationToUser par celle-ci:
     async sendNotificationToUser(message) {
-    try {
-        console.log('Envoi notification à:', message);
+        if (!this.notificationsEnabled || !message) return { success: false };
         
-        // Créer un contrôleur d'abandon avec un timeout plus long
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 secondes
-        
-        const response = await fetch("/api/sendPush", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                message: message.content,
-                fromUser: message.pseudo,
-                toUser: this.pseudo
-            }),
-            signal: controller.signal // Ajouter le signal d'abandon
-        });
-        
-        // Annuler le timeout une fois la réponse reçue
-        clearTimeout(timeoutId);
-        
-        if (!response.ok) {
-            const text = await response.text();
-            console.warn('Réponse API erreur:', {
-                status: response.status,
-                statusText: response.statusText,
-                body: text
-            });
+        try {
+            // Préparer le message pour le gestionnaire de notifications
+            const notificationMessage = {
+                id: message.id,
+                content: message.content,
+                pseudo: message.pseudo,
+                senderName: message.pseudo,
+                senderId: message.ip // Votre format actuel utilise ip comme identifiant
+            };
             
-            // Ne pas bloquer l'interface utilisateur avec une erreur de notification
-            return { success: false, error: text };
+            // Utiliser le gestionnaire pour envoyer la notification
+            return await notificationManager.sendPushNotification(notificationMessage);
+        } catch (error) {
+            console.error('Erreur envoi notification:', error);
+            return { success: false, error: error.message };
         }
-        
-        const result = await response.json();
-        console.log('Réponse API succès:', result);
-        return result;
-    } catch (error) {
-        // Gérer spécifiquement les erreurs d'abandon
-        if (error.name === 'AbortError') {
-            console.warn('La requête de notification a été abandonnée (timeout)');
-            return { success: false, error: 'timeout' };
-        }
-        
-        // Pour les autres erreurs, on log mais on ne propage pas l'erreur
-        console.warn('Erreur envoi notification:', error.message);
-        return { success: false, error: error.message };
     }
-}
+	
 	async loadSounds() {
         const soundFiles = {
             'message': '/sounds/message.mp3',

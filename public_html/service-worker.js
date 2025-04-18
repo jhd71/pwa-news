@@ -15,6 +15,7 @@ const STATIC_RESOURCES = [
     '/js/ios-install.js',
     '/js/newsPanel.js',
     '/js/newsTickerManager.js',
+    '/js/notification-manager.js',
     '/js/quick-links.js',
     '/js/service-worker.js',
     '/js/settingsManager.js',
@@ -560,68 +561,78 @@ function handleDefaultRequest(event) {
     );
 }
 
-// Gestion des notifications push avec contrôle de la visibilité
+// Ajoutez ou mettez à jour ces gestionnaires d'événements dans votre service-worker.js
+
+// Gestion améliorée des notifications push
 self.addEventListener('push', function(event) {
-    console.log('[ServiceWorker] Push Reçu', event.data?.text());
+    console.log('[ServiceWorker] Notification push reçue', event.data?.text());
 
     event.waitUntil((async () => {
         try {
             let data;
             try {
+                // Essayer de parser les données JSON
                 data = event.data.json();
             } catch (e) {
+                // Fallback si ce n'est pas du JSON
                 data = {
-                    title: 'Actu&Média Chat',
+                    title: 'Actu&Média',
                     body: event.data.text()
                 };
             }
 
-            // Vérification de la visibilité de l'application
-            const isClientVisible = await isApplicationVisible();
-            
-            // Ne montrer la notification que si l'application n'est pas visible
-            if (!isClientVisible) {
-                const options = {
-                    body: data.body || 'Nouveau message',
-                    icon: '/images/AM-192-v2.png',
-                    badge: '/images/badge-72x72.png',
-                    tag: 'chat-message-' + Date.now(),
-                    vibrate: [100, 50, 100],
-                    data: {
-                        url: '/?action=openchat',
-                        timestamp: Date.now()
-                    },
-                    actions: [{
-                        action: 'open',
-                        title: 'Ouvrir le chat'
-                    }],
-                    requireInteraction: true,
-                    renotify: true,
-                    silent: false
-                };
+            // Vérifier si l'application est visible avant d'afficher la notification
+            const clientList = await clients.matchAll({
+                type: 'window',
+                includeUncontrolled: true
+            });
 
-                await self.registration.showNotification('Actu&Média Chat', options);
-                console.log('[ServiceWorker] Notification envoyée');
-            } else {
-                // Si l'app est visible, envoyer un message au client au lieu d'une notification
-                const clients = await self.clients.matchAll({
-                    type: 'window',
-                    includeUncontrolled: true
+            const windowClient = clientList.find(client =>
+                client.visibilityState === 'visible'
+            );
+
+            // Si l'application est visible et que c'est un message de chat,
+            // ne pas afficher de notification mais transmettre le message à l'app
+            if (windowClient && data.data && data.data.type === 'chat') {
+                windowClient.postMessage({
+                    type: 'PUSH_RECEIVED',
+                    data: data
                 });
-                
-                clients.forEach(client => {
-                    client.postMessage({
-                        type: 'PUSH_RECEIVED',
-                        data: data
-                    });
-                });
-                
-                console.log('[ServiceWorker] Message envoyé au client visible');
+                console.log('[ServiceWorker] Application visible, message transmis au client');
+                return;
             }
+
+            // Sinon afficher une notification
+            const options = {
+                body: data.body || 'Nouvelle notification',
+                icon: data.icon || '/images/AM-192-v2.png',
+                badge: data.badge || '/images/badge-72x72.png',
+                tag: data.tag || 'notification-' + Date.now(),
+                vibrate: [100, 50, 100],
+                data: {
+                    url: data.data?.url || '/',
+                    timestamp: Date.now(),
+                    ...data.data
+                },
+                actions: [
+                    {
+                        action: 'open',
+                        title: data.data?.type === 'chat' ? 'Ouvrir le chat' : 'Voir'
+                    }
+                ],
+                requireInteraction: true,
+                renotify: true,
+                silent: false
+            };
+
+            await self.registration.showNotification(data.title || 'Actu&Média', options);
+            console.log('[ServiceWorker] Notification affichée');
         } catch (error) {
-            console.error('[ServiceWorker] Erreur dans push:', error);
-            await self.registration.showNotification('Actu&Média Chat', {
-                body: 'Nouveau message reçu',
+            console.error('[ServiceWorker] Erreur lors du traitement de la notification push:', error);
+            
+            // Notification de secours en cas d'erreur
+            await self.registration.showNotification('Actu&Média', {
+                body: 'Nouvelle notification',
                 icon: '/images/AM-192-v2.png',
                 badge: '/images/badge-72x72.png',
                 requireInteraction: true
@@ -630,102 +641,132 @@ self.addEventListener('push', function(event) {
     })());
 });
 
-// Fonction utilitaire pour vérifier si l'application est visible
-async function isApplicationVisible() {
-    const clientList = await clients.matchAll({
-        type: 'window',
-        includeUncontrolled: true
-    });
-
-    return clientList.some(client => client.visibilityState === 'visible');
-}
-
-// Gestion des clics sur les notifications
+// Gestion améliorée des clics sur les notifications
 self.addEventListener('notificationclick', function(event) {
     console.log('[ServiceWorker] Notification cliquée', event.notification.tag);
 
+    // Fermer la notification
     event.notification.close();
 
-    const urlToOpen = event.notification.data?.url || 
-                     new URL('/?action=openchat', self.location.origin).href;
+    // Récupérer l'URL à ouvrir (par défaut, la racine du site)
+    let urlToOpen = event.notification.data?.url || '/';
+    
+    // Si une action spécifique a été cliquée
+    if (event.action === 'open' && event.notification.data?.type === 'chat') {
+        // Pour les messages de chat, s'assurer que le chat s'ouvre
+        urlToOpen = '/?action=openchat';
+    }
+
+    // Construire l'URL complète
+    const fullUrl = new URL(urlToOpen, self.location.origin).href;
 
     event.waitUntil((async () => {
         try {
+            // Obtenir la liste des fenêtres clientes
             const windowClients = await clients.matchAll({
                 type: 'window',
                 includeUncontrolled: true
             });
             
-            // Chercher un client existant avec l'URL cible
+            // Chercher une fenêtre existante à réutiliser
             for (const client of windowClients) {
-                if (client.url === urlToOpen || client.url.startsWith(self.location.origin)) {
-                    // Focus et navigation dans la fenêtre existante
+                // Si la fenêtre est déjà sur le site, la réutiliser
+                if (client.url.startsWith(self.location.origin)) {
                     await client.focus();
                     
-                    // Si l'URL est différente, naviguer vers la destination
-                    if (client.url !== urlToOpen) {
-                        return client.navigate(urlToOpen);
+                    // Naviguer vers l'URL cible si différente
+                    if (client.url !== fullUrl) {
+                        await client.navigate(fullUrl);
+                    }
+                    
+                    // Envoyer un message à l'application pour gérer des actions spécifiques
+                    if (event.notification.data?.type === 'chat') {
+                        client.postMessage({
+                            type: 'NOTIFICATION_CLICKED',
+                            notificationType: 'chat',
+                            data: event.notification.data
+                        });
                     }
                     
                     return;
                 }
             }
             
-            // Si aucun client correspondant, ouvrir une nouvelle fenêtre
-            await clients.openWindow(urlToOpen);
+            // Si aucune fenêtre n'est ouverte, en ouvrir une nouvelle
+            const client = await clients.openWindow(fullUrl);
+            
+            // Focus sur la nouvelle fenêtre si possible
+            if (client) {
+                client.focus();
+            }
         } catch (error) {
-            console.error('[ServiceWorker] Erreur notificationclick:', error);
+            console.error('[ServiceWorker] Erreur lors du traitement du clic de notification:', error);
         }
     })());
 });
 
-// Gestion de la fermeture des notifications
-self.addEventListener('notificationclose', function(event) {
-    console.log('[ServiceWorker] Notification fermée', {
-        tag: event.notification.tag,
-        data: event.notification.data
-    });
-    
-    // Possibilité d'enregistrer des statistiques ou des préférences utilisateur ici
-});
-
-// Gestion du changement de souscription avec retry sur échec
+// Gestion du changement de souscription push améliorée
 self.addEventListener('pushsubscriptionchange', async function(event) {
-    console.log('[ServiceWorker] PushSubscriptionChange');
+    console.log('[ServiceWorker] Changement de souscription push');
     
     event.waitUntil((async () => {
         try {
+            // Nombre maximum de tentatives
             const MAX_RETRY = 3;
             let retryCount = 0;
             let success = false;
             
-            // Récupérer l'ancienne souscription ou la souscription actuelle
+            // Récupérer l'ancienne souscription
             const oldSubscription = event.oldSubscription || 
                                    await self.registration.pushManager.getSubscription();
             
-            // Extraire la clé d'application
-            const applicationServerKey = oldSubscription?.options?.applicationServerKey;
+            if (!oldSubscription) {
+                console.log('[ServiceWorker] Pas d\'ancienne souscription, rien à faire');
+                return;
+            }
             
+            // Obtenir la clé d'application
+            const applicationServerKey = oldSubscription.options?.applicationServerKey;
+            
+            // Essayer jusqu'à MAX_RETRY fois
             while (!success && retryCount < MAX_RETRY) {
                 try {
-                    // Souscrire à nouveau
+                    // S'abonner à nouveau
                     const newSubscription = await self.registration.pushManager.subscribe({
                         userVisibleOnly: true,
                         applicationServerKey: applicationServerKey
                     });
+                    
+                    // Informer le serveur du changement
+                    const response = await fetch('/api/update-subscription.js', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            oldEndpoint: oldSubscription.endpoint,
+                            newSubscription: newSubscription
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Échec de mise à jour de l\'abonnement sur le serveur');
+                    }
                     
                     // Informer l'application du changement
                     const allClients = await self.clients.matchAll();
                     allClients.forEach(client => {
                         client.postMessage({
                             type: 'SUBSCRIPTION_CHANGED',
+                            oldEndpoint: oldSubscription.endpoint,
                             subscription: newSubscription
                         });
                     });
                     
                     success = true;
+                    console.log('[ServiceWorker] Souscription push mise à jour avec succès');
                 } catch (error) {
-                    console.error(`[ServiceWorker] Erreur renouvellement (tentative ${retryCount + 1}):`, error);
+                    console.error(`[ServiceWorker] Erreur lors du renouvellement (tentative ${retryCount + 1}):`, error);
                     retryCount++;
                     
                     // Attendre avant de réessayer (backoff exponentiel)
@@ -734,10 +775,10 @@ self.addEventListener('pushsubscriptionchange', async function(event) {
             }
             
             if (!success) {
-                console.error('[ServiceWorker] Échec du renouvellement de la souscription après plusieurs tentatives');
+                console.error('[ServiceWorker] Échec de mise à jour de la souscription après plusieurs tentatives');
             }
         } catch (error) {
-            console.error('[ServiceWorker] Erreur globale de renouvellement:', error);
+            console.error('[ServiceWorker] Erreur globale lors du changement de souscription:', error);
         }
     })());
 });
