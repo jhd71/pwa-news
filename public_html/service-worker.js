@@ -643,22 +643,35 @@ self.addEventListener('push', event => {
   })());
 });
 
-/*  ===== Gestion du clic sur la notif ===== */
+/* ---------------------------------------------------------- */
+/*  Ouverture de l’URL cible quand on clique sur la notification
+/* ---------------------------------------------------------- */
 self.addEventListener('notificationclick', event => {
-  event.notification.close();
+  event.notification.close();          // cache la notif
 
+  // URL à ouvrir (venant du payload ou défaut '/')
   const targetURL = event.notification.data?.url || '/';
 
+  // Si l’utilisateur a cliqué sur le bouton « Ouvrir »
+  if (event.action === 'open') {
+    // on ouvre directement la page voulue
+    event.waitUntil(self.clients.openWindow(targetURL));
+    return;
+  }
+
+  /* Clic « classique » (ou pas d’action) :  
+     1) si un onglet avec cette URL existe → focus  
+     2) sinon → openWindow */
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true })
-      .then(wClients => {
-        // Si un onglet vers cette URL existe déjà → focus
-        for (const client of wClients) {
-          if ('focus' in client && client.url.includes(targetURL)) {
+      .then(windowClients => {
+        for (const client of windowClients) {
+          // même origine + même chemin = onglet déjà ouvert
+          if (client.url.includes(targetURL) && 'focus' in client) {
             return client.focus();
           }
         }
-        // Sinon on ouvre un nouvel onglet / PWA window
+        // Aucun onglet correspondant → on en ouvre un
         if (self.clients.openWindow) {
           return self.clients.openWindow(targetURL);
         }
