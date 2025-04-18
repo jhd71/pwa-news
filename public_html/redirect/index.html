@@ -1,0 +1,12 @@
+<!DOCTYPE html><title>Redirection…</title>
+<script>
+  const params  = new URLSearchParams(location.search);
+  const target  = params.get('to');
+
+  if (target && /^https?:\/\//.test(target)) {
+    // Bascule vers l’URL externe
+    location.replace(target);
+  } else {
+    document.body.textContent = 'URL invalide.';
+  }
+</script>

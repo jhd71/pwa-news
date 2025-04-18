@@ -632,24 +632,50 @@ self.addEventListener('push', event => {
   })());
 });
 
-/* ----------------------------------------------------------------------
-   Ouvre (ou met le focus sur) l’onglet ciblé quand l’utilisateur clique
------------------------------------------------------------------------- */
-self.addEventListener('notificationclick', event => {
+/* ------------------------------------------------------------------
+   Gestion du clic sur la notification
+   – ouvre/focus une page interne directement
+   – passe par /redirect.html pour les liens externes
+-------------------------------------------------------------------*/
+
+// 1) Petite fonction utilitaire
+const buildTarget = (url) => {
+  try {
+    // On reconstruit l’URL par rapport à l’origine de la PWA
+    const u = new URL(url, self.location.origin);
+
+    // Même origine → on peut ouvrir directement
+    if (u.origin === self.location.origin) {
+      return u.href;
+    }
+
+    // Autre origine → on passe par la page de redirection interne
+    return `/redirect/?to=${encodeURIComponent(url)}`;
+// ou  `/redirect/index.html?to=...`  si tu veux le nom explicite
+
+  } catch {
+    // Si l’URL est malformée on retombe sur la racine
+    return '/';
+  }
+};
+
+self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
-  const targetURL = event.notification.data?.url || '/';
+  // L’URL que tu as mise dans send‑important‑notification
+  const rawURL = event.notification.data?.url || '/';
+  const targetURL = buildTarget(rawURL);
 
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true })
-      .then(windowClients => {
-        // Si un onglet avec cette URL est déjà ouvert ➜ focus
+      .then((windowClients) => {
+        // Si un onglet avec la même URL est déjà ouvert → focus
         for (const client of windowClients) {
-          if ('focus' in client && client.url.includes(targetURL)) {
+          if (client.url.includes(targetURL) && 'focus' in client) {
             return client.focus();
           }
         }
-        // Sinon ➜ en ouvrir un nouveau
+        // Sinon on ouvre une nouvelle fenêtre/onglet
         if (self.clients.openWindow) {
           return self.clients.openWindow(targetURL);
         }
