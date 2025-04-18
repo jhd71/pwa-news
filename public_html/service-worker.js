@@ -588,31 +588,27 @@ self.addEventListener('push', event => {
       }
 
       /* 3) Construction des options ------------------------------------- */
-      const urgent  = data.data?.urgent === true;     // flag urgent
+      const urgent = data.data?.urgent === true;
 
-      const options = {
-        body : data.body  || 'Nouvelle notification',
-        icon : data.icon  || '/images/AM-192-v2.png',
-        badge: data.badge || '/images/badge-72x72.png',
-        tag  : data.tag   || `notification-${Date.now()}`,
+	const options = {
+	  body  : data.body  || 'Nouvelle notification',
+	  icon  : data.icon  || '/images/AM-192-v2.png',
+	  badge : data.badge || '/images/badge-72x72.png',
+	  tag   : data.tag   || `notification-${Date.now()}`,
 
-        requireInteraction : urgent,          // reste affichée si urgent
-        renotify           : urgent,          // heads‑up si déjà affichée
-        silent             : !urgent,         // pas de son si NON urgent
-        vibrate            : urgent ?         // ► vibrations UNIQUEMENT si son
-                         [200,100,200,100,200] : undefined,
+	  requireInteraction : urgent,
+	  renotify           : urgent,
+	  silent             : !urgent,
+	  vibrate            : urgent ? [200,100,200,100,200] : undefined, // <- plus de vibrate quand silent
 
-        data : {
-          url   : data.data?.url || '/',      // toujours ABSOLUE côté serveur
-          urgent,
-          ...data.data
-        },
+	  data : { url: data.data?.url || '/', urgent, ...data.data },
 
-        actions : [{
-          action : 'open',
-          title  : urgent ? 'Ouvrir (urgent)' : 'Voir'
-        }]
-      };
+	  actions : [{
+		action: 'open',
+		title : urgent ? 'Ouvrir (urgent)' : 'Voir'
+	  }]
+	};
+
 
       /* 4) Affiche ------------------------------------------------------- */
       await self.registration.showNotification(
