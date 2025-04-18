@@ -41,19 +41,23 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Titre et corps du message requis' });
     }
 
-    // Préparer les données de notification
-    const notificationPayload = JSON.stringify({
-      title,
-      body,
-      icon: imageUrl || '/images/AM-192-v2.png',
-      badge: '/images/badge-72x72.png',
-      timestamp: Date.now(),
-      data: {
-        url: url || '/',
-        type: 'important',
-        urgent: !!urgent
-      }
-    });
+    // Préparer les données de notification (format enveloppé)
+const notificationPayload = {
+  /* 👇  tout ce qui sera reçu côté Service‑Worker */
+  notification: {
+    title,
+    body,
+    icon: imageUrl || '/images/AM-192-v2.png',
+    badge: '/images/badge-72x72.png',
+    data: {
+      /* l’URL que tu veux ouvrir au clic */
+      url: url || '/',
+      type: 'important',
+      urgent: !!urgent
+    }
+  }
+};
+
 
     // Récupérer tous les abonnements
     const { data: subscriptions, error } = await supabase
@@ -80,7 +84,11 @@ export default async function handler(req, res) {
             pushSubscription = JSON.parse(pushSubscription);
           }
           
-          await webpush.sendNotification(pushSubscription, notificationPayload);
+          await webpush.sendNotification(
+  pushSubscription,
+  JSON.stringify(notificationPayload)    // ⬅️ on stringify ici
+);
+
           return { success: true, endpoint: pushSubscription.endpoint };
         } catch (error) {
           // Si l'abonnement n'est plus valide, le supprimer

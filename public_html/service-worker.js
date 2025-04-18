@@ -563,82 +563,98 @@ function handleDefaultRequest(event) {
 
 // Ajoutez ou mettez à jour ces gestionnaires d'événements dans votre service-worker.js
 
-// Gestion améliorée des notifications push
-self.addEventListener('push', function(event) {
-    console.log('[ServiceWorker] Notification push reçue', event.data?.text());
+self.addEventListener('push', event => {
+  console.log('[SW] Push reçu ➜', event.data ? event.data.text() : '');
 
-    event.waitUntil((async () => {
-        try {
-            let data;
-            try {
-                // Essayer de parser les données JSON
-                data = event.data.json();
-            } catch (e) {
-                // Fallback si ce n'est pas du JSON
-                data = {
-                    title: 'Actu&Média',
-                    body: event.data.text()
-                };
-            }
+  event.waitUntil((async () => {
+    try {
+      /* 1. Parse la payload ------------------------------------------------ */
+      let raw;
+      try {
+        // Si c’est du JSON on le récupère
+        raw = event.data ? event.data.json() : {};
+      } catch {
+        // Sinon (texte brut) on fabrique un objet minimal
+        raw = { title: 'Actu&Média', body: event.data ? event.data.text() : '' };
+      }
 
-            // Vérifier si l'application est visible avant d'afficher la notification
-            const clientList = await clients.matchAll({
-                type: 'window',
-                includeUncontrolled: true
-            });
+      // Le vrai contenu est soit directement dans raw, soit dans raw.notification
+      const data = raw.notification ? raw.notification : raw;
 
-            const windowClient = clientList.find(client =>
-                client.visibilityState === 'visible'
-            );
+      /* 2.  Si l’appli est déjà visible ----------------------------------- */
+      const clientList = await self.clients.matchAll({
+        type: 'window',
+        includeUncontrolled: true
+      });
+      const visibleClient = clientList.find(c => c.visibilityState === 'visible');
 
-            // Si l'application est visible et que c'est un message de chat,
-            // ne pas afficher de notification mais transmettre le message à l'app
-            if (windowClient && data.data && data.data.type === 'chat') {
-                windowClient.postMessage({
-                    type: 'PUSH_RECEIVED',
-                    data: data
-                });
-                console.log('[ServiceWorker] Application visible, message transmis au client');
-                return;
-            }
+      if (visibleClient && data.data?.type === 'chat') {
+        // On ne spamme pas l’utilisateur : on transmet juste au client
+        visibleClient.postMessage({ type: 'PUSH_RECEIVED', data });
+        console.log('[SW] App visible → message relayé, pas de notif');
+        return; // on s’arrête ici
+      }
 
-            // Sinon afficher une notification
-            const options = {
-                body: data.body || 'Nouvelle notification',
-                icon: data.icon || '/images/AM-192-v2.png',
-                badge: data.badge || '/images/badge-72x72.png',
-                tag: data.tag || 'notification-' + Date.now(),
-                vibrate: [100, 50, 100],
-                data: {
-                    url: data.data?.url || '/',
-                    timestamp: Date.now(),
-                    ...data.data
-                },
-                actions: [
-                    {
-                        action: 'open',
-                        title: data.data?.type === 'chat' ? 'Ouvrir le chat' : 'Voir'
-                    }
-                ],
-                requireInteraction: true,
-                renotify: true,
-                silent: false
-            };
+      /* 3.  Construction des options de notification ---------------------- */
+      const options = {
+        body:  data.body  || 'Nouvelle notification',
+        icon:  data.icon  || '/images/AM-192-v2.png',
+        badge: data.badge || '/images/badge-72x72.png',
+        tag:   data.tag   || `notification-${Date.now()}`,
+        vibrate: [100, 50, 100],
+        requireInteraction: true,
+        renotify: true,
+        silent: false,
+        data: {
+          url: data.data?.url || '/',      // ← l’URL que tu as passée
+          timestamp: Date.now(),
+          ...data.data               // on conserve les autres méta‑données
+        },
+        actions: [{
+          action: 'open',
+          title: data.data?.type === 'chat' ? 'Ouvrir le chat' : 'Voir'
+        }]
+      };
 
-            await self.registration.showNotification(data.title || 'Actu&Média', options);
-            console.log('[ServiceWorker] Notification affichée');
-        } catch (error) {
-            console.error('[ServiceWorker] Erreur lors du traitement de la notification push:', error);
-            
-            // Notification de secours en cas d'erreur
-            await self.registration.showNotification('Actu&Média', {
-                body: 'Nouvelle notification',
-                icon: '/images/AM-192-v2.png',
-                badge: '/images/badge-72x72.png',
-                requireInteraction: true
-            });
+      /* 4.  Affiche la notification --------------------------------------- */
+      await self.registration.showNotification(data.title || 'Actu&Média', options);
+      console.log('[SW] Notification affichée');
+    } catch (err) {
+      console.error('[SW] Erreur push :', err);
+      // Fallback très simple si quelque chose tourne mal
+      await self.registration.showNotification('Actu&Média', {
+        body: 'Nouvelle notification',
+        icon: '/images/AM-192-v2.png',
+        badge: '/images/badge-72x72.png',
+        requireInteraction: true
+      });
+    }
+  })());
+});
+
+/* ----------------------------------------------------------------------
+   Ouvre (ou met le focus sur) l’onglet ciblé quand l’utilisateur clique
+------------------------------------------------------------------------ */
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+
+  const targetURL = event.notification.data?.url || '/';
+
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then(windowClients => {
+        // Si un onglet avec cette URL est déjà ouvert ➜ focus
+        for (const client of windowClients) {
+          if ('focus' in client && client.url.includes(targetURL)) {
+            return client.focus();
+          }
         }
-    })());
+        // Sinon ➜ en ouvrir un nouveau
+        if (self.clients.openWindow) {
+          return self.clients.openWindow(targetURL);
+        }
+      })
+  );
 });
 
 // Gestion améliorée des clics sur les notifications
