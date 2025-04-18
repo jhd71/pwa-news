@@ -631,22 +631,36 @@ self.addEventListener('push', event => {
 self.addEventListener('notificationclick', event => {
   event.notification.close();
 
-  // action ‘open’ OU clic sur le corps
-  if (event.action !== 'open' && event.action !== '') return;
+  /* 1. On récupère l’URL nettoyée ------------------------------- */
+  let targetURL = event.notification.data?.url || '';
+  if (typeof targetURL !== 'string') targetURL = '';
+  targetURL = targetURL.trim();
 
-  const targetURL = event.notification.data?.url || '/';
+  // Si vide → on force la page d’accueil
+  if (!targetURL) targetURL = self.location.origin;         // https://actuetmedia.fr
+  // Si c’est juste « / » → on la convertit aussi en URL absolue
+  else if (targetURL === '/') targetURL = self.location.origin;
 
-  event.waitUntil(
-    self.clients.matchAll({ type:'window', includeUncontrolled:true })
-      .then(list => {
-        // focus si onglet déjà ouvert
-        for (const client of list){
-          if (client.url === targetURL && 'focus' in client) return client.focus();
+  event.waitUntil((async () => {
+    try {
+      /* 2. Tente de focus un onglet déjà ouvert ------------------ */
+      const allClients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+      for (const client of allClients) {
+        if ('focus' in client && client.url === targetURL) {
+          await client.focus();
+          return;
         }
-        // sinon nouvelle fenêtre/onglet
-        if (self.clients.openWindow) return self.clients.openWindow(targetURL);
-      })
-  );
+      }
+
+      /* 3. Sinon, ouvre un nouvel onglet ------------------------- */
+      if (self.clients.openWindow) {
+        await self.clients.openWindow(targetURL);
+      }
+    } catch (err) {
+      // Android peut refuser l’ouverture : on logue, mais on évite l’exception non gérée
+      console.warn('[SW] openWindow/focus refusé :', err);
+    }
+  })());
 });
 
 /* ------------------------------------------------------------------
