@@ -590,24 +590,24 @@ self.addEventListener('push', event => {
       /* 3) Construction des options ------------------------------------- */
       const urgent = data.data?.urgent === true;
 
-	const options = {
-	  body  : data.body  || 'Nouvelle notification',
-	  icon  : data.icon  || '/images/AM-192-v2.png',
-	  badge : data.badge || '/images/badge-72x72.png',
-	  tag   : data.tag   || `notification-${Date.now()}`,
+      const options = {
+        body  : data.body  || 'Nouvelle notification',
+        icon  : data.icon  || '/images/AM-192-v2.png',
+        badge : data.badge || '/images/badge-72x72.png',
+        tag   : data.tag   || `notification-${Date.now()}`,
 
-	  requireInteraction : urgent,
-	  renotify           : urgent,
-	  silent             : !urgent,
-	  vibrate            : urgent ? [200,100,200,100,200] : undefined, // <- plus de vibrate quand silent
+        requireInteraction : urgent,
+        renotify           : urgent,
+        silent             : !urgent,
+        vibrate            : urgent ? [200,100,200,100,200] : undefined, // <- plus de vibrate quand silent
 
-	  data : { url: data.data?.url || '/', urgent, ...data.data },
+        data : { url: data.data?.url || '/', urgent, ...data.data },
 
-	  actions : [{
-		action: 'open',
-		title : urgent ? 'Ouvrir (urgent)' : 'Voir'
-	  }]
-	};
+        actions : [{
+          action: 'open',
+          title : urgent ? 'Ouvrir (urgent)' : 'Voir'
+        }]
+      };
 
 
       /* 4) Affiche ------------------------------------------------------- */
@@ -627,111 +627,27 @@ self.addEventListener('push', event => {
   })());
 });
 
-/* ------------------ CLICK sur la notification ------------------------- */
-self.addEventListener('notificationclick', event => {
-  event.notification.close();
-
-  /* 1. On récupère l’URL nettoyée ------------------------------- */
-  let targetURL = event.notification.data?.url || '';
-  if (typeof targetURL !== 'string') targetURL = '';
-  targetURL = targetURL.trim();
-
-  // Si vide → on force la page d’accueil
-  if (!targetURL) targetURL = self.location.origin;         // https://actuetmedia.fr
-  // Si c’est juste « / » → on la convertit aussi en URL absolue
-  else if (targetURL === '/') targetURL = self.location.origin;
-
-  event.waitUntil((async () => {
-    try {
-      /* 2. Tente de focus un onglet déjà ouvert ------------------ */
-      const allClients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
-      for (const client of allClients) {
-        if ('focus' in client && client.url === targetURL) {
-          await client.focus();
-          return;
-        }
-      }
-
-      /* 3. Sinon, ouvre un nouvel onglet ------------------------- */
-      if (self.clients.openWindow) {
-        await self.clients.openWindow(targetURL);
-      }
-    } catch (err) {
-      // Android peut refuser l’ouverture : on logue, mais on évite l’exception non gérée
-      console.warn('[SW] openWindow/focus refusé :', err);
-    }
-  })());
-});
-
-/* ------------------------------------------------------------------
-   Gestion du clic sur la notification
-   – ouvre/focus une page interne directement
-   – passe par /redirect.html pour les liens externes
--------------------------------------------------------------------*/
-
-// 1) Petite fonction utilitaire
-const buildTarget = (url) => {
-  try {
-    // On reconstruit l’URL par rapport à l’origine de la PWA
-    const u = new URL(url, self.location.origin);
-
-    // Même origine → on peut ouvrir directement
-    if (u.origin === self.location.origin) {
-      return u.href;
-    }
-
-    // Autre origine → on passe par la page de redirection interne
-    return `/redirect/?to=${encodeURIComponent(url)}`;
-// ou  `/redirect/index.html?to=...`  si tu veux le nom explicite
-
-  } catch {
-    // Si l’URL est malformée on retombe sur la racine
-    return '/';
-  }
-};
-
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-
-  // L’URL que tu as mise dans send‑important‑notification
-  const rawURL = event.notification.data?.url || '/';
-  const targetURL = buildTarget(rawURL);
-
-  event.waitUntil(
-    self.clients.matchAll({ type: 'window', includeUncontrolled: true })
-      .then((windowClients) => {
-        // Si un onglet avec la même URL est déjà ouvert → focus
-        for (const client of windowClients) {
-          if (client.url.includes(targetURL) && 'focus' in client) {
-            return client.focus();
-          }
-        }
-        // Sinon on ouvre une nouvelle fenêtre/onglet
-        if (self.clients.openWindow) {
-          return self.clients.openWindow(targetURL);
-        }
-      })
-  );
-});
-
-// Gestion améliorée des clics sur les notifications
+// Gestionnaire unique pour les clics sur notifications
 self.addEventListener('notificationclick', function(event) {
     console.log('[ServiceWorker] Notification cliquée', event.notification.tag);
-
+    
     // Fermer la notification
     event.notification.close();
 
-    // Récupérer l'URL à ouvrir (par défaut, la racine du site)
+    // Déterminer l'URL à ouvrir
     let urlToOpen = event.notification.data?.url || '/';
     
-    // Si une action spécifique a été cliquée
-    if (event.action === 'open' && event.notification.data?.type === 'chat') {
-        // Pour les messages de chat, s'assurer que le chat s'ouvre
-        urlToOpen = '/?action=openchat';
+    // Actions spécifiques selon le type de notification
+    if (event.action === 'open') {
+        if (event.notification.data?.type === 'chat') {
+            urlToOpen = '/?action=openchat';
+        }
     }
 
-    // Construire l'URL complète
+    // Assurer que l'URL est absolue
     const fullUrl = new URL(urlToOpen, self.location.origin).href;
+    
+    console.log('[ServiceWorker] Ouverture URL:', fullUrl);
 
     event.waitUntil((async () => {
         try {
@@ -752,26 +668,20 @@ self.addEventListener('notificationclick', function(event) {
                         await client.navigate(fullUrl);
                     }
                     
-                    // Envoyer un message à l'application pour gérer des actions spécifiques
-                    if (event.notification.data?.type === 'chat') {
-                        client.postMessage({
-                            type: 'NOTIFICATION_CLICKED',
-                            notificationType: 'chat',
-                            data: event.notification.data
-                        });
-                    }
+                    // Informer l'application du clic sur la notification
+                    client.postMessage({
+                        type: 'NOTIFICATION_CLICKED',
+                        notificationType: event.notification.data?.type || 'default',
+                        data: event.notification.data
+                    });
                     
                     return;
                 }
             }
             
             // Si aucune fenêtre n'est ouverte, en ouvrir une nouvelle
-            const client = await clients.openWindow(fullUrl);
-            
-            // Focus sur la nouvelle fenêtre si possible
-            if (client) {
-                client.focus();
-            }
+            console.log('[ServiceWorker] Aucun client existant trouvé, ouverture nouvelle fenêtre');
+            await clients.openWindow(fullUrl);
         } catch (error) {
             console.error('[ServiceWorker] Erreur lors du traitement du clic de notification:', error);
         }
