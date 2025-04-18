@@ -561,75 +561,109 @@ function handleDefaultRequest(event) {
     );
 }
 
-// Ajoutez ou mettez à jour ces gestionnaires d'événements dans votre service-worker.js
-
+/*  ===== Service‑worker – réception des push =====  */
 self.addEventListener('push', event => {
   console.log('[SW] Push reçu ➜', event.data ? event.data.text() : '');
 
   event.waitUntil((async () => {
     try {
-      /* 1. Parse la payload ------------------------------------------------ */
+      /* 1) Décodage de la payload --------------------------------------- */
       let raw;
       try {
-        // Si c’est du JSON on le récupère
+        // Si la charge utile est du JSON
         raw = event.data ? event.data.json() : {};
       } catch {
-        // Sinon (texte brut) on fabrique un objet minimal
+        // Sinon, fallback texte brut
         raw = { title: 'Actu&Média', body: event.data ? event.data.text() : '' };
       }
 
-      // Le vrai contenu est soit directement dans raw, soit dans raw.notification
+      // Certains back‑ends rangent le vrai contenu dans raw.notification
       const data = raw.notification ? raw.notification : raw;
 
-      /* 2.  Si l’appli est déjà visible ----------------------------------- */
-      const clientList = await self.clients.matchAll({
+      /* 2) Si l’appli est déjà visible ----------------------------------- */
+      const clientsList = await self.clients.matchAll({
         type: 'window',
         includeUncontrolled: true
       });
-      const visibleClient = clientList.find(c => c.visibilityState === 'visible');
+
+      const visibleClient = clientsList.find(c => c.visibilityState === 'visible');
 
       if (visibleClient && data.data?.type === 'chat') {
-        // On ne spamme pas l’utilisateur : on transmet juste au client
+        // Pas de spam : on transmet juste le message à la page
         visibleClient.postMessage({ type: 'PUSH_RECEIVED', data });
         console.log('[SW] App visible → message relayé, pas de notif');
-        return; // on s’arrête ici
+        return;                                     // stop ici
       }
 
-      /* 3.  Construction des options de notification ---------------------- */
+      /* 3) Options de notification -------------------------------------- */
+      const urgent = data.data?.urgent === true;    // ← flag urgent
+
       const options = {
-        body:  data.body  || 'Nouvelle notification',
-        icon:  data.icon  || '/images/AM-192-v2.png',
+        body : data.body  || 'Nouvelle notification',
+        icon : data.icon  || '/images/AM-192-v2.png',
         badge: data.badge || '/images/badge-72x72.png',
-        tag:   data.tag   || `notification-${Date.now()}`,
-        vibrate: [100, 50, 100],
-        requireInteraction: true,
-        renotify: true,
-        silent: false,
+        tag  : data.tag   || `notification-${Date.now()}`,
+
+        /* -- Différenciation urgente / normale -- */
+        requireInteraction: urgent,                 // reste à l’écran si urgent
+        renotify         : urgent,                 // heads‑up si déjà affichée
+        silent           : !urgent,                // son seulement si urgent
+        vibrate          : urgent
+                       ? [200, 100, 200, 100, 200] // pattern plus long
+                       : [100, 50, 100],
+
         data: {
-          url: data.data?.url || '/',      // ← l’URL que tu as passée
-          timestamp: Date.now(),
-          ...data.data               // on conserve les autres méta‑données
+          url      : data.data?.url || '/',        // URL cible
+          urgent,
+          ...data.data
         },
+
         actions: [{
           action: 'open',
-          title: data.data?.type === 'chat' ? 'Ouvrir le chat' : 'Voir'
+          title : urgent ? 'Ouvrir (urgent)' : 'Voir'
         }]
       };
 
-      /* 4.  Affiche la notification --------------------------------------- */
-      await self.registration.showNotification(data.title || 'Actu&Média', options);
+      /* 4) Affichage ----------------------------------------------------- */
+      await self.registration.showNotification(
+        urgent ? `🚨 ${data.title}` : data.title || 'Actu&Média',
+        options
+      );
       console.log('[SW] Notification affichée');
     } catch (err) {
       console.error('[SW] Erreur push :', err);
-      // Fallback très simple si quelque chose tourne mal
+      // Fallback minimal
       await self.registration.showNotification('Actu&Média', {
-        body: 'Nouvelle notification',
-        icon: '/images/AM-192-v2.png',
+        body : 'Nouvelle notification',
+        icon : '/images/AM-192-v2.png',
         badge: '/images/badge-72x72.png',
         requireInteraction: true
       });
     }
   })());
+});
+
+/*  ===== Gestion du clic sur la notif ===== */
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+
+  const targetURL = event.notification.data?.url || '/';
+
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then(wClients => {
+        // Si un onglet vers cette URL existe déjà → focus
+        for (const client of wClients) {
+          if ('focus' in client && client.url.includes(targetURL)) {
+            return client.focus();
+          }
+        }
+        // Sinon on ouvre un nouvel onglet / PWA window
+        if (self.clients.openWindow) {
+          return self.clients.openWindow(targetURL);
+        }
+      })
+  );
 });
 
 /* ------------------------------------------------------------------
