@@ -624,6 +624,12 @@ self.addEventListener('push', event => {
         }]
       };
 
+if (urgent) {
+  /* même tag pour toutes les urgentes → même « canal » Android */
+  options.tag      = 'important-alert';
+  options.renotify = true;        // heads‑up si déjà affichée
+}
+
       /* 4) Affichage ----------------------------------------------------- */
       await self.registration.showNotification(
         urgent ? `🚨 ${data.title}` : data.title || 'Actu&Média',
@@ -647,34 +653,23 @@ self.addEventListener('push', event => {
 /*  Ouverture de l’URL cible quand on clique sur la notification
 /* ---------------------------------------------------------- */
 self.addEventListener('notificationclick', event => {
-  event.notification.close();          // cache la notif
+  event.notification.close();
 
-  // URL à ouvrir (venant du payload ou défaut '/')
-  const targetURL = event.notification.data?.url || '/';
+  /* si l’URL n’est pas absolue on la résout sur l’origine du SW */
+  const raw = event.notification.data?.url || '/';
+  const targetURL = raw.match(/^https?:\/\//)
+      ? raw                                // déjà absolue
+      : new URL(raw, self.location.origin).href;  // on la complète
 
-  // Si l’utilisateur a cliqué sur le bouton « Ouvrir »
-  if (event.action === 'open') {
-    // on ouvre directement la page voulue
-    event.waitUntil(self.clients.openWindow(targetURL));
-    return;
-  }
-
-  /* Clic « classique » (ou pas d’action) :  
-     1) si un onglet avec cette URL existe → focus  
-     2) sinon → openWindow */
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true })
-      .then(windowClients => {
-        for (const client of windowClients) {
-          // même origine + même chemin = onglet déjà ouvert
-          if (client.url.includes(targetURL) && 'focus' in client) {
-            return client.focus();
-          }
+      .then(clientsArr => {
+        /* si déjà ouvert → focus */
+        for (const c of clientsArr) {
+          if ('focus' in c && c.url === targetURL) return c.focus();
         }
-        // Aucun onglet correspondant → on en ouvre un
-        if (self.clients.openWindow) {
-          return self.clients.openWindow(targetURL);
-        }
+        /* sinon → nouvel onglet/fenêtre */
+        return self.clients.openWindow ? self.clients.openWindow(targetURL) : null;
       })
   );
 });
