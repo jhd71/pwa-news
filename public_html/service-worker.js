@@ -588,26 +588,27 @@ self.addEventListener('push', event => {
       }
 
       /* 3) Construction des options ------------------------------------- */
-      const urgent = data.data?.urgent === true;
-
-      const options = {
-        body  : data.body  || 'Nouvelle notification',
-        icon  : data.icon  || '/images/AM-192-v2.png',
-        badge : data.badge || '/images/badge-72x72.png',
-        tag   : data.tag   || `notification-${Date.now()}`,
-
-        requireInteraction : urgent,
-        renotify           : urgent,
-        silent             : !urgent,
-        vibrate            : urgent ? [200,100,200,100,200] : undefined, // <- plus de vibrate quand silent
-
-        data : { url: data.data?.url || '/', urgent, ...data.data },
-
-        actions : [{
-          action: 'open',
-          title : urgent ? 'Ouvrir (urgent)' : 'Voir'
-        }]
-      };
+const urgent = data.data?.urgent === true;
+const options = {
+  body: data.body || 'Nouvelle notification',
+  icon: data.icon || '/images/AM-192-v2.png',
+  badge: data.badge || '/images/badge-72x72.png',
+  tag: data.tag || `notification-${Date.now()}`,
+  
+  requireInteraction: urgent,
+  renotify: urgent,
+  silent: !urgent,
+  vibrate: urgent ? [200,100,200,100,200] : undefined,
+  
+  data: { 
+    url: data.data?.url || '/', 
+    type: data.data?.type || 'default',
+    urgent, 
+    ...data.data 
+  }
+  
+  // La section "actions" a été supprimée
+};
 
 
       /* 4) Affiche ------------------------------------------------------- */
@@ -627,33 +628,25 @@ self.addEventListener('push', event => {
   })());
 });
 
-// Gestionnaire SIMPLIFIÉ pour les clics sur notifications
+// Gestionnaire ULTRA-SIMPLIFIÉ spécial Android
 self.addEventListener('notificationclick', function(event) {
-    console.log('[ServiceWorker] Notification cliquée:', event.notification.tag);
-    
-    // Fermer la notification
+    // Fermer immédiatement la notification
     event.notification.close();
-
-    // URL par défaut (page d'accueil)
-    let urlToOpen = '/';
-
-    // Pour les notifications de chat
-    if (event.notification.data?.type === 'chat') {
-        urlToOpen = '/?action=openchat';
-    } 
-    // Pour les autres types de notifications
-    else if (event.notification.data?.url) {
-        urlToOpen = event.notification.data.url;
+    
+    // URL à ouvrir, avec priorité au type chat
+    let url = '/';
+    
+    // Priorité au type de notification
+    if (event.notification.data) {
+        if (event.notification.data.type === 'chat') {
+            url = '/?action=openchat';
+        } else if (event.notification.data.url) {
+            url = event.notification.data.url;
+        }
     }
-
-    // URL absolue
-    const fullUrl = new URL(urlToOpen, self.location.origin).href;
-    console.log('[ServiceWorker] Ouverture URL:', fullUrl);
-
-    // Simplifié pour Android
-    event.waitUntil(
-        clients.openWindow(fullUrl)
-    );
+    
+    // Ouvrir directement
+    event.waitUntil(clients.openWindow(url));
 });
 
 // Gestion du changement de souscription push améliorée
