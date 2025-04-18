@@ -606,8 +606,7 @@ const options = {
     urgent, 
     ...data.data 
   }
-  
-  // La section "actions" a été supprimée
+  // Aucune action - le tableau "actions" est supprimé complètement
 };
 
 
