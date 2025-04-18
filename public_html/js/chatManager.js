@@ -2126,7 +2126,7 @@ showAdminPanel() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "X-API-Key": "TA_CLE_ADMIN_ICI" // 🔐 Mets ta clé ADMIN_API_KEY ici
+                "X-API-Key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0MjY3NjE0MiwiZXhwIjoyMDU4MjUyMTQyfQ.iA-RQpaDBYPZf4YlzNlYrGJ7ypMO7FuihCxCmk0cZUY" // 🔐 Mets ta clé ADMIN_API_KEY ici
             },
             body: JSON.stringify({ title, body, url, urgent })
         });
