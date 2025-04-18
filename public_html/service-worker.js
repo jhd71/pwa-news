@@ -627,65 +627,33 @@ self.addEventListener('push', event => {
   })());
 });
 
-// Gestionnaire unique pour les clics sur notifications
+// Gestionnaire SIMPLIFIÉ pour les clics sur notifications
 self.addEventListener('notificationclick', function(event) {
-    console.log('[ServiceWorker] Notification cliquée', event.notification.tag);
+    console.log('[ServiceWorker] Notification cliquée:', event.notification.tag);
     
     // Fermer la notification
     event.notification.close();
 
-    // Déterminer l'URL à ouvrir
-    let urlToOpen = event.notification.data?.url || '/';
-    
-    // Actions spécifiques selon le type de notification
-    if (event.action === 'open') {
-        if (event.notification.data?.type === 'chat') {
-            urlToOpen = '/?action=openchat';
-        }
+    // URL par défaut (page d'accueil)
+    let urlToOpen = '/';
+
+    // Pour les notifications de chat
+    if (event.notification.data?.type === 'chat') {
+        urlToOpen = '/?action=openchat';
+    } 
+    // Pour les autres types de notifications
+    else if (event.notification.data?.url) {
+        urlToOpen = event.notification.data.url;
     }
 
-    // Assurer que l'URL est absolue
+    // URL absolue
     const fullUrl = new URL(urlToOpen, self.location.origin).href;
-    
     console.log('[ServiceWorker] Ouverture URL:', fullUrl);
 
-    event.waitUntil((async () => {
-        try {
-            // Obtenir la liste des fenêtres clientes
-            const windowClients = await clients.matchAll({
-                type: 'window',
-                includeUncontrolled: true
-            });
-            
-            // Chercher une fenêtre existante à réutiliser
-            for (const client of windowClients) {
-                // Si la fenêtre est déjà sur le site, la réutiliser
-                if (client.url.startsWith(self.location.origin)) {
-                    await client.focus();
-                    
-                    // Naviguer vers l'URL cible si différente
-                    if (client.url !== fullUrl) {
-                        await client.navigate(fullUrl);
-                    }
-                    
-                    // Informer l'application du clic sur la notification
-                    client.postMessage({
-                        type: 'NOTIFICATION_CLICKED',
-                        notificationType: event.notification.data?.type || 'default',
-                        data: event.notification.data
-                    });
-                    
-                    return;
-                }
-            }
-            
-            // Si aucune fenêtre n'est ouverte, en ouvrir une nouvelle
-            console.log('[ServiceWorker] Aucun client existant trouvé, ouverture nouvelle fenêtre');
-            await clients.openWindow(fullUrl);
-        } catch (error) {
-            console.error('[ServiceWorker] Erreur lors du traitement du clic de notification:', error);
-        }
-    })());
+    // Simplifié pour Android
+    event.waitUntil(
+        clients.openWindow(fullUrl)
+    );
 });
 
 // Gestion du changement de souscription push améliorée
