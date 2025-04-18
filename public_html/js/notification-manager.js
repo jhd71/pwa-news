@@ -142,50 +142,29 @@ class NotificationManager {
     // Enregistre l'abonnement dans la base de données
     async saveSubscription(subscription) {
     try {
-        // Utilisation directe de Supabase pour une meilleure intégration avec votre code
         if (this.supabase) {
+            // Définir l'utilisateur courant
             await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
             
-            // Vérifier d'abord si un abonnement existe déjà avec cet endpoint
-            const { data: existingSubscription } = await this.supabase
+            // Simplifier - juste insérer un nouvel abonnement
+            const { error } = await this.supabase
                 .from('push_subscriptions')
-                .select('*')
-                .eq('endpoint', subscription.endpoint)
-                .single();
+                .insert({
+                    pseudo: this.pseudo,
+                    subscription: JSON.stringify(subscription),
+                    endpoint: subscription.endpoint || 'unknown',
+                    device_type: this.getDeviceType(),
+                    active: true
+                });
                 
-            if (existingSubscription) {
-                // Mettre à jour l'abonnement existant
-                const { error } = await this.supabase
-                    .from('push_subscriptions')
-                    .update({
-                        subscription: JSON.stringify(subscription),
-                        device_type: this.getDeviceType(),
-                        active: true,
-                        updated_at: new Date().toISOString()
-                    })
-                    .eq('endpoint', subscription.endpoint);
-                    
-                if (error) throw error;
-            } else {
-                // S'assurer que l'endpoint est défini
-                const endpoint = subscription.endpoint || 'unknown-endpoint';
-                
-                // Insérer un nouvel abonnement
-                const { error } = await this.supabase
-                    .from('push_subscriptions')
-                    .insert({
-                        endpoint: endpoint,
-                        pseudo: this.pseudo,
-                        subscription: JSON.stringify(subscription),
-                        device_type: this.getDeviceType(),
-                        active: true
-                    });
-                    
-                if (error) throw error;
+            if (error) {
+                console.error('Erreur insertion abonnement:', error);
+                throw error;
             }
+            
             return true;
         } else {
-            // Code existant pour l'API...
+            // Le reste du code...
         }
     } catch (error) {
         console.error('Erreur lors de l\'enregistrement de l\'abonnement:', error);
