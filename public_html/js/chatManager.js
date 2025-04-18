@@ -2066,6 +2066,29 @@ showAdminPanel() {
                     <div class="loading-ips">Chargement des IPs bannies...</div>
                 </div>
             </div>
+<div class="tab-section" id="notifications-section">
+  <h4>🚨 Envoyer une notification importante</h4>
+
+  <form id="notificationForm">
+    <label>Titre :</label><br>
+    <input type="text" id="notif-title" required><br><br>
+
+    <label>Message :</label><br>
+    <textarea id="notif-body" required></textarea><br><br>
+
+    <label>URL (facultatif) :</label><br>
+    <input type="text" id="notif-url" placeholder="/actualites"><br><br>
+
+    <label>
+      <input type="checkbox" id="notif-urgent">
+      Notification urgente
+    </label><br><br>
+
+    <button type="submit">📤 Envoyer</button>
+  </form>
+
+  <p id="result" style="margin-top:10px;"></p>
+</div>
 
             <div class="tab-section" id="notifications-section">
                 <h4>📢 Envoyer une notification importante</h4>
