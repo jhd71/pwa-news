@@ -100,7 +100,7 @@
     <h1>Notifications Actu&Média</h1>
 
     <label>Mot de passe admin :</label>
-    <input type="password" id="password" placeholder="admin2024" />
+    <input type="password" id="password" placeholder="Mot de passe" />
 
     <label>Titre :</label>
     <input type="text" id="title" />
@@ -214,6 +214,13 @@
         </div>`
       ).join('');
     }
+	['title', 'body', 'url', 'urgent'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener('input', previewNotification);
+    el.addEventListener('change', previewNotification); // pour la case à cocher
+  }
+});
   </script>
 </body>
 </html>
