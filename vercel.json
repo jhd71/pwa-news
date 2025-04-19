@@ -30,9 +30,10 @@
       "headers": { "Location": "/$1" }
     },
 	{
-	  "src": "^/admin$",
-	  "dest": "/public_html/admin.html"
+	  "src": "^/notification$",
+	  "dest": "/public_html/notification.html"
 	},
+
     {
       "src": "/(.*)",
       "dest": "/public_html/$1"
