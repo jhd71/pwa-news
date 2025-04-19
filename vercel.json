@@ -29,6 +29,10 @@
       "status": 301,
       "headers": { "Location": "/$1" }
     },
+	{
+	  "src": "^/admin$",
+	  "dest": "/public_html/admin.html"
+	},
     {
       "src": "/(.*)",
       "dest": "/public_html/$1"
