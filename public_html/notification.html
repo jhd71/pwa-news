@@ -2,29 +2,25 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Notifications Actu&Média</title>
   <style>
     body {
-      font-family: system-ui, sans-serif;
+      font-family: -apple-system, system-ui, sans-serif;
       background: #f5f5f5;
-      margin: 0;
       padding: 20px;
     }
     .container {
-      background: #fff;
+      background: white;
+      border-radius: 8px;
       max-width: 600px;
       margin: auto;
-      border-radius: 10px;
-      padding: 25px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
     h1 {
       color: #1e3a8a;
       text-align: center;
-    }
-    .form-group {
-      margin-bottom: 15px;
     }
     label {
       font-weight: bold;
@@ -33,187 +29,179 @@
     }
     input, textarea {
       width: 100%;
+      margin-bottom: 15px;
       padding: 8px;
-      box-sizing: border-box;
       border: 1px solid #ccc;
-      border-radius: 5px;
+      border-radius: 4px;
+      box-sizing: border-box;
     }
     textarea {
       resize: vertical;
-      height: 90px;
+      height: 80px;
     }
-    .checkbox-group {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
-  flex-wrap: nowrap;
-  white-space: nowrap;
-}
-
-.checkbox-group input[type="checkbox"] {
-  margin: 0;
-}
-
-.checkbox-group label {
-  margin: 0;
-  white-space: nowrap;
-}
-
     button {
-      width: 100%;
-      padding: 10px;
       background: #1e3a8a;
       color: white;
-      font-size: 16px;
       border: none;
-      border-radius: 6px;
+      width: 100%;
+      padding: 10px;
+      border-radius: 4px;
       cursor: pointer;
+      font-size: 16px;
     }
     button:hover {
       background: #2d4bb7;
     }
-    .preview {
-      background: #e0e7ff;
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      white-space: nowrap;
+    }
+    #previewBox {
+      background: #f0f0f0;
       padding: 10px;
-      border-radius: 8px;
-      font-size: 14px;
       margin-top: 10px;
       display: none;
+      border-left: 4px solid #ccc;
     }
     #status {
       display: none;
       margin-top: 15px;
       padding: 10px;
-      border-radius: 6px;
-      font-weight: bold;
-      animation: fadein 0.4s;
+      border-radius: 4px;
     }
-    #status.success { background: #d4edda; color: #155724; }
-    #status.error { background: #f8d7da; color: #721c24; }
-    @keyframes fadein {
-      from { opacity: 0; transform: translateY(-8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    #history {
-      margin-top: 25px;
-      background: #f0f0f0;
-      padding: 12px;
-      border-radius: 8px;
-    }
-    #history h3 {
-      margin-top: 0;
-      color: #1e3a8a;
-      font-size: 18px;
-    }
+    .success { background: #d4edda; color: #155724; }
+    .error { background: #f8d7da; color: #721c24; }
     .notif-entry {
-      margin-bottom: 10px;
+      margin-top: 10px;
+      padding: 8px;
+      background: #f9f9f9;
+      border-left: 4px solid #aaa;
+      font-size: 14px;
     }
-    .notif-entry strong { color: #000; }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Notifications Actu&Média</h1>
 
-    <div class="form-group">
-      <label for="password">🔐 Mot de passe admin</label>
-      <input type="password" id="password" placeholder="Mot de passe"/>
-    </div>
+    <label>Mot de passe admin :</label>
+    <input type="password" id="password" placeholder="admin2024" />
 
-    <div class="form-group">
-      <label for="title">Titre de la notification</label>
-      <input type="text" id="title" placeholder="Titre de la notification"/>
-    </div>
+    <label>Titre :</label>
+    <input type="text" id="title" />
 
-    <div class="form-group">
-      <label for="body">Message</label>
-      <textarea id="body" placeholder="Contenu de la notification"></textarea>
-    </div>
+    <label>Message :</label>
+    <textarea id="body"></textarea>
 
-    <div class="form-group">
-      <label for="url">URL de destination (facultatif)</label>
-      <input type="text" id="url" placeholder="https://actuetmedia.fr/"/>
-    </div>
+    <label>URL de destination (facultatif) :</label>
+    <input type="text" id="url" placeholder="https://actuetmedia.fr/" />
 
     <div class="checkbox-group">
-      <input type="checkbox" id="urgent">
+      <input type="checkbox" id="urgent" />
       <label for="urgent">Notification urgente (vibreur, son, persistante)</label>
     </div>
 
-    <button onclick="sendNotification()">📤 Envoyer la notification</button>
-    <button onclick="previewNotification()" style="margin-top: 10px; background:#6c757d;">👁️ Prévisualiser</button>
-
+    <button id="sendBtn">📤 Envoyer</button>
     <div id="status"></div>
 
-    <div class="preview" id="previewBox"></div>
+    <div id="previewBox"></div>
 
-    <div id="history">
-      <h3>📋 Dernières notifications</h3>
-      <div id="historyContent"></div>
-    </div>
+    <h3 style="margin-top:25px;">🕘 3 dernières notifications</h3>
+    <div id="historyContent"></div>
   </div>
 
   <script>
-  const history = []; // ← Historique déclaré
+    const history = [];
 
-  function previewNotification() {
-    const title = document.getElementById('title').value || "Aperçu notification";
-    const body = document.getElementById('body').value || "Ceci est un exemple";
-    const url = document.getElementById('url').value.trim();
-    const urgent = document.getElementById('urgent').checked;
+    document.getElementById('sendBtn').addEventListener('click', sendNotification);
 
-    const preview = document.getElementById('previewBox');
-    preview.style.display = "block";
+    function previewNotification() {
+      const title = document.getElementById('title').value || "Aperçu notification";
+      const body = document.getElementById('body').value || "Ceci est un exemple";
+      const url = document.getElementById('url').value.trim();
+      const urgent = document.getElementById('urgent').checked;
 
-    preview.innerHTML = `
-      <strong>${title}</strong><br>
-      ${body}<br>
-      ${url ? `<small>🔗 <a href="${url}" target="_blank">${url}</a></small><br>` : ""}
-      <em style="color:${urgent ? 'red' : 'gray'};">
-        ${urgent ? "🔴 Notification urgente" : "Notification normale"}
-      </em>
-    `;
-  } // ← ✅ cette accolade ferme bien la fonction
+      const preview = document.getElementById('previewBox');
+      preview.style.display = "block";
 
-  function showStatus(msg, type) {
-    const s = document.getElementById('status');
-    s.textContent = msg;
-    s.className = type;
-    s.style.display = "block";
-  }
+      preview.innerHTML = `
+        <strong>${title}</strong><br>
+        ${body}<br>
+        ${url ? `<small>🔗 <a href="${url}" target="_blank">${url}</a></small><br>` : ""}
+        <em style="color:${urgent ? 'red' : 'gray'};">
+          ${urgent ? "🔴 Notification urgente" : "Notification normale"}
+        </em>
+      `;
+    }
 
-  function resetForm() {
-    document.getElementById('title').value = '';
-    document.getElementById('body').value = '';
-    document.getElementById('url').value = '';
-    document.getElementById('urgent').checked = false;
-  }
+    async function sendNotification() {
+      const password = document.getElementById('password').value;
+      const title = document.getElementById('title').value;
+      const body = document.getElementById('body').value;
+      const url = document.getElementById('url').value.trim() || 'https://actuetmedia.fr/';
+      const urgent = document.getElementById('urgent').checked;
 
-  function addToHistory(title, body, url, urgent) {
-    history.unshift({
-      title,
-      body,
-      url,
-      urgent,
-      date: new Date().toLocaleString()
-    });
+      if (!password) return showStatus("⛔ Mot de passe requis", "error");
+      if (!title || !body) return showStatus("⛔ Titre et message requis", "error");
 
-    if (history.length > 3) history.pop();
+      previewNotification(); // affichage en live
 
-    const div = document.getElementById('historyContent');
-    div.innerHTML = history.map(h =>
-      `<div class="notif-entry">
-        <strong>${h.title}</strong><br>
-        ${h.body}<br>
-        ${h.url ? `<small>🔗 <a href="${h.url}" target="_blank">${h.url}</a></small><br>` : ""}
-        <em style="color:${h.urgent ? 'red' : 'gray'};">${h.urgent ? "🔴 Notification urgente" : "Notification normale"}</em><br>
-        <small>${h.date}</small>
-      </div>`
-    ).join('');
-  }
-</script>
+      try {
+        const res = await fetch("/api/send-important-notification", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-API-Key": password
+          },
+          body: JSON.stringify({ title, body, url, urgent })
+        });
 
+        const result = await res.json();
+
+        if (res.ok && result.success) {
+          showStatus(`✅ Notification envoyée à ${result.sent} appareil(s)`, "success");
+          addToHistory(title, body, url, urgent);
+          resetForm();
+        } else {
+          showStatus("❌ Erreur : " + (result.error || "Inconnue"), "error");
+        }
+      } catch (err) {
+        showStatus("❌ Erreur réseau : " + err.message, "error");
+      }
+    }
+
+    function showStatus(msg, type) {
+      const s = document.getElementById('status');
+      s.textContent = msg;
+      s.className = type;
+      s.style.display = "block";
+    }
+
+    function resetForm() {
+      document.getElementById('title').value = '';
+      document.getElementById('body').value = '';
+      document.getElementById('url').value = '';
+      document.getElementById('urgent').checked = false;
+    }
+
+    function addToHistory(title, body, url, urgent) {
+      history.unshift({ title, body, url, urgent, date: new Date().toLocaleString() });
+      if (history.length > 3) history.pop();
+
+      const div = document.getElementById('historyContent');
+      div.innerHTML = history.map(h =>
+        `<div class="notif-entry">
+          <strong>${h.title}</strong><br>
+          ${h.body}<br>
+          ${h.url ? `<small>🔗 <a href="${h.url}" target="_blank">${h.url}</a></small><br>` : ""}
+          <em style="color:${h.urgent ? 'red' : 'gray'};">${h.urgent ? "🔴 Urgente" : "Notification normale"}</em><br>
+          <small>${h.date}</small>
+        </div>`
+      ).join('');
+    }
+  </script>
 </body>
 </html>
