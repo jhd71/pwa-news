@@ -53,12 +53,24 @@
       background: #2d4bb7;
     }
     .checkbox-group {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 15px;
-      white-space: nowrap;
-    }
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+.checkbox-group input[type="checkbox"] {
+  margin: 0;
+}
+
+.checkbox-group label {
+  margin: 0;
+  white-space: nowrap;
+}
+
     #previewBox {
       background: #f0f0f0;
       padding: 10px;
