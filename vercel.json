@@ -29,14 +29,6 @@
       "status": 301,
       "headers": { "Location": "/$1" }
     },
-	{
-          "key": "Cross-Origin-Embedder-Policy",
-          "value": "require-corp"
-        },
-        {
-          "key": "Cross-Origin-Opener-Policy",
-          "value": "same-origin"
-        },
     {
       "src": "/(.*)",
       "dest": "/public_html/$1"
