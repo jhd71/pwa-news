@@ -17,7 +17,6 @@ export default function AdminNotifications() {
 
   // Vérifiez si l'utilisateur est déjà authentifié via localStorage
   useEffect(() => {
-    // On vérifie l'authentification côté client seulement
     if (typeof window !== 'undefined') {
       const storedAuth = localStorage.getItem('adminAuth');
       if (storedAuth === 'true') {
@@ -60,7 +59,7 @@ export default function AdminNotifications() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-API-Key': 'actuetmedia-admin-key'  // Utilisez la même clé que dans checkApiKey()
+          'X-API-Key': 'actuetmedia-admin-key'
         },
         body: JSON.stringify(notification)
       });
