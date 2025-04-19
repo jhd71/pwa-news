@@ -23,7 +23,7 @@ webpush.setVapidDetails(
 function checkApiKey(req) {
   const given = req.headers['x-api-key'];
   // Vous pouvez définir ces valeurs dans votre fichier .env
-  return given === 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0MjY3NjE0MiwiZXhwIjoyMDU4MjUyMTQyfQ.iA-RQpaDBYPZf4YlzNlYrGJ7ypMO7FuihCxCmk0cZUY'; // Utilisez la même clé que dans le fichier HTML
+  return given === 'xG7Hs9pLk2Tw5qZr'; // Utilisez la même clé que dans le fichier HTML
 }
 
 /* ──────────────────────────────────────────────── */
