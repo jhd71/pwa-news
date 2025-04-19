@@ -23,7 +23,7 @@ webpush.setVapidDetails(
 function checkApiKey(req) {
   const given = req.headers['x-api-key'];
   // Vous pouvez définir ces valeurs dans votre fichier .env
-  return given === 'am_api_key_2025'; // Utilisez la même clé que dans le fichier HTML
+  return given === 'jhd71'; // Utilisez la même clé que dans le fichier HTML
 }
 
 /* ──────────────────────────────────────────────── */
