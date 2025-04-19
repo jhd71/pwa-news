@@ -43,11 +43,24 @@
       height: 90px;
     }
     .checkbox-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 15px;
-    }
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+.checkbox-group input[type="checkbox"] {
+  margin: 0;
+}
+
+.checkbox-group label {
+  margin: 0;
+  white-space: nowrap;
+}
+
     button {
       width: 100%;
       padding: 10px;
@@ -143,76 +156,64 @@
   </div>
 
   <script>
-    const history = [];
+  const history = []; // ← Historique déclaré
 
-    async function sendNotification() {
-      const password = document.getElementById('password').value;
-      const title = document.getElementById('title').value;
-      const body = document.getElementById('body').value;
-      const url = document.getElementById('url').value || 'https://actuetmedia.fr/';
-      const urgent = document.getElementById('urgent').checked;
+  function previewNotification() {
+    const title = document.getElementById('title').value || "Aperçu notification";
+    const body = document.getElementById('body').value || "Ceci est un exemple";
+    const url = document.getElementById('url').value.trim();
+    const urgent = document.getElementById('urgent').checked;
 
-      if (!password || !title || !body) {
-        return showStatus('Veuillez remplir tous les champs requis.', 'error');
-      }
+    const preview = document.getElementById('previewBox');
+    preview.style.display = "block";
 
-      try {
-        const response = await fetch('/api/send-important-notification', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-API-Key': password
-          },
-          body: JSON.stringify({ title, body, url, urgent })
-        });
+    preview.innerHTML = `
+      <strong>${title}</strong><br>
+      ${body}<br>
+      ${url ? `<small>🔗 <a href="${url}" target="_blank">${url}</a></small><br>` : ""}
+      <em style="color:${urgent ? 'red' : 'gray'};">
+        ${urgent ? "🔴 Notification urgente" : "Notification normale"}
+      </em>
+    `;
+  } // ← ✅ cette accolade ferme bien la fonction
 
-        const result = await response.json();
+  function showStatus(msg, type) {
+    const s = document.getElementById('status');
+    s.textContent = msg;
+    s.className = type;
+    s.style.display = "block";
+  }
 
-        if (result.success) {
-          showStatus(`✅ Notification envoyée à ${result.sent} destinataire(s).`, 'success');
-          addToHistory(title, body);
-          resetForm();
-        } else {
-          showStatus(`❌ Erreur : ${result.error}`, 'error');
-        }
-      } catch (err) {
-        showStatus(`❌ Erreur : ${err.message}`, 'error');
-      }
-    }
+  function resetForm() {
+    document.getElementById('title').value = '';
+    document.getElementById('body').value = '';
+    document.getElementById('url').value = '';
+    document.getElementById('urgent').checked = false;
+  }
 
-    function previewNotification() {
-      const title = document.getElementById('title').value || "Aperçu notification";
-      const body = document.getElementById('body').value || "Ceci est un exemple";
-      const urgent = document.getElementById('urgent').checked;
+  function addToHistory(title, body, url, urgent) {
+    history.unshift({
+      title,
+      body,
+      url,
+      urgent,
+      date: new Date().toLocaleString()
+    });
 
-      const preview = document.getElementById('previewBox');
-      preview.style.display = "block";
-      preview.innerHTML = `<strong>${title}</strong><br>${body}<br><em>${urgent ? "🔴 Notification urgente" : "Notification normale"}</em>`;
-    }
+    if (history.length > 3) history.pop();
 
-    function showStatus(msg, type) {
-      const s = document.getElementById('status');
-      s.textContent = msg;
-      s.className = type;
-      s.style.display = "block";
-    }
+    const div = document.getElementById('historyContent');
+    div.innerHTML = history.map(h =>
+      `<div class="notif-entry">
+        <strong>${h.title}</strong><br>
+        ${h.body}<br>
+        ${h.url ? `<small>🔗 <a href="${h.url}" target="_blank">${h.url}</a></small><br>` : ""}
+        <em style="color:${h.urgent ? 'red' : 'gray'};">${h.urgent ? "🔴 Notification urgente" : "Notification normale"}</em><br>
+        <small>${h.date}</small>
+      </div>`
+    ).join('');
+  }
+</script>
 
-    function resetForm() {
-      document.getElementById('title').value = '';
-      document.getElementById('body').value = '';
-      document.getElementById('url').value = '';
-      document.getElementById('urgent').checked = false;
-    }
-
-    function addToHistory(title, body) {
-      history.unshift({ title, body, date: new Date().toLocaleString() });
-      if (history.length > 3) history.pop();
-
-      const div = document.getElementById('historyContent');
-      div.innerHTML = history.map(h =>
-        `<div class="notif-entry"><strong>${h.title}</strong><br>${h.body}<br><small>${h.date}</small></div>`
-      ).join('');
-    }
-  </script>
 </body>
 </html>
