@@ -21,7 +21,7 @@ webpush.setVapidDetails(
 /* ──────────────────────────────────────────────── */
 function checkApiKey (req){
   const given = req.headers['x-api-key'];
-  return given === process.env.ADMIN_API_KEY || given === 'actuetmedia-admin-key';
+  return given === process.env.ADMIN_API_KEY;
 }
 
 /* ──────────────────────────────────────────────── */
