@@ -6,159 +6,212 @@
   <title>Notifications Actu&Média</title>
   <style>
     body {
-      font-family: -apple-system, system-ui, sans-serif;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
+      font-family: system-ui, sans-serif;
       background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
     }
     .container {
-      background: white;
-      border-radius: 8px;
-      padding: 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      background: #fff;
+      max-width: 600px;
+      margin: auto;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
     }
     h1 {
       color: #1e3a8a;
-      margin-top: 0;
       text-align: center;
     }
     .form-group {
       margin-bottom: 15px;
     }
     label {
-      display: block;
-      margin-bottom: 5px;
       font-weight: bold;
+      margin-bottom: 5px;
+      display: block;
     }
     input, textarea {
       width: 100%;
       padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
       box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
     textarea {
-      height: 100px;
       resize: vertical;
+      height: 90px;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 15px;
     }
     button {
+      width: 100%;
+      padding: 10px;
       background: #1e3a8a;
       color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 4px;
-      cursor: pointer;
-      width: 100%;
       font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
     }
     button:hover {
       background: #2d4bb7;
     }
-    .checkbox-group {
-      margin-top: 10px;
-    }
-    #status {
-      margin-top: 20px;
+    .preview {
+      background: #e0e7ff;
       padding: 10px;
-      border-radius: 4px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-top: 10px;
       display: none;
     }
-    .success {
-      background: #d4edda;
-      color: #155724;
+    #status {
+      display: none;
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 6px;
+      font-weight: bold;
+      animation: fadein 0.4s;
     }
-    .error {
-      background: #f8d7da;
-      color: #721c24;
+    #status.success { background: #d4edda; color: #155724; }
+    #status.error { background: #f8d7da; color: #721c24; }
+    @keyframes fadein {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
+    #history {
+      margin-top: 25px;
+      background: #f0f0f0;
+      padding: 12px;
+      border-radius: 8px;
+    }
+    #history h3 {
+      margin-top: 0;
+      color: #1e3a8a;
+      font-size: 18px;
+    }
+    .notif-entry {
+      margin-bottom: 10px;
+    }
+    .notif-entry strong { color: #000; }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Notifications Actu&Média</h1>
 
-    <form onsubmit="sendNotification(event)">
-      <div class="form-group">
-        <label for="password">🔐 Mot de passe admin</label>
-        <input type="password" id="password" placeholder="Mot de passe" required>
-      </div>
+    <div class="form-group">
+      <label for="password">🔐 Mot de passe admin</label>
+      <input type="password" id="password" placeholder="Mot de passe"/>
+    </div>
 
-      <div class="form-group">
-        <label for="title">Titre de la notification</label>
-        <input type="text" id="title" placeholder="Titre de la notification" required>
-      </div>
+    <div class="form-group">
+      <label for="title">Titre de la notification</label>
+      <input type="text" id="title" placeholder="Titre de la notification"/>
+    </div>
 
-      <div class="form-group">
-        <label for="body">Message</label>
-        <textarea id="body" placeholder="Contenu de la notification" required></textarea>
-      </div>
+    <div class="form-group">
+      <label for="body">Message</label>
+      <textarea id="body" placeholder="Contenu de la notification"></textarea>
+    </div>
 
-      <div class="form-group">
-        <label for="url">URL de destination (facultatif)</label>
-        <input type="text" id="url" placeholder="https://actuetmedia.fr/">
-      </div>
+    <div class="form-group">
+      <label for="url">URL de destination (facultatif)</label>
+      <input type="text" id="url" placeholder="https://actuetmedia.fr/"/>
+    </div>
 
-      <div class="checkbox-group">
-        <label>
-          <input type="checkbox" id="urgent"> Notification urgente (vibreur, son, persistante)
-        </label>
-      </div>
+    <div class="checkbox-group">
+      <input type="checkbox" id="urgent">
+      <label for="urgent">Notification urgente (vibreur, son, persistante)</label>
+    </div>
 
-      <button type="submit">📤 Envoyer la notification</button>
-    </form>
+    <button onclick="sendNotification()">📤 Envoyer la notification</button>
+    <button onclick="previewNotification()" style="margin-top: 10px; background:#6c757d;">👁️ Prévisualiser</button>
 
     <div id="status"></div>
+
+    <div class="preview" id="previewBox"></div>
+
+    <div id="history">
+      <h3>📋 Dernières notifications</h3>
+      <div id="historyContent"></div>
+    </div>
   </div>
 
   <script>
-    async function sendNotification(e) {
-      e.preventDefault();
+    const history = [];
 
-      const password = document.getElementById('password').value.trim();
-      const title    = document.getElementById('title').value.trim();
-      const body     = document.getElementById('body').value.trim();
-      const rawUrl   = document.getElementById('url').value.trim();
-      const url      = rawUrl === "" ? "" : rawUrl;
-      const urgent   = document.getElementById('urgent').checked;
-      const statusEl = document.getElementById('status');
+    async function sendNotification() {
+      const password = document.getElementById('password').value;
+      const title = document.getElementById('title').value;
+      const body = document.getElementById('body').value;
+      const url = document.getElementById('url').value || 'https://actuetmedia.fr/';
+      const urgent = document.getElementById('urgent').checked;
 
-      if (!password) {
-        showStatus("❌ Veuillez entrer le mot de passe admin.", "error");
-        return;
+      if (!password || !title || !body) {
+        return showStatus('Veuillez remplir tous les champs requis.', 'error');
       }
 
       try {
-        const response = await fetch("/api/send-important-notification.js", {
-          method: "POST",
+        const response = await fetch('/api/send-important-notification', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
-            "X-API-Key": password
+            'Content-Type': 'application/json',
+            'X-API-Key': password
           },
           body: JSON.stringify({ title, body, url, urgent })
         });
 
         const result = await response.json();
 
-        if (response.ok && result.success) {
-          showStatus(`✅ Notification envoyée à ${result.sent} appareil(s)`, "success");
-          document.getElementById('title').value = "";
-          document.getElementById('body').value = "";
-          document.getElementById('url').value = "";
-          document.getElementById('urgent').checked = false;
+        if (result.success) {
+          showStatus(`✅ Notification envoyée à ${result.sent} destinataire(s).`, 'success');
+          addToHistory(title, body);
+          resetForm();
         } else {
-          showStatus("❌ Erreur : " + (result.error || "inconnue"), "error");
+          showStatus(`❌ Erreur : ${result.error}`, 'error');
         }
       } catch (err) {
-        showStatus("❌ Erreur : " + err.message, "error");
+        showStatus(`❌ Erreur : ${err.message}`, 'error');
       }
     }
 
-    function showStatus(message, type) {
-      const el = document.getElementById('status');
-      el.textContent = message;
-      el.className = type;
-      el.style.display = 'block';
+    function previewNotification() {
+      const title = document.getElementById('title').value || "Aperçu notification";
+      const body = document.getElementById('body').value || "Ceci est un exemple";
+      const urgent = document.getElementById('urgent').checked;
+
+      const preview = document.getElementById('previewBox');
+      preview.style.display = "block";
+      preview.innerHTML = `<strong>${title}</strong><br>${body}<br><em>${urgent ? "🔴 Notification urgente" : "Notification normale"}</em>`;
+    }
+
+    function showStatus(msg, type) {
+      const s = document.getElementById('status');
+      s.textContent = msg;
+      s.className = type;
+      s.style.display = "block";
+    }
+
+    function resetForm() {
+      document.getElementById('title').value = '';
+      document.getElementById('body').value = '';
+      document.getElementById('url').value = '';
+      document.getElementById('urgent').checked = false;
+    }
+
+    function addToHistory(title, body) {
+      history.unshift({ title, body, date: new Date().toLocaleString() });
+      if (history.length > 3) history.pop();
+
+      const div = document.getElementById('historyContent');
+      div.innerHTML = history.map(h =>
+        `<div class="notif-entry"><strong>${h.title}</strong><br>${h.body}<br><small>${h.date}</small></div>`
+      ).join('');
     }
   </script>
 </body>
