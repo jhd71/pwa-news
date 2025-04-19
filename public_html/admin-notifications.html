@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administration des Notifications - Actu&Média</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .admin-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    h1 {
+      font-size: 1.8rem;
+      color: #333;
+      margin: 0;
+    }
+    
+    h2 {
+      font-size: 1.4rem;
+      color: #444;
+      margin-bottom: 20px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    
+    .checkbox {
+      display: flex;
+      align-items: center;
+    }
+    
+    .checkbox input {
+      width: auto;
+      margin-right: 10px;
+    }
+    
+    .checkbox label {
+      margin-bottom: 0;
+    }
+    
+    small {
+      display: block;
+      margin-top: 5px;
+      color: #777;
+    }
+    
+    .submit-btn, .logout-btn {
+      background-color: #6e46c9;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.2s;
+    }
+    
+    .submit-btn:hover, .logout-btn:hover {
+      background-color: #8a5adf;
+    }
+    
+    .submit-btn:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+    
+    .logout-btn {
+      background-color: #f44336;
+    }
+    
+    .logout-btn:hover {
+      background-color: #d32f2f;
+    }
+    
+    .status-message {
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+    }
+    
+    .success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    @media (max-width: 600px) {
+      .admin-container {
+        padding: 15px;
+      }
+      
+      h1 {
+        font-size: 1.5rem;
+      }
+      
+      .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .logout-btn {
+        margin-top: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <header class="admin-header">
+      <h1>Administration des Notifications</h1>
+      <button id="logoutBtn" class="logout-btn hidden">Déconnexion</button>
+    </header>
+
+    <main class="admin-content">
+      <div id="loginForm" class="login-form">
+        <h2>Connexion</h2>
+        <form id="authForm">
+          <div class="form-group">
+            <label for="password">Mot de passe</label>
+            <input
+              type="password"
+              id="password"
+              required
+            />
+          </div>
+          <div id="loginError" class="status-message error hidden"></div>
+          <button type="submit" class="submit-btn">
+            Se connecter
+          </button>
+        </form>
+      </div>
+
+      <div id="notificationForm" class="notification-form hidden">
+        <h2>Envoyer une notification importante</h2>
+        <form id="sendNotificationForm">
+          <div class="form-group">
+            <label for="title">Titre* :</label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              required
+              maxlength="50"
+            />
+          </div>
+          
+          <div class="form-group">
+            <label for="body">Message* :</label>
+            <textarea
+              id="body"
+              name="body"
+              required
+              maxlength="150"
+              rows="3"
+            ></textarea>
+            <small id="charCount">0/150 caractères</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="url">URL à ouvrir (facultatif) :</label>
+            <input
+              type="text"
+              id="url"
+              name="url"
+              placeholder="/"
+              value="/"
+            />
+          </div>
+          
+          <div class="form-group">
+            <label for="imageUrl">URL de l'image (facultatif) :</label>
+            <input
+              type="text"
+              id="imageUrl"
+              name="imageUrl"
+              placeholder="/images/notification-icon.png"
+            />
+          </div>
+          
+          <div class="form-group checkbox">
+            <input
+              type="checkbox"
+              id="urgent"
+              name="urgent"
+            />
+            <label for="urgent">Notification urgente (vibration, persistante)</label>
+          </div>
+          
+          <div id="statusMessage" class="status-message hidden"></div>
+          
+          <button 
+            type="submit" 
+            id="submitBtn"
+            class="submit-btn"
+          >
+            Envoyer la notification
+          </button>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const loginForm = document.getElementById('loginForm');
+      const authForm = document.getElementById('authForm');
+      const notificationForm = document.getElementById('notificationForm');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const sendNotificationForm = document.getElementById('sendNotificationForm');
+      const statusMessage = document.getElementById('statusMessage');
+      const loginError = document.getElementById('loginError');
+      const bodyTextarea = document.getElementById('body');
+      const charCount = document.getElementById('charCount');
+      const submitBtn = document.getElementById('submitBtn');
+      
+      // Constantes
+      const ADMIN_PASSWORD = 'actuetmedia-admin'; // Mot de passe simple
+      const API_KEY = 'actuetmedia-admin-key';
+      
+      // Vérifier l'authentification au chargement de la page
+      checkAuthentication();
+      
+      // Événements
+      authForm.addEventListener('submit', handleLogin);
+      logoutBtn.addEventListener('click', handleLogout);
+      sendNotificationForm.addEventListener('submit', sendNotification);
+      bodyTextarea.addEventListener('input', updateCharCount);
+      
+      // Mettez à jour le compteur de caractères
+      function updateCharCount() {
+        const length = bodyTextarea.value.length;
+        charCount.textContent = `${length}/150 caractères`;
+        
+        // Vérifier si le formulaire peut être soumis
+        submitBtn.disabled = !sendNotificationForm.checkValidity();
+      }
+      
+      // Vérifier si l'utilisateur est authentifié
+      function checkAuthentication() {
+        const storedAuth = localStorage.getItem('adminAuth');
+        if (storedAuth === 'true') {
+          showNotificationForm();
+        }
+      }
+      
+      // Connexion
+      function handleLogin(e) {
+        e.preventDefault();
+        const password = document.getElementById('password').value;
+        
+        if (password === ADMIN_PASSWORD) {
+          localStorage.setItem('adminAuth', 'true');
+          showNotificationForm();
+        } else {
+          loginError.textContent = 'Mot de passe incorrect';
+          loginError.classList.remove('hidden');
+        }
+      }
+      
+      // Déconnexion
+      function handleLogout() {
+        localStorage.removeItem('adminAuth');
+        showLoginForm();
+      }
+      
+      // Afficher le formulaire de notification
+      function showNotificationForm() {
+        loginForm.classList.add('hidden');
+        notificationForm.classList.remove('hidden');
+        logoutBtn.classList.remove('hidden');
+      }
+      
+      // Afficher le formulaire de connexion
+      function showLoginForm() {
+        loginForm.classList.remove('hidden');
+        notificationForm.classList.add('hidden');
+        logoutBtn.classList.add('hidden');
+      }
+      
+      // Envoyer une notification
+      async function sendNotification(e) {
+        e.preventDefault();
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Envoi en cours...';
+        
+        // Réinitialiser les messages
+        statusMessage.classList.add('hidden');
+        
+        // Récupérer les données du formulaire
+        const notification = {
+          title: document.getElementById('title').value,
+          body: document.getElementById('body').value,
+          url: document.getElementById('url').value || '/',
+          imageUrl: document.getElementById('imageUrl').value || '',
+          urgent: document.getElementById('urgent').checked
+        };
+        
+        try {
+          const response = await fetch('/api/send-important-notification', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-API-Key': API_KEY
+            },
+            body: JSON.stringify(notification)
+          });
+          
+          const data = await response.json();
+          
+          if (response.ok) {
+            statusMessage.textContent = `Notification envoyée avec succès! (${data.sent} envoyées, ${data.failed} échouées)`;
+            statusMessage.classList.remove('error');
+            statusMessage.classList.add('success');
+            statusMessage.classList.remove('hidden');
+            
+            // Réinitialiser le formulaire
+            sendNotificationForm.reset();
+            document.getElementById('url').value = '/';
+            updateCharCount();
+          } else {
+            statusMessage.textContent = data.error || 'Erreur lors de l\'envoi';
+            statusMessage.classList.remove('success');
+            statusMessage.classList.add('error');
+            statusMessage.classList.remove('hidden');
+          }
+        } catch (error) {
+          statusMessage.textContent = error.message || 'Erreur de connexion';
+          statusMessage.classList.remove('success');
+          statusMessage.classList.add('error');
+          statusMessage.classList.remove('hidden');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Envoyer la notification';
+        }
+      }
+    });
+  </script>
+</body>
+</html>
