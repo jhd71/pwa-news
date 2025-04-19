@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administration des notifications | Actu&Média</title>
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    /* Styles généraux */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    
+    .admin-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    h1 {
+      font-size: 24px;
+      color: #333;
+      margin: 0;
+    }
+    
+    h2 {
+      font-size: 20px;
+      color: #444;
+      margin-bottom: 20px;
+    }
+    
+    .login-container, .notification-form {
+      background: #f9f9f9;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    
+    .checkbox {
+      display: flex;
+      align-items: center;
+    }
+    
+    .checkbox input {
+      width: auto;
+      margin-right: 10px;
+    }
+    
+    .checkbox label {
+      margin: 0;
+    }
+    
+    .hint {
+      font-size: 14px;
+      color: #666;
+      margin-left: 10px;
+    }
+    
+    .submit-btn, .logout-btn {
+      background: linear-gradient(135deg, #6e46c9 0%, #8a5adf 100%);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .submit-btn:hover {
+      background: linear-gradient(135deg, #5f3bb5 0%, #7b4dcf 100%);
+    }
+    
+    .submit-btn:disabled {
+      background: #cccccc;
+      cursor: not-allowed;
+    }
+    
+    .logout-btn {
+      background: #f44336;
+      padding: 8px 15px;
+      font-size: 14px;
+    }
+    
+    .error-message {
+      color: #f44336;
+      margin-bottom: 15px;
+    }
+    
+    .notification {
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+    
+    .notification.success {
+      background-color: #e6f7e6;
+      color: #2e7d32;
+      border-left: 4px solid #2e7d32;
+    }
+    
+    .notification.error {
+      background-color: #fdecea;
+      color: #d32f2f;
+      border-left: 4px solid #d32f2f;
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+    
+    @media (max-width: 600px) {
+      .admin-container {
+        padding: 15px;
+      }
+      
+      h1 {
+        font-size: 20px;
+      }
+      
+      .login-container, .notification-form {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <header>
+      <h1>Administration des notifications Actu&Média</h1>
+      <div id="auth-status">
+        <button id="logout-btn" class="logout-btn hidden">Déconnexion</button>
+      </div>
+    </header>
+    
+    <main>
+      <div id="login-container" class="login-container">
+        <h2>Connexion requise</h2>
+        <form id="auth-form">
+          <div class="form-group">
+            <label for="password">Mot de passe admin:</label>
+            <input
+              type="password"
+              id="password"
+              required
+            />
+          </div>
+          <div id="auth-error" class="error-message"></div>
+          <button type="submit" class="submit-btn">Connexion</button>
+        </form>
+      </div>
+      
+      <div id="notification-form" class="notification-form hidden">
+        <h2>Envoyer une notification push</h2>
+        
+        <div id="notification-success" class="notification success hidden"></div>
+        <div id="notification-error" class="notification error hidden"></div>
+        
+        <form id="send-form">
+          <div class="form-group">
+            <label for="title">Titre*:</label>
+            <input
+              type="text"
+              id="title"
+              required
+              placeholder="Titre de la notification"
+            />
+          </div>
+          
+          <div class="form-group">
+            <label for="body">Message*:</label>
+            <textarea
+              id="body"
+              required
+              placeholder="Corps du message"
+              rows="4"
+            ></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="url">URL de destination:</label>
+            <input
+              type="text"
+              id="url"
+              value="/"
+              placeholder="URL où rediriger l'utilisateur (par défaut: /)"
+            />
+          </div>
+          
+          <div class="form-group">
+            <label for="imageUrl">URL de l'image:</label>
+            <input
+              type="text"
+              id="imageUrl"
+              placeholder="URL de l'image à afficher (optionnel)"
+            />
+          </div>
+          
+          <div class="form-group checkbox">
+            <input
+              type="checkbox"
+              id="urgent"
+            />
+            <label for="urgent">Notification urgente</label>
+            <span class="hint">
+              (Les notifications urgentes vibrent et requièrent une interaction)
+            </span>
+          </div>
+          
+          <button 
+            type="submit" 
+            id="send-btn"
+            class="submit-btn"
+          >
+            Envoyer la notification
+          </button>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Éléments DOM
+      const loginContainer = document.getElementById('login-container');
+      const notificationForm = document.getElementById('notification-form');
+      const authForm = document.getElementById('auth-form');
+      const sendForm = document.getElementById('send-form');
+      const logoutBtn = document.getElementById('logout-btn');
+      const authError = document.getElementById('auth-error');
+      const successMessage = document.getElementById('notification-success');
+      const errorMessage = document.getElementById('notification-error');
+      const sendBtn = document.getElementById('send-btn');
+      
+      // Mot de passe admin (à remplacer par une vérification côté serveur en production)
+      const ADMIN_PASSWORD = 'admin2024'; // Remplacez par votre mot de passe
+      const API_KEY = 'am_api_key_2025'; // Remplacez par votre clé API
+      
+      // Vérifier si l'utilisateur est déjà authentifié
+      function checkAuthentication() {
+        const storedAuth = localStorage.getItem('adminAuth');
+        if (storedAuth) {
+          try {
+            const authData = JSON.parse(storedAuth);
+            if (authData.expires > Date.now()) {
+              showNotificationForm();
+              return;
+            }
+          } catch (e) {
+            // Ignorer les erreurs de parsing
+          }
+        }
+        
+        // Si on arrive ici, l'authentification n'est pas valide
+        localStorage.removeItem('adminAuth');
+        showLoginForm();
+      }
+      
+      // Fonctions utilitaires
+      function showLoginForm() {
+        loginContainer.classList.remove('hidden');
+        notificationForm.classList.add('hidden');
+        logoutBtn.classList.add('hidden');
+        document.getElementById('password').value = '';
+      }
+      
+      function showNotificationForm() {
+        loginContainer.classList.add('hidden');
+        notificationForm.classList.remove('hidden');
+        logoutBtn.classList.remove('hidden');
+      }
+      
+      function showAuthError(message) {
+        authError.textContent = message;
+      }
+      
+      function showSuccessMessage(message) {
+        successMessage.textContent = message;
+        successMessage.classList.remove('hidden');
+        errorMessage.classList.add('hidden');
+        
+        // Masquer après 5 secondes
+        setTimeout(() => {
+          successMessage.classList.add('hidden');
+        }, 5000);
+      }
+      
+      function showErrorMessage(message) {
+        errorMessage.textContent = message;
+        errorMessage.classList.remove('hidden');
+        successMessage.classList.add('hidden');
+      }
+      
+      function resetForm() {
+        document.getElementById('title').value = '';
+        document.getElementById('body').value = '';
+        document.getElementById('url').value = '/';
+        document.getElementById('imageUrl').value = '';
+        document.getElementById('urgent').checked = false;
+      }
+      
+      // Gestion de la connexion
+      authForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const password = document.getElementById('password').value.trim();
+        
+        if (password === ADMIN_PASSWORD) {
+          // Stocker l'authentification pour 2 heures
+          localStorage.setItem('adminAuth', JSON.stringify({
+            authenticated: true,
+            apiKey: API_KEY,
+            expires: Date.now() + (2 * 60 * 60 * 1000) // 2 heures
+          }));
+          
+          showNotificationForm();
+          authError.textContent = '';
+        } else {
+          showAuthError('Mot de passe incorrect');
+        }
+      });
+      
+      // Gestion de la déconnexion
+      logoutBtn.addEventListener('click', function() {
+        localStorage.removeItem('adminAuth');
+        showLoginForm();
+      });
+      
+      // Gestion de l'envoi de notification
+      sendForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Récupérer les valeurs
+        const title = document.getElementById('title').value.trim();
+        const body = document.getElementById('body').value.trim();
+        const url = document.getElementById('url').value.trim() || '/';
+        const imageUrl = document.getElementById('imageUrl').value.trim();
+        const urgent = document.getElementById('urgent').checked;
+        
+        // Vérifier les champs obligatoires
+        if (!title || !body) {
+          showErrorMessage('Le titre et le message sont obligatoires');
+          return;
+        }
+        
+        // Récupérer la clé API stockée
+        const authData = JSON.parse(localStorage.getItem('adminAuth') || '{}');
+        if (!authData.apiKey) {
+          showErrorMessage('Session expirée. Veuillez vous reconnecter.');
+          showLoginForm();
+          return;
+        }
+        
+        // Désactiver le bouton d'envoi
+        sendBtn.disabled = true;
+        sendBtn.textContent = 'Envoi en cours...';
+        
+        // Envoyer la requête
+        fetch('/api/send-important-notification', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-Key': authData.apiKey
+          },
+          body: JSON.stringify({
+            title,
+            body,
+            url,
+            imageUrl: imageUrl || undefined,
+            urgent
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            showSuccessMessage(`Notification envoyée avec succès à ${data.sent} destinataires (${data.failed} échecs)`);
+            resetForm();
+          } else {
+            showErrorMessage(`Erreur: ${data.error || 'Échec de l\'envoi de la notification'}`);
+          }
+        })
+        .catch(error => {
+          showErrorMessage('Erreur de connexion. Vérifiez votre réseau.');
+          console.error('Error:', error);
+        })
+        .finally(() => {
+          // Réactiver le bouton
+          sendBtn.disabled = false;
+          sendBtn.textContent = 'Envoyer la notification';
+        });
+      });
+      
+      // Vérifier l'authentification au chargement
+      checkAuthentication();
+    });
+  </script>
+</body>
+</html>
