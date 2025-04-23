@@ -1486,6 +1486,25 @@ body.long-press-active .message-options {
   opacity: 0.8;
 }
 
+/* Styles pour les titres de section dans la liste des bannissements */
+.ban-section-title {
+    margin-top: 15px;
+    margin-bottom: 5px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0.9;
+    text-align: center;
+}
+
+/* Styles pour différencier les types de bannissement */
+.user-ban {
+    border-left: 3px solid #ff5252;
+}
+
+.device-ban {
+    border-left: 3px solid #2196f3;
+}
 /* ============================
    Responsive design
 ============================ */
