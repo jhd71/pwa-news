@@ -684,22 +684,21 @@ setupAuthListeners() {
             return;
         }
 
-            try {
-                // Cas administrateur
-                let isAdmin = false;
-                if (pseudo === 'jhd71') {
-                    console.log('Tentative connexion admin');
-                    
-                    if (adminPassword !== 'admin2024') {
-                        this.showNotification('Mot de passe administrateur incorrect', 'error');
-                        this.playSound('error');
-                        return;
-                    }
-                    
-                    isAdmin = true;
-                } else {
-                    console.log('Tentative connexion utilisateur normal');
-                }
+        // Cas administrateur
+        let isAdmin = false;
+        if (pseudo === 'jhd71') {
+            console.log('Tentative connexion admin');
+            
+            if (adminPassword !== 'admin2024') {
+                this.showNotification('Mot de passe administrateur incorrect', 'error');
+                this.playSound('error');
+                return;
+            }
+            
+            isAdmin = true;
+        } else {
+            console.log('Tentative connexion utilisateur normal');
+        }
 
                 // Vérifier si l'utilisateur existe déjà
                 const { data: existingUser, error: queryError } = await this.supabase
@@ -770,13 +769,14 @@ this.playSound('success');
 
                 
             } catch (error) {
-                console.error('Erreur d\'authentification:', error);
-                this.showNotification('Erreur lors de la connexion: ' + error.message, 'error');
-                this.playSound('error');
-            }
-        });
+        console.error('Erreur d\'authentification:', error);
+        this.showNotification('Erreur lors de la connexion: ' + error.message, 'error');
+        this.playSound('error');
+    }
+});
     }
 }
+
 async registerUser(pseudo, password, isAdmin = false) {
     try {
         console.log('Tentative d\'inscription de l\'utilisateur:', pseudo, 'admin:', isAdmin);
