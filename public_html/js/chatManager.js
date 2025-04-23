@@ -726,22 +726,22 @@ setupAuthListeners() {
         // IMPORTANT: Vérifier d'abord si l'appareil est banni
         console.log(`Vérification si l'appareil ${deviceId} est banni...`);
         // Recherche EXACTE de l'ID de l'appareil (très important)
-        const { data: deviceBans, error: deviceBanError } = await this.supabase
-            .from('banned_ips')
-            .select('*')
-            .or(`ip.eq.${deviceId}`)  // Utiliser .or pour une condition exacte
-            .maybeSingle();
-        
-        console.log("Résultat vérification appareil banni:", deviceBans);
-        
-        if (!deviceBanError && deviceBans) {
-            // Si le bannissement n'est pas expiré
-            if (!deviceBans.expires_at || new Date(deviceBans.expires_at) > new Date()) {
-                console.log('APPAREIL BANNI DÉTECTÉ!');
-                this.showNotification('Votre appareil est banni du chat', 'error');
-                this.playSound('error');
-                return;
-            }
+        const ip = await this.getClientIP();
+	const { data: ipBan } = await this.supabase
+	  .from('banned_ips')
+	  .select('*')
+	  .eq('ip', ip)
+	  .maybeSingle();
+
+	console.log("Résultat vérification IP bannie:", ipBan);
+
+	if (ipBan && (!ipBan.expires_at || new Date(ipBan.expires_at) > new Date())) {
+	  console.log('IP BANNIE DÉTECTÉE!');
+	  this.showNotification("Votre IP est bannie du chat", "error");
+	  this.playSound("error");
+	  return;
+	}
+
         }
 // 🔍 Vérification par IP publique
 try {
@@ -1864,12 +1864,10 @@ async isDeviceBanned() {
 
     async getClientIP() {
   try {
-    const res = await fetch('https://api.ipify.org?format=json');
-    const data = await res.json();
-    localStorage.setItem('client_ip', data.ip);
-    return data.ip;
-  } catch (e) {
-    console.error("Erreur récupération IP:", e);
+    const res = await fetch("https://api.ipify.org?format=json");
+    const json = await res.json();
+    return json.ip;
+  } catch {
     return null;
   }
 }
