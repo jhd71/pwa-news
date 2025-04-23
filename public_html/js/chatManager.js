@@ -707,6 +707,28 @@ setupAuthListeners() {
         });
     }
     
+	// 🔍 Vérification par IP publique
+try {
+    const ipRes = await fetch("https://api.ipify.org?format=json");
+    const ipData = await ipRes.json();
+    const publicIP = ipData.ip;
+
+    const { data: ipBan, error: ipError } = await this.supabase
+        .from('banned_ips')
+        .select('*')
+        .eq('ip', publicIP)
+        .maybeSingle();
+
+    if (!ipError && ipBan && (!ipBan.expires_at || new Date(ipBan.expires_at) > new Date())) {
+        console.log('IP PUBLIQUE BANNIE DÉTECTÉE!');
+        this.showNotification('Cette adresse IP est bannie du chat', 'error');
+        this.playSound('error');
+        return;
+    }
+} catch (e) {
+    console.error("Erreur lors de la vérification de l’IP publique:", e);
+}
+
     if (confirmButton) {
         confirmButton.addEventListener('click', async () => {
     const pseudo = pseudoInput?.value.trim();
@@ -742,29 +764,6 @@ setupAuthListeners() {
 	  return;
 	}
 
-        
-// 🔍 Vérification par IP publique
-try {
-    const ipRes = await fetch("https://api.ipify.org?format=json");
-    const ipData = await ipRes.json();
-    const publicIP = ipData.ip;
-
-    const { data: ipBan, error: ipError } = await this.supabase
-        .from('banned_ips')
-        .select('*')
-        .eq('ip', publicIP)
-        .maybeSingle();
-
-    if (!ipError && ipBan && (!ipBan.expires_at || new Date(ipBan.expires_at) > new Date())) {
-        console.log('IP PUBLIQUE BANNIE DÉTECTÉE!');
-        this.showNotification('Cette adresse IP est bannie du chat', 'error');
-        this.playSound('error');
-        return;
-    }
-} catch (e) {
-    console.error("Erreur lors de la vérification de l’IP publique:", e);
-}
-
                 // Cas administrateur
                 let isAdmin = false;
                 if (pseudo === 'jhd71') {
@@ -795,17 +794,18 @@ try {
                     console.log('Création d\'un nouvel utilisateur');
                     
                     // Insérer directement dans users
-                    const { data: newUser, error: insertError } = await this.supabase
-                        .from('users')
-                        .insert([
-                            { 
-                                pseudo: pseudo,
-                                last_active: new Date().toISOString(),
-                                is_admin: isAdmin,
-                                requires_password: true
-                            }
-                        ])
-                        .select();
+	const { data: newUser, error: insertError } = await this.supabase
+	  .from('users')
+	  .insert([
+		{ 
+		  pseudo: pseudo,
+		  last_active: new Date().toISOString(),
+		  is_admin: isAdmin,
+		  requires_password: true,
+		  ip: publicIP // ← ajoute ici pour enregistrer l’IP
+		}
+	  ])
+	  .select();
                     
                     if (insertError) {
                         console.error('Erreur création utilisateur:', insertError);
@@ -1864,10 +1864,11 @@ async isDeviceBanned() {
 
     async getClientIP() {
   try {
-    const res = await fetch("https://api.ipify.org?format=json");
+    const res = await fetch('https://api64.ipify.org?format=json');
     const json = await res.json();
     return json.ip;
-  } catch {
+  } catch (err) {
+    console.error("Erreur IP : ", err);
     return null;
   }
 }
