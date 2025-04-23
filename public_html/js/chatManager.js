@@ -59,6 +59,50 @@ class ChatManager {
 	
     async init() {
     try {
+        // VÉRIFICATION CRITIQUE: Bannissement local
+        if (localStorage.getItem('chat_device_banned') === 'true') {
+            const bannedUntil = localStorage.getItem('chat_device_banned_until');
+            let isBanned = true;
+            
+            // Vérifier si le bannissement a expiré
+            if (bannedUntil && bannedUntil !== 'permanent') {
+                const expiryTime = parseInt(bannedUntil);
+                if (Date.now() > expiryTime) {
+                    // Le bannissement a expiré
+                    localStorage.removeItem('chat_device_banned');
+                    localStorage.removeItem('chat_device_banned_until');
+                    isBanned = false;
+                }
+            }
+            
+            if (isBanned) {
+                console.log('APPAREIL BANNI: Accès au chat refusé');
+                
+                // Déconnexion forcée
+                this.pseudo = null;
+                this.isAdmin = false;
+                localStorage.removeItem('chatPseudo');
+                localStorage.removeItem('isAdmin');
+                
+                // Afficher un message d'erreur
+                this.container = document.createElement('div');
+                this.container.className = 'chat-widget';
+                this.container.innerHTML = `
+                    <div class="chat-banned-banner">
+                        <div class="banned-icon">🚫</div>
+                        <div class="banned-title">Appareil banni</div>
+                        <div class="banned-message">Cet appareil a été banni du chat.</div>
+                    </div>
+                `;
+                document.body.appendChild(this.container);
+                
+                // Empêcher l'initialisation du chat
+                return;
+            }
+        }
+        
+        // Si aucun bannissement local n'est trouvé, continuer normalement
+        await this.loadBannedWords();
         // Vérifier si l'appareil est banni localement
         const bannedUntil = localStorage.getItem('device_banned_until');
         if (bannedUntil) {
@@ -2502,8 +2546,10 @@ if (urgentChk && submitBtn){          // sécurité
         
         // Convertir la durée
         let durationHours = null;
+        let expiryTime = null;
         if (duration) {
             durationHours = Math.floor(duration / 3600000);
+            expiryTime = Date.now() + durationHours * 3600000;
         }
         
         console.log(`Bannissement de l'utilisateur ${pseudo} pour ${durationHours || 'durée indéfinie'} heures`);
@@ -2523,28 +2569,40 @@ if (urgentChk && submitBtn){          // sécurité
         
         console.log('Pseudo banni avec succès:', pseudo);
         
-        // 2. Bannir l'appareil actuel
-        const deviceId = this.getDeviceId();
-        console.log(`Tentative de bannir l'appareil actuel: ${deviceId}`);
-        
-        const { data: deviceBanData, error: deviceBanError } = await this.supabase.rpc('admin_ban_user', {
-            user_pseudo: deviceId,
-            ban_reason: `Appareil associé à ${pseudo} - ${reason || 'Non spécifié'}`,
-            duration_hours: durationHours,
-            admin_pseudo: this.pseudo
-        });
-        
-        if (deviceBanError) {
-            console.error('Erreur bannissement appareil:', deviceBanError);
+        // 2. Bannir l'appareil actuel si c'est le même utilisateur que celui qu'on bannit
+        if (pseudo === this.pseudo) {
+            // C'est notre propre appareil que nous bannissons (en tant qu'admin)
+            console.log("Bannissement de notre propre appareil évité");
         } else {
-            console.log('Appareil banni avec succès:', deviceId);
+            // C'est un autre utilisateur qu'on bannit
+            const deviceId = this.getDeviceId();
+            console.log(`Tentative de bannir l'appareil: ${deviceId}`);
             
-            // Stockage local pour double sécurité
-            localStorage.setItem('device_banned_until', durationHours ? 
-                (Date.now() + durationHours * 3600000).toString() : 'permanent');
+            // Stocker le bannissement dans la base de données
+            const { data: deviceBanData, error: deviceBanError } = await this.supabase.rpc('admin_ban_user', {
+                user_pseudo: deviceId,
+                ban_reason: `Appareil associé à ${pseudo} - ${reason || 'Non spécifié'}`,
+                duration_hours: durationHours,
+                admin_pseudo: this.pseudo
+            });
+            
+            if (deviceBanError) {
+                console.error('Erreur bannissement appareil:', deviceBanError);
+            } else {
+                console.log('Appareil banni avec succès:', deviceId);
+                
+                // IMPORTANT: Écrire dans localStorage pour l'appareil banni
+                // Ceci est nettement plus fiable que la vérification via la base de données
+                localStorage.setItem('chat_device_banned', 'true');
+                if (expiryTime) {
+                    localStorage.setItem('chat_device_banned_until', expiryTime.toString());
+                } else {
+                    localStorage.setItem('chat_device_banned_until', 'permanent');
+                }
+            }
         }
         
-        this.showNotification(`Utilisateur "${pseudo}" et son appareil bannis avec succès`, 'success');
+        this.showNotification(`Utilisateur "${pseudo}" banni avec succès`, 'success');
         this.playSound('success');
         
         // Actualiser immédiatement les messages

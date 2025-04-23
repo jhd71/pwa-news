@@ -1512,6 +1512,38 @@ body.long-press-active .message-options {
     50% { transform: scale(1.05); }
     100% { transform: scale(1); }
 }
+
+.chat-banned-banner {
+    background: linear-gradient(135deg, #d32f2f, #b71c1c);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    margin: 10px;
+    animation: pulse 2s infinite;
+}
+
+.banned-icon {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.banned-title {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.banned-message {
+    font-size: 14px;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
 /* ============================
    Responsive design
 ============================ */
