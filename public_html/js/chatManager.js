@@ -743,6 +743,27 @@ setupAuthListeners() {
                 return;
             }
         }
+// 🔍 Vérification par IP publique
+try {
+    const ipRes = await fetch("https://api.ipify.org?format=json");
+    const ipData = await ipRes.json();
+    const publicIP = ipData.ip;
+
+    const { data: ipBan, error: ipError } = await this.supabase
+        .from('banned_ips')
+        .select('*')
+        .eq('ip', publicIP)
+        .maybeSingle();
+
+    if (!ipError && ipBan && (!ipBan.expires_at || new Date(ipBan.expires_at) > new Date())) {
+        console.log('IP PUBLIQUE BANNIE DÉTECTÉE!');
+        this.showNotification('Cette adresse IP est bannie du chat', 'error');
+        this.playSound('error');
+        return;
+    }
+} catch (e) {
+    console.error("Erreur lors de la vérification de l’IP publique:", e);
+}
 
                 // Cas administrateur
                 let isAdmin = false;
@@ -1842,15 +1863,15 @@ async isDeviceBanned() {
 }
 
     async getClientIP() {
-    try {
-        // Récupérer l'IP via un service tiers
-        const response = await fetch('https://api.ipify.org?format=json');
-        const data = await response.json();
-        return data.ip;
-    } catch (error) {
-        console.error('Erreur récupération IP:', error);
-        return this.pseudo || 'anonymous'; // Fallback sur le pseudo si erreur
-    }
+  try {
+    const res = await fetch('https://api.ipify.org?format=json');
+    const data = await res.json();
+    localStorage.setItem('client_ip', data.ip);
+    return data.ip;
+  } catch (e) {
+    console.error("Erreur récupération IP:", e);
+    return null;
+  }
 }
 
 startBanMonitoring() {
