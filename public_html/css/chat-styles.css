@@ -1486,6 +1486,32 @@ body.long-press-active .message-options {
   opacity: 0.8;
 }
 
+.chat-error-banner {
+    background: linear-gradient(145deg, #d32f2f, #b71c1c);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    margin: 10px;
+    animation: pulse 2s infinite;
+}
+
+.error-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.error-message {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
 /* ============================
    Responsive design
 ============================ */

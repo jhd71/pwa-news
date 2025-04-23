@@ -59,7 +59,7 @@ class ChatManager {
 	
     async init() {
     try {
-        // Vérifier d'abord le bannissement local
+        // Vérifier si l'appareil est banni localement
         const bannedUntil = localStorage.getItem('device_banned_until');
         if (bannedUntil) {
             if (bannedUntil === 'permanent' || parseInt(bannedUntil) > Date.now()) {
@@ -75,12 +75,57 @@ class ChatManager {
                 }
                 
                 this.deviceBanned = true;
+                
+                // Créer un chat vide pour montrer l'erreur
+                this.container = document.createElement('div');
+                this.container.className = 'chat-widget';
+                this.container.innerHTML = `
+                    <div class="chat-error-banner">
+                        <div class="error-icon">⚠️</div>
+                        <div class="error-message">Appareil banni du chat</div>
+                    </div>
+                `;
+                document.body.appendChild(this.container);
+                return;
             } else {
                 // Le bannissement a expiré, supprimer l'entrée
                 localStorage.removeItem('device_banned_until');
             }
         }
         
+        // Vérifier si l'appareil est banni dans la base de données
+        const isDeviceBanned = await this.isDeviceBanned();
+        if (isDeviceBanned) {
+            console.log('Appareil banni détecté (base de données)');
+            this.showNotification('Votre appareil est banni du chat', 'error');
+            
+            // Stocker localement pour référence future
+            localStorage.setItem('device_banned_until', 'permanent');
+            
+            // Si un utilisateur était connecté, le déconnecter
+            if (this.pseudo) {
+                this.pseudo = null;
+                this.isAdmin = false;
+                localStorage.removeItem('chatPseudo');
+                localStorage.removeItem('isAdmin');
+            }
+            
+            this.deviceBanned = true;
+            
+            // Créer un chat vide pour montrer l'erreur
+            this.container = document.createElement('div');
+            this.container.className = 'chat-widget';
+            this.container.innerHTML = `
+                <div class="chat-error-banner">
+                    <div class="error-icon">⚠️</div>
+                    <div class="error-message">Appareil banni du chat</div>
+                </div>
+            `;
+            document.body.appendChild(this.container);
+            return;
+        }
+        
+        // Continuer l'initialisation normale...
         await this.loadBannedWords();
         
         // Vérifier si l'utilisateur est banni avant de continuer
@@ -1721,13 +1766,13 @@ async isDeviceBanned() {
         const deviceId = this.getDeviceId();
         console.log(`[DEBUG] Vérification bannissement pour appareil: ${deviceId}`);
         
-        // Récupérer TOUS les bannissements pour voir ce qui est stocké
+        // Récupérer TOUS les bannissements 
         const { data: allBans, error: allBansError } = await this.supabase
             .from('banned_ips')
             .select('*');
             
         if (!allBansError && allBans) {
-            console.log(`[DEBUG] Tous les bannissements:`, allBans);
+            console.log(`[DEBUG] Nombre de bannissements: ${allBans.length}`);
             
             // Chercher manuellement notre appareil dans la liste
             const deviceBan = allBans.find(ban => ban.ip === deviceId);
