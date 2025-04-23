@@ -1,6 +1,87 @@
 import soundManager from '/js/sounds.js';
 import notificationManager from '/js/notification-manager.js';
 
+// VÉRIFICATION CRITIQUE: Bloc de sécurité anti-contournement de bannissement
+(function() {
+    if (localStorage.getItem('chat_device_banned') === 'true') {
+        const bannedUntil = localStorage.getItem('chat_device_banned_until');
+        let isBanned = true;
+        
+        // Vérifier si le bannissement a expiré
+        if (bannedUntil && bannedUntil !== 'permanent') {
+            const expiryTime = parseInt(bannedUntil);
+            if (Date.now() > expiryTime) {
+                // Le bannissement a expiré
+                localStorage.removeItem('chat_device_banned');
+                localStorage.removeItem('chat_device_banned_until');
+                isBanned = false;
+            }
+        }
+        
+        if (isBanned) {
+            // Empêcher le chargement du chat
+            console.log("🚫 APPAREIL BANNI: Chargement du chat bloqué");
+            
+            // Attendre que le DOM soit chargé
+            document.addEventListener('DOMContentLoaded', function() {
+                // Créer le message de bannissement
+                const banMessage = document.createElement('div');
+                banMessage.className = 'chat-banned-message';
+                banMessage.innerHTML = `
+                    <div class="banned-icon">🚫</div>
+                    <h2>Accès interdit</h2>
+                    <p>Cet appareil a été banni du chat.</p>
+                `;
+                
+                // Ajouter le style pour le message
+                const style = document.createElement('style');
+                style.textContent = `
+                    .chat-banned-message {
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        background: linear-gradient(135deg, #d32f2f, #b71c1c);
+                        color: white;
+                        border-radius: 12px;
+                        padding: 30px;
+                        text-align: center;
+                        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+                        max-width: 90%;
+                        width: 350px;
+                        z-index: 9999;
+                        animation: pulse 2s infinite;
+                    }
+                    
+                    .banned-icon {
+                        font-size: 48px;
+                        margin-bottom: 15px;
+                    }
+                    
+                    @keyframes pulse {
+                        0% { transform: translate(-50%, -50%) scale(1); }
+                        50% { transform: translate(-50%, -50%) scale(1.05); }
+                        100% { transform: translate(-50%, -50%) scale(1); }
+                    }
+                `;
+                
+                // Ajouter les éléments au document
+                document.head.appendChild(style);
+                document.body.appendChild(banMessage);
+                
+                // Bloquer tout accès au chat
+                const chatElements = document.querySelectorAll('.chat-widget, .chat-toggle-btn, #chatToggleBtn');
+                chatElements.forEach(el => {
+                    if (el) el.style.display = 'none';
+                });
+            });
+            
+            // Empêcher l'initialisation du chat en générant une erreur
+            throw new Error("APPAREIL BANNI: Accès au chat bloqué");
+        }
+    }
+})();
+
 class ChatManager {
     constructor() {
         this.supabase = supabase.createClient(
@@ -21,19 +102,20 @@ class ChatManager {
         this.adminPanelOpen = false;
         this.isOpen = localStorage.getItem('chatOpen') === 'true';
         this.unreadCount = parseInt(localStorage.getItem('unreadCount') || '0');
+        this.deviceBanned = false;
     }
 
-	getDeviceId() {
-			let deviceId = localStorage.getItem('chat_device_id');
-			if (!deviceId) {
-				deviceId = 'device_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-				localStorage.setItem('chat_device_id', deviceId);
-				console.log('Nouvel identifiant d\'appareil généré:', deviceId);
-			} else {
-				console.log('Identifiant d\'appareil existant:', deviceId);
-			}
-			return deviceId;
-		}
+    getDeviceId() {
+        let deviceId = localStorage.getItem('chat_device_id');
+        if (!deviceId) {
+            deviceId = 'device_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            localStorage.setItem('chat_device_id', deviceId);
+            console.log('Nouvel identifiant d\'appareil généré:', deviceId);
+        } else {
+            console.log('Identifiant d\'appareil existant:', deviceId);
+        }
+        return deviceId;
+    }
 		
 	async setCurrentUserForRLS() {
 			try {
@@ -61,6 +143,18 @@ class ChatManager {
     try {
         // VÉRIFICATION CRITIQUE: Bannissement local
         if (localStorage.getItem('chat_device_banned') === 'true') {
+            console.error("APPAREIL BANNI: Initialisation du chat bloquée");
+            
+            this.container = document.createElement('div');
+            this.container.className = 'chat-widget';
+            this.container.innerHTML = `
+                <div class="chat-banned-banner">
+                    <div class="banned-icon">🚫</div>
+                    <div class="banned-title">Appareil banni</div>
+                    <div class="banned-message">Cet appareil a été banni du chat.</div>
+                </div>
+            `;
+            document.body.appendChild(this.container);
             const bannedUntil = localStorage.getItem('chat_device_banned_until');
             let isBanned = true;
             
@@ -2546,10 +2640,8 @@ if (urgentChk && submitBtn){          // sécurité
         
         // Convertir la durée
         let durationHours = null;
-        let expiryTime = null;
         if (duration) {
             durationHours = Math.floor(duration / 3600000);
-            expiryTime = Date.now() + durationHours * 3600000;
         }
         
         console.log(`Bannissement de l'utilisateur ${pseudo} pour ${durationHours || 'durée indéfinie'} heures`);
@@ -2569,36 +2661,49 @@ if (urgentChk && submitBtn){          // sécurité
         
         console.log('Pseudo banni avec succès:', pseudo);
         
-        // 2. Bannir l'appareil actuel si c'est le même utilisateur que celui qu'on bannit
-        if (pseudo === this.pseudo) {
-            // C'est notre propre appareil que nous bannissons (en tant qu'admin)
-            console.log("Bannissement de notre propre appareil évité");
+        // 2. Bannir l'appareil actuel
+        const deviceId = this.getDeviceId();
+        console.log(`Tentative de bannir l'appareil actuel: ${deviceId}`);
+        
+        const { data: deviceBanData, error: deviceBanError } = await this.supabase.rpc('admin_ban_user', {
+            user_pseudo: deviceId,
+            ban_reason: `Appareil associé à ${pseudo} - ${reason || 'Non spécifié'}`,
+            duration_hours: durationHours,
+            admin_pseudo: this.pseudo
+        });
+        
+        if (deviceBanError) {
+            console.error('Erreur bannissement appareil:', deviceBanError);
         } else {
-            // C'est un autre utilisateur qu'on bannit
-            const deviceId = this.getDeviceId();
-            console.log(`Tentative de bannir l'appareil: ${deviceId}`);
+            console.log('Appareil banni avec succès:', deviceId);
             
-            // Stocker le bannissement dans la base de données
-            const { data: deviceBanData, error: deviceBanError } = await this.supabase.rpc('admin_ban_user', {
-                user_pseudo: deviceId,
-                ban_reason: `Appareil associé à ${pseudo} - ${reason || 'Non spécifié'}`,
-                duration_hours: durationHours,
-                admin_pseudo: this.pseudo
-            });
-            
-            if (deviceBanError) {
-                console.error('Erreur bannissement appareil:', deviceBanError);
-            } else {
-                console.log('Appareil banni avec succès:', deviceId);
+            // SOLUTION RADICALE : Ecrire dans une clé spéciale dans LocalStorage
+            // Cette clé sera vérifiée au démarrage et bloquera le chat
+            try {
+                // Créer et envoyer un message iFrame à l'utilisateur banni
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                document.body.appendChild(iframe);
                 
-                // IMPORTANT: Écrire dans localStorage pour l'appareil banni
-                // Ceci est nettement plus fiable que la vérification via la base de données
-                localStorage.setItem('chat_device_banned', 'true');
-                if (expiryTime) {
-                    localStorage.setItem('chat_device_banned_until', expiryTime.toString());
-                } else {
-                    localStorage.setItem('chat_device_banned_until', 'permanent');
-                }
+                // Créer un script qui écrit dans le localStorage de l'utilisateur banni
+                const script = `
+                    localStorage.setItem('chat_device_banned', 'true');
+                    ${duration ? `localStorage.setItem('chat_device_banned_until', '${Date.now() + duration}');` : 
+                                `localStorage.setItem('chat_device_banned_until', 'permanent');`}
+                    console.log("APPAREIL BANNI: Stockage local mis à jour");
+                `;
+                
+                // Exécuter le script dans l'iFrame
+                iframe.contentWindow.eval(script);
+                
+                // Supprimer l'iFrame
+                setTimeout(() => {
+                    document.body.removeChild(iframe);
+                }, 1000);
+                
+                console.log("Script de bannissement injecté");
+            } catch (e) {
+                console.error("Erreur lors de l'injection du script de bannissement:", e);
             }
         }
         
