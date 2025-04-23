@@ -706,28 +706,6 @@ setupAuthListeners() {
             }
         });
     }
-    
-	// 🔍 Vérification par IP publique
-try {
-    const ipRes = await fetch("https://api.ipify.org?format=json");
-    const ipData = await ipRes.json();
-    const publicIP = ipData.ip;
-
-    const { data: ipBan, error: ipError } = await this.supabase
-        .from('banned_ips')
-        .select('*')
-        .eq('ip', publicIP)
-        .maybeSingle();
-
-    if (!ipError && ipBan && (!ipBan.expires_at || new Date(ipBan.expires_at) > new Date())) {
-        console.log('IP PUBLIQUE BANNIE DÉTECTÉE!');
-        this.showNotification('Cette adresse IP est bannie du chat', 'error');
-        this.playSound('error');
-        return;
-    }
-} catch (e) {
-    console.error("Erreur lors de la vérification de l’IP publique:", e);
-}
 
     if (confirmButton) {
         confirmButton.addEventListener('click', async () => {
@@ -793,6 +771,27 @@ try {
                 if (!existingUser || (queryError && queryError.code === 'PGRST116')) {
                     console.log('Création d\'un nouvel utilisateur');
                     
+						// 🔍 Vérification par IP publique
+	try {
+		const ipRes = await fetch("https://api.ipify.org?format=json");
+		const ipData = await ipRes.json();
+		const publicIP = ipData.ip;
+
+		const { data: ipBan, error: ipError } = await this.supabase
+			.from('banned_ips')
+			.select('*')
+			.eq('ip', publicIP)
+			.maybeSingle();
+
+		if (!ipError && ipBan && (!ipBan.expires_at || new Date(ipBan.expires_at) > new Date())) {
+			console.log('IP PUBLIQUE BANNIE DÉTECTÉE!');
+			this.showNotification('Cette adresse IP est bannie du chat', 'error');
+			this.playSound('error');
+			return;
+		}
+	} catch (e) {
+		console.error("Erreur lors de la vérification de l’IP publique:", e);
+	}
                     // Insérer directement dans users
 	const { data: newUser, error: insertError } = await this.supabase
 	  .from('users')
