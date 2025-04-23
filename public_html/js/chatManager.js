@@ -593,137 +593,129 @@ if (chatMessages) {
 }
   }  
 setupAuthListeners() {
-  const pseudoInput = this.container.querySelector('#pseudoInput');
-  const adminPasswordInput = this.container.querySelector('#adminPassword');
-  const confirmButton = this.container.querySelector('#confirmPseudo');
+    const pseudoInput = this.container.querySelector('#pseudoInput');
+    const adminPasswordInput = this.container.querySelector('#adminPassword');
+    const confirmButton = this.container.querySelector('#confirmPseudo');
 
-  if (pseudoInput) {
-    pseudoInput.addEventListener('input', () => {
-      console.log('Pseudo input:', pseudoInput.value.trim());
-      if (pseudoInput.value.trim() === 'jhd71') {
-        console.log('Affichage du champ mot de passe admin');
-        adminPasswordInput.style.display = 'block';
-      } else {
-        adminPasswordInput.style.display = 'none';
-        adminPasswordInput.value = '';
-      }
-    });
-  }
+    if (pseudoInput) {
+        pseudoInput.addEventListener('input', () => {
+            console.log('Pseudo input:', pseudoInput.value.trim());
+            if (pseudoInput.value.trim() === 'jhd71') {
+                console.log('Affichage du champ mot de passe admin');
+                adminPasswordInput.style.display = 'block';
+            } else {
+                adminPasswordInput.style.display = 'none';
+                adminPasswordInput.value = '';
+            }
+        });
+    }
+    
+    if (confirmButton) {
+        confirmButton.addEventListener('click', async () => {
+            const pseudo = pseudoInput?.value.trim();
+            const adminPassword = adminPasswordInput?.value;
 
-  if (confirmButton) {
-    confirmButton.addEventListener('click', async () => {
-      const pseudo = pseudoInput?.value.trim();
-      const adminPassword = adminPasswordInput?.value;
+            console.log('Tentative de connexion avec pseudo:', pseudo);
 
-      console.log('Tentative de connexion avec pseudo:', pseudo);
+            if (!pseudo || pseudo.length < 3) {
+                this.showNotification('Le pseudo doit faire au moins 3 caractères', 'error');
+                this.playSound('error');
+                return;
+            }
 
-      if (!pseudo || pseudo.length < 3) {
-        this.showNotification('Le pseudo doit faire au moins 3 caractères', 'error');
-        this.playSound('error');
-        return;
-      }
+            try {
+                // Cas administrateur
+                let isAdmin = false;
+                if (pseudo === 'jhd71') {
+                    console.log('Tentative connexion admin');
+                    
+                    if (adminPassword !== 'admin2024') {
+                        this.showNotification('Mot de passe administrateur incorrect', 'error');
+                        this.playSound('error');
+                        return;
+                    }
+                    
+                    isAdmin = true;
+                } else {
+                    console.log('Tentative connexion utilisateur normal');
+                }
 
-      try {
-        // Cas administrateur
-        let isAdmin = false;
-        if (pseudo === 'jhd71') {
-          console.log('Tentative connexion admin');
+                // Vérifier si l'utilisateur existe déjà
+                const { data: existingUser, error: queryError } = await this.supabase
+                    .from('users')
+                    .select('*')
+                    .eq('pseudo', pseudo)
+                    .single();
+                
+                console.log('Résultat recherche utilisateur:', existingUser, queryError);
+                
+                                // Si l'utilisateur n'existe pas ou erreur "not found", le créer
+                if (!existingUser || (queryError && queryError.code === 'PGRST116')) {
+                    console.log('Création d\'un nouvel utilisateur');
+                    
+                    // Insérer directement dans users
+                    const { data: newUser, error: insertError } = await this.supabase
+                        .from('users')
+                        .insert([
+                            { 
+                                pseudo: pseudo,
+                                last_active: new Date().toISOString(),
+                                is_admin: isAdmin,
+                                requires_password: true
+                            }
+                        ])
+                        .select();
+                    
+                    if (insertError) {
+                        console.error('Erreur création utilisateur:', insertError);
+                        throw insertError;
+                    }
+                    
+                    console.log('Utilisateur créé avec succès:', newUser);
+                }
 
-          if (adminPassword !== 'admin2024') {
-            this.showNotification('Mot de passe administrateur incorrect', 'error');
-            this.playSound('error');
-            return;
-          }
+                // Définir les variables de session
+                this.pseudo = pseudo;
+                this.isAdmin = isAdmin;
+                localStorage.setItem('chatPseudo', pseudo);
+                localStorage.setItem('isAdmin', isAdmin);
+				this.startBanMonitoring();
 
-          isAdmin = true;
-        } else {
-          console.log('Tentative connexion utilisateur normal');
-        }
-
-        // Récupérer l'IP publique via ipify
-        let publicIP = null;
-        try {
-          const ipRes = await fetch("https://api.ipify.org?format=json");
-          const ipData = await ipRes.json();
-          publicIP = ipData.ip;
-          console.log('Adresse IP publique obtenue :', publicIP);
-        } catch (e) {
-          console.warn('Impossible de récupérer l’IP publique');
-        }
-
-        // Vérifier si l'utilisateur existe déjà
-        const { data: existingUser, error: queryError } = await this.supabase
-          .from('users')
-          .select('*')
-          .eq('pseudo', pseudo)
-          .single();
-
-        console.log('Résultat recherche utilisateur:', existingUser, queryError);
-
-        // Si l'utilisateur n'existe pas ou erreur "not found", le créer
-        if (!existingUser || (queryError && queryError.code === 'PGRST116')) {
-          console.log('Création d\'un nouvel utilisateur');
-
-          const { data: newUser, error: insertError } = await this.supabase
-            .from('users')
-            .insert([
-              {
-                pseudo: pseudo,
-                last_active: new Date().toISOString(),
-                is_admin: isAdmin,
-                requires_password: true,
-                ip: publicIP // ✅ IP enregistrée dans la table
-              }
-            ])
-            .select();
-
-          if (insertError) {
-            console.error('Erreur création utilisateur:', insertError);
-            throw insertError;
-          }
-
-          console.log('Utilisateur créé avec succès:', newUser);
-        }
-
-        // Définir les variables de session
-        this.pseudo = pseudo;
-        this.isAdmin = isAdmin;
-        localStorage.setItem('chatPseudo', pseudo);
-        localStorage.setItem('isAdmin', isAdmin);
-        this.startBanMonitoring();
-
-        // Actualiser l'interface
-        if (document.getElementById('chatToggleBtn')) {
-          this.container.innerHTML = this.getChatHTMLWithoutToggle();
-        } else {
-          this.container.innerHTML = this.getChatHTML();
-        }
-
-        const chatContainer = this.container.querySelector('.chat-container');
-        if (chatContainer) {
-          chatContainer.classList.add('open');
-          this.isOpen = true;
-          localStorage.setItem('chatOpen', 'true');
-
-          document.body.classList.add('no-scroll');
-          chatContainer.addEventListener('touchend', () => {
-            document.body.classList.remove('no-scroll');
-          });
-        }
-
-        this.setupListeners();
-        await this.loadExistingMessages();
-        this.playSound('success');
-
-      } catch (error) {
-        console.error('Erreur d\'authentification:', error);
-        this.showNotification('Erreur lors de la connexion: ' + error.message, 'error');
-        this.playSound('error');
-      }
-    });
-  }
+                // Actualiser l'interface
+if (document.getElementById('chatToggleBtn')) {
+    this.container.innerHTML = this.getChatHTMLWithoutToggle();
+} else {
+    this.container.innerHTML = this.getChatHTML();
 }
 
+const chatContainer = this.container.querySelector('.chat-container');
+if (chatContainer) {
+    chatContainer.classList.add('open');
+    this.isOpen = true;
+    localStorage.setItem('chatOpen', 'true');
+
+    // Désactiver le scroll global quand le chat est ouvert
+    document.body.classList.add('no-scroll');
+
+    // Réactiver le scroll global quand le chat se ferme
+    chatContainer.addEventListener('touchend', () => {
+        document.body.classList.remove('no-scroll');
+    });
+}
+
+this.setupListeners();
+await this.loadExistingMessages();
+this.playSound('success');
+
+                
+            } catch (error) {
+                console.error('Erreur d\'authentification:', error);
+                this.showNotification('Erreur lors de la connexion: ' + error.message, 'error');
+                this.playSound('error');
+            }
+        });
+    }
+}
 async registerUser(pseudo, password, isAdmin = false) {
     try {
         console.log('Tentative d\'inscription de l\'utilisateur:', pseudo, 'admin:', isAdmin);
@@ -2035,35 +2027,6 @@ addInputAccessButton() {
     return accessButton;
 }
 
-async loadRecentIps() {
-  const result = await this.supabase
-    .from('users')
-    .select('pseudo, ip, last_active')
-    .order('last_active', { ascending: false })
-    .limit(10);
-
-  const container = document.querySelector('#recent-ips-list');
-  if (!container) return;
-
-  if (result.error) {
-    container.innerHTML = `<div class="error">Erreur chargement IPs</div>`;
-    console.error(result.error);
-    return;
-  }
-
-  if (result.data.length === 0) {
-    container.textContent = "Aucune IP récente trouvée.";
-    return;
-  }
-
-  container.innerHTML = result.data.map(user =>
-    `<div class="ip-entry">
-       <strong>${user.pseudo}</strong> – ${user.ip || 'IP inconnue'}<br>
-       <small>${new Date(user.last_active).toLocaleString()}</small>
-     </div>`
-  ).join('');
-}
-
 showAdminPanel() {
     if (!this.isAdmin) return;
 
@@ -2085,7 +2048,6 @@ showAdminPanel() {
         <div class="panel-tabs">
             <button class="tab-btn active" data-tab="banned-words">Mots bannis</button>
             <button class="tab-btn" data-tab="banned-ips">IPs bannies</button>
-			<button class="tab-btn" data-tab="recent-ips">IPs récentes</button>
             <button class="tab-btn" data-tab="notifications">Notifications</button>
         </div>
         <div class="panel-content">
@@ -2100,14 +2062,9 @@ showAdminPanel() {
 
             <div class="tab-section" id="banned-ips-section">
                 <h4>IPs bannies</h4>
-                <div class="tab-section" id="recent-ips-section">
-	  <h4>IPs récentes</h4>
-	  <div id="recent-ips-list">Chargement...</div>
-	</div>
-				<div class="tab-section" id="recent-ips-section">
-	  <h4>Utilisateurs récents</h4>
-	  <div id="recentIpsList">Chargement...</div>
-	</div>
+                <div class="banned-ips-list">
+                    <div class="loading-ips">Chargement des IPs bannies...</div>
+                </div>
             </div>
 <div class="tab-section" id="notifications-section">
   <h4>🚨 Envoyer une notification importante</h4>
@@ -2136,7 +2093,6 @@ showAdminPanel() {
     `;
 
     document.body.appendChild(panel);
-	this.loadRecentIps();
     this.loadBannedWords();
     this.loadBannedIPs();
 // ─── Script pour colorer le bouton quand « urgente » est cochée ───
@@ -2204,51 +2160,7 @@ if (urgentChk && submitBtn){          // sécurité
 
     // Fermer le panneau
     panel.querySelector('.close-panel').addEventListener('click', () => panel.remove());
-	// Fonction pour charger les derniers utilisateurs avec IP
-	this.loadRecentIps = async () => {
-	  const container = document.getElementById('recentIpsList');
-	  if (!container) return;
-
-	  container.innerHTML = "Chargement...";
-	  const { data, error } = await this.supabase
-		.from('users')
-		.select('id, pseudo, ip, last_active')
-		.order('last_active', { ascending: false })
-		.limit(10);
-
-	  if (error || !data) {
-		container.innerHTML = "Erreur lors du chargement des IPs.";
-		return;
-	  }
-
-	  container.innerHTML = data.map(user => `
-		<div class="ip-entry">
-		  <strong>${user.pseudo}</strong> — IP: ${user.ip || "inconnue"}
-		  <button class="ban-ip-btn" data-ip="${user.ip}" style="margin-left:10px;">🛑 Bannir</button>
-		</div>
-	  `).join('');
-
-	  // Gestion du clic sur "bannir"
-	  container.querySelectorAll('.ban-ip-btn').forEach(btn => {
-		btn.addEventListener('click', async () => {
-		  const ip = btn.dataset.ip;
-		  if (!ip || !confirm(`Bannir l’IP ${ip} ?`)) return;
-
-		  const { error } = await this.supabase
-			.from('banned_ips')
-			.insert([{ ip }]);
-
-		  if (error) {
-			alert("Erreur lors du bannissement");
-		  } else {
-			alert("IP bannie !");
-			await this.loadRecentIps();
-		  }
-		});
-	  });
-	};
-
-	}
+}
 
     async addBannedWord(word) {
         const { error } = await this.supabase
