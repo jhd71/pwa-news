@@ -1505,6 +1505,43 @@ body.long-press-active .message-options {
 .device-ban {
     border-left: 3px solid #2196f3;
 }
+
+/* Section des IPs récentes */
+#recentIpsList {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Chaque ligne d'IP */
+.ip-entry {
+  background: #f1f1f1;
+  padding: 10px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+/* Bouton bannir IP */
+.ban-ip-btn {
+  background: #d32f2f;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.ban-ip-btn:hover {
+  background: #b71c1c;
+}
+
 /* ============================
    Responsive design
 ============================ */
