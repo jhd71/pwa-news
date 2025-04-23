@@ -2035,6 +2035,35 @@ addInputAccessButton() {
     return accessButton;
 }
 
+async loadRecentIps() {
+  const result = await this.supabase
+    .from('users')
+    .select('pseudo, ip, last_active')
+    .order('last_active', { ascending: false })
+    .limit(10);
+
+  const container = document.querySelector('#recent-ips-list');
+  if (!container) return;
+
+  if (result.error) {
+    container.innerHTML = `<div class="error">Erreur chargement IPs</div>`;
+    console.error(result.error);
+    return;
+  }
+
+  if (result.data.length === 0) {
+    container.textContent = "Aucune IP récente trouvée.";
+    return;
+  }
+
+  container.innerHTML = result.data.map(user =>
+    `<div class="ip-entry">
+       <strong>${user.pseudo}</strong> – ${user.ip || 'IP inconnue'}<br>
+       <small>${new Date(user.last_active).toLocaleString()}</small>
+     </div>`
+  ).join('');
+}
+
 showAdminPanel() {
     if (!this.isAdmin) return;
 
@@ -2056,7 +2085,6 @@ showAdminPanel() {
         <div class="panel-tabs">
             <button class="tab-btn active" data-tab="banned-words">Mots bannis</button>
             <button class="tab-btn" data-tab="banned-ips">IPs bannies</button>
-			<button class="tab-btn" data-tab="recent-ips">Dernières IPs</button>
             <button class="tab-btn" data-tab="notifications">Notifications</button>
         </div>
         <div class="panel-content">
@@ -2071,9 +2099,10 @@ showAdminPanel() {
 
             <div class="tab-section" id="banned-ips-section">
                 <h4>IPs bannies</h4>
-                <div class="banned-ips-list">
-                    <div class="loading-ips">Chargement des IPs bannies...</div>
-                </div>
+                <div class="tab-section" id="recent-ips-section">
+	  <h4>IPs récentes</h4>
+	  <div id="recent-ips-list">Chargement...</div>
+	</div>
 				<div class="tab-section" id="recent-ips-section">
 	  <h4>Utilisateurs récents</h4>
 	  <div id="recentIpsList">Chargement...</div>
