@@ -742,7 +742,7 @@ setupAuthListeners() {
 	  return;
 	}
 
-        }
+        
 // 🔍 Vérification par IP publique
 try {
     const ipRes = await fetch("https://api.ipify.org?format=json");
