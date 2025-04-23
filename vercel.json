@@ -33,7 +33,10 @@
 	  "src": "^/notification$",
 	  "dest": "/public_html/notification.html"
 	},
-
+	{
+	  "src": "^/chat-banned$",
+	  "dest": "/public_html/chat-banned.html"
+	},
     {
       "src": "/(.*)",
       "dest": "/public_html/$1"
