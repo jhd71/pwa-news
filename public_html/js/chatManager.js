@@ -23,31 +23,43 @@ class ChatManager {
         this.unreadCount = parseInt(localStorage.getItem('unreadCount') || '0');
     }
 
-async setCurrentUserForRLS() {
-        try {
-            if (!this.pseudo) return false;
-            
-            console.log(`Définition de l'utilisateur courant pour RLS: ${this.pseudo}`);
-            const { error } = await this.supabase.rpc('set_current_user', { 
-                user_pseudo: this.pseudo 
-            });
-            
-            if (error) {
-                console.error('Erreur définition utilisateur RLS:', error);
-                return false;
-            }
-            
-            console.log('Utilisateur RLS défini avec succès');
-            return true;
-        } catch (error) {
-            console.error('Erreur RLS:', error);
-            return false;
-        }
-    }
+	getDeviceId() {
+			let deviceId = localStorage.getItem('chat_device_id');
+			if (!deviceId) {
+				deviceId = 'device_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+				localStorage.setItem('chat_device_id', deviceId);
+				console.log('Nouvel identifiant d\'appareil généré:', deviceId);
+			} else {
+				console.log('Identifiant d\'appareil existant:', deviceId);
+			}
+			return deviceId;
+		}
+		
+	async setCurrentUserForRLS() {
+			try {
+				if (!this.pseudo) return false;
+				
+				console.log(`Définition de l'utilisateur courant pour RLS: ${this.pseudo}`);
+				const { error } = await this.supabase.rpc('set_current_user', { 
+					user_pseudo: this.pseudo 
+				});
+				
+				if (error) {
+					console.error('Erreur définition utilisateur RLS:', error);
+					return false;
+				}
+				
+				console.log('Utilisateur RLS défini avec succès');
+				return true;
+			} catch (error) {
+				console.error('Erreur RLS:', error);
+				return false;
+			}
+		}
 	
     async init() {
     try {
-		// Vérifier d'abord le bannissement local
+        // Vérifier d'abord le bannissement local
         const bannedUntil = localStorage.getItem('device_banned_until');
         if (bannedUntil) {
             if (bannedUntil === 'permanent' || parseInt(bannedUntil) > Date.now()) {
@@ -68,6 +80,7 @@ async setCurrentUserForRLS() {
                 localStorage.removeItem('device_banned_until');
             }
         }
+        
         await this.loadBannedWords();
         
         // Vérifier si l'utilisateur est banni avant de continuer
@@ -648,16 +661,28 @@ setupAuthListeners() {
     
     if (confirmButton) {
         confirmButton.addEventListener('click', async () => {
-            const pseudo = pseudoInput?.value.trim();
-            const adminPassword = adminPasswordInput?.value;
+    const pseudo = pseudoInput?.value.trim();
+    const adminPassword = adminPasswordInput?.value;
+    const deviceId = this.getDeviceId();
+    
+    console.log('Tentative de connexion avec pseudo:', pseudo);
+    console.log('ID d\'appareil:', deviceId);
 
-            console.log('Tentative de connexion avec pseudo:', pseudo);
+    if (!pseudo || pseudo.length < 3) {
+        this.showNotification('Le pseudo doit faire au moins 3 caractères', 'error');
+        this.playSound('error');
+        return;
+    }
 
-            if (!pseudo || pseudo.length < 3) {
-                this.showNotification('Le pseudo doit faire au moins 3 caractères', 'error');
-                this.playSound('error');
-                return;
-            }
+    try {
+        // Vérification simplifiée du bannissement d'appareil
+        const isDeviceBanned = await this.isDeviceBanned();
+        if (isDeviceBanned) {
+            console.log('[DEBUG] APPAREIL BANNI DÉTECTÉ - ACCÈS REFUSÉ');
+            this.showNotification('Votre appareil est banni du chat', 'error');
+            this.playSound('error');
+            return;
+        }
 
             try {
                 // Cas administrateur
@@ -1690,6 +1715,44 @@ optimizeForLowEndDevices() {
     }
 }
 
+// Après votre méthode checkBannedIP ou toute autre méthode appropriée
+async isDeviceBanned() {
+    try {
+        const deviceId = this.getDeviceId();
+        console.log(`[DEBUG] Vérification bannissement pour appareil: ${deviceId}`);
+        
+        // Récupérer TOUS les bannissements pour voir ce qui est stocké
+        const { data: allBans, error: allBansError } = await this.supabase
+            .from('banned_ips')
+            .select('*');
+            
+        if (!allBansError && allBans) {
+            console.log(`[DEBUG] Tous les bannissements:`, allBans);
+            
+            // Chercher manuellement notre appareil dans la liste
+            const deviceBan = allBans.find(ban => ban.ip === deviceId);
+            if (deviceBan) {
+                console.log(`[DEBUG] Bannissement trouvé pour appareil: ${deviceId}`, deviceBan);
+                
+                // Vérifier si le bannissement est expiré
+                if (deviceBan.expires_at && new Date(deviceBan.expires_at) < new Date()) {
+                    console.log(`[DEBUG] Bannissement expiré pour appareil: ${deviceId}`);
+                    return false;
+                }
+                
+                console.log(`[DEBUG] APPAREIL BANNI DÉTECTÉ: ${deviceId}`);
+                return true;
+            }
+        }
+        
+        console.log(`[DEBUG] Aucun bannissement trouvé pour appareil: ${deviceId}`);
+        return false;
+    } catch (error) {
+        console.error('[DEBUG] Erreur vérification bannissement appareil:', error);
+        return false;
+    }
+}
+
     async getClientIP() {
     try {
         // Utiliser uniquement le pseudo comme identifiant pour le bannissement
@@ -2389,10 +2452,10 @@ if (urgentChk && submitBtn){          // sécurité
 
     async banUser(userIdentifier, reason = '', duration = null) {
     try {
-        // Extraire le pseudo de l'identifiant (format: pseudo-timestamp)
+        // Extraire le pseudo
         const pseudo = userIdentifier.includes('-') ? userIdentifier.split('-')[0] : userIdentifier;
         
-        // Convertir la durée en heures
+        // Convertir la durée
         let durationHours = null;
         if (duration) {
             durationHours = Math.floor(duration / 3600000);
@@ -2400,7 +2463,7 @@ if (urgentChk && submitBtn){          // sécurité
         
         console.log(`Bannissement de l'utilisateur ${pseudo} pour ${durationHours || 'durée indéfinie'} heures`);
         
-        // 1. Bannir le pseudo en utilisant admin_ban_user
+        // 1. Bannir le pseudo
         const { data: pseudoBanData, error: pseudoBanError } = await this.supabase.rpc('admin_ban_user', {
             user_pseudo: pseudo,
             ban_reason: reason || 'Non spécifié',
@@ -2415,7 +2478,7 @@ if (urgentChk && submitBtn){          // sécurité
         
         console.log('Pseudo banni avec succès:', pseudo);
         
-        // 2. Bannir l'appareil actuel - AJOUT IMPORTANT
+        // 2. Bannir l'appareil actuel
         const deviceId = this.getDeviceId();
         console.log(`Tentative de bannir l'appareil actuel: ${deviceId}`);
         
@@ -2428,14 +2491,13 @@ if (urgentChk && submitBtn){          // sécurité
         
         if (deviceBanError) {
             console.error('Erreur bannissement appareil:', deviceBanError);
-            // On continue même en cas d'erreur
         } else {
             console.log('Appareil banni avec succès:', deviceId);
+            
+            // Stockage local pour double sécurité
+            localStorage.setItem('device_banned_until', durationHours ? 
+                (Date.now() + durationHours * 3600000).toString() : 'permanent');
         }
-        
-        // Stockage local de sécurité
-        localStorage.setItem('device_banned_until', durationHours ? 
-            (Date.now() + durationHours * 3600000).toString() : 'permanent');
         
         this.showNotification(`Utilisateur "${pseudo}" et son appareil bannis avec succès`, 'success');
         this.playSound('success');
