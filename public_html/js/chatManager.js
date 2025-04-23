@@ -2085,6 +2085,7 @@ showAdminPanel() {
         <div class="panel-tabs">
             <button class="tab-btn active" data-tab="banned-words">Mots bannis</button>
             <button class="tab-btn" data-tab="banned-ips">IPs bannies</button>
+			<button class="tab-btn" data-tab="recent-ips">IPs récentes</button>
             <button class="tab-btn" data-tab="notifications">Notifications</button>
         </div>
         <div class="panel-content">
