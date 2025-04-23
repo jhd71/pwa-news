@@ -2677,34 +2677,24 @@ if (urgentChk && submitBtn){          // sécurité
         } else {
             console.log('Appareil banni avec succès:', deviceId);
             
-            // SOLUTION RADICALE : Ecrire dans une clé spéciale dans LocalStorage
-            // Cette clé sera vérifiée au démarrage et bloquera le chat
-            try {
-                // Créer et envoyer un message iFrame à l'utilisateur banni
-                const iframe = document.createElement('iframe');
-                iframe.style.display = 'none';
-                document.body.appendChild(iframe);
+            // SOLUTION ULTRA-RADICALE: Utiliser un cookie persistant et une redirection
+            const cookieScript = document.createElement('script');
+            cookieScript.textContent = `
+                // Créer un cookie de bannissement qui expire dans 10 ans
+                document.cookie = "chat_banned=true; expires=${new Date(Date.now() + 315360000000).toUTCString()}; path=/; SameSite=Strict";
                 
-                // Créer un script qui écrit dans le localStorage de l'utilisateur banni
-                const script = `
-                    localStorage.setItem('chat_device_banned', 'true');
-                    ${duration ? `localStorage.setItem('chat_device_banned_until', '${Date.now() + duration}');` : 
-                                `localStorage.setItem('chat_device_banned_until', 'permanent');`}
-                    console.log("APPAREIL BANNI: Stockage local mis à jour");
-                `;
+                // Stocker aussi dans localStorage
+                localStorage.setItem('chat_device_banned', 'true');
+                localStorage.setItem('chat_device_banned_until', 'permanent');
                 
-                // Exécuter le script dans l'iFrame
-                iframe.contentWindow.eval(script);
+                console.log("BANNISSEMENT PERSISTANT ACTIVÉ");
                 
-                // Supprimer l'iFrame
+                // Recharger la page pour activer le bannissement
                 setTimeout(() => {
-                    document.body.removeChild(iframe);
-                }, 1000);
-                
-                console.log("Script de bannissement injecté");
-            } catch (e) {
-                console.error("Erreur lors de l'injection du script de bannissement:", e);
-            }
+                    window.location.reload();
+                }, 2000);
+            `;
+            document.head.appendChild(cookieScript);
         }
         
         this.showNotification(`Utilisateur "${pseudo}" banni avec succès`, 'success');
@@ -2712,10 +2702,20 @@ if (urgentChk && submitBtn){          // sécurité
         
         // Actualiser immédiatement les messages
         await this.loadExistingMessages();
+        // Rediriger vers une page de bannissement
+        const banScript = document.createElement('script');
+        banScript.textContent = `
+            // Définir les marqueurs de bannissement
+            localStorage.setItem('chat_device_banned', 'true');
+            
+            // Rediriger vers une page de bannissement
+            window.location.href = '/chat-banned.html';
+        `;
+        document.head.appendChild(banScript);
+        
         return true;
     } catch (error) {
         console.error('Erreur bannissement:', error);
-        this.showNotification('Erreur lors du bannissement: ' + (error.message || 'Accès non autorisé'), 'error');
         return false;
     }
 }

@@ -78,6 +78,37 @@
     <script src="https://ekjgfiyhkythqcnmhzea.supabase.co"></script>
 </head>
 <body>
+<script>
+// Vérification de bannissement ultra-stricte
+(function() {
+    if (document.cookie.includes('chat_banned=true') || localStorage.getItem('chat_device_banned') === 'true') {
+        console.log("APPAREIL BANNI: Chat bloqué");
+        
+        // Attendre que le DOM soit chargé
+        window.addEventListener('DOMContentLoaded', function() {
+            // Masquer tous les éléments du chat
+            const elements = document.querySelectorAll('.chat-widget, .chat-toggle, #chatToggleBtn');
+            elements.forEach(el => {
+                if (el) el.style.display = 'none';
+            });
+            
+            // Afficher le message de bannissement
+            const banMessage = document.createElement('div');
+            banMessage.style.position = 'fixed';
+            banMessage.style.bottom = '20px';
+            banMessage.style.right = '20px';
+            banMessage.style.backgroundColor = '#d32f2f';
+            banMessage.style.color = 'white';
+            banMessage.style.padding = '15px';
+            banMessage.style.borderRadius = '10px';
+            banMessage.style.boxShadow = '0 2px 10px rgba(0,0,0,0.3)';
+            banMessage.style.zIndex = '9999';
+            banMessage.innerHTML = '🚫 Accès au chat bloqué';
+            document.body.appendChild(banMessage);
+        });
+    }
+})();
+</script>
 <header class="app-header">
     <button type="button" id="menuButton" class="menu-button" aria-label="Menu">
         <span class="material-icons">menu</span>
