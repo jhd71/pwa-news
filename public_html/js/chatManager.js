@@ -127,17 +127,43 @@ class ChatManager {
         if (localStorage.getItem('chat_device_banned') === 'true') {
             console.error("APPAREIL BANNI: Initialisation du chat bloquée");
             
-            this.container = document.createElement('div');
-            this.container.className = 'chat-widget';
-            this.container.innerHTML = `
-                <div class="chat-banned-banner">
-                    <div class="banned-icon">🚫</div>
-                    <div class="banned-title">Appareil banni</div>
-                    <div class="banned-message">Cet appareil a été banni du chat.</div>
-                </div>
-            `;
-            document.body.appendChild(this.container);
-            const bannedUntil = localStorage.getItem('chat_device_banned_until');
+            // Vérifier si le CSS est déjà chargé
+	if (!document.getElementById('chat-ban-css')) {
+		const link = document.createElement('link');
+		link.id = 'chat-ban-css';
+		link.rel = 'stylesheet';
+		link.href = '/css/chat-ban.css';
+		document.head.appendChild(link);
+	}
+
+	// Créer le message de bannissement
+	const banMessage = document.createElement('div');
+	banMessage.className = 'chat-banned-message';
+	banMessage.innerHTML = `
+		<div class="banned-icon">🚫</div>
+		<h2>Accès interdit</h2>
+		<p>Votre accès au chat a été suspendu.</p>
+		<button id="dismiss-ban-message" style="background: rgba(255,255,255,0.2); border: none; padding: 5px 10px; margin-top: 10px; color: white; border-radius: 5px; cursor: pointer;">Fermer</button>
+	`;
+
+	// Ajouter au document
+	document.body.appendChild(banMessage);
+
+	// Ajouter une fonction pour fermer le message
+	setTimeout(() => {
+		const dismissBtn = document.getElementById('dismiss-ban-message');
+		if (dismissBtn) {
+			dismissBtn.addEventListener('click', function() {
+				banMessage.style.display = 'none';
+			});
+		}
+	}, 100);
+
+	// On garde container pour le chat lui-même
+	this.container = document.createElement('div');
+	this.container.className = 'chat-widget hidden';
+	document.body.appendChild(this.container);
+				const bannedUntil = localStorage.getItem('chat_device_banned_until');
             let isBanned = true;
             
             // Vérifier si le bannissement a expiré
@@ -160,17 +186,42 @@ class ChatManager {
                 localStorage.removeItem('chatPseudo');
                 localStorage.removeItem('isAdmin');
                 
-                // Afficher un message d'erreur
-                this.container = document.createElement('div');
-                this.container.className = 'chat-widget';
-                this.container.innerHTML = `
-                    <div class="chat-banned-banner">
-                        <div class="banned-icon">🚫</div>
-                        <div class="banned-title">Appareil banni</div>
-                        <div class="banned-message">Cet appareil a été banni du chat.</div>
-                    </div>
-                `;
-                document.body.appendChild(this.container);
+                // Vérifier si le CSS est déjà chargé
+	if (!document.getElementById('chat-ban-css')) {
+		const link = document.createElement('link');
+		link.id = 'chat-ban-css';
+		link.rel = 'stylesheet';
+		link.href = '/css/chat-ban.css';
+		document.head.appendChild(link);
+	}
+
+	// Créer le message de bannissement
+	const banMessage = document.createElement('div');
+	banMessage.className = 'chat-banned-message';
+	banMessage.innerHTML = `
+		<div class="banned-icon">🚫</div>
+		<h2>Accès interdit</h2>
+		<p>Votre accès au chat a été suspendu.</p>
+		<button id="dismiss-ban-message" style="background: rgba(255,255,255,0.2); border: none; padding: 5px 10px; margin-top: 10px; color: white; border-radius: 5px; cursor: pointer;">Fermer</button>
+	`;
+
+	// Ajouter au document
+	document.body.appendChild(banMessage);
+
+	// Ajouter une fonction pour fermer le message
+	setTimeout(() => {
+		const dismissBtn = document.getElementById('dismiss-ban-message');
+		if (dismissBtn) {
+			dismissBtn.addEventListener('click', function() {
+				banMessage.style.display = 'none';
+			});
+		}
+	}, 100);
+
+	// On garde container pour le chat lui-même
+	this.container = document.createElement('div');
+	this.container.className = 'chat-widget hidden';
+	document.body.appendChild(this.container);
                 
                 // Empêcher l'initialisation du chat
                 return;
