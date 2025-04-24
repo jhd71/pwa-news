@@ -1,6 +1,6 @@
 .chat-banned-message {
   position: fixed;
-  bottom: 20px;
+  bottom: 60px; /* ← augmenté pour ne pas chevaucher le bas */
   right: 20px;
   background: linear-gradient(135deg, #d32f2f, #b71c1c);
   color: white;
@@ -8,7 +8,7 @@
   padding: 15px;
   text-align: center;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-  max-width: calc(100vw - 40px); /* Évite que ça déborde */
+  max-width: calc(100vw - 40px);
   width: 260px;
   z-index: 9999;
   animation: pulse 1.5s ease-in-out infinite;
