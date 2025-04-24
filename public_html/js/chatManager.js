@@ -1625,11 +1625,15 @@ createMessageElement(message) {
         // Créer l'identifiant unique pour ce message
         const messageIp = `${this.pseudo}-${Date.now()}`;
         
-        // Construire le message avec l'identifiant
+        // Obtenir l'IP réelle de l'utilisateur
+        const realIP = await this.getClientRealIP();
+        
+        // Construire le message avec l'identifiant et l'IP réelle
         const message = {
             pseudo: this.pseudo,
             content: content,
             ip: messageIp,
+            real_ip: realIP, // Nouvelle propriété
             created_at: new Date().toISOString()
         };
         
@@ -1642,46 +1646,13 @@ createMessageElement(message) {
             
         if (error) throw error;
         
-        // Envoi de la notification
-        if (messageData) {
-                try {
-                    // On utilise notre nouveau gestionnaire de notifications via API
-                    const response = await fetch("/api/send-notification.js", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            title: `Message de ${this.pseudo}`,
-                            body: content,
-                            chatMessage: true,
-                            icon: '/images/AM-192-v2.png',
-                            data: {
-                                type: 'chat',
-                                messageId: messageData.id,
-                                senderId: this.pseudo,
-                                timestamp: Date.now()
-                            },
-                            sendToAll: true
-                        })
-                    });
-                    
-                    if (response.ok) {
-                        const result = await response.json();
-                        console.log("✅ Notification envoyée :", result);
-                    } else {
-                        console.warn("❌ Erreur API notifications:", response.status);
-                    }
-                } catch (notifError) {
-                    console.error("❌ Erreur notification push:", notifError);
-                    // Continuer malgré l'erreur
-                }
-            }
-            
-            return true;
-        } catch (error) {
-            console.error('Erreur sendMessage:', error);
-            return false;
-        }
+        // Le reste de votre code existant...
+        return true;
+    } catch (error) {
+        console.error('Erreur sendMessage:', error);
+        return false;
     }
+}
 
     // Remplacez votre méthode setupPushNotifications par celle-ci:
     async setupPushNotifications() {
@@ -2834,44 +2805,46 @@ if (urgentChk && submitBtn){          // sécurité
         
         console.log('Pseudo banni avec succès:', pseudo);
         
-        // 2. Obtenir l'adresse IP réelle
-        const realIP = await this.getClientRealIP();
-        
-        if (realIP) {
-            console.log(`Adresse IP réelle obtenue: ${realIP}`);
+        // 2. Récupérer les messages de cet utilisateur pour obtenir son IP
+        const { data: userMessages, error: messagesError } = await this.supabase
+            .from('messages')
+            .select('*')
+            .eq('pseudo', pseudo)
+            .order('created_at', { ascending: false })
+            .limit(1);
             
-            // 3. Bannir l'IP réelle
-            try {
-                const { error: ipBanError } = await this.supabase
-                    .from('banned_real_ips')
-                    .insert({
-                        ip: realIP,
-                        banned_at: new Date().toISOString(),
-                        expires_at: expiresAt,
-                        reason: `IP de ${pseudo} - ${reason || 'Non spécifié'}`,
-                        banned_by: this.pseudo
-                    });
+        if (messagesError) {
+            console.error('Erreur récupération messages:', messagesError);
+        } else if (userMessages && userMessages.length > 0) {
+            const messageIP = await this.getMessageIP(userMessages[0]);
+            
+            if (messageIP) {
+                console.log(`IP de l'utilisateur banni à bloquer: ${messageIP}`);
                 
-                if (ipBanError) {
-                    console.error('Erreur bannissement IP réelle:', ipBanError);
-                } else {
-                    console.log(`IP réelle ${realIP} bannie avec succès`);
+                // 3. Bannir cette IP réelle
+                try {
+                    const { error: ipBanError } = await this.supabase
+                        .from('banned_real_ips')
+                        .insert({
+                            ip: messageIP,
+                            banned_at: new Date().toISOString(),
+                            expires_at: expiresAt,
+                            reason: `IP de ${pseudo} - ${reason || 'Non spécifié'}`,
+                            banned_by: this.pseudo
+                        });
                     
-                    // Stockage local pour référence future
-                    localStorage.setItem('device_banned_until', expiresAt || 'permanent');
-                    localStorage.setItem('chat_device_banned', 'true');
-                    
-                    // Afficher notification et jouer le son
-                    this.showNotification(`Utilisateur "${pseudo}" banni avec succès`, 'success');
-                    this.playSound('success');
-                    
-                    // Forcer un rechargement de la page pour appliquer le bannissement
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 2000);
+                    if (ipBanError) {
+                        console.error('Erreur bannissement IP réelle:', ipBanError);
+                    } else {
+                        console.log(`IP ${messageIP} bannie avec succès`);
+                        
+                        // Afficher notification et jouer le son
+                        this.showNotification(`Utilisateur "${pseudo}" et son IP bannis avec succès`, 'success');
+                        this.playSound('success');
+                    }
+                } catch (e) {
+                    console.error('Exception lors du bannissement IP:', e);
                 }
-            } catch (e) {
-                console.error('Exception lors du bannissement IP:', e);
             }
         }
         
@@ -2882,6 +2855,43 @@ if (urgentChk && submitBtn){          // sécurité
         console.error('Erreur bannissement:', error);
         this.showNotification('Erreur lors du bannissement: ' + (error.message || 'Accès non autorisé'), 'error');
         return false;
+    }
+}
+
+// Nouvelle méthode pour obtenir l'IP d'un message
+async getMessageIP(message) {
+    try {
+        // Si nous avons l'IP stockée directement dans le message, l'utiliser
+        if (message.real_ip) {
+            return message.real_ip;
+        }
+        
+        // Si nous avons une table qui associe les pseudos à des IPs
+        const { data: userIPs, error: userIPsError } = await this.supabase
+            .from('user_connections')
+            .select('ip')
+            .eq('pseudo', message.pseudo)
+            .order('connected_at', { ascending: false })
+            .limit(1);
+            
+        if (!userIPsError && userIPs && userIPs.length > 0) {
+            return userIPs[0].ip;
+        }
+        
+        // Si nous n'avons pas d'autre moyen, utiliser l'IP du message comme dernier recours
+        if (message.ip) {
+            // L'IP peut être au format "pseudo-timestamp"
+            const ipParts = message.ip.split('-');
+            if (ipParts.length > 1) {
+                return ipParts[0]; // Retourner juste le pseudo comme identifiant
+            }
+            return message.ip;
+        }
+        
+        return null;
+    } catch (error) {
+        console.error('Erreur récupération IP message:', error);
+        return null;
     }
 }
     async checkNotificationStatus() {
