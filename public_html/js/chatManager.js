@@ -246,23 +246,37 @@ class ChatManager {
                 if (!ipBan.expires_at || new Date(ipBan.expires_at) > new Date()) {
                     console.log(`IP réelle bannie: ${realIP}`);
                     
-                    // Créer un message de bannissement fixe
-                    const banDiv = document.createElement('div');
-                    banDiv.style.position = 'fixed';
-                    banDiv.style.top = '50%';
-                    banDiv.style.left = '50%';
-                    banDiv.style.transform = 'translate(-50%, -50%)';
-                    banDiv.style.backgroundColor = '#d32f2f';
-                    banDiv.style.color = 'white';
-                    banDiv.style.padding = '20px';
-                    banDiv.style.borderRadius = '10px';
-                    banDiv.style.textAlign = 'center';
-                    banDiv.style.zIndex = '9999';
-                    banDiv.style.width = '80%';
-                    banDiv.style.maxWidth = '400px';
-                    banDiv.innerHTML = '<h2>Accès interdit</h2><p>Votre adresse IP a été bannie du chat.</p>';
-                    
-                    document.body.appendChild(banDiv);
+                    // Vérifier si le CSS est déjà chargé
+	if (!document.getElementById('chat-ban-css')) {
+		const link = document.createElement('link');
+		link.id = 'chat-ban-css';
+		link.rel = 'stylesheet';
+		link.href = '/css/chat-ban.css';
+		document.head.appendChild(link);
+	}
+
+	// Créer le message de bannissement
+	const banDiv = document.createElement('div');
+	banDiv.className = 'chat-banned-message';
+	banDiv.innerHTML = `
+		<div class="banned-icon">🚫</div>
+		<h2>Accès interdit</h2>
+		<p>Votre adresse IP a été bannie du chat.</p>
+		<button id="dismiss-ban-message" style="background: rgba(255,255,255,0.2); border: none; padding: 5px 10px; margin-top: 10px; color: white; border-radius: 5px; cursor: pointer;">Fermer</button>
+	`;
+
+	// Ajouter au document
+	document.body.appendChild(banDiv);
+
+	// Ajouter une fonction pour fermer le message
+	setTimeout(() => {
+		const dismissBtn = document.getElementById('dismiss-ban-message');
+		if (dismissBtn) {
+			dismissBtn.addEventListener('click', function() {
+				banDiv.style.display = 'none';
+			});
+		}
+	}, 100);
                     
                     // Si un utilisateur était connecté, le déconnecter
                     if (this.pseudo) {
