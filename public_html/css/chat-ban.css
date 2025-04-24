@@ -1,0 +1,28 @@
+.chat-banned-message {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #d32f2f, #b71c1c);
+    color: white;
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    max-width: 90%;
+    width: 250px;
+    z-index: 9999;
+}
+
+.banned-icon {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.chat-banned-banner {
+    background: linear-gradient(135deg, #d32f2f, #b71c1c);
+    color: white;
+    padding: 10px;
+    text-align: center;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}

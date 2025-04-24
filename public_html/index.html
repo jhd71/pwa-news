@@ -79,32 +79,16 @@
 </head>
 <body>
 <script>
-// Vérification de bannissement ultra-stricte
+// Vérification de bannissement simplifiée - juste pour cacher le bouton de chat
 (function() {
     if (document.cookie.includes('chat_banned=true') || localStorage.getItem('chat_device_banned') === 'true') {
-        console.log("APPAREIL BANNI: Chat bloqué");
+        console.log("APPAREIL BANNI: Bouton de chat masqué");
         
         // Attendre que le DOM soit chargé
         window.addEventListener('DOMContentLoaded', function() {
-            // Masquer tous les éléments du chat
-            const elements = document.querySelectorAll('.chat-widget, .chat-toggle, #chatToggleBtn');
-            elements.forEach(el => {
-                if (el) el.style.display = 'none';
-            });
-            
-            // Afficher le message de bannissement
-            const banMessage = document.createElement('div');
-            banMessage.style.position = 'fixed';
-            banMessage.style.bottom = '20px';
-            banMessage.style.right = '20px';
-            banMessage.style.backgroundColor = '#d32f2f';
-            banMessage.style.color = 'white';
-            banMessage.style.padding = '15px';
-            banMessage.style.borderRadius = '10px';
-            banMessage.style.boxShadow = '0 2px 10px rgba(0,0,0,0.3)';
-            banMessage.style.zIndex = '9999';
-            banMessage.innerHTML = '🚫 Accès au chat bloqué';
-            document.body.appendChild(banMessage);
+            // Masquer uniquement le bouton de chat
+            const chatBtn = document.getElementById('chatToggleBtn');
+            if (chatBtn) chatBtn.style.display = 'none';
         });
     }
 })();
