@@ -11,13 +11,21 @@
     max-width: 90%;
     width: 250px;
     z-index: 9999;
+
+    animation: pulse 1.5s infinite;
 }
 
+@keyframes pulse {
+	0% { transform: translate(-50%, -50%) scale(1); }
+	50% { transform: translate(-50%, -50%) scale(1.05); }
+	100% { transform: translate(-50%, -50%) scale(1); }
+	}
+					
 .banned-icon {
     font-size: 24px;
     margin-bottom: 5px;
 }
-
+					
 .chat-banned-banner {
     background: linear-gradient(135deg, #d32f2f, #b71c1c);
     color: white;
