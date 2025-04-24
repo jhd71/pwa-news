@@ -38,7 +38,7 @@ import notificationManager from '/js/notification-manager.js';
                 style.textContent = `
                     .chat-banned-message {
                         position: fixed;
-                        top: 50%;
+                        top: 30%;
                         left: 50%;
                         transform: translate(-50%, -50%);
                         background: linear-gradient(135deg, #d32f2f, #b71c1c);
@@ -195,7 +195,65 @@ class ChatManager {
             }
         }
         
-        // Si aucun bannissement local n'est trouvé, continuer normalement
+        // NOUVEAU: Vérification de l'IP réelle
+        const realIP = await this.getClientRealIP();
+        
+        if (realIP) {
+            console.log(`Vérification bannissement pour IP réelle: ${realIP}`);
+            
+            // Vérifie si l'IP est dans la table des IPs bannies
+            const { data: ipBan, error: ipBanError } = await this.supabase
+                .from('banned_real_ips')
+                .select('*')
+                .eq('ip', realIP)
+                .maybeSingle();
+                
+            if (!ipBanError && ipBan) {
+                // Vérifier si le bannissement est expiré
+                if (!ipBan.expires_at || new Date(ipBan.expires_at) > new Date()) {
+                    console.log(`IP réelle bannie: ${realIP}`);
+                    
+                    // Créer un message de bannissement fixe
+                    const banDiv = document.createElement('div');
+                    banDiv.style.position = 'fixed';
+                    banDiv.style.top = '50%';
+                    banDiv.style.left = '50%';
+                    banDiv.style.transform = 'translate(-50%, -50%)';
+                    banDiv.style.backgroundColor = '#d32f2f';
+                    banDiv.style.color = 'white';
+                    banDiv.style.padding = '20px';
+                    banDiv.style.borderRadius = '10px';
+                    banDiv.style.textAlign = 'center';
+                    banDiv.style.zIndex = '9999';
+                    banDiv.style.width = '80%';
+                    banDiv.style.maxWidth = '400px';
+                    banDiv.innerHTML = '<h2>Accès interdit</h2><p>Votre adresse IP a été bannie du chat.</p>';
+                    
+                    document.body.appendChild(banDiv);
+                    
+                    // Si un utilisateur était connecté, le déconnecter
+                    if (this.pseudo) {
+                        this.pseudo = null;
+                        this.isAdmin = false;
+                        localStorage.removeItem('chatPseudo');
+                        localStorage.removeItem('isAdmin');
+                    }
+                    
+                    this.deviceBanned = true;
+                    
+                    // Ne pas initialiser le chat
+                    return;
+                } else {
+                    // Le bannissement a expiré, supprimer l'entrée
+                    await this.supabase
+                        .from('banned_real_ips')
+                        .delete()
+                        .eq('ip', realIP);
+                }
+            }
+        }
+        
+        // Si aucun bannissement local ou d'IP n'est trouvé, continuer normalement
         await this.loadBannedWords();
         // Vérifier si l'appareil est banni localement
         const bannedUntil = localStorage.getItem('device_banned_until');
@@ -811,8 +869,24 @@ if (chatMessages) {
   }
   
 // Au début de votre fonction setupAuthListeners, avant de configurer les écouteurs
-setupAuthListeners() {
-    // Vérifier d'abord le bannissement local
+async setupAuthListeners() {
+    // Vérifier d'abord l'IP réelle
+    const realIP = await this.getClientRealIP();
+    if (realIP) {
+        const { data: ipBan, error: ipBanError } = await this.supabase
+            .from('banned_real_ips')
+            .select('*')
+            .eq('ip', realIP)
+            .maybeSingle();
+            
+        if (!ipBanError && ipBan && (!ipBan.expires_at || new Date(ipBan.expires_at) > new Date())) {
+            console.log('IP réelle bannie détectée');
+            this.showNotification('Votre adresse IP est bannie du chat', 'error');
+            return; // Arrêter l'authentification
+        }
+    }
+
+    // Vérifier ensuite le bannissement local
     const bannedUntil = localStorage.getItem('device_banned_until');
     if (bannedUntil) {
         if (bannedUntil === 'permanent' || parseInt(bannedUntil) > Date.now()) {
@@ -1457,6 +1531,11 @@ createMessageElement(message) {
             .from('banned_ips')
             .select('ip, expires_at');
             
+        // Obtenir la liste des IPs réelles bannies
+        const { data: bannedRealIPs, error: realIPError } = await this.supabase
+            .from('banned_real_ips')
+            .select('ip, expires_at');
+        
         // Filtrer les bannissements non expirés
         const now = new Date();
         const bannedUsersList = bannedUsers 
@@ -1465,7 +1544,17 @@ createMessageElement(message) {
                 .map(ban => ban.ip)
             : [];
             
+        const bannedRealIPList = bannedRealIPs
+            ? bannedRealIPs
+                .filter(ban => !ban.expires_at || new Date(ban.expires_at) > now)
+                .map(ban => ban.ip)
+            : [];
+            
         console.log('Utilisateurs bannis:', bannedUsersList);
+        console.log('IPs réelles bannies:', bannedRealIPList);
+        
+        // Obtenir l'IP réelle actuelle
+        const myRealIP = await this.getClientRealIP();
         
         const { data: messages, error } = await this.supabase
             .from('messages')
@@ -1483,7 +1572,14 @@ createMessageElement(message) {
                 const pseudoFromIP = msg.ip.split('-')[0];
                 
                 // Ne pas afficher les messages des utilisateurs bannis
-                if (!bannedUsersList.includes(pseudoFromIP) && !bannedUsersList.includes(msg.pseudo)) {
+                const isSenderBanned = bannedUsersList.includes(pseudoFromIP) || 
+                                      bannedUsersList.includes(msg.pseudo);
+                                      
+                // Si on a notre IP réelle et qu'elle est bannie, ne pas afficher nos messages non plus
+                const isMyMessage = msg.pseudo === this.pseudo;
+                const isMyIPBanned = myRealIP && bannedRealIPList.includes(myRealIP);
+                
+                if (!isSenderBanned && !(isMyMessage && isMyIPBanned)) {
                     container.appendChild(this.createMessageElement(msg));
                 } else {
                     console.log(`Message de l'utilisateur banni ${msg.pseudo} ignoré`);
@@ -1936,6 +2032,54 @@ async isDeviceBanned() {
     }
 }
 
+// Nouvelle méthode pour vérifier si l'adresse IP réelle est bannie
+async checkRealIPBan() {
+    // Si l'utilisateur n'est pas connecté, ne pas continuer
+    if (!this.pseudo) return false;
+    
+    // Obtenir l'adresse IP réelle
+    const realIP = await this.getClientRealIP();
+    if (!realIP) return false;
+    
+    // Vérifier dans la base de données si cette IP est bannie
+    const { data: ipBan, error: ipBanError } = await this.supabase
+        .from('banned_real_ips')
+        .select('*')
+        .eq('ip', realIP)
+        .maybeSingle();
+        
+    // Si un bannissement valide est trouvé
+    if (!ipBanError && ipBan && (!ipBan.expires_at || new Date(ipBan.expires_at) > new Date())) {
+        console.log('IP réelle bannie détectée pendant la session');
+        this.showNotification('Votre adresse IP a été bannie du chat', 'error');
+        
+        // Déconnecter l'utilisateur
+        await this.logout();
+        
+        // Afficher un message de bannissement
+        const banDiv = document.createElement('div');
+        banDiv.style.position = 'fixed';
+        banDiv.style.top = '50%';
+        banDiv.style.left = '50%';
+        banDiv.style.transform = 'translate(-50%, -50%)';
+        banDiv.style.backgroundColor = '#d32f2f';
+        banDiv.style.color = 'white';
+        banDiv.style.padding = '20px';
+        banDiv.style.borderRadius = '10px';
+        banDiv.style.textAlign = 'center';
+        banDiv.style.zIndex = '9999';
+        banDiv.style.width = '80%';
+        banDiv.style.maxWidth = '400px';
+        banDiv.innerHTML = '<h2>Accès interdit</h2><p>Votre adresse IP a été bannie du chat.</p>';
+        
+        document.body.appendChild(banDiv);
+        
+        return true;
+    }
+    
+    return false;
+}
+
     async getClientIP() {
     try {
         // Utiliser uniquement le pseudo comme identifiant pour le bannissement
@@ -1945,16 +2089,42 @@ async isDeviceBanned() {
     }
 }
 
+// Nouvelle méthode pour obtenir l'adresse IP réelle de l'utilisateur
+// Cette méthode utilise un service externe pour déterminer l'IP publique
+async getClientRealIP() {
+    try {
+        // Appel à l'API ipify qui retourne l'adresse IP dans un format JSON
+        const response = await fetch('https://api.ipify.org?format=json');
+        // Conversion de la réponse en objet JSON
+        const data = await response.json();
+        // Affichage de l'IP dans la console pour le débogage
+        console.log('IP réelle obtenue:', data.ip);
+        // Retourne l'adresse IP
+        return data.ip;
+    } catch (error) {
+        // En cas d'erreur, afficher l'erreur dans la console
+        console.error('Erreur obtention IP:', error);
+        // Retourne null en cas d'échec
+        return null;
+    }
+}
+
 startBanMonitoring() {
     console.log(`Démarrage de la surveillance des bannissements pour ${this.pseudo}`);
     
     // Vérifier immédiatement
     this.checkBannedStatus();
     
-    // Puis vérifier toutes les 10 secondes
-    this.banMonitorInterval = setInterval(() => {
-        this.checkBannedStatus();
-    }, 10000);
+    // Puis vérifier toutes les 30 secondes
+    this.banMonitorInterval = setInterval(async () => {
+        // Vérifier d'abord le bannissement par pseudo
+        const isBanned = await this.checkBannedStatus();
+        
+        // Si pas banni par le pseudo, vérifier par IP réelle
+        if (!isBanned) {
+            await this.checkRealIPBan();
+        }
+    }, 30000);  // Augmenté à 30 secondes pour réduire la charge serveur
 }
 
 async checkBannedStatus() {
@@ -2640,8 +2810,11 @@ if (urgentChk && submitBtn){          // sécurité
         
         // Convertir la durée
         let durationHours = null;
+        let expiresAt = null;
+        
         if (duration) {
             durationHours = Math.floor(duration / 3600000);
+            expiresAt = new Date(Date.now() + duration).toISOString();
         }
         
         console.log(`Bannissement de l'utilisateur ${pseudo} pour ${durationHours || 'durée indéfinie'} heures`);
@@ -2661,61 +2834,53 @@ if (urgentChk && submitBtn){          // sécurité
         
         console.log('Pseudo banni avec succès:', pseudo);
         
-        // 2. Bannir l'appareil actuel
-        const deviceId = this.getDeviceId();
-        console.log(`Tentative de bannir l'appareil actuel: ${deviceId}`);
+        // 2. Obtenir l'adresse IP réelle
+        const realIP = await this.getClientRealIP();
         
-        const { data: deviceBanData, error: deviceBanError } = await this.supabase.rpc('admin_ban_user', {
-            user_pseudo: deviceId,
-            ban_reason: `Appareil associé à ${pseudo} - ${reason || 'Non spécifié'}`,
-            duration_hours: durationHours,
-            admin_pseudo: this.pseudo
-        });
-        
-        if (deviceBanError) {
-            console.error('Erreur bannissement appareil:', deviceBanError);
-        } else {
-            console.log('Appareil banni avec succès:', deviceId);
+        if (realIP) {
+            console.log(`Adresse IP réelle obtenue: ${realIP}`);
             
-            // SOLUTION ULTRA-RADICALE: Utiliser un cookie persistant et une redirection
-            const cookieScript = document.createElement('script');
-            cookieScript.textContent = `
-                // Créer un cookie de bannissement qui expire dans 10 ans
-                document.cookie = "chat_banned=true; expires=${new Date(Date.now() + 315360000000).toUTCString()}; path=/; SameSite=Strict";
+            // 3. Bannir l'IP réelle
+            try {
+                const { error: ipBanError } = await this.supabase
+                    .from('banned_real_ips')
+                    .insert({
+                        ip: realIP,
+                        banned_at: new Date().toISOString(),
+                        expires_at: expiresAt,
+                        reason: `IP de ${pseudo} - ${reason || 'Non spécifié'}`,
+                        banned_by: this.pseudo
+                    });
                 
-                // Stocker aussi dans localStorage
-                localStorage.setItem('chat_device_banned', 'true');
-                localStorage.setItem('chat_device_banned_until', 'permanent');
-                
-                console.log("BANNISSEMENT PERSISTANT ACTIVÉ");
-                
-                // Recharger la page pour activer le bannissement
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
-            `;
-            document.head.appendChild(cookieScript);
+                if (ipBanError) {
+                    console.error('Erreur bannissement IP réelle:', ipBanError);
+                } else {
+                    console.log(`IP réelle ${realIP} bannie avec succès`);
+                    
+                    // Stockage local pour référence future
+                    localStorage.setItem('device_banned_until', expiresAt || 'permanent');
+                    localStorage.setItem('chat_device_banned', 'true');
+                    
+                    // Afficher notification et jouer le son
+                    this.showNotification(`Utilisateur "${pseudo}" banni avec succès`, 'success');
+                    this.playSound('success');
+                    
+                    // Forcer un rechargement de la page pour appliquer le bannissement
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                }
+            } catch (e) {
+                console.error('Exception lors du bannissement IP:', e);
+            }
         }
         
-        this.showNotification(`Utilisateur "${pseudo}" banni avec succès`, 'success');
-        this.playSound('success');
-        
-        // Actualiser immédiatement les messages
+        // Actualiser les messages pour cacher les messages de l'utilisateur banni
         await this.loadExistingMessages();
-        // Rediriger vers une page de bannissement
-        const banScript = document.createElement('script');
-        banScript.textContent = `
-            // Définir les marqueurs de bannissement
-            localStorage.setItem('chat_device_banned', 'true');
-            
-            // Rediriger vers une page de bannissement
-            window.location.href = '/chat-banned.html';
-        `;
-        document.head.appendChild(banScript);
-        
         return true;
     } catch (error) {
         console.error('Erreur bannissement:', error);
+        this.showNotification('Erreur lors du bannissement: ' + (error.message || 'Accès non autorisé'), 'error');
         return false;
     }
 }
