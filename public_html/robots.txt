@@ -1,3 +1,5 @@
 User-agent: *
 Allow: /
-Sitemap: https://jhd71.fr/sitemap.xml
+Disallow: /api/
+
+Sitemap: https://actuetmedia.fr/sitemap.xml
