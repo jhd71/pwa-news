@@ -1,58 +1,45 @@
 <!DOCTYPE html>
 <html lang="fr" data-theme="light" data-font-size="normal">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#1a237e">
-    <meta name="description" content="Actu&Média">
-    <title>Actu&Média</title>
-    <!-- PWA -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Actu&Média">
-    <link rel="icon" type="image/png" sizes="192x192" href="/images/AM-192-v2.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="/images/AM-512-v2.png">
-	<link rel="icon" type="image/x-icon" href="/favicon.ico">
-<!--[if IE]>
-  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-<![endif]-->
-    <link rel="apple-touch-icon" sizes="192x192" href="/images/AM-192-v2.png">
-    <!-- Swiper CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
-    <!-- SwiperJS -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <!-- Ajoutez ces métas -->
-    <meta name="application-name" content="Actu&Média">
-    <meta name="msapplication-navbutton-color" content="#1a237e">
-    <meta name="msapplication-starturl" content="/">
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#1a237e">
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1a237e">
-    <!-- SEO meta tags -->
-    <meta name="description" content="Actu & Média - Votre source d'actualités locales et médias en Saône-et-Loire. Informations locales, radio et TV en direct.">
-    <meta name="keywords" content="actualités, Saône-et-Loire, Montceau News, Le JSL, L'Informateur, Creusot Infos, France Bleu, BFM TV, médias locaux">
-    <meta name="author" content="Actu & Média">
-	<meta name="google-site-verification" content="74sCYbSwcWjU7BQ8Mxhboe9IiRzajIbyy6C1hyuAr3U" />
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://actuetmedia.fr/">
-    <meta property="og:title" content="Actu & Média - Actualités et médias locaux">
-    <meta property="og:description" content="Votre source d'actualités locales et médias en Saône-et-Loire. Informations locales, radio et TV en direct.">
-    <meta property="og:image" content="https://actuetmedia.fr/images/INFOS.png">
+  <title>Actu & Média - Toute l’info locale en temps réel</title>
+  <meta name="description" content="Actu & Média - Suivez en temps réel l’actualité de votre région : Saône-et-Loire, Montceau, Le Creusot, radios locales, vidéos, annonces, sondages et plus encore.">
+  <meta name="author" content="Actu & Média">
+  <meta name="application-name" content="Actu & Média">
+  <meta name="theme-color" content="#1a237e">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Actu & Média">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="msapplication-TileColor" content="#1a237e">
+  <meta name="msapplication-TileImage" content="/images/INFOS-192.png">
+  <meta name="google-site-verification" content="74sCYbSwcWjU7BQ8Mxhboe9IiRzajIbyy6C1hyuAr3U" />
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://actuetmedia.fr/">
-    <meta property="twitter:title" content="Actu & Média - Actualités et médias locaux">
-    <meta property="twitter:description" content="Votre source d'actualités locales et médias en Saône-et-Loire. Informations locales, radio et TV en direct.">
-    <meta property="twitter:image" content="https://actuetmedia.fr/images/INFOS.png">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://actuetmedia.fr/">
+  <meta property="og:title" content="Actu & Média - Toute l’info locale en temps réel">
+  <meta property="og:description" content="Infos locales, radios, vidéos et actus de Saône-et-Loire.">
+  <meta property="og:image" content="https://actuetmedia.fr/images/INFOS.png">
 
-    <!-- Microsoft Meta Tags -->
-    <meta name="msapplication-TileImage" content="images/INFOS-192.png">
-    <meta name="msapplication-TileColor" content="#1a237e">
-<!-- Ajoutez ce code dans la section <head> de votre index.html -->
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://actuetmedia.fr/">
+  <meta name="twitter:title" content="Actu & Média - Toute l’info locale en temps réel">
+  <meta name="twitter:description" content="Infos locales, radios, vidéos et actus de Saône-et-Loire.">
+  <meta name="twitter:image" content="https://actuetmedia.fr/images/INFOS.png">
+
+  <!-- Icons -->
+  <link rel="icon" type="image/png" sizes="192x192" href="/images/AM-192-v2.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/images/AM-512-v2.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="/images/AM-192-v2.png">
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- Swiper CSS/JS (inchangés si tu les utilises) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 <!-- Écrans de démarrage pour iOS -->
 <link rel="apple-touch-startup-image" href="images/splash-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
@@ -63,10 +50,6 @@
 <link rel="apple-touch-startup-image" href="images/splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
 <link rel="apple-touch-startup-image" href="images/splash-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
 
-<!-- Améliorations des meta tags -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <!-- Styles -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
@@ -75,8 +58,6 @@
     <link rel="stylesheet" href="css/widgets.css">
 	<link rel="stylesheet" href="css/settings-styles.css">
 	<link rel="stylesheet" href="/css/chat-ban.css">
-    <!-- Notifications -->
-    <script src="https://ekjgfiyhkythqcnmhzea.supabase.co"></script>
 </head>
 <body>
 <script>
