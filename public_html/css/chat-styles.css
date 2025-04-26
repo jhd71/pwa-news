@@ -1637,3 +1637,128 @@ body.long-press-active .message-options {
   border-color:#b71c1c !important;
   color:#fff !important;
 }
+
+/* ===========================
+   Styles pour les réactions
+   =========================== */
+.message-reactions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.reaction-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  color: #555;
+}
+
+.reaction {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(76,175,80,0.15) !important;
+  border: 1px solid rgba(76,175,80,0.25) !important;
+  border-radius: 12px;
+  padding: 2px 6px;
+  margin-right: 4px;
+  margin-bottom: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.reaction:hover {
+  background: rgba(76,175,80,0.25) !important;
+  transform: scale(1.05);
+}
+.reaction-emoji {
+  margin-right: 3px;
+}
+.reaction-count {
+  font-size: 11px;
+  font-weight: bold;
+}
+.reaction.user-reacted {
+  background: rgba(76,175,80,0.3) !important;
+  border: 1px solid rgba(56,142,60,0.4) !important;
+}
+
+/* bouton “+” toujours visible au survol */
+.add-reaction {
+  font-size: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 3px;
+  margin-top: 4px;
+  display: inline-block;
+  transition: all 0.2s;
+  opacity: 0.5;
+}
+.message:hover .add-reaction {
+  opacity: 1;
+}
+
+/* =======================
+   Styles pour emoji-picker
+   ======================= */
+.emoji-picker {
+  position: fixed !important;
+  z-index: 99999 !important;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: 8px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  
+  /* hauteur = 2 lignes de spans (2rem hauteur + 10px padding span) x2 + 16px du padding picker */
+  max-height: calc((2rem + 10px) * 2 + 16px);
+  overflow-y: auto;
+  /* ne plus mettre overflow: visible, pour que le scroll clip sans découpe transparente */
+}
+
+.emoji-picker span {
+  height: 2rem;
+  line-height: 2rem;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 5px;
+  border-radius: 4px;
+  text-align: center;
+}
+.emoji-picker span:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+@media (min-width: 768px) {
+  .emoji-picker {
+    transform: translateX(-20px);
+  }
+}
+
+/* ==============
+   Thème sombre
+   ============== */
+[data-theme="dark"] .reaction {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+[data-theme="dark"] .reaction:hover {
+  background: rgba(255,255,255,0.2);
+}
+[data-theme="dark"] .add-reaction {
+  color: #ccc;
+}
+[data-theme="dark"] .emoji-picker {
+  background: #333;
+  border: 1px solid #555;
+}
+[data-theme="dark"] .emoji-picker span:hover {
+  background: rgba(255,255,255,0.1);
+}

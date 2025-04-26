@@ -1387,6 +1387,19 @@ toggleEmojiPanel() {
                 }
             }
         )
+		
+		.on('postgres_changes', 
+  { event: '*', schema: 'public', table: 'message_reactions' },
+  (payload) => {
+    console.log('Changement dans les réactions:', payload);
+    if (payload.new && payload.new.message_id) {
+      this.loadMessageReactions(payload.new.message_id);
+    } else if (payload.old && payload.old.message_id) {
+      this.loadMessageReactions(payload.old.message_id);
+    }
+  }
+)
+
         .subscribe((status) => {
             console.log('Statut de la souscription temps réel:', status);
         });
@@ -1493,17 +1506,30 @@ setupBanChecker() {
 }
 
 createMessageElement(message) {
-    const div = document.createElement('div');
-    div.className = `message ${message.pseudo === this.pseudo ? 'sent' : 'received'}`;
-    div.dataset.messageId = message.id;
+  const div = document.createElement('div');
+  div.className = `message ${message.pseudo === this.pseudo ? 'sent' : 'received'}`;
+  div.dataset.messageId = message.id;
 
-    div.innerHTML = `
-        <div class="message-author">${message.pseudo}</div>
-        <div class="message-content">${this.escapeHtml(message.content)}</div>
-        <div class="message-time">${this.formatMessageTime(message.created_at)}</div>
-    `;
+  // Modification de la structure du message
+div.innerHTML = `
+  <div class="message-author">${message.pseudo}</div>
+  <div class="message-content">${this.escapeHtml(message.content)}</div>
+  <div class="message-time">${this.formatMessageTime(message.created_at)}</div>
+  <div class="message-reactions" data-message-id="${message.id}"></div>
+  <button class="add-reaction" title="Ajouter une réaction">
+    <span class="material-icons">add_reaction</span>
+  </button>
+`;
 
-    if (this.isAdmin || message.pseudo === this.pseudo) {
+  // Gestion des réactions
+  const addReactionBtn = div.querySelector('.add-reaction');
+  addReactionBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    this.showEmojiPicker(message.id, e.clientX, e.clientY);
+  });
+
+  // Gestion du menu contextuel et de l'appui long (code existant)
+  if (this.isAdmin || message.pseudo === this.pseudo) {
         // Variables pour gérer l'appui long et prévenir les actions indésirables
         let touchTimer;
         let longPressActive = false;
@@ -1561,6 +1587,8 @@ createMessageElement(message) {
             longPressActive = false;
         });
     }
+	// Charger les réactions existantes
+  this.loadMessageReactions(message.id);
 
     return div;
 }
@@ -2941,6 +2969,154 @@ async getMessageIP(message) {
         return null;
     }
 }
+
+// Afficher le sélecteur d'emoji
+showEmojiPicker(messageId, x, y) {
+  // Supprimer tout picker existant
+  const existingPicker = document.querySelector('.emoji-picker');
+  if (existingPicker) existingPicker.remove();
+  
+  // Créer le nouveau picker
+  const picker = document.createElement('div');
+  picker.className = 'emoji-picker';
+  
+  // Liste des emojis courants
+  const commonEmojis = [
+  '👍','❤️','😂','😘','😮','😢','👏',  // 1ʳᵉ ligne (7)
+  '🔥','🎉','🤔','👎','😡','🚀','👀',  // 2ᵉ ligne (7)
+  '💋','🙌','🤗','🥳','😇','🙃','🤩'   // 3ᵉ ligne (7)
+];
+  
+  // Ajouter les emojis au picker
+  commonEmojis.forEach(emoji => {
+    const span = document.createElement('span');
+    span.textContent = emoji;
+    span.addEventListener('click', () => {
+      this.addReaction(messageId, emoji);
+      picker.remove();
+    });
+    picker.appendChild(span);
+  });
+  
+  // Ajouter au DOM pour calculer les dimensions
+  document.body.appendChild(picker);
+  
+  // Calculer la position pour éviter le débordement
+  const pickerRect = picker.getBoundingClientRect();
+  const windowWidth = window.innerWidth;
+  
+  // Ajuster la position pour éviter le débordement à droite
+  if (x + pickerRect.width > windowWidth) {
+    x = windowWidth - pickerRect.width - 10; // 10px de marge
+  }
+  
+  // S'assurer que le picker reste visible sur la gauche aussi
+  if (x < 10) {
+    x = 10;
+  }
+  
+  // Positionner le picker
+  picker.style.left = `${x}px`;
+  picker.style.top = `${y}px`;
+  
+  // Fermer le picker si on clique ailleurs
+  document.addEventListener('click', (e) => {
+    if (!picker.contains(e.target) && e.target !== document.querySelector(`[data-message-id="${messageId}"] .add-reaction`)) {
+      picker.remove();
+    }
+  }, { once: true });
+}
+
+// Ajouter une réaction à un message
+async addReaction(messageId, emoji) {
+  try {
+    // Vérifier si l'utilisateur a déjà réagi avec cet emoji
+    const { data: existingReactions, error: checkError } = await this.supabase
+      .from('message_reactions')
+      .select('*')
+      .eq('message_id', messageId)
+      .eq('user_pseudo', this.pseudo)
+      .eq('emoji', emoji);
+      
+    if (checkError) throw checkError;
+    
+    if (existingReactions && existingReactions.length > 0) {
+      // L'utilisateur a déjà réagi avec cet emoji, supprimer la réaction
+      const { error: deleteError } = await this.supabase
+        .from('message_reactions')
+        .delete()
+        .eq('id', existingReactions[0].id);
+        
+      if (deleteError) throw deleteError;
+    } else {
+      // Ajouter la nouvelle réaction
+      const { error: insertError } = await this.supabase
+        .from('message_reactions')
+        .insert({
+          message_id: messageId,
+          user_pseudo: this.pseudo,
+          emoji: emoji,
+          created_at: new Date().toISOString()
+        });
+        
+      if (insertError) throw insertError;
+    }
+    
+    // Rafraîchir l'affichage des réactions
+    this.loadMessageReactions(messageId);
+  } catch (error) {
+    console.error('Erreur lors de l\'ajout d\'une réaction:', error);
+    this.showNotification('Erreur lors de l\'ajout de la réaction', 'error');
+  }
+}
+
+// Charger les réactions d'un message
+async loadMessageReactions(messageId) {
+  try {
+    const { data: reactions, error } = await this.supabase
+      .from('message_reactions')
+      .select('*')
+      .eq('message_id', messageId);
+      
+    if (error) throw error;
+    
+    // Regrouper les réactions par emoji
+    const groupedReactions = {};
+    reactions.forEach(reaction => {
+      if (!groupedReactions[reaction.emoji]) {
+        groupedReactions[reaction.emoji] = [];
+      }
+      groupedReactions[reaction.emoji].push(reaction);
+    });
+    
+    // Afficher les réactions
+    const reactionsContainer = document.querySelector(`.message-reactions[data-message-id="${messageId}"]`);
+    if (reactionsContainer) {
+      reactionsContainer.innerHTML = '';
+      
+      Object.entries(groupedReactions).forEach(([emoji, users]) => {
+        const hasUserReacted = users.some(r => r.user_pseudo === this.pseudo);
+        
+        const reactionElement = document.createElement('div');
+        reactionElement.className = `reaction ${hasUserReacted ? 'user-reacted' : ''}`;
+        reactionElement.innerHTML = `
+          <span class="reaction-emoji">${emoji}</span>
+          <span class="reaction-count">${users.length}</span>
+        `;
+        
+        // Ajouter l'événement pour basculer la réaction
+        reactionElement.addEventListener('click', () => {
+          this.addReaction(messageId, emoji);
+        });
+        
+        reactionsContainer.appendChild(reactionElement);
+      });
+    }
+  } catch (error) {
+    console.error('Erreur lors du chargement des réactions:', error);
+  }
+}
+
     async checkNotificationStatus() {
         console.log('État des notifications:', {
             permission: Notification.permission,
