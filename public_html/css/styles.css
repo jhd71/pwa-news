@@ -1506,4 +1506,31 @@ main {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Mode sombre - Bleu */
+/* Suppression des effets de highlight sur mobile */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* Cibler spécifiquement les boutons et liens de widgets */
+.weather-show-btn,
+.quick-links-show-btn,
+.weather-mobile-btn,
+.quick-link,
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  outline: none;
+}
+
+/* Effet de pression alternatif (optionnel) */
+.weather-show-btn:active,
+.quick-links-show-btn:active,
+.weather-mobile-btn:active,
+.quick-link:active,
+button:active,
+a:active {
+  opacity: 0.7;
+  transform: scale(0.97);
+}
