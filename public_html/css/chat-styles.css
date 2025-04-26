@@ -1706,40 +1706,46 @@ body.long-press-active .message-options {
 /* =======================
    Styles pour emoji-picker
    ======================= */
+/* Style pour le sélecteur d'emoji - adapté aux mobiles */
 .emoji-picker {
-  position: fixed !important;
-  z-index: 99999 !important;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  padding: 8px;
+  position: absolute;
+  background: #333;
+  border-radius: 12px;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+  padding: 12px;
+  z-index: 1000;
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
+  grid-template-columns: repeat(7, 1fr); /* 7 colonnes comme dans votre arrangement */
+  gap: 8px;
+  max-width: 95%;
+}
+
+/* Sur mobile, agrandir les emojis pour meilleur tactile */
+@media (max-width: 768px) {
+  .emoji-picker {
+    padding: 12px;
+    grid-template-columns: repeat(7, 1fr); /* Conserver 7 colonnes */
+    width: 320px;
+  }
   
-  /* hauteur = 2 lignes de spans (2rem hauteur + 10px padding span) x2 + 16px du padding picker */
-  max-height: calc((2rem + 10px) * 2 + 16px);
-  overflow-y: auto;
-  /* ne plus mettre overflow: visible, pour que le scroll clip sans découpe transparente */
+  .emoji-picker span {
+    font-size: 22px; /* Légèrement plus grand sur mobile */
+    padding: 8px;
+  }
 }
 
 .emoji-picker span {
-  height: 2rem;
-  line-height: 2rem;
   cursor: pointer;
   font-size: 20px;
-  padding: 5px;
-  border-radius: 4px;
+  padding: 6px;
+  border-radius: 8px;
   text-align: center;
-}
-.emoji-picker span:hover {
-  background: rgba(0, 0, 0, 0.05);
+  transition: transform 0.1s ease;
 }
 
-@media (min-width: 768px) {
-  .emoji-picker {
-    transform: translateX(-20px);
-  }
+.emoji-picker span:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.2);
 }
 
 /* ==============
