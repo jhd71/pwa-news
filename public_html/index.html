@@ -1,83 +1,79 @@
 <!DOCTYPE html>
 <html lang="fr" data-theme="light" data-font-size="normal">
 <head>
-<!-- Google Tag Manager -->
-<script>
-(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id=GTM-N8FTF9GC'+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-N8FTF9GC');
-</script>
-<!-- End Google Tag Manager -->
+    <!-- Méta-informations essentielles -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="description" content="Actu & Média - Votre source d'actualités locales et médias en Saône-et-Loire. Informations locales, radio et TV en direct.">
+    <meta name="author" content="Actu & Média">
+    <meta name="keywords" content="actualités, Saône-et-Loire, Montceau News, Le JSL, L'Informateur, Creusot Infos, France Bleu, BFM TV, médias locaux">
+    <meta name="google-site-verification" content="74sCYbSwcWjU7BQ8Mxhboe9IiRzajIbyy6C1hyuAr3U">
+    <title>Actu&Média</title>
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <!-- Configuration PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="application-name" content="Actu&Média">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a237e">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#1a237e">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1a237e">
+    <meta name="msapplication-navbutton-color" content="#1a237e">
+    <meta name="msapplication-starturl" content="/">
+    <meta name="msapplication-TileColor" content="#1a237e">
 
-  <title>Actu & Média - Toute l’info locale en temps réel</title>
-  <meta name="description" content="Actu & Média - Suivez en temps réel l’actualité de votre région : Saône-et-Loire, Montceau, Le Creusot, radios locales, vidéos, annonces, sondages et plus encore.">
-  <meta name="author" content="Actu & Média">
-  <meta name="application-name" content="Actu & Média">
-  <meta name="theme-color" content="#1a237e">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Actu & Média">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="msapplication-TileColor" content="#1a237e">
-  <meta name="msapplication-TileImage" content="/images/INFOS-192.png">
-  <meta name="google-site-verification" content="74sCYbSwcWjU7BQ8Mxhboe9IiRzajIbyy6C1hyuAr3U" />
+    <!-- Configuration iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Actu&Média">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-  <!-- Open Graph -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://actuetmedia.fr/">
-  <meta property="og:title" content="Actu & Média - Toute l’info locale en temps réel">
-  <meta property="og:description" content="Infos locales, radios, vidéos et actus de Saône-et-Loire.">
-  <meta property="og:image" content="https://actuetmedia.fr/images/INFOS.png">
+    <!-- Favicons et icônes -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/AM-192-v2.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/images/AM-512-v2.png">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="192x192" href="/images/AM-192-v2.png">
+    <meta name="msapplication-TileImage" content="images/INFOS-192.png">
+    <!--[if IE]>
+      <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <![endif]-->
 
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:url" content="https://actuetmedia.fr/">
-  <meta name="twitter:title" content="Actu & Média - Toute l’info locale en temps réel">
-  <meta name="twitter:description" content="Infos locales, radios, vidéos et actus de Saône-et-Loire.">
-  <meta name="twitter:image" content="https://actuetmedia.fr/images/INFOS.png">
+    <!-- Écrans de démarrage iOS -->
+    <link rel="apple-touch-startup-image" href="images/splash-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="images/splash-1668x2388.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="images/splash-1536x2048.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="images/splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="images/splash-1242x2688.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="images/splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="images/splash-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
 
-  <!-- Icons -->
-  <link rel="icon" type="image/png" sizes="192x192" href="/images/AM-192-v2.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="/images/AM-512-v2.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="/images/AM-192-v2.png">
-  <link rel="manifest" href="manifest.json">
-  
-  <!-- Swiper CSS/JS (inchangés si tu les utilises) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <!-- Métadonnées Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://actuetmedia.fr/">
+    <meta property="og:title" content="Actu & Média - Actualités et médias locaux">
+    <meta property="og:description" content="Votre source d'actualités locales et médias en Saône-et-Loire. Informations locales, radio et TV en direct.">
+    <meta property="og:image" content="https://actuetmedia.fr/images/INFOS.png">
 
-<!-- Écrans de démarrage pour iOS -->
-<link rel="apple-touch-startup-image" href="images/splash-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-<link rel="apple-touch-startup-image" href="images/splash-1668x2388.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-<link rel="apple-touch-startup-image" href="images/splash-1536x2048.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-<link rel="apple-touch-startup-image" href="images/splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-<link rel="apple-touch-startup-image" href="images/splash-1242x2688.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-<link rel="apple-touch-startup-image" href="images/splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-<link rel="apple-touch-startup-image" href="images/splash-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <!-- Métadonnées Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://actuetmedia.fr/">
+    <meta property="twitter:title" content="Actu & Média - Actualités et médias locaux">
+    <meta property="twitter:description" content="Votre source d'actualités locales et médias en Saône-et-Loire. Informations locales, radio et TV en direct.">
+    <meta property="twitter:image" content="https://actuetmedia.fr/images/INFOS.png">
 
-    <!-- Styles -->
+    <!-- Bibliothèques externes -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Feuilles de style personnalisées -->
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/chat-styles.css">
     <link rel="stylesheet" href="css/news-panel.css">
     <link rel="stylesheet" href="css/widgets.css">
-	<link rel="stylesheet" href="css/settings-styles.css">
-	<link rel="stylesheet" href="/css/chat-ban.css">
-	<!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4152223070908654"
-     crossorigin="anonymous"></script>	 
+    <link rel="stylesheet" href="css/settings-styles.css">
+    <link rel="stylesheet" href="/css/chat-ban.css">
 </head>
 <body>
-	<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N8FTF9GC"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
-
 <script>
 // Vérification de bannissement simplifiée - juste pour cacher le bouton de chat
 (function() {
@@ -105,7 +101,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </h1>
 </header>
 <!-- Widget météo avec bouton de fermeture -->
-<div class="weather-sidebar" id="weatherSidebar" style="display: none;">
+<div class="weather-sidebar" id="weatherSidebar">
   <button class="weather-toggle" title="Masquer la météo">
     <span class="material-icons">close</span>
   </button>
@@ -631,7 +627,7 @@ window.refreshNews = refreshNews;
   
 </div>
 <!-- Widget liens rapides avec bouton de fermeture -->
-<div class="quick-links-sidebar" id="quickLinksSidebar" style="display: none;">
+<div class="quick-links-sidebar" id="quickLinksSidebar">
   <button class="quick-links-toggle" title="Masquer les liens rapides">
     <span class="material-icons">close</span>
   </button>
