@@ -12,6 +12,20 @@
   opacity: 1 !important;
 }
 
+/* Masquer le widget météo au chargement de la page */
+.weather-sidebar {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Ce style sera appliqué par JavaScript lorsque le widget doit être visible */
+.weather-sidebar.visible {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
 /* Styles communs pour les widgets flottants */
 .weather-sidebar,
 .quick-links-sidebar {

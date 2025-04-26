@@ -149,26 +149,29 @@ async function loadWeatherData() {
   // ====== FONCTIONS D'AFFICHAGE ======
   // Fonction pour afficher le widget météo
   function showWeatherWidget() {
-    console.log("Affichage du widget météo");
-    
-    if (weatherSidebar) {
-      // Chargement des données météo
+  console.log("Affichage du widget météo");
+  
+  if (weatherSidebar) {
+    // Chargement des données météo uniquement si elles n'ont pas déjà été chargées
+    if (!window.weatherDataLoaded) {
       loadWeatherData();
-      
-      // Affichage du widget
-      weatherSidebar.style.display = 'block';
-      weatherSidebar.style.visibility = 'visible';
-      weatherSidebar.style.opacity = '1';
-      weatherSidebar.classList.remove('hidden');
-      weatherSidebar.classList.add('visible');
-      
-      // Ajustement de la position
-      adjustWeatherWidgetPosition();
-      
-      // Gestion des boutons
-      manageButtonsVisibility(false);
+      window.weatherDataLoaded = true;
     }
+    
+    // Affichage du widget
+    weatherSidebar.style.display = 'block';
+    weatherSidebar.style.visibility = 'visible';
+    weatherSidebar.style.opacity = '1';
+    weatherSidebar.classList.remove('hidden');
+    weatherSidebar.classList.add('visible');
+    window.weatherDataLoaded = false;
+    // Ajustement de la position
+    adjustWeatherWidgetPosition();
+    
+    // Gestion des boutons
+    manageButtonsVisibility(false);
   }
+}
   
   // Fonction pour masquer le widget météo
   function hideWeatherWidget() {
