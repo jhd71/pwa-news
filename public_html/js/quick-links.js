@@ -2,7 +2,7 @@
 class QuickLinksWidget {
   constructor() {
     // Éléments DOM
-    this.sidebar = document.querySelector('.quick-links-sidebar');
+    this.sidebar = document.querySelector('#quickLinksSidebar');
     this.toggleBtn = document.querySelector('.quick-links-toggle');
     this.showBtn = document.getElementById('quickLinksShowBtn');
     
@@ -19,14 +19,39 @@ class QuickLinksWidget {
       return;
     }
     
+    // S'assurer que le widget est masqué initialement
+    if (this.sidebar) {
+      this.sidebar.style.display = 'none';
+      this.sidebar.style.visibility = 'hidden';
+      this.sidebar.style.opacity = '0';
+      this.sidebar.classList.add('hidden');
+    }
+    
     // Ajouter les écouteurs d'événements
     this.addEventListeners();
     
     // Observer les changements de thème pour correction des couleurs
     this.observeThemeChanges();
     
-    // Charger l'état initial
-    this.loadInitialState();
+    // Rendre le bouton d'affichage visible
+    this.makeShowButtonVisible();
+  }
+  
+  makeShowButtonVisible() {
+    if (this.showBtn) {
+      // Configurer d'abord pour l'animation
+      this.showBtn.style.opacity = '0';
+      this.showBtn.style.transform = 'scale(0)';
+      this.showBtn.style.display = 'flex';
+      
+      // Puis afficher avec une animation
+      setTimeout(() => {
+        this.showBtn.style.opacity = '1';
+        this.showBtn.style.transform = 'scale(1)';
+        this.showBtn.classList.add('visible');
+        console.log('Bouton de liens rapides visible');
+      }, 500);
+    }
   }
   
   addEventListeners() {
@@ -54,22 +79,6 @@ class QuickLinksWidget {
         this.adjustPosition();
       }
     });
-  }
-  
-  loadInitialState() {
-    // Toujours masquer le widget au démarrage
-    this.hideWidget();
-    
-    // S'assurer que le bouton est visible
-    if (this.showBtn) {
-      this.showBtn.style.opacity = '0';
-      this.showBtn.style.transform = 'scale(0)';
-      
-      // Afficher le bouton après un court délai
-      setTimeout(() => {
-        this.showBtn.classList.add('visible');
-      }, 300);
-    }
   }
   
   showWidget() {
@@ -183,40 +192,21 @@ class QuickLinksWidget {
   }
 }
 
-// Initialiser le widget au chargement du DOM
+// Un seul écouteur d'événements DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
   // Créer l'instance et l'exposer globalement
   window.quickLinksWidget = new QuickLinksWidget();
   
-  // Exposer également la méthode showQuickLinks globalement pour compatibilité
+  // Exposer les méthodes globalement pour compatibilité
   window.showQuickLinks = () => {
     if (window.quickLinksWidget) {
       window.quickLinksWidget.showWidget();
     }
   };
   
-  // Exposer également la méthode hideQuickLinks globalement pour compatibilité
   window.hideQuickLinks = () => {
     if (window.quickLinksWidget) {
       window.quickLinksWidget.hideWidget();
     }
   };
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-  // Vérifier si le bouton existe déjà
-  const quickLinksBtn = document.getElementById('quickLinksShowBtn');
-  
-  if (quickLinksBtn) {
-    // Forcer la visibilité du bouton
-    setTimeout(() => {
-      quickLinksBtn.style.opacity = '1';
-      quickLinksBtn.style.transform = 'scale(1)';
-      quickLinksBtn.style.display = 'flex';
-      quickLinksBtn.classList.add('visible');
-      console.log('Bouton de liens rapides forcé à être visible');
-    }, 500);
-  } else {
-    console.error('Bouton de liens rapides introuvable');
-  }
 });

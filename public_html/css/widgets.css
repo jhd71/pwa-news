@@ -1,4 +1,16 @@
-/* Corrections finales pour les widgets */
+/* Masquer le widget de liens rapides au chargement de la page */
+.quick-links-sidebar {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Ce style sera appliqué par JavaScript lorsque le widget doit être visible */
+.quick-links-sidebar.visible {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
 
 /* Styles communs pour les widgets flottants */
 .weather-sidebar,
