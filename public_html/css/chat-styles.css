@@ -1717,10 +1717,9 @@ body.long-press-active .message-options {
   grid-template-columns: repeat(7, 1fr);
   gap: 5px;
   
-  /* hauteur = 2 lignes de spans (2rem hauteur + 10px padding span) x2 + 16px du padding picker */
-  max-height: calc((2rem + 10px) * 2 + 16px);
+  /* Hauteur pour 4 lignes complètes */
+  max-height: calc((2rem + 10px) * 4 + 20px);
   overflow-y: auto;
-  /* ne plus mettre overflow: visible, pour que le scroll clip sans découpe transparente */
 }
 
 .emoji-picker span {
@@ -1736,12 +1735,86 @@ body.long-press-active .message-options {
   background: rgba(0, 0, 0, 0.05);
 }
 
-@media (min-width: 768px) {
+/* Pour les PC (grands écrans) */
+@media (min-width: 1025px) {
   .emoji-picker {
-    transform: translateX(-20px);
+    grid-template-columns: repeat(7, 1fr);
+    max-height: calc((2rem + 10px) * 4 + 20px);
+  }
+  
+  .emoji-picker span {
+    font-size: 20px;
+    padding: 5px;
   }
 }
 
+/* Pour les tablettes (8-10 pouces) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .emoji-picker {
+    grid-template-columns: repeat(7, 1fr);
+    max-height: calc((1.8rem + 8px) * 4 + 16px); /* Légèrement plus compact */
+    width: 90%;
+    max-width: 450px;
+	transform: translateX(-20px);
+  }
+  
+  .emoji-picker span {
+    font-size: 18px;
+    padding: 4px;
+    height: 1.8rem;
+    line-height: 1.8rem;
+  }
+}
+
+/* Pour les mobiles */
+@media (max-width: 767px) {
+  .emoji-picker {
+    grid-template-columns: repeat(6, 1fr); /* Réduire à 6 colonnes pour adapter plus d'émojis */
+    max-height: calc((1.6rem + 6px) * 4 + 16px); /* Plus compact pour mobile */
+    bottom: 60px;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 95%;
+    max-width: 340px;
+  }
+  
+  .emoji-picker span {
+    font-size: 16px; /* Plus petit sur mobile */
+    padding: 3px;
+    height: 1.6rem;
+    line-height: 1.6rem;
+  }
+}
+
+/* Pour les très petits mobiles */
+@media (max-width: 360px) {
+  .emoji-picker {
+    grid-template-columns: repeat(5, 1fr); /* Encore moins de colonnes */
+    max-height: calc((1.5rem + 6px) * 4 + 16px);
+    width: 98%;
+  }
+  
+  .emoji-picker span {
+    font-size: 15px;
+    padding: 3px;
+    height: 1.5rem;
+    line-height: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .emoji-picker {
+    grid-template-columns: repeat(6, 1fr); /* Réduire à 6 colonnes pour plus d'espace */
+    max-height: calc((2rem + 8px) * 3 + 16px); /* Légèrement ajusté */
+  }
+  
+  .emoji-picker span {
+    font-size: 18px; /* Émojis légèrement plus petits */
+    padding: 4px;
+    height: 1.8rem;
+    line-height: 1.8rem;
+  }
+}
 /* ==============
    Thème sombre
    ============== */
@@ -1761,4 +1834,67 @@ body.long-press-active .message-options {
 }
 [data-theme="dark"] .emoji-picker span:hover {
   background: rgba(255,255,255,0.1);
+}
+
+/* Bouton plein écran pour mobile */
+.mobile-fullscreen-btn {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-fullscreen-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  color: white;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: 150px;
+  top: 15px;
+  z-index: 100;
+  cursor: pointer;
+}
+}
+
+.mobile-fullscreen-btn .material-icons {
+  font-size: 20px;
+}
+
+/* Styles pour le mode plein écran */
+@media (max-width: 768px) {
+  .chat-container.fullscreen {
+    position: fixed !important;
+    top: 60px !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 60px !important;
+    width: 100% !important;
+    height: calc(100% - 120px) !important;
+    max-height: none !important;
+    z-index: 9999 !important;
+    border-radius: 0 !important;
+  }
+  
+  /* Zone des messages en plein écran - ajuster pour voir tous les messages */
+.chat-container.fullscreen .chat-messages {
+  height: calc(100% - 180px) !important; /* Augmenté pour laisser plus de place */
+  padding-bottom: 70px !important; /* Augmenté pour s'assurer que le dernier message est visible */
+  max-height: none !important;
+  overflow-y: auto;
+}
+
+/* Zone de saisie en plein écran */
+.chat-container.fullscreen .chat-input {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 10000 !important;
+  background: var(--chat-gradient) !important;
+  padding: 10px !important; /* Réduire le padding pour gagner de l'espace */
+}
 }

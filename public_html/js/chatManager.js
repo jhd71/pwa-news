@@ -487,6 +487,11 @@ class ChatManager {
         
         this.initialized = true;
         console.log("Chat initialisé avec succès");
+        
+        // Ajouter le bouton plein écran si on est connecté
+        if (this.pseudo) {
+            this.addFullscreenButton();
+        }
     } catch (error) {
         console.error('Erreur initialisation:', error);
         if (!document.querySelector('.chat-widget')) {
@@ -665,7 +670,7 @@ getPseudoHTMLWithoutToggle() {
     `;
 }
 
-getChatHTML() {
+	getChatHTML() {
     return `
         <button class="chat-toggle" title="Ouvrir le chat">
             <span class="material-icons">chat</span>
@@ -674,6 +679,7 @@ getChatHTML() {
         <div class="chat-container">
             <div class="chat-header">
                 <div class="header-title">Chat - ${this.pseudo}</div>
+                <!-- Supprimez le bouton plein écran d'ici -->
                 <div class="header-buttons">
                     ${this.isAdmin ? `
                         <button class="admin-panel-btn" title="Panel Admin">
@@ -711,20 +717,21 @@ getChatHTML() {
     `;
 }
 
-getChatHTMLWithoutToggle() {
+	getChatHTMLWithoutToggle() {
     return `
         <div class="chat-container">
             <div class="chat-header">
                 <div class="header-title">Chat - ${this.pseudo}</div>
+                <!-- Supprimez le bouton plein écran d'ici également -->
                 <div class="header-buttons">
                     ${this.isAdmin ? `
                         <button class="admin-panel-btn" title="Panel Admin">
                             <span class="material-icons">admin_panel_settings</span>
                         </button>
                     ` : ''}
-					<button class="emoji-btn" title="Emojis">
-                    <span class="material-icons">emoji_emotions</span>
-                </button>
+                    <button class="emoji-btn" title="Emojis">
+                        <span class="material-icons">emoji_emotions</span>
+                    </button>
                     <button class="notifications-btn ${this.notificationsEnabled ? 'enabled' : ''}" title="Notifications">
                         <span class="material-icons">${this.notificationsEnabled ? 'notifications_active' : 'notifications_off'}</span>
                     </button>
@@ -807,7 +814,7 @@ getChatHTMLWithoutToggle() {
         });
     }
 
-    // Le reste de votre code pour setupListeners reste inchangé...
+	// AJOUTEZ ICI LE CODE DU BOUTON PLEIN ÉCRAN
     if (soundBtn) {
         soundBtn.addEventListener('click', () => {
             this.soundEnabled = !this.soundEnabled;
@@ -1046,42 +1053,43 @@ async setupAuthListeners() {
 				this.startBanMonitoring();
 
                 // Actualiser l'interface
-if (document.getElementById('chatToggleBtn')) {
-    this.container.innerHTML = this.getChatHTMLWithoutToggle();
-} else {
-    this.container.innerHTML = this.getChatHTML();
-}
+	if (document.getElementById('chatToggleBtn')) {
+		this.container.innerHTML = this.getChatHTMLWithoutToggle();
+	} else {
+		this.container.innerHTML = this.getChatHTML();
+	}
 
-const chatContainer = this.container.querySelector('.chat-container');
-if (chatContainer) {
-    chatContainer.classList.add('open');
-    this.isOpen = true;
-    localStorage.setItem('chatOpen', 'true');
+	const chatContainer = this.container.querySelector('.chat-container');
+	if (chatContainer) {
+		chatContainer.classList.add('open');
+		this.isOpen = true;
+		localStorage.setItem('chatOpen', 'true');
 
-    // Désactiver le scroll global quand le chat est ouvert
-    document.body.classList.add('no-scroll');
+		// Désactiver le scroll global quand le chat est ouvert
+		document.body.classList.add('no-scroll');
 
-    // Réactiver le scroll global quand le chat se ferme
-    chatContainer.addEventListener('touchend', () => {
-        document.body.classList.remove('no-scroll');
-    });
-}
+		// Réactiver le scroll global quand le chat se ferme
+		chatContainer.addEventListener('touchend', () => {
+			document.body.classList.remove('no-scroll');
+		});
+	}
 
-this.setupListeners();
-await this.loadExistingMessages();
-this.playSound('success');
+	this.setupListeners();
+	await this.loadExistingMessages();
+	this.playSound('success');
+	this.addFullscreenButton();
 
-                
-            } catch (error) {
-        console.error('Erreur d\'authentification:', error);
-        this.showNotification('Erreur lors de la connexion: ' + error.message, 'error');
-        this.playSound('error');
-    }
-});
-    }
-}
+					
+				} catch (error) {
+			console.error('Erreur d\'authentification:', error);
+			this.showNotification('Erreur lors de la connexion: ' + error.message, 'error');
+			this.playSound('error');
+		}
+	});
+		}
+	}
 
-async registerUser(pseudo, password, isAdmin = false) {
+	async registerUser(pseudo, password, isAdmin = false) {
     try {
         console.log('Tentative d\'inscription de l\'utilisateur:', pseudo, 'admin:', isAdmin);
         
@@ -2342,12 +2350,112 @@ escapeHtml(unsafe) {
 }
 
 scrollToBottom() {
-    const messagesContainer = this.container.querySelector('.chat-messages');
-    if (messagesContainer) {
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
+  const messagesContainer = this.container.querySelector('.chat-messages');
+  if (messagesContainer) {
+    // Forcer plusieurs tentatives de scroll pour s'assurer que ça fonctionne
+    messagesContainer.scrollTop = messagesContainer.scrollHeight + 5000; // Valeur plus grande pour forcer le scroll
+    
+    // Répéter le scroll avec un délai
+    setTimeout(() => {
+      messagesContainer.scrollTop = messagesContainer.scrollHeight + 5000;
+      
+      // Une dernière tentative
+      setTimeout(() => {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight + 5000;
+      }, 100);
+    }, 50);
+  }
 }
 	
+	addFullscreenButton() {
+  // Vérifier si on est sur mobile
+  if (!/Mobi|Android|iPad|iPhone/i.test(navigator.userAgent)) return;
+  
+  // Supprimer tout bouton plein écran existant pour éviter les doublons
+  const existingButtons = this.container.querySelectorAll('.mobile-fullscreen-btn, .fullscreen-btn');
+  existingButtons.forEach(btn => btn.remove());
+  
+  // Chercher le header du chat
+  const chatHeader = this.container.querySelector('.chat-header');
+  if (!chatHeader) return;
+  
+  // Créer le bouton plein écran
+  const fullscreenBtn = document.createElement('button');
+  fullscreenBtn.className = 'mobile-fullscreen-btn';
+  fullscreenBtn.setAttribute('title', 'Plein écran');
+  fullscreenBtn.innerHTML = '<span class="material-icons">fullscreen</span>';
+
+// position du bouton fullscreen
+fullscreenBtn.style.cssText = `
+  position: absolute;
+  left: 160px;
+  top: 12px;
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 200;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+`;
+
+// Styler l'icône également
+const iconElement = fullscreenBtn.querySelector('.material-icons');
+if (iconElement) {
+  iconElement.style.cssText = `
+    font-size: 18px;
+    line-height: 1;
+  `;
+}
+  // L'insérer au début du header, après le titre
+  const headerTitle = chatHeader.querySelector('.header-title');
+  if (headerTitle) {
+    headerTitle.insertAdjacentElement('afterend', fullscreenBtn);
+  } else {
+    // Si le titre n'est pas trouvé, l'ajouter au début du header
+    chatHeader.insertAdjacentElement('afterbegin', fullscreenBtn);
+  }
+  
+  // Ajouter l'écouteur d'événement directement
+  fullscreenBtn.addEventListener('click', (e) => {
+    console.log('Clic sur bouton plein écran');
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const chatContainer = this.container.querySelector('.chat-container');
+    if (chatContainer) {
+      const isFullscreen = chatContainer.classList.toggle('fullscreen');
+      
+      // Mettre à jour l'icône
+      fullscreenBtn.querySelector('.material-icons').textContent = 
+        isFullscreen ? 'fullscreen_exit' : 'fullscreen';
+      
+      // Assurer la visibilité des messages
+      setTimeout(() => {
+        this.scrollToBottom();
+        
+        // Force un rafraîchissement de l'affichage
+        if (isFullscreen) {
+          chatContainer.style.opacity = '0.99';
+          setTimeout(() => {
+            chatContainer.style.opacity = '1';
+            this.scrollToBottom();
+          }, 50);
+        }
+      }, 300);
+      
+      this.playSound('click');
+    }
+  });
+  
+  console.log('Bouton plein écran ajouté avec succès');
+}
+
 	ensureChatInputVisible() {
     if (/Mobi|Android/i.test(navigator.userAgent)) {
         // Obtenir les éléments nécessaires
