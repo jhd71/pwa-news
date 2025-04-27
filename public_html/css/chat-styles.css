@@ -1884,3 +1884,29 @@ body.long-press-active .message-options {
     margin-top: 0 !important;
     background: var(--chat-gradient) !important; /* Assurer un fond cohérent */
   }
+/* ===== Gérer le safe-area en PWA ===== */
+:root {
+  /* pour fallback sur desktop */
+  --sa-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Si on est en standalone (PWA) on déplace le container et l’input au-dessus du safe-area */
+@media (display-mode: standalone) {
+  /* Décaler le container entier vers le haut */
+  .chat-container.fullscreen {
+    /* bottom: hauteur du safe-area */
+    bottom: var(--sa-bottom) !important;
+  }
+
+  /* La zone messages doit s’arrêter juste au-dessus de l’input + safe-area */
+  .chat-messages {
+    bottom: calc(70px + var(--sa-bottom)) !important;
+  }
+
+  /* Coller l’input en bas : juste au-dessus du safe-area */
+  .chat-input {
+    bottom: var(--sa-bottom) !important;
+    /* et un petit padding pour le fond si besoin */
+    padding-bottom: calc(var(--sa-bottom) + 10px) !important;
+  }
+}
