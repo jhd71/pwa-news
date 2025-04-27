@@ -3088,13 +3088,12 @@ showEmojiPicker(messageId, x, y) {
   const picker = document.createElement('div');
   picker.className = 'emoji-picker';
   
-  // Liste des emojis courants - organisés clairement en lignes
+  // Liste des emojis courants
   const commonEmojis = [
-    '👍','❤️','😂','😘','😮','😢','👏',  // 1ʳᵉ ligne (7)
-    '🔥','🎉','🤔','👎','😡','🚀','👀',  // 2ᵉ ligne (7)
-    '💋','🙌','🤗','🥳','😇','🙃','🤩',  // 3ᵉ ligne (7)
-    '😭','🥺','😱','🤬','🙄','💯','💪'   // 4ᵉ ligne (7)
-  ];
+  '👍','❤️','😂','😘','😮','😢','👏',  // 1ʳᵉ ligne (7)
+  '🔥','🎉','🤔','👎','😡','🚀','👀',  // 2ᵉ ligne (7)
+  '💋','🙌','🤗','🥳','😇','🙃','🤩'   // 3ᵉ ligne (7)
+];
   
   // Ajouter les emojis au picker
   commonEmojis.forEach(emoji => {
@@ -3103,60 +3102,35 @@ showEmojiPicker(messageId, x, y) {
     span.addEventListener('click', () => {
       this.addReaction(messageId, emoji);
       picker.remove();
-      document.body.style.overflow = ''; // Réactiver le défilement
     });
     picker.appendChild(span);
   });
   
-  // IMPORTANT : Empêcher le défilement de la page lorsque le sélecteur est ouvert
-  document.body.style.overflow = 'hidden';
-  
   // Ajouter au DOM pour calculer les dimensions
   document.body.appendChild(picker);
   
-  // Détecter si on est sur mobile
-  const isMobile = window.innerWidth <= 768;
-  
-  // Calculer la position
+  // Calculer la position pour éviter le débordement
   const pickerRect = picker.getBoundingClientRect();
   const windowWidth = window.innerWidth;
-  const windowHeight = window.innerHeight;
   
-  // Positionner le picker (votre code existant)
-  if (isMobile) {
-    x = (windowWidth - pickerRect.width) / 2;
-    
-    // Si le sélecteur est trop bas, le remonter
-    if (y + pickerRect.height > windowHeight - 100) {
-      y = Math.max(50, y - pickerRect.height - 20);
-    }
-  } else {
-    // Ajustements pour desktop (votre code existant)
-    // ...
+  // Ajuster la position pour éviter le débordement à droite
+  if (x + pickerRect.width > windowWidth) {
+    x = windowWidth - pickerRect.width - 10; // 10px de marge
   }
   
+  // S'assurer que le picker reste visible sur la gauche aussi
+  if (x < 10) {
+    x = 10;
+  }
+  
+  // Positionner le picker
   picker.style.left = `${x}px`;
   picker.style.top = `${y}px`;
   
-  // Empêcher la propagation des événements tactiles sur le picker lui-même
-  picker.addEventListener('touchmove', (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-  }, { passive: false });
-  
   // Fermer le picker si on clique ailleurs
   document.addEventListener('click', (e) => {
-    if (!picker.contains(e.target) && !e.target.closest(`[data-message-id="${messageId}"] .add-reaction`)) {
+    if (!picker.contains(e.target) && e.target !== document.querySelector(`[data-message-id="${messageId}"] .add-reaction`)) {
       picker.remove();
-      document.body.style.overflow = ''; // Réactiver le défilement
-    }
-  }, { once: true });
-  
-  // S'assurer que le défilement est réactivé si le sélecteur est fermé autrement
-  window.addEventListener('popstate', () => {
-    if (document.body.contains(picker)) {
-      picker.remove();
-      document.body.style.overflow = '';
     }
   }, { once: true });
 }
