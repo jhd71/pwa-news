@@ -1884,3 +1884,29 @@ body.long-press-active .message-options {
     margin-top: 0 !important;
     background: var(--chat-gradient) !important; /* Assurer un fond cohérent */
   }
+/* — Désactiver le sticky bottom dans la PWA standalone */
+@media (display-mode: standalone) {
+  .chat-input {
+    position: relative !important;
+    bottom: auto !important;
+    /* On retire le margin-top:auto si tu l’as */
+    margin-top: 0 !important;
+  }
+  /* On fait remonter la zone des messages pour qu’elle utilise tout l’espace dispo */
+  .chat-messages {
+    /* hauteur = 100% du container – header (60px) – input (variable safe-area) */
+    height: calc(
+      100% 
+      - 60px                       /* hauteur approximative du header */
+      - env(safe-area-inset-bottom) /* garde juste la safe-area si besoin */
+    ) !important;
+    padding-bottom: env(safe-area-inset-bottom) !important;
+  }
+}
+
+/* — Pour les navigateurs qui supportent les env(safe-area-inset-*) */
+@supports(padding: env(safe-area-inset-bottom)) {
+  .chat-input {
+    padding-bottom: max(env(safe-area-inset-bottom), 15px) !important;
+  }
+}
