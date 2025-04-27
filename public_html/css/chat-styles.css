@@ -1860,3 +1860,18 @@ body.long-press-active .message-options {
     background: var(--chat-gradient) !important;
   }
 }
+.header-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Les autres boutons, ordre par défaut = 0 */
+.header-buttons button {
+  order: 0;
+}
+
+/* Le plein écran, on le remonte avant tous les autres */
+.fullscreen-btn {
+  order: -1;
+}
