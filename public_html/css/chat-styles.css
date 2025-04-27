@@ -1860,3 +1860,59 @@ body.long-press-active .message-options {
     background: var(--chat-gradient) !important;
   }
 }
+
+/* Correction de la barre en mode plein écran sur PWA */
+@media (display-mode: standalone) {
+  /* Éliminer tout élément fantôme ou divisions vides */
+  .chat-container.fullscreen::before,
+  .chat-container.fullscreen::after,
+  .chat-container.fullscreen > div:empty,
+  .chat-container.fullscreen .chat-input::before {
+    display: none !important;
+    height: 0 !important;
+    content: none !important;
+  }
+  
+  /* S'assurer que la transition entre zones est nette */
+  .chat-container.fullscreen .chat-messages {
+    border-bottom: none !important;
+    margin-bottom: 0 !important;
+  }
+  
+  .chat-container.fullscreen .chat-input {
+    border-top: none !important;
+    margin-top: 0 !important;
+    background: var(--chat-gradient) !important; /* Assurer un fond cohérent */
+  }
+  
+  /* Éviter tout espace blanc entre les éléments */
+  .chat-container.fullscreen {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  /* S'assurer que les messages prennent tout l'espace disponible */
+  .chat-container.fullscreen .chat-messages {
+    flex: 1 !important;
+    height: auto !important; /* Laisser flex gérer la hauteur */
+  }
+}
+
+/* Optimisations spécifiques pour les PWA en mode plein écran */
+@media (display-mode: standalone) {
+  .chat-container.fullscreen {
+    /* Utiliser des positions absolues plutôt que fixed pour éviter certains bugs de rendu */
+    position: absolute !important;
+    
+    /* Assurer une prise en compte correcte des safe areas iOS */
+    padding-top: env(safe-area-inset-top, 0) !important;
+    padding-bottom: env(safe-area-inset-bottom, 0) !important;
+  }
+  
+  /* Ajuster l'input pour qu'il soit collé au bas sans espace */
+  .chat-container.fullscreen .chat-input {
+    position: sticky !important; /* sticky fonctionne souvent mieux que absolute ici */
+    bottom: 0 !important;
+    margin-top: auto !important;
+  }
+}
