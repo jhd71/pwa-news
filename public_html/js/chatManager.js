@@ -875,7 +875,6 @@ if (fullscreenBtn) {
     this.playSound('click');
   }
 });
-}
 
     // Le reste de votre code pour setupListeners reste inchangé...
     if (soundBtn) {
