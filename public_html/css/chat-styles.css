@@ -1884,21 +1884,3 @@ body.long-press-active .message-options {
     margin-top: 0 !important;
     background: var(--chat-gradient) !important; /* Assurer un fond cohérent */
   }
-@supports(padding: max(0px)) {
-  /* Sur les navigateurs qui gèrent les safe-area-inset */
-  .chat-input {
-    padding-bottom: max(env(safe-area-inset-bottom), 15px) !important;
-  }
-}
-
-@media (display-mode: standalone) {
-  /* Désactiver le sticky (evite l’espace vide) */
-  .chat-input {
-    position: relative !important;
-    bottom: auto !important;
-  }
-  /* Et remonter la zone de messages pour qu’elle occupe tout l’espace */
-  .chat-container.fullscreen .chat-messages {
-    height: calc(100% - /* hauteur header */ 60px - /* hauteur input */ 70px) !important;
-  }
-}
