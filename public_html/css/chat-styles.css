@@ -446,9 +446,23 @@ body:has(.chat-container.open) .news-ticker {
 }
 
 .message.sent {
-  background: #2e7d32;
+  /* Fond vert appliqué immédiatement */
+  background-color: #2e7d32 !important;
+
+  /* Alignement à droite dans le flex */
   align-self: flex-end;
-  margin-left: 20%;
+  margin-left: 5% !important;
+
+  /* Coins adaptés pour un rendu « droit » */
+  /* top-left, top-right, bottom-right, bottom-left */
+  border-radius: 12px 12px 4px 12px;
+
+  /* Aucune transformation ou transition résiduelle */
+  transform: none !important;
+  transition: none !important;
+
+  /* On annule toute animation qui pourrait faire « flash » */
+  animation: none !important;
 }
 
 .message-time {
@@ -1094,10 +1108,6 @@ body.long-press-active .message-options {
     border-radius: 18px !important;
   }
   
-  .message.sent {
-    margin-left: 5% !important;
-  }
-  
   .message.received {
     margin-right: 5% !important;
   }
@@ -1195,10 +1205,6 @@ body.long-press-active .message-options {
   .chat-input textarea:focus {
     position: relative;
     z-index: 11;
-  }
-  
-  .message.sent {
-    animation: highlight 1s ease;
   }
 }
 
@@ -1648,15 +1654,6 @@ body.long-press-active .message-options {
   margin-top: 5px;
 }
 
-.reaction-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  padding: 0;
-  color: #555;
-}
-
 .reaction {
   display: inline-flex;
   align-items: center;
@@ -1664,26 +1661,29 @@ body.long-press-active .message-options {
   border: 1px solid rgba(76,175,80,0.25) !important;
   border-radius: 12px;
   padding: 2px 6px;
-  margin-right: 4px;
-  margin-bottom: 4px;
+  margin: 0 4px 4px 0;
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s;
 }
+
 .reaction:hover {
   background: rgba(76,175,80,0.25) !important;
   transform: scale(1.05);
 }
+
 .reaction-emoji {
   margin-right: 3px;
 }
+
 .reaction-count {
   font-size: 11px;
   font-weight: bold;
 }
+
 .reaction.user-reacted {
-  background: rgba(76,175,80,0.3) !important;
-  border: 1px solid rgba(56,142,60,0.4) !important;
+  background: rgba(76,175,80,0.30) !important;
+  border: 1px solid rgba(56,142,60,0.40) !important;
 }
 
 /* bouton “+” toujours visible au survol */
@@ -1692,138 +1692,108 @@ body.long-press-active .message-options {
   background: none;
   border: none;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255,255,255,0.6);
   padding: 3px;
   margin-top: 4px;
   display: inline-block;
-  transition: all 0.2s;
+  transition: opacity 0.2s;
   opacity: 0.5;
 }
 .message:hover .add-reaction {
   opacity: 1;
 }
 
+
 /* =======================
    Styles pour emoji-picker
    ======================= */
 .emoji-picker {
+  /* toujours dans <body> avec position fixed */
   position: fixed !important;
+  top: 60px;                 /* juste sous l’en-tête du chat */
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 99999 !important;
+
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   padding: 8px;
+
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 5px;
-  
-  /* Hauteur pour 4 lignes complètes */
-  max-height: calc((2rem + 10px) * 4 + 20px);
-  overflow-y: auto;
+
+  /* pas de scroll : on laisse la boîte grandir sur ses 4 lignes */
+  max-height: none;
+  overflow: visible;
+
+  /* on limite juste la largeur pour tenir dans l’écran */
+  max-width: 95vw;
+  width: auto;
 }
 
 .emoji-picker span {
-  height: 2rem;
-  line-height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.5rem;         /* légèrement plus haut pour plus d’espace */
+  font-size: 1.5rem;      /* 24px approx */
   cursor: pointer;
-  font-size: 20px;
-  padding: 5px;
   border-radius: 4px;
-  text-align: center;
+  transition: background 0.2s;
 }
+
 .emoji-picker span:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(0,0,0,0.05);
 }
 
-/* Pour les PC (grands écrans) */
-@media (min-width: 1025px) {
-  .emoji-picker {
-    grid-template-columns: repeat(7, 1fr);
-    max-height: calc((2rem + 10px) * 4 + 20px);
-  }
-  
-  .emoji-picker span {
-    font-size: 20px;
-    padding: 5px;
-  }
-}
 
-/* Pour les tablettes (8-10 pouces) */
-@media (min-width: 768px) and (max-width: 1024px) {
-  .emoji-picker {
-    grid-template-columns: repeat(7, 1fr);
-    max-height: calc((1.8rem + 8px) * 4 + 16px); /* Légèrement plus compact */
-    width: 90%;
-    max-width: 450px;
-	transform: translateX(-20px);
-  }
-  
-  .emoji-picker span {
-    font-size: 18px;
-    padding: 4px;
-    height: 1.8rem;
-    line-height: 1.8rem;
-  }
-}
-
-/* Pour les mobiles */
+/* =========================
+   Adaptations responsive
+   ========================= */
 @media (max-width: 767px) {
   .emoji-picker {
-    grid-template-columns: repeat(6, 1fr); /* Réduire à 6 colonnes pour adapter plus d'émojis */
-    max-height: calc((1.6rem + 6px) * 4 + 16px); /* Plus compact pour mobile */
-    bottom: 60px;
+    /* colonnes automatiques selon l’espace dispo */
+    grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+    /* occupe 90% de la largeur de l’écran et centre-toi */
+    width: 90vw !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
-    width: 95%;
-    max-width: 340px;
+    /* affiche les 4 lignes, ne limite plus la hauteur */
+    max-height: none;
+    overflow: visible;
+    gap: 6px;
   }
-  
+
   .emoji-picker span {
-    font-size: 16px; /* Plus petit sur mobile */
-    padding: 3px;
-    height: 1.6rem;
-    line-height: 1.6rem;
+    font-size: 1.6rem;    /* ~24px */
+    height: 2.4rem;
+    line-height: 2.4rem;
+    padding: 4px;
   }
 }
 
-/* Pour les très petits mobiles */
 @media (max-width: 360px) {
   .emoji-picker {
-    grid-template-columns: repeat(5, 1fr); /* Encore moins de colonnes */
-    max-height: calc((1.5rem + 6px) * 4 + 16px);
-    width: 98%;
+    grid-template-columns: repeat(5, 1fr);
   }
-  
   .emoji-picker span {
-    font-size: 15px;
-    padding: 3px;
-    height: 1.5rem;
-    line-height: 1.5rem;
+    font-size: 1.1rem;     /* 18px */
+    height: 2rem;
   }
 }
 
-@media (max-width: 480px) {
-  .emoji-picker {
-    grid-template-columns: repeat(6, 1fr); /* Réduire à 6 colonnes pour plus d'espace */
-    max-height: calc((2rem + 8px) * 3 + 16px); /* Légèrement ajusté */
-  }
-  
-  .emoji-picker span {
-    font-size: 18px; /* Émojis légèrement plus petits */
-    padding: 4px;
-    height: 1.8rem;
-    line-height: 1.8rem;
-  }
-}
+
 /* ==============
    Thème sombre
    ============== */
 [data-theme="dark"] .reaction {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.1) !important;
   color: #fff;
 }
 [data-theme="dark"] .reaction:hover {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.2) !important;
 }
 [data-theme="dark"] .add-reaction {
   color: #ccc;
@@ -1836,65 +1806,57 @@ body.long-press-active .message-options {
   background: rgba(255,255,255,0.1);
 }
 
-/* Bouton plein écran pour mobile */
-.mobile-fullscreen-btn {
+
+/* =================================
+   Bouton plein écran (mobile only)
+   ================================= */
+/* — Place le bouton plein-écran DANS le flex .header-buttons */
+.fullscreen-btn.mobile-only {
   display: none;
 }
-
 @media (max-width: 768px) {
-  .mobile-fullscreen-btn {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  color: white;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  left: 150px;
-  top: 15px;
-  z-index: 100;
-  cursor: pointer;
+  .fullscreen-btn.mobile-only {
+    display: flex;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    align-items: center;
+    justify-content: center;
+    /* plus de position:absolute : il est dans .header-buttons */
+    margin-right: 8px;
+  }
 }
-}
+  .fullscreen-btn.mobile-only .material-icons {
+    font-size: 20px;
+    color: white;
+  }
 
-.mobile-fullscreen-btn .material-icons {
-  font-size: 20px;
-}
-
-/* Styles pour le mode plein écran */
+  /* — Garantit que le chat plein-écran est AU-DESSUS des barres hautes et basses */
 @media (max-width: 768px) {
   .chat-container.fullscreen {
     position: fixed !important;
-    top: 60px !important;
+    top: 60px !important;      /* décalé sous la bannière */
     left: 0 !important;
     right: 0 !important;
-    bottom: 60px !important;
+    bottom: 60px !important;   /* décalé au-dessous des icônes du bas */
     width: 100% !important;
     height: calc(100% - 120px) !important;
     max-height: none !important;
-    z-index: 9999 !important;
+    z-index: 100000 !important; /* au-dessus de tout */
     border-radius: 0 !important;
   }
-  
-  /* Zone des messages en plein écran - ajuster pour voir tous les messages */
-.chat-container.fullscreen .chat-messages {
-  height: calc(100% - 180px) !important; /* Augmenté pour laisser plus de place */
-  padding-bottom: 70px !important; /* Augmenté pour s'assurer que le dernier message est visible */
-  max-height: none !important;
-  overflow-y: auto;
-}
-
-/* Zone de saisie en plein écran */
-.chat-container.fullscreen .chat-input {
-  position: absolute !important;
-  bottom: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  z-index: 10000 !important;
-  background: var(--chat-gradient) !important;
-  padding: 10px !important; /* Réduire le padding pour gagner de l'espace */
-}
+  .chat-container.fullscreen .chat-messages {
+    height: calc(100% - 160px) !important;
+    overflow-y: auto;
+  }
+  .chat-container.fullscreen .chat-input {
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    padding: 10px !important;
+    background: var(--chat-gradient) !important;
+  }
 }
