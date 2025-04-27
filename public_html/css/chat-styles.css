@@ -1883,4 +1883,39 @@ body.long-press-active .message-options {
     border-top: none !important;
     margin-top: 0 !important;
     background: var(--chat-gradient) !important; /* Assurer un fond cohérent */
+  }/* ======================================================
+   Ajustements finaux pour plein-écran en PWA standalone
+   ====================================================== */
+@media (display-mode: standalone) {
+  /* 1) On fait tenir le container sur tout l’écran */
+  .chat-container.fullscreen {
+    top: 0      !important;
+    left: 0     !important;
+    right: 0    !important;
+    bottom: 0   !important;
+    border-radius: 0 !important;
   }
+
+  /* 2) On place les messages de façon absolue,
+        entre le header (60px) et l’input (+ safe-area) */
+  .chat-container.fullscreen .chat-messages {
+    position: absolute !important;
+    top: 60px   !important;                              /* header ≃60px */
+    bottom: calc( env(safe-area-inset-bottom, 0px) + 60px ) !important;
+    left: 0      !important;
+    right: 0     !important;
+    overflow-y: auto !important;
+  }
+
+  /* 3) On place l’input en absolu collé au bas
+        juste au-dessus de la safe-area */
+  .chat-container.fullscreen .chat-input {
+    position: absolute !important;
+    bottom: env(safe-area-inset-bottom, 0px) !important;
+    left: 0   !important;
+    right: 0  !important;
+    margin: 0 !important;
+    padding-bottom: max(env(safe-area-inset-bottom, 0px), 15px) !important;
+    background: var(--chat-input-bg) !important;
+  }
+}
