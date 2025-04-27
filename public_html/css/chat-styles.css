@@ -1884,3 +1884,37 @@ body.long-press-active .message-options {
     margin-top: 0 !important;
     background: var(--chat-gradient) !important; /* Assurer un fond cohérent */
   }
+/* ======= Forcer l’input en bas ==== */
+.chat-container {
+  position: relative !important;
+}
+.chat-input {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  margin-top: 0 !important;
+  z-index: 20 !important;
+}
+.chat-messages {
+  /* Laisse un padding bottom égal à la hauteur de l’input pour qu’ils ne se chevauchent pas */
+  padding-bottom: 70px !important;
+  height: calc(100% - 60px) !important; /* 60px ≃ header height */
+}
+
+/* En standalone PWA, même règle */
+@media (display-mode: standalone) {
+  .chat-container {
+    position: relative !important;
+  }
+  .chat-input {
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+  }
+  .chat-messages {
+    padding-bottom: 70px !important;
+    height: calc(100% - 60px) !important;
+  }
+}
