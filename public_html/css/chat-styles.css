@@ -1884,3 +1884,51 @@ body.long-press-active .message-options {
     margin-top: 0 !important;
     background: var(--chat-gradient) !important; /* Assurer un fond cohérent */
   }
+/* ==============================================================
+   Zone messages + input : affichage full height + pas de barre vide
+   ============================================================== */
+
+/* On force le container en position relative pour y placer
+   des enfants absolument positionnés. */
+.chat-container {
+  position: relative !important;
+  overflow: hidden !important; /* on garde l’overflow pour le reste */
+}
+
+/* On prend toute la zone sous le header pour y mettre les messages */
+.chat-messages {
+  position: absolute !important;
+  top: 60px !important;       /* ≃ la hauteur du .chat-header */
+  bottom: 70px !important;     /* ≃ la hauteur du .chat-input */
+  left: 0; 
+  right: 0;
+  padding: 20px  /* garde tes paddings existants */ 
+           20px  /* mais inutile de redéfinir bottom padding ici */ !important;
+  overflow-y: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  background: rgba(0,0,0,0.2) !important; /* ton fond */
+}
+
+/* On colle l’input tout en bas, au-dessous de .chat-messages */
+.chat-input {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+
+  /* Si tu avais un margin-top:auto ou bottom sticky, on le supprime */
+  margin-top: 0 !important;
+  position: absolute !important;
+  z-index: 10 !important;  /* au-dessus de la zone messages */
+}
+
+/* Ajustements en standalone PWA (optionnel, si tu as un safe-area) */
+@media (display-mode: standalone) {
+  .chat-messages { bottom: 70px !important; }
+  .chat-input {
+    /* Assure-toi que la safe-area n’ajoute pas d’espace */
+    padding-bottom: env(safe-area-inset-bottom, 0) !important;
+  }
+}
