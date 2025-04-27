@@ -827,27 +827,54 @@ if (fullscreenBtn) {
             const isFullscreen = chatContainer.classList.toggle('fullscreen');
             
             // Changer l'icône
-            fullscreenBtn.querySelector('.material-icons').textContent = 
-                isFullscreen ? 'fullscreen_exit' : 'fullscreen';
-            
-            // Force le scroll vers le bas après le changement de mode
-            setTimeout(() => {
-                // Assurez-vous que les messages sont visibles
-                this.scrollToBottom();
-                
-                // Pour les appareils mobiles, forcez un redessinage pour éviter les problèmes d'affichage
-                if (/Mobi|Android/i.test(navigator.userAgent)) {
-                    chatContainer.style.opacity = '0.99';
-                    setTimeout(() => {
-                        chatContainer.style.opacity = '1';
-                        this.scrollToBottom();
-                    }, 50);
-                }
-            }, 300);
-            
-            this.playSound('click');
-        }
-    });
+            fullscreenBtn.addEventListener('click', (e) => {
+  console.log('Clic sur bouton plein écran');
+  e.preventDefault();
+  e.stopPropagation();
+  
+  const chatContainer = this.container.querySelector('.chat-container');
+  if (chatContainer) {
+    const isFullscreen = !chatContainer.classList.contains('fullscreen');
+    
+    if (isFullscreen) {
+      // Entrer en mode plein écran avec une structure améliorée
+      chatContainer.classList.add('fullscreen');
+      
+      // Appliquer le correctif pour la PWA
+      if (window.matchMedia('(display-mode: standalone)').matches) {
+        // Sauvegarder l'input pour éviter qu'il soit recréé
+        const chatInput = chatContainer.querySelector('.chat-input');
+        const inputContent = chatInput.innerHTML;
+        
+        // Recréer l'input pour éliminer les éléments fantômes
+        chatInput.remove();
+        
+        // Créer un nouvel élément d'input directement attaché au conteneur
+        const newInput = document.createElement('div');
+        newInput.className = 'chat-input';
+        newInput.innerHTML = inputContent;
+        chatContainer.appendChild(newInput);
+        
+        // Réattacher les écouteurs d'événements
+        this.setupChatListeners();
+      }
+    } else {
+      // Sortir du mode plein écran
+      chatContainer.classList.remove('fullscreen');
+    }
+    
+    // Mettre à jour l'icône
+    fullscreenBtn.querySelector('.material-icons').textContent = 
+      isFullscreen ? 'fullscreen_exit' : 'fullscreen';
+    
+    // Assurer la visibilité des messages
+    setTimeout(() => {
+      this.scrollToBottom();
+    }, 300);
+    
+    this.playSound('click');
+  }
+});
 }
 
     // Le reste de votre code pour setupListeners reste inchangé...
