@@ -983,7 +983,7 @@ body:has(.chat-container.open) .news-ticker {
 }
 
 .emoji-panel span {
-  font-size: 26px; /* Emojis plus grands */
+  font-size: 28px; /* Emojis plus grands */
   cursor: pointer;
   padding: 4px; /* Moins de padding pour laisser place à l'emoji */
   text-align: center;
