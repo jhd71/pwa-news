@@ -1837,20 +1837,25 @@ body.long-press-active .message-options {
 @media (max-width: 768px) {
   .chat-container.fullscreen {
     position: fixed !important;
-    top: 60px !important;      /* décalé sous la bannière */
+    top: 60px !important;
     left: 0 !important;
     right: 0 !important;
-    bottom: 60px !important;   /* décalé au-dessous des icônes du bas */
+    bottom: 60px !important;
     width: 100% !important;
     height: calc(100% - 120px) !important;
     max-height: none !important;
-    z-index: 100000 !important; /* au-dessus de tout */
+    z-index: 100000 !important;
     border-radius: 0 !important;
+    overflow: hidden !important;
   }
+  
   .chat-container.fullscreen .chat-messages {
-    height: calc(100% - 160px) !important;
+    height: calc(100% - 90px) !important;
     overflow-y: auto;
+    margin-bottom: 0 !important;
+    border-bottom: none !important;
   }
+  
   .chat-container.fullscreen .chat-input {
     position: absolute !important;
     bottom: 0 !important;
@@ -1858,5 +1863,31 @@ body.long-press-active .message-options {
     right: 0 !important;
     padding: 10px !important;
     background: var(--chat-gradient) !important;
+    margin-top: 0 !important;
+    border-top: none !important;
   }
 }
+
+/* Correction de la barre en mode plein écran sur PWA */
+@media (display-mode: standalone) {
+  /* Éliminer tout élément fantôme ou divisions vides */
+  .chat-container.fullscreen::before,
+  .chat-container.fullscreen::after,
+  .chat-container.fullscreen > div:empty,
+  .chat-container.fullscreen .chat-input::before {
+    display: none !important;
+    height: 0 !important;
+    content: none !important;
+  }
+  
+  /* S'assurer que la transition entre zones est nette */
+  .chat-container.fullscreen .chat-messages {
+    border-bottom: none !important;
+    margin-bottom: 0 !important;
+  }
+  
+  .chat-container.fullscreen .chat-input {
+    border-top: none !important;
+    margin-top: 0 !important;
+    background: var(--chat-gradient) !important; /* Assurer un fond cohérent */
+  }
