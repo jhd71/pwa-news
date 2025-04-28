@@ -1011,7 +1011,7 @@ body:has(.chat-container.open) .news-ticker {
 @media (max-width: 768px) {
 
 .emoji-panel span {
-     font-size: 24px; /* Redescendre un peu ici */
+     font-size: 28px; /* Redescendre un peu ici */
      min-height: 34px;	 
  }
 }
