@@ -1015,6 +1015,7 @@ body:has(.chat-container.open) .news-ticker {
      top: 65px !important; /* Ajuster si besoin */
      max-height: 45vh !important; /* Limite pour le mode non-fullscreen */
      bottom: auto !important; /* S'assurer qu'il n'est pas fixé en bas */
+	 font-size: 28px; /* Emojis plus grands */
   }
 
   /* Comportement du panneau emoji en mode FULLSCREEN */
