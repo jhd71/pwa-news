@@ -665,7 +665,7 @@ getPseudoHTMLWithoutToggle() {
     `;
 }
 
-	getChatHTML() {
+getChatHTML() {
     return `
         <button class="chat-toggle" title="Ouvrir le chat">
             <span class="material-icons">chat</span>
@@ -674,10 +674,6 @@ getPseudoHTMLWithoutToggle() {
         <div class="chat-container">
             <div class="chat-header">
                 <div class="header-title">Chat - ${this.pseudo}</div>
-                ${/Mobi|Android|iPad|iPhone/i.test(navigator.userAgent) ? `
-                <button class="fullscreen-btn mobile-only" title="Plein écran">
-                    <span class="material-icons">fullscreen</span>
-                </button>` : ''}
                 <div class="header-buttons">
                     ${this.isAdmin ? `
                         <button class="admin-panel-btn" title="Panel Admin">
@@ -715,15 +711,11 @@ getPseudoHTMLWithoutToggle() {
     `;
 }
 
-	getChatHTMLWithoutToggle() {
+getChatHTMLWithoutToggle() {
     return `
         <div class="chat-container">
             <div class="chat-header">
                 <div class="header-title">Chat - ${this.pseudo}</div>
-                ${/Mobi|Android|iPad|iPhone/i.test(navigator.userAgent) ? `
-                <button class="fullscreen-btn mobile-only" title="Plein écran">
-                    <span class="material-icons">fullscreen</span>
-                </button>` : ''}
                 <div class="header-buttons">
                     ${this.isAdmin ? `
                         <button class="admin-panel-btn" title="Panel Admin">
@@ -814,41 +806,6 @@ getPseudoHTMLWithoutToggle() {
             this.playSound('click');
         });
     }
-
-	// AJOUTEZ ICI LE CODE DU BOUTON PLEIN ÉCRAN
-	const fullscreenBtn = this.container.querySelector('.fullscreen-btn.mobile-only');
-if (fullscreenBtn) {
-    fullscreenBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        const chatContainer = this.container.querySelector('.chat-container');
-        if (chatContainer) {
-            const isFullscreen = chatContainer.classList.toggle('fullscreen');
-            
-            // Changer l'icône
-            fullscreenBtn.querySelector('.material-icons').textContent = 
-                isFullscreen ? 'fullscreen_exit' : 'fullscreen';
-            
-            // Force le scroll vers le bas après le changement de mode
-            setTimeout(() => {
-                // Assurez-vous que les messages sont visibles
-                this.scrollToBottom();
-                
-                // Pour les appareils mobiles, forcez un redessinage pour éviter les problèmes d'affichage
-                if (/Mobi|Android/i.test(navigator.userAgent)) {
-                    chatContainer.style.opacity = '0.99';
-                    setTimeout(() => {
-                        chatContainer.style.opacity = '1';
-                        this.scrollToBottom();
-                    }, 50);
-                }
-            }, 300);
-            
-            this.playSound('click');
-        }
-    });
-}
 
     // Le reste de votre code pour setupListeners reste inchangé...
     if (soundBtn) {
@@ -2387,13 +2344,7 @@ escapeHtml(unsafe) {
 scrollToBottom() {
     const messagesContainer = this.container.querySelector('.chat-messages');
     if (messagesContainer) {
-        // Forcer plusieurs tentatives de scroll pour s'assurer que ça fonctionne
-        messagesContainer.scrollTop = messagesContainer.scrollHeight + 1000;
-        
-        // Refaire une tentative après un court délai
-        setTimeout(() => {
-            messagesContainer.scrollTop = messagesContainer.scrollHeight + 1000;
-        }, 100);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 }
 	
@@ -3029,12 +2980,13 @@ showEmojiPicker(messageId, x, y) {
   const picker = document.createElement('div');
   picker.className = 'emoji-picker';
   
-  // Liste des emojis courants
+  // Liste des emojis courants - organisés clairement en lignes
   const commonEmojis = [
-  '👍','❤️','😂','😘','😮','😢','👏',  // 1ʳᵉ ligne (7)
-  '🔥','🎉','🤔','👎','😡','🚀','👀',  // 2ᵉ ligne (7)
-  '💋','🙌','🤗','🥳','😇','🙃','🤩'   // 3ᵉ ligne (7)
-];
+    '👍','❤️','😂','😘','😮','😢','👏',  // 1ʳᵉ ligne (7)
+    '🔥','🎉','🤔','👎','😡','🚀','👀',  // 2ᵉ ligne (7)
+    '💋','🙌','🤗','🥳','😇','🙃','🤩',  // 3ᵉ ligne (7)
+    '😭','🥺','😱','🤬','🙄','💯','💪'   // 4ᵉ ligne (7)
+  ];
   
   // Ajouter les emojis au picker
   commonEmojis.forEach(emoji => {
@@ -3043,35 +2995,60 @@ showEmojiPicker(messageId, x, y) {
     span.addEventListener('click', () => {
       this.addReaction(messageId, emoji);
       picker.remove();
+      document.body.style.overflow = ''; // Réactiver le défilement
     });
     picker.appendChild(span);
   });
   
+  // IMPORTANT : Empêcher le défilement de la page lorsque le sélecteur est ouvert
+  document.body.style.overflow = 'hidden';
+  
   // Ajouter au DOM pour calculer les dimensions
   document.body.appendChild(picker);
   
-  // Calculer la position pour éviter le débordement
+  // Détecter si on est sur mobile
+  const isMobile = window.innerWidth <= 768;
+  
+  // Calculer la position
   const pickerRect = picker.getBoundingClientRect();
   const windowWidth = window.innerWidth;
+  const windowHeight = window.innerHeight;
   
-  // Ajuster la position pour éviter le débordement à droite
-  if (x + pickerRect.width > windowWidth) {
-    x = windowWidth - pickerRect.width - 10; // 10px de marge
+  // Positionner le picker (votre code existant)
+  if (isMobile) {
+    x = (windowWidth - pickerRect.width) / 2;
+    
+    // Si le sélecteur est trop bas, le remonter
+    if (y + pickerRect.height > windowHeight - 100) {
+      y = Math.max(50, y - pickerRect.height - 20);
+    }
+  } else {
+    // Ajustements pour desktop (votre code existant)
+    // ...
   }
   
-  // S'assurer que le picker reste visible sur la gauche aussi
-  if (x < 10) {
-    x = 10;
-  }
-  
-  // Positionner le picker
   picker.style.left = `${x}px`;
   picker.style.top = `${y}px`;
   
+  // Empêcher la propagation des événements tactiles sur le picker lui-même
+  picker.addEventListener('touchmove', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+  }, { passive: false });
+  
   // Fermer le picker si on clique ailleurs
   document.addEventListener('click', (e) => {
-    if (!picker.contains(e.target) && e.target !== document.querySelector(`[data-message-id="${messageId}"] .add-reaction`)) {
+    if (!picker.contains(e.target) && !e.target.closest(`[data-message-id="${messageId}"] .add-reaction`)) {
       picker.remove();
+      document.body.style.overflow = ''; // Réactiver le défilement
+    }
+  }, { once: true });
+  
+  // S'assurer que le défilement est réactivé si le sélecteur est fermé autrement
+  window.addEventListener('popstate', () => {
+    if (document.body.contains(picker)) {
+      picker.remove();
+      document.body.style.overflow = '';
     }
   }, { once: true });
 }
