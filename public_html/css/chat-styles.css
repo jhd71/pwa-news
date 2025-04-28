@@ -1010,17 +1010,12 @@ body:has(.chat-container.open) .news-ticker {
 /* --- Ajustements spécifiques pour Mobile/Tablette (max-width: 768px) --- */
 @media (max-width: 768px) {
 
-  /* Comportement du panneau emoji en mode NORMAL (NON fullscreen) */
-  .chat-container:not(.fullscreen) .emoji-panel {
-     top: 65px !important; /* Ajuster si besoin */
-     max-height: 45vh !important; /* Limite pour le mode non-fullscreen */
-     bottom: auto !important; /* S'assurer qu'il n'est pas fixé en bas */
-  }
 .emoji-panel span {
-     font-size: 22px; /* Redescendre un peu ici */
+     font-size: 24px; /* Redescendre un peu ici */
      min-height: 34px;	 
+ }
 }
-}
+
 /* --- Ajustements pour TRÈS PETITS écrans (max-width: 480px) --- */
 @media (max-width: 480px) {
   .emoji-panel {
@@ -1035,12 +1030,6 @@ body:has(.chat-container.open) .news-ticker {
      font-size: 22px; /* Redescendre un peu ici */
      min-height: 34px;
   }
-   
-   /* Si le panneau est trop haut même avec top/bottom en fullscreen */
-   .chat-container.fullscreen .emoji-panel {
-      /* Tu pourrais remettre une max-height ici si top/bottom donne trop de hauteur */
-      /* max-height: calc(100% - 65px - var(--chat-input-area-height) - 10px); */ /* exemple complexe */
-   }
 }
 
 /* ==========================================================================
