@@ -1903,25 +1903,36 @@ optimizeForLowEndDevices() {
         
         console.log("Préparation de l'envoi de notification push pour le message:", message);
         
-        // MODIFICATION CRITIQUE: Utiliser l'API qui fonctionne déjà
+        // Définir l'URL complète pour éviter les problèmes
+        const baseUrl = window.location.origin || 'https://actuetmedia.fr';
+        const chatUrl = `${baseUrl}/?action=openchat`;
+        
+        // Utiliser l'API qui fonctionne pour les notifications importantes
         const response = await fetch('/api/send-important-notification', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-API-Key': 'admin2024'  // Utilisez la même clé que dans votre notification.html
+                'X-API-Key': 'admin2024'  // La clé d'API utilisée dans votre page de notification
             },
             body: JSON.stringify({
                 title: `Message de ${message.pseudo}`,
                 body: message.content,
-                url: "/?action=openchat",
-                urgent: true // Les messages de chat sont considérés comme urgents
+                url: chatUrl,
+                urgent: true // Toujours considérer les messages de chat comme urgents
             })
         });
+        
+        if (!response.ok) {
+            console.error(`Erreur HTTP: ${response.status} ${response.statusText}`);
+            const errorText = await response.text();
+            console.error(`Détails de l'erreur:`, errorText);
+            throw new Error(`Erreur HTTP: ${response.status}`);
+        }
         
         const result = await response.json();
         console.log("Résultat de l'envoi de notification:", result);
         
-        return { success: result.success !== false, result };
+        return { success: true, result };
     } catch (error) {
         console.error('Erreur envoi notification:', error);
         return { success: false, error: error.message };
