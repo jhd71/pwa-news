@@ -92,17 +92,20 @@ export default async function handler(req, res) {
     logWithTimestamp(`${data.length} abonnements trouvés`);
 
     // Préparation de la notification
-    const notificationPayload = JSON.stringify({
-      title: `Message de ${fromUser}`,
-      body: message.length > 100 ? message.substring(0, 97) + '...' : message,
-      icon: '/images/Actu&Media.png',
-      badge: '/images/AM-192-v2.png',
-      timestamp: new Date().getTime(),
-      data: {
-        url: '/',
-        fromUser
-      }
-    });
+const notificationPayload = JSON.stringify({
+  title: `Message de ${fromUser}`,
+  body: message.length > 100 ? message.substring(0, 97) + '...' : message,
+  icon: '/images/AM-192-v2.png',
+  badge: '/images/badge-72x72.png',
+  timestamp: new Date().getTime(),
+  data: {
+    url: req.body.data?.url || '/',
+    type: req.body.data?.type || 'default',
+    fromUser,
+    messageId: req.body.data?.messageId,
+    urgent: req.body.data?.type === 'chat' || req.body.data?.urgent === true
+  }
+});
 
     // Envoi des notifications
     const sendResults = await Promise.allSettled(

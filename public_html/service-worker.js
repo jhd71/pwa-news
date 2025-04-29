@@ -104,44 +104,56 @@ const OFFLINE_HTML = `<!DOCTYPE html>
 const NETWORK_TIMEOUT = 5000; // 5 secondes
 
 // Installation
-self.addEventListener('install', event => {
-    console.log('[ServiceWorker] Installation');
+// Remplacez le gestionnaire notificationclick dans service-worker.js
+self.addEventListener('notificationclick', function(event) {
+    // Fermer immédiatement la notification
+    event.notification.close();
+    
+    // Déterminer l'URL cible
+    let url = '/';
+    
+    // Récupérer les données de la notification
+    const notifData = event.notification.data;
+    
+    // Priorité au type de notification
+    if (notifData) {
+        if (notifData.type === 'chat') {
+            url = '/?action=openchat';
+            console.log('[SW] Notification de chat cliquée - Ouverture du chat');
+        } else if (notifData.url) {
+            url = notifData.url;
+        }
+    }
+    
+    // Chercher une fenêtre cliente existante à cibler
     event.waitUntil(
-        (async () => {
-            try {
-                const cache = await caches.open(CACHE_NAME);
-                console.log('[ServiceWorker] Mise en cache globale');
-                
-                // Au lieu d'utiliser addAll qui échoue si une seule ressource échoue,
-                // on met en cache chaque ressource individuellement
-                const successfulCaches = [];
-                const failedCaches = [];
-                
-                for (const url of STATIC_RESOURCES) {
-                    try {
-                        await cache.add(url);
-                        successfulCaches.push(url);
-                    } catch (error) {
-                        // Logger l'erreur mais continuer avec les autres ressources
-                        console.warn(`[ServiceWorker] Échec de mise en cache: ${url}`, error);
-                        failedCaches.push(url);
+        clients.matchAll({
+            type: 'window',
+            includeUncontrolled: true
+        })
+        .then(function(clientList) {
+            // Vérifier si une fenêtre est déjà ouverte
+            for (var i = 0; i < clientList.length; i++) {
+                var client = clientList[i];
+                // Si une fenêtre est déjà ouverte, l'utiliser
+                if (client.url.includes(self.registration.scope) && 'focus' in client) {
+                    // Avant de donner le focus, naviguer vers la bonne page
+                    if (client.url !== url) {
+                        client.navigate(url).then(function(navigatedClient) {
+                            return navigatedClient.focus();
+                        });
+                    } else {
+                        return client.focus();
                     }
+                    return;
                 }
-                
-                console.log(`[ServiceWorker] Mise en cache réussie pour ${successfulCaches.length} ressources`);
-                if (failedCaches.length > 0) {
-                    console.warn(`[ServiceWorker] Échec de mise en cache pour ${failedCaches.length} ressources`);
-                }
-                
-                await self.skipWaiting();
-                return;
-            } catch (error) {
-                console.error('[ServiceWorker] Erreur d\'installation:', error);
-                // Continue l'installation même en cas d'erreur
-                await self.skipWaiting();
-                return;
             }
-        })()
+            
+            // Sinon, ouvrir une nouvelle fenêtre
+            if (clients.openWindow) {
+                return clients.openWindow(url);
+            }
+        })
     );
 });
 
@@ -563,6 +575,7 @@ function handleDefaultRequest(event) {
 }
 
 /* ---------------------- PUSH ------------------------------------------ */
+
 self.addEventListener('push', event => {
   console.log('[SW] Push reçu - Détails complets:', {
     data: event.data ? (event.data.text ? event.data.text() : 'Données binaires') : 'Pas de données',
@@ -580,51 +593,54 @@ self.addEventListener('push', event => {
       const data = raw.notification ?? raw;
 
       /* 2) Appli visible ? ---------------------------------------------- */
-const clientsList = await self.clients.matchAll({
-  type:'window', includeUncontrolled:true
-});
+      const clientsList = await self.clients.matchAll({
+        type:'window', includeUncontrolled:true
+      });
 
-// Vérifier s'il y a au moins un client ouvert
-if (clientsList.length === 0) {
-  console.log('[SW] App fermée → affichage de la notification');
-  // Continuer vers l'affichage de la notification
-}
-else {
-  const visibleClient = clientsList.find(c => c.visibilityState === 'visible');
+      // Vérifier s'il y a au moins un client ouvert
+      if (clientsList.length === 0) {
+        console.log('[SW] App fermée → affichage de la notification');
+        // Continuer vers l'affichage de la notification
+      }
+      else {
+        // IMPORTANT: Même si l'application est ouverte mais pas visible,
+        // on affiche quand même la notification pour les messages de chat
+        const visibleClient = clientsList.find(c => c.visibilityState === 'visible');
 
-  if (visibleClient && data.data?.type === 'chat') {
-    visibleClient.postMessage({ type:'PUSH_RECEIVED', data });
-    console.log('[SW] App visible → message relayé, pas de notif');
-    return;
-  }
-}
+        if (visibleClient && data.data?.type === 'chat') {
+          visibleClient.postMessage({ type:'PUSH_RECEIVED', data });
+          console.log('[SW] App visible → message relayé, pas de notif');
+          return;
+        }
+      }
 
       /* 3) Construction des options ------------------------------------- */
-const urgent = data.data?.urgent === true;
-const options = {
-  body: data.body || 'Nouvelle notification',
-  icon: data.icon || '/images/AM-192-v2.png',
-  badge: data.badge || '/images/badge-72x72.png',
-  tag: data.tag || `notification-${Date.now()}`,
-  
-  requireInteraction: urgent,
-  renotify: urgent,
-  silent: !urgent,
-  vibrate: urgent ? [200,100,200,100,200] : undefined,
-  
-  data: { 
-    url: data.data?.url || '/', 
-    type: data.data?.type || 'default',
-    urgent, 
-    ...data.data 
-  }
-  // Aucune action - le tableau "actions" est supprimé complètement
-};
-
+      // Forcer les notifications de chat à être urgentes
+      const isChat = data.data?.type === 'chat';
+      const urgent = isChat || data.data?.urgent === true;
+      
+      const options = {
+        body: data.body || 'Nouvelle notification',
+        icon: data.icon || '/images/AM-192-v2.png',
+        badge: data.badge || '/images/badge-72x72.png',
+        tag: isChat ? `chat-${Date.now()}` : (data.tag || `notification-${Date.now()}`),
+        
+        requireInteraction: urgent,
+        renotify: urgent,
+        silent: !urgent,
+        vibrate: urgent ? [200,100,200,100,200] : undefined,
+        
+        data: { 
+          url: isChat ? '/?action=openchat' : (data.data?.url || '/'), 
+          type: data.data?.type || 'default',
+          urgent, 
+          ...data.data 
+        }
+      };
 
       /* 4) Affiche ------------------------------------------------------- */
       await self.registration.showNotification(
-        data.title || 'Actu&Média',
+        isChat ? `Message de ${data.fromUser || 'Actu&Média'}` : (data.title || 'Actu&Média'),
         options
       );
       console.log('[SW] Notification affichée');

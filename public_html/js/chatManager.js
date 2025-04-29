@@ -1893,7 +1893,8 @@ optimizeForLowEndDevices() {
     }
 	
     // Remplacez votre méthode sendNotificationToUser par celle-ci:
-    async sendNotificationToUser(message) {
+    // Remplacez la méthode sendNotificationToUser dans chatManager.js (vers la ligne 2029)
+async sendNotificationToUser(message) {
     try {
         // Vérifier si les notifications sont activées
         if (!this.notificationsEnabled) {
@@ -1903,23 +1904,21 @@ optimizeForLowEndDevices() {
         
         console.log("Préparation de l'envoi de notification push pour le message:", message);
         
-        // Pour l'application fermée, utiliser l'API de notification du serveur
-        const response = await fetch('/api/send-notification', {
+        // Utiliser l'API sendPush pour les notifications quand l'application est fermée
+        const response = await fetch('/api/sendPush', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                title: `${message.pseudo} a envoyé un message`,
-                body: message.content,
-                chatMessage: true,
-                icon: '/images/AM-192-v2.png',
-                badge: '/images/badge-72x72.png',
+                message: message.content.substring(0, 100), // Limiter la longueur à 100 caractères
+                fromUser: message.pseudo,
+                toUser: this.pseudo,
                 data: {
-                    url: '/?action=openchat',
                     type: 'chat',
+                    url: '/?action=openchat',
                     messageId: message.id,
-                    urgent: true  // Ajoutez cette propriété
+                    urgent: true // Marquer comme urgent pour garantir l'affichage
                 }
             })
         });
