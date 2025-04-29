@@ -1413,10 +1413,40 @@ body.long-press-active .message-options {
   background: rgba(255,255,255,0.1);
 }
 
-/* --- Ajustements spécifiques pour Mobile/Tablette (max-width: 768px) --- */
-@media (max-width: 768px) {
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
 
-  /* Comportement du panneau emoji en mode NORMAL (NON fullscreen) */
+/* Base mobile pour tous appareils mobiles (jusqu'à 768px) */
+@media (max-width: 768px) {
+  .chat-container {
+    width: 100%;
+    height: 70vh;
+    max-height: 80vh;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    border-radius: 20px 20px 0 0;
+  }
+  
+  .chat-input textarea {
+    min-height: 48px;
+    font-size: 16px;
+  }
+  
+  /* Position de l'input fixe en bas */
+  .chat-input {
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 1500 !important;
+    padding: 10px !important;
+    background: var(--chat-input-bg) !important;
+    border-radius: 0 0 20px 20px !important;
+    box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.2) !important;
+    margin-top: auto !important;
+  }
+  
+  /* panneau emoji */
   .chat-container:not(.fullscreen) .emoji-panel {
      position: absolute !important;
      /* Fixé SOUS le header du chat */
@@ -1441,46 +1471,8 @@ body.long-press-active .message-options {
       font-size: 26px !important; /* Ajuste cette taille si tu veux plus grand/petit */
       min-height: 36px; /* Ajuste si besoin pour la case */
    }
-
-  /* --- RAPPEL: Comportement du panneau emoji en mode FULLSCREEN --- */
-  .chat-container.fullscreen .emoji-panel {
-     position: absolute !important; 
-     top: calc(var(--chat-header-height) + 5px) !important; /* Aussi sous le header */
-     bottom: var(--chat-input-area-height) !important; /* Aussi au-dessus de l'input */
-     left: 10px !important;
-     right: 10px !important;
-     height: auto !important; 
-     max-height: none !important; 
-     overflow-y: auto !important; 
-     z-index: 1200 !important; 
-     grid-template-columns: repeat(auto-fit, minmax(45px, 1fr)) !important;
-     gap: 8px !important;
-  }
    
-   /* Taille des emojis en mode FULLSCREEN sur mobile/tablette */
-   .chat-container.fullscreen .emoji-panel span {
-      font-size: 28px !important; /* Peut être différent du mode normal */
-      min-height: 38px;
-   }
-}
-
-/* Mobiles & tablettes (max-width: 768px) */
-@media (max-width: 768px) {
-  .chat-container {
-    width: 100%;
-    height: 80vh;
-    max-height: 80vh;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    border-radius: 20px 20px 0 0;
-  }
-  
-  .chat-input textarea {
-    min-height: 48px;
-    font-size: 16px;
-  }
-  
+  /* Info bulle des notifications */
   .info-bubble-mobile {
     position: fixed !important;
     bottom: 80px !important;
@@ -1502,183 +1494,13 @@ body.long-press-active .message-options {
     animation: bubblePop 0.5s ease-out !important;
   }
   
-  @keyframes bubblePop {
+    @keyframes bubblePop {
     0% { transform: scale(0.8); opacity: 0; }
     50% { transform: scale(1.1); }
     100% { transform: scale(1); opacity: 1; }
   }
-}
-
-/* Mobiles (max-width: 768px) - ajustement clavier */
-@media (max-width: 768px) {
-  .chat-container {
-    height: 65vh !important;
-    max-height: 65vh !important;
-    bottom: 15vh !important;
-  }
   
-  .chat-input {
-    position: sticky !important;
-    bottom: 0 !important;
-    z-index: 1500 !important;
-    padding: 10px !important;
-    background: var(--chat-input-bg) !important;
-    border-radius: 0 0 20px 20px !important;
-    box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.2) !important;
-    margin-top: auto !important;
-  }
-  
-  .chat-messages {
-    max-height: calc(65vh - 90px) !important;
-  }
-}
-
-/* Ajustements pour la gestion du clavier mobile */
-@media (max-width: 768px) {
-  /* Ajuster l'input quand le clavier est ouvert */
-  .chat-input.keyboard-visible {
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    background: rgba(126, 87, 194, 0.95) !important;
-    z-index: 10000 !important;
-    padding: 10px !important;
-  }
-  
-  /* Ajouter un espace en bas du conteneur de messages quand le clavier est ouvert */
-  .chat-container.keyboard-open .chat-messages {
-    padding-bottom: 70px !important;
-  }
-}
-
-@media (max-width: 600px) {
-  .chat-widget {
-    bottom: 120px !important;
-    right: 20px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .chat-widget {
-    bottom: 50px !important;
-    right: 30px;
-  }
-}
-
-@media (max-width: 600px) {
-  .chat-container {
-    right: 10px;
-    width: 90%;
-    bottom: 120px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .chat-container {
-    right: 30px;
-    bottom: 50px;
-    width: 350px;
-  }
-}
-
-/* --- Ajustements pour TRÈS PETITS écrans (max-width: 480px) --- */
-@media (max-width: 480px) {
-  /* Ajustements généraux pour le panneau sur petits écrans */
-  .emoji-panel {
-    grid-template-columns: repeat(auto-fit, minmax(36px, 1fr)); 
-    gap: 5px;
-    padding: 8px; 
-  }
-
-  /* Ajustements généraux pour les emojis sur petits écrans */
-  .emoji-panel span {
-     font-size: 22px; /* Plus petit sur très petits écrans */
-     min-height: 32px;
-  }
-   
-   /* Si besoin d'ajuster spécifiquement pour :not(.fullscreen) sur petits écrans */
-   .chat-container:not(.fullscreen) .emoji-panel {
-      /* ex: ajuster le bottom si l'input est différent ici */
-      /* bottom: calc(var(--chat-input-area-height) + 5px) !important; */
-   }
-   
-   /* Si besoin d'ajuster spécifiquement pour .fullscreen sur petits écrans */
-   .chat-container.fullscreen .emoji-panel {
-       /* ex: ajuster le nombre de colonnes ou autre */
-   }
-}
-
-/* ==========================================================================
-   RESPONSIVE DESIGN
-   ========================================================================== */
-/* Mobiles (max-width: 480px) */
-@media (max-width: 480px) {
-  .chat-container {
-    right: 10px;
-    left: 10px;
-    width: auto;
-    margin: 0;
-    border-radius: 20px 20px 0 0;
-    height: 70vh;
-    bottom: 60px;
-  }
-  
-  .admin-panel-content {
-    width: 100%;
-    height: auto;
-    max-height: 70vh;
-    margin: 10px 0;
-    overflow-y: auto;
-    padding: 10px;
-  }
-  
-  .banned-user {
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .unban-btn {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .chat-login {
-    padding: 15px;
-  }
-  
-  .login-buttons button {
-    padding: 10px 20px;
-    font-size: 14px;
-  }
-  
-  .notification-popup {
-    left: 20px;
-    right: 20px;
-    max-width: none;
-  }
-  
-  .moderate-menu {
-    position: fixed;
-    left: 10px;
-    right: 10px;
-    bottom: 70px;
-    top: auto;
-    margin: 0;
-  }
-  
-  .sound-test {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  }
-  
-  .tab-content {
-    min-height: 250px;
-  }
-  
-  .chat-messages {
-    padding: 15px 10px;
-  }
-  
+  /* Styles pour les messages */
   .message {
     max-width: 95% !important;
     padding: 15px 18px !important;
@@ -1715,7 +1537,35 @@ body.long-press-active .message-options {
   .message-time .material-icons {
     font-size: 16px !important;
   }
+}
+
+/* Spécifique aux petits mobiles (max-width: 480px) */
+@media (max-width: 480px) {  
+  /* Plein écran automatique sur mobile */
+  .chat-container {
+    /* Position verticale */
+    top: 60px !important; /* Juste sous la bannière du haut */
+    height: calc(100vh - 130px) !important; /* Hauteur totale moins espaces haut et bas */
+    max-height: calc(100vh - 130px) !important;
+    bottom: 70px !important; /* Juste au-dessus de la barre de navigation */
+    
+    /* Position horizontale - pleine largeur */
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    
+    /* Apparence */
+    border-radius: 0 !important; /* Pas de coins arrondis en mode plein écran */
+  }
   
+  /* Messages optimisés pour les petits écrans */
+  .chat-messages {
+    padding: 15px 10px;
+    height: calc(100% - 110px) !important; /* Hauteur adaptée */
+  }
+  
+  /* Panel d'emoji repositionné */
   .emoji-panel {
     position: fixed;
     bottom: 70px;
@@ -1725,12 +1575,32 @@ body.long-press-active .message-options {
     max-height: 40vh;
     grid-template-columns: repeat(6, 1fr);
   }
+  
+  /* Panels admin adaptés */
+  .admin-panel-content {
+    width: 100%;
+    height: auto;
+    max-height: 70vh;
+    margin: 10px 0;
+    overflow-y: auto;
+    padding: 10px;
+  }
+  
+  .moderate-menu {
+    position: fixed;
+    left: 10px;
+    right: 10px;
+    bottom: 70px;
+    top: auto;
+    margin: 0;
+  }
 }
 
-/* PWA mode (display-mode: standalone) */
+/* PWA (Progressive Web App) mode */
 @media (display-mode: standalone) {
   .chat-container {
-    height: 80vh;
+    /* Ajustements pour la PWA */
+    height: 75vh;
     max-height: calc(100vh - 120px);
     bottom: 60px;
   }
@@ -1741,40 +1611,24 @@ body.long-press-active .message-options {
   }
 }
 
-/* PC (min-width: 769px) */
-@media (min-width: 769px) {
-  .chat-container {
-    height: 70vh !important;
-    max-height: 70vh !important;
-  }
-  
-  .chat-input {
-    padding: 15px !important;
-    margin-top: auto !important;
-  }
-  
-  .chat-input textarea {
-    min-height: 50px !important;
-    max-height: 150px !important;
-  }
-}
-
 /* Tablettes (entre 600px et 1024px) */
 @media (min-width: 600px) and (max-width: 1024px) {
   .chat-container {
-    width: 65% !important;
-    height: 55vh !important;
-    max-height: 55vh !important;
-    bottom: 20vh !important;
-    left: 5% !important;
-    right: 5% !important;
-    margin: 0 auto !important;
+    /* Positionnement centré et plus grand sur tablette */
+    width: 75% !important;
+    height: 70vh !important;
+    max-height: 70vh !important;
+    bottom: 70px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    margin: 0 !important;
   }
   
   .chat-input {
     padding: 15px !important;
   }
   
+  /* Ajustements quand le clavier est ouvert */
   .chat-container.keyboard-open {
     height: 40vh !important;
     max-height: 40vh !important;
@@ -1785,6 +1639,7 @@ body.long-press-active .message-options {
     max-height: calc(40vh - 90px) !important;
   }
   
+  /* Optimisations de performance pour le défilement */
   .chat-messages {
     -webkit-overflow-scrolling: touch !important;
     scroll-behavior: smooth !important;
@@ -1792,14 +1647,8 @@ body.long-press-active .message-options {
     transform: translateZ(0) !important;
     backface-visibility: hidden !important;
   }
-}
-
-/* Optimisations pour tablettes à performances limitées */
-@media (min-width: 600px) and (max-width: 1024px) {
-  .chat-messages {
-    transform: translate3d(0, 0, 0);
-  }
   
+  /* Optimisations pour tablettes à performances limitées */
   .chat-messages.scrolling * {
     box-shadow: none !important;
     text-shadow: none !important;
@@ -1820,82 +1669,29 @@ body.long-press-active .message-options {
   }
 }
 
-/* ============================
-   Responsive design
-============================ */
-/* Pour écrans moyens/petits */
-@media (max-width: 600px) {
-  .admin-panel {
-    width: 95%;
-    max-width: 95%;
-    max-height: 85vh;
-    border-radius: 14px;
+/* PC (min-width: 769px) */
+@media (min-width: 769px) {
+  .chat-container {
+    height: 70vh !important;
+    max-height: 70vh !important;
+    width: 350px !important;
+    right: 30px !important;
   }
   
-  .admin-panel .panel-header h3 {
-    font-size: 1.1rem;
+  .chat-input {
+    padding: 15px !important;
+    margin-top: auto !important;
   }
   
-  .panel-tabs {
-    margin: 0 0.5rem;
-  }
-  
-  .tab-btn {
-    font-size: 0.85rem;
-  }
-  
-  .panel-content {
-    padding: 0.75rem;
-  }
-  
-  .banned-word {
-    padding: 5px;
-  }
-  .banned-word button {
-    font-size: 1rem;
-  }
-  
-  .banned-ip {
-    padding: 6px 8px;
-  }
-  .remove-ban {
-    font-size: 1.1rem;
-    width: 28px;
-    height: 28px;
+  .chat-input textarea {
+    min-height: 50px !important;
+    max-height: 150px !important;
   }
 }
 
-/* =========================
-   Adaptations responsive
-   ========================= */
-@media (max-width: 767px) {
-  .emoji-picker {
-    /* colonnes automatiques selon l’espace dispo */
-    grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
-    /* occupe 90% de la largeur de l’écran et centre-toi */
-    width: 90vw !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    /* affiche les 4 lignes, ne limite plus la hauteur */
-    max-height: none;
-    overflow: visible;
-    gap: 6px;
-  }
-
-  .emoji-picker span {
-    font-size: 1.6rem;    /* ~24px */
-    height: 2.4rem;
-    line-height: 2.4rem;
-    padding: 4px;
-  }
-}
-
-@media (max-width: 360px) {
-  .emoji-picker {
-    grid-template-columns: repeat(5, 1fr);
-  }
-  .emoji-picker span {
-    font-size: 1.1rem;     /* 18px */
-    height: 2rem;
-  }
+/* Animation pour l'info-bulle */
+@keyframes bubblePop {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
 }
