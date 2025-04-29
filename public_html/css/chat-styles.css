@@ -1533,17 +1533,6 @@ body.long-press-active .message-options {
     height: calc(100% - 110px) !important; /* Hauteur adaptée */
   }
   
-  /* Panel d'emoji repositionné */
-  .emoji-panel {
-    position: fixed;
-    bottom: 70px;
-    top: auto;
-    left: 10px;
-    right: 10px;
-    max-height: 40vh;
-    grid-template-columns: repeat(6, 1fr);
-  }
-  
   /* Panels admin adaptés */
   .admin-panel-content {
     width: 100%;
@@ -1664,98 +1653,158 @@ body.long-press-active .message-options {
   100% { transform: scale(1); opacity: 1; }
 }
 
-/* ------------------------
-   Overrides Emoji-Panel
-   for Mobile/Tablet
-   (≤1024px ou ≤768px selon besoin)
-   ------------------------ */
-@media (max-width: 1024px) {
-  .emoji-panel {
-    /* occupe tout l’espace sous le header et au-dessus de l’input */
-    top:    calc(var(--chat-header-height) + 5px) !important;
-    bottom: var(--chat-input-height)         !important;
-    left:   0        !important;
-    right:  0        !important;
-    
-    /* hauteur ajustée automatiquement */
-    height: auto    !important;
-    max-height: calc(100% - var(--chat-header-height) - var(--chat-input-height)) !important;
-    
-    /* grille moins dense pour plus de place */
-    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)) !important;
-    gap: 8px         !important;
-    padding: 12px    !important;
-  }
+/* ==========================================================================
+   EMOJI PANEL
+   ========================================================================== */
 
-  .emoji-panel span {
-    /* plus grand et “carré” */
-    font-size: 32px    !important;
-    min-height: 48px   !important;
-    padding: 6px       !important;
-  }
+/* --- Variables CSS (ajuste ces valeurs si nécessaire) --- */
+:root {
+  --chat-header-height: 60px; /* Hauteur de ton .chat-header */
+  --chat-input-sticky-height-mobile: 75px; /* Hauteur totale input sticky sur mobile */
+  --chat-input-base-height-tablet: 65px; /* Hauteur totale input non-sticky sur tablette */
 }
 
-/* Si tu veux cibler encore plus petit (smartphone) */
-@media (max-width: 480px) {
-  .emoji-panel {
-    grid-template-columns: repeat(auto-fit, minmax(40px, 1fr)) !important;
-    gap: 6px      !important;
-    padding: 8px  !important;
-  }
-  .emoji-panel span {
-    font-size: 28px  !important;
-    min-height: 40px !important;
-    padding: 5px     !important;
-  }
+/* --- Styles de base pour .emoji-panel (Desktop et fallback) --- */
+.emoji-panel {
+  position: absolute; /* Positionné par rapport à .chat-container */
+  /* Position par défaut (Desktop) */
+  top: calc(var(--chat-header-height, 60px) + 5px); /* Sous le header */
+  left: 10px;
+  right: 10px;
+  bottom: auto; /* Non fixé en bas par défaut */
+  max-height: 50vh; /* Limite de hauteur par défaut */
+
+  /* Apparence */
+  background: var(--chat-gradient);
+  border-radius: 12px;
+  box-shadow: var(--chat-shadow);
+  padding: 10px;
+  z-index: 1200; /* Au-dessus des messages */
+
+  /* Layout interne */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(42px, 1fr)); 
+  gap: 6px; 
+
+  /* Comportement */
+  overflow-y: auto; /* Scroll si nécessaire */
+  box-sizing: border-box; 
 }
 
-/* ==================================================================
-   Emoji‐Panel – borné entre header et input (Mobile/Tablet)
-   ================================================================== */
-@media (max-width: 1024px) {
-  .chat-container {
-    position: relative; /* pour que l’emoji-panel absolute puisse se positionner */
-  }
-  
-  .chat-container .emoji-panel {
-    position: absolute !important;
-    /* colle sous le header */
-    top: calc(var(--chat-header-height, 60px) + 5px) !important;
-    /* colle juste au‐dessus de l’input */
-    bottom: calc(var(--chat-input-height, 60px) + 5px) !important;
-    left: 10px !important;
-    right: 10px !important;
+/* --- Styles de base pour les emojis (span) --- */
+.emoji-panel span {
+  /* Taille par défaut (Desktop) */
+  font-size: 26px; 
+  min-height: 38px; 
+  aspect-ratio: 1 / 1; 
 
-    /* adapte sa hauteur automatiquement */
-    height: auto !important;
-    max-height: calc(100% - var(--chat-header-height, 60px) - var(--chat-input-height, 60px) - 10px) !important;
-    overflow-y: auto !important;
+  /* Apparence et Comportement */
+  cursor: pointer;
+  padding: 4px; 
+  text-align: center;
+  border-radius: 8px;
+  transition: background 0.2s;
+  display: flex; 
+  align-items: center;
+  justify-content: center;
+}
+.emoji-panel span:hover {
+  background: var(--chat-hover);
+}
 
-    /* optimise la grille pour mobile */
-    display: grid !important;
-    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)) !important;
-    gap: 8px !important;
-    padding: 12px !important;
-    z-index: 1200 !important;
+/* --- Styles Scrollbar (Garder tes styles) --- */
+.emoji-panel::-webkit-scrollbar { width: 8px; }
+.emoji-panel::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
+.emoji-panel::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 4px; }
+.emoji-panel::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.5); }
+
+
+/* ==========================================================================
+   RESPONSIVE - Mobile (<= 768px) Panneau Emoji
+   ========================================================================== */
+@media (max-width: 768px) {
+
+  /* Panneau Emoji en mode NORMAL sur Mobile */
+  .chat-container .emoji-panel { /* Pas besoin de :not(.fullscreen) maintenant */
+     position: absolute !important;
+     /* Fixé SOUS le header du chat */
+     top: calc(var(--chat-header-height, 60px) + 5px) !important; 
+     /* Fixé AU-DESSUS de la zone d'input STICKY */
+     bottom: var(--chat-input-sticky-height-mobile, 75px) !important; 
+     left: 10px !important;
+     right: 10px !important;
+     
+     /* La hauteur est gérée par top/bottom */
+     height: auto !important; 
+     max-height: none !important; 
+     
+     overflow-y: auto !important; 
+     z-index: 1200 !important;
+     /* Ajuster colonnes si besoin pour mobile */
+     grid-template-columns: repeat(auto-fit, minmax(40px, 1fr)) !important; 
+     gap: 5px !important; /* Moins d'espace */
+     padding: 8px !important; /* Moins de padding */
   }
-  
+   
+   /* Taille des emojis sur Mobile */
+   .chat-container .emoji-panel span {
+      font-size: 28px !important; /* Plus grands */
+      min-height: 38px !important; 
+   }
+}
+
+
+/* ==========================================================================
+   RESPONSIVE - Tablettes (769px à 1024px) Panneau Emoji
+   ========================================================================== */
+@media (min-width: 769px) and (max-width: 1024px) {
+
+  /* Panneau Emoji sur Tablette */
+  .chat-container .emoji-panel { /* Pas besoin de :not(.fullscreen) */
+     position: absolute !important;
+     /* Fixé SOUS le header du chat */
+     top: calc(var(--chat-header-height, 60px) + 5px) !important; 
+     /* Fixé AU-DESSUS de la zone d'input NON-STICKY */
+     bottom: calc(var(--chat-input-base-height-tablet, 65px) + 5px) !important; /* +5px gap */
+     left: 15px !important; /* Un peu plus de marge latérale */
+     right: 15px !important;
+     
+     /* Hauteur gérée par top/bottom */
+     height: auto !important; 
+     max-height: none !important; 
+     
+     overflow-y: auto !important; 
+     z-index: 1200 !important;
+     /* Plus de colonnes possibles sur tablette */
+     grid-template-columns: repeat(auto-fit, minmax(48px, 1fr)) !important; 
+     gap: 8px !important;
+     padding: 12px !important;
+  }
+
+  /* Taille des emojis sur Tablette */
   .chat-container .emoji-panel span {
-    font-size: 32px !important;
-    min-height: 48px !important;
-    padding: 6px !important;
+      font-size: 30px !important; /* Encore plus grands */
+      min-height: 42px !important;
   }
 }
 
-/* pour très petits écrans */
+/* ==========================================================================
+   Optionnel: Ajustements TRÈS PETITS écrans (<= 480px)
+   ========================================================================== */
 @media (max-width: 480px) {
-  .chat-container .emoji-panel {
-    grid-template-columns: repeat(auto-fit, minmax(40px, 1fr)) !important;
-    gap: 6px !important;
-    padding: 8px !important;
+  /* Ajustements généraux pour le panneau sur petits écrans */
+  .emoji-panel {
+    grid-template-columns: repeat(auto-fit, minmax(36px, 1fr)) !important; 
+    gap: 4px !important;
+    padding: 6px !important; 
+    /* Ajuster top/bottom si les variables de hauteur changent ici */
+    /* top: calc(var(--chat-header-height, 60px) + 3px) !important; */
+    /* bottom: var(--chat-input-sticky-height-mobile, 75px) !important; */
   }
-  .chat-container .emoji-panel span {
-    font-size: 28px !important;
-    min-height: 40px !important;
-    padding: 5px !important;
+
+  /* Ajustements généraux pour les emojis sur petits écrans */
+  .emoji-panel span {
+     font-size: 24px !important; /* Taille adaptée */
+     min-height: 34px !important;
   }
 }
