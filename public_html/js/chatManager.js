@@ -1903,7 +1903,7 @@ optimizeForLowEndDevices() {
         
         console.log("Préparation de l'envoi de notification push pour le message:", message);
         
-        // CORRECTION: Utiliser le bon chemin d'API (sans .js)
+        // Pour l'application fermée, utiliser l'API de notification du serveur
         const response = await fetch('/api/send-notification', {
             method: 'POST',
             headers: {
@@ -1911,18 +1911,18 @@ optimizeForLowEndDevices() {
             },
             body: JSON.stringify({
                 title: `${message.pseudo} a envoyé un message`,
-                body: message.content.substring(0, 100) + (message.content.length > 100 ? '...' : ''),
+                body: message.content,
                 chatMessage: true,
+                icon: '/images/AM-192-v2.png',
+                badge: '/images/badge-72x72.png',
                 data: {
+                    url: '/?action=openchat',
                     type: 'chat',
-                    messageId: message.id
+                    messageId: message.id,
+                    urgent: true  // Ajoutez cette propriété
                 }
             })
         });
-        
-        if (!response.ok) {
-            throw new Error(`Erreur API: ${response.status} ${response.statusText}`);
-        }
         
         const result = await response.json();
         console.log("Résultat de l'envoi de notification:", result);

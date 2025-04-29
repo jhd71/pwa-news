@@ -564,7 +564,10 @@ function handleDefaultRequest(event) {
 
 /* ---------------------- PUSH ------------------------------------------ */
 self.addEventListener('push', event => {
-  console.log('[SW] Push reçu ➜', event.data ? event.data.text() : '');
+  console.log('[SW] Push reçu - Détails complets:', {
+    data: event.data ? (event.data.text ? event.data.text() : 'Données binaires') : 'Pas de données',
+    clientsCount: self.clients.matchAll().then(clients => clients.length)
+  });
 
   event.waitUntil((async () => {
     try {
@@ -577,16 +580,24 @@ self.addEventListener('push', event => {
       const data = raw.notification ?? raw;
 
       /* 2) Appli visible ? ---------------------------------------------- */
-      const clientsList = await self.clients.matchAll({
-        type:'window', includeUncontrolled:true
-      });
-      const visibleClient = clientsList.find(c => c.visibilityState === 'visible');
+const clientsList = await self.clients.matchAll({
+  type:'window', includeUncontrolled:true
+});
 
-      if (visibleClient && data.data?.type === 'chat') {
-        visibleClient.postMessage({ type:'PUSH_RECEIVED', data });
-        console.log('[SW] App visible → message relayé, pas de notif');
-        return;
-      }
+// Vérifier s'il y a au moins un client ouvert
+if (clientsList.length === 0) {
+  console.log('[SW] App fermée → affichage de la notification');
+  // Continuer vers l'affichage de la notification
+}
+else {
+  const visibleClient = clientsList.find(c => c.visibilityState === 'visible');
+
+  if (visibleClient && data.data?.type === 'chat') {
+    visibleClient.postMessage({ type:'PUSH_RECEIVED', data });
+    console.log('[SW] App visible → message relayé, pas de notif');
+    return;
+  }
+}
 
       /* 3) Construction des options ------------------------------------- */
 const urgent = data.data?.urgent === true;
