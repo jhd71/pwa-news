@@ -163,10 +163,6 @@ class ChatManager {
 	this.container = document.createElement('div');
 	this.container.className = 'chat-widget hidden';
 	document.body.appendChild(this.container);
-	// Initialiser le correctif du clavier pour mobile
-const scriptElement = document.createElement('script');
-scriptElement.src = '/js/chat-keyboard-fix.js'; // Ajustez le chemin si nécessaire
-document.body.appendChild(scriptElement);
 				const bannedUntil = localStorage.getItem('chat_device_banned_until');
             let isBanned = true;
             
@@ -441,7 +437,6 @@ document.body.appendChild(scriptElement);
         if (this.pseudo) {
             await this.loadExistingMessages();
             this.updateUnreadBadgeAndBubble();
-			this.checkForUnreadMessages();
         }
         
         // Pour gérer spécifiquement les problèmes de PWA
@@ -689,13 +684,8 @@ getChatHTML() {
                         <span class="material-icons">emoji_emotions</span>
                     </button>
                     <button class="notifications-btn ${this.notificationsEnabled ? 'enabled' : ''}" title="Notifications">
-						<span class="material-icons">${this.notificationsEnabled ? 'notifications_active' : 'notifications_off'}</span>
-					</button>
-					${this.isAdmin ? `
-					<button class="reset-notifications-btn" title="Réinitialiser notifications (Admin)">
-						<span class="material-icons">sync</span>
-					</button>
-				` : ''}
+                        <span class="material-icons">${this.notificationsEnabled ? 'notifications_active' : 'notifications_off'}</span>
+                    </button>
                     <button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
                         <span class="material-icons">${this.soundEnabled ? 'volume_up' : 'volume_off'}</span>
                     </button>
@@ -736,14 +726,9 @@ getChatHTMLWithoutToggle() {
                     <span class="material-icons">emoji_emotions</span>
                 </button>
                     <button class="notifications-btn ${this.notificationsEnabled ? 'enabled' : ''}" title="Notifications">
-					<span class="material-icons">${this.notificationsEnabled ? 'notifications_active' : 'notifications_off'}</span>
-					</button>
-				${this.isAdmin ? `
-					<button class="reset-notifications-btn" title="Réinitialiser notifications (Admin)">
-						<span class="material-icons">sync</span>
-					</button>
-				` : ''}				
-				<button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
+                        <span class="material-icons">${this.notificationsEnabled ? 'notifications_active' : 'notifications_off'}</span>
+                    </button>
+                    <button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
                         <span class="material-icons">${this.soundEnabled ? 'volume_up' : 'volume_off'}</span>
                     </button>
                     <button class="logout-btn" title="Déconnexion">
@@ -838,34 +823,20 @@ getChatHTMLWithoutToggle() {
     }
 
         if (notificationsBtn) {
-    notificationsBtn.addEventListener('click', async () => {
-        try {
-            if (this.notificationsEnabled) {
-                await this.unsubscribeFromPushNotifications();
-            } else {
-                await this.setupPushNotifications();
-            }
-            this.playSound('click');
-        } catch (error) {
-            console.error('Erreur gestion notifications:', error);
-            this.showNotification('Erreur avec les notifications', 'error');
+            notificationsBtn.addEventListener('click', async () => {
+                try {
+                    if (this.notificationsEnabled) {
+                        await this.unsubscribeFromPushNotifications();
+                    } else {
+                        await this.setupPushNotifications();
+                    }
+                    this.playSound('click');
+                } catch (error) {
+                    console.error('Erreur gestion notifications:', error);
+                    this.showNotification('Erreur avec les notifications', 'error');
+                }
+            });
         }
-    });
-}
-
-// AJOUTEZ LE CODE ICI pour le bouton de réinitialisation
-const resetNotifBtn = this.container.querySelector('.reset-notifications-btn');
-if (resetNotifBtn) {
-    resetNotifBtn.addEventListener('click', async () => {
-        try {
-            await this.resetAndResubscribeToPush();
-            this.playSound('click');
-        } catch (error) {
-            console.error('Erreur réinitialisation notifications:', error);
-            this.showNotification('Erreur lors de la réinitialisation', 'error');
-        }
-    });
-}
 
         if (adminBtn && this.isAdmin) {
             adminBtn.addEventListener('click', () => {
@@ -1454,188 +1425,28 @@ setupBanChecker() {
     messagesContainer.appendChild(messageElement);
     this.scrollToBottom();
     
-    // Si le message vient de quelqu'un d'autre, on joue le son et on notifie si nécessaire
     if (message.pseudo !== this.pseudo) {
-    this.playSound('message');
-    
-    if (!chatOpen) {
-        this.unreadCount++;
-        localStorage.setItem('unreadCount', this.unreadCount.toString());
+        this.playSound('message');
         
-        // AJOUTEZ CETTE LIGNE pour stocker le message non lu
-        this.storeUnreadMessage(message);
+        if (!chatOpen) {
+            this.unreadCount++;
+            localStorage.setItem('unreadCount', this.unreadCount.toString());
             
             if (this.notificationsEnabled) {
-                // NOTIFICATION DIRECTE: Utiliser exactement la même technique que celle qui fonctionne avec le bouton
                 try {
-                    console.log(`Envoi notification directe pour message de ${message.pseudo}`);
-                    
-                    // MÉTHODE 1: Utiliser l'API qui fonctionne dans le bouton
-                    const response = await fetch('/api/send-important-notification', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-API-Key': 'admin2024'
-                        },
-                        body: JSON.stringify({
-                            title: `Message de ${message.pseudo}`,
-                            body: message.content,
-                            url: "/?action=openchat",
-                            urgent: true 
-                        })
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`Erreur HTTP: ${response.status}`);
-                    }
-                    
-                    const result = await response.json();
-                    console.log("Réponse notification API:", result);
-                    
-                    // MÉTHODE 2: Créer aussi une notification directe comme backup
-                    if (navigator.serviceWorker && navigator.serviceWorker.ready) {
-                        const registration = await navigator.serviceWorker.ready;
-                        
-                        // Créer les options de notification
-                        const options = {
-                            body: message.content,
-                            icon: '/images/AM-192-v2.png',
-                            badge: '/images/badge-72x72.png',
-                            tag: `chat-${Date.now()}`,
-                            requireInteraction: true,
-                            renotify: true,
-                            vibrate: [200, 100, 200],
-                            data: {
-                                url: '/?action=openchat',
-                                type: 'chat',
-                                messageId: message.id,
-                                fromUser: message.pseudo,
-                                urgent: true
-                            }
-                        };
-                        
-                        await registration.showNotification(`Message de ${message.pseudo}`, options);
-                        console.log("Notification directe générée avec succès");
+                    // Utiliser le résultat mais ne pas propager d'erreur
+                    const notificationResult = await this.sendNotificationToUser(message);
+                    if (!notificationResult?.success) {
+                        console.warn('Notification non envoyée:', notificationResult?.error || 'Raison inconnue');
                     }
                 } catch (error) {
-                    console.error("Erreur complète notification:", error);
-                    
-                    // DERNIER RECOURS: Notification native
-                    try {
-                        if (Notification.permission === 'granted') {
-                            new Notification(`Message de ${message.pseudo}`, {
-                                body: message.content,
-                                icon: '/images/AM-192-v2.png'
-                            });
-                        }
-                    } catch (e) {
-                        console.error("Échec notification native:", e);
-                    }
+                    // En cas d'erreur, simplement logger mais ne pas interrompre
+                    console.warn('Erreur notification ignorée:', error.message);
                 }
             }
             
             this.updateUnreadBadgeAndBubble();
         }
-    }
-}
-
-storeUnreadMessage(message) {
-    try {
-        const unreadMessages = JSON.parse(localStorage.getItem('unreadChatMessages') || '[]');
-        
-        // Ajouter ce message à la liste
-        unreadMessages.push({
-            id: message.id,
-            pseudo: message.pseudo,
-            content: message.content,
-            timestamp: Date.now()
-        });
-        
-        // Limiter à 10 messages maximum
-        if (unreadMessages.length > 10) {
-            unreadMessages.shift(); // Enlever le plus ancien
-        }
-        
-        // Sauvegarder dans localStorage
-        localStorage.setItem('unreadChatMessages', JSON.stringify(unreadMessages));
-        console.log(`Message de ${message.pseudo} stocké pour notification ultérieure`);
-    } catch (e) {
-        console.error('Erreur stockage message non lu:', e);
-    }
-}
-
-checkForUnreadMessages() {
-    try {
-        // Récupérer les messages non lus
-        const unreadMessages = JSON.parse(localStorage.getItem('unreadChatMessages') || '[]');
-        if (unreadMessages.length === 0) return;
-        
-        console.log(`${unreadMessages.length} messages non lus trouvés au démarrage`);
-        
-        // Si des messages non lus existent et que les notifications sont activées
-        if (this.notificationsEnabled) {
-            // Créer une notification groupée
-            if (unreadMessages.length === 1) {
-                // Un seul message non lu
-                const message = unreadMessages[0];
-                this.showDesktopNotification(
-                    `Message de ${message.pseudo}`, 
-                    message.content
-                );
-            } else {
-                // Plusieurs messages non lus
-                const names = [...new Set(unreadMessages.map(m => m.pseudo))];
-                const messageText = names.length === 1
-                    ? `${unreadMessages.length} messages de ${names[0]}`
-                    : `${unreadMessages.length} messages de ${names.length} personnes`;
-                    
-                this.showDesktopNotification(
-                    'Messages non lus',
-                    messageText
-                );
-            }
-        }
-        
-        // Vider la liste après notification
-        localStorage.setItem('unreadChatMessages', '[]');
-    } catch (e) {
-        console.error('Erreur vérification messages non lus:', e);
-    }
-}
-
-showDesktopNotification(title, body) {
-    try {
-        // Vérifier si les notifications sont supportées
-        if (!("Notification" in window)) {
-            console.warn("Ce navigateur ne supporte pas les notifications de bureau");
-            return false;
-        }
-        
-        // Vérifier si la permission est accordée
-        if (Notification.permission !== "granted") {
-            console.warn("Permission de notification non accordée");
-            return false;
-        }
-        
-        // Créer une notification
-        const notification = new Notification(title, {
-            body: body,
-            icon: '/images/AM-192-v2.png',
-            tag: 'chat-notification',
-            requireInteraction: true
-        });
-        
-        // Gestionnaire de clic
-        notification.onclick = function() {
-            window.focus();
-            window.location.href = '/?action=openchat';
-            notification.close();
-        };
-        
-        return true;
-    } catch (e) {
-        console.error("Erreur notification bureau:", e);
-        return false;
     }
 }
 
@@ -1842,36 +1653,60 @@ div.innerHTML = `
 
     async sendMessage(content) { 
     try {
-        // Log détaillé pour le débogage
-        console.log("Envoi du message : " + content);
+        // Utiliser directement this.pseudo comme identifiant
+        const isBanned = await this.checkBannedIP(this.pseudo);
         
-        // Construire le message simplifié
-        const message = {
-            pseudo: this.pseudo,
-            content: content,
-            ip: this.pseudo + "-" + Date.now(),
-            created_at: new Date().toISOString()
-        };
-        
-        // Tenter d'insérer sans RLS complexe
-        const { data, error } = await this.supabase
-            .from('messages')
-            .insert(message);
-            
-        if (error) {
-            console.error("Erreur d'envoi:", error);
-            
-            // Afficher une notification d'erreur à l'utilisateur
-            this.showNotification("Erreur d'envoi: " + (error.message || "Problème de connexion"), 'error');
-            
+        if (isBanned) {
+            console.log(`Message rejeté - utilisateur banni: ${this.pseudo}`);
+            this.showNotification('Vous êtes banni du chat', 'error');
+            // Déconnecter l'utilisateur banni
+            await this.logout();
             return false;
         }
         
-        console.log("Message envoyé avec succès");
+        // Vérifier les mots bannis
+        const containsBannedWord = await this.checkForBannedWords(content);
+        if (containsBannedWord) {
+            this.showNotification('Votre message contient des mots interdits', 'error');
+            return false;
+        }
+        
+        // Définir l'utilisateur courant pour RLS
+        const rlsSuccess = await this.setCurrentUserForRLS();
+        if (!rlsSuccess) {
+            console.error("Échec de la définition de l'utilisateur pour RLS");
+            this.showNotification('Erreur d\'authentification', 'error');
+            return false;
+        }
+        
+        // Créer l'identifiant unique pour ce message
+        const messageIp = `${this.pseudo}-${Date.now()}`;
+        
+        // Obtenir l'IP réelle de l'utilisateur
+        const realIP = await this.getClientRealIP();
+        
+        // Construire le message avec l'identifiant et l'IP réelle
+        const message = {
+            pseudo: this.pseudo,
+            content: content,
+            ip: messageIp,
+            real_ip: realIP, // Nouvelle propriété
+            created_at: new Date().toISOString()
+        };
+        
+        // Insérer le message
+        const { data: messageData, error } = await this.supabase
+            .from('messages')
+            .insert(message)
+            .select()
+            .single();
+            
+        if (error) throw error;
+        
+        // Le reste de votre code existant...
         return true;
     } catch (error) {
         console.error('Erreur sendMessage:', error);
-        this.showNotification("Erreur: " + error.message, 'error');
         return false;
     }
 }
@@ -1922,140 +1757,6 @@ div.innerHTML = `
             return false;
         }
     }
-
-async resetAndResubscribeToPush() {
-    try {
-        console.log("Réinitialisation complète de l'abonnement aux notifications...");
-        
-        // Vérifier si le service worker est disponible
-        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-            this.showNotification('Votre navigateur ne supporte pas les notifications push', 'error');
-            return false;
-        }
-        
-        try {
-            // 1. Obtenir l'enregistrement du service worker
-            const registration = await navigator.serviceWorker.ready;
-            console.log("Service worker prêt pour la réinitialisation");
-            
-            // 2. Obtenir l'abonnement actuel s'il existe
-            const existingSubscription = await registration.pushManager.getSubscription();
-            
-            // 3. Désabonner s'il existe un abonnement
-            if (existingSubscription) {
-                console.log("Désabonnement de la souscription existante");
-                await existingSubscription.unsubscribe();
-                
-                // Supprimer l'abonnement de la base de données
-                try {
-                    await this.supabase
-                        .from('push_subscriptions')
-                        .delete()
-                        .eq('pseudo', this.pseudo);
-                } catch (dbError) {
-                    console.error("Erreur de suppression de l'abonnement en base:", dbError);
-                    // Continuer malgré l'erreur
-                }
-            }
-            
-            // 4. Demander à nouveau la permission
-            console.log("Demande de permission de notification");
-            const permission = await Notification.requestPermission();
-            
-            if (permission !== 'granted') {
-                this.showNotification('Permission de notification refusée', 'error');
-                return false;
-            }
-            
-            // 5. S'abonner à nouveau
-            console.log("Nouvel abonnement avec VAPID key");
-            const vapidPublicKey = 'BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck';
-            
-            const newSubscription = await registration.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: this.urlBase64ToUint8Array(vapidPublicKey)
-            });
-            
-            console.log("Nouveau abonnement créé:", newSubscription);
-            
-            // 6. Enregistrer le nouvel abonnement - CORRECTION: en supprimant last_updated
-            const { error } = await this.supabase
-                .from('push_subscriptions')
-                .insert({
-                    pseudo: this.pseudo,
-                    subscription: JSON.stringify(newSubscription),
-                    endpoint: newSubscription.endpoint,
-                    device_type: this.getDeviceType(),
-                    active: true,
-                    created_at: new Date().toISOString()
-                    // Suppression de last_updated qui n'existe pas dans votre table
-                });
-                
-            if (error) {
-                console.error("Erreur d'enregistrement de l'abonnement:", error);
-                this.showNotification("Erreur d'enregistrement de l'abonnement", 'error');
-                return false;
-            }
-            
-            this.subscription = newSubscription;
-            this.notificationsEnabled = true;
-            localStorage.setItem('notificationsEnabled', 'true');
-            this.updateNotificationButton();
-            
-            this.showNotification('Abonnement aux notifications réinitialisé avec succès', 'success');
-            console.log("Réinitialisation terminée avec succès");
-            
-            // Envoi d'une notification de test
-            setTimeout(() => {
-                this.sendTestNotificationViaAPI();
-            }, 2000);
-            
-            return true;
-        } catch (error) {
-            console.error("Erreur lors de la réinitialisation des notifications:", error);
-            this.showNotification(`Erreur: ${error.message}`, 'error');
-            return false;
-        }
-    } catch (error) {
-        console.error("Erreur globale:", error);
-        this.showNotification('Une erreur est survenue', 'error');
-        return false;
-    }
-}
-
-// Ajouter cette fonction pour envoyer un test via l'API
-async sendTestNotificationViaAPI() {
-    try {
-        // Utiliser l'API sendPush qui fonctionne déjà au lieu de send-important-notification
-        const response = await fetch('/api/sendPush', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                message: 'Ceci est une notification de test pour vérifier que tout fonctionne',
-                fromUser: 'Système',
-                toUser: 'all', // Envoyer à tous les utilisateurs ou spécifier this.pseudo pour l'utilisateur courant
-                data: {
-                    type: 'notification',
-                    url: '/?test=notification',
-                    urgent: true
-                }
-            })
-        });
-        
-        const result = await response.json();
-        console.log("Résultat du test de notification:", result);
-        
-        if (result.success) {
-            console.log("Notification de test envoyée avec succès");
-        } else {
-            console.error("Échec de l'envoi de la notification de test");
-        }
-    } catch (error) {
-        console.error("Erreur lors de l'envoi de la notification de test:", error);
-    }
-}
 
 async sendTestNotification() {
     try {
@@ -2212,121 +1913,27 @@ optimizeForLowEndDevices() {
     }
 	
     // Remplacez votre méthode sendNotificationToUser par celle-ci:
-async sendNotificationToUser(message) {
-    try {
-        console.log("DÉBUT sendNotificationToUser pour:", message.pseudo);
+    async sendNotificationToUser(message) {
+        if (!this.notificationsEnabled || !message) return { success: false };
         
-        // Vérifier si les notifications sont activées
-        if (!this.notificationsEnabled) {
-            console.log("Notifications désactivées pour cet utilisateur");
-            return { success: false, reason: "notifications_disabled" };
-        }
-        
-        // Préparation du payload identique à celui du bouton qui fonctionne
-        const notificationData = {
-            title: `Message de ${message.pseudo}`,
-            body: message.content,
-            url: "/?action=openchat",
-            urgent: true
-        };
-        
-        console.log("Envoi notification avec payload:", JSON.stringify(notificationData));
-        
-        // Utiliser EXACTEMENT la même méthode que celle qui fonctionne avec le bouton de réinitialisation
-        const response = await fetch('/api/send-important-notification', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-API-Key': 'admin2024'
-            },
-            body: JSON.stringify(notificationData)
-        });
-        
-        const responseText = await response.text();
-        console.log(`Réponse brute de l'API: ${responseText}`);
-        
-        let result;
         try {
-            result = JSON.parse(responseText);
-        } catch (e) {
-            console.error("Erreur parsing JSON:", e);
-            return { success: false, error: "Réponse invalide de l'API" };
+            // Préparer le message pour le gestionnaire de notifications
+            const notificationMessage = {
+                id: message.id,
+                content: message.content,
+                pseudo: message.pseudo,
+                senderName: message.pseudo,
+                senderId: message.ip // Votre format actuel utilise ip comme identifiant
+            };
+            
+            // Utiliser le gestionnaire pour envoyer la notification
+            return await notificationManager.sendPushNotification(notificationMessage);
+        } catch (error) {
+            console.error('Erreur envoi notification:', error);
+            return { success: false, error: error.message };
         }
-        
-        console.log("Résultat de l'envoi de notification:", result);
-        
-        return { success: true, result };
-    } catch (error) {
-        console.error('Erreur complète sendNotificationToUser:', error);
-        return { success: false, error: error.message };
     }
-}
 	
-	async sendDirectNotification(message) {
-    try {
-        console.log("Tentative d'envoi direct de notification pour message:", message);
-        
-        // Vérifier si les notifications sont activées
-        if (!this.notificationsEnabled) {
-            console.log("Notifications désactivées pour cet utilisateur");
-            return false;
-        }
-        
-        // Vérifier si le service worker est disponible
-        if (!('serviceWorker' in navigator)) {
-            console.error("Service Worker non supporté");
-            return false;
-        }
-        
-        // Vérifier si l'API Notification est disponible
-        if (!('Notification' in window)) {
-            console.error("API Notification non supportée");
-            return false;
-        }
-        
-        // Vérifier la permission
-        if (Notification.permission !== 'granted') {
-            console.error("Permission de notification non accordée");
-            return false;
-        }
-        
-        // Récupérer l'enregistrement du service worker
-        const registration = await navigator.serviceWorker.ready;
-        console.log("Service worker prêt pour notification directe");
-        
-        // Créer les options de notification
-        const options = {
-            body: message.content,
-            icon: '/images/AM-192-v2.png',
-            badge: '/images/badge-72x72.png',
-            tag: `chat-${Date.now()}`,
-            requireInteraction: true,
-            renotify: true,
-            vibrate: [200, 100, 200],
-            data: {
-                url: '/?action=openchat',
-                type: 'chat',
-                messageId: message.id,
-                fromUser: message.pseudo,
-                urgent: true
-            }
-        };
-        
-        // Créer le titre
-        const title = `Message de ${message.pseudo}`;
-        
-        // Afficher la notification
-        console.log("Affichage notification directe avec:", { title, options });
-        await registration.showNotification(title, options);
-        
-        console.log("Notification directe envoyée avec succès");
-        return true;
-    } catch (error) {
-        console.error("Erreur notification directe:", error);
-        return false;
-    }
-}
-
 	async loadSounds() {
         const soundFiles = {
             'message': '/sounds/message.mp3',
