@@ -935,38 +935,29 @@ body:has(.chat-container.open) .news-ticker {
 
 /* --- Styles de base pour .emoji-panel (S'appliquent sur DESKTOP et comme fallback) --- */
 .emoji-panel {
-  position: absolute; /* Positionné par rapport à .chat-container */
+  position: absolute; 
+  top: calc(var(--chat-header-height, 60px) + 5px) !important; 
   
-  /* === Positionnement Vertical (Desktop) === */
-  top: calc(var(--chat-header-height, 60px) + 5px) !important; /* Juste sous le header */
   /* === CORRECTION ICI === */
-  bottom: calc(var(--chat-input-base-height-desktop, 65px) + 5px) !important; /* Juste au-dessus de l'input + petit espace */
+  /* S'arrête EXACTEMENT à la hauteur estimée de l'input (enlève le + 5px) */
+  bottom: var(--chat-input-base-height-desktop, 65px) !important; 
+  /* OU si ça recouvre encore, essaie de remonter un peu : */
+  /* bottom: calc(var(--chat-input-base-height-desktop, 65px) + 2px) !important; */ /* 2px au-dessus */
   
-  /* === Positionnement Horizontal === */
   left: 10px !important;
   right: 10px !important;
-  
-  /* === Hauteur gérée par top/bottom === */
   height: auto !important; 
-  /* === CORRECTION ICI === */
-  max-height: none !important; /* IMPORTANT: On enlève la limite max-height */
-
-  /* === Apparence === */
+  max-height: none !important; 
   background: var(--chat-gradient);
   border-radius: 12px;
   box-shadow: var(--chat-shadow);
-  padding: 10px; /* Padding généraux */
-  /* === CORRECTION ICI === */
-  padding-bottom: 30px !important; /* Espace EN BAS pour permettre le scroll de la dernière ligne */
+  padding: 10px; 
+  padding-bottom: 30px !important; /* Garder pour le scroll */
   z-index: 1200; 
-
-  /* === Layout interne (Grid) === */
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(42px, 1fr)); /* Colonnes flexibles */
+  grid-template-columns: repeat(auto-fit, minmax(42px, 1fr)); 
   gap: 6px; 
-
-  /* === Comportement === */
-  overflow-y: auto; /* Permettre le scroll vertical */
+  overflow-y: auto; 
   box-sizing: border-box !important; 
 }
 
