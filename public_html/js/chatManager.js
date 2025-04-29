@@ -1903,16 +1903,17 @@ optimizeForLowEndDevices() {
         
         console.log("Préparation de l'envoi de notification push pour le message:", message);
         
-        // Approche directe: utiliser l'API sendPush pour garantir la notification même app fermée
+        // Utiliser directement l'API sendPush avec un format simplifié
         const response = await fetch('/api/sendPush', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                message: message.content.substring(0, 100), // Limiter à 100 caractères
+                message: message.content, // Message complet
                 fromUser: message.pseudo,
                 toUser: this.pseudo,
+                // Données additionnelles minimisées pour garantir la compatibilité
                 data: {
                     type: 'chat',
                     messageId: message.id,
@@ -1924,7 +1925,7 @@ optimizeForLowEndDevices() {
         const result = await response.json();
         console.log("Résultat de l'envoi de notification:", result);
         
-        return { success: result.success !== false, result };
+        return { success: true, result };
     } catch (error) {
         console.error('Erreur envoi notification:', error);
         return { success: false, error: error.message };

@@ -577,92 +577,57 @@ function handleDefaultRequest(event) {
 /* ---------------------- PUSH ------------------------------------------ */
 
 // Remplacez l'événement push existant dans service-worker.js par ce code
-self.addEventListener('push', event => {
-  console.log('[SW] Push reçu:', event.data ? event.data.text() : 'Sans données');
+// REMPLACEZ COMPLÈTEMENT votre gestionnaire d'événement 'push' existant dans service-worker.js par ce code:
 
-  event.waitUntil((async () => {
+self.addEventListener('push', event => {
+  console.log('[SW] Push reçu:', event.data ? event.data.text() : '(sans données)');
+
+  event.waitUntil(async function() {
     try {
-      // 1. Extraire les données de la notification
-      let data;
+      // Essayer de parser les données en JSON
+      let payload;
       try {
-        data = event.data ? event.data.json() : {};
-      } catch (e) {
-        console.error('[SW] Erreur parsing JSON:', e);
-        data = { 
+        payload = event.data ? event.data.json() : {};
+        console.log('[SW] Données push reçues:', JSON.stringify(payload));
+      } catch (error) {
+        console.error('[SW] Erreur parsing JSON:', error);
+        // Fallback pour les données non-JSON
+        payload = {
           title: 'Actu&Média',
           body: event.data ? event.data.text() : 'Nouvelle notification'
         };
       }
 
-      // Normaliser les données (extraire notification si nécessaire)
-      const notifData = data.notification || data;
-      
-      // 2. Déterminer s'il s'agit d'un message de chat
-      const isChat = notifData.fromUser || notifData.data?.type === 'chat';
-      
-      // 3. Gérer différemment selon que l'application est ouverte ou fermée
-      let shouldShowNotification = true;
-      
-      // Vérifier si l'app est ouverte et visible
-      const clientsList = await self.clients.matchAll({
-        type: 'window',
-        includeUncontrolled: true
-      });
-      
-      // Si au moins un client est visible
-      const visibleClient = clientsList.find(client => client.visibilityState === 'visible');
-      
-      if (visibleClient) {
-        console.log('[SW] App visible, transmission du message');
-        
-        // Envoyer un message au client visible
-        visibleClient.postMessage({
-          type: 'PUSH_RECEIVED',
-          data: notifData
-        });
-        
-        // Pour les messages de chat, ne pas afficher de notification si l'app est visible
-        if (isChat) {
-          shouldShowNotification = false;
+      // Déterminer le titre et le corps
+      const title = payload.title || `Message de ${payload.fromUser || 'Actu&Média'}`;
+      const body = payload.body || 'Nouveau message';
+
+      // Options de base pour la notification
+      const options = {
+        body: body,
+        icon: payload.icon || '/images/AM-192-v2.png',
+        badge: payload.badge || '/images/badge-72x72.png',
+        tag: `chat-${Date.now()}`, // Garantit l'unicité
+        requireInteraction: true,  // Force l'interaction utilisateur
+        renotify: true,            // Notifie même si une notification avec le même tag existe
+        vibrate: [200, 100, 200],  // Pattern de vibration
+        data: {
+          url: '/?action=openchat',
+          type: 'chat',
+          messageId: payload.data?.messageId,
+          fromUser: payload.fromUser || payload.data?.fromUser,
+          timestamp: Date.now()
         }
-      }
-      
-      // 4. Afficher la notification si nécessaire
-      if (shouldShowNotification) {
-        console.log('[SW] Affichage notification');
-        
-        // Personnaliser le titre selon le type de message
-        const title = isChat
-          ? `Message de ${notifData.fromUser || notifData.title || 'Actu&Média'}`
-          : (notifData.title || 'Actu&Média');
-        
-        // Options de notification
-        const options = {
-          body: notifData.body || 'Nouvelle notification',
-          icon: notifData.icon || '/images/AM-192-v2.png',
-          badge: notifData.badge || '/images/badge-72x72.png',
-          tag: isChat ? `chat-${Date.now()}` : `notification-${Date.now()}`,
-          
-          // Les notifications de chat ou urgentes nécessitent de l'attention
-          requireInteraction: isChat || notifData.data?.urgent,
-          renotify: true,
-          vibrate: [200, 100, 200],
-          
-          // Données importantes pour le gestionnaire de clic
-          data: {
-            url: isChat ? '/?action=openchat' : (notifData.data?.url || '/'),
-            type: isChat ? 'chat' : (notifData.data?.type || 'default'),
-            messageId: notifData.data?.messageId,
-            fromUser: notifData.fromUser,
-            ...notifData.data
-          }
-        };
-        
-        await self.registration.showNotification(title, options);
-        console.log('[SW] Notification affichée avec succès');
-      }
-    } catch (err) {
-      console.error('[SW] Erreur traitement notification:', err);
+      };
+
+      // IMPORTANT: Toujours afficher la notification, que l'app soit visible ou non
+      // Cela garantit que les notifications fonctionnent même lorsque l'app est fermée
+      await self.registration.showNotification(title, options);
+      console.log('[SW] Notification affichée avec succès');
+
+      return;
+    } catch (error) {
+      console.error('[SW] Erreur lors de l\'affichage de la notification:', error);
       
       // Notification de secours en cas d'erreur
       await self.registration.showNotification('Actu&Média', {
@@ -670,61 +635,46 @@ self.addEventListener('push', event => {
         icon: '/images/AM-192-v2.png'
       });
     }
-  })());
+  }());
 });
 
-// Remplacez aussi l'événement notificationclick pour une meilleure gestion
+// REMPLACEZ AUSSI le gestionnaire d'événement 'notificationclick' par celui-ci:
+
 self.addEventListener('notificationclick', event => {
-  console.log('[SW] Notification cliquée');
+  console.log('[SW] Notification cliquée, données:', JSON.stringify(event.notification.data));
   
-  // Fermer la notification immédiatement
+  // Fermer la notification
   event.notification.close();
   
-  // Extraire les données
-  const notifData = event.notification.data || {};
-  
   // URL par défaut
-  let targetUrl = '/';
+  let url = '/?action=openchat'; // Toujours diriger vers le chat pour plus de simplicité
   
-  // Déterminer l'URL cible
-  if (notifData.type === 'chat') {
-    targetUrl = '/?action=openchat';
-    console.log('[SW] Notification chat - Ouverture du chat');
-  } else if (notifData.url) {
-    targetUrl = notifData.url;
-  }
-  
-  // Gérer la navigation
-  event.waitUntil((async () => {
+  // Gérer le clic
+  event.waitUntil(async function() {
     try {
-      // Récupérer toutes les fenêtres clients
-      const allClients = await clients.matchAll({
+      // Tenter d'ouvrir une fenêtre existante
+      const windowClients = await clients.matchAll({
         type: 'window',
         includeUncontrolled: true
       });
       
-      // Chercher une fenêtre existante à utiliser
-      for (const client of allClients) {
-        // Si une fenêtre est déjà ouverte sur notre application
-        if (client.url.includes(self.registration.scope) && 'focus' in client) {
-          console.log('[SW] Fenêtre trouvée, navigation vers:', targetUrl);
-          
-          // Naviguer vers l'URL cible
-          await client.navigate(targetUrl);
+      // Si une fenêtre est déjà ouverte, l'utiliser
+      for (const client of windowClients) {
+        if ('focus' in client) {
+          await client.navigate(url);
           await client.focus();
           return;
         }
       }
       
-      // Si aucune fenêtre n'est trouvée, en ouvrir une nouvelle
-      console.log('[SW] Pas de fenêtre trouvée, ouverture nouvelle fenêtre:', targetUrl);
-      await clients.openWindow(targetUrl);
-    } catch (err) {
-      console.error('[SW] Erreur navigation:', err);
+      // Si aucune fenêtre n'est ouverte, en ouvrir une nouvelle
+      await clients.openWindow(url);
+    } catch (error) {
+      console.error('[SW] Erreur lors du traitement du clic sur notification:', error);
       // En cas d'erreur, tenter d'ouvrir une nouvelle fenêtre
-      await clients.openWindow(targetUrl);
+      await clients.openWindow(url);
     }
-  })());
+  }());
 });
 
 // Gestion du changement de souscription push améliorée

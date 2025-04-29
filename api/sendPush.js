@@ -94,17 +94,16 @@ export default async function handler(req, res) {
     // Préparation de la notification
 const notificationPayload = JSON.stringify({
   title: `Message de ${fromUser}`,
-  body: message.length > 100 ? message.substring(0, 97) + '...' : message,
-  icon: '/images/AM-192-v2.png',  // Assurez-vous que ce chemin est correct
+  body: message,
+  icon: '/images/AM-192-v2.png',
   badge: '/images/badge-72x72.png',
-  timestamp: new Date().getTime(),
-  fromUser: fromUser,  // Ajouté pour que le service worker puisse l'utiliser directement
+  timestamp: Date.now(),
+  fromUser: fromUser,  // Ajout direct pour faciliter l'accès dans le service worker
   data: {
-    url: req.body.data?.url || '/', 
-    type: req.body.data?.type || 'default',
+    type: 'chat',
     messageId: req.body.data?.messageId,
     fromUser: fromUser,
-    urgent: req.body.data?.type === 'chat' || req.body.data?.urgent === true
+    urgent: true
   }
 });
 
