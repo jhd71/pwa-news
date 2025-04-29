@@ -1,13 +1,21 @@
-const CACHE_NAME = 'infos-pwa-v10'; // Augmentez ce numéro
-const API_CACHE_NAME = 'infos-api-cache-v5'; // Et celui-ci aussi
+// Version corrigée pour service-worker.js
+
+// D'abord on définit les versions des caches
+const CACHE_NAME = 'infos-pwa-v10';
+const API_CACHE_NAME = 'infos-api-cache-v5';
+
+// TRÈS IMPORTANT: Version du service worker
+const WORKER_VERSION = 'v10'; 
+
 // Log initial au démarrage du service worker
 console.log(`[SW ${WORKER_VERSION}] Démarrage du service worker`);
+
 const STATIC_RESOURCES = [
     '/',
     '/css/styles.css',
     '/css/chat-styles.css',
     '/css/news-panel.css',
-	'/css/chat-ban.css',
+    '/css/chat-ban.css',
     '/css/widgets.css',
     '/css/settings-styles.css',
     '/js/app.js',
@@ -39,6 +47,7 @@ const STATIC_RESOURCES = [
     '/sounds/sent.mp3'
 ];
 
+// Le reste du service worker sans changement...
 // Contenu HTML de la page hors ligne
 const OFFLINE_HTML = `<!DOCTYPE html>
 <html lang="fr">
@@ -104,76 +113,146 @@ const OFFLINE_HTML = `<!DOCTYPE html>
 // Configuration du timeout pour les requêtes réseau
 const NETWORK_TIMEOUT = 5000; // 5 secondes
 
-// Installation
-// Remplacez le gestionnaire notificationclick dans service-worker.js
-self.addEventListener('notificationclick', function(event) {
-    // Fermer immédiatement la notification
-    event.notification.close();
-    
-    // Déterminer l'URL cible
-    let url = '/';
-    
-    // Récupérer les données de la notification
-    const notifData = event.notification.data;
-    
-    // Priorité au type de notification
-    if (notifData) {
-        if (notifData.type === 'chat') {
-            url = '/?action=openchat';
-            console.log('[SW] Notification de chat cliquée - Ouverture du chat');
-        } else if (notifData.url) {
-            url = notifData.url;
+// Fonction de log simplifiée et sécurisée
+async function logToServer(message, data = {}) {
+  try {
+    console.log(`[SW ${WORKER_VERSION}] ${message}`, data);
+  } catch (e) {
+    console.error(`[SW ${WORKER_VERSION}] Erreur de log:`, e);
+  }
+}
+
+// REMPLACER l'événement push existant par celui-ci
+self.addEventListener('push', async event => {
+  const pushText = event.data ? event.data.text() : '(sans données)';
+  console.log(`[SW ${WORKER_VERSION}] Push reçu:`, pushText);
+
+  event.waitUntil(async function() {
+    try {
+      // Essayer de parser les données en JSON
+      let payload;
+      try {
+        const rawData = event.data ? event.data.json() : {};
+        
+        // Log des données pour diagnostic
+        console.log(`[SW ${WORKER_VERSION}] Données push détaillées:`, JSON.stringify(rawData));
+        
+        // IMPORTANT: Extraire correctement la notification
+        // Format: {"notification": {...}} ou format direct
+        payload = rawData.notification || rawData;
+        
+      } catch (error) {
+        console.error(`[SW ${WORKER_VERSION}] Erreur parsing JSON:`, error);
+        // Pour les données non-JSON
+        payload = {
+          title: 'Actu&Média',
+          body: event.data ? event.data.text() : 'Nouvelle notification'
+        };
+      }
+
+      // Options de notification simplifiées et robustes
+      const notificationTitle = payload.title || 'Actu&Média';
+      const notificationOptions = {
+        body: payload.body || 'Nouvelle notification',
+        icon: '/images/AM-192-v2.png',
+        badge: '/images/badge-72x72.png',
+        tag: `notif-${Date.now()}`,
+        requireInteraction: true,
+        vibrate: [200, 100, 200],
+        data: {
+          url: payload.data?.url || '/?action=openchat'
         }
+      };
+      
+      // Log le payload et les options pour diagnostic
+      console.log(`[SW ${WORKER_VERSION}] Notification:`, {
+        title: notificationTitle,
+        options: notificationOptions
+      });
+      
+      // AFFICHAGE DE LA NOTIFICATION
+      // Cette ligne est critique - c'est celle qui affiche réellement la notification
+      await self.registration.showNotification(notificationTitle, notificationOptions);
+      console.log(`[SW ${WORKER_VERSION}] Notification affichée avec succès`);
+      
+      return true;
+    } catch (error) {
+      console.error(`[SW ${WORKER_VERSION}] Erreur notification:`, error);
+      
+      // Notification de secours
+      try {
+        await self.registration.showNotification('Actu&Média', {
+          body: `Notification d'urgence (erreur: ${error.message})`,
+          icon: '/images/AM-192-v2.png'
+        });
+      } catch (e) {
+        console.error(`[SW ${WORKER_VERSION}] Erreur notification de secours:`, e);
+      }
+      
+      return false;
     }
-    
-    // Chercher une fenêtre cliente existante à cibler
+  }());
+});
+
+// REMPLACER l'événement notificationclick existant par celui-ci
+self.addEventListener('notificationclick', async event => {
+  console.log(`[SW ${WORKER_VERSION}] Notification cliquée:`, event.notification.title);
+  
+  // Fermer la notification
+  event.notification.close();
+  
+  // Ouvrir l'URL ou, par défaut, la page d'accueil avec le chat
+  const url = event.notification.data?.url || '/?action=openchat';
+  
+  // Ouvrir directement dans une nouvelle fenêtre
+  event.waitUntil(clients.openWindow(url));
+});
+
+// Installation
+self.addEventListener('install', event => {
+    console.log(`[SW ${WORKER_VERSION}] Installation`);
     event.waitUntil(
-        clients.matchAll({
-            type: 'window',
-            includeUncontrolled: true
-        })
-        .then(function(clientList) {
-            // Vérifier si une fenêtre est déjà ouverte
-            for (var i = 0; i < clientList.length; i++) {
-                var client = clientList[i];
-                // Si une fenêtre est déjà ouverte, l'utiliser
-                if (client.url.includes(self.registration.scope) && 'focus' in client) {
-                    // Avant de donner le focus, naviguer vers la bonne page
-                    if (client.url !== url) {
-                        client.navigate(url).then(function(navigatedClient) {
-                            return navigatedClient.focus();
-                        });
-                    } else {
-                        return client.focus();
+        (async () => {
+            try {
+                const cache = await caches.open(CACHE_NAME);
+                console.log(`[SW ${WORKER_VERSION}] Mise en cache globale`);
+                
+                // Au lieu d'utiliser addAll qui échoue si une seule ressource échoue,
+                // on met en cache chaque ressource individuellement
+                const successfulCaches = [];
+                const failedCaches = [];
+                
+                for (const url of STATIC_RESOURCES) {
+                    try {
+                        await cache.add(url);
+                        successfulCaches.push(url);
+                    } catch (error) {
+                        // Logger l'erreur mais continuer avec les autres ressources
+                        console.warn(`[SW ${WORKER_VERSION}] Échec de mise en cache: ${url}`, error);
+                        failedCaches.push(url);
                     }
-                    return;
                 }
+                
+                console.log(`[SW ${WORKER_VERSION}] Mise en cache réussie pour ${successfulCaches.length} ressources`);
+                if (failedCaches.length > 0) {
+                    console.warn(`[SW ${WORKER_VERSION}] Échec de mise en cache pour ${failedCaches.length} ressources`);
+                }
+                
+                await self.skipWaiting();
+                return;
+            } catch (error) {
+                console.error(`[SW ${WORKER_VERSION}] Erreur d'installation:`, error);
+                // Continue l'installation même en cas d'erreur
+                await self.skipWaiting();
+                return;
             }
-            
-            // Sinon, ouvrir une nouvelle fenêtre
-            if (clients.openWindow) {
-                return clients.openWindow(url);
-            }
-        })
+        })()
     );
 });
 
-// Fonction pour précharger des ressources additionnelles importantes
-async function precacheAdditionalResources() {
-    try {
-        // Ici, vous pouvez ajouter du code pour précharger d'autres ressources
-        // comme des données JSON importantes, des icônes supplémentaires, etc.
-        console.log('[ServiceWorker] Préchargement de ressources additionnelles');
-        return Promise.resolve();
-    } catch (error) {
-        console.error('[ServiceWorker] Erreur de préchargement:', error);
-        return Promise.resolve(); // Continue malgré l'erreur
-    }
-}
-
 // Activation avec nettoyage des anciens caches
 self.addEventListener('activate', event => {
-    console.log('[ServiceWorker] Activation');
+    console.log(`[SW ${WORKER_VERSION}] Activation`);
     event.waitUntil(
         (async () => {
             try {
@@ -188,12 +267,12 @@ self.addEventListener('activate', event => {
                 
                 await Promise.all(
                     cachesToDelete.map(cacheName => {
-                        console.log('[ServiceWorker] Suppression de l\'ancien cache:', cacheName);
+                        console.log(`[SW ${WORKER_VERSION}] Suppression de l'ancien cache:`, cacheName);
                         return caches.delete(cacheName);
                     })
                 );
             } catch (error) {
-                console.error('[ServiceWorker] Erreur d\'activation:', error);
+                console.error(`[SW ${WORKER_VERSION}] Erreur d'activation:`, error);
             }
         })()
     );
@@ -576,90 +655,90 @@ function handleDefaultRequest(event) {
 }
 
 /* ---------------------- PUSH ------------------------------------------ */
+self.addEventListener('push', event => {
+  console.log('[SW] Push reçu ➜', event.data ? event.data.text() : '');
 
-self.addEventListener('push', async event => {
-  const pushText = event.data ? event.data.text() : '(sans données)';
-  console.log(`[SW ${WORKER_VERSION}] Push reçu:`, pushText);
-
-  event.waitUntil(async function() {
+  event.waitUntil((async () => {
     try {
-      // Essayer de parser les données en JSON
-      let payload;
-      try {
-        const rawData = event.data ? event.data.json() : {};
-        
-        // Log des données pour diagnostic
-        console.log(`[SW ${WORKER_VERSION}] Données push détaillées:`, JSON.stringify(rawData));
-        
-        // IMPORTANT: Extraire correctement la notification
-        // Format: {"notification": {...}} ou format direct
-        payload = rawData.notification || rawData;
-        
-      } catch (error) {
-        console.error(`[SW ${WORKER_VERSION}] Erreur parsing JSON:`, error);
-        // Pour les données non-JSON
-        payload = {
-          title: 'Actu&Média',
-          body: event.data ? event.data.text() : 'Nouvelle notification'
-        };
+      /* 1) Payload ------------------------------------------------------- */
+      let raw;
+      try   { raw = event.data ? event.data.json() : {}; }
+      catch { raw = { title:'Actu&Média', body: event.data?.text() || '' }; }
+
+      // si vous avez enveloppé dans {notification:{…}} on récupère la vraie partie
+      const data = raw.notification ?? raw;
+
+      /* 2) Appli visible ? ---------------------------------------------- */
+      const clientsList = await self.clients.matchAll({
+        type:'window', includeUncontrolled:true
+      });
+      const visibleClient = clientsList.find(c => c.visibilityState === 'visible');
+
+      if (visibleClient && data.data?.type === 'chat') {
+        visibleClient.postMessage({ type:'PUSH_RECEIVED', data });
+        console.log('[SW] App visible → message relayé, pas de notif');
+        return;
       }
 
-      // Options de notification simplifiées et robustes
-      const notificationTitle = payload.title || 'Actu&Média';
-      const notificationOptions = {
-        body: payload.body || 'Nouvelle notification',
-        icon: '/images/AM-192-v2.png',
-        badge: '/images/badge-72x72.png',
-        tag: `notif-${Date.now()}`,
-        requireInteraction: true,
-        vibrate: [200, 100, 200],
-        data: {
-          url: payload.data?.url || '/?action=openchat'
-        }
-      };
-      
-      // Log le payload et les options pour diagnostic
-      console.log(`[SW ${WORKER_VERSION}] Notification:`, {
-        title: notificationTitle,
-        options: notificationOptions
+      /* 3) Construction des options ------------------------------------- */
+const urgent = data.data?.urgent === true;
+const options = {
+  body: data.body || 'Nouvelle notification',
+  icon: data.icon || '/images/AM-192-v2.png',
+  badge: data.badge || '/images/badge-72x72.png',
+  tag: data.tag || `notification-${Date.now()}`,
+  
+  requireInteraction: urgent,
+  renotify: urgent,
+  silent: !urgent,
+  vibrate: urgent ? [200,100,200,100,200] : undefined,
+  
+  data: { 
+    url: data.data?.url || '/', 
+    type: data.data?.type || 'default',
+    urgent, 
+    ...data.data 
+  }
+  // Aucune action - le tableau "actions" est supprimé complètement
+};
+
+
+      /* 4) Affiche ------------------------------------------------------- */
+      await self.registration.showNotification(
+        data.title || 'Actu&Média',
+        options
+      );
+      console.log('[SW] Notification affichée');
+    } catch(err){
+      console.error('[SW] Erreur push :', err);
+      await self.registration.showNotification('Actu&Média',{
+        body : 'Nouvelle notification',
+        icon : '/images/AM-192-v2.png',
+        badge: '/images/badge-72x72.png'
       });
-      
-      // AFFICHAGE DE LA NOTIFICATION
-      // Cette ligne est critique - c'est celle qui affiche réellement la notification
-      await self.registration.showNotification(notificationTitle, notificationOptions);
-      console.log(`[SW ${WORKER_VERSION}] Notification affichée avec succès`);
-      
-      return true;
-    } catch (error) {
-      console.error(`[SW ${WORKER_VERSION}] Erreur notification:`, error);
-      
-      // Notification de secours
-      try {
-        await self.registration.showNotification('Actu&Média', {
-          body: `Notification d'urgence (erreur: ${error.message})`,
-          icon: '/images/AM-192-v2.png'
-        });
-      } catch (e) {
-        console.error(`[SW ${WORKER_VERSION}] Erreur notification de secours:`, e);
-      }
-      
-      return false;
     }
-  }());
+  })());
 });
 
-// REMPLACER l'événement notificationclick existant par celui-ci
-self.addEventListener('notificationclick', async event => {
-  console.log(`[SW ${WORKER_VERSION}] Notification cliquée:`, event.notification.title);
-  
-  // Fermer la notification
-  event.notification.close();
-  
-  // Ouvrir l'URL ou, par défaut, la page d'accueil avec le chat
-  const url = event.notification.data?.url || '/?action=openchat';
-  
-  // Ouvrir directement dans une nouvelle fenêtre
-  event.waitUntil(clients.openWindow(url));
+// Gestionnaire ULTRA-SIMPLIFIÉ spécial Android
+self.addEventListener('notificationclick', function(event) {
+    // Fermer immédiatement la notification
+    event.notification.close();
+    
+    // URL à ouvrir, avec priorité au type chat
+    let url = '/';
+    
+    // Priorité au type de notification
+    if (event.notification.data) {
+        if (event.notification.data.type === 'chat') {
+            url = '/?action=openchat';
+        } else if (event.notification.data.url) {
+            url = event.notification.data.url;
+        }
+    }
+    
+    // Ouvrir directement
+    event.waitUntil(clients.openWindow(url));
 });
 
 // Gestion du changement de souscription push améliorée
