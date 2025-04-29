@@ -95,14 +95,15 @@ export default async function handler(req, res) {
 const notificationPayload = JSON.stringify({
   title: `Message de ${fromUser}`,
   body: message.length > 100 ? message.substring(0, 97) + '...' : message,
-  icon: '/images/AM-192-v2.png',
+  icon: '/images/AM-192-v2.png',  // Assurez-vous que ce chemin est correct
   badge: '/images/badge-72x72.png',
   timestamp: new Date().getTime(),
+  fromUser: fromUser,  // Ajouté pour que le service worker puisse l'utiliser directement
   data: {
-    url: req.body.data?.url || '/',
+    url: req.body.data?.url || '/', 
     type: req.body.data?.type || 'default',
-    fromUser,
     messageId: req.body.data?.messageId,
+    fromUser: fromUser,
     urgent: req.body.data?.type === 'chat' || req.body.data?.urgent === true
   }
 });
@@ -189,22 +190,48 @@ const notificationPayload = JSON.stringify({
 
     // Analyse des résultats
     const successful = sendResults.filter(r => r.status === 'fulfilled' && r.value.success).length;
-    const failed = sendResults.filter(r => r.status === 'rejected' || !r.value.success).length;
+const failed = sendResults.filter(r => r.status === 'rejected' || !r.value.success).length;
 
-    logWithTimestamp('Résultats des envois', {
-      successful,
-      failed,
-      total: data.length
-    });
+// Ajouter un log des notifications envoyées pour faciliter le débogage
+try {
+  // Enregistrer la notification dans une table de suivi
+  if (req.body.data?.type === 'chat') {
+    await supabase
+      .from('notification_history')
+      .insert({
+        title: `Message de ${fromUser}`,
+        body: message.length > 100 ? message.substring(0, 97) + '...' : message,
+        type: 'chat',
+        // Stocker les informations d'utilisateur dans le champ metadata au format JSON
+        metadata: {
+          from_user: fromUser,
+          to_user: toUser
+        },
+        sent_at: new Date().toISOString(),
+        success_count: successful,
+        failure_count: failed
+      });
+    console.log('Notification de chat enregistrée dans l\'historique');
+  }
+} catch (logError) {
+  console.error('Erreur lors de l\'enregistrement de la notification:', logError);
+  // Ne pas bloquer le processus même si l'enregistrement échoue
+}
 
-    return res.status(200).json({
-      success: true,
-      message: `Notifications envoyées avec succès: ${successful}, échouées: ${failed}`,
-      sent: successful,
-      failed,
-      total: data.length,
-      details: sendResults.map(r => r.status === 'fulfilled' ? r.value : r.reason)
-    });
+logWithTimestamp('Résultats des envois', {
+  successful,
+  failed,
+  total: data.length
+});
+
+return res.status(200).json({
+  success: true,
+  message: `Notifications envoyées avec succès: ${successful}, échouées: ${failed}`,
+  sent: successful,
+  failed,
+  total: data.length,
+  details: sendResults.map(r => r.status === 'fulfilled' ? r.value : r.reason)
+});
 
   } catch (error) {
     logWithTimestamp('Erreur globale', {
