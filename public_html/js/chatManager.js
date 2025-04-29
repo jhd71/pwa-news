@@ -688,8 +688,11 @@ getChatHTML() {
                         <span class="material-icons">emoji_emotions</span>
                     </button>
                     <button class="notifications-btn ${this.notificationsEnabled ? 'enabled' : ''}" title="Notifications">
-                        <span class="material-icons">${this.notificationsEnabled ? 'notifications_active' : 'notifications_off'}</span>
-                    </button>
+						<span class="material-icons">${this.notificationsEnabled ? 'notifications_active' : 'notifications_off'}</span>
+					</button>
+					<button class="reset-notifications-btn" title="Réinitialiser notifications">
+						<span class="material-icons">sync</span>
+					</button>					
                     <button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
                         <span class="material-icons">${this.soundEnabled ? 'volume_up' : 'volume_off'}</span>
                     </button>
@@ -730,8 +733,11 @@ getChatHTMLWithoutToggle() {
                     <span class="material-icons">emoji_emotions</span>
                 </button>
                     <button class="notifications-btn ${this.notificationsEnabled ? 'enabled' : ''}" title="Notifications">
-                        <span class="material-icons">${this.notificationsEnabled ? 'notifications_active' : 'notifications_off'}</span>
-                    </button>
+					<span class="material-icons">${this.notificationsEnabled ? 'notifications_active' : 'notifications_off'}</span>
+				</button>
+				<button class="reset-notifications-btn" title="Réinitialiser notifications">
+					<span class="material-icons">sync</span>
+				</button>
                     <button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
                         <span class="material-icons">${this.soundEnabled ? 'volume_up' : 'volume_off'}</span>
                     </button>
@@ -827,20 +833,34 @@ getChatHTMLWithoutToggle() {
     }
 
         if (notificationsBtn) {
-            notificationsBtn.addEventListener('click', async () => {
-                try {
-                    if (this.notificationsEnabled) {
-                        await this.unsubscribeFromPushNotifications();
-                    } else {
-                        await this.setupPushNotifications();
-                    }
-                    this.playSound('click');
-                } catch (error) {
-                    console.error('Erreur gestion notifications:', error);
-                    this.showNotification('Erreur avec les notifications', 'error');
-                }
-            });
+    notificationsBtn.addEventListener('click', async () => {
+        try {
+            if (this.notificationsEnabled) {
+                await this.unsubscribeFromPushNotifications();
+            } else {
+                await this.setupPushNotifications();
+            }
+            this.playSound('click');
+        } catch (error) {
+            console.error('Erreur gestion notifications:', error);
+            this.showNotification('Erreur avec les notifications', 'error');
         }
+    });
+}
+
+// AJOUTEZ LE CODE ICI pour le bouton de réinitialisation
+const resetNotifBtn = this.container.querySelector('.reset-notifications-btn');
+if (resetNotifBtn) {
+    resetNotifBtn.addEventListener('click', async () => {
+        try {
+            await this.resetAndResubscribeToPush();
+            this.playSound('click');
+        } catch (error) {
+            console.error('Erreur réinitialisation notifications:', error);
+            this.showNotification('Erreur lors de la réinitialisation', 'error');
+        }
+    });
+}
 
         if (adminBtn && this.isAdmin) {
             adminBtn.addEventListener('click', () => {
@@ -1737,6 +1757,136 @@ div.innerHTML = `
             return false;
         }
     }
+
+async resetAndResubscribeToPush() {
+    try {
+        console.log("Réinitialisation complète de l'abonnement aux notifications...");
+        
+        // Vérifier si le service worker est disponible
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+            this.showNotification('Votre navigateur ne supporte pas les notifications push', 'error');
+            return false;
+        }
+        
+        try {
+            // 1. Obtenir l'enregistrement du service worker
+            const registration = await navigator.serviceWorker.ready;
+            console.log("Service worker prêt pour la réinitialisation");
+            
+            // 2. Obtenir l'abonnement actuel s'il existe
+            const existingSubscription = await registration.pushManager.getSubscription();
+            
+            // 3. Désabonner s'il existe un abonnement
+            if (existingSubscription) {
+                console.log("Désabonnement de la souscription existante");
+                await existingSubscription.unsubscribe();
+                
+                // Supprimer l'abonnement de la base de données
+                try {
+                    await this.supabase
+                        .from('push_subscriptions')
+                        .delete()
+                        .eq('pseudo', this.pseudo);
+                } catch (dbError) {
+                    console.error("Erreur de suppression de l'abonnement en base:", dbError);
+                    // Continuer malgré l'erreur
+                }
+            }
+            
+            // 4. Demander à nouveau la permission
+            console.log("Demande de permission de notification");
+            const permission = await Notification.requestPermission();
+            
+            if (permission !== 'granted') {
+                this.showNotification('Permission de notification refusée', 'error');
+                return false;
+            }
+            
+            // 5. S'abonner à nouveau
+            console.log("Nouvel abonnement avec VAPID key");
+            const vapidPublicKey = 'BLpaDhsC7NWdMacPN0mRpqZlsaOrOEV1AwgPyqs7D2q3HBZaQqGSMH8zTnmwzZrFKjjO2JvDonicGOl2zX9Jsck';
+            
+            const newSubscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: this.urlBase64ToUint8Array(vapidPublicKey)
+            });
+            
+            console.log("Nouveau abonnement créé:", newSubscription);
+            
+            // 6. Enregistrer le nouvel abonnement
+            const { error } = await this.supabase
+                .from('push_subscriptions')
+                .insert({
+                    pseudo: this.pseudo,
+                    subscription: JSON.stringify(newSubscription),
+                    endpoint: newSubscription.endpoint,
+                    device_type: this.getDeviceType(),
+                    active: true,
+                    created_at: new Date().toISOString(),
+                    last_updated: new Date().toISOString()
+                });
+                
+            if (error) {
+                console.error("Erreur d'enregistrement de l'abonnement:", error);
+                this.showNotification("Erreur d'enregistrement de l'abonnement", 'error');
+                return false;
+            }
+            
+            this.subscription = newSubscription;
+            this.notificationsEnabled = true;
+            localStorage.setItem('notificationsEnabled', 'true');
+            this.updateNotificationButton();
+            
+            this.showNotification('Abonnement aux notifications réinitialisé avec succès', 'success');
+            console.log("Réinitialisation terminée avec succès");
+            
+            // Envoi d'une notification de test
+            setTimeout(() => {
+                this.sendTestNotificationViaAPI();
+            }, 2000);
+            
+            return true;
+        } catch (error) {
+            console.error("Erreur lors de la réinitialisation des notifications:", error);
+            this.showNotification(`Erreur: ${error.message}`, 'error');
+            return false;
+        }
+    } catch (error) {
+        console.error("Erreur globale:", error);
+        this.showNotification('Une erreur est survenue', 'error');
+        return false;
+    }
+}
+
+// Ajouter cette fonction pour envoyer un test via l'API
+async sendTestNotificationViaAPI() {
+    try {
+        const response = await fetch('/api/send-important-notification', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-API-Key': 'admin2024'
+            },
+            body: JSON.stringify({
+                title: 'Test de notification',
+                body: 'Ceci est une notification de test pour vérifier que tout fonctionne',
+                url: '/?test=notification',
+                urgent: true
+            })
+        });
+        
+        const result = await response.json();
+        console.log("Résultat du test de notification:", result);
+        
+        if (result.success) {
+            console.log("Notification de test envoyée avec succès");
+        } else {
+            console.error("Échec de l'envoi de la notification de test");
+        }
+    } catch (error) {
+        console.error("Erreur lors de l'envoi de la notification de test:", error);
+    }
+}
 
 async sendTestNotification() {
     try {

@@ -1,6 +1,7 @@
-const CACHE_NAME = 'infos-pwa-v9'; // Augmentez ce numéro
+const CACHE_NAME = 'infos-pwa-v10'; // Augmentez ce numéro
 const API_CACHE_NAME = 'infos-api-cache-v5'; // Et celui-ci aussi
-
+// Log initial au démarrage du service worker
+console.log(`[SW ${WORKER_VERSION}] Démarrage du service worker`);
 const STATIC_RESOURCES = [
     '/',
     '/css/styles.css',
@@ -576,8 +577,9 @@ function handleDefaultRequest(event) {
 
 /* ---------------------- PUSH ------------------------------------------ */
 
-self.addEventListener('push', event => {
-  console.log('[SW] Push reçu:', event.data ? event.data.text() : '(sans données)');
+self.addEventListener('push', async event => {
+  const pushText = event.data ? event.data.text() : '(sans données)';
+  console.log(`[SW ${WORKER_VERSION}] Push reçu:`, pushText);
 
   event.waitUntil(async function() {
     try {
@@ -585,88 +587,78 @@ self.addEventListener('push', event => {
       let payload;
       try {
         const rawData = event.data ? event.data.json() : {};
-        console.log('[SW] Données push reçues:', JSON.stringify(rawData));
         
-        // IMPORTANT: Extraire correctement la notification imbriquée
-        // Format détecté: {"notification": {...}}
+        // Log des données pour diagnostic
+        console.log(`[SW ${WORKER_VERSION}] Données push détaillées:`, JSON.stringify(rawData));
+        
+        // IMPORTANT: Extraire correctement la notification
+        // Format: {"notification": {...}} ou format direct
         payload = rawData.notification || rawData;
         
       } catch (error) {
-        console.error('[SW] Erreur parsing JSON:', error);
+        console.error(`[SW ${WORKER_VERSION}] Erreur parsing JSON:`, error);
+        // Pour les données non-JSON
         payload = {
           title: 'Actu&Média',
           body: event.data ? event.data.text() : 'Nouvelle notification'
         };
       }
 
-      // Déterminer si c'est un message de chat
-      const isChat = payload.title && payload.title.includes('Message de');
-      
-      // Toujours utiliser les valeurs de l'objet payload, mais avec des valeurs par défaut
-      const title = payload.title || 'Actu&Média';
-      const body = payload.body || 'Nouvelle notification';
-      
-      // Options de notification avec toutes les propriétés importantes définies
-      const options = {
-        body: body,
-        icon: payload.icon || '/images/AM-192-v2.png',
-        badge: payload.badge || '/images/badge-72x72.png',
-        timestamp: Date.now(),
-        tag: `notif-${Date.now()}`, // Pour garantir l'unicité
-        requireInteraction: true,  // Toujours forcer l'interaction
-        renotify: true,            // Toujours notifier même si une notification avec le même tag existe
-        vibrate: [200, 100, 200],  // Pattern de vibration standard
-        actions: [], // Pas d'actions pour simplifier
-        
-        // Données pour le gestionnaire de clic
+      // Options de notification simplifiées et robustes
+      const notificationTitle = payload.title || 'Actu&Média';
+      const notificationOptions = {
+        body: payload.body || 'Nouvelle notification',
+        icon: '/images/AM-192-v2.png',
+        badge: '/images/badge-72x72.png',
+        tag: `notif-${Date.now()}`,
+        requireInteraction: true,
+        vibrate: [200, 100, 200],
         data: {
-          url: (payload.data && payload.data.url) || '/?action=openchat',
-          type: (payload.data && payload.data.type) || 'chat',
-          urgent: true,
-          fromNotification: true
+          url: payload.data?.url || '/?action=openchat'
         }
       };
       
-      // Log clair des options de notification qui seront utilisées
-      console.log('[SW] Affichage de la notification avec les options:', JSON.stringify({
-        title: title,
-        options: options
-      }));
+      // Log le payload et les options pour diagnostic
+      console.log(`[SW ${WORKER_VERSION}] Notification:`, {
+        title: notificationTitle,
+        options: notificationOptions
+      });
       
-      // Afficher la notification
-      await self.registration.showNotification(title, options);
-      console.log('[SW] Notification affichée avec succès');
+      // AFFICHAGE DE LA NOTIFICATION
+      // Cette ligne est critique - c'est celle qui affiche réellement la notification
+      await self.registration.showNotification(notificationTitle, notificationOptions);
+      console.log(`[SW ${WORKER_VERSION}] Notification affichée avec succès`);
       
+      return true;
     } catch (error) {
-      console.error('[SW] Erreur notification:', error.toString());
-      // Notification de secours très simple en cas d'erreur
+      console.error(`[SW ${WORKER_VERSION}] Erreur notification:`, error);
+      
+      // Notification de secours
       try {
         await self.registration.showNotification('Actu&Média', {
-          body: 'Nouvelle notification',
+          body: `Notification d'urgence (erreur: ${error.message})`,
           icon: '/images/AM-192-v2.png'
         });
-      } catch (fallbackError) {
-        console.error('[SW] Échec notification de secours:', fallbackError);
+      } catch (e) {
+        console.error(`[SW ${WORKER_VERSION}] Erreur notification de secours:`, e);
       }
+      
+      return false;
     }
   }());
 });
 
-// REMPLACEZ AUSSI le gestionnaire d'événement 'notificationclick' par celui-ci:
-
-self.addEventListener('notificationclick', event => {
-  console.log('[SW] Notification cliquée:', JSON.stringify({
-    title: event.notification.title,
-    data: event.notification.data
-  }));
+// REMPLACER l'événement notificationclick existant par celui-ci
+self.addEventListener('notificationclick', async event => {
+  console.log(`[SW ${WORKER_VERSION}] Notification cliquée:`, event.notification.title);
   
   // Fermer la notification
   event.notification.close();
   
-  // Extraire l'URL des données ou utiliser la valeur par défaut
-  const url = (event.notification.data && event.notification.data.url) || '/?action=openchat';
+  // Ouvrir l'URL ou, par défaut, la page d'accueil avec le chat
+  const url = event.notification.data?.url || '/?action=openchat';
   
-  // Naviguer directement - version simple et robuste
+  // Ouvrir directement dans une nouvelle fenêtre
   event.waitUntil(clients.openWindow(url));
 });
 
