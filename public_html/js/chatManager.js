@@ -695,7 +695,11 @@ getChatHTML() {
 					<button class="reset-notifications-btn" title="Réinitialiser notifications (Admin)">
 						<span class="material-icons">sync</span>
 					</button>
-				` : ''}					
+				` : ''}
+				<a href="/chat-notifications.html" target="_blank" class="notification-link">
+    <span class="material-icons">notifications_active</span>
+    <span>Ouvrir les notifications en arrière-plan</span>
+</a>
                     <button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
                         <span class="material-icons">${this.soundEnabled ? 'volume_up' : 'volume_off'}</span>
                     </button>
@@ -742,7 +746,11 @@ getChatHTMLWithoutToggle() {
 					<button class="reset-notifications-btn" title="Réinitialiser notifications (Admin)">
 						<span class="material-icons">sync</span>
 					</button>
-				` : ''}	                   
+				` : ''}
+				<a href="/chat-notifications.html" target="_blank" class="notification-link">
+    <span class="material-icons">notifications_active</span>
+    <span>Ouvrir les notifications en arrière-plan</span>
+</a>
 				<button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
                         <span class="material-icons">${this.soundEnabled ? 'volume_up' : 'volume_off'}</span>
                     </button>

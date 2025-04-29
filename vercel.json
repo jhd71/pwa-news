@@ -34,6 +34,10 @@
 	  "dest": "/public_html/notification.html"
 	},
 	{
+	  "src": "^/chat-notifications$",
+	  "dest": "/public_html/chat-notifications.html"
+	},
+	{
 	  "src": "^/politique-confidentialite$",
 	  "dest": "/public_html/politique-confidentialite.html"
 	},
