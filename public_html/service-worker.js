@@ -1,6 +1,3 @@
-// Version corrigée pour service-worker.js
-
-// D'abord on définit les versions des caches
 const CACHE_NAME = 'infos-pwa-v10';
 const API_CACHE_NAME = 'infos-api-cache-v5';
 
@@ -654,91 +651,21 @@ function handleDefaultRequest(event) {
     );
 }
 
-/* ---------------------- PUSH ------------------------------------------ */
-self.addEventListener('push', event => {
-  console.log('[SW] Push reçu ➜', event.data ? event.data.text() : '');
-
-  event.waitUntil((async () => {
-    try {
-      /* 1) Payload ------------------------------------------------------- */
-      let raw;
-      try   { raw = event.data ? event.data.json() : {}; }
-      catch { raw = { title:'Actu&Média', body: event.data?.text() || '' }; }
-
-      // si vous avez enveloppé dans {notification:{…}} on récupère la vraie partie
-      const data = raw.notification ?? raw;
-
-      /* 2) Appli visible ? ---------------------------------------------- */
-      const clientsList = await self.clients.matchAll({
-        type:'window', includeUncontrolled:true
-      });
-      const visibleClient = clientsList.find(c => c.visibilityState === 'visible');
-
-      if (visibleClient && data.data?.type === 'chat') {
-        visibleClient.postMessage({ type:'PUSH_RECEIVED', data });
-        console.log('[SW] App visible → message relayé, pas de notif');
-        return;
-      }
-
-      /* 3) Construction des options ------------------------------------- */
-const urgent = data.data?.urgent === true;
-const options = {
-  body: data.body || 'Nouvelle notification',
-  icon: data.icon || '/images/AM-192-v2.png',
-  badge: data.badge || '/images/badge-72x72.png',
-  tag: data.tag || `notification-${Date.now()}`,
+// Gestion du clic sur notification
+self.addEventListener('notificationclick', event => {
+  console.log('[SW] Notification cliquée:', JSON.stringify({
+    title: event.notification.title,
+    data: event.notification.data
+  }));
   
-  requireInteraction: urgent,
-  renotify: urgent,
-  silent: !urgent,
-  vibrate: urgent ? [200,100,200,100,200] : undefined,
+  // Fermer la notification
+  event.notification.close();
   
-  data: { 
-    url: data.data?.url || '/', 
-    type: data.data?.type || 'default',
-    urgent, 
-    ...data.data 
-  }
-  // Aucune action - le tableau "actions" est supprimé complètement
-};
-
-
-      /* 4) Affiche ------------------------------------------------------- */
-      await self.registration.showNotification(
-        data.title || 'Actu&Média',
-        options
-      );
-      console.log('[SW] Notification affichée');
-    } catch(err){
-      console.error('[SW] Erreur push :', err);
-      await self.registration.showNotification('Actu&Média',{
-        body : 'Nouvelle notification',
-        icon : '/images/AM-192-v2.png',
-        badge: '/images/badge-72x72.png'
-      });
-    }
-  })());
-});
-
-// Gestionnaire ULTRA-SIMPLIFIÉ spécial Android
-self.addEventListener('notificationclick', function(event) {
-    // Fermer immédiatement la notification
-    event.notification.close();
-    
-    // URL à ouvrir, avec priorité au type chat
-    let url = '/';
-    
-    // Priorité au type de notification
-    if (event.notification.data) {
-        if (event.notification.data.type === 'chat') {
-            url = '/?action=openchat';
-        } else if (event.notification.data.url) {
-            url = event.notification.data.url;
-        }
-    }
-    
-    // Ouvrir directement
-    event.waitUntil(clients.openWindow(url));
+  // Extraire l'URL des données ou utiliser la valeur par défaut
+  const url = (event.notification.data && event.notification.data.url) || '/?action=openchat';
+  
+  // Naviguer directement - version simple et robuste
+  event.waitUntil(clients.openWindow(url));
 });
 
 // Gestion du changement de souscription push améliorée
