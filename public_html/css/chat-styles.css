@@ -927,7 +927,7 @@ body:has(.chat-container.open) .news-ticker {
 :root {
   --chat-header-height: 60px; 
   --chat-input-sticky-height-mobile: 75px; 
-  --chat-input-base-height-tablet: 65px; 
+  --chat-input-base-height-tablet: 72px; 
   /* Utiliser la variable tablette ou une variable spécifique pour desktop */
   --chat-input-base-height-desktop: var(--chat-input-base-height-tablet, 65px); 
 }
