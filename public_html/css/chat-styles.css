@@ -1446,32 +1446,6 @@ body.long-press-active .message-options {
     margin-top: auto !important;
   }
   
-  /* panneau emoji */
-  .chat-container:not(.fullscreen) .emoji-panel {
-     position: absolute !important;
-     /* Fixé SOUS le header du chat */
-     top: calc(var(--chat-header-height) + 5px) !important; /* Positionnement précis sous le header */
-     /* Fixé AU-DESSUS de la zone d'input sticky */
-     bottom: var(--chat-input-area-height) !important; /* S'arrête avant l'input */
-     left: 10px !important;
-     right: 10px !important;
-     
-     /* Enlève max-height car la hauteur est définie par top/bottom */
-     height: auto !important; 
-     max-height: none !important; 
-     
-     overflow-y: auto !important; /* Permet le scroll interne */
-     z-index: 1200 !important;
-     /* Conserver un nombre raisonnable de colonnes */
-     grid-template-columns: repeat(auto-fit, minmax(40px, 1fr)) !important; 
-  }
-   
-   /* Taille des emojis en mode NORMAL sur mobile/tablette */
-   .chat-container:not(.fullscreen) .emoji-panel span {
-      font-size: 26px !important; /* Ajuste cette taille si tu veux plus grand/petit */
-      min-height: 36px; /* Ajuste si besoin pour la case */
-   }
-   
   /* Info bulle des notifications */
   .info-bubble-mobile {
     position: fixed !important;
@@ -1492,12 +1466,6 @@ body.long-press-active .message-options {
   
   .info-bubble-mobile.show {
     animation: bubblePop 0.5s ease-out !important;
-  }
-  
-    @keyframes bubblePop {
-    0% { transform: scale(0.8); opacity: 0; }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); opacity: 1; }
   }
   
   /* Styles pour les messages */
@@ -1694,4 +1662,49 @@ body.long-press-active .message-options {
   0% { transform: scale(0.8); opacity: 0; }
   50% { transform: scale(1.1); }
   100% { transform: scale(1); opacity: 1; }
+}
+
+/* ------------------------
+   Overrides Emoji-Panel
+   for Mobile/Tablet
+   (≤1024px ou ≤768px selon besoin)
+   ------------------------ */
+@media (max-width: 1024px) {
+  .emoji-panel {
+    /* occupe tout l’espace sous le header et au-dessus de l’input */
+    top:    calc(var(--chat-header-height) + 5px) !important;
+    bottom: var(--chat-input-height)         !important;
+    left:   0        !important;
+    right:  0        !important;
+    
+    /* hauteur ajustée automatiquement */
+    height: auto    !important;
+    max-height: calc(100% - var(--chat-header-height) - var(--chat-input-height)) !important;
+    
+    /* grille moins dense pour plus de place */
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)) !important;
+    gap: 8px         !important;
+    padding: 12px    !important;
+  }
+
+  .emoji-panel span {
+    /* plus grand et “carré” */
+    font-size: 32px    !important;
+    min-height: 48px   !important;
+    padding: 6px       !important;
+  }
+}
+
+/* Si tu veux cibler encore plus petit (smartphone) */
+@media (max-width: 480px) {
+  .emoji-panel {
+    grid-template-columns: repeat(auto-fit, minmax(40px, 1fr)) !important;
+    gap: 6px      !important;
+    padding: 8px  !important;
+  }
+  .emoji-panel span {
+    font-size: 28px  !important;
+    min-height: 40px !important;
+    padding: 5px     !important;
+  }
 }
