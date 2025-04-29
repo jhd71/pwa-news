@@ -923,38 +923,61 @@ body:has(.chat-container.open) .news-ticker {
    EMOJI PANEL
    ========================================================================== */
 
-/* --- Variable pour la hauteur estimée de la zone d'input --- */
+/* --- Variables CSS (ajuste si nécessaire) --- */
 :root {
-  /* Ajuste cette valeur si la zone d'input (padding inclus) est plus haute/basse */
-  --chat-input-area-height: 75px; /* Hauteur de l'input sticky en mode normal */
-  --chat-header-height: 60px; /* Hauteur du header du chat */
+  --chat-header-height: 60px; 
+  --chat-input-sticky-height-mobile: 75px; 
+  --chat-input-base-height-tablet: 65px; 
+  /* Utiliser la variable tablette ou une variable spécifique pour desktop */
+  --chat-input-base-height-desktop: var(--chat-input-base-height-tablet, 65px); 
 }
 
 
+/* --- Styles de base pour .emoji-panel (S'appliquent sur DESKTOP et comme fallback) --- */
 .emoji-panel {
-  position: absolute; /* Relative au .chat-container */
-  /* Positionnement par défaut (Non-fullscreen / Desktop) */
-  top: calc(var(--chat-header-height) + 5px); /* Juste sous le header + petit espace */
-  left: 10px;
-  right: 10px;
-  bottom: auto; /* Pas fixé au bas par défaut */
-  max-height: 50vh; /* Hauteur max par défaut */
+  position: absolute; /* Positionné par rapport à .chat-container */
   
+  /* === Positionnement Vertical (Desktop) === */
+  top: calc(var(--chat-header-height, 60px) + 5px) !important; /* Juste sous le header */
+  /* === CORRECTION ICI === */
+  bottom: calc(var(--chat-input-base-height-desktop, 65px) + 5px) !important; /* Juste au-dessus de l'input + petit espace */
+  
+  /* === Positionnement Horizontal === */
+  left: 10px !important;
+  right: 10px !important;
+  
+  /* === Hauteur gérée par top/bottom === */
+  height: auto !important; 
+  /* === CORRECTION ICI === */
+  max-height: none !important; /* IMPORTANT: On enlève la limite max-height */
+
+  /* === Apparence === */
   background: var(--chat-gradient);
   border-radius: 12px;
   box-shadow: var(--chat-shadow);
-  padding: 10px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(42px, 1fr)); 
-  gap: 6px; 
+  padding: 10px; /* Padding généraux */
+  /* === CORRECTION ICI === */
+  padding-bottom: 30px !important; /* Espace EN BAS pour permettre le scroll de la dernière ligne */
   z-index: 1200; 
-  overflow-y: auto; 
-  box-sizing: border-box; 
+
+  /* === Layout interne (Grid) === */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(42px, 1fr)); /* Colonnes flexibles */
+  gap: 6px; 
+
+  /* === Comportement === */
+  overflow-y: auto; /* Permettre le scroll vertical */
+  box-sizing: border-box !important; 
 }
 
+/* --- Styles de base pour les emojis (span) --- */
 .emoji-panel span {
-  /* Taille par défaut (utilisée sur desktop et comme base) */
-  font-size: 26px; /* Taille de base pour les emojis */
+  /* Taille par défaut (Desktop) */
+  font-size: 26px; 
+  min-height: 38px; 
+  aspect-ratio: 1 / 1; 
+
+  /* Apparence et Comportement */
   cursor: pointer;
   padding: 4px; 
   text-align: center;
@@ -963,12 +986,12 @@ body:has(.chat-container.open) .news-ticker {
   display: flex; 
   align-items: center;
   justify-content: center;
-  aspect-ratio: 1 / 1; 
-  min-height: 38px; 
+}
+.emoji-panel span:hover {
+  background: var(--chat-hover);
 }
 
-/* --- LE RESTE DU CSS DU PANNEAU (hover, scrollbar) RESTE IDENTIQUE --- */
-.emoji-panel span:hover { background: var(--chat-hover); }
+/* --- Styles Scrollbar --- */
 .emoji-panel::-webkit-scrollbar { width: 8px; }
 .emoji-panel::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
 .emoji-panel::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 4px; }
