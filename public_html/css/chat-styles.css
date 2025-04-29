@@ -1604,7 +1604,7 @@ body.long-press-active .message-options {
 
 /* --- Variables CSS (ajuste ces valeurs si nécessaire) --- */
 :root {
-  --chat-header-height: 60px; /* Hauteur de ton .chat-header */
+/* ---   --chat-header-height: 60px; /* Hauteur de ton .chat-header */
   --chat-input-sticky-height-mobile: 75px; /* Hauteur totale input sticky sur mobile */
   --chat-input-base-height-tablet: 65px; /* Hauteur totale input non-sticky sur tablette */
 }
@@ -1616,7 +1616,7 @@ body.long-press-active .message-options {
   left: 10px;
   right: 10px;
   bottom: auto; 
-  max-height: 52vh; 
+  max-height: 56vh; 
   background: var(--chat-gradient);
   border-radius: 12px;
   box-shadow: var(--chat-shadow);
