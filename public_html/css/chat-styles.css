@@ -1616,7 +1616,7 @@ body.long-press-active .message-options {
   left: 10px;
   right: 10px;
   bottom: auto; 
-  max-height: 50vh; 
+  max-height: 55vh; 
   background: var(--chat-gradient);
   border-radius: 12px;
   box-shadow: var(--chat-shadow);
