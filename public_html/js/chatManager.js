@@ -1894,25 +1894,45 @@ optimizeForLowEndDevices() {
 	
     // Remplacez votre méthode sendNotificationToUser par celle-ci:
     async sendNotificationToUser(message) {
-        if (!this.notificationsEnabled || !message) return { success: false };
-        
-        try {
-            // Préparer le message pour le gestionnaire de notifications
-            const notificationMessage = {
-                id: message.id,
-                content: message.content,
-                pseudo: message.pseudo,
-                senderName: message.pseudo,
-                senderId: message.ip // Votre format actuel utilise ip comme identifiant
-            };
-            
-            // Utiliser le gestionnaire pour envoyer la notification
-            return await notificationManager.sendPushNotification(notificationMessage);
-        } catch (error) {
-            console.error('Erreur envoi notification:', error);
-            return { success: false, error: error.message };
+    try {
+        // Vérifier si les notifications sont activées
+        if (!this.notificationsEnabled) {
+            console.log("Notifications désactivées pour cet utilisateur");
+            return { success: false, reason: "notifications_disabled" };
         }
+        
+        console.log("Préparation de l'envoi de notification push pour le message:", message);
+        
+        // CORRECTION: Utiliser le bon chemin d'API (sans .js)
+        const response = await fetch('/api/send-notification', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: `${message.pseudo} a envoyé un message`,
+                body: message.content.substring(0, 100) + (message.content.length > 100 ? '...' : ''),
+                chatMessage: true,
+                data: {
+                    type: 'chat',
+                    messageId: message.id
+                }
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Erreur API: ${response.status} ${response.statusText}`);
+        }
+        
+        const result = await response.json();
+        console.log("Résultat de l'envoi de notification:", result);
+        
+        return { success: true };
+    } catch (error) {
+        console.error('Erreur envoi notification:', error);
+        return { success: false, error: error.message };
     }
+}
 	
 	async loadSounds() {
         const soundFiles = {
