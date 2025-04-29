@@ -1861,17 +1861,21 @@ async resetAndResubscribeToPush() {
 // Ajouter cette fonction pour envoyer un test via l'API
 async sendTestNotificationViaAPI() {
     try {
-        const response = await fetch('/api/send-important-notification', {
+        // Utiliser l'API sendPush qui fonctionne déjà au lieu de send-important-notification
+        const response = await fetch('/api/sendPush', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'X-API-Key': 'admin2024'
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                title: 'Test de notification',
-                body: 'Ceci est une notification de test pour vérifier que tout fonctionne',
-                url: '/?test=notification',
-                urgent: true
+                message: 'Ceci est une notification de test pour vérifier que tout fonctionne',
+                fromUser: 'Système',
+                toUser: 'all', // Envoyer à tous les utilisateurs ou spécifier this.pseudo pour l'utilisateur courant
+                data: {
+                    type: 'notification',
+                    url: '/?test=notification',
+                    urgent: true
+                }
             })
         });
         
@@ -2053,11 +2057,7 @@ optimizeForLowEndDevices() {
         
         console.log("Préparation de l'envoi de notification push pour le message:", message);
         
-        // Définir l'URL complète pour éviter les problèmes
-        const baseUrl = window.location.origin || 'https://actuetmedia.fr';
-        const chatUrl = `${baseUrl}/?action=openchat`;
-        
-        // Utiliser l'API qui fonctionne pour les notifications importantes
+        // Utiliser EXACTEMENT la même méthode que celle qui fonctionne avec le bouton de réinitialisation
         const response = await fetch('/api/send-important-notification', {
             method: 'POST',
             headers: {
@@ -2067,15 +2067,13 @@ optimizeForLowEndDevices() {
             body: JSON.stringify({
                 title: `Message de ${message.pseudo}`,
                 body: message.content,
-                url: chatUrl,
+                url: "/?action=openchat",
                 urgent: true // Toujours considérer les messages de chat comme urgents
             })
         });
         
         if (!response.ok) {
             console.error(`Erreur HTTP: ${response.status} ${response.statusText}`);
-            const errorText = await response.text();
-            console.error(`Détails de l'erreur:`, errorText);
             throw new Error(`Erreur HTTP: ${response.status}`);
         }
         
