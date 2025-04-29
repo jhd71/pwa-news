@@ -690,9 +690,11 @@ getChatHTML() {
                     <button class="notifications-btn ${this.notificationsEnabled ? 'enabled' : ''}" title="Notifications">
 						<span class="material-icons">${this.notificationsEnabled ? 'notifications_active' : 'notifications_off'}</span>
 					</button>
-					<button class="reset-notifications-btn" title="Réinitialiser notifications">
+					${this.isAdmin ? `
+					<button class="reset-notifications-btn" title="Réinitialiser notifications (Admin)">
 						<span class="material-icons">sync</span>
-					</button>					
+					</button>
+				` : ''}					
                     <button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
                         <span class="material-icons">${this.soundEnabled ? 'volume_up' : 'volume_off'}</span>
                     </button>
@@ -734,11 +736,13 @@ getChatHTMLWithoutToggle() {
                 </button>
                     <button class="notifications-btn ${this.notificationsEnabled ? 'enabled' : ''}" title="Notifications">
 					<span class="material-icons">${this.notificationsEnabled ? 'notifications_active' : 'notifications_off'}</span>
-				</button>
-				<button class="reset-notifications-btn" title="Réinitialiser notifications">
-					<span class="material-icons">sync</span>
-				</button>
-                    <button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
+					</button>
+				${this.isAdmin ? `
+					<button class="reset-notifications-btn" title="Réinitialiser notifications (Admin)">
+						<span class="material-icons">sync</span>
+					</button>
+				` : ''}	                   
+				<button class="sound-btn ${this.soundEnabled ? 'enabled' : ''}" title="Son">
                         <span class="material-icons">${this.soundEnabled ? 'volume_up' : 'volume_off'}</span>
                     </button>
                     <button class="logout-btn" title="Déconnexion">
@@ -2047,42 +2051,53 @@ optimizeForLowEndDevices() {
     }
 	
     // Remplacez votre méthode sendNotificationToUser par celle-ci:
-    async sendNotificationToUser(message) {
+    // Modifiez sendNotificationToUser avec des logs supplémentaires
+async sendNotificationToUser(message) {
     try {
+        console.log("DÉBUT sendNotificationToUser pour:", message.pseudo);
+        
         // Vérifier si les notifications sont activées
         if (!this.notificationsEnabled) {
             console.log("Notifications désactivées pour cet utilisateur");
             return { success: false, reason: "notifications_disabled" };
         }
         
-        console.log("Préparation de l'envoi de notification push pour le message:", message);
+        // Préparation du payload identique à celui du bouton qui fonctionne
+        const notificationData = {
+            title: `Message de ${message.pseudo}`,
+            body: message.content,
+            url: "/?action=openchat",
+            urgent: true
+        };
+        
+        console.log("Envoi notification avec payload:", JSON.stringify(notificationData));
         
         // Utiliser EXACTEMENT la même méthode que celle qui fonctionne avec le bouton de réinitialisation
         const response = await fetch('/api/send-important-notification', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-API-Key': 'admin2024'  // La clé d'API utilisée dans votre page de notification
+                'X-API-Key': 'admin2024'
             },
-            body: JSON.stringify({
-                title: `Message de ${message.pseudo}`,
-                body: message.content,
-                url: "/?action=openchat",
-                urgent: true // Toujours considérer les messages de chat comme urgents
-            })
+            body: JSON.stringify(notificationData)
         });
         
-        if (!response.ok) {
-            console.error(`Erreur HTTP: ${response.status} ${response.statusText}`);
-            throw new Error(`Erreur HTTP: ${response.status}`);
+        const responseText = await response.text();
+        console.log(`Réponse brute de l'API: ${responseText}`);
+        
+        let result;
+        try {
+            result = JSON.parse(responseText);
+        } catch (e) {
+            console.error("Erreur parsing JSON:", e);
+            return { success: false, error: "Réponse invalide de l'API" };
         }
         
-        const result = await response.json();
         console.log("Résultat de l'envoi de notification:", result);
         
         return { success: true, result };
     } catch (error) {
-        console.error('Erreur envoi notification:', error);
+        console.error('Erreur complète sendNotificationToUser:', error);
         return { success: false, error: error.message };
     }
 }
