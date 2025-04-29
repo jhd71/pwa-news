@@ -1453,6 +1453,7 @@ setupBanChecker() {
     messagesContainer.appendChild(messageElement);
     this.scrollToBottom();
     
+    // Si le message vient de quelqu'un d'autre, on joue le son et on notifie si nécessaire
     if (message.pseudo !== this.pseudo) {
         this.playSound('message');
         
@@ -1461,21 +1462,71 @@ setupBanChecker() {
             localStorage.setItem('unreadCount', this.unreadCount.toString());
             
             if (this.notificationsEnabled) {
-                console.log("Message reçu avec application fermée, envoi notification");
-                
-                // MODIFICATION IMPORTANTE: Utiliser d'abord la méthode directe
+                // NOTIFICATION DIRECTE: Utiliser exactement la même technique que celle qui fonctionne avec le bouton
                 try {
-                    const directResult = await this.sendDirectNotification(message);
-                    console.log("Résultat notification directe:", directResult);
+                    console.log(`Envoi notification directe pour message de ${message.pseudo}`);
                     
-                    // Si la méthode directe échoue, essayer l'ancienne méthode
-                    if (!directResult) {
-                        console.log("Repli sur méthode traditionnelle de notification");
-                        const result = await this.sendNotificationToUser(message);
-                        console.log("Résultat méthode traditionnelle:", result);
+                    // MÉTHODE 1: Utiliser l'API qui fonctionne dans le bouton
+                    const response = await fetch('/api/send-important-notification', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-API-Key': 'admin2024'
+                        },
+                        body: JSON.stringify({
+                            title: `Message de ${message.pseudo}`,
+                            body: message.content,
+                            url: "/?action=openchat",
+                            urgent: true 
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`Erreur HTTP: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    console.log("Réponse notification API:", result);
+                    
+                    // MÉTHODE 2: Créer aussi une notification directe comme backup
+                    if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+                        const registration = await navigator.serviceWorker.ready;
+                        
+                        // Créer les options de notification
+                        const options = {
+                            body: message.content,
+                            icon: '/images/AM-192-v2.png',
+                            badge: '/images/badge-72x72.png',
+                            tag: `chat-${Date.now()}`,
+                            requireInteraction: true,
+                            renotify: true,
+                            vibrate: [200, 100, 200],
+                            data: {
+                                url: '/?action=openchat',
+                                type: 'chat',
+                                messageId: message.id,
+                                fromUser: message.pseudo,
+                                urgent: true
+                            }
+                        };
+                        
+                        await registration.showNotification(`Message de ${message.pseudo}`, options);
+                        console.log("Notification directe générée avec succès");
                     }
                 } catch (error) {
                     console.error("Erreur complète notification:", error);
+                    
+                    // DERNIER RECOURS: Notification native
+                    try {
+                        if (Notification.permission === 'granted') {
+                            new Notification(`Message de ${message.pseudo}`, {
+                                body: message.content,
+                                icon: '/images/AM-192-v2.png'
+                            });
+                        }
+                    } catch (e) {
+                        console.error("Échec notification native:", e);
+                    }
                 }
             }
             
