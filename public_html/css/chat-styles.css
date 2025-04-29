@@ -936,14 +936,13 @@ body:has(.chat-container.open) .news-ticker {
 /* --- Styles de base pour .emoji-panel (S'appliquent sur DESKTOP et comme fallback) --- */
 .emoji-panel {
   position: absolute; 
-  top: calc(var(--chat-header-height, 60px) + 5px) !important; 
+  top: calc(var(--chat-header-height, 60px) !important; 
   
   /* === CORRECTION ICI === */
   /* S'arrête EXACTEMENT à la hauteur estimée de l'input (enlève le + 5px) */
   bottom: var(--chat-input-base-height-desktop, 65px) !important; 
   /* OU si ça recouvre encore, essaie de remonter un peu : */
   /* bottom: calc(var(--chat-input-base-height-desktop, 65px) + 2px) !important; */ /* 2px au-dessus */
-  bottom: calc(var(--chat-input-base-height-desktop) + 3px) !important; /* Commence avec +3px */
   left: 10px !important;
   right: 10px !important;
   height: auto !important; 
