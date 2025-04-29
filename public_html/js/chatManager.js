@@ -441,6 +441,7 @@ document.body.appendChild(scriptElement);
         if (this.pseudo) {
             await this.loadExistingMessages();
             this.updateUnreadBadgeAndBubble();
+			this.checkForUnreadMessages();
         }
         
         // Pour gérer spécifiquement les problèmes de PWA
@@ -1455,11 +1456,14 @@ setupBanChecker() {
     
     // Si le message vient de quelqu'un d'autre, on joue le son et on notifie si nécessaire
     if (message.pseudo !== this.pseudo) {
-        this.playSound('message');
+    this.playSound('message');
+    
+    if (!chatOpen) {
+        this.unreadCount++;
+        localStorage.setItem('unreadCount', this.unreadCount.toString());
         
-        if (!chatOpen) {
-            this.unreadCount++;
-            localStorage.setItem('unreadCount', this.unreadCount.toString());
+        // AJOUTEZ CETTE LIGNE pour stocker le message non lu
+        this.storeUnreadMessage(message);
             
             if (this.notificationsEnabled) {
                 // NOTIFICATION DIRECTE: Utiliser exactement la même technique que celle qui fonctionne avec le bouton
@@ -1532,6 +1536,106 @@ setupBanChecker() {
             
             this.updateUnreadBadgeAndBubble();
         }
+    }
+}
+
+storeUnreadMessage(message) {
+    try {
+        const unreadMessages = JSON.parse(localStorage.getItem('unreadChatMessages') || '[]');
+        
+        // Ajouter ce message à la liste
+        unreadMessages.push({
+            id: message.id,
+            pseudo: message.pseudo,
+            content: message.content,
+            timestamp: Date.now()
+        });
+        
+        // Limiter à 10 messages maximum
+        if (unreadMessages.length > 10) {
+            unreadMessages.shift(); // Enlever le plus ancien
+        }
+        
+        // Sauvegarder dans localStorage
+        localStorage.setItem('unreadChatMessages', JSON.stringify(unreadMessages));
+        console.log(`Message de ${message.pseudo} stocké pour notification ultérieure`);
+    } catch (e) {
+        console.error('Erreur stockage message non lu:', e);
+    }
+}
+
+checkForUnreadMessages() {
+    try {
+        // Récupérer les messages non lus
+        const unreadMessages = JSON.parse(localStorage.getItem('unreadChatMessages') || '[]');
+        if (unreadMessages.length === 0) return;
+        
+        console.log(`${unreadMessages.length} messages non lus trouvés au démarrage`);
+        
+        // Si des messages non lus existent et que les notifications sont activées
+        if (this.notificationsEnabled) {
+            // Créer une notification groupée
+            if (unreadMessages.length === 1) {
+                // Un seul message non lu
+                const message = unreadMessages[0];
+                this.showDesktopNotification(
+                    `Message de ${message.pseudo}`, 
+                    message.content
+                );
+            } else {
+                // Plusieurs messages non lus
+                const names = [...new Set(unreadMessages.map(m => m.pseudo))];
+                const messageText = names.length === 1
+                    ? `${unreadMessages.length} messages de ${names[0]}`
+                    : `${unreadMessages.length} messages de ${names.length} personnes`;
+                    
+                this.showDesktopNotification(
+                    'Messages non lus',
+                    messageText
+                );
+            }
+        }
+        
+        // Vider la liste après notification
+        localStorage.setItem('unreadChatMessages', '[]');
+    } catch (e) {
+        console.error('Erreur vérification messages non lus:', e);
+    }
+}
+
+showDesktopNotification(title, body) {
+    try {
+        // Vérifier si les notifications sont supportées
+        if (!("Notification" in window)) {
+            console.warn("Ce navigateur ne supporte pas les notifications de bureau");
+            return false;
+        }
+        
+        // Vérifier si la permission est accordée
+        if (Notification.permission !== "granted") {
+            console.warn("Permission de notification non accordée");
+            return false;
+        }
+        
+        // Créer une notification
+        const notification = new Notification(title, {
+            body: body,
+            icon: '/images/AM-192-v2.png',
+            tag: 'chat-notification',
+            requireInteraction: true
+        });
+        
+        // Gestionnaire de clic
+        notification.onclick = function() {
+            window.focus();
+            window.location.href = '/?action=openchat';
+            notification.close();
+        };
+        
+        return true;
+    } catch (e) {
+        console.error("Erreur notification bureau:", e);
+        return false;
     }
 }
 
