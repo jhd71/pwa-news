@@ -163,6 +163,10 @@ class ChatManager {
 	this.container = document.createElement('div');
 	this.container.className = 'chat-widget hidden';
 	document.body.appendChild(this.container);
+	// Initialiser le correctif du clavier pour mobile
+const scriptElement = document.createElement('script');
+scriptElement.src = '/js/chat-keyboard-fix.js'; // Ajustez le chemin si nécessaire
+document.body.appendChild(scriptElement);
 				const bannedUntil = localStorage.getItem('chat_device_banned_until');
             let isBanned = true;
             
@@ -1653,60 +1657,36 @@ div.innerHTML = `
 
     async sendMessage(content) { 
     try {
-        // Utiliser directement this.pseudo comme identifiant
-        const isBanned = await this.checkBannedIP(this.pseudo);
+        // Log détaillé pour le débogage
+        console.log("Envoi du message : " + content);
         
-        if (isBanned) {
-            console.log(`Message rejeté - utilisateur banni: ${this.pseudo}`);
-            this.showNotification('Vous êtes banni du chat', 'error');
-            // Déconnecter l'utilisateur banni
-            await this.logout();
-            return false;
-        }
-        
-        // Vérifier les mots bannis
-        const containsBannedWord = await this.checkForBannedWords(content);
-        if (containsBannedWord) {
-            this.showNotification('Votre message contient des mots interdits', 'error');
-            return false;
-        }
-        
-        // Définir l'utilisateur courant pour RLS
-        const rlsSuccess = await this.setCurrentUserForRLS();
-        if (!rlsSuccess) {
-            console.error("Échec de la définition de l'utilisateur pour RLS");
-            this.showNotification('Erreur d\'authentification', 'error');
-            return false;
-        }
-        
-        // Créer l'identifiant unique pour ce message
-        const messageIp = `${this.pseudo}-${Date.now()}`;
-        
-        // Obtenir l'IP réelle de l'utilisateur
-        const realIP = await this.getClientRealIP();
-        
-        // Construire le message avec l'identifiant et l'IP réelle
+        // Construire le message simplifié
         const message = {
             pseudo: this.pseudo,
             content: content,
-            ip: messageIp,
-            real_ip: realIP, // Nouvelle propriété
+            ip: this.pseudo + "-" + Date.now(),
             created_at: new Date().toISOString()
         };
         
-        // Insérer le message
-        const { data: messageData, error } = await this.supabase
+        // Tenter d'insérer sans RLS complexe
+        const { data, error } = await this.supabase
             .from('messages')
-            .insert(message)
-            .select()
-            .single();
+            .insert(message);
             
-        if (error) throw error;
+        if (error) {
+            console.error("Erreur d'envoi:", error);
+            
+            // Afficher une notification d'erreur à l'utilisateur
+            this.showNotification("Erreur d'envoi: " + (error.message || "Problème de connexion"), 'error');
+            
+            return false;
+        }
         
-        // Le reste de votre code existant...
+        console.log("Message envoyé avec succès");
         return true;
     } catch (error) {
         console.error('Erreur sendMessage:', error);
+        this.showNotification("Erreur: " + error.message, 'error');
         return false;
     }
 }

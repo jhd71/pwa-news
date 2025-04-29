@@ -1883,3 +1883,45 @@ body.long-press-active .message-options {
 [data-theme="dark"] .emoji-picker span:hover {
   background: rgba(255,255,255,0.1);
 }
+
+/* Ajustements pour la gestion du clavier mobile */
+@media (max-width: 768px) {
+  /* Ajuster l'input quand le clavier est ouvert */
+  .chat-input.keyboard-visible {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    background: rgba(126, 87, 194, 0.95) !important;
+    z-index: 10000 !important;
+    padding: 10px !important;
+  }
+  
+  /* Ajouter un espace en bas du conteneur de messages quand le clavier est ouvert */
+  .chat-container.keyboard-open .chat-messages {
+    padding-bottom: 70px !important;
+  }
+}
+
+/* Bouton d'accès rapide à l'input */
+.input-access-button {
+  display: none;
+  position: fixed;
+  bottom: 70px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #4CAF50;
+  color: white;
+  z-index: 10001;
+  border: none;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  align-items: center;
+  justify-content: center;
+}
+
+/* Afficher le bouton quand le clavier est ouvert */
+.chat-container.keyboard-open .input-access-button {
+  display: flex;
+}
