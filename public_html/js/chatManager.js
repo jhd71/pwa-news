@@ -1903,29 +1903,25 @@ optimizeForLowEndDevices() {
         
         console.log("Préparation de l'envoi de notification push pour le message:", message);
         
-        // Utiliser directement l'API sendPush avec un format simplifié
-        const response = await fetch('/api/sendPush', {
+        // MODIFICATION CRITIQUE: Utiliser l'API qui fonctionne déjà
+        const response = await fetch('/api/send-important-notification', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-API-Key': 'admin2024'  // Utilisez la même clé que dans votre notification.html
             },
             body: JSON.stringify({
-                message: message.content, // Message complet
-                fromUser: message.pseudo,
-                toUser: this.pseudo,
-                // Données additionnelles minimisées pour garantir la compatibilité
-                data: {
-                    type: 'chat',
-                    messageId: message.id,
-                    urgent: true
-                }
+                title: `Message de ${message.pseudo}`,
+                body: message.content,
+                url: "/?action=openchat",
+                urgent: true // Les messages de chat sont considérés comme urgents
             })
         });
         
         const result = await response.json();
         console.log("Résultat de l'envoi de notification:", result);
         
-        return { success: true, result };
+        return { success: result.success !== false, result };
     } catch (error) {
         console.error('Erreur envoi notification:', error);
         return { success: false, error: error.message };

@@ -1,5 +1,5 @@
-const CACHE_NAME = 'infos-pwa-v6'; // Augmentez le numéro de version
-const API_CACHE_NAME = 'infos-api-cache-v2'; // Augmentez aussi cette version
+const CACHE_NAME = 'infos-pwa-v8'; // Augmentez le numéro de version
+const API_CACHE_NAME = 'infos-api-cache-v4'; // Augmentez aussi cette version
 
 const STATIC_RESOURCES = [
     '/',
@@ -575,9 +575,6 @@ function handleDefaultRequest(event) {
 }
 
 /* ---------------------- PUSH ------------------------------------------ */
-
-// Remplacez l'événement push existant dans service-worker.js par ce code
-// REMPLACEZ COMPLÈTEMENT votre gestionnaire d'événement 'push' existant dans service-worker.js par ce code:
 
 self.addEventListener('push', event => {
   console.log('[SW] Push reçu:', event.data ? event.data.text() : '(sans données)');
