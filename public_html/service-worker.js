@@ -562,73 +562,82 @@ function handleDefaultRequest(event) {
 // REMPLACER l'événement push existant par celui-ci
 self.addEventListener('push', async event => {
   const pushText = event.data ? event.data.text() : '(sans données)';
-  console.log(`[SW ${WORKER_VERSION}] Push reçu:`, pushText);
+  console.log(`[SW v10] Push reçu:`, pushText);
 
-  event.waitUntil(async function() {
+  event.waitUntil((async () => {
     try {
       // Essayer de parser les données en JSON
       let payload;
       try {
         const rawData = event.data ? event.data.json() : {};
+        console.log(`[SW v10] Données push détaillées:`, JSON.stringify(rawData));
         
-        // Log des données pour diagnostic
-        console.log(`[SW ${WORKER_VERSION}] Données push détaillées:`, JSON.stringify(rawData));
-        
-        // IMPORTANT: Extraire correctement la notification
-        // Format: {"notification": {...}} ou format direct
+        // Extraire les données correctement, quelle que soit la structure
         payload = rawData.notification || rawData;
-        
       } catch (error) {
-        console.error(`[SW ${WORKER_VERSION}] Erreur parsing JSON:`, error);
-        // Pour les données non-JSON
+        console.error(`[SW v10] Erreur parsing JSON:`, error);
+        
+        // Pour les données non-JSON, créer un payload simple
         payload = {
           title: 'Actu&Média',
           body: event.data ? event.data.text() : 'Nouvelle notification'
         };
       }
 
-      // Options de notification simplifiées et robustes
-      const notificationTitle = payload.title || 'Actu&Média';
-      const notificationOptions = {
-        body: payload.body || 'Nouvelle notification',
+      // Log détaillé du payload extrait
+      console.log(`[SW v10] Payload extrait:`, JSON.stringify(payload));
+
+      // Titre et corps du message
+      const title = payload.title || (payload.fromUser ? `Message de ${payload.fromUser}` : 'Actu&Média');
+      const body = payload.body || 'Notification';
+
+      // Options complètes pour la notification
+      const options = {
+        body: body,
         icon: '/images/AM-192-v2.png',
         badge: '/images/badge-72x72.png',
         tag: `notif-${Date.now()}`,
         requireInteraction: true,
+        renotify: true,
         vibrate: [200, 100, 200],
         data: {
-          url: payload.data?.url || '/?action=openchat'
+          // Utiliser l'URL du payload si disponible, sinon utiliser le chat
+          url: (payload.data && payload.data.url) || 
+               (payload.url) || 
+               '/?action=openchat',
+          type: (payload.data && payload.data.type) || 'notification',
+          urgent: true,
+          timestamp: Date.now()
         }
       };
-      
-      // Log le payload et les options pour diagnostic
-      console.log(`[SW ${WORKER_VERSION}] Notification:`, {
-        title: notificationTitle,
-        options: notificationOptions
-      });
-      
-      // AFFICHAGE DE LA NOTIFICATION
-      // Cette ligne est critique - c'est celle qui affiche réellement la notification
-      await self.registration.showNotification(notificationTitle, notificationOptions);
-      console.log(`[SW ${WORKER_VERSION}] Notification affichée avec succès`);
+
+      // Log des options finales
+      console.log(`[SW v10] Options notification:`, JSON.stringify({
+        title,
+        options
+      }));
+
+      // Afficher la notification
+      await self.registration.showNotification(title, options);
+      console.log(`[SW v10] Notification affichée avec succès`);
       
       return true;
     } catch (error) {
-      console.error(`[SW ${WORKER_VERSION}] Erreur notification:`, error);
+      console.error(`[SW v10] Erreur notification:`, error);
       
-      // Notification de secours
+      // Notification de secours en cas d'erreur
       try {
         await self.registration.showNotification('Actu&Média', {
-          body: `Notification d'urgence (erreur: ${error.message})`,
+          body: 'Nouvelle notification',
           icon: '/images/AM-192-v2.png'
         });
       } catch (e) {
-        console.error(`[SW ${WORKER_VERSION}] Erreur notification de secours:`, e);
+        console.error(`[SW v10] Erreur ultime:`, e);
       }
       
       return false;
     }
-  }());
+  })());
 });
 
 // REMPLACER l'événement notificationclick existant par celui-ci

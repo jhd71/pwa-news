@@ -1461,15 +1461,21 @@ setupBanChecker() {
             localStorage.setItem('unreadCount', this.unreadCount.toString());
             
             if (this.notificationsEnabled) {
+                console.log("Message reçu avec application fermée, envoi notification");
+                
+                // MODIFICATION IMPORTANTE: Utiliser d'abord la méthode directe
                 try {
-                    // Utiliser le résultat mais ne pas propager d'erreur
-                    const notificationResult = await this.sendNotificationToUser(message);
-                    if (!notificationResult?.success) {
-                        console.warn('Notification non envoyée:', notificationResult?.error || 'Raison inconnue');
+                    const directResult = await this.sendDirectNotification(message);
+                    console.log("Résultat notification directe:", directResult);
+                    
+                    // Si la méthode directe échoue, essayer l'ancienne méthode
+                    if (!directResult) {
+                        console.log("Repli sur méthode traditionnelle de notification");
+                        const result = await this.sendNotificationToUser(message);
+                        console.log("Résultat méthode traditionnelle:", result);
                     }
                 } catch (error) {
-                    // En cas d'erreur, simplement logger mais ne pas interrompre
-                    console.warn('Erreur notification ignorée:', error.message);
+                    console.error("Erreur complète notification:", error);
                 }
             }
             
@@ -2051,7 +2057,6 @@ optimizeForLowEndDevices() {
     }
 	
     // Remplacez votre méthode sendNotificationToUser par celle-ci:
-    // Modifiez sendNotificationToUser avec des logs supplémentaires
 async sendNotificationToUser(message) {
     try {
         console.log("DÉBUT sendNotificationToUser pour:", message.pseudo);
@@ -2102,6 +2107,71 @@ async sendNotificationToUser(message) {
     }
 }
 	
+	async sendDirectNotification(message) {
+    try {
+        console.log("Tentative d'envoi direct de notification pour message:", message);
+        
+        // Vérifier si les notifications sont activées
+        if (!this.notificationsEnabled) {
+            console.log("Notifications désactivées pour cet utilisateur");
+            return false;
+        }
+        
+        // Vérifier si le service worker est disponible
+        if (!('serviceWorker' in navigator)) {
+            console.error("Service Worker non supporté");
+            return false;
+        }
+        
+        // Vérifier si l'API Notification est disponible
+        if (!('Notification' in window)) {
+            console.error("API Notification non supportée");
+            return false;
+        }
+        
+        // Vérifier la permission
+        if (Notification.permission !== 'granted') {
+            console.error("Permission de notification non accordée");
+            return false;
+        }
+        
+        // Récupérer l'enregistrement du service worker
+        const registration = await navigator.serviceWorker.ready;
+        console.log("Service worker prêt pour notification directe");
+        
+        // Créer les options de notification
+        const options = {
+            body: message.content,
+            icon: '/images/AM-192-v2.png',
+            badge: '/images/badge-72x72.png',
+            tag: `chat-${Date.now()}`,
+            requireInteraction: true,
+            renotify: true,
+            vibrate: [200, 100, 200],
+            data: {
+                url: '/?action=openchat',
+                type: 'chat',
+                messageId: message.id,
+                fromUser: message.pseudo,
+                urgent: true
+            }
+        };
+        
+        // Créer le titre
+        const title = `Message de ${message.pseudo}`;
+        
+        // Afficher la notification
+        console.log("Affichage notification directe avec:", { title, options });
+        await registration.showNotification(title, options);
+        
+        console.log("Notification directe envoyée avec succès");
+        return true;
+    } catch (error) {
+        console.error("Erreur notification directe:", error);
+        return false;
+    }
+}
+
 	async loadSounds() {
         const soundFiles = {
             'message': '/sounds/message.mp3',
