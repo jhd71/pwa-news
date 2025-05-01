@@ -1,1 +1,244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentions légales - Actu & Média</title>
+  <style>
+        :root {
+            --primary-color: #7c4dff;
+            --secondary-color: #ff5722;
+            --text-color: #333;
+            --light-gray: #f5f5f5;
+            --border-color: #e0e0e0;
+            --link-color: #7c4dff;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        /* Style global pour les liens */
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .updated-date {
+            font-style: italic;
+            color: #757575;
+            font-size: 0.9rem;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            background-color: var(--light-gray);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .highlight {
+            background-color: #fff3e0;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .contact {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background-color: var(--light-gray);
+            border-radius: 8px;
+        }
+
+        .email {
+            color: var(--primary-color);
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .email:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            color: #757575;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #6a40e0;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+        }
+
+        /* Support du thème sombre */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #222;
+                color: #f5f5f5;
+            }
+            
+            .container {
+                background-color: #333;
+            }
+            
+            .section {
+                background-color: #444;
+            }
+            
+            .highlight {
+                background-color: #3a3222;
+            }
+            
+            .contact {
+                background-color: #444;
+            }
+            
+            h1, h2 {
+                color: #9f78ff;
+            }
+            
+            /* Amélioration du contraste pour le thème sombre */
+            a {
+                color: #9f78ff;
+            }
+            
+            .email {
+                color: #9f78ff;
+            }
+        }
+    </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Mentions légales</h1>
+    </header>
+
+    <div class="section">
+      <h2>1. Éditeur du site</h2>
+      <p><strong>Actu & Média</strong><br>
+      Site personnel de diffusion d'actualités locales et de services numériques.<br>
+      Contact : <a href="mailto:contact@actuetmedia.fr" class="email">contact@actuetmedia.fr</a></p>
+    </div>
+
+    <div class="section">
+      <h2>2. Hébergement</h2>
+      <p>
+        Le site est hébergé par :<br>
+        <strong>Vercel Inc.</strong><br>
+        440 N Barranca Ave #4133<br>
+        Covina, CA 91723, États-Unis<br>
+        <a href="https://vercel.com" target="_blank" rel="noopener">https://vercel.com</a>
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>3. Propriété intellectuelle</h2>
+      <p>Les contenus présents sur ce site (textes, images, logos, code source) sont la propriété exclusive de l'éditeur, sauf mention contraire. Toute reproduction non autorisée est interdite.</p>
+    </div>
+
+    <div class="section">
+      <h2>4. Responsabilité</h2>
+      <p>Les informations publiées sont données à titre indicatif. L'éditeur ne peut être tenu responsable des erreurs, omissions ou problèmes techniques rencontrés sur le site.</p>
+    </div>
+
+    <div class="section">
+      <h2>5. Données personnelles</h2>
+      <p>Des données comme les pseudonymes ou adresses IP peuvent être collectées dans le cadre du chat ou de la navigation. Pour en savoir plus, consultez notre <a href="https://actuetmedia.fr/politique-confidentialite">politique de confidentialité</a>.</p>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px;">
+      <a href="/" class="back-button">Retour à l'accueil</a>
+    </div>
+  </div>
+
+  <footer>&copy; 2025 Actu & Média – Tous droits réservés</footer>
+
+</body>
+</html>
