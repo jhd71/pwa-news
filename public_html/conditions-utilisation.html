@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Conditions d'utilisation - Actu & Média</title>
-  <link rel="stylesheet" href="css/styles.css">
   <style>
         :root {
             --primary-color: #7c4dff;
@@ -12,6 +11,7 @@
             --text-color: #333;
             --light-gray: #f5f5f5;
             --border-color: #e0e0e0;
+            --link-color: #7c4dff;
         }
 
         body {
@@ -22,6 +22,18 @@
             margin: 0 auto;
             padding: 20px;
             background-color: #fff;
+        }
+
+        /* Style global pour les liens */
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+
+        a:hover {
+            text-decoration: underline;
         }
 
         .container {
@@ -170,52 +182,66 @@
             h1, h2 {
                 color: #9f78ff;
             }
+            
+            /* Amélioration du contraste pour le thème sombre */
+            a {
+                color: #9f78ff;
+            }
+            
+            .email {
+                color: #9f78ff;
+            }
         }
     </style>
 </head>
 <body>
+  <div class="container">
+    <header>
+      <h1>Conditions d'utilisation</h1>
+    </header>
 
-  <h1>Conditions d'utilisation</h1>
+    <div class="highlight">
+      <p>En utilisant le site <strong>Actu & Média</strong>, vous acceptez les présentes conditions d'utilisation. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser le site.</p>
+    </div>
 
-  <div class="section">
-    <p>En utilisant le site <strong>Actu & Média</strong>, vous acceptez les présentes conditions d'utilisation. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser le site.</p>
-  </div>
+    <div class="section">
+      <h2>1. Accès au service</h2>
+      <p>Le site est accessible gratuitement. Nous nous réservons le droit de suspendre ou de modifier le contenu à tout moment, sans préavis.</p>
+    </div>
 
-  <div class="section">
-    <h2>1. Accès au service</h2>
-    <p>Le site est accessible gratuitement. Nous nous réservons le droit de suspendre ou de modifier le contenu à tout moment, sans préavis.</p>
-  </div>
+    <div class="section">
+      <h2>2. Responsabilité</h2>
+      <p>Nous nous efforçons de proposer des informations fiables, mais nous ne garantissons ni l'exactitude ni l'exhaustivité du contenu publié.</p>
+    </div>
 
-  <div class="section">
-    <h2>2. Responsabilité</h2>
-    <p>Nous nous efforçons de proposer des informations fiables, mais nous ne garantissons ni l'exactitude ni l'exhaustivité du contenu publié.</p>
-  </div>
+    <div class="section">
+      <h2>3. Utilisation du chat</h2>
+      <p>Le chat est modéré. Les utilisateurs doivent adopter un comportement respectueux. Les propos haineux, injurieux ou contraires à la loi entraîneront un bannissement immédiat.</p>
+    </div>
 
-  <div class="section">
-    <h2>3. Utilisation du chat</h2>
-    <p>Le chat est modéré. Les utilisateurs doivent adopter un comportement respectueux. Les propos haineux, injurieux ou contraires à la loi entraîneront un bannissement immédiat.</p>
-  </div>
+    <div class="section">
+      <h2>4. Propriété intellectuelle</h2>
+      <p>Le contenu du site (textes, logos, images) est protégé par le droit d'auteur. Toute reproduction sans autorisation est interdite.</p>
+    </div>
 
-  <div class="section">
-    <h2>4. Propriété intellectuelle</h2>
-    <p>Le contenu du site (textes, logos, images) est protégé par le droit d’auteur. Toute reproduction sans autorisation est interdite.</p>
-  </div>
+    <div class="section">
+      <h2>5. Protection des données</h2>
+      <p>Pour en savoir plus sur la collecte et l'utilisation des données personnelles, consultez notre <a href="https://actuetmedia.fr/politique-confidentialite.html">politique de confidentialité</a>.</p>
+    </div>
 
-  <div class="section">
-    <h2>5. Protection des données</h2>
-    <p>Pour en savoir plus sur la collecte et l’utilisation des données personnelles, consultez notre <a href="https://actuetmedia.fr/politique-confidentialite.html">politique de confidentialité</a>.</p>
-  </div>
+    <div class="section">
+      <h2>6. Contact</h2>
+      <p>Pour toute question, vous pouvez nous écrire à <a href="mailto:contact@actuetmedia.fr" class="email">contact@actuetmedia.fr</a>.</p>
+    </div>
 
-  <div class="section">
-    <h2>6. Contact</h2>
-    <p>Pour toute question, vous pouvez nous écrire à <a href="mailto:contact@actuetmedia.fr">contact@actuetmedia.fr</a>.</p>
+    <div style="text-align: center; margin-top: 30px;">
+      <a href="/" class="back-button">Retour à l'accueil</a>
+    </div>
   </div>
 
   <footer>
     &copy; 2025 Actu & Média - Tous droits réservés
   </footer>
-  <div style="text-align: center; margin-top: 30px;">
-  <a href="/" class="back-button">Retour à l'accueil</a>
-</div>
+
 </body>
 </html>
