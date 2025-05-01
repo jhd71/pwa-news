@@ -1612,23 +1612,67 @@ body.long-press-active .message-options {
 /* --- Styles de base pour .emoji-panel (Desktop et fallback) --- */
 .emoji-panel {
   position: absolute; 
-  top: calc(var(--chat-header-height, 60px) + 5px); 
+  top: calc(var(--chat-header-height, 60px) + 40px); 
   left: 10px;
   right: 10px;
   bottom: auto; 
-  max-height: 56vh; 
+  /* Hauteur par défaut pour desktop - ajustée à 45vh au lieu de 56vh */
+  max-height: 45vh; 
   background: var(--chat-gradient);
   border-radius: 12px;
   box-shadow: var(--chat-shadow);
-  /* Padding de base (le padding-bottom sera surchargé si nécessaire) */
   padding: 10px; 
-  padding-bottom: 20px; /* Ajoute un petit padding bas par défaut */
+  padding-bottom: 20px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(44px, 1fr)); 
   gap: 6px; 
   z-index: 1200; 
   overflow-y: auto; 
   box-sizing: border-box; 
+}
+
+/* Réglage spécifique pour les très grands écrans */
+@media (min-height: 900px) {
+  .emoji-panel {
+    max-height: 50vh;
+  }
+}
+
+/* Réglage pour les petits écrans */
+@media (max-height: 750px) {
+  .emoji-panel {
+    max-height: 40vh;
+  }
+}
+
+/* Styles pour l'icône emoji quand le panneau est ouvert */
+.emoji-btn.panel-open {
+  background: rgba(255, 255, 255, 0.2);
+  position: relative;
+}
+
+.emoji-btn.panel-open .material-icons {
+  color: #ff4444 !important; /* Rouge pour indiquer l'état ouvert */
+  transform: scale(1.1);
+}
+
+/* Badge optionnel pour indiquer que le panneau est ouvert */
+.emoji-btn.panel-open::after {
+  content: '×';
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 18px;
+  height: 18px;
+  background: #ff4444;
+  color: white;
+  border-radius: 50%;
+  font-size: 14px;
+  line-height: 18px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* --- Styles de base pour les emojis (span) --- */

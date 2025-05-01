@@ -125,8 +125,101 @@
     <div class="swiper-button-prev"></div>
     <div class="swiper-button-next"></div>
   </div>
+  <!-- HTML fixe pour le message de bienvenue -->
+  <div class="welcome-banner desktop-only">
+  <div class="welcome-content">
+    <div class="welcome-text">
+      <h1>Actu & Média<span class="highlight">71</span></h1>
+      <p class="tagline">Votre plateforme multimédia complète pour la Saône-et-Loire et au-delà</p>
+      <p class="description">Toute l'actualité, les radios, TV en direct, football et réseaux sociaux en un seul endroit !</p>
+    </div>
+    <div class="quick-stats">
+      <div class="stat-item">
+        <span class="material-icons">public</span>
+        <div>
+          <strong>24/7</strong>
+          <span>Actualités</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <span class="material-icons">radio</span>
+        <div>
+          <strong>5+</strong>
+          <span>Stations radio</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <span class="material-icons">tv</span>
+        <div>
+          <strong>Live</strong>
+          <span>TV & Sports</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <span class="material-icons">share</span>
+        <div>
+          <strong>Social</strong>
+          <span>Réseaux sociaux</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
+  <!-- HTML amélioré pour le message de bienvenue -->
+<div class="welcome-message only-desktop">
+  <div class="welcome-icon">
+    <span class="material-icons">public</span>
+  </div>
+  <h2>Bienvenue sur <strong>Actu & Média</strong> !</h2>
+  <p class="welcome-intro">
+    Votre portail d'information indépendant dédié à la Saône-et-Loire
+  </p>
+  <p class="welcome-description">
+    Découvrez l'essentiel de l'actualité locale en temps réel : infos de Montceau et Le Creusot, 
+    radios en direct, bulletins météo, vidéos à la une, et bien plus encore.
+  </p>
+  <div class="welcome-features">
+    <div class="feature-item">
+      <span class="material-icons">feed</span>
+      <span>Actualités en continu</span>
+    </div>
+    <div class="feature-item">
+      <span class="material-icons">radio</span>
+      <span>Radios locales</span>
+    </div>
+    <div class="feature-item">
+      <span class="material-icons">cloud</span>
+      <span>Météo locale</span>
+    </div>
+    <div class="feature-item">
+      <span class="material-icons">play_circle</span>
+      <span>Vidéos & Replays</span>
+    </div>
+  </div>
+  <button class="welcome-close" aria-label="Fermer le message de bienvenue">
+    <span class="material-icons">close</span>
+  </button>
+</div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const welcomeMessage = document.querySelector('.welcome-message');
+  const closeButton = document.querySelector('.welcome-close');
+  
+  // Vérifier si l'utilisateur a déjà fermé le message
+  const isWelcomeClosed = localStorage.getItem('welcomeClosed');
+  
+  if (isWelcomeClosed === 'true') {
+    welcomeMessage.style.display = 'none';
+  }
+  
+  // Gérer la fermeture du message
+  closeButton.addEventListener('click', function() {
+    welcomeMessage.style.display = 'none';
+    localStorage.setItem('welcomeClosed', 'true');
+  });
+});
+</script>
 <!-- Menu latéral -->
 <aside id="sidebar" class="sidebar">
     <div class="sidebar-header">
@@ -197,7 +290,6 @@
     <div class="ticker-item">Chargement des actualités...</div>
   </div>
 </div>
-
 <!-- Barre de navigation du bas -->
 <nav class="bottom-nav">
     <button class="nav-item" id="darkModeToggle">

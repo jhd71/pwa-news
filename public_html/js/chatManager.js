@@ -1272,11 +1272,21 @@ extractPseudoFromEmail(email) {
 // Nouvelle méthode pour gérer le panneau d'emojis
 toggleEmojiPanel() {
     let panel = this.container.querySelector('.emoji-panel');
+    const emojiBtn = this.container.querySelector('.emoji-btn');
     
     // Si le panneau existe déjà, on le ferme en cliquant sur l'icône
     if (panel) {
         panel.remove();
+        // Retirer la classe d'état ouvert
+        if (emojiBtn) {
+            emojiBtn.classList.remove('panel-open');
+        }
         return;
+    }
+    
+    // Ajouter la classe d'état ouvert sur le bouton
+    if (emojiBtn) {
+        emojiBtn.classList.add('panel-open');
     }
     
     panel = document.createElement('div');
@@ -1348,6 +1358,10 @@ toggleEmojiPanel() {
             e.target !== this.container.querySelector('.emoji-btn') &&
             !this.container.querySelector('.emoji-btn').contains(e.target)) {
             panel.remove();
+            // Retirer la classe d'état ouvert quand le panneau est fermé autrement
+            if (emojiBtn) {
+                emojiBtn.classList.remove('panel-open');
+            }
         }
     }, { once: true });
 }
