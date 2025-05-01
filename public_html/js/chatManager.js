@@ -164,43 +164,7 @@ class ChatManager {
         if (localStorage.getItem('chat_device_banned') === 'true') {
             console.error("APPAREIL BANNI: Initialisation du chat bloquée");
             
-            // Vérifier si le CSS est déjà chargé
-	if (!document.getElementById('chat-ban-css')) {
-		const link = document.createElement('link');
-		link.id = 'chat-ban-css';
-		link.rel = 'stylesheet';
-		link.href = '/css/chat-ban.css';
-		document.head.appendChild(link);
-	}
-
-	// Créer le message de bannissement
-	const banMessage = document.createElement('div');
-	banMessage.className = 'chat-banned-message';
-	banMessage.innerHTML = `
-		<div class="banned-icon">🚫</div>
-		<h2>Accès interdit</h2>
-		<p>Votre accès au chat a été suspendu.</p>
-		<button id="dismiss-ban-message" style="background: rgba(255,255,255,0.2); border: none; padding: 5px 10px; margin-top: 10px; color: white; border-radius: 5px; cursor: pointer;">Fermer</button>
-	`;
-
-	// Ajouter au document
-	document.body.appendChild(banMessage);
-
-	// Ajouter une fonction pour fermer le message
-	setTimeout(() => {
-		const dismissBtn = document.getElementById('dismiss-ban-message');
-		if (dismissBtn) {
-			dismissBtn.addEventListener('click', function() {
-				banMessage.style.display = 'none';
-			});
-		}
-	}, 100);
-
-	// On garde container pour le chat lui-même
-	this.container = document.createElement('div');
-	this.container.className = 'chat-widget hidden';
-	document.body.appendChild(this.container);
-				const bannedUntil = localStorage.getItem('chat_device_banned_until');
+            const bannedUntil = localStorage.getItem('chat_device_banned_until');
             let isBanned = true;
             
             // Vérifier si le bannissement a expiré
@@ -210,6 +174,8 @@ class ChatManager {
                     // Le bannissement a expiré
                     localStorage.removeItem('chat_device_banned');
                     localStorage.removeItem('chat_device_banned_until');
+                    localStorage.removeItem('chat_ban_reason');
+                    localStorage.removeItem('chat_ban_dismissed');
                     isBanned = false;
                 }
             }
@@ -223,42 +189,16 @@ class ChatManager {
                 localStorage.removeItem('chatPseudo');
                 localStorage.removeItem('isAdmin');
                 
-                // Vérifier si le CSS est déjà chargé
-	if (!document.getElementById('chat-ban-css')) {
-		const link = document.createElement('link');
-		link.id = 'chat-ban-css';
-		link.rel = 'stylesheet';
-		link.href = '/css/chat-ban.css';
-		document.head.appendChild(link);
-	}
-
-	// Créer le message de bannissement
-	const banMessage = document.createElement('div');
-	banMessage.className = 'chat-banned-message';
-	banMessage.innerHTML = `
-		<div class="banned-icon">🚫</div>
-		<h2>Accès interdit</h2>
-		<p>Votre accès au chat a été suspendu.</p>
-		<button id="dismiss-ban-message" style="background: rgba(255,255,255,0.2); border: none; padding: 5px 10px; margin-top: 10px; color: white; border-radius: 5px; cursor: pointer;">Fermer</button>
-	`;
-
-	// Ajouter au document
-	document.body.appendChild(banMessage);
-
-	// Ajouter une fonction pour fermer le message
-	setTimeout(() => {
-		const dismissBtn = document.getElementById('dismiss-ban-message');
-		if (dismissBtn) {
-			dismissBtn.addEventListener('click', function() {
-				banMessage.style.display = 'none';
-			});
-		}
-	}, 100);
-
-	// On garde container pour le chat lui-même
-	this.container = document.createElement('div');
-	this.container.className = 'chat-widget hidden';
-	document.body.appendChild(this.container);
+                // Récupérer la raison du bannissement
+                const banReason = localStorage.getItem('chat_ban_reason') || '';
+                
+                // Utiliser notre nouvelle méthode pour afficher le message
+                this.showBanNotification(banReason);
+                
+                // On garde container pour le chat lui-même mais on le cache
+                this.container = document.createElement('div');
+                this.container.className = 'chat-widget hidden';
+                document.body.appendChild(this.container);
                 
                 // Empêcher l'initialisation du chat
                 return;
@@ -995,35 +935,26 @@ async setupAuthListeners() {
             );
             
             if (bannedIP) {
-                console.log('IP BANNIE: Accès refusé');
-                this.showNotification('Votre adresse IP a été bannie du chat', 'error');
-                
-                // Enregistrer le bannissement localement
-                localStorage.setItem('chat_device_banned', 'true');
-                localStorage.setItem('chat_device_banned_until', 'permanent');
-                
-                // Afficher un message visible
-                const banDiv = document.createElement('div');
-                banDiv.className = 'chat-banned-message';
-                banDiv.innerHTML = `
-                    <div class="banned-icon">🚫</div>
-                    <h2>Accès interdit</h2>
-                    <p>Votre adresse IP a été bannie du chat.</p>
-                    <p><small>Raison: ${bannedIP.reason || 'Non spécifiée'}</small></p>
-                    <button id="dismiss-ban-message">Fermer</button>
-                `;
-                document.body.appendChild(banDiv);
-                
-                // Gestionnaire pour fermer la notification
-                setTimeout(() => {
-                    document.getElementById('dismiss-ban-message')?.addEventListener('click', function() {
-                        banDiv.style.display = 'none';
-                    });
-                }, 100);
-                
-                // Ne pas continuer l'authentification
-                return;
-            }
+    console.log('IP BANNIE: Accès refusé');
+    
+    // Enregistrer le bannissement localement avec sa raison
+    localStorage.setItem('chat_device_banned', 'true');
+    localStorage.setItem('chat_device_banned_until', 'permanent');
+    
+    // Stocker la raison si elle existe
+    if (bannedIP.reason) {
+        localStorage.setItem('chat_ban_reason', bannedIP.reason);
+    }
+    
+    // Afficher le message de notification standard
+    this.showNotification('Votre adresse IP a été bannie du chat', 'error');
+    
+    // Utiliser notre méthode améliorée pour afficher le message de bannissement
+    this.showBanNotification(bannedIP.reason || '');
+    
+    // Ne pas continuer l'authentification
+    return;
+}
         }
     }
     
@@ -2371,15 +2302,67 @@ async checkBannedStatus() {
     }
 
     showNotification(message, type = 'info') {
-        const notification = document.createElement('div');
-        notification.className = `notification-popup ${type}`;
-        notification.textContent = message;
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-            notification.remove();
-        }, 3000);
+    const notification = document.createElement('div');
+    notification.className = `notification-popup ${type}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+// Ajoutez la nouvelle méthode juste ici
+showBanNotification(reason = '') {
+    // Supprimer toute notification existante
+    document.querySelectorAll('.chat-banned-message').forEach(el => el.remove());
+    
+    // Vérifier si le CSS est déjà chargé
+    if (!document.getElementById('chat-ban-css')) {
+        const link = document.createElement('link');
+        link.id = 'chat-ban-css';
+        link.rel = 'stylesheet';
+        link.href = '/css/chat-ban.css';
+        document.head.appendChild(link);
     }
+    
+    // Créer le message de bannissement amélioré
+    const banMessage = document.createElement('div');
+    banMessage.className = 'chat-banned-message';
+    banMessage.innerHTML = `
+        <div class="banned-icon">🚫</div>
+        <h2 style="margin-top: 5px; margin-bottom: 10px; font-size: 20px; font-weight: bold;">Accès interdit</h2>
+        <p style="margin: 0 0 5px 0;">Votre adresse IP a été bannie du chat.</p>
+        ${reason ? `<p class="ban-reason">Raison: ${reason}</p>` : ''}
+        <button id="dismiss-ban-message">Fermer</button>
+    `;
+    
+    document.body.appendChild(banMessage);
+    
+    // Enregistrer le bannissement et sa raison dans le stockage local
+    localStorage.setItem('chat_device_banned', 'true');
+    localStorage.setItem('chat_device_banned_until', 'permanent');
+    if (reason) {
+        localStorage.setItem('chat_ban_reason', reason);
+    }
+    
+    // Gestionnaire pour fermer la notification
+    document.getElementById('dismiss-ban-message').addEventListener('click', function() {
+        banMessage.classList.add('fade-out');
+        setTimeout(() => {
+            banMessage.remove();
+        }, 500);
+        
+        // Stocker que le message a été fermé, mais garder l'information de bannissement
+        localStorage.setItem('chat_ban_dismissed', 'true');
+    });
+    
+    // Empêcher l'accès au chat
+    const chatElements = document.querySelectorAll('.chat-widget, .chat-toggle-btn, #chatToggleBtn');
+    chatElements.forEach(el => {
+        if (el) el.style.display = 'none';
+    });
+}
 
     updateNotificationButton() {
         const notifBtn = this.container.querySelector('.notifications-btn');
@@ -3075,29 +3058,33 @@ if (urgentChk && submitBtn){          // sécurité
             
             // Si une IP réelle a été trouvée, la bannir aussi
             if (userRealIP) {
-                console.log(`Bannissement de l'IP réelle: ${userRealIP}`);
-                
-                // Insérer dans la table banned_real_ips
-                const { error: ipBanError } = await this.supabase
-                    .from('banned_real_ips')
-                    .insert({
-                        ip: userRealIP,
-                        banned_at: new Date().toISOString(),
-                        expires_at: expiresAt,
-                        reason: `IP de ${pseudo} - ${reason || 'Non spécifié'}`,
-                        banned_by: this.pseudo
-                    });
-                    
-                if (ipBanError) {
-                    console.error('Erreur bannissement IP réelle:', ipBanError);
-                } else {
-                    console.log(`IP réelle ${userRealIP} bannie avec succès`);
-                    this.showNotification(`L'IP de ${pseudo} a également été bannie`, 'success');
-                }
-            } else {
-                console.warn(`Aucune IP réelle trouvée pour ${pseudo}`);
-            }
-        }
+    console.log(`Bannissement de l'IP réelle: ${userRealIP}`);
+    
+    // Insérer dans la table banned_real_ips
+    const { error: ipBanError } = await this.supabase
+        .from('banned_real_ips')
+        .insert({
+            ip: userRealIP,
+            banned_at: new Date().toISOString(),
+            expires_at: expiresAt,
+            reason: `IP de ${pseudo} - ${reason || 'Non spécifié'}`,
+            banned_by: this.pseudo
+        });
+        
+    if (ipBanError) {
+        console.error('Erreur bannissement IP réelle:', ipBanError);
+    } else {
+        console.log(`IP réelle ${userRealIP} bannie avec succès`);
+        
+        // Stocker la raison dans localStorage pour référence future
+        const banReason = `IP de ${pseudo} - ${reason || 'Non spécifié'}`;
+        localStorage.setItem('chat_ban_reason', banReason);
+        
+        this.showNotification(`L'IP de ${pseudo} a également été bannie`, 'success');
+    }
+} else {
+    console.warn(`Aucune IP réelle trouvée pour ${pseudo}`);
+}
         
         // Actualiser les messages pour cacher les messages de l'utilisateur banni
         await this.loadExistingMessages();
