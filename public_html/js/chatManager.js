@@ -1612,6 +1612,8 @@ div.innerHTML = `
 
     async loadExistingMessages() {
     try {
+        console.log("Chargement des messages existants...");
+        
         // Afficher un indicateur de chargement
         const container = this.container.querySelector('.chat-messages');
         if (container) {
@@ -1619,49 +1621,12 @@ div.innerHTML = `
         }
         
         // Définir l'utilisateur courant pour RLS
-        const rlsSuccess = await this.setCurrentUserForRLS();
-        if (!rlsSuccess) {
-            console.warn('Échec de la définition de l\'utilisateur pour RLS');
-        }
+        await this.setCurrentUserForRLS();
         
-        // Obtenir la liste des utilisateurs bannis avec une requête plus simple
-        const { data: bannedUsers, error: bannedError } = await this.supabase
-            .from('banned_ips')
-            .select('ip, expires_at');
-            
-        // Obtenir la liste des IPs réelles bannies
-        const { data: bannedRealIPs, error: realIPError } = await this.supabase
-            .from('banned_real_ips')
-            .select('ip, expires_at');
-        
-        // Filtrer les bannissements non expirés
-        const now = new Date();
-        const bannedUsersList = bannedUsers 
-            ? bannedUsers
-                .filter(ban => !ban.expires_at || new Date(ban.expires_at) > now)
-                .map(ban => ban.ip)
-            : [];
-            
-        const bannedRealIPList = bannedRealIPs
-            ? bannedRealIPs
-                .filter(ban => !ban.expires_at || new Date(ban.expires_at) > now)
-                .map(ban => ban.ip)
-            : [];
-            
-        console.log('Utilisateurs bannis:', bannedUsersList);
-        console.log('IPs réelles bannies:', bannedRealIPList);
-        
-        // Obtenir l'IP réelle actuelle
-        const myRealIP = await this.getClientRealIP();
-        
-        // Récupérer les messages avec une limite de temps pour éviter de charger trop d'historique
-        // Par exemple, récupérer seulement les messages des dernières 48 heures
-        const twoHoursAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString();
-        
+        // Requête simple pour récupérer TOUS les messages sans filtrage
         const { data: messages, error } = await this.supabase
             .from('messages')
             .select('*')
-            .gte('created_at', twoHoursAgo) // Limiter aux messages récents
             .order('created_at', { ascending: true });
 
         if (error) {
@@ -1669,38 +1634,21 @@ div.innerHTML = `
             throw error;
         }
 
+        console.log(`${messages?.length || 0} messages récupérés de Supabase`);
+        
         if (container) {
             container.innerHTML = '';
             
             if (!messages || messages.length === 0) {
-                container.innerHTML = '<div class="no-messages">Aucun message récent. Soyez le premier à écrire!</div>';
+                container.innerHTML = '<div class="no-messages">Aucun message récent</div>';
                 return;
             }
             
-            // Compter combien de messages vont être affichés pour un débogage
-            let displayedCount = 0;
-            
+            // Afficher chaque message sans filtrage supplémentaire
             messages.forEach(msg => {
-                // Extraire le pseudo du format 'pseudo-timestamp'
-                const pseudoFromIP = msg.ip?.split('-')[0] || msg.pseudo;
-                
-                // Ne pas afficher les messages des utilisateurs bannis
-                const isSenderBanned = bannedUsersList.includes(pseudoFromIP) || 
-                                      bannedUsersList.includes(msg.pseudo);
-                                      
-                // Si on a notre IP réelle et qu'elle est bannie, ne pas afficher nos messages non plus
-                const isMyMessage = msg.pseudo === this.pseudo;
-                const isMyIPBanned = myRealIP && bannedRealIPList.includes(myRealIP);
-                
-                if (!isSenderBanned && !(isMyMessage && isMyIPBanned)) {
-                    container.appendChild(this.createMessageElement(msg));
-                    displayedCount++;
-                } else {
-                    console.log(`Message de l'utilisateur banni ${msg.pseudo} ignoré`);
-                }
+                console.log(`Affichage du message ID: ${msg.id}, auteur: ${msg.pseudo}`);
+                container.appendChild(this.createMessageElement(msg));
             });
-            
-            console.log(`Total de ${messages.length} messages récupérés, ${displayedCount} affichés`);
             
             this.scrollToBottom();
         }
@@ -1709,7 +1657,7 @@ div.innerHTML = `
         
         const container = this.container.querySelector('.chat-messages');
         if (container) {
-            container.innerHTML = '<div class="error-messages">Erreur lors du chargement des messages. Veuillez actualiser.</div>';
+            container.innerHTML = '<div class="error-messages">Erreur lors du chargement des messages</div>';
         }
         
         this.showNotification('Erreur chargement messages', 'error');
@@ -2912,37 +2860,14 @@ if (urgentChk && submitBtn){          // sécurité
 
     async deleteMessage(messageId) {
     try {
-        // Étape 1: Définir l'utilisateur courant pour les vérifications RLS
-        const { error: userError } = await this.supabase.rpc('set_current_user', { 
-            user_pseudo: this.pseudo 
-        });
+        console.log(`Tentative de suppression du message ${messageId}...`);
         
-        if (userError) {
-            console.error('Erreur set_current_user:', userError);
-            throw userError;
-        }
+        // 1. Définir l'utilisateur courant pour les vérifications RLS
+        console.log(`Définition de l'utilisateur courant: ${this.pseudo}`);
+        await this.setCurrentUserForRLS();
         
-        // Étape 2: Récupérer les informations du message avant de le supprimer
-        // Cela nous permet de le traiter même si l'événement realtime ne fonctionne pas
-        const { data: messageData, error: fetchError } = await this.supabase
-            .from('messages')
-            .select('*')
-            .eq('id', messageId)
-            .single();
-            
-        if (fetchError) {
-            console.error('Erreur récupération message:', fetchError);
-            throw fetchError;
-        }
-        
-        // Étape 3: Vérifier que l'utilisateur peut supprimer ce message
-        // (soit c'est son message, soit il est admin)
-        if (messageData.pseudo !== this.pseudo && !this.isAdmin) {
-            this.showNotification('Vous ne pouvez pas supprimer ce message', 'error');
-            return false;
-        }
-        
-        // Étape 4: Effectuer la suppression avec une requête directe
+        // 2. Effectuer la suppression directement sans vérifications préalables
+        console.log(`Suppression du message ${messageId} dans la base de données...`);
         const { error: deleteError } = await this.supabase
             .from('messages')
             .delete()
@@ -2953,19 +2878,23 @@ if (urgentChk && submitBtn){          // sécurité
             throw deleteError;
         }
         
-        // Étape 5: Supprimer visuellement le message (ne pas attendre l'événement realtime)
-        const messageElement = this.container.querySelector(`[data-message-id="${messageId}"]`);
+        console.log(`Message ${messageId} supprimé avec succès de la base de données`);
+        
+        // 3. Suppression visuelle immédiate
+        const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
         if (messageElement) {
+            console.log(`Suppression visuelle du message ${messageId}`);
             messageElement.classList.add('fade-out');
             setTimeout(() => messageElement.remove(), 300);
             this.showNotification('Message supprimé', 'success');
+        } else {
+            console.log(`Message ${messageId} non trouvé dans le DOM`);
         }
         
-        console.log(`Message supprimé avec succès (ID: ${messageId})`);
         return true;
     } catch (error) {
         console.error('Erreur suppression:', error);
-        this.showNotification('Erreur lors de la suppression', 'error');
+        this.showNotification('Erreur lors de la suppression: ' + error.message, 'error');
         return false;
     }
 }
