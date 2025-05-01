@@ -438,7 +438,7 @@ class ChatManager {
                     }, 500);
                 });
             }
-        } // <-- CETTE ACCOLADE MANQUAIT
+        }
 
         if (this.pseudo) {
             this.setupBanChecker();
@@ -3058,33 +3058,34 @@ if (urgentChk && submitBtn){          // sécurité
             
             // Si une IP réelle a été trouvée, la bannir aussi
             if (userRealIP) {
-    console.log(`Bannissement de l'IP réelle: ${userRealIP}`);
-    
-    // Insérer dans la table banned_real_ips
-    const { error: ipBanError } = await this.supabase
-        .from('banned_real_ips')
-        .insert({
-            ip: userRealIP,
-            banned_at: new Date().toISOString(),
-            expires_at: expiresAt,
-            reason: `IP de ${pseudo} - ${reason || 'Non spécifié'}`,
-            banned_by: this.pseudo
-        });
-        
-    if (ipBanError) {
-        console.error('Erreur bannissement IP réelle:', ipBanError);
-    } else {
-        console.log(`IP réelle ${userRealIP} bannie avec succès`);
-        
-        // Stocker la raison dans localStorage pour référence future
-        const banReason = `IP de ${pseudo} - ${reason || 'Non spécifié'}`;
-        localStorage.setItem('chat_ban_reason', banReason);
-        
-        this.showNotification(`L'IP de ${pseudo} a également été bannie`, 'success');
-    }
-} else {
-    console.warn(`Aucune IP réelle trouvée pour ${pseudo}`);
-}
+                console.log(`Bannissement de l'IP réelle: ${userRealIP}`);
+                
+                // Insérer dans la table banned_real_ips
+                const { error: ipBanError } = await this.supabase
+                    .from('banned_real_ips')
+                    .insert({
+                        ip: userRealIP,
+                        banned_at: new Date().toISOString(),
+                        expires_at: expiresAt,
+                        reason: `IP de ${pseudo} - ${reason || 'Non spécifié'}`,
+                        banned_by: this.pseudo
+                    });
+                    
+                if (ipBanError) {
+                    console.error('Erreur bannissement IP réelle:', ipBanError);
+                } else {
+                    console.log(`IP réelle ${userRealIP} bannie avec succès`);
+                    
+                    // Stocker la raison dans localStorage pour référence future
+                    const banReason = `IP de ${pseudo} - ${reason || 'Non spécifié'}`;
+                    localStorage.setItem('chat_ban_reason', banReason);
+                    
+                    this.showNotification(`L'IP de ${pseudo} a également été bannie`, 'success');
+                }
+            } else {
+                console.warn(`Aucune IP réelle trouvée pour ${pseudo}`);
+            }
+        } // AJOUTEZ CETTE ACCOLADE FERMANTE ICI
         
         // Actualiser les messages pour cacher les messages de l'utilisateur banni
         await this.loadExistingMessages();
