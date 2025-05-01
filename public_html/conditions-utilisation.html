@@ -6,72 +6,172 @@
   <title>Conditions d'utilisation - Actu & Média</title>
   <link rel="stylesheet" href="css/styles.css">
   <style>
-    :root {
-      --primary-color: #1a237e;
-      --text-color: #333;
-      --bg-color: #fff;
-      --text-light: #888;
-    }
+        :root {
+            --primary-color: #7c4dff;
+            --secondary-color: #ff5722;
+            --text-color: #333;
+            --light-gray: #f5f5f5;
+            --border-color: #e0e0e0;
+        }
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      line-height: 1.6;
-      color: var(--text-color);
-      background-color: var(--bg-color);
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+        }
 
-    h1, h2 {
-      color: var(--primary-color);
-    }
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
 
-    .section {
-      margin-bottom: 30px;
-    }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--primary-color);
+        }
 
-    a {
-      color: var(--primary-color);
-      text-decoration: none;
-    }
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
 
-    a:hover {
-      text-decoration: underline;
-    }
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--border-color);
+        }
 
-    footer {
-      text-align: center;
-      font-size: 0.9rem;
-      color: var(--text-light);
-      margin-top: 40px;
-    }
+        .updated-date {
+            font-style: italic;
+            color: #757575;
+            font-size: 0.9rem;
+        }
 
-    /* Thème sombre automatique */
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg-color: #1a1a1a;
-        --text-color: #ddd;
-        --primary-color: #9fa8da;
-        --text-light: #aaa;
-      }
-    }
+        ul {
+            padding-left: 20px;
+        }
 
-    @media (max-width: 600px) {
-      body {
-        padding: 15px;
-        font-size: 0.95rem;
-      }
+        li {
+            margin-bottom: 8px;
+        }
 
-      h1 {
-        font-size: 1.6rem;
-      }
+        .section {
+            margin-bottom: 30px;
+            background-color: var(--light-gray);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
 
-      h2 {
-        font-size: 1.2rem;
-      }
-    }
-  </style>
+        .highlight {
+            background-color: #fff3e0;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .contact {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background-color: var(--light-gray);
+            border-radius: 8px;
+        }
+
+        .email {
+            color: var(--primary-color);
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .email:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            color: #757575;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #6a40e0;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+        }
+
+        /* Support du thème sombre */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #222;
+                color: #f5f5f5;
+            }
+            
+            .container {
+                background-color: #333;
+            }
+            
+            .section {
+                background-color: #444;
+            }
+            
+            .highlight {
+                background-color: #3a3222;
+            }
+            
+            .contact {
+                background-color: #444;
+            }
+            
+            h1, h2 {
+                color: #9f78ff;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -114,5 +214,11 @@
   <footer>
     &copy; 2025 Actu & Média - Tous droits réservés
   </footer>
+  <div style="text-align: center; margin-top: 30px;">
+  <a href="/" class="back-button">Retour à l'accueil</a>
+</div>
+<div style="text-align: center; margin-top: 30px;">
+  <a href="/" class="back-button">Retour à l'accueil</a>
+</div>
 </body>
 </html>
