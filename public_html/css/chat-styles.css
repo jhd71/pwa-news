@@ -1294,69 +1294,6 @@ body.long-press-active .message-options {
   opacity: 1;
 }
 
-/* NOUVEAU: Styles pour le sélecteur d'emojis */
-.emoji-selector {
-  position: absolute;
-  bottom: 100%; /* Position au-dessus du bouton d'ajout */
-  right: 0; /* Aligner à droite du bouton */
-  background: #333;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-  z-index: 1000;
-  padding: 8px;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-  width: 250px; /* Largeur fixe */
-  transform-origin: bottom right;
-  animation: scaleIn 0.2s ease;
-  border: 1px solid rgba(255,255,255,0.1);
-}
-
-/* Pour les messages proches du bord gauche */
-.message.left-side .emoji-selector {
-  right: auto;
-  left: 0;
-  transform-origin: bottom left;
-}
-
-.emoji-selector button {
-  width: 40px;
-  height: 40px;
-  font-size: 22px;
-  background: rgba(255,255,255,0.1);
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.emoji-selector button:hover {
-  background: rgba(255,255,255,0.2);
-  transform: scale(1.1);
-}
-
-@keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.8); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-/* Support pour appareils mobiles */
-@media (max-width: 768px) {
-  .emoji-selector {
-    width: 200px;
-    grid-template-columns: repeat(4, 1fr);
-    left: 50%;
-    right: auto;
-    transform: translateX(-50%);
-    transform-origin: bottom center;
-  }
-}
-
-
 /* =======================
    Styles pour emoji-picker
    ======================= */
