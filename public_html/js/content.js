@@ -248,28 +248,28 @@ this.tileContainer.appendChild(separator2);
         this.tileContainer.appendChild(tile);
     });
 
-// Séparateur Football
-const footballSeparator = document.createElement('div');
-footballSeparator.className = 'separator';
-footballSeparator.innerHTML = `<img src="images/Football.png" alt="Football" class="separator-img">`;
-this.tileContainer.appendChild(footballSeparator);
+// Séparateur Sports
+const sportsSeparator = document.createElement('div');
+sportsSeparator.className = 'separator';
+sportsSeparator.innerHTML = `<img src="images/SPORTS.png" alt="Sports" class="separator-img">`;
+this.tileContainer.appendChild(sportsSeparator);
 
-// Section Football
-const footballSites = [
+// Section Sports
+const sportsSites = [
     {
-        title: 'Ligue 1',
+        title: 'Foot Ligue 1',
         url: 'https://ligue1.fr/fr/competitions/ligue1mcdonalds?tab=news&ranking=scorers',
         mobileUrl: 'https://ligue1.fr/fr/competitions/ligue1mcdonalds?tab=news&ranking=scorers',
         isDefault: true
     },
     {
-        title: 'Ligue 2',
+        title: 'Foot Ligue 2',
         url: 'https://ligue1.fr/fr/competitions/ligue2bkt?tab=news',
         mobileUrl: 'https://ligue1.fr/fr/competitions/ligue2bkt?tab=news',
         isDefault: true
     },
     {
-        title: 'FC Montceau-Bourgogne',
+        title: 'Foot FC Montceau-Bourgogne',
         url: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
         mobileUrl: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
         isDefault: true
@@ -279,10 +279,22 @@ const footballSites = [
         url: 'https://www.footmercato.net/live/',
         mobileUrl: 'https://www.footmercato.net/live/',
         isDefault: true
+    },
+    {
+        title: 'ELAN Chalon Basket',
+        url: 'https://scorenco.com/basket/clubs/elan-chalon-basket-2m40/1-4xe3',
+        mobileUrl: 'https://scorenco.com/basket/clubs/elan-chalon-basket-2m40/1-4xe3',
+        isDefault: true
+    },
+    {
+        title: 'Rugby RC Montceau Bourgogne',
+        url: 'https://scorenco.com/rugby/clubs/rc-montceau-bourgogne-2m2t',
+        mobileUrl: 'https://scorenco.com/rugby/clubs/rc-montceau-bourgogne-2m2t',
+        isDefault: true
     }
 ];
 
-footballSites.forEach(site => {
+sportsSites.forEach(site => {
     const tile = this.createTile(site);
     this.tileContainer.appendChild(tile);
 });

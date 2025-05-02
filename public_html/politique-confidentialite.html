@@ -11,6 +11,7 @@
             --text-color: #333;
             --light-gray: #f5f5f5;
             --border-color: #e0e0e0;
+            --link-color: #7c4dff;
         }
 
         body {
@@ -21,6 +22,18 @@
             margin: 0 auto;
             padding: 20px;
             background-color: #fff;
+        }
+
+        /* Style global pour les liens */
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+
+        a:hover {
+            text-decoration: underline;
         }
 
         .container {
@@ -125,6 +138,7 @@
             background-color: #6a40e0;
         }
 
+        /* Responsive */
         @media (max-width: 600px) {
             body {
                 padding: 15px;
@@ -169,9 +183,18 @@
             h1, h2 {
                 color: #9f78ff;
             }
+            
+            /* Amélioration du contraste pour le thème sombre */
+            a {
+                color: #9f78ff;
+            }
+            
+            .email {
+                color: #9f78ff;
+            }
         }
     </style>
-	<meta name="description" content="Consultez la politique de confidentialité du site Actu & Média : collecte, cookies, sécurité, droits RGPD.">
+    <meta name="description" content="Consultez la politique de confidentialité du site Actu & Média : collecte, cookies, sécurité, droits RGPD.">
 </head>
 <body>
     <div class="container">
@@ -228,14 +251,12 @@
             <p>Pour exercer ces droits, contactez-nous à l'adresse indiquée à la fin de cette politique.</p>
         </div>
 
-			<div class="section">
-	  <h2>5. Cookies et technologies similaires</h2>
-	  <p>Notre site utilise des cookies et des technologies similaires pour améliorer votre expérience. Ces cookies permettent notamment de mémoriser votre pseudonyme et vos préférences d’affichage.</p>
-	  <p>Des cookies tiers peuvent également être utilisés à des fins de mesure d’audience et de publicité, notamment via Google AdSense.</p>
-	  <p>Pour en savoir plus sur les cookies utilisés par Google, vous pouvez consulter leur politique : 
-		<a href="https://policies.google.com/technologies/ads?hl=fr" target="_blank">https://policies.google.com/technologies/ads?hl=fr</a>
-	  </p>
-	</div>
+        <div class="section">
+            <h2>5. Cookies et technologies similaires</h2>
+            <p>Notre site utilise des cookies et des technologies similaires pour améliorer votre expérience. Ces cookies permettent notamment de mémoriser votre pseudonyme et vos préférences d'affichage.</p>
+            <p>Des cookies tiers peuvent également être utilisés à des fins de mesure d'audience et de publicité, notamment via Google AdSense.</p>
+            <p>Pour en savoir plus sur les cookies utilisés par Google, consultez leur <a href="https://policies.google.com/technologies/ads?hl=fr" target="_blank" rel="noopener">politique de confidentialité</a>.</p>
+        </div>
 
         <div class="contact">
             <h2>6. Contact</h2>

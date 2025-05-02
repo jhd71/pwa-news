@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mentions légales - Actu & Média</title>
-  <link rel="stylesheet" href="css/styles.css">
   <style>
         :root {
             --primary-color: #7c4dff;
@@ -12,6 +11,7 @@
             --text-color: #333;
             --light-gray: #f5f5f5;
             --border-color: #e0e0e0;
+            --link-color: #7c4dff;
         }
 
         body {
@@ -22,6 +22,18 @@
             margin: 0 auto;
             padding: 20px;
             background-color: #fff;
+        }
+
+        /* Style global pour les liens */
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+
+        a:hover {
+            text-decoration: underline;
         }
 
         .container {
@@ -170,39 +182,63 @@
             h1, h2 {
                 color: #9f78ff;
             }
+            
+            /* Amélioration du contraste pour le thème sombre */
+            a {
+                color: #9f78ff;
+            }
+            
+            .email {
+                color: #9f78ff;
+            }
         }
     </style>
 </head>
 <body>
+  <div class="container">
+    <header>
+      <h1>Mentions légales</h1>
+    </header>
 
-  <h1>Mentions légales</h1>
+    <div class="section">
+      <h2>1. Éditeur du site</h2>
+      <p><strong>Actu & Média</strong><br>
+      Site personnel de diffusion d'actualités locales et de services numériques.<br>
+      Contact : <a href="mailto:contact@actuetmedia.fr" class="email">contact@actuetmedia.fr</a></p>
+    </div>
 
-  <h2>1. Éditeur du site</h2>
-  <p><strong>Actu & Média</strong><br>
-  Site personnel de diffusion d’actualités locales et de services numériques.<br>
-  Contact : <a href="mailto:contact@actuetmedia.fr">contact@actuetmedia.fr</a></p>
+    <div class="section">
+      <h2>2. Hébergement</h2>
+      <p>
+        Le site est hébergé par :<br>
+        <strong>Vercel Inc.</strong><br>
+        440 N Barranca Ave #4133<br>
+        Covina, CA 91723, États-Unis<br>
+        <a href="https://vercel.com" target="_blank" rel="noopener">https://vercel.com</a>
+      </p>
+    </div>
 
-  <h2>2. Hébergement</h2>
-  <p>
-    Le site est hébergé par :<br>
-    <strong>Vercel Inc.</strong><br>
-    440 N Barranca Ave #4133<br>
-    Covina, CA 91723, États-Unis<br>
-    <a href="https://vercel.com" target="_blank">https://vercel.com</a>
-  </p>
+    <div class="section">
+      <h2>3. Propriété intellectuelle</h2>
+      <p>Les contenus présents sur ce site (textes, images, logos, code source) sont la propriété exclusive de l'éditeur, sauf mention contraire. Toute reproduction non autorisée est interdite.</p>
+    </div>
 
-  <h2>3. Propriété intellectuelle</h2>
-  <p>Les contenus présents sur ce site (textes, images, logos, code source) sont la propriété exclusive de l’éditeur, sauf mention contraire. Toute reproduction non autorisée est interdite.</p>
+    <div class="section">
+      <h2>4. Responsabilité</h2>
+      <p>Les informations publiées sont données à titre indicatif. L'éditeur ne peut être tenu responsable des erreurs, omissions ou problèmes techniques rencontrés sur le site.</p>
+    </div>
 
-  <h2>4. Responsabilité</h2>
-  <p>Les informations publiées sont données à titre indicatif. L’éditeur ne peut être tenu responsable des erreurs, omissions ou problèmes techniques rencontrés sur le site.</p>
+    <div class="section">
+      <h2>5. Données personnelles</h2>
+      <p>Des données comme les pseudonymes ou adresses IP peuvent être collectées dans le cadre du chat ou de la navigation. Pour en savoir plus, consultez notre <a href="https://actuetmedia.fr/politique-confidentialite">politique de confidentialité</a>.</p>
+    </div>
 
-  <h2>5. Données personnelles</h2>
-  <p>Des données comme les pseudonymes ou adresses IP peuvent être collectées dans le cadre du chat ou de la navigation. Pour en savoir plus, consultez notre <a href="https://actuetmedia.fr/politique-confidentialite">politique de confidentialité</a>.</p>
+    <div style="text-align: center; margin-top: 30px;">
+      <a href="/" class="back-button">Retour à l'accueil</a>
+    </div>
+  </div>
 
   <footer>&copy; 2025 Actu & Média – Tous droits réservés</footer>
-<div style="text-align: center; margin-top: 30px;">
-  <a href="/" class="back-button">Retour à l'accueil</a>
-</div>
+
 </body>
 </html>
