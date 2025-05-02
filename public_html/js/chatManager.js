@@ -3086,75 +3086,93 @@ showEmojiPicker(messageId, x, y) {
   const existingPicker = document.querySelector('.emoji-picker');
   if (existingPicker) existingPicker.remove();
   
+  // Obtenir l'élément du message
+  const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+  if (!messageElement) return;
+
+  // Obtenir le bouton d'ajout de réaction qui a été cliqué
+  const addReactionButton = messageElement.querySelector('.add-reaction');
+  if (!addReactionButton) return;
+  
   // Créer le nouveau picker
   const picker = document.createElement('div');
   picker.className = 'emoji-picker';
   
-  // Liste des emojis courants - organisés clairement en lignes
+  // Liste des emojis comme avant...
   const commonEmojis = [
-    '👍','❤️','😂','😘','😮','😢','👏',  // 1ʳᵉ ligne (7)
-    '🔥','🎉','🤔','👎','😡','🚀','👀',  // 2ᵉ ligne (7)
-    '💋','🙌','🤗','🥳','😇','🙃','🤩',  // 3ᵉ ligne (7)
-    '😭','🥺','😱','🤬','🙄','💯','💪'   // 4ᵉ ligne (7)
+    '👍','❤️','😂','😘','😮','😢','👏',
+    '🔥','🎉','🤔','👎','😡','🚀','👀',
+    '💋','🙌','🤗','🥳','😇','🙃','🤩',
+    '😭','🥺','😱','🤬','🙄','💯','💪'
   ];
   
-  // Ajouter les emojis au picker
+  // Ajouter les emojis au picker comme avant...
   commonEmojis.forEach(emoji => {
     const span = document.createElement('span');
     span.textContent = emoji;
     span.addEventListener('click', () => {
       this.addReaction(messageId, emoji);
       picker.remove();
-      document.body.style.overflow = ''; // Réactiver le défilement
+      document.body.style.overflow = '';
     });
     picker.appendChild(span);
   });
   
-  // IMPORTANT : Empêcher le défilement de la page lorsque le sélecteur est ouvert
   document.body.style.overflow = 'hidden';
   
-  // Ajouter au DOM pour calculer les dimensions
-  document.body.appendChild(picker);
+  // IMPORTANT: Ajoutez le picker au message, pas au body
+  messageElement.appendChild(picker);
   
   // Détecter si on est sur mobile
   const isMobile = window.innerWidth <= 768;
   
-  // Calculer la position
+  // Calculer la position par rapport au message
   const pickerRect = picker.getBoundingClientRect();
+  const buttonRect = addReactionButton.getBoundingClientRect();
   const windowWidth = window.innerWidth;
-  const windowHeight = window.innerHeight;
   
-  // Positionner le picker (votre code existant)
+  // Positionner le picker par rapport au bouton d'ajout de réaction
   if (isMobile) {
-    x = (windowWidth - pickerRect.width) / 2;
-    
-    // Si le sélecteur est trop bas, le remonter
-    if (y + pickerRect.height > windowHeight - 100) {
-      y = Math.max(50, y - pickerRect.height - 20);
-    }
+    // Sur mobile: centrer horizontalement et positionner au-dessus du bouton
+    picker.style.position = 'absolute';
+    picker.style.left = '50%';
+    picker.style.transform = 'translateX(-50%)';
+    picker.style.bottom = '100%'; // Au-dessus du message
+    picker.style.top = 'auto';
+    picker.style.zIndex = '1000';
   } else {
-    // Ajustements pour desktop (votre code existant)
-    // ...
+    // Sur desktop: positionner à droite du bouton si possible
+    picker.style.position = 'absolute';
+    
+    // Vérifier si le message est proche du bord droit
+    if (buttonRect.right + pickerRect.width > windowWidth - 20) {
+      // S'il est proche du bord droit, positionner à gauche
+      picker.style.right = '0';
+      picker.style.left = 'auto';
+    } else {
+      // Sinon positionner à droite
+      picker.style.left = '0';
+      picker.style.right = 'auto';
+    }
+    
+    picker.style.bottom = '100%'; // Au-dessus du message
+    picker.style.top = 'auto';
+    picker.style.zIndex = '1000';
   }
   
-  picker.style.left = `${x}px`;
-  picker.style.top = `${y}px`;
-  
-  // Empêcher la propagation des événements tactiles sur le picker lui-même
+  // Le reste du code (fermeture, etc.) comme avant...
   picker.addEventListener('touchmove', (e) => {
     e.stopPropagation();
     e.preventDefault();
   }, { passive: false });
   
-  // Fermer le picker si on clique ailleurs
   document.addEventListener('click', (e) => {
     if (!picker.contains(e.target) && !e.target.closest(`[data-message-id="${messageId}"] .add-reaction`)) {
       picker.remove();
-      document.body.style.overflow = ''; // Réactiver le défilement
+      document.body.style.overflow = '';
     }
   }, { once: true });
   
-  // S'assurer que le défilement est réactivé si le sélecteur est fermé autrement
   window.addEventListener('popstate', () => {
     if (document.body.contains(picker)) {
       picker.remove();
