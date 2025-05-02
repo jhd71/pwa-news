@@ -1298,11 +1298,8 @@ body.long-press-active .message-options {
    Styles pour emoji-picker
    ======================= */
 .emoji-picker {
-  /* toujours dans <body> avec position fixed */
+  /* Position dynamique - position:fixed mais sans les coordonnées fixes */
   position: fixed !important;
-  top: 60px;                 /* juste sous l’en-tête du chat */
-  left: 50%;
-  transform: translateX(-50%);
   z-index: 99999 !important;
 
   background: white;
