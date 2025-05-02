@@ -843,6 +843,39 @@ main {
     cursor: pointer;
 }
 
+/* SECTION 19.1: iOS SAFE AREAS */
+:root {
+  --safe-area-top: env(safe-area-inset-top);
+  --safe-area-bottom: env(safe-area-inset-bottom);
+}
+
+body {
+  padding-top: var(--safe-area-top);
+  padding-bottom: var(--safe-area-bottom);
+}
+
+/* Ajustement header/navbar */
+header, .navbar, nav {
+  padding-top: max(10px, var(--safe-area-top));
+}
+
+/* Ajustement navigation du bas */
+footer, .bottom-nav {
+  padding-bottom: max(10px, var(--safe-area-bottom));
+}
+
+/* Ajustement iOS prompt */
+.ios-prompt {
+  bottom: calc(20px + var(--safe-area-bottom));
+}
+
+/* Pour améliorer la réactivité tactile sur iOS */
+button, a, .tile, .menu-item {
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  touch-action: manipulation;
+}
+
 /* SECTION 20: SWIPER STYLES */
 .swiper-container {
     width: 100%;

@@ -2,8 +2,7 @@
 function showIOSInstallPrompt() {
   // Détection améliorée pour iOS
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-  const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || 
-                            window.navigator.standalone === true;
+  const isInStandaloneMode = window.navigator.standalone === true;
   
   // Vérifier si on a déjà montré récemment
   const lastPrompt = localStorage.getItem('iosPromptShown');

@@ -25,6 +25,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Actu&Média">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
     <!-- Favicons et icônes -->
     <link rel="icon" type="image/png" sizes="192x192" href="/images/AM-192-v2.png">
@@ -790,7 +791,6 @@ window.refreshNews = refreshNews;
     Actualiser les infos
   </button>
 </div>
-<script src="js/ios-install.js"></script>
 <!-- Supprimer l'initialisation de Swiper existante et utiliser celle de loadTopNews à la place -->
 <script>
   // Chargement différé des actualités pour s'assurer que le DOM est prêt
@@ -830,5 +830,6 @@ document.getElementById('donateBtn').addEventListener('click', function() {
 <script src="js/quick-links.js"></script>
 <script src="js/tablet-fixes.js"></script>
 <script src="js/chat-keyboard-fix.js"></script>
+<script src="ios-install.js"></script>
 </body>
 </html>
