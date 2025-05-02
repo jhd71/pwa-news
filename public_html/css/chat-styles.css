@@ -1786,3 +1786,57 @@ body.long-press-active .message-options {
      min-height: 34px !important;
   }
 }
+/* Styles pour le sélecteur d'emojis - solution complète */
+.emoji-picker {
+  position: fixed !important;
+  background: #333 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.5) !important;
+  z-index: 9999 !important;
+  
+  /* Le point crucial - forcer le positionnement par rapport au message */
+  top: auto !important;
+  left: auto !important;
+  margin-left: 0 !important;
+  transform: none !important;
+  
+  /* Améliorer l'apparence */
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  animation: emojiPickerFadeIn 0.2s ease !important;
+}
+
+/* Position spécifique selon l'appareil */
+@media (max-width: 768px) {
+  /* Mobile - centré en bas de l'écran */
+  .emoji-picker {
+    bottom: 80px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 280px !important;
+  }
+}
+
+@media (min-width: 769px) {
+  /* Desktop - près du curseur ou du message */
+  .emoji-picker {
+    /* Ces valeurs seront remplacées par JavaScript mais assurent un positionnement correct par défaut */
+    bottom: auto !important;
+    right: 50px !important;
+  }
+}
+
+/* Animation d'apparition */
+@keyframes emojiPickerFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ajuster les autres styles si nécessaire */
+.emoji-picker span {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.emoji-picker span:hover {
+  transform: scale(1.2);
+}
