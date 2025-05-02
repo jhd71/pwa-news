@@ -1318,10 +1318,7 @@ body.long-press-active .message-options {
   /* on limite juste la largeur pour tenir dans l’écran */
   max-width: 95vw;
   width: auto;
-}/* Animation d'apparition */
-  animation: emojiPickerFadeIn 0.2s ease;
-}
-
+   }
 /* Animation pour une apparition fluide */
 @keyframes emojiPickerFadeIn {
   from { opacity: 0; transform: scale(0.95); }
