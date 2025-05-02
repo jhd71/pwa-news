@@ -1860,3 +1860,20 @@ a:active {
     display: none;
   }
 }
+
+/* Fix iOS : empêcher le contenu d’être masqué en haut ou en bas */
+body {
+  padding-top: var(--header-height);
+  padding-bottom: var(--bottom-nav-height);
+  min-height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Pour appareils Apple avec encoche / safe-area */
+@supports(padding: max(0px)) {
+  body {
+    padding-top: calc(var(--header-height) + env(safe-area-inset-top));
+    padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+  }
+}
