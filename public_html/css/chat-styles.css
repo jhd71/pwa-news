@@ -293,7 +293,7 @@ body:has(.chat-container.open) .news-ticker {
   padding: 15px 20px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 20px 20px 0 0;
-  display: flex;
+/*  display: flex; */
   justify-content: space-between;
   align-items: center;
   border-bottom: var(--chat-border);
