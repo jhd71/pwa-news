@@ -3081,104 +3081,146 @@ async getMessageIP(message) {
 }
 
 // Afficher le sélecteur d'emoji
-showEmojiPicker(messageId, x, y) {
-  // Supprimer tout picker existant
-  const existingPicker = document.querySelector('.emoji-picker');
-  if (existingPicker) existingPicker.remove();
-  
-  // Créer le nouveau picker
-  const picker = document.createElement('div');
-  picker.className = 'emoji-picker';
-  
-  // Liste des emojis courants - inchangée
-  const commonEmojis = [
-    '👍','❤️','😂','😘','😮','😢','👏',
-    '🔥','🎉','🤔','👎','😡','🚀','👀',
-    '💋','🙌','🤗','🥳','😇','🙃','🤩',
-    '😭','🥺','😱','🤬','🙄','💯','💪'
-  ];
-  
-  // Ajouter les emojis au picker - inchangé
-  commonEmojis.forEach(emoji => {
-    const span = document.createElement('span');
-    span.textContent = emoji;
-    span.addEventListener('click', () => {
-      this.addReaction(messageId, emoji);
-      picker.remove();
-      document.body.style.overflow = '';
+showEmojiPicker(messageId /* Supprimer x, y - plus besoin ici */) { // On n'a plus besoin de x, y initiaux
+    // Supprimer tout picker existant
+    const existingPicker = document.querySelector('.emoji-picker');
+    if (existingPicker) existingPicker.remove();
+
+    // *** TROUVER L'ÉLÉMENT PARENT RELATIF ***
+    const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+    if (!messageElement) {
+        console.error("Élément message introuvable:", messageId);
+        return; // Sortir si le message n'existe pas
+    }
+    // Idéalement, avoir un conteneur spécifique pour les actions/popups dans le message
+    // Ex: const parentElement = messageElement.querySelector('.message-actions-container') || messageElement;
+    // Pour l'instant, on utilise messageElement comme parent, assurez-vous qu'il a position: relative;
+    const parentElement = messageElement;
+
+    // Créer le nouveau picker
+    const picker = document.createElement('div');
+    picker.className = 'emoji-picker'; // Le CSS va maintenant gérer la position de base
+
+    // Liste des emojis courants - inchangée
+    const commonEmojis = [ /* ... vos emojis ... */
+        '👍','❤️','😂','😘','😮','😢','👏',
+        '🔥','🎉','🤔','👎','😡','🚀','👀',
+        '💋','🙌','🤗','🥳','😇','🙃','🤩',
+        '😭','🥺','😱','🤬','🙄','💯','💪'
+    ];
+
+    // Ajouter les emojis au picker
+    commonEmojis.forEach(emoji => {
+        const span = document.createElement('span');
+        span.textContent = emoji;
+        span.addEventListener('click', (e) => {
+            e.stopPropagation(); // Empêcher le clic de fermer immédiatement via le listener document
+            this.addReaction(messageId, emoji);
+            picker.remove();
+            // --- SUPPRIMER LA MODIFICATION DE L'OVERFLOW ---
+            // document.body.style.overflow = ''; // N'est plus nécessaire
+        });
+        picker.appendChild(span);
     });
-    picker.appendChild(span);
-  });
-  
-  document.body.style.overflow = 'hidden';
-  
-  // Ajouter au DOM pour calculer les dimensions
-  document.body.appendChild(picker);
-  
-  // Obtenir l'élément du message
-  const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
-  
-  // Détecter si on est sur mobile
-  const isMobile = window.innerWidth <= 768;
-  
-  // Calculer la position
-  const pickerRect = picker.getBoundingClientRect();
-  const windowWidth = window.innerWidth;
-  const windowHeight = window.innerHeight;
-  
-  // Positionner le picker
-  if (isMobile) {
-    // Sur mobile: GARDER VOTRE CODE ORIGINAL INTACT
-    x = (windowWidth - pickerRect.width) / 2;
-    
-    // Si le sélecteur est trop bas, le remonter
-    if (y + pickerRect.height > windowHeight - 100) {
-      y = Math.max(50, y - pickerRect.height - 20);
+
+    // --- SUPPRIMER LA MODIFICATION DE L'OVERFLOW ---
+    // document.body.style.overflow = 'hidden'; // NE PLUS FAIRE ÇA
+
+    // *** AJOUTER LE PICKER DANS LE PARENT RELATIF, PAS BODY ***
+    parentElement.appendChild(picker);
+
+    // *** AFFICHER LE PICKER VIA CLASSE CSS ***
+    // Forcer un reflow pour que la transition CSS fonctionne si vous en utilisez une
+    void picker.offsetWidth;
+    picker.classList.add('is-active'); // Le CSS gère l'affichage via .is-active
+
+
+    // --- SUPPRIMER TOUT LE BLOC DE CALCUL DE POSITION x, y ---
+    /*
+    const pickerRect = picker.getBoundingClientRect();
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    const isMobile = window.innerWidth <= 768;
+    let x, y; // Plus besoin de calculer x, y ici
+
+    if (isMobile) {
+        // ... ancien code mobile supprimé ...
+    } else {
+        // ... ancien code desktop supprimé ...
     }
-  } else {
-    // Sur desktop: CODE MODIFIÉ UNIQUEMENT ICI
-    if (messageElement) {
-      const messageRect = messageElement.getBoundingClientRect();
-      
-      // Positionner à droite du message
-      x = messageRect.right - 30;
-      
-      // Positionner au-dessus du message
-      y = messageRect.top - pickerRect.height - 10;
-      
-      // Si trop haut, positionner en dessous
-      if (y < 10) {
-        y = messageRect.bottom + 10;
-      }
-      
-      // S'assurer que le picker reste dans la fenêtre
-      x = Math.max(10, Math.min(windowWidth - pickerRect.width - 10, x));
+    picker.style.left = `${x}px`; // Plus besoin
+    picker.style.top = `${y}px`; // Plus besoin
+    */
+
+    // --- OPTIONNEL MAIS RECOMMANDÉ : AJUSTEMENT DES BORDS ---
+    // Cette fonction vérifie si le picker (positionné par CSS) dépasse
+    // et ajuste sa position si nécessaire.
+    function adjustPickerPosition() {
+        const pickerRect = picker.getBoundingClientRect();
+        const parentRect = parentElement.getBoundingClientRect(); // Ou viewport si nécessaire
+
+        // Ajustement horizontal (simple exemple : si ça dépasse à gauche/droite du PARENT)
+        if (pickerRect.left < parentRect.left) {
+            picker.style.left = '0px'; // Aligner à gauche du parent
+            picker.style.transform = 'translateX(0)'; // Annuler le centrage
+        } else if (pickerRect.right > parentRect.right) {
+            picker.style.left = 'auto';
+            picker.style.right = '0px'; // Aligner à droite du parent
+            picker.style.transform = 'translateX(0)'; // Annuler le centrage
+        }
+
+        // Ajustement vertical (si ça dépasse en HAUT du viewport)
+        if (pickerRect.top < 0) {
+            picker.style.bottom = 'auto'; // Annuler positionnement par le bas
+            picker.style.top = '100%';    // Positionner le haut du picker sous le parent
+            picker.style.marginTop = '8px'; // Ajouter une marge en haut
+            picker.style.marginBottom = '0';
+            // Ajuster l'origine de la transformation si animée
+            picker.style.transformOrigin = 'top center';
+        }
     }
-  }
-  
-  // Définir la position
-  picker.style.left = `${x}px`;
-  picker.style.top = `${y}px`;
-  
-  // Le reste du code inchangé
-  picker.addEventListener('touchmove', (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-  }, { passive: false });
-  
-  document.addEventListener('click', (e) => {
-    if (!picker.contains(e.target) && !e.target.closest(`[data-message-id="${messageId}"] .add-reaction`)) {
-      picker.remove();
-      document.body.style.overflow = '';
-    }
-  }, { once: true });
-  
-  window.addEventListener('popstate', () => {
-    if (document.body.contains(picker)) {
-      picker.remove();
-      document.body.style.overflow = '';
-    }
-  }, { once: true });
+    // Appeler l'ajustement après un court délai ou requestAnimationFrame pour s'assurer que le rendu est fait
+    requestAnimationFrame(adjustPickerPosition);
+
+
+    // --- Listener pour fermer le picker ---
+    // Utiliser une fonction nommée pour pouvoir la retirer proprement
+    const closePickerOnClickOutside = (e) => {
+        // Vérifier si le clic est sur le bouton "+" original pour éviter fermeture immédiate si on reclique dessus
+        const addButton = parentElement.querySelector('.add-reaction'); // Sélecteur à adapter si besoin
+        if (!picker.contains(e.target) && (!addButton || !addButton.contains(e.target))) {
+            picker.remove();
+            // document.body.style.overflow = ''; // N'est plus nécessaire
+            document.removeEventListener('click', closePickerOnClickOutside, true); // Nettoyer le listener
+        }
+    };
+    // Ajouter le listener en phase de capture pour intercepter le clic plus tôt si besoin
+    document.addEventListener('click', closePickerOnClickOutside, true);
+
+
+    // --- Gérer le popstate ---
+    const closePickerOnPopstate = () => {
+        if (document.body.contains(picker)) {
+            picker.remove();
+            // document.body.style.overflow = ''; // N'est plus nécessaire
+            window.removeEventListener('popstate', closePickerOnPopstate); // Nettoyer
+        }
+    };
+    // On ajoute une seule fois, pas besoin de { once: true } si on le nettoie
+    window.addEventListener('popstate', closePickerOnPopstate);
+
+    // Empêcher le scroll sur mobile SI le picker lui-même a un scroll interne
+    // (Pas nécessaire si le picker est petit et fixe)
+    /*
+    picker.addEventListener('touchmove', (e) => {
+        // Permettre le scroll SI l'élément scrollable DANS le picker est la cible
+        if (picker.scrollHeight > picker.clientHeight && e.target.closest('.emoji-list-container')) {
+             // Ne rien faire, laisser le scroll interne fonctionner
+        } else {
+            e.preventDefault(); // Empêcher le scroll de la page
+        }
+    }, { passive: false });
+    */
 }
 
 // Ajouter une réaction à un message
