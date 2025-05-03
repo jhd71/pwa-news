@@ -467,7 +467,7 @@ class ChatManager {
         
 		// Ajouter l'appel à la fonction pour corriger les problèmes de défilement
     this.fixScrollingIssues();
-}
+
         this.initialized = true;
         console.log("Chat initialisé avec succès");
     } catch (error) {
