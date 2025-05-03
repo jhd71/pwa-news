@@ -1828,3 +1828,58 @@ body.long-press-active .message-options {
 .bottom-nav {
   padding-bottom: env(safe-area-inset-bottom);
 }
+
+/* Solution pour la croix de fermeture sur mobile avec un pseudo long - version deux lignes */
+@media (max-width: 768px) {
+  /* Réorganiser l'en-tête du chat en deux lignes */
+  .chat-header {
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 10px !important;
+    gap: 8px !important;
+  }
+  
+  /* Ligne du haut avec le titre */
+  .chat-header-title {
+    width: 100% !important;
+    text-align: center !important;
+    font-weight: bold !important;
+    font-size: 16px !important;
+    padding-right: 0 !important;
+  }
+  
+  /* Ligne du bas avec les actions */
+  .chat-header-actions {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    gap: 15px !important;
+    padding: 5px 0 !important;
+  }
+  
+  /* Bouton de fermeture toujours visible */
+  .chat-close-btn {
+    position: absolute !important;
+    right: 5px !important;
+    top: 5px !important;
+    z-index: 9999 !important;
+    width: 36px !important;
+    height: 36px !important;
+    background: rgba(0,0,0,0.2) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  /* Ajuster la taille des icônes */
+  .chat-header-actions button {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  
+  /* Augmenter légèrement la hauteur de l'en-tête */
+  .chat-header {
+    min-height: 90px !important;
+  }
+}
