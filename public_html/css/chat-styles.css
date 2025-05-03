@@ -1744,7 +1744,7 @@ body.long-press-active .message-options {
   /* Panneau Emoji sur Tablette */
   .chat-container .emoji-panel { /* Pas besoin de :not(.fullscreen) */
      position: absolute !important;
-     top: calc(var(--chat-header-height, 60px) + 5px) !important; 
+     /*top: calc(var(--chat-header-height, 60px) + 5px) !important;*/ 
      bottom: calc(var(--chat-input-base-height-tablet, 65px) + 5px) !important; 
      left: 15px !important; 
      right: 15px !important;
@@ -1900,7 +1900,7 @@ body.long-press-active .message-options {
 /* Optimisations pour défilement sur mobile */
 @media (max-width: 768px) {
   .chat-container .emoji-panel {
-    max-height: 200px !important; /* Encore plus petit sur mobile */
+    max-height: 570px !important; /* Encore plus petit sur mobile */
     /* Améliorer le défilement tactile */
     -webkit-overflow-scrolling: touch !important;
   }
