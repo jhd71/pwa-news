@@ -1860,3 +1860,15 @@ a:active {
     display: none;
   }
 }
+
+/* === iOS FIXES ADDITION === */
+body {
+  min-height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Si un <main> contient le contenu principal */
+main {
+  padding-bottom: calc(var(--safe-area-bottom) + 60px);
+}
