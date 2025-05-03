@@ -465,6 +465,9 @@ class ChatManager {
             this.optimizeForLowEndDevices();
         }
         
+		// Ajouter l'appel à la fonction pour corriger les problèmes de défilement
+    this.fixScrollingIssues();
+}
         this.initialized = true;
         console.log("Chat initialisé avec succès");
     } catch (error) {
@@ -3324,6 +3327,38 @@ async loadMessageReactions(messageId) {
         notificationsEnabled: this.notificationsEnabled,
         pushManagerSubscribed: !!(await (await navigator.serviceWorker.ready).pushManager.getSubscription())
     });
+}
+
+// Ajoutez la fonction ici
+fixScrollingIssues() {
+  // Trouver le conteneur de messages du chat
+  const chatMessages = document.querySelector('.chat-messages');
+  
+  if (chatMessages) {
+    // Empêcher la propagation du scroll
+    chatMessages.addEventListener('touchmove', function(e) {
+      // Vérifier si le défilement est nécessaire
+      const isScrollable = this.scrollHeight > this.clientHeight;
+      const isAtTop = this.scrollTop === 0;
+      const isAtBottom = this.scrollTop + this.clientHeight >= this.scrollHeight;
+      
+      // Si on est au bout du scroll et qu'on continue, empêcher la propagation
+      if ((isAtTop && e.touches[0].clientY > e.touches[1]?.clientY) || 
+          (isAtBottom && e.touches[0].clientY < e.touches[1]?.clientY)) {
+        e.stopPropagation();
+      }
+      
+      // Si le contenu est défilable, prévenir le scroll du body
+      if (isScrollable) {
+        e.stopPropagation();
+      }
+    }, { passive: false });
+    
+    // Empêcher également le scroll lors d'un swipe simple
+    chatMessages.addEventListener('wheel', function(e) {
+      e.stopPropagation();
+    }, { passive: false });
+  }
 }
 
 // Ajouter cette nouvelle méthode pour gérer le clavier
