@@ -430,7 +430,10 @@ class ChatManager {
                 
                 // Gérer la visibilité du clavier
                 this.handleKeyboardVisibility();
-                
+				
+                // Gérer l'apparition du clavier (AJOUTEZ CETTE LIGNE)
+                this.handleKeyboardAppearance();
+				
                 // Observer les changements d'orientation
                 window.addEventListener('orientationchange', () => {
                     setTimeout(() => {
@@ -3314,12 +3317,35 @@ async loadMessageReactions(messageId) {
 }
 
     async checkNotificationStatus() {
-        console.log('État des notifications:', {
-            permission: Notification.permission,
-            serviceWorkerRegistered: !!await navigator.serviceWorker.getRegistration(),
-            pushManagerSupported: 'PushManager' in window,
-            notificationsEnabled: this.notificationsEnabled,
-            pushManagerSubscribed: !!(await (await navigator.serviceWorker.ready).pushManager.getSubscription())
+    console.log('État des notifications:', {
+        permission: Notification.permission,
+        serviceWorkerRegistered: !!await navigator.serviceWorker.getRegistration(),
+        pushManagerSupported: 'PushManager' in window,
+        notificationsEnabled: this.notificationsEnabled,
+        pushManagerSubscribed: !!(await (await navigator.serviceWorker.ready).pushManager.getSubscription())
+    });
+}
+
+// Ajouter cette nouvelle méthode pour gérer le clavier
+handleKeyboardAppearance() {
+    const visualViewport = window.visualViewport;
+    
+    if (visualViewport) {
+        visualViewport.addEventListener('resize', () => {
+            const chatInput = document.querySelector('.chat-input-container');
+            if (chatInput) {
+                if (visualViewport.height < window.innerHeight * 0.8) {
+                    // Clavier ouvert
+                    chatInput.style.position = 'absolute';
+                    chatInput.style.bottom = '0';
+                    // Faire défiler jusqu'à l'input
+                    chatInput.scrollIntoView(false);
+                } else {
+                    // Clavier fermé
+                    chatInput.style.position = 'fixed';
+                    chatInput.style.bottom = '0';
+                }
+            }
         });
     }
 }

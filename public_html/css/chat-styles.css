@@ -1789,3 +1789,42 @@ body.long-press-active .message-options {
      min-height: 34px !important;
   }
 }
+
+/* Ajoutez ces styles à votre CSS */
+.chat-input-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 10px);
+  background-color: var(--primary-bg, #192355);
+  z-index: 100;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chat-input {
+  margin: 10px;
+  padding: 12px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+/* Espace pour éviter que le contenu soit caché sous la zone de saisie */
+.chat-messages-container {
+  padding-bottom: 80px; /* Ajustez selon la hauteur de votre zone de saisie */
+}
+
+/* Support du clavier virtuel */
+@media screen and (max-height: 450px) {
+  .chat-input-container {
+    position: sticky;
+  }
+}
+
+/* Gestion de la barre de navigation en bas sur mobile */
+.bottom-nav {
+  padding-bottom: env(safe-area-inset-bottom);
+}
