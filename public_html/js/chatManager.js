@@ -1006,7 +1006,7 @@ async setupAuthListeners() {
 
         // Cas administrateur
         let isAdmin = false;
-        if (pseudo === 'jhd71') {
+        if (pseudo === 'Admin_ActuMedia') {
             console.log('Tentative connexion admin');
             
             if (adminPassword !== 'admin2024') {
