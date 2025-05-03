@@ -1829,20 +1829,26 @@ body.long-press-active .message-options {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* Solution pour la croix de fermeture - version adaptative */
+/* Solution adaptée à vos classes existantes */
 
-/* Version DESKTOP - sur une ligne avec croix visible */
+/* Base commune pour desktop et mobile */
 .chat-header {
   position: relative !important;
+  padding: 15px 20px !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 20px 20px 0 0 !important;
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
-  padding-right: 40px !important; /* Espace pour la croix */
+  border-bottom: var(--chat-border) !important;
+  pointer-events: auto !important;
+  padding-right: 50px !important; /* Espace pour la croix */
 }
 
-.chat-close-btn {
+/* Bouton de fermeture toujours visible */
+.chat-close-btn, .close-btn {
   position: absolute !important;
-  right: 5px !important;
+  right: 10px !important;
   top: 50% !important;
   transform: translateY(-50%) !important;
   z-index: 9999 !important;
@@ -1855,39 +1861,30 @@ body.long-press-active .message-options {
   justify-content: center !important;
 }
 
-/* Version MOBILE - sur deux lignes */
+/* Version MOBILE uniquement - deux lignes */
 @media (max-width: 768px) {
-  /* Réorganiser l'en-tête du chat en deux lignes sur mobile uniquement */
   .chat-header {
-    display: flex !important;
     flex-direction: column !important;
-    padding: 10px !important;
-    padding-top: 15px !important; /* Espace pour la croix */
-    padding-right: 10px !important;
-    gap: 8px !important;
-    min-height: 90px !important;
+    padding: 15px 15px !important;
+    gap: 10px !important;
+    min-height: 100px !important; /* Plus d'espace pour deux lignes */
   }
   
-  .chat-header-title {
+  .header-title {
     width: 100% !important;
     text-align: center !important;
-    font-weight: bold !important;
-    font-size: 16px !important;
-    padding-right: 0 !important;
+    margin-top: 15px !important; /* Espace pour la croix */
   }
   
-  .chat-header-actions {
+  .header-buttons {
     width: 100% !important;
-    display: flex !important;
     justify-content: center !important;
     gap: 15px !important;
-    padding: 5px 0 !important;
   }
   
-  .chat-close-btn {
-    position: absolute !important;
-    right: 5px !important;
-    top: 5px !important; /* En haut à droite sur mobile */
+  .chat-close-btn, .close-btn {
+    right: 10px !important;
+    top: 10px !important; /* En haut à droite sur mobile */
     transform: none !important;
   }
 }
