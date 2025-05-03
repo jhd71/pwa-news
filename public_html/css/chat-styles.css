@@ -1886,7 +1886,7 @@ body.long-press-active .message-options {
 
 /* Réduire la taille du panneau d'emojis */
 .chat-container .emoji-panel {
-  max-height: 250px !important; /* Hauteur maximale */
+  max-height: 570px !important; /* Hauteur maximale */
   overflow-y: auto !important; /* Ajouter défilement vertical */
   scroll-behavior: smooth !important; /* Défilement fluide */
 }
