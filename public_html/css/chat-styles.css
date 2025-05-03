@@ -1829,17 +1829,45 @@ body.long-press-active .message-options {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* Solution pour la croix de fermeture sur mobile avec un pseudo long - version deux lignes */
+/* Solution pour la croix de fermeture - version adaptative */
+
+/* Version DESKTOP - sur une ligne avec croix visible */
+.chat-header {
+  position: relative !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding-right: 40px !important; /* Espace pour la croix */
+}
+
+.chat-close-btn {
+  position: absolute !important;
+  right: 5px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 9999 !important;
+  width: 36px !important;
+  height: 36px !important;
+  background: rgba(0,0,0,0.2) !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Version MOBILE - sur deux lignes */
 @media (max-width: 768px) {
-  /* Réorganiser l'en-tête du chat en deux lignes */
+  /* Réorganiser l'en-tête du chat en deux lignes sur mobile uniquement */
   .chat-header {
     display: flex !important;
     flex-direction: column !important;
     padding: 10px !important;
+    padding-top: 15px !important; /* Espace pour la croix */
+    padding-right: 10px !important;
     gap: 8px !important;
+    min-height: 90px !important;
   }
   
-  /* Ligne du haut avec le titre */
   .chat-header-title {
     width: 100% !important;
     text-align: center !important;
@@ -1848,7 +1876,6 @@ body.long-press-active .message-options {
     padding-right: 0 !important;
   }
   
-  /* Ligne du bas avec les actions */
   .chat-header-actions {
     width: 100% !important;
     display: flex !important;
@@ -1857,30 +1884,11 @@ body.long-press-active .message-options {
     padding: 5px 0 !important;
   }
   
-  /* Bouton de fermeture toujours visible */
   .chat-close-btn {
     position: absolute !important;
     right: 5px !important;
-    top: 5px !important;
-    z-index: 9999 !important;
-    width: 36px !important;
-    height: 36px !important;
-    background: rgba(0,0,0,0.2) !important;
-    border-radius: 50% !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-  
-  /* Ajuster la taille des icônes */
-  .chat-header-actions button {
-    width: 40px !important;
-    height: 40px !important;
-  }
-  
-  /* Augmenter légèrement la hauteur de l'en-tête */
-  .chat-header {
-    min-height: 90px !important;
+    top: 5px !important; /* En haut à droite sur mobile */
+    transform: none !important;
   }
 }
 
