@@ -969,7 +969,7 @@ async setupAuthListeners() {
     if (pseudoInput) {
         pseudoInput.addEventListener('input', () => {
             console.log('Pseudo input:', pseudoInput.value.trim());
-            if (pseudoInput.value.trim() === 'jhd71') {
+            if (pseudoInput.value.trim() === 'Admin_ActuMedia') {
                 console.log('Affichage du champ mot de passe admin');
                 adminPasswordInput.style.display = 'block';
             } else {
@@ -1006,7 +1006,7 @@ async setupAuthListeners() {
 
         // Cas administrateur
         let isAdmin = false;
-        if (pseudo === 'jhd71') {
+        if (pseudo === 'Admin_ActuMedia') {
             console.log('Tentative connexion admin');
             
             if (adminPassword !== 'admin2024') {
