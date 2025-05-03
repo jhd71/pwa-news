@@ -1298,48 +1298,65 @@ body.long-press-active .message-options {
    Styles pour emoji-picker
    ======================= */
 .emoji-picker {
-  /* Position dynamique - position:fixed mais sans les coordonnées fixes */
-  position: fixed !important;
-  z-index: 99999 !important;
+  /* --- CHANGEMENT PRINCIPAL --- */
+  position: absolute !important; /* <<< Changer fixed en absolute */
+  /* Positionner au-dessus du bouton/message */
+  bottom: 100%; /* Place le bas du picker au niveau du haut de l'ancêtre relatif */
+  left: 50%;    /* Centre horizontalement par rapport à l'ancêtre */
+  transform: translateX(-50%); /* Ajuste pour centrer parfaitement */
+  margin-bottom: 8px; /* Ajoute un petit espace au-dessus du bouton/message */
+  /* --- FIN CHANGEMENT PRINCIPAL --- */
 
-  background: white;
+  z-index: 1000 !important; /* Diminué un peu, mais toujours élevé */
+
+  background: white; /* Ou var(--picker-bg, white) pour le thème */
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15); /* Ombre un peu plus prononcée */
   padding: 8px;
 
-  display: grid;
+  display: grid; /* Caché par défaut, affiché par JS (via une classe .is-active par exemple) */
   grid-template-columns: repeat(7, 1fr);
   gap: 5px;
 
-  /* pas de scroll : on laisse la boîte grandir sur ses 4 lignes */
-  max-height: none;
-  overflow: visible;
+  /* Gestion de la taille */
+  max-height: 200px; /* Limiter la hauteur et permettre le scroll interne */
+  overflow-y: auto;  /* Activer le scroll vertical si besoin */
+  overflow-x: hidden; /* Empêcher le scroll horizontal */
 
-  /* on limite juste la largeur pour tenir dans l’écran */
-  max-width: 95vw;
-  width: auto;
-   }
-   
-/* Animation pour une apparition fluide */
-@keyframes emojiPickerFadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  width: clamp(250px, 90vw, 320px); /* Largeur réactive: min 250px, max 320px, s'adapte à 90% du viewport si entre les deux */
+
+  /* Animation (optionnel mais sympa) */
+  opacity: 0;
+  transform-origin: bottom center; /* Point d'origine pour l'animation scale */
+  transition: opacity 0.15s ease-out, transform 0.15s ease-out;
+  pointer-events: none; /* Empêche interaction si caché */
 }
+
+/* Classe à ajouter via JavaScript pour afficher le picker */
+.emoji-picker.is-active {
+  opacity: 1;
+  transform: translateX(-50%) scale(1); /* Rétablir la transformation correcte */
+  pointer-events: auto; /* Permettre l'interaction */
+  /* Si vous n'utilisez pas opacity/transform pour afficher/cacher, utilisez display: grid; ici */
+}
+
+/* Animation (peut être simplifiée ou supprimée si la transition suffit) */
+/* @keyframes emojiPickerFadeIn { ... } */
 
 .emoji-picker span {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 2.5rem;         /* légèrement plus haut pour plus d’espace */
-  font-size: 1.5rem;      /* 24px approx */
+  height: 2.5rem;
+  font-size: 1.5rem;
   cursor: pointer;
   border-radius: 4px;
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.1s ease-out; /* Ajout transform */
 }
 
 .emoji-picker span:hover {
   background: rgba(0,0,0,0.05);
-  transform: scale(1.15);
+  transform: scale(1.15); /* Garder le scale au survol */
 }
 
 /* ==============
