@@ -3349,5 +3349,6 @@ handleKeyboardAppearance() {
         });
     }
 }
+}
 
 export default ChatManager;
