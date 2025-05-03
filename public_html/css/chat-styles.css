@@ -1711,7 +1711,7 @@ body.long-press-active .message-options {
   /* Panneau Emoji en mode NORMAL sur Mobile */
   .chat-container .emoji-panel { /* Pas besoin de :not(.fullscreen) */
      position: absolute !important;
-     top: calc(var(--chat-header-height, 60px) + 5px) !important; 
+    /* top: calc(var(--chat-header-height, 60px) + 5px) !important; */ 
      bottom: var(--chat-input-sticky-height-mobile, 75px) !important; 
      left: 10px !important;
      right: 10px !important;
