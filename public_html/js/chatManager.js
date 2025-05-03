@@ -3116,6 +3116,9 @@ showEmojiPicker(messageId, x, y) {
   // Ajouter au DOM pour calculer les dimensions
   document.body.appendChild(picker);
   
+  // Obtenir l'élément du message
+  const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+  
   // Détecter si on est sur mobile
   const isMobile = window.innerWidth <= 768;
   
@@ -3124,17 +3127,52 @@ showEmojiPicker(messageId, x, y) {
   const windowWidth = window.innerWidth;
   const windowHeight = window.innerHeight;
   
-  // Positionner le picker (votre code existant)
+  // Positionner le picker
   if (isMobile) {
+    // Sur mobile, centrer horizontalement et ajuster verticalement
     x = (windowWidth - pickerRect.width) / 2;
     
-    // Si le sélecteur est trop bas, le remonter
-    if (y + pickerRect.height > windowHeight - 100) {
-      y = Math.max(50, y - pickerRect.height - 20);
+    // Si nous avons l'élément du message, positionner juste au-dessus
+    if (messageElement) {
+      const messageRect = messageElement.getBoundingClientRect();
+      y = messageRect.top - pickerRect.height - 10;
+      
+      // Si trop haut, positionner en bas
+      if (y < 10) {
+        y = Math.min(windowHeight - pickerRect.height - 10, messageRect.bottom + 10);
+      }
+    } else {
+      // Fallback: si le message est trop bas, remonter le picker
+      if (y + pickerRect.height > windowHeight - 100) {
+        y = Math.max(50, y - pickerRect.height - 20);
+      }
     }
   } else {
-    // Ajustements pour desktop (votre code existant)
-    // ...
+    // Sur desktop, positionner près du message
+    if (messageElement) {
+      const messageRect = messageElement.getBoundingClientRect();
+      
+      // Déterminer si on doit positionner à gauche ou à droite
+      if (messageRect.left < windowWidth / 2) {
+        // Message à gauche: positionner à droite
+        x = messageRect.right - 30;
+      } else {
+        // Message à droite: positionner à gauche
+        x = messageRect.left - pickerRect.width + 30;
+      }
+      
+      // Positionner verticalement au-dessus du message
+      y = messageRect.top - pickerRect.height - 5;
+      
+      // Si trop haut, positionner en dessous
+      if (y < 10) {
+        y = messageRect.bottom + 5;
+      }
+    }
+    
+    // S'assurer que le picker reste dans la fenêtre
+    x = Math.max(10, Math.min(windowWidth - pickerRect.width - 10, x));
+    y = Math.max(10, Math.min(windowHeight - pickerRect.height - 10, y));
   }
   
   picker.style.left = `${x}px`;
