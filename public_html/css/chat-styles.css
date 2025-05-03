@@ -1295,51 +1295,61 @@ body.long-press-active .message-options {
 }
 
 /* =======================
-   Styles pour emoji-picker
+   Styles pour emoji-picker - BASE COMMUNE
    ======================= */
 .emoji-picker {
-  /* Position dynamique - position:fixed mais sans les coordonnées fixes */
-  position: fixed !important;
+  /* Styles communs pour mobile et desktop */
   z-index: 99999 !important;
-
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   padding: 8px;
-
+  
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 5px;
-
-  /* pas de scroll : on laisse la boîte grandir sur ses 4 lignes */
+  
   max-height: none;
   overflow: visible;
-
-  /* on limite juste la largeur pour tenir dans l’écran */
   max-width: 95vw;
   width: auto;
-   }
-   
-/* Animation pour une apparition fluide */
+  
+  /* Animation d'apparition */
+  animation: emojiPickerFadeIn 0.2s ease;
+}
+
+/* Animation */
 @keyframes emojiPickerFadeIn {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
 }
 
-.emoji-picker span {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 2.5rem;         /* légèrement plus haut pour plus d’espace */
-  font-size: 1.5rem;      /* 24px approx */
-  cursor: pointer;
-  border-radius: 4px;
-  transition: background 0.2s;
+/* MOBILE - Garder le comportement actuel */
+@media (max-width: 768px) {
+  .emoji-picker {
+    position: fixed !important;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
 
-.emoji-picker span:hover {
-  background: rgba(0,0,0,0.05);
-  transform: scale(1.15);
+/* DESKTOP - Nouveau comportement */
+@media (min-width: 769px) {
+  .emoji-picker {
+    position: absolute !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    right: 20px !important;
+    bottom: 100% !important;
+    max-width: 320px !important;
+  }
+  
+  /* S'assurer que le conteneur de chat est bien positionné */
+  .chat-container {
+    position: relative !important;
+  }
 }
 
 /* ==============
