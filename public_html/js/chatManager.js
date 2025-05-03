@@ -3086,41 +3086,38 @@ showEmojiPicker(messageId, x, y) {
   const existingPicker = document.querySelector('.emoji-picker');
   if (existingPicker) existingPicker.remove();
   
-  // Obtenir l'élément du message
-  const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
-  if (!messageElement) return;
-  
-  // Trouver le conteneur de chat (parent des messages)
-  const chatContainer = messageElement.closest('.chat-container') || document.body;
-  
   // Créer le nouveau picker
   const picker = document.createElement('div');
   picker.className = 'emoji-picker';
   
-  // Liste des emojis (inchangée)
+  // Liste des emojis courants - organisés clairement en lignes
   const commonEmojis = [
-    '👍','❤️','😂','😘','😮','😢','👏',
-    '🔥','🎉','🤔','👎','😡','🚀','👀',
-    '💋','🙌','🤗','🥳','😇','🙃','🤩',
-    '😭','🥺','😱','🤬','🙄','💯','💪'
+    '👍','❤️','😂','😘','😮','😢','👏',  // 1ʳᵉ ligne (7)
+    '🔥','🎉','🤔','👎','😡','🚀','👀',  // 2ᵉ ligne (7)
+    '💋','🙌','🤗','🥳','😇','🙃','🤩',  // 3ᵉ ligne (7)
+    '😭','🥺','😱','🤬','🙄','💯','💪'   // 4ᵉ ligne (7)
   ];
   
-  // Ajouter les emojis (inchangé)
+  // Ajouter les emojis au picker
   commonEmojis.forEach(emoji => {
     const span = document.createElement('span');
     span.textContent = emoji;
     span.addEventListener('click', () => {
       this.addReaction(messageId, emoji);
       picker.remove();
-      document.body.style.overflow = '';
+      document.body.style.overflow = ''; // Réactiver le défilement
     });
     picker.appendChild(span);
   });
   
+  // IMPORTANT : Empêcher le défilement de la page lorsque le sélecteur est ouvert
   document.body.style.overflow = 'hidden';
   
-  // CHANGEMENT CLÉ: Ajouter au conteneur de chat au lieu du body
-  chatContainer.appendChild(picker);
+  // Ajouter au DOM pour calculer les dimensions
+  document.body.appendChild(picker);
+  
+  // Obtenir l'élément du message
+  const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
   
   // Détecter si on est sur mobile
   const isMobile = window.innerWidth <= 768;
@@ -3130,64 +3127,72 @@ showEmojiPicker(messageId, x, y) {
   const windowWidth = window.innerWidth;
   const windowHeight = window.innerHeight;
   
+  // Positionner le picker
   if (isMobile) {
-    // Sur mobile: laisser le CSS gérer la position via media query
-    picker.classList.add('mobile');
+    // Sur mobile, centrer horizontalement et ajuster verticalement
+    x = (windowWidth - pickerRect.width) / 2;
     
-    // Mais calculer quand même la hauteur pour éviter le débordement
-    const messageRect = messageElement.getBoundingClientRect();
-    y = messageRect.top - pickerRect.height - 10;
-    
-    // Si trop haut, positionner en dessous
-    if (y < 10) {
-      y = Math.min(windowHeight - pickerRect.height - 10, messageRect.bottom + 10);
+    // Si nous avons l'élément du message, positionner juste au-dessus
+    if (messageElement) {
+      const messageRect = messageElement.getBoundingClientRect();
+      y = messageRect.top - pickerRect.height - 10;
+      
+      // Si trop haut, positionner en bas
+      if (y < 10) {
+        y = Math.min(windowHeight - pickerRect.height - 10, messageRect.bottom + 10);
+      }
+    } else {
+      // Fallback: si le message est trop bas, remonter le picker
+      if (y + pickerRect.height > windowHeight - 100) {
+        y = Math.max(50, y - pickerRect.height - 20);
+      }
     }
   } else {
-    // Sur desktop: ajout d'une classe pour le positionner via CSS
-    picker.classList.add('desktop');
-    
-    // Calcul de position adaptée au chat
-    const messageRect = messageElement.getBoundingClientRect();
-    const chatRect = chatContainer.getBoundingClientRect();
-    
-    // Position relative au conteneur de chat
-    x = messageRect.left - chatRect.left;
-    y = messageRect.top - chatRect.top - pickerRect.height - 10;
-    
-    // Si message à droite du chat, aligner à droite
-    if (x > chatRect.width / 2) {
-      x = Math.min(x, chatRect.width - pickerRect.width - 10);
+    // Sur desktop, positionner près du message
+    if (messageElement) {
+      const messageRect = messageElement.getBoundingClientRect();
+      
+      // Déterminer si on doit positionner à gauche ou à droite
+      if (messageRect.left < windowWidth / 2) {
+        // Message à gauche: positionner à droite
+        x = messageRect.right - 30;
+      } else {
+        // Message à droite: positionner à gauche
+        x = messageRect.left - pickerRect.width + 30;
+      }
+      
+      // Positionner verticalement au-dessus du message
+      y = messageRect.top - pickerRect.height - 5;
+      
+      // Si trop haut, positionner en dessous
+      if (y < 10) {
+        y = messageRect.bottom + 5;
+      }
     }
     
-    // Si trop haut, positionner en dessous
-    if (y < 10) {
-      y = messageRect.bottom - chatRect.top + 10;
-    }
+    // S'assurer que le picker reste dans la fenêtre
+    x = Math.max(10, Math.min(windowWidth - pickerRect.width - 10, x));
+    y = Math.max(10, Math.min(windowHeight - pickerRect.height - 10, y));
   }
   
-  // Définir la position
-  if (isMobile) {
-    // Sur mobile, laisser le CSS s'en occuper
-  } else {
-    // Sur desktop, positionner de manière absolue
-    picker.style.position = 'absolute';
-    picker.style.left = `${x}px`;
-    picker.style.top = `${y}px`;
-  }
+  picker.style.left = `${x}px`;
+  picker.style.top = `${y}px`;
   
-  // Le reste du code (inchangé)
+  // Empêcher la propagation des événements tactiles sur le picker lui-même
   picker.addEventListener('touchmove', (e) => {
     e.stopPropagation();
     e.preventDefault();
   }, { passive: false });
   
+  // Fermer le picker si on clique ailleurs
   document.addEventListener('click', (e) => {
     if (!picker.contains(e.target) && !e.target.closest(`[data-message-id="${messageId}"] .add-reaction`)) {
       picker.remove();
-      document.body.style.overflow = '';
+      document.body.style.overflow = ''; // Réactiver le défilement
     }
   }, { once: true });
   
+  // S'assurer que le défilement est réactivé si le sélecteur est fermé autrement
   window.addEventListener('popstate', () => {
     if (document.body.contains(picker)) {
       picker.remove();
