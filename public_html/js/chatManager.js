@@ -464,9 +464,6 @@ class ChatManager {
         if (/Mobi|Android|iPad|tablet/i.test(navigator.userAgent)) {
             this.optimizeForLowEndDevices();
         }
-        
-		// Ajouter l'appel à la fonction pour corriger les problèmes de défilement
-    this.fixScrollingIssues();
 
         this.initialized = true;
         console.log("Chat initialisé avec succès");
@@ -3327,54 +3324,6 @@ async loadMessageReactions(messageId) {
         notificationsEnabled: this.notificationsEnabled,
         pushManagerSubscribed: !!(await (await navigator.serviceWorker.ready).pushManager.getSubscription())
     });
-}
-
-// Ajoutez la fonction ici
-fixScrollingIssues() {
-  // Trouver les éléments concernés
-  const chatMessages = document.querySelector('.chat-messages');
-  const chatContainer = document.querySelector('.chat-container');
-  const body = document.body;
-  
-  if (!chatMessages || !chatContainer) return;
-  
-  // Ajouter classe au body quand le chat est ouvert
-  if (chatContainer.classList.contains('open')) {
-    body.classList.add('chat-open');
-  }
-  
-  // Écouter les événements d'ouverture/fermeture du chat
-  const chatToggle = document.querySelector('.chat-toggle');
-  if (chatToggle) {
-    chatToggle.addEventListener('click', () => {
-      setTimeout(() => {
-        if (chatContainer.classList.contains('open')) {
-          body.classList.add('chat-open');
-        } else {
-          body.classList.remove('chat-open');
-        }
-      }, 100);
-    });
-  }
-  
-  // Gestion des événements tactiles
-  chatMessages.addEventListener('touchmove', (e) => {
-    // Vérifier si on peut défiler davantage
-    const isAtTop = chatMessages.scrollTop <= 0;
-    const isAtBottom = chatMessages.scrollTop + chatMessages.clientHeight >= chatMessages.scrollHeight;
-    
-    if ((isAtTop && e.touches[0].clientY > e.touches[0].clientY - 10) || 
-        (isAtBottom && e.touches[0].clientY < e.touches[0].clientY + 10)) {
-      e.preventDefault();
-    }
-    
-    e.stopPropagation();
-  }, { passive: false });
-  
-  // Empêcher le défilement du body lorsqu'on est dans la zone des messages
-  chatMessages.addEventListener('wheel', (e) => {
-    e.stopPropagation();
-  }, { passive: false });
 }
 
 // Ajouter cette nouvelle méthode pour gérer le clavier

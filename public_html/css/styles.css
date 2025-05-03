@@ -1872,24 +1872,3 @@ body {
 main {
   padding-bottom: calc(var(--safe-area-bottom) + 60px);
 }
-
-/* Ajouter ce CSS à votre fichier de styles */
-.chat-messages {
-  overscroll-behavior: contain !important;
-  -webkit-overflow-scrolling: touch !important;
-  touch-action: pan-y !important;
-  isolation: isolate !important;
-}
-
-.chat-container {
-  overscroll-behavior: contain !important;
-  position: relative !important;
-  max-height: 100vh !important;
-}
-
-body.chat-open {
-  overflow: hidden !important;
-  position: fixed !important;
-  width: 100% !important;
-  height: 100% !important;
-}
