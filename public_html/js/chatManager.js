@@ -3165,7 +3165,7 @@ showEmojiPicker(messageId /* Supprimer x, y - plus besoin ici */) { // On n'a pl
             picker.style.transform = 'translateX(0)'; // Annuler le centrage
         } else if (pickerRect.right > parentRect.right) {
             picker.style.left = 'auto';
-            picker.style.right = '0px'; // Aligner à droite du parent
+            picker.style.right = '5px'; // Aligner à droite du parent
             picker.style.transform = 'translateX(0)'; // Annuler le centrage
         }
 
