@@ -26,19 +26,19 @@ body {
 /* 2. Remonter les boutons menu et paramètres */
 .menu-button, .hamburger-menu {
   position: fixed !important;
-  top: calc(var(--safe-area-top) + 70px) !important; /* Augmenté pour être sous les widgets */
+  top: calc(var(--safe-area-top) + 30px) !important; /* Ajusté pour s'aligner avec le logo */
   left: 10px !important;
   z-index: 1010 !important;
-  background-color: rgba(126, 87, 194, 0.8) !important; /* Fond semi-transparent pour être visible en mode clair */
+  background-color: rgba(126, 87, 194, 0.8) !important;
   border-radius: 50% !important;
 }
 
 .settings-button, .gear-icon {
   position: fixed !important;
-  top: calc(var(--safe-area-top) + 70px) !important; /* Augmenté pour être sous les widgets */
+  top: calc(var(--safe-area-top) + 30px) !important; /* Ajusté pour s'aligner avec le logo */
   right: 10px !important;
   z-index: 1010 !important;
-  background-color: rgba(126, 87, 194, 0.8) !important; /* Fond semi-transparent pour être visible en mode clair */
+  background-color: rgba(126, 87, 194, 0.8) !important;
   border-radius: 50% !important;
 }
 
