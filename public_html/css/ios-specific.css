@@ -6,135 +6,88 @@
   --safe-area-right: env(safe-area-inset-right, 0px);
 }
 
-/* Ajustement précis de l'espacement supérieur */
+/* 1. Ajustements de base */
 body {
   padding-top: var(--safe-area-top) !important;
 }
 
-/* Positionnement du logo */
-header, .navbar, .site-logo, .site-header {
+/* 2. En-tête et navigation */
+.app-header {
   padding-top: calc(var(--safe-area-top) + 5px) !important;
-  margin-top: 0 !important;
+  height: auto !important;
 }
 
-/* Réduction des espaces excessifs */
-.main-content, #tileContainer, .content-area {
-  padding-top: 10px !important;
+/* 3. Logo principal */
+.site-logo {
+  position: fixed !important;
+  top: calc(var(--safe-area-top) + 5px) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 100 !important;
+  height: 80px !important;
+  width: auto !important;
+  margin-top: 10px !important;
 }
 
-/* Correction des espaces entre les sections */
+/* 4. Boutons de menu et paramètres */
+.menu-button {
+  position: fixed !important;
+  top: calc(var(--safe-area-top) + 8px) !important;
+  left: 10px !important;
+  z-index: 1010 !important;
+}
+
+.settings-button {
+  position: fixed !important;
+  top: calc(var(--safe-area-top) + 8px) !important;
+  right: 10px !important;
+  z-index: 1010 !important;
+}
+
+/* 5. Contenu principal */
+main, #tileContainer, .main-content, .content-area {
+  margin-top: 65px !important;
+  padding-top: 0 !important;
+  padding-bottom: calc(var(--safe-area-bottom) + 20px) !important;
+}
+
+/* 6. Séparateurs et titres de section */
 .separator, .section-title, .category-header {
-  margin-top: 15px !important;
+  margin-top: 10px !important;
   margin-bottom: 10px !important;
 }
 
-/* Navigation du bas */
-.bottom-nav {
-  padding-bottom: max(var(--safe-area-bottom), 10px) !important;
+.separator:first-of-type {
+  margin-top: 30px !important;
 }
 
-/* Ajustement pour le chat et autres éléments fixes */
+/* 7. Éléments spécifiques */
+.news-button, .info-direct, .info-banner {
+  margin-top: 50px !important;
+  position: relative !important;
+  z-index: 5 !important;
+}
+
+/* 8. Tuiles et cartes */
+.tile, .card, .widget {
+  margin-bottom: 10px !important;
+}
+
+/* 9. Navigation du bas */
+.bottom-nav {
+  padding-bottom: max(var(--safe-area-bottom), 10px) !important;
+  height: auto !important;
+}
+
+/* 10. Chat et éléments fixes */
 .chat-container {
   max-width: 100% !important;
   width: calc(100% - var(--safe-area-left) - var(--safe-area-right)) !important;
   height: calc(100vh - var(--safe-area-top) - var(--safe-area-bottom)) !important;
 }
 
-/* Format compact pour les tuiles */
-.tile, .card, .widget {
-  margin-bottom: 10px !important;
-}
-
-/* Corrections spécifiques pour les problèmes d'alignement sur iOS */
-
-/* 1. Correction pour le logo principal */
-.site-logo, .logo-container, .header-logo {
-  position: fixed !important;
-  top: calc(var(--safe-area-top) + 5px) !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  z-index: 100 !important;
-  font-size: 24px !important; /* Augmenter la taille */
-  width: auto !important;
-  height: auto !important;
-}
-
-/* 2. Correction de l'alignement des boutons menu et paramètres */
-.menu-button, .hamburger-menu, nav button:first-child {
-  position: fixed !important;
-  top: calc(var(--safe-area-top) + 5px) !important;
-  left: 10px !important;
-  z-index: 101 !important;
-}
-
-.settings-button, .gear-icon, nav button:last-child {
-  position: fixed !important;
-  top: calc(var(--safe-area-top) + 5px) !important;
-  right: 10px !important;
-  z-index: 101 !important;
-}
-
-/* 3. Correction pour "Infos en direct" */
-.info-direct, .info-banner {
-  margin-top: 50px !important; /* Espace pour le logo */
-  position: relative !important;
-  z-index: 5 !important;
-}
-
-/* 4. Ajustement global des marges pour le contenu */
-#tileContainer, .main-content {
-  margin-top: 65px !important; /* Espace pour le logo et les boutons */
-  padding-top: 0 !important;
-}
-
-/* 5. Ajustement des entêtes de section */
-.separator, .section-title {
-  margin-top: 5px !important;
-}
-
-/* Corrections spécifiques pour les problèmes d'alignement sur iOS */
-
-/* 1. Correction pour le logo principal */
-.site-logo, .logo-container, .header-logo {
-  position: fixed !important;
-  top: calc(var(--safe-area-top) + 5px) !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  z-index: 100 !important;
-  font-size: 24px !important; /* Augmenter la taille */
-  width: auto !important;
-  height: auto !important;
-}
-
-/* 2. Correction de l'alignement des boutons menu et paramètres */
-.menu-button, .hamburger-menu, nav button:first-child {
-  position: fixed !important;
-  top: calc(var(--safe-area-top) + 5px) !important;
-  left: 10px !important;
-  z-index: 101 !important;
-}
-
-.settings-button, .gear-icon, nav button:last-child {
-  position: fixed !important;
-  top: calc(var(--safe-area-top) + 5px) !important;
-  right: 10px !important;
-  z-index: 101 !important;
-}
-
-/* Pour le bouton "Infos en direct" */
-.news-button {
-  margin-top: 50px !important;
-  position: relative !important;
-  z-index: 5 !important;
-}
-
-/* 4. Ajustement global des marges pour le contenu */
-#tileContainer, .main-content {
-  margin-top: 65px !important; /* Espace pour le logo et les boutons */
-  padding-top: 0 !important;
-}
-
-/* 5. Ajustement des entêtes de section */
-.separator, .section-title {
-  margin-top: 5px !important;
+/* 11. Boutons et contrôles tactiles */
+button, a, .tile, .menu-item {
+  -webkit-tap-highlight-color: transparent !important;
+  touch-action: manipulation !important;
 }
