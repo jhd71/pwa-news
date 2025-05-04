@@ -1,0 +1,46 @@
+/* ios-specific.css - Ajustements précis pour iOS */
+:root {
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+}
+
+/* Ajustement précis de l'espacement supérieur */
+body {
+  padding-top: var(--safe-area-top) !important;
+}
+
+/* Positionnement du logo */
+header, .navbar, .site-logo, .site-header {
+  padding-top: calc(var(--safe-area-top) + 5px) !important;
+  margin-top: 0 !important;
+}
+
+/* Réduction des espaces excessifs */
+.main-content, #tileContainer, .content-area {
+  padding-top: 10px !important;
+}
+
+/* Correction des espaces entre les sections */
+.separator, .section-title, .category-header {
+  margin-top: 15px !important;
+  margin-bottom: 10px !important;
+}
+
+/* Navigation du bas */
+.bottom-nav {
+  padding-bottom: max(var(--safe-area-bottom), 10px) !important;
+}
+
+/* Ajustement pour le chat et autres éléments fixes */
+.chat-container {
+  max-width: 100% !important;
+  width: calc(100% - var(--safe-area-left) - var(--safe-area-right)) !important;
+  height: calc(100vh - var(--safe-area-top) - var(--safe-area-bottom)) !important;
+}
+
+/* Format compact pour les tuiles */
+.tile, .card, .widget {
+  margin-bottom: 10px !important;
+}
