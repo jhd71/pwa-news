@@ -833,6 +833,10 @@ main {
 }
 
 /* SECTION 19: IOS PROMPT */
+:root {
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 .ios-prompt {
     position: fixed;
     bottom: 20px;
