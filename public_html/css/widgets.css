@@ -671,3 +671,15 @@
     padding: 5px !important;
   }
 }
+
+/* Déplacer UNIQUEMENT la croix du widget météo à gauche */
+.weather-toggle {
+  right: auto !important;
+  left: 8px !important;
+}
+
+/* S'assurer que la croix des liens rapides reste à droite */
+.quick-links-toggle {
+  right: 8px !important;
+  left: auto !important;
+}
