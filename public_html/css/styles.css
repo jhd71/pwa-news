@@ -1886,8 +1886,8 @@ a:active {
   }
 }
 
-/* === iOS FIXES ADDITION === */
-/* Définir les variables de safe areas */
+/* === iOS FIXES COMPLETS === */
+/* 1. Définir les variables de safe areas */
 :root {
   --safe-area-top: env(safe-area-inset-top, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
@@ -1895,48 +1895,61 @@ a:active {
   --safe-area-right: env(safe-area-inset-right, 0px);
 }
 
-/* Base body fixes - conserver vos règles existantes */
+/* 2. Base body fixes */
 body {
   min-height: 100vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  /* Augmenter l'espace en haut pour éviter le chevauchement */
-  padding-top: max(calc(var(--safe-area-top) + 10px), 20px);
+  /* Augmenter significativement l'espace en haut pour éviter tout chevauchement */
+  padding-top: max(calc(var(--safe-area-top) + 20px), 30px) !important;
 }
 
-/* Si un <main> contient le contenu principal */
-main {
-  padding-bottom: calc(var(--safe-area-bottom) + 60px);
+/* 3. Éléments de haut de page - augmentation d'espace */
+header, .navbar, .chat-header, .top-fixed, .site-header, .top-banner, .main-header {
+  margin-top: 15px !important;
+  padding-top: max(calc(var(--safe-area-top) + 15px), 25px) !important;
 }
 
-/* Ajouts pour les éléments fixes en haut */
-header, .navbar, .chat-header, .top-fixed {
-  padding-top: max(var(--safe-area-top), 10px);
+/* 4. Widgets et éléments spécifiques en haut */
+.weather-icon-container, .weather-widget, .top-widgets, .header-actions {
+  margin-top: 15px !important;
+  padding-top: 10px !important;
 }
 
-/* Ajouts pour les éléments fixes en bas */
+/* 5. Conteneurs principaux */
+main, .main-content, .your-container, #tileContainer, .content-area {
+  padding-top: max(var(--safe-area-top), 15px) !important;
+  padding-bottom: calc(var(--safe-area-bottom) + 80px) !important; /* Plus d'espace pour éviter que le contenu soit caché */
+}
+
+/* 6. Éléments de bas de page */
 footer, .bottom-nav, .chat-input-container, .bottom-fixed {
-  padding-bottom: max(var(--safe-area-bottom), 10px);
+  padding-bottom: max(calc(var(--safe-area-bottom) + 5px), 15px) !important;
+  height: auto !important; /* Permettre à la hauteur de s'adapter */
 }
 
-/* Fix spécifique pour le chat */
+/* 7. Ticker d'informations */
+.news-ticker, .info-ticker, .bottom-bar {
+  padding-bottom: calc(var(--safe-area-bottom) + 15px) !important;
+  margin-bottom: 10px !important;
+  z-index: 100 !important; /* S'assurer qu'il reste au-dessus */
+}
+
+/* 8. Fix spécifique pour le chat */
 .chat-container {
   max-width: 100% !important;
   width: calc(100% - var(--safe-area-left) - var(--safe-area-right)) !important;
-  height: calc(100vh - var(--safe-area-top) - var(--safe-area-bottom)) !important;
+  height: calc(100vh - var(--safe-area-top) - var(--safe-area-bottom) - 20px) !important;
 }
 
-/* Applique un padding supérieur pour éviter que le contenu ne soit sous la barre d'état */
-.main-content, .your-container {
-  padding-top: max(env(safe-area-inset-top), 10px);
+/* 9. Fix pour les sections sous forme de tuiles */
+.tile, .card, .widget {
+  margin-bottom: 15px !important; /* Éviter que les éléments soient trop proches du bas */
 }
 
-.bottom-nav {
-  padding-bottom: env(safe-area-inset-bottom);
-}
-
-/* Pour votre logo et navigation en haut */
-.site-header, header, .top-banner {
-  margin-top: 10px;
-  padding-top: max(env(safe-area-inset-top), 15px);
+/* 10. Amélioration de l'interaction tactile */
+button, a, .tile, .menu-item, .card {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+  touch-action: manipulation !important;
 }
