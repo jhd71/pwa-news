@@ -44,3 +44,97 @@ header, .navbar, .site-logo, .site-header {
 .tile, .card, .widget {
   margin-bottom: 10px !important;
 }
+
+/* Corrections spécifiques pour les problèmes d'alignement sur iOS */
+
+/* 1. Correction pour le logo principal */
+.site-logo, .logo-container, .header-logo {
+  position: fixed !important;
+  top: calc(var(--safe-area-top) + 5px) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 100 !important;
+  font-size: 24px !important; /* Augmenter la taille */
+  width: auto !important;
+  height: auto !important;
+}
+
+/* 2. Correction de l'alignement des boutons menu et paramètres */
+.menu-button, .hamburger-menu, nav button:first-child {
+  position: fixed !important;
+  top: calc(var(--safe-area-top) + 5px) !important;
+  left: 10px !important;
+  z-index: 101 !important;
+}
+
+.settings-button, .gear-icon, nav button:last-child {
+  position: fixed !important;
+  top: calc(var(--safe-area-top) + 5px) !important;
+  right: 10px !important;
+  z-index: 101 !important;
+}
+
+/* 3. Correction pour "Infos en direct" */
+.info-direct, .info-banner {
+  margin-top: 50px !important; /* Espace pour le logo */
+  position: relative !important;
+  z-index: 5 !important;
+}
+
+/* 4. Ajustement global des marges pour le contenu */
+#tileContainer, .main-content {
+  margin-top: 65px !important; /* Espace pour le logo et les boutons */
+  padding-top: 0 !important;
+}
+
+/* 5. Ajustement des entêtes de section */
+.separator, .section-title {
+  margin-top: 5px !important;
+}
+
+/* Corrections spécifiques pour les problèmes d'alignement sur iOS */
+
+/* 1. Correction pour le logo principal */
+.site-logo, .logo-container, .header-logo {
+  position: fixed !important;
+  top: calc(var(--safe-area-top) + 5px) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 100 !important;
+  font-size: 24px !important; /* Augmenter la taille */
+  width: auto !important;
+  height: auto !important;
+}
+
+/* 2. Correction de l'alignement des boutons menu et paramètres */
+.menu-button, .hamburger-menu, nav button:first-child {
+  position: fixed !important;
+  top: calc(var(--safe-area-top) + 5px) !important;
+  left: 10px !important;
+  z-index: 101 !important;
+}
+
+.settings-button, .gear-icon, nav button:last-child {
+  position: fixed !important;
+  top: calc(var(--safe-area-top) + 5px) !important;
+  right: 10px !important;
+  z-index: 101 !important;
+}
+
+/* Pour le bouton "Infos en direct" */
+.news-button {
+  margin-top: 50px !important;
+  position: relative !important;
+  z-index: 5 !important;
+}
+
+/* 4. Ajustement global des marges pour le contenu */
+#tileContainer, .main-content {
+  margin-top: 65px !important; /* Espace pour le logo et les boutons */
+  padding-top: 0 !important;
+}
+
+/* 5. Ajustement des entêtes de section */
+.separator, .section-title {
+  margin-top: 5px !important;
+}
