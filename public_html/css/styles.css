@@ -1900,8 +1900,8 @@ body {
   min-height: 100vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  /* Ajouter l'inset du haut */
-  padding-top: var(--safe-area-top);
+  /* Augmenter l'espace en haut pour éviter le chevauchement */
+  padding-top: max(calc(var(--safe-area-top) + 10px), 20px);
 }
 
 /* Si un <main> contient le contenu principal */
@@ -1924,4 +1924,19 @@ footer, .bottom-nav, .chat-input-container, .bottom-fixed {
   max-width: 100% !important;
   width: calc(100% - var(--safe-area-left) - var(--safe-area-right)) !important;
   height: calc(100vh - var(--safe-area-top) - var(--safe-area-bottom)) !important;
+}
+
+/* Applique un padding supérieur pour éviter que le contenu ne soit sous la barre d'état */
+.main-content, .your-container {
+  padding-top: max(env(safe-area-inset-top), 10px);
+}
+
+.bottom-nav {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Pour votre logo et navigation en haut */
+.site-header, header, .top-banner {
+  margin-top: 10px;
+  padding-top: max(env(safe-area-inset-top), 15px);
 }
