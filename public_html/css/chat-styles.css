@@ -1087,7 +1087,43 @@ body.long-press-active .message-options {
   padding: 8px 12px;
   border-radius: 8px;
   transition: background 0.2s;
+  animation: fadeIn 0.3s ease-out; /* Nouvelle propriété */
 }
+
+.banned-ip.removing {
+    animation: fadeOut 0.3s ease-out forwards;
+}
+
+/* Badge pour distinguer les IPs réelles */
+.ip-badge {
+    display: inline-block;
+    background-color: #e91e63;
+    color: white;
+    font-size: 0.7em;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+/* Affichage de la raison du bannissement */
+.ip-reason {
+    font-size: 0.8em;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 4px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-10px); }
+}
+
 .banned-ip:hover {
   background: rgba(255, 255, 255, 0.2);
 }

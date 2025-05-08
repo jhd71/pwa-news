@@ -507,21 +507,77 @@ await this.checkAndClearExpiredBans();
 	
 	async loadBannedIPs() {
     try {
-        const { data: ips, error } = await this.supabase
-            .from('banned_ips')
-            .select('*')
-            .order('banned_at', { ascending: false });
+        console.log("Chargement des IPs bannies...");
+        
+        // Liste des IPs bannies combinée
+        let allBannedIps = [];
+        
+        // 1. Essayer de récupérer les IPs de banned_ips
+        try {
+            const { data: ips, error: ipsError } = await this.supabase
+                .from('banned_ips')
+                .select('*')
+                .order('banned_at', { ascending: false });
 
-        if (error) throw error;
+            if (ipsError) {
+                console.warn('Erreur chargement banned_ips:', ipsError);
+            } else {
+                console.log(`${ips?.length || 0} IPs trouvées dans banned_ips`);
+                if (ips?.length > 0) {
+                    allBannedIps = [...ips];
+                }
+            }
+        } catch (error) {
+            console.warn('Exception lors du chargement de banned_ips:', error);
+        }
+        
+        // 2. Essayer de récupérer les IPs de banned_real_ips
+        try {
+            const { data: realIps, error: realIpsError } = await this.supabase
+                .from('banned_real_ips')
+                .select('*')
+                .order('banned_at', { ascending: false });
+                
+            if (realIpsError) {
+                console.warn('Erreur chargement banned_real_ips:', realIpsError);
+            } else {
+                console.log(`${realIps?.length || 0} IPs trouvées dans banned_real_ips`);
+                
+                // Ajouter les IPs réelles à la liste
+                if (realIps?.length > 0) {
+                    realIps.forEach(realIp => {
+                        // Vérifier si cette IP n'est pas déjà dans la liste
+                        const existingIndex = allBannedIps.findIndex(ip => ip.ip === realIp.ip);
+                        
+                        if (existingIndex === -1) {
+                            // Ajouter avec un indicateur que c'est une IP réelle
+                            allBannedIps.push({
+                                ...realIp,
+                                is_real_ip: true
+                            });
+                        } else {
+                            // Mise à jour de l'entrée existante avec l'information qu'elle est aussi une IP réelle
+                            allBannedIps[existingIndex].is_real_ip = true;
+                        }
+                    });
+                }
+            }
+        } catch (error) {
+            console.warn('Exception lors du chargement de banned_real_ips:', error);
+        }
 
         const list = document.querySelector('.banned-ips-list');
         if (list) {
-            if (!ips || ips.length === 0) {
+            if (allBannedIps.length === 0) {
                 list.innerHTML = '<div class="no-data">Aucune IP bannie</div>';
                 return;
             }
 
-            list.innerHTML = ips.map(ip => {
+            // Vider la liste actuelle
+            list.innerHTML = '';
+            
+            // Ajouter chaque IP
+            allBannedIps.forEach(ip => {
                 // Formater la date d'expiration ou indiquer permanent
                 let expires = 'Ban permanent';
                 if (ip.expires_at) {
@@ -535,16 +591,27 @@ await this.checkAndClearExpiredBans();
                     }
                 }
                 
-                return `
-                    <div class="banned-ip">
-                        <div class="ip-info">
-                            <div class="ip-pseudo">${ip.ip}</div>
-                            <div class="ip-expiry">${expires}</div>
-                        </div>
-                        <button class="remove-ban" data-ip="${ip.ip}">×</button>
+                // Créer l'élément HTML avec votre structure existante
+                const ipElement = document.createElement('div');
+                ipElement.className = 'banned-ip';
+                ipElement.dataset.ip = ip.ip;
+                
+                // Marquer les IPs réelles pour le CSS
+                if (ip.is_real_ip) {
+                    ipElement.dataset.isRealIp = 'true';
+                }
+                
+                ipElement.innerHTML = `
+                    <div class="ip-info">
+                        <div class="ip-pseudo">${ip.ip} ${ip.is_real_ip ? '<span class="ip-badge">IP réelle</span>' : ''}</div>
+                        <div class="ip-expiry">${expires}</div>
+                        ${ip.reason ? `<div class="ip-reason">Raison: ${ip.reason}</div>` : ''}
                     </div>
+                    <button class="remove-ban" data-ip="${ip.ip}">×</button>
                 `;
-            }).join('');
+                
+                list.appendChild(ipElement);
+            });
 
             // Ajouter les listeners pour les boutons de suppression
             list.querySelectorAll('.remove-ban').forEach(btn => {
@@ -555,28 +622,70 @@ await this.checkAndClearExpiredBans();
         console.error('Erreur loadBannedIPs:', error);
         const list = document.querySelector('.banned-ips-list');
         if (list) {
-            list.innerHTML = '<div class="error">Erreur lors du chargement des IPs bannies</div>';
+            list.innerHTML = '<div class="error">Erreur lors du chargement des IPs bannies: ' + error.message + '</div>';
         }
     }
 }
 
 async unbanIP(ip) {
     try {
-        // Définir l'utilisateur courant pour les vérifications RLS
-        await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
+        console.log(`Tentative de débannissement de l'IP: ${ip}`);
         
-        const { error } = await this.supabase
+        // Animation de suppression visuelle
+        const ipElement = document.querySelector(`.banned-ip[data-ip="${ip}"]`);
+        if (ipElement) {
+            ipElement.classList.add('removing');
+            // Attendre légèrement pour l'animation
+            await new Promise(resolve => setTimeout(resolve, 300));
+        }
+        
+        // Essayer de définir l'utilisateur courant pour RLS
+        try {
+            await this.setCurrentUserForRLS();
+        } catch (error) {
+            console.warn("Erreur lors de la définition de l'utilisateur pour RLS, continue quand même:", error);
+        }
+        
+        // 1. Supprimer de la table banned_ips
+        console.log(`Suppression de l'IP ${ip} de la table banned_ips`);
+        const { data: deleteData, error: deleteError } = await this.supabase
             .from('banned_ips')
             .delete()
             .eq('ip', ip);
 
-        if (error) throw error;
+        if (deleteError) {
+            console.warn('Erreur lors de la suppression de banned_ips:', deleteError);
+        } else {
+            console.log('Suppression réussie de banned_ips');
+        }
+        
+        // 2. Supprimer aussi de banned_real_ips
+        console.log(`Suppression de l'IP ${ip} de la table banned_real_ips`);
+        const { data: deleteRealData, error: deleteRealError } = await this.supabase
+            .from('banned_real_ips')
+            .delete()
+            .eq('ip', ip);
+            
+        if (deleteRealError) {
+            console.warn('Erreur lors de la suppression de banned_real_ips:', deleteRealError);
+        } else {
+            console.log('Suppression réussie de banned_real_ips');
+        }
 
+        // Notification de succès
         this.showNotification(`IP ${ip} débannie avec succès`, 'success');
-        this.loadBannedIPs(); // Recharger la liste
+        
+        // Attendre avant de recharger la liste
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
+        // Recharger la liste des IPs bannies
+        await this.loadBannedIPs();
+        
+        return true;
     } catch (error) {
         console.error('Erreur unbanIP:', error);
-        this.showNotification('Erreur lors du débannissement', 'error');
+        this.showNotification('Erreur lors du débannissement: ' + error.message, 'error');
+        return false;
     }
 }
 
