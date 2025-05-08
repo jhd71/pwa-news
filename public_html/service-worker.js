@@ -19,6 +19,7 @@ const STATIC_RESOURCES = [
     '/js/newsTickerManager.js',
     '/js/notification-manager.js',
     '/js/quick-links.js',
+	'/js/ban-check.js',
     '/js/service-worker.js',
     '/js/settingsManager.js',
     '/js/sounds.js',
