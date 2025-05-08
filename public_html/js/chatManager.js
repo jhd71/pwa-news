@@ -2821,16 +2821,6 @@ showBanNotification(reason = '') {
         localStorage.setItem('chat_ban_dismissed', 'true');
     });
     
-    // Créer le bouton flottant de vérification
-    this.createBanStatusButton();
-    
-    // Empêcher l'accès au chat
-    const chatElements = document.querySelectorAll('.chat-widget, .chat-toggle-btn, #chatToggleBtn');
-    chatElements.forEach(el => {
-        if (el) el.style.display = 'none';
-    });
-}
-    
     // Gestionnaire pour vérifier le bannissement
     document.getElementById('check-ban-status-btn').addEventListener('click', async () => {
         // Conserver une référence au message de bannissement
