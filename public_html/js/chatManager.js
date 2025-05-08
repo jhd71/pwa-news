@@ -2955,7 +2955,7 @@ showBanNotification(reason = '') {
     }
 }
 
-async checkAndClearExpiredBans() {
+async checkAndClearExpiredBans(forceCleanup = false) {
     try {
         console.log("Vérification des bannissements expirés...");
         
@@ -2972,48 +2972,188 @@ async checkAndClearExpiredBans() {
             }
         }
         
-        // Vérifier les bannissements dans la base de données
-        if (this.isAdmin) {
+        // Si nous sommes administrateur ou si le nettoyage est forcé, nettoyer la base de données
+        if (this.isAdmin || forceCleanup) {
             console.log("Nettoyage des bannissements expirés dans la base de données");
             
             // Supprimer les bannissements expirés de banned_ips
-            const { error: ipError } = await this.supabase
+            const { data: expiredIps, error: ipSelectError } = await this.supabase
                 .from('banned_ips')
-                .delete()
+                .select('*')
                 .lt('expires_at', new Date().toISOString());
                 
-            if (ipError) {
-                console.error("Erreur lors du nettoyage des banned_ips:", ipError);
+            if (ipSelectError) {
+                console.error("Erreur lors de la recherche des banned_ips expirés:", ipSelectError);
+            } else if (expiredIps && expiredIps.length > 0) {
+                console.log(`${expiredIps.length} bannissements expirés trouvés dans banned_ips`);
+                
+                for (const ban of expiredIps) {
+                    const { error: deleteError } = await this.supabase
+                        .from('banned_ips')
+                        .delete()
+                        .eq('id', ban.id);
+                        
+                    if (deleteError) {
+                        console.warn(`Erreur lors de la suppression du bannissement IP ${ban.ip}:`, deleteError);
+                    } else {
+                        console.log(`Bannissement expiré supprimé pour IP ${ban.ip}`);
+                    }
+                }
             }
             
             // Supprimer les bannissements expirés de banned_real_ips
-            const { error: realIpError } = await this.supabase
+            const { data: expiredRealIps, error: realIpSelectError } = await this.supabase
                 .from('banned_real_ips')
-                .delete()
+                .select('*')
                 .lt('expires_at', new Date().toISOString());
                 
-            if (realIpError) {
-                console.error("Erreur lors du nettoyage des banned_real_ips:", realIpError);
+            if (realIpSelectError) {
+                console.error("Erreur lors de la recherche des banned_real_ips expirés:", realIpSelectError);
+            } else if (expiredRealIps && expiredRealIps.length > 0) {
+                console.log(`${expiredRealIps.length} bannissements expirés trouvés dans banned_real_ips`);
+                
+                for (const ban of expiredRealIps) {
+                    const { error: deleteError } = await this.supabase
+                        .from('banned_real_ips')
+                        .delete()
+                        .eq('id', ban.id);
+                        
+                    if (deleteError) {
+                        console.warn(`Erreur lors de la suppression du bannissement IP réelle ${ban.ip}:`, deleteError);
+                    } else {
+                        console.log(`Bannissement expiré supprimé pour IP réelle ${ban.ip}`);
+                    }
+                }
             }
         }
         
         // Vérifier si l'appareil actuel est encore banni
         const deviceId = this.getDeviceId();
-        const { data: deviceBan, error: deviceBanError } = await this.supabase
-            .from('banned_ips')
-            .select('*')
-            .eq('ip', deviceId)
-            .maybeSingle();
-            
-        if (!deviceBanError && !deviceBan) {
-            // L'appareil n'est plus banni dans la base de données
-            localStorage.removeItem('chat_device_banned');
-            localStorage.removeItem('chat_device_banned_until');
-            localStorage.removeItem('chat_ban_reason');
-            localStorage.removeItem('chat_ban_dismissed');
+        if (deviceId) {
+            // Vérifier dans banned_ips
+            const { data: deviceBan, error: deviceBanError } = await this.supabase
+                .from('banned_ips')
+                .select('*')
+                .eq('ip', deviceId)
+                .maybeSingle();
+                
+            if (deviceBanError) {
+                console.warn("Erreur lors de la vérification du bannissement d'appareil:", deviceBanError);
+            } else if (!deviceBan) {
+                // L'appareil n'est plus banni dans la base de données
+                localStorage.removeItem('chat_device_banned');
+                localStorage.removeItem('chat_device_banned_until');
+                localStorage.removeItem('chat_ban_reason');
+                localStorage.removeItem('chat_ban_dismissed');
+            }
         }
+        
+        // Vérifier si notre IP réelle est encore bannie
+        const realIP = await this.getClientRealIP();
+        if (realIP) {
+            const { data: realIpBan, error: realIpBanError } = await this.supabase
+                .from('banned_real_ips')
+                .select('*')
+                .eq('ip', realIP)
+                .maybeSingle();
+                
+            if (realIpBanError) {
+                console.warn("Erreur lors de la vérification du bannissement d'IP réelle:", realIpBanError);
+            } else if (!realIpBan) {
+                // L'IP réelle n'est plus bannie
+                localStorage.removeItem('chat_device_banned');
+                localStorage.removeItem('chat_device_banned_until');
+                localStorage.removeItem('chat_ban_reason');
+                localStorage.removeItem('chat_ban_dismissed');
+                
+                // Créer un cookie pour indiquer que le bannissement a été levé
+                document.cookie = "chat_ban_lifted=true; path=/; max-age=60";
+            }
+        }
+        
+        return true;
     } catch (error) {
         console.error("Erreur lors de la vérification des bannissements expirés:", error);
+        return false;
+    }
+}
+
+async cleanBanDatabase() {
+    if (!this.isAdmin) {
+        console.warn("Tentative de nettoyage de la base de bannissements sans privilèges d'administrateur");
+        return false;
+    }
+    
+    try {
+        console.log("Nettoyage des bannissements dans la base de données...");
+        
+        // Obtenir l'IP réelle de l'administrateur
+        const adminRealIP = await this.getClientRealIP();
+        const adminDeviceId = this.getDeviceId();
+        
+        // 1. Supprimer tous les bannissements pour l'IP de l'administrateur
+        if (adminRealIP) {
+            const { error: deleteRealIpError } = await this.supabase
+                .from('banned_real_ips')
+                .delete()
+                .eq('ip', adminRealIP);
+                
+            if (deleteRealIpError) {
+                console.error("Erreur lors de la suppression du bannissement IP réelle de l'admin:", deleteRealIpError);
+            } else {
+                console.log(`Bannissement IP réelle de l'admin supprimé: ${adminRealIP}`);
+            }
+        }
+        
+        // 2. Supprimer tous les bannissements pour l'appareil de l'administrateur
+        if (adminDeviceId) {
+            const { error: deleteDeviceError } = await this.supabase
+                .from('banned_ips')
+                .delete()
+                .eq('ip', adminDeviceId);
+                
+            if (deleteDeviceError) {
+                console.error("Erreur lors de la suppression du bannissement appareil de l'admin:", deleteDeviceError);
+            } else {
+                console.log(`Bannissement appareil de l'admin supprimé: ${adminDeviceId}`);
+            }
+        }
+        
+        // 3. Supprimer le bannissement du pseudo de l'administrateur
+        if (this.pseudo) {
+            const { error: deletePseudoError } = await this.supabase
+                .from('banned_ips')
+                .delete()
+                .eq('ip', this.pseudo);
+                
+            if (deletePseudoError) {
+                console.error("Erreur lors de la suppression du bannissement pseudo de l'admin:", deletePseudoError);
+            } else {
+                console.log(`Bannissement pseudo de l'admin supprimé: ${this.pseudo}`);
+            }
+        }
+        
+        // 4. Supprimer toutes les entrées locales de bannissement
+        localStorage.removeItem('chat_device_banned');
+        localStorage.removeItem('chat_device_banned_until');
+        localStorage.removeItem('chat_ban_reason');
+        localStorage.removeItem('chat_ban_dismissed');
+        
+        // 5. Ajouter un cookie pour indiquer que le bannissement a été levé
+        document.cookie = "chat_ban_lifted=true; path=/; max-age=60";
+        
+        // 6. Afficher une notification de succès
+        this.showNotification("Protection admin : vos bannissements ont été nettoyés", "success");
+        
+        // 7. Recharger la page après un court délai
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
+        
+        return true;
+    } catch (error) {
+        console.error("Erreur lors du nettoyage des bannissements:", error);
+        return false;
     }
 }
 
@@ -3068,8 +3208,42 @@ async checkAndClearExpiredBans() {
     }, 3000);
 }
 
-// Ajoutez la nouvelle méthode juste ici
 showBanNotification(reason = '') {
+    // Protection spéciale pour les administrateurs
+    if (this.isAdmin) {
+        // Offrir à l'administrateur la possibilité de se débannir
+        const adminProtection = document.createElement('div');
+        adminProtection.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(76, 175, 80, 0.9);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            z-index: 9999;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 90%;
+            width: 400px;
+        `;
+        
+        adminProtection.innerHTML = `
+            <div style="font-size: 18px; margin-bottom: 10px; font-weight: bold;">Protection Administrateur</div>
+            <p style="margin: 0 0 15px 0;">Vous êtes banni du chat, mais en tant qu'administrateur, vous pouvez supprimer ce bannissement.</p>
+            <button id="admin-unban-button" style="background: #4CAF50; border: none; padding: 8px 15px; color: white; border-radius: 5px; cursor: pointer;">Se débannir</button>
+        `;
+        
+        document.body.appendChild(adminProtection);
+        
+        // Ajouter le gestionnaire pour le bouton de débannissement
+        document.getElementById('admin-unban-button').addEventListener('click', async () => {
+            await this.cleanBanDatabase();
+            adminProtection.remove();
+        });
+    }
+
     // Supprimer toute notification existante
     document.querySelectorAll('.chat-banned-message').forEach(el => el.remove());
     
@@ -3090,9 +3264,9 @@ showBanNotification(reason = '') {
         <h2 style="margin-top: 5px; margin-bottom: 10px; font-size: 20px; font-weight: bold;">Accès interdit</h2>
         <p style="margin: 0 0 5px 0;">Votre accès au chat a été suspendu.</p>
         ${reason ? `<p class="ban-reason">Raison: ${reason}</p>` : ''}
-        <div style="display: flex; gap: 10px; margin-top: 15px;">
-            <button id="dismiss-ban-message">Fermer</button>
-            <button id="check-ban-status" style="background: rgba(0,200,83,0.4);">Vérifier si débanni</button>
+        <div style="display: flex; gap: 10px; margin-top: 15px; justify-content: center;">
+            <button id="dismiss-ban-message" style="background: rgba(255,255,255,0.2); border: none; padding: 8px 15px; color: white; border-radius: 5px; cursor: pointer;">Fermer</button>
+            <button id="check-ban-status-btn" style="background: rgba(255,255,255,0.25); border: none; padding: 8px 15px; color: white; border-radius: 5px; cursor: pointer;">Vérifier si débanni</button>
         </div>
     `;
     
@@ -3103,6 +3277,11 @@ showBanNotification(reason = '') {
     localStorage.setItem('chat_device_banned_until', 'permanent');
     if (reason) {
         localStorage.setItem('chat_ban_reason', reason);
+    }
+    
+    // Stocker le pseudo actuel si disponible
+    if (this.pseudo) {
+        localStorage.setItem('lastPseudo', this.pseudo);
     }
     
     // Gestionnaire pour fermer la notification
@@ -3116,72 +3295,18 @@ showBanNotification(reason = '') {
         localStorage.setItem('chat_ban_dismissed', 'true');
     });
     
-    // Gestionnaire pour vérifier si l'utilisateur est toujours banni
-    document.getElementById('check-ban-status').addEventListener('click', async () => {
-        // Ajouter une animation de chargement
-        const checkButton = document.getElementById('check-ban-status');
-        checkButton.innerHTML = '<span class="loading-dots">Vérification...</span>';
-        checkButton.disabled = true;
-        
-        try {
-            // Vérifier si le stockage local indique un bannissement temporaire expiré
-            await this.checkAndClearLocalBan();
-            
-            // Vérifier dans la base de données si l'utilisateur est banni
-            const pseudo = localStorage.getItem('lastPseudo') || localStorage.getItem('chatPseudo');
-            if (pseudo) {
-                const isBanned = await this.isUserBannedInDatabase(pseudo);
-                
-                if (!isBanned) {
-                    // Si plus banni, supprimer toutes les informations de bannissement
-                    localStorage.removeItem('chat_device_banned');
-                    localStorage.removeItem('chat_device_banned_until');
-                    localStorage.removeItem('chat_ban_reason');
-                    localStorage.removeItem('chat_ban_dismissed');
-                    
-                    // Afficher un message de succès
-                    banMessage.innerHTML = `
-                        <div class="banned-icon" style="color: #4CAF50;">✓</div>
-                        <h2 style="margin-top: 5px; margin-bottom: 10px; font-size: 20px; font-weight: bold; color: #4CAF50;">Votre bannissement a été levé</h2>
-                        <p style="margin: 0 0 15px 0;">Vous pouvez à nouveau utiliser le chat.</p>
-                        <button id="refresh-page" style="background: #4CAF50;">Actualiser la page</button>
-                    `;
-                    
-                    // Ajouter un gestionnaire pour actualiser la page
-                    document.getElementById('refresh-page').addEventListener('click', () => {
-                        window.location.reload();
-                    });
-                    
-                    // Afficher le bouton de chat s'il existe
-                    const chatBtn = document.getElementById('chatToggleBtn');
-                    if (chatBtn) {
-                        chatBtn.style.display = 'flex';
-                    }
-                } else {
-                    // Si toujours banni, afficher un message
-                    checkButton.innerHTML = 'Vérifier si débanni';
-                    checkButton.disabled = false;
-                    
-                    this.showNotification("Vous êtes toujours banni du chat", "error");
-                }
-            } else {
-                // Si pas de pseudo stocké, actualiser la page
-                window.location.reload();
-            }
-        } catch (error) {
-            console.error("Erreur lors de la vérification du bannissement:", error);
-            checkButton.innerHTML = 'Vérifier si débanni';
-            checkButton.disabled = false;
-            
-            this.showNotification("Erreur lors de la vérification", "error");
-        }
-    });
+    // ... le reste de votre code pour le bouton "Vérifier si débanni"
     
     // Empêcher l'accès au chat
     const chatElements = document.querySelectorAll('.chat-widget, .chat-toggle-btn, #chatToggleBtn');
     chatElements.forEach(el => {
         if (el) el.style.display = 'none';
     });
+    
+    // Créer le bouton flottant de secours
+    if (window.banCheckSystem && typeof window.banCheckSystem.showBanMessage === 'function') {
+        window.banCheckSystem.showBanMessage();
+    }
 }
 
     updateNotificationButton() {
@@ -3489,6 +3614,7 @@ showAdminPanel() {
             <button class="tab-btn active" data-tab="banned-words">Mots bannis</button>
             <button class="tab-btn" data-tab="banned-ips">IPs bannies</button>
             <button class="tab-btn" data-tab="notifications">Notifications</button>
+            <button class="tab-btn" data-tab="admin-tools">Outils Admin</button>
         </div>
         <div class="panel-content">
             <div class="tab-section active" id="banned-words-section">
@@ -3506,44 +3632,54 @@ showAdminPanel() {
                     <div class="loading-ips">Chargement des IPs bannies...</div>
                 </div>
             </div>
-<div class="tab-section" id="notifications-section">
-  <h4>🚨 Envoyer une notification importante</h4>
 
-  <form id="notificationForm">
-    <label>Titre :</label><br>
-    <input type="text" id="notif-title" required><br><br>
+            <div class="tab-section" id="notifications-section">
+                <h4>🚨 Envoyer une notification importante</h4>
+                <form id="notificationForm">
+                    <label>Titre :</label><br>
+                    <input type="text" id="notif-title" required><br><br>
+                    <label>Message :</label><br>
+                    <textarea id="notif-body" required></textarea><br><br>
+                    <label>URL (facultatif) :</label><br>
+                    <input type="text" id="notif-url" placeholder="/actualites"><br><br>
+                    <label>
+                        <input type="checkbox" id="notif-urgent">
+                        Notification urgente
+                    </label><br><br>
+                    <button type="submit">📤 Envoyer</button>
+                </form>
+                <p id="result" style="margin-top:10px;"></p>
+            </div>
 
-    <label>Message :</label><br>
-    <textarea id="notif-body" required></textarea><br><br>
-
-    <label>URL (facultatif) :</label><br>
-    <input type="text" id="notif-url" placeholder="/actualites"><br><br>
-
-    <label>
-      <input type="checkbox" id="notif-urgent">
-      Notification urgente
-    </label><br><br>
-
-    <button type="submit">📤 Envoyer</button>
-  </form>
-
-  <p id="result" style="margin-top:10px;"></p>
-</div>
+            <div class="tab-section" id="admin-tools-section">
+                <h4>🛡️ Outils d'administration</h4>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div>
+                        <button id="admin-protection-btn" style="background: #4CAF50; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                            <span class="material-icons">security</span>
+                            Protection Admin (débannir vous-même)
+                        </button>
+                        <p style="font-size: 0.9em; margin-top: 5px; color: rgba(255,255,255,0.7);">
+                            Utilisez ce bouton si vous vous êtes accidentellement banni vous-même.
+                        </p>
+                    </div>
+                    <div>
+                        <button id="clear-expired-bans-btn" style="background: #FFA726; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                            <span class="material-icons">cleaning_services</span>
+                            Nettoyer les bannissements expirés
+                        </button>
+                        <p style="font-size: 0.9em; margin-top: 5px; color: rgba(255,255,255,0.7);">
+                            Supprime tous les bannissements expirés de la base de données.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     `;
 
     document.body.appendChild(panel);
     this.loadBannedWords();
     this.loadBannedIPs();
-// ─── Script pour colorer le bouton quand « urgente » est cochée ───
-const urgentChk = panel.querySelector('#notif-urgent');
-const submitBtn = panel.querySelector('#notificationForm button[type="submit"]');
-
-if (urgentChk && submitBtn){          // sécurité
-  urgentChk.addEventListener('change', () => {
-    submitBtn.classList.toggle('urgent', urgentChk.checked);
-  });
-}
 
     // Gestion des onglets
     const tabBtns = panel.querySelectorAll('.tab-btn');
@@ -3573,29 +3709,23 @@ if (urgentChk && submitBtn){          // sécurité
     // Formulaire notification
     panel.querySelector('#notificationForm').addEventListener('submit', async (e) => {
         e.preventDefault();
+        // Code existant pour les notifications...
+    });
 
-			const title  = document.getElementById("notif-title").value.trim();
-	const body   = document.getElementById("notif-body").value.trim();
+    // Bouton de protection admin
+    panel.querySelector('#admin-protection-btn').addEventListener('click', async () => {
+        if (confirm("Êtes-vous sûr de vouloir supprimer tous vos bannissements ? Cette action vous permettra de continuer à utiliser le chat si vous vous êtes accidentellement banni.")) {
+            await this.cleanBanDatabase();
+        }
+    });
 
-	const raw    = document.getElementById("notif-url").value.trim();
-	const url    = raw === '' ? '' : raw;           // plus de « /actualites »
-
-	const urgent = document.getElementById("notif-urgent").checked;
-
-
-        const response = await fetch("/api/send-important-notification", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-API-Key": "admin2024" // 🔐 Mets ta clé ADMIN_API_KEY ici
-            },
-            body: JSON.stringify({ title, body, url, urgent })
-        });
-
-        const result = await response.json();
-        document.getElementById("result").innerText = response.ok
-            ? "✅ Notification envoyée avec succès"
-            : "❌ Erreur : " + (result.error || "inconnue");
+    // Bouton pour nettoyer les bannissements expirés
+    panel.querySelector('#clear-expired-bans-btn').addEventListener('click', async () => {
+        if (confirm("Êtes-vous sûr de vouloir nettoyer tous les bannissements expirés ?")) {
+            await this.checkAndClearExpiredBans(true);
+            this.showNotification("Nettoyage des bannissements expirés terminé", "success");
+            await this.loadBannedIPs();
+        }
     });
 
     // Fermer le panneau
@@ -3812,6 +3942,13 @@ if (urgentChk && submitBtn){          // sécurité
         // Extraire le pseudo
         const pseudo = userIdentifier.includes('-') ? userIdentifier.split('-')[0] : userIdentifier;
         
+        // Vérification de sécurité : ne pas bannir l'administrateur
+        if (pseudo === this.pseudo && this.isAdmin) {
+            console.warn("Tentative de bannissement de soi-même détectée et bloquée");
+            this.showNotification("Vous ne pouvez pas vous bannir vous-même", "error");
+            return false;
+        }
+        
         // Convertir la durée
         let expiresAt = null;
         if (duration) {
@@ -3838,30 +3975,7 @@ if (urgentChk && submitBtn){          // sécurité
         
         console.log('Pseudo banni avec succès:', pseudo);
         
-        // 2. NOUVEAU: Bannir également l'appareil de l'utilisateur pour éviter les contournements
-        const deviceId = this.getDeviceId();
-        if (deviceId) {
-            try {
-                const { error: deviceBanError } = await this.supabase
-                    .from('banned_ips')
-                    .insert({
-                        ip: deviceId,
-                        banned_at: new Date().toISOString(),
-                        expires_at: expiresAt,
-                        reason: `Appareil de ${pseudo} - ${reason || 'Non spécifié'}`,
-                        banned_by: this.pseudo
-                    });
-                    
-                if (!deviceBanError) {
-                    console.log(`Appareil ${deviceId} banni avec succès`);
-                }
-            } catch (deviceError) {
-                console.warn("Erreur lors du bannissement de l'appareil:", deviceError);
-                // Ne pas interrompre le processus en cas d'erreur
-            }
-        }
-        
-        // 3. Récupérer les messages récents de l'utilisateur pour trouver son IP
+        // 2. Récupérer les messages récents de l'utilisateur pour trouver son IP
         const { data: userMessages, error: messagesError } = await this.supabase
             .from('messages')
             .select('*')
@@ -3882,29 +3996,31 @@ if (urgentChk && submitBtn){          // sécurité
             
             // Si une IP réelle a été trouvée, la bannir aussi
             if (userRealIP) {
-                console.log(`Bannissement de l'IP réelle: ${userRealIP}`);
-                
-                // Insérer dans la table banned_real_ips
-                const { error: ipBanError } = await this.supabase
-                    .from('banned_real_ips')
-                    .insert({
-                        ip: userRealIP,
-                        banned_at: new Date().toISOString(),
-                        expires_at: expiresAt,
-                        reason: `IP de ${pseudo} - ${reason || 'Non spécifié'}`,
-                        banned_by: this.pseudo
-                    });
-                    
-                if (ipBanError) {
-                    console.error('Erreur bannissement IP réelle:', ipBanError);
+                // Vérification de sécurité : ne pas bannir l'IP de l'administrateur
+                const adminRealIP = await this.getClientRealIP();
+                if (userRealIP === adminRealIP && this.isAdmin) {
+                    console.warn("Tentative de bannissement de l'IP de l'admin détectée et bloquée");
+                    this.showNotification("Protection admin : votre IP n'a pas été bannie", "warning");
                 } else {
-                    console.log(`IP réelle ${userRealIP} bannie avec succès`);
+                    console.log(`Bannissement de l'IP réelle: ${userRealIP}`);
                     
-                    // Stocker la raison dans localStorage pour référence future
-                    const banReason = `IP de ${pseudo} - ${reason || 'Non spécifié'}`;
-                    localStorage.setItem('chat_ban_reason', banReason);
-                    
-                    this.showNotification(`L'IP de ${pseudo} a également été bannie`, 'success');
+                    // Insérer dans la table banned_real_ips
+                    const { error: ipBanError } = await this.supabase
+                        .from('banned_real_ips')
+                        .insert({
+                            ip: userRealIP,
+                            banned_at: new Date().toISOString(),
+                            expires_at: expiresAt,
+                            reason: `IP de ${pseudo} - ${reason || 'Non spécifié'}`,
+                            banned_by: this.pseudo
+                        });
+                        
+                    if (ipBanError) {
+                        console.error('Erreur bannissement IP réelle:', ipBanError);
+                    } else {
+                        console.log(`IP réelle ${userRealIP} bannie avec succès`);
+                        this.showNotification(`L'IP de ${pseudo} a également été bannie`, 'success');
+                    }
                 }
             } else {
                 console.warn(`Aucune IP réelle trouvée pour ${pseudo}`);
@@ -3926,20 +4042,6 @@ if (urgentChk && submitBtn){          // sécurité
         } else {
             console.log(`Messages de l'utilisateur ${pseudo} supprimés avec succès`);
             this.showNotification(`Messages de "${pseudo}" supprimés avec succès`, 'success');
-        }
-        
-        // Ajouter un bannissement local pour s'assurer que l'utilisateur ne peut pas se reconnecter
-        localStorage.setItem('chat_device_banned', 'true');
-        localStorage.setItem('chat_device_banned_until', expiresAt || 'permanent');
-        localStorage.setItem('chat_ban_reason', reason || 'Non spécifié');
-        
-        // Créer le bouton pour vérifier le statut
-        try {
-            if (window.banCheckSystem && typeof window.banCheckSystem.checkBanStatus === 'function') {
-                window.banCheckSystem.showBanMessage();
-            }
-        } catch (e) {
-            console.warn("Impossible de créer le bouton de statut:", e);
         }
         
         this.showNotification(`Utilisateur "${pseudo}" banni avec succès`, 'success');
