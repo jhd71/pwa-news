@@ -77,3 +77,29 @@ body {
 .tile, .card, .widget {
   margin-bottom: 10px !important;
 }
+
+/* 8. Adaptation au thème sombre pour les boutons de menu et paramètres */
+[data-theme="dark"] .menu-button, 
+[data-theme="dark"] .hamburger-menu,
+[data-theme="dark"] .settings-button, 
+[data-theme="dark"] .gear-icon,
+html.dark-theme .menu-button, 
+html.dark-theme .hamburger-menu,
+html.dark-theme .settings-button, 
+html.dark-theme .gear-icon,
+body.dark-theme .menu-button, 
+body.dark-theme .hamburger-menu,
+body.dark-theme .settings-button, 
+body.dark-theme .gear-icon {
+  background-color: rgba(40, 40, 70, 0.8) !important;
+}
+
+/* S'assurer que l'icône est bien visible en mode sombre */
+[data-theme="dark"] .menu-button .material-icons, 
+[data-theme="dark"] .settings-button .material-icons,
+html.dark-theme .menu-button .material-icons, 
+html.dark-theme .settings-button .material-icons,
+body.dark-theme .menu-button .material-icons, 
+body.dark-theme .settings-button .material-icons {
+  color: white !important;
+}
