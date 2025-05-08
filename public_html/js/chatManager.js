@@ -464,7 +464,8 @@ class ChatManager {
         if (/Mobi|Android|iPad|tablet/i.test(navigator.userAgent)) {
             this.optimizeForLowEndDevices();
         }
-
+// Vérifier et nettoyer les bannissements expirés
+await this.checkAndClearExpiredBans();
         this.initialized = true;
         console.log("Chat initialisé avec succès");
     } catch (error) {
@@ -1449,6 +1450,9 @@ setupBanChecker() {
                 this.showNotification('Vous avez été banni du chat', 'error');
                 clearInterval(this.banCheckInterval);
                 await this.logout();
+            } else {
+                // Vérifier et nettoyer les bannissements expirés
+                await this.checkAndClearExpiredBans();
             }
         }
     }, 30000);
@@ -2223,6 +2227,68 @@ async checkBannedStatus() {
         
         // Déconnecter l'utilisateur
         await this.logout();
+    }
+}
+
+async checkAndClearExpiredBans() {
+    try {
+        console.log("Vérification des bannissements expirés...");
+        
+        // Vérifier le bannissement local d'abord
+        const bannedUntil = localStorage.getItem('chat_device_banned_until');
+        if (bannedUntil && bannedUntil !== 'permanent') {
+            const expiryTime = parseInt(bannedUntil);
+            if (Date.now() > expiryTime) {
+                console.log("Bannissement local expiré, nettoyage...");
+                localStorage.removeItem('chat_device_banned');
+                localStorage.removeItem('chat_device_banned_until');
+                localStorage.removeItem('chat_ban_reason');
+                localStorage.removeItem('chat_ban_dismissed');
+            }
+        }
+        
+        // Vérifier les bannissements dans la base de données
+        if (this.isAdmin) {
+            console.log("Nettoyage des bannissements expirés dans la base de données");
+            
+            // Supprimer les bannissements expirés de banned_ips
+            const { error: ipError } = await this.supabase
+                .from('banned_ips')
+                .delete()
+                .lt('expires_at', new Date().toISOString());
+                
+            if (ipError) {
+                console.error("Erreur lors du nettoyage des banned_ips:", ipError);
+            }
+            
+            // Supprimer les bannissements expirés de banned_real_ips
+            const { error: realIpError } = await this.supabase
+                .from('banned_real_ips')
+                .delete()
+                .lt('expires_at', new Date().toISOString());
+                
+            if (realIpError) {
+                console.error("Erreur lors du nettoyage des banned_real_ips:", realIpError);
+            }
+        }
+        
+        // Vérifier si l'appareil actuel est encore banni
+        const deviceId = this.getDeviceId();
+        const { data: deviceBan, error: deviceBanError } = await this.supabase
+            .from('banned_ips')
+            .select('*')
+            .eq('ip', deviceId)
+            .maybeSingle();
+            
+        if (!deviceBanError && !deviceBan) {
+            // L'appareil n'est plus banni dans la base de données
+            localStorage.removeItem('chat_device_banned');
+            localStorage.removeItem('chat_device_banned_until');
+            localStorage.removeItem('chat_ban_reason');
+            localStorage.removeItem('chat_ban_dismissed');
+        }
+    } catch (error) {
+        console.error("Erreur lors de la vérification des bannissements expirés:", error);
     }
 }
 
@@ -3034,10 +3100,24 @@ if (urgentChk && submitBtn){          // sécurité
         } // AJOUTEZ CETTE ACCOLADE FERMANTE ICI
         
         // Actualiser les messages pour cacher les messages de l'utilisateur banni
-        await this.loadExistingMessages();
-        this.showNotification(`Utilisateur "${pseudo}" banni avec succès`, 'success');
-        this.playSound('success');
-        
+	await this.loadExistingMessages();
+
+	// Supprimer tous les messages de l'utilisateur banni
+	console.log(`Suppression des messages de l'utilisateur ${pseudo}`);
+	const { error: deleteMessagesError } = await this.supabase
+		.from('messages')
+		.delete()
+		.eq('pseudo', pseudo);
+
+	if (deleteMessagesError) {
+		console.error('Erreur lors de la suppression des messages:', deleteMessagesError);
+	} else {
+		console.log(`Messages de l'utilisateur ${pseudo} supprimés avec succès`);
+		this.showNotification(`Messages de "${pseudo}" supprimés avec succès`, 'success');
+	}
+
+	this.showNotification(`Utilisateur "${pseudo}" banni avec succès`, 'success');
+	this.playSound('success');    
         return true;
     } catch (error) {
         console.error('Erreur bannissement:', error);
