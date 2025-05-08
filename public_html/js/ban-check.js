@@ -21,24 +21,7 @@
         console.log("Initialisation du système de vérification de bannissement");
         
         // Initialiser Supabase si nécessaire
-        if (!window.supabase) {
-            try {
-                // Essayer d'utiliser le client Supabase existant si disponible
-                if (window.chatManager && window.chatManager.supabase) {
-                    supabaseClient = window.chatManager.supabase;
-                } else {
-                    // Créer un nouveau client si nécessaire
-                    supabaseClient = supabase.createClient(
-                        'https://ekjgfiyhkythqcnmhzea.supabase.co',
-                        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4'
-                    );
-                }
-            } catch (error) {
-                console.error("Erreur d'initialisation de Supabase:", error);
-            }
-        } else {
-            supabaseClient = window.supabase;
-        }
+        initializeSupabase();
         
         // Vérifier si l'utilisateur est banni
         const isBanned = localStorage.getItem('chat_device_banned') === 'true';
@@ -57,6 +40,31 @@
         
         // S'assurer que le bouton de chat est caché si banni
         updateChatButtonVisibility();
+    }
+    
+    // Fonction pour initialiser Supabase correctement
+    function initializeSupabase() {
+        try {
+            // Essayer d'utiliser le client Supabase existant si disponible
+            if (window.chatManager && window.chatManager.supabase) {
+                supabaseClient = window.chatManager.supabase;
+                console.log("Utilisation du client Supabase de chatManager");
+            } 
+            // Vérifier si la variable globale est disponible
+            else if (window.supabase) {
+                supabaseClient = window.supabase.createClient(
+                    'https://ekjgfiyhkythqcnmhzea.supabase.co',
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4'
+                );
+                console.log("Client Supabase créé à partir de window.supabase");
+            }
+            else {
+                console.warn("Supabase non disponible - les vérifications en base de données seront ignorées");
+            }
+        } catch (error) {
+            console.error("Erreur d'initialisation de Supabase:", error);
+            supabaseClient = null;
+        }
     }
     
     // Fonction pour créer le bouton de vérification flottant
@@ -211,48 +219,61 @@
             // Vérifier les bannissements dans la base de données
             let isBannedInDatabase = false;
             
-            // Vérifier dans banned_ips
-            if (pseudo && supabaseClient) {
-                const { data: ipBanData } = await supabaseClient
-                    .from('banned_ips')
-                    .select('*')
-                    .eq('ip', pseudo)
-                    .maybeSingle();
-                
-                if (ipBanData) {
-                    // Vérifier si le bannissement a expiré
-                    if (ipBanData.expires_at && new Date(ipBanData.expires_at) < new Date()) {
-                        // Supprimer le bannissement expiré
-                        await supabaseClient
-                            .from('banned_ips')
-                            .delete()
-                            .eq('ip', pseudo);
-                    } else {
-                        isBannedInDatabase = true;
+            // Vérifier si supabaseClient est correctement initialisé
+            if (supabaseClient && typeof supabaseClient.from === 'function') {
+                // Vérifier dans banned_ips
+                if (pseudo) {
+                    const { data: ipBanData, error: ipBanError } = await supabaseClient
+                        .from('banned_ips')
+                        .select('*')
+                        .eq('ip', pseudo)
+                        .maybeSingle();
+                    
+                    if (!ipBanError && ipBanData) {
+                        // Vérifier si le bannissement a expiré
+                        if (ipBanData.expires_at && new Date(ipBanData.expires_at) < new Date()) {
+                            // Supprimer le bannissement expiré
+                            await supabaseClient
+                                .from('banned_ips')
+                                .delete()
+                                .eq('ip', pseudo);
+                        } else {
+                            isBannedInDatabase = true;
+                        }
                     }
                 }
+                
+                // Vérifier dans banned_real_ips
+                if (!isBannedInDatabase && realIP) {
+                    const { data: realIpBanData, error: realIpBanError } = await supabaseClient
+                        .from('banned_real_ips')
+                        .select('*')
+                        .eq('ip', realIP)
+                        .maybeSingle();
+                    
+                    if (!realIpBanError && realIpBanData) {
+                        // Vérifier si le bannissement a expiré
+                        if (realIpBanData.expires_at && new Date(realIpBanData.expires_at) < new Date()) {
+                            // Supprimer le bannissement expiré
+                            await supabaseClient
+                                .from('banned_real_ips')
+                                .delete()
+                                .eq('ip', realIP);
+                        } else {
+                            isBannedInDatabase = true;
+                        }
+                    }
+                }
+            } else {
+                console.warn("Supabase non initialisé ou incomplet, vérification passive uniquement");
+                // Si supabaseClient n'est pas disponible, on fait une vérification passive avec un délai supplémentaire
+                await new Promise(resolve => setTimeout(resolve, 2000));
             }
             
-            // Vérifier dans banned_real_ips
-            if (!isBannedInDatabase && realIP && supabaseClient) {
-                const { data: realIpBanData } = await supabaseClient
-                    .from('banned_real_ips')
-                    .select('*')
-                    .eq('ip', realIP)
-                    .maybeSingle();
-                
-                if (realIpBanData) {
-                    // Vérifier si le bannissement a expiré
-                    if (realIpBanData.expires_at && new Date(realIpBanData.expires_at) < new Date()) {
-                        // Supprimer le bannissement expiré
-                        await supabaseClient
-                            .from('banned_real_ips')
-                            .delete()
-                            .eq('ip', realIP);
-                    } else {
-                        isBannedInDatabase = true;
-                    }
-                }
+            // Forcer le débannissement si nous ne pouvons pas vérifier la base de données
+            if (!supabaseClient || typeof supabaseClient.from !== 'function') {
+                console.log("Supabase non disponible, débannissement forcé en mode local uniquement");
+                isBannedInDatabase = false;
             }
             
             // Si l'utilisateur n'est plus banni, mettre à jour le stockage local
@@ -263,6 +284,9 @@
                 localStorage.removeItem('chat_ban_reason');
                 localStorage.removeItem('chat_ban_dismissed');
                 localStorage.removeItem('status_button_visible');
+                
+                // Marquer comme débanni avec un cookie
+                document.cookie = "chat_ban_lifted=true; path=/; max-age=60";
                 
                 // Afficher une notification de succès
                 showUnbannedNotification();
