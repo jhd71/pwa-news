@@ -26,7 +26,7 @@ body {
 /* 2. Remonter les boutons menu et paramètres */
 .menu-button, .hamburger-menu {
   position: fixed !important;
-  top: calc(var(--safe-area-top) + 80px) !important; /* Augmenté pour descendre le bouton */
+  top: calc(var(--safe-area-top) + 90px) !important; /* Augmenté pour descendre le bouton */
   left: 10px !important;
   z-index: 1010 !important;
   background-color: rgba(126, 87, 194, 0.8) !important;
@@ -35,7 +35,7 @@ body {
 
 .settings-button, .gear-icon {
   position: fixed !important;
-  top: calc(var(--safe-area-top) + 80px) !important; /* Augmenté pour descendre le bouton */
+  top: calc(var(--safe-area-top) + 90px) !important; /* Augmenté pour descendre le bouton */
   right: 10px !important;
   z-index: 1010 !important;
   background-color: rgba(126, 87, 194, 0.8) !important;
