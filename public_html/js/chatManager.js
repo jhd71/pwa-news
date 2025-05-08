@@ -2379,6 +2379,319 @@ async checkBannedStatus() {
     }
 }
 
+showSimpleNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `simple-notification ${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+        background: ${type === 'error' ? 'rgba(211, 47, 47, 0.9)' : 'rgba(33, 150, 83, 0.9)'};
+        color: white;
+        padding: 12px 20px;
+        border-radius: 5px;
+        z-index: 9999;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        font-size: 14px;
+        max-width: 300px;
+        word-wrap: break-word;
+        animation: slideInRight 0.3s ease-out forwards;
+    `;
+    
+    // Ajouter un style pour l'animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+    `;
+    
+    if (!document.head.querySelector('style[data-for="simple-notification"]')) {
+        style.setAttribute('data-for', 'simple-notification');
+        document.head.appendChild(style);
+    }
+    
+    document.body.appendChild(notification);
+    
+    // Supprimer la notification après 3 secondes
+    setTimeout(() => {
+        notification.style.animation = 'fadeOut 0.5s ease-out forwards';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 500);
+    }, 3000);
+}
+
+// Ajoutez cette méthode juste après showSimpleNotification()
+createBanStatusButton() {
+    // Supprimer tout bouton existant
+    const existingButton = document.getElementById('check-ban-status-button');
+    if (existingButton) {
+        existingButton.remove();
+    }
+    
+    // Détecter si on est sur mobile
+    const isMobile = window.innerWidth <= 768;
+    
+    // Créer le bouton flottant
+    const button = document.createElement('button');
+    button.id = 'check-ban-status-button';
+    
+    // Style différent pour mobile et desktop
+    if (isMobile) {
+        button.innerHTML = '🔄';
+        button.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(126, 87, 194, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        `;
+    } else {
+        button.innerHTML = '🔄 Vérifier accès chat';
+        button.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(126, 87, 194, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 14px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        `;
+    }
+    
+    // Ajouter un effet hover
+    button.addEventListener('mouseenter', () => {
+        button.style.background = 'rgba(126, 87, 194, 1)';
+        button.style.transform = 'scale(1.05)';
+    });
+    
+    button.addEventListener('mouseleave', () => {
+        button.style.background = 'rgba(126, 87, 194, 0.8)';
+        button.style.transform = 'scale(1)';
+    });
+    
+    // Titre informatif pour expliquer ce que fait le bouton
+    button.title = "Vérifier si votre bannissement a été levé";
+    
+    // Ajouter le gestionnaire de clic
+    button.addEventListener('click', async () => {
+        // Animation de chargement adaptée au mobile
+        if (isMobile) {
+            button.innerHTML = '⏳';
+        } else {
+            button.innerHTML = '🔄 Vérification...';
+        }
+        button.disabled = true;
+        
+        try {
+            // Récupérer l'IP réelle
+            const realIP = await this.getClientRealIP();
+            
+            // Récupérer le pseudo stocké
+            const storedPseudo = localStorage.getItem('lastPseudo') || localStorage.getItem('chatPseudo');
+            
+            // Vérifier si banni dans banned_ips (si pseudo stocké)
+            let isBannedInIps = false;
+            if (storedPseudo) {
+                const { data: ipBanData } = await this.supabase
+                    .from('banned_ips')
+                    .select('*')
+                    .eq('ip', storedPseudo)
+                    .maybeSingle();
+                    
+                if (ipBanData) {
+                    // Vérifier si le bannissement est expiré
+                    if (ipBanData.expires_at && new Date(ipBanData.expires_at) < new Date()) {
+                        // Le bannissement a expiré, supprimer l'entrée
+                        await this.supabase
+                            .from('banned_ips')
+                            .delete()
+                            .eq('ip', storedPseudo);
+                    } else {
+                        isBannedInIps = true;
+                    }
+                }
+            }
+            
+            // Vérifier si banni dans banned_real_ips
+            let isBannedInRealIps = false;
+            if (realIP) {
+                const { data: realIpBanData } = await this.supabase
+                    .from('banned_real_ips')
+                    .select('*')
+                    .eq('ip', realIP)
+                    .maybeSingle();
+                    
+                if (realIpBanData) {
+                    // Vérifier si le bannissement est expiré
+                    if (realIpBanData.expires_at && new Date(realIpBanData.expires_at) < new Date()) {
+                        // Le bannissement a expiré, supprimer l'entrée
+                        await this.supabase
+                            .from('banned_real_ips')
+                            .delete()
+                            .eq('ip', realIP);
+                    } else {
+                        isBannedInRealIps = true;
+                    }
+                }
+            }
+            
+            // Vérifier le bannissement local
+            const bannedUntil = localStorage.getItem('chat_device_banned_until');
+            let isLocallyBanned = localStorage.getItem('chat_device_banned') === 'true';
+            
+            // Si le bannissement local est temporaire et expiré, le supprimer
+            if (isLocallyBanned && bannedUntil && bannedUntil !== 'permanent') {
+                const expiryTime = parseInt(bannedUntil);
+                if (Date.now() > expiryTime) {
+                    localStorage.removeItem('chat_device_banned');
+                    localStorage.removeItem('chat_device_banned_until');
+                    localStorage.removeItem('chat_ban_reason');
+                    localStorage.removeItem('chat_ban_dismissed');
+                    isLocallyBanned = false;
+                }
+            }
+            
+            // Si plus banni nulle part, afficher un message de succès et permettre de revenir au chat
+            if (!isBannedInIps && !isBannedInRealIps && !isLocallyBanned) {
+                // Afficher une notification de succès
+                const successNotif = document.createElement('div');
+                successNotif.className = 'ban-status-notification success';
+                successNotif.innerHTML = `
+                    <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+                        <div style="font-size: 48px; margin-bottom: 10px;">✅</div>
+                        <h3 style="margin: 0 0 10px 0;">Votre accès au chat a été restauré</h3>
+                        <p style="margin: 0 0 15px 0;">Vous pouvez à nouveau utiliser le chat.</p>
+                        <button id="reload-page-button" style="background: #4CAF50; border: none; color: white; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Actualiser la page</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(successNotif);
+                
+                // Ajouter du style CSS pour la notification
+                const style = document.createElement('style');
+                style.textContent = `
+                    .ban-status-notification {
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        background: rgba(0, 0, 0, 0.8);
+                        color: white;
+                        padding: 30px;
+                        border-radius: 10px;
+                        z-index: 10000;
+                        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+                        max-width: 90%;
+                        width: 350px;
+                    }
+                    
+                    .ban-status-notification.success {
+                        background: linear-gradient(135deg, rgba(33, 150, 83, 0.9), rgba(16, 120, 60, 0.9));
+                    }
+                    
+                    .ban-status-notification.error {
+                        background: linear-gradient(135deg, rgba(211, 47, 47, 0.9), rgba(183, 28, 28, 0.9));
+                    }
+                    
+                    #reload-page-button:hover {
+                        background: #3d8b40 !important;
+                    }
+                `;
+                
+                document.head.appendChild(style);
+                
+                // Ajouter le gestionnaire pour actualiser la page
+                document.getElementById('reload-page-button')?.addEventListener('click', () => {
+                    window.location.reload();
+                });
+                
+                // Supprimer le bouton de statut
+                button.remove();
+            } else {
+                // Si toujours banni, afficher un message
+                if (isMobile) {
+                    button.innerHTML = '🔒';
+                } else {
+                    button.innerHTML = '🔒 Toujours banni';
+                }
+                button.style.background = 'rgba(211, 47, 47, 0.8)';
+                
+                // Réinitialiser après 3 secondes
+                setTimeout(() => {
+                    if (isMobile) {
+                        button.innerHTML = '🔄';
+                    } else {
+                        button.innerHTML = '🔄 Vérifier accès chat';
+                    }
+                    button.style.background = 'rgba(126, 87, 194, 0.8)';
+                    button.disabled = false;
+                }, 3000);
+                
+                // Afficher aussi une notification
+                this.showSimpleNotification("Vous êtes toujours banni du chat", "error");
+            }
+        } catch (error) {
+            console.error("Erreur lors de la vérification du bannissement:", error);
+            if (isMobile) {
+                button.innerHTML = '⚠️';
+            } else {
+                button.innerHTML = '⚠️ Erreur';
+            }
+            button.style.background = 'rgba(211, 47, 47, 0.8)';
+            
+            // Réinitialiser après 3 secondes
+            setTimeout(() => {
+                if (isMobile) {
+                    button.innerHTML = '🔄';
+                } else {
+                    button.innerHTML = '🔄 Vérifier accès chat';
+                }
+                button.style.background = 'rgba(126, 87, 194, 0.8)';
+                button.disabled = false;
+            }, 3000);
+            
+            this.showSimpleNotification("Erreur lors de la vérification", "error");
+        }
+    });
+    
+    // Ajouter le bouton au document
+    document.body.appendChild(button);
+    
+    return button;
+}
+
 async checkAndClearLocalBan() {
     console.log("Vérification des bannissements locaux...");
     
@@ -2583,6 +2896,20 @@ showBanNotification(reason = '') {
             this.showNotification("Erreur lors de la vérification", "error");
         }
     });
+    
+    // Gestionnaire pour fermer la notification
+    document.getElementById('dismiss-ban-message').addEventListener('click', function() {
+        banMessage.classList.add('fade-out');
+        setTimeout(() => {
+            banMessage.remove();
+        }, 500);
+        
+        // Stocker que le message a été fermé, mais garder l'information de bannissement
+        localStorage.setItem('chat_ban_dismissed', 'true');
+    });
+    
+    // Ajouter cette ligne ici pour créer le bouton de vérification
+    this.createBanStatusButton();
     
     // Empêcher l'accès au chat
     const chatElements = document.querySelectorAll('.chat-widget, .chat-toggle-btn, #chatToggleBtn');
@@ -3522,7 +3849,7 @@ if (urgentChk && submitBtn){          // sécurité
             } else {
                 console.warn(`Aucune IP réelle trouvée pour ${pseudo}`);
             }
-        } // AJOUTEZ CETTE ACCOLADE FERMANTE ICI
+        }
         
         // Actualiser les messages pour cacher les messages de l'utilisateur banni
 	await this.loadExistingMessages();
@@ -3541,9 +3868,17 @@ if (urgentChk && submitBtn){          // sécurité
 		this.showNotification(`Messages de "${pseudo}" supprimés avec succès`, 'success');
 	}
 
-	this.showNotification(`Utilisateur "${pseudo}" banni avec succès`, 'success');
-	this.playSound('success');    
-        return true;
+	// Ajoutez ce nouveau bloc de code ici
+try {
+    // Créer le bouton de statut pour l'utilisateur banni (s'il utilise cette page)
+    this.createBanStatusButton();
+} catch (e) {
+    console.warn("Impossible de créer le bouton de statut:", e);
+}
+
+this.showNotification(`Utilisateur "${pseudo}" banni avec succès`, 'success');
+this.playSound('success');    
+return true;
     } catch (error) {
         console.error('Erreur bannissement:', error);
         this.showNotification('Erreur lors du bannissement', 'error');
