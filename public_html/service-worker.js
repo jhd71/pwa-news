@@ -14,6 +14,7 @@ const STATIC_RESOURCES = [
     '/js/chat-keyboard-fix.js',
     '/js/content.js',
     '/js/ios-install.js',
+	'/js/ios-chat-fix.js',
     '/js/newsPanel.js',
     '/js/newsTickerManager.js',
     '/js/notification-manager.js',
