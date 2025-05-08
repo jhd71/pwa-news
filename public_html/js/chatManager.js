@@ -161,48 +161,19 @@ class ChatManager {
     async init() {
     try {
         // VÉRIFICATION CRITIQUE: Bannissement local
-        if (localStorage.getItem('chat_device_banned') === 'true') {
+        // Remplacer la vérification existante par un appel à notre nouvelle fonction
+        const isStillBanned = await this.checkAndClearLocalBan();
+        if (isStillBanned) {
             console.error("APPAREIL BANNI: Initialisation du chat bloquée");
             
-            const bannedUntil = localStorage.getItem('chat_device_banned_until');
-            let isBanned = true;
+            // Récupérer la raison du bannissement
+            const banReason = localStorage.getItem('chat_ban_reason') || '';
             
-            // Vérifier si le bannissement a expiré
-            if (bannedUntil && bannedUntil !== 'permanent') {
-                const expiryTime = parseInt(bannedUntil);
-                if (Date.now() > expiryTime) {
-                    // Le bannissement a expiré
-                    localStorage.removeItem('chat_device_banned');
-                    localStorage.removeItem('chat_device_banned_until');
-                    localStorage.removeItem('chat_ban_reason');
-                    localStorage.removeItem('chat_ban_dismissed');
-                    isBanned = false;
-                }
-            }
+            // Afficher le message de bannissement
+            this.showBanNotification(banReason);
             
-            if (isBanned) {
-                console.log('APPAREIL BANNI: Accès au chat refusé');
-                
-                // Déconnexion forcée
-                this.pseudo = null;
-                this.isAdmin = false;
-                localStorage.removeItem('chatPseudo');
-                localStorage.removeItem('isAdmin');
-                
-                // Récupérer la raison du bannissement
-                const banReason = localStorage.getItem('chat_ban_reason') || '';
-                
-                // Utiliser notre nouvelle méthode pour afficher le message
-                this.showBanNotification(banReason);
-                
-                // On garde container pour le chat lui-même mais on le cache
-                this.container = document.createElement('div');
-                this.container.className = 'chat-widget hidden';
-                document.body.appendChild(this.container);
-                
-                // Empêcher l'initialisation du chat
-                return;
-            }
+            // Empêcher l'initialisation du chat
+            return;
         }
         
         // NOUVEAU: Vérification de l'IP réelle
@@ -224,36 +195,105 @@ class ChatManager {
                     console.log(`IP réelle bannie: ${realIP}`);
                     
                     // Vérifier si le CSS est déjà chargé
-	if (!document.getElementById('chat-ban-css')) {
-		const link = document.createElement('link');
-		link.id = 'chat-ban-css';
-		link.rel = 'stylesheet';
-		link.href = '/css/chat-ban.css';
-		document.head.appendChild(link);
-	}
+                    if (!document.getElementById('chat-ban-css')) {
+                        const link = document.createElement('link');
+                        link.id = 'chat-ban-css';
+                        link.rel = 'stylesheet';
+                        link.href = '/css/chat-ban.css';
+                        document.head.appendChild(link);
+                    }
 
-	// Créer le message de bannissement
-	const banDiv = document.createElement('div');
-	banDiv.className = 'chat-banned-message';
-	banDiv.innerHTML = `
-		<div class="banned-icon">🚫</div>
-		<h2>Accès interdit</h2>
-		<p>Votre adresse IP a été bannie du chat.</p>
-		<button id="dismiss-ban-message" style="background: rgba(255,255,255,0.2); border: none; padding: 5px 10px; margin-top: 10px; color: white; border-radius: 5px; cursor: pointer;">Fermer</button>
-	`;
+                    // Créer le message de bannissement
+                    const banDiv = document.createElement('div');
+                    banDiv.className = 'chat-banned-message';
+                    banDiv.innerHTML = `
+                        <div class="banned-icon">🚫</div>
+                        <h2>Accès interdit</h2>
+                        <p>Votre adresse IP a été bannie du chat.</p>
+                        <div style="display: flex; gap: 10px; margin-top: 15px;">
+                            <button id="dismiss-ban-message" style="background: rgba(255,255,255,0.2); border: none; padding: 5px 10px; margin-top: 10px; color: white; border-radius: 5px; cursor: pointer;">Fermer</button>
+                            <button id="check-ban-status" style="background: rgba(0,200,83,0.4); border: none; padding: 5px 10px; margin-top: 10px; color: white; border-radius: 5px; cursor: pointer;">Vérifier si débanni</button>
+                        </div>
+                    `;
 
-	// Ajouter au document
-	document.body.appendChild(banDiv);
+                    // Ajouter au document
+                    document.body.appendChild(banDiv);
 
-	// Ajouter une fonction pour fermer le message
-	setTimeout(() => {
-		const dismissBtn = document.getElementById('dismiss-ban-message');
-		if (dismissBtn) {
-			dismissBtn.addEventListener('click', function() {
-				banDiv.style.display = 'none';
-			});
-		}
-	}, 100);
+                    // Ajouter une fonction pour fermer le message
+                    setTimeout(() => {
+                        const dismissBtn = document.getElementById('dismiss-ban-message');
+                        if (dismissBtn) {
+                            dismissBtn.addEventListener('click', function() {
+                                banDiv.style.display = 'none';
+                            });
+                        }
+                        
+                        // Gestionnaire pour vérifier si l'utilisateur est toujours banni
+                        const checkButton = document.getElementById('check-ban-status');
+                        if (checkButton) {
+                            checkButton.addEventListener('click', async () => {
+                                // Ajouter une animation de chargement
+                                checkButton.innerHTML = '<span class="loading-dots">Vérification...</span>';
+                                checkButton.disabled = true;
+                                
+                                try {
+                                    // Vérifier dans la base de données si l'IP est toujours bannie
+                                    const { data, error } = await this.supabase
+                                        .from('banned_real_ips')
+                                        .select('*')
+                                        .eq('ip', realIP)
+                                        .maybeSingle();
+                                        
+                                    if (error || !data) {
+                                        // Si plus banni ou erreur, supprimer le bannissement
+                                        banDiv.innerHTML = `
+                                            <div class="banned-icon" style="color: #4CAF50;">✓</div>
+                                            <h2 style="margin-top: 5px; margin-bottom: 10px; font-size: 20px; font-weight: bold; color: #4CAF50;">Votre bannissement a été levé</h2>
+                                            <p style="margin: 0 0 15px 0;">Vous pouvez à nouveau utiliser le chat.</p>
+                                            <button id="refresh-page" style="background: #4CAF50; border: none; padding: 8px 15px; color: white; border-radius: 5px; cursor: pointer;">Actualiser la page</button>
+                                        `;
+                                        
+                                        // Ajouter un gestionnaire pour actualiser la page
+                                        setTimeout(() => {
+                                            document.getElementById('refresh-page')?.addEventListener('click', () => {
+                                                window.location.reload();
+                                            });
+                                        }, 100);
+                                    } else {
+                                        // Vérifier si le bannissement a expiré
+                                        if (data.expires_at && new Date(data.expires_at) < new Date()) {
+                                            // Le bannissement a expiré
+                                            banDiv.innerHTML = `
+                                                <div class="banned-icon" style="color: #4CAF50;">✓</div>
+                                                <h2 style="margin-top: 5px; margin-bottom: 10px; font-size: 20px; font-weight: bold; color: #4CAF50;">Votre bannissement a expiré</h2>
+                                                <p style="margin: 0 0 15px 0;">Vous pouvez à nouveau utiliser le chat.</p>
+                                                <button id="refresh-page" style="background: #4CAF50; border: none; padding: 8px 15px; color: white; border-radius: 5px; cursor: pointer;">Actualiser la page</button>
+                                            `;
+                                            
+                                            // Ajouter un gestionnaire pour actualiser la page
+                                            setTimeout(() => {
+                                                document.getElementById('refresh-page')?.addEventListener('click', () => {
+                                                    window.location.reload();
+                                                });
+                                            }, 100);
+                                        } else {
+                                            // Si toujours banni, afficher un message
+                                            checkButton.innerHTML = 'Vérifier si débanni';
+                                            checkButton.disabled = false;
+                                            
+                                            this.showNotification("Vous êtes toujours banni du chat", "error");
+                                        }
+                                    }
+                                } catch (error) {
+                                    console.error("Erreur lors de la vérification du bannissement:", error);
+                                    checkButton.innerHTML = 'Vérifier si débanni';
+                                    checkButton.disabled = false;
+                                    
+                                    this.showNotification("Erreur lors de la vérification", "error");
+                                }
+                            });
+                        }
+                    }, 100);
                     
                     // Si un utilisateur était connecté, le déconnecter
                     if (this.pseudo) {
@@ -2339,6 +2379,218 @@ async checkBannedStatus() {
     }
 }
 
+async checkAndClearLocalBan() {
+    console.log("Vérification des bannissements locaux...");
+    
+    // Vérifier si un bannissement local est enregistré
+    const isBannedLocally = localStorage.getItem('chat_device_banned') === 'true';
+    
+    if (!isBannedLocally) {
+        console.log("Aucun bannissement local détecté");
+        return false; // Pas de bannissement local
+    }
+    
+    console.log("Bannissement local détecté, vérification de sa validité...");
+    
+    // Vérifier si le bannissement a une date d'expiration
+    const bannedUntil = localStorage.getItem('chat_device_banned_until');
+    
+    // Si c'est permanent, on ne fait rien
+    if (bannedUntil === 'permanent') {
+        console.log("Bannissement permanent, aucune action à entreprendre");
+        return true; // Toujours banni
+    }
+    
+    // Si c'est temporaire, vérifier si c'est expiré
+    if (bannedUntil) {
+        const expiryTime = parseInt(bannedUntil);
+        if (Date.now() > expiryTime) {
+            console.log("Bannissement local expiré, nettoyage...");
+            
+            // Supprimer toutes les informations de bannissement
+            localStorage.removeItem('chat_device_banned');
+            localStorage.removeItem('chat_device_banned_until');
+            localStorage.removeItem('chat_ban_reason');
+            localStorage.removeItem('chat_ban_dismissed');
+            
+            // Afficher une notification
+            this.showNotification("Votre bannissement a expiré, vous pouvez à nouveau utiliser le chat", "success");
+            
+            // Afficher le bouton de chat s'il existe
+            const chatBtn = document.getElementById('chatToggleBtn');
+            if (chatBtn) {
+                chatBtn.style.display = 'flex';
+            }
+            
+            return false; // Plus banni
+        } else {
+            console.log(`Bannissement encore actif, expire dans ${Math.round((expiryTime - Date.now()) / 1000 / 60)} minutes`);
+            return true; // Toujours banni
+        }
+    }
+    
+    return true; // Par défaut, considérer comme banni
+}
+
+// Fonction pour vérifier si un utilisateur est banni dans la base de données
+async isUserBannedInDatabase(pseudo) {
+    if (!pseudo) return false;
+    
+    try {
+        // Vérifier dans banned_ips
+        const { data: bannedIpData, error: bannedIpError } = await this.supabase
+            .from('banned_ips')
+            .select('*')
+            .eq('ip', pseudo)
+            .maybeSingle();
+            
+        if (!bannedIpError && bannedIpData) {
+            // Vérifier si le bannissement est expiré
+            if (bannedIpData.expires_at && new Date(bannedIpData.expires_at) < new Date()) {
+                console.log(`Bannissement expiré pour ${pseudo} dans banned_ips`);
+                return false;
+            }
+            return true;
+        }
+        
+        // Vérifier dans banned_real_ips
+        const { data: bannedRealIpData, error: bannedRealIpError } = await this.supabase
+            .from('banned_real_ips')
+            .select('*')
+            .eq('ip', pseudo)
+            .maybeSingle();
+            
+        if (!bannedRealIpError && bannedRealIpData) {
+            // Vérifier si le bannissement est expiré
+            if (bannedRealIpData.expires_at && new Date(bannedRealIpData.expires_at) < new Date()) {
+                console.log(`Bannissement expiré pour ${pseudo} dans banned_real_ips`);
+                return false;
+            }
+            return true;
+        }
+        
+        return false;
+    } catch (error) {
+        console.error("Erreur lors de la vérification du bannissement:", error);
+        return false; // En cas d'erreur, considérer comme non banni
+    }
+}
+
+showBanNotification(reason = '') {
+    // Supprimer toute notification existante
+    document.querySelectorAll('.chat-banned-message').forEach(el => el.remove());
+    
+    // Vérifier si le CSS est déjà chargé
+    if (!document.getElementById('chat-ban-css')) {
+        const link = document.createElement('link');
+        link.id = 'chat-ban-css';
+        link.rel = 'stylesheet';
+        link.href = '/css/chat-ban.css';
+        document.head.appendChild(link);
+    }
+    
+    // Créer le message de bannissement amélioré
+    const banMessage = document.createElement('div');
+    banMessage.className = 'chat-banned-message';
+    banMessage.innerHTML = `
+        <div class="banned-icon">🚫</div>
+        <h2 style="margin-top: 5px; margin-bottom: 10px; font-size: 20px; font-weight: bold;">Accès interdit</h2>
+        <p style="margin: 0 0 5px 0;">Votre accès au chat a été suspendu.</p>
+        ${reason ? `<p class="ban-reason">Raison: ${reason}</p>` : ''}
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button id="dismiss-ban-message">Fermer</button>
+            <button id="check-ban-status" style="background: rgba(0,200,83,0.4);">Vérifier si débanni</button>
+        </div>
+    `;
+    
+    document.body.appendChild(banMessage);
+    
+    // Enregistrer le bannissement et sa raison dans le stockage local
+    localStorage.setItem('chat_device_banned', 'true');
+    localStorage.setItem('chat_device_banned_until', 'permanent');
+    if (reason) {
+        localStorage.setItem('chat_ban_reason', reason);
+    }
+    
+    // Gestionnaire pour fermer la notification
+    document.getElementById('dismiss-ban-message').addEventListener('click', function() {
+        banMessage.classList.add('fade-out');
+        setTimeout(() => {
+            banMessage.remove();
+        }, 500);
+        
+        // Stocker que le message a été fermé, mais garder l'information de bannissement
+        localStorage.setItem('chat_ban_dismissed', 'true');
+    });
+    
+    // Gestionnaire pour vérifier si l'utilisateur est toujours banni
+    document.getElementById('check-ban-status').addEventListener('click', async () => {
+        // Ajouter une animation de chargement
+        const checkButton = document.getElementById('check-ban-status');
+        checkButton.innerHTML = '<span class="loading-dots">Vérification...</span>';
+        checkButton.disabled = true;
+        
+        try {
+            // Vérifier si le stockage local indique un bannissement temporaire expiré
+            await this.checkAndClearLocalBan();
+            
+            // Vérifier dans la base de données si l'utilisateur est banni
+            const pseudo = localStorage.getItem('lastPseudo') || localStorage.getItem('chatPseudo');
+            if (pseudo) {
+                const isBanned = await this.isUserBannedInDatabase(pseudo);
+                
+                if (!isBanned) {
+                    // Si plus banni, supprimer toutes les informations de bannissement
+                    localStorage.removeItem('chat_device_banned');
+                    localStorage.removeItem('chat_device_banned_until');
+                    localStorage.removeItem('chat_ban_reason');
+                    localStorage.removeItem('chat_ban_dismissed');
+                    
+                    // Afficher un message de succès
+                    banMessage.innerHTML = `
+                        <div class="banned-icon" style="color: #4CAF50;">✓</div>
+                        <h2 style="margin-top: 5px; margin-bottom: 10px; font-size: 20px; font-weight: bold; color: #4CAF50;">Votre bannissement a été levé</h2>
+                        <p style="margin: 0 0 15px 0;">Vous pouvez à nouveau utiliser le chat.</p>
+                        <button id="refresh-page" style="background: #4CAF50;">Actualiser la page</button>
+                    `;
+                    
+                    // Ajouter un gestionnaire pour actualiser la page
+                    document.getElementById('refresh-page').addEventListener('click', () => {
+                        window.location.reload();
+                    });
+                    
+                    // Afficher le bouton de chat s'il existe
+                    const chatBtn = document.getElementById('chatToggleBtn');
+                    if (chatBtn) {
+                        chatBtn.style.display = 'flex';
+                    }
+                } else {
+                    // Si toujours banni, afficher un message
+                    checkButton.innerHTML = 'Vérifier si débanni';
+                    checkButton.disabled = false;
+                    
+                    this.showNotification("Vous êtes toujours banni du chat", "error");
+                }
+            } else {
+                // Si pas de pseudo stocké, actualiser la page
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error("Erreur lors de la vérification du bannissement:", error);
+            checkButton.innerHTML = 'Vérifier si débanni';
+            checkButton.disabled = false;
+            
+            this.showNotification("Erreur lors de la vérification", "error");
+        }
+    });
+    
+    // Empêcher l'accès au chat
+    const chatElements = document.querySelectorAll('.chat-widget, .chat-toggle-btn, #chatToggleBtn');
+    chatElements.forEach(el => {
+        if (el) el.style.display = 'none';
+    });
+}
+
 async checkAndClearExpiredBans() {
     try {
         console.log("Vérification des bannissements expirés...");
@@ -2472,9 +2724,12 @@ showBanNotification(reason = '') {
     banMessage.innerHTML = `
         <div class="banned-icon">🚫</div>
         <h2 style="margin-top: 5px; margin-bottom: 10px; font-size: 20px; font-weight: bold;">Accès interdit</h2>
-        <p style="margin: 0 0 5px 0;">Votre adresse IP a été bannie du chat.</p>
+        <p style="margin: 0 0 5px 0;">Votre accès au chat a été suspendu.</p>
         ${reason ? `<p class="ban-reason">Raison: ${reason}</p>` : ''}
-        <button id="dismiss-ban-message">Fermer</button>
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button id="dismiss-ban-message">Fermer</button>
+            <button id="check-ban-status" style="background: rgba(0,200,83,0.4);">Vérifier si débanni</button>
+        </div>
     `;
     
     document.body.appendChild(banMessage);
@@ -2495,6 +2750,67 @@ showBanNotification(reason = '') {
         
         // Stocker que le message a été fermé, mais garder l'information de bannissement
         localStorage.setItem('chat_ban_dismissed', 'true');
+    });
+    
+    // Gestionnaire pour vérifier si l'utilisateur est toujours banni
+    document.getElementById('check-ban-status').addEventListener('click', async () => {
+        // Ajouter une animation de chargement
+        const checkButton = document.getElementById('check-ban-status');
+        checkButton.innerHTML = '<span class="loading-dots">Vérification...</span>';
+        checkButton.disabled = true;
+        
+        try {
+            // Vérifier si le stockage local indique un bannissement temporaire expiré
+            await this.checkAndClearLocalBan();
+            
+            // Vérifier dans la base de données si l'utilisateur est banni
+            const pseudo = localStorage.getItem('lastPseudo') || localStorage.getItem('chatPseudo');
+            if (pseudo) {
+                const isBanned = await this.isUserBannedInDatabase(pseudo);
+                
+                if (!isBanned) {
+                    // Si plus banni, supprimer toutes les informations de bannissement
+                    localStorage.removeItem('chat_device_banned');
+                    localStorage.removeItem('chat_device_banned_until');
+                    localStorage.removeItem('chat_ban_reason');
+                    localStorage.removeItem('chat_ban_dismissed');
+                    
+                    // Afficher un message de succès
+                    banMessage.innerHTML = `
+                        <div class="banned-icon" style="color: #4CAF50;">✓</div>
+                        <h2 style="margin-top: 5px; margin-bottom: 10px; font-size: 20px; font-weight: bold; color: #4CAF50;">Votre bannissement a été levé</h2>
+                        <p style="margin: 0 0 15px 0;">Vous pouvez à nouveau utiliser le chat.</p>
+                        <button id="refresh-page" style="background: #4CAF50;">Actualiser la page</button>
+                    `;
+                    
+                    // Ajouter un gestionnaire pour actualiser la page
+                    document.getElementById('refresh-page').addEventListener('click', () => {
+                        window.location.reload();
+                    });
+                    
+                    // Afficher le bouton de chat s'il existe
+                    const chatBtn = document.getElementById('chatToggleBtn');
+                    if (chatBtn) {
+                        chatBtn.style.display = 'flex';
+                    }
+                } else {
+                    // Si toujours banni, afficher un message
+                    checkButton.innerHTML = 'Vérifier si débanni';
+                    checkButton.disabled = false;
+                    
+                    this.showNotification("Vous êtes toujours banni du chat", "error");
+                }
+            } else {
+                // Si pas de pseudo stocké, actualiser la page
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error("Erreur lors de la vérification du bannissement:", error);
+            checkButton.innerHTML = 'Vérifier si débanni';
+            checkButton.disabled = false;
+            
+            this.showNotification("Erreur lors de la vérification", "error");
+        }
     });
     
     // Empêcher l'accès au chat

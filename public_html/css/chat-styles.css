@@ -1946,3 +1946,16 @@ body.long-press-active .message-options {
     padding: 4px !important;
   }
 }
+
+/* Animation de chargement pour le bouton de vérification de bannissement */
+.loading-dots:after {
+  content: '.';
+  animation: dots 1.5s steps(5, end) infinite;
+}
+
+@keyframes dots {
+  0%, 20% { content: '.'; }
+  40% { content: '..'; }
+  60% { content: '...'; }
+  80%, 100% { content: ''; }
+}
