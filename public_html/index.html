@@ -89,6 +89,44 @@ if (isIOS) {
 </head>
 <body>
 <script>
+// Vérification de bannissement direct - plus fiable que le système précédent
+(function() {
+    // Vérifier si l'appareil est banni localement
+    if (localStorage.getItem('chat_device_banned') === 'true') {
+        const bannedUntil = localStorage.getItem('chat_device_banned_until');
+        let isBanned = true;
+        
+        // Vérifier si le bannissement a expiré
+        if (bannedUntil && bannedUntil !== 'permanent') {
+            const expiryTime = parseInt(bannedUntil);
+            if (Date.now() > expiryTime) {
+                // Le bannissement a expiré
+                localStorage.removeItem('chat_device_banned');
+                localStorage.removeItem('chat_device_banned_until');
+                localStorage.removeItem('chat_ban_reason');
+                localStorage.removeItem('chat_ban_dismissed');
+                isBanned = false;
+            }
+        }
+        
+        if (isBanned) {
+            console.log("APPAREIL BANNI: Bouton de chat masqué");
+            
+            // Masquer le bouton de chat immédiatement en ajoutant un style
+            const style = document.createElement('style');
+            style.textContent = '#chatToggleBtn { display: none !important; }';
+            document.head.appendChild(style);
+            
+            // Attendre que le DOM soit chargé pour s'assurer que le bouton est masqué
+            window.addEventListener('DOMContentLoaded', function() {
+                const chatBtn = document.getElementById('chatToggleBtn');
+                if (chatBtn) chatBtn.style.display = 'none';
+            });
+        }
+    }
+})();
+</script>
+<script>
 // Vérification de bannissement et détection de levée de ban
 (function() {
     // Fonction pour lire un cookie par son nom
