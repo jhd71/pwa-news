@@ -2798,7 +2798,17 @@ showBanNotification(reason = '') {
     
     document.body.appendChild(banMessage);
     
-    // Reste du code existant...
+    // Enregistrer le bannissement et sa raison dans le stockage local
+    localStorage.setItem('chat_device_banned', 'true');
+    localStorage.setItem('chat_device_banned_until', 'permanent');
+    if (reason) {
+        localStorage.setItem('chat_ban_reason', reason);
+    }
+    
+    // Stocker le pseudo actuel si disponible
+    if (this.pseudo) {
+        localStorage.setItem('lastPseudo', this.pseudo);
+    }
     
     // Gestionnaire pour fermer la notification
     document.getElementById('dismiss-ban-message').addEventListener('click', function() {
@@ -2810,6 +2820,16 @@ showBanNotification(reason = '') {
         // Stocker que le message a été fermé, mais garder l'information de bannissement
         localStorage.setItem('chat_ban_dismissed', 'true');
     });
+    
+    // Créer le bouton flottant de vérification
+    this.createBanStatusButton();
+    
+    // Empêcher l'accès au chat
+    const chatElements = document.querySelectorAll('.chat-widget, .chat-toggle-btn, #chatToggleBtn');
+    chatElements.forEach(el => {
+        if (el) el.style.display = 'none';
+    });
+}
     
     // Gestionnaire pour vérifier le bannissement
     document.getElementById('check-ban-status-btn').addEventListener('click', async () => {
