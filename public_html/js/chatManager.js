@@ -1260,24 +1260,7 @@ async setupAuthListeners() {
         this.playSound('error');
         return;
     }
-// Vérifier si le pseudo est banni
-            const isBanned = await this.checkBannedIP(pseudo);
-            if (isBanned) {
-                // Si le pseudo est banni, montrer directement le message de bannissement
-                console.log(`Pseudo banni détecté: ${pseudo}, accès refusé`);
-                this.showNotification(`Le pseudo "${pseudo}" est banni du chat`, 'error');
-                this.playSound('error');
-                
-                // Marquer l'appareil comme banni (nouveau)
-                localStorage.setItem('chat_device_banned', 'true');
-                localStorage.setItem('chat_device_banned_until', 'permanent'); // Par défaut, permanent
-                localStorage.setItem('chat_ban_reason', `Pseudo banni: ${pseudo}`);
-                
-                // Afficher le message de bannissement
-                this.showBanNotification(`Pseudo banni: ${pseudo}`);
-                
-                return;
-            }
+
     try {
         // Vérification simplifiée du bannissement d'appareil
         const isDeviceBanned = await this.isDeviceBanned();
