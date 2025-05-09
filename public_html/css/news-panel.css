@@ -138,6 +138,7 @@
 
 /* Assurer que le bouton conserve sa couleur de thème */
 [data-theme="dark"] .news-button,
+[data-theme="rouge"] .news-button,
 [data-theme="light"] .news-button {
     background-color: var(--primary-color) !important;
 }
@@ -881,6 +882,127 @@
   0% { background-color: #7a040e; }
   50% { background-color: #9e0b1d; }
   100% { background-color: #7a040e; }
+}
+
+/* Adaptation aux thèmes */
+[data-theme="light"] .news-ticker {
+  background-color: rgba(30, 30, 80, 0.9);
+}
+
+[data-theme="dark"] .news-ticker {
+  background-color: rgba(0, 0, 0, 0.85);
+}
+
+/* Thème rouge pour le news ticker */
+[data-theme="rouge"] .news-ticker {
+  background-color: rgba(0, 0, 0, 0.85);
+}
+
+[data-theme="dark"] .news-panel {
+  background: linear-gradient(145deg, #1a237e, #283593);
+}
+
+[data-theme="light"] .news-panel {
+  background: linear-gradient(145deg, #7E57C2, #9575CD);
+}
+
+/* Thème rouge pour le news panel */
+[data-theme="rouge"] .news-panel {
+  background: linear-gradient(145deg, #c62828, #e53935);
+}
+
+/* Adaptation du thème rouge pour les éléments spécifiques */
+[data-theme="rouge"] .news-item {
+  background: rgba(183, 28, 28, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="rouge"] .news-item-source {
+  color: #ffeb3b; /* Jaune pour un meilleur contraste avec le fond rouge */
+}
+
+[data-theme="rouge"] .news-item-link {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+[data-theme="rouge"] .news-item-link:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Articles récents en mode rouge */
+[data-theme="rouge"] .latest-article {
+  background-color: #6b1515; /* Rouge plus foncé pour contraste */
+  color: white;
+  animation: pulseEffectRouge 2s infinite ease-in-out;
+}
+
+@keyframes pulseEffectRouge {
+  0% { background-color: #6b1515; }
+  50% { background-color: #8c1c1c; }
+  100% { background-color: #6b1515; }
+}
+
+[data-theme="rouge"] .new-article {
+  background-color: #6b1515;
+  animation: blinkRouge 2s infinite ease-in-out;
+}
+
+@keyframes blinkRouge {
+  0% { background-color: #6b1515; }
+  50% { background-color: #8c1c1c; }
+  100% { background-color: #6b1515; }
+}
+
+/* Bouton d'actualisation en thème rouge */
+[data-theme="rouge"] .refresh-button {
+  background: #388e3c !important; /* Vert pour contraster avec le fond rouge */
+}
+
+[data-theme="rouge"] .refresh-button:hover {
+  background: #2e7d32 !important;
+}
+
+/* Modal de partage en thème rouge */
+[data-theme="rouge"] .share-modal-content {
+  background: linear-gradient(145deg, #c62828, #e53935);
+}
+
+[data-theme="rouge"] .share-option {
+  background-color: rgba(183, 28, 28, 0.4);
+}
+
+[data-theme="rouge"] .share-option:hover,
+[data-theme="rouge"] .share-option:active {
+  background-color: rgba(183, 28, 28, 0.6);
+}
+
+/* Style unifié pour les articles récents en thème rouge */
+[data-theme="rouge"] .latest-article {
+  background-color: #6b1515;
+  color: #ffffff;
+  animation: pulseEffectRouge 2s infinite ease-in-out;
+}
+
+@keyframes pulseEffectRouge {
+  0% { background-color: #6b1515; }
+  50% { background-color: #8c1c1c; }
+  100% { background-color: #6b1515; }
+}
+
+/* Style pour les sources dans le ticker en thème rouge */
+[data-theme="rouge"] .ticker-source {
+  color: #ffeb3b; /* Jaune pour meilleur contraste */
+}
+
+/* Bouton de fermeture mobile en thème rouge */
+[data-theme="rouge"] .mobile-close-panel {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="rouge"] .mobile-close-panel:hover, 
+[data-theme="rouge"] .mobile-close-panel:active {
+  background: rgba(0, 0, 0, 0.8);
 }
 
 

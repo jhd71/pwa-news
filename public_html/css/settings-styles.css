@@ -23,8 +23,8 @@
 }
 
 .modal-content {
-  background-color: var(--background-color, #fff);
-  color: var(--text-color, #333);
+  background-color: var(--primary-color) !important;
+  color: white !important;
   border-radius: 12px;
   width: 90%;
   max-width: 500px;
@@ -44,13 +44,14 @@
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .modal-header h3 {
   margin: 0;
   font-size: 1.25rem;
   font-weight: 600;
+  color: white !important;
 }
 
 .modal-close {
@@ -65,14 +66,16 @@
   justify-content: center;
   border-radius: 50%;
   transition: background-color 0.2s;
+  color: white !important;
 }
 
 .modal-close:hover {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .settings-content {
   padding: 20px;
+  color: white !important;
 }
 
 .settings-section {
@@ -84,6 +87,7 @@
   margin-bottom: 15px;
   font-size: 1.1rem;
   font-weight: 500;
+  color: white !important;
 }
 
 /* Sélecteurs de couleurs */
@@ -99,6 +103,7 @@
   flex-direction: column;
   gap: 5px;
   font-size: 0.9rem;
+  color: white !important;
 }
 
 .color-picker input[type="color"] {
@@ -123,6 +128,7 @@
   align-items: center;
   gap: 5px;
   cursor: pointer;
+  color: white !important;
 }
 
 /* Tuiles de taille de police */
@@ -141,31 +147,42 @@
   width: 70px;
   height: 70px;
   border-radius: 12px;
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(255, 255, 255, 0.1);
   cursor: pointer;
   transition: all 0.2s;
+  color: white !important;
+}
+
+/* Style des tuiles selon les thèmes */
+[data-theme="light"] .font-size-tile {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 [data-theme="dark"] .font-size-tile {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
+[data-theme="rouge"] .font-size-tile {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 .font-size-tile.active {
-  background-color: var(--primary-color, #1e3a8a);
-  color: white;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white !important;
 }
 
 .font-size-tile:hover:not(.active) {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
-[data-theme="dark"] .font-size-tile:hover:not(.active) {
-  background-color: rgba(255, 255, 255, 0.15);
+[data-theme="light"] .font-size-tile:hover:not(.active) {
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .font-size-tile .material-icons {
   font-size: 24px;
   margin-bottom: 5px;
+  color: white !important;
 }
 
 /* Interrupteurs de type toggle */
@@ -175,6 +192,7 @@
   align-items: center;
   margin-bottom: 12px;
   padding: 8px 0;
+  color: white !important;
 }
 
 .toggle-switch {
@@ -257,18 +275,13 @@ input:checked + .toggle-slider:before {
 }
 
 .btn.secondary {
-  background-color: rgba(0, 0, 0, 0.1);
-  color: var(--text-color, #333);
-}
-
-[data-theme="dark"] .btn.secondary {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: var(--text-color, #fff);
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white !important;
 }
 
 .btn.danger {
-  background-color: rgba(220, 53, 69, 0.1);
-  color: #dc3545;
+  background-color: rgba(220, 53, 69, 0.8);
+  color: white !important;
 }
 
 .btn:hover {
@@ -308,4 +321,83 @@ input:checked + .toggle-slider:before {
   background-color: #dc3545;
 }
 
-.toast-notification
+/* Support spécifique pour le thème rouge */
+[data-theme="rouge"] .modal-content {
+  background-color: #d32f2f !important;
+}
+
+[data-theme="rouge"] .modal-header,
+[data-theme="rouge"] .settings-content,
+[data-theme="rouge"] .settings-section h4,
+[data-theme="rouge"] .theme-mode label,
+[data-theme="rouge"] .switch-label,
+[data-theme="rouge"] .color-picker label {
+  color: white !important;
+}
+
+[data-theme="rouge"] input:checked + .toggle-slider {
+  background-color: #b71c1c;
+}
+
+[data-theme="rouge"] .btn.primary {
+  background-color: #b71c1c;
+}
+
+[data-theme="rouge"] .btn.secondary {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white !important;
+}
+
+/* Support spécifique pour le thème sombre */
+[data-theme="dark"] .modal-content {
+  background-color: #1a237e !important;
+}
+
+[data-theme="dark"] .modal-header,
+[data-theme="dark"] .settings-content,
+[data-theme="dark"] .settings-section h4,
+[data-theme="dark"] .theme-mode label,
+[data-theme="dark"] .switch-label,
+[data-theme="dark"] .color-picker label {
+  color: white !important;
+}
+
+[data-theme="dark"] input:checked + .toggle-slider {
+  background-color: #283593;
+}
+
+[data-theme="dark"] .btn.primary {
+  background-color: #283593;
+}
+
+[data-theme="dark"] .btn.secondary {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white !important;
+}
+
+/* Support spécifique pour le thème clair (violet) */
+[data-theme="light"] .modal-content {
+  background-color: #7E57C2 !important;
+}
+
+[data-theme="light"] .modal-header,
+[data-theme="light"] .settings-content,
+[data-theme="light"] .settings-section h4,
+[data-theme="light"] .theme-mode label,
+[data-theme="light"] .switch-label,
+[data-theme="light"] .color-picker label {
+  color: white !important;
+}
+
+[data-theme="light"] input:checked + .toggle-slider {
+  background-color: #673AB7;
+}
+
+[data-theme="light"] .btn.primary {
+  background-color: #673AB7;
+}
+
+[data-theme="light"] .btn.secondary {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white !important;
+}

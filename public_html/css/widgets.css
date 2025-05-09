@@ -469,6 +469,65 @@
   color: #333 !important;
 }
 
+/* Thème rouge pour les widgets */
+[data-theme="rouge"] .weather-sidebar,
+[data-theme="rouge"] .quick-links-sidebar {
+  background: rgba(211, 47, 47, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="rouge"] .weather-sidebar h3,
+[data-theme="rouge"] .quick-links-sidebar h3,
+[data-theme="rouge"] .weather-sidebar p strong {
+  color: white !important;
+  border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="rouge"] .weather-day {
+  background: rgba(229, 57, 53, 0.3);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="rouge"] .quick-link {
+  background: rgba(229, 57, 53, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="rouge"] .quick-link span:not(.material-icons) {
+  color: white !important;
+}
+
+[data-theme="rouge"] .quick-link .material-icons {
+  color: white !important;
+}
+
+[data-theme="rouge"] .weather-toggle,
+[data-theme="rouge"] .quick-links-toggle {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white !important;
+}
+
+[data-theme="rouge"] .weather-show-btn,
+[data-theme="rouge"] .quick-links-show-btn {
+  background: linear-gradient(145deg, #c62828, #e53935);
+}
+
+/* Correction: Assurer que le texte est blanc pour le modal en mode rouge */
+[data-theme="rouge"] .modal-header h2,
+[data-theme="rouge"] .modal-header h3,
+[data-theme="rouge"] .modal-header .modal-title {
+  color: white !important;
+}
+
+/* Correction pour le mode sombre */
+[data-theme="dark"] .modal-header h2,
+[data-theme="dark"] .modal-header h3,
+[data-theme="dark"] .modal-header .modal-title {
+  color: white !important;
+}
+
 /* Assurez-vous que les icônes météo sont visibles */
 .weather-gif {
   width: 50px;

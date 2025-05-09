@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="fr" data-theme="light" data-font-size="normal">
 <head>
+<script>
+    // Appliquer le thème sauvegardé dès le début du chargement
+    (function() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        } else {
+            document.documentElement.setAttribute('data-theme', 'rouge');
+        }
+    })();
+</script>
     <!-- Méta-informations essentielles -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -86,6 +97,154 @@ if (isIOS) {
   document.body.classList.add('ios-device');
 }
 </script>
+<style>
+/* Styles pour améliorer le contraste dans le thème rouge - version équilibrée */
+
+/* Couleurs locales : rouge légèrement plus foncé et jaune renforcé */
+:root {
+  --rouge-site: #bc3a34; /* Rouge du site */
+  --rouge-fonce: #a32f2a; /* Rouge légèrement plus foncé que le site */
+  --jaune-local: #ffd230; /* Jaune plus vif pour l'identité locale */
+}
+
+/* Bannière de bienvenue - rouge légèrement plus foncé */
+[data-theme="rouge"] .welcome-banner {
+  background-color: var(--rouge-fonce) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Texte en blanc pour lisibilité */
+[data-theme="rouge"] .welcome-text h1,
+[data-theme="rouge"] .description,
+[data-theme="rouge"] .stat-item {
+  color: white !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Éléments accentués en jaune local */
+[data-theme="rouge"] .highlight,
+[data-theme="rouge"] .tagline {
+  color: var(--jaune-local) !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5) !important;
+  font-weight: bold !important;
+}
+
+/* Message de bienvenue */
+[data-theme="rouge"] .welcome-message {
+  background-color: var(--rouge-fonce) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Texte du message de bienvenue */
+[data-theme="rouge"] .welcome-message h2,
+[data-theme="rouge"] .welcome-intro,
+[data-theme="rouge"] .welcome-description {
+  color: white !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Icône jaune dans le cercle */
+[data-theme="rouge"] .welcome-icon {
+  background-color: var(--jaune-local) !important;
+  color: var(--rouge-fonce) !important; /* Texte en rouge foncé pour contraste */
+}
+
+/* Feature items avec fond légèrement transparent */
+[data-theme="rouge"] .feature-item {
+  color: white !important;
+  background: rgba(163, 47, 42, 0.5) !important; /* Rouge foncé semi-transparent */
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Feature items - icônes en jaune */
+[data-theme="rouge"] .feature-item .material-icons {
+  color: var(--jaune-local) !important;
+}
+
+/* Swiper avec le rouge du site légèrement ajusté */
+[data-theme="rouge"] .swiper {
+  background: var(--rouge-site) !important;
+}
+
+[data-theme="rouge"] .swiper-slide {
+  background: var(--rouge-site) !important; 
+}
+
+[data-theme="rouge"] .slide-title {
+  color: white !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme="rouge"] .slide-source {
+  color: var(--jaune-local) !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5) !important;
+  font-weight: bold !important;
+}
+
+/* Styles pour les boutons */
+[data-theme="rouge"] .news-button,
+[data-theme="rouge"] .weather-show-btn,
+[data-theme="rouge"] .quick-links-show-btn {
+  background-color: var(--rouge-fonce) !important;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Message d'erreur du carrousel */
+[data-theme="rouge"] .swiper-slide p {
+  color: white !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Stat-items avec fond rouge légèrement transparent */
+[data-theme="rouge"] .stat-item {
+  background: rgba(163, 47, 42, 0.5) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Icônes dans les stat-items en jaune */
+[data-theme="rouge"] .stat-item .material-icons {
+  color: var(--jaune-local) !important;
+}
+
+/* Styles pour la croix de fermeture - toujours visible */
+.welcome-close {
+  background: rgba(0, 0, 0, 0.3) !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 50% !important;
+  width: 30px !important;
+  height: 30px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.2s ease !important;
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+  opacity: 1 !important;
+  z-index: 100 !important;
+}
+
+.welcome-close:hover {
+  background: rgba(255, 255, 255, 0.5) !important;
+  transform: scale(1.1) !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+.welcome-close .material-icons {
+  color: white !important;
+  font-size: 22px !important;
+  font-weight: bold !important;
+}
+
+/* Mettre également en jaune les numéros/chiffres dans les stats */
+[data-theme="rouge"] .stat-item strong {
+  color: var(--jaune-local) !important;
+  font-weight: bold !important;
+}
+</style>
 </head>
 <body>
 <script>
@@ -1015,5 +1174,6 @@ document.getElementById('donateBtn').addEventListener('click', function() {
 <script src="/js/ios-install.js"></script>
 <script src="/js/ios-chat-fix.js"></script>
 <script src="/js/ban-check.js"></script>
+<script src="/js/theme-manager.js"></script>
 </body>
 </html>

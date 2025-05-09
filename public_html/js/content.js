@@ -1,10 +1,10 @@
 class ContentManager {
     constructor() {
-        this.tileContainer = null;
-        this.isDarkMode = localStorage.getItem('theme') === 'dark';
-        this.fontSize = localStorage.getItem('fontSize') || 'normal';
-        this.deferredPrompt = null;
-    }
+    this.tileContainer = null;
+    this.currentTheme = localStorage.getItem('theme') || 'rouge'; // Changer 'light' en 'rouge'
+    this.fontSize = localStorage.getItem('fontSize') || 'normal';
+    this.deferredPrompt = null;
+}
 
     init() {
         if (document.readyState === 'loading') {
@@ -58,8 +58,8 @@ document.documentElement.setAttribute('data-font-size', this.fontSize);
         // Boutons de navigation
         const darkModeToggle = document.getElementById('darkModeToggle');
         if (darkModeToggle) {
-            darkModeToggle.addEventListener('click', this.toggleDarkMode.bind(this));
-        }
+    darkModeToggle.addEventListener('click', this.toggleTheme.bind(this));
+}
 
         const layoutToggle = document.getElementById('layoutToggle');
         if (layoutToggle) {
@@ -130,10 +130,14 @@ window.addEventListener('beforeinstallprompt', (e) => {
     }
 
     setupTheme() {
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        this.updateThemeIcon(savedTheme === 'dark');
-    }
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    this.currentTheme = savedTheme;
+    
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    
+    // Mettre à jour l'icône appropriée
+    this.updateThemeIcon();
+}
 
     setupFontSize() {
         document.documentElement.setAttribute('data-font-size', this.fontSize);
@@ -792,14 +796,39 @@ showInstallBanner() {
     });
 }
 
-    toggleDarkMode() {
-        this.isDarkMode = !this.isDarkMode;
-        const newTheme = this.isDarkMode ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        this.updateThemeIcon(this.isDarkMode);
-        this.showToast(`Mode ${this.isDarkMode ? 'sombre' : 'clair'} activé`);
+    toggleTheme() {
+    // Cycle entre les thèmes : light -> dark -> rouge -> light
+    switch (this.currentTheme) {
+        case 'light':
+            this.currentTheme = 'dark';
+            break;
+        case 'dark':
+            this.currentTheme = 'rouge';
+            break;
+        case 'rouge':
+        default:
+            this.currentTheme = 'light';
+            break;
     }
+    
+    // Appliquer le thème
+    document.documentElement.setAttribute('data-theme', this.currentTheme);
+    localStorage.setItem('theme', this.currentTheme);
+    
+    // Mettre à jour l'icône et le texte
+    this.updateThemeIcon();
+    
+    // Afficher une notification
+    let themeName = '';
+    switch(this.currentTheme) {
+        case 'dark': themeName = 'sombre'; break;
+        case 'rouge': themeName = 'rouge'; break;
+        case 'light': themeName = 'violet'; break;
+        default: themeName = 'clair'; break;
+    }
+    
+    this.showToast(`Thème ${themeName} activé`);
+}
 
     toggleLayout() {
     // Simplifier avec seulement deux modes
@@ -840,15 +869,30 @@ updateLayoutIcon(layout) {
     }
 }
 
-    updateThemeIcon(isDark) {
-        const themeButton = document.getElementById('darkModeToggle');
-        if (themeButton) {
-            const icon = themeButton.querySelector('.material-icons');
-            const text = themeButton.querySelector('span:not(.material-icons)');
-            if (icon) icon.textContent = isDark ? 'light_mode' : 'dark_mode';
-            if (text) text.textContent = isDark ? 'Clair' : 'Sombre';
+    updateThemeIcon() {
+    const themeButton = document.getElementById('darkModeToggle');
+    if (themeButton) {
+        const icon = themeButton.querySelector('.material-icons');
+        const text = themeButton.querySelector('span:not(.material-icons)');
+        
+        // Configurer l'icône et le texte en fonction du thème actuel
+        switch (this.currentTheme) {
+            case 'dark':
+                if (icon) icon.textContent = 'palette';
+                if (text) text.textContent = 'Rouge';
+                break;
+            case 'rouge':
+                if (icon) icon.textContent = 'light_mode';
+                if (text) text.textContent = 'Violet';
+                break;
+            case 'light':
+            default:
+                if (icon) icon.textContent = 'dark_mode';
+                if (text) text.textContent = 'Sombre';
+                break;
         }
     }
+}
 
     async showAddSiteDialog() {
     const title = prompt('Nom du site :');

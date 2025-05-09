@@ -1,4 +1,4 @@
-/* ios-specific.css - Version corrigée finale */
+/* ios-specific.css - Version corrigée avec support pour le thème rouge */
 :root {
   --safe-area-top: env(safe-area-inset-top, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
@@ -23,13 +23,13 @@ body {
   margin: 0 !important;
 }
 
-/* 2. Remonter les boutons menu et paramètres */
+/* 2. Remonter les boutons menu et paramètres - couleur adaptée selon le thème */
 .menu-button, .hamburger-menu {
   position: fixed !important;
   top: calc(var(--safe-area-top) + 90px) !important; /* Augmenté pour descendre le bouton */
   left: 10px !important;
   z-index: 1010 !important;
-  background-color: rgba(126, 87, 194, 0.8) !important;
+  background-color: rgba(126, 87, 194, 0.8) !important; /* Couleur par défaut - violet */
   border-radius: 50% !important;
 }
 
@@ -38,7 +38,7 @@ body {
   top: calc(var(--safe-area-top) + 90px) !important; /* Augmenté pour descendre le bouton */
   right: 10px !important;
   z-index: 1010 !important;
-  background-color: rgba(126, 87, 194, 0.8) !important;
+  background-color: rgba(126, 87, 194, 0.8) !important; /* Couleur par défaut - violet */
   border-radius: 50% !important;
 }
 
@@ -91,15 +91,46 @@ body.dark-theme .menu-button,
 body.dark-theme .hamburger-menu,
 body.dark-theme .settings-button, 
 body.dark-theme .gear-icon {
-  background-color: rgba(40, 40, 70, 0.8) !important;
+  background-color: rgba(40, 53, 147, 0.8) !important; /* Bleu foncé pour thème sombre */
 }
 
-/* S'assurer que l'icône est bien visible en mode sombre */
-[data-theme="dark"] .menu-button .material-icons, 
-[data-theme="dark"] .settings-button .material-icons,
-html.dark-theme .menu-button .material-icons, 
-html.dark-theme .settings-button .material-icons,
-body.dark-theme .menu-button .material-icons, 
-body.dark-theme .settings-button .material-icons {
+/* NOUVEAU: Adaptation au thème rouge pour les boutons de menu et paramètres */
+[data-theme="rouge"] .menu-button, 
+[data-theme="rouge"] .hamburger-menu,
+[data-theme="rouge"] .settings-button, 
+[data-theme="rouge"] .gear-icon,
+html.rouge-theme .menu-button, 
+html.rouge-theme .hamburger-menu,
+html.rouge-theme .settings-button, 
+html.rouge-theme .gear-icon,
+body.rouge-theme .menu-button, 
+body.rouge-theme .hamburger-menu,
+body.rouge-theme .settings-button, 
+body.rouge-theme .gear-icon {
+  background-color: rgba(163, 47, 42, 0.8) !important; /* Rouge légèrement plus foncé */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* S'assurer que l'icône est bien visible dans tous les thèmes */
+.menu-button .material-icons, 
+.settings-button .material-icons {
   color: white !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important; /* Ombre légère pour meilleure visibilité */
+}
+
+/* Ajout d'un effet de survol pour améliorer l'interactivité */
+.menu-button:hover, 
+.hamburger-menu:hover,
+.settings-button:hover, 
+.gear-icon:hover {
+  transform: scale(1.05) !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Thème clair spécifique (pour être sûr) */
+[data-theme="light"] .menu-button, 
+[data-theme="light"] .hamburger-menu,
+[data-theme="light"] .settings-button, 
+[data-theme="light"] .gear-icon {
+  background-color: rgba(126, 87, 194, 0.8) !important; /* Violet */
 }

@@ -43,7 +43,8 @@ body {
 }
 
 /* SECTION 2: THÈMES ET TAILLES DE POLICE */
-/* Thème sombre */
+
+/* Thème sombre (bleu nuit) */
 [data-theme="dark"] {
     --primary-color: #1a237e;
     --background-color: #121212;
@@ -51,6 +52,7 @@ body {
     --border-color: #404040;
     --hover-color: rgba(255, 255, 255, 0.1);
     --shadow-color: rgba(0, 0, 0, 0.3);
+    --card-background: var(--primary-color);
 }
 
 /* Pour le texte en mode clair */
@@ -1860,4 +1862,149 @@ a:active {
   .welcome-banner {
     display: none;
   }
+}
+
+/* Styles pour les boutons de thème actifs */
+.nav-item.active {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40%;
+    height: 3px;
+    background-color: white;
+    border-radius: 2px;
+}
+
+/* Thème rouge - compléments pour tous les éléments */
+[data-theme="rouge"] {
+  /* Couleurs principales */
+  --primary-color: #d32f2f;
+  --background-color: #FFF5F5;
+  --text-color: #333333;
+  --border-color: #F4E5E5;
+  --hover-color: rgba(211, 47, 47, 0.1);
+  --shadow-color: rgba(0, 0, 0, 0.08);
+  --card-background: var(--primary-color);
+  
+  /* Chat */
+  --chat-gradient: linear-gradient(145deg, #c62828, #e53935);
+  --chat-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  --chat-border: 1px solid rgba(255, 255, 255, 0.1);
+  --info-bubble-bg: linear-gradient(135deg, #b71c1c 0%, #f44336 100%);
+  
+  /* Widgets */
+  --weather-gradient: linear-gradient(145deg, #c62828, #e53935);
+  --quick-links-gradient: linear-gradient(145deg, #c62828, #e53935);
+}
+
+/* Barre de navigation en bas pour thème rouge */
+[data-theme="rouge"] .bottom-nav {
+  background: linear-gradient(to bottom, #c62828, #b71c1c);
+}
+
+/* Séparateur pour le thème rouge */
+[data-theme="rouge"] .separator {
+  background: linear-gradient(90deg, 
+      rgba(211, 47, 47, 0.3) 0%, 
+      rgba(211, 47, 47, 0.8) 50%, 
+      rgba(211, 47, 47, 0.3) 100%
+  );
+}
+
+/* En-tête */
+[data-theme="rouge"] .app-header {
+  background: linear-gradient(to right, #c62828, #d32f2f);
+}
+
+/* Boutons flottants et autres éléments d'interface */
+[data-theme="rouge"] .chat-toggle,
+[data-theme="rouge"] .weather-show-btn,
+[data-theme="rouge"] .quick-links-show-btn,
+[data-theme="rouge"] .news-button {
+  background: linear-gradient(145deg, #c62828, #d32f2f);
+}
+
+/* Widgets et sidebars */
+[data-theme="rouge"] .weather-sidebar,
+[data-theme="rouge"] .quick-links-sidebar {
+  background: linear-gradient(145deg, #c62828, #d32f2f);
+}
+
+/* Séparateurs */
+[data-theme="rouge"] .separator img {
+  background: linear-gradient(to right, rgba(198, 40, 40, 0.7), rgba(229, 57, 53, 0.7));
+  border-radius: 10px;
+}
+
+/* Tuiles */
+[data-theme="rouge"] .tile {
+  border-color: rgba(211, 47, 47, 0.3);
+}
+
+/* Réglages pour le chat */
+[data-theme="rouge"] .chat-container {
+  background: linear-gradient(145deg, #c62828, #e53935);
+}
+
+[data-theme="rouge"] .chat-header {
+  background: rgba(183, 28, 28, 0.3);
+}
+
+/* Boutons actifs pour le thème rouge */
+[data-theme="rouge"] .nav-item.active {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="rouge"] .separator {
+background-color: #d32f2f;
+}
+
+/* Texte mode rouge en blanc pour quick-link */
+.quick-link {
+background: #d32f2f;
+}
+
+/* Styles pour les liens rapides - texte blanc */
+.modal-content i.fa,
+.modal-content i.fas,
+.modal-content i.far,
+.modal-content i.fab,
+.modal-content .material-icons {
+    color: white !important;
+}
+
+.modal-content a,
+.modal-content button,
+.modal-content span,
+.modal-content div {
+    color: white !important;
+}
+
+/* Style spécifique pour les liens dans le widget */
+.modal-content .quick-link {
+    color: white !important;
+}
+
+.modal-content .quick-link i {
+    color: white !important;
+}
+
+/* Style global pour les liens rapides */
+.quick-link {
+    color: white !important;
+}
+
+.quick-link i {
+    color: white !important;
+}
+
+/* Séparateur pour le theme sombre */
+.separator {
+background-color: #1a237e;
 }
