@@ -680,12 +680,13 @@ startAutoBanCheck() {
                 this.bannedWords = new Set(words.map(w => w.word.toLowerCase()));
                 const list = document.querySelector('.banned-words-list');
                 if (list) {
-                    list.innerHTML = words.map(w => `
-                        <div class="banned-word">
-                            ${w.word}
-                            <button class="remove-word" data-word="${w.word}">×</button>
-                        </div>
-                    `).join('');
+                    const isMobile = window.innerWidth <= 768;
+list.innerHTML = words.map(w => `
+    <div class="banned-word" style="${isMobile ? 'display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; margin-bottom: 8px; background: rgba(255, 255, 255, 0.12); border-radius: 10px;' : ''}">
+        ${w.word}
+        <button class="remove-word" data-word="${w.word}" style="${isMobile ? 'position: relative; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 22px; background: rgba(255, 70, 70, 0.2); border-radius: 50%; color: #ff4c4c;' : ''}">×</button>
+    </div>
+`).join('');
 
                     list.querySelectorAll('.remove-word').forEach(btn => {
                         btn.addEventListener('click', () => this.removeBannedWord(btn.dataset.word));
@@ -761,10 +762,11 @@ startAutoBanCheck() {
 
         const list = document.querySelector('.banned-ips-list');
         if (list) {
-            if (allBannedIps.length === 0) {
-                list.innerHTML = '<div class="no-data">Aucune IP bannie</div>';
-                return;
-            }
+    if (allBannedIps.length === 0) {
+        const isMobile = window.innerWidth <= 768;
+        list.innerHTML = `<div class="no-data" style="${isMobile ? 'text-align: center; padding: 30px 20px; font-size: 16px; color: rgba(255, 255, 255, 0.7); background: rgba(0, 0, 0, 0.2); border-radius: 10px; margin: 20px 0;' : ''}">Aucune IP bannie</div>`;
+        return;
+    }
 
             // Vider la liste actuelle
             list.innerHTML = '';
@@ -3692,11 +3694,11 @@ showAdminPanel() {
             </button>
         </div>
         <div class="panel-tabs" style="${isMobile ? 'overflow-x: auto; white-space: nowrap; padding: 10px; background: #2a2a2a;' : ''}">
-            <button class="tab-btn active" data-tab="banned-words" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Mots bannis</button>
-            <button class="tab-btn" data-tab="banned-ips" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">IPs bannies</button>
-            <button class="tab-btn" data-tab="notifications" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Notif.</button>
-            <button class="tab-btn" data-tab="admin-tools" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px; background: #4CAF50;' : ''}">Outils</button>
-        </div>
+    <button class="tab-btn active" data-tab="banned-words" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px; background: #4CAF50; color: white;' : ''}">Mots bannis</button>
+    <button class="tab-btn" data-tab="banned-ips" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">IPs bannies</button>
+    <button class="tab-btn" data-tab="notifications" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Notif.</button>
+    <button class="tab-btn" data-tab="admin-tools" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Outils</button>
+</div>
         <div class="panel-content" style="${isMobile ? 'padding: 15px; height: calc(100% - 130px); overflow-y: auto; -webkit-overflow-scrolling: touch;' : ''}">
             <!-- Contenu des onglets - contenu existant... -->
             <div class="tab-section active" id="banned-words-section">
@@ -3781,16 +3783,28 @@ showAdminPanel() {
     this.loadBannedIPs();
 
     // Gestion des onglets
-    const tabBtns = panel.querySelectorAll('.tab-btn');
-    tabBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            tabBtns.forEach(b => b.classList.remove('active'));
-            panel.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
-            btn.classList.add('active');
-            const tabId = btn.dataset.tab + '-section';
-            panel.querySelector(`#${tabId}`).classList.add('active');
+const tabBtns = panel.querySelectorAll('.tab-btn');
+tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        tabBtns.forEach(b => {
+            b.classList.remove('active');
+            // Supprimer également le style vert en ligne
+            if (isMobile) {
+                b.style.background = '';
+                b.style.color = '';
+            }
         });
+        panel.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+        btn.classList.add('active');
+        // Ajouter le style vert en ligne pour mobile
+        if (isMobile) {
+            btn.style.background = '#4CAF50';
+            btn.style.color = 'white';
+        }
+        const tabId = btn.dataset.tab + '-section';
+        panel.querySelector(`#${tabId}`).classList.add('active');
     });
+});
 
     // Bouton ajout de mot banni
     const addWordBtn = panel.querySelector('.add-word-btn');

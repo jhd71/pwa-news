@@ -2104,3 +2104,65 @@ body.long-press-active .message-options {
     padding-bottom: 20px;
   }
 }
+
+/* Mise en forme des onglets actifs et amélioration des listes */
+.admin-panel .tab-btn.active {
+  background: #4CAF50 !important;
+  color: white !important;
+  border-bottom-color: #4CAF50 !important;
+}
+
+@media (max-width: 768px) {
+  /* Augmenter considérablement la hauteur des listes */
+  .banned-words-list, 
+  .banned-ips-list {
+    max-height: 400px !important; /* Hauteur maximale augmentée */
+    min-height: 300px !important; /* Hauteur minimale augmentée */
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    border-radius: 10px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    padding: 10px !important;
+    margin-top: 15px !important;
+    margin-bottom: 20px !important;
+  }
+  
+  /* Centrer la croix rouge dans les boutons de suppression */
+  .remove-word, 
+  .remove-ban {
+    position: relative !important;
+    width: 36px !important;
+    height: 36px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 22px !important;
+    background: rgba(255, 70, 70, 0.2) !important;
+    border-radius: 50% !important;
+    color: #ff4c4c !important;
+    margin-left: 10px !important;
+  }
+  
+  /* Mieux structurer les éléments des listes */
+  .banned-word, 
+  .banned-ip {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 12px 15px !important;
+    margin-bottom: 8px !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-radius: 10px !important;
+  }
+  
+  /* Améliorer la mise en forme des messages quand il n'y a pas d'IPs bannies */
+  .no-data {
+    text-align: center !important;
+    padding: 30px 20px !important;
+    font-size: 16px !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+    border-radius: 10px !important;
+    margin: 20px 0 !important;
+  }
+}
