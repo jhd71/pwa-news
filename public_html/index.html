@@ -245,6 +245,66 @@ if (isIOS) {
   font-weight: bold !important;
 }
 </style>
+<style>
+/* Ciblage très spécifique pour le bouton "Actualiser les infos" */
+[data-theme="rouge"] button.refresh-button,
+[data-theme="rouge"] #refreshButton,
+[data-theme="rouge"] .news-panel button[id="refreshButton"],
+[data-theme="rouge"] button.refresh-button#refreshButton,
+[data-theme="rouge"] .panel-content + button,
+[data-theme="rouge"] button:contains("Actualiser les infos") {
+  background-color: #ffd230 !important; /* Jaune vif */
+  background: #ffd230 !important; /* Double propriété pour plus de certitude */
+  background-image: none !important; /* Supprimer tout gradient */
+  border-color: #f5c000 !important;
+  color: #111111 !important; /* Texte foncé */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Restaurer la couleur d'origine du bouton de chat en bas */
+[data-theme="rouge"] .bottom-nav .chat-toggle-btn,
+[data-theme="rouge"] .nav-item.chat-toggle-btn,
+[data-theme="rouge"] #chatToggleBtn,
+[data-theme="rouge"] .bottom-nav button[id="chatToggleBtn"] {
+  background-color: transparent !important; /* Retour couleur par défaut */
+  border-color: transparent !important;
+  color: white !important; /* Texte blanc */
+}
+
+/* Force l'application de la couleur au bouton de chat dans la barre inférieure */
+[data-theme="rouge"] .bottom-nav .nav-item {
+  background-color: transparent !important;
+}
+
+/* Essai avec une approche différente pour le bouton Actualiser */
+[data-theme="rouge"] button[style*="background-color: rgb(92, 184, 92)"],
+[data-theme="rouge"] button[style*="background: rgb(92, 184, 92)"],
+[data-theme="rouge"] button[style*="background-color: #5cb85c"],
+[data-theme="rouge"] button[style*="background: #5cb85c"] {
+  background-color: #ffd230 !important;
+  background: #ffd230 !important;
+  border-color: #f5c000 !important;
+  color: #111111 !important;
+}
+
+/* Ciblage plus spécifique par classe et contenu */
+[data-theme="rouge"] button.refresh-button,
+[data-theme="rouge"] button.btn-success,
+[data-theme="rouge"] button.news-refresh {
+  background-color: #ffd230 !important;
+  background: #ffd230 !important;
+  border-color: #f5c000 !important;
+  color: #111111 !important;
+}
+
+/* Version ultra-spécifique pour le bouton de rafraîchissement */
+button#refreshButton.refresh-button {
+  background-color: #ffd230 !important;
+  background: #ffd230 !important;
+  border-color: #f5c000 !important;
+  color: #111111 !important;
+}
+</style>
 </head>
 <body>
 <script>
