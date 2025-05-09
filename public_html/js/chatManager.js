@@ -3705,14 +3705,14 @@ showAdminPanel() {
                     <input type="text" placeholder="Nouveau mot à bannir">
                     <button class="add-word-btn">Ajouter</button>
                 </div>
-                <div class="banned-words-list"></div>
+                <div class="banned-words-list" style="${isMobile ? 'max-height: 300px; min-height: 200px;' : ''}"></div>
             </div>
 
             <div class="tab-section" id="banned-ips-section">
                 <h4>IPs bannies</h4>
-                <div class="banned-ips-list">
-                    <div class="loading-ips">Chargement des IPs bannies...</div>
-                </div>
+                <div class="banned-ips-list" style="${isMobile ? 'max-height: 300px; min-height: 200px;' : ''}">
+    <div class="loading-ips">Chargement des IPs bannies...</div>
+</div>
             </div>
 
             <div class="tab-section" id="notifications-section">

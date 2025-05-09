@@ -2032,3 +2032,75 @@ body.long-press-active .message-options {
     height: 100% !important;
   }
 }
+
+/* Amélioration de la hauteur des listes dans le panel admin sur mobile */
+@media (max-width: 768px) {
+  /* Augmenter la hauteur des listes de mots bannis */
+  .banned-words-list {
+    max-height: 300px !important; /* Augmenté de 200px à 300px */
+    min-height: 200px !important; /* Hauteur minimale pour avoir de l'espace */
+  }
+  
+  /* Augmenter la hauteur des listes d'IPs bannies */
+  .banned-ips-list {
+    max-height: 300px !important; /* Augmenté de 200px à 300px */
+    min-height: 200px !important; /* Hauteur minimale pour avoir de l'espace */
+  }
+  
+  /* Améliorer la navigation entre les onglets */
+  .panel-tabs .tab-btn {
+    font-size: 15px !important;
+    padding: 12px 16px !important;
+    margin-right: 8px !important;
+    border-radius: 20px !important;
+  }
+  
+  /* Donner plus d'espace vertical aux contenus des onglets */
+  .tab-section {
+    margin-bottom: 30px !important;
+    padding-bottom: 20px !important;
+  }
+  
+  /* Réduire l'espacement entre les éléments */
+  .banned-word, .banned-ip {
+    padding: 8px 12px !important;
+    margin-bottom: 6px !important;
+  }
+  
+  /* Ajuster la hauteur du contenu pour qu'il prenne plus de place */
+  .panel-content {
+    padding: 15px !important;
+    height: calc(100vh - 130px) !important;
+  }
+  
+  /* Améliorer la visibilité des boutons de suppression */
+  .remove-word, .remove-ban {
+    width: 34px !important;
+    height: 34px !important;
+    font-size: 20px !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 50% !important;
+  }
+}
+
+/* Améliorer la lisibilité des textes sur mobile */
+@media (max-width: 768px) {
+  .admin-panel h4 {
+    font-size: 18px !important;
+    margin-bottom: 15px !important;
+  }
+  
+  .ip-pseudo, .banned-word {
+    font-size: 16px !important;
+  }
+  
+  .ip-expiry, .ip-reason {
+    font-size: 14px !important;
+  }
+  
+  /* Meilleure séparation entre les sections */
+  .tab-section {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 20px;
+  }
+}
