@@ -623,6 +623,7 @@ class ChatManager {
         await this.checkAndClearExpiredBans();
         
         // Marquer l'initialisation comme terminée
+		this.startAutoBanCheck();
         this.initialized = true;
         console.log("Chat initialisé avec succès");
     } catch (error) {
@@ -633,6 +634,39 @@ class ChatManager {
             document.body.appendChild(this.container);
         }
     }
+}
+
+startAutoBanCheck() {
+    // Vérifier le bannissement toutes les 15 secondes
+    this.banCheckTimer = setInterval(async () => {
+        if (this.pseudo) {
+            // Vérifier si l'utilisateur est banni
+            const isBanned = await this.checkBannedIP(this.pseudo);
+            if (isBanned) {
+                console.log(`Bannissement détecté pour ${this.pseudo}, déconnexion forcée...`);
+                this.showNotification('Vous avez été banni du chat', 'error');
+                
+                // Stocker les infos de bannissement localement
+                localStorage.setItem('chat_device_banned', 'true');
+                localStorage.setItem('chat_device_banned_until', 'permanent');
+                localStorage.setItem('chat_ban_reason', 'Utilisateur banni');
+                
+                // Déconnecter l'utilisateur
+                await this.logout();
+                
+                // Afficher le message de bannissement
+                this.showBanNotification('Utilisateur banni');
+                
+                // Arrêter le timer
+                clearInterval(this.banCheckTimer);
+                
+                // Recharger la page après un court délai
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            }
+        }
+    }, 15000); // Vérification toutes les 15 secondes
 }
 
     async loadBannedWords() {
@@ -1431,6 +1465,10 @@ async logout() {
 		if (this.banMonitorInterval) {
             clearInterval(this.banMonitorInterval);
         }
+		// Nettoyer le timer de vérification auto des bannissements
+if (this.banCheckTimer) {
+    clearInterval(this.banCheckTimer);
+}
         // Nettoyer l'intervalle de vérification des bannissements
         if (this.banCheckInterval) {
             clearInterval(this.banCheckInterval);
@@ -1673,17 +1711,24 @@ toggleEmojiPanel() {
             }
         )
         .on('postgres_changes',
-            { event: '*', schema: 'public', table: 'banned_ips' },
-            async (payload) => {
-                console.log('Changement dans les bannissements:', payload);
-                // Si l'utilisateur courant est banni, le déconnecter
-                if (this.pseudo && payload.new && payload.new.ip === this.pseudo) {
-                    console.log('Vous avez été banni du chat');
-                    this.showNotification('Vous avez été banni du chat', 'error');
-                    await this.logout();
-                }
+    { event: '*', schema: 'public', table: 'banned_ips' },
+    async (payload) => {
+        console.log('Changement dans les bannissements:', payload);
+        
+        // Si l'utilisateur courant est banni, le déconnecter
+        if (this.pseudo && payload.new && payload.new.ip === this.pseudo) {
+            console.log('Vous avez été banni du chat');
+            this.showNotification('Vous avez été banni du chat', 'error');
+            // Vérification immédiate du bannissement et déconnexion
+            await this.checkUserBannedStatus();
+        } else {
+            // Vérifier si un bannissement a été ajouté - vérifier pour tous
+            if (payload.eventType === 'INSERT') {
+                await this.checkUserBannedStatus();
             }
-        )
+        }
+    }
+)
         .on('postgres_changes', 
             { event: '*', schema: 'public', table: 'message_reactions' },
             (payload) => {
@@ -1953,16 +1998,22 @@ div.innerHTML = `
 
     async sendMessage(content) { 
     try {
-        // Utiliser directement this.pseudo comme identifiant
-        const isBanned = await this.checkBannedIP(this.pseudo);
-        
+        // Vérifier d'abord si l'utilisateur est banni
+        const isBanned = await this.checkUserBannedStatus();
         if (isBanned) {
+            return false;
+        }
+        
+        // Utiliser directement this.pseudo comme identifiant
+        const isBannedCheck = await this.checkBannedIP(this.pseudo);
+        
+        if (isBannedCheck) {
             console.log(`Message rejeté - utilisateur banni: ${this.pseudo}`);
             this.showNotification('Vous êtes banni du chat', 'error');
             // Déconnecter l'utilisateur banni
             await this.logout();
             return false;
-        }
+        }        
         
         // Vérifier les mots bannis
         const containsBannedWord = await this.checkForBannedWords(content);
@@ -3618,32 +3669,36 @@ showAdminPanel() {
     const existingPanel = document.querySelector('.admin-panel');
     if (existingPanel) {
         existingPanel.remove();
+        this.adminPanelOpen = false;
         return;
     }
 
     // Détecter si on est sur mobile
     const isMobile = window.innerWidth <= 768;
     
+    this.adminPanelOpen = true;
+    
     const panel = document.createElement('div');
     panel.className = 'admin-panel';
     panel.style.cssText = isMobile ? 
-        'position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 10000; background: rgba(0,0,0,0.95);' : 
-        '';
+        'position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 10000; background: rgba(0,0,0,0.95); overflow-y: auto;' : 
+        'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 600px; max-height: 80vh; background: var(--chat-gradient); border-radius: 16px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); color: white; z-index: 1010; display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2);';
     
     panel.innerHTML = `
-        <div class="panel-header" style="${isMobile ? 'position: sticky; top: 0; background: #1a1a1a; z-index: 1001;' : ''}">
+        <div class="panel-header" style="${isMobile ? 'position: sticky; top: 0; background: #1a1a1a; z-index: 1001; padding: 15px; display: flex; justify-content: space-between; align-items: center;' : ''}">
             <h3>Panel Admin</h3>
-            <button class="close-panel">
+            <button class="close-panel" style="${isMobile ? 'width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: none; color: white;' : ''}">
                 <span class="material-icons">close</span>
             </button>
         </div>
-        <div class="panel-tabs" style="${isMobile ? 'overflow-x: auto; white-space: nowrap; padding-bottom: 5px;' : ''}">
-            <button class="tab-btn active" data-tab="banned-words" style="${isMobile ? 'min-width: auto; padding: 8px 10px;' : ''}">Mots bannis</button>
-            <button class="tab-btn" data-tab="banned-ips" style="${isMobile ? 'min-width: auto; padding: 8px 10px;' : ''}">IPs bannies</button>
-            <button class="tab-btn" data-tab="notifications" style="${isMobile ? 'min-width: auto; padding: 8px 10px;' : ''}">Notif.</button>
-            <button class="tab-btn" data-tab="admin-tools" style="${isMobile ? 'min-width: auto; padding: 8px 10px; background: #4CAF50;' : ''}">Outils</button>
+        <div class="panel-tabs" style="${isMobile ? 'overflow-x: auto; white-space: nowrap; padding: 10px; background: #2a2a2a;' : ''}">
+            <button class="tab-btn active" data-tab="banned-words" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Mots bannis</button>
+            <button class="tab-btn" data-tab="banned-ips" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">IPs bannies</button>
+            <button class="tab-btn" data-tab="notifications" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Notif.</button>
+            <button class="tab-btn" data-tab="admin-tools" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px; background: #4CAF50;' : ''}">Outils</button>
         </div>
-        <div class="panel-content" style="${isMobile ? 'height: calc(100% - 100px); overflow-y: auto;' : ''}">
+        <div class="panel-content" style="${isMobile ? 'padding: 15px; height: calc(100% - 130px); overflow-y: auto; -webkit-overflow-scrolling: touch;' : ''}">
+            <!-- Contenu des onglets - contenu existant... -->
             <div class="tab-section active" id="banned-words-section">
                 <h4>Mots bannis</h4>
                 <div class="add-word">
@@ -3664,16 +3719,16 @@ showAdminPanel() {
                 <h4>🚨 Envoyer une notification</h4>
                 <form id="notificationForm">
                     <label>Titre :</label><br>
-                    <input type="text" id="notif-title" required style="${isMobile ? 'width: 100%;' : ''}"><br><br>
+                    <input type="text" id="notif-title" required style="${isMobile ? 'width: 100%; padding: 10px; margin-bottom: 10px;' : ''}"><br><br>
                     <label>Message :</label><br>
-                    <textarea id="notif-body" required style="${isMobile ? 'width: 100%;' : ''}"></textarea><br><br>
+                    <textarea id="notif-body" required style="${isMobile ? 'width: 100%; padding: 10px; margin-bottom: 10px; min-height: 80px;' : ''}"></textarea><br><br>
                     <label>URL (facultatif) :</label><br>
-                    <input type="text" id="notif-url" placeholder="/actualites" style="${isMobile ? 'width: 100%;' : ''}"><br><br>
+                    <input type="text" id="notif-url" placeholder="/actualites" style="${isMobile ? 'width: 100%; padding: 10px; margin-bottom: 10px;' : ''}"><br><br>
                     <label>
                         <input type="checkbox" id="notif-urgent">
                         Notification urgente
                     </label><br><br>
-                    <button type="submit">📤 Envoyer</button>
+                    <button type="submit" style="${isMobile ? 'width: 100%; padding: 12px; background: #4CAF50; color: white; border: none; border-radius: 5px;' : ''}">📤 Envoyer</button>
                 </form>
                 <p id="result" style="margin-top:10px;"></p>
             </div>
@@ -3682,7 +3737,7 @@ showAdminPanel() {
                 <h4>🛡️ Outils d'administration</h4>
                 <div style="display: flex; flex-direction: column; gap: 15px;">
                     <div>
-                        <button id="admin-protection-btn" style="background: #4CAF50; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px; width: 100%;">
+                        <button id="admin-protection-btn" style="background: #4CAF50; color: white; border: none; padding: 12px 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px; width: 100%;">
                             <span class="material-icons">security</span>
                             ${isMobile ? 'Débannir Admin' : 'Protection Admin (débannir vous-même)'}
                         </button>
@@ -3691,7 +3746,7 @@ showAdminPanel() {
                         </p>
                     </div>
                     <div>
-                        <button id="clear-expired-bans-btn" style="background: #FFA726; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px; width: 100%;">
+                        <button id="clear-expired-bans-btn" style="background: #FFA726; color: white; border: none; padding: 12px 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px; width: 100%;">
                             <span class="material-icons">cleaning_services</span>
                             ${isMobile ? 'Nettoyer bans expirés' : 'Nettoyer les bannissements expirés'}
                         </button>
@@ -3700,8 +3755,8 @@ showAdminPanel() {
                         </p>
                     </div>
                     ${isMobile ? `
-                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2);">
-                        <button id="force-reload-btn" style="background: #2196F3; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px; width: 100%;">
+                    <div style="margin-top: 30px; padding: 15px; border-top: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); border-radius: 8px;">
+                        <button id="force-reload-btn" style="background: #2196F3; color: white; border: none; padding: 12px 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px; width: 100%;">
                             <span class="material-icons">refresh</span>
                             Actualiser la page
                         </button>
@@ -3716,6 +3771,12 @@ showAdminPanel() {
     `;
 
     document.body.appendChild(panel);
+    
+    // Ajouter une classe au body pour désactiver le scroll
+    if (isMobile) {
+        document.body.classList.add('admin-panel-open');
+    }
+    
     this.loadBannedWords();
     this.loadBannedIPs();
 
@@ -3745,20 +3806,26 @@ showAdminPanel() {
     });
 
     // Formulaire notification
-    panel.querySelector('#notificationForm').addEventListener('submit', async (e) => {
+    panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         // Code existant pour les notifications...
     });
 
     // Bouton de protection admin
-    panel.querySelector('#admin-protection-btn').addEventListener('click', async () => {
+    panel.querySelector('#admin-protection-btn')?.addEventListener('click', async () => {
         if (confirm("Êtes-vous sûr de vouloir supprimer tous vos bannissements ? Cette action vous permettra de continuer à utiliser le chat si vous vous êtes accidentellement banni.")) {
             await this.cleanBanDatabase();
+            if (isMobile) {
+                // Fermer le panel sur mobile après l'action
+                panel.remove();
+                document.body.classList.remove('admin-panel-open');
+                this.adminPanelOpen = false;
+            }
         }
     });
 
     // Bouton pour nettoyer les bannissements expirés
-    panel.querySelector('#clear-expired-bans-btn').addEventListener('click', async () => {
+    panel.querySelector('#clear-expired-bans-btn')?.addEventListener('click', async () => {
         if (confirm("Êtes-vous sûr de vouloir nettoyer tous les bannissements expirés ?")) {
             await this.checkAndClearExpiredBans(true);
             this.showNotification("Nettoyage des bannissements expirés terminé", "success");
@@ -3768,13 +3835,17 @@ showAdminPanel() {
 
     // Bouton d'actualisation (mobile uniquement)
     if (isMobile) {
-        panel.querySelector('#force-reload-btn').addEventListener('click', () => {
+        panel.querySelector('#force-reload-btn')?.addEventListener('click', () => {
             window.location.reload();
         });
     }
 
     // Fermer le panneau
-    panel.querySelector('.close-panel').addEventListener('click', () => panel.remove());
+    panel.querySelector('.close-panel')?.addEventListener('click', () => {
+        panel.remove();
+        document.body.classList.remove('admin-panel-open');
+        this.adminPanelOpen = false;
+    });
     
     // Sur mobile, faire défiler jusqu'à l'onglet Outils Admin automatiquement après un court délai
     if (isMobile) {
@@ -4110,6 +4181,43 @@ showAdminPanel() {
     }
 }
 
+async checkUserBannedStatus() {
+    // Vérifier si l'utilisateur est connecté
+    if (!this.pseudo) return false;
+    
+    try {
+        // Vérifier le bannissement dans la base de données
+        const isBanned = await this.checkBannedIP(this.pseudo);
+        
+        if (isBanned) {
+            console.log(`Bannissement détecté pour ${this.pseudo}, déconnexion forcée...`);
+            this.showNotification('Vous avez été banni du chat', 'error');
+            
+            // Stocker les infos de bannissement localement
+            localStorage.setItem('chat_device_banned', 'true');
+            localStorage.setItem('chat_device_banned_until', 'permanent');
+            localStorage.setItem('chat_ban_reason', 'Utilisateur banni');
+            
+            // Déconnecter l'utilisateur
+            await this.logout();
+            
+            // Afficher le message de bannissement
+            this.showBanNotification('Utilisateur banni');
+            
+            // Recharger la page après un court délai
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+            
+            return true;
+        }
+        
+        return false;
+    } catch (error) {
+        console.error('Erreur vérification bannissement:', error);
+        return false;
+    }
+}
 // Nouvelle méthode pour obtenir l'IP d'un message
 async getMessageIP(message) {
     try {
