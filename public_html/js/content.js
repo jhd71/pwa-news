@@ -172,10 +172,23 @@ this.tileContainer.appendChild(separator0);
             mobileUrl: 'https://www.lejsl.com/edition-montceau-les-mines',
             isDefault: true
         },
+		
         {
             title: 'Creusot Infos',
             url: 'https://www.creusot-infos.com',
             mobileUrl: 'https://www.creusot-infos.com/?m=1',
+            isDefault: true
+        },
+		{
+            title: 'Faits Divers Saône-et-Loire',
+            url: 'https://faitsdivers365.fr/bourgogne-franche-comte/saone-et-loire/',
+            mobileUrl: 'https://faitsdivers365.fr/bourgogne-franche-comte/saone-et-loire/',
+            isDefault: true
+        },
+		{
+            title: 'Mâcon-Infos',
+            url: 'https://macon-infos.com/fr/faits-divers/macon',
+            mobileUrl: 'https://macon-infos.com/fr/faits-divers/macon',
             isDefault: true
         }
     ];
@@ -287,7 +300,7 @@ const sportsSites = [
     {
         title: 'ELAN Chalon Basket',
         url: 'https://scorenco.com/basket/clubs/elan-chalon-basket-2m40/1-4xe3',
-        mobileUrl: 'https://scorenco.com/basket/clubs/elan-chalon-basket-2m40/1-4xe3',
+        mobileUrl: 'https://www.elanchalon.com/',
         isDefault: true
     },
     {
