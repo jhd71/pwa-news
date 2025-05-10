@@ -1,3 +1,5 @@
+/* SECTION 1: STYLES DE BASE POUR LE SONDAGE */
+
 /* Animation pulsante pour le bouton sondage */
 @keyframes surveyPulse {
     0% { transform: scale(1); }
@@ -13,7 +15,6 @@
 /* Appliquer l'animation au bouton */
 .survey-btn .material-icons {
     animation: surveyPulse 2s infinite;
-    color: #FFD230; /* Jaune pour attirer l'attention */
 }
 
 /* Indicateur visuel pour inciter au clic */
@@ -24,15 +25,37 @@
     right: 0;
     width: 10px;
     height: 10px;
-    background-color: #FF4545; /* Point rouge */
+    background-color: #FF4545;
     border-radius: 50%;
     box-shadow: 0 0 5px rgba(255, 69, 69, 0.5);
 }
 
-/* Animation de changement de couleur en continu pour le texte */
+/* Thème light (violet) */
+[data-theme="light"] .survey-btn .material-icons {
+    color: #FFEB3B; /* Jaune pour contraster avec le violet */
+}
+
+/* Thème dark (bleu nuit) */
+[data-theme="dark"] .survey-btn .material-icons {
+    color: #FFEB3B; /* Jaune pour contraster avec le bleu */
+}
+
+/* Thème rouge */
+[data-theme="rouge"] .survey-btn .material-icons {
+    color: #FFD230; /* Jaune spécifique au thème rouge */
+}
+
+/* Animation de changement de couleur pour le texte */
 @keyframes textColorChange {
     0% { color: white; }
-    50% { color: #FFD230; /* Jaune */ }
+    50% { color: #FFEB3B; }
+    100% { color: white; }
+}
+
+/* Spécifique au thème rouge */
+@keyframes textColorChangeRouge {
+    0% { color: white; }
+    50% { color: #FFD230; }
     100% { color: white; }
 }
 
@@ -40,7 +63,11 @@
     animation: textColorChange 3s infinite;
 }
 
-/* Style pour le modal du sondage */
+[data-theme="rouge"] .survey-btn span:not(.material-icons) {
+    animation: textColorChangeRouge 3s infinite;
+}
+
+/* SECTION 2: MODAL DU SONDAGE */
 .survey-modal {
     display: none;
     position: fixed;
@@ -58,8 +85,9 @@
     display: flex;
 }
 
+/* Style de base pour le contenu (thème clair/violet par défaut) */
 .survey-content {
-    background: linear-gradient(145deg, #bc3a34, #a32f2a);
+    background: linear-gradient(145deg, #7E57C2, #9575CD);
     width: 90%;
     max-width: 500px;
     border-radius: 15px;
@@ -69,6 +97,16 @@
     position: relative;
     max-height: 80vh;
     overflow-y: auto;
+}
+
+/* Thème dark (bleu nuit) */
+[data-theme="dark"] .survey-content {
+    background: linear-gradient(145deg, #1a237e, #283593);
+}
+
+/* Thème rouge */
+[data-theme="rouge"] .survey-content {
+    background: linear-gradient(145deg, #bc3a34, #a32f2a);
 }
 
 .survey-header {
@@ -83,6 +121,7 @@
 .survey-header h2 {
     margin: 0;
     font-size: 20px;
+    color: white;
 }
 
 .close-survey {
@@ -103,6 +142,7 @@
     background: rgba(255, 255, 255, 0.3);
 }
 
+/* SECTION 3: QUESTIONS ET OPTIONS */
 .survey-question {
     margin-bottom: 20px;
 }
@@ -111,6 +151,7 @@
     margin-top: 0;
     margin-bottom: 15px;
     font-size: 18px;
+    color: white;
 }
 
 .survey-options {
@@ -127,6 +168,7 @@
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
+    color: white;
 }
 
 .survey-option:hover {
@@ -134,8 +176,22 @@
     transform: translateX(5px);
 }
 
-.survey-option.selected {
-    background: rgba(255, 210, 48, 0.3); /* Fond jaune transparent pour l'option sélectionnée */
+/* Style de l'option sélectionnée selon les thèmes */
+/* Thème light (violet) */
+[data-theme="light"] .survey-option.selected {
+    background: rgba(255, 235, 59, 0.2);
+    border-color: #FFEB3B;
+}
+
+/* Thème dark (bleu nuit) */
+[data-theme="dark"] .survey-option.selected {
+    background: rgba(255, 235, 59, 0.2);
+    border-color: #FFEB3B;
+}
+
+/* Thème rouge */
+[data-theme="rouge"] .survey-option.selected {
+    background: rgba(255, 210, 48, 0.3);
     border-color: #FFD230;
 }
 
@@ -148,8 +204,10 @@
     justify-content: center;
 }
 
-.survey-submit {
-    background: #FFD230;
+/* SECTION 4: BOUTON DE SOUMISSION */
+/* Thème light (violet) */
+[data-theme="light"] .survey-submit {
+    background: #FFEB3B;
     border: none;
     color: #333;
     font-weight: bold;
@@ -162,28 +220,68 @@
     display: block;
 }
 
-.survey-submit:hover {
-    background: #FFDA5A;
+[data-theme="light"] .survey-submit:hover {
+    background: #FFF176;
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
+/* Thème dark (bleu nuit) */
+[data-theme="dark"] .survey-submit {
+    background: #FFEB3B;
+    color: #333;
+}
+
+[data-theme="dark"] .survey-submit:hover {
+    background: #FFF176;
+}
+
+/* Thème rouge */
+[data-theme="rouge"] .survey-submit {
+    background: #FFD230;
+    color: #333;
+}
+
+[data-theme="rouge"] .survey-submit:hover {
+    background: #FFDA5A;
+}
+
+/* SECTION 5: MESSAGE DE REMERCIEMENT ET RÉSULTATS */
 .thank-you-message {
     display: none;
     text-align: center;
     padding: 20px;
 }
 
-.thank-you-message h3 {
-    color: #FFD230;
+/* Thème light (violet) */
+[data-theme="light"] .thank-you-message h3 {
+    color: #FFEB3B;
     margin-bottom: 15px;
 }
 
-.thank-you-icon {
+[data-theme="light"] .thank-you-icon {
     font-size: 50px;
-    color: #FFD230;
+    color: #FFEB3B;
     margin-bottom: 15px;
     display: block;
+}
+
+/* Thème dark (bleu nuit) */
+[data-theme="dark"] .thank-you-message h3 {
+    color: #FFEB3B;
+}
+
+[data-theme="dark"] .thank-you-icon {
+    color: #FFEB3B;
+}
+
+/* Thème rouge */
+[data-theme="rouge"] .thank-you-message h3 {
+    color: #FFD230;
+}
+
+[data-theme="rouge"] .thank-you-icon {
+    color: #FFD230;
 }
 
 .survey-results {
@@ -199,11 +297,23 @@
     position: relative;
 }
 
-.result-fill {
+/* Barres de résultats selon les thèmes */
+/* Thème light (violet) */
+[data-theme="light"] .result-fill {
     height: 100%;
-    background: linear-gradient(to right, #FFD230, #FFDA5A);
+    background: linear-gradient(to right, #FFEB3B, #FFF59D);
     width: 0%; /* Sera défini par JS */
     transition: width 1s ease-in-out;
+}
+
+/* Thème dark (bleu nuit) */
+[data-theme="dark"] .result-fill {
+    background: linear-gradient(to right, #FFEB3B, #FFF59D);
+}
+
+/* Thème rouge */
+[data-theme="rouge"] .result-fill {
+    background: linear-gradient(to right, #FFD230, #FFDA5A);
 }
 
 .result-text {
@@ -222,7 +332,8 @@
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-.back-to-survey {
+/* Thème light (violet) */
+[data-theme="light"] .back-to-survey {
     background: rgba(255, 255, 255, 0.2);
     border: none;
     color: white;
@@ -233,11 +344,29 @@
     transition: background 0.3s;
 }
 
-.back-to-survey:hover {
+[data-theme="light"] .back-to-survey:hover {
     background: rgba(255, 255, 255, 0.3);
 }
 
-/* Responsivité pour mobile */
+/* Thème dark (bleu nuit) */
+[data-theme="dark"] .back-to-survey {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .back-to-survey:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Thème rouge */
+[data-theme="rouge"] .back-to-survey {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="rouge"] .back-to-survey:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* SECTION 6: RESPONSIVITÉ */
 @media (max-width: 768px) {
     .survey-content {
         width: 95%;
