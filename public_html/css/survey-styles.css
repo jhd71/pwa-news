@@ -513,3 +513,13 @@
     align-items: center !important;
     justify-content: center !important;
 }
+
+/* Force le message de remerciement à être caché par défaut */
+.thank-you-message {
+    display: none !important;
+}
+
+/* Annule le !important uniquement quand la classe .visible est ajoutée */
+.thank-you-message.visible {
+    display: block !important;
+}

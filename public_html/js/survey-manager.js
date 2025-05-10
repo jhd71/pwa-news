@@ -395,6 +395,12 @@ document.addEventListener('DOMContentLoaded', function() {
 async function openSurveyModal() {
     console.log("Ouverture du modal de sondage...");
     
+    // Forcer le message de remerciement à être caché au début
+    if (thankYouMessage) {
+        thankYouMessage.style.display = 'none';
+        thankYouMessage.classList.remove('visible');
+    }
+    
     // Vérifier si l'utilisateur a déjà participé
     const alreadyParticipated = await hasAlreadyParticipated();
     
@@ -402,7 +408,6 @@ async function openSurveyModal() {
     const loaded = await loadSurveyData();
     if (!loaded) {
         console.warn("Impossible de charger les données du sondage");
-        // Continue quand même pour permettre de participer au sondage
     }
     
     // Afficher le modal
@@ -411,19 +416,15 @@ async function openSurveyModal() {
     // Si l'utilisateur a déjà répondu, montrer les résultats directement
     if (alreadyParticipated) {
         console.log("Utilisateur a déjà participé, affichage des résultats");
-        surveyQuestions.style.display = 'none';
-        thankYouMessage.style.display = 'block';
-        showResults();
+        if (surveyQuestions) surveyQuestions.style.display = 'none';
+        
+        // Utiliser setTimeout pour être sûr que le message est bien masqué d'abord
+        setTimeout(() => {
+            showResults(); // Cette fonction affichera le message de remerciement
+        }, 50);
     } else {
         // Réinitialiser l'affichage pour un nouveau participant
-        surveyQuestions.style.display = 'block';
-        thankYouMessage.style.display = 'none';
-        
-        // SUPPRIMER cette redéclaration qui cause l'erreur
-        // const thankYouMessage = document.getElementById('thankYouMessage');
-        // if (thankYouMessage) {
-        //     thankYouMessage.style.display = 'none';
-        // }
+        if (surveyQuestions) surveyQuestions.style.display = 'block';
         
         // Réinitialiser les sélections
         document.querySelectorAll('.survey-option').forEach(option => {
@@ -463,14 +464,23 @@ async function openSurveyModal() {
     
     // Fonction pour afficher les résultats
     function showResults() {
-    // S'assurer que la section des questions est cachée
-    surveyQuestions.style.display = 'none';
+    // Assurer que la section des questions est cachée
+    if (surveyQuestions) {
+        surveyQuestions.style.display = 'none';
+    }
     
-    // S'assurer que le message de remerciement est visible
-    thankYouMessage.style.display = 'block';
+    // Assurer que le message de remerciement est visible
+    if (thankYouMessage) {
+        thankYouMessage.style.display = 'block';
+        
+        // Ajouter la classe visible pour contrer le !important dans le CSS
+        thankYouMessage.classList.add('visible');
+    }
     
-    // Générer les résultats
-    surveyResults.innerHTML = '';
+    // Vider le contenu des résultats actuels avant de les recréer
+    if (surveyResults) {
+        surveyResults.innerHTML = '';
+    }
     
     // Vérifier s'il y a des données à afficher
     let hasAnyData = false;
@@ -566,7 +576,12 @@ surveySubmit.addEventListener('click', async function() {
     const alreadyParticipated = await hasAlreadyParticipated();
     if (alreadyParticipated) {
         alert('Vous avez déjà participé à ce sondage.');
-        showResults();
+        
+        // Forcer l'affichage des résultats
+        if (surveyQuestions) surveyQuestions.style.display = 'none';
+        setTimeout(() => {
+            showResults();
+        }, 50);
         return;
     }
     
@@ -632,12 +647,13 @@ surveySubmit.addEventListener('click', async function() {
     // Marquer comme complété
     localStorage.setItem('surveyCompleted', 'true');
     
-    // IMPORTANT: Cacher la section des questions et afficher le message de remerciement
-    surveyQuestions.style.display = 'none';
-    thankYouMessage.style.display = 'block';
+    // IMPORTANT: Cacher la section des questions
+    if (surveyQuestions) surveyQuestions.style.display = 'none';
     
-    // Afficher les résultats
-    showResults();
+    // Utiliser setTimeout pour s'assurer que le message de remerciement est bien caché avant
+    setTimeout(() => {
+        showResults(); // Cette fonction affichera le message de remerciement
+    }, 50);
     
     // Message selon succès
     if (successCount === 0) {
