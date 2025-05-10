@@ -29,6 +29,7 @@ const STATIC_RESOURCES = [
     '/js/utils.js',
 	'/js/theme-manager.js',
     '/js/weather-widget.js',
+	'/js/survey-manager.js',
     '/manifest.json',
     '/images/INFOS-96.png',
     '/images/INFOS-192.png',
