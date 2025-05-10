@@ -308,12 +308,18 @@
 
 /* Thème dark (bleu nuit) */
 [data-theme="dark"] .result-fill {
+    height: 100%;
     background: linear-gradient(to right, #FFEB3B, #FFF59D);
+    width: 0%; /* Sera défini par JS */
+    transition: width 1s ease-in-out;
 }
 
 /* Thème rouge */
 [data-theme="rouge"] .result-fill {
-    background: linear-gradient(to right, #FFD230, #FFDA5A);
+    height: 100%;
+    background: linear-gradient(to right, #FFEB3B, #FFF59D);
+    width: 0%; /* Sera défini par JS */
+    transition: width 1s ease-in-out;
 }
 
 .result-text {
