@@ -419,11 +419,11 @@ async function openSurveyModal() {
         surveyQuestions.style.display = 'block';
         thankYouMessage.style.display = 'none';
         
-        // S'assurer que le message de remerciement est bien caché
-        const thankYouMessage = document.getElementById('thankYouMessage');
-        if (thankYouMessage) {
-            thankYouMessage.style.display = 'none';
-        }
+        // SUPPRIMER cette redéclaration qui cause l'erreur
+        // const thankYouMessage = document.getElementById('thankYouMessage');
+        // if (thankYouMessage) {
+        //     thankYouMessage.style.display = 'none';
+        // }
         
         // Réinitialiser les sélections
         document.querySelectorAll('.survey-option').forEach(option => {
