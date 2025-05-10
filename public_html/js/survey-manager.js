@@ -391,39 +391,51 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Fonction pour ouvrir le modal du sondage
-    async function openSurveyModal() {
-        console.log("Ouverture du modal de sondage...");
-        
-        // Vérifier si l'utilisateur a déjà participé
-        const alreadyParticipated = await hasAlreadyParticipated();
-        
-        // Charger les données du sondage
-        const loaded = await loadSurveyData();
-        if (!loaded) {
-            console.warn("Impossible de charger les données du sondage");
-            // Continue quand même pour permettre de participer au sondage
-        }
-        
-        surveyModal.classList.add('show');
-        
-        // Si l'utilisateur a déjà répondu, montrer les résultats directement
-        if (alreadyParticipated) {
-            console.log("Utilisateur a déjà participé, affichage des résultats");
-            surveyQuestions.style.display = 'none';
-            thankYouMessage.style.display = 'block';
-            showResults();
-        } else {
-            // Réinitialiser l'affichage pour un nouveau participant
-            surveyQuestions.style.display = 'block';
-            thankYouMessage.style.display = 'none';
-            
-            // Réinitialiser les sélections
-            document.querySelectorAll('.survey-option').forEach(option => {
-                option.classList.remove('selected');
-            });
-        }
+    // Fonction pour ouvrir le modal du sondage (correction)
+async function openSurveyModal() {
+    console.log("Ouverture du modal de sondage...");
+    
+    // Vérifier si l'utilisateur a déjà participé
+    const alreadyParticipated = await hasAlreadyParticipated();
+    
+    // Charger les données du sondage
+    const loaded = await loadSurveyData();
+    if (!loaded) {
+        console.warn("Impossible de charger les données du sondage");
+        // Continue quand même pour permettre de participer au sondage
     }
+    
+    // Afficher le modal
+    surveyModal.classList.add('show');
+    
+    // Si l'utilisateur a déjà répondu, montrer les résultats directement
+    if (alreadyParticipated) {
+        console.log("Utilisateur a déjà participé, affichage des résultats");
+        surveyQuestions.style.display = 'none';
+        thankYouMessage.style.display = 'block';
+        showResults();
+    } else {
+        // Réinitialiser l'affichage pour un nouveau participant
+        surveyQuestions.style.display = 'block';
+        thankYouMessage.style.display = 'none';
+        
+        // S'assurer que le message de remerciement est bien caché
+        const thankYouMessage = document.getElementById('thankYouMessage');
+        if (thankYouMessage) {
+            thankYouMessage.style.display = 'none';
+        }
+        
+        // Réinitialiser les sélections
+        document.querySelectorAll('.survey-option').forEach(option => {
+            option.classList.remove('selected');
+        });
+        
+        // Vider les réponses sélectionnées
+        Object.keys(selectedAnswers).forEach(key => {
+            delete selectedAnswers[key];
+        });
+    }
+}
     
     // Fonction pour fermer le modal du sondage
     function closeSurveyModal() {
@@ -451,189 +463,191 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Fonction pour afficher les résultats
     function showResults() {
-        surveyQuestions.style.display = 'none';
-        thankYouMessage.style.display = 'block';
+    // S'assurer que la section des questions est cachée
+    surveyQuestions.style.display = 'none';
+    
+    // S'assurer que le message de remerciement est visible
+    thankYouMessage.style.display = 'block';
+    
+    // Générer les résultats
+    surveyResults.innerHTML = '';
+    
+    // Vérifier s'il y a des données à afficher
+    let hasAnyData = false;
+    
+    Object.keys(surveyData).forEach(question => {
+        const questionData = surveyData[question];
         
-        // Générer les résultats
-        surveyResults.innerHTML = '';
+        // Vérifier s'il y a des données pour cette question
+        if (Object.keys(questionData).length === 0) {
+            return; // Passer à la question suivante s'il n'y a pas de données
+        }
         
-        // Vérifier s'il y a des données à afficher
-        let hasAnyData = false;
+        const total = Object.values(questionData).reduce((acc, val) => acc + val, 0);
         
-        Object.keys(surveyData).forEach(question => {
-            const questionData = surveyData[question];
+        // S'il n'y a pas de réponses, passer
+        if (total === 0) return;
+        
+        hasAnyData = true;
+        
+        // Label pour la question
+        const questionLabel = {
+            'preference': 'Rubriques préférées',
+            'nouvelle_fonctionnalite': 'Fonctionnalités souhaitées',
+            'frequence': 'Fréquence de visite'
+        }[question] || question;
+        
+        const resultHeader = document.createElement('h5');
+        resultHeader.textContent = questionLabel;
+        surveyResults.appendChild(resultHeader);
+        
+        // Labels pour les valeurs
+        const valueLabels = {
+            // Preference
+            'actualites': 'Actualités locales',
+            'sports': 'Sports',
+            'radio': 'Radio',
+            'tv': 'TV en direct',
+            'meteo': 'Météo',
             
-            // Vérifier s'il y a des données pour cette question
-            if (Object.keys(questionData).length === 0) {
-                return; // Passer à la question suivante s'il n'y a pas de données
+            // Nouvelles fonctionnalités
+            'agenda': 'Agenda événements',
+            'petites_annonces': 'Petites annonces',
+            'tribune': 'Tribune libre',
+            'alertes': 'Alertes locales',
+            'carte': 'Carte interactive',
+            
+            // Fréquence
+            'quotidien': 'Tous les jours',
+            'hebdomadaire': 'Plusieurs fois/semaine',
+            'mensuel': 'Quelques fois/mois',
+            'occasionnel': 'Occasionnellement',
+            'premiere': 'Première visite'
+        };
+        
+        // Créer les barres de résultats
+        Object.entries(questionData).forEach(([value, count]) => {
+            const percentage = Math.round((count / total) * 100);
+            
+            const resultBar = document.createElement('div');
+            resultBar.className = 'result-bar';
+            
+            const resultFill = document.createElement('div');
+            resultFill.className = 'result-fill';
+            
+            const resultText = document.createElement('div');
+            resultText.className = 'result-text';
+            resultText.innerHTML = `<span>${valueLabels[value] || value}</span> <span>${percentage}%</span>`;
+            
+            resultBar.appendChild(resultFill);
+            resultBar.appendChild(resultText);
+            surveyResults.appendChild(resultBar);
+            
+            // Animation de la barre
+            setTimeout(() => {
+                resultFill.style.width = `${percentage}%`;
+            }, 100);
+        });
+    });
+    
+    // Si aucune donnée n'est disponible
+    if (!hasAnyData) {
+        const noDataMsg = document.createElement('p');
+        noDataMsg.textContent = "Aucune donnée n'est encore disponible. Vous êtes parmi les premiers à participer!";
+        noDataMsg.style.textAlign = 'center';
+        noDataMsg.style.marginTop = '20px';
+        surveyResults.appendChild(noDataMsg);
+    }
+}
+    
+    // Fonction pour la soumission du sondage (correction)
+surveySubmit.addEventListener('click', async function() {
+    // Vérifier si l'utilisateur a déjà participé
+    const alreadyParticipated = await hasAlreadyParticipated();
+    if (alreadyParticipated) {
+        alert('Vous avez déjà participé à ce sondage.');
+        showResults();
+        return;
+    }
+    
+    const questions = document.querySelectorAll('.survey-question');
+    let allAnswered = true;
+    
+    // Vérifier si toutes les questions ont une réponse
+    questions.forEach(question => {
+        const questionId = question.dataset.question;
+        if (!selectedAnswers[questionId]) {
+            allAnswered = false;
+            question.style.border = '2px solid rgba(255, 69, 69, 0.7)';
+            setTimeout(() => {
+                question.style.border = 'none';
+            }, 2000);
+        }
+    });
+    
+    if (!allAnswered) {
+        alert('Merci de répondre à toutes les questions.');
+        return;
+    }
+    
+    // Désactiver le bouton pendant l'envoi
+    surveySubmit.disabled = true;
+    surveySubmit.textContent = 'Envoi en cours...';
+    
+    // Enregistrer la participation
+    const participationRecorded = await recordParticipation();
+    if (!participationRecorded) {
+        console.warn("Erreur lors de l'enregistrement de la participation");
+    }
+    
+    // Enregistrer les réponses dans Supabase
+    let allSuccess = true;
+    let successCount = 0;
+    
+    for (const [question, answer] of Object.entries(selectedAnswers)) {
+        console.log(`Traitement de la réponse: ${question}=${answer}`);
+        const success = await updateSurveyResponse(question, answer);
+        if (success) {
+            successCount++;
+            
+            // Mettre à jour les données locales pour l'affichage
+            if (!surveyData[question]) {
+                surveyData[question] = {};
             }
             
-            const total = Object.values(questionData).reduce((acc, val) => acc + val, 0);
+            if (!surveyData[question][answer]) {
+                surveyData[question][answer] = 0;
+            }
             
-            // S'il n'y a pas de réponses, passer
-            if (total === 0) return;
-            
-            hasAnyData = true;
-            
-            // Label pour la question
-            const questionLabel = {
-                'preference': 'Rubriques préférées',
-                'nouvelle_fonctionnalite': 'Fonctionnalités souhaitées',
-                'frequence': 'Fréquence de visite'
-            }[question] || question;
-            
-            const resultHeader = document.createElement('h5');
-            resultHeader.textContent = questionLabel;
-            surveyResults.appendChild(resultHeader);
-            
-            // Labels pour les valeurs
-            const valueLabels = {
-                // Preference
-                'actualites': 'Actualités locales',
-                'sports': 'Sports',
-                'radio': 'Radio',
-                'tv': 'TV en direct',
-                'meteo': 'Météo',
-                
-                // Nouvelles fonctionnalités
-                'agenda': 'Agenda événements',
-                'petites_annonces': 'Petites annonces',
-                'tribune': 'Tribune libre',
-                'alertes': 'Alertes locales',
-                'carte': 'Carte interactive',
-                
-                // Fréquence
-                'quotidien': 'Tous les jours',
-                'hebdomadaire': 'Plusieurs fois/semaine',
-                'mensuel': 'Quelques fois/mois',
-                'occasionnel': 'Occasionnellement',
-                'premiere': 'Première visite'
-            };
-            
-            // Créer les barres de résultats
-            Object.entries(questionData).forEach(([value, count]) => {
-                const percentage = Math.round((count / total) * 100);
-                
-                const resultBar = document.createElement('div');
-                resultBar.className = 'result-bar';
-                
-                const resultFill = document.createElement('div');
-                resultFill.className = 'result-fill';
-                
-                const resultText = document.createElement('div');
-                resultText.className = 'result-text';
-                resultText.innerHTML = `<span>${valueLabels[value] || value}</span> <span>${percentage}%</span>`;
-                
-                resultBar.appendChild(resultFill);
-                resultBar.appendChild(resultText);
-                surveyResults.appendChild(resultBar);
-                
-                // Animation de la barre
-                setTimeout(() => {
-                    resultFill.style.width = `${percentage}%`;
-                }, 100);
-            });
-        });
-        
-        // Si aucune donnée n'est disponible
-        if (!hasAnyData) {
-            const noDataMsg = document.createElement('p');
-            noDataMsg.textContent = "Aucune donnée n'est encore disponible. Vous êtes parmi les premiers à participer!";
-            noDataMsg.style.textAlign = 'center';
-            noDataMsg.style.marginTop = '20px';
-            surveyResults.appendChild(noDataMsg);
+            surveyData[question][answer] += 1;
+        } else {
+            allSuccess = false;
         }
     }
     
-    // Soumission du sondage
-    surveySubmit.addEventListener('click', async function() {
-        // Vérifier si l'utilisateur a déjà participé
-        const alreadyParticipated = await hasAlreadyParticipated();
-        if (alreadyParticipated) {
-            alert('Vous avez déjà participé à ce sondage.');
-            showResults();
-            return;
-        }
-        
-        const questions = document.querySelectorAll('.survey-question');
-        let allAnswered = true;
-        
-        // Vérifier si toutes les questions ont une réponse
-        questions.forEach(question => {
-            const questionId = question.dataset.question;
-            if (!selectedAnswers[questionId]) {
-                allAnswered = false;
-                question.style.border = '2px solid rgba(255, 69, 69, 0.7)';
-                setTimeout(() => {
-                    question.style.border = 'none';
-                }, 2000);
-            }
-        });
-        
-        if (!allAnswered) {
-            alert('Merci de répondre à toutes les questions.');
-            return;
-        }
-        
-        // Enregistrer la participation avant de soumettre les réponses
-        const participationRecorded = await recordParticipation();
-        if (!participationRecorded) {
-            console.warn("Erreur lors de l'enregistrement de la participation");
-            // On continue quand même, puisque le localStorage servira de fallback
-        }
-        
-        // Désactiver le bouton pendant l'envoi
-        surveySubmit.disabled = true;
-        surveySubmit.textContent = 'Envoi en cours...';
-        
-        // Enregistrer les réponses dans Supabase
-        let allSuccess = true;
-        let successCount = 0;
-        
-        for (const [question, answer] of Object.entries(selectedAnswers)) {
-            console.log(`Traitement de la réponse: ${question}=${answer}`);
-            const success = await updateSurveyResponse(question, answer);
-            if (success) {
-                successCount++;
-                
-                // Mettre à jour les données locales pour l'affichage
-                if (!surveyData[question]) {
-                    surveyData[question] = {};
-                }
-                
-                if (!surveyData[question][answer]) {
-                    surveyData[question][answer] = 0;
-                }
-                
-                surveyData[question][answer] += 1;
-            } else {
-                allSuccess = false;
-            }
-        }
-        
-        // Marquer comme complété dans localStorage
-        localStorage.setItem('surveyCompleted', 'true');
-        
-        // Réactiver le bouton
-        surveySubmit.disabled = false;
-        surveySubmit.textContent = 'Envoyer mes réponses';
-        
-        // Recharger les données du sondage pour s'assurer d'avoir les derniers résultats
-        await loadSurveyData();
-        
-        // Afficher les résultats
-        showResults();
-        
-        // Afficher un message selon le succès des opérations
-        if (successCount === 0) {
-            console.error('Aucune réponse n\'a pu être enregistrée');
-            // Ne pas afficher d'alerte pour ne pas perturber l'utilisateur
-        } else if (!allSuccess) {
-            console.warn('Certaines réponses n\'ont pas pu être enregistrées');
-        } else {
-            console.log('Toutes les réponses ont été enregistrées avec succès');
-        }
-    });
+    // Réactiver le bouton (au cas où il y a une erreur)
+    surveySubmit.disabled = false;
+    surveySubmit.textContent = 'Envoyer mes réponses';
+    
+    // Marquer comme complété
+    localStorage.setItem('surveyCompleted', 'true');
+    
+    // IMPORTANT: Cacher la section des questions et afficher le message de remerciement
+    surveyQuestions.style.display = 'none';
+    thankYouMessage.style.display = 'block';
+    
+    // Afficher les résultats
+    showResults();
+    
+    // Message selon succès
+    if (successCount === 0) {
+        console.error('Aucune réponse n\'a pu être enregistrée');
+    } else if (!allSuccess) {
+        console.warn('Certaines réponses n\'ont pas pu être enregistrées');
+    } else {
+        console.log('Toutes les réponses ont été enregistrées avec succès');
+    }
+});
     
     // Attacher les événements aux boutons
     if (surveyBtn) {
