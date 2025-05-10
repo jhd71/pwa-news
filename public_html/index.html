@@ -499,10 +499,15 @@ document.addEventListener('DOMContentLoaded', function() {
         <span>Vue</span>
     </button>
     <button class="nav-item" id="donateBtn">
-    <span class="material-icons">volunteer_activism</span>
-    <span>Soutenir</span>
-</button>
-    <!-- Bouton de chat intégré dans la barre -->
+      <span class="material-icons">volunteer_activism</span>
+      <span>Soutenir</span>
+    </button>
+    <!-- Nouveau bouton pour le sondage avec animation pulsante -->
+    <button class="nav-item survey-btn" id="surveyBtn">
+        <span class="material-icons">poll</span>
+        <span>Sondage</span>
+    </button>
+    <!-- Bouton de chat existant -->
     <button class="nav-item chat-toggle-btn" id="chatToggleBtn">
         <span class="material-icons">chat</span>
         <span>Chat</span>
@@ -1027,5 +1032,580 @@ document.getElementById('donateBtn').addEventListener('click', function() {
 <script src="/js/ios-chat-fix.js"></script>
 <script src="/js/ban-check.js"></script>
 <script src="/js/theme-manager.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Supabase client (utilise la connexion déjà établie par votre chat manager)
+    const supabase = window.supabase || null;
+    
+    if (!supabase && window.chatManager && window.chatManager.supabase) {
+        supabase = window.chatManager.supabase;
+    }
+    
+    // Éléments DOM
+    const surveyBtn = document.getElementById('surveyBtn');
+    const surveyModal = document.getElementById('surveyModal');
+    const closeSurvey = document.getElementById('closeSurvey');
+    const surveySubmit = document.getElementById('surveySubmit');
+    const surveyQuestions = document.getElementById('surveyQuestions');
+    const thankYouMessage = document.getElementById('thankYouMessage');
+    const surveyResults = document.getElementById('surveyResults');
+    const closeSurveyAfterSubmit = document.getElementById('closeSurveyAfterSubmit');
+    
+    // Stockage des réponses sélectionnées
+    const selectedAnswers = {};
+    
+    // Structure pour stocker les résultats du sondage
+    let surveyData = {
+        preference: {},
+        nouvelle_fonctionnalite: {},
+        frequence: {}
+    };
+    
+    // Fonction pour charger les données du sondage depuis Supabase
+    async function loadSurveyData() {
+        try {
+            if (!supabase) {
+                console.error("Client Supabase non disponible");
+                return false;
+            }
+            
+            // Récupérer toutes les réponses de la table survey_responses
+            const { data, error } = await supabase
+                .from('survey_responses')
+                .select('*');
+                
+            if (error) {
+                console.error('Erreur chargement des données du sondage:', error);
+                return false;
+            }
+            
+            // Organiser les données par question et réponse
+            data.forEach(item => {
+                const { question, answer, count } = item;
+                
+                if (!surveyData[question]) {
+                    surveyData[question] = {};
+                }
+                
+                surveyData[question][answer] = count;
+            });
+            
+            return true;
+        } catch (error) {
+            console.error('Erreur:', error);
+            return false;
+        }
+    }
+    
+    // Fonction pour mettre à jour une réponse dans Supabase
+    async function updateSurveyResponse(question, answer) {
+        try {
+            if (!supabase) {
+                console.error("Client Supabase non disponible");
+                return false;
+            }
+            
+            // Vérifier si cette réponse existe déjà
+            const { data, error: selectError } = await supabase
+                .from('survey_responses')
+                .select('*')
+                .eq('question', question)
+                .eq('answer', answer)
+                .maybeSingle();
+                
+            if (selectError) {
+                console.error('Erreur vérification réponse existante:', selectError);
+                return false;
+            }
+            
+            if (data) {
+                // La réponse existe, incrémenter le compteur
+                const { error: updateError } = await supabase
+                    .from('survey_responses')
+                    .update({ 
+                        count: data.count + 1,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', data.id);
+                    
+                if (updateError) {
+                    console.error('Erreur mise à jour réponse:', updateError);
+                    return false;
+                }
+            } else {
+                // La réponse n'existe pas encore, l'insérer
+                const { error: insertError } = await supabase
+                    .from('survey_responses')
+                    .insert({
+                        question: question,
+                        answer: answer,
+                        count: 1
+                    });
+                    
+                if (insertError) {
+                    console.error('Erreur insertion réponse:', insertError);
+                    return false;
+                }
+            }
+            
+            return true;
+        } catch (error) {
+            console.error('Erreur:', error);
+            return false;
+        }
+    }
+    
+    // Fonction pour ouvrir le modal du sondage
+    async function openSurveyModal() {
+        // Charger les données du sondage
+        await loadSurveyData();
+        
+        surveyModal.classList.add('show');
+        // Réinitialiser l'affichage
+        surveyQuestions.style.display = 'block';
+        thankYouMessage.style.display = 'none';
+        
+        // Réinitialiser les sélections
+        document.querySelectorAll('.survey-option').forEach(option => {
+            option.classList.remove('selected');
+        });
+        
+        // Si l'utilisateur a déjà répondu, montrer les résultats directement
+        const hasResponded = localStorage.getItem('surveyCompleted');
+        if (hasResponded === 'true') {
+            showResults();
+        }
+    }
+    
+    // Fonction pour fermer le modal du sondage
+    function closeSurveyModal() {
+        surveyModal.classList.remove('show');
+    }
+    
+    // Gestion des clics sur les options
+    document.querySelectorAll('.survey-option').forEach(option => {
+        option.addEventListener('click', function() {
+            const question = this.closest('.survey-question').dataset.question;
+            const value = this.dataset.value;
+            
+            // Désélectionner les autres options dans la même question
+            this.closest('.survey-options').querySelectorAll('.survey-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Sélectionner cette option
+            this.classList.add('selected');
+            
+            // Stocker la réponse
+            selectedAnswers[question] = value;
+        });
+    });
+    
+    // Fonction pour afficher les résultats
+    function showResults() {
+        surveyQuestions.style.display = 'none';
+        thankYouMessage.style.display = 'block';
+        
+        // Générer les résultats
+        surveyResults.innerHTML = '';
+        
+        Object.keys(surveyData).forEach(question => {
+            const questionData = surveyData[question];
+            
+            // Vérifier s'il y a des données pour cette question
+            if (Object.keys(questionData).length === 0) {
+                return; // Passer à la question suivante s'il n'y a pas de données
+            }
+            
+            const total = Object.values(questionData).reduce((acc, val) => acc + val, 0);
+            
+            // S'il n'y a pas de réponses, passer
+            if (total === 0) return;
+            
+            // Label pour la question
+            const questionLabel = {
+                'preference': 'Rubriques préférées',
+                'nouvelle_fonctionnalite': 'Fonctionnalités souhaitées',
+                'frequence': 'Fréquence de visite'
+            }[question] || question;
+            
+            const resultHeader = document.createElement('h5');
+            resultHeader.textContent = questionLabel;
+            surveyResults.appendChild(resultHeader);
+            
+            // Labels pour les valeurs
+            const valueLabels = {
+                // Preference
+                'actualites': 'Actualités locales',
+                'sports': 'Sports',
+                'radio': 'Radio',
+                'tv': 'TV en direct',
+                'meteo': 'Météo',
+                
+                // Nouvelles fonctionnalités
+                'agenda': 'Agenda événements',
+                'petites_annonces': 'Petites annonces',
+                'tribune': 'Tribune libre',
+                'alertes': 'Alertes locales',
+                'carte': 'Carte interactive',
+                
+                // Fréquence
+                'quotidien': 'Tous les jours',
+                'hebdomadaire': 'Plusieurs fois/semaine',
+                'mensuel': 'Quelques fois/mois',
+                'occasionnel': 'Occasionnellement',
+                'premiere': 'Première visite'
+            };
+            
+            // Créer les barres de résultats
+            Object.entries(questionData).forEach(([value, count]) => {
+                const percentage = Math.round((count / total) * 100);
+                
+                const resultBar = document.createElement('div');
+                resultBar.className = 'result-bar';
+                
+                const resultFill = document.createElement('div');
+                resultFill.className = 'result-fill';
+                
+                const resultText = document.createElement('div');
+                resultText.className = 'result-text';
+                resultText.innerHTML = `<span>${valueLabels[value] || value}</span> <span>${percentage}%</span>`;
+                
+                resultBar.appendChild(resultFill);
+                resultBar.appendChild(resultText);
+                surveyResults.appendChild(resultBar);
+                
+                // Animation de la barre
+                setTimeout(() => {
+                    resultFill.style.width = `${percentage}%`;
+                }, 100);
+            });
+        });
+    }
+    
+    // Soumission du sondage
+    surveySubmit.addEventListener('click', async function() {
+        const questions = document.querySelectorAll('.survey-question');
+        let allAnswered = true;
+        
+        // Vérifier si toutes les questions ont une réponse
+        questions.forEach(question => {
+            const questionId = question.dataset.question;
+            if (!selectedAnswers[questionId]) {
+                allAnswered = false;
+                question.style.border = '2px solid rgba(255, 69, 69, 0.7)';
+                setTimeout(() => {
+                    question.style.border = 'none';
+                }, 2000);
+            }
+        });
+        
+        if (!allAnswered) {
+            alert('Merci de répondre à toutes les questions.');
+            return;
+        }
+        
+        // Désactiver le bouton pendant l'envoi
+        surveySubmit.disabled = true;
+        surveySubmit.textContent = 'Envoi en cours...';
+        
+        // Enregistrer les réponses dans Supabase
+        let allSuccess = true;
+        
+        for (const [question, answer] of Object.entries(selectedAnswers)) {
+            const success = await updateSurveyResponse(question, answer);
+            if (!success) {
+                allSuccess = false;
+            }
+            
+            // Mettre à jour les données locales pour l'affichage
+            if (!surveyData[question]) {
+                surveyData[question] = {};
+            }
+            
+            if (!surveyData[question][answer]) {
+                surveyData[question][answer] = 0;
+            }
+            
+            surveyData[question][answer] += 1;
+        }
+        
+        // Réactiver le bouton
+        surveySubmit.disabled = false;
+        surveySubmit.textContent = 'Envoyer mes réponses';
+        
+        if (!allSuccess) {
+            alert('Une erreur est survenue lors de l\'envoi de certaines réponses. Les résultats affichés peuvent ne pas être à jour.');
+        }
+        
+        // Marquer comme complété
+        localStorage.setItem('surveyCompleted', 'true');
+        
+        // Recharger les données depuis Supabase pour afficher les résultats à jour
+        await loadSurveyData();
+        
+        // Afficher les résultats
+        showResults();
+    });
+    
+    // Event Listeners
+    surveyBtn.addEventListener('click', openSurveyModal);
+    closeSurvey.addEventListener('click', closeSurveyModal);
+    closeSurveyAfterSubmit.addEventListener('click', closeSurveyModal);
+    
+    // Fermer le modal en cliquant à l'extérieur du contenu
+    surveyModal.addEventListener('click', function(e) {
+        if (e.target === surveyModal) {
+            closeSurveyModal();
+        }
+    });
+    
+    // Reset du bouton pulsant si l'utilisateur a déjà répondu
+    if (localStorage.getItem('surveyCompleted') === 'true') {
+        const surveyIcon = surveyBtn.querySelector('.material-icons');
+        surveyIcon.style.animation = 'none';
+        surveyIcon.style.color = 'white';
+        
+        // Supprimer le point rouge
+        const afterStyle = document.createElement('style');
+        afterStyle.textContent = '.survey-btn::after { display: none; }';
+        document.head.appendChild(afterStyle);
+    }
+});
+</script>
+
+/* 3. FONCTION UTILITAIRE POUR ACCÉDER DIRECTEMENT AUX RÉSULTATS DU SONDAGE DEPUIS LA CONSOLE ADMIN */
+
+<script>
+// Cette fonction peut être appelée depuis la console pour obtenir un CSV des résultats
+async function exportSurveyResultsToCSV() {
+    try {
+        // Utiliser le client Supabase de chatManager ou définir un nouveau client
+        let supabase = window.supabase;
+        if (!supabase && window.chatManager && window.chatManager.supabase) {
+            supabase = window.chatManager.supabase;
+        }
+        
+        if (!supabase) {
+            console.error("Client Supabase non disponible");
+            return;
+        }
+        
+        // Récupérer toutes les réponses
+        const { data, error } = await supabase
+            .from('survey_responses')
+            .select('*')
+            .order('question', { ascending: true })
+            .order('count', { ascending: false });
+            
+        if (error) {
+            console.error('Erreur récupération des données:', error);
+            return;
+        }
+        
+        // Générer les en-têtes CSV
+        let csv = 'Question,Réponse,Nombre de votes,Date de mise à jour\n';
+        
+        // Ajouter les lignes de données
+        data.forEach(row => {
+            const formattedDate = new Date(row.updated_at).toLocaleString('fr-FR');
+            csv += `"${row.question}","${row.answer}",${row.count},"${formattedDate}"\n`;
+        });
+        
+        // Créer un blob et un lien pour télécharger
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'resultats_sondage.csv');
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        console.log('Export CSV terminé avec succès!');
+    } catch (error) {
+        console.error('Erreur export CSV:', error);
+    }
+}
+
+// Fonction pour vider toutes les réponses au sondage (à utiliser avec précaution!)
+async function clearAllSurveyResponses() {
+    if (!confirm('ATTENTION: Cette action va supprimer TOUTES les réponses au sondage. Cette action est irréversible. Continuer?')) {
+        return;
+    }
+    
+    try {
+        // Utiliser le client Supabase de chatManager ou définir un nouveau client
+        let supabase = window.supabase;
+        if (!supabase && window.chatManager && window.chatManager.supabase) {
+            supabase = window.chatManager.supabase;
+        }
+        
+        if (!supabase) {
+            console.error("Client Supabase non disponible");
+            return;
+        }
+        
+        // Supprimer toutes les réponses
+        const { error } = await supabase
+            .from('survey_responses')
+            .delete()
+            .gt('id', '0'); // Condition toujours vraie pour supprimer toutes les lignes
+            
+        if (error) {
+            console.error('Erreur suppression des données:', error);
+            return;
+        }
+        
+        console.log('Toutes les réponses au sondage ont été supprimées avec succès.');
+    } catch (error) {
+        console.error('Erreur:', error);
+    }
+}
+
+// Exposer les fonctions globalement
+window.exportSurveyResultsToCSV = exportSurveyResultsToCSV;
+window.clearAllSurveyResponses = clearAllSurveyResponses;
+</script>
+<div class="survey-modal" id="surveyModal">
+    <div class="survey-content">
+        <div class="survey-header">
+            <h2>Aidez-nous à améliorer Actu&Média71</h2>
+            <button class="close-survey" id="closeSurvey">×</button>
+        </div>
+        
+        <div id="surveyQuestions">
+            <!-- Question 1 -->
+            <div class="survey-question" data-question="preference">
+                <h3>Quelle rubrique préférez-vous sur Actu&Média71 ?</h3>
+                <div class="survey-options">
+                    <div class="survey-option" data-value="actualites">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">newspaper</span>
+                        </div>
+                        <span>Actualités locales</span>
+                    </div>
+                    <div class="survey-option" data-value="sports">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">sports_soccer</span>
+                        </div>
+                        <span>Sports</span>
+                    </div>
+                    <div class="survey-option" data-value="radio">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">radio</span>
+                        </div>
+                        <span>Radio</span>
+                    </div>
+                    <div class="survey-option" data-value="tv">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">tv</span>
+                        </div>
+                        <span>TV en direct</span>
+                    </div>
+                    <div class="survey-option" data-value="meteo">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">cloud</span>
+                        </div>
+                        <span>Météo</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="survey-question" data-question="nouvelle_fonctionnalite">
+                <h3>Quelle nouvelle fonctionnalité souhaiteriez-vous voir sur le site ?</h3>
+                <div class="survey-options">
+                    <div class="survey-option" data-value="agenda">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">event</span>
+                        </div>
+                        <span>Agenda des événements locaux</span>
+                    </div>
+                    <div class="survey-option" data-value="petites_annonces">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">sell</span>
+                        </div>
+                        <span>Petites annonces gratuites</span>
+                    </div>
+                    <div class="survey-option" data-value="tribune">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">forum</span>
+                        </div>
+                        <span>Tribune libre/Blog citoyen</span>
+                    </div>
+                    <div class="survey-option" data-value="alertes">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">notifications_active</span>
+                        </div>
+                        <span>Alertes locales (travaux, urgences...)</span>
+                    </div>
+                    <div class="survey-option" data-value="carte">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">map</span>
+                        </div>
+                        <span>Carte interactive des commerces et services</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="survey-question" data-question="frequence">
+                <h3>À quelle fréquence visitez-vous Actu&Média71 ?</h3>
+                <div class="survey-options">
+                    <div class="survey-option" data-value="quotidien">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">today</span>
+                        </div>
+                        <span>Tous les jours</span>
+                    </div>
+                    <div class="survey-option" data-value="hebdomadaire">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">view_week</span>
+                        </div>
+                        <span>Plusieurs fois par semaine</span>
+                    </div>
+                    <div class="survey-option" data-value="mensuel">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">calendar_month</span>
+                        </div>
+                        <span>Quelques fois par mois</span>
+                    </div>
+                    <div class="survey-option" data-value="occasionnel">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">calendar_today</span>
+                        </div>
+                        <span>Occasionnellement</span>
+                    </div>
+                    <div class="survey-option" data-value="premiere">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">new_releases</span>
+                        </div>
+                        <span>C'est ma première visite</span>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="survey-submit" id="surveySubmit">Envoyer mes réponses</button>
+        </div>
+        
+        <!-- Message de remerciement et résultats -->
+        <div class="thank-you-message" id="thankYouMessage">
+            <span class="thank-you-icon">🎉</span>
+            <h3>Merci pour votre participation !</h3>
+            <p>Votre avis est précieux pour améliorer Actu&Média71.</p>
+            
+            <div class="survey-results">
+                <h4>Résultats actuels du sondage</h4>
+                <div id="surveyResults">
+                    <!-- Les résultats seront injectés ici par JavaScript -->
+                </div>
+            </div>
+            
+            <button class="back-to-survey" id="closeSurveyAfterSubmit">Retour au site</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>
