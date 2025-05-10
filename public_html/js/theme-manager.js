@@ -1,3 +1,5 @@
+// Correction pour theme-manager.js - Focus sur la notification toast
+
 class ThemeManager {
     constructor() {
         // Définir les thèmes disponibles
@@ -20,7 +22,8 @@ class ThemeManager {
         
         // Appliquer le thème sauvegardé ou le thème par défaut (rouge)
         if (savedTheme) {
-            this.setTheme(savedTheme);
+            // Appliquer le thème sans afficher de toast au démarrage
+            this.setTheme(savedTheme, false);
         } else {
             document.documentElement.setAttribute('data-theme', 'rouge');
             localStorage.setItem('theme', 'rouge');
@@ -33,7 +36,8 @@ class ThemeManager {
     }
     
     // Appliquer un thème spécifique
-    setTheme(themeId) {
+    // Ajout d'un paramètre showToast pour contrôler l'affichage de la notification
+    setTheme(themeId, showToast = true) {
         // Vérifier si le thème existe
         if (!this.themes.find(t => t.id === themeId)) {
             console.error(`Thème inconnu: ${themeId}`);
@@ -51,8 +55,10 @@ class ThemeManager {
             detail: { theme: themeId }
         }));
         
-        // Afficher une notification toast pour indiquer le changement de thème
-        this.showToast(`Thème ${this.getThemeName(themeId)} activé`);
+        // Afficher une notification toast uniquement si demandé
+        if (showToast) {
+            this.showToast(`Thème ${this.getThemeName(themeId)} activé`);
+        }
         
         console.log(`Thème appliqué: ${themeId}`);
     }
@@ -65,7 +71,7 @@ class ThemeManager {
     
     // Configurer le bouton de thème
     setupThemeButton() {
-        // CORRECTION: Utiliser le bouton darkModeToggle qui existe dans le HTML
+        // Utiliser le bouton darkModeToggle qui existe dans le HTML
         const themeToggleBtn = document.getElementById('darkModeToggle');
         
         if (themeToggleBtn) {
@@ -124,8 +130,8 @@ class ThemeManager {
         // Calculer le prochain index (revenir au début si on atteint la fin)
         const nextIndex = (currentIndex + 1) % themeIds.length;
         
-        // Appliquer le prochain thème
-        this.setTheme(themeIds[nextIndex]);
+        // Appliquer le prochain thème (avec notification toast)
+        this.setTheme(themeIds[nextIndex], true);
         
         // Mettre à jour l'interface du bouton
         this.updateThemeButtonUI();
@@ -138,26 +144,28 @@ class ThemeManager {
     
     // Afficher une notification toast
     showToast(message) {
-        // Créer un élément toast s'il n'existe pas déjà
-        let toast = document.getElementById('theme-toast');
+        // Nettoyer tout toast précédent
+        this.clearToast();
         
-        if (!toast) {
-            toast = document.createElement('div');
-            toast.id = 'theme-toast';
-            toast.className = 'toast';
-            document.body.appendChild(toast);
-        }
-        
-        // Définir le message
+        // Créer un nouvel élément toast
+        const toast = document.createElement('div');
+        toast.id = 'theme-toast';
+        toast.className = 'toast show';
         toast.textContent = message;
-        
-        // Afficher le toast
-        toast.classList.add('show');
+        document.body.appendChild(toast);
         
         // Masquer le toast après 3 secondes
         setTimeout(() => {
-            toast.classList.remove('show');
+            this.clearToast();
         }, 3000);
+    }
+    
+    // Nettoyer les notifications toast existantes
+    clearToast() {
+        const existingToast = document.getElementById('theme-toast');
+        if (existingToast && existingToast.parentNode) {
+            existingToast.parentNode.removeChild(existingToast);
+        }
     }
 }
 
