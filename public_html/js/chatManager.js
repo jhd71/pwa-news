@@ -4006,9 +4006,42 @@ tabBtns.forEach(btn => {
         
         // 1. Définir l'utilisateur courant pour les vérifications RLS
         console.log(`Définition de l'utilisateur courant: ${this.pseudo}`);
-        await this.setCurrentUserForRLS();
+        const rlsSuccess = await this.setCurrentUserForRLS();
         
-        // 2. Effectuer la suppression directement sans vérifications préalables
+        if (!rlsSuccess) {
+            console.error("Échec de la définition de l'utilisateur pour RLS");
+            throw new Error("Échec de l'authentification RLS");
+        }
+        
+        // 2. Vérifier d'abord si le message existe et appartient à l'utilisateur
+        console.log(`Vérification du message ${messageId}...`);
+        const { data: messageData, error: messageError } = await this.supabase
+            .from('messages')
+            .select('*')
+            .eq('id', messageId)
+            .single();
+            
+        if (messageError) {
+            console.error('Erreur vérification message:', messageError);
+            throw messageError;
+        }
+        
+        if (!messageData) {
+            console.error(`Message ${messageId} non trouvé`);
+            throw new Error("Message introuvable");
+        }
+        
+        console.log(`Message trouvé: auteur=${messageData.pseudo}, utilisateur actuel=${this.pseudo}`);
+        
+        // 3. Vérifier si l'utilisateur est l'auteur du message ou un administrateur
+        const canDelete = messageData.pseudo === this.pseudo || this.isAdmin;
+        
+        if (!canDelete) {
+            console.error(`Non autorisé à supprimer ce message: utilisateur=${this.pseudo}, auteur=${messageData.pseudo}, isAdmin=${this.isAdmin}`);
+            throw new Error("Non autorisé à supprimer ce message");
+        }
+        
+        // 4. Effectuer la suppression
         console.log(`Suppression du message ${messageId} dans la base de données...`);
         const { error: deleteError } = await this.supabase
             .from('messages')
@@ -4022,7 +4055,7 @@ tabBtns.forEach(btn => {
         
         console.log(`Message ${messageId} supprimé avec succès de la base de données`);
         
-        // 3. Suppression visuelle immédiate
+        // 5. Suppression visuelle immédiate
         const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
         if (messageElement) {
             console.log(`Suppression visuelle du message ${messageId}`);
