@@ -1055,6 +1055,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Vérifier que le client est valide
     if (!supabaseClient || typeof supabaseClient.from !== 'function') {
         console.error("Erreur: Client Supabase non valide ou manquant la méthode 'from'", supabaseClient);
+        
         // Message d'erreur visible pour l'utilisateur
         const toastDiv = document.createElement('div');
         toastDiv.className = 'toast';
@@ -1085,6 +1086,102 @@ document.addEventListener('DOMContentLoaded', function() {
         nouvelle_fonctionnalite: {},
         frequence: {}
     };
+    
+    // Fonction pour obtenir un identifiant d'appareil stable
+    function getDeviceId() {
+        // Vérifier si un ID existe déjà dans localStorage
+        let deviceId = localStorage.getItem('survey_device_id');
+        
+        // Si aucun ID n'existe, en créer un nouveau
+        if (!deviceId) {
+            deviceId = 'survey_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+            localStorage.setItem('survey_device_id', deviceId);
+        }
+        
+        return deviceId;
+    }
+
+    // Fonction pour vérifier si cet appareil a déjà participé
+    async function hasAlreadyParticipated() {
+        try {
+            // Obtenir l'ID de l'appareil
+            const deviceId = getDeviceId();
+            
+            // Vérifier dans la base de données
+            const { data, error } = await supabaseClient
+                .from('survey_participants')
+                .select('id')
+                .eq('device_id', deviceId)
+                .maybeSingle();
+                
+            if (error) {
+                console.error('Erreur vérification participation:', error);
+                return false; // En cas d'erreur, permettre de participer
+            }
+            
+            // Si des données sont trouvées, l'appareil a déjà participé
+            if (data) {
+                console.log('Appareil a déjà participé au sondage:', data);
+                // Mettre à jour localStorage aussi
+                localStorage.setItem('surveyCompleted', 'true');
+                return true;
+            }
+            
+            // Vérifier aussi localStorage (pour la session actuelle)
+            return localStorage.getItem('surveyCompleted') === 'true';
+        } catch (error) {
+            console.error('Erreur hasAlreadyParticipated:', error);
+            return false;
+        }
+    }
+    
+    // Fonction pour enregistrer la participation de cet appareil
+    async function recordParticipation() {
+        try {
+            // Obtenir l'ID de l'appareil
+            const deviceId = getDeviceId();
+            
+            // Tenter d'obtenir l'adresse IP du client
+            let ipAddress = '';
+            
+            // Utiliser l'IP du chatManager si disponible
+            if (window.chatManager && typeof window.chatManager.getClientRealIP === 'function') {
+                try {
+                    ipAddress = await window.chatManager.getClientRealIP() || '';
+                } catch (e) {
+                    console.log('Impossible d\'obtenir l\'IP via chatManager:', e);
+                }
+            }
+            
+            // Obtenir le user agent
+            const userAgent = navigator.userAgent || '';
+            
+            // Enregistrer dans la base de données
+            const { error } = await supabaseClient
+                .from('survey_participants')
+                .insert({
+                    device_id: deviceId,
+                    ip_address: ipAddress,
+                    user_agent: userAgent
+                });
+                
+            if (error) {
+                // Si l'erreur est due à un conflit (déjà enregistré), c'est ok
+                if (error.code === '23505') { // Code PostgreSQL pour violation de contrainte unique
+                    console.log('Appareil déjà enregistré (contrainte unique)');
+                    return true;
+                }
+                
+                console.error('Erreur enregistrement participation:', error);
+                return false;
+            }
+            
+            return true;
+        } catch (error) {
+            console.error('Erreur recordParticipation:', error);
+            return false;
+        }
+    }
     
     // Fonction pour charger les données du sondage depuis Supabase
     async function loadSurveyData() {
@@ -1195,6 +1292,9 @@ document.addEventListener('DOMContentLoaded', function() {
     async function openSurveyModal() {
         console.log("Ouverture du modal de sondage...");
         
+        // Vérifier si l'utilisateur a déjà participé
+        const alreadyParticipated = await hasAlreadyParticipated();
+        
         // Charger les données du sondage
         const loaded = await loadSurveyData();
         if (!loaded) {
@@ -1203,19 +1303,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         surveyModal.classList.add('show');
-        // Réinitialiser l'affichage
-        surveyQuestions.style.display = 'block';
-        thankYouMessage.style.display = 'none';
-        
-        // Réinitialiser les sélections
-        document.querySelectorAll('.survey-option').forEach(option => {
-            option.classList.remove('selected');
-        });
         
         // Si l'utilisateur a déjà répondu, montrer les résultats directement
-        const hasResponded = localStorage.getItem('surveyCompleted');
-        if (hasResponded === 'true') {
+        if (alreadyParticipated) {
+            console.log("Utilisateur a déjà participé, affichage des résultats");
             showResults();
+        } else {
+            // Réinitialiser l'affichage pour un nouveau participant
+            surveyQuestions.style.display = 'block';
+            thankYouMessage.style.display = 'none';
+            
+            // Réinitialiser les sélections
+            document.querySelectorAll('.survey-option').forEach(option => {
+                option.classList.remove('selected');
+            });
         }
     }
     
@@ -1341,6 +1442,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Soumission du sondage
     surveySubmit.addEventListener('click', async function() {
+        // Vérifier si l'utilisateur a déjà participé
+        const alreadyParticipated = await hasAlreadyParticipated();
+        if (alreadyParticipated) {
+            alert('Vous avez déjà participé à ce sondage.');
+            showResults();
+            return;
+        }
+        
         const questions = document.querySelectorAll('.survey-question');
         let allAnswered = true;
         
@@ -1364,6 +1473,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // Désactiver le bouton pendant l'envoi
         surveySubmit.disabled = true;
         surveySubmit.textContent = 'Envoi en cours...';
+        
+        // Enregistrer la participation de l'appareil
+        const participationRecorded = await recordParticipation();
+        if (!participationRecorded) {
+            console.warn("Impossible d'enregistrer la participation de l'appareil");
+            // Continuer quand même, ce n'est pas critique
+        }
         
         // Enregistrer les réponses dans Supabase
         let allSuccess = true;
@@ -1431,19 +1547,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Reset du bouton pulsant si l'utilisateur a déjà répondu
-    if (surveyBtn && localStorage.getItem('surveyCompleted') === 'true') {
-        const surveyIcon = surveyBtn.querySelector('.material-icons');
-        if (surveyIcon) {
-            surveyIcon.style.animation = 'none';
-            surveyIcon.style.color = 'white';
-            
-            // Supprimer le point rouge
-            const afterStyle = document.createElement('style');
-            afterStyle.textContent = '.survey-btn::after { display: none; }';
-            document.head.appendChild(afterStyle);
+    // Vérifier la participation et mettre à jour l'UI en conséquence
+    hasAlreadyParticipated().then(hasParticipated => {
+        if (hasParticipated && surveyBtn) {
+            const surveyIcon = surveyBtn.querySelector('.material-icons');
+            if (surveyIcon) {
+                surveyIcon.style.animation = 'none';
+                surveyIcon.style.color = 'white';
+                
+                // Supprimer le point rouge
+                const afterStyle = document.createElement('style');
+                afterStyle.textContent = '.survey-btn::after { display: none; }';
+                document.head.appendChild(afterStyle);
+            }
         }
-    }
+    });
 });
 </script>
 <div class="survey-modal" id="surveyModal">
