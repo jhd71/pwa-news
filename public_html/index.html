@@ -1034,11 +1034,36 @@ document.getElementById('donateBtn').addEventListener('click', function() {
 <script src="/js/theme-manager.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Supabase client (utilise la connexion déjà établie par votre chat manager)
-    const supabase = window.supabase || null;
+    // Récupérer une instance valide du client Supabase
+    let supabaseClient = null;
     
-    if (!supabase && window.chatManager && window.chatManager.supabase) {
-        supabase = window.chatManager.supabase;
+    // Méthode 1: Utiliser l'instance du chatManager
+    if (window.chatManager && window.chatManager.supabase) {
+        supabaseClient = window.chatManager.supabase;
+        console.log("Utilisation du client Supabase du chatManager");
+    } 
+    // Méthode 2: Créer une nouvelle instance si nécessaire
+    else {
+        console.log("Création d'un nouveau client Supabase pour le sondage");
+        // Assurez-vous que ces clés correspondent exactement à celles utilisées par votre chatManager
+        supabaseClient = supabase.createClient(
+            'https://ekjgfiyhkythqcnmhzea.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4'
+        );
+    }
+    
+    // Vérifier que le client est valide
+    if (!supabaseClient || typeof supabaseClient.from !== 'function') {
+        console.error("Erreur: Client Supabase non valide ou manquant la méthode 'from'", supabaseClient);
+        // Message d'erreur visible pour l'utilisateur
+        const toastDiv = document.createElement('div');
+        toastDiv.className = 'toast';
+        toastDiv.textContent = "Le sondage est temporairement indisponible. Veuillez réessayer plus tard.";
+        document.body.appendChild(toastDiv);
+        setTimeout(() => {
+            toastDiv.remove();
+        }, 5000);
+        return; // Sortir si le client n'est pas valide
     }
     
     // Éléments DOM
@@ -1064,13 +1089,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fonction pour charger les données du sondage depuis Supabase
     async function loadSurveyData() {
         try {
-            if (!supabase) {
-                console.error("Client Supabase non disponible");
-                return false;
-            }
+            console.log("Début du chargement des données du sondage...");
             
             // Récupérer toutes les réponses de la table survey_responses
-            const { data, error } = await supabase
+            const { data, error } = await supabaseClient
                 .from('survey_responses')
                 .select('*');
                 
@@ -1079,20 +1101,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 return false;
             }
             
-            // Organiser les données par question et réponse
-            data.forEach(item => {
-                const { question, answer, count } = item;
-                
-                if (!surveyData[question]) {
-                    surveyData[question] = {};
-                }
-                
-                surveyData[question][answer] = count;
-            });
+            console.log("Données récupérées:", data);
             
+            // Réinitialiser les données du sondage
+            surveyData = {
+                preference: {},
+                nouvelle_fonctionnalite: {},
+                frequence: {}
+            };
+            
+            // Organiser les données par question et réponse
+            if (data && data.length > 0) {
+                data.forEach(item => {
+                    const { question, answer, count } = item;
+                    
+                    if (!surveyData[question]) {
+                        surveyData[question] = {};
+                    }
+                    
+                    surveyData[question][answer] = count;
+                });
+            }
+            
+            console.log("Données organisées:", surveyData);
             return true;
         } catch (error) {
-            console.error('Erreur:', error);
+            console.error('Erreur loadSurveyData:', error);
             return false;
         }
     }
@@ -1100,13 +1134,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fonction pour mettre à jour une réponse dans Supabase
     async function updateSurveyResponse(question, answer) {
         try {
-            if (!supabase) {
-                console.error("Client Supabase non disponible");
-                return false;
-            }
+            console.log(`Mise à jour de la réponse: ${question} - ${answer}`);
             
             // Vérifier si cette réponse existe déjà
-            const { data, error: selectError } = await supabase
+            const { data, error: selectError } = await supabaseClient
                 .from('survey_responses')
                 .select('*')
                 .eq('question', question)
@@ -1118,9 +1149,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 return false;
             }
             
+            console.log("Résultat de la recherche:", data);
+            
             if (data) {
                 // La réponse existe, incrémenter le compteur
-                const { error: updateError } = await supabase
+                console.log(`Réponse existante trouvée avec ID: ${data.id}, compteur actuel: ${data.count}`);
+                const { error: updateError } = await supabaseClient
                     .from('survey_responses')
                     .update({ 
                         count: data.count + 1,
@@ -1134,7 +1168,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             } else {
                 // La réponse n'existe pas encore, l'insérer
-                const { error: insertError } = await supabase
+                console.log("Insertion d'une nouvelle réponse");
+                const { error: insertError } = await supabaseClient
                     .from('survey_responses')
                     .insert({
                         question: question,
@@ -1148,17 +1183,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             
+            console.log(`Réponse ${question}:${answer} mise à jour avec succès`);
             return true;
         } catch (error) {
-            console.error('Erreur:', error);
+            console.error('Erreur updateSurveyResponse:', error);
             return false;
         }
     }
     
     // Fonction pour ouvrir le modal du sondage
     async function openSurveyModal() {
+        console.log("Ouverture du modal de sondage...");
+        
         // Charger les données du sondage
-        await loadSurveyData();
+        const loaded = await loadSurveyData();
+        if (!loaded) {
+            console.warn("Impossible de charger les données du sondage");
+            // Continue quand même pour permettre de participer au sondage
+        }
         
         surveyModal.classList.add('show');
         // Réinitialiser l'affichage
@@ -1209,6 +1251,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Générer les résultats
         surveyResults.innerHTML = '';
         
+        // Vérifier s'il y a des données à afficher
+        let hasAnyData = false;
+        
         Object.keys(surveyData).forEach(question => {
             const questionData = surveyData[question];
             
@@ -1221,6 +1266,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // S'il n'y a pas de réponses, passer
             if (total === 0) return;
+            
+            hasAnyData = true;
             
             // Label pour la question
             const questionLabel = {
@@ -1281,6 +1328,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 100);
             });
         });
+        
+        // Si aucune donnée n'est disponible
+        if (!hasAnyData) {
+            const noDataMsg = document.createElement('p');
+            noDataMsg.textContent = "Aucune donnée n'est encore disponible. Vous êtes parmi les premiers à participer!";
+            noDataMsg.style.textAlign = 'center';
+            noDataMsg.style.marginTop = '20px';
+            surveyResults.appendChild(noDataMsg);
+        }
     }
     
     // Soumission du sondage
@@ -1311,30 +1367,37 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Enregistrer les réponses dans Supabase
         let allSuccess = true;
+        let successCount = 0;
         
         for (const [question, answer] of Object.entries(selectedAnswers)) {
+            console.log(`Traitement de la réponse: ${question}=${answer}`);
             const success = await updateSurveyResponse(question, answer);
-            if (!success) {
+            if (success) {
+                successCount++;
+                
+                // Mettre à jour les données locales pour l'affichage
+                if (!surveyData[question]) {
+                    surveyData[question] = {};
+                }
+                
+                if (!surveyData[question][answer]) {
+                    surveyData[question][answer] = 0;
+                }
+                
+                surveyData[question][answer] += 1;
+            } else {
                 allSuccess = false;
             }
-            
-            // Mettre à jour les données locales pour l'affichage
-            if (!surveyData[question]) {
-                surveyData[question] = {};
-            }
-            
-            if (!surveyData[question][answer]) {
-                surveyData[question][answer] = 0;
-            }
-            
-            surveyData[question][answer] += 1;
         }
         
         // Réactiver le bouton
         surveySubmit.disabled = false;
         surveySubmit.textContent = 'Envoyer mes réponses';
         
-        if (!allSuccess) {
+        // Afficher un message approprié
+        if (successCount === 0) {
+            alert('Erreur lors de l\'envoi des réponses. Veuillez réessayer plus tard.');
+        } else if (!allSuccess) {
             alert('Une erreur est survenue lors de l\'envoi de certaines réponses. Les résultats affichés peuvent ne pas être à jour.');
         }
         
@@ -1349,124 +1412,39 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Event Listeners
-    surveyBtn.addEventListener('click', openSurveyModal);
-    closeSurvey.addEventListener('click', closeSurveyModal);
-    closeSurveyAfterSubmit.addEventListener('click', closeSurveyModal);
+    if (surveyBtn) {
+        surveyBtn.addEventListener('click', openSurveyModal);
+    }
+    if (closeSurvey) {
+        closeSurvey.addEventListener('click', closeSurveyModal);
+    }
+    if (closeSurveyAfterSubmit) {
+        closeSurveyAfterSubmit.addEventListener('click', closeSurveyModal);
+    }
     
     // Fermer le modal en cliquant à l'extérieur du contenu
-    surveyModal.addEventListener('click', function(e) {
-        if (e.target === surveyModal) {
-            closeSurveyModal();
-        }
-    });
+    if (surveyModal) {
+        surveyModal.addEventListener('click', function(e) {
+            if (e.target === surveyModal) {
+                closeSurveyModal();
+            }
+        });
+    }
     
     // Reset du bouton pulsant si l'utilisateur a déjà répondu
-    if (localStorage.getItem('surveyCompleted') === 'true') {
+    if (surveyBtn && localStorage.getItem('surveyCompleted') === 'true') {
         const surveyIcon = surveyBtn.querySelector('.material-icons');
-        surveyIcon.style.animation = 'none';
-        surveyIcon.style.color = 'white';
-        
-        // Supprimer le point rouge
-        const afterStyle = document.createElement('style');
-        afterStyle.textContent = '.survey-btn::after { display: none; }';
-        document.head.appendChild(afterStyle);
+        if (surveyIcon) {
+            surveyIcon.style.animation = 'none';
+            surveyIcon.style.color = 'white';
+            
+            // Supprimer le point rouge
+            const afterStyle = document.createElement('style');
+            afterStyle.textContent = '.survey-btn::after { display: none; }';
+            document.head.appendChild(afterStyle);
+        }
     }
 });
-</script>
-
-/* 3. FONCTION UTILITAIRE POUR ACCÉDER DIRECTEMENT AUX RÉSULTATS DU SONDAGE DEPUIS LA CONSOLE ADMIN */
-
-<script>
-// Cette fonction peut être appelée depuis la console pour obtenir un CSV des résultats
-async function exportSurveyResultsToCSV() {
-    try {
-        // Utiliser le client Supabase de chatManager ou définir un nouveau client
-        let supabase = window.supabase;
-        if (!supabase && window.chatManager && window.chatManager.supabase) {
-            supabase = window.chatManager.supabase;
-        }
-        
-        if (!supabase) {
-            console.error("Client Supabase non disponible");
-            return;
-        }
-        
-        // Récupérer toutes les réponses
-        const { data, error } = await supabase
-            .from('survey_responses')
-            .select('*')
-            .order('question', { ascending: true })
-            .order('count', { ascending: false });
-            
-        if (error) {
-            console.error('Erreur récupération des données:', error);
-            return;
-        }
-        
-        // Générer les en-têtes CSV
-        let csv = 'Question,Réponse,Nombre de votes,Date de mise à jour\n';
-        
-        // Ajouter les lignes de données
-        data.forEach(row => {
-            const formattedDate = new Date(row.updated_at).toLocaleString('fr-FR');
-            csv += `"${row.question}","${row.answer}",${row.count},"${formattedDate}"\n`;
-        });
-        
-        // Créer un blob et un lien pour télécharger
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.setAttribute('href', url);
-        link.setAttribute('download', 'resultats_sondage.csv');
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        console.log('Export CSV terminé avec succès!');
-    } catch (error) {
-        console.error('Erreur export CSV:', error);
-    }
-}
-
-// Fonction pour vider toutes les réponses au sondage (à utiliser avec précaution!)
-async function clearAllSurveyResponses() {
-    if (!confirm('ATTENTION: Cette action va supprimer TOUTES les réponses au sondage. Cette action est irréversible. Continuer?')) {
-        return;
-    }
-    
-    try {
-        // Utiliser le client Supabase de chatManager ou définir un nouveau client
-        let supabase = window.supabase;
-        if (!supabase && window.chatManager && window.chatManager.supabase) {
-            supabase = window.chatManager.supabase;
-        }
-        
-        if (!supabase) {
-            console.error("Client Supabase non disponible");
-            return;
-        }
-        
-        // Supprimer toutes les réponses
-        const { error } = await supabase
-            .from('survey_responses')
-            .delete()
-            .gt('id', '0'); // Condition toujours vraie pour supprimer toutes les lignes
-            
-        if (error) {
-            console.error('Erreur suppression des données:', error);
-            return;
-        }
-        
-        console.log('Toutes les réponses au sondage ont été supprimées avec succès.');
-    } catch (error) {
-        console.error('Erreur:', error);
-    }
-}
-
-// Exposer les fonctions globalement
-window.exportSurveyResultsToCSV = exportSurveyResultsToCSV;
-window.clearAllSurveyResponses = clearAllSurveyResponses;
 </script>
 <div class="survey-modal" id="surveyModal">
     <div class="survey-content">
