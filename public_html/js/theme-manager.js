@@ -1,4 +1,3 @@
-// Gestionnaire des thèmes
 class ThemeManager {
     constructor() {
         // Définir les thèmes disponibles
@@ -27,7 +26,7 @@ class ThemeManager {
             localStorage.setItem('theme', 'rouge');
         }
         
-        // Configurer le bouton de thème unique
+        // Configurer le bouton de thème
         this.setupThemeButton();
         
         console.log('ThemeManager initialisé');
@@ -52,14 +51,22 @@ class ThemeManager {
             detail: { theme: themeId }
         }));
         
+        // Afficher une notification toast pour indiquer le changement de thème
+        this.showToast(`Thème ${this.getThemeName(themeId)} activé`);
+        
         console.log(`Thème appliqué: ${themeId}`);
     }
     
-    // Configurer le bouton de thème (unique)
+    // Obtenir le nom du thème à partir de son ID
+    getThemeName(themeId) {
+        const theme = this.themes.find(t => t.id === themeId);
+        return theme ? theme.name : themeId;
+    }
+    
+    // Configurer le bouton de thème
     setupThemeButton() {
-        // Utilisez le bouton existant qui sert à alterner entre les trois thèmes
-        // Nous supposons qu'il existe un bouton avec un id comme 'themeToggle'
-        const themeToggleBtn = document.getElementById('themeToggle') || document.querySelector('.theme-toggle');
+        // CORRECTION: Utiliser le bouton darkModeToggle qui existe dans le HTML
+        const themeToggleBtn = document.getElementById('darkModeToggle');
         
         if (themeToggleBtn) {
             // Supprimer les gestionnaires d'événements existants
@@ -70,11 +77,40 @@ class ThemeManager {
             newBtn.addEventListener('click', () => {
                 this.cycleThemes();
             });
+            
+            // Mettre à jour le texte du bouton selon le thème actuel
+            this.updateThemeButtonUI();
         } else {
-            console.warn("Bouton de changement de thème non trouvé. Assurez-vous d'avoir un bouton avec l'ID 'themeToggle' ou la classe 'theme-toggle'.");
+            console.warn("Bouton de changement de thème non trouvé. Assurez-vous d'avoir un bouton avec l'ID 'darkModeToggle'.");
         }
+    }
+    
+    // Mettre à jour l'interface du bouton de thème
+    updateThemeButtonUI() {
+        const themeToggleBtn = document.getElementById('darkModeToggle');
+        if (!themeToggleBtn) return;
         
-        // Nous ne créons aucun nouveau bouton, car vous avez mentionné avoir déjà une icône qui sert pour les trois thèmes
+        const currentTheme = this.getCurrentTheme();
+        const theme = this.themes.find(t => t.id === currentTheme);
+        
+        if (theme) {
+            // Mettre à jour l'icône
+            const iconElement = themeToggleBtn.querySelector('.material-icons');
+            if (iconElement) {
+                iconElement.textContent = theme.icon;
+            }
+            
+            // Mettre à jour le texte
+            const textElement = themeToggleBtn.querySelector('span:not(.material-icons)');
+            if (textElement) {
+                textElement.textContent = theme.name;
+            }
+            
+            // Ajouter la classe active uniquement au bouton actuel
+            const allButtons = document.querySelectorAll('.nav-item');
+            allButtons.forEach(btn => btn.classList.remove('active'));
+            themeToggleBtn.classList.add('active');
+        }
     }
     
     // Faire défiler les thèmes dans l'ordre
@@ -90,15 +126,76 @@ class ThemeManager {
         
         // Appliquer le prochain thème
         this.setTheme(themeIds[nextIndex]);
+        
+        // Mettre à jour l'interface du bouton
+        this.updateThemeButtonUI();
     }
     
     // Obtenir le thème actuel
     getCurrentTheme() {
         return localStorage.getItem('theme') || 'rouge';
     }
+    
+    // Afficher une notification toast
+    showToast(message) {
+        // Créer un élément toast s'il n'existe pas déjà
+        let toast = document.getElementById('theme-toast');
+        
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'theme-toast';
+            toast.className = 'toast';
+            document.body.appendChild(toast);
+        }
+        
+        // Définir le message
+        toast.textContent = message;
+        
+        // Afficher le toast
+        toast.classList.add('show');
+        
+        // Masquer le toast après 3 secondes
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
 }
 
 // Initialiser le gestionnaire de thèmes au chargement
 document.addEventListener('DOMContentLoaded', () => {
     new ThemeManager();
+
+    // Correction pour l'animation constante du chat
+    document.addEventListener('themeChanged', function() {
+        // Arrêter l'animation de pulsation du bouton de chat après 2 secondes
+        setTimeout(() => {
+            const chatToggleBtn = document.getElementById('chatToggleBtn');
+            if (chatToggleBtn) {
+                chatToggleBtn.style.animation = 'none';
+            }
+        }, 2000);
+    });
+    
+    // S'assurer que le bouton de chat ne pulse pas constamment
+    setTimeout(() => {
+        const chatToggleBtn = document.getElementById('chatToggleBtn');
+        if (chatToggleBtn) {
+            chatToggleBtn.style.animation = 'none';
+        }
+        
+        const chatNotificationBadge = document.querySelector('.chat-notification-badge');
+        if (chatNotificationBadge) {
+            chatNotificationBadge.classList.add('hidden');
+        }
+    }, 5000);
+});
+
+// Script pour arrêter l'animation au clic
+document.addEventListener('click', function(e) {
+    if (e.target.closest('#chatToggleBtn')) {
+        const chatToggleBtn = document.getElementById('chatToggleBtn');
+        if (chatToggleBtn) {
+            chatToggleBtn.style.animation = 'none';
+        }
+    }
 });
