@@ -1,13 +1,22 @@
-/* Styles pour le bouton du sondage */
+/* Animation pulsante pour le bouton sondage */
+@keyframes surveyPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Style de base pour le bouton */
 .survey-btn {
     position: relative;
 }
 
+/* Appliquer l'animation au bouton */
 .survey-btn .material-icons {
-    animation: pulse 2s infinite;
+    animation: surveyPulse 2s infinite;
+    color: #FFD230; /* Jaune pour attirer l'attention */
 }
 
-/* Indicateur de nouveau sondage */
+/* Indicateur visuel pour inciter au clic */
 .survey-btn::after {
     content: '';
     position: absolute;
@@ -15,18 +24,23 @@
     right: 0;
     width: 10px;
     height: 10px;
-    background-color: #ff5252;
+    background-color: #FF4545; /* Point rouge */
     border-radius: 50%;
-    border: 2px solid var(--bg-color);
+    box-shadow: 0 0 5px rgba(255, 69, 69, 0.5);
 }
 
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.15); }
-    100% { transform: scale(1); }
+/* Animation de changement de couleur en continu pour le texte */
+@keyframes textColorChange {
+    0% { color: white; }
+    50% { color: #FFD230; /* Jaune */ }
+    100% { color: white; }
 }
 
-/* Modal du sondage - correction fond transparent */
+.survey-btn span:not(.material-icons) {
+    animation: textColorChange 3s infinite;
+}
+
+/* Style pour le modal du sondage */
 .survey-modal {
     display: none;
     position: fixed;
@@ -35,441 +49,210 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
-    z-index: 9999;
-    overflow-y: auto;
-    backdrop-filter: blur(5px);
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    z-index: 1010;
+    align-items: center;
+    justify-content: center;
 }
 
 .survey-modal.show {
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    opacity: 1;
-    padding: 20px;
-    box-sizing: border-box;
 }
 
 .survey-content {
-    background-color: #ffffff; /* Fond blanc explicite */
-    color: #000000; /* Texte noir explicite */
-    border-radius: 10px;
-    max-width: 600px;
+    background: linear-gradient(145deg, #bc3a34, #a32f2a);
     width: 90%;
-    margin: 40px auto;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    animation: slideIn 0.3s ease-out;
-    max-height: 90vh;
+    max-width: 500px;
+    border-radius: 15px;
+    padding: 20px;
+    color: white;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+    max-height: 80vh;
     overflow-y: auto;
 }
 
-@keyframes slideIn {
-    from { transform: translateY(-50px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
 .survey-header {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 20px;
-    position: relative;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .survey-header h2 {
     margin: 0;
-    font-size: 1.5rem;
-    text-align: center;
+    font-size: 20px;
 }
 
 .close-survey {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    background: none;
+    background: rgba(255, 255, 255, 0.2);
     border: none;
     color: white;
-    font-size: 24px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
+    transition: background 0.3s;
 }
 
-#surveyQuestions {
-    padding: 20px;
+.close-survey:hover {
+    background: rgba(255, 255, 255, 0.3);
 }
 
-/* Styles pour les questions */
 .survey-question {
-    margin-bottom: 30px;
-    border-radius: 8px;
-    transition: border 0.3s ease;
+    margin-bottom: 20px;
 }
 
-/* Ajustement du texte dans les questions pour s'assurer qu'il est visible */
 .survey-question h3 {
     margin-top: 0;
     margin-bottom: 15px;
-    font-size: 1.2rem;
-    color: inherit; /* Utilise la couleur héritée du parent */
-    font-weight: bold;
+    font-size: 18px;
 }
 
-/* S'assurer que le texte dans les options est visible */
+.survey-options {
+    display: grid;
+    gap: 10px;
+}
+
 .survey-option {
-    color: inherit; /* Utilise la couleur héritée du parent */
-}
-
-/* S'assurer que le texte dans les résultats est visible */
-.result-text {
-    color: inherit; /* Utilise la couleur héritée du parent */
-}
-
-/* Fond des options de réponse plus opaque */
-.survey-option {
-    background-color: rgba(0, 0, 0, 0.08);
-    border-radius: 8px;
-    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 12px 15px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    text-align: center;
-    border: 2px solid transparent;
-    user-select: none;
 }
 
 .survey-option:hover {
-    background-color: rgba(0, 0, 0, 0.08);
-    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(5px);
 }
 
 .survey-option.selected {
-    border-color: #d32f2f; /* Rouge pour le thème par défaut */
-    background-color: rgba(211, 47, 47, 0.2); /* Fond plus visible */
-    font-weight: bold;
+    background: rgba(255, 210, 48, 0.3); /* Fond jaune transparent pour l'option sélectionnée */
+    border-color: #FFD230;
 }
 
 .survey-option-icon {
-    margin-bottom: 10px;
-    width: 50px;
-    height: 50px;
-    background-color: var(--primary-color);
-    border-radius: 50%;
+    margin-right: 10px;
+    width: 24px;
+    height: 24px;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
 }
 
-.survey-option-icon .material-icons {
-    color: white;
-    font-size: 24px;
-}
-
-/* Bouton d'envoi */
 .survey-submit {
-    display: block;
-    margin: 30px auto 10px;
-    padding: 12px 24px;
-    background-color: var(--primary-color);
-    color: white;
+    background: #FFD230;
     border: none;
-    border-radius: 5px;
-    font-size: 1rem;
+    color: #333;
+    font-weight: bold;
+    padding: 12px 20px;
+    border-radius: 30px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    margin-top: 10px;
+    width: 100%;
+    transition: all 0.3s ease;
+    display: block;
 }
 
 .survey-submit:hover {
-    background-color: var(--primary-color-dark, #1565c0);
+    background: #FFDA5A;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.survey-submit:disabled {
-    background-color: #b0b0b0;
-    cursor: not-allowed;
-}
-
-/* Message de remerciement */
 .thank-you-message {
     display: none;
-    padding: 20px;
     text-align: center;
+    padding: 20px;
+}
+
+.thank-you-message h3 {
+    color: #FFD230;
+    margin-bottom: 15px;
 }
 
 .thank-you-icon {
-    font-size: 40px;
+    font-size: 50px;
+    color: #FFD230;
     margin-bottom: 15px;
     display: block;
 }
 
-.thank-you-message h3 {
-    margin-top: 0;
-    color: var(--primary-color);
-}
-
-/* Résultats du sondage */
 .survey-results {
-    margin-top: 30px;
-    text-align: left;
-    padding: 0 10px;
+    margin-top: 15px;
 }
 
-.survey-results h4 {
-    margin-bottom: 20px;
-    text-align: center;
-    color: var(--text-color);
-}
-
-.survey-results h5 {
-    margin-top: 20px;
-    margin-bottom: 10px;
-    color: var(--text-color);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    padding-bottom: 5px;
-}
-
-/* Ajustement pour les barres de résultats */
 .result-bar {
-    position: relative;
-    height: 40px;
-    margin-bottom: 12px;
-    background-color: rgba(0, 0, 0, 0.1); /* Plus opaque */
+    height: 25px;
+    background: rgba(255, 255, 255, 0.1);
+    margin-bottom: 10px;
     border-radius: 5px;
     overflow: hidden;
+    position: relative;
 }
 
 .result-fill {
-    position: absolute;
-    top: 0;
-    left: 0;
     height: 100%;
-    background-color: var(--primary-color, #2196f3);
-    width: 0; /* Commence à 0 pour l'animation */
-    border-radius: 5px;
-    transition: width 1s ease-out;
+    background: linear-gradient(to right, #FFD230, #FFDA5A);
+    width: 0%; /* Sera défini par JS */
+    transition: width 1s ease-in-out;
 }
 
 .result-text {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 0 15px;
-    box-sizing: border-box;
-    color: var(--text-color);
-    font-size: 0.9rem;
-    font-weight: 500;
-    z-index: 1;
-}
-
-.result-text span:last-child {
+    justify-content: space-between;
+    padding: 0 10px;
+    font-size: 14px;
     font-weight: bold;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-/* Bouton de retour */
 .back-to-survey {
-    padding: 10px 20px;
-    background-color: var(--primary-color);
-    color: white;
+    background: rgba(255, 255, 255, 0.2);
     border: none;
+    color: white;
+    padding: 10px 15px;
     border-radius: 5px;
-    margin-top: 30px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    margin-top: 15px;
+    transition: background 0.3s;
 }
 
 .back-to-survey:hover {
-    background-color: var(--primary-color-dark, #1565c0);
+    background: rgba(255, 255, 255, 0.3);
 }
 
-/* Toast notification */
-.toast {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 12px 20px;
-    border-radius: 5px;
-    z-index: 10000;
-    animation: fadeInUp 0.3s, fadeOut 0.3s 4.7s;
-}
-
-@keyframes fadeInUp {
-    from { transform: translate(-50%, 20px); opacity: 0; }
-    to { transform: translate(-50%, 0); opacity: 1; }
-}
-
-@keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
-}
-
-/* Adaptations pour mobile */
-@media (max-width: 600px) {
-    .survey-options {
-        grid-template-columns: 1fr;
-    }
-    
+/* Responsivité pour mobile */
+@media (max-width: 768px) {
     .survey-content {
         width: 95%;
-        margin: 20px auto;
+        padding: 15px;
     }
     
     .survey-header h2 {
-        font-size: 1.2rem;
+        font-size: 18px;
     }
     
     .survey-question h3 {
-        font-size: 1rem;
+        font-size: 16px;
     }
     
-    .result-text {
-        font-size: 0.8rem;
+    .survey-option {
+        padding: 10px;
     }
-}
-
-/* Support pour les thèmes sombres */
-/* Fond des options de réponse pour le thème sombre */
-html[data-theme="dark"] .survey-option,
-html[data-theme="sombre"] .survey-option,
-html[data-theme="noir"] .survey-option {
-    background-color: rgba(255, 255, 255, 0.15);
-}
-
-html[data-theme="dark"] .survey-option:hover,
-html[data-theme="sombre"] .survey-option:hover,
-html[data-theme="noir"] .survey-option:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-}
-
-html[data-theme="dark"] .survey-option.selected,
-html[data-theme="sombre"] .survey-option.selected,
-html[data-theme="noir"] .survey-option.selected {
-    background-color: rgba(var(--primary-color-rgb), 0.3);
-}
-
-html[data-theme="dark"] .result-bar,
-html[data-theme="sombre"] .result-bar,
-html[data-theme="noir"] .result-bar {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* Ajustements spécifiques au thème rouge */
-html[data-theme="rouge"] .survey-header {
-    background-color: #d32f2f;
-}
-
-html[data-theme="rouge"] .survey-option-icon {
-    background-color: #d32f2f;
-}
-
-html[data-theme="rouge"] .survey-option.selected {
-    border-color: #d32f2f;
-    background-color: rgba(211, 47, 47, 0.1);
-}
-
-html[data-theme="rouge"] .survey-submit,
-html[data-theme="rouge"] .back-to-survey {
-    background-color: #d32f2f;
-}
-
-html[data-theme="rouge"] .survey-submit:hover,
-html[data-theme="rouge"] .back-to-survey:hover {
-    background-color: #b71c1c;
-}
-
-html[data-theme="rouge"] .result-fill {
-    background-color: #d32f2f;
-}
-
-html[data-theme="rouge"] .thank-you-message h3 {
-    color: #d32f2f;
-}
-
-/* Ajustements pour le thème bleu */
-html[data-theme="bleu"] .survey-header {
-    background-color: #1976d2;
-}
-
-html[data-theme="bleu"] .survey-option-icon {
-    background-color: #1976d2;
-}
-
-html[data-theme="bleu"] .survey-option.selected {
-    border-color: #1976d2;
-    background-color: rgba(25, 118, 210, 0.1);
-}
-
-html[data-theme="bleu"] .survey-submit,
-html[data-theme="bleu"] .back-to-survey {
-    background-color: #1976d2;
-}
-
-html[data-theme="bleu"] .survey-submit:hover,
-html[data-theme="bleu"] .back-to-survey:hover {
-    background-color: #0d47a1;
-}
-
-html[data-theme="bleu"] .result-fill {
-    background-color: #1976d2;
-}
-
-html[data-theme="bleu"] .thank-you-message h3 {
-    color: #1976d2;
-}
-
-/* Ajustements pour les autres thèmes si nécessaire */
-html[data-theme="vert"] .survey-header,
-html[data-theme="vert"] .survey-option-icon,
-html[data-theme="vert"] .survey-submit,
-html[data-theme="vert"] .back-to-survey,
-html[data-theme="vert"] .result-fill {
-    background-color: #2e7d32;
-}
-
-html[data-theme="vert"] .survey-option.selected {
-    border-color: #2e7d32;
-    background-color: rgba(46, 125, 50, 0.1);
-}
-
-html[data-theme="vert"] .survey-submit:hover,
-html[data-theme="vert"] .back-to-survey:hover {
-    background-color: #1b5e20;
-}
-
-html[data-theme="vert"] .thank-you-message h3 {
-    color: #2e7d32;
-}
-
-/* Animation du bouton de sondage */
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0);
-    }
-    40% {
-        transform: translateY(-5px);
-    }
-    60% {
-        transform: translateY(-2px);
-    }
-}
-
-.survey-btn .material-icons {
-    animation: bounce 2s infinite;
-}
-
-/* Pour les thèmes sombres */
-html[data-theme="dark"] .survey-content,
-html[data-theme="sombre"] .survey-content,
-html[data-theme="noir"] .survey-content {
-    background-color: #1e1e1e; 
-    color: #ffffff;
 }
