@@ -385,3 +385,131 @@
         padding: 10px;
     }
 }
+
+/* Amélioration des boutons du sondage */
+
+/* Bouton d'envoi des réponses */
+.survey-submit {
+    display: block !important;
+    width: 80% !important; /* Légèrement plus étroit que 100% */
+    margin: 25px auto 15px !important; /* Marges verticales augmentées et auto pour centrer */
+    padding: 14px 24px !important; /* Padding plus grand pour un bouton plus visible */
+    border-radius: 30px !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+    border: none !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Bouton de retour au site */
+.back-to-survey {
+    display: block !important;
+    width: 60% !important; /* Plus étroit que le bouton principal */
+    margin: 25px auto 15px !important;
+    padding: 12px 20px !important;
+    border-radius: 30px !important;
+    font-size: 15px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+    border: none !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Effet de brillance sur les boutons */
+.survey-submit::before,
+.back-to-survey::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        transparent 100%
+    ) !important;
+    transform: skewX(-25deg) !important;
+    transition: left 0.5s ease !important;
+}
+
+.survey-submit:hover::before,
+.back-to-survey:hover::before {
+    left: 100% !important;
+}
+
+/* Effet au survol des boutons (en plus de l'effet de brillance) */
+.survey-submit:hover,
+.back-to-survey:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Effet de pression */
+.survey-submit:active,
+.back-to-survey:active {
+    transform: translateY(1px) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Styles spécifiques par thème */
+/* Thème light (violet) */
+[data-theme="light"] .survey-submit {
+    background: linear-gradient(to right, #FFEB3B, #FFF176) !important;
+    color: #333 !important;
+}
+
+[data-theme="light"] .back-to-survey {
+    background: rgba(255, 255, 255, 0.25) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Thème dark (bleu nuit) */
+[data-theme="dark"] .survey-submit {
+    background: linear-gradient(to right, #FFEB3B, #FFF176) !important;
+    color: #333 !important;
+}
+
+[data-theme="dark"] .back-to-survey {
+    background: rgba(255, 255, 255, 0.25) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Thème rouge */
+[data-theme="rouge"] .survey-submit {
+    background: linear-gradient(to right, #FFD230, #FFDA5A) !important;
+    color: #333 !important;
+}
+
+[data-theme="rouge"] .back-to-survey {
+    background: rgba(255, 255, 255, 0.25) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Amélioration du conteneur de boutons (optionnel) */
+.survey-buttons-container {
+    text-align: center !important;
+    margin-top: 20px !important;
+}
+
+/* Correction pour le centrage dans le message de remerciement */
+.thank-you-message {
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
