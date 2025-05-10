@@ -26,7 +26,7 @@
     100% { transform: scale(1); }
 }
 
-/* Modal du sondage */
+/* Modal du sondage - correction fond transparent */
 .survey-modal {
     display: none;
     position: fixed;
@@ -52,7 +52,8 @@
 }
 
 .survey-content {
-    background-color: var(--bg-color);
+    background-color: #ffffff; /* Fond blanc explicite */
+    color: #000000; /* Texte noir explicite */
     border-radius: 10px;
     max-width: 600px;
     width: 90%;
@@ -106,22 +107,28 @@
     transition: border 0.3s ease;
 }
 
+/* Ajustement du texte dans les questions pour s'assurer qu'il est visible */
 .survey-question h3 {
     margin-top: 0;
     margin-bottom: 15px;
     font-size: 1.2rem;
-    color: var(--text-color);
+    color: inherit; /* Utilise la couleur héritée du parent */
+    font-weight: bold;
 }
 
-/* Options de réponse */
-.survey-options {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 10px;
-}
-
+/* S'assurer que le texte dans les options est visible */
 .survey-option {
-    background-color: rgba(0, 0, 0, 0.05);
+    color: inherit; /* Utilise la couleur héritée du parent */
+}
+
+/* S'assurer que le texte dans les résultats est visible */
+.result-text {
+    color: inherit; /* Utilise la couleur héritée du parent */
+}
+
+/* Fond des options de réponse plus opaque */
+.survey-option {
+    background-color: rgba(0, 0, 0, 0.08);
     border-radius: 8px;
     padding: 15px;
     cursor: pointer;
@@ -140,8 +147,9 @@
 }
 
 .survey-option.selected {
-    border-color: var(--primary-color);
-    background-color: rgba(var(--primary-color-rgb), 0.1);
+    border-color: #d32f2f; /* Rouge pour le thème par défaut */
+    background-color: rgba(211, 47, 47, 0.2); /* Fond plus visible */
+    font-weight: bold;
 }
 
 .survey-option-icon {
@@ -222,11 +230,12 @@
     padding-bottom: 5px;
 }
 
+/* Ajustement pour les barres de résultats */
 .result-bar {
     position: relative;
     height: 40px;
     margin-bottom: 12px;
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: rgba(0, 0, 0, 0.1); /* Plus opaque */
     border-radius: 5px;
     overflow: hidden;
 }
@@ -328,10 +337,11 @@
 }
 
 /* Support pour les thèmes sombres */
+/* Fond des options de réponse pour le thème sombre */
 html[data-theme="dark"] .survey-option,
 html[data-theme="sombre"] .survey-option,
 html[data-theme="noir"] .survey-option {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.15);
 }
 
 html[data-theme="dark"] .survey-option:hover,
@@ -454,4 +464,12 @@ html[data-theme="vert"] .thank-you-message h3 {
 
 .survey-btn .material-icons {
     animation: bounce 2s infinite;
+}
+
+/* Pour les thèmes sombres */
+html[data-theme="dark"] .survey-content,
+html[data-theme="sombre"] .survey-content,
+html[data-theme="noir"] .survey-content {
+    background-color: #1e1e1e; 
+    color: #ffffff;
 }
