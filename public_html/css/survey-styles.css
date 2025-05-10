@@ -346,6 +346,22 @@
         2px 0 0 #000;
 }
 
+/* Amélioration spécifique pour le pourcentage, pour le rendre encore plus visible */
+.result-percentage {
+    font-weight: bold;
+    font-size: 15px;
+    color: white;
+    text-shadow: 
+        -1px -1px 0 #000,  
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000,
+        0 -2px 0 #000,
+        0 2px 0 #000,
+        -2px 0 0 #000,
+        2px 0 0 #000;
+}
+
 /* Thème light (violet) */
 [data-theme="light"] .back-to-survey {
     background: rgba(255, 255, 255, 0.2);
