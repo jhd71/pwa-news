@@ -2399,24 +2399,31 @@ body.long-press-active .message-options {
         0 -1px 0 rgba(255, 255, 255, 0.7) !important;
 }
 
-/* Solution pour remonter le titre du chat */
+/* Correctif pour maintenir le titre du chat sur une ligne */
 .chat-header {
-    display: flex !important;
-    align-items: flex-start !important;  /* Aligne le contenu en haut plutôt qu'au centre */
-    padding-top: 10px !important; 
-    padding-bottom: 6px !important;
+    display: flex !important; 
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 8px 10px !important;
 }
 
-/* Cible le titre, quelle que soit sa structure HTML */
-.chat-header h2,
+/* Empêche le titre de revenir à la ligne */
 .header-title, 
 .chat-header-title,
-.chat-header > *:first-child:not(.header-buttons) {
-    margin-top: -4px !important;
-    line-height: 1.2 !important;
+.chat-header h2,
+.chat-header > :first-child {
+    white-space: nowrap !important;
+    font-size: 0.95rem !important; /* Légèrement plus petit */
+    max-width: 150px !important; /* Limite la largeur */
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
 }
 
-/* Centre les boutons verticalement */
-.header-buttons {
-    align-self: center !important;
+/* S'assure que les boutons et la croix restent visibles */
+.header-buttons, 
+.chat-close-btn,
+.chat-header > :last-child {
+    display: flex !important;
+    flex-shrink: 0 !important;
+    margin-left: auto !important; /* Pousse à droite */
 }
