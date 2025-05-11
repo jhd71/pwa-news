@@ -2328,3 +2328,67 @@ body.long-press-active .message-options {
     border-radius: 50% !important;
     border: 2px solid #FFD230 !important;
 }
+
+/* Bouton "Confirmer" (page de connexion) */
+[data-theme="rouge"] .login-buttons button,
+[data-theme="rouge"] .chat-login button {
+    background: #FFD230 !important; /* Jaune du thème rouge */
+    color: #333 !important; /* Texte foncé pour contraste */
+    border: none !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
+    transition: all 0.3s ease !important;
+    font-weight: bold !important;
+}
+
+[data-theme="rouge"] .login-buttons button:hover,
+[data-theme="rouge"] .chat-login button:hover {
+    background: #FFDA5A !important; /* Version plus claire au survol */
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Style spécifique pour le bouton d'envoi avec flèche plus visible */
+
+/* Bouton d'envoi de message */
+[data-theme="rouge"] .chat-input button {
+    background: #FFD230 !important; /* Jaune spécifique au thème rouge */
+    border: none !important;
+    width: 50px !important; /* Plus large que l'original */
+    height: 50px !important; /* Plus grand pour toucher facilement */
+    border-radius: 50% !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
+    position: relative !important;
+    overflow: visible !important; /* Pour autoriser le débordement de l'icône */
+}
+
+[data-theme="rouge"] .chat-input button:hover {
+    background: #FFDA5A !important;
+    transform: scale(1.05) !important;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Flèche d'envoi plus visible - version Material Icons */
+[data-theme="rouge"] .chat-input button .material-icons {
+    color: #333 !important; /* Couleur foncée pour contraste */
+    font-size: 28px !important; /* Plus grande */
+    font-weight: bold !important; /* Plus épaisse */
+}
+
+/* Version alternative avec pseudo-élément si nécessaire */
+[data-theme="rouge"] .chat-input button::after {
+    content: '→' !important; /* Flèche Unicode simple */
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    color: #333 !important;
+    font-size: 28px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Masquer la flèche originale si vous utilisez le pseudo-élément */
+[data-theme="rouge"] .chat-input button .material-icons.hidden-icon {
+    display: none !important;
+}
