@@ -1054,20 +1054,16 @@ getChatHTMLWithoutToggle() {
     
     if (this.isOpen) {
         chatContainer?.classList.add('open');
-        
-        // NOUVEAU: Bloquer le scroll du body
-        document.body.classList.add('chat-open-no-scroll');
-        
-        // Autres actions existantes...
+        // Réinitialisation du compteur
         this.unreadCount = 0;
         localStorage.setItem('unreadCount', '0');
+        
+        // Mettre à jour le badge ET l'info-bulle
         this.updateUnreadBadgeAndBubble();
+        
         this.scrollToBottom();
     } else {
         chatContainer?.classList.remove('open');
-        
-        // NOUVEAU: Réactiver le scroll du body
-        document.body.classList.remove('chat-open-no-scroll');
     }
     
     localStorage.setItem('chatOpen', this.isOpen);
@@ -1088,17 +1084,13 @@ getChatHTMLWithoutToggle() {
     }
 
     if (closeBtn) {
-    closeBtn.addEventListener('click', () => {
-        this.isOpen = false;
-        localStorage.setItem('chatOpen', 'false');
-        chatContainer?.classList.remove('open');
-        
-        // NOUVEAU: Réactiver le scroll du body
-        document.body.classList.remove('chat-open-no-scroll');
-        
-        this.playSound('click');
-    });
-}
+        closeBtn.addEventListener('click', () => {
+            this.isOpen = false;
+            localStorage.setItem('chatOpen', 'false');
+            chatContainer?.classList.remove('open');
+            this.playSound('click');
+        });
+    }
 
     // Le reste de votre code pour setupListeners reste inchangé...
     if (soundBtn) {
@@ -1168,7 +1160,6 @@ if (messagesContainer) {
         }, 150); // Attendre que le défilement s'arrête
     }, { passive: true });
 }
-
 // Détection du clavier virtuel sur tablette
 if (this.isTablet()) {
     const textarea = this.container.querySelector('.chat-input textarea');
@@ -1185,14 +1176,26 @@ if (this.isTablet()) {
     }
 }
     // Remplacer le code existant par celui-ci
-const messagesContainer = this.container.querySelector('.chat-messages');
-if (messagesContainer) {
-    messagesContainer.addEventListener('touchstart', (e) => {
-        e.stopPropagation();
+const chatMessages = this.container.querySelector('.chat-messages');
+if (chatMessages) {
+    // Utiliser une approche différente qui permet le défilement normal du chat
+    chatMessages.addEventListener('touchmove', (e) => {
+        // Ne pas stopper la propagation - permettre le défilement normal
+        e.stopPropagation(); // Ceci empêche l'événement de remonter à la page principale
     }, { passive: true });
     
-    messagesContainer.addEventListener('touchmove', (e) => {
-        e.stopPropagation();
+    // Empêcher le rebond aux extrémités qui cause souvent le défilement de la page
+    chatMessages.addEventListener('scroll', () => {
+        const scrollTop = chatMessages.scrollTop;
+        const scrollHeight = chatMessages.scrollHeight;
+        const clientHeight = chatMessages.clientHeight;
+        
+        // Ajuster légèrement les valeurs pour éviter les problèmes de "bounce"
+        if (scrollTop <= 1) {
+            chatMessages.scrollTop = 1;
+        } else if (scrollTop + clientHeight >= scrollHeight - 1) {
+            chatMessages.scrollTop = scrollHeight - clientHeight - 1;
+        }
     }, { passive: true });
 }
   }
