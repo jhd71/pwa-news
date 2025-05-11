@@ -11,10 +11,10 @@ body {
   padding-top: var(--safe-area-top) !important;
 }
 
-/* 1. Remonter le logo du site */
+/* 1. Remonter davantage le logo du site */
 .site-logo, .logo-container, .site-title {
   position: fixed !important;
-  top: calc(var(--safe-area-top) + 5px) !important; /* Légèrement plus haut */
+  top: calc(var(--safe-area-top) + 2px) !important; /* Remonté de 5px à 2px */
   left: 50% !important;
   transform: translateX(-50%) !important;
   z-index: 1001 !important;
@@ -42,14 +42,14 @@ body {
   border-radius: 50% !important;
 }
 
-/* 3. Ajuster le premier séparateur */
+/* 3. Remonter le premier séparateur */
 .separator:first-of-type {
-  margin-top: 130px !important; /* Aligné avec le conteneur principal */
+  margin-top: 110px !important; /* Réduit de 130px à 110px */
 }
 
-/* 4. Ajustement des marges du contenu principal */
+/* 4. Ajuster en conséquence les marges du contenu principal */
 #tileContainer, .main-content, .tile-container {
-  margin-top: 130px !important; /* Augmenté pour compenser les éléments remontés */
+  margin-top: 110px !important; /* Réduit de 130px à 110px */
   padding-bottom: calc(var(--safe-area-bottom) + 80px) !important;
 }
 
@@ -135,37 +135,46 @@ body.rouge-theme .gear-icon {
   background-color: rgba(126, 87, 194, 0.8) !important; /* Violet */
 }
 
-/* 2. Descendre les widgets météo et liens rapides */
+/* 2. Ajuster la position des widgets pour qu'ils soient sous les boutons mais au-dessus du premier séparateur */
 @media (max-width: 767px) {
   /* Position des boutons d'affichage des widgets */
   .weather-mobile-btn {
     display: flex !important;
-    top: 90px !important; /* Descendu à l'ancienne position des boutons menu/paramètres */
+    top: 85px !important; /* Légèrement plus haut */
     left: 10px !important;
   }
   
   .quick-links-show-btn {
     display: flex !important;
     opacity: 1 !important;
-    top: 90px !important; /* Descendu à l'ancienne position des boutons menu/paramètres */
+    top: 85px !important; /* Légèrement plus haut */
     right: 10px !important;
   }
   
   /* Position des widgets quand ils sont affichés */
   .weather-sidebar,
   .quick-links-sidebar {
-    top: 120px !important; /* Ajusté pour être juste en dessous des boutons */
+    top: 110px !important; /* Ajusté pour être juste au-dessus du séparateur */
   }
-}
 
-/* 3. Ajuster le bouton Infos en direct pour être centré */
-@media (max-width: 767px) {
+  /* 3. Ajuster le bouton Infos en direct */
   .news-button {
     position: fixed !important;
-    top: 90px !important; /* Même niveau que les boutons des widgets */
+    top: 85px !important; /* Même niveau que les boutons des widgets */
     left: 50% !important;
     right: auto !important;
     transform: translateX(-50%);
     z-index: 995 !important;
   }
+}
+
+/* Assurer que les widgets ne chevauchent pas le contenu */
+.weather-sidebar.active,
+.quick-links-sidebar.active {
+  z-index: 996 !important;
+}
+
+/* Assurer que le contenu principal s'affiche correctement */
+.main-content > *:first-child:not(.separator) {
+  margin-top: 110px !important; /* S'aligner avec le séparateur */
 }
