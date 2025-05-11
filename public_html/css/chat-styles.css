@@ -2398,3 +2398,25 @@ body.long-press-active .message-options {
         0 1px 0 rgba(255, 255, 255, 0.7),
         0 -1px 0 rgba(255, 255, 255, 0.7) !important;
 }
+
+/* Solution pour remonter le titre du chat */
+.chat-header {
+    display: flex !important;
+    align-items: flex-start !important;  /* Aligne le contenu en haut plutôt qu'au centre */
+    padding-top: 10px !important; 
+    padding-bottom: 6px !important;
+}
+
+/* Cible le titre, quelle que soit sa structure HTML */
+.chat-header h2,
+.header-title, 
+.chat-header-title,
+.chat-header > *:first-child:not(.header-buttons) {
+    margin-top: -4px !important;
+    line-height: 1.2 !important;
+}
+
+/* Centre les boutons verticalement */
+.header-buttons {
+    align-self: center !important;
+}
