@@ -236,134 +236,135 @@ body.rouge-theme .gear-icon {
   }
 }
 
-/* Correction pour centrer le logo et aligner les widgets sur iPhone 15 Pro */
+/* Correction de la superposition des boutons pour iPhone 15 Pro */
 
 @media screen and (min-width: 375px) and (-webkit-device-pixel-ratio: 3) {
-  /* Centrer le logo entre les boutons et widgets */
+  /* 1. Logo en haut et centré */
   .site-logo, .logo-container, .site-title {
-    position: absolute !important;
-    top: 110px !important; /* Position en dessous des boutons menu/paramètres */
+    position: fixed !important;
+    top: calc(var(--safe-area-top) + 5px) !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
     width: auto !important;
-    height: 75px !important; /* Taille ajustée */
+    height: 60px !important;
     margin: 0 !important;
     z-index: 997 !important;
-    text-align: center !important;
   }
   
-  /* Positionner les boutons menu et paramètres en haut */
+  /* 2. Boutons menu et paramètres alignés horizontalement avec le logo */
   .menu-button, .hamburger-menu {
     position: fixed !important;
-    top: calc(var(--safe-area-top) + 10px) !important; /* Juste sous la barre d'état */
+    top: calc(var(--safe-area-top) + 10px) !important;
     left: 15px !important;
     z-index: 998 !important;
   }
   
   .settings-button, .gear-icon {
     position: fixed !important;
-    top: calc(var(--safe-area-top) + 10px) !important; /* Juste sous la barre d'état */
+    top: calc(var(--safe-area-top) + 10px) !important;
     right: 15px !important;
     z-index: 998 !important;
   }
   
-  /* Aligner tous les widgets sur une ligne horizontale */
+  /* 3. Boutons météo et liens -> REPOSITIONNÉS HORIZONTALEMENT */
   .weather-mobile-btn {
     position: fixed !important;
-    top: 65px !important; /* En dessous des boutons menu/paramètres */
-    left: 15px !important;
+    top: calc(var(--safe-area-top) + 80px) !important; /* Éloigné du logo */
+    left: 20% !important; /* À gauche, mais pas complètement */
     z-index: 996 !important;
+    transform: translateX(-50%) !important; /* Centré sur son point */
   }
   
   .quick-links-show-btn {
     position: fixed !important;
-    top: 65px !important; /* Aligné avec le widget météo */
-    right: 15px !important;
+    top: calc(var(--safe-area-top) + 80px) !important; /* Même niveau que météo */
+    right: 20% !important; /* À droite, mais pas complètement */
     z-index: 996 !important;
+    transform: translateX(50%) !important; /* Centré sur son point */
   }
   
-  /* Bouton infos en direct - maintenant placé sous le logo */
+  /* 4. Bouton infos en direct - centré sous les autres boutons */
   .news-button {
-    position: absolute !important;
-    top: 195px !important; /* En dessous du logo */
+    position: fixed !important;
+    top: calc(var(--safe-area-top) + 150px) !important; /* Bien en dessous des autres boutons */
     left: 50% !important;
     transform: translateX(-50%) !important;
     z-index: 995 !important;
     width: auto !important;
-    min-width: 200px !important;
+    min-width: 220px !important; /* Légèrement plus large */
   }
   
-  /* Position des widgets déployés */
-  .weather-sidebar,
+  /* Position des widgets déployés - éviter la superposition */
+  .weather-sidebar {
+    top: calc(var(--safe-area-top) + 130px) !important;
+    left: 10px !important;
+    right: auto !important;
+    max-width: 45% !important; /* Limiter la largeur */
+    max-height: 40vh !important;
+    z-index: 996 !important;
+  }
+  
   .quick-links-sidebar {
-    top: 105px !important; /* Sous les boutons, à côté du logo */
-    max-height: 40vh !important; /* Limiter la hauteur */
+    top: calc(var(--safe-area-top) + 130px) !important;
+    left: auto !important;
+    right: 10px !important;
+    max-width: 45% !important; /* Limiter la largeur */
+    max-height: 40vh !important;
+    z-index: 996 !important;
   }
   
-  /* Ajuster le séparateur et le contenu principal */
+  /* 5. Ajuster le séparateur et le contenu principal */
   .separator:first-of-type,
   .separator:first-child,
   #actualites-locales,
   .title-separator:first-of-type,
   .section-title:first-of-type {
-    margin-top: 240px !important; /* Ajusté pour être sous le bouton infos en direct */
+    margin-top: 210px !important; /* Bien en dessous du bouton infos */
     position: relative !important;
     z-index: 990 !important;
   }
   
   #tileContainer, .main-content, .tile-container {
-    margin-top: 240px !important; /* Aligné avec le séparateur */
+    margin-top: 210px !important; /* Aligné avec le séparateur */
     padding-bottom: calc(var(--safe-area-bottom) + 80px) !important;
   }
   
   /* Assurer que le contenu principal s'affiche correctement */
   .main-content > *:first-child:not(.separator) {
-    margin-top: 240px !important; /* Aligné avec le séparateur */
+    margin-top: 210px !important; /* Aligné avec le séparateur */
   }
   
-  /* Mise en page générale */
-  body {
-    padding-top: var(--safe-area-top) !important;
+  /* Définir clairement les dimensions des boutons pour éviter les problèmes de taille */
+  .weather-mobile-btn,
+  .quick-links-show-btn {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 }
 
-/* Ajustements spécifiques pour iPads et grands iPhone */
-@media screen and (min-width: 768px) and (-webkit-device-pixel-ratio: 2) {
-  /* Ajuster les positions pour les écrans plus grands */
-  .site-logo, .logo-container, .site-title {
-    top: 130px !important; /* Position plus basse sur grands écrans */
-    height: 85px !important; /* Logo plus grand */
-  }
-  
-  .news-button {
-    top: 225px !important; /* Ajusté pour grands écrans */
-  }
-  
-  .separator:first-of-type,
-  #tileContainer, .main-content, .tile-container,
-  .main-content > *:first-child:not(.separator) {
-    margin-top: 270px !important; /* Ajusté pour grands écrans */
-  }
-}
-
-/* Orientation paysage */
+/* Orientation paysage - ajuster pour éviter superposition */
 @media screen and (orientation: landscape) and (-webkit-device-pixel-ratio: 3) {
-  .site-logo, .logo-container, .site-title {
-    top: 65px !important; /* Position ajustée en mode paysage */
-    height: 60px !important; /* Logo plus petit en mode paysage */
+  .weather-mobile-btn {
+    top: calc(var(--safe-area-top) + 70px) !important;
+    left: 15% !important; /* Encore plus à gauche en mode paysage */
   }
   
-  .weather-mobile-btn, .quick-links-show-btn {
-    top: 45px !important; /* Ajusté pour mode paysage */
+  .quick-links-show-btn {
+    top: calc(var(--safe-area-top) + 70px) !important;
+    right: 15% !important; /* Encore plus à droite en mode paysage */
   }
   
   .news-button {
-    top: 135px !important; /* Ajusté pour mode paysage */
+    top: calc(var(--safe-area-top) + 130px) !important;
   }
   
   .separator:first-of-type,
   #tileContainer, .main-content, .tile-container,
   .main-content > *:first-child:not(.separator) {
-    margin-top: 180px !important; /* Ajusté pour mode paysage */
+    margin-top: 185px !important; /* Réduit en mode paysage */
   }
 }
