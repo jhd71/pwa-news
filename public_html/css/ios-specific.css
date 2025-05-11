@@ -235,3 +235,145 @@ body.rouge-theme .gear-icon {
     margin-top: 150px !important; /* Même valeur que la règle principale */
   }
 }
+
+/* Ajustements spécifiques pour iPhone 15 Pro */
+
+/* 1. Réorganisation du logo et des boutons de navigation */
+@media screen and (min-width: 375px) and (-webkit-device-pixel-ratio: 3) {
+  /* Structure de l'en-tête */
+  .site-logo, .logo-container, .site-title {
+    position: relative !important; /* Changé de fixed à relative */
+    top: 30px !important; /* Donner de l'espace sous la Dynamic Island */
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    height: 70px !important; /* Logo plus grand */
+    width: auto !important;
+    margin: 0 auto 20px auto !important; /* Marge en bas */
+    z-index: 997 !important; /* Niveau d'empilement ajusté */
+  }
+  
+  /* Descendre les boutons menu et paramètres */
+  .menu-button, .hamburger-menu {
+    position: absolute !important; /* Changé de fixed à absolute */
+    top: 75px !important; /* Aligné verticalement avec le logo */
+    left: 15px !important;
+    z-index: 998 !important;
+  }
+  
+  .settings-button, .gear-icon {
+    position: absolute !important; /* Changé de fixed à absolute */
+    top: 75px !important; /* Aligné verticalement avec le logo */
+    right: 15px !important;
+    z-index: 998 !important;
+  }
+  
+  /* 2. Ajuster la position du bouton Infos en direct */
+  .news-button {
+    position: relative !important; /* Changé de fixed à relative */
+    top: 5px !important; /* Juste sous le logo */
+    margin: 5px auto 15px auto !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+    z-index: 996 !important;
+    max-width: 80% !important;
+    display: block !important;
+  }
+  
+  /* 3. Ajuster le séparateur et les contenus principaux */
+  .separator:first-of-type,
+  .separator:first-child,
+  #actualites-locales,
+  .title-separator:first-of-type,
+  .section-title:first-of-type {
+    margin-top: 20px !important; /* Réduit significativement - relatif au logo maintenant */
+    position: relative !important;
+    z-index: 995 !important;
+  }
+  
+  #tileContainer, .main-content, .tile-container {
+    margin-top: 20px !important; /* Aligné avec le séparateur */
+    padding-bottom: calc(var(--safe-area-bottom) + 80px) !important;
+  }
+  
+  /* 4. Ajuster les widgets météo et liens rapides */
+  .weather-mobile-btn {
+    position: absolute !important;
+    top: 140px !important; /* Sous le logo et les boutons */
+    left: 20px !important;
+  }
+  
+  .quick-links-show-btn {
+    position: absolute !important;
+    top: 140px !important; /* Sous le logo et les boutons */
+    right: 20px !important;
+  }
+  
+  .weather-sidebar,
+  .quick-links-sidebar {
+    top: 180px !important; /* Quand ils sont déployés */
+  }
+  
+  /* 5. Conteneur principal en flux normal */
+  #app-container, 
+  .app-wrapper, 
+  main {
+    display: flex !important;
+    flex-direction: column !important;
+    padding-top: calc(var(--safe-area-top) + 10px) !important;
+  }
+  
+  /* 6. Navigation du bas - ajouter plus d'espace */
+  .bottom-nav {
+    padding-bottom: calc(var(--safe-area-bottom) + 8px) !important;
+  }
+}
+
+/* Règles spécifiques pour iPhone 15 Pro Max qui peut avoir des dimensions différentes */
+@media screen and (min-width: 428px) and (-webkit-device-pixel-ratio: 3) {
+  .site-logo, .logo-container, .site-title {
+    top: 35px !important; /* Légèrement plus bas sur l'écran plus grand */
+    height: 75px !important; /* Logo encore plus grand */
+  }
+  
+  .menu-button, .hamburger-menu,
+  .settings-button, .gear-icon {
+    top: 85px !important; /* Ajusté pour écran plus grand */
+  }
+}
+
+/* Support des différentes orientations d'écran */
+@media screen and (orientation: landscape) and (-webkit-device-pixel-ratio: 3) {
+  .site-logo, .logo-container, .site-title {
+    top: 15px !important; /* Moins d'espace en mode paysage */
+    height: 60px !important; /* Logo plus petit en mode paysage */
+  }
+  
+  .menu-button, .hamburger-menu,
+  .settings-button, .gear-icon {
+    top: 55px !important; /* Ajusté pour mode paysage */
+  }
+  
+  .separator:first-of-type,
+  #actualites-locales {
+    margin-top: 10px !important; /* Réduit en mode paysage */
+  }
+}
+
+/* Fallback pour les autres modèles d'iPhone */
+@supports (padding-top: env(safe-area-inset-top)) {
+  /* Détection générique des iPhone avec encoche ou Dynamic Island */
+  @media not all and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) {
+    #app-container, 
+    .app-wrapper, 
+    main {
+      padding-top: env(safe-area-inset-top) !important;
+    }
+    
+    .site-logo, .logo-container, .site-title {
+      position: relative !important;
+      top: 20px !important;
+      margin-bottom: 15px !important;
+    }
+  }
+}
