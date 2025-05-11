@@ -1169,17 +1169,6 @@ if (messagesContainer) {
     }, { passive: true });
 }
 
-const messagesContainer = this.container.querySelector('.chat-messages');
-if (messagesContainer) {
-    messagesContainer.addEventListener('touchstart', (e) => {
-        e.stopPropagation();
-    }, { passive: true });
-    
-    messagesContainer.addEventListener('touchmove', (e) => {
-        e.stopPropagation();
-    }, { passive: true });
-}
-
 // Détection du clavier virtuel sur tablette
 if (this.isTablet()) {
     const textarea = this.container.querySelector('.chat-input textarea');
