@@ -2406,8 +2406,10 @@ body.long-press-active .message-options {
     display: flex !important;
     flex-direction: column !important; /* Organisation verticale */
     align-items: center !important; /* Centre horizontalement */
-    padding: 10px 10px 5px !important;
-    position: relative !important; /* Pour la croix de fermeture */
+    justify-content: center !important;
+    padding: 10px 10px 5px !important; /* Plus d'espace en haut */
+    position: relative !important; /* Pour positionnement absolu */
+    min-height: 70px !important; /* Hauteur minimale pour éviter compression */
 }
 
 /* Style du titre (en haut) */
@@ -2416,27 +2418,90 @@ body.long-press-active .message-options {
 .chat-header h2,
 .chat-header > *:first-child:not(.header-buttons) {
     text-align: center !important;
-    margin: 0 0 8px 0 !important; /* Marge en bas uniquement */
+    width: auto !important;
+    max-width: 90% !important; /* Évite de dépasser */
+    margin: 0 0 10px 0 !important; /* Marge en bas uniquement */
     padding: 0 !important;
     font-size: 1rem !important;
-    order: 1 !important; /* S'assure que le titre est en premier */
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+    color: white !important;
+    order: 1 !important; /* S'assure qu'il apparaît en premier */
 }
 
 /* Style des boutons (en bas) */
-.header-buttons {
+.header-buttons,
+.chat-header > div:not(:first-child):not(:last-child) {
     display: flex !important;
     justify-content: center !important;
+    align-items: center !important;
     gap: 10px !important;
     margin: 0 !important;
-    order: 2 !important; /* Boutons après le titre */
+    padding: 0 !important;
+    order: 2 !important; /* Apparaît après le titre */
 }
 
 /* Position de la croix de fermeture */
 .close-chat,
 .chat-close-btn,
-.chat-header > button:last-child {
+.chat-header > button:last-child,
+.chat-header button[aria-label="Fermer"],
+.chat-header > div:last-child > button:last-child {
     position: absolute !important;
     top: 5px !important;
     right: 5px !important;
-    z-index: 10 !important; /* Au-dessus des autres éléments */
+    width: 30px !important;
+    height: 30px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 100 !important; /* Au-dessus de tout le reste */
+    background: rgba(0, 0, 0, 0.1) !important; /* Légèrement visible */
+    border-radius: 50% !important;
+}
+
+/* Style des boutons dans la rangée d'icônes */
+.header-buttons button,
+.chat-header > div:nth-child(2) button {
+    width: 36px !important;
+    height: 36px !important;
+    padding: 0 !important;
+    margin: 0 3px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Assure que l'icône de la croix est visible */
+.close-chat span,
+.chat-close-btn span,
+.chat-header > button:last-child span {
+    font-size: 20px !important;
+    color: white !important;
+}
+
+/* Thème rouge spécifique si nécessaire */
+[data-theme="rouge"] .chat-header {
+    /* Les mêmes propriétés que ci-dessus, mais spécifiques au thème rouge */
+}
+
+/* Styles spécifiques aux écrans plus petits */
+@media (max-width: 768px) {
+    .chat-header {
+        padding: 8px 8px 3px !important;
+        min-height: 65px !important;
+    }
+    
+    .chat-header-title,
+    .header-title,
+    .chat-header h2 {
+        font-size: 0.95rem !important;
+        margin-bottom: 8px !important;
+    }
+    
+    .header-buttons button {
+        width: 32px !important;
+        height: 32px !important;
+    }
 }
