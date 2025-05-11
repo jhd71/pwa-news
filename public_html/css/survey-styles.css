@@ -124,32 +124,67 @@
     color: white;
 }
 
-/* Amélioration du bouton de fermeture */
+/* Style de base pour le bouton de fermeture */
 .close-survey {
     background: rgba(255, 255, 255, 0.2);
     border: none;
-    color: white; /* ou jaune comme vous l'avez suggéré: color: yellow; */
-    width: 36px; /* Augmenté de 30px à 36px */
-    height: 36px; /* Augmenté de 30px à 36px */
+    color: white; /* Couleur par défaut pour tous les thèmes */
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s;
-    position: relative; /* Ajouté pour permettre un positionnement absolu de la croix */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Ombre légère pour le relief */
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* Amélioration de l'effet au survol */
-.close-survey:hover {
-    background: rgba(255, 255, 255, 0.4); /* Plus lumineux au survol */
-    transform: scale(1.1); /* Légère animation d'agrandissement */
+/* Style pour la croix elle-même (si vous utilisez × comme caractère) */
+.close-survey::before {
+    content: "×";
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1;
 }
 
-/* Alternative: si vous utilisez une icône Material Design ou autre */
+/* Alternative: si vous utilisez une icône Material Design */
 .close-survey .material-icons {
-    font-size: 22px; /* Augmenté pour une croix plus visible */
+    font-size: 22px;
+}
+
+/* Effet au survol pour tous les thèmes */
+.close-survey:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(1.1);
+}
+
+/* Croix JAUNE spécifiquement pour le thème ROUGE */
+[data-theme="rouge"] .close-survey {
+    color: yellow;
+}
+
+/* Maintenir la croix BLANCHE pour les thèmes dark et light */
+[data-theme="dark"] .close-survey,
+[data-theme="light"] .close-survey {
+    color: white;
+}
+
+/* Adaptation pour les appareils mobiles */
+@media (max-width: 768px) {
+    .close-survey {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .close-survey::before {
+        font-size: 28px;
+    }
+    
+    .close-survey .material-icons {
+        font-size: 24px;
+    }
 }
 
 /* SECTION 3: QUESTIONS ET OPTIONS */
@@ -407,22 +442,6 @@
     
     .survey-option {
         padding: 10px;
-    }
-}
-
-/* Adaptation pour les appareils mobiles */
-@media (max-width: 768px) {
-    .close-survey {
-        width: 40px; /* Encore plus grand sur mobile pour faciliter le toucher */
-        height: 40px;
-    }
-    
-    .close-survey::before {
-        font-size: 28px; /* Plus grand sur mobile */
-    }
-    
-    .close-survey .material-icons {
-        font-size: 24px; /* Plus grand sur mobile */
     }
 }
 
