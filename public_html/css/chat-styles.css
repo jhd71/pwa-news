@@ -2373,22 +2373,3 @@ body.long-press-active .message-options {
     font-size: 28px !important; /* Plus grande */
     font-weight: bold !important; /* Plus épaisse */
 }
-
-/* Version alternative avec pseudo-élément si nécessaire */
-[data-theme="rouge"] .chat-input button::after {
-    content: '→' !important; /* Flèche Unicode simple */
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    color: #333 !important;
-    font-size: 28px !important;
-    font-weight: bold !important;
-    line-height: 1 !important;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2) !important;
-}
-
-/* Masquer la flèche originale si vous utilisez le pseudo-élément */
-[data-theme="rouge"] .chat-input button .material-icons.hidden-icon {
-    display: none !important;
-}
