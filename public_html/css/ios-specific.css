@@ -236,144 +236,134 @@ body.rouge-theme .gear-icon {
   }
 }
 
-/* Ajustements spécifiques pour iPhone 15 Pro */
+/* Correction pour centrer le logo et aligner les widgets sur iPhone 15 Pro */
 
-/* 1. Réorganisation du logo et des boutons de navigation */
 @media screen and (min-width: 375px) and (-webkit-device-pixel-ratio: 3) {
-  /* Structure de l'en-tête */
+  /* Centrer le logo entre les boutons et widgets */
   .site-logo, .logo-container, .site-title {
-    position: relative !important; /* Changé de fixed à relative */
-    top: 30px !important; /* Donner de l'espace sous la Dynamic Island */
+    position: absolute !important;
+    top: 110px !important; /* Position en dessous des boutons menu/paramètres */
     left: 50% !important;
     transform: translateX(-50%) !important;
-    height: 70px !important; /* Logo plus grand */
     width: auto !important;
-    margin: 0 auto 20px auto !important; /* Marge en bas */
-    z-index: 997 !important; /* Niveau d'empilement ajusté */
+    height: 75px !important; /* Taille ajustée */
+    margin: 0 !important;
+    z-index: 997 !important;
+    text-align: center !important;
   }
   
-  /* Descendre les boutons menu et paramètres */
+  /* Positionner les boutons menu et paramètres en haut */
   .menu-button, .hamburger-menu {
-    position: absolute !important; /* Changé de fixed à absolute */
-    top: 75px !important; /* Aligné verticalement avec le logo */
+    position: fixed !important;
+    top: calc(var(--safe-area-top) + 10px) !important; /* Juste sous la barre d'état */
     left: 15px !important;
     z-index: 998 !important;
   }
   
   .settings-button, .gear-icon {
-    position: absolute !important; /* Changé de fixed à absolute */
-    top: 75px !important; /* Aligné verticalement avec le logo */
+    position: fixed !important;
+    top: calc(var(--safe-area-top) + 10px) !important; /* Juste sous la barre d'état */
     right: 15px !important;
     z-index: 998 !important;
   }
   
-  /* 2. Ajuster la position du bouton Infos en direct */
-  .news-button {
-    position: relative !important; /* Changé de fixed à relative */
-    top: 5px !important; /* Juste sous le logo */
-    margin: 5px auto 15px auto !important;
-    left: auto !important;
-    right: auto !important;
-    transform: none !important;
+  /* Aligner tous les widgets sur une ligne horizontale */
+  .weather-mobile-btn {
+    position: fixed !important;
+    top: 65px !important; /* En dessous des boutons menu/paramètres */
+    left: 15px !important;
     z-index: 996 !important;
-    max-width: 80% !important;
-    display: block !important;
   }
   
-  /* 3. Ajuster le séparateur et les contenus principaux */
+  .quick-links-show-btn {
+    position: fixed !important;
+    top: 65px !important; /* Aligné avec le widget météo */
+    right: 15px !important;
+    z-index: 996 !important;
+  }
+  
+  /* Bouton infos en direct - maintenant placé sous le logo */
+  .news-button {
+    position: absolute !important;
+    top: 195px !important; /* En dessous du logo */
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 995 !important;
+    width: auto !important;
+    min-width: 200px !important;
+  }
+  
+  /* Position des widgets déployés */
+  .weather-sidebar,
+  .quick-links-sidebar {
+    top: 105px !important; /* Sous les boutons, à côté du logo */
+    max-height: 40vh !important; /* Limiter la hauteur */
+  }
+  
+  /* Ajuster le séparateur et le contenu principal */
   .separator:first-of-type,
   .separator:first-child,
   #actualites-locales,
   .title-separator:first-of-type,
   .section-title:first-of-type {
-    margin-top: 20px !important; /* Réduit significativement - relatif au logo maintenant */
+    margin-top: 240px !important; /* Ajusté pour être sous le bouton infos en direct */
     position: relative !important;
-    z-index: 995 !important;
+    z-index: 990 !important;
   }
   
   #tileContainer, .main-content, .tile-container {
-    margin-top: 20px !important; /* Aligné avec le séparateur */
+    margin-top: 240px !important; /* Aligné avec le séparateur */
     padding-bottom: calc(var(--safe-area-bottom) + 80px) !important;
   }
   
-  /* 4. Ajuster les widgets météo et liens rapides */
-  .weather-mobile-btn {
-    position: absolute !important;
-    top: 140px !important; /* Sous le logo et les boutons */
-    left: 20px !important;
+  /* Assurer que le contenu principal s'affiche correctement */
+  .main-content > *:first-child:not(.separator) {
+    margin-top: 240px !important; /* Aligné avec le séparateur */
   }
   
-  .quick-links-show-btn {
-    position: absolute !important;
-    top: 140px !important; /* Sous le logo et les boutons */
-    right: 20px !important;
-  }
-  
-  .weather-sidebar,
-  .quick-links-sidebar {
-    top: 180px !important; /* Quand ils sont déployés */
-  }
-  
-  /* 5. Conteneur principal en flux normal */
-  #app-container, 
-  .app-wrapper, 
-  main {
-    display: flex !important;
-    flex-direction: column !important;
-    padding-top: calc(var(--safe-area-top) + 10px) !important;
-  }
-  
-  /* 6. Navigation du bas - ajouter plus d'espace */
-  .bottom-nav {
-    padding-bottom: calc(var(--safe-area-bottom) + 8px) !important;
+  /* Mise en page générale */
+  body {
+    padding-top: var(--safe-area-top) !important;
   }
 }
 
-/* Règles spécifiques pour iPhone 15 Pro Max qui peut avoir des dimensions différentes */
-@media screen and (min-width: 428px) and (-webkit-device-pixel-ratio: 3) {
+/* Ajustements spécifiques pour iPads et grands iPhone */
+@media screen and (min-width: 768px) and (-webkit-device-pixel-ratio: 2) {
+  /* Ajuster les positions pour les écrans plus grands */
   .site-logo, .logo-container, .site-title {
-    top: 35px !important; /* Légèrement plus bas sur l'écran plus grand */
-    height: 75px !important; /* Logo encore plus grand */
+    top: 130px !important; /* Position plus basse sur grands écrans */
+    height: 85px !important; /* Logo plus grand */
   }
   
-  .menu-button, .hamburger-menu,
-  .settings-button, .gear-icon {
-    top: 85px !important; /* Ajusté pour écran plus grand */
-  }
-}
-
-/* Support des différentes orientations d'écran */
-@media screen and (orientation: landscape) and (-webkit-device-pixel-ratio: 3) {
-  .site-logo, .logo-container, .site-title {
-    top: 15px !important; /* Moins d'espace en mode paysage */
-    height: 60px !important; /* Logo plus petit en mode paysage */
-  }
-  
-  .menu-button, .hamburger-menu,
-  .settings-button, .gear-icon {
-    top: 55px !important; /* Ajusté pour mode paysage */
+  .news-button {
+    top: 225px !important; /* Ajusté pour grands écrans */
   }
   
   .separator:first-of-type,
-  #actualites-locales {
-    margin-top: 10px !important; /* Réduit en mode paysage */
+  #tileContainer, .main-content, .tile-container,
+  .main-content > *:first-child:not(.separator) {
+    margin-top: 270px !important; /* Ajusté pour grands écrans */
   }
 }
 
-/* Fallback pour les autres modèles d'iPhone */
-@supports (padding-top: env(safe-area-inset-top)) {
-  /* Détection générique des iPhone avec encoche ou Dynamic Island */
-  @media not all and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) {
-    #app-container, 
-    .app-wrapper, 
-    main {
-      padding-top: env(safe-area-inset-top) !important;
-    }
-    
-    .site-logo, .logo-container, .site-title {
-      position: relative !important;
-      top: 20px !important;
-      margin-bottom: 15px !important;
-    }
+/* Orientation paysage */
+@media screen and (orientation: landscape) and (-webkit-device-pixel-ratio: 3) {
+  .site-logo, .logo-container, .site-title {
+    top: 65px !important; /* Position ajustée en mode paysage */
+    height: 60px !important; /* Logo plus petit en mode paysage */
+  }
+  
+  .weather-mobile-btn, .quick-links-show-btn {
+    top: 45px !important; /* Ajusté pour mode paysage */
+  }
+  
+  .news-button {
+    top: 135px !important; /* Ajusté pour mode paysage */
+  }
+  
+  .separator:first-of-type,
+  #tileContainer, .main-content, .tile-container,
+  .main-content > *:first-child:not(.separator) {
+    margin-top: 180px !important; /* Ajusté pour mode paysage */
   }
 }
