@@ -14,43 +14,43 @@ body {
 /* 1. Remonter le logo du site */
 .site-logo, .logo-container, .site-title {
   position: fixed !important;
-  top: calc(var(--safe-area-top) + 10px) !important;
+  top: calc(var(--safe-area-top) + 5px) !important; /* Légèrement plus haut */
   left: 50% !important;
   transform: translateX(-50%) !important;
   z-index: 1001 !important;
-  height: 65px !important; /* Légèrement augmenté de 60px à 65px */
+  height: 65px !important;
   width: auto !important;
   margin: 0 !important;
 }
 
-/* 2. Remonter les boutons menu et paramètres - couleur adaptée selon le thème */
+/* 1. Remonter les boutons menu et paramètres tout en haut */
 .menu-button, .hamburger-menu {
   position: fixed !important;
-  top: calc(var(--safe-area-top) + 90px) !important; /* Augmenté pour descendre le bouton */
+  top: calc(var(--safe-area-top) + 10px) !important; /* Remonté en haut */
   left: 10px !important;
   z-index: 1010 !important;
-  background-color: rgba(126, 87, 194, 0.8) !important; /* Couleur par défaut - violet */
+  background-color: rgba(126, 87, 194, 0.8) !important;
   border-radius: 50% !important;
 }
 
 .settings-button, .gear-icon {
   position: fixed !important;
-  top: calc(var(--safe-area-top) + 90px) !important; /* Augmenté pour descendre le bouton */
+  top: calc(var(--safe-area-top) + 10px) !important; /* Remonté en haut */
   right: 10px !important;
   z-index: 1010 !important;
-  background-color: rgba(126, 87, 194, 0.8) !important; /* Couleur par défaut - violet */
+  background-color: rgba(126, 87, 194, 0.8) !important;
   border-radius: 50% !important;
 }
 
 /* 3. Ajuster le premier séparateur */
 .separator:first-of-type {
-  margin-top: 80px !important; /* Espace pour le logo */
+  margin-top: 130px !important; /* Aligné avec le conteneur principal */
 }
 
 /* 4. Ajustement des marges du contenu principal */
 #tileContainer, .main-content, .tile-container {
-  margin-top: 15px !important;
-  padding-bottom: calc(var(--safe-area-bottom) + 80px) !important; /* Plus d'espace en bas */
+  margin-top: 130px !important; /* Augmenté pour compenser les éléments remontés */
+  padding-bottom: calc(var(--safe-area-bottom) + 80px) !important;
 }
 
 /* 5. Corriger la position de la barre d'infos en bas */
@@ -133,4 +133,39 @@ body.rouge-theme .gear-icon {
 [data-theme="light"] .settings-button, 
 [data-theme="light"] .gear-icon {
   background-color: rgba(126, 87, 194, 0.8) !important; /* Violet */
+}
+
+/* 2. Descendre les widgets météo et liens rapides */
+@media (max-width: 767px) {
+  /* Position des boutons d'affichage des widgets */
+  .weather-mobile-btn {
+    display: flex !important;
+    top: 90px !important; /* Descendu à l'ancienne position des boutons menu/paramètres */
+    left: 10px !important;
+  }
+  
+  .quick-links-show-btn {
+    display: flex !important;
+    opacity: 1 !important;
+    top: 90px !important; /* Descendu à l'ancienne position des boutons menu/paramètres */
+    right: 10px !important;
+  }
+  
+  /* Position des widgets quand ils sont affichés */
+  .weather-sidebar,
+  .quick-links-sidebar {
+    top: 120px !important; /* Ajusté pour être juste en dessous des boutons */
+  }
+}
+
+/* 3. Ajuster le bouton Infos en direct pour être centré */
+@media (max-width: 767px) {
+  .news-button {
+    position: fixed !important;
+    top: 90px !important; /* Même niveau que les boutons des widgets */
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%);
+    z-index: 995 !important;
+  }
 }

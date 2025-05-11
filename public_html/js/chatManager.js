@@ -1054,16 +1054,20 @@ getChatHTMLWithoutToggle() {
     
     if (this.isOpen) {
         chatContainer?.classList.add('open');
-        // Réinitialisation du compteur
+        
+        // NOUVEAU: Bloquer le scroll du body
+        document.body.classList.add('chat-open-no-scroll');
+        
+        // Autres actions existantes...
         this.unreadCount = 0;
         localStorage.setItem('unreadCount', '0');
-        
-        // Mettre à jour le badge ET l'info-bulle
         this.updateUnreadBadgeAndBubble();
-        
         this.scrollToBottom();
     } else {
         chatContainer?.classList.remove('open');
+        
+        // NOUVEAU: Réactiver le scroll du body
+        document.body.classList.remove('chat-open-no-scroll');
     }
     
     localStorage.setItem('chatOpen', this.isOpen);
@@ -1084,13 +1088,17 @@ getChatHTMLWithoutToggle() {
     }
 
     if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
-            this.isOpen = false;
-            localStorage.setItem('chatOpen', 'false');
-            chatContainer?.classList.remove('open');
-            this.playSound('click');
-        });
-    }
+    closeBtn.addEventListener('click', () => {
+        this.isOpen = false;
+        localStorage.setItem('chatOpen', 'false');
+        chatContainer?.classList.remove('open');
+        
+        // NOUVEAU: Réactiver le scroll du body
+        document.body.classList.remove('chat-open-no-scroll');
+        
+        this.playSound('click');
+    });
+}
 
     // Le reste de votre code pour setupListeners reste inchangé...
     if (soundBtn) {
@@ -1160,6 +1168,18 @@ if (messagesContainer) {
         }, 150); // Attendre que le défilement s'arrête
     }, { passive: true });
 }
+
+const messagesContainer = this.container.querySelector('.chat-messages');
+if (messagesContainer) {
+    messagesContainer.addEventListener('touchstart', (e) => {
+        e.stopPropagation();
+    }, { passive: true });
+    
+    messagesContainer.addEventListener('touchmove', (e) => {
+        e.stopPropagation();
+    }, { passive: true });
+}
+
 // Détection du clavier virtuel sur tablette
 if (this.isTablet()) {
     const textarea = this.container.querySelector('.chat-input textarea');
