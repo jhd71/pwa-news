@@ -2255,3 +2255,76 @@ body.long-press-active .message-options {
     margin: 20px 0 !important;
   }
 }
+
+/* Styles spécifiques pour les boutons d'en-tête (son et cloche) */
+
+/* Style commun pour tous les boutons d'en-tête en mode activé */
+[data-theme="rouge"] .header-buttons button.enabled {
+    background: #FFD230 !important; /* Jaune */
+    border: 1px solid rgba(0, 0, 0, 0.15) !important; /* Bordure subtile */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important; /* Ombre légère */
+}
+
+/* Style spécifique pour le bouton son actif */
+[data-theme="rouge"] .sound-btn.enabled {
+    position: relative !important;
+    overflow: visible !important;
+}
+
+/* Icône de son - version plus visible avec contour */
+[data-theme="rouge"] .sound-btn.enabled .material-icons {
+    color: #000 !important; /* Noir pour contraste maximal */
+    font-size: 22px !important; /* Légèrement réduit pour netteté */
+    -webkit-text-stroke: 0.5px black !important; /* Contour fin */
+    text-shadow: 
+        0 1px 0 rgba(255, 255, 255, 0.7),
+        0 -1px 0 rgba(255, 255, 255, 0.7) !important; /* Ombre blanche pour contraste */
+}
+
+/* Style spécifique pour le bouton cloche actif */
+[data-theme="rouge"] .notifications-btn.enabled {
+    position: relative !important;
+    overflow: visible !important;
+}
+
+/* Icône de cloche - version plus visible avec contour */
+[data-theme="rouge"] .notifications-btn.enabled .material-icons {
+    color: #000 !important; /* Noir pour contraste maximal */
+    font-size: 22px !important; /* Légèrement réduit pour netteté */
+    -webkit-text-stroke: 0.5px black !important; /* Contour fin */
+    text-shadow: 
+        0 1px 0 rgba(255, 255, 255, 0.7),
+        0 -1px 0 rgba(255, 255, 255, 0.7) !important; /* Ombre blanche pour contraste */
+}
+
+/* Animation subtile pour attirer l'attention sur ces boutons */
+@keyframes subtle-glow {
+    0%, 100% { box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); }
+    50% { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4); }
+}
+
+[data-theme="rouge"] .sound-btn.enabled,
+[data-theme="rouge"] .notifications-btn.enabled {
+    animation: subtle-glow 2s infinite !important;
+}
+
+/* Effet de survol plus prononcé */
+[data-theme="rouge"] .sound-btn.enabled:hover,
+[data-theme="rouge"] .notifications-btn.enabled:hover {
+    background: #FFDA5A !important; /* Version plus claire */
+    transform: scale(1.1) !important; /* Légèrement plus grand */
+}
+
+/* Version alternative avec une icône personnalisée si nécessaire */
+[data-theme="rouge"] .sound-btn.enabled::after,
+[data-theme="rouge"] .notifications-btn.enabled::after {
+    content: '' !important;
+    position: absolute !important;
+    top: -3px !important;
+    right: -3px !important;
+    width: 10px !important;
+    height: 10px !important;
+    background-color: #22c55e !important; /* Point vert pour indiquer "actif" */
+    border-radius: 50% !important;
+    border: 2px solid #FFD230 !important;
+}
