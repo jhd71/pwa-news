@@ -1185,26 +1185,14 @@ if (this.isTablet()) {
     }
 }
     // Remplacer le code existant par celui-ci
-const chatMessages = this.container.querySelector('.chat-messages');
-if (chatMessages) {
-    // Utiliser une approche différente qui permet le défilement normal du chat
-    chatMessages.addEventListener('touchmove', (e) => {
-        // Ne pas stopper la propagation - permettre le défilement normal
-        e.stopPropagation(); // Ceci empêche l'événement de remonter à la page principale
+const messagesContainer = this.container.querySelector('.chat-messages');
+if (messagesContainer) {
+    messagesContainer.addEventListener('touchstart', (e) => {
+        e.stopPropagation();
     }, { passive: true });
     
-    // Empêcher le rebond aux extrémités qui cause souvent le défilement de la page
-    chatMessages.addEventListener('scroll', () => {
-        const scrollTop = chatMessages.scrollTop;
-        const scrollHeight = chatMessages.scrollHeight;
-        const clientHeight = chatMessages.clientHeight;
-        
-        // Ajuster légèrement les valeurs pour éviter les problèmes de "bounce"
-        if (scrollTop <= 1) {
-            chatMessages.scrollTop = 1;
-        } else if (scrollTop + clientHeight >= scrollHeight - 1) {
-            chatMessages.scrollTop = scrollHeight - clientHeight - 1;
-        }
+    messagesContainer.addEventListener('touchmove', (e) => {
+        e.stopPropagation();
     }, { passive: true });
 }
   }
