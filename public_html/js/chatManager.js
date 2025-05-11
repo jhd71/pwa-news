@@ -621,7 +621,8 @@ class ChatManager {
         
         // Vérifier et nettoyer les bannissements expirés
         await this.checkAndClearExpiredBans();
-        
+        // Gérer les problèmes de défilement tactile
+		this.handleTouchScrolling();
         // Marquer l'initialisation comme terminée
 		this.startAutoBanCheck();
         this.initialized = true;
@@ -1054,6 +1055,9 @@ getChatHTMLWithoutToggle() {
     
     if (this.isOpen) {
         chatContainer?.classList.add('open');
+        // Ajouter la classe pour désactiver le scroll du body
+        document.body.classList.add('chat-open-no-scroll');
+        
         // Réinitialisation du compteur
         this.unreadCount = 0;
         localStorage.setItem('unreadCount', '0');
@@ -1064,6 +1068,8 @@ getChatHTMLWithoutToggle() {
         this.scrollToBottom();
     } else {
         chatContainer?.classList.remove('open');
+        // Retirer la classe pour réactiver le scroll du body
+        document.body.classList.remove('chat-open-no-scroll');
     }
     
     localStorage.setItem('chatOpen', this.isOpen);
@@ -1091,7 +1097,44 @@ getChatHTMLWithoutToggle() {
             this.playSound('click');
         });
     }
-
+// Bloquer le défilement de la page lorsque le chat est ouvert
+if (chatContainer) {
+    // Empêcher la propagation des événements tactiles en dehors du chat
+    chatContainer.addEventListener('touchmove', (e) => {
+        // Ne pas stopper la propagation - permettre le défilement normal
+        e.stopPropagation(); // Ceci empêche l'événement de remonter à la page principale
+    }, { passive: true });
+    
+    // Empêcher le rebond aux extrémités qui cause souvent le défilement de la page
+    chatContainer.addEventListener('scroll', () => {
+        const scrollTop = chatContainer.scrollTop;
+        const scrollHeight = chatContainer.scrollHeight;
+        const clientHeight = chatContainer.clientHeight;
+        
+        // Ajuster légèrement les valeurs pour éviter les problèmes de "bounce"
+        if (scrollTop <= 1) {
+            chatContainer.scrollTop = 1;
+        } else if (scrollTop + clientHeight >= scrollHeight - 1) {
+            chatContainer.scrollTop = scrollHeight - clientHeight - 1;
+        }
+    }, { passive: true });
+    
+    // Ajouter une classe au body quand le chat est ouvert
+    const toggleBodyClass = () => {
+        if (chatContainer.classList.contains('open')) {
+            document.body.classList.add('chat-open-no-scroll');
+        } else {
+            document.body.classList.remove('chat-open-no-scroll');
+        }
+    };
+    
+    // Appliquer la classe immédiatement si le chat est déjà ouvert
+    toggleBodyClass();
+    
+    // Observer les changements de classe sur le conteneur du chat
+    const observer = new MutationObserver(toggleBodyClass);
+    observer.observe(chatContainer, { attributes: true, attributeFilter: ['class'] });
+}
     // Le reste de votre code pour setupListeners reste inchangé...
     if (soundBtn) {
         soundBtn.addEventListener('click', () => {
@@ -3472,16 +3515,40 @@ updateUnreadBadgeAndBubble() {
     }
 }
 
-escapeHtml(unsafe) {
-    return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
+	escapeHtml(unsafe) {
+		return unsafe
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;")
+			.replace(/"/g, "&quot;")
+			.replace(/'/g, "&#039;");
+	}
 
-scrollToBottom() {
+	handleTouchScrolling() {
+		const chatMessages = this.container.querySelector('.chat-messages');
+		if (chatMessages) {
+			// Utiliser une approche différente qui permet le défilement normal du chat
+			chatMessages.addEventListener('touchmove', (e) => {
+				// Ne pas stopper la propagation - permettre le défilement normal
+				e.stopPropagation(); // Ceci empêche l'événement de remonter à la page principale
+			}, { passive: true });
+			
+			// Empêcher le rebond aux extrémités qui cause souvent le défilement de la page
+			chatMessages.addEventListener('scroll', () => {
+				const scrollTop = chatMessages.scrollTop;
+				const scrollHeight = chatMessages.scrollHeight;
+				const clientHeight = chatMessages.clientHeight;
+				
+				// Ajuster légèrement les valeurs pour éviter les problèmes de "bounce"
+				if (scrollTop <= 1) {
+					chatMessages.scrollTop = 1;
+				} else if (scrollTop + clientHeight >= scrollHeight - 1) {
+					chatMessages.scrollTop = scrollHeight - clientHeight - 1;
+				}
+			}, { passive: true });
+		}
+	}
+	scrollToBottom() {
     const messagesContainer = this.container.querySelector('.chat-messages');
     if (messagesContainer) {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
