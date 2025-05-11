@@ -124,22 +124,32 @@
     color: white;
 }
 
+/* Amélioration du bouton de fermeture */
 .close-survey {
     background: rgba(255, 255, 255, 0.2);
     border: none;
-    color: white;
-    width: 30px;
-    height: 30px;
+    color: white; /* ou jaune comme vous l'avez suggéré: color: yellow; */
+    width: 36px; /* Augmenté de 30px à 36px */
+    height: 36px; /* Augmenté de 30px à 36px */
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: all 0.3s;
+    position: relative; /* Ajouté pour permettre un positionnement absolu de la croix */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Ombre légère pour le relief */
 }
 
+/* Amélioration de l'effet au survol */
 .close-survey:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.4); /* Plus lumineux au survol */
+    transform: scale(1.1); /* Légère animation d'agrandissement */
+}
+
+/* Alternative: si vous utilisez une icône Material Design ou autre */
+.close-survey .material-icons {
+    font-size: 22px; /* Augmenté pour une croix plus visible */
 }
 
 /* SECTION 3: QUESTIONS ET OPTIONS */
@@ -346,15 +356,6 @@
         2px 0 0 #000;
 }
 
-/* Option alternative : fond semi-transparent derrière le texte pour augmenter encore la lisibilité */
-.result-text-with-background {
-    position: relative;
-    z-index: 2;
-    padding: 2px 6px;
-    border-radius: 3px;
-    background-color: rgba(0, 0, 0, 0.5);
-}
-
 /* Thème light (violet) */
 [data-theme="light"] .back-to-survey {
     background: rgba(255, 255, 255, 0.2);
@@ -406,6 +407,22 @@
     
     .survey-option {
         padding: 10px;
+    }
+}
+
+/* Adaptation pour les appareils mobiles */
+@media (max-width: 768px) {
+    .close-survey {
+        width: 40px; /* Encore plus grand sur mobile pour faciliter le toucher */
+        height: 40px;
+    }
+    
+    .close-survey::before {
+        font-size: 28px; /* Plus grand sur mobile */
+    }
+    
+    .close-survey .material-icons {
+        font-size: 24px; /* Plus grand sur mobile */
     }
 }
 
