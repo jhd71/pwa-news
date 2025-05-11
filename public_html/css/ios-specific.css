@@ -146,27 +146,27 @@ body.rouge-theme .gear-icon {
   /* Position des boutons d'affichage des widgets */
   .weather-mobile-btn {
     display: flex !important;
-    top: 100px !important; /* Ajusté entre le logo et le séparateur */
+    top: 75px !important; /* Remonté de 100px à 75px */
     left: 10px !important;
   }
   
   .quick-links-show-btn {
     display: flex !important;
     opacity: 1 !important;
-    top: 100px !important; /* Ajusté entre le logo et le séparateur */
+    top: 75px !important; /* Remonté de 100px à 75px */
     right: 10px !important;
   }
   
   /* Position des widgets quand ils sont affichés */
   .weather-sidebar,
   .quick-links-sidebar {
-    top: 140px !important; /* Juste au-dessus du séparateur */
+    top: 115px !important; /* Remonté de 140px à 115px */
   }
 
   /* Ajuster le bouton Infos en direct */
   .news-button {
     position: fixed !important;
-    top: 100px !important; /* Ajusté entre le logo et le séparateur */
+    top: 75px !important; /* Remonté de 100px à 75px */
     left: 50% !important;
     right: auto !important;
     transform: translateX(-50%);
@@ -184,6 +184,12 @@ body.rouge-theme .gear-icon {
 .weather-sidebar.active,
 .quick-links-sidebar.active {
   z-index: 996 !important;
+}
+
+/* Espacement entre les widgets et le séparateur */
+.weather-sidebar,
+.quick-links-sidebar {
+  margin-bottom: 15px !important; /* Ajouter de l'espace après les widgets */
 }
 
 /* Alignement du contenu principal */
