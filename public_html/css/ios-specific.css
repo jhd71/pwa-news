@@ -42,20 +42,20 @@ body {
   border-radius: 50% !important;
 }
 
-/* 2. Ajuster la position du premier séparateur - légèrement plus bas */
+/* Ajustement précis du premier séparateur */
 .separator:first-of-type,
 .separator:first-child,
 #actualites-locales,
 .title-separator:first-of-type,
 .section-title:first-of-type {
-  margin-top: 125px !important; /* Redescendu à 125px (était à 90px) */
+  margin-top: 150px !important; /* Ajusté de 125px à 150px */
   position: relative !important;
   z-index: 995 !important;
 }
 
-/* 3. Ajuster en conséquence les marges du contenu principal */
+/* Ajuster en conséquence les marges du contenu principal */
 #tileContainer, .main-content, .tile-container {
-  margin-top: 125px !important; /* Aligné avec le séparateur */
+  margin-top: 150px !important; /* Aligné avec le séparateur */
   padding-bottom: calc(var(--safe-area-bottom) + 80px) !important;
 }
 
@@ -141,32 +141,32 @@ body.rouge-theme .gear-icon {
   background-color: rgba(126, 87, 194, 0.8) !important; /* Violet */
 }
 
-/* 4. Ajustement des widgets pour qu'ils soient bien placés entre le logo et le séparateur */
+/* Position des widgets et boutons */
 @media (max-width: 767px) {
   /* Position des boutons d'affichage des widgets */
   .weather-mobile-btn {
     display: flex !important;
-    top: 85px !important; /* Ajusté pour être entre le logo et le séparateur */
+    top: 100px !important; /* Ajusté entre le logo et le séparateur */
     left: 10px !important;
   }
   
   .quick-links-show-btn {
     display: flex !important;
     opacity: 1 !important;
-    top: 85px !important; /* Ajusté pour être entre le logo et le séparateur */
+    top: 100px !important; /* Ajusté entre le logo et le séparateur */
     right: 10px !important;
   }
   
   /* Position des widgets quand ils sont affichés */
   .weather-sidebar,
   .quick-links-sidebar {
-    top: 115px !important; /* Juste au-dessus du séparateur */
+    top: 140px !important; /* Juste au-dessus du séparateur */
   }
 
   /* Ajuster le bouton Infos en direct */
   .news-button {
     position: fixed !important;
-    top: 85px !important; /* Ajusté pour être entre le logo et le séparateur */
+    top: 100px !important; /* Ajusté entre le logo et le séparateur */
     left: 50% !important;
     right: auto !important;
     transform: translateX(-50%);
@@ -186,9 +186,9 @@ body.rouge-theme .gear-icon {
   z-index: 996 !important;
 }
 
-/* 6. Correction pour l'alignement du contenu principal */
+/* Alignement du contenu principal */
 .main-content > *:first-child:not(.separator) {
-  margin-top: 125px !important; /* Aligné avec le séparateur */
+  margin-top: 150px !important; /* Aligné avec le séparateur */
 }
 
 /* 6. Ajustement pour le message "Installez Actu&Média" */
@@ -205,27 +205,27 @@ body.rouge-theme .gear-icon {
   margin-top: 0 !important;
 }
 
-/* 8. Ajustement spécifique pour le premier séparateur et vignettes */
+/* Assurer que l'espacement après le séparateur est bien ajusté */
 .separator:first-of-type + .tile,
 .separator:first-of-type + .row,
 .separator:first-of-type + div,
 .separator:first-child + .tile,
 .separator:first-child + .row,
 .separator:first-child + div {
-  margin-top: 5px !important; /* Très peu d'espace après le séparateur */
+  margin-top: 10px !important; /* Un peu d'espace après le séparateur */
 }
 
-/* 5. Correctif pour iOS 15 et plus récent - ajusté également */
+/* Correctif pour iOS 15 et plus récent */
 @supports (padding-top: env(safe-area-inset-top)) {
   .separator:first-of-type,
   .separator:first-child,
   #actualites-locales,
   .title-separator:first-of-type,
   .section-title:first-of-type {
-    margin-top: 125px !important; /* Même valeur que la règle principale */
+    margin-top: 150px !important; /* Même valeur que la règle principale */
   }
   
   #tileContainer, .main-content, .tile-container {
-    margin-top: 125px !important; /* Même valeur que la règle principale */
+    margin-top: 150px !important; /* Même valeur que la règle principale */
   }
 }
