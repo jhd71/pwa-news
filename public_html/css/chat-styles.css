@@ -2304,13 +2304,18 @@ body.long-press-active .message-options {
 }
 
 [data-theme="rouge"] .sound-btn.enabled,
-[data-theme="rouge"] .notifications-btn.enabled {
+[data-theme="rouge"] .notifications-btn.enabled,
+[data-theme="rouge"] .emoji-btn.enabled,
+[data-theme="rouge"] .emoji-btn.panel-open {
     animation: subtle-glow 2s infinite !important;
 }
 
 /* Effet de survol plus prononcé */
 [data-theme="rouge"] .sound-btn.enabled:hover,
-[data-theme="rouge"] .notifications-btn.enabled:hover {
+[data-theme="rouge"] .notifications-btn.enabled:hover,
+[data-theme="rouge"] .emoji-btn.enabled:hover,
+[data-theme="rouge"] .emoji-btn.panel-open:hover,
+[data-theme="rouge"] .header-buttons button.enabled:hover {
     background: #FFDA5A !important; /* Version plus claire */
     transform: scale(1.1) !important; /* Légèrement plus grand */
 }
@@ -2372,4 +2377,24 @@ body.long-press-active .message-options {
     color: #333 !important; /* Couleur foncée pour contraste */
     font-size: 28px !important; /* Plus grande */
     font-weight: bold !important; /* Plus épaisse */
+}
+
+/* CORRECTION: Bouton d'émojis activé en jaune au lieu de rouge */
+[data-theme="rouge"] .emoji-btn.enabled,
+[data-theme="rouge"] .emoji-btn.panel-open {
+    background: #FFD230 !important; /* Jaune du thème rouge */
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+    color: #333 !important;
+}
+
+/* Spécifiquement pour l'icône d'émojis */
+[data-theme="rouge"] .emoji-btn.enabled .material-icons,
+[data-theme="rouge"] .emoji-btn.panel-open .material-icons {
+    color: #000 !important; /* Noir pour contraste maximal */
+    font-size: 22px !important;
+    -webkit-text-stroke: 0.5px black !important;
+    text-shadow: 
+        0 1px 0 rgba(255, 255, 255, 0.7),
+        0 -1px 0 rgba(255, 255, 255, 0.7) !important;
 }
