@@ -160,3 +160,7 @@ body.rouge-theme .gear-icon {
     /* autres propriétés de masquage */
   }
   }
+  
+.news-panel {
+	z-index: 1020 !important;
+	}
