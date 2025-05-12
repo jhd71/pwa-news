@@ -1,4 +1,4 @@
-/* ios-specific.css - Version universelle pour tous les iPhones */
+/* ios-specific.css - Version optimisée avec nouvelle disposition */
 
 :root {
   --safe-area-top: env(safe-area-inset-top, 0px);
@@ -62,12 +62,11 @@ body {
   justify-content: center !important;
 }
 
-/* Boutons météo et liens - placés côte à côte sous le logo */
+/* NOUVELLE DISPOSITION : Widgets météo et liens de chaque côté, infos en direct au milieu */
 .weather-mobile-btn {
   position: fixed !important;
-  top: calc(var(--safe-area-top) + 75px) !important;
-  left: 20% !important;
-  transform: translateX(-50%) !important;
+  top: calc(var(--safe-area-top) + 80px) !important;
+  left: 25px !important; /* Plus à gauche */
   width: var(--widget-button-size) !important;
   height: var(--widget-button-size) !important;
   border-radius: 50% !important;
@@ -79,9 +78,8 @@ body {
 
 .quick-links-show-btn {
   position: fixed !important;
-  top: calc(var(--safe-area-top) + 75px) !important;
-  right: 20% !important;
-  transform: translateX(50%) !important;
+  top: calc(var(--safe-area-top) + 80px) !important;
+  right: 25px !important; /* Plus à droite */
   width: var(--widget-button-size) !important;
   height: var(--widget-button-size) !important;
   border-radius: 50% !important;
@@ -91,20 +89,20 @@ body {
   justify-content: center !important;
 }
 
-/* Bouton infos en direct - centré sous les boutons widgets */
+/* Bouton infos en direct - maintenant entre les boutons widgets */
 .news-button {
   position: fixed !important;
-  top: calc(var(--safe-area-top) + 145px) !important;
+  top: calc(var(--safe-area-top) + 80px) !important; /* Même niveau que les widgets */
   left: 50% !important;
   transform: translateX(-50%) !important;
   z-index: 995 !important;
   width: auto !important;
-  min-width: 200px !important;
+  min-width: 180px !important; /* Largeur réduite pour s'adapter */
 }
 
 /* Position des widgets déployés - éviter la superposition */
 .weather-sidebar {
-  top: calc(var(--safe-area-top) + 130px) !important;
+  top: calc(var(--safe-area-top) + 140px) !important;
   left: 10px !important;
   right: auto !important;
   max-width: 45% !important;
@@ -114,7 +112,7 @@ body {
 }
 
 .quick-links-sidebar {
-  top: calc(var(--safe-area-top) + 130px) !important;
+  top: calc(var(--safe-area-top) + 140px) !important;
   left: auto !important;
   right: 10px !important;
   max-width: 45% !important;
@@ -123,24 +121,24 @@ body {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
 }
 
-/* Séparateur et contenu principal */
+/* Séparateur et contenu principal - REMONTÉ */
 .separator:first-of-type,
 .separator:first-child,
 #actualites-locales,
 .title-separator:first-of-type,
 .section-title:first-of-type {
-  margin-top: 210px !important;
+  margin-top: 150px !important; /* Remonté de 210px à 150px */
   position: relative !important;
   z-index: 990 !important;
 }
 
 #tileContainer, .main-content, .tile-container {
-  margin-top: 210px !important;
+  margin-top: 150px !important; /* Aligné avec le séparateur */
   padding-bottom: calc(var(--safe-area-bottom) + 80px) !important;
 }
 
 .main-content > *:first-child:not(.separator) {
-  margin-top: 210px !important;
+  margin-top: 150px !important; /* Aligné avec le séparateur */
 }
 
 /* Barre d'infos et navigation du bas */
@@ -185,7 +183,7 @@ body {
   .separator:first-of-type,
   #tileContainer, .main-content, .tile-container,
   .main-content > *:first-child:not(.separator) {
-    margin-top: 210px !important;
+    margin-top: 150px !important;
   }
   
   /* Ajustements spécifiques pour la Dynamic Island */
@@ -229,19 +227,15 @@ body {
   }
   
   .weather-mobile-btn,
-  .quick-links-show-btn {
-    top: calc(var(--safe-area-top) + 80px) !important;
-  }
-  
+  .quick-links-show-btn,
   .news-button {
-    top: calc(var(--safe-area-top) + 155px) !important;
-    min-width: 230px !important;
+    top: calc(var(--safe-area-top) + 85px) !important;
   }
   
   .separator:first-of-type,
   #tileContainer, .main-content, .tile-container,
   .main-content > *:first-child:not(.separator) {
-    margin-top: 220px !important;
+    margin-top: 160px !important;
   }
 }
 
@@ -250,23 +244,23 @@ body {
   :root {
     --header-height: 55px;
     --button-size: 40px;
-    --widget-button-size: 55px;
+    --widget-button-size: 50px;
   }
   
   .weather-mobile-btn,
-  .quick-links-show-btn {
-    top: calc(var(--safe-area-top) + 70px) !important;
+  .quick-links-show-btn,
+  .news-button {
+    top: calc(var(--safe-area-top) + 75px) !important;
   }
   
   .news-button {
-    top: calc(var(--safe-area-top) + 135px) !important;
-    min-width: 180px !important;
+    min-width: 160px !important;
   }
   
   .separator:first-of-type,
   #tileContainer, .main-content, .tile-container,
   .main-content > *:first-child:not(.separator) {
-    margin-top: 200px !important;
+    margin-top: 140px !important;
   }
 }
 
@@ -288,22 +282,23 @@ body {
   
   .weather-mobile-btn {
     top: calc(var(--safe-area-top) + 65px) !important;
-    left: 15% !important;
+    left: 20px !important;
   }
   
   .quick-links-show-btn {
     top: calc(var(--safe-area-top) + 65px) !important;
-    right: 15% !important;
+    right: 20px !important;
   }
   
   .news-button {
-    top: calc(var(--safe-area-top) + 125px) !important;
+    top: calc(var(--safe-area-top) + 65px) !important;
+    min-width: 160px !important;
   }
   
   .separator:first-of-type,
   #tileContainer, .main-content, .tile-container,
   .main-content > *:first-child:not(.separator) {
-    margin-top: 175px !important;
+    margin-top: 130px !important;
   }
   
   .weather-sidebar,
