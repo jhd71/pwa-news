@@ -12,16 +12,14 @@ body {
 }
 
 /* 1. Remonter le logo du site */
-.site-logo, .logo-container, .site-title {
-  position: fixed !important;
-  top: calc(var(--safe-area-top) + 10px) !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  z-index: 1001 !important;
-  height: 65px !important; /* Légèrement augmenté de 60px à 65px */
-  width: auto !important;
-  margin: 0 !important;
-}
+.site-logo {
+        height: 80px !important;
+        width: auto !important;
+        max-width: none !important;
+        display: block !important;
+        object-fit: contain !important;
+        margin: 0px auto !important;
+    }
 
 /* 2. Remonter les boutons menu et paramètres - couleur adaptée selon le thème */
 .menu-button, .hamburger-menu {
