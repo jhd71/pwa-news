@@ -1,324 +1,84 @@
-/* ios-specific.css - Version optimisée avec nouvelle disposition */
-
+/* ios-specific.css - Version corrigée avec support pour le thème rouge */
 :root {
   --safe-area-top: env(safe-area-inset-top, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
   --safe-area-left: env(safe-area-inset-left, 0px);
   --safe-area-right: env(safe-area-inset-right, 0px);
-  --header-height: 60px;
-  --button-size: 48px;
-  --widget-button-size: 60px;
 }
 
-/* Structure de base pour tous les iPhones */
+/* Structure de base */
 body {
   padding-top: var(--safe-area-top) !important;
-  -webkit-overflow-scrolling: touch !important;
 }
 
-/* =========================================
-   1. MISE EN PAGE UNIVERSELLE POUR iOS
-   ========================================= */
-
-/* Logo du site - centré en haut */
+/* 1. Remonter le logo du site */
 .site-logo, .logo-container, .site-title {
-    position: fixed !important;
-    top: calc(var(--safe-area-top) + 2px) !important; /* Tout en haut */
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    height: 60px !important;
-	width: auto !important;
-	margin: 0 !important;
-	z-index: 1001 !important;
-	text-align: center !important;
+  position: fixed !important;
+  top: calc(var(--safe-area-top) + 10px) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 1001 !important;
+  height: 65px !important; /* Légèrement augmenté de 60px à 65px */
+  width: auto !important;
+  margin: 0 !important;
 }
 
-/* Boutons menu et paramètres - alignés horizontalement avec le logo */
+/* 2. Remonter les boutons menu et paramètres - couleur adaptée selon le thème */
 .menu-button, .hamburger-menu {
   position: fixed !important;
-  top: calc(var(--safe-area-top) + 8px) !important;
-  left: 15px !important;
-  width: var(--button-size) !important;
-  height: var(--button-size) !important;
-  border-radius: 50% !important;
+  top: calc(var(--safe-area-top) + 90px) !important; /* Augmenté pour descendre le bouton */
+  left: 10px !important;
   z-index: 1010 !important;
-  background-color: rgba(126, 87, 194, 0.8) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  background-color: rgba(126, 87, 194, 0.8) !important; /* Couleur par défaut - violet */
+  border-radius: 50% !important;
 }
 
 .settings-button, .gear-icon {
   position: fixed !important;
-  top: calc(var(--safe-area-top) + 8px) !important;
-  right: 15px !important;
-  width: var(--button-size) !important;
-  height: var(--button-size) !important;
-  border-radius: 50% !important;
-  z-index: 1010 !important;
-  background-color: rgba(126, 87, 194, 0.8) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
-/* NOUVELLE DISPOSITION : Widgets météo et liens de chaque côté, infos en direct au milieu */
-.weather-mobile-btn {
-  position: fixed !important;
-  top: calc(var(--safe-area-top) + 75px) !important; /* Juste sous le logo */
-  left: 20% !important;
-  transform: translateX(-50%) !important;
-  width: var(--widget-button-size) !important;
-  height: var(--widget-button-size) !important;
-  border-radius: 50% !important;
-  z-index: 996 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
-.quick-links-show-btn {
-  position: fixed !important;
-  top: calc(var(--safe-area-top) + 75px) !important;
-  right: 20% !important;
-  transform: translateX(50%) !important;
-  width: var(--widget-button-size) !important;
-  height: var(--widget-button-size) !important;
-  border-radius: 50% !important;
-  z-index: 996 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
-/* Bouton infos en direct - maintenant entre les boutons widgets */
-.news-button {
-  position: fixed !important;
-  top: calc(var(--safe-area-top) + 75px) !important; /* Même niveau que les widgets */
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  min-width: 180px !important;
-  z-index: 995 !important;
-  width: auto !important;
-  background-color: rgba(220, 53, 69, 0.9) !important; /* Rouge plus vif */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  border-radius: 25px !important;
-}
-
-/* Position des widgets déployés - éviter la superposition */
-.weather-sidebar {
-  top: calc(var(--safe-area-top) + 140px) !important;
-  left: 10px !important;
-  right: auto !important;
-  max-width: 45% !important;
-  max-height: 40vh !important;
-  z-index: 996 !important;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
-}
-
-.quick-links-sidebar {
-  top: calc(var(--safe-area-top) + 140px) !important;
-  left: auto !important;
+  top: calc(var(--safe-area-top) + 90px) !important; /* Augmenté pour descendre le bouton */
   right: 10px !important;
-  max-width: 45% !important;
-  max-height: 40vh !important;
-  z-index: 996 !important;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+  z-index: 1010 !important;
+  background-color: rgba(126, 87, 194, 0.8) !important; /* Couleur par défaut - violet */
+  border-radius: 50% !important;
 }
 
-/* Séparateur et contenu principal - REMONTÉ */
-.separator:first-of-type,
-.separator:first-child,
-#actualites-locales,
-.title-separator:first-of-type,
-.section-title:first-of-type {
-  margin-top: 150px !important; /* Remonté de 210px à 150px */
-  position: relative !important;
-  z-index: 990 !important;
+/* 3. Ajuster le premier séparateur */
+.separator:first-of-type {
+  margin-top: 80px !important; /* Espace pour le logo */
 }
 
+/* 4. Ajustement des marges du contenu principal */
 #tileContainer, .main-content, .tile-container {
-  margin-top: 150px !important; /* Aligné avec le séparateur */
-  padding-bottom: calc(var(--safe-area-bottom) + 80px) !important;
+  margin-top: 15px !important;
+  padding-bottom: calc(var(--safe-area-bottom) + 80px) !important; /* Plus d'espace en bas */
 }
 
-.main-content > *:first-child:not(.separator) {
-  margin-top: 150px !important; /* Aligné avec le séparateur */
-}
-
-/* Barre d'infos et navigation du bas */
+/* 5. Corriger la position de la barre d'infos en bas */
 .news-ticker, .bottom-bar, .ticker {
   position: fixed !important;
-  bottom: calc(var(--safe-area-bottom) + var(--bottom-nav-height, 60px) + 5px) !important;
-  z-index: 998 !important;
+  bottom: calc(var(--safe-area-bottom) + var(--bottom-nav-height) + 5px) !important;
+  z-index: 998 !important; /* Sous la nav */
 }
 
+/* 6. Navigation du bas - s'assurer qu'elle reste au-dessus */
 .bottom-nav {
   padding-bottom: calc(var(--safe-area-bottom) + 5px) !important;
   height: auto !important;
-  z-index: 999 !important;
+  z-index: 999 !important; /* Au-dessus de la barre d'infos */
 }
 
-/* Bannière d'installation */
-.install-banner, .pwa-banner, .app-install-prompt {
-  margin-top: 0 !important;
-  top: auto !important;
-  bottom: calc(var(--safe-area-bottom) + var(--bottom-nav-height, 60px) + 65px) !important;
-  position: fixed !important;
-  z-index: 980 !important;
+/* 7. Autres ajustements nécessaires */
+.chat-container {
+  max-width: 100% !important;
+  width: calc(100% - var(--safe-area-left) - var(--safe-area-right)) !important;
+  height: calc(100vh - var(--safe-area-top) - var(--safe-area-bottom)) !important;
 }
 
-/* Espacement des tuiles */
 .tile, .card, .widget {
   margin-bottom: 10px !important;
 }
 
-/* =========================================
-   2. ADAPTATIONS SELON LES MODÈLES D'IPHONE
-   ========================================= */
-
-/* iPhone avec encoche ou Dynamic Island (X, XS, 11, 12, 13, 14, 15) */
-@media screen and (min-width: 375px) and (-webkit-device-pixel-ratio: 2) and (display-mode: standalone), 
-       screen and (min-width: 375px) and (-webkit-device-pixel-ratio: 3) {
-  :root {
-    --header-height: 60px;
-    --button-size: 45px;
-  }
-  
-  .separator:first-of-type,
-  #tileContainer, .main-content, .tile-container,
-  .main-content > *:first-child:not(.separator) {
-    margin-top: 150px !important;
-  }
-  
-  /* Ajustements spécifiques pour la Dynamic Island */
-  @supports (padding-top: constant(safe-area-inset-top)) {
-    body {
-      padding-top: constant(safe-area-inset-top) !important;
-    }
-    
-    .site-logo, .logo-container, .site-title {
-      top: calc(constant(safe-area-inset-top) + 5px) !important;
-    }
-    
-    .menu-button, .hamburger-menu,
-    .settings-button, .gear-icon {
-      top: calc(constant(safe-area-inset-top) + 8px) !important;
-    }
-  }
-  
-  @supports (padding-top: env(safe-area-inset-top)) {
-    body {
-      padding-top: env(safe-area-inset-top) !important;
-    }
-    
-    .site-logo, .logo-container, .site-title {
-      top: calc(env(safe-area-inset-top) + 5px) !important;
-    }
-    
-    .menu-button, .hamburger-menu,
-    .settings-button, .gear-icon {
-      top: calc(env(safe-area-inset-top) + 8px) !important;
-    }
-  }
-}
-
-/* iPhones Plus, iPhones Pro Max (grands écrans) */
-@media screen and (min-width: 414px) and (-webkit-device-pixel-ratio: 3) {
-  :root {
-    --header-height: 65px;
-    --button-size: 50px;
-    --widget-button-size: 65px;
-  }
-  
-  .weather-mobile-btn,
-  .quick-links-show-btn,
-  .news-button {
-    top: calc(var(--safe-area-top) + 85px) !important;
-  }
-  
-  .separator:first-of-type,
-  #tileContainer, .main-content, .tile-container,
-  .main-content > *:first-child:not(.separator) {
-    margin-top: 160px !important;
-  }
-}
-
-/* iPhone SE, iPhone 8 et plus anciens (petits écrans) */
-@media screen and (max-width: 375px) and (-webkit-device-pixel-ratio: 2) {
-  :root {
-    --header-height: 55px;
-    --button-size: 40px;
-    --widget-button-size: 50px;
-  }
-  
-  .weather-mobile-btn,
-  .quick-links-show-btn,
-  .news-button {
-    top: calc(var(--safe-area-top) + 75px) !important;
-  }
-  
-  .news-button {
-    min-width: 160px !important;
-  }
-  
-  .separator:first-of-type,
-  #tileContainer, .main-content, .tile-container,
-  .main-content > *:first-child:not(.separator) {
-    margin-top: 140px !important;
-  }
-}
-
-/* =========================================
-   3. ORIENTATIONS D'ÉCRAN
-   ========================================= */
-
-/* Mode paysage - tous les iPhone */
-@media screen and (orientation: landscape) {
-  :root {
-    --header-height: 50px;
-    --button-size: 40px;
-    --widget-button-size: 50px;
-  }
-  
-  .site-logo, .logo-container, .site-title {
-    top: calc(var(--safe-area-top) + 5px) !important;
-  }
-  
-  .weather-mobile-btn {
-    top: calc(var(--safe-area-top) + 65px) !important;
-    left: 20px !important;
-  }
-  
-  .quick-links-show-btn {
-    top: calc(var(--safe-area-top) + 65px) !important;
-    right: 20px !important;
-  }
-  
-  .news-button {
-    top: calc(var(--safe-area-top) + 65px) !important;
-    min-width: 160px !important;
-  }
-  
-  .separator:first-of-type,
-  #tileContainer, .main-content, .tile-container,
-  .main-content > *:first-child:not(.separator) {
-    margin-top: 130px !important;
-  }
-  
-  .weather-sidebar,
-  .quick-links-sidebar {
-    max-height: 60vh !important;
-    top: calc(var(--safe-area-top) + 110px) !important;
-  }
-}
-
-/* =========================================
-   4. THÈMES DE COULEUR
-   ========================================= */
-
-/* Thème sombre */
+/* 8. Adaptation au thème sombre pour les boutons de menu et paramètres */
 [data-theme="dark"] .menu-button, 
 [data-theme="dark"] .hamburger-menu,
 [data-theme="dark"] .settings-button, 
@@ -331,10 +91,10 @@ body.dark-theme .menu-button,
 body.dark-theme .hamburger-menu,
 body.dark-theme .settings-button, 
 body.dark-theme .gear-icon {
-  background-color: rgba(40, 53, 147, 0.8) !important;
+  background-color: rgba(40, 53, 147, 0.8) !important; /* Bleu foncé pour thème sombre */
 }
 
-/* Thème rouge */
+/* NOUVEAU: Adaptation au thème rouge pour les boutons de menu et paramètres */
 [data-theme="rouge"] .menu-button, 
 [data-theme="rouge"] .hamburger-menu,
 [data-theme="rouge"] .settings-button, 
@@ -347,23 +107,18 @@ body.rouge-theme .menu-button,
 body.rouge-theme .hamburger-menu,
 body.rouge-theme .settings-button, 
 body.rouge-theme .gear-icon {
-  background-color: rgba(163, 47, 42, 0.8) !important;
+  background-color: rgba(163, 47, 42, 0.8) !important; /* Rouge légèrement plus foncé */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Thème clair (par défaut) */
-[data-theme="light"] .menu-button, 
-[data-theme="light"] .hamburger-menu,
-[data-theme="light"] .settings-button, 
-[data-theme="light"] .gear-icon {
-  background-color: rgba(126, 87, 194, 0.8) !important;
+/* S'assurer que l'icône est bien visible dans tous les thèmes */
+.menu-button .material-icons, 
+.settings-button .material-icons {
+  color: white !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important; /* Ombre légère pour meilleure visibilité */
 }
 
-/* =========================================
-   5. STYLES D'INTERACTION
-   ========================================= */
-
-/* Effet de survol pour les boutons */
+/* Ajout d'un effet de survol pour améliorer l'interactivité */
 .menu-button:hover, 
 .hamburger-menu:hover,
 .settings-button:hover, 
@@ -372,95 +127,21 @@ body.rouge-theme .gear-icon {
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4) !important;
 }
 
-/* S'assurer que les icônes sont visibles */
-.menu-button .material-icons, 
-.settings-button .material-icons {
-  color: white !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
-  font-size: 24px !important;
+/* Thème clair spécifique (pour être sûr) */
+[data-theme="light"] .menu-button, 
+[data-theme="light"] .hamburger-menu,
+[data-theme="light"] .settings-button, 
+[data-theme="light"] .gear-icon {
+  background-color: rgba(126, 87, 194, 0.8) !important; /* Violet */
 }
 
-/* Chat et conversations */
-.chat-container {
-  max-width: 100% !important;
-  width: calc(100% - var(--safe-area-left) - var(--safe-area-right)) !important;
-  height: calc(100vh - var(--safe-area-top) - var(--safe-area-bottom)) !important;
-}
-
-/* =========================================
-   6. OPTIMISATIONS DE PERFORMANCE
-   ========================================= */
-
-/* Optimisation du rendu */
-.separator:first-of-type,
-#tileContainer, .main-content, .tile-container {
-  transform: translateZ(0) !important;
-  will-change: transform !important;
-  -webkit-backface-visibility: hidden !important;
-  backface-visibility: hidden !important;
-}
-
-/* Animation fluide */
-.news-button, 
-.weather-mobile-btn, 
-.quick-links-show-btn,
-.site-logo, 
-.logo-container, 
-.site-title,
-.menu-button, 
-.hamburger-menu,
-.settings-button, 
-.gear-icon {
-  transition: transform 0.2s ease-out !important;
-}
-/* Masquer le swiper spécifiquement sur iOS */
-
-/* Détection iOS avec @supports */
-@supports (-webkit-touch-callout: none) {
-  /* Ciblage précis du swiper avec les classes exactes */
-  .swiper-container,
-  .swiper,
-  .swiper-wrapper,
-  .swiper-slide {
-    display: none !important;
-    height: 0 !important;
-    min-height: 0 !important;
-    max-height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: hidden !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-  }
-  
-  /* Masquer aussi les contrôles de pagination et navigation */
-  .swiper-pagination,
-  .swiper-button-next,
-  .swiper-button-prev {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-  }
-  
-  /* Remonter le séparateur pour combler l'espace */
-  .separator:first-of-type,
-  .separator:first-child,
-  #actualites-locales,
-  .title-separator:first-of-type,
-  .section-title:first-of-type {
-    margin-top: 70px !important; /* Valeur ajustée */
-    position: relative !important;
-    z-index: 990 !important;
-  }
-  
-  #tileContainer, .main-content, .tile-container {
-    margin-top: 70px !important; /* Aligné avec le séparateur */
-    padding-bottom: calc(var(--safe-area-bottom) + 80px) !important;
-  }
-  
-  .main-content > *:first-child:not(.separator) {
-    margin-top: 70px !important; /* Aligné avec le séparateur */
-  }
+/* Ajustement pour le message "Installez Actu&Média" */
+.install-banner, .pwa-banner, .app-install-prompt {
+  margin-top: 0 !important;
+  top: auto !important;
+  bottom: calc(var(--safe-area-bottom) + var(--bottom-nav-height) + 65px) !important;
+  position: fixed !important;
+  z-index: 980 !important;
 }
 
 /* Masque le swiper  */
