@@ -13,13 +13,13 @@ body {
 
 /* 1. Remonter le logo du site */
 .site-logo {
-        height: 80px !important;
-        width: auto !important;
-        max-width: none !important;
-        display: block !important;
-        object-fit: contain !important;
-        margin: 0px auto !important;
-    }
+  height: 80px !important;
+  width: auto !important;
+  max-width: none !important;
+  display: block !important;
+  object-fit: contain !important;
+  margin: 0px auto !important;
+}
 
 /* 2. Remonter les boutons menu et paramètres - couleur adaptée selon le thème */
 .menu-button, .hamburger-menu {
