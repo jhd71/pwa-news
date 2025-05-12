@@ -407,3 +407,91 @@ body.rouge-theme .gear-icon {
 .gear-icon {
   transition: transform 0.2s ease-out !important;
 }
+/* Masquer le swiper spécifiquement sur iOS */
+
+/* Détection iOS avec @supports */
+@supports (-webkit-touch-callout: none) {
+  /* Ciblage précis du swiper avec les classes exactes */
+  .swiper-container,
+  .swiper,
+  .swiper-wrapper,
+  .swiper-slide {
+    display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+  
+  /* Masquer aussi les contrôles de pagination et navigation */
+  .swiper-pagination,
+  .swiper-button-next,
+  .swiper-button-prev {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+  
+  /* Remonter le séparateur pour combler l'espace */
+  .separator:first-of-type,
+  .separator:first-child,
+  #actualites-locales,
+  .title-separator:first-of-type,
+  .section-title:first-of-type {
+    margin-top: 70px !important; /* Valeur ajustée */
+    position: relative !important;
+    z-index: 990 !important;
+  }
+  
+  #tileContainer, .main-content, .tile-container {
+    margin-top: 70px !important; /* Aligné avec le séparateur */
+    padding-bottom: calc(var(--safe-area-bottom) + 80px) !important;
+  }
+  
+  .main-content > *:first-child:not(.separator) {
+    margin-top: 70px !important; /* Aligné avec le séparateur */
+  }
+}
+
+/* Alternative avec détection basée sur -webkit-overflow-scrolling (peut être plus largement compatible) */
+@media (max-device-width: 1024px) and (-webkit-overflow-scrolling: touch) {
+  /* Ciblage précis du swiper */
+  .swiper-container {
+    margin-top: 0 !important; /* Annuler le margin-top: 120px */
+    height: 0 !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    display: none !important;
+  }
+  
+  .swiper {
+    height: 0 !important;
+    display: none !important;
+  }
+}
+
+/* Pour les iPhones spécifiquement (basé sur la taille d'écran) */
+@media only screen and (max-width: 428px) and (-webkit-min-device-pixel-ratio: 2) {
+  /* Même ciblage précis */
+  .swiper-container {
+    display: none !important;
+    margin-top: 0 !important;
+    height: 0 !important;
+  }
+  
+  .swiper {
+    height: 0 !important;
+    display: none !important;
+  }
+  
+  /* Aussi efficace: redéfinir la hauteur fixe à 0 */
+  .swiper-container, .swiper {
+    height: 0 !important;
+    max-height: 0 !important;
+    min-height: 0 !important;
+  }
+}
