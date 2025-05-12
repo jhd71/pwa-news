@@ -1,79 +1,158 @@
-/* ios-specific.css - Version corrigée avec support pour le thème rouge */
+/* ios-specific.css - Proposition de correction */
 :root {
   --safe-area-top: env(safe-area-inset-top, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
   --safe-area-left: env(safe-area-inset-left, 0px);
   --safe-area-right: env(safe-area-inset-right, 0px);
+
+  /* Variables pour gérer les hauteurs et espacements de l'en-tête */
+  --header-icon-size: 40px; /* Taille des boutons icônes circulaires */
+  --header-icon-margin-lr: 15px; /* Marge gauche/droite pour les icônes aux extrémités */
+  --header-vertical-spacing: 10px; /* Espacement vertical entre les rangées de l'en-tête */
+
+  --logo-top-offset: 10px;
+  --logo-height: 50px; /* Hauteur du logo/bandeau "Infos en direct" initial */
+
+  /* Calcul des positions verticales des rangées */
+  --logo-row-top: calc(var(--safe-area-top) + var(--logo-top-offset));
+  
+  --menu-settings-row-top: calc(var(--logo-row-top) + var(--logo-height) + var(--header-vertical-spacing));
+  
+  --widgets-row-top: calc(var(--menu-settings-row-top) + var(--header-icon-size) + var(--header-vertical-spacing));
+  
+  /* Marge totale nécessaire pour le contenu principal en dessous de l'en-tête fixé */
+  --main-content-margin-top: calc(var(--widgets-row-top) + var(--header-icon-size) + var(--header-vertical-spacing));
 }
 
 /* Structure de base */
 body {
-  padding-top: var(--safe-area-top) !important;
+  padding-top: var(--safe-area-top) !important; /* Déjà présent, mais var(--safe-area-top) est géré par les éléments fixed */
 }
 
-/* 1. Conserver la position du logo */
+/* 1. Logo du site (ou l'élément qui doit être tout en haut et centré) */
+/* Ce CSS positionne le logo principal du site tout en haut, centré. */
+/* Si "Infos en direct" était votre logo, et qu'il doit rester un bandeau, ajustez la hauteur. */
 .site-logo, .logo-container, .site-title {
   position: fixed !important;
-  top: calc(var(--safe-area-top) + 2px) !important;
+  top: var(--logo-row-top) !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
   z-index: 1001 !important;
-  height: 60px !important;
-  width: auto !important;
+  height: var(--logo-height) !important;
+  width: auto !important; /* Ou une largeur fixe si nécessaire */
   margin: 0 !important;
+  /* Ajoutez ici le style pour que le logo ressemble au bandeau "Infos en direct" si c'est un texte/image de logo */
+  /* Exemple : background-color: #D32F2F; color: white; padding: 10px 20px; border-radius: 25px; */
 }
 
-/* 1. Remonter les boutons menu et paramètres tout en haut */
+/* 2. Boutons Menu et Paramètres */
+/* Positionnés SOUS le logo, et AU-DESSUS de la rangée Météo / Infos en direct / Liens */
 .menu-button, .hamburger-menu {
   position: fixed !important;
-  top: calc(var(--safe-area-top) + 10px) !important; /* Remonté en haut */
-  left: 10px !important;
+  top: var(--menu-settings-row-top) !important;
+  left: var(--header-icon-margin-lr) !important;
   z-index: 1010 !important;
-  background-color: rgba(126, 87, 194, 0.8) !important;
+  width: var(--header-icon-size) !important;
+  height: var(--header-icon-size) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   border-radius: 50% !important;
+  /* La couleur de fond est gérée par les thèmes plus bas */
 }
 
 .settings-button, .gear-icon {
   position: fixed !important;
-  top: calc(var(--safe-area-top) + 10px) !important; /* Remonté en haut */
-  right: 10px !important;
+  top: var(--menu-settings-row-top) !important;
+  right: var(--header-icon-margin-lr) !important;
   z-index: 1010 !important;
-  background-color: rgba(126, 87, 194, 0.8) !important;
+  width: var(--header-icon-size) !important;
+  height: var(--header-icon-size) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   border-radius: 50% !important;
+  /* La couleur de fond est gérée par les thèmes plus bas */
 }
 
-/* Ajustement précis du premier séparateur */
-.separator:first-of-type,
-.separator:first-child,
-#actualites-locales,
-.title-separator:first-of-type,
-.section-title:first-of-type {
-  margin-top: 150px !important; /* Ajusté de 125px à 150px */
-  position: relative !important;
-  z-index: 995 !important;
+/* 3. Widgets Météo, Bouton "Infos en direct" (déplacé), et Liens rapides */
+/* Ces éléments sont SOUS les boutons Menu/Paramètres */
+/* Assurez-vous d'avoir les bons sélecteurs CSS pour ces éléments */
+
+#weather-widget { /* Remplacez par le sélecteur réel du widget météo */
+  position: fixed !important;
+  top: var(--widgets-row-top) !important;
+  left: var(--header-icon-margin-lr) !important;
+  z-index: 1005 !important;
+  width: var(--header-icon-size) !important;
+  height: var(--header-icon-size) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important; /* Si c'est un bouton circulaire */
+  /* background-color: rgba(200, 200, 200, 0.8); Adaptez le style */
 }
 
-/* Ajuster en conséquence les marges du contenu principal */
+/* C'est le bouton "Infos en direct" qui était initialement en haut */
+#infos-direct-button { /* Remplacez par le sélecteur réel du bouton "Infos en direct" */
+  position: fixed !important;
+  top: var(--widgets-row-top) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 1005 !important;
+  height: var(--header-icon-size) !important; /* Ou une hauteur spécifique pour ce bouton */
+  padding: 0 20px !important; /* Pour un style "pill" */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: #D32F2F !important; /* Rouge, comme sur l'image */
+  color: white !important;
+  border-radius: 25px !important; /* Pour un style "pill" */
+  font-weight: bold;
+  /* box-shadow: 0 2px 5px rgba(0,0,0,0.2); */
+}
+
+#quick-links-widget { /* Remplacez par le sélecteur réel du widget liens rapides */
+  position: fixed !important;
+  top: var(--widgets-row-top) !important;
+  right: var(--header-icon-margin-lr) !important;
+  z-index: 1005 !important;
+  width: var(--header-icon-size) !important;
+  height: var(--header-icon-size) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important; /* Si c'est un bouton circulaire */
+  /* background-color: rgba(200, 200, 200, 0.8); Adaptez le style */
+}
+
+
+/* 4. Ajuster le premier séparateur et le contenu principal */
+.separator:first-of-type {
+  margin-top: var(--main-content-margin-top) !important;
+}
+
 #tileContainer, .main-content, .tile-container {
-  margin-top: 150px !important; /* Aligné avec le séparateur */
+  /* margin-top: 15px !important; /* Cette marge s'ajoute à celle du séparateur, peut-être la réduire ou l'enlever */
+  padding-top: 15px !important; /* Utilisez padding-top si le séparateur est à l'intérieur */
   padding-bottom: calc(var(--safe-area-bottom) + 80px) !important;
 }
 
-/* 5. Corriger la position de la barre d'infos en bas */
+/* 5. Corriger la position de la barre d'infos en bas (inchangé) */
 .news-ticker, .bottom-bar, .ticker {
   position: fixed !important;
   bottom: calc(var(--safe-area-bottom) + var(--bottom-nav-height) + 5px) !important;
-  z-index: 998 !important; /* Sous la nav */
+  z-index: 998 !important;
 }
 
-/* 6. Navigation du bas - s'assurer qu'elle reste au-dessus */
+/* 6. Navigation du bas (inchangé) */
 .bottom-nav {
   padding-bottom: calc(var(--safe-area-bottom) + 5px) !important;
   height: auto !important;
-  z-index: 999 !important; /* Au-dessus de la barre d'infos */
+  z-index: 999 !important;
 }
 
-/* 7. Autres ajustements nécessaires */
+/* 7. Autres ajustements (inchangé) */
 .chat-container {
   max-width: 100% !important;
   width: calc(100% - var(--safe-area-left) - var(--safe-area-right)) !important;
@@ -84,287 +163,67 @@ body {
   margin-bottom: 10px !important;
 }
 
-/* 8. Adaptation au thème sombre pour les boutons de menu et paramètres */
+/* 8. Adaptation aux thèmes pour les boutons de menu et paramètres */
+/* Thème Clair / Défaut */
+[data-theme="light"] .menu-button, 
+[data-theme="light"] .hamburger-menu,
+[data-theme="light"] .settings-button, 
+[data-theme="light"] .gear-icon,
+.menu-button, .hamburger-menu, /* Cas par défaut */
+.settings-button, .gear-icon { /* Cas par défaut */
+  background-color: rgba(126, 87, 194, 0.8) !important; /* Violet par défaut */
+}
+
+/* Thème Sombre */
 [data-theme="dark"] .menu-button, 
 [data-theme="dark"] .hamburger-menu,
 [data-theme="dark"] .settings-button, 
 [data-theme="dark"] .gear-icon,
-html.dark-theme .menu-button, 
-html.dark-theme .hamburger-menu,
-html.dark-theme .settings-button, 
-html.dark-theme .gear-icon,
-body.dark-theme .menu-button, 
-body.dark-theme .hamburger-menu,
-body.dark-theme .settings-button, 
-body.dark-theme .gear-icon {
-  background-color: rgba(40, 53, 147, 0.8) !important; /* Bleu foncé pour thème sombre */
+html.dark-theme .menu-button, html.dark-theme .hamburger-menu,
+html.dark-theme .settings-button, html.dark-theme .gear-icon,
+body.dark-theme .menu-button, body.dark-theme .hamburger-menu,
+body.dark-theme .settings-button, body.dark-theme .gear-icon {
+  background-color: rgba(40, 53, 147, 0.8) !important; /* Bleu foncé */
 }
 
-/* NOUVEAU: Adaptation au thème rouge pour les boutons de menu et paramètres */
+/* Thème Rouge */
 [data-theme="rouge"] .menu-button, 
 [data-theme="rouge"] .hamburger-menu,
 [data-theme="rouge"] .settings-button, 
 [data-theme="rouge"] .gear-icon,
-html.rouge-theme .menu-button, 
-html.rouge-theme .hamburger-menu,
-html.rouge-theme .settings-button, 
-html.rouge-theme .gear-icon,
-body.rouge-theme .menu-button, 
-body.rouge-theme .hamburger-menu,
-body.rouge-theme .settings-button, 
-body.rouge-theme .gear-icon {
+html.rouge-theme .menu-button, html.rouge-theme .hamburger-menu,
+html.rouge-theme .settings-button, html.rouge-theme .gear-icon,
+body.rouge-theme .menu-button, body.rouge-theme .hamburger-menu,
+body.rouge-theme .settings-button, body.rouge-theme .gear-icon {
   background-color: rgba(163, 47, 42, 0.8) !important; /* Rouge légèrement plus foncé */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
 }
 
 /* S'assurer que l'icône est bien visible dans tous les thèmes */
 .menu-button .material-icons, 
-.settings-button .material-icons {
+.settings-button .material-icons,
+#weather-widget i, /* Si vous utilisez des <i> pour les icônes Material Icons */
+#quick-links-widget i {
   color: white !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important; /* Ombre légère pour meilleure visibilité */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
 }
+/* Pour le bouton infos en direct, la couleur du texte est déjà gérée plus haut */
 
-/* Ajout d'un effet de survol pour améliorer l'interactivité */
-.menu-button:hover, 
-.hamburger-menu:hover,
-.settings-button:hover, 
-.gear-icon:hover {
+
+/* Effet de survol (inchangé) */
+.menu-button:hover, .hamburger-menu:hover,
+.settings-button:hover, .gear-icon:hover,
+#weather-widget:hover, #quick-links-widget:hover, #infos-direct-button:hover {
   transform: scale(1.05) !important;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4) !important;
 }
 
-/* Thème clair spécifique (pour être sûr) */
-[data-theme="light"] .menu-button, 
-[data-theme="light"] .hamburger-menu,
-[data-theme="light"] .settings-button, 
-[data-theme="light"] .gear-icon {
-  background-color: rgba(126, 87, 194, 0.8) !important; /* Violet */
-}
 
-/* Position des widgets et boutons */
-@media (max-width: 767px) {
-  /* Position des boutons d'affichage des widgets */
-  .weather-mobile-btn {
-    display: flex !important;
-    top: 75px !important; /* Remonté de 100px à 75px */
-    left: 10px !important;
-  }
-  
-  .quick-links-show-btn {
-    display: flex !important;
-    opacity: 1 !important;
-    top: 75px !important; /* Remonté de 100px à 75px */
-    right: 10px !important;
-  }
-  
-  /* Position des widgets quand ils sont affichés */
-  .weather-sidebar,
-  .quick-links-sidebar {
-    top: 115px !important; /* Remonté de 140px à 115px */
-  }
-
-  /* Ajuster le bouton Infos en direct */
-  .news-button {
-    position: fixed !important;
-    top: 75px !important; /* Remonté de 100px à 75px */
-    left: 50% !important;
-    right: auto !important;
-    transform: translateX(-50%);
-    z-index: 995 !important;
-  }
-}
-
-/* 5. S'assurer que tout le contenu suit bien le séparateur */
-.main-content > *:not(.separator):not(.site-logo):not(.menu-button):not(.settings-button):not(.weather-mobile-btn):not(.quick-links-show-btn):not(.news-button) {
-  position: relative !important;
-  z-index: 990 !important;
-}
-
-/* Assurer que les widgets ne chevauchent pas le contenu */
-.weather-sidebar.active,
-.quick-links-sidebar.active {
-  z-index: 996 !important;
-}
-
-/* Espacement entre les widgets et le séparateur */
-.weather-sidebar,
-.quick-links-sidebar {
-  margin-bottom: 15px !important; /* Ajouter de l'espace après les widgets */
-}
-
-/* Alignement du contenu principal */
-.main-content > *:first-child:not(.separator) {
-  margin-top: 150px !important; /* Aligné avec le séparateur */
-}
-
-/* 6. Ajustement pour le message "Installez Actu&Média" */
+/* Ajustement pour le message "Installez Actu&Média" (inchangé) */
 .install-banner, .pwa-banner, .app-install-prompt {
   margin-top: 0 !important;
   top: auto !important;
   bottom: calc(var(--safe-area-bottom) + var(--bottom-nav-height) + 65px) !important;
   position: fixed !important;
   z-index: 980 !important;
-}
-
-/* 7. Forcer le conteneur des tuiles à remonter */
-#tileContainer > *, .tile-container > * {
-  margin-top: 0 !important;
-}
-
-/* Assurer que l'espacement après le séparateur est bien ajusté */
-.separator:first-of-type + .tile,
-.separator:first-of-type + .row,
-.separator:first-of-type + div,
-.separator:first-child + .tile,
-.separator:first-child + .row,
-.separator:first-child + div {
-  margin-top: 10px !important; /* Un peu d'espace après le séparateur */
-}
-
-/* Correctif pour iOS 15 et plus récent */
-@supports (padding-top: env(safe-area-inset-top)) {
-  .separator:first-of-type,
-  .separator:first-child,
-  #actualites-locales,
-  .title-separator:first-of-type,
-  .section-title:first-of-type {
-    margin-top: 150px !important; /* Même valeur que la règle principale */
-  }
-  
-  #tileContainer, .main-content, .tile-container {
-    margin-top: 150px !important; /* Même valeur que la règle principale */
-  }
-}
-
-/* Correction de la superposition des boutons pour iPhone 15 Pro */
-
-@media screen and (min-width: 375px) and (-webkit-device-pixel-ratio: 3) {
-  /* 1. Logo en haut et centré */
-  .site-logo, .logo-container, .site-title {
-    position: fixed !important;
-    top: calc(var(--safe-area-top) + 5px) !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    width: auto !important;
-    height: 60px !important;
-    margin: 0 !important;
-    z-index: 997 !important;
-  }
-  
-  /* 2. Boutons menu et paramètres alignés horizontalement avec le logo */
-  .menu-button, .hamburger-menu {
-    position: fixed !important;
-    top: calc(var(--safe-area-top) + 10px) !important;
-    left: 15px !important;
-    z-index: 998 !important;
-  }
-  
-  .settings-button, .gear-icon {
-    position: fixed !important;
-    top: calc(var(--safe-area-top) + 10px) !important;
-    right: 15px !important;
-    z-index: 998 !important;
-  }
-  
-  /* 3. Boutons météo et liens -> REPOSITIONNÉS HORIZONTALEMENT */
-  .weather-mobile-btn {
-    position: fixed !important;
-    top: calc(var(--safe-area-top) + 80px) !important; /* Éloigné du logo */
-    left: 20% !important; /* À gauche, mais pas complètement */
-    z-index: 996 !important;
-    transform: translateX(-50%) !important; /* Centré sur son point */
-  }
-  
-  .quick-links-show-btn {
-    position: fixed !important;
-    top: calc(var(--safe-area-top) + 80px) !important; /* Même niveau que météo */
-    right: 20% !important; /* À droite, mais pas complètement */
-    z-index: 996 !important;
-    transform: translateX(50%) !important; /* Centré sur son point */
-  }
-  
-  /* 4. Bouton infos en direct - centré sous les autres boutons */
-  .news-button {
-    position: fixed !important;
-    top: calc(var(--safe-area-top) + 150px) !important; /* Bien en dessous des autres boutons */
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    z-index: 995 !important;
-    width: auto !important;
-    min-width: 220px !important; /* Légèrement plus large */
-  }
-  
-  /* Position des widgets déployés - éviter la superposition */
-  .weather-sidebar {
-    top: calc(var(--safe-area-top) + 130px) !important;
-    left: 10px !important;
-    right: auto !important;
-    max-width: 45% !important; /* Limiter la largeur */
-    max-height: 40vh !important;
-    z-index: 996 !important;
-  }
-  
-  .quick-links-sidebar {
-    top: calc(var(--safe-area-top) + 130px) !important;
-    left: auto !important;
-    right: 10px !important;
-    max-width: 45% !important; /* Limiter la largeur */
-    max-height: 40vh !important;
-    z-index: 996 !important;
-  }
-  
-  /* 5. Ajuster le séparateur et le contenu principal */
-  .separator:first-of-type,
-  .separator:first-child,
-  #actualites-locales,
-  .title-separator:first-of-type,
-  .section-title:first-of-type {
-    margin-top: 210px !important; /* Bien en dessous du bouton infos */
-    position: relative !important;
-    z-index: 990 !important;
-  }
-  
-  #tileContainer, .main-content, .tile-container {
-    margin-top: 210px !important; /* Aligné avec le séparateur */
-    padding-bottom: calc(var(--safe-area-bottom) + 80px) !important;
-  }
-  
-  /* Assurer que le contenu principal s'affiche correctement */
-  .main-content > *:first-child:not(.separator) {
-    margin-top: 210px !important; /* Aligné avec le séparateur */
-  }
-  
-  /* Définir clairement les dimensions des boutons pour éviter les problèmes de taille */
-  .weather-mobile-btn,
-  .quick-links-show-btn {
-    width: 60px !important;
-    height: 60px !important;
-    border-radius: 50% !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-}
-
-/* Orientation paysage - ajuster pour éviter superposition */
-@media screen and (orientation: landscape) and (-webkit-device-pixel-ratio: 3) {
-  .weather-mobile-btn {
-    top: calc(var(--safe-area-top) + 70px) !important;
-    left: 15% !important; /* Encore plus à gauche en mode paysage */
-  }
-  
-  .quick-links-show-btn {
-    top: calc(var(--safe-area-top) + 70px) !important;
-    right: 15% !important; /* Encore plus à droite en mode paysage */
-  }
-  
-  .news-button {
-    top: calc(var(--safe-area-top) + 130px) !important;
-  }
-  
-  .separator:first-of-type,
-  #tileContainer, .main-content, .tile-container,
-  .main-content > *:first-child:not(.separator) {
-    margin-top: 185px !important; /* Réduit en mode paysage */
-  }
 }
