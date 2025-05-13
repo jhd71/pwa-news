@@ -109,7 +109,7 @@
 }
 
 /* Badge "DIRECT" mis en évidence - correction */
-.tile.live-content .tile-content::before {
+.tile.live-content::before {
     content: 'DIRECT';
     position: absolute;
     left: 8px;
@@ -122,15 +122,16 @@
     z-index: 3;
     font-weight: bold;
     border: 1px solid white;
+    display: block !important; /* Forcer l'affichage */
 }
 
-/* On s'assure que le pseudo-élément ::before standard n'est pas utilisé */
-.tile.live-content::before {
-    display: none;
+/* Suppression du pseudo-élément ::before sur tile-content */
+.tile.live-content .tile-content::before {
+    display: none !important;
 }
 
-/* Suppression des badges DIRECT sur les tuiles TV puisque déjà affiché en surimpression */
-.tile-content::before {
+/* Supprimer toutes les icônes dans les tuiles TV */
+.tile[data-category="tv"] .tile-title::before {
     display: none !important;
 }
 
