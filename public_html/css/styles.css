@@ -532,14 +532,145 @@ main {
 }
 
 /* Dimensions des tuiles selon la vue */
+/* Animation d'entrée pour les tuiles */
 .tile-container.grid .tile {
-    height: 80px;
-	animation: fadeInScale 0.3s ease forwards;
+    animation: fadeInStaggered 0.4s ease forwards;
 }
 
+.tile-container.grid .tile:nth-child(1) { animation-delay: 0.05s; }
+.tile-container.grid .tile:nth-child(2) { animation-delay: 0.1s; }
+.tile-container.grid .tile:nth-child(3) { animation-delay: 0.15s; }
+.tile-container.grid .tile:nth-child(4) { animation-delay: 0.2s; }
+.tile-container.grid .tile:nth-child(5) { animation-delay: 0.25s; }
+.tile-container.grid .tile:nth-child(6) { animation-delay: 0.3s; }
+.tile-container.grid .tile:nth-child(7) { animation-delay: 0.35s; }
+.tile-container.grid .tile:nth-child(8) { animation-delay: 0.4s; }
+.tile-container.grid .tile:nth-child(9) { animation-delay: 0.45s; }
+/* Continuez pour autant de tuiles que nécessaire */
+
+/* Animation d'entrée pour la vue liste */
 .tile-container.list .tile {
-    height: 40px;
-	animation: slideInRight 0.3s ease forwards;
+    animation: slideInRight 0.4s ease forwards;
+}
+
+.tile-container.list .tile:nth-child(1) { animation-delay: 0.05s; }
+.tile-container.list .tile:nth-child(2) { animation-delay: 0.1s; }
+.tile-container.list .tile:nth-child(3) { animation-delay: 0.15s; }
+.tile-container.list .tile:nth-child(4) { animation-delay: 0.2s; }
+.tile-container.list .tile:nth-child(5) { animation-delay: 0.25s; }
+.tile-container.list .tile:nth-child(6) { animation-delay: 0.3s; }
+.tile-container.list .tile:nth-child(7) { animation-delay: 0.35s; }
+.tile-container.list .tile:nth-child(8) { animation-delay: 0.4s; }
+.tile-container.list .tile:nth-child(9) { animation-delay: 0.45s; }
+/* Continuez pour autant de tuiles que nécessaire */
+
+/* Effet spécial pour les tuiles sportives */
+.tile-icon .material-icons.sports_soccer {
+    animation: spin 10s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Media queries adaptés */
+@media (max-width: 600px) {
+    .tile-container.grid .tile {
+        height: 70px;
+    }
+    
+    .tile-container.list .tile {
+        height: 45px;
+    }
+    
+    .tile-icon {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .tile-title {
+        font-size: 14px;
+    }
+}
+
+/* Vue liste - réorganisation des éléments */
+.tile-container.list .tile {
+    height: 50px;
+    padding: 0 15px;
+}
+
+.tile-container.list .tile-content {
+    flex-direction: row;
+    justify-content: flex-start;
+    text-align: left;
+    gap: 15px;
+}
+
+.tile-container.list .tile-icon {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 0;
+}
+
+.tile-container.list .tile-title {
+    text-align: left;
+}
+
+/* Badge de notification */
+.tile-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #ff3e3e;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Effet de ripple au clic */
+.tile::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%, -50%);
+    transform-origin: 50% 50%;
+}
+
+.tile:active::after {
+    animation: ripple 0.6s ease-out;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0, 0) translate(-50%, -50%);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(20, 20) translate(-50%, -50%);
+        opacity: 0;
+    }
 }
 
 /* Effets de survol selon la vue */
@@ -742,16 +873,51 @@ background-color: #1a237e;
 }
 
 /* SECTION 15: MENU CONTEXTUEL */
+/* Styles du menu contextuel amélioré */
 .tile-menu {
     position: fixed;
-    background-color: var(--primary-color) !important;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    background-color: var(--primary-color);
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     overflow: hidden;
     z-index: 1000;
-    min-width: 200px;
+    min-width: 250px;
     max-width: 90%;
-    opacity: 1 !important;
+    transition: all 0.3s ease;
+    opacity: 1;
+    transform: scale(1);
+}
+
+.menu-header {
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.menu-title {
+    font-weight: bold;
+    color: white;
+    font-size: 16px;
+}
+
+.menu-close {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.menu-close:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .tile-menu button {
@@ -760,12 +926,17 @@ background-color: #1a237e;
     padding: 12px 16px;
     border: none;
     background: none;
-    color: white !important;
+    color: white;
     cursor: pointer;
     align-items: center;
     gap: 12px;
     font-size: var(--menu-text-size);
     transition: background-color 0.2s;
+}
+
+.tile-menu button span:not(.material-icons) {
+    flex: 1;
+    text-align: left;
 }
 
 .tile-menu button .material-icons {
@@ -776,6 +947,30 @@ background-color: #1a237e;
 
 .tile-menu button:hover {
     background-color: rgba(255, 255, 255, 0.1);
+}
+
+.tile-menu button:active {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Ajustement pour mode sombre */
+[data-theme="dark"] .tile-menu {
+    background-color: #1a237e;
+}
+
+/* Ajustement pour mode rouge */
+[data-theme="rouge"] .tile-menu {
+    background-color: #c62828;
+}
+
+/* Styles spécifiques pour les boutons d'action */
+.menu-item.delete {
+    color: #ff6b6b;
+}
+
+.menu-item.info-item {
+    color: #ffce44;
+    font-style: italic;
 }
 
 /* Force le texte blanc dans les deux thèmes */
@@ -1369,6 +1564,7 @@ background-color: #1a237e;
 }
 
 /* SECTION 12: TUILES */
+/* Styles améliorés pour les tuiles */
 .tile {
     background-color: var(--card-background);
     border-radius: 12px;
@@ -1379,12 +1575,34 @@ background-color: #1a237e;
     user-select: none;
     -webkit-user-select: none;
     -webkit-tap-highlight-color: transparent;
-    box-shadow: 0 2px 5px var(--shadow-color);
+    box-shadow: 0 3px 8px var(--shadow-color);
     height: 80px;
     overflow: hidden;
     position: relative;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform-origin: center;
+    opacity: 0; /* Commencez invisible pour l'animation */
+    will-change: transform, opacity, box-shadow; /* Optimisation performance */
+}
+
+/* Animation d'apparition progressive pour les tuiles */
+@keyframes fadeInStaggered {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Effet de pression au clic */
+.tile-pressed {
+    transform: scale(0.95) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    opacity: 0.9 !important;
+    transition: all 0.1s ease-out !important;
 }
 
 /* Effet de brillance */
@@ -1437,13 +1655,38 @@ background-color: #1a237e;
 }
 
 /* Contenu des tuiles */
+/* Contenu de la tuile réorganisé avec icône */
 .tile-content {
     padding: 10px;
     text-align: center;
     width: 100%;
-    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: relative;
 }
 
+/* Icône de la tuile */
+.tile-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 4px;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.tile:hover .tile-icon {
+    transform: scale(1.1) rotate(5deg);
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Style pour le titre */
 .tile-title {
     font-size: var(--tile-title-size);
     font-weight: 600;
@@ -1452,8 +1695,8 @@ background-color: #1a237e;
     width: 100%;
     text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
     line-height: 1.2;
-    padding: 0 8px;
     transition: transform 0.3s ease;
+    padding: 0 5px;
 }
 
 /* Effet d'agrandissement du titre au survol */
