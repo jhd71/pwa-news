@@ -373,70 +373,244 @@ this.tileContainer.appendChild(separator3);
     }
 }
 
-    createTile(site) {
-        const tile = document.createElement('div');
-        tile.className = 'tile';
-        tile.innerHTML = `
-            <div class="tile-content">
-                <div class="tile-title">${site.title}</div>
+    // Dans content.js, modifiez la fonction createTile pour ajouter des icônes
+createTile(site) {
+    const tile = document.createElement('div');
+    tile.className = 'tile';
+    
+    // Déterminer l'icône en fonction du type de site
+    let icon = 'public'; // icône par défaut
+    
+    // Logique pour assigner les icônes selon le type de site
+    if (site.title.includes('News') || site.title.includes('JSL') || site.title.includes('Infos') || site.title.includes('Informateur')) {
+        icon = 'newspaper';
+    } else if (site.title.includes('Radio') || site.title.includes('Bleu')) {
+        icon = 'radio';
+    } else if (site.title.includes('TV') || site.title.includes('France 3') || site.title.includes('BFMTV') || site.title.includes('CNews')) {
+        icon = 'tv';
+    } else if (site.title.includes('Foot') || site.title.includes('Rugby') || site.title.includes('ELAN') || site.title.includes('Sport')) {
+        icon = 'sports_soccer';
+    } else if (site.title.includes('YouTube')) {
+        icon = 'smart_display';
+    } else if (site.title.includes('Twitch')) {
+        icon = 'videogame_asset';
+    } else if (site.title.includes('TikTok')) {
+        icon = 'trending_up';
+    }
+    
+    // Ajouter une classe badge si le site a du contenu récent (simulé ici)
+    const hasNewContent = Math.random() > 0.7; // Simulation - 30% des tuiles affichent un badge
+    const badgeClass = hasNewContent ? 'has-badge' : '';
+    
+    // HTML de la tuile avec l'icône et éventuellement un badge
+    tile.innerHTML = `
+        <div class="tile-content ${badgeClass}">
+            <div class="tile-icon">
+                <span class="material-icons">${icon}</span>
             </div>
-        `;
+            <div class="tile-title">${site.title}</div>
+            ${hasNewContent ? '<span class="tile-badge">1</span>' : ''}
+        </div>
+    `;
 
-        // Gestion du clic normal
-        tile.addEventListener('click', () => {
+    // Gestion du clic normal
+    tile.addEventListener('click', () => {
+        // Effet de pression au clic
+        tile.classList.add('tile-pressed');
+        setTimeout(() => {
+            tile.classList.remove('tile-pressed');
             window.open(site.mobileUrl || site.url, '_blank');
-        });
+        }, 150);
+    });
 
-        // Menu contextuel (clic droit)
-        tile.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-            this.showTileMenu(tile, site, e.clientX, e.clientY);
-        });
-
-        // Gestion de l'appui long sur mobile avec prévention du scroll
-let longPressTimer;
-let isLongPress = false;
-let lastScrollTime = 0;
-
-// Détection du scroll (mémorise le moment du dernier scroll)
-window.addEventListener('scroll', () => {
-    lastScrollTime = Date.now(); // Enregistre le moment du scroll
-});
-
-tile.addEventListener('touchstart', (e) => {
-    isLongPress = false;
-
-    // Vérifie si le scroll a eu lieu récemment (moins d'1 seconde)
-    if (Date.now() - lastScrollTime < 1000) {
-        return; // Ignore l'appui long si on vient de scroller
-    }
-
-    longPressTimer = setTimeout(() => {
-        isLongPress = true;
-        const touch = e.touches[0];
-        this.showTileMenu(tile, site, touch.clientX, touch.clientY);
-    }, 800); // ✅ Augmenté à 800ms pour éviter l'apparition trop rapide
-});
-
-tile.addEventListener('touchmove', () => {
-    clearTimeout(longPressTimer); // ✅ Annule l’appui long si le doigt bouge (scroll détecté)
-});
-
-tile.addEventListener('touchend', (e) => {
-    clearTimeout(longPressTimer);
-    if (isLongPress) {
+    // Menu contextuel (clic droit) - code existant conservé
+    tile.addEventListener('contextmenu', (e) => {
         e.preventDefault();
-    }
-});
+        this.showTileMenu(tile, site, e.clientX, e.clientY);
+    });
 
-tile.addEventListener('touchmove', () => {
-    clearTimeout(longPressTimer);
-    isScrolling = true; // Empêche le menu si l'utilisateur bouge le doigt
-});
+    // Gestion de l'appui long sur mobile avec prévention du scroll
+    let longPressTimer;
+    let isLongPress = false;
+    let lastScrollTime = 0;
 
-// Retourne l'élément modifié
-return tile;
+    // Détection du scroll (mémorise le moment du dernier scroll)
+    window.addEventListener('scroll', () => {
+        lastScrollTime = Date.now(); // Enregistre le moment du scroll
+    });
+
+    tile.addEventListener('touchstart', (e) => {
+        isLongPress = false;
+
+        // Vérifie si le scroll a eu lieu récemment (moins d'1 seconde)
+        if (Date.now() - lastScrollTime < 1000) {
+            return; // Ignore l'appui long si on vient de scroller
+        }
+
+        longPressTimer = setTimeout(() => {
+            isLongPress = true;
+            // Effet de rétroaction haptique si disponible
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+            const touch = e.touches[0];
+            this.showTileMenu(tile, site, touch.clientX, touch.clientY);
+        }, 800); // Augmenté à 800ms pour éviter l'apparition trop rapide
+    });
+
+    tile.addEventListener('touchmove', () => {
+        clearTimeout(longPressTimer); // Annule l'appui long si le doigt bouge (scroll détecté)
+    });
+
+    tile.addEventListener('touchend', (e) => {
+        clearTimeout(longPressTimer);
+        if (isLongPress) {
+            e.preventDefault();
+        } else {
+            // Effet de pression au tap
+            tile.classList.add('tile-pressed');
+            setTimeout(() => {
+                tile.classList.remove('tile-pressed');
+            }, 150);
+        }
+    });
+
+    // Retourne l'élément modifié
+    return tile;
+}
+
+// Mettez à jour la méthode showTileMenu pour améliorer le menu contextuel
+showTileMenu(tile, site, x, y) {
+    const existingMenu = document.querySelector('.tile-menu');
+    if (existingMenu) {
+        existingMenu.remove();
     }
+
+    const menu = document.createElement('div');
+    menu.className = 'tile-menu';
+
+    // Ajout d'un en-tête au menu
+    menu.innerHTML = `
+        <div class="menu-header">
+            <span class="menu-title">${site.title}</span>
+            <button class="menu-close"><span class="material-icons">close</span></button>
+        </div>
+        ${site.isDefault ? `
+            <button class="menu-item info-item">
+                <span class="material-icons">info</span>
+                <span>Site par défaut</span>
+            </button>
+        ` : `
+            <button class="menu-item edit">
+                <span class="material-icons">edit</span>
+                <span>Modifier</span>
+            </button>
+            <button class="menu-item delete">
+                <span class="material-icons">delete</span>
+                <span>Supprimer</span>
+            </button>
+        `}
+        <button class="menu-item share">
+            <span class="material-icons">share</span>
+            <span>Partager</span>
+        </button>
+        <button class="menu-item open-mobile">
+            <span class="material-icons">phone_android</span>
+            <span>Version mobile</span>
+        </button>
+        <button class="menu-item open-desktop">
+            <span class="material-icons">computer</span>
+            <span>Version bureau</span>
+        </button>
+    `;
+    document.body.appendChild(menu);
+
+    // Position du menu
+    const menuRect = menu.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    let menuX = Math.min(x, viewportWidth - menuRect.width - 10);
+    let menuY = Math.min(y, viewportHeight - menuRect.height - 10);
+
+    menuX = Math.max(10, menuX);
+    menuY = Math.max(10, menuY);
+
+    menu.style.position = 'fixed';
+    menu.style.left = `${menuX}px`;
+    menu.style.top = `${menuY}px`;
+
+    // Animation d'entrée
+    menu.style.opacity = '0';
+    menu.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+        menu.style.opacity = '1';
+        menu.style.transform = 'scale(1)';
+    }, 10);
+
+    // Gestionnaire d'événements
+    menu.addEventListener('click', (e) => {
+        const button = e.target.closest('button');
+        if (!button) return;
+
+        // Animation de sortie
+        menu.style.opacity = '0';
+        menu.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            menu.remove();
+        }, 200);
+
+        if (button.classList.contains('menu-close')) {
+            return;
+        }
+
+        if (button.classList.contains('edit')) {
+            this.editSite(site);
+        } else if (button.classList.contains('delete')) {
+            this.deleteSite(site);
+        } else if (button.classList.contains('share')) {
+            this.shareSite(site);
+        } else if (button.classList.contains('open-mobile')) {
+            window.open(site.mobileUrl || site.url, '_blank');
+        } else if (button.classList.contains('open-desktop')) {
+            window.open(site.url, '_blank');
+        }
+    });
+
+    // Fermeture au clic en dehors
+    document.addEventListener('click', (e) => {
+        if (!menu.contains(e.target)) {
+            menu.style.opacity = '0';
+            menu.style.transform = 'scale(0.95)';
+            setTimeout(() => menu.remove(), 200);
+        }
+    }, { once: true });
+}
+
+// Ajoutez cette méthode pour le partage
+shareSite(site) {
+    if (navigator.share) {
+        navigator.share({
+            title: site.title,
+            text: `Visitez ${site.title}`,
+            url: site.url
+        })
+        .then(() => this.showToast('Partagé avec succès'))
+        .catch(error => {
+            console.error('Erreur de partage:', error);
+            this.showToast('Impossible de partager');
+        });
+    } else {
+        // Fallback si Web Share API n'est pas disponible
+        const fallbackLink = document.createElement('textarea');
+        fallbackLink.value = site.url;
+        document.body.appendChild(fallbackLink);
+        fallbackLink.select();
+        document.execCommand('copy');
+        document.body.removeChild(fallbackLink);
+        this.showToast('Lien copié dans le presse-papier');
+    }
+}
 
     showTileMenu(tile, site, x, y) {
         const existingMenu = document.querySelector('.tile-menu');
