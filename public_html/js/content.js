@@ -512,25 +512,34 @@ class ContentManager {
     }
 
     createTile(site) {
-        const tile = document.createElement('div');
-        tile.className = 'tile';
-        
-        // Ajouter l'attribut data-category pour faciliter le ciblage CSS
-        tile.setAttribute('data-category', site.category || 'default');
-        
-        // Ajouter des classes conditionnelles pour les designs spéciaux
-        if (site.isLive) tile.classList.add('live-content');
-        
-        // Structure HTML de la tuile avec les effets spéciaux
-        tile.innerHTML = `
-            <div class="tile-content">
-                <div class="tile-title">${site.title}</div>
-            </div>
-        `;
+    const tile = document.createElement('div');
+    tile.className = 'tile';
+    
+    // Ajouter l'attribut data-category pour faciliter le ciblage CSS
+    tile.setAttribute('data-category', site.category || 'default');
+    
+    // Ajouter des classes conditionnelles pour les designs spéciaux
+    // Vérifie si c'est vraiment un site de diffusion en direct
+    const isReallyLive = site.isLive && 
+                        (site.title.includes('TV') || 
+                         site.url.includes('direct') || 
+                         site.category === 'tv');
+    
+    // N'ajoute le badge DIRECT que pour les chaînes TV, pas pour Foot-Live
+    if (isReallyLive && site.title !== 'Foot-Live') {
+        tile.classList.add('live-content');
+    }
+    
+    // Structure HTML de la tuile
+    tile.innerHTML = `
+        <div class="tile-content">
+            <div class="tile-title">${site.title}</div>
+        </div>
+    `;
 
-        // Stockage de l'URL pour faciliter l'accès
-        tile.dataset.siteUrl = site.url;
-        tile.dataset.mobileSiteUrl = site.mobileUrl || site.url;
+    // Stockage de l'URL pour faciliter l'accès
+    tile.dataset.siteUrl = site.url;
+    tile.dataset.mobileSiteUrl = site.mobileUrl || site.url;
         
         // Gestion du clic normal
         tile.addEventListener('click', () => {
@@ -717,15 +726,19 @@ class ContentManager {
     }
 
     checkSitesUpdates() {
-        // Sites qui pourraient avoir des mises à jour
-        const sitesData = [
-            { url: 'montceau-news.com', category: 'news', hasUpdate: false },
-            { url: 'lejsl.com', category: 'news', hasUpdate: false },
-            { url: 'francebleu', category: 'radio', hasUpdate: false },
-            { url: 'bfmtv.com', category: 'tv', hasUpdate: false },
-            { url: 'francetvinfo.fr', category: 'tv', hasUpdate: false },
-            { url: 'footmercato', category: 'sports', hasUpdate: false }
-        ];
+    // Pour désactiver complètement les notifications aléatoires
+    // Nous ne faisons rien dans cette fonction
+    
+    // Si vous voulez réactiver les notifications plus tard, décommentez le code ci-dessous:
+    /*
+    const sitesData = [
+        { url: 'montceau-news.com', category: 'news', hasUpdate: false },
+        { url: 'lejsl.com', category: 'news', hasUpdate: false },
+        { url: 'francebleu', category: 'radio', hasUpdate: false },
+        { url: 'bfmtv.com', category: 'tv', hasUpdate: false },
+        { url: 'francetvinfo.fr', category: 'tv', hasUpdate: false },
+        { url: 'footmercato', category: 'sports', hasUpdate: false }
+    ];
         
         // Choisir aléatoirement 1 à 2 sites pour simuler une mise à jour
         const updatesCount = Math.floor(Math.random() * 2) + 1;
@@ -771,7 +784,7 @@ class ContentManager {
                 });
             }
         }
-    }
+    }*/
 
     editSite(site) {
         if (site.isDefault) {
