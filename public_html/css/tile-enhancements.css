@@ -94,19 +94,22 @@
     opacity: 0;
 }
 
-/* 8. Badge "DIRECT" pour les chaînes TV - RÉTABLI mais ADOUCI */
+/* 8. Badge "DIRECT" amélioré pour les chaînes TV */
 .tile.live-content::before {
     content: '•DIRECT';
     position: absolute;
     left: 8px;
     top: 8px;
-    font-size: 10px;
-    color: rgba(255, 82, 82, 0.9);
-    background-color: rgba(0, 0, 0, 0.4);
-    padding: 1px 5px;
-    border-radius: 8px;
+    font-size: 11px;
+    color: #ffffff; /* Texte blanc */
+    background-color: rgba(255, 0, 0, 0.7); /* Fond rouge semi-transparent */
+    padding: 2px 6px;
+    border-radius: 10px;
     z-index: 3;
     font-weight: bold;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5); /* Contour blanc */
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.8); /* Ombre du texte */
+    letter-spacing: 0.5px; /* Espacement des lettres */
 }
 
 /* Supprime les animations de hover 3D */
