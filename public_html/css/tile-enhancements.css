@@ -672,3 +672,25 @@
 .tile-container.list .tile {
     margin-bottom: 6px !important; /* Espacement réduit entre les tuiles */
 }
+/* Correction minimale pour le panneau de paramètres */
+
+/* Cette version ne modifie que les transitions des boutons de taille de texte */
+
+/* 1. Modifier uniquement les boutons de taille de texte */
+.font-size-tile, 
+button[data-size], 
+[data-section="taille-texte"] button,
+.settings-menu button {
+    /* Prévenir les transformations qui causent des problèmes */
+    transform: none !important;
+    /* Désactiver les transitions pour ces boutons uniquement */
+    transition-duration: 0s !important;
+}
+
+/* 2. Laisser le reste du menu intact */
+.settings-menu {
+    /* Ces propriétés ne sont pas modifiées */
+    /* Tout fonctionnement normal est préservé */
+}
+
+/* C'est tout. Aucune autre modification pour éviter de perturber l'interface */
