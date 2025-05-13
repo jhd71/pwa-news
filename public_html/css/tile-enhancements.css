@@ -415,3 +415,31 @@
     background-repeat: no-repeat;
     background-size: contain;
 }
+
+/* Correction pour l'affichage des titres en mode liste pour les tuiles TV */
+.tile-container.list .tile[data-category="tv"] .tile-title {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: absolute;
+    right: 50px; /* Position à droite du badge DIRECT */
+    left: auto;
+    text-align: right;
+}
+
+/* Assurer que le badge DIRECT reste visible en mode liste */
+.tile-container.list .tile.live-content .tile-content::before {
+    display: block !important;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%); /* Centrer verticalement */
+}
+
+/* Positionnement du titre dans les tuiles en mode liste */
+.tile-container.list .tile .tile-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 80px !important; /* Espace pour le badge DIRECT */
+    padding-right: 15px !important;
+}
