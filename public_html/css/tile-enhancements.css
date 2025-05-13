@@ -510,3 +510,73 @@
 .tile-container.list .tile[data-category="tv"] .tile-title {
     margin-right: 20px; /* Espace à droite du titre */
 }
+/* Amélioration des tuiles TV en Direct */
+
+/* 1. Correction pour le mode liste - alignement horizontal */
+.tile-container.list .tile[data-category="tv"] {
+    display: flex;
+    justify-content: flex-start; /* Aligne à gauche */
+    align-items: center;
+    padding: 0 !important;
+}
+
+.tile-container.list .tile[data-category="tv"] .tile-content {
+    justify-content: flex-start !important; /* Force l'alignement à gauche */
+    padding-left: 80px !important; /* Espace pour le badge DIRECT */
+    padding-right: 20px !important;
+    width: 100%;
+}
+
+.tile-container.list .tile[data-category="tv"] .tile-title {
+    justify-content: flex-start !important;
+    text-align: left !important;
+    width: auto;
+    margin-left: 10px !important;
+}
+
+/* 2. Correction pour le badge DIRECT qui chevauche le texte en mode tuiles */
+.tile.live-content .tile-content::before {
+    content: 'DIRECT';
+    position: absolute;
+    left: 8px;
+    top: 8px !important; /* Position fixe en haut */
+    font-size: 10px;
+    color: white;
+    background-color: #ff3d3d;
+    padding: 2px 8px;
+    border-radius: 12px;
+    z-index: 10; /* Augmenté pour être au-dessus de tout */
+    font-weight: bold;
+    border: 1px solid white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Pour éviter le chevauchement en mode tuiles, on déplace le contenu vers le bas */
+.tile-container.grid .tile[data-category="tv"] .tile-content {
+    padding-top: 30px !important; /* Espace pour le badge DIRECT */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Assurez-vous que le badge est bien placé dans tous les modes */
+.tile-container.grid .tile.live-content .tile-content::before,
+.tile-container.list .tile.live-content .tile-content::before {
+    transform: none !important;
+}
+
+/* Pour le mode liste, repositionner le badge sur le côté gauche */
+.tile-container.list .tile.live-content .tile-content::before {
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    left: 15px !important;
+}
+
+/* Assurez-vous que les icônes TV sont masquées correctement */
+.tile[data-category="tv"] .tile-title::before {
+    display: none !important;
+}
+
+/* Correction pour l'espacement et l'alignement des tuiles en mode liste */
+.tile-container.list .tile {
+    margin-bottom: 8px !important;
+}
