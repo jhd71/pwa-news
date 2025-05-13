@@ -95,30 +95,24 @@
 }
 
 /* 8. Badge "DIRECT" amélioré pour les chaînes TV */
-.tile.live-content::before {
-    content: '•DIRECT';
+.tile.live-content .tile-content::before {
+    content: 'DIRECT';
     position: absolute;
     left: 8px;
     top: 8px;
-    font-size: 11px;
-    color: white; /* Texte blanc */
-    background-color: rgba(255, 59, 59, 0.9); /* Fond rouge semi-transparent */
-    padding: 2px 8px;
-    border-radius: 12px;
+    font-size: 10px;
+    color: white;
+    background-color: #ff3d3d;
+    padding: 1px 6px;
+    border-radius: 10px;
     z-index: 3;
     font-weight: bold;
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.7); /* Contour blanc */
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5); /* Ombre du texte */
+    border: 1px solid white;
 }
 
-/* Assurez-vous que rien d'autre n'affecte la tuile */
-.tile.live-content {
-    background-color: transparent !important; /* Force la transparence pour ne pas affecter la tuile */
-}
-
-/* Assurez-vous que le contenu de la tuile reste visible */
-.tile.live-content .tile-content {
-    background-color: transparent !important;
+/* On s'assure que le pseudo-élément ::before standard n'est pas utilisé */
+.tile.live-content::before {
+    display: none;
 }
 
 /* Supprime les animations de hover 3D */
