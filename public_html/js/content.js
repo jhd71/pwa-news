@@ -783,8 +783,8 @@ class ContentManager {
                     icon: '/images/icon-192.png'
                 });
             }
-        }
-    }*/
+        }*/
+    }
 
     editSite(site) {
         if (site.isDefault) {
