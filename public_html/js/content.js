@@ -417,7 +417,7 @@ class ContentManager {
         tile.classList.add('live-content');
     }
     
-    // Ajouter des classes spéciales pour les réseaux sociaux
+    // Ajouter des classes spéciales pour les icônes
     if (site.category === 'social') {
         if (site.title === 'YouTube') {
             tile.classList.add('tile-youtube');
@@ -426,6 +426,34 @@ class ContentManager {
         } else if (site.title === 'TikTok') {
             tile.classList.add('tile-tiktok');
         }
+    } else if (site.category === 'news') {
+        if (site.title === 'Montceau News' || site.url.includes('montceau-news')) {
+            tile.classList.add('tile-montceau-news');
+        } else if (site.title === 'Le JSL' || site.url.includes('lejsl.com')) {
+            tile.classList.add('tile-jsl');
+        } else if (site.title === 'L\'Informateur de Bourgogne' || site.url.includes('informateurdebourgogne')) {
+            tile.classList.add('tile-informateur');
+        }
+    } else if (site.category === 'tv') {
+        if (site.title === 'France 3 Bourgogne' || site.url.includes('france3')) {
+            tile.classList.add('tile-france3');
+        } else if (site.title === 'BFMTV' || site.url.includes('bfmtv')) {
+            tile.classList.add('tile-bfmtv');
+        } else if (site.title === 'CNews' || site.url.includes('cnews')) {
+            tile.classList.add('tile-cnews');
+        } else if (site.title === 'FranceTV Info' || site.url.includes('francetvinfo')) {
+            tile.classList.add('tile-francetv');
+        }
+    } else if (site.category === 'sports') {
+        if (site.title.includes('Foot') || site.url.includes('foot')) {
+            tile.classList.add('tile-foot');
+        } else if (site.title.includes('Basket') || site.url.includes('basket')) {
+            tile.classList.add('tile-basket');
+        } else if (site.title.includes('Rugby') || site.url.includes('rugby')) {
+            tile.classList.add('tile-rugby');
+        }
+    } else if (site.category === 'radio') {
+        tile.classList.add('tile-radio');
     }
     
     // Structure HTML de la tuile
@@ -435,9 +463,9 @@ class ContentManager {
         </div>
     `;
 
-        // Stockage de l'URL pour faciliter l'accès
-        tile.dataset.siteUrl = site.url;
-        tile.dataset.mobileSiteUrl = site.mobileUrl || site.url;
+    // Stockage de l'URL pour faciliter l'accès
+    tile.dataset.siteUrl = site.url;
+    tile.dataset.mobileSiteUrl = site.mobileUrl || site.url;
         
         // Gestion du clic normal
         tile.addEventListener('click', () => {

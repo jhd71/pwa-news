@@ -218,3 +218,120 @@
 .tile-menu button:hover {
     background-color: rgba(255, 255, 255, 0.15) !important;
 }
+
+/* Icône pour Montceau News */
+.tile-montceau-news .tile-title::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    vertical-align: middle;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/><path d="M14 17H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>');
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+/* Icône pour JSL */
+.tile-jsl .tile-title::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    vertical-align: middle;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M20 3H4c-1.1 0-1.99.9-1.99 2L2 19c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 16H5V7h14v12z"/><path d="M14 12l-2-2-2 2 2 2 2-2zm-6-6h8v2H8zm0 8h4v2H8z"/></svg>');
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+/* Icône pour L'Informateur de Bourgogne */
+.tile-informateur .tile-title::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    vertical-align: middle;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>');
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+/* Icône pour France 3 Bourgogne et FranceTV */
+.tile-france3, .tile-francetv .tile-title::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    vertical-align: middle;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M21 6h-7.59l3.29-3.29L16 2l-4 4-4-4-.71.71L10.59 6H3c-1.1 0-2 .89-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.11-.9-2-2-2zm0 14H3V8h18v12zM9 10v8l7-4z"/></svg>');
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+/* Icône pour BFMTV et CNews */
+.tile-bfmtv, .tile-cnews .tile-title::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    vertical-align: middle;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M13 16.13v-2.38c-2.5.75-4.37 2.57-5.19 5.25h8.69c-.69-1.31-1.88-2.37-3.5-2.87zM19 2H5C3.89 2 3 2.89 3 4v10c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.11-.9-2-2-2zm0 12H5V4h14v10zm-5.45-3.16L12 9.19l-1.55 1.65-3.95-3.96L5 8.46l7 6.99 7-6.99-1.55-1.58z"/></svg>');
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+/* Icône pour les sites de foot */
+.tile-foot .tile-title::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    vertical-align: middle;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 3.3l1.35-.95c1.82.56 3.37 1.76 4.38 3.34l-.39 1.34-1.35.46L13 6.7V5.3zm-3.35-.95L11 5.3v1.4L7.01 9.49l-1.35-.46-.39-1.34c1.01-1.57 2.56-2.77 4.38-3.34zM7.08 17.11l-1.14.1C4.73 15.81 4 13.99 4 12c0-.12.01-.23.02-.35l1-.73 1.38.48 1.46 4.34-.78 1.37zm7.42 2.48c-.79.26-1.63.41-2.5.41s-1.71-.15-2.5-.41l-.69-1.49.64-1.1h5.11l.64 1.11-.7 1.48zM14.27 15H9.73l-1.35-4.02L12 8.44l3.63 2.54L14.27 15zm3.79 2.21l-1.14-.1-.79-1.37 1.46-4.34 1.39-.47 1 .73c.01.11.02.22.02.34 0 1.99-.73 3.81-1.94 5.21z"/></svg>');
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+/* Icône pour basket */
+.tile-basket .tile-title::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    vertical-align: middle;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M17.09 11h4.86c-.16-1.61-.71-3.11-1.54-4.4-1.73.83-2.99 2.45-3.32 4.4zM6.91 11c-.33-1.95-1.59-3.57-3.32-4.4-.83 1.29-1.38 2.79-1.54 4.4h4.86zm8.16 0c.32-2.59 1.88-4.79 4.06-6-1.6-1.63-3.74-2.71-6.13-2.95V11h2.07zm-6.14 0H11V2.05C8.61 2.29 6.46 3.37 4.87 5c2.18 1.21 3.74 3.41 4.06 6zm6.14 2H13v8.95c2.39-.24 4.54-1.32 6.13-2.95-2.18-1.21-3.74-3.41-4.06-6zM3.59 17.4c1.72-.83 2.99-2.46 3.32-4.4H2.05c.16 1.61.71 3.11 1.54 4.4zm13.5-4.4c.33 1.95 1.59 3.57 3.32 4.4.83-1.29 1.38-2.79 1.54-4.4h-4.86zm-8.16 0c-.32 2.59-1.88 4.79-4.06 6 1.6 1.63 3.74 2.71 6.13 2.95V13H8.93z"/></svg>');
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+/* Icône pour rugby */
+.tile-rugby .tile-title::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    vertical-align: middle;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M14.27 6c-.55.95-.22 2.2.82 2.77.95.54 2.2.21 2.77-.83.53-.95.21-2.2-.84-2.77-.54-.54-1.8-.21-2.75.83zM12 2c5.33 0 9.27 5 8.27 10.5-2.48 3.13-6 3.9-10.53 1.5-3.9-2.1-8.48-2.42-10.46-2.42-.46 0-.86.02-1.2.05C.17 12.83 0 13.5 0 14.18V17c0 1.1.9 2 2 2h8.17c.85 1.31 1.73 2.7 3.83 2.7 2.1 0 2.46-.82 3.56-2.7H22c1.1 0 2-.9 2-2v-2.82c0-.68-.17-1.35-.44-1.95-1.12-3.97-4.78-7-9.56-7.33 0 0 4.5 2.67 5.5 6.33.17.47.27.97.27 1.5 0 .03-.01.06-.01.1-.95-1.7-3.2-2.93-5.76-2.93-2.57 0-4.82 1.23-5.77 2.93 0-.04-.01-.07-.01-.1 0-2.2 1.5-6.5 5.78-6.5zM12 22s-1.63-2-3.5-2c-.83 0-1.5.67-1.5 1.5S7.67 23 8.5 23c1.87 0 3.5-1 3.5-1zm1-9.5c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>');
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+/* Icône pour radio */
+.tile-radio .tile-title::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    vertical-align: middle;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M3.24 6.15C2.51 6.43 2 7.17 2 8v12c0 1.1.89 2 2 2h16c1.11 0 2-.9 2-2V8c0-1.11-.89-2-2-2H8.3l8.26-3.34L15.88 1 3.24 6.15zM7 20c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm13-8h-2v-2h-2v2H4V8h16v4z"/></svg>');
+    background-repeat: no-repeat;
+    background-size: contain;
+}
