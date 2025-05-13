@@ -415,31 +415,64 @@
     background-repeat: no-repeat;
     background-size: contain;
 }
+/* Correction complète pour le mode liste - alignement cohérent */
 
-/* Correction pour l'affichage des titres en mode liste pour les tuiles TV */
-.tile-container.list .tile[data-category="tv"] .tile-title {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
+/* Tuiles standard en mode liste */
+.tile-container.list .tile {
+    position: relative;
+    height: 60px !important;
+}
+
+/* Contenu des tuiles en mode liste */
+.tile-container.list .tile .tile-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centre le contenu horizontalement */
+    padding: 0 20px;
+}
+
+/* Titres des tuiles en mode liste */
+.tile-container.list .tile .tile-title {
+    text-align: center;
+    width: auto;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Badge DIRECT en mode liste */
+.tile-container.list .tile.live-content .tile-content::before {
     position: absolute;
-    right: 50px; /* Position à droite du badge DIRECT */
-    left: auto;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+}
+
+/* Tuiles TV spécifiquement */
+.tile-container.list .tile[data-category="tv"] .tile-content {
+    justify-content: flex-end; /* Aligner à droite pour laisser de la place au badge */
+    padding-right: 40px; /* Espace à droite */
+    padding-left: 80px; /* Espace pour le badge DIRECT */
+}
+
+/* Réaligner le texte des tuiles TV */
+.tile-container.list .tile[data-category="tv"] .tile-title {
+    margin-left: 0;
+    margin-right: 0;
     text-align: right;
 }
 
-/* Assurer que le badge DIRECT reste visible en mode liste */
-.tile-container.list .tile.live-content .tile-content::before {
-    display: block !important;
-    left: 8px;
-    top: 50%;
-    transform: translateY(-50%); /* Centrer verticalement */
+/* Style pour les icônes à côté des titres */
+.tile-container.list .tile .tile-title::before {
+    display: inline-block !important;
+    margin-right: 10px !important;
+    vertical-align: middle !important;
 }
 
-/* Positionnement du titre dans les tuiles en mode liste */
-.tile-container.list .tile .tile-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-left: 80px !important; /* Espace pour le badge DIRECT */
-    padding-right: 15px !important;
+/* Pour rendre le CSS plus prioritaire, on peut utiliser !important */
+.tile-container.list .tile:not([data-category="tv"]) .tile-title {
+    justify-content: center !important;
 }
