@@ -672,3 +672,56 @@
 .tile-container.list .tile {
     margin-bottom: 6px !important; /* Espacement réduit entre les tuiles */
 }
+/* Correction pour le panneau de paramètres qui se referme */
+
+/* Fix le problème de comportement du panneau de paramètres */
+.settings-menu {
+    /* Assurer que le panneau reste à sa place */
+    transition: right 0.3s ease, transform 0.01s linear !important;
+    transform: none !important;
+    z-index: 999 !important;
+}
+
+.settings-menu.open {
+    /* Forcer le panneau à rester ouvert */
+    right: 0 !important;
+    transform: none !important;
+}
+
+/* Stabiliser les boutons du panneau paramètres */
+.settings-section button,
+.font-size-tile,
+[data-section="taille-texte"] button,
+.text-size button {
+    /* Améliorer le comportement au clic */
+    transition: background 0.2s ease !important;
+    transform: none !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+/* Empêcher les animations parasites */
+.settings-menu.open body,
+.settings-menu.open .tile-container,
+.settings-menu.open main {
+    transform: none !important;
+    transition: none !important;
+}
+
+/* Stabiliser l'interaction avec les boutons de taille de texte */
+.settings-menu button:active {
+    transform: scale(0.97) !important;
+    opacity: 0.9 !important;
+}
+
+/* Assurer que les clics sur les boutons ne traversent pas vers l'arrière-plan */
+.settings-content {
+    isolation: isolate !important;
+    z-index: 1000 !important;
+}
+
+/* Éviter les conflits de z-index */
+.settings-menu * {
+    transform-style: flat !important;
+    backface-visibility: hidden !important;
+}
