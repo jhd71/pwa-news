@@ -206,17 +206,3 @@ body.rouge-theme .gear-icon {
 .news-panel {
 	z-index: 1020 !important;
 	}
-	
-.weather-sidebar {
-        position: fixed !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
-        width: 92% !important;
-        max-width: 310px !important;
-        max-height: 72vh !important;
-        overflow-y: hidden !important;
-        z-index: 9999 !important;
-        border-radius: 16px !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }	
