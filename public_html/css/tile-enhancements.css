@@ -108,7 +108,7 @@
     opacity: 0;
 }
 
-/* Badge "DIRECT" mis en évidence - correction */
+/* Badge "DIRECT" uniquement pour le texte - solution révisée */
 .tile.live-content::before {
     content: 'DIRECT';
     position: absolute;
@@ -122,15 +122,30 @@
     z-index: 3;
     font-weight: bold;
     border: 1px solid white;
-    display: block !important; /* Forcer l'affichage */
+    display: block !important;
+    width: auto; /* S'assurer que la largeur est limitée au contenu */
+    height: auto; /* S'assurer que la hauteur est limitée au contenu */
 }
 
-/* Suppression du pseudo-élément ::before sur tile-content */
-.tile.live-content .tile-content::before {
-    display: none !important;
+/* S'assurer que le reste de la tuile n'est pas affecté */
+.tile.live-content {
+    background: transparent !important;
 }
 
-/* Supprimer toutes les icônes dans les tuiles TV */
+.tile.live-content .tile-content {
+    background: transparent !important;
+}
+
+/* Réinitialiser les styles potentiellement problématiques */
+.tile[data-category="tv"] {
+    background: inherit; /* Utiliser la couleur de fond normale de la tuile */
+}
+
+.tile[data-category="tv"] .tile-content {
+    background: transparent !important;
+}
+
+/* Supprimer les icônes des tuiles TV */
 .tile[data-category="tv"] .tile-title::before {
     display: none !important;
 }
