@@ -241,7 +241,7 @@ class ContentManager {
         this.tileContainer.appendChild(separator2);
 
         // Section TV
-        const tvSites = [
+const tvSites = [
     {
         title: 'FR3 Bourgogne', // Raccourci de "France 3 Bourgogne"
         url: 'https://www.francebleu.fr/tv/direct/bourgogne',
