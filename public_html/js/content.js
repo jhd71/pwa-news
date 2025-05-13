@@ -1359,51 +1359,71 @@ class ContentManager {
     }
     
     markSiteAsRead(tile, site) {
-        tile.classList.remove('has-new-content');
-        localStorage.setItem(`lastVisit_${site.url}`, Date.now().toString());
-        this.showToast(`${site.title} marqué comme lu`);
+    // Supprimer la classe qui indique un nouveau contenu
+    tile.classList.remove('has-new-content');
+    
+    // Supprimer l'attribut data-has-update si présent
+    tile.removeAttribute('data-has-update');
+    
+    // Enregistrer le timestamp de la dernière visite
+    localStorage.setItem(`lastVisit_${site.url}`, Date.now().toString());
+    
+    // Afficher une notification
+    this.showToast(`${site.title} marqué comme lu`);
+}
+
+// Modifiez aussi cette méthode dans votre code existant
+checkSitesUpdates() {
+    // Sites qui pourraient avoir des mises à jour
+    const sitesData = [
+        { url: 'montceau-news.com', category: 'news', hasUpdate: false },  // Changé à false par défaut
+        { url: 'lejsl.com', category: 'news', hasUpdate: false },
+        { url: 'francebleu', category: 'radio', hasUpdate: false },
+        { url: 'bfmtv.com', category: 'tv', hasUpdate: false },
+        { url: 'francetvinfo.fr', category: 'tv', hasUpdate: false },
+        { url: 'footmercato', category: 'sports', hasUpdate: false }
+    ];
+    
+    // Dans une vraie application, vous feriez une requête API pour vérifier
+    // les mises à jour réelles. Pour l'instant, on simule juste 1 ou 2 sites mis à jour
+    
+    // Choisir aléatoirement 1 à 2 sites pour simuler une mise à jour
+    const updatesCount = Math.floor(Math.random() * 2) + 1;
+    for (let i = 0; i < updatesCount; i++) {
+        const randomIndex = Math.floor(Math.random() * sitesData.length);
+        sitesData[randomIndex].hasUpdate = true;
     }
     
-    checkSitesUpdates() {
-        // Cette fonction simule une vérification des mises à jour
-        // Dans une application réelle, vous utiliseriez des appels API
-        
-        // Liste des sites qui pourraient avoir des mises à jour
-        const sitesData = [
-            { url: 'montceau-news.com', category: 'news', hasUpdate: Math.random() > 0.7 },
-            { url: 'lejsl.com', category: 'news', hasUpdate: Math.random() > 0.7 },
-            { url: 'francebleu', category: 'radio', hasUpdate: Math.random() > 0.8 },
-            { url: 'bfmtv.com', category: 'tv', hasUpdate: Math.random() > 0.7 },
-            { url: 'francetvinfo.fr', category: 'tv', hasUpdate: Math.random() > 0.7 },
-            { url: 'footmercato', category: 'sports', hasUpdate: Math.random() > 0.6 }
-        ];
-        
-        const updatedSites = [];
-        
-        // Parcourir tous les sites
-        sitesData.forEach(siteData => {
-            if (siteData.hasUpdate) {
-                updatedSites.push(siteData);
-                
-                // Marquer les tuiles correspondantes comme ayant du nouveau contenu
-                const tiles = document.querySelectorAll('.tile');
-                tiles.forEach(tile => {
-                    const siteUrl = tile.dataset.siteUrl || '';
-                    
-                    if (siteUrl.includes(siteData.url)) {
-                        tile.classList.add('has-new-content');
-                    }
-                });
-            }
-        });
-        
-        // Si des mises à jour ont été trouvées, notifier l'utilisateur
-        if (updatedSites.length > 0) {
-            const message = updatedSites.length === 1 
-                ? `Nouveau contenu sur ${updatedSites[0].url.split('.')[0]}` 
-                : `${updatedSites.length} sites ont du nouveau contenu`;
+    const updatedSites = [];
+    
+    // Parcourir tous les sites
+    sitesData.forEach(siteData => {
+        if (siteData.hasUpdate) {
+            updatedSites.push(siteData);
             
-            this.showToast(message);
+            // Marquer les tuiles correspondantes comme ayant du nouveau contenu
+            const tiles = document.querySelectorAll('.tile');
+            tiles.forEach(tile => {
+                const siteUrl = tile.dataset.siteUrl || '';
+                
+                if (siteUrl.includes(siteData.url)) {
+                    tile.classList.add('has-new-content');
+                    // Ajouter un attribut pour indiquer une vraie mise à jour
+                    tile.setAttribute('data-has-update', 'true');
+                }
+            });
+        }
+    });
+    
+    // Notification si des mises à jour ont été trouvées
+    if (updatedSites.length > 0) {
+        const message = updatedSites.length === 1 
+            ? `Nouveau contenu sur ${updatedSites[0].url.split('.')[0]}` 
+            : `${updatedSites.length} sites ont du nouveau contenu`;
+        
+        this.showToast(message);
+    }
+}
             
             // Notification si disponible
             if ('Notification' in window && Notification.permission === 'granted') {
