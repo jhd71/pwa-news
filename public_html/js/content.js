@@ -736,84 +736,105 @@ const tvSites = [
         }, 3000);
     }
 
-    showSettings() {
-        const existingPanel = document.querySelector('.settings-menu');
-        if (existingPanel) {
-            existingPanel.classList.remove('open');
-            setTimeout(() => {
-                existingPanel.remove();
-            }, 300);
-            return;
-        }
+    // Modifiez la fonction showSettings() dans content.js comme suit:
 
-        const panel = document.createElement('div');
-        panel.className = 'settings-menu';
-        panel.innerHTML = `
-            <div class="settings-header">
-                <h3>Paramètres</h3>
-                <button type="button" class="close-btn">
-                    <span class="material-icons">close</span>
-                </button>
-            </div>
-            <div class="settings-content">
-                <div class="settings-section">
-                    <h4>Taille du texte</h4>
-                    <div class="font-size-tiles">
-                        <div class="font-size-tile ${this.fontSize === 'small' ? 'active' : ''}" data-font-size="small">
-                            <span>Petit</span>
-                        </div>
-                        <div class="font-size-tile ${this.fontSize === 'normal' ? 'active' : ''}" data-font-size="normal">
-                            <span>Normal</span>
-                        </div>
-                        <div class="font-size-tile ${this.fontSize === 'large' ? 'active' : ''}" data-font-size="large">
-                            <span>Grand</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="settings-section">
-                    <h4>À propos</h4>
-                    <p class="version-text">Version 1.2</p>
-                    <div style="text-align: center; padding: 15px;">
-                        <img src="images/qrcode.png" alt="QR Code" style="max-width: 200px; width: 100%; height: auto;">
-                    </div>
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(panel);
-        setTimeout(() => panel.classList.add('open'), 10);
-
-        const closeBtn = panel.querySelector('.close-btn');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', () => {
-                panel.classList.remove('open');
-                setTimeout(() => panel.remove(), 300);
-            });
-        }
-
-        panel.querySelectorAll('.font-size-tile').forEach(tile => {
-            tile.addEventListener('click', () => {
-                const size = tile.dataset.fontSize;
-                this.changeFontSize(size);
-                panel.querySelectorAll('.font-size-tile').forEach(t => {
-                    t.classList.toggle('active', t.dataset.fontSize === size);
-                });
-            });
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!panel.contains(e.target) && !e.target.closest('#settingsButton')) {
-                panel.classList.remove('open');
-                setTimeout(() => panel.remove(), 300);
-            }
-        }, { capture: true });
+showSettings() {
+    const existingPanel = document.querySelector('.settings-menu');
+    if (existingPanel) {
+        existingPanel.classList.remove('open');
+        setTimeout(() => {
+            existingPanel.remove();
+        }, 300);
+        return;
     }
+
+    const panel = document.createElement('div');
+    panel.className = 'settings-menu';
+    panel.innerHTML = `
+        <div class="settings-header">
+            <h3>Paramètres</h3>
+            <button type="button" class="close-btn">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="settings-content">
+            <div class="settings-section">
+                <h4>Taille du texte</h4>
+                <div class="font-size-tiles">
+                    <div class="font-size-tile ${this.fontSize === 'small' ? 'active' : ''}" data-font-size="small">
+                        <span>Petit</span>
+                    </div>
+                    <div class="font-size-tile ${this.fontSize === 'normal' ? 'active' : ''}" data-font-size="normal">
+                        <span>Normal</span>
+                    </div>
+                    <div class="font-size-tile ${this.fontSize === 'large' ? 'active' : ''}" data-font-size="large">
+                        <span>Grand</span>
+                    </div>
+                </div>
+            </div>
+            <div class="settings-section">
+                <h4>À propos</h4>
+                <p class="version-text">Version 1.2</p>
+                <div style="text-align: center; padding: 15px;">
+                    <img src="images/qrcode.png" alt="QR Code" style="max-width: 200px; width: 100%; height: auto;">
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(panel);
+    setTimeout(() => panel.classList.add('open'), 10);
+
+    const closeBtn = panel.querySelector('.close-btn');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            panel.classList.remove('open');
+            setTimeout(() => panel.remove(), 300);
+        });
+    }
+
+    // MODIFICATION : Stocker une référence pour savoir si on est en train de traiter un changement de taille
+    let isProcessingFontSizeChange = false;
+
+    panel.querySelectorAll('.font-size-tile').forEach(tile => {
+        tile.addEventListener('click', (e) => {
+            // MODIFICATION : Empêcher la propagation pour éviter la fermeture
+            e.stopPropagation();
+            
+            // MODIFICATION : Indiquer qu'on est en train de traiter un changement
+            isProcessingFontSizeChange = true;
+            
+            const size = tile.dataset.fontSize;
+            this.changeFontSize(size);
+            panel.querySelectorAll('.font-size-tile').forEach(t => {
+                t.classList.toggle('active', t.dataset.fontSize === size);
+            });
+            
+            // MODIFICATION : Réinitialiser le flag après un délai
+            setTimeout(() => {
+                isProcessingFontSizeChange = false;
+            }, 500);
+        });
+    });
+
+    // MODIFICATION : Ajouté une condition pour ne pas fermer pendant le traitement d'un changement
+    document.addEventListener('click', (e) => {
+        if (!panel.contains(e.target) && !e.target.closest('#settingsButton') && !isProcessingFontSizeChange) {
+            panel.classList.remove('open');
+            setTimeout(() => panel.remove(), 300);
+        }
+    }, { capture: true });
+}
+
+// Modifiez la fonction changeFontSize() dans content.js comme suit:
+
+changeFontSize(size) {
+    // Sauvegarder la nouvelle taille
+    this.fontSize = size;
+    localStorage.setItem('fontSize', size);
     
-    changeFontSize(size) {
-        // Sauvegarder la nouvelle taille
-        this.fontSize = size;
-        localStorage.setItem('fontSize', size);
-        
+    // MODIFICATION : Délai avant de rafraîchir l'affichage pour éviter les problèmes
+    setTimeout(() => {
         // Appliquer la taille au document
         document.documentElement.setAttribute('data-font-size', size);
         
@@ -828,7 +849,8 @@ const tvSites = [
                 'grande'
             }`);
         }
-    }
+    }, 50); // Petit délai pour laisser le DOM se stabiliser
+}
 
     handleInstall() {
         if (this.deferredPrompt) {
