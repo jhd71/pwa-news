@@ -433,6 +433,12 @@ class ContentManager {
             tile.classList.add('tile-jsl');
         } else if (site.title === 'L\'Informateur de Bourgogne' || site.url.includes('informateurdebourgogne')) {
             tile.classList.add('tile-informateur');
+        } else if (site.title === 'Creusot Infos' || site.url.includes('creusot-infos')) {
+            tile.classList.add('tile-creusot');
+        } else if (site.title === 'Faits Divers Saône-et-Loire' || site.url.includes('faitsdivers')) {
+            tile.classList.add('tile-faits-divers');
+        } else if (site.title === 'Mâcon-Infos' || site.url.includes('macon-infos')) {
+            tile.classList.add('tile-macon');
         }
     } else if (site.category === 'tv') {
         if (site.title === 'France 3 Bourgogne' || site.url.includes('france3')) {
