@@ -405,24 +405,35 @@ class ContentManager {
     }
 
     createTile(site) {
-        const tile = document.createElement('div');
-        tile.className = 'tile';
-        
-        // Ajouter l'attribut data-category pour faciliter le ciblage CSS
-        tile.setAttribute('data-category', site.category || 'default');
-        
-        // Ajouter des classes conditionnelles pour les designs spéciaux
-        // N'ajoute le badge DIRECT qu'aux chaînes TV, pas à Foot-Live
-        if (site.isLive && site.category === 'tv') {
-            tile.classList.add('live-content');
+    const tile = document.createElement('div');
+    tile.className = 'tile';
+    
+    // Ajouter l'attribut data-category pour faciliter le ciblage CSS
+    tile.setAttribute('data-category', site.category || 'default');
+    
+    // Ajouter des classes conditionnelles pour les designs spéciaux
+    // N'ajoute le badge DIRECT qu'aux chaînes TV, pas à Foot-Live
+    if (site.isLive && site.category === 'tv') {
+        tile.classList.add('live-content');
+    }
+    
+    // Ajouter des classes spéciales pour les réseaux sociaux
+    if (site.category === 'social') {
+        if (site.title === 'YouTube') {
+            tile.classList.add('tile-youtube');
+        } else if (site.title === 'Twitch') {
+            tile.classList.add('tile-twitch');
+        } else if (site.title === 'TikTok') {
+            tile.classList.add('tile-tiktok');
         }
-        
-        // Structure HTML de la tuile
-        tile.innerHTML = `
-            <div class="tile-content">
-                <div class="tile-title">${site.title}</div>
-            </div>
-        `;
+    }
+    
+    // Structure HTML de la tuile
+    tile.innerHTML = `
+        <div class="tile-content">
+            <div class="tile-title">${site.title}</div>
+        </div>
+    `;
 
         // Stockage de l'URL pour faciliter l'accès
         tile.dataset.siteUrl = site.url;
