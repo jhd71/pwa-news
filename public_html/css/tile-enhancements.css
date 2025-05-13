@@ -101,15 +101,29 @@
     left: 8px;
     top: 8px;
     font-size: 11px;
-    color: #ffffff; /* Texte blanc */
-    background-color: rgba(255, 0, 0, 0.7); /* Fond rouge semi-transparent */
+    color: #ff3a3a; /* Texte rouge vif */
+    background-color: white; /* Fond blanc */
     padding: 2px 6px;
-    border-radius: 10px;
+    border-radius: 12px;
     z-index: 3;
     font-weight: bold;
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5); /* Contour blanc */
-    text-shadow: 0 0 2px rgba(0, 0, 0, 0.8); /* Ombre du texte */
-    letter-spacing: 0.5px; /* Espacement des lettres */
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.4); /* Ombre légère autour du badge */
+    border: 1px solid rgba(255, 0, 0, 0.5); /* Bordure rouge */
+}
+
+/* Version pour le thème sombre - pour assurer la visibilité */
+[data-theme="dark"] .tile.live-content::before {
+    background-color: white; /* Garde le fond blanc même en mode sombre */
+    color: #ff3a3a; /* Rouge vif */
+    border: 1px solid rgba(255, 0, 0, 0.7); /* Bordure rouge plus visible */
+}
+
+/* Version pour le thème rouge - pour assurer le contraste */
+[data-theme="rouge"] .tile.live-content::before {
+    background-color: white; /* Fond blanc */
+    color: #b71c1c; /* Rouge plus foncé pour contraster avec le thème rouge */
+    border: 1px solid #b71c1c; /* Bordure assortie */
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.6); /* Halo blanc */
 }
 
 /* Supprime les animations de hover 3D */
