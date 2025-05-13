@@ -672,86 +672,49 @@
 .tile-container.list .tile {
     margin-bottom: 6px !important; /* Espacement réduit entre les tuiles */
 }
-/* Correction pour le panneau de paramètres - Version compatible */
+/* Correction simplifiée pour le menu paramètres - ne modifie que les interactions */
 
-/* Ces styles sont conçus pour coexister avec styles.css */
-/* Stabiliser uniquement le comportement problématique sans toucher au design existant */
-
-/* Stabiliser le panneau de paramètres sans modifier son apparence */
-.settings-panel, 
-body > .settings, 
-div[id*="settings"], 
-div[class*="settings"],
-.parametres {
-    position: fixed !important; /* Position fixe pour éviter les mouvements */
-    z-index: 9999 !important; /* S'assurer qu'il est au-dessus de tout */
-    transform: none !important; /* Empêcher les transformations indésirables */
-    backface-visibility: hidden !important; /* Prévenir les glitches visuels */
-    -webkit-backface-visibility: hidden !important;
-}
-
-/* Boutons de sélection de taille de texte - version minimale */
-.settings button[class*="text-size"],
-.settings-panel button[class*="text-size"],
-.text-size-buttons button,
-button[data-size] {
-    pointer-events: auto !important;
-    -webkit-tap-highlight-color: transparent !important;
-    will-change: auto !important; /* Désactive l'optimisation qui pourrait causer des problèmes */
-}
-
-/* Empêcher la propagation des événements pour garder le panneau ouvert */
-.settings button,
-.settings-panel button,
-.settings .option,
-.settings-panel .option {
-    transform: translateZ(0) !important; /* Force le rendu hardware pour éviter les bugs */
-    position: relative !important;
-    z-index: 1 !important;
-}
-
-/* Solution contre le mouvement des tuiles en arrière-plan */
-body.settings-open .tile-container,
-body.menu-open .tile-container,
-body[class*="settings"] .tile-container {
-    transform: none !important; 
-    transition: none !important;
-    animation: none !important;
-}
-
-/* Script de solution temporaire - à placer à la fin du fichier */
-/* Ce code utilise !important uniquement sur les propriétés critiques */
-
-/* Assurer que les boutons de taille restent visibles et fonctionnels */
-.taille-texte button,
-[data-section="taille-texte"] button,
-.text-size button,
-#taille-texte button {
-    opacity: 1 !important;
-    visibility: visible !important;
-    transition-property: background-color !important;
-}
-
-/* Stabiliser tout le contenu principal quand les paramètres sont ouverts */
-html, body {
-    overflow-x: hidden !important; /* Empêcher le déplacement horizontal */
-}
-
-/* Hack spécifique pour empêcher le mouvement parasite lors du clic */
-/* Ceci désactive temporairement les animations qui pourraient causer le problème */
-.settings button:active ~ *,
-.parametres button:active ~ * {
-    animation-play-state: paused !important;
-    transition: none !important;
-}
-
-/* Correction finale : si les solutions ci-dessus ne fonctionnent pas complètement,
-   cette règle force le navigateur à recomposer la page lors des interactions avec le menu */
-.settings-panel, 
-.settings-panel *,
+/* Annuler les règles qui causent des problèmes */
+.settings-panel,
 .parametres,
-.parametres * {
-    contain: none !important; /* Désactive l'optimisation de containment qui peut causer des bugs visuels */
-    z-index: auto !important; /* Réinitialise l'ordre d'empilement */
-    z-index: 9999 !important; /* Puis force un ordre d'empilement élevé */
+.settings,
+div[id*="settings"],
+div[class*="settings"] {
+    position: static !important; /* Annule la position fixed qui cause le décalage */
+    height: auto !important; /* Restaure la hauteur automatique */
+    width: auto !important; /* Restaure la largeur automatique */
+    transform: none !important; /* Empêche toute transformation */
+    z-index: auto !important; /* Restaure l'ordre d'empilement normal */
+}
+
+/* Corriger les boutons de taille de texte */
+.taille-texte button,
+.size-button,
+button[data-size],
+[data-section="taille-texte"] button {
+    pointer-events: auto !important; /* S'assure que les clics fonctionnent */
+    position: static !important; /* Annule tout positionnement qui pourrait causer des problèmes */
+    transform: none !important; /* Empêche toute transformation */
+    transition: none !important; /* Désactive les transitions qui pourraient causer des problèmes */
+}
+
+/* Permettre les clics sur le QR code et autres éléments du panneau */
+.qr-code,
+.qr-code img,
+.parametres img,
+.settings-panel img {
+    pointer-events: auto !important;
+    z-index: auto !important;
+}
+
+/* Empêcher le mouvement des tuiles en arrière-plan, mais sans affecter le menu */
+body .tile-container {
+    transition: none !important;
+}
+
+/* Correction pour l'empilement des éléments du panneau */
+.parametres > *,
+.settings-panel > * {
+    position: relative !important;
+    z-index: auto !important; /* Restaure l'ordre d'empilement normal */
 }
