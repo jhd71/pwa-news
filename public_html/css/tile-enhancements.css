@@ -1,0 +1,347 @@
+/* Améliorations des tuiles pour Actu & Média */
+
+/* 1. Effet de survol amélioré avec zoom et ombre */
+.tile {
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.tile:hover {
+    transform: translateY(-8px) scale(1.03) !important;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2) !important;
+    filter: brightness(1.1) !important;
+    z-index: 10 !important;
+}
+
+/* 2. Effet de pulsation au clic */
+.tile:active, .tile.tile-click {
+    animation: pulse 0.3s ease-in-out !important;
+    transform: scale(0.95) !important;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.95); }
+    50% { transform: scale(0.98); }
+    100% { transform: scale(0.95); }
+}
+
+/* 3. Effet de brillance qui se déplace au survol */
+.tile::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        transparent 100%
+    );
+    z-index: 1;
+    transform: skewX(-15deg);
+    transition: left 0.8s ease;
+    pointer-events: none;
+}
+
+.tile:hover::before {
+    left: 150%;
+}
+
+/* 4. Amélioration du contenu des tuiles */
+.tile-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 2;
+    padding: 15px 10px !important;
+}
+
+/* 5. Style du titre amélioré */
+.tile-title {
+    font-weight: 700 !important;
+    text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.4) !important;
+    letter-spacing: 0.5px;
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.tile:hover .tile-title {
+    transform: scale(1.1) !important;
+}
+
+/* 6. Correction des indicateurs de nouveau contenu */
+.tile.has-new-content::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 10px;
+    height: 10px;
+    background-color: #FFD700;
+    border-radius: 50%;
+    box-shadow: 0 0 5px #FFD700;
+    animation: blink 1.5s infinite;
+    z-index: 3;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+/* 7. Animation d'apparition pour les tuiles */
+@keyframes tilesAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tile {
+    animation: tilesAppear 0.5s ease forwards;
+    animation-delay: calc(var(--tile-index, 0) * 0.05s);
+    opacity: 0;
+}
+
+/* 8. Badge pour les sites populaires */
+.tile.popular::before {
+    content: 'trending_up';
+    font-family: 'Material Icons';
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    font-size: 16px;
+    color: #FFD700;
+    z-index: 3;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* 9. Badge "DIRECT" pour les chaînes TV en direct */
+.tile.live-content::before {
+    content: '•DIRECT';
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    font-size: 12px;
+    color: #FF5252;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 2px 6px;
+    border-radius: 10px;
+    z-index: 3;
+    font-weight: bold;
+    animation: blink 1.5s infinite;
+}
+
+/* 10. Effet de hover pour le mode sombre */
+[data-theme="dark"] .tile:hover {
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4) !important;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0)) !important;
+}
+
+/* 11. Effet de hover pour le thème rouge */
+[data-theme="rouge"] .tile:hover {
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+/* 12. Menu contextuel des tuiles */
+.tile-menu {
+    border-radius: 12px !important;
+    overflow: hidden;
+    animation: menuFadeIn 0.2s ease-out;
+    background-color: var(--primary-color) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3) !important;
+    z-index: 9999 !important;
+}
+
+@keyframes menuFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.tile-menu button {
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+    padding: 12px 16px !important;
+    color: white !important;
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+}
+
+.tile-menu button:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.tile-menu button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.4s ease, height 0.4s ease;
+}
+
+.tile-menu button:hover::before {
+    width: 150%;
+    height: 150%;
+}
+
+/* 13. Badge de notification pour les catégories */
+.category-badge {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #FF5252;
+    color: white;
+    border-radius: 12px;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    animation: pulse 2s infinite;
+    z-index: 2;
+}
+
+/* Adaptation selon le thème */
+[data-theme="dark"] .category-badge {
+    background-color: #FF7043;
+}
+
+[data-theme="rouge"] .category-badge {
+    background-color: #FFD700;
+    color: #a32f2a;
+}
+
+/* Position relative pour les séparateurs */
+.separator {
+    position: relative;
+}
+
+/* 14. Adaptation pour les appareils mobiles */
+@media (max-width: 600px) {
+    .tile {
+        border-radius: 12px !important;
+    }
+    
+    .tile:hover {
+        transform: translateY(-3px) !important;
+    }
+    
+    .tile-container.list .tile:hover {
+        transform: translateX(5px) !important;
+    }
+    
+    .tile.has-new-content::after {
+        width: 10px;
+        height: 10px;
+    }
+}
+
+/* Pour corriger les problèmes de notification aléatoire */
+/* Ce code force les notifs à n'apparaître que sur les sites visités moins récemment qu'une journée */
+.tile.has-new-content {
+    position: relative;
+}
+
+/* Supprime l'indicateur de notification au clic sur la tuile */
+.tile.tile-click.has-new-content::after,
+.tile:active.has-new-content::after {
+    display: none !important;
+}
+
+/* Empêche l'apparition aléatoire des notifications */
+.tile.has-new-content:not([data-has-update="true"])::after {
+    display: none !important;
+}
+
+/* Amélioration des toasts de notification */
+.toast {
+    position: fixed;
+    bottom: 90px;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
+    max-width: 90%;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    text-align: center;
+    font-size: var(--message-text-size);
+    animation: slideUp 0.4s ease, pulse 1.5s infinite;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Ajouter un effet de survol 3D pour les tuiles */
+.tile-container.grid .tile {
+    transition: all 0.4s ease;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+/* Adaptation pour la vue liste */
+.tile-container.list .tile {
+    height: 55px !important;
+    border-radius: 12px !important;
+    margin-bottom: 8px !important;
+}
+
+.tile-container.list .tile:hover {
+    transform: translateX(15px) scale(1.02) !important;
+}
+
+.tile-container.list .tile-title {
+    font-size: calc(var(--tile-title-size) - 1px) !important;
+}
+
+/* Gestion de l'appui long pour les tuiles */
+.tile-long-press {
+    transform: scale(0.95);
+    transition: transform 0.2s ease;
+}
