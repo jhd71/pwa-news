@@ -672,18 +672,3 @@
 .tile-container.list .tile {
     margin-bottom: 6px !important; /* Espacement réduit entre les tuiles */
 }
-/* Correction minimaliste pour le problème du menu paramètres en mode liste */
-
-/* Cette correction est extrêmement ciblée et ne touche que le strict minimum */
-
-/* 1. Supprimer uniquement les transitions du conteneur en mode liste lors de l'interaction avec le menu */
-.settings-menu.open ~ .tile-container.list {
-    transition: none !important;
-}
-
-/* 2. Forcer le panneau des paramètres à rester au-dessus de tout */
-.settings-menu.open {
-    z-index: 9999 !important;
-}
-
-/* C'est tout - aucune autre modification pour éviter de perturber la mise en page */
