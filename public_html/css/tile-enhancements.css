@@ -394,3 +394,17 @@
     background-repeat: no-repeat;
     background-size: contain;
 }
+
+/* Gestion spéciale pour France 3 Bourgogne sur mobile */
+@media (max-width: 480px) {
+    .tile[data-category="tv"] .tile-title:contains("France 3 Bourgogne") {
+        white-space: normal; /* Permet le retour à la ligne */
+        line-height: 1.2; /* Espacement entre les lignes */
+    }
+    
+    /* Version alternative avec une classe spécifique */
+    .tile-france3 .tile-title {
+        white-space: normal; /* Permet le retour à la ligne */
+        line-height: 1.2; /* Espacement entre les lignes */
+    }
+}
