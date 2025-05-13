@@ -11,9 +11,24 @@ body {
   padding-top: var(--safe-area-top) !important;
 }
 
+.app-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--header-height);
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    /* padding: 0 10px; */
+    z-index: 1005;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: visible;
+}
 /* 1. Remonter le logo du site */
 .site-logo, .logo-container, .site-title {
-  position: fixed !important;
+  position: relative !important;
   top: calc(var(--safe-area-top) + 10px) !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
