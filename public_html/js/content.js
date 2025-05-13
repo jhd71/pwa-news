@@ -1252,5 +1252,5 @@ class ContentManager {
         }
     }
 }
-
+}
 export default ContentManager;
