@@ -725,3 +725,91 @@
     transform-style: flat !important;
     backface-visibility: hidden !important;
 }
+/* Solution radicale pour le problème du panneau de paramètres */
+
+/* 1. Forcer le panneau à rester ouvert avec position fixed stricte */
+.settings-menu.open {
+    position: fixed !important;
+    top: var(--header-height) !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 30% !important;
+    max-width: 280px !important;
+    min-width: 280px !important;
+    height: calc(100vh - var(--header-height)) !important;
+    transform: none !important;
+    z-index: 9999 !important;
+    overflow-y: auto !important;
+    transition: none !important; /* Désactiver toutes les transitions */
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2) !important;
+    animation: none !important;
+}
+
+/* 2. Empêcher toute animation ou transition lors de l'interaction */
+.settings-menu.open *,
+.settings-menu.open button,
+.settings-menu.open .font-size-tile {
+    animation: none !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+}
+
+/* 3. Créer un overlay complet pour bloquer les interactions avec l'arrière-plan */
+body:has(.settings-menu.open)::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+    pointer-events: none;
+}
+
+/* 4. Version alternative de l'overlay pour les navigateurs qui ne supportent pas :has */
+.settings-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+    pointer-events: none;
+}
+
+.settings-menu.open + .settings-overlay {
+    display: block;
+}
+
+/* 5. Fixer les boutons de taille de texte pour qu'ils fonctionnent sans problème */
+.font-size-tile,
+[data-font-size] button,
+.settings-content button,
+.text-size button {
+    pointer-events: auto !important;
+    position: relative !important;
+    z-index: 10000 !important;
+    transition: none !important;
+    transform: none !important;
+}
+
+/* 6. Empêcher le contenu de l'arrière-plan de bouger */
+body:has(.settings-menu.open) .tile-container,
+body:has(.settings-menu.open) main {
+    pointer-events: none !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+}
+
+/* 7. Version alternative pour les navigateurs qui ne supportent pas :has */
+.settings-menu.open ~ .tile-container,
+.settings-menu.open ~ main {
+    pointer-events: none !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+}
