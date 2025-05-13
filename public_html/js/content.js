@@ -242,15 +242,14 @@ class ContentManager {
 
         // Section TV
         const tvSites = [
-            {
-                title: 'France 3<br>Bourgogne',
-                url: 'https://www.francebleu.fr/tv/direct/bourgogne',
-                mobileUrl: 'https://www.francebleu.fr/tv/direct/bourgogne',
-                isDefault: true,
-                category: 'tv',
-                isLive: true
-            },
-            {
+    {
+        title: 'FR3 Bourgogne', // Raccourci de "France 3 Bourgogne"
+        url: 'https://www.francebleu.fr/tv/direct/bourgogne',
+        mobileUrl: 'https://www.francebleu.fr/tv/direct/bourgogne',
+        isDefault: true,
+        category: 'tv',
+        isLive: true
+    },
                 title: 'BFMTV',
                 url: 'https://www.bfmtv.com/en-direct/',
                 mobileUrl: 'https://www.bfmtv.com/en-direct/',
