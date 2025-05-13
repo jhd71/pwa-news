@@ -1,30 +1,48 @@
 /* Améliorations des tuiles pour Actu & Média - Version corrigée */
 
-/* 1. Effet de survol amélioré avec zoom et ombre - ADOUCI */
+/* 1. Effet de survol amélioré avec scintillement et ombre */
 .tile {
-    transition: all 0.6s ease !important; /* Ralenti */
+    transition: all 0.6s ease !important;
     position: relative;
     overflow: hidden;
     border-radius: 12px !important;
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.08) !important; /* Ombre plus légère */
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.08) !important;
 }
 
 .tile:hover {
-    transform: translateY(-5px) scale(1.02) !important; /* Effet réduit */
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15) !important; /* Ombre plus légère */
-    filter: brightness(1.05) !important; /* Luminosité réduite */
+    transform: translateY(-3px) !important; /* Effet minimal */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15) !important;
+    filter: brightness(1.05) !important;
     z-index: 5 !important;
 }
 
 /* 2. Effet de pulsation au clic - ADOUCI */
 .tile:active, .tile.tile-click {
-    animation: none !important; /* Supprime l'animation de pulsation */
     transform: scale(0.98) !important; /* Simple réduction d'échelle */
 }
 
-/* 3. Effet de brillance qui se déplace au survol - DÉSACTIVÉ */
+/* 3. Effet de brillance qui se déplace au survol - RÉTABLI mais ADOUCI */
 .tile::before {
-    display: none !important; /* Désactive complètement l'effet de brillance */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.1) 50%, /* Moins brillant */
+        transparent 100%
+    );
+    z-index: 1;
+    transform: skewX(-15deg);
+    transition: left 1.2s ease; /* Plus lent */
+    pointer-events: none;
+}
+
+.tile:hover::before {
+    left: 150%;
 }
 
 /* 4. Amélioration du contenu des tuiles */
@@ -43,41 +61,26 @@
 /* 5. Style du titre amélioré */
 .tile-title {
     font-weight: 600 !important;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important; /* Ombre du texte adoucie */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
     letter-spacing: 0.3px;
     position: relative;
-    transition: transform 0.5s ease !important; /* Transition ralentie */
+    transition: transform 0.5s ease !important;
 }
 
 .tile:hover .tile-title {
-    transform: scale(1.05) !important; /* Effet réduit */
+    transform: scale(1.05) !important;
 }
 
-/* 6. Indicateur de nouveau contenu - CORRIGÉ */
+/* 6. Indicateur de nouveau contenu - DÉSACTIVÉ */
 .tile.has-new-content::after {
-    content: '';
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 8px;
-    height: 8px;
-    background-color: #FFD700;
-    border-radius: 50%;
-    box-shadow: 0 0 3px #FFD700;
-    animation: blink 2s infinite; /* Animation ralentie */
-    z-index: 3;
-}
-
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    display: none !important;
 }
 
 /* 7. Animation d'apparition pour les tuiles - RALENTIE */
 @keyframes tilesAppear {
     from {
         opacity: 0;
-        transform: translateY(10px); /* Déplacement réduit */
+        transform: translateY(10px);
     }
     to {
         opacity: 1;
@@ -86,78 +89,38 @@
 }
 
 .tile {
-    animation: tilesAppear 0.7s ease forwards; /* Animation ralentie */
-    animation-delay: calc(var(--tile-index, 0) * 0.07s); /* Délai augmenté */
+    animation: tilesAppear 0.7s ease forwards;
+    animation-delay: calc(var(--tile-index, 0) * 0.07s);
     opacity: 0;
 }
 
-/* 8. Badge pour les sites populaires - DÉSACTIVÉ */
-.tile.popular::before {
-    display: none !important; /* Désactive les badges populaires */
-}
-
-/* 9. Badge "DIRECT" pour les chaînes TV - ADOUCI */
+/* 8. Badge "DIRECT" pour les chaînes TV - RÉTABLI mais ADOUCI */
 .tile.live-content::before {
     content: '•DIRECT';
     position: absolute;
     left: 8px;
     top: 8px;
-    font-size: 10px; /* Taille réduite */
-    color: rgba(255, 82, 82, 0.9); /* Couleur plus douce */
-    background-color: rgba(0, 0, 0, 0.4); /* Fond plus transparent */
+    font-size: 10px;
+    color: rgba(255, 82, 82, 0.9);
+    background-color: rgba(0, 0, 0, 0.4);
     padding: 1px 5px;
     border-radius: 8px;
     z-index: 3;
     font-weight: bold;
-    animation: blink 2s infinite; /* Animation ralentie */
 }
 
-/* Supprime toutes les animations de hover 3D */
+/* Supprime les animations de hover 3D */
 .tile-container.grid .tile {
     transform-style: flat !important;
     perspective: none !important;
 }
 
-.tile:hover {
-    transform: translateY(-3px) !important; /* Effet simplifié */
-}
-
-/* Désactive complètement les notifications aléatoires */
-.tile.has-new-content:not([data-has-update="true"])::after {
-    display: none !important;
-}
-
-/* Même pour les vraies notifs, on désactive pour cette démo */
-.tile.has-new-content[data-has-update="true"]::after {
-    display: none !important;
-}
-
-/* Pour corriger le menu contextuel qui était trop sombre */
-.tile-menu {
-    background-color: var(--primary-color) !important;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
-    z-index: 9999 !important;
-    opacity: 0.95 !important; /* Légèrement transparent */
-}
-
-/* Animation du menu ralentie */
-@keyframes menuFadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-    to {
-        opacity: 0.95;
-        transform: scale(1);
-    }
-}
-
 /* Toast notifications - ADOUCI */
 .toast {
-    background-color: rgba(0, 0, 0, 0.7) !important; /* Fond plus simple et foncé */
+    background-color: rgba(0, 0, 0, 0.7) !important;
     color: white !important;
     border-radius: 8px !important;
-    animation: slideUp 0.5s ease !important; /* Animation simplifiée */
+    animation: slideUp 0.5s ease !important;
     font-weight: normal !important;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
 }
@@ -171,4 +134,44 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* Styles du menu contextuel */
+.tile-menu {
+    border-radius: 12px !important;
+    overflow: hidden;
+    animation: menuFadeIn 0.2s ease-out;
+    background-color: var(--primary-color) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3) !important;
+    z-index: 9999 !important;
+}
+
+@keyframes menuFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.tile-menu button {
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+    padding: 12px 16px !important;
+    color: white !important;
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+}
+
+.tile-menu button:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
 }

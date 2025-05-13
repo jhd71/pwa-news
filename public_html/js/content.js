@@ -1,7 +1,7 @@
 class ContentManager {
     constructor() {
         this.tileContainer = null;
-        this.currentTheme = localStorage.getItem('theme') || 'rouge'; // Thème par défaut: 'rouge'
+        this.currentTheme = localStorage.getItem('theme') || 'rouge';
         this.fontSize = localStorage.getItem('fontSize') || 'normal';
         this.deferredPrompt = null;
     }
@@ -26,113 +26,6 @@ class ContentManager {
         this.setupTheme();
         this.setupFontSize();
         this.setupTiles();
-        
-        // Ajouter les styles CSS pour les effets de tuiles
-        this.addTileEffectsStyles();
-        
-        // Vérifier les mises à jour toutes les 5 minutes
-        setInterval(() => this.checkSitesUpdates(), 5 * 60 * 1000);
-    }
-
-    addTileEffectsStyles() {
-        const styleElement = document.createElement('style');
-        styleElement.textContent = `
-            /* Effet de survol amélioré avec zoom et ombre */
-            .tile {
-                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-                position: relative;
-                overflow: hidden;
-                border-radius: 15px !important;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
-            }
-
-            .tile:hover {
-                transform: translateY(-8px) scale(1.03) !important;
-                box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2) !important;
-                filter: brightness(1.1) !important;
-                z-index: 10 !important;
-            }
-
-            /* Effet de pulsation au clic */
-            .tile:active, .tile.tile-click {
-                animation: pulse 0.3s ease-in-out !important;
-                transform: scale(0.95) !important;
-            }
-
-            @keyframes pulse {
-                0% { transform: scale(0.95); }
-                50% { transform: scale(0.98); }
-                100% { transform: scale(0.95); }
-            }
-
-            /* Effet de brillance qui se déplace au survol */
-            .tile::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -100%;
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(
-                    90deg,
-                    transparent 0%,
-                    rgba(255, 255, 255, 0.2) 50%,
-                    transparent 100%
-                );
-                z-index: 1;
-                transform: skewX(-15deg);
-                transition: left 0.8s ease;
-                pointer-events: none;
-            }
-
-            .tile:hover::before {
-                left: 150%;
-            }
-
-            /* Indicateur visuel pour les sites avec du nouveau contenu */
-            .tile.has-new-content::after {
-                content: '';
-                position: absolute;
-                top: 10px;
-                right: 10px;
-                width: 10px;
-                height: 10px;
-                background-color: #FFD700;
-                border-radius: 50%;
-                box-shadow: 0 0 5px #FFD700;
-                animation: blink 1.5s infinite;
-                z-index: 3;
-            }
-
-            @keyframes blink {
-                0%, 100% { opacity: 1; }
-                50% { opacity: 0.4; }
-            }
-
-            /* Animation d'apparition pour les tuiles */
-            @keyframes tilesAppear {
-                from {
-                    opacity: 0;
-                    transform: translateY(20px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            .tile {
-                animation: tilesAppear 0.5s ease forwards;
-                animation-delay: calc(var(--tile-index, 0) * 0.05s);
-                opacity: 0;
-            }
-
-            /* Pour corriger les problèmes de notification aléatoire */
-            .tile.has-new-content:not([data-has-update="true"])::after {
-                display: none !important;
-            }
-        `;
-        document.head.appendChild(styleElement);
     }
 
     setupEventListeners() {
@@ -422,8 +315,8 @@ class ContentManager {
                 url: 'https://www.footmercato.net/live/',
                 mobileUrl: 'https://www.footmercato.net/live/',
                 isDefault: true,
-                category: 'sports',
-                isLive: true
+                category: 'sports'
+                // isLive supprimé pour Foot-Live
             },
             {
                 title: 'ELAN Chalon Basket',
@@ -512,42 +405,33 @@ class ContentManager {
     }
 
     createTile(site) {
-    const tile = document.createElement('div');
-    tile.className = 'tile';
-    
-    // Ajouter l'attribut data-category pour faciliter le ciblage CSS
-    tile.setAttribute('data-category', site.category || 'default');
-    
-    // Ajouter des classes conditionnelles pour les designs spéciaux
-    // Vérifie si c'est vraiment un site de diffusion en direct
-    const isReallyLive = site.isLive && 
-                        (site.title.includes('TV') || 
-                         site.url.includes('direct') || 
-                         site.category === 'tv');
-    
-    // N'ajoute le badge DIRECT que pour les chaînes TV, pas pour Foot-Live
-    if (isReallyLive && site.title !== 'Foot-Live') {
-        tile.classList.add('live-content');
-    }
-    
-    // Structure HTML de la tuile
-    tile.innerHTML = `
-        <div class="tile-content">
-            <div class="tile-title">${site.title}</div>
-        </div>
-    `;
+        const tile = document.createElement('div');
+        tile.className = 'tile';
+        
+        // Ajouter l'attribut data-category pour faciliter le ciblage CSS
+        tile.setAttribute('data-category', site.category || 'default');
+        
+        // Ajouter des classes conditionnelles pour les designs spéciaux
+        // N'ajoute le badge DIRECT qu'aux chaînes TV, pas à Foot-Live
+        if (site.isLive && site.category === 'tv') {
+            tile.classList.add('live-content');
+        }
+        
+        // Structure HTML de la tuile
+        tile.innerHTML = `
+            <div class="tile-content">
+                <div class="tile-title">${site.title}</div>
+            </div>
+        `;
 
-    // Stockage de l'URL pour faciliter l'accès
-    tile.dataset.siteUrl = site.url;
-    tile.dataset.mobileSiteUrl = site.mobileUrl || site.url;
+        // Stockage de l'URL pour faciliter l'accès
+        tile.dataset.siteUrl = site.url;
+        tile.dataset.mobileSiteUrl = site.mobileUrl || site.url;
         
         // Gestion du clic normal
         tile.addEventListener('click', () => {
             this.animateTileClick(tile);
             window.open(site.mobileUrl || site.url, '_blank');
-            
-            // Marquer le site comme visité
-            this.markSiteAsRead(tile, site);
         });
 
         // Menu contextuel (clic droit)
@@ -631,7 +515,7 @@ class ContentManager {
         const menu = document.createElement('div');
         menu.className = 'tile-menu';
 
-        // Menu interactif enrichi
+        // Menu interactif réduit (sans l'option "Marquer comme lu")
         menu.innerHTML = `
             ${site.isDefault ? `
                 <button class="menu-item">
@@ -659,10 +543,6 @@ class ContentManager {
             <button class="menu-item share-site">
                 <span class="material-icons">share</span>
                 Partager
-            </button>
-            <button class="menu-item mark-read">
-                <span class="material-icons">done_all</span>
-                Marquer comme lu
             </button>
         `;
         document.body.appendChild(menu);
@@ -699,8 +579,6 @@ class ContentManager {
                 window.open(site.url, '_blank');
             } else if (button.classList.contains('share-site')) {
                 this.shareSite(site);
-            } else if (button.classList.contains('mark-read')) {
-                this.markSiteAsRead(tile, site);
             }
         });
 
@@ -709,81 +587,6 @@ class ContentManager {
                 menu.remove();
             }
         }, { once: true });
-    }
-
-    markSiteAsRead(tile, site) {
-        // Supprimer la classe qui indique un nouveau contenu
-        tile.classList.remove('has-new-content');
-        
-        // Supprimer l'attribut data-has-update si présent
-        tile.removeAttribute('data-has-update');
-        
-        // Enregistrer le timestamp de la dernière visite
-        localStorage.setItem(`lastVisit_${site.url}`, Date.now().toString());
-        
-        // Afficher une notification
-        this.showToast(`${site.title} marqué comme lu`);
-    }
-
-    checkSitesUpdates() {
-    // Pour désactiver complètement les notifications aléatoires
-    // Nous ne faisons rien dans cette fonction
-    
-    // Si vous voulez réactiver les notifications plus tard, décommentez le code ci-dessous:
-    /*
-    const sitesData = [
-        { url: 'montceau-news.com', category: 'news', hasUpdate: false },
-        { url: 'lejsl.com', category: 'news', hasUpdate: false },
-        { url: 'francebleu', category: 'radio', hasUpdate: false },
-        { url: 'bfmtv.com', category: 'tv', hasUpdate: false },
-        { url: 'francetvinfo.fr', category: 'tv', hasUpdate: false },
-        { url: 'footmercato', category: 'sports', hasUpdate: false }
-    ];
-        
-        // Choisir aléatoirement 1 à 2 sites pour simuler une mise à jour
-        const updatesCount = Math.floor(Math.random() * 2) + 1;
-        for (let i = 0; i < updatesCount; i++) {
-            const randomIndex = Math.floor(Math.random() * sitesData.length);
-            sitesData[randomIndex].hasUpdate = true;
-        }
-        
-        const updatedSites = [];
-        
-        // Parcourir tous les sites
-        sitesData.forEach(siteData => {
-            if (siteData.hasUpdate) {
-                updatedSites.push(siteData);
-                
-                // Marquer les tuiles correspondantes comme ayant du nouveau contenu
-                const tiles = document.querySelectorAll('.tile');
-                tiles.forEach(tile => {
-                    const siteUrl = tile.dataset.siteUrl || '';
-                    
-                    if (siteUrl.includes(siteData.url)) {
-                        tile.classList.add('has-new-content');
-                        // Ajouter un attribut pour indiquer une vraie mise à jour
-                        tile.setAttribute('data-has-update', 'true');
-                    }
-                });
-            }
-        });
-        
-        // Notification si des mises à jour ont été trouvées
-        if (updatedSites.length > 0) {
-            const message = updatedSites.length === 1 
-                ? `Nouveau contenu sur ${updatedSites[0].url.split('.')[0]}` 
-                : `${updatedSites.length} sites ont du nouveau contenu`;
-            
-            this.showToast(message);
-            
-            // Notification si disponible
-            if ('Notification' in window && Notification.permission === 'granted') {
-                new Notification('Actu & Média', {
-                    body: message,
-                    icon: '/images/icon-192.png'
-                });
-            }
-        }*/
     }
 
     editSite(site) {
@@ -835,7 +638,7 @@ class ContentManager {
 
     deleteSite(site) {
         if (site.isDefault) {
-            this.showToast('Les sites par défaut ne peuvent pas être supprimés');
+            this.showToast('Les sites par défaut ne peuvent pas être modifiés');
             return;
         }
 
