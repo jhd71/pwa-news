@@ -250,30 +250,31 @@ const tvSites = [
         category: 'tv',
         isLive: true
     },
-                title: 'BFMTV',
-                url: 'https://www.bfmtv.com/en-direct/',
-                mobileUrl: 'https://www.bfmtv.com/en-direct/',
-                isDefault: true,
-                category: 'tv',
-                isLive: true
-            },
-            {
-                title: 'CNews',
-                url: 'https://www.cnews.fr/le-direct',
-                mobileUrl: 'https://www.cnews.fr/le-direct',
-                isDefault: true,
-                category: 'tv',
-                isLive: true
-            },
-            {
-                title: 'FranceTV Info',
-                url: 'https://www.francetvinfo.fr/en-direct/tv.html',
-                mobileUrl: 'https://www.francetvinfo.fr/en-direct/tv.html',
-                isDefault: true,
-                category: 'tv',
-                isLive: true
-            }
-        ];
+    {
+        title: 'BFMTV',
+        url: 'https://www.bfmtv.com/en-direct/',
+        mobileUrl: 'https://www.bfmtv.com/en-direct/',
+        isDefault: true,
+        category: 'tv',
+        isLive: true
+    },
+    {
+        title: 'CNews',
+        url: 'https://www.cnews.fr/le-direct',
+        mobileUrl: 'https://www.cnews.fr/le-direct',
+        isDefault: true,
+        category: 'tv',
+        isLive: true
+    },
+    {
+        title: 'FranceTV Info',
+        url: 'https://www.francetvinfo.fr/en-direct/tv.html',
+        mobileUrl: 'https://www.francetvinfo.fr/en-direct/tv.html',
+        isDefault: true,
+        category: 'tv',
+        isLive: true
+    }
+];
 
         tvSites.forEach(site => {
             const tile = this.createTile(site);
