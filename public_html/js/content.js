@@ -243,7 +243,7 @@ class ContentManager {
         // Section TV
         const tvSites = [
             {
-                title: 'France 3 Bourgogne',
+                title: 'France 3<br>Bourgogne',
                 url: 'https://www.francebleu.fr/tv/direct/bourgogne',
                 mobileUrl: 'https://www.francebleu.fr/tv/direct/bourgogne',
                 isDefault: true,
