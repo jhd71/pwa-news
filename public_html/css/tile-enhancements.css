@@ -476,3 +476,37 @@
 .tile-container.list .tile:not([data-category="tv"]) .tile-title {
     justify-content: center !important;
 }
+/* Centrage vertical des noms des chaînes TV */
+.tile[data-category="tv"] .tile-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centre verticalement */
+    align-items: center; /* Centre horizontalement */
+    height: 100%;
+    padding-top: 0 !important; /* Annule tout padding-top qui pourrait décaler le texte */
+    padding-bottom: 0 !important;
+}
+
+.tile[data-category="tv"] .tile-title {
+    margin-top: 0 !important; /* Annule les marges qui pourraient décaler le texte */
+    margin-bottom: 0 !important;
+    position: relative; /* Pour que le texte reste dans le flux normal */
+    top: 0; /* Annule tout positionnement absolu */
+}
+
+/* Ajustement spécifique pour le badge DIRECT */
+.tile.live-content .tile-content::before {
+    top: 15px !important; /* Position plus haute */
+    transform: none !important; /* Annule toute transformation qui pourrait affecter sa position */
+}
+
+/* Pour le mode liste spécifiquement */
+.tile-container.list .tile[data-category="tv"] .tile-content {
+    justify-content: space-between; /* Répartit l'espace horizontalement */
+    flex-direction: row; /* Disposition horizontale */
+    padding-left: 70px !important; /* Espace pour le badge DIRECT */
+}
+
+.tile-container.list .tile[data-category="tv"] .tile-title {
+    margin-right: 20px; /* Espace à droite du titre */
+}
