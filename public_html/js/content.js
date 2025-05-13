@@ -4,7 +4,6 @@ class ContentManager {
         this.currentTheme = localStorage.getItem('theme') || 'rouge'; // Thème par défaut: 'rouge'
         this.fontSize = localStorage.getItem('fontSize') || 'normal';
         this.deferredPrompt = null;
-        this.previewMode = false;
     }
 
     init() {
@@ -33,6 +32,107 @@ class ContentManager {
         
         // Vérifier les mises à jour toutes les 5 minutes
         setInterval(() => this.checkSitesUpdates(), 5 * 60 * 1000);
+    }
+
+    addTileEffectsStyles() {
+        const styleElement = document.createElement('style');
+        styleElement.textContent = `
+            /* Effet de survol amélioré avec zoom et ombre */
+            .tile {
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+                position: relative;
+                overflow: hidden;
+                border-radius: 15px !important;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+            }
+
+            .tile:hover {
+                transform: translateY(-8px) scale(1.03) !important;
+                box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2) !important;
+                filter: brightness(1.1) !important;
+                z-index: 10 !important;
+            }
+
+            /* Effet de pulsation au clic */
+            .tile:active, .tile.tile-click {
+                animation: pulse 0.3s ease-in-out !important;
+                transform: scale(0.95) !important;
+            }
+
+            @keyframes pulse {
+                0% { transform: scale(0.95); }
+                50% { transform: scale(0.98); }
+                100% { transform: scale(0.95); }
+            }
+
+            /* Effet de brillance qui se déplace au survol */
+            .tile::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(
+                    90deg,
+                    transparent 0%,
+                    rgba(255, 255, 255, 0.2) 50%,
+                    transparent 100%
+                );
+                z-index: 1;
+                transform: skewX(-15deg);
+                transition: left 0.8s ease;
+                pointer-events: none;
+            }
+
+            .tile:hover::before {
+                left: 150%;
+            }
+
+            /* Indicateur visuel pour les sites avec du nouveau contenu */
+            .tile.has-new-content::after {
+                content: '';
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                width: 10px;
+                height: 10px;
+                background-color: #FFD700;
+                border-radius: 50%;
+                box-shadow: 0 0 5px #FFD700;
+                animation: blink 1.5s infinite;
+                z-index: 3;
+            }
+
+            @keyframes blink {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.4; }
+            }
+
+            /* Animation d'apparition pour les tuiles */
+            @keyframes tilesAppear {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .tile {
+                animation: tilesAppear 0.5s ease forwards;
+                animation-delay: calc(var(--tile-index, 0) * 0.05s);
+                opacity: 0;
+            }
+
+            /* Pour corriger les problèmes de notification aléatoire */
+            .tile.has-new-content:not([data-has-update="true"])::after {
+                display: none !important;
+            }
+        `;
+        document.head.appendChild(styleElement);
     }
 
     setupEventListeners() {
@@ -94,7 +194,6 @@ class ContentManager {
 
         // Installation PWA
         window.addEventListener('beforeinstallprompt', (e) => {
-            // e.preventDefault(); <-- COMMENTEZ CETTE LIGNE
             this.deferredPrompt = e;
             
             // Ajouter cette ligne pour afficher notre bannière personnalisée
@@ -148,246 +247,6 @@ class ContentManager {
 
     setupFontSize() {
         document.documentElement.setAttribute('data-font-size', this.fontSize);
-    }
-
-    addTileEffectsStyles() {
-        const styleElement = document.createElement('style');
-        styleElement.textContent = `
-            /* Effet de survol amélioré avec zoom et ombre */
-            .tile {
-                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-                position: relative;
-                overflow: hidden;
-                border-radius: 15px !important;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
-            }
-
-            .tile:hover {
-                transform: translateY(-8px) scale(1.03) !important;
-                box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2) !important;
-                filter: brightness(1.1) !important;
-                z-index: 10 !important;
-            }
-
-            /* Effet de pulsation au clic */
-            .tile.tile-click {
-                animation: pulse 0.3s ease-in-out !important;
-                transform: scale(0.95) !important;
-            }
-
-            @keyframes pulse {
-                0% { transform: scale(0.95); }
-                50% { transform: scale(0.98); }
-                100% { transform: scale(0.95); }
-            }
-
-            /* Effet de brillance qui se déplace au survol */
-            .tile::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -100%;
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(
-                    90deg,
-                    transparent 0%,
-                    rgba(255, 255, 255, 0.2) 50%,
-                    transparent 100%
-                );
-                z-index: 1;
-                transform: skewX(-15deg);
-                transition: left 0.8s ease;
-                pointer-events: none;
-            }
-
-            .tile:hover::before {
-                left: 150%;
-            }
-
-            /* Indicateur visuel pour les sites avec du nouveau contenu */
-            .tile.has-new-content::after {
-                content: '';
-                position: absolute;
-                top: 10px;
-                right: 10px;
-                width: 10px;
-                height: 10px;
-                background-color: #FFD700;
-                border-radius: 50%;
-                box-shadow: 0 0 5px #FFD700;
-                animation: blink 1.5s infinite;
-            }
-
-            @keyframes blink {
-                0%, 100% { opacity: 1; }
-                50% { opacity: 0.4; }
-            }
-
-            /* Effet de rotation 3D léger au survol */
-            .tile-container.grid .tile {
-                transition: all 0.4s ease;
-                transform-style: preserve-3d;
-                perspective: 1000px;
-            }
-
-            /* Adaptation pour la vue liste */
-            .tile-container.list .tile {
-                height: 55px !important;
-                border-radius: 12px !important;
-                margin-bottom: 8px !important;
-            }
-
-            .tile-container.list .tile:hover {
-                transform: translateX(15px) scale(1.02) !important;
-            }
-
-            .tile-container.list .tile-title {
-                font-size: calc(var(--tile-title-size) - 1px) !important;
-            }
-
-            /* Animation pour le badge "nouveau contenu" */
-            .has-new-content .tile-title::after {
-                content: ' ';
-                display: inline-block;
-                width: 6px;
-                height: 6px;
-                background-color: #FFD700;
-                border-radius: 50%;
-                margin-left: 5px;
-                vertical-align: middle;
-                animation: blink 1s infinite;
-            }
-
-            /* Animation d'apparition lors du chargement */
-            @keyframes tilesAppear {
-                from {
-                    opacity: 0;
-                    transform: translateY(20px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            .tile {
-                animation: tilesAppear 0.5s ease forwards;
-                animation-delay: calc(var(--tile-index, 0) * 0.05s);
-                opacity: 0;
-            }
-
-            /* Badge pour les sites populaires */
-            .tile.popular::before {
-                content: 'trending_up';
-                font-family: 'Material Icons';
-                position: absolute;
-                left: 8px;
-                top: 8px;
-                font-size: 16px;
-                color: #FFD700;
-                z-index: 3;
-                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-            }
-
-            /* Badge "DIRECT" pour les chaînes TV en direct */
-            .tile.live-content::before {
-                content: '•DIRECT';
-                position: absolute;
-                left: 8px;
-                top: 8px;
-                font-size: 12px;
-                color: #FF5252;
-                background-color: rgba(0, 0, 0, 0.5);
-                padding: 2px 6px;
-                border-radius: 10px;
-                z-index: 3;
-                font-weight: bold;
-                animation: blink 1.5s infinite;
-            }
-
-            /* Menu contextuel des tuiles */
-            .tile-menu {
-                border-radius: 12px !important;
-                overflow: hidden;
-                animation: menuFadeIn 0.2s ease-out;
-            }
-
-            @keyframes menuFadeIn {
-                from {
-                    opacity: 0;
-                    transform: scale(0.9);
-                }
-                to {
-                    opacity: 1;
-                    transform: scale(1);
-                }
-            }
-
-            .tile-menu button {
-                position: relative;
-                overflow: hidden;
-                transition: background-color 0.3s ease;
-            }
-
-            .tile-menu button:hover {
-                background-color: rgba(255, 255, 255, 0.15) !important;
-            }
-
-            .tile-menu button::before {
-                content: '';
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: 0;
-                height: 0;
-                background-color: rgba(255, 255, 255, 0.1);
-                border-radius: 50%;
-                transform: translate(-50%, -50%);
-                transition: width 0.4s ease, height 0.4s ease;
-            }
-
-            .tile-menu button:hover::before {
-                width: 150%;
-                height: 150%;
-            }
-
-            /* Badge de notification pour les catégories */
-            .category-badge {
-                position: absolute;
-                right: 15px;
-                top: 50%;
-                transform: translateY(-50%);
-                background-color: #FF5252;
-                color: white;
-                border-radius: 12px;
-                padding: 2px 8px;
-                font-size: 12px;
-                font-weight: bold;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-                animation: pulse 2s infinite;
-                z-index: 2;
-            }
-
-            /* Adaptation selon le thème */
-            [data-theme="dark"] .category-badge {
-                background-color: #FF7043;
-            }
-
-            [data-theme="rouge"] .category-badge {
-                background-color: #FFD700;
-                color: #a32f2a;
-            }
-
-            /* Position relative pour les séparateurs */
-            .separator {
-                position: relative;
-            }
-        `;
-        document.head.appendChild(styleElement);
     }
 
     setupTiles() {
@@ -662,10 +521,6 @@ class ContentManager {
         // Ajouter des classes conditionnelles pour les designs spéciaux
         if (site.isLive) tile.classList.add('live-content');
         
-        // Déterminer si le site est populaire (pour ajouter un badge)
-        const isPopular = site.url.includes('montceau-news.com') || site.url.includes('lejsl.com') || site.url.includes('francetvinfo.fr');
-        if (isPopular) tile.classList.add('popular');
-        
         // Structure HTML de la tuile avec les effets spéciaux
         tile.innerHTML = `
             <div class="tile-content">
@@ -727,41 +582,6 @@ class ContentManager {
                 e.preventDefault();
             }
         });
-
-        // Effet de brillance interactif sur desktop
-        if (window.matchMedia('(min-width: 1024px)').matches) {
-            tile.addEventListener('mousemove', (e) => {
-                const rect = tile.getBoundingClientRect();
-                const x = e.clientX - rect.left; 
-                const y = e.clientY - rect.top;
-                
-                // Calcul de l'angle pour l'effet de brillance
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const deltaX = (x - centerX) / centerX;
-                const deltaY = (y - centerY) / centerY;
-                
-                // Appliquer une légère rotation 3D
-                tile.style.transform = `perspective(1000px) rotateX(${deltaY * 3}deg) rotateY(${-deltaX * 3}deg) translateZ(5px)`;
-            });
-            
-            // Réinitialiser la transformation lorsque la souris quitte la tuile
-            tile.addEventListener('mouseleave', () => {
-                tile.style.transform = '';
-            });
-        }
-
-        // Vérifier si le site a du nouveau contenu (simulé)
-        const lastVisit = localStorage.getItem(`lastVisit_${site.url}`);
-        const now = Date.now();
-        
-        // Si le site n'a jamais été visité ou la dernière visite date de plus de 24h
-        if (!lastVisit || now - parseInt(lastVisit) > 24 * 60 * 60 * 1000) {
-            // Aléatoirement ajouter la classe new-content pour la démo
-            if (Math.random() > 0.7) {
-                tile.classList.add('has-new-content');
-            }
-        }
 
         return tile;
     }
@@ -853,16 +673,6 @@ class ContentManager {
         menu.style.left = `${menuX}px`;
         menu.style.top = `${menuY}px`;
 
-        // Animation d'apparition du menu
-        menu.animate([
-            { opacity: 0, transform: 'scale(0.9)' },
-            { opacity: 1, transform: 'scale(1)' }
-        ], {
-            duration: 150,
-            easing: 'ease-out',
-            fill: 'forwards'
-        });
-
         // Gestionnaire d'événements
         menu.addEventListener('click', (e) => {
             const button = e.target.closest('button');
@@ -890,6 +700,77 @@ class ContentManager {
                 menu.remove();
             }
         }, { once: true });
+    }
+
+    markSiteAsRead(tile, site) {
+        // Supprimer la classe qui indique un nouveau contenu
+        tile.classList.remove('has-new-content');
+        
+        // Supprimer l'attribut data-has-update si présent
+        tile.removeAttribute('data-has-update');
+        
+        // Enregistrer le timestamp de la dernière visite
+        localStorage.setItem(`lastVisit_${site.url}`, Date.now().toString());
+        
+        // Afficher une notification
+        this.showToast(`${site.title} marqué comme lu`);
+    }
+
+    checkSitesUpdates() {
+        // Sites qui pourraient avoir des mises à jour
+        const sitesData = [
+            { url: 'montceau-news.com', category: 'news', hasUpdate: false },
+            { url: 'lejsl.com', category: 'news', hasUpdate: false },
+            { url: 'francebleu', category: 'radio', hasUpdate: false },
+            { url: 'bfmtv.com', category: 'tv', hasUpdate: false },
+            { url: 'francetvinfo.fr', category: 'tv', hasUpdate: false },
+            { url: 'footmercato', category: 'sports', hasUpdate: false }
+        ];
+        
+        // Choisir aléatoirement 1 à 2 sites pour simuler une mise à jour
+        const updatesCount = Math.floor(Math.random() * 2) + 1;
+        for (let i = 0; i < updatesCount; i++) {
+            const randomIndex = Math.floor(Math.random() * sitesData.length);
+            sitesData[randomIndex].hasUpdate = true;
+        }
+        
+        const updatedSites = [];
+        
+        // Parcourir tous les sites
+        sitesData.forEach(siteData => {
+            if (siteData.hasUpdate) {
+                updatedSites.push(siteData);
+                
+                // Marquer les tuiles correspondantes comme ayant du nouveau contenu
+                const tiles = document.querySelectorAll('.tile');
+                tiles.forEach(tile => {
+                    const siteUrl = tile.dataset.siteUrl || '';
+                    
+                    if (siteUrl.includes(siteData.url)) {
+                        tile.classList.add('has-new-content');
+                        // Ajouter un attribut pour indiquer une vraie mise à jour
+                        tile.setAttribute('data-has-update', 'true');
+                    }
+                });
+            }
+        });
+        
+        // Notification si des mises à jour ont été trouvées
+        if (updatedSites.length > 0) {
+            const message = updatedSites.length === 1 
+                ? `Nouveau contenu sur ${updatedSites[0].url.split('.')[0]}` 
+                : `${updatedSites.length} sites ont du nouveau contenu`;
+            
+            this.showToast(message);
+            
+            // Notification si disponible
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('Actu & Média', {
+                    body: message,
+                    icon: '/images/icon-192.png'
+                });
+            }
+        }
     }
 
     editSite(site) {
@@ -1286,6 +1167,29 @@ class ContentManager {
         }
     }
 
+    shareSite(site) {
+        if (navigator.share) {
+            navigator.share({
+                title: site.title,
+                text: `Découvrez ${site.title} sur Actu & Média`,
+                url: site.url
+            })
+            .then(() => this.showToast('Lien partagé avec succès'))
+            .catch(error => {
+                console.error('Erreur lors du partage:', error);
+                this.showToast('Le partage a été annulé');
+            });
+        } else {
+            // Copier l'URL dans le presse-papier si Web Share n'est pas disponible
+            navigator.clipboard.writeText(site.url)
+                .then(() => this.showToast('URL copiée dans le presse-papier'))
+                .catch(error => {
+                    console.error('Erreur lors de la copie:', error);
+                    this.showToast('Impossible de copier l\'URL');
+                });
+        }
+    }
+
     async showAddSiteDialog() {
         const title = prompt('Nom du site :');
         if (!title || title.trim() === '') {
@@ -1332,106 +1236,6 @@ class ContentManager {
         } catch (error) {
             console.error('Erreur ajout site:', error);
             this.showToast('Erreur lors de l\'ajout du site');
-        }
-    }
-
-    shareSite(site) {
-        if (navigator.share) {
-            navigator.share({
-                title: site.title,
-                text: `Découvrez ${site.title} sur Actu & Média`,
-                url: site.url
-            })
-            .then(() => this.showToast('Lien partagé avec succès'))
-            .catch(error => {
-                console.error('Erreur lors du partage:', error);
-                this.showToast('Le partage a été annulé');
-            });
-        } else {
-            // Copier l'URL dans le presse-papier si Web Share n'est pas disponible
-            navigator.clipboard.writeText(site.url)
-                .then(() => this.showToast('URL copiée dans le presse-papier'))
-                .catch(error => {
-                    console.error('Erreur lors de la copie:', error);
-                    this.showToast('Impossible de copier l\'URL');
-                });
-        }
-    }
-    
-    markSiteAsRead(tile, site) {
-    // Supprimer la classe qui indique un nouveau contenu
-    tile.classList.remove('has-new-content');
-    
-    // Supprimer l'attribut data-has-update si présent
-    tile.removeAttribute('data-has-update');
-    
-    // Enregistrer le timestamp de la dernière visite
-    localStorage.setItem(`lastVisit_${site.url}`, Date.now().toString());
-    
-    // Afficher une notification
-    this.showToast(`${site.title} marqué comme lu`);
-}
-
-// Modifiez aussi cette méthode dans votre code existant
-checkSitesUpdates() {
-    // Sites qui pourraient avoir des mises à jour
-    const sitesData = [
-        { url: 'montceau-news.com', category: 'news', hasUpdate: false },  // Changé à false par défaut
-        { url: 'lejsl.com', category: 'news', hasUpdate: false },
-        { url: 'francebleu', category: 'radio', hasUpdate: false },
-        { url: 'bfmtv.com', category: 'tv', hasUpdate: false },
-        { url: 'francetvinfo.fr', category: 'tv', hasUpdate: false },
-        { url: 'footmercato', category: 'sports', hasUpdate: false }
-    ];
-    
-    // Dans une vraie application, vous feriez une requête API pour vérifier
-    // les mises à jour réelles. Pour l'instant, on simule juste 1 ou 2 sites mis à jour
-    
-    // Choisir aléatoirement 1 à 2 sites pour simuler une mise à jour
-    const updatesCount = Math.floor(Math.random() * 2) + 1;
-    for (let i = 0; i < updatesCount; i++) {
-        const randomIndex = Math.floor(Math.random() * sitesData.length);
-        sitesData[randomIndex].hasUpdate = true;
-    }
-    
-    const updatedSites = [];
-    
-    // Parcourir tous les sites
-    sitesData.forEach(siteData => {
-        if (siteData.hasUpdate) {
-            updatedSites.push(siteData);
-            
-            // Marquer les tuiles correspondantes comme ayant du nouveau contenu
-            const tiles = document.querySelectorAll('.tile');
-            tiles.forEach(tile => {
-                const siteUrl = tile.dataset.siteUrl || '';
-                
-                if (siteUrl.includes(siteData.url)) {
-                    tile.classList.add('has-new-content');
-                    // Ajouter un attribut pour indiquer une vraie mise à jour
-                    tile.setAttribute('data-has-update', 'true');
-                }
-            });
-        }
-    });
-    
-    // Notification si des mises à jour ont été trouvées
-    if (updatedSites.length > 0) {
-        const message = updatedSites.length === 1 
-            ? `Nouveau contenu sur ${updatedSites[0].url.split('.')[0]}` 
-            : `${updatedSites.length} sites ont du nouveau contenu`;
-        
-        this.showToast(message);
-    }
-}
-            
-            // Notification si disponible
-            if ('Notification' in window && Notification.permission === 'granted') {
-                new Notification('Actu & Média', {
-                    body: message,
-                    icon: '/images/icon-192.png'
-                });
-            }
         }
     }
 }
