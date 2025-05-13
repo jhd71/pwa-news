@@ -554,15 +554,14 @@ main {
 }
 
 /* SECTION 10: ANIMATIONS */
-/* Remplacer les animations existantes par des animations plus sophistiquées */
 @keyframes fadeInScale {
     from {
         opacity: 0;
-        transform: scale(0.9) translateY(10px);
+        transform: scale(0.9);
     }
     to {
         opacity: 1;
-        transform: scale(1) translateY(0);
+        transform: scale(1);
     }
 }
 
@@ -570,44 +569,11 @@ main {
     from {
         opacity: 0;
         transform: translateX(-20px);
-        box-shadow: 0 0 0 rgba(0, 0, 0, 0);
     }
     to {
         opacity: 1;
         transform: translateX(0);
-        box-shadow: -4px 4px 8px rgba(0, 0, 0, 0.2);
     }
-}
-
-/* Animation différée pour chaque tuile */
-.tile-container.grid .tile:nth-child(3n + 1) {
-    animation: fadeInScale 0.5s ease forwards;
-    animation-delay: 0.05s;
-}
-
-.tile-container.grid .tile:nth-child(3n + 2) {
-    animation: fadeInScale 0.5s ease forwards;
-    animation-delay: 0.1s;
-}
-
-.tile-container.grid .tile:nth-child(3n + 3) {
-    animation: fadeInScale 0.5s ease forwards;
-    animation-delay: 0.15s;
-}
-
-.tile-container.list .tile:nth-child(3n + 1) {
-    animation: slideInRight 0.4s ease forwards;
-    animation-delay: 0.05s;
-}
-
-.tile-container.list .tile:nth-child(3n + 2) {
-    animation: slideInRight 0.4s ease forwards;
-    animation-delay: 0.1s;
-}
-
-.tile-container.list .tile:nth-child(3n + 3) {
-    animation: slideInRight 0.4s ease forwards;
-    animation-delay: 0.15s;
 }
 
 /* SECTION 11: SÉPARATEURS */
@@ -2669,324 +2635,644 @@ button#refreshButton.refresh-button {
   background: linear-gradient(145deg, #bc3a34, #a32f2a) !important;
 }
 
-/* Ajouter ce code dans styles.css */
+/* Améliorations des tuiles pour Actu & Média */
 
-/* Styles améliorés pour les tuiles */
+/* 1. Effet de survol amélioré avec zoom et ombre */
 .tile {
-    background-color: var(--card-background);
-    border-radius: 12px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-tap-highlight-color: transparent;
-    box-shadow: 0 3px 8px var(--shadow-color);
-    height: 80px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    position: relative;
     overflow: hidden;
-    position: relative;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    transform-origin: center;
-    opacity: 0; /* Commencez invisible pour l'animation */
-    will-change: transform, opacity, box-shadow; /* Optimisation performance */
+    border-radius: 15px !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* Animation d'apparition progressive pour les tuiles */
-@keyframes fadeInStaggered {
-    from {
-        opacity: 0;
-        transform: scale(0.9) translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
+.tile:hover {
+    transform: translateY(-8px) scale(1.03) !important;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2) !important;
+    filter: brightness(1.1) !important;
+    z-index: 10 !important;
 }
 
-/* Effet de pression au clic */
-.tile-pressed {
+/* 2. Effet de pulsation au clic */
+.tile:active {
+    animation: pulse 0.3s ease-in-out !important;
     transform: scale(0.95) !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
-    opacity: 0.9 !important;
-    transition: all 0.1s ease-out !important;
-}
-
-/* Contenu de la tuile réorganisé avec icône */
-.tile-content {
-    padding: 10px;
-    text-align: center;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    position: relative;
-}
-
-/* Icône de la tuile */
-.tile-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    margin-bottom: 4px;
-    transition: transform 0.3s ease, background-color 0.3s ease;
-}
-
-.tile:hover .tile-icon {
-    transform: scale(1.1) rotate(5deg);
-    background: rgba(255, 255, 255, 0.3);
-}
-
-/* Style pour le titre */
-.tile-title {
-    font-size: var(--tile-title-size);
-    font-weight: 600;
-    color: white;
-    text-align: center;
-    width: 100%;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-    line-height: 1.2;
-    transition: transform 0.3s ease;
-    padding: 0 5px;
-}
-
-/* Vue liste - réorganisation des éléments */
-.tile-container.list .tile {
-    height: 50px;
-    padding: 0 15px;
-}
-
-.tile-container.list .tile-content {
-    flex-direction: row;
-    justify-content: flex-start;
-    text-align: left;
-    gap: 15px;
-}
-
-.tile-container.list .tile-icon {
-    width: 32px;
-    height: 32px;
-    margin-bottom: 0;
-}
-
-.tile-container.list .tile-title {
-    text-align: left;
-}
-
-/* Badge de notification */
-.tile-badge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background-color: #ff3e3e;
-    color: white;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    z-index: 2;
-    animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
+    0% { transform: scale(0.95); }
+    50% { transform: scale(0.98); }
+    100% { transform: scale(0.95); }
 }
 
-/* Effet de ripple au clic */
-.tile::after {
+/* 3. Effet de brillance qui se déplace au survol */
+.tile::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        transparent 100%
+    );
+    z-index: 1;
+    transform: skewX(-15deg);
+    transition: left 0.8s ease;
+    pointer-events: none;
+}
+
+.tile:hover::before {
+    left: 150%;
+}
+
+/* 4. Amélioration du contenu des tuiles */
+.tile-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 2;
+    padding: 15px 10px !important;
+}
+
+/* 5. Style du titre amélioré */
+.tile-title {
+    font-weight: 700 !important;
+    text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.4) !important;
+    letter-spacing: 0.5px;
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.tile:hover .tile-title {
+    transform: scale(1.1) !important;
+}
+
+/* 6. Indicateur visuel (petit point) pour les sites avec du nouveau contenu */
+.tile.has-new-content::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 10px;
+    height: 10px;
+    background-color: #FFD700;
+    border-radius: 50%;
+    box-shadow: 0 0 5px #FFD700;
+    animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+/* 7. Effet de rotation 3D léger au survol */
+.tile-container.grid .tile {
+    transition: all 0.4s ease;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.tile-container.grid .tile:hover {
+    transform: translateY(-8px) scale(1.03) rotateX(5deg) rotateY(5deg) !important;
+}
+
+/* 8. Adaptation pour la vue liste */
+.tile-container.list .tile {
+    height: 55px !important;
+    border-radius: 12px !important;
+    margin-bottom: 8px !important;
+}
+
+.tile-container.list .tile:hover {
+    transform: translateX(15px) scale(1.02) !important;
+}
+
+.tile-container.list .tile-title {
+    font-size: calc(var(--tile-title-size) - 1px) !important;
+}
+
+/* 9. Ajout d'icônes pour chaque catégorie */
+.tile-title::before {
+    font-family: 'Material Icons';
+    margin-right: 8px;
+    font-size: 18px;
+    vertical-align: middle;
+    opacity: 0.9;
+    display: inline-block;
+}
+
+/* Icônes par catégorie */
+/* Actualités */
+.tile:nth-child(30n + 1) .tile-title::before,
+.tile:nth-child(30n + 2) .tile-title::before,
+.tile:nth-child(30n + 3) .tile-title::before,
+.tile:nth-child(30n + 4) .tile-title::before,
+.tile:nth-child(30n + 5) .tile-title::before,
+.tile:nth-child(30n + 6) .tile-title::before {
+    content: 'article';
+}
+
+/* Radio */
+.tile:nth-child(30n + 7) .tile-title::before,
+.tile:nth-child(30n + 8) .tile-title::before {
+    content: 'radio';
+}
+
+/* TV */
+.tile:nth-child(30n + 9) .tile-title::before,
+.tile:nth-child(30n + 10) .tile-title::before,
+.tile:nth-child(30n + 11) .tile-title::before,
+.tile:nth-child(30n + 12) .tile-title::before {
+    content: 'tv';
+}
+
+/* Sports */
+.tile:nth-child(30n + 13) .tile-title::before,
+.tile:nth-child(30n + 14) .tile-title::before,
+.tile:nth-child(30n + 15) .tile-title::before,
+.tile:nth-child(30n + 16) .tile-title::before,
+.tile:nth-child(30n + 17) .tile-title::before,
+.tile:nth-child(30n + 18) .tile-title::before {
+    content: 'sports_soccer';
+}
+
+/* Réseaux sociaux */
+.tile:nth-child(30n + 19) .tile-title::before,
+.tile:nth-child(30n + 20) .tile-title::before,
+.tile:nth-child(30n + 21) .tile-title::before {
+    content: 'public';
+}
+
+/* 10. Animation d'apparition lors du chargement */
+@keyframes tilesAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tile {
+    animation: tilesAppear 0.5s ease forwards;
+    animation-delay: calc(var(--tile-index, 0) * 0.05s);
+    opacity: 0;
+}
+
+/* Ajoutez cette classe JavaScript pour créer un effet de vague */
+/* Vous ajouterez cette fonctionnalité via JavaScript */
+
+/* 11. Badge pour les sites populaires */
+.tile.popular::before {
+    content: 'trending_up';
+    font-family: 'Material Icons';
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    font-size: 16px;
+    color: #FFD700;
+    z-index: 3;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* 12. Badge "DIRECT" pour les chaînes TV en direct */
+.tile.live-content::before {
+    content: '•DIRECT';
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    font-size: 12px;
+    color: #FF5252;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 2px 6px;
+    border-radius: 10px;
+    z-index: 3;
+    font-weight: bold;
+    animation: blink 1.5s infinite;
+}
+
+/* 13. Effet de hover pour le mode sombre */
+[data-theme="dark"] .tile:hover {
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4) !important;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0)) !important;
+}
+
+/* 14. Effet de hover pour le thème rouge */
+[data-theme="rouge"] .tile:hover {
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+/* 15. Amélioration du menu contextuel des tuiles */
+.tile-menu {
+    border-radius: 12px !important;
+    overflow: hidden;
+    animation: menuFadeIn 0.2s ease-out;
+}
+
+@keyframes menuFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.tile-menu button {
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+}
+
+.tile-menu button:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.tile-menu button::before {
     content: '';
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 5px;
-    height: 5px;
-    background: rgba(255, 255, 255, 0.5);
+    width: 0;
+    height: 0;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.4s ease, height 0.4s ease;
+}
+
+.tile-menu button:hover::before {
+    width: 150%;
+    height: 150%;
+}
+
+/* Ajustements mobiles */
+@media (max-width: 600px) {
+    .tile {
+        border-radius: 12px !important;
+    }
+    
+    .tile-container.grid .tile:hover {
+        transform: translateY(-5px) scale(1.02) !important;
+    }
+    
+    .tile-container.list .tile:hover {
+        transform: translateX(10px) !important;
+    }
+}
+
+/* Effets de profondeur et améliorations visuelles pour les tuiles */
+
+/* 1. Effet Glassmorphism pour les tuiles */
+.tile {
+    backdrop-filter: blur(5px);
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.05) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* 2. Ombre portée avec effet de profondeur 3D */
+.tile {
+    box-shadow: 
+        0 4px 6px rgba(0, 0, 0, 0.1),
+        0 1px 3px rgba(0, 0, 0, 0.08),
+        0 1px 0 rgba(255, 255, 255, 0.06) inset,
+        0 -1px 0 rgba(0, 0, 0, 0.2) inset;
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tile:hover {
+    box-shadow: 
+        0 10px 20px rgba(0, 0, 0, 0.15),
+        0 6px 6px rgba(0, 0, 0, 0.1),
+        0 1px 0 rgba(255, 255, 255, 0.1) inset;
+    transform: translateY(-5px) translateZ(10px);
+}
+
+/* 3. Effet de surbrillance au survol */
+.tile::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.03) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
     opacity: 0;
-    border-radius: 100%;
-    transform: scale(1, 1) translate(-50%, -50%);
-    transform-origin: 50% 50%;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    border-radius: inherit;
 }
 
-.tile:active::after {
-    animation: ripple 0.6s ease-out;
+.tile:hover::after {
+    opacity: 1;
 }
 
-@keyframes ripple {
+/* 4. Effet de pression au clic */
+.tile:active {
+    transform: scale(0.98) translateY(2px);
+    box-shadow: 
+        0 2px 5px rgba(0, 0, 0, 0.1),
+        0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+/* 5. Bordures lumineuses pour l'effet néon */
+.tile-container.grid .tile {
+    overflow: visible;
+    position: relative;
+}
+
+.tile-container.grid .tile::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, 
+        rgba(255, 255, 255, 0.1),
+        rgba(255, 255, 255, 0),
+        rgba(255, 255, 255, 0.1),
+        rgba(255, 255, 255, 0)
+    );
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.tile-container.grid .tile:hover::before {
+    opacity: 1;
+    animation: borderGlow 2s linear infinite;
+}
+
+@keyframes borderGlow {
     0% {
-        transform: scale(0, 0) translate(-50%, -50%);
-        opacity: 0.7;
+        background-position: 0% 0%;
     }
     100% {
-        transform: scale(20, 20) translate(-50%, -50%);
-        opacity: 0;
+        background-position: 200% 0%;
     }
 }
 
-/* Styles du menu contextuel amélioré */
-.tile-menu {
-    position: fixed;
-    background-color: var(--primary-color);
-    border-radius: 12px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+/* 6. Adaptation des effets pour le thème sombre */
+[data-theme="dark"] .tile {
+    background: linear-gradient(
+        135deg,
+        rgba(30, 50, 100, 0.5) 0%,
+        rgba(20, 30, 70, 0.3) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .tile::after {
+    background: linear-gradient(
+        135deg,
+        rgba(50, 120, 255, 0) 0%,
+        rgba(50, 120, 255, 0.03) 50%,
+        rgba(50, 120, 255, 0) 100%
+    );
+}
+
+/* 7. Adaptation des effets pour le thème rouge */
+[data-theme="rouge"] .tile {
+    background: linear-gradient(
+        135deg,
+        rgba(211, 47, 47, 0.5) 0%,
+        rgba(183, 28, 28, 0.3) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="rouge"] .tile::after {
+    background: linear-gradient(
+        135deg,
+        rgba(255, 200, 50, 0) 0%,
+        rgba(255, 200, 50, 0.05) 50%,
+        rgba(255, 200, 50, 0) 100%
+    );
+}
+
+/* 8. Effets spéciaux pour les tuiles en direct */
+.tile.live-content {
+    position: relative;
     overflow: hidden;
-    z-index: 1000;
-    min-width: 250px;
-    max-width: 90%;
-    transition: all 0.3s ease;
-    opacity: 1;
-    transform: scale(1);
 }
 
-.menu-header {
-    padding: 12px 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.menu-title {
+.tile.live-content::before {
+    content: 'DIRECT';
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background-color: #FF3D00;
+    color: white;
+    font-size: 10px;
     font-weight: bold;
-    color: white;
-    font-size: 16px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    z-index: 3;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    letter-spacing: 0.5px;
 }
 
-.menu-close {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
+.tile.live-content::after {
+    content: '';
+    position: absolute;
+    top: 11px;
+    left: 5px;
+    width: 6px;
+    height: 6px;
+    background-color: #FF3D00;
     border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s;
+    animation: blink 1s infinite;
+    z-index: 3;
 }
 
-.menu-close:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+/* 9. Effet de pulsation pour les notifications */
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
 }
 
-.tile-menu button {
-    display: flex;
-    width: 100%;
-    padding: 12px 16px;
-    border: none;
-    background: none;
-    color: white;
-    cursor: pointer;
-    align-items: center;
-    gap: 12px;
-    font-size: var(--menu-text-size);
-    transition: background-color 0.2s;
+/* 10. Animation d'apparition pour les nouvelles tuiles */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.tile-menu button span:not(.material-icons) {
-    flex: 1;
-    text-align: left;
+/* 11. Effet néon pour indiquer les nouveaux contenus */
+.tile.has-new-content {
+    box-shadow: 0 0 15px rgba(255, 210, 0, 0.5);
 }
 
-.tile-menu button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+.tile.has-new-content::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 12px;
+    height: 12px;
+    background-color: #FFD700;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #FFD700;
+    animation: pulse 1.5s infinite;
+    z-index: 3;
 }
 
-.tile-menu button:active {
-    background-color: rgba(255, 255, 255, 0.2);
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
-/* Ajustement pour mode sombre */
-[data-theme="dark"] .tile-menu {
-    background-color: #1a237e;
-}
-
-/* Ajustement pour mode rouge */
-[data-theme="rouge"] .tile-menu {
-    background-color: #c62828;
-}
-
-/* Styles spécifiques pour les boutons d'action */
-.menu-item.delete {
-    color: #ff6b6b;
-}
-
-.menu-item.info-item {
-    color: #ffce44;
-    font-style: italic;
-}
-
-/* Animation d'entrée pour les tuiles */
-.tile-container.grid .tile {
-    animation: fadeInStaggered 0.4s ease forwards;
-}
-
-.tile-container.grid .tile:nth-child(1) { animation-delay: 0.05s; }
-.tile-container.grid .tile:nth-child(2) { animation-delay: 0.1s; }
-.tile-container.grid .tile:nth-child(3) { animation-delay: 0.15s; }
-.tile-container.grid .tile:nth-child(4) { animation-delay: 0.2s; }
-.tile-container.grid .tile:nth-child(5) { animation-delay: 0.25s; }
-.tile-container.grid .tile:nth-child(6) { animation-delay: 0.3s; }
-.tile-container.grid .tile:nth-child(7) { animation-delay: 0.35s; }
-.tile-container.grid .tile:nth-child(8) { animation-delay: 0.4s; }
-.tile-container.grid .tile:nth-child(9) { animation-delay: 0.45s; }
-/* Continuez pour autant de tuiles que nécessaire */
-
-/* Animation d'entrée pour la vue liste */
+/* 12. Styles pour la vue liste */
 .tile-container.list .tile {
-    animation: slideInRight 0.4s ease forwards;
+    border-radius: 10px;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.05) 100%
+    );
+    transition: all 0.3s ease;
 }
 
-.tile-container.list .tile:nth-child(1) { animation-delay: 0.05s; }
-.tile-container.list .tile:nth-child(2) { animation-delay: 0.1s; }
-.tile-container.list .tile:nth-child(3) { animation-delay: 0.15s; }
-.tile-container.list .tile:nth-child(4) { animation-delay: 0.2s; }
-.tile-container.list .tile:nth-child(5) { animation-delay: 0.25s; }
-.tile-container.list .tile:nth-child(6) { animation-delay: 0.3s; }
-.tile-container.list .tile:nth-child(7) { animation-delay: 0.35s; }
-.tile-container.list .tile:nth-child(8) { animation-delay: 0.4s; }
-.tile-container.list .tile:nth-child(9) { animation-delay: 0.45s; }
-/* Continuez pour autant de tuiles que nécessaire */
-
-/* Effet spécial pour les tuiles sportives */
-.tile-icon .material-icons.sports_soccer {
-    animation: spin 10s linear infinite;
+.tile-container.list .tile:hover {
+    transform: translateX(10px);
+    padding-left: 5px;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.tile-container.list .tile.has-new-content::after {
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
 }
 
-/* Media queries adaptés */
+/* 13. Animation d'apparition séquentielle */
+.tile {
+    animation: fadeInUp 0.5s ease forwards;
+    animation-delay: calc(var(--tile-index, 0) * 0.05s);
+    opacity: 0;
+}
+
+/* 14. Ajouter des icônes de catégories */
+.tile-content::before {
+    font-family: 'Material Icons';
+    opacity: 0.7;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.3s ease;
+}
+
+/* 15. Icônes spécifiques par catégorie */
+/* Actualités */
+.tile[data-category="news"] .tile-content::before {
+    content: 'newspaper';
+}
+
+/* Radio */
+.tile[data-category="radio"] .tile-content::before {
+    content: 'radio';
+}
+
+/* TV */
+.tile[data-category="tv"] .tile-content::before {
+    content: 'live_tv';
+}
+
+/* Sports */
+.tile[data-category="sports"] .tile-content::before {
+    content: 'sports_soccer';
+}
+
+/* Réseaux sociaux */
+.tile[data-category="social"] .tile-content::before {
+    content: 'public';
+}
+
+/* Sites personnalisés */
+.tile[data-category="custom"] .tile-content::before {
+    content: 'bookmark';
+}
+
+/* 16. Animation de l'icône au survol */
+.tile:hover .tile-content::before {
+    opacity: 1;
+    transform: scale(1.2);
+    color: white;
+}
+
+/* 17. Adaptation pour les appareils mobiles */
 @media (max-width: 600px) {
-    .tile-container.grid .tile {
-        height: 70px;
+    .tile {
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
     }
     
-    .tile-container.list .tile {
-        height: 45px;
+    .tile:hover {
+        transform: translateY(-3px);
     }
     
-    .tile-icon {
-        width: 32px;
-        height: 32px;
+    .tile-container.list .tile:hover {
+        transform: translateX(5px);
     }
     
-    .tile-title {
-        font-size: 14px;
+    .tile.has-new-content::after {
+        width: 10px;
+        height: 10px;
     }
+}
+
+/* 18. Animation pour le badge "nouveau contenu" */
+.has-new-content .tile-title::after {
+    content: ' ';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background-color: #FFD700;
+    border-radius: 50%;
+    margin-left: 5px;
+    vertical-align: middle;
+    animation: blink 1s infinite;
 }
