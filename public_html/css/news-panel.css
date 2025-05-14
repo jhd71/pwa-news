@@ -729,17 +729,18 @@
     background: linear-gradient(145deg, #c62828, #e53935) !important;
 }
 
+/* Titre "Partager" plus visible et mieux centré */
 .share-modal-content h3 {
     margin-top: 0;
     text-align: center;
     margin-bottom: 20px;
-    font-size: 24px;
+    font-size: 26px;
     font-weight: bold;
     letter-spacing: 0.5px;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* Style de base pour les options de partage */
+/* Style unifié des options de partage avec alignement correct */
 .share-option {
     display: flex;
     align-items: center;
@@ -756,9 +757,11 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.share-option span:not(.material-icons) {
+/* Amélioration pour l'alignement du texte dans les options */
+.share-option span:not(.material-icons):not(.icon-container) {
     flex-grow: 1;
-    text-align: center;
+    text-align: left;
+    padding-left: 18px; /* Aligne le texte avec Facebook */
 }
 
 /* Ajout des effets au survol */
@@ -769,11 +772,21 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Style pour les icônes */
-.share-option .material-icons {
-    margin-right: 15px;
-    margin-left: 15px;
-    font-size: 22px;
+/* Style pour l'icône à gauche */
+.share-option .material-icons,
+.share-option .icon-container {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 12px;
+}
+
+/* Option "Copier le lien" centrée */
+.share-option.copy-btn span:not(.material-icons):not(.icon-container) {
+    text-align: center;
+    padding-left: 0;
 }
 
 /* Léger zoom au survol de l'icône */
@@ -781,25 +794,24 @@
     transform: scale(1.1);
 }
 
-/* Style des boutons de partage (centré et visible) */
+/* Bouton Fermer plus compact */
 .share-close {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    padding: 14px;
+    padding: 12px;
     border-radius: 12px;
     background-color: #4CAF50;
     color: white;
     font-size: 1.1em;
+    font-weight: bold;
     border: none;
     cursor: pointer;
-    font-weight: bold;
     transition: background-color 0.3s ease, transform 0.2s ease;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
     box-shadow: 0 3px 7px rgba(0, 0, 0, 0.2);
-    margin-top: 10px;
-    max-width: 90%;
+    margin-top: 15px;
+    width: 70%;
     margin-left: auto;
     margin-right: auto;
 }
@@ -992,7 +1004,7 @@
     background: rgba(0, 0, 0, 0.8);
 }
 
-/* Modifications pour le bouton fermer en mode rouge */
+/* Thème rouge pour le bouton Fermer */
 [data-theme="rouge"] .share-close {
     background-color: #ffeb3b !important;
     color: #000000 !important;

@@ -53,26 +53,34 @@ shareModal.innerHTML = `
     <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" 
        target="_blank" 
        class="share-option">
-      <span class="material-icons">facebook</span>
+      <div class="icon-container">
+        <span class="material-icons">facebook</span>
+      </div>
       <span>Facebook</span>
     </a>
     
     <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" 
        target="_blank" 
        class="share-option">
-      <span class="material-icons">send</span>
+      <div class="icon-container">
+        <span class="material-icons">send</span>
+      </div>
       <span>X.com</span>
     </a>
     
     <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(title + ' ' + url)}" 
        target="_blank" 
        class="share-option">
-      <img src="https://cdn-icons-png.flaticon.com/512/124/124034.png" width="24" height="24" style="margin-right: 15px; margin-left: 15px;">
+      <div class="icon-container">
+        <img src="https://cdn-icons-png.flaticon.com/512/124/124034.png" width="24" height="24">
+      </div>
       <span>WhatsApp</span>
     </a>
     
     <button class="share-option copy-btn">
-      <span class="material-icons">content_copy</span>
+      <div class="icon-container">
+        <span class="material-icons">content_copy</span>
+      </div>
       <span>Copier le lien</span>
     </button>
     
