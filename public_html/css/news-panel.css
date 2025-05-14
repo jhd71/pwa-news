@@ -693,26 +693,40 @@
     z-index: 1100;
 }
 
-/* Appliquer les thèmes à la modal de partage */
+/* Appliquer les thèmes à la modal de partage avec !important pour surcharger les styles en ligne */
 [data-theme="dark"] .share-modal {
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.7) !important;
 }
 
 [data-theme="light"] .share-modal {
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.7) !important;
 }
 
 [data-theme="rouge"] .share-modal {
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.7) !important;
 }
 
+/* Utiliser !important pour surcharger les styles en ligne */
 .share-modal-content {
-    background: var(--primary-color);
-    border-radius: 12px;
-    padding: 20px;
-    width: 90%;
-    max-width: 320px;
-    color: white;
+    background: var(--primary-color) !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    width: 90% !important;
+    max-width: 320px !important;
+    color: white !important;
+}
+
+/* Surcharger spécifiquement le style en ligne pour les thèmes */
+[data-theme="dark"] .share-modal-content {
+    background: linear-gradient(145deg, #1a237e, #283593) !important;
+}
+
+[data-theme="light"] .share-modal-content {
+    background: linear-gradient(145deg, #7E57C2, #9575CD) !important;
+}
+
+[data-theme="rouge"] .share-modal-content {
+    background: linear-gradient(145deg, #c62828, #e53935) !important;
 }
 
 .share-modal-content h3 {
@@ -981,4 +995,22 @@
 [data-theme="rouge"] .share-close:hover,
 [data-theme="rouge"] .share-close:active {
     background-color: #fdd835 !important;
+}
+
+/* Style personnalisé pour surcharger les styles en ligne */
+#share div[style*="background"] {
+    background: inherit !important;
+}
+
+/* Surcharge spécifique pour chaque thème */
+[data-theme="light"] #share div[style*="background"] {
+    background: linear-gradient(145deg, #7E57C2, #9575CD) !important;
+}
+
+[data-theme="dark"] #share div[style*="background"] {
+    background: linear-gradient(145deg, #1a237e, #283593) !important;
+}
+
+[data-theme="rouge"] #share div[style*="background"] {
+    background: linear-gradient(145deg, #c62828, #e53935) !important;
 }
