@@ -729,7 +729,9 @@
     background: linear-gradient(145deg, #c62828, #e53935) !important;
 }
 
-/* Titre "Partager" plus visible et mieux centré */
+/* CSS simplifié pour la fenêtre de partage */
+
+/* Titre centré */
 .share-modal-content h3 {
     margin-top: 0;
     text-align: center;
@@ -740,22 +742,50 @@
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* Pour tous les boutons de partage */
+/* Style de base pour toutes les options */
 .share-option {
     display: flex;
     align-items: center;
+    gap: 15px;
+    padding: 14px;
+    margin: 10px 0;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.15);
+    color: white !important;
+    text-decoration: none;
+    font-size: 1.1em;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+/* Style pour le texte */
+.share-option span:not(.material-icons) {
+    flex: 1;
+    text-align: left;
+    margin-left: 5px;
+}
+
+/* Pour Facebook, X.com, etc. - même style */
+.share-option .material-icons,
+.share-option img {
+    width: 24px;
+    height: 24px;
+    display: flex;
     justify-content: center;
-    gap: 10px; /* Utiliser gap pour un espacement uniforme */
-    text-align: center;
-    padding: 14px 10px;
+    align-items: center;
 }
 
-/* Style commun pour le texte */
-.share-option span:not(.material-icons):not(.icon-container) {
-    text-align: center;
+/* Éviter des styles spécifiques pour copy-btn */
+.share-option.copy-btn {
+    background-color: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: white;
 }
 
-/* Ajout des effets au survol */
+/* Effet hover commun */
 .share-option:hover,
 .share-option:active {
     background-color: rgba(255, 255, 255, 0.25);
@@ -763,55 +793,13 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Style commun pour le conteneur d'icône */
-.share-option .icon-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 24px;
-    height: 24px;
-    flex-shrink: 0;
-}
-
-/* Correction pour aligner correctement l'icône et le texte */
-.share-option.copy-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 14px 20px;
-    text-align: center;
-}
-
-/* Corriger l'alignement de l'icône */
-.share-option.copy-btn .icon-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
-    margin-left: 0;
-}
-
-/* Option "Copier le lien" centrée */
-.share-option.copy-btn span:not(.material-icons):not(.icon-container) {
-    text-align: center;
-    flex: none;
-    margin: 0;
-    padding-left: 0;
-    margin-right: 10px;
-}
-
-/* Léger zoom au survol de l'icône */
-.share-option:hover .material-icons {
-    transform: scale(1.1);
-}
-
-/* Style pour le bouton Fermer */
+/* Bouton Fermer */
 .share-close {
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 70%;
+    margin: 20px auto 10px auto;
     padding: 12px;
     border-radius: 12px;
     background-color: #4CAF50;
@@ -823,10 +811,26 @@
     transition: background-color 0.3s ease, transform 0.2s ease;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
     box-shadow: 0 3px 7px rgba(0, 0, 0, 0.2);
-    margin-top: 15px;
-    width: 70%;
-    margin-left: auto;
-    margin-right: auto;
+}
+
+/* Effets du bouton */
+.share-close:hover,
+.share-close:active {
+    background-color: #388E3C;
+    transform: scale(1.02);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Thème rouge pour le bouton Fermer */
+[data-theme="rouge"] .share-close {
+    background-color: #ffeb3b !important;
+    color: #000000 !important;
+    text-shadow: none !important;
+}
+
+[data-theme="rouge"] .share-close:hover,
+[data-theme="rouge"] .share-close:active {
+    background-color: #fdd835 !important;
 }
 
 /* Ajout de l'icone à gauche sur mobile */
@@ -838,14 +842,6 @@
         flex-direction: row;
         text-align: center;
     }
-}
-
-/* Améliore l'effet au survol */
-.share-close:hover,
-.share-close:active {
-    background-color: #388E3C;
-    transform: scale(1.02);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 /* Adaptation aux thèmes pour la modal de partage */
@@ -1015,18 +1011,6 @@
 [data-theme="rouge"] .mobile-close-panel:hover, 
 [data-theme="rouge"] .mobile-close-panel:active {
     background: rgba(0, 0, 0, 0.8);
-}
-
-/* Thème rouge pour le bouton Fermer */
-[data-theme="rouge"] .share-close {
-    background-color: #ffeb3b !important;
-    color: #000000 !important;
-    text-shadow: none !important;
-}
-
-[data-theme="rouge"] .share-close:hover,
-[data-theme="rouge"] .share-close:active {
-    background-color: #fdd835 !important;
 }
 
 /* Style personnalisé pour surcharger les styles en ligne */
