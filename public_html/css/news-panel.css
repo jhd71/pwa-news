@@ -740,31 +740,19 @@
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* Style des options de partage - TOUT CENTRÉ */
+/* Pour tous les boutons de partage */
 .share-option {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 14px 20px;
-    border-radius: 12px;
-    background-color: rgba(255, 255, 255, 0.15);
-    color: white;
-    text-decoration: none;
-    font-size: 1.1em;
-    cursor: pointer;
-    border: none;
-    margin-bottom: 10px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    gap: 10px; /* Utiliser gap pour un espacement uniforme */
     text-align: center;
+    padding: 14px 10px;
 }
 
-/* Style pour le texte - centré avec espacement */
+/* Style commun pour le texte */
 .share-option span:not(.material-icons):not(.icon-container) {
-    flex-grow: 1;
     text-align: center;
-    margin-left: 10px;
-    margin-right: 10px;
 }
 
 /* Ajout des effets au survol */
@@ -775,24 +763,43 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Style pour l'icône à gauche */
+/* Style commun pour le conteneur d'icône */
 .share-option .icon-container {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
-    width: 30px;
+    width: 24px;
     height: 24px;
+    flex-shrink: 0;
 }
 
-/* Ajustement spécifique pour "Copier le lien" */
+/* Correction pour aligner correctement l'icône et le texte */
+.share-option.copy-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 20px;
+    text-align: center;
+}
+
+/* Corriger l'alignement de l'icône */
 .share-option.copy-btn .icon-container {
-    margin-right: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+    margin-left: 0;
 }
 
 /* Option "Copier le lien" centrée */
 .share-option.copy-btn span:not(.material-icons):not(.icon-container) {
     text-align: center;
+    flex: none;
+    margin: 0;
     padding-left: 0;
+    margin-right: 10px;
 }
 
 /* Léger zoom au survol de l'icône */

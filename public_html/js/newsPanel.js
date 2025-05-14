@@ -78,9 +78,7 @@ shareModal.innerHTML = `
     </a>
     
     <button class="share-option copy-btn">
-      <div class="icon-container">
-        <span class="material-icons">content_copy</span>
-      </div>
+      <span class="material-icons">content_copy</span>
       <span>Copier le lien</span>
     </button>
     
