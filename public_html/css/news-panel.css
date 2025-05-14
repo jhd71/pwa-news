@@ -740,11 +740,12 @@
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* Style unifié des options de partage avec alignement correct */
+/* Style des options de partage - TOUT CENTRÉ */
 .share-option {
     display: flex;
     align-items: center;
-    padding: 14px;
+    justify-content: center;
+    padding: 14px 20px;
     border-radius: 12px;
     background-color: rgba(255, 255, 255, 0.15);
     color: white;
@@ -755,13 +756,15 @@
     margin-bottom: 10px;
     transition: background-color 0.3s ease, transform 0.2s ease;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
-/* Amélioration pour l'alignement du texte dans les options */
+/* Style pour le texte - centré avec espacement */
 .share-option span:not(.material-icons):not(.icon-container) {
     flex-grow: 1;
-    text-align: left;
-    padding-left: 18px; /* Aligne le texte avec Facebook */
+    text-align: center;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 /* Ajout des effets au survol */
@@ -773,14 +776,17 @@
 }
 
 /* Style pour l'icône à gauche */
-.share-option .material-icons,
 .share-option .icon-container {
-    width: 24px;
-    height: 24px;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
-    margin-left: 12px;
+    width: 30px;
+    height: 24px;
+}
+
+/* Ajustement spécifique pour "Copier le lien" */
+.share-option.copy-btn .icon-container {
+    margin-right: 5px;
 }
 
 /* Option "Copier le lien" centrée */
@@ -794,7 +800,7 @@
     transform: scale(1.1);
 }
 
-/* Bouton Fermer plus compact */
+/* Style pour le bouton Fermer */
 .share-close {
     display: flex;
     justify-content: center;
