@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v5';
+const CACHE_NAME = 'infos-pwa-v6';
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -23,7 +23,6 @@ const STATIC_RESOURCES = [
     '/js/notification-manager.js',
     '/js/quick-links.js',
 	'/js/ban-check.js',
-    '/js/service-worker.js',
     '/js/settingsManager.js',
     '/js/sounds.js',
     '/js/tablet-fixes.js',
