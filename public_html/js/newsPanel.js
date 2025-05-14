@@ -42,45 +42,45 @@ document.addEventListener('DOMContentLoaded', function() {
           }
           
           // Créer la nouvelle modale avec des classes CSS au lieu des styles en ligne
-          const shareModal = document.createElement('div');
-          shareModal.className = 'share-modal';
-          
-          // Utiliser des classes CSS au lieu de styles en ligne
-          shareModal.innerHTML = `
-            <div id="share" class="share-modal-content">
-              <h3>Partager</h3>
-              
-              <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" 
-                 target="_blank" 
-                 class="share-option">
-                <span class="material-icons">facebook</span>
-                <span>Facebook</span>
-              </a>
-              
-              <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" 
-                 target="_blank" 
-                 class="share-option">
-                <span class="material-icons">send</span>
-                <span>X.com</span>
-              </a>
-              
-              <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(title + ' ' + url)}" 
-                 target="_blank" 
-                 class="share-option">
-                <span class="material-icons">whatsapp</span>
-                <span>WhatsApp</span>
-              </a>
-              
-              <button class="share-option copy-btn">
-                <span class="material-icons">content_copy</span>
-                <span>Copier le lien</span>
-              </button>
-              
-              <button class="share-close">
-                Fermer
-              </button>
-            </div>
-          `;
+const shareModal = document.createElement('div');
+shareModal.className = 'share-modal';
+
+// Utiliser des classes CSS au lieu de styles en ligne
+shareModal.innerHTML = `
+  <div id="share" class="share-modal-content">
+    <h3>Partager</h3>
+    
+    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" 
+       target="_blank" 
+       class="share-option">
+      <span class="material-icons">facebook</span>
+      <span>Facebook</span>
+    </a>
+    
+    <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" 
+       target="_blank" 
+       class="share-option">
+      <span class="material-icons">send</span>
+      <span>X.com</span>
+    </a>
+    
+    <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(title + ' ' + url)}" 
+       target="_blank" 
+       class="share-option">
+      <img src="https://cdn-icons-png.flaticon.com/512/124/124034.png" width="24" height="24" style="margin-right: 15px; margin-left: 15px;">
+      <span>WhatsApp</span>
+    </a>
+    
+    <button class="share-option copy-btn">
+      <span class="material-icons">content_copy</span>
+      <span>Copier le lien</span>
+    </button>
+    
+    <button class="share-close">
+      Fermer
+    </button>
+  </div>
+`;
           
           document.body.appendChild(shareModal);
           
