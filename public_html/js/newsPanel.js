@@ -53,14 +53,14 @@ shareModal.innerHTML = `
     <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" 
        target="_blank" 
        class="share-option">
-      <span class="material-icons">facebook</span>
+      <img src="https://cdn-icons-png.flaticon.com/512/124/124010.png" width="24" height="24">
       <span>Facebook</span>
     </a>
     
     <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" 
        target="_blank" 
        class="share-option">
-      <span class="material-icons">send</span>
+      <img src="https://cdn-icons-png.flaticon.com/512/5969/5969020.png" width="24" height="24">
       <span>X.com</span>
     </a>
     
@@ -72,7 +72,7 @@ shareModal.innerHTML = `
     </a>
     
     <button class="share-option copy-btn">
-      <span class="material-icons">content_copy</span>
+      <img src="https://cdn-icons-png.flaticon.com/512/4208/4208397.png" width="24" height="24">
       <span>Copier le lien</span>
     </button>
     
