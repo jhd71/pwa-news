@@ -46,6 +46,8 @@ const shareModal = document.createElement('div');
 shareModal.className = 'share-modal';
 
 // Utiliser des classes CSS au lieu de styles en ligne
+// Utiliser un emoji pour WhatsApp comme alternative
+
 shareModal.innerHTML = `
   <div id="share" class="share-modal-content">
     <h3>Partager</h3>
@@ -67,7 +69,7 @@ shareModal.innerHTML = `
     <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(title + ' ' + url)}" 
        target="_blank" 
        class="share-option">
-      <span class="material-icons">whatsapp</span>
+      <span class="emoji-icon">📱</span>
       <span>WhatsApp</span>
     </a>
     
