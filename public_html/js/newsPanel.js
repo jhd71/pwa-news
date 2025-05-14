@@ -69,7 +69,7 @@ shareModal.innerHTML = `
     <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(title + ' ' + url)}" 
        target="_blank" 
        class="share-option">
-      <span class="emoji-icon">📱</span>
+      <img src="https://cdn-icons-png.flaticon.com/512/1384/1384023.png" width="24" height="24" alt="WhatsApp" class="whatsapp-icon">
       <span>WhatsApp</span>
     </a>
     

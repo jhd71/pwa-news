@@ -742,6 +742,15 @@
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
+/* Style pour l'icône WhatsApp */
+.whatsapp-icon {
+    width: 24px;
+    height: 24px;
+    filter: brightness(0) invert(1); /* Rend l'icône blanche */
+    display: inline-block;
+    vertical-align: middle;
+}
+
 /* Style de base pour toutes les options */
 .share-option {
     display: flex;
@@ -770,14 +779,9 @@
     margin-left: 5px;
 }
 
-/* Pour Facebook, X.com, etc. - même style */
-.share-option .material-icons,
-.share-option img {
-    width: 24px;
-    height: 24px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* S'assurer que toutes les icônes sont alignées de la même façon */
+.share-option .material-icons {
+    color: white;
 }
 
 /* Éviter des styles spécifiques pour copy-btn */
