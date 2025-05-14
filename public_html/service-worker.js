@@ -11,6 +11,7 @@ const STATIC_RESOURCES = [
     '/css/settings-styles.css',
 	'/css/ios-specific.css',
 	'/css/survey-styles.css',
+	'/css/tile-enhancements.css',
     '/js/app.js',
     '/js/chatManager.js',
     '/js/chat-keyboard-fix.js',

@@ -139,6 +139,13 @@
   margin: 15px 0;
 }
 
+.font-size-tiles {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 15px 0;
+}
+
 .font-size-tile {
   display: flex;
   flex-direction: column;
@@ -149,8 +156,15 @@
   border-radius: 12px;
   background-color: rgba(255, 255, 255, 0.1);
   cursor: pointer;
-  transition: all 0.2s;
   color: white !important;
+  /* Supprimer la transition qui pose problème sur mobile */
+  transition: background-color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  /* Stabiliser l'élément */
+  position: relative;
+  will-change: background-color;
+  user-select: none;
+  touch-action: manipulation;
 }
 
 /* Style des tuiles selon les thèmes */
@@ -169,20 +183,149 @@
 .font-size-tile.active {
   background-color: rgba(255, 255, 255, 0.2);
   color: white !important;
+  /* Supprimer les transformations et remplacer par border pour l'état actif */
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  /* Aucune transformation pour éviter les problèmes sur mobile */
+  transform: none !important;
 }
 
-.font-size-tile:hover:not(.active) {
-  background-color: rgba(255, 255, 255, 0.15);
-}
+/* Effet de survol UNIQUEMENT pour les appareils non tactiles */
+@media (hover: hover) {
+  .font-size-tile:hover:not(.active) {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
 
-[data-theme="light"] .font-size-tile:hover:not(.active) {
-  background-color: rgba(0, 0, 0, 0.1);
+  [data-theme="light"] .font-size-tile:hover:not(.active) {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
 }
 
 .font-size-tile .material-icons {
   font-size: 24px;
   margin-bottom: 5px;
   color: white !important;
+}
+
+/* Support spécifique pour les appareils mobiles */
+@media (max-width: 767px) {
+  /* Optimisations pour le menu des paramètres sur mobile */
+  .settings-menu {
+    position: fixed;
+    top: var(--header-height, 60px);
+    right: 0;
+    width: 85%;
+    max-width: 300px;
+    height: calc(100vh - var(--header-height, 60px) - var(--bottom-nav-height, 60px));
+    max-height: calc(100vh - var(--header-height, 60px) - var(--bottom-nav-height, 60px));
+    background-color: var(--primary-color);
+    z-index: 1010;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-out;
+    box-shadow: -3px 0 10px rgba(0, 0, 0, 0.3);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .settings-menu.open {
+    transform: translateX(0);
+  }
+
+  /* Style pour l'en-tête du panneau */
+  .settings-header {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--primary-color);
+    z-index: 2;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Style pour le contenu */
+  .settings-content {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Style pour les tuiles sur mobile */
+  .font-size-tiles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 15px 0;
+  }
+
+  .font-size-tile {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1/1;
+    min-height: 48px;
+    border-radius: 8px;
+    /* Aucune transition sur mobile */
+    transition: none !important;
+  }
+
+  /* Indique visuellement l'état actif sans animation */
+  .font-size-tile.active {
+    border: 2px solid white;
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: none !important;
+  }
+
+  /* Indiquer l'état pressé sans animation */
+  .font-size-tile:active {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: none !important;
+  }
+  
+  /* Style pour le bouton settings actif */
+  .settings-button.active {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Style pour le bouton de fermeture */
+  .settings-header .close-btn {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 3;
+  }
+  
+  /* Empêcher le défilement du body quand le panneau est ouvert */
+  body.settings-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Overlay quand le panneau est ouvert */
+  body.settings-open::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1005;
+    pointer-events: none;
+  }
 }
 
 /* Interrupteurs de type toggle */
@@ -326,6 +469,14 @@ input:checked + .toggle-slider:before {
   background-color: #d32f2f !important;
 }
 
+[data-theme="rouge"] .settings-menu {
+  background-color: #d32f2f !important;
+}
+
+[data-theme="rouge"] .settings-header {
+  background-color: #d32f2f !important;
+}
+
 [data-theme="rouge"] .modal-header,
 [data-theme="rouge"] .settings-content,
 [data-theme="rouge"] .settings-section h4,
@@ -353,6 +504,14 @@ input:checked + .toggle-slider:before {
   background-color: #1a237e !important;
 }
 
+[data-theme="dark"] .settings-menu {
+  background-color: #1a237e !important;
+}
+
+[data-theme="dark"] .settings-header {
+  background-color: #1a237e !important;
+}
+
 [data-theme="dark"] .modal-header,
 [data-theme="dark"] .settings-content,
 [data-theme="dark"] .settings-section h4,
@@ -377,6 +536,14 @@ input:checked + .toggle-slider:before {
 
 /* Support spécifique pour le thème clair (violet) */
 [data-theme="light"] .modal-content {
+  background-color: #7E57C2 !important;
+}
+
+[data-theme="light"] .settings-menu {
+  background-color: #7E57C2 !important;
+}
+
+[data-theme="light"] .settings-header {
   background-color: #7E57C2 !important;
 }
 

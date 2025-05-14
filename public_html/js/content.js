@@ -736,17 +736,27 @@ const tvSites = [
         }, 3000);
     }
 
-    // Modifiez la fonction showSettings() dans content.js comme suit:
+// Remplacez la méthode showSettings() existante par celle-ci :
+
+// Remplacez la méthode showSettings() dans content.js par cette version corrigée
 
 showSettings() {
     const existingPanel = document.querySelector('.settings-menu');
     if (existingPanel) {
         existingPanel.classList.remove('open');
+        document.body.classList.remove('settings-open');
+        const settingsButton = document.getElementById('settingsButton');
+        if (settingsButton) {
+            settingsButton.classList.remove('active');
+        }
         setTimeout(() => {
             existingPanel.remove();
         }, 300);
         return;
     }
+
+    // Ajouter une classe au body pour indiquer que le panneau est ouvert
+    document.body.classList.add('settings-open');
 
     const panel = document.createElement('div');
     panel.className = 'settings-menu';
@@ -783,73 +793,126 @@ showSettings() {
     `;
 
     document.body.appendChild(panel);
-    setTimeout(() => panel.classList.add('open'), 10);
+    
+    // Indiquer visuellement que le bouton settings est actif
+    const settingsButton = document.getElementById('settingsButton');
+    if (settingsButton) {
+        settingsButton.classList.add('active');
+    }
+    
+    // Laisser le panneau s'ajouter au DOM avant d'animer
+    requestAnimationFrame(() => {
+        panel.classList.add('open');
+    });
 
     const closeBtn = panel.querySelector('.close-btn');
     if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
+        closeBtn.addEventListener('click', (e) => {
+            // Important: arrêter la propagation pour éviter que le clic atteigne le document
+            e.stopPropagation();
             panel.classList.remove('open');
+            document.body.classList.remove('settings-open');
+            if (settingsButton) {
+                settingsButton.classList.remove('active');
+            }
             setTimeout(() => panel.remove(), 300);
         });
     }
 
-    // MODIFICATION : Stocker une référence pour savoir si on est en train de traiter un changement de taille
-    let isProcessingFontSizeChange = false;
+    // Système de verrouillage pour éviter les problèmes lors du changement de taille
+    let isChangingFontSize = false;
 
+    // Gestionnaire pour les tuiles de taille de police
     panel.querySelectorAll('.font-size-tile').forEach(tile => {
-        tile.addEventListener('click', (e) => {
-            // MODIFICATION : Empêcher la propagation pour éviter la fermeture
-            e.stopPropagation();
-            
-            // MODIFICATION : Indiquer qu'on est en train de traiter un changement
-            isProcessingFontSizeChange = true;
-            
-            const size = tile.dataset.fontSize;
-            this.changeFontSize(size);
-            panel.querySelectorAll('.font-size-tile').forEach(t => {
-                t.classList.toggle('active', t.dataset.fontSize === size);
-            });
-            
-            // MODIFICATION : Réinitialiser le flag après un délai
-            setTimeout(() => {
-                isProcessingFontSizeChange = false;
-            }, 500);
+        // Utiliser touchstart et click pour couvrir tous les cas
+        ['touchstart', 'click'].forEach(eventType => {
+            tile.addEventListener(eventType, (e) => {
+                // IMPORTANT: Arrêter la propagation de l'événement
+                e.stopPropagation();
+                
+                // Ne pas traiter si on est déjà en train de changer
+                if (isChangingFontSize) return;
+                isChangingFontSize = true;
+                
+                // Feedback visuel immédiat
+                panel.querySelectorAll('.font-size-tile').forEach(t => {
+                    t.classList.remove('active');
+                });
+                tile.classList.add('active');
+                
+                // Changer la taille de police
+                const size = tile.dataset.fontSize;
+                
+                // Utiliser un délai pour s'assurer que l'interface est mise à jour avant l'animation
+                setTimeout(() => {
+                    this.changeFontSize(size);
+                    // Réinitialiser le verrouillage après un délai
+                    setTimeout(() => {
+                        isChangingFontSize = false;
+                    }, 500);
+                }, 50);
+            }, { passive: false });
         });
     });
 
-    // MODIFICATION : Ajouté une condition pour ne pas fermer pendant le traitement d'un changement
-    document.addEventListener('click', (e) => {
-        if (!panel.contains(e.target) && !e.target.closest('#settingsButton') && !isProcessingFontSizeChange) {
-            panel.classList.remove('open');
-            setTimeout(() => panel.remove(), 300);
+    // Empêcher que des clics sur le panneau lui-même ferment celui-ci
+    panel.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+
+    // Fermer le panneau si on clique ailleurs dans le document
+    // Utiliser un flag pour ne pas fermer durant les manipulations de taille
+    const outsideClickHandler = (e) => {
+        // Ne pas fermer si on est en train de changer la taille
+        if (isChangingFontSize) return;
+        
+        // Ne pas fermer si on clique sur le panneau ou le bouton settings
+        if (panel.contains(e.target) || (settingsButton && settingsButton.contains(e.target))) {
+            return;
         }
-    }, { capture: true });
+        
+        // Fermer le panneau
+        panel.classList.remove('open');
+        document.body.classList.remove('settings-open');
+        if (settingsButton) {
+            settingsButton.classList.remove('active');
+        }
+        
+        // Nettoyer
+        document.removeEventListener('click', outsideClickHandler);
+        setTimeout(() => panel.remove(), 300);
+    };
+
+    // Ajouter le gestionnaire après un petit délai
+    setTimeout(() => {
+        document.addEventListener('click', outsideClickHandler);
+    }, 100);
 }
 
-// Modifiez la fonction changeFontSize() dans content.js comme suit:
+// Remplacez également la méthode changeFontSize() par celle-ci :
 
 changeFontSize(size) {
-    // Sauvegarder la nouvelle taille
+    // Sauvegarder la nouvelle taille de manière persistante
     this.fontSize = size;
     localStorage.setItem('fontSize', size);
     
-    // MODIFICATION : Délai avant de rafraîchir l'affichage pour éviter les problèmes
-    setTimeout(() => {
-        // Appliquer la taille au document
-        document.documentElement.setAttribute('data-font-size', size);
-        
-        // Rafraîchir l'affichage
+    // Appliquer la taille au document HTML immédiatement
+    document.documentElement.setAttribute('data-font-size', size);
+    
+    // Essayer d'éviter les reflows importants en mettant à jour l'affichage progressivement
+    requestAnimationFrame(() => {
+        // Mettre à jour les tuiles
         this.setupTiles();
         
-        // Notification du changement
-        if (this.showToast) {
+        // Afficher une notification avec un léger délai
+        setTimeout(() => {
             this.showToast(`Taille de texte : ${
                 size === 'small' ? 'petite' :
                 size === 'normal' ? 'normale' :
                 'grande'
             }`);
-        }
-    }, 50); // Petit délai pour laisser le DOM se stabiliser
+        }, 300);
+    });
 }
 
     handleInstall() {

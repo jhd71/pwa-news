@@ -1,126 +1,340 @@
-/* ios-specific.css - Version corrigée avec support pour le thème rouge */
+/* ios-specific.css - Version optimisée pour tous les modèles d'iPhone */
+
+/* Variables pour les marges de sécurité iOS */
 :root {
   --safe-area-top: env(safe-area-inset-top, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
   --safe-area-left: env(safe-area-inset-left, 0px);
   --safe-area-right: env(safe-area-inset-right, 0px);
+  
+  /* Variables pour les différentes tailles d'iPhone */
+  --is-small-iphone: 0; /* iPhone SE, 8, etc. */
+  --is-medium-iphone: 0; /* iPhone X, 11, 12, 13 standard */
+  --is-large-iphone: 0; /* iPhone Plus, Pro Max */
+  
+  /* Dimensions dynamiques selon l'appareil */
+  --iphone-header-offset: 0px;
+  --iphone-logo-size: 80px;
+  --iphone-button-top: 90px;
+  --iphone-main-margin: 15px;
+  --iphone-widget-top: 75px;
+  --iphone-separator-margin: 80px;
+}
+
+/* Détection des tailles d'iPhone par media queries */
+@media only screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2),
+       only screen and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) {
+  /* iPhone SE, 8, etc. */
+  :root {
+    --is-small-iphone: 1;
+    --iphone-header-offset: 10px;
+    --iphone-logo-size: 70px;
+    --iphone-button-top: 75px;
+    --iphone-main-margin: 10px;
+    --iphone-widget-top: 65px;
+    --iphone-separator-margin: 70px;
+  }
+}
+
+@media only screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3),
+       only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  /* iPhone X, 11, 12, 13 standard */
+  :root {
+    --is-medium-iphone: 1;
+    --iphone-header-offset: 20px;
+    --iphone-logo-size: 80px;
+    --iphone-button-top: 100px;
+    --iphone-main-margin: 20px;
+    --iphone-widget-top: 85px;
+    --iphone-separator-margin: 90px;
+  }
+}
+
+@media only screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3),
+       only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3),
+       only screen and (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) {
+  /* iPhone Pro Max, Plus, etc. */
+  :root {
+    --is-large-iphone: 1;
+    --iphone-header-offset: 30px;
+    --iphone-logo-size: 90px;
+    --iphone-button-top: 110px;
+    --iphone-main-margin: 25px;
+    --iphone-widget-top: 95px;
+    --iphone-separator-margin: 100px;
+  }
+}
+
+/* Styles pour iPhone 14 et 15 */
+@media only screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3),
+       only screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) {
+  :root {
+    --is-medium-iphone: 1;
+    --iphone-header-offset: 30px;
+    --iphone-logo-size: 80px;
+    --iphone-button-top: 100px;
+    --iphone-main-margin: 20px;
+    --iphone-widget-top: 85px;
+    --iphone-separator-margin: 90px;
+  }
+}
+
+/* Styles pour iPhone 14 Pro, 15 Pro */
+@media only screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) {
+  :root {
+    --is-medium-iphone: 1;
+    --iphone-header-offset: 40px; /* Plus grand à cause de l'encoche/Dynamic Island */
+    --iphone-logo-size: 80px;
+    --iphone-button-top: 110px;
+    --iphone-main-margin: 20px;
+    --iphone-widget-top: 95px;
+    --iphone-separator-margin: 100px;
+  }
+}
+
+/* Styles pour iPhone 14 Pro Max, 15 Pro Max */
+@media only screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+  :root {
+    --is-large-iphone: 1;
+    --iphone-header-offset: 45px; /* Plus grand à cause de l'encoche/Dynamic Island */
+    --iphone-logo-size: 90px;
+    --iphone-button-top: 120px;
+    --iphone-main-margin: 25px;
+    --iphone-widget-top: 105px;
+    --iphone-separator-margin: 110px;
+  }
+}
+
+/* Backup pour les nouveaux modèles qui ne seraient pas détectés */
+@supports (-webkit-touch-callout: none) {
+  body.ios-device {
+    /* Ces styles seront appliqués à tous les appareils iOS */
+    --iphone-header-offset: 20px;
+    --iphone-logo-size: 80px;
+    --iphone-button-top: 90px;
+    --iphone-main-margin: 15px;
+    --iphone-widget-top: 75px;
+    --iphone-separator-margin: 100px;
+  }
 }
 
 /* Structure de base */
 body {
-  padding-top: var(--safe-area-top) !important;
+  padding-top: calc(var(--safe-area-top) + var(--iphone-header-offset)) !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior-y: none !important;
 }
 
+/* 1. En-tête et logo */
 .app-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: var(--header-height);
-    background-color: var(--primary-color);
-    color: white;
-    display: flex;
-    align-items: center;
-    /* padding: 0 10px; */
-    z-index: 1005;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    overflow: visible;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: auto !important; /* Hauteur auto pour s'adapter aux différentes tailles */
+  min-height: var(--header-height) !important;
+  padding-top: var(--safe-area-top) !important;
+  background-color: var(--primary-color) !important;
+  color: white !important;
+  display: flex !important;
+  align-items: center !important;
+  z-index: 1005 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  overflow: visible !important;
 }
-/* 1. Remonter le logo du site */
+
 .site-logo, .logo-container, .site-title {
   position: relative !important;
   top: calc(var(--safe-area-top) + 10px) !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
   z-index: 1001 !important;
-  height: 80px !important; /* Légèrement augmenté de 60px à 65px */
+  height: var(--iphone-logo-size) !important;
   width: auto !important;
   margin: 0 !important;
+  max-width: 70% !important; /* Eviter que le logo déborde */
+  object-fit: contain !important;
 }
 
-/* 2. Widgets alignés horizontalement - sous le logo */
+/* 2. Widgets alignés horizontalement */
 .weather-mobile-btn {
-    position: fixed !important;
-    top: calc(var(--safe-area-top) + 75px) !important; /* Juste sous le logo */
-    left: 20% !important;
-    transform: translateX(-50%) !important;
-    z-index: 996 !important;
-  }
-  
-.quick-links-show-btn {
-    position: fixed !important;
-    top: calc(var(--safe-area-top) + 75px) !important;
-    right: 20% !important;
-    transform: translateX(50%) !important;
-    z-index: 996 !important;
-  }
-  
-  /* 3. Bouton Infos en direct - CONSERVÉ, entre les widgets */
-.news-button {
-    position: fixed !important;
-    top: calc(var(--safe-area-top) + 75px) !important; /* Même niveau que les widgets */
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    min-width: 180px !important; /* Largeur réduite pour s'adapter */
+  position: fixed !important;
+  top: calc(var(--safe-area-top) + var(--iphone-widget-top)) !important;
+  left: 20% !important;
+  transform: translateX(-50%) !important;
+  z-index: 996 !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
-	
-	
-/* 2. Remonter les boutons menu et paramètres - couleur adaptée selon le thème */
+
+.quick-links-show-btn {
+  position: fixed !important;
+  top: calc(var(--safe-area-top) + var(--iphone-widget-top)) !important;
+  right: 20% !important;
+  transform: translateX(50%) !important;
+  z-index: 996 !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* 3. Bouton Infos en direct */
+.news-button {
+  position: fixed !important;
+  top: calc(var(--safe-area-top) + var(--iphone-widget-top)) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  min-width: 160px !important;
+  max-width: 180px !important;
+  height: 40px !important;
+  z-index: 996 !important;
+  font-size: 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 12px !important;
+}
+
+/* 4. Boutons menu et paramètres */
 .menu-button, .hamburger-menu {
   position: fixed !important;
-  top: calc(var(--safe-area-top) + 90px) !important; /* Augmenté pour descendre le bouton */
+  top: calc(var(--safe-area-top) + var(--iphone-button-top)) !important;
   left: 10px !important;
   z-index: 1010 !important;
-  background-color: rgba(126, 87, 194, 0.8) !important; /* Couleur par défaut - violet */
+  background-color: rgba(126, 87, 194, 0.8) !important;
   border-radius: 50% !important;
+  width: 44px !important; /* Taille plus grande pour la facilité d'appui */
+  height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
 }
 
 .settings-button, .gear-icon {
   position: fixed !important;
-  top: calc(var(--safe-area-top) + 90px) !important; /* Augmenté pour descendre le bouton */
+  top: calc(var(--safe-area-top) + var(--iphone-button-top)) !important;
   right: 10px !important;
   z-index: 1010 !important;
-  background-color: rgba(126, 87, 194, 0.8) !important; /* Couleur par défaut - violet */
+  background-color: rgba(126, 87, 194, 0.8) !important;
   border-radius: 50% !important;
+  width: 44px !important;
+  height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* 3. Ajuster le premier séparateur */
+/* 5. Séparateurs */
 .separator:first-of-type {
-  margin-top: 80px !important; /* Espace pour le logo */
+  margin-top: calc(var(--iphone-separator-margin) + var(--safe-area-top)) !important;
 }
 
-/* 4. Ajustement des marges du contenu principal */
-#tileContainer, .main-content, .tile-container {
-  margin-top: 15px !important;
-  padding-bottom: calc(var(--safe-area-bottom) + 80px) !important; /* Plus d'espace en bas */
+.separator {
+  margin: 15px 0 !important;
+  width: 100% !important;
 }
 
-/* 5. Corriger la position de la barre d'infos en bas */
+/* 6. Contenu principal */
+main, #tileContainer, .main-content, .tile-container {
+  margin-top: calc(var(--iphone-main-margin) + var(--safe-area-top)) !important;
+  padding-bottom: calc(var(--safe-area-bottom) + 80px) !important;
+  padding-left: calc(var(--safe-area-left) + 5px) !important;
+  padding-right: calc(var(--safe-area-right) + 5px) !important;
+  width: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* Tuiles */
+.tile-container.grid {
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)) !important;
+  gap: 6px !important;
+}
+
+.tile {
+  min-height: 40px !important;
+  margin-bottom: 8px !important;
+}
+
+/* 7. Barre d'infos (ticker) */
 .news-ticker, .bottom-bar, .ticker {
   position: fixed !important;
   bottom: calc(var(--safe-area-bottom) + var(--bottom-nav-height) + 5px) !important;
-  z-index: 998 !important; /* Sous la nav */
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 998 !important;
+  height: 30px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
 }
 
-/* 6. Navigation du bas - s'assurer qu'elle reste au-dessus */
+/* 8. Navigation du bas */
 .bottom-nav {
   padding-bottom: calc(var(--safe-area-bottom) + 5px) !important;
   height: auto !important;
-  z-index: 999 !important; /* Au-dessus de la barre d'infos */
+  min-height: var(--bottom-nav-height) !important;
+  z-index: 999 !important;
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  background-color: var(--primary-color) !important;
+  display: flex !important;
+  justify-content: space-around !important;
+  align-items: center !important;
 }
 
-/* 7. Autres ajustements nécessaires */
+/* 9. Chat et autres panneaux */
 .chat-container {
   max-width: 100% !important;
   width: calc(100% - var(--safe-area-left) - var(--safe-area-right)) !important;
   height: calc(100vh - var(--safe-area-top) - var(--safe-area-bottom)) !important;
+  bottom: calc(var(--safe-area-bottom) + var(--bottom-nav-height)) !important;
+  z-index: 1020 !important;
 }
 
-.tile, .card, .widget {
-  margin-bottom: 10px !important;
+.chat-messages {
+  padding-bottom: calc(var(--safe-area-bottom) + 70px) !important;
 }
 
-/* 8. Adaptation au thème sombre pour les boutons de menu et paramètres */
+.settings-menu, .sidebar {
+  height: calc(100vh - var(--header-height) - var(--safe-area-top) - var(--safe-area-bottom)) !important;
+  top: calc(var(--header-height) + var(--safe-area-top)) !important;
+  padding-bottom: calc(var(--safe-area-bottom) + 10px) !important;
+  z-index: 1010 !important;
+}
+
+.settings-menu {
+  width: 85% !important;
+  max-width: 300px !important;
+}
+
+/* Panels et contenus spécifiques */
+.weather-sidebar, .quick-links-sidebar {
+  top: calc(var(--header-height) + var(--safe-area-top)) !important;
+  height: calc(100vh - var(--header-height) - var(--bottom-nav-height) - var(--safe-area-top) - var(--safe-area-bottom)) !important;
+  padding-bottom: calc(var(--safe-area-bottom) + 10px) !important;
+  z-index: 997 !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+.news-panel {
+  z-index: 1020 !important;
+  padding-bottom: calc(var(--safe-area-bottom) + 70px) !important;
+  max-height: calc(80vh - var(--safe-area-bottom)) !important;
+}
+
+/* 10. Adaptation aux thèmes */
+/* Thème sombre */
 [data-theme="dark"] .menu-button, 
 [data-theme="dark"] .hamburger-menu,
 [data-theme="dark"] .settings-button, 
@@ -133,10 +347,11 @@ body.dark-theme .menu-button,
 body.dark-theme .hamburger-menu,
 body.dark-theme .settings-button, 
 body.dark-theme .gear-icon {
-  background-color: rgba(40, 53, 147, 0.8) !important; /* Bleu foncé pour thème sombre */
+  background-color: rgba(40, 53, 147, 0.8) !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* NOUVEAU: Adaptation au thème rouge pour les boutons de menu et paramètres */
+/* Thème rouge */
 [data-theme="rouge"] .menu-button, 
 [data-theme="rouge"] .hamburger-menu,
 [data-theme="rouge"] .settings-button, 
@@ -149,18 +364,25 @@ body.rouge-theme .menu-button,
 body.rouge-theme .hamburger-menu,
 body.rouge-theme .settings-button, 
 body.rouge-theme .gear-icon {
-  background-color: rgba(163, 47, 42, 0.8) !important; /* Rouge légèrement plus foncé */
+  background-color: rgba(163, 47, 42, 0.8) !important;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* S'assurer que l'icône est bien visible dans tous les thèmes */
-.menu-button .material-icons, 
-.settings-button .material-icons {
-  color: white !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important; /* Ombre légère pour meilleure visibilité */
+/* Thème clair (violet) */
+[data-theme="light"] .menu-button, 
+[data-theme="light"] .hamburger-menu,
+[data-theme="light"] .settings-button, 
+[data-theme="light"] .gear-icon {
+  background-color: rgba(126, 87, 194, 0.8) !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Ajout d'un effet de survol pour améliorer l'interactivité */
+/* 11. Éléments d'interface et notifications */
+.material-icons {
+  color: white !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
 .menu-button:hover, 
 .hamburger-menu:hover,
 .settings-button:hover, 
@@ -169,26 +391,57 @@ body.rouge-theme .gear-icon {
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4) !important;
 }
 
-/* Thème clair spécifique (pour être sûr) */
-[data-theme="light"] .menu-button, 
-[data-theme="light"] .hamburger-menu,
-[data-theme="light"] .settings-button, 
-[data-theme="light"] .gear-icon {
-  background-color: rgba(126, 87, 194, 0.8) !important; /* Violet */
-}
-
-/* Ajustement pour le message "Installez Actu&Média" */
 .install-banner, .pwa-banner, .app-install-prompt {
   margin-top: 0 !important;
   top: auto !important;
   bottom: calc(var(--safe-area-bottom) + var(--bottom-nav-height) + 65px) !important;
   position: fixed !important;
   z-index: 980 !important;
+  width: 90% !important;
+  left: 5% !important;
+  right: 5% !important;
+  border-radius: 10px !important;
 }
 
-/* Masque le swiper  */
+/* 12. Corrections pour le panneau des paramètres */
+.settings-menu .font-size-tiles {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 8px !important;
+  margin: 15px 0 !important;
+}
+
+.settings-menu .font-size-tile {
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 1/1 !important;
+  min-height: 48px !important;
+  border-radius: 8px !important;
+  transition: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.settings-menu .font-size-tile.active {
+  border: 2px solid white !important;
+  background-color: rgba(255, 255, 255, 0.3) !important;
+  transform: none !important;
+}
+
+.settings-header {
+  position: sticky !important;
+  top: 0 !important;
+  background-color: inherit !important;
+  z-index: 2 !important;
+}
+
+.settings-menu.open {
+  transform: translateX(0) !important;
+}
+
+/* 13. Masquer le swiper sur iOS */
 @supports (-webkit-touch-callout: none) {
-  /* Masquer d'abord le swiper */
   .swiper-container,
   .swiper,
   .swiper-wrapper,
@@ -199,10 +452,74 @@ body.rouge-theme .gear-icon {
     display: none !important;
     height: 0 !important;
     margin: 0 !important;
-    /* autres propriétés de masquage */
-  }
+    padding: 0 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    overflow: hidden !important;
+    position: absolute !important;
+    z-index: -1 !important;
   }
   
-.news-panel {
-	z-index: 1020 !important;
-	}
+  /* Ajustement des séparateurs quand swiper est masqué */
+  .separator:first-of-type {
+    margin-top: calc(var(--iphone-header-offset) + 120px + var(--safe-area-top)) !important;
+  }
+}
+
+/* 14. Correction du clavier virtuel sur iOS */
+.chat-input, .message-input, input[type="text"], textarea {
+  -webkit-appearance: none !important;
+  border-radius: 8px !important;
+  font-size: 16px !important; /* Empêche le zoom du champ de texte */
+  padding: 10px !important;
+}
+
+/* 15. Animations plus douces */
+* {
+  -webkit-overflow-scrolling: touch !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+.tile:active,
+.nav-item:active,
+.menu-button:active,
+.settings-button:active,
+.font-size-tile:active {
+  transform: scale(0.97) !important;
+  transition: transform 0.1s !important;
+}
+
+/* 16. Support pour l'orientation paysage */
+@media screen and (orientation: landscape) and (-webkit-device-pixel-ratio: 2) {
+  .site-logo, .logo-container, .site-title {
+    height: 60px !important;
+    top: calc(var(--safe-area-top) + 5px) !important;
+  }
+  
+  .weather-mobile-btn, .quick-links-show-btn {
+    display: none !important; /* Masquer en mode paysage pour gagner de l'espace */
+  }
+  
+  .news-button {
+    top: calc(var(--safe-area-top) + 50px) !important;
+  }
+  
+  .menu-button, .hamburger-menu,
+  .settings-button, .gear-icon {
+    top: calc(var(--safe-area-top) + 50px) !important;
+    width: 36px !important;
+    height: 36px !important;
+  }
+  
+  .separator:first-of-type {
+    margin-top: calc(var(--safe-area-top) + 60px) !important;
+  }
+  
+  .tile-container.grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)) !important;
+  }
+  
+  main, #tileContainer, .main-content, .tile-container {
+    margin-top: calc(var(--iphone-main-margin) + var(--safe-area-top) - 10px) !important;
+  }
+}
