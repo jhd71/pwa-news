@@ -3899,11 +3899,49 @@ tabBtns.forEach(btn => {
         }
     });
 
-    // Formulaire notification
-    panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        // Code existant pour les notifications...
-    });
+    // Formulaire notification dans showAdminPanel() après
+panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const title = panel.querySelector('#notif-title').value;
+    const body = panel.querySelector('#notif-body').value;
+    const url = panel.querySelector('#notif-url').value || '/';
+    const urgent = panel.querySelector('#notif-urgent').checked;
+    const result = panel.querySelector('#result');
+    
+    if (!title || !body) {
+        result.textContent = "⛔ Titre et message requis";
+        result.style.color = "red";
+        return;
+    }
+    
+    result.textContent = "⏳ Envoi en cours...";
+    result.style.color = "white";
+    
+    try {
+        const response = await this.sendImportantNotification(title, body, url, urgent);
+        
+        result.textContent = `✅ Notification envoyée à ${response.sent} appareil(s)`;
+        result.style.color = "#4CAF50";
+        
+        // Réinitialiser le formulaire
+        panel.querySelector('#notif-title').value = '';
+        panel.querySelector('#notif-body').value = '';
+        panel.querySelector('#notif-url').value = '';
+        panel.querySelector('#notif-urgent').checked = false;
+        
+        // Vibrer pour confirmation sur mobile
+        if (navigator.vibrate) {
+            navigator.vibrate(200);
+        }
+        
+        this.playSound('success');
+    } catch (err) {
+        result.textContent = "❌ Erreur : " + err.message;
+        result.style.color = "red";
+        this.playSound('error');
+    }
+});
 
     // Bouton de protection admin
     panel.querySelector('#admin-protection-btn')?.addEventListener('click', async () => {
@@ -3949,6 +3987,37 @@ tabBtns.forEach(btn => {
                 adminToolsBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
             }
         }, 300);
+    }
+}
+
+async sendImportantNotification(title, body, url, urgent) {
+    try {
+        // Vérifier que l'utilisateur est admin
+        if (!this.isAdmin) {
+            throw new Error("Seuls les administrateurs peuvent envoyer des notifications importantes");
+        }
+        
+        const adminPassword = document.querySelector('#admin-password')?.value || 'admin2024';
+        
+        const response = await fetch("/api/send-important-notification", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-API-Key": adminPassword
+            },
+            body: JSON.stringify({ title, body, url, urgent })
+        });
+        
+        const result = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(result.error || "Erreur inconnue");
+        }
+        
+        return result;
+    } catch (error) {
+        console.error('Erreur envoi notification importante:', error);
+        throw error;
     }
 }
 
