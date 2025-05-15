@@ -853,9 +853,42 @@
   [data-theme="rouge"] .weather-sidebar {
     max-height: 75vh !important; /* Réduit la hauteur maximale */
     overflow-y: auto !important; /* Ajoute un défilement vertical si nécessaire */
-    top: 55% !important; /* Centré légèrement plus bas */
+    top: 45% !important; /* Centré légèrement plus bas */
     transform: translate(-50%, -50%) !important; /* Centrage parfait */
     padding: 10px 15px !important; /* Légère réduction du padding */
+  }
+  
+  /* Éviter que le widget ne cache la barre de défilement des infos */
+  [data-theme="rouge"] .weather-sidebar {
+    bottom: auto !important; /* Empêche le positionnement par rapport au bas de l'écran */
+    margin-bottom: 70px !important; /* Espace supplémentaire en bas */
+  }
+
+/* Agrandir l'icône météo en mode rouge */
+[data-theme="rouge"] .weather-mobile-btn {
+  width: 56px !important; /* Augmenter la largeur */
+  height: 56px !important; /* Augmenter la hauteur */
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3) !important; /* Ombre plus prononcée */
+}
+
+[data-theme="rouge"] .weather-mobile-btn .material-icons {
+  font-size: 32px !important; /* Augmenter la taille de l'icône */
+}
+
+/* Animation subtile pour l'icône météo */
+[data-theme="rouge"] .weather-mobile-btn {
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+[data-theme="rouge"] .weather-mobile-btn:active {
+  transform: scale(0.9) !important; /* Effet d'appui */
+}
+}
+/* Ajuster la position de l'icône météo sur mobile */
+@media (max-width: 767px) {
+  [data-theme="rouge"] .weather-mobile-btn {
+    top: 70px !important; /* Ajuster selon vos besoins */
+    left: 15px !important; /* Un peu plus à droite */
   }
   
   /* Optimisation des jours météo pour l'espace vertical */
