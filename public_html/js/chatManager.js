@@ -66,10 +66,8 @@ import notificationManager from '/js/notification-manager.js';
 
 class ChatManager {
     constructor() {
-        this.supabase = supabase.createClient(
-            'https://ekjgfiyhkythqcnmhzea.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4'
-        );
+        // Remplacer la création directe du client Supabase par l'utilisation du client partagé
+        this.supabase = window.getSupabaseClient();
     
         this.initialized = false;
         this.container = null;

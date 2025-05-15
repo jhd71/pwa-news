@@ -1,20 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Récupérer une instance valide du client Supabase
-    let supabaseClient = null;
-    
-    // Méthode 1: Utiliser l'instance du chatManager
-    if (window.chatManager && window.chatManager.supabase) {
-        supabaseClient = window.chatManager.supabase;
-        console.log("Utilisation du client Supabase du chatManager");
-    } 
-    // Méthode 2: Créer une nouvelle instance si nécessaire
-    else {
-        console.log("Création d'un nouveau client Supabase pour le sondage");
-        supabaseClient = supabase.createClient(
-            'https://ekjgfiyhkythqcnmhzea.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4'
-        );
-    }
+    let supabaseClient = window.getSupabaseClient();
+    console.log("Utilisation du client Supabase partagé pour le sondage");
     
     // Vérifier que le client est valide
     if (!supabaseClient || typeof supabaseClient.from !== 'function') {
