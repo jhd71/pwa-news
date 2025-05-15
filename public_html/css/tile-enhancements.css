@@ -686,3 +686,44 @@
     background-repeat: no-repeat !important;
     background-size: contain !important;
 }
+
+
+
+/* Icône spécifique pour FR3 Bourgogne */
+.tile-title:contains("FR3 Bourgogne")::before,
+.tile-title:contains("France 3")::before {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M21 6h-7.59l3.29-3.29L16 2l-4 4-4-4-.71.71L10.59 6H3c-1.1 0-2 .89-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.11-.9-2-2-2zm0 14H3V8h18v12zM9 10v8l7-4z"/></svg>') !important;
+}
+
+/* Icône spécifique pour BFMTV */
+.tile-title:contains("BFMTV")::before {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M13 16.13v-2.38c-2.5.75-4.37 2.57-5.19 5.25h8.69c-.69-1.31-1.88-2.37-3.5-2.87zM19 2H5C3.89 2 3 2.89 3 4v10c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.11-.9-2-2-2zm0 12H5V4h14v10zm-5.45-3.16L12 9.19l-1.55 1.65-3.95-3.96L5 8.46l7 6.99 7-6.99-1.55-1.58z"/></svg>') !important;
+}
+
+/* Icône spécifique pour CNews */
+.tile-title:contains("CNews")::before {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>') !important;
+}
+
+/* Icône spécifique pour FranceTV Info */
+.tile-title:contains("FranceTV Info")::before {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-5 14H4v-4h11v4zm0-5H4V9h11v4zm5 5h-4V9h4v9z"/></svg>') !important;
+}
+
+/* Solution alternative utilisant les classes spécifiques */
+.tile-france3 .tile-title::before,
+.tile-francetv .tile-title::before {
+    display: inline-block !important;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M21 6h-7.59l3.29-3.29L16 2l-4 4-4-4-.71.71L10.59 6H3c-1.1 0-2 .89-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.11-.9-2-2-2zm0 14H3V8h18v12zM9 10v8l7-4z"/></svg>') !important;
+}
+
+.tile-bfmtv .tile-title::before,
+.tile-cnews .tile-title::before {
+    display: inline-block !important;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M13 16.13v-2.38c-2.5.75-4.37 2.57-5.19 5.25h8.69c-.69-1.31-1.88-2.37-3.5-2.87zM19 2H5C3.89 2 3 2.89 3 4v10c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.11-.9-2-2-2zm0 12H5V4h14v10zm-5.45-3.16L12 9.19l-1.55 1.65-3.95-3.96L5 8.46l7 6.99 7-6.99-1.55-1.58z"/></svg>') !important;
+}
+
+/* Surcharge de la règle qui masque les icônes TV */
+.tile[data-category="tv"] .tile-title::before {
+    display: inline-block !important;
+}
