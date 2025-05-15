@@ -15,9 +15,6 @@ const STATIC_RESOURCES = [
     '/css/ios-specific.css',
     '/css/survey-styles.css',
     '/css/tile-enhancements.css',
-    
-	// Scripts de console
-	'/js/console-filter.js',
 	
     // Scripts JavaScript
     '/js/app.js',

@@ -2,62 +2,6 @@
 <html lang="fr" data-theme="light" data-font-size="normal">
 <head>
 <script>
-    // Injecter dans l'objet Console du navigateur
-    (function() {
-        // Créer un filtre qui intercepte les messages à la source
-        const filterPatterns = [
-            /Banner not shown/i,
-            /beforeinstallprompt/i,
-            /runtime\.lastError/i,
-            /Deprecated API/i,
-            /asynchronous response/i,
-            /message channel closed/i
-        ];
-        
-        // Méthodes à intercepter
-        const methodsToIntercept = ['log', 'warn', 'error', 'info', 'debug'];
-        
-        // Créer un proxy pour l'objet console
-        const originalConsole = { ...console };
-        
-        // Remplacer chaque méthode
-        methodsToIntercept.forEach(method => {
-            if (typeof console[method] === 'function') {
-                console[method] = function() {
-                    // Vérifier si le premier argument est une chaîne et correspond à l'un des filtres
-                    if (arguments.length > 0 && typeof arguments[0] === 'string') {
-                        const message = arguments[0];
-                        
-                        // Vérifier chaque filtre
-                        for (let i = 0; i < filterPatterns.length; i++) {
-                            if (filterPatterns[i].test(message)) {
-                                return; // Ignorer ce message
-                            }
-                        }
-                    }
-                    
-                    // Appeler la méthode d'origine si le message n'est pas filtré
-                    return originalConsole[method].apply(console, arguments);
-                };
-            }
-        });
-        
-        // Ajouter un gestionnaire d'erreurs global
-        window.addEventListener('error', function(event) {
-            // Vérifier si le message d'erreur correspond à l'un des filtres
-            if (event && event.message) {
-                for (let i = 0; i < filterPatterns.length; i++) {
-                    if (filterPatterns[i].test(event.message)) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        return true; // Empêcher l'affichage de cette erreur
-                    }
-                }
-            }
-        }, true);
-    })();
-    </script>
-<script>
     // Appliquer le thème sauvegardé dès le début du chargement
     (function() {
         const savedTheme = localStorage.getItem('theme');
