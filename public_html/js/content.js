@@ -1008,6 +1008,10 @@ changeFontSize(size) {
         return; // Ne pas montrer si la bannière a été affichée dans les 7 derniers jours
     }
     
+    // Supprimer toute bannière existante
+    const existingBanners = document.querySelectorAll('.install-banner');
+    existingBanners.forEach(b => b.remove());
+    
     // Créer la bannière
     const banner = document.createElement('div');
     banner.className = 'install-banner';
@@ -1033,6 +1037,7 @@ changeFontSize(size) {
             z-index: 9999;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             animation: slideDown 0.5s ease;
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
         
         .install-content {
@@ -1073,30 +1078,95 @@ changeFontSize(size) {
     // Référence à l'événement d'installation depuis l'initializer
     const deferredPrompt = window.pwaInstaller ? window.pwaInstaller.deferredPrompt : null;
     
-    // Gérer le clic sur le bouton d'installation avec { once: true }
-    const installBtn = document.getElementById('installBtnBanner');
-    if (installBtn) {
-        installBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-            }
-            
-            banner.remove();
-        }, { once: true });
+    // Fonction pour installer l'application
+    function installApp() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+        }
+        
+        const banners = document.querySelectorAll('.install-banner');
+        banners.forEach(b => b.remove());
     }
     
-    // Gérer le clic sur le bouton de fermeture avec { once: true }
-    const closeBtn = document.getElementById('closeBannerBtn');
-    if (closeBtn) {
-        closeBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
+    // Fonction pour fermer la bannière
+    function closeBanner() {
+        const banners = document.querySelectorAll('.install-banner');
+        banners.forEach(b => {
+            // Animation de disparition
+            b.style.opacity = '0';
+            b.style.transform = 'translateY(-100%)';
             
-            banner.remove();
-            localStorage.setItem('installBannerLastShown', Date.now().toString());
-        }, { once: true });
+            // Supprimer après l'animation
+            setTimeout(() => {
+                if (b.parentNode) {
+                    b.parentNode.removeChild(b);
+                }
+            }, 300);
+        });
+        
+        // Enregistrer que la bannière a été fermée
+        localStorage.setItem('installBannerLastShown', Date.now().toString());
     }
+    
+    // Configurer les boutons après un court délai
+    setTimeout(() => {
+        // Configurer le bouton d'installation
+        const installBtn = document.getElementById('installBtnBanner');
+        if (installBtn) {
+            // Remplacer pour supprimer tous les gestionnaires
+            const newInstallBtn = installBtn.cloneNode(true);
+            installBtn.parentNode.replaceChild(newInstallBtn, installBtn);
+            
+            // Configurer le nouveau bouton
+            document.getElementById('installBtnBanner').onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                installApp();
+                return false;
+            };
+        }
+        
+        // Configurer le bouton de fermeture
+        const closeBtn = document.getElementById('closeBannerBtn');
+        if (closeBtn) {
+            // Remplacer pour supprimer tous les gestionnaires
+            const newCloseBtn = closeBtn.cloneNode(true);
+            closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
+            
+            // Configurer le nouveau bouton
+            document.getElementById('closeBannerBtn').onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                closeBanner();
+                return false;
+            };
+        }
+    }, 100);
+    
+    // Ajouter un gestionnaire global avec un identifiant unique
+    const handlerId = 'install-banner-handler-' + Date.now();
+    window[handlerId] = function(e) {
+        // Si on clique sur le bouton de fermeture ou un de ses enfants
+        if (e.target && (e.target.id === 'closeBannerBtn' || e.target.closest('#closeBannerBtn'))) {
+            e.preventDefault();
+            e.stopPropagation();
+            closeBanner();
+            // Supprimer ce gestionnaire après utilisation
+            document.removeEventListener('click', window[handlerId], true);
+        }
+        
+        // Si on clique sur le bouton d'installation ou un de ses enfants
+        if (e.target && (e.target.id === 'installBtnBanner' || e.target.closest('#installBtnBanner'))) {
+            e.preventDefault();
+            e.stopPropagation();
+            installApp();
+            // Supprimer ce gestionnaire après utilisation
+            document.removeEventListener('click', window[handlerId], true);
+        }
+    };
+    
+    // Ajouter le gestionnaire global en mode capture
+    document.addEventListener('click', window[handlerId], true);
 }
 
     toggleTheme() {
