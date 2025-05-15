@@ -498,13 +498,15 @@ const tvSites = [
             tile.classList.add('tile-francetv');
         }
     } else if (site.category === 'sports') {
-        if (site.title.includes('Foot') || site.url.includes('foot')) {
-            tile.classList.add('tile-foot');
-        } else if (site.title.includes('Basket') || site.url.includes('basket')) {
-            tile.classList.add('tile-basket');
-        } else if (site.title.includes('Rugby') || site.url.includes('rugby')) {
-            tile.classList.add('tile-rugby');
-        }
+    if (site.title.includes('Foot') || site.url.includes('foot')) {
+        tile.classList.add('tile-foot');
+    } else if (site.title.includes('Basket') || site.url.includes('basket')) {
+        tile.classList.add('tile-basket');
+    } else if (site.title.includes('Rugby') || site.url.includes('rugby')) {
+        tile.classList.add('tile-rugby');
+    } else if (site.title.includes('Cyclisme') || site.url.includes('cyclisme')) {
+        tile.classList.add('tile-cyclisme');
+    }
     } else if (site.category === 'radio') {
         tile.classList.add('tile-radio');
     }
