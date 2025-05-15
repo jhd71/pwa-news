@@ -252,6 +252,13 @@ setupTVIcons() {
                 isDefault: true,
                 category: 'radio'
             },
+			{
+                title: 'Radios de Bourgogne',
+                url: 'https://ecouterradioenligne.com/region/bourgogne/#prevert-chalon',
+                mobileUrl: 'https://ecouterradioenligne.com/region/bourgogne/#prevert-chalon',
+                isDefault: true,
+                category: 'radio'
+            },
             {
                 title: 'Radio Sans Pub',
                 url: 'https://www.radio-en-ligne.fr/radio-sans-pub/',
