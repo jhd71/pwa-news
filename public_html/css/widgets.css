@@ -851,7 +851,7 @@
 @media (max-width: 767px) {
   /* Réduire la hauteur maximale et assurer le défilement */
   [data-theme="rouge"] .weather-sidebar {
-    max-height: 65vh !important; /* Réduit la hauteur maximale */
+    max-height: 60vh !important; /* Réduit la hauteur maximale */
     overflow-y: auto !important; /* Ajoute un défilement vertical si nécessaire */
     top: 55% !important; /* Centré légèrement plus bas */
     transform: translate(-50%, -50%) !important; /* Centrage parfait */
@@ -860,8 +860,8 @@
   
   /* Optimisation des jours météo pour l'espace vertical */
   [data-theme="rouge"] .weather-day {
-    padding: 8px !important;
-    margin-bottom: 10px !important; /* Espacement réduit entre les jours */
+    padding: 6px !important;
+    margin-bottom: 8px !important; /* Espacement réduit entre les jours */
   }
   
   /* Réduction de la taille des titres des jours */
@@ -879,8 +879,8 @@
   
   /* Réduction de l'espace du conteneur de température */
   [data-theme="rouge"] .temperature-container {
-    padding: 4px !important;
-    margin: 6px 0 !important;
+    padding: 3px !important;
+    margin: 4px 0 !important;
   }
   
   /* Titre de la ville plus compact */
