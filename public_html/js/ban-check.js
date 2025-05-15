@@ -43,29 +43,34 @@
     }
     
     // Fonction pour initialiser Supabase correctement
-    function initializeSupabase() {
-        try {
-            // Essayer d'utiliser le client Supabase existant si disponible
-            if (window.chatManager && window.chatManager.supabase) {
-                supabaseClient = window.chatManager.supabase;
-                console.log("Utilisation du client Supabase de chatManager");
-            } 
-            // Vérifier si la variable globale est disponible
-            else if (window.supabase) {
-                supabaseClient = window.supabase.createClient(
-                    'https://ekjgfiyhkythqcnmhzea.supabase.co',
-                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4'
-                );
-                console.log("Client Supabase créé à partir de window.supabase");
-            }
-            else {
-                console.warn("Supabase non disponible - les vérifications en base de données seront ignorées");
-            }
-        } catch (error) {
-            console.error("Erreur d'initialisation de Supabase:", error);
-            supabaseClient = null;
+function initializeSupabase() {
+    try {
+        // Utiliser la fonction partagée getSupabaseClient si disponible
+        if (window.getSupabaseClient && typeof window.getSupabaseClient === 'function') {
+            supabaseClient = window.getSupabaseClient();
+            console.log("Client Supabase créé à partir de getSupabaseClient");
         }
+        // Fallback vers chatManager si disponible
+        else if (window.chatManager && window.chatManager.supabase) {
+            supabaseClient = window.chatManager.supabase;
+            console.log("Utilisation du client Supabase de chatManager");
+        } 
+        // Dernier recours : créer une nouvelle instance
+        else if (window.supabase) {
+            supabaseClient = window.supabase.createClient(
+                'https://ekjgfiyhkythqcnmhzea.supabase.co',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4'
+            );
+            console.warn("Client Supabase créé à partir de window.supabase - envisagez d'utiliser getSupabaseClient");
+        }
+        else {
+            console.warn("Supabase non disponible - les vérifications en base de données seront ignorées");
+        }
+    } catch (error) {
+        console.error("Erreur d'initialisation de Supabase:", error);
+        supabaseClient = null;
     }
+}
     
     // Fonction pour créer le bouton de vérification flottant
     function createStatusButton() {
