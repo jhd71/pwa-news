@@ -851,20 +851,13 @@
 @media (max-width: 767px) {
   /* Réduire la hauteur maximale et assurer le défilement */
   [data-theme="rouge"] .weather-sidebar {
-    max-height: 80vh !important; /* Réduit la hauteur maximale */
-    overflow-y: auto !important; /* Ajoute un défilement vertical si nécessaire */
-    top: 45% !important; /* Centré légèrement plus bas */
-    transform: translate(-50%, -50%) !important; /* Centrage parfait */
-    padding: 10px 15px !important; /* Légère réduction du padding */
+    .weather-sidebar {
+    width: 92% !important;
+    max-width: 380px !important;
+    padding: 10px 12px !important;
   }
-  
-  /* Éviter que le widget ne cache la barre de défilement des infos */
-  [data-theme="rouge"] .weather-sidebar {
-    bottom: auto !important; /* Empêche le positionnement par rapport au bas de l'écran */
-    margin-bottom: 70px !important; /* Espace supplémentaire en bas */
+ }
   }
-}
-
 [data-theme="rouge"] .weather-mobile-btn .material-icons {
   font-size: 32px !important; /* Augmenter la taille de l'icône */
 }
