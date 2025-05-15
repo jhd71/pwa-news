@@ -847,46 +847,67 @@
 
 /* Améliorations supplémentaires pour la lisibilité sur mobile */
 
-/* Adaptations spécifiques pour mobile en mode rouge */
+/* Ajustement de la position et de la taille du widget météo sur mobile */
 @media (max-width: 767px) {
-  /* Fond avec un gradient plus contrasté pour mobile */
+  /* Réduire la hauteur maximale et assurer le défilement */
   [data-theme="rouge"] .weather-sidebar {
-    background: linear-gradient(145deg, #b71c1c, #d32f2f) !important;
-    padding: 12px !important;
+    max-height: 65vh !important; /* Réduit la hauteur maximale */
+    overflow-y: auto !important; /* Ajoute un défilement vertical si nécessaire */
+    top: 55% !important; /* Centré légèrement plus bas */
+    transform: translate(-50%, -50%) !important; /* Centrage parfait */
+    padding: 10px 15px !important; /* Légère réduction du padding */
   }
   
-  /* Titre plus visible sur petits écrans */
-  [data-theme="rouge"] .weather-sidebar h3 {
-    font-size: 19px !important;
-    letter-spacing: 0.5px !important;
-    padding-bottom: 10px !important;
-  }
-  
-  /* Jours plus faciles à distinguer sur mobile */
+  /* Optimisation des jours météo pour l'espace vertical */
   [data-theme="rouge"] .weather-day {
-    margin-bottom: 15px !important;
-    border-radius: 10px !important;
-    padding: 8px 12px !important;
+    padding: 8px !important;
+    margin-bottom: 10px !important; /* Espacement réduit entre les jours */
   }
   
-  /* Titres des jours plus lisibles */
+  /* Réduction de la taille des titres des jours */
   [data-theme="rouge"] .weather-day h4 {
     font-size: 16px !important;
-    padding: 8px 0 !important;
+    padding: 5px 0 !important;
+    margin-bottom: 5px !important;
+  }
+  
+  /* Optimisation des détails météo */
+  [data-theme="rouge"] .weather-detail-item {
+    padding: 4px 6px !important;
+    font-size: 12px !important;
+  }
+  
+  /* Réduction de l'espace du conteneur de température */
+  [data-theme="rouge"] .temperature-container {
+    padding: 4px !important;
+    margin: 6px 0 !important;
+  }
+  
+  /* Titre de la ville plus compact */
+  [data-theme="rouge"] .weather-sidebar h3 {
+    font-size: 17px !important;
+    padding-bottom: 5px !important;
     margin-bottom: 8px !important;
   }
   
-  /* Températures plus grandes sur mobile */
-  [data-theme="rouge"] .min-temp,
-  [data-theme="rouge"] .max-temp {
-    font-size: 20px !important;
+  /* Pour les très petits écrans (iPhone SE, etc.) */
+  @media (max-width: 375px) {
+    [data-theme="rouge"] .weather-sidebar {
+      max-height: 70vh !important; /* Un peu plus grand pour voir plus de contenu */
+      padding: 8px !important;
+    }
+    
+    [data-theme="rouge"] .weather-day {
+      margin-bottom: 8px !important;
+    }
   }
-  
-  /* Meilleure lisibilité des détails */
-  [data-theme="rouge"] .weather-detail-item {
-    font-size: 14px !important;
-    padding: 6px 10px !important;
-    margin: 3px 0 !important;
+}
+
+/* Pour tablettes en portrait - ajustement spécifique */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+  [data-theme="rouge"] .weather-sidebar {
+    max-height: 60vh !important;
+    overflow-y: auto !important;
   }
 }
 
