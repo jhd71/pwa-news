@@ -16,6 +16,9 @@ const STATIC_RESOURCES = [
     '/css/survey-styles.css',
     '/css/tile-enhancements.css',
     
+	// Scripts de console
+	'/js/console-filter.js',
+	
     // Scripts JavaScript
     '/js/app.js',
 	'/js/app-initializer.js',  // Nouveau fichier que vous avez créé
