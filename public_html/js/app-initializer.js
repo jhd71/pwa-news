@@ -1,15 +1,29 @@
 // js/app-initializer.js
 
-// Supprimer les avertissements liés à l'installation de la PWA
+// Suppression des avertissements spécifiques à la console
 const originalConsoleWarn = console.warn;
 console.warn = function(...args) {
-    // Filtrer l'avertissement spécifique
-    if (args.length > 0 && typeof args[0] === 'string' && args[0].includes('Banner not shown')) {
-        return; // Ignorer cet avertissement
+    // Capture exactement le message d'erreur que vous voyez dans les logs
+    if (args.length > 0 && typeof args[0] === 'string' && 
+        args[0].includes('Banner not shown: beforeinstallpromptevent.preventDefault() called')) {
+        return; // Ignorer cet avertissement spécifique
     }
     
     // Laisser passer les autres avertissements
     originalConsoleWarn.apply(console, args);
+};
+
+// Faire de même pour les erreurs unchecked runtime.lastError
+const originalConsoleError = console.error;
+console.error = function(...args) {
+    // Ignorer les erreurs de message channel
+    if (args.length > 0 && typeof args[0] === 'string' && 
+        args[0].includes('Unchecked runtime.lastError')) {
+        return;
+    }
+    
+    // Laisser passer les autres erreurs
+    originalConsoleError.apply(console, args);
 };
 
 // PWA Installation
@@ -150,7 +164,7 @@ async function initApp() {
         await registerServiceWorker();
         
         // Initialiser l'installateur PWA
-        new PWAInstaller();
+        window.pwaInstaller = new PWAInstaller();
         
         // Initialiser ContentManager
         console.log('Chargement de ContentManager...');
