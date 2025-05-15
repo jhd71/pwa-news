@@ -899,20 +899,40 @@ changeFontSize(size) {
     // Appliquer la taille au document HTML immédiatement
     document.documentElement.setAttribute('data-font-size', size);
     
-    // Essayer d'éviter les reflows importants en mettant à jour l'affichage progressivement
-    requestAnimationFrame(() => {
-        // Mettre à jour les tuiles
-        this.setupTiles();
-        
-        // Afficher une notification avec un léger délai
-        setTimeout(() => {
-            this.showToast(`Taille de texte : ${
-                size === 'small' ? 'petite' :
-                size === 'normal' ? 'normale' :
-                'grande'
-            }`);
-        }, 300);
-    });
+    // Force un reflow pour s'assurer que les changements sont appliqués
+    document.body.clientWidth;
+    
+    // Mettre à jour explicitement les tuiles en mode liste si nécessaire
+    const tileContainer = document.getElementById('tileContainer');
+    if (tileContainer && tileContainer.classList.contains('list')) {
+        const tiles = tileContainer.querySelectorAll('.tile');
+        tiles.forEach(tile => {
+            // Mettre à jour explicitement le style de chaque tuile
+            const titleEl = tile.querySelector('.tile-title');
+            if (titleEl) {
+                switch(size) {
+                    case 'small':
+                        titleEl.style.fontSize = '0.85rem';
+                        break;
+                    case 'normal':
+                        titleEl.style.fontSize = '1rem';
+                        break;
+                    case 'large':
+                        titleEl.style.fontSize = '1.2rem';
+                        break;
+                }
+            }
+        });
+    }
+    
+    // Afficher une notification avec un léger délai
+    setTimeout(() => {
+        this.showToast(`Taille de texte : ${
+            size === 'small' ? 'petite' :
+            size === 'normal' ? 'normale' :
+            'grande'
+        }`);
+    }, 300);
 }
 
     handleInstall() {

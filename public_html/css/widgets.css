@@ -742,3 +742,294 @@
   right: 8px !important;
   left: auto !important;
 }
+
+/* Améliorations du widget météo pour le thème rouge */
+
+/* Arrière-plan du widget avec dégradé plus contrasté */
+[data-theme="rouge"] .weather-sidebar {
+  background: linear-gradient(145deg, #b71c1c, #e53935) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Titre de la ville en jaune pour le thème rouge */
+[data-theme="rouge"] .weather-sidebar h3,
+[data-theme="rouge"] .weather-sidebar p strong {
+  color: #ffeb3b !important; /* Jaune */
+  font-weight: bold !important;
+  font-size: 18px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+  padding-bottom: 8px !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Amélioration des jours de la semaine pour le thème rouge */
+[data-theme="rouge"] .weather-day {
+  background: rgba(0, 0, 0, 0.2) !important; /* Fond plus foncé pour meilleur contraste */
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  margin-bottom: 12px !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Titres des jours en jaune */
+[data-theme="rouge"] .weather-day h4 {
+  background-color: rgba(255, 235, 59, 0.2) !important; /* Fond légèrement jaune */
+  color: #ffeb3b !important; /* Texte jaune */
+  font-weight: bold !important;
+  padding: 6px 0 !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
+  border-radius: 6px !important;
+}
+
+/* Amélioration des conditions météo */
+[data-theme="rouge"] .weather-condition {
+  color: white !important;
+  font-weight: 500 !important;
+  font-size: 15px !important;
+  text-align: center !important;
+  margin: 8px 0 !important;
+}
+
+/* Meilleure séparation visuelle pour les températures */
+[data-theme="rouge"] .temperature-container {
+  background: rgba(0, 0, 0, 0.15) !important;
+  border-radius: 8px !important;
+  padding: 6px !important;
+  margin: 8px 0 !important;
+  border: none !important;
+}
+
+/* Amélioration pour les détails météo en mode rouge */
+[data-theme="rouge"] .weather-detail-item {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: white !important;
+  font-weight: 500 !important;
+  padding: 5px 8px !important;
+}
+
+/* Valeurs dans les détails */
+[data-theme="rouge"] .weather-detail-item span:nth-child(2) {
+  color: #ffeb3b !important; /* Valeurs en jaune */
+  font-weight: bold !important;
+}
+
+/* Garder les températures bien distinctes */
+[data-theme="rouge"] .min-temp {
+  color: #90CAF9 !important; /* Bleu clair */
+  font-weight: bold !important;
+  font-size: 18px !important;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme="rouge"] .max-temp {
+  color: #FFCC80 !important; /* Orange clair */
+  font-weight: bold !important;
+  font-size: 18px !important;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Améliorer la visibilité du bouton de fermeture */
+[data-theme="rouge"] .weather-toggle {
+  background: rgba(0, 0, 0, 0.3) !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+}
+
+[data-theme="rouge"] .weather-toggle:hover {
+  background: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* S'assurer que tout le texte est lisible */
+[data-theme="rouge"] .weather-day p,
+[data-theme="rouge"] .weather-detail-item span:first-child {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Améliorations supplémentaires pour la lisibilité sur mobile */
+
+/* Adaptations spécifiques pour mobile en mode rouge */
+@media (max-width: 767px) {
+  /* Fond avec un gradient plus contrasté pour mobile */
+  [data-theme="rouge"] .weather-sidebar {
+    background: linear-gradient(145deg, #b71c1c, #d32f2f) !important;
+    padding: 12px !important;
+  }
+  
+  /* Titre plus visible sur petits écrans */
+  [data-theme="rouge"] .weather-sidebar h3 {
+    font-size: 19px !important;
+    letter-spacing: 0.5px !important;
+    padding-bottom: 10px !important;
+  }
+  
+  /* Jours plus faciles à distinguer sur mobile */
+  [data-theme="rouge"] .weather-day {
+    margin-bottom: 15px !important;
+    border-radius: 10px !important;
+    padding: 8px 12px !important;
+  }
+  
+  /* Titres des jours plus lisibles */
+  [data-theme="rouge"] .weather-day h4 {
+    font-size: 16px !important;
+    padding: 8px 0 !important;
+    margin-bottom: 8px !important;
+  }
+  
+  /* Températures plus grandes sur mobile */
+  [data-theme="rouge"] .min-temp,
+  [data-theme="rouge"] .max-temp {
+    font-size: 20px !important;
+  }
+  
+  /* Meilleure lisibilité des détails */
+  [data-theme="rouge"] .weather-detail-item {
+    font-size: 14px !important;
+    padding: 6px 10px !important;
+    margin: 3px 0 !important;
+  }
+}
+
+/* Animation subtile pour les températures */
+[data-theme="rouge"] .min-temp,
+[data-theme="rouge"] .max-temp {
+  transition: transform 0.2s ease;
+}
+
+[data-theme="rouge"] .min-temp:hover,
+[data-theme="rouge"] .max-temp:hover {
+  transform: scale(1.1);
+}
+
+/* Effet de hover sur les jours de la semaine */
+[data-theme="rouge"] .weather-day {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+[data-theme="rouge"] .weather-day:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Amélioration de l'icône météo */
+[data-theme="rouge"] .weather-gif {
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
+}
+
+/* Harmonisation des croix de fermeture entre météo et liens rapides - thème rouge */
+
+/* Style pour les boutons de fermeture en thème rouge */
+[data-theme="rouge"] .weather-toggle,
+[data-theme="rouge"] .quick-links-toggle {
+  background: rgba(255, 255, 255, 0.3) !important; /* Voile blanc semi-transparent */
+  border: 1px solid rgba(255, 255, 255, 0.5) !important; /* Bordure blanche */
+  color: white !important; /* Icône blanche */
+  width: 30px !important;
+  height: 30px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important; /* Forme parfaitement ronde */
+  transition: background 0.2s ease !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important; /* Légère ombre */
+}
+
+/* Effet au survol des boutons de fermeture */
+[data-theme="rouge"] .weather-toggle:hover,
+[data-theme="rouge"] .quick-links-toggle:hover {
+  background: rgba(255, 255, 255, 0.5) !important; /* Plus lumineux au survol */
+  transform: scale(1.05) !important; /* Léger agrandissement */
+}
+
+/* Effet au clic des boutons de fermeture */
+[data-theme="rouge"] .weather-toggle:active,
+[data-theme="rouge"] .quick-links-toggle:active {
+  background: rgba(255, 255, 255, 0.4) !important;
+  transform: scale(0.95) !important; /* Léger rétrécissement */
+}
+
+/* Style spécifique pour l'icône à l'intérieur du bouton de fermeture */
+[data-theme="rouge"] .weather-toggle .material-icons,
+[data-theme="rouge"] .quick-links-toggle .material-icons {
+  color: white !important;
+  font-size: 20px !important;
+  font-weight: bold !important;
+}
+
+/* Conserver le positionnement de la croix météo à gauche */
+[data-theme="rouge"] .weather-toggle {
+  right: auto !important;
+  left: 8px !important;
+}
+
+/* S'assurer que la croix des liens rapides reste à droite */
+[data-theme="rouge"] .quick-links-toggle {
+  right: 8px !important;
+  left: auto !important;
+}
+
+/* Assurer que les icônes des liens rapides restent blanches */
+[data-theme="rouge"] .quick-link .material-icons {
+  color: white !important;
+}
+
+/* Assurer que les textes des liens rapides restent blancs */
+[data-theme="rouge"] .quick-link span:not(.material-icons) {
+  color: white !important;
+}
+
+/* Fond et bordure du widget liens rapides */
+[data-theme="rouge"] .quick-links-sidebar {
+  background: linear-gradient(145deg, #b71c1c, #e53935) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Titre des liens rapides */
+[data-theme="rouge"] .quick-links-sidebar h3 {
+  color: #ffeb3b !important; /* Jaune comme pour la météo */
+  font-weight: bold !important;
+  font-size: 18px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+  padding-bottom: 8px !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
+  text-align: center !important;
+  margin-bottom: 12px !important;
+}
+
+/* Style des tuiles de liens rapides */
+[data-theme="rouge"] .quick-link {
+  background: rgba(0, 0, 0, 0.2) !important; /* Fond plus foncé pour meilleur contraste */
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  margin-bottom: 8px !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+  transition: transform 0.2s, box-shadow 0.2s !important;
+}
+
+/* Effet au survol des tuiles */
+[data-theme="rouge"] .quick-link:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+  background: rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Style des icônes dans les liens rapides */
+[data-theme="rouge"] .quick-link .material-icons {
+  color: white !important;
+  font-size: 28px !important;
+  margin-bottom: 8px !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Style des textes dans les liens rapides */
+[data-theme="rouge"] .quick-link span:not(.material-icons) {
+  color: white !important;
+  font-weight: 500 !important;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Espacement de la grille de liens */
+[data-theme="rouge"] .links-grid {
+  gap: 12px !important;
+  padding: 5px !important;
+}

@@ -2634,3 +2634,68 @@ button#refreshButton.refresh-button {
   background-color: #a32f2a !important;
   background: linear-gradient(145deg, #bc3a34, #a32f2a) !important;
 }
+
+/* CSS pour appliquer la taille du texte à la fois en mode grille et liste */
+
+/* Base pour toutes les tailles de police */
+[data-font-size="small"] .tile .tile-title {
+    font-size: 0.85rem !important;
+}
+
+[data-font-size="normal"] .tile .tile-title {
+    font-size: 1rem !important; 
+}
+
+[data-font-size="large"] .tile .tile-title {
+    font-size: 1.2rem !important;
+}
+
+/* S'assurer que la taille s'applique aussi en mode liste */
+[data-font-size="small"] #tileContainer.list .tile .tile-title {
+    font-size: 0.85rem !important;
+}
+
+[data-font-size="normal"] #tileContainer.list .tile .tile-title {
+    font-size: 1rem !important;
+}
+
+[data-font-size="large"] #tileContainer.list .tile .tile-title {
+    font-size: 1.2rem !important;
+}
+
+/* Ajout de sélecteurs plus spécifiques pour s'assurer que la règle est appliquée */
+[data-font-size="small"] .tile .tile-content .tile-title,
+[data-font-size="small"] #tileContainer.list .tile .tile-content .tile-title {
+    font-size: 0.85rem !important;
+}
+
+[data-font-size="normal"] .tile .tile-content .tile-title,
+[data-font-size="normal"] #tileContainer.list .tile .tile-content .tile-title {
+    font-size: 1rem !important;
+}
+
+[data-font-size="large"] .tile .tile-content .tile-title,
+[data-font-size="large"] #tileContainer.list .tile .tile-content .tile-title {
+    font-size: 1.2rem !important;
+}
+
+/* Ajustement des styles en mode liste pour chaque taille */
+#tileContainer.list .tile {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 15px;
+}
+
+/* Adaptation de la hauteur en fonction de la taille du texte */
+[data-font-size="small"] #tileContainer.list .tile {
+    min-height: 45px;
+}
+
+[data-font-size="normal"] #tileContainer.list .tile {
+    min-height: 50px;
+}
+
+[data-font-size="large"] #tileContainer.list .tile {
+    min-height: 60px;
+}
