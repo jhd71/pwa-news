@@ -1,6 +1,5 @@
 // js/app-initializer.js
 
-// NOUVEAU CODE - PLACEZ-LE TOUT EN HAUT DU FICHIER
 (function() {
     // Créer un filtre global pour les messages de la console
     const filters = [
@@ -41,32 +40,6 @@
         // En cas d'erreur, ne rien faire
     }
 })();
-
-// VOTRE CODE EXISTANT - VOUS POUVEZ SUPPRIMER CETTE PARTIE PUISQU'ELLE EST REMPLACÉE PAR LE CODE CI-DESSUS
-// Suppression des avertissements spécifiques à la console
-const originalConsoleWarn = console.warn;
-console.warn = function(...args) {
-    // Capture exactement le message d'erreur que vous voyez dans les logs
-    if (args.length > 0 && typeof args[0] === 'string' && 
-        args[0].includes('Banner not shown: beforeinstallpromptevent.preventDefault() called')) {
-        return; // Ignorer cet avertissement spécifique
-    }
-    
-    // Laisser passer les autres avertissements
-    originalConsoleWarn.apply(console, args);
-};
-// Faire de même pour les erreurs unchecked runtime.lastError
-const originalConsoleError = console.error;
-console.error = function(...args) {
-    // Ignorer les erreurs de message channel
-    if (args.length > 0 && typeof args[0] === 'string' && 
-        args[0].includes('Unchecked runtime.lastError')) {
-        return;
-    }
-    
-    // Laisser passer les autres erreurs
-    originalConsoleError.apply(console, args);
-};
 
 // PWA Installation
 class PWAInstaller {
