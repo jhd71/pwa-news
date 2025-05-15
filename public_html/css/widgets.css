@@ -851,7 +851,7 @@
 @media (max-width: 767px) {
   /* Réduire la hauteur maximale et assurer le défilement */
   [data-theme="rouge"] .weather-sidebar {
-    max-height: 60vh !important; /* Réduit la hauteur maximale */
+    max-height: 75vh !important; /* Réduit la hauteur maximale */
     overflow-y: auto !important; /* Ajoute un défilement vertical si nécessaire */
     top: 55% !important; /* Centré légèrement plus bas */
     transform: translate(-50%, -50%) !important; /* Centrage parfait */
