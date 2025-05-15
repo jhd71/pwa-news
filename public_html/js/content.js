@@ -141,6 +141,38 @@ class ContentManager {
     setupFontSize() {
         document.documentElement.setAttribute('data-font-size', this.fontSize);
     }
+// À ajouter dans votre classe ContentManager
+setupTVIcons() {
+  // Attendre que les tuiles soient chargées
+  setTimeout(() => {
+    // Récupérer toutes les tuiles TV
+    const tvTiles = document.querySelectorAll('.tile[data-category="tv"]');
+    
+    // Parcourir chaque tuile TV
+    tvTiles.forEach(tile => {
+      const titleElement = tile.querySelector('.tile-title');
+      if (!titleElement) return;
+      
+      const title = titleElement.textContent.trim();
+      
+      // Ajouter des classes spécifiques en fonction du titre
+      if (title.includes('FR3') || title.includes('France 3')) {
+        tile.classList.add('tile-france3');
+      }
+      else if (title.includes('BFMTV')) {
+        tile.classList.add('tile-bfmtv');
+      }
+      else if (title.includes('CNews')) {
+        tile.classList.add('tile-cnews');
+      }
+      else if (title.includes('FranceTV') || title.includes('France TV')) {
+        tile.classList.add('tile-francetv');
+      }
+    });
+    
+    console.log('Classes TV ajoutées avec succès');
+  }, 500); // Léger délai pour s'assurer que les tuiles sont chargées
+}
 
     setupTiles() {
         if (!this.tileContainer) return;
@@ -402,6 +434,7 @@ const tvSites = [
         
         // Animer l'apparition des tuiles
         this.setupTilesWithAnimation();
+		this.setupTVIcons();
     }
 
     createTile(site) {
