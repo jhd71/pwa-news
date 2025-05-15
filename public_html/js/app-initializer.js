@@ -1,5 +1,17 @@
 // js/app-initializer.js
 
+// Supprimer les avertissements liés à l'installation de la PWA
+const originalConsoleWarn = console.warn;
+console.warn = function(...args) {
+    // Filtrer l'avertissement spécifique
+    if (args.length > 0 && typeof args[0] === 'string' && args[0].includes('Banner not shown')) {
+        return; // Ignorer cet avertissement
+    }
+    
+    // Laisser passer les autres avertissements
+    originalConsoleWarn.apply(console, args);
+};
+
 // PWA Installation
 class PWAInstaller {
     constructor() {
@@ -20,6 +32,7 @@ class PWAInstaller {
 
     // Dans votre classe PWAInstaller
 async handleBeforeInstallPrompt(event) {
+    // Garder event.preventDefault() - c'est nécessaire pour votre bannière personnalisée
     event.preventDefault();
     this.deferredPrompt = event;
 
@@ -28,161 +41,13 @@ async handleBeforeInstallPrompt(event) {
         this.installButton.addEventListener('click', this.handleInstallClick.bind(this), { once: true });
     }
     
-    // Afficher la bannière personnalisée
-    this.showCustomInstallBanner();
-}
-
-// Ajoutez cette nouvelle méthode à votre classe PWAInstaller
-showCustomInstallBanner() {
-    // Vérifier si on a déjà montré la bannière récemment
-    const lastShown = localStorage.getItem('installBannerLastShown');
-    if (lastShown && (Date.now() - parseInt(lastShown)) < 3 * 24 * 60 * 60 * 1000) {
-        return; // Ne pas montrer si la bannière a été affichée dans les 3 derniers jours
+    // Appeler la bannière personnalisée existante dans contentManager
+    if (window.contentManager && typeof window.contentManager.showInstallBanner === 'function') {
+        window.contentManager.showInstallBanner();
     }
     
-    // Vérifier si la bannière existe déjà
-    if (document.querySelector('.pwa-install-banner')) {
-        return;
-    }
-    
-    // Créer la bannière
-    const banner = document.createElement('div');
-    banner.className = 'pwa-install-banner';
-    banner.innerHTML = `
-        <div class="banner-content">
-            <div class="banner-icon">
-                <img src="/images/AM-192-v2.png" alt="Actu&Media" width="40" height="40">
-            </div>
-            <div class="banner-text">
-                <h3>Installer Actu&Media</h3>
-                <p>Accédez rapidement à vos actualités locales</p>
-            </div>
-            <div class="banner-buttons">
-                <button id="banner-install-btn">Installer</button>
-                <button id="banner-close-btn">Plus tard</button>
-            </div>
-        </div>
-    `;
-    
-    // Ajouter les styles
-    const style = document.createElement('style');
-    style.textContent = `
-        .pwa-install-banner {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--card-bg, #ffffff);
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-            z-index: 9999;
-            animation: slideUp 0.3s ease-out forwards;
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-        }
-        
-        .banner-content {
-            display: flex;
-            align-items: center;
-            padding: 12px 16px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .banner-icon {
-            margin-right: 12px;
-        }
-        
-        .banner-icon img {
-            border-radius: 8px;
-        }
-        
-        .banner-text {
-            flex: 1;
-        }
-        
-        .banner-text h3 {
-            margin: 0 0 4px 0;
-            font-size: 16px;
-            font-weight: bold;
-            color: var(--text-color, #333);
-        }
-        
-        .banner-text p {
-            margin: 0;
-            font-size: 14px;
-            color: var(--text-color-secondary, #666);
-        }
-        
-        .banner-buttons {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .banner-buttons button {
-            border: none;
-            border-radius: 4px;
-            padding: 8px 12px;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        
-        #banner-install-btn {
-            background: var(--primary-color, #1e3a8a);
-            color: white;
-        }
-        
-        #banner-close-btn {
-            background: transparent;
-            color: var(--text-color, #333);
-        }
-        
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-        
-        @media (max-width: 600px) {
-            .banner-content {
-                flex-wrap: wrap;
-            }
-            
-            .banner-buttons {
-                margin-top: 8px;
-                width: 100%;
-                justify-content: flex-end;
-            }
-        }
-    `;
-    
-    document.head.appendChild(style);
-    document.body.appendChild(banner);
-    
-    // Gérer les clics
-    document.getElementById('banner-install-btn').addEventListener('click', () => {
-        if (this.deferredPrompt) {
-            this.handleInstallClick({ preventDefault: () => {} });
-        }
-        banner.remove();
-    });
-    
-    document.getElementById('banner-close-btn').addEventListener('click', () => {
-        banner.style.animation = 'slideDown 0.3s ease-out forwards';
-        setTimeout(() => {
-            banner.remove();
-        }, 300);
-        
-        // Mémoriser que l'utilisateur a fermé la bannière
-        localStorage.setItem('installBannerLastShown', Date.now().toString());
-    });
-    
-    // Ajouter une animation de disparition
-    const slideDownStyle = document.createElement('style');
-    slideDownStyle.textContent = `
-        @keyframes slideDown {
-            from { transform: translateY(0); }
-            to { transform: translateY(100%); }
-        }
-    `;
-    document.head.appendChild(slideDownStyle);
+    // Si vous voyez toujours l'erreur, ajoutez ce commentaire pour ignorer l'avertissement
+    console.log('Installation PWA disponible - bannière personnalisée utilisée');
 }
 
     async handleInstallClick(event) {
