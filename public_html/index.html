@@ -470,7 +470,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="menu-item">
         <div class="copyright-text">
             <span class="material-icons">copyright</span>
-            <span>2025 Actu & Média</span>
+            <span><script>document.write(new Date().getFullYear())</script> Actu & Média</span>
         </div>
     </div>
 </aside>
@@ -896,12 +896,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // Vérifier à nouveau après un délai (pour les tablettes)
   setTimeout(ensureTabletSwiper, 500);
 });
-
-// Exposer la fonction pour pouvoir l'appeler depuis d'autres scripts
-window.refreshNews = function() {
-  console.log('Actualisation des nouvelles...');
-  loadTopNews();
-}
 
 // Charger les actualités au chargement de la page
 document.addEventListener('DOMContentLoaded', loadTopNews);
