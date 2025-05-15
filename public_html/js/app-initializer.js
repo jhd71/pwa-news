@@ -1,5 +1,48 @@
 // js/app-initializer.js
 
+// NOUVEAU CODE - PLACEZ-LE TOUT EN HAUT DU FICHIER
+(function() {
+    // Créer un filtre global pour les messages de la console
+    const filters = [
+        "Banner not shown: beforeinstallpromptevent.preventDefault()",
+        "Unchecked runtime.lastError",
+        "Deprecated API for given entry type"
+    ];
+
+    // Redéfinir console.warn et console.error
+    try {
+        const originalWarn = console.warn;
+        console.warn = function(...args) {
+            if (args.length > 0 && typeof args[0] === 'string' && 
+                filters.some(filter => args[0].includes(filter))) {
+                return; // Ignorer ce message
+            }
+            originalWarn.apply(console, args);
+        };
+
+        const originalError = console.error;
+        console.error = function(...args) {
+            if (args.length > 0 && typeof args[0] === 'string' && 
+                filters.some(filter => args[0].includes(filter))) {
+                return; // Ignorer ce message
+            }
+            originalError.apply(console, args);
+        };
+
+        const originalLog = console.log;
+        console.log = function(...args) {
+            if (args.length > 0 && typeof args[0] === 'string' && 
+                filters.some(filter => args[0].includes(filter))) {
+                return; // Ignorer ce message
+            }
+            originalLog.apply(console, args);
+        };
+    } catch (e) {
+        // En cas d'erreur, ne rien faire
+    }
+})();
+
+// VOTRE CODE EXISTANT - VOUS POUVEZ SUPPRIMER CETTE PARTIE PUISQU'ELLE EST REMPLACÉE PAR LE CODE CI-DESSUS
 // Suppression des avertissements spécifiques à la console
 const originalConsoleWarn = console.warn;
 console.warn = function(...args) {
@@ -12,7 +55,6 @@ console.warn = function(...args) {
     // Laisser passer les autres avertissements
     originalConsoleWarn.apply(console, args);
 };
-
 // Faire de même pour les erreurs unchecked runtime.lastError
 const originalConsoleError = console.error;
 console.error = function(...args) {
