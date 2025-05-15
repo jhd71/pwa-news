@@ -370,6 +370,13 @@ const tvSites = [
                 mobileUrl: 'https://scorenco.com/rugby/clubs/rc-montceau-bourgogne-2m2t',
                 isDefault: true,
                 category: 'sports'
+            },
+			{
+                title: 'Cyclisme',
+                url: 'https://rmcsport.bfmtv.com/cyclisme/',
+                mobileUrl: 'https://rmcsport.bfmtv.com/cyclisme/',
+                isDefault: true,
+                category: 'sports'
             }
         ];
 
