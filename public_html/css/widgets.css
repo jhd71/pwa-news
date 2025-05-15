@@ -626,7 +626,7 @@
   .weather-day > img.weather-gif,
   .weather-day img[src*="images/weather-gifs"] {
     position: absolute !important;
-    top: 45px !important; /* Ajuster la hauteur */
+    top: 40px !important; /* Ajuster la hauteur */
     right: 10px !important;
     width: 45px !important;
     height: 45px !important;
@@ -653,7 +653,7 @@
 	.weather-day img[src*="images/weather-gifs"] {
      width: 45px !important;
      height: 45px !important;
-     top: 40px !important;
+     top: 35px !important;
     }
 	}
 	
