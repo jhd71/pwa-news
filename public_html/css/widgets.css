@@ -865,13 +865,6 @@
   }
 }
 
-/* Agrandir l'icône météo en mode rouge */
-[data-theme="rouge"] .weather-mobile-btn {
-  width: 56px !important; /* Augmenter la largeur */
-  height: 56px !important; /* Augmenter la hauteur */
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3) !important; /* Ombre plus prononcée */
-}
-
 [data-theme="rouge"] .weather-mobile-btn .material-icons {
   font-size: 32px !important; /* Augmenter la taille de l'icône */
 }
