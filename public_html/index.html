@@ -19,7 +19,6 @@
     <meta name="author" content="Actu & Média">
     <meta name="keywords" content="actualités, Saône-et-Loire, Montceau News, Le JSL, L'Informateur, Creusot Infos, France Bleu, BFM TV, médias locaux">
     <meta name="google-site-verification" content="74sCYbSwcWjU7BQ8Mxhboe9IiRzajIbyy6C1hyuAr3U">
-	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;">
     <title>Actu&Média</title>
 
     <!-- Configuration PWA -->
@@ -37,6 +36,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Actu&Média">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
     <!-- Favicons et icônes -->
     <link rel="icon" type="image/png" sizes="192x192" href="/images/AM-192-v2.png">
@@ -439,24 +439,24 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="menu-item">
         <a href="mailto:contact@actuetmedia.fr">
             <span class="material-icons">email</span>
-            contact@actuetmedia.fr
+            contact@actu&media.fr
         </a>
     </div>
 	<div class="menu-item">
-    <a href="/mentions-legales">
+    <a href="/mentions-legales.html">
         <span class="material-icons">gavel</span>
         Mentions légales
     </a>
     </div>
 
     <div class="menu-item">
-        <a href="/politique-confidentialite">
+        <a href="/politique-confidentialite.html">
             <span class="material-icons">security</span>
             Confidentialité
         </a>
     </div>
     <div class="menu-item">
-        <a href="/conditions-utilisation">
+        <a href="/conditions-utilisation.html">
             <span class="material-icons">gavel</span>
             Conditions d'utilisation
         </a>
@@ -470,7 +470,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="menu-item">
         <div class="copyright-text">
             <span class="material-icons">copyright</span>
-            <span><script>document.write(new Date().getFullYear())</script> Actu & Média</span>
+            <span>2025 Actu & Média</span>
         </div>
     </div>
 </aside>
@@ -516,9 +516,6 @@ document.addEventListener('DOMContentLoaded', function() {
         <span class="chat-notification-badge hidden">0</span>
     </button>
 </nav>
-
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <!-- Module principal -->
 <script type="module">
@@ -899,6 +896,12 @@ document.addEventListener('DOMContentLoaded', function() {
   // Vérifier à nouveau après un délai (pour les tablettes)
   setTimeout(ensureTabletSwiper, 500);
 });
+
+// Exposer la fonction pour pouvoir l'appeler depuis d'autres scripts
+window.refreshNews = function() {
+  console.log('Actualisation des nouvelles...');
+  loadTopNews();
+}
 
 // Charger les actualités au chargement de la page
 document.addEventListener('DOMContentLoaded', loadTopNews);
