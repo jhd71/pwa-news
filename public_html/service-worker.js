@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v7';
+const CACHE_NAME = 'infos-pwa-v8';
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -62,6 +62,12 @@ const STATIC_RESOURCES = [
     '/sounds/erreur.mp3',
     '/sounds/success.mp3',
     '/sounds/sent.mp3'
+];
+
+const EXTERNAL_RESOURCES = [
+    'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js',
+    'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css',
+    'https://fonts.googleapis.com/icon?family=Material+Icons'
 ];
 
 // Contenu HTML de la page hors ligne
@@ -143,6 +149,7 @@ self.addEventListener('install', event => {
                 const successfulCaches = [];
                 const failedCaches = [];
                 
+                // Mettre en cache les ressources statiques locales
                 for (const url of STATIC_RESOURCES) {
                     try {
                         await cache.add(url);
@@ -150,6 +157,18 @@ self.addEventListener('install', event => {
                     } catch (error) {
                         // Logger l'erreur mais continuer avec les autres ressources
                         console.warn(`[ServiceWorker] Échec de mise en cache: ${url}`, error);
+                        failedCaches.push(url);
+                    }
+                }
+                
+                // Mettre en cache les ressources externes
+                for (const url of EXTERNAL_RESOURCES) {
+                    try {
+                        await cache.add(url);
+                        successfulCaches.push(url);
+                    } catch (error) {
+                        // Logger l'erreur mais continuer avec les autres ressources
+                        console.warn(`[ServiceWorker] Échec de mise en cache externe: ${url}`, error);
                         failedCaches.push(url);
                     }
                 }
@@ -304,6 +323,9 @@ self.addEventListener('fetch', (event) => {
     const requestType = categorizeRequest(event.request);
     
     switch (requestType) {
+        case 'CDN':  // Nouveau cas ajouté ici
+            handleCdnRequest(event);
+            break;
         case 'IMAGE':
             handleImageRequest(event);
             break;
@@ -354,6 +376,55 @@ function categorizeRequest(request) {
     }
     
     return 'DEFAULT';
+}
+
+// Et ajoutez cette fonction pour gérer les requêtes CDN
+function handleCdnRequest(event) {
+    event.respondWith(
+        (async () => {
+            const cache = await caches.open(CACHE_NAME);
+            const cachedResponse = await cache.match(event.request);
+            
+            if (cachedResponse) {
+                // Stale-while-revalidate : retourner la version en cache
+                // tout en mettant à jour le cache en arrière-plan
+                fetchWithTimeout(event.request, NETWORK_TIMEOUT)
+                    .then(response => {
+                        if (response.ok) {
+                            cache.put(event.request, response.clone());
+                        }
+                    })
+                    .catch(error => {
+                        console.warn('[ServiceWorker] Échec de revalidation CDN:', error);
+                    });
+                
+                return cachedResponse;
+            }
+            
+            try {
+                // Si pas en cache, essayer le réseau
+                const response = await fetchWithTimeout(event.request, NETWORK_TIMEOUT);
+                if (response.ok) {
+                    cache.put(event.request, response.clone());
+                }
+                return response;
+            } catch (error) {
+                console.error('[ServiceWorker] Erreur CDN:', error);
+                
+                // Si pas de cache et pas de réseau, on peut essayer des fallbacks pour certaines ressources
+                if (event.request.url.includes('Material+Icons')) {
+                    // Fallback pour Material Icons
+                    return new Response('', { 
+                        status: 200,
+                        headers: { 'Content-Type': 'text/css' }
+                    });
+                }
+                
+                // Pour le reste, échec normal
+                throw error;
+            }
+        })()
+    );
 }
 
 // Gestion des requêtes d'images avec stale-while-revalidate optimisé
