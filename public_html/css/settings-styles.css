@@ -265,7 +265,7 @@
   }
 
   .font-size-tile {
-    width: 100%;
+    width: 0;
     height: auto;
     aspect-ratio: 1/1;
     min-height: 48px;

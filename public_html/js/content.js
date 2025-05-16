@@ -828,7 +828,7 @@ showSettings() {
                 <div class="font-size-tile ${this.fontSize === 'normal' ? 'active' : ''}" data-font-size="normal">
                     <span>Normal</span>
                 </div>
-                <div class="font-size-tile ${this.fontSize === 'large' ? 'active' : ''}" data-font-size="large">
+                <div class="font-size-tile font-size-large ${this.fontSize === 'large' ? 'active' : ''}" data-font-size="large">
                     <span>Grand</span>
                 </div>
             </div>
