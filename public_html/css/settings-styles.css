@@ -208,17 +208,16 @@
 
 /* Support spécifique pour les appareils mobiles */
 @media (max-width: 767px) {
-  /* Optimisations pour le menu des paramètres sur mobile */
   .settings-menu {
     position: fixed;
     top: var(--header-height, 60px);
     right: 0;
     width: 85%;
     max-width: 300px;
-    height: calc(100vh - var(--header-height, 60px) - var(--bottom-nav-height, 60px));
-    max-height: calc(100vh - var(--header-height, 60px) - var(--bottom-nav-height, 60px));
+    /* Modification importante ici : supprimer la limitation de hauteur */
+    height: 100vh !important; /* Couvrir toute la hauteur de l'écran */
     background-color: var(--primary-color);
-    z-index: 10000 !important;
+    z-index: 10000 !important; /* Garder très élevé comme vous l'aviez */
     transform: translateX(100%);
     transition: transform 0.3s ease-out;
     box-shadow: -3px 0 10px rgba(0, 0, 0, 0.3);
@@ -227,11 +226,14 @@
     overscroll-behavior: contain;
     display: flex;
     flex-direction: column;
+    /* Ajouter une marge inférieure négative pour couvrir la barre de navigation */
+    margin-bottom: -60px; /* Même valeur que --bottom-nav-height */
   }
 
   .settings-menu.open {
     transform: translateX(0);
   }
+}
 
   /* Style pour l'en-tête du panneau */
   .settings-header {
@@ -582,4 +584,42 @@ input:checked + .toggle-slider:before {
 /* S'assurer que le news-ticker reste en dessous */
 .news-ticker {
     z-index: 9000;
+}
+
+/* Style pour l'overlay lorsque le panneau des paramètres est ouvert */
+.settings-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999; /* Juste en dessous du menu des paramètres */
+  display: none;
+}
+
+.settings-overlay.active {
+  display: block;
+}
+
+/* Empêcher le défilement du body quand le panneau est ouvert */
+body.settings-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 767px) {
+  /* Correction pour le safe area sur iOS */
+  .settings-menu {
+    height: calc(100vh + env(safe-area-inset-bottom, 0px)) !important;
+    padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+  }
+  
+  /* S'assurer que le contenu des paramètres remplit l'espace */
+  .settings-content {
+    flex: 1;
+    min-height: calc(100vh - var(--header-height) - 60px); /* 60px pour la hauteur de l'en-tête du menu */
+  }
 }
