@@ -2699,3 +2699,26 @@ button#refreshButton.refresh-button {
 [data-font-size="large"] #tileContainer.list .tile {
     min-height: 60px;
 }
+
+/* Style pour le QR code dans le menu latéral */
+.qr-code-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    padding: 10px;
+}
+
+.qr-code-container h4 {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #fff;
+}
+
+.sidebar-qr-code {
+    max-width: 180px;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}

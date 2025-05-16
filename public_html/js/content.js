@@ -1,10 +1,12 @@
 class ContentManager {
     constructor() {
-        this.tileContainer = null;
-        this.currentTheme = localStorage.getItem('theme') || 'rouge';
-        this.fontSize = localStorage.getItem('fontSize') || 'normal';
-        this.deferredPrompt = null;
-    }
+    this.tileContainer = null;
+    this.currentTheme = localStorage.getItem('theme') || 'rouge';
+    this.fontSize = localStorage.getItem('fontSize') || 'normal';
+    this.fontFamily = localStorage.getItem('fontFamily') || 'system'; // Vérifiez cette ligne
+    this.textContrast = localStorage.getItem('textContrast') || 'normal'; // Vérifiez cette ligne
+    this.deferredPrompt = null;
+}
 
     init() {
         if (document.readyState === 'loading') {
@@ -25,6 +27,8 @@ class ContentManager {
         this.setupLayout();
         this.setupTheme();
         this.setupFontSize();
+		this.setupFontFamily(); // Nouvelle ligne
+        this.setupTextContrast(); // Nouvelle ligne
         this.setupTiles();
     }
 
@@ -246,7 +250,7 @@ setupTVIcons() {
         // Section Radio
         const radioSites = [
             {
-                title: 'France Bleu Bourgogne',
+                title: 'France Bleu<br>Bourgogne',
                 url: 'https://www.radio-en-ligne.fr/france-bleu-bourgogne',
                 mobileUrl: 'https://www.radio-en-ligne.fr/france-bleu-bourgogne',
                 isDefault: true,
@@ -281,14 +285,14 @@ setupTVIcons() {
 
         // Section TV
 const tvSites = [
-    {
-        title: 'FR3 Bourgogne', // Raccourci de "France 3 Bourgogne"
-        url: 'https://www.francebleu.fr/tv/direct/bourgogne',
-        mobileUrl: 'https://www.francebleu.fr/tv/direct/bourgogne',
-        isDefault: true,
-        category: 'tv',
-        isLive: true
-    },
+  {
+    title: 'France 3<br>Bourgogne',
+    url: 'https://www.francebleu.fr/tv/direct/bourgogne',
+    mobileUrl: 'https://www.francebleu.fr/tv/direct/bourgogne',
+    isDefault: true,
+    category: 'tv',
+    isLive: true
+  },
     {
         title: 'BFMTV',
         url: 'https://www.bfmtv.com/en-direct/',
@@ -343,7 +347,7 @@ const tvSites = [
                 category: 'sports'
             },
             {
-                title: 'Foot FC Montceau-Bourgogne',
+                title: 'Foot<br>FC Montceau-Bourgogne',
                 url: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
                 mobileUrl: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
                 isDefault: true,
@@ -358,14 +362,14 @@ const tvSites = [
                 // isLive supprimé pour Foot-Live
             },
             {
-                title: 'ELAN Chalon Basket',
+                title: 'ELAN<br>Chalon Basket',
                 url: 'https://scorenco.com/basket/clubs/elan-chalon-basket-2m40/1-4xe3',
                 mobileUrl: 'https://www.elanchalon.com/',
                 isDefault: true,
                 category: 'sports'
             },
             {
-                title: 'Rugby RC Montceau Bourgogne',
+                title: 'Rugby<br>RC Montceau Bourgogne',
                 url: 'https://scorenco.com/rugby/clubs/rc-montceau-bourgogne-2m2t',
                 mobileUrl: 'https://scorenco.com/rugby/clubs/rc-montceau-bourgogne-2m2t',
                 isDefault: true,
@@ -785,10 +789,6 @@ const tvSites = [
         }, 3000);
     }
 
-// Remplacez la méthode showSettings() existante par celle-ci :
-
-// Remplacez la méthode showSettings() dans content.js par cette version corrigée
-
 showSettings() {
     const existingPanel = document.querySelector('.settings-menu');
     if (existingPanel) {
@@ -810,36 +810,63 @@ showSettings() {
     const panel = document.createElement('div');
     panel.className = 'settings-menu';
     panel.innerHTML = `
-        <div class="settings-header">
-            <h3>Paramètres</h3>
-            <button type="button" class="close-btn">
-                <span class="material-icons">close</span>
-            </button>
-        </div>
-        <div class="settings-content">
-            <div class="settings-section">
-                <h4>Taille du texte</h4>
-                <div class="font-size-tiles">
-                    <div class="font-size-tile ${this.fontSize === 'small' ? 'active' : ''}" data-font-size="small">
-                        <span>Petit</span>
-                    </div>
-                    <div class="font-size-tile ${this.fontSize === 'normal' ? 'active' : ''}" data-font-size="normal">
-                        <span>Normal</span>
-                    </div>
-                    <div class="font-size-tile ${this.fontSize === 'large' ? 'active' : ''}" data-font-size="large">
-                        <span>Grand</span>
-                    </div>
+    <div class="settings-header">
+        <h3>Paramètres d'affichage</h3>
+        <button type="button" class="close-btn">
+            <span class="material-icons">close</span>
+        </button>
+    </div>
+    <div class="settings-content">
+        <p class="settings-intro">Ces options personnalisent l'apparence des tuiles de navigation.</p>
+        
+        <div class="settings-section">
+            <h4>Taille du texte</h4>
+            <div class="font-size-tiles">
+                <div class="font-size-tile ${this.fontSize === 'small' ? 'active' : ''}" data-font-size="small">
+                    <span>Petit</span>
                 </div>
-            </div>
-            <div class="settings-section">
-                <h4>À propos</h4>
-                <p class="version-text">Version 1.2</p>
-                <div style="text-align: center; padding: 15px;">
-                    <img src="images/qrcode.png" alt="QR Code" style="max-width: 200px; width: 100%; height: auto;">
+                <div class="font-size-tile ${this.fontSize === 'normal' ? 'active' : ''}" data-font-size="normal">
+                    <span>Normal</span>
+                </div>
+                <div class="font-size-tile ${this.fontSize === 'large' ? 'active' : ''}" data-font-size="large">
+                    <span>Grand</span>
                 </div>
             </div>
         </div>
-    `;
+        
+        <div class="settings-section">
+            <h4>Police de caractères</h4>
+            <div class="font-family-tiles">
+                <div class="font-family-tile ${this.fontFamily === 'system' ? 'active' : ''}" data-font-family="system">
+                    <span style="font-family: -apple-system, BlinkMacSystemFont, sans-serif">Système</span>
+                </div>
+                <div class="font-family-tile ${this.fontFamily === 'roboto' ? 'active' : ''}" data-font-family="roboto">
+                    <span style="font-family: 'Roboto', sans-serif">Roboto</span>
+                </div>
+                <div class="font-family-tile ${this.fontFamily === 'opensans' ? 'active' : ''}" data-font-family="opensans">
+                    <span style="font-family: 'Open Sans', sans-serif">Open Sans</span>
+                </div>
+                <div class="font-family-tile ${this.fontFamily === 'montserrat' ? 'active' : ''}" data-font-family="montserrat">
+                    <span style="font-family: 'Montserrat', sans-serif">Montserrat</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h4>Contraste du texte</h4>
+            <div class="text-contrast-tiles">
+                <div class="text-contrast-tile ${this.textContrast === 'normal' ? 'active' : ''}" data-text-contrast="normal">
+                    <span>Normal</span>
+                </div>
+                <div class="text-contrast-tile ${this.textContrast === 'high' ? 'active' : ''}" data-text-contrast="high">
+                    <span>Élevé</span>
+                </div>
+                <div class="text-contrast-tile ${this.textContrast === 'very-high' ? 'active' : ''}" data-text-contrast="very-high">
+                    <span>Très élevé</span>
+                </div>
+            </div>
+        </div>
+`;
 
     document.body.appendChild(panel);
     
@@ -904,6 +931,42 @@ showSettings() {
         });
     });
 
+// Ajouter des gestionnaires pour les nouvelles options
+panel.querySelectorAll('.font-family-tile').forEach(tile => {
+    ['touchstart', 'click'].forEach(eventType => {
+        tile.addEventListener(eventType, (e) => {
+            e.stopPropagation();
+            
+            panel.querySelectorAll('.font-family-tile').forEach(t => {
+                t.classList.remove('active');
+            });
+            tile.classList.add('active');
+            
+            const fontFamily = tile.dataset.fontFamily;
+            setTimeout(() => {
+                this.changeFontFamily(fontFamily);
+            }, 50);
+        }, { passive: false });
+    });
+});
+
+panel.querySelectorAll('.text-contrast-tile').forEach(tile => {
+    ['touchstart', 'click'].forEach(eventType => {
+        tile.addEventListener(eventType, (e) => {
+            e.stopPropagation();
+            
+            panel.querySelectorAll('.text-contrast-tile').forEach(t => {
+                t.classList.remove('active');
+            });
+            tile.classList.add('active');
+            
+            const textContrast = tile.dataset.textContrast;
+            setTimeout(() => {
+                this.changeTextContrast(textContrast);
+            }, 50);
+        }, { passive: false });
+    });
+});
     // Empêcher que des clics sur le panneau lui-même ferment celui-ci
     panel.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -937,8 +1000,6 @@ showSettings() {
         document.addEventListener('click', outsideClickHandler);
     }, 100);
 }
-
-// Remplacez également la méthode changeFontSize() par celle-ci :
 
 changeFontSize(size) {
     // Sauvegarder la nouvelle taille de manière persistante
@@ -984,6 +1045,57 @@ changeFontSize(size) {
     }, 300);
 }
 
+// Mise à jour des méthodes setup
+setupFontFamily() {
+    // Ajouter la classe de police au body
+    document.body.classList.add(`${this.fontFamily}-font`);
+}
+
+setupTextContrast() {
+    // Ajouter la classe de contraste au body
+    document.body.classList.add(`${this.textContrast}-contrast`);
+}
+
+changeFontFamily(family) {
+    console.log("Changement de police vers:", family);
+    this.fontFamily = family;
+    localStorage.setItem('fontFamily', family);
+    
+    // Enlever toutes les classes de police
+    document.body.classList.remove('system-font', 'roboto-font', 'opensans-font', 'montserrat-font');
+    
+    // Ajouter la nouvelle classe
+    document.body.classList.add(`${family}-font`);
+    
+    setTimeout(() => {
+        this.showToast(`Police : ${
+            family === 'system' ? 'Système' :
+            family === 'roboto' ? 'Roboto' :
+            family === 'opensans' ? 'Open Sans' :
+            'Montserrat'
+        }`);
+    }, 300);
+}
+
+changeTextContrast(contrast) {
+    console.log("Changement de contraste vers:", contrast);
+    this.textContrast = contrast;
+    localStorage.setItem('textContrast', contrast);
+    
+    // Enlever toutes les classes de contraste
+    document.body.classList.remove('normal-contrast', 'high-contrast', 'very-high-contrast');
+    
+    // Ajouter la nouvelle classe
+    document.body.classList.add(`${contrast}-contrast`);
+    
+    setTimeout(() => {
+        this.showToast(`Contraste : ${
+            contrast === 'normal' ? 'Normal' :
+            contrast === 'high' ? 'Élevé' :
+            'Très élevé'
+        }`);
+    }, 300);
+}
     handleInstall() {
         if (this.deferredPrompt) {
             this.deferredPrompt.prompt();

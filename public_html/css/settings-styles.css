@@ -568,3 +568,18 @@ input:checked + .toggle-slider:before {
   background-color: rgba(255, 255, 255, 0.2);
   color: white !important;
 }
+
+/* Augmenter le z-index du panneau des paramètres */
+.settings-menu {
+    z-index: 10000 !important; /* Valeur très élevée pour passer au-dessus de tout */
+}
+
+/* Augmenter également le z-index du sidebar menu */
+.sidebar {
+    z-index: 10000 !important;
+}
+
+/* S'assurer que le news-ticker reste en dessous */
+.news-ticker {
+    z-index: 9000;
+}

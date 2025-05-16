@@ -1,4 +1,4 @@
-/* Améliorations des tuiles pour Actu & Média - Version corrigée */
+/* Améliorations des tuiles pour Actu & Média - Version nettoyée */
 
 /* 1. Effet de survol amélioré avec scintillement et ombre */
 .tile {
@@ -118,19 +118,19 @@
     font-size: 10px;
     color: white;
     background-color: #ff3d3d;
-    padding: 2px 8px; /* Padding légèrement augmenté */
-    border-radius: 12px; /* Bordure plus arrondie */
+    padding: 2px 8px;
+    border-radius: 12px;
     z-index: 3;
     font-weight: bold;
     border: 1px solid white;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Ombre légère pour détacher visuellement */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 /* Ajustement spécifique pour mobile */
 @media (max-width: 768px) {
     /* Déplacer le contenu des tuiles TV vers le bas pour éviter le badge DIRECT */
     .tile[data-category="tv"] .tile-content {
-        padding-top: 30px !important; /* Espace supplémentaire en haut */
+        padding-top: 30px !important;
     }
     
     /* Centrer verticalement le contenu dans la tuile */
@@ -142,7 +142,7 @@
     
     /* Ajuster le badge DIRECT sur mobile */
     .tile.live-content .tile-content::before {
-        top: 6px; /* Positionner un peu plus haut */
+        top: 6px;
     }
 }
 
@@ -151,49 +151,7 @@
     display: none;
 }
 
-/* Supprimer les icônes des tuiles TV */
-.tile[data-category="tv"] .tile-title::before {
-    display: none !important;
-}
-
-/* Icônes pour les réseaux sociaux */
-.tile-youtube .tile-title::before {
-    content: '';
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    vertical-align: middle;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>');
-    background-repeat: no-repeat;
-    background-size: contain;
-}
-
-.tile-twitch .tile-title::before {
-    content: '';
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    vertical-align: middle;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M2.149 0L0.5 4.18v16.225h5.93V24h3.418l3.649-3.594h5.569l7.483-7.435V0H2.149zm19.913 12.135l-4.271 4.24h-6.856l-3.65 3.651v-3.651H2.986V1.773h19.076v10.362z"/><path d="M10.033 5.356H8.31v7.44h1.723v-7.44zm4.759 0h-1.723v7.44h1.723v-7.44z"/></svg>');
-    background-repeat: no-repeat;
-    background-size: contain;
-}
-
-.tile-tiktok .tile-title::before {
-    content: '';
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    vertical-align: middle;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>');
-    background-repeat: no-repeat;
-    background-size: contain;
-}
-
-/* Supprime les animations de hover 3D */
+/* Supprimer les animations de hover 3D */
 .tile-container.grid .tile {
     transform-style: flat !important;
     perspective: none !important;
@@ -260,167 +218,12 @@
     background-color: rgba(255, 255, 255, 0.15) !important;
 }
 
-/* Icône pour Montceau News */
-.tile-montceau-news .tile-title::before {
-    content: '';
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    vertical-align: middle;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/><path d="M14 17H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>');
-    background-repeat: no-repeat;
-    background-size: contain;
-}
-
-/* Icône pour JSL */
-.tile-jsl .tile-title::before {
-    content: '';
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    vertical-align: middle;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M20 3H4c-1.1 0-1.99.9-1.99 2L2 19c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 16H5V7h14v12z"/><path d="M14 12l-2-2-2 2 2 2 2-2zm-6-6h8v2H8zm0 8h4v2H8z"/></svg>');
-    background-repeat: no-repeat;
-    background-size: contain;
-}
-
-/* Icône pour L'Informateur de Bourgogne */
-.tile-informateur .tile-title::before {
-    content: '';
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    vertical-align: middle;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>');
-    background-repeat: no-repeat;
-    background-size: contain;
-}
-
-/* Icône pour France 3 Bourgogne et FranceTV */
-.tile-france3, .tile-francetv .tile-title::before {
-    content: '';
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    vertical-align: middle;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M21 6h-7.59l3.29-3.29L16 2l-4 4-4-4-.71.71L10.59 6H3c-1.1 0-2 .89-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.11-.9-2-2-2zm0 14H3V8h18v12zM9 10v8l7-4z"/></svg>');
-    background-repeat: no-repeat;
-    background-size: contain;
-}
-
-/* Icône pour BFMTV et CNews */
-.tile-bfmtv, .tile-cnews .tile-title::before {
-    content: '';
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    vertical-align: middle;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M13 16.13v-2.38c-2.5.75-4.37 2.57-5.19 5.25h8.69c-.69-1.31-1.88-2.37-3.5-2.87zM19 2H5C3.89 2 3 2.89 3 4v10c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.11-.9-2-2-2zm0 12H5V4h14v10zm-5.45-3.16L12 9.19l-1.55 1.65-3.95-3.96L5 8.46l7 6.99 7-6.99-1.55-1.58z"/></svg>');
-    background-repeat: no-repeat;
-    background-size: contain;
-}
-
-/* Icône pour les sites de foot */
-.tile-foot .tile-title::before {
-    content: '';
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    vertical-align: middle;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 3.3l1.35-.95c1.82.56 3.37 1.76 4.38 3.34l-.39 1.34-1.35.46L13 6.7V5.3zm-3.35-.95L11 5.3v1.4L7.01 9.49l-1.35-.46-.39-1.34c1.01-1.57 2.56-2.77 4.38-3.34zM7.08 17.11l-1.14.1C4.73 15.81 4 13.99 4 12c0-.12.01-.23.02-.35l1-.73 1.38.48 1.46 4.34-.78 1.37zm7.42 2.48c-.79.26-1.63.41-2.5.41s-1.71-.15-2.5-.41l-.69-1.49.64-1.1h5.11l.64 1.11-.7 1.48zM14.27 15H9.73l-1.35-4.02L12 8.44l3.63 2.54L14.27 15zm3.79 2.21l-1.14-.1-.79-1.37 1.46-4.34 1.39-.47 1 .73c.01.11.02.22.02.34 0 1.99-.73 3.81-1.94 5.21z"/></svg>');
-    background-repeat: no-repeat;
-    background-size: contain;
-}
-
-/* Icône pour basket */
-.tile-basket .tile-title::before {
-    content: '';
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    vertical-align: middle;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M17.09 11h4.86c-.16-1.61-.71-3.11-1.54-4.4-1.73.83-2.99 2.45-3.32 4.4zM6.91 11c-.33-1.95-1.59-3.57-3.32-4.4-.83 1.29-1.38 2.79-1.54 4.4h4.86zm8.16 0c.32-2.59 1.88-4.79 4.06-6-1.6-1.63-3.74-2.71-6.13-2.95V11h2.07zm-6.14 0H11V2.05C8.61 2.29 6.46 3.37 4.87 5c2.18 1.21 3.74 3.41 4.06 6zm6.14 2H13v8.95c2.39-.24 4.54-1.32 6.13-2.95-2.18-1.21-3.74-3.41-4.06-6zM3.59 17.4c1.72-.83 2.99-2.46 3.32-4.4H2.05c.16 1.61.71 3.11 1.54 4.4zm13.5-4.4c.33 1.95 1.59 3.57 3.32 4.4.83-1.29 1.38-2.79 1.54-4.4h-4.86zm-8.16 0c-.32 2.59-1.88 4.79-4.06 6 1.6 1.63 3.74 2.71 6.13 2.95V13H8.93z"/></svg>');
-    background-repeat: no-repeat;
-    background-size: contain;
-}
-
-/* Icône pour rugby */
-.tile-rugby .tile-title::before {
-    content: '';
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    vertical-align: middle;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M14.27 6c-.55.95-.22 2.2.82 2.77.95.54 2.2.21 2.77-.83.53-.95.21-2.2-.84-2.77-.54-.54-1.8-.21-2.75.83zM12 2c5.33 0 9.27 5 8.27 10.5-2.48 3.13-6 3.9-10.53 1.5-3.9-2.1-8.48-2.42-10.46-2.42-.46 0-.86.02-1.2.05C.17 12.83 0 13.5 0 14.18V17c0 1.1.9 2 2 2h8.17c.85 1.31 1.73 2.7 3.83 2.7 2.1 0 2.46-.82 3.56-2.7H22c1.1 0 2-.9 2-2v-2.82c0-.68-.17-1.35-.44-1.95-1.12-3.97-4.78-7-9.56-7.33 0 0 4.5 2.67 5.5 6.33.17.47.27.97.27 1.5 0 .03-.01.06-.01.1-.95-1.7-3.2-2.93-5.76-2.93-2.57 0-4.82 1.23-5.77 2.93 0-.04-.01-.07-.01-.1 0-2.2 1.5-6.5 5.78-6.5zM12 22s-1.63-2-3.5-2c-.83 0-1.5.67-1.5 1.5S7.67 23 8.5 23c1.87 0 3.5-1 3.5-1zm1-9.5c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>');
-    background-repeat: no-repeat;
-    background-size: contain;
-}
-
-/* Icône pour radio */
-.tile-radio .tile-title::before {
-    content: '';
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    vertical-align: middle;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M3.24 6.15C2.51 6.43 2 7.17 2 8v12c0 1.1.89 2 2 2h16c1.11 0 2-.9 2-2V8c0-1.11-.89-2-2-2H8.3l8.26-3.34L15.88 1 3.24 6.15zM7 20c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm13-8h-2v-2h-2v2H4V8h16v4z"/></svg>');
-    background-repeat: no-repeat;
-    background-size: contain;
-}
-
-/* Icône pour Creusot Infos */
-.tile-creusot .tile-title::before {
-    content: '';
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    vertical-align: middle;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>');
-    background-repeat: no-repeat;
-    background-size: contain;
-}
-
-/* Icône pour Faits Divers Saône-et-Loire */
-.tile-faits-divers .tile-title::before {
-    content: '';
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    vertical-align: middle;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M18 7l-1.41-1.41-6.34 6.34 1.41 1.41L18 7zm4.24-1.41L11.66 16.17 7.48 12l-1.41 1.41L11.66 19l12-12-1.42-1.41zM.41 13.41L6 19l1.41-1.41L1.83 12 .41 13.41z"/></svg>');
-    background-repeat: no-repeat;
-    background-size: contain;
-}
-
-/* Icône pour Mâcon-Infos */
-.tile-macon .tile-title::before {
-    content: '';
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    vertical-align: middle;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/><path d="M4 8h16v13H4z"/></svg>');
-    background-repeat: no-repeat;
-    background-size: contain;
-}
 /* Correction complète pour le mode liste - alignement cohérent */
-
 /* Tuiles standard en mode liste */
 .tile-container.list .tile {
     position: relative;
-    height: 60px !important;
+    height: 50px !important;
+    margin-bottom: 6px !important;
 }
 
 /* Contenu des tuiles en mode liste */
@@ -429,8 +232,10 @@
     height: 100%;
     display: flex;
     align-items: center;
-    justify-content: center; /* Centre le contenu horizontalement */
+    justify-content: center;
     padding: 0 20px;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
 }
 
 /* Titres des tuiles en mode liste */
@@ -440,6 +245,8 @@
     display: flex !important;
     align-items: center;
     justify-content: center;
+    font-size: 14px !important;
+    line-height: 1.2 !important;
 }
 
 /* Badge DIRECT en mode liste */
@@ -447,296 +254,49 @@
     position: absolute;
     left: 15px;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-50%) !important;
     z-index: 5;
+    font-size: 9px !important;
+    padding: 1px 6px !important;
 }
 
-/* Tuiles TV spécifiquement */
+/* Tuiles TV spécifiquement en mode liste */
+.tile-container.list .tile[data-category="tv"] {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0 !important;
+}
+
 .tile-container.list .tile[data-category="tv"] .tile-content {
-    justify-content: flex-end; /* Aligner à droite pour laisser de la place au badge */
-    padding-right: 40px; /* Espace à droite */
-    padding-left: 80px; /* Espace pour le badge DIRECT */
+    justify-content: flex-start !important;
+    padding-left: 80px !important;
+    padding-right: 20px !important;
+    width: 100%;
 }
 
-/* Réaligner le texte des tuiles TV */
 .tile-container.list .tile[data-category="tv"] .tile-title {
-    margin-left: 0;
-    margin-right: 0;
-    text-align: right;
+    justify-content: flex-start !important;
+    text-align: left !important;
+    width: auto;
+    margin-left: 10px !important;
+    margin-right: 20px;
 }
 
-/* Style pour les icônes à côté des titres */
-.tile-container.list .tile .tile-title::before {
-    display: inline-block !important;
-    margin-right: 10px !important;
-    vertical-align: middle !important;
-}
-
-/* Pour rendre le CSS plus prioritaire, on peut utiliser !important */
-.tile-container.list .tile:not([data-category="tv"]) .tile-title {
-    justify-content: center !important;
-}
-/* Centrage vertical des noms des chaînes TV */
+/* Centrage vertical des noms des chaînes TV en mode grille */
 .tile[data-category="tv"] .tile-content {
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Centre verticalement */
-    align-items: center; /* Centre horizontalement */
+    justify-content: center;
+    align-items: center;
     height: 100%;
-    padding-top: 0 !important; /* Annule tout padding-top qui pourrait décaler le texte */
+    padding-top: 30px !important;
     padding-bottom: 0 !important;
 }
 
 .tile[data-category="tv"] .tile-title {
-    margin-top: 0 !important; /* Annule les marges qui pourraient décaler le texte */
+    margin-top: 0 !important;
     margin-bottom: 0 !important;
-    position: relative; /* Pour que le texte reste dans le flux normal */
-    top: 0; /* Annule tout positionnement absolu */
-}
-
-/* Ajustement spécifique pour le badge DIRECT */
-.tile.live-content .tile-content::before {
-    top: 15px !important; /* Position plus haute */
-    transform: none !important; /* Annule toute transformation qui pourrait affecter sa position */
-}
-
-/* Pour le mode liste spécifiquement */
-.tile-container.list .tile[data-category="tv"] .tile-content {
-    justify-content: space-between; /* Répartit l'espace horizontalement */
-    flex-direction: row; /* Disposition horizontale */
-    padding-left: 70px !important; /* Espace pour le badge DIRECT */
-}
-
-.tile-container.list .tile[data-category="tv"] .tile-title {
-    margin-right: 20px; /* Espace à droite du titre */
-}
-/* Amélioration des tuiles TV en Direct */
-
-/* 1. Correction pour le mode liste - alignement horizontal */
-.tile-container.list .tile[data-category="tv"] {
-    display: flex;
-    justify-content: flex-start; /* Aligne à gauche */
-    align-items: center;
-    padding: 0 !important;
-}
-
-.tile-container.list .tile[data-category="tv"] .tile-content {
-    justify-content: flex-start !important; /* Force l'alignement à gauche */
-    padding-left: 80px !important; /* Espace pour le badge DIRECT */
-    padding-right: 20px !important;
-    width: 100%;
-}
-
-.tile-container.list .tile[data-category="tv"] .tile-title {
-    justify-content: flex-start !important;
-    text-align: left !important;
-    width: auto;
-    margin-left: 10px !important;
-}
-
-/* 2. Correction pour le badge DIRECT qui chevauche le texte en mode tuiles */
-.tile.live-content .tile-content::before {
-    content: 'DIRECT';
-    position: absolute;
-    left: 8px;
-    top: 8px !important; /* Position fixe en haut */
-    font-size: 10px;
-    color: white;
-    background-color: #ff3d3d;
-    padding: 2px 8px;
-    border-radius: 12px;
-    z-index: 10; /* Augmenté pour être au-dessus de tout */
-    font-weight: bold;
-    border: 1px solid white;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-/* Pour éviter le chevauchement en mode tuiles, on déplace le contenu vers le bas */
-.tile-container.grid .tile[data-category="tv"] .tile-content {
-    padding-top: 30px !important; /* Espace pour le badge DIRECT */
-    justify-content: center;
-    align-items: center;
-}
-
-/* Assurez-vous que le badge est bien placé dans tous les modes */
-.tile-container.grid .tile.live-content .tile-content::before,
-.tile-container.list .tile.live-content .tile-content::before {
-    transform: none !important;
-}
-
-/* Pour le mode liste, repositionner le badge sur le côté gauche */
-.tile-container.list .tile.live-content .tile-content::before {
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    left: 15px !important;
-}
-
-/* Assurez-vous que les icônes TV sont masquées correctement */
-.tile[data-category="tv"] .tile-title::before {
-    display: none !important;
-}
-
-/* Correction pour l'espacement et l'alignement des tuiles en mode liste */
-.tile-container.list .tile {
-    margin-bottom: 8px !important;
-}
-/* Amélioration des tuiles TV en Direct */
-
-/* Réduction de la hauteur de toutes les tuiles en mode liste */
-.tile-container.list .tile {
-    height: 50px !important; /* Hauteur réduite de 60px à 50px */
-}
-
-/* 1. Correction pour le mode liste - alignement horizontal */
-.tile-container.list .tile[data-category="tv"] {
-    display: flex;
-    justify-content: flex-start; /* Aligne à gauche */
-    align-items: center;
-    padding: 0 !important;
-}
-
-.tile-container.list .tile[data-category="tv"] .tile-content {
-    justify-content: flex-start !important; /* Force l'alignement à gauche */
-    padding-left: 80px !important; /* Espace pour le badge DIRECT */
-    padding-right: 20px !important;
-    width: 100%;
-}
-
-.tile-container.list .tile[data-category="tv"] .tile-title {
-    justify-content: flex-start !important;
-    text-align: left !important;
-    width: auto;
-    margin-left: 10px !important;
-}
-
-/* 2. Correction pour le badge DIRECT qui chevauche le texte en mode tuiles */
-.tile.live-content .tile-content::before {
-    content: 'DIRECT';
-    position: absolute;
-    left: 8px;
-    top: 8px !important; /* Position fixe en haut */
-    font-size: 10px;
-    color: white;
-    background-color: #ff3d3d;
-    padding: 2px 8px;
-    border-radius: 12px;
-    z-index: 10; /* Augmenté pour être au-dessus de tout */
-    font-weight: bold;
-    border: 1px solid white;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-/* Pour éviter le chevauchement en mode tuiles, on déplace le contenu vers le bas */
-.tile-container.grid .tile[data-category="tv"] .tile-content {
-    padding-top: 30px !important; /* Espace pour le badge DIRECT */
-    justify-content: center;
-    align-items: center;
-}
-
-/* Assurez-vous que le badge est bien placé dans tous les modes */
-.tile-container.grid .tile.live-content .tile-content::before,
-.tile-container.list .tile.live-content .tile-content::before {
-    transform: none !important;
-}
-
-/* Pour le mode liste, repositionner le badge sur le côté gauche */
-.tile-container.list .tile.live-content .tile-content::before {
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    left: 15px !important;
-}
-
-/* Assurez-vous que les icônes TV sont masquées correctement */
-.tile[data-category="tv"] .tile-title::before {
-    display: none !important;
-}
-
-/* Pour le mode liste, ajuster tous les éléments internes pour la nouvelle hauteur */
-.tile-container.list .tile .tile-content {
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-}
-
-.tile-container.list .tile .tile-title {
-    font-size: 14px !important; /* Taille de police légèrement réduite */
-    line-height: 1.2 !important; /* Interligne réduit */
-}
-
-/* Ajuster le badge DIRECT pour la nouvelle hauteur */
-.tile-container.list .tile.live-content .tile-content::before {
-    font-size: 9px !important; /* Badge légèrement plus petit */
-    padding: 1px 6px !important; /* Padding réduit */
-}
-
-/* Ajuster l'espacement vertical entre les tuiles */
-.tile-container.list .tile {
-    margin-bottom: 6px !important; /* Espacement réduit entre les tuiles */
-}
-
-/* Correction pour les icônes TV manquantes */
-
-/* Ajout des icônes pour toutes les chaînes TV */
-.tile[data-category="tv"] .tile-title::before {
-    content: '' !important;
-    display: inline-block !important;
-    width: 20px !important;
-    height: 20px !important;
-    margin-right: 8px !important;
-    vertical-align: middle !important;
-    background-repeat: no-repeat !important;
-    background-size: contain !important;
-}
-
-
-
-/* Icône spécifique pour FR3 Bourgogne */
-.tile-title:contains("FR3 Bourgogne")::before,
-.tile-title:contains("France 3")::before {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M21 6h-7.59l3.29-3.29L16 2l-4 4-4-4-.71.71L10.59 6H3c-1.1 0-2 .89-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.11-.9-2-2-2zm0 14H3V8h18v12zM9 10v8l7-4z"/></svg>') !important;
-}
-
-/* Icône spécifique pour BFMTV */
-.tile-title:contains("BFMTV")::before {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M13 16.13v-2.38c-2.5.75-4.37 2.57-5.19 5.25h8.69c-.69-1.31-1.88-2.37-3.5-2.87zM19 2H5C3.89 2 3 2.89 3 4v10c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.11-.9-2-2-2zm0 12H5V4h14v10zm-5.45-3.16L12 9.19l-1.55 1.65-3.95-3.96L5 8.46l7 6.99 7-6.99-1.55-1.58z"/></svg>') !important;
-}
-
-/* Icône spécifique pour CNews */
-.tile-title:contains("CNews")::before {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>') !important;
-}
-
-/* Icône spécifique pour FranceTV Info */
-.tile-title:contains("FranceTV Info")::before {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-5 14H4v-4h11v4zm0-5H4V9h11v4zm5 5h-4V9h4v9z"/></svg>') !important;
-}
-
-/* Solution alternative utilisant les classes spécifiques */
-.tile-france3 .tile-title::before,
-.tile-francetv .tile-title::before {
-    display: inline-block !important;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M21 6h-7.59l3.29-3.29L16 2l-4 4-4-4-.71.71L10.59 6H3c-1.1 0-2 .89-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.11-.9-2-2-2zm0 14H3V8h18v12zM9 10v8l7-4z"/></svg>') !important;
-}
-
-.tile-bfmtv .tile-title::before,
-.tile-cnews .tile-title::before {
-    display: inline-block !important;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M13 16.13v-2.38c-2.5.75-4.37 2.57-5.19 5.25h8.69c-.69-1.31-1.88-2.37-3.5-2.87zM19 2H5C3.89 2 3 2.89 3 4v10c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.11-.9-2-2-2zm0 12H5V4h14v10zm-5.45-3.16L12 9.19l-1.55 1.65-3.95-3.96L5 8.46l7 6.99 7-6.99-1.55-1.58z"/></svg>') !important;
-}
-
-/* Surcharge de la règle qui masque les icônes TV */
-.tile[data-category="tv"] .tile-title::before {
-    display: inline-block !important;
-}
-
-/* Icône pour cyclisme */
-.tile-cyclisme .tile-title::before {
-    content: '';
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    vertical-align: middle;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M15.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM5 12c-2.8 0-5 2.2-5 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 8.5c-1.9 0-3.5-1.6-3.5-3.5s1.6-3.5 3.5-3.5 3.5 1.6 3.5 3.5-1.6 3.5-3.5 3.5zm5.8-10l2.4-2.4.8.8c1.3 1.3 3 2.1 5.1 2.1V9c-1.5 0-2.7-.6-3.6-1.5l-1.9-1.9c-.5-.4-1-.6-1.6-.6s-1.1.2-1.4.6L7.8 8.4c-.4.4-.6.9-.6 1.4 0 .6.2 1.1.6 1.4L11 14v5h2v-6.2l-2.2-2.3zM19 12c-2.8 0-5 2.2-5 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 8.5c-1.9 0-3.5-1.6-3.5-3.5s1.6-3.5 3.5-3.5 3.5 1.6 3.5 3.5-1.6 3.5-3.5 3.5z"/></svg>');
-    background-repeat: no-repeat;
-    background-size: contain;
+    position: relative;
+    top: 0;
 }

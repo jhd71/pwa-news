@@ -1,0 +1,100 @@
+/* Style ultra-direct sans sélecteur de police */
+.tile .tile-title {
+    transition: all 0.3s ease;
+}
+
+/* Styles appliqués directement par JavaScript */
+.system-font .tile-title {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+}
+
+.roboto-font .tile-title {
+    font-family: 'Roboto', sans-serif !important;
+}
+
+.opensans-font .tile-title {
+    font-family: 'Open Sans', sans-serif !important;
+}
+
+.montserrat-font .tile-title {
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+/* Contrastes */
+.normal-contrast .tile-title {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
+    font-weight: 600 !important;
+}
+
+.high-contrast .tile-title {
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5), 0 0 1px rgba(0, 0, 0, 0.3) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px !important;
+}
+
+.very-high-contrast .tile-title {
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7), 0 0 2px rgba(0, 0, 0, 0.5) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.6px !important;
+    -webkit-text-stroke: 0.3px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Uniformisation des styles de tuiles */
+.font-family-tiles,
+.text-contrast-tiles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.font-family-tile,
+.text-contrast-tile {
+    flex: 1 0 calc(50% - 10px);
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 15px 10px;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.font-family-tile.active,
+.text-contrast-tile.active {
+    background-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.font-family-tile:hover,
+.text-contrast-tile:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Rendre les tuiles cohérentes avec celles de la taille du texte */
+.font-family-tile, 
+.text-contrast-tile {
+    min-height: 40px;
+}
+
+/* Style cohérent avec les tuiles de taille de texte */
+.font-family-tiles, 
+.text-contrast-tiles, 
+.font-size-tiles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.settings-intro {
+    font-size: 14px;
+    margin: 0 0 15px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.8);
+    padding: 0 10px;
+}

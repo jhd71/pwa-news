@@ -1,0 +1,123 @@
+/* Correction pour centrage du texte dans les tuiles TV */
+.tile[data-category="tv"] {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.tile[data-category="tv"] .tile-content {
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding: 30px 8px 8px 8px !important; /* Espace en haut pour le badge DIRECT */
+}
+
+.tile[data-category="tv"] .tile-title {
+    width: 100% !important;
+    text-align: center !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Positionnement du badge DIRECT */
+.tile.live-content .tile-content::before {
+    top: 8px !important;
+    left: 8px !important;
+    transform: none !important;
+}
+
+/* MODE LISTE - Centrage vertical pour toutes les tuiles */
+.tile-container.list .tile {
+    display: flex !important;
+    align-items: center !important; /* Centrage vertical pour toutes les tuiles */
+    height: 50px !important;
+}
+
+.tile-container.list .tile .tile-content {
+    display: flex !important;
+    align-items: center !important;
+    height: 100% !important;
+    padding: 0 10px !important;
+}
+
+/* Spécifiquement pour les tuiles TV en mode liste */
+.tile-container.list .tile[data-category="tv"] {
+    padding: 0 !important;
+}
+
+.tile-container.list .tile[data-category="tv"] .tile-content {
+    padding: 0 10px 0 65px !important; /* Espace à gauche pour le badge DIRECT */
+    justify-content: flex-start !important;
+}
+
+.tile-container.list .tile[data-category="tv"] .tile-title {
+    justify-content: flex-start !important;
+    text-align: left !important;
+}
+
+.tile-container.list .tile.live-content .tile-content::before {
+    top: 50% !important;
+    left: 10px !important;
+    transform: translateY(-50%) !important;
+}
+
+/* Centrage vertical pour tous les textes en mode liste */
+.tile-container.list .tile .tile-title {
+    margin: 0 !important;
+}
+
+/* Correction pour centrage vertical des tuiles TV en mode liste */
+
+/* S'assurer que toutes les tuiles en mode liste ont une hauteur cohérente */
+.tile-container.list .tile {
+    height: 50px !important;
+    min-height: 50px !important;
+}
+
+/* Styles généraux pour le centrage vertical du contenu */
+.tile-container.list .tile .tile-content {
+    display: flex !important;
+    align-items: center !important; /* Centrage vertical */
+    height: 100% !important;
+    min-height: 100% !important;
+}
+
+/* Styles spécifiques pour les titres */
+.tile-container.list .tile .tile-title {
+    display: flex !important;
+    align-items: center !important;
+    height: auto !important;
+}
+
+/* SPÉCIFIQUE AUX TUILES TV EN DIRECT */
+.tile-container.list .tile[data-category="tv"] {
+    display: flex !important;
+    align-items: center !important; /* Centrage vertical de la tuile entière */
+}
+
+.tile-container.list .tile[data-category="tv"] .tile-content {
+    padding: 0 !important; /* Supprimer les paddings qui peuvent décaler */
+    justify-content: center !important; /* Centrage horizontal */
+    text-align: center !important;
+}
+
+.tile-container.list .tile[data-category="tv"] .tile-title {
+    justify-content: center !important;
+    text-align: center !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Positionnement du badge DIRECT pour ne pas perturber le centrage */
+.tile-container.list .tile.live-content .tile-content::before {
+    position: absolute !important;
+    left: 10px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    margin: 0 !important;
+}
