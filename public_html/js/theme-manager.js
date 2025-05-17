@@ -6,7 +6,8 @@ class ThemeManager {
         this.themes = [
             { id: 'light', name: 'Violet', icon: 'color_lens' },
             { id: 'dark', name: 'Sombre', icon: 'dark_mode' },
-            { id: 'rouge', name: 'Rouge', icon: 'palette' }
+            { id: 'rouge', name: 'Rouge', icon: 'palette' },
+            { id: 'bleuciel', name: 'Bleu Ciel', icon: 'water_drop' } // Nouveau thème ajouté
         ];
         
         // Initialiser le système de thèmes

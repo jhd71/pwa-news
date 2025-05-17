@@ -623,3 +623,24 @@ body.settings-open {
     min-height: calc(100vh - var(--header-height) - 60px); /* 60px pour la hauteur de l'en-tête du menu */
   }
 }
+
+/* Styles pour les overlays */
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 990;
+  display: none;
+}
+
+.menu-overlay.visible {
+  display: block;
+}
+
+/* Empêcher les clics sur les tuiles quand un overlay est visible */
+body.overlay-active .tile {
+  pointer-events: none;
+}

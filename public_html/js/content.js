@@ -34,30 +34,59 @@ class ContentManager {
 
     setupEventListeners() {
         // Gestion du menu
-        const menuButton = document.getElementById('menuButton');
-        const sidebar = document.getElementById('sidebar');
+const menuButton = document.getElementById('menuButton');
+const sidebar = document.getElementById('sidebar');
 
-        if (menuButton && sidebar) {
-            const sidebarCloseBtn = sidebar.querySelector('.close-btn');
-
-            menuButton.addEventListener('click', () => {
-                sidebar.classList.toggle('open');
-            });
-
-            if (sidebarCloseBtn) {
-                sidebarCloseBtn.addEventListener('click', () => {
-                    sidebar.classList.remove('open');
-                });
-            }
-
-            document.addEventListener('click', (e) => {
-                if (sidebar.classList.contains('open') &&
-                    !sidebar.contains(e.target) &&
-                    !menuButton.contains(e.target)) {
-                    sidebar.classList.remove('open');
-                }
-            });
+if (menuButton && sidebar) {
+    const sidebarCloseBtn = sidebar.querySelector('.close-btn');
+    
+    // Créer un overlay pour le menu
+    let menuOverlay = document.createElement('div');
+    menuOverlay.className = 'menu-overlay';
+    document.body.appendChild(menuOverlay);
+    
+    // Gestion du clic sur le bouton du menu
+    menuButton.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+        
+        // Si le menu est ouvert, afficher l'overlay
+        if (sidebar.classList.contains('open')) {
+            menuOverlay.classList.add('visible');
+            document.body.classList.add('overlay-active');
+        } else {
+            menuOverlay.classList.remove('visible');
+            document.body.classList.remove('overlay-active');
         }
+    });
+    
+    // Gestion du clic sur le bouton de fermeture
+    if (sidebarCloseBtn) {
+        sidebarCloseBtn.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            menuOverlay.classList.remove('visible');
+            document.body.classList.remove('overlay-active');
+        });
+    }
+    
+    // Gestion du clic sur l'overlay
+    menuOverlay.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        menuOverlay.classList.remove('visible');
+        document.body.classList.remove('overlay-active');
+    });
+    
+    // Conserver le gestionnaire de clic existant
+    document.addEventListener('click', (e) => {
+        if (sidebar.classList.contains('open') &&
+            !sidebar.contains(e.target) &&
+            !menuButton.contains(e.target) &&
+            !menuOverlay.contains(e.target)) {
+            sidebar.classList.remove('open');
+            menuOverlay.classList.remove('visible');
+            document.body.classList.remove('overlay-active');
+        }
+    });
+}
 
         // Boutons de navigation
         const darkModeToggle = document.getElementById('darkModeToggle');
@@ -806,7 +835,27 @@ showSettings() {
 
     // Ajouter une classe au body pour indiquer que le panneau est ouvert
     document.body.classList.add('settings-open');
+// Créer un overlay pour le menu des paramètres
+const settingsOverlay = document.createElement('div');
+settingsOverlay.className = 'menu-overlay';
+settingsOverlay.classList.add('visible');
+document.body.appendChild(settingsOverlay);
+document.body.classList.add('overlay-active');
 
+// Fermer le menu quand on clique sur l'overlay
+settingsOverlay.addEventListener('click', (e) => {
+    e.preventDefault();
+    panel.classList.remove('open');
+    document.body.classList.remove('settings-open');
+    settingsOverlay.remove();
+    document.body.classList.remove('overlay-active');
+    
+    if (settingsButton) {
+        settingsButton.classList.remove('active');
+    }
+    
+    setTimeout(() => panel.remove(), 300);
+});
     const panel = document.createElement('div');
     panel.className = 'settings-menu';
     panel.innerHTML = `
@@ -882,18 +931,26 @@ showSettings() {
     });
 
     const closeBtn = panel.querySelector('.close-btn');
-    if (closeBtn) {
-        closeBtn.addEventListener('click', (e) => {
-            // Important: arrêter la propagation pour éviter que le clic atteigne le document
-            e.stopPropagation();
-            panel.classList.remove('open');
-            document.body.classList.remove('settings-open');
-            if (settingsButton) {
-                settingsButton.classList.remove('active');
-            }
-            setTimeout(() => panel.remove(), 300);
-        });
-    }
+if (closeBtn) {
+    closeBtn.addEventListener('click', (e) => {
+        // Important: arrêter la propagation pour éviter que le clic atteigne le document
+        e.stopPropagation();
+        panel.classList.remove('open');
+        document.body.classList.remove('settings-open');
+        
+        // Supprimer l'overlay
+        const overlay = document.querySelector('.menu-overlay.visible');
+        if (overlay) {
+            overlay.remove();
+        }
+        document.body.classList.remove('overlay-active');
+        
+        if (settingsButton) {
+            settingsButton.classList.remove('active');
+        }
+        setTimeout(() => panel.remove(), 300);
+    });
+}
 
     // Système de verrouillage pour éviter les problèmes lors du changement de taille
     let isChangingFontSize = false;
@@ -1282,38 +1339,42 @@ changeTextContrast(contrast) {
 }
 
     toggleTheme() {
-        // Cycle entre les thèmes : light -> dark -> rouge -> light
-        switch (this.currentTheme) {
-            case 'light':
-                this.currentTheme = 'dark';
-                break;
-            case 'dark':
-                this.currentTheme = 'rouge';
-                break;
-            case 'rouge':
-            default:
-                this.currentTheme = 'light';
-                break;
-        }
+    // Cycle entre les thèmes : light -> dark -> rouge -> bleuciel -> light
+    switch (this.currentTheme) {
+        case 'light':
+            this.currentTheme = 'dark';
+            break;
+        case 'dark':
+            this.currentTheme = 'rouge';
+            break;
+        case 'rouge':
+            this.currentTheme = 'bleuciel';
+            break;
+        case 'bleuciel':
+        default:
+            this.currentTheme = 'light';
+            break;
+    }
         
         // Appliquer le thème
-        document.documentElement.setAttribute('data-theme', this.currentTheme);
-        localStorage.setItem('theme', this.currentTheme);
-        
-        // Mettre à jour l'icône et le texte
-        this.updateThemeIcon();
-        
-        // Afficher une notification
-        let themeName = '';
-        switch(this.currentTheme) {
-            case 'dark': themeName = 'sombre'; break;
-            case 'rouge': themeName = 'rouge'; break;
-            case 'light': themeName = 'violet'; break;
-            default: themeName = 'clair'; break;
-        }
-        
-        this.showToast(`Thème ${themeName} activé`);
+    document.documentElement.setAttribute('data-theme', this.currentTheme);
+    localStorage.setItem('theme', this.currentTheme);
+    
+    // Mettre à jour l'icône et le texte
+    this.updateThemeIcon();
+    
+    // Afficher une notification
+    let themeName = '';
+    switch(this.currentTheme) {
+        case 'dark': themeName = 'sombre'; break;
+        case 'rouge': themeName = 'rouge'; break;
+        case 'light': themeName = 'violet'; break;
+        case 'bleuciel': themeName = 'bleu ciel'; break;
+        default: themeName = 'clair'; break;
     }
+    
+    this.showToast(`Thème ${themeName} activé`);
+}
 
     toggleLayout() {
         // Simplifier avec seulement deux modes
@@ -1355,29 +1416,33 @@ changeTextContrast(contrast) {
     }
 
     updateThemeIcon() {
-        const themeButton = document.getElementById('darkModeToggle');
-        if (themeButton) {
-            const icon = themeButton.querySelector('.material-icons');
-            const text = themeButton.querySelector('span:not(.material-icons)');
-            
-            // Configurer l'icône et le texte en fonction du thème actuel
-            switch (this.currentTheme) {
-                case 'dark':
-                    if (icon) icon.textContent = 'palette';
-                    if (text) text.textContent = 'Rouge';
-                    break;
-                case 'rouge':
-                    if (icon) icon.textContent = 'light_mode';
-                    if (text) text.textContent = 'Violet';
-                    break;
-                case 'light':
-                default:
-                    if (icon) icon.textContent = 'dark_mode';
-                    if (text) text.textContent = 'Sombre';
-                    break;
-            }
+    const themeButton = document.getElementById('darkModeToggle');
+    if (themeButton) {
+        const icon = themeButton.querySelector('.material-icons');
+        const text = themeButton.querySelector('span:not(.material-icons)');
+        
+        // Configurer l'icône et le texte en fonction du thème actuel
+        switch (this.currentTheme) {
+            case 'dark':
+                if (icon) icon.textContent = 'palette';
+                if (text) text.textContent = 'Rouge';
+                break;
+            case 'rouge':
+                if (icon) icon.textContent = 'water_drop';
+                if (text) text.textContent = 'Bleu Ciel';
+                break;
+            case 'bleuciel':
+                if (icon) icon.textContent = 'light_mode';
+                if (text) text.textContent = 'Violet';
+                break;
+            case 'light':
+            default:
+                if (icon) icon.textContent = 'dark_mode';
+                if (text) text.textContent = 'Sombre';
+                break;
         }
     }
+}
 
     shareSite(site) {
         if (navigator.share) {
