@@ -203,3 +203,52 @@
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   }
 }
+
+/* Correction pour la barre d'infos (ticker) sur iOS */
+@supports (-webkit-touch-callout: none) {
+  /* Ajuster la position du ticker par rapport à la barre de navigation */
+  .news-ticker, .bottom-bar, .ticker {
+    position: fixed;
+    bottom: calc(var(--safe-area-bottom) + var(--bottom-nav-height) + 5px);
+    left: 0;
+    right: 0;
+    z-index: 990; /* Valeur réduite pour être sous le panneau de fond d'écran */
+    height: 30px;
+  }
+
+  /* S'assurer que la barre de navigation reste au-dessus du ticker */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding-bottom: var(--safe-area-bottom);
+    height: var(--bottom-nav-height);
+    z-index: 995; /* Valeur intermédiaire, au-dessus du ticker mais sous le panneau de fond */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: var(--background-color); /* Assurer un fond opaque */
+  }
+
+  /* Ajuster l'espace en bas de la page pour éviter que le contenu soit caché */
+  main, #tileContainer, .main-content, .tile-container {
+    margin-top: 70px;
+    padding-bottom: calc(var(--safe-area-bottom) + var(--bottom-nav-height) + 40px); /* +40px pour le ticker */
+    padding-left: calc(var(--safe-area-left) + 5px);
+    padding-right: calc(var(--safe-area-right) + 5px);
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* S'assurer que les panneaux comme le sélecteur de fond passent par-dessus tout */
+  .bg-selector-panel {
+    z-index: 9999 !important;
+  }
+
+  .bg-selector-panel-content, 
+  .floating-close-btn,
+  .reset-bg-btn {
+    z-index: 10000 !important;
+  }
+}
