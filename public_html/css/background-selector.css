@@ -370,3 +370,39 @@ body.bg-gradient-duo-red-blue {
 .bg-selector-panel.open * {
     z-index: 9999 !important;
 }
+
+/* Bouton flottant de fermeture au bas du panneau */
+.floating-close-btn {
+    position: fixed;
+    bottom: 5px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    border: none;
+    cursor: pointer;
+    z-index: 10005 !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: scale(0.8);
+    pointer-events: none;
+}
+
+.bg-selector-panel.open .floating-close-btn {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}
+
+.floating-close-btn:hover {
+    background: rgba(0, 0, 0, 0.5);
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}

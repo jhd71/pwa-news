@@ -227,6 +227,9 @@ class BackgroundSelector {
             </div>
             
             <button class="reset-bg-btn" id="resetBgBtn">Réinitialiser le fond</button>
+            
+            <!-- Bouton flottant de fermeture -->
+            <button class="floating-close-btn" id="floatingCloseBtn">×</button>
         </div>
     `;
     
@@ -255,6 +258,14 @@ class BackgroundSelector {
             });
         }
         
+		// Ajouter l'écouteur pour le bouton flottant
+    const floatingCloseBtn = document.getElementById('floatingCloseBtn');
+    if (floatingCloseBtn) {
+        floatingCloseBtn.addEventListener('click', () => {
+            this.closePanel();
+        });
+    }
+	
         const resetBtn = document.getElementById('resetBgBtn');
         if (resetBtn) {
             resetBtn.addEventListener('click', () => {
