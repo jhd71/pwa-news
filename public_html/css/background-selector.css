@@ -52,6 +52,26 @@ body.bg-solid-amber {
     background-color: #FFD54F !important;
 }
 
+body.bg-solid-purple {
+    --bg-image: none;
+    background-color: #9C27B0 !important;
+}
+
+body.bg-solid-pink {
+    --bg-image: none;
+    background-color: #EC407A !important;
+}
+
+body.bg-solid-deep-orange {
+    --bg-image: none;
+    background-color: #FF5722 !important;
+}
+
+body.bg-solid-lime {
+    --bg-image: none;
+    background-color: #CDDC39 !important;
+}
+
 /* Classes pour les dégradés classiques */
 body.bg-gradient-violet {
     --bg-image: linear-gradient(135deg, #9575CD, #7E57C2, #5E35B1);
@@ -94,6 +114,39 @@ body.bg-gradient-cherry {
     --bg-image: linear-gradient(135deg, #F8BBD0, #F06292, #D81B60);
 }
 
+body.bg-gradient-midnight {
+    --bg-image: linear-gradient(135deg, #131862, #2D31FA, #6667AB);
+}
+
+body.bg-gradient-autumn {
+    --bg-image: linear-gradient(135deg, #F57F17, #FF8F00, #FFB300);
+}
+
+body.bg-gradient-spring {
+    --bg-image: linear-gradient(135deg, #8BC34A, #CDDC39, #FFC107);
+}
+
+body.bg-gradient-winter {
+    --bg-image: linear-gradient(135deg, #B3E5FC, #81D4FA, #4FC3F7);
+}
+
+/* Dégradés radiaux */
+body.bg-gradient-radial-blue {
+    --bg-image: radial-gradient(circle at center, #64B5F6, #1976D2);
+}
+
+body.bg-gradient-radial-purple {
+    --bg-image: radial-gradient(circle at center, #CE93D8, #7B1FA2);
+}
+
+body.bg-gradient-radial-green {
+    --bg-image: radial-gradient(circle at center, #A5D6A7, #2E7D32);
+}
+
+body.bg-gradient-radial-warm {
+    --bg-image: radial-gradient(circle at center, #FFCCBC, #E64A19);
+}
+
 /* Classes pour les dégradés diagonaux */
 body.bg-gradient-diagonal-blue {
     --bg-image: linear-gradient(45deg, #2196F3, #0D47A1);
@@ -109,6 +162,23 @@ body.bg-gradient-diagonal-purple {
 
 body.bg-gradient-diagonal-orange {
     --bg-image: linear-gradient(45deg, #FF9800, #E65100);
+}
+
+/* Dégradés bicolores */
+body.bg-gradient-duo-blue-green {
+    --bg-image: linear-gradient(to right, #2196F3, #4CAF50);
+}
+
+body.bg-gradient-duo-purple-pink {
+    --bg-image: linear-gradient(to right, #9C27B0, #E91E63);
+}
+
+body.bg-gradient-duo-orange-yellow {
+    --bg-image: linear-gradient(to right, #FF9800, #FFEB3B);
+}
+
+body.bg-gradient-duo-red-blue {
+    --bg-image: linear-gradient(to right, #F44336, #2196F3);
 }
 
 /* Styles pour le PANNEAU LATÉRAL au lieu du modal */
