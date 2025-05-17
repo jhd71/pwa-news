@@ -11,40 +11,42 @@
     }
   ],
   "routes": [
+  {
+  "src": "^/redirect/(.*)$",
+  "headers": {
+    "X-Robots-Tag": "noindex, nofollow"
+  },
+  "continue": true
+}
     {
       "src": "/api/([^\\.]+)$",
       "dest": "/api/$1.js"
     },
     {
-      "src": "/index$",
+      "src": "/index$|/index\\.html$",
       "status": 301,
       "headers": { "Location": "/" }
+    },
+    {
+      "src": "^/notification$",
+      "dest": "/public_html/notification.html"
+    },
+    {
+      "src": "^/mentions-legales$",
+      "dest": "/public_html/mentions-legales.html"
+    },
+    {
+      "src": "^/conditions-utilisation$",
+      "dest": "/public_html/conditions-utilisation.html"
+    },
+    {
+      "src": "^/politique-confidentialite$",
+      "dest": "/public_html/politique-confidentialite.html"
     },
     {
       "src": "^/$",
       "dest": "/public_html/index.html"
     },
-    {
-      "src": "/(.*)\\.html$",
-      "status": 301,
-      "headers": { "Location": "/$1" }
-    },
-	{
-	  "src": "^/notification$",
-	  "dest": "/public_html/notification.html"
-	},
-	{
-	  "src": "^/mentions-legales$",
-	  "dest": "/public_html/mentions-legales.html"
-	},
-	{
-	  "src": "^/conditions-utilisation$",
-	  "dest": "/public_html/conditions-utilisation.html"
-	},
-	{
-	  "src": "^/politique-confidentialite$",
-	  "dest": "/public_html/politique-confidentialite.html"
-	},
     {
       "src": "/(.*)",
       "dest": "/public_html/$1"
