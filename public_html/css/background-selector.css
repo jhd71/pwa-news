@@ -1,0 +1,288 @@
+/* Remplacement du modal par un panneau latéral */
+
+/* Fonds d'écran par défaut pour chaque thème */
+[data-theme="light"] {
+    --bg-image: none;
+}
+
+[data-theme="dark"] {
+    --bg-image: none;
+}
+
+[data-theme="rouge"] {
+    --bg-image: none;
+}
+
+[data-theme="bleuciel"] {
+    --bg-image: none;
+}
+
+/* Application de l'image de fond */
+body.has-bg-image {
+    background-image: var(--bg-image) !important;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat !important;
+}
+
+/* Classes pour les différents fonds unis */
+body.bg-solid-light-blue {
+    --bg-image: none;
+    background-color: #64B5F6 !important;
+}
+
+body.bg-solid-teal {
+    --bg-image: none;
+    background-color: #4DB6AC !important;
+}
+
+body.bg-solid-indigo {
+    --bg-image: none;
+    background-color: #5C6BC0 !important;
+}
+
+body.bg-solid-green {
+    --bg-image: none;
+    background-color: #81C784 !important;
+}
+
+body.bg-solid-amber {
+    --bg-image: none;
+    background-color: #FFD54F !important;
+}
+
+/* Classes pour les dégradés classiques */
+body.bg-gradient-violet {
+    --bg-image: linear-gradient(135deg, #9575CD, #7E57C2, #5E35B1);
+}
+
+body.bg-gradient-blue {
+    --bg-image: linear-gradient(135deg, #283593, #1a237e, #0d1257);
+}
+
+body.bg-gradient-red {
+    --bg-image: linear-gradient(135deg, #e53935, #c62828, #b71c1c);
+}
+
+body.bg-gradient-bleu-ciel {
+    --bg-image: linear-gradient(135deg, #4FC3F7, #4FB3E8, #3F97C7);
+}
+
+/* Classes pour les dégradés supplémentaires */
+body.bg-gradient-sunset {
+    --bg-image: linear-gradient(135deg, #FF9E80, #FF6E40, #FF3D00);
+}
+
+body.bg-gradient-ocean {
+    --bg-image: linear-gradient(135deg, #00BCD4, #0097A7, #006064);
+}
+
+body.bg-gradient-forest {
+    --bg-image: linear-gradient(135deg, #81C784, #4CAF50, #2E7D32);
+}
+
+body.bg-gradient-lavender {
+    --bg-image: linear-gradient(135deg, #E1BEE7, #CE93D8, #AB47BC);
+}
+
+body.bg-gradient-golden {
+    --bg-image: linear-gradient(135deg, #FFD54F, #FFC107, #FF8F00);
+}
+
+body.bg-gradient-cherry {
+    --bg-image: linear-gradient(135deg, #F8BBD0, #F06292, #D81B60);
+}
+
+/* Classes pour les dégradés diagonaux */
+body.bg-gradient-diagonal-blue {
+    --bg-image: linear-gradient(45deg, #2196F3, #0D47A1);
+}
+
+body.bg-gradient-diagonal-green {
+    --bg-image: linear-gradient(45deg, #4CAF50, #1B5E20);
+}
+
+body.bg-gradient-diagonal-purple {
+    --bg-image: linear-gradient(45deg, #9C27B0, #4A148C);
+}
+
+body.bg-gradient-diagonal-orange {
+    --bg-image: linear-gradient(45deg, #FF9800, #E65100);
+}
+
+/* Styles pour le PANNEAU LATÉRAL au lieu du modal */
+.bg-selector-panel {
+    position: fixed;
+    top: 0;
+    right: -320px; /* Hors de l'écran par défaut */
+    bottom: 0;
+    width: 320px; 
+    background-color: var(--primary-color);
+    box-shadow: -3px 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 1050;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.bg-selector-panel.open {
+    right: 0;
+}
+
+.bg-selector-panel-content {
+    padding: 15px;
+    height: 88%;
+    overflow-y: auto;
+}
+
+/* Adapter la couleur du panneau selon le thème */
+[data-theme="light"] .bg-selector-panel {
+    background: linear-gradient(145deg, #7E57C2, #9575CD);
+}
+
+[data-theme="dark"] .bg-selector-panel {
+    background: linear-gradient(145deg, #1a237e, #283593);
+}
+
+[data-theme="rouge"] .bg-selector-panel {
+    background: linear-gradient(145deg, #bc3a34, #a32f2a);
+}
+
+[data-theme="bleuciel"] .bg-selector-panel {
+    background: linear-gradient(145deg, #4FB3E8, #3F97C7);
+}
+
+.bg-selector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.bg-selector-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+}
+
+.close-bg-selector {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 24px;
+    line-height: 1;
+    padding: 0;
+}
+
+.close-bg-selector:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(1.1);
+}
+
+/* Grille des miniatures de fond */
+.backgrounds-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+.bg-thumbnail {
+    border-radius: 10px;
+    height: 80px;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 2px solid transparent;
+}
+
+.bg-thumbnail:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.bg-thumbnail-gradient {
+    width: 100%;
+    height: 100%;
+}
+
+/* Étiquette sous les miniatures */
+.bg-thumbnail-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 4px 0;
+    font-size: 12px;
+    text-align: center;
+}
+
+.bg-thumbnail.selected {
+    border: 2px solid #FFEB3B;
+    box-shadow: 0 0 10px rgba(255, 235, 59, 0.7);
+}
+
+[data-theme="rouge"] .bg-thumbnail.selected {
+    border: 2px solid #FFD230;
+    box-shadow: 0 0 10px rgba(255, 210, 48, 0.7);
+}
+
+/* Catégories de fonds */
+.bg-category {
+    margin-bottom: 25px;
+}
+
+.bg-category h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 5px;
+}
+
+/* Bouton pour réinitialiser le fond */
+.reset-bg-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto 10px;
+    transition: all 0.3s;
+    font-weight: bold;
+    font-size: 15px;
+    width: 80%;
+    max-width: 250px;
+}
+
+.reset-bg-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Supprimer toutes références aux modals et overlays */
+.bg-selector-modal, 
+.modal-backdrop {
+    display: none !important;
+}

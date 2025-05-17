@@ -93,6 +93,7 @@
 	<link rel="stylesheet" href="css/tv-tiles-fix.css">
 	<link rel="stylesheet" href="css/font-settings.css">
 	<link rel="stylesheet" href="css/theme-bleuciel.css">
+	<link rel="stylesheet" href="css/background-selector.css">
 </head>
 <body>
 <header class="app-header">
@@ -222,12 +223,6 @@
         </a>
     </div>
     <div class="menu-item">
-        <a href="https://transfert.free.fr/upload" target="_blank">
-            <span class="material-icons">upload</span>
-            Free_Transfert
-        </a>
-    </div>
-    <div class="menu-item">
         <a href="mailto:contact@actuetmedia.fr">
             <span class="material-icons">email</span>
             Contact
@@ -258,6 +253,12 @@
             <span>Installer l'application</span>
         </button>
     </div>
+	<a href="#" id="bgSelectorBtn" class="menu-link" style="display: flex; align-items: center; text-decoration: none; color: white; padding: 12px 30px;">
+    <span class="material-icons" style="margin-right: 1px; width: 24px; text-align: center; display: inline-flex; justify-content: center;">
+        wallpaper
+    </span>
+    <span>Fond d'écran</span>
+</a>
     <div class="menu-item qr-code-container">
         <h4>Scannez notre QR code</h4>
         <img src="images/qrcode.png" alt="QR Code" class="sidebar-qr-code">
@@ -545,5 +546,6 @@
         </div>
     </div>
 </div>
+<script src="js/background-selector.js"></script>
 </body>
 </html>
