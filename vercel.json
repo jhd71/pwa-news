@@ -11,13 +11,13 @@
     }
   ],
   "routes": [
-  {
-  "src": "^/redirect/(.*)$",
-  "headers": {
-    "X-Robots-Tag": "noindex, nofollow"
-  },
-  "continue": true
-}
+    {
+      "src": "^/redirect/(.*)$",
+      "headers": {
+        "X-Robots-Tag": "noindex, nofollow"
+      },
+      "continue": true
+    },
     {
       "src": "/api/([^\\.]+)$",
       "dest": "/api/$1.js"
