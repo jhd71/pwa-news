@@ -115,12 +115,12 @@ body.bg-gradient-diagonal-orange {
 .bg-selector-panel {
     position: fixed;
     top: 0;
-    right: -320px; /* Hors de l'écran par défaut */
+    right: -320px;
     bottom: 0;
     width: 320px; 
     background-color: var(--primary-color);
     box-shadow: -3px 0 10px rgba(0, 0, 0, 0.2);
-    z-index: 1050;
+    z-index: 9999 !important; /* Valeur très élevée avec !important pour forcer la priorité */
     transition: right 0.3s ease;
     overflow-y: auto;
     overflow-x: hidden;
@@ -130,10 +130,13 @@ body.bg-gradient-diagonal-orange {
     right: 0;
 }
 
+/* S'assurer que le contenu hérite aussi du z-index élevé */
 .bg-selector-panel-content {
-    padding: 15px;
-    height: 88%;
+    padding: 15px 10px 15px 15px;
+    height: 100%;
     overflow-y: auto;
+    position: relative;
+    z-index: 10000 !important; /* Encore plus élevé que le panneau parent */
 }
 
 /* Adapter la couleur du panneau selon le thème */
@@ -243,9 +246,11 @@ body.bg-gradient-diagonal-orange {
     box-shadow: 0 0 10px rgba(255, 210, 48, 0.7);
 }
 
-/* Catégories de fonds */
+/* Assurer que les catégories de fond héritent du z-index élevé */
 .bg-category {
     margin-bottom: 25px;
+    position: relative;
+    z-index: 10001 !important;
 }
 
 .bg-category h3 {
@@ -258,7 +263,7 @@ body.bg-gradient-diagonal-orange {
     padding-bottom: 5px;
 }
 
-/* Bouton pour réinitialiser le fond */
+/* Repositionner le bouton de réinitialisation plus haut et assurer sa visibilité */
 .reset-bg-btn {
     background: rgba(255, 255, 255, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.3);
@@ -267,22 +272,31 @@ body.bg-gradient-diagonal-orange {
     border-radius: 30px;
     cursor: pointer;
     display: block;
-    margin: 20px auto 10px;
+    margin: 20px auto 40px; /* Plus d'espace en bas */
     transition: all 0.3s;
     font-weight: bold;
     font-size: 15px;
     width: 80%;
     max-width: 250px;
+    position: relative; 
+    z-index: 10002 !important; /* Valeur encore plus élevée */
 }
 
+/* Ajouter un effet visuel fort pour le bouton quand on le survole */
 .reset-bg-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: translateY(-2px);
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 /* Supprimer toutes références aux modals et overlays */
 .bg-selector-modal, 
 .modal-backdrop {
     display: none !important;
+}
+
+/* Style pour contrer spécifiquement la barre d'infos */
+.bg-selector-panel.open, 
+.bg-selector-panel.open * {
+    z-index: 9999 !important;
 }
