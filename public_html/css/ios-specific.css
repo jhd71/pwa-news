@@ -1,254 +1,39 @@
-/* ios-simplified.css - Version optimisée et simplifiée pour iOS */
+/* ios-specific.css - Version optimisée et corrigée pour iOS */
 
-/* Variables de base avec des valeurs raisonnables */
-:root {
-  --safe-area-top: env(safe-area-inset-top, 0px);
-  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-area-left: env(safe-area-inset-left, 0px);
-  --safe-area-right: env(safe-area-inset-right, 0px);
-  
-  --header-height: 60px;
-  --bottom-nav-height: 60px;
+:root { --safe-area-top: env(safe-area-inset-top, 0px); --safe-area-bottom: env(safe-area-inset-bottom, 0px); --header-height: 60px; --bottom-nav-height: 60px; }
+
+/* Détection iOS */ @supports (-webkit-touch-callout: none) {
+
+body { padding-top: var(--safe-area-top); -webkit-overflow-scrolling: touch; overscroll-behavior-y: none; }
+
+/* En-tête optimisé */ .app-header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-height); padding-top: var(--safe-area-top); z-index: 2000; display: flex; justify-content: center; align-items: center; }
+
+.site-logo { height: 50px; max-width: 70%; object-fit: contain; margin: 0 auto; }
+
+/* Boutons Menu et Paramètres repositionnés */ .menu-button, .hamburger-menu { position: absolute; top: calc(var(--safe-area-top) + 10px); left: 15px; z-index: 2001; }
+
+.settings-button, .gear-icon { position: absolute; top: calc(var(--safe-area-top) + 10px); right: 15px; z-index: 2001; }
+
+/* Contenu principal optimisé */ main, #tileContainer, .main-content, .tile-container { position: relative; z-index: 1500; margin-top: calc(var(--header-height) + var(--safe-area-top) + 15px); padding-bottom: calc(var(--safe-area-bottom) + var(--bottom-nav-height) + 15px); padding-left: 10px; padding-right: 10px; box-sizing: border-box; }
+
+/* Barre d'infos positionnée correctement */ .news-ticker, .bottom-bar, .ticker { position: fixed; bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom)); left: 0; right: 0; height: 30px; z-index: 1400; }
+
+/* Navigation inférieure */ .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: var(--bottom-nav-height); padding-bottom: var(--safe-area-bottom); z-index: 1600; }
+
+/* Corrections générales pour la compatibilité tactile iOS */
+
+{ -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+
+
+input[type="text"], textarea, select { font-size: 16px; /* Empêcher le zoom indésirable sur les inputs */ }
+
+html, body { width: 100%; overflow-x: hidden; max-width: 100vw; }
+
 }
 
-/* Détection iOS générique */
-@supports (-webkit-touch-callout: none) {
-  /* Structure de base */
-  body {
-    padding-top: var(--safe-area-top);
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: none;
-  }
+/* Petits écrans (iPhone SE, Mini) */ @media only screen and (max-width: 375px) { .tile-container.grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); } }
 
-  /* 1. En-tête et logo */
-  .app-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: var(--header-height);
-    padding-top: var(--safe-area-top);
-    z-index: 1005;
-  }
+/* Orientation paysage */ @media screen and (orientation: landscape) { .site-logo { height: 40px; }
 
-  .site-logo, .logo-container, .site-title {
-    position: relative;
-    margin: 0 auto;
-    height: 50px;
-    width: auto;
-    max-width: 70%;
-    object-fit: contain;
-  }
+main, #tileContainer, .main-content, .tile-container { margin-top: calc(var(--header-height) + var(--safe-area-top)); } }
 
-  /* 2. Boutons et widgets */
-  .weather-mobile-btn {
-    position: absolute;
-    top: 10px;
-    left: 20%;
-    transform: translateX(-50%);
-    width: 40px;
-    height: 40px;
-  }
-
-  .quick-links-show-btn {
-    position: absolute;
-    top: 10px;
-    right: 20%;
-    transform: translateX(50%);
-    width: 40px;
-    height: 40px;
-  }
-
-  /* 3. Bouton Infos en direct */
-  .news-button {
-    position: relative;
-    margin: 15px auto;
-    min-width: 160px;
-    max-width: 180px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* 4. Menu et paramètres */
-  .menu-button, .hamburger-menu {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 1010;
-    width: 44px;
-    height: 44px;
-  }
-
-  .settings-button, .gear-icon {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 1010;
-    width: 44px;
-    height: 44px;
-  }
-
-  /* 5. Contenu principal */
-  main, #tileContainer, .main-content, .tile-container {
-    margin-top: 70px;
-    padding-bottom: calc(var(--safe-area-bottom) + 60px);
-    padding-left: calc(var(--safe-area-left) + 5px);
-    padding-right: calc(var(--safe-area-right) + 5px);
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  /* 6. Séparateurs */
-  .separator {
-    margin: 10px 0;
-    width: 100%;
-  }
-
-  .separator:first-of-type {
-    margin-top: 20px;
-  }
-
-  /* 7. Tuiles */
-  .tile-container.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 8px;
-  }
-
-  .tile {
-    min-height: 40px;
-    margin-bottom: 8px;
-  }
-
-  /* 8. Barre d'infos (ticker) */
-  .news-ticker, .bottom-bar, .ticker {
-    position: fixed;
-    bottom: calc(var(--safe-area-bottom) + var(--bottom-nav-height));
-    left: 0;
-    right: 0;
-    z-index: 998;
-    height: 30px;
-  }
-
-  /* 9. Navigation du bas */
-  .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding-bottom: var(--safe-area-bottom);
-    height: var(--bottom-nav-height);
-    z-index: 999;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-  }
-
-  /* 10. Support tactile amélioré */
-  * {
-    -webkit-overflow-scrolling: touch;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  input, button, .tile, .nav-item {
-    touch-action: manipulation;
-  }
-
-  /* 11. Empêcher les zooms non désirés sur les inputs */
-  input[type="text"], textarea, select {
-    font-size: 16px;
-  }
-
-  /* 12. Fixes pour le positionnement des panneaux */
-  .settings-menu, .sidebar, .chat-container {
-    position: fixed;
-    z-index: 1000;
-    height: calc(100vh - var(--header-height) - var(--safe-area-top) - var(--safe-area-bottom));
-    padding-bottom: var(--safe-area-bottom);
-  }
-
-  /* Fix pour prévenir les débordements horizontaux */
-  html, body {
-    width: 100%;
-    max-width: 100vw;
-    overflow-x: hidden;
-  }
-}
-
-/* Optimisations pour les petits écrans iPhone */
-@media only screen and (max-width: 375px) {
-  .tile-container.grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  }
-  
-  .news-button {
-    min-width: 140px;
-    font-size: 13px;
-  }
-}
-
-/* Optimisations pour l'orientation paysage */
-@media screen and (orientation: landscape) {
-  .site-logo, .logo-container, .site-title {
-    height: 40px;
-  }
-  
-  main, #tileContainer, .main-content, .tile-container {
-    margin-top: 50px;
-  }
-  
-  .tile-container.grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  }
-}
-
-/* Correction pour la barre d'infos (ticker) sur iOS */
-@supports (-webkit-touch-callout: none) {
-  /* Ajuster la position du ticker par rapport à la barre de navigation */
-  .news-ticker, .bottom-bar, .ticker {
-    position: fixed;
-    bottom: calc(var(--safe-area-bottom) + var(--bottom-nav-height) + 5px);
-    left: 0;
-    right: 0;
-    z-index: 990; /* Valeur réduite pour être sous le panneau de fond d'écran */
-    height: 30px;
-  }
-
-  /* S'assurer que la barre de navigation reste au-dessus du ticker */
-  .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding-bottom: var(--safe-area-bottom);
-    height: var(--bottom-nav-height);
-    z-index: 995; /* Valeur intermédiaire, au-dessus du ticker mais sous le panneau de fond */
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    background-color: var(--background-color); /* Assurer un fond opaque */
-  }
-
-  /* Ajuster l'espace en bas de la page pour éviter que le contenu soit caché */
-  main, #tileContainer, .main-content, .tile-container {
-    margin-top: 70px;
-    padding-bottom: calc(var(--safe-area-bottom) + var(--bottom-nav-height) + 40px); /* +40px pour le ticker */
-    padding-left: calc(var(--safe-area-left) + 5px);
-    padding-right: calc(var(--safe-area-right) + 5px);
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  /* S'assurer que les panneaux comme le sélecteur de fond passent par-dessus tout */
-  .bg-selector-panel {
-    z-index: 9999 !important;
-  }
-
-  .bg-selector-panel-content, 
-  .floating-close-btn,
-  .reset-bg-btn {
-    z-index: 10000 !important;
-  }
-}
