@@ -93,7 +93,7 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: var(--header-height);
+    height: 55px;
     background-color: var(--primary-color);
     color: white;
     display: flex;
