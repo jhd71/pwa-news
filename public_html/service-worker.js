@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v8';
+const CACHE_NAME = 'infos-pwa-v9';
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -6,41 +6,47 @@ const STATIC_RESOURCES = [
     '/index.html',
     
     // Feuilles de style CSS
-    '/css/styles.css',
-    '/css/chat-styles.css',
-    '/css/news-panel.css',
-    '/css/chat-ban.css',
-    '/css/widgets.css',
-    '/css/settings-styles.css',
-    '/css/ios-specific.css',
-    '/css/survey-styles.css',
-    '/css/tile-enhancements.css',
-	
-    // Scripts JavaScript
-    '/js/app.js',
-	'/js/app-initializer.js',  // Nouveau fichier que vous avez créé
-    '/js/chatManager.js',
-    '/js/chat-keyboard-fix.js',
-    '/js/content.js',
-    '/js/ios-install.js',
-    '/js/ios-chat-fix.js',
-    '/js/newsPanel.js',
-    '/js/newsTickerManager.js',
-    '/js/notification-manager.js',
-    '/js/quick-links.js',
-    '/js/ban-check.js',
-    '/js/ban-manager.js',       // Nouveau fichier que vous avez créé
-    '/js/settingsManager.js',
-    '/js/sounds.js',
-    '/js/supabase-client.js',   // Nouveau fichier que vous avez créé
-    '/js/tablet-fixes.js',
-    '/js/utils.js',
-    '/js/theme-manager.js',
-    '/js/weather-widget.js',
-    '/js/survey-manager.js',
-    '/js/news-manager.js',      // Vous l'avez peut-être ajouté récemment
-    '/js/welcome-manager.js',   // Si vous l'avez créé
-    '/js/donation.js',          // Si vous l'avez créé
+'/css/styles.css',
+'/css/chat-styles.css',
+'/css/news-panel.css',
+'/css/chat-ban.css',
+'/css/widgets.css',
+'/css/settings-styles.css',
+'/css/ios-specific.css',
+'/css/survey-styles.css',
+'/css/theme-bleuciel.css',
+'/css/tv-tiles-fix.css',
+'/css/background-selector.css',
+'/css/font-settings.css',
+'/css/tile-enhancements.css',
+
+// Scripts JavaScript
+'/js/app.js',
+'/js/app-initializer.js',
+'/js/background-selector.js',
+'/js/ban-check.js',
+'/js/ban-manager.js',
+'/js/chat-keyboard-fix.js',
+'/js/chatManager.js',
+'/js/content.js',
+'/js/donation.js',
+'/js/ios-chat-fix.js',
+'/js/ios-detector.js',
+'/js/ios-install.js',
+'/js/news-manager.js',
+'/js/newsPanel.js',
+'/js/newsTickerManager.js',
+'/js/notification-manager.js',
+'/js/quick-links.js',
+'/js/settingsManager.js',
+'/js/sounds.js',
+'/js/supabase-client.js',
+'/js/survey-manager.js',
+'/js/tablet-fixes.js',
+'/js/theme-manager.js',
+'/js/utils.js',
+'/js/weather-widget.js',
+'/js/welcome-manager.js'
     
     // Fichiers de configuration
     '/manifest.json',
