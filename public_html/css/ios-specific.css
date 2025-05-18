@@ -1,23 +1,29 @@
-/* ios-specific.css - Version optimisée pour iPhone 15 Pro et autres appareils iOS */
+/* ios-specific.css - Version corrigée pour iPhone uniquement */
 
+/* Variables globales par défaut (ne pas modifier celles-ci) */
 :root {
-  --safe-area-top: env(safe-area-inset-top, 0px);
-  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-area-left: env(safe-area-inset-left, 0px);
-  --safe-area-right: env(safe-area-inset-right, 0px);
-  --header-height: 55px; /* Augmenté pour plus d'espace */
-  --bottom-nav-height: 60px;
+  /* Ces variables doivent être vides ou correspondre à celles de votre CSS principal */
 }
 
-/* Détection iOS */
+/* Variables et styles spécifiques à iOS - tout est à l'intérieur du bloc @supports */
 @supports (-webkit-touch-callout: none) {
+  /* Redéfinition des variables pour iOS uniquement */
+  :root {
+    --safe-area-top: env(safe-area-inset-top, 0px);
+    --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-area-left: env(safe-area-inset-left, 0px);
+    --safe-area-right: env(safe-area-inset-right, 0px);
+    --header-height: 70px;
+    --bottom-nav-height: 65px;
+  }
+
   body {
     padding-top: var(--safe-area-top);
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: none;
   }
 
-  /* En-tête optimisé */
+  /* Tous les autres styles pour iOS */
   .app-header {
     position: fixed;
     top: 0;
@@ -27,22 +33,22 @@
     padding-top: var(--safe-area-top);
     z-index: 2000;
     display: flex;
-    justify-content: flex-start; /* Aligné à gauche */
+    justify-content: center;
     align-items: center;
   }
 
   .site-logo, .site-title img {
-    height: 40px; /* Taille réduite */
-    max-width: 65%;
+    height: 45px;
+    max-width: 70%;
     object-fit: contain;
-    margin-left: 75px; /* Décalé à droite pour laisser de la place aux boutons */
-    margin-right: auto;
+    margin: 0 auto;
+    margin-top: 3px;
   }
 
-  /* Boutons Menu et Paramètres repositionnés et abaissés */
+  /* Boutons Menu et Paramètres repositionnés */
   .menu-button, .hamburger-menu {
-    position: absolute;
-    top: calc(var(--safe-area-top) + 20px); /* Plus bas */
+    position: fixed !important; /* Fixed au lieu de absolute */
+    top: calc(var(--safe-area-top) + 15px);
     left: 15px;
     z-index: 2001;
     width: 44px;
@@ -53,8 +59,8 @@
   }
 
   .settings-button, .gear-icon {
-    position: absolute;
-    top: calc(var(--safe-area-top) + 20px); /* Plus bas */
+    position: fixed !important; /* Fixed au lieu de absolute */
+    top: calc(var(--safe-area-top) + 15px);
     right: 15px;
     z-index: 2001;
     width: 44px;
@@ -64,33 +70,43 @@
     justify-content: center;
   }
 
-  /* Bouton d'infos repositionné */
-  .news-button {
-    margin-top: 10px; /* Réduit l'espace pour ne pas trop baisser le premier séparateur */
-    margin-bottom: 10px;
+  /* Bouton Infos en direct repositionné */
+  .button-group {
+    margin-top: 15px !important;
   }
 
-  /* Boutons widgets repositionnés */
-  .weather-show-btn, .quick-links-show-btn {
-    position: fixed;
-    bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom) + 50px); /* Plus bas, au-dessus de la nav */
+  .news-button {
+    margin-top: 5px;
+    margin-bottom: 10px;
+    position: relative;
     z-index: 1500;
   }
 
+  /* Widgets repositionnés correctement */
   .weather-show-btn {
-    left: 15px;
+    position: fixed !important;
+    top: calc(var(--safe-area-top) + 80px) !important;
+    left: 15px !important;
+    z-index: 1500 !important;
+    width: 44px !important;
+    height: 44px !important;
   }
 
   .quick-links-show-btn {
-    right: 15px;
+    position: fixed !important;
+    top: calc(var(--safe-area-top) + 80px) !important;
+    right: 15px !important;
+    z-index: 1500 !important;
+    width: 44px !important;
+    height: 44px !important;
   }
 
   /* Contenu principal optimisé */
   main, #tileContainer, .main-content, .tile-container {
     position: relative;
-    z-index: 1500;
-    margin-top: calc(var(--header-height) + 5px); /* Réduit la marge supérieure */
-    padding-bottom: calc(var(--safe-area-bottom) + var(--bottom-nav-height) + 15px);
+    z-index: 1000;
+    margin-top: calc(var(--header-height) + 5px);
+    padding-bottom: calc(var(--safe-area-bottom) + var(--bottom-nav-height) + 45px); /* +45px pour éviter que le contenu soit coupé */
     padding-left: 10px;
     padding-right: 10px;
     box-sizing: border-box;
@@ -99,11 +115,12 @@
   /* Barre d'infos positionnée correctement */
   .news-ticker, .bottom-bar, .ticker {
     position: fixed;
-    bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom));
+    bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom) - 2px); /* -2px pour la coller à la barre de navigation */
     left: 0;
     right: 0;
     height: 30px;
     z-index: 1400;
+    background-color: rgba(0, 0, 0, 0.8); /* S'assurer qu'elle est bien visible */
   }
 
   /* Navigation inférieure */
@@ -115,23 +132,31 @@
     height: var(--bottom-nav-height);
     padding-bottom: var(--safe-area-bottom);
     z-index: 1600;
+    background-color: var(--background-color, #fff); /* Assurer un fond opaque */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
   }
 
-  /* Ajustements pour le séparateur et les titres de catégorie */
-  .separator:first-of-type {
-    margin-top: 10px; /* Ne pas trop descendre */
+  /* S'assurer que les boutons de la barre de navigation sont entièrement visibles */
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    padding-top: 3px;
+    padding-bottom: 3px;
   }
 
-  /* Styles pour le sélecteur de fond */
-  .bg-selector-panel {
-    z-index: 9999 !important;
-    padding-top: calc(var(--safe-area-top) + 10px);
+  .nav-item .material-icons {
+    font-size: 24px;
+    margin-bottom: 2px;
   }
 
-  .bg-selector-panel-content, 
-  .floating-close-btn,
-  .reset-bg-btn {
-    z-index: 10000 !important;
+  .nav-item span:not(.material-icons) {
+    font-size: 12px;
+    line-height: 1;
   }
 
   /* Corrections générales pour la compatibilité tactile iOS */
@@ -158,50 +183,54 @@
       grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     }
     
-    .site-logo, .site-title img {
-      height: 35px;
-      margin-left: 65px;
+    .nav-item span:not(.material-icons) {
+      font-size: 10px;
     }
   }
   
   /* Orientation paysage */
   @media screen and (orientation: landscape) {
     .site-logo, .site-title img {
-      height: 35px;
+      height: 40px;
     }
     
-    main, #tileContainer, .main-content, .tile-container {
-      margin-top: calc(var(--header-height) - 10px);
+    .weather-show-btn, .quick-links-show-btn {
+      top: calc(var(--safe-area-top) + 60px) !important;
+    }
+    
+    .news-ticker {
+      bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom) - 3px);
     }
   }
   
-  /* Ajustements spécifiques pour iPhone 14/15 Pro et Pro Max qui ont des problèmes de positionnement */
+  /* Correction pour iPhone 14/15 Pro et Pro Max */
   @media only screen and (min-width: 390px) and (device-width: 390px), 
          only screen and (min-width: 428px) and (device-width: 428px),
          only screen and (min-width: 430px) and (device-width: 430px) {
     
-    /* En-tête encore plus ajusté pour iPhone 15 Pro */
     .app-header {
       height: calc(var(--header-height) + 10px);
     }
     
     .menu-button, .hamburger-menu {
-      top: calc(var(--safe-area-top) + 25px); /* Encore plus bas */
+      top: calc(var(--safe-area-top) + 20px);
     }
     
     .settings-button, .gear-icon {
-      top: calc(var(--safe-area-top) + 25px); /* Encore plus bas */
+      top: calc(var(--safe-area-top) + 20px);
     }
     
-    .site-logo, .site-title img {
-      height: 40px;
-      margin-left: 80px; /* Plus de marge à gauche */
-      margin-top: 5px; /* Un peu plus bas */
-    }
-    
-    /* Boutons widgets encore plus bas pour ces appareils */
     .weather-show-btn, .quick-links-show-btn {
-      bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom) + 60px);
+      top: calc(var(--safe-area-top) + 90px) !important;
     }
+    
+    .bottom-nav {
+      height: calc(var(--bottom-nav-height) + 5px);
+    }
+  }
+
+  /* Correction pour l'écart entre news-ticker et bottom-nav */
+  .ticker-wrapper {
+    padding-top: 5px;
   }
 }
