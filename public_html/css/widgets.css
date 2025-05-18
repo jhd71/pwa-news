@@ -640,9 +640,9 @@
     }
     
     .weather-day img[src*="images/weather-gifs"] {
-     width: 45px !important;
-     height: 45px !important;
-     top: 40px !important;
+     width: 60px !important;
+     height: 60px !important;
+     top: 45px !important;
     }
   }
   
