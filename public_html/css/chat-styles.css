@@ -1586,9 +1586,9 @@ body.long-press-active .message-options {
   /* Plein écran automatique sur mobile */
   .chat-container {
     /* Position verticale */
-    top: 60px !important; /* Juste sous la bannière du haut */
-    height: calc(100vh - 130px) !important; /* Hauteur totale moins espaces haut et bas */
-    max-height: calc(100vh - 130px) !important;
+    top: 55px !important; /* Juste sous la bannière du haut */
+    height: calc(102vh - 130px) !important; /* Hauteur totale moins espaces haut et bas */
+    max-height: calc(110vh - 130px) !important;
     bottom: 70px !important; /* Juste au-dessus de la barre de navigation */
     
     /* Position horizontale - pleine largeur */
@@ -2436,7 +2436,7 @@ body.long-press-active .message-options {
 .chat-close-btn,
 .chat-header > button:last-child {
     position: absolute !important;
-    top: 5px !important;
+    top: 10px !important;
     right: 5px !important;
     z-index: 10 !important; /* Au-dessus des autres éléments */
 }
