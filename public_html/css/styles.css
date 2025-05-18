@@ -149,7 +149,7 @@ body {
 /* Position spécifique pour le bouton paramètres */
 .settings-button {
     position: fixed;
-    top: 8px;
+    top: 3px;
     right: 8px;
     z-index: 1002;
     padding: 10px;
