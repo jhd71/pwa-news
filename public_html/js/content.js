@@ -219,50 +219,64 @@ setupTVIcons() {
         this.tileContainer.appendChild(separator0);
         
         // Actualités locales
-        const newsDefaultSites = [
-            {
-                title: 'Montceau News',
-                url: 'https://montceau-news.com/',
-                mobileUrl: 'https://montceau-news.com/',
-                isDefault: true,
-                category: 'news'
-            },
-            {
-                title: 'L\'Informateur de Bourgogne',
-                url: 'https://linformateurdebourgogne.com/',
-                mobileUrl: 'https://linformateurdebourgogne.com/',
-                isDefault: true,
-                category: 'news'
-            },
-            {
-                title: 'Le JSL',
-                url: 'https://www.lejsl.com/edition-montceau-les-mines',
-                mobileUrl: 'https://www.lejsl.com/edition-montceau-les-mines',
-                isDefault: true,
-                category: 'news'
-            },
-            {
-                title: 'Creusot Infos',
-                url: 'https://www.creusot-infos.com',
-                mobileUrl: 'https://www.creusot-infos.com/?m=1',
-                isDefault: true,
-                category: 'news'
-            },
-            {
-                title: 'Faits Divers Saône-et-Loire',
-                url: 'https://faitsdivers365.fr/bourgogne-franche-comte/saone-et-loire/',
-                mobileUrl: 'https://faitsdivers365.fr/bourgogne-franche-comte/saone-et-loire/',
-                isDefault: true,
-                category: 'news'
-            },
-            {
-                title: 'Mâcon-Infos',
-                url: 'https://macon-infos.com/fr/faits-divers/macon',
-                mobileUrl: 'https://macon-infos.com/fr/faits-divers/macon',
-                isDefault: true,
-                category: 'news'
-            }
-        ];
+        const newsDefaultSites = [			
+  {
+    title: '📰 Montceau News',
+    url: 'https://montceau-news.com/',
+    mobileUrl: 'https://montceau-news.com/',
+    isDefault: true,
+    category: 'news'
+  },
+  {
+    title: '🗞️ L\'Informateur de Bourgogne',
+    url: 'https://linformateurdebourgogne.com/',
+    mobileUrl: 'https://linformateurdebourgogne.com/',
+    isDefault: true,
+    category: 'news'
+  },
+  {
+    title: '📰 Le JSL',
+    url: 'https://www.lejsl.com/edition-montceau-les-mines',
+    mobileUrl: 'https://www.lejsl.com/edition-montceau-les-mines',
+    isDefault: true,
+    category: 'news'
+  },
+  {
+    title: '🗞️ Creusot Infos',
+    url: 'https://www.creusot-infos.com',
+    mobileUrl: 'https://www.creusot-infos.com/?m=1',
+    isDefault: true,
+    category: 'news'
+  },
+  {
+    title: '🚨 Faits Divers Saône-et-Loire',
+    url: 'https://faitsdivers365.fr/bourgogne-franche-comte/saone-et-loire/',
+    mobileUrl: 'https://faitsdivers365.fr/bourgogne-franche-comte/saone-et-loire/',
+    isDefault: true,
+    category: 'news'
+  },
+  {
+    title: '🗞️ Mâcon-Infos',
+    url: 'https://macon-infos.com/fr/faits-divers/macon',
+    mobileUrl: 'https://macon-infos.com/fr/faits-divers/macon',
+    isDefault: true,
+    category: 'news'
+  },
+  {
+    title: '✉️ Proposer une actu (mail)',
+    url: 'mailto:contact@actuetmedia.fr',
+    mobileUrl: 'mailto:contact@actuetmedia.fr',
+    isDefault: true,
+    category: 'news'
+  },
+  {
+    title: '💬 Proposer via Messenger',
+    url: 'https://m.me/actuetmedia',
+    mobileUrl: 'https://m.me/actuetmedia',
+    isDefault: true,
+    category: 'news'
+  }
+];
 
         // Créer les tuiles d'actualités
         newsDefaultSites.forEach(site => {
@@ -277,29 +291,29 @@ setupTVIcons() {
         this.tileContainer.appendChild(separator1);
 
         // Section Radio
-        const radioSites = [
-            {
-                title: 'France Bleu<br>Bourgogne',
-                url: 'https://www.radio-en-ligne.fr/france-bleu-bourgogne',
-                mobileUrl: 'https://www.radio-en-ligne.fr/france-bleu-bourgogne',
-                isDefault: true,
-                category: 'radio'
-            },
-			{
-                title: 'Radios de Bourgogne',
-                url: 'https://ecouterradioenligne.com/region/bourgogne/#prevert-chalon',
-                mobileUrl: 'https://ecouterradioenligne.com/region/bourgogne/#prevert-chalon',
-                isDefault: true,
-                category: 'radio'
-            },
-            {
-                title: 'Radio Sans Pub',
-                url: 'https://www.radio-en-ligne.fr/radio-sans-pub/',
-                mobileUrl: 'https://www.radio-en-ligne.fr/radio-sans-pub/',
-                isDefault: true,
-                category: 'radio'
-            }
-        ];
+        const radioSites = [		
+  {
+    title: '📻 France Bleu<br>Bourgogne',
+    url: 'https://www.radio-en-ligne.fr/france-bleu-bourgogne',
+    mobileUrl: 'https://www.radio-en-ligne.fr/france-bleu-bourgogne',
+    isDefault: true,
+    category: 'radio'
+  },
+  {
+    title: '🎧 Radios de Bourgogne',
+    url: 'https://ecouterradioenligne.com/region/bourgogne/#prevert-chalon',
+    mobileUrl: 'https://ecouterradioenligne.com/region/bourgogne/#prevert-chalon',
+    isDefault: true,
+    category: 'radio'
+  },
+  {
+    title: '🚫 Radio Sans Pub',
+    url: 'https://www.radio-en-ligne.fr/radio-sans-pub/',
+    mobileUrl: 'https://www.radio-en-ligne.fr/radio-sans-pub/',
+    isDefault: true,
+    category: 'radio'
+  }
+];
 
         radioSites.forEach(site => {
             const tile = this.createTile(site);
@@ -361,57 +375,56 @@ const tvSites = [
 
         // Section Sports
         const sportsSites = [
-            {
-                title: 'Foot Ligue 1',
-                url: 'https://ligue1.fr/fr/competitions/ligue1mcdonalds?tab=news&ranking=scorers',
-                mobileUrl: 'https://ligue1.fr/fr/competitions/ligue1mcdonalds?tab=news&ranking=scorers',
-                isDefault: true,
-                category: 'sports'
-            },
-            {
-                title: 'Foot Ligue 2',
-                url: 'https://ligue1.fr/fr/competitions/ligue2bkt?tab=news',
-                mobileUrl: 'https://ligue1.fr/fr/competitions/ligue2bkt?tab=news',
-                isDefault: true,
-                category: 'sports'
-            },
-            {
-                title: 'Foot<br>FC Montceau-Bourgogne',
-                url: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
-                mobileUrl: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
-                isDefault: true,
-                category: 'sports'
-            },
-            {
-                title: 'Foot-Live',
-                url: 'https://www.footmercato.net/live/',
-                mobileUrl: 'https://www.footmercato.net/live/',
-                isDefault: true,
-                category: 'sports'
-                // isLive supprimé pour Foot-Live
-            },
-            {
-                title: 'ELAN<br>Chalon Basket',
-                url: 'https://scorenco.com/basket/clubs/elan-chalon-basket-2m40/1-4xe3',
-                mobileUrl: 'https://www.elanchalon.com/',
-                isDefault: true,
-                category: 'sports'
-            },
-            {
-                title: 'Rugby<br>RC Montceau Bourgogne',
-                url: 'https://scorenco.com/rugby/clubs/rc-montceau-bourgogne-2m2t',
-                mobileUrl: 'https://scorenco.com/rugby/clubs/rc-montceau-bourgogne-2m2t',
-                isDefault: true,
-                category: 'sports'
-            },
-			{
-                title: 'Cyclisme',
-                url: 'https://rmcsport.bfmtv.com/cyclisme/',
-                mobileUrl: 'https://rmcsport.bfmtv.com/cyclisme/',
-                isDefault: true,
-                category: 'sports'
-            }
-        ];
+  {
+    title: '⚽ Foot Ligue 1',
+    url: 'https://ligue1.fr/fr/competitions/ligue1mcdonalds?tab=news&ranking=scorers',
+    mobileUrl: 'https://ligue1.fr/fr/competitions/ligue1mcdonalds?tab=news&ranking=scorers',
+    isDefault: true,
+    category: 'sports'
+  },
+  {
+    title: '⚽ Foot Ligue 2',
+    url: 'https://ligue1.fr/fr/competitions/ligue2bkt?tab=news',
+    mobileUrl: 'https://ligue1.fr/fr/competitions/ligue2bkt?tab=news',
+    isDefault: true,
+    category: 'sports'
+  },
+  {
+    title: '🏟️ Foot<br>FC Montceau-Bourgogne',
+    url: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
+    mobileUrl: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
+    isDefault: true,
+    category: 'sports'
+  },
+  {
+    title: '🆚 Foot-Live',
+    url: 'https://www.footmercato.net/live/',
+    mobileUrl: 'https://www.footmercato.net/live/',
+    isDefault: true,
+    category: 'sports'
+  },
+  {
+    title: '🏀 ELAN<br>Chalon Basket',
+    url: 'https://scorenco.com/basket/clubs/elan-chalon-basket-2m40/1-4xe3',
+    mobileUrl: 'https://www.elanchalon.com/',
+    isDefault: true,
+    category: 'sports'
+  },
+  {
+    title: '🏉 Rugby<br>RC Montceau Bourgogne',
+    url: 'https://scorenco.com/rugby/clubs/rc-montceau-bourgogne-2m2t',
+    mobileUrl: 'https://scorenco.com/rugby/clubs/rc-montceau-bourgogne-2m2t',
+    isDefault: true,
+    category: 'sports'
+  },
+  {
+    title: '🚴 Cyclisme',
+    url: 'https://rmcsport.bfmtv.com/cyclisme/',
+    mobileUrl: 'https://rmcsport.bfmtv.com/cyclisme/',
+    isDefault: true,
+    category: 'sports'
+  }
+];
 
         sportsSites.forEach(site => {
             const tile = this.createTile(site);
@@ -426,28 +439,28 @@ const tvSites = [
 
         // Section Réseaux Sociaux
         const socialSites = [
-            {
-                title: 'YouTube',
-                url: 'https://www.youtube.com/feed/trending',
-                mobileUrl: 'https://www.youtube.com/feed/trending',
-                isDefault: true,
-                category: 'social'
-            },
-            {
-                title: 'Twitch',
-                url: 'https://www.twitch.tv/',
-                mobileUrl: 'https://www.twitch.tv/',
-                isDefault: true,
-                category: 'social'
-            },
-            {
-                title: 'TikTok',
-                url: 'https://www.tiktok.com/discover?lang=fr',
-                mobileUrl: 'https://www.tiktok.com/?lang=fr',
-                isDefault: true,
-                category: 'social'
-            }
-        ];
+  {
+    title: '▶️ YouTube',
+    url: 'https://www.youtube.com/feed/trending',
+    mobileUrl: 'https://www.youtube.com/feed/trending',
+    isDefault: true,
+    category: 'social'
+  },
+  {
+    title: '🟣 Twitch',
+    url: 'https://www.twitch.tv/',
+    mobileUrl: 'https://www.twitch.tv/',
+    isDefault: true,
+    category: 'social'
+  },
+  {
+    title: '🎵 TikTok',
+    url: 'https://www.tiktok.com/discover?lang=fr',
+    mobileUrl: 'https://www.tiktok.com/?lang=fr',
+    isDefault: true,
+    category: 'social'
+  }
+];
 
         socialSites.forEach(site => {
             const tile = this.createTile(site);
@@ -506,21 +519,24 @@ const tvSites = [
         } else if (site.title === 'TikTok') {
             tile.classList.add('tile-tiktok');
         }
-    } else if (site.category === 'news') {
-        if (site.title === 'Montceau News' || site.url.includes('montceau-news')) {
-            tile.classList.add('tile-montceau-news');
-        } else if (site.title === 'Le JSL' || site.url.includes('lejsl.com')) {
-            tile.classList.add('tile-jsl');
-        } else if (site.title === 'L\'Informateur de Bourgogne' || site.url.includes('informateurdebourgogne')) {
-            tile.classList.add('tile-informateur');
-        } else if (site.title === 'Creusot Infos' || site.url.includes('creusot-infos')) {
-            tile.classList.add('tile-creusot');
-        } else if (site.title === 'Faits Divers Saône-et-Loire' || site.url.includes('faitsdivers')) {
-            tile.classList.add('tile-faits-divers');
-        } else if (site.title === 'Mâcon-Infos' || site.url.includes('macon-infos')) {
-            tile.classList.add('tile-macon');
-        }
-    } else if (site.category === 'tv') {
+		} else if (site.category === 'news') {
+    if (site.title === '💬 Proposer une actu locale' || site.url.includes('contact@actuetmedia.fr')) {
+        tile.classList.add('tile-facebook-actu');
+    } else if (site.title === 'Montceau News' || site.url.includes('montceau-news')) {
+        tile.classList.add('tile-montceau-news');
+    } else if (site.title === 'Le JSL' || site.url.includes('lejsl.com')) {
+        tile.classList.add('tile-jsl');
+    } else if (site.title === 'L\'Informateur de Bourgogne' || site.url.includes('informateurdebourgogne')) {
+        tile.classList.add('tile-informateur');
+    } else if (site.title === 'Creusot Infos' || site.url.includes('creusot-infos')) {
+        tile.classList.add('tile-creusot');
+    } else if (site.title === 'Faits Divers Saône-et-Loire' || site.url.includes('faitsdivers')) {
+        tile.classList.add('tile-faits-divers');
+    } else if (site.title === 'Mâcon-Infos' || site.url.includes('macon-infos')) {
+        tile.classList.add('tile-macon');
+    }
+	}
+	else if (site.category === 'tv') {
         if (site.title === 'France 3 Bourgogne' || site.url.includes('france3')) {
             tile.classList.add('tile-france3');
         } else if (site.title === 'BFMTV' || site.url.includes('bfmtv')) {
