@@ -404,7 +404,7 @@
 }
 
 [data-theme="bleuciel"] .temperature-container {
-    background: rgba(255, 255, 255, 0.1) !important;
+    background: rgb(60 99 141) !important;
     border-radius: 8px !important;
     padding: 6px !important;
 }
