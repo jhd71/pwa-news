@@ -72,6 +72,49 @@ body.bg-solid-lime {
     background-color: #CDDC39 !important;
 }
 
+/* Fonds noirs et sombres */
+body.bg-solid-black {
+    --bg-image: none;
+    background-color: #000000 !important;
+}
+
+body.bg-solid-dark-grey {
+    --bg-image: none;
+    background-color: #212121 !important;
+}
+
+body.bg-solid-charcoal {
+    --bg-image: none;
+    background-color: #333333 !important;
+}
+
+body.bg-solid-navy {
+    --bg-image: none;
+    background-color: #0D1B2A !important;
+}
+
+/* Dégradés sombres */
+body.bg-gradient-dark-blue {
+    --bg-image: linear-gradient(135deg, #0D1B2A, #1B263B, #415A77);
+}
+
+body.bg-gradient-dark-purple {
+    --bg-image: linear-gradient(135deg, #2A0944, #3B185F, #A12568);
+}
+
+body.bg-gradient-dark-green {
+    --bg-image: linear-gradient(135deg, #14261D, #1E4D2B, #056835);
+}
+
+body.bg-gradient-night-sky {
+    --bg-image: linear-gradient(135deg, #0F172A, #1E293B, #334155);
+}
+
+/* Dégradé spécial noir profond */
+body.bg-gradient-deep-black {
+    --bg-image: linear-gradient(135deg, #000000, #0A0A0A, #1A1A1A);
+}
+
 /* Classes pour les dégradés classiques */
 body.bg-gradient-violet {
     --bg-image: linear-gradient(135deg, #9575CD, #7E57C2, #5E35B1);

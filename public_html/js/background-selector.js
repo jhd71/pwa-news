@@ -41,50 +41,66 @@ class BackgroundSelector {
             </div>
             
             <div class="bg-category">
-                <h3>Fonds unis</h3>
-                <div class="backgrounds-grid" id="solidBgs">
-                    <div class="bg-thumbnail" data-bg="none" title="Couleur par défaut du thème">
-                        <div class="bg-thumbnail-gradient" style="background-color: var(--primary-color);"></div>
-                        <div class="bg-thumbnail-label">Par défaut</div>
-                    </div>
-                    <div class="bg-thumbnail" data-bg="bg-solid-light-blue" title="Fond bleu clair">
-                        <div class="bg-thumbnail-gradient" style="background-color: #64B5F6;"></div>
-                        <div class="bg-thumbnail-label">Bleu clair</div>
-                    </div>
-                    <div class="bg-thumbnail" data-bg="bg-solid-teal" title="Fond turquoise">
-                        <div class="bg-thumbnail-gradient" style="background-color: #4DB6AC;"></div>
-                        <div class="bg-thumbnail-label">Turquoise</div>
-                    </div>
-                    <div class="bg-thumbnail" data-bg="bg-solid-indigo" title="Fond indigo">
-                        <div class="bg-thumbnail-gradient" style="background-color: #5C6BC0;"></div>
-                        <div class="bg-thumbnail-label">Indigo</div>
-                    </div>
-                    <div class="bg-thumbnail" data-bg="bg-solid-green" title="Fond vert">
-                        <div class="bg-thumbnail-gradient" style="background-color: #81C784;"></div>
-                        <div class="bg-thumbnail-label">Vert</div>
-                    </div>
-                    <div class="bg-thumbnail" data-bg="bg-solid-amber" title="Fond ambre">
-                        <div class="bg-thumbnail-gradient" style="background-color: #FFD54F;"></div>
-                        <div class="bg-thumbnail-label">Ambre</div>
-                    </div>
-                    <div class="bg-thumbnail" data-bg="bg-solid-purple" title="Fond violet">
-                        <div class="bg-thumbnail-gradient" style="background-color: #9C27B0;"></div>
-                        <div class="bg-thumbnail-label">Violet</div>
-                    </div>
-                    <div class="bg-thumbnail" data-bg="bg-solid-pink" title="Fond rose">
-                        <div class="bg-thumbnail-gradient" style="background-color: #EC407A;"></div>
-                        <div class="bg-thumbnail-label">Rose</div>
-                    </div>
-                    <div class="bg-thumbnail" data-bg="bg-solid-deep-orange" title="Fond orange profond">
-                        <div class="bg-thumbnail-gradient" style="background-color: #FF5722;"></div>
-                        <div class="bg-thumbnail-label">Orange foncé</div>
-                    </div>
-                    <div class="bg-thumbnail" data-bg="bg-solid-lime" title="Fond citron vert">
-                        <div class="bg-thumbnail-gradient" style="background-color: #CDDC39;"></div>
-                        <div class="bg-thumbnail-label">Citron vert</div>
-                    </div>
-                </div>
-            </div>
+    <h3>Fonds unis</h3>
+    <div class="backgrounds-grid" id="solidBgs">
+        <div class="bg-thumbnail" data-bg="none" title="Couleur par défaut du thème">
+            <div class="bg-thumbnail-gradient" style="background-color: var(--primary-color);"></div>
+            <div class="bg-thumbnail-label">Par défaut</div>
+        </div>
+        <div class="bg-thumbnail" data-bg="bg-solid-light-blue" title="Fond bleu clair">
+            <div class="bg-thumbnail-gradient" style="background-color: #64B5F6;"></div>
+            <div class="bg-thumbnail-label">Bleu clair</div>
+        </div>
+        <div class="bg-thumbnail" data-bg="bg-solid-teal" title="Fond turquoise">
+            <div class="bg-thumbnail-gradient" style="background-color: #4DB6AC;"></div>
+            <div class="bg-thumbnail-label">Turquoise</div>
+        </div>
+        <div class="bg-thumbnail" data-bg="bg-solid-indigo" title="Fond indigo">
+            <div class="bg-thumbnail-gradient" style="background-color: #5C6BC0;"></div>
+            <div class="bg-thumbnail-label">Indigo</div>
+        </div>
+        <div class="bg-thumbnail" data-bg="bg-solid-green" title="Fond vert">
+            <div class="bg-thumbnail-gradient" style="background-color: #81C784;"></div>
+            <div class="bg-thumbnail-label">Vert</div>
+        </div>
+        <div class="bg-thumbnail" data-bg="bg-solid-amber" title="Fond ambre">
+            <div class="bg-thumbnail-gradient" style="background-color: #FFD54F;"></div>
+            <div class="bg-thumbnail-label">Ambre</div>
+        </div>
+        <div class="bg-thumbnail" data-bg="bg-solid-purple" title="Fond violet">
+            <div class="bg-thumbnail-gradient" style="background-color: #9C27B0;"></div>
+            <div class="bg-thumbnail-label">Violet</div>
+        </div>
+        <div class="bg-thumbnail" data-bg="bg-solid-pink" title="Fond rose">
+            <div class="bg-thumbnail-gradient" style="background-color: #EC407A;"></div>
+            <div class="bg-thumbnail-label">Rose</div>
+        </div>
+        <div class="bg-thumbnail" data-bg="bg-solid-deep-orange" title="Fond orange profond">
+            <div class="bg-thumbnail-gradient" style="background-color: #FF5722;"></div>
+            <div class="bg-thumbnail-label">Orange foncé</div>
+        </div>
+        <div class="bg-thumbnail" data-bg="bg-solid-lime" title="Fond citron vert">
+            <div class="bg-thumbnail-gradient" style="background-color: #CDDC39;"></div>
+            <div class="bg-thumbnail-label">Citron vert</div>
+        </div>
+        <div class="bg-thumbnail" data-bg="bg-solid-black" title="Fond noir">
+            <div class="bg-thumbnail-gradient" style="background-color: #000000;"></div>
+            <div class="bg-thumbnail-label">Noir</div>
+        </div>
+        <div class="bg-thumbnail" data-bg="bg-solid-dark-grey" title="Fond gris foncé">
+            <div class="bg-thumbnail-gradient" style="background-color: #212121;"></div>
+            <div class="bg-thumbnail-label">Gris foncé</div>
+        </div>
+        <div class="bg-thumbnail" data-bg="bg-solid-charcoal" title="Fond anthracite">
+            <div class="bg-thumbnail-gradient" style="background-color: #333333;"></div>
+            <div class="bg-thumbnail-label">Anthracite</div>
+        </div>
+        <div class="bg-thumbnail" data-bg="bg-solid-navy" title="Fond bleu marine">
+            <div class="bg-thumbnail-gradient" style="background-color: #0D1B2A;"></div>
+            <div class="bg-thumbnail-label">Bleu marine</div>
+        </div>
+    </div>
+</div>
             
             <div class="bg-category">
                 <h3>Dégradés classiques</h3>
@@ -226,6 +242,34 @@ class BackgroundSelector {
                 </div>
             </div>
             
+			<div class="bg-category">
+    <h3>Dégradés sombres</h3>
+    <div class="backgrounds-grid" id="darkGradientBgs">
+        <div class="bg-thumbnail" data-bg="bg-gradient-dark-blue" title="Dégradé bleu sombre">
+            <div class="bg-thumbnail-gradient" style="background: linear-gradient(135deg, #0D1B2A, #1B263B, #415A77);"></div>
+            <div class="bg-thumbnail-label">Bleu nuit</div>
+        </div>
+        <div class="bg-thumbnail" data-bg="bg-gradient-dark-purple" title="Dégradé violet sombre">
+            <div class="bg-thumbnail-gradient" style="background: linear-gradient(135deg, #2A0944, #3B185F, #A12568);"></div>
+            <div class="bg-thumbnail-label">Violet nuit</div>
+        </div>
+        <div class="bg-thumbnail" data-bg="bg-gradient-dark-green" title="Dégradé vert sombre">
+            <div class="bg-thumbnail-gradient" style="background: linear-gradient(135deg, #14261D, #1E4D2B, #056835);"></div>
+            <div class="bg-thumbnail-label">Vert forêt</div>
+        </div>
+        <div class="bg-thumbnail" data-bg="bg-gradient-night-sky" title="Ciel nocturne">
+            <div class="bg-thumbnail-gradient" style="background: linear-gradient(135deg, #0F172A, #1E293B, #334155);"></div>
+            <div class="bg-thumbnail-label">Ciel nocturne</div>
+        </div>
+        <div class="bg-thumbnail" data-bg="bg-gradient-deep-black" title="Noir profond">
+            <div class="bg-thumbnail-gradient" style="background: linear-gradient(135deg, #000000, #0A0A0A, #1A1A1A);"></div>
+            <div class="bg-thumbnail-label">Noir profond</div>
+        </div>
+    </div>
+</div>
+
+<button class="reset-bg-btn" id="resetBgBtn">Réinitialiser le fond</button>
+
             <button class="reset-bg-btn" id="resetBgBtn">Réinitialiser le fond</button>
             
             <!-- Bouton flottant de fermeture -->
