@@ -270,7 +270,7 @@ class BackgroundSelector {
 
 <button class="reset-bg-btn" id="resetBgBtn">Réinitialiser le fond</button>
             
-'<!-- Bouton flottant de fermeture -->
+<!-- Bouton flottant de fermeture -->
             <button class="floating-close-btn" id="floatingCloseBtn">×</button>
         </div>
     `;
