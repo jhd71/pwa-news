@@ -293,7 +293,7 @@ setupTVIcons() {
         // Section Radio
         const radioSites = [		
   {
-    title: '📻<br> France Bleu<br>Bourgogne',
+    title: '📻 France Bleu<br>Bourgogne',
     url: 'https://www.radio-en-ligne.fr/france-bleu-bourgogne',
     mobileUrl: 'https://www.radio-en-ligne.fr/france-bleu-bourgogne',
     isDefault: true,
