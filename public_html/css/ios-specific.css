@@ -1,161 +1,279 @@
-/* Toutes les règles sont à l'intérieur du bloc @supports pour n'affecter que iOS */
+/* ios-specific.css - Version entièrement commentée et révisée pour iOS
+ * Ce fichier résout les problèmes de mise en page spécifiques à iOS
+ * Chaque section est commentée pour faciliter les modifications futures
+ */
+
+/* Isolation pour iOS uniquement - Tout le CSS est à l'intérieur de ce bloc
+ * @supports (-webkit-touch-callout: none) détecte seulement les appareils iOS
+ */
 @supports (-webkit-touch-callout: none) {
-  /* Variables iOS uniquement */
+  
+  /* ======= VARIABLES GLOBALES POUR iOS ======= */
+  /* Ces variables sont utilisées dans tout le fichier pour plus de cohérence */
   :root {
+    /* Zones de sécurité (notch, encoche, etc.) */
     --safe-area-top: env(safe-area-inset-top, 0px);
     --safe-area-bottom: env(safe-area-inset-bottom, 0px);
     --safe-area-left: env(safe-area-inset-left, 0px);
     --safe-area-right: env(safe-area-inset-right, 0px);
-    --ios-header-height: 70px;
-    --ios-bottom-nav-height: 65px;
+    
+    /* Hauteurs spécifiques à iOS */
+    --ios-header-height: 60px; /* Hauteur de la barre supérieure */
+    --ios-nav-height: 60px;    /* Hauteur de la barre de navigation inférieure */
+    
+    /* Espacements */
+    --ios-padding: 15px;
+    
+    /* Z-index pour contrôler l'ordre des éléments */
+    --z-overlay: 9000;     /* Superposition (modals, etc.) */
+    --z-top-button: 2000;  /* Boutons supérieurs (menu, paramètres) */
+    --z-header: 1900;      /* En-tête (logo) */
+    --z-widgets: 1800;     /* Widgets (météo, liens) */
+    --z-content: 1000;     /* Contenu principal */
+    --z-ticker: 1700;      /* Barre de défilement d'informations */
+    --z-navigation: 1750;  /* Barre de navigation inférieure */
   }
 
-  /* Structure de base */
+  /* ======= AJUSTEMENTS DE BASE POUR iOS ======= */
+  /* Pour éviter les problèmes de défilement et d'affichage */
   body {
-    padding-top: var(--safe-area-top);
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: none;
+    /* Ajustement pour zone de sécurité supérieure (encoche/notch) */
+    padding-top: var(--safe-area-top) !important;
+    
+    /* Améliore le défilement sur iOS */
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-y: none !important;
   }
 
   html, body {
-    width: 100%;
-    overflow-x: hidden;
-    max-width: 100vw;
+    /* Empêche le débordement horizontal */
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
   }
 
-  /* En-tête principal */
+  /* ======= EN-TÊTE ET LOGO ======= */
+  /* Barre supérieure contenant le logo */
   .app-header {
+    /* Positionnement fixe en haut de l'écran */
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
     right: 0 !important;
+    
+    /* Dimensions */
     height: var(--ios-header-height) !important;
     padding-top: var(--safe-area-top) !important;
-    z-index: 1050 !important;
+    
+    /* Apparence */
+    z-index: var(--z-header) !important;
+    background-color: #5ebcec !important;
+    
+    /* Alignement du contenu */
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
-    background-color: var(--header-bg, #5ebcec) !important;
   }
 
   /* Logo du site */
   .site-logo, .site-title img {
-    height: 45px !important;
+    /* Taille du logo */
+    height: 40px !important;
     max-width: 70% !important;
+    
+    /* Positionnement */
+    margin: 0 auto !important;
     object-fit: contain !important;
-    margin: 0 auto !important;
-    margin-top: 5px !important;
   }
 
-  /* Bouton Menu */
+  /* ======= BOUTONS MENU ET PARAMÈTRES ======= */
+  /* Bouton menu (hamburger) */
   .menu-button, .hamburger-menu {
-    position: fixed !important;
-    top: calc(var(--safe-area-top) + 12px) !important;
+    /* Positionnement en haut à gauche */
+    position: fixed !important; 
+    top: calc(var(--safe-area-top) + 10px) !important;
     left: 15px !important;
-    z-index: 1060 !important;
+    
+    /* Dimension et apparence */
     width: 44px !important;
     height: 44px !important;
+    z-index: var(--z-top-button) !important;
+    
+    /* Style du bouton */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
-  /* Bouton Paramètres */
+  /* Bouton paramètres (engrenage) */
   .settings-button, .gear-icon {
+    /* Positionnement en haut à droite */
     position: fixed !important;
-    top: calc(var(--safe-area-top) + 12px) !important;
+    top: calc(var(--safe-area-top) + 10px) !important;
     right: 15px !important;
-    z-index: 1060 !important;
+    
+    /* Dimension et apparence */
     width: 44px !important;
     height: 44px !important;
+    z-index: var(--z-top-button) !important;
+    
+    /* Style du bouton */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
-  /* Bouton Infos en direct */
-  .button-group {
-    position: relative !important;
-    margin: 15px auto 10px !important;
-    text-align: center !important;
-    z-index: 1030 !important;
-  }
-
-  .news-button {
-    margin: 0 auto !important;
-    position: relative !important;
-    z-index: 1030 !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-  }
-
-  /* Masquer le bouton de lien (icône de chaîne) qui apparaît à droite */
-  a[href="#"] img,
+  /* ======= BOUTONS WIDGETS (MÉTÉO ET LIENS) ======= */
+  /* Les boutons des widgets météo et liens sont masqués sur cette mise en page */
+  /* Mais on peut les réactiver en supprimant le display: none */
+  .weather-show-btn, .quick-links-show-btn, 
+  a[href="#"] img[src*="link"], 
   [data-icon="link"],
-  .quick-links-show-btn {
+  a.quick-links-show-btn {
     display: none !important;
   }
 
-  /* Contenu principal */
-  main, #tileContainer, .main-content, .tile-container {
+  /* Si vous souhaitez les réactiver, voici leur positionnement */
+  /*
+  .weather-show-btn {
+    position: fixed !important;
+    top: calc(var(--ios-header-height) + 15px) !important;
+    left: 15px !important;
+    z-index: var(--z-widgets) !important;
+    width: 44px !important;
+    height: 44px !important;
+  }
+
+  .quick-links-show-btn {
+    position: fixed !important;
+    top: calc(var(--ios-header-height) + 15px) !important;
+    right: 15px !important;
+    z-index: var(--z-widgets) !important;
+    width: 44px !important;
+    height: 44px !important;
+  }
+  */
+
+  /* ======= BOUTON INFOS EN DIRECT ======= */
+  /* Ce bouton doit apparaître sous le logo */
+  .button-group {
+    /* Positionnement et alignement */
+    position: fixed !important;
+    top: calc(var(--ios-header-height) + 10px) !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: var(--z-widgets) !important;
+    
+    /* Style du groupe */
+    display: flex !important;
+    justify-content: center !important;
+    margin: 0 auto !important;
+  }
+
+  /* Le bouton lui-même */
+  .news-button {
+    /* Taille et apparence */
+    margin: 0 auto !important;
     position: relative !important;
-    z-index: 1000 !important;
-    margin-top: calc(var(--ios-header-height) + 5px) !important;
-    padding-bottom: calc(var(--safe-area-bottom) + var(--ios-bottom-nav-height) + 50px) !important;
-    padding-left: 10px !important;
-    padding-right: 10px !important;
+    z-index: var(--z-widgets) !important;
+  }
+
+  /* ======= CONTENU PRINCIPAL ======= */
+  /* Cette section comprend toutes les tuiles et le contenu */
+  main, #tileContainer, .main-content, .tile-container {
+    /* Positionnement */
+    position: relative !important;
+    z-index: var(--z-content) !important;
+    
+    /* Marges pour éviter de chevaucher d'autres éléments */
+    margin-top: calc(var(--ios-header-height) + 65px) !important; /* Ajusté pour laisser de la place pour le bouton Infos */
+    padding-bottom: calc(var(--ios-nav-height) + var(--safe-area-bottom) + 50px) !important; /* +50px pour la barre de défilement */
+    
+    /* Marges horizontales */
+    padding-left: var(--ios-padding) !important;
+    padding-right: var(--ios-padding) !important;
+    
+    /* Autres styles */
     box-sizing: border-box !important;
   }
 
-  /* Barre d'infos (ticker) */
+  /* ======= BARRE DE DÉFILEMENT D'INFORMATIONS ======= */
+  /* La barre noire en bas avec les informations défilantes */
   .news-ticker, .bottom-bar, .ticker {
+    /* Positionnement au-dessus de la barre de navigation */
     position: fixed !important;
-    bottom: calc(var(--ios-bottom-nav-height) + var(--safe-area-bottom)) !important;
+    bottom: calc(var(--ios-nav-height) + var(--safe-area-bottom)) !important;
     left: 0 !important;
     right: 0 !important;
+    
+    /* Dimensions et apparence */
     height: 36px !important;
-    z-index: 1020 !important;
+    z-index: var(--z-ticker) !important;
+    
+    /* Style de la barre */
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    color: white !important;
     overflow: hidden !important;
-    background-color: rgba(0, 0, 0, 0.75) !important;
   }
 
+  /* Conteneur du texte défilant */
   .ticker-wrapper {
+    /* Alignement vertical */
     height: 100% !important;
     display: flex !important;
     align-items: center !important;
+    
+    /* Suppression des marges inutiles */
     padding-top: 0 !important;
     padding-bottom: 0 !important;
   }
 
-  /* Navigation inférieure */
+  /* ======= BARRE DE NAVIGATION INFÉRIEURE ======= */
+  /* La barre bleue en bas avec les 6 boutons */
   .bottom-nav {
+    /* Positionnement fixe en bas de l'écran */
     position: fixed !important;
     bottom: 0 !important;
     left: 0 !important;
     right: 0 !important;
-    height: var(--ios-bottom-nav-height) !important;
+    
+    /* Dimensions et apparence */
+    height: var(--ios-nav-height) !important;
     padding-bottom: var(--safe-area-bottom) !important;
-    z-index: 1030 !important;
-    background-color: var(--bottom-nav-bg, #5ebcec) !important;
+    z-index: var(--z-navigation) !important;
+    
+    /* Style de la barre */
+    background-color: #5ebcec !important;
     display: flex !important;
     justify-content: space-around !important;
     align-items: center !important;
   }
 
-  /* Boutons de navigation */
+  /* Boutons individuels dans la barre */
   .nav-item {
+    /* Structure et alignement */
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    height: calc(var(--ios-bottom-nav-height) - 15px) !important;
-    width: 16.66% !important; /* 6 boutons = 100% / 6 */
-    padding-top: 3px !important;
-    padding-bottom: 3px !important;
+    
+    /* Dimensions */
+    height: calc(var(--ios-nav-height) - 10px) !important;
+    width: 16.66% !important; /* 100% / 6 boutons */
+    
+    /* Espacement interne */
+    padding: 2px 0 !important;
   }
 
+  /* Icônes dans les boutons */
   .nav-item .material-icons {
     font-size: 24px !important;
     margin-bottom: 2px !important;
   }
 
+  /* Texte dans les boutons */
   .nav-item span:not(.material-icons) {
-    font-size: 11px !important;
+    font-size: 10px !important;
     line-height: 1.1 !important;
     text-align: center !important;
     max-width: 100% !important;
@@ -164,72 +282,102 @@
     white-space: nowrap !important;
   }
 
-  /* Optimisations tactiles */
+  /* ======= OPTIMISATIONS TACTILES ======= */
+  /* Améliore l'expérience tactile sur iOS */
   * {
+    /* Supprime l'effet de surbrillance bleu au toucher */
     -webkit-tap-highlight-color: transparent !important;
+    
+    /* Contrôle plus précis des gestes tactiles */
     touch-action: manipulation !important;
   }
 
+  /* Éléments interactifs plus réactifs */
   input, button, a {
     cursor: pointer !important;
   }
 
+  /* Empêche le zoom automatique sur les inputs (irritant sur iOS) */
   input[type="text"], textarea, select {
-    font-size: 16px !important; /* Empêcher le zoom indésirable sur les inputs */
+    font-size: 16px !important;
   }
 
-  /* Petits écrans iPhone SE, Mini */
+  /* ======= ADAPTATIONS POUR DIFFÉRENTS APPAREILS iOS ======= */
+  
+  /* Pour les petits iPhone (SE, mini) */
   @media only screen and (max-width: 375px) {
+    /* Logo plus petit */
     .site-logo, .site-title img {
-      height: 40px !important;
+      height: 35px !important;
     }
-
+    
+    /* Texte plus petit pour les boutons nav */
     .nav-item span:not(.material-icons) {
-      font-size: 10px !important;
+      font-size: 9px !important;
     }
-
+    
+    /* Barre de défilement plus petite */
     .news-ticker, .bottom-bar, .ticker {
-      height: 32px !important;
+      height: 30px !important;
+    }
+    
+    /* Plus de place pour le contenu principal */
+    main, #tileContainer, .main-content, .tile-container {
+      margin-top: calc(var(--ios-header-height) + 60px) !important;
     }
   }
-
-  /* iPhone avec encoche/Dynamic Island */
-  @media only screen and (min-width: 375px) and (max-width: 428px) and (device-aspect-ratio: 9/19.5) {
+  
+  /* Pour les iPhone avec encoche/Dynamic Island */
+  @media only screen and (min-device-width: 375px) and (max-device-width: 428px) and (-webkit-device-pixel-ratio: 3) {
+    /* Ajuster pour l'encoche supérieure */
     .app-header {
-      height: calc(var(--ios-header-height) + 10px) !important;
+      height: calc(var(--ios-header-height) + 5px) !important;
     }
     
-    .menu-button, .hamburger-menu {
-      top: calc(var(--safe-area-top) + 15px) !important;
-    }
-    
+    /* Repositionner les boutons menu et paramètres */
+    .menu-button, .hamburger-menu,
     .settings-button, .gear-icon {
       top: calc(var(--safe-area-top) + 15px) !important;
     }
-  }
-
-  /* Orientation paysage */
-  @media screen and (orientation: landscape) {
-    .app-header {
-      height: calc(var(--ios-header-height) - 10px) !important;
+    
+    /* Ajuster le logo */
+    .site-logo, .site-title img {
+      margin-top: 5px !important;
     }
-
+  }
+  
+  /* Pour l'orientation paysage */
+  @media screen and (orientation: landscape) {
+    /* Barre d'en-tête plus petite */
+    .app-header {
+      height: calc(var(--ios-header-height) - 5px) !important;
+    }
+    
+    /* Logo plus petit */
     .site-logo, .site-title img {
       height: 35px !important;
       margin-top: 0 !important;
     }
     
+    /* Contenu principal plus proche du haut */
     main, #tileContainer, .main-content, .tile-container {
-      margin-top: calc(var(--ios-header-height) - 15px) !important;
+      margin-top: calc(var(--ios-header-height) + 45px) !important;
     }
     
+    /* Barre de navigation inférieure plus petite */
     .bottom-nav {
-      height: calc(var(--ios-bottom-nav-height) - 10px) !important;
+      height: calc(var(--ios-nav-height) - 5px) !important;
     }
     
+    /* Barre de défilement d'infos plus petite et repositionnée */
     .news-ticker, .bottom-bar, .ticker {
-      bottom: calc(var(--ios-bottom-nav-height) - 10px + var(--safe-area-bottom)) !important;
+      bottom: calc(var(--ios-nav-height) - 5px + var(--safe-area-bottom)) !important;
       height: 28px !important;
+    }
+    
+    /* Repositionner le bouton infos en direct */
+    .button-group {
+      top: calc(var(--ios-header-height) + 5px) !important;
     }
   }
 }
