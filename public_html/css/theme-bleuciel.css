@@ -421,7 +421,7 @@
 
 /* Conserver les couleurs spécifiques pour les températures */
 [data-theme="bleuciel"] .min-temp {
-    color: #3191df !important; /* Bleu clair */
+    color: #91c6f1 !important; /* Bleu clair */
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3) !important;
 }
 
