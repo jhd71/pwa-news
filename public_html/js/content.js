@@ -293,7 +293,7 @@ setupTVIcons() {
         // Section Radio
         const radioSites = [		
   {
-    title: '📻 France Bleu<br>Bourgogne',
+    title: '📻<br> France Bleu<br>Bourgogne',
     url: 'https://www.radio-en-ligne.fr/france-bleu-bourgogne',
     mobileUrl: 'https://www.radio-en-ligne.fr/france-bleu-bourgogne',
     isDefault: true,
@@ -390,7 +390,7 @@ const tvSites = [
     category: 'sports'
   },
   {
-    title: '🏟️ Foot<br>FC Montceau-Bourgogne',
+    title: '⚽ Foot<br>FC Montceau-Bourgogne',
     url: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
     mobileUrl: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
     isDefault: true,
