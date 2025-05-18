@@ -7,15 +7,32 @@
     
     console.log("iOS détecté - Activation des correctifs améliorés pour le chat");
     
-    document.addEventListener('DOMContentLoaded', function() {
+    // Attendre que le DOM soit chargé
+    const onReady = function() {
         // S'assurer que le gestionnaire de chat est initialisé
         const waitForChatManager = setInterval(() => {
             if (window.chatManager && window.chatManager.initialized) {
                 clearInterval(waitForChatManager);
                 setupIOSChatFixes();
+            } else if (document.querySelector('.chat-container')) {
+                // Alternative si chatManager n'est pas disponible
+                clearInterval(waitForChatManager);
+                setupIOSChatFixes();
             }
         }, 500);
-    });
+        
+        // Arrêter la vérification après 10 secondes si rien n'est trouvé
+        setTimeout(() => {
+            clearInterval(waitForChatManager);
+        }, 10000);
+    };
+    
+    // Vérifier si le DOM est déjà chargé
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", onReady);
+    } else {
+        onReady();
+    }
     
     function setupIOSChatFixes() {
         // Référence aux éléments du chat
