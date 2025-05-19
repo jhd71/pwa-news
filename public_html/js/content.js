@@ -221,42 +221,42 @@ setupTVIcons() {
         // Actualités locales
         const newsDefaultSites = [			
   {
-    title: 'Montceau News',
+    title: '📰 Montceau News',
     url: 'https://montceau-news.com/',
     mobileUrl: 'https://montceau-news.com/',
     isDefault: true,
     category: 'news'
   },
   {
-    title: 'L\'Informateur de Bourgogne',
+    title: '🗞️ L\'Informateur de Bourgogne',
     url: 'https://linformateurdebourgogne.com/',
     mobileUrl: 'https://linformateurdebourgogne.com/',
     isDefault: true,
     category: 'news'
   },
   {
-    title: 'Le JSL',
+    title: '📰 Le JSL',
     url: 'https://www.lejsl.com/edition-montceau-les-mines',
     mobileUrl: 'https://www.lejsl.com/edition-montceau-les-mines',
     isDefault: true,
     category: 'news'
   },
   {
-    title: 'Creusot Infos',
+    title: '🗞️ Creusot Infos',
     url: 'https://www.creusot-infos.com',
     mobileUrl: 'https://www.creusot-infos.com/?m=1',
     isDefault: true,
     category: 'news'
   },
   {
-    title: 'Faits Divers Saône-et-Loire',
+    title: '🚨 Faits Divers Saône-et-Loire',
     url: 'https://faitsdivers365.fr/bourgogne-franche-comte/saone-et-loire/',
     mobileUrl: 'https://faitsdivers365.fr/bourgogne-franche-comte/saone-et-loire/',
     isDefault: true,
     category: 'news'
   },
   {
-    title: 'Mâcon-Infos',
+    title: '🗞️ Mâcon-Infos',
     url: 'https://macon-infos.com/fr/faits-divers/macon',
     mobileUrl: 'https://macon-infos.com/fr/faits-divers/macon',
     isDefault: true,
@@ -390,7 +390,7 @@ const tvSites = [
     category: 'sports'
   },
   {
-    title: '⚽ Foot<br>FC Montceau-Bourgogne',
+    title: '🏟️ Foot<br>FC Montceau-Bourgogne',
     url: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
     mobileUrl: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
     isDefault: true,

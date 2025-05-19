@@ -28,17 +28,6 @@
       "headers": { "Location": "/" }
     },
     {
-      "src": "^/$",
-      "has": [
-        {
-          "type": "header",
-          "key": "user-agent",
-          "value": ".*iPhone.*|.*iPad.*|.*iPod.*"
-        }
-      ],
-      "dest": "/public_html/index-ios.html"
-    },
-    {
       "src": "^/notification$",
       "dest": "/public_html/notification.html"
     },
