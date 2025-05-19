@@ -1,75 +1,66 @@
-// gallery-manager.js
-// Début du fichier - vérification de l'environnement
-
-// Vérification que la fonction getSupabaseClient existe et est accessible
-if (typeof window.getSupabaseClient !== 'function') {
-    console.error('Erreur critique: La fonction getSupabaseClient n\'existe pas');
-    
-    // Afficher un message d'erreur utilisateur immédiat
-    window.addEventListener('DOMContentLoaded', function() {
-        const container = document.querySelector('.gallery-main') || document.body;
-        const errorMessage = document.createElement('div');
-        errorMessage.style.cssText = 'background-color: #d32f2f; color: white; padding: 20px; margin: 20px; border-radius: 8px; text-align: center;';
-        errorMessage.innerHTML = `
-            <h3>Erreur de connexion à la base de données</h3>
-            <p>Impossible de se connecter au service de galerie photos.</p>
-            <button onclick="location.reload()" style="background: white; color: #d32f2f; border: none; padding: 8px 16px; margin-top: 10px; border-radius: 4px; cursor: pointer;">Rafraîchir la page</button>
-        `;
-        container.prepend(errorMessage);
-    });
-    
-    // Ne pas exécuter le reste du code
-    throw new Error('Initialisation de la galerie impossible: getSupabaseClient manquant');
-}
-
-// Essayer d'initialiser Supabase avec gestion d'erreur
-let supabase;
-try {
+// gallery-manager.js - Début du fichier
+// Attendre un bref instant pour s'assurer que tout est bien chargé
+setTimeout(() => {
+  // Vérifier si l'instance Supabase est disponible globalement
+  let supabase;
+  
+  if (window.supabaseInstance) {
+    // Utiliser l'instance créée directement
+    supabase = window.supabaseInstance;
+    console.log("Utilisation de l'instance Supabase globale");
+  } else if (typeof window.getSupabaseClient === 'function') {
+    // Utiliser la fonction getSupabaseClient
     supabase = window.getSupabaseClient();
     if (!supabase) {
-        throw new Error('getSupabaseClient a retourné null ou undefined');
+      console.error("getSupabaseClient a retourné null ou undefined");
+    } else {
+      console.log("Instance Supabase récupérée via getSupabaseClient");
     }
-    console.log('Supabase initialisé avec succès dans gallery-manager.js');
-} catch (error) {
-    console.error('Impossible d\'initialiser Supabase:', error);
+  } else {
+    console.error("Aucune méthode disponible pour obtenir l'instance Supabase");
+  }
+  
+  // Si l'instance n'est pas disponible, créer une version factice
+  if (!supabase) {
+    console.error("Impossible d'obtenir une instance Supabase, utilisation d'une version factice");
+    // Créer un objet factice pour éviter les erreurs
+    supabase = {
+      from: () => ({
+        select: () => ({
+          order: () => ({
+            range: () => Promise.resolve({ data: [], error: null })
+          })
+        }),
+        insert: () => Promise.resolve({ data: null, error: new Error('Base de données non disponible') })
+      }),
+      storage: {
+        from: () => ({
+          upload: () => Promise.resolve({ data: null, error: new Error('Base de données non disponible') }),
+          getPublicUrl: () => ({ data: { publicUrl: '' } })
+        })
+      }
+    };
     
     // Afficher un message d'erreur utilisateur
     window.addEventListener('DOMContentLoaded', function() {
-        const container = document.querySelector('.gallery-main') || document.body;
-        const errorMessage = document.createElement('div');
-        errorMessage.style.cssText = 'background-color: #d32f2f; color: white; padding: 20px; margin: 20px; border-radius: 8px; text-align: center;';
-        errorMessage.innerHTML = `
-            <h3>Erreur de connexion à la base de données</h3>
-            <p>Impossible de se connecter au service de galerie photos: ${error.message}</p>
-            <button onclick="location.reload()" style="background: white; color: #d32f2f; border: none; padding: 8px 16px; margin-top: 10px; border-radius: 4px; cursor: pointer;">Rafraîchir la page</button>
-        `;
-        container.prepend(errorMessage);
+      const container = document.querySelector('.gallery-main') || document.body;
+      const errorMessage = document.createElement('div');
+      errorMessage.style.cssText = 'background-color: #d32f2f; color: white; padding: 20px; margin: 20px; border-radius: 8px; text-align: center;';
+      errorMessage.innerHTML = `
+        <h3>Erreur de connexion à la base de données</h3>
+        <p>Impossible de se connecter au service de galerie photos.</p>
+        <button onclick="location.reload()" style="background: white; color: #d32f2f; border: none; padding: 8px 16px; margin-top: 10px; border-radius: 4px; cursor: pointer;">Rafraîchir la page</button>
+      `;
+      container.prepend(errorMessage);
     });
-    
-    // Créer un objet supabase factice pour éviter les erreurs
-    supabase = {
-        from: () => ({
-            select: () => ({
-                order: () => ({
-                    range: () => Promise.resolve({ data: [], error: null })
-                })
-            }),
-            insert: () => Promise.resolve({ data: null, error: new Error('Base de données non disponible') })
-        }),
-        storage: {
-            from: () => ({
-                upload: () => Promise.resolve({ data: null, error: new Error('Base de données non disponible') }),
-                getPublicUrl: () => ({ data: { publicUrl: '' } })
-            })
-        }
-    };
-}
-
-// État de l'application
-let currentPhotoId = null;
-let currentPage = 0;
-const pageSize = 12;
-let hasMorePhotos = true;
+  }
+  
+  // Continuez avec le reste du code
+  // État de l'application
+  let currentPhotoId = null;
+  let currentPage = 0;
+  const pageSize = 12;
+  let hasMorePhotos = true;
 
 // Déclarer les variables d'éléments DOM au niveau global
 let photoGrid;

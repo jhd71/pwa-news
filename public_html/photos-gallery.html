@@ -155,7 +155,46 @@
     </nav>
 
 <!-- 1. D'abord charger la bibliothèque Supabase -->
-<script src="https://unpkg.com/@supabase/supabase-js@2.39.3/dist/umd/supabase.js"></script>
+<!-- Dans photos-gallery.html, remplacez votre chargement de Supabase par ceci -->
+<script>
+  // Charger Supabase et créer l'instance directement
+  const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
+  
+  // Chargement du script avec création de l'instance et mise à disposition globale
+  const script = document.createElement('script');
+  script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js';
+  script.onload = function() {
+    try {
+      // Créer l'instance et la rendre disponible globalement
+      window.supabaseInstance = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      console.log('Instance Supabase créée et disponible globalement');
+      
+      // Définir la fonction getSupabaseClient
+      window.getSupabaseClient = function() {
+        return window.supabaseInstance;
+      };
+      
+      // Charger les scripts restants
+      loadScript("js/gallery-manager.js");
+    } catch (error) {
+      console.error('Erreur lors de la création de l\'instance Supabase:', error);
+      alert('Erreur de connexion à la base de données. Veuillez rafraîchir la page.');
+    }
+  };
+  script.onerror = function() {
+    console.error('Erreur de chargement de la bibliothèque Supabase');
+    alert('Erreur de chargement de l\'application. Veuillez rafraîchir la page.');
+  };
+  document.body.appendChild(script);
+  
+  // Fonction pour charger un script
+  function loadScript(src) {
+    const script = document.createElement('script');
+    script.src = src;
+    document.body.appendChild(script);
+  }
+</script>
 
 <!-- 2. Script pour s'assurer que Supabase est bien chargé -->
 <script>
