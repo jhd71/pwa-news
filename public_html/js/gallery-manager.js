@@ -80,15 +80,28 @@ let progressBarFill;
 let commentForm;
 
 // Attendre que le DOM soit complètement chargé
+console.log("Script gallery-manager.js chargé");
+
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialiser la galerie
+    console.log("DOMContentLoaded déclenché");
     initializeGallery();
+});
+
+// Vérification supplémentaire
+window.addEventListener('load', () => {
+    console.log("Window load déclenché");
+    if (!photoGrid) {
+        console.log("photoGrid non initialisé lors de window.load, tentative d'initialisation...");
+        initializeGallery();
+    }
 });
 
 // Fonction d'initialisation de la galerie
 function initializeGallery() {
+	console.log("Début de initializeGallery");
     // Initialiser les éléments DOM
     photoGrid = document.getElementById('photoGrid');
+	console.log("photoGrid trouvé:", !!photoGrid);
     uploadModal = document.getElementById('uploadModal');
     photoViewModal = document.getElementById('photoViewModal');
     uploadPhotoBtn = document.getElementById('uploadPhotoBtn');
@@ -140,7 +153,19 @@ function initializeGallery() {
 
 // Charger les photos
 async function loadPhotos(isLoadMore = false) {
-    console.log("Début de loadPhotos, supabase disponible:", !!supabase);
+    console.log("Début de loadPhotos, isLoadMore:", isLoadMore);
+    console.log("État actuel: currentPage =", currentPage, "hasMorePhotos =", hasMorePhotos);
+    
+    // Vérifications
+    if (!photoGrid) {
+        console.error("photoGrid n'est pas initialisé!");
+        return;
+    }
+    
+    if (!loadingIndicator) {
+        console.error("loadingIndicator n'est pas initialisé!");
+        return;
+    }
     
     if (!supabase) {
         console.error('Erreur: Supabase n\'est pas initialisé');
@@ -159,6 +184,7 @@ async function loadPhotos(isLoadMore = false) {
     }
 
     if (!isLoadMore) {
+        console.log("Réinitialisation de l'affichage (nouveau chargement)");
         loadingIndicator.style.display = 'flex';
         photoGrid.innerHTML = '';
         currentPage = 0;
@@ -177,7 +203,10 @@ async function loadPhotos(isLoadMore = false) {
             .order('created_at', { ascending: false })
             .range(from, to);
         
-        console.log("Réponse Supabase:", { photos, error });
+        console.log("Réponse Supabase:", photos ? photos.length : 0, "photos,", error ? "avec erreur" : "sans erreur");
+        if (photos && photos.length > 0) {
+            console.log("Première photo:", photos[0]);
+        }
         
         if (error) {
             console.error("Erreur Supabase:", error);
@@ -187,30 +216,38 @@ async function loadPhotos(isLoadMore = false) {
         // Aucune photo trouvée
         if (!photos || photos.length === 0) {
             console.log("Aucune photo trouvée dans la base de données");
-            noPhotosMessage.style.display = 'block';
-            loadingIndicator.style.display = 'none';
+            if (noPhotosMessage) {
+                noPhotosMessage.style.display = 'block';
+            }
             hasMorePhotos = false;
-            loadMoreBtn.style.display = 'none';
-            return;
-        }
-        
-        // Des photos ont été trouvées
-        console.log(`${photos.length} photos récupérées:`, photos);
-        noPhotosMessage.style.display = 'none';
-        
-        // Rendu des photos
-        renderPhotos(photos);
-        
-        // Mise à jour de la pagination
-        if (photos.length < pageSize) {
-            hasMorePhotos = false;
-            loadMoreBtn.style.display = 'none';
+            if (loadMoreBtn) {
+                loadMoreBtn.style.display = 'none';
+            }
         } else {
-            hasMorePhotos = true;
-            loadMoreBtn.style.display = 'block';
+            // Des photos ont été trouvées
+            console.log(`${photos.length} photos récupérées`);
+            if (noPhotosMessage) {
+                noPhotosMessage.style.display = 'none';
+            }
+            
+            // Rendu des photos
+            renderPhotos(photos);
+            
+            // Mise à jour de la pagination
+            if (photos.length < pageSize) {
+                hasMorePhotos = false;
+                if (loadMoreBtn) {
+                    loadMoreBtn.style.display = 'none';
+                }
+            } else {
+                hasMorePhotos = true;
+                if (loadMoreBtn) {
+                    loadMoreBtn.style.display = 'block';
+                }
+            }
+            
+            currentPage++;
         }
-        
-        currentPage++;
         
     } catch (error) {
         console.error('Erreur lors du chargement des photos:', error);
@@ -222,6 +259,7 @@ async function loadPhotos(isLoadMore = false) {
             </div>
         `;
     } finally {
+        console.log("Fin de loadPhotos");
         loadingIndicator.style.display = 'none';
     }
 }
@@ -239,46 +277,78 @@ function renderPhotos(photos) {
     
     if (!photos || photos.length === 0) {
         console.log("Aucune photo à afficher");
+        if (noPhotosMessage) {
+            noPhotosMessage.style.display = 'block';
+        }
         return;
     }
     
+    // Masquer le message "pas de photos" puisqu'on en a
+    if (noPhotosMessage) {
+        noPhotosMessage.style.display = 'none';
+    }
+    
     photos.forEach(photo => {
-        // Ajouter cette vérification
-        if (!photo || !photo.id) {
-            console.error("Photo invalide:", photo);
-            return;
-        }
-        
-        console.log("Rendu de la photo:", photo);
-        
-        const photoCard = document.createElement('div');
-        photoCard.className = 'photo-card';
-        photoCard.dataset.id = photo.id;
-        
-        const date = new Date(photo.created_at);
-        const formattedDate = date.toLocaleDateString('fr-FR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-        });
-        
-        photoCard.innerHTML = `
-            <div class="photo-img-container">
-                <img class="photo-img" src="${photo.image_url}" alt="${photo.title}">
-            </div>
-            <div class="photo-info">
-                <h3 class="photo-title">${photo.title}</h3>
-                <div class="photo-meta">
-                    <span>${photo.location || 'Non précisé'}</span>
-                    <span>Par ${photo.author_name}</span>
-                    <span>${formattedDate}</span>
+        try {
+            console.log("Traitement de la photo:", photo);
+            
+            // Vérifier que la photo a les propriétés nécessaires
+            if (!photo || !photo.id) {
+                console.error("Photo invalide (pas d'ID):", photo);
+                return;
+            }
+            
+            const photoCard = document.createElement('div');
+            photoCard.className = 'photo-card';
+            photoCard.dataset.id = photo.id;
+            
+            // Vérifier la date
+            let formattedDate = 'Date inconnue';
+            if (photo.created_at) {
+                try {
+                    const date = new Date(photo.created_at);
+                    formattedDate = date.toLocaleDateString('fr-FR', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    });
+                } catch (e) {
+                    console.error("Erreur de formatage de date:", e);
+                }
+            }
+            
+            // Construction du HTML avec vérifications
+            photoCard.innerHTML = `
+                <div class="photo-img-container">
+                    <img class="photo-img" src="${photo.image_url || ''}" alt="${photo.title || 'Photo sans titre'}" 
+                         onerror="this.src='https://via.placeholder.com/400x300?text=Image+non+disponible'; this.onerror=null;">
                 </div>
-            </div>
-        `;
-        
-        photoCard.addEventListener('click', () => openPhotoView(photo.id));
-        photoGrid.appendChild(photoCard);
+                <div class="photo-info">
+                    <h3 class="photo-title">${photo.title || 'Sans titre'}</h3>
+                    <div class="photo-meta">
+                        <span>${photo.location || 'Lieu non précisé'}</span>
+                        <span>Par ${photo.author_name || 'Anonyme'}</span>
+                        <span>${formattedDate}</span>
+                    </div>
+                </div>
+            `;
+            
+            // Ajouter l'événement de clic
+            photoCard.addEventListener('click', () => {
+                console.log("Clic sur la photo ID:", photo.id);
+                openPhotoView(photo.id);
+            });
+            
+            // Ajouter au DOM
+            photoGrid.appendChild(photoCard);
+            console.log("Photo ajoutée au DOM:", photo.id);
+            
+        } catch (error) {
+            console.error("Erreur lors du rendu de la photo:", error, photo);
+        }
     });
+    
+    console.log("Fin de renderPhotos, " + photoGrid.children.length + " photos ajoutées au DOM");
 }
 
 // Ouvrir la modale d'upload
@@ -845,7 +915,7 @@ async function uploadPhoto(event) {
         uploadProgress.style.display = 'none';
     }
 }
-// Ajoutez ce code temporairement à la fin de votre fichier gallery-manager.js pour tester directement
+// Test de connexion Supabase (conserver cette partie, elle est utile)
 setTimeout(async () => {
   try {
     console.log("Test direct de la connexion Supabase:");
@@ -863,6 +933,35 @@ setTimeout(async () => {
     console.error("Erreur lors du test Supabase:", err);
   }
 }, 2000);
+
+// Nouveau code pour forcer le chargement des photos
+setTimeout(() => {
+    console.log("Forçage du chargement des photos après 3 secondes...");
+    
+    // S'assurer que les éléments DOM sont initialisés
+    if (!photoGrid) {
+        photoGrid = document.getElementById('photoGrid');
+        console.log("PhotoGrid initialisé:", !!photoGrid);
+    }
+    
+    if (!loadingIndicator) {
+        loadingIndicator = document.getElementById('loadingIndicator');
+        console.log("LoadingIndicator initialisé:", !!loadingIndicator);
+    }
+    
+    if (!noPhotosMessage) {
+        noPhotosMessage = document.getElementById('noPhotosMessage');
+        console.log("NoPhotosMessage initialisé:", !!noPhotosMessage);
+    }
+    
+    // Réinitialiser l'état
+    currentPage = 0;
+    
+    // Appeler loadPhotos
+    loadPhotos(false);
+    
+}, 3000);
+
 // Fermeture du setTimeout - cette accolade manquait
 }, 100);
 
