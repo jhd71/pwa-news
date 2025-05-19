@@ -142,31 +142,45 @@
     </nav>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-client.js"></script>
-    <script src="js/gallery-manager.js"></script>
-    <!-- Script pour synchroniser le thème -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Synchroniser le thème avec le reste de l'application
-            function syncAppSettings() {
-                const currentTheme = localStorage.getItem('theme') || 'light';
-                document.documentElement.setAttribute('data-theme', currentTheme);
-                
-                const currentFontSize = localStorage.getItem('fontSize') || 'normal';
-                document.documentElement.setAttribute('data-font-size', currentFontSize);
-            }
-            
-            // Appliquer les réglages au chargement
-            syncAppSettings();
-            
-            // Mettre à jour si les réglages changent
-            window.addEventListener('storage', function(event) {
-                if (event.key === 'theme' || event.key === 'fontSize') {
-                    syncAppSettings();
-                }
-            });
-        });
-    </script>
+<!-- D'abord charger la bibliothèque Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- ATTENDRE que Supabase soit chargé avant d'initialiser le client -->
+<script>
+  // S'assurer que la bibliothèque Supabase est bien chargée
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof supabase === 'undefined') {
+      console.error('Erreur : La bibliothèque Supabase n\'est pas chargée correctement');
+      alert('Erreur de chargement de la bibliothèque Supabase. Veuillez rafraîchir la page.');
+    }
+  });
+</script>
+<!-- Puis charger votre client Supabase -->
+<script src="js/supabase-client.js"></script>
+<!-- Enfin charger le gestionnaire de galerie -->
+<script src="js/gallery-manager.js"></script>
+
+<!-- Script pour synchroniser le thème -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Synchroniser le thème avec le reste de l'application
+    function syncAppSettings() {
+      const currentTheme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', currentTheme);
+      
+      const currentFontSize = localStorage.getItem('fontSize') || 'normal';
+      document.documentElement.setAttribute('data-font-size', currentFontSize);
+    }
+    
+    // Appliquer les réglages au chargement
+    syncAppSettings();
+    
+    // Mettre à jour si les réglages changent
+    window.addEventListener('storage', function(event) {
+      if (event.key === 'theme' || event.key === 'fontSize') {
+        syncAppSettings();
+      }
+    });
+  });
+</script>
 </body>
 </html>

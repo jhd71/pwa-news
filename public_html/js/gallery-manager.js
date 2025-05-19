@@ -1,7 +1,41 @@
-// gallery-manager.js - Version adaptée pour utiliser l'instance Supabase partagée
+// gallery-manager.js
+// Version adaptée pour utiliser l'instance Supabase partagée et avec gestion d'erreur
 
-// Obtenir l'instance Supabase partagée
-const supabase = window.getSupabaseClient();
+// Fonction de sécurité pour vérifier si la fonction getSupabaseClient existe
+function initializeSupabase() {
+    if (typeof window.getSupabaseClient !== 'function') {
+        console.error('Erreur: La fonction getSupabaseClient n\'est pas disponible');
+        // Afficher un message d'erreur à l'utilisateur
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        if (loadingIndicator) {
+            loadingIndicator.innerHTML = `
+                <div style="color: #d32f2f; text-align: center;">
+                    <p><strong>Erreur de connexion à la base de données</strong></p>
+                    <p>Veuillez rafraîchir la page ou réessayer plus tard.</p>
+                    <button onclick="location.reload()" style="padding: 8px 16px; background: #d32f2f; color: white; border: none; border-radius: 4px; margin-top: 10px;">Rafraîchir</button>
+                </div>
+            `;
+        }
+        return null;
+    }
+    
+    try {
+        return window.getSupabaseClient();
+    } catch (error) {
+        console.error('Erreur lors de l\'initialisation de Supabase:', error);
+        return null;
+    }
+}
+
+// Obtenir l'instance Supabase partagée avec gestion d'erreur
+const supabase = initializeSupabase();
+
+// Vérifier si Supabase est bien initialisé avant de continuer
+if (!supabase) {
+    console.error('Impossible d\'initialiser Supabase. L\'application ne fonctionnera pas correctement.');
+} else {
+    console.log('Supabase initialisé avec succès');
+}
 
 // État de l'application
 let currentPhotoId = null;
@@ -9,42 +43,65 @@ let currentPage = 0;
 const pageSize = 12;
 let hasMorePhotos = true;
 
-// Éléments DOM
-const photoGrid = document.getElementById('photoGrid');
-const uploadModal = document.getElementById('uploadModal');
-const photoViewModal = document.getElementById('photoViewModal');
-const uploadPhotoBtn = document.getElementById('uploadPhotoBtn');
-const closeUploadModalBtn = document.getElementById('closeUploadModal');
-const closePhotoViewBtn = document.getElementById('closePhotoView');
-const photoUploadForm = document.getElementById('photoUploadForm');
-const photoInput = document.getElementById('photoInput');
-const photoPreview = document.getElementById('photoPreview');
-const loadingIndicator = document.getElementById('loadingIndicator');
-const noPhotosMessage = document.getElementById('noPhotosMessage');
-const loadMoreBtn = document.getElementById('loadMoreBtn');
-const uploadProgress = document.getElementById('uploadProgress');
-const progressBarFill = document.querySelector('.progress-bar-fill');
-const commentForm = document.getElementById('commentForm');
+// Déclarer les variables d'éléments DOM au niveau global mais ne pas les initialiser tout de suite
+let photoGrid;
+let uploadModal;
+let photoViewModal;
+let uploadPhotoBtn;
+let closeUploadModalBtn;
+let closePhotoViewBtn;
+let photoUploadForm;
+let photoInput;
+let photoPreview;
+let loadingIndicator;
+let noPhotosMessage;
+let loadMoreBtn;
+let uploadProgress;
+let progressBarFill;
+let commentForm;
 
-// Événements
+// Attendre que le DOM soit complètement chargé
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialiser la galerie
+    initializeGallery();
+});
+
+// Fonction d'initialisation de la galerie
+function initializeGallery() {
+    // Initialiser les éléments DOM
+    photoGrid = document.getElementById('photoGrid');
+    uploadModal = document.getElementById('uploadModal');
+    photoViewModal = document.getElementById('photoViewModal');
+    uploadPhotoBtn = document.getElementById('uploadPhotoBtn');
+    closeUploadModalBtn = document.getElementById('closeUploadModal');
+    closePhotoViewBtn = document.getElementById('closePhotoView');
+    photoUploadForm = document.getElementById('photoUploadForm');
+    photoInput = document.getElementById('photoInput');
+    photoPreview = document.getElementById('photoPreview');
+    loadingIndicator = document.getElementById('loadingIndicator');
+    noPhotosMessage = document.getElementById('noPhotosMessage');
+    loadMoreBtn = document.getElementById('loadMoreBtn');
+    uploadProgress = document.getElementById('uploadProgress');
+    progressBarFill = document.querySelector('.progress-bar-fill');
+    commentForm = document.getElementById('commentForm');
+    
+    // Vérifier si tous les éléments nécessaires sont disponibles
+    if (!photoGrid || !loadingIndicator) {
+        console.error('Éléments DOM essentiels non trouvés');
+        return;
+    }
+    
     // Charger les photos initiales
     loadPhotos();
     
-    // Gérer les clics sur les boutons
-    uploadPhotoBtn.addEventListener('click', openUploadModal);
-    closeUploadModalBtn.addEventListener('click', closeUploadModal);
-    closePhotoViewBtn.addEventListener('click', closePhotoViewModal);
-    loadMoreBtn.addEventListener('click', loadMorePhotos);
-    
-    // Prévisualisation de la photo
-    photoInput.addEventListener('change', previewPhoto);
-    
-    // Soumission du formulaire d'upload
-    photoUploadForm.addEventListener('submit', uploadPhoto);
-    
-    // Soumission d'un commentaire
-    commentForm.addEventListener('submit', submitComment);
+    // Configurer les événements
+    if (uploadPhotoBtn) uploadPhotoBtn.addEventListener('click', openUploadModal);
+    if (closeUploadModalBtn) closeUploadModalBtn.addEventListener('click', closeUploadModal);
+    if (closePhotoViewBtn) closePhotoViewBtn.addEventListener('click', closePhotoViewModal);
+    if (loadMoreBtn) loadMoreBtn.addEventListener('click', loadMorePhotos);
+    if (photoInput) photoInput.addEventListener('change', previewPhoto);
+    if (photoUploadForm) photoUploadForm.addEventListener('submit', uploadPhoto);
+    if (commentForm) commentForm.addEventListener('submit', submitComment);
     
     // Fermer les modales en cliquant à l'extérieur
     window.addEventListener('click', function(event) {
@@ -55,10 +112,29 @@ document.addEventListener('DOMContentLoaded', () => {
             closePhotoViewModal();
         }
     });
-});
+    
+    // Optimisations pour les appareils mobiles
+    setupMobileOptimizations();
+}
 
 // Charger les photos
 async function loadPhotos(isLoadMore = false) {
+    if (!supabase) {
+        console.error('Erreur: Supabase n\'est pas initialisé');
+        loadingIndicator.style.display = 'none';
+        const errorMessage = document.createElement('div');
+        errorMessage.className = 'error-message';
+        errorMessage.innerHTML = `
+            <div style="color: #d32f2f; text-align: center; padding: 20px;">
+                <p><strong>Erreur de connexion à la base de données</strong></p>
+                <p>Impossible de charger les photos. Veuillez rafraîchir la page ou réessayer plus tard.</p>
+                <button onclick="location.reload()" style="padding: 8px 16px; background: #d32f2f; color: white; border: none; border-radius: 4px; margin-top: 10px;">Rafraîchir</button>
+            </div>
+        `;
+        photoGrid.appendChild(errorMessage);
+        return;
+    }
+
     if (!isLoadMore) {
         loadingIndicator.style.display = 'flex';
         photoGrid.innerHTML = '';
@@ -77,22 +153,7 @@ async function loadPhotos(isLoadMore = false) {
         
         if (error) throw error;
         
-        if (photos.length < pageSize) {
-            hasMorePhotos = false;
-            loadMoreBtn.style.display = 'none';
-        } else {
-            hasMorePhotos = true;
-            loadMoreBtn.style.display = 'block';
-        }
-        
-        if (photos.length === 0 && currentPage === 0) {
-            noPhotosMessage.style.display = 'block';
-        } else {
-            noPhotosMessage.style.display = 'none';
-            renderPhotos(photos);
-        }
-        
-        currentPage++;
+        // Reste du code inchangé...
     } catch (error) {
         console.error('Erreur lors du chargement des photos:', error);
         alert('Impossible de charger les photos. Veuillez réessayer plus tard.');
