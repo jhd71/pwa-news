@@ -1,33 +1,28 @@
 <!DOCTYPE html>
 <html lang="fr" data-theme="light" data-font-size="normal">
 <head>
-    <!-- Inclure les mêmes méta-informations et CSS de base que votre index.html -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="description" content="Galerie photo collaborative - Actu & Média. Partagez vos plus belles photos de Saône-et-Loire et d'ailleurs.">
     <title>Photos d'ici et d'ailleurs - Actu&Média</title>
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!-- Inclure les mêmes feuilles de style que votre index.html -->
+
+    <!-- Icônes Material Design -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- Styles -->
     <link rel="stylesheet" href="css/styles.css">
-    <!-- Ajouter des styles spécifiques à la galerie photo -->
     <link rel="stylesheet" href="css/gallery-styles.css">
 </head>
 <body>
-    <!-- En-tête identique à votre index.html -->
+    <!-- En-tête simplifié -->
     <header class="app-header">
-    <a href="index.html" class="back-button" aria-label="Retour à l'accueil">
-        <span class="material-icons">arrow_back</span>
-    </a>
-    <button type="button" id="menuButton" class="menu-button" aria-label="Menu">
-        <span class="material-icons">menu</span>
-    </button>
-    <button type="button" id="settingsButton" class="settings-button" aria-label="Paramètres">
-        <span class="material-icons">settings</span>
-    </button>   
-    <h1 class="site-title">
-        <img src="images/Actu&Media.png" alt="Actu & Média" class="site-logo">
-    </h1>
-</header>
+        <a href="index.html" class="back-button" aria-label="Retour à l'accueil">
+            <span class="material-icons">arrow_back</span>
+        </a>
+        <h1 class="site-title">
+            <img src="images/Actu&Media.png" alt="Actu & Média" class="site-logo">
+        </h1>
+    </header>
 
     <!-- Contenu principal de la galerie -->
     <main class="gallery-main">
@@ -35,12 +30,12 @@
             <h1>Photos d'ici et d'ailleurs</h1>
             <p class="gallery-intro">Partagez vos plus belles photos de la région et au-delà. Montrez-nous votre regard sur le monde !</p>
             <button id="uploadPhotoBtn" class="upload-btn">
-    <span class="material-icons">add_a_photo</span>
-    <span>Ajouter une photo</span>
-</button>
+                <i class="material-icons">add_photo_alternate</i>
+                <span>Ajouter une photo</span>
+            </button>
         </div>
 
-        <!-- Chargement en cours (s'affiche pendant le chargement des photos) -->
+        <!-- Chargement en cours -->
         <div id="loadingIndicator" class="loading-indicator">
             <div class="spinner"></div>
             <p>Chargement des photos...</p>
@@ -49,16 +44,16 @@
         <!-- Conteneur pour les photos -->
         <div id="photoGrid" class="photo-grid"></div>
 
-        <!-- Message si aucune photo n'est disponible -->
+        <!-- Message si aucune photo -->
         <div id="noPhotosMessage" class="no-photos-message" style="display: none;">
-            <span class="material-icons">photo_library</span>
+            <i class="material-icons">photo_library</i>
             <h3>Aucune photo pour le moment</h3>
             <p>Soyez le premier à partager une photo!</p>
         </div>
 
-        <!-- Bouton "Charger plus" pour la pagination -->
+        <!-- Bouton "Charger plus" -->
         <button id="loadMoreBtn" class="load-more-btn" style="display: none;">
-            <span class="material-icons">expand_more</span>
+            <i class="material-icons">expand_more</i>
             <span>Charger plus de photos</span>
         </button>
     </main>
@@ -74,7 +69,7 @@
                 <div class="file-upload-area">
                     <input type="file" id="photoInput" accept="image/*" required>
                     <label for="photoInput" class="file-label">
-                        <span class="material-icons">file_upload</span>
+                        <i class="material-icons">file_upload</i>
                         <span>Cliquez pour sélectionner une photo</span>
                     </label>
                     <div id="photoPreview" class="photo-preview"></div>
@@ -134,42 +129,48 @@
         </div>
     </div>
 
-    <!-- Navigation du bas (identique à votre index.html) -->
+    <!-- Navigation du bas (simplifiée) -->
     <nav class="bottom-nav">
-    <a href="index.html" class="nav-item active">
-        <span class="material-icons">home</span>
-        <span class="nav-label">Accueil</span>
-    </a>
-</nav>
+        <a href="index.html" class="nav-item">
+            <i class="material-icons">home</i>
+            <span class="nav-label">Accueil</span>
+        </a>
+        <a href="chat.html" class="nav-item">
+            <i class="material-icons">chat</i>
+            <span class="nav-label">Chat</span>
+        </a>
+        <a href="photos-gallery.html" class="nav-item active">
+            <i class="material-icons">photo_library</i>
+            <span class="nav-label">Photos</span>
+        </a>
+    </nav>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/supabase-config.js"></script>
-<script src="js/gallery-manager.js"></script>
-    <!-- Inclure les autres scripts de base nécessaires -->
-<script>
-// Synchroniser le thème avec le reste de l'application
-function syncThemeWithApp() {
-    // Récupérer le thème actuel depuis localStorage
-    const currentTheme = localStorage.getItem('theme') || 'light';
-    const currentFontSize = localStorage.getItem('fontSize') || 'normal';
-    
-    // Appliquer le thème à la page
-    document.documentElement.setAttribute('data-theme', currentTheme);
-    document.documentElement.setAttribute('data-font-size', currentFontSize);
-}
-
-// Exécuter au chargement de la page
-document.addEventListener('DOMContentLoaded', function() {
-    syncThemeWithApp();
-    
-    // Synchroniser à nouveau si le thème change
-    window.addEventListener('storage', function(event) {
-        if (event.key === 'theme' || event.key === 'fontSize') {
-            syncThemeWithApp();
-        }
-    });
-});
-</script>
+    <script src="js/supabase-client.js"></script>
+    <script src="js/gallery-manager.js"></script>
+    <!-- Script pour synchroniser le thème -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Synchroniser le thème avec le reste de l'application
+            function syncAppSettings() {
+                const currentTheme = localStorage.getItem('theme') || 'light';
+                document.documentElement.setAttribute('data-theme', currentTheme);
+                
+                const currentFontSize = localStorage.getItem('fontSize') || 'normal';
+                document.documentElement.setAttribute('data-font-size', currentFontSize);
+            }
+            
+            // Appliquer les réglages au chargement
+            syncAppSettings();
+            
+            // Mettre à jour si les réglages changent
+            window.addEventListener('storage', function(event) {
+                if (event.key === 'theme' || event.key === 'fontSize') {
+                    syncAppSettings();
+                }
+            });
+        });
+    </script>
 </body>
 </html>

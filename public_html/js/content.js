@@ -3,8 +3,8 @@ class ContentManager {
     this.tileContainer = null;
     this.currentTheme = localStorage.getItem('theme') || 'rouge';
     this.fontSize = localStorage.getItem('fontSize') || 'normal';
-    this.fontFamily = localStorage.getItem('fontFamily') || 'system'; // Vérifiez cette ligne
-    this.textContrast = localStorage.getItem('textContrast') || 'normal'; // Vérifiez cette ligne
+    this.fontFamily = localStorage.getItem('fontFamily') || 'system'; // Cette ligne existe mais vérifiez qu'elle est bien prise en compte
+    this.textContrast = localStorage.getItem('textContrast') || 'normal'; // Cette ligne existe mais vérifiez qu'elle est bien prise en compte
     this.deferredPrompt = null;
 }
 
@@ -24,13 +24,14 @@ class ContentManager {
         }
         document.documentElement.setAttribute('data-font-size', this.fontSize);
         this.setupEventListeners();
-        this.setupLayout();
-        this.setupTheme();
-        this.setupFontSize();
-		this.setupFontFamily(); // Nouvelle ligne
-        this.setupTextContrast(); // Nouvelle ligne
-        this.setupTiles();
-    }
+    this.setupLayout();
+    this.setupTheme();
+    this.setupFontSize();
+    this.setupFontFamily();
+    this.setupTextContrast();
+    this.setupTiles();
+    this.updateActiveNavLinks();
+}
 
     setupEventListeners() {
         // Gestion du menu
@@ -118,6 +119,19 @@ if (menuButton && sidebar) {
             addSiteBtn.addEventListener('click', this.showAddSiteDialog.bind(this));
         }
 
+	this.updateActiveNavLinks();
+// AJOUTEZ VOTRE CODE ICI - Gestion des liens actifs dans la navigation du bas
+    document.querySelectorAll('.bottom-nav .nav-item').forEach(navItem => {
+        const link = navItem.getAttribute('href');
+        const currentPath = window.location.pathname;
+        
+        // Vérifier si c'est le chemin actuel
+        if (currentPath.endsWith(link)) {
+            navItem.classList.add('active');
+        } else {
+            navItem.classList.remove('active');
+        }
+    });
         // Installation PWA
         window.addEventListener('beforeinstallprompt', (e) => {
             this.deferredPrompt = e;
@@ -261,21 +275,27 @@ setupTVIcons() {
     mobileUrl: 'https://macon-infos.com/fr/faits-divers/macon',
     isDefault: true,
     category: 'news'
-  },
-  {
-  title: "Photos d'ici et d'ailleurs",
-  icon: "photo_camera",
-  color: "var(--primary-color)", // Utilisera la couleur primaire du thème actif
-  url: "/photos-gallery.html", // Assurez-vous que l'extension .html est incluse si nécessaire
-  description: "Partagez vos plus belles photos de Saône-et-Loire et d'ailleurs"
-}
-];
+  }
+	];
 
+	// Ajouter la tuile Photos séparément après la liste des sites d'actualités
+	const photosTile = {
+	title: "Photos d'ici et d'ailleurs",
+	url: "photos-gallery.html",
+	mobileUrl: "photos-gallery.html",
+	isDefault: true,
+	category: "photos",
+  color: "var(--primary-color)"
+	};
         // Créer les tuiles d'actualités
         newsDefaultSites.forEach(site => {
             const tile = this.createTile(site);
             this.tileContainer.appendChild(tile);
         });
+
+// Ajouter la tuile photos séparément
+const photosTileElement = this.createTile(photosTile);
+this.tileContainer.appendChild(photosTileElement);
 
         // Séparateur Radio
         const separator1 = document.createElement('div');
@@ -498,10 +518,10 @@ const tvSites = [
     tile.setAttribute('data-category', site.category || 'default');
     
     // Ajouter des classes conditionnelles pour les designs spéciaux
-    // N'ajoute le badge DIRECT qu'aux chaînes TV, pas à Foot-Live
     if (site.isLive && site.category === 'tv') {
         tile.classList.add('live-content');
     }
+    
     // Structure HTML de la tuile
     tile.innerHTML = `
         <div class="tile-content">
@@ -513,11 +533,20 @@ const tvSites = [
     tile.dataset.siteUrl = site.url;
     tile.dataset.mobileSiteUrl = site.mobileUrl || site.url;
         
-        // Gestion du clic normal
-        tile.addEventListener('click', () => {
-            this.animateTileClick(tile);
-            window.open(site.mobileUrl || site.url, '_blank');
-        });
+    // Gestion du clic normal
+    tile.addEventListener('click', () => {
+        this.animateTileClick(tile);
+        
+        // Vérifier si c'est un lien interne ou externe
+        const url = site.mobileUrl || site.url;
+        if (url.startsWith('http')) {
+            // Lien externe - ouvrir dans un nouvel onglet
+            window.open(url, '_blank');
+        } else {
+            // Lien interne - naviguer dans la même fenêtre
+            window.location.href = url;
+        }
+    });
 
         // Menu contextuel (clic droit)
         tile.addEventListener('contextmenu', (e) => {
@@ -1472,6 +1501,18 @@ changeTextContrast(contrast) {
             console.error('Erreur ajout site:', error);
             this.showToast('Erreur lors de l\'ajout du site');
         }
+    }
+	updateActiveNavLinks() {
+        document.querySelectorAll('.bottom-nav .nav-item').forEach(navItem => {
+            const link = navItem.getAttribute('href');
+            const currentPath = window.location.pathname;
+            
+            if (currentPath.endsWith(link)) {
+                navItem.classList.add('active');
+            } else {
+                navItem.classList.remove('active');
+            }
+        });
     }
 }
 

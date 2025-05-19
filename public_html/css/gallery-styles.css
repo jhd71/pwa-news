@@ -398,3 +398,19 @@
 [data-theme="dark"] .comment {
     background: var(--comment-bg-dark, #333);
 }
+
+.tile[data-category="photos"] {
+    background-color: var(--primary-color, #9C27B0);
+}
+
+[data-theme="dark"] .tile[data-category="photos"] {
+    background-color: var(--primary-color-dark, #7B1FA2);
+}
+
+[data-theme="rouge"] .tile[data-category="photos"] {
+    background-color: var(--primary-color-rouge, #D32F2F);
+}
+
+[data-theme="bleuciel"] .tile[data-category="photos"] {
+    background-color: var(--primary-color-bleuciel, #2196F3);
+}
