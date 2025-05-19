@@ -265,8 +265,8 @@ setupTVIcons() {
   {
   title: "Photos d'ici et d'ailleurs",
   icon: "photo_camera",
-  color: "#9C27B0", // Couleur violette, à adapter selon votre thème
-  url: "/photos-gallery",
+  color: "var(--primary-color)", // Utilisera la couleur primaire du thème actif
+  url: "/photos-gallery.html", // Assurez-vous que l'extension .html est incluse si nécessaire
   description: "Partagez vos plus belles photos de Saône-et-Loire et d'ailleurs"
 }
 ];

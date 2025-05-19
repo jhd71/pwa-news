@@ -1,5 +1,19 @@
 /* gallery-styles.css */
 
+/* Assurez-vous que ces variables utilisent celles du thème principal */
+:root {
+    --primary-color: var(--primary, #9371D9);
+    --accent-color: var(--accent, #7b1fa2);
+    --background-color: var(--bg, white);
+    --card-bg: var(--card-background, white);
+    --text-color: var(--text, #333);
+    --text-muted: var(--text-secondary, #666);
+    --border-color: var(--border, #ddd);
+    --input-bg: var(--input-background, white);
+    --button-bg: var(--button-background, #f0f0f0);
+    --comment-bg: var(--comment-background, #f5f5f5);
+}
+
 /* Structure principale */
 .gallery-main {
     padding: 20px;
