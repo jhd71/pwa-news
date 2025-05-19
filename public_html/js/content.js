@@ -279,21 +279,21 @@ setupTVIcons() {
         // Section Radio
         const radioSites = [		
   {
-    title: '📻 France Bleu<br>Bourgogne',
+    title: 'France Bleu<br>Bourgogne',
     url: 'https://www.radio-en-ligne.fr/france-bleu-bourgogne',
     mobileUrl: 'https://www.radio-en-ligne.fr/france-bleu-bourgogne',
     isDefault: true,
     category: 'radio'
   },
   {
-    title: '🎧 Radios de Bourgogne',
+    title: 'Radios de Bourgogne',
     url: 'https://ecouterradioenligne.com/region/bourgogne/#prevert-chalon',
     mobileUrl: 'https://ecouterradioenligne.com/region/bourgogne/#prevert-chalon',
     isDefault: true,
     category: 'radio'
   },
   {
-    title: '🚫 Radio Sans Pub',
+    title: 'Radio Sans Pub',
     url: 'https://www.radio-en-ligne.fr/radio-sans-pub/',
     mobileUrl: 'https://www.radio-en-ligne.fr/radio-sans-pub/',
     isDefault: true,
@@ -376,7 +376,7 @@ const tvSites = [
     category: 'sports'
   },
   {
-    title: '🏟️ Foot<br>FC Montceau-Bourgogne',
+    title: '⚽ Foot<br>FC Montceau-Bourgogne',
     url: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
     mobileUrl: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
     isDefault: true,
@@ -495,54 +495,6 @@ const tvSites = [
     if (site.isLive && site.category === 'tv') {
         tile.classList.add('live-content');
     }
-    
-    // Ajouter des classes spéciales pour les icônes
-    if (site.category === 'social') {
-        if (site.title === 'YouTube') {
-            tile.classList.add('tile-youtube');
-        } else if (site.title === 'Twitch') {
-            tile.classList.add('tile-twitch');
-        } else if (site.title === 'TikTok') {
-            tile.classList.add('tile-tiktok');
-        }
-		} else if (site.category === 'news') {
-    if (site.title === 'Montceau News' || site.url.includes('montceau-news')) {
-        tile.classList.add('tile-montceau-news');
-    } else if (site.title === 'Le JSL' || site.url.includes('lejsl.com')) {
-        tile.classList.add('tile-jsl');
-    } else if (site.title === 'L\'Informateur de Bourgogne' || site.url.includes('informateurdebourgogne')) {
-        tile.classList.add('tile-informateur');
-    } else if (site.title === 'Creusot Infos' || site.url.includes('creusot-infos')) {
-        tile.classList.add('tile-creusot');
-    } else if (site.title === 'Faits Divers Saône-et-Loire' || site.url.includes('faitsdivers')) {
-        tile.classList.add('tile-faits-divers');
-    } else if (site.title === 'Mâcon-Infos' || site.url.includes('macon-infos')) {
-        tile.classList.add('tile-macon');
-        }
-	} else if (site.category === 'tv') {
-        if (site.title === 'France 3 Bourgogne' || site.url.includes('france3')) {
-            tile.classList.add('tile-france3');
-        } else if (site.title === 'BFMTV' || site.url.includes('bfmtv')) {
-            tile.classList.add('tile-bfmtv');
-        } else if (site.title === 'CNews' || site.url.includes('cnews')) {
-            tile.classList.add('tile-cnews');
-        } else if (site.title === 'FranceTV Info' || site.url.includes('francetvinfo')) {
-            tile.classList.add('tile-francetv');
-        }
-    } else if (site.category === 'sports') {
-    if (site.title.includes('Foot') || site.url.includes('foot')) {
-        tile.classList.add('tile-foot');
-    } else if (site.title.includes('Basket') || site.url.includes('basket')) {
-        tile.classList.add('tile-basket');
-    } else if (site.title.includes('Rugby') || site.url.includes('rugby')) {
-        tile.classList.add('tile-rugby');
-    } else if (site.title.includes('Cyclisme') || site.url.includes('cyclisme')) {
-        tile.classList.add('tile-cyclisme');
-    }
-    } else if (site.category === 'radio') {
-        tile.classList.add('tile-radio');
-    }
-    
     // Structure HTML de la tuile
     tile.innerHTML = `
         <div class="tile-content">
