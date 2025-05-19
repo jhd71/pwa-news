@@ -261,20 +261,6 @@ setupTVIcons() {
     mobileUrl: 'https://macon-infos.com/fr/faits-divers/macon',
     isDefault: true,
     category: 'news'
-  },
-  {
-    title: '✉️ Proposer une actu (mail)',
-    url: 'mailto:contact@actuetmedia.fr',
-    mobileUrl: 'mailto:contact@actuetmedia.fr',
-    isDefault: true,
-    category: 'news'
-  },
-  {
-    title: '💬 Proposer via Messenger',
-    url: 'https://m.me/actuetmedia',
-    mobileUrl: 'https://m.me/actuetmedia',
-    isDefault: true,
-    category: 'news'
   }
 ];
 
@@ -520,9 +506,7 @@ const tvSites = [
             tile.classList.add('tile-tiktok');
         }
 		} else if (site.category === 'news') {
-    if (site.title === '💬 Proposer une actu locale' || site.url.includes('contact@actuetmedia.fr')) {
-        tile.classList.add('tile-facebook-actu');
-    } else if (site.title === 'Montceau News' || site.url.includes('montceau-news')) {
+    if (site.title === 'Montceau News' || site.url.includes('montceau-news')) {
         tile.classList.add('tile-montceau-news');
     } else if (site.title === 'Le JSL' || site.url.includes('lejsl.com')) {
         tile.classList.add('tile-jsl');
@@ -534,9 +518,8 @@ const tvSites = [
         tile.classList.add('tile-faits-divers');
     } else if (site.title === 'Mâcon-Infos' || site.url.includes('macon-infos')) {
         tile.classList.add('tile-macon');
-    }
-	}
-	else if (site.category === 'tv') {
+        }
+	} else if (site.category === 'tv') {
         if (site.title === 'France 3 Bourgogne' || site.url.includes('france3')) {
             tile.classList.add('tile-france3');
         } else if (site.title === 'BFMTV' || site.url.includes('bfmtv')) {
