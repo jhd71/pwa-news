@@ -19,6 +19,7 @@ const STATIC_RESOURCES = [
 '/css/background-selector.css',
 '/css/font-settings.css',
 '/css/tile-enhancements.css',
+'/css/gallery-styles.css',
 
 // Scripts JavaScript
 '/js/app.js',
@@ -46,6 +47,7 @@ const STATIC_RESOURCES = [
 '/js/theme-manager.js',
 '/js/utils.js',
 '/js/weather-widget.js',
+'/js/gallery-manager.js',
 '/js/welcome-manager.js',
     
     // Fichiers de configuration

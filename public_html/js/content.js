@@ -261,7 +261,14 @@ setupTVIcons() {
     mobileUrl: 'https://macon-infos.com/fr/faits-divers/macon',
     isDefault: true,
     category: 'news'
-  }
+  },
+  {
+  title: "Photos d'ici et d'ailleurs",
+  icon: "photo_camera",
+  color: "#9C27B0", // Couleur violette, à adapter selon votre thème
+  url: "/photos-gallery",
+  description: "Partagez vos plus belles photos de Saône-et-Loire et d'ailleurs"
+}
 ];
 
         // Créer les tuiles d'actualités

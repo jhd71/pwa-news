@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light" data-font-size="normal">
+<head>
+    <!-- Inclure les mêmes méta-informations et CSS de base que votre index.html -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="description" content="Galerie photo collaborative - Actu & Média. Partagez vos plus belles photos de Saône-et-Loire et d'ailleurs.">
+    <title>Photos d'ici et d'ailleurs - Actu&Média</title>
+
+    <!-- Inclure les mêmes feuilles de style que votre index.html -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Ajouter des styles spécifiques à la galerie photo -->
+    <link rel="stylesheet" href="css/gallery-styles.css">
+</head>
+<body>
+    <!-- En-tête identique à votre index.html -->
+    <header class="app-header">
+        <button type="button" id="menuButton" class="menu-button" aria-label="Menu">
+            <span class="material-icons">menu</span>
+        </button>
+        <button type="button" id="settingsButton" class="settings-button" aria-label="Paramètres">
+            <span class="material-icons">settings</span>
+        </button>   
+        <h1 class="site-title">
+            <img src="images/Actu&Media.png" alt="Actu & Média" class="site-logo">
+        </h1>
+    </header>
+
+    <!-- Contenu principal de la galerie -->
+    <main class="gallery-main">
+        <div class="gallery-header">
+            <h1>Photos d'ici et d'ailleurs</h1>
+            <p class="gallery-intro">Partagez vos plus belles photos de la région et au-delà. Montrez-nous votre regard sur le monde !</p>
+            <button id="uploadPhotoBtn" class="upload-btn">
+                <span class="material-icons">add_a_photo</span>
+                <span>Ajouter une photo</span>
+            </button>
+        </div>
+
+        <!-- Chargement en cours (s'affiche pendant le chargement des photos) -->
+        <div id="loadingIndicator" class="loading-indicator">
+            <div class="spinner"></div>
+            <p>Chargement des photos...</p>
+        </div>
+
+        <!-- Conteneur pour les photos -->
+        <div id="photoGrid" class="photo-grid"></div>
+
+        <!-- Message si aucune photo n'est disponible -->
+        <div id="noPhotosMessage" class="no-photos-message" style="display: none;">
+            <span class="material-icons">photo_library</span>
+            <h3>Aucune photo pour le moment</h3>
+            <p>Soyez le premier à partager une photo!</p>
+        </div>
+
+        <!-- Bouton "Charger plus" pour la pagination -->
+        <button id="loadMoreBtn" class="load-more-btn" style="display: none;">
+            <span class="material-icons">expand_more</span>
+            <span>Charger plus de photos</span>
+        </button>
+    </main>
+
+    <!-- Modal pour l'upload de photos -->
+    <div id="uploadModal" class="upload-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Ajouter une photo</h2>
+                <button class="close-modal" id="closeUploadModal">&times;</button>
+            </div>
+            <form id="photoUploadForm">
+                <div class="file-upload-area">
+                    <input type="file" id="photoInput" accept="image/*" required>
+                    <label for="photoInput" class="file-label">
+                        <span class="material-icons">file_upload</span>
+                        <span>Cliquez pour sélectionner une photo</span>
+                    </label>
+                    <div id="photoPreview" class="photo-preview"></div>
+                </div>
+                <div class="form-group">
+                    <label for="photoTitle">Titre de la photo</label>
+                    <input type="text" id="photoTitle" placeholder="Donnez un titre à votre photo" required>
+                </div>
+                <div class="form-group">
+                    <label for="photoDescription">Description</label>
+                    <textarea id="photoDescription" placeholder="Racontez l'histoire de cette photo..." rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="photoLocation">Lieu</label>
+                    <input type="text" id="photoLocation" placeholder="Où a été prise cette photo?">
+                </div>
+                <div class="form-group">
+                    <label for="photographerName">Votre nom/pseudo</label>
+                    <input type="text" id="photographerName" placeholder="Comment souhaitez-vous être identifié?" required>
+                </div>
+                <button type="submit" class="submit-photo-btn">Partager ma photo</button>
+            </form>
+            <div id="uploadProgress" class="upload-progress" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-bar-fill"></div>
+                </div>
+                <span class="progress-text">Envoi en cours...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour afficher une photo en grand -->
+    <div id="photoViewModal" class="photo-view-modal">
+        <div class="modal-content">
+            <button class="close-modal" id="closePhotoView">&times;</button>
+            <div class="photo-detail-view">
+                <img id="modalPhotoImg" src="" alt="">
+                <div class="photo-info">
+                    <h3 id="modalPhotoTitle"></h3>
+                    <p id="modalPhotoDescription"></p>
+                    <div class="photo-metadata">
+                        <span id="modalPhotoLocation"></span>
+                        <span id="modalPhotoDate"></span>
+                        <span id="modalPhotoAuthor"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="photo-comments">
+                <h4>Commentaires</h4>
+                <div id="commentsContainer" class="comments-container"></div>
+                <form id="commentForm" class="comment-form">
+                    <input type="text" id="commentAuthor" placeholder="Votre nom" required>
+                    <textarea id="commentText" placeholder="Votre commentaire..." required></textarea>
+                    <button type="submit">Publier</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation du bas (identique à votre index.html) -->
+    <nav class="bottom-nav">
+        <!-- Inclure les mêmes boutons de navigation que votre index.html -->
+    </nav>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/gallery-manager.js"></script>
+    <!-- Inclure les autres scripts de base nécessaires -->
+</body>
+</html>
