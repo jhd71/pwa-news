@@ -758,4 +758,5 @@ async function uploadPhoto(event) {
     } finally {
         uploadProgress.style.display = 'none';
     }
-}
+	}
+	}
