@@ -801,13 +801,6 @@ async function uploadPhoto(event) {
         uploadProgress.style.display = 'none';
     }
 }
-
-// Fermeture du setTimeout - cette accolade manquait
-}, 100);
-
-// Fin du fichier - ajouter un console.log pour confirmer
-console.log('Fin du fichier gallery-manager.js atteinte correctement');
-
 // Ajoutez ce code temporairement à la fin de votre fichier gallery-manager.js pour tester directement
 setTimeout(async () => {
   try {
@@ -826,3 +819,10 @@ setTimeout(async () => {
     console.error("Erreur lors du test Supabase:", err);
   }
 }, 2000);
+// Fermeture du setTimeout - cette accolade manquait
+}, 100);
+
+// Fin du fichier - ajouter un console.log pour confirmer
+console.log('Fin du fichier gallery-manager.js atteinte correctement');
+
+
