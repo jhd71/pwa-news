@@ -1,259 +1,73 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="light" data-font-size="normal" class="ios-page">
+<html lang="fr" data-theme="rouge" data-font-size="normal">
 <head>
-    <script>
-        // Appliquer le thème sauvegardé dès le début du chargement
-        (function() {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                document.documentElement.setAttribute('data-theme', savedTheme);
-            } else {
-                document.documentElement.setAttribute('data-theme', 'rouge');
-            }
-        })();
-    </script>
-    <!-- Méta-informations essentielles -->
     <meta charset="UTF-8">
-    <meta name="description" content="Actu & Média - Votre source d'actualités locales et médias en Saône-et-Loire. Informations locales, radio et TV en direct.">
-    <meta name="author" content="Actu & Média">
-    <meta name="keywords" content="actualités, Saône-et-Loire, Montceau News, Le JSL, L'Informateur, Creusot Infos, France Bleu, BFM TV, médias locaux">
-    <meta name="google-site-verification" content="74sCYbSwcWjU7BQ8Mxhboe9IiRzajIbyy6C1hyuAr3U">
-    <title>Actu&Média</title>
-
-    <!-- Configuration PWA -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="application-name" content="Actu&Média">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#1a237e">
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#1a237e">
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1a237e">
-    <meta name="msapplication-navbutton-color" content="#1a237e">
-    <meta name="msapplication-starturl" content="/">
-    <meta name="msapplication-TileColor" content="#1a237e">
-    
-    <!-- Configuration iOS optimisée -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Actu&Média">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-    <!-- Favicons et icônes -->
-    <link rel="icon" type="image/png" sizes="192x192" href="/images/AM-192-v2.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="/images/AM-512-v2.png">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" sizes="192x192" href="/images/AM-192-v2.png">
-    <meta name="msapplication-TileImage" content="images/INFOS-192.png">
-    <!--[if IE]>
-      <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-    <![endif]-->
-
-    <!-- Écrans de démarrage iOS -->
-    <link rel="apple-touch-startup-image" href="images/splash-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="images/splash-1668x2388.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="images/splash-1536x2048.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="images/splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="images/splash-1242x2688.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="images/splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="images/splash-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-
-    <!-- Métadonnées Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://actuetmedia.fr/">
-    <meta property="og:title" content="Actu & Média - Actualités et médias locaux">
-    <meta property="og:description" content="Votre source d'actualités locales et médias en Saône-et-Loire. Informations locales, radio et TV en direct.">
-    <meta property="og:image" content="https://actuetmedia.fr/images/INFOS.png">
-
-    <!-- Métadonnées Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://actuetmedia.fr/">
-    <meta property="twitter:title" content="Actu & Média - Actualités et médias locaux">
-    <meta property="twitter:description" content="Votre source d'actualités locales et médias en Saône-et-Loire. Informations locales, radio et TV en direct.">
-    <meta property="twitter:image" content="https://actuetmedia.fr/images/INFOS.png">
-
-    <!-- Bibliothèques externes -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-client.js"></script>
+    <title>Actu&Média</title>
     
-    <!-- Polices Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-    <!-- Feuilles de style principales -->
+    <!-- Styles de base -->
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/chat-styles.css">
-    <link rel="stylesheet" href="css/news-panel.css">
-    <link rel="stylesheet" href="css/widgets.css">
-    <link rel="stylesheet" href="css/settings-styles.css">
-    <link rel="stylesheet" href="css/chat-ban.css">
-    <link rel="stylesheet" href="css/survey-styles.css">
-    <link rel="stylesheet" href="css/tile-enhancements.css">
-    <link rel="stylesheet" href="css/tv-tiles-fix.css">
-    <link rel="stylesheet" href="css/font-settings.css">
     <link rel="stylesheet" href="css/theme-bleuciel.css">
-    <link rel="stylesheet" href="css/background-selector.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
-    <!-- Style spécifique à iOS -->
+    <!-- Styles iOS pour les corrections essentielles -->
     <style>
-        /* Styles spécifiques à iOS */
+        /* Styles iOS de base */
         :root {
             --safe-area-top: env(safe-area-inset-top, 0px);
             --safe-area-bottom: env(safe-area-inset-bottom, 0px);
-            --safe-area-left: env(safe-area-inset-left, 0px);
-            --safe-area-right: env(safe-area-inset-right, 0px);
-            --ios-header-height: 60px;
-            --ios-btn-height: 44px;
-            --ios-nav-height: 65px;
         }
         
+        /* Correction pour le corps de la page */
         body {
             padding-top: var(--safe-area-top);
+            padding-bottom: var(--safe-area-bottom);
             -webkit-overflow-scrolling: touch;
-            overflow-x: hidden;
-            max-width: 100vw;
         }
         
-        /* En-tête */
-        .app-header {
+        /* Correction pour la barre du bas */
+        .bottom-nav {
             position: fixed;
-            top: 0;
+            bottom: 0;
             left: 0;
             right: 0;
-            height: var(--ios-header-height);
-            padding-top: var(--safe-area-top);
-            z-index: 2000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            padding-bottom: var(--safe-area-bottom);
+            z-index: 1000;
         }
         
-        .site-title {
-            text-align: center;
-            margin: 0;
-        }
-        
-        .site-logo {
-            height: 40px;
-            max-width: 200px;
-            object-fit: contain;
-        }
-        
-        /* Boutons supérieurs */
-        .menu-button, .settings-button {
-            position: fixed !important;
-            z-index: 2001 !important;
-            top: calc(var(--safe-area-top) + 8px) !important;
-            width: var(--ios-btn-height) !important;
-            height: var(--ios-btn-height) !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            background: rgba(255,255,255,0.2) !important;
-            border-radius: 50% !important;
-        }
-        
-        .menu-button {
-            left: 15px !important;
-        }
-        
-        .settings-button {
-            right: 15px !important;
-        }
-        
-        /* Bouton infos en direct */
-        .button-group {
-            position: fixed !important;
-            top: calc(var(--ios-header-height) + var(--safe-area-top)) !important;
-            left: 0 !important;
-            right: 0 !important;
-            z-index: 1500 !important;
-            display: flex !important;
-            justify-content: center !important;
-            padding: 10px 0 !important;
-        }
-        
-        /* Contenu principal */
-        main {
-            position: relative !important;
-            margin-top: calc(var(--ios-header-height) + var(--safe-area-top) + 60px) !important;
-            padding-bottom: calc(var(--ios-nav-height) + var(--safe-area-bottom) + 40px) !important;
-            z-index: 1000 !important;
-        }
-        
-        /* Barre de défilement d'infos */
+        /* Correction pour la barre de défilement d'infos */
         .news-ticker {
-            position: fixed !important;
-            bottom: calc(var(--ios-nav-height) + var(--safe-area-bottom)) !important;
-            left: 0 !important;
-            right: 0 !important;
-            height: 36px !important;
-            z-index: 1400 !important;
-            background-color: rgba(0, 0, 0, 0.8) !important;
+            position: fixed;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+            z-index: 900;
         }
         
-        /* Navigation inférieure */
-        .bottom-nav {
-            position: fixed !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            height: var(--ios-nav-height) !important;
-            padding-bottom: var(--safe-area-bottom) !important;
-            z-index: 1500 !important;
-            background-color: var(--primary-color) !important;
-        }
-        
-        .nav-item {
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center !important;
-            justify-content: center !important;
-        }
-        
-        .nav-item span:not(.material-icons) {
-            font-size: 10px !important;
-        }
-        
-        /* Gestion des modaux */
-        .bg-selector-panel {
-            z-index: 9999 !important;
-            padding-top: var(--safe-area-top) !important;
-            padding-bottom: var(--safe-area-bottom) !important;
-        }
-        
-        /* Optimisations tactiles */
-        * {
-            -webkit-tap-highlight-color: transparent !important;
-            touch-action: manipulation !important;
+        /* Correction pour le contenu principal */
+        main {
+            margin-top: 80px; /* Espace pour l'en-tête */
+            margin-bottom: 110px; /* Espace pour le ticker et la nav */
+            padding-left: 10px;
+            padding-right: 10px;
         }
     </style>
 </head>
-<body class="ios-body">
+<body>
     <header class="app-header">
         <button type="button" id="menuButton" class="menu-button" aria-label="Menu">
             <span class="material-icons">menu</span>
         </button>
-        <button type="button" id="settingsButton" class="settings-button" aria-label="Paramètres">
-            <span class="material-icons">settings</span>
-        </button>   
         <h1 class="site-title">
             <img src="images/Actu&Media.png" alt="Actu & Média" class="site-logo">
         </h1>
+        <button type="button" id="settingsButton" class="settings-button" aria-label="Paramètres">
+            <span class="material-icons">settings</span>
+        </button>
     </header>
 
-    <!-- Widget météo avec bouton de fermeture -->
-    <div class="weather-sidebar" id="weatherSidebar">
-        <button class="weather-toggle" title="Masquer la météo">
-            <span class="material-icons">close</span>
-        </button>
-        <div id="weather-widget">Chargement...</div>
-    </div>
-
     <!-- Bouton Infos en direct -->
-    <div class="button-group">
+    <div class="button-group" style="margin-top: 15px; text-align: center;">
         <button id="newsButton" class="news-button">
             <span class="material-icons">feed</span>
             <span>Infos en direct</span>
@@ -276,7 +90,7 @@
     <nav class="bottom-nav">
         <button class="nav-item" id="darkModeToggle">
             <span class="material-icons">dark_mode</span>
-            <span>Sombre</span>
+            <span>Rouge</span>
         </button>
         <button class="nav-item" id="addSiteBtn">
             <span class="material-icons">add_circle</span>
@@ -297,104 +111,12 @@
         <button class="nav-item" id="chatToggleBtn">
             <span class="material-icons">chat</span>
             <span>Chat</span>
-            <span class="chat-notification-badge hidden">0</span>
         </button>
     </nav>
 
-    <!-- Menu latéral -->
-    <aside id="sidebar" class="sidebar">
-        <div class="sidebar-header">
-            <h2>Menu</h2>
-            <button type="button" class="close-btn" aria-label="Fermer">
-                <span class="material-icons">close</span>
-            </button>
-        </div>
-        <div class="menu-item">
-            <a href="https://www.swisstransfer.com/fr-ch" target="_blank">
-                <span class="material-icons">upload</span>
-                Swiss_Transfer
-            </a>
-        </div>
-        <div class="menu-item">
-            <a href="mailto:contact@actuetmedia.fr">
-                <span class="material-icons">email</span>
-                Contact
-            </a>
-        </div>
-        <div class="menu-item">
-            <a href="/mentions-legales">
-                <span class="material-icons">gavel</span>
-                Mentions légales
-            </a>
-        </div>
-        <div class="menu-item">
-            <a href="/politique-confidentialite">
-                <span class="material-icons">security</span>
-                Confidentialité
-            </a>
-        </div>
-        <div class="menu-item">
-            <a href="/conditions-utilisation">
-                <span class="material-icons">gavel</span>
-                Conditions d'utilisation
-            </a>
-        </div>
-        <div class="menu-item">
-            <button id="menuInstall" class="menu-link">
-                <span class="material-icons">download</span>
-                <span>Installer l'application</span>
-            </button>
-        </div>
-        <a href="#" id="bgSelectorBtn" class="menu-link" style="display: flex; align-items: center; text-decoration: none; color: white; padding: 12px 30px;">
-            <span class="material-icons" style="margin-right: 1px; width: 24px; text-align: center; display: inline-flex; justify-content: center;">
-                wallpaper
-            </span>
-            <span>Fond d'écran</span>
-        </a>
-        <div class="menu-item qr-code-container">
-            <h4>Scannez notre QR code</h4>
-            <img src="images/qrcode.png" alt="QR Code" class="sidebar-qr-code">
-        </div>
-        <div class="menu-item">
-            <div class="copyright-text">
-                <span class="material-icons">copyright</span>
-                <span><script>document.write(new Date().getFullYear())</script> Actu & Média</span>
-            </div>
-        </div>
-    </aside>
-
-    <!-- Menu déroulant des actualités -->
-    <div class="news-panel" id="newsPanel">
-        <div class="panel-header">
-            <h3>Actualités en direct</h3>
-            <button class="close-panel">
-                <span class="material-icons">close</span>
-            </button>
-        </div>
-        <div class="panel-content" id="newsPanelContent">
-            <!-- Les actualités vont ici -->
-        </div>
-        <!-- Bouton de fermeture flottant (visible uniquement sur mobile) -->
-        <button class="mobile-close-panel" id="mobileClosePanel">
-            <span class="material-icons">keyboard_arrow_down</span>
-            <span>Fermer</span>
-        </button>
-        <button class="refresh-button" id="refreshButton">
-            <span class="material-icons">refresh</span> 
-            Actualiser les infos
-        </button>
-    </div>
-
-    <!-- Modal du sondage -->
-    <div class="survey-modal" id="surveyModal">
-        <!-- Contenu du sondage (identique à index.html) -->
-    </div>
-
-   <!-- Scripts essentiels (chargement rapide) -->
-<script src="js/ios-detector.js"></script> <!-- Remplacez par un petit script de détection de notch/home bar -->
-<script src="js/ban-manager.js"></script>
-
-<!-- Scripts de fonctionnalités -->
+    <!-- Scripts minimaux - utilisez les originaux sans iOS -->
+    <!-- À la fin du body, juste avant </body> -->
+<script src="js/app.js" type="module"></script>
 <script src="js/welcome-manager.js"></script>
 <script src="js/news-manager.js"></script>
 <script src="js/newsTickerManager.js"></script>
@@ -405,40 +127,44 @@
 <script src="js/theme-manager.js"></script>
 <script src="js/donation.js"></script>
 <script src="js/survey-manager.js"></script>
-
-<!-- Scripts spécifiques à iOS -->
-<script src="js/ios-app.js" type="module"></script>
-<script src="js/ios-install.js"></script>
-<script src="js/ios-chat-fix.js"></script>
 <script src="js/background-selector.js"></script>
 
-    <!-- Scripts iOS spécifiques -->
-    <script>
-        // Script pour gérer les problèmes de position fixe sur iOS
-        document.addEventListener('DOMContentLoaded', function() {
-            // Corriger les problèmes d'affichage liés à l'apparition/disparition de la barre d'adresse
-            const setIOSHeight = () => {
-                const vh = window.innerHeight * 0.01;
-                document.documentElement.style.setProperty('--vh', `${vh}px`);
-            };
-            
-            setIOSHeight();
-            window.addEventListener('resize', setIOSHeight);
-            window.addEventListener('orientationchange', () => {
-                setTimeout(setIOSHeight, 100);
-            });
-            
-            // Améliorer la réactivité tactile
-            document.querySelectorAll('.nav-item, button:not(.tile)').forEach(btn => {
-                btn.addEventListener('touchstart', function() {
-                    this.classList.add('ios-active');
-                });
-                
-                btn.addEventListener('touchend', function() {
-                    this.classList.remove('ios-active');
-                });
-            });
+<!-- Script iOS minimaliste pour ajustements -->
+<script>
+    // Ajustements iOS minimaux
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ajouter des classes iOS
+        document.documentElement.classList.add('ios');
+        document.body.classList.add('ios-body');
+        
+        // Ajuster la hauteur de la vue
+        const setIOSHeight = () => {
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        };
+        
+        setIOSHeight();
+        window.addEventListener('resize', setIOSHeight);
+        window.addEventListener('orientationchange', () => {
+            setTimeout(setIOSHeight, 100);
         });
-    </script>
+        
+        // Ajuster les positions fixes pour iOS
+        const ticker = document.querySelector('.news-ticker');
+        if (ticker) {
+            ticker.style.bottom = 'calc(60px + env(safe-area-inset-bottom, 0px))';
+        }
+        
+        const nav = document.querySelector('.bottom-nav');
+        if (nav) {
+            nav.style.paddingBottom = 'env(safe-area-inset-bottom, 0px)';
+        }
+        
+        // Améliorer le défilement
+        document.querySelectorAll('.tile-container, .news-panel, .sidebar').forEach(el => {
+            el.style.webkitOverflowScrolling = 'touch';
+        });
+    });
+</script>
 </body>
 </html>
