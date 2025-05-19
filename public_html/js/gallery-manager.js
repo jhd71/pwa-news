@@ -140,6 +140,8 @@ function initializeGallery() {
 
 // Charger les photos
 async function loadPhotos(isLoadMore = false) {
+    console.log("Début de loadPhotos, supabase disponible:", !!supabase);
+    
     if (!supabase) {
         console.error('Erreur: Supabase n\'est pas initialisé');
         loadingIndicator.style.display = 'none';
@@ -163,8 +165,11 @@ async function loadPhotos(isLoadMore = false) {
     }
     
     try {
+        console.log("Tentative de chargement des photos...");
         const from = currentPage * pageSize;
         const to = from + pageSize - 1;
+        
+        console.log(`Requête Supabase: from=${from}, to=${to}`);
         
         let { data: photos, error } = await supabase
             .from('photos')
@@ -172,9 +177,31 @@ async function loadPhotos(isLoadMore = false) {
             .order('created_at', { ascending: false })
             .range(from, to);
         
-        if (error) throw error;
+        console.log("Réponse Supabase:", { photos, error });
         
-        // Reste du code inchangé...
+        if (error) {
+            console.error("Erreur Supabase:", error);
+            throw error;
+        }
+        
+        if (photos && photos.length > 0) {
+            console.log(`${photos.length} photos récupérées:`, photos);
+            renderPhotos(photos);
+        } else {
+            console.log("Aucune photo trouvée");
+            noPhotosMessage.style.display = 'block';
+        }
+        
+        if (photos && photos.length < pageSize) {
+            hasMorePhotos = false;
+            loadMoreBtn.style.display = 'none';
+        } else {
+            hasMorePhotos = true;
+            loadMoreBtn.style.display = 'block';
+        }
+        
+        currentPage++;
+        
     } catch (error) {
         console.error('Erreur lors du chargement des photos:', error);
         alert('Impossible de charger les photos. Veuillez réessayer plus tard.');
@@ -192,7 +219,22 @@ function loadMorePhotos() {
 
 // Afficher les photos dans la grille
 function renderPhotos(photos) {
+    console.log("Début de renderPhotos avec", photos.length, "photos");
+    
+    if (!photos || photos.length === 0) {
+        console.log("Aucune photo à afficher");
+        return;
+    }
+    
     photos.forEach(photo => {
+        // Ajouter cette vérification
+        if (!photo || !photo.id) {
+            console.error("Photo invalide:", photo);
+            return;
+        }
+        
+        console.log("Rendu de la photo:", photo);
+        
         const photoCard = document.createElement('div');
         photoCard.className = 'photo-card';
         photoCard.dataset.id = photo.id;
@@ -765,3 +807,22 @@ async function uploadPhoto(event) {
 
 // Fin du fichier - ajouter un console.log pour confirmer
 console.log('Fin du fichier gallery-manager.js atteinte correctement');
+
+// Ajoutez ce code temporairement à la fin de votre fichier gallery-manager.js pour tester directement
+setTimeout(async () => {
+  try {
+    console.log("Test direct de la connexion Supabase:");
+    const { data, error } = await supabase.from('photos').select('count');
+    console.log("Résultat du comptage:", data, error);
+    
+    // Essayez aussi une requête simple
+    const { data: testData, error: testError } = await supabase
+      .from('photos')
+      .select('id, title')
+      .limit(1);
+    console.log("Résultat du test:", testData, testError);
+    
+  } catch (err) {
+    console.error("Erreur lors du test Supabase:", err);
+  }
+}, 2000);
