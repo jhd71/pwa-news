@@ -758,5 +758,10 @@ async function uploadPhoto(event) {
     } finally {
         uploadProgress.style.display = 'none';
     }
-	}
-	}
+}
+
+// Fermeture du setTimeout - cette accolade manquait
+}, 100);
+
+// Fin du fichier - ajouter un console.log pour confirmer
+console.log('Fin du fichier gallery-manager.js atteinte correctement');
