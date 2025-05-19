@@ -2,6 +2,15 @@
 <html lang="fr" data-theme="light" data-font-size="normal">
 <head>
 <script>
+  // Vérification supplémentaire pour rediriger les utilisateurs iOS
+  if (/iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream) {
+    // Seulement si nous ne sommes pas déjà sur la version iOS
+    if (window.location.pathname === '/' && !document.documentElement.classList.contains('ios-page')) {
+      window.location.reload(); // Recharger pour déclencher la redirection Vercel
+    }
+  }
+</script>
+<script>
     // Appliquer le thème sauvegardé dès le début du chargement
     (function() {
         const savedTheme = localStorage.getItem('theme');
@@ -94,7 +103,6 @@
 	<link rel="stylesheet" href="css/font-settings.css">
 	<link rel="stylesheet" href="css/theme-bleuciel.css">
 	<link rel="stylesheet" href="css/background-selector.css">
-	<link rel="stylesheet" href="css/ios-specific.css">
 	<link rel="canonical" href="https://actuetmedia.fr/" />
 </head>
 <body>
@@ -326,8 +334,6 @@
 <script src="js/weather-widget.js"></script>
 <script src="js/quick-links.js"></script>
 <script src="js/tablet-fixes.js"></script>
-<script src="js/chat-keyboard-fix.js"></script>
-<script src="js/ios-install.js"></script>
 <script src="js/ios-chat-fix.js"></script>
 <script src="js/ban-check.js"></script>
 <script src="js/theme-manager.js"></script>
