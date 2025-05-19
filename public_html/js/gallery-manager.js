@@ -184,15 +184,25 @@ async function loadPhotos(isLoadMore = false) {
             throw error;
         }
         
-        if (photos && photos.length > 0) {
-            console.log(`${photos.length} photos récupérées:`, photos);
-            renderPhotos(photos);
-        } else {
-            console.log("Aucune photo trouvée");
+        // Aucune photo trouvée
+        if (!photos || photos.length === 0) {
+            console.log("Aucune photo trouvée dans la base de données");
             noPhotosMessage.style.display = 'block';
+            loadingIndicator.style.display = 'none';
+            hasMorePhotos = false;
+            loadMoreBtn.style.display = 'none';
+            return;
         }
         
-        if (photos && photos.length < pageSize) {
+        // Des photos ont été trouvées
+        console.log(`${photos.length} photos récupérées:`, photos);
+        noPhotosMessage.style.display = 'none';
+        
+        // Rendu des photos
+        renderPhotos(photos);
+        
+        // Mise à jour de la pagination
+        if (photos.length < pageSize) {
             hasMorePhotos = false;
             loadMoreBtn.style.display = 'none';
         } else {
@@ -204,7 +214,13 @@ async function loadPhotos(isLoadMore = false) {
         
     } catch (error) {
         console.error('Erreur lors du chargement des photos:', error);
-        alert('Impossible de charger les photos. Veuillez réessayer plus tard.');
+        photoGrid.innerHTML = `
+            <div style="color: #d32f2f; text-align: center; padding: 20px; margin: 20px; border-radius: 8px; background-color: rgba(211, 47, 47, 0.1);">
+                <p><strong>Erreur lors du chargement des photos</strong></p>
+                <p>Détails: ${error.message || 'Erreur inconnue'}</p>
+                <button onclick="location.reload()" style="padding: 8px 16px; background: #d32f2f; color: white; border: none; border-radius: 4px; margin-top: 10px;">Réessayer</button>
+            </div>
+        `;
     } finally {
         loadingIndicator.style.display = 'none';
     }
@@ -298,9 +314,17 @@ function previewPhoto(event) {
     reader.readAsDataURL(file);
 }
 
-// Envoyer la photo
+// Version modifiée de la fonction uploadPhoto
 async function uploadPhoto(event) {
     event.preventDefault();
+    console.log("Début de la fonction uploadPhoto");
+    
+    // Vérifier que tous les éléments DOM nécessaires sont disponibles
+    if (!photoInput || !progressBarFill) {
+        console.error("Éléments DOM manquants pour uploadPhoto");
+        alert('Erreur: éléments DOM manquants. Veuillez rafraîchir la page.');
+        return;
+    }
     
     const file = photoInput.files[0];
     if (!file) {
@@ -308,10 +332,14 @@ async function uploadPhoto(event) {
         return;
     }
     
+    console.log("Fichier sélectionné:", file.name, file.type, file.size);
+    
     const title = document.getElementById('photoTitle').value;
     const description = document.getElementById('photoDescription').value;
     const location = document.getElementById('photoLocation').value;
     const authorName = document.getElementById('photographerName').value;
+    
+    console.log("Données du formulaire:", { title, description, location, authorName });
     
     uploadProgress.style.display = 'block';
     
@@ -324,6 +352,8 @@ async function uploadPhoto(event) {
         const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
         const filePath = `photos/${fileName}`;
         
+        console.log("Tentative d'upload du fichier vers:", filePath);
+        
         // Uploader le fichier dans le bucket Storage
         const { data: fileData, error: fileError } = await supabase.storage
             .from('gallery')
@@ -332,17 +362,26 @@ async function uploadPhoto(event) {
                 upsert: false,
                 onUploadProgress: (progress) => {
                     const percent = Math.round((progress.loaded / progress.total) * 100);
+                    console.log(`Upload: ${percent}%`);
                     progressBarFill.style.width = `${percent}%`;
                 }
             });
         
-        if (fileError) throw fileError;
+        if (fileError) {
+            console.error("Erreur d'upload du fichier:", fileError);
+            throw fileError;
+        }
+        
+        console.log("Fichier uploadé avec succès:", fileData);
         
         // Obtenir l'URL publique
         const { data: urlData } = supabase.storage.from('gallery').getPublicUrl(filePath);
         const imageUrl = urlData.publicUrl;
         
+        console.log("URL publique générée:", imageUrl);
+        
         // Enregistrer les métadonnées dans la base de données
+        console.log("Tentative d'insertion dans la table photos");
         const { data, error } = await supabase
             .from('photos')
             .insert([
@@ -356,7 +395,12 @@ async function uploadPhoto(event) {
                 }
             ]);
         
-        if (error) throw error;
+        if (error) {
+            console.error("Erreur d'insertion dans la table photos:", error);
+            throw error;
+        }
+        
+        console.log("Données insérées avec succès:", data);
         
         alert('Photo ajoutée avec succès!');
         closeUploadModal();
@@ -368,7 +412,7 @@ async function uploadPhoto(event) {
         
     } catch (error) {
         console.error('Erreur lors de l\'upload:', error);
-        alert('Une erreur est survenue. Veuillez réessayer.');
+        alert(`Une erreur est survenue: ${error.message || 'Erreur inconnue'}. Veuillez réessayer.`);
     } finally {
         uploadProgress.style.display = 'none';
     }
