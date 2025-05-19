@@ -1,9 +1,9 @@
-// supabase-client.js
+// supabase-client.js - Attention à l'ordre de chargement
 (function() {
-    // Vérifier que la bibliothèque Supabase est chargée
+    // Vérification pour s'assurer que la bibliothèque Supabase est bien chargée
     if (typeof supabase === 'undefined') {
-        console.error('Erreur : La bibliothèque Supabase n\'est pas chargée.');
-        alert('Erreur de chargement. Veuillez rafraîchir la page.');
+        console.error('Erreur fatale: La bibliothèque Supabase n\'est pas disponible');
+        alert('Erreur de chargement de la bibliothèque Supabase. Veuillez rafraîchir la page.');
         return;
     }
     
@@ -19,11 +19,16 @@
             try {
                 console.log('Initialisation du client Supabase partagé');
                 supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                console.log('Client Supabase initialisé avec succès');
             } catch (error) {
                 console.error('Erreur lors de l\'initialisation de Supabase:', error);
                 alert('Erreur de connexion à la base de données. Veuillez rafraîchir la page.');
+                return null;
             }
         }
         return supabaseClient;
     };
 })();
+
+// Test immédiat pour vérifier que tout fonctionne
+console.log('Test de la fonction getSupabaseClient:', typeof window.getSupabaseClient === 'function' ? 'OK' : 'ERREUR');

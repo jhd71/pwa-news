@@ -1,40 +1,68 @@
 // gallery-manager.js
-// Version adaptée pour utiliser l'instance Supabase partagée et avec gestion d'erreur
+// Début du fichier - vérification de l'environnement
 
-// Fonction de sécurité pour vérifier si la fonction getSupabaseClient existe
-function initializeSupabase() {
-    if (typeof window.getSupabaseClient !== 'function') {
-        console.error('Erreur: La fonction getSupabaseClient n\'est pas disponible');
-        // Afficher un message d'erreur à l'utilisateur
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        if (loadingIndicator) {
-            loadingIndicator.innerHTML = `
-                <div style="color: #d32f2f; text-align: center;">
-                    <p><strong>Erreur de connexion à la base de données</strong></p>
-                    <p>Veuillez rafraîchir la page ou réessayer plus tard.</p>
-                    <button onclick="location.reload()" style="padding: 8px 16px; background: #d32f2f; color: white; border: none; border-radius: 4px; margin-top: 10px;">Rafraîchir</button>
-                </div>
-            `;
-        }
-        return null;
-    }
+// Vérification que la fonction getSupabaseClient existe et est accessible
+if (typeof window.getSupabaseClient !== 'function') {
+    console.error('Erreur critique: La fonction getSupabaseClient n\'existe pas');
     
-    try {
-        return window.getSupabaseClient();
-    } catch (error) {
-        console.error('Erreur lors de l\'initialisation de Supabase:', error);
-        return null;
-    }
+    // Afficher un message d'erreur utilisateur immédiat
+    window.addEventListener('DOMContentLoaded', function() {
+        const container = document.querySelector('.gallery-main') || document.body;
+        const errorMessage = document.createElement('div');
+        errorMessage.style.cssText = 'background-color: #d32f2f; color: white; padding: 20px; margin: 20px; border-radius: 8px; text-align: center;';
+        errorMessage.innerHTML = `
+            <h3>Erreur de connexion à la base de données</h3>
+            <p>Impossible de se connecter au service de galerie photos.</p>
+            <button onclick="location.reload()" style="background: white; color: #d32f2f; border: none; padding: 8px 16px; margin-top: 10px; border-radius: 4px; cursor: pointer;">Rafraîchir la page</button>
+        `;
+        container.prepend(errorMessage);
+    });
+    
+    // Ne pas exécuter le reste du code
+    throw new Error('Initialisation de la galerie impossible: getSupabaseClient manquant');
 }
 
-// Obtenir l'instance Supabase partagée avec gestion d'erreur
-const supabase = initializeSupabase();
-
-// Vérifier si Supabase est bien initialisé avant de continuer
-if (!supabase) {
-    console.error('Impossible d\'initialiser Supabase. L\'application ne fonctionnera pas correctement.');
-} else {
-    console.log('Supabase initialisé avec succès');
+// Essayer d'initialiser Supabase avec gestion d'erreur
+let supabase;
+try {
+    supabase = window.getSupabaseClient();
+    if (!supabase) {
+        throw new Error('getSupabaseClient a retourné null ou undefined');
+    }
+    console.log('Supabase initialisé avec succès dans gallery-manager.js');
+} catch (error) {
+    console.error('Impossible d\'initialiser Supabase:', error);
+    
+    // Afficher un message d'erreur utilisateur
+    window.addEventListener('DOMContentLoaded', function() {
+        const container = document.querySelector('.gallery-main') || document.body;
+        const errorMessage = document.createElement('div');
+        errorMessage.style.cssText = 'background-color: #d32f2f; color: white; padding: 20px; margin: 20px; border-radius: 8px; text-align: center;';
+        errorMessage.innerHTML = `
+            <h3>Erreur de connexion à la base de données</h3>
+            <p>Impossible de se connecter au service de galerie photos: ${error.message}</p>
+            <button onclick="location.reload()" style="background: white; color: #d32f2f; border: none; padding: 8px 16px; margin-top: 10px; border-radius: 4px; cursor: pointer;">Rafraîchir la page</button>
+        `;
+        container.prepend(errorMessage);
+    });
+    
+    // Créer un objet supabase factice pour éviter les erreurs
+    supabase = {
+        from: () => ({
+            select: () => ({
+                order: () => ({
+                    range: () => Promise.resolve({ data: [], error: null })
+                })
+            }),
+            insert: () => Promise.resolve({ data: null, error: new Error('Base de données non disponible') })
+        }),
+        storage: {
+            from: () => ({
+                upload: () => Promise.resolve({ data: null, error: new Error('Base de données non disponible') }),
+                getPublicUrl: () => ({ data: { publicUrl: '' } })
+            })
+        }
+    };
 }
 
 // État de l'application
@@ -43,7 +71,7 @@ let currentPage = 0;
 const pageSize = 12;
 let hasMorePhotos = true;
 
-// Déclarer les variables d'éléments DOM au niveau global mais ne pas les initialiser tout de suite
+// Déclarer les variables d'éléments DOM au niveau global
 let photoGrid;
 let uploadModal;
 let photoViewModal;
@@ -115,6 +143,8 @@ function initializeGallery() {
     
     // Optimisations pour les appareils mobiles
     setupMobileOptimizations();
+	 // Initialiser le menu contextuel après tout le reste
+    addContextMenu();
 }
 
 // Charger les photos
@@ -493,6 +523,12 @@ async function reportContent(type, id) {
 
 // Ajouter un menu contextuel pour signaler le contenu
 function addContextMenu() {
+    // S'assurer que photoGrid existe avant d'ajouter des gestionnaires d'événements
+    if (!photoGrid) {
+        console.error('photoGrid non disponible pour addContextMenu');
+        return;
+    }
+    
     // Ajouter un gestionnaire de clic droit sur les photos
     photoGrid.addEventListener('contextmenu', function(e) {
         // Trouver l'élément photo-card parent
@@ -521,9 +557,6 @@ function addContextMenu() {
         }
     });
 }
-
-// Initialiser le menu contextuel
-addContextMenu();
 
 // Optimisations pour les appareils mobiles
 function setupMobileOptimizations() {

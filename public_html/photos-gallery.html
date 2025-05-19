@@ -14,6 +14,19 @@
     <link rel="stylesheet" href="css/gallery-styles.css">
 </head>
 <body>
+<script>
+  // Intercepteur d'erreurs global
+  window.addEventListener('error', function(event) {
+    console.error('Erreur globale détectée:', event.error);
+    // Éviter l'affichage de multiples alertes
+    if (!window.errorAlreadyShown) {
+      window.errorAlreadyShown = true;
+      if (event.error && event.error.message && event.error.message.includes('supabase')) {
+        alert('Problème avec la base de données. Veuillez rafraîchir la page.');
+      }
+    }
+  });
+</script>
     <!-- En-tête simplifié -->
     <header class="app-header">
         <a href="index.html" class="back-button" aria-label="Retour à l'accueil">
@@ -141,25 +154,66 @@
         </a>
     </nav>
 
-    <!-- Scripts -->
-<!-- D'abord charger la bibliothèque Supabase -->
+<!-- 1. D'abord charger la bibliothèque Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<!-- ATTENDRE que Supabase soit chargé avant d'initialiser le client -->
-<script>
-  // S'assurer que la bibliothèque Supabase est bien chargée
-  document.addEventListener('DOMContentLoaded', function() {
-    if (typeof supabase === 'undefined') {
-      console.error('Erreur : La bibliothèque Supabase n\'est pas chargée correctement');
-      alert('Erreur de chargement de la bibliothèque Supabase. Veuillez rafraîchir la page.');
-    }
-  });
-</script>
-<!-- Puis charger votre client Supabase -->
-<script src="js/supabase-client.js"></script>
-<!-- Enfin charger le gestionnaire de galerie -->
-<script src="js/gallery-manager.js"></script>
 
-<!-- Script pour synchroniser le thème -->
+<!-- 2. Script pour s'assurer que Supabase est bien chargé -->
+<script>
+  // Ce script attend explicitement que Supabase soit chargé
+  function checkSupabaseLoaded() {
+    return new Promise((resolve, reject) => {
+      // Vérifier si Supabase est déjà disponible
+      if (typeof supabase !== 'undefined') {
+        resolve(true);
+        return;
+      }
+      
+      // Si non, attendre un peu et vérifier à nouveau
+      let attempts = 0;
+      const maxAttempts = 10;
+      const interval = setInterval(() => {
+        attempts++;
+        if (typeof supabase !== 'undefined') {
+          clearInterval(interval);
+          resolve(true);
+        } else if (attempts >= maxAttempts) {
+          clearInterval(interval);
+          reject(new Error("La bibliothèque Supabase n'a pas pu être chargée"));
+        }
+      }, 200);
+    });
+  }
+
+  // Vérifier que Supabase est chargé avant de continuer
+  checkSupabaseLoaded()
+    .then(() => {
+      console.log("Supabase chargé avec succès");
+      // Charger le reste des scripts dans l'ordre
+      loadScript("js/supabase-client.js")
+        .then(() => loadScript("js/gallery-manager.js"))
+        .catch(error => {
+          console.error("Erreur lors du chargement des scripts:", error);
+          alert("Une erreur est survenue lors du chargement de l'application. Veuillez rafraîchir la page.");
+        });
+    })
+    .catch(error => {
+      console.error(error);
+      alert("Impossible de charger la bibliothèque Supabase. Veuillez rafraîchir la page.");
+    });
+
+  // Fonction pour charger un script de manière asynchrone
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = src;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error(`Erreur de chargement pour ${src}`));
+      document.body.appendChild(script);
+    });
+  }
+</script>
+
+<!-- Le reste de vos scripts personnalisés (si nécessaire) -->
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     // Synchroniser le thème avec le reste de l'application
