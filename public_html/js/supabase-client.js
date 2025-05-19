@@ -1,8 +1,8 @@
-// supabase-client.js - Attention à l'ordre de chargement
+// supabase-client.js - Utilisation correcte de l'API Supabase
 (function() {
     // Vérification pour s'assurer que la bibliothèque Supabase est bien chargée
-    if (typeof supabase === 'undefined') {
-        console.error('Erreur fatale: La bibliothèque Supabase n\'est pas disponible');
+    if (typeof supabase === 'undefined' || typeof supabase.createClient !== 'function') {
+        console.error('Erreur fatale: La bibliothèque Supabase n\'est pas correctement chargée');
         alert('Erreur de chargement de la bibliothèque Supabase. Veuillez rafraîchir la page.');
         return;
     }
