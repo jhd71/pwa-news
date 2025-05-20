@@ -2119,10 +2119,23 @@ background: #d32f2f;
     color: white !important;
 }
 
+/* Modification de la règle qui rend tout le texte blanc */
 .modal-content a,
 .modal-content button,
 .modal-content span,
 .modal-content div {
+    color: #000 !important; /* Changé de white à noir */
+}
+
+/* Exceptions pour garder certains éléments en blanc */
+.modal-header,
+.modal-header h2, 
+.modal-header span,
+.modal-header button {
+    color: white !important;
+}
+
+#commentForm button {
     color: white !important;
 }
 
