@@ -82,25 +82,29 @@
             <button class="close-modal" id="closeUploadModal">&times;</button>
         </div>
         <form id="photoUploadForm">
-            <div class="file-upload-area">
-                <!-- Input caché qui sera déclenché par les boutons -->
-                <input type="file" id="photoInput" accept="image/*" required style="display: none;">
-                
-                <!-- Boutons pour prendre photo / choisir dans la galerie -->
-                <div class="upload-buttons">
-                    <button type="button" id="captureBtn" class="capture-btn">
-                        <i class="material-icons">camera_alt</i>
-                        <span>Prendre une photo</span>
-                    </button>
-                    <button type="button" id="galleryBtn" class="gallery-btn">
-                        <i class="material-icons">photo_library</i>
-                        <span>Choisir une image</span>
-                    </button>
-                </div>
-                
-                <!-- Zone de prévisualisation -->
-                <div id="photoPreview" class="photo-preview"></div>
-            </div>
+            <!-- Version alternative avec deux inputs distincts -->
+<div class="file-upload-area">
+    <!-- Input caché pour la galerie -->
+    <input type="file" id="galleryInput" accept="image/*" style="display: none;">
+    
+    <!-- Input caché pour l'appareil photo -->
+    <input type="file" id="captureInput" accept="image/*" capture="environment" style="display: none;">
+    
+    <!-- Boutons visibles -->
+    <div class="upload-buttons">
+        <button type="button" id="captureBtn" class="capture-btn">
+            <i class="material-icons">camera_alt</i>
+            <span>Prendre une photo</span>
+        </button>
+        <button type="button" id="galleryBtn" class="gallery-btn">
+            <i class="material-icons">photo_library</i>
+            <span>Choisir une image</span>
+        </button>
+    </div>
+    
+    <!-- Zone de prévisualisation -->
+    <div id="photoPreview" class="photo-preview"></div>
+</div>
             
             <div class="form-group">
                 <label for="photoTitle">Titre de la photo</label>
@@ -308,21 +312,63 @@
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const photoInput = document.getElementById('photoInput');
+    // Références aux éléments
+    const galleryInput = document.getElementById('galleryInput');
+    const captureInput = document.getElementById('captureInput');
     const captureBtn = document.getElementById('captureBtn');
     const galleryBtn = document.getElementById('galleryBtn');
+    const photoInput = document.getElementById('photoInput'); // Input hidden pour le formulaire
     
-    if (captureBtn && galleryBtn && photoInput) {
-        // Prendre une photo directement
+    // Si tous les éléments existent
+    if (galleryInput && captureInput && captureBtn && galleryBtn && photoInput) {
+        // Bouton pour prendre une photo
         captureBtn.addEventListener('click', function() {
-            photoInput.setAttribute('capture', 'environment');
-            photoInput.click();
+            captureInput.click();
         });
         
-        // Choisir dans la galerie
+        // Bouton pour choisir dans la galerie
         galleryBtn.addEventListener('click', function() {
-            photoInput.removeAttribute('capture');
-            photoInput.click();
+            galleryInput.click();
+        });
+        
+        // Fonction pour traiter le fichier sélectionné
+        function handleFileSelect(event, source) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Copier le fichier vers l'input caché du formulaire
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            photoInput.files = dataTransfer.files;
+            
+            // Afficher la prévisualisation
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const photoPreview = document.getElementById('photoPreview');
+                if (photoPreview) {
+                    photoPreview.innerHTML = '';
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = "Prévisualisation";
+                    photoPreview.appendChild(img);
+                    
+                    // Ajouter une indication de source
+                    const sourceIndicator = document.createElement('div');
+                    sourceIndicator.style.cssText = 'position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 5px 10px; border-radius: 20px; font-size: 12px;';
+                    sourceIndicator.innerText = source === 'camera' ? '📷 Appareil photo' : '🖼️ Galerie';
+                    photoPreview.appendChild(sourceIndicator);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // Gestionnaires d'événements pour les inputs
+        captureInput.addEventListener('change', function(event) {
+            handleFileSelect(event, 'camera');
+        });
+        
+        galleryInput.addEventListener('change', function(event) {
+            handleFileSelect(event, 'gallery');
         });
     }
 });
