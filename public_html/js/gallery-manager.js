@@ -349,8 +349,15 @@ async function openPhotoView(photoId) {
         }
         
         // Mettre à jour les autres éléments s'ils existent
-        document.getElementById('modalPhotoTitle')?.textContent = photo.title || 'Sans titre';
-        document.getElementById('modalPhotoDescription')?.textContent = photo.description || 'Aucune description';
+        const modalPhotoTitle = document.getElementById('modalPhotoTitle');
+if (modalPhotoTitle) {
+    modalPhotoTitle.textContent = photo.title || 'Sans titre';
+}
+
+const modalPhotoDescription = document.getElementById('modalPhotoDescription');
+if (modalPhotoDescription) {
+    modalPhotoDescription.textContent = photo.description || 'Aucune description';
+}
         
         if (document.getElementById('modalPhotoLocation')) {
             document.getElementById('modalPhotoLocation').textContent = photo.location ? `📍 ${photo.location}` : '';
