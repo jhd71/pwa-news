@@ -75,47 +75,59 @@
     </main>
 
     <!-- Modal pour l'upload de photos -->
-    <div id="uploadModal" class="upload-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Ajouter une photo</h2>
-                <button class="close-modal" id="closeUploadModal">&times;</button>
+<div id="uploadModal" class="upload-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Ajouter une photo</h2>
+            <button class="close-modal" id="closeUploadModal">&times;</button>
+        </div>
+        <form id="photoUploadForm">
+            <div class="file-upload-area">
+                <!-- Input caché qui sera déclenché par les boutons -->
+                <input type="file" id="photoInput" accept="image/*" required style="display: none;">
+                
+                <!-- Boutons pour prendre photo / choisir dans la galerie -->
+                <div class="upload-buttons">
+                    <button type="button" id="captureBtn" class="capture-btn">
+                        <i class="material-icons">camera_alt</i>
+                        <span>Prendre une photo</span>
+                    </button>
+                    <button type="button" id="galleryBtn" class="gallery-btn">
+                        <i class="material-icons">photo_library</i>
+                        <span>Choisir une image</span>
+                    </button>
+                </div>
+                
+                <!-- Zone de prévisualisation -->
+                <div id="photoPreview" class="photo-preview"></div>
             </div>
-            <form id="photoUploadForm">
-                <div class="file-upload-area">
-                    <input type="file" id="photoInput" accept="image/*" required>
-                    <label for="photoInput" class="file-label">
-                        <i class="material-icons">file_upload</i>
-                        <span>Cliquez pour sélectionner une photo</span>
-                    </label>
-                    <div id="photoPreview" class="photo-preview"></div>
-                </div>
-                <div class="form-group">
-                    <label for="photoTitle">Titre de la photo</label>
-                    <input type="text" id="photoTitle" placeholder="Donnez un titre à votre photo" required>
-                </div>
-                <div class="form-group">
-                    <label for="photoDescription">Description</label>
-                    <textarea id="photoDescription" placeholder="Racontez l'histoire de cette photo..." rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="photoLocation">Lieu</label>
-                    <input type="text" id="photoLocation" placeholder="Où a été prise cette photo?">
-                </div>
-                <div class="form-group">
-                    <label for="photographerName">Votre nom/pseudo</label>
-                    <input type="text" id="photographerName" placeholder="Comment souhaitez-vous être identifié?" required>
-                </div>
-                <button type="submit" class="submit-photo-btn">Partager ma photo</button>
-            </form>
-            <div id="uploadProgress" class="upload-progress" style="display: none;">
-                <div class="progress-bar">
-                    <div class="progress-bar-fill"></div>
-                </div>
-                <span class="progress-text">Envoi en cours...</span>
+            
+            <div class="form-group">
+                <label for="photoTitle">Titre de la photo</label>
+                <input type="text" id="photoTitle" placeholder="Donnez un titre à votre photo" required>
             </div>
+            <div class="form-group">
+                <label for="photoDescription">Description</label>
+                <textarea id="photoDescription" placeholder="Racontez l'histoire de cette photo..." rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="photoLocation">Lieu</label>
+                <input type="text" id="photoLocation" placeholder="Où a été prise cette photo?">
+            </div>
+            <div class="form-group">
+                <label for="photographerName">Votre nom/pseudo</label>
+                <input type="text" id="photographerName" placeholder="Comment souhaitez-vous être identifié?" required>
+            </div>
+            <button type="submit" class="submit-photo-btn">Partager ma photo</button>
+        </form>
+        <div id="uploadProgress" class="upload-progress" style="display: none;">
+            <div class="progress-bar">
+                <div class="progress-bar-fill"></div>
+            </div>
+            <span class="progress-text">Envoi en cours...</span>
         </div>
     </div>
+</div>
 
     <!-- Modale de visualisation des photos -->
 <div id="photoViewModal" class="photo-view-modal">
@@ -293,6 +305,27 @@
       }
     });
   });
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const photoInput = document.getElementById('photoInput');
+    const captureBtn = document.getElementById('captureBtn');
+    const galleryBtn = document.getElementById('galleryBtn');
+    
+    if (captureBtn && galleryBtn && photoInput) {
+        // Prendre une photo directement
+        captureBtn.addEventListener('click', function() {
+            photoInput.setAttribute('capture', 'environment');
+            photoInput.click();
+        });
+        
+        // Choisir dans la galerie
+        galleryBtn.addEventListener('click', function() {
+            photoInput.removeAttribute('capture');
+            photoInput.click();
+        });
+    }
+});
 </script>
 </body>
 </html>

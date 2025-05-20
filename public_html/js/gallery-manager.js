@@ -62,7 +62,6 @@ function loadMorePhotos() {
 
 // Prévisualiser l'image sélectionnée
 function previewPhoto(event) {
-    const photoPreview = document.getElementById('photoPreview');
     const file = event.target.files[0];
     if (!file) return;
     
@@ -73,11 +72,51 @@ function previewPhoto(event) {
     
     const reader = new FileReader();
     reader.onload = function(e) {
+        const photoPreview = document.getElementById('photoPreview');
         if (photoPreview) {
-            photoPreview.innerHTML = `<img src="${e.target.result}" alt="Prévisualisation" style="max-width: 100%; max-height: 200px;">`;
+            // Vider puis ajouter la nouvelle image
+            photoPreview.innerHTML = '';
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = "Prévisualisation";
+            photoPreview.appendChild(img);
+            
+            // Ajouter une indication de source
+            const photoInput = document.getElementById('photoInput');
+            const sourceIndicator = document.createElement('div');
+            sourceIndicator.style.cssText = 'position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 5px 10px; border-radius: 20px; font-size: 12px;';
+            sourceIndicator.innerText = photoInput.hasAttribute('capture') ? '📷 Appareil photo' : '🖼️ Galerie';
+            photoPreview.appendChild(sourceIndicator);
         }
     };
     reader.readAsDataURL(file);
+}
+
+// Fonction pour initialiser les boutons de capture photo
+function initCameraCapture() {
+    console.log("Initialisation des boutons de capture photo");
+    const photoInput = document.getElementById('photoInput');
+    const captureBtn = document.getElementById('captureBtn');
+    const galleryBtn = document.getElementById('galleryBtn');
+    
+    if (!photoInput || !captureBtn || !galleryBtn) {
+        console.error("Éléments de capture photo non trouvés");
+        return;
+    }
+    
+    // Prendre une photo directement
+    captureBtn.addEventListener('click', function() {
+        console.log("Tentative d'ouverture de l'appareil photo");
+        photoInput.setAttribute('capture', 'environment');
+        photoInput.click();
+    });
+    
+    // Choisir dans la galerie
+    galleryBtn.addEventListener('click', function() {
+        console.log("Ouverture de la galerie");
+        photoInput.removeAttribute('capture');
+        photoInput.click();
+    });
 }
 
 // Version modifiée de la fonction uploadPhoto
@@ -836,7 +875,8 @@ function initializeGallery() {
     if (commentAuthorInput && localStorage.getItem('commenterName')) {
         commentAuthorInput.value = localStorage.getItem('commenterName');
     }
-}
+	initCameraCapture();
+	}
 
 // Initialiser Supabase
 function initializeSupabase() {

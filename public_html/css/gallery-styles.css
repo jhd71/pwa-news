@@ -640,3 +640,86 @@
   color: white !important;
 }
 
+/* Styles CSS pour les boutons de capture et galerie */
+
+.file-upload-options {
+    position: relative;
+}
+
+.file-upload-options input[type="file"] {
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+.upload-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.capture-btn, .gallery-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 48%;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.capture-btn:hover, .gallery-btn:hover {
+    transform: translateY(-2px);
+    background: var(--accent-color);
+}
+
+.capture-btn .material-icons, .gallery-btn .material-icons {
+    font-size: 36px;
+    margin-bottom: 8px;
+}
+
+.capture-btn span, .gallery-btn span {
+    font-size: 14px;
+}
+
+/* Styles pour la zone de prévisualisation */
+.photo-preview {
+    margin-top: 15px;
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.photo-preview::before {
+    content: "Aperçu de l'image";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--text-muted);
+    z-index: 0;
+}
+
+.photo-preview img {
+    max-height: 200px;
+    max-width: 100%;
+    object-fit: contain;
+    z-index: 1;
+    position: relative;
+}
+
