@@ -4774,43 +4774,56 @@ async loadGalleryPhotos() {
         
         // Style de la grille adaptée à l'administration
         const gridContainer = document.createElement('div');
-        gridContainer.className = 'admin-photos-grid';
-        gridContainer.style.cssText = `
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        `;
-        
-        photos.forEach(photo => {
-            const photoCard = document.createElement('div');
-            photoCard.className = 'admin-photo-card';
-            photoCard.dataset.id = photo.id;
-            photoCard.style.cssText = `
-                position: relative;
-                background: rgba(0, 0, 0, 0.2);
-                border-radius: 8px;
-                overflow: hidden;
-                transition: transform 0.2s;
-            `;
-            
-            photoCard.innerHTML = `
-                <div style="width: 100%; height: 120px; overflow: hidden;">
-                    <img src="${photo.image_url || ''}" alt="${photo.title || 'Photo sans titre'}" 
-                         style="width: 100%; height: 100%; object-fit: cover;"
-                         onerror="this.src='/images/no-image.png'; this.onerror=null;">
-                </div>
-                <div style="padding: 8px; font-size: 12px; color: rgba(255,255,255,0.9);">
-                    <div style="font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${photo.title || 'Sans titre'}</div>
-                    <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                        <span>${photo.author_name || 'Anonyme'}</span>
-                        <button class="delete-photo-btn" data-id="${photo.id}" style="background: rgba(255,0,0,0.7); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer;">×</button>
-                    </div>
-                </div>
-            `;
-            
-            gridContainer.appendChild(photoCard);
-        });
+gridContainer.className = 'admin-photos-grid';
+gridContainer.style.cssText = `
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+    padding: 10px;
+`;
+
+photos.forEach(photo => {
+    const photoCard = document.createElement('div');
+    photoCard.className = 'admin-photo-card';
+    photoCard.dataset.id = photo.id;
+    photoCard.style.cssText = `
+        position: relative;
+        background: rgba(30, 30, 30, 0.8);
+        border-radius: 10px;
+        overflow: hidden;
+        transition: all 0.3s;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    `;
+    
+    // Ajouter un effet hover
+    photoCard.addEventListener('mouseenter', () => {
+        photoCard.style.transform = 'translateY(-5px)';
+        photoCard.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.4)';
+    });
+    
+    photoCard.addEventListener('mouseleave', () => {
+        photoCard.style.transform = 'translateY(0)';
+        photoCard.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.3)';
+    });
+    
+    photoCard.innerHTML = `
+        <div style="width: 100%; height: 150px; overflow: hidden;">
+            <img src="${photo.image_url || ''}" alt="${photo.title || 'Photo sans titre'}" 
+                 style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;"
+                 onerror="this.src='/images/no-image.png'; this.onerror=null;">
+        </div>
+        <div style="padding: 12px; font-size: 14px; color: white; background: rgba(0,0,0,0.6);">
+            <div style="font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 8px;">${photo.title || 'Sans titre'}</div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="text-shadow: 1px 1px 2px black;">${photo.author_name || 'Anonyme'}</span>
+                <button class="delete-photo-btn" data-id="${photo.id}" style="background: rgba(255,0,0,0.8); color: white; border: none; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; font-weight: bold; padding: 0;">×</button>
+            </div>
+        </div>
+    `;
+    
+    gridContainer.appendChild(photoCard);
+});
         
         photosList.appendChild(gridContainer);
         

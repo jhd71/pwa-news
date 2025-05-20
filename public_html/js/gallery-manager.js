@@ -191,7 +191,10 @@ function setupMobileOptimizations() {
 }
 setupMobileOptimizations();
     
-    // Initialiser le menu contextuel après tout le reste
+    // Fonction temporaire pour éviter l'erreur
+function addContextMenu() {
+  console.log("Menu contextuel désactivé");
+}
     addContextMenu();
     
     // Initialiser les fonctionnalités d'administrateur
@@ -200,6 +203,16 @@ setupMobileOptimizations();
     }, 1000); // Attendre que tout soit chargé
   }
 
+// Fonction pour ouvrir la modale d'upload
+function openUploadModal() {
+    const uploadModal = document.getElementById('uploadModal');
+    if (uploadModal) {
+        uploadModal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    } else {
+        console.error("Modal d'upload non trouvée");
+    }
+}
   // Charger les photos - Fonction corrigée pour éviter les chargements multiples
   async function loadPhotos(isLoadMore = false) {
     console.log("Début de loadPhotos, isLoadMore:", isLoadMore);
