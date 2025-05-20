@@ -60,45 +60,35 @@ function loadMorePhotos() {
     }
 }
 
-// Version simplifiée de previewPhoto qui délègue à la gestion d'événements dans initCameraCapture
+// Fonction de compatibilité - remplace l'ancienne fonction previewPhoto
 function previewPhoto(event) {
-    // Cette fonction est maintenant gérée par l'événement 'change' dans initCameraCapture
-    // On garde cette version simplifiée pour maintenir la compatibilité avec le code existant
-    console.log("Fonction previewPhoto appelée - utilisant l'événement change interne");
+    console.log("previewPhoto appelée - délégation au système à deux inputs");
     
-    // Obtenir l'élément input
-    const photoInput = document.getElementById('photoInput');
+    // Cette fonction est désormais gérée par les gestionnaires dans initCameraCapture
+    // Mais nous gardons cette fonction pour la compatibilité
     
-    // Vérifier si l'input existe et a un gestionnaire d'événements change
-    if (photoInput && typeof event === 'object' && event.target && event.target.files) {
-        // Déclencher manuellement l'événement change sur l'input
-        // Cela permet de réutiliser la logique définie dans initCameraCapture
-        const newEvent = new Event('change', { bubbles: true });
-        Object.defineProperty(newEvent, 'target', { value: event.target });
-        photoInput.dispatchEvent(newEvent);
-    } else {
-        // Si l'input n'existe pas ou s'il n'y a pas de gestionnaire,
-        // utiliser l'ancienne logique comme fallback
-        const file = event.target.files[0];
-        if (!file) return;
-        
-        if (!file.type.match('image.*')) {
-            alert('Veuillez sélectionner une image');
-            return;
-        }
-        
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const photoPreview = document.getElementById('photoPreview');
-            if (photoPreview) {
-                photoPreview.innerHTML = `<img src="${e.target.result}" alt="Prévisualisation" style="max-width: 100%; max-height: 200px;">`;
-            }
-        };
-        reader.readAsDataURL(file);
+    const file = event && event.target && event.target.files ? event.target.files[0] : null;
+    if (!file) return;
+    
+    if (!file.type.match('image.*')) {
+        alert('Veuillez sélectionner une image');
+        return;
     }
+    
+    // Utiliser la même logique de prévisualisation
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const photoPreview = document.getElementById('photoPreview');
+        if (photoPreview) {
+            photoPreview.innerHTML = '';
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = "Prévisualisation";
+            photoPreview.appendChild(img);
+        }
+    };
+    reader.readAsDataURL(file);
 }
-
-// Approche avec deux inputs séparés - remplace initCameraCapture et previewPhoto
 
 // Fonction pour initialiser les inputs de capture photo séparés
 function initCameraCapture() {
@@ -202,36 +192,6 @@ function initCameraCapture() {
         };
         reader.readAsDataURL(file);
     }
-}
-
-// Fonction de compatibilité - remplace l'ancienne fonction previewPhoto
-function previewPhoto(event) {
-    console.log("previewPhoto appelée - délégation au système à deux inputs");
-    
-    // Cette fonction est désormais gérée par les gestionnaires dans initCameraCapture
-    // Mais nous gardons cette fonction pour la compatibilité
-    
-    const file = event && event.target && event.target.files ? event.target.files[0] : null;
-    if (!file) return;
-    
-    if (!file.type.match('image.*')) {
-        alert('Veuillez sélectionner une image');
-        return;
-    }
-    
-    // Utiliser la même logique de prévisualisation
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const photoPreview = document.getElementById('photoPreview');
-        if (photoPreview) {
-            photoPreview.innerHTML = '';
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.alt = "Prévisualisation";
-            photoPreview.appendChild(img);
-        }
-    };
-    reader.readAsDataURL(file);
 }
 
 // Version modifiée de la fonction uploadPhoto
