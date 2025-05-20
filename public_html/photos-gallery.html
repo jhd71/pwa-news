@@ -180,8 +180,9 @@
         return window.supabaseInstance;
       };
       
-      // Charger les scripts restants
-      loadScript("js/gallery-manager.js");
+      // NE PAS charger gallery-manager.js ici, il sera chargé par l'autre script
+      // Charger uniquement supabase-client.js si nécessaire
+      loadScript("js/supabase-client.js");
     } catch (error) {
       console.error('Erreur lors de la création de l\'instance Supabase:', error);
       alert('Erreur de connexion à la base de données. Veuillez rafraîchir la page.');
@@ -193,15 +194,20 @@
   };
   document.body.appendChild(script);
   
-  // Fonction pour charger un script
+  // Fonction pour charger un script en vérifiant s'il existe déjà
   function loadScript(src) {
+    // Vérifier si le script est déjà chargé
+    if (document.querySelector(`script[src="${src}"]`)) {
+      console.log(`Script ${src} déjà chargé, ignoré.`);
+      return;
+    }
+    
     const script = document.createElement('script');
     script.src = src;
     document.body.appendChild(script);
   }
 </script>
 
-<!-- 2. Script pour s'assurer que Supabase est bien chargé -->
 <script>
   // Ce script attend explicitement que Supabase soit chargé
   function checkSupabaseLoaded() {
@@ -232,25 +238,33 @@
   checkSupabaseLoaded()
     .then(() => {
       console.log("Supabase chargé avec succès");
-      // Charger le reste des scripts dans l'ordre
-      loadScript("js/supabase-client.js")
-        .then(() => loadScript("js/gallery-manager.js"))
-        .catch(error => {
-          console.error("Erreur lors du chargement des scripts:", error);
-          alert("Une erreur est survenue lors du chargement de l'application. Veuillez rafraîchir la page.");
-        });
+      // Attendre un court instant pour s'assurer que supabase-client.js a eu le temps de se charger
+      setTimeout(() => {
+        // Charger gallery-manager.js seulement s'il n'est pas déjà chargé
+        loadScript("js/gallery-manager.js");
+      }, 300);
     })
     .catch(error => {
       console.error(error);
       alert("Impossible de charger la bibliothèque Supabase. Veuillez rafraîchir la page.");
     });
 
-  // Fonction pour charger un script de manière asynchrone
+  // Fonction pour charger un script de manière asynchrone avec vérification
   function loadScript(src) {
     return new Promise((resolve, reject) => {
+      // Vérifier si le script est déjà chargé
+      if (document.querySelector(`script[src="${src}"]`)) {
+        console.log(`Script ${src} déjà chargé, ignoré.`);
+        resolve();
+        return;
+      }
+      
       const script = document.createElement('script');
       script.src = src;
-      script.onload = () => resolve();
+      script.onload = () => {
+        console.log(`Script ${src} chargé avec succès`);
+        resolve();
+      };
       script.onerror = () => reject(new Error(`Erreur de chargement pour ${src}`));
       document.body.appendChild(script);
     });
