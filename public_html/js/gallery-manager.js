@@ -737,17 +737,6 @@ photoCard.innerHTML = `
       alert(isCurrentlyAdmin ? 'Mode administrateur désactivé' : 'Mode administrateur activé');
     }
   });
-  
-  
-// Ajouter le gestionnaire pour la touche secrète qui définit le mode admin
-  document.addEventListener('keydown', function(e) {
-    // Ctrl+Alt+A pour activer/désactiver le mode admin
-    if (e.ctrlKey && e.altKey && e.key === 'a') {
-      const isCurrentlyAdmin = localStorage.getItem('isAdmin') === 'true';
-      setAdminMode(!isCurrentlyAdmin);
-      alert(isCurrentlyAdmin ? 'Mode administrateur désactivé' : 'Mode administrateur activé');
-    }
-  });
 
   // Charger les commentaires d'une photo
   async function loadPhotoComments(photoId) {
