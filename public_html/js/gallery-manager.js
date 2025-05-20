@@ -268,6 +268,12 @@ async function submitComment(event) {
     console.log("Auteur:", author);
     console.log("Texte:", text);
     
+    // Afficher un indicateur de chargement
+    const submitBtn = document.querySelector('#commentForm button');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="material-icons" style="font-size: 14px;">hourglass_empty</i> Envoi...';
+    
     try {
         // Sauvegarder le nom pour les futurs commentaires
         localStorage.setItem('commenterName', author);
@@ -296,19 +302,46 @@ async function submitComment(event) {
         
         console.log("Commentaire enregistré:", data);
         
+        // Afficher un message de succès
+        const successMsg = document.createElement('div');
+        successMsg.style.cssText = 'background: #4CAF50; color: white; padding: 10px; border-radius: 4px; text-align: center; margin-top: 10px;';
+        successMsg.textContent = 'Commentaire ajouté avec succès!';
+        textInput.parentNode.insertBefore(successMsg, textInput.nextSibling);
+        
         // Réinitialiser le formulaire
         textInput.value = '';
+        
+        // Masquer le message après quelques secondes
+        setTimeout(() => {
+            successMsg.style.opacity = 0;
+            successMsg.style.transition = 'opacity 0.5s';
+            setTimeout(() => successMsg.remove(), 500);
+        }, 3000);
         
         // Attendre un court instant avant de recharger les commentaires
         setTimeout(() => {
             loadPhotoComments(window.currentPhotoId);
         }, 500);
         
-        alert('Commentaire ajouté avec succès!');
-        
     } catch (error) {
         console.error('Erreur lors de l\'envoi du commentaire:', error);
-        alert('Impossible d\'envoyer votre commentaire: ' + error.message);
+        
+        // Afficher une erreur visible
+        const errorMsg = document.createElement('div');
+        errorMsg.style.cssText = 'background: #f44336; color: white; padding: 10px; border-radius: 4px; text-align: center; margin-top: 10px;';
+        errorMsg.textContent = 'Impossible d\'envoyer votre commentaire: ' + error.message;
+        textInput.parentNode.insertBefore(errorMsg, textInput.nextSibling);
+        
+        // Masquer l'erreur après quelques secondes
+        setTimeout(() => {
+            errorMsg.style.opacity = 0;
+            errorMsg.style.transition = 'opacity 0.5s';
+            setTimeout(() => errorMsg.remove(), 500);
+        }, 5000);
+    } finally {
+        // Rétablir le bouton d'envoi
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
     }
 }
 
@@ -343,29 +376,55 @@ async function openPhotoView(photoId) {
         
         console.log("Données de la photo récupérées:", photo);
         
-        // Mettre à jour les éléments de la modale
+        // REMPLACER CETTE PARTIE - DÉBUT
         const modalImg = document.getElementById('modalPhotoImg');
         if (modalImg) {
+            // Test direct de l'URL en utilisant une requête fetch pour vérifier si l'image est accessible
+            fetch(photo.image_url)
+                .then(response => {
+                    if (response.ok) {
+                        console.log("Image accessible via fetch:", photo.image_url);
+                    } else {
+                        console.error("Image inaccessible via fetch:", photo.image_url, "Status:", response.status);
+                    }
+                })
+                .catch(error => {
+                    console.error("Erreur fetch pour l'image:", error);
+                });
+            
+            // Ajouter un bouton "Ouvrir dans un nouvel onglet" pour tester directement
+            const modalHeader = document.querySelector('.photo-detail-view');
+            if (modalHeader) {
+                const openImageBtn = document.createElement('button');
+                openImageBtn.textContent = "Ouvrir l'image dans un nouvel onglet";
+                openImageBtn.style.cssText = "margin: 10px 0; padding: 5px; background: #007bff; color: white; border: none; border-radius: 4px;";
+                openImageBtn.onclick = function() {
+                    window.open(photo.image_url, '_blank');
+                };
+                modalHeader.appendChild(openImageBtn);
+            }
+            
+            // Définir l'image source avec gestion d'erreur améliorée
+            modalImg.onerror = function() {
+                console.error("Erreur chargement image modale:", photo.image_url);
+                this.src = 'images/Actu&Media.png';
+            };
             modalImg.src = photo.image_url || '';
             modalImg.alt = photo.title || 'Photo';
-            modalImg.onerror = function() {
-                this.src = '/images/no-image.png';
-                console.error("Erreur chargement image modale");
-            };
         } else {
             console.error("Élément modalPhotoImg non trouvé");
         }
+        // REMPLACER CETTE PARTIE - FIN
         
         // Mettre à jour les autres éléments s'ils existent
         const modalPhotoTitle = document.getElementById('modalPhotoTitle');
-if (modalPhotoTitle) {
-    modalPhotoTitle.textContent = photo.title || 'Sans titre';
-}
-
-const modalPhotoDescription = document.getElementById('modalPhotoDescription');
-if (modalPhotoDescription) {
-    modalPhotoDescription.textContent = photo.description || 'Aucune description';
-}
+        if (modalPhotoTitle) {
+            modalPhotoTitle.textContent = photo.title || 'Sans titre';
+        }
+        const modalPhotoDescription = document.getElementById('modalPhotoDescription');
+        if (modalPhotoDescription) {
+            modalPhotoDescription.textContent = photo.description || 'Aucune description';
+        }
         
         if (document.getElementById('modalPhotoLocation')) {
             document.getElementById('modalPhotoLocation').textContent = photo.location ? `📍 ${photo.location}` : '';
@@ -402,17 +461,20 @@ async function loadPhotoComments(photoId) {
     commentsContainer.innerHTML = '<p>Chargement des commentaires...</p>';
     
     try {
-        // Déboguer avec un log de la requête
+        // Logging de la requête
         console.log("Requête de commentaires pour photo_id:", photoId);
+        
+        // Assurez-vous que photoId est un nombre si nécessaire
+        const idToUse = typeof photoId === 'string' ? parseInt(photoId, 10) : photoId;
         
         const { data: comments, error } = await window.supabase
             .from('photo_comments')
             .select('*')
-            .eq('photo_id', photoId)
+            .eq('photo_id', idToUse)
             .order('created_at', { ascending: false });
         
-        // Log détaillé de la réponse
-        console.log("Réponse de commentaires:", { data: comments, error });
+        // Vérifier si les commentaires sont disponibles
+        console.log("Réponse de commentaires:", comments);
         
         if (error) {
             console.error("Erreur de chargement des commentaires:", error);
@@ -420,13 +482,18 @@ async function loadPhotoComments(photoId) {
         }
         
         if (!comments || comments.length === 0) {
-            commentsContainer.innerHTML = '<p>Aucun commentaire pour le moment. Soyez le premier à commenter!</p>';
+            commentsContainer.innerHTML = '<div style="text-align: center; padding: 15px; color: #777;">' +
+                '<i class="material-icons" style="font-size: 36px; display: block; margin-bottom: 10px;">chat_bubble_outline</i>' +
+                '<p>Aucun commentaire pour le moment. Soyez le premier à commenter!</p></div>';
             return;
         }
         
+        // Vider le conteneur avant d'ajouter les nouveaux commentaires
         commentsContainer.innerHTML = '';
+        
         console.log(`Affichage de ${comments.length} commentaires`);
         
+        // Créer des éléments HTML visibles pour chaque commentaire
         comments.forEach(comment => {
             console.log("Traitement du commentaire:", comment);
             
@@ -444,18 +511,36 @@ async function loadPhotoComments(photoId) {
             commentElement.dataset.id = comment.id;
             commentElement.innerHTML = `
                 <div class="comment-header">
-                    <span class="comment-author">${comment.author_name}</span>
+                    <span class="comment-author">${comment.author_name || 'Anonyme'}</span>
                     <span class="comment-date">${formattedDate}</span>
                 </div>
-                <div class="comment-text">${comment.comment_text}</div>
+                <div class="comment-text">${comment.comment_text || ''}</div>
             `;
             
             commentsContainer.appendChild(commentElement);
+            
+            // Ajouter un délai d'animation pour le rendre plus visible
+            setTimeout(() => {
+                commentElement.style.opacity = 1;
+                commentElement.style.transform = 'translateY(0)';
+            }, 100 * (comments.length - comments.indexOf(comment)));
         });
+        
+        // Ajouter un message de notification quand les commentaires sont chargés
+        const notification = document.createElement('div');
+        notification.style.cssText = 'background: #4CAF50; color: white; padding: 8px; border-radius: 4px; text-align: center; margin-top: 10px; font-size: 14px; transition: opacity 2s; opacity: 1;';
+        notification.textContent = `${comments.length} commentaire(s) chargé(s)`;
+        commentsContainer.parentNode.insertBefore(notification, commentsContainer.nextSibling);
+        
+        // Faire disparaître la notification après quelques secondes
+        setTimeout(() => {
+            notification.style.opacity = 0;
+            setTimeout(() => notification.remove(), 2000);
+        }, 3000);
         
     } catch (error) {
         console.error('Erreur lors du chargement des commentaires:', error);
-        commentsContainer.innerHTML = '<p>Impossible de charger les commentaires. Veuillez réessayer plus tard.</p>';
+        commentsContainer.innerHTML = '<p style="color: #d32f2f; text-align: center; padding: 15px;">Impossible de charger les commentaires. Veuillez réessayer plus tard.</p>';
     }
 }
 
@@ -517,7 +602,7 @@ function renderPhotos(photos) {
 photoCard.innerHTML = `
     <div class="photo-img-container">
         <img class="photo-img" src="${photo.image_url || ''}" alt="${photo.title || 'Photo sans titre'}" 
-             onerror="this.onerror=null; this.src='images/Actu&Media.png'; console.error('Erreur chargement image:', this.src, 'URL originale:', '${photo.image_url}');">
+             onerror="console.error('Erreur chargement image:', this.src, 'URL originale:', '${photo.image_url}'); this.src='images/Actu&Media.png';">
     </div>
     <div class="photo-info">
         <h3 class="photo-title">${photo.title || 'Sans titre'}</h3>
