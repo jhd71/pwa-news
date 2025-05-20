@@ -60,177 +60,34 @@ function loadMorePhotos() {
     }
 }
 
-// Fonction de compatibilité - ne fait rien
+// Fonction de compatibilité - remplace l'ancienne fonction previewPhoto
 function previewPhoto(event) {
-    console.log("previewPhoto appelée - ne fait rien car utilise la méthode directe");
-}
-
-// Fonction pour modifier le comportement de uploadPhoto pour utiliser la donnée base64
-function patchUploadPhoto() {
-    console.log("Modification de la fonction uploadPhoto pour utiliser base64");
+    console.log("previewPhoto appelée - délégation au système à deux inputs");
     
-    // Sauvegarder la fonction originale
-    const originalUploadPhoto = window.uploadPhoto;
+    // Cette fonction est désormais gérée par les gestionnaires dans initCameraCapture
+    // Mais nous gardons cette fonction pour la compatibilité
     
-    // Remplacer par notre version
-    window.uploadPhoto = async function(event) {
-        event.preventDefault();
-        console.log("Fonction uploadPhoto modifiée appelée");
-        
-        // Référence aux éléments
-        const photoBase64 = document.getElementById('photoBase64');
-        
-        // Vérifier qu'une image a été sélectionnée
-        if (!photoBase64 || !photoBase64.value) {
-            alert('Veuillez sélectionner une image');
-            return;
-        }
-        
-        // Récupérer les autres données du formulaire
-        const title = document.getElementById('photoTitle').value || 'Sans titre';
-        const description = document.getElementById('photoDescription').value || '';
-        const location = document.getElementById('photoLocation').value || '';
-        const authorName = document.getElementById('photographerName').value || 'Anonyme';
-        
-        // Afficher la barre de progression
-        const uploadProgress = document.getElementById('uploadProgress');
-        if (uploadProgress) {
-            uploadProgress.style.display = 'block';
-        }
-        
-        try {
-            // Convertir la base64 en blob
-            const base64Data = photoBase64.value.split(',')[1];
-            const mimeType = photoBase64.value.split(',')[0].split(':')[1].split(';')[0];
-            const byteCharacters = atob(base64Data);
-            const byteArrays = [];
-            
-            for (let offset = 0; offset < byteCharacters.length; offset += 512) {
-                const slice = byteCharacters.slice(offset, offset + 512);
-                const byteNumbers = new Array(slice.length);
-                
-                for (let i = 0; i < slice.length; i++) {
-                    byteNumbers[i] = slice.charCodeAt(i);
-                }
-                
-                const byteArray = new Uint8Array(byteNumbers);
-                byteArrays.push(byteArray);
-            }
-            
-            // Créer un blob à partir des données
-            const blob = new Blob(byteArrays, { type: mimeType });
-            
-            // Créer un fichier à partir du blob
-            const fileName = Date.now() + '.jpg';
-            const file = new File([blob], fileName, { type: mimeType });
-            
-            // Sauvegarder le nom pour les futurs uploads
-            localStorage.setItem('photographerName', authorName);
-            
-            // Générer un nom de fichier unique
-            const fileExt = file.name.split('.').pop();
-            const uniqueFileName = `${Date.now()}_${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
-            const filePath = `photos/${uniqueFileName}`;
-            
-            // Upload du fichier dans Supabase
-            const { data: fileData, error: fileError } = await window.supabase.storage
-                .from('gallery')
-                .upload(filePath, file, {
-                    cacheControl: '3600',
-                    upsert: false,
-                    onUploadProgress: (progress) => {
-                        const percent = Math.round((progress.loaded / progress.total) * 100);
-                        console.log(`Upload: ${percent}%`);
-                        const progressBarFill = document.querySelector('.progress-bar-fill');
-                        if (progressBarFill) {
-                            progressBarFill.style.width = `${percent}%`;
-                        }
-                    }
-                });
-            
-            if (fileError) {
-                console.error("Erreur d'upload du fichier:", fileError);
-                throw fileError;
-            }
-            
-            // Obtenir l'URL publique
-            const { data: urlData } = window.supabase.storage.from('gallery').getPublicUrl(filePath);
-            const imageUrl = urlData.publicUrl;
-            
-            // Enregistrer les métadonnées
-            const { data, error } = await window.supabase
-                .from('photos')
-                .insert([
-                    { 
-                        title, 
-                        description, 
-                        location, 
-                        author_name: authorName,
-                        image_url: imageUrl,
-                        file_path: filePath
-                    }
-                ]);
-            
-            if (error) {
-                console.error("Erreur d'insertion dans la table photos:", error);
-                throw error;
-            }
-            
-            alert('Photo ajoutée avec succès!');
-            
-            // Fermer la modale
-            const uploadModal = document.getElementById('uploadModal');
-            if (uploadModal) {
-                uploadModal.style.display = 'none';
-                document.body.style.overflow = '';
-            }
-            
-            // Réinitialiser le formulaire
-            const photoUploadForm = document.getElementById('photoUploadForm');
-            if (photoUploadForm) {
-                photoUploadForm.reset();
-            }
-            
-            // Vider la prévisualisation
-            const photoPreview = document.getElementById('photoPreview');
-            if (photoPreview) {
-                photoPreview.innerHTML = '';
-            }
-            
-            // Masquer la barre de progression
-            if (uploadProgress) {
-                uploadProgress.style.display = 'none';
-                const progressBarFill = document.querySelector('.progress-bar-fill');
-                if (progressBarFill) {
-                    progressBarFill.style.width = '0%';
-                }
-            }
-            
-            // Recharger les photos
-            const photoGrid = document.getElementById('photoGrid');
-            if (photoGrid) {
-                photoGrid.innerHTML = '';
-            }
-            
-            window.currentPage = 0;
-            loadPhotos();
-            
-        } catch (error) {
-            console.error('Erreur lors de l\'upload:', error);
-            alert(`Une erreur est survenue: ${error.message || 'Erreur inconnue'}. Veuillez réessayer.`);
-            
-            // Masquer la barre de progression
-            if (uploadProgress) {
-                uploadProgress.style.display = 'none';
-            }
+    const file = event && event.target && event.target.files ? event.target.files[0] : null;
+    if (!file) return;
+    
+    if (!file.type.match('image.*')) {
+        alert('Veuillez sélectionner une image');
+        return;
+    }
+    
+    // Utiliser la même logique de prévisualisation
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const photoPreview = document.getElementById('photoPreview');
+        if (photoPreview) {
+            photoPreview.innerHTML = '';
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = "Prévisualisation";
+            photoPreview.appendChild(img);
         }
     };
-}
-
-// Fonction pour initialiser à la fois la capture et patcher uploadPhoto
-function initPhotoSystem() {
-    initCameraCapture();
-    patchUploadPhoto();
+    reader.readAsDataURL(file);
 }
 
 // Fonction pour initialiser les inputs de capture photo séparés
