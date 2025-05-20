@@ -60,138 +60,270 @@ function loadMorePhotos() {
     }
 }
 
-// Fonction de compatibilité - remplace l'ancienne fonction previewPhoto
+// Fonction de compatibilité - ne fait rien
 function previewPhoto(event) {
-    console.log("previewPhoto appelée - délégation au système à deux inputs");
-    
-    // Cette fonction est désormais gérée par les gestionnaires dans initCameraCapture
-    // Mais nous gardons cette fonction pour la compatibilité
-    
-    const file = event && event.target && event.target.files ? event.target.files[0] : null;
-    if (!file) return;
-    
-    if (!file.type.match('image.*')) {
-        alert('Veuillez sélectionner une image');
-        return;
-    }
-    
-    // Utiliser la même logique de prévisualisation
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const photoPreview = document.getElementById('photoPreview');
-        if (photoPreview) {
-            photoPreview.innerHTML = '';
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.alt = "Prévisualisation";
-            photoPreview.appendChild(img);
-        }
-    };
-    reader.readAsDataURL(file);
+    console.log("previewPhoto appelée - ne fait rien car utilise la méthode directe");
 }
 
-// Fonction pour initialiser les inputs de capture photo séparés
-function initCameraCapture() {
-    console.log("Initialisation des inputs de capture photo séparés");
+// Fonction pour modifier le comportement de uploadPhoto pour utiliser la donnée base64
+function patchUploadPhoto() {
+    console.log("Modification de la fonction uploadPhoto pour utiliser base64");
     
-    // Référence aux éléments
-    const photoInput = document.getElementById('photoInput');     // input du formulaire
-    const galleryInput = document.getElementById('galleryInput'); // input pour la galerie
-    const captureInput = document.getElementById('captureInput'); // input pour l'appareil photo
-    const captureBtn = document.getElementById('captureBtn');     // bouton appareil photo
-    const galleryBtn = document.getElementById('galleryBtn');     // bouton galerie
+    // Sauvegarder la fonction originale
+    const originalUploadPhoto = window.uploadPhoto;
     
-    // Vérifier que tous les éléments existent
-    if (!photoInput || !galleryInput || !captureInput || !captureBtn || !galleryBtn) {
-        console.error("Éléments de capture photo non trouvés");
-        return;
-    }
-    
-    // Bouton pour prendre une photo
-    captureBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        console.log("Clic sur le bouton appareil photo");
-        captureInput.click();
-    });
-    
-    // Bouton pour choisir dans la galerie
-    galleryBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        console.log("Clic sur le bouton galerie");
-        galleryInput.click();
-    });
-    
-    // Gestionnaire pour l'input de l'appareil photo
-    captureInput.addEventListener('change', function(event) {
-        console.log("Événement change sur captureInput");
-        // Si un fichier a été sélectionné
-        if (event.target.files && event.target.files[0]) {
-            // Copier le fichier vers l'input principal du formulaire
-            transferFile(event.target.files[0], photoInput);
-            // Afficher la prévisualisation
-            previewFile(event.target.files[0], 'camera');
-        }
-    });
-    
-    // Gestionnaire pour l'input de la galerie
-    galleryInput.addEventListener('change', function(event) {
-        console.log("Événement change sur galleryInput");
-        // Si un fichier a été sélectionné
-        if (event.target.files && event.target.files[0]) {
-            // Copier le fichier vers l'input principal du formulaire
-            transferFile(event.target.files[0], photoInput);
-            // Afficher la prévisualisation
-            previewFile(event.target.files[0], 'gallery');
-        }
-    });
-    
-    // Fonction pour transférer un fichier vers un autre input
-    function transferFile(file, targetInput) {
-        // Certains navigateurs ne permettent pas de définir directement files,
-        // on utilise DataTransfer pour contourner cette limitation
-        try {
-            // Méthode moderne avec DataTransfer
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            targetInput.files = dataTransfer.files;
-        } catch (error) {
-            console.error("Erreur lors du transfert de fichier:", error);
-            // Méthode alternative pour IE
-            try {
-                targetInput.value = file.name;
-            } catch (e) {
-                console.error("Impossible de définir la valeur de l'input:", e);
-            }
-        }
-    }
-    
-    // Fonction pour afficher la prévisualisation
-    function previewFile(file, source) {
-        if (!file.type.match('image.*')) {
+    // Remplacer par notre version
+    window.uploadPhoto = async function(event) {
+        event.preventDefault();
+        console.log("Fonction uploadPhoto modifiée appelée");
+        
+        // Référence aux éléments
+        const photoBase64 = document.getElementById('photoBase64');
+        
+        // Vérifier qu'une image a été sélectionnée
+        if (!photoBase64 || !photoBase64.value) {
             alert('Veuillez sélectionner une image');
             return;
         }
         
-        const reader = new FileReader();
-        reader.onload = function(e) {
+        // Récupérer les autres données du formulaire
+        const title = document.getElementById('photoTitle').value || 'Sans titre';
+        const description = document.getElementById('photoDescription').value || '';
+        const location = document.getElementById('photoLocation').value || '';
+        const authorName = document.getElementById('photographerName').value || 'Anonyme';
+        
+        // Afficher la barre de progression
+        const uploadProgress = document.getElementById('uploadProgress');
+        if (uploadProgress) {
+            uploadProgress.style.display = 'block';
+        }
+        
+        try {
+            // Convertir la base64 en blob
+            const base64Data = photoBase64.value.split(',')[1];
+            const mimeType = photoBase64.value.split(',')[0].split(':')[1].split(';')[0];
+            const byteCharacters = atob(base64Data);
+            const byteArrays = [];
+            
+            for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+                const slice = byteCharacters.slice(offset, offset + 512);
+                const byteNumbers = new Array(slice.length);
+                
+                for (let i = 0; i < slice.length; i++) {
+                    byteNumbers[i] = slice.charCodeAt(i);
+                }
+                
+                const byteArray = new Uint8Array(byteNumbers);
+                byteArrays.push(byteArray);
+            }
+            
+            // Créer un blob à partir des données
+            const blob = new Blob(byteArrays, { type: mimeType });
+            
+            // Créer un fichier à partir du blob
+            const fileName = Date.now() + '.jpg';
+            const file = new File([blob], fileName, { type: mimeType });
+            
+            // Sauvegarder le nom pour les futurs uploads
+            localStorage.setItem('photographerName', authorName);
+            
+            // Générer un nom de fichier unique
+            const fileExt = file.name.split('.').pop();
+            const uniqueFileName = `${Date.now()}_${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+            const filePath = `photos/${uniqueFileName}`;
+            
+            // Upload du fichier dans Supabase
+            const { data: fileData, error: fileError } = await window.supabase.storage
+                .from('gallery')
+                .upload(filePath, file, {
+                    cacheControl: '3600',
+                    upsert: false,
+                    onUploadProgress: (progress) => {
+                        const percent = Math.round((progress.loaded / progress.total) * 100);
+                        console.log(`Upload: ${percent}%`);
+                        const progressBarFill = document.querySelector('.progress-bar-fill');
+                        if (progressBarFill) {
+                            progressBarFill.style.width = `${percent}%`;
+                        }
+                    }
+                });
+            
+            if (fileError) {
+                console.error("Erreur d'upload du fichier:", fileError);
+                throw fileError;
+            }
+            
+            // Obtenir l'URL publique
+            const { data: urlData } = window.supabase.storage.from('gallery').getPublicUrl(filePath);
+            const imageUrl = urlData.publicUrl;
+            
+            // Enregistrer les métadonnées
+            const { data, error } = await window.supabase
+                .from('photos')
+                .insert([
+                    { 
+                        title, 
+                        description, 
+                        location, 
+                        author_name: authorName,
+                        image_url: imageUrl,
+                        file_path: filePath
+                    }
+                ]);
+            
+            if (error) {
+                console.error("Erreur d'insertion dans la table photos:", error);
+                throw error;
+            }
+            
+            alert('Photo ajoutée avec succès!');
+            
+            // Fermer la modale
+            const uploadModal = document.getElementById('uploadModal');
+            if (uploadModal) {
+                uploadModal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+            
+            // Réinitialiser le formulaire
+            const photoUploadForm = document.getElementById('photoUploadForm');
+            if (photoUploadForm) {
+                photoUploadForm.reset();
+            }
+            
+            // Vider la prévisualisation
             const photoPreview = document.getElementById('photoPreview');
             if (photoPreview) {
-                // Vider puis ajouter la nouvelle image
+                photoPreview.innerHTML = '';
+            }
+            
+            // Masquer la barre de progression
+            if (uploadProgress) {
+                uploadProgress.style.display = 'none';
+                const progressBarFill = document.querySelector('.progress-bar-fill');
+                if (progressBarFill) {
+                    progressBarFill.style.width = '0%';
+                }
+            }
+            
+            // Recharger les photos
+            const photoGrid = document.getElementById('photoGrid');
+            if (photoGrid) {
+                photoGrid.innerHTML = '';
+            }
+            
+            window.currentPage = 0;
+            loadPhotos();
+            
+        } catch (error) {
+            console.error('Erreur lors de l\'upload:', error);
+            alert(`Une erreur est survenue: ${error.message || 'Erreur inconnue'}. Veuillez réessayer.`);
+            
+            // Masquer la barre de progression
+            if (uploadProgress) {
+                uploadProgress.style.display = 'none';
+            }
+        }
+    };
+}
+
+// Fonction pour initialiser à la fois la capture et patcher uploadPhoto
+function initPhotoSystem() {
+    initCameraCapture();
+    patchUploadPhoto();
+}
+
+// Fonction pour initialiser les inputs de capture photo séparés
+function initCameraCapture() {
+    console.log("Initialisation de la capture avec méthode directe");
+    
+    // Référence aux éléments
+    const captureBtn = document.getElementById('captureBtn');
+    const galleryBtn = document.getElementById('galleryBtn');
+    const photoPreview = document.getElementById('photoPreview');
+    const photoBase64 = document.getElementById('photoBase64');
+    
+    // Vérifier que les éléments existent
+    if (!captureBtn || !galleryBtn || !photoPreview || !photoBase64) {
+        console.error("Éléments nécessaires non trouvés");
+        return;
+    }
+    
+    // Fonction pour créer un input file temporaire
+    function createTemporaryInput(useCamera) {
+        // Créer un nouvel élément input
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        
+        // Ajouter l'attribut capture si on utilise l'appareil photo
+        if (useCamera) {
+            input.setAttribute('capture', 'environment');
+        }
+        
+        // Ajouter le gestionnaire d'événements change
+        input.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (!file.type.match('image.*')) {
+                alert('Veuillez sélectionner une image');
+                return;
+            }
+            
+            // Lire le fichier et l'afficher
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Stocker l'image en base64
+                const base64Image = e.target.result;
+                photoBase64.value = base64Image;
+                
+                // Afficher la prévisualisation
                 photoPreview.innerHTML = '';
                 const img = document.createElement('img');
-                img.src = e.target.result;
+                img.src = base64Image;
                 img.alt = "Prévisualisation";
                 photoPreview.appendChild(img);
                 
                 // Ajouter une indication de source
                 const sourceIndicator = document.createElement('div');
                 sourceIndicator.style.cssText = 'position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 5px 10px; border-radius: 20px; font-size: 12px;';
-                sourceIndicator.innerText = source === 'camera' ? '📷 Appareil photo' : '🖼️ Galerie';
+                sourceIndicator.innerText = useCamera ? '📷 Appareil photo' : '🖼️ Galerie';
                 photoPreview.appendChild(sourceIndicator);
-            }
-        };
-        reader.readAsDataURL(file);
+                
+                // Supprimer l'input temporaire
+                input.remove();
+            };
+            reader.readAsDataURL(file);
+        });
+        
+        // Retourner l'input
+        return input;
     }
+    
+    // Gérer le clic sur le bouton de capture
+    captureBtn.addEventListener('click', function() {
+        console.log("Clic sur le bouton appareil photo");
+        
+        // Créer un input temporaire avec l'attribut capture
+        const input = createTemporaryInput(true);
+        
+        // Ajouter à la page et déclencher le clic
+        document.body.appendChild(input);
+        input.click();
+    });
+    
+    // Gérer le clic sur le bouton galerie
+    galleryBtn.addEventListener('click', function() {
+        console.log("Clic sur le bouton galerie");
+        
+        // Créer un input temporaire sans l'attribut capture
+        const input = createTemporaryInput(false);
+        
+        // Ajouter à la page et déclencher le clic
+        document.body.appendChild(input);
+        input.click();
+    });
 }
 
 // Version modifiée de la fonction uploadPhoto
