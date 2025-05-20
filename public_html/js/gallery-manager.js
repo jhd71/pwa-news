@@ -65,53 +65,40 @@ function previewPhoto(event) {
     console.log("previewPhoto appelée - ne fait rien car utilise la méthode directe");
 }
 
-// Version corrigée de la fonction patchUploadPhoto
+// Fonction pour modifier le comportement de uploadPhoto pour utiliser la donnée base64
 function patchUploadPhoto() {
     console.log("Modification de la fonction uploadPhoto pour utiliser base64");
     
-    // Complètement remplacer la fonction uploadPhoto
+    // Sauvegarder la fonction originale
+    const originalUploadPhoto = window.uploadPhoto;
+    
+    // Remplacer par notre version
     window.uploadPhoto = async function(event) {
         event.preventDefault();
         console.log("Fonction uploadPhoto modifiée appelée");
         
-        // Récupérer les données du formulaire
+        // Référence aux éléments
         const photoBase64 = document.getElementById('photoBase64');
-        const titleInput = document.getElementById('photoTitle');
-        const descriptionInput = document.getElementById('photoDescription');
-        const locationInput = document.getElementById('photoLocation');
-        const authorNameInput = document.getElementById('photographerName');
-        const uploadProgress = document.getElementById('uploadProgress');
-        const progressBarFill = document.querySelector('.progress-bar-fill');
         
-        // Vérifier les éléments essentiels
+        // Vérifier qu'une image a été sélectionnée
         if (!photoBase64 || !photoBase64.value) {
             alert('Veuillez sélectionner une image');
             return;
         }
         
-        if (!titleInput || !authorNameInput) {
-            console.error("Éléments de formulaire manquants");
-            alert('Erreur: formulaire incomplet. Veuillez rafraîchir la page.');
-            return;
-        }
-        
-        // Récupérer les valeurs
-        const title = titleInput.value || 'Sans titre';
-        const description = descriptionInput ? descriptionInput.value || '' : '';
-        const location = locationInput ? locationInput.value || '' : '';
-        const authorName = authorNameInput.value || 'Anonyme';
-        
-        console.log("Données formulaire:", { title, authorName });
+        // Récupérer les autres données du formulaire
+        const title = document.getElementById('photoTitle').value || 'Sans titre';
+        const description = document.getElementById('photoDescription').value || '';
+        const location = document.getElementById('photoLocation').value || '';
+        const authorName = document.getElementById('photographerName').value || 'Anonyme';
         
         // Afficher la barre de progression
+        const uploadProgress = document.getElementById('uploadProgress');
         if (uploadProgress) {
             uploadProgress.style.display = 'block';
         }
         
         try {
-            // Sauvegarder le nom pour les futurs uploads
-            localStorage.setItem('photographerName', authorName);
-            
             // Convertir la base64 en blob
             const base64Data = photoBase64.value.split(',')[1];
             const mimeType = photoBase64.value.split(',')[0].split(':')[1].split(';')[0];
@@ -137,18 +124,13 @@ function patchUploadPhoto() {
             const fileName = Date.now() + '.jpg';
             const file = new File([blob], fileName, { type: mimeType });
             
+            // Sauvegarder le nom pour les futurs uploads
+            localStorage.setItem('photographerName', authorName);
+            
             // Générer un nom de fichier unique
             const fileExt = file.name.split('.').pop();
             const uniqueFileName = `${Date.now()}_${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
             const filePath = `photos/${uniqueFileName}`;
-            
-            console.log("Tentative d'upload vers:", filePath);
-            
-            // Vérifier que Supabase est disponible
-            if (!window.supabase || !window.supabase.storage) {
-                console.error("Supabase ou Supabase Storage n'est pas disponible");
-                throw new Error("Service de stockage non disponible");
-            }
             
             // Upload du fichier dans Supabase
             const { data: fileData, error: fileError } = await window.supabase.storage
@@ -159,6 +141,7 @@ function patchUploadPhoto() {
                     onUploadProgress: (progress) => {
                         const percent = Math.round((progress.loaded / progress.total) * 100);
                         console.log(`Upload: ${percent}%`);
+                        const progressBarFill = document.querySelector('.progress-bar-fill');
                         if (progressBarFill) {
                             progressBarFill.style.width = `${percent}%`;
                         }
@@ -170,13 +153,9 @@ function patchUploadPhoto() {
                 throw fileError;
             }
             
-            console.log("Fichier uploadé avec succès");
-            
             // Obtenir l'URL publique
             const { data: urlData } = window.supabase.storage.from('gallery').getPublicUrl(filePath);
             const imageUrl = urlData.publicUrl;
-            
-            console.log("URL publique:", imageUrl);
             
             // Enregistrer les métadonnées
             const { data, error } = await window.supabase
@@ -196,8 +175,6 @@ function patchUploadPhoto() {
                 console.error("Erreur d'insertion dans la table photos:", error);
                 throw error;
             }
-            
-            console.log("Métadonnées enregistrées avec succès");
             
             alert('Photo ajoutée avec succès!');
             
@@ -220,12 +197,10 @@ function patchUploadPhoto() {
                 photoPreview.innerHTML = '';
             }
             
-            // Réinitialiser la valeur base64
-            photoBase64.value = '';
-            
             // Masquer la barre de progression
             if (uploadProgress) {
                 uploadProgress.style.display = 'none';
+                const progressBarFill = document.querySelector('.progress-bar-fill');
                 if (progressBarFill) {
                     progressBarFill.style.width = '0%';
                 }
@@ -238,7 +213,7 @@ function patchUploadPhoto() {
             }
             
             window.currentPage = 0;
-            window.loadPhotos();
+            loadPhotos();
             
         } catch (error) {
             console.error('Erreur lors de l\'upload:', error);
@@ -250,8 +225,6 @@ function patchUploadPhoto() {
             }
         }
     };
-    
-    console.log("Fonction uploadPhoto remplacée avec succès");
 }
 
 // Fonction pour initialiser à la fois la capture et patcher uploadPhoto
