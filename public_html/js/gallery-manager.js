@@ -60,62 +60,141 @@ function loadMorePhotos() {
     }
 }
 
-// Prévisualiser l'image sélectionnée
+// Version simplifiée de previewPhoto qui délègue à la gestion d'événements dans initCameraCapture
 function previewPhoto(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+    // Cette fonction est maintenant gérée par l'événement 'change' dans initCameraCapture
+    // On garde cette version simplifiée pour maintenir la compatibilité avec le code existant
+    console.log("Fonction previewPhoto appelée - utilisant l'événement change interne");
     
-    if (!file.type.match('image.*')) {
-        alert('Veuillez sélectionner une image');
-        return;
-    }
+    // Obtenir l'élément input
+    const photoInput = document.getElementById('photoInput');
     
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const photoPreview = document.getElementById('photoPreview');
-        if (photoPreview) {
-            // Vider puis ajouter la nouvelle image
-            photoPreview.innerHTML = '';
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.alt = "Prévisualisation";
-            photoPreview.appendChild(img);
-            
-            // Ajouter une indication de source
-            const photoInput = document.getElementById('photoInput');
-            const sourceIndicator = document.createElement('div');
-            sourceIndicator.style.cssText = 'position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 5px 10px; border-radius: 20px; font-size: 12px;';
-            sourceIndicator.innerText = photoInput.hasAttribute('capture') ? '📷 Appareil photo' : '🖼️ Galerie';
-            photoPreview.appendChild(sourceIndicator);
+    // Vérifier si l'input existe et a un gestionnaire d'événements change
+    if (photoInput && typeof event === 'object' && event.target && event.target.files) {
+        // Déclencher manuellement l'événement change sur l'input
+        // Cela permet de réutiliser la logique définie dans initCameraCapture
+        const newEvent = new Event('change', { bubbles: true });
+        Object.defineProperty(newEvent, 'target', { value: event.target });
+        photoInput.dispatchEvent(newEvent);
+    } else {
+        // Si l'input n'existe pas ou s'il n'y a pas de gestionnaire,
+        // utiliser l'ancienne logique comme fallback
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        if (!file.type.match('image.*')) {
+            alert('Veuillez sélectionner une image');
+            return;
         }
-    };
-    reader.readAsDataURL(file);
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const photoPreview = document.getElementById('photoPreview');
+            if (photoPreview) {
+                photoPreview.innerHTML = `<img src="${e.target.result}" alt="Prévisualisation" style="max-width: 100%; max-height: 200px;">`;
+            }
+        };
+        reader.readAsDataURL(file);
+    }
 }
 
-// Fonction pour initialiser les boutons de capture photo
+// Version corrigée de la fonction initCameraCapture
 function initCameraCapture() {
     console.log("Initialisation des boutons de capture photo");
+    
+    // Références aux éléments DOM
     const photoInput = document.getElementById('photoInput');
     const captureBtn = document.getElementById('captureBtn');
     const galleryBtn = document.getElementById('galleryBtn');
     
+    // Vérifier que tous les éléments existent
     if (!photoInput || !captureBtn || !galleryBtn) {
         console.error("Éléments de capture photo non trouvés");
         return;
     }
     
-    // Prendre une photo directement
-    captureBtn.addEventListener('click', function() {
+    // Désactiver tout gestionnaire d'événements existant
+    photoInput.removeEventListener('change', previewPhoto);
+    captureBtn.onclick = null;
+    galleryBtn.onclick = null;
+    
+    // Variable pour suivre l'état de sélection
+    let isCapturing = false;
+    
+    // Ajouter un gestionnaire d'événements au bouton de capture
+    captureBtn.addEventListener('click', function(e) {
+        e.preventDefault(); // Empêcher toute action par défaut
         console.log("Tentative d'ouverture de l'appareil photo");
+        
+        // Définir l'état
+        isCapturing = true;
+        
+        // Définir l'attribut pour capturer via l'appareil photo
         photoInput.setAttribute('capture', 'environment');
-        photoInput.click();
+        
+        // Réinitialiser la valeur pour s'assurer que l'événement change se déclenche
+        photoInput.value = '';
+        
+        // Déclencher le clic après un court délai
+        setTimeout(function() {
+            photoInput.click();
+        }, 100);
     });
     
-    // Choisir dans la galerie
-    galleryBtn.addEventListener('click', function() {
+    // Ajouter un gestionnaire d'événements au bouton de galerie
+    galleryBtn.addEventListener('click', function(e) {
+        e.preventDefault(); // Empêcher toute action par défaut
         console.log("Ouverture de la galerie");
+        
+        // Définir l'état
+        isCapturing = false;
+        
+        // Supprimer l'attribut pour sélectionner depuis la galerie
         photoInput.removeAttribute('capture');
-        photoInput.click();
+        
+        // Réinitialiser la valeur pour s'assurer que l'événement change se déclenche
+        photoInput.value = '';
+        
+        // Déclencher le clic après un court délai
+        setTimeout(function() {
+            photoInput.click();
+        }, 100);
+    });
+    
+    // Ajouter un gestionnaire d'événements à l'input file
+    photoInput.addEventListener('change', function(event) {
+        // S'assurer que nous avons un fichier
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        // Vérifier que c'est bien une image
+        if (!file.type.match('image.*')) {
+            alert('Veuillez sélectionner une image');
+            return;
+        }
+        
+        console.log("Fichier sélectionné:", file.name, isCapturing ? "(appareil photo)" : "(galerie)");
+        
+        // Afficher la prévisualisation
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const photoPreview = document.getElementById('photoPreview');
+            if (photoPreview) {
+                // Vider puis ajouter la nouvelle image
+                photoPreview.innerHTML = '';
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.alt = "Prévisualisation";
+                photoPreview.appendChild(img);
+                
+                // Ajouter une indication de source
+                const sourceIndicator = document.createElement('div');
+                sourceIndicator.style.cssText = 'position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 5px 10px; border-radius: 20px; font-size: 12px;';
+                sourceIndicator.innerText = isCapturing ? '📷 Appareil photo' : '🖼️ Galerie';
+                photoPreview.appendChild(sourceIndicator);
+            }
+        };
+        reader.readAsDataURL(file);
     });
 }
 
