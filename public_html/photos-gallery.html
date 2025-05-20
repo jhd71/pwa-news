@@ -84,7 +84,16 @@
         <form id="photoUploadForm">
             <!-- Version avec deux inputs distincts pour résoudre le problème du double clic -->
 <div class="file-upload-area">
-    <!-- On ne conserve que des boutons simples -->
+    <!-- Input caché pour le formulaire - celui qui va réellement être soumis -->
+    <input type="file" id="photoInput" name="photoInput" accept="image/*" style="display: none;" required>
+    
+    <!-- Input spécifique pour la galerie -->
+    <input type="file" id="galleryInput" accept="image/*" style="display: none;">
+    
+    <!-- Input spécifique pour l'appareil photo -->
+    <input type="file" id="captureInput" accept="image/*" capture="environment" style="display: none;">
+    
+    <!-- Boutons visibles -->
     <div class="upload-buttons">
         <button type="button" id="captureBtn" class="capture-btn">
             <i class="material-icons">camera_alt</i>
@@ -98,9 +107,6 @@
     
     <!-- Zone de prévisualisation -->
     <div id="photoPreview" class="photo-preview"></div>
-    
-    <!-- Champ caché pour stocker l'image en base64 -->
-    <input type="hidden" id="photoBase64" name="photoBase64">
 </div>
             
             <div class="form-group">
