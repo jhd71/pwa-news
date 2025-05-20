@@ -653,8 +653,6 @@ async function loadPhotos(isLoadMore = false) {
     }
 }
 
-// gallery-manager.js - Version améliorée (PARTIE 3)
-
 // Initialisation principale
 function initializeGallery() {
     console.log("Début de initializeGallery");
