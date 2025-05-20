@@ -199,6 +199,10 @@ function addContextMenu() {
     
     // Initialiser les fonctionnalités d'administrateur
     setTimeout(() => {
+		// Fonction temporaire pour éviter l'erreur
+function renderAdminControls() {
+    console.log("Contrôles admin désactivés");
+}
       renderAdminControls();
     }, 1000); // Attendre que tout soit chargé
   }
@@ -213,6 +217,258 @@ function openUploadModal() {
         console.error("Modal d'upload non trouvée");
     }
 }
+
+// Version modifiée de la fonction uploadPhoto
+async function uploadPhoto(event) {
+    event.preventDefault();
+    console.log("Début de la fonction uploadPhoto");
+    
+    // Vérifier que tous les éléments DOM nécessaires sont disponibles
+    if (!photoInput || !progressBarFill || !uploadProgress) {
+        console.error("Éléments DOM manquants pour uploadPhoto");
+        alert('Erreur: éléments DOM manquants. Veuillez rafraîchir la page.');
+        return;
+    }
+    
+    const file = photoInput.files[0];
+    if (!file) {
+        alert('Veuillez sélectionner une image');
+        return;
+    }
+    
+    console.log("Fichier sélectionné:", file.name, file.type, file.size);
+    
+    const title = document.getElementById('photoTitle').value || 'Sans titre';
+    const description = document.getElementById('photoDescription').value || '';
+    const location = document.getElementById('photoLocation').value || '';
+    const authorName = document.getElementById('photographerName').value || 'Anonyme';
+    
+    console.log("Données du formulaire:", { title, description, location, authorName });
+    
+    uploadProgress.style.display = 'block';
+    
+    try {
+        // Garder en mémoire le nom préféré de l'utilisateur
+        localStorage.setItem('photographerName', authorName);
+        
+        // Générer un nom de fichier unique
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+        const filePath = `photos/${fileName}`;
+        
+        console.log("Tentative d'upload du fichier vers:", filePath);
+        
+        // Vérifier que supabase est bien défini
+        if (!supabase) {
+            console.error("Erreur: supabase n'est pas défini");
+            throw new Error("Supabase n'est pas initialisé");
+        }
+        
+        // Vérifier que storage est disponible
+        if (!supabase.storage) {
+            console.error("Erreur: supabase.storage n'est pas disponible");
+            throw new Error("Storage Supabase non disponible");
+        }
+        
+        // Uploader le fichier dans le bucket Storage avec un timeout plus long
+        console.log("Début de l'upload du fichier...");
+        const { data: fileData, error: fileError } = await supabase.storage
+            .from('gallery')
+            .upload(filePath, file, {
+                cacheControl: '3600',
+                upsert: false,
+                onUploadProgress: (progress) => {
+                    const percent = Math.round((progress.loaded / progress.total) * 100);
+                    console.log(`Upload: ${percent}%`);
+                    if (progressBarFill) {
+                        progressBarFill.style.width = `${percent}%`;
+                    }
+                }
+            });
+            
+        if (fileError) {
+            console.error("Erreur d'upload du fichier:", fileError);
+            throw fileError;
+        }
+        
+        console.log("Fichier uploadé avec succès:", fileData);
+        
+        // Obtenir l'URL publique
+        const { data: urlData } = supabase.storage.from('gallery').getPublicUrl(filePath);
+        const imageUrl = urlData.publicUrl;
+        
+        console.log("URL publique générée:", imageUrl);
+        
+        // Enregistrer les métadonnées dans la base de données
+        console.log("Tentative d'insertion dans la table photos");
+        const { data, error } = await supabase
+            .from('photos')
+            .insert([
+                { 
+                    title, 
+                    description, 
+                    location, 
+                    author_name: authorName,
+                    image_url: imageUrl,
+                    file_path: filePath
+                }
+            ]);
+        
+        if (error) {
+            console.error("Erreur d'insertion dans la table photos:", error);
+            throw error;
+        }
+        
+        console.log("Données insérées avec succès:", data);
+        
+        alert('Photo ajoutée avec succès!');
+        
+        // Fermer la modale d'upload
+        if (uploadModal) {
+            uploadModal.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+        
+        // Réinitialiser le formulaire
+        if (photoUploadForm) {
+            photoUploadForm.reset();
+        }
+        
+        // Vider la prévisualisation
+        if (photoPreview) {
+            photoPreview.innerHTML = '';
+        }
+        
+        // Masquer la barre de progression
+        if (uploadProgress) {
+            uploadProgress.style.display = 'none';
+            if (progressBarFill) {
+                progressBarFill.style.width = '0%';
+            }
+        }
+        
+        // Recharger les photos pour afficher la nouvelle
+        if (photoGrid) {
+            photoGrid.innerHTML = '';
+        }
+        
+        // Réinitialiser l'état et recharger les photos
+        currentPage = 0;
+        loadPhotos();
+        
+    } catch (error) {
+        console.error('Erreur lors de l\'upload:', error);
+        alert(`Une erreur est survenue: ${error.message || 'Erreur inconnue'}. Veuillez réessayer.`);
+        
+        // Masquer la barre de progression en cas d'erreur
+        if (uploadProgress) {
+            uploadProgress.style.display = 'none';
+        }
+    }
+}
+
+// Fermer la modale d'upload
+function closeUploadModal() {
+    if (uploadModal) {
+        uploadModal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+    
+    // Réinitialiser le formulaire
+    if (photoUploadForm) {
+        photoUploadForm.reset();
+    }
+    
+    // Vider la prévisualisation
+    if (photoPreview) {
+        photoPreview.innerHTML = '';
+    }
+    
+    // Masquer la barre de progression
+    if (uploadProgress) {
+        uploadProgress.style.display = 'none';
+        if (progressBarFill) {
+            progressBarFill.style.width = '0%';
+        }
+    }
+}
+
+// Prévisualiser l'image sélectionnée
+function previewPhoto(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    if (!file.type.match('image.*')) {
+        alert('Veuillez sélectionner une image');
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        if (photoPreview) {
+            photoPreview.innerHTML = `<img src="${e.target.result}" alt="Prévisualisation" style="max-width: 100%; max-height: 200px;">`;
+        }
+    };
+    reader.readAsDataURL(file);
+}
+
+// Ouvrir la vue détaillée d'une photo
+async function openPhotoView(photoId) {
+    if (!photoViewModal) {
+        console.error('Modal de vue photo non trouvée');
+        return;
+    }
+    
+    photoViewModal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    currentPhotoId = photoId;
+    
+    try {
+        // Charger les détails de la photo
+        const { data: photo, error: photoError } = await supabase
+            .from('photos')
+            .select('*')
+            .eq('id', photoId)
+            .single();
+        
+        if (photoError) throw photoError;
+        
+        // Afficher les détails
+        const modalPhotoImg = document.getElementById('modalPhotoImg');
+        const modalPhotoTitle = document.getElementById('modalPhotoTitle');
+        const modalPhotoDescription = document.getElementById('modalPhotoDescription');
+        const modalPhotoLocation = document.getElementById('modalPhotoLocation');
+        const modalPhotoDate = document.getElementById('modalPhotoDate');
+        const modalPhotoAuthor = document.getElementById('modalPhotoAuthor');
+        
+        if (modalPhotoImg) modalPhotoImg.src = photo.image_url;
+        if (modalPhotoTitle) modalPhotoTitle.textContent = photo.title || 'Sans titre';
+        if (modalPhotoDescription) modalPhotoDescription.textContent = photo.description || 'Aucune description';
+        if (modalPhotoLocation) modalPhotoLocation.textContent = photo.location ? `📍 ${photo.location}` : '';
+        
+        if (modalPhotoDate && photo.created_at) {
+            const date = new Date(photo.created_at);
+            modalPhotoDate.textContent = `📅 ${date.toLocaleDateString('fr-FR')}`;
+        }
+        
+        if (modalPhotoAuthor) modalPhotoAuthor.textContent = `👤 ${photo.author_name || 'Anonyme'}`;
+        
+    } catch (error) {
+        console.error('Erreur lors du chargement des détails:', error);
+        alert('Impossible de charger les détails de la photo');
+        closePhotoViewModal();
+    }
+}
+
+// Fermer la vue détaillée
+function closePhotoViewModal() {
+    if (photoViewModal) {
+        photoViewModal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+    currentPhotoId = null;
+}
+
   // Charger les photos - Fonction corrigée pour éviter les chargements multiples
   async function loadPhotos(isLoadMore = false) {
     console.log("Début de loadPhotos, isLoadMore:", isLoadMore);
@@ -429,12 +685,7 @@ function openUploadModal() {
     });
       
     console.log("Fin de renderPhotos, " + photoCards.length + " photos ajoutées au DOM");
-      
-    // Fonction temporaire pour éviter l'erreur
-function renderAdminControls() {
-  console.log("Contrôles admin désactivés");
-}
-renderAdminControls();
+   
   }
 
   // Fonction pour définir le mode administrateur (pour les tests)
