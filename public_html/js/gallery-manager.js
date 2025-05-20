@@ -185,7 +185,11 @@ if (commentForm) commentForm.addEventListener('submit', function(event) {
     });
       
     // Optimisations pour les appareils mobiles
-    setupMobileOptimizations();
+    // Optimisations pour les appareils mobiles - fonction temporaire
+function setupMobileOptimizations() {
+  console.log("Optimisations mobiles désactivées");
+}
+setupMobileOptimizations();
     
     // Initialiser le menu contextuel après tout le reste
     addContextMenu();
@@ -413,8 +417,11 @@ if (commentForm) commentForm.addEventListener('submit', function(event) {
       
     console.log("Fin de renderPhotos, " + photoCards.length + " photos ajoutées au DOM");
       
-    // Après avoir rendu toutes les photos, ajouter les contrôles admin si nécessaire
-    renderAdminControls();
+    // Fonction temporaire pour éviter l'erreur
+function renderAdminControls() {
+  console.log("Contrôles admin désactivés");
+}
+renderAdminControls();
   }
 
   // Fonction pour définir le mode administrateur (pour les tests)

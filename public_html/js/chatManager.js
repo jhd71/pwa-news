@@ -3767,100 +3767,104 @@ showAdminPanel() {
         'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 600px; max-height: 80vh; background: var(--chat-gradient); border-radius: 16px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); color: white; z-index: 1010; display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2);';
     
     panel.innerHTML = `
-        <div class="panel-header" style="${isMobile ? 'position: sticky; top: 0; background: #1a1a1a; z-index: 1001; padding: 15px; display: flex; justify-content: space-between; align-items: center;' : ''}">
-            <h3>Panel Admin</h3>
-            <button class="close-panel" style="${isMobile ? 'width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: none; color: white;' : ''}">
-                <span class="material-icons">close</span>
-            </button>
+    <div class="panel-header" style="${isMobile ? 'position: sticky; top: 0; background: #1a1a1a; z-index: 1001; padding: 15px; display: flex; justify-content: space-between; align-items: center;' : ''}">
+        <h3>Panel Admin</h3>
+        <button class="close-panel" style="${isMobile ? 'width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: none; color: white;' : ''}">
+            <span class="material-icons">close</span>
+        </button>
+    </div>
+    <div class="panel-tabs" style="${isMobile ? 'overflow-x: auto; white-space: nowrap; padding: 10px; background: #2a2a2a;' : ''}">
+        <button class="tab-btn active" data-tab="banned-words" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px; background: #4CAF50; color: white;' : ''}">Mots bannis</button>
+        <button class="tab-btn" data-tab="banned-ips" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">IPs bannies</button>
+        <button class="tab-btn" data-tab="notifications" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Notif.</button>
+        <button class="tab-btn" data-tab="admin-tools" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Outils</button>
+        <button class="tab-btn" data-tab="gallery" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Photos</button>
+    </div>
+    <div class="panel-content" style="${isMobile ? 'padding: 15px; height: calc(100% - 130px); overflow-y: auto; -webkit-overflow-scrolling: touch;' : ''}">
+        <!-- Onglet Mots bannis -->
+        <div class="tab-section active" id="banned-words-section">
+            <h4>Mots bannis</h4>
+            <div class="add-word">
+                <input type="text" placeholder="Nouveau mot à bannir">
+                <button class="add-word-btn">Ajouter</button>
+            </div>
+            <div class="banned-words-list" style="${isMobile ? 'max-height: 300px; min-height: 200px;' : ''}"></div>
         </div>
-        <div class="panel-tabs" style="${isMobile ? 'overflow-x: auto; white-space: nowrap; padding: 10px; background: #2a2a2a;' : ''}">
-    <button class="tab-btn active" data-tab="banned-words" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px; background: #4CAF50; color: white;' : ''}">Mots bannis</button>
-    <button class="tab-btn" data-tab="banned-ips" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">IPs bannies</button>
-    <button class="tab-btn" data-tab="notifications" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Notif.</button>
-    <button class="tab-btn" data-tab="admin-tools" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Outils</button>
-	<button class="tab-btn" data-tab="gallery" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Photos</button>
-</div>
-        <div class="panel-content" style="${isMobile ? 'padding: 15px; height: calc(100% - 130px); overflow-y: auto; -webkit-overflow-scrolling: touch;' : ''}">
-            <!-- Contenu des onglets - contenu existant... -->
-            <div class="tab-section active" id="banned-words-section">
-                <h4>Mots bannis</h4>
-                <div class="add-word">
-                    <input type="text" placeholder="Nouveau mot à bannir">
-                    <button class="add-word-btn">Ajouter</button>
-					<!-- Nouvel onglet pour la gestion de la galerie -->
-<div class="tab-section" id="gallery-section">
-    <h4>Gestion des photos</h4>
-    <div class="gallery-admin-controls">
-        <div class="photos-list" style="${isMobile ? 'max-height: 300px; min-height: 200px; overflow-y: auto;' : ''}">
-            <div class="loading-photos">Chargement des photos...</div>
+
+        <!-- Onglet IPs bannies -->
+        <div class="tab-section" id="banned-ips-section">
+            <h4>IPs bannies</h4>
+            <div class="banned-ips-list" style="${isMobile ? 'max-height: 300px; min-height: 200px;' : ''}">
+                <div class="loading-ips">Chargement des IPs bannies...</div>
+            </div>
+        </div>
+
+        <!-- Onglet Notifications -->
+        <div class="tab-section" id="notifications-section">
+            <h4>🚨 Envoyer une notification</h4>
+            <form id="notificationForm">
+                <label>Titre :</label><br>
+                <input type="text" id="notif-title" required style="${isMobile ? 'width: 100%; padding: 10px; margin-bottom: 10px;' : ''}"><br><br>
+                <label>Message :</label><br>
+                <textarea id="notif-body" required style="${isMobile ? 'width: 100%; padding: 10px; margin-bottom: 10px; min-height: 80px;' : ''}"></textarea><br><br>
+                <label>URL (facultatif) :</label><br>
+                <input type="text" id="notif-url" placeholder="/actualites" style="${isMobile ? 'width: 100%; padding: 10px; margin-bottom: 10px;' : ''}"><br><br>
+                <label>
+                    <input type="checkbox" id="notif-urgent">
+                    Notification urgente
+                </label><br><br>
+                <button type="submit" style="${isMobile ? 'width: 100%; padding: 12px; background: #4CAF50; color: white; border: none; border-radius: 5px;' : ''}">📤 Envoyer</button>
+            </form>
+            <p id="result" style="margin-top:10px;"></p>
+        </div>
+
+        <!-- Onglet Outils admin -->
+        <div class="tab-section" id="admin-tools-section">
+            <h4>🛡️ Outils d'administration</h4>
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <div>
+                    <button id="admin-protection-btn" style="background: #4CAF50; color: white; border: none; padding: 12px 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px; width: 100%;">
+                        <span class="material-icons">security</span>
+                        ${isMobile ? 'Débannir Admin' : 'Protection Admin (débannir vous-même)'}
+                    </button>
+                    <p style="font-size: 0.9em; margin-top: 5px; color: rgba(255,255,255,0.7);">
+                        Utilisez ce bouton si vous vous êtes accidentellement banni vous-même.
+                    </p>
+                </div>
+                <div>
+                    <button id="clear-expired-bans-btn" style="background: #FFA726; color: white; border: none; padding: 12px 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px; width: 100%;">
+                        <span class="material-icons">cleaning_services</span>
+                        ${isMobile ? 'Nettoyer bans expirés' : 'Nettoyer les bannissements expirés'}
+                    </button>
+                    <p style="font-size: 0.9em; margin-top: 5px; color: rgba(255,255,255,0.7);">
+                        Supprime tous les bannissements expirés de la base de données.
+                    </p>
+                </div>
+                ${isMobile ? `
+                <div style="margin-top: 30px; padding: 15px; border-top: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); border-radius: 8px;">
+                    <button id="force-reload-btn" style="background: #2196F3; color: white; border: none; padding: 12px 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px; width: 100%;">
+                        <span class="material-icons">refresh</span>
+                        Actualiser la page
+                    </button>
+                    <p style="font-size: 0.9em; margin-top: 5px; color: rgba(255,255,255,0.7);">
+                        Utilisez ce bouton pour recharger la page si les changements ne s'appliquent pas.
+                    </p>
+                </div>
+                ` : ''}
+            </div>
+        </div>
+
+        <!-- Nouvel onglet pour la gestion de la galerie -->
+        <div class="tab-section" id="gallery-section">
+            <h4>Gestion des photos</h4>
+            <div class="gallery-admin-controls">
+                <div class="photos-list" style="${isMobile ? 'max-height: 300px; min-height: 200px; overflow-y: auto;' : ''}">
+                    <div class="loading-photos">Chargement des photos...</div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-                </div>
-                <div class="banned-words-list" style="${isMobile ? 'max-height: 300px; min-height: 200px;' : ''}"></div>
-            </div>
-
-            <div class="tab-section" id="banned-ips-section">
-                <h4>IPs bannies</h4>
-                <div class="banned-ips-list" style="${isMobile ? 'max-height: 300px; min-height: 200px;' : ''}">
-    <div class="loading-ips">Chargement des IPs bannies...</div>
-</div>
-            </div>
-
-            <div class="tab-section" id="notifications-section">
-                <h4>🚨 Envoyer une notification</h4>
-                <form id="notificationForm">
-                    <label>Titre :</label><br>
-                    <input type="text" id="notif-title" required style="${isMobile ? 'width: 100%; padding: 10px; margin-bottom: 10px;' : ''}"><br><br>
-                    <label>Message :</label><br>
-                    <textarea id="notif-body" required style="${isMobile ? 'width: 100%; padding: 10px; margin-bottom: 10px; min-height: 80px;' : ''}"></textarea><br><br>
-                    <label>URL (facultatif) :</label><br>
-                    <input type="text" id="notif-url" placeholder="/actualites" style="${isMobile ? 'width: 100%; padding: 10px; margin-bottom: 10px;' : ''}"><br><br>
-                    <label>
-                        <input type="checkbox" id="notif-urgent">
-                        Notification urgente
-                    </label><br><br>
-                    <button type="submit" style="${isMobile ? 'width: 100%; padding: 12px; background: #4CAF50; color: white; border: none; border-radius: 5px;' : ''}">📤 Envoyer</button>
-                </form>
-                <p id="result" style="margin-top:10px;"></p>
-            </div>
-
-            <div class="tab-section" id="admin-tools-section">
-                <h4>🛡️ Outils d'administration</h4>
-                <div style="display: flex; flex-direction: column; gap: 15px;">
-                    <div>
-                        <button id="admin-protection-btn" style="background: #4CAF50; color: white; border: none; padding: 12px 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px; width: 100%;">
-                            <span class="material-icons">security</span>
-                            ${isMobile ? 'Débannir Admin' : 'Protection Admin (débannir vous-même)'}
-                        </button>
-                        <p style="font-size: 0.9em; margin-top: 5px; color: rgba(255,255,255,0.7);">
-                            Utilisez ce bouton si vous vous êtes accidentellement banni vous-même.
-                        </p>
-                    </div>
-                    <div>
-                        <button id="clear-expired-bans-btn" style="background: #FFA726; color: white; border: none; padding: 12px 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px; width: 100%;">
-                            <span class="material-icons">cleaning_services</span>
-                            ${isMobile ? 'Nettoyer bans expirés' : 'Nettoyer les bannissements expirés'}
-                        </button>
-                        <p style="font-size: 0.9em; margin-top: 5px; color: rgba(255,255,255,0.7);">
-                            Supprime tous les bannissements expirés de la base de données.
-                        </p>
-                    </div>
-                    ${isMobile ? `
-                    <div style="margin-top: 30px; padding: 15px; border-top: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); border-radius: 8px;">
-                        <button id="force-reload-btn" style="background: #2196F3; color: white; border: none; padding: 12px 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px; width: 100%;">
-                            <span class="material-icons">refresh</span>
-                            Actualiser la page
-                        </button>
-                        <p style="font-size: 0.9em; margin-top: 5px; color: rgba(255,255,255,0.7);">
-                            Utilisez ce bouton pour recharger la page si les changements ne s'appliquent pas.
-                        </p>
-                    </div>
-                    ` : ''}
-                </div>
-            </div>
-        </div>
-    `;
+`;
 
     document.body.appendChild(panel);
     
@@ -3893,11 +3897,13 @@ tabBtns.forEach(btn => {
         }
         const tabId = btn.dataset.tab + '-section';
         panel.querySelector(`#${tabId}`).classList.add('active');
+        
+        // ICI AJOUTEZ LE CODE SUIVANT:
+        // Charger les photos si l'onglet Galerie est sélectionné
+        if (btn.dataset.tab === 'gallery') {
+            this.loadGalleryPhotos();
+        }
     });
-	// Charger les photos si l'onglet Galerie est sélectionné
-if (btn.dataset.tab === 'gallery') {
-    this.loadGalleryPhotos();
-}
 });
 
     // Bouton ajout de mot banni
@@ -4731,6 +4737,187 @@ handleKeyboardAppearance() {
         });
     }
 }
+
+// Méthode pour charger les photos dans le panel admin
+async loadGalleryPhotos() {
+    try {
+        console.log("Chargement des photos depuis le panel admin du chat...");
+        
+        // Obtenez l'élément où afficher les photos
+        const photosList = document.querySelector('.photos-list');
+        if (!photosList) {
+            console.error("Conteneur photos-list non trouvé");
+            return;
+        }
+        
+        photosList.innerHTML = '<div class="loading-photos">Chargement des photos...</div>';
+        
+        // Utiliser l'instance Supabase du chat
+        const { data: photos, error } = await this.supabase
+            .from('photos')
+            .select('*')
+            .order('created_at', { ascending: false });
+            
+        if (error) {
+            console.error("Erreur lors du chargement des photos:", error);
+            photosList.innerHTML = `<div class="error">Erreur lors du chargement des photos: ${error.message}</div>`;
+            return;
+        }
+        
+        if (!photos || photos.length === 0) {
+            photosList.innerHTML = '<div class="no-data">Aucune photo trouvée</div>';
+            return;
+        }
+        
+        // Créer la liste des photos avec leurs contrôles
+        photosList.innerHTML = '';
+        
+        // Style de la grille adaptée à l'administration
+        const gridContainer = document.createElement('div');
+        gridContainer.className = 'admin-photos-grid';
+        gridContainer.style.cssText = `
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        `;
+        
+        photos.forEach(photo => {
+            const photoCard = document.createElement('div');
+            photoCard.className = 'admin-photo-card';
+            photoCard.dataset.id = photo.id;
+            photoCard.style.cssText = `
+                position: relative;
+                background: rgba(0, 0, 0, 0.2);
+                border-radius: 8px;
+                overflow: hidden;
+                transition: transform 0.2s;
+            `;
+            
+            photoCard.innerHTML = `
+                <div style="width: 100%; height: 120px; overflow: hidden;">
+                    <img src="${photo.image_url || ''}" alt="${photo.title || 'Photo sans titre'}" 
+                         style="width: 100%; height: 100%; object-fit: cover;"
+                         onerror="this.src='/images/no-image.png'; this.onerror=null;">
+                </div>
+                <div style="padding: 8px; font-size: 12px; color: rgba(255,255,255,0.9);">
+                    <div style="font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${photo.title || 'Sans titre'}</div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                        <span>${photo.author_name || 'Anonyme'}</span>
+                        <button class="delete-photo-btn" data-id="${photo.id}" style="background: rgba(255,0,0,0.7); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer;">×</button>
+                    </div>
+                </div>
+            `;
+            
+            gridContainer.appendChild(photoCard);
+        });
+        
+        photosList.appendChild(gridContainer);
+        
+        // Ajouter les gestionnaires d'événements pour les boutons de suppression
+        photosList.querySelectorAll('.delete-photo-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const photoId = btn.dataset.id;
+                
+                if (confirm(`Êtes-vous sûr de vouloir supprimer la photo #${photoId} ?`)) {
+                    await this.deleteGalleryPhoto(photoId);
+                }
+            });
+        });
+        
+    } catch (error) {
+        console.error("Erreur lors du chargement des photos:", error);
+        const photosList = document.querySelector('.photos-list');
+        if (photosList) {
+            photosList.innerHTML = `<div class="error">Erreur: ${error.message}</div>`;
+        }
+    }
 }
 
+// Méthode pour supprimer une photo
+async deleteGalleryPhoto(photoId) {
+    try {
+        console.log(`Tentative de suppression de la photo ID: ${photoId}...`);
+        
+        // Afficher un indicateur de chargement
+        const photoCard = document.querySelector(`.admin-photo-card[data-id="${photoId}"]`);
+        if (photoCard) {
+            photoCard.style.opacity = '0.5';
+        }
+        
+        // 1. Récupérer les détails de la photo pour avoir le chemin du fichier
+        const { data: photo, error: fetchError } = await this.supabase
+            .from('photos')
+            .select('file_path')
+            .eq('id', photoId)
+            .single();
+            
+        if (fetchError) {
+            console.error("Erreur lors de la récupération des détails de la photo:", fetchError);
+            throw fetchError;
+        }
+        
+        // 2. Supprimer le fichier du storage
+        if (photo && photo.file_path) {
+            const { error: storageError } = await this.supabase.storage
+                .from('gallery')
+                .remove([photo.file_path]);
+                
+            if (storageError) {
+                console.warn("Erreur lors de la suppression du fichier:", storageError);
+                // Continuer malgré l'erreur pour supprimer l'entrée de base de données
+            }
+        }
+        
+        // 3. Supprimer l'entrée de la base de données
+        const { error: dbError } = await this.supabase
+            .from('photos')
+            .delete()
+            .eq('id', photoId);
+            
+        if (dbError) {
+            console.error("Erreur lors de la suppression de l'entrée de base de données:", dbError);
+            throw dbError;
+        }
+        
+        console.log(`Photo ${photoId} supprimée avec succès`);
+        this.showNotification("Photo supprimée avec succès", "success");
+        
+        // Supprimer visuellement la carte de photo
+        if (photoCard) {
+            photoCard.style.transition = "all 0.3s";
+            photoCard.style.transform = "scale(0.5)";
+            photoCard.style.opacity = "0";
+            
+            setTimeout(() => {
+                photoCard.remove();
+                
+                // Vérifier s'il reste des photos
+                const remainingPhotos = document.querySelectorAll('.admin-photo-card');
+                if (remainingPhotos.length === 0) {
+                    const photosList = document.querySelector('.photos-list');
+                    if (photosList) {
+                        photosList.innerHTML = '<div class="no-data">Aucune photo trouvée</div>';
+                    }
+                }
+            }, 300);
+        }
+        
+        return true;
+    } catch (error) {
+        console.error("Erreur lors de la suppression de la photo:", error);
+        this.showNotification(`Erreur lors de la suppression: ${error.message}`, "error");
+        
+        // Restaurer l'opacité normale
+        const photoCard = document.querySelector(`.admin-photo-card[data-id="${photoId}"]`);
+        if (photoCard) {
+            photoCard.style.opacity = '1';
+        }
+        
+        return false;
+    }
+}
+
+}
 export default ChatManager;
