@@ -82,25 +82,32 @@
             <button class="close-modal" id="closeUploadModal">&times;</button>
         </div>
         <form id="photoUploadForm">
-            <div class="file-upload-area">
-                <!-- Input caché qui sera déclenché par les boutons -->
-                <input type="file" id="photoInput" accept="image/*" required style="display: none;">
-                
-                <!-- Boutons pour prendre photo / choisir dans la galerie -->
-                <div class="upload-buttons">
-                    <button type="button" id="captureBtn" class="capture-btn">
-                        <i class="material-icons">camera_alt</i>
-                        <span>Prendre une photo</span>
-                    </button>
-                    <button type="button" id="galleryBtn" class="gallery-btn">
-                        <i class="material-icons">photo_library</i>
-                        <span>Choisir une image</span>
-                    </button>
-                </div>
-                
-                <!-- Zone de prévisualisation -->
-                <div id="photoPreview" class="photo-preview"></div>
-            </div>
+            <!-- Version avec deux inputs distincts pour résoudre le problème du double clic -->
+<div class="file-upload-area">
+    <!-- Input caché pour le formulaire - celui qui va réellement être soumis -->
+    <input type="file" id="photoInput" name="photoInput" accept="image/*" style="display: none;" required>
+    
+    <!-- Input spécifique pour la galerie -->
+    <input type="file" id="galleryInput" accept="image/*" style="display: none;">
+    
+    <!-- Input spécifique pour l'appareil photo -->
+    <input type="file" id="captureInput" accept="image/*" capture="environment" style="display: none;">
+    
+    <!-- Boutons visibles -->
+    <div class="upload-buttons">
+        <button type="button" id="captureBtn" class="capture-btn">
+            <i class="material-icons">camera_alt</i>
+            <span>Prendre une photo</span>
+        </button>
+        <button type="button" id="galleryBtn" class="gallery-btn">
+            <i class="material-icons">photo_library</i>
+            <span>Choisir une image</span>
+        </button>
+    </div>
+    
+    <!-- Zone de prévisualisation -->
+    <div id="photoPreview" class="photo-preview"></div>
+</div>
             
             <div class="form-group">
                 <label for="photoTitle">Titre de la photo</label>

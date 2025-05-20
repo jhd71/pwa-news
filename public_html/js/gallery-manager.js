@@ -98,84 +98,90 @@ function previewPhoto(event) {
     }
 }
 
-// Version corrigée de la fonction initCameraCapture
+// Approche avec deux inputs séparés - remplace initCameraCapture et previewPhoto
+
+// Fonction pour initialiser les inputs de capture photo séparés
 function initCameraCapture() {
-    console.log("Initialisation des boutons de capture photo");
+    console.log("Initialisation des inputs de capture photo séparés");
     
-    // Références aux éléments DOM
-    const photoInput = document.getElementById('photoInput');
-    const captureBtn = document.getElementById('captureBtn');
-    const galleryBtn = document.getElementById('galleryBtn');
+    // Référence aux éléments
+    const photoInput = document.getElementById('photoInput');     // input du formulaire
+    const galleryInput = document.getElementById('galleryInput'); // input pour la galerie
+    const captureInput = document.getElementById('captureInput'); // input pour l'appareil photo
+    const captureBtn = document.getElementById('captureBtn');     // bouton appareil photo
+    const galleryBtn = document.getElementById('galleryBtn');     // bouton galerie
     
     // Vérifier que tous les éléments existent
-    if (!photoInput || !captureBtn || !galleryBtn) {
+    if (!photoInput || !galleryInput || !captureInput || !captureBtn || !galleryBtn) {
         console.error("Éléments de capture photo non trouvés");
         return;
     }
     
-    // Désactiver tout gestionnaire d'événements existant
-    photoInput.removeEventListener('change', previewPhoto);
-    captureBtn.onclick = null;
-    galleryBtn.onclick = null;
-    
-    // Variable pour suivre l'état de sélection
-    let isCapturing = false;
-    
-    // Ajouter un gestionnaire d'événements au bouton de capture
+    // Bouton pour prendre une photo
     captureBtn.addEventListener('click', function(e) {
-        e.preventDefault(); // Empêcher toute action par défaut
-        console.log("Tentative d'ouverture de l'appareil photo");
-        
-        // Définir l'état
-        isCapturing = true;
-        
-        // Définir l'attribut pour capturer via l'appareil photo
-        photoInput.setAttribute('capture', 'environment');
-        
-        // Réinitialiser la valeur pour s'assurer que l'événement change se déclenche
-        photoInput.value = '';
-        
-        // Déclencher le clic après un court délai
-        setTimeout(function() {
-            photoInput.click();
-        }, 100);
+        e.preventDefault();
+        console.log("Clic sur le bouton appareil photo");
+        captureInput.click();
     });
     
-    // Ajouter un gestionnaire d'événements au bouton de galerie
+    // Bouton pour choisir dans la galerie
     galleryBtn.addEventListener('click', function(e) {
-        e.preventDefault(); // Empêcher toute action par défaut
-        console.log("Ouverture de la galerie");
-        
-        // Définir l'état
-        isCapturing = false;
-        
-        // Supprimer l'attribut pour sélectionner depuis la galerie
-        photoInput.removeAttribute('capture');
-        
-        // Réinitialiser la valeur pour s'assurer que l'événement change se déclenche
-        photoInput.value = '';
-        
-        // Déclencher le clic après un court délai
-        setTimeout(function() {
-            photoInput.click();
-        }, 100);
+        e.preventDefault();
+        console.log("Clic sur le bouton galerie");
+        galleryInput.click();
     });
     
-    // Ajouter un gestionnaire d'événements à l'input file
-    photoInput.addEventListener('change', function(event) {
-        // S'assurer que nous avons un fichier
-        const file = event.target.files[0];
-        if (!file) return;
-        
-        // Vérifier que c'est bien une image
+    // Gestionnaire pour l'input de l'appareil photo
+    captureInput.addEventListener('change', function(event) {
+        console.log("Événement change sur captureInput");
+        // Si un fichier a été sélectionné
+        if (event.target.files && event.target.files[0]) {
+            // Copier le fichier vers l'input principal du formulaire
+            transferFile(event.target.files[0], photoInput);
+            // Afficher la prévisualisation
+            previewFile(event.target.files[0], 'camera');
+        }
+    });
+    
+    // Gestionnaire pour l'input de la galerie
+    galleryInput.addEventListener('change', function(event) {
+        console.log("Événement change sur galleryInput");
+        // Si un fichier a été sélectionné
+        if (event.target.files && event.target.files[0]) {
+            // Copier le fichier vers l'input principal du formulaire
+            transferFile(event.target.files[0], photoInput);
+            // Afficher la prévisualisation
+            previewFile(event.target.files[0], 'gallery');
+        }
+    });
+    
+    // Fonction pour transférer un fichier vers un autre input
+    function transferFile(file, targetInput) {
+        // Certains navigateurs ne permettent pas de définir directement files,
+        // on utilise DataTransfer pour contourner cette limitation
+        try {
+            // Méthode moderne avec DataTransfer
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            targetInput.files = dataTransfer.files;
+        } catch (error) {
+            console.error("Erreur lors du transfert de fichier:", error);
+            // Méthode alternative pour IE
+            try {
+                targetInput.value = file.name;
+            } catch (e) {
+                console.error("Impossible de définir la valeur de l'input:", e);
+            }
+        }
+    }
+    
+    // Fonction pour afficher la prévisualisation
+    function previewFile(file, source) {
         if (!file.type.match('image.*')) {
             alert('Veuillez sélectionner une image');
             return;
         }
         
-        console.log("Fichier sélectionné:", file.name, isCapturing ? "(appareil photo)" : "(galerie)");
-        
-        // Afficher la prévisualisation
         const reader = new FileReader();
         reader.onload = function(e) {
             const photoPreview = document.getElementById('photoPreview');
@@ -190,12 +196,42 @@ function initCameraCapture() {
                 // Ajouter une indication de source
                 const sourceIndicator = document.createElement('div');
                 sourceIndicator.style.cssText = 'position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 5px 10px; border-radius: 20px; font-size: 12px;';
-                sourceIndicator.innerText = isCapturing ? '📷 Appareil photo' : '🖼️ Galerie';
+                sourceIndicator.innerText = source === 'camera' ? '📷 Appareil photo' : '🖼️ Galerie';
                 photoPreview.appendChild(sourceIndicator);
             }
         };
         reader.readAsDataURL(file);
-    });
+    }
+}
+
+// Fonction de compatibilité - remplace l'ancienne fonction previewPhoto
+function previewPhoto(event) {
+    console.log("previewPhoto appelée - délégation au système à deux inputs");
+    
+    // Cette fonction est désormais gérée par les gestionnaires dans initCameraCapture
+    // Mais nous gardons cette fonction pour la compatibilité
+    
+    const file = event && event.target && event.target.files ? event.target.files[0] : null;
+    if (!file) return;
+    
+    if (!file.type.match('image.*')) {
+        alert('Veuillez sélectionner une image');
+        return;
+    }
+    
+    // Utiliser la même logique de prévisualisation
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const photoPreview = document.getElementById('photoPreview');
+        if (photoPreview) {
+            photoPreview.innerHTML = '';
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = "Prévisualisation";
+            photoPreview.appendChild(img);
+        }
+    };
+    reader.readAsDataURL(file);
 }
 
 // Version modifiée de la fonction uploadPhoto
