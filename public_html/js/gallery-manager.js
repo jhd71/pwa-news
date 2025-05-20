@@ -149,6 +149,10 @@ function initializeGallery() {
     setupMobileOptimizations();
 	 // Initialiser le menu contextuel après tout le reste
     addContextMenu();
+	// Initialiser les fonctionnalités d'administrateur
+    setTimeout(() => {
+        renderAdminControls();
+    }, 1000); // Attendre que tout soit chargé
 }
 
 // Charger les photos
@@ -288,6 +292,9 @@ function renderPhotos(photos) {
         noPhotosMessage.style.display = 'none';
     }
     
+    // Déterminer si l'utilisateur est admin (de manière asynchrone)
+    let photoCards = []; // Pour stocker les cartes créées
+    
     photos.forEach(photo => {
         try {
             console.log("Traitement de la photo:", photo);
@@ -301,6 +308,7 @@ function renderPhotos(photos) {
             const photoCard = document.createElement('div');
             photoCard.className = 'photo-card';
             photoCard.dataset.id = photo.id;
+            photoCard.style.position = 'relative'; // Pour le positionnement absolu du bouton
             
             // Vérifier la date
             let formattedDate = 'Date inconnue';
@@ -317,11 +325,11 @@ function renderPhotos(photos) {
                 }
             }
             
-            // Construction du HTML avec vérifications
+            // Construction du HTML avec image de secours locale
             photoCard.innerHTML = `
                 <div class="photo-img-container">
                     <img class="photo-img" src="${photo.image_url || ''}" alt="${photo.title || 'Photo sans titre'}" 
-                         onerror="this.src='https://via.placeholder.com/400x300?text=Image+non+disponible'; this.onerror=null;">
+                         onerror="this.src='images/no-image.png'; this.onerror=null;">
                 </div>
                 <div class="photo-info">
                     <h3 class="photo-title">${photo.title || 'Sans titre'}</h3>
@@ -341,6 +349,7 @@ function renderPhotos(photos) {
             
             // Ajouter au DOM
             photoGrid.appendChild(photoCard);
+            photoCards.push(photoCard); // Stocker pour ajouter les contrôles admin plus tard
             console.log("Photo ajoutée au DOM:", photo.id);
             
         } catch (error) {
@@ -349,6 +358,9 @@ function renderPhotos(photos) {
     });
     
     console.log("Fin de renderPhotos, " + photoGrid.children.length + " photos ajoutées au DOM");
+    
+    // Après avoir rendu toutes les photos, ajouter les contrôles admin si nécessaire
+    renderAdminControls();
 }
 
 // Ouvrir la modale d'upload
@@ -961,6 +973,199 @@ setTimeout(() => {
     loadPhotos(false);
     
 }, 3000);
+
+// [tout le code existant...]
+
+// Ajouter cette fonction pour gérer la suppression des photos
+async function deletePhoto(photoId) {
+    if (!confirm("Êtes-vous sûr de vouloir supprimer cette photo ?")) {
+        return;
+    }
+    
+    try {
+        console.log("Tentative de suppression de la photo ID:", photoId);
+        
+        // D'abord, récupérer les détails de la photo pour avoir le chemin du fichier
+        const { data: photo, error: fetchError } = await supabase
+            .from('photos')
+            .select('file_path')
+            .eq('id', photoId)
+            .single();
+        
+        if (fetchError) {
+            console.error("Erreur lors de la récupération des détails de la photo:", fetchError);
+            throw fetchError;
+        }
+        
+        if (!photo || !photo.file_path) {
+            console.error("Chemin de fichier non disponible pour la photo ID:", photoId);
+            throw new Error("Informations de fichier manquantes");
+        }
+        
+        // Supprimer le fichier du storage
+        const { error: storageError } = await supabase.storage
+            .from('gallery')
+            .remove([photo.file_path]);
+        
+        if (storageError) {
+            console.error("Erreur lors de la suppression du fichier:", storageError);
+            // Continuer même si la suppression du fichier échoue
+            console.warn("Tentative de suppression de l'entrée de base de données malgré l'échec de la suppression du fichier");
+        }
+        
+        // Supprimer l'entrée de la base de données
+        const { error: dbError } = await supabase
+            .from('photos')
+            .delete()
+            .eq('id', photoId);
+        
+        if (dbError) {
+            console.error("Erreur lors de la suppression de l'entrée de base de données:", dbError);
+            throw dbError;
+        }
+        
+        console.log("Photo supprimée avec succès:", photoId);
+        alert("Photo supprimée avec succès");
+        
+        // Recharger la galerie
+        photoGrid.innerHTML = '';
+        currentPage = 0;
+        loadPhotos();
+        
+    } catch (error) {
+        console.error("Erreur lors de la suppression de la photo:", error);
+        alert("Erreur lors de la suppression de la photo: " + (error.message || "Erreur inconnue"));
+    }
+}
+
+// Vérifier si l'utilisateur est administrateur en utilisant la session actuelle
+async function checkIfUserIsAdmin() {
+    // Vérifier si l'utilisateur est admin dans le chat
+    const isChatAdmin = localStorage.getItem('chatAdmin') === 'true' || 
+                        sessionStorage.getItem('chatAdmin') === 'true';
+    
+    // Vous pouvez également vérifier d'autres indicateurs d'admin
+    const isLocalAdmin = localStorage.getItem('isAdmin') === 'true';
+    
+    // Vérifier la session Supabase (si vous utilisez l'authentification Supabase)
+    let isSupabaseAdmin = false;
+    try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (!error && session && session.user) {
+            isSupabaseAdmin = session.user?.app_metadata?.role === 'admin' || 
+                             session.user?.user_metadata?.is_admin === true;
+        }
+    } catch (e) {
+        console.error("Erreur lors de la vérification de la session Supabase:", e);
+    }
+    
+    // Test pour le débogage
+    console.log("Statut admin:", { isChatAdmin, isLocalAdmin, isSupabaseAdmin });
+    
+    // L'utilisateur est admin si l'une des conditions est vraie
+    return isChatAdmin || isLocalAdmin || isSupabaseAdmin;
+}
+
+// Initialiser les contrôles d'administration
+function renderAdminControls() {
+    // Vérifier si l'utilisateur est administrateur
+    checkIfUserIsAdmin().then(isAdmin => {
+        console.log("Mode administrateur:", isAdmin);
+        
+        // Ajouter des boutons de suppression aux photos existantes si l'utilisateur est admin
+        if (isAdmin) {
+            const photoCards = document.querySelectorAll('.photo-card');
+            photoCards.forEach(card => {
+                const photoId = card.dataset.id;
+                
+                // Ne pas ajouter le bouton s'il existe déjà
+                if (card.querySelector('.delete-photo-btn')) {
+                    return;
+                }
+                
+                const deleteButton = document.createElement('button');
+                deleteButton.className = 'delete-photo-btn';
+                deleteButton.innerHTML = '<i class="material-icons">delete</i>';
+                deleteButton.style.cssText = `
+                    position: absolute;
+                    top: 5px;
+                    right: 5px;
+                    background: rgba(255,0,0,0.7);
+                    color: white;
+                    border: none;
+                    border-radius: 50%;
+                    width: 30px;
+                    height: 30px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10;
+                `;
+                
+                deleteButton.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Empêcher l'ouverture de la vue détaillée
+                    deletePhoto(photoId);
+                });
+                
+                card.style.position = 'relative'; // Pour le positionnement absolu du bouton
+                card.appendChild(deleteButton);
+            });
+            
+            // Ajouter un indicateur visuel du mode admin
+            let adminIndicator = document.getElementById('adminModeIndicator');
+            if (!adminIndicator) {
+                adminIndicator = document.createElement('div');
+                adminIndicator.id = 'adminModeIndicator';
+                adminIndicator.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    background: rgba(0,0,0,0.7);
+                    color: white;
+                    padding: 8px 15px;
+                    border-radius: 20px;
+                    font-size: 14px;
+                    z-index: 1000;
+                `;
+                adminIndicator.innerHTML = 'Mode Admin Actif';
+                document.body.appendChild(adminIndicator);
+            }
+        }
+    });
+}
+
+// Fonction pour définir le mode administrateur (pour les tests)
+function setAdminMode(enable) {
+    if (enable) {
+        localStorage.setItem('adminCode', 'photo123');
+    } else {
+        localStorage.removeItem('adminCode');
+    }
+    
+    // Rafraîchir les contrôles d'administration
+    renderAdminControls();
+    
+    // Recharger la galerie pour afficher/masquer les boutons de suppression
+    photoGrid.innerHTML = '';
+    currentPage = 0;
+    loadPhotos();
+}
+
+// Ajouter un gestionnaire de clavier pour activer/désactiver le mode admin avec un code secret
+document.addEventListener('keydown', function(e) {
+    // Ctrl+Alt+A pour activer/désactiver le mode admin
+    if (e.ctrlKey && e.altKey && e.key === 'a') {
+        const isCurrentlyAdmin = localStorage.getItem('adminCode') === 'photo123';
+        setAdminMode(!isCurrentlyAdmin);
+        alert(isCurrentlyAdmin ? 'Mode administrateur désactivé' : 'Mode administrateur activé');
+    }
+});
+
+// Appeler cette fonction après le chargement des photos
+setTimeout(() => {
+    renderAdminControls();
+}, 1500);
 
 // Fermeture du setTimeout - cette accolade manquait
 }, 100);
