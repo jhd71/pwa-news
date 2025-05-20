@@ -394,15 +394,21 @@ async function openPhotoView(photoId) {
             
             // Ajouter un bouton "Ouvrir dans un nouvel onglet" pour tester directement
             const modalHeader = document.querySelector('.photo-detail-view');
-            if (modalHeader) {
-                const openImageBtn = document.createElement('button');
-                openImageBtn.textContent = "Ouvrir l'image dans un nouvel onglet";
-                openImageBtn.style.cssText = "margin: 10px 0; padding: 5px; background: #007bff; color: white; border: none; border-radius: 4px;";
-                openImageBtn.onclick = function() {
-                    window.open(photo.image_url, '_blank');
-                };
-                modalHeader.appendChild(openImageBtn);
-            }
+if (modalHeader) {
+    // Supprimer les boutons existants pour éviter les doublons
+    const existingButtons = modalHeader.querySelectorAll('.open-image-btn');
+    existingButtons.forEach(btn => btn.remove());
+    
+    // Créer un nouveau bouton
+    const openImageBtn = document.createElement('button');
+    openImageBtn.className = 'open-image-btn'; // Ajout d'une classe pour l'identifier
+    openImageBtn.textContent = "Ouvrir l'image dans un nouvel onglet";
+    openImageBtn.style.cssText = "margin: 10px 0; padding: 5px; background: #007bff; color: white; border: none; border-radius: 4px;";
+    openImageBtn.onclick = function() {
+        window.open(photo.image_url, '_blank');
+    };
+    modalHeader.appendChild(openImageBtn);
+}
             
             // Définir l'image source avec gestion d'erreur améliorée
             modalImg.onerror = function() {
