@@ -31,7 +31,7 @@
 .gallery-intro {
     max-width: 600px;
     margin: 15px auto;
-    color: var(--text-color);
+    color: #fff
     opacity: 0.9;
 }
 
@@ -105,14 +105,14 @@
 .photo-title {
     font-size: 18px;
     margin: 0 0 8px;
-    color: var(--text-color);
+    color: #ffd230
 }
 
 .photo-meta {
     display: flex;
     justify-content: space-between;
     font-size: 12px;
-    color: var(--text-muted, #666);
+    color: #fff;
     margin-top: 10px;
 }
 
@@ -584,5 +584,59 @@
   .photo-comments {
     padding: 10px;
   }
+}
+
+/* Ajoutez ces règles à la fin de votre CSS pour corriger les problèmes de couleur */
+
+/* 1. Annuler la règle qui rend le texte blanc dans les modales */
+.modal-content a,
+.modal-content button,
+.modal-content span:not(.comment-author):not(.comment-date),
+.modal-content div:not(.comment):not(.comment-text):not(.comment-header) {
+  color: inherit;
+}
+
+/* 2. Forcer les couleurs spécifiques pour les éléments de commentaire */
+.comment-author {
+  color: #000000 !important;
+  font-weight: bold !important;
+}
+
+.comment-date {
+  color: #555555 !important;
+}
+
+.comment-text {
+  color: #333333 !important;
+}
+
+.comment {
+  color: #333333 !important;
+  background-color: #ffffff !important;
+}
+
+/* 3. Titre "Photos d'ici et d'ailleurs" en blanc */
+.gallery-header h1 {
+  color: white !important;
+}
+
+.gallery-intro {
+  color: white !important;
+}
+
+/* 4. Forcer le texte en noir dans toute la section commentaires */
+.photo-comments,
+.photo-comments * {
+  color: #333333;
+}
+
+.photo-comments h3 {
+  color: #000000 !important;
+  font-weight: bold !important;
+}
+
+/* 5. Assurez-vous que les boutons gardent leur couleur */
+#commentForm button {
+  color: white !important;
 }
 
