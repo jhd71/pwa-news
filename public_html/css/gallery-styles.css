@@ -1,17 +1,59 @@
 /* gallery-styles.css */
 
-/* Assurez-vous que ces variables utilisent celles du thème principal */
+/* Variables qui s'adaptent aux thèmes du site */
 :root {
-    --primary-color: var(--primary, #9371D9);
-    --accent-color: var(--accent, #7b1fa2);
-    --background-color: var(--bg, white);
-    --card-bg: var(--card-background, white);
-    --text-color: var(--text, #333);
-    --text-muted: var(--text-secondary, #666);
-    --border-color: var(--border, #ddd);
-    --input-bg: var(--input-background, white);
-    --button-bg: var(--button-background, #f0f0f0);
-    --comment-bg: var(--comment-background, #f5f5f5);
+    --primary-color: #7E57C2;
+    --accent-color: #9C27B0;
+    --background-color: #EFF1FF;
+    --card-bg: white;
+    --text-color: #333;
+    --text-muted: #666;
+    --border-color: #ddd;
+    --input-bg: white;
+    --button-bg: #f0f0f0;
+    --comment-bg: #f5f5f5;
+}
+
+/* Thème sombre */
+[data-theme="dark"] {
+    --primary-color: #1a237e;
+    --accent-color: #3F51B5;
+    --background-color: #121212;
+    --card-bg: #2a2a2a;
+    --text-color: #e0e0e0;
+    --text-muted: #aaaaaa;
+    --border-color: #444;
+    --input-bg: #333;
+    --button-bg: #333;
+    --comment-bg: #333;
+}
+
+/* Thème rouge */
+[data-theme="rouge"] {
+    --primary-color: #d32f2f;
+    --accent-color: #c62828;
+    --background-color: #FFF5F5;
+    --card-bg: white;
+    --text-color: #333;
+    --text-muted: #666;
+    --border-color: #ddd;
+    --input-bg: white;
+    --button-bg: #f0f0f0;
+    --comment-bg: #f5f5f5;
+}
+
+/* Thème bleu ciel */
+[data-theme="bleuciel"] {
+    --primary-color: #4FB3E8;
+    --accent-color: #3F97C7;
+    --background-color: #F0F8FF;
+    --card-bg: white;
+    --text-color: #333;
+    --text-muted: #666;
+    --border-color: #ddd;
+    --input-bg: white;
+    --button-bg: #f0f0f0;
+    --comment-bg: #f5f5f5;
 }
 
 /* Structure principale */
@@ -21,6 +63,8 @@
     padding-bottom: 90px;
     max-width: 1200px;
     margin: 0 auto;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 .gallery-header {
@@ -28,10 +72,14 @@
     margin-bottom: 30px;
 }
 
+.gallery-header h1 {
+    color: var(--primary-color);
+}
+
 .gallery-intro {
     max-width: 600px;
     margin: 15px auto;
-    color: #fff
+    color: var(--text-color);
     opacity: 0.9;
 }
 
@@ -55,7 +103,7 @@
 
 .upload-btn:hover {
     transform: translateY(-2px);
-    background: var(--accent-color, #7b1fa2);
+    background: var(--accent-color);
 }
 
 /* Grille de photos */
@@ -69,7 +117,7 @@
 .photo-card {
     border-radius: 10px;
     overflow: hidden;
-    background: var(--card-bg, white);
+    background: var(--card-bg);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s;
     position: relative;
@@ -100,19 +148,20 @@
 
 .photo-info {
     padding: 15px;
+    color: var(--text-color);
 }
 
 .photo-title {
     font-size: 18px;
     margin: 0 0 8px;
-    color: #ffd230
+    color: var(--primary-color);
 }
 
 .photo-meta {
     display: flex;
     justify-content: space-between;
     font-size: 12px;
-    color: #fff;
+    color: var(--text-muted);
     margin-top: 10px;
 }
 
@@ -131,7 +180,7 @@
 }
 
 .modal-content {
-    background: var(--background-color, white);
+    background: var(--background-color);
     max-width: 600px;
     margin: 20px auto;
     border-radius: 10px;
@@ -162,7 +211,7 @@
 }
 
 .file-upload-area {
-    border: 2px dashed var(--border-color, #ccc);
+    border: 2px dashed var(--border-color);
     padding: 20px;
     border-radius: 8px;
     text-align: center;
@@ -186,7 +235,7 @@
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    color: var(--text-muted, #666);
+    color: var(--text-muted);
 }
 
 .photo-preview {
@@ -217,9 +266,9 @@
 .form-group input, .form-group textarea {
     width: 100%;
     padding: 10px;
-    border: 1px solid var(--border-color, #ddd);
+    border: 1px solid var(--border-color);
     border-radius: 6px;
-    background: var(--input-bg, white);
+    background: var(--input-bg);
     color: var(--text-color);
 }
 
@@ -238,6 +287,7 @@
 /* Vue détaillée de la photo */
 .photo-detail-view {
     padding: 20px;
+    color: var(--text-color);
 }
 
 .photo-detail-view img {
@@ -247,77 +297,85 @@
     border-radius: 8px;
 }
 
-.photo-info {
-    margin-top: 15px;
-}
-
 .photo-metadata {
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
     margin-top: 15px;
     font-size: 14px;
-    color: var(--text-muted, #666);
+    color: var(--text-muted);
 }
 
-/* Ajoutez ces styles supplémentaires pour assurer le contraste des commentaires */
-
-/* Forcer les couleurs avec !important pour les commentaires */
+/* Commentaires */
 .comment {
-  background: #ffffff !important;
-  color: #333333 !important;
-  padding: 12px !important;
-  margin-bottom: 12px !important;
-  border-radius: 6px !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
-  border: 1px solid #e0e0e0 !important;
-  opacity: 1 !important;
+    background: var(--comment-bg);
+    color: var(--text-color);
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
 }
 
 .comment-text {
-  color: #333333 !important;
-  line-height: 1.4 !important;
-  font-weight: normal !important;
+    color: var(--text-color);
+    line-height: 1.4;
+    font-weight: normal;
 }
 
 .comment-author {
-  font-weight: bold !important;
-  color: #444444 !important;
+    font-weight: bold;
+    color: var(--primary-color);
 }
 
 .comment-date {
-  font-size: 0.85em !important;
-  color: #777777 !important;
+    font-size: 0.85em;
+    color: var(--text-muted);
 }
 
-/* Assurer que le conteneur des commentaires est bien visible */
 #commentsContainer {
-  background-color: #f0f0f0 !important;
-  border: 1px solid #e0e0e0 !important;
-  color: #333333 !important;
+    background-color: var(--comment-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
 }
 
-/* Forcer les couleurs du formulaire de commentaire */
 #commentForm {
-  background-color: #ffffff !important;
+    background-color: var(--card-bg);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
 }
 
 #commentAuthor, #commentText {
-  background-color: #ffffff !important;
-  color: #333333 !important;
-  border: 1px solid #cccccc !important;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
 }
 
-/* Assurer que la section commentaires est bien visible */
+#commentText {
+    min-height: 80px;
+    resize: vertical;
+}
+
 .photo-comments {
-  background-color: #f5f5f5 !important;
-  color: #333333 !important;
-  border-top: 1px solid #e0e0e0 !important;
+    background-color: var(--comment-bg);
+    color: var(--text-color);
+    border-top: 1px solid var(--border-color);
+    padding: 20px;
+    margin-top: 20px;
 }
 
 .photo-comments h3 {
-  color: #333333 !important;
-  font-weight: bold !important;
+    color: var(--text-color);
+    font-weight: bold;
+    margin-bottom: 15px;
 }
 
 /* Chargement */
@@ -346,7 +404,7 @@
 .no-photos-message {
     text-align: center;
     padding: 40px 0;
-    color: var(--text-muted, #666);
+    color: var(--text-muted);
 }
 
 .no-photos-message .material-icons {
@@ -363,7 +421,7 @@
     gap: 8px;
     margin: 30px auto 0;
     padding: 10px 20px;
-    background: var(--button-bg, #f0f0f0);
+    background: var(--button-bg);
     color: var(--text-color);
     border: none;
     border-radius: 20px;
@@ -393,29 +451,9 @@
     }
 }
 
-/* Support de thème sombre - à adapter selon vos variables de couleur */
-[data-theme="dark"] .photo-card {
-    background: var(--card-bg-dark, #2a2a2a);
-}
-
-[data-theme="dark"] .comment {
-    background: var(--comment-bg-dark, #333);
-}
-
+/* Adaptation du style pour les tuiles de catégorie "photos" */
 .tile[data-category="photos"] {
-    background-color: var(--primary-color, #9C27B0);
-}
-
-[data-theme="dark"] .tile[data-category="photos"] {
-    background-color: var(--primary-color-dark, #7B1FA2);
-}
-
-[data-theme="rouge"] .tile[data-category="photos"] {
-    background-color: var(--primary-color-rouge, #D32F2F);
-}
-
-[data-theme="bleuciel"] .tile[data-category="photos"] {
-    background-color: var(--primary-color-bleuciel, #2196F3);
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
 }
 
 /* Styles pour le bouton de suppression */
@@ -447,201 +485,21 @@
     opacity: 1;
 }
 
-/* Améliorer la structure de la modale photo et permettre le défilement */
+/* Modal photo vue détaillée */
 .photo-view-modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  z-index: 1000;
-  overflow-y: scroll; /* Permettre le défilement */
-  padding: 20px;
-}
-
-.modal-content {
-  background: var(--background-color, white);
-  max-width: 800px;
-  margin: 20px auto;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-  max-height: calc(100vh - 40px); /* Limiter la hauteur pour permettre le défilement */
-  overflow-y: auto; /* Permettre le défilement dans la modale */
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    background: var(--primary-color);
-    color: white;
-}
-
-.close-modal {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 28px;
-    cursor: pointer;
-}
-
-/* Vue détaillée de la photo */
-.photo-detail-view {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    overflow-y: scroll;
     padding: 20px;
 }
 
-.photo-detail-view img {
-    width: 100%;
-    max-height: 500px;
-    object-fit: contain;
-    border-radius: 8px;
-    margin-bottom: 15px;
-}
-
-.photo-info p {
-    margin-bottom: 15px;
-    color: var(--text-color);
-}
-
-.photo-metadata {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-top: 15px;
-    font-size: 14px;
-    color: var(--text-muted, #666);
-}
-
-/* Garantir que la section commentaires est visible */
-.photo-comments {
-  padding: 20px;
-  margin-top: 20px;
-  background-color: #f8f8f8;
-  border-radius: 8px;
-  border-top: 1px solid #e0e0e0;
-}
-
-/* Garantir que le formulaire de commentaire est visible */
-#commentForm {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 15px;
-  padding: 15px;
-  background: white;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-#commentAuthor {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: white;
-  color: #333;
-}
-
-#commentText {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  min-height: 80px;
-  resize: vertical;
-  background: white;
-  color: #333;
-}
-
-#commentForm button {
-  background-color: var(--primary-color, #9371D9);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 10px 15px;
-  cursor: pointer;
-  font-weight: bold;
-  margin-top: 5px;
-}
-
-#commentForm button:hover {
-  background-color: var(--accent-color, #7b1fa2);
-}
-
-/* Adaptation mobile pour garantir l'accessibilité */
-@media (max-width: 768px) {
-  .modal-content {
-    margin: 10px;
-    max-height: calc(100vh - 20px);
-  }
-  
-  .photo-detail-view {
-    padding: 10px;
-  }
-  
-  .photo-comments {
-    padding: 10px;
-  }
-}
-
-/* Ajoutez ces règles à la fin de votre CSS pour corriger les problèmes de couleur */
-
-/* 1. Annuler la règle qui rend le texte blanc dans les modales */
-.modal-content a,
-.modal-content button,
-.modal-content span:not(.comment-author):not(.comment-date),
-.modal-content div:not(.comment):not(.comment-text):not(.comment-header) {
-  color: inherit;
-}
-
-/* 2. Forcer les couleurs spécifiques pour les éléments de commentaire */
-.comment-author {
-  color: #000000 !important;
-  font-weight: bold !important;
-}
-
-.comment-date {
-  color: #555555 !important;
-}
-
-.comment-text {
-  color: #333333 !important;
-}
-
-.comment {
-  color: #333333 !important;
-  background-color: #ffffff !important;
-}
-
-/* 3. Titre "Photos d'ici et d'ailleurs" en blanc */
-.gallery-header h1 {
-  color: white !important;
-}
-
-.gallery-intro {
-  color: white !important;
-}
-
-/* 4. Forcer le texte en noir dans toute la section commentaires */
-.photo-comments,
-.photo-comments * {
-  color: #333333;
-}
-
-.photo-comments h3 {
-  color: #000000 !important;
-  font-weight: bold !important;
-}
-
-/* 5. Assurez-vous que les boutons gardent leur couleur */
-#commentForm button {
-  color: white !important;
-}
-
-/* Styles CSS pour les boutons de capture et galerie */
-
+/* Styles pour les boutons de capture et galerie */
 .file-upload-options {
     position: relative;
 }
@@ -722,5 +580,3 @@
     z-index: 1;
     position: relative;
 }
-
-
