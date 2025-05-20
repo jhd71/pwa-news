@@ -1,6 +1,6 @@
 /* gallery-styles.css - Version améliorée */
 
-/* Variables qui s'adaptent aux thèmes du site */
+/* Adapter les variables selon les thèmes */
 :root {
     --primary-color: #7E57C2;
     --accent-color: #9C27B0;
@@ -17,6 +17,8 @@
     --card-text-color: #333333;
     --navbar-bg: rgba(255, 255, 255, 0.9);
     --footer-bg: rgba(255, 255, 255, 0.9);
+    --modal-bg: #EFF1FF;
+    --photo-view-bg: white;
 }
 
 /* Thème sombre */
@@ -36,6 +38,8 @@
     --card-text-color: #FFFFFF;
     --navbar-bg: rgba(26, 35, 126, 0.95);
     --footer-bg: rgba(26, 35, 126, 0.95);
+    --modal-bg: #1a237e;
+    --photo-view-bg: #1E1E1E;
 }
 
 /* Thème rouge */
@@ -55,6 +59,8 @@
     --card-text-color: #FFFFFF;
     --navbar-bg: rgba(211, 47, 47, 0.95);
     --footer-bg: rgba(211, 47, 47, 0.95);
+    --modal-bg: #b71c1c;
+    --photo-view-bg: #8a2320;
 }
 
 /* Thème bleu ciel */
@@ -74,6 +80,8 @@
     --card-text-color: #333333;
     --navbar-bg: rgba(79, 179, 232, 0.95);
     --footer-bg: rgba(79, 179, 232, 0.95);
+    --modal-bg: #4FB3E8;
+    --photo-view-bg: white;
 }
 
 /* Structure principale */
@@ -600,8 +608,232 @@
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.8);
     z-index: 1000;
-    overflow-y: scroll;
+    overflow-y: auto;
     padding: 20px;
+}
+
+/* Style amélioré pour le contenu de la modal photo */
+.photo-view-modal .modal-content {
+    background: var(--card-bg);
+    color: var(--text-color);
+    border-radius: 15px;
+    overflow: hidden;
+    max-width: 800px;
+    width: 95%;
+    margin: 20px auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+/* En-tête de la modal photo */
+.photo-view-modal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: var(--primary-color);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.photo-view-modal .modal-header h2 {
+    color: white;
+    margin: 0;
+    font-size: 22px;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Bouton de fermeture */
+.photo-view-modal .close-modal {
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.photo-view-modal .close-modal:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+/* Contenu de la vue détaillée */
+.photo-view-modal .photo-detail-view {
+    padding: 25px;
+}
+
+.photo-view-modal .photo-detail-view img {
+    width: 100%;
+    max-height: 500px;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    margin-bottom: 20px;
+}
+
+/* Titre et description */
+.photo-view-modal .photo-title {
+    font-size: 24px;
+    margin: 0 0 15px 0;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.photo-view-modal .photo-description {
+    margin-bottom: 20px;
+    line-height: 1.6;
+    color: var(--text-color);
+}
+
+[data-theme="dark"] .photo-view-modal .photo-title,
+[data-theme="rouge"] .photo-view-modal .photo-title {
+    color: white;
+}
+
+[data-theme="bleuciel"] .photo-view-modal .photo-title {
+    color: var(--primary-color);
+}
+
+/* Métadonnées */
+.photo-view-modal .photo-metadata {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 20px 0;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.photo-view-modal .metadata-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.photo-view-modal .metadata-item .material-icons {
+    color: var(--primary-color);
+    font-size: 18px;
+}
+
+[data-theme="dark"] .photo-view-modal .metadata-item .material-icons,
+[data-theme="rouge"] .photo-view-modal .metadata-item .material-icons {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Section commentaires */
+.photo-view-modal .photo-comments {
+    background: rgba(0, 0, 0, 0.03);
+    border-top: 1px solid var(--border-color);
+    padding: 25px;
+    margin-top: 20px;
+    border-radius: 0 0 15px 15px;
+}
+
+.photo-view-modal .photo-comments h3 {
+    color: var(--text-color);
+    font-size: 20px;
+    margin: 0 0 20px 0;
+    font-weight: bold;
+}
+
+/* Message "aucun commentaire" */
+.photo-view-modal .no-comments {
+    text-align: center;
+    padding: 30px 0;
+    color: var(--text-muted);
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.photo-view-modal .no-comments .material-icons {
+    font-size: 48px;
+    margin-bottom: 15px;
+    color: var(--text-muted);
+    opacity: 0.7;
+}
+
+/* Formulaire de commentaire */
+.photo-view-modal #commentForm {
+    background: rgba(0, 0, 0, 0.03);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.photo-view-modal #commentForm input,
+.photo-view-modal #commentForm textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--input-bg);
+    color: var(--text-color);
+    font-size: 15px;
+}
+
+.photo-view-modal #commentForm textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.photo-view-modal #commentForm button {
+    padding: 12px 20px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.photo-view-modal #commentForm button:hover {
+    background: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Bouton "Ouvrir dans un nouvel onglet" */
+.open-in-new-tab {
+    display: inline-block;
+    margin: 20px auto;
+    padding: 12px 24px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    width: auto;
+    max-width: 300px;
+}
+
+.open-in-new-tab:hover {
+    background: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Centrer le bouton */
+.button-container {
+    text-align: center;
+    margin: 20px 0;
 }
 
 /* Styles pour les boutons de capture et galerie */
