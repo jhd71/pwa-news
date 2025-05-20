@@ -117,33 +117,35 @@
         </div>
     </div>
 
-    <!-- Modal pour afficher une photo en grand -->
-    <div id="photoViewModal" class="photo-view-modal">
-        <div class="modal-content">
-            <button class="close-modal" id="closePhotoView">&times;</button>
-            <div class="photo-detail-view">
-                <img id="modalPhotoImg" src="" alt="">
-                <div class="photo-info">
-                    <h3 id="modalPhotoTitle"></h3>
-                    <p id="modalPhotoDescription"></p>
-                    <div class="photo-metadata">
-                        <span id="modalPhotoLocation"></span>
-                        <span id="modalPhotoDate"></span>
-                        <span id="modalPhotoAuthor"></span>
-                    </div>
-                </div>
-            </div>
-            <div class="photo-comments">
-                <h4>Commentaires</h4>
-                <div id="commentsContainer" class="comments-container"></div>
-                <form id="commentForm" class="comment-form">
-                    <input type="text" id="commentAuthor" placeholder="Votre nom" required>
-                    <textarea id="commentText" placeholder="Votre commentaire..." required></textarea>
-                    <button type="submit">Publier</button>
-                </form>
-            </div>
-        </div>
+    <!-- Modale de visualisation des photos -->
+<div id="photoViewModal" class="photo-view-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modalPhotoTitle">Titre de la photo</h2>
+      <button id="closePhotoView" class="close-modal">&times;</button>
     </div>
+    <div class="photo-detail-view">
+      <img id="modalPhotoImg" src="" alt="Photo">
+      <div class="photo-info">
+        <p id="modalPhotoDescription"></p>
+        <div class="photo-metadata">
+          <span id="modalPhotoLocation"></span>
+          <span id="modalPhotoDate"></span>
+          <span id="modalPhotoAuthor"></span>
+        </div>
+      </div>
+    </div>
+    <div class="photo-comments">
+      <h3>Commentaires</h3>
+      <div id="commentsContainer"></div>
+      <form id="commentForm">
+        <input type="text" id="commentAuthor" placeholder="Votre nom" required>
+        <textarea id="commentText" placeholder="Votre commentaire" required></textarea>
+        <button type="submit">Envoyer</button>
+      </form>
+    </div>
+  </div>
+</div>
 
     <!-- Navigation du bas (simplifiée) -->
     <nav class="bottom-nav">

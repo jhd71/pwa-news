@@ -443,3 +443,134 @@
 .photo-card:hover .delete-photo-btn {
     opacity: 1;
 }
+
+/* Modal de visualisation des photos */
+.photo-view-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.modal-content {
+    background: var(--background-color, white);
+    max-width: 800px;
+    margin: 20px auto;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: var(--primary-color);
+    color: white;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+/* Vue détaillée de la photo */
+.photo-detail-view {
+    padding: 20px;
+}
+
+.photo-detail-view img {
+    width: 100%;
+    max-height: 500px;
+    object-fit: contain;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.photo-info p {
+    margin-bottom: 15px;
+    color: var(--text-color);
+}
+
+.photo-metadata {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 15px;
+    font-size: 14px;
+    color: var(--text-muted, #666);
+}
+
+/* Commentaires */
+.photo-comments {
+    padding: 0 20px 20px;
+    border-top: 1px solid var(--border-color, #eee);
+}
+
+#commentsContainer {
+    margin: 15px 0;
+}
+
+.comment {
+    background: var(--comment-bg, #f5f5f5);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.comment-author {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.comment-date {
+    color: var(--text-muted, #777);
+    font-size: 12px;
+}
+
+#commentForm {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+#commentForm input, 
+#commentForm textarea {
+    padding: 10px;
+    border: 1px solid var(--border-color, #ddd);
+    border-radius: 6px;
+    width: 100%;
+}
+
+#commentForm textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+#commentForm button {
+    align-self: flex-end;
+    padding: 8px 15px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}

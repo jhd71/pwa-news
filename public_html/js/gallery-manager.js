@@ -414,12 +414,17 @@ function previewPhoto(event) {
 
 // Ouvrir la vue détaillée d'une photo
 async function openPhotoView(photoId) {
-    if (!photoViewModal) {
-        console.error('Modal de vue photo non trouvée');
+    console.log("Ouverture de la vue photo:", photoId);
+    
+    // Vérifier si la modale existe
+    if (!document.getElementById('photoViewModal')) {
+        console.error("Modal de vue photo non trouvée!");
+        alert("Erreur: Impossible d'afficher la photo en détail");
         return;
     }
     
-    photoViewModal.style.display = 'block';
+    // Afficher la modale
+    document.getElementById('photoViewModal').style.display = 'block';
     document.body.style.overflow = 'hidden';
     currentPhotoId = photoId;
     
@@ -431,32 +436,51 @@ async function openPhotoView(photoId) {
             .eq('id', photoId)
             .single();
         
-        if (photoError) throw photoError;
-        
-        // Afficher les détails
-        const modalPhotoImg = document.getElementById('modalPhotoImg');
-        const modalPhotoTitle = document.getElementById('modalPhotoTitle');
-        const modalPhotoDescription = document.getElementById('modalPhotoDescription');
-        const modalPhotoLocation = document.getElementById('modalPhotoLocation');
-        const modalPhotoDate = document.getElementById('modalPhotoDate');
-        const modalPhotoAuthor = document.getElementById('modalPhotoAuthor');
-        
-        if (modalPhotoImg) modalPhotoImg.src = photo.image_url;
-        if (modalPhotoTitle) modalPhotoTitle.textContent = photo.title || 'Sans titre';
-        if (modalPhotoDescription) modalPhotoDescription.textContent = photo.description || 'Aucune description';
-        if (modalPhotoLocation) modalPhotoLocation.textContent = photo.location ? `📍 ${photo.location}` : '';
-        
-        if (modalPhotoDate && photo.created_at) {
-            const date = new Date(photo.created_at);
-            modalPhotoDate.textContent = `📅 ${date.toLocaleDateString('fr-FR')}`;
+        if (photoError) {
+            console.error("Erreur requête photo:", photoError);
+            throw photoError;
         }
         
-        if (modalPhotoAuthor) modalPhotoAuthor.textContent = `👤 ${photo.author_name || 'Anonyme'}`;
+        console.log("Données de la photo récupérées:", photo);
+        
+        // Mettre à jour les éléments de la modale
+        const modalImg = document.getElementById('modalPhotoImg');
+        if (modalImg) {
+            modalImg.src = photo.image_url || '';
+            modalImg.alt = photo.title || 'Photo';
+            modalImg.onerror = function() {
+                this.src = '/images/no-image.png';
+                console.error("Erreur chargement image modale");
+            };
+        } else {
+            console.error("Élément modalPhotoImg non trouvé");
+        }
+        
+        // Mettre à jour les autres éléments s'ils existent
+        document.getElementById('modalPhotoTitle')?.textContent = photo.title || 'Sans titre';
+        document.getElementById('modalPhotoDescription')?.textContent = photo.description || 'Aucune description';
+        
+        if (document.getElementById('modalPhotoLocation')) {
+            document.getElementById('modalPhotoLocation').textContent = photo.location ? `📍 ${photo.location}` : '';
+        }
+        
+        if (document.getElementById('modalPhotoDate')) {
+            const date = new Date(photo.created_at);
+            document.getElementById('modalPhotoDate').textContent = `📅 ${date.toLocaleDateString('fr-FR')}`;
+        }
+        
+        if (document.getElementById('modalPhotoAuthor')) {
+            document.getElementById('modalPhotoAuthor').textContent = `👤 ${photo.author_name || 'Anonyme'}`;
+        }
+        
+        // Charger les commentaires si la fonction existe
+        if (typeof loadPhotoComments === 'function') {
+            loadPhotoComments(photoId);
+        }
         
     } catch (error) {
-        console.error('Erreur lors du chargement des détails:', error);
+        console.error('Erreur chargement détails:', error);
         alert('Impossible de charger les détails de la photo');
-        closePhotoViewModal();
     }
 }
 
@@ -649,20 +673,21 @@ function closePhotoViewModal() {
         }
           
         // Construction du HTML avec image de secours locale
-        photoCard.innerHTML = `
-          <div class="photo-img-container">
-            <img class="photo-img" src="${photo.image_url || ''}" alt="${photo.title || 'Photo sans titre'}" 
-                 onerror="this.src='/images/no-image.png'; this.onerror=null;">
-          </div>
-          <div class="photo-info">
-            <h3 class="photo-title">${photo.title || 'Sans titre'}</h3>
-            <div class="photo-meta">
-              <span>${photo.location || 'Lieu non précisé'}</span>
-              <span>Par ${photo.author_name || 'Anonyme'}</span>
-              <span>${formattedDate}</span>
-            </div>
-          </div>
-        `;
+        // Dans la fonction renderPhotos, modifiez la construction du HTML:
+photoCard.innerHTML = `
+  <div class="photo-img-container">
+    <img class="photo-img" src="${photo.image_url || ''}" alt="${photo.title || 'Photo sans titre'}" 
+         onerror="this.onerror=null; this.src='/images/no-image.png'; console.error('Erreur chargement image:', this.src);">
+  </div>
+  <div class="photo-info">
+    <h3 class="photo-title">${photo.title || 'Sans titre'}</h3>
+    <div class="photo-meta">
+      <span>${photo.location || 'Lieu non précisé'}</span>
+      <span>Par ${photo.author_name || 'Anonyme'}</span>
+      <span>${formattedDate}</span>
+    </div>
+  </div>
+`;
           
         // Ajouter l'événement de clic
         photoCard.addEventListener('click', (e) => {
@@ -712,6 +737,143 @@ function closePhotoViewModal() {
       alert(isCurrentlyAdmin ? 'Mode administrateur désactivé' : 'Mode administrateur activé');
     }
   });
+  
+  
+// Ajouter le gestionnaire pour la touche secrète qui définit le mode admin
+  document.addEventListener('keydown', function(e) {
+    // Ctrl+Alt+A pour activer/désactiver le mode admin
+    if (e.ctrlKey && e.altKey && e.key === 'a') {
+      const isCurrentlyAdmin = localStorage.getItem('isAdmin') === 'true';
+      setAdminMode(!isCurrentlyAdmin);
+      alert(isCurrentlyAdmin ? 'Mode administrateur désactivé' : 'Mode administrateur activé');
+    }
+  });
+
+  // Charger les commentaires d'une photo
+  async function loadPhotoComments(photoId) {
+    console.log("Chargement des commentaires pour la photo ID:", photoId);
+    
+    const commentsContainer = document.getElementById('commentsContainer');
+    if (!commentsContainer) {
+        console.error("Conteneur de commentaires non trouvé");
+        return;
+    }
+    
+    commentsContainer.innerHTML = '<p>Chargement des commentaires...</p>';
+    
+    try {
+        const { data: comments, error } = await supabase
+            .from('photo_comments')
+            .select('*')
+            .eq('photo_id', photoId)
+            .order('created_at', { ascending: false });
+        
+        if (error) {
+            console.error("Erreur de chargement des commentaires:", error);
+            throw error;
+        }
+        
+        if (!comments || comments.length === 0) {
+            commentsContainer.innerHTML = '<p>Aucun commentaire pour le moment. Soyez le premier à commenter!</p>';
+            return;
+        }
+        
+        commentsContainer.innerHTML = '';
+        comments.forEach(comment => {
+            const date = new Date(comment.created_at);
+            const formattedDate = date.toLocaleDateString('fr-FR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            const commentElement = document.createElement('div');
+            commentElement.className = 'comment';
+            commentElement.dataset.id = comment.id;
+            commentElement.innerHTML = `
+                <div class="comment-header">
+                    <span class="comment-author">${comment.author_name}</span>
+                    <span class="comment-date">${formattedDate}</span>
+                </div>
+                <div class="comment-text">${comment.comment_text}</div>
+            `;
+            
+            commentsContainer.appendChild(commentElement);
+        });
+        
+    } catch (error) {
+        console.error('Erreur lors du chargement des commentaires:', error);
+        commentsContainer.innerHTML = '<p>Impossible de charger les commentaires. Veuillez réessayer plus tard.</p>';
+    }
+  }
+
+  // Soumettre un nouveau commentaire
+  async function submitComment(event) {
+      event.preventDefault();
+      console.log("Tentative d'envoi de commentaire");
+      
+      if (!currentPhotoId) {
+          console.error("ID de photo non défini");
+          return;
+      }
+      
+      const authorInput = document.getElementById('commentAuthor');
+      const textInput = document.getElementById('commentText');
+      
+      if (!authorInput || !textInput) {
+          console.error("Champs de commentaire non trouvés");
+          return;
+      }
+      
+      const author = authorInput.value.trim();
+      const text = textInput.value.trim();
+      
+      if (!author || !text) {
+          alert('Veuillez remplir tous les champs du commentaire');
+          return;
+      }
+      
+      console.log("Envoi d'un commentaire pour la photo:", currentPhotoId);
+      console.log("Auteur:", author);
+      console.log("Texte:", text);
+      
+      try {
+          // Sauvegarder le nom pour les futurs commentaires
+          localStorage.setItem('commenterName', author);
+          
+          // Insérer le commentaire
+          const { data, error } = await supabase
+              .from('photo_comments')
+              .insert([
+                  {
+                      photo_id: currentPhotoId,
+                      author_name: author,
+                      comment_text: text
+                  }
+              ]);
+          
+          if (error) {
+              console.error('Erreur lors de l\'envoi du commentaire:', error);
+              throw error;
+          }
+          
+          console.log("Commentaire enregistré:", data);
+          
+          // Réinitialiser le formulaire
+          textInput.value = '';
+          
+          // Recharger les commentaires
+          loadPhotoComments(currentPhotoId);
+          
+          alert('Commentaire ajouté avec succès!');
+          
+      } catch (error) {
+          console.error('Erreur lors de l\'envoi du commentaire:', error);
+          alert('Impossible d\'envoyer votre commentaire: ' + error.message);
+      }
+  }
   
 }, 100);
 
