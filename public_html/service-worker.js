@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v9';
+const CACHE_NAME = 'infos-pwa-v10';
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [

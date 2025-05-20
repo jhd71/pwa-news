@@ -3778,6 +3778,7 @@ showAdminPanel() {
     <button class="tab-btn" data-tab="banned-ips" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">IPs bannies</button>
     <button class="tab-btn" data-tab="notifications" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Notif.</button>
     <button class="tab-btn" data-tab="admin-tools" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Outils</button>
+	<button class="tab-btn" data-tab="gallery" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Photos</button>
 </div>
         <div class="panel-content" style="${isMobile ? 'padding: 15px; height: calc(100% - 130px); overflow-y: auto; -webkit-overflow-scrolling: touch;' : ''}">
             <!-- Contenu des onglets - contenu existant... -->
@@ -3786,6 +3787,15 @@ showAdminPanel() {
                 <div class="add-word">
                     <input type="text" placeholder="Nouveau mot à bannir">
                     <button class="add-word-btn">Ajouter</button>
+					<!-- Nouvel onglet pour la gestion de la galerie -->
+<div class="tab-section" id="gallery-section">
+    <h4>Gestion des photos</h4>
+    <div class="gallery-admin-controls">
+        <div class="photos-list" style="${isMobile ? 'max-height: 300px; min-height: 200px; overflow-y: auto;' : ''}">
+            <div class="loading-photos">Chargement des photos...</div>
+        </div>
+    </div>
+</div>
                 </div>
                 <div class="banned-words-list" style="${isMobile ? 'max-height: 300px; min-height: 200px;' : ''}"></div>
             </div>
@@ -3884,6 +3894,10 @@ tabBtns.forEach(btn => {
         const tabId = btn.dataset.tab + '-section';
         panel.querySelector(`#${tabId}`).classList.add('active');
     });
+	// Charger les photos si l'onglet Galerie est sélectionné
+if (btn.dataset.tab === 'gallery') {
+    this.loadGalleryPhotos();
+}
 });
 
     // Bouton ajout de mot banni

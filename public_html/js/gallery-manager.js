@@ -1,6 +1,6 @@
 // gallery-manager.js - Version corrigée
-// Variable globale pour éviter les initialisations multiples
-let galleryInitialized = false;
+// Utiliser une variable globale pour éviter les redéclarations
+window.galleryInitialized = window.galleryInitialized !== undefined ? window.galleryInitialized : false;
 
 // Attendre un bref instant pour s'assurer que tout est bien chargé
 setTimeout(() => {
@@ -83,25 +83,30 @@ setTimeout(() => {
   let commentForm;
 
   // Attendre que le DOM soit complètement chargé
-  console.log("Script gallery-manager.js chargé");
+console.log("Script gallery-manager.js chargé");
 
-  document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOMContentLoaded déclenché");
-    if (!galleryInitialized) {
-      initializeGallery();
-      galleryInitialized = true;
-    }
-  });
+// Utiliser une variable globale pour éviter les redéclarations
+if (typeof window.galleryInitialized === 'undefined') {
+  window.galleryInitialized = false;
+}
 
-  // Vérification supplémentaire
-  window.addEventListener('load', () => {
-    console.log("Window load déclenché");
-    if (!galleryInitialized) {
-      console.log("Galerie non initialisée lors de window.load, tentative d'initialisation...");
-      initializeGallery();
-      galleryInitialized = true;
-    }
-  });
+document.addEventListener('DOMContentLoaded', () => {
+  console.log("DOMContentLoaded déclenché");
+  if (!window.galleryInitialized) {
+    initializeGallery();
+    window.galleryInitialized = true;
+  }
+});
+
+// Vérification supplémentaire
+window.addEventListener('load', () => {
+  console.log("Window load déclenché");
+  if (!window.galleryInitialized) {
+    console.log("Galerie non initialisée lors de window.load, tentative d'initialisation...");
+    initializeGallery();
+    window.galleryInitialized = true;
+  }
+});
 
   // Fonction d'initialisation de la galerie
   function initializeGallery() {
@@ -133,14 +138,41 @@ setTimeout(() => {
     // Charger les photos initiales
     loadPhotos();
       
-    // Configurer les événements
-    if (uploadPhotoBtn) uploadPhotoBtn.addEventListener('click', openUploadModal);
-    if (closeUploadModalBtn) closeUploadModalBtn.addEventListener('click', closeUploadModal);
-    if (closePhotoViewBtn) closePhotoViewBtn.addEventListener('click', closePhotoViewModal);
-    if (loadMoreBtn) loadMoreBtn.addEventListener('click', loadMorePhotos);
-    if (photoInput) photoInput.addEventListener('change', previewPhoto);
-    if (photoUploadForm) photoUploadForm.addEventListener('submit', uploadPhoto);
-    if (commentForm) commentForm.addEventListener('submit', submitComment);
+    // Configurer les événements avec des fonctions anonymes
+if (uploadPhotoBtn) uploadPhotoBtn.addEventListener('click', function() { 
+    if (typeof openUploadModal === 'function') openUploadModal(); 
+    else console.error("Fonction openUploadModal non définie");
+});
+
+if (closeUploadModalBtn) closeUploadModalBtn.addEventListener('click', function() { 
+    if (typeof closeUploadModal === 'function') closeUploadModal(); 
+    else console.error("Fonction closeUploadModal non définie");
+});
+
+if (closePhotoViewBtn) closePhotoViewBtn.addEventListener('click', function() {
+    if (typeof closePhotoViewModal === 'function') closePhotoViewModal();
+    else console.error("Fonction closePhotoViewModal non définie");
+});
+
+if (loadMoreBtn) loadMoreBtn.addEventListener('click', function() {
+    if (typeof loadMorePhotos === 'function') loadMorePhotos();
+    else console.error("Fonction loadMorePhotos non définie");
+});
+
+if (photoInput) photoInput.addEventListener('change', function(event) {
+    if (typeof previewPhoto === 'function') previewPhoto(event);
+    else console.error("Fonction previewPhoto non définie");
+});
+
+if (photoUploadForm) photoUploadForm.addEventListener('submit', function(event) {
+    if (typeof uploadPhoto === 'function') uploadPhoto(event);
+    else console.error("Fonction uploadPhoto non définie");
+});
+
+if (commentForm) commentForm.addEventListener('submit', function(event) {
+    if (typeof submitComment === 'function') submitComment(event);
+    else console.error("Fonction submitComment non définie");
+});
       
     // Fermer les modales en cliquant à l'extérieur
     window.addEventListener('click', function(event) {
