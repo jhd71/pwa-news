@@ -617,11 +617,11 @@
 
 /* 3. Titre "Photos d'ici et d'ailleurs" en blanc */
 .gallery-header h1 {
-  color: white !important;
+  color: #000
 }
 
 .gallery-intro {
-  color: white !important;
+  color: #000
 }
 
 /* 4. Forcer le texte en noir dans toute la section commentaires */
