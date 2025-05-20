@@ -82,44 +82,45 @@
             <button class="close-modal" id="closeUploadModal">&times;</button>
         </div>
         <form id="photoUploadForm">
-    <div class="file-upload-area">
-        <!-- Boutons pour appareil photo et galerie -->
-        <div class="upload-buttons">
-            <button type="button" id="captureBtn" class="capture-btn">
-                <i class="material-icons">camera_alt</i>
-                <span>Prendre une photo</span>
-            </button>
-            <button type="button" id="galleryBtn" class="gallery-btn">
-                <i class="material-icons">photo_library</i>
-                <span>Choisir une image</span>
-            </button>
-        </div>
-        
-        <!-- Zone de prévisualisation -->
-        <div id="photoPreview" class="photo-preview"></div>
-        
-        <!-- Champ caché pour stocker l'image en base64 -->
-        <input type="hidden" id="photoBase64" name="photoBase64">
+            <!-- Version avec deux inputs distincts pour résoudre le problème du double clic -->
+<div class="file-upload-area">
+    <!-- On ne conserve que des boutons simples -->
+    <div class="upload-buttons">
+        <button type="button" id="captureBtn" class="capture-btn">
+            <i class="material-icons">camera_alt</i>
+            <span>Prendre une photo</span>
+        </button>
+        <button type="button" id="galleryBtn" class="gallery-btn">
+            <i class="material-icons">photo_library</i>
+            <span>Choisir une image</span>
+        </button>
     </div>
     
-    <div class="form-group">
-        <label for="photoTitle">Titre de la photo</label>
-        <input type="text" id="photoTitle" placeholder="Donnez un titre à votre photo" required>
-    </div>
-    <div class="form-group">
-        <label for="photoDescription">Description</label>
-        <textarea id="photoDescription" placeholder="Racontez l'histoire de cette photo..." rows="3"></textarea>
-    </div>
-    <div class="form-group">
-        <label for="photoLocation">Lieu</label>
-        <input type="text" id="photoLocation" placeholder="Où a été prise cette photo?">
-    </div>
-    <div class="form-group">
-        <label for="photographerName">Votre nom/pseudo</label>
-        <input type="text" id="photographerName" placeholder="Comment souhaitez-vous être identifié?" required>
-    </div>
-    <button type="button" id="submitPhotoBtn" class="submit-photo-btn">Partager ma photo</button>
-</form>
+    <!-- Zone de prévisualisation -->
+    <div id="photoPreview" class="photo-preview"></div>
+    
+    <!-- Champ caché pour stocker l'image en base64 -->
+    <input type="hidden" id="photoBase64" name="photoBase64">
+</div>
+            
+            <div class="form-group">
+                <label for="photoTitle">Titre de la photo</label>
+                <input type="text" id="photoTitle" placeholder="Donnez un titre à votre photo" required>
+            </div>
+            <div class="form-group">
+                <label for="photoDescription">Description</label>
+                <textarea id="photoDescription" placeholder="Racontez l'histoire de cette photo..." rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="photoLocation">Lieu</label>
+                <input type="text" id="photoLocation" placeholder="Où a été prise cette photo?">
+            </div>
+            <div class="form-group">
+                <label for="photographerName">Votre nom/pseudo</label>
+                <input type="text" id="photographerName" placeholder="Comment souhaitez-vous être identifié?" required>
+            </div>
+            <button type="submit" class="submit-photo-btn">Partager ma photo</button>
+        </form>
         <div id="uploadProgress" class="upload-progress" style="display: none;">
             <div class="progress-bar">
                 <div class="progress-bar-fill"></div>
