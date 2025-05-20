@@ -272,16 +272,22 @@ async function submitComment(event) {
         // Sauvegarder le nom pour les futurs commentaires
         localStorage.setItem('commenterName', author);
         
+        // Vérifier le type de currentPhotoId
+        console.log("Type de currentPhotoId:", typeof window.currentPhotoId);
+        
+        // Préparer les données à insérer
+        const commentData = {
+            photo_id: window.currentPhotoId,
+            author_name: author,
+            comment_text: text
+        };
+        
+        console.log("Données du commentaire à insérer:", commentData);
+        
         // Insérer le commentaire
         const { data, error } = await window.supabase
             .from('photo_comments')
-            .insert([
-                {
-                    photo_id: window.currentPhotoId,
-                    author_name: author,
-                    comment_text: text
-                }
-            ]);
+            .insert([commentData]);
         
         if (error) {
             console.error('Erreur lors de l\'envoi du commentaire:', error);
@@ -293,8 +299,10 @@ async function submitComment(event) {
         // Réinitialiser le formulaire
         textInput.value = '';
         
-        // Recharger les commentaires
-        loadPhotoComments(window.currentPhotoId);
+        // Attendre un court instant avant de recharger les commentaires
+        setTimeout(() => {
+            loadPhotoComments(window.currentPhotoId);
+        }, 500);
         
         alert('Commentaire ajouté avec succès!');
         
@@ -394,11 +402,17 @@ async function loadPhotoComments(photoId) {
     commentsContainer.innerHTML = '<p>Chargement des commentaires...</p>';
     
     try {
+        // Déboguer avec un log de la requête
+        console.log("Requête de commentaires pour photo_id:", photoId);
+        
         const { data: comments, error } = await window.supabase
             .from('photo_comments')
             .select('*')
             .eq('photo_id', photoId)
             .order('created_at', { ascending: false });
+        
+        // Log détaillé de la réponse
+        console.log("Réponse de commentaires:", { data: comments, error });
         
         if (error) {
             console.error("Erreur de chargement des commentaires:", error);
@@ -411,7 +425,11 @@ async function loadPhotoComments(photoId) {
         }
         
         commentsContainer.innerHTML = '';
+        console.log(`Affichage de ${comments.length} commentaires`);
+        
         comments.forEach(comment => {
+            console.log("Traitement du commentaire:", comment);
+            
             const date = new Date(comment.created_at);
             const formattedDate = date.toLocaleDateString('fr-FR', {
                 day: '2-digit',
@@ -495,20 +513,21 @@ function renderPhotos(photos) {
             }
               
             // Construction du HTML avec image de secours locale
-            photoCard.innerHTML = `
-                <div class="photo-img-container">
-                    <img class="photo-img" src="${photo.image_url || ''}" alt="${photo.title || 'Photo sans titre'}" 
-                         onerror="this.onerror=null; this.src='/images/no-image.png'; console.error('Erreur chargement image:', this.src);">
-                </div>
-                <div class="photo-info">
-                    <h3 class="photo-title">${photo.title || 'Sans titre'}</h3>
-                    <div class="photo-meta">
-                        <span>${photo.location || 'Lieu non précisé'}</span>
-                        <span>Par ${photo.author_name || 'Anonyme'}</span>
-                        <span>${formattedDate}</span>
-                    </div>
-                </div>
-            `;
+            console.log("URL de l'image:", photo.image_url);
+photoCard.innerHTML = `
+    <div class="photo-img-container">
+        <img class="photo-img" src="${photo.image_url || ''}" alt="${photo.title || 'Photo sans titre'}" 
+             onerror="this.onerror=null; this.src='images/Actu&Media.png'; console.error('Erreur chargement image:', this.src, 'URL originale:', '${photo.image_url}');">
+    </div>
+    <div class="photo-info">
+        <h3 class="photo-title">${photo.title || 'Sans titre'}</h3>
+        <div class="photo-meta">
+            <span>${photo.location || 'Lieu non précisé'}</span>
+            <span>Par ${photo.author_name || 'Anonyme'}</span>
+            <span>${formattedDate}</span>
+        </div>
+    </div>
+`;
               
             // Ajouter l'événement de clic
             photoCard.addEventListener('click', (e) => {
