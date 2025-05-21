@@ -496,24 +496,12 @@ async function openPhotoView(photoId) {
                 });
             
             // Ajouter un bouton "Ouvrir dans un nouvel onglet" pour tester directement
-            const modalHeader = document.querySelector('.photo-detail-view');
-if (modalHeader) {
-    // D'abord, supprimer tous les boutons "Ouvrir l'image" existants
-    const existingButtons = modalHeader.querySelectorAll('button');
-    existingButtons.forEach(button => {
-        if (button.textContent === "Ouvrir l'image dans un nouvel onglet") {
-            button.remove();
-        }
-    });
-    
-    // Ensuite, créer un nouveau bouton
-    const openImageBtn = document.createElement('button');
-    openImageBtn.textContent = "Ouvrir l'image dans un nouvel onglet";
-    openImageBtn.style.cssText = "margin: 10px 0; padding: 5px; background: #007bff; color: white; border: none; border-radius: 4px;";
-    openImageBtn.onclick = function() {
+            const openInNewTabBtn = document.getElementById('openInNewTab');
+if (openInNewTabBtn) {
+    // Mettre à jour le clic pour ouvrir l'image actuelle
+    openInNewTabBtn.onclick = function() {
         window.open(photo.image_url, '_blank');
     };
-    modalHeader.appendChild(openImageBtn);
 }
             
             // Définir l'image source avec gestion d'erreur améliorée
@@ -1046,5 +1034,80 @@ window.previewPhoto = previewPhoto;
 window.uploadPhoto = uploadPhoto;
 window.submitComment = submitComment;
 window.openPhotoView = openPhotoView;
+
+// Ajoutez ce code à la fin de votre fichier gallery-manager.js
+
+// Corriger le défilement sur mobile
+function fixMobileScrolling() {
+    // Fonctions pour gérer le défilement sur iOS
+    function disableBodyScroll() {
+        document.body.classList.add('modal-open');
+        document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100%';
+    }
+
+    function enableBodyScroll() {
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
+    }
+
+    // Amélioration des fonctions existantes
+    const originalOpenPhotoView = window.openPhotoView;
+    window.openPhotoView = function(photoId) {
+        const result = originalOpenPhotoView(photoId);
+        
+        // Après l'ouverture, forcer le focus sur le formulaire
+        setTimeout(() => {
+            disableBodyScroll();
+            
+            // S'assurer que le formulaire de commentaire est visible
+            const commentForm = document.getElementById('commentForm');
+            if (commentForm) {
+                commentForm.style.display = 'block';
+                
+                // Ajout d'un bouton "Voir les commentaires" pour mobile
+                const photoDetailView = document.querySelector('.photo-detail-view');
+                if (photoDetailView && !document.getElementById('scrollToCommentsBtn')) {
+                    const scrollBtn = document.createElement('button');
+                    scrollBtn.id = 'scrollToCommentsBtn';
+                    scrollBtn.className = 'open-image-btn';
+                    scrollBtn.textContent = 'Voir les commentaires';
+                    scrollBtn.style.marginTop = '15px';
+                    scrollBtn.onclick = function() {
+                        document.querySelector('.photo-comments').scrollIntoView({behavior: 'smooth'});
+                    };
+                    photoDetailView.appendChild(scrollBtn);
+                }
+            }
+        }, 300);
+        
+        return result;
+    };
+
+    const originalClosePhotoViewModal = window.closePhotoViewModal;
+    window.closePhotoViewModal = function() {
+        enableBodyScroll();
+        return originalClosePhotoViewModal();
+    };
+
+    // Corriger le problème de soumission de commentaire sur mobile
+    const commentForm = document.getElementById('commentForm');
+    if (commentForm) {
+        commentForm.addEventListener('submit', function(e) {
+            // Si submitComment échoue ou ne fonctionne pas, s'assurer que le formulaire est toujours affiché
+            setTimeout(() => {
+                this.style.display = 'block';
+                this.style.visibility = 'visible';
+                this.style.opacity = '1';
+            }, 500);
+        });
+    }
+}
+
+// Exécuter la correction mobile quand le DOM est chargé
+document.addEventListener('DOMContentLoaded', fixMobileScrolling);
 
 console.log('Fin du fichier gallery-manager.js atteinte correctement');

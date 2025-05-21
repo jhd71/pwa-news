@@ -12,6 +12,7 @@
     <!-- Styles -->
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/gallery-styles.css">
+	<link rel="stylesheet" href="css/commentaires-toggle.css">
 </head>
 <body>
 <script>
@@ -145,6 +146,9 @@
           <span id="modalPhotoDate"></span>
           <span id="modalPhotoAuthor"></span>
         </div>
+      </div>
+      <div class="button-container">
+        <button class="open-image-btn" id="openInNewTab">Ouvrir l'image dans un nouvel onglet</button>
       </div>
     </div>
     <div class="photo-comments">
@@ -327,5 +331,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+<script src="js/commentaires-toggle.js"></script>
 </body>
 </html>

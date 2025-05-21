@@ -1,6 +1,319 @@
 /* gallery-styles.css - Version améliorée */
 
-/* Adapter les variables selon les thèmes */
+/* Style du bouton "Ouvrir l'image dans un nouvel onglet" */
+.open-image-btn,
+button.open-image-btn,
+.modal-content button.open-image-btn {
+    display: inline-block;
+    margin: 15px auto;
+    padding: 10px 20px;
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    border: none;
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: auto;
+    max-width: 300px;
+}
+
+.open-image-btn:hover,
+button.open-image-btn:hover,
+.modal-content button.open-image-btn:hover {
+    background-color: var(--accent-color) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Adaptations spécifiques selon les thèmes */
+[data-theme="dark"] .open-image-btn,
+[data-theme="dark"] button.open-image-btn,
+[data-theme="dark"] .modal-content button.open-image-btn {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+[data-theme="rouge"] .open-image-btn,
+[data-theme="rouge"] button.open-image-btn,
+[data-theme="rouge"] .modal-content button.open-image-btn {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+[data-theme="bleuciel"] .open-image-btn,
+[data-theme="bleuciel"] button.open-image-btn,
+[data-theme="bleuciel"] .modal-content button.open-image-btn {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+}
+[data-theme="dark"] .photo-info p,
+[data-theme="dark"] .photo-detail-view p,
+[data-theme="dark"] .location-text,
+[data-theme="dark"] .date-text,
+[data-theme="dark"] .author-text,
+[data-theme="dark"] .material-icons + span,
+[data-theme="dark"] .material-symbols-outlined + span {
+    color: white !important;
+}
+
+[data-theme="rouge"] .photo-info p,
+[data-theme="rouge"] .photo-detail-view p,
+[data-theme="rouge"] .location-text,
+[data-theme="rouge"] .date-text,
+[data-theme="rouge"] .author-text,
+[data-theme="rouge"] .material-icons + span,
+[data-theme="rouge"] .material-symbols-outlined + span {
+    color: white !important;
+}
+
+/* Force le thème pour les vues détaillées */
+.photo-view-modal {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+[data-theme="dark"] .photo-view-modal {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+[data-theme="rouge"] .photo-view-modal {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+[data-theme="bleuciel"] .photo-view-modal {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Force le fond de la modal selon le thème */
+[data-theme="dark"] .modal-content {
+    background-color: #1a237e !important;
+}
+
+[data-theme="rouge"] .modal-content {
+    background-color: #b71c1c !important;
+}
+
+[data-theme="bleuciel"] .modal-content {
+    background-color: #4FB3E8 !important;
+}
+
+/* Amélioration du défilement dans la modale */
+.photo-view-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    overflow-y: auto; /* Permet le défilement vertical */
+    padding: 20px;
+}
+
+.photo-view-modal .modal-content {
+    background: var(--photo-view-bg);
+    color: var(--text-color);
+    border-radius: 15px;
+    overflow: visible; /* Changé de hidden à visible */
+    max-width: 800px;
+    width: 95%;
+    margin: 20px auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    position: relative;
+    max-height: none; /* Supprime la limitation de hauteur */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Ajustement de la hauteur du contenu */
+.photo-detail-view {
+    max-height: none; /* Supprime la limitation de hauteur */
+    overflow: visible; /* Permet au contenu de dépasser */
+}
+
+.modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--primary-color);
+}
+
+/* Style spécifique pour la section commentaires */
+.photo-comments {
+    padding: 20px;
+    margin-top: 10px;
+    max-height: none; /* Supprime la limitation de hauteur */
+    overflow: visible; /* Permet le défilement du contenu */
+}
+
+/* Amélioration du formulaire de commentaire */
+#commentForm {
+    padding: 15px;
+    margin-top: 20px;
+    margin-bottom: 20px; /* Ajoute de l'espace en bas */
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+#commentForm input,
+#commentForm textarea {
+    margin-bottom: 10px;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+}
+
+#commentForm button {
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+/* Assurer que le contenu reste lisible */
+[data-theme="dark"] .photo-comments,
+[data-theme="dark"] .photo-comments h3,
+[data-theme="dark"] #commentForm,
+[data-theme="dark"] #commentForm input,
+[data-theme="dark"] #commentForm textarea,
+[data-theme="dark"] #commentsContainer,
+[data-theme="rouge"] .photo-comments,
+[data-theme="rouge"] .photo-comments h3,
+[data-theme="rouge"] #commentForm,
+[data-theme="rouge"] #commentForm input,
+[data-theme="rouge"] #commentForm textarea,
+[data-theme="rouge"] #commentsContainer {
+    color: white !important;
+}
+
+/* Améliorations spécifiques pour mobile */
+@media (max-width: 768px) {
+    /* Correction du défilement sur mobile */
+    .photo-view-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 0; /* Réduire le padding sur mobile */
+        -webkit-overflow-scrolling: touch; /* Améliorer le défilement sur iOS */
+        overscroll-behavior: contain; /* Éviter le défilement propagé */
+        height: 100%; /* Forcer la hauteur à 100% */
+        display: flex; /* Utiliser flexbox pour centrer */
+        align-items: center; /* Centrer verticalement */
+        justify-content: center; /* Centrer horizontalement */
+    }
+    
+    .photo-view-modal .modal-content {
+        width: 100%; /* Pleine largeur sur mobile */
+        max-width: 100%;
+        height: 100%; /* Pleine hauteur */
+        max-height: 100%;
+        margin: 0; /* Pas de marge */
+        border-radius: 0; /* Pas d'arrondi sur mobile */
+        overflow: auto; /* Activer le défilement dans le contenu */
+        display: flex;
+        flex-direction: column;
+    }
+    
+    /* Rendre l'en-tête fixe */
+    .photo-view-modal .modal-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        width: 100%;
+        padding: 10px 15px;
+    }
+    
+    /* Rendre le contenu défilable */
+    .photo-view-modal .photo-detail-view {
+        flex: 1;
+        overflow-y: auto;
+        padding: 10px 15px;
+    }
+    
+    /* Ajuster les commentaires pour qu'ils soient défilables */
+    .photo-view-modal .photo-comments {
+        flex: 1;
+        overflow-y: auto;
+        padding: 10px 15px;
+        padding-bottom: 30px; /* Espace supplémentaire en bas */
+    }
+    
+    /* Rendre le formulaire de commentaire plus visible */
+    .photo-view-modal #commentForm {
+        position: relative;
+        padding: 15px;
+        margin-top: 20px;
+        margin-bottom: 60px; /* Espace important en bas sur mobile */
+        background-color: rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+    }
+    
+    /* Ajuster la taille des champs */
+    .photo-view-modal #commentForm input,
+    .photo-view-modal #commentForm textarea {
+        font-size: 14px; /* Éviter le zoom iOS sur focus */
+        padding: 12px;
+    }
+    
+    .photo-view-modal #commentForm button {
+        height: 44px; /* Hauteur minimale pour touch */
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+    
+    /* Style du bouton "Ouvrir dans un nouvel onglet" pour mobile */
+    .photo-view-modal .open-image-btn,
+    .photo-view-modal #openInNewTab {
+        width: 100%;
+        margin: 15px 0;
+        font-size: 16px;
+        height: 50px;
+    }
+    
+    /* Ajustement de la hauteur de l'image */
+    .photo-view-modal #modalPhotoImg {
+        max-height: 200px; /* Réduire la hauteur de l'image sur mobile */
+        object-fit: contain;
+    }
+}
+
+/* Force l'affichage du formulaire dans tous les cas */
+#commentForm {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Hack pour iOS Safari */
+body.modal-open {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+/* Détection de la plateforme pour iOS */
+@supports (-webkit-touch-callout: none) {
+    /* CSS spécifique à iOS */
+    .photo-view-modal {
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .photo-view-modal .modal-content {
+        height: auto;
+        max-height: 85vh; /* Limitation pour iOS */
+    }
+}
 :root {
     --primary-color: #7E57C2;
     --accent-color: #9C27B0;
@@ -193,7 +506,7 @@
 }
 
 .photo-info {
-    padding: 15px;
+    padding: 0px;
     color: var(--card-text-color);
 }
 
@@ -399,7 +712,7 @@
 
 /* Commentaires */
 .comment {
-    background: var(--card-bg);
+    background: #ffffff
     color: var(--text-color);
     padding: 15px;
     margin-bottom: 15px;
@@ -438,7 +751,7 @@
 }
 
 #commentsContainer {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: #ffd230;
     border: 1px solid var(--border-color);
     color: var(--text-color);
     padding: 20px;
@@ -667,7 +980,7 @@
 
 /* Contenu de la vue détaillée */
 .photo-view-modal .photo-detail-view {
-    padding: 25px;
+    padding: 10px;
 }
 
 .photo-view-modal .photo-detail-view img {
@@ -708,7 +1021,7 @@
     flex-wrap: wrap;
     gap: 15px;
     margin: 20px 0;
-    background: rgba(0, 0, 0, 0.05);
+    background: #ffffff;
     padding: 15px;
     border-radius: 8px;
 }
@@ -777,7 +1090,7 @@
     margin-bottom: 15px;
     border: 1px solid var(--border-color);
     border-radius: 6px;
-    background: var(--input-bg);
+    background: #dae1e8;
     color: var(--text-color);
     font-size: 15px;
 }
@@ -833,7 +1146,7 @@
 /* Centrer le bouton */
 .button-container {
     text-align: center;
-    margin: 20px 0;
+    margin: 0px 0;
 }
 
 /* Styles pour les boutons de capture et galerie */
@@ -986,6 +1299,30 @@
         grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
         gap: 15px;
     }
+	
+	.gallery-main {
+    min-height: auto;
+    height: auto;
+    overflow: visible;
+}
+
+.photo-grid {
+    display: grid;
+    visibility: visible;
+    opacity: 1;
+}
+
+main, .gallery-main, .photo-grid, .gallery-header {
+    display: block;
+    visibility: visible;
+}
+
+html, body {
+    height: auto;
+    min-height: 100%;
+    overflow: auto;
+    position: relative;
+}
     
     .modal-content {
         margin: 40px 10px;
