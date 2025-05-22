@@ -488,6 +488,25 @@ async function openPhotoView(photoId) {
         // Charger les commentaires
         loadPhotoComments(photoId);
         
+		if (window.innerWidth <= 768) {
+    setTimeout(() => {
+        const photoDetailView = document.querySelector('.photo-detail-view');
+        if (photoDetailView && !document.getElementById('scrollToCommentsBtn')) {
+            const scrollBtn = document.createElement('button');
+            scrollBtn.id = 'scrollToCommentsBtn';
+            scrollBtn.className = 'scroll-to-comments-btn';
+            scrollBtn.innerHTML = '<i class="material-icons">comment</i> Voir les commentaires';
+            scrollBtn.onclick = function() {
+                document.querySelector('.photo-comments').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            };
+            photoDetailView.appendChild(scrollBtn);
+        }
+    }, 500);
+}
+
         // S'assurer que le formulaire est visible sur mobile
         if (window.innerWidth <= 768) {
             setTimeout(() => {

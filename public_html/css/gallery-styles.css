@@ -1583,3 +1583,361 @@ body.modal-open {
         margin-bottom: 10px !important;
     }
 }
+
+/* === CORRECTIONS URGENTES MOBILE === */
+/* À AJOUTER À LA FIN DE VOTRE gallery-styles.css */
+
+/* 1. CORRECTION DU BOUTON "VOIR LES COMMENTAIRES" */
+@media (max-width: 768px) {
+    /* Créer le bouton "Voir les commentaires" manquant */
+    .scroll-to-comments-btn {
+        display: inline-block !important;
+        width: 100% !important;
+        max-width: none !important;
+        padding: 12px 20px !important;
+        background: var(--accent-color) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-size: 16px !important;
+        font-weight: bold !important;
+        cursor: pointer !important;
+        margin: 15px 0 !important;
+        text-align: center !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.2) !important;
+    }
+    
+    .scroll-to-comments-btn:active {
+        background: var(--primary-color) !important;
+        transform: scale(0.98) !important;
+    }
+    
+    /* Améliorer tous les boutons dans la modal mobile */
+    .photo-view-modal .open-image-btn,
+    .photo-view-modal button.open-image-btn {
+        display: block !important;
+        width: 100% !important;
+        max-width: none !important;
+        padding: 12px 20px !important;
+        margin: 15px 0 !important;
+        background: var(--primary-color) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-size: 16px !important;
+        font-weight: bold !important;
+        cursor: pointer !important;
+        text-align: center !important;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.2) !important;
+        transition: all 0.2s ease !important;
+    }
+    
+    .photo-view-modal .open-image-btn:active,
+    .photo-view-modal button.open-image-btn:active {
+        background: var(--accent-color) !important;
+        transform: scale(0.98) !important;
+    }
+}
+
+/* 2. CORRECTION DE LA CROIX DE FERMETURE */
+@media (max-width: 768px) {
+    .photo-view-modal .close-modal {
+        position: absolute !important;
+        right: 10px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        width: 44px !important;
+        height: 44px !important;
+        background: rgba(255,255,255,0.9) !important;
+        border: 2px solid white !important;
+        border-radius: 50% !important;
+        color: #333 !important;
+        font-size: 28px !important;
+        font-weight: bold !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        z-index: 10001 !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;
+        transition: all 0.2s ease !important;
+        line-height: 1 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    .photo-view-modal .close-modal:hover,
+    .photo-view-modal .close-modal:active {
+        background: rgba(255,255,255,1) !important;
+        transform: translateY(-50%) scale(1.1) !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4) !important;
+    }
+    
+    /* S'assurer que la croix est toujours au-dessus */
+    .photo-view-modal .modal-header {
+        position: relative !important;
+    }
+}
+
+/* 3. CORRECTION DE L'EN-TÊTE MOBILE */
+@media (max-width: 768px) {
+    .photo-view-modal .modal-header {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 65px !important;
+        padding: 10px 60px 10px 15px !important; /* Plus d'espace à droite pour la croix */
+        background: var(--primary-color) !important;
+        z-index: 10000 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;
+    }
+    
+    .photo-view-modal .modal-header h2 {
+        color: white !important;
+        font-size: 18px !important;
+        margin: 0 !important;
+        font-weight: bold !important;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5) !important;
+        flex: 1 !important;
+        text-align: left !important;
+        padding: 0 !important;
+        line-height: 1.2 !important;
+        max-width: calc(100% - 60px) !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+}
+
+/* 4. CORRECTION DU CONTENU AVEC ESPACE POUR L'EN-TÊTE */
+@media (max-width: 768px) {
+    .photo-view-modal .modal-content {
+        padding-top: 65px !important; /* Espace pour l'en-tête fixe */
+    }
+    
+    .photo-view-modal .photo-detail-view {
+        flex: 1 !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding: 15px !important;
+        margin: 0 !important;
+    }
+}
+
+/* 5. CORRECTION DE LA SECTION COMMENTAIRES */
+@media (max-width: 768px) {
+    .photo-view-modal .photo-comments {
+        background: white !important;
+        margin: 20px -15px 0 -15px !important; /* Étendre sur toute la largeur */
+        padding: 20px 15px 130px 15px !important; /* Plus d'espace en bas pour le formulaire */
+        border-radius: 15px 15px 0 0 !important;
+        border-top: 3px solid var(--primary-color) !important;
+        position: relative !important;
+    }
+    
+    .photo-view-modal .photo-comments h3 {
+        color: var(--primary-color) !important;
+        font-size: 20px !important;
+        margin: 0 0 20px 0 !important;
+        font-weight: bold !important;
+        text-align: center !important;
+        padding-bottom: 15px !important;
+        border-bottom: 2px solid #f0f0f0 !important;
+    }
+}
+
+/* 6. CORRECTION DU FORMULAIRE DE COMMENTAIRE FIXE */
+@media (max-width: 768px) {
+    .photo-view-modal #commentForm {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        background: white !important;
+        padding: 20px 15px !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.3) !important;
+        border-top: 4px solid var(--primary-color) !important;
+        z-index: 9998 !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    .photo-view-modal #commentAuthor,
+    .photo-view-modal #commentText {
+        width: 100% !important;
+        padding: 15px !important;
+        margin-bottom: 12px !important;
+        border: 2px solid #e0e0e0 !important;
+        border-radius: 10px !important;
+        font-size: 16px !important;
+        background: white !important;
+        color: #333 !important;
+        box-sizing: border-box !important;
+        -webkit-appearance: none !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        transition: all 0.2s ease !important;
+    }
+    
+    .photo-view-modal #commentAuthor:focus,
+    .photo-view-modal #commentText:focus {
+        border-color: var(--primary-color) !important;
+        outline: none !important;
+        box-shadow: 0 0 0 3px rgba(126, 87, 194, 0.2) !important;
+    }
+    
+    .photo-view-modal #commentText {
+        min-height: 70px !important;
+        max-height: 100px !important;
+        resize: none !important;
+    }
+    
+    .photo-view-modal #commentForm button {
+        width: 100% !important;
+        padding: 15px !important;
+        background: var(--primary-color) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 10px !important;
+        font-size: 18px !important;
+        font-weight: bold !important;
+        cursor: pointer !important;
+        margin-top: 8px !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.2) !important;
+    }
+    
+    .photo-view-modal #commentForm button:active {
+        background: var(--accent-color) !important;
+        transform: scale(0.98) !important;
+    }
+}
+
+/* 7. STYLES POUR TOUS LES THÈMES - CORRECTIONS */
+@media (max-width: 768px) {
+    [data-theme="dark"] .photo-view-modal .photo-comments,
+    [data-theme="dark"] .photo-view-modal #commentForm {
+        background: #2c2c2c !important;
+    }
+    
+    [data-theme="dark"] .photo-view-modal #commentAuthor,
+    [data-theme="dark"] .photo-view-modal #commentText {
+        background: #404040 !important;
+        color: white !important;
+        border-color: #666 !important;
+    }
+    
+    [data-theme="rouge"] .photo-view-modal .photo-comments,
+    [data-theme="rouge"] .photo-view-modal #commentForm {
+        background: #8a2320 !important;
+    }
+    
+    [data-theme="rouge"] .photo-view-modal #commentAuthor,
+    [data-theme="rouge"] .photo-view-modal #commentText {
+        background: #ac2925 !important;
+        color: white !important;
+        border-color: rgba(255,255,255,0.4) !important;
+    }
+    
+    [data-theme="bleuciel"] .photo-view-modal .photo-comments {
+        background: #F0F8FF !important;
+    }
+    
+    [data-theme="bleuciel"] .photo-view-modal #commentForm {
+        background: white !important;
+    }
+}
+
+/* 8. CORRECTION DES COMMENTAIRES EXISTANTS */
+@media (max-width: 768px) {
+    .comment {
+        background: #f8f9fa !important;
+        border: 1px solid #e9ecef !important;
+        border-radius: 12px !important;
+        padding: 15px !important;
+        margin-bottom: 12px !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+    }
+    
+    .comment-header {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        margin-bottom: 10px !important;
+    }
+    
+    .comment-author {
+        font-weight: bold !important;
+        color: var(--primary-color) !important;
+        font-size: 15px !important;
+    }
+    
+    .comment-date {
+        font-size: 13px !important;
+        color: #6c757d !important;
+    }
+    
+    .comment-text {
+        color: #333 !important;
+        line-height: 1.5 !important;
+        font-size: 15px !important;
+    }
+}
+
+/* 9. AMÉLIORATION DU SCROLL ET PREVENTION DES BUGS */
+@media (max-width: 768px) {
+    /* Prévention du scroll du body */
+    body.modal-open {
+        overflow: hidden !important;
+        position: fixed !important;
+        width: 100% !important;
+        height: 100% !important;
+        top: 0 !important;
+        left: 0 !important;
+    }
+    
+    /* Container de commentaires avec scroll optimisé */
+    #commentsContainer {
+        max-height: 250px !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        margin-bottom: 25px !important;
+    }
+    
+    /* Espace pour éviter que le contenu soit caché par le formulaire fixe */
+    .photo-view-modal .photo-comments::after {
+        content: '' !important;
+        display: block !important;
+        height: 150px !important;
+        width: 100% !important;
+    }
+}
+
+/* 10. CORRECTION SPÉCIALE POUR iOS */
+@supports (-webkit-touch-callout: none) {
+    @media (max-width: 768px) {
+        .photo-view-modal {
+            -webkit-overflow-scrolling: touch !important;
+        }
+        
+        .photo-view-modal .modal-content {
+            min-height: 100vh !important;
+        }
+        
+        /* Correction du viewport sur iOS */
+        .photo-view-modal #commentForm {
+            bottom: env(safe-area-inset-bottom, 0) !important;
+            padding-bottom: calc(20px + env(safe-area-inset-bottom, 0)) !important;
+        }
+    }
+}
