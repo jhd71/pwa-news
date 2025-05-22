@@ -573,50 +573,88 @@ if (buttonContainer && !document.getElementById('scrollToCommentsBtn')) {
     scrollBtn.className = 'scroll-to-comments-btn';
     scrollBtn.innerHTML = '<i class="material-icons">expand_more</i> Voir les commentaires';
     
-    scrollBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log('Tentative de scroll vers commentaires');
+    // CORRECTION FINALE DU BOUTON "VOIR LES COMMENTAIRES"
+// À remplacer dans openPhotoView()
+
+scrollBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('Clic sur bouton "Voir les commentaires"');
+    
+    // Essayer différentes approches pour trouver les commentaires
+    let targetElement = null;
+    
+    // 1. Essayer de trouver le container de commentaires
+    targetElement = document.getElementById('commentsContainer');
+    
+    if (!targetElement) {
+        // 2. Essayer de trouver la section commentaires
+        targetElement = document.querySelector('.photo-comments');
+    }
+    
+    if (!targetElement) {
+        // 3. Essayer de trouver le titre "Commentaires"
+        targetElement = document.querySelector('.photo-comments h3');
+    }
+    
+    if (targetElement) {
+        console.log('Élément trouvé pour le scroll:', targetElement);
         
-        // NOUVELLE APPROCHE - Scroll directement vers la section
-        const commentsSection = document.querySelector('.photo-comments');
+        // Scroll vers l'élément trouvé
+        targetElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+            inline: 'nearest'
+        });
         
-        if (commentsSection) {
-            console.log('Section commentaires trouvée, scroll en cours...');
-            
-            // Scroll vers la section commentaires
-            commentsSection.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start',
-                inline: 'nearest'
+        // Feedback visuel
+        scrollBtn.innerHTML = '<i class="material-icons">check</i> Commentaires visibles !';
+        scrollBtn.style.background = '#28a745';
+        
+        // Alternative : scroll manuel si scrollIntoView ne fonctionne pas
+        setTimeout(() => {
+            const photoDetailView = document.querySelector('.photo-detail-view');
+            if (photoDetailView) {
+                const rect = targetElement.getBoundingClientRect();
+                const containerRect = photoDetailView.getBoundingClientRect();
+                
+                if (rect.top > containerRect.bottom || rect.bottom < containerRect.top) {
+                    // L'élément n'est pas visible, forcer le scroll manuel
+                    photoDetailView.scrollTo({
+                        top: photoDetailView.scrollTop + rect.top - containerRect.top - 100,
+                        behavior: 'smooth'
+                    });
+                    console.log('Scroll manuel appliqué');
+                }
+            }
+        }, 100);
+        
+        setTimeout(() => {
+            scrollBtn.innerHTML = '<i class="material-icons">expand_more</i> Voir les commentaires';
+            scrollBtn.style.background = '#FF6B35';
+        }, 2000);
+        
+    } else {
+        console.error('Aucun élément commentaire trouvé');
+        
+        // Dernière tentative : scroll tout en bas
+        const photoDetailView = document.querySelector('.photo-detail-view');
+        if (photoDetailView) {
+            photoDetailView.scrollTo({
+                top: photoDetailView.scrollHeight,
+                behavior: 'smooth'
             });
+            console.log('Scroll vers le bas appliqué');
             
-            // Feedback visuel
-            scrollBtn.innerHTML = '<i class="material-icons">check</i> Commentaires visibles !';
-            scrollBtn.style.background = '#28a745';
-            
+            scrollBtn.innerHTML = '<i class="material-icons">arrow_downward</i> Scrollé vers le bas';
             setTimeout(() => {
                 scrollBtn.innerHTML = '<i class="material-icons">expand_more</i> Voir les commentaires';
-                scrollBtn.style.background = '#FF6B35';
             }, 2000);
-            
-            console.log('Scroll vers commentaires exécuté');
         } else {
-            console.error('Section .photo-comments non trouvée');
-            
-            // Alternative - essayer de trouver le titre "Commentaires"
-            const commentsTitle = document.querySelector('.photo-comments h3');
-            if (commentsTitle) {
-                console.log('Titre commentaires trouvé, scroll alternatif...');
-                commentsTitle.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            } else {
-                alert('Section commentaires non trouvée. Scrollez manuellement vers le bas.');
-            }
+            alert('Impossible de trouver la section commentaires. Scrollez manuellement vers le bas.');
         }
-    }, { passive: false });
+    }
+}, { passive: false });
     
     // Ajouter aussi l'événement touch pour mobile
     scrollBtn.addEventListener('touchend', function(e) {
