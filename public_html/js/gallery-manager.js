@@ -413,6 +413,8 @@ async function submitComment(event) {
 }
 
 // VERSION AMÉLIORÉE - Ouvrir la vue détaillée d'une photo
+// VERSION COMPLÈTE DE openPhotoView avec toutes les corrections
+
 async function openPhotoView(photoId) {
     console.log("Ouverture de la vue photo:", photoId);
     
@@ -449,6 +451,8 @@ async function openPhotoView(photoId) {
             throw photoError;
         }
         
+        console.log("Données de la photo récupérées:", photo);
+        
         // Mettre à jour l'image
         const modalImg = document.getElementById('modalPhotoImg');
         if (modalImg) {
@@ -457,14 +461,6 @@ async function openPhotoView(photoId) {
             };
             modalImg.src = photo.image_url || '';
             modalImg.alt = photo.title || 'Photo';
-        }
-        
-        // Mettre à jour le bouton "Ouvrir dans un nouvel onglet"
-        const openInNewTabBtn = document.getElementById('openInNewTab');
-        if (openInNewTabBtn) {
-            openInNewTabBtn.onclick = function() {
-                window.open(photo.image_url, '_blank');
-            };
         }
         
         // Mettre à jour les autres éléments
@@ -491,81 +487,135 @@ async function openPhotoView(photoId) {
             document.getElementById('modalPhotoAuthor').textContent = `👤 ${photo.author_name || 'Anonyme'}`;
         }
         
-// Charger les commentaires
-loadPhotoComments(photoId);
-
-// Amélioration mobile : s'assurer que le formulaire est visible
-if (window.innerWidth <= 768) {
-    setTimeout(() => {
-        // Nettoyer TOUS les anciens boutons
-        const oldScrollBtn = document.getElementById('scrollToCommentsBtn');
-        const oldToggleBtn = document.getElementById('commentsToggleBtn');
-        if (oldScrollBtn) oldScrollBtn.remove();
-        if (oldToggleBtn) oldToggleBtn.remove();
+        // Charger les commentaires
+        loadPhotoComments(photoId);
         
-        // S'assurer que le formulaire est visible
-        const commentForm = document.getElementById('commentForm');
-        if (commentForm) {
-            commentForm.style.display = 'block';
-            commentForm.style.visibility = 'visible';
-            commentForm.style.opacity = '1';
-            
-            const commentAuthor = document.getElementById('commentAuthor');
-            if (commentAuthor && localStorage.getItem('commenterName')) {
-                commentAuthor.value = localStorage.getItem('commenterName');
-            }
-        }
-        
-        // Créer UN SEUL bouton "Voir les commentaires"
-        const buttonContainer = document.querySelector('.button-container');
-        if (buttonContainer && !document.getElementById('scrollToCommentsBtn')) {
-            const scrollBtn = document.createElement('button');
-            scrollBtn.id = 'scrollToCommentsBtn';
-            scrollBtn.className = 'scroll-to-comments-btn';
-            scrollBtn.innerHTML = '<i class="material-icons">expand_more</i> Voir les commentaires';
-            
-            // Événement de clic AMÉLIORÉ
-            scrollBtn.onclick = function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Scroll vers commentaires - version améliorée');
+        // === CORRECTIONS MOBILE COMPLÈTES ===
+        if (window.innerWidth <= 768) {
+            setTimeout(() => {
+                // Nettoyer TOUS les anciens boutons
+                const oldScrollBtn = document.getElementById('scrollToCommentsBtn');
+                const oldToggleBtn = document.getElementById('commentsToggleBtn');
+                if (oldScrollBtn) oldScrollBtn.remove();
+                if (oldToggleBtn) oldToggleBtn.remove();
                 
-                // Trouver la section commentaires
-                const commentsSection = document.querySelector('.photo-comments');
-                const photoDetailView = document.querySelector('.photo-detail-view');
-                
-                if (commentsSection && photoDetailView) {
-                    // Calculer la position de scroll nécessaire
-                    const rect = commentsSection.getBoundingClientRect();
-                    const containerRect = photoDetailView.getBoundingClientRect();
+                // S'assurer que le formulaire est visible
+                const commentForm = document.getElementById('commentForm');
+                if (commentForm) {
+                    commentForm.style.display = 'block';
+                    commentForm.style.visibility = 'visible';
+                    commentForm.style.opacity = '1';
                     
-                    // Scroll vers la section commentaires
-                    photoDetailView.scrollTo({
-                        top: photoDetailView.scrollTop + rect.top - containerRect.top - 80,
-                        behavior: 'smooth'
-                    });
-                    
-                    // Changer le texte du bouton temporairement
-                    scrollBtn.innerHTML = '<i class="material-icons">check</i> Commentaires visibles';
-                    setTimeout(() => {
-                        scrollBtn.innerHTML = '<i class="material-icons">expand_more</i> Voir les commentaires';
-                    }, 2000);
-                } else {
-                    console.error('Section commentaires non trouvée');
-                    alert('Section commentaires non trouvée');
+                    const commentAuthor = document.getElementById('commentAuthor');
+                    if (commentAuthor && localStorage.getItem('commenterName')) {
+                        commentAuthor.value = localStorage.getItem('commenterName');
+                    }
                 }
-            };
-            
-            buttonContainer.appendChild(scrollBtn);
-            console.log('Bouton "Voir les commentaires" créé avec scroll amélioré');
+                
+                // 1. CORRIGER LA CROIX DE FERMETURE
+                const closeBtn = document.getElementById('closePhotoView');
+                if (closeBtn) {
+                    closeBtn.onclick = null;
+                    closeBtn.removeEventListener('click', closePhotoViewModal);
+                    
+                    closeBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('Clic croix fermeture (mobile)');
+                        closePhotoViewModal();
+                    }, { passive: false });
+                    
+                    closeBtn.addEventListener('touchend', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('Touch croix fermeture (mobile)');
+                        closePhotoViewModal();
+                    }, { passive: false });
+                    
+                    console.log('Croix de fermeture corrigée');
+                }
+                
+                // 2. CORRIGER LE BOUTON "OUVRIR L'IMAGE"
+                const openInNewTabBtn = document.getElementById('openInNewTab');
+                if (openInNewTabBtn) {
+                    openInNewTabBtn.onclick = null;
+                    
+                    openInNewTabBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('Clic ouvrir image (mobile)');
+                        
+                        if (photo && photo.image_url) {
+                            window.open(photo.image_url, '_blank');
+                            console.log('Image ouverte:', photo.image_url);
+                        } else {
+                            console.error('URL image non disponible');
+                            alert('Impossible d\'ouvrir l\'image');
+                        }
+                    }, { passive: false });
+                    
+                    openInNewTabBtn.addEventListener('touchend', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (photo && photo.image_url) {
+                            window.open(photo.image_url, '_blank');
+                        }
+                    }, { passive: false });
+                    
+                    console.log('Bouton "Ouvrir image" corrigé');
+                }
+                
+                // 3. CRÉER LE BOUTON "VOIR LES COMMENTAIRES"
+                const buttonContainer = document.querySelector('.button-container');
+                if (buttonContainer && !document.getElementById('scrollToCommentsBtn')) {
+                    const scrollBtn = document.createElement('button');
+                    scrollBtn.id = 'scrollToCommentsBtn';
+                    scrollBtn.className = 'scroll-to-comments-btn';
+                    scrollBtn.innerHTML = '<i class="material-icons">expand_more</i> Voir les commentaires';
+                    
+                    scrollBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('Scroll vers commentaires');
+                        
+                        const commentsSection = document.querySelector('.photo-comments');
+                        const photoDetailView = document.querySelector('.photo-detail-view');
+                        
+                        if (commentsSection && photoDetailView) {
+                            const rect = commentsSection.getBoundingClientRect();
+                            const containerRect = photoDetailView.getBoundingClientRect();
+                            
+                            photoDetailView.scrollTo({
+                                top: photoDetailView.scrollTop + rect.top - containerRect.top - 80,
+                                behavior: 'smooth'
+                            });
+                            
+                            scrollBtn.innerHTML = '<i class="material-icons">check</i> Commentaires visibles';
+                            setTimeout(() => {
+                                scrollBtn.innerHTML = '<i class="material-icons">expand_more</i> Voir les commentaires';
+                            }, 2000);
+                        } else {
+                            console.error('Section commentaires non trouvée');
+                        }
+                    }, { passive: false });
+                    
+                    scrollBtn.addEventListener('touchend', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        // Même logique que le clic
+                        scrollBtn.click();
+                    }, { passive: false });
+                    
+                    buttonContainer.appendChild(scrollBtn);
+                    console.log('Bouton "Voir commentaires" créé et corrigé');
+                }
+            }, 500);
         }
-    }, 500);
-}
-
-} catch (error) {
-    console.error('Erreur chargement détails:', error);
-    alert('Impossible de charger les détails de la photo');
-}
+        
+    } catch (error) {
+        console.error('Erreur chargement détails:', error);
+        alert('Impossible de charger les détails de la photo');
+    }
 }
 
 // PARTIE 4/5 - CHARGEMENT PHOTOS ET OPTIMISATIONS MOBILE
