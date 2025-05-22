@@ -144,40 +144,85 @@ function initCameraCapture() {
             input.setAttribute('capture', 'environment');
         }
         
-        input.addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            if (!file.type.match('image.*')) {
-                alert('Veuillez sélectionner une image');
-                input.remove();
-                return;
+        // CORRECTION DE LA PRISE DE PHOTO
+// Dans initCameraCapture(), remplacez le gestionnaire d'événements par :
+
+input.addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    console.log('Fichier sélectionné:', file);
+    
+    if (!file) {
+        console.log('Aucun fichier sélectionné');
+        return;
+    }
+    
+    if (!file.type.match('image.*')) {
+        alert('Veuillez sélectionner une image');
+        input.remove();
+        return;
+    }
+    
+    console.log('Traitement de l\'image:', file.name, file.size);
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        console.log('Image lue avec succès');
+        
+        // COPIER LE FICHIER DANS L'INPUT PRINCIPAL IMMÉDIATEMENT
+        const mainPhotoInput = document.getElementById('photoInput');
+        if (mainPhotoInput) {
+            try {
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                mainPhotoInput.files = dataTransfer.files;
+                console.log('Fichier copié dans l\'input principal');
+            } catch (error) {
+                console.error('Erreur copie fichier:', error);
+                // Fallback : déclencher directement l'événement change
+                const event = new Event('change', { bubbles: true });
+                Object.defineProperty(event, 'target', {
+                    writable: false,
+                    value: { files: [file] }
+                });
+                mainPhotoInput.dispatchEvent(event);
             }
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const mainPhotoInput = document.getElementById('photoInput');
-                if (mainPhotoInput) {
-                    const dataTransfer = new DataTransfer();
-                    dataTransfer.items.add(file);
-                    mainPhotoInput.files = dataTransfer.files;
-                }
-                
-                photoPreview.innerHTML = '';
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                img.alt = "Prévisualisation";
-                photoPreview.appendChild(img);
-                
-                const sourceIndicator = document.createElement('div');
-                sourceIndicator.style.cssText = 'position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 5px 10px; border-radius: 20px; font-size: 12px;';
-                sourceIndicator.innerText = useCamera ? '📷 Appareil photo' : '🖼️ Galerie';
-                photoPreview.appendChild(sourceIndicator);
-                
-                input.remove();
-            };
-            reader.readAsDataURL(file);
-        });
+        }
+        
+        // Afficher la prévisualisation IMMÉDIATEMENT
+        photoPreview.innerHTML = '';
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.alt = "Prévisualisation";
+        img.style.maxWidth = '100%';
+        img.style.maxHeight = '200px';
+        img.style.objectFit = 'contain';
+        photoPreview.appendChild(img);
+        
+        // Ajouter une indication de source
+        const sourceIndicator = document.createElement('div');
+        sourceIndicator.style.cssText = 'position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; z-index: 10;';
+        sourceIndicator.innerText = useCamera ? '📷 Photo prise' : '🖼️ Image sélectionnée';
+        photoPreview.style.position = 'relative';
+        photoPreview.appendChild(sourceIndicator);
+        
+        console.log('Prévisualisation affichée');
+        
+        // Supprimer l'input temporaire APRÈS traitement complet
+        setTimeout(() => {
+            input.remove();
+            console.log('Input temporaire supprimé');
+        }, 100);
+    };
+    
+    reader.onerror = function(error) {
+        console.error('Erreur lecture fichier:', error);
+        alert('Erreur lors de la lecture de l\'image');
+        input.remove();
+    };
+    
+    // Lire le fichier
+    reader.readAsDataURL(file);
+});
         
         return input;
     }
@@ -572,87 +617,43 @@ if (buttonContainer && !document.getElementById('scrollToCommentsBtn')) {
     scrollBtn.id = 'scrollToCommentsBtn';
     scrollBtn.className = 'scroll-to-comments-btn';
     scrollBtn.innerHTML = '<i class="material-icons">expand_more</i> Voir les commentaires';
-    
-    // CORRECTION FINALE DU BOUTON "VOIR LES COMMENTAIRES"
-// À remplacer dans openPhotoView()
+
+
+// BOUTON "VOIR LES COMMENTAIRES" - VERSION SIMPLE
 
 scrollBtn.addEventListener('click', function(e) {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Clic sur bouton "Voir les commentaires"');
+    console.log('Clic bouton commentaires - version simple');
     
-    // Essayer différentes approches pour trouver les commentaires
-    let targetElement = null;
-    
-    // 1. Essayer de trouver le container de commentaires
-    targetElement = document.getElementById('commentsContainer');
-    
-    if (!targetElement) {
-        // 2. Essayer de trouver la section commentaires
-        targetElement = document.querySelector('.photo-comments');
-    }
-    
-    if (!targetElement) {
-        // 3. Essayer de trouver le titre "Commentaires"
-        targetElement = document.querySelector('.photo-comments h3');
-    }
-    
-    if (targetElement) {
-        console.log('Élément trouvé pour le scroll:', targetElement);
+    // Scroll simple vers le bas de la page
+    const photoDetailView = document.querySelector('.photo-detail-view');
+    if (photoDetailView) {
+        // Calculer la position pour voir les commentaires
+        const scrollPosition = photoDetailView.scrollHeight - photoDetailView.clientHeight + 50;
         
-        // Scroll vers l'élément trouvé
-        targetElement.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-            inline: 'nearest'
+        photoDetailView.scrollTo({
+            top: scrollPosition,
+            behavior: 'smooth'
         });
         
-        // Feedback visuel
-        scrollBtn.innerHTML = '<i class="material-icons">check</i> Commentaires visibles !';
-        scrollBtn.style.background = '#28a745';
+        console.log('Scroll vers position:', scrollPosition);
         
-        // Alternative : scroll manuel si scrollIntoView ne fonctionne pas
-        setTimeout(() => {
-            const photoDetailView = document.querySelector('.photo-detail-view');
-            if (photoDetailView) {
-                const rect = targetElement.getBoundingClientRect();
-                const containerRect = photoDetailView.getBoundingClientRect();
-                
-                if (rect.top > containerRect.bottom || rect.bottom < containerRect.top) {
-                    // L'élément n'est pas visible, forcer le scroll manuel
-                    photoDetailView.scrollTo({
-                        top: photoDetailView.scrollTop + rect.top - containerRect.top - 100,
-                        behavior: 'smooth'
-                    });
-                    console.log('Scroll manuel appliqué');
-                }
-            }
-        }, 100);
+        // Feedback visuel
+        scrollBtn.innerHTML = '<i class="material-icons">check</i> Commentaires !';
+        scrollBtn.style.background = '#28a745';
         
         setTimeout(() => {
             scrollBtn.innerHTML = '<i class="material-icons">expand_more</i> Voir les commentaires';
             scrollBtn.style.background = '#FF6B35';
-        }, 2000);
-        
+        }, 1500);
     } else {
-        console.error('Aucun élément commentaire trouvé');
-        
-        // Dernière tentative : scroll tout en bas
-        const photoDetailView = document.querySelector('.photo-detail-view');
-        if (photoDetailView) {
-            photoDetailView.scrollTo({
-                top: photoDetailView.scrollHeight,
-                behavior: 'smooth'
-            });
-            console.log('Scroll vers le bas appliqué');
-            
-            scrollBtn.innerHTML = '<i class="material-icons">arrow_downward</i> Scrollé vers le bas';
-            setTimeout(() => {
-                scrollBtn.innerHTML = '<i class="material-icons">expand_more</i> Voir les commentaires';
-            }, 2000);
-        } else {
-            alert('Impossible de trouver la section commentaires. Scrollez manuellement vers le bas.');
-        }
+        console.error('Container de scroll non trouvé');
+        // Essayer de scroller la fenêtre entière
+        window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: 'smooth'
+        });
     }
 }, { passive: false });
     

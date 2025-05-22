@@ -1311,25 +1311,28 @@ body.modal-open {
 
 /* 3. CONTENU AVEC SCROLL ET ESPACEMENT CORRIGÉ */
 @media (max-width: 768px) {
+    /* 1. RÉDUIRE L'ESPACE EN HAUT - Image plus compacte */
     .photo-view-modal .photo-detail-view {
         flex: 1 !important;
         overflow-y: auto !important;
         -webkit-overflow-scrolling: touch !important;
-        padding: 70px 15px 0 15px !important; /* Espace pour header fixe */
+        padding: 10px !important; /* Réduit */
         margin: 0 !important;
+        padding-bottom: 120px !important; /* Espace pour formulaire */
     }
     
     .photo-view-modal .photo-detail-view img {
         width: 100% !important;
-        max-height: 250px !important;
+        max-height: 200px !important; /* Plus petit */
         object-fit: contain !important;
-        border-radius: 8px !important;
+        border-radius: 6px !important;
         margin-bottom: 15px !important;
     }
     
+    /* 2. MÉTADONNÉES PLUS COMPACTES */
     .photo-view-modal .photo-info {
-        padding: 15px 0 !important;
-        margin-bottom: 15px !important;
+        padding: 8px 0 !important;
+        margin-bottom: 10px !important;
     }
     
     .photo-view-modal .button-container {
@@ -1445,33 +1448,33 @@ body.modal-open {
     .photo-view-modal #commentAuthor,
     .photo-view-modal #commentText {
         width: 100% !important;
-        padding: 8px !important;
-        margin-bottom: 6px !important;
-        border: 1px solid #ddd !important;
-        border-radius: 6px !important;
-        font-size: 14px !important;
+        padding: 6px !important;
+        margin-bottom: 4px !important;
+        border: 1px solid #ccc !important;
+        border-radius: 4px !important;
+        font-size: 12px !important;
         background: white !important;
         color: #333 !important;
         box-sizing: border-box !important;
     }
     
     .photo-view-modal #commentText {
-        min-height: 40px !important;
-        max-height: 50px !important;
+        min-height: 30px !important;
+        max-height: 35px !important;
         resize: none !important;
     }
     
     .photo-view-modal #commentForm button {
         width: 100% !important;
-        padding: 8px !important;
+        padding: 6px !important;
         background: var(--primary-color) !important;
         color: white !important;
         border: none !important;
-        border-radius: 6px !important;
-        font-size: 14px !important;
+        border-radius: 4px !important;
+        font-size: 12px !important;
         font-weight: bold !important;
         cursor: pointer !important;
-        margin-top: 3px !important;
+        margin-top: 2px !important;
     }
     
     /* 6. MESSAGE "AUCUN COMMENTAIRE" */
@@ -1505,14 +1508,12 @@ body.modal-open {
 
 /* 8. AMÉLIORATION DE LA MÉTADONNÉE */
 @media (max-width: 768px) {
-    .photo-view-modal .photo-metadata {
+     .photo-view-modal .photo-metadata {
         background: #f8f9fa !important;
-        border-radius: 8px !important;
-        padding: 12px !important;
-        margin: 15px 0 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 8px !important;
+        border-radius: 6px !important;
+        padding: 8px !important;
+        margin: 10px 0 !important;
+        font-size: 12px !important;
     }
     
     .photo-view-modal .photo-metadata span {
@@ -1787,10 +1788,10 @@ body.modal-open {
     .comment {
         background: #f8f9fa !important;
         border: 1px solid #e9ecef !important;
-        border-radius: 12px !important;
-        padding: 15px !important;
-        margin-bottom: 12px !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+        border-radius: 6px !important;
+        padding: 8px !important;
+        margin-bottom: 8px !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
     }
     
     .comment-header {
@@ -1801,20 +1802,17 @@ body.modal-open {
     }
     
     .comment-author {
-        font-weight: bold !important;
-        color: var(--primary-color) !important;
-        font-size: 15px !important;
+        font-size: 12px !important;
     }
     
     .comment-date {
-        font-size: 13px !important;
-        color: #6c757d !important;
+        font-size: 11px !important;
     }
     
     .comment-text {
-        color: #333 !important;
-        line-height: 1.5 !important;
-        font-size: 15px !important;
+        font-size: 13px !important;
+        line-height: 1.3 !important;
+        margin-top: 4px !important;
     }
 }
 
@@ -1886,6 +1884,14 @@ body.modal-open {
         z-index: 9999 !important;
     }
     
+	.photo-view-modal .open-image-btn,
+    .scroll-to-comments-btn {
+        padding: 10px 15px !important;
+        margin: 8px 0 !important;
+        font-size: 14px !important;
+        border-radius: 8px !important;
+    }
+	
     .photo-view-modal .modal-content {
         width: 100% !important;
         height: 100vh !important;
@@ -2029,22 +2035,24 @@ body.modal-open {
     
     /* SECTION COMMENTAIRES */
     .photo-view-modal .photo-comments {
-        background: white !important;
-        margin: 20px -15px 0 -15px !important;
-        padding: 20px 15px 130px 15px !important;
-        border-radius: 15px 15px 0 0 !important;
-        border-top: 3px solid var(--primary-color) !important;
+        background: transparent !important;
+        margin: 15px -10px 0 -10px !important;
+        padding: 0 !important;
+        border: none !important;
         position: relative !important;
     }
     
+    /* 5. TITRE "COMMENTAIRES" - BIEN VISIBLE */
     .photo-view-modal .photo-comments h3 {
-        color: var(--primary-color) !important;
-        font-size: 20px !important;
-        margin: 0 0 20px 0 !important;
+        color: white !important;
+        background: var(--primary-color) !important;
+        font-size: 16px !important;
+        margin: 0 !important;
         font-weight: bold !important;
         text-align: center !important;
-        padding-bottom: 15px !important;
-        border-bottom: 2px solid #f0f0f0 !important;
+        padding: 12px !important;
+        border-radius: 8px 8px 0 0 !important;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important;
     }
     
     /* FORMULAIRE FIXE */
@@ -2161,13 +2169,13 @@ body.modal-open {
     
     /* CONTAINER DE COMMENTAIRES */
     #commentsContainer {
-        max-height: 250px !important;
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-        background: transparent !important;
-        border: none !important;
-        padding: 0 !important;
-        margin-bottom: 25px !important;
+        background: white !important;
+        padding: 15px !important;
+        margin: 0 !important;
+        border-radius: 0 0 8px 8px !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+        /* Espace pour formulaire */
+        padding-bottom: 30px !important;
     }
 }
 
@@ -2211,13 +2219,10 @@ body.modal-open {
     
     /* 3. CONTAINER BOUTONS TOUJOURS VISIBLE */
     .photo-view-modal .button-container {
-        margin: 20px 0 !important;
-        padding: 0 !important;
-        text-align: center !important;
+        margin: 15px 0 !important;
+        padding: 10px !important;
         background: rgba(255,255,255,0.9) !important;
-        border-radius: 12px !important;
-        padding: 15px !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+        border-radius: 8px !important;
     }
     
     /* 4. SECTION COMMENTAIRES AVEC SCROLL SÉPARÉ */
@@ -2265,15 +2270,17 @@ body.modal-open {
         left: 0 !important;
         right: 0 !important;
         background: white !important;
-        padding: 15px !important;
+        padding: 8px 12px !important;
         margin: 0 !important;
         border-radius: 0 !important;
-        box-shadow: 0 -3px 15px rgba(0,0,0,0.3) !important;
-        border-top: 3px solid var(--primary-color) !important;
-        z-index: 9999 !important;
-        display: block !important;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.3) !important;
+        border-top: 2px solid var(--primary-color) !important;
+        z-index: 10000 !important;
+        display: flex !important;
+        flex-direction: column !important;
         visibility: visible !important;
         opacity: 1 !important;
+        max-height: 100px !important;
     }
     
     /* 7. ESPACE POUR ÉVITER QUE LE FORMULAIRE CACHE LE CONTENU */
