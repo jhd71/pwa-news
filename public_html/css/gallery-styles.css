@@ -131,8 +131,12 @@ button.open-image-btn:hover,
 
 /* Ajustement de la hauteur du contenu */
 .photo-detail-view {
-    max-height: none; /* Supprime la limitation de hauteur */
-    overflow: visible; /* Permet au contenu de dépasser */
+    flex: 1 !important;
+    overflow: visible !important;
+    padding: 20px !important;
+    /* CORRECTION : Éliminer l'espace en bas */
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
 }
 
 .modal-header {
@@ -144,10 +148,14 @@ button.open-image-btn:hover,
 
 /* Style spécifique pour la section commentaires */
 .photo-comments {
-    padding: 20px;
-    margin-top: 10px;
-    max-height: none; /* Supprime la limitation de hauteur */
-    overflow: visible; /* Permet le défilement du contenu */
+    background: rgba(255, 255, 255, 0.95) !important;
+    margin-top: 20px !important;
+    padding: 25px !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    /* CORRECTION : Éliminer l'espace en bas */
+    margin-bottom: 0 !important;
+    padding-bottom: 30px !important;
 }
 
 /* Amélioration du formulaire de commentaire */
@@ -194,98 +202,131 @@ button.open-image-btn:hover,
     color: white !important;
 }
 
-/* Améliorations spécifiques pour mobile */
+[data-theme="bleuciel"] #commentForm {
+    background: white !important;
+}
+
+[data-theme="dark"] #commentAuthor,
+[data-theme="dark"] #commentText,
+[data-theme="rouge"] #commentAuthor,
+[data-theme="rouge"] #commentText,
+[data-theme="bleuciel"] #commentAuthor,
+[data-theme="bleuciel"] #commentText {
+    background: white !important;
+    color: black !important;
+}
+
+/* 4. CORRECTIONS SPÉCIFIQUES MOBILE */
 @media (max-width: 768px) {
-    /* Correction du défilement sur mobile */
+    /* En-tête mobile plus compact */
+    .photo-view-modal .modal-header {
+        padding: 10px 15px !important;
+        min-height: 50px !important;
+        max-height: 50px !important;
+    }
+    
+    .photo-view-modal .modal-header h2 {
+        font-size: 16px !important;
+        margin: 0 !important;
+        line-height: 1.2 !important;
+    }
+    
+    /* Boutons plus petits sur mobile */
+    .photo-view-modal .close-modal,
+    .photo-view-modal .back-button {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 18px !important;
+    }
+    
+    /* Éliminer complètement l'espace en bas sur mobile */
     .photo-view-modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        padding: 0; /* Réduire le padding sur mobile */
-        -webkit-overflow-scrolling: touch; /* Améliorer le défilement sur iOS */
-        overscroll-behavior: contain; /* Éviter le défilement propagé */
-        height: 100%; /* Forcer la hauteur à 100% */
-        display: flex; /* Utiliser flexbox pour centrer */
-        align-items: center; /* Centrer verticalement */
-        justify-content: center; /* Centrer horizontalement */
+        height: 100vh !important;
+        overflow: hidden !important;
     }
     
     .photo-view-modal .modal-content {
-        width: 100%; /* Pleine largeur sur mobile */
-        max-width: 100%;
-        height: 100%; /* Pleine hauteur */
-        max-height: 100%;
-        margin: 0; /* Pas de marge */
-        border-radius: 0; /* Pas d'arrondi sur mobile */
-        overflow: auto; /* Activer le défilement dans le contenu */
-        display: flex;
-        flex-direction: column;
+        height: 100vh !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
     }
     
-    /* Rendre l'en-tête fixe */
-    .photo-view-modal .modal-header {
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        width: 100%;
-        padding: 10px 15px;
+    /* Zone de commentaires optimisée pour mobile */
+    .photo-comments {
+        padding: 15px !important;
+        margin: 15px 0 0 0 !important;
+        border-radius: 12px !important;
     }
     
-    /* Rendre le contenu défilable */
-    .photo-view-modal .photo-detail-view {
-        flex: 1;
-        overflow-y: auto;
-        padding: 10px 15px;
+    /* Formulaire de commentaires fixe en bas sur mobile */
+    #commentForm {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        background: white !important;
+        padding: 15px !important;
+        box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.2) !important;
+        z-index: 1050 !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        transform: translateY(0) !important;
+        transition: transform 0.3s ease !important;
     }
     
-    /* Ajuster les commentaires pour qu'ils soient défilables */
-    .photo-view-modal .photo-comments {
-        flex: 1;
-        overflow-y: auto;
-        padding: 10px 15px;
-        padding-bottom: 30px; /* Espace supplémentaire en bas */
+    /* Quand le clavier est ouvert, le formulaire reste visible */
+    #commentForm.keyboard-open {
+        transform: translateY(0) !important;
+        position: fixed !important;
+        bottom: 0 !important;
     }
     
-    /* Rendre le formulaire de commentaire plus visible */
-    .photo-view-modal #commentForm {
-        position: relative;
-        padding: 15px;
-        margin-top: 20px;
-        margin-bottom: 60px; /* Espace important en bas sur mobile */
-        background-color: rgba(0, 0, 0, 0.05);
-        border-radius: 8px;
-        border: 1px solid var(--border-color);
+    /* Espace pour le formulaire fixe */
+    .photo-comments {
+        padding-bottom: 120px !important;
     }
     
-    /* Ajuster la taille des champs */
-    .photo-view-modal #commentForm input,
-    .photo-view-modal #commentForm textarea {
-        font-size: 14px; /* Éviter le zoom iOS sur focus */
-        padding: 12px;
+    /* Champs de formulaire mobile */
+    #commentAuthor, 
+    #commentText {
+        width: 100% !important;
+        padding: 12px !important;
+        margin-bottom: 10px !important;
+        border: 2px solid #e0e0e0 !important;
+        border-radius: 8px !important;
+        font-size: 16px !important;
+        background: white !important;
+        color: black !important;
+        box-sizing: border-box !important;
     }
     
-    .photo-view-modal #commentForm button {
-        height: 44px; /* Hauteur minimale pour touch */
-        font-size: 16px;
-        margin-bottom: 20px;
+    #commentText {
+        min-height: 60px !important;
+        max-height: 80px !important;
+        resize: none !important;
     }
     
-    /* Style du bouton "Ouvrir dans un nouvel onglet" pour mobile */
-    .photo-view-modal .open-image-btn,
-    .photo-view-modal #openInNewTab {
-        width: 100%;
-        margin: 15px 0;
-        font-size: 16px;
-        height: 50px;
+    /* Bouton envoyer mobile */
+    #commentForm button {
+        width: 100% !important;
+        padding: 12px !important;
+        font-size: 16px !important;
+        margin-top: 5px !important;
+        border-radius: 8px !important;
     }
-    
-    /* Ajustement de la hauteur de l'image */
-    .photo-view-modal #modalPhotoImg {
-        max-height: 200px; /* Réduire la hauteur de l'image sur mobile */
-        object-fit: contain;
-    }
+}
+
+/* 5. CORRECTION POUR EMPÊCHER LES CLICS DANS L'ESPACE VIDE */
+.photo-view-modal::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: -1;
+    pointer-events: none;
 }
 
 /* Force l'affichage du formulaire dans tous les cas */
@@ -297,9 +338,10 @@ button.open-image-btn:hover,
 
 /* Hack pour iOS Safari */
 body.modal-open {
-    position: fixed;
-    width: 100%;
-    height: 100%;
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100% !important;
 }
 
 /* Détection de la plateforme pour iOS */
@@ -925,27 +967,14 @@ body.modal-open {
     padding: 20px;
 }
 
-/* Style amélioré pour le contenu de la modal photo */
+/* 6. CORRECTION POUR LE Z-INDEX DES ÉLÉMENTS */
 .photo-view-modal .modal-content {
-    background: var(--card-bg);
-    color: var(--text-color);
-    border-radius: 15px;
-    overflow: hidden;
-    max-width: 800px;
-    width: 95%;
-    margin: 20px auto;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     position: relative;
+    z-index: 10;
 }
 
-/* En-tête de la modal photo */
 .photo-view-modal .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    background: var(--primary-color);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 15;
 }
 
 .photo-view-modal .modal-header h2 {
@@ -1373,203 +1402,4 @@ html, body {
         width: 100%;
         margin-bottom: 10px;
     }
-}
-
-/* ============================================== */
-/* CORRECTIONS POUR LA GALERIE MOBILE */
-/* ============================================== */
-
-/* 1. CORRECTION DE LA HAUTEUR DE L'EN-TÊTE */
-.photo-view-modal .modal-header {
-    background: linear-gradient(135deg, var(--primary-color), var(--accent-color)) !important;
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 20 !important;
-    /* CORRECTION : Réduire le padding pour diminuer la hauteur */
-    padding: 15px 10px !important; /* Au lieu de 56px */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
-    /* Hauteur fixe pour éviter les variations */
-    min-height: 60px !important;
-    max-height: 60px !important;
-}
-
-/* 2. CORRECTION DE L'ESPACE VIDE EN BAS */
-.photo-view-modal .modal-content {
-    min-height: 100vh !important;
-    height: auto !important;
-    overflow: visible !important;
-    display: flex !important;
-    flex-direction: column !important;
-    /* CORRECTION : Éliminer l'espace en bas */
-    padding-bottom: 0 !important;
-    margin-bottom: 0 !important;
-}
-
-.photo-detail-view {
-    flex: 1 !important;
-    overflow: visible !important;
-    padding: 20px !important;
-    /* CORRECTION : Éliminer l'espace en bas */
-    padding-bottom: 0 !important;
-    margin-bottom: 0 !important;
-}
-
-/* 3. CORRECTION DU PROBLÈME DE CLAVIER MOBILE */
-.photo-comments {
-    background: rgba(255, 255, 255, 0.95) !important;
-    margin-top: 20px !important;
-    padding: 25px !important;
-    border-radius: 16px !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
-    /* CORRECTION : Éliminer l'espace en bas */
-    margin-bottom: 0 !important;
-    padding-bottom: 30px !important;
-}
-
-/* 4. CORRECTIONS SPÉCIFIQUES MOBILE */
-@media (max-width: 768px) {
-    /* En-tête mobile plus compact */
-    .photo-view-modal .modal-header {
-        padding: 10px 15px !important;
-        min-height: 50px !important;
-        max-height: 50px !important;
-    }
-    
-    .photo-view-modal .modal-header h2 {
-        font-size: 16px !important;
-        margin: 0 !important;
-        line-height: 1.2 !important;
-    }
-    
-    /* Boutons plus petits sur mobile */
-    .photo-view-modal .close-modal,
-    .photo-view-modal .back-button {
-        width: 36px !important;
-        height: 36px !important;
-        font-size: 18px !important;
-    }
-    
-    /* Éliminer complètement l'espace en bas sur mobile */
-    .photo-view-modal {
-        height: 100vh !important;
-        overflow: hidden !important;
-    }
-    
-    .photo-view-modal .modal-content {
-        height: 100vh !important;
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-    }
-    
-    /* Zone de commentaires optimisée pour mobile */
-    .photo-comments {
-        padding: 15px !important;
-        margin: 15px 0 0 0 !important;
-        border-radius: 12px !important;
-    }
-    
-    /* Formulaire de commentaires fixe en bas sur mobile */
-    #commentForm {
-        position: fixed !important;
-        bottom: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        background: white !important;
-        padding: 15px !important;
-        box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.2) !important;
-        z-index: 1050 !important;
-        border-radius: 0 !important;
-        margin: 0 !important;
-        transform: translateY(0) !important;
-        transition: transform 0.3s ease !important;
-    }
-    
-    /* Quand le clavier est ouvert, le formulaire reste visible */
-    #commentForm.keyboard-open {
-        transform: translateY(0) !important;
-        position: fixed !important;
-        bottom: 0 !important;
-    }
-    
-    /* Espace pour le formulaire fixe */
-    .photo-comments {
-        padding-bottom: 120px !important;
-    }
-    
-    /* Champs de formulaire mobile */
-    #commentAuthor, 
-    #commentText {
-        width: 100% !important;
-        padding: 12px !important;
-        margin-bottom: 10px !important;
-        border: 2px solid #e0e0e0 !important;
-        border-radius: 8px !important;
-        font-size: 16px !important;
-        background: white !important;
-        color: black !important;
-        box-sizing: border-box !important;
-    }
-    
-    #commentText {
-        min-height: 60px !important;
-        max-height: 80px !important;
-        resize: none !important;
-    }
-    
-    /* Bouton envoyer mobile */
-    #commentForm button {
-        width: 100% !important;
-        padding: 12px !important;
-        font-size: 16px !important;
-        margin-top: 5px !important;
-        border-radius: 8px !important;
-    }
-}
-
-/* 5. CORRECTION POUR EMPÊCHER LES CLICS DANS L'ESPACE VIDE */
-.photo-view-modal::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.9);
-    z-index: -1;
-    pointer-events: none;
-}
-
-/* 6. CORRECTION POUR LE Z-INDEX DES ÉLÉMENTS */
-.photo-view-modal .modal-content {
-    position: relative;
-    z-index: 10;
-}
-
-.photo-view-modal .modal-header {
-    z-index: 15;
-}
-
-/* 7. STYLES POUR LA CLASSE modal-open */
-body.modal-open {
-    overflow: hidden !important;
-    position: fixed !important;
-    width: 100% !important;
-    height: 100% !important;
-}
-
-/* 8. CORRECTION DES THÈMES POUR LES NOUVEAUX STYLES */
-[data-theme="dark"] #commentForm,
-[data-theme="rouge"] #commentForm,
-[data-theme="bleuciel"] #commentForm {
-    background: white !important;
-}
-
-[data-theme="dark"] #commentAuthor,
-[data-theme="dark"] #commentText,
-[data-theme="rouge"] #commentAuthor,
-[data-theme="rouge"] #commentText,
-[data-theme="bleuciel"] #commentAuthor,
-[data-theme="bleuciel"] #commentText {
-    background: white !important;
-    color: black !important;
 }
