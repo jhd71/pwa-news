@@ -486,48 +486,63 @@ async function openPhotoView(photoId) {
         }
         
         // Charger les commentaires
-        loadPhotoComments(photoId);
-        
-		if (window.innerWidth <= 768) {
+        // Charger les commentaires
+loadPhotoComments(photoId);
+
+// BLOC UNIFIÉ POUR MOBILE
+if (window.innerWidth <= 768) {
     setTimeout(() => {
+        // 1. S'assurer que le formulaire est visible
+        const commentForm = document.getElementById('commentForm');
+        if (commentForm) {
+            commentForm.style.display = 'block';
+            commentForm.style.visibility = 'visible';
+            commentForm.style.opacity = '1';
+            
+            const commentAuthor = document.getElementById('commentAuthor');
+            if (commentAuthor && localStorage.getItem('commenterName')) {
+                commentAuthor.value = localStorage.getItem('commenterName');
+            }
+        }
+        
+        // 2. Ajouter le bouton "Voir les commentaires" SEULEMENT s'il n'existe pas
         const photoDetailView = document.querySelector('.photo-detail-view');
         if (photoDetailView && !document.getElementById('scrollToCommentsBtn')) {
             const scrollBtn = document.createElement('button');
             scrollBtn.id = 'scrollToCommentsBtn';
             scrollBtn.className = 'scroll-to-comments-btn';
             scrollBtn.innerHTML = '<i class="material-icons">comment</i> Voir les commentaires';
-            scrollBtn.onclick = function() {
-                document.querySelector('.photo-comments').scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+            scrollBtn.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Clic sur "Voir les commentaires"');
+                
+                const commentsSection = document.querySelector('.photo-comments');
+                if (commentsSection) {
+                    commentsSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                } else {
+                    console.error('Section commentaires non trouvée');
+                }
             };
-            photoDetailView.appendChild(scrollBtn);
+            
+            // Insérer AVANT la section commentaires pour éviter les doublons
+            const commentsSection = document.querySelector('.photo-comments');
+            if (commentsSection) {
+                commentsSection.parentNode.insertBefore(scrollBtn, commentsSection);
+            } else {
+                photoDetailView.appendChild(scrollBtn);
+            }
         }
-    }, 500);
+    }, 400); // Un seul délai unifié
 }
 
-        // S'assurer que le formulaire est visible sur mobile
-        if (window.innerWidth <= 768) {
-            setTimeout(() => {
-                const commentForm = document.getElementById('commentForm');
-                if (commentForm) {
-                    commentForm.style.display = 'block';
-                    commentForm.style.visibility = 'visible';
-                    commentForm.style.opacity = '1';
-                    
-                    const commentAuthor = document.getElementById('commentAuthor');
-                    if (commentAuthor && localStorage.getItem('commenterName')) {
-                        commentAuthor.value = localStorage.getItem('commenterName');
-                    }
-                }
-            }, 300);
-        }
-        
-    } catch (error) {
-        console.error('Erreur chargement détails:', error);
-        alert('Impossible de charger les détails de la photo');
-    }
+} catch (error) {
+    console.error('Erreur chargement détails:', error);
+    alert('Impossible de charger les détails de la photo');
+}
 }
 
 // PARTIE 4/5 - CHARGEMENT PHOTOS ET OPTIMISATIONS MOBILE
