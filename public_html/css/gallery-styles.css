@@ -2156,3 +2156,150 @@ body.modal-open {
         margin-bottom: 25px !important;
     }
 }
+
+/* === CORRECTIONS LAYOUT MOBILE === */
+/* À AJOUTER à la fin de gallery-styles.css */
+
+@media (max-width: 768px) {
+    /* 1. IMAGE PLUS GRANDE SUR MOBILE */
+    .photo-view-modal .photo-detail-view img {
+        width: 100% !important;
+        max-height: 300px !important; /* Plus grande */
+        object-fit: contain !important;
+        border-radius: 8px !important;
+        margin-bottom: 20px !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2) !important;
+    }
+    
+    /* 2. INFORMATIONS PHOTO COMPACTES */
+    .photo-view-modal .photo-info {
+        padding: 10px 0 !important;
+        margin-bottom: 15px !important;
+    }
+    
+    .photo-view-modal .photo-metadata {
+        background: #f8f9fa !important;
+        border-radius: 8px !important;
+        padding: 12px !important;
+        margin: 15px 0 !important;
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 8px !important;
+        font-size: 14px !important;
+    }
+    
+    .photo-view-modal .photo-metadata span {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        color: #495057 !important;
+    }
+    
+    /* 3. CONTAINER BOUTONS TOUJOURS VISIBLE */
+    .photo-view-modal .button-container {
+        margin: 20px 0 !important;
+        padding: 0 !important;
+        text-align: center !important;
+        background: rgba(255,255,255,0.9) !important;
+        border-radius: 12px !important;
+        padding: 15px !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+    }
+    
+    /* 4. SECTION COMMENTAIRES AVEC SCROLL SÉPARÉ */
+    .photo-view-modal .photo-comments {
+        background: white !important;
+        margin: 20px -15px 0 -15px !important;
+        padding: 15px !important;
+        border-radius: 15px 15px 0 0 !important;
+        border-top: 3px solid var(--primary-color) !important;
+        position: relative !important;
+        max-height: 40vh !important; /* Limite la hauteur */
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    .photo-view-modal .photo-comments h3 {
+        color: var(--primary-color) !important;
+        font-size: 18px !important;
+        margin: 0 0 15px 0 !important;
+        font-weight: bold !important;
+        text-align: center !important;
+        padding-bottom: 10px !important;
+        border-bottom: 2px solid #f0f0f0 !important;
+        position: sticky !important;
+        top: 0 !important;
+        background: white !important;
+        z-index: 10 !important;
+    }
+    
+    /* 5. CONTAINER COMMENTAIRES SCROLLABLE */
+    #commentsContainer {
+        max-height: 25vh !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        margin-bottom: 15px !important;
+    }
+    
+    /* 6. FORMULAIRE COMMENTAIRE COLLÉ EN BAS */
+    .photo-view-modal #commentForm {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        background: white !important;
+        padding: 15px !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: 0 -3px 15px rgba(0,0,0,0.3) !important;
+        border-top: 3px solid var(--primary-color) !important;
+        z-index: 9999 !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* 7. ESPACE POUR ÉVITER QUE LE FORMULAIRE CACHE LE CONTENU */
+    .photo-view-modal .photo-comments::after {
+        content: '' !important;
+        display: block !important;
+        height: 140px !important; /* Espace pour le formulaire fixe */
+        width: 100% !important;
+    }
+    
+    /* 8. MEILLEUR SCROLL POUR LE CONTENU PRINCIPAL */
+    .photo-view-modal .photo-detail-view {
+        flex: 1 !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding: 15px !important;
+        margin: 0 !important;
+        padding-bottom: 160px !important; /* Espace pour formulaire */
+    }
+}
+
+/* === CORRECTIONS SPÉCIALES THÈME ROUGE === */
+[data-theme="rouge"] .photo-view-modal .photo-comments,
+[data-theme="rouge"] .photo-view-modal #commentForm {
+    background: rgba(138, 35, 32, 0.95) !important;
+}
+
+[data-theme="rouge"] .photo-view-modal .photo-comments h3 {
+    color: white !important;
+    background: rgba(138, 35, 32, 0.95) !important;
+}
+
+[data-theme="rouge"] .photo-view-modal #commentAuthor,
+[data-theme="rouge"] .photo-view-modal #commentText {
+    background: rgba(172, 41, 37, 0.9) !important;
+    color: white !important;
+    border-color: rgba(255,255,255,0.4) !important;
+}
+
+[data-theme="rouge"] .photo-view-modal #commentAuthor::placeholder,
+[data-theme="rouge"] .photo-view-modal #commentText::placeholder {
+    color: rgba(255,255,255,0.7) !important;
+}

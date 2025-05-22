@@ -522,27 +522,42 @@ if (window.innerWidth <= 768) {
             const scrollBtn = document.createElement('button');
             scrollBtn.id = 'scrollToCommentsBtn';
             scrollBtn.className = 'scroll-to-comments-btn';
-            scrollBtn.innerHTML = '<i class="material-icons">chat_bubble</i> Voir les commentaires';
+            scrollBtn.innerHTML = '<i class="material-icons">expand_more</i> Voir les commentaires';
             
-            // Événement de clic
+            // Événement de clic AMÉLIORÉ
             scrollBtn.onclick = function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('Clic sur "Voir les commentaires"');
+                console.log('Scroll vers commentaires - version améliorée');
                 
+                // Trouver la section commentaires
                 const commentsSection = document.querySelector('.photo-comments');
-                if (commentsSection) {
-                    commentsSection.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
+                const photoDetailView = document.querySelector('.photo-detail-view');
+                
+                if (commentsSection && photoDetailView) {
+                    // Calculer la position de scroll nécessaire
+                    const rect = commentsSection.getBoundingClientRect();
+                    const containerRect = photoDetailView.getBoundingClientRect();
+                    
+                    // Scroll vers la section commentaires
+                    photoDetailView.scrollTo({
+                        top: photoDetailView.scrollTop + rect.top - containerRect.top - 80,
+                        behavior: 'smooth'
                     });
+                    
+                    // Changer le texte du bouton temporairement
+                    scrollBtn.innerHTML = '<i class="material-icons">check</i> Commentaires visibles';
+                    setTimeout(() => {
+                        scrollBtn.innerHTML = '<i class="material-icons">expand_more</i> Voir les commentaires';
+                    }, 2000);
                 } else {
                     console.error('Section commentaires non trouvée');
+                    alert('Section commentaires non trouvée');
                 }
             };
             
             buttonContainer.appendChild(scrollBtn);
-            console.log('Bouton "Voir les commentaires" créé et ajouté');
+            console.log('Bouton "Voir les commentaires" créé avec scroll amélioré');
         }
     }, 500);
 }
