@@ -49,7 +49,7 @@ function closeUploadModal() {
 
 // VERSION AMÉLIORÉE - Fermer la vue détaillée
 function closePhotoViewModal() {
-    // NETTOYER TOUS LES BOUTONS CRÉÉS DYNAMIQUEMENT
+    // NETTOYER LES BOUTONS CRÉÉS DYNAMIQUEMENT
     const existingBtn = document.getElementById('scrollToCommentsBtn');
     if (existingBtn) {
         existingBtn.remove();
