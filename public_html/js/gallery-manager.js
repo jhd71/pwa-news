@@ -565,50 +565,73 @@ async function openPhotoView(photoId) {
                     console.log('Bouton "Ouvrir image" corrigé');
                 }
                 
-                // 3. CRÉER LE BOUTON "VOIR LES COMMENTAIRES"
-                const buttonContainer = document.querySelector('.button-container');
-                if (buttonContainer && !document.getElementById('scrollToCommentsBtn')) {
-                    const scrollBtn = document.createElement('button');
-                    scrollBtn.id = 'scrollToCommentsBtn';
-                    scrollBtn.className = 'scroll-to-comments-btn';
-                    scrollBtn.innerHTML = '<i class="material-icons">expand_more</i> Voir les commentaires';
-                    
-                    scrollBtn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        console.log('Scroll vers commentaires');
-                        
-                        const commentsSection = document.querySelector('.photo-comments');
-                        const photoDetailView = document.querySelector('.photo-detail-view');
-                        
-                        if (commentsSection && photoDetailView) {
-                            const rect = commentsSection.getBoundingClientRect();
-                            const containerRect = photoDetailView.getBoundingClientRect();
-                            
-                            photoDetailView.scrollTo({
-                                top: photoDetailView.scrollTop + rect.top - containerRect.top - 80,
-                                behavior: 'smooth'
-                            });
-                            
-                            scrollBtn.innerHTML = '<i class="material-icons">check</i> Commentaires visibles';
-                            setTimeout(() => {
-                                scrollBtn.innerHTML = '<i class="material-icons">expand_more</i> Voir les commentaires';
-                            }, 2000);
-                        } else {
-                            console.error('Section commentaires non trouvée');
-                        }
-                    }, { passive: false });
-                    
-                    scrollBtn.addEventListener('touchend', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        // Même logique que le clic
-                        scrollBtn.click();
-                    }, { passive: false });
-                    
-                    buttonContainer.appendChild(scrollBtn);
-                    console.log('Bouton "Voir commentaires" créé et corrigé');
-                }
+                // 3. CRÉER LE BOUTON "VOIR LES COMMENTAIRES" - VERSION CORRIGÉE
+const buttonContainer = document.querySelector('.button-container');
+if (buttonContainer && !document.getElementById('scrollToCommentsBtn')) {
+    const scrollBtn = document.createElement('button');
+    scrollBtn.id = 'scrollToCommentsBtn';
+    scrollBtn.className = 'scroll-to-comments-btn';
+    scrollBtn.innerHTML = '<i class="material-icons">expand_more</i> Voir les commentaires';
+    
+    scrollBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Tentative de scroll vers commentaires');
+        
+        // NOUVELLE APPROCHE - Scroll directement vers la section
+        const commentsSection = document.querySelector('.photo-comments');
+        
+        if (commentsSection) {
+            console.log('Section commentaires trouvée, scroll en cours...');
+            
+            // Scroll vers la section commentaires
+            commentsSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+                inline: 'nearest'
+            });
+            
+            // Feedback visuel
+            scrollBtn.innerHTML = '<i class="material-icons">check</i> Commentaires visibles !';
+            scrollBtn.style.background = '#28a745';
+            
+            setTimeout(() => {
+                scrollBtn.innerHTML = '<i class="material-icons">expand_more</i> Voir les commentaires';
+                scrollBtn.style.background = '#FF6B35';
+            }, 2000);
+            
+            console.log('Scroll vers commentaires exécuté');
+        } else {
+            console.error('Section .photo-comments non trouvée');
+            
+            // Alternative - essayer de trouver le titre "Commentaires"
+            const commentsTitle = document.querySelector('.photo-comments h3');
+            if (commentsTitle) {
+                console.log('Titre commentaires trouvé, scroll alternatif...');
+                commentsTitle.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            } else {
+                alert('Section commentaires non trouvée. Scrollez manuellement vers le bas.');
+            }
+        }
+    }, { passive: false });
+    
+    // Ajouter aussi l'événement touch pour mobile
+    scrollBtn.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Touch sur bouton commentaires');
+        // Déclencher le même comportement que le clic
+        setTimeout(() => {
+            scrollBtn.click();
+        }, 50);
+    }, { passive: false });
+    
+    buttonContainer.appendChild(scrollBtn);
+    console.log('Bouton "Voir commentaires" créé avec scroll corrigé');
+}
             }, 500);
         }
         

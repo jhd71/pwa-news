@@ -1346,15 +1346,23 @@ body.modal-open {
     }
 }
 
-/* 4. SECTION COMMENTAIRES OPTIMISÉE */
+/* === CORRECTION AFFICHAGE COMMENTAIRES MOBILE === */
+/* Remplacement des règles commentaires dans gallery-styles.css */
+
 @media (max-width: 768px) {
+    /* 1. SECTION COMMENTAIRES - NOUVELLE APPROCHE */
     .photo-view-modal .photo-comments {
         background: white !important;
-        margin: 20px 0 0 0 !important;
-        padding: 20px 15px 120px 15px !important; /* Espace pour formulaire fixe */
+        margin: 20px -15px 0 -15px !important;
+        padding: 15px !important;
         border-radius: 15px 15px 0 0 !important;
         border-top: 3px solid var(--primary-color) !important;
         position: relative !important;
+        /* SUPPRIMER la limitation de hauteur pour voir tous les commentaires */
+        max-height: none !important;
+        overflow: visible !important;
+        /* Ajouter de l'espace en bas pour le formulaire fixe */
+        padding-bottom: 180px !important;
     }
     
     .photo-view-modal .photo-comments h3 {
@@ -1365,119 +1373,129 @@ body.modal-open {
         text-align: center !important;
         padding-bottom: 10px !important;
         border-bottom: 2px solid #f0f0f0 !important;
+        /* Plus de position sticky qui créait des conflits */
+        position: static !important;
+        background: transparent !important;
     }
     
-    /* Conteneur de commentaires avec scroll séparé */
+    /* 2. CONTAINER COMMENTAIRES - VISIBLE ET SCROLLABLE */
     #commentsContainer {
-        max-height: 300px !important;
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch !important;
+        /* Supprimer les limitations de hauteur */
+        max-height: none !important;
+        overflow: visible !important;
         background: transparent !important;
         border: none !important;
         padding: 0 !important;
         margin-bottom: 20px !important;
     }
-}
-
-/* 5. FORMULAIRE DE COMMENTAIRE FIXE ET VISIBLE */
-@media (max-width: 768px) {
+    
+    /* 3. FORMULAIRE COMMENTAIRE - RESTE FIXE MAIS RÉDUIT */
     .photo-view-modal #commentForm {
         position: fixed !important;
         bottom: 0 !important;
         left: 0 !important;
         right: 0 !important;
         background: white !important;
-        padding: 15px !important;
+        padding: 12px 15px !important; /* Réduit */
         margin: 0 !important;
         border-radius: 0 !important;
-        box-shadow: 0 -3px 15px rgba(0,0,0,0.2) !important;
+        box-shadow: 0 -3px 15px rgba(0,0,0,0.3) !important;
         border-top: 3px solid var(--primary-color) !important;
-        z-index: 9998 !important;
+        z-index: 9999 !important;
         display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
+        /* Hauteur réduite */
+        max-height: 140px !important;
     }
     
     .photo-view-modal #commentAuthor,
     .photo-view-modal #commentText {
         width: 100% !important;
-        padding: 12px !important;
-        margin-bottom: 10px !important;
+        padding: 10px !important; /* Réduit */
+        margin-bottom: 8px !important; /* Réduit */
         border: 2px solid #e0e0e0 !important;
         border-radius: 8px !important;
-        font-size: 16px !important;
+        font-size: 14px !important; /* Plus petit */
         background: white !important;
         color: #333 !important;
         box-sizing: border-box !important;
-        -webkit-appearance: none !important;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-    }
-    
-    .photo-view-modal #commentAuthor:focus,
-    .photo-view-modal #commentText:focus {
-        border-color: var(--primary-color) !important;
-        outline: none !important;
-        box-shadow: 0 0 0 2px rgba(126, 87, 194, 0.2) !important;
     }
     
     .photo-view-modal #commentText {
-        min-height: 60px !important;
-        max-height: 80px !important;
+        min-height: 50px !important; /* Plus petit */
+        max-height: 60px !important;
         resize: none !important;
     }
     
     .photo-view-modal #commentForm button {
         width: 100% !important;
-        padding: 12px !important;
+        padding: 10px !important; /* Plus petit */
         background: var(--primary-color) !important;
         color: white !important;
         border: none !important;
         border-radius: 8px !important;
-        font-size: 16px !important;
+        font-size: 14px !important; /* Plus petit */
         font-weight: bold !important;
         cursor: pointer !important;
         margin-top: 5px !important;
     }
     
-    .photo-view-modal #commentForm button:active {
-        background: var(--accent-color) !important;
-        transform: scale(0.98) !important;
+    /* 4. BOUTON "VOIR COMMENTAIRES" - FONCTIONNEL */
+    .scroll-to-comments-btn {
+        display: block !important;
+        width: 100% !important;
+        padding: 15px 20px !important;
+        background: #FF6B35 !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 12px !important;
+        font-size: 16px !important;
+        font-weight: bold !important;
+        cursor: pointer !important;
+        margin: 20px 0 !important;
+        text-align: center !important;
+        touch-action: manipulation !important;
+        -webkit-tap-highlight-color: transparent !important;
     }
-}
-
-/* 6. CORRECTION DES COMMENTAIRES EXISTANTS */
-@media (max-width: 768px) {
+    
+    /* 5. AMÉLIORER LE SCROLL DU CONTENU PRINCIPAL */
+    .photo-view-modal .photo-detail-view {
+        flex: 1 !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding: 15px !important;
+        margin: 0 !important;
+        /* Plus d'espace en bas pour le formulaire réduit */
+        padding-bottom: 160px !important;
+    }
+    
+    /* 6. CORRECTIONS THÈME ROUGE */
+    [data-theme="rouge"] .photo-view-modal .photo-comments {
+        background: rgba(138, 35, 32, 0.05) !important;
+        border-top-color: #d32f2f !important;
+    }
+    
+    [data-theme="rouge"] .photo-view-modal .photo-comments h3 {
+        color: #d32f2f !important;
+        background: transparent !important;
+    }
+    
+    /* 7. COMMENTAIRES INDIVIDUELS PLUS COMPACTS */
     .comment {
         background: #f8f9fa !important;
         border: 1px solid #e9ecef !important;
         border-radius: 8px !important;
-        padding: 12px !important;
-        margin-bottom: 10px !important;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
-    }
-    
-    .comment-header {
-        display: flex !important;
-        justify-content: space-between !important;
-        align-items: center !important;
+        padding: 10px !important; /* Plus compact */
         margin-bottom: 8px !important;
-    }
-    
-    .comment-author {
-        font-weight: bold !important;
-        color: var(--primary-color) !important;
-        font-size: 14px !important;
-    }
-    
-    .comment-date {
-        font-size: 12px !important;
-        color: #6c757d !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
     }
     
     .comment-text {
         color: #333 !important;
         line-height: 1.4 !important;
         font-size: 14px !important;
+        margin-top: 5px !important;
     }
 }
 
