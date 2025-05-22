@@ -2109,3 +2109,55 @@ body.modal-open {
         border: 1px solid #e9ecef !important;
     }
 }
+
+/* CORRECTION BOUTONS MOBILE */
+@media (max-width: 768px) {
+    /* Tous les boutons de la modal */
+    .photo-view-modal button,
+    .photo-view-modal .open-image-btn,
+    .scroll-to-comments-btn {
+        display: block !important;
+        width: 100% !important;
+        padding: 15px 20px !important;
+        margin: 15px 0 !important;
+        border: none !important;
+        border-radius: 12px !important;
+        font-size: 16px !important;
+        font-weight: bold !important;
+        cursor: pointer !important;
+        touch-action: manipulation !important;
+        -webkit-tap-highlight-color: transparent !important;
+        transition: all 0.2s ease !important;
+    }
+    
+    /* Bouton "Ouvrir l'image" */
+    .photo-view-modal .open-image-btn {
+        background: var(--primary-color) !important;
+        color: white !important;
+    }
+    
+    /* Bouton "Voir les commentaires" */
+    .scroll-to-comments-btn {
+        background: #FF6B35 !important;
+        color: white !important;
+    }
+    
+    /* Effets au clic */
+    .photo-view-modal button:active,
+    .photo-view-modal .open-image-btn:active,
+    .scroll-to-comments-btn:active {
+        transform: scale(0.95) !important;
+        opacity: 0.8 !important;
+    }
+    
+    /* Croix de fermeture plus grande */
+    .photo-view-modal .close-modal {
+        width: 50px !important;
+        height: 50px !important;
+        font-size: 32px !important;
+        background: rgba(255,255,255,0.95) !important;
+        color: #333 !important;
+        border: 3px solid white !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4) !important;
+    }
+}

@@ -49,6 +49,12 @@ function closeUploadModal() {
 
 // VERSION AMÉLIORÉE - Fermer la vue détaillée
 function closePhotoViewModal() {
+    // NETTOYER TOUS LES BOUTONS CRÉÉS DYNAMIQUEMENT
+    const existingBtn = document.getElementById('scrollToCommentsBtn');
+    if (existingBtn) {
+        existingBtn.remove();
+    }
+    
     const photoViewModal = document.getElementById('photoViewModal');
     if (photoViewModal) {
         photoViewModal.style.display = 'none';
@@ -487,12 +493,19 @@ async function openPhotoView(photoId) {
         
         // Charger les commentaires
         // Charger les commentaires
+// Charger les commentaires
 loadPhotoComments(photoId);
 
-// BLOC UNIFIÉ POUR MOBILE
+// BLOC MOBILE CORRIGÉ
 if (window.innerWidth <= 768) {
     setTimeout(() => {
-        // 1. S'assurer que le formulaire est visible
+        // Nettoyer d'abord les anciens boutons
+        const oldBtn = document.getElementById('scrollToCommentsBtn');
+        if (oldBtn) {
+            oldBtn.remove();
+        }
+        
+        // S'assurer que le formulaire est visible
         const commentForm = document.getElementById('commentForm');
         if (commentForm) {
             commentForm.style.display = 'block';
@@ -505,17 +518,33 @@ if (window.innerWidth <= 768) {
             }
         }
         
-        // 2. Ajouter le bouton "Voir les commentaires" SEULEMENT s'il n'existe pas
-        const photoDetailView = document.querySelector('.photo-detail-view');
-        if (photoDetailView && !document.getElementById('scrollToCommentsBtn')) {
+        // Créer le bouton "Voir les commentaires" une seule fois
+        const buttonContainer = document.querySelector('.button-container');
+        if (buttonContainer && !document.getElementById('scrollToCommentsBtn')) {
             const scrollBtn = document.createElement('button');
             scrollBtn.id = 'scrollToCommentsBtn';
             scrollBtn.className = 'scroll-to-comments-btn';
-            scrollBtn.innerHTML = '<i class="material-icons">comment</i> Voir les commentaires';
-            scrollBtn.onclick = function(e) {
+            scrollBtn.innerHTML = '<i class="material-icons">chat_bubble</i> Voir les commentaires';
+            scrollBtn.style.cssText = `
+                display: block !important;
+                width: 100% !important;
+                padding: 15px 20px !important;
+                background: #FF6B35 !important;
+                color: white !important;
+                border: none !important;
+                border-radius: 12px !important;
+                font-size: 16px !important;
+                font-weight: bold !important;
+                margin: 15px 0 !important;
+                cursor: pointer !important;
+                touch-action: manipulation !important;
+                -webkit-tap-highlight-color: transparent !important;
+            `;
+            
+            scrollBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('Clic sur "Voir les commentaires"');
+                console.log('Scroll vers commentaires');
                 
                 const commentsSection = document.querySelector('.photo-comments');
                 if (commentsSection) {
@@ -523,20 +552,12 @@ if (window.innerWidth <= 768) {
                         behavior: 'smooth',
                         block: 'start'
                     });
-                } else {
-                    console.error('Section commentaires non trouvée');
                 }
-            };
+            });
             
-            // Insérer AVANT la section commentaires pour éviter les doublons
-            const commentsSection = document.querySelector('.photo-comments');
-            if (commentsSection) {
-                commentsSection.parentNode.insertBefore(scrollBtn, commentsSection);
-            } else {
-                photoDetailView.appendChild(scrollBtn);
-            }
+            buttonContainer.appendChild(scrollBtn);
         }
-    }, 400); // Un seul délai unifié
+    }, 500);
 }
 
 } catch (error) {
