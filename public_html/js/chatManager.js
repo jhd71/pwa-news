@@ -3779,6 +3779,8 @@ showAdminPanel() {
         <button class="tab-btn" data-tab="notifications" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Notif.</button>
         <button class="tab-btn" data-tab="admin-tools" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Outils</button>
         <button class="tab-btn" data-tab="gallery" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Photos</button>
+		<button class="tab-btn" data-tab="gallery" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Photos</button>
+		<button class="tab-btn" data-tab="comments" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Commentaires</button>
     </div>
     <div class="panel-content" style="${isMobile ? 'padding: 15px; height: calc(100% - 130px); overflow-y: auto; -webkit-overflow-scrolling: touch;' : ''}">
         <!-- Onglet Mots bannis -->
@@ -3863,6 +3865,13 @@ showAdminPanel() {
                 </div>
             </div>
         </div>
+<!-- Onglet Commentaires des photos -->
+<div class="tab-section" id="comments-section">
+    <h4>Gestion des commentaires</h4>
+    <div class="comments-list" style="${isMobile ? 'max-height: 300px; min-height: 200px; overflow-y: auto;' : ''}">
+        <div class="loading-comments">Chargement des commentaires...</div>
+    </div>
+</div>
     </div>
 `;
 
@@ -3880,30 +3889,34 @@ showAdminPanel() {
 const tabBtns = panel.querySelectorAll('.tab-btn');
 tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-        tabBtns.forEach(b => {
-            b.classList.remove('active');
-            // Supprimer également le style vert en ligne
-            if (isMobile) {
-                b.style.background = '';
-                b.style.color = '';
-            }
-        });
-        panel.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
-        btn.classList.add('active');
-        // Ajouter le style vert en ligne pour mobile
+    tabBtns.forEach(b => {
+        b.classList.remove('active');
+        // Supprimer également le style vert en ligne
         if (isMobile) {
-            btn.style.background = '#4CAF50';
-            btn.style.color = 'white';
-        }
-        const tabId = btn.dataset.tab + '-section';
-        panel.querySelector(`#${tabId}`).classList.add('active');
-        
-        // ICI AJOUTEZ LE CODE SUIVANT:
-        // Charger les photos si l'onglet Galerie est sélectionné
-        if (btn.dataset.tab === 'gallery') {
-            this.loadGalleryPhotos();
+            b.style.background = '';
+            b.style.color = '';
         }
     });
+    panel.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    // Ajouter le style vert en ligne pour mobile
+    if (isMobile) {
+        btn.style.background = '#4CAF50';
+        btn.style.color = 'white';
+    }
+    const tabId = btn.dataset.tab + '-section';
+    panel.querySelector(`#${tabId}`).classList.add('active');
+    
+    // Charger les photos si l'onglet Galerie est sélectionné
+    if (btn.dataset.tab === 'gallery') {
+        this.loadGalleryPhotos();
+    }
+    
+    // Charger les commentaires si l'onglet Commentaires est sélectionné
+    if (btn.dataset.tab === 'comments') {
+        this.loadPhotoComments();
+    }
+});
 });
 
     // Bouton ajout de mot banni
@@ -4845,6 +4858,191 @@ photos.forEach(photo => {
         if (photosList) {
             photosList.innerHTML = `<div class="error">Erreur: ${error.message}</div>`;
         }
+    }
+}
+
+// Méthode pour charger les commentaires des photos
+// Méthode pour charger les commentaires des photos
+async loadPhotoComments() {
+    try {
+        console.log("Chargement des commentaires depuis le panel admin du chat...");
+        
+        // Obtenez l'élément où afficher les commentaires
+        const commentsList = document.querySelector('.comments-list');
+        if (!commentsList) {
+            console.error("Conteneur comments-list non trouvé");
+            return;
+        }
+        
+        commentsList.innerHTML = '<div class="loading-comments">Chargement des commentaires...</div>';
+        
+        // Utiliser l'instance Supabase du chat pour récupérer les commentaires
+        // Ajustement à votre structure spécifique
+        const { data: comments, error } = await this.supabase
+            .from('photo_comments')
+            .select('*, photos(title, image_url)') // Jointure avec la table photos
+            .order('created_at', { ascending: false });
+            
+        if (error) {
+            console.error("Erreur lors du chargement des commentaires:", error);
+            commentsList.innerHTML = `<div class="error">Erreur: ${error.message}</div>`;
+            return;
+        }
+        
+        if (!comments || comments.length === 0) {
+            commentsList.innerHTML = '<div class="no-data">Aucun commentaire trouvé</div>';
+            return;
+        }
+        
+        // Créer la liste des commentaires avec leurs contrôles
+        commentsList.innerHTML = '';
+        
+        // Conteneur pour les commentaires
+        const commentsContainer = document.createElement('div');
+        commentsContainer.className = 'admin-comments-container';
+        commentsContainer.style.cssText = `
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 10px;
+        `;
+
+        comments.forEach(comment => {
+            const commentCard = document.createElement('div');
+            commentCard.className = 'admin-comment-card';
+            commentCard.dataset.id = comment.id;
+            commentCard.style.cssText = `
+                position: relative;
+                background: rgba(30, 30, 30, 0.8);
+                border-radius: 10px;
+                overflow: hidden;
+                padding: 15px;
+                transition: all 0.3s;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+                display: flex;
+                gap: 15px;
+            `;
+            
+            // Si on a l'image de la photo associée, l'afficher en miniature
+            const hasPhoto = comment.photos && comment.photos.image_url;
+            
+            commentCard.innerHTML = `
+                ${hasPhoto ? `
+                <div style="min-width: 80px; width: 80px; height: 80px; overflow: hidden; border-radius: 8px;">
+                    <img src="${comment.photos.image_url}" alt="${comment.photos.title || 'Photo'}" 
+                        style="width: 100%; height: 100%; object-fit: cover;"
+                        onerror="this.src='/images/no-image.png'; this.onerror=null;">
+                </div>
+                ` : ''}
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <div style="font-weight: bold; margin-bottom: 4px; color: #ddd;">
+                                ${comment.author_name || 'Anonyme'}
+                            </div>
+                            <div style="font-size: 12px; color: #aaa;">
+                                ${new Date(comment.created_at).toLocaleString('fr-FR')}
+                            </div>
+                        </div>
+                        <button class="delete-comment-btn" data-id="${comment.id}" style="background: rgba(255,0,0,0.8); color: white; border: none; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; font-weight: bold; padding: 0;">×</button>
+                    </div>
+                    <div style="color: white; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-top: 5px;">
+                        ${comment.comment_text || 'Aucun contenu'}
+                    </div>
+                    ${hasPhoto ? `
+                    <div style="font-size: 12px; color: #aaa; margin-top: 5px;">
+                        Photo: ${comment.photos.title || 'Sans titre'}
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            commentsContainer.appendChild(commentCard);
+        });
+        
+        commentsList.appendChild(commentsContainer);
+        
+        // Ajouter les gestionnaires d'événements pour les boutons de suppression
+        commentsList.querySelectorAll('.delete-comment-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const commentId = btn.dataset.id;
+                
+                if (confirm(`Êtes-vous sûr de vouloir supprimer ce commentaire ?`)) {
+                    await this.deletePhotoComment(commentId);
+                }
+            });
+        });
+        
+    } catch (error) {
+        console.error("Erreur lors du chargement des commentaires:", error);
+        const commentsList = document.querySelector('.comments-list');
+        if (commentsList) {
+            commentsList.innerHTML = `<div class="error">Erreur: ${error.message}</div>`;
+        }
+    }
+}
+
+// Méthode pour supprimer un commentaire
+// Méthode pour supprimer un commentaire
+async deletePhotoComment(commentId) {
+    try {
+        console.log(`Tentative de suppression du commentaire ID: ${commentId}...`);
+        
+        // Afficher un indicateur de chargement
+        const commentCard = document.querySelector(`.admin-comment-card[data-id="${commentId}"]`);
+        if (commentCard) {
+            commentCard.style.opacity = '0.5';
+        }
+        
+        // Supprimer le commentaire de la base de données
+        const { error } = await this.supabase
+            .from('photo_comments')
+            .delete()
+            .eq('id', commentId);
+            
+        if (error) {
+            console.error("Erreur lors de la suppression du commentaire:", error);
+            throw error;
+        }
+        
+        console.log(`Commentaire ${commentId} supprimé avec succès`);
+        this.showNotification("Commentaire supprimé avec succès", "success");
+        
+        // Supprimer visuellement le commentaire
+        if (commentCard) {
+            commentCard.style.transition = "all 0.3s";
+            commentCard.style.maxHeight = "0";
+            commentCard.style.opacity = "0";
+            commentCard.style.padding = "0";
+            commentCard.style.margin = "0";
+            
+            setTimeout(() => {
+                commentCard.remove();
+                
+                // Vérifier s'il reste des commentaires
+                const remainingComments = document.querySelectorAll('.admin-comment-card');
+                if (remainingComments.length === 0) {
+                    const commentsList = document.querySelector('.comments-list');
+                    if (commentsList) {
+                        commentsList.innerHTML = '<div class="no-data">Aucun commentaire trouvé</div>';
+                    }
+                }
+            }, 300);
+        }
+        
+        return true;
+    } catch (error) {
+        console.error("Erreur lors de la suppression du commentaire:", error);
+        this.showNotification(`Erreur lors de la suppression: ${error.message}`, "error");
+        
+        // Restaurer l'opacité normale
+        const commentCard = document.querySelector(`.admin-comment-card[data-id="${commentId}"]`);
+        if (commentCard) {
+            commentCard.style.opacity = '1';
+        }
+        
+        return false;
     }
 }
 

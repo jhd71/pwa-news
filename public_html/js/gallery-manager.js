@@ -48,6 +48,7 @@ function closePhotoViewModal() {
     const photoViewModal = document.getElementById('photoViewModal');
     if (photoViewModal) {
         photoViewModal.style.display = 'none';
+        document.body.classList.remove('modal-open'); // AJOUTER CETTE LIGNE
         document.body.style.overflow = '';
     }
     window.currentPhotoId = null;
@@ -95,16 +96,15 @@ function initCameraCapture() {
     console.log("Initialisation de la capture avec méthode directe");
     
     // Référence aux éléments
-    const captureBtn = document.getElementById('captureBtn');
-    const galleryBtn = document.getElementById('galleryBtn');
-    const photoPreview = document.getElementById('photoPreview');
-    const photoBase64 = document.getElementById('photoBase64');
-    
-    // Vérifier que les éléments existent
-    if (!captureBtn || !galleryBtn || !photoPreview || !photoBase64) {
-        console.error("Éléments nécessaires non trouvés");
-        return;
-    }
+const captureBtn = document.getElementById('captureBtn');
+const galleryBtn = document.getElementById('galleryBtn');
+const photoPreview = document.getElementById('photoPreview');
+
+// Vérifier que les éléments existent (SANS photoBase64)
+if (!captureBtn || !galleryBtn || !photoPreview) {
+    console.log("Éléments de capture non disponibles (modal fermée)");
+    return;
+}
     
     // Fonction pour créer un input file temporaire
     function createTemporaryInput(useCamera) {
@@ -120,39 +120,47 @@ function initCameraCapture() {
         
         // Ajouter le gestionnaire d'événements change
         input.addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            if (!file.type.match('image.*')) {
-                alert('Veuillez sélectionner une image');
-                return;
-            }
-            
-            // Lire le fichier et l'afficher
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                // Stocker l'image en base64
-                const base64Image = e.target.result;
-                photoBase64.value = base64Image;
-                
-                // Afficher la prévisualisation
-                photoPreview.innerHTML = '';
-                const img = document.createElement('img');
-                img.src = base64Image;
-                img.alt = "Prévisualisation";
-                photoPreview.appendChild(img);
-                
-                // Ajouter une indication de source
-                const sourceIndicator = document.createElement('div');
-                sourceIndicator.style.cssText = 'position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 5px 10px; border-radius: 20px; font-size: 12px;';
-                sourceIndicator.innerText = useCamera ? '📷 Appareil photo' : '🖼️ Galerie';
-                photoPreview.appendChild(sourceIndicator);
-                
-                // Supprimer l'input temporaire
-                input.remove();
-            };
-            reader.readAsDataURL(file);
-        });
+    const file = event.target.files[0];
+    if (!file) {
+        // Ne pas supprimer l'input si aucun fichier
+        return;
+    }
+    
+    if (!file.type.match('image.*')) {
+        alert('Veuillez sélectionner une image');
+        input.remove();
+        return;
+    }
+    
+    // Lire le fichier et l'afficher
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        // COPIER LE FICHIER DANS L'INPUT PRINCIPAL
+        const mainPhotoInput = document.getElementById('photoInput');
+        if (mainPhotoInput) {
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            mainPhotoInput.files = dataTransfer.files;
+        }
+        
+        // Afficher la prévisualisation
+        photoPreview.innerHTML = '';
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.alt = "Prévisualisation";
+        photoPreview.appendChild(img);
+        
+        // Ajouter une indication de source
+        const sourceIndicator = document.createElement('div');
+        sourceIndicator.style.cssText = 'position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 5px 10px; border-radius: 20px; font-size: 12px;';
+        sourceIndicator.innerText = useCamera ? '📷 Appareil photo' : '🖼️ Galerie';
+        photoPreview.appendChild(sourceIndicator);
+        
+        // Supprimer l'input temporaire APRÈS traitement
+        input.remove();
+    };
+    reader.readAsDataURL(file);
+});
         
         // Retourner l'input
         return input;
@@ -341,14 +349,14 @@ async function uploadPhoto(event) {
     }
 }
 
-// Fonction pour soumettre un commentaire
+// Fonction pour soumettre un commentaire - VERSION CORRIGÉE
 async function submitComment(event) {
     event.preventDefault();
     console.log("Tentative d'envoi de commentaire");
     
     if (!window.currentPhotoId) {
         console.error("ID de photo non défini");
-        return;
+        return Promise.reject("ID de photo non défini");
     }
     
     const authorInput = document.getElementById('commentAuthor');
@@ -356,7 +364,7 @@ async function submitComment(event) {
     
     if (!authorInput || !textInput) {
         console.error("Champs de commentaire non trouvés");
-        return;
+        return Promise.reject("Champs de commentaire non trouvés");
     }
     
     const author = authorInput.value.trim();
@@ -364,85 +372,70 @@ async function submitComment(event) {
     
     if (!author || !text) {
         alert('Veuillez remplir tous les champs du commentaire');
-        return;
+        return Promise.reject("Champs non remplis");
     }
     
     console.log("Envoi d'un commentaire pour la photo:", window.currentPhotoId);
-    console.log("Auteur:", author);
-    console.log("Texte:", text);
     
-    // Afficher un indicateur de chargement
     const submitBtn = document.querySelector('#commentForm button');
     const originalText = submitBtn.textContent;
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="material-icons" style="font-size: 14px;">hourglass_empty</i> Envoi...';
     
     try {
-        // Sauvegarder le nom pour les futurs commentaires
         localStorage.setItem('commenterName', author);
         
-        // Vérifier le type de currentPhotoId
-        console.log("Type de currentPhotoId:", typeof window.currentPhotoId);
-        
-        // Préparer les données à insérer
         const commentData = {
             photo_id: window.currentPhotoId,
             author_name: author,
             comment_text: text
         };
         
-        console.log("Données du commentaire à insérer:", commentData);
-        
-        // Insérer le commentaire
         const { data, error } = await window.supabase
             .from('photo_comments')
             .insert([commentData]);
         
         if (error) {
-            console.error('Erreur lors de l\'envoi du commentaire:', error);
             throw error;
         }
         
         console.log("Commentaire enregistré:", data);
         
-        // Afficher un message de succès
         const successMsg = document.createElement('div');
         successMsg.style.cssText = 'background: #4CAF50; color: white; padding: 10px; border-radius: 4px; text-align: center; margin-top: 10px;';
         successMsg.textContent = 'Commentaire ajouté avec succès!';
         textInput.parentNode.insertBefore(successMsg, textInput.nextSibling);
         
-        // Réinitialiser le formulaire
         textInput.value = '';
         
-        // Masquer le message après quelques secondes
         setTimeout(() => {
             successMsg.style.opacity = 0;
             successMsg.style.transition = 'opacity 0.5s';
             setTimeout(() => successMsg.remove(), 500);
         }, 3000);
         
-        // Attendre un court instant avant de recharger les commentaires
         setTimeout(() => {
             loadPhotoComments(window.currentPhotoId);
         }, 500);
         
+        return Promise.resolve("Commentaire envoyé");
+        
     } catch (error) {
         console.error('Erreur lors de l\'envoi du commentaire:', error);
         
-        // Afficher une erreur visible
         const errorMsg = document.createElement('div');
         errorMsg.style.cssText = 'background: #f44336; color: white; padding: 10px; border-radius: 4px; text-align: center; margin-top: 10px;';
         errorMsg.textContent = 'Impossible d\'envoyer votre commentaire: ' + error.message;
         textInput.parentNode.insertBefore(errorMsg, textInput.nextSibling);
         
-        // Masquer l'erreur après quelques secondes
         setTimeout(() => {
             errorMsg.style.opacity = 0;
             errorMsg.style.transition = 'opacity 0.5s';
             setTimeout(() => errorMsg.remove(), 500);
         }, 5000);
+        
+        return Promise.reject(error);
     } finally {
-        // Rétablir le bouton d'envoi
         submitBtn.disabled = false;
         submitBtn.textContent = originalText;
     }
@@ -461,7 +454,7 @@ async function openPhotoView(photoId) {
     
     // Afficher la modale
     document.getElementById('photoViewModal').style.display = 'block';
-    document.body.style.overflow = 'hidden';
+    document.body.classList.add('modal-open');
     window.currentPhotoId = photoId;
     
     try {

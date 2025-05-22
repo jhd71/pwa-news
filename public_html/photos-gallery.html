@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+	
+	<!-- Configuration iOS - à ajouter -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Actu&Média">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="description" content="Galerie photo collaborative - Actu & Média. Partagez vos plus belles photos de Saône-et-Loire et d'ailleurs.">
     <title>Photos d'ici et d'ailleurs - Actu&Média</title>
 
@@ -12,7 +17,6 @@
     <!-- Styles -->
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/gallery-styles.css">
-	<link rel="stylesheet" href="css/commentaires-toggle.css">
 </head>
 <body>
 <script>
@@ -286,30 +290,6 @@
     });
   }
 </script>
-
-<!-- Le reste de vos scripts personnalisés (si nécessaire) -->
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Synchroniser le thème avec le reste de l'application
-    function syncAppSettings() {
-      const currentTheme = localStorage.getItem('theme') || 'light';
-      document.documentElement.setAttribute('data-theme', currentTheme);
-      
-      const currentFontSize = localStorage.getItem('fontSize') || 'normal';
-      document.documentElement.setAttribute('data-font-size', currentFontSize);
-    }
-    
-    // Appliquer les réglages au chargement
-    syncAppSettings();
-    
-    // Mettre à jour si les réglages changent
-    window.addEventListener('storage', function(event) {
-      if (event.key === 'theme' || event.key === 'fontSize') {
-        syncAppSettings();
-      }
-    });
-  });
-</script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const photoInput = document.getElementById('photoInput');
@@ -331,6 +311,119 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+<!-- NOUVEAU SCRIPT À AJOUTER - Correction des problèmes de clavier mobile -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+        console.log('Corrections mobile activées');
+        
+        // Fonction pour gérer l'ouverture de la modal
+        function handleModalOpen() {
+            const photoViewModal = document.getElementById('photoViewModal');
+            const body = document.body;
+            
+            if (photoViewModal && photoViewModal.style.display === 'block') {
+                // Bloquer le scroll du body
+                body.classList.add('modal-open');
+                
+                // S'assurer que le formulaire est bien positionné
+                const commentForm = document.getElementById('commentForm');
+                if (commentForm) {
+                    commentForm.style.position = 'fixed';
+                    commentForm.style.bottom = '0';
+                    commentForm.style.left = '0';
+                    commentForm.style.right = '0';
+                    commentForm.style.zIndex = '1015';
+                    commentForm.style.background = 'white';
+                }
+            } else {
+                // Débloquer le scroll du body
+                body.classList.remove('modal-open');
+            }
+        }
+        
+        // Observer les changements de la modal
+        const photoViewModal = document.getElementById('photoViewModal');
+        if (photoViewModal) {
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                        handleModalOpen();
+                    }
+                });
+            });
+            
+            observer.observe(photoViewModal, {
+                attributes: true,
+                attributeFilter: ['style']
+            });
+        }
+        
+        // Gérer les champs de formulaire
+        function setupFormHandling() {
+            const commentAuthor = document.getElementById('commentAuthor');
+            const commentText = document.getElementById('commentText');
+            
+            if (commentAuthor) {
+                commentAuthor.addEventListener('focus', function() {
+                    console.log('Focus sur champ auteur');
+                    // Scroll vers le formulaire
+                    setTimeout(() => {
+                        this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 100);
+                });
+            }
+            
+            if (commentText) {
+                commentText.addEventListener('focus', function() {
+                    console.log('Focus sur champ commentaire');
+                    // Scroll vers le formulaire
+                    setTimeout(() => {
+                        this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 100);
+                });
+            }
+        }
+        
+        // Appliquer les corrections
+        setTimeout(setupFormHandling, 500);
+        
+        // Réappliquer quand la modal s'ouvre
+        if (photoViewModal) {
+            photoViewModal.addEventListener('transitionend', setupFormHandling);
+        }
+    }
+});
+</script>
 <script src="js/commentaires-toggle.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Synchroniser le thème avec le reste de l'application
+    function syncAppSettings() {
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        
+        const currentFontSize = localStorage.getItem('fontSize') || 'normal';
+        document.documentElement.setAttribute('data-font-size', currentFontSize);
+        
+        console.log('Thème appliqué:', currentTheme);
+    }
+    
+    // Appliquer les réglages au chargement
+    syncAppSettings();
+    
+    // Mettre à jour si les réglages changent dans d'autres onglets
+    window.addEventListener('storage', function(event) {
+        if (event.key === 'theme' || event.key === 'fontSize') {
+            syncAppSettings();
+        }
+    });
+    
+    // Forcer la synchronisation périodique (au cas où)
+    setInterval(syncAppSettings, 2000);
+});
+</script>
 </body>
 </html>

@@ -708,7 +708,7 @@ body:has(.chat-container.open) .news-ticker {
   background: rgba(255, 255, 255, 0.2);
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 8px 16px;
+  padding: 8px 0px;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -2510,4 +2510,34 @@ body.long-press-active .message-options {
         /* Éviter les problèmes de débordement du clavier virtuel */
         padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
     }
+}
+
+/* Styles pour les commentaires dans le panel admin */
+.admin-comment-card {
+    transition: all 0.3s ease;
+}
+
+.admin-comment-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.delete-comment-btn {
+    opacity: 0.8;
+    transition: all 0.2s ease;
+}
+
+.delete-comment-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.admin-comment-card {
+    animation: fadeIn 0.3s ease-out;
+    animation-fill-mode: backwards;
 }
