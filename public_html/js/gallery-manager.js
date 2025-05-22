@@ -49,11 +49,11 @@ function closeUploadModal() {
 
 // VERSION AMÉLIORÉE - Fermer la vue détaillée
 function closePhotoViewModal() {
-    // NETTOYER LES BOUTONS CRÉÉS DYNAMIQUEMENT
-    const existingBtn = document.getElementById('scrollToCommentsBtn');
-    if (existingBtn) {
-        existingBtn.remove();
-    }
+    // NETTOYER TOUS LES BOUTONS CRÉÉS DYNAMIQUEMENT
+    const scrollBtn = document.getElementById('scrollToCommentsBtn');
+    const toggleBtn = document.getElementById('commentsToggleBtn');
+    if (scrollBtn) scrollBtn.remove();
+    if (toggleBtn) toggleBtn.remove();
     
     const photoViewModal = document.getElementById('photoViewModal');
     if (photoViewModal) {
@@ -491,19 +491,17 @@ async function openPhotoView(photoId) {
             document.getElementById('modalPhotoAuthor').textContent = `👤 ${photo.author_name || 'Anonyme'}`;
         }
         
-        // Charger les commentaires
-        // Charger les commentaires
 // Charger les commentaires
 loadPhotoComments(photoId);
 
-// BLOC MOBILE CORRIGÉ
+// Amélioration mobile : s'assurer que le formulaire est visible
 if (window.innerWidth <= 768) {
     setTimeout(() => {
-        // Nettoyer d'abord les anciens boutons
-        const oldBtn = document.getElementById('scrollToCommentsBtn');
-        if (oldBtn) {
-            oldBtn.remove();
-        }
+        // Nettoyer TOUS les anciens boutons
+        const oldScrollBtn = document.getElementById('scrollToCommentsBtn');
+        const oldToggleBtn = document.getElementById('commentsToggleBtn');
+        if (oldScrollBtn) oldScrollBtn.remove();
+        if (oldToggleBtn) oldToggleBtn.remove();
         
         // S'assurer que le formulaire est visible
         const commentForm = document.getElementById('commentForm');
@@ -518,33 +516,19 @@ if (window.innerWidth <= 768) {
             }
         }
         
-        // Créer le bouton "Voir les commentaires" une seule fois
+        // Créer UN SEUL bouton "Voir les commentaires"
         const buttonContainer = document.querySelector('.button-container');
         if (buttonContainer && !document.getElementById('scrollToCommentsBtn')) {
             const scrollBtn = document.createElement('button');
             scrollBtn.id = 'scrollToCommentsBtn';
             scrollBtn.className = 'scroll-to-comments-btn';
             scrollBtn.innerHTML = '<i class="material-icons">chat_bubble</i> Voir les commentaires';
-            scrollBtn.style.cssText = `
-                display: block !important;
-                width: 100% !important;
-                padding: 15px 20px !important;
-                background: #FF6B35 !important;
-                color: white !important;
-                border: none !important;
-                border-radius: 12px !important;
-                font-size: 16px !important;
-                font-weight: bold !important;
-                margin: 15px 0 !important;
-                cursor: pointer !important;
-                touch-action: manipulation !important;
-                -webkit-tap-highlight-color: transparent !important;
-            `;
             
-            scrollBtn.addEventListener('click', function(e) {
+            // Événement de clic
+            scrollBtn.onclick = function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('Scroll vers commentaires');
+                console.log('Clic sur "Voir les commentaires"');
                 
                 const commentsSection = document.querySelector('.photo-comments');
                 if (commentsSection) {
@@ -552,10 +536,13 @@ if (window.innerWidth <= 768) {
                         behavior: 'smooth',
                         block: 'start'
                     });
+                } else {
+                    console.error('Section commentaires non trouvée');
                 }
-            });
+            };
             
             buttonContainer.appendChild(scrollBtn);
+            console.log('Bouton "Voir les commentaires" créé et ajouté');
         }
     }, 500);
 }
