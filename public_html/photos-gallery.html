@@ -146,10 +146,16 @@
                             <span id="modalPhotoDate" class="metadata-item"></span>
                             <span id="modalPhotoAuthor" class="metadata-item"></span>
                         </div>
-                        <button class="action-btn" id="openInNewTab">
-                            <i class="material-icons">open_in_new</i>
-                            Ouvrir l'image
-                        </button>
+                        <div class="photo-actions">
+                            <button class="action-btn" id="openInNewTab">
+                                <i class="material-icons">open_in_new</i>
+                                Ouvrir l'image
+                            </button>
+                            <button class="action-btn secondary-btn" id="backToGalleryBtn">
+                                <i class="material-icons">arrow_back</i>
+                                Retour à la galerie
+                            </button>
+                        </div>
                     </div>
                 </div>
                 
@@ -163,17 +169,17 @@
                     </div>
                     
                     <div class="comments-actions">
-                        <button class="view-comments-btn" id="viewCommentsBtn">
+                        <button class="comments-action-btn primary" id="viewCommentsBtn">
                             <i class="material-icons">visibility</i>
-                            Voir les commentaires
+                            <span>Voir les commentaires</span>
                         </button>
-                        <button class="write-comment-btn" id="writeCommentBtn">
+                        <button class="comments-action-btn secondary" id="writeCommentBtn">
                             <i class="material-icons">edit</i>
-                            Écrire un commentaire
+                            <span>Écrire un commentaire</span>
                         </button>
                     </div>
                     
-                    <div class="comments-content" id="commentsContent" style="display: block;">
+                    <div class="comments-content" id="commentsContent" style="display: none;">
                         <div id="commentsContainer" class="comments-list"></div>
                         
                         <!-- Formulaire de commentaire -->
