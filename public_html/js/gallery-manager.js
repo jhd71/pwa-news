@@ -1,193 +1,4 @@
-// ===== VUE DÉTAILLÉE D'UNE PHOTO =====
-async function openPhotoView(photoId) {
-    currentPhotoId = photoId;
-    const modal = document.getElementById('photoViewModal');
-    
-    modal.style.display = 'block';
-    document.body.classList.add('modal-open');
-    
-    try {
-        // Charger les détails de la photo
-        const { data: photo, error } = await window.supabase
-            .from('photos')
-            .select('*')
-            .eq('id', photoId)
-            .single();
-            
-        if (error) throw error;
-        
-        // Mettre à jour l'interface
-        document.getElementById('modalPhotoImg').src = photo.image_url;
-        document.getElementById('modalPhotoTitle').textContent = photo.title || 'Sans titre';
-        document.getElementById('modalPhotoDescription').textContent = photo.description || 'Aucune description';
-        
-        // Métadonnées
-        const locationEl = document.getElementById('modalPhotoLocation');
-        const dateEl = document.getElementById('modalPhotoDate');
-        const authorEl = document.getElementById('modalPhotoAuthor');
-        
-        locationEl.textContent = photo.location ? `📍 ${photo.location}` : '';
-        dateEl.textContent = `📅 ${new Date(photo.created_at).toLocaleDateString('fr-FR')}`;
-        authorEl.textContent = `📸 ${photo.author_name || 'Anonyme'}`;
-        
-        // Charger et afficher les commentaires directement
-        loadComments();
-        
-        // Les commentaires sont toujours visibles par défaut maintenant
-        const commentsContainer = document.getElementById('commentsContainer');
-        const commentFormWrapper = document.getElementById('commentFormWrapper');
-        if (commentsContainer) {
-            commentsContainer.style.display = 'block';
-        }
-        if (commentFormWrapper) {
-            commentFormWrapper.style.display = 'none';
-        }
-        
-    } catch (error) {
-        console.error('Erreur chargement photo:', error);
-        alert('Erreur lors du chargement de la photo');
-    }
-}
-
-// ===== GESTION DES COMMENTAIRES =====
-async function loadComments() {
-    const container = document.getElementById('commentsContainer');
-    container.innerHTML = '<p style="text-align: center;">Chargement des commentaires...</p>';
-    
-    try {
-        const { data: comments, error } = await window.supabase
-            .from('photo_comments')
-            .select('*')
-            .eq('photo_id', currentPhotoId)
-            .order('created_at', { ascending: false });
-            
-        if (error) throw error;
-        
-        if (!comments || comments.length === 0) {
-            container.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">Aucun commentaire pour le moment.</p>';
-        } else {
-            container.innerHTML = '';
-            comments.forEach(comment => {
-                const commentEl = createCommentElement(comment);
-                container.appendChild(commentEl);
-            });
-        }
-        
-    } catch (error) {
-        console.error('Erreur chargement commentaires:', error);
-        container.innerHTML = '<p style="color: red; text-align: center;">Erreur lors du chargement des commentaires.</p>';
-    }
-}
-
-function createCommentElement(comment) {
-    const div = document.createElement('div');
-    div.className = 'comment';
-    
-    const date = new Date(comment.created_at);
-    const formattedDate = date.toLocaleDateString('fr-FR') + ' à ' + date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-    
-    div.innerHTML = `
-        <div class="comment-header">
-            <span class="comment-author">${comment.author_name || 'Anonyme'}</span>
-            <span class="comment-date">${formattedDate}</span>
-        </div>
-        <div class="comment-text">${comment.comment_text}</div>
-    `;
-    
-    return div;
-}
-
-// Fonction pour afficher les commentaires (au cas où ils seraient cachés)
-function showComments() {
-    const container = document.getElementById('commentsContainer');
-    if (container) {
-        container.style.display = 'block';
-    }
-}
-
-function showCommentForm() {
-    const formWrapper = document.getElementById('commentFormWrapper');
-    const commentsContainer = document.getElementById('commentsContainer');
-    
-    if (formWrapper) {
-        formWrapper.style.display = 'block';
-        
-        // Focus sur le premier champ
-        setTimeout(() => {
-            const authorInput = document.getElementById('commentAuthor');
-            if (authorInput && !authorInput.value) {
-                authorInput.focus();
-            } else {
-                const textInput = document.getElementById('commentText');
-                if (textInput) {
-                    textInput.focus();
-                }
-            }
-        }, 100);
-    }
-    
-    // S'assurer que les commentaires sont visibles aussi
-    if (commentsContainer) {
-        commentsContainer.style.display = 'block';
-    }
-}
-
-function hideCommentForm() {
-    const formWrapper = document.getElementById('commentFormWrapper');
-    
-    if (formWrapper) {
-        formWrapper.style.display = 'none';
-        
-        // Réinitialiser le formulaire
-        const textInput = document.getElementById('commentText');
-        if (textInput) {
-            textInput.value = '';
-        }
-    }
-}
-
-async function submitComment(event) {
-    event.preventDefault();
-    
-    const authorInput = document.getElementById('commentAuthor');
-    const textInput = document.getElementById('commentText');
-    
-    const author = authorInput.value.trim();
-    const text = textInput.value.trim();
-    
-    if (!author || !text) {
-        alert('Veuillez remplir tous les champs');
-        return;
-    }
-    
-    // Sauvegarder le nom
-    localStorage.setItem('commenterName', author);
-    
-    try {
-        const { data, error } = await window.supabase
-            .from('photo_comments')
-            .insert([{
-                photo_id: currentPhotoId,
-                author_name: author,
-                comment_text: text
-            }]);
-            
-        if (error) throw error;
-        
-        // Succès
-        textInput.value = '';
-        hideCommentForm();
-        
-        // Recharger les commentaires
-        loadComments();
-        
-    } catch (error) {
-        console.error('Erreur envoi commentaire:', error);
-        alert('Erreur lors de l\'envoi du commentaire');
-    }
-}
-
-// Plus besoin de toggleComments car on enlève cette fonctionnalité// gallery-manager-v2.js - Version complètement refaite
+// gallery-manager-v2.js - Version complètement refaite
 
 // ===== VARIABLES GLOBALES =====
 let currentPhotoId = null;
@@ -358,6 +169,12 @@ function initializeEventListeners() {
                 }
             }
         });
+    }
+    
+    // Bouton retour galerie
+    const backToGalleryBtn = document.getElementById('backToGalleryBtn');
+    if (backToGalleryBtn) {
+        backToGalleryBtn.addEventListener('click', closePhotoViewModal);
     }
     
     // NOUVEAUX BOUTONS COMMENTAIRES
@@ -783,6 +600,324 @@ async function openPhotoView(photoId) {
         dateEl.textContent = `📅 ${new Date(photo.created_at).toLocaleDateString('fr-FR')}`;
         authorEl.textContent = `📸 ${photo.author_name || 'Anonyme'}`;
         
+        // Charger les commentaires mais les cacher par défaut
+        loadComments();
+        
+        // Cacher les commentaires et le formulaire à l'ouverture
+        const commentsContent = document.getElementById('commentsContent');
+        const commentFormWrapper = document.getElementById('commentFormWrapper');
+        if (commentsContent) {
+            commentsContent.style.display = 'none';
+        }
+        if (commentFormWrapper) {
+            commentFormWrapper.style.display = 'none';
+        }
+        
+    } catch (error) {
+        console.error('Erreur chargement photo:', error);
+        alert('Erreur lors du chargement de la photo');
+    }
+}
+
+// ===== GESTION DES COMMENTAIRES =====
+async function loadComments() {
+    const container = document.getElementById('commentsContainer');
+    container.innerHTML = '<p style="text-align: center;">Chargement des commentaires...</p>';
+    
+    try {
+        const { data: comments, error } = await window.supabase
+            .from('photo_comments')
+            .select('*')
+            .eq('photo_id', currentPhotoId)
+            .order('created_at', { ascending: false });
+            
+        if (error) throw error;
+        
+        if (!comments || comments.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">Aucun commentaire pour le moment.</p>';
+        } else {
+            container.innerHTML = '';
+            comments.forEach(comment => {
+                const commentEl = createCommentElement(comment);
+                container.appendChild(commentEl);
+            });
+        }
+        
+    } catch (error) {
+        console.error('Erreur chargement commentaires:', error);
+        container.innerHTML = '<p style="color: red; text-align: center;">Erreur lors du chargement des commentaires.</p>';
+    }
+}
+
+function createCommentElement(comment) {
+    const div = document.createElement('div');
+    div.className = 'comment';
+    
+    const date = new Date(comment.created_at);
+    const formattedDate = date.toLocaleDateString('fr-FR') + ' à ' + date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    
+    div.innerHTML = `
+        <div class="comment-header">
+            <span class="comment-author">${comment.author_name || 'Anonyme'}</span>
+            <span class="comment-date">${formattedDate}</span>
+        </div>
+        <div class="comment-text">${comment.comment_text}</div>
+    `;
+    
+    return div;
+}
+
+// Fonction pour afficher les commentaires
+function showComments() {
+    const commentsContent = document.getElementById('commentsContent');
+    const commentFormWrapper = document.getElementById('commentFormWrapper');
+    
+    if (commentsContent) {
+        commentsContent.style.display = 'block';
+        // Cacher le formulaire quand on affiche les commentaires
+        if (commentFormWrapper) {
+            commentFormWrapper.style.display = 'none';
+        }
+        
+        // Scroll vers les commentaires sur mobile
+        if (isMobile()) {
+            setTimeout(() => {
+                commentsContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+    }
+}
+
+function showCommentForm() {
+    const formWrapper = document.getElementById('commentFormWrapper');
+    const commentsContent = document.getElementById('commentsContent');
+    
+    // D'abord afficher la section commentaires si elle est cachée
+    if (commentsContent && commentsContent.style.display === 'none') {
+        commentsContent.style.display = 'block';
+    }
+    
+    if (formWrapper) {
+        formWrapper.style.display = 'block';
+        
+        // Focus sur le premier champ
+        setTimeout(() => {
+            const authorInput = document.getElementById('commentAuthor');
+            if (authorInput && !authorInput.value) {
+                authorInput.focus();
+            } else {
+                const textInput = document.getElementById('commentText');
+                if (textInput) {
+                    textInput.focus();
+                }
+            }
+            
+            // Sur mobile, scroll vers le formulaire
+            if (isMobile()) {
+                formWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 100);
+    }
+}
+
+function hideCommentForm() {
+    const formWrapper = document.getElementById('commentFormWrapper');
+    
+    if (formWrapper) {
+        formWrapper.style.display = 'none';
+        
+        // Réinitialiser le formulaire
+        const textInput = document.getElementById('commentText');
+        if (textInput) {
+            textInput.value = '';
+        }
+    }
+}
+
+async function submitComment(event) {
+    event.preventDefault();
+    
+    const authorInput = document.getElementById('commentAuthor');
+    const textInput = document.getElementById('commentText');
+    
+    const author = authorInput.value.trim();
+    const text = textInput.value.trim();
+    
+    if (!author || !text) {
+        alert('Veuillez remplir tous les champs');
+        return;
+    }
+    
+    // Sauvegarder le nom
+    localStorage.setItem('commenterName', author);
+    
+    try {
+        const { data, error } = await window.supabase
+            .from('photo_comments')
+            .insert([{
+                photo_id: currentPhotoId,
+                author_name: author,
+                comment_text: text
+            }]);
+            
+        if (error) throw error;
+        
+        // Succès
+        textInput.value = '';
+        hideCommentForm();
+        
+        // Recharger les commentaires
+        loadComments();
+        
+        // S'assurer que les commentaires sont visibles
+        const commentsContent = document.getElementById('commentsContent');
+        if (commentsContent) {
+            commentsContent.style.display = 'block';
+        }
+        
+    } catch (error) {
+        console.error('Erreur envoi commentaire:', error);
+        alert('Erreur lors de l\'envoi du commentaire');
+    }
+}
+    div.className = 'comment';
+    
+    const date = new Date(comment.created_at);
+    const formattedDate = date.toLocaleDateString('fr-FR') + ' à ' + date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    
+    div.innerHTML = `
+        <div class="comment-header">
+            <span class="comment-author">${comment.author_name || 'Anonyme'}</span>
+            <span class="comment-date">${formattedDate}</span>
+        </div>
+        <div class="comment-text">${comment.comment_text}</div>
+    `;
+    
+    return div;
+}
+
+// Fonction pour afficher les commentaires (au cas où ils seraient cachés)
+function showComments() {
+    const container = document.getElementById('commentsContainer');
+    if (container) {
+        container.style.display = 'block';
+    }
+}
+
+function showCommentForm() {
+    const formWrapper = document.getElementById('commentFormWrapper');
+    const commentsContainer = document.getElementById('commentsContainer');
+    
+    if (formWrapper) {
+        formWrapper.style.display = 'block';
+        
+        // Focus sur le premier champ
+        setTimeout(() => {
+            const authorInput = document.getElementById('commentAuthor');
+            if (authorInput && !authorInput.value) {
+                authorInput.focus();
+            } else {
+                const textInput = document.getElementById('commentText');
+                if (textInput) {
+                    textInput.focus();
+                }
+            }
+        }, 100);
+    }
+    
+    // S'assurer que les commentaires sont visibles aussi
+    if (commentsContainer) {
+        commentsContainer.style.display = 'block';
+    }
+}
+
+function hideCommentForm() {
+    const formWrapper = document.getElementById('commentFormWrapper');
+    
+    if (formWrapper) {
+        formWrapper.style.display = 'none';
+        
+        // Réinitialiser le formulaire
+        const textInput = document.getElementById('commentText');
+        if (textInput) {
+            textInput.value = '';
+        }
+    }
+}
+
+async function submitComment(event) {
+    event.preventDefault();
+    
+    const authorInput = document.getElementById('commentAuthor');
+    const textInput = document.getElementById('commentText');
+    
+    const author = authorInput.value.trim();
+    const text = textInput.value.trim();
+    
+    if (!author || !text) {
+        alert('Veuillez remplir tous les champs');
+        return;
+    }
+    
+    // Sauvegarder le nom
+    localStorage.setItem('commenterName', author);
+    
+    try {
+        const { data, error } = await window.supabase
+            .from('photo_comments')
+            .insert([{
+                photo_id: currentPhotoId,
+                author_name: author,
+                comment_text: text
+            }]);
+            
+        if (error) throw error;
+        
+        // Succès
+        textInput.value = '';
+        hideCommentForm();
+        
+        // Recharger les commentaires
+        loadComments();
+        
+    } catch (error) {
+        console.error('Erreur envoi commentaire:', error);
+        alert('Erreur lors de l\'envoi du commentaire');
+    }
+}
+
+// Plus besoin de toggleComments car on enlève cette fonctionnalité DÉTAILLÉE D'UNE PHOTO =====
+async function openPhotoView(photoId) {
+    currentPhotoId = photoId;
+    const modal = document.getElementById('photoViewModal');
+    
+    modal.style.display = 'block';
+    document.body.classList.add('modal-open');
+    
+    try {
+        // Charger les détails de la photo
+        const { data: photo, error } = await window.supabase
+            .from('photos')
+            .select('*')
+            .eq('id', photoId)
+            .single();
+            
+        if (error) throw error;
+        
+        // Mettre à jour l'interface
+        document.getElementById('modalPhotoImg').src = photo.image_url;
+        document.getElementById('modalPhotoTitle').textContent = photo.title || 'Sans titre';
+        document.getElementById('modalPhotoDescription').textContent = photo.description || 'Aucune description';
+        
+        // Métadonnées
+        const locationEl = document.getElementById('modalPhotoLocation');
+        const dateEl = document.getElementById('modalPhotoDate');
+        const authorEl = document.getElementById('modalPhotoAuthor');
+        
+        locationEl.textContent = photo.location ? `📍 ${photo.location}` : '';
+        dateEl.textContent = `📅 ${new Date(photo.created_at).toLocaleDateString('fr-FR')}`;
+        authorEl.textContent = `📸 ${photo.author_name || 'Anonyme'}`;
+        
         // Charger les commentaires
         loadComments();
         
@@ -1062,7 +1197,7 @@ window.galleryManager = {
     submitComment,
     showCommentForm,
     hideCommentForm,
-    toggleComments
+    showComments
 };
 
 console.log('Gallery Manager V2 initialisé avec succès');
