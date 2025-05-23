@@ -1,261 +1,6 @@
-/* gallery-styles.css - Version améliorée */
+/* gallery-styles.css - Version complètement refaite */
 
-/* Style du bouton "Ouvrir l'image dans un nouvel onglet" */
-.open-image-btn,
-button.open-image-btn,
-.modal-content button.open-image-btn {
-    display: inline-block;
-    margin: 15px auto;
-    padding: 10px 20px;
-    background-color: var(--primary-color) !important;
-    color: white !important;
-    border: none;
-    border-radius: 30px;
-    font-weight: bold;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    width: auto;
-    max-width: 300px;
-}
-
-.open-image-btn:hover,
-button.open-image-btn:hover,
-.modal-content button.open-image-btn:hover {
-    background-color: var(--accent-color) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-/* Adaptations spécifiques selon les thèmes */
-[data-theme="dark"] .open-image-btn,
-[data-theme="dark"] button.open-image-btn,
-[data-theme="dark"] .modal-content button.open-image-btn {
-    background-color: var(--primary-color) !important;
-    color: white !important;
-}
-
-[data-theme="rouge"] .open-image-btn,
-[data-theme="rouge"] button.open-image-btn,
-[data-theme="rouge"] .modal-content button.open-image-btn {
-    background-color: var(--primary-color) !important;
-    color: white !important;
-}
-
-[data-theme="bleuciel"] .open-image-btn,
-[data-theme="bleuciel"] button.open-image-btn,
-[data-theme="bleuciel"] .modal-content button.open-image-btn {
-    background-color: var(--primary-color) !important;
-    color: white !important;
-}
-[data-theme="dark"] .photo-info p,
-[data-theme="dark"] .photo-detail-view p,
-[data-theme="dark"] .location-text,
-[data-theme="dark"] .date-text,
-[data-theme="dark"] .author-text,
-[data-theme="dark"] .material-icons + span,
-[data-theme="dark"] .material-symbols-outlined + span {
-    color: white !important;
-}
-
-[data-theme="rouge"] .photo-info p,
-[data-theme="rouge"] .photo-detail-view p,
-[data-theme="rouge"] .location-text,
-[data-theme="rouge"] .date-text,
-[data-theme="rouge"] .author-text,
-[data-theme="rouge"] .material-icons + span,
-[data-theme="rouge"] .material-symbols-outlined + span {
-    color: white !important;
-}
-
-/* Force le thème pour les vues détaillées */
-.photo-view-modal {
-    background-color: rgba(0, 0, 0, 0.8);
-}
-
-[data-theme="dark"] .photo-view-modal {
-    background-color: rgba(0, 0, 0, 0.8);
-}
-
-[data-theme="rouge"] .photo-view-modal {
-    background-color: rgba(0, 0, 0, 0.8);
-}
-
-[data-theme="bleuciel"] .photo-view-modal {
-    background-color: rgba(0, 0, 0, 0.8);
-}
-
-/* Force le fond de la modal selon le thème */
-[data-theme="dark"] .modal-content {
-    background-color: #1a237e !important;
-}
-
-[data-theme="rouge"] .modal-content {
-    background-color: #b71c1c !important;
-}
-
-[data-theme="bleuciel"] .modal-content {
-    background-color: #4FB3E8 !important;
-}
-
-/* Amélioration du défilement dans la modale */
-.photo-view-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.8);
-    z-index: 1000;
-    overflow-y: auto; /* Permet le défilement vertical */
-    padding: 20px;
-}
-
-.photo-view-modal .modal-content {
-    background: var(--photo-view-bg);
-    color: var(--text-color);
-    border-radius: 15px;
-    overflow: visible; /* Changé de hidden à visible */
-    max-width: 800px;
-    width: 95%;
-    margin: 20px auto;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    position: relative;
-    max-height: none; /* Supprime la limitation de hauteur */
-    display: flex;
-    flex-direction: column;
-}
-
-/* Ajustement de la hauteur du contenu */
-.photo-detail-view {
-    flex: 1 !important;
-    overflow: visible !important;
-    padding: 20px !important;
-    /* CORRECTION : Éliminer l'espace en bas */
-    padding-bottom: 0 !important;
-    margin-bottom: 0 !important;
-}
-
-.modal-header {
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    background: var(--primary-color);
-}
-
-/* Style spécifique pour la section commentaires */
-.photo-comments {
-    background: rgba(255, 255, 255, 0.95) !important;
-    margin-top: 20px !important;
-    padding: 25px !important;
-    border-radius: 16px !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
-    /* CORRECTION : Éliminer l'espace en bas */
-    margin-bottom: 0 !important;
-    padding-bottom: 30px !important;
-}
-
-/* Amélioration du formulaire de commentaire */
-#commentForm {
-    padding: 15px;
-    margin-top: 20px;
-    margin-bottom: 20px; /* Ajoute de l'espace en bas */
-    border-radius: 8px;
-    background-color: rgba(0, 0, 0, 0.05);
-}
-
-#commentForm input,
-#commentForm textarea {
-    margin-bottom: 10px;
-    padding: 10px;
-    width: 100%;
-    border-radius: 5px;
-    border: 1px solid var(--border-color);
-}
-
-#commentForm button {
-    padding: 10px 20px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 5px;
-}
-
-/* Assurer que le contenu reste lisible */
-[data-theme="dark"] .photo-comments,
-[data-theme="dark"] .photo-comments h3,
-[data-theme="dark"] #commentForm,
-[data-theme="dark"] #commentForm input,
-[data-theme="dark"] #commentForm textarea,
-[data-theme="dark"] #commentsContainer,
-[data-theme="rouge"] .photo-comments,
-[data-theme="rouge"] .photo-comments h3,
-[data-theme="rouge"] #commentForm,
-[data-theme="rouge"] #commentForm input,
-[data-theme="rouge"] #commentForm textarea,
-[data-theme="rouge"] #commentsContainer {
-    color: white !important;
-}
-
-[data-theme="bleuciel"] #commentForm {
-    background: white !important;
-}
-
-[data-theme="dark"] #commentAuthor,
-[data-theme="dark"] #commentText,
-[data-theme="rouge"] #commentAuthor,
-[data-theme="rouge"] #commentText,
-[data-theme="bleuciel"] #commentAuthor,
-[data-theme="bleuciel"] #commentText {
-    background: white !important;
-    color: black !important;
-}
-
-/* 5. CORRECTION POUR EMPÊCHER LES CLICS DANS L'ESPACE VIDE */
-.photo-view-modal::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.9);
-    z-index: -1;
-    pointer-events: none;
-}
-
-/* Force l'affichage du formulaire dans tous les cas */
-#commentForm {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-/* Hack pour iOS Safari */
-body.modal-open {
-    overflow: hidden !important;
-    position: fixed !important;
-    width: 100% !important;
-    height: 100% !important;
-}
-
-/* Détection de la plateforme pour iOS */
-@supports (-webkit-touch-callout: none) {
-    /* CSS spécifique à iOS */
-    .photo-view-modal {
-        -webkit-overflow-scrolling: touch;
-    }
-    
-    .photo-view-modal .modal-content {
-        height: auto;
-        max-height: 85vh; /* Limitation pour iOS */
-    }
-}
+/* ===== VARIABLES ET THÈMES ===== */
 :root {
     --primary-color: #7E57C2;
     --accent-color: #9C27B0;
@@ -272,8 +17,14 @@ body.modal-open {
     --card-text-color: #333333;
     --navbar-bg: rgba(255, 255, 255, 0.9);
     --footer-bg: rgba(255, 255, 255, 0.9);
-    --modal-bg: #EFF1FF;
+    --modal-bg: #ffffff;
     --photo-view-bg: white;
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 8px rgba(0,0,0,0.15);
+    --shadow-lg: 0 8px 16px rgba(0,0,0,0.2);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
 }
 
 /* Thème sombre */
@@ -293,7 +44,7 @@ body.modal-open {
     --card-text-color: #FFFFFF;
     --navbar-bg: rgba(26, 35, 126, 0.95);
     --footer-bg: rgba(26, 35, 126, 0.95);
-    --modal-bg: #1a237e;
+    --modal-bg: #1E1E1E;
     --photo-view-bg: #1E1E1E;
 }
 
@@ -314,7 +65,7 @@ body.modal-open {
     --card-text-color: #FFFFFF;
     --navbar-bg: rgba(211, 47, 47, 0.95);
     --footer-bg: rgba(211, 47, 47, 0.95);
-    --modal-bg: #b71c1c;
+    --modal-bg: #8a2320;
     --photo-view-bg: #8a2320;
 }
 
@@ -335,11 +86,11 @@ body.modal-open {
     --card-text-color: #333333;
     --navbar-bg: rgba(79, 179, 232, 0.95);
     --footer-bg: rgba(79, 179, 232, 0.95);
-    --modal-bg: #4FB3E8;
+    --modal-bg: #ffffff;
     --photo-view-bg: white;
 }
 
-/* Structure principale */
+/* ===== STRUCTURE PRINCIPALE ===== */
 .gallery-main {
     padding: 20px;
     padding-top: 80px;
@@ -356,8 +107,8 @@ body.modal-open {
     margin-bottom: 30px;
     background-color: var(--primary-color);
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
 }
 
 .gallery-header h1 {
@@ -378,10 +129,10 @@ body.modal-open {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-/* Bouton d'upload */
+/* ===== BOUTONS PRINCIPAUX ===== */
 .upload-btn {
-    background: var(--primary-color);
-    color: white;
+    background: white;
+    color: var(--primary-color);
     border: none;
     border-radius: 30px;
     padding: 14px 28px;
@@ -393,21 +144,16 @@ body.modal-open {
     font-weight: bold;
     font-size: 16px;
     cursor: pointer;
-    transition: transform 0.2s, background-color 0.2s;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-md);
 }
 
 .upload-btn:hover {
     transform: translateY(-3px);
-    background: var(--accent-color);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-lg);
 }
 
-.upload-btn .material-icons {
-    font-size: 24px;
-}
-
-/* Grille de photos */
+/* ===== GRILLE DE PHOTOS ===== */
 .photo-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -416,17 +162,18 @@ body.modal-open {
 }
 
 .photo-card {
-    border-radius: 10px;
+    border-radius: var(--radius-md);
     overflow: hidden;
     background: var(--card-bg);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
     position: relative;
+    cursor: pointer;
 }
 
 .photo-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-lg);
 }
 
 .photo-img-container {
@@ -448,37 +195,27 @@ body.modal-open {
 }
 
 .photo-info {
-    padding: 0px;
+    padding: 15px;
     color: var(--card-text-color);
 }
 
 .photo-title {
-    font-size: 20px;
+    font-size: 18px;
     margin: 0 0 10px;
     color: var(--photo-title-color);
     font-weight: bold;
 }
 
-/* Pour le thème rouge, forcer le titre en couleur claire */
-[data-theme="rouge"] .photo-title {
-    color: white;
-}
-
-/* Pour le thème bleu ciel, s'assurer que les titres sont bien visibles */
-[data-theme="bleuciel"] .photo-title {
-    color: var(--primary-color);
-    font-weight: bold;
-}
-
 .photo-meta {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 5px;
     font-size: 14px;
     color: var(--text-muted);
     margin-top: 10px;
 }
 
-/* Modal d'upload */
+/* ===== MODAL D'UPLOAD ===== */
 .upload-modal {
     display: none;
     position: fixed;
@@ -496,9 +233,9 @@ body.modal-open {
     background: var(--card-bg);
     max-width: 600px;
     margin: 20px auto;
-    border-radius: 10px;
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-lg);
     color: var(--text-color);
 }
 
@@ -509,12 +246,6 @@ body.modal-open {
     padding: 18px 20px;
     background: var(--primary-color);
     color: white;
-}
-
-.modal-header h2 {
-    margin: 0;
-    font-size: 20px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .close-modal {
@@ -536,138 +267,225 @@ body.modal-open {
     background: rgba(255, 255, 255, 0.4);
 }
 
-/* Formulaire d'upload */
-#photoUploadForm {
-    padding: 20px;
-}
-
-.file-upload-area {
-    border: 2px dashed var(--border-color);
-    padding: 20px;
-    border-radius: 8px;
-    text-align: center;
-    margin-bottom: 20px;
-    position: relative;
-}
-
-#photoInput {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
+/* ===== NOUVELLE MODAL DE VISUALISATION ===== */
+.photo-view-modal {
+    display: none;
+    position: fixed;
     top: 0;
     left: 0;
-    cursor: pointer;
-    z-index: 2;
+    right: 0;
+    bottom: 0;
+    z-index: 1100;
 }
 
-.file-label {
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1;
+}
+
+.modal-container {
+    position: relative;
+    z-index: 2;
+    width: 90%;
+    max-width: 800px;
+    height: 90vh;
+    margin: 5vh auto;
+    background: var(--modal-bg);
+    border-radius: var(--radius-lg);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    color: var(--text-color);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
-.photo-preview {
-    margin-top: 15px;
-    max-height: 200px;
-    display: flex;
-    justify-content: center;
-    overflow: hidden;
-    background-color: rgba(0, 0, 0, 0.05);
-    border-radius: 8px;
-    padding: 10px;
-}
-
-.photo-preview img {
-    max-height: 100%;
-    max-width: 100%;
-    object-fit: contain;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: var(--text-color);
-}
-
-.form-group input, .form-group textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    background: var(--input-bg);
-    color: var(--text-color);
-    font-size: 16px;
-}
-
-.submit-photo-btn {
-    width: 100%;
-    padding: 14px;
+.modal-header-fixed {
+    position: sticky;
+    top: 0;
+    z-index: 10;
     background: var(--primary-color);
     color: white;
-    border: none;
-    border-radius: 6px;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.modal-header-fixed h2 {
+    margin: 0;
+    font-size: 20px;
     font-weight: bold;
-    font-size: 16px;
+}
+
+.close-modal-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
     cursor: pointer;
-    margin-top: 15px;
-    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
 }
 
-.submit-photo-btn:hover {
-    background: var(--accent-color);
+.close-modal-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
 }
 
-/* Vue détaillée de la photo */
-.photo-detail-view {
+.modal-scrollable-content {
+    flex: 1;
+    overflow-y: auto;
     padding: 20px;
-    color: var(--text-color);
 }
 
-.photo-detail-view img {
+/* Section photo */
+.photo-section {
+    margin-bottom: 30px;
+}
+
+.photo-section img {
     width: 100%;
-    max-height: 500px;
+    max-height: 400px;
     object-fit: contain;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
     margin-bottom: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.photo-info-section {
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: var(--radius-md);
+}
+
+.photo-description {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    color: var(--text-color);
 }
 
 .photo-metadata {
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
-    margin-top: 15px;
+    margin-bottom: 20px;
     font-size: 14px;
     color: var(--text-muted);
-    background-color: rgba(0, 0, 0, 0.05);
-    padding: 15px;
-    border-radius: 8px;
 }
 
-/* Commentaires */
-.comment {
-    background: #ffffff
+.metadata-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.action-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    box-shadow: var(--shadow-sm);
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    background: var(--accent-color);
+}
+
+/* Section commentaires - PC uniquement fermée par défaut */
+@media (min-width: 769px) {
+    .comments-section {
+        transition: all 0.3s ease;
+    }
+    
+    .comments-section.collapsed .comments-content {
+        display: none;
+    }
+    
+    .comments-section.collapsed {
+        padding-bottom: 10px;
+    }
+    
+    .toggle-comments-btn .material-icons {
+        transition: transform 0.3s;
+    }
+    
+    .comments-section.collapsed .toggle-comments-btn .material-icons {
+        transform: rotate(180deg);
+    }
+}
+
+.comments-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.comments-header h3 {
+    margin: 0;
+    font-size: 20px;
     color: var(--text-color);
+}
+
+.toggle-comments-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--button-bg);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.toggle-comments-btn:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.comments-content {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.comments-list {
+    margin-bottom: 20px;
+}
+
+.comment {
+    background: var(--comment-bg);
     padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    border-radius: var(--radius-md);
     border: 1px solid var(--border-color);
 }
 
-.comment-text {
-    color: var(--text-color);
-    line-height: 1.5;
-    font-weight: normal;
-    margin-top: 8px;
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
 }
 
 .comment-author {
@@ -675,81 +493,304 @@ body.modal-open {
     color: var(--primary-color);
 }
 
-/* Forcer un texte visible pour les auteurs de commentaires */
-[data-theme="dark"] .comment-author,
-[data-theme="rouge"] .comment-author {
-    color: white;
-    opacity: 1;
-}
-
-[data-theme="bleuciel"] .comment-author {
-    color: var(--primary-color);
-    font-weight: bold;
-}
-
 .comment-date {
-    font-size: 0.85em;
+    font-size: 12px;
     color: var(--text-muted);
 }
 
-#commentsContainer {
-    background-color: #ffd230;
-    border: 1px solid var(--border-color);
+.comment-text {
     color: var(--text-color);
-    padding: 20px;
-    border-radius: 8px;
-    margin-top: 25px;
+    line-height: 1.5;
 }
 
-#commentForm {
-    background-color: var(--card-bg);
-    padding: 20px;
-    border-radius: 8px;
+/* Formulaire de commentaire */
+.comment-form-wrapper {
     margin-top: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-#commentAuthor, #commentText {
-    background-color: var(--input-bg);
-    color: var(--text-color);
-    border: 1px solid var(--border-color);
+.show-comment-form-btn {
     width: 100%;
     padding: 12px;
-    margin-bottom: 12px;
-    border-radius: 6px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.show-comment-form-btn:hover {
+    background: var(--accent-color);
+}
+
+.comment-form {
+    margin-top: 15px;
+    padding: 20px;
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+}
+
+.comment-form input,
+.comment-form textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: var(--input-bg);
+    color: var(--text-color);
     font-size: 16px;
 }
 
-#commentText {
-    min-height: 100px;
+.comment-form textarea {
     resize: vertical;
+    min-height: 80px;
 }
 
-/* Correction du texte pour les thèmes sombre et rouge */
-[data-theme="dark"] #commentAuthor, 
-[data-theme="dark"] #commentText,
-[data-theme="rouge"] #commentAuthor, 
-[data-theme="rouge"] #commentText {
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.form-actions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.cancel-btn {
+    background: var(--button-bg);
+    color: var(--text-color);
+}
+
+.submit-btn {
+    background: var(--primary-color);
     color: white;
 }
 
-.photo-comments {
-    background-color: rgba(0, 0, 0, 0.05);
-    color: var(--text-color);
-    border-top: 1px solid var(--border-color);
-    padding: 25px;
-    margin-top: 25px;
-    border-radius: 8px;
+.form-actions button:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
 }
 
-.photo-comments h3 {
-    color: var(--text-color);
-    font-weight: bold;
-    margin-bottom: 20px;
-    font-size: 20px;
+/* ===== MOBILE RESPONSIVE AMÉLIORÉ ===== */
+@media (max-width: 768px) {
+    .gallery-main {
+        padding: 15px;
+        padding-top: 70px;
+        padding-bottom: 80px;
+    }
+    
+    .gallery-header h1 {
+        font-size: 22px;
+    }
+    
+    .photo-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .photo-img-container {
+        height: 180px;
+    }
+    
+    /* Modal mobile */
+    .modal-container {
+        width: 100%;
+        height: 100vh;
+        margin: 0;
+        border-radius: 0;
+    }
+    
+    /* Header fixe avec plus d'espace pour la croix */
+    .modal-header-fixed {
+        border-radius: 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        padding: 15px 60px 15px 20px; /* Plus d'espace à droite pour la croix */
+    }
+    
+    /* Croix de fermeture mieux positionnée */
+    .close-modal-btn {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 44px;
+        height: 44px;
+        z-index: 101;
+    }
+    
+    .modal-scrollable-content {
+        padding: 15px;
+        padding-top: 80px;
+        padding-bottom: 20px;
+        height: 100vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .photo-section img {
+        max-height: 300px;
+    }
+    
+    /* Commentaires mobile */
+    .comments-section {
+        background: var(--modal-bg);
+        border-radius: var(--radius-lg);
+        margin-top: 20px;
+        padding: 15px;
+        position: relative;
+    }
+    
+    /* Boutons d'action en colonne sur mobile */
+    .comments-actions {
+        flex-direction: column;
+    }
+    
+    .view-comments-btn, .write-comment-btn {
+        width: 100%;
+    }
+    
+    .comments-content {
+        max-height: none;
+    }
+    
+    /* Formulaire mobile amélioré */
+    .comment-form {
+        position: relative;
+        margin: 0;
+        margin-top: 15px;
+        padding: 15px;
+        /* Pas de position fixed */
+    }
+    
+    /* Fix pour le clavier mobile */
+    .comment-form input,
+    .comment-form textarea {
+        font-size: 16px !important; /* Empêcher le zoom iOS */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+    
+    /* Empêcher la fermeture du formulaire au focus */
+    .comment-form input:focus,
+    .comment-form textarea:focus {
+        outline: 2px solid var(--primary-color);
+        outline-offset: -2px;
+    }
+    
+    /* Modal upload mobile */
+    .upload-modal {
+        padding: 0;
+    }
+    
+    .upload-modal .modal-content {
+        margin: 0;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    /* Header modal upload avec espace pour la croix */
+    .upload-modal .modal-header {
+        padding: 15px 60px 15px 20px;
+        flex-shrink: 0;
+    }
+    
+    /* Croix modal upload */
+    .upload-modal .close-modal {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 44px;
+        height: 44px;
+        z-index: 10;
+    }
+    
+    /* Formulaire upload scrollable */
+    #photoUploadForm {
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 20px;
+        padding-bottom: 100px; /* Espace pour voir le bouton envoyer */
+    }
+    
+    /* Boutons upload mobile */
+    .upload-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .capture-btn, .gallery-btn {
+        width: 100%;
+        padding: 15px;
+    }
+    
+    /* Progress bar mobile */
+    .upload-progress {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 20px;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Ajustements pour iOS */
+    @supports (-webkit-touch-callout: none) {
+        /* CSS spécifique iOS */
+        .modal-scrollable-content,
+        #photoUploadForm {
+            padding-bottom: env(safe-area-inset-bottom, 20px);
+        }
+        
+        .comment-form {
+            padding-bottom: calc(20px + env(safe-area-inset-bottom, 0));
+        }
+    }
 }
 
-/* Chargement */
+/* Petits écrans */
+@media (max-width: 480px) {
+    .gallery-header {
+        padding: 15px;
+    }
+    
+    .gallery-header h1 {
+        font-size: 20px;
+    }
+    
+    .upload-btn {
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+    
+    .modal-header-fixed h2 {
+        font-size: 18px;
+    }
+}
+
+/* ===== AUTRES STYLES ===== */
 .loading-indicator {
     display: flex;
     flex-direction: column;
@@ -771,24 +812,15 @@ body.modal-open {
     to { transform: rotate(360deg); }
 }
 
-/* Message "pas de photos" */
 .no-photos-message {
     text-align: center;
-    padding: 50px 0;
-    color: var(--text-color);
-    background-color: rgba(0, 0, 0, 0.05);
-    border-radius: 10px;
+    padding: 50px 20px;
+    color: var(--text-muted);
+    background-color: rgba(0, 0, 0, 0.03);
+    border-radius: var(--radius-lg);
     margin: 20px 0;
 }
 
-.no-photos-message .material-icons {
-    font-size: 48px;
-    margin-bottom: 15px;
-    opacity: 0.7;
-    color: var(--primary-color);
-}
-
-/* Bouton "Charger plus" */
 .load-more-btn {
     display: flex;
     align-items: center;
@@ -803,370 +835,142 @@ body.modal-open {
     cursor: pointer;
     font-weight: 500;
     font-size: 16px;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s, background-color 0.2s;
+    box-shadow: var(--shadow-md);
+    transition: all 0.2s;
 }
 
 .load-more-btn:hover {
     transform: translateY(-2px);
     background: var(--accent-color);
-    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-lg);
 }
 
-.load-more-btn .material-icons {
-    font-size: 20px;
-}
-
-/* Adaptation du style pour les tuiles de catégorie "photos" */
-.tile[data-category="photos"] {
-    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-}
-
-/* Styles pour le bouton de suppression */
-.delete-photo-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(255, 0, 0, 0.8);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s, transform 0.2s;
-    z-index: 10;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-}
-
-.delete-photo-btn:hover {
-    opacity: 1;
-    transform: scale(1.1);
-    background: rgba(255, 0, 0, 0.95);
-}
-
-.photo-card:hover .delete-photo-btn {
-    opacity: 0.9;
-}
-
-/* Modal photo vue détaillée */
-.photo-view-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.8);
-    z-index: 1000;
-    overflow-y: auto;
+/* Formulaire d'upload */
+#photoUploadForm {
     padding: 20px;
 }
 
-/* 6. CORRECTION POUR LE Z-INDEX DES ÉLÉMENTS */
-.photo-view-modal .modal-content {
-    position: relative;
-    z-index: 10;
-}
-
-.photo-view-modal .modal-header {
-    z-index: 15;
-}
-
-.photo-view-modal .modal-header h2 {
-    color: white;
-    margin: 0;
-    font-size: 22px;
-    font-weight: bold;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-/* Bouton de fermeture */
-.photo-view-modal .close-modal {
-    width: 36px;
-    height: 36px;
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    border-radius: 50%;
-    color: white;
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.photo-view-modal .close-modal:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: scale(1.1);
-}
-
-/* Contenu de la vue détaillée */
-.photo-view-modal .photo-detail-view {
-    padding: 10px;
-}
-
-.photo-view-modal .photo-detail-view img {
-    width: 100%;
-    max-height: 500px;
-    object-fit: contain;
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+.file-upload-area {
     margin-bottom: 20px;
-}
-
-/* Titre et description */
-.photo-view-modal .photo-title {
-    font-size: 24px;
-    margin: 0 0 15px 0;
-    color: var(--primary-color);
-    font-weight: bold;
-}
-
-.photo-view-modal .photo-description {
-    margin-bottom: 20px;
-    line-height: 1.6;
-    color: var(--text-color);
-}
-
-[data-theme="dark"] .photo-view-modal .photo-title,
-[data-theme="rouge"] .photo-view-modal .photo-title {
-    color: white;
-}
-
-[data-theme="bleuciel"] .photo-view-modal .photo-title {
-    color: var(--primary-color);
-}
-
-/* Métadonnées */
-.photo-view-modal .photo-metadata {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin: 20px 0;
-    background: #ffffff;
-    padding: 15px;
-    border-radius: 8px;
-}
-
-.photo-view-modal .metadata-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.photo-view-modal .metadata-item .material-icons {
-    color: var(--primary-color);
-    font-size: 18px;
-}
-
-[data-theme="dark"] .photo-view-modal .metadata-item .material-icons,
-[data-theme="rouge"] .photo-view-modal .metadata-item .material-icons {
-    color: rgba(255, 255, 255, 0.9);
-}
-
-/* Section commentaires */
-.photo-view-modal .photo-comments {
-    background: rgba(0, 0, 0, 0.03);
-    border-top: 1px solid var(--border-color);
-    padding: 25px;
-    margin-top: 20px;
-    border-radius: 0 0 15px 15px;
-}
-
-.photo-view-modal .photo-comments h3 {
-    color: var(--text-color);
-    font-size: 20px;
-    margin: 0 0 20px 0;
-    font-weight: bold;
-}
-
-/* Message "aucun commentaire" */
-.photo-view-modal .no-comments {
-    text-align: center;
-    padding: 30px 0;
-    color: var(--text-muted);
-    background: rgba(0, 0, 0, 0.02);
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-
-.photo-view-modal .no-comments .material-icons {
-    font-size: 48px;
-    margin-bottom: 15px;
-    color: var(--text-muted);
-    opacity: 0.7;
-}
-
-/* Formulaire de commentaire */
-.photo-view-modal #commentForm {
-    background: rgba(0, 0, 0, 0.03);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-
-.photo-view-modal #commentForm input,
-.photo-view-modal #commentForm textarea {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    background: #dae1e8;
-    color: var(--text-color);
-    font-size: 15px;
-}
-
-.photo-view-modal #commentForm textarea {
-    min-height: 100px;
-    resize: vertical;
-}
-
-.photo-view-modal #commentForm button {
-    padding: 12px 20px;
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 30px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.photo-view-modal #commentForm button:hover {
-    background: var(--accent-color);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-/* Bouton "Ouvrir dans un nouvel onglet" */
-.open-in-new-tab {
-    display: inline-block;
-    margin: 20px auto;
-    padding: 12px 24px;
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 30px;
-    font-weight: bold;
-    text-align: center;
-    text-decoration: none;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-    transition: all 0.2s ease;
-    cursor: pointer;
-    width: auto;
-    max-width: 300px;
-}
-
-.open-in-new-tab:hover {
-    background: var(--accent-color);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
-}
-
-/* Centrer le bouton */
-.button-container {
-    text-align: center;
-    margin: 0px 0;
-}
-
-/* Styles pour les boutons de capture et galerie */
-.file-upload-options {
-    position: relative;
-}
-
-.file-upload-options input[type="file"] {
-    opacity: 0;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: -1;
 }
 
 .upload-buttons {
     display: flex;
-    justify-content: space-between;
     gap: 15px;
     margin-bottom: 20px;
 }
 
 .capture-btn, .gallery-btn {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 15px;
+    padding: 20px;
     background: var(--primary-color);
     color: white;
     border: none;
-    border-radius: 10px;
+    border-radius: var(--radius-md);
     cursor: pointer;
-    width: 48%;
-    transition: transform 0.2s, background 0.2s;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s;
+    box-shadow: var(--shadow-sm);
 }
 
 .capture-btn:hover, .gallery-btn:hover {
     transform: translateY(-3px);
     background: var(--accent-color);
-    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-md);
 }
 
-.capture-btn .material-icons, .gallery-btn .material-icons {
+.capture-btn .material-icons, 
+.gallery-btn .material-icons {
     font-size: 36px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
-.capture-btn span, .gallery-btn span {
-    font-size: 14px;
-    font-weight: 500;
-}
-
-/* Styles pour la zone de prévisualisation */
 .photo-preview {
-    margin-top: 20px;
     min-height: 200px;
     display: flex;
     justify-content: center;
     align-items: center;
     border: 2px dashed var(--border-color);
-    border-radius: 10px;
+    border-radius: var(--radius-md);
     overflow: hidden;
     position: relative;
     background-color: rgba(0, 0, 0, 0.03);
-}
-
-.photo-preview::before {
-    content: "Aperçu de l'image";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: var(--text-muted);
-    z-index: 0;
-    font-size: 16px;
 }
 
 .photo-preview img {
     max-height: 200px;
     max-width: 100%;
     object-fit: contain;
-    z-index: 1;
-    position: relative;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Navigation du bas pour tous les thèmes - s'assurer qu'elle est toujours visible */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.form-group input, 
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: var(--input-bg);
+    color: var(--text-color);
+    font-size: 16px;
+}
+
+.submit-photo-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background-color 0.2s;
+}
+
+.submit-photo-btn:hover {
+    background: var(--accent-color);
+}
+
+.upload-progress {
+    margin-top: 20px;
+}
+
+.progress-bar {
+    height: 8px;
+    background: var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: var(--primary-color);
+    transition: width 0.3s;
+}
+
+.progress-text {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    color: var(--text-muted);
+}
+
+/* Navigation du bas */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -1202,165 +1006,46 @@ body.modal-open {
     margin-bottom: 4px;
 }
 
-/* Styles spécifiques pour chaque thème de la barre de navigation */
-[data-theme="dark"] .bottom-nav {
-    background: var(--navbar-bg);
+.nav-item.active {
+    color: white;
+    font-weight: bold;
 }
 
-[data-theme="rouge"] .bottom-nav {
-    background: var(--navbar-bg);
-}
-
-[data-theme="bleuciel"] .bottom-nav {
-    background: var(--navbar-bg);
-}
-
-/* S'assurer que le texte et les icônes sont visibles dans tous les thèmes */
-.nav-item, 
-.nav-item .material-icons {
-    color: white !important;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-@media (max-width: 480px) {
-    .photo-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .photo-img-container {
-        height: 180px;
-    }
-    
-    .gallery-header {
-        padding: 15px;
-    }
-    
-    .gallery-header h1 {
-        font-size: 22px;
-    }
-    
-    .gallery-main {
-        padding: 15px;
-        padding-top: 70px;
-        padding-bottom: 80px;
-    }
-    
-    .upload-buttons {
-        flex-direction: column;
-    }
-    
-    .capture-btn, .gallery-btn {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-}
-
-/* 7. PRÉVENTION DU SCROLL DU BODY QUAND MODAL OUVERTE */
+/* Correction pour body modal open */
 body.modal-open {
     overflow: hidden !important;
     position: fixed !important;
     width: 100% !important;
-    height: 100% !important;
 }
 
-/* 9. STYLES POUR TOUS LES THÈMES */
-[data-theme="dark"] .photo-view-modal .photo-comments,
-[data-theme="dark"] .photo-view-modal #commentForm {
-    background: #2c2c2c !important;
-}
-
-[data-theme="dark"] .photo-view-modal #commentAuthor,
-[data-theme="dark"] .photo-view-modal #commentText {
-    background: #404040 !important;
-    color: white !important;
-    border-color: #555 !important;
-}
-
-[data-theme="rouge"] .photo-view-modal .photo-comments,
-[data-theme="rouge"] .photo-view-modal #commentForm {
-    background: #8a2320 !important;
-}
-
-[data-theme="rouge"] .photo-view-modal #commentAuthor,
-[data-theme="rouge"] .photo-view-modal #commentText {
-    background: #ac2925 !important;
-    color: white !important;
-    border-color: rgba(255,255,255,0.3) !important;
-}
-
-/* 7. STYLES POUR TOUS LES THÈMES - CORRECTIONS */
-@media (max-width: 768px) {
-    [data-theme="dark"] .photo-view-modal .photo-comments,
-    [data-theme="dark"] .photo-view-modal #commentForm {
-        background: #2c2c2c !important;
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
     }
-    
-    [data-theme="dark"] .photo-view-modal #commentAuthor,
-    [data-theme="dark"] .photo-view-modal #commentText {
-        background: #404040 !important;
-        color: white !important;
-        border-color: #666 !important;
-    }
-    
-    [data-theme="rouge"] .photo-view-modal .photo-comments,
-    [data-theme="rouge"] .photo-view-modal #commentForm {
-        background: #8a2320 !important;
-    }
-    
-    [data-theme="rouge"] .photo-view-modal #commentAuthor,
-    [data-theme="rouge"] .photo-view-modal #commentText {
-        background: #ac2925 !important;
-        color: white !important;
-        border-color: rgba(255,255,255,0.4) !important;
-    }
-    
-    [data-theme="bleuciel"] .photo-view-modal .photo-comments {
-        background: #F0F8FF !important;
-    }
-    
-    [data-theme="bleuciel"] .photo-view-modal #commentForm {
-        background: white !important;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
-/* 10. CORRECTION SPÉCIALE POUR iOS */
+.comment {
+    animation: fadeIn 0.3s ease;
+}
+
+/* iOS specific fixes */
 @supports (-webkit-touch-callout: none) {
-    @media (max-width: 768px) {
-        .photo-view-modal {
-            -webkit-overflow-scrolling: touch !important;
-        }
-        
-        .photo-view-modal .modal-content {
-            min-height: 100vh !important;
-        }
-        
-        /* Correction du viewport sur iOS */
-        .photo-view-modal #commentForm {
-            bottom: env(safe-area-inset-bottom, 0) !important;
-            padding-bottom: calc(20px + env(safe-area-inset-bottom, 0)) !important;
-        }
+    .modal-scrollable-content {
+        -webkit-overflow-scrolling: touch;
     }
-}
-
-/* === CORRECTIONS SPÉCIALES THÈME ROUGE === */
-[data-theme="rouge"] .photo-view-modal .photo-comments,
-[data-theme="rouge"] .photo-view-modal #commentForm {
-    background: rgba(138, 35, 32, 0.95) !important;
-}
-
-[data-theme="rouge"] .photo-view-modal .photo-comments h3 {
-    color: white !important;
-    background: rgba(138, 35, 32, 0.95) !important;
-}
-
-[data-theme="rouge"] .photo-view-modal #commentAuthor,
-[data-theme="rouge"] .photo-view-modal #commentText {
-    background: rgba(172, 41, 37, 0.9) !important;
-    color: white !important;
-    border-color: rgba(255,255,255,0.4) !important;
-}
-
-[data-theme="rouge"] .photo-view-modal #commentAuthor::placeholder,
-[data-theme="rouge"] .photo-view-modal #commentText::placeholder {
-    color: rgba(255,255,255,0.7) !important;
+    
+    .comments-content {
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Fix pour le clavier iOS */
+    .comment-form {
+        padding-bottom: env(safe-area-inset-bottom, 20px);
+    }
 }
