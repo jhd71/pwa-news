@@ -353,7 +353,7 @@
 
 .photo-section img {
     width: 100%;
-    max-height: 400px;
+    max-height: 600px; /* Augmenté de 400px */
     object-fit: contain;
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-md);
@@ -388,6 +388,13 @@
     gap: 5px;
 }
 
+/* Boutons d'action photo */
+.photo-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
 .action-btn {
     background: var(--primary-color);
     color: white;
@@ -409,26 +416,35 @@
     background: var(--accent-color);
 }
 
-/* Section commentaires - PC uniquement fermée par défaut */
+.secondary-btn {
+    background: #6c757d;
+}
+
+.secondary-btn:hover {
+    background: #5a6268;
+}
+
+/* ===== SECTION COMMENTAIRES PC - Collapsed par défaut ===== */
 @media (min-width: 769px) {
     .comments-section {
         transition: all 0.3s ease;
     }
     
-    .comments-section.collapsed .comments-content {
-        display: none;
+    .comments-content {
+        transition: all 0.3s ease;
+        overflow: hidden;
     }
     
-    .comments-section.collapsed {
-        padding-bottom: 10px;
+    /* État fermé - cache le contenu */
+    .comments-content[style*="display: none"] {
+        max-height: 0;
+        opacity: 0;
     }
     
-    .toggle-comments-btn .material-icons {
-        transition: transform 0.3s;
-    }
-    
-    .comments-section.collapsed .toggle-comments-btn .material-icons {
-        transform: rotate(180deg);
+    /* État ouvert */
+    .comments-content[style*="display: block"] {
+        max-height: 1000px;
+        opacity: 1;
     }
 }
 
@@ -644,7 +660,7 @@
     }
     
     .photo-section img {
-        max-height: 300px;
+        max-height: 400px; /* Ajusté pour mobile */
     }
     
     /* Commentaires mobile */
@@ -694,13 +710,19 @@
         outline-offset: -2px;
     }
     
-    /* Modal upload mobile */
+    /* Modal upload mobile plein écran */
     .upload-modal {
         padding: 0;
     }
     
     .upload-modal .modal-content {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         margin: 0;
+        width: 100%;
         height: 100vh;
         max-height: 100vh;
         border-radius: 0;
@@ -708,20 +730,37 @@
         flex-direction: column;
     }
     
-    /* Header modal upload avec espace pour la croix */
+    /* Header modal upload avec croix bien positionnée */
     .upload-modal .modal-header {
-        padding: 15px 60px 15px 20px;
+        padding: 15px 20px;
         flex-shrink: 0;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     
-    /* Croix modal upload */
+    .upload-modal .modal-header h2 {
+        margin: 0;
+        text-align: center;
+    }
+    
+    /* Croix modal upload en haut à droite */
     .upload-modal .close-modal {
         position: absolute;
         right: 15px;
         top: 50%;
         transform: translateY(-50%);
-        width: 44px;
-        height: 44px;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        border-radius: 50%;
+        color: white;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         z-index: 10;
     }
     
@@ -731,7 +770,25 @@
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
         padding: 20px;
-        padding-bottom: 100px; /* Espace pour voir le bouton envoyer */
+        padding-bottom: 100px;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    /* Bouton submit en bas et centré */
+    .submit-photo-btn {
+        margin-top: auto;
+        margin-bottom: 20px;
+        padding: 16px 32px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 30px;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .submit-photo-btn:active {
+        transform: scale(0.98);
     }
     
     /* Boutons upload mobile */
@@ -930,20 +987,48 @@
 
 .submit-photo-btn {
     width: 100%;
-    padding: 14px;
-    background: var(--primary-color);
+    padding: 16px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
     color: white;
     border: none;
-    border-radius: var(--radius-sm);
+    border-radius: 30px;
     font-weight: bold;
     font-size: 16px;
     cursor: pointer;
-    margin-top: 15px;
-    transition: background-color 0.2s;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.submit-photo-btn::before {
+    content: '📷';
+    font-size: 20px;
 }
 
 .submit-photo-btn:hover {
-    background: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.submit-photo-btn:active {
+    transform: translateY(0);
+}
+
+/* Adaptation selon les thèmes */
+[data-theme="dark"] .submit-photo-btn {
+    background: linear-gradient(135deg, #5C6BC0 0%, #7E57C2 100%);
+}
+
+[data-theme="rouge"] .submit-photo-btn {
+    background: linear-gradient(135deg, #E53935 0%, #C62828 100%);
+}
+
+[data-theme="bleuciel"] .submit-photo-btn {
+    background: linear-gradient(135deg, #64B5F6 0%, #42A5F5 100%);
 }
 
 .upload-progress {
