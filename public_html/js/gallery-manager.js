@@ -1,901 +1,676 @@
-// gallery-manager.js - Version complète optimisée
-// PARTIE 1/5 - DÉBUT ET FONCTIONS DE BASE
-
-// ===============================
-// DÉFINITION DES FONCTIONS PRINCIPALES
-// ===============================
-
-// Fonction pour ouvrir la modale d'upload
-function openUploadModal() {
-    const uploadModal = document.getElementById('uploadModal');
-    if (uploadModal) {
-        uploadModal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-    } else {
-        console.error("Modal d'upload non trouvée");
-    }
-}
-
-// Fonction pour fermer la modale d'upload
-function closeUploadModal() {
-    const uploadModal = document.getElementById('uploadModal');
-    if (uploadModal) {
-        uploadModal.style.display = 'none';
-        document.body.style.overflow = '';
-    }
+// ===== VUE DÉTAILLÉE D'UNE PHOTO =====
+async function openPhotoView(photoId) {
+    currentPhotoId = photoId;
+    const modal = document.getElementById('photoViewModal');
     
-    // Réinitialiser le formulaire
-    const photoUploadForm = document.getElementById('photoUploadForm');
-    if (photoUploadForm) {
-        photoUploadForm.reset();
-    }
-    
-    // Vider la prévisualisation
-    const photoPreview = document.getElementById('photoPreview');
-    if (photoPreview) {
-        photoPreview.innerHTML = '';
-    }
-    
-    // Masquer la barre de progression
-    const uploadProgress = document.getElementById('uploadProgress');
-    const progressBarFill = document.querySelector('.progress-bar-fill');
-    if (uploadProgress) {
-        uploadProgress.style.display = 'none';
-        if (progressBarFill) {
-            progressBarFill.style.width = '0%';
-        }
-    }
-}
-
-// VERSION AMÉLIORÉE - Fermer la vue détaillée
-function closePhotoViewModal() {
-    // NETTOYER TOUS LES BOUTONS CRÉÉS DYNAMIQUEMENT
-    const scrollBtn = document.getElementById('scrollToCommentsBtn');
-    const toggleBtn = document.getElementById('commentsToggleBtn');
-    if (scrollBtn) scrollBtn.remove();
-    if (toggleBtn) toggleBtn.remove();
-    
-    const photoViewModal = document.getElementById('photoViewModal');
-    if (photoViewModal) {
-        photoViewModal.style.display = 'none';
-        document.body.classList.remove('modal-open');
-        document.body.style.overflow = '';
-        document.body.style.position = '';
-        document.body.style.width = '';
-        document.body.style.height = '';
-    }
-    window.currentPhotoId = null;
-    
-    // Nettoyer les champs du formulaire sur mobile
-    if (window.innerWidth <= 768) {
-        const commentText = document.getElementById('commentText');
-        if (commentText) {
-            commentText.blur(); // Fermer le clavier
-        }
-    }
-    
-    // Fermer le clavier sur mobile
-    const activeElement = document.activeElement;
-    if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
-        activeElement.blur();
-    }
-    
-    // Réinitialiser le scroll
-    window.scrollTo(0, 0);
-    
-    console.log('Modal fermée proprement');
-}
-
-// Charger plus de photos
-function loadMorePhotos() {
-    if (window.hasMorePhotos && !window.isLoadingPhotos) {
-        loadPhotos(true);
-    }
-}
-
-// Fonction de compatibilité - remplace l'ancienne fonction previewPhoto
-function previewPhoto(event) {
-    console.log("previewPhoto appelée");
-    
-    const file = event && event.target && event.target.files ? event.target.files[0] : null;
-    if (!file) return;
-    
-    if (!file.type.match('image.*')) {
-        alert('Veuillez sélectionner une image');
-        return;
-    }
-    
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const photoPreview = document.getElementById('photoPreview');
-        if (photoPreview) {
-            photoPreview.innerHTML = '';
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.alt = "Prévisualisation";
-            photoPreview.appendChild(img);
-        }
-    };
-    reader.readAsDataURL(file);
-}
-
-// PARTIE 2/5 - CAPTURE PHOTO ET UPLOAD
-
-// Fonction pour initialiser les inputs de capture photo séparés
-function initCameraCapture() {
-    console.log("Initialisation de la capture avec méthode directe");
-    
-    const captureBtn = document.getElementById('captureBtn');
-    const galleryBtn = document.getElementById('galleryBtn');
-    const photoPreview = document.getElementById('photoPreview');
-
-    if (!captureBtn || !galleryBtn || !photoPreview) {
-        console.log("Éléments de capture non disponibles (modal fermée)");
-        return;
-    }
-    
-    // Fonction pour créer un input file temporaire
-    function createTemporaryInput(useCamera) {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/*';
-        
-        if (useCamera) {
-            input.setAttribute('capture', 'environment');
-        }
-        
-        // CORRECTION DE LA PRISE DE PHOTO
-// Dans initCameraCapture(), remplacez le gestionnaire d'événements par :
-
-input.addEventListener('change', function(event) {
-    const file = event.target.files[0];
-    console.log('Fichier sélectionné:', file);
-    
-    if (!file) {
-        console.log('Aucun fichier sélectionné');
-        return;
-    }
-    
-    if (!file.type.match('image.*')) {
-        alert('Veuillez sélectionner une image');
-        input.remove();
-        return;
-    }
-    
-    console.log('Traitement de l\'image:', file.name, file.size);
-    
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        console.log('Image lue avec succès');
-        
-        // COPIER LE FICHIER DANS L'INPUT PRINCIPAL IMMÉDIATEMENT
-        const mainPhotoInput = document.getElementById('photoInput');
-        if (mainPhotoInput) {
-            try {
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(file);
-                mainPhotoInput.files = dataTransfer.files;
-                console.log('Fichier copié dans l\'input principal');
-            } catch (error) {
-                console.error('Erreur copie fichier:', error);
-                // Fallback : déclencher directement l'événement change
-                const event = new Event('change', { bubbles: true });
-                Object.defineProperty(event, 'target', {
-                    writable: false,
-                    value: { files: [file] }
-                });
-                mainPhotoInput.dispatchEvent(event);
-            }
-        }
-        
-        // Afficher la prévisualisation IMMÉDIATEMENT
-        photoPreview.innerHTML = '';
-        const img = document.createElement('img');
-        img.src = e.target.result;
-        img.alt = "Prévisualisation";
-        img.style.maxWidth = '100%';
-        img.style.maxHeight = '200px';
-        img.style.objectFit = 'contain';
-        photoPreview.appendChild(img);
-        
-        // Ajouter une indication de source
-        const sourceIndicator = document.createElement('div');
-        sourceIndicator.style.cssText = 'position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; z-index: 10;';
-        sourceIndicator.innerText = useCamera ? '📷 Photo prise' : '🖼️ Image sélectionnée';
-        photoPreview.style.position = 'relative';
-        photoPreview.appendChild(sourceIndicator);
-        
-        console.log('Prévisualisation affichée');
-        
-        // Supprimer l'input temporaire APRÈS traitement complet
-        setTimeout(() => {
-            input.remove();
-            console.log('Input temporaire supprimé');
-        }, 100);
-    };
-    
-    reader.onerror = function(error) {
-        console.error('Erreur lecture fichier:', error);
-        alert('Erreur lors de la lecture de l\'image');
-        input.remove();
-    };
-    
-    // Lire le fichier
-    reader.readAsDataURL(file);
-});
-        
-        return input;
-    }
-    
-    captureBtn.addEventListener('click', function() {
-        console.log("Clic sur le bouton appareil photo");
-        const input = createTemporaryInput(true);
-        document.body.appendChild(input);
-        input.click();
-    });
-    
-    galleryBtn.addEventListener('click', function() {
-        console.log("Clic sur le bouton galerie");
-        const input = createTemporaryInput(false);
-        document.body.appendChild(input);
-        input.click();
-    });
-}
-
-// Version modifiée de la fonction uploadPhoto
-async function uploadPhoto(event) {
-    event.preventDefault();
-    console.log("Début de la fonction uploadPhoto");
-    
-    const photoInput = document.getElementById('photoInput');
-    const progressBarFill = document.querySelector('.progress-bar-fill');
-    const uploadProgress = document.getElementById('uploadProgress');
-    const uploadModal = document.getElementById('uploadModal');
-    const photoUploadForm = document.getElementById('photoUploadForm');
-    const photoPreview = document.getElementById('photoPreview');
-    
-    if (!photoInput || !progressBarFill || !uploadProgress) {
-        console.error("Éléments DOM manquants pour uploadPhoto");
-        alert('Erreur: éléments DOM manquants. Veuillez rafraîchir la page.');
-        return;
-    }
-    
-    const file = photoInput.files[0];
-    if (!file) {
-        alert('Veuillez sélectionner une image');
-        return;
-    }
-    
-    console.log("Fichier sélectionné:", file.name, file.type, file.size);
-    
-    const title = document.getElementById('photoTitle').value || 'Sans titre';
-    const description = document.getElementById('photoDescription').value || '';
-    const location = document.getElementById('photoLocation').value || '';
-    const authorName = document.getElementById('photographerName').value || 'Anonyme';
-    
-    uploadProgress.style.display = 'block';
+    modal.style.display = 'block';
+    document.body.classList.add('modal-open');
     
     try {
-        localStorage.setItem('photographerName', authorName);
-        
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
-        const filePath = `photos/${fileName}`;
-        
-        if (!window.supabase || !window.supabase.storage) {
-            throw new Error("Supabase n'est pas initialisé");
-        }
-        
-        const { data: fileData, error: fileError } = await window.supabase.storage
-            .from('gallery')
-            .upload(filePath, file, {
-                cacheControl: '3600',
-                upsert: false,
-                onUploadProgress: (progress) => {
-                    const percent = Math.round((progress.loaded / progress.total) * 100);
-                    if (progressBarFill) {
-                        progressBarFill.style.width = `${percent}%`;
-                    }
-                }
-            });
-            
-        if (fileError) {
-            throw fileError;
-        }
-        
-        const { data: urlData } = window.supabase.storage.from('gallery').getPublicUrl(filePath);
-        const imageUrl = urlData.publicUrl;
-        
-        const { data, error } = await window.supabase
+        // Charger les détails de la photo
+        const { data: photo, error } = await window.supabase
             .from('photos')
-            .insert([
-                { 
-                    title, 
-                    description, 
-                    location, 
-                    author_name: authorName,
-                    image_url: imageUrl,
-                    file_path: filePath
-                }
-            ]);
+            .select('*')
+            .eq('id', photoId)
+            .single();
+            
+        if (error) throw error;
         
-        if (error) {
-            throw error;
+        // Mettre à jour l'interface
+        document.getElementById('modalPhotoImg').src = photo.image_url;
+        document.getElementById('modalPhotoTitle').textContent = photo.title || 'Sans titre';
+        document.getElementById('modalPhotoDescription').textContent = photo.description || 'Aucune description';
+        
+        // Métadonnées
+        const locationEl = document.getElementById('modalPhotoLocation');
+        const dateEl = document.getElementById('modalPhotoDate');
+        const authorEl = document.getElementById('modalPhotoAuthor');
+        
+        locationEl.textContent = photo.location ? `📍 ${photo.location}` : '';
+        dateEl.textContent = `📅 ${new Date(photo.created_at).toLocaleDateString('fr-FR')}`;
+        authorEl.textContent = `📸 ${photo.author_name || 'Anonyme'}`;
+        
+        // Charger et afficher les commentaires directement
+        loadComments();
+        
+        // Les commentaires sont toujours visibles par défaut maintenant
+        const commentsContainer = document.getElementById('commentsContainer');
+        const commentFormWrapper = document.getElementById('commentFormWrapper');
+        if (commentsContainer) {
+            commentsContainer.style.display = 'block';
         }
-        
-        alert('Photo ajoutée avec succès!');
-        closeUploadModal();
-        
-        const photoGrid = document.getElementById('photoGrid');
-        if (photoGrid) {
-            photoGrid.innerHTML = '';
+        if (commentFormWrapper) {
+            commentFormWrapper.style.display = 'none';
         }
-        
-        window.currentPage = 0;
-        loadPhotos();
         
     } catch (error) {
-        console.error('Erreur lors de l\'upload:', error);
-        alert(`Une erreur est survenue: ${error.message || 'Erreur inconnue'}. Veuillez réessayer.`);
+        console.error('Erreur chargement photo:', error);
+        alert('Erreur lors du chargement de la photo');
+    }
+}
+
+// ===== GESTION DES COMMENTAIRES =====
+async function loadComments() {
+    const container = document.getElementById('commentsContainer');
+    container.innerHTML = '<p style="text-align: center;">Chargement des commentaires...</p>';
+    
+    try {
+        const { data: comments, error } = await window.supabase
+            .from('photo_comments')
+            .select('*')
+            .eq('photo_id', currentPhotoId)
+            .order('created_at', { ascending: false });
+            
+        if (error) throw error;
         
-        if (uploadProgress) {
-            uploadProgress.style.display = 'none';
+        if (!comments || comments.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">Aucun commentaire pour le moment.</p>';
+        } else {
+            container.innerHTML = '';
+            comments.forEach(comment => {
+                const commentEl = createCommentElement(comment);
+                container.appendChild(commentEl);
+            });
+        }
+        
+    } catch (error) {
+        console.error('Erreur chargement commentaires:', error);
+        container.innerHTML = '<p style="color: red; text-align: center;">Erreur lors du chargement des commentaires.</p>';
+    }
+}
+
+function createCommentElement(comment) {
+    const div = document.createElement('div');
+    div.className = 'comment';
+    
+    const date = new Date(comment.created_at);
+    const formattedDate = date.toLocaleDateString('fr-FR') + ' à ' + date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    
+    div.innerHTML = `
+        <div class="comment-header">
+            <span class="comment-author">${comment.author_name || 'Anonyme'}</span>
+            <span class="comment-date">${formattedDate}</span>
+        </div>
+        <div class="comment-text">${comment.comment_text}</div>
+    `;
+    
+    return div;
+}
+
+// Fonction pour afficher les commentaires (au cas où ils seraient cachés)
+function showComments() {
+    const container = document.getElementById('commentsContainer');
+    if (container) {
+        container.style.display = 'block';
+    }
+}
+
+function showCommentForm() {
+    const formWrapper = document.getElementById('commentFormWrapper');
+    const commentsContainer = document.getElementById('commentsContainer');
+    
+    if (formWrapper) {
+        formWrapper.style.display = 'block';
+        
+        // Focus sur le premier champ
+        setTimeout(() => {
+            const authorInput = document.getElementById('commentAuthor');
+            if (authorInput && !authorInput.value) {
+                authorInput.focus();
+            } else {
+                const textInput = document.getElementById('commentText');
+                if (textInput) {
+                    textInput.focus();
+                }
+            }
+        }, 100);
+    }
+    
+    // S'assurer que les commentaires sont visibles aussi
+    if (commentsContainer) {
+        commentsContainer.style.display = 'block';
+    }
+}
+
+function hideCommentForm() {
+    const formWrapper = document.getElementById('commentFormWrapper');
+    
+    if (formWrapper) {
+        formWrapper.style.display = 'none';
+        
+        // Réinitialiser le formulaire
+        const textInput = document.getElementById('commentText');
+        if (textInput) {
+            textInput.value = '';
         }
     }
 }
 
-// PARTIE 3/5 - COMMENTAIRES ET VUE DÉTAILLÉE
-
-// VERSION AMÉLIORÉE - Fonction pour soumettre un commentaire
 async function submitComment(event) {
     event.preventDefault();
-    console.log("Tentative d'envoi de commentaire");
-    
-    if (!window.currentPhotoId) {
-        console.error("ID de photo non défini");
-        alert("Erreur: photo non sélectionnée");
-        return;
-    }
     
     const authorInput = document.getElementById('commentAuthor');
     const textInput = document.getElementById('commentText');
-    
-    if (!authorInput || !textInput) {
-        console.error("Champs de commentaire non trouvés");
-        alert("Erreur: formulaire non disponible");
-        return;
-    }
     
     const author = authorInput.value.trim();
     const text = textInput.value.trim();
     
     if (!author || !text) {
-        alert('Veuillez remplir tous les champs du commentaire');
-        if (!author) {
-            authorInput.focus();
-        } else if (!text) {
-            textInput.focus();
-        }
+        alert('Veuillez remplir tous les champs');
         return;
     }
     
-    const submitBtn = document.querySelector('#commentForm button');
-    const originalText = submitBtn.textContent;
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Envoi en cours...';
-    
-    // Fermer le clavier sur mobile
-    if (window.innerWidth <= 768) {
-        authorInput.blur();
-        textInput.blur();
-    }
+    // Sauvegarder le nom
+    localStorage.setItem('commenterName', author);
     
     try {
-        localStorage.setItem('commenterName', author);
-        
-        const commentData = {
-            photo_id: window.currentPhotoId,
-            author_name: author,
-            comment_text: text
-        };
-        
         const { data, error } = await window.supabase
             .from('photo_comments')
-            .insert([commentData]);
+            .insert([{
+                photo_id: currentPhotoId,
+                author_name: author,
+                comment_text: text
+            }]);
+            
+        if (error) throw error;
         
-        if (error) {
-            throw error;
-        }
-        
-        // Message de succès
-        const successMsg = document.createElement('div');
-        successMsg.style.cssText = 'background: #28a745; color: white; padding: 10px; border-radius: 8px; text-align: center; margin: 10px 0; font-weight: bold;';
-        successMsg.textContent = '✓ Commentaire ajouté avec succès!';
-        
-        const commentForm = document.getElementById('commentForm');
-        commentForm.insertBefore(successMsg, commentForm.firstChild);
-        
+        // Succès
         textInput.value = '';
+        hideCommentForm();
         
-        setTimeout(() => {
-            successMsg.style.opacity = '0';
-            successMsg.style.transition = 'opacity 0.5s';
-            setTimeout(() => {
-                if (successMsg.parentNode) {
-                    successMsg.remove();
-                }
-            }, 500);
-        }, 3000);
-        
-        setTimeout(() => {
-            loadPhotoComments(window.currentPhotoId);
-        }, 500);
+        // Recharger les commentaires
+        loadComments();
         
     } catch (error) {
-        console.error('Erreur lors de l\'envoi du commentaire:', error);
-        
-        const errorMsg = document.createElement('div');
-        errorMsg.style.cssText = 'background: #dc3545; color: white; padding: 10px; border-radius: 8px; text-align: center; margin: 10px 0; font-weight: bold;';
-        errorMsg.textContent = '✗ Impossible d\'envoyer votre commentaire: ' + (error.message || 'Erreur inconnue');
-        
-        const commentForm = document.getElementById('commentForm');
-        commentForm.insertBefore(errorMsg, commentForm.firstChild);
-        
-        setTimeout(() => {
-            errorMsg.style.opacity = '0';
-            errorMsg.style.transition = 'opacity 0.5s';
-            setTimeout(() => {
-                if (errorMsg.parentNode) {
-                    errorMsg.remove();
-                }
-            }, 500);
-        }, 5000);
-        
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalText;
+        console.error('Erreur envoi commentaire:', error);
+        alert('Erreur lors de l\'envoi du commentaire');
     }
 }
 
-// VERSION AMÉLIORÉE - Ouvrir la vue détaillée d'une photo
-// VERSION COMPLÈTE DE openPhotoView avec toutes les corrections
+// Plus besoin de toggleComments car on enlève cette fonctionnalité// gallery-manager-v2.js - Version complètement refaite
 
-async function openPhotoView(photoId) {
-    console.log("Ouverture de la vue photo:", photoId);
-    
-    if (!document.getElementById('photoViewModal')) {
-        console.error("Modal de vue photo non trouvée!");
-        alert("Erreur: Impossible d'afficher la photo en détail");
-        return;
-    }
-    
-    const modal = document.getElementById('photoViewModal');
-    modal.style.display = 'block';
-    document.body.classList.add('modal-open');
-    window.currentPhotoId = photoId;
-    
-    // Forcer le scroll en haut sur mobile
-    if (window.innerWidth <= 768) {
-        setTimeout(() => {
-            modal.scrollTop = 0;
-            const modalContent = modal.querySelector('.modal-content');
-            if (modalContent) {
-                modalContent.scrollTop = 0;
-            }
-        }, 100);
-    }
-    
-    try {
-        const { data: photo, error: photoError } = await window.supabase
-            .from('photos')
-            .select('*')
-            .eq('id', photoId)
-            .single();
-        
-        if (photoError) {
-            throw photoError;
-        }
-        
-        console.log("Données de la photo récupérées:", photo);
-        
-        // Mettre à jour l'image
-        const modalImg = document.getElementById('modalPhotoImg');
-        if (modalImg) {
-            modalImg.onerror = function() {
-                this.src = 'images/Actu&Media.png';
-            };
-            modalImg.src = photo.image_url || '';
-            modalImg.alt = photo.title || 'Photo';
-        }
-        
-        // Mettre à jour les autres éléments
-        const modalPhotoTitle = document.getElementById('modalPhotoTitle');
-        if (modalPhotoTitle) {
-            modalPhotoTitle.textContent = photo.title || 'Sans titre';
-        }
-        
-        const modalPhotoDescription = document.getElementById('modalPhotoDescription');
-        if (modalPhotoDescription) {
-            modalPhotoDescription.textContent = photo.description || 'Aucune description';
-        }
-        
-        if (document.getElementById('modalPhotoLocation')) {
-            document.getElementById('modalPhotoLocation').textContent = photo.location ? `📍 ${photo.location}` : '';
-        }
-        
-        if (document.getElementById('modalPhotoDate')) {
-            const date = new Date(photo.created_at);
-            document.getElementById('modalPhotoDate').textContent = `📅 ${date.toLocaleDateString('fr-FR')}`;
-        }
-        
-        if (document.getElementById('modalPhotoAuthor')) {
-            document.getElementById('modalPhotoAuthor').textContent = `👤 ${photo.author_name || 'Anonyme'}`;
-        }
-        
-        // Charger les commentaires
-        loadPhotoComments(photoId);
-        
-        // === CORRECTIONS MOBILE COMPLÈTES ===
-        if (window.innerWidth <= 768) {
-            setTimeout(() => {
-                // Nettoyer TOUS les anciens boutons
-                const oldScrollBtn = document.getElementById('scrollToCommentsBtn');
-                const oldToggleBtn = document.getElementById('commentsToggleBtn');
-                if (oldScrollBtn) oldScrollBtn.remove();
-                if (oldToggleBtn) oldToggleBtn.remove();
-                
-                // S'assurer que le formulaire est visible
-                const commentForm = document.getElementById('commentForm');
-                if (commentForm) {
-                    commentForm.style.display = 'block';
-                    commentForm.style.visibility = 'visible';
-                    commentForm.style.opacity = '1';
-                    
-                    const commentAuthor = document.getElementById('commentAuthor');
-                    if (commentAuthor && localStorage.getItem('commenterName')) {
-                        commentAuthor.value = localStorage.getItem('commenterName');
-                    }
-                }
-                
-                // 1. CORRIGER LA CROIX DE FERMETURE
-                const closeBtn = document.getElementById('closePhotoView');
-                if (closeBtn) {
-                    closeBtn.onclick = null;
-                    closeBtn.removeEventListener('click', closePhotoViewModal);
-                    
-                    closeBtn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        console.log('Clic croix fermeture (mobile)');
-                        closePhotoViewModal();
-                    }, { passive: false });
-                    
-                    closeBtn.addEventListener('touchend', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        console.log('Touch croix fermeture (mobile)');
-                        closePhotoViewModal();
-                    }, { passive: false });
-                    
-                    console.log('Croix de fermeture corrigée');
-                }
-                
-                // 2. CORRIGER LE BOUTON "OUVRIR L'IMAGE"
-                const openInNewTabBtn = document.getElementById('openInNewTab');
-                if (openInNewTabBtn) {
-                    openInNewTabBtn.onclick = null;
-                    
-                    openInNewTabBtn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        console.log('Clic ouvrir image (mobile)');
-                        
-                        if (photo && photo.image_url) {
-                            window.open(photo.image_url, '_blank');
-                            console.log('Image ouverte:', photo.image_url);
-                        } else {
-                            console.error('URL image non disponible');
-                            alert('Impossible d\'ouvrir l\'image');
-                        }
-                    }, { passive: false });
-                    
-                    openInNewTabBtn.addEventListener('touchend', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        if (photo && photo.image_url) {
-                            window.open(photo.image_url, '_blank');
-                        }
-                    }, { passive: false });
-                    
-                    console.log('Bouton "Ouvrir image" corrigé');
-                }
-                
-                // 3. CRÉER LE BOUTON "VOIR LES COMMENTAIRES" - VERSION CORRIGÉE
-const buttonContainer = document.querySelector('.button-container');
-if (buttonContainer && !document.getElementById('scrollToCommentsBtn')) {
-    const scrollBtn = document.createElement('button');
-    scrollBtn.id = 'scrollToCommentsBtn';
-    scrollBtn.className = 'scroll-to-comments-btn';
-    scrollBtn.innerHTML = '<i class="material-icons">expand_more</i> Voir les commentaires';
+// ===== VARIABLES GLOBALES =====
+let currentPhotoId = null;
+let currentPage = 0;
+let pageSize = 12;
+let hasMorePhotos = true;
+let isLoadingPhotos = false;
+let isCommentFormVisible = false;
+let isCommentsExpanded = true;
 
-
-// BOUTON "VOIR LES COMMENTAIRES" - VERSION SIMPLE
-
-scrollBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log('Clic bouton commentaires - version simple');
-    
-    // Scroll simple vers le bas de la page
-    const photoDetailView = document.querySelector('.photo-detail-view');
-    if (photoDetailView) {
-        // Calculer la position pour voir les commentaires
-        const scrollPosition = photoDetailView.scrollHeight - photoDetailView.clientHeight + 50;
+// ===== INITIALISATION =====
+function waitForSupabase() {
+    return new Promise((resolve, reject) => {
+        let attempts = 0;
+        const maxAttempts = 50; // 5 secondes max
         
-        photoDetailView.scrollTo({
-            top: scrollPosition,
-            behavior: 'smooth'
-        });
-        
-        console.log('Scroll vers position:', scrollPosition);
-        
-        // Feedback visuel
-        scrollBtn.innerHTML = '<i class="material-icons">check</i> Commentaires !';
-        scrollBtn.style.background = '#28a745';
-        
-        setTimeout(() => {
-            scrollBtn.innerHTML = '<i class="material-icons">expand_more</i> Voir les commentaires';
-            scrollBtn.style.background = '#FF6B35';
-        }, 1500);
-    } else {
-        console.error('Container de scroll non trouvé');
-        // Essayer de scroller la fenêtre entière
-        window.scrollTo({
-            top: document.body.scrollHeight,
-            behavior: 'smooth'
-        });
-    }
-}, { passive: false });
-    
-    // Ajouter aussi l'événement touch pour mobile
-    scrollBtn.addEventListener('touchend', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log('Touch sur bouton commentaires');
-        // Déclencher le même comportement que le clic
-        setTimeout(() => {
-            scrollBtn.click();
-        }, 50);
-    }, { passive: false });
-    
-    buttonContainer.appendChild(scrollBtn);
-    console.log('Bouton "Voir commentaires" créé avec scroll corrigé');
-}
-            }, 500);
-        }
-        
-    } catch (error) {
-        console.error('Erreur chargement détails:', error);
-        alert('Impossible de charger les détails de la photo');
-    }
-}
-
-// PARTIE 4/5 - CHARGEMENT PHOTOS ET OPTIMISATIONS MOBILE
-
-// VERSION AMÉLIORÉE - Charger les commentaires d'une photo
-async function loadPhotoComments(photoId) {
-    console.log("Chargement des commentaires pour la photo ID:", photoId);
-    
-    const commentsContainer = document.getElementById('commentsContainer');
-    if (!commentsContainer) {
-        console.error("Conteneur de commentaires non trouvé");
-        return;
-    }
-    
-    commentsContainer.innerHTML = '<div style="text-align: center; padding: 20px; color: #6c757d;"><i class="material-icons" style="font-size: 24px; margin-bottom: 10px;">hourglass_empty</i><br>Chargement des commentaires...</div>';
-    
-    try {
-        const idToUse = typeof photoId === 'string' ? parseInt(photoId, 10) : photoId;
-        
-        const { data: comments, error } = await window.supabase
-            .from('photo_comments')
-            .select('*')
-            .eq('photo_id', idToUse)
-            .order('created_at', { ascending: false });
-        
-        if (error) {
-            throw error;
-        }
-        
-        if (!comments || comments.length === 0) {
-            commentsContainer.innerHTML = `
-                <div style="text-align: center; padding: 20px; color: #6c757d; background: #f8f9fa; border-radius: 8px;">
-                    <i class="material-icons" style="font-size: 36px; display: block; margin-bottom: 10px; color: #dee2e6;">chat_bubble_outline</i>
-                    <p style="margin: 0; font-size: 14px;">Aucun commentaire pour le moment.<br>Soyez le premier à commenter!</p>
-                </div>
-            `;
-            return;
-        }
-        
-        commentsContainer.innerHTML = '';
-        
-        comments.forEach((comment, index) => {
-            const date = new Date(comment.created_at);
-            const formattedDate = date.toLocaleDateString('fr-FR', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
+        const checkSupabase = () => {
+            attempts++;
             
-            const commentElement = document.createElement('div');
-            commentElement.className = 'comment';
-            commentElement.dataset.id = comment.id;
-            commentElement.style.opacity = '0';
-            commentElement.style.transform = 'translateY(20px)';
-            commentElement.style.transition = 'all 0.3s ease';
-            
-            commentElement.innerHTML = `
-                <div class="comment-header">
-                    <span class="comment-author">${comment.author_name || 'Anonyme'}</span>
-                    <span class="comment-date">${formattedDate}</span>
-                </div>
-                <div class="comment-text">${comment.comment_text || ''}</div>
-            `;
-            
-            commentsContainer.appendChild(commentElement);
-            
-            setTimeout(() => {
-                commentElement.style.opacity = '1';
-                commentElement.style.transform = 'translateY(0)';
-            }, 100 * index);
-        });
-        
-    } catch (error) {
-        console.error('Erreur lors du chargement des commentaires:', error);
-        commentsContainer.innerHTML = `
-            <div style="color: #dc3545; text-align: center; padding: 20px; background: #f8d7da; border-radius: 8px; border: 1px solid #f5c6cb;">
-                <i class="material-icons" style="font-size: 24px; margin-bottom: 10px;">error</i>
-                <p style="margin: 0; font-weight: bold;">Impossible de charger les commentaires</p>
-                <p style="margin: 5px 0 0 0; font-size: 14px;">Erreur: ${error.message || 'Erreur inconnue'}</p>
-                <button onclick="loadPhotoComments(${photoId})" style="margin-top: 10px; padding: 8px 16px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                    Réessayer
-                </button>
-            </div>
-        `;
-    }
-}
-
-// Afficher les photos dans la grille
-function renderPhotos(photos) {
-    const photoGrid = document.getElementById('photoGrid');
-    const noPhotosMessage = document.getElementById('noPhotosMessage');
-    
-    if (!photos || photos.length === 0) {
-        if (noPhotosMessage) {
-            noPhotosMessage.style.display = 'block';
-        }
-        return;
-    }
-    
-    if (noPhotosMessage) {
-        noPhotosMessage.style.display = 'none';
-    }
-    
-    photos.forEach(photo => {
-        try {
-            if (!photo || !photo.id) {
+            // Vérifier si window.supabase existe et a la méthode from
+            if (window.supabase && typeof window.supabase.from === 'function') {
+                console.log('Supabase trouvé et fonctionnel');
+                resolve();
                 return;
             }
             
-            const photoCard = document.createElement('div');
-            photoCard.className = 'photo-card';
-            photoCard.dataset.id = photo.id;
-            photoCard.style.position = 'relative';
-            
-            let formattedDate = 'Date inconnue';
-            if (photo.created_at) {
-                try {
-                    const date = new Date(photo.created_at);
-                    formattedDate = date.toLocaleDateString('fr-FR', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric'
-                    });
-                } catch (e) {
-                    console.error("Erreur de formatage de date:", e);
+            // Si getSupabaseClient existe, essayer de l'utiliser
+            if (window.getSupabaseClient && typeof window.getSupabaseClient === 'function') {
+                const client = window.getSupabaseClient();
+                if (client && typeof client.from === 'function') {
+                    window.supabase = client;
+                    console.log('Supabase récupéré via getSupabaseClient');
+                    resolve();
+                    return;
                 }
             }
             
-            photoCard.innerHTML = `
-                <div class="photo-img-container">
-                    <img class="photo-img" src="${photo.image_url || ''}" alt="${photo.title || 'Photo sans titre'}" 
-                         onerror="this.src='images/Actu&Media.png';">
-                </div>
-                <div class="photo-info">
-                    <h3 class="photo-title">${photo.title || 'Sans titre'}</h3>
-                    <div class="photo-meta">
-                        <span>${photo.location || 'Lieu non précisé'}</span>
-                        <span>Par ${photo.author_name || 'Anonyme'}</span>
-                        <span>${formattedDate}</span>
-                    </div>
-                </div>
-            `;
+            if (attempts >= maxAttempts) {
+                reject(new Error('Timeout en attendant Supabase'));
+                return;
+            }
             
-            photoCard.addEventListener('click', (e) => {
-                if (e.target.closest('.delete-photo-btn')) {
-                    return;
-                }
-                openPhotoView(photo.id);
-            });
-            
-            photoGrid.appendChild(photoCard);
-            
-        } catch (error) {
-            console.error("Erreur lors du rendu de la photo:", error, photo);
-        }
+            // Réessayer dans 100ms
+            setTimeout(checkSupabase, 100);
+        };
+        
+        checkSupabase();
     });
 }
 
-// Charger les photos
-async function loadPhotos(isLoadMore = false) {
-    const photoGrid = document.getElementById('photoGrid');
-    const loadingIndicator = document.getElementById('loadingIndicator');
-    const noPhotosMessage = document.getElementById('noPhotosMessage');
-    const loadMoreBtn = document.getElementById('loadMoreBtn');
+async function initializeApp() {
+    console.log('Attente de Supabase...');
     
-    if (window.isLoadingPhotos) {
+    try {
+        await waitForSupabase();
+        console.log('Supabase prêt, initialisation de la galerie');
+        
+        // Vérifier une dernière fois que tout est OK
+        if (!window.supabase || typeof window.supabase.from !== 'function') {
+            throw new Error('Supabase non fonctionnel');
+        }
+        
+        initializeGallery();
+    } catch (error) {
+        console.error('Erreur lors de l\'initialisation:', error);
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        if (loadingIndicator) {
+            loadingIndicator.innerHTML = `
+                <div style="color: red; text-align: center; padding: 20px;">
+                    <p><strong>Erreur de chargement</strong></p>
+                    <p>${error.message}</p>
+                    <button onclick="location.reload()" style="margin-top: 10px; padding: 8px 16px; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        Rafraîchir la page
+                    </button>
+                </div>
+            `;
+        }
+    }
+}
+
+// Attendre que le DOM soit chargé
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeApp);
+} else {
+    // DOM déjà chargé
+    setTimeout(initializeApp, 100); // Petit délai pour laisser le temps aux scripts de se charger
+}
+
+function initializeGallery() {
+    console.log('Initialisation complète de la galerie');
+    
+    // Initialiser les événements
+    initializeEventListeners();
+    
+    // Charger les photos
+    loadPhotos();
+    
+    // Restaurer les noms sauvegardés
+    restoreSavedNames();
+    
+    // Optimisations mobile
+    if (isMobile()) {
+        initializeMobileOptimizations();
+    }
+}
+
+// ===== DÉTECTION MOBILE =====
+function isMobile() {
+    return window.innerWidth <= 768 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+}
+
+// ===== ÉVÉNEMENTS PRINCIPAUX =====
+function initializeEventListeners() {
+    console.log('Initialisation des événements');
+    
+    // Bouton upload
+    const uploadBtn = document.getElementById('uploadPhotoBtn');
+    if (uploadBtn) {
+        uploadBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Clic sur le bouton upload');
+            openUploadModal();
+        });
+    } else {
+        console.error('Bouton upload non trouvé !');
+    }
+    
+    // Fermeture modals
+    const closeUploadBtn = document.getElementById('closeUploadModal');
+    if (closeUploadBtn) {
+        closeUploadBtn.addEventListener('click', closeUploadModal);
+    }
+    
+    const closePhotoBtn = document.getElementById('closePhotoView');
+    if (closePhotoBtn) {
+        closePhotoBtn.addEventListener('click', closePhotoViewModal);
+    }
+    
+    // Bouton charger plus
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', loadMorePhotos);
+    }
+    
+    // Formulaire upload
+    const uploadForm = document.getElementById('photoUploadForm');
+    if (uploadForm) {
+        uploadForm.addEventListener('submit', uploadPhoto);
+    }
+    
+    // Formulaire commentaire
+    const commentForm = document.getElementById('commentForm');
+    if (commentForm) {
+        commentForm.addEventListener('submit', submitComment);
+    }
+    
+    // Boutons capture/galerie
+    initializeCameraButtons();
+    
+    // Bouton ouvrir image
+    const openNewTabBtn = document.getElementById('openInNewTab');
+    if (openNewTabBtn) {
+        openNewTabBtn.addEventListener('click', function() {
+            if (currentPhotoId) {
+                const img = document.getElementById('modalPhotoImg');
+                if (img && img.src) {
+                    window.open(img.src, '_blank');
+                }
+            }
+        });
+    }
+    
+    // NOUVEAUX BOUTONS COMMENTAIRES
+    const viewCommentsBtn = document.getElementById('viewCommentsBtn');
+    if (viewCommentsBtn) {
+        viewCommentsBtn.addEventListener('click', showComments);
+    }
+    
+    const writeCommentBtn = document.getElementById('writeCommentBtn');
+    if (writeCommentBtn) {
+        writeCommentBtn.addEventListener('click', showCommentForm);
+    }
+    
+    // Bouton annuler commentaire
+    const cancelBtn = document.getElementById('cancelCommentBtn');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', hideCommentForm);
+    }
+    
+    // Fermer modals en cliquant sur l'overlay
+    const overlay = document.querySelector('.modal-overlay');
+    if (overlay) {
+        overlay.addEventListener('click', closePhotoViewModal);
+    }
+    
+    // Fermer modal upload en cliquant dehors
+    const uploadModal = document.getElementById('uploadModal');
+    if (uploadModal) {
+        uploadModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeUploadModal();
+            }
+        });
+    }
+    
+    // FIX: Empêcher la fermeture du formulaire au focus sur mobile
+    if (isMobile()) {
+        const commentAuthor = document.getElementById('commentAuthor');
+        const commentText = document.getElementById('commentText');
+        
+        if (commentAuthor) {
+            commentAuthor.addEventListener('touchstart', function(e) {
+                e.stopPropagation();
+            });
+            
+            commentAuthor.addEventListener('focus', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                // Garder le formulaire visible
+                const formWrapper = document.getElementById('commentFormWrapper');
+                if (formWrapper) {
+                    formWrapper.style.display = 'block';
+                }
+            });
+        }
+        
+        if (commentText) {
+            commentText.addEventListener('touchstart', function(e) {
+                e.stopPropagation();
+            });
+            
+            commentText.addEventListener('focus', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                // Garder le formulaire visible
+                const formWrapper = document.getElementById('commentFormWrapper');
+                if (formWrapper) {
+                    formWrapper.style.display = 'block';
+                }
+            });
+        }
+    }
+    
+    console.log('Événements initialisés avec succès');
+}
+
+// ===== GESTION DES BOUTONS CAMERA =====
+function initializeCameraButtons() {
+    const captureBtn = document.getElementById('captureBtn');
+    const galleryBtn = document.getElementById('galleryBtn');
+    const photoInput = document.getElementById('photoInput');
+    
+    if (!captureBtn || !galleryBtn || !photoInput) return;
+    
+    // Fonction pour gérer le changement de fichier
+    function handleFileSelect(file) {
+        if (!file || !file.type.match('image.*')) {
+            alert('Veuillez sélectionner une image');
+            return;
+        }
+        
+        // Afficher la prévisualisation
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const photoPreview = document.getElementById('photoPreview');
+            if (photoPreview) {
+                photoPreview.innerHTML = `<img src="${e.target.result}" alt="Prévisualisation">`;
+            }
+        };
+        reader.readAsDataURL(file);
+        
+        // Mettre à jour l'input principal
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        photoInput.files = dataTransfer.files;
+    }
+    
+    // Bouton prendre photo
+    captureBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.capture = 'environment';
+        
+        input.onchange = function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                handleFileSelect(file);
+            }
+        };
+        
+        input.click();
+    });
+    
+    // Bouton choisir image
+    galleryBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        
+        input.onchange = function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                handleFileSelect(file);
+            }
+        };
+        
+        input.click();
+    });
+}
+
+// ===== GESTION DES MODALS =====
+function openUploadModal() {
+    console.log('Ouverture de la modal upload');
+    const modal = document.getElementById('uploadModal');
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.classList.add('modal-open');
+        console.log('Modal upload ouverte');
+    } else {
+        console.error('Modal upload non trouvée !');
+    }
+}
+
+function closeUploadModal() {
+    const modal = document.getElementById('uploadModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.classList.remove('modal-open');
+        
+        // Réinitialiser le formulaire
+        document.getElementById('photoUploadForm')?.reset();
+        document.getElementById('photoPreview').innerHTML = '';
+        document.getElementById('uploadProgress').style.display = 'none';
+    }
+}
+
+function closePhotoViewModal() {
+    const modal = document.getElementById('photoViewModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.classList.remove('modal-open');
+        currentPhotoId = null;
+        
+        // Réinitialiser le formulaire de commentaire
+        hideCommentForm();
+        
+        // Fermer le clavier sur mobile
+        if (isMobile()) {
+            document.activeElement?.blur();
+        }
+    }
+}
+
+// ===== UPLOAD DE PHOTO =====
+async function uploadPhoto(event) {
+    event.preventDefault();
+    
+    const photoInput = document.getElementById('photoInput');
+    const file = photoInput.files[0];
+    
+    if (!file) {
+        alert('Veuillez sélectionner une image');
         return;
     }
     
-    if (!photoGrid || !loadingIndicator) {
-        console.error("Éléments DOM essentiels non trouvés");
+    // Récupérer les données du formulaire
+    const title = document.getElementById('photoTitle').value.trim();
+    const description = document.getElementById('photoDescription').value.trim();
+    const location = document.getElementById('photoLocation').value.trim();
+    const authorName = document.getElementById('photographerName').value.trim();
+    
+    // Afficher la progression
+    const uploadProgress = document.getElementById('uploadProgress');
+    const progressBarFill = document.querySelector('.progress-bar-fill');
+    uploadProgress.style.display = 'block';
+    
+    try {
+        // Sauvegarder le nom
+        localStorage.setItem('photographerName', authorName);
+        
+        // Générer un nom de fichier unique
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+        const filePath = `photos/${fileName}`;
+        
+        // Upload vers Supabase Storage
+        const { data: fileData, error: fileError } = await window.supabase.storage
+            .from('gallery')
+            .upload(filePath, file, {
+                cacheControl: '3600',
+                upsert: false
+            });
+            
+        if (fileError) throw fileError;
+        
+        // Obtenir l'URL publique
+        const { data: urlData } = window.supabase.storage
+            .from('gallery')
+            .getPublicUrl(filePath);
+        
+        // Insérer dans la base de données
+        const { data, error } = await window.supabase
+            .from('photos')
+            .insert([{
+                title: title || 'Sans titre',
+                description: description || '',
+                location: location || '',
+                author_name: authorName || 'Anonyme',
+                image_url: urlData.publicUrl,
+                file_path: filePath
+            }]);
+            
+        if (error) throw error;
+        
+        // Succès
+        alert('Photo ajoutée avec succès !');
+        closeUploadModal();
+        
+        // Recharger les photos
+        currentPage = 0;
+        document.getElementById('photoGrid').innerHTML = '';
+        loadPhotos();
+        
+    } catch (error) {
+        console.error('Erreur upload:', error);
+        alert('Erreur lors de l\'upload: ' + error.message);
+    } finally {
+        uploadProgress.style.display = 'none';
+        progressBarFill.style.width = '0%';
+    }
+}
+
+// ===== CHARGEMENT DES PHOTOS =====
+async function loadPhotos(isLoadMore = false) {
+    console.log('Début du chargement des photos');
+    
+    if (isLoadingPhotos) {
+        console.log('Chargement déjà en cours, annulé');
         return;
     }
     
     if (!window.supabase) {
-        console.error('Erreur: Supabase n\'est pas initialisé');
-        loadingIndicator.style.display = 'none';
-        const errorMessage = document.createElement('div');
-        errorMessage.innerHTML = `
-            <div style="color: #d32f2f; text-align: center; padding: 20px;">
-                <p><strong>Erreur de connexion à la base de données</strong></p>
-                <p>Impossible de charger les photos. Veuillez rafraîchir la page.</p>
-                <button onclick="location.reload()" style="padding: 8px 16px; background: #d32f2f; color: white; border: none; border-radius: 4px; margin-top: 10px;">Rafraîchir</button>
-            </div>
-        `;
-        photoGrid.appendChild(errorMessage);
+        console.error('Supabase non disponible pour charger les photos');
         return;
     }
-
-    window.isLoadingPhotos = true;
-
-    if (!isLoadMore) {
+    
+    isLoadingPhotos = true;
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const noPhotosMessage = document.getElementById('noPhotosMessage');
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    const photoGrid = document.getElementById('photoGrid');
+    
+    if (!isLoadMore && loadingIndicator) {
         loadingIndicator.style.display = 'flex';
-        photoGrid.innerHTML = '';
-        window.currentPage = 0;
     }
     
     try {
-        const from = window.currentPage * window.pageSize;
-        const to = from + window.pageSize - 1;
+        const from = currentPage * pageSize;
+        const to = from + pageSize - 1;
         
-        let { data: photos, error } = await window.supabase
+        console.log(`Chargement des photos de ${from} à ${to}`);
+        
+        const { data: photos, error } = await window.supabase
             .from('photos')
             .select('*')
             .order('created_at', { ascending: false })
             .range(from, to);
-        
+            
         if (error) {
+            console.error('Erreur Supabase:', error);
             throw error;
         }
         
+        console.log(`${photos ? photos.length : 0} photos chargées`);
+        
         if (!photos || photos.length === 0) {
-            if (noPhotosMessage) {
+            if (currentPage === 0 && noPhotosMessage) {
                 noPhotosMessage.style.display = 'block';
             }
-            window.hasMorePhotos = false;
+            hasMorePhotos = false;
             if (loadMoreBtn) {
                 loadMoreBtn.style.display = 'none';
             }
@@ -903,441 +678,391 @@ async function loadPhotos(isLoadMore = false) {
             if (noPhotosMessage) {
                 noPhotosMessage.style.display = 'none';
             }
-            
             renderPhotos(photos);
             
-            if (photos.length < window.pageSize) {
-                window.hasMorePhotos = false;
-                if (loadMoreBtn) {
-                    loadMoreBtn.style.display = 'none';
-                }
-            } else {
-                window.hasMorePhotos = true;
-                if (loadMoreBtn) {
-                    loadMoreBtn.style.display = 'block';
-                }
+            hasMorePhotos = photos.length === pageSize;
+            if (loadMoreBtn) {
+                loadMoreBtn.style.display = hasMorePhotos ? 'block' : 'none';
             }
             
-            window.currentPage++;
+            currentPage++;
         }
         
     } catch (error) {
-        console.error('Erreur lors du chargement des photos:', error);
-        photoGrid.innerHTML = `
-            <div style="color: #d32f2f; text-align: center; padding: 20px; margin: 20px; border-radius: 8px; background-color: rgba(211, 47, 47, 0.1);">
-                <p><strong>Erreur lors du chargement des photos</strong></p>
-                <p>Détails: ${error.message || 'Erreur inconnue'}</p>
-                <button onclick="location.reload()" style="padding: 8px 16px; background: #d32f2f; color: white; border: none; border-radius: 4px; margin-top: 10px;">Réessayer</button>
+        console.error('Erreur chargement photos:', error);
+        
+        // Afficher un message d'erreur plus détaillé
+        if (photoGrid && currentPage === 0) {
+            photoGrid.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: var(--text-color);">
+                    <p style="font-size: 18px; margin-bottom: 10px;">⚠️ Impossible de charger les photos</p>
+                    <p style="color: var(--text-muted);">Erreur: ${error.message || 'Erreur inconnue'}</p>
+                    <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; background: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                        Rafraîchir la page
+                    </button>
+                </div>
+            `;
+        }
+    } finally {
+        if (loadingIndicator) {
+            loadingIndicator.style.display = 'none';
+        }
+        isLoadingPhotos = false;
+    }
+}
+
+function loadMorePhotos() {
+    if (hasMorePhotos && !isLoadingPhotos) {
+        loadPhotos(true);
+    }
+}
+
+// ===== AFFICHAGE DES PHOTOS =====
+function renderPhotos(photos) {
+    const photoGrid = document.getElementById('photoGrid');
+    
+    photos.forEach(photo => {
+        const photoCard = document.createElement('div');
+        photoCard.className = 'photo-card';
+        photoCard.dataset.id = photo.id;
+        
+        const date = new Date(photo.created_at);
+        const formattedDate = date.toLocaleDateString('fr-FR');
+        
+        photoCard.innerHTML = `
+            <div class="photo-img-container">
+                <img class="photo-img" 
+                     src="${photo.image_url}" 
+                     alt="${photo.title || 'Photo'}"
+                     onerror="this.src='images/Actu&Media.png';">
+            </div>
+            <div class="photo-info">
+                <h3 class="photo-title">${photo.title || 'Sans titre'}</h3>
+                <div class="photo-meta">
+                    <span>📍 ${photo.location || 'Lieu non précisé'}</span>
+                    <span>📸 ${photo.author_name || 'Anonyme'}</span>
+                    <span>📅 ${formattedDate}</span>
+                </div>
             </div>
         `;
-    } finally {
-        loadingIndicator.style.display = 'none';
-        window.isLoadingPhotos = false;
-    }
+        
+        photoCard.addEventListener('click', () => openPhotoView(photo.id));
+        photoGrid.appendChild(photoCard);
+    });
 }
 
-// ===============================
-// OPTIMISATIONS MOBILE
-// ===============================
-
-// Gestion du clavier mobile
-function initMobileKeyboardHandling() {
-    if (window.innerWidth <= 768) {
-        const commentAuthor = document.getElementById('commentAuthor');
-        const commentText = document.getElementById('commentText');
-        
-        if (commentAuthor) {
-            commentAuthor.addEventListener('focus', function() {
-                console.log('Focus sur champ auteur');
-                setTimeout(() => {
-                    const commentForm = document.getElementById('commentForm');
-                    if (commentForm) {
-                        commentForm.scrollIntoView({ 
-                            behavior: 'smooth', 
-                            block: 'end' 
-                        });
-                    }
-                }, 300);
-            });
+// ===== VUE DÉTAILLÉE D'UNE PHOTO =====
+async function openPhotoView(photoId) {
+    currentPhotoId = photoId;
+    const modal = document.getElementById('photoViewModal');
+    
+    modal.style.display = 'block';
+    document.body.classList.add('modal-open');
+    
+    try {
+        // Charger les détails de la photo
+        const { data: photo, error } = await window.supabase
+            .from('photos')
+            .select('*')
+            .eq('id', photoId)
+            .single();
             
-            commentAuthor.addEventListener('blur', function() {
-                if (this.value.trim()) {
-                    localStorage.setItem('commenterName', this.value.trim());
-                }
-            });
-        }
+        if (error) throw error;
         
-        if (commentText) {
-            commentText.addEventListener('focus', function() {
-                console.log('Focus sur champ commentaire');
-                setTimeout(() => {
-                    const commentForm = document.getElementById('commentForm');
-                    if (commentForm) {
-                        commentForm.scrollIntoView({ 
-                            behavior: 'smooth', 
-                            block: 'end' 
-                        });
-                    }
-                }, 300);
-            });
-        }
-    }
-}
-
-// Optimisations mobile complètes
-function initMobileOptimizations() {
-    console.log('Initialisation des optimisations mobile');
-    
-    const isMobile = window.innerWidth <= 768 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    
-    if (isMobile) {
-        console.log('Mode mobile détecté - Application des optimisations');
+        // Mettre à jour l'interface
+        document.getElementById('modalPhotoImg').src = photo.image_url;
+        document.getElementById('modalPhotoTitle').textContent = photo.title || 'Sans titre';
+        document.getElementById('modalPhotoDescription').textContent = photo.description || 'Aucune description';
         
-        setTimeout(initMobileKeyboardHandling, 1000);
+        // Métadonnées
+        const locationEl = document.getElementById('modalPhotoLocation');
+        const dateEl = document.getElementById('modalPhotoDate');
+        const authorEl = document.getElementById('modalPhotoAuthor');
         
-        // Améliorer la gestion des clics
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.photo-view-modal')) {
-                e.stopPropagation();
+        locationEl.textContent = photo.location ? `📍 ${photo.location}` : '';
+        dateEl.textContent = `📅 ${new Date(photo.created_at).toLocaleDateString('fr-FR')}`;
+        authorEl.textContent = `📸 ${photo.author_name || 'Anonyme'}`;
+        
+        // Charger les commentaires
+        loadComments();
+        
+        // Sur PC, fermer les commentaires par défaut
+        if (!isMobile()) {
+            const commentsSection = document.querySelector('.comments-section');
+            if (commentsSection) {
+                commentsSection.classList.add('collapsed');
+                isCommentsExpanded = false;
+                const icon = document.querySelector('#toggleCommentsBtn .material-icons');
+                if (icon) icon.textContent = 'keyboard_arrow_up';
             }
-        }, true);
-        
-        // Gestion du redimensionnement
-        let resizeTimer;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function() {
-                const modal = document.getElementById('photoViewModal');
-                if (modal && modal.style.display === 'block') {
-                    const commentForm = document.getElementById('commentForm');
-                    if (commentForm) {
-                        commentForm.style.display = 'block';
-                        commentForm.style.visibility = 'visible';
-                        commentForm.style.opacity = '1';
-                    }
-                }
-            }, 250);
-        });
-        
-        // Optimisations iOS Safari
-        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-            console.log('iOS détecté - Optimisations Safari appliquées');
-            
-            const viewport = document.querySelector('meta[name="viewport"]');
-            if (viewport) {
-                viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
-            }
-            
-            document.addEventListener('touchmove', function(e) {
-                if (document.body.classList.contains('modal-open')) {
-                    const target = e.target.closest('.photo-view-modal .modal-content, #commentsContainer');
-                    if (!target) {
-                        e.preventDefault();
-                    }
-                }
-            }, { passive: false });
         }
-    }
-    
-    // Observer pour les changements de modal
-    const photoViewModal = document.getElementById('photoViewModal');
-    if (photoViewModal) {
-        const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-                    if (photoViewModal.style.display === 'block' && isMobile) {
-                        setTimeout(() => {
-                            initMobileKeyboardHandling();
-                            const commentForm = document.getElementById('commentForm');
-                            if (commentForm) {
-                                commentForm.style.display = 'block';
-                                commentForm.style.visibility = 'visible';
-                                commentForm.style.opacity = '1';
-                            }
-                        }, 500);
-                    }
-                }
-            });
-        });
         
-        observer.observe(photoViewModal, {
-            attributes: true,
-            attributeFilter: ['style']
-        });
+    } catch (error) {
+        console.error('Erreur chargement photo:', error);
+        alert('Erreur lors du chargement de la photo');
     }
 }
 
-// PARTIE 5/5 - INITIALISATION ET FIN
+// ===== GESTION DES COMMENTAIRES =====
+async function loadComments() {
+    const container = document.getElementById('commentsContainer');
+    container.innerHTML = '<p style="text-align: center;">Chargement des commentaires...</p>';
+    
+    try {
+        const { data: comments, error } = await window.supabase
+            .from('photo_comments')
+            .select('*')
+            .eq('photo_id', currentPhotoId)
+            .order('created_at', { ascending: false });
+            
+        if (error) throw error;
+        
+        if (!comments || comments.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: var(--text-muted);">Aucun commentaire pour le moment.</p>';
+        } else {
+            container.innerHTML = '';
+            comments.forEach(comment => {
+                const commentEl = createCommentElement(comment);
+                container.appendChild(commentEl);
+            });
+        }
+        
+    } catch (error) {
+        console.error('Erreur chargement commentaires:', error);
+        container.innerHTML = '<p style="color: red;">Erreur lors du chargement des commentaires.</p>';
+    }
+}
 
-// ===============================
-// INITIALISATION
-// ===============================
+function createCommentElement(comment) {
+    const div = document.createElement('div');
+    div.className = 'comment';
+    
+    const date = new Date(comment.created_at);
+    const formattedDate = date.toLocaleDateString('fr-FR') + ' à ' + date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    
+    div.innerHTML = `
+        <div class="comment-header">
+            <span class="comment-author">${comment.author_name || 'Anonyme'}</span>
+            <span class="comment-date">${formattedDate}</span>
+        </div>
+        <div class="comment-text">${comment.comment_text}</div>
+    `;
+    
+    return div;
+}
 
-// Initialisation principale
-function initializeGallery() {
-    console.log("Début de initializeGallery");
+function showCommentForm() {
+    const form = document.getElementById('commentForm');
+    const showBtn = document.getElementById('showCommentFormBtn');
     
-    // Variables globales
-    window.currentPhotoId = null;
-    window.currentPage = 0;
-    window.pageSize = 12;
-    window.hasMorePhotos = true;
-    window.isLoadingPhotos = false;
+    form.style.display = 'block';
+    showBtn.style.display = 'none';
+    isCommentFormVisible = true;
     
-    // Éléments DOM
-    const photoGrid = document.getElementById('photoGrid');
-    const uploadModal = document.getElementById('uploadModal');
-    const photoViewModal = document.getElementById('photoViewModal');
-    const uploadPhotoBtn = document.getElementById('uploadPhotoBtn');
-    const closeUploadModalBtn = document.getElementById('closeUploadModal');
-    const closePhotoViewBtn = document.getElementById('closePhotoView');
-    const photoUploadForm = document.getElementById('photoUploadForm');
-    const photoInput = document.getElementById('photoInput');
-    const loadingIndicator = document.getElementById('loadingIndicator');
-    const loadMoreBtn = document.getElementById('loadMoreBtn');
-    const commentForm = document.getElementById('commentForm');
+    // Focus sur le premier champ
+    const authorInput = document.getElementById('commentAuthor');
+    if (authorInput && !authorInput.value) {
+        authorInput.focus();
+    } else {
+        document.getElementById('commentText').focus();
+    }
     
-    if (!photoGrid || !loadingIndicator) {
-        console.error('Éléments DOM essentiels non trouvés');
+    // Sur mobile, s'assurer que le formulaire est visible
+    if (isMobile()) {
+        setTimeout(() => {
+            form.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }, 100);
+    }
+}
+
+function hideCommentForm() {
+    const form = document.getElementById('commentForm');
+    const showBtn = document.getElementById('showCommentFormBtn');
+    
+    form.style.display = 'none';
+    showBtn.style.display = 'flex';
+    isCommentFormVisible = false;
+    
+    // Réinitialiser le formulaire
+    document.getElementById('commentText').value = '';
+}
+
+async function submitComment(event) {
+    event.preventDefault();
+    
+    const authorInput = document.getElementById('commentAuthor');
+    const textInput = document.getElementById('commentText');
+    
+    const author = authorInput.value.trim();
+    const text = textInput.value.trim();
+    
+    if (!author || !text) {
+        alert('Veuillez remplir tous les champs');
         return;
     }
     
-    // Charger les photos initiales
-    loadPhotos();
+    // Sauvegarder le nom
+    localStorage.setItem('commenterName', author);
     
-    // Configurer les événements
-    if (uploadPhotoBtn) uploadPhotoBtn.addEventListener('click', openUploadModal);
-    if (closeUploadModalBtn) closeUploadModalBtn.addEventListener('click', closeUploadModal);
-    if (closePhotoViewBtn) closePhotoViewBtn.addEventListener('click', closePhotoViewModal);
-    if (loadMoreBtn) loadMoreBtn.addEventListener('click', loadMorePhotos);
-    if (photoInput) photoInput.addEventListener('change', previewPhoto);
-    if (photoUploadForm) photoUploadForm.addEventListener('submit', uploadPhoto);
-    if (commentForm) commentForm.addEventListener('submit', submitComment);
-    
-    // Fermer les modales en cliquant à l'extérieur
-    window.addEventListener('click', function(event) {
-        if (event.target === uploadModal) {
-            closeUploadModal();
-        }
-        if (event.target === photoViewModal) {
-            closePhotoViewModal();
-        }
-    });
-    
-    // Charger les noms utilisateur depuis localStorage
-    const photographerNameInput = document.getElementById('photographerName');
-    if (photographerNameInput && localStorage.getItem('photographerName')) {
-        photographerNameInput.value = localStorage.getItem('photographerName');
+    try {
+        const { data, error } = await window.supabase
+            .from('photo_comments')
+            .insert([{
+                photo_id: currentPhotoId,
+                author_name: author,
+                comment_text: text
+            }]);
+            
+        if (error) throw error;
+        
+        // Succès
+        textInput.value = '';
+        hideCommentForm();
+        
+        // Recharger les commentaires
+        loadComments();
+        
+    } catch (error) {
+        console.error('Erreur envoi commentaire:', error);
+        alert('Erreur lors de l\'envoi du commentaire');
     }
-    
-    const commentAuthorInput = document.getElementById('commentAuthor');
-    if (commentAuthorInput && localStorage.getItem('commenterName')) {
-        commentAuthorInput.value = localStorage.getItem('commenterName');
-    }
-    
-    initCameraCapture();
 }
 
-// Initialiser Supabase
-function initializeSupabase() {
-    console.log("Initialisation de Supabase");
+function toggleComments() {
+    // Fonction uniquement pour PC
+    if (isMobile()) return;
     
-    if (window.supabaseInstance) {
-        window.supabase = window.supabaseInstance;
-        console.log("Utilisation de l'instance Supabase globale");
-        return true;
-    } else if (typeof window.getSupabaseClient === 'function') {
-        window.supabase = window.getSupabaseClient();
-        if (!window.supabase) {
-            console.error("getSupabaseClient a retourné null ou undefined");
-            return false;
-        } else {
-            console.log("Instance Supabase récupérée via getSupabaseClient");
-            return true;
-        }
+    const commentsSection = document.querySelector('.comments-section');
+    const toggleBtn = document.getElementById('toggleCommentsBtn');
+    const icon = toggleBtn.querySelector('.material-icons');
+    
+    if (isCommentsExpanded) {
+        commentsSection.classList.add('collapsed');
+        icon.textContent = 'keyboard_arrow_up';
+        isCommentsExpanded = false;
     } else {
-        console.error("Aucune méthode disponible pour obtenir l'instance Supabase");
-        
-        // Créer un objet factice pour éviter les erreurs
-        window.supabase = {
-            from: () => ({
-                select: () => ({
-                    order: () => ({
-                        range: () => Promise.resolve({ data: [], error: null })
-                    })
-                }),
-                insert: () => Promise.resolve({ data: null, error: new Error('Base de données non disponible') })
-            }),
-            storage: {
-                from: () => ({
-                    upload: () => Promise.resolve({ data: null, error: new Error('Base de données non disponible') }),
-                    getPublicUrl: () => ({ data: { publicUrl: '' } })
-                })
-            }
-        };
-        
-        const errorMessageElement = document.createElement('div');
-        errorMessageElement.style.cssText = 'background-color: #d32f2f; color: white; padding: 20px; margin: 20px; border-radius: 8px; text-align: center;';
-        errorMessageElement.innerHTML = `
-            <h3>Erreur de connexion à la base de données</h3>
-            <p>Impossible de se connecter au service de galerie photos.</p>
-            <button onclick="location.reload()" style="background: white; color: #d32f2f; border: none; padding: 8px 16px; margin-top: 10px; border-radius: 4px; cursor: pointer;">Rafraîchir la page</button>
-        `;
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            const container = document.querySelector('.gallery-main') || document.body;
-            container.prepend(errorMessageElement);
-        });
-        
-        return false;
+        commentsSection.classList.remove('collapsed');
+        icon.textContent = 'keyboard_arrow_down';
+        isCommentsExpanded = true;
     }
 }
 
-// ===============================
-// LANCEMENT DE L'APPLICATION
-// ===============================
-
-console.log("Script gallery-manager.js chargé");
-
-// Variable globale pour éviter les redéclarations
-if (typeof window.galleryInitialized === 'undefined') {
-    window.galleryInitialized = false;
+// ===== UTILITAIRES =====
+function restoreSavedNames() {
+    const photographerName = localStorage.getItem('photographerName');
+    if (photographerName) {
+        const input = document.getElementById('photographerName');
+        if (input) input.value = photographerName;
+    }
+    
+    const commenterName = localStorage.getItem('commenterName');
+    if (commenterName) {
+        const input = document.getElementById('commentAuthor');
+        if (input) input.value = commenterName;
+    }
 }
 
-// Initialisation unique et complète au chargement du DOM
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOMContentLoaded déclenché - Initialisation complète");
+// ===== OPTIMISATIONS MOBILE =====
+function initializeMobileOptimizations() {
+    // Empêcher le zoom sur double tap
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function(event) {
+        const now = Date.now();
+        if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+        }
+        lastTouchEnd = now;
+    }, false);
     
-    if (!window.galleryInitialized) {
-        // 1. Initialiser Supabase et la galerie
-        const supabaseInitialized = initializeSupabase();
-        if (supabaseInitialized) {
-            initializeGallery();
-        } else {
-            console.error("Impossible d'initialiser Supabase, galerie non initialisée");
+    // Gérer le viewport pour iOS
+    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+        // Ajuster la hauteur du viewport
+        function setViewportHeight() {
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
         }
         
-        // 2. Détecter si c'est un appareil mobile
-        const isMobile = window.innerWidth <= 768 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        setViewportHeight();
+        window.addEventListener('resize', setViewportHeight);
         
-        if (isMobile) {
-            console.log('Mode mobile détecté - Application de toutes les optimisations');
-            
-            // Appliquer les corrections clavier après un délai
-            setTimeout(initMobileKeyboardHandling, 1000);
-            
-            // Améliorer la gestion des clics pour éviter les clics qui "passent à travers"
-            document.addEventListener('click', function(e) {
-                if (e.target.closest('.photo-view-modal')) {
-                    e.stopPropagation();
-                }
-            }, true);
-            
-            // Gestion du redimensionnement de fenêtre (rotation, clavier)
-            let resizeTimer;
-            window.addEventListener('resize', function() {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(function() {
-                    const modal = document.getElementById('photoViewModal');
-                    if (modal && modal.style.display === 'block') {
-                        const commentForm = document.getElementById('commentForm');
-                        if (commentForm) {
-                            commentForm.style.display = 'block';
-                            commentForm.style.visibility = 'visible';
-                            commentForm.style.opacity = '1';
-                        }
-                    }
-                }, 250);
-            });
-            
-            // Observer pour les changements de modal
-            const photoViewModal = document.getElementById('photoViewModal');
-            if (photoViewModal) {
-                const observer = new MutationObserver(function(mutations) {
-                    mutations.forEach(function(mutation) {
-                        if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-                            if (photoViewModal.style.display === 'block') {
-                                setTimeout(() => {
-                                    initMobileKeyboardHandling();
-                                    const commentForm = document.getElementById('commentForm');
-                                    if (commentForm) {
-                                        commentForm.style.display = 'block';
-                                        commentForm.style.visibility = 'visible';
-                                        commentForm.style.opacity = '1';
-                                    }
-                                }, 500);
+        // Gérer le comportement du clavier - VERSION CORRIGÉE
+        document.addEventListener('focusin', function(e) {
+            if (e.target.matches('input, textarea')) {
+                // Sur mobile, ne pas faire de scroll automatique qui peut casser l'interface
+                if (e.target.closest('.comment-form')) {
+                    // Pour le formulaire de commentaire, juste s'assurer qu'il est visible
+                    setTimeout(() => {
+                        const form = e.target.closest('.comment-form');
+                        if (form) {
+                            // Faire défiler doucement vers le formulaire
+                            const rect = form.getBoundingClientRect();
+                            if (rect.bottom > window.innerHeight) {
+                                window.scrollBy({
+                                    top: rect.bottom - window.innerHeight + 50,
+                                    behavior: 'smooth'
+                                });
                             }
                         }
-                    });
-                });
-                
-                observer.observe(photoViewModal, {
-                    attributes: true,
-                    attributeFilter: ['style']
-                });
+                    }, 300);
+                }
             }
-        }
+        });
         
-        // 3. Initialiser les optimisations mobile complètes
+        // NE PAS empêcher le scroll dans les modals
+        document.body.addEventListener('touchmove', function(e) {
+            // Permettre le scroll partout dans les modals
+            if (e.target.closest('.modal-scrollable-content, .comments-content, .upload-modal')) {
+                return; // Laisser le scroll fonctionner
+            }
+            
+            // Empêcher seulement si on est sur l'overlay de fond
+            if (e.target.classList.contains('modal-overlay')) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+    }
+    
+    // Gérer l'orientation
+    window.addEventListener('orientationchange', function() {
         setTimeout(() => {
-            initMobileOptimizations();
-            console.log('Optimisations mobile initialisées avec succès');
-        }, 1200);
-        
-        window.galleryInitialized = true;
+            if (document.querySelector('.photo-view-modal').style.display === 'block') {
+                window.scrollTo(0, 0);
+            }
+        }, 300);
+    });
+    
+    // Améliorer les performances de scroll
+    const scrollableElements = document.querySelectorAll('.modal-scrollable-content, .comments-content, .upload-modal .modal-content');
+    scrollableElements.forEach(el => {
+        if (el) {
+            el.style.webkitOverflowScrolling = 'touch';
+            el.style.overflowY = 'auto';
+        }
+    });
+}
+
+// ===== GESTION DES ERREURS =====
+window.addEventListener('error', function(event) {
+    console.error('Erreur globale:', event.error);
+    
+    // Ne pas afficher d'alerte pour chaque erreur
+    if (event.error && event.error.message && event.error.message.includes('supabase')) {
+        console.error('Erreur Supabase détectée');
     }
 });
 
-// Vérification supplémentaire si le DOM est déjà chargé
-if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    console.log("Document déjà chargé, tentative d'initialisation immédiate");
-    if (!window.galleryInitialized) {
-        const supabaseInitialized = initializeSupabase();
-        if (supabaseInitialized) {
-            setTimeout(initializeGallery, 0);
-        } else {
-            console.error("Impossible d'initialiser Supabase, galerie non initialisée");
-        }
-        
-        setTimeout(() => {
-            initMobileOptimizations();
-            console.log('Optimisations mobile initialisées avec succès (chargement immédiat)');
-        }, 1000);
-        
-        window.galleryInitialized = true;
-    }
-}
+// ===== EXPORTS GLOBAUX =====
+window.galleryManager = {
+    openUploadModal,
+    closeUploadModal,
+    closePhotoViewModal,
+    loadPhotos,
+    loadMorePhotos,
+    openPhotoView,
+    submitComment,
+    showCommentForm,
+    hideCommentForm,
+    toggleComments
+};
 
-// Correction supplémentaire pour le chargement tardif
-window.addEventListener('load', function() {
-    console.log('Window load event - Double vérification des optimisations');
-    // Double vérification après le chargement complet
-    setTimeout(() => {
-        if (window.innerWidth <= 768 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-            initMobileOptimizations();
-            console.log('Seconde vérification des optimisations mobile terminée');
-        }
-    }, 500);
-});
-
-// Exposer les fonctions globalement
-window.openUploadModal = openUploadModal;
-window.closeUploadModal = closeUploadModal;
-window.closePhotoViewModal = closePhotoViewModal;
-window.loadMorePhotos = loadMorePhotos;
-window.previewPhoto = previewPhoto;
-window.uploadPhoto = uploadPhoto;
-window.submitComment = submitComment;
-window.openPhotoView = openPhotoView;
-window.loadPhotoComments = loadPhotoComments;
-
-// Fonctions de correction mobile supplémentaires pour compatibilité
-function fixMobileScrolling() {
-    // Cette fonction est conservée pour compatibilité mais intégrée dans initMobileOptimizations
-    console.log('fixMobileScrolling - fonction legacy conservée pour compatibilité');
-}
-
-// Appel de fixMobileScrolling pour compatibilité avec l'ancien code
-document.addEventListener('DOMContentLoaded', fixMobileScrolling);
-
-console.log('Fin du fichier gallery-manager.js atteinte correctement');
+console.log('Gallery Manager V2 initialisé avec succès');
