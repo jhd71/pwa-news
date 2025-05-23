@@ -47,7 +47,7 @@ const STATIC_RESOURCES = [
 '/js/theme-manager.js',
 '/js/utils.js',
 '/js/weather-widget.js',
-'/js/gallery-manager.js',
+'/js/gallery-manager-v2.js',
 '/js/welcome-manager.js',
     
     // Fichiers de configuration
