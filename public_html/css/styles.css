@@ -2735,3 +2735,77 @@ button#refreshButton.refresh-button {
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
+
+/* Styles spéciaux pour la tuile Photos */
+.tile[data-category="photos"] {
+    grid-column: span 2; /* Prend 2 colonnes au lieu d'1 */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    transform: scale(1.02);
+    z-index: 2;
+}
+
+.tile[data-category="photos"]::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="camera" patternUnits="userSpaceOnUse" width="20" height="20"><circle cx="10" cy="10" r="2" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23camera)"/></svg>');
+    animation: float 6s ease-in-out infinite;
+}
+
+.tile[data-category="photos"] .tile-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.tile[data-category="photos"] .tile-title {
+    font-size: 1.1em;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+}
+
+/* Responsive pour mobile */
+@media (max-width: 768px) {
+    .tile[data-category="photos"] {
+        grid-column: span 1; /* Sur mobile, garde la taille normale */
+    }
+}
+
+/* Badge NOUVEAU pour la tuile Photos */
+.tile[data-category="photos"]::after {
+    content: 'NOUVEAU';
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ff4757;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.7em;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(255, 71, 87, 0.4);
+    animation: pulse 2s infinite;
+    z-index: 3;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}

@@ -280,12 +280,12 @@ setupTVIcons() {
 
 	// Ajouter la tuile Photos séparément après la liste des sites d'actualités
 	const photosTile = {
-	title: "📷 Photos d'ici et d'ailleurs",
-	url: "photos-gallery.html",
-	mobileUrl: "photos-gallery.html",
-	isDefault: true,
-	category: "photos",
-  color: "var(--primary-color)"
+    title: "📷 Photos d'ici et d'ailleurs",
+    url: "photos-gallery.html",
+    mobileUrl: "photos-gallery.html",
+    isDefault: true,
+    category: "photos",
+    color: "var(--primary-color)"
 	};
         // Créer les tuiles d'actualités
         newsDefaultSites.forEach(site => {
