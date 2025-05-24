@@ -670,23 +670,30 @@ function showCommentForm() {
     if (formWrapper) {
         formWrapper.style.display = 'block';
         
-        // Focus sur le premier champ
+        // Sur mobile, ajouter une classe au body pour bloquer le scroll
+        if (isMobile()) {
+            document.body.classList.add('comment-form-open');
+            
+            // Sauvegarder la position actuelle
+            const scrollY = window.scrollY;
+            document.body.style.top = `-${scrollY}px`;
+        }
+        
+        // Focus sur le premier champ après un délai
         setTimeout(() => {
             const authorInput = document.getElementById('commentAuthor');
             if (authorInput && !authorInput.value) {
-                authorInput.focus();
-            } else {
+                // Ne pas faire de focus automatique sur mobile pour éviter le clavier
+                if (!isMobile()) {
+                    authorInput.focus();
+                }
+            } else if (!isMobile()) {
                 const textInput = document.getElementById('commentText');
                 if (textInput) {
                     textInput.focus();
                 }
             }
-            
-            // Sur mobile, scroll vers le formulaire
-            if (isMobile()) {
-                formWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }, 100);
+        }, 300);
     }
 }
 
@@ -695,6 +702,17 @@ function hideCommentForm() {
     
     if (formWrapper) {
         formWrapper.style.display = 'none';
+        
+        // Sur mobile, retirer la classe et restaurer le scroll
+        if (isMobile()) {
+            document.body.classList.remove('comment-form-open');
+            
+            // Restaurer la position de scroll
+            const scrollY = document.body.style.top;
+            document.body.style.position = '';
+            document.body.style.top = '';
+            window.scrollTo(0, parseInt(scrollY || '0') * -1);
+        }
         
         // Réinitialiser le formulaire
         const textInput = document.getElementById('commentText');
@@ -773,33 +791,59 @@ function setupMobileCommentFix() {
     const commentAuthor = document.getElementById('commentAuthor');
     const commentText = document.getElementById('commentText');
     
+    // Gestionnaire pour empêcher la fermeture au focus
+    function preventFormClose(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        
+        const formWrapper = document.getElementById('commentFormWrapper');
+        if (formWrapper && formWrapper.style.display === 'block') {
+            // Garder le formulaire visible
+            formWrapper.style.display = 'block';
+            
+            // Empêcher le scroll du body
+            if (!document.body.classList.contains('comment-form-open')) {
+                document.body.classList.add('comment-form-open');
+            }
+        }
+    }
+    
     if (commentAuthor) {
+        // Empêcher la propagation des événements tactiles
         commentAuthor.addEventListener('touchstart', function(e) {
             e.stopPropagation();
         }, { passive: true });
         
-        commentAuthor.addEventListener('focus', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const formWrapper = document.getElementById('commentFormWrapper');
-            if (formWrapper) {
-                formWrapper.style.display = 'block';
-            }
+        // Gérer le focus
+        commentAuthor.addEventListener('focus', preventFormClose);
+        
+        // Empêcher le blur accidentel
+        commentAuthor.addEventListener('blur', function(e) {
+            // Si on clique sur un autre champ du formulaire, ne pas fermer
+            setTimeout(() => {
+                const activeElement = document.activeElement;
+                if (activeElement && activeElement.closest('.comment-form')) {
+                    e.preventDefault();
+                }
+            }, 100);
         });
     }
     
     if (commentText) {
+        // Même logique pour le textarea
         commentText.addEventListener('touchstart', function(e) {
             e.stopPropagation();
         }, { passive: true });
         
-        commentText.addEventListener('focus', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const formWrapper = document.getElementById('commentFormWrapper');
-            if (formWrapper) {
-                formWrapper.style.display = 'block';
-            }
+        commentText.addEventListener('focus', preventFormClose);
+        
+        commentText.addEventListener('blur', function(e) {
+            setTimeout(() => {
+                const activeElement = document.activeElement;
+                if (activeElement && activeElement.closest('.comment-form')) {
+                    e.preventDefault();
+                }
+            }, 100);
         });
     }
 }
