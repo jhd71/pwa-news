@@ -776,7 +776,7 @@ function setupMobileCommentFix() {
     if (commentAuthor) {
         commentAuthor.addEventListener('touchstart', function(e) {
             e.stopPropagation();
-        });
+        }, { passive: true });
         
         commentAuthor.addEventListener('focus', function(e) {
             e.preventDefault();
@@ -791,7 +791,7 @@ function setupMobileCommentFix() {
     if (commentText) {
         commentText.addEventListener('touchstart', function(e) {
             e.stopPropagation();
-        });
+        }, { passive: true });
         
         commentText.addEventListener('focus', function(e) {
             e.preventDefault();
@@ -813,7 +813,7 @@ function initializeMobileOptimizations() {
             event.preventDefault();
         }
         lastTouchEnd = now;
-    }, false);
+    }, { passive: false });
     
     // Gérer le viewport pour iOS
     if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {

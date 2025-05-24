@@ -236,7 +236,9 @@
         script.onload = function() {
             try {
                 // Créer l'instance et la rendre disponible globalement
-                window.supabaseInstance = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                if (!window.supabaseInstance) {
+    window.supabaseInstance = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
                 console.log('Instance Supabase créée');
                 
                 // Définir la fonction getSupabaseClient si elle n'existe pas
@@ -302,8 +304,8 @@
                 }
             });
             
-            // Forcer la synchronisation périodique
-            setInterval(syncAppSettings, 2000);
+            // Synchronisation uniquement au changement
+			// Plus besoin de setInterval
         });
     </script>
 </body>
