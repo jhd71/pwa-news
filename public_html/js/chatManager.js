@@ -902,14 +902,20 @@ async unbanIP(ip) {
                 </div>
             </div>
             <div class="chat-login">
-                <input type="text" 
-                       id="pseudoInput" 
-                       placeholder="Entrez votre pseudo (3-20 caractères)" 
-                       maxlength="20">
-                <div class="login-buttons">
-                    <button id="confirmPseudo">Confirmer</button>
-                </div>
-            </div>
+    <form style="margin: 0;">
+        <input type="text" 
+               id="pseudoInput" 
+               placeholder="Entrez votre pseudo (3-20 caractères)" 
+               maxlength="20">
+        <input type="password" 
+               id="adminPassword" 
+               placeholder="Mot de passe admin" 
+               style="display: none;">
+    </form>
+    <div class="login-buttons">
+        <button id="confirmPseudo">Confirmer</button>
+    </div>
+</div>
         </div>
     `;
 }
@@ -929,14 +935,20 @@ getPseudoHTMLWithoutToggle() {
                 </div>
             </div>
             <div class="chat-login">
-                <input type="text" 
-                       id="pseudoInput" 
-                       placeholder="Entrez votre pseudo (3-20 caractères)" 
-                       maxlength="20">
-                <div class="login-buttons">
-                    <button id="confirmPseudo">Confirmer</button>
-                </div>
-            </div>
+    <form style="margin: 0;">
+        <input type="text" 
+               id="pseudoInput" 
+               placeholder="Entrez votre pseudo (3-20 caractères)" 
+               maxlength="20">
+        <input type="password" 
+               id="adminPassword" 
+               placeholder="Mot de passe admin" 
+               style="display: none;">
+    </form>
+    <div class="login-buttons">
+        <button id="confirmPseudo">Confirmer</button>
+    </div>
+</div>
         </div>
     `;
 }
