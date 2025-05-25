@@ -904,9 +904,10 @@ async unbanIP(ip) {
             <div class="chat-login">
     <form style="margin: 0;">
         <input type="text" 
-               id="pseudoInput" 
-               placeholder="Entrez votre pseudo (3-20 caractères)" 
-               maxlength="20">
+       id="pseudoInput" 
+       placeholder="Entrez votre pseudo (3-20 caractères)" 
+       autocomplete="username"
+       maxlength="20">
         <input type="password" 
        id="adminPassword" 
        placeholder="Mot de passe admin" 
@@ -938,9 +939,10 @@ getPseudoHTMLWithoutToggle() {
             <div class="chat-login">
     <form style="margin: 0;">
         <input type="text" 
-               id="pseudoInput" 
-               placeholder="Entrez votre pseudo (3-20 caractères)" 
-               maxlength="20">
+       id="pseudoInput" 
+       placeholder="Entrez votre pseudo (3-20 caractères)" 
+       autocomplete="username"
+       maxlength="20">
         <input type="password" 
        id="adminPassword" 
        placeholder="Mot de passe admin" 
