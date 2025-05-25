@@ -1096,6 +1096,14 @@
     font-size: 16px;
 }
 
+/* Background blanc pour les inputs en thème rouge */
+[data-theme="rouge"] .form-group input,
+[data-theme="rouge"] .form-group textarea {
+    background: #ffffff !important;
+    color: #2c3e50 !important;
+    border-color: #ddd !important;
+}
+
 .submit-photo-btn {
     width: 100%;
     padding: 16px;
@@ -1131,7 +1139,7 @@
 
 /* Adaptation selon les thèmes */
 [data-theme="dark"] .submit-photo-btn {
-    background: linear-gradient(135deg, #5C6BC0 0%, #7E57C2 100%);
+    background: linear-gradient(135deg, #1d37cd 0%, #0b2579 100%);
 }
 
 [data-theme="rouge"] .submit-photo-btn {
@@ -1262,4 +1270,35 @@ body.modal-open {
     .site-logo {
         max-height: 70px;
     }
+}
+
+/* Texte blanc pour les boutons en thème dark */
+[data-theme="dark"] .capture-btn,
+[data-theme="dark"] .gallery-btn,
+[data-theme="dark"] .submit-photo-btn {
+    color: white !important;
+}
+
+/* Si vous voulez aussi les textes des labels du formulaire en blanc */
+[data-theme="dark"] .form-group label {
+    color: white !important;
+}
+
+/* Pour le placeholder des inputs en thème dark */
+[data-theme="dark"] .form-group input::placeholder,
+[data-theme="dark"] .form-group textarea::placeholder {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Texte blanc pour les boutons upload en thème dark */
+[data-theme="dark"] .capture-btn span,
+[data-theme="dark"] .gallery-btn span,
+[data-theme="dark"] .submit-photo-btn {
+    color: white !important;
+}
+
+/* Les icônes Material Icons en blanc aussi */
+[data-theme="dark"] .capture-btn .material-icons,
+[data-theme="dark"] .gallery-btn .material-icons {
+    color: white !important;
 }
