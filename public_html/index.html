@@ -268,7 +268,10 @@
     <div class="menu-item">
         <div class="copyright-text">
             <span class="material-icons">copyright</span>
-            <span><script>document.write(new Date().getFullYear())</script> Actu & Média</span>
+            <span><span id="currentYear"></span>
+<script>
+document.getElementById('currentYear').textContent = new Date().getFullYear();
+</script> Actu & Média</span>
         </div>
     </div>
 </aside>

@@ -577,11 +577,11 @@ const tvSites = [
                 const touch = e.touches[0];
                 this.showTileMenu(tile, site, touch.clientX, touch.clientY);
             }, 800); // ✅ Augmenté à 800ms pour éviter l'apparition trop rapide
-        });
+        }, { passive: true });
 
         tile.addEventListener('touchmove', () => {
             clearTimeout(longPressTimer); // ✅ Annule l'appui long si le doigt bouge (scroll détecté)
-        });
+        }, { passive: true });
 
         tile.addEventListener('touchend', (e) => {
             clearTimeout(longPressTimer);
