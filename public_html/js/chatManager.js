@@ -908,9 +908,10 @@ async unbanIP(ip) {
                placeholder="Entrez votre pseudo (3-20 caractères)" 
                maxlength="20">
         <input type="password" 
-               id="adminPassword" 
-               placeholder="Mot de passe admin" 
-               style="display: none;">
+       id="adminPassword" 
+       placeholder="Mot de passe admin" 
+       autocomplete="current-password"
+       style="display: none;">
     </form>
     <div class="login-buttons">
         <button id="confirmPseudo">Confirmer</button>
@@ -941,9 +942,10 @@ getPseudoHTMLWithoutToggle() {
                placeholder="Entrez votre pseudo (3-20 caractères)" 
                maxlength="20">
         <input type="password" 
-               id="adminPassword" 
-               placeholder="Mot de passe admin" 
-               style="display: none;">
+       id="adminPassword" 
+       placeholder="Mot de passe admin" 
+       autocomplete="current-password"
+       style="display: none;">
     </form>
     <div class="login-buttons">
         <button id="confirmPseudo">Confirmer</button>
