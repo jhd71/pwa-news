@@ -1607,10 +1607,10 @@ extractPseudoFromEmail(email) {
 
         if (/Mobi|Android/i.test(navigator.userAgent)) {
             sendBtn.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                sendMessage();
-            });
+    e.preventDefault();
+    e.stopPropagation();
+    sendMessage();
+	}, { passive: false });
         } else {
             sendBtn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -1950,28 +1950,28 @@ div.innerHTML = `
 
         // Gérer le toucher qui commence (touchstart)
         div.addEventListener('touchstart', (e) => {
-            // Ne pas démarrer un nouveau timer si un appui long a été récemment détecté
-            if (Date.now() - lastTouchEnd < 1000) {
-                return;
-            }
-            
-            // Démarrer le timer pour l'appui long
-            touchTimer = setTimeout(() => {
-                longPressActive = true;
-                const touch = e.touches[0];
-                this.showMessageOptions(message, touch.clientX, touch.clientY);
-                
-                // Ajouter une vibration si disponible
-                if (navigator.vibrate) {
-                    navigator.vibrate(50);
-                }
-            }, 800);
-        });
+    // Ne pas démarrer un nouveau timer si un appui long a été récemment détecté
+    if (Date.now() - lastTouchEnd < 1000) {
+        return;
+    }
+    
+    // Démarrer le timer pour l'appui long
+    touchTimer = setTimeout(() => {
+        longPressActive = true;
+        const touch = e.touches[0];
+        this.showMessageOptions(message, touch.clientX, touch.clientY);
+        
+        // Ajouter une vibration si disponible
+        if (navigator.vibrate) {
+            navigator.vibrate(50);
+        }
+    }, 800);
+	}, { passive: true });
         
         // Annuler l'appui long si le doigt bouge
         div.addEventListener('touchmove', () => {
-            clearTimeout(touchTimer);
-        });
+    clearTimeout(touchTimer);
+	}, { passive: true });
         
         // Gérer la fin du toucher
         div.addEventListener('touchend', (e) => {
