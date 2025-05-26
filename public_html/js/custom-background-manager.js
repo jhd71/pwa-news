@@ -775,7 +775,6 @@ applyCustomBackground(backgroundId) {
 const customBackgroundStyles = `
 <style id="customBackgroundStyles">
 /* Modal de fond d'écran personnalisé - Design adaptatif aux thèmes */
-/* 12. MODAL - Supprimer tout débordement */
 .background-upload-modal {
     position: fixed;
     top: 0;
@@ -786,8 +785,8 @@ const customBackgroundStyles = `
     background: rgba(0, 0, 0, 0.9);
     backdrop-filter: blur(5px);
     overflow: hidden;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
 }
 
 .background-upload-modal .modal-overlay {
@@ -801,12 +800,11 @@ const customBackgroundStyles = `
     height: 100%;
 }
 
-/* RESPONSIVE MODAL CONTAINER */
+/* MODAL CONTAINER - SANS ESPACE BLANC */
 .background-upload-modal .modal-container {
     position: relative;
     z-index: 2;
-    width: 100%;
-    max-width: 100%;
+    width: 100vw;
     height: 100vh;
     margin: 0;
     background: var(--card-bg, white);
@@ -819,70 +817,14 @@ const customBackgroundStyles = `
     box-sizing: border-box;
 }
 
-/* Version desktop - modal centrée avec bordures arrondies */
+/* Desktop - Modal centrée SANS espace blanc */
 @media (min-width: 769px) {
     .background-upload-modal .modal-container {
-        width: 95%;
-        max-width: 1200px;
-        height: 95vh;
-        margin: 2.5vh auto;
-        border-radius: 16px;
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-    }
-}
-
-/* Mobile paysage et petites tablettes */
-@media (min-width: 481px) and (max-width: 768px) {
-    .background-upload-modal .modal-container {
-        width: 100%;
+        width: 100vw;
         height: 100vh;
         margin: 0;
         border-radius: 0;
-    }
-    
-    .image-controls {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-        padding: 15px;
-    }
-    
-    .position-controls {
-        display: block;
-        padding: 15px;
-    }
-}
-
-/* Tablettes */
-@media (min-width: 769px) and (max-width: 1024px) {
-    .background-upload-modal .modal-container {
-        width: 90%;
-        max-width: 900px;
-        height: 90vh;
-        margin: 5vh auto;
-        border-radius: 16px;
-    }
-    
-    .image-controls {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 18px;
-        padding: 18px;
-    }
-}
-
-/* Desktop */
-@media (min-width: 1025px) {
-    .background-upload-modal .modal-container {
-        width: 85%;
-        max-width: 1100px;
-        height: 90vh;
-        margin: 5vh auto;
-        border-radius: 20px;
-    }
-    
-    .image-controls {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 25px;
-        padding: 25px;
+        box-shadow: none;
     }
 }
 
@@ -890,28 +832,24 @@ const customBackgroundStyles = `
 [data-theme="dark"] .background-upload-modal .modal-container {
     background: var(--card-bg, #1a1a1a);
     color: var(--text-color, #ffffff);
-    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 [data-theme="light"] .background-upload-modal .modal-container {
     background: var(--card-bg, #ffffff);
     color: var(--text-color, #333333);
-    border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="rouge"] .background-upload-modal .modal-container {
     background: var(--card-bg, #fafafa);
     color: var(--text-color, #333333);
-    border: 1px solid rgba(188, 58, 52, 0.2);
 }
 
 [data-theme="bleuciel"] .background-upload-modal .modal-container {
     background: var(--card-bg, #f8fdff);
     color: var(--text-color, #333333);
-    border: 1px solid rgba(79, 179, 232, 0.2);
 }
 
-/* Animation d'entrée adaptée */
+/* Animation d'entrée */
 @keyframes modalSlideIn {
     from { 
         transform: translateY(100%);
@@ -923,15 +861,12 @@ const customBackgroundStyles = `
     }
 }
 
-/* Desktop - animation depuis le centre */
 @media (min-width: 769px) {
     @keyframes modalSlideIn {
         from { 
-            transform: translateY(30px) scale(0.95);
             opacity: 0; 
         }
         to { 
-            transform: translateY(0) scale(1);
             opacity: 1; 
         }
     }
@@ -941,7 +876,7 @@ const customBackgroundStyles = `
 .background-upload-modal .modal-header {
     background: linear-gradient(135deg, var(--primary-color, #7c4dff), var(--accent-color, #9c27b0));
     color: white;
-    padding: 12px 15px;
+    padding: 15px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -949,13 +884,6 @@ const customBackgroundStyles = `
     flex-shrink: 0;
     width: 100%;
     box-sizing: border-box;
-}
-
-/* Desktop - en-tête plus grand */
-@media (min-width: 769px) {
-    .background-upload-modal .modal-header {
-        padding: 18px 25px;
-    }
 }
 
 /* Adaptation des en-têtes selon les thèmes */
@@ -977,36 +905,40 @@ const customBackgroundStyles = `
 
 .background-upload-modal .modal-header h2 {
     margin: 0;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 600;
 }
 
-@media (min-width: 769px) {
-    .background-upload-modal .modal-header h2 {
-        font-size: 20px;
-    }
-}
-
-/* CONTENU ADAPTATIF */
+/* CONTENU PRINCIPAL */
 .background-upload-modal .modal-content {
     flex: 1;
-    padding: 15px;
+    padding: 20px;
     overflow-y: auto;
     overflow-x: hidden;
     background: var(--background-color, #f8f9fa);
     width: 100%;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
 }
 
+/* Desktop - Contenu en 2 colonnes pour éviter l'espace blanc */
 @media (min-width: 769px) {
     .background-upload-modal .modal-content {
-        padding: 20px;
-    }
-}
-
-@media (min-width: 1025px) {
-    .background-upload-modal .modal-content {
+        flex-direction: row;
+        gap: 30px;
         padding: 30px;
+    }
+    
+    .upload-section {
+        flex: 1;
+        max-width: 60%;
+    }
+    
+    .custom-backgrounds-section {
+        flex: 0 0 35%;
+        max-width: 35%;
     }
 }
 
@@ -1027,26 +959,18 @@ const customBackgroundStyles = `
     background: var(--background-color, #f8fdff);
 }
 
-/* ZONE D'UPLOAD ADAPTATIVE */
+/* ZONE D'UPLOAD */
 .upload-area {
     border: 3px dashed var(--primary-color, #7c4dff);
     border-radius: 12px;
-    padding: 25px 15px;
+    padding: 30px 20px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
     background: linear-gradient(135deg, rgba(124, 77, 255, 0.05), rgba(156, 39, 176, 0.05));
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     width: 100%;
     box-sizing: border-box;
-}
-
-/* Desktop - zone d'upload plus spacieuse */
-@media (min-width: 769px) {
-    .upload-area {
-        padding: 40px 20px;
-        margin-bottom: 20px;
-    }
 }
 
 .upload-area:hover, .upload-area.drag-over {
@@ -1057,14 +981,8 @@ const customBackgroundStyles = `
 }
 
 .upload-icon {
-    font-size: 40px;
+    font-size: 48px;
     margin-bottom: 15px;
-}
-
-@media (min-width: 769px) {
-    .upload-icon {
-        font-size: 48px;
-    }
 }
 
 .upload-area p {
@@ -1084,36 +1002,28 @@ const customBackgroundStyles = `
 .image-preview {
     background: var(--card-bg, white);
     border-radius: 12px;
-    padding: 15px;
+    padding: 20px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     width: 100%;
     box-sizing: border-box;
 }
 
-@media (min-width: 769px) {
-    .image-preview {
-        padding: 20px;
-        margin-bottom: 20px;
-    }
-}
-
-/* Adaptation de la prévisualisation selon les thèmes */
 [data-theme="dark"] .image-preview {
     background: var(--card-bg, #2d2d2d);
 }
 
-/* Container de prévisualisation avec feedback visuel amélioré */
+/* Container de prévisualisation */
 .preview-container {
     position: relative;
     width: 100%;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     border-radius: 8px;
     overflow: hidden;
     border: 3px solid var(--primary-color, #7c4dff);
     box-shadow: 0 4px 15px rgba(124, 77, 255, 0.2);
     background: #f0f0f0;
-    min-height: 200px;
+    min-height: 250px;
     max-height: 400px;
     display: flex;
     align-items: center;
@@ -1122,25 +1032,9 @@ const customBackgroundStyles = `
     box-sizing: border-box;
 }
 
-/* Desktop - prévisualisation plus grande */
-@media (min-width: 769px) {
-    .preview-container {
-        min-height: 280px;
-        max-height: 450px;
-        margin-bottom: 20px;
-    }
-}
-
-@media (min-width: 1025px) {
-    .preview-container {
-        min-height: 320px;
-        max-height: 500px;
-    }
-}
-
 .preview-container img {
     width: 100%;
-    max-height: 180px;
+    max-height: 380px;
     object-fit: cover;
     border-radius: 5px;
     user-select: none;
@@ -1150,14 +1044,7 @@ const customBackgroundStyles = `
     transition: all 0.3s ease;
 }
 
-/* Desktop - image plus grande */
-@media (min-width: 769px) {
-    .preview-container img {
-        max-height: 300px;
-    }
-}
-
-/* États du glisser améliorés */
+/* États du glisser */
 .preview-container:hover {
     border-color: var(--accent-color, #9c27b0);
     box-shadow: 0 6px 20px rgba(124, 77, 255, 0.3);
@@ -1180,16 +1067,16 @@ const customBackgroundStyles = `
     cursor: grabbing !important;
 }
 
-/* Hint de glisser amélioré */
+/* Hint de glisser */
 .drag-hint {
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: 10px;
+    right: 10px;
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6));
     color: white;
-    padding: 6px 10px;
+    padding: 8px 12px;
     border-radius: 20px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     opacity: 0;
     transition: all 0.3s ease;
@@ -1197,15 +1084,6 @@ const customBackgroundStyles = `
     z-index: 10;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-@media (min-width: 769px) {
-    .drag-hint {
-        top: 10px;
-        right: 10px;
-        padding: 8px 12px;
-        font-size: 12px;
-    }
 }
 
 .preview-container:hover .drag-hint {
@@ -1220,51 +1098,37 @@ const customBackgroundStyles = `
     transform: scale(1.1);
 }
 
-/* 2. GRILLE DE CONTRÔLES - Version corrigée sans débordement */
+/* GRILLE DE CONTRÔLES */
 .image-controls {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
-    margin-bottom: 15px;
-    padding: 15px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+    padding: 20px;
     background: var(--background-color, #f8f9fa);
     border-radius: 8px;
     width: 100%;
     box-sizing: border-box;
-    overflow: hidden;
 }
 
-/* Tablette - 2 colonnes équilibrées */
-@media (min-width: 481px) and (max-width: 768px) {
+@media (max-width: 768px) {
     .image-controls {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr;
         gap: 15px;
+        padding: 15px;
     }
 }
 
-/* Desktop - 2 lignes au lieu de 4 colonnes pour éviter le débordement */
-@media (min-width: 769px) {
-    .image-controls {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-        margin-bottom: 20px;
-        padding: 20px;
-    }
-}
-
-/* Adaptation des contrôles selon les thèmes */
 [data-theme="dark"] .image-controls {
     background: var(--background-color, #1e1e1e);
 }
 
-/* 5. CONTRÔLE GROUPE - Largeur fixée */
 .control-group {
     display: flex;
     flex-direction: column;
     gap: 8px;
     width: 100%;
     box-sizing: border-box;
-    min-width: 0; /* Permet la réduction si nécessaire */
 }
 
 .control-group label {
@@ -1275,40 +1139,17 @@ const customBackgroundStyles = `
 
 .control-group select,
 .control-group input[type="range"] {
-    padding: 8px 12px;
+    padding: 10px 12px;
     border: 2px solid var(--border-color, #ddd);
-    border-radius: 6px;
+    border-radius: 8px;
     background: var(--card-bg, white);
     color: var(--text-color, #333);
     font-size: 14px;
     transition: border-color 0.3s ease;
     width: 100%;
     box-sizing: border-box;
-    max-width: 100%;
 }
 
-/* Mobile portrait */
-@media (max-width: 480px) {
-    .background-upload-modal .modal-container {
-        width: 100%;
-        height: 100vh;
-        margin: 0;
-        border-radius: 0;
-    }
-    
-    .image-controls {
-        grid-template-columns: 1fr;
-        padding: 10px;
-        gap: 10px;
-    }
-    
-    .position-controls {
-        display: block;
-        padding: 10px;
-    }
-}
-	
-/* Adaptation des champs selon les thèmes */
 [data-theme="dark"] .control-group select,
 [data-theme="dark"] .control-group input[type="range"] {
     background: var(--card-bg, #2d2d2d);
@@ -1320,172 +1161,196 @@ const customBackgroundStyles = `
 .control-group input[type="range"]:focus {
     outline: none;
     border-color: var(--primary-color, #7c4dff);
+    box-shadow: 0 0 0 3px rgba(124, 77, 255, 0.1);
 }
 
-/* 3. CONTRÔLES DE POSITION - Version sans débordement */
+/* CONTRÔLES DE POSITION - VERSION VISIBLE */
 .position-controls {
     grid-column: 1 / -1;
-    background: linear-gradient(135deg, rgba(124, 77, 255, 0.1), rgba(156, 39, 176, 0.05));
-    padding: 15px;
+    background: linear-gradient(135deg, rgba(124, 77, 255, 0.15), rgba(156, 39, 176, 0.1));
+    padding: 25px;
     border-radius: 12px;
-    border: 2px solid var(--primary-color, #7c4dff);
-    margin-top: 10px;
+    border: 3px solid var(--primary-color, #7c4dff);
+    margin-top: 15px;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     width: 100%;
     box-sizing: border-box;
-}
-
-/* Desktop - contrôles organisés en colonnes */
-@media (min-width: 769px) {
-    .position-controls {
-        padding: 20px;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-        align-items: center;
-    }
+    box-shadow: 0 4px 15px rgba(124, 77, 255, 0.2);
 }
 
 .position-controls::before {
     content: '📍 Position personnalisée';
     position: absolute;
-    top: -10px;
-    left: 20px;
+    top: -15px;
+    left: 25px;
     background: var(--primary-color, #7c4dff);
     color: white;
-    padding: 3px 10px;
-    border-radius: 15px;
-    font-size: 10px;
-    font-weight: 600;
-}
-
-@media (min-width: 769px) {
-    .position-controls::before {
-        padding: 4px 12px;
-        font-size: 11px;
-    }
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 3px 10px rgba(124, 77, 255, 0.4);
+    z-index: 10;
 }
 
 .position-controls label {
     color: var(--primary-color, #7c4dff);
     font-weight: 700;
-    font-size: 14px;
+    font-size: 15px;
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
-/* 4. SLIDERS - Version sans débordement */
 .position-controls input[type="range"] {
     width: 100%;
-    height: 6px;
-    background: linear-gradient(to right, #ddd, var(--primary-color, #7c4dff), #ddd);
-    border-radius: 5px;
+    height: 8px;
+    background: linear-gradient(to right, #ddd 0%, var(--primary-color, #7c4dff) 50%, #ddd 100%);
+    border-radius: 6px;
     outline: none;
-    margin: 5px 0 15px 0;
+    margin: 8px 0 20px 0;
     box-sizing: border-box;
-    max-width: 100%;
+    border: 2px solid rgba(124, 77, 255, 0.3);
 }
 
 .position-controls input[type="range"]::-webkit-slider-thumb {
-    width: 18px;
-    height: 18px;
+    appearance: none;
+    width: 22px;
+    height: 22px;
     background: var(--primary-color, #7c4dff);
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
     transition: all 0.3s ease;
+    border: 3px solid white;
 }
 
 .position-controls input[type="range"]::-webkit-slider-thumb:hover {
-    transform: scale(1.2);
-    box-shadow: 0 4px 12px rgba(124, 77, 255, 0.5);
+    transform: scale(1.3);
+    box-shadow: 0 5px 15px rgba(124, 77, 255, 0.6);
 }
 
-/* 9. ACTIONS - Layout amélioré */
+/* Adaptation des contrôles selon les thèmes */
+[data-theme="dark"] .position-controls {
+    background: linear-gradient(135deg, rgba(26, 35, 126, 0.25), rgba(26, 35, 126, 0.15));
+    border-color: var(--primary-color, #1a237e);
+}
+
+[data-theme="dark"] .position-controls::before {
+    background: var(--primary-color, #1a237e);
+}
+
+[data-theme="rouge"] .position-controls {
+    background: linear-gradient(135deg, rgba(188, 58, 52, 0.25), rgba(188, 58, 52, 0.15));
+    border-color: var(--primary-color, #bc3a34);
+}
+
+[data-theme="rouge"] .position-controls::before {
+    background: var(--primary-color, #bc3a34);
+}
+
+[data-theme="bleuciel"] .position-controls {
+    background: linear-gradient(135deg, rgba(79, 179, 232, 0.25), rgba(79, 179, 232, 0.15));
+    border-color: var(--primary-color, #4fb3e8);
+}
+
+[data-theme="bleuciel"] .position-controls::before {
+    background: var(--primary-color, #4fb3e8);
+}
+
+/* BOUTONS D'ACTION - VERSION STYLISÉE */
 .preview-actions {
     display: flex;
-    gap: 10px;
+    gap: 15px;
     justify-content: center;
-    flex-direction: column;
+    flex-wrap: wrap;
     width: 100%;
-    margin-top: 15px;
+    margin-top: 25px;
 }
 
-@media (min-width: 481px) {
-    .preview-actions {
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 15px;
-    }
-}
-
-@media (min-width: 769px) {
-    .preview-actions {
-        margin-top: 20px;
-        gap: 20px;
-    }
-
-/* BOUTONS ADAPTATIFS */
 .btn-primary, .btn-secondary, .btn-reset {
-    width: 100%;
-    padding: 14px 20px;
-    justify-content: center;
-    box-sizing: border-box;
+    padding: 16px 32px;
     border: none;
-    border-radius: 25px;
+    border-radius: 30px;
     cursor: pointer;
-    font-weight: 600;
-    font-size: 15px;
+    font-weight: 700;
+    font-size: 16px;
     transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-}
-
-/* Desktop - boutons avec largeur automatique */
-@media (min-width: 769px) {
-    .btn-primary, .btn-secondary {
-        width: auto;
-        min-width: 160px;
-        padding: 12px 24px;
-    }
-    .btn-reset {
-        width: auto;
-        padding: 12px 24px;
-    }
+    justify-content: center;
+    gap: 10px;
+    min-width: 180px;
+    box-sizing: border-box;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #4CAF50, #45a049);
+    background: linear-gradient(135deg, #4CAF50, #45a049, #388e3c);
     color: white;
-    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+    border: 2px solid transparent;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.6s ease;
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(76, 175, 80, 0.5);
+    background: linear-gradient(135deg, #66BB6A, #4CAF50, #43A047);
+}
+
+.btn-primary:hover::before {
+    left: 100%;
 }
 
 .btn-secondary {
-    background: linear-gradient(135deg, #f44336, #d32f2f);
+    background: linear-gradient(135deg, #f44336, #d32f2f, #c62828);
     color: white;
-    box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+    box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
+    border: 2px solid transparent;
+}
+
+.btn-secondary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.6s ease;
 }
 
 .btn-secondary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(244, 67, 54, 0.5);
+    background: linear-gradient(135deg, #EF5350, #f44336, #E53935);
 }
 
-/* Bouton de réinitialisation amélioré */
+.btn-secondary:hover::before {
+    left: 100%;
+}
+
 .btn-reset {
-    border: 2px solid var(--primary-color, #7c4dff);
+    border: 3px solid var(--primary-color, #7c4dff);
     background: linear-gradient(135deg, rgba(124, 77, 255, 0.1), rgba(156, 39, 176, 0.05));
     color: var(--primary-color, #7c4dff);
-    font-size: 14px;
+    box-shadow: 0 6px 20px rgba(124, 77, 255, 0.3);
     position: relative;
-    overflow: hidden;
 }
 
 .btn-reset::before {
@@ -1495,39 +1360,50 @@ const customBackgroundStyles = `
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    transition: left 0.5s ease;
-}
-
-.btn-reset:hover::before {
-    left: 100%;
+    background: linear-gradient(90deg, transparent, rgba(124, 77, 255, 0.2), transparent);
+    transition: left 0.6s ease;
 }
 
 .btn-reset:hover {
     background: var(--primary-color, #7c4dff);
     color: white;
     transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(124, 77, 255, 0.4);
+    box-shadow: 0 10px 30px rgba(124, 77, 255, 0.5);
 }
 
-/* SECTION DES FONDS PERSONNALISÉS ADAPTATIVE */
-.custom-backgrounds-section {
-    background: var(--card-bg, white);
-    border-radius: 12px;
-    padding: 15px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    width: 100%;
-    box-sizing: border-box;
+.btn-reset:hover::before {
+    left: 100%;
 }
 
-/* Desktop - plus d'espace */
-@media (min-width: 769px) {
-    .custom-backgrounds-section {
-        padding: 20px;
+@media (max-width: 768px) {
+    .preview-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .btn-primary, .btn-secondary, .btn-reset {
+        width: 100%;
+        min-width: auto;
     }
 }
 
-/* Adaptation de la section selon les thèmes */
+/* SECTION DES FONDS PERSONNALISÉS */
+.custom-backgrounds-section {
+    background: var(--card-bg, white);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 20px;
+}
+
+@media (min-width: 769px) {
+    .custom-backgrounds-section {
+        margin-top: 0;
+    }
+}
+
 [data-theme="dark"] .custom-backgrounds-section {
     background: var(--card-bg, #2d2d2d);
 }
@@ -1540,31 +1416,16 @@ const customBackgroundStyles = `
     font-weight: 600;
 }
 
-/* 10. BACKGROUNDS GRID - Responsive amélioré */
 .custom-backgrounds-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 10px;
+    gap: 15px;
 }
 
-@media (min-width: 481px) and (max-width: 768px) {
+@media (min-width: 769px) {
     .custom-backgrounds-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-    }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-    .custom-backgrounds-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-    }
-}
-
-@media (min-width: 1025px) {
-    .custom-backgrounds-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
+        grid-template-columns: 1fr;
+        gap: 12px;
     }
 }
 
@@ -1576,7 +1437,6 @@ const customBackgroundStyles = `
     background: var(--card-bg, white);
 }
 
-/* Adaptation des éléments selon les thèmes */
 [data-theme="dark"] .custom-bg-item {
     background: var(--card-bg, #2d2d2d);
     border-color: var(--border-color, #555);
@@ -1593,34 +1453,35 @@ const customBackgroundStyles = `
 }
 
 .bg-preview {
-    height: 120px;
+    height: 80px;
     background-size: cover;
     background-position: center;
 }
 
 .bg-info {
-    padding: 12px;
+    padding: 10px;
 }
 
 .bg-name {
     font-weight: 600;
     color: var(--text-color, #333);
     display: block;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    font-size: 13px;
 }
 
 .bg-actions {
     display: flex;
-    gap: 8px;
+    gap: 6px;
 }
 
 .btn-use, .btn-delete {
     flex: 1;
-    padding: 8px 12px;
+    padding: 6px 10px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 500;
     transition: all 0.3s ease;
 }
@@ -1647,15 +1508,16 @@ const customBackgroundStyles = `
     background: rgba(255, 255, 255, 0.2);
     border: none;
     color: white;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-    font-size: 18px;
+    font-size: 20px;
+    font-weight: bold;
 }
 
 .close-modal-btn:hover {
@@ -1667,47 +1529,15 @@ const customBackgroundStyles = `
     text-align: center;
     color: var(--text-muted, #666);
     font-style: italic;
-    padding: 40px 20px;
+    padding: 30px 15px;
     background: var(--background-color, #f8f9fa);
     border-radius: 8px;
+    font-size: 14px;
 }
 
-/* Adaptation selon les thèmes pour les nouveaux éléments */
 [data-theme="dark"] .no-custom-bg {
     background: var(--background-color, #1e1e1e);
     color: var(--text-muted, #888);
-}
-
-[data-theme="dark"] .position-controls {
-    background: linear-gradient(135deg, rgba(26, 35, 126, 0.2), rgba(26, 35, 126, 0.1));
-    border-color: var(--primary-color, #1a237e);
-}
-
-[data-theme="dark"] .position-controls::before {
-    background: var(--primary-color, #1a237e);
-}
-
-[data-theme="rouge"] .position-controls {
-    background: linear-gradient(135deg, rgba(188, 58, 52, 0.2), rgba(188, 58, 52, 0.1));
-    border-color: var(--primary-color, #bc3a34);
-}
-
-[data-theme="rouge"] .position-controls::before {
-    background: var(--primary-color, #bc3a34);
-}
-
-[data-theme="bleuciel"] .position-controls {
-    background: linear-gradient(135deg, rgba(79, 179, 232, 0.2), rgba(79, 179, 232, 0.1));
-    border-color: var(--primary-color, #4fb3e8);
-}
-
-[data-theme="bleuciel"] .position-controls::before {
-    background: var(--primary-color, #4fb3e8);
-}
-
-/* Suppression de tous les espaces blancs indésirables */
-.background-upload-modal * {
-    box-sizing: border-box;
 }
 
 /* Animations */
@@ -1721,7 +1551,6 @@ const customBackgroundStyles = `
     to { transform: translateX(100%); opacity: 0; }
 }
 
-/* Animation de feedback quand on clique */
 .btn-primary:active, .btn-secondary:active, .btn-reset:active {
     animation: buttonPulse 0.3s ease;
 }
@@ -1729,6 +1558,46 @@ const customBackgroundStyles = `
 @keyframes buttonPulse {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.05); }
+}
+
+/* RESPONSIVE MOBILE */
+@media (max-width: 768px) {
+    .background-upload-modal .modal-content {
+        flex-direction: column;
+        padding: 15px;
+    }
+    
+    .upload-section, .custom-backgrounds-section {
+        max-width: 100%;
+        flex: none;
+    }
+    
+    .preview-container {
+        min-height: 200px;
+        max-height: 300px;
+    }
+    
+    .preview-container img {
+        max-height: 280px;
+    }
+    
+    .position-controls {
+        padding: 20px;
+    }
+    
+    .position-controls::before {
+        font-size: 12px;
+        padding: 6px 12px;
+        top: -12px;
+        left: 20px;
+    }
+    
+    .drag-hint {
+        font-size: 11px;
+        padding: 6px 10px;
+        top: 5px;
+        right: 5px;
+    }
 }
 </style>
 `;
