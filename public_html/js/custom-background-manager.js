@@ -775,6 +775,7 @@ applyCustomBackground(backgroundId) {
 const customBackgroundStyles = `
 <style id="customBackgroundStyles">
 /* Modal de fond d'écran personnalisé - Design adaptatif aux thèmes */
+/* 12. MODAL - Supprimer tout débordement */
 .background-upload-modal {
     position: fixed;
     top: 0;
@@ -785,6 +786,8 @@ const customBackgroundStyles = `
     background: rgba(0, 0, 0, 0.9);
     backdrop-filter: blur(5px);
     overflow: hidden;
+    width: 100%;
+    height: 100%;
 }
 
 .background-upload-modal .modal-overlay {
@@ -793,7 +796,9 @@ const customBackgroundStyles = `
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.8);
+    width: 100%;
+    height: 100%;
 }
 
 /* RESPONSIVE MODAL CONTAINER */
@@ -817,24 +822,67 @@ const customBackgroundStyles = `
 /* Version desktop - modal centrée avec bordures arrondies */
 @media (min-width: 769px) {
     .background-upload-modal .modal-container {
-        width: 90%;
-        max-width: 1000px;
-        height: 90vh;
-        margin: 5vh auto;
-        border-radius: 20px;
+        width: 95%;
+        max-width: 1200px;
+        height: 95vh;
+        margin: 2.5vh auto;
+        border-radius: 16px;
         box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
     }
 }
 
-/* Version tablette - plein écran avec coins arrondis en haut */
+/* Mobile paysage et petites tablettes */
 @media (min-width: 481px) and (max-width: 768px) {
     .background-upload-modal .modal-container {
         width: 100%;
         height: 100vh;
         margin: 0;
         border-radius: 0;
-        border-top-left-radius: 20px;
-        border-top-right-radius: 20px;
+    }
+    
+    .image-controls {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        padding: 15px;
+    }
+    
+    .position-controls {
+        display: block;
+        padding: 15px;
+    }
+}
+
+/* Tablettes */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .background-upload-modal .modal-container {
+        width: 90%;
+        max-width: 900px;
+        height: 90vh;
+        margin: 5vh auto;
+        border-radius: 16px;
+    }
+    
+    .image-controls {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+        padding: 18px;
+    }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+    .background-upload-modal .modal-container {
+        width: 85%;
+        max-width: 1100px;
+        height: 90vh;
+        margin: 5vh auto;
+        border-radius: 20px;
+    }
+    
+    .image-controls {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+        padding: 25px;
     }
 }
 
@@ -950,10 +998,15 @@ const customBackgroundStyles = `
     box-sizing: border-box;
 }
 
-/* Desktop - plus d'espace */
 @media (min-width: 769px) {
     .background-upload-modal .modal-content {
-        padding: 25px;
+        padding: 20px;
+    }
+}
+
+@media (min-width: 1025px) {
+    .background-upload-modal .modal-content {
+        padding: 30px;
     }
 }
 
@@ -1060,7 +1113,8 @@ const customBackgroundStyles = `
     border: 3px solid var(--primary-color, #7c4dff);
     box-shadow: 0 4px 15px rgba(124, 77, 255, 0.2);
     background: #f0f0f0;
-    min-height: 180px;
+    min-height: 200px;
+    max-height: 400px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1071,8 +1125,16 @@ const customBackgroundStyles = `
 /* Desktop - prévisualisation plus grande */
 @media (min-width: 769px) {
     .preview-container {
-        min-height: 250px;
+        min-height: 280px;
+        max-height: 450px;
         margin-bottom: 20px;
+    }
+}
+
+@media (min-width: 1025px) {
+    .preview-container {
+        min-height: 320px;
+        max-height: 500px;
     }
 }
 
@@ -1158,7 +1220,7 @@ const customBackgroundStyles = `
     transform: scale(1.1);
 }
 
-/* GRILLE DE CONTRÔLES ADAPTATIVE */
+/* 2. GRILLE DE CONTRÔLES - Version corrigée sans débordement */
 .image-controls {
     display: grid;
     grid-template-columns: 1fr;
@@ -1169,9 +1231,10 @@ const customBackgroundStyles = `
     border-radius: 8px;
     width: 100%;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
-/* Tablette - 2 colonnes */
+/* Tablette - 2 colonnes équilibrées */
 @media (min-width: 481px) and (max-width: 768px) {
     .image-controls {
         grid-template-columns: repeat(2, 1fr);
@@ -1179,10 +1242,10 @@ const customBackgroundStyles = `
     }
 }
 
-/* Desktop - 4 colonnes */
+/* Desktop - 2 lignes au lieu de 4 colonnes pour éviter le débordement */
 @media (min-width: 769px) {
     .image-controls {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         gap: 20px;
         margin-bottom: 20px;
         padding: 20px;
@@ -1194,10 +1257,14 @@ const customBackgroundStyles = `
     background: var(--background-color, #1e1e1e);
 }
 
+/* 5. CONTRÔLE GROUPE - Largeur fixée */
 .control-group {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    min-width: 0; /* Permet la réduction si nécessaire */
 }
 
 .control-group label {
@@ -1215,8 +1282,32 @@ const customBackgroundStyles = `
     color: var(--text-color, #333);
     font-size: 14px;
     transition: border-color 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+    max-width: 100%;
 }
 
+/* Mobile portrait */
+@media (max-width: 480px) {
+    .background-upload-modal .modal-container {
+        width: 100%;
+        height: 100vh;
+        margin: 0;
+        border-radius: 0;
+    }
+    
+    .image-controls {
+        grid-template-columns: 1fr;
+        padding: 10px;
+        gap: 10px;
+    }
+    
+    .position-controls {
+        display: block;
+        padding: 10px;
+    }
+}
+	
 /* Adaptation des champs selon les thèmes */
 [data-theme="dark"] .control-group select,
 [data-theme="dark"] .control-group input[type="range"] {
@@ -1231,7 +1322,7 @@ const customBackgroundStyles = `
     border-color: var(--primary-color, #7c4dff);
 }
 
-/* Contrôles de position avec indicateur visuel amélioré */
+/* 3. CONTRÔLES DE POSITION - Version sans débordement */
 .position-controls {
     grid-column: 1 / -1;
     background: linear-gradient(135deg, rgba(124, 77, 255, 0.1), rgba(156, 39, 176, 0.05));
@@ -1245,10 +1336,14 @@ const customBackgroundStyles = `
     box-sizing: border-box;
 }
 
-/* Desktop - contrôles plus spacieux */
+/* Desktop - contrôles organisés en colonnes */
 @media (min-width: 769px) {
     .position-controls {
         padding: 20px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        align-items: center;
     }
 }
 
@@ -1280,7 +1375,7 @@ const customBackgroundStyles = `
     margin-bottom: 5px;
 }
 
-/* Sliders améliorés */
+/* 4. SLIDERS - Version sans débordement */
 .position-controls input[type="range"] {
     width: 100%;
     height: 6px;
@@ -1288,6 +1383,8 @@ const customBackgroundStyles = `
     border-radius: 5px;
     outline: none;
     margin: 5px 0 15px 0;
+    box-sizing: border-box;
+    max-width: 100%;
 }
 
 .position-controls input[type="range"]::-webkit-slider-thumb {
@@ -1305,16 +1402,16 @@ const customBackgroundStyles = `
     box-shadow: 0 4px 12px rgba(124, 77, 255, 0.5);
 }
 
-/* ACTIONS ADAPTATIVES */
+/* 9. ACTIONS - Layout amélioré */
 .preview-actions {
     display: flex;
     gap: 10px;
     justify-content: center;
     flex-direction: column;
     width: 100%;
+    margin-top: 15px;
 }
 
-/* Tablette et desktop - actions en ligne */
 @media (min-width: 481px) {
     .preview-actions {
         flex-direction: row;
@@ -1322,6 +1419,12 @@ const customBackgroundStyles = `
         gap: 15px;
     }
 }
+
+@media (min-width: 769px) {
+    .preview-actions {
+        margin-top: 20px;
+        gap: 20px;
+    }
 
 /* BOUTONS ADAPTATIFS */
 .btn-primary, .btn-secondary, .btn-reset {
@@ -1437,14 +1540,13 @@ const customBackgroundStyles = `
     font-weight: 600;
 }
 
-/* Grille des fonds personnalisés adaptative */
+/* 10. BACKGROUNDS GRID - Responsive amélioré */
 .custom-backgrounds-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 10px;
 }
 
-/* Tablette - 2 colonnes */
 @media (min-width: 481px) and (max-width: 768px) {
     .custom-backgrounds-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -1452,11 +1554,17 @@ const customBackgroundStyles = `
     }
 }
 
-/* Desktop - 3 colonnes */
-@media (min-width: 769px) {
+@media (min-width: 769px) and (max-width: 1024px) {
+    .custom-backgrounds-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+}
+
+@media (min-width: 1025px) {
     .custom-backgrounds-grid {
         grid-template-columns: repeat(3, 1fr);
-        gap: 15px;
+        gap: 20px;
     }
 }
 
