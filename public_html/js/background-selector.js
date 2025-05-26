@@ -414,9 +414,17 @@ class BackgroundSelector {
     }
     
     resetBackground() {
-        this.setBackground('none');
-        this.updateSelectedThumbnail();
+    // Réinitialiser les fonds d'écran classiques
+    this.setBackground('none');
+    
+    // Réinitialiser aussi les fonds personnalisés
+    if (window.customBackgroundManager) {
+        window.customBackgroundManager.resetToDefaultBackground();
     }
+    
+    this.updateSelectedThumbnail();
+    this.showToast('Fond d\'écran réinitialisé');
+}
     
     applySavedBackground() {
         const savedBg = localStorage.getItem(this.storageKey);

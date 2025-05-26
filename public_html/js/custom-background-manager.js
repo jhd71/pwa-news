@@ -21,7 +21,7 @@ class CustomBackgroundManager {
                 <div class="modal-overlay"></div>
                 <div class="modal-container">
                     <div class="modal-header">
-                        <h2>📸 Ajouter un fond d'écran personnalisé</h2>
+                        <h2>🎨 Ajouter un fond d'écran personnalisé</h2>
                         <button id="closeBackgroundModal" class="close-modal-btn">
                             <i class="material-icons">close</i>
                         </button>
@@ -39,9 +39,43 @@ class CustomBackgroundManager {
                                 <input type="file" id="backgroundFileInput" accept="image/*" style="display: none;">
                             </div>
                             <div id="imagePreview" class="image-preview" style="display: none;">
-                                <img id="previewImg" src="" alt="Aperçu">
+                                <div class="preview-container">
+                                    <img id="previewImg" src="" alt="Aperçu">
+                                    <div class="crop-overlay" id="cropOverlay">
+                                        <div class="crop-box" id="cropBox">
+                                            <div class="crop-handle nw"></div>
+                                            <div class="crop-handle ne"></div>
+                                            <div class="crop-handle sw"></div>
+                                            <div class="crop-handle se"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="image-controls">
+                                    <div class="control-group">
+                                        <label>Position:</label>
+                                        <select id="positionSelect">
+                                            <option value="center">Centre</option>
+                                            <option value="top">Haut</option>
+                                            <option value="bottom">Bas</option>
+                                            <option value="left">Gauche</option>
+                                            <option value="right">Droite</option>
+                                        </select>
+                                    </div>
+                                    <div class="control-group">
+                                        <label>Taille:</label>
+                                        <select id="sizeSelect">
+                                            <option value="cover">Couvrir (recommandé)</option>
+                                            <option value="contain">Contenir</option>
+                                            <option value="stretch">Étirer</option>
+                                        </select>
+                                    </div>
+                                    <div class="control-group">
+                                        <label>Opacité: <span id="opacityValue">100%</span></label>
+                                        <input type="range" id="opacitySlider" min="20" max="100" value="100">
+                                    </div>
+                                </div>
                                 <div class="preview-actions">
-                                    <button id="confirmUpload" class="btn-primary">✅ Utiliser cette image</button>
+                                    <button id="confirmUpload" class="btn-primary">✅ Appliquer ce fond</button>
                                     <button id="cancelUpload" class="btn-secondary">❌ Annuler</button>
                                 </div>
                             </div>
@@ -61,8 +95,7 @@ class CustomBackgroundManager {
         document.body.insertAdjacentHTML('beforeend', modalHTML);
     }
 
-    setupEventListeners() {       
-
+    setupEventListeners() {
         // Upload area
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('backgroundFileInput');
@@ -94,6 +127,14 @@ class CustomBackgroundManager {
             if (e.target.files.length > 0) {
                 this.handleFileSelect(e.target.files[0]);
             }
+        });
+
+        // Image controls
+        document.getElementById('positionSelect').addEventListener('change', () => this.updatePreview());
+        document.getElementById('sizeSelect').addEventListener('change', () => this.updatePreview());
+        document.getElementById('opacitySlider').addEventListener('input', (e) => {
+            document.getElementById('opacityValue').textContent = e.target.value + '%';
+            this.updatePreview();
         });
 
         // Modal controls
@@ -133,200 +174,99 @@ class CustomBackgroundManager {
 
         this.showToast('⏳ Traitement de l\'image...', 'info');
 
-        // Redimensionner et optimiser l'image
-        this.processImage(file).then(processedImageData => {
+        // Charger et afficher l'image
+        this.loadImagePreview(file);
+    }
+
+    loadImagePreview(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
             const previewImg = document.getElementById('previewImg');
-            previewImg.src = processedImageData;
-            previewImg.dataset.fileData = processedImageData;
+            previewImg.src = e.target.result;
+            previewImg.dataset.originalData = e.target.result;
             
             document.getElementById('uploadArea').style.display = 'none';
             document.getElementById('imagePreview').style.display = 'block';
-            this.showImageEffectControls();
-        }).catch(error => {
-            console.error('Erreur traitement image:', error);
-            this.showToast('❌ Erreur lors du traitement de l\'image', 'error');
-        });
+            
+            // Réinitialiser les contrôles
+            document.getElementById('positionSelect').value = 'center';
+            document.getElementById('sizeSelect').value = 'cover';
+            document.getElementById('opacitySlider').value = '100';
+            document.getElementById('opacityValue').textContent = '100%';
+            
+            this.updatePreview();
+        };
+        reader.readAsDataURL(file);
     }
 
-    async processImage(file) {
-        return new Promise((resolve, reject) => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const img = new Image();
-
-            img.onload = () => {
-                // Calculer les dimensions optimales
-                const maxWidth = 1920;
-                const maxHeight = 1080;
-                let { width, height } = img;
-
-                // Redimensionner si nécessaire
-                if (width > maxWidth || height > maxHeight) {
-                    const ratio = Math.min(maxWidth / width, maxHeight / height);
-                    width *= ratio;
-                    height *= ratio;
-                }
-
-                canvas.width = width;
-                canvas.height = height;
-
-                // Dessiner l'image redimensionnée
-                ctx.drawImage(img, 0, 0, width, height);
-
-                // Convertir en format optimisé (qualité réduite pour économiser l'espace)
-                const processedData = canvas.toDataURL('image/jpeg', 0.8);
-                resolve(processedData);
-            };
-
-            img.onerror = () => reject('Erreur de chargement de l\'image');
-            img.src = URL.createObjectURL(file);
-        });
-    }
-
-    showImageEffectControls() {
-        const effectsHTML = `
-            <div class="image-effects-panel">
-                <h4>🎨 Effets d'image</h4>
-                <div class="effects-grid">
-                    <div class="effect-option" data-effect="none">
-                        <div class="effect-preview original"></div>
-                        <span>Original</span>
-                    </div>
-                    <div class="effect-option" data-effect="blur">
-                        <div class="effect-preview blur"></div>
-                        <span>Flou artistique</span>
-                    </div>
-                    <div class="effect-option" data-effect="darken">
-                        <div class="effect-preview darken"></div>
-                        <span>Assombri</span>
-                    </div>
-                    <div class="effect-option" data-effect="sepia">
-                        <div class="effect-preview sepia"></div>
-                        <span>Sépia vintage</span>
-                    </div>
-                    <div class="effect-option" data-effect="gradient">
-                        <div class="effect-preview gradient"></div>
-                        <span>Dégradé overlay</span>
-                    </div>
-                    <div class="effect-option" data-effect="pattern">
-                        <div class="effect-preview pattern"></div>
-                        <span>Motif géométrique</span>
-                    </div>
-                </div>
-                <div class="effect-controls">
-                    <label>Opacité: <span id="opacityValue">100%</span></label>
-                    <input type="range" id="opacitySlider" min="20" max="100" value="100">
-                </div>
-            </div>
-        `;
-
-        const imagePreview = document.getElementById('imagePreview');
-        const existingEffects = imagePreview.querySelector('.image-effects-panel');
-        if (existingEffects) {
-            existingEffects.remove();
-        }
-
-        imagePreview.insertAdjacentHTML('beforeend', effectsHTML);
-        this.setupEffectControls();
-    }
-
-    setupEffectControls() {
-        const effectOptions = document.querySelectorAll('.effect-option');
-        const opacitySlider = document.getElementById('opacitySlider');
-        const opacityValue = document.getElementById('opacityValue');
+    updatePreview() {
         const previewImg = document.getElementById('previewImg');
+        const position = document.getElementById('positionSelect').value;
+        const size = document.getElementById('sizeSelect').value;
+        const opacity = document.getElementById('opacitySlider').value / 100;
 
-        let selectedEffect = 'none';
-        let opacity = 100;
+        // Appliquer les styles de prévisualisation
+        let backgroundSize = 'cover';
+        let backgroundPosition = 'center';
 
-        // Gestion des effets
-        effectOptions.forEach(option => {
-            option.addEventListener('click', () => {
-                effectOptions.forEach(opt => opt.classList.remove('selected'));
-                option.classList.add('selected');
-                selectedEffect = option.dataset.effect;
-                this.applyImageEffect(previewImg, selectedEffect, opacity);
-            });
-        });
-
-        // Gestion de l'opacité
-        opacitySlider.addEventListener('input', (e) => {
-            opacity = parseInt(e.target.value);
-            opacityValue.textContent = `${opacity}%`;
-            this.applyImageEffect(previewImg, selectedEffect, opacity);
-        });
-
-        // Sélectionner l'effet "Original" par défaut
-        effectOptions[0].classList.add('selected');
-    }
-
-    applyImageEffect(imgElement, effect, opacity) {
-        let filter = '';
-        let background = '';
-        let backgroundBlendMode = 'normal';
-
-        switch (effect) {
-            case 'blur':
-                filter = 'blur(1px)';
-                background = `rgba(0,0,0,${(100-opacity)/200})`;
-                backgroundBlendMode = 'overlay';
+        switch (size) {
+            case 'contain':
+                backgroundSize = 'contain';
                 break;
-            case 'darken':
-                background = `rgba(0,0,0,${(100-opacity)/100})`;
-                backgroundBlendMode = 'multiply';
-                break;
-            case 'sepia':
-                filter = 'sepia(70%) saturate(0.8)';
-                background = `rgba(139,69,19,${(100-opacity)/300})`;
-                backgroundBlendMode = 'overlay';
-                break;
-            case 'gradient':
-                background = `linear-gradient(135deg, rgba(74,144,226,${(100-opacity)/200}), rgba(142,68,173,${(100-opacity)/200}))`;
-                backgroundBlendMode = 'overlay';
-                break;
-            case 'pattern':
-                background = `
-                    radial-gradient(circle at 20% 20%, rgba(120,119,198,${(100-opacity)/300}) 0%, transparent 20%),
-                    radial-gradient(circle at 80% 80%, rgba(255,119,198,${(100-opacity)/300}) 0%, transparent 20%),
-                    radial-gradient(circle at 40% 40%, rgba(120,219,98,${(100-opacity)/300}) 0%, transparent 20%)
-                `;
+            case 'stretch':
+                backgroundSize = '100% 100%';
                 break;
             default:
-                // Effet original avec opacité ajustable
-                background = `rgba(255,255,255,${(100-opacity)/100})`;
-                backgroundBlendMode = 'normal';
+                backgroundSize = 'cover';
         }
 
-        imgElement.style.filter = filter;
-        imgElement.style.background = background;
-        imgElement.style.backgroundBlendMode = backgroundBlendMode;
-        imgElement.dataset.effect = effect;
-        imgElement.dataset.opacity = opacity;
+        switch (position) {
+            case 'top':
+                backgroundPosition = 'center top';
+                break;
+            case 'bottom':
+                backgroundPosition = 'center bottom';
+                break;
+            case 'left':
+                backgroundPosition = 'left center';
+                break;
+            case 'right':
+                backgroundPosition = 'right center';
+                break;
+            default:
+                backgroundPosition = 'center';
+        }
+
+        previewImg.style.opacity = opacity;
+        previewImg.style.objectFit = size === 'stretch' ? 'fill' : size;
+        previewImg.style.objectPosition = backgroundPosition.replace('center ', '');
     }
 
     confirmUpload() {
         const previewImg = document.getElementById('previewImg');
-        const imageData = previewImg.dataset.fileData;
+        const imageData = previewImg.dataset.originalData;
         
         if (!imageData) {
             this.showToast('❌ Erreur lors du traitement de l\'image', 'error');
             return;
         }
 
-        // Récupérer les paramètres d'effet
-        const effect = previewImg.dataset.effect || 'none';
-        const opacity = previewImg.dataset.opacity || '100';
+        // Récupérer les paramètres
+        const position = document.getElementById('positionSelect').value;
+        const size = document.getElementById('sizeSelect').value;
+        const opacity = document.getElementById('opacitySlider').value;
 
         // Créer un ID unique pour l'image
         const backgroundId = 'custom_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
         
-        // Sauvegarder dans localStorage avec les effets
+        // Sauvegarder avec les paramètres
         const newBackground = {
             id: backgroundId,
             data: imageData,
-            effect: effect,
+            position: position,
+            size: size,
             opacity: opacity,
-            name: this.getEffectName(effect),
+            name: `Fond personnalisé ${this.customBackgrounds.length + 1}`,
             createdAt: new Date().toISOString()
         };
 
@@ -341,18 +281,6 @@ class CustomBackgroundManager {
         this.resetUploadArea();
     }
 
-    getEffectName(effect) {
-        const effectNames = {
-            'none': 'Fond personnalisé',
-            'blur': 'Fond flou artistique',
-            'darken': 'Fond assombri',
-            'sepia': 'Fond sépia vintage',
-            'gradient': 'Fond avec dégradé',
-            'pattern': 'Fond avec motifs'
-        };
-        return effectNames[effect] || 'Fond personnalisé';
-    }
-
     cancelUpload() {
         this.resetUploadArea();
     }
@@ -364,74 +292,93 @@ class CustomBackgroundManager {
     }
 
     applyCustomBackground(backgroundId) {
-    const background = this.customBackgrounds.find(bg => bg.id === backgroundId);
-    if (!background) return;
+        const background = this.customBackgrounds.find(bg => bg.id === backgroundId);
+        if (!background) return;
 
-    // Supprimer tous les anciens styles de fond
-    document.body.classList.remove('has-bg-image');
-    document.body.className = document.body.className
-        .split(' ')
-        .filter(cls => !cls.startsWith('bg-'))
-        .join(' ');
-    
-    // Supprimer les anciens styles personnalisés
-    const existingStyle = document.getElementById('customBackgroundStyle');
-    if (existingStyle) {
-        existingStyle.remove();
-    }
-
-    // Créer le nouveau style CSS
-    const style = document.createElement('style');
-    style.id = 'customBackgroundStyle';
-    style.textContent = `
-        body.custom-background {
-            background-image: url("${background.data}") !important;
-            background-size: cover !important;
-            background-position: center !important;
-            background-repeat: no-repeat !important;
-            background-attachment: fixed !important;
-        }
-    `;
-    document.head.appendChild(style);
-
-    // Appliquer la classe
-    document.body.classList.add('custom-background');
-    
-    // Sauvegarder
-    this.currentCustomBackground = backgroundId;
-    localStorage.setItem('currentCustomBackground', backgroundId);
-    localStorage.setItem('selectedBackground', 'custom');
-    
-    console.log('✅ Fond d\'écran personnalisé appliqué:', backgroundId);
-}
-
-    applyBackgroundEffect(element, effect, opacity) {
-        element.classList.add('background-effect');
+        // Supprimer tous les anciens styles de fond
+        document.body.classList.remove('has-bg-image');
+        document.body.className = document.body.className
+            .split(' ')
+            .filter(cls => !cls.startsWith('bg-'))
+            .join(' ');
         
-        switch (effect) {
-            case 'blur':
-                element.style.filter = 'blur(1px)';
-                element.style.setProperty('--bg-overlay', `rgba(0,0,0,${(100-opacity)/200})`);
-                break;
-            case 'darken':
-                element.style.setProperty('--bg-overlay', `rgba(0,0,0,${(100-opacity)/100})`);
-                break;
-            case 'sepia':
-                element.style.filter = 'sepia(70%) saturate(0.8)';
-                element.style.setProperty('--bg-overlay', `rgba(139,69,19,${(100-opacity)/300})`);
-                break;
-            case 'gradient':
-                element.style.setProperty('--bg-overlay', 
-                    `linear-gradient(135deg, rgba(74,144,226,${(100-opacity)/200}), rgba(142,68,173,${(100-opacity)/200}))`);
-                break;
-            case 'pattern':
-                element.style.setProperty('--bg-overlay', `
-                    radial-gradient(circle at 20% 20%, rgba(120,119,198,${(100-opacity)/300}) 0%, transparent 20%),
-                    radial-gradient(circle at 80% 80%, rgba(255,119,198,${(100-opacity)/300}) 0%, transparent 20%),
-                    radial-gradient(circle at 40% 40%, rgba(120,219,98,${(100-opacity)/300}) 0%, transparent 20%)
-                `);
-                break;
+        // Supprimer les anciens styles personnalisés
+        const existingStyle = document.getElementById('customBackgroundStyle');
+        if (existingStyle) {
+            existingStyle.remove();
         }
+
+        // Créer le nouveau style CSS
+        let backgroundSize = 'cover';
+        let backgroundPosition = 'center';
+
+        switch (background.size) {
+            case 'contain':
+                backgroundSize = 'contain';
+                break;
+            case 'stretch':
+                backgroundSize = '100% 100%';
+                break;
+            default:
+                backgroundSize = 'cover';
+        }
+
+        switch (background.position) {
+            case 'top':
+                backgroundPosition = 'center top';
+                break;
+            case 'bottom':
+                backgroundPosition = 'center bottom';
+                break;
+            case 'left':
+                backgroundPosition = 'left center';
+                break;
+            case 'right':
+                backgroundPosition = 'right center';
+                break;
+            default:
+                backgroundPosition = 'center';
+        }
+
+        const style = document.createElement('style');
+        style.id = 'customBackgroundStyle';
+        style.textContent = `
+            body.custom-background {
+                background-image: url("${background.data}") !important;
+                background-size: ${backgroundSize} !important;
+                background-position: ${backgroundPosition} !important;
+                background-repeat: no-repeat !important;
+                background-attachment: fixed !important;
+                opacity: ${background.opacity / 100} !important;
+            }
+            body.custom-background::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-image: url("${background.data}");
+                background-size: ${backgroundSize};
+                background-position: ${backgroundPosition};
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                opacity: ${background.opacity / 100};
+                z-index: -1;
+                pointer-events: none;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Appliquer la classe
+        document.body.classList.add('custom-background');
+        
+        // Sauvegarder
+        this.currentCustomBackground = backgroundId;
+        localStorage.setItem('currentCustomBackground', backgroundId);
+        localStorage.setItem('selectedBackground', 'custom');
+        
+        console.log('✅ Fond d\'écran personnalisé appliqué:', backgroundId);
     }
 
     removeCustomBackground(backgroundId) {
@@ -460,7 +407,7 @@ class CustomBackgroundManager {
 
         container.innerHTML = this.customBackgrounds.map(bg => `
             <div class="custom-bg-item ${this.currentCustomBackground === bg.id ? 'active' : ''}">
-                <div class="bg-preview" style="background-image: url(${bg.data})"></div>
+                <div class="bg-preview" style="background-image: url(${bg.data}); background-size: cover; background-position: center;"></div>
                 <div class="bg-info">
                     <span class="bg-name">${bg.name}</span>
                     <div class="bg-actions">
@@ -483,12 +430,21 @@ class CustomBackgroundManager {
     }
 
     resetToDefaultBackground() {
-        document.body.style.backgroundImage = '';
+        // Supprimer les styles personnalisés
+        const existingStyle = document.getElementById('customBackgroundStyle');
+        if (existingStyle) {
+            existingStyle.remove();
+        }
+        
         document.body.classList.remove('custom-background');
-        document.body.classList.add('default-background');
         this.currentCustomBackground = null;
         localStorage.removeItem('currentCustomBackground');
-        localStorage.setItem('selectedBackground', 'default');
+        localStorage.setItem('selectedBackground', 'none');
+        
+        // Notifier le sélecteur de fond principal
+        if (window.backgroundSelector) {
+            window.backgroundSelector.resetBackground();
+        }
     }
 
     showToast(message, type = 'info') {
@@ -524,10 +480,10 @@ class CustomBackgroundManager {
     }
 }
 
-// CSS dynamique pour les styles
+// CSS dynamique pour les styles améliorés
 const customBackgroundStyles = `
 <style id="customBackgroundStyles">
-/* Modal de fond d'écran personnalisé */
+/* Modal de fond d'écran personnalisé - Design amélioré */
 .background-upload-modal {
     position: fixed;
     top: 0;
@@ -554,7 +510,7 @@ const customBackgroundStyles = `
     width: 95%;
     max-width: 900px;
     height: 90vh;
-    margin: 5vh auto;
+    margin: 2.5vh auto;
     background: var(--card-bg, white);
     border-radius: 16px;
     display: flex;
@@ -565,114 +521,132 @@ const customBackgroundStyles = `
 }
 
 @keyframes modalSlideIn {
-    from { transform: translateY(50px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    from { transform: translateY(30px) scale(0.95); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
 }
 
 .background-upload-modal .modal-header {
     background: linear-gradient(135deg, var(--primary-color, #7c4dff), var(--accent-color, #9c27b0));
     color: white;
-    padding: 20px 25px;
+    padding: 15px 25px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    flex-shrink: 0;
 }
 
 .background-upload-modal .modal-header h2 {
     margin: 0;
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 600;
 }
 
 .background-upload-modal .modal-content {
     flex: 1;
-    padding: 25px;
+    padding: 20px;
     overflow-y: auto;
     background: var(--background-color, #f8f9fa);
 }
 
 .upload-area {
     border: 3px dashed var(--primary-color, #7c4dff);
-    border-radius: 16px;
-    padding: 50px 30px;
+    border-radius: 12px;
+    padding: 40px 20px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
     background: linear-gradient(135deg, rgba(124, 77, 255, 0.05), rgba(156, 39, 176, 0.05));
-    position: relative;
-    overflow: hidden;
-}
-
-.upload-area::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, transparent, rgba(124, 77, 255, 0.1), transparent);
-    transform: rotate(45deg);
-    animation: shimmer 3s infinite;
-}
-
-@keyframes shimmer {
-    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    margin-bottom: 20px;
 }
 
 .upload-area:hover, .upload-area.drag-over {
     border-color: var(--accent-color, #9c27b0);
     background: linear-gradient(135deg, rgba(124, 77, 255, 0.1), rgba(156, 39, 176, 0.1));
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(124, 77, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(124, 77, 255, 0.2);
 }
 
 .upload-icon {
-    font-size: 64px;
-    margin-bottom: 20px;
-    position: relative;
-    z-index: 1;
+    font-size: 48px;
+    margin-bottom: 15px;
 }
 
 .upload-area p {
-    position: relative;
-    z-index: 1;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 500;
-    margin: 10px 0;
+    margin: 8px 0;
 }
 
 .file-requirements {
-    font-size: 14px;
+    font-size: 13px;
     color: var(--text-muted, #666);
-    margin-top: 15px;
-    position: relative;
-    z-index: 1;
+    margin-top: 10px;
 }
 
 .image-preview {
-    text-align: center;
     background: white;
-    border-radius: 16px;
+    border-radius: 12px;
     padding: 20px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
 }
 
-.image-preview img {
+.preview-container {
+    position: relative;
     max-width: 100%;
-    max-height: 400px;
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-    transition: transform 0.3s ease;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
-.image-preview img:hover {
-    transform: scale(1.02);
+.preview-container img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.image-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: var(--background-color, #f8f9fa);
+    border-radius: 8px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.control-group label {
+    font-weight: 600;
+    color: var(--text-color, #333);
+    font-size: 14px;
+}
+
+.control-group select,
+.control-group input[type="range"] {
+    padding: 8px 12px;
+    border: 2px solid var(--border-color, #ddd);
+    border-radius: 6px;
+    background: white;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.control-group select:focus,
+.control-group input[type="range"]:focus {
+    outline: none;
+    border-color: var(--primary-color, #7c4dff);
 }
 
 .preview-actions {
-    margin-top: 20px;
     display: flex;
     gap: 15px;
     justify-content: center;
@@ -680,18 +654,18 @@ const customBackgroundStyles = `
 }
 
 .btn-primary, .btn-secondary {
-    padding: 14px 28px;
+    padding: 12px 24px;
     border: none;
     border-radius: 25px;
     cursor: pointer;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 15px;
     transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    position: relative;
-    overflow: hidden;
+    gap: 8px;
+    min-width: 160px;
+    justify-content: center;
 }
 
 .btn-primary {
@@ -701,8 +675,8 @@ const customBackgroundStyles = `
 }
 
 .btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
 }
 
 .btn-secondary {
@@ -712,38 +686,113 @@ const customBackgroundStyles = `
 }
 
 .btn-secondary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(244, 67, 54, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
 }
 
 .custom-backgrounds-section {
-    margin-top: 35px;
     background: white;
-    border-radius: 16px;
-    padding: 25px;
+    border-radius: 12px;
+    padding: 20px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
 .custom-backgrounds-section h3 {
     margin-top: 0;
+    margin-bottom: 15px;
     color: var(--primary-color, #7c4dff);
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
+}
+
+.custom-backgrounds-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.custom-bg-item {
+    border: 2px solid var(--border-color, #ddd);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.custom-bg-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.custom-bg-item.active {
+    border-color: var(--primary-color, #7c4dff);
+    box-shadow: 0 0 20px rgba(124, 77, 255, 0.3);
+}
+
+.bg-preview {
+    height: 120px;
+    background-size: cover;
+    background-position: center;
+}
+
+.bg-info {
+    padding: 12px;
+}
+
+.bg-name {
+    font-weight: 600;
+    color: var(--text-color, #333);
+    display: block;
+    margin-bottom: 10px;
+}
+
+.bg-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-use, .btn-delete {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-use {
+    background: var(--primary-color, #7c4dff);
+    color: white;
+}
+
+.btn-use:hover {
+    background: var(--accent-color, #9c27b0);
+}
+
+.btn-delete {
+    background: #f44336;
+    color: white;
+}
+
+.btn-delete:hover {
+    background: #d32f2f;
 }
 
 .close-modal-btn {
     background: rgba(255, 255, 255, 0.2);
     border: none;
     color: white;
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .close-modal-btn:hover {
@@ -751,7 +800,16 @@ const customBackgroundStyles = `
     transform: scale(1.1);
 }
 
-/* MOBILE RESPONSIVE */
+.no-custom-bg {
+    text-align: center;
+    color: var(--text-muted, #666);
+    font-style: italic;
+    padding: 40px 20px;
+    background: var(--background-color, #f8f9fa);
+    border-radius: 8px;
+}
+
+/* RESPONSIVE */
 @media (max-width: 768px) {
     .background-upload-modal .modal-container {
         width: 100%;
@@ -761,10 +819,7 @@ const customBackgroundStyles = `
     }
     
     .background-upload-modal .modal-header {
-        padding: 15px 20px;
-        position: sticky;
-        top: 0;
-        z-index: 10;
+        padding: 12px 20px;
     }
     
     .background-upload-modal .modal-header h2 {
@@ -772,25 +827,20 @@ const customBackgroundStyles = `
     }
     
     .background-upload-modal .modal-content {
-        padding: 20px 15px;
-        padding-bottom: 100px;
+        padding: 15px;
     }
     
     .upload-area {
         padding: 30px 15px;
-        border-radius: 12px;
     }
     
     .upload-icon {
-        font-size: 48px;
+        font-size: 40px;
     }
     
-    .upload-area p {
-        font-size: 16px;
-    }
-    
-    .image-preview img {
-        max-height: 250px;
+    .image-controls {
+        grid-template-columns: 1fr;
+        gap: 10px;
     }
     
     .preview-actions {
@@ -799,25 +849,22 @@ const customBackgroundStyles = `
     
     .btn-primary, .btn-secondary {
         width: 100%;
-        justify-content: center;
-        padding: 16px 24px;
     }
     
-    .custom-backgrounds-section {
-        margin-top: 20px;
-        padding: 20px 15px;
-        border-radius: 12px;
+    .custom-backgrounds-grid {
+        grid-template-columns: 1fr;
     }
 }
 
-/* Animation pour les boutons */
-@keyframes buttonPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
+/* Animations */
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
 }
 
-.btn-primary:active, .btn-secondary:active {
-    animation: buttonPulse 0.3s ease;
+@keyframes slideOutRight {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
 }
 </style>
 `;
@@ -843,3 +890,14 @@ if (window.backgroundSelector) {
         }
     };
 }
+
+// Attendre que le backgroundSelector soit chargé si ce n'est pas encore fait
+setTimeout(() => {
+    if (window.backgroundSelector && !window.backgroundSelector.addCustomOption) {
+        window.backgroundSelector.addCustomOption = function() {
+            if (window.customBackgroundManager) {
+                window.customBackgroundManager.openModal();
+            }
+        };
+    }
+}, 2000);
