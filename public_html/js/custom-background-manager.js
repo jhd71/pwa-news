@@ -481,7 +481,7 @@ class CustomBackgroundManager {
         }, 3000);
     }
 }
-
+}
 // CSS dynamique pour les styles améliorés
 const customBackgroundStyles = `
 <style id="customBackgroundStyles">
