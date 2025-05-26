@@ -357,14 +357,19 @@ class BackgroundSelector {
         });
     // ⬇️ AJOUTEZ CE CODE ICI, JUSTE AVANT LA FERMETURE ⬇️
     const addCustomBtn = document.getElementById('addCustomBgBtn');
-    if (addCustomBtn) {
-        addCustomBtn.addEventListener('click', () => {
+if (addCustomBtn) {
+    addCustomBtn.addEventListener('click', () => {
+        // Fermer le panneau de fond d'écran
+        this.closePanel();
+        
+        // Ouvrir la modal de fond personnalisé après un délai
+        setTimeout(() => {
             if (window.customBackgroundManager) {
                 window.customBackgroundManager.openModal();
             }
-        });
-    }
-} // ⬅️ Fermeture de setupEventListeners()
+        }, 300);
+    });
+}
     
     openPanel() {
     const panel = document.getElementById('bgSelectorPanel');

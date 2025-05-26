@@ -64,7 +64,7 @@ class CustomBackgroundManager {
     setupEventListeners() {
         // Bouton pour ouvrir la modal depuis le sélecteur de fond existant
         const bgSelectorBtn = document.getElementById('bgSelectorBtn');
-        if (bgSelectorBtn) {
+        /*if (bgSelectorBtn) {
             // Ajouter un bouton "Ajouter fond personnalisé" au menu existant
             const customBgBtn = document.createElement('button');
             customBgBtn.innerHTML = `
@@ -78,7 +78,7 @@ class CustomBackgroundManager {
             bgSelectorBtn.parentNode.insertAdjacentElement('afterend', customBgBtn);
             
             customBgBtn.addEventListener('click', () => this.openModal());
-        }
+        }*/
 
         // Upload area
         const uploadArea = document.getElementById('uploadArea');
@@ -381,48 +381,46 @@ class CustomBackgroundManager {
     }
 
     applyCustomBackground(backgroundId) {
-        const background = this.customBackgrounds.find(bg => bg.id === backgroundId);
-        if (!background) return;
+    const background = this.customBackgrounds.find(bg => bg.id === backgroundId);
+    if (!background) return;
 
-        // Créer un élément temporaire pour appliquer les effets
-        const tempImg = document.createElement('div');
-        tempImg.style.backgroundImage = `url(${background.data})`;
-        tempImg.style.backgroundSize = 'cover';
-        tempImg.style.backgroundPosition = 'center';
-        tempImg.style.backgroundRepeat = 'no-repeat';
-        tempImg.style.backgroundAttachment = 'fixed';
-
-        // Appliquer les effets sauvegardés
-        if (background.effect && background.effect !== 'none') {
-            this.applyBackgroundEffect(tempImg, background.effect, background.opacity || 100);
-        }
-
-        // Copier les styles vers le body
-        const computedStyle = window.getComputedStyle(tempImg);
-        document.body.style.backgroundImage = computedStyle.backgroundImage;
-        document.body.style.backgroundSize = computedStyle.backgroundSize;
-        document.body.style.backgroundPosition = computedStyle.backgroundPosition;
-        document.body.style.backgroundRepeat = computedStyle.backgroundRepeat;
-        document.body.style.backgroundAttachment = computedStyle.backgroundAttachment;
-
-        // Appliquer les effets au body
-        if (background.effect && background.effect !== 'none') {
-            this.applyBackgroundEffect(document.body, background.effect, background.opacity || 100);
-        } else {
-            // Reset des effets
-            document.body.style.filter = '';
-            document.body.classList.remove('background-effect');
-        }
-
-        // Sauvegarder la sélection
-        this.currentCustomBackground = backgroundId;
-        localStorage.setItem('currentCustomBackground', backgroundId);
-        localStorage.setItem('selectedBackground', 'custom');
-
-        // Ajouter une classe pour identifier les fonds personnalisés
-        document.body.classList.add('custom-background');
-        document.body.classList.remove('default-background');
+    // Supprimer tous les anciens styles de fond
+    document.body.classList.remove('has-bg-image');
+    document.body.className = document.body.className
+        .split(' ')
+        .filter(cls => !cls.startsWith('bg-'))
+        .join(' ');
+    
+    // Supprimer les anciens styles personnalisés
+    const existingStyle = document.getElementById('customBackgroundStyle');
+    if (existingStyle) {
+        existingStyle.remove();
     }
+
+    // Créer le nouveau style CSS
+    const style = document.createElement('style');
+    style.id = 'customBackgroundStyle';
+    style.textContent = `
+        body.custom-background {
+            background-image: url("${background.data}") !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-attachment: fixed !important;
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Appliquer la classe
+    document.body.classList.add('custom-background');
+    
+    // Sauvegarder
+    this.currentCustomBackground = backgroundId;
+    localStorage.setItem('currentCustomBackground', backgroundId);
+    localStorage.setItem('selectedBackground', 'custom');
+    
+    console.log('✅ Fond d\'écran personnalisé appliqué:', backgroundId);
+}
 
     applyBackgroundEffect(element, effect, opacity) {
         element.classList.add('background-effect');
@@ -553,8 +551,9 @@ const customBackgroundStyles = `
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 1000;
-    background: rgba(0, 0, 0, 0.8);
+    z-index: 10000;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(5px);
 }
 
 .background-upload-modal .modal-overlay {
@@ -563,415 +562,279 @@ const customBackgroundStyles = `
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.7);
 }
 
 .background-upload-modal .modal-container {
     position: relative;
     z-index: 2;
-    width: 90%;
+    width: 95%;
     max-width: 900px;
     height: 90vh;
     margin: 5vh auto;
     background: var(--card-bg, white);
-    border-radius: 12px;
+    border-radius: 16px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
 .background-upload-modal .modal-header {
-    background: var(--primary-color, #7c4dff);
+    background: linear-gradient(135deg, var(--primary-color, #7c4dff), var(--accent-color, #9c27b0));
     color: white;
-    padding: 15px 20px;
+    padding: 20px 25px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.background-upload-modal .modal-header h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
 }
 
 .background-upload-modal .modal-content {
     flex: 1;
-    padding: 20px;
+    padding: 25px;
     overflow-y: auto;
+    background: var(--background-color, #f8f9fa);
 }
 
 .upload-area {
-    border: 3px dashed var(--border-color, #ddd);
-    border-radius: 12px;
-    padding: 40px 20px;
+    border: 3px dashed var(--primary-color, #7c4dff);
+    border-radius: 16px;
+    padding: 50px 30px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    background: var(--background-color, #f9f9f9);
+    background: linear-gradient(135deg, rgba(124, 77, 255, 0.05), rgba(156, 39, 176, 0.05));
+    position: relative;
+    overflow: hidden;
+}
+
+.upload-area::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(124, 77, 255, 0.1), transparent);
+    transform: rotate(45deg);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
 }
 
 .upload-area:hover, .upload-area.drag-over {
-    border-color: var(--primary-color, #7c4dff);
-    background: rgba(124, 77, 255, 0.1);
+    border-color: var(--accent-color, #9c27b0);
+    background: linear-gradient(135deg, rgba(124, 77, 255, 0.1), rgba(156, 39, 176, 0.1));
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(124, 77, 255, 0.3);
 }
 
 .upload-icon {
-    font-size: 48px;
-    margin-bottom: 15px;
+    font-size: 64px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.upload-area p {
+    position: relative;
+    z-index: 1;
+    font-size: 18px;
+    font-weight: 500;
+    margin: 10px 0;
 }
 
 .file-requirements {
-    font-size: 12px;
+    font-size: 14px;
     color: var(--text-muted, #666);
-    margin-top: 10px;
+    margin-top: 15px;
+    position: relative;
+    z-index: 1;
 }
 
 .image-preview {
     text-align: center;
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
 
 .image-preview img {
     max-width: 100%;
-    max-height: 300px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    transition: all 0.3s ease;
+    max-height: 400px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+}
+
+.image-preview img:hover {
+    transform: scale(1.02);
 }
 
 .preview-actions {
-    margin-top: 15px;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-}
-
-/* Panneau d'effets d'image */
-.image-effects-panel {
     margin-top: 20px;
-    padding: 20px;
-    background: var(--card-bg, #f8f9fa);
-    border-radius: 12px;
-    border: 1px solid var(--border-color, #e9ecef);
-}
-
-.image-effects-panel h4 {
-    margin: 0 0 15px 0;
-    color: var(--text-color, #333);
-    font-size: 18px;
-}
-
-.effects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.effect-option {
-    text-align: center;
-    cursor: pointer;
-    padding: 10px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-    background: var(--card-bg, white);
-}
-
-.effect-option:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.effect-option.selected {
-    border-color: var(--primary-color, #7c4dff);
-    background: rgba(124, 77, 255, 0.1);
-}
-
-.effect-preview {
-    width: 80px;
-    height: 50px;
-    border-radius: 6px;
-    margin: 0 auto 8px;
-    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
-    background-size: 400% 400%;
-    animation: gradientMove 3s ease infinite;
-}
-
-.effect-preview.original {
-    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-}
-
-.effect-preview.blur {
-    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-    filter: blur(1px);
-    position: relative;
-}
-
-.effect-preview.blur::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.2);
-    border-radius: 6px;
-}
-
-.effect-preview.darken {
-    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-    position: relative;
-}
-
-.effect-preview.darken::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.4);
-    border-radius: 6px;
-}
-
-.effect-preview.sepia {
-    background: linear-gradient(45deg, #d2b48c, #daa520);
-    filter: sepia(70%) saturate(0.8);
-}
-
-.effect-preview.gradient {
-    background: 
-        linear-gradient(135deg, rgba(74,144,226,0.6), rgba(142,68,173,0.6)),
-        linear-gradient(45deg, #ff6b6b, #4ecdc4);
-}
-
-.effect-preview.pattern {
-    background: 
-        radial-gradient(circle at 20% 20%, rgba(120,119,198,0.4) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(255,119,198,0.4) 0%, transparent 50%),
-        linear-gradient(45deg, #ff6b6b, #4ecdc4);
-}
-
-.effect-option span {
-    font-size: 12px;
-    color: var(--text-color, #333);
-    font-weight: 500;
-}
-
-.effect-controls {
     display: flex;
-    align-items: center;
     gap: 15px;
-    padding: 15px;
-    background: rgba(124, 77, 255, 0.05);
-    border-radius: 8px;
-}
-
-.effect-controls label {
-    font-weight: 500;
-    color: var(--text-color, #333);
-    white-space: nowrap;
-}
-
-.effect-controls input[type="range"] {
-    flex: 1;
-    height: 6px;
-    border-radius: 3px;
-    background: var(--border-color, #ddd);
-    outline: none;
-    -webkit-appearance: none;
-}
-
-.effect-controls input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: var(--primary-color, #7c4dff);
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-}
-
-.effect-controls input[type="range"]::-moz-range-thumb {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: var(--primary-color, #7c4dff);
-    cursor: pointer;
-    border: none;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-}
-
-@keyframes gradientMove {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-/* Effets appliqués au body */
-.background-effect::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: var(--bg-overlay, transparent);
-    pointer-events: none;
-    z-index: -1;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .btn-primary, .btn-secondary {
-    padding: 12px 24px;
+    padding: 14px 28px;
     border: none;
-    border-radius: 8px;
+    border-radius: 25px;
     cursor: pointer;
     font-weight: 600;
-    font-size: 14px;
-    transition: all 0.2s;
+    font-size: 16px;
+    transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
 }
 
 .btn-primary {
-    background: var(--primary-color, #4caf50);
+    background: linear-gradient(135deg, #4CAF50, #45a049);
     color: white;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
 }
 
 .btn-primary:hover {
-    background: var(--accent-color, #45a049);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
 }
 
 .btn-secondary {
-    background: #f44336;
+    background: linear-gradient(135deg, #f44336, #d32f2f);
     color: white;
+    box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
 }
 
 .btn-secondary:hover {
-    background: #d32f2f;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(244, 67, 54, 0.4);
 }
 
 .custom-backgrounds-section {
-    margin-top: 30px;
-    border-top: 1px solid var(--border-color, #eee);
-    padding-top: 20px;
+    margin-top: 35px;
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
-.custom-backgrounds-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 15px;
-    margin-top: 15px;
-}
-
-.custom-bg-item {
-    border: 2px solid transparent;
-    border-radius: 8px;
-    overflow: hidden;
-    background: var(--card-bg, white);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
-}
-
-.custom-bg-item.active {
-    border-color: var(--primary-color, #4caf50);
-    box-shadow: 0 4px 16px rgba(124, 77, 255, 0.3);
-}
-
-.bg-preview {
-    height: 120px;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-.bg-info {
-    padding: 10px;
-}
-
-.bg-name {
-    font-weight: 500;
-    color: var(--text-color, #333);
-}
-
-.bg-actions {
-    display: flex;
-    gap: 5px;
-    margin-top: 8px;
-}
-
-.btn-use, .btn-delete {
-    background: none;
-    border: 1px solid var(--border-color, #ddd);
-    padding: 4px 8px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-    transition: all 0.2s;
-}
-
-.btn-use:hover {
-    background: var(--primary-color, #4caf50);
-    color: white;
-}
-
-.btn-delete:hover {
-    background: #f44336;
-    color: white;
-}
-
-.no-custom-bg {
-    text-align: center;
-    color: var(--text-muted, #666);
-    font-style: italic;
-    padding: 20px;
+.custom-backgrounds-section h3 {
+    margin-top: 0;
+    color: var(--primary-color, #7c4dff);
+    font-size: 20px;
+    font-weight: 600;
 }
 
 .close-modal-btn {
     background: rgba(255, 255, 255, 0.2);
     border: none;
     color: white;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
+    font-size: 20px;
 }
 
 .close-modal-btn:hover {
     background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
 }
 
-/* Animations */
-@keyframes slideInRight {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
-
-@keyframes slideOutRight {
-    from { transform: translateX(0); opacity: 1; }
-    to { transform: translateX(100%); opacity: 0; }
-}
-
-/* Mobile responsive */
+/* MOBILE RESPONSIVE */
 @media (max-width: 768px) {
-    .custom-backgrounds-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 10px;
+    .background-upload-modal .modal-container {
+        width: 100%;
+        height: 100vh;
+        margin: 0;
+        border-radius: 0;
+    }
+    
+    .background-upload-modal .modal-header {
+        padding: 15px 20px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    
+    .background-upload-modal .modal-header h2 {
+        font-size: 18px;
+    }
+    
+    .background-upload-modal .modal-content {
+        padding: 20px 15px;
+        padding-bottom: 100px;
     }
     
     .upload-area {
-        padding: 20px 10px;
+        padding: 30px 15px;
+        border-radius: 12px;
+    }
+    
+    .upload-icon {
+        font-size: 48px;
+    }
+    
+    .upload-area p {
+        font-size: 16px;
+    }
+    
+    .image-preview img {
+        max-height: 250px;
     }
     
     .preview-actions {
         flex-direction: column;
     }
+    
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        justify-content: center;
+        padding: 16px 24px;
+    }
+    
+    .custom-backgrounds-section {
+        margin-top: 20px;
+        padding: 20px 15px;
+        border-radius: 12px;
+    }
+}
+
+/* Animation pour les boutons */
+@keyframes buttonPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.btn-primary:active, .btn-secondary:active {
+    animation: buttonPulse 0.3s ease;
 }
 </style>
 `;
