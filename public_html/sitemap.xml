@@ -2,22 +2,32 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://actuetmedia.fr/</loc>
-    <lastmod>2025-04-26</lastmod>
+    <lastmod>2025-05-26</lastmod>
     <priority>1.0</priority>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>https://actuetmedia.fr/photos-gallery</loc>
+    <lastmod>2025-05-26</lastmod>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
   </url>
   <url>
     <loc>https://actuetmedia.fr/politique-confidentialite</loc>
-    <lastmod>2025-04-26</lastmod>
+    <lastmod>2025-05-26</lastmod>
     <priority>0.5</priority>
+    <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://actuetmedia.fr/conditions-utilisation</loc>
-    <lastmod>2025-04-26</lastmod>
+    <lastmod>2025-05-26</lastmod>
     <priority>0.5</priority>
+    <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://actuetmedia.fr/mentions-legales</loc>
-    <lastmod>2025-04-26</lastmod>
+    <lastmod>2025-05-26</lastmod>
     <priority>0.5</priority>
+    <changefreq>monthly</changefreq>
   </url>
 </urlset>
