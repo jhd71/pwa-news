@@ -291,10 +291,17 @@ class BackgroundSelector {
 }
     
     setupEventListeners() {
+    // Attendre que le DOM soit complètement chargé
+    setTimeout(() => {
         const openBtn = document.getElementById('bgSelectorBtn');
         if (openBtn) {
-            openBtn.addEventListener('click', (e) => {
+            // Supprimer les anciens événements
+            openBtn.replaceWith(openBtn.cloneNode(true));
+            const newOpenBtn = document.getElementById('bgSelectorBtn');
+            
+            newOpenBtn.addEventListener('click', (e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 this.openPanel();
                 
                 // Fermer la sidebar
@@ -304,6 +311,7 @@ class BackgroundSelector {
                 }
             });
         }
+    }, 500);
         
         const closeBtn = document.getElementById('closeBgSelector');
         if (closeBtn) {
@@ -376,7 +384,10 @@ if (addCustomBtn) {
     if (panel) {
         panel.classList.add('open');
         this.updateSelectedThumbnail();
-        this.updateCustomBackgrounds(); // Ajouter cette ligne
+        // Attendre un peu avant de mettre à jour les fonds personnalisés
+        setTimeout(() => {
+            this.updateCustomBackgrounds();
+        }, 100);
     }
 }
     
@@ -513,10 +524,11 @@ if (addCustomBtn) {
         }
     }
 } // ⬅️ Fermeture de la classe BackgroundSelector
-}
+
 // Initialiser avec un délai pour s'assurer que tout est chargé
 window.addEventListener('load', function() {
     setTimeout(function() {
         window.backgroundSelector = new BackgroundSelector();
     }, 1000);
 });
+}

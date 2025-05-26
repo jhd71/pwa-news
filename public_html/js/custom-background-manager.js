@@ -63,22 +63,7 @@ class CustomBackgroundManager {
 
     setupEventListeners() {
         // Bouton pour ouvrir la modal depuis le sélecteur de fond existant
-        const bgSelectorBtn = document.getElementById('bgSelectorBtn');
-        if (bgSelectorBtn) {
-            // Ajouter un bouton "Ajouter fond personnalisé" au menu existant
-            const customBgBtn = document.createElement('button');
-            customBgBtn.innerHTML = `
-                <span class="material-icons">add_photo_alternate</span>
-                <span>Fond personnalisé</span>
-            `;
-            customBgBtn.className = 'menu-link custom-bg-btn';
-            customBgBtn.style.cssText = 'display: flex; align-items: center; text-decoration: none; color: white; padding: 12px 30px; background: transparent; border: none; width: 100%; cursor: pointer;';
-            
-            // Insérer après le bouton fond d'écran existant
-            bgSelectorBtn.parentNode.insertAdjacentElement('afterend', customBgBtn);
-            
-            customBgBtn.addEventListener('click', () => this.openModal());
-        }
+        const bgSelectorBtn = document.getElementById('bgSelectorBtn');       
 
         // Upload area
         const uploadArea = document.getElementById('uploadArea');
