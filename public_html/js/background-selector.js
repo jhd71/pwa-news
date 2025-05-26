@@ -267,7 +267,19 @@ class BackgroundSelector {
         </div>
     </div>
 </div>
-
+// Ajouter la section pour les fonds personnalisés
+<div class="bg-category">
+    <h3>🎨 Fonds personnalisés</h3>
+    <div class="custom-bg-actions">
+        <button class="add-custom-bg-btn" id="addCustomBgBtn">
+            <span class="material-icons">add_photo_alternate</span>
+            <span>Ajouter votre image</span>
+        </button>
+    </div>
+    <div class="backgrounds-grid" id="customBgsList">
+        <!-- Les fonds personnalisés apparaîtront ici -->
+    </div>
+</div>
 <button class="reset-bg-btn" id="resetBgBtn">Réinitialiser le fond</button>
             
             <!-- Bouton flottant de fermeture -->
@@ -276,6 +288,7 @@ class BackgroundSelector {
     `;
     
     document.body.appendChild(panel);
+	
 }
     
     setupEventListeners() {
@@ -343,15 +356,25 @@ class BackgroundSelector {
         window.addEventListener('themeChanged', (e) => {
             this.updateSelectedThumbnail();
         });
+    // ⬇️ AJOUTEZ CE CODE ICI, JUSTE AVANT LA FERMETURE ⬇️
+    const addCustomBtn = document.getElementById('addCustomBgBtn');
+    if (addCustomBtn) {
+        addCustomBtn.addEventListener('click', () => {
+            if (window.customBackgroundManager) {
+                window.customBackgroundManager.openModal();
+            }
+        });
     }
+} // ⬅️ Fermeture de setupEventListeners()
     
     openPanel() {
-        const panel = document.getElementById('bgSelectorPanel');
-        if (panel) {
-            panel.classList.add('open');
-            this.updateSelectedThumbnail();
-        }
+    const panel = document.getElementById('bgSelectorPanel');
+    if (panel) {
+        panel.classList.add('open');
+        this.updateSelectedThumbnail();
+        this.updateCustomBackgrounds(); // Ajouter cette ligne
     }
+}
     
     closePanel() {
         const panel = document.getElementById('bgSelectorPanel');
@@ -440,7 +463,52 @@ class BackgroundSelector {
             }, 3000);
         }
     }
-}
+	// ⬇️ AJOUTEZ LES NOUVELLES METHODES ICI ⬇️
+    updateCustomBackgrounds() {
+        const customBgsList = document.getElementById('customBgsList');
+        if (!customBgsList) return;
+        
+        const customBackgrounds = JSON.parse(localStorage.getItem('customBackgrounds') || '[]');
+        
+        if (customBackgrounds.length === 0) {
+            customBgsList.innerHTML = '<p class="no-custom-bg">Aucun fond personnalisé pour le moment</p>';
+            return;
+        }
+        
+        customBgsList.innerHTML = customBackgrounds.map(bg => `
+            <div class="bg-thumbnail custom-bg-thumb" data-bg="custom-${bg.id}" data-custom-id="${bg.id}">
+                <div class="bg-thumbnail-gradient" style="background-image: url(${bg.data}); background-size: cover; background-position: center;"></div>
+                <div class="bg-thumbnail-label">${bg.name}</div>
+                <button class="delete-custom-bg" data-id="${bg.id}" title="Supprimer">×</button>
+            </div>
+        `).join('');
+        
+        // Ajouter les événements pour les nouveaux éléments
+        customBgsList.querySelectorAll('.bg-thumbnail').forEach(thumb => {
+            thumb.addEventListener('click', (e) => {
+                if (e.target.classList.contains('delete-custom-bg')) {
+                    e.stopPropagation();
+                    this.deleteCustomBackground(e.target.dataset.id);
+                } else {
+                    const customId = thumb.dataset.customId;
+                    if (window.customBackgroundManager) {
+                        window.customBackgroundManager.applyCustomBackground(customId);
+                        this.selectThumbnail(thumb);
+                    }
+                }
+            });
+        });
+    }
+
+    deleteCustomBackground(bgId) {
+        if (confirm('Supprimer ce fond d\'écran personnalisé ?')) {
+            if (window.customBackgroundManager) {
+                window.customBackgroundManager.removeCustomBackground(bgId);
+            }
+            this.updateCustomBackgrounds();
+        }
+    }
+} // ⬅️ Fermeture de la classe BackgroundSelector
 
 // Initialiser avec un délai pour s'assurer que tout est chargé
 window.addEventListener('load', function() {
