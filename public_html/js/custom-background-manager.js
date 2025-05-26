@@ -16,146 +16,187 @@ class CustomBackgroundManager {
     }
 
     createUploadModal() {
-    const modalHTML = `
-        <div id="backgroundUploadModal" class="background-upload-modal" style="display: none;">
-            <div class="modal-overlay"></div>
-            <div class="modal-container">
-                <div class="modal-header">
-                    <h2>🎨 Ajouter un fond d'écran personnalisé</h2>
-                    <button id="closeBackgroundModal" class="close-modal-btn">
-                        <i class="material-icons">close</i>
-                    </button>
-                </div>
-                <div class="modal-content">
-                    <div class="upload-section">
-                        <div class="upload-area" id="uploadArea">
-                            <div class="upload-icon">📁</div>
-                            <p>Glissez-déposez votre image ici</p>
-                            <p class="upload-info">ou cliquez pour choisir un fichier</p>
-                            <p class="file-requirements">
-                                Formats acceptés : JPG, PNG, WEBP<br>
-                                Taille max : 5MB
-                            </p>
-                            <input type="file" id="backgroundFileInput" accept="image/*" style="display: none;">
-                        </div>
-                        <div id="imagePreview" class="image-preview" style="display: none;">
-                            <div class="preview-container">
-                                <img id="previewImg" src="" alt="Aperçu">
-                            </div>
-                            <div class="image-controls">
-                                <div class="control-group">
-                                    <label>Position:</label>
-                                    <select id="positionSelect">
-                                        <option value="center">Centre</option>
-                                        <option value="top">Haut</option>
-                                        <option value="bottom">Bas</option>
-                                        <option value="left">Gauche</option>
-                                        <option value="right">Droite</option>
-                                    </select>
-                                </div>
-                                <div class="control-group">
-                                    <label>Taille:</label>
-                                    <select id="sizeSelect">
-                                        <option value="cover">Couvrir (recommandé)</option>
-                                        <option value="contain">Contenir</option>
-                                        <option value="stretch">Étirer</option>
-                                    </select>
-                                </div>
-                                <div class="control-group">
-                                    <label>Zoom: <span id="zoomValue">100%</span></label>
-                                    <input type="range" id="zoomSlider" min="50" max="200" value="100">
-                                </div>
-                                <div class="control-group">
-                                    <label>Opacité: <span id="opacityValue">100%</span></label>
-                                    <input type="range" id="opacitySlider" min="20" max="100" value="100">
-                                </div>
-                            </div>
-                            <div class="preview-actions">
-                                <button id="confirmUpload" class="btn-primary">✅ Appliquer ce fond</button>
-                                <button id="cancelUpload" class="btn-secondary">❌ Annuler</button>
-                            </div>
-                        </div>
+        const modalHTML = `
+            <div id="backgroundUploadModal" class="background-upload-modal" style="display: none;">
+                <div class="modal-overlay"></div>
+                <div class="modal-container">
+                    <div class="modal-header">
+                        <h2>🎨 Ajouter un fond d'écran personnalisé</h2>
+                        <button id="closeBackgroundModal" class="close-modal-btn">×</button>
                     </div>
-                    
-                    <div class="custom-backgrounds-section">
-                        <h3>🖼️ Vos fonds d'écran personnalisés</h3>
-                        <div id="customBackgroundsList" class="custom-backgrounds-grid">
-                            <!-- Les fonds personnalisés seront affichés ici -->
+                    <div class="modal-content">
+                        <div class="upload-section">
+                            <div class="upload-area" id="uploadArea">
+                                <div class="upload-icon">📁</div>
+                                <p>Glissez-déposez votre image ici</p>
+                                <p class="upload-info">ou cliquez pour choisir un fichier</p>
+                                <p class="file-requirements">
+                                    Formats acceptés : JPG, PNG, WEBP<br>
+                                    Taille max : 5MB
+                                </p>
+                                <input type="file" id="backgroundFileInput" accept="image/*" style="display: none;">
+                            </div>
+                            <div id="imagePreview" class="image-preview" style="display: none;">
+                                <div class="preview-container">
+                                    <img id="previewImg" src="" alt="Aperçu">
+                                </div>
+                                <div class="image-controls">
+                                    <div class="control-group">
+                                        <label>Position:</label>
+                                        <select id="positionSelect">
+                                            <option value="center">Centre</option>
+                                            <option value="top">Haut</option>
+                                            <option value="bottom">Bas</option>
+                                            <option value="left">Gauche</option>
+                                            <option value="right">Droite</option>
+                                        </select>
+                                    </div>
+                                    <div class="control-group">
+                                        <label>Taille:</label>
+                                        <select id="sizeSelect">
+                                            <option value="cover">Couvrir (recommandé)</option>
+                                            <option value="contain">Contenir</option>
+                                            <option value="stretch">Étirer</option>
+                                        </select>
+                                    </div>
+                                    <div class="control-group">
+                                        <label>Zoom: <span id="zoomValue">100%</span></label>
+                                        <input type="range" id="zoomSlider" min="50" max="200" value="100">
+                                    </div>
+                                    <div class="control-group">
+                                        <label>Opacité: <span id="opacityValue">100%</span></label>
+                                        <input type="range" id="opacitySlider" min="20" max="100" value="100">
+                                    </div>
+                                </div>
+                                <div class="preview-actions">
+                                    <button id="confirmUpload" class="btn-primary">✅ Appliquer ce fond</button>
+                                    <button id="cancelUpload" class="btn-secondary">❌ Annuler</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="custom-backgrounds-section">
+                            <h3>🖼️ Vos fonds d'écran personnalisés</h3>
+                            <div id="customBackgroundsList" class="custom-backgrounds-grid">
+                                <!-- Les fonds personnalisés seront affichés ici -->
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    `;
-    
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
-}
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+    }
 
     setupEventListeners() {
         // Upload area
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('backgroundFileInput');
 
-        // Click to upload
-        uploadArea.addEventListener('click', () => fileInput.click());
+        if (uploadArea && fileInput) {
+            // Click to upload
+            uploadArea.addEventListener('click', () => fileInput.click());
 
-        // Drag and drop
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.classList.add('drag-over');
-        });
+            // Drag and drop
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('drag-over');
+            });
 
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('drag-over');
-        });
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('drag-over');
+            });
 
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('drag-over');
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                this.handleFileSelect(files[0]);
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('drag-over');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    this.handleFileSelect(files[0]);
+                }
+            });
+
+            // File input change
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    this.handleFileSelect(e.target.files[0]);
+                }
+            });
+        }
+
+        // Image controls - avec vérification d'existence
+        setTimeout(() => {
+            const positionSelect = document.getElementById('positionSelect');
+            const sizeSelect = document.getElementById('sizeSelect');
+            const zoomSlider = document.getElementById('zoomSlider');
+            const opacitySlider = document.getElementById('opacitySlider');
+
+            if (positionSelect) {
+                positionSelect.addEventListener('change', () => this.updatePreview());
             }
-        });
-
-        // File input change
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                this.handleFileSelect(e.target.files[0]);
+            if (sizeSelect) {
+                sizeSelect.addEventListener('change', () => this.updatePreview());
             }
-        });
-
-        // Image controls
-        document.getElementById('positionSelect').addEventListener('change', () => this.updatePreview());
-        document.getElementById('sizeSelect').addEventListener('change', () => this.updatePreview());
-        document.getElementById('opacitySlider').addEventListener('input', (e) => {
-            document.getElementById('opacityValue').textContent = e.target.value + '%';
-			document.getElementById('zoomSlider').addEventListener('input', (e) => {
-        document.getElementById('zoomValue').textContent = e.target.value + '%';
-            this.updatePreview();
-        });
+            if (zoomSlider) {
+                zoomSlider.addEventListener('input', (e) => {
+                    const zoomValue = document.getElementById('zoomValue');
+                    if (zoomValue) {
+                        zoomValue.textContent = e.target.value + '%';
+                    }
+                    this.updatePreview();
+                });
+            }
+            if (opacitySlider) {
+                opacitySlider.addEventListener('input', (e) => {
+                    const opacityValue = document.getElementById('opacityValue');
+                    if (opacityValue) {
+                        opacityValue.textContent = e.target.value + '%';
+                    }
+                    this.updatePreview();
+                });
+            }
+        }, 500);
 
         // Modal controls
-        document.getElementById('closeBackgroundModal').addEventListener('click', () => this.closeModal());
-        document.getElementById('confirmUpload').addEventListener('click', () => this.confirmUpload());
-        document.getElementById('cancelUpload').addEventListener('click', () => this.cancelUpload());
+        const closeBtn = document.getElementById('closeBackgroundModal');
+        const confirmBtn = document.getElementById('confirmUpload');
+        const cancelBtn = document.getElementById('cancelUpload');
+        const overlay = document.querySelector('#backgroundUploadModal .modal-overlay');
 
-        // Close modal on overlay click
-        document.querySelector('#backgroundUploadModal .modal-overlay').addEventListener('click', () => this.closeModal());
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => this.closeModal());
+        }
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', () => this.confirmUpload());
+        }
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', () => this.cancelUpload());
+        }
+        if (overlay) {
+            overlay.addEventListener('click', () => this.closeModal());
+        }
     }
 
     openModal() {
+        console.log('🎨 Ouverture de la modal de fond personnalisé');
         const modal = document.getElementById('backgroundUploadModal');
-        modal.style.display = 'block';
-        document.body.classList.add('modal-open');
-        this.updateCustomBackgroundsList();
+        if (modal) {
+            modal.style.display = 'block';
+            document.body.classList.add('modal-open');
+            this.updateCustomBackgroundsList();
+        } else {
+            console.error('❌ Modal backgroundUploadModal non trouvée');
+        }
     }
 
     closeModal() {
         const modal = document.getElementById('backgroundUploadModal');
-        modal.style.display = 'none';
-        document.body.classList.remove('modal-open');
-        this.resetUploadArea();
+        if (modal) {
+            modal.style.display = 'none';
+            document.body.classList.remove('modal-open');
+            this.resetUploadArea();
+        }
     }
 
     handleFileSelect(file) {
@@ -171,8 +212,6 @@ class CustomBackgroundManager {
         }
 
         this.showToast('⏳ Traitement de l\'image...', 'info');
-
-        // Charger et afficher l'image
         this.loadImagePreview(file);
     }
 
@@ -180,208 +219,223 @@ class CustomBackgroundManager {
         const reader = new FileReader();
         reader.onload = (e) => {
             const previewImg = document.getElementById('previewImg');
-            previewImg.src = e.target.result;
-            previewImg.dataset.originalData = e.target.result;
-            
-            document.getElementById('uploadArea').style.display = 'none';
-            document.getElementById('imagePreview').style.display = 'block';
-            
-            // Réinitialiser les contrôles
-            document.getElementById('positionSelect').value = 'center';
-            document.getElementById('sizeSelect').value = 'cover';
-            document.getElementById('opacitySlider').value = '100';
-            document.getElementById('opacityValue').textContent = '100%';
-            
-            this.updatePreview();
+            if (previewImg) {
+                previewImg.src = e.target.result;
+                previewImg.dataset.originalData = e.target.result;
+                
+                const uploadArea = document.getElementById('uploadArea');
+                const imagePreview = document.getElementById('imagePreview');
+                
+                if (uploadArea) uploadArea.style.display = 'none';
+                if (imagePreview) imagePreview.style.display = 'block';
+                
+                // Réinitialiser les contrôles
+                const positionSelect = document.getElementById('positionSelect');
+                const sizeSelect = document.getElementById('sizeSelect');
+                const zoomSlider = document.getElementById('zoomSlider');
+                const opacitySlider = document.getElementById('opacitySlider');
+                const zoomValue = document.getElementById('zoomValue');
+                const opacityValue = document.getElementById('opacityValue');
+                
+                if (positionSelect) positionSelect.value = 'center';
+                if (sizeSelect) sizeSelect.value = 'cover';
+                if (zoomSlider) zoomSlider.value = '100';
+                if (opacitySlider) opacitySlider.value = '100';
+                if (zoomValue) zoomValue.textContent = '100%';
+                if (opacityValue) opacityValue.textContent = '100%';
+                
+                this.updatePreview();
+            }
         };
         reader.readAsDataURL(file);
     }
 
     updatePreview() {
-    const previewImg = document.getElementById('previewImg');
-    const position = document.getElementById('positionSelect').value;
-    const size = document.getElementById('sizeSelect').value;
-    const zoom = document.getElementById('zoomSlider').value / 100;
-    const opacity = document.getElementById('opacitySlider').value / 100;
+        const previewImg = document.getElementById('previewImg');
+        const positionSelect = document.getElementById('positionSelect');
+        const sizeSelect = document.getElementById('sizeSelect');
+        const zoomSlider = document.getElementById('zoomSlider');
+        const opacitySlider = document.getElementById('opacitySlider');
 
-    // Appliquer les styles de prévisualisation
-    let backgroundSize = 'cover';
-    let backgroundPosition = 'center';
+        if (!previewImg) return;
 
-    switch (size) {
-        case 'contain':
-            backgroundSize = 'contain';
-            break;
-        case 'stretch':
-            backgroundSize = '100% 100%';
-            break;
-        default:
-            backgroundSize = 'cover';
+        const position = positionSelect ? positionSelect.value : 'center';
+        const size = sizeSelect ? sizeSelect.value : 'cover';
+        const zoom = zoomSlider ? zoomSlider.value / 100 : 1;
+        const opacity = opacitySlider ? opacitySlider.value / 100 : 1;
+
+        // Appliquer les styles de prévisualisation
+        let backgroundPosition = 'center';
+
+        switch (position) {
+            case 'top':
+                backgroundPosition = 'center top';
+                break;
+            case 'bottom':
+                backgroundPosition = 'center bottom';
+                break;
+            case 'left':
+                backgroundPosition = 'left center';
+                break;
+            case 'right':
+                backgroundPosition = 'right center';
+                break;
+            default:
+                backgroundPosition = 'center';
+        }
+
+        previewImg.style.opacity = opacity;
+        previewImg.style.transform = `scale(${zoom})`;
+        previewImg.style.objectFit = size === 'stretch' ? 'fill' : size;
+        previewImg.style.objectPosition = backgroundPosition.replace('center ', '');
     }
-
-    // Appliquer le zoom
-    if (zoom !== 1) {
-        backgroundSize = size === 'stretch' ? `${zoom * 100}% ${zoom * 100}%` : 
-                        size === 'contain' ? `${zoom * 100}%` : 
-                        `${zoom * 100}%`;
-    }
-
-    switch (position) {
-        case 'top':
-            backgroundPosition = 'center top';
-            break;
-        case 'bottom':
-            backgroundPosition = 'center bottom';
-            break;
-        case 'left':
-            backgroundPosition = 'left center';
-            break;
-        case 'right':
-            backgroundPosition = 'right center';
-            break;
-        default:
-            backgroundPosition = 'center';
-    }
-
-    previewImg.style.opacity = opacity;
-    previewImg.style.transform = `scale(${zoom})`;
-    previewImg.style.objectFit = size === 'stretch' ? 'fill' : size;
-    previewImg.style.objectPosition = backgroundPosition.replace('center ', '');
-}
 
     confirmUpload() {
-    const previewImg = document.getElementById('previewImg');
-    const imageData = previewImg.dataset.originalData;
-    
-    if (!imageData) {
-        this.showToast('❌ Erreur lors du traitement de l\'image', 'error');
-        return;
+        const previewImg = document.getElementById('previewImg');
+        if (!previewImg) {
+            this.showToast('❌ Erreur lors du traitement de l\'image', 'error');
+            return;
+        }
+
+        const imageData = previewImg.dataset.originalData;
+        if (!imageData) {
+            this.showToast('❌ Erreur lors du traitement de l\'image', 'error');
+            return;
+        }
+
+        // Récupérer les paramètres
+        const positionSelect = document.getElementById('positionSelect');
+        const sizeSelect = document.getElementById('sizeSelect');
+        const zoomSlider = document.getElementById('zoomSlider');
+        const opacitySlider = document.getElementById('opacitySlider');
+
+        const position = positionSelect ? positionSelect.value : 'center';
+        const size = sizeSelect ? sizeSelect.value : 'cover';
+        const zoom = zoomSlider ? zoomSlider.value : '100';
+        const opacity = opacitySlider ? opacitySlider.value : '100';
+
+        // Créer un ID unique pour l'image
+        const backgroundId = 'custom_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        
+        // Sauvegarder avec les paramètres
+        const newBackground = {
+            id: backgroundId,
+            data: imageData,
+            position: position,
+            size: size,
+            zoom: zoom,
+            opacity: opacity,
+            name: `Fond personnalisé ${this.customBackgrounds.length + 1}`,
+            createdAt: new Date().toISOString()
+        };
+
+        this.customBackgrounds.push(newBackground);
+        localStorage.setItem('customBackgrounds', JSON.stringify(this.customBackgrounds));
+
+        // Appliquer immédiatement
+        this.applyCustomBackground(backgroundId);
+        
+        this.showToast('✅ Fond d\'écran ajouté et appliqué !', 'success');
+        this.updateCustomBackgroundsList();
+        this.resetUploadArea();
     }
-
-    // Récupérer les paramètres (AJOUTEZ zoom)
-    const position = document.getElementById('positionSelect').value;
-    const size = document.getElementById('sizeSelect').value;
-    const zoom = document.getElementById('zoomSlider').value;
-    const opacity = document.getElementById('opacitySlider').value;
-
-    // Créer un ID unique pour l'image
-    const backgroundId = 'custom_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    
-    // Sauvegarder avec les paramètres (AJOUTEZ zoom)
-    const newBackground = {
-        id: backgroundId,
-        data: imageData,
-        position: position,
-        size: size,
-        zoom: zoom,
-        opacity: opacity,
-        name: `Fond personnalisé ${this.customBackgrounds.length + 1}`,
-        createdAt: new Date().toISOString()
-    };
-
-    this.customBackgrounds.push(newBackground);
-    localStorage.setItem('customBackgrounds', JSON.stringify(this.customBackgrounds));
-
-    // Appliquer immédiatement
-    this.applyCustomBackground(backgroundId);
-    
-    this.showToast('✅ Fond d\'écran ajouté et appliqué !', 'success');
-    this.updateCustomBackgroundsList();
-    this.resetUploadArea();
-}
 
     cancelUpload() {
         this.resetUploadArea();
     }
 
     resetUploadArea() {
-        document.getElementById('uploadArea').style.display = 'block';
-        document.getElementById('imagePreview').style.display = 'none';
-        document.getElementById('backgroundFileInput').value = '';
+        const uploadArea = document.getElementById('uploadArea');
+        const imagePreview = document.getElementById('imagePreview');
+        const fileInput = document.getElementById('backgroundFileInput');
+
+        if (uploadArea) uploadArea.style.display = 'block';
+        if (imagePreview) imagePreview.style.display = 'none';
+        if (fileInput) fileInput.value = '';
     }
 
     applyCustomBackground(backgroundId) {
-    const background = this.customBackgrounds.find(bg => bg.id === backgroundId);
-    if (!background) return;
+        const background = this.customBackgrounds.find(bg => bg.id === backgroundId);
+        if (!background) return;
 
-    // Supprimer tous les anciens styles de fond
-    document.body.classList.remove('has-bg-image');
-    document.body.className = document.body.className
-        .split(' ')
-        .filter(cls => !cls.startsWith('bg-'))
-        .join(' ');
-    
-    // Supprimer les anciens styles personnalisés
-    const existingStyle = document.getElementById('customBackgroundStyle');
-    if (existingStyle) {
-        existingStyle.remove();
-    }
-
-    // Créer le nouveau style CSS avec zoom
-    let backgroundSize = 'cover';
-    let backgroundPosition = 'center';
-    const zoom = background.zoom ? background.zoom / 100 : 1;
-
-    switch (background.size) {
-        case 'contain':
-            backgroundSize = zoom !== 1 ? `${zoom * 100}%` : 'contain';
-            break;
-        case 'stretch':
-            backgroundSize = zoom !== 1 ? `${zoom * 100}% ${zoom * 100}%` : '100% 100%';
-            break;
-        default:
-            backgroundSize = zoom !== 1 ? `${zoom * 100}%` : 'cover';
-    }
-
-    switch (background.position) {
-        case 'top':
-            backgroundPosition = 'center top';
-            break;
-        case 'bottom':
-            backgroundPosition = 'center bottom';
-            break;
-        case 'left':
-            backgroundPosition = 'left center';
-            break;
-        case 'right':
-            backgroundPosition = 'right center';
-            break;
-        default:
-            backgroundPosition = 'center';
-    }
-
-    const style = document.createElement('style');
-    style.id = 'customBackgroundStyle';
-    style.textContent = `
-        body.custom-background::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url("${background.data}");
-            background-size: ${backgroundSize};
-            background-position: ${backgroundPosition};
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            opacity: ${background.opacity / 100};
-            z-index: -1;
-            pointer-events: none;
+        // Supprimer tous les anciens styles de fond
+        document.body.classList.remove('has-bg-image');
+        document.body.className = document.body.className
+            .split(' ')
+            .filter(cls => !cls.startsWith('bg-'))
+            .join(' ');
+        
+        // Supprimer les anciens styles personnalisés
+        const existingStyle = document.getElementById('customBackgroundStyle');
+        if (existingStyle) {
+            existingStyle.remove();
         }
-    `;
-    document.head.appendChild(style);
 
-    // Appliquer la classe
-    document.body.classList.add('custom-background');
-    
-    // Sauvegarder
-    this.currentCustomBackground = backgroundId;
-    localStorage.setItem('currentCustomBackground', backgroundId);
-    localStorage.setItem('selectedBackground', 'custom');
-    
-    console.log('✅ Fond d\'écran personnalisé appliqué:', backgroundId);
-}
+        // Créer le nouveau style CSS avec zoom
+        let backgroundSize = 'cover';
+        let backgroundPosition = 'center';
+        const zoom = background.zoom ? background.zoom / 100 : 1;
+
+        switch (background.size) {
+            case 'contain':
+                backgroundSize = zoom !== 1 ? `${zoom * 100}%` : 'contain';
+                break;
+            case 'stretch':
+                backgroundSize = zoom !== 1 ? `${zoom * 100}% ${zoom * 100}%` : '100% 100%';
+                break;
+            default:
+                backgroundSize = zoom !== 1 ? `${zoom * 100}%` : 'cover';
+        }
+
+        switch (background.position) {
+            case 'top':
+                backgroundPosition = 'center top';
+                break;
+            case 'bottom':
+                backgroundPosition = 'center bottom';
+                break;
+            case 'left':
+                backgroundPosition = 'left center';
+                break;
+            case 'right':
+                backgroundPosition = 'right center';
+                break;
+            default:
+                backgroundPosition = 'center';
+        }
+
+        const style = document.createElement('style');
+        style.id = 'customBackgroundStyle';
+        style.textContent = `
+            body.custom-background::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-image: url("${background.data}");
+                background-size: ${backgroundSize};
+                background-position: ${backgroundPosition};
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                opacity: ${background.opacity / 100};
+                z-index: -1;
+                pointer-events: none;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Appliquer la classe
+        document.body.classList.add('custom-background');
+        
+        // Sauvegarder
+        this.currentCustomBackground = backgroundId;
+        localStorage.setItem('currentCustomBackground', backgroundId);
+        localStorage.setItem('selectedBackground', 'custom');
+        
+        console.log('✅ Fond d\'écran personnalisé appliqué:', backgroundId);
+    }
 
     removeCustomBackground(backgroundId) {
         if (confirm('Êtes-vous sûr de vouloir supprimer ce fond d\'écran ?')) {
@@ -401,6 +455,7 @@ class CustomBackgroundManager {
 
     updateCustomBackgroundsList() {
         const container = document.getElementById('customBackgroundsList');
+        if (!container) return;
         
         if (this.customBackgrounds.length === 0) {
             container.innerHTML = '<p class="no-custom-bg">Aucun fond personnalisé. Ajoutez-en un ci-dessus !</p>';
@@ -480,12 +535,12 @@ class CustomBackgroundManager {
             setTimeout(() => toast.remove(), 300);
         }, 3000);
     }
-}
-}
-// CSS dynamique pour les styles améliorés
+} // ← ACCOLADE DE FERMETURE DE LA CLASSE
+
+// CSS dynamique pour les styles
 const customBackgroundStyles = `
 <style id="customBackgroundStyles">
-/* Modal de fond d'écran personnalisé - Design amélioré avec thèmes */
+/* Modal de fond d'écran personnalisé - Design adaptatif aux thèmes */
 .background-upload-modal {
     position: fixed;
     top: 0;
@@ -967,25 +1022,25 @@ const customBackgroundStyles = `
 document.head.insertAdjacentHTML('beforeend', customBackgroundStyles);
 
 // Initialiser automatiquement si le DOM est prêt
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
+function initCustomBackgroundManager() {
+    if (!window.customBackgroundManager) {
+        console.log('🎨 Initialisation du CustomBackgroundManager');
         window.customBackgroundManager = new CustomBackgroundManager();
-    });
-} else {
-    window.customBackgroundManager = new CustomBackgroundManager();
+    }
 }
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCustomBackgroundManager);
+} else {
+    initCustomBackgroundManager();
+}
+
+// Sécurité supplémentaire
+window.addEventListener('load', () => {
+    setTimeout(initCustomBackgroundManager, 1000);
+});
 
 // Intégration avec le système de thème existant
-if (window.backgroundSelector) {
-    // Ajouter l'option personnalisée au sélecteur existant
-    window.backgroundSelector.addCustomOption = function() {
-        if (window.customBackgroundManager) {
-            window.customBackgroundManager.openModal();
-        }
-    };
-}
-
-// Attendre que le backgroundSelector soit chargé si ce n'est pas encore fait
 setTimeout(() => {
     if (window.backgroundSelector && !window.backgroundSelector.addCustomOption) {
         window.backgroundSelector.addCustomOption = function() {
