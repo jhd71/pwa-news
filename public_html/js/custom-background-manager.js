@@ -251,6 +251,7 @@ setupImageDrag() {
             e.preventDefault();
             isDragging = true;
             previewContainer.style.cursor = 'grabbing';
+            previewContainer.classList.add('dragging');
             
             const pos = getEventPos(e);
             startX = pos.x;
@@ -311,17 +312,32 @@ setupImageDrag() {
                 if (positionYValue) positionYValue.textContent = Math.round(newY) + '%';
             }
             
-            this.updatePreview();
+            // CORRECTION : Appliquer visuellement la nouvelle position immédiatement
+            const zoom = document.getElementById('zoomSlider') ? document.getElementById('zoomSlider').value / 100 : 1;
+            const opacity = document.getElementById('opacitySlider') ? document.getElementById('opacitySlider').value / 100 : 1;
+            const sizeSelect = document.getElementById('sizeSelect');
+            const size = sizeSelect ? sizeSelect.value : 'cover';
+            
+            // Appliquer directement les styles pour un aperçu instantané
+            previewImg.style.objectPosition = `${Math.round(newX)}% ${Math.round(newY)}%`;
+            previewImg.style.transform = `scale(${zoom})`;
+            previewImg.style.opacity = opacity;
+            previewImg.style.objectFit = size === 'stretch' ? 'fill' : size;
         }
 
         function endDrag() {
             isDragging = false;
             previewContainer.style.cursor = 'grab';
+            previewContainer.classList.remove('dragging');
         }
 
         // Style du curseur
         previewContainer.style.cursor = 'grab';
         previewContainer.style.userSelect = 'none';
+        
+        // Empêcher la sélection du texte lors du glisser
+        previewContainer.addEventListener('selectstart', (e) => e.preventDefault());
+        previewContainer.addEventListener('dragstart', (e) => e.preventDefault());
     }, 100);
 }
 
@@ -456,35 +472,43 @@ updatePreview() {
     const opacity = opacitySlider ? opacitySlider.value / 100 : 1;
 
     // Gérer la position
-    let backgroundPosition = 'center';
+    let objectPosition = 'center';
 
     if (position === 'custom') {
         const posX = positionXSlider ? positionXSlider.value : 50;
         const posY = positionYSlider ? positionYSlider.value : 50;
-        backgroundPosition = `${posX}% ${posY}%`;
+        objectPosition = `${posX}% ${posY}%`;
     } else {
         switch (position) {
             case 'top':
-                backgroundPosition = 'center top';
+                objectPosition = 'center top';
                 break;
             case 'bottom':
-                backgroundPosition = 'center bottom';
+                objectPosition = 'center bottom';
                 break;
             case 'left':
-                backgroundPosition = 'left center';
+                objectPosition = 'left center';
                 break;
             case 'right':
-                backgroundPosition = 'right center';
+                objectPosition = 'right center';
                 break;
             default:
-                backgroundPosition = 'center';
+                objectPosition = 'center';
         }
     }
 
+    // Appliquer tous les styles
     previewImg.style.opacity = opacity;
     previewImg.style.transform = `scale(${zoom})`;
     previewImg.style.objectFit = size === 'stretch' ? 'fill' : size;
-    previewImg.style.objectPosition = backgroundPosition.replace('center ', '');
+    previewImg.style.objectPosition = objectPosition;
+    
+    // Ajouter une transition fluide quand on n'est pas en train de glisser
+    if (!previewImg.closest('.preview-container').classList.contains('dragging')) {
+        previewImg.style.transition = 'all 0.3s ease';
+    } else {
+        previewImg.style.transition = 'none';
+    }
 }
 
     // 7. Modifiez confirmUpload() pour sauvegarder les coordonnées :
@@ -920,20 +944,87 @@ const customBackgroundStyles = `
     background: var(--card-bg, #2d2d2d);
 }
 
+/* Container de prévisualisation avec feedback visuel amélioré */
 .preview-container {
     position: relative;
     max-width: 100%;
     margin-bottom: 20px;
     border-radius: 8px;
     overflow: hidden;
+    border: 3px solid var(--primary-color, #7c4dff);
+    box-shadow: 0 4px 15px rgba(124, 77, 255, 0.2);
+    background: #f0f0f0;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab !important;
 }
 
 .preview-container img {
     width: 100%;
     max-height: 300px;
     object-fit: cover;
-    border-radius: 8px;
+    border-radius: 5px;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     transition: all 0.3s ease;
+}
+
+/* États du glisser améliorés */
+.preview-container:hover {
+    border-color: var(--accent-color, #9c27b0);
+    box-shadow: 0 6px 20px rgba(124, 77, 255, 0.3);
+}
+
+.preview-container.dragging {
+    border-color: #FFD700 !important;
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5) !important;
+    background: #fff9e6 !important;
+    cursor: grabbing !important;
+}
+
+.preview-container.dragging img {
+    transition: none !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.preview-container:active {
+    transform: scale(0.99);
+    cursor: grabbing !important;
+}
+
+/* Hint de glisser amélioré */
+.drag-hint {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6));
+    color: white;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.preview-container:hover .drag-hint {
+    opacity: 1;
+    transform: translateY(-2px);
+}
+
+.preview-container.dragging .drag-hint {
+    opacity: 1;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.9), rgba(255, 193, 7, 0.8));
+    color: #333;
+    transform: scale(1.1);
 }
 
 .image-controls {
@@ -988,6 +1079,64 @@ const customBackgroundStyles = `
     border-color: var(--primary-color, #7c4dff);
 }
 
+/* Contrôles de position avec indicateur visuel amélioré */
+.position-controls {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, rgba(124, 77, 255, 0.1), rgba(156, 39, 176, 0.05));
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px solid var(--primary-color, #7c4dff);
+    margin-top: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.position-controls::before {
+    content: '📍 Position personnalisée';
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    background: var(--primary-color, #7c4dff);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.position-controls label {
+    color: var(--primary-color, #7c4dff);
+    font-weight: 700;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Sliders améliorés */
+.position-controls input[type="range"] {
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(to right, #ddd, var(--primary-color, #7c4dff), #ddd);
+    border-radius: 5px;
+    outline: none;
+    margin: 5px 0 15px 0;
+}
+
+.position-controls input[type="range"]::-webkit-slider-thumb {
+    width: 18px;
+    height: 18px;
+    background: var(--primary-color, #7c4dff);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+}
+
+.position-controls input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 4px 12px rgba(124, 77, 255, 0.5);
+}
+
 .preview-actions {
     display: flex;
     gap: 15px;
@@ -1030,6 +1179,46 @@ const customBackgroundStyles = `
 .btn-secondary:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
+}
+
+/* Bouton de réinitialisation amélioré */
+.btn-reset {
+    padding: 12px 24px;
+    border: 2px solid var(--primary-color, #7c4dff);
+    border-radius: 25px;
+    background: linear-gradient(135deg, rgba(124, 77, 255, 0.1), rgba(156, 39, 176, 0.05));
+    color: var(--primary-color, #7c4dff);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-reset::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-reset:hover::before {
+    left: 100%;
+}
+
+.btn-reset:hover {
+    background: var(--primary-color, #7c4dff);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(124, 77, 255, 0.4);
 }
 
 .custom-backgrounds-section {
@@ -1162,10 +1351,37 @@ const customBackgroundStyles = `
     border-radius: 8px;
 }
 
-/* Adaptation selon les thèmes */
+/* Adaptation selon les thèmes pour les nouveaux éléments */
 [data-theme="dark"] .no-custom-bg {
     background: var(--background-color, #1e1e1e);
     color: var(--text-muted, #888);
+}
+
+[data-theme="dark"] .position-controls {
+    background: linear-gradient(135deg, rgba(26, 35, 126, 0.2), rgba(26, 35, 126, 0.1));
+    border-color: var(--primary-color, #1a237e);
+}
+
+[data-theme="dark"] .position-controls::before {
+    background: var(--primary-color, #1a237e);
+}
+
+[data-theme="rouge"] .position-controls {
+    background: linear-gradient(135deg, rgba(188, 58, 52, 0.2), rgba(188, 58, 52, 0.1));
+    border-color: var(--primary-color, #bc3a34);
+}
+
+[data-theme="rouge"] .position-controls::before {
+    background: var(--primary-color, #bc3a34);
+}
+
+[data-theme="bleuciel"] .position-controls {
+    background: linear-gradient(135deg, rgba(79, 179, 232, 0.2), rgba(79, 179, 232, 0.1));
+    border-color: var(--primary-color, #4fb3e8);
+}
+
+[data-theme="bleuciel"] .position-controls::before {
+    background: var(--primary-color, #4fb3e8);
 }
 
 /* RESPONSIVE - SUPPRESSION DE L'ESPACE BLANC */
@@ -1204,14 +1420,46 @@ const customBackgroundStyles = `
     
     .preview-actions {
         flex-direction: column;
+        gap: 10px;
     }
     
     .btn-primary, .btn-secondary {
         width: 100%;
     }
     
+    .btn-reset {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+    
     .custom-backgrounds-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .drag-hint {
+        font-size: 11px;
+        padding: 6px 10px;
+        top: 5px;
+        right: 5px;
+    }
+    
+    .position-controls {
+        padding: 15px;
+        margin-top: 15px;
+    }
+    
+    .position-controls::before {
+        font-size: 10px;
+        padding: 3px 10px;
+    }
+    
+    .preview-container {
+        min-height: 150px;
+    }
+    
+    .preview-container img {
+        max-height: 200px;
     }
 }
 
@@ -1226,144 +1474,15 @@ const customBackgroundStyles = `
     to { transform: translateX(100%); opacity: 0; }
 }
 
-/* Hint de glisser sur l'image */
-.drag-hint {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 15px;
-    font-size: 12px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-    z-index: 10;
+/* Animation de feedback quand on clique */
+.btn-primary:active, .btn-secondary:active, .btn-reset:active {
+    animation: buttonPulse 0.3s ease;
 }
 
-.preview-container:hover .drag-hint {
-    opacity: 1;
+@keyframes buttonPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
 }
-
-/* Contrôles de position personnalisée */
-.position-controls {
-    grid-column: 1 / -1;
-    background: rgba(124, 77, 255, 0.1);
-    padding: 15px;
-    border-radius: 8px;
-    border: 2px solid var(--primary-color, #7c4dff);
-}
-
-.position-controls label {
-    color: var(--primary-color, #7c4dff);
-    font-weight: 700;
-}
-
-/* Bouton de réinitialisation */
-.btn-reset {
-    padding: 12px 20px;
-    border: 2px solid var(--primary-color, #7c4dff);
-    border-radius: 25px;
-    background: transparent;
-    color: var(--primary-color, #7c4dff);
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 14px;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.btn-reset:hover {
-    background: var(--primary-color, #7c4dff);
-    color: white;
-    transform: translateY(-2px);
-}
-
-/* Container de prévisualisation amélioré */
-.preview-container {
-    position: relative;
-    max-width: 100%;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    overflow: hidden;
-    border: 3px solid var(--primary-color, #7c4dff);
-    box-shadow: 0 4px 15px rgba(124, 77, 255, 0.2);
-}
-
-.preview-container img {
-    width: 100%;
-    max-height: 300px;
-    object-fit: cover;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-}
-
-/* Animation lors du glisser */
-.preview-container.dragging {
-    box-shadow: 0 8px 25px rgba(124, 77, 255, 0.4);
-}
-
-.preview-container.dragging img {
-    transition: none;
-}
-
-/* Adaptation responsive pour les contrôles */
-@media (max-width: 768px) {
-    .drag-hint {
-        font-size: 11px;
-        padding: 4px 8px;
-        top: 5px;
-        right: 5px;
-    }
-    
-    .position-controls {
-        padding: 10px;
-    }
-    
-    .btn-reset {
-        width: 100%;
-        justify-content: center;
-        margin-bottom: 10px;
-    }
-    
-    .preview-actions {
-        flex-direction: column;
-        gap: 10px;
-    }
-}
-
-/* Curseur personnalisé pour le glisser */
-.preview-container[style*="cursor: grab"] {
-    cursor: grab !important;
-}
-
-.preview-container[style*="cursor: grabbing"] {
-    cursor: grabbing !important;
-}
-
-/* Adaptation aux thèmes pour les nouveaux éléments */
-[data-theme="dark"] .position-controls {
-    background: rgba(26, 35, 126, 0.2);
-    border-color: var(--primary-color, #1a237e);
-}
-
-[data-theme="rouge"] .position-controls {
-    background: rgba(188, 58, 52, 0.2);
-    border-color: var(--primary-color, #bc3a34);
-}
-
-[data-theme="bleuciel"] .position-controls {
-    background: rgba(79, 179, 232, 0.2);
-    border-color: var(--primary-color, #4fb3e8);
-}
-
 </style>
 `;
 
