@@ -381,48 +381,94 @@ class CustomBackgroundManager {
     }
 
     applyCustomBackground(backgroundId) {
-        const background = this.customBackgrounds.find(bg => bg.id === backgroundId);
-        if (!background) return;
+    const background = this.customBackgrounds.find(bg => bg.id === backgroundId);
+    if (!background) return;
 
-        // Créer un élément temporaire pour appliquer les effets
-        const tempImg = document.createElement('div');
-        tempImg.style.backgroundImage = `url(${background.data})`;
-        tempImg.style.backgroundSize = 'cover';
-        tempImg.style.backgroundPosition = 'center';
-        tempImg.style.backgroundRepeat = 'no-repeat';
-        tempImg.style.backgroundAttachment = 'fixed';
-
-        // Appliquer les effets sauvegardés
-        if (background.effect && background.effect !== 'none') {
-            this.applyBackgroundEffect(tempImg, background.effect, background.opacity || 100);
-        }
-
-        // Copier les styles vers le body
-        const computedStyle = window.getComputedStyle(tempImg);
-        document.body.style.backgroundImage = computedStyle.backgroundImage;
-        document.body.style.backgroundSize = computedStyle.backgroundSize;
-        document.body.style.backgroundPosition = computedStyle.backgroundPosition;
-        document.body.style.backgroundRepeat = computedStyle.backgroundRepeat;
-        document.body.style.backgroundAttachment = computedStyle.backgroundAttachment;
-
-        // Appliquer les effets au body
-        if (background.effect && background.effect !== 'none') {
-            this.applyBackgroundEffect(document.body, background.effect, background.opacity || 100);
-        } else {
-            // Reset des effets
-            document.body.style.filter = '';
-            document.body.classList.remove('background-effect');
-        }
-
-        // Sauvegarder la sélection
-        this.currentCustomBackground = backgroundId;
-        localStorage.setItem('currentCustomBackground', backgroundId);
-        localStorage.setItem('selectedBackground', 'custom');
-
-        // Ajouter une classe pour identifier les fonds personnalisés
-        document.body.classList.add('custom-background');
-        document.body.classList.remove('default-background');
+    // Retirer tous les autres fonds d'écran
+    document.body.style.backgroundImage = '';
+    document.body.classList.remove('default-background');
+    
+    // Supprimer les anciens styles de fond personnalisé
+    const existingStyle = document.getElementById('customBackgroundStyle');
+    if (existingStyle) {
+        existingStyle.remove();
     }
+
+    // Créer un nouveau style pour le fond personnalisé
+    const customStyle = document.createElement('style');
+    customStyle.id = 'customBackgroundStyle';
+    
+    let cssContent = `
+        body.custom-background {
+            background-image: url("${background.data}") !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-attachment: fixed !important;
+        }
+    `;
+
+    // Appliquer les effets si nécessaire
+    if (background.effect && background.effect !== 'none') {
+        cssContent += this.generateEffectCSS(background.effect, background.opacity || 100);
+    }
+
+    customStyle.textContent = cssContent;
+    document.head.appendChild(customStyle);
+
+    // Appliquer la classe
+    document.body.classList.add('custom-background');
+    
+    // Sauvegarder la sélection
+    this.currentCustomBackground = backgroundId;
+    localStorage.setItem('currentCustomBackground', backgroundId);
+    localStorage.setItem('selectedBackground', 'custom');
+    
+    console.log('Fond d\'écran appliqué:', backgroundId);
+}
+
+generateEffectCSS(effect, opacity) {
+    let css = '';
+    
+    switch (effect) {
+        case 'blur':
+            css = `
+                body.custom-background::before {
+                    content: '';
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0,0,0,${(100-opacity)/200});
+                    pointer-events: none;
+                    z-index: -1;
+                }
+                body.custom-background {
+                    filter: blur(1px) !important;
+                }
+            `;
+            break;
+        case 'darken':
+            css = `
+                body.custom-background::before {
+                    content: '';
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0,0,0,${(100-opacity)/100});
+                    pointer-events: none;
+                    z-index: -1;
+                }
+            `;
+            break;
+        // Ajoutez les autres effets si nécessaire
+    }
+    
+    return css;
+}
 
     applyBackgroundEffect(element, effect, opacity) {
         element.classList.add('background-effect');
@@ -502,13 +548,21 @@ class CustomBackgroundManager {
     }
 
     resetToDefaultBackground() {
-        document.body.style.backgroundImage = '';
-        document.body.classList.remove('custom-background');
-        document.body.classList.add('default-background');
-        this.currentCustomBackground = null;
-        localStorage.removeItem('currentCustomBackground');
-        localStorage.setItem('selectedBackground', 'default');
+    document.body.style.backgroundImage = '';
+    document.body.style.filter = '';
+    document.body.classList.remove('custom-background');
+    document.body.classList.add('default-background');
+    
+    // Supprimer le style personnalisé
+    const existingStyle = document.getElementById('customBackgroundStyle');
+    if (existingStyle) {
+        existingStyle.remove();
     }
+    
+    this.currentCustomBackground = null;
+    localStorage.removeItem('currentCustomBackground');
+    localStorage.setItem('selectedBackground', 'default');
+}
 
     showToast(message, type = 'info') {
         // Supprimer les toasts existants
@@ -997,3 +1051,42 @@ if (window.backgroundSelector) {
         }
     };
 }
+
+// Ajout du bouton fond personnalisé au menu existant
+document.addEventListener('DOMContentLoaded', function() {
+    // Attendre que le menu soit prêt
+    setTimeout(() => {
+        const bgSelectorBtn = document.getElementById('bgSelectorBtn');
+        if (bgSelectorBtn && !document.querySelector('.custom-bg-btn')) {
+            // Créer le bouton fond personnalisé
+            const customBgBtn = document.createElement('button');
+            customBgBtn.innerHTML = `
+                <span class="material-icons" style="margin-right: 8px;">add_photo_alternate</span>
+                <span>Fond personnalisé</span>
+            `;
+            customBgBtn.className = 'menu-link custom-bg-btn';
+            customBgBtn.style.cssText = 'display: flex; align-items: center; text-decoration: none; color: white; padding: 12px 30px; background: transparent; border: none; width: 100%; cursor: pointer; margin-bottom: 10px;';
+            
+            // L'insérer dans le menu après le bouton existant
+            const sidebar = document.getElementById('sidebar');
+            const menuItems = sidebar.querySelectorAll('.menu-item');
+            const installMenuItem = Array.from(menuItems).find(item => 
+                item.querySelector('#menuInstall')
+            );
+            
+            if (installMenuItem) {
+                const customMenuItem = document.createElement('div');
+                customMenuItem.className = 'menu-item';
+                customMenuItem.appendChild(customBgBtn);
+                installMenuItem.parentNode.insertBefore(customMenuItem, installMenuItem);
+                
+                // Ajouter l'événement
+                customBgBtn.addEventListener('click', () => {
+                    if (window.customBackgroundManager) {
+                        window.customBackgroundManager.openModal();
+                    }
+                });
+            }
+        }
+    }, 1000);
+});
