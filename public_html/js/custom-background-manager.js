@@ -61,9 +61,7 @@ class CustomBackgroundManager {
         document.body.insertAdjacentHTML('beforeend', modalHTML);
     }
 
-    setupEventListeners() {
-        // Bouton pour ouvrir la modal depuis le sélecteur de fond existant
-        const bgSelectorBtn = document.getElementById('bgSelectorBtn');       
+    setupEventListeners() {       
 
         // Upload area
         const uploadArea = document.getElementById('uploadArea');

@@ -478,7 +478,7 @@ if (addCustomBtn) {
             }, 3000);
         }
     }
-	// ⬇️ AJOUTEZ LES NOUVELLES METHODES ICI ⬇️
+	
     updateCustomBackgrounds() {
         const customBgsList = document.getElementById('customBgsList');
         if (!customBgsList) return;
@@ -522,13 +522,22 @@ if (addCustomBtn) {
             }
             this.updateCustomBackgrounds();
         }
-    }
-} // ⬅️ Fermeture de la classe BackgroundSelector
+		}
+	}
+}
 
-// Initialiser avec un délai pour s'assurer que tout est chargé
-window.addEventListener('load', function() {
+document.addEventListener('DOMContentLoaded', function() {
     setTimeout(function() {
-        window.backgroundSelector = new BackgroundSelector();
-    }, 1000);
+        if (!window.backgroundSelector) {
+            window.backgroundSelector = new BackgroundSelector();
+        }
+    }, 1500);
 });
+
+if (document.readyState === 'complete') {
+    setTimeout(function() {
+        if (!window.backgroundSelector) {
+            window.backgroundSelector = new BackgroundSelector();
+        }
+    }, 1500);
 }
