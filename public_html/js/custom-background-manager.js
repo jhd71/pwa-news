@@ -784,6 +784,7 @@ const customBackgroundStyles = `
     z-index: 10000;
     background: rgba(0, 0, 0, 0.9);
     backdrop-filter: blur(5px);
+    overflow: hidden;
 }
 
 .background-upload-modal .modal-overlay {
@@ -795,57 +796,118 @@ const customBackgroundStyles = `
     background: rgba(0, 0, 0, 0.7);
 }
 
+/* RESPONSIVE MODAL CONTAINER */
 .background-upload-modal .modal-container {
     position: relative;
     z-index: 2;
-    width: 95%;
-    max-width: 900px;
-    height: 90vh;
-    margin: 2.5vh auto;
+    width: 100%;
+    max-width: 100%;
+    height: 100vh;
+    margin: 0;
     background: var(--card-bg, white);
-    border-radius: 16px;
+    border-radius: 0;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    box-shadow: none;
     animation: modalSlideIn 0.3s ease;
+    box-sizing: border-box;
 }
 
-/* ADAPTATION AUX THÈMES */
+/* Version desktop - modal centrée avec bordures arrondies */
+@media (min-width: 769px) {
+    .background-upload-modal .modal-container {
+        width: 90%;
+        max-width: 1000px;
+        height: 90vh;
+        margin: 5vh auto;
+        border-radius: 20px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    }
+}
+
+/* Version tablette - plein écran avec coins arrondis en haut */
+@media (min-width: 481px) and (max-width: 768px) {
+    .background-upload-modal .modal-container {
+        width: 100%;
+        height: 100vh;
+        margin: 0;
+        border-radius: 0;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+    }
+}
+
+/* ADAPTATION PARFAITE AUX THÈMES */
 [data-theme="dark"] .background-upload-modal .modal-container {
-    background: var(--card-bg, #2d2d2d);
-    color: var(--text-color, white);
+    background: var(--card-bg, #1a1a1a);
+    color: var(--text-color, #ffffff);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 [data-theme="light"] .background-upload-modal .modal-container {
-    background: var(--card-bg, white);
-    color: var(--text-color, #333);
+    background: var(--card-bg, #ffffff);
+    color: var(--text-color, #333333);
+    border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="rouge"] .background-upload-modal .modal-container {
     background: var(--card-bg, #fafafa);
-    color: var(--text-color, #333);
+    color: var(--text-color, #333333);
+    border: 1px solid rgba(188, 58, 52, 0.2);
 }
 
 [data-theme="bleuciel"] .background-upload-modal .modal-container {
     background: var(--card-bg, #f8fdff);
-    color: var(--text-color, #333);
+    color: var(--text-color, #333333);
+    border: 1px solid rgba(79, 179, 232, 0.2);
 }
 
+/* Animation d'entrée adaptée */
 @keyframes modalSlideIn {
-    from { transform: translateY(30px) scale(0.95); opacity: 0; }
-    to { transform: translateY(0) scale(1); opacity: 1; }
+    from { 
+        transform: translateY(100%);
+        opacity: 0; 
+    }
+    to { 
+        transform: translateY(0);
+        opacity: 1; 
+    }
 }
 
+/* Desktop - animation depuis le centre */
+@media (min-width: 769px) {
+    @keyframes modalSlideIn {
+        from { 
+            transform: translateY(30px) scale(0.95);
+            opacity: 0; 
+        }
+        to { 
+            transform: translateY(0) scale(1);
+            opacity: 1; 
+        }
+    }
+}
+
+/* EN-TÊTE ADAPTATIF */
 .background-upload-modal .modal-header {
     background: linear-gradient(135deg, var(--primary-color, #7c4dff), var(--accent-color, #9c27b0));
     color: white;
-    padding: 15px 25px;
+    padding: 12px 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     flex-shrink: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Desktop - en-tête plus grand */
+@media (min-width: 769px) {
+    .background-upload-modal .modal-header {
+        padding: 18px 25px;
+    }
 }
 
 /* Adaptation des en-têtes selon les thèmes */
@@ -867,15 +929,32 @@ const customBackgroundStyles = `
 
 .background-upload-modal .modal-header h2 {
     margin: 0;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
 }
 
+@media (min-width: 769px) {
+    .background-upload-modal .modal-header h2 {
+        font-size: 20px;
+    }
+}
+
+/* CONTENU ADAPTATIF */
 .background-upload-modal .modal-content {
     flex: 1;
-    padding: 20px;
+    padding: 15px;
     overflow-y: auto;
+    overflow-x: hidden;
     background: var(--background-color, #f8f9fa);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Desktop - plus d'espace */
+@media (min-width: 769px) {
+    .background-upload-modal .modal-content {
+        padding: 25px;
+    }
 }
 
 /* Adaptation du contenu selon les thèmes */
@@ -895,15 +974,26 @@ const customBackgroundStyles = `
     background: var(--background-color, #f8fdff);
 }
 
+/* ZONE D'UPLOAD ADAPTATIVE */
 .upload-area {
     border: 3px dashed var(--primary-color, #7c4dff);
     border-radius: 12px;
-    padding: 40px 20px;
+    padding: 25px 15px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
     background: linear-gradient(135deg, rgba(124, 77, 255, 0.05), rgba(156, 39, 176, 0.05));
-    margin-bottom: 20px;
+    margin-bottom: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Desktop - zone d'upload plus spacieuse */
+@media (min-width: 769px) {
+    .upload-area {
+        padding: 40px 20px;
+        margin-bottom: 20px;
+    }
 }
 
 .upload-area:hover, .upload-area.drag-over {
@@ -914,8 +1004,14 @@ const customBackgroundStyles = `
 }
 
 .upload-icon {
-    font-size: 48px;
+    font-size: 40px;
     margin-bottom: 15px;
+}
+
+@media (min-width: 769px) {
+    .upload-icon {
+        font-size: 48px;
+    }
 }
 
 .upload-area p {
@@ -931,12 +1027,22 @@ const customBackgroundStyles = `
     margin-top: 10px;
 }
 
+/* PRÉVISUALISATION D'IMAGE */
 .image-preview {
     background: var(--card-bg, white);
     border-radius: 12px;
-    padding: 20px;
+    padding: 15px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
+    margin-bottom: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@media (min-width: 769px) {
+    .image-preview {
+        padding: 20px;
+        margin-bottom: 20px;
+    }
 }
 
 /* Adaptation de la prévisualisation selon les thèmes */
@@ -947,23 +1053,32 @@ const customBackgroundStyles = `
 /* Container de prévisualisation avec feedback visuel amélioré */
 .preview-container {
     position: relative;
-    max-width: 100%;
-    margin-bottom: 20px;
+    width: 100%;
+    margin-bottom: 15px;
     border-radius: 8px;
     overflow: hidden;
     border: 3px solid var(--primary-color, #7c4dff);
     box-shadow: 0 4px 15px rgba(124, 77, 255, 0.2);
     background: #f0f0f0;
-    min-height: 200px;
+    min-height: 180px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: grab !important;
+    box-sizing: border-box;
+}
+
+/* Desktop - prévisualisation plus grande */
+@media (min-width: 769px) {
+    .preview-container {
+        min-height: 250px;
+        margin-bottom: 20px;
+    }
 }
 
 .preview-container img {
     width: 100%;
-    max-height: 300px;
+    max-height: 180px;
     object-fit: cover;
     border-radius: 5px;
     user-select: none;
@@ -971,6 +1086,13 @@ const customBackgroundStyles = `
     -moz-user-select: none;
     -ms-user-select: none;
     transition: all 0.3s ease;
+}
+
+/* Desktop - image plus grande */
+@media (min-width: 769px) {
+    .preview-container img {
+        max-height: 300px;
+    }
 }
 
 /* États du glisser améliorés */
@@ -999,13 +1121,13 @@ const customBackgroundStyles = `
 /* Hint de glisser amélioré */
 .drag-hint {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 5px;
+    right: 5px;
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6));
     color: white;
-    padding: 8px 12px;
+    padding: 6px 10px;
     border-radius: 20px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     opacity: 0;
     transition: all 0.3s ease;
@@ -1013,6 +1135,15 @@ const customBackgroundStyles = `
     z-index: 10;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@media (min-width: 769px) {
+    .drag-hint {
+        top: 10px;
+        right: 10px;
+        padding: 8px 12px;
+        font-size: 12px;
+    }
 }
 
 .preview-container:hover .drag-hint {
@@ -1027,14 +1158,35 @@ const customBackgroundStyles = `
     transform: scale(1.1);
 }
 
+/* GRILLE DE CONTRÔLES ADAPTATIVE */
 .image-controls {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 15px;
-    margin-bottom: 20px;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 15px;
     padding: 15px;
     background: var(--background-color, #f8f9fa);
     border-radius: 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Tablette - 2 colonnes */
+@media (min-width: 481px) and (max-width: 768px) {
+    .image-controls {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+}
+
+/* Desktop - 4 colonnes */
+@media (min-width: 769px) {
+    .image-controls {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin-bottom: 20px;
+        padding: 20px;
+    }
 }
 
 /* Adaptation des contrôles selon les thèmes */
@@ -1083,12 +1235,21 @@ const customBackgroundStyles = `
 .position-controls {
     grid-column: 1 / -1;
     background: linear-gradient(135deg, rgba(124, 77, 255, 0.1), rgba(156, 39, 176, 0.05));
-    padding: 20px;
+    padding: 15px;
     border-radius: 12px;
     border: 2px solid var(--primary-color, #7c4dff);
     margin-top: 10px;
     position: relative;
     overflow: hidden;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Desktop - contrôles plus spacieux */
+@media (min-width: 769px) {
+    .position-controls {
+        padding: 20px;
+    }
 }
 
 .position-controls::before {
@@ -1098,10 +1259,17 @@ const customBackgroundStyles = `
     left: 20px;
     background: var(--primary-color, #7c4dff);
     color: white;
-    padding: 4px 12px;
+    padding: 3px 10px;
     border-radius: 15px;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
+}
+
+@media (min-width: 769px) {
+    .position-controls::before {
+        padding: 4px 12px;
+        font-size: 11px;
+    }
 }
 
 .position-controls label {
@@ -1137,15 +1305,30 @@ const customBackgroundStyles = `
     box-shadow: 0 4px 12px rgba(124, 77, 255, 0.5);
 }
 
+/* ACTIONS ADAPTATIVES */
 .preview-actions {
     display: flex;
-    gap: 15px;
+    gap: 10px;
     justify-content: center;
-    flex-wrap: wrap;
+    flex-direction: column;
+    width: 100%;
 }
 
-.btn-primary, .btn-secondary {
-    padding: 12px 24px;
+/* Tablette et desktop - actions en ligne */
+@media (min-width: 481px) {
+    .preview-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+}
+
+/* BOUTONS ADAPTATIFS */
+.btn-primary, .btn-secondary, .btn-reset {
+    width: 100%;
+    padding: 14px 20px;
+    justify-content: center;
+    box-sizing: border-box;
     border: none;
     border-radius: 25px;
     cursor: pointer;
@@ -1155,8 +1338,19 @@ const customBackgroundStyles = `
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    min-width: 160px;
-    justify-content: center;
+}
+
+/* Desktop - boutons avec largeur automatique */
+@media (min-width: 769px) {
+    .btn-primary, .btn-secondary {
+        width: auto;
+        min-width: 160px;
+        padding: 12px 24px;
+    }
+    .btn-reset {
+        width: auto;
+        padding: 12px 24px;
+    }
 }
 
 .btn-primary {
@@ -1183,18 +1377,10 @@ const customBackgroundStyles = `
 
 /* Bouton de réinitialisation amélioré */
 .btn-reset {
-    padding: 12px 24px;
     border: 2px solid var(--primary-color, #7c4dff);
-    border-radius: 25px;
     background: linear-gradient(135deg, rgba(124, 77, 255, 0.1), rgba(156, 39, 176, 0.05));
     color: var(--primary-color, #7c4dff);
-    cursor: pointer;
-    font-weight: 600;
     font-size: 14px;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
     position: relative;
     overflow: hidden;
 }
@@ -1221,11 +1407,21 @@ const customBackgroundStyles = `
     box-shadow: 0 6px 20px rgba(124, 77, 255, 0.4);
 }
 
+/* SECTION DES FONDS PERSONNALISÉS ADAPTATIVE */
 .custom-backgrounds-section {
     background: var(--card-bg, white);
     border-radius: 12px;
-    padding: 20px;
+    padding: 15px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Desktop - plus d'espace */
+@media (min-width: 769px) {
+    .custom-backgrounds-section {
+        padding: 20px;
+    }
 }
 
 /* Adaptation de la section selon les thèmes */
@@ -1241,10 +1437,27 @@ const customBackgroundStyles = `
     font-weight: 600;
 }
 
+/* Grille des fonds personnalisés adaptative */
 .custom-backgrounds-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 15px;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+/* Tablette - 2 colonnes */
+@media (min-width: 481px) and (max-width: 768px) {
+    .custom-backgrounds-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+}
+
+/* Desktop - 3 colonnes */
+@media (min-width: 769px) {
+    .custom-backgrounds-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
 }
 
 .custom-bg-item {
@@ -1384,83 +1597,9 @@ const customBackgroundStyles = `
     background: var(--primary-color, #4fb3e8);
 }
 
-/* RESPONSIVE - SUPPRESSION DE L'ESPACE BLANC */
-@media (max-width: 768px) {
-    .background-upload-modal .modal-container {
-        width: 100%;
-        height: 100vh;
-        margin: 0;
-        border-radius: 0;
-    }
-    
-    .background-upload-modal .modal-header {
-        padding: 12px 20px;
-    }
-    
-    .background-upload-modal .modal-header h2 {
-        font-size: 18px;
-    }
-    
-    .background-upload-modal .modal-content {
-        padding: 15px;
-    }
-    
-    .upload-area {
-        padding: 30px 15px;
-    }
-    
-    .upload-icon {
-        font-size: 40px;
-    }
-    
-    .image-controls {
-        grid-template-columns: 1fr;
-        gap: 10px;
-    }
-    
-    .preview-actions {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .btn-primary, .btn-secondary {
-        width: 100%;
-    }
-    
-    .btn-reset {
-        width: 100%;
-        justify-content: center;
-        margin-bottom: 15px;
-    }
-    
-    .custom-backgrounds-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .drag-hint {
-        font-size: 11px;
-        padding: 6px 10px;
-        top: 5px;
-        right: 5px;
-    }
-    
-    .position-controls {
-        padding: 15px;
-        margin-top: 15px;
-    }
-    
-    .position-controls::before {
-        font-size: 10px;
-        padding: 3px 10px;
-    }
-    
-    .preview-container {
-        min-height: 150px;
-    }
-    
-    .preview-container img {
-        max-height: 200px;
-    }
+/* Suppression de tous les espaces blancs indésirables */
+.background-upload-modal * {
+    box-sizing: border-box;
 }
 
 /* Animations */
