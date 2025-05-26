@@ -267,7 +267,6 @@ class BackgroundSelector {
         </div>
     </div>
 </div>
-// Ajouter la section pour les fonds personnalisés
 <div class="bg-category">
     <h3>🎨 Fonds personnalisés</h3>
     <div class="custom-bg-actions">
