@@ -513,7 +513,7 @@ if (addCustomBtn) {
         }
     }
 } // ⬅️ Fermeture de la classe BackgroundSelector
-
+}
 // Initialiser avec un délai pour s'assurer que tout est chargé
 window.addEventListener('load', function() {
     setTimeout(function() {
