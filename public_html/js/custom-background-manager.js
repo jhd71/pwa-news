@@ -29,13 +29,46 @@ class CustomBackgroundManager {
                         <div class="upload-area" id="uploadArea">
                             <div class="upload-icon">📁</div>
                             <p>Glissez-déposez votre image ici</p>
-                            <p class="upload-info">ou cliquez pour choisir un fichier</p>
+                            <p class="upload-info">ou choisissez une option ci-dessous</p>
                             <p class="file-requirements">
                                 Formats acceptés : JPG, PNG, WEBP<br>
                                 Taille max : 5MB
                             </p>
                             <input type="file" id="backgroundFileInput" accept="image/*" style="display: none;">
+                            
+                            <!-- NOUVEAUX BOUTONS D'UPLOAD -->
+                            <div class="upload-options">
+                                <button class="upload-btn file-btn" id="chooseFileBtn">
+                                    <span class="btn-icon">📂</span>
+                                    <span>Choisir un fichier</span>
+                                </button>
+                                <button class="upload-btn camera-btn" id="takePictureBtn">
+                                    <span class="btn-icon">📷</span>
+                                    <span>Prendre une photo</span>
+                                </button>
+                            </div>
                         </div>
+                        
+                        <!-- CAMÉRA SECTION -->
+                        <div id="cameraSection" class="camera-section" style="display: none;">
+                            <div class="camera-container">
+                                <video id="cameraVideo" autoplay playsinline></video>
+                                <canvas id="cameraCanvas" style="display: none;"></canvas>
+                                <div class="camera-controls">
+                                    <button id="switchCameraBtn" class="camera-control-btn">
+                                        <span>🔄</span> Basculer
+                                    </button>
+                                    <button id="captureBtn" class="capture-btn">
+                                        <span class="capture-ring"></span>
+                                        <span class="capture-inner"></span>
+                                    </button>
+                                    <button id="closeCameraBtn" class="camera-control-btn">
+                                        <span>❌</span> Fermer
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div id="imagePreview" class="image-preview" style="display: none;">
                             <div class="preview-container" id="previewContainer">
                                 <img id="previewImg" src="" alt="Aperçu" draggable="false">
@@ -136,6 +169,31 @@ class CustomBackgroundManager {
         const positionXSlider = document.getElementById('positionXSlider');
         const positionYSlider = document.getElementById('positionYSlider');
         const resetPositionBtn = document.getElementById('resetPosition');
+		const chooseFileBtn = document.getElementById('chooseFileBtn');
+    const takePictureBtn = document.getElementById('takePictureBtn');
+    const switchCameraBtn = document.getElementById('switchCameraBtn');
+    const captureBtn = document.getElementById('captureBtn');
+    const closeCameraBtn = document.getElementById('closeCameraBtn');
+
+    if (chooseFileBtn) {
+        chooseFileBtn.addEventListener('click', () => fileInput.click());
+    }
+
+    if (takePictureBtn) {
+        takePictureBtn.addEventListener('click', () => this.openCamera());
+    }
+
+    if (switchCameraBtn) {
+        switchCameraBtn.addEventListener('click', () => this.switchCamera());
+    }
+
+    if (captureBtn) {
+        captureBtn.addEventListener('click', () => this.capturePhoto());
+    }
+
+    if (closeCameraBtn) {
+        closeCameraBtn.addEventListener('click', () => this.closeCamera());
+    }
 
         if (positionSelect) {
             positionSelect.addEventListener('change', (e) => {
@@ -381,13 +439,16 @@ resetImagePosition() {
     }
 
     closeModal() {
-        const modal = document.getElementById('backgroundUploadModal');
-        if (modal) {
-            modal.style.display = 'none';
-            document.body.classList.remove('modal-open');
-            this.resetUploadArea();
-        }
+    // Fermer la caméra si elle est active
+    this.closeCamera();
+    
+    const modal = document.getElementById('backgroundUploadModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.classList.remove('modal-open');
+        this.resetUploadArea();
     }
+}
 
     handleFileSelect(file) {
         // Validation
@@ -769,6 +830,196 @@ applyCustomBackground(backgroundId) {
             setTimeout(() => toast.remove(), 300);
         }, 3000);
     }
+	
+	async openCamera() {
+    this.currentFacingMode = 'environment'; // Caméra arrière par défaut
+    this.stream = null;
+    
+    try {
+        console.log('🎥 Ouverture de la caméra...');
+        this.showToast('📷 Ouverture de la caméra...', 'info');
+        
+        // Cacher la zone d'upload et afficher la caméra
+        document.getElementById('uploadArea').style.display = 'none';
+        document.getElementById('cameraSection').style.display = 'block';
+        
+        await this.startCamera();
+        
+    } catch (error) {
+        console.error('Erreur d\'accès à la caméra:', error);
+        this.showToast('❌ Impossible d\'accéder à la caméra', 'error');
+        this.closeCamera();
+    }
+}
+
+async startCamera() {
+    const video = document.getElementById('cameraVideo');
+    
+    // Arrêter le stream précédent s'il existe
+    if (this.stream) {
+        this.stream.getTracks().forEach(track => track.stop());
+    }
+    
+    try {
+        const constraints = {
+            video: {
+                facingMode: this.currentFacingMode,
+                width: { ideal: 1920 },
+                height: { ideal: 1080 }
+            }
+        };
+        
+        this.stream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = this.stream;
+        
+        console.log('✅ Caméra démarrée');
+        this.showToast('✅ Caméra prête !', 'success');
+        
+    } catch (error) {
+        console.error('Erreur démarrage caméra:', error);
+        throw error;
+    }
+}
+
+async switchCamera() {
+    if (!this.stream) return;
+    
+    try {
+        this.showToast('🔄 Basculement de caméra...', 'info');
+        
+        // Alterner entre caméra avant et arrière
+        this.currentFacingMode = this.currentFacingMode === 'environment' ? 'user' : 'environment';
+        
+        await this.startCamera();
+        
+        const cameraName = this.currentFacingMode === 'environment' ? 'arrière' : 'avant';
+        this.showToast(`📱 Caméra ${cameraName} activée`, 'success');
+        
+    } catch (error) {
+        console.error('Erreur basculement caméra:', error);
+        this.showToast('⚠️ Basculement impossible', 'error');
+    }
+}
+
+capturePhoto() {
+    const video = document.getElementById('cameraVideo');
+    const canvas = document.getElementById('cameraCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Définir les dimensions du canvas
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    
+    // Capturer l'image
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    // Convertir en data URL
+    const dataURL = canvas.toDataURL('image/jpeg', 0.9);
+    
+    // Animation de flash
+    this.showCameraFlash();
+    
+    // Traiter l'image capturée
+    this.processCapturedImage(dataURL);
+    
+    this.showToast('📸 Photo capturée !', 'success');
+}
+
+showCameraFlash() {
+    const flash = document.createElement('div');
+    flash.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: white;
+        z-index: 11000;
+        opacity: 0.8;
+        pointer-events: none;
+        animation: cameraFlash 0.3s ease;
+    `;
+    
+    document.body.appendChild(flash);
+    
+    setTimeout(() => {
+        flash.remove();
+    }, 300);
+}
+
+processCapturedImage(dataURL) {
+    // Fermer la caméra
+    this.closeCamera();
+    
+    // Afficher l'aperçu avec l'image capturée
+    const previewImg = document.getElementById('previewImg');
+    if (previewImg) {
+        previewImg.src = dataURL;
+        previewImg.dataset.originalData = dataURL;
+        
+        const imagePreview = document.getElementById('imagePreview');
+        if (imagePreview) {
+            imagePreview.style.display = 'block';
+        }
+        
+        // Réinitialiser les contrôles
+        this.resetImageControls();
+        
+        // Configurer le drag après un délai
+        setTimeout(() => {
+            this.setupImageDrag();
+        }, 100);
+        
+        this.updatePreview();
+    }
+}
+
+resetImageControls() {
+    const controls = {
+        positionSelect: 'center',
+        sizeSelect: 'cover',
+        zoomSlider: '100',
+        opacitySlider: '100',
+        positionXSlider: '50',
+        positionYSlider: '50'
+    };
+    
+    Object.entries(controls).forEach(([id, value]) => {
+        const element = document.getElementById(id);
+        if (element) element.value = value;
+    });
+    
+    // Mettre à jour les labels
+    const zoomValue = document.getElementById('zoomValue');
+    const opacityValue = document.getElementById('opacityValue');
+    const positionXValue = document.getElementById('positionXValue');
+    const positionYValue = document.getElementById('positionYValue');
+    
+    if (zoomValue) zoomValue.textContent = '100%';
+    if (opacityValue) opacityValue.textContent = '100%';
+    if (positionXValue) positionXValue.textContent = '50%';
+    if (positionYValue) positionYValue.textContent = '50%';
+}
+
+closeCamera() {
+    console.log('🔒 Fermeture de la caméra');
+    
+    // Arrêter le stream vidéo
+    if (this.stream) {
+        this.stream.getTracks().forEach(track => {
+            track.stop();
+            console.log('📷 Track arrêté:', track.kind);
+        });
+        this.stream = null;
+    }
+    
+    // Remettre l'interface normale
+    const uploadArea = document.getElementById('uploadArea');
+    const cameraSection = document.getElementById('cameraSection');
+    
+    if (uploadArea) uploadArea.style.display = 'block';
+    if (cameraSection) cameraSection.style.display = 'none';
+}
 } // ← ACCOLADE DE FERMETURE DE LA CLASSE
 
 // CSS dynamique pour les styles
@@ -1599,6 +1850,294 @@ const customBackgroundStyles = `
         right: 5px;
     }
 }
+
+/* Boutons d'upload dans la zone de glisser-déposer */
+.upload-options {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.upload-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px 25px;
+    border: 2px solid var(--primary-color, #7c4dff);
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(124, 77, 255, 0.1), rgba(156, 39, 176, 0.05));
+    color: var(--primary-color, #7c4dff);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    min-width: 120px;
+    position: relative;
+    overflow: hidden;
+}
+
+.upload-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(124, 77, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.upload-btn:hover::before {
+    left: 100%;
+}
+
+.upload-btn:hover {
+    background: var(--primary-color, #7c4dff);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(124, 77, 255, 0.4);
+}
+
+.btn-icon {
+    font-size: 24px;
+}
+
+.camera-btn {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(67, 160, 71, 0.05));
+    border-color: #4CAF50;
+    color: #4CAF50;
+}
+
+.camera-btn:hover {
+    background: #4CAF50;
+    color: white;
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+}
+
+/* Section caméra */
+.camera-section {
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.camera-container {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    background: #000;
+}
+
+#cameraVideo {
+    width: 100%;
+    height: auto;
+    max-height: 60vh;
+    object-fit: cover;
+    border-radius: 12px;
+    background: #000;
+}
+
+.camera-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    padding: 15px 25px;
+    border-radius: 50px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.camera-control-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.camera-control-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+}
+
+/* Bouton de capture stylisé */
+.capture-btn {
+    background: transparent;
+    border: none;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.capture-ring {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border: 4px solid white;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.capture-inner {
+    width: 50px;
+    height: 50px;
+    background: white;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.capture-btn:hover .capture-ring {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+.capture-btn:hover .capture-inner {
+    transform: scale(0.8);
+}
+
+.capture-btn:active {
+    transform: scale(0.95);
+}
+
+.capture-btn:active .capture-inner {
+    background: #ff4444;
+}
+
+/* Animation de flash */
+@keyframes cameraFlash {
+    0% { opacity: 0; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0; }
+}
+
+/* Responsive mobile pour la caméra */
+@media (max-width: 768px) {
+    .upload-options {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .upload-btn {
+        width: 100%;
+        flex-direction: row;
+        justify-content: center;
+        padding: 15px 20px;
+        min-width: auto;
+    }
+    
+    .btn-icon {
+        font-size: 20px;
+    }
+    
+    #cameraVideo {
+        max-height: 50vh;
+    }
+    
+    .camera-controls {
+        gap: 20px;
+        padding: 12px 20px;
+        bottom: 15px;
+    }
+    
+    .camera-control-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 12px;
+    }
+    
+    .capture-btn {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .capture-ring {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .capture-inner {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* Adaptation aux thèmes */
+[data-theme="dark"] .upload-btn {
+    background: linear-gradient(135deg, rgba(26, 35, 126, 0.2), rgba(26, 35, 126, 0.1));
+    border-color: var(--primary-color, #1a237e);
+    color: var(--primary-color, #1a237e);
+}
+
+[data-theme="dark"] .upload-btn:hover {
+    background: var(--primary-color, #1a237e);
+}
+
+[data-theme="rouge"] .upload-btn {
+    background: linear-gradient(135deg, rgba(188, 58, 52, 0.2), rgba(188, 58, 52, 0.1));
+    border-color: var(--primary-color, #bc3a34);
+    color: var(--primary-color, #bc3a34);
+}
+
+[data-theme="rouge"] .upload-btn:hover {
+    background: var(--primary-color, #bc3a34);
+}
+
+[data-theme="bleuciel"] .upload-btn {
+    background: linear-gradient(135deg, rgba(79, 179, 232, 0.2), rgba(79, 179, 232, 0.1));
+    border-color: var(--primary-color, #4fb3e8);
+    color: var(--primary-color, #4fb3e8);
+}
+
+[data-theme="bleuciel"] .upload-btn:hover {
+    background: var(--primary-color, #4fb3e8);
+}
+
+/* Indicateur de caméra active */
+.camera-section::before {
+    content: '🔴 LIVE';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 10;
+    animation: liveBlink 2s infinite;
+}
+
+@keyframes liveBlink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.5; }
+}
+
 </style>
 `;
 
