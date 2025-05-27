@@ -30,7 +30,8 @@ class ContentManager {
     this.setupFontFamily();
     this.setupTextContrast();
     this.setupTiles();
-    this.updateActiveNavLinks();
+	this.autoEnhanceTileVisibility(); // NOUVELLE LIGNE
+	this.updateActiveNavLinks();
 }
 
     setupEventListeners() {
@@ -1514,6 +1515,100 @@ changeTextContrast(contrast) {
             }
         });
     }
+	
+	// Méthode pour améliorer automatiquement la visibilité des tuiles
+autoEnhanceTileVisibility() {
+    // Appliquer les améliorations visuelles à toutes les tuiles
+    const tiles = document.querySelectorAll('.tile');
+    
+    tiles.forEach(tile => {
+        // Ajouter une classe pour le style amélioré
+        tile.classList.add('enhanced-visibility');
+    });
+    
+    // Ajouter les styles CSS si ils n'existent pas
+    this.addVisibilityStyles();
+}
+
+// Ajouter les styles CSS directement via JavaScript
+addVisibilityStyles() {
+    // Vérifier si les styles existent déjà
+    if (document.getElementById('visibility-styles')) return;
+    
+    const style = document.createElement('style');
+    style.id = 'visibility-styles';
+    style.textContent = `
+        /* Amélioration automatique de la visibilité des tuiles */
+        .tile.enhanced-visibility {
+            /* Fond semi-transparent avec flou */
+            backdrop-filter: blur(10px) brightness(1.1);
+            -webkit-backdrop-filter: blur(10px) brightness(1.1);
+            
+            /* Bordure subtile */
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            
+            /* Ombre pour détacher du fond */
+            box-shadow: 
+                0 4px 20px rgba(0, 0, 0, 0.3),
+                0 2px 8px rgba(0, 0, 0, 0.2);
+            
+            /* Fond de secours plus opaque */
+            background-color: rgba(var(--tile-bg-rgb), 0.85) !important;
+            
+            /* Transition fluide */
+            transition: all 0.3s ease;
+        }
+        
+        .tile.enhanced-visibility:hover {
+            /* Plus visible au survol */
+            backdrop-filter: blur(15px) brightness(1.2);
+            -webkit-backdrop-filter: blur(15px) brightness(1.2);
+            box-shadow: 
+                0 8px 30px rgba(0, 0, 0, 0.4),
+                0 4px 12px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* Texte plus contrasté */
+        .tile.enhanced-visibility .tile-title {
+            text-shadow: 
+                1px 1px 2px rgba(0, 0, 0, 0.8),
+                0 0 4px rgba(0, 0, 0, 0.5);
+            font-weight: 600;
+        }
+        
+        /* Variables CSS pour les couleurs de fond des tuiles */
+        .tile[data-category="news"].enhanced-visibility {
+            --tile-bg-rgb: 220, 53, 69; /* Rouge */
+        }
+        
+        .tile[data-category="radio"].enhanced-visibility {
+            --tile-bg-rgb: 255, 193, 7; /* Jaune/Orange */
+        }
+        
+        .tile[data-category="tv"].enhanced-visibility {
+            --tile-bg-rgb: 0, 123, 255; /* Bleu */
+        }
+        
+        .tile[data-category="sports"].enhanced-visibility {
+            --tile-bg-rgb: 40, 167, 69; /* Vert */
+        }
+        
+        .tile[data-category="social"].enhanced-visibility {
+            --tile-bg-rgb: 108, 117, 125; /* Gris */
+        }
+        
+        .tile[data-category="custom"].enhanced-visibility {
+            --tile-bg-rgb: 111, 66, 193; /* Violet */
+        }
+        
+        .tile[data-category="photos"].enhanced-visibility {
+            --tile-bg-rgb: 255, 105, 180; /* Rose */
+        }
+    `;
+    
+    document.head.appendChild(style);
+}
 }
 
 export default ContentManager;
