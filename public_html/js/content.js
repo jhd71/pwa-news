@@ -2131,7 +2131,8 @@ setupSlideshowEvents(modal) {
                     this.closeSlideshowModal();
                     break;
         }
-    });
+    }
+});
 }
 
 // 3. Ouvrir le diaporama
@@ -2286,5 +2287,5 @@ closeSlideshowModal() {
 }
 
 }
-}
+
 export default ContentManager;
