@@ -3068,6 +3068,10 @@ button#refreshButton.refresh-button {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
+[data-theme="rouge"] .transparency-info p {
+   color: #dae1e8;
+  }
+  
 [data-theme="rouge"] .transparency-slider-container label {
     color: #FFEB3B !important; /* Jaune vif pour les labels */
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
