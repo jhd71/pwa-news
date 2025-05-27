@@ -2837,7 +2837,7 @@ button#refreshButton.refresh-button {
     height: 100vh;
     background: var(--card-bg);
     box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3);
-    z-index: 9999;
+    z-index: 10000 !important; /* Z-index élevé pour passer devant la barre d'infos */
     transition: right 0.3s ease;
     display: flex;
     flex-direction: column;
@@ -2906,11 +2906,11 @@ button#refreshButton.refresh-button {
 }
 
 .transparency-controls {
-    padding: 30px 20px;
+    padding: 20px 20px 10px 20px; /* Padding réduit */
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 20px; /* Espacement réduit */
 }
 
 /* Container du curseur */
@@ -3031,15 +3031,16 @@ button#refreshButton.refresh-button {
     transform: scale(0.95);
 }
 
-/* Info transparence */
+/* Info transparence - repositionnée */
 .transparency-info {
     background: linear-gradient(135deg, 
         rgba(124, 77, 255, 0.1), 
         rgba(156, 39, 176, 0.05));
-    padding: 20px;
+    padding: 15px 20px; /* Padding réduit */
     border-radius: 12px;
     border-left: 4px solid var(--primary-color);
-    margin-top: auto;
+    margin-top: 15px; /* Marge réduite */
+    margin-bottom: 0; /* Supprimer marge du bas */
 }
 
 .transparency-info p {
@@ -3047,6 +3048,59 @@ button#refreshButton.refresh-button {
     color: var(--text-color);
     font-size: 14px;
     line-height: 1.5;
+}
+
+/* ===== ADAPTATIONS POUR LE THÈME ROUGE ===== */
+[data-theme="rouge"] .transparency-panel {
+    color: white; /* Texte blanc pour le thème rouge */
+}
+
+[data-theme="rouge"] .transparency-slider-container {
+    background: rgba(188, 58, 52, 0.1);
+    border-color: rgba(188, 58, 52, 0.3);
+    color: white;
+}
+
+[data-theme="rouge"] .transparency-slider-container label {
+    color: #FFD700; /* Jaune doré pour les labels */
+}
+
+[data-theme="rouge"] .slider-label {
+    color: #FFEB3B; /* Jaune vif pour les labels du slider */
+}
+
+[data-theme="rouge"] .transparency-value {
+    background: rgba(188, 58, 52, 0.2);
+    color: #FFD700; /* Jaune doré */
+    border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+[data-theme="rouge"] .transparency-presets h4 {
+    color: #FFD700; /* Jaune doré pour les titres */
+}
+
+[data-theme="rouge"] .preset-btn {
+    background: rgba(188, 58, 52, 0.2);
+    border-color: rgba(255, 215, 0, 0.3);
+    color: white;
+}
+
+[data-theme="rouge"] .preset-btn:hover {
+    background: #FFD700;
+    color: #bc3a34;
+    border-color: #FFD700;
+}
+
+[data-theme="rouge"] .transparency-info {
+    background: linear-gradient(135deg, 
+        rgba(188, 58, 52, 0.2), 
+        rgba(188, 58, 52, 0.1));
+    border-left-color: #FFD700;
+    color: white;
+}
+
+[data-theme="rouge"] .transparency-info strong {
+    color: #FFD700;
 }
 
 /* Adaptations pour les thèmes sombres */
@@ -3063,6 +3117,35 @@ button#refreshButton.refresh-button {
 
 [data-theme="dark"] .transparency-value {
     background: rgba(26, 35, 126, 0.2);
+}
+
+/* ===== TRANSPARENCE POUR LES SÉPARATEURS ===== */
+.separator {
+    opacity: var(--tile-opacity, 1) !important;
+    transition: opacity 0.3s ease !important;
+}
+
+.separator:hover {
+    opacity: 1 !important;
+}
+
+.separator img {
+    opacity: inherit !important;
+    transition: opacity 0.3s ease !important;
+}
+
+/* Force la transparence avec les classes CSS */
+.separator.force-transparency {
+    opacity: var(--tile-opacity, 1) !important;
+    transition: opacity 0.3s ease !important;
+}
+
+.separator.force-transparency:hover {
+    opacity: 1 !important;
+}
+
+.separator.force-transparency img {
+    opacity: inherit !important;
 }
 
 /* Animation des tuiles en transition */
@@ -3099,4 +3182,17 @@ button#refreshButton.refresh-button {
 
 .transparency-widget[data-transparency-level]:not([data-transparency-level="0"])::after {
     opacity: 1;
+}
+
+/* Responsive : ajustements mobile */
+@media (max-width: 768px) {
+    .transparency-controls {
+        padding: 15px 15px 5px 15px;
+        gap: 15px;
+    }
+    
+    .transparency-info {
+        padding: 12px 15px;
+        margin-top: 10px;
+    }
 }

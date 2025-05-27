@@ -1652,9 +1652,10 @@ setupTransparencyPanelEvents(panel) {
     }, { once: true });
 }
 
-// 5. Appliquer la transparence (VERSION CORRIGÉE)
+// 5. Appliquer la transparence (VERSION AVEC SÉPARATEURS)
 applyTransparency(value) {
     const tiles = document.querySelectorAll('.tile');
+    const separators = document.querySelectorAll('.separator'); // AJOUT
     const opacity = 1 - (value / 100);
     
     // Supprimer le style de transparence existant
@@ -1686,6 +1687,21 @@ applyTransparency(value) {
         
         .tile.enhanced-visibility:hover {
             opacity: 1 !important;
+        }
+        
+        /* AJOUT: Transparence pour les séparateurs */
+        .separator {
+            opacity: ${opacity} !important;
+            transition: opacity 0.3s ease !important;
+        }
+        
+        .separator:hover {
+            opacity: 1 !important;
+        }
+        
+        .separator img {
+            opacity: inherit !important;
+            transition: opacity 0.3s ease !important;
         }
     `;
     
