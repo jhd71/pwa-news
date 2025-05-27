@@ -1652,28 +1652,70 @@ setupTransparencyPanelEvents(panel) {
     }, { once: true });
 }
 
-// 5. Appliquer la transparence
+// 5. Appliquer la transparence (VERSION CORRIGÉE)
 applyTransparency(value) {
     const tiles = document.querySelectorAll('.tile');
     const opacity = 1 - (value / 100);
     
-    tiles.forEach(tile => {
-        tile.style.opacity = opacity;
-        tile.style.transition = 'opacity 0.3s ease';
-    });
+    // Supprimer le style de transparence existant
+    const existingTransparencyStyle = document.getElementById('tileTransparencyStyle');
+    if (existingTransparencyStyle) {
+        existingTransparencyStyle.remove();
+    }
+    
+    // Créer un nouveau style CSS avec !important pour forcer l'application
+    const style = document.createElement('style');
+    style.id = 'tileTransparencyStyle';
+    style.textContent = `
+        .tile {
+            opacity: ${opacity} !important;
+            transition: opacity 0.3s ease, transform 0.3s ease !important;
+        }
+        
+        .tile:hover {
+            opacity: 1 !important;
+            transform: scale(1.02) !important;
+            z-index: 10 !important;
+            position: relative !important;
+        }
+        
+        /* Assurer que la transparence fonctionne même avec enhanced-visibility */
+        .tile.enhanced-visibility {
+            opacity: ${opacity} !important;
+        }
+        
+        .tile.enhanced-visibility:hover {
+            opacity: 1 !important;
+        }
+    `;
+    
+    document.head.appendChild(style);
     
     // Sauvegarder
     localStorage.setItem('tilesTransparency', value);
+    
+    // Mettre à jour l'indicateur sur le widget
+    const widget = document.getElementById('transparencyWidget');
+    if (widget) {
+        if (value > 0) {
+            widget.setAttribute('data-transparency-level', Math.round(value / 25));
+        } else {
+            widget.removeAttribute('data-transparency-level');
+        }
+    }
     
     // Toast informatif
     this.showToast(`Transparence : ${this.getTransparencyLabel(value)}`);
 }
 
-// 6. Appliquer la transparence sauvegardée
+// 6. Appliquer la transparence sauvegardée (VERSION MISE À JOUR)
 applyTransparencySettings() {
     const savedTransparency = localStorage.getItem('tilesTransparency') || '0';
     if (savedTransparency !== '0') {
-        this.applyTransparency(savedTransparency);
+        // Attendre que les tuiles soient créées
+        setTimeout(() => {
+            this.applyTransparency(savedTransparency);
+        }, 500);
     }
 }
 
@@ -1685,6 +1727,15 @@ getTransparencyLabel(value) {
     if (val <= 50) return 'Moyen';
     if (val <= 75) return 'Fort';
     return 'Presque invisible';
+}
+
+// AJOUTEZ LA NOUVELLE MÉTHODE ICI ↓
+// Méthode pour nettoyer les styles de transparence
+cleanupTransparencyStyles() {
+    const existingTransparencyStyle = document.getElementById('tileTransparencyStyle');
+    if (existingTransparencyStyle) {
+        existingTransparencyStyle.remove();
+    }
 }
 
 // 8. CORRECTION POUR LE MODE LISTE PC
