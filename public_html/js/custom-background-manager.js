@@ -2155,19 +2155,44 @@ const customBackgroundStyles = `
 }
 
 /* Indicateur de caméra active */
-.camera-section::before {
+/* Indicateur de caméra active */
+.camera-container::before {
     content: '🔴 LIVE';
     position: absolute;
     top: 15px;
     right: 15px;
-    background: rgba(255, 0, 0, 0.8);
+    background: rgba(255, 0, 0, 0.9);
     color: white;
-    padding: 5px 10px;
-    border-radius: 15px;
-    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
     font-weight: bold;
-    z-index: 10;
+    z-index: 100;
     animation: liveBlink 2s infinite;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Assurer que le container a une position relative */
+.camera-container {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Responsive pour l'indicateur LIVE */
+@media (max-width: 768px) {
+    .camera-container::before {
+        top: 10px;
+        right: 10px;
+        padding: 4px 8px;
+        font-size: 10px;
+        border-radius: 15px;
+    }
 }
 
 @keyframes liveBlink {
