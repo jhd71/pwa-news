@@ -118,80 +118,66 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fonction pour vérifier si cet appareil a déjà participé
     async function hasAlreadyParticipated() {
     try {
-        // Obtenir l'ID de l'appareil
-        const deviceId = getDeviceId();
+        console.log('=== DÉBUT VÉRIFICATION PARTICIPATION ===');
         
-        console.log('Vérification de participation avec ID:', deviceId);
-        
-        // 1. Vérification stricte dans localStorage D'ABORD
+        // 1. Vérification locale d'abord
         const hasCompletedLocally = localStorage.getItem('surveyCompleted') === 'true';
-        const deviceIdConfirmed = localStorage.getItem('survey_device_id_confirmed') === 'true';
+        console.log('Participation locale:', hasCompletedLocally);
         
-        console.log('Vérification locale:', hasCompletedLocally);
-        console.log('Device ID confirmé:', deviceIdConfirmed);
-        
-        // Si pas de participation locale ET pas d'ID confirmé, permettre la participation
-        if (!hasCompletedLocally && !deviceIdConfirmed) {
-            console.log('Première participation détectée - autorisation de voter');
-            return false;
-        }
-        
-        // Si marqué comme complété localement, vérifier quand même en base
         if (hasCompletedLocally) {
-            console.log('Appareil marqué comme ayant participé dans localStorage');
+            console.log('✅ Participation confirmée localement');
             return true;
         }
         
-        // 2. Vérifier l'IP actuelle si chatManager est disponible
+        // 2. Vérification IP PRIORITAIRE
         let currentIP = '';
         if (window.chatManager && typeof window.chatManager.getClientRealIP === 'function') {
             try {
                 currentIP = await window.chatManager.getClientRealIP() || '';
-                console.log('IP obtenue pour vérification:', currentIP);
+                console.log('IP obtenue:', currentIP);
                 
                 if (currentIP) {
-                    // Vérifier si cette IP a déjà participé
                     const { data: ipData, error: ipError } = await supabaseClient
                         .from('survey_participants')
-                        .select('id')
+                        .select('id, created_at')
                         .eq('ip_address', currentIP)
                         .maybeSingle();
                     
                     if (!ipError && ipData) {
-                        console.log('IP a déjà participé au sondage:', ipData);
+                        console.log('❌ IP a déjà participé:', ipData);
+                        // Marquer localement pour éviter les vérifications futures
                         localStorage.setItem('surveyCompleted', 'true');
                         localStorage.setItem('survey_device_id_confirmed', 'true');
                         return true;
+                    } else {
+                        console.log('✅ IP pas encore utilisée pour voter');
                     }
                 }
             } catch (e) {
-                console.log('Impossible d\'obtenir l\'IP via chatManager:', e);
+                console.log('Erreur récupération IP:', e);
             }
         }
         
-        // 3. Vérifier dans la base de données avec l'ID de l'appareil
-        const { data, error } = await supabaseClient
+        // 3. Vérification Device ID (secondaire)
+        const deviceId = getDeviceId();
+        console.log('Device ID:', deviceId);
+        
+        const { data: deviceData, error: deviceError } = await supabaseClient
             .from('survey_participants')
-            .select('id')
+            .select('id, created_at')
             .eq('device_id', deviceId)
             .maybeSingle();
             
-        if (error) {
-            console.error('Erreur vérification participation:', error);
-            return hasCompletedLocally;
-        }
-        
-        // Si des données sont trouvées, l'appareil a déjà participé
-        if (data) {
-            console.log('Appareil a déjà participé au sondage:', data);
+        if (!deviceError && deviceData) {
+            console.log('❌ Device ID a déjà participé:', deviceData);
             localStorage.setItem('surveyCompleted', 'true');
             localStorage.setItem('survey_device_id_confirmed', 'true');
             return true;
         }
         
-        // 4. Vérifier si l'user agent correspond à un participant existant
+        // 4. Vérification User Agent (moins fiable)
         const userAgent = navigator.userAgent;
-        if (userAgent) {
+        if (userAgent && userAgent.length > 50) {
             const { data: uaData, error: uaError } = await supabaseClient
                 .from('survey_participants')
                 .select('id, user_agent')
@@ -200,8 +186,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 
             if (!uaError && uaData && uaData.length > 0) {
                 const similarity = calculateSimilarity(userAgent, uaData[0].user_agent);
-                if (similarity > 0.9) {
-                    console.log('User agent très similaire trouvé, probable même utilisateur:', similarity);
+                if (similarity > 0.95) { // Augmenté à 95% pour être plus strict
+                    console.log('❌ User agent très similaire trouvé:', similarity);
                     localStorage.setItem('surveyCompleted', 'true');
                     localStorage.setItem('survey_device_id_confirmed', 'true');
                     return true;
@@ -209,84 +195,90 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        console.log('Aucune participation antérieure détectée - autorisation de voter');
+        console.log('✅ Aucune participation détectée - AUTORISATION DE VOTER');
         return false;
+        
     } catch (error) {
-        console.error('Erreur hasAlreadyParticipated:', error);
+        console.error('Erreur vérification participation:', error);
+        // En cas d'erreur, on vérifie au moins le localStorage
         return localStorage.getItem('surveyCompleted') === 'true';
     }
 }
 
     // Fonction pour enregistrer la participation de cet appareil
     async function recordParticipation() {
-        try {
-            // Obtenir l'ID de l'appareil
-            const deviceId = getDeviceId();
-            
-            // Tenter d'obtenir l'adresse IP du client
-            let ipAddress = '';
-            
-            // Utiliser l'IP du chatManager si disponible
-            if (window.chatManager && typeof window.chatManager.getClientRealIP === 'function') {
-                try {
-                    ipAddress = await window.chatManager.getClientRealIP() || '';
-                    console.log('IP obtenue via chatManager:', ipAddress);
-                } catch (e) {
-                    console.log('Impossible d\'obtenir l\'IP via chatManager:', e);
-                }
+    try {
+        console.log('=== ENREGISTREMENT PARTICIPATION ===');
+        
+        // Vérification finale avant enregistrement
+        const alreadyExists = await hasAlreadyParticipated();
+        if (alreadyExists) {
+            console.log('❌ Tentative de double participation bloquée');
+            return false;
+        }
+        
+        const deviceId = getDeviceId();
+        let ipAddress = '';
+        
+        // Obtenir l'IP
+        if (window.chatManager && typeof window.chatManager.getClientRealIP === 'function') {
+            try {
+                ipAddress = await window.chatManager.getClientRealIP() || '';
+                console.log('IP pour enregistrement:', ipAddress);
+            } catch (e) {
+                console.log('Impossible d\'obtenir l\'IP:', e);
             }
-            
-            // Obtenir le user agent
-            const userAgent = navigator.userAgent || '';
-            
-            // Obtenir des informations supplémentaires pour une meilleure identification
-            const screenInfo = `${screen.width}x${screen.height}x${screen.colorDepth}`;
-            const languages = navigator.languages ? navigator.languages.join(',') : navigator.language;
-            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
-            
-            const additionalInfo = {
-                screen: screenInfo,
-                languages: languages,
-                timezone: timezone
-            };
-            
-            console.log('Enregistrement de la participation:', {
+        }
+        
+        const userAgent = navigator.userAgent || '';
+        const screenInfo = `${screen.width}x${screen.height}x${screen.colorDepth}`;
+        const languages = navigator.languages ? navigator.languages.join(',') : navigator.language;
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+        
+        const additionalInfo = {
+            screen: screenInfo,
+            languages: languages,
+            timezone: timezone,
+            timestamp: new Date().toISOString()
+        };
+        
+        // Tentative d'insertion avec gestion des doublons
+        const { data, error } = await supabaseClient
+            .from('survey_participants')
+            .insert({
                 device_id: deviceId,
                 ip_address: ipAddress,
                 user_agent: userAgent.substring(0, 250),
-                additional_info: additionalInfo
-            });
+                additional_info: JSON.stringify(additionalInfo).substring(0, 500)
+            })
+            .select();
             
-            // Enregistrer dans la base de données
-            const { data, error } = await supabaseClient
-                .from('survey_participants')
-                .insert({
-                    device_id: deviceId,
-                    ip_address: ipAddress,
-                    user_agent: userAgent.substring(0, 250),
-                    additional_info: JSON.stringify(additionalInfo).substring(0, 500)
-                });
-                
-            if (error) {
-                // Si l'erreur est due à un conflit (déjà enregistré), c'est ok
-                if (error.code === '23505') { // Code PostgreSQL pour violation de contrainte unique
-                    console.log('Appareil déjà enregistré (contrainte unique)');
-                    return true;
-                }
-                
-                console.error('Erreur enregistrement participation:', error);
-                return false;
+        if (error) {
+            // Si c'est une violation de contrainte unique (déjà existant)
+            if (error.code === '23505' || error.message.includes('duplicate')) {
+                console.log('❌ Participation déjà enregistrée (contrainte unique)');
+                localStorage.setItem('surveyCompleted', 'true');
+                localStorage.setItem('survey_device_id_confirmed', 'true');
+                return false; // Empêcher le vote
             }
             
-            console.log('Participation enregistrée avec succès');
-	localStorage.setItem('survey_device_id_confirmed', 'true');
-	console.log('Participation confirmée et enregistrée localement');
-	return true;
-        } catch (error) {
-            console.error('Erreur recordParticipation:', error);
+            console.error('Erreur enregistrement:', error);
             return false;
         }
+        
+        console.log('✅ Participation enregistrée avec succès:', data);
+        
+        // Marquer localement seulement APRÈS succès en base
+        localStorage.setItem('surveyCompleted', 'true');
+        localStorage.setItem('survey_device_id_confirmed', 'true');
+        
+        return true;
+        
+    } catch (error) {
+        console.error('Erreur recordParticipation:', error);
+        return false;
     }
+}
     
     // Fonction pour charger les données du sondage depuis Supabase
     async function loadSurveyData() {
@@ -577,9 +569,10 @@ window.openSurveyModal = openSurveyModal;
     
     // Fonction pour la soumission du sondage (correction)
 surveySubmit.addEventListener('click', async function() {
-    // Vérifier si l'utilisateur a déjà participé
+    // VÉRIFICATION FINALE avant traitement
     const alreadyParticipated = await hasAlreadyParticipated();
     if (alreadyParticipated) {
+        console.log('❌ Tentative de double vote bloquée');
         alert('Vous avez déjà participé à ce sondage.');
         
         // Forcer l'affichage des résultats
