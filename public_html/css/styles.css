@@ -3549,3 +3549,91 @@ button#refreshButton.refresh-button {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
     font-weight: 700;
 }
+
+/* ===== APERÇU DIAPORAMA DANS LA TUILE ===== */
+
+/* Aperçu diaporama dans la tuile */
+.slideshow-preview {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+/* Aperçu diaporama dans la tuile */
+.slideshow-preview {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.mini-slideshow {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.mini-slide-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.mini-slide-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.5s ease;
+}
+
+.mini-slide-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.mini-slide-placeholder .material-icons {
+    font-size: 24px;
+    margin-bottom: 5px;
+    opacity: 0.7;
+}
+
+.loading-text {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.mini-slide-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    padding: 15px 10px 10px;
+    color: white;
+}
+
+.mini-slide-overlay .tile-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+}
+
+.mini-slide-counter {
+    font-size: 10px;
+    opacity: 0.8;
+    letter-spacing: 2px;
+}

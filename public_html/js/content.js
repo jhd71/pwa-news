@@ -564,6 +564,8 @@ const tvSites = [
         </div>
     `;
 
+	// Créer l'aperçu pour la tuile diaporama
+	this.createTilePreview(tile, site);
     // Stockage de l'URL pour faciliter l'accès
     tile.dataset.siteUrl = site.url;
     tile.dataset.mobileSiteUrl = site.mobileUrl || site.url;
@@ -1747,11 +1749,15 @@ applyTransparency(value) {
     const style = document.createElement('style');
     style.id = 'tileTransparencyStyle';
     style.textContent = `
-        .tile:not(.survey-tile):not([data-category="social"]:first-child) {
+        .tile:not(.survey-tile):not(.slideshow-tile):not([data-category="social"]:first-child) {
             opacity: ${opacity} !important;
             transition: opacity 0.3s ease, transform 0.3s ease !important;
         }
         
+		/* Forcer la tuile diaporama à rester visible */
+	.tile.slideshow-tile {
+    opacity: 1 !important;
+	}
         .tile:not(.survey-tile):not([data-category="social"]:first-child):hover {
             opacity: 1 !important;
             transform: scale(1.02) !important;
@@ -2284,6 +2290,109 @@ closeSlideshowModal() {
             this.slideshowInterval = null;
         }
     }
+}
+
+// Ajoutez cette méthode dans votre classe ContentManager
+
+// Méthode pour créer l'aperçu diaporama dans la tuile
+createTilePreview(tile, site) {
+    if (!site.isSlideshow) return;
+    
+    // Modifier la structure HTML de la tuile diaporama
+    tile.innerHTML = `
+        <div class="tile-content slideshow-preview">
+            <div class="mini-slideshow">
+                <div class="mini-slide-container">
+                    <img class="mini-slide-image" src="" alt="Aperçu photo" style="display: none;">
+                    <div class="mini-slide-placeholder">
+                        <span class="material-icons">photo_library</span>
+                        <span class="loading-text">Chargement...</span>
+                    </div>
+                </div>
+                <div class="mini-slide-overlay">
+                    <div class="tile-title">${site.title}</div>
+                    <div class="mini-slide-counter">• • •</div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Charger et démarrer l'aperçu
+    this.loadTilePreview(tile);
+}
+
+// Charger les photos pour l'aperçu de la tuile
+async loadTilePreview(tile) {
+    try {
+        const supabaseClient = window.getSupabaseClient();
+        if (!supabaseClient) return;
+        
+        const { data: photos, error } = await supabaseClient
+            .from('photos')
+            .select('image_url, title')
+            .order('created_at', { ascending: false })
+            .limit(5); // Limiter à 5 photos pour l'aperçu
+        
+        if (error || !photos || photos.length === 0) {
+            // Pas de photos disponibles
+            const placeholder = tile.querySelector('.mini-slide-placeholder');
+            if (placeholder) {
+                placeholder.innerHTML = `
+                    <span class="material-icons">add_photo_alternate</span>
+                    <span class="loading-text">Aucune photo</span>
+                `;
+            }
+            return;
+        }
+        
+        // Démarrer le mini-diaporama
+        this.startTileSlideshow(tile, photos);
+        
+    } catch (error) {
+        console.error('Erreur chargement aperçu photos:', error);
+    }
+}
+
+// Démarrer le diaporama dans la tuile
+startTileSlideshow(tile, photos) {
+    const imageEl = tile.querySelector('.mini-slide-image');
+    const placeholder = tile.querySelector('.mini-slide-placeholder');
+    const counter = tile.querySelector('.mini-slide-counter');
+    
+    if (!imageEl || photos.length === 0) return;
+    
+    let currentIndex = 0;
+    
+    // Fonction pour changer d'image
+    const showNextImage = () => {
+        const photo = photos[currentIndex];
+        imageEl.src = photo.image_url;
+        imageEl.alt = photo.title || 'Photo';
+        
+        // Cacher le placeholder et montrer l'image
+        if (placeholder) placeholder.style.display = 'none';
+        imageEl.style.display = 'block';
+        
+        // Mettre à jour le compteur visuel
+        if (counter) {
+            const dots = photos.map((_, index) => 
+                index === currentIndex ? '●' : '○'
+            ).join(' ');
+            counter.textContent = dots;
+        }
+        
+        // Passer à l'image suivante
+        currentIndex = (currentIndex + 1) % photos.length;
+    };
+    
+    // Montrer la première image
+    showNextImage();
+    
+    // Changer d'image toutes les 3 secondes
+    const interval = setInterval(showNextImage, 3000);
+    
+    // Nettoyer l'intervalle si la tuile est supprimée
+    tile.dataset.slideshowInterval = interval;
 }
 
 }
