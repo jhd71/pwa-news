@@ -1991,17 +1991,32 @@ const customBackgroundStyles = `
     line-height: 1;
 }
 
-.background-upload-modal .camera-section .camera-controls .camera-control-btn .camera-text {
-    font-size: 10px;
-    line-height: 1;
-    white-space: nowrap;
-    text-align: center;
-    color: white;
-    font-weight: 600;
+.camera-text {
+    font-size: 10px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+    color: white !important;
+    font-weight: 600 !important;
 }
 
-.background-upload-modal .camera-section .camera-controls .camera-control-btn {
-    color: white;
+/* Forcer la couleur blanche sur tous les éléments des contrôles caméra */
+.camera-control-btn,
+.camera-control-btn *,
+.camera-control-btn span,
+.camera-control-btn .camera-text,
+.camera-controls button,
+.camera-controls button *,
+.camera-controls button span {
+    color: white !important;
+}
+
+/* Règle spécifique pour contrer styles.css */
+.background-upload-modal .camera-controls .camera-control-btn,
+.background-upload-modal .camera-controls .camera-control-btn *,
+.background-upload-modal .camera-controls button,
+.background-upload-modal .camera-controls button * {
+    color: white !important;
 }
 
 
@@ -2203,6 +2218,22 @@ const customBackgroundStyles = `
 @keyframes liveBlink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0.5; }
+}
+
+/* Override général pour contrer la règle styles.css dans la modal de fond */
+.background-upload-modal .camera-section *,
+.background-upload-modal .camera-controls *,
+.background-upload-modal .camera-control-btn *,
+.background-upload-modal .camera-text {
+    color: white !important;
+}
+
+/* Spécifiquement pour les spans et textes des boutons caméra */
+.camera-controls span.camera-text,
+.camera-controls .camera-text,
+button.camera-control-btn span.camera-text,
+button.camera-control-btn .camera-text {
+    color: white !important;
 }
 
 </style>
