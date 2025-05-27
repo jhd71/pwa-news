@@ -282,23 +282,38 @@ setupTVIcons() {
 	];
 
 	// Ajouter la tuile Photos séparément après la liste des sites d'actualités
-	const photosTile = {
+const photosTile = {
     title: "📷 Photos d'ici et d'ailleurs",
     url: "photos-gallery.html",
     mobileUrl: "photos-gallery.html",
     isDefault: true,
     category: "photos",
     color: "var(--primary-color)"
-	};
-        // Créer les tuiles d'actualités
-        newsDefaultSites.forEach(site => {
-            const tile = this.createTile(site);
-            this.tileContainer.appendChild(tile);
-        });
+};
 
-// Ajouter la tuile photos séparément
+// NOUVELLE TUILE DIAPORAMA
+const slideshowTile = {
+    title: "🎞️ Diaporama<br>Photos",
+    url: "#slideshow",
+    mobileUrl: "#slideshow",
+    isDefault: true,
+    category: "photos",
+    isSlideshow: true // Marqueur spécial
+};
+
+// Créer les tuiles d'actualités
+newsDefaultSites.forEach(site => {
+    const tile = this.createTile(site);
+    this.tileContainer.appendChild(tile);
+});
+
+// Ajouter la tuile photos
 const photosTileElement = this.createTile(photosTile);
 this.tileContainer.appendChild(photosTileElement);
+
+// AJOUTER LA TUILE DIAPORAMA
+const slideshowTileElement = this.createTile(slideshowTile);
+this.tileContainer.appendChild(slideshowTileElement);
 
         // Séparateur Radio
         const separator1 = document.createElement('div');
@@ -532,6 +547,11 @@ const tvSites = [
     tile.classList.add('survey-tile');
 	}
 	
+	// Marquer spécialement la tuile diaporama
+	if (site.isSlideshow) {
+    tile.classList.add('slideshow-tile');
+	}
+	
     // Ajouter des classes conditionnelles pour les designs spéciaux
     if (site.isLive && site.category === 'tv') {
         tile.classList.add('live-content');
@@ -549,12 +569,12 @@ const tvSites = [
     tile.dataset.mobileSiteUrl = site.mobileUrl || site.url;
         
     // Gestion du clic normal
-// Remplacez la gestion du clic par :
-tile.addEventListener('click', () => {
+	// Remplacez la gestion du clic par :
+	tile.addEventListener('click', () => {
     this.animateTileClick(tile);
     
     // Gestion spéciale pour le sondage
-if (site.isSurvey) {
+	if (site.isSurvey) {
     // Appeler directement la fonction d'ouverture du sondage de survey-manager.js
     if (typeof window.openSurveyModal !== 'undefined') {
         window.openSurveyModal();
@@ -570,9 +590,14 @@ if (site.isSurvey) {
         }, 100);
     }
     return;
-}
+	}
     
-    // Reste du code existant...
+	// Gestion spéciale pour le diaporama
+	if (site.isSlideshow) {
+    this.openSlideshowModal();
+    return;
+	}
+    // Vérifier si c'est un lien interne ou externe
     const url = site.mobileUrl || site.url;
     if (url.startsWith('http')) {
         window.open(url, '_blank');
@@ -1992,6 +2017,274 @@ addVisibilityStyles() {
     
     document.head.appendChild(style);
 }
+
+// Méthodes pour le diaporama - à ajouter dans votre classe ContentManager
+
+// 1. Créer le modal du diaporama
+createSlideshowModal() {
+    // Vérifier si le modal existe déjà
+    if (document.getElementById('slideshowModal')) return;
+    
+    const modal = document.createElement('div');
+    modal.id = 'slideshowModal';
+    modal.className = 'slideshow-modal';
+    modal.innerHTML = `
+        <div class="slideshow-overlay"></div>
+        <div class="slideshow-container">
+            <div class="slideshow-header">
+                <h2>🎞️ Diaporama des photos</h2>
+                <button class="close-slideshow-btn">×</button>
+            </div>
+            <div class="slideshow-content">
+                <div class="slideshow-loading">
+                    <div class="spinner"></div>
+                    <p>Chargement des photos...</p>
+                </div>
+                <div class="slideshow-viewer" style="display: none;">
+                    <div class="slide-container">
+                        <img class="slide-image" src="" alt="Photo du diaporama">
+                        <div class="slide-info">
+                            <h3 class="slide-title"></h3>
+                            <p class="slide-description"></p>
+                            <span class="slide-author"></span>
+                        </div>
+                    </div>
+                    <div class="slideshow-controls">
+                        <button class="slide-btn prev-btn">
+                            <span class="material-icons">chevron_left</span>
+                        </button>
+                        <div class="slide-indicators">
+                            <span class="slide-counter">1 / 1</span>
+                        </div>
+                        <button class="slide-btn next-btn">
+                            <span class="material-icons">chevron_right</span>
+                        </button>
+                    </div>
+                    <div class="slideshow-actions">
+                        <button class="action-btn play-pause-btn">
+                            <span class="material-icons">pause</span>
+                            <span class="btn-text">Pause</span>
+                        </button>
+                        <button class="action-btn gallery-btn">
+                            <span class="material-icons">photo_library</span>
+                            <span>Voir la galerie</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="slideshow-empty" style="display: none;">
+                    <span class="material-icons" style="font-size: 48px; opacity: 0.5;">photo_library</span>
+                    <h3>Aucune photo disponible</h3>
+                    <p>La galerie est vide pour le moment.</p>
+                    <button class="action-btn" onclick="window.location.href='photos-gallery.html'">
+                        <span class="material-icons">add_photo_alternate</span>
+                        <span>Ajouter des photos</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    this.setupSlideshowEvents(modal);
 }
 
+// 2. Configurer les événements du diaporama
+setupSlideshowEvents(modal) {
+    const closeBtn = modal.querySelector('.close-slideshow-btn');
+    const overlay = modal.querySelector('.slideshow-overlay');
+    const prevBtn = modal.querySelector('.prev-btn');
+    const nextBtn = modal.querySelector('.next-btn');
+    const playPauseBtn = modal.querySelector('.play-pause-btn');
+    const galleryBtn = modal.querySelector('.gallery-btn');
+    
+    // Fermeture
+    closeBtn.addEventListener('click', () => this.closeSlideshowModal());
+    overlay.addEventListener('click', () => this.closeSlideshowModal());
+    
+    // Navigation
+    prevBtn.addEventListener('click', () => this.previousSlide());
+    nextBtn.addEventListener('click', () => this.nextSlide());
+    
+    // Play/Pause
+    playPauseBtn.addEventListener('click', () => this.toggleSlideshow());
+    
+    // Aller à la galerie
+    galleryBtn.addEventListener('click', () => {
+        window.location.href = 'photos-gallery.html';
+    });
+    
+    // Navigation clavier
+    document.addEventListener('keydown', (e) => {
+        if (modal.classList.contains('show')) {
+            switch(e.key) {
+                case 'ArrowLeft':
+                    this.previousSlide();
+                    break;
+                case 'ArrowRight':
+                    this.nextSlide();
+                    break;
+                case ' ':
+                    e.preventDefault();
+                    this.toggleSlideshow();
+                    break;
+                case 'Escape':
+                    this.closeSlideshowModal();
+                    break;
+        }
+    });
+}
+
+// 3. Ouvrir le diaporama
+async openSlideshowModal() {
+    // Créer le modal s'il n'existe pas
+    this.createSlideshowModal();
+    
+    const modal = document.getElementById('slideshowModal');
+    modal.classList.add('show');
+    
+    // Initialiser les variables du diaporama
+    this.currentSlideIndex = 0;
+    this.slides = [];
+    this.slideshowInterval = null;
+    this.isPlaying = true;
+    
+    // Charger les photos
+    await this.loadSlideshowPhotos();
+}
+
+// 4. Charger les photos depuis Supabase
+async loadSlideshowPhotos() {
+    const loadingEl = document.querySelector('.slideshow-loading');
+    const viewerEl = document.querySelector('.slideshow-viewer');
+    const emptyEl = document.querySelector('.slideshow-empty');
+    
+    try {
+        // Obtenir le client Supabase
+        const supabaseClient = window.getSupabaseClient();
+        if (!supabaseClient) {
+            throw new Error('Client Supabase non disponible');
+        }
+        
+        // Récupération des photos
+        const { data: photos, error } = await supabaseClient
+            .from('photos')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(20); // Limiter à 20 photos pour de bonnes performances
+        
+        if (error) throw error;
+        
+        loadingEl.style.display = 'none';
+        
+        if (!photos || photos.length === 0) {
+            emptyEl.style.display = 'block';
+            return;
+        }
+        
+        this.slides = photos;
+        viewerEl.style.display = 'block';
+        
+        // Démarrer le diaporama
+        this.showSlide(0);
+        this.startSlideshow();
+        
+    } catch (error) {
+        console.error('Erreur chargement photos diaporama:', error);
+        loadingEl.innerHTML = `
+            <span class="material-icons" style="font-size: 48px; color: #f44336;">error</span>
+            <p>Erreur de chargement des photos</p>
+            <button onclick="location.reload()" style="padding: 8px 16px; margin-top: 10px;">
+                Réessayer
+            </button>
+        `;
+    }
+}
+
+// 5. Afficher une slide
+showSlide(index) {
+    if (!this.slides || this.slides.length === 0) return;
+    
+    // Corriger l'index si nécessaire
+    if (index >= this.slides.length) index = 0;
+    if (index < 0) index = this.slides.length - 1;
+    
+    this.currentSlideIndex = index;
+    const slide = this.slides[index];
+    
+    // Mettre à jour l'image et les informations
+    const slideImage = document.querySelector('.slide-image');
+    const slideTitle = document.querySelector('.slide-title');
+    const slideDescription = document.querySelector('.slide-description');
+    const slideAuthor = document.querySelector('.slide-author');
+    const slideCounter = document.querySelector('.slide-counter');
+    
+    slideImage.src = slide.image_url;
+    slideImage.alt = slide.title || 'Photo';
+    slideTitle.textContent = slide.title || 'Sans titre';
+    slideDescription.textContent = slide.description || '';
+    slideAuthor.textContent = `Par ${slide.photographer_name || 'Anonyme'}`;
+    slideCounter.textContent = `${index + 1} / ${this.slides.length}`;
+}
+
+// 6. Navigation dans les slides
+nextSlide() {
+    if (this.slides && this.slides.length > 0) {
+        this.showSlide(this.currentSlideIndex + 1);
+    }
+}
+
+previousSlide() {
+    if (this.slides && this.slides.length > 0) {
+        this.showSlide(this.currentSlideIndex - 1);
+    }
+}
+
+// 7. Gestion du diaporama automatique
+startSlideshow() {
+    if (this.slideshowInterval) {
+        clearInterval(this.slideshowInterval);
+    }
+    
+    this.slideshowInterval = setInterval(() => {
+        if (this.isPlaying) {
+            this.nextSlide();
+        }
+    }, 4000); // 4 secondes par image
+}
+
+toggleSlideshow() {
+    this.isPlaying = !this.isPlaying;
+    const playPauseBtn = document.querySelector('.play-pause-btn');
+    const icon = playPauseBtn.querySelector('.material-icons');
+    const text = playPauseBtn.querySelector('.btn-text');
+    
+    if (this.isPlaying) {
+        icon.textContent = 'pause';
+        text.textContent = 'Pause';
+        this.startSlideshow();
+    } else {
+        icon.textContent = 'play_arrow';
+        text.textContent = 'Lecture';
+        if (this.slideshowInterval) {
+            clearInterval(this.slideshowInterval);
+        }
+    }
+}
+
+// 8. Fermer le diaporama
+closeSlideshowModal() {
+    const modal = document.getElementById('slideshowModal');
+    if (modal) {
+        modal.classList.remove('show');
+        
+        // Nettoyer les intervalles
+        if (this.slideshowInterval) {
+            clearInterval(this.slideshowInterval);
+            this.slideshowInterval = null;
+        }
+    }
+}
+
+}
+}
 export default ContentManager;
