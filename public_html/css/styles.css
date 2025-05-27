@@ -3070,6 +3070,7 @@ button#refreshButton.refresh-button {
 
 [data-theme="rouge"] .transparency-info p {
    color: #dae1e8;
+   font-weight: 600;
   }
   
 [data-theme="rouge"] .transparency-slider-container label {
