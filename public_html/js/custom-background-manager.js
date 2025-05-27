@@ -1991,7 +1991,7 @@ const customBackgroundStyles = `
     line-height: 1;
 }
 
-.camera-text {
+.background-upload-modal .camera-section .camera-controls .camera-control-btn .camera-text {
     font-size: 10px;
     line-height: 1;
     white-space: nowrap;
@@ -1999,6 +1999,11 @@ const customBackgroundStyles = `
     color: white;
     font-weight: 600;
 }
+
+.background-upload-modal .camera-section .camera-controls .camera-control-btn {
+    color: white;
+}
+
 
 .camera-control-btn:hover {
     background: rgba(255, 255, 255, 0.3);
