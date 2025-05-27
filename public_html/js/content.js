@@ -554,25 +554,26 @@ tile.addEventListener('click', () => {
     this.animateTileClick(tile);
     
     // Gestion spéciale pour le sondage
-    if (site.isSurvey) {
-        // Trouver et déclencher l'événement du sondage
+if (site.isSurvey) {
+    // Déclencher directement la fonction d'ouverture du sondage
+    const surveyBtn = document.getElementById('surveyBtn');
+    if (surveyBtn) {
+        // Si le bouton existe encore, utiliser son événement
+        surveyBtn.click();
+    } else {
+        // Sinon, ouvrir directement le modal
         const surveyModal = document.getElementById('surveyModal');
         if (surveyModal) {
-            // Utiliser la fonction d'ouverture du sondage existante
-            if (typeof openSurveyModal === 'function') {
-                openSurveyModal();
-            } else {
-                // Fallback : déclencher manuellement
-                surveyModal.classList.add('show');
-                
-                // Charger les données du sondage si la fonction existe
-                if (window.loadSurveyData) {
-                    window.loadSurveyData();
-                }
+            surveyModal.classList.add('show');
+            
+            // Déclencher la fonction d'ouverture si elle existe
+            if (typeof window.openSurveyModal === 'function') {
+                window.openSurveyModal();
             }
         }
-        return;
     }
+    return;
+}
     
     // Reste du code existant...
     const url = site.mobileUrl || site.url;
@@ -1708,10 +1709,10 @@ setupTransparencyPanelEvents(panel) {
     document.addEventListener('keydown', escapeHandler);
 }
 
-// 5. Appliquer la transparence (VERSION AVEC SÉPARATEURS)
+// 5. Appliquer la transparence (VERSION AVEC EXCLUSION SONDAGE)
 applyTransparency(value) {
     const tiles = document.querySelectorAll('.tile');
-    const separators = document.querySelectorAll('.separator'); // AJOUT
+    const separators = document.querySelectorAll('.separator');
     const opacity = 1 - (value / 100);
     
     // Supprimer le style de transparence existant
@@ -1724,12 +1725,12 @@ applyTransparency(value) {
     const style = document.createElement('style');
     style.id = 'tileTransparencyStyle';
     style.textContent = `
-        .tile {
+        .tile:not(.survey-tile):not([data-category="social"]:first-child) {
             opacity: ${opacity} !important;
             transition: opacity 0.3s ease, transform 0.3s ease !important;
         }
         
-        .tile:hover {
+        .tile:not(.survey-tile):not([data-category="social"]:first-child):hover {
             opacity: 1 !important;
             transform: scale(1.02) !important;
             z-index: 10 !important;
@@ -1737,15 +1738,21 @@ applyTransparency(value) {
         }
         
         /* Assurer que la transparence fonctionne même avec enhanced-visibility */
-        .tile.enhanced-visibility {
+        .tile.enhanced-visibility:not(.survey-tile):not([data-category="social"]:first-child) {
             opacity: ${opacity} !important;
         }
         
-        .tile.enhanced-visibility:hover {
+        .tile.enhanced-visibility:not(.survey-tile):not([data-category="social"]:first-child):hover {
             opacity: 1 !important;
         }
         
-        /* AJOUT: Transparence pour les séparateurs */
+        /* Forcer la tuile sondage à rester visible */
+        .tile.survey-tile,
+        .tile[data-category="social"]:first-child {
+            opacity: 1 !important;
+        }
+        
+        /* Transparence pour les séparateurs */
         .separator {
             opacity: ${opacity} !important;
             transition: opacity 0.3s ease !important;

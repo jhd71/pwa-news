@@ -117,92 +117,105 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Fonction pour vérifier si cet appareil a déjà participé
     async function hasAlreadyParticipated() {
-        try {
-            // Obtenir l'ID de l'appareil
-            const deviceId = getDeviceId();
-            
-            console.log('Vérification de participation avec ID:', deviceId);
-            
-            // 1. Vérifier d'abord dans localStorage (rapide)
-            const hasCompletedLocally = localStorage.getItem('surveyCompleted') === 'true';
-            if (hasCompletedLocally) {
-                console.log('Appareil marqué comme ayant participé dans localStorage');
-                return true;
-            }
-            
-            // 2. Vérifier l'IP actuelle si chatManager est disponible
-            let currentIP = '';
-            if (window.chatManager && typeof window.chatManager.getClientRealIP === 'function') {
-                try {
-                    currentIP = await window.chatManager.getClientRealIP() || '';
-                    console.log('IP obtenue pour vérification:', currentIP);
-                    
-                    if (currentIP) {
-                        // Vérifier si cette IP a déjà participé
-                        const { data: ipData, error: ipError } = await supabaseClient
-                            .from('survey_participants')
-                            .select('id')
-                            .eq('ip_address', currentIP)
-                            .maybeSingle();
-                        
-                        if (!ipError && ipData) {
-                            console.log('IP a déjà participé au sondage:', ipData);
-                            localStorage.setItem('surveyCompleted', 'true');
-                            return true;
-                        }
-                    }
-                } catch (e) {
-                    console.log('Impossible d\'obtenir l\'IP via chatManager:', e);
-                }
-            }
-            
-            // 3. Vérifier dans la base de données avec l'ID de l'appareil
-            const { data, error } = await supabaseClient
-                .from('survey_participants')
-                .select('id')
-                .eq('device_id', deviceId)
-                .maybeSingle();
+    try {
+        // Obtenir l'ID de l'appareil
+        const deviceId = getDeviceId();
+        
+        console.log('Vérification de participation avec ID:', deviceId);
+        
+        // 1. Vérification stricte dans localStorage D'ABORD
+        const hasCompletedLocally = localStorage.getItem('surveyCompleted') === 'true';
+        const deviceIdConfirmed = localStorage.getItem('survey_device_id_confirmed') === 'true';
+        
+        console.log('Vérification locale:', hasCompletedLocally);
+        console.log('Device ID confirmé:', deviceIdConfirmed);
+        
+        // Si pas de participation locale ET pas d'ID confirmé, permettre la participation
+        if (!hasCompletedLocally && !deviceIdConfirmed) {
+            console.log('Première participation détectée - autorisation de voter');
+            return false;
+        }
+        
+        // Si marqué comme complété localement, vérifier quand même en base
+        if (hasCompletedLocally) {
+            console.log('Appareil marqué comme ayant participé dans localStorage');
+            return true;
+        }
+        
+        // 2. Vérifier l'IP actuelle si chatManager est disponible
+        let currentIP = '';
+        if (window.chatManager && typeof window.chatManager.getClientRealIP === 'function') {
+            try {
+                currentIP = await window.chatManager.getClientRealIP() || '';
+                console.log('IP obtenue pour vérification:', currentIP);
                 
-            if (error) {
-                console.error('Erreur vérification participation:', error);
-                return hasCompletedLocally; // Fallback sur localStorage
-            }
-            
-            // Si des données sont trouvées, l'appareil a déjà participé
-            if (data) {
-                console.log('Appareil a déjà participé au sondage:', data);
-                // Mettre à jour localStorage aussi pour cohérence
-                localStorage.setItem('surveyCompleted', 'true');
-                return true;
-            }
-            
-            // 4. Vérifier si l'user agent correspond à un participant existant
-            const userAgent = navigator.userAgent;
-            if (userAgent) {
-                const { data: uaData, error: uaError } = await supabaseClient
-                    .from('survey_participants')
-                    .select('id, user_agent')
-                    .ilike('user_agent', `%${userAgent.substring(0, 50)}%`) // Recherche partielle
-                    .limit(1);
+                if (currentIP) {
+                    // Vérifier si cette IP a déjà participé
+                    const { data: ipData, error: ipError } = await supabaseClient
+                        .from('survey_participants')
+                        .select('id')
+                        .eq('ip_address', currentIP)
+                        .maybeSingle();
                     
-                if (!uaError && uaData && uaData.length > 0) {
-                    // Vérifier si l'user agent est très similaire (présomption d'être le même appareil)
-                    const similarity = calculateSimilarity(userAgent, uaData[0].user_agent);
-                    if (similarity > 0.9) { // 90% de similarité
-                        console.log('User agent très similaire trouvé, probable même utilisateur:', similarity);
+                    if (!ipError && ipData) {
+                        console.log('IP a déjà participé au sondage:', ipData);
                         localStorage.setItem('surveyCompleted', 'true');
+                        localStorage.setItem('survey_device_id_confirmed', 'true');
                         return true;
                     }
                 }
+            } catch (e) {
+                console.log('Impossible d\'obtenir l\'IP via chatManager:', e);
             }
-            
-            console.log('Aucune participation antérieure détectée');
-            return false;
-        } catch (error) {
-            console.error('Erreur hasAlreadyParticipated:', error);
-            return localStorage.getItem('surveyCompleted') === 'true'; // Fallback
         }
+        
+        // 3. Vérifier dans la base de données avec l'ID de l'appareil
+        const { data, error } = await supabaseClient
+            .from('survey_participants')
+            .select('id')
+            .eq('device_id', deviceId)
+            .maybeSingle();
+            
+        if (error) {
+            console.error('Erreur vérification participation:', error);
+            return hasCompletedLocally;
+        }
+        
+        // Si des données sont trouvées, l'appareil a déjà participé
+        if (data) {
+            console.log('Appareil a déjà participé au sondage:', data);
+            localStorage.setItem('surveyCompleted', 'true');
+            localStorage.setItem('survey_device_id_confirmed', 'true');
+            return true;
+        }
+        
+        // 4. Vérifier si l'user agent correspond à un participant existant
+        const userAgent = navigator.userAgent;
+        if (userAgent) {
+            const { data: uaData, error: uaError } = await supabaseClient
+                .from('survey_participants')
+                .select('id, user_agent')
+                .ilike('user_agent', `%${userAgent.substring(0, 50)}%`)
+                .limit(1);
+                
+            if (!uaError && uaData && uaData.length > 0) {
+                const similarity = calculateSimilarity(userAgent, uaData[0].user_agent);
+                if (similarity > 0.9) {
+                    console.log('User agent très similaire trouvé, probable même utilisateur:', similarity);
+                    localStorage.setItem('surveyCompleted', 'true');
+                    localStorage.setItem('survey_device_id_confirmed', 'true');
+                    return true;
+                }
+            }
+        }
+        
+        console.log('Aucune participation antérieure détectée - autorisation de voter');
+        return false;
+    } catch (error) {
+        console.error('Erreur hasAlreadyParticipated:', error);
+        return localStorage.getItem('surveyCompleted') === 'true';
     }
+}
 
     // Fonction pour enregistrer la participation de cet appareil
     async function recordParticipation() {
@@ -266,7 +279,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             console.log('Participation enregistrée avec succès');
-            return true;
+	localStorage.setItem('survey_device_id_confirmed', 'true');
+	console.log('Participation confirmée et enregistrée localement');
+	return true;
         } catch (error) {
             console.error('Erreur recordParticipation:', error);
             return false;
