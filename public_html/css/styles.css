@@ -3050,57 +3050,76 @@ button#refreshButton.refresh-button {
     line-height: 1.5;
 }
 
-/* ===== ADAPTATIONS POUR LE THÈME ROUGE ===== */
+/* ===== CORRECTIONS POUR LE THÈME ROUGE ===== */
+
+/* Panneau principal en thème rouge - fond plus opaque */
 [data-theme="rouge"] .transparency-panel {
-    color: white; /* Texte blanc pour le thème rouge */
+    background: rgba(139, 32, 28, 0.95) !important; /* Fond rouge foncé très opaque */
+    color: white;
+    backdrop-filter: blur(10px);
+    border-left: 3px solid #FFD700;
 }
 
+/* Container du curseur en thème rouge */
 [data-theme="rouge"] .transparency-slider-container {
-    background: rgba(188, 58, 52, 0.1);
-    border-color: rgba(188, 58, 52, 0.3);
+    background: rgba(139, 32, 28, 0.8) !important; /* Fond rouge foncé */
+    border: 2px solid #FFD700 !important; /* Bordure jaune */
     color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 [data-theme="rouge"] .transparency-slider-container label {
-    color: #FFD700; /* Jaune doré pour les labels */
+    color: #FFEB3B !important; /* Jaune vif pour les labels */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
 }
 
 [data-theme="rouge"] .slider-label {
-    color: #FFEB3B; /* Jaune vif pour les labels du slider */
+    color: #FFF9C4 !important; /* Jaune très clair */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    font-weight: 600;
 }
 
 [data-theme="rouge"] .transparency-value {
-    background: rgba(188, 58, 52, 0.2);
-    color: #FFD700; /* Jaune doré */
-    border: 1px solid rgba(255, 215, 0, 0.3);
+    background: rgba(255, 215, 0, 0.9) !important; /* Fond jaune opaque */
+    color: #8B201C !important; /* Texte rouge foncé */
+    border: 2px solid #FFF9C4;
+    font-weight: bold;
+    text-shadow: none;
 }
 
 [data-theme="rouge"] .transparency-presets h4 {
-    color: #FFD700; /* Jaune doré pour les titres */
+    color: #FFEB3B !important; /* Jaune vif */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
 }
 
 [data-theme="rouge"] .preset-btn {
-    background: rgba(188, 58, 52, 0.2);
-    border-color: rgba(255, 215, 0, 0.3);
-    color: white;
+    background: rgba(139, 32, 28, 0.7) !important;
+    border: 2px solid #FFD700 !important;
+    color: #FFF9C4 !important;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 [data-theme="rouge"] .preset-btn:hover {
-    background: #FFD700;
-    color: #bc3a34;
-    border-color: #FFD700;
+    background: #FFD700 !important;
+    color: #8B201C !important;
+    border-color: #FFEB3B !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+    text-shadow: none;
 }
 
 [data-theme="rouge"] .transparency-info {
-    background: linear-gradient(135deg, 
-        rgba(188, 58, 52, 0.2), 
-        rgba(188, 58, 52, 0.1));
-    border-left-color: #FFD700;
-    color: white;
+    background: rgba(139, 32, 28, 0.8) !important;
+    border: 2px solid #FFD700 !important;
+    border-left: 4px solid #FFEB3B !important;
+    color: #FFF9C4 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 [data-theme="rouge"] .transparency-info strong {
-    color: #FFD700;
+    color: #FFEB3B !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 /* Adaptations pour les thèmes sombres */
@@ -3195,4 +3214,34 @@ button#refreshButton.refresh-button {
         padding: 12px 15px;
         margin-top: 10px;
     }
+}
+
+/* Style spécial pour la tuile sondage */
+.tile[data-category="social"].tile-survey {
+    background: linear-gradient(135deg, #FF6B6B, #4ECDC4, #45B7D1);
+    position: relative;
+    overflow: hidden;
+}
+
+.tile[data-category="social"].tile-survey::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: surveyShine 3s infinite;
+}
+
+@keyframes surveyShine {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.tile[data-category="social"].tile-survey .tile-title {
+    position: relative;
+    z-index: 2;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    font-weight: 700;
 }

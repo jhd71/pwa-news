@@ -456,6 +456,14 @@ const tvSites = [
         // Section Réseaux Sociaux
         const socialSites = [
   {
+    title: '📊 Sondage<br>Actu & Média',
+    url: '#survey', // URL spéciale pour le sondage
+    mobileUrl: '#survey',
+    isDefault: true,
+    category: 'social',
+    isSurvey: true // Marqueur spécial
+  },
+  {
     title: '▶️ YouTube',
     url: 'https://www.youtube.com/feed/trending',
     mobileUrl: 'https://www.youtube.com/feed/trending',
@@ -537,19 +545,37 @@ const tvSites = [
     tile.dataset.mobileSiteUrl = site.mobileUrl || site.url;
         
     // Gestion du clic normal
-    tile.addEventListener('click', () => {
-        this.animateTileClick(tile);
-        
-        // Vérifier si c'est un lien interne ou externe
-        const url = site.mobileUrl || site.url;
-        if (url.startsWith('http')) {
-            // Lien externe - ouvrir dans un nouvel onglet
-            window.open(url, '_blank');
-        } else {
-            // Lien interne - naviguer dans la même fenêtre
-            window.location.href = url;
+    // Dans createTile(), remplacez la gestion du clic par :
+tile.addEventListener('click', () => {
+    this.animateTileClick(tile);
+    
+    // Gestion spéciale pour le sondage
+    if (site.isSurvey) {
+        // Ouvrir le modal de sondage
+        if (document.getElementById('surveyModal')) {
+            const surveyModal = document.getElementById('surveyModal');
+            surveyModal.classList.add('show');
+            
+            // Déclencher l'ouverture du sondage comme le bouton original
+            const event = new Event('click');
+            const surveyBtn = document.getElementById('surveyBtn');
+            if (surveyBtn) {
+                surveyBtn.click();
+            }
         }
-    });
+        return;
+    }
+    
+    // Vérifier si c'est un lien interne ou externe
+    const url = site.mobileUrl || site.url;
+    if (url.startsWith('http')) {
+        // Lien externe - ouvrir dans un nouvel onglet
+        window.open(url, '_blank');
+    } else {
+        // Lien interne - naviguer dans la même fenêtre
+        window.location.href = url;
+    }
+});
 
         // Menu contextuel (clic droit)
         tile.addEventListener('contextmenu', (e) => {
@@ -1550,14 +1576,21 @@ createTransparencyWidget() {
     }, 100);
 }
 
-// 3. Afficher le panneau de transparence
+// 3. Afficher le panneau de transparence (VERSION AMÉLIORÉE)
 showTransparencyPanel() {
-    // Supprimer tout panneau existant
+    const widget = document.getElementById('transparencyWidget');
+    
+    // Supprimer tout panneau existant (fermeture au re-clic)
     const existingPanel = document.querySelector('.transparency-panel');
     if (existingPanel) {
-        existingPanel.remove();
+        existingPanel.classList.remove('open');
+        if (widget) widget.classList.remove('active');
+        setTimeout(() => existingPanel.remove(), 300);
         return;
     }
+    
+    // Marquer le widget comme actif
+    if (widget) widget.classList.add('active');
     
     const panel = document.createElement('div');
     panel.className = 'transparency-panel';
@@ -1607,12 +1640,20 @@ showTransparencyPanel() {
     this.setupTransparencyPanelEvents(panel);
 }
 
-// 4. Configurer les événements du panneau
+// 4. Configurer les événements du panneau (VERSION AMÉLIORÉE)
 setupTransparencyPanelEvents(panel) {
     const slider = panel.querySelector('#transparencySlider');
     const valueDisplay = panel.querySelector('#transparencyValue');
     const closeBtn = panel.querySelector('.close-transparency-btn');
     const presetButtons = panel.querySelectorAll('.preset-btn');
+    const widget = document.getElementById('transparencyWidget');
+    
+    // Fonction de fermeture
+    const closePanel = () => {
+        panel.classList.remove('open');
+        if (widget) widget.classList.remove('active');
+        setTimeout(() => panel.remove(), 300);
+    };
     
     // Curseur
     slider.addEventListener('input', (e) => {
@@ -1637,19 +1678,28 @@ setupTransparencyPanelEvents(panel) {
         });
     });
     
-    // Fermeture
-    closeBtn.addEventListener('click', () => {
-        panel.classList.remove('open');
-        setTimeout(() => panel.remove(), 300);
-    });
+    // Fermeture par bouton X
+    closeBtn.addEventListener('click', closePanel);
     
-    // Fermer en cliquant dehors
-    document.addEventListener('click', (e) => {
-        if (!panel.contains(e.target) && !e.target.closest('#transparencyWidget')) {
-            panel.classList.remove('open');
-            setTimeout(() => panel.remove(), 300);
+    // Fermer en cliquant dehors (PC uniquement)
+    setTimeout(() => {
+        document.addEventListener('click', (e) => {
+            if (!panel.contains(e.target) && 
+                !e.target.closest('#transparencyWidget') &&
+                window.innerWidth > 768) { // Seulement sur PC
+                closePanel();
+            }
+        }, { once: true });
+    }, 100);
+    
+    // Fermer avec Escape
+    const escapeHandler = (e) => {
+        if (e.key === 'Escape') {
+            closePanel();
+            document.removeEventListener('keydown', escapeHandler);
         }
-    }, { once: true });
+    };
+    document.addEventListener('keydown', escapeHandler);
 }
 
 // 5. Appliquer la transparence (VERSION AVEC SÉPARATEURS)
