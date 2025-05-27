@@ -582,3 +582,96 @@
 .thank-you-message.visible {
     display: block !important;
 }
+
+/* ===== STYLES SPÉCIAUX POUR LA TUILE SONDAGE ===== */
+
+/* Style spécial pour la tuile sondage */
+.tile[data-category="social"]:first-child,
+.tile.survey-tile {
+    background: linear-gradient(135deg, #FF6B6B, #4ECDC4, #45B7D1) !important;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Animation de brillance pour la tuile sondage */
+.tile[data-category="social"]:first-child::before,
+.tile.survey-tile::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: surveyTileShine 4s infinite;
+    z-index: 1;
+}
+
+@keyframes surveyTileShine {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+/* Texte de la tuile sondage */
+.tile[data-category="social"]:first-child .tile-title,
+.tile.survey-tile .tile-title {
+    position: relative;
+    z-index: 2;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    font-weight: 700;
+    color: white !important;
+}
+
+/* Effet de pulsation subtile */
+.tile[data-category="social"]:first-child,
+.tile.survey-tile {
+    animation: surveyTilePulse 3s infinite ease-in-out;
+}
+
+@keyframes surveyTilePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+/* Effet au survol renforcé */
+.tile[data-category="social"]:first-child:hover,
+.tile.survey-tile:hover {
+    transform: scale(1.05) translateY(-5px) !important;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4) !important;
+    animation: none; /* Stop l'animation de pulsation au survol */
+}
+
+/* Adaptation selon les thèmes */
+[data-theme="rouge"] .tile[data-category="social"]:first-child,
+[data-theme="rouge"] .tile.survey-tile {
+    background: linear-gradient(135deg, #FFD700, #FF6B6B, #FF4545) !important;
+    border-color: rgba(255, 215, 0, 0.5);
+}
+
+[data-theme="dark"] .tile[data-category="social"]:first-child,
+[data-theme="dark"] .tile.survey-tile {
+    background: linear-gradient(135deg, #4FC3F7, #29B6F6, #0288D1) !important;
+    border-color: rgba(79, 195, 247, 0.5);
+}
+
+[data-theme="bleuciel"] .tile[data-category="social"]:first-child,
+[data-theme="bleuciel"] .tile.survey-tile {
+    background: linear-gradient(135deg, #87CEEB, #4FC3F7, #29B6F6) !important;
+    border-color: rgba(135, 206, 235, 0.5);
+}
+
+/* Style pour mobile */
+@media (max-width: 768px) {
+    .tile[data-category="social"]:first-child,
+    .tile.survey-tile {
+        min-height: 80px;
+    }
+    
+    .tile[data-category="social"]:first-child .tile-title,
+    .tile.survey-tile .tile-title {
+        font-size: 14px;
+        line-height: 1.2;
+    }
+}

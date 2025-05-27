@@ -3215,33 +3215,3 @@ button#refreshButton.refresh-button {
         margin-top: 10px;
     }
 }
-
-/* Style spécial pour la tuile sondage */
-.tile[data-category="social"].tile-survey {
-    background: linear-gradient(135deg, #FF6B6B, #4ECDC4, #45B7D1);
-    position: relative;
-    overflow: hidden;
-}
-
-.tile[data-category="social"].tile-survey::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
-    animation: surveyShine 3s infinite;
-}
-
-@keyframes surveyShine {
-    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-}
-
-.tile[data-category="social"].tile-survey .tile-title {
-    position: relative;
-    z-index: 2;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-    font-weight: 700;
-}

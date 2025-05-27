@@ -527,7 +527,11 @@ const tvSites = [
     
     // Ajouter l'attribut data-category pour faciliter le ciblage CSS
     tile.setAttribute('data-category', site.category || 'default');
-    
+    // Marquer spécialement la tuile sondage
+	if (site.isSurvey) {
+    tile.classList.add('survey-tile');
+	}
+	
     // Ajouter des classes conditionnelles pour les designs spéciaux
     if (site.isLive && site.category === 'tv') {
         tile.classList.add('live-content');
@@ -545,34 +549,36 @@ const tvSites = [
     tile.dataset.mobileSiteUrl = site.mobileUrl || site.url;
         
     // Gestion du clic normal
-    // Dans createTile(), remplacez la gestion du clic par :
+// Remplacez la gestion du clic par :
 tile.addEventListener('click', () => {
     this.animateTileClick(tile);
     
     // Gestion spéciale pour le sondage
     if (site.isSurvey) {
-        // Ouvrir le modal de sondage
-        if (document.getElementById('surveyModal')) {
-            const surveyModal = document.getElementById('surveyModal');
-            surveyModal.classList.add('show');
-            
-            // Déclencher l'ouverture du sondage comme le bouton original
-            const event = new Event('click');
-            const surveyBtn = document.getElementById('surveyBtn');
-            if (surveyBtn) {
-                surveyBtn.click();
+        // Trouver et déclencher l'événement du sondage
+        const surveyModal = document.getElementById('surveyModal');
+        if (surveyModal) {
+            // Utiliser la fonction d'ouverture du sondage existante
+            if (typeof openSurveyModal === 'function') {
+                openSurveyModal();
+            } else {
+                // Fallback : déclencher manuellement
+                surveyModal.classList.add('show');
+                
+                // Charger les données du sondage si la fonction existe
+                if (window.loadSurveyData) {
+                    window.loadSurveyData();
+                }
             }
         }
         return;
     }
     
-    // Vérifier si c'est un lien interne ou externe
+    // Reste du code existant...
     const url = site.mobileUrl || site.url;
     if (url.startsWith('http')) {
-        // Lien externe - ouvrir dans un nouvel onglet
         window.open(url, '_blank');
     } else {
-        // Lien interne - naviguer dans la même fenêtre
         window.location.href = url;
     }
 });
