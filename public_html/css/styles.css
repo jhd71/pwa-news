@@ -3370,7 +3370,7 @@ button#refreshButton.refresh-button {
 
 .slide-description {
     margin: 0 0 8px 0;
-    color: var(--text-color) !important; /* Force la couleur principale */
+    color: #ffffff !important; /* Force la couleur principale */
     line-height: 1.4;
     opacity: 0.85; /* Légèrement plus discret que le titre */
 }
