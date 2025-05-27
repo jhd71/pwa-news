@@ -3370,35 +3370,9 @@ button#refreshButton.refresh-button {
 
 .slide-description {
     margin: 0 0 8px 0;
-    color: var(--text-color) !important; /* Utiliser la couleur de texte principale */
+    color: var(--text-color) !important; /* Force la couleur principale */
     line-height: 1.4;
-    opacity: 0.9; /* Légèrement plus clair que le titre */
-}
-
-/* OU pour plus de contrôle par thème : */
-.slide-description {
-    margin: 0 0 8px 0;
-    line-height: 1.4;
-}
-
-/* Thème light (violet) */
-[data-theme="light"] .slide-description {
-    color: #333333 !important;
-}
-
-/* Thème dark (bleu nuit) */
-[data-theme="dark"] .slide-description {
-    color: #ffffff !important;
-}
-
-/* Thème rouge */
-[data-theme="rouge"] .slide-description {
-    color: #ffffff !important;
-}
-
-/* Thème bleu ciel */
-[data-theme="bleuciel"] .slide-description {
-    color: #333333 !important;
+    opacity: 0.85; /* Légèrement plus discret que le titre */
 }
 
 .slide-author {
