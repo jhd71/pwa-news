@@ -439,6 +439,9 @@ async function openSurveyModal() {
         });
     }
 }
+
+// AJOUTEZ CETTE LIGNE JUSTE APRÈS LA FONCTION :
+window.openSurveyModal = openSurveyModal;
     
     // Fonction pour fermer le modal du sondage
     function closeSurveyModal() {
@@ -707,4 +710,11 @@ surveySubmit.addEventListener('click', async function() {
             document.head.appendChild(style);
         }
     });
+
+    // Écouteur pour l'événement personnalisé depuis la tuile
+    document.addEventListener('openSurvey', function() {
+        console.log('Événement openSurvey déclenché depuis la tuile');
+        openSurveyModal();
+    });
+    
 });

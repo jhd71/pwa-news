@@ -555,22 +555,19 @@ tile.addEventListener('click', () => {
     
     // Gestion spéciale pour le sondage
 if (site.isSurvey) {
-    // Déclencher directement la fonction d'ouverture du sondage
-    const surveyBtn = document.getElementById('surveyBtn');
-    if (surveyBtn) {
-        // Si le bouton existe encore, utiliser son événement
-        surveyBtn.click();
+    // Appeler directement la fonction d'ouverture du sondage de survey-manager.js
+    if (typeof window.openSurveyModal !== 'undefined') {
+        window.openSurveyModal();
     } else {
-        // Sinon, ouvrir directement le modal
-        const surveyModal = document.getElementById('surveyModal');
-        if (surveyModal) {
-            surveyModal.classList.add('show');
-            
-            // Déclencher la fonction d'ouverture si elle existe
-            if (typeof window.openSurveyModal === 'function') {
-                window.openSurveyModal();
+        // Fallback : déclencher l'événement comme si on cliquait sur le bouton
+        setTimeout(() => {
+            const surveyModal = document.getElementById('surveyModal');
+            if (surveyModal) {
+                // Déclencher l'ouverture du modal avec toute la logique
+                const event = new CustomEvent('openSurvey');
+                document.dispatchEvent(event);
             }
-        }
+        }, 100);
     }
     return;
 }
