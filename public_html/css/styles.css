@@ -3656,3 +3656,77 @@ button#refreshButton.refresh-button {
     opacity: 0.7;
     letter-spacing: 1px;
 }
+
+/* Image pleine tuile pour le diaporama */
+.tile[data-category="photos"].slideshow-tile .slideshow-preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit; /* Hérite du border-radius de la tuile */
+}
+
+.tile[data-category="photos"].slideshow-tile .mini-slide-container {
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    overflow: hidden;
+}
+
+.tile[data-category="photos"].slideshow-tile .mini-slide-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Remplit complètement la tuile */
+    transition: opacity 0.5s ease;
+    border-radius: inherit;
+}
+
+/* Placeholder qui remplit aussi toute la tuile */
+.tile[data-category="photos"].slideshow-tile .mini-slide-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #FF6B6B, #4ECDC4, #45B7D1, #96CEB4);
+    border-radius: inherit;
+}
+
+/* Overlay discret en bas */
+.tile[data-category="photos"].slideshow-tile .mini-slide-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.6));
+    padding: 4px 6px 2px;
+    border-radius: 0 0 8px 8px;
+}
+
+/* Texte très petit et discret */
+.tile[data-category="photos"].slideshow-tile .mini-slide-overlay .tile-title {
+    font-size: 9px !important;
+    font-weight: 600 !important;
+    margin: 0 0 1px 0 !important;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
+    line-height: 1.2;
+}
+
+.tile[data-category="photos"].slideshow-tile .mini-slide-counter {
+    font-size: 7px !important;
+    opacity: 0.8;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+/* Supprimer tout padding/margin de la tuile diaporama */
+.tile[data-category="photos"].slideshow-tile .tile-content {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
