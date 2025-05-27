@@ -30,9 +30,11 @@ class ContentManager {
     this.setupFontFamily();
     this.setupTextContrast();
     this.setupTiles();
-	this.autoEnhanceTileVisibility(); // NOUVELLE LIGNE
+	this.autoEnhanceTileVisibility(); // LIGNE EXISTANTE
+	this.setupTransparencyControl(); // NOUVELLE LIGNE
+	this.fixListModeLayout(); // NOUVELLE LIGNE
 	this.updateActiveNavLinks();
-}
+	}
 
     setupEventListeners() {
         // Gestion du menu
@@ -1503,6 +1505,252 @@ changeTextContrast(contrast) {
             this.showToast('Erreur lors de l\'ajout du site');
         }
     }
+	
+	// AJOUTEZ ces méthodes dans votre classe ContentManager
+
+// 1. Méthode pour créer le curseur de transparence des tuiles
+setupTransparencyControl() {
+    // Créer le bouton widget dans la navigation du bas
+    this.createTransparencyWidget();
+    
+    // Appliquer la transparence sauvegardée
+    this.applyTransparencySettings();
+}
+
+// 2. Créer le widget de transparence
+createTransparencyWidget() {
+    // Vérifier si le widget existe déjà
+    if (document.getElementById('transparencyWidget')) return;
+    
+    const widget = document.createElement('button');
+    widget.id = 'transparencyWidget';
+    widget.className = 'nav-item transparency-widget';
+    widget.innerHTML = `
+        <span class="material-icons">opacity</span>
+        <span>Transparence</span>
+    `;
+    
+    // Ajouter le widget dans la barre de navigation
+    const bottomNav = document.querySelector('.bottom-nav');
+    if (bottomNav) {
+        // Insérer avant "Chat" (dernier élément)
+        const lastNavItem = bottomNav.lastElementChild;
+        bottomNav.insertBefore(widget, lastNavItem);
+    }
+    
+    // Gestionnaire d'événement
+    widget.addEventListener('click', this.showTransparencyPanel.bind(this));
+}
+
+// 3. Afficher le panneau de transparence
+showTransparencyPanel() {
+    // Supprimer tout panneau existant
+    const existingPanel = document.querySelector('.transparency-panel');
+    if (existingPanel) {
+        existingPanel.remove();
+        return;
+    }
+    
+    const panel = document.createElement('div');
+    panel.className = 'transparency-panel';
+    panel.innerHTML = `
+        <div class="transparency-panel-content">
+            <div class="transparency-header">
+                <h3>🎛️ Transparence des tuiles</h3>
+                <button class="close-transparency-btn">×</button>
+            </div>
+            <div class="transparency-controls">
+                <div class="transparency-slider-container">
+                    <label for="transparencySlider">Niveau de transparence</label>
+                    <div class="slider-wrapper">
+                        <span class="slider-label">Visible</span>
+                        <input type="range" id="transparencySlider" min="0" max="90" value="${localStorage.getItem('tilesTransparency') || '0'}" step="5">
+                        <span class="slider-label">Transparent</span>
+                    </div>
+                    <div class="transparency-value">
+                        <span id="transparencyValue">${this.getTransparencyLabel(localStorage.getItem('tilesTransparency') || '0')}</span>
+                    </div>
+                </div>
+                <div class="transparency-presets">
+                    <h4>Réglages rapides</h4>
+                    <div class="preset-buttons">
+                        <button class="preset-btn" data-value="0">👁️ Visible</button>
+                        <button class="preset-btn" data-value="25">🔍 Léger</button>
+                        <button class="preset-btn" data-value="50">👻 Moyen</button>
+                        <button class="preset-btn" data-value="75">🌫️ Fort</button>
+                        <button class="preset-btn" data-value="90">💨 Presque invisible</button>
+                    </div>
+                </div>
+                <div class="transparency-info">
+                    <p>💡 <strong>Astuce :</strong> Réglez la transparence selon votre fond d'écran pour une lecture optimale.</p>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(panel);
+    
+    // Animation d'apparition
+    requestAnimationFrame(() => {
+        panel.classList.add('open');
+    });
+    
+    // Gestionnaires d'événements
+    this.setupTransparencyPanelEvents(panel);
+}
+
+// 4. Configurer les événements du panneau
+setupTransparencyPanelEvents(panel) {
+    const slider = panel.querySelector('#transparencySlider');
+    const valueDisplay = panel.querySelector('#transparencyValue');
+    const closeBtn = panel.querySelector('.close-transparency-btn');
+    const presetButtons = panel.querySelectorAll('.preset-btn');
+    
+    // Curseur
+    slider.addEventListener('input', (e) => {
+        const value = e.target.value;
+        valueDisplay.textContent = this.getTransparencyLabel(value);
+        this.applyTransparency(value);
+    });
+    
+    // Boutons de préréglage
+    presetButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const value = btn.dataset.value;
+            slider.value = value;
+            valueDisplay.textContent = this.getTransparencyLabel(value);
+            this.applyTransparency(value);
+            
+            // Animation du bouton
+            btn.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                btn.style.transform = 'scale(1)';
+            }, 150);
+        });
+    });
+    
+    // Fermeture
+    closeBtn.addEventListener('click', () => {
+        panel.classList.remove('open');
+        setTimeout(() => panel.remove(), 300);
+    });
+    
+    // Fermer en cliquant dehors
+    document.addEventListener('click', (e) => {
+        if (!panel.contains(e.target) && !e.target.closest('#transparencyWidget')) {
+            panel.classList.remove('open');
+            setTimeout(() => panel.remove(), 300);
+        }
+    }, { once: true });
+}
+
+// 5. Appliquer la transparence
+applyTransparency(value) {
+    const tiles = document.querySelectorAll('.tile');
+    const opacity = 1 - (value / 100);
+    
+    tiles.forEach(tile => {
+        tile.style.opacity = opacity;
+        tile.style.transition = 'opacity 0.3s ease';
+    });
+    
+    // Sauvegarder
+    localStorage.setItem('tilesTransparency', value);
+    
+    // Toast informatif
+    this.showToast(`Transparence : ${this.getTransparencyLabel(value)}`);
+}
+
+// 6. Appliquer la transparence sauvegardée
+applyTransparencySettings() {
+    const savedTransparency = localStorage.getItem('tilesTransparency') || '0';
+    if (savedTransparency !== '0') {
+        this.applyTransparency(savedTransparency);
+    }
+}
+
+// 7. Obtenir le label de transparence
+getTransparencyLabel(value) {
+    const val = parseInt(value);
+    if (val === 0) return 'Visible';
+    if (val <= 25) return 'Léger';
+    if (val <= 50) return 'Moyen';
+    if (val <= 75) return 'Fort';
+    return 'Presque invisible';
+}
+
+// 8. CORRECTION POUR LE MODE LISTE PC
+fixListModeLayout() {
+    const tileContainer = document.getElementById('tileContainer');
+    if (!tileContainer) return;
+    
+    // Observer les changements de classe pour détecter le mode liste
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                this.updateListModeStyles();
+            }
+        });
+    });
+    
+    observer.observe(tileContainer, { attributes: true });
+    
+    // Appliquer immédiatement
+    this.updateListModeStyles();
+}
+
+// 9. Mettre à jour les styles du mode liste
+updateListModeStyles() {
+    const tileContainer = document.getElementById('tileContainer');
+    if (!tileContainer) return;
+    
+    // Supprimer le style existant
+    const existingStyle = document.getElementById('listModeFixStyle');
+    if (existingStyle) {
+        existingStyle.remove();
+    }
+    
+    // Ajouter le nouveau style si on est en mode liste
+    if (tileContainer.classList.contains('list')) {
+        const style = document.createElement('style');
+        style.id = 'listModeFixStyle';
+        style.textContent = `
+            /* Correction mode liste pour PC */
+            @media (min-width: 769px) {
+                #tileContainer.list {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    gap: 10px !important;
+                }
+                
+                #tileContainer.list .tile {
+                    width: 100% !important;
+                    max-width: 600px !important;
+                    margin: 0 auto !important;
+                    display: flex !important;
+                    align-items: center !important;
+                    justify-content: flex-start !important;
+                    padding: 15px 20px !important;
+                    min-height: 60px !important;
+                }
+                
+                #tileContainer.list .tile .tile-title {
+                    font-size: 16px !important;
+                    text-align: left !important;
+                    width: 100% !important;
+                }
+                
+                #tileContainer.list .separator {
+                    width: 100% !important;
+                    max-width: 600px !important;
+                    margin: 20px auto !important;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
 	updateActiveNavLinks() {
         document.querySelectorAll('.bottom-nav .nav-item').forEach(navItem => {
             const link = navItem.getAttribute('href');
