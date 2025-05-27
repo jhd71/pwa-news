@@ -2809,3 +2809,315 @@ button#refreshButton.refresh-button {
     50% { transform: scale(1.1); }
     100% { transform: scale(1); }
 }
+
+/* Styles pour le widget de transparence */
+
+/* Widget dans la navigation */
+.transparency-widget {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.transparency-widget:hover {
+    transform: translateY(-2px);
+    background-color: var(--hover-color);
+}
+
+.transparency-widget.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Panneau de transparence */
+.transparency-panel {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 380px;
+    height: 100vh;
+    background: var(--card-bg);
+    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    transition: right 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.transparency-panel.open {
+    right: 0;
+}
+
+/* Mobile - Panneau plein écran */
+@media (max-width: 768px) {
+    .transparency-panel {
+        width: 100vw;
+        right: -100vw;
+    }
+    
+    .transparency-panel.open {
+        right: 0;
+    }
+}
+
+/* En-tête du panneau */
+.transparency-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.transparency-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.close-transparency-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.close-transparency-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+/* Contenu du panneau */
+.transparency-panel-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.transparency-controls {
+    padding: 30px 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Container du curseur */
+.transparency-slider-container {
+    background: var(--background-color);
+    padding: 25px;
+    border-radius: 12px;
+    border: 2px solid var(--border-color);
+}
+
+.transparency-slider-container label {
+    display: block;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.slider-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.slider-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+    min-width: 60px;
+    text-align: center;
+}
+
+#transparencySlider {
+    flex: 1;
+    height: 8px;
+    background: linear-gradient(to right, 
+        var(--primary-color) 0%, 
+        var(--accent-color) 50%, 
+        #ccc 100%);
+    border-radius: 5px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+#transparencySlider::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    border: 2px solid white;
+}
+
+#transparencySlider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.5);
+}
+
+.transparency-value {
+    text-align: center;
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 16px;
+    padding: 10px;
+    background: rgba(var(--primary-color-rgb), 0.1);
+    border-radius: 8px;
+}
+
+/* Boutons de préréglage */
+.transparency-presets h4 {
+    color: var(--text-color);
+    margin-bottom: 15px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.preset-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+@media (max-width: 768px) {
+    .preset-buttons {
+        grid-template-columns: 1fr;
+    }
+}
+
+.preset-btn {
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    background: var(--card-bg);
+    color: var(--text-color);
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.preset-btn:hover {
+    border-color: var(--primary-color);
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.3);
+}
+
+.preset-btn:active {
+    transform: scale(0.95);
+}
+
+/* Info transparence */
+.transparency-info {
+    background: linear-gradient(135deg, 
+        rgba(var(--primary-color-rgb), 0.1), 
+        rgba(var(--accent-color-rgb), 0.05));
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 4px solid var(--primary-color);
+    margin-top: auto;
+}
+
+.transparency-info p {
+    margin: 0;
+    color: var(--text-color);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Variables CSS pour les couleurs RGB */
+:root {
+    --primary-color-rgb: 124, 77, 255;
+    --accent-color-rgb: 156, 39, 176;
+}
+
+[data-theme="dark"] {
+    --primary-color-rgb: 26, 35, 126;
+    --accent-color-rgb: 40, 53, 147;
+}
+
+[data-theme="rouge"] {
+    --primary-color-rgb: 188, 58, 52;
+    --accent-color-rgb: 163, 47, 42;
+}
+
+[data-theme="bleuciel"] {
+    --primary-color-rgb: 79, 179, 232;
+    --accent-color-rgb: 63, 151, 199;
+}
+
+/* Adaptation thèmes sombres */
+[data-theme="dark"] .transparency-slider-container {
+    background: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .preset-btn {
+    background: var(--card-bg);
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+[data-theme="dark"] .transparency-value {
+    background: rgba(var(--primary-color-rgb), 0.2);
+}
+
+/* Animation des tuiles en transition */
+.tile.transparency-transition {
+    transition: opacity 0.5s ease, transform 0.3s ease;
+}
+
+.tile.transparency-transition:hover {
+    opacity: 1 !important;
+    transform: scale(1.02);
+    z-index: 10;
+    position: relative;
+}
+
+/* Indicateur visuel sur le widget */
+.transparency-widget::after {
+    content: attr(data-transparency-level);
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.transparency-widget[data-transparency-level]:not([data-transparency-level="0"])::after {
+    opacity: 1;
+}
