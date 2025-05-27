@@ -1777,7 +1777,7 @@ const customBackgroundStyles = `
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-    font-size: 20px;
+    font-size: 30px;
     font-weight: bold;
 }
 
