@@ -2218,7 +2218,7 @@ showSlide(index) {
     slideImage.alt = slide.title || 'Photo';
     slideTitle.textContent = slide.title || 'Sans titre';
     slideDescription.textContent = slide.description || '';
-    slideAuthor.textContent = `Par ${slide.author_name || 'Anonyme'}`;
+    slideAuthor.textContent = `Par ${slide.author_name || slide.photographer_name || 'Anonyme'}`;
     slideCounter.textContent = `${index + 1} / ${this.slides.length}`;
 }
 
