@@ -282,23 +282,16 @@ setupTVIcons() {
 	];
 
 	// Ajouter la tuile Photos séparément après la liste des sites d'actualités
-const photosTile = {
-    title: "📷 Photos d'ici et d'ailleurs",
-    url: "photos-gallery.html",
-    mobileUrl: "photos-gallery.html",
-    isDefault: true,
-    category: "photos",
-    color: "var(--primary-color)"
-};
+
 
 // NOUVELLE TUILE DIAPORAMA
 const slideshowTile = {
-    title: "🎞️ Diaporama<br>Photos",
+    title: "🎞️ Galerie<br>Photos", 
     url: "#slideshow",
     mobileUrl: "#slideshow",
     isDefault: true,
     category: "photos",
-    isSlideshow: true // Marqueur spécial
+    isSlideshow: true
 };
 
 // Créer les tuiles d'actualités
@@ -306,10 +299,6 @@ newsDefaultSites.forEach(site => {
     const tile = this.createTile(site);
     this.tileContainer.appendChild(tile);
 });
-
-// Ajouter la tuile photos
-const photosTileElement = this.createTile(photosTile);
-this.tileContainer.appendChild(photosTileElement);
 
 // AJOUTER LA TUILE DIAPORAMA
 const slideshowTileElement = this.createTile(slideshowTile);
