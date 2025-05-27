@@ -3534,7 +3534,6 @@ button#refreshButton.refresh-button {
     background: linear-gradient(135deg, #FF6B6B, #4ECDC4, #45B7D1, #96CEB4);
     position: relative;
     overflow: hidden;
-    animation: slideshowTileGlow 4s infinite ease-in-out;
 }
 
 @keyframes slideshowTileGlow {
@@ -3636,4 +3635,24 @@ button#refreshButton.refresh-button {
     font-size: 10px;
     opacity: 0.8;
     letter-spacing: 2px;
+}
+
+/* Masquer le texte sur la tuile diaporama pour laisser place aux images */
+.tile[data-category="photos"].slideshow-tile .tile-title {
+    display: none !important;
+}
+
+/* OU si vous préférez le garder mais très discret */
+.tile[data-category="photos"].slideshow-tile .mini-slide-overlay .tile-title {
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    opacity: 0.9;
+    margin-bottom: 2px !important;
+}
+
+/* Ajuster aussi le compteur pour qu'il soit plus petit */
+.mini-slide-counter {
+    font-size: 8px !important;
+    opacity: 0.7;
+    letter-spacing: 1px;
 }
