@@ -55,17 +55,19 @@ class CustomBackgroundManager {
                                 <video id="cameraVideo" autoplay playsinline></video>
                                 <canvas id="cameraCanvas" style="display: none;"></canvas>
                                 <div class="camera-controls">
-                                    <button id="switchCameraBtn" class="camera-control-btn">
-                                        <span>🔄</span> Basculer
-                                    </button>
-                                    <button id="captureBtn" class="capture-btn">
-                                        <span class="capture-ring"></span>
-                                        <span class="capture-inner"></span>
-                                    </button>
-                                    <button id="closeCameraBtn" class="camera-control-btn">
-                                        <span>❌</span> Fermer
-                                    </button>
-                                </div>
+    <button id="switchCameraBtn" class="camera-control-btn">
+        <span class="camera-icon">🔄</span>
+        <span class="camera-text">Basculer</span>
+    </button>
+    <button id="captureBtn" class="capture-btn">
+        <span class="capture-ring"></span>
+        <span class="capture-inner"></span>
+    </button>
+    <button id="closeCameraBtn" class="camera-control-btn">
+        <span class="camera-icon">❌</span>
+        <span class="camera-text">Fermer</span>
+    </button>
+	</div>
                             </div>
                         </div>
                         
@@ -137,7 +139,12 @@ class CustomBackgroundManager {
     const fileInput = document.getElementById('backgroundFileInput');
 
     if (uploadArea && fileInput) {
-        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('click', (e) => {
+    // Ne pas ouvrir l'input si on clique sur un bouton à l'intérieur
+    if (!e.target.closest('.upload-btn')) {
+        fileInput.click();
+    }
+});
         uploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
             uploadArea.classList.add('drag-over');
@@ -176,8 +183,11 @@ class CustomBackgroundManager {
     const closeCameraBtn = document.getElementById('closeCameraBtn');
 
     if (chooseFileBtn) {
-        chooseFileBtn.addEventListener('click', () => fileInput.click());
-    }
+    chooseFileBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Empêche la propagation vers l'uploadArea
+        fileInput.click();
+    });
+}
 
     if (takePictureBtn) {
         takePictureBtn.addEventListener('click', () => this.openCamera());
@@ -1960,17 +1970,34 @@ const customBackgroundStyles = `
     background: rgba(255, 255, 255, 0.2);
     border: 2px solid rgba(255, 255, 255, 0.3);
     color: white;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    border-radius: 15px;
     cursor: pointer;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
+    gap: 4px;
+    font-size: 10px;
     font-weight: 600;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
+    padding: 8px 4px;
+}
+
+.camera-icon {
+    font-size: 20px;
+    line-height: 1;
+}
+
+.camera-text {
+    font-size: 10px;
+    line-height: 1;
+    white-space: nowrap;
+    text-align: center;
+    color: white;
+    font-weight: 600;
 }
 
 .camera-control-btn:hover {
@@ -2059,15 +2086,25 @@ const customBackgroundStyles = `
     }
     
     .camera-controls {
-        gap: 20px;
+        gap: 15px;
         padding: 12px 20px;
         bottom: 15px;
     }
     
     .camera-control-btn {
-        width: 45px;
-        height: 45px;
-        font-size: 12px;
+        width: 60px;
+        height: 60px;
+        font-size: 9px;
+        gap: 2px;
+        padding: 6px 2px;
+    }
+    
+    .camera-icon {
+        font-size: 16px;
+    }
+    
+    .camera-text {
+        font-size: 9px;
     }
     
     .capture-btn {
