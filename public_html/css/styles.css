@@ -87,7 +87,7 @@ body {
     --header-text-size: 24px;
 }
 
-/* SECTION 3: HEADER ET NAVIGATION - VERSION iOS OPTIMISÉE */
+/* SECTION 3: HEADER ET NAVIGATION */
 .app-header {
     position: fixed;
     top: 0;
@@ -98,79 +98,37 @@ body {
     color: white;
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Changé de center à space-between */
     padding: 0 10px;
-    z-index: 1005;
+    z-index: 1005; /* Valeur plus élevée pour rester au-dessus */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    overflow: visible;
-    
-    /* Fix spécifique iOS */
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    will-change: transform;
+    overflow: visible; /* Permet au logo de déborder */
 }
 
-/* Fix iOS - Safe area pour les iPhone avec encoche */
-@supports (padding: max(0px)) {
-    .app-header {
-        padding-top: max(env(safe-area-inset-top, 0px), 0px);
-        height: calc(55px + max(env(safe-area-inset-top, 0px), 0px));
-    }
-}
-
-/* Style du titre - CENTRÉ ABSOLUMENT */
+/* Style du titre */
 .site-title {
     position: absolute;
     left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
     font-size: var(--header-text-size);
     font-weight: bold;
     white-space: nowrap;
     color: white;
     text-shadow: 1px 1px 0 black, -1px 1px 0 black, 1px -1px 0 black, -1px -1px 0 black;
-    z-index: 1006;
 }
 
-/* Style du logo - TAILLE CONTRÔLÉE */
+/* Style du logo */
 .site-logo {
-    height: 45px !important; /* Réduit de 140px à 45px */
+    height: 140px;
     width: auto;
-    max-width: 200px;
-    margin: 0;
+    margin-top: 30px;
     position: relative;
     z-index: 1001;
     filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.3));
     object-fit: contain;
-    
-    /* Fix iOS */
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
 }
 
-/* Boutons du header - POSITIONNEMENT FIXE */
-.menu-button {
-    background: none;
-    border: none;
-    color: white;
-    min-width: 48px;
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border-radius: 50%;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    z-index: 1007;
-    
-    /* Fix iOS */
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-}
-
+/* Boutons du header */
+.menu-button, 
 .settings-button {
     background: none;
     border: none;
@@ -186,42 +144,15 @@ body {
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
-    z-index: 1007;
-    
-    /* Fix iOS */
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
 }
 
-/* Responsive pour mobile - CORRECTIONS iOS */
-@media (max-width: 600px) {
-    .app-header {
-        height: 50px;
-        padding: 0 8px;
-    }
-    
-    @supports (padding: max(0px)) {
-        .app-header {
-            padding-top: max(env(safe-area-inset-top, 0px), 0px);
-            height: calc(50px + max(env(safe-area-inset-top, 0px), 0px));
-        }
-    }
-    
-    .site-logo {
-        height: 35px !important;
-        max-width: 150px;
-    }
-    
-    .menu-button,
-    .settings-button {
-        width: 40px;
-        height: 40px;
-        min-width: 40px;
-    }
-    
-    .site-title {
-        font-size: 16px;
-    }
+/* Position spécifique pour le bouton paramètres */
+.settings-button {
+    position: fixed;
+    top: 3px;
+    right: 8px;
+    z-index: 1002;
+    padding: 10px;
 }
 
 /* Effets des boutons */
@@ -706,11 +637,6 @@ background-color: #1a237e;
         transparent
     );
     transition: all 0.3s ease;
-    
-    /* Fix iOS */
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    touch-action: manipulation;
 }
 
 /* === AJOUT POUR L'EFFET FLASH === */
@@ -899,6 +825,28 @@ background-color: #1a237e;
     font-size: var(--modal-text-size);
 }
 
+/* SECTION 17: PAYPAL DONATION */
+.paypal-donate {
+    position: fixed;
+    bottom: calc(var(--bottom-nav-height) + 1px);
+    left: 10px;
+    z-index: 10;
+}
+
+.paypal-donate form {
+    margin: 0;
+}
+
+.paypal-donate input[type="image"] {
+    max-width: 200px;
+    height: auto;
+    transition: transform 0.2s ease-in-out;
+}
+
+.paypal-donate input[type="image"]:hover {
+    transform: scale(1.05);
+}
+
 /* Correction pour le lien "Installer l'application" */
 .install-app, 
 #menuInstall {
@@ -930,13 +878,58 @@ background-color: #1a237e;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* SECTION 19: IOS PROMPT */
+:root {
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.ios-prompt {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    background: var(--primary-color);
+    padding: 15px;
+    border-radius: 10px;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    animation: slideUp 0.3s ease;
+}
+
+.ios-prompt-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ios-prompt-message {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ios-prompt-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Ajustement iOS prompt */
+.ios-prompt {
+  bottom: calc(20px + var(--safe-area-bottom));
+}
+
 /* SECTION 20: SWIPER STYLES */
 .swiper-container {
     width: 100%;
     max-width: 800px !important;
     margin-left: auto !important;
     margin-right: auto !important;
-    margin-top: 40px !important;
+    margin-top: 120px !important;
     margin-bottom: 20px !important;
     display: flex;
     justify-content: center;
@@ -1567,7 +1560,7 @@ background-color: #1a237e;
     margin: 10px 0;
 }
 
-/* ===== NAVIGATION DU BAS - iOS OPTIMISÉE ===== */
+/* SECTION 14: NAVIGATION DU BAS */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -1581,22 +1574,9 @@ background-color: #1a237e;
     backdrop-filter: blur(10px);
     padding: 8px 0;
     box-shadow: 0 -2px 5px var(--shadow-color);
-    
-    /* Fix iOS */
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    will-change: transform;
 }
 
-/* Fix pour iOS avec safe area */
-@supports (padding: max(0px)) {
-    .bottom-nav {
-        padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
-        height: calc(var(--bottom-nav-height) + max(env(safe-area-inset-bottom, 0px), 0px));
-    }
-}
-
-* Mode clair - Violet */
+/* Mode clair - Violet */
 [data-theme="light"] .bottom-nav {
     background: linear-gradient(
         to bottom,
@@ -3961,244 +3941,4 @@ border-color: #ffd230 !important;
     width: 100%;
     height: 100%;
     position: relative;
-}
-
-/* ===== CORRECTION TICKER D'ACTUALITÉS iOS ===== */
-
-.news-ticker {
-    position: fixed;
-    bottom: var(--bottom-nav-height, 60px);
-    left: 0;
-    right: 0;
-    height: 35px;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    z-index: 997; /* Sous la navigation */
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    
-    /* Fix iOS */
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    will-change: transform;
-}
-
-/* Fix pour iOS avec safe area */
-@supports (padding: max(0px)) {
-    .news-ticker {
-        bottom: calc(var(--bottom-nav-height, 60px) + max(env(safe-area-inset-bottom, 0px), 0px));
-    }
-}
-
-.ticker-wrapper {
-    white-space: nowrap;
-    animation: scroll-left 30s linear infinite;
-    display: flex;
-    align-items: center;
-    height: 100%;
-}
-
-.ticker-item {
-    padding-right: 50px;
-    font-size: 14px;
-    display: inline-block;
-}
-
-@keyframes scroll-left {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
-}
-
-/* Mobile */
-@media (max-width: 600px) {
-    .news-ticker {
-        height: 30px;
-    }
-    
-    .ticker-item {
-        font-size: 12px;
-        padding-right: 30px;
-    }
-}
-
-/* Mobile - ajustements spécifiques */
-@media (max-width: 600px) {
-    .bottom-nav {
-        height: 60px;
-        padding: 5px 0;
-    }
-    
-    @supports (padding: max(0px)) {
-        .bottom-nav {
-            padding-bottom: max(env(safe-area-inset-bottom, 0px), 5px);
-            height: calc(60px + max(env(safe-area-inset-bottom, 0px), 0px));
-        }
-    }
-    
-    .nav-item {
-        padding: 6px 4px;
-    }
-    
-    .nav-item span:not(.material-icons) {
-        font-size: 11px;
-    }
-}
-
-/* ===== WIDGETS FLOTTANTS - iOS OPTIMISÉS ===== */
-
-/* Boutons d'affichage des widgets */
-.weather-show-btn,
-.quick-links-show-btn {
-    position: fixed !important;
-    z-index: 999 !important;
-    width: 50px !important;
-    height: 50px !important;
-    border-radius: 50% !important;
-    border: none !important;
-    color: white !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
-    transition: all 0.3s ease !important;
-    
-    /* Fix iOS */
-    -webkit-transform: translateZ(0) !important;
-    transform: translateZ(0) !important;
-    -webkit-tap-highlight-color: transparent !important;
-    -webkit-touch-callout: none !important;
-    touch-action: manipulation !important;
-}
-
-.weather-show-btn {
-    top: 70px !important;
-    right: 20px !important;
-    background: linear-gradient(135deg, #4CAF50, #45a049) !important;
-}
-
-.quick-links-show-btn {
-    top: 130px !important;
-    right: 20px !important;
-    background: linear-gradient(135deg, #2196F3, #1976D2) !important;
-}
-
-/* Mobile - repositionnement */
-@media (max-width: 600px) {
-    .weather-show-btn,
-    .quick-links-show-btn {
-        width: 45px !important;
-        height: 45px !important;
-        right: 15px !important;
-    }
-    
-    .weather-show-btn {
-        top: 60px !important;
-    }
-    
-    .quick-links-show-btn {
-        top: 115px !important;
-    }
-}
-
-/* Fix pour iPhone avec encoche */
-@supports (padding: max(0px)) {
-    .weather-show-btn {
-        top: calc(70px + max(env(safe-area-inset-top, 0px), 0px)) !important;
-    }
-    
-    .quick-links-show-btn {
-        top: calc(130px + max(env(safe-area-inset-top, 0px), 0px)) !important;
-    }
-    
-    @media (max-width: 600px) {
-        .weather-show-btn {
-            top: calc(60px + max(env(safe-area-inset-top, 0px), 0px)) !important;
-        }
-        
-        .quick-links-show-btn {
-            top: calc(115px + max(env(safe-area-inset-top, 0px), 0px)) !important;
-        }
-    }
-}
-
-/* Sidebars des widgets */
-.weather-sidebar,
-.quick-links-sidebar {
-    position: fixed !important;
-    top: 0 !important;
-    right: -300px !important;
-    width: 280px !important;
-    height: 100vh !important;
-    background: var(--primary-color) !important;
-    z-index: 1000 !important;
-    transition: right 0.3s ease !important;
-    overflow-y: auto !important;
-    
-    /* Fix iOS */
-    -webkit-transform: translateZ(0) !important;
-    transform: translateZ(0) !important;
-    -webkit-overflow-scrolling: touch !important;
-}
-
-.weather-sidebar.open,
-.quick-links-sidebar.open {
-    right: 0 !important;
-}
-
-/* Mobile - pleine largeur */
-@media (max-width: 600px) {
-    .weather-sidebar,
-    .quick-links-sidebar {
-        width: 100vw !important;
-        right: -100vw !important;
-    }
-}
-
-/* Bouton "Infos en direct" */
-.news-button {
-    position: fixed !important;
-    bottom: 110px !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    z-index: 999 !important;
-    background: var(--primary-color) !important;
-    color: white !important;
-    border: none !important;
-    padding: 12px 20px !important;
-    border-radius: 25px !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
-    
-    /* Fix iOS */
-    -webkit-transform: translateX(-50%) translateZ(0) !important;
-    transform: translateX(-50%) translateZ(0) !important;
-    -webkit-tap-highlight-color: transparent !important;
-    -webkit-touch-callout: none !important;
-    touch-action: manipulation !important;
-}
-
-/* Fix pour iPhone avec safe area */
-@supports (padding: max(0px)) {
-    .news-button {
-        bottom: calc(110px + max(env(safe-area-inset-bottom, 0px), 0px)) !important;
-    }
-}
-
-/* Mobile */
-@media (max-width: 600px) {
-    .news-button {
-        bottom: 100px !important;
-        padding: 10px 16px !important;
-        font-size: 14px !important;
-    }
-    
-    @supports (padding: max(0px)) {
-        .news-button {
-            bottom: calc(100px + max(env(safe-area-inset-bottom, 0px), 0px)) !important;
-        }
-    }
 }
