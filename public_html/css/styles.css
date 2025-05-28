@@ -2911,6 +2911,7 @@ button#refreshButton.refresh-button {
     display: flex;
     flex-direction: column;
     gap: 20px; /* Espacement réduit */
+	z-index: 10000;
 }
 
 /* Container du curseur */
@@ -3140,8 +3141,21 @@ button#refreshButton.refresh-button {
 }
 
 [data-theme="dark"] .transparency-value {
-    background: rgba(26, 35, 126, 0.2);
-}
+    text-align: center;
+    font-weight: 600;
+    color: #fff;
+    font-size: 16px;
+    padding: 10px;
+    background: rgba(124, 77, 255, 0.1);
+	}
+	
+[data-theme="dark"] .slider-label {
+    font-size: 12px;
+    color: #ffffff;
+    font-weight: 500;
+    min-width: 60px;
+    text-align: center;
+}	
 
 /* ===== TRANSPARENCE POUR LES SÉPARATEURS ===== */
 .separator {
