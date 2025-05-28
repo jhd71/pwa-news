@@ -3590,7 +3590,7 @@ z-index: 10000;
     /* BOUTONS FIXES EN BAS - avec z-index plus élevé */
     .slideshow-controls {
         position: fixed;
-        bottom: 60px;
+        bottom: 70px;
         left: 0;
         right: 0;
         background: var(--background-color);
@@ -3636,20 +3636,6 @@ z-index: 10000;
         border-top: 1px solid var(--border-color);
         color: var(--primary-color);
         font-weight: 500;
-    }
-    
-    /* Ajouter un indicateur visuel de scroll */
-    .slide-info::after {
-        content: "⬇ Faites défiler pour voir la suite ⬇";
-        position: sticky;
-        bottom: 0;
-        display: block;
-        text-align: center;
-        padding: 8px;
-        background: linear-gradient(transparent, var(--card-bg));
-        font-size: 12px;
-        color: var(--text-muted);
-        opacity: 0.7;
     }
 }
 
