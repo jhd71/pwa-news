@@ -3683,6 +3683,7 @@ z-index: 10000;
 [data-theme="rouge"] .modal-content .file-btn span,
 [data-theme="rouge"] .modal-content .camera-btn span {	
 color: #ffd230 !important;
+border-color: #ffd230 !important;
 }
 
 /* Titre "Vos fonds d'écran personnalisés" en blanc en mode sombre */
