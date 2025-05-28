@@ -825,28 +825,6 @@ background-color: #1a237e;
     font-size: var(--modal-text-size);
 }
 
-/* SECTION 17: PAYPAL DONATION */
-.paypal-donate {
-    position: fixed;
-    bottom: calc(var(--bottom-nav-height) + 1px);
-    left: 10px;
-    z-index: 10;
-}
-
-.paypal-donate form {
-    margin: 0;
-}
-
-.paypal-donate input[type="image"] {
-    max-width: 200px;
-    height: auto;
-    transition: transform 0.2s ease-in-out;
-}
-
-.paypal-donate input[type="image"]:hover {
-    transform: scale(1.05);
-}
-
 /* Correction pour le lien "Installer l'application" */
 .install-app, 
 #menuInstall {
