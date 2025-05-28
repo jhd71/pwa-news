@@ -34,6 +34,8 @@ const STATIC_RESOURCES = [
 '/js/ios-chat-fix.js',
 '/js/ios-detector.js',
 '/js/ios-install.js',
+'/js/ios-safari-fixes.js',
+'/js/ios-touch-fixes.js',
 '/js/news-manager.js',
 '/js/newsPanel.js',
 '/js/newsTickerManager.js',

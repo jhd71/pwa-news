@@ -302,6 +302,10 @@ function initIOSFixes() {
         }
     });
     
+	// Ajouter classe iOS au body si nécessaire
+    if (isIOS && !document.body.classList.contains('ios-device')) {
+        document.body.classList.add('ios-device');
+    }
     console.log('Corrections iOS appliquées');
 }
 

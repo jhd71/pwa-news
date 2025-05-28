@@ -1084,3 +1084,256 @@
   gap: 12px !important;
   padding: 5px !important;
 }
+
+/* ===== CORRECTIONS iOS SPÉCIFIQUES POUR WIDGETS ===== */
+/* À AJOUTER À LA FIN DE votre widgets.css */
+
+/* Variables CSS pour iOS */
+.ios-device {
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+}
+
+/* Corrections générales pour les widgets sur iOS */
+.ios-device .weather-sidebar,
+.ios-device .quick-links-sidebar {
+  /* Force l'accélération matérielle */
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform;
+  
+  /* Amélioration du défilement tactile */
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  
+  /* Optimisation des interactions */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+/* Corrections spécifiques pour iOS mobile */
+@media (max-width: 767px) {
+  .ios-device .weather-sidebar,
+  .ios-device .quick-links-sidebar {
+    /* Position sécurisée sur iOS */
+    top: calc(65px + var(--safe-area-top, 0px)) !important;
+    left: 50% !important;
+    transform: translateX(-50%) translateZ(0) !important;
+    
+    /* Taille adaptée aux safe areas */
+    width: calc(80% - var(--safe-area-left, 0px) - var(--safe-area-right, 0px)) !important;
+    max-width: calc(300px - var(--safe-area-left, 0px) - var(--safe-area-right, 0px)) !important;
+    max-height: calc(70vh - var(--safe-area-top, 0px) - 20px) !important;
+    
+    /* Espacement sécurisé */
+    margin-left: var(--safe-area-left, 0px) !important;
+    margin-right: var(--safe-area-right, 0px) !important;
+    
+    /* Optimisation iOS */
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+  }
+  
+  /* Correction pour le widget météo mobile sur iOS */
+  .ios-device .weather-mobile-btn {
+    top: calc(65px + var(--safe-area-top, 0px)) !important;
+    left: calc(10px + var(--safe-area-left, 0px)) !important;
+    
+    /* Amélioration tactile iOS */
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+  
+  /* Correction pour les liens rapides sur iOS */
+  .ios-device .quick-links-show-btn {
+    top: calc(65px + var(--safe-area-top, 0px)) !important;
+    right: calc(10px + var(--safe-area-right, 0px)) !important;
+    
+    /* Amélioration tactile iOS */
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+}
+
+/* Corrections pour iOS en mode paysage */
+@media (max-width: 767px) and (orientation: landscape) {
+  .ios-device .weather-sidebar,
+  .ios-device .quick-links-sidebar {
+    max-height: calc(85vh - var(--safe-area-top, 0px)) !important;
+    top: calc(55px + var(--safe-area-top, 0px)) !important;
+  }
+  
+  .ios-device .weather-mobile-btn,
+  .ios-device .quick-links-show-btn {
+    top: calc(55px + var(--safe-area-top, 0px)) !important;
+  }
+}
+
+/* Corrections pour iOS tablette */
+@media (min-width: 768px) and (max-width: 1100px) {
+  .ios-device .weather-sidebar {
+    top: calc(50% - var(--safe-area-top, 0px)) !important;
+    left: calc(50% - var(--safe-area-left, 0px)) !important;
+    transform: translate(-50%, -50%) translateZ(0) !important;
+  }
+  
+  .ios-device .quick-links-sidebar {
+    top: calc(80px + var(--safe-area-top, 0px)) !important;
+    right: calc(10px + var(--safe-area-right, 0px)) !important;
+  }
+  
+  .ios-device .weather-show-btn {
+    top: calc(70px + var(--safe-area-top, 0px)) !important;
+    left: calc(10px + var(--safe-area-left, 0px)) !important;
+  }
+  
+  .ios-device .quick-links-show-btn {
+    top: calc(70px + var(--safe-area-top, 0px)) !important;
+    right: calc(10px + var(--safe-area-right, 0px)) !important;
+  }
+}
+
+/* Corrections pour iOS desktop */
+@media (min-width: 1101px) {
+  .ios-device .weather-sidebar {
+    top: calc(120px + var(--safe-area-top, 0px)) !important;
+    left: calc(10px + var(--safe-area-left, 0px)) !important;
+  }
+  
+  .ios-device .quick-links-sidebar {
+    top: calc(120px + var(--safe-area-top, 0px)) !important;
+    right: calc(10px + var(--safe-area-right, 0px)) !important;
+  }
+  
+  .ios-device .weather-show-btn {
+    top: calc(110px + var(--safe-area-top, 0px)) !important;
+    left: calc(10px + var(--safe-area-left, 0px)) !important;
+  }
+  
+  .ios-device .quick-links-show-btn {
+    top: calc(110px + var(--safe-area-top, 0px)) !important;
+    right: calc(10px + var(--safe-area-right, 0px)) !important;
+  }
+}
+
+/* Optimisation des boutons flottants sur iOS */
+.ios-device .weather-show-btn,
+.ios-device .quick-links-show-btn,
+.ios-device .weather-mobile-btn {
+  /* Performance iOS */
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform;
+  
+  /* Interaction tactile améliorée */
+  min-width: 50px !important;
+  min-height: 50px !important;
+  
+  /* Feedback tactile */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ios-device .weather-show-btn:active,
+.ios-device .quick-links-show-btn:active,
+.ios-device .weather-mobile-btn:active {
+  transform: scale(0.95) translateZ(0);
+}
+
+/* Correction des croix de fermeture sur iOS */
+.ios-device .weather-toggle,
+.ios-device .quick-links-toggle {
+  /* Taille de touch optimisée pour iOS */
+  min-width: 44px !important;
+  min-height: 44px !important;
+  
+  /* Performance */
+  transform: translateZ(0);
+  will-change: transform;
+  
+  /* Interaction tactile */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ios-device .weather-toggle:active,
+.ios-device .quick-links-toggle:active {
+  transform: scale(0.9) translateZ(0);
+}
+
+/* Optimisation du contenu des widgets sur iOS */
+.ios-device .weather-day,
+.ios-device .quick-link {
+  /* Performance */
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  
+  /* Interaction tactile améliorée */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ios-device .quick-link:active {
+  transform: scale(0.95) translateZ(0);
+}
+
+/* Correction du défilement des widgets sur iOS */
+.ios-device .weather-sidebar::-webkit-scrollbar,
+.ios-device .quick-links-sidebar::-webkit-scrollbar {
+  width: 3px;
+}
+
+.ios-device .weather-sidebar::-webkit-scrollbar-thumb,
+.ios-device .quick-links-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+}
+
+/* Mode PWA standalone sur iOS */
+@media (display-mode: standalone) {
+  .ios-device .weather-sidebar,
+  .ios-device .quick-links-sidebar {
+    top: calc(var(--top-offset, 65px) + var(--safe-area-top, 0px)) !important;
+  }
+  
+  .ios-device .weather-mobile-btn,
+  .ios-device .quick-links-show-btn,
+  .ios-device .weather-show-btn {
+    top: calc(var(--top-offset, 65px) + var(--safe-area-top, 0px)) !important;
+  }
+}
+
+/* iPhone avec encoche (notch) */
+.ios-notch .weather-sidebar,
+.ios-notch .quick-links-sidebar {
+  top: calc(var(--top-offset, 65px) + var(--safe-area-top, 44px)) !important;
+}
+
+.ios-notch .weather-mobile-btn,
+.ios-notch .quick-links-show-btn,
+.ios-notch .weather-show-btn {
+  top: calc(var(--top-offset, 65px) + var(--safe-area-top, 44px)) !important;
+}
+
+/* Correction pour les très petits écrans iOS */
+@media (max-width: 375px) {
+  .ios-device .weather-sidebar,
+  .ios-device .quick-links-sidebar {
+    width: calc(90% - var(--safe-area-left, 0px) - var(--safe-area-right, 0px)) !important;
+    padding: 8px !important;
+  }
+  
+  .ios-device .weather-day {
+    padding: 4px !important;
+    margin-bottom: 4px !important;
+  }
+  
+  .ios-device .quick-link {
+    padding: 8px !important;
+  }
+}

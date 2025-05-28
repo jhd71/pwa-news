@@ -180,6 +180,119 @@ if (isIOS) {
         });
     }
     
+    // Fix 10: Correction spécifique pour les tuiles non-cliquables
+    function fixTileClicks() {
+        const tiles = document.querySelectorAll('.tile');
+        tiles.forEach(tile => {
+            // Supprimer les anciens event listeners
+            tile.removeEventListener('touchstart', handleTileTouch);
+            tile.removeEventListener('touchend', handleTileTouch);
+            tile.removeEventListener('click', handleTileClick);
+            
+            // Ajouter les nouveaux
+            tile.addEventListener('touchstart', handleTileTouch, {passive: true});
+            tile.addEventListener('touchend', handleTileTouch, {passive: true});
+            tile.addEventListener('click', handleTileClick, {passive: false});
+        });
+    }
+
+    function handleTileTouch(e) {
+        const tile = e.currentTarget;
+        if (e.type === 'touchstart') {
+            tile.style.transform = 'scale(0.95)';
+            tile.style.opacity = '0.8';
+        } else if (e.type === 'touchend') {
+            setTimeout(() => {
+                tile.style.transform = '';
+                tile.style.opacity = '';
+            }, 150);
+        }
+    }
+
+    function handleTileClick(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const tile = e.currentTarget;
+        const url = tile.dataset.url;
+        
+        if (url) {
+            // Feedback visuel
+            tile.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                window.open(url, '_blank');
+                tile.style.transform = '';
+            }, 100);
+        }
+    }
+
+    // Fix 11: Correction pour le Swiper qui ne glisse pas sur iOS
+    function fixSwiperIOS() {
+        setTimeout(() => {
+            if (window.swiper) {
+                // Détruire et recréer avec de meilleures options pour iOS
+                window.swiper.destroy(true, true);
+                
+                window.swiper = new Swiper('.swiper', {
+                    slidesPerView: 1,
+                    spaceBetween: 0,
+                    loop: true,
+                    autoplay: {
+                        delay: 8000,
+                        disableOnInteraction: false,
+                    },
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true,
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+                    // Options critiques pour iOS
+                    touchEventsTarget: 'container',
+                    simulateTouch: true,
+                    allowTouchMove: true,
+                    touchRatio: 1,
+                    touchAngle: 45,
+                    shortSwipes: true,
+                    longSwipes: true,
+                    followFinger: true,
+                    threshold: 10,
+                    touchMoveStopPropagation: false,
+                    touchStartPreventDefault: false,
+                    touchStartForcePreventDefault: false,
+                    touchReleaseOnEdges: true,
+                    iOSEdgeSwipeDetection: true,
+                    iOSEdgeSwipeThreshold: 20,
+                    observer: true,
+                    observeParents: true,
+                    // Performance
+                    watchSlidesProgress: true,
+                    watchSlidesVisibility: true,
+                    preloadImages: false,
+                    lazy: true
+                });
+            }
+        }, 2000);
+    }
+
+    // Fix 12: Correction pour les boutons de navigation
+    function fixNavigationButtons() {
+        const navButtons = document.querySelectorAll('.nav-item, .menu-button, .settings-button');
+        navButtons.forEach(button => {
+            button.addEventListener('touchstart', function() {
+                this.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+            }, {passive: true});
+            
+            button.addEventListener('touchend', function() {
+                setTimeout(() => {
+                    this.style.backgroundColor = '';
+                }, 200);
+            }, {passive: true});
+        });
+    }
+    
     // Initialisation de tous les fixes
     document.addEventListener('DOMContentLoaded', function() {
         preventZoom();
@@ -192,6 +305,15 @@ if (isIOS) {
         
         // Délai pour le fix Swiper
         setTimeout(fixSwiper, 2000);
+        
+        // Appliquer les nouveaux fixes
+        setTimeout(() => {
+            fixTileClicks();
+            fixSwiperIOS();
+            fixNavigationButtons();
+            
+            console.log('Fixes iOS supplémentaires appliqués');
+        }, 1000);
         
         console.log('Tous les fixes iOS ont été appliqués');
     });

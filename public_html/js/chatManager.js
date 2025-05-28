@@ -1107,42 +1107,65 @@ getChatHTMLWithoutToggle() {
             this.playSound('click');
         });
     }
-// Bloquer le défilement de la page lorsque le chat est ouvert
+// Gestion améliorée du conteneur pour iOS
 if (chatContainer) {
+    // Détecter iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    
+    // Optimisations iOS
+    if (isIOS) {
+        chatContainer.style.webkitOverflowScrolling = 'touch';
+        chatContainer.style.transform = 'translate3d(0,0,0)';
+        document.body.classList.add('ios-device');
+    }
+    
     // Empêcher la propagation des événements tactiles en dehors du chat
     chatContainer.addEventListener('touchmove', (e) => {
-        // Ne pas stopper la propagation - permettre le défilement normal
-        e.stopPropagation(); // Ceci empêche l'événement de remonter à la page principale
+        e.stopPropagation();
     }, { passive: true });
     
-    // Empêcher le rebond aux extrémités qui cause souvent le défilement de la page
-    chatContainer.addEventListener('scroll', () => {
-        const scrollTop = chatContainer.scrollTop;
-        const scrollHeight = chatContainer.scrollHeight;
-        const clientHeight = chatContainer.clientHeight;
+    // Gérer le scroll et empêcher le bounce sur iOS
+    const chatMessages = chatContainer.querySelector('.chat-messages');
+    if (chatMessages) {
+        if (isIOS) {
+            chatMessages.style.webkitOverflowScrolling = 'touch';
+            chatMessages.style.transform = 'translate3d(0,0,0)';
+            
+            // Empêcher le rebond aux extrémités sur iOS
+            chatMessages.addEventListener('scroll', () => {
+                const scrollTop = chatMessages.scrollTop;
+                const scrollHeight = chatMessages.scrollHeight;
+                const clientHeight = chatMessages.clientHeight;
+                
+                if (scrollTop <= 1) {
+                    chatMessages.scrollTop = 1;
+                } else if (scrollTop + clientHeight >= scrollHeight - 1) {
+                    chatMessages.scrollTop = scrollHeight - clientHeight - 1;
+                }
+            }, { passive: true });
+        }
         
-        // Ajuster légèrement les valeurs pour éviter les problèmes de "bounce"
-        if (scrollTop <= 1) {
-            chatContainer.scrollTop = 1;
-        } else if (scrollTop + clientHeight >= scrollHeight - 1) {
-            chatContainer.scrollTop = scrollHeight - clientHeight - 1;
-        }
-    }, { passive: true });
-    
-    // Ajouter une classe au body quand le chat est ouvert
-    const toggleBodyClass = () => {
-        if (chatContainer.classList.contains('open')) {
-            document.body.classList.add('chat-open-no-scroll');
-        } else {
-            document.body.classList.remove('chat-open-no-scroll');
-        }
-    };
-    
-    // Appliquer la classe immédiatement si le chat est déjà ouvert
-    toggleBodyClass();
+        // Empêcher la propagation sur tous les appareils
+        chatMessages.addEventListener('touchmove', (e) => {
+            e.stopPropagation();
+        }, { passive: true });
+    }
     
     // Observer les changements de classe sur le conteneur du chat
-    const observer = new MutationObserver(toggleBodyClass);
+    const observer = new MutationObserver(() => {
+        if (chatContainer.classList.contains('open')) {
+            if (isIOS) {
+                // Sur iOS, utiliser une approche différente
+                document.body.classList.add('ios-chat-open');
+            } else {
+                document.body.classList.add('chat-open-no-scroll');
+            }
+        } else {
+            document.body.classList.remove('ios-chat-open');
+            document.body.classList.remove('chat-open-no-scroll');
+        }
+    });
     observer.observe(chatContainer, { attributes: true, attributeFilter: ['class'] });
 }
     // Le reste de votre code pour setupListeners reste inchangé...
@@ -1228,8 +1251,7 @@ if (this.isTablet()) {
         });
     }
 }
-    // Remplacer le code existant par celui-ci
-// Remplacer le code existant par celui-ci
+
 const chatMessages = this.container.querySelector('.chat-messages');
 if (chatMessages) {
     // Empêcher la propagation des événements tactiles en dehors du chat
@@ -1632,6 +1654,49 @@ extractPseudoFromEmail(email) {
         emojiBtn.addEventListener('click', () => {
             this.toggleEmojiPanel();
         });
+    }
+	// Optimisations spécifiques iOS pour le chat
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    
+    if (isIOS && input) {
+        const chatContainer = this.container.querySelector('.chat-container');
+        
+        // Gérer le clavier virtuel sur iOS
+        if (window.visualViewport) {
+            const handleViewportChange = () => {
+                if (chatContainer && chatContainer.classList.contains('open')) {
+                    if (window.visualViewport.height < window.innerHeight * 0.8) {
+                        chatContainer.classList.add('keyboard-active');
+                    } else {
+                        chatContainer.classList.remove('keyboard-active');
+                    }
+                }
+            };
+            
+            window.visualViewport.addEventListener('resize', handleViewportChange);
+        }
+        
+        // Fallback pour les anciens iOS
+        input.addEventListener('focus', () => {
+            setTimeout(() => {
+                if (chatContainer) {
+                    chatContainer.classList.add('keyboard-active');
+                }
+            }, 300);
+        });
+        
+        input.addEventListener('blur', () => {
+            setTimeout(() => {
+                if (chatContainer) {
+                    chatContainer.classList.remove('keyboard-active');
+                }
+            }, 300);
+        });
+        
+        // Empêcher le zoom automatique sur iOS
+        input.style.fontSize = '16px';
+        input.style.webkitAppearance = 'none';
     }
 }
 
@@ -3572,8 +3637,17 @@ updateUnreadBadgeAndBubble() {
 }
 	
 	isMobileDevice() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
-           (window.innerWidth <= 768);
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    const isMobile = isIOS || isAndroid || (window.innerWidth <= 768);
+    
+    // Ajouter classe CSS pour iOS
+    if (isIOS && !document.body.classList.contains('ios-device')) {
+        document.body.classList.add('ios-device');
+    }
+    
+    return isMobile;
 }
 
 	ensureChatInputVisible() {
