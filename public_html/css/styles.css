@@ -3155,6 +3155,11 @@ button#refreshButton.refresh-button {
     font-weight: 500;
     min-width: 60px;
     text-align: center;
+}
+
+[data-theme="dark"] .transparency-controls {
+background-color #1a237e;
+    z-index: 10000;
 }	
 
 /* ===== TRANSPARENCE POUR LES SÉPARATEURS ===== */
