@@ -16,23 +16,188 @@ class ContentManager {
         }
     }
 
-// À ajouter après la méthode init()
+// Méthode améliorée pour les optimisations iOS
 setupIOSOptimizations() {
-    if (!window.isIOSDevice) return;
+    // Détecter iOS plus précisément
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    
+    if (!isIOS) return;
     
     console.log("Application des optimisations iOS dans ContentManager");
     
-    // Fix pour les événements touch iOS
+    // Ajouter classe CSS au body
+    document.body.classList.add('ios-device');
+    
+    // Fix pour la hauteur viewport
+    this.setupIOSViewport();
+    
+    // Fix pour les événements touch
     this.setupIOSTouchEvents();
     
-    // Fix pour le Swiper sur iOS (desktop uniquement)
-    this.setupIOSSwiper();
+    // Fix pour le header et les éléments fixes
+    this.setupIOSFixedElements();
     
-    // Fix pour les modales et sidebars iOS
+    // Fix pour les modales et sidebars
     this.setupIOSModals();
     
-    // Fix pour la rotation d'écran iOS
+    // Fix pour l'orientation
     this.setupIOSOrientation();
+}
+
+setupIOSViewport() {
+    // Fix pour la hauteur 100vh problématique sur iOS Safari
+    function setIOSVH() {
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+        document.documentElement.style.setProperty('--real-vh', `${window.innerHeight}px`);
+    }
+    
+    setIOSVH();
+    window.setIOSVH = setIOSVH; // Rendre disponible globalement
+    
+    // Événements iOS
+    window.addEventListener('resize', setIOSVH);
+    window.addEventListener('orientationchange', () => {
+        setTimeout(setIOSVH, 500);
+    });
+    
+    // Fix pour les performances iOS
+    document.body.style.webkitOverflowScrolling = 'touch';
+    document.body.style.transform = 'translateZ(0)';
+}
+
+setupIOSTouchEvents() {
+    // Optimiser les événements touch pour iOS
+    document.addEventListener('touchstart', function(){}, {passive: true});
+    
+    // Fix pour les tuiles sur iOS
+    const tiles = document.querySelectorAll('.tile');
+    tiles.forEach(tile => {
+        tile.style.webkitTapHighlightColor = 'rgba(0,0,0,0.1)';
+        tile.style.webkitTouchCallout = 'none';
+        tile.style.transform = 'translateZ(0)';
+        
+        // Feedback tactile iOS amélioré
+        tile.addEventListener('touchstart', function(e) {
+            this.style.transform = 'translateZ(0) scale(0.98)';
+        }, {passive: true});
+        
+        tile.addEventListener('touchend', function(e) {
+            this.style.transform = 'translateZ(0) scale(1)';
+        }, {passive: true});
+        
+        tile.addEventListener('touchcancel', function(e) {
+            this.style.transform = 'translateZ(0) scale(1)';
+        }, {passive: true});
+    });
+}
+
+setupIOSFixedElements() {
+    // Fix pour les éléments fixes (header, footer, widgets)
+    const fixedElements = document.querySelectorAll(`
+        .app-header, 
+        .bottom-nav, 
+        .news-ticker, 
+        .weather-show-btn, 
+        .quick-links-show-btn, 
+        .news-button
+    `);
+    
+    fixedElements.forEach(el => {
+        if (el) {
+            el.style.webkitTransform = 'translateZ(0)';
+            el.style.transform = 'translateZ(0)';
+            el.style.willChange = 'transform';
+        }
+    });
+    
+    // Fix spécifique pour le header
+    const header = document.querySelector('.app-header');
+    if (header) {
+        header.style.position = '-webkit-sticky';
+        header.style.position = 'sticky';
+    }
+    
+    // Fix pour la navigation du bas
+    const bottomNav = document.querySelector('.bottom-nav');
+    if (bottomNav) {
+        bottomNav.style.webkitBackfaceVisibility = 'hidden';
+        bottomNav.style.backfaceVisibility = 'hidden';
+    }
+}
+
+setupIOSModals() {
+    // Fix pour les modales et sidebars sur iOS
+    const modals = document.querySelectorAll(`
+        .sidebar, 
+        .settings-menu, 
+        .news-panel, 
+        .weather-sidebar, 
+        .quick-links-sidebar
+    `);
+    
+    modals.forEach(modal => {
+        if (modal) {
+            modal.style.webkitOverflowScrolling = 'touch';
+            modal.style.transform = 'translateZ(0)';
+            
+            modal.addEventListener('touchmove', function(e) {
+                e.stopPropagation();
+            }, {passive: false});
+        }
+    });
+    
+    // Observer pour les futures modales
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    if (node.classList && (
+                        node.classList.contains('modal') || 
+                        node.classList.contains('settings-menu') ||
+                        node.classList.contains('news-panel') ||
+                        node.classList.contains('sidebar')
+                    )) {
+                        // Optimiser pour iOS
+                        node.style.webkitOverflowScrolling = 'touch';
+                        node.style.transform = 'translateZ(0)';
+                        
+                        node.addEventListener('touchmove', function(e) {
+                            e.stopPropagation();
+                        }, {passive: false});
+                    }
+                }
+            });
+        });
+    });
+    
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+}
+
+setupIOSOrientation() {
+    // Gestion de la rotation d'écran iOS
+    window.addEventListener('orientationchange', () => {
+        // Fix viewport iOS
+        setTimeout(() => {
+            if (window.setIOSVH) {
+                window.setIOSVH();
+            }
+            
+            // Forcer un reflow pour corriger les problèmes de layout
+            document.body.style.height = `${window.innerHeight}px`;
+            setTimeout(() => {
+                document.body.style.height = '';
+            }, 100);
+            
+            // Corriger les éléments fixes
+            this.setupIOSFixedElements();
+            
+        }, 500);
+    });
 }
 
 setupIOSTouchEvents() {

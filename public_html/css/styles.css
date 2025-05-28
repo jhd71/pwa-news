@@ -706,6 +706,11 @@ background-color: #1a237e;
         transparent
     );
     transition: all 0.3s ease;
+    
+    /* Fix iOS */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
 }
 
 /* === AJOUT POUR L'EFFET FLASH === */
@@ -1562,7 +1567,7 @@ background-color: #1a237e;
     margin: 10px 0;
 }
 
-/* SECTION 14: NAVIGATION DU BAS */
+/* ===== NAVIGATION DU BAS - iOS OPTIMISÉE ===== */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -1576,9 +1581,22 @@ background-color: #1a237e;
     backdrop-filter: blur(10px);
     padding: 8px 0;
     box-shadow: 0 -2px 5px var(--shadow-color);
+    
+    /* Fix iOS */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
 }
 
-/* Mode clair - Violet */
+/* Fix pour iOS avec safe area */
+@supports (padding: max(0px)) {
+    .bottom-nav {
+        padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
+        height: calc(var(--bottom-nav-height) + max(env(safe-area-inset-bottom, 0px), 0px));
+    }
+}
+
+* Mode clair - Violet */
 [data-theme="light"] .bottom-nav {
     background: linear-gradient(
         to bottom,
@@ -3943,4 +3961,244 @@ border-color: #ffd230 !important;
     width: 100%;
     height: 100%;
     position: relative;
+}
+
+/* ===== CORRECTION TICKER D'ACTUALITÉS iOS ===== */
+
+.news-ticker {
+    position: fixed;
+    bottom: var(--bottom-nav-height, 60px);
+    left: 0;
+    right: 0;
+    height: 35px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    z-index: 997; /* Sous la navigation */
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    
+    /* Fix iOS */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+/* Fix pour iOS avec safe area */
+@supports (padding: max(0px)) {
+    .news-ticker {
+        bottom: calc(var(--bottom-nav-height, 60px) + max(env(safe-area-inset-bottom, 0px), 0px));
+    }
+}
+
+.ticker-wrapper {
+    white-space: nowrap;
+    animation: scroll-left 30s linear infinite;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.ticker-item {
+    padding-right: 50px;
+    font-size: 14px;
+    display: inline-block;
+}
+
+@keyframes scroll-left {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .news-ticker {
+        height: 30px;
+    }
+    
+    .ticker-item {
+        font-size: 12px;
+        padding-right: 30px;
+    }
+}
+
+/* Mobile - ajustements spécifiques */
+@media (max-width: 600px) {
+    .bottom-nav {
+        height: 60px;
+        padding: 5px 0;
+    }
+    
+    @supports (padding: max(0px)) {
+        .bottom-nav {
+            padding-bottom: max(env(safe-area-inset-bottom, 0px), 5px);
+            height: calc(60px + max(env(safe-area-inset-bottom, 0px), 0px));
+        }
+    }
+    
+    .nav-item {
+        padding: 6px 4px;
+    }
+    
+    .nav-item span:not(.material-icons) {
+        font-size: 11px;
+    }
+}
+
+/* ===== WIDGETS FLOTTANTS - iOS OPTIMISÉS ===== */
+
+/* Boutons d'affichage des widgets */
+.weather-show-btn,
+.quick-links-show-btn {
+    position: fixed !important;
+    z-index: 999 !important;
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50% !important;
+    border: none !important;
+    color: white !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    transition: all 0.3s ease !important;
+    
+    /* Fix iOS */
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none !important;
+    touch-action: manipulation !important;
+}
+
+.weather-show-btn {
+    top: 70px !important;
+    right: 20px !important;
+    background: linear-gradient(135deg, #4CAF50, #45a049) !important;
+}
+
+.quick-links-show-btn {
+    top: 130px !important;
+    right: 20px !important;
+    background: linear-gradient(135deg, #2196F3, #1976D2) !important;
+}
+
+/* Mobile - repositionnement */
+@media (max-width: 600px) {
+    .weather-show-btn,
+    .quick-links-show-btn {
+        width: 45px !important;
+        height: 45px !important;
+        right: 15px !important;
+    }
+    
+    .weather-show-btn {
+        top: 60px !important;
+    }
+    
+    .quick-links-show-btn {
+        top: 115px !important;
+    }
+}
+
+/* Fix pour iPhone avec encoche */
+@supports (padding: max(0px)) {
+    .weather-show-btn {
+        top: calc(70px + max(env(safe-area-inset-top, 0px), 0px)) !important;
+    }
+    
+    .quick-links-show-btn {
+        top: calc(130px + max(env(safe-area-inset-top, 0px), 0px)) !important;
+    }
+    
+    @media (max-width: 600px) {
+        .weather-show-btn {
+            top: calc(60px + max(env(safe-area-inset-top, 0px), 0px)) !important;
+        }
+        
+        .quick-links-show-btn {
+            top: calc(115px + max(env(safe-area-inset-top, 0px), 0px)) !important;
+        }
+    }
+}
+
+/* Sidebars des widgets */
+.weather-sidebar,
+.quick-links-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    right: -300px !important;
+    width: 280px !important;
+    height: 100vh !important;
+    background: var(--primary-color) !important;
+    z-index: 1000 !important;
+    transition: right 0.3s ease !important;
+    overflow-y: auto !important;
+    
+    /* Fix iOS */
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+.weather-sidebar.open,
+.quick-links-sidebar.open {
+    right: 0 !important;
+}
+
+/* Mobile - pleine largeur */
+@media (max-width: 600px) {
+    .weather-sidebar,
+    .quick-links-sidebar {
+        width: 100vw !important;
+        right: -100vw !important;
+    }
+}
+
+/* Bouton "Infos en direct" */
+.news-button {
+    position: fixed !important;
+    bottom: 110px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 999 !important;
+    background: var(--primary-color) !important;
+    color: white !important;
+    border: none !important;
+    padding: 12px 20px !important;
+    border-radius: 25px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    
+    /* Fix iOS */
+    -webkit-transform: translateX(-50%) translateZ(0) !important;
+    transform: translateX(-50%) translateZ(0) !important;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none !important;
+    touch-action: manipulation !important;
+}
+
+/* Fix pour iPhone avec safe area */
+@supports (padding: max(0px)) {
+    .news-button {
+        bottom: calc(110px + max(env(safe-area-inset-bottom, 0px), 0px)) !important;
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .news-button {
+        bottom: 100px !important;
+        padding: 10px 16px !important;
+        font-size: 14px !important;
+    }
+    
+    @supports (padding: max(0px)) {
+        .news-button {
+            bottom: calc(100px + max(env(safe-area-inset-bottom, 0px), 0px)) !important;
+        }
+    }
 }
