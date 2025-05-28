@@ -3158,7 +3158,7 @@ button#refreshButton.refresh-button {
 }
 
 [data-theme="dark"] .transparency-controls {
-background-color #1a237e;
+background: #1a237e;
     z-index: 10000;
 }	
 
