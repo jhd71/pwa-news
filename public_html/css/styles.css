@@ -3678,7 +3678,7 @@ z-index: 10000;
 
 /* ===== CORRECTIONS MODE SOMBRE - FOND D'ÉCRAN PERSONNALISÉ ===== */
 [data-theme="rouge"] .modal-content .upload-btn .camera-btn {
-border-color: #ffd230
+border-color: #ffd230 !important;
 }
 
 /* Titre "Vos fonds d'écran personnalisés" en blanc en mode sombre */
