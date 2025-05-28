@@ -3677,7 +3677,11 @@ z-index: 10000;
 }
 
 /* ===== CORRECTIONS MODE SOMBRE - FOND D'ÉCRAN PERSONNALISÉ ===== */
-[data-theme="rouge"] .modal-content .upload-btn .camera-btn {
+[data-theme="rouge"] .modal-content .upload-btn span,
+[data-theme="rouge"] .modal-content .upload-btn,
+[data-theme="rouge"] .modal-content button span,
+[data-theme="rouge"] .modal-content .file-btn span,
+[data-theme="rouge"] .modal-content .camera-btn span {	
 border-color: #ffd230 !important;
 }
 
