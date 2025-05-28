@@ -3162,6 +3162,16 @@ background: #1a237e;
     z-index: 10000;
 }	
 
+[data-theme="light"] .transparency-controls {
+background-color #7e57c2;
+z-index: 10000;
+}
+
+[data-theme="bleuciel"] .transparency-controls {
+background-color rgba(79, 179, 232, 0.95);
+z-index: 10000;
+}
+
 /* ===== TRANSPARENCE POUR LES SÉPARATEURS ===== */
 .separator {
     opacity: var(--tile-opacity, 1) !important;
