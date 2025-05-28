@@ -1448,29 +1448,49 @@ background-color: #1a237e;
     }
 }
 
-/* Très grands écrans */
+/* Desktop */
 @media (min-width: 1200px) {
-    /* Pour les grands écrans avec widgets latéraux */
+    .swiper-container {
+        width: calc(100% - 190px) !important;
+        max-width: 800px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+    
+    .swiper {
+        max-width: 800px !important;
+        height: 200px !important;
+    }
+
+    .tile-container {
+        width: calc(100% - 190px) !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        max-width: 1400px;
+    }
+    
+    .tile-container.grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+    
+    /* Pour les grands écrans avec widgets */
     .swiper-container {
         width: calc(100% - 580px) !important;
         max-width: 800px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
     
     .tile-container {
         width: calc(100% - 580px) !important;
-        max-width: 1200px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        max-width: 1200px;
     }
     
-    .swiper {
-        height: 350px !important;
-    }
-    
-    .slide-content h2 {
-        font-size: 2.5rem !important;
-    }
-    
-    .slide-content p {
-        font-size: 1.2rem !important;
+    /* Assurer que le widget météo ne chevauche pas le contenu */
+    .separator:first-of-type {
+        margin-top: 20px !important;
     }
 } Bleu */
 [data-theme="dark"] .separator {
