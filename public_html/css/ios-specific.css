@@ -1,849 +1,207 @@
-/* ===== OPTIMISATIONS iOS SAFARI ===== */
+/* ios-specific.css - Version optimisée pour iPhone 15 Pro et autres appareils iOS */
 
-/* Fix pour la hauteur 100vh problématique sur iOS Safari */
 :root {
-  --vh: 1vh;
-}
-
-/* Support des variables CSS pour la hauteur réelle */
-@supports (-webkit-appearance: none) {
-  :root {
-    --vh: 1vh;
-  }
-}
-
-/* Reset et base pour iOS */
-*, *::before, *::after {
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-}
-
-html, body {
-  height: 100%;
-  -webkit-overflow-scrolling: touch;
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-  overscroll-behavior-y: none; /* Évite le bounce sur iOS */
-}
-
-/* Fix pour les inputs sur iOS Safari */
-input, textarea, select {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  border-radius: 0;
-  background-color: transparent;
-  font-size: 16px; /* Empêche le zoom automatique */
-  transform: translateZ(0); /* Force l'accélération matérielle */
-}
-
-/* Fix spécifique pour les inputs de recherche sur iOS */
-input[type="search"] {
-  -webkit-appearance: none;
-  border-radius: 0;
-}
-
-/* Fix pour les boutons sur iOS */
-button {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  border-radius: 0;
-  cursor: pointer;
-  background: none;
-  border: none;
-  transform: translateZ(0);
-}
-
-/* Fix pour les liens et zones touchables */
-a, button, [role="button"], .clickable {
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  user-select: none;
-  touch-action: manipulation;
-}
-
-/* Fix pour les images sur iOS */
-img {
-  max-width: 100%;
-  height: auto;
-  -webkit-user-drag: none;
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-/* Fix pour le Swiper sur iOS */
-.swiper-container, .swiper {
-  -webkit-overflow-scrolling: touch;
-  transform: translateZ(0);
-}
-
-.swiper-slide {
-  transform: translateZ(0);
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-}
-
-/* Fix pour les modales et overlays sur iOS */
-.modal, .overlay, .sidebar, .news-panel {
-  -webkit-overflow-scrolling: touch;
-  transform: translateZ(0);
-}
-
-/* Fix pour la barre de navigation du bas sur iOS */
-.bottom-nav {
-  padding-bottom: env(safe-area-inset-bottom, 0);
-  background: var(--bg-color);
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-}
-
-/* Fix pour le header avec la zone safe area */
-.app-header {
-  padding-top: env(safe-area-inset-top, 0);
-  background: var(--header-bg, #1a237e);
-}
-
-/* Fix pour la sidebar avec safe area */
-.sidebar {
-  padding-top: env(safe-area-inset-top, 20px);
-  padding-left: env(safe-area-inset-left, 0);
-  transform: translateZ(0);
-}
-
-/* Fix pour les widgets flottants */
-.weather-sidebar, .quick-links-sidebar {
-  transform: translateZ(0);
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Fix pour le scroll momentum sur tous les éléments scrollables */
-.swiper-wrapper,
-.panel-content,
-.sidebar,
-.news-panel,
-.modal-content {
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Fix pour les transitions et animations sur iOS */
-.swiper-slide-active,
-.modal.show,
-.sidebar.open {
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-}
-
-/* Fix pour les inputs dans les modales sur iOS */
-.modal input, .sidebar input, .chat-input {
-  font-size: 16px !important; /* Force 16px pour éviter le zoom */
-  -webkit-appearance: none;
-  border-radius: 0;
-}
-
-/* Fix pour les videos et iframes sur iOS */
-video, iframe {
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-}
-
-/* Fix pour le chat et keyboard sur iOS */
-.chat-container {
-  padding-bottom: env(safe-area-inset-bottom, 0);
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Fix pour les notifications et badges */
-.chat-notification-badge,
-.notification {
-  transform: translateZ(0);
-}
-
-/* Fix pour les gestures et le pinch-to-zoom */
-.tile-container {
-  touch-action: pan-y pinch-zoom;
-}
-
-/* Fix spécifique pour iOS 15+ */
-@supports (-webkit-touch-callout: none) {
-  .bottom-nav {
-    padding-bottom: max(env(safe-area-inset-bottom), 20px);
-  }
-  
-  .app-header {
-    padding-top: max(env(safe-area-inset-top), 10px);
-  }
-}
-
-/* Fix pour les problèmes de performance sur iOS */
-.swiper-container,
-.tile-container,
-.news-panel,
-.sidebar {
-  will-change: transform;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-}
-
-/* Fix pour les problèmes de focus sur iOS */
-input:focus, textarea:focus {
-  -webkit-user-select: text;
-  user-select: text;
-}
-
-/* Fix pour les problèmes de sticky positioning sur iOS Safari */
-.app-header {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-/* Fix pour l'overscroll sur iOS */
-body {
-  overscroll-behavior: none;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Fix pour les problèmes de layout sur iOS en landscape */
-@media screen and (orientation: landscape) and (max-height: 500px) {
-  .app-header h1 {
-    font-size: 1.2rem;
-  }
-  
-  .bottom-nav {
-    padding: 5px 0 max(env(safe-area-inset-bottom), 5px) 0;
-  }
-  
-  .bottom-nav span:not(.material-icons) {
-    font-size: 0.7rem;
-  }
-}
-
-/* ===== CORRECTIONS iOS SPÉCIFIQUES SUPPLÉMENTAIRES ===== */
-
-/* Fix pour la gestion du viewport sur iOS Safari */
-.ios-device html {
-  height: 100%;
-  height: -webkit-fill-available;
-}
-
-.ios-device body {
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
-  position: relative;
-  overflow-x: hidden;
-}
-
-/* Fix pour les tuiles qui ne sont pas cliquables sur iOS */
-.ios-device .tile {
-  cursor: pointer;
-  -webkit-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
-  touch-action: manipulation;
-  position: relative;
-  z-index: 1;
-}
-
-/* Fix pour le Swiper qui ne fonctionne pas bien sur iOS */
-.ios-device .swiper {
-  -webkit-overflow-scrolling: touch;
-  overflow: hidden;
-  touch-action: pan-y;
-}
-
-.ios-device .swiper-slide {
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  will-change: transform;
-}
-
-/* Fix pour les boutons de navigation qui ne répondent pas */
-.ios-device .nav-item,
-.ios-device .menu-button,
-.ios-device .settings-button {
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-  cursor: pointer;
-}
-
-/* Fix pour les menus et modales */
-.ios-device .sidebar,
-.ios-device .settings-menu {
-  -webkit-overflow-scrolling: touch;
-  will-change: transform;
-  transform: translateZ(0);
-}
-
-/* Fix pour les problèmes de chat sur iOS */
-.ios-device .chat-container {
-  position: fixed;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-y;
-}
-
-/* Fix pour les inputs dans le chat */
-.ios-device .chat-input textarea {
-  -webkit-appearance: none;
-  border-radius: 8px;
-  resize: none;
-  font-size: 16px !important;
-}
-
-/* Fix pour les widgets flottants */
-.ios-device .weather-sidebar,
-.ios-device .quick-links-sidebar {
-  -webkit-overflow-scrolling: touch;
-  will-change: transform;
-  transform: translateZ(0);
-}
-
-/* Fix pour le news panel qui peut bloquer */
-.ios-device .news-panel {
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-y;
-  will-change: transform;
-}
-
-/* Fix pour les séparateurs cliquables */
-.ios-device .separator {
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* Amélioration des performances sur iOS */
-.ios-device .tile-container {
-  will-change: auto;
-  contain: layout style paint;
-}
-
-/* Fix pour éviter les bugs de layout sur iOS */
-.ios-device main {
-  contain: layout style;
-  isolation: isolate;
-}
-
-/* Fix pour le problème de bounce sur iOS */
-.ios-device {
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
-  height: 100%;
-}
-
-.ios-device body {
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: none;
-}
-
-/* ===== CORRECTIONS iOS SPÉCIFIQUES SUPPLÉMENTAIRES ===== */
-
-/* Fix pour la gestion du viewport sur iOS Safari */
-.ios-device html {
-  height: 100%;
-  height: -webkit-fill-available;
-}
-
-.ios-device body {
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
-  position: relative;
-  overflow-x: hidden;
-}
-
-/* Fix pour les tuiles qui ne sont pas cliquables sur iOS */
-.ios-device .tile {
-  cursor: pointer;
-  -webkit-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
-  touch-action: manipulation;
-  position: relative;
-  z-index: 1;
-}
-
-/* Fix pour le Swiper qui ne fonctionne pas bien sur iOS */
-.ios-device .swiper {
-  -webkit-overflow-scrolling: touch;
-  overflow: hidden;
-  touch-action: pan-y;
-}
-
-.ios-device .swiper-slide {
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  will-change: transform;
-}
-
-/* Fix pour les boutons de navigation qui ne répondent pas */
-.ios-device .nav-item,
-.ios-device .menu-button,
-.ios-device .settings-button {
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-  cursor: pointer;
-}
-
-/* Fix pour les menus et modales */
-.ios-device .sidebar,
-.ios-device .settings-menu {
-  -webkit-overflow-scrolling: touch;
-  will-change: transform;
-  transform: translateZ(0);
-}
-
-/* Fix pour les problèmes de chat sur iOS */
-.ios-device .chat-container {
-  position: fixed;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-y;
-}
-
-/* Fix pour les inputs dans le chat */
-.ios-device .chat-input textarea {
-  -webkit-appearance: none;
-  border-radius: 8px;
-  resize: none;
-  font-size: 16px !important;
-}
-
-/* Fix pour les widgets flottants */
-.ios-device .weather-sidebar,
-.ios-device .quick-links-sidebar {
-  -webkit-overflow-scrolling: touch;
-  will-change: transform;
-  transform: translateZ(0);
-}
-
-/* Fix pour le news panel qui peut bloquer */
-.ios-device .news-panel {
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-y;
-  will-change: transform;
-}
-
-/* Fix pour les séparateurs cliquables */
-.ios-device .separator {
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* Amélioration des performances sur iOS */
-.ios-device .tile-container {
-  will-change: auto;
-  contain: layout style paint;
-}
-
-/* Fix pour éviter les bugs de layout sur iOS */
-.ios-device main {
-  contain: layout style;
-  isolation: isolate;
-}
-
-/* Fix pour le problème de bounce sur iOS */
-.ios-device {
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
-  height: 100%;
-}
-
-.ios-device body {
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: none;
-}
-
-/* IOS PROMPT - VERSION AMÉLIORÉE */
-:root {
-  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
   --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
   --safe-area-left: env(safe-area-inset-left, 0px);
   --safe-area-right: env(safe-area-inset-right, 0px);
+  --header-height: 55px; /* Augmenté pour plus d'espace */
+  --bottom-nav-height: 60px;
 }
 
-/* Corrections iOS générales */
-.ios-device {
-  -webkit-overflow-scrolling: touch;
-  -webkit-text-size-adjust: 100%;
-  height: 100vh;
-  height: -webkit-fill-available;
-}
+/* Détection iOS */
+@supports (-webkit-touch-callout: none) {
+  body {
+    padding-top: var(--safe-area-top);
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: none;
+  }
 
-.ios-device body {
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
-  overscroll-behavior-y: none;
-}
-
-/* Fix pour les inputs iOS (empêche le zoom automatique) */
-.ios-device input, 
-.ios-device textarea, 
-.ios-device select {
-  font-size: 16px !important;
-  -webkit-appearance: none;
-  border-radius: 0;
-  transform: translateZ(0);
-}
-
-/* Prompt iOS amélioré */
-.ios-prompt {
+  /* En-tête optimisé */
+  .app-header {
     position: fixed;
-    bottom: calc(20px + var(--safe-area-bottom));
-    left: calc(20px + var(--safe-area-left));
-    right: calc(20px + var(--safe-area-right));
-    background: linear-gradient(135deg, var(--primary-color, #4a148c) 0%, #6a1b9a 100%);
-    padding: 20px;
-    border-radius: 16px;
-    color: white;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-    z-index: 9999;
-    animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
-.ios-prompt-container {
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--header-height);
+    padding-top: var(--safe-area-top);
+    z-index: 2000;
     display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 15px;
-}
+    justify-content: flex-start; /* Aligné à gauche */
+    align-items: center;
+  }
 
-.ios-prompt-message {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    flex: 1;
-}
+  .site-logo, .site-title img {
+    height: 40px; /* Taille réduite */
+    max-width: 65%;
+    object-fit: contain;
+    margin-left: 75px; /* Décalé à droite pour laisser de la place aux boutons */
+    margin-right: auto;
+  }
 
-.ios-prompt-header {
+  /* Boutons Menu et Paramètres repositionnés et abaissés */
+  .menu-button, .hamburger-menu {
+    position: absolute;
+    top: calc(var(--safe-area-top) + 20px); /* Plus bas */
+    left: 15px;
+    z-index: 2001;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
-    gap: 10px;
-}
+    justify-content: center;
+  }
 
-.ios-prompt-header h3 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-}
+  .settings-button, .gear-icon {
+    position: absolute;
+    top: calc(var(--safe-area-top) + 20px); /* Plus bas */
+    right: 15px;
+    z-index: 2001;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-.ios-prompt-close {
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.2s ease;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-}
+  /* Bouton d'infos repositionné */
+  .news-button {
+    margin-top: 10px; /* Réduit l'espace pour ne pas trop baisser le premier séparateur */
+    margin-bottom: 10px;
+  }
 
-.ios-prompt-close:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: scale(1.05);
-}
+  /* Boutons widgets repositionnés */
+  .weather-show-btn, .quick-links-show-btn {
+    position: fixed;
+    bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom) + 50px); /* Plus bas, au-dessus de la nav */
+    z-index: 1500;
+  }
 
-/* Animations iOS */
-@keyframes slideUp {
-    from { 
-        opacity: 0;
-        transform: translateY(100%);
-    }
-    to { 
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+  .weather-show-btn {
+    left: 15px;
+  }
 
-/* Support PWA standalone sur iOS */
-@media (display-mode: standalone) {
-    .ios-device .app-header {
-        padding-top: calc(10px + var(--safe-area-top));
-    }
-    
-    .ios-device .bottom-nav {
-        padding-bottom: calc(10px + var(--safe-area-bottom));
-    }
-}
+  .quick-links-show-btn {
+    right: 15px;
+  }
 
-/* iPhone avec notch */
-.ios-notch .app-header {
-    padding-top: calc(15px + var(--safe-area-top));
-}
+  /* Contenu principal optimisé */
+  main, #tileContainer, .main-content, .tile-container {
+    position: relative;
+    z-index: 1500;
+    margin-top: calc(var(--header-height) + 5px); /* Réduit la marge supérieure */
+    padding-bottom: calc(var(--safe-area-bottom) + var(--bottom-nav-height) + 15px);
+    padding-left: 10px;
+    padding-right: 10px;
+    box-sizing: border-box;
+  }
 
-.ios-notch .bottom-nav {
-    padding-bottom: calc(15px + var(--safe-area-bottom));
-}
+  /* Barre d'infos positionnée correctement */
+  .news-ticker, .bottom-bar, .ticker {
+    position: fixed;
+    bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom));
+    left: 0;
+    right: 0;
+    height: 30px;
+    z-index: 1400;
+  }
 
-/* Fix pour Safari iOS - problème de hauteur 100vh */
-body, html {
-  height: 100%;
-  -webkit-overflow-scrolling: touch;
-}
+  /* Navigation inférieure */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--bottom-nav-height);
+    padding-bottom: var(--safe-area-bottom);
+    z-index: 1600;
+  }
 
-/* Fix pour les inputs sur iOS */
-input, textarea, select {
-  -webkit-appearance: none;
-  border-radius: 0;
-  background-color: transparent;
-}
+  /* Ajustements pour le séparateur et les titres de catégorie */
+  .separator:first-of-type {
+    margin-top: 10px; /* Ne pas trop descendre */
+  }
 
-/* Fix pour les boutons sur iOS */
-button {
-  -webkit-appearance: none;
-  border-radius: 0;
-  cursor: pointer;
-}
+  /* Styles pour le sélecteur de fond */
+  .bg-selector-panel {
+    z-index: 9999 !important;
+    padding-top: calc(var(--safe-area-top) + 10px);
+  }
 
-/* Fix pour le zoom automatique sur les inputs */
-input[type="text"], 
-input[type="email"], 
-input[type="password"], 
-textarea {
-  font-size: 16px; /* Empêche le zoom automatique sur iOS */
-}
+  .bg-selector-panel-content, 
+  .floating-close-btn,
+  .reset-bg-btn {
+    z-index: 10000 !important;
+  }
 
-/* Fix pour les images responsives */
-img {
-  max-width: 100%;
-  height: auto;
-  -webkit-user-select: none;
-}
-
-/* Corrections iOS intégrées */
-@media screen and (-webkit-min-device-pixel-ratio: 1) {
-    .bottom-nav {
-        padding-bottom: max(env(safe-area-inset-bottom), 10px);
-    }
-    
-    .app-header {
-        padding-top: max(env(safe-area-inset-top), 0px);
-    }
-    
-    input, textarea {
-        font-size: 16px !important;
-    }
-}
-
-/* ===== OPTIMISATIONS PERFORMANCES iOS ===== */
-.ios-device * {
+  /* Corrections générales pour la compatibilité tactile iOS */
+  * {
     -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-}
-
-.ios-device .tile,
-.ios-device .separator,
-.ios-device .nav-item {
-    transform: translateZ(0);
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    will-change: transform;
-}
-
-.ios-device .swiper-slide {
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-}
-
-/* Fix pour Safari iOS */
-.ios-safari .chat-container,
-.ios-safari .modal,
-.ios-safari .sidebar {
-    -webkit-overflow-scrolling: touch;
-}
-
-/* ===== FEEDBACK TOUCH iOS ===== */
-.ios-touch-active {
-    transform: scale(0.95) !important;
-    opacity: 0.8 !important;
-    transition: all 0.1s ease !important;
-}
-
-.ios-touch-active.tile {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
-}
-
-.ios-touch-active.nav-item {
-    background-color: rgba(255, 255, 255, 0.2) !important;
-}
-
-/* Amélioration des zones de touch */
-@media (max-width: 768px) {
-    .nav-item, .menu-button, .settings-button {
-        min-height: 44px;
-        min-width: 44px;
-        touch-action: manipulation;
-    }
-    
-    .tile {
-        min-height: 60px;
-        touch-action: manipulation;
-    }
-}
-
-/* ===== NOUVELLES OPTIMISATIONS CHAT iOS ===== */
-
-/* Fix spécifique pour le chat sur iOS */
-@supports (-webkit-touch-callout: none) {
-    /* Chat container optimisé pour iOS */
-    .chat-container {
-        -webkit-overflow-scrolling: touch;
-        transform: translate3d(0,0,0);
-        -webkit-transform: translate3d(0,0,0);
-        will-change: transform;
-        overscroll-behavior: contain;
-    }
-    
-    /* Messages du chat optimisés */
-    .chat-messages {
-        -webkit-overflow-scrolling: touch;
-        transform: translate3d(0,0,0);
-        -webkit-transform: translate3d(0,0,0);
-        overscroll-behavior: contain;
-        -webkit-overflow-scrolling: touch;
-    }
-    
-    /* Fix pour le clavier virtuel iOS */
-    .chat-container.keyboard-open {
-        height: 50vh !important;
-        max-height: 50vh !important;
-    }
-    
-    .chat-container.keyboard-open .chat-messages {
-        max-height: calc(50vh - 80px) !important;
-    }
-    
-    /* Zone de saisie optimisée pour iOS */
-    .chat-input {
-        position: sticky;
-        bottom: 0;
-        z-index: 1000;
-        background: var(--chat-gradient, #667eea);
-        transform: translateZ(0);
-        -webkit-transform: translateZ(0);
-        padding-bottom: max(env(safe-area-inset-bottom, 0px), 10px);
-    }
-    
-    /* Textarea optimisé pour iOS */
-    .chat-input textarea {
-        -webkit-appearance: none;
-        border-radius: 8px;
-        font-size: 16px !important;
-        resize: none;
-        transform: translateZ(0);
-        -webkit-transform: translateZ(0);
-    }
-    
-    /* Boutons du chat optimisés */
-    .chat-container button {
-        -webkit-tap-highlight-color: rgba(0,0,0,0.1);
-        -webkit-touch-callout: none;
-        transform: translateZ(0);
-        -webkit-transform: translateZ(0);
-    }
-}
-
-/* Fix pour empêcher le scroll de la page quand le chat est ouvert sur iOS */
-body.ios-chat-open {
-    position: fixed !important;
-    width: 100% !important;
-    height: 100% !important;
-    overflow: hidden !important;
-    -webkit-overflow-scrolling: touch;
-}
-
-/* Animation du chat optimisée pour iOS */
-.chat-container.open {
-    animation: iosSlideIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-@keyframes iosSlideIn {
-    0% {
-        transform: translate3d(100%, 0, 0);
-        opacity: 0;
-    }
-    100% {
-        transform: translate3d(0, 0, 0);
-        opacity: 1;
-    }
-}
-
-/* Fix pour le clavier virtuel sur iOS */
-@media screen and (max-device-width: 812px) {
-    .ios-device .chat-container.keyboard-active {
-        height: 45vh !important;
-        max-height: 45vh !important;
-    }
-    
-    .ios-device .chat-container.keyboard-active .chat-messages {
-        max-height: calc(45vh - 80px) !important;
-    }
-}
-
-/* Fix pour l'orientation landscape sur iOS */
-@media screen and (orientation: landscape) and (max-device-width: 812px) {
-    .ios-device .chat-container {
-        height: 70vh !important;
-        max-height: 70vh !important;
-    }
-    
-    .ios-device .chat-container.keyboard-active {
-        height: 50vh !important;
-        max-height: 50vh !important;
-    }
-}
-
-/* Fix pour le scroll momentum sur iOS dans le chat */
-.ios-device .chat-messages::-webkit-scrollbar {
-    display: none;
-}
-
-/* Fix pour les performances du chat sur iOS */
-.ios-device .chat-widget * {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-.ios-device .message {
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    will-change: auto;
-}
-
-/* Fix pour le bouton de chat dans la navigation */
-.ios-device #chatToggleBtn {
-    -webkit-tap-highlight-color: rgba(0,0,0,0.1);
-    -webkit-touch-callout: none;
-    transform: translateZ(0);
     touch-action: manipulation;
-}
+  }
 
-/* Fix pour les emoji et réactions sur iOS */
-.ios-device .emoji-picker,
-.ios-device .emoji-panel {
-    -webkit-overflow-scrolling: touch;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-}
+  input[type="text"], textarea, select {
+    font-size: 16px; /* Empêcher le zoom indésirable sur les inputs */
+  }
 
-/* Fix pour les notifications badge sur iOS */
-.ios-device .chat-notification-badge {
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    will-change: transform;
+  html, body {
+    width: 100%;
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  /* RÈGLES MEDIA À L'INTÉRIEUR DU BLOC iOS */
+  
+  /* Petits écrans (iPhone SE, Mini) */
+  @media only screen and (max-width: 375px) {
+    .tile-container.grid {
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+    
+    .site-logo, .site-title img {
+      height: 35px;
+      margin-left: 65px;
+    }
+  }
+  
+  /* Orientation paysage */
+  @media screen and (orientation: landscape) {
+    .site-logo, .site-title img {
+      height: 35px;
+    }
+    
+    main, #tileContainer, .main-content, .tile-container {
+      margin-top: calc(var(--header-height) - 10px);
+    }
+  }
+  
+  /* Ajustements spécifiques pour iPhone 14/15 Pro et Pro Max qui ont des problèmes de positionnement */
+  @media only screen and (min-width: 390px) and (device-width: 390px), 
+         only screen and (min-width: 428px) and (device-width: 428px),
+         only screen and (min-width: 430px) and (device-width: 430px) {
+    
+    /* En-tête encore plus ajusté pour iPhone 15 Pro */
+    .app-header {
+      height: calc(var(--header-height) + 10px);
+    }
+    
+    .menu-button, .hamburger-menu {
+      top: calc(var(--safe-area-top) + 25px); /* Encore plus bas */
+    }
+    
+    .settings-button, .gear-icon {
+      top: calc(var(--safe-area-top) + 25px); /* Encore plus bas */
+    }
+    
+    .site-logo, .site-title img {
+      height: 40px;
+      margin-left: 80px; /* Plus de marge à gauche */
+      margin-top: 5px; /* Un peu plus bas */
+    }
+    
+    /* Boutons widgets encore plus bas pour ces appareils */
+    .weather-show-btn, .quick-links-show-btn {
+      bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom) + 60px);
+    }
+  }
 }
