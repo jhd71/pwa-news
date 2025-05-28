@@ -3676,6 +3676,62 @@ z-index: 10000;
     --background-color-rgb: 248, 253, 255;
 }
 
+/* ===== CORRECTIONS MODE SOMBRE - FOND D'ÉCRAN PERSONNALISÉ ===== */
+
+/* Titre "Vos fonds d'écran personnalisés" en blanc en mode sombre */
+[data-theme="dark"] .custom-backgrounds-section h3 {
+    color: white !important;
+}
+
+/* Textes des boutons "Choisir un fichier" et "Prendre une photo" en blanc */
+[data-theme="dark"] .modal-content .upload-btn span,
+[data-theme="dark"] .modal-content .upload-btn,
+[data-theme="dark"] .modal-content button span,
+[data-theme="dark"] .modal-content .file-btn span,
+[data-theme="dark"] .modal-content .camera-btn span {
+    color: white !important;
+}
+
+/* Tous les textes de la modal en mode sombre */
+[data-theme="dark"] .modal-content,
+[data-theme="dark"] .modal-content p,
+[data-theme="dark"] .modal-content span,
+[data-theme="dark"] .modal-content div,
+[data-theme="dark"] .modal-content label {
+    color: white !important;
+}
+
+/* Textes des sections spécifiques */
+[data-theme="dark"] .upload-section p,
+[data-theme="dark"] .upload-section span,
+[data-theme="dark"] .file-requirements,
+[data-theme="dark"] .upload-info {
+    color: white !important;
+}
+
+/* Préservation des couleurs pour les boutons d'action */
+[data-theme="dark"] .modal-content .btn-primary,
+[data-theme="dark"] .modal-content .btn-secondary {
+    color: white !important; /* Garder blanc sur les boutons colorés */
+}
+
+/* Assurer que les icônes restent visibles */
+[data-theme="dark"] .modal-content .material-icons,
+[data-theme="dark"] .modal-content .btn-icon {
+    color: inherit !important;
+}
+
+/* Section des fonds personnalisés existants */
+[data-theme="dark"] .custom-backgrounds-grid .custom-bg-item,
+[data-theme="dark"] .custom-backgrounds-grid p {
+    color: white !important;
+}
+
+/* Texte "Aucun fond personnalisé" */
+[data-theme="dark"] .no-custom-bg {
+    color: white !important;
+}
+
 /* Style spécial pour la tuile diaporama */
 .tile[data-category="photos"].slideshow-tile {
     background: linear-gradient(135deg, #FF6B6B, #4ECDC4, #45B7D1, #96CEB4);
