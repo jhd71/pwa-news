@@ -35,7 +35,12 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Actu&Média">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Fix iOS Safari spécifiques -->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="date=no">
+    <meta name="format-detection" content="address=no">
+    <meta name="format-detection" content="email=no">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <!-- Favicons et icônes -->
     <link rel="icon" type="image/png" sizes="192x192" href="/images/AM-192-v2.png">
@@ -318,6 +323,7 @@ document.getElementById('currentYear').textContent = new Date().getFullYear();
 </nav>
 <!-- Scripts essentiels (chargement rapide) -->
 <script src="js/ios-detector.js"></script>
+<script src="js/ios-safari-fixes.js"></script>
 <script src="js/ban-manager.js"></script>
 
 <!-- Scripts de fonctionnalités -->

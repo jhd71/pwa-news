@@ -16,6 +16,371 @@ class ContentManager {
         }
     }
 
+// À ajouter après la méthode init()
+setupIOSOptimizations() {
+    if (!window.isIOSDevice) return;
+    
+    console.log("Application des optimisations iOS dans ContentManager");
+    
+    // Fix pour les événements touch iOS
+    this.setupIOSTouchEvents();
+    
+    // Fix pour le Swiper sur iOS (desktop uniquement)
+    this.setupIOSSwiper();
+    
+    // Fix pour les modales et sidebars iOS
+    this.setupIOSModals();
+    
+    // Fix pour la rotation d'écran iOS
+    this.setupIOSOrientation();
+}
+
+setupIOSTouchEvents() {
+    // Optimiser les événements touch pour iOS
+    document.addEventListener('touchstart', function(){}, {passive: true});
+    document.addEventListener('touchmove', function(){}, {passive: true});
+    
+    // Fix pour les tuiles sur iOS
+    const tiles = document.querySelectorAll('.tile');
+    tiles.forEach(tile => {
+        tile.style.webkitTapHighlightColor = 'rgba(0,0,0,0.1)';
+        tile.style.webkitTouchCallout = 'none';
+        
+        // Feedback tactile iOS
+        tile.addEventListener('touchstart', function() {
+            this.style.transform = 'scale(0.98)';
+        }, {passive: true});
+        
+        tile.addEventListener('touchend', function() {
+            this.style.transform = 'scale(1)';
+        }, {passive: true});
+    });
+}
+
+setupIOSSwiper() {
+    // Swiper uniquement sur grand écran, même sur iOS
+    if (window.innerWidth <= 1024) return;
+    
+    // Attendre que Swiper soit chargé
+    setTimeout(() => {
+        if (typeof Swiper !== 'undefined' && document.querySelector('.swiper')) {
+            // Configuration Swiper optimisée pour iOS desktop
+            const swiperConfig = {
+                slidesPerView: 1,
+                spaceBetween: 0,
+                loop: true,
+                autoplay: {
+                    delay: 8000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                // Options spécifiques iOS Safari
+                touchEventsTarget: 'container',
+                simulateTouch: true,
+                allowTouchMove: true,
+                touchStartPreventDefault: false,
+                touchStartForcePreventDefault: false,
+                on: {
+                    init: function() {
+                        console.log('Swiper iOS initialisé');
+                        // Force un update pour iOS
+                        setTimeout(() => this.update(), 100);
+                    }
+                }
+            };
+            
+            // Initialiser Swiper
+            window.swiper = new Swiper('.swiper', swiperConfig);
+        }
+    }, 1000);
+}
+
+setupIOSModals() {
+    // Fix pour les modales et sidebars sur iOS
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) {
+        sidebar.addEventListener('touchmove', function(e) {
+            e.stopPropagation();
+        }, {passive: false});
+    }
+    
+    // Observer pour les futures modales
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    if (node.classList && (node.classList.contains('modal') || 
+                        node.classList.contains('settings-menu') ||
+                        node.classList.contains('news-panel'))) {
+                        
+                        // Optimiser pour iOS
+                        node.style.webkitOverflowScrolling = 'touch';
+                        node.style.transform = 'translateZ(0)';
+                        
+                        node.addEventListener('touchmove', function(e) {
+                            e.stopPropagation();
+                        }, {passive: false});
+                    }
+                }
+            });
+        });
+    });
+    
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+}
+
+setupIOSOrientation() {
+    // Gestion de la rotation d'écran iOS
+    window.addEventListener('orientationchange', () => {
+        // Fix viewport iOS
+        setTimeout(() => {
+            if (window.setIOSVH) {
+                window.setIOSVH();
+            }
+            
+            // Réinitialiser le Swiper si nécessaire
+            if (window.swiper && window.innerWidth > 1024) {
+                window.swiper.update();
+            }
+            
+            // Forcer un reflow
+            document.body.style.height = window.innerHeight + 'px';
+            setTimeout(() => {
+                document.body.style.height = '';
+            }, 500);
+        }, 500);
+    });
+}
+
+// Méthode améliorée pour showSettings (iOS)
+showSettings() {
+    const existingPanel = document.querySelector('.settings-menu');
+    if (existingPanel) {
+        existingPanel.classList.remove('open');
+        document.body.classList.remove('settings-open');
+        const settingsButton = document.getElementById('settingsButton');
+        if (settingsButton) {
+            settingsButton.classList.remove('active');
+        }
+        setTimeout(() => {
+            existingPanel.remove();
+        }, 300);
+        return;
+    }
+
+    document.body.classList.add('settings-open');
+    
+    const settingsOverlay = document.createElement('div');
+    settingsOverlay.className = 'menu-overlay';
+    settingsOverlay.classList.add('visible');
+    document.body.appendChild(settingsOverlay);
+    document.body.classList.add('overlay-active');
+
+    const panel = document.createElement('div');
+    panel.className = 'settings-menu';
+    
+    // Optimisation iOS pour le panel
+    if (window.isIOSDevice) {
+        panel.style.webkitOverflowScrolling = 'touch';
+        panel.style.transform = 'translateZ(0)';
+    }
+    
+    panel.innerHTML = `
+    <div class="settings-header">
+        <h3>Paramètres d'affichage</h3>
+        <button type="button" class="close-btn">
+            <span class="material-icons">close</span>
+        </button>
+    </div>
+    <div class="settings-content">
+        <p class="settings-intro">Ces options personnalisent l'apparence des tuiles de navigation.</p>
+        
+        <div class="settings-section">
+            <h4>Taille du texte</h4>
+            <div class="font-size-tiles">
+                <div class="font-size-tile ${this.fontSize === 'small' ? 'active' : ''}" data-font-size="small">
+                    <span>Petit</span>
+                </div>
+                <div class="font-size-tile ${this.fontSize === 'normal' ? 'active' : ''}" data-font-size="normal">
+                    <span>Normal</span>
+                </div>
+                <div class="font-size-tile font-size-large ${this.fontSize === 'large' ? 'active' : ''}" data-font-size="large">
+                    <span>Grand</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="settings-section">
+            <h4>Police de caractères</h4>
+            <div class="font-family-tiles">
+                <div class="font-family-tile ${this.fontFamily === 'system' ? 'active' : ''}" data-font-family="system">
+                    <span style="font-family: -apple-system, BlinkMacSystemFont, sans-serif">Système</span>
+                </div>
+                <div class="font-family-tile ${this.fontFamily === 'roboto' ? 'active' : ''}" data-font-family="roboto">
+                    <span style="font-family: 'Roboto', sans-serif">Roboto</span>
+                </div>
+                <div class="font-family-tile ${this.fontFamily === 'opensans' ? 'active' : ''}" data-font-family="opensans">
+                    <span style="font-family: 'Open Sans', sans-serif">Open Sans</span>
+                </div>
+                <div class="font-family-tile ${this.fontFamily === 'montserrat' ? 'active' : ''}" data-font-family="montserrat">
+                    <span style="font-family: 'Montserrat', sans-serif">Montserrat</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h4>Contraste du texte</h4>
+            <div class="text-contrast-tiles">
+                <div class="text-contrast-tile ${this.textContrast === 'normal' ? 'active' : ''}" data-text-contrast="normal">
+                    <span>Normal</span>
+                </div>
+                <div class="text-contrast-tile ${this.textContrast === 'high' ? 'active' : ''}" data-text-contrast="high">
+                    <span>Élevé</span>
+                </div>
+                <div class="text-contrast-tile ${this.textContrast === 'very-high' ? 'active' : ''}" data-text-contrast="very-high">
+                    <span>Très élevé</span>
+                </div>
+            </div>
+        </div>
+`;
+
+    document.body.appendChild(panel);
+    
+    // Indiquer visuellement que le bouton settings est actif
+    const settingsButton = document.getElementById('settingsButton');
+    if (settingsButton) {
+        settingsButton.classList.add('active');
+    }
+    
+    // Animation d'ouverture
+    requestAnimationFrame(() => {
+        panel.classList.add('open');
+    });
+
+    // Gestionnaires d'événements optimisés pour iOS
+    const closeBtn = panel.querySelector('.close-btn');
+    if (closeBtn) {
+        const closeHandler = (e) => {
+            e.stopPropagation();
+            panel.classList.remove('open');
+            document.body.classList.remove('settings-open');
+            settingsOverlay.remove();
+            document.body.classList.remove('overlay-active');
+            
+            if (settingsButton) {
+                settingsButton.classList.remove('active');
+            }
+            setTimeout(() => panel.remove(), 300);
+        };
+        
+        // Utiliser touchstart sur iOS, click sur desktop
+        if (window.isIOSDevice) {
+            closeBtn.addEventListener('touchstart', closeHandler, {passive: false});
+        } else {
+            closeBtn.addEventListener('click', closeHandler);
+        }
+    }
+
+    // Fermeture par overlay
+    settingsOverlay.addEventListener(window.isIOSDevice ? 'touchstart' : 'click', (e) => {
+        e.preventDefault();
+        panel.classList.remove('open');
+        document.body.classList.remove('settings-open');
+        settingsOverlay.remove();
+        document.body.classList.remove('overlay-active');
+        
+        if (settingsButton) {
+            settingsButton.classList.remove('active');
+        }
+        
+        setTimeout(() => panel.remove(), 300);
+    });
+
+    // Système de verrouillage pour éviter les problèmes lors du changement de taille
+    let isChangingFontSize = false;
+
+    // Gestionnaires optimisés pour iOS
+    panel.querySelectorAll('.font-size-tile').forEach(tile => {
+        const eventType = window.isIOSDevice ? 'touchstart' : 'click';
+        
+        tile.addEventListener(eventType, (e) => {
+            e.stopPropagation();
+            
+            if (isChangingFontSize) return;
+            isChangingFontSize = true;
+            
+            // Feedback visuel immédiat
+            panel.querySelectorAll('.font-size-tile').forEach(t => {
+                t.classList.remove('active');
+            });
+            tile.classList.add('active');
+            
+            const size = tile.dataset.fontSize;
+            
+            setTimeout(() => {
+                this.changeFontSize(size);
+                setTimeout(() => {
+                    isChangingFontSize = false;
+                }, 500);
+            }, 50);
+        }, { passive: false });
+    });
+
+    // Même logique pour les autres tiles...
+    panel.querySelectorAll('.font-family-tile').forEach(tile => {
+        const eventType = window.isIOSDevice ? 'touchstart' : 'click';
+        
+        tile.addEventListener(eventType, (e) => {
+            e.stopPropagation();
+            
+            panel.querySelectorAll('.font-family-tile').forEach(t => {
+                t.classList.remove('active');
+            });
+            tile.classList.add('active');
+            
+            const fontFamily = tile.dataset.fontFamily;
+            setTimeout(() => {
+                this.changeFontFamily(fontFamily);
+            }, 50);
+        }, { passive: false });
+    });
+
+    panel.querySelectorAll('.text-contrast-tile').forEach(tile => {
+        const eventType = window.isIOSDevice ? 'touchstart' : 'click';
+        
+        tile.addEventListener(eventType, (e) => {
+            e.stopPropagation();
+            
+            panel.querySelectorAll('.text-contrast-tile').forEach(t => {
+                t.classList.remove('active');
+            });
+            tile.classList.add('active');
+            
+            const textContrast = tile.dataset.textContrast;
+            setTimeout(() => {
+                this.changeTextContrast(textContrast);
+            }, 50);
+        }, { passive: false });
+    });
+
+    // Empêcher la fermeture sur iOS avec touchmove
+    if (window.isIOSDevice) {
+        panel.addEventListener('touchmove', (e) => {
+            e.stopPropagation();
+        }, { passive: false });
+    }
+}
+
     setup() {
         this.tileContainer = document.getElementById('tileContainer');
         if (!this.tileContainer) {
@@ -34,6 +399,7 @@ class ContentManager {
 	this.setupTransparencyControl(); // NOUVELLE LIGNE
 	this.fixListModeLayout(); // NOUVELLE LIGNE
 	this.updateActiveNavLinks();
+	this.setupIOSOptimizations();
 	}
 
     setupEventListeners() {
