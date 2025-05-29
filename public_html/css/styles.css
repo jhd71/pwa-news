@@ -2726,6 +2726,36 @@ button#refreshButton.refresh-button {
     z-index: 2;
 }
 
+/* Faire que l'image de la galerie photo remplisse toute la tuile */
+.title[data-category="photos"] .slideshow-container,
+.title[data-category="photos"] .slideshow-preview {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.title[data-category="photos"] .slideshow-preview img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 0 !important;
+}
+
+/* Masquer le texte "Photos" */
+.title[data-category="photos"] .title-content {
+    display: none !important;
+}
+
+/* S'assurer que la tuile est positionnée correctement */
+.title[data-category="photos"] {
+    position: relative !important;
+    overflow: hidden !important;
+}
+
 .tile[data-category="photos"]::before {
     content: '';
     position: absolute;
