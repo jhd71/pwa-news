@@ -35,6 +35,11 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Actu&Média">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+	<!-- Fix iOS Safari spécifiques -->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="date=no">
+    <meta name="format-detection" content="address=no">
+    <meta name="format-detection" content="email=no">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <!-- Favicons et icônes -->
@@ -319,6 +324,9 @@ document.getElementById('currentYear').textContent = new Date().getFullYear();
 </nav>
 <!-- Scripts essentiels (chargement rapide) -->
 <script src="js/ios-detector.js"></script>
+<script src="js/ios-install.js"></script>
+<script src="js/ios-chat-fix.js"></script>
+<script src="js/ios-safari-fixes.js"></script>
 <script src="js/ban-manager.js"></script>
 
 <!-- Scripts de fonctionnalités -->
@@ -330,8 +338,6 @@ document.getElementById('currentYear').textContent = new Date().getFullYear();
 <script src="js/quick-links.js"></script>
 <script src="js/tablet-fixes.js"></script>
 <script src="js/chat-keyboard-fix.js"></script>
-<script src="js/ios-install.js"></script>
-<script src="js/ios-chat-fix.js"></script>
 <script src="js/ban-check.js"></script>
 <script src="js/theme-manager.js"></script>
 <script src="js/donation.js"></script>
