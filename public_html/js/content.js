@@ -16,172 +16,25 @@ class ContentManager {
         }
     }
 
-// AJOUTEZ TOUT CE BLOC ICI ↓
-setupIOSOptimizations() {
-    if (!window.isIOSDevice) return;
-    
-    console.log("Application des optimisations iOS dans ContentManager");
-    
-    // Fix pour les événements touch iOS
-    this.setupIOSTouchEvents();
-    
-    // Fix pour le Swiper sur iOS (desktop uniquement)
-    this.setupIOSSwiper();
-    
-    // Fix pour les modales et sidebars iOS
-    this.setupIOSModals();
-    
-    // Fix pour la rotation d'écran iOS
-    this.setupIOSOrientation();
-}
-
-setupIOSTouchEvents() {
-    // Optimiser les événements touch pour iOS
-    document.addEventListener('touchstart', function(){}, {passive: true});
-    document.addEventListener('touchmove', function(){}, {passive: true});
-    
-    // Fix pour les tuiles sur iOS
-    const tiles = document.querySelectorAll('.tile');
-    tiles.forEach(tile => {
-        tile.style.webkitTapHighlightColor = 'rgba(0,0,0,0.1)';
-        tile.style.webkitTouchCallout = 'none';
-        
-        // Feedback tactile iOS
-        tile.addEventListener('touchstart', function() {
-            this.style.transform = 'scale(0.98)';
-        }, {passive: true});
-        
-        tile.addEventListener('touchend', function() {
-            this.style.transform = 'scale(1)';
-        }, {passive: true});
-    });
-}
-
-setupIOSSwiper() {
-    // Swiper uniquement sur grand écran, même sur iOS
-    if (window.innerWidth <= 1024) return;
-    
-    // Attendre que Swiper soit chargé
-    setTimeout(() => {
-        if (typeof Swiper !== 'undefined' && document.querySelector('.swiper')) {
-            // Configuration Swiper optimisée pour iOS desktop
-            const swiperConfig = {
-                slidesPerView: 1,
-                spaceBetween: 0,
-                loop: true,
-                autoplay: {
-                    delay: 8000,
-                    disableOnInteraction: false,
-                },
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true,
-                },
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
-                // Options spécifiques iOS Safari
-                touchEventsTarget: 'container',
-                simulateTouch: true,
-                allowTouchMove: true,
-                touchStartPreventDefault: false,
-                touchStartForcePreventDefault: false,
-                on: {
-                    init: function() {
-                        console.log('Swiper iOS initialisé');
-                        // Force un update pour iOS
-                        setTimeout(() => this.update(), 100);
-                    }
-                }
-            };
-            
-            // Initialiser Swiper
-            window.swiper = new Swiper('.swiper', swiperConfig);
-        }
-    }, 1000);
-}
-
-setupIOSModals() {
-    // Fix pour les modales et sidebars sur iOS
-    const sidebar = document.getElementById('sidebar');
-    if (sidebar) {
-        sidebar.addEventListener('touchmove', function(e) {
-            e.stopPropagation();
-        }, {passive: false});
-    }
-    
-    // Observer pour les futures modales
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            mutation.addedNodes.forEach((node) => {
-                if (node.nodeType === Node.ELEMENT_NODE) {
-                    if (node.classList && (node.classList.contains('modal') || 
-                        node.classList.contains('settings-menu') ||
-                        node.classList.contains('news-panel'))) {
-                        
-                        // Optimiser pour iOS
-                        node.style.webkitOverflowScrolling = 'touch';
-                        node.style.transform = 'translateZ(0)';
-                        
-                        node.addEventListener('touchmove', function(e) {
-                            e.stopPropagation();
-                        }, {passive: false});
-                    }
-                }
-            });
-        });
-    });
-    
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
-}
-
-setupIOSOrientation() {
-    // Gestion de la rotation d'écran iOS
-    window.addEventListener('orientationchange', () => {
-        // Fix viewport iOS
-        setTimeout(() => {
-            if (window.setIOSVH) {
-                window.setIOSVH();
-            }
-            
-            // Réinitialiser le Swiper si nécessaire
-            if (window.swiper && window.innerWidth > 1024) {
-                window.swiper.update();
-            }
-            
-            // Forcer un reflow
-            document.body.style.height = window.innerHeight + 'px';
-            setTimeout(() => {
-                document.body.style.height = '';
-            }, 500);
-        }, 500);
-    });
-}
-
     setup() {
-    this.tileContainer = document.getElementById('tileContainer');
-    if (!this.tileContainer) {
-        console.error('Container de tuiles non trouvé');
-        return;
-    }
-    document.documentElement.setAttribute('data-font-size', this.fontSize);
-    this.setupEventListeners();
+        this.tileContainer = document.getElementById('tileContainer');
+        if (!this.tileContainer) {
+            console.error('Container de tuiles non trouvé');
+            return;
+        }
+        document.documentElement.setAttribute('data-font-size', this.fontSize);
+        this.setupEventListeners();
     this.setupLayout();
     this.setupTheme();
     this.setupFontSize();
     this.setupFontFamily();
     this.setupTextContrast();
     this.setupTiles();
-    this.autoEnhanceTileVisibility();
-    this.setupTransparencyControl();
-    this.fixListModeLayout();
-    this.updateActiveNavLinks();
-    this.setupIOSOptimizations();
-}
+	this.autoEnhanceTileVisibility(); // LIGNE EXISTANTE
+	this.setupTransparencyControl(); // NOUVELLE LIGNE
+	this.fixListModeLayout(); // NOUVELLE LIGNE
+	this.updateActiveNavLinks();
+	}
 
     setupEventListeners() {
         // Gestion du menu

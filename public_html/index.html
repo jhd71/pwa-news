@@ -35,11 +35,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Actu&Média">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-	<!-- Fix iOS Safari spécifiques -->
-    <meta name="format-detection" content="telephone=no">
-    <meta name="format-detection" content="date=no">
-    <meta name="format-detection" content="address=no">
-    <meta name="format-detection" content="email=no">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <!-- Favicons et icônes -->
@@ -100,7 +95,6 @@
 	<link rel="stylesheet" href="css/theme-bleuciel.css">
 	<link rel="stylesheet" href="css/background-selector.css">
 	<link rel="stylesheet" href="css/ios-specific.css">
-	<link rel="stylesheet" href="css/donation.css">
 	<link rel="canonical" href="https://actuetmedia.fr/" />
 </head>
 <body>
@@ -307,14 +301,14 @@ document.getElementById('currentYear').textContent = new Date().getFullYear();
         <span class="material-icons">grid_view</span>
         <span>Vue</span>
     </button>
-    <button class="nav-item" id="donateButton">
-  <span class="material-icons">favorite</span>
-  <span>Soutenir</span>
-	</button>
+    <button class="nav-item" id="donateBtn">
+      <span class="material-icons">volunteer_activism</span>
+      <span>Soutenir</span>
+    </button>
 	<button class="nav-item" id="transparencyWidget">
     <span class="material-icons">opacity</span>
     <span>Transparence</span>
-	</button>
+</button>
     <!-- Bouton de chat existant -->
     <button class="nav-item chat-toggle-btn" id="chatToggleBtn">
         <span class="material-icons">chat</span>
