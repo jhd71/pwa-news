@@ -224,3 +224,122 @@ body {
     font-size: 0.7rem;
   }
 }
+
+/* ===== CORRECTIONS iOS SPÉCIFIQUES SUPPLÉMENTAIRES ===== */
+
+/* Fix pour la gestion du viewport sur iOS Safari */
+.ios-device html {
+  height: 100%;
+  height: -webkit-fill-available;
+}
+
+.ios-device body {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Fix pour les tuiles qui ne sont pas cliquables sur iOS */
+.ios-device .tile {
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+  position: relative;
+  z-index: 1;
+}
+
+/* Fix pour le Swiper qui ne fonctionne pas bien sur iOS */
+.ios-device .swiper {
+  -webkit-overflow-scrolling: touch;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.ios-device .swiper-slide {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+/* Fix pour les boutons de navigation qui ne répondent pas */
+.ios-device .nav-item,
+.ios-device .menu-button,
+.ios-device .settings-button {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
+/* Fix pour les menus et modales */
+.ios-device .sidebar,
+.ios-device .settings-menu {
+  -webkit-overflow-scrolling: touch;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Fix pour les problèmes de chat sur iOS */
+.ios-device .chat-container {
+  position: fixed;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+
+/* Fix pour les inputs dans le chat */
+.ios-device .chat-input textarea {
+  -webkit-appearance: none;
+  border-radius: 8px;
+  resize: none;
+  font-size: 16px !important;
+}
+
+/* Fix pour les widgets flottants */
+.ios-device .weather-sidebar,
+.ios-device .quick-links-sidebar {
+  -webkit-overflow-scrolling: touch;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Fix pour le news panel qui peut bloquer */
+.ios-device .news-panel {
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  will-change: transform;
+}
+
+/* Fix pour les séparateurs cliquables */
+.ios-device .separator {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Amélioration des performances sur iOS */
+.ios-device .tile-container {
+  will-change: auto;
+  contain: layout style paint;
+}
+
+/* Fix pour éviter les bugs de layout sur iOS */
+.ios-device main {
+  contain: layout style;
+  isolation: isolate;
+}
+
+/* Fix pour le problème de bounce sur iOS */
+.ios-device {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+.ios-device body {
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
+}
