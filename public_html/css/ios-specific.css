@@ -105,7 +105,6 @@ img {
 /* Fix pour le header avec la zone safe area */
 .app-header {
   padding-top: env(safe-area-inset-top, 0);
-  background: var(--header-bg, #1a237e);
 }
 
 /* Fix pour la sidebar avec safe area */
