@@ -276,19 +276,19 @@ document.getElementById('currentYear').textContent = new Date().getFullYear();
     </div>
 </aside>
 
-<!-- Conteneur principal des tuiles -->
-<main>
+	<!-- Conteneur principal des tuiles -->
+	<main>
     <div id="tileContainer" class="tile-container grid"></div>
-</main>
+	</main>
 
-<!-- Ticker d'actualités -->
-<div class="news-ticker">
+	<!-- Ticker d'actualités -->
+	<div class="news-ticker">
   <div class="ticker-wrapper" id="newsTicker">
     <div class="ticker-item">Chargement des actualités...</div>
   </div>
-</div>
-<!-- Barre de navigation du bas -->
-<nav class="bottom-nav">
+	</div>
+	<!-- Barre de navigation du bas -->
+	<nav class="bottom-nav">
     <button class="nav-item" id="darkModeToggle">
         <span class="material-icons">dark_mode</span>
         <span>Sombre</span>
@@ -301,60 +301,60 @@ document.getElementById('currentYear').textContent = new Date().getFullYear();
         <span class="material-icons">grid_view</span>
         <span>Vue</span>
     </button>
-    <button class="nav-item" id="donateBtn">
-      <span class="material-icons">volunteer_activism</span>
-      <span>Soutenir</span>
-    </button>
+    <button class="nav-item" id="donateButton">
+  <span class="material-icons">favorite</span>
+  <span>Soutenir</span>
+	</button>
 	<button class="nav-item" id="transparencyWidget">
     <span class="material-icons">opacity</span>
     <span>Transparence</span>
-</button>
+	</button>
     <!-- Bouton de chat existant -->
     <button class="nav-item chat-toggle-btn" id="chatToggleBtn">
         <span class="material-icons">chat</span>
         <span>Chat</span>
         <span class="chat-notification-badge hidden">0</span>
     </button>
-</nav>
-<!-- Scripts essentiels (chargement rapide) -->
-<script src="js/ios-detector.js"></script>
-<script src="js/ios-install.js"></script>
-<script src="js/ios-chat-fix.js"></script>
-<script src="js/ios-safari-fixes.js"></script>
-<script src="js/ban-manager.js"></script>
+	</nav>
+	<!-- Scripts essentiels (chargement rapide) -->
+	<script src="js/ios-detector.js"></script>
+	<script src="js/ios-install.js"></script>
+	<script src="js/ios-chat-fix.js"></script>
+	<script src="js/ios-safari-fixes.js"></script>
+	<script src="js/ban-manager.js"></script>
 
-<!-- Scripts de fonctionnalités -->
-<script src="js/welcome-manager.js"></script>
-<script src="js/news-manager.js"></script>
-<script src="js/newsTickerManager.js"></script>
-<script src="js/newsPanel.js"></script>
-<script src="js/weather-widget.js"></script>
-<script src="js/quick-links.js"></script>
-<script src="js/tablet-fixes.js"></script>
-<script src="js/chat-keyboard-fix.js"></script>
-<script src="js/ban-check.js"></script>
-<script src="js/theme-manager.js"></script>
-<script src="js/donation.js"></script>
-<script src="js/survey-manager.js"></script>
+	<!-- Scripts de fonctionnalités -->
+	<script src="js/welcome-manager.js"></script>
+	<script src="js/news-manager.js"></script>
+	<script src="js/newsTickerManager.js"></script>
+	<script src="js/newsPanel.js"></script>
+	<script src="js/weather-widget.js"></script>
+	<script src="js/quick-links.js"></script>
+	<script src="js/tablet-fixes.js"></script>
+	<script src="js/chat-keyboard-fix.js"></script>
+	<script src="js/ban-check.js"></script>
+	<script src="js/theme-manager.js"></script>
+	<script src="js/donation.js"></script>
+	<script src="js/survey-manager.js"></script>
 
-<!-- Script d'initialisation principal -->
-<script type="module" src="js/app-initializer.js"></script>
+	<!-- Script d'initialisation principal -->
+	<script type="module" src="js/app-initializer.js"></script>
 
-<!-- Bouton Infos en direct -->
-<div class="button-group" style="display: flex; justify-content: center; gap: 10px; margin: 20px 0;">
+	<!-- Bouton Infos en direct -->
+	<div class="button-group" style="display: flex; justify-content: center; gap: 10px; margin: 20px 0;">
   <!-- Bouton existant -->
   <button id="newsButton" class="news-button">
     <span class="material-icons">feed</span>
     <span>Infos en direct</span>
   </button>
   <!-- Bouton pour réafficher le widget (en dehors du sidebar) -->
-<button class="weather-show-btn" id="weatherShowBtn" title="Afficher la météo">
+	<button class="weather-show-btn" id="weatherShowBtn" title="Afficher la météo">
   <span class="material-icons">cloudy_snowing</span>
-</button>
+	</button>
   
-</div>
-<!-- Widget liens rapides avec bouton de fermeture -->
-<div class="quick-links-sidebar" id="quickLinksSidebar">
+	</div>
+	<!-- Widget liens rapides avec bouton de fermeture -->
+	<div class="quick-links-sidebar" id="quickLinksSidebar">
   <button class="quick-links-toggle" title="Masquer les liens rapides">
     <span class="material-icons">close</span>
   </button>

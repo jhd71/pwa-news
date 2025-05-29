@@ -2073,27 +2073,11 @@ body.long-press-active .message-options {
   }
   
   .admin-panel .panel-content {
-    padding: 15px !important;
-    height: calc(100vh - 200px) !important; /* Utilise la hauteur de la fenêtre au lieu de 100% */
-    max-height: calc(100vh - 200px) !important; /* Ajoute une hauteur max */
+    height: calc(100vh - 130px) !important;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
-	}
+  }
   
-  /* Correction spécifique pour la section des photos */
-	#gallery-section .photos-list,
-	#comments-section .comments-list {
-    max-height: calc(100vh - 300px) !important;
-    overflow-y: auto !important;
-    padding: 5px !important;
-	}
-
-	/* S'assurer que la grille des photos utilise tout l'espace disponible */
-	.admin-photos-grid {
-    height: auto !important;
-    max-height: none !important;
-	}
-
   .admin-panel .panel-tabs {
     background: #2a2a2a !important;
     overflow-x: auto !important;
