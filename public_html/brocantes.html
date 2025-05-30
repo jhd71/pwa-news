@@ -356,11 +356,36 @@
 
         // Charger le thème sauvegardé ou celui du site principal
         function loadTheme() {
-            const savedTheme = localStorage.getItem('brocantes-theme') || 
-                              localStorage.getItem('theme') || 
-                              'light';
-            setTheme(savedTheme);
-        }
+    // 1. Priorité au thème du site principal
+    const mainSiteTheme = localStorage.getItem('theme') || 
+                         localStorage.getItem('selectedTheme') ||
+                         document.documentElement.getAttribute('data-theme');
+    
+    // 2. Sinon thème spécifique à la page brocantes
+    const brocantesTheme = localStorage.getItem('brocantes-theme');
+    
+    // 3. Sinon thème par défaut
+    const finalTheme = mainSiteTheme || brocantesTheme || 'light';
+    
+    console.log('Thème détecté:', finalTheme);
+    setTheme(finalTheme);
+}
+
+// Fonction améliorée pour sauvegarder les thèmes
+function setTheme(theme) {
+    document.body.setAttribute('data-theme', theme);
+    
+    // Sauvegarder dans les deux clés pour compatibilité
+    localStorage.setItem('brocantes-theme', theme);
+    localStorage.setItem('theme', theme); // Sync avec le site principal
+}
+
+// Écouter les changements de thème du site principal (si ouvert en parallèle)
+window.addEventListener('storage', function(e) {
+    if (e.key === 'theme' && e.newValue) {
+        setTheme(e.newValue);
+    }
+});
 
         // Fonction pour formater les dates
         function formatDate(dateString) {
