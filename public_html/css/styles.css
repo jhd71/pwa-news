@@ -2795,29 +2795,6 @@ button#refreshButton.refresh-button {
     }
 }
 
-/* Badge NOUVEAU pour la tuile Photos */
-.tile[data-category="photos"]::after {
-    content: 'NOUVEAU';
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background: #ff4757;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.7em;
-    font-weight: bold;
-    box-shadow: 0 2px 8px rgba(255, 71, 87, 0.4);
-    animation: pulse 2s infinite;
-    z-index: 3;
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-}
-
 /* ===== STYLES POUR LE WIDGET DE TRANSPARENCE ===== */
 
 /* Widget dans la navigation */
