@@ -3928,25 +3928,9 @@ border-color: #ffd230 !important;
     position: relative;
 }
 
-/* Supprimer le padding spécifiquement pour la tuile Photos en mode liste */
-#tileContainer.list .tile.slideshow-tile.enhanced-visibility {
-    padding: 0 !important;
-}
-
-/* S'assurer que l'image remplit complètement */
-#tileContainer.list .tile.slideshow-tile.enhanced-visibility .slideshow-preview,
-#tileContainer.list .tile.slideshow-tile.enhanced-visibility img {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    border-radius: inherit !important;
-}
-
-/* Position relative pour que l'absolute fonctionne */
-#tileContainer.list .tile.slideshow-tile.enhanced-visibility {
-    position: relative !important;
-    overflow: hidden !important;
+/* Masquer la tuile Photos en mode liste uniquement */
+#tileContainer.list .tile.slideshow-tile.enhanced-visibility,
+#tileContainer.list .tile[data-category="photos"],
+.tile-container.list .slideshow-tile {
+    display: none !important;
 }
