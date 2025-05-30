@@ -83,7 +83,7 @@
     
     /* Ajuster l'espacement pour le premier séparateur */
     .separator:first-of-type {
-        margin-top: 50px !important;
+        margin-top: 70px !important;
     }
     
     /* Style du bouton sur mobile */

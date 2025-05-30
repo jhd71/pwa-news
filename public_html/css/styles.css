@@ -1061,7 +1061,7 @@ background-color: #1a237e;
 @media (max-width: 600px) {
     /* Header et Logo */
     .site-logo {
-        height: 80px !important;
+        height: 60px !important;
         width: auto !important;
         max-width: none !important;
         display: block !important;
