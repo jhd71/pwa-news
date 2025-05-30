@@ -2750,15 +2750,8 @@ button#refreshButton.refresh-button {
     display: none !important;
 }
 
-/* Masquer TOUT le texte sur la tuile diaporama pour laisser place aux images */
-.tile.slideshow-tile.enhanced-visibility .tile-title,
-.tile.slideshow-tile.enhanced-visibility .mini-slide-overlay,
-.tile.slideshow-tile .tile-title {
-    display: none !important;
-}
-
-/* S'assurer que la tuile photos est bien positionnée */
-.tile.slideshow-tile.enhanced-visibility {
+/* S'assurer que la tuile est positionnée correctement */
+.title[data-category="photos"] {
     position: relative !important;
     overflow: hidden !important;
 }
@@ -3841,6 +3834,11 @@ border-color: #ffd230 !important;
     letter-spacing: 2px;
 }
 
+/* Masquer le texte sur la tuile diaporama pour laisser place aux images */
+.tile[data-category="photos"].slideshow-tile .tile-title {
+    display: none !important;
+}
+
 /* OU si vous préférez le garder mais très discret */
 .tile[data-category="photos"].slideshow-tile .mini-slide-overlay .tile-title {
     font-size: 11px !important;
@@ -3857,7 +3855,7 @@ border-color: #ffd230 !important;
 }
 
 /* Image pleine tuile pour le diaporama */
-.tile.slideshow-tile.enhanced-visibility .slideshow-preview {
+.tile[data-category="photos"].slideshow-tile .slideshow-preview {
     position: absolute;
     top: 0;
     left: 0;
@@ -3865,25 +3863,26 @@ border-color: #ffd230 !important;
     bottom: 0;
     width: 100%;
     height: 100%;
-    border-radius: inherit;
+    border-radius: inherit; /* Hérite du border-radius de la tuile */
 }
 
-.tile.slideshow-tile.enhanced-visibility .mini-slide-container {
+.tile[data-category="photos"].slideshow-tile .mini-slide-container {
     width: 100%;
     height: 100%;
     border-radius: inherit;
     overflow: hidden;
 }
 
-.tile.slideshow-tile.enhanced-visibility .mini-slide-image {
+.tile[data-category="photos"].slideshow-tile .mini-slide-image {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: cover; /* Remplit complètement la tuile */
     transition: opacity 0.5s ease;
     border-radius: inherit;
 }
 
-.tile.slideshow-tile.enhanced-visibility .mini-slide-placeholder {
+/* Placeholder qui remplit aussi toute la tuile */
+.tile[data-category="photos"].slideshow-tile .mini-slide-placeholder {
     position: absolute;
     top: 0;
     left: 0;
@@ -3891,14 +3890,6 @@ border-color: #ffd230 !important;
     bottom: 0;
     background: linear-gradient(135deg, #FF6B6B, #4ECDC4, #45B7D1, #96CEB4);
     border-radius: inherit;
-}
-
-.tile.slideshow-tile.enhanced-visibility .tile-content {
-    padding: 0 !important;
-    margin: 0 !important;
-    width: 100%;
-    height: 100%;
-    position: relative;
 }
 
 /* Overlay discret en bas */
