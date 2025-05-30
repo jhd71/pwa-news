@@ -281,12 +281,12 @@ setupTVIcons() {
   },
   {
     title: '🛍️ Brocantes',
-    url: '/brocantes',
-    mobileUrl: '/brocantes',
+    url: 'https://brocabrac.fr/71/montceau-les-mines/',
+    mobileUrl: 'https://brocabrac.fr/71/montceau-les-mines/',
     isDefault: true,
-    category: 'events', // Nouvelle catégorie pour la différencier
-    specialStyle: 'brocantes' // Flag pour un style spécial
-  }
+    category: 'events',
+    specialStyle: 'brocantes'
+	}
 	];
 
 	// Ajouter la tuile Photos séparément après la liste des sites d'actualités
@@ -294,13 +294,12 @@ setupTVIcons() {
 
 // NOUVELLE TUILE DIAPORAMA
 const slideshowTile = {
-    title: "",  // ← Vide ou masqué
+    title: "🎞️ Galerie<br>Photos", 
     url: "#slideshow",
     mobileUrl: "#slideshow",
     isDefault: true,
     category: "photos",
-    isSlideshow: true,
-    fullImageMode: true  // ← AJOUTEZ CETTE LIGNE
+    isSlideshow: true
 };
 
 // Créer les tuiles d'actualités
@@ -599,15 +598,9 @@ const tvSites = [
 	}
     // Vérifier si c'est un lien interne ou externe
     const url = site.mobileUrl || site.url;
-    
-    if (url.startsWith('/')) {
-        // Lien interne (comme /brocantes)
-        window.location.href = url;
-    } else if (url.startsWith('http')) {
-        // Lien externe
+    if (url.startsWith('http')) {
         window.open(url, '_blank');
     } else {
-        // Fallback pour autres types de liens
         window.location.href = url;
     }
 });

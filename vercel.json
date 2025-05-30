@@ -52,10 +52,6 @@
       "dest": "/public_html/index.html"
     },
     {
-      "src": "^/brocantes$",
-      "dest": "/public_html/brocantes.html"
-    },
-    {
       "src": "/(.*)",
       "dest": "/public_html/$1"
     }
