@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brocantes et Vide-Greniers - Montceau-les-Mines | ActuetMedia</title>
+    <meta name="description" content="Découvrez tous les événements brocantes et vide-greniers à Montceau-les-Mines. Agenda complet des événements pour les chineurs.">
+    
+    <!-- Liens vers vos CSS existants pour récupérer les thèmes -->
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* Variables CSS pour les thèmes - adaptées de votre site */
+        :root {
+            --primary-color: #C5554C;
+            --secondary-color: #87CEEB;
+            --accent-color: #8b5cf6;
+            --text-color: #333;
+            --bg-color: #ffffff;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] {
+            --text-color: #ffffff;
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --border-color: #404040;
+            --shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        [data-theme="rouge"] {
+            --primary-color: #C5554C;
+            --secondary-color: #ff6b6b;
+            --bg-color: #fef2f2;
+            --card-bg: #ffffff;
+        }
+
+        [data-theme="bleuciel"] {
+            --primary-color: #87CEEB;
+            --secondary-color: #5dade2;
+            --bg-color: #f0f8ff;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.3s ease;
+            min-height: 100vh;
+        }
+        
+        .brocantes-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .brocantes-header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+        
+        .brocantes-title {
+            font-size: 2.5rem;
+            color: var(--text-color);
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .brocantes-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-color);
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(197, 85, 76, 0.3);
+        }
+        
+        .theme-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .theme-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .theme-light { background: #ffffff; }
+        .theme-dark { background: #1a1a1a; }
+        .theme-rouge { background: #C5554C; }
+        .theme-bleuciel { background: #87CEEB; }
+        
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .event-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border-left: 5px solid var(--accent-color);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        
+        .event-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(139, 92, 246, 0.2);
+        }
+        
+        .event-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color), var(--secondary-color));
+        }
+        
+        .event-type {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        
+        .event-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--text-color);
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+        
+        .event-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+        
+        .event-info svg {
+            width: 18px;
+            height: 18px;
+            color: var(--primary-color);
+        }
+        
+        .event-description {
+            color: var(--text-color);
+            opacity: 0.7;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .event-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .event-link:hover {
+            color: var(--accent-color);
+            transform: translateX(5px);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-color);
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background: rgba(197, 85, 76, 0.1);
+            color: var(--primary-color);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            border: 1px solid var(--primary-color);
+        }
+        
+        .no-events {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            color: var(--text-color);
+            opacity: 0.8;
+            border: 1px solid var(--border-color);
+        }
+        
+        .footer-info {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            color: var(--text-color);
+            opacity: 0.8;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .brocantes-container {
+                padding: 15px;
+            }
+            
+            .brocantes-title {
+                font-size: 2rem;
+            }
+            
+            .events-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .event-card {
+                padding: 20px;
+            }
+            
+            .theme-switcher {
+                position: relative;
+                top: auto;
+                right: auto;
+                justify-content: center;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <div class="theme-switcher">
+        <div class="theme-btn theme-light" onclick="setTheme('light')" title="Thème clair"></div>
+        <div class="theme-btn theme-dark" onclick="setTheme('dark')" title="Thème sombre"></div>
+        <div class="theme-btn theme-rouge" onclick="setTheme('rouge')" title="Thème rouge"></div>
+        <div class="theme-btn theme-bleuciel" onclick="setTheme('bleuciel')" title="Thème bleu ciel"></div>
+    </div>
+
+    <div class="brocantes-container">
+        <div class="brocantes-header">
+            <a href="/" class="back-button">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Retour à l'accueil
+            </a>
+            
+            <h1 class="brocantes-title">🛍️ Brocantes & Vide-Greniers</h1>
+            <p class="brocantes-subtitle">Montceau-les-Mines et environs</p>
+        </div>
+
+        <div id="loading" class="loading">
+            <div class="loading-spinner"></div>
+            <p>Chargement des événements...</p>
+        </div>
+
+        <div id="error" class="error-message" style="display: none;">
+            <p>Erreur lors du chargement des brocantes. Veuillez réessayer plus tard.</p>
+        </div>
+
+        <div id="events-container"></div>
+
+        <div class="footer-info">
+            <p><strong>Données mises à jour quotidiennement</strong> depuis Brocabrac.fr</p>
+            <p>Pour plus d'informations ou pour ajouter votre événement, consultez directement le site source.</p>
+        </div>
+    </div>
+
+    <script>
+        // Gestion des thèmes
+        function setTheme(theme) {
+            document.body.setAttribute('data-theme', theme);
+            localStorage.setItem('brocantes-theme', theme);
+        }
+
+        // Charger le thème sauvegardé ou celui du site principal
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('brocantes-theme') || 
+                              localStorage.getItem('theme') || 
+                              'light';
+            setTheme(savedTheme);
+        }
+
+        // Fonction pour formater les dates
+        function formatDate(dateString) {
+            if (!dateString || dateString === 'Date à confirmer') {
+                return 'Date à confirmer';
+            }
+            
+            try {
+                let date;
+                if (dateString.includes('/')) {
+                    const [day, month, year] = dateString.split('/');
+                    date = new Date(year, month - 1, day);
+                } else {
+                    date = new Date(dateString);
+                }
+                
+                if (isNaN(date.getTime())) {
+                    return dateString;
+                }
+                
+                return date.toLocaleDateString('fr-FR', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            } catch (e) {
+                return dateString;
+            }
+        }
+
+        // Fonction pour créer une carte d'événement
+        function createEventCard(event) {
+            const typeColors = {
+                'vide-grenier': '🏠',
+                'brocante': '🛍️',
+                'marché': '🏪',
+                'braderie': '🛒',
+                'troc': '🔄',
+                'info': '📅'
+            };
+
+            const icon = typeColors[event.type] || '🛍️';
+
+            return `
+                <div class="event-card">
+                    <div class="event-type">${icon} ${event.type}</div>
+                    <h2 class="event-title">${event.title}</h2>
+                    
+                    ${event.date ? `
+                        <div class="event-info">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            <span>${formatDate(event.date)}</span>
+                        </div>
+                    ` : ''}
+                    
+                    ${event.location ? `
+                        <div class="event-info">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            <span>${event.location}</span>
+                        </div>
+                    ` : ''}
+                    
+                    ${event.description && event.description !== event.title ? `
+                        <p class="event-description">${event.description}</p>
+                    ` : ''}
+                    
+                    ${event.link ? `
+                        <a href="${event.link}" target="_blank" rel="noopener noreferrer" class="event-link">
+                            Voir les détails
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                            </svg>
+                        </a>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        // Fonction principale pour charger les brocantes
+        async function loadBrocantes() {
+            const loadingEl = document.getElementById('loading');
+            const errorEl = document.getElementById('error');
+            const containerEl = document.getElementById('events-container');
+
+            try {
+                const response = await fetch('https://raw.githubusercontent.com/jhd71/scraper-brocantes-montceau/main/data/brocantes.json');
+                
+                if (!response.ok) {
+                    throw new Error('Erreur de chargement');
+                }
+
+                const data = await response.json();
+                const events = data.events || [];
+
+                loadingEl.style.display = 'none';
+
+                if (events.length === 0) {
+                    containerEl.innerHTML = `
+                        <div class="no-events">
+                            <h3>Aucun événement trouvé pour le moment</h3>
+                            <p>Consultez Brocabrac.fr pour les dernières mises à jour</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Trier les événements par date
+                events.sort((a, b) => {
+                    if (a.date === 'Date à confirmer') return 1;
+                    if (b.date === 'Date à confirmer') return -1;
+                    return new Date(a.date) - new Date(b.date);
+                });
+
+                const eventsGrid = document.createElement('div');
+                eventsGrid.className = 'events-grid';
+                eventsGrid.innerHTML = events.map(event => createEventCard(event)).join('');
+
+                containerEl.appendChild(eventsGrid);
+
+            } catch (error) {
+                console.error('Erreur chargement brocantes:', error);
+                loadingEl.style.display = 'none';
+                errorEl.style.display = 'block';
+            }
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTheme();
+            loadBrocantes();
+        });
+    </script>
+</body>
+</html>

@@ -3934,3 +3934,67 @@ border-color: #ffd230 !important;
 .tile-container.list .slideshow-tile {
     display: none !important;
 }
+
+                                /* Style spécial pour la tuile Brocantes */
+.tile[data-category="events"] {
+    background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 50%, #f59e0b 100%) !important;
+    border: 2px solid #8b5cf6;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
+}
+
+.tile[data-category="events"]:before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+    animation: shimmer 4s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.tile[data-category="events"]:hover {
+    transform: scale(1.08) rotate(2deg);
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+    border-color: #f59e0b;
+}
+
+.tile[data-category="events"] .tile-title {
+    color: #ffffff !important;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    font-weight: bold;
+    position: relative;
+    z-index: 2;
+}
+
+/* Badge "NOUVEAU" */
+.tile[data-category="events"]:after {
+    content: 'NOUVEAU';
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: #ef4444;
+    color: white;
+    font-size: 9px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: bold;
+    text-shadow: none;
+    z-index: 3;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Animation shimmer */
+@keyframes shimmer {
+    0%, 100% { 
+        transform: translateX(-100%) translateY(-100%) rotate(45deg); 
+        opacity: 0;
+    }
+    50% { 
+        transform: translateX(100%) translateY(100%) rotate(45deg); 
+        opacity: 1;
+    }
+}

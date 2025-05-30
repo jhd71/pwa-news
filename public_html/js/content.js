@@ -278,6 +278,14 @@ setupTVIcons() {
     mobileUrl: 'https://macon-infos.com/fr/faits-divers/macon',
     isDefault: true,
     category: 'news'
+  },
+  {
+    title: '🛍️ Brocantes',
+    url: '/brocantes',
+    mobileUrl: '/brocantes',
+    isDefault: true,
+    category: 'events', // Nouvelle catégorie pour la différencier
+    specialStyle: 'brocantes' // Flag pour un style spécial
   }
 	];
 
@@ -591,9 +599,15 @@ const tvSites = [
 	}
     // Vérifier si c'est un lien interne ou externe
     const url = site.mobileUrl || site.url;
-    if (url.startsWith('http')) {
+    
+    if (url.startsWith('/')) {
+        // Lien interne (comme /brocantes)
+        window.location.href = url;
+    } else if (url.startsWith('http')) {
+        // Lien externe
         window.open(url, '_blank');
     } else {
+        // Fallback pour autres types de liens
         window.location.href = url;
     }
 });
