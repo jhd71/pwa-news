@@ -286,12 +286,13 @@ setupTVIcons() {
 
 // NOUVELLE TUILE DIAPORAMA
 const slideshowTile = {
-    title: "🎞️ Galerie<br>Photos", 
+    title: "",  // ← Vide ou masqué
     url: "#slideshow",
     mobileUrl: "#slideshow",
     isDefault: true,
     category: "photos",
-    isSlideshow: true
+    isSlideshow: true,
+    fullImageMode: true  // ← AJOUTEZ CETTE LIGNE
 };
 
 // Créer les tuiles d'actualités
