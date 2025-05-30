@@ -6,10 +6,86 @@
     <title>Brocantes et Vide-Greniers - Montceau-les-Mines | ActuetMedia</title>
     <meta name="description" content="Découvrez tous les événements brocantes et vide-greniers à Montceau-les-Mines. Agenda complet des événements pour les chineurs.">
     
-    <!-- Liens vers vos CSS existants pour récupérer les thèmes -->
-    <link rel="stylesheet" href="style.css">
-    
     <style>
+        :root {
+            --bg-color: #ffffff;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --text-secondary: #666666;
+            --border-color: #e2e8f0;
+            --primary-color: #C5554C;
+            --accent-color: #8b5cf6;
+            --shadow: 0 8px 25px rgba(0,0,0,0.1);
+            --hover-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-color: #ffffff;
+            --text-secondary: #cccccc;
+            --border-color: #404040;
+            --primary-color: #ff6b6b;
+            --accent-color: #a78bfa;
+            --shadow: 0 8px 25px rgba(0,0,0,0.3);
+            --hover-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.3s ease;
+            min-height: 100vh;
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 30px;
+            padding: 8px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .theme-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .theme-icon.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .theme-icon.inactive {
+            color: var(--text-secondary);
+        }
+        
         .brocantes-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -20,22 +96,27 @@
         .brocantes-header {
             text-align: center;
             margin-bottom: 40px;
-            background: var(--card-background, #ffffff);
+            background: var(--card-bg);
             padding: 30px;
             border-radius: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color, #e2e8f0);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
         }
         
         .brocantes-title {
             font-size: 2.5rem;
-            color: var(--text-color, #333);
+            color: var(--text-color);
             margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         .brocantes-subtitle {
             font-size: 1.2rem;
-            color: var(--text-color, #666);
+            color: var(--text-secondary);
             margin-bottom: 20px;
         }
         
@@ -43,7 +124,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: var(--primary-color, #C5554C);
+            background: var(--primary-color);
             color: white;
             padding: 12px 24px;
             border-radius: 25px;
@@ -56,6 +137,7 @@
         .back-button:hover {
             transform: translateY(-2px);
             opacity: 0.9;
+            box-shadow: 0 8px 20px rgba(197, 85, 76, 0.3);
         }
         
         .events-grid {
@@ -66,26 +148,36 @@
         }
         
         .event-card {
-            background: var(--card-background, #ffffff);
+            background: var(--card-bg);
             border-radius: 20px;
             padding: 25px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow);
             transition: all 0.3s ease;
-            border-left: 5px solid var(--accent-color, #8b5cf6);
+            border-left: 5px solid var(--accent-color);
             position: relative;
             overflow: hidden;
-            border: 1px solid var(--border-color, #e2e8f0);
+            border: 1px solid var(--border-color);
             cursor: pointer;
         }
         
         .event-card:hover {
             transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .event-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
         }
         
         .event-type {
             display: inline-block;
-            background: var(--primary-color, #8b5cf6);
+            background: var(--primary-color);
             color: white;
             padding: 6px 12px;
             border-radius: 20px;
@@ -98,7 +190,7 @@
         .event-title {
             font-size: 1.4rem;
             font-weight: bold;
-            color: var(--text-color, #333);
+            color: var(--text-color);
             margin-bottom: 15px;
             line-height: 1.3;
         }
@@ -108,17 +200,18 @@
             align-items: center;
             gap: 8px;
             margin-bottom: 10px;
-            color: var(--text-color, #666);
+            color: var(--text-secondary);
         }
         
         .event-info svg {
             width: 18px;
             height: 18px;
-            color: var(--primary-color, #8b5cf6);
+            color: var(--primary-color);
+            flex-shrink: 0;
         }
         
         .event-description {
-            color: var(--text-color, #666);
+            color: var(--text-secondary);
             margin-bottom: 20px;
             line-height: 1.5;
         }
@@ -127,7 +220,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            color: var(--primary-color, #8b5cf6);
+            color: var(--primary-color);
             text-decoration: none;
             font-weight: bold;
             transition: all 0.3s ease;
@@ -141,14 +234,14 @@
         .loading {
             text-align: center;
             padding: 60px 20px;
-            color: var(--text-color, #333);
+            color: var(--text-color);
         }
         
         .loading-spinner {
             width: 50px;
             height: 50px;
-            border: 4px solid var(--border-color, #e2e8f0);
-            border-top: 4px solid var(--primary-color, #8b5cf6);
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--primary-color);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 20px;
@@ -161,38 +254,39 @@
         
         .error-message {
             background: rgba(197, 85, 76, 0.1);
-            color: var(--primary-color, #C5554C);
+            color: var(--primary-color);
             padding: 20px;
             border-radius: 10px;
             text-align: center;
             margin: 20px 0;
-            border: 1px solid var(--primary-color, #C5554C);
+            border: 1px solid var(--primary-color);
         }
         
         .no-events {
             text-align: center;
             padding: 60px 20px;
-            background: var(--card-background, #ffffff);
+            background: var(--card-bg);
             border-radius: 20px;
-            color: var(--text-color, #666);
-            border: 1px solid var(--border-color, #e2e8f0);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
         }
         
         .footer-info {
             text-align: center;
             margin-top: 40px;
             padding: 20px;
-            background: var(--card-background, #ffffff);
+            background: var(--card-bg);
             border-radius: 15px;
-            color: var(--text-color, #666);
+            color: var(--text-secondary);
             font-size: 0.9rem;
-            border: 1px solid var(--border-color, #e2e8f0);
+            border: 1px solid var(--border-color);
         }
         
         /* Responsive */
         @media (max-width: 768px) {
             .brocantes-container {
                 padding: 15px;
+                padding-top: 80px; /* Espace pour le bouton theme */
             }
             
             .brocantes-title {
@@ -207,10 +301,30 @@
             .event-card {
                 padding: 20px;
             }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                padding: 6px;
+            }
         }
     </style>
 </head>
-<body>
+<body data-theme="light">
+    <!-- Toggle Clair/Sombre -->
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <div class="theme-icon" id="light-icon">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+            </svg>
+        </div>
+        <div class="theme-icon" id="dark-icon">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+        </div>
+    </div>
+
     <div class="brocantes-container">
         <div class="brocantes-header">
             <a href="/" class="back-button">
@@ -241,29 +355,52 @@
         </div>
     </div>
 
-    <!-- Script pour synchroniser les thèmes - EXACTEMENT comme photos-gallery.html -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Synchroniser le thème avec le reste de l'application
-            function syncAppSettings() {
-                const currentTheme = localStorage.getItem('theme') || 'light';
-                document.documentElement.setAttribute('data-theme', currentTheme);
-                
-                const currentFontSize = localStorage.getItem('fontSize') || 'normal';
-                document.documentElement.setAttribute('data-font-size', currentFontSize);
-                
-                console.log('Thème brocantes appliqué:', currentTheme);
+        // Gestion du thème Clair/Sombre
+        function toggleTheme() {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('brocantes-theme', newTheme);
+            localStorage.setItem('theme', newTheme); // Sync avec le site principal
+            
+            updateThemeIcons(newTheme);
+        }
+
+        function updateThemeIcons(theme) {
+            const lightIcon = document.getElementById('light-icon');
+            const darkIcon = document.getElementById('dark-icon');
+            
+            if (theme === 'dark') {
+                lightIcon.classList.remove('active');
+                lightIcon.classList.add('inactive');
+                darkIcon.classList.remove('inactive');
+                darkIcon.classList.add('active');
+            } else {
+                lightIcon.classList.remove('inactive');
+                lightIcon.classList.add('active');
+                darkIcon.classList.remove('active');
+                darkIcon.classList.add('inactive');
             }
+        }
+
+        function loadTheme() {
+            // Récupérer le thème sauvegardé
+            const savedTheme = localStorage.getItem('brocantes-theme') || 
+                              localStorage.getItem('theme') || 
+                              'light';
             
-            // Appliquer les réglages au chargement
-            syncAppSettings();
-            
-            // Mettre à jour si les réglages changent dans d'autres onglets
-            window.addEventListener('storage', function(event) {
-                if (event.key === 'theme' || event.key === 'fontSize') {
-                    syncAppSettings();
-                }
-            });
+            document.body.setAttribute('data-theme', savedTheme);
+            updateThemeIcons(savedTheme);
+        }
+
+        // Écouter les changements de thème du site principal
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'theme' && e.newValue) {
+                document.body.setAttribute('data-theme', e.newValue);
+                updateThemeIcons(e.newValue);
+            }
         });
 
         // Fonction pour formater les dates
@@ -273,7 +410,7 @@
             }
             
             try {
-                // Parser format "Dimanche 01 Juin 2025"
+                // Parser format "25 Juin 2025"
                 const frenchMonths = {
                     'janvier': 0, 'février': 1, 'mars': 2, 'avril': 3, 'mai': 4, 'juin': 5,
                     'juillet': 6, 'août': 7, 'septembre': 8, 'octobre': 9, 'novembre': 10, 'décembre': 11
@@ -281,9 +418,9 @@
                 
                 const parts = dateString.toLowerCase().split(' ');
                 if (parts.length >= 3) {
-                    const day = parseInt(parts[1]);
-                    const month = frenchMonths[parts[2]];
-                    const year = parseInt(parts[3]) || new Date().getFullYear();
+                    const day = parseInt(parts[0]);
+                    const month = frenchMonths[parts[1]];
+                    const year = parseInt(parts[2]) || new Date().getFullYear();
                     
                     if (!isNaN(day) && month !== undefined) {
                         const date = new Date(year, month, day);
@@ -401,8 +538,11 @@
             }
         }
 
-        // Charger les brocantes après la synchronisation des thèmes
-        setTimeout(loadBrocantes, 100);
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTheme();
+            loadBrocantes();
+        });
     </script>
 </body>
 </html>
