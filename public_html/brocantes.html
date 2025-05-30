@@ -6,69 +6,10 @@
     <title>Brocantes et Vide-Greniers - Montceau-les-Mines | ActuetMedia</title>
     <meta name="description" content="Découvrez tous les événements brocantes et vide-greniers à Montceau-les-Mines. Agenda complet des événements pour les chineurs.">
     
+    <!-- Liens vers vos CSS existants pour récupérer les thèmes -->
+    <link rel="stylesheet" href="style.css">
+    
     <style>
-        /* Variables CSS pour les VRAIS thèmes de votre site */
-        :root {
-            --primary-color: #C5554C;
-            --secondary-color: #87CEEB;
-            --accent-color: #8b5cf6;
-            --text-color: #333;
-            --bg-color: #ffffff;
-            --card-bg: #ffffff;
-            --border-color: #e2e8f0;
-            --shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
-
-        /* Thème SOMBRE - fond noir */
-        [data-theme="dark"] {
-            --text-color: #ffffff;
-            --bg-color: #000000;
-            --card-bg: #1a1a1a;
-            --border-color: #404040;
-            --shadow: 0 8px 25px rgba(0,0,0,0.5);
-            --primary-color: #4169E1;
-        }
-
-        /* Thème ROUGE - fond rouge */
-        [data-theme="rouge"] {
-            --text-color: #ffffff;
-            --bg-color: #C5554C;
-            --card-bg: rgba(255,255,255,0.95);
-            --border-color: rgba(255,255,255,0.2);
-            --primary-color: #ffffff;
-            --accent-color: #ffffff;
-        }
-
-        /* Thème BLEU CIEL - fond bleu */
-        [data-theme="bleuciel"] {
-            --text-color: #ffffff;
-            --bg-color: #87CEEB;
-            --card-bg: rgba(255,255,255,0.95);
-            --border-color: rgba(255,255,255,0.2);
-            --primary-color: #ffffff;
-            --accent-color: #ffffff;
-        }
-
-        /* Thème VIOLET - fond violet */
-        [data-theme="violet"] {
-            --text-color: #ffffff;
-            --bg-color: #8b5cf6;
-            --card-bg: rgba(255,255,255,0.95);
-            --border-color: rgba(255,255,255,0.2);
-            --primary-color: #ffffff;
-            --accent-color: #ffffff;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            transition: all 0.3s ease;
-            min-height: 100vh;
-        }
-        
         .brocantes-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -79,35 +20,22 @@
         .brocantes-header {
             text-align: center;
             margin-bottom: 40px;
-            background: var(--card-bg);
+            background: var(--card-background, #ffffff);
             padding: 30px;
             border-radius: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color, #e2e8f0);
         }
         
         .brocantes-title {
             font-size: 2.5rem;
-            color: var(--text-color);
+            color: var(--text-color, #333);
             margin-bottom: 10px;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* Fix pour thèmes colorés où le texte doit rester visible */
-        [data-theme="rouge"] .brocantes-title,
-        [data-theme="bleuciel"] .brocantes-title,
-        [data-theme="violet"] .brocantes-title {
-            -webkit-text-fill-color: var(--text-color);
-            background: none;
         }
         
         .brocantes-subtitle {
             font-size: 1.2rem;
-            color: var(--text-color);
-            opacity: 0.8;
+            color: var(--text-color, #666);
             margin-bottom: 20px;
         }
         
@@ -115,53 +43,20 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: var(--primary-color);
-            color: var(--bg-color);
+            background: var(--primary-color, #C5554C);
+            color: white;
             padding: 12px 24px;
             border-radius: 25px;
             text-decoration: none;
             font-weight: bold;
             transition: all 0.3s ease;
             margin-bottom: 20px;
-            border: 2px solid var(--primary-color);
         }
         
         .back-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-            background: transparent;
-            color: var(--primary-color);
+            opacity: 0.9;
         }
-        
-        .theme-switcher {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            gap: 10px;
-            z-index: 1000;
-        }
-        
-        .theme-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid #ffffff;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-        
-        .theme-btn:hover {
-            transform: scale(1.2);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-        
-        .theme-light { background: #ffffff; }
-        .theme-dark { background: #000000; }
-        .theme-rouge { background: #C5554C; }
-        .theme-bleuciel { background: #87CEEB; }
-        .theme-violet { background: #8b5cf6; }
         
         .events-grid {
             display: grid;
@@ -171,15 +66,16 @@
         }
         
         .event-card {
-            background: var(--card-bg);
+            background: var(--card-background, #ffffff);
             border-radius: 20px;
             padding: 25px;
-            box-shadow: var(--shadow);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
-            border-left: 5px solid var(--accent-color);
+            border-left: 5px solid var(--accent-color, #8b5cf6);
             position: relative;
             overflow: hidden;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border-color, #e2e8f0);
+            cursor: pointer;
         }
         
         .event-card:hover {
@@ -187,20 +83,10 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.2);
         }
         
-        .event-card:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-        }
-        
         .event-type {
             display: inline-block;
-            background: var(--primary-color);
-            color: var(--bg-color);
+            background: var(--primary-color, #8b5cf6);
+            color: white;
             padding: 6px 12px;
             border-radius: 20px;
             font-size: 0.8rem;
@@ -212,16 +98,9 @@
         .event-title {
             font-size: 1.4rem;
             font-weight: bold;
-            color: var(--text-color);
+            color: var(--text-color, #333);
             margin-bottom: 15px;
             line-height: 1.3;
-        }
-
-        /* Fix couleur titre pour cartes sur fonds colorés */
-        [data-theme="rouge"] .event-title,
-        [data-theme="bleuciel"] .event-title,
-        [data-theme="violet"] .event-title {
-            color: #333;
         }
         
         .event-info {
@@ -229,40 +108,26 @@
             align-items: center;
             gap: 8px;
             margin-bottom: 10px;
-            color: var(--text-color);
-            opacity: 0.8;
-        }
-
-        [data-theme="rouge"] .event-info,
-        [data-theme="bleuciel"] .event-info,
-        [data-theme="violet"] .event-info {
-            color: #666;
+            color: var(--text-color, #666);
         }
         
         .event-info svg {
             width: 18px;
             height: 18px;
-            color: var(--primary-color);
+            color: var(--primary-color, #8b5cf6);
         }
         
         .event-description {
-            color: var(--text-color);
-            opacity: 0.7;
+            color: var(--text-color, #666);
             margin-bottom: 20px;
             line-height: 1.5;
-        }
-
-        [data-theme="rouge"] .event-description,
-        [data-theme="bleuciel"] .event-description,
-        [data-theme="violet"] .event-description {
-            color: #555;
         }
         
         .event-link {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            color: var(--primary-color);
+            color: var(--primary-color, #8b5cf6);
             text-decoration: none;
             font-weight: bold;
             transition: all 0.3s ease;
@@ -276,14 +141,14 @@
         .loading {
             text-align: center;
             padding: 60px 20px;
-            color: var(--text-color);
+            color: var(--text-color, #333);
         }
         
         .loading-spinner {
             width: 50px;
             height: 50px;
-            border: 4px solid var(--border-color);
-            border-top: 4px solid var(--primary-color);
+            border: 4px solid var(--border-color, #e2e8f0);
+            border-top: 4px solid var(--primary-color, #8b5cf6);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 20px;
@@ -296,34 +161,32 @@
         
         .error-message {
             background: rgba(197, 85, 76, 0.1);
-            color: var(--primary-color);
+            color: var(--primary-color, #C5554C);
             padding: 20px;
             border-radius: 10px;
             text-align: center;
             margin: 20px 0;
-            border: 1px solid var(--primary-color);
+            border: 1px solid var(--primary-color, #C5554C);
         }
         
         .no-events {
             text-align: center;
             padding: 60px 20px;
-            background: var(--card-bg);
+            background: var(--card-background, #ffffff);
             border-radius: 20px;
-            color: var(--text-color);
-            opacity: 0.8;
-            border: 1px solid var(--border-color);
+            color: var(--text-color, #666);
+            border: 1px solid var(--border-color, #e2e8f0);
         }
         
         .footer-info {
             text-align: center;
             margin-top: 40px;
             padding: 20px;
-            background: var(--card-bg);
+            background: var(--card-background, #ffffff);
             border-radius: 15px;
-            color: var(--text-color);
-            opacity: 0.8;
+            color: var(--text-color, #666);
             font-size: 0.9rem;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border-color, #e2e8f0);
         }
         
         /* Responsive */
@@ -344,26 +207,10 @@
             .event-card {
                 padding: 20px;
             }
-            
-            .theme-switcher {
-                position: relative;
-                top: auto;
-                right: auto;
-                justify-content: center;
-                margin-bottom: 20px;
-            }
         }
     </style>
 </head>
-<body data-theme="light">
-    <div class="theme-switcher">
-        <div class="theme-btn theme-light" onclick="setTheme('light')" title="Thème clair"></div>
-        <div class="theme-btn theme-dark" onclick="setTheme('dark')" title="Thème sombre"></div>
-        <div class="theme-btn theme-rouge" onclick="setTheme('rouge')" title="Thème rouge"></div>
-        <div class="theme-btn theme-bleuciel" onclick="setTheme('bleuciel')" title="Thème bleu ciel"></div>
-        <div class="theme-btn theme-violet" onclick="setTheme('violet')" title="Thème violet"></div>
-    </div>
-
+<body>
     <div class="brocantes-container">
         <div class="brocantes-header">
             <a href="/" class="back-button">
@@ -394,27 +241,29 @@
         </div>
     </div>
 
+    <!-- Script pour synchroniser les thèmes - EXACTEMENT comme photos-gallery.html -->
     <script>
-        // Gestion des thèmes synchronisée avec votre site
-        function setTheme(theme) {
-            document.body.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-            localStorage.setItem('brocantes-theme', theme);
-        }
-
-        function loadTheme() {
-            // Récupérer le thème de votre site principal
-            const mainSiteTheme = localStorage.getItem('theme') || 
-                                 localStorage.getItem('selectedTheme') ||
-                                 'light';
-            setTheme(mainSiteTheme);
-        }
-
-        // Écouter les changements de thème
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'theme' && e.newValue) {
-                setTheme(e.newValue);
+        document.addEventListener('DOMContentLoaded', function() {
+            // Synchroniser le thème avec le reste de l'application
+            function syncAppSettings() {
+                const currentTheme = localStorage.getItem('theme') || 'light';
+                document.documentElement.setAttribute('data-theme', currentTheme);
+                
+                const currentFontSize = localStorage.getItem('fontSize') || 'normal';
+                document.documentElement.setAttribute('data-font-size', currentFontSize);
+                
+                console.log('Thème brocantes appliqué:', currentTheme);
             }
+            
+            // Appliquer les réglages au chargement
+            syncAppSettings();
+            
+            // Mettre à jour si les réglages changent dans d'autres onglets
+            window.addEventListener('storage', function(event) {
+                if (event.key === 'theme' || event.key === 'fontSize') {
+                    syncAppSettings();
+                }
+            });
         });
 
         // Fonction pour formater les dates
@@ -468,7 +317,7 @@
             const icon = typeColors[event.type] || '🛍️';
 
             return `
-                <div class="event-card">
+                <div class="event-card" onclick="window.open('${event.link}', '_blank')">
                     <div class="event-type">${icon} ${event.type}</div>
                     <h2 class="event-title">${event.title}</h2>
                     
@@ -495,14 +344,12 @@
                         <p class="event-description">${event.description}</p>
                     ` : ''}
                     
-                    ${event.link ? `
-                        <a href="${event.link}" target="_blank" rel="noopener noreferrer" class="event-link">
-                            Voir les détails
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                            </svg>
-                        </a>
-                    ` : ''}
+                    <div class="event-link">
+                        Voir les détails
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                        </svg>
+                    </div>
                 </div>
             `;
         }
@@ -554,11 +401,8 @@
             }
         }
 
-        // Initialisation
-        document.addEventListener('DOMContentLoaded', () => {
-            loadTheme();
-            loadBrocantes();
-        });
+        // Charger les brocantes après la synchronisation des thèmes
+        setTimeout(loadBrocantes, 100);
     </script>
 </body>
 </html>
