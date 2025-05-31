@@ -4,11 +4,13 @@ class ThemeManager {
     constructor() {
         // Définir les thèmes disponibles
         this.themes = [
-            { id: 'light', name: 'Violet', icon: 'color_lens' },
-            { id: 'dark', name: 'Sombre', icon: 'dark_mode' },
-            { id: 'rouge', name: 'Rouge', icon: 'palette' },
-            { id: 'bleuciel', name: 'Bleu Ciel', icon: 'water_drop' } // Nouveau thème ajouté
-        ];
+    { id: 'light', name: 'Violet', icon: 'color_lens' },
+    { id: 'dark', name: 'Sombre', icon: 'dark_mode' },
+    { id: 'rouge', name: 'Rouge', icon: 'palette' },
+    { id: 'bleuciel', name: 'Bleu Ciel', icon: 'water_drop' },
+    { id: 'vert', name: 'Vert Nature', icon: 'nature' },        // AJOUTÉ
+    { id: 'sunset', name: 'Coucher de Soleil', icon: 'wb_sunny' } // AJOUTÉ
+];
         
         // Initialiser le système de thèmes
         this.init();
