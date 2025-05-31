@@ -34,6 +34,7 @@ class ContentManager {
 	this.setupTransparencyControl(); // NOUVELLE LIGNE
 	this.fixListModeLayout(); // NOUVELLE LIGNE
 	this.updateActiveNavLinks();
+	setTimeout(() => this.setBackgroundForTheme(), 1000);
 	}
 
     setupEventListeners() {
@@ -1369,7 +1370,7 @@ changeTextContrast(contrast) {
 }
 
     toggleTheme() {
-    // Cycle entre les thèmes : light -> dark -> rouge -> bleuciel -> light
+    // Cycle entre les thèmes : light -> dark -> rouge -> bleuciel -> vert -> sunset -> light
     switch (this.currentTheme) {
         case 'light':
             this.currentTheme = 'dark';
@@ -1381,25 +1382,36 @@ changeTextContrast(contrast) {
             this.currentTheme = 'bleuciel';
             break;
         case 'bleuciel':
+            this.currentTheme = 'vert';
+            break;
+        case 'vert':
+            this.currentTheme = 'sunset';
+            break;
+        case 'sunset':
         default:
             this.currentTheme = 'light';
             break;
     }
         
-        // Appliquer le thème
+    // Appliquer le thème
     document.documentElement.setAttribute('data-theme', this.currentTheme);
     localStorage.setItem('theme', this.currentTheme);
     
     // Mettre à jour l'icône et le texte
     this.updateThemeIcon();
     
+    // Appliquer le fond d'écran approprié
+    setTimeout(() => this.setBackgroundForTheme(), 300);
+    
     // Afficher une notification
     let themeName = '';
     switch(this.currentTheme) {
         case 'dark': themeName = 'sombre'; break;
         case 'rouge': themeName = 'rouge'; break;
-        case 'light': themeName = 'violet'; break;
         case 'bleuciel': themeName = 'bleu ciel'; break;
+        case 'vert': themeName = 'vert nature'; break;
+        case 'sunset': themeName = 'coucher de soleil'; break;
+        case 'light': themeName = 'violet'; break;
         default: themeName = 'clair'; break;
     }
     
@@ -1558,6 +1570,14 @@ applyListModeImmediate() {
             case 'bleuciel':
                 if (icon) icon.textContent = 'water_drop';
                 if (text) text.textContent = 'Bleu Ciel';
+                break;
+            case 'vert':
+                if (icon) icon.textContent = 'nature';
+                if (text) text.textContent = 'Vert Nature';
+                break;
+            case 'sunset':
+                if (icon) icon.textContent = 'wb_sunny';
+                if (text) text.textContent = 'Coucher de Soleil';
                 break;
             case 'light':
             default:
@@ -1974,7 +1994,183 @@ updateListModeStylesFast() {
             }
         });
     }
-	
+
+	setNatureBackground() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    
+    if (currentTheme === 'vert') {
+        // Générer un numéro vraiment aléatoire pour éviter le cache
+        const randomNum = Math.floor(Math.random() * 10000) + Date.now();
+        
+        // URL avec Picsum Photos (qui fonctionne encore !)
+        const imageUrl = `https://picsum.photos/1920/1080?random=${randomNum}`;
+        
+        // Appliquer l'image de fond
+        document.body.style.backgroundImage = `url('${imageUrl}')`;
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'center';
+        document.body.style.backgroundAttachment = 'fixed';
+        document.body.style.backgroundRepeat = 'no-repeat';
+        
+        console.log(`Fond d'écran nature appliqué: ${randomNum}`);
+    } else if (currentTheme === 'sunset') {
+        // Appeler la méthode coucher de soleil
+        this.setSunsetBackground();
+    } else {
+        // Supprimer l'image de fond pour les autres thèmes
+        document.body.style.backgroundImage = '';
+    }
+}
+
+	setSunsetBackground() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    
+    if (currentTheme === 'sunset') {
+        // 25 gradients inspirés du feu, couchers de soleil, énergie
+        const fireGradients = [
+            // Série couchers de soleil classiques
+            'linear-gradient(135deg, #ff9a56 0%, #ff6b35 50%, #f7931e 100%)',
+            'linear-gradient(135deg, #ffeaa7 0%, #fab1a0 50%, #e17055 100%)',
+            'linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #ff6b35 100%)',
+            'linear-gradient(135deg, #ff8a80 0%, #ff5722 50%, #d84315 100%)',
+            'linear-gradient(135deg, #ffcc80 0%, #ff8a65 50%, #ff5722 100%)',
+            
+            // Série feu et flammes
+            'linear-gradient(135deg, #ff6b9d 0%, #c92a49 50%, #8b1538 100%)',
+            'linear-gradient(135deg, #ff7675 0%, #fd79a8 50%, #fdcb6e 100%)',
+            'linear-gradient(135deg, #ff9472 0%, #f2709c 50%, #ff6b9d 100%)',
+            'linear-gradient(135deg, #e84393 0%, #fd79a8 50%, #fdcb6e 100%)',
+            'linear-gradient(135deg, #ff5722 0%, #ff8a65 50%, #ffab91 100%)',
+            
+            // Série énergique et dynamique
+            'radial-gradient(circle at center, #ff6b35 0%, #f7931e 30%, #8b1538 100%)',
+            'radial-gradient(ellipse at top, #ff6b35 0%, #c92a49 50%, #1a1a2e 100%)',
+            'radial-gradient(circle at bottom, #fdcb6e 0%, #e84393 50%, #8b1538 100%)',
+            'radial-gradient(ellipse at left, #ff8a80 0%, #ff5722 50%, #d84315 100%)',
+            'radial-gradient(circle at right, #fab1a0 0%, #e17055 50%, #8b1538 100%)',
+            
+            // Série crépuscule et aube
+            'linear-gradient(45deg, #ff9472 0%, #f2709c 50%, #ff6b9d 100%)',
+            'linear-gradient(45deg, #ffeaa7 0%, #fab1a0 50%, #e17055 100%)',
+            'linear-gradient(225deg, #ff6b35 0%, #e84393 50%, #8b1538 100%)',
+            'linear-gradient(315deg, #fdcb6e 0%, #fd79a8 50%, #c92a49 100%)',
+            'linear-gradient(180deg, #ff8a80 0%, #ff5722 50%, #bf360c 100%)',
+            
+            // Série tropicale et exotique
+            'linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%)',
+            'linear-gradient(135deg, #ffa726 0%, #fb8c00 50%, #e65100 100%)',
+            'linear-gradient(135deg, #ff7043 0%, #d84315 50%, #bf360c 100%)',
+            'linear-gradient(135deg, #ffb74d 0%, #ff9800 50%, #f57c00 100%)',
+            'linear-gradient(135deg, #ff8f00 0%, #ff6f00 50%, #e65100 100%)'
+        ];
+        
+        // Choisir un gradient aléatoire parmi les 25
+        const randomGradient = fireGradients[Math.floor(Math.random() * fireGradients.length)];
+        
+        // Appliquer le gradient
+        document.body.style.backgroundImage = randomGradient;
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'center';
+        document.body.style.backgroundAttachment = 'fixed';
+        document.body.style.backgroundRepeat = 'no-repeat';
+        
+        console.log(`Fond d'écran feu/énergie appliqué (${fireGradients.indexOf(randomGradient) + 1}/25): ${randomGradient}`);
+    } else {
+        document.body.style.backgroundImage = '';
+    }
+}
+
+
+setBackgroundForTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    
+    switch(currentTheme) {
+        case 'vert':
+            this.setNatureBackground();
+            break;
+        case 'sunset':
+            this.setSunsetBackground();
+            break;
+        default:
+            document.body.style.backgroundImage = '';
+            break;
+    }
+}
+
+setBackgroundForTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    
+    switch(currentTheme) {
+        case 'vert':
+            this.setNatureBackground();
+            break;
+        case 'sunset':
+            this.setSunsetBackground();
+            break;
+        default:
+            // Supprimer l'image de fond pour les autres thèmes
+            document.body.style.backgroundImage = '';
+            break;
+    }
+}
+
+// VERSION ALTERNATIVE - Utilise l'ID d'images spécifiques pour encore plus de contrôle
+setNatureBackgroundWithIDs() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    
+    if (currentTheme === 'vert') {
+        // IDs d'images nature sélectionnées manuellement de Picsum
+        const natureImageIDs = [
+            1, 2, 3, 10, 15, 20, 25, 28, 30, 33, 
+            36, 39, 42, 48, 50, 58, 62, 68, 70, 75,
+            82, 88, 90, 96, 102, 110, 118, 120, 125, 130
+        ];
+        
+        // Choisir un ID aléatoire
+        const randomID = natureImageIDs[Math.floor(Math.random() * natureImageIDs.length)];
+        
+        // URL avec ID spécifique
+        const imageUrl = `https://picsum.photos/id/${randomID}/1920/1080`;
+        
+        // Appliquer l'image de fond
+        document.body.style.backgroundImage = `url('${imageUrl}')`;
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'center';
+        document.body.style.backgroundAttachment = 'fixed';
+        document.body.style.backgroundRepeat = 'no-repeat';
+        
+        console.log(`Fond d'écran nature appliqué avec ID: ${randomID}`);
+    } else {
+        // Supprimer l'image de fond pour les autres thèmes
+        document.body.style.backgroundImage = '';
+    }
+}
+
+// VERSION AVEC PARAMETER RANDOM - Pour éviter totalement le cache
+setNatureBackgroundAntiCache() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    
+    if (currentTheme === 'vert') {
+        // Générer un numéro vraiment aléatoire
+        const randomNum = Math.floor(Math.random() * 10000) + Date.now();
+        
+        // URL avec paramètre random pour éviter le cache
+        const imageUrl = `https://picsum.photos/1920/1080?random=${randomNum}`;
+        
+        // Appliquer l'image de fond
+        document.body.style.backgroundImage = `url('${imageUrl}')`;
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'center';
+        document.body.style.backgroundAttachment = 'fixed';
+        document.body.style.backgroundRepeat = 'no-repeat';
+        
+        console.log(`Fond d'écran aléatoire appliqué: ${randomNum}`);
+    } else {
+        // Supprimer l'image de fond pour les autres thèmes
+        document.body.style.backgroundImage = '';
+    }
+}
+
 	// Méthode pour améliorer automatiquement la visibilité des tuiles
 autoEnhanceTileVisibility() {
     // Appliquer les améliorations visuelles à toutes les tuiles

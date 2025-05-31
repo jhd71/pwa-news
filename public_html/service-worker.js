@@ -1,82 +1,179 @@
-const CACHE_NAME = 'infos-pwa-v10';
+const CACHE_NAME = 'infos-pwa-v12'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
     '/',
     '/index.html',
+    '/photos-gallery.html',
+    '/mentions-legales.html',
+    '/politique-confidentialite.html',
+    '/conditions-utilisation.html',
+    '/notification.html',
+    '/404.html',
+    '/500.html',
     
-    // Feuilles de style CSS
-'/css/styles.css',
-'/css/chat-styles.css',
-'/css/news-panel.css',
-'/css/chat-ban.css',
-'/css/widgets.css',
-'/css/settings-styles.css',
-'/css/ios-specific.css',
-'/css/survey-styles.css',
-'/css/theme-bleuciel.css',
-'/css/tv-tiles-fix.css',
-'/css/background-selector.css',
-'/css/font-settings.css',
-'/css/tile-enhancements.css',
-'/css/gallery-styles.css',
+    // Feuilles de style CSS - MISE À JOUR COMPLÈTE
+    '/css/styles.css',
+    '/css/chat-styles.css',
+    '/css/news-panel.css',
+    '/css/chat-ban.css',
+    '/css/widgets.css',
+    '/css/settings-styles.css',
+    '/css/ios-specific.css',
+    '/css/survey-styles.css',
+    '/css/theme-bleuciel.css',
+    '/css/theme-vert.css',
+    '/css/theme-sunset.css', // NOUVEAU THÈME AJOUTÉ
+    '/css/tv-tiles-fix.css',
+    '/css/background-selector.css',
+    '/css/font-settings.css',
+    '/css/tile-enhancements.css',
+    '/css/gallery-styles.css',
+    '/css/donation.css',
 
-// Scripts JavaScript
-'/js/app.js',
-'/js/app-initializer.js',
-'/js/background-selector.js',
-'/js/ban-check.js',
-'/js/ban-manager.js',
-'/js/chat-keyboard-fix.js',
-'/js/chatManager.js',
-'/js/content.js',
-'/js/donation.js',
-'/js/ios-chat-fix.js',
-'/js/ios-detector.js',
-'/js/ios-install.js',
-'/js/news-manager.js',
-'/js/newsPanel.js',
-'/js/newsTickerManager.js',
-'/js/notification-manager.js',
-'/js/quick-links.js',
-'/js/settingsManager.js',
-'/js/sounds.js',
-'/js/supabase-client.js',
-'/js/survey-manager.js',
-'/js/tablet-fixes.js',
-'/js/theme-manager.js',
-'/js/utils.js',
-'/js/weather-widget.js',
-'/js/gallery-manager-v2.js',
-'/js/welcome-manager.js',
-'/js/custom-background-manager.js',
+    // Scripts JavaScript - MISE À JOUR COMPLÈTE
+    '/js/app.js',
+    '/js/app-initializer.js',
+    '/js/background-selector.js',
+    '/js/ban-check.js',
+    '/js/ban-manager.js',
+    '/js/chat-keyboard-fix.js',
+    '/js/chatManager.js',
+    '/js/content.js',
+    '/js/donation.js',
+    '/js/ios-chat-fix.js',
+    '/js/ios-detector.js',
+    '/js/ios-install.js',
+    '/js/ios-safari-fixes.js', // AJOUTÉ
+    '/js/news-manager.js',
+    '/js/newsPanel.js',
+    '/js/newsTickerManager.js',
+    '/js/notification-manager.js',
+    '/js/quick-links.js',
+    '/js/settingsManager.js',
+    '/js/sounds.js',
+    '/js/supabase-client.js',
+    '/js/survey-manager.js',
+    '/js/tablet-fixes.js',
+    '/js/theme-manager.js',
+    '/js/utils.js',
+    '/js/weather-widget.js',
+    '/js/gallery-manager-v2.js',
+    '/js/welcome-manager.js',
+    '/js/custom-background-manager.js',
     
     // Fichiers de configuration
     '/manifest.json',
+    '/robots.txt',
+    '/sitemap.xml',
+    '/dds.txt',
+    '/favicon.ico',
     
-    // Images
-    '/images/INFOS-96.png',
-    '/images/INFOS-192.png',
-    '/images/INFOS.png',
+    // Images principales et logos
+    '/images/Actu&Media.png',
+    '/images/ActualitesLocales.png',
     '/images/AM-192-v2.png',
-    '/images/AM-512-v2.png',    // Version plus grande pour les écrans haute résolution
+    '/images/AM-512-v2.png',
+    '/images/android-launcher-icon-48-48.png',
     '/images/badge-72x72.png',
-    '/images/Actu&Media.png',    // Logo principal
-    '/images/default-news.jpg',  // Image par défaut pour les actualités
+    '/images/default-news.jpg',
+    '/images/don_resized_200x80.png',
+    '/images/favicon.ico',
+    '/images/favicon-16x16.png',
+    '/images/favicon-32x32.png',
     
-    // Sons
+    // Icônes principales INFOS
+    '/images/INFOS.png',
+    '/images/INFOS-96.png',
+    '/images/INFOS-144.png',
+    '/images/INFOS-192.png',
+    '/images/INFOS-512.png',
+    '/images/INFOS-maskable-96.png',
+    '/images/INFOS-maskable-144.png',
+    '/images/INFOS-maskable-192.png',
+    '/images/INFOS-maskable-512.png',
+    
+    // Icônes spécialisées
+    '/images/Football.png',
+    '/images/no-image.png',
+    '/images/paypal-icon.png',
+    '/images/qrcode.png',
+    '/images/Radio.png',
+    '/images/ReseauxSociaux.png',
+    '/images/screenshot-mobile.png',
+    '/images/screenshot-wide.png',
+    '/images/Sites-Personnalises.png',
+    '/images/SPORTS.png',
+    '/images/TVenDirect.png',
+    
+    // Toutes les icônes de différentes tailles
+    '/images/icon-144x144.png',
+    '/images/icon-192x192.png',
+    '/images/icon-48x48.png',
+    '/images/icon-48x48-maskable.png',
+    '/images/icon-72x72.png',
+    '/images/icon-72x72-maskable.png',
+    '/images/icon-96x96.png',
+    '/images/icon-96x96-maskable.png',
+    '/images/icon-128x128.png',
+    '/images/icon-144x144.png',
+    '/images/icon-192x192.png',
+    '/images/icon-192x192-maskable.png',
+    '/images/icon-384x384.png',
+    '/images/icon-512x512.png',
+    '/images/icon-512x512-maskable.png',
+    
+    // Icônes maskables supplémentaires
+    '/images/maskable_icon.png',
+    '/images/maskable_icon_x48.png',
+    '/images/maskable_icon_x72.png',
+    '/images/maskable_icon_x96.png',
+    '/images/maskable_icon_x128.png',
+    '/images/maskable_icon_x192.png',
+    '/images/maskable_icon_x384.png',
+    '/images/maskable_icon_x512.png',
+    
+    // Écrans de démarrage (splash screens) iOS
+    '/images/splash-320x470.png',
+    '/images/splash-480x640.png',
+    '/images/splash-512x512.png',
+    '/images/splash-640x1136.png',
+    '/images/splash-720x960.png',
+    '/images/splash-750x1334.png',
+    '/images/splash-960x1280.png',
+    '/images/splash-1125x2436.png',
+    '/images/splash-1242x2688.png',
+    '/images/splash-1280x1920.png',
+    '/images/splash-1536x2048.png',
+    '/images/splash-1668x2388.png',
+    '/images/splash-2048x2732.png',
+    
+    // GIFs météo dans le sous-dossier
+    '/images/weather-gifs/cloudy.gif',
+    '/images/weather-gifs/default.gif',
+    '/images/weather-gifs/fog.gif',
+    '/images/weather-gifs/partly_cloudy.gif',
+    '/images/weather-gifs/rain.gif',
+    '/images/weather-gifs/snow.gif',
+    '/images/weather-gifs/sunny.gif',
+    '/images/weather-gifs/thunderstorm.gif',
+    
+    // Sons - LISTE COMPLÈTE
     '/sounds/message.mp3',
     '/sounds/notification.mp3',
     '/sounds/click.mp3',
     '/sounds/erreur.mp3',
     '/sounds/success.mp3',
-    '/sounds/sent.mp3'
+    '/sounds/sent.mp3',
+    '/sounds/ban-alert.mp3'
 ];
 
 const EXTERNAL_RESOURCES = [
     'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js',
     'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css',
-    'https://fonts.googleapis.com/icon?family=Material+Icons'
+    'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
+    'https://fonts.googleapis.com/icon?family=Material+Icons',
+    'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap'
 ];
 
 // Contenu HTML de la page hors ligne
@@ -146,7 +243,7 @@ const NETWORK_TIMEOUT = 5000; // 5 secondes
 
 // Installation
 self.addEventListener('install', event => {
-    console.log('[ServiceWorker] Installation');
+    console.log('[ServiceWorker] Installation - Version v11');
     event.waitUntil(
         (async () => {
             try {
@@ -214,7 +311,7 @@ async function precacheAdditionalResources() {
 
 // Activation avec nettoyage des anciens caches
 self.addEventListener('activate', event => {
-    console.log('[ServiceWorker] Activation');
+    console.log('[ServiceWorker] Activation - Version v11');
     event.waitUntil(
         (async () => {
             try {
@@ -332,7 +429,7 @@ self.addEventListener('fetch', (event) => {
     const requestType = categorizeRequest(event.request);
     
     switch (requestType) {
-        case 'CDN':  // Nouveau cas ajouté ici
+        case 'CDN':
             handleCdnRequest(event);
             break;
         case 'IMAGE':
