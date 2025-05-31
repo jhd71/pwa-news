@@ -1545,24 +1545,24 @@ applyListModeImmediate() {
         const icon = themeButton.querySelector('.material-icons');
         const text = themeButton.querySelector('span:not(.material-icons)');
         
-        // Configurer l'icône et le texte en fonction du thème actuel
+        // Configurer l'icône et le texte en fonction du thème ACTUEL
         switch (this.currentTheme) {
             case 'dark':
+                if (icon) icon.textContent = 'dark_mode';
+                if (text) text.textContent = 'Sombre';
+                break;
+            case 'rouge':
                 if (icon) icon.textContent = 'palette';
                 if (text) text.textContent = 'Rouge';
                 break;
-            case 'rouge':
+            case 'bleuciel':
                 if (icon) icon.textContent = 'water_drop';
                 if (text) text.textContent = 'Bleu Ciel';
                 break;
-            case 'bleuciel':
-                if (icon) icon.textContent = 'light_mode';
-                if (text) text.textContent = 'Violet';
-                break;
             case 'light':
             default:
-                if (icon) icon.textContent = 'dark_mode';
-                if (text) text.textContent = 'Sombre';
+                if (icon) icon.textContent = 'light_mode';
+                if (text) text.textContent = 'Violet';
                 break;
         }
     }
