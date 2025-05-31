@@ -289,17 +289,15 @@ setupTVIcons() {
 	}
 	];
 
-	// Ajouter la tuile Photos séparément après la liste des sites d'actualités
 
-
-// NOUVELLE TUILE DIAPORAMA
-const slideshowTile = {
-    title: "🎞️ Galerie<br>Photos", 
-    url: "#slideshow",
-    mobileUrl: "#slideshow",
+// TUILE PHOTOS SIMPLE
+const photosTile = {
+    title: "📸 Galerie Photos", 
+    url: "photos-gallery.html",
+    mobileUrl: "photos-gallery.html",
     isDefault: true,
     category: "photos",
-    isSlideshow: true
+    isSlideshow: false // Plus de diaporama
 };
 
 // Créer les tuiles d'actualités
@@ -308,9 +306,9 @@ newsDefaultSites.forEach(site => {
     this.tileContainer.appendChild(tile);
 });
 
-// AJOUTER LA TUILE DIAPORAMA
-const slideshowTileElement = this.createTile(slideshowTile);
-this.tileContainer.appendChild(slideshowTileElement);
+// AJOUTER LA TUILE PHOTOS SIMPLE
+const photosTileElement = this.createTile(photosTile);
+this.tileContainer.appendChild(photosTileElement);
 
         // Séparateur Radio
         const separator1 = document.createElement('div');
@@ -321,7 +319,7 @@ this.tileContainer.appendChild(slideshowTileElement);
         // Section Radio
         const radioSites = [		
   {
-    title: 'France Bleu<br>Bourgogne',
+    title: 'France Bleu Bourgogne',
     url: 'https://www.radio-en-ligne.fr/france-bleu-bourgogne',
     mobileUrl: 'https://www.radio-en-ligne.fr/france-bleu-bourgogne',
     isDefault: true,
@@ -357,7 +355,7 @@ this.tileContainer.appendChild(slideshowTileElement);
         // Section TV
 const tvSites = [
   {
-    title: 'France 3<br>Bourgogne',
+    title: 'France 3 Bourgogne',
     url: 'https://www.francebleu.fr/tv/direct/bourgogne',
     mobileUrl: 'https://www.francebleu.fr/tv/direct/bourgogne',
     isDefault: true,
@@ -418,7 +416,7 @@ const tvSites = [
     category: 'sports'
   },
   {
-    title: '⚽ Foot<br>FC Montceau-Bourgogne',
+    title: '⚽ Foot FC Montceau-Bourgogne',
     url: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
     mobileUrl: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
     isDefault: true,
@@ -432,14 +430,14 @@ const tvSites = [
     category: 'sports'
   },
   {
-    title: '🏀 ELAN<br>Chalon Basket',
+    title: '🏀 ELAN Chalon Basket',
     url: 'https://scorenco.com/basket/clubs/elan-chalon-basket-2m40/1-4xe3',
     mobileUrl: 'https://www.elanchalon.com/',
     isDefault: true,
     category: 'sports'
   },
   {
-    title: '🏉 Rugby<br>RC Montceau Bourgogne',
+    title: '🏉 Rugby RC Montceau Bourgogne',
     url: 'https://scorenco.com/rugby/clubs/rc-montceau-bourgogne-2m2t',
     mobileUrl: 'https://scorenco.com/rugby/clubs/rc-montceau-bourgogne-2m2t',
     isDefault: true,
@@ -468,7 +466,7 @@ const tvSites = [
         // Section Réseaux Sociaux
         const socialSites = [
   {
-    title: '📊 Sondage<br>Actu & Média',
+    title: '📊 Sondage Actu & Média',
     url: '#survey', // URL spéciale pour le sondage
     mobileUrl: '#survey',
     isDefault: true,
@@ -544,11 +542,6 @@ const tvSites = [
     tile.classList.add('survey-tile');
 	}
 	
-	// Marquer spécialement la tuile diaporama
-	if (site.isSlideshow) {
-    tile.classList.add('slideshow-tile');
-	}
-	
     // Ajouter des classes conditionnelles pour les designs spéciaux
     if (site.isLive && site.category === 'tv') {
         tile.classList.add('live-content');
@@ -561,8 +554,6 @@ const tvSites = [
         </div>
     `;
 
-	// Créer l'aperçu pour la tuile diaporama
-	this.createTilePreview(tile, site);
     // Stockage de l'URL pour faciliter l'accès
     tile.dataset.siteUrl = site.url;
     tile.dataset.mobileSiteUrl = site.mobileUrl || site.url;
@@ -590,12 +581,7 @@ const tvSites = [
     }
     return;
 	}
-    
-	// Gestion spéciale pour le diaporama
-	if (site.isSlideshow) {
-    this.openSlideshowModal();
-    return;
-	}
+
     // Vérifier si c'est un lien interne ou externe
     const url = site.mobileUrl || site.url;
     if (url.startsWith('http')) {
@@ -1421,12 +1407,14 @@ changeTextContrast(contrast) {
 }
 
     toggleLayout() {
-        // Simplifier avec seulement deux modes
-        const currentLayout = localStorage.getItem('layout') || 'grid';
-        const nextLayout = currentLayout === 'grid' ? 'list' : 'grid';
-        this.setLayout(nextLayout);
-        this.showToast(`Vue : ${nextLayout === 'grid' ? 'grille' : 'liste'}`);
-    }
+    // Simplifier avec seulement deux modes - VERSION OPTIMISÉE
+    const currentLayout = localStorage.getItem('layout') || 'grid';
+    const nextLayout = currentLayout === 'grid' ? 'list' : 'grid';
+    
+    // Changement immédiat sans recréer les tuiles
+    this.setLayoutFast(nextLayout);
+    this.showToast(`Vue : ${nextLayout === 'grid' ? 'grille' : 'liste'}`);
+}
 
     setLayout(layout) {
         if (this.tileContainer) {
@@ -1437,6 +1425,98 @@ changeTextContrast(contrast) {
             this.updateLayoutIcon(layout);
         }
     }
+
+// NOUVELLE FONCTION - Changement de vue rapide
+setLayoutFast(layout) {
+    if (!this.tileContainer) return;
+    
+    // Changement instantané des classes CSS
+    this.tileContainer.classList.remove('grid', 'list');
+    this.tileContainer.classList.add(layout);
+    
+    // Sauvegarder immédiatement
+    localStorage.setItem('layout', layout);
+    
+    // Mettre à jour l'icône
+    this.updateLayoutIcon(layout);
+    
+    // Forcer le navigateur à recalculer immédiatement
+    this.tileContainer.offsetHeight; // Force reflow
+    
+    // Appliquer les corrections spécifiques au mode liste sans délai
+    if (layout === 'list') {
+        this.applyListModeImmediate();
+    }
+}
+
+// NOUVELLE FONCTION - Application immédiate du mode liste
+applyListModeImmediate() {
+    // Supprimer le style existant
+    const existingStyle = document.getElementById('listModeFixStyle');
+    if (existingStyle) {
+        existingStyle.remove();
+    }
+    
+    // Ajouter immédiatement le style pour le mode liste
+    const style = document.createElement('style');
+    style.id = 'listModeFixStyle';
+    style.textContent = `
+        /* Application immédiate du mode liste */
+        #tileContainer.list {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 8px !important;
+            transition: none !important; /* Pas de transition */
+        }
+        
+        #tileContainer.list .tile {
+            width: 100% !important;
+            max-width: 800px !important;
+            margin: 0 auto !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: flex-start !important;
+            padding: 15px 20px !important;
+            min-height: 50px !important;
+            height: auto !important;
+            transition: none !important; /* Pas de transition */
+        }
+        
+        #tileContainer.list .tile .tile-title {
+            font-size: var(--tile-title-size) !important;
+            text-align: left !important;
+            width: 100% !important;
+        }
+        
+        #tileContainer.list .separator {
+            width: 100% !important;
+            max-width: 800px !important;
+            margin: 15px auto !important;
+        }
+        
+        /* Mode grille - transitions normales */
+        #tileContainer.grid {
+            display: grid !important;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
+            gap: 8px !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        #tileContainer.grid .tile {
+            height: 80px !important;
+            width: auto !important;
+            max-width: none !important;
+            padding: 10px !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        #tileContainer.grid .tile .tile-title {
+            text-align: center !important;
+        }
+    `;
+    
+    document.head.appendChild(style);
+}
 
     updateLayoutIcon(layout) {
         const layoutButton = document.getElementById('layoutToggle');
@@ -1746,52 +1826,49 @@ applyTransparency(value) {
     const style = document.createElement('style');
     style.id = 'tileTransparencyStyle';
     style.textContent = `
-        .tile:not(.survey-tile):not(.slideshow-tile):not([data-category="social"]:first-child) {
-            opacity: ${opacity} !important;
-            transition: opacity 0.3s ease, transform 0.3s ease !important;
-        }
-        
-		/* Forcer la tuile diaporama à rester visible */
-	.tile.slideshow-tile {
-    opacity: 1 !important;
-	}
-        .tile:not(.survey-tile):not([data-category="social"]:first-child):hover {
-            opacity: 1 !important;
-            transform: scale(1.02) !important;
-            z-index: 10 !important;
-            position: relative !important;
-        }
-        
-        /* Assurer que la transparence fonctionne même avec enhanced-visibility */
-        .tile.enhanced-visibility:not(.survey-tile):not([data-category="social"]:first-child) {
-            opacity: ${opacity} !important;
-        }
-        
-        .tile.enhanced-visibility:not(.survey-tile):not([data-category="social"]:first-child):hover {
-            opacity: 1 !important;
-        }
-        
-        /* Forcer la tuile sondage à rester visible */
-        .tile.survey-tile,
-        .tile[data-category="social"]:first-child {
-            opacity: 1 !important;
-        }
-        
-        /* Transparence pour les séparateurs */
-        .separator {
-            opacity: ${opacity} !important;
-            transition: opacity 0.3s ease !important;
-        }
-        
-        .separator:hover {
-            opacity: 1 !important;
-        }
-        
-        .separator img {
-            opacity: inherit !important;
-            transition: opacity 0.3s ease !important;
-        }
-    `;
+    /* Appliquer la transparence à TOUTES les tuiles sauf slideshow */
+    .tile:not(.slideshow-tile) {
+        opacity: ${opacity} !important;
+        transition: opacity 0.3s ease, transform 0.3s ease !important;
+    }
+    
+    /* Forcer la tuile diaporama à rester visible (au cas où) */
+    .tile.slideshow-tile {
+        opacity: 1 !important;
+    }
+    
+    /* Effet au survol pour toutes les tuiles transparentes */
+    .tile:not(.slideshow-tile):hover {
+        opacity: 1 !important;
+        transform: scale(1.02) !important;
+        z-index: 10 !important;
+        position: relative !important;
+    }
+    
+    /* Assurer que la transparence fonctionne avec enhanced-visibility */
+    .tile.enhanced-visibility:not(.slideshow-tile) {
+        opacity: ${opacity} !important;
+    }
+    
+    .tile.enhanced-visibility:not(.slideshow-tile):hover {
+        opacity: 1 !important;
+    }
+    
+    /* Transparence pour les séparateurs */
+    .separator {
+        opacity: ${opacity} !important;
+        transition: opacity 0.3s ease !important;
+    }
+    
+    .separator:hover {
+        opacity: 1 !important;
+    }
+    
+    .separator img {
+        opacity: inherit !important;
+        transition: opacity 0.3s ease !important;
+    }
+`;
     
     document.head.appendChild(style);
     
@@ -1847,70 +1924,41 @@ fixListModeLayout() {
     const tileContainer = document.getElementById('tileContainer');
     if (!tileContainer) return;
     
-    // Observer les changements de classe pour détecter le mode liste
+    // Application immédiate du bon mode
+    const currentLayout = localStorage.getItem('layout') || 'grid';
+    if (currentLayout === 'list') {
+        this.applyListModeImmediate();
+    }
+    
+    // Observer les changements MAIS sans délai
     const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                this.updateListModeStyles();
+                // Application immédiate sans délai
+                requestAnimationFrame(() => {
+                    this.updateListModeStylesFast();
+                });
             }
         });
     });
     
     observer.observe(tileContainer, { attributes: true });
-    
-    // Appliquer immédiatement
-    this.updateListModeStyles();
 }
 
 // 9. Mettre à jour les styles du mode liste
-updateListModeStyles() {
+updateListModeStylesFast() {
     const tileContainer = document.getElementById('tileContainer');
     if (!tileContainer) return;
     
-    // Supprimer le style existant
-    const existingStyle = document.getElementById('listModeFixStyle');
-    if (existingStyle) {
-        existingStyle.remove();
-    }
-    
-    // Ajouter le nouveau style si on est en mode liste
+    // Application immédiate selon le mode
     if (tileContainer.classList.contains('list')) {
-        const style = document.createElement('style');
-        style.id = 'listModeFixStyle';
-        style.textContent = `
-            /* Correction mode liste pour PC */
-            @media (min-width: 769px) {
-                #tileContainer.list {
-                    display: flex !important;
-                    flex-direction: column !important;
-                    gap: 10px !important;
-                }
-                
-                #tileContainer.list .tile {
-                    width: 100% !important;
-                    max-width: 600px !important;
-                    margin: 0 auto !important;
-                    display: flex !important;
-                    align-items: center !important;
-                    justify-content: flex-start !important;
-                    padding: 15px 20px !important;
-                    min-height: 60px !important;
-                }
-                
-                #tileContainer.list .tile .tile-title {
-                    font-size: 16px !important;
-                    text-align: left !important;
-                    width: 100% !important;
-                }
-                
-                #tileContainer.list .separator {
-                    width: 100% !important;
-                    max-width: 600px !important;
-                    margin: 20px auto !important;
-                }
-            }
-        `;
-        document.head.appendChild(style);
+        this.applyListModeImmediate();
+    } else {
+        // Mode grille - supprimer les styles de liste
+        const existingStyle = document.getElementById('listModeFixStyle');
+        if (existingStyle) {
+            existingStyle.remove();
+        }
     }
 }
 
@@ -2019,377 +2067,6 @@ addVisibilityStyles() {
     `;
     
     document.head.appendChild(style);
-}
-
-// Méthodes pour le diaporama - à ajouter dans votre classe ContentManager
-
-// 1. Créer le modal du diaporama
-createSlideshowModal() {
-    // Vérifier si le modal existe déjà
-    if (document.getElementById('slideshowModal')) return;
-    
-    const modal = document.createElement('div');
-    modal.id = 'slideshowModal';
-    modal.className = 'slideshow-modal';
-    modal.innerHTML = `
-        <div class="slideshow-overlay"></div>
-        <div class="slideshow-container">
-            <div class="slideshow-header">
-                <h2>🎞️ Diaporama des photos</h2>
-                <button class="close-slideshow-btn">×</button>
-            </div>
-            <div class="slideshow-content">
-                <div class="slideshow-loading">
-                    <div class="spinner"></div>
-                    <p>Chargement des photos...</p>
-                </div>
-                <div class="slideshow-viewer" style="display: none;">
-                    <div class="slide-container">
-                        <img class="slide-image" src="" alt="Photo du diaporama">
-                        <div class="slide-info">
-                            <h3 class="slide-title"></h3>
-                            <p class="slide-description"></p>
-                            <span class="slide-author"></span>
-                        </div>
-                    </div>
-                    <div class="slideshow-controls">
-                        <button class="slide-btn prev-btn">
-                            <span class="material-icons">chevron_left</span>
-                        </button>
-                        <div class="slide-indicators">
-                            <span class="slide-counter">1 / 1</span>
-                        </div>
-                        <button class="slide-btn next-btn">
-                            <span class="material-icons">chevron_right</span>
-                        </button>
-                    </div>
-                    <div class="slideshow-actions">
-                        <button class="action-btn play-pause-btn">
-                            <span class="material-icons">pause</span>
-                            <span class="btn-text">Pause</span>
-                        </button>
-                        <button class="action-btn gallery-btn">
-                            <span class="material-icons">photo_library</span>
-                            <span>Voir la galerie</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="slideshow-empty" style="display: none;">
-                    <span class="material-icons" style="font-size: 48px; opacity: 0.5;">photo_library</span>
-                    <h3>Aucune photo disponible</h3>
-                    <p>La galerie est vide pour le moment.</p>
-                    <button class="action-btn" onclick="window.location.href='photos-gallery.html'">
-                        <span class="material-icons">add_photo_alternate</span>
-                        <span>Ajouter des photos</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-    this.setupSlideshowEvents(modal);
-}
-
-// 2. Configurer les événements du diaporama
-setupSlideshowEvents(modal) {
-    const closeBtn = modal.querySelector('.close-slideshow-btn');
-    const overlay = modal.querySelector('.slideshow-overlay');
-    const prevBtn = modal.querySelector('.prev-btn');
-    const nextBtn = modal.querySelector('.next-btn');
-    const playPauseBtn = modal.querySelector('.play-pause-btn');
-    const galleryBtn = modal.querySelector('.gallery-btn');
-    
-    // Fermeture
-    closeBtn.addEventListener('click', () => this.closeSlideshowModal());
-    overlay.addEventListener('click', () => this.closeSlideshowModal());
-    
-    // Navigation
-    prevBtn.addEventListener('click', () => this.previousSlide());
-    nextBtn.addEventListener('click', () => this.nextSlide());
-    
-    // Play/Pause
-    playPauseBtn.addEventListener('click', () => this.toggleSlideshow());
-    
-    // Aller à la galerie
-    galleryBtn.addEventListener('click', () => {
-        window.location.href = 'photos-gallery.html';
-    });
-    
-    // Navigation clavier
-    document.addEventListener('keydown', (e) => {
-        if (modal.classList.contains('show')) {
-            switch(e.key) {
-                case 'ArrowLeft':
-                    this.previousSlide();
-                    break;
-                case 'ArrowRight':
-                    this.nextSlide();
-                    break;
-                case ' ':
-                    e.preventDefault();
-                    this.toggleSlideshow();
-                    break;
-                case 'Escape':
-                    this.closeSlideshowModal();
-                    break;
-        }
-    }
-});
-}
-
-// 3. Ouvrir le diaporama
-async openSlideshowModal() {
-    // Créer le modal s'il n'existe pas
-    this.createSlideshowModal();
-    
-    const modal = document.getElementById('slideshowModal');
-    modal.classList.add('show');
-    
-    // Initialiser les variables du diaporama
-    this.currentSlideIndex = 0;
-    this.slides = [];
-    this.slideshowInterval = null;
-    this.isPlaying = true;
-    
-    // Charger les photos
-    await this.loadSlideshowPhotos();
-}
-
-// 4. Charger les photos depuis Supabase
-async loadSlideshowPhotos() {
-    const loadingEl = document.querySelector('.slideshow-loading');
-    const viewerEl = document.querySelector('.slideshow-viewer');
-    const emptyEl = document.querySelector('.slideshow-empty');
-    
-    try {
-        // Obtenir le client Supabase
-        const supabaseClient = window.getSupabaseClient();
-        if (!supabaseClient) {
-            throw new Error('Client Supabase non disponible');
-        }
-        
-        // Récupération des photos
-        const { data: photos, error } = await supabaseClient
-            .from('photos')
-            .select('*')
-            .order('created_at', { ascending: false })
-            .limit(20); // Limiter à 20 photos pour de bonnes performances
-        
-        if (error) throw error;
-        
-        loadingEl.style.display = 'none';
-        
-        if (!photos || photos.length === 0) {
-            emptyEl.style.display = 'block';
-            return;
-        }
-        
-        this.slides = photos;
-        viewerEl.style.display = 'block';
-        
-        // Démarrer le diaporama
-        this.showSlide(0);
-        this.startSlideshow();
-        
-    } catch (error) {
-        console.error('Erreur chargement photos diaporama:', error);
-        loadingEl.innerHTML = `
-            <span class="material-icons" style="font-size: 48px; color: #f44336;">error</span>
-            <p>Erreur de chargement des photos</p>
-            <button onclick="location.reload()" style="padding: 8px 16px; margin-top: 10px;">
-                Réessayer
-            </button>
-        `;
-    }
-}
-
-// 5. Afficher une slide
-showSlide(index) {
-    if (!this.slides || this.slides.length === 0) return;
-    
-    // Corriger l'index si nécessaire
-    if (index >= this.slides.length) index = 0;
-    if (index < 0) index = this.slides.length - 1;
-    
-    this.currentSlideIndex = index;
-    const slide = this.slides[index];
-    
-    // Mettre à jour l'image et les informations
-    const slideImage = document.querySelector('.slide-image');
-    const slideTitle = document.querySelector('.slide-title');
-    const slideDescription = document.querySelector('.slide-description');
-    const slideAuthor = document.querySelector('.slide-author');
-    const slideCounter = document.querySelector('.slide-counter');
-    
-    slideImage.src = slide.image_url;
-    slideImage.alt = slide.title || 'Photo';
-    slideTitle.textContent = slide.title || 'Sans titre';
-    slideDescription.textContent = slide.description || '';
-    slideAuthor.textContent = `Par ${slide.author_name || slide.photographer_name || 'Anonyme'}`;
-    slideCounter.textContent = `${index + 1} / ${this.slides.length}`;
-}
-
-// 6. Navigation dans les slides
-nextSlide() {
-    if (this.slides && this.slides.length > 0) {
-        this.showSlide(this.currentSlideIndex + 1);
-    }
-}
-
-previousSlide() {
-    if (this.slides && this.slides.length > 0) {
-        this.showSlide(this.currentSlideIndex - 1);
-    }
-}
-
-// 7. Gestion du diaporama automatique
-startSlideshow() {
-    if (this.slideshowInterval) {
-        clearInterval(this.slideshowInterval);
-    }
-    
-    this.slideshowInterval = setInterval(() => {
-        if (this.isPlaying) {
-            this.nextSlide();
-        }
-    }, 4000); // 4 secondes par image
-}
-
-toggleSlideshow() {
-    this.isPlaying = !this.isPlaying;
-    const playPauseBtn = document.querySelector('.play-pause-btn');
-    const icon = playPauseBtn.querySelector('.material-icons');
-    const text = playPauseBtn.querySelector('.btn-text');
-    
-    if (this.isPlaying) {
-        icon.textContent = 'pause';
-        text.textContent = 'Pause';
-        this.startSlideshow();
-    } else {
-        icon.textContent = 'play_arrow';
-        text.textContent = 'Lecture';
-        if (this.slideshowInterval) {
-            clearInterval(this.slideshowInterval);
-        }
-    }
-}
-
-// 8. Fermer le diaporama
-closeSlideshowModal() {
-    const modal = document.getElementById('slideshowModal');
-    if (modal) {
-        modal.classList.remove('show');
-        
-        // Nettoyer les intervalles
-        if (this.slideshowInterval) {
-            clearInterval(this.slideshowInterval);
-            this.slideshowInterval = null;
-        }
-    }
-}
-
-// Ajoutez cette méthode dans votre classe ContentManager
-
-// Méthode pour créer l'aperçu diaporama dans la tuile
-createTilePreview(tile, site) {
-    if (!site.isSlideshow) return;
-    
-    // Modifier la structure HTML de la tuile diaporama
-    tile.innerHTML = `
-        <div class="tile-content slideshow-preview">
-            <div class="mini-slideshow">
-                <div class="mini-slide-container">
-                    <img class="mini-slide-image" src="" alt="Aperçu photo" style="display: none;">
-                    <div class="mini-slide-placeholder">
-                        <span class="material-icons">photo_library</span>
-                        <span class="loading-text">Chargement...</span>
-                    </div>
-                </div>
-                <div class="mini-slide-overlay">
-                    <div class="tile-title">${site.title}</div>
-                    <div class="mini-slide-counter">• • •</div>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    // Charger et démarrer l'aperçu
-    this.loadTilePreview(tile);
-}
-
-// Charger les photos pour l'aperçu de la tuile
-async loadTilePreview(tile) {
-    try {
-        const supabaseClient = window.getSupabaseClient();
-        if (!supabaseClient) return;
-        
-        const { data: photos, error } = await supabaseClient
-            .from('photos')
-            .select('image_url, title')
-            .order('created_at', { ascending: false })
-            .limit(5); // Limiter à 5 photos pour l'aperçu
-        
-        if (error || !photos || photos.length === 0) {
-            // Pas de photos disponibles
-            const placeholder = tile.querySelector('.mini-slide-placeholder');
-            if (placeholder) {
-                placeholder.innerHTML = `
-                    <span class="material-icons">add_photo_alternate</span>
-                    <span class="loading-text">Aucune photo</span>
-                `;
-            }
-            return;
-        }
-        
-        // Démarrer le mini-diaporama
-        this.startTileSlideshow(tile, photos);
-        
-    } catch (error) {
-        console.error('Erreur chargement aperçu photos:', error);
-    }
-}
-
-// Démarrer le diaporama dans la tuile
-startTileSlideshow(tile, photos) {
-    const imageEl = tile.querySelector('.mini-slide-image');
-    const placeholder = tile.querySelector('.mini-slide-placeholder');
-    const counter = tile.querySelector('.mini-slide-counter');
-    
-    if (!imageEl || photos.length === 0) return;
-    
-    let currentIndex = 0;
-    
-    // Fonction pour changer d'image
-    const showNextImage = () => {
-        const photo = photos[currentIndex];
-        imageEl.src = photo.image_url;
-        imageEl.alt = photo.title || 'Photo';
-        
-        // Cacher le placeholder et montrer l'image
-        if (placeholder) placeholder.style.display = 'none';
-        imageEl.style.display = 'block';
-        
-        // Mettre à jour le compteur visuel
-        if (counter) {
-            const dots = photos.map((_, index) => 
-                index === currentIndex ? '●' : '○'
-            ).join(' ');
-            counter.textContent = dots;
-        }
-        
-        // Passer à l'image suivante
-        currentIndex = (currentIndex + 1) % photos.length;
-    };
-    
-    // Montrer la première image
-    showNextImage();
-    
-    // Changer d'image toutes les 3 secondes
-    const interval = setInterval(showNextImage, 3000);
-    
-    // Nettoyer l'intervalle si la tuile est supprimée
-    tile.dataset.slideshowInterval = interval;
 }
 
 }

@@ -1302,3 +1302,94 @@ body.modal-open {
 [data-theme="dark"] .gallery-btn .material-icons {
     color: white !important;
 }
+
+/* ===== NAVIGATION ENTRE PHOTOS ===== */
+
+.photo-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.navigation-row,
+.actions-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.nav-btn {
+    flex: 1;
+    max-width: 140px;
+    background: var(--primary-color) !important;
+    color: white !important;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    background: var(--accent-color, #9c27b0) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.nav-btn .material-icons {
+    font-size: 20px;
+}
+
+/* Style pour le thème rouge */
+[data-theme="rouge"] .nav-btn {
+    background: #bc3a34 !important;
+    border-color: rgba(255, 210, 48, 0.3);
+}
+
+[data-theme="rouge"] .nav-btn:hover {
+    background: #d32f2f !important;
+    border-color: #FFD230;
+}
+
+/* Responsive mobile */
+@media (max-width: 768px) {
+    .navigation-row {
+        margin-bottom: 10px;
+    }
+    
+    .nav-btn {
+        font-size: 12px;
+        padding: 8px 12px;
+        flex-direction: row; /* Horizontal au lieu de vertical */
+        gap: 6px;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Bouton Précédent : Flèche à GAUCHE du texte */
+    #prevPhotoBtn {
+        flex-direction: row; /* Icône puis texte */
+    }
+    
+    /* Bouton Suivant : Flèche à DROITE du texte */
+    #nextPhotoBtn {
+        flex-direction: row-reverse; /* Texte puis icône */
+    }
+    
+    .nav-btn span {
+        font-size: 12px;
+        line-height: 1;
+    }
+    
+    .nav-btn .material-icons {
+        font-size: 22px;
+    }
+}
+
+/* Animation pour indiquer la navigation */
+.modal-scrollable-content {
+    transition: transform 0.2s ease;
+}
+
+.modal-scrollable-content.navigating {
+    transform: scale(0.98);
+}

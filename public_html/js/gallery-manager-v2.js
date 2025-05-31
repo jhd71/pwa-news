@@ -2,6 +2,7 @@
 
 // ===== VARIABLES GLOBALES =====
 let currentPhotoId = null;
+let currentPhotoIndex = 0;
 let currentPage = 0;
 let pageSize = 12;
 let hasMorePhotos = true;
@@ -173,6 +174,30 @@ function initializeEventListeners() {
         backToGalleryBtn.addEventListener('click', closePhotoViewModal);
     }
     
+	// Boutons de navigation photo
+const prevPhotoBtn = document.getElementById('prevPhotoBtn');
+const nextPhotoBtn = document.getElementById('nextPhotoBtn');
+
+if (prevPhotoBtn) {
+    prevPhotoBtn.addEventListener('click', () => navigateToPhoto(-1));
+}
+
+if (nextPhotoBtn) {
+    nextPhotoBtn.addEventListener('click', () => navigateToPhoto(1));
+}
+
+// Navigation clavier
+document.addEventListener('keydown', (e) => {
+    const modal = document.getElementById('photoViewModal');
+    if (modal && modal.style.display === 'block') {
+        if (e.key === 'ArrowLeft') {
+            navigateToPhoto(-1);
+        } else if (e.key === 'ArrowRight') {
+            navigateToPhoto(1);
+        }
+    }
+});
+
     // Boutons commentaires
     const viewCommentsBtn = document.getElementById('viewCommentsBtn');
     if (viewCommentsBtn) {
@@ -559,7 +584,9 @@ async function openPhotoView(photoId) {
         document.getElementById('modalPhotoImg').src = photo.image_url;
         document.getElementById('modalPhotoTitle').textContent = photo.title || 'Sans titre';
         document.getElementById('modalPhotoDescription').textContent = photo.description || 'Aucune description';
-        
+        // Stocker l'index de la photo actuelle pour la navigation
+	currentPhotoIndex = findPhotoIndex(photoId);
+	setupNavigationButtons();
         // Métadonnées
         const locationEl = document.getElementById('modalPhotoLocation');
         const dateEl = document.getElementById('modalPhotoDate');
@@ -930,6 +957,66 @@ window.addEventListener('error', function(event) {
         console.error('Erreur Supabase détectée');
     }
 });
+
+// ===== NAVIGATION ENTRE PHOTOS =====
+
+
+// Trouver l'index d'une photo dans la liste actuelle
+function findPhotoIndex(photoId) {
+    // Récupérer toutes les photos affichées dans la grille
+    const photoCards = document.querySelectorAll('.photo-card');
+    for (let i = 0; i < photoCards.length; i++) {
+        if (photoCards[i].dataset.id == photoId) {
+            return i;
+        }
+    }
+    return 0;
+}
+
+// Naviguer vers la photo précédente/suivante
+function navigateToPhoto(direction) {
+    const photoCards = document.querySelectorAll('.photo-card');
+    if (photoCards.length === 0) return;
+    
+    // Calculer le nouvel index
+    currentPhotoIndex += direction;
+    
+    // Gérer les limites (boucle infinie)
+    if (currentPhotoIndex < 0) {
+        currentPhotoIndex = photoCards.length - 1;
+    } else if (currentPhotoIndex >= photoCards.length) {
+        currentPhotoIndex = 0;
+    }
+    
+    // Ouvrir la nouvelle photo
+    const newPhotoId = photoCards[currentPhotoIndex].dataset.id;
+    openPhotoView(newPhotoId);
+}
+
+// Configurer les boutons de navigation
+function setupNavigationButtons() {
+    const photoCards = document.querySelectorAll('.photo-card');
+    const prevBtn = document.getElementById('prevPhotoBtn');
+    const nextBtn = document.getElementById('nextPhotoBtn');
+    
+    if (!prevBtn || !nextBtn) return;
+    
+    // Afficher/masquer les boutons selon le nombre de photos
+    if (photoCards.length <= 1) {
+        prevBtn.style.display = 'none';
+        nextBtn.style.display = 'none';
+    } else {
+        prevBtn.style.display = 'flex';
+        nextBtn.style.display = 'flex';
+        
+        // Mettre à jour les textes avec les numéros
+        const currentNum = currentPhotoIndex + 1;
+        const totalNum = photoCards.length;
+        
+        prevBtn.title = `Photo précédente (${currentNum - 1 > 0 ? currentNum - 1 : totalNum}/${totalNum})`;
+        nextBtn.title = `Photo suivante (${currentNum + 1 <= totalNum ? currentNum + 1 : 1}/${totalNum})`;
+    }
+}
 
 // ===== EXPORTS GLOBAUX =====
 window.galleryManager = {
