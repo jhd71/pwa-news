@@ -2022,60 +2022,105 @@ updateListModeStylesFast() {
     }
 }
 
-	setSunsetBackground() {
+	// REMPLACEZ votre méthode setSunsetBackground() par cette version Mix complète :
+
+setSunsetBackground() {
     const currentTheme = document.documentElement.getAttribute('data-theme');
+    console.log(`🔍 setSunsetBackground appelée, thème actuel: ${currentTheme}`);
     
     if (currentTheme === 'sunset') {
-        // 25 gradients inspirés du feu, couchers de soleil, énergie
-        const fireGradients = [
-            // Série couchers de soleil classiques
-            'linear-gradient(135deg, #ff9a56 0%, #ff6b35 50%, #f7931e 100%)',
-            'linear-gradient(135deg, #ffeaa7 0%, #fab1a0 50%, #e17055 100%)',
-            'linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #ff6b35 100%)',
-            'linear-gradient(135deg, #ff8a80 0%, #ff5722 50%, #d84315 100%)',
-            'linear-gradient(135deg, #ffcc80 0%, #ff8a65 50%, #ff5722 100%)',
-            
-            // Série feu et flammes
-            'linear-gradient(135deg, #ff6b9d 0%, #c92a49 50%, #8b1538 100%)',
-            'linear-gradient(135deg, #ff7675 0%, #fd79a8 50%, #fdcb6e 100%)',
-            'linear-gradient(135deg, #ff9472 0%, #f2709c 50%, #ff6b9d 100%)',
-            'linear-gradient(135deg, #e84393 0%, #fd79a8 50%, #fdcb6e 100%)',
-            'linear-gradient(135deg, #ff5722 0%, #ff8a65 50%, #ffab91 100%)',
-            
-            // Série énergique et dynamique
-            'radial-gradient(circle at center, #ff6b35 0%, #f7931e 30%, #8b1538 100%)',
-            'radial-gradient(ellipse at top, #ff6b35 0%, #c92a49 50%, #1a1a2e 100%)',
-            'radial-gradient(circle at bottom, #fdcb6e 0%, #e84393 50%, #8b1538 100%)',
-            'radial-gradient(ellipse at left, #ff8a80 0%, #ff5722 50%, #d84315 100%)',
-            'radial-gradient(circle at right, #fab1a0 0%, #e17055 50%, #8b1538 100%)',
-            
-            // Série crépuscule et aube
-            'linear-gradient(45deg, #ff9472 0%, #f2709c 50%, #ff6b9d 100%)',
-            'linear-gradient(45deg, #ffeaa7 0%, #fab1a0 50%, #e17055 100%)',
-            'linear-gradient(225deg, #ff6b35 0%, #e84393 50%, #8b1538 100%)',
-            'linear-gradient(315deg, #fdcb6e 0%, #fd79a8 50%, #c92a49 100%)',
-            'linear-gradient(180deg, #ff8a80 0%, #ff5722 50%, #bf360c 100%)',
-            
-            // Série tropicale et exotique
-            'linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%)',
-            'linear-gradient(135deg, #ffa726 0%, #fb8c00 50%, #e65100 100%)',
-            'linear-gradient(135deg, #ff7043 0%, #d84315 50%, #bf360c 100%)',
-            'linear-gradient(135deg, #ffb74d 0%, #ff9800 50%, #f57c00 100%)',
-            'linear-gradient(135deg, #ff8f00 0%, #ff6f00 50%, #e65100 100%)'
-        ];
+        console.log('✅ Thème sunset détecté, application du fond...');
         
-        // Choisir un gradient aléatoire parmi les 25
-        const randomGradient = fireGradients[Math.floor(Math.random() * fireGradients.length)];
+        // 60% de chance d'avoir un vrai coucher de soleil
+        const useRealImage = Math.random() > 0.4;
+        console.log(`🎲 Type de fond choisi: ${useRealImage ? 'Image réelle' : 'Gradient'}`);
         
-        // Appliquer le gradient
-        document.body.style.backgroundImage = randomGradient;
-        document.body.style.backgroundSize = 'cover';
-        document.body.style.backgroundPosition = 'center';
-        document.body.style.backgroundAttachment = 'fixed';
-        document.body.style.backgroundRepeat = 'no-repeat';
-        
-        console.log(`Fond d'écran feu/énergie appliqué (${fireGradients.indexOf(randomGradient) + 1}/25): ${randomGradient}`);
+        if (useRealImage) {
+            // IDs d'images Unsplash spécifiquement sélectionnées pour les couchers de soleil
+            const sunsetImageIds = [
+                'Bm0Ja6LZWl4', // L'image rochers sur mer que vous avez montrée
+                'OQSCtabGkSY', // Coucher de soleil orange sur mer
+                'zjKOApQRyDM', // Coucher de soleil doré sur plage
+                'qJSqTUcrqV4', // Coucher de soleil montagne
+                'YnPgJf4wJYQ', // Coucher de soleil urbain
+                'bwki71ap-qk', // Coucher de soleil désert
+                'dS2hi__ZZMk', // Coucher de soleil lac
+                'SLMGt0v3h2w', // Coucher de soleil forêt
+                'VLaKsTkmVhk', // Coucher de soleil océan
+                '19gX3p4t2I8', // Coucher de soleil prairie
+                'nGOJr2hfXXw', // Coucher de soleil plage palmiers
+                'ReeEthMOLhI', // Coucher de soleil collines
+                'QQl59hpnHSk', // Coucher de soleil ville
+                'dRCGFPkPl-Y', // Coucher de soleil champs
+                'b5MHWL1f7Hk'  // Coucher de soleil silhouette
+            ];
+            
+            const randomId = sunsetImageIds[Math.floor(Math.random() * sunsetImageIds.length)];
+            
+            // Ajouter un paramètre aléatoire pour éviter le cache
+            const cacheBuster = Date.now();
+            const imageUrl = `https://images.unsplash.com/${randomId}?w=1920&h=1080&fit=crop&t=${cacheBuster}`;
+            
+            document.body.style.backgroundImage = `url('${imageUrl}')`;
+            document.body.style.backgroundSize = 'cover';
+            document.body.style.backgroundPosition = 'center';
+            document.body.style.backgroundAttachment = 'fixed';
+            document.body.style.backgroundRepeat = 'no-repeat';
+            
+            console.log(`🌅 Vrai coucher de soleil Unsplash appliqué: ${randomId}`);
+        } else {
+            // Utiliser un gradient magnifique en fallback
+            const fireGradients = [
+                // Série couchers de soleil classiques
+                'linear-gradient(135deg, #ff9a56 0%, #ff6b35 50%, #f7931e 100%)',
+                'linear-gradient(135deg, #ffeaa7 0%, #fab1a0 50%, #e17055 100%)',
+                'linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #ff6b35 100%)',
+                'linear-gradient(135deg, #ff8a80 0%, #ff5722 50%, #d84315 100%)',
+                'linear-gradient(135deg, #ffcc80 0%, #ff8a65 50%, #ff5722 100%)',
+                
+                // Série feu et flammes
+                'linear-gradient(135deg, #ff6b9d 0%, #c92a49 50%, #8b1538 100%)',
+                'linear-gradient(135deg, #ff7675 0%, #fd79a8 50%, #fdcb6e 100%)',
+                'linear-gradient(135deg, #ff9472 0%, #f2709c 50%, #ff6b9d 100%)',
+                'linear-gradient(135deg, #e84393 0%, #fd79a8 50%, #fdcb6e 100%)',
+                'linear-gradient(135deg, #ff5722 0%, #ff8a65 50%, #ffab91 100%)',
+                
+                // Série énergique et dynamique
+                'radial-gradient(circle at center, #ff6b35 0%, #f7931e 30%, #8b1538 100%)',
+                'radial-gradient(ellipse at top, #ff6b35 0%, #c92a49 50%, #1a1a2e 100%)',
+                'radial-gradient(circle at bottom, #fdcb6e 0%, #e84393 50%, #8b1538 100%)',
+                'radial-gradient(ellipse at left, #ff8a80 0%, #ff5722 50%, #d84315 100%)',
+                'radial-gradient(circle at right, #fab1a0 0%, #e17055 50%, #8b1538 100%)',
+                
+                // Série crépuscule et aube
+                'linear-gradient(45deg, #ff9472 0%, #f2709c 50%, #ff6b9d 100%)',
+                'linear-gradient(45deg, #ffeaa7 0%, #fab1a0 50%, #e17055 100%)',
+                'linear-gradient(225deg, #ff6b35 0%, #e84393 50%, #8b1538 100%)',
+                'linear-gradient(315deg, #fdcb6e 0%, #fd79a8 50%, #c92a49 100%)',
+                'linear-gradient(180deg, #ff8a80 0%, #ff5722 50%, #bf360c 100%)',
+                
+                // Série tropicale et exotique
+                'linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%)',
+                'linear-gradient(135deg, #ffa726 0%, #fb8c00 50%, #e65100 100%)',
+                'linear-gradient(135deg, #ff7043 0%, #d84315 50%, #bf360c 100%)',
+                'linear-gradient(135deg, #ffb74d 0%, #ff9800 50%, #f57c00 100%)',
+                'linear-gradient(135deg, #ff8f00 0%, #ff6f00 50%, #e65100 100%)'
+            ];
+            
+            // Choisir un gradient aléatoire parmi les 25
+            const randomGradient = fireGradients[Math.floor(Math.random() * fireGradients.length)];
+            
+            // Appliquer le gradient
+            document.body.style.backgroundImage = randomGradient;
+            document.body.style.backgroundSize = 'cover';
+            document.body.style.backgroundPosition = 'center';
+            document.body.style.backgroundAttachment = 'fixed';
+            document.body.style.backgroundRepeat = 'no-repeat';
+            
+            console.log(`🔥 Fond d'écran gradient appliqué (${fireGradients.indexOf(randomGradient) + 1}/25): ${randomGradient}`);
+        }
     } else {
+        console.log(`❌ Thème ${currentTheme} détecté, pas de fond sunset`);
         document.body.style.backgroundImage = '';
     }
 }
@@ -2089,9 +2134,10 @@ setBackgroundForTheme() {
             this.setNatureBackground();
             break;
         case 'sunset':
-            this.setSunsetBackground();
+            this.setSunsetBackground(); // ← Cette ligne doit être présente !
             break;
         default:
+            // Supprimer l'image de fond pour les autres thèmes
             document.body.style.backgroundImage = '';
             break;
     }
