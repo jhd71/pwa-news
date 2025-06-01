@@ -1,5 +1,5 @@
-const CACHE_NAME = 'infos-pwa-v14'; // Incrémenté pour forcer la mise à jour
-const API_CACHE_NAME = 'infos-api-cache-v2';
+const CACHE_NAME = 'infos-pwa-v15'; // Incrémenté pour forcer la mise à jour
+const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
     '/',
@@ -12,7 +12,7 @@ const STATIC_RESOURCES = [
     '/404.html',
     '/500.html',
     
-    // Feuilles de style CSS - MISE À JOUR COMPLÈTE
+    // Feuilles de style CSS
     '/css/styles.css',
     '/css/chat-styles.css',
     '/css/news-panel.css',
@@ -23,7 +23,7 @@ const STATIC_RESOURCES = [
     '/css/survey-styles.css',
     '/css/theme-bleuciel.css',
     '/css/theme-vert.css',
-    '/css/theme-sunset.css', // NOUVEAU THÈME AJOUTÉ
+    '/css/theme-sunset.css',
     '/css/tv-tiles-fix.css',
     '/css/background-selector.css',
     '/css/font-settings.css',
@@ -31,7 +31,7 @@ const STATIC_RESOURCES = [
     '/css/gallery-styles.css',
     '/css/donation.css',
 
-    // Scripts JavaScript - MISE À JOUR COMPLÈTE
+    // Scripts JavaScript
     '/js/app.js',
     '/js/app-initializer.js',
     '/js/background-selector.js',
@@ -44,7 +44,7 @@ const STATIC_RESOURCES = [
     '/js/ios-chat-fix.js',
     '/js/ios-detector.js',
     '/js/ios-install.js',
-    '/js/ios-safari-fixes.js', // AJOUTÉ
+    '/js/ios-safari-fixes.js',
     '/js/news-manager.js',
     '/js/newsPanel.js',
     '/js/newsTickerManager.js',
@@ -62,23 +62,20 @@ const STATIC_RESOURCES = [
     '/js/welcome-manager.js',
     '/js/custom-background-manager.js',
     
-    // Fichiers de configuration
+    // Fichiers de configuration (seulement ceux qui existent)
     '/manifest.json',
     '/robots.txt',
     '/sitemap.xml',
-    '/dds.txt',
     '/favicon.ico',
     
-    // Images principales et logos
+    // Images principales et logos (seulement ceux confirmés)
     '/images/Actu&Media.png',
     '/images/ActualitesLocales.png',
     '/images/AM-192-v2.png',
     '/images/AM-512-v2.png',
-    '/images/android-launcher-icon-48-48.png',
     '/images/badge-72x72.png',
     '/images/default-news.jpg',
     '/images/don_resized_200x80.png',
-    '/images/favicon.ico',
     '/images/favicon-16x16.png',
     '/images/favicon-32x32.png',
     
@@ -102,38 +99,14 @@ const STATIC_RESOURCES = [
     '/images/ReseauxSociaux.png',
     '/images/screenshot-mobile.png',
     '/images/screenshot-wide.png',
-    '/images/Sites-Personnalises.png',
     '/images/SPORTS.png',
     '/images/TVenDirect.png',
     
-    // Toutes les icônes de différentes tailles
+    // Icônes de base (seulement ceux qui existent)
     '/images/icon-144x144.png',
     '/images/icon-192x192.png',
-    '/images/icon-48x48.png',
-    '/images/icon-48x48-maskable.png',
-    '/images/icon-72x72.png',
-    '/images/icon-72x72-maskable.png',
-    '/images/icon-96x96.png',
-    '/images/icon-96x96-maskable.png',
-    '/images/icon-128x128.png',
-    '/images/icon-144x144.png',
-    '/images/icon-192x192.png',
-    '/images/icon-192x192-maskable.png',
-    '/images/icon-384x384.png',
-    '/images/icon-512x512.png',
-    '/images/icon-512x512-maskable.png',
     
-    // Icônes maskables supplémentaires
-    '/images/maskable_icon.png',
-    '/images/maskable_icon_x48.png',
-    '/images/maskable_icon_x72.png',
-    '/images/maskable_icon_x96.png',
-    '/images/maskable_icon_x128.png',
-    '/images/maskable_icon_x192.png',
-    '/images/maskable_icon_x384.png',
-    '/images/maskable_icon_x512.png',
-    
-    // Écrans de démarrage (splash screens) iOS
+    // Écrans de démarrage iOS (seulement ceux qui existent)
     '/images/splash-320x470.png',
     '/images/splash-480x640.png',
     '/images/splash-512x512.png',
@@ -148,7 +121,7 @@ const STATIC_RESOURCES = [
     '/images/splash-1668x2388.png',
     '/images/splash-2048x2732.png',
     
-    // GIFs météo dans le sous-dossier
+    // GIFs météo
     '/images/weather-gifs/cloudy.gif',
     '/images/weather-gifs/default.gif',
     '/images/weather-gifs/fog.gif',
@@ -158,7 +131,7 @@ const STATIC_RESOURCES = [
     '/images/weather-gifs/sunny.gif',
     '/images/weather-gifs/thunderstorm.gif',
     
-    // Sons - LISTE COMPLÈTE
+    // Sons
     '/sounds/message.mp3',
     '/sounds/notification.mp3',
     '/sounds/click.mp3',
