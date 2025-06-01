@@ -78,9 +78,23 @@
 }
 
 [data-theme="light"] .weather-day {
-  background: rgba(240, 240, 250, 0.7);
-  border: 1px solid rgba(126, 87, 194, 0.1);
-  color: #333;
+  background: rgba(240, 240, 250, 0.8);
+  border: 1px solid rgba(126, 87, 194, 0.2);
+  color: #333 !important;
+}
+
+/* Assurer que TOUT le texte est visible en mode clair */
+[data-theme="light"] .weather-day * {
+  color: #333 !important;
+}
+
+/* Exceptions pour les températures qui gardent leurs couleurs */
+[data-theme="light"] .min-temp {
+  color: #1976d2 !important; /* Bleu plus foncé */
+}
+
+[data-theme="light"] .max-temp {
+  color: #f57c00 !important; /* Orange plus foncé */
 }
 
 [data-theme="light"] .quick-link {
@@ -88,8 +102,9 @@
   border: 1px solid rgba(126, 87, 194, 0.1);
 }
 
+/* Améliorer la visibilité des GIFs météo en mode clair */
 [data-theme="light"] .weather-gif {
-  filter: brightness(1.1) contrast(1.1);
+  filter: brightness(0.8) contrast(1.3) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
   z-index: 10;
 }
 
@@ -360,6 +375,12 @@
 }
 
 /* Adaptation de l'en-tête pour chaque thème */
+[data-theme="light"] .weather-day h4 {
+  background-color: rgba(126, 87, 194, 0.2) !important;
+  color: #7e57c2 !important;
+  font-weight: bold !important;
+}
+
 [data-theme="rouge"] .weather-day h4 {
   background-color: rgba(255, 235, 59, 0.2) !important;
   color: #ffeb3b !important;
@@ -463,8 +484,9 @@
 
 /* Adaptation des détails pour chaque thème */
 [data-theme="light"] .weather-detail-item {
-  background: rgba(126, 87, 194, 0.05);
-  color: #333;
+  background: rgba(126, 87, 194, 0.1);
+  color: #333 !important;
+  font-weight: 500 !important;
 }
 
 [data-theme="dark"] .weather-detail-item {
@@ -502,7 +524,8 @@
 
 /* Adaptation du texte pour chaque thème */
 [data-theme="light"] .weather-condition {
-  color: #333;
+  color: #333 !important;
+  font-weight: 600 !important; /* Plus gras pour être mieux visible */
 }
 
 [data-theme="dark"] .weather-condition {
