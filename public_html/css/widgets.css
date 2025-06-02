@@ -1,0 +1,776 @@
+/* Masquer le widget de liens rapides au chargement de la page */
+.quick-links-sidebar {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Ce style sera appliqué par JavaScript lorsque le widget doit être visible */
+.quick-links-sidebar.visible {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Masquer le widget météo au chargement de la page */
+.weather-sidebar {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Ce style sera appliqué par JavaScript lorsque le widget doit être visible */
+.weather-sidebar.visible {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Styles communs pour les widgets flottants */
+.weather-sidebar,
+.quick-links-sidebar {
+  position: fixed !important;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  backdrop-filter: blur(5px);
+  transition: transform 0.3s, opacity 0.3s;
+  z-index: 1000;
+  width: 240px !important;
+  max-width: 240px !important;
+}
+
+/* Largeur du contenu météo */
+#weather-widget {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Météo locale - titre et ville */
+.weather-sidebar h3,
+.quick-links-sidebar h3,
+.weather-sidebar p strong {
+  margin: 0 0 10px 0;
+  font-size: 15px;
+  text-align: center;
+  padding-bottom: 6px;
+  font-weight: bold;
+}
+
+/* ==== THÈMES DE COULEUR ==== */
+
+/* 1. Mode Violet (light) */
+[data-theme="light"] .weather-sidebar,
+[data-theme="light"] .quick-links-sidebar {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(126, 87, 194, 0.2);
+}
+
+[data-theme="light"] .weather-sidebar h3,
+[data-theme="light"] .weather-sidebar p strong {
+  color: #7e57c2 !important;
+  border-bottom-color: rgba(126, 87, 194, 0.2);
+}
+
+[data-theme="light"] .quick-links-sidebar h3 {
+  color: #7e57c2;
+  border-bottom-color: rgba(126, 87, 194, 0.2);
+}
+
+[data-theme="light"] .weather-day {
+  background: rgba(240, 240, 250, 0.8);
+  border: 1px solid rgba(126, 87, 194, 0.2);
+  color: #333 !important;
+}
+
+/* Assurer que TOUT le texte est visible en mode clair */
+[data-theme="light"] .weather-day * {
+  color: #333 !important;
+}
+
+/* Exceptions pour les températures qui gardent leurs couleurs */
+[data-theme="light"] .min-temp {
+  color: #1976d2 !important; /* Bleu plus foncé */
+}
+
+[data-theme="light"] .max-temp {
+  color: #f57c00 !important; /* Orange plus foncé */
+}
+
+[data-theme="light"] .quick-link {
+  background: rgba(240, 240, 250, 0.5);
+  border: 1px solid rgba(126, 87, 194, 0.1);
+}
+
+/* Améliorer la visibilité des GIFs météo en mode clair */
+[data-theme="light"] .weather-gif {
+  filter: brightness(0.8) contrast(1.3) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  z-index: 10;
+}
+
+/* 2. Mode Sombre (dark) */
+[data-theme="dark"] .weather-sidebar,
+[data-theme="dark"] .quick-links-sidebar {
+  background: rgba(26, 35, 126, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .weather-sidebar h3,
+[data-theme="dark"] .quick-links-sidebar h3,
+[data-theme="dark"] .weather-sidebar p strong {
+  color: #90caf9;
+  border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .weather-day {
+  background: rgba(30, 40, 140, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+[data-theme="dark"] .quick-link {
+  background: rgba(30, 40, 140, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .weather-gif {
+  filter: brightness(1.2) contrast(1.1);
+  z-index: 10;
+}
+
+/* 3. Mode Rouge */
+[data-theme="rouge"] .weather-sidebar,
+[data-theme="rouge"] .quick-links-sidebar {
+  background: linear-gradient(145deg, #b71c1c, #e53935) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35) !important;
+}
+
+[data-theme="rouge"] .weather-sidebar h3,
+[data-theme="rouge"] .quick-links-sidebar h3,
+[data-theme="rouge"] .weather-sidebar p strong {
+  color: #ffeb3b !important;
+  border-bottom-color: rgba(255, 255, 255, 0.2);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="rouge"] .weather-day {
+  background: rgba(0, 0, 0, 0.2) !important;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="rouge"] .quick-link {
+  background: rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="rouge"] .weather-gif {
+  filter: brightness(1.3) contrast(1.2) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
+  z-index: 10;
+}
+
+/* 4. Mode Bleu Ciel */
+[data-theme="bleuciel"] .weather-sidebar,
+[data-theme="bleuciel"] .quick-links-sidebar {
+  background: linear-gradient(145deg, #0277bd, #03a9f4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25) !important;
+}
+
+[data-theme="bleuciel"] .weather-sidebar h3,
+[data-theme="bleuciel"] .quick-links-sidebar h3,
+[data-theme="bleuciel"] .weather-sidebar p strong {
+  color: #ffffff !important;
+  border-bottom-color: rgba(255, 255, 255, 0.3);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="bleuciel"] .weather-day {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="bleuciel"] .quick-link {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="bleuciel"] .weather-gif {
+  filter: brightness(1.2) contrast(1.1) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+  z-index: 10;
+}
+
+/* 5. Mode Vert Nature */
+[data-theme="vert"] .weather-sidebar,
+[data-theme="vert"] .quick-links-sidebar {
+  background: linear-gradient(145deg, #2e7d32, #4caf50) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25) !important;
+}
+
+[data-theme="vert"] .weather-sidebar h3,
+[data-theme="vert"] .quick-links-sidebar h3,
+[data-theme="vert"] .weather-sidebar p strong {
+  color: #e8f5e8 !important;
+  border-bottom-color: rgba(255, 255, 255, 0.3);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="vert"] .weather-day {
+  background: rgba(0, 0, 0, 0.15) !important;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="vert"] .quick-link {
+  background: rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="vert"] .weather-gif {
+  filter: brightness(1.2) contrast(1.1) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+  z-index: 10;
+}
+
+/* 6. Mode Coucher de Soleil */
+[data-theme="sunset"] .weather-sidebar,
+[data-theme="sunset"] .quick-links-sidebar {
+  background: linear-gradient(145deg, #ff6f00, #ff9800, #ffc107) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 5px 15px rgba(255, 111, 0, 0.3) !important;
+}
+
+[data-theme="sunset"] .weather-sidebar h3,
+[data-theme="sunset"] .quick-links-sidebar h3,
+[data-theme="sunset"] .weather-sidebar p strong {
+  color: #1a1a1a !important;
+  border-bottom-color: rgba(0, 0, 0, 0.2);
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3) !important;
+  font-weight: bold !important;
+}
+
+[data-theme="sunset"] .weather-day {
+  background: rgba(0, 0, 0, 0.1) !important;
+  color: #1a1a1a;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="sunset"] .quick-link {
+  background: rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="sunset"] .weather-gif {
+  filter: brightness(1.1) contrast(1.2) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.15));
+  z-index: 10;
+}
+
+/* ==== BOUTONS DE FERMETURE ==== */
+.weather-toggle,
+.quick-links-toggle {
+  position: absolute;
+  top: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: background 0.2s, transform 0.2s;
+}
+
+/* CROIX MÉTÉO À DROITE */
+.weather-toggle {
+  right: 8px !important;
+  left: auto !important;
+}
+
+/* CROIX LIENS RAPIDES À DROITE */
+.quick-links-toggle {
+  right: 8px !important;
+  left: auto !important;
+}
+
+/* Styles des boutons pour chaque thème */
+[data-theme="light"] .weather-toggle,
+[data-theme="light"] .quick-links-toggle {
+  background: rgba(126, 87, 194, 0.2);
+  border: 1px solid rgba(126, 87, 194, 0.3);
+  color: #7e57c2 !important;
+}
+
+[data-theme="dark"] .weather-toggle,
+[data-theme="dark"] .quick-links-toggle {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+[data-theme="rouge"] .weather-toggle,
+[data-theme="rouge"] .quick-links-toggle {
+  background: rgba(255, 255, 255, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  color: white !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-theme="bleuciel"] .weather-toggle,
+[data-theme="bleuciel"] .quick-links-toggle {
+  background: rgba(255, 255, 255, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  color: white !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-theme="vert"] .weather-toggle,
+[data-theme="vert"] .quick-links-toggle {
+  background: rgba(255, 255, 255, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  color: white !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-theme="sunset"] .weather-toggle,
+[data-theme="sunset"] .quick-links-toggle {
+  background: rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid rgba(0, 0, 0, 0.3) !important;
+  color: #1a1a1a !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Effets au survol pour tous les thèmes */
+.weather-toggle:hover,
+.quick-links-toggle:hover {
+  transform: scale(1.05) !important;
+}
+
+.weather-toggle:active,
+.quick-links-toggle:active {
+  transform: scale(0.95) !important;
+}
+
+/* ==== JOURS MÉTÉO ==== */
+.weather-day {
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 0.9em;
+  position: relative;
+}
+
+/* En-tête du jour */
+.weather-day h4 {
+  background-color: rgba(126, 87, 194, 0.15);
+  border-radius: 6px;
+  text-align: center;
+  margin: 0 0 8px 0;
+  padding: 4px 0;
+  font-weight: bold;
+  font-size: 13px;
+  width: 100%;
+}
+
+/* Adaptation de l'en-tête pour chaque thème */
+[data-theme="light"] .weather-day h4 {
+  background-color: rgba(126, 87, 194, 0.2) !important;
+  color: #7e57c2 !important;
+  font-weight: bold !important;
+}
+
+[data-theme="rouge"] .weather-day h4 {
+  background-color: rgba(255, 235, 59, 0.2) !important;
+  color: #ffeb3b !important;
+}
+
+[data-theme="bleuciel"] .weather-day h4 {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+[data-theme="vert"] .weather-day h4 {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: #e8f5e8 !important;
+}
+
+[data-theme="sunset"] .weather-day h4 {
+  background-color: rgba(0, 0, 0, 0.15) !important;
+  color: #1a1a1a !important;
+}
+
+/* OPTIMISATION DES GIFS MÉTÉO POUR TOUS LES THÈMES */
+.weather-gif {
+  width: 50px;
+  height: 50px;
+  display: block;
+  margin: 5px auto;
+  position: relative;
+  z-index: 15 !important;
+}
+
+/* Position des GIFs météo sur mobile et tablette */
+@media (max-width: 1100px) {
+  .weather-day > img.weather-gif,
+  .weather-day img[src*="images/weather-gifs"] {
+    position: absolute !important;
+    top: 40px !important;
+    right: 10px !important;
+    width: 45px !important;
+    height: 45px !important;
+    margin: 0 !important;
+    z-index: 15 !important;
+  }
+  
+  .weather-day > div[style*="flex: 1"] {
+    font-size: 18px !important;
+    font-weight: 500 !important;
+    text-align: center !important;
+    margin-bottom: 5px !important;
+    display: block !important;
+    width: 80% !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .weather-day img[src*="images/weather-gifs"] {
+    width: 60px !important;
+    height: 60px !important;
+    top: 45px !important;
+  }
+}
+
+/* Temperatures */
+.temperature-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0;
+  padding: 3px 0;
+  border-top: 1px dashed rgba(0, 0, 0, 0.1);
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+}
+
+.min-temp {
+  color: #64B5F6 !important;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.max-temp {
+  color: #FFA726 !important;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* Détails météo */
+.weather-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.weather-detail-item {
+  padding: 3px 6px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+}
+
+/* Adaptation des détails pour chaque thème */
+[data-theme="light"] .weather-detail-item {
+  background: rgba(126, 87, 194, 0.1);
+  color: #333 !important;
+  font-weight: 500 !important;
+}
+
+[data-theme="dark"] .weather-detail-item {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+[data-theme="rouge"] .weather-detail-item {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: white !important;
+}
+
+[data-theme="bleuciel"] .weather-detail-item {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: white !important;
+}
+
+[data-theme="vert"] .weather-detail-item {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: white !important;
+}
+
+[data-theme="sunset"] .weather-detail-item {
+  background: rgba(0, 0, 0, 0.1) !important;
+  color: #1a1a1a !important;
+}
+
+/* Texte des conditions */
+.weather-condition {
+  font-size: 13px;
+  text-align: center;
+  margin: 5px 0;
+  font-weight: 500;
+}
+
+/* Adaptation du texte pour chaque thème */
+[data-theme="light"] .weather-condition {
+  color: #333 !important;
+  font-weight: 600 !important; /* Plus gras pour être mieux visible */
+}
+
+[data-theme="dark"] .weather-condition {
+  color: white;
+}
+
+[data-theme="rouge"] .weather-condition {
+  color: white !important;
+}
+
+[data-theme="bleuciel"] .weather-condition {
+  color: white !important;
+}
+
+[data-theme="vert"] .weather-condition {
+  color: white !important;
+}
+
+[data-theme="sunset"] .weather-condition {
+  color: #1a1a1a !important;
+}
+
+/* ==== LIENS RAPIDES ==== */
+.links-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.quick-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 8px;
+  border-radius: 8px;
+  text-decoration: none;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.quick-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+.quick-link .material-icons {
+  margin-bottom: 6px;
+  font-size: 22px;
+}
+
+.quick-link span:not(.material-icons) {
+  font-size: 12px !important;
+  line-height: 1.2;
+}
+
+/* Adaptation des liens pour chaque thème */
+[data-theme="light"] .quick-link span:not(.material-icons) {
+  color: #333 !important;
+}
+
+[data-theme="light"] .quick-link .material-icons {
+  color: #7e57c2;
+}
+
+[data-theme="dark"] .quick-link span:not(.material-icons) {
+  color: white !important;
+}
+
+[data-theme="dark"] .quick-link .material-icons {
+  color: #90caf9;
+}
+
+[data-theme="rouge"] .quick-link span:not(.material-icons) {
+  color: white !important;
+}
+
+[data-theme="rouge"] .quick-link .material-icons {
+  color: white !important;
+}
+
+[data-theme="bleuciel"] .quick-link span:not(.material-icons) {
+  color: white !important;
+}
+
+[data-theme="bleuciel"] .quick-link .material-icons {
+  color: white !important;
+}
+
+[data-theme="vert"] .quick-link span:not(.material-icons) {
+  color: white !important;
+}
+
+[data-theme="vert"] .quick-link .material-icons {
+  color: white !important;
+}
+
+[data-theme="sunset"] .quick-link span:not(.material-icons) {
+  color: #1a1a1a !important;
+}
+
+[data-theme="sunset"] .quick-link .material-icons {
+  color: #1a1a1a !important;
+}
+
+/* ==== BOUTONS D'AFFICHAGE ==== */
+.weather-show-btn,
+.quick-links-show-btn,
+.weather-mobile-btn {
+  position: fixed;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 46px;
+  height: 46px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  z-index: 990;
+  opacity: 1 !important;
+  transform: scale(1) !important;
+}
+
+/* Adaptation des boutons pour chaque thème */
+[data-theme="rouge"] .weather-show-btn,
+[data-theme="rouge"] .quick-links-show-btn,
+[data-theme="rouge"] .weather-mobile-btn {
+  background: linear-gradient(145deg, #c62828, #e53935);
+}
+
+[data-theme="bleuciel"] .weather-show-btn,
+[data-theme="bleuciel"] .quick-links-show-btn,
+[data-theme="bleuciel"] .weather-mobile-btn {
+  background: linear-gradient(145deg, #0277bd, #03a9f4);
+}
+
+[data-theme="vert"] .weather-show-btn,
+[data-theme="vert"] .quick-links-show-btn,
+[data-theme="vert"] .weather-mobile-btn {
+  background: linear-gradient(145deg, #2e7d32, #4caf50);
+}
+
+[data-theme="sunset"] .weather-show-btn,
+[data-theme="sunset"] .quick-links-show-btn,
+[data-theme="sunset"] .weather-mobile-btn {
+  background: linear-gradient(145deg, #ff6f00, #ff9800);
+}
+
+/* ==== RESPONSIVE DESIGN ==== */
+
+/* Desktop */
+@media (min-width: 1101px) {
+  .weather-sidebar {
+    top: 120px !important;
+    left: 10px !important;
+    width: 280px !important;
+    max-width: 280px !important;
+  }
+  
+  .quick-links-sidebar {
+    top: 120px !important;
+    right: 10px !important;
+    width: 320px !important;
+    max-width: 320px !important;
+  }
+  
+  .weather-show-btn {
+    top: 110px !important;
+    left: 10px !important;
+  }
+  
+  .quick-links-show-btn {
+    top: 110px !important;
+    right: 10px !important;
+  }
+}
+
+/* Tablette */
+@media (min-width: 768px) and (max-width: 1100px) {
+  .weather-sidebar {
+    width: 300px !important;
+    max-width: 300px !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+  }
+  
+  .quick-links-sidebar {
+    width: 320px !important;
+    max-width: 320px !important;
+    top: 80px !important;
+    right: 10px !important;
+  }
+  
+  .weather-mobile-btn {
+    display: none !important;
+  }
+  
+  .weather-show-btn {
+    display: flex !important;
+    opacity: 1 !important;
+    top: 70px !important;
+    left: 10px !important;
+  }
+  
+  .quick-links-show-btn {
+    display: flex !important;
+    opacity: 1 !important;
+    top: 70px !important;
+    right: 10px !important;
+  }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .weather-sidebar,
+  .quick-links-sidebar {
+    width: 92% !important;
+    max-width: 380px !important;
+    max-height: 72vh !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    padding: 10px 12px !important;
+    z-index: 9999 !important;
+    border-radius: 16px !important;
+    overflow-y: auto !important;
+  }
+  
+  .weather-mobile-btn {
+    display: flex !important;
+    top: 65px !important;
+    left: 15px !important;
+  }
+  
+  .quick-links-show-btn {
+    display: flex !important;
+    opacity: 1 !important;
+    top: 65px !important;
+    right: 10px !important;
+  }
+  
+  .weather-show-btn {
+    display: none !important;
+  }
+}
