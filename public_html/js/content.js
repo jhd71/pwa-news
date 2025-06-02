@@ -139,6 +139,7 @@ if (menuButton && sidebar) {
 	
 	// Fonction pour ouvrir les prix carburant
 	this.setupFuelButton();
+
         // Installation PWA
         window.addEventListener('beforeinstallprompt', (e) => {
             this.deferredPrompt = e;
@@ -2297,6 +2298,7 @@ openFuelPrices() {
         this.showToast('Erreur lors de l\'ouverture');
     }
 }
+
 }
 
 export default ContentManager;

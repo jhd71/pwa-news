@@ -210,3 +210,173 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 });
+
+// Fonction globale pour afficher les numéros d'urgence
+function showEmergencyNumbers(event) {
+  event.preventDefault();
+  
+  // Créer le modal d'urgence
+  const modal = document.createElement('div');
+  modal.className = 'emergency-modal';
+  modal.innerHTML = `
+    <div class="emergency-content">
+      <div class="emergency-header">
+        <h3>🚨 Numéros d'urgence</h3>
+        <button class="close-emergency">×</button>
+      </div>
+      <div class="emergency-numbers">
+        <div class="emergency-item" onclick="callNumber('15')">
+          <span class="material-icons">medical_services</span>
+          <div>
+            <strong>15 - SAMU</strong>
+            <span>Urgences médicales</span>
+          </div>
+        </div>
+        <div class="emergency-item" onclick="callNumber('18')">
+          <span class="material-icons">local_fire_department</span>
+          <div>
+            <strong>18 - Pompiers</strong>
+            <span>Incendie, accidents</span>
+          </div>
+        </div>
+        <div class="emergency-item" onclick="callNumber('17')">
+          <span class="material-icons">shield</span>
+          <div>
+            <strong>17 - Police</strong>
+            <span>Police secours</span>
+          </div>
+        </div>
+        <div class="emergency-item" onclick="callNumber('112')">
+          <span class="material-icons">phone</span>
+          <div>
+            <strong>112 - Urgences UE</strong>
+            <span>Numéro d'urgence européen</span>
+          </div>
+        </div>
+		<div class="emergency-item" onclick="window.open('https://www.ch-montceau71.fr/', '_blank')">
+			<span class="material-icons">local_hospital</span>
+		<div>
+			<strong>Hôpital Montceau</strong>
+			<span>Centre hospitalier</span>
+		</div>
+		</div>
+        <div class="emergency-item" onclick="callNumber('114')">
+          <span class="material-icons">hearing</span>
+          <div>
+            <strong>114 - Malentendants</strong>
+            <span>Urgences par SMS/Fax</span>
+          </div>
+        </div>       
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Styles CSS inline pour le modal
+  const style = document.createElement('style');
+  style.textContent = `
+    .emergency-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .emergency-content {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      max-width: 400px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .emergency-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      color: #d32f2f;
+    }
+    .close-emergency {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #666;
+    }
+    .emergency-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      border: 2px solid #f5f5f5;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .emergency-item:hover {
+      border-color: #d32f2f;
+      background: #fff5f5;
+    }
+    .emergency-item .material-icons {
+      color: #d32f2f;
+      font-size: 28px;
+    }
+    .emergency-item div {
+      flex: 1;
+    }
+    .emergency-item strong {
+      display: block;
+      color: #333;
+      font-size: 16px;
+    }
+    .emergency-item span {
+      color: #666;
+      font-size: 14px;
+    }
+  `;
+  
+  document.head.appendChild(style);
+  
+  // Fermeture du modal
+  modal.querySelector('.close-emergency').onclick = () => {
+    modal.remove();
+    style.remove();
+  };
+  
+  modal.onclick = (e) => {
+    if (e.target === modal) {
+      modal.remove();
+      style.remove();
+    }
+  };
+}
+
+// Fonction pour appeler un numéro
+function callNumber(number) {
+  if (confirm(`Appeler le ${number} ?`)) {
+    window.location.href = `tel:${number}`;
+  }
+}
+
+// Fonction pour appeler un numéro
+function callNumber(number) {
+  if (confirm(`Appeler le ${number} ?`)) {
+    window.location.href = `tel:${number}`;
+  }
+}
+
+// AJOUTEZ ICI - Fonction globale pour la recherche locale
+function openLocalSearchDirect() {
+    const searchUrl = 'https://www.google.fr/maps/search/?api=1&query=Montceau-les-Mines,+France';
+    window.open(searchUrl, '_blank', 'noopener,noreferrer');
+    console.log('🔍 Ouverture de la recherche locale');
+}

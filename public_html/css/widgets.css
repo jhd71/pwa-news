@@ -771,7 +771,7 @@
    display: flex !important;
    opacity: 1 !important;
    top: 70px !important;
-   right: 10px !important;
+   right: 5px !important;
    width: 40px;
    height: 40px;
   }
@@ -930,6 +930,99 @@
     
     [data-theme="dark"] .fuel-button:hover,
     .theme-dark .fuel-button:hover {
+        transform: translateX(-50%) translateY(-2px) !important;
+    }
+}
+
+/* Widget Recherche locale - Même style que fuel-button */
+.search-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    outline: none;
+    text-decoration: none;
+    padding: 0;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    color: white !important;
+}
+
+/* Positionnement PC - À droite du bouton carburant */
+@media (min-width: 769px) {
+    .search-button {
+        position: fixed;
+        top: 170px;
+        width: 46px;
+        height: 46px;
+		right: 10px;
+    }
+    
+    .search-button .material-icons {
+        font-size: 24px;
+        color: white !important;
+    }
+}
+
+/* Positionnement Mobile - À droite du bouton carburant */
+@media (max-width: 768px) {
+        .search-button {
+        position: fixed;
+        top: 70px;
+        left: 80%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 40px;
+        z-index: 100;
+    }
+    
+    .search-button .material-icons {
+        font-size: 22px;
+        color: white !important;
+    }
+}
+
+/* Mêmes couleurs que fuel-button pour tous les thèmes */
+[data-theme="light"] .search-button,
+.theme-light .search-button {
+    background: #7e57c2 !important;
+}
+
+[data-theme="dark"] .search-button,
+.theme-dark .search-button {
+    background: #1a237e !important;
+}
+
+[data-theme="rouge"] .search-button,
+.theme-rouge .search-button {
+    background: linear-gradient(145deg, #c62828, #e53935) !important;
+}
+
+[data-theme="bleuciel"] .search-button,
+.theme-bleuciel .search-button {
+    background: linear-gradient(145deg, #4FB3E8, #3F97C7) !important;
+}
+
+[data-theme="vert"] .search-button,
+.theme-vert .search-button {
+    background: linear-gradient(145deg, #4CAF50, #388E3C) !important;
+}
+
+[data-theme="sunset"] .search-button,
+.theme-sunset .search-button {
+    background: linear-gradient(145deg, #FF6B35, #E65100) !important;
+}
+
+/* Effets hover */
+.search-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+@media (max-width: 768px) {
+    .search-button:hover {
         transform: translateX(-50%) translateY(-2px) !important;
     }
 }

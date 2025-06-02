@@ -124,6 +124,10 @@
 <button class="fuel-button" onclick="contentManager.openFuelPrices()" title="Consulter les prix des carburants à Montceau-les-Mines">
     <span class="material-icons">local_gas_station</span>
 </button>
+<!-- Bouton Recherche locale -->
+<button class="search-button" onclick="openLocalSearchDirect()" title="Recherche locale à Montceau-les-Mines">
+    <span class="material-icons">search</span>
+</button>
 <!-- Structure HTML optimisée pour le Swiper et les séparateurs -->
 <div class="swiper-container">
   <div class="swiper">
@@ -367,6 +371,10 @@ document.getElementById('currentYear').textContent = new Date().getFullYear();
   </button>
   <h3>Liens rapides</h3>
   <div class="links-grid">
+  <a href="#" class="quick-link emergency-link" onclick="showEmergencyNumbers(event)">
+  <span class="material-icons">emergency</span>
+  <span>Urgences</span>
+</a>
     <a href="https://www.montceaulesmines.fr/" class="quick-link" target="_blank">
       <span class="material-icons">location_city</span>
       <span>Ville de Montceau</span>
