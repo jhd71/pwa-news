@@ -1492,7 +1492,6 @@ applyListModeImmediate() {
             display: flex !important;
             align-items: center !important;
             justify-content: flex-start !important;
-            padding: 15px 20px !important;
             min-height: 50px !important;
             height: auto !important;
             transition: none !important; /* Pas de transition */
