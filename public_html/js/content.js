@@ -1507,7 +1507,6 @@ applyListModeImmediate() {
         #tileContainer.list .separator {
             width: 100% !important;
             max-width: 800px !important;
-            margin: 15px auto !important;
         }
         
         /* Mode grille - transitions normales */
