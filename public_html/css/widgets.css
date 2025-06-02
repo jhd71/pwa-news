@@ -757,20 +757,179 @@
     overflow-y: auto !important;
   }
   
-  .weather-mobile-btn {
-    display: flex !important;
-    top: 65px !important;
-    left: 15px !important;
+  @media (max-width: 767px) {
+    .weather-mobile-btn {
+        display: flex !important;
+        top: 70px !important;
+        left: 5px !important;
+        width: 40px;
+        height: 40px;
+    }
   }
   
   .quick-links-show-btn {
-    display: flex !important;
-    opacity: 1 !important;
-    top: 65px !important;
-    right: 10px !important;
+   display: flex !important;
+   opacity: 1 !important;
+   top: 70px !important;
+   right: 10px !important;
+   width: 40px;
+   height: 40px;
   }
   
   .weather-show-btn {
     display: none !important;
   }
+}
+
+/* Bouton Carburant - Fond adaptatif selon thèmes */
+.fuel-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    outline: none;
+    text-decoration: none;
+    padding: 0;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    color: white !important;
+}
+
+/* Positionnement PC */
+@media (min-width: 769px) {
+    .fuel-button {
+        position: fixed;
+        top: 170px;
+        left: 10px;
+        width: 46px;
+        height: 46px;
+    }
+    
+    .fuel-button .material-icons {
+        font-size: 24px;
+        color: white !important;
+    }
+}
+
+/* Positionnement Mobile */
+@media (max-width: 768px) {
+    .fuel-button {
+        position: fixed;
+        top: 71px;
+        left: 20%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 40px;
+        z-index: 100;
+    }
+    
+    .fuel-button .material-icons {
+        font-size: 22px;
+        color: white !important;
+    }
+}
+
+/* VRAIES COULEURS DES THÈMES */
+
+/* Thème Violet (light) - Violet #7e57c2 */
+[data-theme="light"] .fuel-button,
+.theme-light .fuel-button {
+    background: #7e57c2 !important;
+    color: white !important;
+}
+
+[data-theme="light"] .fuel-button:hover,
+.theme-light .fuel-button:hover {
+    background: #673ab7 !important;
+    box-shadow: 0 6px 20px rgba(126, 87, 194, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Thème Sombre (dark) - Bleu foncé #1a237e */
+[data-theme="dark"] .fuel-button,
+.theme-dark .fuel-button {
+    background: #1a237e !important;
+    color: white !important;
+}
+
+[data-theme="dark"] .fuel-button:hover,
+.theme-dark .fuel-button:hover {
+    background: #283593 !important;
+    box-shadow: 0 6px 20px rgba(26, 35, 126, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Thème Rouge - Gradient rouge */
+[data-theme="rouge"] .fuel-button,
+.theme-rouge .fuel-button {
+    background: linear-gradient(145deg, #c62828, #e53935) !important;
+    color: white !important;
+}
+
+[data-theme="rouge"] .fuel-button:hover,
+.theme-rouge .fuel-button:hover {
+    background: linear-gradient(145deg, #b71c1c, #d32f2f) !important;
+    box-shadow: 0 6px 20px rgba(198, 40, 40, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Thème Bleu Ciel - Bleu #4fb3e8 */
+[data-theme="bleuciel"] .fuel-button,
+.theme-bleuciel .fuel-button {
+    background: linear-gradient(145deg, #4FB3E8, #3F97C7) !important;
+    color: white !important;
+}
+
+[data-theme="bleuciel"] .fuel-button:hover,
+.theme-bleuciel .fuel-button:hover {
+    background: #42a5f5 !important;
+    box-shadow: 0 6px 20px rgba(79, 179, 232, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Thème Vert Nature - Gradient vert */
+[data-theme="vert"] .fuel-button,
+.theme-vert .fuel-button {
+    background: linear-gradient(145deg, #4CAF50, #388E3C) !important;
+    color: white !important;
+}
+
+[data-theme="vert"] .fuel-button:hover,
+.theme-vert .fuel-button:hover {
+    background: linear-gradient(145deg, #43a047, #2e7d32) !important;
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Thème Coucher de Soleil - Gradient orange */
+[data-theme="sunset"] .fuel-button,
+.theme-sunset .fuel-button {
+    background: linear-gradient(145deg, #FF6B35, #E65100) !important;
+    color: white !important;
+}
+
+[data-theme="sunset"] .fuel-button:hover,
+.theme-sunset .fuel-button:hover {
+    background: linear-gradient(145deg, #ff5722, #bf360c) !important;
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+    transform: translateY(-2px);
+}
+
+/* FORCE l'icône blanche dans TOUS les cas */
+.fuel-button .material-icons {
+    color: white !important;
+}
+
+/* Responsive mobile - ajustements */
+@media (max-width: 768px) {
+    .fuel-button:hover {
+        transform: translateX(-50%) translateY(-2px) !important;
+    }
+    
+    [data-theme="dark"] .fuel-button:hover,
+    .theme-dark .fuel-button:hover {
+        transform: translateX(-50%) translateY(-2px) !important;
+    }
 }
