@@ -324,7 +324,7 @@
 /* Arrière-plan bleu ciel pour tout le site */
 [data-theme="bleuciel"] body,
 [data-theme="bleuciel"] html {
-    background-color: #609ac8 !important;
+    background-color: #65a1d0 !important;
     background-image: none !important;
 }
 
