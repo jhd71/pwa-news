@@ -224,6 +224,241 @@ body.bg-gradient-duo-red-blue {
     --bg-image: linear-gradient(to right, #F44336, #2196F3);
 }
 
+/* === FONDS CLAIRS ET NEUTRES === */
+/* Blancs et gris clairs */
+body.bg-solid-white {
+    --bg-image: none;
+    background-color: #FFFFFF !important;
+}
+
+body.bg-solid-off-white {
+    --bg-image: none;
+    background-color: #FAFAFA !important;
+}
+
+body.bg-solid-cream {
+    --bg-image: none;
+    background-color: #FFF8E1 !important;
+}
+
+body.bg-solid-light-grey {
+    --bg-image: none;
+    background-color: #F5F5F5 !important;
+}
+
+body.bg-solid-silver {
+    --bg-image: none;
+    background-color: #E0E0E0 !important;
+}
+
+body.bg-solid-pearl {
+    --bg-image: none;
+    background-color: #F8F8FF !important;
+}
+
+body.bg-solid-snow {
+    --bg-image: none;
+    background-color: #FFFAFA !important;
+}
+
+body.bg-solid-ivory {
+    --bg-image: none;
+    background-color: #FFFFF0 !important;
+}
+
+/* Gris moyens */
+body.bg-solid-light-steel {
+    --bg-image: none;
+    background-color: #B0BEC5 !important;
+}
+
+body.bg-solid-medium-grey {
+    --bg-image: none;
+    background-color: #9E9E9E !important;
+}
+
+body.bg-solid-cool-grey {
+    --bg-image: none;
+    background-color: #90A4AE !important;
+}
+
+body.bg-solid-warm-grey {
+    --bg-image: none;
+    background-color: #A1887F !important;
+}
+
+/* === DÉGRADÉS CLAIRS === */
+/* Dégradés blanc-gris */
+body.bg-gradient-white-grey {
+    --bg-image: linear-gradient(135deg, #FFFFFF, #F5F5F5, #E0E0E0);
+}
+
+body.bg-gradient-pearl-silver {
+    --bg-image: linear-gradient(135deg, #F8F8FF, #E8E8E8, #D0D0D0);
+}
+
+body.bg-gradient-cream-beige {
+    --bg-image: linear-gradient(135deg, #FFF8E1, #F5F5DC, #F0E68C);
+}
+
+body.bg-gradient-soft-clouds {
+    --bg-image: linear-gradient(135deg, #ECF0F1, #BDC3C7, #95A5A6);
+}
+
+/* Dégradés pastels */
+body.bg-gradient-pastel-blue {
+    --bg-image: linear-gradient(135deg, #E3F2FD, #BBDEFB, #90CAF9);
+}
+
+body.bg-gradient-pastel-pink {
+    --bg-image: linear-gradient(135deg, #FCE4EC, #F8BBD0, #F48FB1);
+}
+
+body.bg-gradient-pastel-green {
+    --bg-image: linear-gradient(135deg, #E8F5E8, #C8E6C9, #A5D6A7);
+}
+
+body.bg-gradient-pastel-yellow {
+    --bg-image: linear-gradient(135deg, #FFFDE7, #FFF9C4, #FFF176);
+}
+
+body.bg-gradient-pastel-purple {
+    --bg-image: linear-gradient(135deg, #F3E5F5, #E1BEE7, #CE93D8);
+}
+
+body.bg-gradient-pastel-orange {
+    --bg-image: linear-gradient(135deg, #FFF3E0, #FFCC80, #FFB74D);
+}
+
+/* === DÉGRADÉS RADIAUX CLAIRS === */
+body.bg-gradient-radial-light {
+    --bg-image: radial-gradient(circle at center, #FFFFFF, #F0F0F0);
+}
+
+body.bg-gradient-radial-soft-blue {
+    --bg-image: radial-gradient(circle at center, #E3F2FD, #81D4FA);
+}
+
+body.bg-gradient-radial-soft-pink {
+    --bg-image: radial-gradient(circle at center, #FCE4EC, #F48FB1);
+}
+
+body.bg-gradient-radial-soft-green {
+    --bg-image: radial-gradient(circle at center, #E8F5E8, #A5D6A7);
+}
+
+/* === COULEURS TENDANCE === */
+/* Couleurs modernes claires */
+body.bg-solid-sage {
+    --bg-image: none;
+    background-color: #B2DFDB !important;
+}
+
+body.bg-solid-dusty-rose {
+    --bg-image: none;
+    background-color: #F8BBD0 !important;
+}
+
+body.bg-solid-powder-blue {
+    --bg-image: none;
+    background-color: #B3E5FC !important;
+}
+
+body.bg-solid-mint {
+    --bg-image: none;
+    background-color: #C8E6C9 !important;
+}
+
+body.bg-solid-vanilla {
+    --bg-image: none;
+    background-color: #FFF9C4 !important;
+}
+
+body.bg-solid-lavender-mist {
+    --bg-image: none;
+    background-color: #E1BEE7 !important;
+}
+
+body.bg-solid-peach {
+    --bg-image: none;
+    background-color: #FFCCBC !important;
+}
+
+body.bg-solid-sky-blue {
+    --bg-image: none;
+    background-color: #87CEEB !important;
+}
+
+/* === COULEURS TERRE ET NATURE === */
+body.bg-solid-sand {
+    --bg-image: none;
+    background-color: #F4A460 !important;
+}
+
+body.bg-solid-wheat {
+    --bg-image: none;
+    background-color: #F5DEB3 !important;
+}
+
+body.bg-solid-linen {
+    --bg-image: none;
+    background-color: #FAF0E6 !important;
+}
+
+body.bg-solid-misty-rose {
+    --bg-image: none;
+    background-color: #FFE4E1 !important;
+}
+
+body.bg-solid-almond {
+    --bg-image: none;
+    background-color: #FFDBCD !important;
+}
+
+/* === DÉGRADÉS TERRE === */
+body.bg-gradient-earth-tones {
+    --bg-image: linear-gradient(135deg, #F5DEB3, #DEB887, #D2B48C);
+}
+
+body.bg-gradient-desert {
+    --bg-image: linear-gradient(135deg, #F4A460, #CD853F, #A0522D);
+}
+
+body.bg-gradient-morning-mist {
+    --bg-image: linear-gradient(135deg, #F0F8FF, #E6E6FA, #D3D3D3);
+}
+
+/* === MODIFICATIONS POUR LA LISIBILITÉ === */
+/* Ajustements spéciaux pour les fonds très clairs */
+body.bg-solid-white .tile,
+body.bg-solid-off-white .tile,
+body.bg-solid-cream .tile,
+body.bg-solid-light-grey .tile,
+body.bg-solid-pearl .tile,
+body.bg-solid-snow .tile,
+body.bg-solid-ivory .tile {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Ajustement pour les séparateurs sur fonds clairs */
+body.bg-solid-white .separator,
+body.bg-solid-off-white .separator,
+body.bg-solid-cream .separator,
+body.bg-solid-light-grey .separator {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Améliorer la visibilité du texte sur certains fonds pastels */
+body.bg-gradient-pastel-yellow .tile-title,
+body.bg-solid-vanilla .tile-title,
+body.bg-solid-cream .tile-title {
+    text-shadow: 
+        1px 1px 3px rgba(0, 0, 0, 0.8),
+        0 0 5px rgba(0, 0, 0, 0.5) !important;
+}
+
 /* Styles pour le PANNEAU LATÉRAL au lieu du modal */
 .bg-selector-panel {
     position: fixed;
