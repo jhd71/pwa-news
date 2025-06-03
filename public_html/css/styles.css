@@ -1405,45 +1405,134 @@ background-color: #1a237e;
     transform: scale(1.05);
 }
 
-/* Couleurs des tuiles dynamiques */
-.tile:nth-child(30n + 1) { background: linear-gradient(135deg, #9675CD, #7E57C2); }
-.tile:nth-child(30n + 2) { background: linear-gradient(135deg, #4DB6AC, #26A69A); }
-.tile:nth-child(30n + 3) { background: linear-gradient(135deg, #7986CB, #5C6BC0); }
-.tile:nth-child(30n + 4) { background: linear-gradient(135deg, #81C784, #66BB6A); }
-.tile:nth-child(30n + 5) { background: linear-gradient(135deg, #F06292, #EC407A); }
-.tile:nth-child(30n + 6) { background: linear-gradient(135deg, #64B5F6, #42A5F5); }
-.tile:nth-child(30n + 7) { background: linear-gradient(135deg, #FFB74D, #FFA726); }
-.tile:nth-child(30n + 8) { background: linear-gradient(135deg, #BA68C8, #AB47BC); }
-.tile:nth-child(30n + 9) { background: linear-gradient(135deg, #4DD0E1, #26C6DA); }
-.tile:nth-child(30n + 10) { background: linear-gradient(135deg, #A1887F, #8D6E63); }
-.tile:nth-child(30n + 11) { background: linear-gradient(135deg, #E57373, #EF5350); }
-.tile:nth-child(30n + 12) { background: linear-gradient(135deg, #F06292, #EC407A); }
-.tile:nth-child(30n + 13) { background: linear-gradient(135deg, #AB47BC, #9C27B0); }
-.tile:nth-child(30n + 14) { background: linear-gradient(135deg, #5C6BC0, #3F51B5); }
-.tile:nth-child(30n + 15) { background: linear-gradient(135deg, #009688, #00796B); }
-.tile:nth-child(30n + 16) { background: linear-gradient(135deg, #8BC34A, #7CB342); }
-.tile:nth-child(30n + 17) { background: linear-gradient(135deg, #FF9800, #FB8C00); }
-.tile:nth-child(30n + 18) { background: linear-gradient(135deg, #795548, #6D4C41); }
-.tile:nth-child(30n + 19) { background: linear-gradient(135deg, #607D8B, #546E7A); }
-.tile:nth-child(30n + 20) { background: linear-gradient(135deg, #FFC107, #FFA000); }
-.tile:nth-child(30n + 21) { background: linear-gradient(135deg, #C62828, #B71C1C); }
-.tile:nth-child(30n + 22) { background: linear-gradient(135deg, #AD1457, #880E4F); }
-.tile:nth-child(30n + 23) { background: linear-gradient(135deg, #6A1B9A, #4A148C); }
-.tile:nth-child(30n + 24) { background: linear-gradient(135deg, #1E88E5, #1976D2); }
-.tile:nth-child(30n + 25) { background: linear-gradient(135deg, #2E7D32, #1B5E20); }
-.tile:nth-child(30n + 26) { background: linear-gradient(135deg, #FF6F00, #E65100); }
-.tile:nth-child(30n + 27) { background: linear-gradient(135deg, #3E2723, #212121); }
-.tile:nth-child(30n + 28) { background: linear-gradient(135deg, #9E9D24, #827717); }
-.tile:nth-child(30n + 29) { background: linear-gradient(135deg, #546E7A, #37474F); }
-.tile:nth-child(30n + 0) { background: linear-gradient(135deg, #D84315, #BF360C); }
+/* === NOUVELLE PALETTE DE COULEURS VIBRANTES === */
+/* 30 couleurs soigneusement sélectionnées pour être belles et harmonieuses */
 
-/* Texte sur tuiles claires pour améliorer la lisibilité */
-.tile:nth-child(30n + 2) .tile-title,
-.tile:nth-child(30n + 6) .tile-title,
+/* 1-5: Violets et roses énergiques */
+.tile:nth-child(30n + 1) { background: linear-gradient(135deg, #667eea, #764ba2); }
+.tile:nth-child(30n + 2) { background: linear-gradient(135deg, #f093fb, #f5576c); }
+.tile:nth-child(30n + 3) { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+.tile:nth-child(30n + 4) { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+.tile:nth-child(30n + 5) { background: linear-gradient(135deg, #fa709a, #fee140); }
+
+/* 6-10: Bleus et turquoise dynamiques */
+.tile:nth-child(30n + 6) { background: linear-gradient(135deg, #30cfd0, #91a7ff); }
+.tile:nth-child(30n + 7) { background: linear-gradient(135deg, #a8edea, #fed6e3); }
+.tile:nth-child(30n + 8) { background: linear-gradient(135deg, #ff9a9e, #fecfef); }
+.tile:nth-child(30n + 9) { background: linear-gradient(135deg, #ffecd2, #fcb69f); }
+.tile:nth-child(30n + 10) { background: linear-gradient(135deg, #ff8a80, #ea4c89); }
+
+/* 11-15: Oranges et jaunes chaleureux */
+.tile:nth-child(30n + 11) { background: linear-gradient(135deg, #ffd89b, #19547b); }
+.tile:nth-child(30n + 12) { background: linear-gradient(135deg, #667eea, #764ba2); }
+.tile:nth-child(30n + 13) { background: linear-gradient(135deg, #f093fb, #f5576c); }
+.tile:nth-child(30n + 14) { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+.tile:nth-child(30n + 15) { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+
+/* 16-20: Verts frais et naturels */
+.tile:nth-child(30n + 16) { background: linear-gradient(135deg, #fa709a, #fee140); }
+.tile:nth-child(30n + 17) { background: linear-gradient(135deg, #30cfd0, #c43bad); }
+.tile:nth-child(30n + 18) { background: linear-gradient(135deg, #a8edea, #fed6e3); }
+.tile:nth-child(30n + 19) { background: linear-gradient(135deg, #ff9a9e, #fad0c4); }
+.tile:nth-child(30n + 20) { background: linear-gradient(135deg, #ffecd2, #fcb69f); }
+
+/* 21-25: Rouges et roses vibrants */
+.tile:nth-child(30n + 21) { background: linear-gradient(135deg, #ff8a80, #ea4c89); }
+.tile:nth-child(30n + 22) { background: linear-gradient(135deg, #ffd89b, #19547b); }
+.tile:nth-child(30n + 23) { background: linear-gradient(135deg, #a1c4fd, #c2e9fb); }
+.tile:nth-child(30n + 24) { background: linear-gradient(135deg, #d299c2, #fef9d7); }
+.tile:nth-child(30n + 25) { background: linear-gradient(135deg, #89f7fe, #66a6ff); }
+
+/* 26-30: Couleurs modernes et tendance */
+.tile:nth-child(30n + 26) { background: linear-gradient(135deg, #fdbb2d, #22c1c3); }
+.tile:nth-child(30n + 27) { background: linear-gradient(135deg, #e96443, #904e95); }
+.tile:nth-child(30n + 28) { background: linear-gradient(135deg, #96deda, #50c9c3); }
+.tile:nth-child(30n + 29) { background: linear-gradient(135deg, #f38ba8, #fde2e7); }
+.tile:nth-child(30n + 0) { background: linear-gradient(135deg, #6a11cb, #2575fc); }
+
+/* === AMÉLIORATION DE LA LISIBILITÉ === */
+/* Ombres de texte pour toutes les tuiles pour une meilleure lisibilité */
+.tile .tile-title {
+    text-shadow: 
+        1px 1px 2px rgba(0, 0, 0, 0.7),
+        0 0 4px rgba(0, 0, 0, 0.3);
+    font-weight: 600;
+    color: white;
+}
+
+/* Ombres renforcées pour les couleurs plus claires */
+.tile:nth-child(30n + 3) .tile-title,
+.tile:nth-child(30n + 4) .tile-title,
+.tile:nth-child(30n + 7) .tile-title,
 .tile:nth-child(30n + 9) .tile-title,
-.tile:nth-child(30n + 15) .tile-title,
-.tile:nth-child(30n + 20) .tile-title {
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+.tile:nth-child(30n + 18) .tile-title,
+.tile:nth-child(30n + 20) .tile-title,
+.tile:nth-child(30n + 23) .tile-title,
+.tile:nth-child(30n + 24) .tile-title,
+.tile:nth-child(30n + 26) .tile-title,
+.tile:nth-child(30n + 28) .tile-title,
+.tile:nth-child(30n + 29) .tile-title {
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.8),
+        0 0 6px rgba(0, 0, 0, 0.5),
+        0 0 2px rgba(0, 0, 0, 0.9);
+    font-weight: 700;
+}
+
+/* === EFFETS VISUELS AMÉLIORÉS === */
+.tile {
+    /* Bordure subtile pour définir les contours */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    
+    /* Ombre douce pour détacher du fond */
+    box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.2),
+        0 2px 6px rgba(0, 0, 0, 0.1);
+    
+    /* Transition fluide pour tous les effets */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tile:hover {
+    /* Effet de surélévation au survol */
+    transform: translateY(-3px) scale(1.02);
+    
+    /* Ombre plus prononcée au survol */
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.3),
+        0 4px 12px rgba(0, 0, 0, 0.2);
+    
+    /* Bordure plus visible au survol */
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+/* === ANIMATIONS SUBTILES === */
+@keyframes shimmer {
+    0% { background-position: -200px 0; }
+    100% { background-position: 200px 0; }
+}
+
+.tile::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    background-size: 200px 100%;
+    animation: shimmer 3s infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.tile:hover::before {
+    opacity: 1;
 }
 
 /* SECTION 13: MENU PARAMÈTRES */
