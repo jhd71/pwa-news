@@ -2210,7 +2210,7 @@ addVisibilityStyles() {
                 0 2px 8px rgba(0, 0, 0, 0.2);
             
             /* Fond de secours plus opaque */
-            background-color: rgba(var(--tile-bg-rgb), 0.85) !important;
+            background-color: #4fb3e8 !important;
             
             /* Transition fluide */
             transition: all 0.3s ease;
