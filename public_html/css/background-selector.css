@@ -428,37 +428,6 @@ body.bg-gradient-morning-mist {
     --bg-image: linear-gradient(135deg, #F0F8FF, #E6E6FA, #D3D3D3);
 }
 
-/* === MODIFICATIONS POUR LA LISIBILITÉ === */
-/* Ajustements spéciaux pour les fonds très clairs */
-body.bg-solid-white .tile,
-body.bg-solid-off-white .tile,
-body.bg-solid-cream .tile,
-body.bg-solid-light-grey .tile,
-body.bg-solid-pearl .tile,
-body.bg-solid-snow .tile,
-body.bg-solid-ivory .tile {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-    border: 1px solid rgba(0, 0, 0, 0.1) !important;
-}
-
-/* Ajustement pour les séparateurs sur fonds clairs */
-body.bg-solid-white .separator,
-body.bg-solid-off-white .separator,
-body.bg-solid-cream .separator,
-body.bg-solid-light-grey .separator {
-    background: rgba(0, 0, 0, 0.05) !important;
-    border: 1px solid rgba(0, 0, 0, 0.1) !important;
-}
-
-/* Améliorer la visibilité du texte sur certains fonds pastels */
-body.bg-gradient-pastel-yellow .tile-title,
-body.bg-solid-vanilla .tile-title,
-body.bg-solid-cream .tile-title {
-    text-shadow: 
-        1px 1px 3px rgba(0, 0, 0, 0.8),
-        0 0 5px rgba(0, 0, 0, 0.5) !important;
-}
-
 /* Styles pour le PANNEAU LATÉRAL au lieu du modal */
 .bg-selector-panel {
     position: fixed;
@@ -757,4 +726,35 @@ body.bg-solid-cream .tile-title {
         width: 100%;
         justify-content: center;
     }
+}
+
+/* === MODIFICATIONS POUR LA LISIBILITÉ === */
+/* Ajustements spéciaux pour les fonds très clairs */
+body.bg-solid-white .tile,
+body.bg-solid-off-white .tile,
+body.bg-solid-cream .tile,
+body.bg-solid-light-grey .tile,
+body.bg-solid-pearl .tile,
+body.bg-solid-snow .tile,
+body.bg-solid-ivory .tile {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Ajustement pour les séparateurs sur fonds clairs */
+body.bg-solid-white .separator,
+body.bg-solid-off-white .separator,
+body.bg-solid-cream .separator,
+body.bg-solid-light-grey .separator {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Améliorer la visibilité du texte sur certains fonds pastels */
+body.bg-gradient-pastel-yellow .tile-title,
+body.bg-solid-vanilla .tile-title,
+body.bg-solid-cream .tile-title {
+    text-shadow: 
+        1px 1px 3px rgba(0, 0, 0, 0.8),
+        0 0 5px rgba(0, 0, 0, 0.5) !important;
 }
