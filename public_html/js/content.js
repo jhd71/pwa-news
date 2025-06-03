@@ -2393,70 +2393,141 @@ changeVisualEnhancement(mode) {
         style.id = 'theme-color-fix';
         
         if (currentTheme === 'vert') {
-            console.log('🌿 Application des styles verts');
+            console.log('🌿 Application des styles verts ULTRA-PRIORITAIRES');
             style.textContent = `
-                /* Correction pour thème vert */
-                [data-theme="vert"] .tile {
+                /* Correction ULTRA-PRIORITAIRE pour thème vert */
+                body[data-theme="vert"] #tileContainer .tile {
                     background: linear-gradient(135deg, #1b5e20, #2e7d32) !important;
                     color: white !important;
                     border: 1px solid rgba(255, 255, 255, 0.2) !important;
                 }
-                [data-theme="vert"] .tile:nth-child(even) {
+                body[data-theme="vert"] #tileContainer .tile:nth-child(even) {
                     background: linear-gradient(135deg, #2d5016, #4a7c23) !important;
                 }
-                [data-theme="vert"] .tile:nth-child(3n) {
+                body[data-theme="vert"] #tileContainer .tile:nth-child(3n) {
                     background: linear-gradient(135deg, #33691e, #558b2f) !important;
                 }
-                [data-theme="vert"] .tile:nth-child(4n) {
+                body[data-theme="vert"] #tileContainer .tile:nth-child(4n) {
                     background: linear-gradient(135deg, #827717, #9e9d24) !important;
                 }
-                [data-theme="vert"] .tile:nth-child(5n) {
+                body[data-theme="vert"] #tileContainer .tile:nth-child(5n) {
                     background: linear-gradient(135deg, #689f38, #8bc34a) !important;
                 }
-                [data-theme="vert"] .tile-title {
+                body[data-theme="vert"] #tileContainer .tile:nth-child(6n) {
+                    background: linear-gradient(135deg, #388e3c, #66bb6a) !important;
+                }
+                body[data-theme="vert"] #tileContainer .tile .tile-title {
                     color: white !important;
                     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9) !important;
                     font-weight: 700 !important;
                 }
+                /* Forcer TOUS les sélecteurs nth-child */
+                body[data-theme="vert"] .tile:nth-child(30n + 1),
+                body[data-theme="vert"] .tile:nth-child(30n + 2),
+                body[data-theme="vert"] .tile:nth-child(30n + 3),
+                body[data-theme="vert"] .tile:nth-child(30n + 4),
+                body[data-theme="vert"] .tile:nth-child(30n + 5),
+                body[data-theme="vert"] .tile:nth-child(30n + 6),
+                body[data-theme="vert"] .tile:nth-child(30n + 7),
+                body[data-theme="vert"] .tile:nth-child(30n + 8),
+                body[data-theme="vert"] .tile:nth-child(30n + 9),
+                body[data-theme="vert"] .tile:nth-child(30n + 10),
+                body[data-theme="vert"] .tile:nth-child(30n + 11),
+                body[data-theme="vert"] .tile:nth-child(30n + 12),
+                body[data-theme="vert"] .tile:nth-child(30n + 13),
+                body[data-theme="vert"] .tile:nth-child(30n + 14),
+                body[data-theme="vert"] .tile:nth-child(30n + 15),
+                body[data-theme="vert"] .tile:nth-child(30n + 16),
+                body[data-theme="vert"] .tile:nth-child(30n + 17),
+                body[data-theme="vert"] .tile:nth-child(30n + 18),
+                body[data-theme="vert"] .tile:nth-child(30n + 19),
+                body[data-theme="vert"] .tile:nth-child(30n + 20),
+                body[data-theme="vert"] .tile:nth-child(30n + 21),
+                body[data-theme="vert"] .tile:nth-child(30n + 22),
+                body[data-theme="vert"] .tile:nth-child(30n + 23),
+                body[data-theme="vert"] .tile:nth-child(30n + 24),
+                body[data-theme="vert"] .tile:nth-child(30n + 25),
+                body[data-theme="vert"] .tile:nth-child(30n + 26),
+                body[data-theme="vert"] .tile:nth-child(30n + 27),
+                body[data-theme="vert"] .tile:nth-child(30n + 28),
+                body[data-theme="vert"] .tile:nth-child(30n + 29),
+                body[data-theme="vert"] .tile:nth-child(30n + 0) {
+                    background: linear-gradient(135deg, #2d5016, #4a7c23) !important;
+                    color: white !important;
+                }
             `;
         } else if (currentTheme === 'sunset') {
-            console.log('🌅 Application des styles sunset');
+            console.log('🌅 Application des styles sunset ULTRA-PRIORITAIRES');
             style.textContent = `
-                /* Correction pour thème sunset */
-                [data-theme="sunset"] .tile {
+                /* Correction ULTRA-PRIORITAIRE pour thème sunset */
+                body[data-theme="sunset"] #tileContainer .tile {
                     background: linear-gradient(135deg, #bf360c, #e64a19) !important;
                     color: white !important;
                     border: 1px solid rgba(255, 255, 255, 0.2) !important;
                 }
-                [data-theme="sunset"] .tile:nth-child(even) {
+                body[data-theme="sunset"] #tileContainer .tile:nth-child(even) {
                     background: linear-gradient(135deg, #d84315, #ff5722) !important;
                 }
-                [data-theme="sunset"] .tile:nth-child(3n) {
+                body[data-theme="sunset"] #tileContainer .tile:nth-child(3n) {
                     background: linear-gradient(135deg, #e65100, #ff9800) !important;
                 }
-                [data-theme="sunset"] .tile:nth-child(4n) {
+                body[data-theme="sunset"] #tileContainer .tile:nth-child(4n) {
                     background: linear-gradient(135deg, #f57c00, #ffc107) !important;
                 }
-                [data-theme="sunset"] .tile:nth-child(5n) {
+                body[data-theme="sunset"] #tileContainer .tile:nth-child(5n) {
                     background: linear-gradient(135deg, #ff8f00, #ffb300) !important;
                 }
-                [data-theme="sunset"] .tile-title {
+                body[data-theme="sunset"] #tileContainer .tile:nth-child(6n) {
+                    background: linear-gradient(135deg, #ff6f00, #ff8f00) !important;
+                }
+                body[data-theme="sunset"] #tileContainer .tile .tile-title {
                     color: white !important;
                     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9) !important;
                     font-weight: 700 !important;
+                }
+                /* Forcer TOUS les sélecteurs nth-child */
+                body[data-theme="sunset"] .tile:nth-child(30n + 1),
+                body[data-theme="sunset"] .tile:nth-child(30n + 2),
+                body[data-theme="sunset"] .tile:nth-child(30n + 3),
+                body[data-theme="sunset"] .tile:nth-child(30n + 4),
+                body[data-theme="sunset"] .tile:nth-child(30n + 5),
+                body[data-theme="sunset"] .tile:nth-child(30n + 6),
+                body[data-theme="sunset"] .tile:nth-child(30n + 7),
+                body[data-theme="sunset"] .tile:nth-child(30n + 8),
+                body[data-theme="sunset"] .tile:nth-child(30n + 9),
+                body[data-theme="sunset"] .tile:nth-child(30n + 10),
+                body[data-theme="sunset"] .tile:nth-child(30n + 11),
+                body[data-theme="sunset"] .tile:nth-child(30n + 12),
+                body[data-theme="sunset"] .tile:nth-child(30n + 13),
+                body[data-theme="sunset"] .tile:nth-child(30n + 14),
+                body[data-theme="sunset"] .tile:nth-child(30n + 15),
+                body[data-theme="sunset"] .tile:nth-child(30n + 16),
+                body[data-theme="sunset"] .tile:nth-child(30n + 17),
+                body[data-theme="sunset"] .tile:nth-child(30n + 18),
+                body[data-theme="sunset"] .tile:nth-child(30n + 19),
+                body[data-theme="sunset"] .tile:nth-child(30n + 20),
+                body[data-theme="sunset"] .tile:nth-child(30n + 21),
+                body[data-theme="sunset"] .tile:nth-child(30n + 22),
+                body[data-theme="sunset"] .tile:nth-child(30n + 23),
+                body[data-theme="sunset"] .tile:nth-child(30n + 24),
+                body[data-theme="sunset"] .tile:nth-child(30n + 25),
+                body[data-theme="sunset"] .tile:nth-child(30n + 26),
+                body[data-theme="sunset"] .tile:nth-child(30n + 27),
+                body[data-theme="sunset"] .tile:nth-child(30n + 28),
+                body[data-theme="sunset"] .tile:nth-child(30n + 29),
+                body[data-theme="sunset"] .tile:nth-child(30n + 0) {
+                    background: linear-gradient(135deg, #d84315, #ff5722) !important;
+                    color: white !important;
                 }
             `;
         }
         
         document.head.appendChild(style);
-        console.log('✅ Style ajouté au head, ID:', style.id);
+        console.log('✅ Style ULTRA-PRIORITAIRE ajouté au head, ID:', style.id);
         
-        // Vérifier que le style est bien dans le DOM
-        const checkStyle = document.getElementById('theme-color-fix');
-        console.log('🔍 Style présent dans DOM:', !!checkStyle);
-        if (checkStyle) {
-            console.log('📝 Contenu du style:', checkStyle.textContent.substring(0, 100) + '...');
-        }
+        // Force un reflow pour s'assurer que les styles sont appliqués
+        document.body.offsetHeight;
+        
     } else {
         console.log('ℹ️ Pas de correction nécessaire pour ce thème');
     }
