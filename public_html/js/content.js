@@ -6,6 +6,7 @@ class ContentManager {
     this.fontFamily = localStorage.getItem('fontFamily') || 'system'; // Cette ligne existe mais vérifiez qu'elle est bien prise en compte
     this.textContrast = localStorage.getItem('textContrast') || 'normal'; // Cette ligne existe mais vérifiez qu'elle est bien prise en compte
     this.deferredPrompt = null;
+	this.visualEnhancement = localStorage.getItem('visualEnhancement') || 'normal';
 }
 
     init() {
@@ -34,6 +35,7 @@ class ContentManager {
 	this.setupTransparencyControl(); // NOUVELLE LIGNE
 	this.fixListModeLayout(); // NOUVELLE LIGNE
 	this.updateActiveNavLinks();
+	this.setupVisualEnhancement();
 	setTimeout(() => this.setBackgroundForTheme(), 1000);
 	}
 
@@ -243,42 +245,42 @@ setupTVIcons() {
         // Actualités locales
         const newsDefaultSites = [			
   {
-    title: '📰 Montceau News',
+    title: 'Montceau News',
     url: 'https://montceau-news.com/',
     mobileUrl: 'https://montceau-news.com/',
     isDefault: true,
     category: 'news'
   },
   {
-    title: '🗞️ L\'Informateur de Bourgogne',
+    title: 'L\'Informateur de Bourgogne',
     url: 'https://linformateurdebourgogne.com/',
     mobileUrl: 'https://linformateurdebourgogne.com/',
     isDefault: true,
     category: 'news'
   },
   {
-    title: '📰 Le JSL',
+    title: 'Le JSL',
     url: 'https://www.lejsl.com/edition-montceau-les-mines',
     mobileUrl: 'https://www.lejsl.com/edition-montceau-les-mines',
     isDefault: true,
     category: 'news'
   },
   {
-    title: '🗞️ Creusot Infos',
+    title: 'Creusot Infos',
     url: 'https://www.creusot-infos.com',
     mobileUrl: 'https://www.creusot-infos.com/?m=1',
     isDefault: true,
     category: 'news'
   },
   {
-    title: '🚨 Faits Divers Saône-et-Loire',
+    title: 'Faits Divers Saône-et-Loire',
     url: 'https://faitsdivers365.fr/bourgogne-franche-comte/saone-et-loire/',
     mobileUrl: 'https://faitsdivers365.fr/bourgogne-franche-comte/saone-et-loire/',
     isDefault: true,
     category: 'news'
   },
   {
-    title: '🗞️ Mâcon-Infos',
+    title: 'Mâcon-Infos',
     url: 'https://macon-infos.com/fr/faits-divers/macon',
     mobileUrl: 'https://macon-infos.com/fr/faits-divers/macon',
     isDefault: true,
@@ -360,7 +362,7 @@ this.tileContainer.appendChild(photosTileElement);
         // Section TV
 const tvSites = [
   {
-    title: 'France 3 Bourgogne',
+    title: 'France 3<br>Bourgogne',
     url: 'https://www.francebleu.fr/tv/direct/bourgogne',
     mobileUrl: 'https://www.francebleu.fr/tv/direct/bourgogne',
     isDefault: true,
@@ -407,21 +409,21 @@ const tvSites = [
         // Section Sports
         const sportsSites = [
   {
-    title: '⚽ Foot Ligue 1',
+    title: '⚽ Ligue 1',
     url: 'https://ligue1.fr/fr/competitions/ligue1mcdonalds?tab=news&ranking=scorers',
     mobileUrl: 'https://ligue1.fr/fr/competitions/ligue1mcdonalds?tab=news&ranking=scorers',
     isDefault: true,
     category: 'sports'
   },
   {
-    title: '⚽ Foot Ligue 2',
+    title: '⚽ Ligue 2',
     url: 'https://ligue1.fr/fr/competitions/ligue2bkt?tab=news',
     mobileUrl: 'https://ligue1.fr/fr/competitions/ligue2bkt?tab=news',
     isDefault: true,
     category: 'sports'
   },
   {
-    title: '⚽ Foot FC Montceau-Bourgogne',
+    title: '⚽ FC Montceau Bourgogne',
     url: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
     mobileUrl: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
     isDefault: true,
@@ -442,7 +444,7 @@ const tvSites = [
     category: 'sports'
   },
   {
-    title: '🏉 Rugby RC Montceau Bourgogne',
+    title: '🏉 RC Montceau Bourgogne',
     url: 'https://scorenco.com/rugby/clubs/rc-montceau-bourgogne-2m2t',
     mobileUrl: 'https://scorenco.com/rugby/clubs/rc-montceau-bourgogne-2m2t',
     isDefault: true,
@@ -479,21 +481,21 @@ const tvSites = [
     isSurvey: true // Marqueur spécial
   },
   {
-    title: '▶️ YouTube',
+    title: '🔴 YouTube',
     url: 'https://www.youtube.com/feed/trending',
     mobileUrl: 'https://www.youtube.com/feed/trending',
     isDefault: true,
     category: 'social'
   },
   {
-    title: '🟣 Twitch',
+    title: '🟢 Twitch',
     url: 'https://www.twitch.tv/',
     mobileUrl: 'https://www.twitch.tv/',
     isDefault: true,
     category: 'social'
   },
   {
-    title: '🎵 TikTok',
+    title: '⚫ TikTok',
     url: 'https://www.tiktok.com/discover?lang=fr',
     mobileUrl: 'https://www.tiktok.com/?lang=fr',
     isDefault: true,
@@ -950,6 +952,18 @@ settingsOverlay.addEventListener('click', (e) => {
                 </div>
             </div>
         </div>
+		
+		<div class="settings-section">
+            <h4>Amélioration visuelle</h4>
+            <div class="visual-enhancement-tiles">
+                <div class="visual-enhancement-tile ${this.visualEnhancement === 'normal' ? 'active' : ''}" data-visual-enhancement="normal">
+                    <span>⚪ Standard</span>
+                </div>
+                <div class="visual-enhancement-tile ${this.visualEnhancement === 'enhanced' ? 'active' : ''}" data-visual-enhancement="enhanced">
+                    <span>✨ Amélioré</span>
+                </div>
+            </div>
+        </div>
 `;
 
     document.body.appendChild(panel);
@@ -1059,6 +1073,25 @@ panel.querySelectorAll('.text-contrast-tile').forEach(tile => {
         }, { passive: false });
     });
 });
+
+panel.querySelectorAll('.visual-enhancement-tile').forEach(tile => {
+    ['touchstart', 'click'].forEach(eventType => {
+        tile.addEventListener(eventType, (e) => {
+            e.stopPropagation();
+            
+            panel.querySelectorAll('.visual-enhancement-tile').forEach(t => {
+                t.classList.remove('active');
+            });
+            tile.classList.add('active');
+            
+            const visualEnhancement = tile.dataset.visualEnhancement;
+            setTimeout(() => {
+                this.changeVisualEnhancement(visualEnhancement);
+            }, 50);
+        }, { passive: false });
+    });
+});
+
     // Empêcher que des clics sur le panneau lui-même ferment celui-ci
     panel.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -1146,6 +1179,11 @@ setupFontFamily() {
 setupTextContrast() {
     // Ajouter la classe de contraste au body
     document.body.classList.add(`${this.textContrast}-contrast`);
+}
+
+setupVisualEnhancement() {
+    // Appliquer l'amélioration visuelle sauvegardée au démarrage
+    this.applyVisualEnhancement(this.visualEnhancement);
 }
 
 changeFontFamily(family) {
@@ -1374,7 +1412,7 @@ changeTextContrast(contrast) {
 }
 
     toggleTheme() {
-    // Cycle entre les thèmes : light -> dark -> rouge -> bleuciel -> vert -> sunset -> light
+    // Cycle entre les thèmes : light -> dark -> rouge -> bleuciel -> light
     switch (this.currentTheme) {
         case 'light':
             this.currentTheme = 'dark';
@@ -1385,13 +1423,7 @@ changeTextContrast(contrast) {
         case 'rouge':
             this.currentTheme = 'bleuciel';
             break;
-        case 'bleuciel':
-            this.currentTheme = 'vert';
-            break;
-        case 'vert':
-            this.currentTheme = 'sunset';
-            break;
-        case 'sunset':
+        case 'bleuciel':           
         default:
             this.currentTheme = 'light';
             break;
@@ -1412,14 +1444,13 @@ changeTextContrast(contrast) {
     switch(this.currentTheme) {
         case 'dark': themeName = 'sombre'; break;
         case 'rouge': themeName = 'rouge'; break;
-        case 'bleuciel': themeName = 'bleu ciel'; break;
-        case 'vert': themeName = 'vert nature'; break;
-        case 'sunset': themeName = 'coucher de soleil'; break;
+        case 'bleuciel': themeName = 'bleu ciel'; break;       
         case 'light': themeName = 'violet'; break;
         default: themeName = 'clair'; break;
     }
     
     this.showToast(`Thème ${themeName} activé`);
+	setTimeout(() => this.fixThemeColors(), 500);
 }
 
     toggleLayout() {
@@ -1997,182 +2028,6 @@ updateListModeStylesFast() {
         });
     }
 
-	setNatureBackground() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    
-    if (currentTheme === 'vert') {
-        // Générer un numéro vraiment aléatoire pour éviter le cache
-        const randomNum = Math.floor(Math.random() * 10000) + Date.now();
-        
-        // URL avec Picsum Photos (qui fonctionne encore !)
-        const imageUrl = `https://picsum.photos/1920/1080?random=${randomNum}`;
-        
-        // Appliquer l'image de fond
-        document.body.style.backgroundImage = `url('${imageUrl}')`;
-        document.body.style.backgroundSize = 'cover';
-        document.body.style.backgroundPosition = 'center';
-        document.body.style.backgroundAttachment = 'fixed';
-        document.body.style.backgroundRepeat = 'no-repeat';
-        
-        console.log(`Fond d'écran nature appliqué: ${randomNum}`);
-    } else if (currentTheme === 'sunset') {
-        // Appeler la méthode coucher de soleil
-        this.setSunsetBackground();
-    } else {
-        // Supprimer l'image de fond pour les autres thèmes
-        document.body.style.backgroundImage = '';
-    }
-}
-
-	setSunsetBackground() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    
-    if (currentTheme === 'sunset') {
-        // 25 gradients inspirés du feu, couchers de soleil, énergie
-        const fireGradients = [
-            // Série couchers de soleil classiques
-            'linear-gradient(135deg, #ff9a56 0%, #ff6b35 50%, #f7931e 100%)',
-            'linear-gradient(135deg, #ffeaa7 0%, #fab1a0 50%, #e17055 100%)',
-            'linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #ff6b35 100%)',
-            'linear-gradient(135deg, #ff8a80 0%, #ff5722 50%, #d84315 100%)',
-            'linear-gradient(135deg, #ffcc80 0%, #ff8a65 50%, #ff5722 100%)',
-            
-            // Série feu et flammes
-            'linear-gradient(135deg, #ff6b9d 0%, #c92a49 50%, #8b1538 100%)',
-            'linear-gradient(135deg, #ff7675 0%, #fd79a8 50%, #fdcb6e 100%)',
-            'linear-gradient(135deg, #ff9472 0%, #f2709c 50%, #ff6b9d 100%)',
-            'linear-gradient(135deg, #e84393 0%, #fd79a8 50%, #fdcb6e 100%)',
-            'linear-gradient(135deg, #ff5722 0%, #ff8a65 50%, #ffab91 100%)',
-            
-            // Série énergique et dynamique
-            'radial-gradient(circle at center, #ff6b35 0%, #f7931e 30%, #8b1538 100%)',
-            'radial-gradient(ellipse at top, #ff6b35 0%, #c92a49 50%, #1a1a2e 100%)',
-            'radial-gradient(circle at bottom, #fdcb6e 0%, #e84393 50%, #8b1538 100%)',
-            'radial-gradient(ellipse at left, #ff8a80 0%, #ff5722 50%, #d84315 100%)',
-            'radial-gradient(circle at right, #fab1a0 0%, #e17055 50%, #8b1538 100%)',
-            
-            // Série crépuscule et aube
-            'linear-gradient(45deg, #ff9472 0%, #f2709c 50%, #ff6b9d 100%)',
-            'linear-gradient(45deg, #ffeaa7 0%, #fab1a0 50%, #e17055 100%)',
-            'linear-gradient(225deg, #ff6b35 0%, #e84393 50%, #8b1538 100%)',
-            'linear-gradient(315deg, #fdcb6e 0%, #fd79a8 50%, #c92a49 100%)',
-            'linear-gradient(180deg, #ff8a80 0%, #ff5722 50%, #bf360c 100%)',
-            
-            // Série tropicale et exotique
-            'linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%)',
-            'linear-gradient(135deg, #ffa726 0%, #fb8c00 50%, #e65100 100%)',
-            'linear-gradient(135deg, #ff7043 0%, #d84315 50%, #bf360c 100%)',
-            'linear-gradient(135deg, #ffb74d 0%, #ff9800 50%, #f57c00 100%)',
-            'linear-gradient(135deg, #ff8f00 0%, #ff6f00 50%, #e65100 100%)'
-        ];
-        
-        // Choisir un gradient aléatoire parmi les 25
-        const randomGradient = fireGradients[Math.floor(Math.random() * fireGradients.length)];
-        
-        // Appliquer le gradient
-        document.body.style.backgroundImage = randomGradient;
-        document.body.style.backgroundSize = 'cover';
-        document.body.style.backgroundPosition = 'center';
-        document.body.style.backgroundAttachment = 'fixed';
-        document.body.style.backgroundRepeat = 'no-repeat';
-        
-        console.log(`Fond d'écran feu/énergie appliqué (${fireGradients.indexOf(randomGradient) + 1}/25): ${randomGradient}`);
-    } else {
-        document.body.style.backgroundImage = '';
-    }
-}
-
-
-setBackgroundForTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    
-    switch(currentTheme) {
-        case 'vert':
-            this.setNatureBackground();
-            break;
-        case 'sunset':
-            this.setSunsetBackground();
-            break;
-        default:
-            document.body.style.backgroundImage = '';
-            break;
-    }
-}
-
-setBackgroundForTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    
-    switch(currentTheme) {
-        case 'vert':
-            this.setNatureBackground();
-            break;
-        case 'sunset':
-            this.setSunsetBackground();
-            break;
-        default:
-            // Supprimer l'image de fond pour les autres thèmes
-            document.body.style.backgroundImage = '';
-            break;
-    }
-}
-
-// VERSION ALTERNATIVE - Utilise l'ID d'images spécifiques pour encore plus de contrôle
-setNatureBackgroundWithIDs() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    
-    if (currentTheme === 'vert') {
-        // IDs d'images nature sélectionnées manuellement de Picsum
-        const natureImageIDs = [
-            1, 2, 3, 10, 15, 20, 25, 28, 30, 33, 
-            36, 39, 42, 48, 50, 58, 62, 68, 70, 75,
-            82, 88, 90, 96, 102, 110, 118, 120, 125, 130
-        ];
-        
-        // Choisir un ID aléatoire
-        const randomID = natureImageIDs[Math.floor(Math.random() * natureImageIDs.length)];
-        
-        // URL avec ID spécifique
-        const imageUrl = `https://picsum.photos/id/${randomID}/1920/1080`;
-        
-        // Appliquer l'image de fond
-        document.body.style.backgroundImage = `url('${imageUrl}')`;
-        document.body.style.backgroundSize = 'cover';
-        document.body.style.backgroundPosition = 'center';
-        document.body.style.backgroundAttachment = 'fixed';
-        document.body.style.backgroundRepeat = 'no-repeat';
-        
-        console.log(`Fond d'écran nature appliqué avec ID: ${randomID}`);
-    } else {
-        // Supprimer l'image de fond pour les autres thèmes
-        document.body.style.backgroundImage = '';
-    }
-}
-
-// VERSION AVEC PARAMETER RANDOM - Pour éviter totalement le cache
-setNatureBackgroundAntiCache() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    
-    if (currentTheme === 'vert') {
-        // Générer un numéro vraiment aléatoire
-        const randomNum = Math.floor(Math.random() * 10000) + Date.now();
-        
-        // URL avec paramètre random pour éviter le cache
-        const imageUrl = `https://picsum.photos/1920/1080?random=${randomNum}`;
-        
-        // Appliquer l'image de fond
-        document.body.style.backgroundImage = `url('${imageUrl}')`;
-        document.body.style.backgroundSize = 'cover';
-        document.body.style.backgroundPosition = 'center';
-        document.body.style.backgroundAttachment = 'fixed';
-        document.body.style.backgroundRepeat = 'no-repeat';
-        
-        console.log(`Fond d'écran aléatoire appliqué: ${randomNum}`);
-    } else {
-        // Supprimer l'image de fond pour les autres thèmes
-        document.body.style.backgroundImage = '';
-    }
-}
-
 	// Méthode pour améliorer automatiquement la visibilité des tuiles
 autoEnhanceTileVisibility() {
     // Appliquer les améliorations visuelles à toutes les tuiles
@@ -2296,6 +2151,31 @@ openFuelPrices() {
         this.showToast('Erreur lors de l\'ouverture');
     }
 }
+
+changeVisualEnhancement(mode) {
+        console.log("Changement d'amélioration visuelle vers:", mode);
+        this.visualEnhancement = mode;
+        localStorage.setItem('visualEnhancement', mode);
+        
+        this.applyVisualEnhancement(mode);
+        
+        setTimeout(() => {
+            this.showToast(`Amélioration : ${
+                mode === 'enhanced' ? 'Activée' : 'Standard'
+            }`);
+        }, 300);
+    }
+
+    applyVisualEnhancement(mode) {
+        // Supprimer la classe précédente
+        document.body.classList.remove('visual-enhancement-mode');
+        
+        if (mode === 'enhanced') {
+            // Appliquer l'amélioration visuelle (effet fond crème)
+            document.body.classList.add('visual-enhancement-mode');
+        }
+        // Si mode === 'normal', on ne fait rien (mode standard)
+    }
 
 }
 
