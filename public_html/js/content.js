@@ -421,7 +421,7 @@ const tvSites = [
     category: 'sports'
   },
   {
-    title: '⚽ FC Montceau-Bourgogne',
+    title: '⚽ FC Montceau Bourgogne',
     url: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
     mobileUrl: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
     isDefault: true,
