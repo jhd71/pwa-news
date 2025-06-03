@@ -1446,7 +1446,6 @@ changeTextContrast(contrast) {
     }
     
     this.showToast(`Thème ${themeName} activé`);
-	setTimeout(() => this.fixThemeColors(), 500);
 }
 
     toggleLayout() {
