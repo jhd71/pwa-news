@@ -1604,14 +1604,6 @@ applyListModeImmediate() {
                 if (icon) icon.textContent = 'water_drop';
                 if (text) text.textContent = 'Bleu Ciel';
                 break;
-            case 'vert':
-                if (icon) icon.textContent = 'nature';
-                if (text) text.textContent = 'Vert Nature';
-                break;
-            case 'sunset':
-                if (icon) icon.textContent = 'wb_sunny';
-                if (text) text.textContent = 'Coucher de Soleil';
-                break;
             case 'light':
             default:
                 if (icon) icon.textContent = 'light_mode';
