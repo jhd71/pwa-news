@@ -479,21 +479,21 @@ const tvSites = [
     isSurvey: true // Marqueur spécial
   },
   {
-    title: '🎥 YouTube',
+    title: '🔴 YouTube',
     url: 'https://www.youtube.com/feed/trending',
     mobileUrl: 'https://www.youtube.com/feed/trending',
     isDefault: true,
     category: 'social'
   },
   {
-    title: '🎮 Twitch',
+    title: '🟢 Twitch',
     url: 'https://www.twitch.tv/',
     mobileUrl: 'https://www.twitch.tv/',
     isDefault: true,
     category: 'social'
   },
   {
-    title: '📱 TikTok',
+    title: '⚫ TikTok',
     url: 'https://www.tiktok.com/discover?lang=fr',
     mobileUrl: 'https://www.tiktok.com/?lang=fr',
     isDefault: true,
