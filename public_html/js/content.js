@@ -1458,7 +1458,18 @@ changeTextContrast(contrast) {
     }
     
     this.showToast(`Thème ${themeName} activé`);
-	setTimeout(() => this.fixThemeColors(), 500);
+	// AJOUTEZ ces lignes temporaires :
+    console.log('🔄 toggleTheme appelé');
+    setTimeout(() => {
+        console.log('⏰ Appel de fixThemeColors dans 500ms');
+        this.fixThemeColors();
+    }, 500);
+    
+    // AJOUTEZ aussi un appel immédiat pour tester :
+    setTimeout(() => {
+        console.log('⚡ Appel immédiat de fixThemeColors');
+        this.fixThemeColors();
+    }, 100);
 }
 
     toggleLayout() {
@@ -2365,40 +2376,57 @@ changeVisualEnhancement(mode) {
 	fixThemeColors() {
     const currentTheme = document.documentElement.getAttribute('data-theme');
     
+    console.log('🎨 fixThemeColors appelée, thème actuel:', currentTheme);
+    
     // Supprimer tous les styles de correction précédents
     const existingFix = document.getElementById('theme-color-fix');
-    if (existingFix) existingFix.remove();
+    if (existingFix) {
+        existingFix.remove();
+        console.log('🗑️ Ancien style supprimé');
+    }
     
     // Appliquer des corrections seulement pour vert et sunset
     if (currentTheme === 'vert' || currentTheme === 'sunset') {
+        console.log(`🔧 Application des corrections pour le thème ${currentTheme}`);
+        
         const style = document.createElement('style');
         style.id = 'theme-color-fix';
         
         if (currentTheme === 'vert') {
+            console.log('🌿 Application des styles verts');
             style.textContent = `
                 /* Correction pour thème vert */
                 [data-theme="vert"] .tile {
-                    background: linear-gradient(135deg, #2d5016, #4a7c23) !important;
+                    background: linear-gradient(135deg, #1b5e20, #2e7d32) !important;
                     color: white !important;
+                    border: 1px solid rgba(255, 255, 255, 0.2) !important;
                 }
                 [data-theme="vert"] .tile:nth-child(even) {
-                    background: linear-gradient(135deg, #1b5e20, #2e7d32) !important;
+                    background: linear-gradient(135deg, #2d5016, #4a7c23) !important;
                 }
                 [data-theme="vert"] .tile:nth-child(3n) {
                     background: linear-gradient(135deg, #33691e, #558b2f) !important;
                 }
+                [data-theme="vert"] .tile:nth-child(4n) {
+                    background: linear-gradient(135deg, #827717, #9e9d24) !important;
+                }
+                [data-theme="vert"] .tile:nth-child(5n) {
+                    background: linear-gradient(135deg, #689f38, #8bc34a) !important;
+                }
                 [data-theme="vert"] .tile-title {
                     color: white !important;
-                    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
+                    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9) !important;
                     font-weight: 700 !important;
                 }
             `;
         } else if (currentTheme === 'sunset') {
+            console.log('🌅 Application des styles sunset');
             style.textContent = `
                 /* Correction pour thème sunset */
                 [data-theme="sunset"] .tile {
                     background: linear-gradient(135deg, #bf360c, #e64a19) !important;
                     color: white !important;
+                    border: 1px solid rgba(255, 255, 255, 0.2) !important;
                 }
                 [data-theme="sunset"] .tile:nth-child(even) {
                     background: linear-gradient(135deg, #d84315, #ff5722) !important;
@@ -2406,15 +2434,31 @@ changeVisualEnhancement(mode) {
                 [data-theme="sunset"] .tile:nth-child(3n) {
                     background: linear-gradient(135deg, #e65100, #ff9800) !important;
                 }
+                [data-theme="sunset"] .tile:nth-child(4n) {
+                    background: linear-gradient(135deg, #f57c00, #ffc107) !important;
+                }
+                [data-theme="sunset"] .tile:nth-child(5n) {
+                    background: linear-gradient(135deg, #ff8f00, #ffb300) !important;
+                }
                 [data-theme="sunset"] .tile-title {
                     color: white !important;
-                    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
+                    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9) !important;
                     font-weight: 700 !important;
                 }
             `;
         }
         
         document.head.appendChild(style);
+        console.log('✅ Style ajouté au head, ID:', style.id);
+        
+        // Vérifier que le style est bien dans le DOM
+        const checkStyle = document.getElementById('theme-color-fix');
+        console.log('🔍 Style présent dans DOM:', !!checkStyle);
+        if (checkStyle) {
+            console.log('📝 Contenu du style:', checkStyle.textContent.substring(0, 100) + '...');
+        }
+    } else {
+        console.log('ℹ️ Pas de correction nécessaire pour ce thème');
     }
 }
 
