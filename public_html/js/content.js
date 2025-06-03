@@ -297,7 +297,7 @@ setupTVIcons() {
 
 // TUILE PHOTOS SIMPLE
 const photosTile = {
-    title: "📸 Galerie Photos", 
+    title: "📸<br>Galerie Photos", 
     url: "photos-gallery.html",
     mobileUrl: "photos-gallery.html",
     isDefault: true,
