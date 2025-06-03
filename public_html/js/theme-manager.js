@@ -7,9 +7,7 @@ class ThemeManager {
     { id: 'light', name: 'Violet', icon: 'color_lens' },
     { id: 'dark', name: 'Sombre', icon: 'dark_mode' },
     { id: 'rouge', name: 'Rouge', icon: 'palette' },
-    { id: 'bleuciel', name: 'Bleu Ciel', icon: 'water_drop' },
-    { id: 'vert', name: 'Vert Nature', icon: 'nature' },        // AJOUTÉ
-    { id: 'sunset', name: 'Coucher de Soleil', icon: 'wb_sunny' } // AJOUTÉ
+    { id: 'bleuciel', name: 'Bleu Ciel', icon: 'water_drop' }
 ];
         
         // Initialiser le système de thèmes
