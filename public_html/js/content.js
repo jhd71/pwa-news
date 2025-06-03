@@ -6,7 +6,6 @@ class ContentManager {
     this.fontFamily = localStorage.getItem('fontFamily') || 'system'; // Cette ligne existe mais vérifiez qu'elle est bien prise en compte
     this.textContrast = localStorage.getItem('textContrast') || 'normal'; // Cette ligne existe mais vérifiez qu'elle est bien prise en compte
     this.deferredPrompt = null;
-	this.visualEnhancement = localStorage.getItem('visualEnhancement') || 'normal';
 }
 
     init() {
@@ -35,7 +34,6 @@ class ContentManager {
 	this.setupTransparencyControl(); // NOUVELLE LIGNE
 	this.fixListModeLayout(); // NOUVELLE LIGNE
 	this.updateActiveNavLinks();
-	this.setupVisualEnhancement();
 	setTimeout(() => this.setBackgroundForTheme(), 1000);
 	}
 
@@ -245,42 +243,42 @@ setupTVIcons() {
         // Actualités locales
         const newsDefaultSites = [			
   {
-    title: 'Montceau News',
+    title: '📰 Montceau News',
     url: 'https://montceau-news.com/',
     mobileUrl: 'https://montceau-news.com/',
     isDefault: true,
     category: 'news'
   },
   {
-    title: 'L\'Informateur de Bourgogne',
+    title: '🗞️ L\'Informateur de Bourgogne',
     url: 'https://linformateurdebourgogne.com/',
     mobileUrl: 'https://linformateurdebourgogne.com/',
     isDefault: true,
     category: 'news'
   },
   {
-    title: 'Le JSL',
+    title: '📰 Le JSL',
     url: 'https://www.lejsl.com/edition-montceau-les-mines',
     mobileUrl: 'https://www.lejsl.com/edition-montceau-les-mines',
     isDefault: true,
     category: 'news'
   },
   {
-    title: 'Creusot Infos',
+    title: '🗞️ Creusot Infos',
     url: 'https://www.creusot-infos.com',
     mobileUrl: 'https://www.creusot-infos.com/?m=1',
     isDefault: true,
     category: 'news'
   },
   {
-    title: 'Faits Divers Saône-et-Loire',
+    title: '🚨 Faits Divers Saône-et-Loire',
     url: 'https://faitsdivers365.fr/bourgogne-franche-comte/saone-et-loire/',
     mobileUrl: 'https://faitsdivers365.fr/bourgogne-franche-comte/saone-et-loire/',
     isDefault: true,
     category: 'news'
   },
   {
-    title: 'Mâcon-Infos',
+    title: '🗞️ Mâcon-Infos',
     url: 'https://macon-infos.com/fr/faits-divers/macon',
     mobileUrl: 'https://macon-infos.com/fr/faits-divers/macon',
     isDefault: true,
@@ -362,7 +360,7 @@ this.tileContainer.appendChild(photosTileElement);
         // Section TV
 const tvSites = [
   {
-    title: 'France 3<br>Bourgogne',
+    title: 'France 3 Bourgogne',
     url: 'https://www.francebleu.fr/tv/direct/bourgogne',
     mobileUrl: 'https://www.francebleu.fr/tv/direct/bourgogne',
     isDefault: true,
@@ -409,21 +407,21 @@ const tvSites = [
         // Section Sports
         const sportsSites = [
   {
-    title: '⚽ Ligue 1',
+    title: '⚽ Foot Ligue 1',
     url: 'https://ligue1.fr/fr/competitions/ligue1mcdonalds?tab=news&ranking=scorers',
     mobileUrl: 'https://ligue1.fr/fr/competitions/ligue1mcdonalds?tab=news&ranking=scorers',
     isDefault: true,
     category: 'sports'
   },
   {
-    title: '⚽ Ligue 2',
+    title: '⚽ Foot Ligue 2',
     url: 'https://ligue1.fr/fr/competitions/ligue2bkt?tab=news',
     mobileUrl: 'https://ligue1.fr/fr/competitions/ligue2bkt?tab=news',
     isDefault: true,
     category: 'sports'
   },
   {
-    title: '⚽ FC Montceau Bourgogne',
+    title: '⚽ Foot FC Montceau-Bourgogne',
     url: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
     mobileUrl: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
     isDefault: true,
@@ -444,7 +442,7 @@ const tvSites = [
     category: 'sports'
   },
   {
-    title: '🏉 RC Montceau Bourgogne',
+    title: '🏉 Rugby RC Montceau Bourgogne',
     url: 'https://scorenco.com/rugby/clubs/rc-montceau-bourgogne-2m2t',
     mobileUrl: 'https://scorenco.com/rugby/clubs/rc-montceau-bourgogne-2m2t',
     isDefault: true,
@@ -481,21 +479,21 @@ const tvSites = [
     isSurvey: true // Marqueur spécial
   },
   {
-    title: '🔴 YouTube',
+    title: '▶️ YouTube',
     url: 'https://www.youtube.com/feed/trending',
     mobileUrl: 'https://www.youtube.com/feed/trending',
     isDefault: true,
     category: 'social'
   },
   {
-    title: '🟢 Twitch',
+    title: '🟣 Twitch',
     url: 'https://www.twitch.tv/',
     mobileUrl: 'https://www.twitch.tv/',
     isDefault: true,
     category: 'social'
   },
   {
-    title: '⚫ TikTok',
+    title: '🎵 TikTok',
     url: 'https://www.tiktok.com/discover?lang=fr',
     mobileUrl: 'https://www.tiktok.com/?lang=fr',
     isDefault: true,
@@ -952,18 +950,6 @@ settingsOverlay.addEventListener('click', (e) => {
                 </div>
             </div>
         </div>
-		
-		<div class="settings-section">
-            <h4>Amélioration visuelle</h4>
-            <div class="visual-enhancement-tiles">
-                <div class="visual-enhancement-tile ${this.visualEnhancement === 'normal' ? 'active' : ''}" data-visual-enhancement="normal">
-                    <span>⚪ Standard</span>
-                </div>
-                <div class="visual-enhancement-tile ${this.visualEnhancement === 'enhanced' ? 'active' : ''}" data-visual-enhancement="enhanced">
-                    <span>✨ Amélioré</span>
-                </div>
-            </div>
-        </div>
 `;
 
     document.body.appendChild(panel);
@@ -1073,25 +1059,6 @@ panel.querySelectorAll('.text-contrast-tile').forEach(tile => {
         }, { passive: false });
     });
 });
-
-panel.querySelectorAll('.visual-enhancement-tile').forEach(tile => {
-    ['touchstart', 'click'].forEach(eventType => {
-        tile.addEventListener(eventType, (e) => {
-            e.stopPropagation();
-            
-            panel.querySelectorAll('.visual-enhancement-tile').forEach(t => {
-                t.classList.remove('active');
-            });
-            tile.classList.add('active');
-            
-            const visualEnhancement = tile.dataset.visualEnhancement;
-            setTimeout(() => {
-                this.changeVisualEnhancement(visualEnhancement);
-            }, 50);
-        }, { passive: false });
-    });
-});
-
     // Empêcher que des clics sur le panneau lui-même ferment celui-ci
     panel.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -1179,11 +1146,6 @@ setupFontFamily() {
 setupTextContrast() {
     // Ajouter la classe de contraste au body
     document.body.classList.add(`${this.textContrast}-contrast`);
-}
-
-setupVisualEnhancement() {
-    // Appliquer l'amélioration visuelle sauvegardée au démarrage
-    this.applyVisualEnhancement(this.visualEnhancement);
 }
 
 changeFontFamily(family) {
@@ -1458,7 +1420,6 @@ changeTextContrast(contrast) {
     }
     
     this.showToast(`Thème ${themeName} activé`);
-	setTimeout(() => this.fixThemeColors(), 500);
 }
 
     toggleLayout() {
@@ -2136,7 +2097,6 @@ setBackgroundForTheme() {
             document.body.style.backgroundImage = '';
             break;
     }
-	setTimeout(() => this.fixThemeColors(), 500);
 }
 
 setBackgroundForTheme() {
@@ -2334,87 +2294,6 @@ openFuelPrices() {
     } catch (error) {
         console.error('Erreur ouverture prix carburant:', error);
         this.showToast('Erreur lors de l\'ouverture');
-    }
-}
-
-changeVisualEnhancement(mode) {
-        console.log("Changement d'amélioration visuelle vers:", mode);
-        this.visualEnhancement = mode;
-        localStorage.setItem('visualEnhancement', mode);
-        
-        this.applyVisualEnhancement(mode);
-        
-        setTimeout(() => {
-            this.showToast(`Amélioration : ${
-                mode === 'enhanced' ? 'Activée' : 'Standard'
-            }`);
-        }, 300);
-    }
-
-    applyVisualEnhancement(mode) {
-        // Supprimer la classe précédente
-        document.body.classList.remove('visual-enhancement-mode');
-        
-        if (mode === 'enhanced') {
-            // Appliquer l'amélioration visuelle (effet fond crème)
-            document.body.classList.add('visual-enhancement-mode');
-        }
-        // Si mode === 'normal', on ne fait rien (mode standard)
-    }
-	
-	fixThemeColors() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    
-    // Supprimer tous les styles de correction précédents
-    const existingFix = document.getElementById('theme-color-fix');
-    if (existingFix) existingFix.remove();
-    
-    // Appliquer des corrections seulement pour vert et sunset
-    if (currentTheme === 'vert' || currentTheme === 'sunset') {
-        const style = document.createElement('style');
-        style.id = 'theme-color-fix';
-        
-        if (currentTheme === 'vert') {
-            style.textContent = `
-                /* Correction pour thème vert */
-                [data-theme="vert"] .tile {
-                    background: linear-gradient(135deg, #2d5016, #4a7c23) !important;
-                    color: white !important;
-                }
-                [data-theme="vert"] .tile:nth-child(even) {
-                    background: linear-gradient(135deg, #1b5e20, #2e7d32) !important;
-                }
-                [data-theme="vert"] .tile:nth-child(3n) {
-                    background: linear-gradient(135deg, #33691e, #558b2f) !important;
-                }
-                [data-theme="vert"] .tile-title {
-                    color: white !important;
-                    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
-                    font-weight: 700 !important;
-                }
-            `;
-        } else if (currentTheme === 'sunset') {
-            style.textContent = `
-                /* Correction pour thème sunset */
-                [data-theme="sunset"] .tile {
-                    background: linear-gradient(135deg, #bf360c, #e64a19) !important;
-                    color: white !important;
-                }
-                [data-theme="sunset"] .tile:nth-child(even) {
-                    background: linear-gradient(135deg, #d84315, #ff5722) !important;
-                }
-                [data-theme="sunset"] .tile:nth-child(3n) {
-                    background: linear-gradient(135deg, #e65100, #ff9800) !important;
-                }
-                [data-theme="sunset"] .tile-title {
-                    color: white !important;
-                    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
-                    font-weight: 700 !important;
-                }
-            `;
-        }
-        
-        document.head.appendChild(style);
     }
 }
 
