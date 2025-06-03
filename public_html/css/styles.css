@@ -3276,94 +3276,7 @@ border-color: #ffd230 !important;
     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
-/* === FONDS D'ÉCRAN POUR LES THÈMES === */
-
-/* Thème Violet (light) - Fond violet dégradé */
-[data-theme="light"] body {
-    background: linear-gradient(135deg, #7b5fbf 0%, #9575cd 50%, #7e57c2 100%) !important;
-    background-attachment: fixed !important;
-    background-size: cover !important;
-    background-repeat: no-repeat !important;
-}
-
-/* Alternative plus douce avec texture */
-/*
-[data-theme="light"] body {
-    background: 
-        radial-gradient(circle at 25% 25%, rgba(123, 95, 191, 0.8) 0%, transparent 50%),
-        radial-gradient(circle at 75% 75%, rgba(149, 117, 205, 0.6) 0%, transparent 50%),
-        linear-gradient(135deg, #7b5fbf 0%, #9575cd 100%) !important;
-    background-attachment: fixed !important;
-}
-*/
-
-/* Thème Sombre (dark) - Fond bleu nuit dégradé */
-[data-theme="dark"] body {
-    background: linear-gradient(135deg, #1a237e 0%, #283593 50%, #3f51b5 100%) !important;
-    background-attachment: fixed !important;
-    background-size: cover !important;
-    background-repeat: no-repeat !important;
-}
-
-/* Alternative sombre plus profonde */
-/*
-[data-theme="dark"] body {
-    background: 
-        radial-gradient(circle at 20% 80%, rgba(26, 35, 126, 0.9) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(40, 53, 147, 0.7) 0%, transparent 50%),
-        linear-gradient(135deg, #0d1421 0%, #1a237e 100%) !important;
-    background-attachment: fixed !important;
-}
-*/
-
-/* Thème Rouge - Conserver le dégradé existant si vous en avez un */
-[data-theme="rouge"] body {
-    background: linear-gradient(135deg, #b71c1c 0%, #d32f2f 50%, #f44336 100%) !important;
-    background-attachment: fixed !important;
-    background-size: cover !important;
-    background-repeat: no-repeat !important;
-}
-
-/* Thème Bleu Ciel - Fond bleu ciel dégradé */
-[data-theme="bleuciel"] body {
-    background: linear-gradient(135deg, #01579b 0%, #0288d1 50%, #03a9f4 100%) !important;
-    background-attachment: fixed !important;
-    background-size: cover !important;
-    background-repeat: no-repeat !important;
-}
-
-/* Les thèmes Vert et Sunset gardent leurs fonds d'écran dynamiques dans content.js */
-
-/* === ASSURER LA LISIBILITÉ === */
-/* S'assurer que les éléments restent lisibles sur les nouveaux fonds */
-
-[data-theme="light"] .main-container,
-[data-theme="dark"] .main-container,
-[data-theme="rouge"] .main-container,
-[data-theme="bleuciel"] .main-container {
-    background: rgba(255, 255, 255, 0.05) !important;
-    backdrop-filter: blur(10px) !important;
-    border-radius: 15px !important;
-    margin: 10px !important;
-    padding: 10px !important;
-}
-
-/* Optionnel: Améliorer la visibilité des séparateurs */
-[data-theme="light"] .separator,
-[data-theme="dark"] .separator,
-[data-theme="rouge"] .separator,
-[data-theme="bleuciel"] .separator {
-    background: rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(5px) !important;
-    border-radius: 10px !important;
-    padding: 5px !important;
-    margin: 5px 0 !important;
-}
-
-/* === VARIANTES ALTERNATIVES === */
-/* Si vous préférez des fonds plus simples, décommentez ces versions */
-
-/*
+/* === background des Themes === */
 [data-theme="light"] body {
     background: #7b5fbf !important;
 }
@@ -3379,4 +3292,3 @@ border-color: #ffd230 !important;
 [data-theme="bleuciel"] body {
     background: #01579b !important;
 }
-*/
