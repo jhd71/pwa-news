@@ -285,7 +285,7 @@ setupTVIcons() {
     category: 'news'
   },
   {
-    title: '🛍️<br>Brocantes',
+    title: '🛍️ Brocantes',
     url: 'https://brocabrac.fr/71/montceau-les-mines/',
     mobileUrl: 'https://brocabrac.fr/71/montceau-les-mines/',
     isDefault: true,
@@ -297,7 +297,7 @@ setupTVIcons() {
 
 // TUILE PHOTOS SIMPLE
 const photosTile = {
-    title: "📸<br>Galerie Photos", 
+    title: "📸 Galerie Photos", 
     url: "photos-gallery.html",
     mobileUrl: "photos-gallery.html",
     isDefault: true,
@@ -407,49 +407,49 @@ const tvSites = [
         // Section Sports
         const sportsSites = [
   {
-    title: '⚽<br>Ligue 1',
+    title: '⚽ Ligue 1',
     url: 'https://ligue1.fr/fr/competitions/ligue1mcdonalds?tab=news&ranking=scorers',
     mobileUrl: 'https://ligue1.fr/fr/competitions/ligue1mcdonalds?tab=news&ranking=scorers',
     isDefault: true,
     category: 'sports'
   },
   {
-    title: '⚽<br>Ligue 2',
+    title: '⚽ Ligue 2',
     url: 'https://ligue1.fr/fr/competitions/ligue2bkt?tab=news',
     mobileUrl: 'https://ligue1.fr/fr/competitions/ligue2bkt?tab=news',
     isDefault: true,
     category: 'sports'
   },
   {
-    title: '⚽<br>FC Montceau Bourgogne',
+    title: '⚽ FC Montceau Bourgogne',
     url: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
     mobileUrl: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
     isDefault: true,
     category: 'sports'
   },
   {
-    title: '🆚<br>Foot-Live',
+    title: '🆚 Foot-Live',
     url: 'https://www.footmercato.net/live/',
     mobileUrl: 'https://www.footmercato.net/live/',
     isDefault: true,
     category: 'sports'
   },
   {
-    title: '🏀<br>ELAN Chalon Basket',
+    title: '🏀 ELAN Chalon Basket',
     url: 'https://scorenco.com/basket/clubs/elan-chalon-basket-2m40/1-4xe3',
     mobileUrl: 'https://www.elanchalon.com/',
     isDefault: true,
     category: 'sports'
   },
   {
-    title: '🏉<br>RC Montceau Bourgogne',
+    title: '🏉 RC Montceau Bourgogne',
     url: 'https://scorenco.com/rugby/clubs/rc-montceau-bourgogne-2m2t',
     mobileUrl: 'https://scorenco.com/rugby/clubs/rc-montceau-bourgogne-2m2t',
     isDefault: true,
     category: 'sports'
   },
   {
-    title: '🚴<br>Cyclisme',
+    title: '🚴 Cyclisme',
     url: 'https://rmcsport.bfmtv.com/cyclisme/',
     mobileUrl: 'https://rmcsport.bfmtv.com/cyclisme/',
     isDefault: true,
