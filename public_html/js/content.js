@@ -1458,6 +1458,7 @@ changeTextContrast(contrast) {
     }
     
     this.showToast(`Thème ${themeName} activé`);
+	setTimeout(() => this.fixThemeColors(), 500);
 }
 
     toggleLayout() {
@@ -2052,9 +2053,6 @@ updateListModeStylesFast() {
         document.body.style.backgroundAttachment = 'fixed';
         document.body.style.backgroundRepeat = 'no-repeat';
         
-        // NOUVEAU: Forcer les tuiles à avoir des couleurs contrastées
-        this.applyGreenThemeStyles();
-        
         console.log(`Fond d'écran nature appliqué: ${randomNum}`);
     } else if (currentTheme === 'sunset') {
         // Appeler la méthode coucher de soleil
@@ -2062,8 +2060,6 @@ updateListModeStylesFast() {
     } else {
         // Supprimer l'image de fond pour les autres thèmes
         document.body.style.backgroundImage = '';
-        // Supprimer les styles spéciaux
-        this.removeThemeStyles();
     }
 }
 
@@ -2073,10 +2069,40 @@ updateListModeStylesFast() {
     if (currentTheme === 'sunset') {
         // 25 gradients inspirés du feu, couchers de soleil, énergie
         const fireGradients = [
-            // ... vos gradients existants ...
+            // Série couchers de soleil classiques
             'linear-gradient(135deg, #ff9a56 0%, #ff6b35 50%, #f7931e 100%)',
             'linear-gradient(135deg, #ffeaa7 0%, #fab1a0 50%, #e17055 100%)',
-            // ... tous vos autres gradients ...
+            'linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #ff6b35 100%)',
+            'linear-gradient(135deg, #ff8a80 0%, #ff5722 50%, #d84315 100%)',
+            'linear-gradient(135deg, #ffcc80 0%, #ff8a65 50%, #ff5722 100%)',
+            
+            // Série feu et flammes
+            'linear-gradient(135deg, #ff6b9d 0%, #c92a49 50%, #8b1538 100%)',
+            'linear-gradient(135deg, #ff7675 0%, #fd79a8 50%, #fdcb6e 100%)',
+            'linear-gradient(135deg, #ff9472 0%, #f2709c 50%, #ff6b9d 100%)',
+            'linear-gradient(135deg, #e84393 0%, #fd79a8 50%, #fdcb6e 100%)',
+            'linear-gradient(135deg, #ff5722 0%, #ff8a65 50%, #ffab91 100%)',
+            
+            // Série énergique et dynamique
+            'radial-gradient(circle at center, #ff6b35 0%, #f7931e 30%, #8b1538 100%)',
+            'radial-gradient(ellipse at top, #ff6b35 0%, #c92a49 50%, #1a1a2e 100%)',
+            'radial-gradient(circle at bottom, #fdcb6e 0%, #e84393 50%, #8b1538 100%)',
+            'radial-gradient(ellipse at left, #ff8a80 0%, #ff5722 50%, #d84315 100%)',
+            'radial-gradient(circle at right, #fab1a0 0%, #e17055 50%, #8b1538 100%)',
+            
+            // Série crépuscule et aube
+            'linear-gradient(45deg, #ff9472 0%, #f2709c 50%, #ff6b9d 100%)',
+            'linear-gradient(45deg, #ffeaa7 0%, #fab1a0 50%, #e17055 100%)',
+            'linear-gradient(225deg, #ff6b35 0%, #e84393 50%, #8b1538 100%)',
+            'linear-gradient(315deg, #fdcb6e 0%, #fd79a8 50%, #c92a49 100%)',
+            'linear-gradient(180deg, #ff8a80 0%, #ff5722 50%, #bf360c 100%)',
+            
+            // Série tropicale et exotique
+            'linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%)',
+            'linear-gradient(135deg, #ffa726 0%, #fb8c00 50%, #e65100 100%)',
+            'linear-gradient(135deg, #ff7043 0%, #d84315 50%, #bf360c 100%)',
+            'linear-gradient(135deg, #ffb74d 0%, #ff9800 50%, #f57c00 100%)',
+            'linear-gradient(135deg, #ff8f00 0%, #ff6f00 50%, #e65100 100%)'
         ];
         
         // Choisir un gradient aléatoire parmi les 25
@@ -2089,13 +2115,9 @@ updateListModeStylesFast() {
         document.body.style.backgroundAttachment = 'fixed';
         document.body.style.backgroundRepeat = 'no-repeat';
         
-        // NOUVEAU: Forcer les tuiles à avoir des couleurs contrastées
-        this.applySunsetThemeStyles();
-        
         console.log(`Fond d'écran feu/énergie appliqué (${fireGradients.indexOf(randomGradient) + 1}/25): ${randomGradient}`);
     } else {
         document.body.style.backgroundImage = '';
-        this.removeThemeStyles();
     }
 }
 
@@ -2111,11 +2133,10 @@ setBackgroundForTheme() {
             this.setSunsetBackground();
             break;
         default:
-            // Supprimer l'image de fond pour les autres thèmes
             document.body.style.backgroundImage = '';
-            this.removeThemeStyles();
             break;
     }
+	setTimeout(() => this.fixThemeColors(), 500);
 }
 
 setBackgroundForTheme() {
@@ -2341,95 +2362,60 @@ changeVisualEnhancement(mode) {
         // Si mode === 'normal', on ne fait rien (mode standard)
     }
 	
-	applyGreenThemeStyles() {
-    // Supprimer les styles précédents
-    this.removeThemeStyles();
+	fixThemeColors() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
     
-    // Créer un style spécifique pour le thème vert
-    const style = document.createElement('style');
-    style.id = 'green-theme-styles';
-    style.textContent = `
-        /* Forcer des couleurs sombres contrastées pour le thème vert */
-        [data-theme="vert"] .tile {
-            background: linear-gradient(135deg, #2d5016, #4a7c23) !important;
-            color: white !important;
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        }
-        
-        [data-theme="vert"] .tile:nth-child(even) {
-            background: linear-gradient(135deg, #1b5e20, #2e7d32) !important;
-        }
-        
-        [data-theme="vert"] .tile:nth-child(3n) {
-            background: linear-gradient(135deg, #33691e, #558b2f) !important;
-        }
-        
-        [data-theme="vert"] .tile:nth-child(4n) {
-            background: linear-gradient(135deg, #827717, #9e9d24) !important;
-        }
-        
-        [data-theme="vert"] .tile:nth-child(5n) {
-            background: linear-gradient(135deg, #689f38, #8bc34a) !important;
-        }
-        
-        [data-theme="vert"] .tile-title {
-            color: white !important;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
-            font-weight: 700 !important;
-        }
-    `;
+    // Supprimer tous les styles de correction précédents
+    const existingFix = document.getElementById('theme-color-fix');
+    if (existingFix) existingFix.remove();
     
-    document.head.appendChild(style);
-}
-
-applySunsetThemeStyles() {
-    // Supprimer les styles précédents
-    this.removeThemeStyles();
-    
-    // Créer un style spécifique pour le thème sunset
-    const style = document.createElement('style');
-    style.id = 'sunset-theme-styles';
-    style.textContent = `
-        /* Forcer des couleurs chaudes contrastées pour le thème sunset */
-        [data-theme="sunset"] .tile {
-            background: linear-gradient(135deg, #bf360c, #e64a19) !important;
-            color: white !important;
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    // Appliquer des corrections seulement pour vert et sunset
+    if (currentTheme === 'vert' || currentTheme === 'sunset') {
+        const style = document.createElement('style');
+        style.id = 'theme-color-fix';
+        
+        if (currentTheme === 'vert') {
+            style.textContent = `
+                /* Correction pour thème vert */
+                [data-theme="vert"] .tile {
+                    background: linear-gradient(135deg, #2d5016, #4a7c23) !important;
+                    color: white !important;
+                }
+                [data-theme="vert"] .tile:nth-child(even) {
+                    background: linear-gradient(135deg, #1b5e20, #2e7d32) !important;
+                }
+                [data-theme="vert"] .tile:nth-child(3n) {
+                    background: linear-gradient(135deg, #33691e, #558b2f) !important;
+                }
+                [data-theme="vert"] .tile-title {
+                    color: white !important;
+                    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
+                    font-weight: 700 !important;
+                }
+            `;
+        } else if (currentTheme === 'sunset') {
+            style.textContent = `
+                /* Correction pour thème sunset */
+                [data-theme="sunset"] .tile {
+                    background: linear-gradient(135deg, #bf360c, #e64a19) !important;
+                    color: white !important;
+                }
+                [data-theme="sunset"] .tile:nth-child(even) {
+                    background: linear-gradient(135deg, #d84315, #ff5722) !important;
+                }
+                [data-theme="sunset"] .tile:nth-child(3n) {
+                    background: linear-gradient(135deg, #e65100, #ff9800) !important;
+                }
+                [data-theme="sunset"] .tile-title {
+                    color: white !important;
+                    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
+                    font-weight: 700 !important;
+                }
+            `;
         }
         
-        [data-theme="sunset"] .tile:nth-child(even) {
-            background: linear-gradient(135deg, #d84315, #ff5722) !important;
-        }
-        
-        [data-theme="sunset"] .tile:nth-child(3n) {
-            background: linear-gradient(135deg, #e65100, #ff9800) !important;
-        }
-        
-        [data-theme="sunset"] .tile:nth-child(4n) {
-            background: linear-gradient(135deg, #f57c00, #ffc107) !important;
-        }
-        
-        [data-theme="sunset"] .tile:nth-child(5n) {
-            background: linear-gradient(135deg, #ff8f00, #ffb300) !important;
-        }
-        
-        [data-theme="sunset"] .tile-title {
-            color: white !important;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
-            font-weight: 700 !important;
-        }
-    `;
-    
-    document.head.appendChild(style);
-}
-
-removeThemeStyles() {
-    // Supprimer les styles spéciaux des thèmes
-    const greenStyles = document.getElementById('green-theme-styles');
-    const sunsetStyles = document.getElementById('sunset-theme-styles');
-    
-    if (greenStyles) greenStyles.remove();
-    if (sunsetStyles) sunsetStyles.remove();
+        document.head.appendChild(style);
+    }
 }
 
 }
