@@ -36,7 +36,6 @@ class ContentManager {
 	this.fixListModeLayout(); // NOUVELLE LIGNE
 	this.updateActiveNavLinks();
 	this.setupVisualEnhancement();
-	setTimeout(() => this.setBackgroundForTheme(), 1000);
 	}
 
     setupEventListeners() {
@@ -1435,9 +1434,6 @@ changeTextContrast(contrast) {
     
     // Mettre à jour l'icône et le texte
     this.updateThemeIcon();
-    
-    // Appliquer le fond d'écran approprié
-    setTimeout(() => this.setBackgroundForTheme(), 300);
     
     // Afficher une notification
     let themeName = '';
