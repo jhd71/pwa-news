@@ -243,42 +243,42 @@ setupTVIcons() {
         // Actualités locales
         const newsDefaultSites = [			
   {
-    title: '📰 Montceau News',
+    title: 'Montceau News',
     url: 'https://montceau-news.com/',
     mobileUrl: 'https://montceau-news.com/',
     isDefault: true,
     category: 'news'
   },
   {
-    title: '🗞️ L\'Informateur de Bourgogne',
+    title: 'L\'Informateur de Bourgogne',
     url: 'https://linformateurdebourgogne.com/',
     mobileUrl: 'https://linformateurdebourgogne.com/',
     isDefault: true,
     category: 'news'
   },
   {
-    title: '📰 Le JSL',
+    title: 'Le JSL',
     url: 'https://www.lejsl.com/edition-montceau-les-mines',
     mobileUrl: 'https://www.lejsl.com/edition-montceau-les-mines',
     isDefault: true,
     category: 'news'
   },
   {
-    title: '🗞️ Creusot Infos',
+    title: 'Creusot Infos',
     url: 'https://www.creusot-infos.com',
     mobileUrl: 'https://www.creusot-infos.com/?m=1',
     isDefault: true,
     category: 'news'
   },
   {
-    title: '🚨 Faits Divers Saône-et-Loire',
+    title: 'Faits Divers Saône-et-Loire',
     url: 'https://faitsdivers365.fr/bourgogne-franche-comte/saone-et-loire/',
     mobileUrl: 'https://faitsdivers365.fr/bourgogne-franche-comte/saone-et-loire/',
     isDefault: true,
     category: 'news'
   },
   {
-    title: '🗞️ Mâcon-Infos',
+    title: 'Mâcon-Infos',
     url: 'https://macon-infos.com/fr/faits-divers/macon',
     mobileUrl: 'https://macon-infos.com/fr/faits-divers/macon',
     isDefault: true,
@@ -360,7 +360,7 @@ this.tileContainer.appendChild(photosTileElement);
         // Section TV
 const tvSites = [
   {
-    title: 'France 3 Bourgogne',
+    title: 'France 3<br>Bourgogne',
     url: 'https://www.francebleu.fr/tv/direct/bourgogne',
     mobileUrl: 'https://www.francebleu.fr/tv/direct/bourgogne',
     isDefault: true,
@@ -407,21 +407,21 @@ const tvSites = [
         // Section Sports
         const sportsSites = [
   {
-    title: '⚽ Foot Ligue 1',
+    title: '⚽ Ligue 1',
     url: 'https://ligue1.fr/fr/competitions/ligue1mcdonalds?tab=news&ranking=scorers',
     mobileUrl: 'https://ligue1.fr/fr/competitions/ligue1mcdonalds?tab=news&ranking=scorers',
     isDefault: true,
     category: 'sports'
   },
   {
-    title: '⚽ Foot Ligue 2',
+    title: '⚽ Ligue 2',
     url: 'https://ligue1.fr/fr/competitions/ligue2bkt?tab=news',
     mobileUrl: 'https://ligue1.fr/fr/competitions/ligue2bkt?tab=news',
     isDefault: true,
     category: 'sports'
   },
   {
-    title: '⚽ Foot FC Montceau-Bourgogne',
+    title: '⚽ FC Montceau-Bourgogne',
     url: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
     mobileUrl: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
     isDefault: true,
@@ -442,7 +442,7 @@ const tvSites = [
     category: 'sports'
   },
   {
-    title: '🏉 Rugby RC Montceau Bourgogne',
+    title: '🏉 RC Montceau Bourgogne',
     url: 'https://scorenco.com/rugby/clubs/rc-montceau-bourgogne-2m2t',
     mobileUrl: 'https://scorenco.com/rugby/clubs/rc-montceau-bourgogne-2m2t',
     isDefault: true,
