@@ -328,7 +328,7 @@ body {
 
 /* 4. Thème clair - Violet */
 [data-theme="light"] .toast {
-    background: #775cbd;
+    background: linear-gradient(145deg, var(--primary-color), #9575CD);
 }
 
 /* 5. Thème sombre - Bleu */
