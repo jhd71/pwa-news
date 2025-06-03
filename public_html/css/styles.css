@@ -3292,3 +3292,29 @@ border-color: #ffd230 !important;
 [data-theme="bleuciel"] body {
     background: #01579b !important;
 }
+
+/* === ASSURER LA LISIBILITÉ === */
+/* S'assurer que les éléments restent lisibles sur les nouveaux fonds */
+
+[data-theme="light"] .main-container,
+[data-theme="dark"] .main-container,
+[data-theme="rouge"] .main-container,
+[data-theme="bleuciel"] .main-container {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(10px) !important;
+    border-radius: 15px !important;
+    margin: 10px !important;
+    padding: 10px !important;
+}
+
+/* Optionnel: Améliorer la visibilité des séparateurs */
+[data-theme="light"] .separator,
+[data-theme="dark"] .separator,
+[data-theme="rouge"] .separator,
+[data-theme="bleuciel"] .separator {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(5px) !important;
+    border-radius: 10px !important;
+    padding: 5px !important;
+    margin: 5px 0 !important;
+}
