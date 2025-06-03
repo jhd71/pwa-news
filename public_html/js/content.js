@@ -6,6 +6,7 @@ class ContentManager {
     this.fontFamily = localStorage.getItem('fontFamily') || 'system'; // Cette ligne existe mais vérifiez qu'elle est bien prise en compte
     this.textContrast = localStorage.getItem('textContrast') || 'normal'; // Cette ligne existe mais vérifiez qu'elle est bien prise en compte
     this.deferredPrompt = null;
+	this.visualEnhancement = localStorage.getItem('visualEnhancement') || 'normal';
 }
 
     init() {
@@ -34,6 +35,7 @@ class ContentManager {
 	this.setupTransparencyControl(); // NOUVELLE LIGNE
 	this.fixListModeLayout(); // NOUVELLE LIGNE
 	this.updateActiveNavLinks();
+	this.setupVisualEnhancement();
 	setTimeout(() => this.setBackgroundForTheme(), 1000);
 	}
 
@@ -950,6 +952,18 @@ settingsOverlay.addEventListener('click', (e) => {
                 </div>
             </div>
         </div>
+		
+		<div class="settings-section">
+            <h4>Amélioration visuelle</h4>
+            <div class="visual-enhancement-tiles">
+                <div class="visual-enhancement-tile ${this.visualEnhancement === 'normal' ? 'active' : ''}" data-visual-enhancement="normal">
+                    <span>⚪ Standard</span>
+                </div>
+                <div class="visual-enhancement-tile ${this.visualEnhancement === 'enhanced' ? 'active' : ''}" data-visual-enhancement="enhanced">
+                    <span>✨ Amélioré</span>
+                </div>
+            </div>
+        </div>
 `;
 
     document.body.appendChild(panel);
@@ -1059,6 +1073,25 @@ panel.querySelectorAll('.text-contrast-tile').forEach(tile => {
         }, { passive: false });
     });
 });
+
+panel.querySelectorAll('.visual-enhancement-tile').forEach(tile => {
+    ['touchstart', 'click'].forEach(eventType => {
+        tile.addEventListener(eventType, (e) => {
+            e.stopPropagation();
+            
+            panel.querySelectorAll('.visual-enhancement-tile').forEach(t => {
+                t.classList.remove('active');
+            });
+            tile.classList.add('active');
+            
+            const visualEnhancement = tile.dataset.visualEnhancement;
+            setTimeout(() => {
+                this.changeVisualEnhancement(visualEnhancement);
+            }, 50);
+        }, { passive: false });
+    });
+});
+
     // Empêcher que des clics sur le panneau lui-même ferment celui-ci
     panel.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -1146,6 +1179,11 @@ setupFontFamily() {
 setupTextContrast() {
     // Ajouter la classe de contraste au body
     document.body.classList.add(`${this.textContrast}-contrast`);
+}
+
+setupVisualEnhancement() {
+    // Appliquer l'amélioration visuelle sauvegardée au démarrage
+    this.applyVisualEnhancement(this.visualEnhancement);
 }
 
 changeFontFamily(family) {
@@ -2296,6 +2334,31 @@ openFuelPrices() {
         this.showToast('Erreur lors de l\'ouverture');
     }
 }
+
+changeVisualEnhancement(mode) {
+        console.log("Changement d'amélioration visuelle vers:", mode);
+        this.visualEnhancement = mode;
+        localStorage.setItem('visualEnhancement', mode);
+        
+        this.applyVisualEnhancement(mode);
+        
+        setTimeout(() => {
+            this.showToast(`Amélioration : ${
+                mode === 'enhanced' ? 'Activée' : 'Standard'
+            }`);
+        }, 300);
+    }
+
+    applyVisualEnhancement(mode) {
+        // Supprimer la classe précédente
+        document.body.classList.remove('visual-enhancement-mode');
+        
+        if (mode === 'enhanced') {
+            // Appliquer l'amélioration visuelle (effet fond crème)
+            document.body.classList.add('visual-enhancement-mode');
+        }
+        // Si mode === 'normal', on ne fait rien (mode standard)
+    }
 
 }
 
