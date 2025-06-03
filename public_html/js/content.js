@@ -6,7 +6,7 @@ class ContentManager {
     this.fontFamily = localStorage.getItem('fontFamily') || 'system'; // Cette ligne existe mais vérifiez qu'elle est bien prise en compte
     this.textContrast = localStorage.getItem('textContrast') || 'normal'; // Cette ligne existe mais vérifiez qu'elle est bien prise en compte
     this.deferredPrompt = null;
-	this.visualEnhancement = localStorage.getItem('visualEnhancement') || 'normal';
+	this.visualEnhancement = localStorage.getItem('visualEnhancement') || 'enhanced';
 }
 
     init() {

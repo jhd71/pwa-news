@@ -175,3 +175,114 @@
 .visual-enhancement-tile:hover {
     background-color: rgba(255, 255, 255, 0.2);
 }
+
+/* === AJOUT DANS VOTRE font-settings.css === */
+/* Adaptation intelligente de l'amélioration visuelle selon les thèmes */
+
+/* THÈMES AVEC FONDS DYNAMIQUES : Adaptation spéciale */
+
+/* Thème VERT : Forcer le texte blanc sur les fonds nature */
+[data-theme="vert"] .visual-enhancement-mode .tile-title {
+    color: white !important;
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 8px rgba(0, 0, 0, 0.7),
+        1px 1px 2px rgba(0, 0, 0, 1) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.3px !important;
+    -webkit-text-stroke: 0.3px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Thème SUNSET : Adapter selon la couleur de fond */
+[data-theme="sunset"] .visual-enhancement-mode .tile-title {
+    color: white !important;
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.8),
+        0 0 6px rgba(0, 0, 0, 0.6),
+        1px 1px 2px rgba(0, 0, 0, 0.9) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.3px !important;
+    -webkit-text-stroke: 0.2px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Thème BLEU CIEL : Optimisation pour les dégradés bleus */
+[data-theme="bleuciel"] .visual-enhancement-mode .tile-title {
+    color: white !important;
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.8),
+        0 0 6px rgba(0, 0, 0, 0.6),
+        1px 1px 2px rgba(0, 0, 0, 0.9) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.3px !important;
+}
+
+/* THÈMES SOMBRES ET ROUGE : Garde l'amélioration standard */
+[data-theme="dark"] .visual-enhancement-mode .tile-title,
+[data-theme="rouge"] .visual-enhancement-mode .tile-title {
+    /* Garde les styles existants qui fonctionnent bien */
+    color: white !important;
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.8),
+        0 0 6px rgba(0, 0, 0, 0.6),
+        1px 1px 2px rgba(0, 0, 0, 0.9) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.3px !important;
+    -webkit-text-stroke: 0.2px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Thème LIGHT (Violet) : Adaptation pour fond violet */
+[data-theme="light"] .visual-enhancement-mode .tile-title {
+    color: white !important;
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.8),
+        0 0 6px rgba(0, 0, 0, 0.6),
+        1px 1px 2px rgba(0, 0, 0, 0.9) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.3px !important;
+}
+
+/* === AMÉLIORATION DES OMBRES POUR TOUS LES THÈMES === */
+/* Ombres de tuiles adaptées par thème */
+
+[data-theme="vert"] .visual-enhancement-mode .tile {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid rgba(0, 0, 0, 0.25) !important;
+}
+
+[data-theme="sunset"] .visual-enhancement-mode .tile {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35) !important;
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-theme="bleuciel"] .visual-enhancement-mode .tile {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+}
+
+/* === SÉPARATEURS ADAPTÉS === */
+[data-theme="vert"] .visual-enhancement-mode .separator,
+[data-theme="sunset"] .visual-enhancement-mode .separator,
+[data-theme="bleuciel"] .visual-enhancement-mode .separator {
+    background: rgba(0, 0, 0, 0.15) !important;
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15) !important;
+}
+
+[data-theme="vert"] .visual-enhancement-mode .separator img,
+[data-theme="sunset"] .visual-enhancement-mode .separator img,
+[data-theme="bleuciel"] .visual-enhancement-mode .separator img {
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4)) !important;
+}
+
+/* === OPTIMISATION MOBILE === */
+@media (max-width: 767px) {
+    [data-theme="vert"] .visual-enhancement-mode .tile-title,
+    [data-theme="sunset"] .visual-enhancement-mode .tile-title,
+    [data-theme="bleuciel"] .visual-enhancement-mode .tile-title {
+        -webkit-text-stroke: 0.4px rgba(0, 0, 0, 0.5) !important;
+        text-shadow: 
+            2px 2px 5px rgba(0, 0, 0, 0.9),
+            0 0 8px rgba(0, 0, 0, 0.8),
+            1px 1px 3px rgba(0, 0, 0, 1) !important;
+    }
+}
