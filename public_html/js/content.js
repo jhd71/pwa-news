@@ -493,7 +493,7 @@ const tvSites = [
     category: 'social'
   },
   {
-    title: '📱 TikTok
+    title: '📱 TikTok',
     url: 'https://www.tiktok.com/discover?lang=fr',
     mobileUrl: 'https://www.tiktok.com/?lang=fr',
     isDefault: true,
