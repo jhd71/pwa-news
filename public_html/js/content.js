@@ -2187,7 +2187,7 @@ autoEnhanceTileVisibility() {
     this.addVisibilityStyles();
 }
 
-// Ajouter les styles CSS directement via JavaScript - VERSION CORRIGÉE
+// Ajouter les styles CSS directement via JavaScript
 addVisibilityStyles() {
     // Vérifier si les styles existent déjà
     if (document.getElementById('visibility-styles')) return;
@@ -2209,8 +2209,8 @@ addVisibilityStyles() {
                 0 4px 20px rgba(0, 0, 0, 0.3),
                 0 2px 8px rgba(0, 0, 0, 0.2);
             
-            /* SUPPRIMÉ: background-color fixe qui empêchait les couleurs aléatoires */
-            /* background-color: #4fb3e8 !important; */
+            /* Fond de secours plus opaque */
+            background-color: rgba(var(--tile-bg-rgb), 0.85) !important;
             
             /* Transition fluide */
             transition: all 0.3s ease;
@@ -2234,13 +2234,7 @@ addVisibilityStyles() {
             font-weight: 600;
         }
         
-        /* ALTERNATIVE: Utiliser les variables CSS plutôt que des couleurs fixes */
-        .tile.enhanced-visibility {
-            /* Utiliser la couleur aléatoire avec un fallback légèrement transparent */
-            background-color: rgba(var(--tile-bg-rgb, 75, 179, 232), 0.9) !important;
-        }
-        
-        /* Variables CSS pour les couleurs par catégorie (OPTIONNEL) */
+        /* Variables CSS pour les couleurs de fond des tuiles */
         .tile[data-category="news"].enhanced-visibility {
             --tile-bg-rgb: 220, 53, 69; /* Rouge */
         }
