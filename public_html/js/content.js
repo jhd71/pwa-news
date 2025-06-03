@@ -285,7 +285,7 @@ setupTVIcons() {
     category: 'news'
   },
   {
-    title: '🛍️ Brocantes',
+    title: '🛍️<br>Brocantes',
     url: 'https://brocabrac.fr/71/montceau-les-mines/',
     mobileUrl: 'https://brocabrac.fr/71/montceau-les-mines/',
     isDefault: true,
