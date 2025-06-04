@@ -561,6 +561,299 @@
         [data-theme="dark"] .quick-subtitle {
             color: #b0b0b0;
         }
+		
+		/* ===== INTERFACE UNIFIÉE ===== */
+        .unified-publish-section {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px var(--shadow);
+            border: 3px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .unified-publish-section .section-title {
+            color: var(--primary-color);
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+        }
+
+        .section-subtitle {
+            color: var(--text-color);
+            margin-bottom: 25px;
+            font-style: italic;
+            opacity: 0.8;
+            font-size: 15px;
+        }
+
+        .large-textarea {
+            min-height: 200px !important;
+            font-family: inherit;
+            line-height: 1.6;
+        }
+
+        .options-row {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn-publish {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-draft {
+            background: #ffc107;
+            color: #333;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-publish:hover,
+        .btn-draft:hover,
+        .btn-cancel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        /* État d'édition */
+        .unified-publish-section.editing {
+            border-color: #ffc107;
+            background: linear-gradient(135deg, var(--card-bg), rgba(255, 193, 7, 0.05));
+        }
+
+        .unified-publish-section.editing .section-title {
+            color: #ffc107;
+        }
+
+        .unified-publish-section.editing .btn-cancel {
+            display: flex !important;
+        }
+
+        .unified-publish-section.editing .btn-publish {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .unified-publish-section.editing .btn-publish .material-icons {
+            content: 'edit';
+        }
+
+        /* Suppression de l'ancienne section */
+        .quick-publish-section {
+    display: none !important;
+		}
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .action-buttons {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .unified-publish-section {
+                padding: 20px;
+            }
+        }
+		
+		/* ===== OPTIMISATION LAYOUT ADMIN ===== */
+
+/* Réduction de l'en-tête admin */
+.admin-header {
+    padding: 15px; /* Réduit de 20px à 15px */
+    margin-bottom: 15px; /* Réduit de 20px à 15px */
+}
+
+.admin-header h1 {
+    font-size: 20px; /* Réduit de 24px à 20px */
+    margin: 0;
+}
+
+.admin-header p {
+    margin: 5px 0 0 0; /* Réduit l'espacement */
+    font-size: 13px; /* Réduit la taille */
+    opacity: 0.8;
+}
+
+/* Optimisation de la section unifiée */
+.unified-publish-section {
+    padding: 20px; /* Réduit de 30px à 20px */
+    margin-bottom: 15px; /* Réduit de 30px à 15px */
+}
+
+.section-subtitle {
+    margin-bottom: 15px; /* Réduit de 25px à 15px */
+    font-size: 13px; /* Réduit légèrement */
+}
+
+.example-box {
+    padding: 10px; /* Réduit de 12px à 10px */
+    margin-bottom: 12px; /* Réduit de 15px à 12px */
+    font-size: 11px; /* Réduit légèrement */
+}
+
+/* Optimisation de la liste des actualités */
+.news-list {
+    max-height: 500px; /* Augmente de 350px à 500px */
+    overflow-y: auto;
+}
+
+/* Réduction des marges générales */
+.admin-container {
+    padding: 15px; /* Réduit de 20px à 15px */
+}
+
+/* ===== MOBILE OPTIMISATIONS ===== */
+@media (max-width: 768px) {
+    /* En-tête encore plus compact sur mobile */
+    .admin-header {
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .admin-header h1 {
+        font-size: 18px;
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .admin-header p {
+        font-size: 12px;
+        text-align: center;
+    }
+    
+    /* Section unifiée plus compacte */
+    .unified-publish-section {
+        padding: 15px;
+        margin-bottom: 10px;
+    }
+    
+    .unified-publish-section .section-title {
+        font-size: 18px;
+    }
+    
+    /* Container avec moins de padding */
+    .admin-container {
+        padding: 8px;
+    }
+    
+    /* Liste des actualités prend plus de place */
+    .news-list {
+        max-height: 60vh; /* Utilise 60% de la hauteur de l'écran */
+    }
+    
+    /* Logout button plus petit */
+    .logout-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+    
+    /* Réduction des form-group */
+    .form-group {
+        margin-bottom: 12px;
+    }
+    
+    /* Textarea plus compacte sur mobile */
+    .large-textarea {
+        min-height: 150px !important; /* Réduit de 200px à 150px */
+    }
+}
+
+/* ===== AMÉLIORATION DES ACTUALITÉS EXISTANTES ===== */
+.admin-section {
+    padding: 15px; /* Réduit de 20px à 15px */
+}
+
+.news-item {
+    padding: 10px; /* Réduit de 12px à 10px */
+    margin-bottom: 6px; /* Réduit de 8px à 6px */
+}
+
+.news-item-content {
+    font-size: 12px; /* Réduit de 13px à 12px */
+    line-height: 1.3; /* Réduit de 1.4 à 1.3 */
+}
+
+.news-item-actions {
+    margin-top: 6px; /* Réduit de 8px à 6px */
+}
+
+.btn-secondary {
+    padding: 4px 8px; /* Réduit de 6px 12px à 4px 8px */
+    font-size: 10px; /* Réduit de 11px à 10px */
+    margin-right: 4px; /* Réduit de 8px à 4px */
+}
+
+/* ===== UTILISATION MAXIMALE DE L'ÉCRAN MOBILE ===== */
+@media (max-width: 768px) {
+    /* Utiliser toute la largeur sur mobile */
+    .admin-container {
+        max-width: 100%;
+        padding: 5px;
+    }
+    
+    /* Marges latérales minimales */
+    .unified-publish-section,
+    .admin-section {
+        margin-left: 2px;
+        margin-right: 2px;
+    }
+    
+    /* Inputs et textarea pleine largeur */
+    .form-group input,
+    .form-group textarea {
+        padding: 8px; /* Réduit légèrement */
+    }
+}
     </style>
 </head>
 <body>
@@ -599,14 +892,14 @@
             </h1>
             <p>Gestion des actualités locales de Montceau-les-Mines et environs</p>
         </div>
-
-        <!-- Section Publication Rapide -->
-        <div class="quick-publish-section">
-            <h2 class="quick-title">
-                <span class="material-icons">flash_on</span>
-                Publication Rapide
+            
+            <!-- Section Publication Unifiée -->
+        <div class="unified-publish-section" id="unifiedSection">
+            <h2 class="section-title">
+                <span class="material-icons">create</span>
+                <span id="sectionTitleText">Créer une actualité</span>
             </h2>
-            <p class="quick-subtitle">Collez directement vos actualités et publiez en un clic !</p>
+            <p class="section-subtitle">Rédigez vos actualités locales de Montceau-les-Mines et environs</p>
             
             <div class="example-box">
                 <div class="example-title">💡 Exemple de format :</div>
@@ -614,89 +907,59 @@
                 Du 25 au 27 septembre 2025, le BAM Festival revient avec une programmation exceptionnelle !
             </div>
             
-            <form id="quickNewsForm">
+            <form id="unifiedNewsForm">
                 <div class="form-group">
-                    <label for="quickTitle">Titre de l'actualité :</label>
-                    <input type="text" id="quickTitle" required maxlength="200" 
+                    <label for="unifiedTitle">Titre de l'actualité :</label>
+                    <input type="text" id="unifiedTitle" required maxlength="200" 
                            placeholder="Ex: BAM Festival 2025 - Programmation exceptionnelle">
-                    <div class="character-count" id="titleCount">0/200 caractères</div>
+                    <div class="character-count" id="unifiedTitleCount">0/200 caractères</div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="quickContent">Contenu complet :</label>
-                    <textarea id="quickContent" required class="quick-textarea"
-                              placeholder="Collez ici le contenu de votre actualité..."></textarea>
-                    <div class="character-count" id="contentCount">0 caractères</div>
+                    <label for="unifiedContent">Contenu complet :</label>
+                    <textarea id="unifiedContent" required class="large-textarea"
+                              placeholder="Collez ou rédigez ici le contenu de votre actualité..."></textarea>
+                    <div class="character-count" id="unifiedContentCount">0 caractères</div>
                 </div>
                 
-                <div class="checkbox-group">
-                    <input type="checkbox" id="quickFeatured">
-                    <label for="quickFeatured">⭐ Mettre à la une</label>
+                <div class="options-row">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="unifiedFeatured">
+                        <label for="unifiedFeatured">⭐ Mettre à la une</label>
+                    </div>
                 </div>
                 
-                <div class="quick-actions">
-                    <button type="button" class="btn-quick quick-publish-btn" onclick="quickPublish(true)">
+                <div class="action-buttons">
+                    <button type="button" class="btn-publish" id="publishBtn" onclick="publishNews(true)">
                         <span class="material-icons">publish</span>
                         PUBLIER
                     </button>
-                    <button type="button" class="btn-quick quick-draft-btn" onclick="quickPublish(false)">
+                    <button type="button" class="btn-draft" onclick="publishNews(false)">
                         <span class="material-icons">save</span>
-                        BROUILLON
+                        SAUVER EN BROUILLON
+                    </button>
+                    <button type="button" class="btn-cancel" id="cancelBtn" onclick="cancelEdit()" style="display: none;">
+                        <span class="material-icons">cancel</span>
+                        ANNULER
                     </button>
                 </div>
             </form>
         </div>
 
-        <div class="admin-sections">
-            <!-- Section Edition manuelle -->
-            <div class="admin-section">
-                <h2 class="section-title">
-                    <span class="material-icons">edit</span>
-                    Édition manuelle
-                </h2>
-                
-                <form id="newsForm">
-                    <div class="form-group">
-                        <label for="newsTitle">Titre :</label>
-                        <input type="text" id="newsTitle" required maxlength="200">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="newsContent">Contenu :</label>
-                        <textarea id="newsContent" required></textarea>
-                    </div>
-                    
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="newsPublished">
-                        <label for="newsPublished">Publier</label>
-                    </div>
-                    
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="newsFeatured">
-                        <label for="newsFeatured">À la une</label>
-                    </div>
-                    
-                    <button type="submit" class="btn-primary">
-                        <span class="material-icons">save</span>
-                        Enregistrer
-                    </button>
-                </form>
-            </div>
-
-            <!-- Section Liste des actualités -->
-            <div class="admin-section">
-                <h2 class="section-title">
-                    <span class="material-icons">list</span>
-                    Actualités existantes
-                </h2>
-                
-                <div id="newsList" class="news-list">
-                    <div class="loading">
-                        <span class="material-icons spinner">hourglass_empty</span>
-                        Chargement...
-                    </div>
+        <!-- Section Liste des actualités -->
+        <div class="admin-section">
+            <h2 class="section-title">
+                <span class="material-icons">list</span>
+                Actualités existantes
+            </h2>
+            
+            <div id="newsList" class="news-list">
+                <div class="loading">
+                    <span class="material-icons spinner">hourglass_empty</span>
+                    Chargement...
                 </div>
             </div>
+        </div>
         </div>
     </div>
 
@@ -722,29 +985,28 @@
                     e.preventDefault();
                     this.handleLogin();
                 });
-
-                document.getElementById('newsForm').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    this.handleNewsSubmit();
-                });
             }
 
             setupCharacterCounters() {
-                const titleInput = document.getElementById('quickTitle');
-                const contentInput = document.getElementById('quickContent');
-                const titleCounter = document.getElementById('titleCount');
-                const contentCounter = document.getElementById('contentCount');
+                const titleInput = document.getElementById('unifiedTitle');
+                const contentInput = document.getElementById('unifiedContent');
+                const titleCounter = document.getElementById('unifiedTitleCount');
+                const contentCounter = document.getElementById('unifiedContentCount');
 
-                titleInput.addEventListener('input', () => {
-                    const length = titleInput.value.length;
-                    titleCounter.textContent = `${length}/200 caractères`;
-                    titleCounter.style.color = length > 180 ? '#dc3545' : 'inherit';
-                });
+                if (titleInput && titleCounter) {
+                    titleInput.addEventListener('input', () => {
+                        const length = titleInput.value.length;
+                        titleCounter.textContent = `${length}/200 caractères`;
+                        titleCounter.style.color = length > 180 ? '#dc3545' : 'inherit';
+                    });
+                }
 
-                contentInput.addEventListener('input', () => {
-                    const length = contentInput.value.length;
-                    contentCounter.textContent = `${length} caractères`;
-                });
+                if (contentInput && contentCounter) {
+                    contentInput.addEventListener('input', () => {
+                        const length = contentInput.value.length;
+                        contentCounter.textContent = `${length} caractères`;
+                    });
+                }
             }
 
             checkAuthentication() {
@@ -779,17 +1041,17 @@
                 this.isAuthenticated = false;
                 document.getElementById('loginContainer').style.display = 'block';
                 document.getElementById('adminContainer').style.display = 'none';
-                this.resetAllForms();
+                this.resetForm();
                 this.showToast('👋 Déconnexion réussie', 'success');
             }
 
-            async quickPublish(publish) {
+            async publishNews(publish) {
                 if (!this.isAuthenticated) return;
 
                 try {
-                    const title = document.getElementById('quickTitle').value.trim();
-                    const content = document.getElementById('quickContent').value.trim();
-                    const featured = document.getElementById('quickFeatured').checked;
+                    const title = document.getElementById('unifiedTitle').value.trim();
+                    const content = document.getElementById('unifiedContent').value.trim();
+                    const featured = document.getElementById('unifiedFeatured').checked;
 
                     if (!title || !content) {
                         this.showToast('⚠️ Titre et contenu requis', 'error');
@@ -810,82 +1072,34 @@
                         author: 'Actu&Média'
                     };
 
-                    const result = await supabase
-                        .from('local_news')
-                        .insert([newsData]);
-
-                    if (result.error) {
-                        throw result.error;
-                    }
-
-                    if (publish) {
-                        this.showToast('✅ Actualité publiée !', 'success');
-                    } else {
-                        this.showToast('💾 Brouillon sauvé', 'success');
-                    }
-
-                    this.resetQuickForm();
-                    this.loadNews();
-                    window.dispatchEvent(new CustomEvent('newsUpdated'));
-
-                } catch (error) {
-                    console.error('Erreur:', error);
-                    this.showToast('❌ Erreur: ' + error.message, 'error');
-                }
-            }
-
-            async handleNewsSubmit() {
-                if (!this.isAuthenticated) return;
-
-                try {
-                    const title = document.getElementById('newsTitle').value.trim();
-                    const content = document.getElementById('newsContent').value.trim();
-                    const isPublished = document.getElementById('newsPublished').checked;
-                    const isFeatured = document.getElementById('newsFeatured').checked;
-
-                    if (!title || !content) {
-                        this.showToast('⚠️ Titre et contenu requis', 'error');
-                        return;
-                    }
-
-                    const supabase = window.getSupabaseClient();
-                    if (!supabase) {
-                        throw new Error('Supabase non disponible');
-                    }
-
-                    const newsData = {
-                        title,
-                        content,
-                        is_published: isPublished,
-                        featured: isFeatured,
-                        category: 'Montceau-les-Mines et environs',
-                        author: 'Actu&Média'
-                    };
-
                     let result;
                     if (this.editingId) {
+                        // Mode édition
                         result = await supabase
                             .from('local_news')
                             .update(newsData)
                             .eq('id', this.editingId);
                         
-                        this.editingId = null;
-                        document.querySelector('#newsForm button[type="submit"]').innerHTML = `
-                            <span class="material-icons">save</span>
-                            Enregistrer
-                        `;
+                        this.showToast('✅ Actualité modifiée !', 'success');
+                        this.cancelEdit();
                     } else {
+                        // Mode création
                         result = await supabase
                             .from('local_news')
                             .insert([newsData]);
+                        
+                        if (publish) {
+                            this.showToast('✅ Actualité publiée !', 'success');
+                        } else {
+                            this.showToast('💾 Brouillon sauvé', 'success');
+                        }
                     }
 
                     if (result.error) {
                         throw result.error;
                     }
 
-                    this.showToast('✅ Actualité enregistrée !', 'success');
-                    this.resetManualForm();
+                    this.resetForm();
                     this.loadNews();
                     window.dispatchEvent(new CustomEvent('newsUpdated'));
 
@@ -974,25 +1188,47 @@
 
                     if (error) throw error;
 
-                    // Remplir le formulaire manuel
-                    document.getElementById('newsTitle').value = news.title;
-                    document.getElementById('newsContent').value = news.content;
-                    document.getElementById('newsPublished').checked = news.is_published;
-                    document.getElementById('newsFeatured').checked = news.featured;
+                    // Remplir le formulaire
+                    document.getElementById('unifiedTitle').value = news.title;
+                    document.getElementById('unifiedContent').value = news.content;
+                    document.getElementById('unifiedFeatured').checked = news.featured;
 
+                    // Passer en mode édition
                     this.editingId = id;
-                    document.querySelector('#newsForm button[type="submit"]').innerHTML = `
-                        <span class="material-icons">save</span>
-                        Modifier l'actualité
-                    `;
+                    this.setEditingMode(true);
 
                     // Scroll vers le formulaire
-                    document.querySelector('#newsForm').scrollIntoView({ behavior: 'smooth' });
+                    document.getElementById('unifiedSection').scrollIntoView({ behavior: 'smooth' });
 
                 } catch (error) {
                     console.error('Erreur:', error);
                     this.showToast('❌ Erreur lors du chargement', 'error');
                 }
+            }
+
+            setEditingMode(editing) {
+                const section = document.getElementById('unifiedSection');
+                const titleText = document.getElementById('sectionTitleText');
+                const publishBtn = document.getElementById('publishBtn');
+                const cancelBtn = document.getElementById('cancelBtn');
+
+                if (editing) {
+                    section.classList.add('editing');
+                    titleText.textContent = 'Modifier l\'actualité';
+                    publishBtn.innerHTML = '<span class="material-icons">edit</span>MODIFIER';
+                    cancelBtn.style.display = 'flex';
+                } else {
+                    section.classList.remove('editing');
+                    titleText.textContent = 'Créer une actualité';
+                    publishBtn.innerHTML = '<span class="material-icons">publish</span>PUBLIER';
+                    cancelBtn.style.display = 'none';
+                }
+            }
+
+            cancelEdit() {
+                this.editingId = null;
+                this.setEditingMode(false);
+                this.resetForm();
             }
 
             async togglePublish(id, publish) {
@@ -1037,28 +1273,16 @@
                 }
             }
 
-            resetQuickForm() {
-                document.getElementById('quickTitle').value = '';
-                document.getElementById('quickContent').value = '';
-                document.getElementById('quickFeatured').checked = false;
-                document.getElementById('titleCount').textContent = '0/200 caractères';
-                document.getElementById('contentCount').textContent = '0 caractères';
-            }
-
-            resetManualForm() {
-                document.getElementById('newsForm').reset();
-                this.editingId = null;
-                document.querySelector('#newsForm button[type="submit"]').innerHTML = `
-                    <span class="material-icons">save</span>
-                    Enregistrer
-                `;
-            }
-
-            resetAllForms() {
-                this.resetQuickForm();
-                this.resetManualForm();
-                document.getElementById('username').value = '';
-                document.getElementById('password').value = '';
+            resetForm() {
+                document.getElementById('unifiedTitle').value = '';
+                document.getElementById('unifiedContent').value = '';
+                document.getElementById('unifiedFeatured').checked = false;
+                document.getElementById('unifiedTitleCount').textContent = '0/200 caractères';
+                document.getElementById('unifiedContentCount').textContent = '0 caractères';
+                
+                if (this.editingId) {
+                    this.cancelEdit();
+                }
             }
 
             showToast(message, type = 'success') {
@@ -1079,7 +1303,7 @@
             }
         }
 
-        // Instance globale
+         // Instance globale
         const newsAdmin = new NewsAdmin();
 
         // Fonctions globales
@@ -1087,8 +1311,12 @@
             newsAdmin.logout();
         }
 
-        function quickPublish(publish) {
-            newsAdmin.quickPublish(publish);
+        function publishNews(publish) {
+            newsAdmin.publishNews(publish);
+        }
+
+        function cancelEdit() {
+            newsAdmin.cancelEdit();
         }
 
         // Initialisation
