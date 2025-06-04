@@ -11,6 +11,8 @@ const STATIC_RESOURCES = [
     '/notification.html',
     '/404.html',
     '/500.html',
+	'/admin-news.html',
+	'/news-locale.html',
     
     // Feuilles de style CSS
     '/css/styles.css',
@@ -28,6 +30,7 @@ const STATIC_RESOURCES = [
     '/css/tile-enhancements.css',
     '/css/gallery-styles.css',
     '/css/donation.css',
+	'/css/news-widget.css',
 
     // Scripts JavaScript
     '/js/app.js',
@@ -59,6 +62,7 @@ const STATIC_RESOURCES = [
     '/js/gallery-manager-v2.js',
     '/js/welcome-manager.js',
     '/js/custom-background-manager.js',
+	'/js/news-widget.js',
     
     // Fichiers de configuration (seulement ceux qui existent)
     '/manifest.json',

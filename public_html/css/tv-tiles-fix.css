@@ -188,9 +188,6 @@
 
 /* === GRILLE ADAPTATIVE === */
 /* S'assurer que la grille s'adapte aux nouvelles hauteurs des tuiles TV */
-#tileContainer.grid {
-    grid-auto-rows: minmax(80px, auto) !important;
-}
 
 #tileContainer.grid .tile[data-category="tv"] {
     grid-row: span 1 !important;

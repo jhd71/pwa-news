@@ -583,7 +583,7 @@ main {
     align-items: center;
     justify-content: center;
     height: 35px;
-    margin: 4px 0;
+    margin: 20px 0;
     border-radius: 12px;
     position: relative;
     text-align: center;
@@ -1169,6 +1169,33 @@ background-color: #1a237e;
     }
 }
 
+/* Ajoutez cette règle dans la section MEDIA QUERIES de styles.css */
+
+@media (max-width: 767px) {
+    /* Correction pour éviter le chevauchement du widget avec le header */
+    main {
+        margin-top: calc(var(--header-height) !important); /* Augmente l'espace du haut */
+        padding-top: 0px !important;
+    }
+    
+    /* Correction pour l'espacement des séparateurs sur mobile */
+    .separator {
+        margin: 20px 0 8px 0 !important;
+        padding: 10px !important;
+    }
+    
+    /* Premier séparateur après le widget NEWS */
+    .tile-container .separator:first-child {
+        margin-top: 20px !important;
+        margin-bottom: 8px !important;
+    }
+    
+    /* Espacement entre les groupes de tuiles */
+    .tile-container .tile:first-of-type {
+        margin-top: 0 !important;
+    }
+}
+
 /* Petits écrans et très petits écrans */
 @media (max-width: 480px) {
     .bottom-nav .nav-item span:not(.material-icons) {
@@ -1265,11 +1292,7 @@ background-color: #1a237e;
         margin-right: auto !important;
         max-width: 1200px;
     }
-    
-    /* Assurer que le widget météo ne chevauche pas le contenu */
-    .separator:first-of-type {
-        margin-top: 20px !important;
-    }
+           
 } Bleu */
 [data-theme="dark"] .separator {
     background: linear-gradient(90deg, 
@@ -3291,30 +3314,4 @@ border-color: #ffd230 !important;
 
 [data-theme="bleuciel"] body {
     background: #01579b !important;
-}
-
-/* === ASSURER LA LISIBILITÉ === */
-/* S'assurer que les éléments restent lisibles sur les nouveaux fonds */
-
-[data-theme="light"] .main-container,
-[data-theme="dark"] .main-container,
-[data-theme="rouge"] .main-container,
-[data-theme="bleuciel"] .main-container {
-    background: rgba(255, 255, 255, 0.05) !important;
-    backdrop-filter: blur(10px) !important;
-    border-radius: 15px !important;
-    margin: 10px !important;
-    padding: 10px !important;
-}
-
-/* Optionnel: Améliorer la visibilité des séparateurs */
-[data-theme="light"] .separator,
-[data-theme="dark"] .separator,
-[data-theme="rouge"] .separator,
-[data-theme="bleuciel"] .separator {
-    background: rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(5px) !important;
-    border-radius: 10px !important;
-    padding: 5px !important;
-    margin: 5px 0 !important;
 }

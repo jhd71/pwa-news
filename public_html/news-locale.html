@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="rouge" data-font-size="normal">
+<head>
+    <script>
+        // Appliquer le thème sauvegardé
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'rouge';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Actualités locales de Montceau-les-Mines et environs - Actu & Média">
+    <title>NEWS Locales - Actu&Média</title>
+    
+    <!-- Styles -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/news-widget.css">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    
+    <style>
+        :root {
+            /* Variables pour les thèmes */
+            --primary-color: #7e57c2; /* Violet par défaut */
+            --primary-bg: linear-gradient(135deg, #7e57c2, #9575cd);
+            --text-color: #333;
+            --bg-color: #f8f9fa;
+            --card-bg: white;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Thème Light (Violet) */
+        [data-theme="light"] {
+            --primary-color: #7e57c2;
+            --primary-bg: linear-gradient(135deg, #7e57c2, #9575cd);
+            --text-color: #333;
+            --bg-color: #f8f9fa;
+            --card-bg: white;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Thème Dark (Bleu Nuit) */
+        [data-theme="dark"] {
+            --primary-color: #5c6bc0; /* Bleu plus clair */
+            --primary-bg: linear-gradient(135deg, #1a237e, #3f51b5);
+            --text-color: #e0e0e0; /* Texte clair */
+            --bg-color: #121212; /* Fond sombre */
+            --card-bg: #2d2d2d; /* Cartes sombres */
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Thème Rouge */
+        [data-theme="rouge"] {
+            --primary-color: #d32f2f;
+            --primary-bg: linear-gradient(135deg, #d32f2f, #f44336);
+            --text-color: #333;
+            --bg-color: #fff5f5;
+            --card-bg: white;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Thème Bleu Ciel */
+        [data-theme="bleuciel"] {
+            --primary-color: #0ea5e9;
+            --primary-bg: linear-gradient(135deg, #0ea5e9, #38bdf8);
+            --text-color: #333;
+            --bg-color: #f0f9ff;
+            --card-bg: white;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+        
+        .news-page {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .news-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--primary-bg);
+            color: white;
+            border-radius: 15px;
+        }
+        
+        .news-header h1 {
+            margin: 0;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .news-subtitle {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        /* SUPPRESSION DU BOUTON RETOUR */
+        .back-button {
+            display: none;
+        }
+        
+        /* NOUVEAU BOUTON ACCUEIL EN BAS */
+        .home-button {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--shadow);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .home-button:hover {
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 0 6px 20px var(--shadow);
+            background: var(--primary-color);
+            filter: brightness(1.1);
+        }
+        
+        .home-button:active {
+            transform: translateX(-50%) scale(0.95);
+        }
+        
+        .news-article {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px var(--shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .news-article:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--shadow);
+        }
+        
+        .news-article.featured {
+            /* Articles à la une avec une bordure subtile dorée */
+            border: 2px solid #ffd700;
+            box-shadow: 0 4px 15px var(--shadow), 0 0 0 1px rgba(255, 215, 0, 0.2);
+        }
+        
+        /* Gradient léger pour les articles featured */
+        [data-theme="light"] .news-article.featured {
+            background: linear-gradient(135deg, #fff, #f8f7ff);
+        }
+        
+        [data-theme="dark"] .news-article.featured {
+            background: linear-gradient(135deg, #2d2d2d, #3a3a4a);
+        }
+        
+        [data-theme="rouge"] .news-article.featured {
+            background: linear-gradient(135deg, #fff, #fef7f7);
+        }
+        
+        [data-theme="bleuciel"] .news-article.featured {
+            background: linear-gradient(135deg, #fff, #f0f9ff);
+        }
+        
+        .news-article-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .news-icon {
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .news-article-meta {
+            flex: 1;
+        }
+        
+        .news-article-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--text-color);
+            margin: 0 0 8px 0;
+            line-height: 1.3;
+        }
+        
+        .news-article-date {
+            color: var(--primary-color);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .featured-badge {
+            background: #ffd700;
+            color: #333;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .news-article-content {
+            color: var(--text-color);
+            line-height: 1.6;
+            font-size: 16px;
+            white-space: pre-line;
+        }
+        
+        .loading-container {
+            text-align: center;
+            padding: 50px;
+            color: var(--text-color);
+        }
+        
+        .loading-spinner {
+            font-size: 48px;
+            animation: spin 1s linear infinite;
+            color: var(--primary-color);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: var(--text-color);
+        }
+        
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+            color: var(--primary-color);
+        }
+        
+        .error-state {
+            text-align: center;
+            padding: 50px;
+            color: var(--primary-color);
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive - CORRECTION MOBILE */
+        @media (max-width: 768px) {
+            .news-page {
+                padding: 10px;
+                /* AJOUT D'UN PADDING EN BAS POUR LE BOUTON */
+                padding-bottom: 80px !important;
+            }
+            
+            /* Espacement supplémentaire pour le dernier article */
+            .news-article:last-child {
+                margin-bottom: 40px !important;
+            }
+            
+            .back-button {
+                top: 10px;
+                left: 10px;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .news-article {
+                padding: 20px;
+                margin-bottom: 15px; /* Réduire l'espacement entre articles sur mobile */
+            }
+            
+            .news-article-title {
+                font-size: 18px;
+            }
+            
+            .news-header h1 {
+                font-size: 24px;
+            }
+            
+            /* Ajustement du bouton pour mobile */
+            .home-button {
+                bottom: 15px;
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+        }
+
+        /* Corrections spécifiques pour le mode sombre */
+        [data-theme="dark"] .news-article-date {
+            color: #7986cb; /* Bleu plus clair pour la lisibilité */
+        }
+
+        [data-theme="dark"] .loading-container,
+        [data-theme="dark"] .empty-state {
+            color: #e0e0e0;
+        }
+
+        [data-theme="dark"] .empty-state h3,
+        [data-theme="dark"] .error-state h3 {
+            color: #b3c5ef;
+        }
+    </style>
+</head>
+<body>
+    <div class="news-page">
+        
+        <!-- En-tête -->
+        <div class="news-header">
+            <h1>
+                <span class="material-icons">newspaper</span>
+                NEWS Actu&Média
+            </h1>
+            <p class="news-subtitle">Actualités de Montceau-les-Mines et environs</p>
+        </div>
+        
+        <!-- Conteneur des actualités -->
+        <div id="newsContainer">
+            <div class="loading-container">
+                <div class="material-icons loading-spinner">hourglass_empty</div>
+                <p>Chargement des actualités...</p>
+            </div>
+        </div>
+		<button class="home-button" onclick="window.location.href='index.html'" title="Retour à l'accueil">
+    <span class="material-icons">home</span>
+    Retour à l'accueil
+</button>
+    </div>
+
+    <script>
+        class NewsPageManager {
+            constructor() {
+                this.isLoaded = false;
+                this.retryCount = 0;
+                this.maxRetries = 3;
+            }
+
+            async init() {
+                console.log('📰 Initialisation de la page NEWS');
+                await this.waitForSupabase();
+                await this.loadAllNews();
+            }
+
+            async waitForSupabase() {
+                return new Promise((resolve, reject) => {
+                    const checkSupabase = () => {
+                        if (typeof window.getSupabaseClient === 'function') {
+                            resolve();
+                        } else if (this.retryCount < this.maxRetries) {
+                            this.retryCount++;
+                            console.log(`⏳ Attente de Supabase... (${this.retryCount}/${this.maxRetries})`);
+                            setTimeout(checkSupabase, 1000);
+                        } else {
+                            reject(new Error('Supabase non disponible'));
+                        }
+                    };
+                    checkSupabase();
+                });
+            }
+
+            async loadAllNews() {
+                try {
+                    const supabase = window.getSupabaseClient();
+                    if (!supabase) {
+                        throw new Error('Client Supabase non disponible');
+                    }
+
+                    const { data: news, error } = await supabase
+                        .from('local_news')
+                        .select('*')
+                        .eq('is_published', true)
+                        .order('featured', { ascending: false })
+                        .order('created_at', { ascending: false });
+
+                    if (error) {
+                        throw error;
+                    }
+
+                    this.displayNews(news);
+                    console.log(`✅ ${news.length} actualités chargées`);
+
+                } catch (error) {
+                    console.error('❌ Erreur lors du chargement:', error);
+                    this.showError();
+                }
+            }
+
+            displayNews(news) {
+                const container = document.getElementById('newsContainer');
+                
+                if (!news || news.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="material-icons empty-icon">article</div>
+                            <h3>Aucune actualité pour le moment</h3>
+                            <p>Les prochaines actualités locales apparaîtront bientôt ici.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = news.map(article => `
+                    <article class="news-article ${article.featured ? 'featured' : ''}">
+                        <div class="news-article-header">
+                            <div class="news-icon">
+                                <span class="material-icons">${article.featured ? 'star' : 'article'}</span>
+                            </div>
+                            <div class="news-article-meta">
+                                <h2 class="news-article-title">
+                                    ${article.title}
+                                    ${article.featured ? '<span class="featured-badge">⭐ À la une</span>' : ''}
+                                </h2>
+                                <div class="news-article-date">
+                                    <span class="material-icons">schedule</span>
+                                    ${this.formatDate(article.created_at)}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="news-article-content">
+                            ${article.content}
+                        </div>
+                    </article>
+                `).join('');
+
+                // Animer l'apparition des articles
+                const articles = container.querySelectorAll('.news-article');
+                articles.forEach((article, index) => {
+                    article.style.opacity = '0';
+                    article.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        article.style.transition = 'all 0.5s ease';
+                        article.style.opacity = '1';
+                        article.style.transform = 'translateY(0)';
+                    }, index * 100);
+                });
+            }
+
+            showError() {
+                const container = document.getElementById('newsContainer');
+                container.innerHTML = `
+                    <div class="error-state">
+                        <div class="material-icons empty-icon">error</div>
+                        <h3>Erreur de chargement</h3>
+                        <p>Impossible de charger les actualités. Veuillez réessayer plus tard.</p>
+                        <button onclick="location.reload()" style="
+                            background: var(--primary-color);
+                            color: white;
+                            border: none;
+                            padding: 10px 20px;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            margin-top: 15px;
+                        ">
+                            Réessayer
+                        </button>
+                    </div>
+                `;
+            }
+
+            formatDate(dateString) {
+                const date = new Date(dateString);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+                if (diffDays === 0) {
+                    return `Aujourd'hui à ${date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`;
+                } else if (diffDays === 1) {
+                    return 'Hier';
+                } else if (diffDays < 7) {
+                    return `Il y a ${diffDays} jours`;
+                } else {
+                    return date.toLocaleDateString('fr-FR', { 
+                        day: 'numeric', 
+                        month: 'long', 
+                        year: 'numeric' 
+                    });
+                }
+            }
+        }
+
+        // Initialisation
+        const newsManager = new NewsPageManager();
+        document.addEventListener('DOMContentLoaded', () => {
+            newsManager.init();
+        });
+    </script>
+</body>
+</html>

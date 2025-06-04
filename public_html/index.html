@@ -96,6 +96,7 @@
 	<link rel="stylesheet" href="css/background-selector.css">
 	<link rel="stylesheet" href="css/donation.css">
 	<link rel="stylesheet" href="css/ios-specific.css">
+	<link rel="stylesheet" href="css/news-widget.css">
 	<link rel="canonical" href="https://actuetmedia.fr/" />
 </head>
 <body>
@@ -143,81 +144,29 @@
     <div class="swiper-button-prev"></div>
     <div class="swiper-button-next"></div>
   </div>
-  <!-- HTML fixe pour le message de bienvenue -->
-  <div class="welcome-banner desktop-only">
-  <div class="welcome-content">
-    <div class="welcome-text">
-      <h1>Actu & Média<span class="highlight">71</span></h1>
-      <p class="tagline">Votre plateforme multimédia complète pour la Saône-et-Loire et au-delà</p>
-      <p class="description">Toute l'actualité, les radios, TV en direct, football et réseaux sociaux en un seul endroit !</p>
-    </div>
-    <div class="quick-stats">
-      <div class="stat-item">
-        <span class="material-icons">public</span>
-        <div>
-          <strong>24/7</strong>
-          <span>Actualités</span>
-        </div>
-      </div>
-      <div class="stat-item">
-        <span class="material-icons">radio</span>
-        <div>
-          <strong>5+</strong>
-          <span>Stations radio</span>
-        </div>
-      </div>
-      <div class="stat-item">
-        <span class="material-icons">tv</span>
-        <div>
-          <strong>Live</strong>
-          <span>TV & Sports</span>
-        </div>
-      </div>
-      <div class="stat-item">
-        <span class="material-icons">share</span>
-        <div>
-          <strong>Social</strong>
-          <span>Réseaux sociaux</span>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
-  <!-- HTML amélioré pour le message de bienvenue -->
-<div class="welcome-message only-desktop">
-  <div class="welcome-icon">
-    <span class="material-icons">public</span>
-  </div>
-  <h2>Bienvenue sur <strong>Actu & Média</strong> !</h2>
-  <p class="welcome-intro">
-    Votre portail d'information indépendant dédié à la Saône-et-Loire
-  </p>
-  <p class="welcome-description">
-    Découvrez l'essentiel de l'actualité locale en temps réel : infos de Montceau et Le Creusot, 
-    radios en direct, bulletins météo, vidéos à la une, et bien plus encore.
-  </p>
-  <div class="welcome-features">
-    <div class="feature-item">
-      <span class="material-icons">feed</span>
-      <span>Actualités en continu</span>
+
+<!-- Widget NEWS Actu&Média - DÉPLACÉ EN DEHORS DU SWIPER -->
+<div class="news-widget-container">
+    <div class="local-news-widget" id="localNewsWidget" onclick="openLocalNewsPage()">
+        <div class="news-widget-header">
+            <span class="material-icons news-pulse">newspaper</span>
+            <div class="news-widget-title">NEWS Actu&Média</div>
+            <div class="news-widget-badge">Local</div>
+        </div>
+        
+        <div class="news-widget-preview" id="newsWidgetPreview">
+            <div class="loading-news">
+                <span class="material-icons spinning">hourglass_empty</span>
+                Chargement des actualités...
+            </div>
+        </div>
+        
+        <div class="news-widget-footer">
+            <span class="news-widget-tap">👆 Touchez pour lire toutes les actualités</span>
+            <div class="news-widget-count" id="newsWidgetCount">0 news</div>
+        </div>
     </div>
-    <div class="feature-item">
-      <span class="material-icons">radio</span>
-      <span>Radios locales</span>
-    </div>
-    <div class="feature-item">
-      <span class="material-icons">cloud</span>
-      <span>Météo locale</span>
-    </div>
-    <div class="feature-item">
-      <span class="material-icons">play_circle</span>
-      <span>Vidéos & Replays</span>
-    </div>
-  </div>
-  <button class="welcome-close" aria-label="Fermer le message de bienvenue">
-    <span class="material-icons">close</span>
-  </button>
-</div>
 </div>
 <!-- Menu latéral -->
 <aside id="sidebar" class="sidebar">
@@ -345,6 +294,7 @@ document.getElementById('currentYear').textContent = new Date().getFullYear();
 	<script src="js/theme-manager.js"></script>
 	<script src="js/donation.js"></script>
 	<script src="js/survey-manager.js"></script>
+	<script src="js/news-widget.js"></script>
 
 	<!-- Script d'initialisation principal -->
 	<script type="module" src="js/app-initializer.js"></script>
