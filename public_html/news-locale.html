@@ -280,48 +280,346 @@
         @keyframes spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
-        }
-        
-        /* Responsive - CORRECTION MOBILE */
-        @media (max-width: 768px) {
-            .news-page {
-                padding: 10px;
-                /* AJOUT D'UN PADDING EN BAS POUR LE BOUTON */
-                padding-bottom: 80px !important;
-            }
-            
-            /* Espacement supplémentaire pour le dernier article */
-            .news-article:last-child {
-                margin-bottom: 40px !important;
-            }
-            
-            .back-button {
-                top: 10px;
-                left: 10px;
-                width: 40px;
-                height: 40px;
-            }
-            
-            .news-article {
-                padding: 20px;
-                margin-bottom: 15px; /* Réduire l'espacement entre articles sur mobile */
-            }
-            
-            .news-article-title {
-                font-size: 18px;
-            }
-            
-            .news-header h1 {
-                font-size: 24px;
-            }
-            
-            /* Ajustement du bouton pour mobile */
-            .home-button {
-                bottom: 15px;
-                padding: 10px 20px;
-                font-size: 13px;
-            }
-        }
+        }       				
+
+				/* ===== SYSTÈME DE COMMENTAIRES ===== */
+
+.comments-section {
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 25px;
+    margin-top: 25px;
+    border-top: 3px solid var(--primary-color);
+    box-shadow: 0 4px 15px var(--shadow);
+}
+
+.comments-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.comments-count {
+    background: var(--primary-color);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Formulaire de commentaire */
+.comment-form {
+    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.05);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(var(--primary-color-rgb, 220, 53, 69), 0.1);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--border-color, #e1e5e9);
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    background: var(--card-bg);
+    color: var(--text-color);
+    box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.form-group textarea {
+    min-height: 150px;
+    resize: vertical;
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+.comment-submit-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.comment-submit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.comment-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Liste des commentaires */
+.comments-list {
+    margin-top: 25px;
+}
+
+.comment-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color, #e1e5e9);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.comment-item:hover {
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+.comment-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.comment-author {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.comment-avatar {
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.comment-author-name {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.comment-date {
+    color: var(--primary-color);
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.comment-content {
+    color: var(--text-color);
+    line-height: 1.6;
+    white-space: pre-line;
+}
+
+/* États des commentaires */
+.pending-moderation {
+    background: rgba(255, 193, 7, 0.1);
+    border-color: #ffc107;
+    position: relative;
+    overflow: hidden;
+}
+
+.pending-moderation::before {
+    content: "En attente de modération";
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #ffc107;
+    color: #333;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: bold;
+    border-bottom-left-radius: 8px;
+}
+
+.no-comments {
+    text-align: center;
+    padding: 0px 0px;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+.no-comments-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+    opacity: 0.5;
+}
+
+/* Loading état */
+.comments-loading {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-color);
+}
+
+.loading-spinner {
+    animation: spin 1s linear infinite;
+    color: var(--primary-color);
+    font-size: 24px;
+}
+
+/* Styles pour le système pliable */
+.comments-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.05);
+    border-radius: 10px;
+    border: 1px solid rgba(var(--primary-color-rgb, 220, 53, 69), 0.1);
+    margin-bottom: 0;
+    cursor: pointer;  /* AJOUTEZ AUSSI CECI */
+}
+
+.comments-header:hover {
+    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.08);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.comments-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.add-comment-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+}
+
+.add-comment-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-icon {
+    color: var(--primary-color);
+    transition: transform 0.3s ease;
+    font-size: 24px;
+}
+
+/* RÈGLE MANQUANTE - ÉTAT INITIAL */
+.comments-collapsible {
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.4s ease-out;
+    opacity: 0;
+    background: var(--card-bg);
+}
+
+/* ÉTAT OUVERT */
+.comments-collapsible.open {
+    max-height: 2000px !important;
+    opacity: 1 !important;
+    padding: 20px !important;
+    overflow: visible !important;
+}
+
+.comments-section.expanded .comments-collapsible {
+    border: 1px solid rgba(var(--primary-color-rgb, 220, 53, 69), 0.1);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    padding: 20px;
+    background: var(--card-bg);
+    max-height: none !important;
+    opacity: 1 !important;
+}
+
+.comments-collapsible.open .toggle-icon {
+    transform: rotate(180deg);
+}
+
+.comments-section.expanded .comments-header {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom: none;
+}
+
+.comments-section.expanded .comments-collapsible {
+    border: 1px solid rgba(var(--primary-color-rgb, 220, 53, 69), 0.1);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    padding: 20px;
+    background: var(--card-bg);
+}
+
+
+/* Thème sombre spécifique */
+[data-theme="dark"] .comment-form {
+    background: rgba(92, 107, 192, 0.1);
+    border-color: rgba(92, 107, 192, 0.2);
+}
+
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group textarea {
+    background: #3a3a3a;
+    border-color: #555;
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .comment-item {
+    background: #3a3a3a;
+    border-color: #555;
+}
+
+[data-theme="dark"] .pending-moderation {
+    background: rgba(255, 193, 7, 0.2);
+}
 
         /* Corrections spécifiques pour le mode sombre */
         [data-theme="dark"] .news-article-date {
@@ -337,6 +635,274 @@
         [data-theme="dark"] .error-state h3 {
             color: #b3c5ef;
         }
+		
+		/* ===== CSS MOBILE COMPLET ET NETTOYÉ ===== */
+
+/* Responsive - CORRECTION MOBILE GÉNÉRALE */
+@media (max-width: 768px) {
+    .news-page {
+        padding: 10px;
+        padding-bottom: 80px !important;
+    }
+    
+    .news-article:last-child {
+        margin-bottom: 40px !important;
+    }
+    
+    .back-button {
+        top: 10px;
+        left: 10px;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .news-article {
+        padding: 20px;
+        margin-bottom: 15px;
+    }
+    
+    .news-article-title {
+        font-size: 18px;
+    }
+    
+    .news-header h1 {
+        font-size: 24px;
+    }
+    
+    .home-button {
+        bottom: 15px;
+        padding: 10px 20px;
+        font-size: 13px;
+    }
+    
+    /* ===== COMMENTAIRES MOBILE ===== */
+    
+    /* Section commentaires agrandie */
+    .comments-section {
+        padding: 0px;
+        margin: 25px 0;
+        border-radius: 20px;
+    }
+    
+    /* En-tête des commentaires */
+    .comments-header {
+        padding: 18px;
+        border-radius: 15px;
+        font-size: 18px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    /* Actions dans l'en-tête */
+    .comments-actions {
+        margin-left: 0;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+        flex-direction: row;
+        gap: 12px;
+        margin-top: 10px;
+    }
+    
+    /* Bouton "Ajouter un commentaire" */
+    .add-comment-btn {
+        padding: 0px 0px;
+        font-size: 15px;
+        border-radius: 25px;
+        min-height: 50px;
+        flex: 1;
+        justify-content: center;
+        min-width: 0;
+    }
+    
+    /* Icône toggle */
+    .toggle-icon {
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+    
+    /* Zone pliable agrandie */
+    .comments-collapsible.open {
+        padding: 25px;
+        border-radius: 0 0 20px 20px;
+    }
+    
+    /* Formulaire agrandi */
+    .comment-form {
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+    }
+    
+    /* Disposition des champs en colonne sur mobile */
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    /* Groupes de champs */
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    /* Labels agrandis */
+    .form-group label {
+        font-size: 16px;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+    
+    /* Champs de saisie agrandis */
+    .form-group input {
+        min-height: 60px;
+        padding: 18px;
+        font-size: 16px;
+        border-radius: 12px;
+        border-width: 2px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    /* Zone de texte agrandie */
+    .form-group textarea {
+        min-height: 200px;
+        padding: 20px;
+        font-size: 16px;
+        border-radius: 12px;
+        border-width: 2px;
+        line-height: 1.6;
+        resize: vertical;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    /* Espacement spécial pour la zone de commentaire */
+    .form-group:has(textarea) {
+        margin-bottom: 25px;
+    }
+    
+    /* Bouton de soumission agrandi */
+    .comment-submit-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 10px 10px;
+        font-size: 16px;
+        border-radius: 12px;
+        min-height: 60px;
+    }
+    
+    /* Commentaires existants agrandis */
+    .comment-item {
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 15px;
+    }
+    
+    /* En-tête des commentaires existants */
+    .comment-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    /* Auteur du commentaire */
+    .comment-author {
+        width: 100%;
+    }
+    
+    /* Avatar agrandi */
+    .comment-avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+    
+    /* Nom de l'auteur */
+    .comment-author-name {
+        font-size: 16px;
+    }
+    
+    /* Date du commentaire */
+    .comment-date {
+        align-self: flex-end;
+        margin-top: -25px;
+        font-size: 14px;
+    }
+    
+    /* Contenu du commentaire */
+    .comment-content {
+        font-size: 16px;
+        line-height: 1.6;
+        margin-top: 12px;
+    }
+    
+    /* Compteur de commentaires */
+    .comments-count {
+        padding: 6px 12px;
+        font-size: 14px;
+        min-width: 30px;
+        height: 30px;
+    }
+}
+
+/* ===== TRÈS PETITS ÉCRANS (480px et moins) ===== */
+@media (max-width: 480px) {
+    /* Section commentaires encore plus grande */
+    .comments-section {
+        padding: 0px;
+        margin: 30px 0;
+    }
+    
+    /* Actions en colonne sur très petits écrans */
+    .comments-actions {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+    
+    /* Bouton pleine largeur */
+    .add-comment-btn {
+        width: 100%;
+        margin-bottom: 8px;
+        padding: 0px 0px;
+        font-size: 16px;
+    }
+    
+    /* Icône centrée */
+    .toggle-icon {
+        align-self: center;
+        font-size: 24px;
+    }
+    
+    /* En-tête centré */
+    .comments-header {
+        text-align: center;
+    }
+    
+    .comments-header > span:not(.comments-count):not(.toggle-icon) {
+        flex: 1;
+    }
+    
+    /* Champs encore plus grands */
+    .form-group input {
+        min-height: 65px;
+        padding: 20px;
+        font-size: 17px;
+    }
+    
+    .form-group textarea {
+        min-height: 220px;
+        padding: 22px;
+        font-size: 17px;
+    }
+    
+    /* Bouton de soumission encore plus grand */
+    .comment-submit-btn {
+        padding: 10px 10px;
+        font-size: 17px;
+        min-height: 65px;
+    }
+}
     </style>
 </head>
 <body>
@@ -423,54 +989,120 @@
             }
 
             displayNews(news) {
-                const container = document.getElementById('newsContainer');
-                
-                if (!news || news.length === 0) {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <div class="material-icons empty-icon">article</div>
-                            <h3>Aucune actualité pour le moment</h3>
-                            <p>Les prochaines actualités locales apparaîtront bientôt ici.</p>
-                        </div>
-                    `;
-                    return;
-                }
+    const container = document.getElementById('newsContainer');
+    
+    if (!news || news.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="material-icons empty-icon">article</div>
+                <h3>Aucune actualité pour le moment</h3>
+                <p>Les prochaines actualités locales apparaîtront bientôt ici.</p>
+            </div>
+        `;
+        return;
+    }
 
-                container.innerHTML = news.map(article => `
-                    <article class="news-article ${article.featured ? 'featured' : ''}">
-                        <div class="news-article-header">
-                            <div class="news-icon">
-                                <span class="material-icons">${article.featured ? 'star' : 'article'}</span>
-                            </div>
-                            <div class="news-article-meta">
-                                <h2 class="news-article-title">
-                                    ${article.title}
-                                    ${article.featured ? '<span class="featured-badge">⭐ À la une</span>' : ''}
-                                </h2>
-                                <div class="news-article-date">
-                                    <span class="material-icons">schedule</span>
-                                    ${this.formatDate(article.created_at)}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="news-article-content">
-                            ${article.content}
-                        </div>
-                    </article>
-                `).join('');
+    container.innerHTML = news.map(article => `
+        <article class="news-article ${article.featured ? 'featured' : ''}" data-news-id="${article.id}">
+            <div class="news-article-header">
+                <div class="news-icon">
+                    <span class="material-icons">${article.featured ? 'star' : 'article'}</span>
+                </div>
+                <div class="news-article-meta">
+                    <h2 class="news-article-title">
+                        ${article.title}
+                        ${article.featured ? '<span class="featured-badge">⭐ À la une</span>' : ''}
+                    </h2>
+                    <div class="news-article-date">
+                        <span class="material-icons">schedule</span>
+                        ${this.formatDate(article.created_at)}
+                    </div>
+                </div>
+            </div>
+            <div class="news-article-content">
+                ${article.content}
+            </div>
+            
+            <!-- Section Commentaires PLIABLE -->
+<div class="comments-section">
+    <!-- En-tête cliquable -->
+    <div class="comments-header" id="commentsToggle-${article.id}" style="cursor: pointer; transition: all 0.3s ease;">
+        <span class="material-icons">chat_bubble_outline</span>
+        <span>Commentaires</span>
+        <span class="comments-count" id="commentsCount-${article.id}">0</span>
+        <div class="comments-actions">
+            <button class="add-comment-btn" id="addCommentBtn-${article.id}">
+                <span class="material-icons">add_comment</span>
+                Ajouter un commentaire
+            </button>
+            <span class="material-icons toggle-icon" id="toggleIcon-${article.id}">expand_more</span>
+        </div>
+    </div>
+    
+    <!-- Zone pliable (initialement cachée) -->
+    <div class="comments-collapsible" id="commentsCollapsible-${article.id}" style="
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease-out;
+        opacity: 0;
+    ">
+        <!-- Formulaire de commentaire -->
+        <form class="comment-form" id="commentForm-${article.id}">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="authorName-${article.id}">Votre nom *</label>
+                    <input type="text" id="authorName-${article.id}" required maxlength="100" 
+                           placeholder="Votre nom ou pseudo">
+                </div>
+                <div class="form-group">
+                    <label for="authorEmail-${article.id}">Email (optionnel)</label>
+                    <input type="email" id="authorEmail-${article.id}" maxlength="255" 
+                           placeholder="votre@email.com">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="commentContent-${article.id}">Votre commentaire *</label>
+                <textarea id="commentContent-${article.id}" required maxlength="1000" 
+                          placeholder="Partagez votre avis sur cette actualité..."></textarea>
+            </div>
+            <button type="submit" class="comment-submit-btn">
+                <span class="material-icons">send</span>
+                Publier le commentaire
+            </button>
+        </form>
+        
+        <!-- Liste des commentaires -->
+        <div class="comments-list" id="commentsList-${article.id}">
+            <div class="comments-loading">
+                <span class="material-icons loading-spinner">hourglass_empty</span>
+                Chargement des commentaires...
+            </div>
+        </div>
+    </div>
+</div>
+        </article>
+    `).join('');
 
-                // Animer l'apparition des articles
-                const articles = container.querySelectorAll('.news-article');
-                articles.forEach((article, index) => {
-                    article.style.opacity = '0';
-                    article.style.transform = 'translateY(20px)';
-                    setTimeout(() => {
-                        article.style.transition = 'all 0.5s ease';
-                        article.style.opacity = '1';
-                        article.style.transform = 'translateY(0)';
-                    }, index * 100);
-                });
-            }
+    // Animer l'apparition des articles
+    const articles = container.querySelectorAll('.news-article');
+    articles.forEach((article, index) => {
+        article.style.opacity = '0';
+        article.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            article.style.transition = 'all 0.5s ease';
+            article.style.opacity = '1';
+            article.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+
+    // Initialiser les commentaires pour chaque article
+    // Initialiser les commentaires pour chaque article
+news.forEach(article => {
+    this.initializeComments(article.id);
+    // AJOUTEZ CETTE LIGNE :
+    initializeCommentsToggle(article.id);
+});
+}
 
             showError() {
                 const container = document.getElementById('newsContainer');
@@ -514,8 +1146,304 @@
                     });
                 }
             }
+			
+			// Initialiser les commentaires pour un article
+async initializeComments(newsId) {
+    try {
+        // Charger les commentaires
+        await this.loadComments(newsId);
+        
+        // Configurer le formulaire
+        const form = document.getElementById(`commentForm-${newsId}`);
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.submitComment(newsId);
+            });
+        }
+    } catch (error) {
+        console.error(`Erreur lors de l'initialisation des commentaires pour l'article ${newsId}:`, error);
+    }
+}
+
+// Charger les commentaires approuvés
+async loadComments(newsId) {
+    try {
+        const supabase = window.getSupabaseClient();
+        if (!supabase) throw new Error('Supabase non disponible');
+
+        // Récupérer les commentaires approuvés
+        const { data: comments, error } = await supabase
+            .from('news_comments')
+            .select('*')
+            .eq('news_id', newsId)
+            .eq('is_approved', true)
+            .order('created_at', { ascending: true });
+
+        if (error) throw error;
+
+        this.displayComments(newsId, comments);
+        this.updateCommentsCount(newsId, comments.length);
+
+    } catch (error) {
+        console.error('Erreur lors du chargement des commentaires:', error);
+        this.showCommentsError(newsId);
+    }
+}
+
+// Afficher les commentaires
+displayComments(newsId, comments) {
+    const container = document.getElementById(`commentsList-${newsId}`);
+    if (!container) return;
+
+    if (!comments || comments.length === 0) {
+        container.innerHTML = `
+            <div class="no-comments">
+                <div class="material-icons no-comments-icon">chat_bubble_outline</div>
+                <p>Aucun commentaire pour le moment.</p>
+                <p>Soyez le premier à donner votre avis !</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = comments.map(comment => `
+        <div class="comment-item">
+            <div class="comment-header">
+                <div class="comment-author">
+                    <div class="comment-avatar">
+                        ${comment.author_name.charAt(0).toUpperCase()}
+                    </div>
+                    <div class="comment-author-name">${comment.author_name}</div>
+                </div>
+                <div class="comment-date">
+                    ${this.formatDate(comment.created_at)}
+                </div>
+            </div>
+            <div class="comment-content">
+                ${comment.content}
+            </div>
+        </div>
+    `).join('');
+}
+
+// Soumettre un nouveau commentaire
+async submitComment(newsId) {
+    try {
+        const nameInput = document.getElementById(`authorName-${newsId}`);
+        const emailInput = document.getElementById(`authorEmail-${newsId}`);
+        const contentInput = document.getElementById(`commentContent-${newsId}`);
+        const submitBtn = document.querySelector(`#commentForm-${newsId} .comment-submit-btn`);
+
+        if (!nameInput || !contentInput) {
+            throw new Error('Éléments du formulaire non trouvés');
         }
 
+        const authorName = nameInput.value.trim();
+        const authorEmail = emailInput ? emailInput.value.trim() : '';
+        const content = contentInput.value.trim();
+
+        if (!authorName || !content) {
+            this.showToast('Veuillez remplir tous les champs obligatoires', 'error');
+            return;
+        }
+
+        // Désactiver le bouton pendant l'envoi
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="material-icons loading-spinner">hourglass_empty</span> Envoi...';
+        }
+
+        const supabase = window.getSupabaseClient();
+        if (!supabase) throw new Error('Supabase non disponible');
+
+        const { error } = await supabase
+            .from('news_comments')
+            .insert([{
+                news_id: newsId,
+                author_name: authorName,
+                author_email: authorEmail || null,
+                content: content,
+                is_approved: false // En attente de modération
+            }]);
+
+        if (error) throw error;
+
+        // Réinitialiser le formulaire
+        nameInput.value = '';
+        if (emailInput) emailInput.value = '';
+        contentInput.value = '';
+
+        // Afficher un message de confirmation
+        this.showPendingComment(newsId);
+        this.showToast('Commentaire envoyé ! Il sera visible après modération.', 'success');
+
+    } catch (error) {
+        console.error('Erreur lors de l\'envoi du commentaire:', error);
+        this.showToast('Erreur lors de l\'envoi du commentaire. Veuillez réessayer.', 'error');
+    } finally {
+        // Réactiver le bouton
+        const submitBtn = document.querySelector(`#commentForm-${newsId} .comment-submit-btn`);
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span class="material-icons">send</span> Publier le commentaire';
+        }
+    }
+}
+
+// Afficher un commentaire en attente de modération
+showPendingComment(newsId) {
+    const container = document.getElementById(`commentsList-${newsId}`);
+    if (!container) return;
+
+    const pendingComment = `
+        <div class="comment-item pending-moderation">
+            <div class="comment-header">
+                <div class="comment-author">
+                    <div class="comment-avatar">✓</div>
+                    <div class="comment-author-name">Votre commentaire</div>
+                </div>
+                <div class="comment-date">À l'instant</div>
+            </div>
+            <div class="comment-content">
+                Votre commentaire a été envoyé et sera affiché après validation par notre équipe.
+            </div>
+        </div>
+    `;
+
+    // Ajouter en haut de la liste
+    if (container.querySelector('.no-comments')) {
+        container.innerHTML = pendingComment;
+    } else {
+        container.insertAdjacentHTML('afterbegin', pendingComment);
+    }
+}
+
+// Mettre à jour le compteur de commentaires
+updateCommentsCount(newsId, count) {
+    const countElement = document.getElementById(`commentsCount-${newsId}`);
+    if (countElement) {
+        countElement.textContent = count;
+    }
+}
+
+// Afficher une erreur dans les commentaires
+showCommentsError(newsId) {
+    const container = document.getElementById(`commentsList-${newsId}`);
+    if (container) {
+        container.innerHTML = `
+            <div class="no-comments">
+                <div class="material-icons no-comments-icon">error</div>
+                <p>Erreur lors du chargement des commentaires.</p>
+                <button onclick="newsManager.loadComments(${newsId})" style="
+                    background: var(--primary-color);
+                    color: white;
+                    border: none;
+                    padding: 8px 16px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    margin-top: 10px;
+                ">
+                    Réessayer
+                </button>
+            </div>
+        `;
+    }
+}
+
+// Fonction pour afficher des messages toast
+showToast(message, type = 'success') {
+    // Supprimer les toasts existants
+    const existingToasts = document.querySelectorAll('.toast-message');
+    existingToasts.forEach(toast => toast.remove());
+
+    const toast = document.createElement('div');
+    toast.className = `toast-message ${type === 'error' ? 'toast-error' : 'toast-success'}`;
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'error' ? '#dc3545' : '#28a745'};
+        color: white;
+        padding: 12px 16px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        z-index: 1000;
+        transform: translateX(400px);
+        transition: transform 0.3s ease;
+        font-size: 14px;
+        max-width: 300px;
+    `;
+    toast.textContent = message;
+    
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.transform = 'translateX(0)';
+    }, 100);
+
+    setTimeout(() => {
+        toast.style.transform = 'translateX(400px)';
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+}
+
+        }
+
+// JavaScript pour gérer l'ouverture/fermeture des commentaires
+function initializeCommentsToggle(newsId) {
+    const toggle = document.getElementById(`commentsToggle-${newsId}`);
+    const collapsible = document.getElementById(`commentsCollapsible-${newsId}`);
+    const icon = document.getElementById(`toggleIcon-${newsId}`);
+    const addBtn = document.getElementById(`addCommentBtn-${newsId}`);
+    const section = toggle?.closest('.comments-section');
+    
+    if (!toggle || !collapsible) return; // Protection si éléments non trouvés
+    
+    // Fonction pour ouvrir/fermer
+    const toggleComments = () => {
+        const isOpen = collapsible.classList.contains('open');
+        
+        if (isOpen) {
+            // Fermer
+            collapsible.classList.remove('open');
+            section?.classList.remove('expanded');
+            if (icon) icon.style.transform = 'rotate(0deg)';
+        } else {
+            // Ouvrir
+            collapsible.classList.add('open');
+            section?.classList.add('expanded');
+            if (icon) icon.style.transform = 'rotate(180deg)';
+            
+            // Charger les commentaires si pas encore fait
+            if (!collapsible.dataset.loaded) {
+                newsManager.loadComments(newsId);
+                collapsible.dataset.loaded = 'true';
+            }
+            
+            // Scroll smooth vers la section
+            setTimeout(() => {
+                section?.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'nearest' 
+                });
+            }, 200);
+        }
+    };
+    
+    // Event listeners
+    toggle.addEventListener('click', toggleComments);
+    addBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!collapsible.classList.contains('open')) {
+            toggleComments();
+        }
+        // Focus sur le premier champ
+        setTimeout(() => {
+            document.getElementById(`authorName-${newsId}`)?.focus();
+        }, 400);
+    });
+}
         // Initialisation
         const newsManager = new NewsPageManager();
         document.addEventListener('DOMContentLoaded', () => {

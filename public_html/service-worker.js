@@ -12,6 +12,7 @@ const STATIC_RESOURCES = [
     '/404.html',
     '/500.html',
 	'/admin-news.html',
+	'/admin-comments.html',
 	'/news-locale.html',
     
     // Feuilles de style CSS

@@ -122,26 +122,92 @@
         }
 
         .logout-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
+    position: absolute;
+    top: 1px;
+    right: 920px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+		}
 
         .logout-btn:hover {
             transform: translateY(-1px);
             box-shadow: 0 4px 12px var(--shadow);
         }
+		
+		.header-buttons {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+	}
+
+		.admin-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    font-family: inherit;
+}
+
+.comments-btn {
+    background: #28a745;
+}
+
+.comments-btn-container {
+    position: relative;
+}
+
+.comments-badge {
+    position: absolute;
+    top: 40px;
+    right: -5px;
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    border: 2px solid white;
+}
+
+.admin-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.logout-btn {
+    white-space: nowrap;
+    min-width: auto;
+    width: auto;
+}
+
+.admin-header {
+    position: relative;
+}
 
         .quick-publish-section {
             background: var(--card-bg);
@@ -882,16 +948,25 @@
     <!-- Interface d'administration -->
     <div class="admin-container" id="adminContainer" style="display: none;">
         <div class="admin-header">
-            <button class="logout-btn" onclick="logout()">
-                <span class="material-icons">logout</span>
-                Déconnexion
-            </button>
-            <h1>
-                <span class="material-icons">newspaper</span>
-                Administration NEWS Actu&Média
-            </h1>
-            <p>Gestion des actualités locales de Montceau-les-Mines et environs</p>
+    <div class="header-buttons">
+        <div class="comments-btn-container">
+            <a href="admin-comments.html" class="admin-btn comments-btn">
+                <span class="material-icons">moderation</span>
+                Commentaires
+                <span id="commentsBadge" class="comments-badge" style="display: none;">0</span>
+            </a>
         </div>
+        <button class="admin-btn logout-btn" onclick="logout()">
+            <span class="material-icons">logout</span>
+            Déconnexion
+        </button>
+    </div>
+    <h1>
+        <span class="material-icons">newspaper</span>
+        Administration NEWS Actu&Média
+    </h1>
+    <p>Gestion des actualités locales de Montceau-les-Mines et environs</p>
+</div>
             
             <!-- Section Publication Unifiée -->
         <div class="unified-publish-section" id="unifiedSection">
@@ -1110,28 +1185,26 @@
             }
 
             async loadNews() {
-                try {
-                    const supabase = window.getSupabaseClient();
-                    if (!supabase) throw new Error('Supabase non disponible');
-
-                    const { data: news, error } = await supabase
-                        .from('local_news')
-                        .select('*')
-                        .order('created_at', { ascending: false });
-
-                    if (error) throw error;
-                    this.displayNews(news);
-
-                } catch (error) {
-                    console.error('Erreur:', error);
-                    document.getElementById('newsList').innerHTML = `
-                        <div class="loading">
-                            <span class="material-icons">error</span>
-                            Erreur de chargement
-                        </div>
-                    `;
-                }
-            }
+		try {
+        const supabase = window.getSupabaseClient();
+        if (!supabase) throw new Error('Supabase non disponible');
+        const { data: news, error } = await supabase
+            .from('local_news')
+            .select('*')
+            .order('created_at', { ascending: false });
+        if (error) throw error;
+        this.displayNews(news);
+        await this.checkPendingComments();
+		} catch (error) {
+        console.error('Erreur:', error);
+        document.getElementById('newsList').innerHTML = `
+            <div class="loading">
+                <span class="material-icons">error</span>
+                Erreur de chargement
+            </div>
+        `;
+		}
+	}
 
             displayNews(news) {
                 const container = document.getElementById('newsList');
@@ -1176,6 +1249,31 @@
                     </div>
                 `).join('');
             }
+			
+			// Vérifier les commentaires en attente
+async checkPendingComments() {
+    try {
+        const supabase = window.getSupabaseClient();
+        if (!supabase) return;
+
+        const { count } = await supabase
+            .from('news_comments')
+            .select('*', { count: 'exact', head: true })
+            .eq('is_approved', false);
+
+        const badge = document.getElementById('commentsBadge');
+        if (badge) {
+            if (count > 0) {
+                badge.textContent = count;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+    } catch (error) {
+        console.error('Erreur vérification commentaires:', error);
+    }
+}
 
             async editNews(id) {
                 try {
@@ -1300,7 +1398,7 @@
                     toast.classList.remove('show');
                     setTimeout(() => toast.remove(), 300);
                 }, 3000);
-            }
+            }						
         }
 
          // Instance globale

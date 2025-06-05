@@ -13,7 +13,7 @@ const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY;
 
 // Configuration de web-push
 webpush.setVapidDetails(
-  'mailto:infos@jhd71.fr', // Votre adresse email de contact
+  'mailto:contact@actuetmedia.fr', // Votre adresse email de contact
   VAPID_PUBLIC_KEY,
   VAPID_PRIVATE_KEY
 );

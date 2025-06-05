@@ -3788,6 +3788,7 @@ showAdminPanel() {
         <button class="tab-btn" data-tab="admin-tools" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Outils</button>
         <button class="tab-btn" data-tab="gallery" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Photos</button>
 		<button class="tab-btn" data-tab="comments" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Commentaires</button>
+		<button class="tab-btn" data-tab="news-admin" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">NEWS Admin</button>
     </div>
     <div class="panel-content" style="${isMobile ? 'padding: 15px; height: calc(100% - 130px); overflow-y: auto; -webkit-overflow-scrolling: touch;' : ''}">
         <!-- Onglet Mots bannis -->
@@ -3872,17 +3873,77 @@ showAdminPanel() {
                 </div>
             </div>
         </div>
-<!-- Onglet Commentaires des photos -->
+<!-- Onglet Commentaires (Photos + NEWS) -->
 <div class="tab-section" id="comments-section">
     <h4>Gestion des commentaires</h4>
-    <div class="comments-list" style="${isMobile ? 'max-height: 300px; min-height: 200px; overflow-y: auto;' : ''}">
-        <div class="loading-comments">Chargement des commentaires...</div>
+    
+    <!-- Sélecteur de type de commentaires -->
+    <div style="margin-bottom: 15px;">
+        <button class="comment-type-btn active" data-type="photos" style="background: #4CAF50; color: white; border: none; padding: 8px 15px; border-radius: 20px; margin-right: 10px; cursor: pointer;">Photos</button>
+        <button class="comment-type-btn" data-type="news" style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer;">Actualités</button>
+    </div>
+    
+    <!-- Zone d'affichage des commentaires -->
+    <div class="comments-display">
+        <div class="photo-comments-list" style="${isMobile ? 'max-height: 300px; min-height: 200px; overflow-y: auto;' : ''}">
+            <div class="loading-comments">Chargement des commentaires photos...</div>
+        </div>
+        <div class="news-comments-list" style="display: none; ${isMobile ? 'max-height: 300px; min-height: 200px; overflow-y: auto;' : ''}">
+            <div class="loading-comments">Chargement des commentaires actualités...</div>
+        </div>
+    </div>
+</div>
+
+<!-- Onglet NEWS Admin -->
+<div class="tab-section" id="news-admin-section">
+    <h4>📰 Administration NEWS</h4>
+    
+    <!-- Statistiques rapides -->
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
+    <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; text-align: center;">
+        <div style="font-size: 20px; font-weight: bold; color: #4CAF50;" id="publishedCount">0</div>
+        <div style="font-size: 12px; color: #aaa;">Publiées</div>
+    </div>
+    <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; text-align: center;">
+        <div style="font-size: 20px; font-weight: bold; color: #FFC107;" id="draftCount">0</div>
+        <div style="font-size: 12px; color: #aaa;">Brouillons</div>
+    </div>
+    <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; text-align: center; position: relative;">
+        <div style="font-size: 20px; font-weight: bold; color: #FF5722;" id="pendingCommentsCount">0</div>
+        <div style="font-size: 12px; color: #aaa;">Commentaires</div>
+        <!-- Badge de notification -->
+        <div id="commentsBadgeNews" style="position: absolute; top: -5px; right: -5px; background: #FF5722; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; font-weight: bold; display: none; align-items: center; justify-content: center;">!</div>
+    </div>
+</div>
+    
+    <!-- Actions rapides -->
+    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+        <button id="openNewsAdmin" style="background: #2196F3; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; flex: 1; min-width: 140px;">
+    📝 Gérer actualités
+</button>
+<button id="openCommentsAdmin" style="background: #FF9800; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; flex: 1; min-width: 140px; position: relative;">
+    💬 Modérer commentaires
+    <!-- Badge sur le bouton -->
+    <span id="commentsButtonBadge" style="position: absolute; top: -5px; right: -5px; background: #FF5722; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; font-weight: bold; display: none; align-items: center; justify-content: center;"></span>
+</button>
+    </div>
+    
+    <!-- Liste des dernières actualités -->
+    <h5 style="margin: 20px 0 10px 0;">Dernières actualités</h5>
+    <div class="recent-news-list" style="${isMobile ? 'max-height: 200px; overflow-y: auto;' : ''}">
+        <div class="loading-news">Chargement des actualités...</div>
     </div>
 </div>
     </div>
 `;
 
-    document.body.appendChild(panel);
+	
+	document.body.appendChild(panel);
+
+// Ajouter une classe au body pour désactiver le scroll
+if (isMobile) {
+    document.body.classList.add('admin-panel-open');
+}
     
     // Ajouter une classe au body pour désactiver le scroll
     if (isMobile) {
@@ -3891,6 +3952,10 @@ showAdminPanel() {
     
     this.loadBannedWords();
     this.loadBannedIPs();
+
+	// Charger les stats NEWS par défaut
+	this.loadNewsStats();
+	this.loadRecentNews();
 
     // Gestion des onglets
 const tabBtns = panel.querySelectorAll('.tab-btn');
@@ -3923,8 +3988,100 @@ tabBtns.forEach(btn => {
     if (btn.dataset.tab === 'comments') {
         this.loadPhotoComments();
     }
+	
+	 // Charger les actualités si l'onglet NEWS Admin est sélectionné
+	if (btn.dataset.tab === 'news-admin') {
+    this.loadNewsStats();
+    this.loadRecentNews();
+	}
+    
+	});
+	});
+
+	// Gestion du sélecteur de type de commentaires
+	panel.querySelectorAll('.comment-type-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Mettre à jour les boutons
+        panel.querySelectorAll('.comment-type-btn').forEach(b => {
+            b.style.background = 'rgba(255,255,255,0.2)';
+        });
+        btn.style.background = '#4CAF50';
+        
+        // Afficher le bon type de commentaires
+        const type = btn.dataset.type;
+        const photosList = panel.querySelector('.photo-comments-list');
+        const newsList = panel.querySelector('.news-comments-list');
+        
+        if (type === 'photos') {
+            photosList.style.display = 'block';
+            newsList.style.display = 'none';
+            this.loadPhotoComments();
+        } else {
+            photosList.style.display = 'none';
+            newsList.style.display = 'block';
+            this.loadNewsComments();
+        }
+    });
 });
-});
+
+const newsAdminBtn = panel.querySelector('#openNewsAdmin');
+const commentsAdminBtn = panel.querySelector('#openCommentsAdmin');
+
+// Configuration des gestionnaires NEWS avec authentification
+
+// Fonction helper pour préparer l'authentification
+const prepareNewsAdminAuth = () => {
+    // Vérifier que l'utilisateur est bien admin
+    if (this.pseudo === 'Admin_ActuMedia' && this.isAdmin) {
+        // Définir tous les tokens nécessaires
+        sessionStorage.setItem('newsAdminAuth', 'authenticated');
+        sessionStorage.setItem('newsAdminUser', this.pseudo);
+        sessionStorage.setItem('newsAdminTimestamp', Date.now().toString());
+        return true;
+    }
+    return false;
+};
+
+if (newsAdminBtn) {
+    const newNewsBtn = newsAdminBtn.cloneNode(true);
+    newsAdminBtn.parentNode.replaceChild(newNewsBtn, newsAdminBtn);
+    
+    newNewsBtn.addEventListener('click', (e) => {
+        console.log('OUVERTURE ADMIN-NEWS.HTML');
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (prepareNewsAdminAuth()) {
+            window.open('admin-news.html', '_blank');
+        } else {
+            this.showNotification('Accès refusé - Admin requis', 'error');
+        }
+    });
+}
+
+if (commentsAdminBtn) {
+    const newCommentsBtn = commentsAdminBtn.cloneNode(true);
+    commentsAdminBtn.parentNode.replaceChild(newCommentsBtn, commentsAdminBtn);
+    
+    newCommentsBtn.addEventListener('click', (e) => {
+        console.log('OUVERTURE ADMIN-COMMENTS.HTML');
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (prepareNewsAdminAuth()) {
+            // Essayer d'ouvrir dans un nouvel onglet
+            const newWindow = window.open('admin-comments.html', '_blank');
+            
+            // Si bloqué, rediriger dans l'onglet actuel
+            if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+                console.log('Popup bloqué, redirection dans l\'onglet actuel');
+                window.location.href = 'admin-comments.html';
+            }
+        } else {
+            this.showNotification('Accès refusé - Admin requis', 'error');
+        }
+    });
+}
 
     // Bouton ajout de mot banni
     const addWordBtn = panel.querySelector('.add-word-btn');
@@ -5137,5 +5294,204 @@ async deleteGalleryPhoto(photoId) {
     }
 }
 
+// Charger les statistiques NEWS
+async loadNewsStats() {
+    try {
+        // Actualités publiées
+        const { count: published } = await this.supabase
+            .from('local_news')
+            .select('*', { count: 'exact', head: true })
+            .eq('is_published', true);
+            
+        // Brouillons
+        const { count: drafts } = await this.supabase
+            .from('local_news')
+            .select('*', { count: 'exact', head: true })
+            .eq('is_published', false);
+            
+        // Commentaires en attente
+        const { count: pendingComments } = await this.supabase
+            .from('news_comments')
+            .select('*', { count: 'exact', head: true })
+            .eq('is_approved', false);
+            
+        // Mettre à jour l'affichage
+        const publishedEl = document.getElementById('publishedCount');
+        const draftEl = document.getElementById('draftCount');
+        const pendingEl = document.getElementById('pendingCommentsCount');
+        
+        if (publishedEl) publishedEl.textContent = published || 0;
+        if (draftEl) draftEl.textContent = drafts || 0;
+        if (pendingEl) pendingEl.textContent = pendingComments || 0;
+        
+        // Gérer les badges de notification
+        const commentsBadge = document.getElementById('commentsBadgeNews');
+        const buttonBadge = document.getElementById('commentsButtonBadge');
+        
+        if (pendingComments > 0) {
+            // Afficher les badges
+            if (commentsBadge) {
+                commentsBadge.style.display = 'flex';
+                commentsBadge.textContent = pendingComments > 9 ? '9+' : pendingComments;
+            }
+            if (buttonBadge) {
+                buttonBadge.style.display = 'flex';
+                buttonBadge.textContent = pendingComments > 9 ? '9+' : pendingComments;
+            }
+        } else {
+            // Cacher les badges
+            if (commentsBadge) commentsBadge.style.display = 'none';
+            if (buttonBadge) buttonBadge.style.display = 'none';
+        }
+        
+    } catch (error) {
+        console.error('Erreur chargement stats:', error);
+    }
+}
+
+// Charger les dernières actualités
+async loadRecentNews() {
+    try {
+        const container = document.querySelector('.recent-news-list');
+        if (!container) return;
+        
+        container.innerHTML = '<div class="loading-news">Chargement des actualités...</div>';
+        
+        const { data: news, error } = await this.supabase
+            .from('local_news')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(5);
+            
+        if (error) throw error;
+        
+        if (!news || news.length === 0) {
+            container.innerHTML = '<div class="no-data">Aucune actualité</div>';
+            return;
+        }
+        
+        container.innerHTML = news.map(article => `
+            <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid ${article.is_published ? '#4CAF50' : '#FFC107'};">
+                <div style="font-weight: bold; margin-bottom: 4px; color: #ddd;">${article.title}</div>
+                <div style="font-size: 12px; color: #aaa; display: flex; justify-content: space-between;">
+                    <span>${new Date(article.created_at).toLocaleDateString('fr-FR')}</span>
+                    <span style="color: ${article.is_published ? '#4CAF50' : '#FFC107'};">
+                        ${article.is_published ? '✅ Publié' : '📝 Brouillon'}
+                        ${article.featured ? ' ⭐' : ''}
+                    </span>
+                </div>
+            </div>
+        `).join('');
+        
+    } catch (error) {
+        console.error('Erreur chargement actualités:', error);
+        const container = document.querySelector('.recent-news-list');
+        if (container) {
+            container.innerHTML = `<div class="error">Erreur: ${error.message}</div>`;
+        }
+    }
+}
+
+// Charger les commentaires d'actualités
+async loadNewsComments() {
+    try {
+        const container = document.querySelector('.news-comments-list');
+        if (!container) return;
+        
+        container.innerHTML = '<div class="loading-comments">Chargement des commentaires actualités...</div>';
+        
+        const { data: comments, error } = await this.supabase
+            .from('news_comments')
+            .select('*, local_news(title)')
+            .order('created_at', { ascending: false });
+            
+        if (error) throw error;
+        
+        if (!comments || comments.length === 0) {
+            container.innerHTML = '<div class="no-data">Aucun commentaire d\'actualité</div>';
+            return;
+        }
+        
+        container.innerHTML = comments.map(comment => `
+            <div class="admin-comment-card" data-id="${comment.id}" style="background: rgba(30, 30, 30, 0.8); border-radius: 10px; padding: 15px; margin-bottom: 10px; border-left: 4px solid ${comment.is_approved ? '#4CAF50' : '#FFC107'};">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                    <div>
+                        <div style="font-weight: bold; color: #ddd; margin-bottom: 4px;">${comment.author_name}</div>
+                        <div style="font-size: 12px; color: #aaa;">${new Date(comment.created_at).toLocaleString('fr-FR')}</div>
+                        <div style="font-size: 12px; color: #4CAF50; margin-top: 4px;">📰 ${comment.local_news?.title || 'Actualité supprimée'}</div>
+                    </div>
+                    <div style="display: flex; gap: 5px;">
+                        ${!comment.is_approved ? `
+                            <button class="approve-news-comment" data-id="${comment.id}" style="background: #4CAF50; color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 12px;">✓</button>
+                        ` : ''}
+                        <button class="delete-news-comment" data-id="${comment.id}" style="background: #F44336; color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 12px;">×</button>
+                    </div>
+                </div>
+                <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; color: white;">
+                    ${comment.content}
+                </div>
+                <div style="margin-top: 8px; font-size: 12px; color: ${comment.is_approved ? '#4CAF50' : '#FFC107'};">
+                    ${comment.is_approved ? '✅ Approuvé' : '⏳ En attente'}
+                </div>
+            </div>
+        `).join('');
+        
+        // Ajouter les gestionnaires d'événements
+        container.querySelectorAll('.approve-news-comment').forEach(btn => {
+            btn.addEventListener('click', () => this.approveNewsComment(btn.dataset.id));
+        });
+        
+        container.querySelectorAll('.delete-news-comment').forEach(btn => {
+            btn.addEventListener('click', () => this.deleteNewsComment(btn.dataset.id));
+        });
+        
+    } catch (error) {
+        console.error('Erreur chargement commentaires actualités:', error);
+        const container = document.querySelector('.news-comments-list');
+        if (container) {
+            container.innerHTML = `<div class="error">Erreur: ${error.message}</div>`;
+        }
+    }
+}
+
+// Approuver un commentaire d'actualité
+async approveNewsComment(commentId) {
+    try {
+        const { error } = await this.supabase
+            .from('news_comments')
+            .update({ is_approved: true })
+            .eq('id', commentId);
+            
+        if (error) throw error;
+        
+        this.showNotification('Commentaire approuvé', 'success');
+        this.loadNewsComments();
+        this.loadNewsStats(); // Recharger les stats
+    } catch (error) {
+        console.error('Erreur approbation:', error);
+        this.showNotification('Erreur approbation', 'error');
+    }
+}
+
+// Supprimer un commentaire d'actualité
+async deleteNewsComment(commentId) {
+    if (!confirm('Supprimer ce commentaire ?')) return;
+    
+    try {
+        const { error } = await this.supabase
+            .from('news_comments')
+            .delete()
+            .eq('id', commentId);
+            
+        if (error) throw error;
+        
+        this.showNotification('Commentaire supprimé', 'success');
+        this.loadNewsComments();
+        this.loadNewsStats(); // Recharger les stats
+    } catch (error) {
+        console.error('Erreur suppression:', error);
+        this.showNotification('Erreur suppression', 'error');
+    }
+}
 }
 export default ChatManager;

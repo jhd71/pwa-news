@@ -172,6 +172,169 @@ function setupChatButton() {
     }
 }
 
+// Dans app-initializer.js - Ajouter cette fonction simple
+
+async function checkAdminNotifications() {
+    // Vérifier si l'utilisateur est admin
+    const isAdmin = localStorage.getItem('isAdmin') === 'true';
+    const pseudo = localStorage.getItem('chatPseudo');
+    
+    if (!isAdmin || pseudo !== 'Admin_ActuMedia') {
+        return; // Pas admin, on sort
+    }
+
+    try {
+        const supabase = window.getSupabaseClient();
+        if (!supabase) return;
+
+        // Compter les commentaires en attente
+        const { count, error } = await supabase
+            .from('news_comments')
+            .select('*', { count: 'exact', head: true })
+            .eq('is_approved', false);
+
+        if (!error && count > 0) {
+            // Ajouter un badge au widget NEWS
+            addNotificationBadgeToNewsWidget(count);
+            
+            // Optionnel : notification native une seule fois
+            const lastNotified = localStorage.getItem('lastCommentNotification');
+            const now = Date.now();
+            
+            if (!lastNotified || (now - parseInt(lastNotified)) > 3600000) { // 1 heure
+                showSimpleNotification(`${count} commentaire(s) en attente de modération`);
+                localStorage.setItem('lastCommentNotification', now.toString());
+            }
+        } else {
+            // Supprimer le badge s'il n'y a plus de commentaires
+            removeNotificationBadgeFromNewsWidget();
+        }
+    } catch (error) {
+        console.error('Erreur vérification commentaires:', error);
+    }
+}
+
+function addNotificationBadgeToNewsWidget(count) {
+    const newsWidget = document.querySelector('.news-widget-container');
+    if (!newsWidget) return;
+
+    // Supprimer ancien badge
+    const oldBadge = newsWidget.querySelector('.admin-notification-badge');
+    if (oldBadge) oldBadge.remove();
+
+    // Créer nouveau badge
+    const badge = document.createElement('div');
+    badge.className = 'admin-notification-badge';
+    badge.textContent = count > 9 ? '9+' : count;
+    badge.title = `${count} commentaire(s) en attente de modération - Cliquez pour modérer`;
+    
+    badge.style.cssText = `
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    background: #ff4444;
+    color: white;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(255, 68, 68, 0.6);
+    animation: pulse 2s infinite;
+    border: 2px solid white;
+`;
+
+    // Ajouter animation CSS
+if (!document.querySelector('#admin-badge-styles')) {
+    const style = document.createElement('style');
+    style.id = 'admin-badge-styles';
+    style.textContent = `
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+            50% { transform: scale(1.1); box-shadow: 0 2px 12px rgba(255,68,68,0.6); }
+            100% { transform: scale(1); box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+        }
+        .news-widget-container {
+            position: relative;
+        }
+        
+        @media (max-width: 768px) {
+            .admin-notification-badge {
+                width: 36px !important;
+                height: 36px !important;
+                font-size: 16px !important;
+                top: 7px !important;
+                right: 80px !important;
+                border: 3px solid white !important;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+    // Ajouter le clic pour ouvrir admin-comments
+    badge.addEventListener('click', (e) => {
+        e.stopPropagation();
+        
+        // Préparer l'authentification
+        sessionStorage.setItem('newsAdminAuth', 'authenticated');
+        sessionStorage.setItem('newsAdminUser', 'Admin_ActuMedia');
+        sessionStorage.setItem('newsAdminTimestamp', Date.now().toString());
+        
+        // Ouvrir la page de modération
+        window.open('admin-comments.html', '_blank');
+    });
+
+    newsWidget.appendChild(badge);
+    
+    // S'assurer que le widget a position: relative
+    if (getComputedStyle(newsWidget).position === 'static') {
+        newsWidget.style.position = 'relative';
+    }
+}
+
+function removeNotificationBadgeFromNewsWidget() {
+    const badge = document.querySelector('.admin-notification-badge');
+    if (badge) badge.remove();
+}
+
+function showSimpleNotification(message) {
+    // Notification native si permission accordée
+    if (Notification.permission === 'granted') {
+        new Notification('Administration - Actu&Média', {
+            body: message,
+            icon: '/icons/icon-192x192.png',
+            tag: 'admin-comments'
+        });
+    }
+    
+    // Vibration sur mobile
+    if (navigator.vibrate) {
+        navigator.vibrate([200, 100, 200]);
+    }
+}
+
+// Dans app-initializer.js, ajouter à la fin de l'initialisation :
+document.addEventListener('DOMContentLoaded', () => {
+    // ... votre code existant ...
+    
+    // Vérifier les notifications admin après le chargement
+    setTimeout(() => {
+        checkAdminNotifications();
+        
+        // Vérifier toutes les 3 minutes
+        setInterval(checkAdminNotifications, 180000);
+    }, 5000);
+});
+
+// Rendre disponible globalement
+window.checkAdminNotifications = checkAdminNotifications;
+
 // Application Initialization
 async function initApp() {
     try {
