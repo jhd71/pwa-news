@@ -76,7 +76,31 @@
     font-size: 14px;
     line-height: 1.4;
     margin-bottom: 10px;
-    min-height: 80px;
+    min-height: 120px;
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+/* Style de la scrollbar pour le widget */
+.news-widget-preview::-webkit-scrollbar {
+    width: 6px;
+}
+
+.news-widget-preview::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.1);
+    border-radius: 3px;
+}
+
+.news-widget-preview::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 3px;
+    opacity: 0.7;
+}
+
+.news-widget-preview::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+    opacity: 1;
 }
 
 .loading-news {
@@ -99,15 +123,17 @@
 .news-preview-item {
     background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.1);
     border-left: 3px solid var(--primary-color, #dc3545);
-    padding: 8px 12px;
-    margin: 6px 0;
+    padding: 6px 10px; /* Réduit pour plus d'actualités */
+    margin: 4px 0; /* Réduit l'espacement */
     border-radius: 0 8px 8px 0;
-    font-size: 13px;
+    font-size: 12px; /* Plus petit */
     transition: all 0.2s ease;
+    cursor: pointer;
 }
 
 .news-preview-item:hover {
-    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.15);
+    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.2);
+    transform: translateX(2px);
 }
 
 .news-preview-item strong {
