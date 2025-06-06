@@ -920,6 +920,137 @@
         padding: 8px; /* Réduit légèrement */
     }
 }
+
+/* ===== SYSTÈME D'UPLOAD D'IMAGES ===== */
+
+.image-option-tabs {
+    display: flex;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 10px 15px;
+    background: var(--button-bg);
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s;
+    color: var(--text-color);
+}
+
+.tab-btn.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.tab-btn:hover:not(.active) {
+    background: rgba(var(--primary-color-rgb), 0.1);
+}
+
+.image-mode {
+    display: none;
+}
+
+.image-mode.active {
+    display: block;
+}
+
+.upload-zone {
+    border: 2px dashed var(--border-color);
+    border-radius: 8px;
+    padding: 40px 20px;
+    text-align: center;
+    background: rgba(var(--primary-color-rgb), 0.02);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-zone:hover {
+    border-color: var(--primary-color);
+    background: rgba(var(--primary-color-rgb), 0.05);
+}
+
+.upload-zone.dragover {
+    border-color: var(--primary-color);
+    background: rgba(var(--primary-color-rgb), 0.1);
+    transform: scale(1.02);
+}
+
+.upload-content {
+    pointer-events: none;
+}
+
+.upload-icon {
+    font-size: 48px;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    display: block;
+}
+
+.upload-zone p {
+    margin: 10px 0;
+    color: var(--text-color);
+}
+
+.upload-info {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.image-preview {
+    margin-top: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+.image-preview img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: contain; /* Voir l'image entière */
+    background: #f5f5f5;
+}
+
+.preview-actions {
+    padding: 10px;
+    background: var(--card-bg);
+    text-align: center;
+}
+
+.btn-remove {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.btn-remove:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+/* Thème sombre */
+[data-theme="dark"] .upload-zone {
+    background: rgba(92, 107, 192, 0.1);
+    border-color: #555;
+}
+
+[data-theme="dark"] .upload-zone:hover {
+    border-color: var(--primary-color);
+    background: rgba(92, 107, 192, 0.2);
+}
     </style>
 </head>
 <body>
@@ -995,6 +1126,60 @@
                     <textarea id="unifiedContent" required class="large-textarea"
                               placeholder="Collez ou rédigez ici le contenu de votre actualité..."></textarea>
                     <div class="character-count" id="unifiedContentCount">0 caractères</div>
+                </div>
+                
+                <!-- SECTION IMAGE AMÉLIORÉE -->
+<div class="form-group">
+    <label for="imageOption">Image (optionnelle) :</label>
+    
+    <!-- Sélecteur d'option -->
+    <div class="image-option-tabs">
+        <button type="button" class="tab-btn active" onclick="switchImageMode('upload')">
+            📤 Upload
+        </button>
+        <button type="button" class="tab-btn" onclick="switchImageMode('url')">
+            🔗 URL
+        </button>
+    </div>
+    
+    <!-- Zone d'upload -->
+    <div id="uploadMode" class="image-mode active">
+        <div class="upload-zone" id="uploadZone">
+            <div class="upload-content">
+                <span class="material-icons upload-icon">cloud_upload</span>
+                <p>Glissez votre image ici ou cliquez pour sélectionner</p>
+                <p class="upload-info">Formats : JPG, PNG, WebP • Max 5 Mo</p>
+            </div>
+            <input type="file" id="imageFile" accept="image/*" style="display: none;">
+        </div>
+        
+        <!-- Preview de l'image -->
+        <div id="imagePreview" class="image-preview" style="display: none;">
+            <img id="previewImg" src="" alt="Preview">
+            <div class="preview-actions">
+                <button type="button" class="btn-remove" onclick="removeImage()">
+                    <span class="material-icons">delete</span> Supprimer
+                </button>
+            </div>
+        </div>
+        
+        <!-- URL générée automatiquement (masquée) -->
+        <input type="hidden" id="unifiedImageUrl">
+    </div>
+    
+    <!-- Mode URL manuel -->
+    <div id="urlMode" class="image-mode">
+        <input type="url" id="manualImageUrl" 
+               placeholder="https://exemple.com/image.jpg">
+        <div class="character-count">Collez l'URL d'une image externe</div>
+    </div>
+</div>
+                
+                <div class="form-group">
+                    <label for="unifiedImageAlt">Description de l'image (optionnelle) :</label>
+                    <input type="text" id="unifiedImageAlt" maxlength="100"
+                           placeholder="Courte description de l'image">
+                    <div class="character-count" id="unifiedImageAltCount">0/100 caractères</div>
                 </div>
                 
                 <div class="options-row">
@@ -1121,31 +1306,38 @@
             }
 
             async publishNews(publish) {
-                if (!this.isAuthenticated) return;
+    if (!this.isAuthenticated) return;
 
-                try {
-                    const title = document.getElementById('unifiedTitle').value.trim();
-                    const content = document.getElementById('unifiedContent').value.trim();
-                    const featured = document.getElementById('unifiedFeatured').checked;
+    try {
+        const title = document.getElementById('unifiedTitle').value.trim();
+        const content = document.getElementById('unifiedContent').value.trim();
+        const featured = document.getElementById('unifiedFeatured').checked;
+        
+        // AJOUTEZ CES LIGNES :
+        const imageUrl = document.getElementById('unifiedImageUrl').value.trim();
+        const imageAlt = document.getElementById('unifiedImageAlt').value.trim();
 
-                    if (!title || !content) {
-                        this.showToast('⚠️ Titre et contenu requis', 'error');
-                        return;
-                    }
+        if (!title || !content) {
+            this.showToast('⚠️ Titre et contenu requis', 'error');
+            return;
+        }
 
-                    const supabase = window.getSupabaseClient();
-                    if (!supabase) {
-                        throw new Error('Supabase non disponible');
-                    }
+        const supabase = window.getSupabaseClient();
+        if (!supabase) {
+            throw new Error('Supabase non disponible');
+        }
 
-                    const newsData = {
-                        title,
-                        content,
-                        is_published: publish,
-                        featured: featured,
-                        category: 'Montceau-les-Mines et environs',
-                        author: 'Actu&Média'
-                    };
+        const newsData = {
+            title,
+            content,
+            is_published: publish,
+            featured: featured,
+            category: 'Montceau-les-Mines et environs',
+            author: 'Actu&Média',
+            // AJOUTEZ CES LIGNES :
+            image_url: imageUrl || null,
+            image_alt: imageAlt || null
+        };
 
                     let result;
                     if (this.editingId) {
@@ -1421,6 +1613,245 @@ async checkPendingComments() {
         document.addEventListener('DOMContentLoaded', () => {
             newsAdmin.init();
         });
+		
+		// ===== SYSTÈME D'UPLOAD D'IMAGES =====
+
+let uploadedImageUrl = null;
+
+// Fonction pour changer de mode (Upload/URL)
+function switchImageMode(mode) {
+    const uploadMode = document.getElementById('uploadMode');
+    const urlMode = document.getElementById('urlMode');
+    const tabs = document.querySelectorAll('.tab-btn');
+    
+    // Réinitialiser les onglets
+    tabs.forEach(tab => tab.classList.remove('active'));
+    
+    if (mode === 'upload') {
+        uploadMode.classList.add('active');
+        urlMode.classList.remove('active');
+        document.querySelector('.tab-btn[onclick*="upload"]').classList.add('active');
+        
+        // Utiliser l'image uploadée si disponible
+        if (uploadedImageUrl) {
+            document.getElementById('unifiedImageUrl').value = uploadedImageUrl;
+        } else {
+            document.getElementById('unifiedImageUrl').value = '';
+        }
+    } else {
+        urlMode.classList.add('active');
+        uploadMode.classList.remove('active');
+        document.querySelector('.tab-btn[onclick*="url"]').classList.add('active');
+        
+        // Utiliser l'URL manuelle
+        const manualUrl = document.getElementById('manualImageUrl').value;
+        document.getElementById('unifiedImageUrl').value = manualUrl;
+    }
+}
+
+// Configuration de la zone d'upload
+document.addEventListener('DOMContentLoaded', function() {
+    const uploadZone = document.getElementById('uploadZone');
+    const fileInput = document.getElementById('imageFile');
+    const manualUrlInput = document.getElementById('manualImageUrl');
+    
+    if (!uploadZone || !fileInput) return;
+    
+    // Clic sur la zone d'upload
+    uploadZone.addEventListener('click', () => {
+        fileInput.click();
+    });
+    
+    // Drag & Drop
+    uploadZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadZone.classList.add('dragover');
+    });
+    
+    uploadZone.addEventListener('dragleave', () => {
+        uploadZone.classList.remove('dragover');
+    });
+    
+    uploadZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadZone.classList.remove('dragover');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleImageUpload(files[0]);
+        }
+    });
+    
+    // Sélection de fichier
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            handleImageUpload(e.target.files[0]);
+        }
+    });
+    
+    // URL manuelle
+    manualUrlInput.addEventListener('input', (e) => {
+        document.getElementById('unifiedImageUrl').value = e.target.value;
+    });
+});
+
+// Fonction pour redimensionner l'image
+function resizeImage(file, maxWidth, maxHeight) {
+    return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        
+        img.onload = function() {
+            // Calculer les nouvelles dimensions
+            let { width, height } = img;
+            
+            if (width > maxWidth || height > maxHeight) {
+                const ratio = Math.min(maxWidth / width, maxHeight / height);
+                width *= ratio;
+                height *= ratio;
+            }
+            
+            // Redimensionner
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            // Convertir en blob
+            canvas.toBlob((blob) => {
+                // Garder le nom et type originaux
+                const resizedFile = new File([blob], file.name, {
+                    type: file.type,
+                    lastModified: Date.now()
+                });
+                resolve(resizedFile);
+            }, file.type, 0.85); // Qualité 85%
+        };
+        
+        img.src = URL.createObjectURL(file);
+    });
+}
+		
+// Fonction pour traiter l'upload
+async function handleImageUpload(file) {
+    try {
+        // Validation du fichier
+        if (!file.type.startsWith('image/')) {
+            newsAdmin.showToast('❌ Veuillez sélectionner une image', 'error');
+            return;
+        }
+        
+        if (file.size > 5 * 1024 * 1024) { // 5 Mo
+            newsAdmin.showToast('❌ L\'image est trop lourde (max 5 Mo)', 'error');
+            return;
+        }
+        
+        // Afficher le loading
+        const uploadZone = document.getElementById('uploadZone');
+        const originalContent = uploadZone.innerHTML;
+        
+        uploadZone.innerHTML = `
+            <div class="upload-content">
+                <span class="material-icons upload-icon spinning">hourglass_empty</span>
+                <p>Upload en cours...</p>
+            </div>
+        `;
+        
+        // Créer un nom de fichier unique
+        const timestamp = Date.now();
+        const extension = file.name.split('.').pop();
+        const fileName = `news-${timestamp}.${extension}`;
+        
+        // Redimensionner l'image avant upload
+const resizedFile = await resizeImage(file, 800, 600); // Max 800x600
+
+// Upload vers Supabase
+const supabase = window.getSupabaseClient();
+if (!supabase) {
+    throw new Error('Supabase non disponible');
+}
+
+const { data, error } = await supabase.storage
+    .from('news-images')
+    .upload(fileName, resizedFile, {
+        cacheControl: '3600',
+        upsert: false
+    });
+        
+        if (error) {
+            throw error;
+        }
+        
+        // Obtenir l'URL publique
+        const { data: urlData } = supabase.storage
+            .from('news-images')
+            .getPublicUrl(fileName);
+        
+        if (!urlData.publicUrl) {
+            throw new Error('Impossible d\'obtenir l\'URL de l\'image');
+        }
+        
+        // Stocker l'URL
+        uploadedImageUrl = urlData.publicUrl;
+        document.getElementById('unifiedImageUrl').value = uploadedImageUrl;
+        
+        // Afficher la preview
+        showImagePreview(uploadedImageUrl, file.name);
+        
+        // Restaurer la zone d'upload (cachée)
+        uploadZone.innerHTML = originalContent;
+        uploadZone.style.display = 'none';
+        
+        newsAdmin.showToast('✅ Image uploadée avec succès !', 'success');
+        
+    } catch (error) {
+        console.error('Erreur upload:', error);
+        newsAdmin.showToast('❌ Erreur lors de l\'upload: ' + error.message, 'error');
+        
+        // Restaurer la zone d'upload
+        const uploadZone = document.getElementById('uploadZone');
+        uploadZone.innerHTML = `
+            <div class="upload-content">
+                <span class="material-icons upload-icon">cloud_upload</span>
+                <p>Glissez votre image ici ou cliquez pour sélectionner</p>
+                <p class="upload-info">Formats : JPG, PNG, WebP • Max 5 Mo</p>
+            </div>
+        `;
+    }
+}
+
+// Afficher la preview de l'image
+function showImagePreview(url, filename) {
+    const preview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+    
+    previewImg.src = url;
+    previewImg.alt = filename;
+    preview.style.display = 'block';
+}
+
+// Supprimer l'image
+function removeImage() {
+    uploadedImageUrl = null;
+    document.getElementById('unifiedImageUrl').value = '';
+    document.getElementById('imagePreview').style.display = 'none';
+    document.getElementById('uploadZone').style.display = 'block';
+    
+    // Reset du input file
+    document.getElementById('imageFile').value = '';
+    
+    newsAdmin.showToast('🗑️ Image supprimée', 'success');
+}
+
+// Ajouter l'animation de rotation
+const style = document.createElement('style');
+style.textContent = `
+    .spinning {
+        animation: spin 1s linear infinite;
+    }
+`;
+document.head.appendChild(style);
+
     </script>
 </body>
 </html>

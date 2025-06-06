@@ -1068,6 +1068,82 @@ body.comment-form-open {
     position: fixed !important;
     width: 100% !important;
 }
+
+/* ===== IMAGES DES ACTUALITÉS ===== */
+
+.news-image-container {
+    margin: 15px 0 20px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px var(--shadow);
+}
+
+.news-image {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: contain;
+    display: block;
+    transition: transform 0.3s ease;
+    background: #f8f9fa; /* Fond par défaut */
+}
+
+/* Thème Light (Violet) */
+[data-theme="light"] .news-image {
+    background: #f8f9fa;
+}
+
+/* Thème Dark (Bleu Nuit) */
+[data-theme="dark"] .news-image {
+    background: #2a2a2a;
+}
+
+/* Thème Rouge */
+[data-theme="rouge"] .news-image {
+    background: #fff5f5;
+}
+
+/* Thème Bleu Ciel */
+[data-theme="bleuciel"] .news-image {
+    background: #f0f9ff;
+}
+
+.news-image:hover {
+    transform: scale(1.02);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .news-image {
+        max-height: 250px;
+    }
+    
+    .news-image-container {
+        margin: 10px 0 15px 0;
+        border-radius: 8px;
+    }
+}
+
+.news-image-caption {
+    padding: 10px 15px;
+    background: rgba(0, 0, 0, 0.05);
+    color: #666;
+    font-size: 14px;
+    font-style: italic;
+    text-align: center;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .news-image-caption {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ccc;
+    border-top-color: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="rouge"] .news-image-caption {
+    background: rgba(211, 47, 47, 0.1);
+    color: #8b0000;
+}
     </style>
 </head>
 <body>
@@ -1184,9 +1260,24 @@ body.comment-form-open {
                     </div>
                 </div>
             </div>
-            <div class="news-article-content">
-                ${article.content}
+            <!-- IMAGE DE L'ACTUALITÉ -->
+${article.image_url ? `
+    <div class="news-image-container">
+        <img src="${article.image_url}" 
+             alt="${article.image_alt || article.title}" 
+             class="news-image"
+             loading="lazy">
+        ${article.image_alt ? `
+            <div class="news-image-caption">
+                ${article.image_alt}
             </div>
+        ` : ''}
+    </div>
+` : ''}
+
+<div class="news-article-content">
+    ${article.content}
+</div>
             
             <!-- Section Commentaires PLIABLE -->
 <div class="comments-section">
