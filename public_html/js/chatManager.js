@@ -5058,7 +5058,8 @@ async loadPhotoComments() {
         console.log("Chargement des commentaires depuis le panel admin du chat...");
         
         // Chercher l'élément dans le panel admin OU créer un container dédié
-let commentsList = document.querySelector('.admin-panel .comments-list');
+let commentsList = document.querySelector('.photo-comments-list') || 
+                   document.querySelector('#photo-comments-container');
 
 if (!commentsList) {
     // Créer un container pour les commentaires dans le panel admin
@@ -5453,7 +5454,8 @@ async loadNewsComments() {
         
         if (photosList) photosList.innerHTML = ''; // Vider le conteneur photos
         
-        const container = document.querySelector('.news-comments-list');
+        const container = document.querySelector('.news-comments-list') || 
+                  document.querySelector('#news-comments-container');
         if (!container) return;
         
         container.innerHTML = '<div class="loading-comments">Chargement des commentaires actualités...</div>';
