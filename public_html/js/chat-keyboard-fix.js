@@ -1,19 +1,8 @@
 /**
  * Correctif pour le repositionnement du chat quand le clavier virtuel se ferme
- * Spécialement pour iOS uniquement
+ * Spécialement pour les tablettes et mobiles
  */
 document.addEventListener('DOMContentLoaded', function() {
-  // 🆕 Détection iOS - Ne s'exécuter QUE sur iOS
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && 
-                !window.MSStream && 
-                !(/Android/.test(navigator.userAgent));
-  
-  if (!isIOS) {
-    console.log('chat-keyboard-fix.js: Non-iOS détecté, script ignoré');
-    return; // 🛑 Arrêter l'exécution sur Android
-  }
-  
-  console.log('chat-keyboard-fix.js: iOS détecté, application des correctifs');
   // Hauteur initiale de la fenêtre
   let initialWindowHeight = window.innerHeight;
   

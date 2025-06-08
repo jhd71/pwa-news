@@ -92,11 +92,6 @@ function initializeGallery() {
     // Initialiser les événements
     initializeEventListeners();
     
-    // 🆕 Appliquer les corrections iOS dès l'initialisation
-    if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-        setTimeout(fixiOSScrolling, 500);
-    }
-    
     // Charger les photos
     loadPhotos();
     
@@ -1036,44 +1031,5 @@ window.galleryManager = {
     hideCommentForm,
     showComments
 };
-
-// ===== CORRECTIONS iOS GALERIE =====
-function fixiOSScrolling() {
-    // Détection iOS
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    if (!isIOS) return;
-
-    // Fix modal photo view
-    const photoModal = document.getElementById('photoViewModal');
-    if (photoModal) {
-        photoModal.style.position = 'fixed';
-        photoModal.style.top = '0';
-        photoModal.style.left = '0';
-        photoModal.style.right = '0';
-        photoModal.style.bottom = '0';
-        photoModal.style.zIndex = '9999';
-        photoModal.style.overflowY = 'auto';
-        photoModal.style.webkitOverflowScrolling = 'touch';
-    }
-
-    // Fix comments section
-    const commentsContent = document.getElementById('commentsContent');
-    if (commentsContent) {
-        commentsContent.style.maxHeight = '60vh';
-        commentsContent.style.overflowY = 'auto';
-        commentsContent.style.webkitOverflowScrolling = 'touch';
-        commentsContent.style.paddingBottom = '100px';
-    }
-
-    // Fix comment form positioning
-    const commentForm = document.getElementById('commentFormWrapper');
-    if (commentForm) {
-        commentForm.style.position = 'sticky';
-        commentForm.style.bottom = '0';
-        commentForm.style.background = 'rgba(0, 0, 0, 0.9)';
-        commentForm.style.padding = '15px';
-        commentForm.style.zIndex = '1000';
-    }
-}
 
 console.log('Gallery Manager V2 initialisé avec succès');
