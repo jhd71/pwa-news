@@ -106,7 +106,7 @@
     text-align: center;
     margin-bottom: 30px;
     background-color: var(--primary-color);
-    padding: 20px;
+    padding: 60px;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
 }
