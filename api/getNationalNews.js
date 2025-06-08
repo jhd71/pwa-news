@@ -58,14 +58,7 @@ export default async function handler(req, res) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     
-    // 🔥 ICI - REMPLACER "const data = await response.text();" PAR :
-    let data;
-    if (feed.useProxy) {
-      const jsonData = await response.json();
-      data = jsonData.contents;
-    } else {
-      data = await response.text();
-    }
+    const data = await response.text();
     
     const feedData = await parser.parseString(data);
         console.log(`✅ ${feed.name}: ${feedData.items.length} articles trouvés`);
