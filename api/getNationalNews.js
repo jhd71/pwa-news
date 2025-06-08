@@ -27,40 +27,52 @@ export default async function handler(req, res) {
     
     const parser = new Parser();
     
-    // Limiter à quelques flux fiables
-    const feeds = [
-      { name: 'BFMTV', url: 'https://www.bfmtv.com/rss/news-24-7/', max: 3 },
-      { name: 'France Info', url: 'https://www.francetvinfo.fr/titres.rss', max: 3 },
-      { name: 'JeuxVideo.com', url: 'https://www.jeuxvideo.com/rss/rss-news.xml', max: 3 },
-      { name: 'ActuGaming', url: 'https://www.actugaming.net/feed/', max: 3 }
-    ];
+		// Limiter à quelques flux fiables
+		const feeds = [
+	{ name: 'BFMTV', url: 'https://www.bfmtv.com/rss/news-24-7/', max: 3 },
+	{ name: 'France Info', url: 'https://www.francetvinfo.fr/titres.rss', max: 3 },
+	{ 
+		name: 'JeuxVideo.com', 
+		url: 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.jeuxvideo.com/rss/rss-news.xml'), 
+		max: 3,
+		useProxy: true
+	},
+	{ name: 'ActuGaming', url: 'https://www.actugaming.net/feed/', max: 3 }
+	];
     
     let articles = [];
     
     // Approche séquentielle pour plus de fiabilité
     for (const feed of feeds) {
-      try {
-        console.log(`📡 Récupération de ${feed.name}...`);
-        
-        // Utiliser fetch au lieu d'axios
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 secondes timeout
-        
-        const response = await fetch(feed.url, {
-          headers: { 
-            'User-Agent': 'Mozilla/5.0 (compatible; NewsApp/1.0)'
-          },
-          signal: controller.signal
-        });
-        
-        clearTimeout(timeoutId);
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.text();
-        const feedData = await parser.parseString(data);
+  try {
+    console.log(`📡 Récupération de ${feed.name}...`);
+    
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    
+    const response = await fetch(feed.url, {
+      headers: { 
+        'User-Agent': 'Mozilla/5.0 (compatible; NewsApp/1.0)'
+      },
+      signal: controller.signal
+    });
+    
+    clearTimeout(timeoutId);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    // 🔥 ICI - REMPLACER "const data = await response.text();" PAR :
+    let data;
+    if (feed.useProxy) {
+      const jsonData = await response.json();
+      data = jsonData.contents;
+    } else {
+      data = await response.text();
+    }
+    
+    const feedData = await parser.parseString(data);
         console.log(`✅ ${feed.name}: ${feedData.items.length} articles trouvés`);
         
         const fetchedArticles = feedData.items.slice(0, feed.max).map(item => {
