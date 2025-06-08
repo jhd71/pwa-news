@@ -657,6 +657,70 @@ body:has(.chat-container.open) .news-ticker {
   animation: fadeIn 0.3s ease; /* anim d’apparition */
 }
 
+/* Correction du scroll dans le panel admin */
+.panel-content {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  max-height: none !important;
+  height: auto !important;
+  padding: 15px !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* S'assurer que les contenus des onglets sont scrollables */
+.tab-section {
+  display: none;
+  height: auto !important;
+  max-height: none !important;
+  overflow-y: visible !important;
+}
+
+.tab-section.active {
+  display: block !important;
+  height: auto !important;
+}
+
+/* Corrections spécifiques pour chaque section */
+.admin-photos-grid {
+  max-height: none !important;
+  overflow-y: visible !important;
+}
+
+.admin-comments-list,
+.admin-news-list {
+  max-height: 50vh !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  padding: 10px !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Améliorer la hauteur du panel admin */
+.admin-panel {
+  max-height: 85vh !important; /* Augmenté de 80vh à 85vh */
+  height: auto !important;
+  min-height: 60vh !important;
+}
+
+/* Correction pour mobile */
+@media (max-width: 768px) {
+  .admin-panel {
+    max-height: 90vh !important;
+    height: 90vh !important;
+  }
+  
+  .panel-content {
+    height: calc(90vh - 120px) !important; /* Hauteur fixe moins header et tabs */
+    overflow-y: auto !important;
+  }
+  
+  .admin-comments-list,
+  .admin-news-list {
+    max-height: 60vh !important;
+  }
+}
+
 .admin-panel .panel-header {
   display: flex;
   justify-content: space-between;
