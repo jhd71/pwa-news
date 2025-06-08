@@ -5026,17 +5026,40 @@ photos.forEach(photo => {
 }
 
 // Méthode pour charger les commentaires des photos
-// Méthode pour charger les commentaires des photos
 async loadPhotoComments() {
     try {
         console.log("Chargement des commentaires depuis le panel admin du chat...");
         
-        // Obtenez l'élément où afficher les commentaires
-        const commentsList = document.querySelector('.comments-list');
-        if (!commentsList) {
-            console.error("Conteneur comments-list non trouvé");
-            return;
+        // Chercher l'élément dans le panel admin OU créer un container dédié
+let commentsList = document.querySelector('.admin-panel .comments-list');
+
+if (!commentsList) {
+    // Créer un container pour les commentaires dans le panel admin
+    commentsList = document.createElement('div');
+    commentsList.className = 'comments-list admin-comments-list';
+    commentsList.id = 'admin-comments-list';
+    
+    // L'ajouter au bon endroit dans le panel admin
+    const commentsSection = document.querySelector('#photo-comments-section') || 
+                           document.querySelector('.tab-section.active') ||
+                           document.querySelector('.admin-panel .panel-content');
+    
+    if (commentsSection) {
+        // Ajouter un titre si nécessaire
+        if (!commentsSection.querySelector('h4')) {
+            const title = document.createElement('h4');
+            title.textContent = 'Commentaires des photos';
+            title.style.marginBottom = '15px';
+            commentsSection.appendChild(title);
         }
+        
+        commentsSection.appendChild(commentsList);
+        console.log("Container de commentaires créé dans le panel admin");
+    } else {
+        console.error("Impossible de trouver un container parent pour les commentaires");
+        return;
+    }
+}
         
         commentsList.innerHTML = '<div class="loading-comments">Chargement des commentaires...</div>';
         
