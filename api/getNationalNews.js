@@ -29,15 +29,20 @@ export default async function handler(req, res) {
     
 		// Limiter à quelques flux fiables
 		const feeds = [
-  { name: 'BFMTV', url: 'https://www.bfmtv.com/rss/news-24-7/', max: 2 }, // 🔥 Réduit
-  { name: 'France Info', url: 'https://www.francetvinfo.fr/titres.rss', max: 2 }, // 🔥 Réduit
+  { name: 'BFMTV', url: 'https://www.bfmtv.com/rss/news-24-7/', max: 1 },
   { 
-    name: 'JeuxVideo.com', 
-    url: 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.jeuxvideo.com/rss/rss-news.xml'), 
+    name: 'France Info', 
+    url: 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.francetvinfo.fr/titres.rss'), 
     max: 2,
     useProxy: true
   },
-  { name: 'ActuGaming', url: 'https://www.actugaming.net/feed/', max: 2 } // 🔥 Réduit
+  { 
+    name: 'JeuxVideo.com', 
+    url: 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.jeuxvideo.com/rss/rss-news.xml'), 
+    max: 1,
+    useProxy: true
+  },
+  { name: 'ActuGaming', url: 'https://www.actugaming.net/feed/', max: 1 }
 ];
     
     let articles = [];
