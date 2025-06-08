@@ -2573,3 +2573,111 @@ body.long-press-active .message-options {
     animation: fadeIn 0.3s ease-out;
     animation-fill-mode: backwards;
 }
+
+/* ==========================================================================
+   CORRECTIONS SPÉCIFIQUES iOS
+   ========================================================================== */
+
+/* Détection iOS spécifique */
+@supports (-webkit-touch-callout: none) {
+  /* Chat container optimisé pour iOS */
+  .chat-container {
+    position: fixed !important;
+    bottom: 80px !important; /* Au-dessus de la nav iOS */
+    right: 10px !important;
+    left: 10px !important;
+    width: auto !important;
+    height: 70vh !important;
+    max-height: 70vh !important;
+    border-radius: 15px !important;
+    z-index: 9999 !important;
+  }
+  
+  /* Zone de saisie TOUJOURS visible sur iOS */
+  .chat-input {
+    position: sticky !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    padding: 12px !important;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+    background: var(--chat-input-bg) !important;
+    border-radius: 0 0 15px 15px !important;
+    z-index: 10000 !important;
+    margin: 0 !important;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3) !important;
+  }
+  
+  /* Textarea toujours accessible */
+  .chat-input textarea {
+    width: 100% !important;
+    min-height: 45px !important;
+    max-height: 100px !important;
+    padding: 12px 15px !important;
+    border-radius: 20px !important;
+    font-size: 16px !important; /* Évite le zoom */
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: white !important;
+    resize: none !important;
+    outline: none !important;
+  }
+  
+  /* Bouton d'envoi toujours visible */
+  .chat-input button {
+    width: 45px !important;
+    height: 45px !important;
+    border-radius: 50% !important;
+    background: var(--chat-message-sent) !important;
+    border: none !important;
+    color: white !important;
+    font-size: 20px !important;
+    flex-shrink: 0 !important;
+  }
+  
+  /* Messages avec scroll correct */
+  .chat-messages {
+    height: calc(100% - 80px) !important; /* Espace pour l'input */
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 15px !important;
+    margin-bottom: 0 !important;
+  }
+  
+  /* Header fixe */
+  .chat-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+  }
+}
+
+/* Corrections spécifiques pour iPhone */
+@media (max-width: 768px) and (-webkit-min-device-pixel-ratio: 2) {
+  /* Chat plein écran sur iPhone */
+  .chat-container {
+    top: 60px !important; /* Sous le header */
+    bottom: 70px !important; /* Au-dessus de la nav */
+    left: 5px !important;
+    right: 5px !important;
+    width: auto !important;
+    height: auto !important;
+    max-height: none !important;
+    border-radius: 10px !important;
+  }
+  
+  /* Input TRÈS visible */
+  .chat-input {
+    background: rgba(0, 0, 0, 0.8) !important; /* Fond plus foncé */
+    border-top: 2px solid rgba(255, 255, 255, 0.3) !important;
+    padding: 15px !important;
+  }
+  
+  .chat-input textarea {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: 2px solid rgba(255, 255, 255, 0.5) !important;
+    min-height: 50px !important;
+  }
+}
