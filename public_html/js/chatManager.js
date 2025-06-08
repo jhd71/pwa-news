@@ -3954,10 +3954,29 @@ if (isMobile) {
     this.loadBannedIPs();
 
 	// Charger les stats NEWS par défaut
-	this.loadNewsStats();
-	this.loadRecentNews();
+this.loadNewsStats();
+this.loadRecentNews();
 
-    // Gestion des onglets
+// 🆕 AJOUTEZ ICI : Initialiser l'affichage par défaut des commentaires
+const photosList = panel.querySelector('.photo-comments-list');
+const newsList = panel.querySelector('.news-comments-list');
+
+if (photosList && newsList) {
+    // Par défaut, afficher les commentaires photos et cacher les actualités
+    photosList.style.display = 'block';
+    newsList.style.display = 'none';
+    
+    // S'assurer que le bouton "Photos" est actif par défaut
+    const photosBtn = panel.querySelector('[data-type="photos"]');
+    const newsBtn = panel.querySelector('[data-type="news"]'); // ou 'actualites'
+    
+    if (photosBtn && newsBtn) {
+        photosBtn.style.background = '#4CAF50';
+        newsBtn.style.background = 'rgba(255,255,255,0.2)';
+    }
+}
+
+// Gestion des onglets
 const tabBtns = panel.querySelectorAll('.tab-btn');
 tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -5028,6 +5047,14 @@ photos.forEach(photo => {
 // Méthode pour charger les commentaires des photos
 async loadPhotoComments() {
     try {
+        console.log("🖼️ CHARGEMENT COMMENTAIRES PHOTOS");
+        
+        // 🆕 AJOUTEZ ICI : Nettoyer TOUS les conteneurs
+        const photosList = document.querySelector('.photo-comments-list');
+        const newsList = document.querySelector('.news-comments-list');
+        
+        if (newsList) newsList.innerHTML = ''; // Vider le conteneur actualités
+        
         console.log("Chargement des commentaires depuis le panel admin du chat...");
         
         // Chercher l'élément dans le panel admin OU créer un container dédié
@@ -5418,6 +5445,14 @@ async loadRecentNews() {
 // Charger les commentaires d'actualités
 async loadNewsComments() {
     try {
+        console.log("📰 CHARGEMENT COMMENTAIRES ACTUALITÉS");
+        
+        // 🆕 AJOUTEZ ICI : Nettoyer TOUS les conteneurs
+        const photosList = document.querySelector('.photo-comments-list');
+        const newsList = document.querySelector('.news-comments-list');
+        
+        if (photosList) photosList.innerHTML = ''; // Vider le conteneur photos
+        
         const container = document.querySelector('.news-comments-list');
         if (!container) return;
         
