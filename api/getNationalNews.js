@@ -29,10 +29,10 @@ export default async function handler(req, res) {
     
 		// Limiter à quelques flux fiables
 		const feeds = [
-  { name: 'France Info', url: 'https://www.francetvinfo.fr/titres.rss', max: 2 },
+  { name: 'France Info', url: 'https://www.francetvinfo.fr/titres.rss', max: 1 },
   { name: 'BFMTV', url: 'https://www.bfmtv.com/rss/news-24-7/', max: 1 },
   { name: 'France 3 Bourgogne', url: 'https://france3-regions.francetvinfo.fr/bourgogne-franche-comte/rss', max: 2 }, // 🆕 RÉGIONAL !
-  { name: 'Le Figaro', url: 'https://www.lefigaro.fr/rss/figaro_actualites.xml', max: 1 }
+  { name: 'CNEWS', url: 'https://www.cnews.fr/rss.xml', max: 1 }
 ];
     
     let articles = [];
