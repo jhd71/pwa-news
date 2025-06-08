@@ -64,6 +64,7 @@ const STATIC_RESOURCES = [
     '/js/welcome-manager.js',
     '/js/custom-background-manager.js',
 	'/js/news-widget.js',
+	'/js/ios-chat-keyboard-fix.js',
     
     // Fichiers de configuration (seulement ceux qui existent)
     '/manifest.json',

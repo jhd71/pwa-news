@@ -2493,57 +2493,6 @@ body.long-press-active .message-options {
     isolation: isolate !important;
 }
 
-/* S'assurer que la zone de messages capture bien les événements tactiles - uniquement sur mobile */
-@media (max-width: 768px) {
-    .chat-container {
-        overscroll-behavior: contain !important;
-        touch-action: pan-y !important;
-        -webkit-overflow-scrolling: touch !important;
-    }
-    
-    .chat-messages {
-        /* Comportement de défilement optimisé */
-        overscroll-behavior: contain !important;
-        /* Isolation du contexte de défilement */
-        isolation: isolate !important;
-        /* Améliorer le comportement tactile */
-        touch-action: pan-y !important;
-        /* Activer le défilement élastique sur iOS */
-        -webkit-overflow-scrolling: touch !important;
-        /* Transformation pour forcer un contexte d'empilement isolé */
-        transform: translateZ(0) !important;
-        will-change: transform !important;
-    }
-}
-
-/* Pour les appareils avec écran tactile */
-@media (hover: none) and (pointer: coarse) {
-    /* Optimisations pour les appareils tactiles */
-    .chat-container, .chat-messages {
-        /* Capture des événements tactiles sans propagation */
-        touch-action: pan-y !important;
-        /* Amélioration du rebond */
-        overscroll-behavior: contain !important;
-    }
-    
-    /* Assurez-vous que la zone de messages a une hauteur déterminée et défile correctement */
-    .chat-messages {
-        height: calc(100% - 125px) !important; /* Ajuster en fonction de la hauteur de votre en-tête et zone d'input */
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-    }
-    
-    /* Interface de saisie fixe qui reste en place pendant le défilement */
-    .chat-input {
-        position: sticky !important;
-        bottom: 0 !important;
-        background: var(--chat-input-bg) !important;
-        z-index: 10 !important;
-        /* Éviter les problèmes de débordement du clavier virtuel */
-        padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
-    }
-}
-
 /* Styles pour les commentaires dans le panel admin */
 .admin-comment-card {
     transition: all 0.3s ease;
