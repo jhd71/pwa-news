@@ -107,15 +107,18 @@
   }
 
   /* Navigation inférieure */
-  .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: var(--bottom-nav-height);
-    padding-bottom: var(--safe-area-bottom);
-    z-index: 1600;
-  }
+  /* Navigation inférieure - TOUJOURS collée en bas */
+.bottom-nav {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 60px !important;
+  padding-bottom: var(--safe-area-bottom) !important;
+  z-index: 9999 !important; /* Z-index très élevé */
+  background: var(--nav-background, #1a237e) !important;
+  border-top: 1px solid rgba(255,255,255,0.1) !important;
+}
 
   /* Ajustements pour le séparateur et les titres de catégorie */
   .separator:first-of-type {
@@ -204,4 +207,38 @@
       bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom) + 60px);
     }
   }
+}
+
+/* Tuiles et contenu - Z-index plus bas */
+.tile, .tile-container, main, #tileContainer {
+  z-index: 1 !important; /* Très bas */
+  position: relative !important;
+}
+
+/* Container principal avec marge pour la nav */
+main, #tileContainer, .tile-container {
+  padding-bottom: calc(80px + var(--safe-area-bottom)) !important;
+  margin-bottom: 0 !important;
+}
+
+/* HIÉRARCHIE Z-INDEX CLAIRE POUR iOS */
+.bg-selector-panel { z-index: 10000 !important; }
+.bottom-nav { z-index: 9999 !important; }
+.sidebar, .news-panel { z-index: 5000 !important; }
+.app-header { z-index: 2000 !important; }
+.weather-sidebar, .quick-links-sidebar { z-index: 1500 !important; }
+.cinema-mobile-modal { z-index: 2000 !important; }
+.news-ticker { z-index: 1400 !important; }
+.swiper-container { z-index: 100 !important; }
+.widgets-row { z-index: 50 !important; }
+.tile, .tile-container, main { z-index: 1 !important; }
+
+/* Barre d'infos - AU-DESSUS de la nav */
+.news-ticker {
+  position: fixed !important;
+  bottom: calc(60px + var(--safe-area-bottom)) !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 30px !important;
+  z-index: 1400 !important;
 }
