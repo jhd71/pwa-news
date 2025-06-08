@@ -107,18 +107,15 @@
   }
 
   /* Navigation inférieure */
-  /* Navigation inférieure - TOUJOURS collée en bas */
-.bottom-nav {
-  position: fixed !important;
-  bottom: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  height: 60px !important;
-  padding-bottom: var(--safe-area-bottom) !important;
-  z-index: 9999 !important; /* Z-index très élevé */
-  background: var(--nav-background, #1a237e) !important;
-  border-top: 1px solid rgba(255,255,255,0.1) !important;
-}
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--bottom-nav-height);
+    padding-bottom: var(--safe-area-bottom);
+    z-index: 1600;
+  }
 
   /* Ajustements pour le séparateur et les titres de catégorie */
   .separator:first-of-type {
@@ -207,160 +204,4 @@
       bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom) + 60px);
     }
   }
-}
-
-/* Tuiles et contenu - Z-index plus bas */
-.tile, .tile-container, main, #tileContainer {
-  z-index: 1 !important; /* Très bas */
-  position: relative !important;
-}
-
-/* Container principal avec marge pour la nav */
-main, #tileContainer, .tile-container {
-  padding-bottom: calc(80px + var(--safe-area-bottom)) !important;
-  margin-bottom: 0 !important;
-}
-
-/* HIÉRARCHIE Z-INDEX CLAIRE POUR iOS */
-.bg-selector-panel { z-index: 10000 !important; }
-.bottom-nav { z-index: 9999 !important; }
-.sidebar, .news-panel { z-index: 5000 !important; }
-.app-header { z-index: 2000 !important; }
-.weather-sidebar, .quick-links-sidebar { z-index: 1500 !important; }
-.cinema-mobile-modal { z-index: 2000 !important; }
-.news-ticker { z-index: 1400 !important; }
-.swiper-container { z-index: 100 !important; }
-.widgets-row { z-index: 50 !important; }
-.tile, .tile-container, main { z-index: 1 !important; }
-
-/* Barre d'infos - AU-DESSUS de la nav */
-.news-ticker {
-  position: fixed !important;
-  bottom: calc(60px + var(--safe-area-bottom)) !important;
-  left: 0 !important;
-  right: 0 !important;
-  height: 30px !important;
-  z-index: 1400 !important;
-}
-
-/* Corrections ticker pour iOS */
-.news-ticker {
-  position: fixed !important;
-  bottom: calc(60px + env(safe-area-inset-bottom, 0px)) !important;
-  left: 0 !important;
-  right: 0 !important;
-  height: 35px !important;
-  z-index: 1400 !important;
-  background: rgba(0, 0, 0, 0.8) !important;
-  backdrop-filter: blur(10px) !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-.ticker-wrapper {
-  height: 35px !important;
-  line-height: 35px !important;
-  padding: 0 10px !important;
-}
-
-.ticker-item {
-  font-size: 14px !important;
-  padding: 0 15px !important;
-  white-space: nowrap !important;
-}
-
-/* Corrections galerie iOS */
-.photo-view-modal {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  z-index: 9999 !important;
-  overflow-y: auto !important;
-  -webkit-overflow-scrolling: touch !important;
-}
-
-.modal-scrollable-content {
-  padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px)) !important;
-  min-height: 100vh !important;
-}
-
-.comments-content {
-  max-height: 60vh !important;
-  overflow-y: auto !important;
-  -webkit-overflow-scrolling: touch !important;
-  border-radius: 10px !important;
-  background: rgba(255, 255, 255, 0.1) !important;
-  margin: 10px 0 !important;
-  padding: 15px !important;
-}
-
-.comment-form {
-  position: sticky !important;
-  bottom: env(safe-area-inset-bottom, 0px) !important;
-  background: rgba(0, 0, 0, 0.9) !important;
-  padding: 15px !important;
-  border-radius: 10px 10px 0 0 !important;
-  z-index: 1000 !important;
-  backdrop-filter: blur(10px) !important;
-}
-
-.comment-form input,
-.comment-form textarea {
-  font-size: 16px !important;
-  padding: 12px !important;
-  border-radius: 8px !important;
-  background: rgba(255, 255, 255, 0.1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  color: white !important;
-}
-
-/* Spécifique iPhone */
-@media (max-width: 768px) {
-  .news-ticker {
-    bottom: calc(70px + env(safe-area-inset-bottom, 0px)) !important;
-    height: 40px !important;
-  }
-  
-  .ticker-wrapper {
-    height: 40px !important;
-    line-height: 40px !important;
-  }
-}
-
-/* Chat iOS spécifique */
-.chat-container {
-  position: fixed !important;
-  bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
-  right: 10px !important;
-  left: 10px !important;
-  width: auto !important;
-  height: 70vh !important;
-  max-height: 70vh !important;
-  border-radius: 15px !important;
-  z-index: 9999 !important;
-}
-
-.chat-input {
-  position: sticky !important;
-  bottom: 0 !important;
-  padding: 12px !important;
-  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
-  background: var(--chat-input-bg) !important;
-  z-index: 10000 !important;
-}
-
-.chat-input textarea {
-  font-size: 16px !important;
-  min-height: 45px !important;
-  background: rgba(255, 255, 255, 0.15) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  color: white !important;
-}
-
-.chat-messages {
-  height: calc(100% - 80px) !important;
-  overflow-y: auto !important;
-  -webkit-overflow-scrolling: touch !important;
-  padding: 15px !important;
 }

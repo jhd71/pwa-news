@@ -2,9 +2,7 @@
 
 (function() {
     // Ne s'exécuter que sur iOS
-    const isIOS = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) && 
-              !(/Android/.test(navigator.userAgent)) && 
-              !(/Chrome/.test(navigator.userAgent) && /Mobile/.test(navigator.userAgent));
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     if (!isIOS) return;
     
     console.log("iOS détecté - Activation des correctifs améliorés pour le chat");
