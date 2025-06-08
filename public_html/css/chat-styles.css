@@ -721,6 +721,22 @@ body:has(.chat-container.open) .news-ticker {
   }
 }
 
+
+/* Force le scroll sur les conteneurs problématiques */
+#adminCommentsContainer,
+#adminNewsContainer {
+  max-height: 60vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* S'assurer que le contenu prend toute la hauteur */
+.admin-panel .panel-content > div {
+  height: auto !important;
+  min-height: 300px !important;
+}
+
+
 .admin-panel .panel-header {
   display: flex;
   justify-content: space-between;
