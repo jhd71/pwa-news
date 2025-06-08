@@ -311,7 +311,7 @@ body:has(.chat-container.open) .news-ticker {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  background: rgba(0, 0, 0, 0.1);
+  background: rgb(0 0 0 / .1);
 }
 
 .chat-login input {
