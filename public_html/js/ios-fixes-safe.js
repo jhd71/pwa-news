@@ -385,7 +385,7 @@
             }
             
             [data-theme="light"] .chat-input button {
-                background: #7e57c2 !important;
+                background: #6cac5a !important;
                 color: white !important;
             }
             
@@ -501,7 +501,7 @@
             }
             
             [data-theme="bleuciel"] .chat-input button {
-                background: #0277bd !important;
+                background: #6cac5a !important;
                 color: white !important;
             }
             
