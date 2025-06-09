@@ -202,71 +202,6 @@
   z-index: 10;
 }
 
-/* 5. Mode Vert Nature */
-[data-theme="vert"] .weather-sidebar,
-[data-theme="vert"] .quick-links-sidebar {
-  background: linear-gradient(145deg, #2e7d32, #4caf50) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25) !important;
-}
-
-[data-theme="vert"] .weather-sidebar h3,
-[data-theme="vert"] .quick-links-sidebar h3,
-[data-theme="vert"] .weather-sidebar p strong {
-  color: #e8f5e8 !important;
-  border-bottom-color: rgba(255, 255, 255, 0.3);
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
-}
-
-[data-theme="vert"] .weather-day {
-  background: rgba(0, 0, 0, 0.15) !important;
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-[data-theme="vert"] .quick-link {
-  background: rgba(0, 0, 0, 0.15) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-[data-theme="vert"] .weather-gif {
-  filter: brightness(1.2) contrast(1.1) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
-  z-index: 10;
-}
-
-/* 6. Mode Coucher de Soleil */
-[data-theme="sunset"] .weather-sidebar,
-[data-theme="sunset"] .quick-links-sidebar {
-  background: linear-gradient(145deg, #ff6f00, #ff9800, #ffc107) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  box-shadow: 0 5px 15px rgba(255, 111, 0, 0.3) !important;
-}
-
-[data-theme="sunset"] .weather-sidebar h3,
-[data-theme="sunset"] .quick-links-sidebar h3,
-[data-theme="sunset"] .weather-sidebar p strong {
-  color: #1a1a1a !important;
-  border-bottom-color: rgba(0, 0, 0, 0.2);
-  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3) !important;
-  font-weight: bold !important;
-}
-
-[data-theme="sunset"] .weather-day {
-  background: rgba(0, 0, 0, 0.1) !important;
-  color: #1a1a1a;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-}
-
-[data-theme="sunset"] .quick-link {
-  background: rgba(0, 0, 0, 0.1) !important;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-}
-
-[data-theme="sunset"] .weather-gif {
-  filter: brightness(1.1) contrast(1.2) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.15));
-  z-index: 10;
-}
-
 /* ==== BOUTONS DE FERMETURE ==== */
 .weather-toggle,
 .quick-links-toggle {
@@ -326,22 +261,6 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
 }
 
-[data-theme="vert"] .weather-toggle,
-[data-theme="vert"] .quick-links-toggle {
-  background: rgba(255, 255, 255, 0.3) !important;
-  border: 1px solid rgba(255, 255, 255, 0.4) !important;
-  color: white !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
-}
-
-[data-theme="sunset"] .weather-toggle,
-[data-theme="sunset"] .quick-links-toggle {
-  background: rgba(0, 0, 0, 0.2) !important;
-  border: 1px solid rgba(0, 0, 0, 0.3) !important;
-  color: #1a1a1a !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-}
-
 /* Effets au survol pour tous les thèmes */
 .weather-toggle:hover,
 .quick-links-toggle:hover {
@@ -389,16 +308,6 @@
 [data-theme="bleuciel"] .weather-day h4 {
   background-color: rgba(255, 255, 255, 0.2) !important;
   color: white !important;
-}
-
-[data-theme="vert"] .weather-day h4 {
-  background-color: rgba(255, 255, 255, 0.2) !important;
-  color: #e8f5e8 !important;
-}
-
-[data-theme="sunset"] .weather-day h4 {
-  background-color: rgba(0, 0, 0, 0.15) !important;
-  color: #1a1a1a !important;
 }
 
 /* OPTIMISATION DES GIFS MÉTÉO POUR TOUS LES THÈMES */
@@ -504,16 +413,6 @@
   color: white !important;
 }
 
-[data-theme="vert"] .weather-detail-item {
-  background: rgba(255, 255, 255, 0.15) !important;
-  color: white !important;
-}
-
-[data-theme="sunset"] .weather-detail-item {
-  background: rgba(0, 0, 0, 0.1) !important;
-  color: #1a1a1a !important;
-}
-
 /* Texte des conditions */
 .weather-condition {
   font-size: 13px;
@@ -538,14 +437,6 @@
 
 [data-theme="bleuciel"] .weather-condition {
   color: white !important;
-}
-
-[data-theme="vert"] .weather-condition {
-  color: white !important;
-}
-
-[data-theme="sunset"] .weather-condition {
-  color: #1a1a1a !important;
 }
 
 /* ==== LIENS RAPIDES ==== */
@@ -614,22 +505,6 @@
   color: white !important;
 }
 
-[data-theme="vert"] .quick-link span:not(.material-icons) {
-  color: white !important;
-}
-
-[data-theme="vert"] .quick-link .material-icons {
-  color: white !important;
-}
-
-[data-theme="sunset"] .quick-link span:not(.material-icons) {
-  color: #1a1a1a !important;
-}
-
-[data-theme="sunset"] .quick-link .material-icons {
-  color: #1a1a1a !important;
-}
-
 /* ==== BOUTONS D'AFFICHAGE ==== */
 .weather-show-btn,
 .quick-links-show-btn,
@@ -664,17 +539,6 @@
   background: linear-gradient(145deg, #0277bd, #03a9f4);
 }
 
-[data-theme="vert"] .weather-show-btn,
-[data-theme="vert"] .quick-links-show-btn,
-[data-theme="vert"] .weather-mobile-btn {
-  background: linear-gradient(145deg, #2e7d32, #4caf50);
-}
-
-[data-theme="sunset"] .weather-show-btn,
-[data-theme="sunset"] .quick-links-show-btn,
-[data-theme="sunset"] .weather-mobile-btn {
-  background: linear-gradient(145deg, #ff6f00, #ff9800);
-}
 
 /* ==== RESPONSIVE DESIGN ==== */
 
@@ -891,34 +755,6 @@
     transform: translateY(-2px);
 }
 
-/* Thème Vert Nature - Gradient vert */
-[data-theme="vert"] .fuel-button,
-.theme-vert .fuel-button {
-    background: linear-gradient(145deg, #4CAF50, #388E3C) !important;
-    color: white !important;
-}
-
-[data-theme="vert"] .fuel-button:hover,
-.theme-vert .fuel-button:hover {
-    background: linear-gradient(145deg, #43a047, #2e7d32) !important;
-    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
-    transform: translateY(-2px);
-}
-
-/* Thème Coucher de Soleil - Gradient orange */
-[data-theme="sunset"] .fuel-button,
-.theme-sunset .fuel-button {
-    background: linear-gradient(145deg, #FF6B35, #E65100) !important;
-    color: white !important;
-}
-
-[data-theme="sunset"] .fuel-button:hover,
-.theme-sunset .fuel-button:hover {
-    background: linear-gradient(145deg, #ff5722, #bf360c) !important;
-    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
-    transform: translateY(-2px);
-}
-
 /* FORCE l'icône blanche dans TOUS les cas */
 .fuel-button .material-icons {
     color: white !important;
@@ -1007,16 +843,6 @@
 [data-theme="bleuciel"] .search-button,
 .theme-bleuciel .search-button {
     background: linear-gradient(145deg, #4FB3E8, #3F97C7) !important;
-}
-
-[data-theme="vert"] .search-button,
-.theme-vert .search-button {
-    background: linear-gradient(145deg, #4CAF50, #388E3C) !important;
-}
-
-[data-theme="sunset"] .search-button,
-.theme-sunset .search-button {
-    background: linear-gradient(145deg, #FF6B35, #E65100) !important;
 }
 
 /* Effets hover */

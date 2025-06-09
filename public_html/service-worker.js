@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v19'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v20'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -22,7 +22,6 @@ const STATIC_RESOURCES = [
     '/css/chat-ban.css',
     '/css/widgets.css',
     '/css/settings-styles.css',
-    '/css/ios-specific.css',
     '/css/survey-styles.css',
     '/css/theme-bleuciel.css',
     '/css/tv-tiles-fix.css',
@@ -43,10 +42,7 @@ const STATIC_RESOURCES = [
     '/js/chatManager.js',
     '/js/content.js',
     '/js/donation.js',
-    '/js/ios-chat-fix.js',
-    '/js/ios-detector.js',
     '/js/ios-install.js',
-    '/js/ios-safari-fixes.js',
     '/js/news-manager.js',
     '/js/newsPanel.js',
     '/js/newsTickerManager.js',
@@ -64,6 +60,7 @@ const STATIC_RESOURCES = [
     '/js/welcome-manager.js',
     '/js/custom-background-manager.js',
 	'/js/news-widget.js',
+	'/js/ios-fixes-safe.js',
     
     // Fichiers de configuration (seulement ceux qui existent)
     '/manifest.json',
