@@ -795,6 +795,7 @@
     border-radius: 50%;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     color: white !important;
+	z-index: 990;
 }
 
 /* Positionnement PC */
@@ -805,6 +806,7 @@
         left: 10px;
         width: 46px;
         height: 46px;
+		z-index: 990;
     }
     
     .fuel-button .material-icons {
@@ -948,6 +950,7 @@
     border-radius: 50%;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     color: white !important;
+	z-index: 990;
 }
 
 /* Positionnement PC - À droite du bouton carburant */
@@ -958,6 +961,7 @@
         width: 46px;
         height: 46px;
 		right: 10px;
+		z-index: 990;
     }
     
     .search-button .material-icons {
