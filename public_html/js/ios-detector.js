@@ -1,7 +1,11 @@
 // ios-detector.js
 (function() {
-    // Détecter uniquement les appareils iOS
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    // Détection iOS ultra-précise pour exclure Android
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && 
+                  !window.MSStream && 
+                  !(/Android/.test(navigator.userAgent)) &&
+                  !(/Chrome/.test(navigator.userAgent) && /Mobile/.test(navigator.userAgent) && !/iPad|iPhone|iPod/.test(navigator.userAgent)) &&
+                  !(/CriOS/.test(navigator.userAgent));
 
     if (isIOS) {
         console.log("Appareil iOS détecté - Chargement des optimisations");
@@ -30,5 +34,8 @@
             };
             console.log("Version iOS détectée:", window.iOSVersion);
         }
+    } else {
+        console.log("Non-iOS détecté - CSS iOS ignoré");
+        window.isIOSDevice = false;
     }
 })();
