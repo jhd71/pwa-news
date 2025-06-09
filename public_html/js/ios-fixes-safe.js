@@ -1,8 +1,8 @@
-// ios-fixes-safe.js - Version 2.3 - Compatibilité avec widgets.css
+// ios-fixes-safe.js - Version 2.3 - Compatibilité avec widgets.css - CORRIGÉ
 (function() {
     'use strict';
     
-    // Détection iOS ultra-précise
+    // Détection iOS ultra-précise - ERREUR CORRIGÉE
     const isReallyIOS = () => {
         const ua = navigator.userAgent;
         const platform = navigator.platform;
@@ -12,7 +12,7 @@
         const notMSStream = !window.MSStream;
         const isPadOnIOS13 = platform === 'MacIntel' && navigator.maxTouchPoints > 1;
         
-        return (iosPattern || iPadOnIOS13) && notAndroid && notMSStream;
+        return (iosPattern || isPadOnIOS13) && notAndroid && notMSStream; // CORRIGÉ
     };
     
     if (!isReallyIOS()) {
@@ -211,7 +211,7 @@
                 -webkit-overflow-scrolling: touch !important;
             }
             
-			/* PANNEAU INFOS EN DIRECT - Z-INDEX SUPÉRIEUR AUX WIDGETS */
+            /* PANNEAU INFOS EN DIRECT - Z-INDEX SUPÉRIEUR AUX WIDGETS */
             .news-panel, 
             .panel, 
             .info-panel,
@@ -231,7 +231,7 @@
                 z-index: 2000 !important;
                 position: relative !important;
             }
-			
+            
             /* Masquer les widgets quand le chat est ouvert */
             .chat-container:not(.hidden) ~ .weather-sidebar,
             .chat-container:not(.hidden) ~ .quick-links-sidebar,
@@ -302,7 +302,7 @@
         const style = document.createElement('style');
         style.id = 'ios-chat-fixes-v23';
         style.textContent = `
-            /* CHAT OPTIMISÉ POUR iOS v2.3 - AVEC THÈMES */
+            /* CHAT OPTIMISÉ POUR iOS v2.3 - AVEC VOS COULEURS PERSONNALISÉES */
             
             .chat-container {
                 position: fixed !important;
@@ -357,25 +357,25 @@
                 font-weight: 600 !important;
             }
             
-            /* ==== THÈME LIGHT (Violet) ==== */
+            /* ==== THÈME LIGHT (Violet) - VOS COULEURS ==== */
             [data-theme="light"] .chat-container {
                 background: rgba(255, 255, 255, 0.95) !important;
                 border: 2px solid rgba(126, 87, 194, 0.3) !important;
             }
             
             [data-theme="light"] .chat-header {
-                background: rgb(119 92 189) !important;
+                background: rgb(119, 92, 189) !important;
                 border-bottom: 1px solid rgba(126, 87, 194, 0.2) !important;
                 color: #7e57c2 !important;
             }
             
             [data-theme="light"] .chat-input {
-                background: rgb(119 92 189) !important;
+                background: rgb(119, 92, 189) !important;
                 border-top: 1px solid rgba(126, 87, 194, 0.2) !important;
             }
             
             [data-theme="light"] .chat-input textarea {
-                background: rgb(170 145 233) !important;
+                background: rgb(170, 145, 233) !important;
                 border: 1px solid rgba(126, 87, 194, 0.3) !important;
                 color: #f3eded !important;
             }
@@ -392,12 +392,12 @@
             [data-theme="light"] .chat-input .material-icons {
                 color: #7e57c2 !important;
             }
-			
-			[data-theme="light"] .chat-messages {
-			background: rgb(106 85 185);
-		   }
             
-            /* ==== THÈME DARK (Bleu foncé) ==== */
+            [data-theme="light"] .chat-messages {
+                background: rgb(106, 85, 185) !important;
+            }
+            
+            /* ==== THÈME DARK (Bleu foncé) - VOS COULEURS ==== */
             [data-theme="dark"] .chat-container {
                 background: rgba(26, 35, 126, 0.95) !important;
                 border: 2px solid rgba(255, 255, 255, 0.2) !important;
@@ -433,26 +433,24 @@
                 color: #ffffff !important;
             }
             
-			[data-theme="dark"] .chat-messages {
-			background: rgb(25 32 95);
-			}
-			
-			background: rgb(25 32 95);
-            /* ==== THÈME ROUGE ==== */
+            [data-theme="dark"] .chat-messages {
+                background: rgb(25, 32, 95) !important;
+            }
+            
+            /* ==== THÈME ROUGE - VOS COULEURS ==== */
             [data-theme="rouge"] .chat-container {
                 background: linear-gradient(145deg, #b71c1c, #e53935) !important;
                 border: 2px solid rgba(255, 255, 255, 0.3) !important;
             }
-			
             
             [data-theme="rouge"] .chat-header {
-                background: rgb(164 48 34) !important;
+                background: rgb(164, 48, 34) !important;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
                 color: #ffeb3b !important;
             }
             
             [data-theme="rouge"] .chat-input {
-                background: rgb(148 58 39) !important;
+                background: rgb(148, 58, 39) !important;
                 border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
             }
             
@@ -468,14 +466,14 @@
             
             [data-theme="rouge"] .chat-input button {
                 background: #ffeb3b !important;
-				color: white !important;;
+                color: white !important;
             }
             
             [data-theme="rouge"] .chat-input .material-icons {
                 color: white !important;
             }
             
-            /* ==== THÈME BLEU CIEL ==== */
+            /* ==== THÈME BLEU CIEL - VOS COULEURS ==== */
             [data-theme="bleuciel"] .chat-container {
                 background: linear-gradient(145deg, #0277bd, #03a9f4) !important;
                 border: 2px solid rgba(255, 255, 255, 0.3) !important;
@@ -510,7 +508,6 @@
             [data-theme="bleuciel"] .chat-input .material-icons {
                 color: white !important;
             }
-                       
         `;
         document.head.appendChild(style);
     }
