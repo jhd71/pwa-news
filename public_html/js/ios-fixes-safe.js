@@ -390,7 +390,7 @@
             }
             
             [data-theme="light"] .chat-input .material-icons {
-                color: #7e57c2 !important;
+                color: #f5f3f7 !important;
             }
             
             [data-theme="light"] .chat-messages {
