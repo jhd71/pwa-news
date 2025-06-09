@@ -1,4 +1,4 @@
-// ios-install-improved.js - Popup d'installation iOS amélioré
+// ios-install-improved.js - Popup d'installation iOS avec adaptation aux thèmes
 (function() {
     'use strict';
     
@@ -195,11 +195,11 @@
         }, 5000);
     }
     
-    // Ajouter les styles CSS
+    // Ajouter les styles CSS avec adaptation aux thèmes
     const style = document.createElement('style');
     style.id = 'ios-install-styles';
     style.textContent = `
-        /* POPUP INSTALLATION iOS MODERNE */
+        /* POPUP INSTALLATION iOS MODERNE - ADAPTÉ AUX THÈMES */
         .ios-install-prompt {
             position: fixed !important;
             top: 0 !important;
@@ -241,7 +241,7 @@
         }
         
         .ios-prompt-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--primary-color, linear-gradient(135deg, #c62828, #e53935)) !important;
             color: white;
             padding: 20px;
             text-align: center;
@@ -309,7 +309,7 @@
         }
         
         .ios-step-number {
-            background: #667eea;
+            background: var(--primary-color, #c62828) !important;
             color: white;
             width: 28px;
             height: 28px;
@@ -337,7 +337,7 @@
         
         .ios-share-icon,
         .ios-home-icon {
-            background: #007AFF;
+            background: var(--primary-color, #c62828) !important;
             color: white;
             padding: 4px 8px;
             border-radius: 6px;
@@ -400,14 +400,14 @@
         }
         
         .ios-btn-install {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--primary-color, linear-gradient(135deg, #c62828, #e53935)) !important;
             color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 4px 15px rgba(198, 40, 40, 0.4);
         }
         
         .ios-btn-install:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+            box-shadow: 0 6px 20px rgba(198, 40, 40, 0.6);
         }
         
         /* ANIMATION FLÈCHE PARTAGE */
@@ -428,12 +428,12 @@
         }
         
         .ios-arrow-content {
-            background: #007AFF;
+            background: var(--primary-color, #c62828) !important;
             color: white;
             padding: 10px 15px;
             border-radius: 20px;
             text-align: center;
-            box-shadow: 0 4px 20px rgba(0, 122, 255, 0.4);
+            box-shadow: 0 4px 20px rgba(198, 40, 40, 0.4);
             position: relative;
         }
         
@@ -450,6 +450,104 @@
         @keyframes iosPulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.1); }
+        }
+        
+        /* ==== ADAPTATION AUX THÈMES ==== */
+        
+        /* Thème Light (Violet) */
+        [data-theme="light"] .ios-prompt-header {
+            background: linear-gradient(135deg, #7e57c2, #9575cd) !important;
+        }
+        
+        [data-theme="light"] .ios-step-number,
+        [data-theme="light"] .ios-share-icon,
+        [data-theme="light"] .ios-home-icon {
+            background: #7e57c2 !important;
+        }
+        
+        [data-theme="light"] .ios-btn-install {
+            background: linear-gradient(135deg, #7e57c2, #9575cd) !important;
+            box-shadow: 0 4px 15px rgba(126, 87, 194, 0.4);
+        }
+        
+        [data-theme="light"] .ios-btn-install:hover {
+            box-shadow: 0 6px 20px rgba(126, 87, 194, 0.6);
+        }
+        
+        [data-theme="light"] .ios-arrow-content {
+            background: #7e57c2 !important;
+            box-shadow: 0 4px 20px rgba(126, 87, 194, 0.4);
+        }
+        
+        /* Thème Dark (Bleu foncé) */
+        [data-theme="dark"] .ios-prompt-header {
+            background: linear-gradient(135deg, #1a237e, #3949ab) !important;
+        }
+        
+        [data-theme="dark"] .ios-step-number,
+        [data-theme="dark"] .ios-share-icon,
+        [data-theme="dark"] .ios-home-icon {
+            background: #1a237e !important;
+        }
+        
+        [data-theme="dark"] .ios-btn-install {
+            background: linear-gradient(135deg, #1a237e, #3949ab) !important;
+            box-shadow: 0 4px 15px rgba(26, 35, 126, 0.4);
+        }
+        
+        [data-theme="dark"] .ios-btn-install:hover {
+            box-shadow: 0 6px 20px rgba(26, 35, 126, 0.6);
+        }
+        
+        [data-theme="dark"] .ios-arrow-content {
+            background: #1a237e !important;
+            box-shadow: 0 4px 20px rgba(26, 35, 126, 0.4);
+        }
+        
+        /* Thème Rouge (par défaut) */
+        [data-theme="rouge"] .ios-prompt-header {
+            background: linear-gradient(135deg, #c62828, #e53935) !important;
+        }
+        
+        [data-theme="rouge"] .ios-step-number,
+        [data-theme="rouge"] .ios-share-icon,
+        [data-theme="rouge"] .ios-home-icon {
+            background: #c62828 !important;
+        }
+        
+        [data-theme="rouge"] .ios-btn-install {
+            background: linear-gradient(135deg, #c62828, #e53935) !important;
+            box-shadow: 0 4px 15px rgba(198, 40, 40, 0.4);
+        }
+        
+        [data-theme="rouge"] .ios-arrow-content {
+            background: #c62828 !important;
+            box-shadow: 0 4px 20px rgba(198, 40, 40, 0.4);
+        }
+        
+        /* Thème Bleu Ciel */
+        [data-theme="bleuciel"] .ios-prompt-header {
+            background: linear-gradient(135deg, #0277bd, #03a9f4) !important;
+        }
+        
+        [data-theme="bleuciel"] .ios-step-number,
+        [data-theme="bleuciel"] .ios-share-icon,
+        [data-theme="bleuciel"] .ios-home-icon {
+            background: #0277bd !important;
+        }
+        
+        [data-theme="bleuciel"] .ios-btn-install {
+            background: linear-gradient(135deg, #0277bd, #03a9f4) !important;
+            box-shadow: 0 4px 15px rgba(2, 119, 189, 0.4);
+        }
+        
+        [data-theme="bleuciel"] .ios-btn-install:hover {
+            box-shadow: 0 6px 20px rgba(2, 119, 189, 0.6);
+        }
+        
+        [data-theme="bleuciel"] .ios-arrow-content {
+            background: #0277bd !important;
+            box-shadow: 0 4px 20px rgba(2, 119, 189, 0.4);
         }
         
         /* RESPONSIVE */
