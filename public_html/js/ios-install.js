@@ -550,30 +550,7 @@
             box-shadow: 0 4px 20px rgba(2, 119, 189, 0.4);
         }
         
-        /* Thème Vert */
-        [data-theme="vert"] .ios-prompt-header {
-            background: linear-gradient(135deg, #2e7d32, #4caf50) !important;
-        }
-        
-        [data-theme="vert"] .ios-step-number,
-        [data-theme="vert"] .ios-share-icon,
-        [data-theme="vert"] .ios-home-icon {
-            background: #2e7d32 !important;
-        }
-        
-        [data-theme="vert"] .ios-btn-install {
-            background: linear-gradient(135deg, #2e7d32, #4caf50) !important;
-            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.4);
-        }
-        
-        [data-theme="vert"] .ios-btn-install:hover {
-            box-shadow: 0 6px 20px rgba(46, 125, 50, 0.6);
-        }
-        
-        [data-theme="vert"] .ios-arrow-content {
-            background: #2e7d32 !important;
-            box-shadow: 0 4px 20px rgba(46, 125, 50, 0.4);
-        }
+        /* Thème Vert - SUPPRIMÉ */
         
         /* Thème Sunset */
         [data-theme="sunset"] .ios-prompt-header {
@@ -649,6 +626,49 @@
             background: #6366F1 !important;
             box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
         }
+        
+        /* RESPONSIVE */
+        @media (max-width: 400px) {
+            .ios-prompt-card {
+                width: calc(100vw - 20px);
+            }
+            
+            .ios-benefits {
+                grid-template-columns: 1fr;
+            }
+            
+            .ios-prompt-actions {
+                flex-direction: column;
+            }
+        }
+        
+        /* SAFE AREAS iOS */
+        @supports (padding: env(safe-area-inset-top)) {
+            .ios-share-arrow {
+                top: calc(20px + env(safe-area-inset-top)) !important;
+                right: calc(20px + env(safe-area-inset-right)) !important;
+            }
+        }
+    `;
+    
+    // Ajouter les styles seulement sur iOS
+    if (isReallyIOS()) {
+        document.head.appendChild(style);
+    }
+    
+    // Initialisation
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(showIOSInstallPrompt, 3000);
+        });
+    } else {
+        setTimeout(showIOSInstallPrompt, 3000);
+    }
+    
+    // Exposer globalement
+    window.showIOSInstallPrompt = showIOSInstallPrompt;
+    
+})();
         
         /* RESPONSIVE */
         @media (max-width: 400px) {

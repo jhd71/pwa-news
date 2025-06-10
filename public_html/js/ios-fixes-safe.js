@@ -1,8 +1,8 @@
-// ios-fixes-safe.js - Version 2.3 - Compatibilité avec widgets.css - CORRIGÉ
+// ios-fixes-safe.js - Version 2.3 - COMPLET et CORRIGÉ
 (function() {
     'use strict';
     
-    // Détection iOS ultra-précise - ERREUR CORRIGÉE
+    // Détection iOS ultra-précise
     const isReallyIOS = () => {
         const ua = navigator.userAgent;
         const platform = navigator.platform;
@@ -12,7 +12,7 @@
         const notMSStream = !window.MSStream;
         const isPadOnIOS13 = platform === 'MacIntel' && navigator.maxTouchPoints > 1;
         
-        return (iosPattern || isPadOnIOS13) && notAndroid && notMSStream; // CORRIGÉ
+        return (iosPattern || isPadOnIOS13) && notAndroid && notMSStream;
     };
     
     if (!isReallyIOS()) {
@@ -20,7 +20,7 @@
         return;
     }
     
-    console.log('🍎 iOS détecté - Application des corrections v2.3 (compatibilité widgets.css)');
+    console.log('🍎 iOS détecté - Application des corrections v2.3');
     
     const initFixes = () => {
         if (document.readyState === 'loading') {
@@ -74,7 +74,7 @@
         const style = document.createElement('style');
         style.id = 'ios-widget-positioning-v23';
         style.textContent = `
-            /* CORRECTIONS SPÉCIFIQUES iOS - Compatible avec widgets.css */
+            /* CORRECTIONS iOS - Compatible avec widgets.css */
             
             /* Empêcher les tuiles de passer sous la navigation */
             .tile-container, #tileContainer, .main-content {
@@ -82,7 +82,7 @@
                 margin-bottom: 20px !important;
             }
             
-            /* Corriger la barre d'infos déroulante (ticker) */
+            /* Corriger la barre d'infos déroulante */
             .news-ticker {
                 position: fixed !important;
                 bottom: calc(60px + var(--ios-safe-bottom, 0px)) !important;
@@ -115,7 +115,7 @@
                 padding-top: calc(20px + var(--ios-safe-top, 0px)) !important;
             }
             
-            /* REPOSITIONNER LES BOUTONS WIDGETS SUR iOS UNIQUEMENT */
+            /* REPOSITIONNER LES BOUTONS WIDGETS SUR iOS */
             
             /* Desktop iOS (iPad) */
             @media (min-width: 1101px) {
@@ -169,7 +169,6 @@
             
             /* Mobile iOS (iPhone) */
             @media (max-width: 767px) {
-                /* Repositionner les boutons dans la barre du haut */
                 .weather-mobile-btn {
                     top: calc(75px + var(--ios-safe-top, 0px)) !important;
                     left: 10px !important;
@@ -196,7 +195,6 @@
                     z-index: 1000 !important;
                 }
                 
-                /* S'assurer que le weather-show-btn standard est caché sur mobile iOS */
                 .weather-show-btn {
                     display: none !important;
                 }
@@ -211,9 +209,9 @@
                 -webkit-overflow-scrolling: touch !important;
             }
             
-            /* CORRECTIONS WIDGETS POUR NOUVEAUX THÈMES iOS */
+            /* WIDGETS THÉMATISÉS */
             
-            /* Thème Océan - Widget météo opaque */
+            /* Thème Océan */
             [data-theme="ocean"] .weather-sidebar,
             [data-theme="ocean"] .quick-links-sidebar {
                 background: rgba(0, 96, 100, 0.95) !important;
@@ -237,7 +235,7 @@
                 color: white !important;
             }
             
-            /* Thème Sunset - Widget météo opaque */
+            /* Thème Sunset */
             [data-theme="sunset"] .weather-sidebar,
             [data-theme="sunset"] .quick-links-sidebar {
                 background: rgba(255, 107, 53, 0.95) !important;
@@ -261,7 +259,7 @@
                 color: white !important;
             }
             
-            /* Thème Super Light - Widget météo glass morphism */
+            /* Thème Super Light */
             [data-theme="super-light"] .weather-sidebar,
             [data-theme="super-light"] .quick-links-sidebar {
                 background: linear-gradient(135deg, #6366F1, #8B5CF6) !important;
@@ -299,7 +297,7 @@
                 backdrop-filter: blur(5px) !important;
             }
             
-            /* PANNEAU INFOS EN DIRECT - Z-INDEX SUPÉRIEUR AUX WIDGETS */
+            /* PANNEAU INFOS EN DIRECT */
             .news-panel, 
             .panel, 
             .info-panel,
@@ -312,7 +310,6 @@
                 position: relative !important;
             }
             
-            /* S'assurer que le contenu du panneau est au-dessus */
             .panel-content,
             .news-panel-content,
             .info-panel-content {
@@ -339,15 +336,12 @@
         style.id = 'ios-text-fixes-v23';
         style.textContent = `
             /* CORRECTION RENDU TEXTE iOS */
-            
-            /* Force un meilleur rendu du texte sur iOS */
             * {
                 -webkit-font-smoothing: antialiased !important;
                 -moz-osx-font-smoothing: grayscale !important;
                 text-rendering: optimizeLegibility !important;
             }
             
-            /* Correction spécifique pour les tuiles */
             .tile, .tile-title, .tile h3, .tile p, .tile span,
             .grid-item, .grid-item h3, .grid-item p, .grid-item span {
                 -webkit-font-smoothing: antialiased !important;
@@ -358,13 +352,11 @@
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
             }
             
-            /* Assurer la lisibilité sur tous les éléments de texte */
             h1, h2, h3, h4, h5, h6, p, span, div, a, button {
                 -webkit-font-smoothing: antialiased !important;
                 text-rendering: optimizeLegibility !important;
             }
             
-            /* Correction pour les titres de section */
             .section-title, .actualites-locales, h2 {
                 text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5) !important;
                 font-weight: 700 !important;
@@ -390,7 +382,7 @@
         const style = document.createElement('style');
         style.id = 'ios-chat-fixes-v23';
         style.textContent = `
-            /* CHAT OPTIMISÉ POUR iOS v2.3 - AVEC VOS COULEURS PERSONNALISÉES */
+            /* CHAT OPTIMISÉ POUR iOS - TOUS LES THÈMES */
             
             .chat-container {
                 position: fixed !important;
@@ -445,7 +437,7 @@
                 font-weight: 600 !important;
             }
             
-            /* ==== THÈME LIGHT (Violet) - VOS COULEURS ==== */
+            /* THÈME LIGHT (Violet) */
             [data-theme="light"] .chat-container {
                 background: rgba(255, 255, 255, 0.95) !important;
                 border: 2px solid rgba(126, 87, 194, 0.3) !important;
@@ -485,7 +477,7 @@
                 background: rgb(106, 85, 185) !important;
             }
             
-            /* ==== THÈME DARK (Bleu foncé) - VOS COULEURS ==== */
+            /* THÈME DARK (Bleu foncé) */
             [data-theme="dark"] .chat-container {
                 background: rgba(26, 35, 126, 0.95) !important;
                 border: 2px solid rgba(255, 255, 255, 0.2) !important;
@@ -525,7 +517,7 @@
                 background: rgb(25, 32, 95) !important;
             }
             
-            /* ==== THÈME ROUGE - VOS COULEURS ==== */
+            /* THÈME ROUGE */
             [data-theme="rouge"] .chat-container {
                 background: linear-gradient(145deg, #b71c1c, #e53935) !important;
                 border: 2px solid rgba(255, 255, 255, 0.3) !important;
@@ -561,7 +553,7 @@
                 color: white !important;
             }
             
-            /* ==== THÈME BLEU CIEL - VOS COULEURS ==== */
+            /* THÈME BLEU CIEL */
             [data-theme="bleuciel"] .chat-container {
                 background: linear-gradient(145deg, #0277bd, #03a9f4) !important;
                 border: 2px solid rgba(255, 255, 255, 0.3) !important;
@@ -597,43 +589,7 @@
                 color: white !important;
             }
             
-            /* ==== THÈME VERT ==== */
-            [data-theme="vert"] .chat-container {
-                background: linear-gradient(145deg, #2e7d32, #4caf50) !important;
-                border: 2px solid rgba(255, 255, 255, 0.3) !important;
-            }
-            
-            [data-theme="vert"] .chat-header {
-                background: rgba(0, 0, 0, 0.2) !important;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
-                color: #e8f5e8 !important;
-            }
-            
-            [data-theme="vert"] .chat-input {
-                background: rgba(0, 0, 0, 0.2) !important;
-                border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
-            }
-            
-            [data-theme="vert"] .chat-input textarea {
-                background: rgba(255, 255, 255, 0.15) !important;
-                border: 1px solid rgba(255, 255, 255, 0.4) !important;
-                color: white !important;
-            }
-            
-            [data-theme="vert"] .chat-input textarea::placeholder {
-                color: rgba(255, 255, 255, 0.7) !important;
-            }
-            
-            [data-theme="vert"] .chat-input button {
-                background: #2e7d32 !important;
-                color: white !important;
-            }
-            
-            [data-theme="vert"] .chat-input .material-icons {
-                color: white !important;
-            }
-            
-            /* ==== THÈME SUNSET ==== */
+            /* THÈME SUNSET */
             [data-theme="sunset"] .chat-container {
                 background: linear-gradient(145deg, #ff6f00, #ff9800, #ffc107) !important;
                 border: 2px solid rgba(255, 255, 255, 0.3) !important;
@@ -669,7 +625,7 @@
                 color: #1a1a1a !important;
             }
             
-            /* ==== THÈME OCÉAN ==== */
+            /* THÈME OCÉAN */
             [data-theme="ocean"] .chat-container {
                 background: linear-gradient(145deg, #006064, #0097A7) !important;
                 border: 2px solid rgba(255, 255, 255, 0.3) !important;
@@ -705,7 +661,7 @@
                 color: white !important;
             }
             
-            /* ==== THÈME SUPER LIGHT ==== */
+            /* THÈME SUPER LIGHT */
             [data-theme="super-light"] .chat-container {
                 background: rgba(255, 255, 255, 0.98) !important;
                 border: 2px solid rgba(99, 102, 241, 0.3) !important;
