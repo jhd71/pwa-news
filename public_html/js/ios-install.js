@@ -1,8 +1,8 @@
-// ios-install-improved.js - Popup d'installation iOS avec adaptation aux thèmes
+// ios-install.js - Popup d'installation iOS - VERSION PROPRE ET COMPLÈTE
 (function() {
     'use strict';
     
-    // Détection iOS ultra-précise (même que le script de fix)
+    // Détection iOS ultra-précise
     const isReallyIOS = () => {
         const ua = navigator.userAgent;
         const platform = navigator.platform;
@@ -19,46 +19,48 @@
         const isIOS = isReallyIOS();
         const isInStandaloneMode = window.navigator.standalone === true;
         
-        console.log("Vérification iOS install:", { isIOS, isInStandaloneMode });
+        console.log("🔍 Vérification iOS install:", { 
+            isIOS, 
+            isInStandaloneMode, 
+            userAgent: navigator.userAgent,
+            platform: navigator.platform 
+        });
         
         // Ne pas afficher si pas iOS ou déjà installé
         if (!isIOS || isInStandaloneMode) {
-            console.log("Conditions non remplies pour afficher le prompt iOS");
+            console.log("❌ Conditions non remplies pour afficher le prompt iOS");
             return;
         }
         
         // Vérifier si on a déjà montré récemment
         const lastPrompt = localStorage.getItem('iosPromptShown');
         const now = Date.now();
-        const showAgain = !lastPrompt || (now - parseInt(lastPrompt)) > 3 * 24 * 60 * 60 * 1000; // 3 jours
+        const showAgain = !lastPrompt || (now - parseInt(lastPrompt)) > 2 * 24 * 60 * 60 * 1000; // 2 jours
         
         if (!showAgain) {
-            console.log("Prompt iOS déjà montré récemment");
+            console.log("⏰ Prompt iOS déjà montré récemment");
             return;
         }
         
-        console.log("Affichage du prompt iOS amélioré");
+        console.log("✅ Affichage du prompt iOS amélioré");
         
         // Supprimer tout prompt existant
         const existingPrompt = document.querySelector('.ios-install-prompt');
         if (existingPrompt) existingPrompt.remove();
         
-        // Détecter le type d'appareil pour personnaliser le message
+        // Détecter le type d'appareil
         const isIPhone = /iPhone/.test(navigator.userAgent);
         const isIPad = /iPad/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-        
         const deviceName = isIPhone ? 'iPhone' : isIPad ? 'iPad' : 'appareil';
         
-        // Créer le popup moderne
+        // Créer le popup
         const iosPrompt = document.createElement('div');
         iosPrompt.className = 'ios-install-prompt';
         iosPrompt.innerHTML = `
             <div class="ios-prompt-overlay"></div>
             <div class="ios-prompt-card">
                 <div class="ios-prompt-header">
-                    <div class="ios-app-icon">
-                        📱
-                    </div>
+                    <div class="ios-app-icon">📱</div>
                     <h3>Installer Actu&Média</h3>
                     <button class="ios-prompt-close">&times;</button>
                 </div>
@@ -135,21 +137,16 @@
             localStorage.setItem('iosPromptShown', now.toString());
         };
         
-        // Bouton fermer (X)
+        // Bouton fermer
         iosPrompt.querySelector('.ios-prompt-close').addEventListener('click', closePrompt);
         
         // Bouton "Plus tard"
         iosPrompt.querySelector('.ios-btn-later').addEventListener('click', closePrompt);
         
-        // Bouton "Installer maintenant" - scroll vers le haut et animation de l'icône partage
+        // Bouton "Installer maintenant"
         iosPrompt.querySelector('.ios-btn-install').addEventListener('click', () => {
-            // Fermer le popup
             closePrompt();
-            
-            // Scroll vers le haut pour que l'utilisateur voie l'icône partage
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            
-            // Afficher une animation pointant vers l'icône partage
             setTimeout(() => {
                 showShareIconAnimation();
             }, 800);
@@ -167,7 +164,6 @@
     }
     
     function showShareIconAnimation() {
-        // Créer une flèche pointant vers l'icône partage Safari
         const arrow = document.createElement('div');
         arrow.className = 'ios-share-arrow';
         arrow.innerHTML = `
@@ -179,12 +175,10 @@
         
         document.body.appendChild(arrow);
         
-        // Animation pulsante
         setTimeout(() => {
             arrow.classList.add('ios-arrow-visible');
         }, 100);
         
-        // Supprimer après 5 secondes
         setTimeout(() => {
             arrow.classList.remove('ios-arrow-visible');
             setTimeout(() => {
@@ -195,11 +189,10 @@
         }, 5000);
     }
     
-    // Ajouter les styles CSS avec adaptation aux thèmes
+    // Styles CSS
     const style = document.createElement('style');
     style.id = 'ios-install-styles';
     style.textContent = `
-        /* POPUP INSTALLATION iOS MODERNE - ADAPTÉ AUX THÈMES */
         .ios-install-prompt {
             position: fixed !important;
             top: 0 !important;
@@ -410,7 +403,6 @@
             box-shadow: 0 6px 20px rgba(198, 40, 40, 0.6);
         }
         
-        /* ANIMATION FLÈCHE PARTAGE */
         .ios-share-arrow {
             position: fixed !important;
             top: 20px !important;
@@ -452,197 +444,138 @@
             50% { transform: scale(1.1); }
         }
         
-        /* ==== ADAPTATION AUX THÈMES ==== */
-        
-        /* Thème Light (Violet) */
+        /* THÈMES */
         [data-theme="light"] .ios-prompt-header {
             background: linear-gradient(135deg, #7e57c2, #9575cd) !important;
         }
-        
         [data-theme="light"] .ios-step-number,
         [data-theme="light"] .ios-share-icon,
         [data-theme="light"] .ios-home-icon {
             background: #7e57c2 !important;
         }
-        
         [data-theme="light"] .ios-btn-install {
             background: linear-gradient(135deg, #7e57c2, #9575cd) !important;
             box-shadow: 0 4px 15px rgba(126, 87, 194, 0.4);
         }
-        
-        [data-theme="light"] .ios-btn-install:hover {
-            box-shadow: 0 6px 20px rgba(126, 87, 194, 0.6);
-        }
-        
         [data-theme="light"] .ios-arrow-content {
             background: #7e57c2 !important;
             box-shadow: 0 4px 20px rgba(126, 87, 194, 0.4);
         }
         
-        /* Thème Dark (Bleu foncé) */
         [data-theme="dark"] .ios-prompt-header {
             background: linear-gradient(135deg, #1a237e, #3949ab) !important;
         }
-        
         [data-theme="dark"] .ios-step-number,
         [data-theme="dark"] .ios-share-icon,
         [data-theme="dark"] .ios-home-icon {
             background: #1a237e !important;
         }
-        
         [data-theme="dark"] .ios-btn-install {
             background: linear-gradient(135deg, #1a237e, #3949ab) !important;
             box-shadow: 0 4px 15px rgba(26, 35, 126, 0.4);
         }
-        
-        [data-theme="dark"] .ios-btn-install:hover {
-            box-shadow: 0 6px 20px rgba(26, 35, 126, 0.6);
-        }
-        
         [data-theme="dark"] .ios-arrow-content {
             background: #1a237e !important;
             box-shadow: 0 4px 20px rgba(26, 35, 126, 0.4);
         }
         
-        /* Thème Rouge (par défaut) */
         [data-theme="rouge"] .ios-prompt-header {
             background: linear-gradient(135deg, #c62828, #e53935) !important;
         }
-        
         [data-theme="rouge"] .ios-step-number,
         [data-theme="rouge"] .ios-share-icon,
         [data-theme="rouge"] .ios-home-icon {
             background: #c62828 !important;
         }
-        
         [data-theme="rouge"] .ios-btn-install {
             background: linear-gradient(135deg, #c62828, #e53935) !important;
             box-shadow: 0 4px 15px rgba(198, 40, 40, 0.4);
         }
-        
         [data-theme="rouge"] .ios-arrow-content {
             background: #c62828 !important;
             box-shadow: 0 4px 20px rgba(198, 40, 40, 0.4);
         }
         
-        /* Thème Bleu Ciel */
         [data-theme="bleuciel"] .ios-prompt-header {
             background: linear-gradient(135deg, #0277bd, #03a9f4) !important;
         }
-        
         [data-theme="bleuciel"] .ios-step-number,
         [data-theme="bleuciel"] .ios-share-icon,
         [data-theme="bleuciel"] .ios-home-icon {
             background: #0277bd !important;
         }
-        
         [data-theme="bleuciel"] .ios-btn-install {
             background: linear-gradient(135deg, #0277bd, #03a9f4) !important;
             box-shadow: 0 4px 15px rgba(2, 119, 189, 0.4);
         }
-        
-        [data-theme="bleuciel"] .ios-btn-install:hover {
-            box-shadow: 0 6px 20px rgba(2, 119, 189, 0.6);
-        }
-        
         [data-theme="bleuciel"] .ios-arrow-content {
             background: #0277bd !important;
             box-shadow: 0 4px 20px rgba(2, 119, 189, 0.4);
         }
         
-        /* Thème Vert - SUPPRIMÉ */
-        
-        /* Thème Sunset */
         [data-theme="sunset"] .ios-prompt-header {
             background: linear-gradient(135deg, #ff6f00, #ff9800) !important;
         }
-        
         [data-theme="sunset"] .ios-step-number,
         [data-theme="sunset"] .ios-share-icon,
         [data-theme="sunset"] .ios-home-icon {
             background: #ff6f00 !important;
         }
-        
         [data-theme="sunset"] .ios-btn-install {
             background: linear-gradient(135deg, #ff6f00, #ff9800) !important;
             box-shadow: 0 4px 15px rgba(255, 111, 0, 0.4);
         }
-        
-        [data-theme="sunset"] .ios-btn-install:hover {
-            box-shadow: 0 6px 20px rgba(255, 111, 0, 0.6);
-        }
-        
         [data-theme="sunset"] .ios-arrow-content {
             background: #ff6f00 !important;
             box-shadow: 0 4px 20px rgba(255, 111, 0, 0.4);
         }
         
-        /* Thème Océan */
         [data-theme="ocean"] .ios-prompt-header {
             background: linear-gradient(135deg, #006064, #0097A7) !important;
         }
-        
         [data-theme="ocean"] .ios-step-number,
         [data-theme="ocean"] .ios-share-icon,
         [data-theme="ocean"] .ios-home-icon {
             background: #006064 !important;
         }
-        
         [data-theme="ocean"] .ios-btn-install {
             background: linear-gradient(135deg, #006064, #0097A7) !important;
             box-shadow: 0 4px 15px rgba(0, 96, 100, 0.4);
         }
-        
-        [data-theme="ocean"] .ios-btn-install:hover {
-            box-shadow: 0 6px 20px rgba(0, 96, 100, 0.6);
-        }
-        
         [data-theme="ocean"] .ios-arrow-content {
             background: #006064 !important;
             box-shadow: 0 4px 20px rgba(0, 96, 100, 0.4);
         }
         
-        /* Thème Super Light */
         [data-theme="super-light"] .ios-prompt-header {
             background: linear-gradient(135deg, #6366F1, #8B5CF6) !important;
         }
-        
         [data-theme="super-light"] .ios-step-number,
         [data-theme="super-light"] .ios-share-icon,
         [data-theme="super-light"] .ios-home-icon {
             background: #6366F1 !important;
         }
-        
         [data-theme="super-light"] .ios-btn-install {
             background: linear-gradient(135deg, #6366F1, #8B5CF6) !important;
             box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
         }
-        
-        [data-theme="super-light"] .ios-btn-install:hover {
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
-        }
-        
         [data-theme="super-light"] .ios-arrow-content {
             background: #6366F1 !important;
             box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
         }
         
-        /* RESPONSIVE */
         @media (max-width: 400px) {
             .ios-prompt-card {
                 width: calc(100vw - 20px);
             }
-            
             .ios-benefits {
                 grid-template-columns: 1fr;
             }
-            
             .ios-prompt-actions {
                 flex-direction: column;
             }
         }
         
-        /* SAFE AREAS iOS */
         @supports (padding: env(safe-area-inset-top)) {
             .ios-share-arrow {
                 top: calc(20px + env(safe-area-inset-top)) !important;
@@ -656,59 +589,32 @@
         document.head.appendChild(style);
     }
     
-    // Initialisation
+    // Initialisation avec logs
+    console.log("📱 Script iOS Install chargé");
+    
     if (document.readyState === 'loading') {
+        console.log("🔄 DOM en cours de chargement, attente...");
         document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(showIOSInstallPrompt, 3000);
+            console.log("✅ DOM chargé, démarrage du timer");
+            setTimeout(() => {
+                console.log("⏰ Timer expiré, tentative d'affichage du popup");
+                showIOSInstallPrompt();
+            }, 2000);
         });
     } else {
-        setTimeout(showIOSInstallPrompt, 3000);
+        console.log("✅ DOM déjà chargé, démarrage immédiat du timer");
+        setTimeout(() => {
+            console.log("⏰ Timer expiré, tentative d'affichage du popup");
+            showIOSInstallPrompt();
+        }, 2000);
     }
     
-    // Exposer globalement
+    // Exposer pour tests
     window.showIOSInstallPrompt = showIOSInstallPrompt;
-    
-})();
-        
-        /* RESPONSIVE */
-        @media (max-width: 400px) {
-            .ios-prompt-card {
-                width: calc(100vw - 20px);
-            }
-            
-            .ios-benefits {
-                grid-template-columns: 1fr;
-            }
-            
-            .ios-prompt-actions {
-                flex-direction: column;
-            }
-        }
-        
-        /* SAFE AREAS iOS */
-        @supports (padding: env(safe-area-inset-top)) {
-            .ios-share-arrow {
-                top: calc(20px + env(safe-area-inset-top)) !important;
-                right: calc(20px + env(safe-area-inset-right)) !important;
-            }
-        }
-    `;
-    
-    // Ajouter les styles seulement sur iOS
-    if (isReallyIOS()) {
-        document.head.appendChild(style);
-    }
-    
-    // Initialisation
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(showIOSInstallPrompt, 3000);
-        });
-    } else {
-        setTimeout(showIOSInstallPrompt, 3000);
-    }
-    
-    // Exposer globalement
-    window.showIOSInstallPrompt = showIOSInstallPrompt;
+    window.testIOSPopup = () => {
+        console.log("🧪 Test manuel du popup iOS");
+        localStorage.removeItem('iosPromptShown');
+        showIOSInstallPrompt();
+    };
     
 })();
