@@ -550,6 +550,106 @@
             box-shadow: 0 4px 20px rgba(2, 119, 189, 0.4);
         }
         
+        /* Thème Vert */
+        [data-theme="vert"] .ios-prompt-header {
+            background: linear-gradient(135deg, #2e7d32, #4caf50) !important;
+        }
+        
+        [data-theme="vert"] .ios-step-number,
+        [data-theme="vert"] .ios-share-icon,
+        [data-theme="vert"] .ios-home-icon {
+            background: #2e7d32 !important;
+        }
+        
+        [data-theme="vert"] .ios-btn-install {
+            background: linear-gradient(135deg, #2e7d32, #4caf50) !important;
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.4);
+        }
+        
+        [data-theme="vert"] .ios-btn-install:hover {
+            box-shadow: 0 6px 20px rgba(46, 125, 50, 0.6);
+        }
+        
+        [data-theme="vert"] .ios-arrow-content {
+            background: #2e7d32 !important;
+            box-shadow: 0 4px 20px rgba(46, 125, 50, 0.4);
+        }
+        
+        /* Thème Sunset */
+        [data-theme="sunset"] .ios-prompt-header {
+            background: linear-gradient(135deg, #ff6f00, #ff9800) !important;
+        }
+        
+        [data-theme="sunset"] .ios-step-number,
+        [data-theme="sunset"] .ios-share-icon,
+        [data-theme="sunset"] .ios-home-icon {
+            background: #ff6f00 !important;
+        }
+        
+        [data-theme="sunset"] .ios-btn-install {
+            background: linear-gradient(135deg, #ff6f00, #ff9800) !important;
+            box-shadow: 0 4px 15px rgba(255, 111, 0, 0.4);
+        }
+        
+        [data-theme="sunset"] .ios-btn-install:hover {
+            box-shadow: 0 6px 20px rgba(255, 111, 0, 0.6);
+        }
+        
+        [data-theme="sunset"] .ios-arrow-content {
+            background: #ff6f00 !important;
+            box-shadow: 0 4px 20px rgba(255, 111, 0, 0.4);
+        }
+        
+        /* Thème Océan */
+        [data-theme="ocean"] .ios-prompt-header {
+            background: linear-gradient(135deg, #006064, #0097A7) !important;
+        }
+        
+        [data-theme="ocean"] .ios-step-number,
+        [data-theme="ocean"] .ios-share-icon,
+        [data-theme="ocean"] .ios-home-icon {
+            background: #006064 !important;
+        }
+        
+        [data-theme="ocean"] .ios-btn-install {
+            background: linear-gradient(135deg, #006064, #0097A7) !important;
+            box-shadow: 0 4px 15px rgba(0, 96, 100, 0.4);
+        }
+        
+        [data-theme="ocean"] .ios-btn-install:hover {
+            box-shadow: 0 6px 20px rgba(0, 96, 100, 0.6);
+        }
+        
+        [data-theme="ocean"] .ios-arrow-content {
+            background: #006064 !important;
+            box-shadow: 0 4px 20px rgba(0, 96, 100, 0.4);
+        }
+        
+        /* Thème Super Light */
+        [data-theme="super-light"] .ios-prompt-header {
+            background: linear-gradient(135deg, #6366F1, #8B5CF6) !important;
+        }
+        
+        [data-theme="super-light"] .ios-step-number,
+        [data-theme="super-light"] .ios-share-icon,
+        [data-theme="super-light"] .ios-home-icon {
+            background: #6366F1 !important;
+        }
+        
+        [data-theme="super-light"] .ios-btn-install {
+            background: linear-gradient(135deg, #6366F1, #8B5CF6) !important;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+        
+        [data-theme="super-light"] .ios-btn-install:hover {
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+        }
+        
+        [data-theme="super-light"] .ios-arrow-content {
+            background: #6366F1 !important;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+        }
+        
         /* RESPONSIVE */
         @media (max-width: 400px) {
             .ios-prompt-card {
