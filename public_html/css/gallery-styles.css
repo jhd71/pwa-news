@@ -1373,3 +1373,78 @@ body.modal-open {
 .modal-scrollable-content.navigating {
     transform: scale(0.98);
 }
+
+/* ===== THÈME COUCHER DE SOLEIL ===== */
+[data-theme="sunset"] {
+    --primary-color: #FF6B35;
+    --accent-color: #E91E63;
+    --background-color: #2C1810;
+    --card-bg: #3D2817;
+    --text-color: #FFF8E7;
+    --text-muted: #FFCC80;
+    --border-color: rgba(255, 107, 53, 0.3);
+    --input-bg: rgba(255, 255, 255, 0.1);
+    --button-bg: #FF8A50;
+    --comment-bg: #3D2817;
+    --header-text-color: #FFFFFF;
+    --photo-title-color: #FFF8E7;
+    --card-text-color: #FFF8E7;
+    --navbar-bg: rgba(255, 107, 53, 0.95);
+    --footer-bg: rgba(255, 107, 53, 0.95);
+    --modal-bg: #2C1810;
+    --photo-view-bg: #2C1810;
+}
+
+[data-theme="sunset"] .submit-photo-btn {
+    background: linear-gradient(135deg, #FF6B35 0%, #E91E63 100%);
+}
+
+/* ===== THÈME OCÉAN PROFOND ===== */
+[data-theme="ocean"] {
+    --primary-color: #006064;
+    --accent-color: #0097A7;
+    --background-color: #0D1B2A;
+    --card-bg: #1A2C3A;
+    --text-color: #B3E5FC;
+    --text-muted: #81D4FA;
+    --border-color: rgba(0, 131, 143, 0.3);
+    --input-bg: rgba(255, 255, 255, 0.1);
+    --button-bg: #00838F;
+    --comment-bg: #1A2C3A;
+    --header-text-color: #FFFFFF;
+    --photo-title-color: #B3E5FC;
+    --card-text-color: #B3E5FC;
+    --navbar-bg: rgba(0, 96, 100, 0.95);
+    --footer-bg: rgba(0, 96, 100, 0.95);
+    --modal-bg: #0D1B2A;
+    --photo-view-bg: #0D1B2A;
+}
+
+[data-theme="ocean"] .submit-photo-btn {
+    background: linear-gradient(135deg, #006064 0%, #0097A7 100%);
+}
+
+/* ===== THÈME SUPER-LIGHT ===== */
+[data-theme="super-light"] {
+    --primary-color: #6366F1;
+    --accent-color: #8B5CF6;
+    --background-color: #FEFEFE;
+    --card-bg: rgba(255, 255, 255, 0.95);
+    --text-color: #1F2937;
+    --text-muted: #6B7280;
+    --border-color: rgba(99, 102, 241, 0.2);
+    --input-bg: rgba(255, 255, 255, 0.95);
+    --button-bg: #F1F5F9;
+    --comment-bg: #F8FAFC;
+    --header-text-color: #FFFFFF;
+    --photo-title-color: #1F2937;
+    --card-text-color: #1F2937;
+    --navbar-bg: rgba(255, 255, 255, 0.95);
+    --footer-bg: rgba(255, 255, 255, 0.95);
+    --modal-bg: rgba(255, 255, 255, 0.98);
+    --photo-view-bg: rgba(255, 255, 255, 0.98);
+}
+
+[data-theme="super-light"] .submit-photo-btn {
+    background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+}
