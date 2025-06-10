@@ -856,3 +856,63 @@
         transform: translateX(-50%) translateY(-2px) !important;
     }
 }
+
+/* ===== THÈME COUCHER DE SOLEIL ===== */
+[data-theme="sunset"] .fuel-button,
+.theme-sunset .fuel-button,
+[data-theme="sunset"] .search-button,
+.theme-sunset .search-button {
+    background: linear-gradient(145deg, #FF6B35, #E91E63) !important;
+    color: white !important;
+}
+
+[data-theme="sunset"] .fuel-button:hover,
+.theme-sunset .fuel-button:hover,
+[data-theme="sunset"] .search-button:hover,
+.theme-sunset .search-button:hover {
+    background: linear-gradient(145deg, #FF8A50, #F06292) !important;
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+    transform: translateY(-2px);
+}
+
+
+
+/* ===== THÈME SUPER-LIGHT ===== */
+[data-theme="super-light"] .fuel-button,
+.theme-super-light .fuel-button,
+[data-theme="super-light"] .search-button,
+.theme-super-light .search-button {
+    background: linear-gradient(145deg, #6366F1, #8B5CF6) !important;
+    color: white !important;
+}
+
+[data-theme="super-light"] .fuel-button:hover,
+.theme-super-light .fuel-button:hover,
+[data-theme="super-light"] .search-button:hover,
+.theme-super-light .search-button:hover {
+    background: linear-gradient(145deg, #8B5CF6, #A78BFA) !important;
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Responsive mobile - ajustements pour tous les nouveaux thèmes */
+@media (max-width: 768px) {
+    [data-theme="sunset"] .fuel-button:hover,
+    [data-theme="ocean"] .fuel-button:hover,
+    [data-theme="super-light"] .fuel-button:hover,
+    [data-theme="sunset"] .search-button:hover,
+    [data-theme="ocean"] .search-button:hover,
+    [data-theme="super-light"] .search-button:hover {
+        transform: translateX(-50%) translateY(-2px) !important;
+    }
+}
+
+/* FORCE l'icône blanche dans TOUS les nouveaux thèmes */
+[data-theme="sunset"] .fuel-button .material-icons,
+[data-theme="ocean"] .fuel-button .material-icons,
+[data-theme="super-light"] .fuel-button .material-icons,
+[data-theme="sunset"] .search-button .material-icons,
+[data-theme="ocean"] .search-button .material-icons,
+[data-theme="super-light"] .search-button .material-icons {
+    color: white !important;
+}
