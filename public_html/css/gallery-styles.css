@@ -810,15 +810,6 @@
         outline-offset: -2px;
     }
     
-    /* Empêcher la fermeture du formulaire au focus */
-    .comment-form input,
-    .comment-form textarea {
-        font-size: 16px !important; /* Empêcher le zoom iOS */
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-        touch-action: manipulation;
-    }
 }
     
     /* Modal upload mobile plein écran */
@@ -924,18 +915,6 @@
         box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     }
     
-    /* Ajustements pour iOS */
-    @supports (-webkit-touch-callout: none) {
-        /* CSS spécifique iOS */
-        .modal-scrollable-content,
-        #photoUploadForm {
-            padding-bottom: env(safe-area-inset-bottom, 20px);
-        }
-        
-        .comment-form {
-            padding-bottom: calc(20px + env(safe-area-inset-bottom, 0));
-        }
-    }
 }
 
 /* Petits écrans */
@@ -1205,6 +1184,23 @@
     transition: all 0.3s ease;
 }
 
+/* Thème super-light - Navigation avec couleurs adaptées */
+[data-theme="super-light"] .nav-item {
+    color: #6366F1 !important;
+}
+
+[data-theme="super-light"] .nav-item.active {
+    color: #8B5CF6 !important;
+    background: rgba(99, 102, 241, 0.1) !important;
+    border-radius: 8px !important;
+}
+
+[data-theme="super-light"] .nav-item:hover {
+    color: #8B5CF6 !important;
+    background: rgba(99, 102, 241, 0.05) !important;
+    border-radius: 8px !important;
+}
+
 .nav-item .material-icons {
     font-size: 24px;
     margin-bottom: 4px;
@@ -1236,22 +1232,6 @@ body.modal-open {
 
 .comment {
     animation: fadeIn 0.3s ease;
-}
-
-/* iOS specific fixes */
-@supports (-webkit-touch-callout: none) {
-    .modal-scrollable-content {
-        -webkit-overflow-scrolling: touch;
-    }
-    
-    .comments-content {
-        -webkit-overflow-scrolling: touch;
-    }
-    
-    /* Fix pour le clavier iOS */
-    .comment-form {
-        padding-bottom: env(safe-area-inset-bottom, 20px);
-    }
 }
 
 .material-icons.arrow-back-white {

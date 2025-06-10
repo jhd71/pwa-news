@@ -26,6 +26,7 @@ const STATIC_RESOURCES = [
     '/css/theme-bleuciel.css',
 	'/css/theme-sunset.css',
 	'/css/theme-ocean.css',
+	'/css/theme-super-light.css',
     '/css/tv-tiles-fix.css',
     '/css/background-selector.css',
     '/css/font-settings.css',
