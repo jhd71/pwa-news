@@ -118,9 +118,9 @@ body {
 
 /* Style du logo */
 .site-logo {
-    height: 140px;
-    width: auto;
-    margin-top: 30px;
+    height: 70px;
+    width: 500px;
+    margin-top: 10px;
     position: relative;
     z-index: 1001;
     filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.3));
@@ -144,7 +144,6 @@ body {
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
-	z-index: 990;
 }
 
 /* Position spécifique pour le bouton paramètres */
@@ -1187,7 +1186,7 @@ background-color: #1a237e;
     
     /* Premier séparateur après le widget NEWS */
     .tile-container .separator:first-child {
-        margin-top: 20px !important;
+        margin-top: 1px !important;
         margin-bottom: 8px !important;
     }
     
@@ -3302,17 +3301,17 @@ border-color: #ffd230 !important;
 
 /* === background des Themes === */
 [data-theme="light"] body {
-    background: #7b5fbf !important;
+    background: #775cbd !important;
 }
 
 [data-theme="dark"] body {
-    background: #1a237e !important;
+    background: #161c5b !important;
 }
 
 [data-theme="rouge"] body {
-    background: #b71c1c !important;
+    background: #9d1414 !important;
 }
 
 [data-theme="bleuciel"] body {
-    background: #01579b !important;
+    background: #65a1d0 !important;
 }

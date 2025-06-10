@@ -1422,7 +1422,13 @@ changeTextContrast(contrast) {
         case 'rouge':
             this.currentTheme = 'bleuciel';
             break;
-        case 'bleuciel':           
+        case 'bleuciel':
+		this.currentTheme = 'sunset';
+            break;
+        case 'sunset':
+            this.currentTheme = 'ocean';
+            break;
+        case 'ocean':
         default:
             this.currentTheme = 'light';
             break;
@@ -1442,6 +1448,8 @@ changeTextContrast(contrast) {
         case 'rouge': themeName = 'rouge'; break;
         case 'bleuciel': themeName = 'bleu ciel'; break;       
         case 'light': themeName = 'violet'; break;
+		case 'sunset': themeName = 'Coucher de Soleil'; break;
+		case 'ocean': themeName = 'Océan Profond'; break;
         default: themeName = 'clair'; break;
     }
     
@@ -1599,11 +1607,21 @@ applyListModeImmediate() {
                 if (icon) icon.textContent = 'water_drop';
                 if (text) text.textContent = 'Bleu Ciel';
                 break;
-            case 'light':
+				case 'light':
             default:
                 if (icon) icon.textContent = 'light_mode';
                 if (text) text.textContent = 'Violet';
                 break;
+				case 'sunset':
+                if (icon) icon.textContent = 'wb_twilight';
+                if (text) text.textContent = 'Coucher de Soleil';
+                break;
+				case 'ocean':
+                if (icon) icon.textContent = 'waves';
+                if (text) text.textContent = 'Océan Profond';
+                break;
+            
+				
         }
     }
 }

@@ -1,0 +1,86 @@
+/* Thème Coucher de Soleil - Couleurs chaudes et romantiques */
+
+[data-theme="sunset"] {
+    /* Palette de coucher de soleil */
+    --primary-color: #FF6B35; /* Orange sunset */
+    --background-color: #2C1810; /* Brun très sombre */
+    --text-color: #FFF8E7;
+    --border-color: #FF8A50;
+    --hover-color: rgba(255, 107, 53, 0.2);
+    --shadow-color: rgba(0, 0, 0, 0.5);
+    --card-background: linear-gradient(135deg, #FF6B35, #FF8A50);
+    
+    /* Variables spécifiques */
+    --chat-gradient: linear-gradient(145deg, #FF6B35, #E91E63);
+    --chat-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    --info-bubble-bg: linear-gradient(135deg, #FF8A50, #FF6B35);
+}
+
+/* Arrière-plan dégradé coucher de soleil */
+[data-theme="sunset"] body,
+[data-theme="sunset"] html {
+    background: linear-gradient(180deg, 
+        #FF6B35 0%,     /* Orange chaud */
+        #E91E63 30%,    /* Rose magenta */
+        #673AB7 60%,    /* Violet profond */
+        #2C1810 100%    /* Brun nuit */
+    ) !important;
+    background-attachment: fixed !important;
+}
+
+/* Tuiles avec couleurs chaudes et romantiques */
+[data-theme="sunset"] .tile:nth-child(18n + 1) { background: linear-gradient(135deg, #FF6B35, #FF8A50); } /* Orange principal */
+[data-theme="sunset"] .tile:nth-child(18n + 2) { background: linear-gradient(135deg, #E91E63, #F06292); } /* Rose vif */
+[data-theme="sunset"] .tile:nth-child(18n + 3) { background: linear-gradient(135deg, #FF9800, #FFB74D); } /* Orange doré */
+[data-theme="sunset"] .tile:nth-child(18n + 4) { background: linear-gradient(135deg, #673AB7, #9C27B0); } /* Violet coucher */
+[data-theme="sunset"] .tile:nth-child(18n + 5) { background: linear-gradient(135deg, #FF5722, #FF7043); } /* Rouge orangé */
+[data-theme="sunset"] .tile:nth-child(18n + 6) { background: linear-gradient(135deg, #FFC107, #FFD54F); } /* Jaune soleil */
+[data-theme="sunset"] .tile:nth-child(18n + 7) { background: linear-gradient(135deg, #D32F2F, #F44336); } /* Rouge passion */
+[data-theme="sunset"] .tile:nth-child(18n + 8) { background: linear-gradient(135deg, #FF4081, #FF80AB); } /* Rose bonbon */
+[data-theme="sunset"] .tile:nth-child(18n + 9) { background: linear-gradient(135deg, #FF6F00, #FF8F00); } /* Orange ambré */
+[data-theme="sunset"] .tile:nth-child(18n + 10) { background: linear-gradient(135deg, #8E24AA, #BA68C8); } /* Violet doux */
+[data-theme="sunset"] .tile:nth-child(18n + 11) { background: linear-gradient(135deg, #FFAB00, #FFC107); } /* Ambre */
+[data-theme="sunset"] .tile:nth-child(18n + 12) { background: linear-gradient(135deg, #C2185B, #E91E63); } /* Rose foncé */
+[data-theme="sunset"] .tile:nth-child(18n + 13) { background: linear-gradient(135deg, #FF3D00, #FF5722); } /* Rouge feu */
+[data-theme="sunset"] .tile:nth-child(18n + 14) { background: linear-gradient(135deg, #7B1FA2, #8E24AA); } /* Violet nuit */
+[data-theme="sunset"] .tile:nth-child(18n + 15) { background: linear-gradient(135deg, #F57C00, #FF9800); } /* Orange miel */
+[data-theme="sunset"] .tile:nth-child(18n + 16) { background: linear-gradient(135deg, #E040FB, #F48FB1); } /* Magenta */
+[data-theme="sunset"] .tile:nth-child(18n + 17) { background: linear-gradient(135deg, #BF360C, #D84315); } /* Rouge brique */
+[data-theme="sunset"] .tile:nth-child(18n + 0) { background: linear-gradient(135deg, #FF1744, #FF5252); } /* Rouge éclatant */
+
+/* Interface avec ambiance chaleureuse */
+[data-theme="sunset"] .sidebar,
+[data-theme="sunset"] .settings-menu,
+[data-theme="sunset"] .bottom-nav {
+    background: linear-gradient(135deg, #2C1810, #FF6B35) !important;
+    border: 1px solid #FF8A50;
+    color: #FFF8E7 !important;
+    backdrop-filter: blur(10px);
+}
+
+[data-theme="sunset"] .menu-button,
+[data-theme="sunset"] .hamburger-menu,
+[data-theme="sunset"] .settings-button {
+    background: linear-gradient(135deg, #FF6B35, #E91E63) !important;
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4) !important;
+}
+
+[data-theme="sunset"] .chat-toggle {
+    background: linear-gradient(145deg, #FF6B35, #E91E63);
+    box-shadow: 0 8px 30px rgba(255, 107, 53, 0.5);
+}
+
+/* Effets romantiques pour les tuiles */
+[data-theme="sunset"] .tile:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 12px 40px rgba(255, 107, 53, 0.3);
+    filter: brightness(1.15) saturate(1.1);
+}
+
+/* Toast style coucher de soleil */
+[data-theme="sunset"] .toast {
+    background: linear-gradient(135deg, #FF6B35, #E91E63);
+    color: white;
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+    border: 1px solid #FF8A50;
+}

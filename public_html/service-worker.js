@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v20'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v21'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -24,6 +24,8 @@ const STATIC_RESOURCES = [
     '/css/settings-styles.css',
     '/css/survey-styles.css',
     '/css/theme-bleuciel.css',
+	'/css/theme-sunset.css',
+	'/css/theme-ocean.css',
     '/css/tv-tiles-fix.css',
     '/css/background-selector.css',
     '/css/font-settings.css',

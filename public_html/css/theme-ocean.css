@@ -1,0 +1,113 @@
+/* Thème Océan Profond - Mystérieux et apaisant */
+
+[data-theme="ocean"] {
+    /* Palette océanique profonde */
+    --primary-color: #006064; /* Bleu océan profond */
+    --background-color: #0D1B2A; /* Bleu nuit océan */
+    --text-color: #B3E5FC;
+    --border-color: #00838F;
+    --hover-color: rgba(0, 131, 143, 0.3);
+    --shadow-color: rgba(0, 0, 0, 0.6);
+    --card-background: linear-gradient(135deg, #006064, #00838F);
+    
+    /* Variables spécifiques */
+    --chat-gradient: linear-gradient(145deg, #006064, #0097A7);
+    --chat-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --info-bubble-bg: linear-gradient(135deg, #00838F, #006064);
+}
+
+/* Arrière-plan océanique avec vagues */
+[data-theme="ocean"] body,
+[data-theme="ocean"] html {
+    background: radial-gradient(ellipse at center, 
+        #0D1B2A 0%,     /* Centre sombre */
+        #1A237E 30%,    /* Bleu marine */
+        #0D47A1 60%,    /* Bleu océan */
+        #006064 100%    /* Bleu-vert profond */
+    ) !important;
+    background-attachment: fixed !important;
+}
+
+/* Tuiles inspirées de la vie marine */
+[data-theme="ocean"] .tile:nth-child(22n + 1) { background: linear-gradient(135deg, #006064, #00838F); } /* Bleu océan */
+[data-theme="ocean"] .tile:nth-child(22n + 2) { background: linear-gradient(135deg, #0097A7, #00BCD4); } /* Cyan océan */
+[data-theme="ocean"] .tile:nth-child(22n + 3) { background: linear-gradient(135deg, #1A237E, #303F9F); } /* Bleu marine */
+[data-theme="ocean"] .tile:nth-child(22n + 4) { background: linear-gradient(135deg, #004D40, #00695C); } /* Vert océan */
+[data-theme="ocean"] .tile:nth-child(22n + 5) { background: linear-gradient(135deg, #0D47A1, #1976D2); } /* Bleu profond */
+[data-theme="ocean"] .tile:nth-child(22n + 6) { background: linear-gradient(135deg, #00ACC1, #26C6DA); } /* Turquoise */
+[data-theme="ocean"] .tile:nth-child(22n + 7) { background: linear-gradient(135deg, #1E88E5, #42A5F5); } /* Bleu ciel marin */
+[data-theme="ocean"] .tile:nth-child(22n + 8) { background: linear-gradient(135deg, #00796B, #009688); } /* Vert marin */
+[data-theme="ocean"] .tile:nth-child(22n + 9) { background: linear-gradient(135deg, #283593, #3F51B5); } /* Indigo */
+[data-theme="ocean"] .tile:nth-child(22n + 10) { background: linear-gradient(135deg, #0288D1, #03A9F4); } /* Bleu clair */
+[data-theme="ocean"] .tile:nth-child(22n + 11) { background: linear-gradient(135deg, #00695C, #00897B); } /* Vert émeraude */
+[data-theme="ocean"] .tile:nth-child(22n + 12) { background: linear-gradient(135deg, #512DA8, #673AB7); } /* Violet océan */
+[data-theme="ocean"] .tile:nth-child(22n + 13) { background: linear-gradient(135deg, #0277BD, #0288D1); } /* Bleu glacier */
+[data-theme="ocean"] .tile:nth-child(22n + 14) { background: linear-gradient(135deg, #00BCD4, #4DD0E1); } /* Cyan clair */
+[data-theme="ocean"] .tile:nth-child(22n + 15) { background: linear-gradient(135deg, #1976D2, #2196F3); } /* Bleu vif */
+[data-theme="ocean"] .tile:nth-child(22n + 16) { background: linear-gradient(135deg, #00ACC1, #00E5FF); } /* Aqua */
+[data-theme="ocean"] .tile:nth-child(22n + 17) { background: linear-gradient(135deg, #3949AB, #5C6BC0); } /* Bleu lavande */
+[data-theme="ocean"] .tile:nth-child(22n + 18) { background: linear-gradient(135deg, #0E4B99, #1565C0); } /* Bleu royal */
+[data-theme="ocean"] .tile:nth-child(22n + 19) { background: linear-gradient(135deg, #00838F, #0097A7); } /* Teal foncé */
+[data-theme="ocean"] .tile:nth-child(22n + 20) { background: linear-gradient(135deg, #004D5C, #006064); } /* Bleu abyssal */
+[data-theme="ocean"] .tile:nth-child(22n + 21) { background: linear-gradient(135deg, #1A237E, #1565C0); } /* Bleu nuit */
+[data-theme="ocean"] .tile:nth-child(22n + 0) { background: linear-gradient(135deg, #01579B, #0277BD); } /* Bleu profondeur */
+
+/* Interface avec style aquatique */
+[data-theme="ocean"] .sidebar,
+[data-theme="ocean"] .settings-menu,
+[data-theme="ocean"] .bottom-nav {
+    background: linear-gradient(135deg, #0D1B2A, #006064) !important;
+    border: 1px solid #00838F;
+    color: #B3E5FC !important;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 8px 32px rgba(0, 96, 100, 0.3);
+}
+
+[data-theme="ocean"] .menu-button,
+[data-theme="ocean"] .hamburger-menu,
+[data-theme="ocean"] .settings-button {
+    background: linear-gradient(135deg, #006064, #0097A7) !important;
+    box-shadow: 0 8px 25px rgba(0, 96, 100, 0.4) !important;
+}
+
+[data-theme="ocean"] .chat-toggle {
+    background: linear-gradient(145deg, #006064, #0097A7);
+    box-shadow: 0 10px 40px rgba(0, 96, 100, 0.5);
+}
+
+/* Effets aquatiques pour les tuiles */
+[data-theme="ocean"] .tile:hover {
+    transform: translateY(-4px) scale(1.04);
+    box-shadow: 0 15px 50px rgba(0, 131, 143, 0.4);
+    filter: brightness(1.2) saturate(1.2);
+}
+
+/* Style pour les boutons */
+[data-theme="ocean"] .news-button,
+[data-theme="ocean"] .weather-show-btn,
+[data-theme="ocean"] .quick-links-show-btn,
+[data-theme="ocean"] .search-button,
+[data-theme="ocean"] .fuel-button {
+    background: linear-gradient(145deg, #006064, #0097A7) !important;
+    color: #B3E5FC !important;
+    border: 1px solid #00838F !important;
+    box-shadow: 0 4px 10px rgba(0, 96, 100, 0.4) !important;
+}
+
+[data-theme="ocean"] .search-button:hover,
+[data-theme="ocean"] .fuel-button:hover,
+[data-theme="ocean"] .news-button:hover,
+[data-theme="ocean"] .weather-show-btn:hover,
+[data-theme="ocean"] .quick-links-show-btn:hover {
+    background: linear-gradient(145deg, #0097A7, #00BCD4) !important;
+    box-shadow: 0 6px 15px rgba(0, 131, 143, 0.5) !important;
+    transform: translateY(-2px);
+}
+
+/* Toast style océanique */
+[data-theme="ocean"] .toast {
+    background: linear-gradient(135deg, #006064, #0097A7);
+    color: #B3E5FC;
+    box-shadow: 0 8px 25px rgba(0, 96, 100, 0.4);
+    border: 1px solid #00BCD4;
+}
