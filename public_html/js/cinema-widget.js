@@ -327,6 +327,30 @@ class CinemaWidget {
         }
     }
 
+// 1. Fonction pour obtenir les jours de diffusion (À ajouter après parseHoraires)
+getDaysOfWeek() {
+    const today = new Date();
+    const days = [];
+    
+    for (let i = 0; i < 7; i++) {
+        const date = new Date(today);
+        date.setDate(today.getDate() + i);
+        
+        const dayName = date.toLocaleDateString('fr-FR', { weekday: 'long' });
+        const dayNumber = date.getDate();
+        const month = date.toLocaleDateString('fr-FR', { month: 'short' });
+        
+        days.push({
+            name: dayName.charAt(0).toUpperCase() + dayName.slice(1),
+            date: `${dayNumber} ${month}`,
+            isToday: i === 0,
+            isTomorrow: i === 1
+        });
+    }
+    
+    return days;
+}
+
     // Afficher les films (méthode inchangée)
     displayCinema(movies) {
         const previewContainer = document.getElementById('cinemaWidgetPreview');
@@ -444,40 +468,61 @@ class CinemaWidget {
         }
     }
 
-    // Mise à jour du contenu modal
-    updateModalContent(modalContent) {
-        if (this.cinemaData && this.cinemaData.length > 0) {
-            modalContent.innerHTML = this.cinemaData.map(movie => {
-                const newBadge = movie.isNew ? '🆕 ' : '';
-                const timesText = movie.times.length > 3 
-                    ? `${movie.times.slice(0, 3).join(', ')}...` 
-                    : movie.times.join(', ');
-                
-                const clickAction = movie.url ? 
-                    `onclick="event.stopPropagation(); window.open('${movie.url}', '_blank')"` : 
-                    '';
-                
-                return `
-                    <div class="cinema-preview-item" data-movie-id="${movie.id}" ${clickAction} style="cursor: pointer; background: rgba(220, 53, 69, 0.1); border-left: 3px solid #dc3545; padding: 8px 12px; margin: 6px 0; border-radius: 0 8px 8px 0; font-size: 13px; transition: all 0.2s ease;">
-                        <strong style="color: #dc3545;">${newBadge}${movie.title}</strong> <em>(${movie.duration})</em><br>
-                        <div style="font-size: 11px; color: #888; font-style: italic; margin-top: 2px;">${movie.genre}</div>
-                        <div class="movie-times" style="font-size: 12px; color: #666; margin-top: 4px;">${timesText}</div>
-                    </div>
-                `;
-            }).join('');
-        } else {
-            modalContent.innerHTML = `
-                <div style="text-align: center; padding: 40px;">
-                    <span class="material-icons" style="font-size: 48px; color: #dc3545;">movie_filter</span>
-                    <div style="margin: 15px 0; font-weight: 500;">Programme temporairement indisponible</div>
-                    <div style="font-size: 14px; color: #666; line-height: 1.4;">
-                        Consultez directement :<br>
-                        <a href="https://www.cinemas-panacea.fr/montceau-embarcadere/" target="_blank" style="color: #dc3545; text-decoration: none;">🌐 Site du cinéma</a><br>
-                        <a href="https://www.facebook.com/CinemaEmbarcadere" target="_blank" style="color: #dc3545; text-decoration: none;">📘 Page Facebook</a>
-                    </div>
+    // 2. Version améliorée de updateModalContent avec jours
+updateModalContent(modalContent) {
+    if (this.cinemaData && this.cinemaData.length > 0) {
+        const days = this.getDaysOfWeek();
+        
+        // Simuler la répartition des films sur les jours (en attendant de vraies données)
+        const filmsWithDays = this.cinemaData.map(movie => {
+            // Pour l'instant, on assigne aléatoirement 2-4 jours par film
+            const numDays = Math.floor(Math.random() * 3) + 2; // 2 à 4 jours
+            const assignedDays = days.slice(0, numDays);
+            
+            return {
+                ...movie,
+                showDays: assignedDays
+            };
+        });
+
+        modalContent.innerHTML = filmsWithDays.map(movie => {
+            const newBadge = movie.isNew ? '🆕 ' : '';
+            const timesText = movie.times.length > 3 
+                ? `${movie.times.slice(0, 3).join(', ')}...` 
+                : movie.times.join(', ');
+            
+            // Affichage des jours de diffusion
+            const daysText = movie.showDays.map(day => {
+                if (day.isToday) return 'Aujourd\'hui';
+                if (day.isTomorrow) return 'Demain';
+                return `${day.name} ${day.date}`;
+            }).slice(0, 2).join(', '); // Limiter à 2 jours dans l'affichage
+            
+            const clickAction = movie.url ? 
+                `onclick="event.stopPropagation(); window.open('${movie.url}', '_blank')"` : 
+                '';
+            
+            return `
+                <div class="cinema-preview-item" data-movie-id="${movie.id}" ${clickAction} style="cursor: pointer; background: rgba(220, 53, 69, 0.1); border-left: 3px solid #dc3545; padding: 8px 12px; margin: 6px 0; border-radius: 0 8px 8px 0; font-size: 13px; transition: all 0.2s ease;">
+                    <strong style="color: #dc3545;">${newBadge}${movie.title}</strong> <em>(${movie.duration})</em><br>
+                    <div style="font-size: 11px; color: #888; font-style: italic; margin-top: 2px;">${movie.genre}</div>
+                    <div style="font-size: 10px; color: #666; margin-top: 2px;">📅 ${daysText}</div>
+                    <div class="movie-times" style="font-size: 12px; color: #666; margin-top: 4px;">🕐 ${timesText}</div>
                 </div>
             `;
-        }
+        }).join('');
+    } else {
+        modalContent.innerHTML = `
+            <div style="text-align: center; padding: 40px;">
+                <span class="material-icons" style="font-size: 48px; color: #dc3545;">movie_filter</span>
+                <div style="margin: 15px 0; font-weight: 500;">Programme temporairement indisponible</div>
+                <div style="font-size: 14px; color: #666; line-height: 1.4;">
+                    Consultez directement :<br>
+                    <a href="https://www.cinemas-panacea.fr/montceau-embarcadere/" target="_blank" style="color: #dc3545; text-decoration: none;">🌐 Site du cinéma</a><br>
+                    <a href="https://www.facebook.com/CinemaEmbarcadere" target="_blank" style="color: #dc3545; text-decoration: none;">📘 Page Facebook</a>
+                </div>
+            </div>
+        `;
     }
 }
 
