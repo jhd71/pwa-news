@@ -99,6 +99,7 @@
 	<link rel="stylesheet" href="css/background-selector.css">
 	<link rel="stylesheet" href="css/donation.css">
 	<link rel="stylesheet" href="css/news-widget.css">
+	<link rel="stylesheet" href="css/cinema-widget.css">
 	<link rel="canonical" href="https://actuetmedia.fr/" />
 </head>
 <body>
@@ -148,28 +149,81 @@
   </div>
 </div>
 
-<!-- Widget NEWS Actu&Média - DÉPLACÉ EN DEHORS DU SWIPER -->
-<div class="news-widget-container">
-    <div class="local-news-widget" id="localNewsWidget" onclick="openLocalNewsPage()">
-        <div class="news-widget-header">
-            <span class="material-icons news-pulse">newspaper</span>
-            <div class="news-widget-title">NEWS Actu&Média</div>
-            <div class="news-widget-badge">Local</div>
-        </div>
-        
-        <div class="news-widget-preview" id="newsWidgetPreview">
-            <div class="loading-news">
-                <span class="material-icons spinning">hourglass_empty</span>
-                Chargement des actualités...
+<!-- Conteneur pour les deux widgets côte à côte -->
+<div class="widgets-row">
+    <!-- Widget NEWS Actu&Média -->
+    <div class="news-widget-container">
+        <div class="local-news-widget" id="localNewsWidget" onclick="openLocalNewsPage()">
+            <div class="news-widget-header">
+                <span class="material-icons news-pulse">newspaper</span>
+                <div class="news-widget-title">NEWS Actu&Média</div>
+                <div class="news-widget-badge">Local</div>
+            </div>
+            
+            <div class="news-widget-preview" id="newsWidgetPreview">
+                <div class="loading-news">
+                    <span class="material-icons spinning">hourglass_empty</span>
+                    Chargement des actualités...
+                </div>
+            </div>
+            
+            <div class="news-widget-footer">
+                <span class="news-widget-tap">👆 Touchez pour lire toutes les actualités</span>
+                <div class="news-widget-count" id="newsWidgetCount">0 news</div>
             </div>
         </div>
-        
-        <div class="news-widget-footer">
-            <span class="news-widget-tap">👆 Touchez pour lire toutes les actualités</span>
-            <div class="news-widget-count" id="newsWidgetCount">0 news</div>
+    </div>
+
+    <!-- Widget CINÉMA -->
+    <div class="cinema-widget-container">
+        <div class="cinema-widget" id="cinemaWidget" onclick="openCinemaPage()">
+            <div class="cinema-widget-header">
+                <span class="material-icons cinema-icon">movie</span>
+                <span class="cinema-widget-title">🎬 CINÉMA L'Embarcadère</span>
+                <span class="cinema-widget-badge">Panacéa</span>
+            </div>
+            
+            <div class="cinema-widget-preview" id="cinemaWidgetPreview">
+                <div class="loading-cinema">
+                    <span class="material-icons spinning">hourglass_empty</span>
+                    Chargement du programme...
+                </div>
+            </div>
+            
+            <div class="cinema-widget-footer">
+                <span class="cinema-widget-tap">👆 Programme complet & réservations</span>
+                <span class="cinema-widget-count" id="cinemaWidgetCount">0 films</span>
+            </div>
         </div>
     </div>
 </div>
+
+<!-- Bouton flottant cinéma mobile -->
+<button class="cinema-mobile-btn" id="cinemaMobileBtn" title="Programme cinéma">
+    <span class="material-icons">movie</span>
+</button>
+
+<!-- Modal cinéma mobile -->
+<div class="cinema-mobile-modal" id="cinemaMobileModal">
+    <div class="cinema-modal-content">
+        <div class="cinema-modal-header">
+            <h3>🎬 CINÉMA L'Embarcadère</h3>
+            <button class="cinema-modal-close" id="cinemaModalClose">
+    ✕
+</button>
+        </div>
+        <div id="cinemaModalContent">
+            <!-- Le contenu du widget sera copié ici -->
+        </div>
+        <div style="text-align: center; margin-top: 15px;">
+            <button onclick="window.open('https://www.cinemas-panacea.fr/montceau-embarcadere/horaires/', '_blank')" 
+                    style="background: var(--primary-color); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">
+                📅 Programme complet & réservations
+            </button>
+        </div>
+    </div>
+</div>
+
 <!-- Menu latéral -->
 <aside id="sidebar" class="sidebar">
     <div class="sidebar-header">
@@ -295,6 +349,7 @@ document.getElementById('currentYear').textContent = new Date().getFullYear();
 	<script src="js/donation.js"></script>
 	<script src="js/survey-manager.js"></script>
 	<script src="js/news-widget.js"></script>
+	<script src="js/cinema-widget.js"></script>
 
 	<!-- Script d'initialisation principal -->
 	<script type="module" src="js/app-initializer.js"></script>

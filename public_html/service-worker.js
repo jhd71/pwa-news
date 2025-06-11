@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v21'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v22'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -24,8 +24,8 @@ const STATIC_RESOURCES = [
     '/css/settings-styles.css',
     '/css/survey-styles.css',
     '/css/theme-bleuciel.css',
-	'/css/theme-sunset.css',
 	'/css/theme-ocean.css',
+	'/css/theme-sunset.css',
 	'/css/theme-super-light.css',
     '/css/tv-tiles-fix.css',
     '/css/background-selector.css',
@@ -34,6 +34,7 @@ const STATIC_RESOURCES = [
     '/css/gallery-styles.css',
     '/css/donation.css',
 	'/css/news-widget.css',
+	'/css/cinema-widget.css',
 
     // Scripts JavaScript
     '/js/app.js',
@@ -63,6 +64,7 @@ const STATIC_RESOURCES = [
     '/js/welcome-manager.js',
     '/js/custom-background-manager.js',
 	'/js/news-widget.js',
+	'/js/cinema-widget.js',
 	'/js/ios-fixes-safe.js',
     
     // Fichiers de configuration (seulement ceux qui existent)
@@ -460,7 +462,7 @@ function categorizeRequest(request) {
     return 'DEFAULT';
 }
 
-// Et ajoutez cette fonction pour gérer les requêtes CDN
+// Gestion des requêtes CDN
 function handleCdnRequest(event) {
     event.respondWith(
         (async () => {
@@ -473,7 +475,11 @@ function handleCdnRequest(event) {
                 fetchWithTimeout(event.request, NETWORK_TIMEOUT)
                     .then(response => {
                         if (response.ok) {
-                            cache.put(event.request, response.clone());
+                            try {
+                                cache.put(event.request, response.clone());
+                            } catch (cacheError) {
+                                console.warn('[ServiceWorker] Erreur de mise en cache CDN:', cacheError);
+                            }
                         }
                     })
                     .catch(error => {
@@ -487,7 +493,11 @@ function handleCdnRequest(event) {
                 // Si pas en cache, essayer le réseau
                 const response = await fetchWithTimeout(event.request, NETWORK_TIMEOUT);
                 if (response.ok) {
-                    cache.put(event.request, response.clone());
+                    try {
+                        cache.put(event.request, response.clone());
+                    } catch (cacheError) {
+                        console.warn('[ServiceWorker] Erreur de mise en cache CDN:', cacheError);
+                    }
                 }
                 return response;
             } catch (error) {
@@ -523,7 +533,11 @@ function handleImageRequest(event) {
                     .then(response => {
                         // Mettre en cache si approprié
                         if (shouldCache(event.request, response)) {
-                            cache.put(event.request, response.clone());
+                            try {
+                                cache.put(event.request, response.clone());
+                            } catch (cacheError) {
+                                console.warn('[ServiceWorker] Erreur de mise en cache image:', cacheError);
+                            }
                         }
                         return response;
                     })
@@ -571,7 +585,11 @@ function handleApiRequest(event) {
                 
                 // Mettre en cache pour une utilisation hors ligne future
                 const cache = await caches.open(API_CACHE_NAME);
-                cache.put(event.request, response.clone());
+                try {
+                    cache.put(event.request, response.clone());
+                } catch (cacheError) {
+                    console.warn('[ServiceWorker] Erreur de mise en cache API:', cacheError);
+                }
                 
                 return response;
             } catch (error) {
@@ -625,7 +643,11 @@ function handleFontRequest(event) {
             try {
                 const response = await fetch(event.request);
                 if (response.ok) {
-                    cache.put(event.request, response.clone());
+                    try {
+                        cache.put(event.request, response.clone());
+                    } catch (cacheError) {
+                        console.warn('[ServiceWorker] Erreur de mise en cache police:', cacheError);
+                    }
                 }
                 return response;
             } catch (error) {
@@ -649,7 +671,11 @@ function handleCssJsRequest(event) {
                 // Stratégie réseau d'abord pour les ressources critiques
                 const response = await fetchWithTimeout(event.request, NETWORK_TIMEOUT);
                 if (response.ok) {
-                    cache.put(event.request, response.clone());
+                    try {
+                        cache.put(event.request, response.clone());
+                    } catch (cacheError) {
+                        console.warn('[ServiceWorker] Erreur de mise en cache CSS/JS:', cacheError);
+                    }
                 }
                 return response;
             } catch (error) {
@@ -687,7 +713,11 @@ function handleNavigationRequest(event) {
                 
                 // Mettre en cache pour utilisation hors ligne
                 const cache = await caches.open(CACHE_NAME);
-                cache.put(event.request, networkResponse.clone());
+                try {
+                    cache.put(event.request, networkResponse.clone());
+                } catch (cacheError) {
+                    console.warn('[ServiceWorker] Erreur de mise en cache navigation:', cacheError);
+                }
                 
                 return networkResponse;
             } catch (error) {
@@ -722,7 +752,11 @@ function handleDefaultRequest(event) {
                 
                 // Mettre en cache si c'est approprié
                 if (shouldCache(event.request, networkResponse)) {
-                    cache.put(event.request, networkResponse.clone());
+                    try {
+                        cache.put(event.request, networkResponse.clone());
+                    } catch (cacheError) {
+                        console.warn('[ServiceWorker] Erreur de mise en cache par défaut:', cacheError);
+                    }
                 }
                 
                 return networkResponse;
