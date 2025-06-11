@@ -167,222 +167,324 @@ class CinemaWidget {
 
     // Parser amélioré et plus robuste
     parseHoraires(doc) {
-        const films = [];
-        const filmsSeen = new Map();
+    const films = [];
+    const filmsSeen = new Map();
+    
+    try {
+        // Sélecteurs plus précis pour le site Panacéa
+        const selectors = [
+            '.film-item',
+            '.movie-item', 
+            '.seance-item',
+            '[data-film]',
+            'article.film',
+            '.program-item'
+        ];
         
-        try {
-            // Sélecteurs plus précis pour le site Panacéa
-            const selectors = [
-                '.film-item',
-                '.movie-item', 
-                '.seance-item',
-                '[data-film]',
-                'article.film',
-                '.program-item'
-            ];
-            
-            let filmElements = [];
-            for (const selector of selectors) {
-                filmElements = doc.querySelectorAll(selector);
-                if (filmElements.length > 0) {
-                    console.log(`Éléments trouvés avec sélecteur: ${selector}`);
-                    break;
-                }
+        let filmElements = [];
+        for (const selector of selectors) {
+            filmElements = doc.querySelectorAll(selector);
+            if (filmElements.length > 0) {
+                console.log(`Éléments trouvés avec sélecteur: ${selector}`);
+                break;
             }
-            
-            if (filmElements.length === 0) {
-                // Essayer une approche plus générale
-                filmElements = doc.querySelectorAll('*[class*="film"], *[class*="movie"], *[class*="seance"]');
-            }
-            
-            if (filmElements.length === 0) {
-                console.warn('Aucun élément de film trouvé');
-                return [];
-            }
-            
-            filmElements.forEach((element, index) => {
-                try {
-                    // Chercher le titre du film
-                    const titleSelectors = [
-                        'h1, h2, h3',
-                        '.title, .film-title, .movie-title',
-                        'a[href*="/film/"]'
-                    ];
-                    
-                    let titleElement = null;
-                    for (const selector of titleSelectors) {
-                        titleElement = element.querySelector(selector);
-                        if (titleElement) break;
-                    }
-                    
-                    if (!titleElement) return;
-                    
-                    const fullTitle = titleElement.textContent.trim();
-                    const title = fullTitle.replace(/\s*\([^)]*\)\s*/g, '').trim();
-
-                    // Filtrer les titres non valides (sélecteurs, navigation, etc.)
-                    const invalidTitles = [
-                        'choisissez votre cinéma',
-                        'choisissez votre',
-                        'sélectionnez',
-                        'programme complet',
-                        'réservations',
-                        'horaires',
-                        'cinéma'
-                    ];
-
-                    const titleLower = title.toLowerCase();
-                    const isInvalidTitle = invalidTitles.some(invalid => 
-                        titleLower.includes(invalid) || titleLower === invalid
-                    );
-
-                    // Validation du titre
-                    if (title.length < 2 || title.length > 100 || isInvalidTitle) return;
-                    
-                    // Extraire la durée
-                    const durationRegex = /(?:Durée\s*[:]\s*)?(\d{1,2}h(?:\d{2})?|\d{1,3}\s*min)/i;
-                    const durationMatch = element.textContent.match(durationRegex);
-                    const duration = durationMatch ? durationMatch[1] : "Non spécifié";
-                    
-                    // Extraire les horaires
-                    const timeRegex = /\b(\d{1,2}h\d{2})\b/g;
-                    const timeMatches = [...element.textContent.matchAll(timeRegex)];
-                    const times = timeMatches
-                        .map(match => match[1])
-                        .filter(time => {
-                            const hours = parseInt(time.split('h')[0]);
-                            return hours >= 8 && hours <= 23;
-                        })
-                        .slice(0, 8); // Limiter à 8 horaires max
-                    
-                    // Vérifier qu'on a bien des horaires valides
-                    if (times.length === 0) return;
-                    
-                    // Extraire le genre
-                    const genreText = element.textContent.toLowerCase();
-                    let genre = "Film";
-                    const genreMap = {
-                        'animation': 'Animation',
-                        'action': 'Action',
-                        'comédie': 'Comédie',
-                        'comedy': 'Comédie',
-                        'drame': 'Drame',
-                        'famille': 'Famille',
-                        'aventure': 'Aventure',
-                        'thriller': 'Thriller',
-                        'horreur': 'Horreur',
-                        'musical': 'Musical'
-                    };
-                    
-                    for (const [keyword, genreName] of Object.entries(genreMap)) {
-                        if (genreText.includes(keyword)) {
-                            genre = genreName;
-                            break;
-                        }
-                    }
-                    
-                    // URL du film
-                    const linkElement = element.querySelector('a[href*="/film/"]');
-                    let filmUrl = null;
-                    if (linkElement) {
-                        const href = linkElement.getAttribute('href');
-                        filmUrl = href.startsWith('http') ? href : 'https://www.cinemas-panacea.fr' + href;
-                    }
-                    
-                    // Vérifier si nouveau (avec prudence)
-                    const isNew = /\b(nouveau|new|première)\b/i.test(element.textContent);
-                    
-                    if (title && times.length > 0) {
-                        if (filmsSeen.has(title)) {
-                            const existingFilm = filmsSeen.get(title);
-                            times.forEach(time => {
-                                if (!existingFilm.times.includes(time)) {
-                                    existingFilm.times.push(time);
-                                }
-                            });
-                        } else {
-                            filmsSeen.set(title, {
-                                id: filmsSeen.size + 1,
-                                title: title,
-                                duration: duration,
-                                times: [...times],
-                                genre: genre,
-                                isNew: isNew,
-                                url: filmUrl
-                            });
-                        }
-                    }
-                } catch (err) {
-                    console.warn('Erreur parsing film individuel:', err);
-                }
-            });
-            
-            const filmsArray = Array.from(filmsSeen.values());
-            console.log('🎬 Films parsés:', filmsArray.length);
-            return filmsArray;
-            
-        } catch (error) {
-            console.error('Erreur lors du parsing:', error);
+        }
+        
+        if (filmElements.length === 0) {
+            // Essayer une approche plus générale
+            filmElements = doc.querySelectorAll('*[class*="film"], *[class*="movie"], *[class*="seance"]');
+        }
+        
+        if (filmElements.length === 0) {
+            console.warn('Aucun élément de film trouvé');
             return [];
         }
-    }
-
-    // Obtenir les jours de diffusion
-    getDaysOfWeek() {
-        const today = new Date();
-        const days = [];
         
-        for (let i = 0; i < 7; i++) {
-            const date = new Date(today);
-            date.setDate(today.getDate() + i);
+        filmElements.forEach((element, index) => {
+            try {
+                // Chercher le titre du film
+                const titleSelectors = [
+                    'h1, h2, h3',
+                    '.title, .film-title, .movie-title',
+                    'a[href*="/film/"]'
+                ];
+                
+                let titleElement = null;
+                for (const selector of titleSelectors) {
+                    titleElement = element.querySelector(selector);
+                    if (titleElement) break;
+                }
+                
+                if (!titleElement) return;
+                
+                const fullTitle = titleElement.textContent.trim();
+                const title = fullTitle.replace(/\s*\([^)]*\)\s*/g, '').trim();
+
+                // Filtrer les titres non valides
+                const invalidTitles = [
+                    'choisissez votre cinéma',
+                    'choisissez votre',
+                    'sélectionnez',
+                    'programme complet',
+                    'réservations',
+                    'horaires',
+                    'cinéma'
+                ];
+
+                const titleLower = title.toLowerCase();
+                const isInvalidTitle = invalidTitles.some(invalid => 
+                    titleLower.includes(invalid) || titleLower === invalid
+                );
+
+                // Validation du titre
+                if (title.length < 2 || title.length > 100 || isInvalidTitle) return;
+                
+                // Extraire la durée
+                const durationRegex = /(?:Durée\s*[:]\s*)?(\d{1,2}h(?:\d{2})?|\d{1,3}\s*min)/i;
+                const durationMatch = element.textContent.match(durationRegex);
+                const duration = durationMatch ? durationMatch[1] : "Non spécifié";
+                
+                // Extraire les horaires
+                const timeRegex = /\b(\d{1,2}h\d{2})\b/g;
+                const timeMatches = [...element.textContent.matchAll(timeRegex)];
+                const times = timeMatches
+                    .map(match => match[1])
+                    .filter(time => {
+                        const hours = parseInt(time.split('h')[0]);
+                        return hours >= 8 && hours <= 23;
+                    })
+                    .slice(0, 8);
+                
+                // Vérifier qu'on a bien des horaires valides
+                if (times.length === 0) return;
+                
+                // **NOUVEAU** : Extraire les vraies dates de diffusion
+                const realDates = this.extractRealDates(element);
+                
+                // Extraire le genre
+                const genreText = element.textContent.toLowerCase();
+                let genre = "Film";
+                const genreMap = {
+                    'animation': 'Animation',
+                    'action': 'Action',
+                    'comédie': 'Comédie',
+                    'comedy': 'Comédie',
+                    'drame': 'Drame',
+                    'famille': 'Famille',
+                    'aventure': 'Aventure',
+                    'thriller': 'Thriller',
+                    'horreur': 'Horreur',
+                    'musical': 'Musical'
+                };
+                
+                for (const [keyword, genreName] of Object.entries(genreMap)) {
+                    if (genreText.includes(keyword)) {
+                        genre = genreName;
+                        break;
+                    }
+                }
+                
+                // URL du film
+                const linkElement = element.querySelector('a[href*="/film/"]');
+                let filmUrl = null;
+                if (linkElement) {
+                    const href = linkElement.getAttribute('href');
+                    filmUrl = href.startsWith('http') ? href : 'https://www.cinemas-panacea.fr' + href;
+                }
+                
+                // Vérifier si nouveau
+                const isNew = /\b(nouveau|new|première)\b/i.test(element.textContent);
+                
+                if (title && times.length > 0) {
+                    if (filmsSeen.has(title)) {
+                        const existingFilm = filmsSeen.get(title);
+                        // Ajouter les nouveaux horaires
+                        times.forEach(time => {
+                            if (!existingFilm.times.includes(time)) {
+                                existingFilm.times.push(time);
+                            }
+                        });
+                        // Ajouter les nouvelles dates
+                        realDates.forEach(date => {
+                            if (!existingFilm.realDates.some(d => d.dateString === date.dateString)) {
+                                existingFilm.realDates.push(date);
+                            }
+                        });
+                    } else {
+                        filmsSeen.set(title, {
+                            id: filmsSeen.size + 1,
+                            title: title,
+                            duration: duration,
+                            times: [...times],
+                            genre: genre,
+                            isNew: isNew,
+                            url: filmUrl,
+                            realDates: realDates // **NOUVEAU** : Vraies dates
+                        });
+                    }
+                }
+            } catch (err) {
+                console.warn('Erreur parsing film individuel:', err);
+            }
+        });
+        
+        const filmsArray = Array.from(filmsSeen.values());
+        console.log('🎬 Films parsés:', filmsArray.length);
+        return filmsArray;
+        
+    } catch (error) {
+        console.error('Erreur lors du parsing:', error);
+        return [];
+    }
+}
+
+    // **NOUVELLE MÉTHODE** : Extraire les vraies dates du site Panacéa
+extractRealDates(element) {
+    const dates = [];
+    const today = new Date();
+    
+    try {
+        // Chercher les dates dans le texte de l'élément
+        const text = element.textContent;
+        
+        // Regex pour différents formats de dates français
+        const datePatterns = [
+            // Format: "Samedi 14", "Mercredi 18", etc.
+            /\b(lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)\s+(\d{1,2})\b/gi,
+            // Format: "14/12", "18/12", etc.
+            /\b(\d{1,2})\/(\d{1,2})\b/g,
+            // Format: "14 déc", "18 déc", etc.
+            /\b(\d{1,2})\s+(jan|fév|mar|avr|mai|jun|jul|aoû|sep|oct|nov|déc)/gi
+        ];
+        
+        const monthNames = {
+            'janvier': 0, 'février': 1, 'mars': 2, 'avril': 3, 'mai': 4, 'juin': 5,
+            'juillet': 6, 'août': 7, 'septembre': 8, 'octobre': 9, 'novembre': 10, 'décembre': 11,
+            'jan': 0, 'fév': 1, 'mar': 2, 'avr': 3, 'jun': 5, 'jul': 6, 'aoû': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'déc': 11
+        };
+        
+        const dayNames = {
+            'lundi': 1, 'mardi': 2, 'mercredi': 3, 'jeudi': 4, 'vendredi': 5, 'samedi': 6, 'dimanche': 0
+        };
+        
+        // Chercher les dates avec jour de la semaine
+        let matches = [...text.matchAll(datePatterns[0])];
+        matches.forEach(match => {
+            const dayName = match[1].toLowerCase();
+            const dayNumber = parseInt(match[2]);
             
-            const dayName = date.toLocaleDateString('fr-FR', { weekday: 'long' });
-            const dayNumber = date.getDate();
-            const month = date.toLocaleDateString('fr-FR', { month: 'short' });
+            if (dayNames[dayName] !== undefined && dayNumber >= 1 && dayNumber <= 31) {
+                // Créer la date (approximative pour le mois actuel/suivant)
+                const date = new Date(today.getFullYear(), today.getMonth(), dayNumber);
+                
+                // Si la date est passée, essayer le mois suivant
+                if (date < today) {
+                    date.setMonth(date.getMonth() + 1);
+                }
+                
+                const isToday = this.isSameDay(date, today);
+                const isTomorrow = this.isSameDay(date, new Date(today.getTime() + 24 * 60 * 60 * 1000));
+                
+                dates.push({
+                    date: date,
+                    dateString: date.toISOString().split('T')[0],
+                    displayName: isToday ? 'Aujourd\'hui' : 
+                                isTomorrow ? 'Demain' : 
+                                `${match[1]} ${dayNumber}`,
+                    isToday: isToday,
+                    isTomorrow: isTomorrow,
+                    dayName: match[1]
+                });
+            }
+        });
+        
+        // Si pas de dates trouvées, créer des dates par défaut
+        if (dates.length === 0) {
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
             
-            days.push({
-                name: dayName.charAt(0).toUpperCase() + dayName.slice(1),
-                date: `${dayNumber} ${month}`,
-                isToday: i === 0,
-                isTomorrow: i === 1
-            });
+            dates.push(
+                {
+                    date: today,
+                    dateString: today.toISOString().split('T')[0],
+                    displayName: 'Aujourd\'hui',
+                    isToday: true,
+                    isTomorrow: false,
+                    dayName: today.toLocaleDateString('fr-FR', { weekday: 'long' })
+                },
+                {
+                    date: tomorrow,
+                    dateString: tomorrow.toISOString().split('T')[0],
+                    displayName: 'Demain',
+                    isToday: false,
+                    isTomorrow: true,
+                    dayName: tomorrow.toLocaleDateString('fr-FR', { weekday: 'long' })
+                }
+            );
         }
         
-        return days;
+        return dates;
+        
+    } catch (error) {
+        console.error('Erreur extraction dates:', error);
+        return [{
+            date: today,
+            dateString: today.toISOString().split('T')[0],
+            displayName: 'Aujourd\'hui',
+            isToday: true,
+            isTomorrow: false,
+            dayName: today.toLocaleDateString('fr-FR', { weekday: 'long' })
+        }];
     }
+}
 
-    // Afficher les films (méthode inchangée)
-    displayCinema(movies) {
-        const previewContainer = document.getElementById('cinemaWidgetPreview');
-        const countElement = document.getElementById('cinemaWidgetCount');
+// Méthode utilitaire pour comparer les dates
+isSameDay(date1, date2) {
+    return date1.getFullYear() === date2.getFullYear() &&
+           date1.getMonth() === date2.getMonth() &&
+           date1.getDate() === date2.getDate();
+}
 
-        if (movies && movies.length > 0) {
-            previewContainer.innerHTML = movies.map(movie => {
-                const newBadge = movie.isNew ? '🆕 ' : '';
-                const timesText = movie.times.length > 3 
-                    ? `${movie.times.slice(0, 3).join(', ')}...` 
-                    : movie.times.join(', ');
-                
-                const clickAction = movie.url ? 
-                    `onclick="event.stopPropagation(); window.open('${movie.url}', '_blank')"` : 
-                    '';
-                
-                return `
-                    <div class="cinema-preview-item" data-movie-id="${movie.id}" ${clickAction} style="cursor: pointer;">
-                        <strong>${newBadge}${movie.title}</strong> <em>(${movie.duration})</em><br>
-                        <div class="movie-genre" style="font-size: 11px; color: #888; font-style: italic;">${movie.genre}</div>
-                        <div class="movie-times">${timesText}</div>
-                    </div>
-                `;
-            }).join('');
+    // Afficher les films avec vraies dates (WIDGET PRINCIPAL PC)
+displayCinema(movies) {
+    const previewContainer = document.getElementById('cinemaWidgetPreview');
+    const countElement = document.getElementById('cinemaWidgetCount');
 
-            countElement.textContent = `${movies.length} films`;
-            this.isLoaded = true;
+    if (movies && movies.length > 0) {
+        previewContainer.innerHTML = movies.map(movie => {
+            const newBadge = movie.isNew ? '🆕 ' : '';
+            const timesText = movie.times.length > 3 
+                ? `${movie.times.slice(0, 3).join(', ')}...` 
+                : movie.times.join(', ');
             
-        } else {
-            this.showUnavailableState();
-        }
+            // **NOUVEAU** : Afficher les vraies dates
+            let datesText = '';
+            if (movie.realDates && movie.realDates.length > 0) {
+                const displayDates = movie.realDates.slice(0, 2).map(d => d.displayName);
+                datesText = `<div class="movie-dates" style="font-size: 10px; color: #666; margin-top: 2px;">📅 ${displayDates.join(', ')}</div>`;
+            }
+            
+            const clickAction = movie.url ? 
+                `onclick="event.stopPropagation(); window.open('${movie.url}', '_blank')"` : 
+                '';
+            
+            return `
+                <div class="cinema-preview-item" data-movie-id="${movie.id}" ${clickAction} style="cursor: pointer;">
+                    <strong>${newBadge}${movie.title}</strong> <em>(${movie.duration})</em><br>
+                    <div class="movie-genre" style="font-size: 11px; color: #888; font-style: italic;">${movie.genre}</div>
+                    ${datesText}
+                    <div class="movie-times" style="font-size: 12px; color: #666; margin-top: 2px;">🕐 ${timesText}</div>
+                </div>
+            `;
+        }).join('');
+
+        countElement.textContent = `${movies.length} films`;
+        this.isLoaded = true;
+        
+    } else {
+        this.showUnavailableState();
     }
+}
 
     // Méthode de rafraîchissement
     async refresh() {
@@ -468,63 +570,54 @@ class CinemaWidget {
         }
     }
 
-    // Mise à jour du contenu modal avec jours
-    updateModalContent(modalContent) {
-        if (this.cinemaData && this.cinemaData.length > 0) {
-            const days = this.getDaysOfWeek();
+    // Mise à jour du contenu modal avec vraies dates (MOBILE)
+updateModalContent(modalContent) {
+    if (this.cinemaData && this.cinemaData.length > 0) {
+        modalContent.innerHTML = this.cinemaData.map(movie => {
+            const newBadge = movie.isNew ? '🆕 ' : '';
+            const timesText = movie.times.length > 3 
+                ? `${movie.times.slice(0, 3).join(', ')}...` 
+                : movie.times.join(', ');
             
-            // Simuler la répartition des films sur les jours (en attendant de vraies données)
-            const filmsWithDays = this.cinemaData.map(movie => {
-                // Pour l'instant, on assigne aléatoirement 2-4 jours par film
-                const numDays = Math.floor(Math.random() * 3) + 2; // 2 à 4 jours
-                const assignedDays = days.slice(0, numDays);
+            // **NOUVEAU** : Utiliser les vraies dates au lieu des données simulées
+            let datesText = 'Dates à confirmer';
+            if (movie.realDates && movie.realDates.length > 0) {
+                const displayDates = movie.realDates.slice(0, 3).map(d => d.displayName);
+                datesText = displayDates.join(', ');
                 
-                return {
-                    ...movie,
-                    showDays: assignedDays
-                };
-            });
-
-            modalContent.innerHTML = filmsWithDays.map(movie => {
-                const newBadge = movie.isNew ? '🆕 ' : '';
-                const timesText = movie.times.length > 3 
-                    ? `${movie.times.slice(0, 3).join(', ')}...` 
-                    : movie.times.join(', ');
-                
-                // Affichage des jours de diffusion
-                const daysText = movie.showDays.map(day => {
-                    if (day.isToday) return 'Aujourd\'hui';
-                    if (day.isTomorrow) return 'Demain';
-                    return `${day.name} ${day.date}`;
-                }).slice(0, 2).join(', '); // Limiter à 2 jours dans l'affichage
-                
-                const clickAction = movie.url ? 
-                    `onclick="event.stopPropagation(); window.open('${movie.url}', '_blank')"` : 
-                    '';
-                
-                return `
-                    <div class="cinema-preview-item" data-movie-id="${movie.id}" ${clickAction} style="cursor: pointer; background: rgba(220, 53, 69, 0.1); border-left: 3px solid #dc3545; padding: 8px 12px; margin: 6px 0; border-radius: 0 8px 8px 0; font-size: 13px; transition: all 0.2s ease;">
-                        <strong style="color: #dc3545;">${newBadge}${movie.title}</strong> <em>(${movie.duration})</em><br>
-                        <div style="font-size: 11px; color: #888; font-style: italic; margin-top: 2px;">${movie.genre}</div>
-                        <div style="font-size: 10px; color: #666; margin-top: 2px;">📅 ${daysText}</div>
-                        <div class="movie-times" style="font-size: 12px; color: #666; margin-top: 4px;">🕐 ${timesText}</div>
-                    </div>
-                `;
-            }).join('');
-        } else {
-            modalContent.innerHTML = `
-                <div style="text-align: center; padding: 40px;">
-                    <span class="material-icons" style="font-size: 48px; color: #dc3545;">movie_filter</span>
-                    <div style="margin: 15px 0; font-weight: 500;">Programme temporairement indisponible</div>
-                    <div style="font-size: 14px; color: #666; line-height: 1.4;">
-                        Consultez directement :<br>
-                        <a href="https://www.cinemas-panacea.fr/montceau-embarcadere/" target="_blank" style="color: #dc3545; text-decoration: none;">🌐 Site du cinéma</a><br>
-                        <a href="https://www.facebook.com/CinemaEmbarcadere" target="_blank" style="color: #dc3545; text-decoration: none;">📘 Page Facebook</a>
-                    </div>
+                // Si plus de 3 dates, ajouter "..."
+                if (movie.realDates.length > 3) {
+                    datesText += '...';
+                }
+            }
+            
+            const clickAction = movie.url ? 
+                `onclick="event.stopPropagation(); window.open('${movie.url}', '_blank')"` : 
+                '';
+            
+            return `
+                <div class="cinema-preview-item" data-movie-id="${movie.id}" ${clickAction} style="cursor: pointer; background: rgba(220, 53, 69, 0.1); border-left: 3px solid #dc3545; padding: 8px 12px; margin: 6px 0; border-radius: 0 8px 8px 0; font-size: 13px; transition: all 0.2s ease;">
+                    <strong style="color: #dc3545;">${newBadge}${movie.title}</strong> <em>(${movie.duration})</em><br>
+                    <div style="font-size: 11px; color: #888; font-style: italic; margin-top: 2px;">${movie.genre}</div>
+                    <div style="font-size: 10px; color: #666; margin-top: 2px;">📅 ${datesText}</div>
+                    <div class="movie-times" style="font-size: 12px; color: #666; margin-top: 4px;">🕐 ${timesText}</div>
                 </div>
             `;
-        }
+        }).join('');
+    } else {
+        modalContent.innerHTML = `
+            <div style="text-align: center; padding: 40px;">
+                <span class="material-icons" style="font-size: 48px; color: #dc3545;">movie_filter</span>
+                <div style="margin: 15px 0; font-weight: 500;">Programme temporairement indisponible</div>
+                <div style="font-size: 14px; color: #666; line-height: 1.4;">
+                    Consultez directement :<br>
+                    <a href="https://www.cinemas-panacea.fr/montceau-embarcadere/" target="_blank" style="color: #dc3545; text-decoration: none;">🌐 Site du cinéma</a><br>
+                    <a href="https://www.facebook.com/CinemaEmbarcadere" target="_blank" style="color: #dc3545; text-decoration: none;">📘 Page Facebook</a>
+                </div>
+            </div>
+        `;
     }
+}
 }
 
 // Instance globale du widget
