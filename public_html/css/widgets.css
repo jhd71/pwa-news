@@ -1072,3 +1072,171 @@
 [data-theme="super-light"] .search-button .material-icons {
     color: white !important;
 }
+
+/* CORRECTION POUR WIDGETS.CSS - Thèmes Ocean et Sunset */
+
+/* 7. Mode Océan Profond */
+[data-theme="ocean"] .weather-sidebar,
+[data-theme="ocean"] .quick-links-sidebar {
+    background: linear-gradient(145deg, #006064, #0097A7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 5px 15px rgba(0, 96, 100, 0.3) !important;
+}
+
+[data-theme="ocean"] .weather-sidebar h3,
+[data-theme="ocean"] .quick-links-sidebar h3,
+[data-theme="ocean"] .weather-sidebar p strong {
+    color: #B3E5FC !important;
+    border-bottom-color: rgba(255, 255, 255, 0.3);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
+    font-weight: bold !important;
+}
+
+[data-theme="ocean"] .weather-day {
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: #B3E5FC !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="ocean"] .weather-day h4 {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: #B3E5FC !important;
+    font-weight: bold !important;
+}
+
+[data-theme="ocean"] .weather-condition {
+    color: #B3E5FC !important;
+    font-weight: 500 !important;
+}
+
+[data-theme="ocean"] .temperature-container {
+    background: rgba(0, 131, 143, 0.3) !important;
+    border-radius: 8px !important;
+    padding: 6px !important;
+}
+
+[data-theme="ocean"] .weather-detail-item {
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: #B3E5FC !important;
+    font-weight: 500 !important;
+}
+
+[data-theme="ocean"] .quick-link {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #B3E5FC !important;
+}
+
+[data-theme="ocean"] .quick-link:hover {
+    background: rgba(255, 255, 255, 0.25) !important;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="ocean"] .quick-link .material-icons {
+    color: #B3E5FC !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-theme="ocean"] .quick-link span:not(.material-icons) {
+    color: #B3E5FC !important;
+    font-weight: 500 !important;
+}
+
+/* 8. Mode Coucher de Soleil */
+[data-theme="sunset"] .weather-sidebar,
+[data-theme="sunset"] .quick-links-sidebar {
+    background: linear-gradient(145deg, #FF6B35, #E91E63) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3) !important;
+}
+
+[data-theme="sunset"] .weather-sidebar h3,
+[data-theme="sunset"] .quick-links-sidebar h3,
+[data-theme="sunset"] .weather-sidebar p strong {
+    color: #FFF8E7 !important;
+    border-bottom-color: rgba(255, 255, 255, 0.3);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
+    font-weight: bold !important;
+}
+
+[data-theme="sunset"] .weather-day {
+    background: rgba(0, 0, 0, 0.15) !important;
+    color: #FFF8E7 !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="sunset"] .weather-day h4 {
+    background: rgba(0, 0, 0, 0.2) !important;
+    color: #FFF8E7 !important;
+    font-weight: bold !important;
+}
+
+[data-theme="sunset"] .weather-condition {
+    color: #FFF8E7 !important;
+    font-weight: 500 !important;
+}
+
+[data-theme="sunset"] .temperature-container {
+    background: rgba(0, 0, 0, 0.15) !important;
+    border-radius: 8px !important;
+    padding: 6px !important;
+}
+
+[data-theme="sunset"] .weather-detail-item {
+    background: rgba(0, 0, 0, 0.15) !important;
+    color: #FFF8E7 !important;
+    font-weight: 500 !important;
+}
+
+[data-theme="sunset"] .quick-link {
+    background: rgba(0, 0, 0, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #FFF8E7 !important;
+}
+
+[data-theme="sunset"] .quick-link:hover {
+    background: rgba(0, 0, 0, 0.25) !important;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="sunset"] .quick-link .material-icons {
+    color: #FFF8E7 !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-theme="sunset"] .quick-link span:not(.material-icons) {
+    color: #FFF8E7 !important;
+    font-weight: 500 !important;
+}
+
+/* Boutons de fermeture pour les nouveaux thèmes */
+[data-theme="ocean"] .weather-toggle,
+[data-theme="ocean"] .quick-links-toggle {
+    background: rgba(255, 255, 255, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    color: #B3E5FC !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-theme="sunset"] .weather-toggle,
+[data-theme="sunset"] .quick-links-toggle {
+    background: rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: #FFF8E7 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Boutons d'affichage des widgets */
+[data-theme="ocean"] .weather-show-btn,
+[data-theme="ocean"] .quick-links-show-btn,
+[data-theme="ocean"] .weather-mobile-btn {
+    background: linear-gradient(145deg, #006064, #0097A7) !important;
+}
+
+[data-theme="sunset"] .weather-show-btn,
+[data-theme="sunset"] .quick-links-show-btn,
+[data-theme="sunset"] .weather-mobile-btn {
+    background: linear-gradient(145deg, #FF6B35, #E91E63) !important;
+}
