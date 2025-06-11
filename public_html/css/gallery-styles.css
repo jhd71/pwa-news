@@ -1186,11 +1186,11 @@
 
 /* Thème super-light - Navigation avec couleurs adaptées */
 [data-theme="super-light"] .nav-item {
-    color: #6366F1 !important;
+    color: #fafbfc !important;
 }
 
 [data-theme="super-light"] .nav-item.active {
-    color: #8B5CF6 !important;
+    color: #fbfcfd !important;
     background: rgba(99, 102, 241, 0.1) !important;
     border-radius: 8px !important;
 }
