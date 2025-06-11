@@ -341,65 +341,150 @@ class CinemaWidget {
     // **NOUVELLE MÉTHODE** : Extraire les vraies dates du site Panacéa
 extractRealDates(element) {
     const dates = [];
+    const seenDates = new Set(); // Pour éviter les doublons
     const today = new Date();
     
     try {
         // Chercher les dates dans le texte de l'élément
         const text = element.textContent;
         
-        // Regex pour différents formats de dates français
+        console.log('🔍 Texte analysé pour dates:', text.substring(0, 200));
+        
+        // Regex améliorée pour capturer les patterns de dates
         const datePatterns = [
-            // Format: "Samedi 14", "Mercredi 18", etc.
+            // Format: "jeudi 12", "samedi 14", etc. (avec capture du jour et numéro)
             /\b(lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)\s+(\d{1,2})\b/gi,
-            // Format: "14/12", "18/12", etc.
-            /\b(\d{1,2})\/(\d{1,2})\b/g,
-            // Format: "14 déc", "18 déc", etc.
-            /\b(\d{1,2})\s+(jan|fév|mar|avr|mai|jun|jul|aoû|sep|oct|nov|déc)/gi
+            // Format: "12 décembre", "14 janvier", etc.
+            /\b(\d{1,2})\s+(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\b/gi,
+            // Format: "12/12", "14/01", etc.
+            /\b(\d{1,2})\/(\d{1,2})\b/g
         ];
         
         const monthNames = {
             'janvier': 0, 'février': 1, 'mars': 2, 'avril': 3, 'mai': 4, 'juin': 5,
-            'juillet': 6, 'août': 7, 'septembre': 8, 'octobre': 9, 'novembre': 10, 'décembre': 11,
-            'jan': 0, 'fév': 1, 'mar': 2, 'avr': 3, 'jun': 5, 'jul': 6, 'aoû': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'déc': 11
+            'juillet': 6, 'août': 7, 'septembre': 8, 'octobre': 9, 'novembre': 10, 'décembre': 11
         };
         
         const dayNames = {
             'lundi': 1, 'mardi': 2, 'mercredi': 3, 'jeudi': 4, 'vendredi': 5, 'samedi': 6, 'dimanche': 0
         };
         
-        // Chercher les dates avec jour de la semaine
+        // Pattern 1: "jeudi 12", "samedi 14"
         let matches = [...text.matchAll(datePatterns[0])];
-        matches.forEach(match => {
+        console.log(`🎯 Matches trouvés (jour + numéro):`, matches.length);
+        
+        matches.forEach((match, index) => {
             const dayName = match[1].toLowerCase();
             const dayNumber = parseInt(match[2]);
             
+            console.log(`📅 Match ${index}: ${dayName} ${dayNumber}`);
+            
             if (dayNames[dayName] !== undefined && dayNumber >= 1 && dayNumber <= 31) {
-                // Créer la date (approximative pour le mois actuel/suivant)
-                const date = new Date(today.getFullYear(), today.getMonth(), dayNumber);
+                // Créer une clé unique pour cette date
+                const dateKey = `${dayName}-${dayNumber}`;
+                
+                // Éviter les doublons
+                if (seenDates.has(dateKey)) {
+                    console.log(`⚠️ Date en doublon ignorée: ${dateKey}`);
+                    return;
+                }
+                seenDates.add(dateKey);
+                
+                // Créer la date (essayer mois actuel puis suivant)
+                let date = new Date(today.getFullYear(), today.getMonth(), dayNumber);
                 
                 // Si la date est passée, essayer le mois suivant
                 if (date < today) {
                     date.setMonth(date.getMonth() + 1);
                 }
                 
+                // Vérifier que le jour de la semaine correspond
+                if (date.getDay() !== dayNames[dayName]) {
+                    // Ajuster pour trouver le bon jour
+                    const targetDay = dayNames[dayName];
+                    const currentDay = date.getDay();
+                    const diff = targetDay - currentDay;
+                    
+                    if (diff !== 0) {
+                        // Essayer le mois suivant
+                        date.setMonth(date.getMonth() + 1);
+                        // Recalculer si nécessaire
+                        if (date.getDay() !== targetDay) {
+                            continue; // Ignorer cette date si on n'arrive pas à la résoudre
+                        }
+                    }
+                }
+                
                 const isToday = this.isSameDay(date, today);
-                const isTomorrow = this.isSameDay(date, new Date(today.getTime() + 24 * 60 * 60 * 1000));
+                const tomorrow = new Date(today);
+                tomorrow.setDate(today.getDate() + 1);
+                const isTomorrow = this.isSameDay(date, tomorrow);
                 
                 dates.push({
                     date: date,
                     dateString: date.toISOString().split('T')[0],
                     displayName: isToday ? 'Aujourd\'hui' : 
                                 isTomorrow ? 'Demain' : 
-                                `${match[1]} ${dayNumber}`,
+                                `${dayName.charAt(0).toUpperCase() + dayName.slice(1)} ${dayNumber}`,
                     isToday: isToday,
                     isTomorrow: isTomorrow,
-                    dayName: match[1]
+                    dayName: dayName,
+                    dayNumber: dayNumber
                 });
+                
+                console.log(`✅ Date ajoutée: ${dayName} ${dayNumber} -> ${date.toDateString()}`);
             }
         });
         
-        // Si pas de dates trouvées, créer des dates par défaut
+        // Pattern 2: "12 décembre", si aucune date trouvée avec le premier pattern
         if (dates.length === 0) {
+            matches = [...text.matchAll(datePatterns[1])];
+            console.log(`🎯 Matches trouvés (numéro + mois):`, matches.length);
+            
+            matches.forEach((match, index) => {
+                const dayNumber = parseInt(match[1]);
+                const monthName = match[2].toLowerCase();
+                
+                if (monthNames[monthName] !== undefined && dayNumber >= 1 && dayNumber <= 31) {
+                    const monthIndex = monthNames[monthName];
+                    const dateKey = `${dayNumber}-${monthIndex}`;
+                    
+                    if (seenDates.has(dateKey)) return;
+                    seenDates.add(dateKey);
+                    
+                    let date = new Date(today.getFullYear(), monthIndex, dayNumber);
+                    
+                    // Si la date est passée, essayer l'année suivante
+                    if (date < today) {
+                        date.setFullYear(date.getFullYear() + 1);
+                    }
+                    
+                    const isToday = this.isSameDay(date, today);
+                    const tomorrow = new Date(today);
+                    tomorrow.setDate(today.getDate() + 1);
+                    const isTomorrow = this.isSameDay(date, tomorrow);
+                    
+                    dates.push({
+                        date: date,
+                        dateString: date.toISOString().split('T')[0],
+                        displayName: isToday ? 'Aujourd\'hui' : 
+                                    isTomorrow ? 'Demain' : 
+                                    `${dayNumber} ${monthName}`,
+                        isToday: isToday,
+                        isTomorrow: isTomorrow,
+                        dayNumber: dayNumber,
+                        monthName: monthName
+                    });
+                }
+            });
+        }
+        
+        console.log(`📊 Total dates extraites: ${dates.length}`, dates.map(d => d.displayName));
+        
+        // Si toujours aucune date trouvée, créer des dates par défaut
+        if (dates.length === 0) {
+            console.log('⚠️ Aucune date trouvée, utilisation des dates par défaut');
+            
             const tomorrow = new Date(today);
             tomorrow.setDate(today.getDate() + 1);
             
@@ -423,10 +508,14 @@ extractRealDates(element) {
             );
         }
         
-        return dates;
+        // Trier les dates par ordre chronologique
+        dates.sort((a, b) => a.date - b.date);
+        
+        // Limiter à 5 dates maximum pour l'affichage
+        return dates.slice(0, 5);
         
     } catch (error) {
-        console.error('Erreur extraction dates:', error);
+        console.error('❌ Erreur extraction dates:', error);
         return [{
             date: today,
             dateString: today.toISOString().split('T')[0],
