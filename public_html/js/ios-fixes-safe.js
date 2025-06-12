@@ -169,6 +169,7 @@
             
             /* Mobile iOS (iPhone) */
             @media (max-width: 767px) {
+                /* Repositionner les boutons dans la barre du haut */
                 .weather-mobile-btn {
                     top: calc(75px + var(--ios-safe-top, 0px)) !important;
                     left: 10px !important;
@@ -197,6 +198,51 @@
                 
                 .weather-show-btn {
                     display: none !important;
+                }
+                
+                /* BOUTONS CINÉMA ET PHOTOS - REPOSITIONNÉS POUR iOS */
+                .cinema-mobile-btn {
+                    position: absolute !important;
+                    top: calc(320px + var(--ios-safe-top, 0px)) !important;
+                    right: calc(10px + var(--ios-safe-right, 0px)) !important;
+                    z-index: 1000 !important;
+                    /* Assurer la visibilité sur iOS */
+                    opacity: 1 !important;
+                    visibility: visible !important;
+                    display: flex !important;
+                }
+                
+                .photos-mobile-btn {
+                    position: absolute !important;
+                    top: calc(320px + var(--ios-safe-top, 0px)) !important;
+                    left: calc(10px + var(--ios-safe-left, 0px)) !important;
+                    z-index: 1000 !important;
+                    /* Assurer la visibilité sur iOS */
+                    opacity: 1 !important;
+                    visibility: visible !important;
+                    display: flex !important;
+                }
+                
+                /* Correction pour les petits iPhone */
+                @media (max-width: 375px) {
+                    .photos-mobile-btn {
+                        left: calc(5px + var(--ios-safe-left, 0px)) !important;
+                    }
+                    
+                    .cinema-mobile-btn {
+                        right: calc(5px + var(--ios-safe-right, 0px)) !important;
+                    }
+                }
+                
+                /* Correction pour iPhone avec encoche */
+                @media (max-width: 430px) and (min-height: 800px) {
+                    .photos-mobile-btn {
+                        left: calc(15px + var(--ios-safe-left, 0px)) !important;
+                    }
+                    
+                    .cinema-mobile-btn {
+                        right: calc(15px + var(--ios-safe-right, 0px)) !important;
+                    }
                 }
             }
             

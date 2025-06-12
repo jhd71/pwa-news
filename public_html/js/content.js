@@ -140,6 +140,26 @@ if (menuButton && sidebar) {
 	
 	// Fonction pour ouvrir les prix carburant
 	this.setupFuelButton();
+	
+	// 🆕 AJOUTER : Gestionnaire pour le bouton photos mobile
+    const photosMobileBtn = document.getElementById('photosMobileBtn');
+    if (photosMobileBtn) {
+        photosMobileBtn.addEventListener('click', () => {
+            // Animation de clic
+            photosMobileBtn.style.transform = 'scale(0.9)';
+            
+            // Vibration si disponible
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+            
+            // Retour à la taille normale et ouverture
+            setTimeout(() => {
+                photosMobileBtn.style.transform = 'scale(1)';
+                this.openPhotosGallery();
+            }, 150);
+        });
+    }
 
         // Installation PWA
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -279,6 +299,13 @@ setupTVIcons() {
     category: 'news'
   },
   {
+    title: 'Mâcon-Infos',
+    url: 'https://macon-infos.com/fr/faits-divers/macon',
+    mobileUrl: 'https://macon-infos.com/fr/faits-divers/macon',
+    isDefault: true,
+    category: 'news'
+  },
+  {
     title: '🛍️ Brocantes',
     url: 'https://brocabrac.fr/71/montceau-les-mines/',
     mobileUrl: 'https://brocabrac.fr/71/montceau-les-mines/',
@@ -291,7 +318,7 @@ setupTVIcons() {
 
 // TUILE PHOTOS SIMPLE
 const photosTile = {
-    title: "Galerie Photos", 
+    title: "📸 Galerie Photos", 
     url: "photos-gallery.html",
     mobileUrl: "photos-gallery.html",
     isDefault: true,
@@ -2153,6 +2180,41 @@ openFuelPrices() {
     } catch (error) {
         console.error('Erreur ouverture prix carburant:', error);
         this.showToast('Erreur lors de l\'ouverture');
+    }
+}
+
+// Nouvelle méthode pour ouvrir la galerie photos
+openPhotosGallery() {
+    try {
+        // Animation du bouton
+        const photosMobileBtn = document.getElementById('photosMobileBtn');
+        if (photosMobileBtn) {
+            photosMobileBtn.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                photosMobileBtn.style.transform = 'scale(1)';
+            }, 150);
+        }
+        
+        // Vibration
+        if (navigator.vibrate) {
+            navigator.vibrate(50);
+        }
+        
+        // Ouvrir la galerie photos
+        const photosUrl = 'photos-gallery.html'; // Adaptez selon votre URL
+        
+        if (photosUrl.startsWith('http')) {
+            window.open(photosUrl, '_blank');
+        } else {
+            window.location.href = photosUrl;
+        }
+        
+        console.log('📸 Ouverture de la galerie photos');
+        this.showToast && this.showToast('Ouverture de la galerie photos...');
+        
+    } catch (error) {
+        console.error('Erreur ouverture galerie photos:', error);
+        this.showToast && this.showToast('Erreur lors de l\'ouverture');
     }
 }
 

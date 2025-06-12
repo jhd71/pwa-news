@@ -3812,6 +3812,30 @@ border-color: #ffd230 !important;
     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
+/* Dual intelligent : Optimise selon l'appareil */
+
+/* Sur mobile : Bouton flottant seulement */
+@media (max-width: 767px) {
+    .tile[data-category="photos"] {
+        display: none !important;
+    }
+    
+    .photos-mobile-btn {
+        display: flex !important;
+    }
+}
+
+/* Sur desktop : Tuile seulement */
+@media (min-width: 768px) {
+    .tile[data-category="photos"] {
+        display: block !important;
+    }
+    
+    .photos-mobile-btn {
+        display: none !important;
+    }
+}
+
 /* === background des Themes === */
 [data-theme="light"] body {
     background: #775cbd !important;

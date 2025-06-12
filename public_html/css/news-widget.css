@@ -440,10 +440,11 @@
 }
 
 /* ===== RESPONSIVE WIDGET UNIQUEMENT ===== */
-/* Mobile */
+/* ✅ SOLUTION : Boutons masqués puis apparition retardée */
+
 @media (max-width: 767px) {
     .news-widget-container {
-        position: relative; /* 🆕 Ajouté */
+        position: relative;
         padding: 0 5px;
         margin: 130px auto 15px auto;
         order: 2;
@@ -464,60 +465,165 @@
         text-align: center;
     }
     
-    /* 🆕 NOUVEAU : Bouton cinéma avec texte transparent */
+    /* ✅ BOUTONS MASQUÉS INITIALEMENT */
+    .cinema-mobile-btn,
+    .photos-mobile-btn {
+        /* Masqués au départ */
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(20px) scale(0.8);
+        
+        /* Animation d'apparition retardée */
+        animation: delayedButtonsAppear 0.8s ease-out forwards;
+        animation-delay: 2.5s; /* ✅ 2,5 secondes de délai */
+    }
+    
+    /* Bouton CINÉMA */
     .cinema-mobile-btn {
         position: absolute;
-        top: 6px; /* ✅ Gardez votre position */
-        right: 90px; /* ✅ Gardez votre position */
-        width: 60px; /* ✅ Plus large pour le texte */
+        top: 320px;
+        right: 10px;
+        width: 60px;
         height: 45px;
-        background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.9); /* ✅ Semi-transparent */
-        border-radius: 25px; /* ✅ Plus rectangulaire */
-        border: 2px solid rgba(255, 255, 255, 0.3); /* ✅ Bordure subtile */
+        background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.9);
+        border-radius: 25px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
         color: white;
-        font-size: 11px; /* ✅ Taille pour le texte */
+        font-size: 11px;
         font-weight: bold;
-        font-family: 'Montserrat', sans-serif; /* ✅ Police moderne */
+        font-family: 'Montserrat', sans-serif;
         text-transform: uppercase;
         letter-spacing: 1px;
         box-shadow: 
             0 4px 15px rgba(0, 0, 0, 0.3),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2); /* ✅ Effet 3D */
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
         cursor: pointer;
         z-index: 100;
         transition: all 0.3s ease;
-        animation: cinemaPulse 3s infinite;
         display: flex;
         align-items: center;
         justify-content: center;
         line-height: 1;
-        backdrop-filter: blur(10px); /* ✅ Effet de flou d'arrière-plan */
+        backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
+        
+        /* ✅ Apparition retardée + pulsation encore plus retardée */
+        animation: 
+            delayedButtonsAppear 0.8s ease-out forwards 2.5s,
+            cinemaPulse 3s infinite 4s; /* Pulsation après 4 secondes */
     }
     
-    .cinema-mobile-btn:hover {
+    /* Bouton PHOTOS */
+    .photos-mobile-btn {
+        position: absolute;
+        top: 320px;
+        right: 305px;
+        width: 60px;
+        height: 45px;
+        background: rgba(255, 107, 157, 0.9);
+        border-radius: 25px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        font-size: 11px;
+        font-weight: bold;
+        font-family: 'Montserrat', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 
+            0 4px 15px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        cursor: pointer;
+        z-index: 100;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        
+        /* ✅ Apparition retardée + pulsation encore plus retardée */
+        animation: 
+            delayedButtonsAppear 0.8s ease-out forwards 2.7s,
+            photosPulse 3s infinite 4.2s; /* Pulsation après 4.2 secondes */
+    }
+    
+    /* Interactions */
+    .cinema-mobile-btn:hover,
+    .photos-mobile-btn:hover {
         transform: scale(1.05);
-        background: rgba(var(--primary-color-rgb, 220, 53, 69), 1); /* ✅ Plus opaque au survol */
+        background: rgba(var(--primary-color-rgb, 220, 53, 69), 1);
         box-shadow: 
             0 6px 20px rgba(0, 0, 0, 0.4),
             inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
     
-    .cinema-mobile-btn:active {
+    .photos-mobile-btn:hover {
+        background: rgba(255, 107, 157, 1);
+    }
+    
+    .cinema-mobile-btn:active,
+    .photos-mobile-btn:active {
         transform: scale(0.95);
     }
     
-    /* Masquer l'icône et afficher le texte */
-    .cinema-mobile-btn .material-icons {
-        display: none; /* ✅ Masquer l'icône movie */
+    /* Textes */
+    .cinema-mobile-btn .material-icons,
+    .photos-mobile-btn .material-icons {
+        display: none;
     }
     
     .cinema-mobile-btn::before {
-        content: "CINÉMA"; /* ✅ Texte à afficher */
+        content: "CINÉMA";
         display: block;
         text-shadow: 
             0 1px 2px rgba(0, 0, 0, 0.8),
-            0 0 4px rgba(0, 0, 0, 0.5); /* ✅ Ombre pour lisibilité */
+            0 0 4px rgba(0, 0, 0, 0.5);
+    }
+    
+    .photos-mobile-btn::before {
+        content: "PHOTOS";
+        display: block;
+        text-shadow: 
+            0 1px 2px rgba(0, 0, 0, 0.8),
+            0 0 4px rgba(0, 0, 0, 0.5);
+    }
+    
+    /* ✅ ANIMATION D'APPARITION RETARDÉE */
+    @keyframes delayedButtonsAppear {
+        0% {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px) scale(0.8);
+        }
+        100% {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+    }
+    
+    /* Animations de pulsation */
+    @keyframes cinemaPulse {
+        0%, 100% { 
+            transform: scale(1); 
+            opacity: 1; 
+        }
+        50% { 
+            transform: scale(1.05); 
+            opacity: 0.9; 
+        }
+    }
+    
+    @keyframes photosPulse {
+        0%, 100% { 
+            transform: scale(1); 
+            opacity: 1; 
+        }
+        50% { 
+            transform: scale(1.05); 
+            opacity: 0.9; 
+        }
     }
 }
 
@@ -529,7 +635,7 @@
     }
 }
 
-/* Animation d'apparition */
+/* Animation d'apparition du widget */
 .local-news-widget {
     animation: newsWidgetFadeIn 0.6s ease-out;
 }
@@ -614,6 +720,79 @@
 }
 
 [data-theme="super-light"] .cinema-mobile-btn:hover {
+    background: rgba(99, 102, 241, 1);
+}
+
+/* ===== THÈMES POUR LE BOUTON PHOTOS TRANSPARENT ===== */
+/* AJOUTEZ après vos thèmes cinéma */
+
+/* Thème Light (Violet) */
+[data-theme="light"] .photos-mobile-btn {
+    background: rgba(126, 87, 194, 0.9);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+[data-theme="light"] .photos-mobile-btn:hover {
+    background: rgba(126, 87, 194, 1);
+}
+
+/* Thème Dark */
+[data-theme="dark"] .photos-mobile-btn {
+    background: rgba(92, 107, 192, 0.9);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="dark"] .photos-mobile-btn:hover {
+    background: rgba(92, 107, 192, 1);
+}
+
+/* Thème Rouge */
+[data-theme="rouge"] .photos-mobile-btn {
+    background: rgba(211, 47, 47, 0.9);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+[data-theme="rouge"] .photos-mobile-btn:hover {
+    background: rgba(211, 47, 47, 1);
+}
+
+/* Thème Bleu Ciel */
+[data-theme="bleuciel"] .photos-mobile-btn {
+    background: rgba(14, 165, 233, 0.9);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+[data-theme="bleuciel"] .photos-mobile-btn:hover {
+    background: rgba(14, 165, 233, 1);
+}
+
+/* Thème Sunset */
+[data-theme="sunset"] .photos-mobile-btn {
+    background: rgba(255, 107, 53, 0.9);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="sunset"] .photos-mobile-btn:hover {
+    background: rgba(255, 107, 53, 1);
+}
+
+/* Thème Ocean */
+[data-theme="ocean"] .photos-mobile-btn {
+    background: rgba(0, 96, 100, 0.9);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="ocean"] .photos-mobile-btn:hover {
+    background: rgba(0, 96, 100, 1);
+}
+
+/* Thème Super-Light */
+[data-theme="super-light"] .photos-mobile-btn {
+    background: rgba(99, 102, 241, 0.9);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+[data-theme="super-light"] .photos-mobile-btn:hover {
     background: rgba(99, 102, 241, 1);
 }
 

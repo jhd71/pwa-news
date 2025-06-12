@@ -198,9 +198,14 @@
     </div>
 </div>
 
-<!-- Bouton flottant cinéma mobile -->
+<!-- Bouton flottant cinéma mobile (existant) -->
 <button class="cinema-mobile-btn" id="cinemaMobileBtn" title="Programme cinéma">
     <span class="material-icons">movie</span>
+</button>
+
+<!-- 🆕 NOUVEAU : Bouton flottant galerie photos mobile -->
+<button class="photos-mobile-btn" id="photosMobileBtn" title="Galerie Photos">
+    <span class="material-icons">photo_library</span>
 </button>
 
 <!-- Modal cinéma mobile -->
@@ -320,9 +325,9 @@ document.getElementById('currentYear').textContent = new Date().getFullYear();
   <span>Soutenir</span>
 	</button>
 	<button class="nav-item" id="transparencyWidget">
-    <span class="material-icons">visibility</span>
-    <span>Opacité</span> <!-- ✅ Plus court -->
-</button>
+    <span class="material-icons">opacity</span>
+    <span>Transparence</span>
+	</button>
     <!-- Bouton de chat existant -->
     <button class="nav-item chat-toggle-btn" id="chatToggleBtn">
         <span class="material-icons">chat</span>
