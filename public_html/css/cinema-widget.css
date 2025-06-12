@@ -1,4 +1,4 @@
-/* ===== WIDGET CINÉMA ===== */
+/* ===== WIDGET CINÉMA - VERSION AMÉLIORÉE COMME NEWS ===== */
 
 .cinema-widget-container {
     max-width: 600px;
@@ -77,24 +77,29 @@
     line-height: 1.4;
     margin-bottom: 10px;
     min-height: 120px;
-    max-height: 250px;
+    max-height: 250px; /* Même hauteur que NEWS */
     overflow-y: auto;
-    padding-right: 5px;
+    padding-right: 5px; /* Même padding que NEWS */
 }
 
-/* Style de la scrollbar pour le widget cinéma */
+/* Style de la scrollbar pour le widget cinéma - IDENTIQUE À NEWS */
 .cinema-widget-preview::-webkit-scrollbar {
-    width: 4px;
+    width: 4px; /* Même largeur que NEWS */
 }
 
 .cinema-widget-preview::-webkit-scrollbar-track {
     background: rgba(0,0,0,0.1);
-    border-radius: 2px;
+    border-radius: 2px; /* Même style que NEWS */
 }
 
 .cinema-widget-preview::-webkit-scrollbar-thumb {
     background: var(--primary-color, #dc3545);
-    border-radius: 2px;
+    border-radius: 2px; /* Même style que NEWS */
+}
+
+.cinema-widget-preview::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+    opacity: 1;
 }
 
 .loading-cinema {
@@ -105,19 +110,28 @@
     font-style: italic;
 }
 
+.spinning {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
 .cinema-preview-item {
     background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.1);
     border-left: 3px solid var(--primary-color, #dc3545);
-    padding: 8px 12px;
-    margin: 6px 0;
+    padding: 8px 12px; /* Même padding que NEWS */
+    margin: 6px 0; /* Même marge que NEWS */
     border-radius: 0 8px 8px 0;
-    font-size: 15px;
+    font-size: 13px; /* MÊME TAILLE QUE NEWS */
     transition: all 0.2s ease;
     cursor: pointer;
 }
 
 .cinema-preview-item:hover {
-    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.15);
+    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.2);
     transform: translateX(2px);
 }
 
@@ -125,10 +139,23 @@
     color: var(--primary-color, #dc3545);
 }
 
-.movie-times {
-    font-size: 13px;
+.movie-genre {
+    font-size: 11px;
+    color: #888;
+    font-style: italic;
+    margin-top: 2px;
+}
+
+.movie-dates {
+    font-size: 10px;
     color: #666;
-    margin-top: 4px;
+    margin-top: 2px;
+}
+
+.movie-times {
+    font-size: 12px;
+    color: #666;
+    margin-top: 2px;
 }
 
 .cinema-widget-footer {
@@ -155,9 +182,14 @@
     font-weight: 600;
 }
 
-/* ===== THÈMES ADAPTÉS ===== */
+/* ===== THÈMES ADAPTÉS - IDENTIQUES À NEWS ===== */
 
 /* Thème Light (Violet) */
+[data-theme="light"] .cinema-widget {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(126, 87, 194, 0.4);
+}
+
 [data-theme="light"] .cinema-widget-header,
 [data-theme="light"] .cinema-widget-title,
 [data-theme="light"] .cinema-widget-footer {
@@ -173,10 +205,23 @@
     border-left-color: #7e57c2;
 }
 
+[data-theme="light"] .cinema-preview-item strong {
+    color: #7e57c2;
+}
+
+[data-theme="light"] .cinema-widget-count {
+    background: rgba(126, 87, 194, 0.1);
+}
+
+[data-theme="light"] .movie-dates {
+    color: #aaa;
+}
+
 /* Thème Dark (Bleu Nuit) */
 [data-theme="dark"] .cinema-widget {
     background: rgba(40, 40, 40, 0.95);
     border-color: rgba(26, 35, 126, 0.6);
+    backdrop-filter: blur(15px);
 }
 
 [data-theme="dark"] .cinema-widget-header,
@@ -208,11 +253,27 @@
     color: #7986cb;
 }
 
-[data-theme="dark"] .movie-times {
+[data-theme="dark"] .cinema-widget-count {
+    background: rgba(26, 35, 126, 0.3);
+    color: #b3c5ef;
+}
+
+[data-theme="dark"] .cinema-widget-tap {
     color: #b0b0b0;
 }
 
+[data-theme="dark"] .movie-genre,
+[data-theme="dark"] .movie-dates,
+[data-theme="dark"] .movie-times {
+    color: #aaa;
+}
+
 /* Thème Rouge */
+[data-theme="rouge"] .cinema-widget {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(211, 47, 47, 0.4);
+}
+
 [data-theme="rouge"] .cinema-widget-header,
 [data-theme="rouge"] .cinema-widget-title,
 [data-theme="rouge"] .cinema-widget-footer {
@@ -228,7 +289,20 @@
     border-left-color: #d32f2f;
 }
 
+[data-theme="rouge"] .cinema-preview-item strong {
+    color: #d32f2f;
+}
+
+[data-theme="rouge"] .cinema-widget-count {
+    background: rgba(211, 47, 47, 0.1);
+}
+
 /* Thème Bleu Ciel */
+[data-theme="bleuciel"] .cinema-widget {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(14, 165, 233, 0.4);
+}
+
 [data-theme="bleuciel"] .cinema-widget-header,
 [data-theme="bleuciel"] .cinema-widget-title,
 [data-theme="bleuciel"] .cinema-widget-footer {
@@ -244,10 +318,19 @@
     border-left-color: #0ea5e9;
 }
 
+[data-theme="bleuciel"] .cinema-preview-item strong {
+    color: #0ea5e9;
+}
+
+[data-theme="bleuciel"] .cinema-widget-count {
+    background: rgba(14, 165, 233, 0.1);
+}
+
 /* Thème Coucher de Soleil */
 [data-theme="sunset"] .cinema-widget {
     background: rgba(61, 40, 23, 0.95);
     border-color: rgba(255, 107, 53, 0.6);
+    backdrop-filter: blur(15px);
 }
 
 [data-theme="sunset"] .cinema-widget-header,
@@ -278,12 +361,18 @@
     color: #FFCC80;
 }
 
-[data-theme="sunset"] .movie-times {
+[data-theme="sunset"] .cinema-widget-count {
+    background: rgba(255, 107, 53, 0.3);
     color: #FFCC80;
 }
 
-[data-theme="sunset"] .cinema-widget-count {
-    background: rgba(255, 107, 53, 0.3);
+[data-theme="sunset"] .cinema-widget-tap {
+    color: #FFCC80;
+}
+
+[data-theme="sunset"] .movie-genre,
+[data-theme="sunset"] .movie-dates,
+[data-theme="sunset"] .movie-times {
     color: #FFCC80;
 }
 
@@ -291,6 +380,7 @@
 [data-theme="ocean"] .cinema-widget {
     background: rgba(26, 44, 58, 0.95);
     border-color: rgba(0, 96, 100, 0.6);
+    backdrop-filter: blur(15px);
 }
 
 [data-theme="ocean"] .cinema-widget-header,
@@ -321,12 +411,18 @@
     color: #81D4FA;
 }
 
-[data-theme="ocean"] .movie-times {
+[data-theme="ocean"] .cinema-widget-count {
+    background: rgba(0, 96, 100, 0.3);
     color: #81D4FA;
 }
 
-[data-theme="ocean"] .cinema-widget-count {
-    background: rgba(0, 96, 100, 0.3);
+[data-theme="ocean"] .cinema-widget-tap {
+    color: #81D4FA;
+}
+
+[data-theme="ocean"] .movie-genre,
+[data-theme="ocean"] .movie-dates,
+[data-theme="ocean"] .movie-times {
     color: #81D4FA;
 }
 
@@ -365,24 +461,30 @@
     color: #6366F1;
 }
 
-[data-theme="super-light"] .movie-times {
-    color: #6B7280;
-}
-
 [data-theme="super-light"] .cinema-widget-count {
     background: rgba(99, 102, 241, 0.1);
     color: #6366F1;
+}
+
+[data-theme="super-light"] .cinema-widget-tap {
+    color: #6B7280;
+}
+
+[data-theme="super-light"] .movie-genre,
+[data-theme="super-light"] .movie-dates,
+[data-theme="super-light"] .movie-times {
+    color: #6B7280;
 }
 
 /* ===== RESPONSIVE MOBILE ===== */
 @media (max-width: 767px) {
     /* Masquer le widget cinéma sur mobile */
     .cinema-widget-container {
-    position: absolute !important;
-    left: -9999px !important; /* Masquer hors écran */
-    visibility: hidden !important;
-    /* Le widget existe mais est invisible */
-}       
+        position: absolute !important;
+        left: -9999px !important; /* Masquer hors écran */
+        visibility: hidden !important;
+        /* Le widget existe mais est invisible */
+    }       
     
     @keyframes cinemaPulse {
         0%, 100% { 
@@ -403,7 +505,7 @@
         width: 100%;
         height: 100%;
         background: rgba(0, 0, 0, 0.8);
-        z-index: 2000;
+        z-index: 10000;
         display: none;
         align-items: center;
         justify-content: center;
@@ -423,7 +525,7 @@
         max-height: 80%;
         overflow-y: auto;
         backdrop-filter: blur(10px);
-        position: fixed;
+        position: relative;
     }
     
     .cinema-modal-header {
@@ -436,98 +538,98 @@
     }
     
     .cinema-modal-close {
-    background: rgba(255, 255, 255, 0.9);
-    border: 2px solid var(--primary-color, #dc3545);
-    font-size: 20px;
-    cursor: pointer;
-    color: var(--primary-color, #dc3545);
-    padding: 8px;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid var(--primary-color, #dc3545);
+        font-size: 20px;
+        cursor: pointer;
+        color: var(--primary-color, #dc3545);
+        padding: 8px;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
 
-.cinema-modal-close:hover {
-    background: var(--primary-color, #dc3545);
-    color: white;
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
+    .cinema-modal-close:hover {
+        background: var(--primary-color, #dc3545);
+        color: white;
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
 
-.cinema-modal-close:active {
-    transform: scale(0.95);
-}
+    .cinema-modal-close:active {
+        transform: scale(0.95);
+    }
 
-/* ===== THÈMES POUR LA CROIX ===== */
-[data-theme="light"] .cinema-modal-close {
-    border-color: #7e57c2;
-    color: #7e57c2;
-}
+    /* ===== THÈMES POUR LA CROIX - IDENTIQUES AUX WIDGETS ===== */
+    [data-theme="light"] .cinema-modal-close {
+        border-color: #7e57c2;
+        color: #7e57c2;
+    }
 
-[data-theme="light"] .cinema-modal-close:hover {
-    background: #7e57c2;
-}
+    [data-theme="light"] .cinema-modal-close:hover {
+        background: #7e57c2;
+    }
 
-[data-theme="dark"] .cinema-modal-close {
-    border-color: #5c6bc0;
-    color: #5c6bc0;
-    background: rgba(40, 40, 40, 0.9);
-}
+    [data-theme="dark"] .cinema-modal-close {
+        border-color: #5c6bc0;
+        color: #5c6bc0;
+        background: rgba(40, 40, 40, 0.9);
+    }
 
-[data-theme="dark"] .cinema-modal-close:hover {
-    background: #5c6bc0;
-}
+    [data-theme="dark"] .cinema-modal-close:hover {
+        background: #5c6bc0;
+    }
 
-[data-theme="rouge"] .cinema-modal-close {
-    border-color: #d32f2f;
-    color: #d32f2f;
-}
+    [data-theme="rouge"] .cinema-modal-close {
+        border-color: #d32f2f;
+        color: #d32f2f;
+    }
 
-[data-theme="rouge"] .cinema-modal-close:hover {
-    background: #d32f2f;
-}
+    [data-theme="rouge"] .cinema-modal-close:hover {
+        background: #d32f2f;
+    }
 
-[data-theme="bleuciel"] .cinema-modal-close {
-    border-color: #0ea5e9;
-    color: #0ea5e9;
-}
+    [data-theme="bleuciel"] .cinema-modal-close {
+        border-color: #0ea5e9;
+        color: #0ea5e9;
+    }
 
-[data-theme="bleuciel"] .cinema-modal-close:hover {
-    background: #0ea5e9;
-}
+    [data-theme="bleuciel"] .cinema-modal-close:hover {
+        background: #0ea5e9;
+    }
 
-[data-theme="sunset"] .cinema-modal-close {
-    border-color: #FF6B35;
-    color: #FF6B35;
-}
+    [data-theme="sunset"] .cinema-modal-close {
+        border-color: #FF6B35;
+        color: #FF6B35;
+    }
 
-[data-theme="sunset"] .cinema-modal-close:hover {
-    background: #FF6B35;
-}
+    [data-theme="sunset"] .cinema-modal-close:hover {
+        background: #FF6B35;
+    }
 
-[data-theme="ocean"] .cinema-modal-close {
-    border-color: #006064;
-    color: #006064;
-    background: rgba(26, 44, 58, 0.9);
-}
+    [data-theme="ocean"] .cinema-modal-close {
+        border-color: #006064;
+        color: #006064;
+        background: rgba(26, 44, 58, 0.9);
+    }
 
-[data-theme="ocean"] .cinema-modal-close:hover {
-    background: #006064;
-}
+    [data-theme="ocean"] .cinema-modal-close:hover {
+        background: #006064;
+    }
 
-[data-theme="super-light"] .cinema-modal-close {
-    border-color: #6366F1;
-    color: #6366F1;
-}
+    [data-theme="super-light"] .cinema-modal-close {
+        border-color: #6366F1;
+        color: #6366F1;
+    }
 
-[data-theme="super-light"] .cinema-modal-close:hover {
-    background: #6366F1;
-}
+    [data-theme="super-light"] .cinema-modal-close:hover {
+        background: #6366F1;
+    }
     
     @keyframes modalFadeIn {
         from {
@@ -542,7 +644,6 @@
 }
 
 /* Desktop */
-/* ===== LAYOUT CÔTE À CÔTE ===== */
 @media (min-width: 768px) {
     /* Conteneur parent pour les deux widgets */
     .widgets-row {
@@ -557,37 +658,6 @@
     .cinema-widget-container {
         flex: 1;
         margin: 0;
-        max-width: none;
-    }
-    
-    .cinema-widget-container {
-        order: 2; /* CINÉMA à droite */
-    }
-    
-    .news-widget-container {
-        order: 1; /* NEWS à gauche */
-    }
-}
-
-/* ===== LAYOUT CÔTE À CÔTE ===== */
-@media (min-width: 768px) {
-    /* Vos règles existantes... */
-    
-    /* Masquer le bouton flottant sur desktop */
-    .cinema-mobile-btn {
-        display: none !important;
-    }
-    
-    /* Masquer la modal sur desktop */
-    .cinema-mobile-modal {
-        display: none !important;
-    }
-}
-
-/* Égaliser les hauteurs des widgets */
-    .news-widget-container,
-    .cinema-widget-container {
-        flex: 1;
         max-width: none;
         display: flex; /* Important pour l'égalisation */
     }
@@ -604,199 +674,67 @@
         flex: 1; /* Zone de contenu extensible */
         min-height: 200px; /* Hauteur minimum */
     }
-	
-	/* CSS pour la modal cinéma - À ajouter dans cinema-widget.css */
-
-/* Z-index élevé pour passer devant le ticker */
-.cinema-mobile-modal {
-    z-index: 10000 !important; /* Plus élevé que le ticker (9999) */
+    
+    .cinema-widget-container {
+        order: 2; /* CINÉMA à droite */
+    }
+    
+    .news-widget-container {
+        order: 1; /* NEWS à gauche */
+    }
+    
+    /* Masquer le bouton flottant sur desktop */
+    .cinema-mobile-btn {
+        display: none !important;
+    }
+    
+    /* Masquer la modal sur desktop */
+    .cinema-mobile-modal {
+        display: none !important;
+    }
 }
 
-/* Support des thèmes pour la modal cinéma */
-
-/* Thème Rouge (par défaut) */
-[data-theme="rouge"] .cinema-mobile-modal,
-[data-theme="red"] .cinema-mobile-modal {
-    background: rgba(220, 53, 69, 0.95);
+/* ===== VARIABLES CSS POUR LES COULEURS RGB ===== */
+:root {
+    --primary-color-rgb: 126, 87, 194; /* Violet par défaut */
 }
 
-[data-theme="rouge"] .cinema-modal-content,
-[data-theme="red"] .cinema-modal-content {
-    background: #ffffff;
-    border: 2px solid #dc3545;
+[data-theme="dark"] {
+    --primary-color-rgb: 92, 107, 192; /* Bleu clair pour dark */
 }
 
-[data-theme="rouge"] .cinema-modal-close,
-[data-theme="red"] .cinema-modal-close {
-    color: #dc3545;
+[data-theme="rouge"] {
+    --primary-color-rgb: 211, 47, 47; /* Rouge */
 }
 
-/* Thème Bleu Ciel */
-[data-theme="bleuciel"] .cinema-mobile-modal {
-    background: rgba(135, 206, 235, 0.95);
+[data-theme="bleuciel"] {
+    --primary-color-rgb: 14, 165, 233; /* Bleu ciel */
 }
 
-[data-theme="bleuciel"] .cinema-modal-content {
-    background: #ffffff;
-    border: 2px solid #87ceeb;
+[data-theme="sunset"] {
+    --primary-color-rgb: 255, 107, 53; /* Coucher de Soleil */
 }
 
-[data-theme="bleuciel"] .cinema-modal-close {
-    color: #5f9ea0;
+[data-theme="ocean"] {
+    --primary-color-rgb: 0, 96, 100; /* Océan Profond */
 }
 
-[data-theme="bleuciel"] .cinema-preview-item {
-    background: rgba(135, 206, 235, 0.1) !important;
-    border-left: 3px solid #87ceeb !important;
+[data-theme="super-light"] {
+    --primary-color-rgb: 99, 102, 241; /* Super-Light */
 }
 
-[data-theme="bleuciel"] .cinema-preview-item strong {
-    color: #5f9ea0 !important;
+/* Animation d'apparition - IDENTIQUE À NEWS */
+.cinema-widget {
+    animation: cinemaWidgetFadeIn 0.6s ease-out;
 }
 
-/* Thème Sunset */
-[data-theme="sunset"] .cinema-mobile-modal {
-    background: rgba(255, 165, 0, 0.95);
-}
-
-[data-theme="sunset"] .cinema-modal-content {
-    background: #ffffff;
-    border: 2px solid #ff8c00;
-}
-
-[data-theme="sunset"] .cinema-modal-close {
-    color: #ff8c00;
-}
-
-[data-theme="sunset"] .cinema-preview-item {
-    background: rgba(255, 165, 0, 0.1) !important;
-    border-left: 3px solid #ff8c00 !important;
-}
-
-[data-theme="sunset"] .cinema-preview-item strong {
-    color: #ff8c00 !important;
-}
-
-/* Thème Ocean */
-[data-theme="ocean"] .cinema-mobile-modal {
-    background: rgba(0, 119, 190, 0.95);
-}
-
-[data-theme="ocean"] .cinema-modal-content {
-    background: #ffffff;
-    border: 2px solid #0077be;
-}
-
-[data-theme="ocean"] .cinema-modal-close {
-    color: #0077be;
-}
-
-[data-theme="ocean"] .cinema-preview-item {
-    background: rgba(0, 119, 190, 0.1) !important;
-    border-left: 3px solid #0077be !important;
-}
-
-[data-theme="ocean"] .cinema-preview-item strong {
-    color: #0077be !important;
-}
-
-/* Thème Super Light */
-[data-theme="super-light"] .cinema-mobile-modal {
-    background: rgba(248, 249, 250, 0.98);
-}
-
-[data-theme="super-light"] .cinema-modal-content {
-    background: #ffffff;
-    border: 2px solid #e9ecef;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-}
-
-[data-theme="super-light"] .cinema-modal-close {
-    color: #6c757d;
-}
-
-[data-theme="super-light"] .cinema-preview-item {
-    background: rgba(108, 117, 125, 0.1) !important;
-    border-left: 3px solid #6c757d !important;
-}
-
-[data-theme="super-light"] .cinema-preview-item strong {
-    color: #495057 !important;
-}
-
-/* Mode sombre */
-[data-theme="dark"] .cinema-mobile-modal {
-    background: rgba(33, 37, 41, 0.95);
-}
-
-[data-theme="dark"] .cinema-modal-content {
-    background: #212529;
-    border: 2px solid #495057;
-    color: #ffffff;
-}
-
-[data-theme="dark"] .cinema-modal-close {
-    color: #ffffff;
-}
-
-[data-theme="dark"] .cinema-preview-item {
-    background: rgba(108, 117, 125, 0.2) !important;
-    border-left: 3px solid #6c757d !important;
-    color: #ffffff !important;
-}
-
-[data-theme="dark"] .cinema-preview-item strong {
-    color: #ffffff !important;
-}
-
-/* Mode clair */
-[data-theme="light"] .cinema-mobile-modal {
-    background: rgba(255, 255, 255, 0.95);
-}
-
-[data-theme="light"] .cinema-modal-content {
-    background: #ffffff;
-    border: 2px solid #dee2e6;
-}
-
-[data-theme="light"] .cinema-modal-close {
-    color: #495057;
-}
-
-[data-theme="light"] .cinema-preview-item {
-    background: rgba(108, 117, 125, 0.1) !important;
-    border-left: 3px solid #6c757d !important;
-}
-
-[data-theme="light"] .cinema-preview-item strong {
-    color: #495057 !important;
-}
-
-/* Animation d'apparition améliorée */
-.cinema-mobile-modal.show {
-    animation: cinemaModalSlideIn 0.3s ease-out;
-}
-
-@keyframes cinemaModalSlideIn {
+@keyframes cinemaWidgetFadeIn {
     from {
         opacity: 0;
-        transform: translateY(50px);
+        transform: translateY(20px);
     }
     to {
         opacity: 1;
         transform: translateY(0);
-    }
-}
-
-/* Responsive - Modal plus haute sur mobile */
-@media (max-width: 768px) {
-    .cinema-modal-content {
-        max-height: 85vh !important;
-        margin: 5% auto !important;
-    }
-    
-    #cinemaModalContent {
-        max-height: 70vh;
-        overflow-y: auto;
     }
 }
