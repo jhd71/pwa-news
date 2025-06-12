@@ -279,13 +279,6 @@ setupTVIcons() {
     category: 'news'
   },
   {
-    title: 'Mâcon-Infos',
-    url: 'https://macon-infos.com/fr/faits-divers/macon',
-    mobileUrl: 'https://macon-infos.com/fr/faits-divers/macon',
-    isDefault: true,
-    category: 'news'
-  },
-  {
     title: '🛍️ Brocantes',
     url: 'https://brocabrac.fr/71/montceau-les-mines/',
     mobileUrl: 'https://brocabrac.fr/71/montceau-les-mines/',
