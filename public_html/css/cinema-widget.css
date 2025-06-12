@@ -217,7 +217,7 @@
     color: #aaa;
 }
 
-/* Thème Dark (Bleu Nuit) */
+/* Thème Dark (Bleu Nuit) - TEXTE PLUS CLAIR */
 [data-theme="dark"] .cinema-widget {
     background: rgba(40, 40, 40, 0.95);
     border-color: rgba(26, 35, 126, 0.6);
@@ -236,7 +236,7 @@
 }
 
 [data-theme="dark"] .cinema-widget-preview {
-    color: #e0e0e0;
+    color: #e0e0e0; /* ✅ TEXTE PRINCIPAL CLAIR */
 }
 
 [data-theme="dark"] .loading-cinema {
@@ -246,11 +246,11 @@
 [data-theme="dark"] .cinema-preview-item {
     background: rgba(26, 35, 126, 0.2);
     border-left-color: #5c6bc0;
-    color: #e0e0e0;
+    color: #e0e0e0; /* ✅ TEXTE ITEMS CLAIR */
 }
 
 [data-theme="dark"] .cinema-preview-item strong {
-    color: #7986cb;
+    color: #7986cb; /* ✅ TITRES BIEN VISIBLES */
 }
 
 [data-theme="dark"] .cinema-widget-count {
@@ -262,10 +262,16 @@
     color: #b0b0b0;
 }
 
-[data-theme="dark"] .movie-genre,
-[data-theme="dark"] .movie-dates,
+[data-theme="dark"] .movie-genre {
+    color: #b0b0b0; /* ✅ GENRE LISIBLE */
+}
+
+[data-theme="dark"] .movie-dates {
+    color: #aaa; /* ✅ DATES LISIBLES */
+}
+
 [data-theme="dark"] .movie-times {
-    color: #aaa;
+    color: #b0b0b0; /* ✅ HORAIRES LISIBLES */
 }
 
 /* Thème Rouge */
@@ -326,7 +332,7 @@
     background: rgba(14, 165, 233, 0.1);
 }
 
-/* Thème Coucher de Soleil */
+/* Thème Coucher de Soleil - TEXTE PLUS CLAIR */
 [data-theme="sunset"] .cinema-widget {
     background: rgba(61, 40, 23, 0.95);
     border-color: rgba(255, 107, 53, 0.6);
@@ -344,7 +350,7 @@
 }
 
 [data-theme="sunset"] .cinema-widget-preview {
-    color: #FFF8E7;
+    color: #FFF8E7; /* ✅ TEXTE PRINCIPAL TRÈS CLAIR */
 }
 
 [data-theme="sunset"] .loading-cinema {
@@ -354,11 +360,11 @@
 [data-theme="sunset"] .cinema-preview-item {
     background: rgba(255, 107, 53, 0.2);
     border-left-color: #FF6B35;
-    color: #FFF8E7;
+    color: #FFF8E7; /* ✅ TEXTE ITEMS TRÈS CLAIR */
 }
 
 [data-theme="sunset"] .cinema-preview-item strong {
-    color: #FFCC80;
+    color: #FFCC80; /* ✅ TITRES DORÉS VISIBLES */
 }
 
 [data-theme="sunset"] .cinema-widget-count {
@@ -370,13 +376,19 @@
     color: #FFCC80;
 }
 
-[data-theme="sunset"] .movie-genre,
-[data-theme="sunset"] .movie-dates,
-[data-theme="sunset"] .movie-times {
-    color: #FFCC80;
+[data-theme="sunset"] .movie-genre {
+    color: #FFCC80; /* ✅ GENRE DORÉ */
 }
 
-/* Thème Océan Profond */
+[data-theme="sunset"] .movie-dates {
+    color: #FFE0B2; /* ✅ DATES TRÈS CLAIRES */
+}
+
+[data-theme="sunset"] .movie-times {
+    color: #FFCC80; /* ✅ HORAIRES DORÉS */
+}
+
+/* Thème Océan Profond - TEXTE PLUS CLAIR */
 [data-theme="ocean"] .cinema-widget {
     background: rgba(26, 44, 58, 0.95);
     border-color: rgba(0, 96, 100, 0.6);
@@ -386,7 +398,7 @@
 [data-theme="ocean"] .cinema-widget-header,
 [data-theme="ocean"] .cinema-widget-title,
 [data-theme="ocean"] .cinema-widget-footer {
-    color: #006064;
+    color: #4DD0E1; /* ✅ CYAN PLUS CLAIR */
 }
 
 [data-theme="ocean"] .cinema-widget-badge {
@@ -394,7 +406,7 @@
 }
 
 [data-theme="ocean"] .cinema-widget-preview {
-    color: #B3E5FC;
+    color: #B3E5FC; /* ✅ TEXTE PRINCIPAL CYAN CLAIR */
 }
 
 [data-theme="ocean"] .loading-cinema {
@@ -403,12 +415,12 @@
 
 [data-theme="ocean"] .cinema-preview-item {
     background: rgba(0, 96, 100, 0.2);
-    border-left-color: #006064;
-    color: #B3E5FC;
+    border-left-color: #4DD0E1; /* ✅ BORDURE PLUS CLAIRE */
+    color: #B3E5FC; /* ✅ TEXTE ITEMS CYAN CLAIR */
 }
 
 [data-theme="ocean"] .cinema-preview-item strong {
-    color: #81D4FA;
+    color: #81D4FA; /* ✅ TITRES CYAN VIFS */
 }
 
 [data-theme="ocean"] .cinema-widget-count {
@@ -420,10 +432,16 @@
     color: #81D4FA;
 }
 
-[data-theme="ocean"] .movie-genre,
-[data-theme="ocean"] .movie-dates,
+[data-theme="ocean"] .movie-genre {
+    color: #81D4FA; /* ✅ GENRE CYAN */
+}
+
+[data-theme="ocean"] .movie-dates {
+    color: #B3E5FC; /* ✅ DATES CYAN CLAIR */
+}
+
 [data-theme="ocean"] .movie-times {
-    color: #81D4FA;
+    color: #81D4FA; /* ✅ HORAIRES CYAN */
 }
 
 /* Thème Super-Light */
