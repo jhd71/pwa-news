@@ -348,16 +348,12 @@ extractRealDates(element) {
         // Chercher les dates dans le texte de l'élément
         const text = element.textContent;
         
-        console.log('🔍 Texte analysé pour dates:', text.substring(0, 200));
-        
         // Regex améliorée pour capturer les patterns de dates
         const datePatterns = [
-            // Format: "jeudi 12", "samedi 14", etc. (avec capture du jour et numéro)
+            // Format: "jeudi 12", "samedi 14", etc.
             /\b(lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)\s+(\d{1,2})\b/gi,
             // Format: "12 décembre", "14 janvier", etc.
-            /\b(\d{1,2})\s+(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\b/gi,
-            // Format: "12/12", "14/01", etc.
-            /\b(\d{1,2})\/(\d{1,2})\b/g
+            /\b(\d{1,2})\s+(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\b/gi
         ];
         
         const monthNames = {
@@ -371,13 +367,10 @@ extractRealDates(element) {
         
         // Pattern 1: "jeudi 12", "samedi 14"
         let matches = [...text.matchAll(datePatterns[0])];
-        console.log(`🎯 Matches trouvés (jour + numéro):`, matches.length);
         
-        matches.forEach((match, index) => {
+        matches.forEach((match) => {
             const dayName = match[1].toLowerCase();
             const dayNumber = parseInt(match[2]);
-            
-            console.log(`📅 Match ${index}: ${dayName} ${dayNumber}`);
             
             if (dayNames[dayName] !== undefined && dayNumber >= 1 && dayNumber <= 31) {
                 // Créer une clé unique pour cette date
@@ -385,8 +378,7 @@ extractRealDates(element) {
                 
                 // Éviter les doublons
                 if (seenDates.has(dateKey)) {
-                    console.log(`⚠️ Date en doublon ignorée: ${dateKey}`);
-                    return; // ✅ CORRECTION : return au lieu de continue
+                    return; // Ignore silencieusement les doublons
                 }
                 seenDates.add(dateKey);
                 
@@ -402,16 +394,12 @@ extractRealDates(element) {
                 if (date.getDay() !== dayNames[dayName]) {
                     // Ajuster pour trouver le bon jour
                     const targetDay = dayNames[dayName];
-                    const currentDay = date.getDay();
-                    const diff = targetDay - currentDay;
                     
-                    if (diff !== 0) {
-                        // Essayer le mois suivant
-                        date.setMonth(date.getMonth() + 1);
-                        // Recalculer si nécessaire
-                        if (date.getDay() !== targetDay) {
-                            return; // ✅ CORRECTION : return au lieu de continue
-                        }
+                    // Essayer le mois suivant
+                    date.setMonth(date.getMonth() + 1);
+                    // Si toujours pas bon, ignorer cette date
+                    if (date.getDay() !== targetDay) {
+                        return;
                     }
                 }
                 
@@ -431,17 +419,14 @@ extractRealDates(element) {
                     dayName: dayName,
                     dayNumber: dayNumber
                 });
-                
-                console.log(`✅ Date ajoutée: ${dayName} ${dayNumber} -> ${date.toDateString()}`);
             }
         });
         
         // Pattern 2: "12 décembre", si aucune date trouvée avec le premier pattern
         if (dates.length === 0) {
             matches = [...text.matchAll(datePatterns[1])];
-            console.log(`🎯 Matches trouvés (numéro + mois):`, matches.length);
             
-            matches.forEach((match, index) => {
+            matches.forEach((match) => {
                 const dayNumber = parseInt(match[1]);
                 const monthName = match[2].toLowerCase();
                 
@@ -479,12 +464,14 @@ extractRealDates(element) {
             });
         }
         
-        console.log(`📊 Total dates extraites: ${dates.length}`, dates.map(d => d.displayName));
+        // Log propre - Une seule ligne par film
+        const filmTitle = element.querySelector('h1, h2, h3, strong')?.textContent?.trim() || 'Film';
+        if (dates.length > 0) {
+            console.log(`🎬 ${filmTitle}: ${dates.map(d => d.displayName).join(', ')}`);
+        }
         
         // Si toujours aucune date trouvée, créer des dates par défaut
         if (dates.length === 0) {
-            console.log('⚠️ Aucune date trouvée, utilisation des dates par défaut');
-            
             const tomorrow = new Date(today);
             tomorrow.setDate(today.getDate() + 1);
             
