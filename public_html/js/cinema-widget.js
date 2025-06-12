@@ -385,9 +385,19 @@ extractRealDates(element) {
                 // Créer la date (essayer mois actuel puis suivant)
                 let date = new Date(today.getFullYear(), today.getMonth(), dayNumber);
                 
-                // Si la date est passée, essayer le mois suivant
-                if (date < today) {
+                // Vérifier si la date est passée
+                const daysDiff = (today - date) / (1000 * 60 * 60 * 24);
+                
+                if (daysDiff > 2) {
+                    // Si plus de 2 jours dans le passé, essayer le mois suivant
                     date.setMonth(date.getMonth() + 1);
+                    
+                    // Vérifier à nouveau si c'est cohérent (pas trop loin dans le futur)
+                    const futureDays = (date - today) / (1000 * 60 * 60 * 24);
+                    if (futureDays > 60) {
+                        // Si c'est plus de 2 mois dans le futur, probablement faux
+                        return;
+                    }
                 }
                 
                 // Vérifier que le jour de la semaine correspond
@@ -439,9 +449,21 @@ extractRealDates(element) {
                     
                     let date = new Date(today.getFullYear(), monthIndex, dayNumber);
                     
-                    // Si la date est passée, essayer l'année suivante
-                    if (date < today) {
-                        date.setFullYear(date.getFullYear() + 1);
+                    // ✅ LOGIQUE CINÉMA RÉALISTE
+                    const daysDiff = (today - date) / (1000 * 60 * 60 * 24);
+                    
+                    if (daysDiff > 2) {
+                        // Si c'est plus de 2 jours dans le passé, ignorer complètement
+                        // Les cinémas ne gardent pas les vieilles infos
+                        console.log(`⚠️ Date passée ignorée: ${dayNumber} ${monthName} (${Math.round(daysDiff)} jours passés)`);
+                        return;
+                    }
+                    
+                    // Vérifier que la date n'est pas trop loin dans le futur (max 3 mois)
+                    const futureDays = (date - today) / (1000 * 60 * 60 * 24);
+                    if (futureDays > 90) {
+                        console.log(`⚠️ Date trop lointaine ignorée: ${dayNumber} ${monthName} (${Math.round(futureDays)} jours dans le futur)`);
+                        return;
                     }
                     
                     const isToday = this.isSameDay(date, today);
@@ -472,8 +494,14 @@ extractRealDates(element) {
         
         // Si toujours aucune date trouvée, créer des dates par défaut
         if (dates.length === 0) {
+            console.log(`⚠️ Aucune date valide trouvée pour ${filmTitle}, utilisation des dates par défaut`);
+            
             const tomorrow = new Date(today);
             tomorrow.setDate(today.getDate() + 1);
+            
+            // Dates par défaut réalistes pour un cinéma
+            const dayAfterTomorrow = new Date(today);
+            dayAfterTomorrow.setDate(today.getDate() + 2);
             
             dates.push(
                 {
@@ -481,16 +509,21 @@ extractRealDates(element) {
                     dateString: today.toISOString().split('T')[0],
                     displayName: 'Aujourd\'hui',
                     isToday: true,
-                    isTomorrow: false,
-                    dayName: today.toLocaleDateString('fr-FR', { weekday: 'long' })
+                    isTomorrow: false
                 },
                 {
                     date: tomorrow,
                     dateString: tomorrow.toISOString().split('T')[0],
                     displayName: 'Demain',
                     isToday: false,
-                    isTomorrow: true,
-                    dayName: tomorrow.toLocaleDateString('fr-FR', { weekday: 'long' })
+                    isTomorrow: true
+                },
+                {
+                    date: dayAfterTomorrow,
+                    dateString: dayAfterTomorrow.toISOString().split('T')[0],
+                    displayName: dayAfterTomorrow.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric' }),
+                    isToday: false,
+                    isTomorrow: false
                 }
             );
         }
@@ -508,8 +541,7 @@ extractRealDates(element) {
             dateString: today.toISOString().split('T')[0],
             displayName: 'Aujourd\'hui',
             isToday: true,
-            isTomorrow: false,
-            dayName: today.toLocaleDateString('fr-FR', { weekday: 'long' })
+            isTomorrow: false
         }];
     }
 }
