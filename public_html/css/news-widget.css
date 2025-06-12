@@ -481,7 +481,7 @@
         cursor: pointer;
         z-index: 100;
         transition: all 0.3s ease;
-        animation: cinemaPulse 3s infinite;
+        animation: cinemaPulse 2s infinite;
         display: flex;
         align-items: center;
         justify-content: center;
