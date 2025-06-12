@@ -386,7 +386,7 @@ extractRealDates(element) {
                 // Éviter les doublons
                 if (seenDates.has(dateKey)) {
                     console.log(`⚠️ Date en doublon ignorée: ${dateKey}`);
-                    return;
+                    return; // ✅ CORRECTION : return au lieu de continue
                 }
                 seenDates.add(dateKey);
                 
@@ -410,7 +410,7 @@ extractRealDates(element) {
                         date.setMonth(date.getMonth() + 1);
                         // Recalculer si nécessaire
                         if (date.getDay() !== targetDay) {
-                            continue; // Ignorer cette date si on n'arrive pas à la résoudre
+                            return; // ✅ CORRECTION : return au lieu de continue
                         }
                     }
                 }
