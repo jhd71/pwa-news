@@ -468,8 +468,8 @@
     /* 🆕 Bouton cinéma dans le widget NEWS */
     .cinema-mobile-btn {
         position: absolute;
-        top: 320px;
-        right: 20px;
+        top: 6px;
+        right: 90px;
         width: 45px;
         height: 45px;
         background: var(--primary-color, #dc3545);
