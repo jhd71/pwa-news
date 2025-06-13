@@ -298,3 +298,76 @@ window.openSpecificNews = openSpecificNews;
 window.updateClock = updateClock;
 window.openTimeWidget = openTimeWidget;
 window.initClock = initClock;
+
+// Fonction pour ouvrir la galerie photos
+function openGalleryPage() {
+    // Arrêter la propagation pour éviter d'ouvrir le widget news
+    if (event) {
+        event.stopPropagation();
+    }
+    
+    // Vibration tactile si disponible
+    if (navigator.vibrate) {
+        navigator.vibrate(50);
+    }
+    
+    // Redirection vers votre page galerie
+    window.location.href = 'galerie.html'; // ✅ Changez par le nom de votre page galerie
+    
+    console.log('📸 Bouton Photos cliqué');
+}
+
+// Fonction pour ouvrir le widget cinéma (version mobile)
+function openCinemaModal() {
+    // Arrêter la propagation pour éviter d'ouvrir le widget news
+    if (event) {
+        event.stopPropagation();
+    }
+    
+    // Vibration tactile si disponible
+    if (navigator.vibrate) {
+        navigator.vibrate(50);
+    }
+    
+    // Ouvrir la modal cinéma mobile directement
+    const modal = document.getElementById('cinemaMobileModal');
+    const modalContent = document.getElementById('cinemaModalContent');
+    
+    if (modal && modalContent) {
+        // Afficher la modal
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        
+        console.log('🎬 Modal cinéma ouverte depuis le bouton header');
+        
+        // Copier le contenu du widget cinéma
+        const cinemaWidgetPreview = document.getElementById('cinemaWidgetPreview');
+        if (cinemaWidgetPreview) {
+            modalContent.innerHTML = cinemaWidgetPreview.innerHTML;
+        }
+        
+        // Événements de fermeture
+        const modalClose = document.getElementById('cinemaModalClose');
+        if (modalClose) {
+            modalClose.onclick = () => {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            };
+        }
+        
+        modal.onclick = (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        };
+        
+    } else {
+        console.warn('Modal cinéma introuvable');
+        window.open('https://www.cinemas-panacea.fr/montceau-embarcadere/horaires/', '_blank');
+    }
+}
+
+// Rendre les fonctions disponibles globalement
+window.openGalleryPage = openGalleryPage;
+window.openCinemaModal = openCinemaModal;

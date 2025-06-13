@@ -198,30 +198,7 @@
                 
                 .weather-show-btn {
                     display: none !important;
-                }
-                
-                /* BOUTONS CINÉMA ET PHOTOS - REPOSITIONNÉS POUR iOS */
-                .cinema-mobile-btn {
-                    position: absolute !important;
-                    top: calc(335px + var(--ios-safe-top, 0px)) !important;
-                    right: calc(10px + var(--ios-safe-right, 0px)) !important;
-                    z-index: 1000 !important;
-                    /* Assurer la visibilité sur iOS */
-                    opacity: 1 !important;
-                    visibility: visible !important;
-                    display: flex !important;
-                }
-                
-                .photos-mobile-btn {
-                    position: absolute !important;
-                    top: calc(335px + var(--ios-safe-top, 0px)) !important;
-                    left: calc(10px + var(--ios-safe-left, 0px)) !important;
-                    z-index: 1000 !important;
-                    /* Assurer la visibilité sur iOS */
-                    opacity: 1 !important;
-                    visibility: visible !important;
-                    display: flex !important;
-                }
+                }                               
                 
                 /* Correction pour les petits iPhone */
                 @media (max-width: 375px) {

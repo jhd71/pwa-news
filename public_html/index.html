@@ -158,6 +158,17 @@
             <div class="news-widget-header">
     <span class="material-icons news-pulse">newspaper</span>
     <div class="news-widget-title-short">NEWS</div>
+    
+    <!-- Boutons intégrés avec stopPropagation -->
+<div class="header-buttons">
+    <button class="header-btn photos-btn" onclick="event.stopPropagation(); openGalleryPage();" title="Galerie Photos">
+        Photos
+    </button>
+    <button class="header-btn cinema-btn" onclick="event.stopPropagation(); openCinemaModal();" title="Programme Cinéma">
+        Cinéma
+    </button>
+</div>
+    
     <div class="news-widget-clock" id="newsWidgetClock" onclick="openTimeWidget()" title="Cliquez pour plus d'infos">
         <div class="clock-time" id="clockTime">--:--</div>
         <div class="clock-date" id="clockDate">---</div>
@@ -201,16 +212,6 @@
         </div>
     </div>
 </div>
-
-<!-- Bouton flottant cinéma mobile (existant) -->
-<button class="cinema-mobile-btn" id="cinemaMobileBtn" title="Programme cinéma">
-    <span class="material-icons">movie</span>
-</button>
-
-<!-- 🆕 NOUVEAU : Bouton flottant galerie photos mobile -->
-<button class="photos-mobile-btn" id="photosMobileBtn" title="Galerie Photos">
-    <span class="material-icons">photo_library</span>
-</button>
 
 <!-- Modal cinéma mobile -->
 <div class="cinema-mobile-modal" id="cinemaMobileModal">
