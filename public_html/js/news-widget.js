@@ -312,7 +312,7 @@ function openGalleryPage() {
     }
     
     // Redirection vers votre page galerie
-    window.location.href = 'galerie.html'; // ✅ Changez par le nom de votre page galerie
+    window.location.href = 'photos-gallery.html'; // ✅ Changez par le nom de votre page galerie
     
     console.log('📸 Bouton Photos cliqué');
 }
