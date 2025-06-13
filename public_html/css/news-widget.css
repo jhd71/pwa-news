@@ -481,7 +481,7 @@
     /* Bouton CINÉMA */
     .cinema-mobile-btn {
         position: absolute;
-        top: 320px;
+        top: 335px;
         right: 10px;
         width: 60px;
         height: 45px;
@@ -516,7 +516,7 @@
     /* Bouton PHOTOS */
     .photos-mobile-btn {
         position: absolute;
-        top: 320px;
+        top: 335px;
         right: 305px;
         width: 60px;
         height: 45px;
@@ -823,4 +823,160 @@
 
 [data-theme="super-light"] {
     --primary-color-rgb: 99, 102, 241; /* Super-Light */
+}
+
+/* widget-clock */
+
+.news-widget-title-short {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--primary-color, #dc3545);
+    margin-right: auto; /* Pousse l'horloge à droite */
+}
+
+.news-widget-clock {
+    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.1);
+    border: 1px solid var(--primary-color, #dc3545);
+    border-radius: 8px;
+    padding: 6px 10px; /* ✅ Plus de padding */
+    font-size: 12px; /* ✅ Plus gros */
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 60px; /* ✅ Plus large */
+    margin-left: auto; /* Horloge à droite */
+}
+
+.news-widget-clock:hover {
+    background: var(--primary-color, #dc3545);
+    color: white;
+    transform: scale(1.05);
+}
+
+.clock-time {
+    font-size: 13px; /* ✅ Plus gros */
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.clock-date {
+    font-size: 10px; /* ✅ Plus gros */
+    font-weight: 600;
+    line-height: 1.1;
+    opacity: 0.9;
+}
+
+/* ===== THÈMES AVEC TEXTE BLANC POUR SOMBRES ===== */
+
+/* Thème Light (Violet) */
+[data-theme="light"] .news-widget-clock {
+    background: rgba(126, 87, 194, 0.1);
+    border-color: #7e57c2;
+    color: #7e57c2;
+}
+
+[data-theme="light"] .news-widget-clock:hover {
+    background: #7e57c2;
+    color: white;
+}
+
+[data-theme="light"] .news-widget-title-short {
+    color: #7e57c2;
+}
+
+/* Thème Dark (Bleu Nuit) - TEXTE BLANC */
+[data-theme="dark"] .news-widget-clock {
+    background: rgba(92, 107, 192, 0.2);
+    border-color: #5c6bc0;
+    color: #ffffff; /* ✅ TEXTE BLANC */
+}
+
+[data-theme="dark"] .news-widget-clock:hover {
+    background: #5c6bc0;
+    color: white;
+}
+
+[data-theme="dark"] .news-widget-title-short {
+    color: #5c6bc0;
+}
+
+/* Thème Rouge */
+[data-theme="rouge"] .news-widget-clock {
+    background: rgba(211, 47, 47, 0.1);
+    border-color: #d32f2f;
+    color: #d32f2f;
+}
+
+[data-theme="rouge"] .news-widget-clock:hover {
+    background: #d32f2f;
+    color: white;
+}
+
+[data-theme="rouge"] .news-widget-title-short {
+    color: #d32f2f;
+}
+
+/* Thème Bleu Ciel */
+[data-theme="bleuciel"] .news-widget-clock {
+    background: rgba(14, 165, 233, 0.1);
+    border-color: #0ea5e9;
+    color: #0ea5e9;
+}
+
+[data-theme="bleuciel"] .news-widget-clock:hover {
+    background: #0ea5e9;
+    color: white;
+}
+
+[data-theme="bleuciel"] .news-widget-title-short {
+    color: #0ea5e9;
+}
+
+/* Thème Sunset */
+[data-theme="sunset"] .news-widget-clock {
+    background: rgba(255, 107, 53, 0.2);
+    border-color: #FF6B35;
+    color: #FFCC80; /* ✅ TEXTE CLAIR */
+}
+
+[data-theme="sunset"] .news-widget-clock:hover {
+    background: #FF6B35;
+    color: white;
+}
+
+[data-theme="sunset"] .news-widget-title-short {
+    color: #FF6B35;
+}
+
+/* Thème Océan Profond - TEXTE BLANC */
+[data-theme="ocean"] .news-widget-clock {
+    background: rgba(0, 96, 100, 0.2);
+    border-color: #4DD0E1;
+    color: #ffffff; /* ✅ TEXTE BLANC */
+}
+
+[data-theme="ocean"] .news-widget-clock:hover {
+    background: #006064;
+    color: white;
+}
+
+[data-theme="ocean"] .news-widget-title-short {
+    color: #4DD0E1;
+}
+
+/* Thème Super-Light */
+[data-theme="super-light"] .news-widget-clock {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: #6366F1;
+    color: #6366F1;
+}
+
+[data-theme="super-light"] .news-widget-clock:hover {
+    background: #6366F1;
+    color: white;
+}
+
+[data-theme="super-light"] .news-widget-title-short {
+    color: #6366F1;
 }

@@ -203,7 +203,7 @@
                 /* BOUTONS CINÉMA ET PHOTOS - REPOSITIONNÉS POUR iOS */
                 .cinema-mobile-btn {
                     position: absolute !important;
-                    top: calc(320px + var(--ios-safe-top, 0px)) !important;
+                    top: calc(335px + var(--ios-safe-top, 0px)) !important;
                     right: calc(10px + var(--ios-safe-right, 0px)) !important;
                     z-index: 1000 !important;
                     /* Assurer la visibilité sur iOS */
@@ -214,7 +214,7 @@
                 
                 .photos-mobile-btn {
                     position: absolute !important;
-                    top: calc(320px + var(--ios-safe-top, 0px)) !important;
+                    top: calc(335px + var(--ios-safe-top, 0px)) !important;
                     left: calc(10px + var(--ios-safe-left, 0px)) !important;
                     z-index: 1000 !important;
                     /* Assurer la visibilité sur iOS */

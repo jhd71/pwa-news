@@ -156,10 +156,13 @@
     <div class="news-widget-container">
         <div class="local-news-widget" id="localNewsWidget" onclick="openLocalNewsPage()">
             <div class="news-widget-header">
-                <span class="material-icons news-pulse">newspaper</span>
-                <div class="news-widget-title">NEWS Actu&Média</div>
-                <div class="news-widget-badge">Local</div>
-            </div>
+    <span class="material-icons news-pulse">newspaper</span>
+    <div class="news-widget-title-short">NEWS</div>
+    <div class="news-widget-clock" id="newsWidgetClock" onclick="openTimeWidget()" title="Cliquez pour plus d'infos">
+        <div class="clock-time" id="clockTime">--:--</div>
+        <div class="clock-date" id="clockDate">---</div>
+    </div>
+</div>
             
             <div class="news-widget-preview" id="newsWidgetPreview">
                 <div class="loading-news">

@@ -251,5 +251,50 @@ function openSpecificNews(newsId) {
     window.location.href = `news-locale.html#news-${newsId}`;
 }
 
+// Fonction pour mettre à jour l'horloge
+function updateClock() {
+    const now = new Date();
+    const timeElement = document.getElementById('clockTime');
+    const dateElement = document.getElementById('clockDate');
+    
+    if (timeElement && dateElement) {
+        // Format heure : 14:23
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        timeElement.textContent = `${hours}:${minutes}`;
+        
+        // Format date : Ven 13
+        const days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+        const dayName = days[now.getDay()];
+        const dayNumber = now.getDate();
+        dateElement.textContent = `${dayName} ${dayNumber}`;
+    }
+}
+
+// Fonction appelée au clic
+function openTimeWidget() {
+    // Vibration si disponible
+    if (navigator.vibrate) {
+        navigator.vibrate(50);
+    }
+    
+    // Ouvrir Google météo locale
+    window.open('https://www.google.com/search?q=météo+montceau+les+mines', '_blank');
+    
+    console.log('🕐 Horloge cliquée');
+}
+
+// Démarrer l'horloge
+function initClock() {
+    updateClock(); // Mise à jour immédiate
+    setInterval(updateClock, 1000); // Mise à jour chaque seconde
+}
+
+// Démarrer quand le DOM est prêt
+document.addEventListener('DOMContentLoaded', initClock);
+
 // Rendre la fonction disponible globalement
 window.openSpecificNews = openSpecificNews;
+window.updateClock = updateClock;
+window.openTimeWidget = openTimeWidget;
+window.initClock = initClock;
