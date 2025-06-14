@@ -197,7 +197,8 @@
 }
 
 [data-theme="light"] .cinema-widget-badge {
-    background: #7e57c2;
+    background: rgba(126, 87, 194, 0.1);
+	color: #7e57c2;
 }
 
 [data-theme="light"] .cinema-preview-item {
@@ -287,7 +288,8 @@
 }
 
 [data-theme="rouge"] .cinema-widget-badge {
-    background: #d32f2f;
+    background: #f3e2df;
+    color: #be4034;
 }
 
 [data-theme="rouge"] .cinema-preview-item {
@@ -316,7 +318,8 @@
 }
 
 [data-theme="bleuciel"] .cinema-widget-badge {
-    background: #0ea5e9;
+    background: #e8f2fa;
+    color: #54a3e4;
 }
 
 [data-theme="bleuciel"] .cinema-preview-item {
@@ -346,7 +349,8 @@
 }
 
 [data-theme="sunset"] .cinema-widget-badge {
-    background: #FF6B35;
+    background: #5e3826;
+    color: #edc484;
 }
 
 [data-theme="sunset"] .cinema-widget-preview {
@@ -402,7 +406,8 @@
 }
 
 [data-theme="ocean"] .cinema-widget-badge {
-    background: #006064;
+    background: #213542;
+    color: #7bcddf;
 }
 
 [data-theme="ocean"] .cinema-widget-preview {
@@ -458,7 +463,8 @@
 }
 
 [data-theme="super-light"] .cinema-widget-badge {
-    background: #6366F1;
+    background: rgb(239 240 253);
+    color: #656aea;
 }
 
 [data-theme="super-light"] .cinema-widget-preview {
