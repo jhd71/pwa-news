@@ -63,7 +63,7 @@
 
 .cinema-widget-badge {
     background: var(--primary-color, #dc3545);
-    color: white;
+    color: #ffffffcc;
     padding: 4px 8px;
     border-radius: 12px;
     font-size: 11px;
@@ -631,8 +631,8 @@
     }
 
     [data-theme="ocean"] .cinema-modal-close {
-        border-color: #006064;
-        color: #006064;
+        border-color: #7bcddf;
+        color: #7bcddf;
         background: rgba(26, 44, 58, 0.9);
     }
 
@@ -828,7 +828,7 @@
 }
 
 [data-theme="dark"] .cinema-modal-header h3 {
-    color: #5c6bc0;
+    color: #ffffffcc;
 }
 
 [data-theme="dark"] .cinema-preview-item {
@@ -950,7 +950,7 @@
 }
 
 [data-theme="ocean"] .cinema-preview-item strong {
-    color: #81D4FA !important;
+    color: #a2deeb !important;
 }
 
 [data-theme="ocean"] .movie-genre,

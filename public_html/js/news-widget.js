@@ -273,13 +273,22 @@ function updateClock() {
 
 // Fonction appelée au clic
 function openTimeWidget() {
+    // Arrêter la propagation pour éviter d'ouvrir le widget news
+    if (event) {
+        event.stopPropagation();
+    }
+    
     // Vibration si disponible
     if (navigator.vibrate) {
         navigator.vibrate(50);
     }
     
-    // Ouvrir Google météo locale
-    window.open('https://www.google.com/search?q=météo+montceau+les+mines', '_blank');
+    // Ouvrir Google météo dans un nouvel onglet FORCÉ
+    window.open(
+        'https://www.google.com/search?q=météo+montceau+les+mines', 
+        '_blank',
+        'noopener,noreferrer' // ✅ Force un nouvel onglet indépendant
+    );
     
     console.log('🕐 Horloge cliquée');
 }

@@ -569,7 +569,7 @@ displayCinema(movies) {
             let datesText = '';
             if (movie.realDates && movie.realDates.length > 0) {
                 const displayDates = movie.realDates.slice(0, 2).map(d => d.displayName);
-                datesText = `<div class="movie-dates" style="font-size: 10px; color: #666; margin-top: 2px;">📅 ${displayDates.join(', ')}</div>`;
+                datesText = `<div class="movie-dates" style="font-size: 12px; color: #666; margin-top: 2px;">📅 ${displayDates.join(', ')}</div>`;
             }
             
             const clickAction = movie.url ? 
@@ -579,7 +579,7 @@ displayCinema(movies) {
             return `
                 <div class="cinema-preview-item" data-movie-id="${movie.id}" ${clickAction} style="cursor: pointer;">
                     <strong>${newBadge}${movie.title}</strong> <em>(${movie.duration})</em><br>
-                    <div class="movie-genre" style="font-size: 11px; color: #888; font-style: italic;">${movie.genre}</div>
+                    <div class="movie-genre" style="font-size: 13px; color: #888; font-style: italic;">${movie.genre}</div>
                     ${datesText}
                     <div class="movie-times" style="font-size: 12px; color: #666; margin-top: 2px;">🕐 ${timesText}</div>
                 </div>
@@ -707,7 +707,7 @@ updateModalContent(modalContent) {
                 <div class="cinema-preview-item" data-movie-id="${movie.id}" ${clickAction} style="cursor: pointer; background: rgba(220, 53, 69, 0.1); border-left: 3px solid #dc3545; padding: 8px 12px; margin: 6px 0; border-radius: 0 8px 8px 0; font-size: 13px; transition: all 0.2s ease;">
                     <strong style="color: #dc3545;">${newBadge}${movie.title}</strong> <em>(${movie.duration})</em><br>
                     <div style="font-size: 11px; color: #888; font-style: italic; margin-top: 2px;">${movie.genre}</div>
-                    <div style="font-size: 10px; color: #666; margin-top: 2px;">📅 ${datesText}</div>
+                    <div style="font-size: 11px; color: #666; margin-top: 2px;">📅 ${datesText}</div>
                     <div class="movie-times" style="font-size: 12px; color: #666; margin-top: 4px;">🕐 ${timesText}</div>
                 </div>
             `;

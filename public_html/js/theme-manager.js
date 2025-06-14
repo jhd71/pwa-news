@@ -2,15 +2,15 @@
 
 class ThemeManager {
     constructor() {
-        // Nouveaux thèmes avec des identités visuelles distinctes
+        // Thèmes dans l'ordre souhaité avec rouge par défaut
         this.themes = [
-			{ id: 'rouge', name: 'Rouge', icon: 'palette' },
-			{ id: 'dark', name: 'Sombre', icon: 'dark_mode' },
-            { id: 'light', name: 'Violet', icon: 'color_lens' },          
+            { id: 'rouge', name: 'Rouge', icon: 'palette' },
+            { id: 'dark', name: 'Sombre', icon: 'dark_mode' },
             { id: 'bleuciel', name: 'Bleu Ciel', icon: 'water_drop' },
-            { id: 'sunset', name: 'Coucher de Soleil', icon: 'wb_twilight' },
+            { id: 'light', name: 'Violet', icon: 'color_lens' },
+            { id: 'super-light', name: 'Super Clair', icon: 'brightness_high' },
             { id: 'ocean', name: 'Océan Profond', icon: 'waves' },
-			{ id: 'super-light', name: 'Super Clair', icon: 'brightness_high' }
+            { id: 'sunset', name: 'Coucher de Soleil', icon: 'wb_twilight' }
         ];
         
         this.init();

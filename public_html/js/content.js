@@ -1431,29 +1431,29 @@ changeTextContrast(contrast) {
 }
 
     toggleTheme() {
-    // Cycle entre les thèmes : light -> dark -> rouge -> bleuciel -> light
+    // Cycle dans l'ordre : rouge -> dark -> bleuciel -> light -> super-light -> ocean -> Coucher de Soleil -> rouge
     switch (this.currentTheme) {
-        case 'light':
+        case 'rouge':
             this.currentTheme = 'dark';
             break;
         case 'dark':
-            this.currentTheme = 'rouge';
-            break;
-        case 'rouge':
             this.currentTheme = 'bleuciel';
             break;
         case 'bleuciel':
-		this.currentTheme = 'sunset';
+            this.currentTheme = 'light';
             break;
-        case 'sunset':
+        case 'light':
+            this.currentTheme = 'super-light';
+            break;
+        case 'super-light':
             this.currentTheme = 'ocean';
             break;
         case 'ocean':
-		this.currentTheme = 'super-light';
+            this.currentTheme = 'sunset';
             break;
-        case 'super-light':
+        case 'sunset':
         default:
-            this.currentTheme = 'light';
+            this.currentTheme = 'rouge'; // ✅ Retour au rouge (défaut)
             break;
     }
         
@@ -1467,14 +1467,14 @@ changeTextContrast(contrast) {
     // Afficher une notification
     let themeName = '';
     switch(this.currentTheme) {
-        case 'dark': themeName = 'sombre'; break;
         case 'rouge': themeName = 'rouge'; break;
+        case 'dark': themeName = 'sombre'; break;
         case 'bleuciel': themeName = 'bleu ciel'; break;       
         case 'light': themeName = 'violet'; break;
-		case 'sunset': themeName = 'Coucher de Soleil'; break;
-		case 'ocean': themeName = 'Océan Profond'; break;
-		case 'super-light': themeName = 'super-light'; break;
-        default: themeName = 'clair'; break;
+        case 'super-light': themeName = 'super-light'; break;
+        case 'ocean': themeName = 'Océan Profond'; break;
+        case 'sunset': themeName = 'Coucher de Soleil'; break;
+        default: themeName = 'rouge'; break;
     }
     
     this.showToast(`Thème ${themeName} activé`);

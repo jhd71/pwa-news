@@ -321,7 +321,7 @@
 [data-theme="light"] .quick-links-toggle {
   background: rgba(126, 87, 194, 0.2);
   border: 1px solid rgba(126, 87, 194, 0.3);
-  color: #7e57c2 !important;
+  color: #ffffff !important;
 }
 
 [data-theme="dark"] .weather-toggle,

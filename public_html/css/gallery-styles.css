@@ -1159,7 +1159,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 60px;
+    height: 70px;
     background: var(--navbar-bg);
     display: flex;
     justify-content: space-around;
@@ -1196,7 +1196,7 @@
 }
 
 [data-theme="super-light"] .nav-item:hover {
-    color: #8B5CF6 !important;
+    color: #ffffff !important;
     background: rgba(99, 102, 241, 0.05) !important;
     border-radius: 8px !important;
 }
@@ -1447,4 +1447,41 @@ body.modal-open {
 
 [data-theme="super-light"] .submit-photo-btn {
     background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+}
+
+/* ===== THÈMES POUR .comments-header h3 ===== */
+
+/* Thème Light (Violet) */
+[data-theme="light"] .comments-header h3 {
+    color: #7e57c2;
+}
+
+/* Thème Dark (Bleu Nuit) */
+[data-theme="dark"] .comments-header h3 {
+    color: #ffffff;
+}
+
+/* Thème Rouge */
+[data-theme="rouge"] .comments-header h3 {
+    color: #d32f2f;
+}
+
+/* Thème Bleu Ciel */
+[data-theme="bleuciel"] .comments-header h3 {
+    color: #0ea5e9;
+}
+
+/* Thème Sunset */
+[data-theme="sunset"] .comments-header h3 {
+    color: #FFCC80;
+}
+
+/* Thème Ocean (Océan Profond) */
+[data-theme="ocean"] .comments-header h3 {
+    color: #B3E5FC;
+}
+
+/* Thème Super-Light */
+[data-theme="super-light"] .comments-header h3 {
+    color: #6366F1;
 }
