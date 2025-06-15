@@ -54,9 +54,43 @@ async function loadWeatherData() {
     
     const data = await response.json();
     const location = data.location;
+    const current = data.current; // ✅ NOUVEAU : Données actuelles
     const forecast = data.forecast.forecastday;
     
-    let forecastHTML = `<p style="text-align:center; margin: 0 0 5px 0; color: white;"><strong>${location.name}</strong></p>`;
+    // ✅ NOUVEAU : Ajout de la température actuelle en haut
+    let forecastHTML = `
+      <div style="text-align: center; margin-bottom: 15px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+        <p style="margin: 0 0 5px 0; color: white; font-size: 16px;"><strong>${location.name}</strong></p>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+          <span style="font-size: 24px; font-weight: bold; color: #FFD700;">${Math.round(current.temp_c)}°C</span>
+          <img src="${current.condition.icon}" alt="${current.condition.text}" style="width: 32px; height: 32px;">
+        </div>
+        <p style="margin: 5px 0 0 0; color: white; font-size: 14px;">${current.condition.text}</p>
+        <p style="margin: 2px 0 0 0; color: rgba(255,255,255,0.8); font-size: 12px;">
+          Ressenti ${Math.round(current.feelslike_c)}°C • Vent ${Math.round(current.wind_kph)} km/h
+        </p>
+      </div>
+    `;
+    
+    // ✅ NOUVEAU : Partager la température avec le widget horloge
+    if (current && current.temp_c !== undefined) {
+        window.currentTemp = Math.round(current.temp_c) + '°';
+        const tempElement = document.getElementById('tempValue');
+        if (tempElement) {
+            tempElement.textContent = window.currentTemp;
+        }
+        
+        // Sauvegarder globalement pour partage
+        window.sharedWeatherData = {
+            temperature: Math.round(current.temp_c),
+            condition: current.condition.text,
+            humidity: current.humidity,
+            wind: Math.round(current.wind_kph),
+            lastUpdate: new Date().getTime()
+        };
+        
+        console.log(`🌡️ Température actuelle partagée: ${window.currentTemp}`);
+    }
     
     // Générer les cartes pour chaque jour avec un style amélioré
     forecast.slice(0, 3).forEach((day, index) => {
@@ -114,6 +148,52 @@ async function loadWeatherData() {
     weatherWidget.innerHTML = `<p class="error" style="color: white;">Erreur de chargement des données météo: ${error.message}</p>`;
     return false;
   }
+}
+
+// ✅ NOUVEAU : Version simplifiée de fetchTemperature pour utiliser les données partagées
+async function fetchTemperature() {
+    try {
+        // Si on a des données récentes du widget météo, les utiliser
+        const now = new Date().getTime();
+        if (window.sharedWeatherData && 
+            (now - window.sharedWeatherData.lastUpdate) < 300000) { // 5 minutes
+            
+            currentTemp = window.sharedWeatherData.temperature + '°';
+            const tempElement = document.getElementById('tempValue');
+            if (tempElement) {
+                tempElement.textContent = currentTemp;
+            }
+            console.log(`🌡️ Température depuis widget météo: ${currentTemp}`);
+            return;
+        }
+        
+        // Sinon, récupérer directement
+        const apiKey = "4b79472c165b42f690790252242112";
+        const city = "Montceau-les-Mines";
+        const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&lang=fr`;
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (data.current && data.current.temp_c !== undefined) {
+            currentTemp = Math.round(data.current.temp_c) + '°';
+            const tempElement = document.getElementById('tempValue');
+            if (tempElement) {
+                tempElement.textContent = currentTemp;
+            }
+            console.log(`🌡️ Température directe: ${currentTemp}`);
+        } else {
+            throw new Error('Données météo indisponibles');
+        }
+        
+    } catch (error) {
+        console.log('❌ Impossible de récupérer la météo:', error);
+        // Masquer le widget météo si échec
+        const weatherWidget = document.getElementById('weatherTemp');
+        if (weatherWidget) {
+            weatherWidget.style.display = 'none';
+        }
+    }
 }
   
   // ====== RÉFÉRENCES DOM ======

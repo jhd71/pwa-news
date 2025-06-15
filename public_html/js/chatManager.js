@@ -142,7 +142,7 @@ class ChatManager {
                 console.warn(`Tentative ${attempts + 1} échouée:`, error);
                 attempts++;
                 // Attendre un peu avant de réessayer
-                await new Promise(resolve => setTimeout(resolve, 500));
+                await new Promise(resolve => setTimeout(resolve, 200));
             } else {
                 success = true;
                 console.log('Utilisateur RLS défini avec succès');
@@ -4370,68 +4370,79 @@ async sendImportantNotification(title, body, url, urgent) {
         console.log(`Tentative de suppression du message ${messageId}...`);
         
         // 1. Définir l'utilisateur courant pour les vérifications RLS
-        console.log(`Définition de l'utilisateur courant: ${this.pseudo}`);
         const rlsSuccess = await this.setCurrentUserForRLS();
-        
         if (!rlsSuccess) {
-            console.error("Échec de la définition de l'utilisateur pour RLS");
             throw new Error("Échec de l'authentification RLS");
         }
         
         // 2. Vérifier d'abord si le message existe et appartient à l'utilisateur
-        console.log(`Vérification du message ${messageId}...`);
         const { data: messageData, error: messageError } = await this.supabase
             .from('messages')
             .select('*')
             .eq('id', messageId)
             .single();
             
-        if (messageError) {
-            console.error('Erreur vérification message:', messageError);
-            throw messageError;
-        }
-        
-        if (!messageData) {
-            console.error(`Message ${messageId} non trouvé`);
+        if (messageError || !messageData) {
             throw new Error("Message introuvable");
         }
         
-        console.log(`Message trouvé: auteur=${messageData.pseudo}, utilisateur actuel=${this.pseudo}`);
-        
-        // 3. Vérifier si l'utilisateur est l'auteur du message ou un administrateur
+        // 3. Vérifier les permissions
         const canDelete = messageData.pseudo === this.pseudo || this.isAdmin;
-        
         if (!canDelete) {
-            console.error(`Non autorisé à supprimer ce message: utilisateur=${this.pseudo}, auteur=${messageData.pseudo}, isAdmin=${this.isAdmin}`);
             throw new Error("Non autorisé à supprimer ce message");
         }
         
-        // 4. Effectuer la suppression
-        console.log(`Suppression du message ${messageId} dans la base de données...`);
+        // ✅ 4. NOUVEAU : Marquer visuellement comme "en cours de suppression"
+        const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+        if (messageElement) {
+            messageElement.style.opacity = '0.5';
+            messageElement.style.pointerEvents = 'none';
+        }
+        
+        // ✅ 5. Supprimer de la base ET attendre confirmation
         const { error: deleteError } = await this.supabase
             .from('messages')
             .delete()
             .eq('id', messageId);
-
+            
         if (deleteError) {
-            console.error('Erreur suppression:', deleteError);
+            // Restaurer l'apparence si erreur
+            if (messageElement) {
+                messageElement.style.opacity = '1';
+                messageElement.style.pointerEvents = 'auto';
+            }
             throw deleteError;
         }
         
-        console.log(`Message ${messageId} supprimé avec succès de la base de données`);
+        // ✅ 6. ATTENDRE un court délai pour la synchronisation
+        await new Promise(resolve => setTimeout(resolve, 500));
         
-        // 5. Suppression visuelle immédiate
-        const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
-        if (messageElement) {
-            console.log(`Suppression visuelle du message ${messageId}`);
-            messageElement.classList.add('fade-out');
-            setTimeout(() => messageElement.remove(), 300);
+        // ✅ 7. Vérifier que le message est vraiment supprimé
+        const { data: checkData } = await this.supabase
+            .from('messages')
+            .select('id')
+            .eq('id', messageId)
+            .single();
+            
+        if (!checkData) {
+            // Message vraiment supprimé, suppression visuelle
+            if (messageElement) {
+                messageElement.classList.add('fade-out');
+                setTimeout(() => messageElement.remove(), 300);
+            }
             this.showNotification('Message supprimé', 'success');
+            console.log(`Message ${messageId} supprimé avec succès`);
         } else {
-            console.log(`Message ${messageId} non trouvé dans le DOM`);
+            // Message encore présent, restaurer l'apparence
+            if (messageElement) {
+                messageElement.style.opacity = '1';
+                messageElement.style.pointerEvents = 'auto';
+            }
+            throw new Error("La suppression n'a pas été confirmée");
         }
         
         return true;
+        
     } catch (error) {
         console.error('Erreur suppression:', error);
         this.showNotification('Erreur lors de la suppression: ' + error.message, 'error');

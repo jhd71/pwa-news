@@ -35,7 +35,7 @@
   padding: 15px;
   backdrop-filter: blur(5px);
   transition: transform 0.3s, opacity 0.3s;
-  z-index: 1000;
+  z-index: 10000;
   width: 240px !important;
   max-width: 240px !important;
 }
@@ -767,7 +767,7 @@
   .quick-links-sidebar {
     width: 92% !important;
     max-width: 380px !important;
-    max-height: 72vh !important;
+    max-height: 70vh !important;
     top: 50% !important;
     left: 50% !important;
     transform: translate(-50%, -50%) !important;

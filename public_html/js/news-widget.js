@@ -8,6 +8,10 @@ let alarmCheckInterval = null;
 let alarmSoundInterval = null;
 let alarmSoundCount = 0;
 
+// ✅ Variables pour contrôler les sons
+let currentAlarmAudio = null;
+let currentTimerAudio = null;
+
 // Configuration des durées
 const ALARM_SETTINGS = {
     ALARM_DURATION: 120,        // 2 minutes
@@ -16,22 +20,177 @@ const ALARM_SETTINGS = {
     TIMER_REPEAT_INTERVAL: 5000
 };
 
-// Configuration des sons
+// Configuration des sons - VOS FICHIERS
 const SOUND_FILES = {
-    // ✅ REMPLACEZ par vos vrais fichiers d'alarme :
-    'beep': '/sounds/alarm-clock.mp3',        // Son d'alarme classique
-    'bells': '/sounds/church-bells.mp3',      // Cloches d'église
-    'alarm': '/sounds/fire-alarm.mp3',        // Alarme incendie
-    'chime': '/sounds/wind-chimes.mp3',       // Carillon
-    'digital': '/sounds/digital-beep.mp3',    // Bip digital
-    
-    // ✅ Ou gardez vos fichiers existants :
-    // 'beep': '/sounds/click.mp3',
-    // 'bells': '/sounds/notification.mp3',
-    // 'alarm': '/sounds/erreur.mp3',
-    // 'chime': '/sounds/success.mp3',
-    // 'digital': '/sounds/sent.mp3'
+    'modern': '/sounds/modern.mp3',           // Son moderne
+    'college': '/sounds/college.mp3',         // Son collège  
+    'pixel': '/sounds/pixel.mp3',            // Son pixel/rétro
+    'suara': '/sounds/suara.mp3',            // Son suara
+    'ringtone': '/sounds/ringtone.mp3'       // Sonnerie classique
 };
+
+// ✅ ========== FONCTIONS DE PERSISTANCE AJOUTÉES (NOUVELLES) ==========
+
+// Fonctions de sauvegarde et restauration
+function saveAlarmState() {
+    const alarmState = {
+        alarmTime: alarmTime,
+        alarmProgrammed: window.alarmProgrammed || false,
+        selectedAlarmSound: window.selectedAlarmSound || 'college',
+        timestamp: Date.now()
+    };
+    localStorage.setItem('alarmState', JSON.stringify(alarmState));
+}
+
+function saveTimerState() {
+    if (timerInterval && timerSeconds > 0) {
+        const timerState = {
+            remainingSeconds: timerSeconds,
+            selectedTimerSound: window.selectedTimerSound || 'college',
+            isActive: true,
+            timestamp: Date.now()
+        };
+        localStorage.setItem('timerState', JSON.stringify(timerState));
+    } else {
+        localStorage.removeItem('timerState');
+    }
+}
+
+function restoreAlarmState() {
+    try {
+        const savedState = localStorage.getItem('alarmState');
+        if (savedState) {
+            const alarmState = JSON.parse(savedState);
+            
+            // Vérifier que la sauvegarde n'est pas trop ancienne (24h max)
+            const hoursSinceGave = (Date.now() - alarmState.timestamp) / (1000 * 60 * 60);
+            if (hoursSinceGave > 24) {
+                localStorage.removeItem('alarmState');
+                return;
+            }
+            
+            // Restaurer l'alarme
+            if (alarmState.alarmTime && alarmState.alarmProgrammed) {
+                alarmTime = alarmState.alarmTime;
+                window.alarmProgrammed = true;
+                window.selectedAlarmSound = alarmState.selectedAlarmSound;
+                
+                // Redémarrer la surveillance
+                startAlarmChecker();
+                updateClockIndicator();
+                
+                // Afficher notification de restauration
+                showRestoreNotification('⏰ Alarme restaurée', `Programmée pour ${alarmTime}`);
+            }
+        }
+    } catch (error) {
+        localStorage.removeItem('alarmState');
+    }
+}
+
+function restoreTimerState() {
+    try {
+        const savedState = localStorage.getItem('timerState');
+        if (savedState) {
+            const timerState = JSON.parse(savedState);
+            
+            // Calculer le temps écoulé depuis la sauvegarde
+            const elapsedSeconds = Math.floor((Date.now() - timerState.timestamp) / 1000);
+            const remainingSeconds = timerState.remainingSeconds - elapsedSeconds;
+            
+            // Si il reste du temps, restaurer le minuteur
+            if (remainingSeconds > 0 && timerState.isActive) {
+                timerSeconds = remainingSeconds;
+                window.selectedTimerSound = timerState.selectedTimerSound;
+                
+                // Redémarrer le minuteur
+                startTimerFromRestore();
+                
+                const minutes = Math.floor(remainingSeconds / 60);
+                const seconds = remainingSeconds % 60;
+                
+                // Afficher notification de restauration
+                showRestoreNotification('⏱️ Minuteur restauré', `${minutes}:${seconds.toString().padStart(2, '0')} restant`);
+            } else {
+                // Temps écoulé, supprimer la sauvegarde
+                localStorage.removeItem('timerState');
+            }
+        }
+    } catch (error) {
+        localStorage.removeItem('timerState');
+    }
+}
+
+function startTimerFromRestore() {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+    }
+    
+    timerInterval = setInterval(() => {
+        if (timerSeconds <= 0) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            localStorage.removeItem('timerState');
+            
+            // Supprimer l'indicateur flottant
+            const timerFloating = document.getElementById('timerFloating');
+            if (timerFloating) {
+                timerFloating.remove();
+            }
+            
+            triggerTimerAlarm();
+            return;
+        }
+        
+        // Mettre à jour l'affichage
+        updateTimerStatus();
+        
+        // Sauvegarder l'état régulièrement
+        saveTimerState();
+        
+        timerSeconds--;
+    }, 1000);
+}
+
+function showRestoreNotification(title, message) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(145deg, #4CAF50, #45a049);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 12px;
+        z-index: 10002;
+        font-weight: bold;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        text-align: center;
+        border: 2px solid rgba(255,255,255,0.3);
+        min-width: 250px;
+        animation: slideInDown 0.5s ease;
+    `;
+    
+    notification.innerHTML = `
+        <div style="font-size: 16px; margin-bottom: 5px;">${title}</div>
+        <div style="font-size: 14px; opacity: 0.9;">${message}</div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Supprimer après 4 secondes
+    setTimeout(() => {
+        notification.style.animation = 'slideOutUp 0.5s ease';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 500);
+    }, 4000);
+}
+
+// ✅ ========== TOUTES VOS CLASSES ET FONCTIONS EXISTANTES (CONSERVÉES) ==========
 
 class NewsWidget {
     constructor() {
@@ -227,27 +386,6 @@ function openSpecificNews(newsId) {
     window.location.href = `news-locale.html#news-${newsId}`;
 }
 
-// Initialisation automatique
-document.addEventListener('DOMContentLoaded', function() {
-    // Créer l'instance du widget
-    newsWidget = new NewsWidget();
-    
-    // Initialiser le widget après un délai pour s'assurer que Supabase est chargé
-    setTimeout(() => {
-        newsWidget.init();
-    }, 1500);
-});
-
-// Recharger le widget quand les actualités sont mises à jour (optionnel)
-window.addEventListener('newsUpdated', function() {
-    if (newsWidget) {
-        newsWidget.refresh();
-    }
-});
-
-// Export pour usage externe
-window.NewsWidget = NewsWidget;
-
 // Fonction pour mettre à jour l'horloge
 function updateClock() {
     const now = new Date();
@@ -265,6 +403,12 @@ function updateClock() {
         const dayName = days[now.getDay()];
         const dayNumber = now.getDate();
         dateElement.textContent = `${dayName} ${dayNumber}`;
+        
+        // ✅ NOUVEAU : Mettre à jour le titre par défaut de l'horloge
+        const clockElement = document.getElementById('newsWidgetClock');
+        if (clockElement && !alarmTime) {
+            clockElement.title = 'Horloge • Cliquez pour alarme & minuteur ⏰';
+        }
     }
 }
 
@@ -272,10 +416,15 @@ function updateClock() {
 function initClock() {
     updateClock(); // Mise à jour immédiate
     setInterval(updateClock, 1000); // Mise à jour chaque seconde
+    
+    // ✅ NOUVEAU : Initialiser le titre de l'horloge
+    setTimeout(() => {
+        const clockElement = document.getElementById('newsWidgetClock');
+        if (clockElement) {
+            clockElement.title = 'Horloge • Cliquez pour alarme & minuteur ⏰';
+        }
+    }, 100);
 }
-
-// Démarrer quand le DOM est prêt
-document.addEventListener('DOMContentLoaded', initClock);
 
 // Fonction pour ouvrir la galerie photos
 function openGalleryPage() {
@@ -350,30 +499,131 @@ function openCinemaModal() {
 let currentTemp = '--°';
 let visitorsCount = 0;
 
-// Fonction pour récupérer la VRAIE température
+// ✅ REMPLACEZ la fonction fetchTemperature() dans news-widget.js par celle-ci :
+
 async function fetchTemperature() {
     try {
-        // API gratuite sans clé requise - OpenMeteo
-        const url = 'https://api.open-meteo.com/v1/forecast?latitude=46.6747&longitude=4.3736&current_weather=true&timezone=Europe/Paris';
+        // ✅ Utiliser la même API que votre widget météo
+        const apiKey = "4b79472c165b42f690790252242112";
+        const city = "Montceau-les-Mines";
+        const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&lang=fr`;
         
         const response = await fetch(url);
         const data = await response.json();
         
-        if (data.current_weather && data.current_weather.temperature !== undefined) {
-            currentTemp = Math.round(data.current_weather.temperature) + '°';
-            document.getElementById('tempValue').textContent = currentTemp;
-            console.log(`🌡️ Vraie température Montceau: ${currentTemp}`);
+        if (data.current && data.current.temp_c !== undefined) {
+            currentTemp = Math.round(data.current.temp_c) + '°';
+            const tempElement = document.getElementById('tempValue');
+            if (tempElement) {
+                tempElement.textContent = currentTemp;
+            }
+            console.log(`🌡️ Vraie température Montceau (WeatherAPI): ${currentTemp}`);
         } else {
             throw new Error('Données météo indisponibles');
         }
         
     } catch (error) {
-        console.log('❌ Impossible de récupérer la vraie météo:', error);
-        // Masquer le widget météo au lieu d'afficher des fausses données
+        console.log('❌ Impossible de récupérer la météo WeatherAPI:', error);
+        
+        // ✅ Fallback vers OpenMeteo si WeatherAPI échoue
+        try {
+            const fallbackUrl = 'https://api.open-meteo.com/v1/forecast?latitude=46.6747&longitude=4.3736&current_weather=true&timezone=Europe/Paris';
+            const fallbackResponse = await fetch(fallbackUrl);
+            const fallbackData = await fallbackResponse.json();
+            
+            if (fallbackData.current_weather && fallbackData.current_weather.temperature !== undefined) {
+                currentTemp = Math.round(fallbackData.current_weather.temperature) + '°';
+                const tempElement = document.getElementById('tempValue');
+                if (tempElement) {
+                    tempElement.textContent = currentTemp;
+                }
+                console.log(`🌡️ Température Montceau (OpenMeteo fallback): ${currentTemp}`);
+            } else {
+                throw new Error('Données météo de secours indisponibles');
+            }
+            
+        } catch (fallbackError) {
+            console.log('❌ Impossible de récupérer la météo de secours:', fallbackError);
+            // Masquer le widget météo si tout échoue
+            const weatherWidget = document.getElementById('weatherTemp');
+            if (weatherWidget) {
+                weatherWidget.style.display = 'none';
+                console.log('🌡️ Widget météo masqué');
+            }
+        }
+    }
+}
+
+// ✅ ALTERNATIVE : Si vous préférez partager les données entre les deux widgets
+
+// Fonction pour récupérer les données météo une seule fois et les partager
+async function getSharedWeatherData() {
+    try {
+        const apiKey = "4b79472c165b42f690790252242112";
+        const city = "Montceau-les-Mines";
+        const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&lang=fr`;
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (data.current) {
+            // Sauvegarder globalement pour partage
+            window.sharedWeatherData = {
+                temperature: Math.round(data.current.temp_c),
+                condition: data.current.condition.text,
+                humidity: data.current.humidity,
+                wind: Math.round(data.current.wind_kph),
+                lastUpdate: new Date().getTime()
+            };
+            
+            return window.sharedWeatherData;
+        }
+        
+        throw new Error('Données météo indisponibles');
+        
+    } catch (error) {
+        console.log('❌ Erreur météo partagée:', error);
+        return null;
+    }
+}
+
+// ✅ Version optimisée de fetchTemperature utilisant les données partagées
+async function fetchTemperatureOptimized() {
+    try {
+        // Vérifier si on a des données récentes (moins de 5 minutes)
+        const now = new Date().getTime();
+        if (window.sharedWeatherData && 
+            (now - window.sharedWeatherData.lastUpdate) < 300000) { // 5 minutes
+            
+            // Utiliser les données en cache
+            currentTemp = window.sharedWeatherData.temperature + '°';
+            const tempElement = document.getElementById('tempValue');
+            if (tempElement) {
+                tempElement.textContent = currentTemp;
+            }
+            console.log(`🌡️ Température en cache: ${currentTemp}`);
+            return;
+        }
+        
+        // Récupérer de nouvelles données
+        const weatherData = await getSharedWeatherData();
+        if (weatherData) {
+            currentTemp = weatherData.temperature + '°';
+            const tempElement = document.getElementById('tempValue');
+            if (tempElement) {
+                tempElement.textContent = currentTemp;
+            }
+            console.log(`🌡️ Nouvelle température: ${currentTemp}`);
+        } else {
+            throw new Error('Impossible de récupérer les données météo');
+        }
+        
+    } catch (error) {
+        console.log('❌ Erreur température optimisée:', error);
+        // Masquer le widget si échec
         const weatherWidget = document.getElementById('weatherTemp');
         if (weatherWidget) {
             weatherWidget.style.display = 'none';
-            console.log('🌡️ Widget météo masqué');
         }
     }
 }
@@ -549,11 +799,11 @@ function createAlarmPopup() {
                         <input type="time" id="alarmTime" value="08:00">
                         
                         <select id="alarmSound">
-                            <option value="beep">🔊 Bip (click.mp3)</option>
-                            <option value="bells">🔔 Notification (notification.mp3)</option>
-                            <option value="alarm">⏰ Alarme (erreur.mp3)</option>
-                            <option value="chime">🎵 Succès (success.mp3)</option>
-                            <option value="digital">📱 Digital (sent.mp3)</option>
+                            <option value="modern">🎵 Modern (modern.mp3)</option>
+                            <option value="college" selected>🎓 College (college.mp3)</option>
+                            <option value="pixel">🎮 Pixel (pixel.mp3)</option>
+                            <option value="suara">🔔 Suara (suara.mp3)</option>
+                            <option value="ringtone">📱 Ringtone (ringtone.mp3)</option>
                         </select>
                         
                         <button id="setAlarmBtn" onclick="setAlarm()">Programmer l'alarme</button>
@@ -578,13 +828,12 @@ function createAlarmPopup() {
                             <option value="60">60 minutes</option>
                         </select>
                         
-                        <!-- ✅ NOUVEAU : Choix de son pour le minuteur -->
                         <select id="timerSound">
-                            <option value="beep">🔊 Bip (click.mp3)</option>
-                            <option value="bells" selected>🔔 Notification (notification.mp3)</option>
-                            <option value="alarm">⏰ Alarme (erreur.mp3)</option>
-                            <option value="chime">🎵 Succès (success.mp3)</option>
-                            <option value="digital">📱 Digital (sent.mp3)</option>
+                            <option value="modern">🎵 Modern (modern.mp3)</option>
+                            <option value="college" selected>🎓 College (college.mp3)</option>
+                            <option value="pixel">🎮 Pixel (pixel.mp3)</option>
+                            <option value="suara">🔔 Suara (suara.mp3)</option>
+                            <option value="ringtone">📱 Ringtone (ringtone.mp3)</option>
                         </select>
                         
                         <button id="startTimerBtn" onclick="startTimer()">Démarrer</button>
@@ -648,7 +897,6 @@ function startAlarmChecker() {
         clearInterval(alarmCheckInterval);
     }
     
-    console.log('🔍 Surveillance d\'alarme démarrée');
     alarmCheckInterval = setInterval(() => {
         checkAlarmTime();
     }, 1000); // Vérifier toutes les secondes
@@ -656,7 +904,7 @@ function startAlarmChecker() {
 
 // Vérification de l'alarme
 function checkAlarmTime() {
-    if (!alarmTime) return;
+    if (!alarmTime || !window.alarmProgrammed) return;
     
     const now = new Date();
     const currentTime = now.toTimeString().slice(0, 5); // Format HH:MM
@@ -671,13 +919,13 @@ function checkAlarmTime() {
             alarmCheckInterval = null;
         }
         
-        // ✅ Nettoyer les variables globales
+        // ✅ Nettoyer les variables globales SEULEMENT après déclenchement
         window.alarmProgrammed = false;
         window.alarmTimeSet = null;
-        
-        // Réinitialiser l'alarme
         alarmTime = null;
-        updateClockIndicator(); // Mettre à jour l'indicateur
+        
+        // Mettre à jour l'indicateur
+        updateClockIndicator();
     }
 }
 
@@ -692,7 +940,7 @@ function updateCurrentTime() {
     }
 }
 
-// Programmer une alarme
+// ✅ FONCTION MODIFIÉE AVEC PERSISTANCE - Programmer une alarme
 function setAlarm() {
     const alarmInput = document.getElementById('alarmTime');
     const alarmStatus = document.getElementById('alarmStatus');
@@ -704,12 +952,14 @@ function setAlarm() {
         // Sauvegarder le son sélectionné globalement
         if (soundSelect) {
             window.selectedAlarmSound = soundSelect.value;
-            console.log('💾 Son sauvegardé:', window.selectedAlarmSound);
         }
         
-        // ✅ SAUVEGARDER le statut d'alarme pour l'afficher même après fermeture/réouverture
+        // SAUVEGARDER le statut d'alarme pour l'afficher même après fermeture/réouverture
         window.alarmProgrammed = true;
         window.alarmTimeSet = alarmTime;
+        
+        // ✅ NOUVEAU : Sauvegarder dans localStorage
+        saveAlarmState();
         
         // Affichage avec bouton annuler
         alarmStatus.innerHTML = `
@@ -740,17 +990,32 @@ function setAlarm() {
 // Indicateur visuel sur l'horloge
 function updateClockIndicator() {
     const clockElement = document.getElementById('newsWidgetClock');
+    
     if (clockElement) {
-        if (alarmTime) {
+        // ✅ CORRECTION : Vérifier aussi window.alarmProgrammed
+        if (alarmTime && window.alarmProgrammed) {
             // Ajouter l'indicateur d'alarme
             clockElement.style.border = '2px solid #FFD230';
             clockElement.style.boxShadow = '0 0 10px rgba(255, 210, 48, 0.5)';
-            clockElement.title = `Alarme programmée pour ${alarmTime}`;
+            clockElement.title = `Alarme programmée pour ${alarmTime} • Cliquez pour gérer ⏰`;
+            
+            // ✅ NOUVELLE APPROCHE : Ajouter une classe CSS au lieu de JavaScript
+            const timeElement = document.getElementById('clockTime');
+            
+            if (timeElement) {
+                timeElement.classList.add('alarm-active');
+            }
         } else {
             // Supprimer l'indicateur
             clockElement.style.border = '1px solid var(--primary-color, #dc3545)';
             clockElement.style.boxShadow = 'none';
-            clockElement.title = 'Cliquez pour plus d\'infos';
+            clockElement.title = 'Horloge • Cliquez pour alarme & minuteur ⏰';
+            
+            // ✅ NOUVELLE APPROCHE : Supprimer la classe CSS
+            const timeElement = document.getElementById('clockTime');
+            if (timeElement) {
+                timeElement.classList.remove('alarm-active');
+            }
         }
     }
 }
@@ -797,14 +1062,21 @@ function triggerAlarm() {
 // Jouer des sons depuis votre dossier /sounds/
 function playAlarmSound() {
     const soundSelect = document.getElementById('alarmSound');
-    let soundType = 'beep';
+    let soundType = 'college';
     
     if (soundSelect) {
         soundType = soundSelect.value;
         console.log('🔊 Son sélectionné:', soundType);
     } else {
-        soundType = window.selectedAlarmSound || 'beep';
+        soundType = window.selectedAlarmSound || 'college';
         console.log('🔊 Son sauvegardé:', soundType);
+    }
+    
+    // ✅ Arrêter le son précédent s'il y en a un
+    if (currentAlarmAudio) {
+        currentAlarmAudio.pause();
+        currentAlarmAudio.currentTime = 0;
+        currentAlarmAudio = null;
     }
     
     // ✅ Utiliser la nouvelle configuration
@@ -812,10 +1084,10 @@ function playAlarmSound() {
     console.log('🎵 Fichier son à jouer:', soundFile);
     
     if (soundFile) {
-        const audio = new Audio(soundFile);
-        audio.volume = 0.8;
+        currentAlarmAudio = new Audio(soundFile);
+        currentAlarmAudio.volume = 0.8;
         
-        audio.play().then(() => {
+        currentAlarmAudio.play().then(() => {
             console.log('✅ Son joué avec succès');
         }).catch(error => {
             console.log('❌ Erreur lecture son:', error);
@@ -846,7 +1118,7 @@ function playGeneratedSound() {
     }
 }
 
-// Démarrer le minuteur
+// ✅ FONCTION MODIFIÉE AVEC PERSISTANCE - Démarrer le minuteur
 function startTimer() {
     const minutesInput = document.getElementById('timerMinutes');
     const timerDisplay = document.getElementById('timerDisplay');
@@ -858,7 +1130,6 @@ function startTimer() {
         // Sauvegarder le son du minuteur
         if (timerSoundSelect) {
             window.selectedTimerSound = timerSoundSelect.value;
-            console.log('⏱️💾 Son minuteur sauvegardé:', window.selectedTimerSound);
         }
         
         if (timerInterval) {
@@ -869,6 +1140,9 @@ function startTimer() {
             if (timerSeconds <= 0) {
                 clearInterval(timerInterval);
                 timerInterval = null;
+                
+                // ✅ NOUVEAU : Supprimer la sauvegarde
+                localStorage.removeItem('timerState');
                 
                 // Supprimer l'indicateur flottant
                 const timerFloating = document.getElementById('timerFloating');
@@ -895,55 +1169,121 @@ function startTimer() {
             }
             
             updateTimerStatus();
+            
+            // ✅ NOUVEAU : Sauvegarder l'état toutes les 10 secondes
+            if (timerSeconds % 10 === 0) {
+                saveTimerState();
+            }
+            
             timerSeconds--;
         }, 1000);
         
-        // ✅ NOUVEAU : Ajouter bouton ANNULER dans la popup si ouverte
-        const timerSection = document.querySelector('.timer-section');
-if (timerSection) {
-    let cancelButton = document.getElementById('cancelTimerBtn');
-    if (!cancelButton) {
-        cancelButton = document.createElement('button');
-        cancelButton.id = 'cancelTimerBtn';
-        cancelButton.textContent = '❌ Annuler le minuteur';
-        cancelButton.onclick = cancelTimer;
-        cancelButton.style.cssText = `
-            background: #ff4444;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 8px;
-            width: 200px;
-            margin: 10px auto 0 auto;
-            cursor: pointer;
-            font-weight: bold;
-            display: block;
-            text-align: center;
-        `;
+        // ✅ NOUVEAU : Sauvegarder l'état initial
+        saveTimerState();
         
-        // ✅ Insérer le bouton dans .timer-inputs au lieu de .timer-section
-        const timerInputs = document.querySelector('.timer-inputs');
-        if (timerInputs) {
-            timerInputs.appendChild(cancelButton);
-        } else {
-            timerSection.appendChild(cancelButton);
+        // NOUVEAU : Ajouter bouton ANNULER dans la popup si ouverte
+        const timerSection = document.querySelector('.timer-section');
+        if (timerSection) {
+            let cancelButton = document.getElementById('cancelTimerBtn');
+            if (!cancelButton) {
+                cancelButton = document.createElement('button');
+                cancelButton.id = 'cancelTimerBtn';
+                cancelButton.textContent = '❌ Annuler le minuteur';
+                cancelButton.onclick = cancelTimer;
+                cancelButton.style.cssText = `
+                    background: #ff4444;
+                    color: white;
+                    border: none;
+                    border-radius: 5px;
+                    padding: 8px;
+                    width: 200px;
+                    margin: 10px auto 0 auto;
+                    cursor: pointer;
+                    font-weight: bold;
+                    display: block;
+                    text-align: center;
+                `;
+                
+                const timerInputs = document.querySelector('.timer-inputs');
+                if (timerInputs) {
+                    timerInputs.appendChild(cancelButton);
+                } else {
+                    timerSection.appendChild(cancelButton);
+                }
+            }
         }
-    }
-}
         
         console.log(`⏱️ Minuteur démarré pour ${minutesInput.value} minutes`);
     }
 }
 
-// ✅ 2. NOUVELLE FONCTION : Annuler le minuteur
+// ✅ FONCTION MODIFIÉE AVEC PERSISTANCE - Annuler l'alarme
+function cancelAlarm() {
+    // Arrêter la surveillance
+    if (alarmCheckInterval) {
+        clearInterval(alarmCheckInterval);
+        alarmCheckInterval = null;
+    }
+    
+    // Réinitialiser l'alarme
+    alarmTime = null;
+    
+    // NETTOYER les variables globales
+    window.alarmProgrammed = false;
+    window.alarmTimeSet = null;
+    
+    // ✅ NOUVEAU : Supprimer la sauvegarde
+    localStorage.removeItem('alarmState');
+    
+    // Mettre à jour le statut
+    const alarmStatus = document.getElementById('alarmStatus');
+    if (alarmStatus) {
+        alarmStatus.textContent = '❌ Alarme annulée';
+        alarmStatus.style.color = '#ff4444';
+        
+        setTimeout(() => {
+            if (alarmStatus) {
+                alarmStatus.textContent = 'Aucune alarme programmée';
+                alarmStatus.style.color = 'white';
+            }
+        }, 2000);
+    }
+    
+    // Supprimer l'indicateur sur l'horloge
+    updateClockIndicator();
+    
+    console.log('❌ Alarme annulée par l\'utilisateur');
+}
+
+// ✅ FONCTION MODIFIÉE AVEC PERSISTANCE - Annuler le minuteur
 function cancelTimer() {
     console.log('❌ Annulation du minuteur demandée');
+    
+    // Confirmation sur mobile pour éviter les annulations accidentelles
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                     ('ontouchstart' in window) || 
+                     window.innerWidth <= 768;
+    
+    if (isMobile) {
+        // Vibration de confirmation
+        if (navigator.vibrate) {
+            navigator.vibrate([50, 50, 50]);
+        }
+        
+        const confirm = window.confirm('Voulez-vous vraiment arrêter le minuteur ?');
+        if (!confirm) {
+            return;
+        }
+    }
     
     // Arrêter le minuteur
     if (timerInterval) {
         clearInterval(timerInterval);
         timerInterval = null;
     }
+    
+    // ✅ NOUVEAU : Supprimer la sauvegarde
+    localStorage.removeItem('timerState');
     
     // Supprimer l'indicateur flottant
     const timerFloating = document.getElementById('timerFloating');
@@ -957,37 +1297,51 @@ function cancelTimer() {
         timerDisplay.textContent = '00:00';
     }
     
-    // Supprimer le bouton annuler
+    // Supprimer le bouton annuler dans la popup
     const cancelButton = document.getElementById('cancelTimerBtn');
     if (cancelButton) {
         cancelButton.remove();
     }
     
-    // Message de confirmation
+    // Message de confirmation stylé
     const confirmation = document.createElement('div');
     confirmation.style.cssText = `
         position: fixed;
-        top: 20px;
-        right: 20px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         background: #ff4444;
         color: white;
-        padding: 15px 20px;
-        border-radius: 10px;
+        padding: 20px 25px;
+        border-radius: 15px;
         z-index: 10001;
         font-weight: bold;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        font-size: 16px;
+        text-align: center;
+        border: 2px solid rgba(255,255,255,0.3);
     `;
-    confirmation.textContent = '❌ Minuteur annulé';
+    confirmation.innerHTML = `
+        <div style="font-size: 24px; margin-bottom: 8px;">⏱️</div>
+        <div>Minuteur arrêté</div>
+    `;
     document.body.appendChild(confirmation);
+    
+    // Animation de disparition
+    setTimeout(() => {
+        confirmation.style.opacity = '0';
+        confirmation.style.transform = 'translate(-50%, -50%) scale(0.8)';
+        confirmation.style.transition = 'all 0.3s ease';
+    }, 1500);
     
     setTimeout(() => {
         if (confirmation.parentNode) {
             confirmation.parentNode.removeChild(confirmation);
         }
-    }, 3000);
+    }, 2000);
 }
 
-// ✅ NOUVELLE FONCTION : Déclencher alarme du minuteur
+// ✅ NOUVELLES FONCTIONS : Déclencher alarme du minuteur
 function triggerTimerAlarm() {
     console.log('⏱️🚨 MINUTEUR TERMINÉ !');
     
@@ -1019,17 +1373,24 @@ function triggerTimerAlarm() {
 
 // ✅ NOUVELLE FONCTION : Jouer son du minuteur
 function playTimerSound() {
-    const soundType = window.selectedTimerSound || 'bells';
+    const soundType = window.selectedTimerSound || 'college';
+    
+    // ✅ Arrêter le son précédent s'il y en a un
+    if (currentTimerAudio) {
+        currentTimerAudio.pause();
+        currentTimerAudio.currentTime = 0;
+        currentTimerAudio = null;
+    }
     
     // ✅ Utiliser la nouvelle configuration
     const soundFile = SOUND_FILES[soundType];
     console.log('⏱️🎵 Fichier son minuteur à jouer:', soundFile);
     
     if (soundFile) {
-        const audio = new Audio(soundFile);
-        audio.volume = 0.7; // Volume plus doux pour le minuteur
+        currentTimerAudio = new Audio(soundFile);
+        currentTimerAudio.volume = 0.7; // Volume plus doux pour le minuteur
         
-        audio.play().then(() => {
+        currentTimerAudio.play().then(() => {
             console.log('✅ Son minuteur joué avec succès');
         }).catch(error => {
             console.log('❌ Erreur lecture son minuteur:', error);
@@ -1089,6 +1450,14 @@ function createTimerStopButton() {
 function stopTimerAlarm() {
     console.log('🛑 Arrêt du minuteur demandé');
     
+    // ✅ NOUVEAU : Arrêter immédiatement le son en cours
+    if (currentTimerAudio) {
+        currentTimerAudio.pause();
+        currentTimerAudio.currentTime = 0;
+        currentTimerAudio = null;
+        console.log('🔇 Son de minuteur arrêté immédiatement');
+    }
+    
     // Arrêter les sons du minuteur
     if (window.timerSoundInterval) {
         clearInterval(window.timerSoundInterval);
@@ -1111,7 +1480,7 @@ function stopTimerAlarm() {
         const confirmation = document.createElement('div');
         confirmation.style.cssText = `
             position: fixed;
-            top: 20px;
+            top: 10px;
             right: 20px;
             background: #FF6B35;
             color: white;
@@ -1197,6 +1566,14 @@ function createStopAlarmButton() {
 function stopAlarm() {
     console.log('🛑 Arrêt de l\'alarme demandé');
     
+    // ✅ NOUVEAU : Arrêter immédiatement le son en cours
+    if (currentAlarmAudio) {
+        currentAlarmAudio.pause();
+        currentAlarmAudio.currentTime = 0;
+        currentAlarmAudio = null;
+        console.log('🔇 Son d\'alarme arrêté immédiatement');
+    }
+    
     // Arrêter les sons
     if (alarmSoundInterval) {
         clearInterval(alarmSoundInterval);
@@ -1257,42 +1634,6 @@ function stopAlarm() {
     }, 500);
 }
 
-// NOUVELLE FONCTION : Annuler l'alarme
-function cancelAlarm() {
-    // Arrêter la surveillance
-    if (alarmCheckInterval) {
-        clearInterval(alarmCheckInterval);
-        alarmCheckInterval = null;
-    }
-    
-    // Réinitialiser l'alarme
-    alarmTime = null;
-    
-    // ✅ NETTOYER les variables globales
-    window.alarmProgrammed = false;
-    window.alarmTimeSet = null;
-    
-    // Mettre à jour le statut
-    const alarmStatus = document.getElementById('alarmStatus');
-    if (alarmStatus) {
-        alarmStatus.textContent = '❌ Alarme annulée';
-        alarmStatus.style.color = '#ff4444';
-        
-        setTimeout(() => {
-            if (alarmStatus) {
-                alarmStatus.textContent = 'Aucune alarme programmée';
-                alarmStatus.style.color = 'white';
-            }
-        }, 2000);
-    }
-    
-    // Supprimer l'indicateur sur l'horloge
-    updateClockIndicator();
-    
-    console.log('❌ Alarme annulée par l\'utilisateur');
-}
-
-// NOUVELLE FONCTION : Afficher statut minuteur même popup fermée
 function updateTimerStatus() {
     // Si un minuteur est en cours et que la popup est fermée
     if (timerInterval && !document.getElementById('alarmPopup')) {
@@ -1301,45 +1642,117 @@ function updateTimerStatus() {
         if (!timerFloating) {
             timerFloating = document.createElement('div');
             timerFloating.id = 'timerFloating';
-            timerFloating.style.cssText = `
-                position: fixed;
-                top: 80px;
-                right: 20px;
-                background: linear-gradient(145deg, #FF6B35, #e53935);
-                color: white;
-                padding: 10px 15px;
-                border-radius: 10px;
-                z-index: 1000;
-                font-weight: bold;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-                cursor: pointer;
-                font-size: 14px;
-                text-align: center;
-            `;
             
-            // ✅ NOUVEAU : Clic gauche = ouvrir popup, clic droit = annuler
-            timerFloating.onclick = () => {
-                createAlarmPopup();
-            };
+            // ✅ Détection mobile
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                             ('ontouchstart' in window) || 
+                             window.innerWidth <= 768;
             
-            timerFloating.oncontextmenu = (e) => {
-                e.preventDefault();
-                cancelTimer();
-            };
-            
-            // ✅ AJOUT : Tooltip explicatif
-            timerFloating.title = 'Clic gauche: ouvrir | Clic droit: annuler';
+            if (isMobile) {
+                // ✅ VERSION MOBILE : 2 boutons séparés
+                timerFloating.style.cssText = `
+                    position: fixed;
+                    top: 120px;
+                    right: 270px;
+                    z-index: 1000;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0px;
+                    font-weight: bold;
+                    user-select: none;
+                    -webkit-user-select: none;
+                    -webkit-touch-callout: none;
+                `;
+                
+                timerFloating.innerHTML = `
+                    <div style="
+                        background: linear-gradient(145deg, #FF6B35, #e53935);
+                        color: white;
+                        padding: 8px 5px;
+                        border-radius: 12px;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+                        cursor: pointer;
+                        font-size: 14px;
+                        text-align: center;
+                        border: 2px solid rgba(255,255,255,0.3);
+                        min-width: 80px;
+                    " onclick="createAlarmPopup()">
+                        <div style="font-size: 16px; margin-bottom: 2px;" id="timerTimeDisplay">⏱️ --:--</div>
+                        <div style="font-size: 9px; opacity: 0.9; line-height: 1;">Toucher pour ouvrir</div>
+                    </div>
+                    <button style="
+                        background: #ff4444;
+                        color: white;
+                        border: none;
+                        padding: 4px 12px;
+                        border-radius: 8px;
+                        font-size: 12px;
+                        font-weight: bold;
+                        cursor: pointer;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                        border: 1px solid rgba(255,255,255,0.3);
+                        min-width: 80px;
+                        text-align: center;
+                    " onclick="cancelTimer()">
+                        ❌ STOP
+                    </button>
+                `;
+                
+            } else {
+                // ✅ VERSION DESKTOP : Clic droit classique
+                timerFloating.style.cssText = `
+                    position: fixed;
+                    top: 240px;
+                    right: 10px;
+                    background: linear-gradient(145deg, #FF6B35, #e53935);
+                    color: white;
+                    padding: 12px 16px;
+                    border-radius: 12px;
+                    z-index: 1000;
+                    font-weight: bold;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+                    cursor: pointer;
+                    font-size: 14px;
+                    text-align: center;
+                    user-select: none;
+                    border: 2px solid rgba(255,255,255,0.3);
+                    min-width: 80px;
+                `;
+                
+                timerFloating.onclick = () => createAlarmPopup();
+                timerFloating.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    cancelTimer();
+                };
+                timerFloating.title = 'Clic gauche: ouvrir | Clic droit: annuler';
+            }
             
             document.body.appendChild(timerFloating);
         }
         
-        // Mettre à jour l'affichage avec indication d'annulation
+        // ✅ Mettre à jour le temps affiché
         const minutes = Math.floor(timerSeconds / 60);
         const seconds = timerSeconds % 60;
-        timerFloating.innerHTML = `
-            ⏱️ ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}<br>
-            <span style="font-size: 10px; opacity: 0.8;">Clic droit: annuler</span>
-        `;
+        const timeText = `⏱️ ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                         ('ontouchstart' in window) || 
+                         window.innerWidth <= 768;
+        
+        if (isMobile) {
+            // Mettre à jour seulement le temps sur mobile
+            const timeDisplay = document.getElementById('timerTimeDisplay');
+            if (timeDisplay) {
+                timeDisplay.textContent = timeText;
+            }
+        } else {
+            // Mettre à jour le contenu complet sur desktop
+            timerFloating.innerHTML = `
+                <div style="font-size: 16px; margin-bottom: 2px;">${timeText}</div>
+                <div style="font-size: 9px; opacity: 0.9; line-height: 1;">Clic droit = stop</div>
+            `;
+        }
+        
     } else {
         // Supprimer l'indicateur si pas de minuteur
         const timerFloating = document.getElementById('timerFloating');
@@ -1365,14 +1778,181 @@ function openWeatherDetails() {
 
 // Initialisation des widgets (version corrigée)
 function initHeaderWidgets() {
-    fetchTemperature();
+    fetchTemperatureOptimized(); // ✅ Au lieu de fetchTemperature()
     updateVisitorsCount();
     
-    // Mise à jour périodique
-    setInterval(fetchTemperature, 300000); // 5 minutes - météo
-    setInterval(updateVisitorsCount, 45000); // 45 secondes - visiteurs
-    setInterval(cleanupInactiveVisitors, 120000); // 2 minutes - nettoyage
+    setInterval(fetchTemperatureOptimized, 300000); // ✅ Changez ici aussi
+    setInterval(updateVisitorsCount, 45000);
+    setInterval(cleanupInactiveVisitors, 120000);
 }
+
+// ✅ ========== INITIALISATION AVEC PERSISTANCE ==========
+
+// ✅ MODIFIÉE : Initialisation automatique avec restauration
+document.addEventListener('DOMContentLoaded', function() {
+    // Créer l'instance du widget
+    newsWidget = new NewsWidget();
+    
+    // Initialiser le widget après un délai pour s'assurer que Supabase est chargé
+    setTimeout(() => {
+        newsWidget.init();
+    }, 1500);
+    
+    // ✅ NOUVEAU : Restaurer les états sauvegardés
+    setTimeout(() => {
+        restoreAlarmState();
+        restoreTimerState();
+    }, 2000);
+    
+    // Initialiser l'horloge
+    initClock();
+    
+    // Initialiser les widgets header après délai
+    setTimeout(initHeaderWidgets, 2000);
+});
+
+// ✅ NOUVEAU : Sauvegarder avant fermeture de page
+window.addEventListener('beforeunload', function() {
+    if (alarmTime) {
+        saveAlarmState();
+    }
+    if (timerInterval) {
+        saveTimerState();
+    }
+});
+
+// Recharger le widget quand les actualités sont mises à jour (optionnel)
+window.addEventListener('newsUpdated', function() {
+    if (newsWidget) {
+        newsWidget.refresh();
+    }
+});
+
+// ✅ AJOUTER les animations CSS (VERSION CORRIGÉE AVEC CLASSE)
+const animationCSS = `
+<style>
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+@keyframes slideOutUp {
+    from {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-30px);
+    }
+}
+
+@keyframes blink-alarm {
+    0%, 50% { 
+        opacity: 1; 
+        transform: scale(1);
+        color: #FFD230;
+    }
+    51%, 100% { 
+        opacity: 0.3; 
+        transform: scale(0.9);
+        color: #FFD230;
+    }
+}
+
+/* ✅ NOUVELLE APPROCHE : Icône via CSS pseudo-element */
+.clock-time.alarm-active::after {
+    content: ' ⏰';
+    font-size: 20px !important;
+    color: #FFD230 !important;
+    font-weight: bold !important;
+    text-shadow: 0 0 5px rgba(255, 210, 48, 1) !important;
+    animation: blink-alarm 1.5s infinite !important;
+    margin-left: 3px !important;
+    display: inline !important;
+    position: relative !important;
+    z-index: 9999 !important;
+}
+
+/* Style supplémentaire pour l'icône d'alarme */
+.alarm-icon {
+    color: #FFD230 !important;
+    font-weight: bold !important;
+    text-shadow: 0 0 3px rgba(255, 210, 48, 0.8) !important;
+}
+</style>
+`;
+
+// ✅ NOUVEAU : Vérifier si les styles ne sont pas déjà ajoutés
+if (!document.head.querySelector('style[data-alarm-styles]')) {
+    const styleElement = document.createElement('style');
+    styleElement.setAttribute('data-alarm-styles', 'true');
+    styleElement.innerHTML = `
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+@keyframes slideOutUp {
+    from {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-30px);
+    }
+}
+
+@keyframes blink-alarm {
+    0%, 50% { 
+        opacity: 1; 
+        transform: scale(1);
+        color: #FFD230;
+    }
+    51%, 100% { 
+        opacity: 0.3; 
+        transform: scale(0.9);
+        color: #FFD230;
+    }
+}
+
+/* ✅ APPROCHE CSS PURE : Icône via pseudo-element */
+.clock-time.alarm-active::after {
+    content: ' ⏰' !important;
+    font-size: 12px !important;
+    color: #FFD230 !important;
+    font-weight: bold !important;
+    text-shadow: 0 0 5px rgba(255, 210, 48, 1) !important;
+    animation: blink-alarm 1.5s infinite !important;
+    margin-left: 3px !important;
+    display: inline !important;
+    position: relative !important;
+    z-index: 9999 !important;
+}
+
+.alarm-icon {
+    color: #FFD230 !important;
+    font-weight: bold !important;
+    text-shadow: 0 0 3px rgba(255, 210, 48, 0.8) !important;
+}
+    `;
+    document.head.appendChild(styleElement);
+}
+
+document.head.insertAdjacentHTML('beforeend', animationCSS);
 
 // ===== EXPORTS GLOBAUX =====
 window.debugVisitors = debugVisitors;
@@ -1398,7 +1978,5 @@ window.createTimerStopButton = createTimerStopButton;
 window.stopTimerAlarm = stopTimerAlarm;
 window.cancelTimer = cancelTimer;
 
-// Démarrer au chargement
-document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(initHeaderWidgets, 2000);
-});
+// Export pour usage externe
+window.NewsWidget = NewsWidget;
