@@ -1499,26 +1499,6 @@
     }
 }
 
-/* ✅ STYLES SPÉCIAUX POUR iOS ET SAFARI */
-@supports (-webkit-touch-callout: none) {
-    @media (max-width: 768px) {
-        .alarm-section input[type="time"] {
-            /* Safari iOS spécifique */
-            -webkit-text-fill-color: white !important;
-            -webkit-opacity: 1 !important;
-            direction: ltr !important;
-            unicode-bidi: normal !important;
-        }
-        
-        .alarm-section input[type="time"]::-webkit-datetime-edit-fields-wrapper {
-            /* Forcer la direction et l'alignement sur iOS */
-            direction: ltr !important;
-            unicode-bidi: normal !important;
-            text-align: center !important;
-        }
-    }
-}
-
 /* ✅ STYLES POUR FIREFOX MOBILE */
 @-moz-document url-prefix() {
     @media (max-width: 768px) {
