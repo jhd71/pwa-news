@@ -985,6 +985,74 @@
     100% { background-color: #6b1515; }
 }
 
+/* Articles récents en mode rouge pour tous les autres thèmes */
+
+/* Thème Sombre */
+[data-theme="dark"] .latest-article {
+    background-color: #6b1515;
+    color: white;
+    animation: pulseEffectRouge 2s infinite ease-in-out;
+}
+[data-theme="dark"] .new-article {
+    background-color: #6b1515;
+    animation: blinkRouge 2s infinite ease-in-out;
+}
+
+/* Thème Bleu Ciel */
+[data-theme="bleuciel"] .latest-article {
+    background-color: #6b1515;
+    color: white;
+    animation: pulseEffectRouge 2s infinite ease-in-out;
+}
+[data-theme="bleuciel"] .new-article {
+    background-color: #6b1515;
+    animation: blinkRouge 2s infinite ease-in-out;
+}
+
+/* Thème Violet */
+[data-theme="light"] .latest-article {
+    background-color: #6b1515;
+    color: white;
+    animation: pulseEffectRouge 2s infinite ease-in-out;
+}
+[data-theme="light"] .new-article {
+    background-color: #6b1515;
+    animation: blinkRouge 2s infinite ease-in-out;
+}
+
+/* Thème Super Clair */
+[data-theme="super-light"] .latest-article {
+    background-color: #6b1515;
+    color: white;
+    animation: pulseEffectRouge 2s infinite ease-in-out;
+}
+[data-theme="super-light"] .new-article {
+    background-color: #6b1515;
+    animation: blinkRouge 2s infinite ease-in-out;
+}
+
+/* Thème Océan Profond */
+[data-theme="ocean"] .latest-article {
+    background-color: #6b1515;
+    color: white;
+    animation: pulseEffectRouge 2s infinite ease-in-out;
+}
+[data-theme="ocean"] .new-article {
+    background-color: #6b1515;
+    animation: blinkRouge 2s infinite ease-in-out;
+}
+
+/* Thème Coucher de Soleil */
+[data-theme="sunset"] .latest-article {
+    background-color: #6b1515;
+    color: white;
+    animation: pulseEffectRouge 2s infinite ease-in-out;
+}
+[data-theme="sunset"] .new-article {
+    background-color: #6b1515;
+    animation: blinkRouge 2s infinite ease-in-out;
+}
+
 /* Bouton d'actualisation en thème rouge */
 [data-theme="rouge"] .refresh-button {
     background: #388e3c !important;
