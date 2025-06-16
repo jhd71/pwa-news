@@ -537,7 +537,7 @@
 }
 
 [data-theme="bleuciel"] .news-widget-title-short {
-    color: #0ea5e9;
+    color: #4196df;
 }
 
 /* ===== THÈMES POUR LES BOUTONS HEADER ===== */
@@ -755,7 +755,7 @@
 [data-theme="bleuciel"] .visitors-count,
 [data-theme="bleuciel"] .temp-label,
 [data-theme="bleuciel"] .visitors-label {
-    color: #0ea5e9;
+    color: #4196df;
 }
 
 [data-theme="bleuciel"] .weather-temp:hover,
@@ -768,6 +768,11 @@
 [data-theme="bleuciel"] .visitors-counter:hover .visitors-count,
 [data-theme="bleuciel"] .visitors-counter:hover .visitors-label {
     color: white;
+}
+
+[data-theme="bleuciel"] .clock-time,
+[data-theme="bleuciel"] .clock-date {
+color: #4196df;
 }
 
 /* ===== STYLES ALARME & MINUTEUR ===== */
