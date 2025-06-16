@@ -1,4 +1,4 @@
-// ios-fixes-safe.js - Version 2.3 - COMPLET et CORRIGÉ
+// ios-fixes-safe.js - Version 2.4 - CORRECTIONS POSITIONNEMENT
 (function() {
     'use strict';
     
@@ -20,7 +20,7 @@
         return;
     }
     
-    console.log('🍎 iOS détecté - Application des corrections v2.3');
+    console.log('🍎 iOS détecté - Application des corrections v2.4');
     
     const initFixes = () => {
         if (document.readyState === 'loading') {
@@ -31,31 +31,24 @@
     };
     
     function applyIOSFixes() {
-    console.log('Application des corrections iOS v2.3...');
-    
-    setTimeout(() => {
-        addSafeAreaVariables();
-        fixViewportHeight();
-        fixWidgetPositioning();
-        fixChatPositioning();
-        fixTextRendering();
-        handleOrientationChange();
-        preventInputZoom();
-        // ✅ NOUVELLES CORRECTIONS
-        fixHeaderButtons();
-        fixSiteLogo();
-        fixNewsButton();
-        fixNewsWidget();
-        fixNewsTicker();
-        fixChatZIndex();
-    }, 1000);
-    
-    console.log('✅ Corrections iOS v2.3 appliquées');
-}
+        console.log('Application des corrections iOS v2.4...');
+        
+        setTimeout(() => {
+            addSafeAreaVariables();
+            fixViewportHeight();
+            fixWidgetPositioning();
+            fixChatPositioning();
+            fixTextRendering();
+            handleOrientationChange();
+            preventInputZoom();
+        }, 1000);
+        
+        console.log('✅ Corrections iOS v2.4 appliquées');
+    }
     
     function addSafeAreaVariables() {
         const style = document.createElement('style');
-        style.id = 'ios-safe-areas-v23';
+        style.id = 'ios-safe-areas-v24';
         style.textContent = `
             :root {
                 --ios-safe-top: env(safe-area-inset-top, 0px);
@@ -79,29 +72,78 @@
     
     function fixWidgetPositioning() {
         const style = document.createElement('style');
-        style.id = 'ios-widget-positioning-v23';
+        style.id = 'ios-widget-positioning-v24';
         style.textContent = `
-            /* CORRECTIONS iOS - Compatible avec widgets.css */
+            /* CORRECTIONS iOS v2.4 - NOUVEAUX POSITIONNEMENTS */
+            
+            /* CORRECTIONS HEADER ET LOGO */
+            .app-header {
+                padding-top: calc(40px + var(--ios-safe-top, 0px)) !important;
+                z-index: 1200 !important;
+                position: relative !important;
+                top: 0 !important;
+            }
+            
+            .site-logo {
+                position: relative !important;
+                top: calc(10px + var(--ios-safe-top, 0px)) !important;
+                z-index: 1201 !important;
+            }
+            
+            /* BOUTONS MENU ET PARAMÈTRES */
+            .menu-button, .settings-button {
+                position: fixed !important;
+                top: calc(50px + var(--ios-safe-top, 0px)) !important;
+                z-index: 1202 !important;
+            }
+            
+            .menu-button {
+                left: 15px !important;
+            }
+            
+            .settings-button {
+                right: 15px !important;
+            }
+            
+            /* BOUTON INFOS EN DIRECT */
+            .news-button {
+                position: fixed !important;
+                top: calc(110px + var(--ios-safe-top, 0px)) !important;
+                right: 15px !important;
+                z-index: 1200 !important;
+            }
+            
+            /* WIDGET NEWS LOCAL */
+            .local-news-widget {
+                position: fixed !important;
+                top: calc(160px + var(--ios-safe-top, 0px)) !important;
+                z-index: 1000 !important;
+                margin-top: 0 !important;
+            }
             
             /* Empêcher les tuiles de passer sous la navigation */
             .tile-container, #tileContainer, .main-content {
-                padding-bottom: calc(120px + var(--ios-safe-bottom, 0px)) !important;
+                padding-bottom: calc(140px + var(--ios-safe-bottom, 0px)) !important;
                 margin-bottom: 20px !important;
             }
             
-            /* Corriger la barre d'infos déroulante */
+            /* CORRIGER LA BARRE D'INFOS DÉROULANTE */
             .news-ticker {
                 position: fixed !important;
-                bottom: calc(60px + var(--ios-safe-bottom, 0px)) !important;
+                bottom: calc(52px + var(--ios-safe-bottom, 0px)) !important;
                 left: 0 !important;
                 right: 0 !important;
                 z-index: 1000 !important;
                 background: rgba(0, 0, 0, 0.9) !important;
                 backdrop-filter: blur(10px) !important;
                 border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
+                height: 40px !important;
+                line-height: 40px !important;
+                margin: 0 !important;
+                padding: 0 10px !important;
             }
             
-            /* Navigation du bas avec safe area */
+            /* Navigation du bas avec safe area - AJUSTÉE */
             .bottom-nav {
                 position: fixed !important;
                 bottom: 0 !important;
@@ -109,17 +151,17 @@
                 right: 0 !important;
                 padding-bottom: var(--ios-safe-bottom, 0px) !important;
                 z-index: 1100 !important;
+                height: calc(52px + var(--ios-safe-bottom, 0px)) !important;
             }
             
-            /* Header avec safe area */
-            .app-header {
-                padding-top: var(--ios-safe-top, 0px) !important;
-                z-index: 1200 !important;
+            .nav-item {
+                padding: 5px !important;
+                margin: 0 !important;
             }
             
             /* Contenu principal avec marge pour header */
             main, .main-content {
-                padding-top: calc(20px + var(--ios-safe-top, 0px)) !important;
+                padding-top: calc(60px + var(--ios-safe-top, 0px)) !important;
             }
             
             /* REPOSITIONNER LES BOUTONS WIDGETS SUR iOS */
@@ -127,24 +169,24 @@
             /* Desktop iOS (iPad) */
             @media (min-width: 1101px) {
                 .weather-show-btn {
-                    top: calc(120px + var(--ios-safe-top, 0px)) !important;
+                    top: calc(140px + var(--ios-safe-top, 0px)) !important;
                     left: 15px !important;
                     z-index: 999 !important;
                 }
                 
                 .quick-links-show-btn {
-                    top: calc(120px + var(--ios-safe-top, 0px)) !important;
+                    top: calc(140px + var(--ios-safe-top, 0px)) !important;
                     right: 15px !important;
                     z-index: 999 !important;
                 }
                 
                 .fuel-button {
-                    top: calc(180px + var(--ios-safe-top, 0px)) !important;
+                    top: calc(200px + var(--ios-safe-top, 0px)) !important;
                     left: 15px !important;
                 }
                 
                 .search-button {
-                    top: calc(180px + var(--ios-safe-top, 0px)) !important;
+                    top: calc(200px + var(--ios-safe-top, 0px)) !important;
                     right: 15px !important;
                 }
             }
@@ -152,52 +194,91 @@
             /* Tablette iOS */
             @media (min-width: 768px) and (max-width: 1100px) {
                 .weather-show-btn {
-                    top: calc(80px + var(--ios-safe-top, 0px)) !important;
+                    top: calc(100px + var(--ios-safe-top, 0px)) !important;
                     left: 15px !important;
                     z-index: 999 !important;
                 }
                 
                 .quick-links-show-btn {
-                    top: calc(80px + var(--ios-safe-top, 0px)) !important;
+                    top: calc(100px + var(--ios-safe-top, 0px)) !important;
                     right: 15px !important;
                     z-index: 999 !important;
                 }
                 
                 .fuel-button {
-                    top: calc(140px + var(--ios-safe-top, 0px)) !important;
+                    top: calc(160px + var(--ios-safe-top, 0px)) !important;
                     left: 15px !important;
                 }
                 
                 .search-button {
-                    top: calc(140px + var(--ios-safe-top, 0px)) !important;
+                    top: calc(160px + var(--ios-safe-top, 0px)) !important;
                     right: 15px !important;
+                }
+                
+                .news-button {
+                    top: calc(100px + var(--ios-safe-top, 0px)) !important;
+                }
+                
+                .local-news-widget {
+                    top: calc(150px + var(--ios-safe-top, 0px)) !important;
                 }
             }
             
             /* Mobile iOS (iPhone) */
             @media (max-width: 767px) {
+                /* Ajustements pour mobile */
+                .app-header {
+                    padding-top: calc(25px + var(--ios-safe-top, 0px)) !important;
+                }
+                
+                .site-logo {
+                    top: calc(5px + var(--ios-safe-top, 0px)) !important;
+                    font-size: 1.2rem !important;
+                }
+                
+                /* Boutons menu et paramètres plus bas */
+                .menu-button, .settings-button {
+                    top: calc(35px + var(--ios-safe-top, 0px)) !important;
+                    width: 36px !important;
+                    height: 36px !important;
+                }
+                
+                /* Bouton infos en direct */
+                .news-button {
+                    top: calc(80px + var(--ios-safe-top, 0px)) !important;
+                    right: 10px !important;
+                }
+                
+                /* Widget news local */
+                .local-news-widget {
+                    top: calc(130px + var(--ios-safe-top, 0px)) !important;
+                    left: 10px !important;
+                    right: 10px !important;
+                    width: auto !important;
+                }
+                
                 /* Repositionner les boutons dans la barre du haut */
                 .weather-mobile-btn {
-                    top: calc(75px + var(--ios-safe-top, 0px)) !important;
+                    top: calc(90px + var(--ios-safe-top, 0px)) !important;
                     left: 10px !important;
                     z-index: 1000 !important;
                 }
                 
                 .quick-links-show-btn {
-                    top: calc(75px + var(--ios-safe-top, 0px)) !important;
+                    top: calc(90px + var(--ios-safe-top, 0px)) !important;
                     right: 10px !important;
                     z-index: 1000 !important;
                 }
                 
                 .fuel-button {
-                    top: calc(75px + var(--ios-safe-top, 0px)) !important;
+                    top: calc(90px + var(--ios-safe-top, 0px)) !important;
                     left: 40% !important;
                     transform: translateX(-100px) !important;
                     z-index: 1000 !important;
                 }
                 
                 .search-button {
-                    top: calc(75px + var(--ios-safe-top, 0px)) !important;
+                    top: calc(90px + var(--ios-safe-top, 0px)) !important;
                     left: 60% !important;
                     transform: translateX(60px) !important;
                     z-index: 1000 !important;
@@ -210,10 +291,9 @@
                 /* BOUTONS CINÉMA ET PHOTOS - REPOSITIONNÉS POUR iOS */
                 .cinema-mobile-btn {
                     position: absolute !important;
-                    top: calc(320px + var(--ios-safe-top, 0px)) !important;
+                    top: calc(340px + var(--ios-safe-top, 0px)) !important;
                     right: calc(10px + var(--ios-safe-right, 0px)) !important;
                     z-index: 1000 !important;
-                    /* Assurer la visibilité sur iOS */
                     opacity: 1 !important;
                     visibility: visible !important;
                     display: flex !important;
@@ -221,10 +301,9 @@
                 
                 .photos-mobile-btn {
                     position: absolute !important;
-                    top: calc(320px + var(--ios-safe-top, 0px)) !important;
+                    top: calc(340px + var(--ios-safe-top, 0px)) !important;
                     left: calc(10px + var(--ios-safe-left, 0px)) !important;
                     z-index: 1000 !important;
-                    /* Assurer la visibilité sur iOS */
                     opacity: 1 !important;
                     visibility: visible !important;
                     display: flex !important;
@@ -370,15 +449,23 @@
                 position: relative !important;
             }
             
+            /* CHAT PRIORITAIRE SUR TOUS LES ÉLÉMENTS */
+            .chat-container:not(.hidden) {
+                z-index: 99999 !important;
+            }
+            
             /* Masquer les widgets quand le chat est ouvert */
             .chat-container:not(.hidden) ~ .weather-sidebar,
             .chat-container:not(.hidden) ~ .quick-links-sidebar,
             .chat-container:not(.hidden) ~ .weather-show-btn,
             .chat-container:not(.hidden) ~ .quick-links-show-btn,
-            .chat-container:not(.hidden) ~ .weather-mobile-btn {
-                opacity: 0 !important;
+            .chat-container:not(.hidden) ~ .weather-mobile-btn,
+            .chat-container:not(.hidden) ~ .fuel-button,
+            .chat-container:not(.hidden) ~ .search-button,
+            .chat-container:not(.hidden) ~ .cinema-mobile-btn,
+            .chat-container:not(.hidden) ~ .photos-mobile-btn {
+                opacity: 0.3 !important;
                 pointer-events: none !important;
-                z-index: -1 !important;
             }
         `;
         document.head.appendChild(style);
@@ -386,7 +473,7 @@
     
     function fixTextRendering() {
         const style = document.createElement('style');
-        style.id = 'ios-text-fixes-v23';
+        style.id = 'ios-text-fixes-v24';
         style.textContent = `
             /* CORRECTION RENDU TEXTE iOS */
             * {
@@ -433,9 +520,9 @@
     
     function applyChatFixes(chatContainer) {
         const style = document.createElement('style');
-        style.id = 'ios-chat-fixes-v23';
+        style.id = 'ios-chat-fixes-v24';
         style.textContent = `
-            /* CHAT OPTIMISÉ POUR iOS - TOUS LES THÈMES */
+            /* CHAT OPTIMISÉ POUR iOS - PRIORITÉ ABSOLUE */
             
             .chat-container {
                 position: fixed !important;
@@ -445,11 +532,23 @@
                 width: min(380px, calc(100vw - 40px)) !important;
                 height: calc(70vh - var(--ios-safe-bottom, 0px)) !important;
                 max-height: calc(70vh - var(--ios-safe-bottom, 0px)) !important;
-                z-index: 10000 !important;
+                z-index: 99999 !important;
                 border-radius: 20px !important;
                 overflow: hidden !important;
                 backdrop-filter: blur(20px) !important;
                 box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5) !important;
+            }
+            
+            /* Overlay sombre quand le chat est ouvert */
+            .chat-container:not(.hidden)::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: -1;
             }
             
             .chat-messages {
@@ -780,7 +879,7 @@
     
     function preventInputZoom() {
         const style = document.createElement('style');
-        style.id = 'ios-input-zoom-prevention-v23';
+        style.id = 'ios-input-zoom-prevention-v24';
         style.textContent = `
             input, textarea, select {
                 font-size: 16px !important;
@@ -795,88 +894,6 @@
     setTimeout(initFixes, 500);
     
     // Exposer pour debug
-    window.iOSFixesV23Active = true;
+    window.iOSFixesV24Active = true;
     
-	// 🆕 NOUVELLES CORRECTIONS POSITIONNEMENT
-function fixHeaderButtons() {
-    const menuButton = document.getElementById('menuButton');
-    const settingsButton = document.getElementById('settingsButton');
-    
-    if (menuButton) {
-        menuButton.style.top = '50px';
-        menuButton.style.position = 'fixed';
-        menuButton.style.zIndex = '9998';
-    }
-    
-    if (settingsButton) {
-        settingsButton.style.top = '50px';
-        settingsButton.style.position = 'fixed';
-        settingsButton.style.zIndex = '9998';
-    }
-}
-
-function fixSiteLogo() {
-    const siteLogo = document.querySelector('.site-logo, .logo-text');
-    if (siteLogo) {
-        siteLogo.style.marginTop = '20px';
-        siteLogo.style.paddingTop = '10px';
-    }
-}
-
-function fixNewsButton() {
-    const newsButton = document.querySelector('.news-button');
-    if (newsButton) {
-        newsButton.style.marginTop = '15px';
-        newsButton.style.position = 'relative';
-    }
-}
-
-function fixNewsWidget() {
-    const newsWidget = document.querySelector('.local-news-widget');
-    if (newsWidget) {
-        newsWidget.style.marginTop = '20px';
-        newsWidget.style.position = 'relative';
-    }
-}
-
-function fixNewsTicker() {
-    const newsTicker = document.querySelector('.news-ticker');
-    const bottomNav = document.querySelector('.bottom-nav');
-    
-    if (newsTicker && bottomNav) {
-        newsTicker.style.bottom = '70px';
-        newsTicker.style.position = 'fixed';
-        newsTicker.style.zIndex = '1000';
-    }
-    
-    if (bottomNav) {
-        bottomNav.style.bottom = '0';
-        bottomNav.style.paddingBottom = 'env(safe-area-inset-bottom)';
-    }
-}
-
-function fixChatZIndex() {
-    const chatElements = [
-        '.chat-container',
-        '.chat-widget', 
-        '.chat-overlay',
-        '#chatContainer',
-        '[class*="chat"]'
-    ];
-    
-    chatElements.forEach(selector => {
-        const chatElement = document.querySelector(selector);
-        if (chatElement) {
-            chatElement.style.zIndex = '99999';
-            chatElement.style.position = 'fixed';
-        }
-    });
-    
-    const openChat = document.querySelector('.chat-open, .chat-active, .chat-visible');
-    if (openChat) {
-        openChat.style.zIndex = '99999';
-        openChat.style.position = 'fixed';
-    }
-}
-
 })();
