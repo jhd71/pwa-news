@@ -497,6 +497,43 @@
     color: #9b87ce;
 }
 
+[data-theme="light"] .visitors-count,
+[data-theme="light"] .temp-value,
+[data-theme="light"] .temp-label,
+[data-theme="light"].visitors-label {
+font-size: 14px;
+}
+
+[data-theme="bleuciel"] .visitors-count,
+[data-theme="bleuciel"] .temp-value,
+[data-theme="bleuciel"] .temp-label,
+[data-theme="bleuciel"] .visitors-label {
+font-size: 14px;
+}
+
+[data-theme="bleuciel"] .clock-date {
+    font-size: 12px;
+}
+
+[data-theme="bleuciel"] .clock-time {
+    font-size: 15px;
+}
+
+[data-theme="dark"] .temp-value,
+[data-theme="dark"] .visitors-count,
+[data-theme="dark"] .temp-label,
+[data-theme="dark"] .visitors-label {
+font-size: 14px;
+}
+
+[data-theme="dark"] .clock-date {
+    font-size: 12px;
+}
+
+[data-theme="dark"] .clock-time {
+    font-size: 15px;
+}
+
 /* Thème Dark (Bleu Nuit) - TEXTE BLANC */
 [data-theme="dark"] .news-widget-clock {
     background: rgba(92, 107, 192, 0.2);
@@ -729,11 +766,18 @@
     border-color: #d32f2f;
 }
 
+[data-theme="light"] .clock-date {
+    font-size: 12px;
+}
+
+[data-theme="light"] .clock-time {
+    font-size: 15px;
+}	
+
 [data-theme="rouge"] .temp-value,
 [data-theme="rouge"] .visitors-count,
 [data-theme="rouge"] .temp-label,
 [data-theme="rouge"] .visitors-label {
-    color: #000000;
 	font-size: 14px;
 }
 
