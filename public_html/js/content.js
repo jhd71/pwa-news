@@ -1442,16 +1442,7 @@ changeTextContrast(contrast) {
         case 'bleuciel':
             this.currentTheme = 'light';
             break;
-        case 'light':
-            this.currentTheme = 'super-light';
-            break;
-        case 'super-light':
-            this.currentTheme = 'ocean';
-            break;
-        case 'ocean':
-            this.currentTheme = 'sunset';
-            break;
-        case 'sunset':
+        case 'light':          
         default:
             this.currentTheme = 'rouge'; // ✅ Retour au rouge (défaut)
             break;
@@ -1471,9 +1462,6 @@ changeTextContrast(contrast) {
         case 'dark': themeName = 'sombre'; break;
         case 'bleuciel': themeName = 'bleu ciel'; break;       
         case 'light': themeName = 'violet'; break;
-        case 'super-light': themeName = 'super-light'; break;
-        case 'ocean': themeName = 'Océan Profond'; break;
-        case 'sunset': themeName = 'Coucher de Soleil'; break;
         default: themeName = 'rouge'; break;
     }
     
@@ -1630,19 +1618,7 @@ applyListModeImmediate() {
             case 'bleuciel':
                 if (icon) icon.textContent = 'water_drop';
                 if (text) text.textContent = 'Bleu Ciel';
-                break;
-            case 'sunset':
-                if (icon) icon.textContent = 'wb_twilight';
-                if (text) text.textContent = 'Coucher de Soleil';
-                break;
-            case 'ocean':
-                if (icon) icon.textContent = 'waves';
-                if (text) text.textContent = 'Océan Profond';
-                break;
-            case 'super-light':
-                if (icon) icon.textContent = 'wb_sunny';
-                if (text) text.textContent = 'Super Light';
-                break;
+                break;           
             case 'light':
             default:
                 if (icon) icon.textContent = 'light_mode';

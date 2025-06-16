@@ -35,27 +35,6 @@
   --chat-border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Thème Coucher de Soleil */
-[data-theme="sunset"] {
-  --chat-gradient: linear-gradient(145deg, #FF6B35, #E91E63);
-  --chat-message-received: rgba(255, 107, 53, 0.4);
-  --info-bubble-bg: linear-gradient(135deg, #FF6B35 0%, #E91E63 100%);
-}
-
-/* Thème Océan Profond */
-[data-theme="ocean"] {
-  --chat-gradient: linear-gradient(145deg, #006064, #0097A7);
-  --chat-message-received: rgba(0, 96, 100, 0.4);
-  --info-bubble-bg: linear-gradient(135deg, #006064 0%, #0097A7 100%);
-}
-
-/* Thème Super-Light */
-[data-theme="super-light"] {
-  --chat-gradient: linear-gradient(145deg, #6366F1, #8B5CF6);
-  --chat-message-received: rgba(99, 102, 241, 0.2);
-  --info-bubble-bg: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
-}
-
 /* Messages reçus - thème rouge */
 [data-theme="rouge"] .message.received {
   /* Fond beaucoup plus foncé pour un meilleur contraste avec le fond rouge */
@@ -89,29 +68,6 @@
 [data-theme="rouge"] .message.received .message-time .date,
 [data-theme="rouge"] .message.received .message-time .time {
   opacity: 1 !important; /* Pleine opacité */
-}
-
-/* Messages reçus - nouveaux thèmes */
-[data-theme="sunset"] .message.received,
-[data-theme="ocean"] .message.received {
-  background: var(--chat-message-received) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
-}
-
-[data-theme="sunset"] .message.received .message-content,
-[data-theme="sunset"] .message.received .message-author,
-[data-theme="sunset"] .message.received .message-time,
-[data-theme="ocean"] .message.received .message-content,
-[data-theme="ocean"] .message.received .message-author,
-[data-theme="ocean"] .message.received .message-time {
-  color: var(--text-color) !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
-}
-
-[data-theme="super-light"] .message.received {
-  background: rgba(99, 102, 241, 0.1) !important;
-  border: 1px solid rgba(99, 102, 241, 0.2) !important;
 }
 
 [data-theme="rouge"] .emoji-panel {
@@ -271,18 +227,6 @@
 
 [data-theme="bleuciel"] .chat-toggle {
     background: linear-gradient(145deg, #0ea5e9, #38bdf8);
-}
-
-[data-theme="sunset"] .chat-toggle {
-    background: linear-gradient(145deg, #FF6B35, #E91E63);
-}
-
-[data-theme="ocean"] .chat-toggle {
-    background: linear-gradient(145deg, #006064, #0097A7);
-}
-
-[data-theme="super-light"] .chat-toggle {
-    background: linear-gradient(145deg, #6366F1, #8B5CF6);
 }
 
 /* Badge de notification */

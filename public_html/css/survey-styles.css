@@ -50,21 +50,6 @@
     color: #FFEB3B; /* Jaune pour contraster avec le bleu ciel */
 }
 
-/* Thème Coucher de Soleil */
-[data-theme="sunset"] .survey-btn .material-icons {
-    color: #FFCC80; /* Orange clair pour contraster */
-}
-
-/* Thème Océan Profond */
-[data-theme="ocean"] .survey-btn .material-icons {
-    color: #81D4FA; /* Bleu clair pour contraster */
-}
-
-/* Thème Super-Light */
-[data-theme="super-light"] .survey-btn .material-icons {
-    color: #6366F1; /* Violet pour contraster */
-}
-
 /* Animation de changement de couleur pour le texte */
 @keyframes textColorChange {
     0% { color: white; }
@@ -94,38 +79,8 @@
     100% { color: white; }
 }
 
-@keyframes textColorChangeSunset {
-    0% { color: #FFF8E7; }
-    50% { color: #FFCC80; }
-    100% { color: #FFF8E7; }
-}
-
-@keyframes textColorChangeOcean {
-    0% { color: #B3E5FC; }
-    50% { color: #81D4FA; }
-    100% { color: #B3E5FC; }
-}
-
-@keyframes textColorChangeSuperLight {
-    0% { color: #1F2937; }
-    50% { color: #6366F1; }
-    100% { color: #1F2937; }
-}
-
 [data-theme="bleuciel"] .survey-btn span:not(.material-icons) {
     animation: textColorChangeBleuciel 3s infinite;
-}
-
-[data-theme="sunset"] .survey-btn span:not(.material-icons) {
-    animation: textColorChangeSunset 3s infinite;
-}
-
-[data-theme="ocean"] .survey-btn span:not(.material-icons) {
-    animation: textColorChangeOcean 3s infinite;
-}
-
-[data-theme="super-light"] .survey-btn span:not(.material-icons) {
-    animation: textColorChangeSuperLight 3s infinite;
 }
 
 
@@ -174,21 +129,6 @@
 /* Thème Bleu Ciel */
 [data-theme="bleuciel"] .survey-content {
     background: linear-gradient(145deg, #0ea5e9, #38bdf8);
-}
-
-/* Thème Coucher de Soleil */
-[data-theme="sunset"] .survey-content {
-    background: linear-gradient(145deg, #FF6B35, #E91E63);
-}
-
-/* Thème Océan Profond */
-[data-theme="ocean"] .survey-content {
-    background: linear-gradient(145deg, #006064, #0097A7);
-}
-
-/* Thème Super-Light */
-[data-theme="super-light"] .survey-content {
-    background: linear-gradient(145deg, #6366F1, #8B5CF6);
 }
 
 .survey-header {
@@ -249,18 +189,6 @@
 
 /* Nouveaux thèmes - boutons de fermeture */
 [data-theme="bleuciel"] .close-survey {
-    color: white;
-}
-
-[data-theme="sunset"] .close-survey {
-    color: #FFCC80;
-}
-
-[data-theme="ocean"] .close-survey {
-    color: #81D4FA;
-}
-
-[data-theme="super-light"] .close-survey {
     color: white;
 }
 
@@ -345,21 +273,6 @@
     border-color: #FFEB3B;
 }
 
-[data-theme="sunset"] .survey-option.selected {
-    background: rgba(255, 204, 128, 0.3);
-    border-color: #FFCC80;
-}
-
-[data-theme="ocean"] .survey-option.selected {
-    background: rgba(129, 212, 250, 0.3);
-    border-color: #81D4FA;
-}
-
-[data-theme="super-light"] .survey-option.selected {
-    background: rgba(99, 102, 241, 0.2);
-    border-color: #6366F1;
-}
-
 .survey-option-icon {
     margin-right: 10px;
     width: 24px;
@@ -432,33 +345,6 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-[data-theme="sunset"] .survey-submit {
-    background: #FFCC80;
-    color: #333;
-}
-
-[data-theme="sunset"] .survey-submit:hover {
-    background: #FFE0B2;
-}
-
-[data-theme="ocean"] .survey-submit {
-    background: #81D4FA;
-    color: #333;
-}
-
-[data-theme="ocean"] .survey-submit:hover {
-    background: #B3E5FC;
-}
-
-[data-theme="super-light"] .survey-submit {
-    background: #6366F1;
-    color: white;
-}
-
-[data-theme="super-light"] .survey-submit:hover {
-    background: #8B5CF6;
-}
-
 /* SECTION 5: MESSAGE DE REMERCIEMENT ET RÉSULTATS */
 .thank-you-message {
     display: none;
@@ -514,39 +400,6 @@
 [data-theme="bleuciel"] .thank-you-icon {
     font-size: 50px;
     color: #FFEB3B;
-    margin-bottom: 15px;
-    display: block;
-}
-
-[data-theme="sunset"] .thank-you-message h3 {
-    color: #FFCC80;
-}
-
-[data-theme="sunset"] .thank-you-icon {
-    font-size: 50px;
-    color: #FFCC80;
-    margin-bottom: 15px;
-    display: block;
-}
-
-[data-theme="ocean"] .thank-you-message h3 {
-    color: #81D4FA;
-}
-
-[data-theme="ocean"] .thank-you-icon {
-    font-size: 50px;
-    color: #81D4FA;
-    margin-bottom: 15px;
-    display: block;
-}
-
-[data-theme="super-light"] .thank-you-message h3 {
-    color: #6366F1;
-}
-
-[data-theme="super-light"] .thank-you-icon {
-    font-size: 50px;
-    color: #6366F1;
     margin-bottom: 15px;
     display: block;
 }
@@ -660,30 +513,6 @@
 }
 
 [data-theme="bleuciel"] .back-to-survey:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-[data-theme="sunset"] .back-to-survey {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-[data-theme="sunset"] .back-to-survey:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-[data-theme="ocean"] .back-to-survey {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-[data-theme="ocean"] .back-to-survey:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-[data-theme="super-light"] .back-to-survey {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-[data-theme="super-light"] .back-to-survey:hover {
     background: rgba(255, 255, 255, 0.3);
 }
 
@@ -827,39 +656,6 @@
 }
 
 [data-theme="bleuciel"] .back-to-survey {
-    background: rgba(255, 255, 255, 0.25) !important;
-    color: white !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-}
-
-[data-theme="sunset"] .survey-submit {
-    background: linear-gradient(to right, #FFCC80, #FFE0B2) !important;
-    color: #333 !important;
-}
-
-[data-theme="sunset"] .back-to-survey {
-    background: rgba(255, 255, 255, 0.25) !important;
-    color: white !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-}
-
-[data-theme="ocean"] .survey-submit {
-    background: linear-gradient(to right, #81D4FA, #B3E5FC) !important;
-    color: #333 !important;
-}
-
-[data-theme="ocean"] .back-to-survey {
-    background: rgba(255, 255, 255, 0.25) !important;
-    color: white !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-}
-
-[data-theme="super-light"] .survey-submit {
-    background: linear-gradient(to right, #6366F1, #8B5CF6) !important;
-    color: white !important;
-}
-
-[data-theme="super-light"] .back-to-survey {
     background: rgba(255, 255, 255, 0.25) !important;
     color: white !important;
     border: 1px solid rgba(255, 255, 255, 0.3) !important;

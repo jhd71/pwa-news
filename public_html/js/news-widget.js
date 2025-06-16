@@ -252,7 +252,7 @@ class NewsWidget {
                     return `
                         <div class="news-preview-item" data-news-id="${item.id}" onclick="openSpecificNews(${item.id})" style="cursor: pointer;">
                             <strong>${featuredIcon}${item.title}</strong><br>
-                            <span style="font-size: 12px; opacity: 0.8;">${shortContent}...</span>
+                            <span style="font-size: 13px;">${shortContent}...</span>
                         </div>
                     `;
                 }).join('');

@@ -511,58 +511,7 @@
         [data-theme="bleuciel"] .ios-arrow-content {
             background: #0277bd !important;
             box-shadow: 0 4px 20px rgba(2, 119, 189, 0.4);
-        }
-        
-        [data-theme="sunset"] .ios-prompt-header {
-            background: linear-gradient(135deg, #ff6f00, #ff9800) !important;
-        }
-        [data-theme="sunset"] .ios-step-number,
-        [data-theme="sunset"] .ios-share-icon,
-        [data-theme="sunset"] .ios-home-icon {
-            background: #ff6f00 !important;
-        }
-        [data-theme="sunset"] .ios-btn-install {
-            background: linear-gradient(135deg, #ff6f00, #ff9800) !important;
-            box-shadow: 0 4px 15px rgba(255, 111, 0, 0.4);
-        }
-        [data-theme="sunset"] .ios-arrow-content {
-            background: #ff6f00 !important;
-            box-shadow: 0 4px 20px rgba(255, 111, 0, 0.4);
-        }
-        
-        [data-theme="ocean"] .ios-prompt-header {
-            background: linear-gradient(135deg, #006064, #0097A7) !important;
-        }
-        [data-theme="ocean"] .ios-step-number,
-        [data-theme="ocean"] .ios-share-icon,
-        [data-theme="ocean"] .ios-home-icon {
-            background: #006064 !important;
-        }
-        [data-theme="ocean"] .ios-btn-install {
-            background: linear-gradient(135deg, #006064, #0097A7) !important;
-            box-shadow: 0 4px 15px rgba(0, 96, 100, 0.4);
-        }
-        [data-theme="ocean"] .ios-arrow-content {
-            background: #006064 !important;
-            box-shadow: 0 4px 20px rgba(0, 96, 100, 0.4);
-        }
-        
-        [data-theme="super-light"] .ios-prompt-header {
-            background: linear-gradient(135deg, #6366F1, #8B5CF6) !important;
-        }
-        [data-theme="super-light"] .ios-step-number,
-        [data-theme="super-light"] .ios-share-icon,
-        [data-theme="super-light"] .ios-home-icon {
-            background: #6366F1 !important;
-        }
-        [data-theme="super-light"] .ios-btn-install {
-            background: linear-gradient(135deg, #6366F1, #8B5CF6) !important;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-        }
-        [data-theme="super-light"] .ios-arrow-content {
-            background: #6366F1 !important;
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
-        }
+        }               
         
         @media (max-width: 400px) {
             .ios-prompt-card {

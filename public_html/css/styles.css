@@ -254,18 +254,6 @@ body {
     background: linear-gradient(145deg, #0ea5e9, #38bdf8);
 }
 
-[data-theme="sunset"] .chat-toggle {
-    background: linear-gradient(145deg, #FF6B35, #E91E63);
-}
-
-[data-theme="ocean"] .chat-toggle {
-    background: linear-gradient(145deg, #006064, #0097A7);
-}
-
-[data-theme="super-light"] .chat-toggle {
-    background: linear-gradient(145deg, #6366F1, #8B5CF6);
-}
-
 /* Effet de brillance du bouton */
 .chat-toggle::before {
     content: '';
@@ -379,28 +367,6 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.2) !important;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
     /* Garder les mêmes animations que les autres thèmes */
-    animation: slideUp 0.4s ease, pulse 1.5s infinite !important;
-}
-
-/* Toasts pour les nouveaux thèmes */
-[data-theme="sunset"] .toast {
-    background: linear-gradient(145deg, #FF6B35, #E91E63) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
-    animation: slideUp 0.4s ease, pulse 1.5s infinite !important;
-}
-
-[data-theme="ocean"] .toast {
-    background: linear-gradient(145deg, #006064, #0097A7) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
-    animation: slideUp 0.4s ease, pulse 1.5s infinite !important;
-}
-
-[data-theme="super-light"] .toast {
-    background: linear-gradient(145deg, #6366F1, #8B5CF6) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
     animation: slideUp 0.4s ease, pulse 1.5s infinite !important;
 }
 
@@ -820,18 +786,6 @@ background-color: #1a237e;
     color: white !important;
 }
 
-[data-theme="sunset"] .tile-menu button {
-    color: white !important;
-}
-
-[data-theme="ocean"] .tile-menu button {
-    color: white !important;
-}
-
-[data-theme="super-light"] .tile-menu button {
-    color: white !important;
-}
-
 /* Force le texte blanc dans les deux thèmes */
 [data-theme="light"] .tile-menu button,
 [data-theme="dark"] .tile-menu button {
@@ -1133,18 +1087,6 @@ background-color: #1a237e;
     background: rgba(126, 87, 194, 0.9);
 }
 
-[data-theme="sunset"] .swiper {
-    background: rgba(255, 107, 53, 0.9);
-}
-
-[data-theme="ocean"] .swiper {
-    background: rgba(0, 96, 100, 0.9);
-}
-
-[data-theme="super-light"] .swiper {
-    background: rgba(99, 102, 241, 0.9);
-}
-
 /* SECTION 21: CHAT STYLES */
 /* Empêcher le scroll de traverser la fenêtre de chat */
 .chat-container.open {
@@ -1399,30 +1341,6 @@ background-color: #1a237e;
         rgba(26, 35, 126, 0.3) 0%, 
         rgba(26, 35, 126, 0.8) 50%, 
         rgba(26, 35, 126, 0.3) 100%
-    );
-}
-
-[data-theme="sunset"] .separator {
-    background: linear-gradient(90deg, 
-        rgba(255, 107, 53, 0.3) 0%, 
-        rgba(255, 107, 53, 0.8) 50%, 
-        rgba(255, 107, 53, 0.3) 100%
-    );
-}
-
-[data-theme="ocean"] .separator {
-    background: linear-gradient(90deg, 
-        rgba(0, 96, 100, 0.3) 0%, 
-        rgba(0, 96, 100, 0.8) 50%, 
-        rgba(0, 96, 100, 0.3) 100%
-    );
-}
-
-[data-theme="super-light"] .separator {
-    background: linear-gradient(90deg, 
-        rgba(99, 102, 241, 0.2) 0%, 
-        rgba(99, 102, 241, 0.6) 50%, 
-        rgba(99, 102, 241, 0.2) 100%
     );
 }
 
@@ -2206,21 +2124,6 @@ a:active {
   background: linear-gradient(to bottom, #c62828, #b71c1c);
 }
 
-[data-theme="sunset"] .bottom-nav {
-  background: linear-gradient(to bottom, #FF6B35, #E91E63);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="ocean"] .bottom-nav {
-  background: linear-gradient(to bottom, #006064, #0097A7);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="super-light"] .bottom-nav {
-  background: linear-gradient(to bottom, #6366F1, #8B5CF6);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 /* Séparateur pour le thème rouge */
 [data-theme="rouge"] .separator {
   background: linear-gradient(90deg, 
@@ -2235,19 +2138,6 @@ a:active {
   background: linear-gradient(to right, #c62828, #d32f2f);
 }
 
-[data-theme="sunset"] .app-header {
-  background: linear-gradient(to right, #FF6B35, #E91E63);
-}
-
-[data-theme="ocean"] .app-header {
-  background: linear-gradient(to right, #006064, #0097A7);
-}
-
-[data-theme="super-light"] .app-header {
-  background: linear-gradient(to right, #6366F1, #8B5CF6);
-}
-
-/* Boutons flottants et autres éléments d'interface */
 /* Styles des boutons flottants pour tous les thèmes */
 [data-theme="light"] .weather-show-btn,
 [data-theme="light"] .quick-links-show-btn,
@@ -2272,25 +2162,6 @@ a:active {
 [data-theme="bleuciel"] .news-button {
     background: linear-gradient(145deg, #0ea5e9, #38bdf8);
 }
-
-[data-theme="sunset"] .weather-show-btn,
-[data-theme="sunset"] .quick-links-show-btn,
-[data-theme="sunset"] .news-button {
-    background: linear-gradient(145deg, #FF6B35, #E91E63);
-}
-
-[data-theme="ocean"] .weather-show-btn,
-[data-theme="ocean"] .quick-links-show-btn,
-[data-theme="ocean"] .news-button {
-    background: linear-gradient(145deg, #006064, #0097A7);
-}
-
-[data-theme="super-light"] .weather-show-btn,
-[data-theme="super-light"] .quick-links-show-btn,
-[data-theme="super-light"] .news-button {
-    background: linear-gradient(145deg, #6366F1, #8B5CF6);
-}
-
 
 /* Styles des widgets et sidebars pour tous les thèmes */
 [data-theme="light"] .weather-sidebar,
@@ -2320,28 +2191,6 @@ a:active {
 [data-theme="bleuciel"] .settings-menu {
     background: linear-gradient(145deg, #0ea5e9, #38bdf8) !important;
 }
-
-[data-theme="sunset"] .weather-sidebar,
-[data-theme="sunset"] .quick-links-sidebar,
-[data-theme="sunset"] .sidebar,
-[data-theme="sunset"] .settings-menu {
-    background: linear-gradient(145deg, #FF6B35, #E91E63) !important;
-}
-
-[data-theme="ocean"] .weather-sidebar,
-[data-theme="ocean"] .quick-links-sidebar,
-[data-theme="ocean"] .sidebar,
-[data-theme="ocean"] .settings-menu {
-    background: linear-gradient(145deg, #006064, #0097A7) !important;
-}
-
-[data-theme="super-light"] .weather-sidebar,
-[data-theme="super-light"] .quick-links-sidebar,
-[data-theme="super-light"] .sidebar,
-[data-theme="super-light"] .settings-menu {
-    background: linear-gradient(145deg, #6366F1, #8B5CF6) !important;
-}
-
 
 /* Tuiles */
 [data-theme="rouge"] .tile {
@@ -3059,149 +2908,6 @@ button#refreshButton.refresh-button {
     font-weight: 600;
 }
 
-/* ===== THÈME SUPER-LIGHT - TRANSPARENCE ===== */
-[data-theme="super-light"] .transparency-header {
-    background: linear-gradient(135deg, var(--primary-color), #8B5CF6) !important;
-    color: white;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-shrink: 0;
-}
-
-[data-theme="super-light"] .slider-label {
-    font-size: 12px;
-    color: #1F2937 !important;
-    font-weight: 500;
-    min-width: 60px;
-    text-align: center;
-}
-
-[data-theme="super-light"] .transparency-value {
-    text-align: center;
-    font-weight: 600;
-    color: #6366F1 !important;
-    font-size: 16px;
-    padding: 10px;
-    background: rgba(99, 102, 241, 0.1) !important;
-    border-radius: 8px;
-}
-
-[data-theme="super-light"] .preset-btn {
-    padding: 12px 16px;
-    border: 2px solid var(--border-color, #ddd) !important;
-    background: var(--card-bg, white) !important;
-    color: #1F2937 !important;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 14px;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-[data-theme="super-light"] .preset-btn:hover {
-    border-color: var(--primary-color) !important;
-    background: var(--primary-color) !important;
-    color: white !important;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-}
-
-/* ===== THÈME COUCHER DE SOLEIL - TRANSPARENCE ===== */
-[data-theme="sunset"] .transparency-header {
-    background: linear-gradient(135deg, var(--primary-color), #d33f5f) !important;
-    color: white;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-shrink: 0;
-}
-
-[data-theme="sunset"] .slider-label {
-    font-size: 12px;
-    color: #fbf5f8 !important;
-    font-weight: 500;
-    min-width: 60px;
-    text-align: center;
-}
-
-[data-theme="sunset"] .transparency-value {
-    text-align: center;
-    font-weight: 600;
-    color: #fbf5f8 !important;
-    font-size: 16px;
-    padding: 10px;
-    background: rgba(124, 77, 255, 0.1) !important;
-    border-radius: 8px;
-}
-
-[data-theme="sunset"] .preset-btn {
-    padding: 12px 16px;
-    border: 2px solid var(--border-color, #ddd) !important;
-    background: var(--card-bg, white) !important;
-    color: #07000c !important;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 14px;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-/* ===== THÈME OCÉAN PROFOND - TRANSPARENCE ===== */
-[data-theme="ocean"] .transparency-header {
-    background: linear-gradient(135deg, var(--primary-color), #478f9f) !important;
-    color: white;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-shrink: 0;
-}
-
-[data-theme="ocean"] .slider-label {
-    font-size: 12px;
-    color: #f3f4f6 !important;
-    font-weight: 500;
-    min-width: 60px;
-    text-align: center;
-}
-
-[data-theme="ocean"] .transparency-value {
-    text-align: center;
-    font-weight: 600;
-    color: #f3f4f6 !important;
-    font-size: 16px;
-    padding: 10px;
-    background: rgba(124, 77, 255, 0.1) !important;
-    border-radius: 8px;
-}
-
-[data-theme="ocean"] .preset-btn {
-    padding: 12px 16px;
-    border: 2px solid var(--border-color, #ddd) !important;
-    background: var(--card-bg, white) !important;
-    color: #000608 !important;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 14px;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
 .close-transparency-btn {
     background: rgba(255, 255, 255, 0.2);
     border: none;
@@ -3441,23 +3147,6 @@ button#refreshButton.refresh-button {
     text-shadow: none;
 }
 
-/* Effets hover pour les nouveaux thèmes */
-[data-theme="sunset"] .preset-btn:hover {
-    border-color: var(--primary-color) !important;
-    background: var(--primary-color) !important;
-    color: white !important;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
-}
-
-[data-theme="ocean"] .preset-btn:hover {
-    border-color: var(--primary-color) !important;
-    background: var(--primary-color) !important;
-    color: white !important;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 96, 100, 0.3);
-}
-
 [data-theme="rouge"] .transparency-info {
     background: rgba(139, 32, 28, 0.8) !important;
     border: 2px solid #FFD700 !important;
@@ -3506,37 +3195,6 @@ background: #1a237e;
 }
 
 /* Adaptations du panneau pour les nouveaux thèmes */
-[data-theme="sunset"] .transparency-panel {
-    background: var(--card-bg);
-    color: var(--text-color);
-    border-left: 3px solid var(--primary-color);
-}
-
-[data-theme="ocean"] .transparency-panel {
-    background: var(--card-bg);
-    color: var(--text-color);
-    border-left: 3px solid var(--primary-color);
-}
-
-[data-theme="super-light"] .transparency-panel {
-    background: var(--card-bg);
-    color: var(--text-color);
-    border-left: 3px solid var(--primary-color);
-    backdrop-filter: blur(20px);
-}
-
-[data-theme="sunset"] .transparency-slider-container,
-[data-theme="ocean"] .transparency-slider-container {
-    background: var(--card-bg);
-    border: 2px solid var(--primary-color);
-    color: var(--text-color);
-}
-
-[data-theme="super-light"] .transparency-slider-container {
-    background: rgba(255, 255, 255, 0.9);
-    border: 2px solid var(--primary-color);
-    backdrop-filter: blur(10px);
-}	
 
 [data-theme="light"] .transparency-controls {
 background: #7e57c2;
@@ -3546,21 +3204,6 @@ z-index: 10000;
 [data-theme="bleuciel"] .transparency-controls {
 background: rgba(79, 179, 232, 0.95);
 z-index: 10000;
-}
-
-[data-theme="sunset"] .transparency-controls {
-    background: linear-gradient(135deg, #FF6B35, #E91E63);
-    z-index: 10000;
-}
-
-[data-theme="ocean"] .transparency-controls {
-    background: linear-gradient(135deg, #006064, #0097A7);
-    z-index: 10000;
-}
-
-[data-theme="super-light"] .transparency-controls {
-    background: linear-gradient(135deg, #6366F1, #8B5CF6);
-    z-index: 10000;
 }
 
 /* ===== TRANSPARENCE POUR LES SÉPARATEURS ===== */
@@ -3658,18 +3301,6 @@ z-index: 10000;
     --background-color-rgb: 248, 253, 255;
 }
 
-[data-theme="sunset"] {
-    --background-color-rgb: 44, 24, 16;
-}
-
-[data-theme="ocean"] {
-    --background-color-rgb: 13, 27, 42;
-}
-
-[data-theme="super-light"] {
-    --background-color-rgb: 254, 254, 254;
-}
-
 /* ===== CORRECTIONS MODE SOMBRE et rouge  - FOND D'ÉCRAN PERSONNALISÉ ===== */
 [data-theme="rouge"] .modal-content .upload-btn span,
 [data-theme="rouge"] .modal-content .upload-btn,
@@ -3679,66 +3310,6 @@ z-index: 10000;
 color: #ffd230 !important;
 font-weight: bold;
 border-color: #ffd230 !important;
-}
-
-/* Corrections pour les nouveaux thèmes sombres */
-[data-theme="sunset"] .custom-backgrounds-section h3,
-[data-theme="ocean"] .custom-backgrounds-section h3 {
-    color: var(--text-color) !important;
-}
-
-[data-theme="sunset"] .modal-content .upload-btn span,
-[data-theme="sunset"] .modal-content .upload-btn,
-[data-theme="sunset"] .modal-content button span,
-[data-theme="sunset"] .modal-content .file-btn span,
-[data-theme="sunset"] .modal-content .camera-btn span {
-    color: #FFCC80 !important;
-    font-weight: bold;
-    border-color: #FF6B35 !important;
-}
-
-[data-theme="ocean"] .modal-content .upload-btn span,
-[data-theme="ocean"] .modal-content .upload-btn,
-[data-theme="ocean"] .modal-content button span,
-[data-theme="ocean"] .modal-content .file-btn span,
-[data-theme="ocean"] .modal-content .camera-btn span {
-    color: #81D4FA !important;
-    font-weight: bold;
-    border-color: #006064 !important;
-}
-
-/* Tous les textes de la modal pour les nouveaux thèmes sombres */
-[data-theme="sunset"] .modal-content,
-[data-theme="sunset"] .modal-content p,
-[data-theme="sunset"] .modal-content span,
-[data-theme="sunset"] .modal-content div,
-[data-theme="sunset"] .modal-content label,
-[data-theme="ocean"] .modal-content,
-[data-theme="ocean"] .modal-content p,
-[data-theme="ocean"] .modal-content span,
-[data-theme="ocean"] .modal-content div,
-[data-theme="ocean"] .modal-content label {
-    color: var(--text-color) !important;
-}
-
-[data-theme="sunset"] .upload-section p,
-[data-theme="sunset"] .upload-section span,
-[data-theme="sunset"] .file-requirements,
-[data-theme="sunset"] .upload-info,
-[data-theme="ocean"] .upload-section p,
-[data-theme="ocean"] .upload-section span,
-[data-theme="ocean"] .file-requirements,
-[data-theme="ocean"] .upload-info {
-    color: var(--text-color) !important;
-}
-
-[data-theme="sunset"] .custom-backgrounds-grid .custom-bg-item,
-[data-theme="sunset"] .custom-backgrounds-grid p,
-[data-theme="sunset"] .no-custom-bg,
-[data-theme="ocean"] .custom-backgrounds-grid .custom-bg-item,
-[data-theme="ocean"] .custom-backgrounds-grid p,
-[data-theme="ocean"] .no-custom-bg {
-    color: var(--text-color) !important;
 }
 
 /* Titre "Vos fonds d'écran personnalisés" en blanc en mode sombre */
@@ -3851,30 +3422,6 @@ border-color: #ffd230 !important;
 
 [data-theme="bleuciel"] body {
     background: #65a1d0 !important;
-}
-
-[data-theme="sunset"] body {
-    background: linear-gradient(135deg, #2C1810, #FF6B35) !important;
-}
-
-[data-theme="ocean"] body {
-    background: linear-gradient(135deg, #0D1B2A, #006064) !important;
-}
-
-[data-theme="super-light"] body {
-    background: linear-gradient(135deg, #FEFEFE, #F8FAFC) !important;
-}
-
-[data-theme="sunset"] body {
-    background: linear-gradient(135deg, #2C1810, #FF6B35) !important;
-}
-
-[data-theme="ocean"] body {
-    background: linear-gradient(135deg, #0D1B2A, #006064) !important;
-}
-
-[data-theme="super-light"] body {
-    background: linear-gradient(135deg, #FEFEFE, #F8FAFC) !important;
 }
 
 /* Style pour le logo et les séparateurs */

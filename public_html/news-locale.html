@@ -82,43 +82,7 @@
             --shadow: rgba(0, 0, 0, 0.1);
             --border-color: #bae6fd;
             --primary-color-rgb: 14, 165, 233;
-        }
-		
-		/* ===== THÈME COUCHER DE SOLEIL ===== */
-[data-theme="sunset"] {
-    --primary-color: #FF6B35;
-    --primary-bg: linear-gradient(135deg, #FF6B35, #E91E63);
-    --text-color: #FFF8E7;
-    --bg-color: #2C1810;
-    --card-bg: #3D2817;
-    --shadow: rgba(0, 0, 0, 0.4);
-    --border-color: rgba(255, 107, 53, 0.3);
-    --primary-color-rgb: 255, 107, 53;
-}
-
-/* ===== THÈME OCÉAN PROFOND ===== */
-[data-theme="ocean"] {
-    --primary-color: #006064;
-    --primary-bg: linear-gradient(135deg, #006064, #0097A7);
-    --text-color: #B3E5FC;
-    --bg-color: #0D1B2A;
-    --card-bg: #1A2C3A;
-    --shadow: rgba(0, 0, 0, 0.5);
-    --border-color: rgba(0, 131, 143, 0.3);
-    --primary-color-rgb: 0, 96, 100;
-}
-
-/* ===== THÈME SUPER-LIGHT ===== */
-[data-theme="super-light"] {
-    --primary-color: #6366F1;
-    --primary-bg: linear-gradient(135deg, #6366F1, #8B5CF6);
-    --text-color: #1F2937;
-    --bg-color: #FEFEFE;
-    --card-bg: rgba(255, 255, 255, 0.95);
-    --shadow: rgba(99, 102, 241, 0.15);
-    --border-color: rgba(99, 102, 241, 0.2);
-    --primary-color-rgb: 99, 102, 241;
-}
+        }		
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
@@ -234,21 +198,7 @@
         
         [data-theme="bleuciel"] .news-article.featured {
             background: linear-gradient(135deg, #fff, #f0f9ff);
-        }
-		
-		[data-theme="sunset"] .news-article.featured {
-    background: linear-gradient(135deg, #3D2817, #4A3020);
-}
-
-[data-theme="ocean"] .news-article.featured {
-    background: linear-gradient(135deg, #1A2C3A, #245A63);
-}
-
-[data-theme="super-light"] .news-article.featured {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), #F8FAFC);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(99, 102, 241, 0.15);
-}
+        }		
         
         .news-article-header {
             display: flex;
@@ -692,67 +642,7 @@
         [data-theme="rouge"] .comment-form,
         [data-theme="bleuciel"] .comment-form {
             background: white !important;
-        }
-		
-		/* Corrections spécifiques pour les nouveaux thèmes sombres */
-[data-theme="sunset"] .news-article-date,
-[data-theme="ocean"] .news-article-date {
-    color: var(--primary-color);
-}
-
-[data-theme="sunset"] .loading-container,
-[data-theme="sunset"] .empty-state,
-[data-theme="ocean"] .loading-container,
-[data-theme="ocean"] .empty-state {
-    color: var(--text-color);
-}
-
-[data-theme="sunset"] .empty-state h3,
-[data-theme="sunset"] .error-state h3,
-[data-theme="ocean"] .empty-state h3,
-[data-theme="ocean"] .error-state h3 {
-    color: var(--primary-color);
-}
-
-/* Forcer les couleurs des commentaires pour TOUS les nouveaux thèmes */
-[data-theme="sunset"] .comment-item,
-[data-theme="ocean"] .comment-item,
-[data-theme="super-light"] .comment-item {
-    background: white !important;
-    color: #333 !important;
-}
-
-[data-theme="sunset"] .comment-author-name,
-[data-theme="sunset"] .comment-content,
-[data-theme="ocean"] .comment-author-name,
-[data-theme="ocean"] .comment-content,
-[data-theme="super-light"] .comment-author-name,
-[data-theme="super-light"] .comment-content {
-    color: #333 !important;
-}
-
-[data-theme="sunset"] .comment-date,
-[data-theme="ocean"] .comment-date,
-[data-theme="super-light"] .comment-date {
-    color: #666 !important;
-}
-
-[data-theme="sunset"] .form-group input,
-[data-theme="sunset"] .form-group textarea,
-[data-theme="ocean"] .form-group input,
-[data-theme="ocean"] .form-group textarea,
-[data-theme="super-light"] .form-group input,
-[data-theme="super-light"] .form-group textarea {
-    background: white !important;
-    color: #333 !important;
-    border-color: #e1e5e9 !important;
-}
-
-[data-theme="sunset"] .comment-form,
-[data-theme="ocean"] .comment-form,
-[data-theme="super-light"] .comment-form {
-    background: white !important;
-}
+        }				
 
         /* ===== MOBILE RESPONSIVE COMMENTAIRES - Style Galerie ===== */
         @media (max-width: 768px) {
@@ -1218,18 +1108,6 @@ body.comment-form-open {
     background: #f0f9ff;
 }
 
-[data-theme="sunset"] .news-image {
-    background: #2C1810;
-}
-
-[data-theme="ocean"] .news-image {
-    background: #0D1B2A;
-}
-
-[data-theme="super-light"] .news-image {
-    background: #FEFEFE;
-}
-
 .news-image:hover {
     transform: scale(1.02);
 }
@@ -1265,104 +1143,6 @@ body.comment-form-open {
 [data-theme="rouge"] .news-image-caption {
     background: rgba(211, 47, 47, 0.1);
     color: #8b0000;
-}
-
-[data-theme="sunset"] .news-image-caption {
-    background: rgba(255, 107, 53, 0.1);
-    color: #FFCC80;
-    border-top-color: rgba(255, 107, 53, 0.2);
-}
-
-[data-theme="ocean"] .news-image-caption {
-    background: rgba(0, 131, 143, 0.1);
-    color: #81D4FA;
-    border-top-color: rgba(0, 131, 143, 0.2);
-}
-
-[data-theme="super-light"] .news-image-caption {
-    background: rgba(99, 102, 241, 0.05);
-    color: #6B7280;
-    border-top-color: rgba(99, 102, 241, 0.1);
-}
-
-/* ===== THÈME COUCHER DE SOLEIL ===== */
-[data-theme="sunset"] {
-    --primary-color: #FF6B35;
-    --primary-bg: linear-gradient(135deg, #FF6B35, #E91E63);
-    --text-color: #FFF8E7;
-    --bg-color: #2C1810;
-    --card-bg: #3D2817;
-    --shadow: rgba(0, 0, 0, 0.4);
-    --border-color: rgba(255, 107, 53, 0.3);
-    --primary-color-rgb: 255, 107, 53;
-}
-
-[data-theme="sunset"] .news-article.featured {
-    background: linear-gradient(135deg, #3D2817, #4A3020);
-}
-
-[data-theme="sunset"] .news-image {
-    background: #2C1810;
-}
-
-[data-theme="sunset"] .news-image-caption {
-    background: rgba(255, 107, 53, 0.1);
-    color: #FFCC80;
-    border-top-color: rgba(255, 107, 53, 0.2);
-}
-
-/* ===== THÈME OCÉAN PROFOND ===== */
-[data-theme="ocean"] {
-    --primary-color: #006064;
-    --primary-bg: linear-gradient(135deg, #006064, #0097A7);
-    --text-color: #B3E5FC;
-    --bg-color: #0D1B2A;
-    --card-bg: #1A2C3A;
-    --shadow: rgba(0, 0, 0, 0.5);
-    --border-color: rgba(0, 131, 143, 0.3);
-    --primary-color-rgb: 0, 96, 100;
-}
-
-[data-theme="ocean"] .news-article.featured {
-    background: linear-gradient(135deg, #1A2C3A, #245A63);
-}
-
-[data-theme="ocean"] .news-image {
-    background: #0D1B2A;
-}
-
-[data-theme="ocean"] .news-image-caption {
-    background: rgba(0, 131, 143, 0.1);
-    color: #81D4FA;
-    border-top-color: rgba(0, 131, 143, 0.2);
-}
-
-/* ===== THÈME SUPER-LIGHT ===== */
-[data-theme="super-light"] {
-    --primary-color: #6366F1;
-    --primary-bg: linear-gradient(135deg, #6366F1, #8B5CF6);
-    --text-color: #1F2937;
-    --bg-color: #FEFEFE;
-    --card-bg: rgba(255, 255, 255, 0.95);
-    --shadow: rgba(99, 102, 241, 0.15);
-    --border-color: rgba(99, 102, 241, 0.2);
-    --primary-color-rgb: 99, 102, 241;
-}
-
-[data-theme="super-light"] .news-article.featured {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), #F8FAFC);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(99, 102, 241, 0.15);
-}
-
-[data-theme="super-light"] .news-image {
-    background: #FEFEFE;
-}
-
-[data-theme="super-light"] .news-image-caption {
-    background: rgba(99, 102, 241, 0.05);
-    color: #6B7280;
-    border-top-color: rgba(99, 102, 241, 0.1);
 }
 
     </style>

@@ -1020,39 +1020,6 @@
     animation: blinkRouge 2s infinite ease-in-out;
 }
 
-/* Thème Super Clair */
-[data-theme="super-light"] .latest-article {
-    background-color: #6b1515;
-    color: white;
-    animation: pulseEffectRouge 2s infinite ease-in-out;
-}
-[data-theme="super-light"] .new-article {
-    background-color: #6b1515;
-    animation: blinkRouge 2s infinite ease-in-out;
-}
-
-/* Thème Océan Profond */
-[data-theme="ocean"] .latest-article {
-    background-color: #6b1515;
-    color: white;
-    animation: pulseEffectRouge 2s infinite ease-in-out;
-}
-[data-theme="ocean"] .new-article {
-    background-color: #6b1515;
-    animation: blinkRouge 2s infinite ease-in-out;
-}
-
-/* Thème Coucher de Soleil */
-[data-theme="sunset"] .latest-article {
-    background-color: #6b1515;
-    color: white;
-    animation: pulseEffectRouge 2s infinite ease-in-out;
-}
-[data-theme="sunset"] .new-article {
-    background-color: #6b1515;
-    animation: blinkRouge 2s infinite ease-in-out;
-}
-
 /* Bouton d'actualisation en thème rouge */
 [data-theme="rouge"] .refresh-button {
     background: #388e3c !important;

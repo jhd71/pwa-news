@@ -7,10 +7,7 @@ class ThemeManager {
             { id: 'rouge', name: 'Rouge', icon: 'palette' },
             { id: 'dark', name: 'Sombre', icon: 'dark_mode' },
             { id: 'bleuciel', name: 'Bleu Ciel', icon: 'water_drop' },
-            { id: 'light', name: 'Violet', icon: 'color_lens' },
-            { id: 'super-light', name: 'Super Clair', icon: 'brightness_high' },
-            { id: 'ocean', name: 'Océan Profond', icon: 'waves' },
-            { id: 'sunset', name: 'Coucher de Soleil', icon: 'wb_twilight' }
+            { id: 'light', name: 'Violet', icon: 'color_lens' }
         ];
         
         this.init();
