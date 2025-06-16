@@ -3876,3 +3876,41 @@ border-color: #ffd230 !important;
 [data-theme="super-light"] body {
     background: linear-gradient(135deg, #FEFEFE, #F8FAFC) !important;
 }
+
+/* Style pour le logo et les séparateurs */
+.logo-text, .separator-text {
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-weight: 900;
+    font-size: 2.5rem;
+    color: white;
+    text-shadow: 
+        -3px -3px 0 #000,
+        3px -3px 0 #000,
+        -3px 3px 0 #000,
+        3px 3px 0 #000,
+        -3px 0 0 #000,
+        3px 0 0 #000,
+        0 -3px 0 #000,
+        0 3px 0 #000;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0;
+    padding: 10px 20px;
+    display: inline-block;
+}
+
+/* Version plus petite pour les séparateurs */
+.separator-text {
+    font-size: 1.8rem;
+    padding: 8px 15px;
+}
+
+/* Adaptation responsive */
+@media (max-width: 768px) {
+    .logo-text {
+        font-size: 2rem;
+    }
+    .separator-text {
+        font-size: 1.4rem;
+    }
+}

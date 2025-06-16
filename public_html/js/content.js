@@ -258,7 +258,7 @@ setupTVIcons() {
         // Séparateur Actualités
         const separator0 = document.createElement('div');
         separator0.className = 'separator';
-        separator0.innerHTML = `<img src="images/ActualitesLocales.png" alt="Actualités Locales" class="separator-img">`;
+        separator0.innerHTML = `<h2 class="separator-text">Actualités Locales</h2>`;
         this.tileContainer.appendChild(separator0);
         
         // Actualités locales
@@ -339,7 +339,7 @@ this.tileContainer.appendChild(photosTileElement);
         // Séparateur Radio
         const separator1 = document.createElement('div');
         separator1.className = 'separator';
-        separator1.innerHTML = `<img src="images/Radio.png" alt="Radio" class="separator-img">`;
+        separator1.innerHTML = `<h2 class="separator-text">Radio</h2>`;
         this.tileContainer.appendChild(separator1);
 
         // Section Radio
@@ -375,7 +375,7 @@ this.tileContainer.appendChild(photosTileElement);
         // Séparateur TV
         const separator2 = document.createElement('div');
         separator2.className = 'separator';
-        separator2.innerHTML = `<img src="images/TVenDirect.png" alt="TV en Direct" class="separator-img">`;
+        separator2.innerHTML = `<h2 class="separator-text">TV en Direct</h2>`;
         this.tileContainer.appendChild(separator2);
 
         // Section TV
@@ -422,7 +422,7 @@ const tvSites = [
         // Séparateur Sports
         const sportsSeparator = document.createElement('div');
         sportsSeparator.className = 'separator';
-        sportsSeparator.innerHTML = `<img src="images/SPORTS.png" alt="Sports" class="separator-img">`;
+        sportsSeparator.innerHTML = `<h2 class="separator-text">Sports</h2>`;
         this.tileContainer.appendChild(sportsSeparator);
 
         // Section Sports
@@ -486,7 +486,7 @@ const tvSites = [
         // Séparateur Réseaux Sociaux
         const separator3 = document.createElement('div');
         separator3.className = 'separator';
-        separator3.innerHTML = `<img src="images/ReseauxSociaux.png" alt="Réseaux Sociaux" class="separator-img">`;
+        separator3.innerHTML = `<h2 class="separator-text">Réseaux Sociaux</h2>`;
         this.tileContainer.appendChild(separator3);
 
         // Section Réseaux Sociaux
@@ -532,7 +532,7 @@ const tvSites = [
             // Créer le séparateur même s'il n'y a pas de sites
             const separator = document.createElement('div');
             separator.className = 'separator';
-            separator.innerHTML = `<img src="images/Sites-Personnalise.png" alt="Sites personnalisés">`;
+            separator.innerHTML = `<h2 class="separator-text">Sites Perso</h2>`;
             this.tileContainer.appendChild(separator);
 
             const saved = localStorage.getItem('customSites');
