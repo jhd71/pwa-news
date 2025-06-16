@@ -349,6 +349,10 @@
 [data-theme="dark"] .news-widget-footer,
     color: #ffffff;
 }
+
+[data-theme="dark"] .news-preview-item {
+    color: #ffffff;
+}
 	
 /* Thème Rouge */
 [data-theme="rouge"] .local-news-widget {
