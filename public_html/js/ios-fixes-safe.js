@@ -31,27 +31,20 @@
     };
     
     function applyIOSFixes() {
-    console.log('Application des corrections iOS v2.3...');
-    
-    setTimeout(() => {
-        addSafeAreaVariables();
-        fixViewportHeight();
-        fixWidgetPositioning();
-        fixChatPositioning();
-        fixTextRendering();
-        handleOrientationChange();
-        preventInputZoom();
-        // ✅ NOUVELLES CORRECTIONS
-        fixHeaderButtons();
-        fixSiteLogo();
-        fixNewsButton();
-        fixNewsWidget();
-        fixNewsTicker();
-        fixChatZIndex();
-    }, 1000);
-    
-    console.log('✅ Corrections iOS v2.3 appliquées');
-}
+        console.log('Application des corrections iOS v2.3...');
+        
+        setTimeout(() => {
+            addSafeAreaVariables();
+            fixViewportHeight();
+            fixWidgetPositioning();
+            fixChatPositioning();
+            fixTextRendering();
+            handleOrientationChange();
+            preventInputZoom();
+        }, 1000);
+        
+        console.log('✅ Corrections iOS v2.3 appliquées');
+    }
     
     function addSafeAreaVariables() {
         const style = document.createElement('style');
@@ -797,86 +790,4 @@
     // Exposer pour debug
     window.iOSFixesV23Active = true;
     
-	// 🆕 NOUVELLES CORRECTIONS POSITIONNEMENT
-function fixHeaderButtons() {
-    const menuButton = document.getElementById('menuButton');
-    const settingsButton = document.getElementById('settingsButton');
-    
-    if (menuButton) {
-        menuButton.style.top = '50px';
-        menuButton.style.position = 'fixed';
-        menuButton.style.zIndex = '9998';
-    }
-    
-    if (settingsButton) {
-        settingsButton.style.top = '50px';
-        settingsButton.style.position = 'fixed';
-        settingsButton.style.zIndex = '9998';
-    }
-}
-
-function fixSiteLogo() {
-    const siteLogo = document.querySelector('.site-logo, .logo-text');
-    if (siteLogo) {
-        siteLogo.style.marginTop = '20px';
-        siteLogo.style.paddingTop = '10px';
-    }
-}
-
-function fixNewsButton() {
-    const newsButton = document.querySelector('.news-button');
-    if (newsButton) {
-        newsButton.style.marginTop = '15px';
-        newsButton.style.position = 'relative';
-    }
-}
-
-function fixNewsWidget() {
-    const newsWidget = document.querySelector('.local-news-widget');
-    if (newsWidget) {
-        newsWidget.style.marginTop = '20px';
-        newsWidget.style.position = 'relative';
-    }
-}
-
-function fixNewsTicker() {
-    const newsTicker = document.querySelector('.news-ticker');
-    const bottomNav = document.querySelector('.bottom-nav');
-    
-    if (newsTicker && bottomNav) {
-        newsTicker.style.bottom = '70px';
-        newsTicker.style.position = 'fixed';
-        newsTicker.style.zIndex = '1000';
-    }
-    
-    if (bottomNav) {
-        bottomNav.style.bottom = '0';
-        bottomNav.style.paddingBottom = 'env(safe-area-inset-bottom)';
-    }
-}
-
-function fixChatZIndex() {
-    const chatElements = [
-        '.chat-container',
-        '.chat-widget', 
-        '.chat-overlay',
-        '#chatContainer',
-        '[class*="chat"]'
-    ];
-    
-    chatElements.forEach(selector => {
-        const chatElement = document.querySelector(selector);
-        if (chatElement) {
-            chatElement.style.zIndex = '99999';
-            chatElement.style.position = 'fixed';
-        }
-    });
-    
-    const openChat = document.querySelector('.chat-open, .chat-active, .chat-visible');
-    if (openChat) {
-        openChat.style.zIndex = '99999';
-        openChat.style.position = 'fixed';
-    }
-}
-
 })();
