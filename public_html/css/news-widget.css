@@ -717,6 +717,7 @@ font-size: 14px;
 [data-theme="light"] .temp-label,
 [data-theme="light"] .visitors-label {
     color: #7e57c2;
+	font-size: 14px;
 }
 
 [data-theme="light"] .weather-temp:hover,
@@ -774,11 +775,16 @@ font-size: 14px;
     font-size: 15px;
 }	
 
+[data-theme="light"] .clock-date:hover .clock-time {
+color: white;
+}
+
 [data-theme="rouge"] .temp-value,
 [data-theme="rouge"] .visitors-count,
 [data-theme="rouge"] .temp-label,
 [data-theme="rouge"] .visitors-label {
 	font-size: 14px;
+	color: #000000;
 }
 
 [data-theme="rouge"] .weather-temp:hover,
