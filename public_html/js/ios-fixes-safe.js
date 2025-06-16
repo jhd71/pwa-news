@@ -106,20 +106,20 @@
             }
             
             /* BOUTON INFOS EN DIRECT */
-            .news-button {
-                position: fixed !important;
-                top: calc(110px + var(--ios-safe-top, 0px)) !important;
-                right: 15px !important;
-                z-index: 1200 !important;
-            }
+.news-button {
+    position: fixed !important;
+    top: calc(90px + var(--ios-safe-top, 0px)) !important;
+    right: 15px !important;
+    z-index: 1200 !important;
+}
             
             /* WIDGET NEWS LOCAL */
-            .local-news-widget {
-                position: fixed !important;
-                top: calc(160px + var(--ios-safe-top, 0px)) !important;
-                z-index: 1000 !important;
-                margin-top: 0 !important;
-            }
+.local-news-widget {
+    position: fixed !important;
+    top: calc(140px + var(--ios-safe-top, 0px)) !important;
+    z-index: 1000 !important;
+    margin-top: 0 !important;
+}
             
             /* Empêcher les tuiles de passer sous la navigation */
             .tile-container, #tileContainer, .main-content {
@@ -128,31 +128,31 @@
             }
             
             /* CORRIGER LA BARRE D'INFOS DÉROULANTE */
-            .news-ticker {
-                position: fixed !important;
-                bottom: calc(52px + var(--ios-safe-bottom, 0px)) !important;
-                left: 0 !important;
-                right: 0 !important;
-                z-index: 1000 !important;
-                background: rgba(0, 0, 0, 0.9) !important;
-                backdrop-filter: blur(10px) !important;
-                border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
-                height: 40px !important;
-                line-height: 40px !important;
-                margin: 0 !important;
-                padding: 0 10px !important;
-            }
+.news-ticker {
+    position: fixed !important;
+    bottom: calc(60px + var(--ios-safe-bottom, 0px)) !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 1000 !important;
+    background: rgba(0, 0, 0, 0.9) !important;
+    backdrop-filter: blur(10px) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
+    height: 35px !important;
+    line-height: 35px !important;
+    margin: 0 !important;
+    padding: 0 10px !important;
+}
             
             /* Navigation du bas avec safe area - AJUSTÉE */
-            .bottom-nav {
-                position: fixed !important;
-                bottom: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
-                padding-bottom: var(--ios-safe-bottom, 0px) !important;
-                z-index: 1100 !important;
-                height: calc(52px + var(--ios-safe-bottom, 0px)) !important;
-            }
+.bottom-nav {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    padding-bottom: var(--ios-safe-bottom, 0px) !important;
+    z-index: 1100 !important;
+    height: calc(60px + var(--ios-safe-bottom, 0px)) !important;
+}
             
             .nav-item {
                 padding: 5px !important;
@@ -244,18 +244,18 @@
                 }
                 
                 /* Bouton infos en direct */
-                .news-button {
-                    top: calc(80px + var(--ios-safe-top, 0px)) !important;
-                    right: 10px !important;
-                }
-                
-                /* Widget news local */
-                .local-news-widget {
-                    top: calc(130px + var(--ios-safe-top, 0px)) !important;
-                    left: 10px !important;
-                    right: 10px !important;
-                    width: auto !important;
-                }
+.news-button {
+    top: calc(70px + var(--ios-safe-top, 0px)) !important;
+    right: 10px !important;
+}
+
+/* Widget news local */
+.local-news-widget {
+    top: calc(115px + var(--ios-safe-top, 0px)) !important;
+    left: 10px !important;
+    right: 10px !important;
+    width: auto !important;
+}
                 
                 /* Repositionner les boutons dans la barre du haut */
                 .weather-mobile-btn {
