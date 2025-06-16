@@ -492,6 +492,11 @@
     color: #7e57c2;
 }
 
+[data-theme="light"] .clock-time,
+[data-theme="light"] .clock-date {
+    color: #9b87ce;
+}
+
 /* Thème Dark (Bleu Nuit) - TEXTE BLANC */
 [data-theme="dark"] .news-widget-clock {
     background: rgba(92, 107, 192, 0.2);
