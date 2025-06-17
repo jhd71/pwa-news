@@ -88,9 +88,22 @@ class CinemaWidget {
     }
 
     // Chargement en arrière-plan des vraies données
-    async fetchRealCinemaDataBackground() {
+async fetchRealCinemaDataBackground() {
+    try {
+        // NOUVEAU : Essayer d'abord notre API Vercel
         try {
-            // Plusieurs méthodes de récupération avec timeouts courts
+            const realData = await this.fetchFromVercelAPI();
+            if (realData && realData.length > 0) {
+                console.log(`✅ Données récupérées via API Vercel: ${realData.length} films`);
+                return realData;
+            }
+        } catch (vercelError) {
+            console.warn('API Vercel non disponible, essai des méthodes alternatives...', vercelError.message);
+        }
+        
+        // Si on n'est pas sur Firefox, essayer les autres méthodes
+        if (!navigator.userAgent.toLowerCase().includes('firefox')) {
+            // Méthodes originales pour les autres navigateurs
             const methods = [
                 () => this.fetchWithProxy('https://api.codetabs.com/v1/proxy?quest='),
                 () => this.fetchWithProxy('https://cors-anywhere.herokuapp.com/'),
@@ -114,15 +127,38 @@ class CinemaWidget {
                     console.warn('Méthode échouée, essai suivant...', methodError.message);
                 }
             }
-            
-            console.log('ℹ️ Impossible de récupérer les données réelles');
-            return [];
-            
-        } catch (error) {
-            console.log('ℹ️ Chargement en arrière-plan échoué');
-            return [];
         }
+        
+        console.log('ℹ️ Impossible de récupérer les données réelles');
+        return [];
+        
+    } catch (error) {
+        console.log('ℹ️ Chargement en arrière-plan échoué');
+        return [];
     }
+}
+
+// NOUVELLE MÉTHODE : Fetch depuis l'API Vercel
+async fetchFromVercelAPI() {
+    const response = await fetch('/api/cinema-horaires', {
+        method: 'GET',
+        headers: {
+            'Accept': 'text/html,application/xhtml+xml',
+        }
+    });
+    
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+    }
+    
+    const html = await response.text();
+    
+    // Parser le HTML avec la méthode existante
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    
+    return this.parseHoraires(doc);
+}
 
     // Fetch avec proxy - Version améliorée
     async fetchWithProxy(proxyUrl) {

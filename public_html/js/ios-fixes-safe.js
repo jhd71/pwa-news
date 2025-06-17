@@ -282,6 +282,43 @@
                 position: relative !important;
             }
             
+			/* CORRECTION SPÉCIFIQUE WIDGET NEWS POUR iPHONE AVEC ENCOCHE */
+@media (max-width: 767px) {
+    /* iPhone avec encoche/Dynamic Island */
+    @supports (padding: max(0px)) {
+        .local-news-widget,
+        .news-widget-container {
+            margin-top: max(40px, calc(var(--ios-safe-top, 0px) + 25px)) !important;
+            padding-top: 15px !important;
+        }
+    }
+    
+    /* Correction pour iPhone 12 Pro et plus récents */
+    @media (min-height: 926px) {
+        .local-news-widget,
+        .news-widget-container {
+            margin-top: max(45px, calc(var(--ios-safe-top, 0px) + 30px)) !important;
+            padding-top: 20px !important;
+        }
+    }
+    
+    /* Correction pour iPhone X/XS/11 */
+    @media (min-height: 812px) and (max-height: 896px) {
+        .local-news-widget,
+        .news-widget-container {
+            margin-top: max(35px, calc(var(--ios-safe-top, 0px) + 20px)) !important;
+        }
+    }
+    
+    /* Assurer que le header ne chevauche pas */
+    .app-header {
+        z-index: 1300 !important;
+    }
+    
+    .news-widget-container {
+        z-index: 1200 !important;
+    }
+}
             /* Masquer les widgets quand le chat est ouvert */
             .chat-container:not(.hidden) ~ .weather-sidebar,
             .chat-container:not(.hidden) ~ .quick-links-sidebar,
@@ -627,7 +664,27 @@ function fixNewsButton() {
 function fixNewsWidget() {
     const newsWidget = document.querySelector('.local-news-widget');
     if (newsWidget) {
-        newsWidget.style.marginTop = '20px';
+        // Détection spécifique iPhone avec encoche/Dynamic Island
+        const hasNotch = window.screen.height >= 812; // iPhone X et plus récents
+        const isIPhonePro = window.screen.height >= 926; // iPhone 12 Pro et plus
+        
+        if (hasNotch) {
+            if (isIPhonePro) {
+                // iPhone 12/13/14/15 Pro avec Dynamic Island
+                newsWidget.style.marginTop = '40px';
+                newsWidget.style.paddingTop = '15px';
+            } else {
+                // iPhone X/XS/11 avec encoche classique
+                newsWidget.style.marginTop = '30px';
+                newsWidget.style.paddingTop = '10px';
+            }
+        } else {
+            // iPhone SE ou plus anciens
+            newsWidget.style.marginTop = '20px';
+            newsWidget.style.paddingTop = '10px';
+        }
+        
+        newsWidget.style.position = 'relative';
     }
 }
 
