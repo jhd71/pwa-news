@@ -3426,19 +3426,16 @@ border-color: #ffd230 !important;
 
 /* Style pour le logo et les séparateurs */
 .logo-text, .separator-text {
-    font-family: 'Arial Black', Arial, sans-serif;
+    font-family: 'Montserrat', Arial, sans-serif;
     font-weight: 900;
     font-size: 2.5rem;
     color: white;
     text-shadow: 
-        -3px -3px 0 #000,
-        3px -3px 0 #000,
-        -3px 3px 0 #000,
-        3px 3px 0 #000,
-        -3px 0 0 #000,
-        3px 0 0 #000,
-        0 -3px 0 #000,
-        0 3px 0 #000;
+    -2px -2px 0 #000,
+    2px -2px 0 #000,
+    -2px 2px 0 #000,
+    2px 2px 0 #000,
+    0 2px 8px rgba(0,0,0,0.20); /* ombre diffuse en plus */
     text-transform: uppercase;
     letter-spacing: 2px;
     margin: 0;
