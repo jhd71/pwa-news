@@ -108,6 +108,13 @@
                 height: 55px !important;
             }
             
+            /* Logo dans le header - éviter le débordement */
+            .site-logo {
+                max-height: 50px !important;
+                width: auto !important;
+                object-fit: contain !important;
+            }
+            
             /* Ajuster le contenu principal pour ne pas passer sous le header */
             main, .main-content {
                 margin-top: calc(55px + var(--safe-area-top)) !important;
@@ -117,21 +124,36 @@
             /* ===== WIDGET NEWS - POSITION CORRIGÉE ===== */
             @media (max-width: 767px) {
                 .news-widget-container {
-                    margin-top: calc(15px + var(--safe-area-top)) !important;
+                    margin-top: calc(10px + var(--safe-area-top)) !important;
+                    margin-bottom: 15px !important;
                     position: relative !important;
                     z-index: 1 !important;
                 }
                 
                 .local-news-widget {
-                    /* Pas de margin-top supplémentaire ici */
+                    margin: 0 5px !important;
                     position: relative !important;
+                }
+                
+                /* Premier séparateur après le widget */
+                .separator:first-of-type {
+                    margin-top: 10px !important;
                 }
             }
             
             /* ===== BOUTONS FLOTTANTS - POSITIONS ADAPTATIVES ===== */
             
-            /* Photos et Cinéma - Repositionnement mobile */
+            /* Photos et Cinéma - Ces boutons sont dans le widget NEWS sur mobile */
             @media (max-width: 767px) {
+                /* Les boutons photos-btn et cinema-btn sont positionnés par news-widget.css */
+                /* On s'assure juste qu'ils restent visibles */
+                .photos-btn, .cinema-btn {
+                    opacity: 1 !important;
+                    visibility: visible !important;
+                    pointer-events: auto !important;
+                }
+                
+                /* Si des boutons flottants séparés existent */
                 .photos-mobile-btn {
                     position: fixed !important;
                     bottom: calc(140px + var(--safe-area-bottom)) !important;
@@ -155,32 +177,38 @@
                 /* Boutons header - positions relatives au header */
                 .weather-mobile-btn {
                     position: fixed !important;
-                    top: calc(65px + var(--safe-area-top)) !important;
+                    top: calc(60px + var(--safe-area-top)) !important;
                     left: 10px !important;
                     z-index: 1001 !important;
+                    width: 40px !important;
+                    height: 40px !important;
                 }
                 
                 .quick-links-show-btn {
                     position: fixed !important;
-                    top: calc(65px + var(--safe-area-top)) !important;
+                    top: calc(60px + var(--safe-area-top)) !important;
                     right: 10px !important;
                     z-index: 1001 !important;
+                    width: 40px !important;
+                    height: 40px !important;
                 }
                 
                 .fuel-button {
                     position: fixed !important;
-                    top: calc(65px + var(--safe-area-top)) !important;
-                    left: 20% !important;
-                    transform: translateX(-50%) !important;
+                    top: calc(60px + var(--safe-area-top)) !important;
+                    left: 60px !important;
                     z-index: 1001 !important;
+                    width: 40px !important;
+                    height: 40px !important;
                 }
                 
                 .search-button {
                     position: fixed !important;
-                    top: calc(65px + var(--safe-area-top)) !important;
-                    right: 20% !important;
-                    transform: translateX(50%) !important;
+                    top: calc(60px + var(--safe-area-top)) !important;
+                    right: 60px !important;
                     z-index: 1001 !important;
+                    width: 40px !important;
+                    height: 40px !important;
                 }
             }
             
@@ -358,12 +386,15 @@
             const elements = {
                 header: '.app-header',
                 newsWidget: '.news-widget-container',
-                photosBtn: '.photos-mobile-btn',
-                cinemaBtn: '.cinema-mobile-btn',
+                photosBtn: '.photos-btn',  // Corrigé
+                cinemaBtn: '.cinema-btn',  // Corrigé
                 weatherBtn: '.weather-mobile-btn',
                 bottomNav: '.bottom-nav',
                 newsTicker: '.news-ticker',
-                tileContainer: '.tile-container'
+                tileContainer: '.tile-container',
+                quickLinksBtn: '.quick-links-show-btn',
+                fuelBtn: '.fuel-button',
+                searchBtn: '.search-button'
             };
             
             console.log('🔍 Positions des éléments:');
