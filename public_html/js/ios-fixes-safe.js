@@ -123,9 +123,10 @@
             
             /* ===== WIDGET NEWS - POSITION CORRIGÉE ===== */
             @media (max-width: 767px) {
+                /* Forcer le widget NEWS juste sous "Infos en direct" */
                 .news-widget-container {
-                    margin-top: calc(10px + var(--safe-area-top)) !important;
-                    margin-bottom: 15px !important;
+                    margin-top: 5px !important; /* Réduit l'espace */
+                    margin-bottom: 10px !important;
                     position: relative !important;
                     z-index: 1 !important;
                 }
@@ -133,6 +134,11 @@
                 .local-news-widget {
                     margin: 0 5px !important;
                     position: relative !important;
+                }
+                
+                /* S'assurer que le bouton "Infos en direct" est bien positionné */
+                .news-button {
+                    margin-bottom: 5px !important;
                 }
                 
                 /* Premier séparateur après le widget */
@@ -174,12 +180,12 @@
                     display: flex !important;
                 }
                 
-                /* Boutons header - positions relatives au header */
+                /* Boutons header - positions ajustées */
                 .weather-mobile-btn {
                     position: fixed !important;
                     top: calc(60px + var(--safe-area-top)) !important;
                     left: 10px !important;
-                    z-index: 1001 !important;
+                    z-index: 995 !important; /* Réduit pour passer sous le chat */
                     width: 40px !important;
                     height: 40px !important;
                 }
@@ -188,7 +194,7 @@
                     position: fixed !important;
                     top: calc(60px + var(--safe-area-top)) !important;
                     right: 10px !important;
-                    z-index: 1001 !important;
+                    z-index: 995 !important; /* Réduit pour passer sous le chat */
                     width: 40px !important;
                     height: 40px !important;
                 }
@@ -196,8 +202,8 @@
                 .fuel-button {
                     position: fixed !important;
                     top: calc(60px + var(--safe-area-top)) !important;
-                    left: 60px !important;
-                    z-index: 1001 !important;
+                    left: 55px !important; /* Plus à gauche */
+                    z-index: 995 !important; /* Réduit pour passer sous le chat */
                     width: 40px !important;
                     height: 40px !important;
                 }
@@ -205,10 +211,20 @@
                 .search-button {
                     position: fixed !important;
                     top: calc(60px + var(--safe-area-top)) !important;
-                    right: 60px !important;
-                    z-index: 1001 !important;
+                    right: 55px !important; /* Symétrique */
+                    z-index: 995 !important; /* Réduit pour passer sous le chat */
                     width: 40px !important;
                     height: 40px !important;
+                }
+                
+                /* Masquer les boutons quand le chat est ouvert */
+                body:has(.chat-container.open) .weather-mobile-btn,
+                body:has(.chat-container.open) .quick-links-show-btn,
+                body:has(.chat-container.open) .fuel-button,
+                body:has(.chat-container.open) .search-button {
+                    opacity: 0 !important;
+                    pointer-events: none !important;
+                    transition: opacity 0.3s ease !important;
                 }
             }
             
@@ -288,10 +304,30 @@
             /* ===== Z-INDEX HIERARCHY ===== */
             .app-header { z-index: 1100 !important; }
             .bottom-nav { z-index: 1100 !important; }
+            .news-ticker { z-index: 999 !important; }
+            
+            /* Boutons flottants - z-index réduit pour passer sous le chat */
+            .weather-mobile-btn,
+            .quick-links-show-btn,
+            .fuel-button,
+            .search-button { 
+                z-index: 995 !important; 
+            }
+            
+            /* Chat au-dessus de tout sauf modals */
             .chat-container { z-index: 1200 !important; }
+            .chat-container.open { z-index: 1200 !important; }
+            
+            /* Panels et modals au-dessus du chat */
             .news-panel { z-index: 1300 !important; }
             .modal { z-index: 1400 !important; }
             .notification-popup { z-index: 1500 !important; }
+            
+            /* Widgets latéraux */
+            .weather-sidebar,
+            .quick-links-sidebar {
+                z-index: 1150 !important; /* Entre chat et panels */
+            }
         `;
         document.head.appendChild(style);
     }
