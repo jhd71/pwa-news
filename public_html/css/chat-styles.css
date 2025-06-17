@@ -1620,7 +1620,7 @@ body.long-press-active .message-options {
   /* Info bulle des notifications */
   .info-bubble-mobile {
     position: fixed !important;
-    bottom: 80px !important;
+    bottom: 95px !important;
     left: auto !important;
     right: 20px !important;
     width: auto !important;

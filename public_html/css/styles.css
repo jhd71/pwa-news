@@ -206,7 +206,7 @@ body {
 .chat-notification-badge {
     position: absolute;
     top: 2px;
-    left: 50%;
+    left: 1%;
     transform: translateX(-50%);
     background-color: #ff4757;
     color: white;
