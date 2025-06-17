@@ -3424,40 +3424,87 @@ border-color: #ffd230 !important;
     background: #65a1d0 !important;
 }
 
-/* Style pour le logo et les séparateurs */
+/* Style amélioré pour le logo et les séparateurs */
 .logo-text, .separator-text {
     font-family: 'Arial Black', Arial, sans-serif;
     font-weight: 900;
     font-size: 2.5rem;
     color: white;
+    /* Contour noir plus subtil et moderne */
     text-shadow: 
-        -3px -3px 0 #000,
-        3px -3px 0 #000,
-        -3px 3px 0 #000,
-        3px 3px 0 #000,
-        -3px 0 0 #000,
-        3px 0 0 #000,
-        0 -3px 0 #000,
-        0 3px 0 #000;
+        -2px -2px 0 #000,
+        2px -2px 0 #000,
+        -2px 2px 0 #000,
+        2px 2px 0 #000,
+        -2px 0 0 #000,
+        2px 0 0 #000,
+        0 -2px 0 #000,
+        0 2px 0 #000,
+        /* Ajout d'une ombre portée pour plus de profondeur */
+        0 4px 8px rgba(0, 0, 0, 0.3);
     text-transform: uppercase;
     letter-spacing: 2px;
     margin: 0;
     padding: 10px 20px;
     display: inline-block;
+    /* Ajout d'une transition fluide */
+    transition: all 0.3s ease;
+    /* Léger dégradé pour plus de modernité */
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+    border-radius: 8px;
+}
+
+/* Effet hover pour interactivité */
+.logo-text:hover, .separator-text:hover {
+    transform: translateY(-2px);
+    text-shadow: 
+        -2px -2px 0 #000,
+        2px -2px 0 #000,
+        -2px 2px 0 #000,
+        2px 2px 0 #000,
+        -2px 0 0 #000,
+        2px 0 0 #000,
+        0 -2px 0 #000,
+        0 2px 0 #000,
+        0 6px 12px rgba(0, 0, 0, 0.4);
 }
 
 /* Version plus petite pour les séparateurs */
 .separator-text {
     font-size: 1.8rem;
     padding: 8px 15px;
+    /* Séparateurs légèrement moins imposants */
+    opacity: 0.95;
 }
 
-/* Adaptation responsive */
+/* Adaptation responsive améliorée */
 @media (max-width: 768px) {
     .logo-text {
         font-size: 2rem;
+        letter-spacing: 1px;
+        padding: 8px 15px;
     }
     .separator-text {
         font-size: 1.4rem;
+        letter-spacing: 1px;
+        padding: 6px 12px;
     }
+}
+
+@media (max-width: 480px) {
+    .logo-text {
+        font-size: 1.8rem;
+        letter-spacing: 0.5px;
+    }
+    .separator-text {
+        font-size: 1.2rem;
+        letter-spacing: 0.5px;
+    }
+}
+
+/* Alternative avec police Google Fonts plus moderne (optionnel) */
+.logo-text-modern, .separator-text-modern {
+    font-family: 'Roboto Condensed', 'Arial Black', Arial, sans-serif;
+    font-weight: 700;
+    /* Reste du style identique */
 }
