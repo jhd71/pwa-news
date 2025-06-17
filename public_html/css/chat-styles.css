@@ -2012,18 +2012,6 @@ body.long-press-active .message-options {
   }
 }
 
-/* Ajoutez ces styles à votre CSS */
-.chat-input-container {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding-bottom: calc(env(safe-area-inset-bottom) + 10px);
-  background-color: var(--primary-bg, #192355);
-  z-index: 100;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 .chat-input {
   margin: 10px;
   padding: 12px;
@@ -2037,18 +2025,6 @@ body.long-press-active .message-options {
 /* Espace pour éviter que le contenu soit caché sous la zone de saisie */
 .chat-messages-container {
   padding-bottom: 80px; /* Ajustez selon la hauteur de votre zone de saisie */
-}
-
-/* Support du clavier virtuel */
-@media screen and (max-height: 450px) {
-  .chat-input-container {
-    position: sticky;
-  }
-}
-
-/* Gestion de la barre de navigation en bas sur mobile */
-.bottom-nav {
-  padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* Solution pour la croix de fermeture sur mobile avec un pseudo long - version deux lignes */
@@ -2570,17 +2546,6 @@ body.long-press-active .message-options {
     z-index: 10 !important; /* Au-dessus des autres éléments */
 }
 
-/* Classe à ajouter au body quand le chat est ouvert - uniquement pour mobile */
-@media (max-width: 768px) {
-    body.chat-open-no-scroll {
-        overflow: hidden !important;
-        position: fixed !important;
-        width: 100% !important;
-        height: 100% !important;
-        touch-action: none !important;
-    }
-}
-
 /* Améliorations pour le conteneur principal du chat */
 .chat-container {
     /* Assurer que le chat est bien positionné et qu'il capture les événements tactiles */
@@ -2610,34 +2575,6 @@ body.long-press-active .message-options {
         /* Transformation pour forcer un contexte d'empilement isolé */
         transform: translateZ(0) !important;
         will-change: transform !important;
-    }
-}
-
-/* Pour les appareils avec écran tactile */
-@media (hover: none) and (pointer: coarse) {
-    /* Optimisations pour les appareils tactiles */
-    .chat-container, .chat-messages {
-        /* Capture des événements tactiles sans propagation */
-        touch-action: pan-y !important;
-        /* Amélioration du rebond */
-        overscroll-behavior: contain !important;
-    }
-    
-    /* Assurez-vous que la zone de messages a une hauteur déterminée et défile correctement */
-    .chat-messages {
-        height: calc(100% - 125px) !important; /* Ajuster en fonction de la hauteur de votre en-tête et zone d'input */
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-    }
-    
-    /* Interface de saisie fixe qui reste en place pendant le défilement */
-    .chat-input {
-        position: sticky !important;
-        bottom: 0 !important;
-        background: var(--chat-input-bg) !important;
-        z-index: 10 !important;
-        /* Éviter les problèmes de débordement du clavier virtuel */
-        padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
     }
 }
 
