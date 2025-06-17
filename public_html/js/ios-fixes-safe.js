@@ -117,7 +117,7 @@
             
             /* Ajuster le contenu principal pour ne pas passer sous le header */
             main, .main-content {
-                margin-top: calc(55px + var(--safe-area-top)) !important;
+                margin-top: calc(20px + var(--safe-area-top)) !important;
                 padding-bottom: calc(120px + var(--safe-area-bottom)) !important;
             }
             
@@ -125,7 +125,7 @@
             @media (max-width: 767px) {
                 /* Forcer le widget NEWS juste sous "Infos en direct" */
                 .news-widget-container {
-                    margin-top: 5px !important; /* Réduit l'espace */
+                    margin-top: 130px !important; /* Réduit l'espace */
                     margin-bottom: 10px !important;
                     position: relative !important;
                     z-index: 1 !important;
@@ -202,7 +202,7 @@
                 .fuel-button {
                     position: fixed !important;
                     top: calc(60px + var(--safe-area-top)) !important;
-                    left: 55px !important; /* Plus à gauche */
+                    left: 80px !important; /* Plus à gauche */
                     z-index: 995 !important; /* Réduit pour passer sous le chat */
                     width: 40px !important;
                     height: 40px !important;
@@ -241,7 +241,7 @@
             /* ===== NEWS TICKER ===== */
             .news-ticker {
                 position: fixed !important;
-                bottom: calc(60px + var(--safe-area-bottom)) !important;
+                bottom: calc(70px + var(--safe-area-bottom)) !important;
                 left: 0 !important;
                 right: 0 !important;
                 z-index: 999 !important;
