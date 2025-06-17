@@ -34,14 +34,21 @@
         console.log('Application des corrections iOS v2.3...');
         
         setTimeout(() => {
-            addSafeAreaVariables();
-            fixViewportHeight();
-            fixWidgetPositioning();
-            fixChatPositioning();
-            fixTextRendering();
-            handleOrientationChange();
-            preventInputZoom();
-        }, 1000);
+    addSafeAreaVariables();
+    fixViewportHeight();
+    fixWidgetPositioning();
+    fixChatPositioning();
+    fixTextRendering();
+    handleOrientationChange();
+    preventInputZoom();
+    // ✅ NOUVELLES CORRECTIONS POUR VOS PROBLÈMES
+    fixHeaderButtons();
+    fixSiteLogo();
+    fixNewsButton();
+    fixNewsWidget();
+    fixNewsTicker();
+    fixChatZIndex();
+}, 1000);
         
         console.log('✅ Corrections iOS v2.3 appliquées');
     }
@@ -584,5 +591,61 @@
     
     // Exposer pour debug
     window.iOSFixesV23Active = true;
+	
+	function fixHeaderButtons() {
+    const menuButton = document.getElementById('menuButton');
+    const settingsButton = document.getElementById('settingsButton');
+    
+    if (menuButton) {
+        menuButton.style.top = '50px';
+        menuButton.style.position = 'fixed';
+        menuButton.style.zIndex = '9998';
+    }
+    
+    if (settingsButton) {
+        settingsButton.style.top = '50px';
+        settingsButton.style.position = 'fixed';
+        settingsButton.style.zIndex = '9998';
+    }
+}
+
+function fixSiteLogo() {
+    const siteLogo = document.querySelector('.site-title, .logo-text');
+    if (siteLogo) {
+        siteLogo.style.marginTop = '20px';
+        siteLogo.style.paddingTop = '10px';
+    }
+}
+
+function fixNewsButton() {
+    const newsButton = document.querySelector('.news-button');
+    if (newsButton) {
+        newsButton.style.marginTop = '15px';
+    }
+}
+
+function fixNewsWidget() {
+    const newsWidget = document.querySelector('.local-news-widget');
+    if (newsWidget) {
+        newsWidget.style.marginTop = '20px';
+    }
+}
+
+function fixNewsTicker() {
+    const newsTicker = document.querySelector('.news-ticker');
+    if (newsTicker) {
+        newsTicker.style.bottom = '70px';
+        newsTicker.style.position = 'fixed';
+        newsTicker.style.zIndex = '1000';
+    }
+}
+
+function fixChatZIndex() {
+    const chatElement = document.querySelector('.chat-container');
+    if (chatElement) {
+        chatElement.style.zIndex = '99999';
+        chatElement.style.position = 'fixed';
+    }
+}
     
 })();
