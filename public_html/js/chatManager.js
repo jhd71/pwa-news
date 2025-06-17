@@ -3327,13 +3327,19 @@ async cleanBanDatabase() {
     }
 
     showNotification(message, type = 'info') {
+    // ✅ Supprimer toute notification existante AVANT d'en créer une nouvelle
+    const existingNotifications = document.querySelectorAll('.notification-popup');
+    existingNotifications.forEach(notif => notif.remove());
+    
     const notification = document.createElement('div');
     notification.className = `notification-popup ${type}`;
     notification.textContent = message;
     document.body.appendChild(notification);
     
     setTimeout(() => {
-        notification.remove();
+        if (notification.parentNode) {
+            notification.remove();
+        }
     }, 3000);
 }
 
