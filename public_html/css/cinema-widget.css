@@ -635,7 +635,7 @@
 }
 
 [data-theme="dark"] .cinema-preview-item {
-    background: rgba(26, 35, 126, 0.2) !important;
+    background: rgb(44, 46, 57) !important;
     border-left-color: #5c6bc0 !important;
     color: #ffffff !important;
 }
