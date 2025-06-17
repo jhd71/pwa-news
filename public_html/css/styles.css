@@ -3430,28 +3430,20 @@ border-color: #ffd230 !important;
     font-weight: 900;
     font-size: 2.5rem;
     color: white;
-    /* Contour noir plus subtil et moderne */
     text-shadow: 
-        -2px -2px 0 #000,
-        2px -2px 0 #000,
-        -2px 2px 0 #000,
-        2px 2px 0 #000,
-        -2px 0 0 #000,
-        2px 0 0 #000,
-        0 -2px 0 #000,
-        0 2px 0 #000,
-        /* Ajout d'une ombre portée pour plus de profondeur */
-        0 4px 8px rgba(0, 0, 0, 0.3);
+        -3px -3px 0 #000,
+        3px -3px 0 #000,
+        -3px 3px 0 #000,
+        3px 3px 0 #000,
+        -3px 0 0 #000,
+        3px 0 0 #000,
+        0 -3px 0 #000,
+        0 3px 0 #000;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
     margin: 0;
     padding: 10px 20px;
     display: inline-block;
-    /* Ajout d'une transition fluide */
-    transition: all 0.3s ease;
-    /* Léger dégradé pour plus de modernité */
-    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
-    border-radius: 8px;
 }
 
 /* Version plus petite pour les séparateurs */
