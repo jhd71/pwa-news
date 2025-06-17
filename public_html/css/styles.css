@@ -3426,7 +3426,7 @@ border-color: #ffd230 !important;
 
 /* Style pour le logo et les séparateurs */
 .logo-text, .separator-text {
-    font-family: 'Montserrat', Arial, sans-serif;
+    font-family: 'Arial Black', Arial, sans-serif;
     font-weight: 900;
     font-size: 2.5rem;
     color: white;
