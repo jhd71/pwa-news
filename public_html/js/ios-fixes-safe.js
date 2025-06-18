@@ -82,44 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 top: calc(70px + var(--ios-safe-area-top)) !important;
             }
             
-            /* Fix pour le bouton Infos en direct sur iOS mobile uniquement */
-            @media (max-width: 768px) {
-                .ios-device .news-button {
-                    position: fixed !important;
-                    top: calc(70px + var(--ios-safe-area-top)) !important;
-                    left: 50% !important;
-                    transform: translateX(-50%) !important;
-                    z-index: 990 !important;
-                    
-                    /* Style circulaire comme les autres boutons */
-                    width: 46px !important;
-                    height: 46px !important;
-                    border-radius: 50% !important;
-                    padding: 0 !important;
-                    display: flex !important;
-                    align-items: center !important;
-                    justify-content: center !important;
-                    background: var(--primary-color) !important;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-                }
-                
-                /* Masquer le texte, garder seulement l'icône */
-                .ios-device .news-button span:not(.material-icons) {
-                    display: none !important;
-                }
-                
-                /* Ajuster la taille de l'icône */
-                .ios-device .news-button .material-icons {
-                    font-size: 24px !important;
-                    color: white !important;
-                    margin: 0 !important;
-                }
-                
-                /* Masquer le groupe de boutons original */
-                .ios-device .button-group {
-                    display: none !important;
-                }
-            }
+            
         `;
         document.head.appendChild(style);
         
