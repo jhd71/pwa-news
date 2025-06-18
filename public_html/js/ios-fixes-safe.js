@@ -1,5 +1,5 @@
-// ios-fixes-safe.js - Version 5.0 SIMPLIFIÉE
-// Corrections minimales et ciblées pour iPhone
+// ios-fixes-safe.js - Version 6.0 BASÉE SUR ANDROID
+// Reproduction exacte de la mise en page Android sur iPhone
 
 (function() {
     'use strict';
@@ -15,18 +15,17 @@
         return;
     }
     
-    console.log('🍎 iOS détecté - Application des corrections minimales v5.0');
+    console.log('🍎 iOS détecté - Reproduction mise en page Android v6.0');
     
     // Attendre que le DOM soit complètement chargé
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', applyIOSFixes);
     } else {
-        // Attendre un peu pour que tous les widgets soient initialisés
-        setTimeout(applyIOSFixes, 800);
+        setTimeout(applyIOSFixes, 1000);
     }
     
     function applyIOSFixes() {
-        console.log('📱 Application des corrections iOS minimales...');
+        console.log('📱 Application des corrections basées sur Android...');
         
         // 1. Variables CSS pour les safe areas
         addSafeAreaSupport();
@@ -34,13 +33,13 @@
         // 2. Fix pour la hauteur viewport
         fixViewportHeight();
         
-        // 3. Corrections MINIMALES et ciblées
-        applyMinimalFixes();
+        // 3. Corrections pour reproduire Android
+        applyAndroidLayoutFixes();
         
-        // 4. Fix pour les inputs (zoom)
+        // 4. Fix pour les inputs
         preventInputZoom();
         
-        console.log('✅ Corrections iOS minimales appliquées');
+        console.log('✅ Mise en page Android reproduite sur iOS');
     }
     
     // 1. Support des safe areas iOS
@@ -70,84 +69,244 @@
         window.addEventListener('orientationchange', setVH);
     }
     
-    // 3. CORRECTIONS MINIMALES - Ne toucher QUE aux problèmes spécifiques
-    function applyMinimalFixes() {
+    // 3. CORRECTIONS pour reproduire la mise en page Android
+    function applyAndroidLayoutFixes() {
         const style = document.createElement('style');
-        style.id = 'ios-minimal-fixes';
+        style.id = 'ios-android-layout-fixes';
         style.textContent = `
-            /* ===== CORRECTIONS MINIMALES POUR IPHONE ===== */
+            /* ===== REPRODUCTION EXACTE DE LA MISE EN PAGE ANDROID ===== */
             
-            /* 1. SAFE AREA pour le header seulement si nécessaire */
+            /* 1. HEADER - Structure exacte comme sur Android */
             .app-header {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                height: calc(60px + var(--safe-area-top)) !important;
+                background: #dc2626 !important;
+                z-index: 1100 !important;
                 padding-top: var(--safe-area-top) !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                padding-left: 15px !important;
+                padding-right: 15px !important;
             }
             
-            /* 2. SAFE AREA pour la navigation du bas seulement */
+            /* Logo centré comme sur Android */
+            .app-header .site-logo,
+            .app-header h1,
+            .header-title {
+                flex: 1 !important;
+                text-align: center !important;
+                color: white !important;
+                font-size: 24px !important;
+                font-weight: bold !important;
+                margin: 0 !important;
+            }
+            
+            /* Bouton menu à gauche */
+            .menu-toggle, .hamburger-menu {
+                position: absolute !important;
+                left: 15px !important;
+                top: calc(var(--safe-area-top) + 10px) !important;
+                width: 40px !important;
+                height: 40px !important;
+                z-index: 1200 !important;
+                color: white !important;
+            }
+            
+            /* Bouton paramètres à droite */
+            .settings-btn, .quick-links-show-btn {
+                position: absolute !important;
+                right: 15px !important;
+                top: calc(var(--safe-area-top) + 10px) !important;
+                width: 40px !important;
+                height: 40px !important;
+                z-index: 1200 !important;
+                color: white !important;
+            }
+            
+            /* 2. LIGNE DES BOUTONS - Sous le header comme sur Android */
+            .button-row, .header-buttons {
+                position: fixed !important;
+                top: calc(60px + var(--safe-area-top)) !important;
+                left: 0 !important;
+                right: 0 !important;
+                height: 60px !important;
+                background: #dc2626 !important;
+                z-index: 1050 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-around !important;
+                padding: 0 20px !important;
+            }
+            
+            /* Boutons météo, essence, "Infos en direct", recherche, liens */
+            .weather-mobile-btn,
+            .fuel-button,
+            .news-button,
+            .search-button,
+            .quick-links-btn {
+                position: relative !important;
+                width: 50px !important;
+                height: 50px !important;
+                border-radius: 25px !important;
+                background: rgba(255,255,255,0.2) !important;
+                border: none !important;
+                color: white !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                z-index: 1051 !important;
+            }
+            
+            /* Bouton "Infos en direct" spécial */
+            .news-button, .direct-info-btn {
+                background: rgba(255,255,255,0.9) !important;
+                color: #dc2626 !important;
+                padding: 10px 20px !important;
+                border-radius: 25px !important;
+                font-weight: bold !important;
+                width: auto !important;
+                min-width: 140px !important;
+                height: 40px !important;
+            }
+            
+            /* 3. CONTENU PRINCIPAL - Décalé sous les deux barres */
+            main, .main-content, .container {
+                margin-top: calc(120px + var(--safe-area-top)) !important;
+                padding-bottom: calc(80px + var(--safe-area-bottom)) !important;
+            }
+            
+            /* 4. WIDGET NEWS - Position correcte comme sur Android */
+            .news-widget-container, .local-news-widget {
+                margin-top: 0 !important;
+                margin-bottom: 20px !important;
+                margin-left: 10px !important;
+                margin-right: 10px !important;
+                background: white !important;
+                border-radius: 15px !important;
+                padding: 15px !important;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+            }
+            
+            /* 5. BOUTONS PHOTOS ET CINÉMA - En bas du widget comme sur Android */
+            .photos-btn, .cinema-btn {
+                position: relative !important;
+                display: inline-block !important;
+                margin: 10px 5px !important;
+                padding: 8px 16px !important;
+                background: white !important;
+                color: #dc2626 !important;
+                border: 2px solid #dc2626 !important;
+                border-radius: 20px !important;
+                font-weight: bold !important;
+                text-decoration: none !important;
+                font-size: 14px !important;
+                z-index: auto !important;
+                bottom: auto !important;
+                left: auto !important;
+                right: auto !important;
+            }
+            
+            /* Container des boutons dans le widget */
+            .widget-buttons, .news-widget-footer {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                margin-top: 15px !important;
+                padding-top: 10px !important;
+                border-top: 1px solid #eee !important;
+            }
+            
+            /* 6. NAVIGATION DU BAS - Safe area */
             .bottom-nav {
+                position: fixed !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                z-index: 1100 !important;
                 padding-bottom: var(--safe-area-bottom) !important;
+                background: #dc2626 !important;
             }
             
-            /* 3. AJUSTEMENT du news ticker pour qu'il soit collé aux icônes */
+            /* 7. NEWS TICKER - Juste au-dessus de la navigation */
             .news-ticker {
+                position: fixed !important;
                 bottom: calc(60px + var(--safe-area-bottom)) !important;
+                left: 0 !important;
+                right: 0 !important;
+                z-index: 1000 !important;
+                height: 30px !important;
+                background: rgba(0,0,0,0.8) !important;
+                color: white !important;
             }
             
-            /* 4. Corrections SPÉCIFIQUES des problèmes iPhone observés */
+            /* 8. MASQUER ÉLÉMENTS EN DOUBLE sur mobile */
             @media (max-width: 767px) {
-                
-                /* Bouton paramètres - légère correction position */
-                .settings-btn, .quick-links-show-btn {
-                    top: calc(5px + var(--safe-area-top)) !important;
-                    right: 5px !important;
+                /* Si il y a des boutons flottants en plus, les masquer */
+                .floating-photos-btn,
+                .floating-cinema-btn {
+                    display: none !important;
                 }
                 
-                /* Bouton menu - légère correction position */
-                .menu-toggle, .hamburger-menu {
-                    top: calc(5px + var(--safe-area-top)) !important;
-                    left: 5px !important;
-                }
-                
-                /* Bouton "Infos en direct" - descendre légèrement */
-                .news-button, .direct-info-btn {
-                    margin-top: 10px !important;
-                }
-                
-                /* Widget NEWS - espacement ajusté */
-                .news-widget-container, .local-news-widget {
-                    margin-top: 15px !important;
-                    margin-bottom: 15px !important;
-                }
-                
-                /* Contenu principal - marge bas pour éviter chevauchement */
-                main, .main-content {
-                    padding-bottom: calc(120px + var(--safe-area-bottom)) !important;
-                }
-                
-                /* Boutons Photos et Cinéma - si ils existent, les ajuster */
-                .photos-btn {
-                    bottom: calc(110px + var(--safe-area-bottom)) !important;
-                }
-                
-                .cinema-btn {
-                    bottom: calc(110px + var(--safe-area-bottom)) !important;
+                /* S'assurer que les boutons du widget sont visibles */
+                .widget-buttons .photos-btn,
+                .widget-buttons .cinema-btn {
+                    display: inline-block !important;
+                    position: relative !important;
                 }
             }
             
-            /* 5. Amélioration du scroll iOS */
+            /* 9. AMÉLIORATION DU SCROLL */
             body {
                 -webkit-overflow-scrolling: touch;
+                overflow-x: hidden;
             }
             
             .scrollable,
-            .chat-messages,
-            .news-ticker {
+            .chat-messages {
                 -webkit-overflow-scrolling: touch !important;
             }
             
-            /* 6. Z-index minimal pour éviter les conflits */
-            .app-header { z-index: 1000 !important; }
-            .bottom-nav { z-index: 1000 !important; }
-            .news-ticker { z-index: 999 !important; }
+            /* 10. Z-INDEX HIERARCHY */
+            .app-header { z-index: 1100 !important; }
+            .button-row { z-index: 1050 !important; }
+            .bottom-nav { z-index: 1100 !important; }
+            .news-ticker { z-index: 1000 !important; }
+            .chat-container { z-index: 1200 !important; }
+            .modal { z-index: 1300 !important; }
+            
+            /* 11. CORRECTIONS SPÉCIFIQUES POUR DIFFÉRENTES TAILLES D'IPHONE */
+            
+            /* iPhone SE et petits écrans */
+            @media (max-width: 375px) {
+                .button-row {
+                    padding: 0 10px !important;
+                }
+                
+                .news-button {
+                    min-width: 120px !important;
+                    font-size: 13px !important;
+                }
+            }
+            
+            /* iPhone Plus et grands écrans */
+            @media (min-width: 414px) {
+                .app-header {
+                    height: calc(65px + var(--safe-area-top)) !important;
+                }
+                
+                .button-row {
+                    top: calc(65px + var(--safe-area-top)) !important;
+                    height: 65px !important;
+                }
+                
+                main, .main-content {
+                    margin-top: calc(130px + var(--safe-area-top)) !important;
+                }
+            }
         `;
         document.head.appendChild(style);
     }
@@ -157,39 +316,53 @@
         const style = document.createElement('style');
         style.id = 'ios-input-zoom-fix';
         style.textContent = `
-            input[type="text"],
-            input[type="email"], 
-            input[type="number"],
-            input[type="password"],
-            input[type="tel"],
-            input[type="url"],
-            input[type="search"],
-            textarea,
-            select {
+            input, textarea, select {
                 font-size: 16px !important;
+                -webkit-appearance: none !important;
             }
         `;
         document.head.appendChild(style);
     }
     
-    // Fonction de debug simplifiée
+    // Fonction de debug
     window.iOSDebug = {
-        version: '5.0',
+        version: '6.0 Android Layout',
         
-        info: () => {
-            console.log('📱 iOS Fixes v5.0 - Corrections minimales');
-            console.log('Safe areas:', {
-                top: getComputedStyle(document.documentElement).getPropertyValue('--safe-area-top'),
-                bottom: getComputedStyle(document.documentElement).getPropertyValue('--safe-area-bottom')
+        checkLayout: () => {
+            const elements = {
+                'Header': '.app-header',
+                'Button Row': '.button-row',
+                'News Button': '.news-button',
+                'News Widget': '.news-widget-container',
+                'Photos Button': '.photos-btn',
+                'Cinema Button': '.cinema-btn',
+                'Bottom Nav': '.bottom-nav',
+                'News Ticker': '.news-ticker'
+            };
+            
+            console.log('🔍 Vérification mise en page Android sur iOS:');
+            
+            Object.entries(elements).forEach(([name, selector]) => {
+                const element = document.querySelector(selector);
+                if (element) {
+                    const rect = element.getBoundingClientRect();
+                    const styles = window.getComputedStyle(element);
+                    console.log(`📍 ${name}:`, {
+                        visible: rect.width > 0 && rect.height > 0,
+                        top: rect.top,
+                        position: styles.position,
+                        zIndex: styles.zIndex
+                    });
+                } else {
+                    console.log(`❌ ${name}: non trouvé (${selector})`);
+                }
             });
         },
         
-        reset: () => {
-            ['ios-safe-areas', 'ios-minimal-fixes', 'ios-input-zoom-fix'].forEach(id => {
-                const element = document.getElementById(id);
-                if (element) element.remove();
-            });
-            console.log('🔄 Corrections supprimées');
+        info: () => {
+            console.log('📱 iOS Android Layout v6.0');
+            console.log('🎯 Objectif: Reproduire exactement la mise en page Android');
+            this.checkLayout();
         }
     };
     
