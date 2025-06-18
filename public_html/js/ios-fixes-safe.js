@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     top: calc(70px + var(--ios-safe-area-top)) !important;
                     left: 50% !important;
                     transform: translateX(-50%) !important;
-                    z-index: 10000 !important;
+                    z-index: 999 !important;
                     
                     /* Style circulaire comme les autres boutons */
                     display: flex !important;
