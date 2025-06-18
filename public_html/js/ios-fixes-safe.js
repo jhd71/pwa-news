@@ -17,45 +17,37 @@ document.addEventListener('DOMContentLoaded', function() {
                 --ios-safe-area-top: env(safe-area-inset-top, 20px);
             }
             
-            /* Ajouter un padding en haut du body pour l'espace iOS */
-            .ios-device {
-                padding-top: var(--ios-safe-area-top);
-            }
-            
-            /* Fix pour le header - ajuster l'espacement et l'alignement */
+            /* Décaler le header fixe pour iOS */
             .ios-device .app-header {
-                padding-top: 10px;
-                position: relative;
-                z-index: 100;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                min-height: 60px;
+                top: var(--ios-safe-area-top) !important;
             }
             
-            /* Centrer le titre du site */
-            .ios-device .app-header .site-title {
-                position: absolute;
-                left: 50%;
-                transform: translateX(-50%);
-                margin: 0;
-                white-space: nowrap;
+            /* Ajuster le bouton paramètres qui a aussi position:fixed */
+            .ios-device .settings-button {
+                top: calc(3px + var(--ios-safe-area-top)) !important;
             }
             
-            /* S'assurer que les boutons flottants restent à leur place normale */
-            .ios-device .fuel-button,
-            .ios-device .search-button {
-                /* Pas de modification, ils gardent leur position CSS d'origine */
+            /* Ajouter un padding au body pour compenser le header décalé */
+            .ios-device body {
+                padding-top: calc(55px + var(--ios-safe-area-top));
             }
             
             /* Fix pour la navigation du bas si elle touche le bas de l'écran */
             .ios-device .bottom-nav {
                 padding-bottom: env(safe-area-inset-bottom, 0);
             }
+            
+            /* S'assurer que les modales et sidebars commencent sous la safe area */
+            .ios-device .sidebar,
+            .ios-device .settings-panel,
+            .ios-device .news-panel {
+                top: var(--ios-safe-area-top);
+                height: calc(100% - var(--ios-safe-area-top));
+            }
         `;
         document.head.appendChild(style);
         
         // Log pour debug
-        console.log('iOS fixes appliqués - version minimale');
+        console.log('iOS fixes appliqués - Header et Settings button ajustés');
     }
 });
