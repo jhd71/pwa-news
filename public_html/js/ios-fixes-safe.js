@@ -125,31 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Log pour debug
         console.log('iOS fixes appliqués - Header et Settings button ajustés');
-        const newsBtn = document.querySelector('.news-button');
-if (newsBtn) {
-  // Remettre l’icône propre
-  newsBtn.innerHTML = '<span class="material-icons">feed</span>';
-
-  // Appliquer les styles visibles
-  newsBtn.style.display = 'flex';
-  newsBtn.style.visibility = 'visible';
-  newsBtn.style.opacity = '1';
-  newsBtn.style.position = 'fixed';
-  newsBtn.style.top = '90px';
-  newsBtn.style.left = '50%';
-  newsBtn.style.transform = 'translateX(-50%)';
-  newsBtn.style.zIndex = '999';
-  newsBtn.style.width = '46px';
-  newsBtn.style.height = '46px';
-  newsBtn.style.borderRadius = '50%';
-  newsBtn.style.background = 'var(--primary-color)';
-  newsBtn.style.alignItems = 'center';
-  newsBtn.style.justifyContent = 'center';
-  newsBtn.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-  newsBtn.style.padding = '0';
-  console.log('✅ Bouton .news-button réparé et affiché');
-}
-		
+        		
         // Fix pour restaurer l'état des widgets sur iOS
         setTimeout(() => {
             // Vérifier l'état sauvegardé du widget météo
