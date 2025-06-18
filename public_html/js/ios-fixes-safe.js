@@ -22,11 +22,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 padding-top: var(--ios-safe-area-top);
             }
             
-            /* Fix pour le header - juste un padding interne, pas de décalage */
+            /* Fix pour le header - ajuster l'espacement et l'alignement */
             .ios-device .app-header {
                 padding-top: 10px;
                 position: relative;
                 z-index: 100;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                min-height: 60px;
+            }
+            
+            /* Centrer le titre du site */
+            .ios-device .app-header .site-title {
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                margin: 0;
+                white-space: nowrap;
             }
             
             /* S'assurer que les boutons flottants restent à leur place normale */
