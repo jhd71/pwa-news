@@ -44,10 +44,117 @@ document.addEventListener('DOMContentLoaded', function() {
                 top: var(--ios-safe-area-top);
                 height: calc(100% - var(--ios-safe-area-top));
             }
+            
+            /* Fix pour les widgets qui doivent être visibles sur iOS */
+            .ios-device .weather-sidebar.visible,
+            .ios-device .quick-links-sidebar.visible {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+            
+            /* Fix pour le bouton Infos en direct sur iOS */
+            .ios-device .news-button {
+                position: fixed !important;
+                top: calc(70px + var(--ios-safe-area-top)) !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                z-index: 990 !important;
+                
+                /* Style circulaire comme les autres boutons */
+                width: 46px !important;
+                height: 46px !important;
+                border-radius: 50% !important;
+                padding: 0 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                background: var(--primary-color) !important;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+            }
+            
+            /* Masquer le texte, garder seulement l'icône */
+            .ios-device .news-button span:not(.material-icons) {
+                display: none !important;
+            }
+            
+            /* Ajuster la taille de l'icône */
+            .ios-device .news-button .material-icons {
+                font-size: 24px !important;
+                color: white !important;
+                margin: 0 !important;
+            }
+            
+            /* Masquer le groupe de boutons original sur mobile iOS */
+            @media (max-width: 768px) {
+                .ios-device .button-group {
+                    display: none !important;
+                }
+            }
         `;
         document.head.appendChild(style);
         
         // Log pour debug
         console.log('iOS fixes appliqués - Header et Settings button ajustés');
+        
+        // Fix pour restaurer l'état des widgets sur iOS
+        setTimeout(() => {
+            // Vérifier l'état sauvegardé du widget météo
+            const weatherHidden = localStorage.getItem('weatherWidgetHidden');
+            const weatherWidget = document.querySelector('.weather-sidebar');
+            
+            if (weatherWidget && weatherHidden !== 'true') {
+                // Si le widget n'était pas explicitement masqué, le garder masqué par défaut
+                // mais s'assurer qu'il peut être affiché
+                weatherWidget.classList.remove('visible');
+                weatherWidget.style.display = 'none';
+                console.log('Widget météo configuré pour iOS');
+            }
+            
+            // Vérifier l'état sauvegardé du widget liens rapides
+            const quickLinksHidden = localStorage.getItem('quickLinksHidden');
+            const quickLinksWidget = document.querySelector('.quick-links-sidebar');
+            
+            if (quickLinksWidget && quickLinksHidden !== 'true') {
+                // Même logique pour les liens rapides
+                quickLinksWidget.classList.remove('visible');
+                quickLinksWidget.style.display = 'none';
+                console.log('Widget liens rapides configuré pour iOS');
+            }
+            
+            // S'assurer que les boutons d'affichage sont visibles
+            const weatherShowBtn = document.getElementById('weatherShowBtn');
+            const quickLinksShowBtn = document.getElementById('quickLinksShowBtn');
+            
+            if (weatherShowBtn) {
+                weatherShowBtn.style.display = 'flex';
+                weatherShowBtn.style.opacity = '1';
+            }
+            
+            if (quickLinksShowBtn) {
+                quickLinksShowBtn.style.display = 'flex';
+                quickLinksShowBtn.style.opacity = '1';
+            }
+        }, 1000);
     }
 });
+
+// Fonction globale pour afficher les widgets si nécessaire
+window.forceShowWidgets = function() {
+    const weatherWidget = document.querySelector('.weather-sidebar');
+    const quickLinksWidget = document.querySelector('.quick-links-sidebar');
+    
+    if (weatherWidget) {
+        weatherWidget.classList.add('visible');
+        weatherWidget.style.display = 'block';
+        weatherWidget.style.visibility = 'visible';
+        weatherWidget.style.opacity = '1';
+    }
+    
+    if (quickLinksWidget) {
+        quickLinksWidget.classList.add('visible');
+        quickLinksWidget.style.display = 'block';
+        quickLinksWidget.style.visibility = 'visible';
+        quickLinksWidget.style.opacity = '1';
+    }
+};
