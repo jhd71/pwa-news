@@ -186,4 +186,18 @@ window.forceShowWidgets = function() {
         quickLinksWidget.style.visibility = 'visible';
         quickLinksWidget.style.opacity = '1';
     }
+	
+	if (isiOS()) {
+    const newsBtn = document.querySelector('.news-button');
+    if (newsBtn) {
+        newsBtn.innerHTML = '<span class="material-icons">feed</span>';
+        newsBtn.style.display = 'flex';
+        newsBtn.style.visibility = 'visible';
+        newsBtn.style.opacity = '1';
+        console.log('✅ Bouton .news-button nettoyé et affiché sur iPhone');
+    } else {
+        console.warn('❌ .news-button introuvable');
+    }
+}
+
 };
