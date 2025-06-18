@@ -22,6 +22,11 @@ document.addEventListener('DOMContentLoaded', function() {
 			margin-top: 21vh !important; /* ajuste la valeur à ton goût */
 			}
 
+			/* Monter la barre d'infos défilante sur iPhone */
+			.ios-device .ticker-item {
+			bottom: 70px !important; /* Ajuste la hauteur selon le footer ou widgets */
+			}
+
             /* Décaler le header fixe pour iOS */
             .ios-device .app-header {
                 top: var(--ios-safe-area-top) !important;
