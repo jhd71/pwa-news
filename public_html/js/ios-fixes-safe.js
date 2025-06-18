@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
 			/* Ajustement spécifique pour le widget local-news sur iPhone */
 			.ios-device .local-news-widget {
-			margin-top: 40px !important; /* ajuste la valeur à ton goût */
+			margin-top: 20vh !important; /* ajuste la valeur à ton goût */
 			}
 
             /* Décaler le header fixe pour iOS */
