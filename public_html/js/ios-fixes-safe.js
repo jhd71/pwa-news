@@ -99,26 +99,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     display: flex !important;
                     align-items: center !important;
                     justify-content: center !important;
-                    background: #e53935 !important;
+                    background: var(--primary-color) !important;
                     box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
                 }
                 
-                /* Masquer le texte, garder seulement l'icône */
-                .ios-device .news-button span:not(.material-icons) {
-                    display: none !important;
-                }
-                
-                /* Ajuster la taille de l'icône */
-                .ios-device .news-button .material-icons {
-                    font-size: 24px !important;
-                    color: white !important;
-                    margin: 0 !important;
-                }
-                
-                /* Masquer le groupe de boutons original */
-                .ios-device .button-group {
-                    display: none !important;
-                }
             }
         `;
         document.head.appendChild(style);
