@@ -17,46 +17,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 --ios-safe-area-top: env(safe-area-inset-top, 20px);
             }
             
-            /* Fix pour le header principal sur iOS */
-            .ios-device .app-header {
-                position: relative;
-                top: var(--ios-safe-area-top);
-                margin-bottom: var(--ios-safe-area-top);
-            }
-            
-            /* Ajuster le conteneur principal pour compenser le décalage du header */
-            .ios-device .weather-sidebar,
-            .ios-device .fuel-button,
-            .ios-device .search-button,
-            .ios-device .swiper-container,
-            .ios-device .widgets-row,
-            .ios-device main {
-                position: relative;
-                top: var(--ios-safe-area-top);
-            }
-            
-            /* Fix pour les boutons flottants (fuel et search) */
-            .ios-device .fuel-button,
-            .ios-device .search-button {
-                top: calc(80px + var(--ios-safe-area-top));
-            }
-            
-            /* Ajuster le widget météo si nécessaire */
-            .ios-device .weather-sidebar {
-                top: calc(60px + var(--ios-safe-area-top));
-            }
-            
-            /* S'assurer que le contenu n'est pas caché derrière le header */
-            .ios-device body {
+            /* Ajouter un padding en haut du body pour l'espace iOS */
+            .ios-device {
                 padding-top: var(--ios-safe-area-top);
             }
             
-            /* Fix pour le ticker en bas si nécessaire */
-            .ios-device .news-ticker {
-                margin-bottom: env(safe-area-inset-bottom, 0);
+            /* Fix pour le header - juste un padding interne, pas de décalage */
+            .ios-device .app-header {
+                padding-top: 10px;
+                position: relative;
+                z-index: 100;
             }
             
-            /* Fix pour la navigation du bas */
+            /* S'assurer que les boutons flottants restent à leur place normale */
+            .ios-device .fuel-button,
+            .ios-device .search-button {
+                /* Pas de modification, ils gardent leur position CSS d'origine */
+            }
+            
+            /* Fix pour la navigation du bas si elle touche le bas de l'écran */
             .ios-device .bottom-nav {
                 padding-bottom: env(safe-area-inset-bottom, 0);
             }
@@ -64,6 +43,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.head.appendChild(style);
         
         // Log pour debug
-        console.log('iOS fixes appliqués');
+        console.log('iOS fixes appliqués - version minimale');
     }
 });
