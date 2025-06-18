@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     display: flex !important;
                     align-items: center !important;
                     justify-content: center !important;
-                    background: red !important;
+                    background: #e53935 !important;
                     box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
                 }
                 
