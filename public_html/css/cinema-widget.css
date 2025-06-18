@@ -703,7 +703,7 @@
 /* ===== RESPONSIVE AMÉLIORÉ ===== */
 @media (max-width: 768px) {
     .cinema-modal-content {
-        max-height: 90vh !important;
+        max-height: 80vh !important;
         margin: 5% auto !important;
     }
     
