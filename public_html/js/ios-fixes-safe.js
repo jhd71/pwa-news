@@ -89,13 +89,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     top: calc(70px + var(--ios-safe-area-top)) !important;
                     left: 50% !important;
                     transform: translateX(-50%) !important;
-                    z-index: 990 !important;
+                    z-index: 10000 !important;
                     
                     /* Style circulaire comme les autres boutons */
-                    width: 46px !important;
-                    height: 46px !important;
-                    border-radius: 50% !important;
-                    padding: 0 !important;
                     display: flex !important;
                     align-items: center !important;
                     justify-content: center !important;
