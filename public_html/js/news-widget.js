@@ -899,8 +899,8 @@ function createAlarmPopup() {
                         <input type="time" id="alarmTime" value="08:00">
                         
                         <select id="alarmSound">
-                            <option value="suara">🎵 suara (suara.mp3)</option>
-                            <option value="college" selected>🎓 College (college.mp3)</option>
+                            <option value="suara" selected>🎵 suara (suara.mp3)</option>
+                            <option value="college">🎓 College (college.mp3)</option>
                             <option value="pixel">🎮 Pixel (pixel.mp3)</option>
                             <option value="modern">🔔 modern (modern.mp3)</option>
                             <option value="ringtone">📱 Ringtone (ringtone.mp3)</option>
@@ -929,8 +929,8 @@ function createAlarmPopup() {
                         </select>
                         
                         <select id="timerSound">
-                            <option value="suara">🎵 suara (suara.mp3)</option>
-                            <option value="college" selected>🎓 College (college.mp3)</option>
+                            <option value="suara" selected>🎵 suara (suara.mp3)</option>
+                            <option value="college">🎓 College (college.mp3)</option>
                             <option value="pixel">🎮 Pixel (pixel.mp3)</option>
                             <option value="modern">🔔 modern (modern.mp3)</option>
                             <option value="ringtone">📱 Ringtone (ringtone.mp3)</option>
