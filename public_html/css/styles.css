@@ -3424,11 +3424,11 @@ border-color: #ffd230 !important;
     background: #65a1d0 !important;
 }
 
-/* Style pour le logo et les séparateurs - Version optimisée */
+/* Style pour le logo et les séparateurs */
 .logo-text, .separator-text {
     font-family: 'Montserrat', Arial, sans-serif;
     font-weight: 900;
-    font-size: 2.5rem; /* Taille desktop par défaut */
+    font-size: 2.5rem;
     color: white;
     text-shadow: 
         -3px -3px 0 #000,
@@ -3440,7 +3440,7 @@ border-color: #ffd230 !important;
         0 -3px 0 #000,
         0 3px 0 #000;
     text-transform: uppercase;
-    letter-spacing: 2px; /* Augmenté pour Montserrat */
+    letter-spacing: 1px;
     margin: 0;
     padding: 10px 20px;
     display: inline-block;
@@ -3450,117 +3450,16 @@ border-color: #ffd230 !important;
 .separator-text {
     font-size: 1.8rem;
     padding: 8px 15px;
-    letter-spacing: 1.5px;
 }
 
-/* GRANDS ÉCRANS (1400px+) - Taille maximale */
-@media (min-width: 1400px) {
+/* Adaptation responsive */
+@media (max-width: 768px) {
     .logo-text {
-        font-size: 2.8rem;
-        letter-spacing: 3px;
-        padding: 12px 24px;
+        font-size: 1.9rem;
     }
     .separator-text {
-        font-size: 2rem;
-        letter-spacing: 2px;
+        font-size: 1.3rem;
     }
-}
-
-/* ÉCRANS LARGES (1200px - 1399px) - Desktop standard */
-@media (min-width: 1200px) and (max-width: 1399px) {
-    .logo-text {
-        font-size: 2.5rem; /* Votre taille actuelle */
-        letter-spacing: 2px;
-    }
-    .separator-text {
-        font-size: 1.8rem; /* Votre taille actuelle */
-    }
-}
-
-/* ÉCRANS MOYENS (992px - 1199px) - Petit desktop/grande tablette */
-@media (min-width: 992px) and (max-width: 1199px) {
-    .logo-text {
-        font-size: 2.2rem;
-        letter-spacing: 2px;
-        padding: 9px 18px;
-    }
-    .separator-text {
-        font-size: 1.6rem;
-        padding: 7px 13px;
-    }
-}
-
-/* TABLETTES (769px - 991px) */
-@media (min-width: 769px) and (max-width: 991px) {
-    .logo-text {
-        font-size: 2rem;
-        letter-spacing: 1.8px;
-        padding: 8px 16px;
-    }
-    .separator-text {
-        font-size: 1.5rem;
-        padding: 6px 12px;
-        letter-spacing: 1.3px;
-    }
-}
-
-/* MOBILE (481px - 768px) - Votre réglage actuel */
-@media (min-width: 481px) and (max-width: 768px) {
-    .logo-text {
-        font-size: 2.4rem; /* Votre réglage */
-        letter-spacing: 1.5px;
-        padding: 8px 16px;
-    }
-    .separator-text {
-        font-size: 1.3rem; /* Votre réglage */
-        padding: 6px 12px;
-        letter-spacing: 1.2px;
-    }
-    
-    /* Contour plus fin sur mobile */
-    .logo-text, .separator-text {
-        text-shadow: 
-            -2px -2px 0 #000,
-            2px -2px 0 #000,
-            -2px 2px 0 #000,
-            2px 2px 0 #000,
-            -2px 0 0 #000,
-            2px 0 0 #000,
-            0 -2px 0 #000,
-            0 2px 0 #000;
-    }
-}
-
-/* PETITS MOBILES (≤ 480px) */
-@media (max-width: 480px) {
-    .logo-text {
-        font-size: 1.6rem;
-        letter-spacing: 1px;
-        padding: 6px 12px;
-    }
-    .separator-text {
-        font-size: 1.1rem;
-        padding: 5px 10px;
-        letter-spacing: 0.8px;
-    }
-    
-    /* Contour encore plus fin sur très petits écrans */
-    .logo-text, .separator-text {
-        text-shadow: 
-            -1px -1px 0 #000,
-            1px -1px 0 #000,
-            -1px 1px 0 #000,
-            1px 1px 0 #000,
-            -1px 0 0 #000,
-            1px 0 0 #000,
-            0 -1px 0 #000,
-            0 1px 0 #000;
-    }
-}
-
-/* AMÉLIORATION : Transition fluide entre les tailles */
-.logo-text, .separator-text {
-    transition: font-size 0.3s ease, letter-spacing 0.3s ease, padding 0.3s ease;
 }
 
 .submit-news-btn {
