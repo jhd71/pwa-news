@@ -22,10 +22,10 @@ const ALARM_SETTINGS = {
 
 // Configuration des sons - VOS FICHIERS
 const SOUND_FILES = {
-    'modern': '/sounds/modern.mp3',           // Son moderne
+    'suara': '/sounds/suara.mp3',           // Son suara
     'college': '/sounds/college.mp3',         // Son collège  
     'pixel': '/sounds/pixel.mp3',            // Son pixel/rétro
-    'suara': '/sounds/suara.mp3',            // Son suara
+    'modern': '/sounds/modern.mp3',            // Son modern
     'ringtone': '/sounds/ringtone.mp3'       // Sonnerie classique
 };
 
@@ -899,10 +899,10 @@ function createAlarmPopup() {
                         <input type="time" id="alarmTime" value="08:00">
                         
                         <select id="alarmSound">
-                            <option value="modern">🎵 Modern (modern.mp3)</option>
+                            <option value="suara">🎵 suara (suara.mp3)</option>
                             <option value="college" selected>🎓 College (college.mp3)</option>
                             <option value="pixel">🎮 Pixel (pixel.mp3)</option>
-                            <option value="suara">🔔 Suara (suara.mp3)</option>
+                            <option value="modern">🔔 modern (modern.mp3)</option>
                             <option value="ringtone">📱 Ringtone (ringtone.mp3)</option>
                         </select>
                         
@@ -929,10 +929,10 @@ function createAlarmPopup() {
                         </select>
                         
                         <select id="timerSound">
-                            <option value="modern">🎵 Modern (modern.mp3)</option>
+                            <option value="suara">🎵 suara (suara.mp3)</option>
                             <option value="college" selected>🎓 College (college.mp3)</option>
                             <option value="pixel">🎮 Pixel (pixel.mp3)</option>
-                            <option value="suara">🔔 Suara (suara.mp3)</option>
+                            <option value="modern">🔔 modern (modern.mp3)</option>
                             <option value="ringtone">📱 Ringtone (ringtone.mp3)</option>
                         </select>
                         
