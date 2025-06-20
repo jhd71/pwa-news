@@ -3426,21 +3426,12 @@ border-color: #ffd230 !important;
 
 /* Style pour le logo et les séparateurs */
 .logo-text, .separator-text {
-    font-family: 'Arial Black', Arial, sans-serif;
+    font-family: 'Montserrat', Arial, sans-serif;
     font-weight: 900;
-    font-size: 2.5rem;
     color: white;
-    text-shadow: 
-        -3px -3px 0 #000,
-        3px -3px 0 #000,
-        -3px 3px 0 #000,
-        3px 3px 0 #000,
-        -3px 0 0 #000,
-        3px 0 0 #000,
-        0 -3px 0 #000,
-        0 3px 0 #000;
+    text-shadow: -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 2px; /* Plus d'espacement pour Montserrat */
     margin: 0;
     padding: 10px 20px;
     display: inline-block;
