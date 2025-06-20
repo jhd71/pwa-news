@@ -3424,58 +3424,41 @@ border-color: #ffd230 !important;
     background: #65a1d0 !important;
 }
 
-/* Logo ACTU & MÉDIA - Tailles responsives optimisées */
+/* Style pour le logo et les séparateurs */
 .logo-text, .separator-text {
     font-family: 'Montserrat', Arial, sans-serif;
     font-weight: 900;
+    font-size: 2.5rem;
     color: white;
-    text-shadow: -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000;
+    text-shadow: 
+        -3px -3px 0 #000,
+        3px -3px 0 #000,
+        -3px 3px 0 #000,
+        3px 3px 0 #000,
+        -3px 0 0 #000,
+        3px 0 0 #000,
+        0 -3px 0 #000,
+        0 3px 0 #000;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
     margin: 0;
     padding: 10px 20px;
     display: inline-block;
-    
-    /* Taille par défaut (Desktop) */
-    font-size: 1.8rem; /* Plus grand pour desktop */
 }
 
-/* VERSION DESKTOP (Écrans larges) */
-@media (min-width: 1200px) {
-    .logo-text, .separator-text {
-        font-size: 2.2rem; /* Encore plus grand sur très grands écrans */
-        letter-spacing: 3px;
-        padding: 12px 24px;
-    }
+/* Version plus petite pour les séparateurs */
+.separator-text {
+    font-size: 1.8rem;
+    padding: 8px 15px;
 }
 
-/* VERSION TABLETTE */
-@media (min-width: 769px) and (max-width: 1199px) {
-    .logo-text, .separator-text {
-        font-size: 1.6rem;
-        letter-spacing: 2px;
-        padding: 10px 20px;
-    }
-}
-
-/* VERSION MOBILE (Comme votre image 1) */
+/* Adaptation responsive */
 @media (max-width: 768px) {
-    .logo-text, .separator-text {
-        font-size: 1.2rem; /* Parfait pour mobile */
-        letter-spacing: 1.5px;
-        padding: 8px 16px;
-        /* Contour plus fin sur mobile */
-        text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, -2px 0 0 #000, 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000;
+    .logo-text {
+        font-size: 2rem;
     }
-}
-
-/* VERSION TRÈS PETITS MOBILES */
-@media (max-width: 480px) {
-    .logo-text, .separator-text {
-        font-size: 1rem;
-        letter-spacing: 1px;
-        padding: 6px 12px;
-        text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    .separator-text {
+        font-size: 1.4rem;
     }
 }
 
