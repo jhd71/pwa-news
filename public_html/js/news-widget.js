@@ -36,7 +36,7 @@ function saveAlarmState() {
     const alarmState = {
         alarmTime: alarmTime,
         alarmProgrammed: window.alarmProgrammed || false,
-        selectedAlarmSound: window.selectedAlarmSound || 'college',
+        selectedAlarmSound: window.selectedAlarmSound || 'suara',
         timestamp: Date.now()
     };
     localStorage.setItem('alarmState', JSON.stringify(alarmState));
@@ -46,7 +46,7 @@ function saveTimerState() {
     if (timerInterval && timerSeconds > 0) {
         const timerState = {
             remainingSeconds: timerSeconds,
-            selectedTimerSound: window.selectedTimerSound || 'college',
+            selectedTimerSound: window.selectedTimerSound || 'suara',
             isActive: true,
             timestamp: Date.now()
         };
@@ -1162,13 +1162,13 @@ function triggerAlarm() {
 // Jouer des sons depuis votre dossier /sounds/
 function playAlarmSound() {
     const soundSelect = document.getElementById('alarmSound');
-    let soundType = 'college';
+    let soundType = 'suara';
     
     if (soundSelect) {
         soundType = soundSelect.value;
         console.log('🔊 Son sélectionné:', soundType);
     } else {
-        soundType = window.selectedAlarmSound || 'college';
+        soundType = window.selectedAlarmSound || 'suara';
         console.log('🔊 Son sauvegardé:', soundType);
     }
     
@@ -1473,7 +1473,7 @@ function triggerTimerAlarm() {
 
 // ✅ NOUVELLE FONCTION : Jouer son du minuteur
 function playTimerSound() {
-    const soundType = window.selectedTimerSound || 'college';
+    const soundType = window.selectedTimerSound || 'suara';
     
     // ✅ Arrêter le son précédent s'il y en a un
     if (currentTimerAudio) {
