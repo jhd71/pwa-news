@@ -159,6 +159,12 @@
     <span class="material-icons news-pulse">newspaper</span>
     <div class="news-widget-title-short">NEWS</div>
     
+    <!-- Bouton Proposer avec stopPropagation -->
+    <button class="submit-news-btn" onclick="event.stopPropagation(); openSubmitModal();">
+        <span class="icon">📝</span>
+        <span>Proposer</span>
+    </button>
+    
     <!-- Boutons intégrés -->
     <div class="header-buttons">
         <button class="header-btn photos-btn" onclick="event.stopPropagation(); openGalleryPage();" title="Galerie Photos">
@@ -608,5 +614,332 @@ document.getElementById('currentYear').textContent = new Date().getFullYear();
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div id="submitModal" class="submit-modal">
+        <div class="submit-modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <span>📝</span>
+                    Proposer une actualité
+                </h2>
+                <button class="close-modal" onclick="closeSubmitModal()">×</button>
+            </div>
+
+            <form id="submitNewsForm" class="submit-form">
+                <!-- Type d'actualité -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span>🎯</span>
+                        Type d'actualité
+                    </label>
+                    <div class="news-types">
+                        <label class="news-type">
+                            <input type="radio" name="newsType" value="actualite" checked>
+                            <span>📰 Actualité</span>
+                        </label>
+                        <label class="news-type">
+                            <input type="radio" name="newsType" value="evenement">
+                            <span>🎪 Événement</span>
+                        </label>
+                        <label class="news-type">
+                            <input type="radio" name="newsType" value="pratique">
+                            <span>💡 Info pratique</span>
+                        </label>
+                        <label class="news-type">
+                            <input type="radio" name="newsType" value="insolite">
+                            <span>🤔 Insolite</span>
+                        </label>
+                        <label class="news-type">
+                            <input type="radio" name="newsType" value="photo">
+                            <span>📸 Photo/Vidéo</span>
+                        </label>
+                        <label class="news-type">
+                            <input type="radio" name="newsType" value="autre">
+                            <span>📋 Autre</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Titre -->
+                <div class="form-group">
+                    <label class="form-label" for="newsTitle">
+                        <span>📢</span>
+                        Titre de l'actualité
+                    </label>
+                    <input 
+                        type="text" 
+                        id="newsTitle" 
+                        name="title" 
+                        class="form-input" 
+                        placeholder="Ex: Ouverture d'un nouveau commerce..."
+                        required
+                        maxlength="100"
+                    >
+                    <span class="form-hint">Maximum 100 caractères</span>
+                </div>
+
+                <!-- Contenu -->
+                <div class="form-group">
+                    <label class="form-label" for="newsContent">
+                        <span>📝</span>
+                        Description / Contenu
+                    </label>
+                    <textarea 
+                        id="newsContent" 
+                        name="content" 
+                        class="form-textarea" 
+                        placeholder="Décrivez votre actualité, événement ou information..."
+                        required
+                        maxlength="1000"
+                    ></textarea>
+                    <span class="form-hint">Maximum 1000 caractères</span>
+                </div>
+
+                <!-- Lieu (optionnel) -->
+                <div class="form-group">
+                    <label class="form-label" for="newsLocation">
+                        <span>📍</span>
+                        Lieu (optionnel)
+                    </label>
+                    <input 
+                        type="text" 
+                        id="newsLocation" 
+                        name="location" 
+                        class="form-input" 
+                        placeholder="Ex: Place André Malraux, Centre-ville..."
+                    >
+                </div>
+
+                <!-- Date (optionnel) -->
+                <div class="form-group">
+                    <label class="form-label" for="newsDate">
+                        <span>📅</span>
+                        Date de l'événement (optionnel)
+                    </label>
+                    <input 
+                        type="datetime-local" 
+                        id="newsDate" 
+                        name="eventDate" 
+                        class="form-input"
+                    >
+                </div>
+
+                <!-- Upload fichier -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span>📎</span>
+                        Photo ou document (optionnel)
+                    </label>
+                    <div class="file-upload">
+                        <input 
+                            type="file" 
+                            id="newsFile" 
+                            name="file" 
+                            accept="image/*,.pdf,.doc,.docx"
+                            onchange="handleFileSelect(this)"
+                        >
+                        <label for="newsFile" class="file-upload-label" id="fileLabel">
+                            <span>📎</span>
+                            <span>Cliquez pour ajouter un fichier</span>
+                        </label>
+                    </div>
+                    <span class="form-hint">Images, PDF, Word - Max 5MB</span>
+                </div>
+
+                <!-- Contact -->
+                <div class="form-group">
+                    <label class="form-label" for="newsContact">
+                        <span>📧</span>
+                        Votre email (pour vous recontacter)
+                    </label>
+                    <input 
+                        type="email" 
+                        id="newsContact" 
+                        name="contact" 
+                        class="form-input" 
+                        placeholder="votre.email@exemple.fr"
+                        required
+                    >
+                    <span class="form-hint">Votre email ne sera pas publié</span>
+                </div>
+
+                <!-- Nom (optionnel) -->
+                <div class="form-group">
+                    <label class="form-label" for="newsAuthor">
+                        <span>👤</span>
+                        Votre nom/pseudo (optionnel)
+                    </label>
+                    <input 
+                        type="text" 
+                        id="newsAuthor" 
+                        name="author" 
+                        class="form-input" 
+                        placeholder="Pour vous créditer si publié"
+                    >
+                </div>
+
+                <!-- Actions -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-cancel" onclick="closeSubmitModal()">
+                        Annuler
+                    </button>
+                    <button type="submit" class="btn btn-submit">
+                        📤 Envoyer ma proposition
+                    </button>
+                </div>
+            </form>
+
+            <!-- Message de succès (caché par défaut) -->
+            <div id="successMessage" class="success-message" style="display: none;">
+                <div class="success-icon">✅</div>
+                <h3 class="success-title">Merci pour votre contribution !</h3>
+                <div class="success-text">
+                    <p>Votre proposition d'actualité a bien été envoyée à l'équipe d'Actu&Média.</p>
+                    <p>Nous la examinerons rapidement et vous recontacterons si nécessaire.</p>
+                    <p><strong>Continuez à faire vivre l'actualité locale !</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gestion de la modal
+        function openSubmitModal() {
+            document.getElementById('submitModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Vibration tactile si disponible
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+        }
+
+        function closeSubmitModal() {
+            document.getElementById('submitModal').classList.remove('active');
+            document.body.style.overflow = '';
+            
+            // Reset du formulaire
+            document.getElementById('submitNewsForm').reset();
+            resetFileLabel();
+            hideSuccessMessage();
+        }
+
+        // Gestion des types d'actualité
+        document.addEventListener('DOMContentLoaded', function() {
+            const newsTypes = document.querySelectorAll('.news-type');
+            const radios = document.querySelectorAll('input[name="newsType"]');
+
+            radios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    newsTypes.forEach(type => type.classList.remove('selected'));
+                    this.closest('.news-type').classList.add('selected');
+                });
+            });
+
+            // Sélectionner le premier par défaut
+            document.querySelector('.news-type').classList.add('selected');
+        });
+
+        // Gestion de l'upload de fichier
+        function handleFileSelect(input) {
+            const label = document.getElementById('fileLabel');
+            const file = input.files[0];
+            
+            if (file) {
+                label.innerHTML = `<span>✅</span><span>${file.name}</span>`;
+                label.classList.add('file-selected');
+            } else {
+                resetFileLabel();
+            }
+        }
+
+        function resetFileLabel() {
+            const label = document.getElementById('fileLabel');
+            label.innerHTML = '<span>📎</span><span>Cliquez pour ajouter un fichier</span>';
+            label.classList.remove('file-selected');
+        }
+
+        // Soumission du formulaire
+        document.getElementById('submitNewsForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.querySelector('.btn-submit');
+            const originalText = submitBtn.innerHTML;
+            
+            // Désactiver le bouton et afficher loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '⏳ Envoi en cours...';
+            
+            try {
+                const formData = new FormData(this);
+                
+                // Simuler l'envoi (remplacer par votre logique)
+                await sendNewsSubmission(formData);
+                
+                // Afficher le message de succès
+                showSuccessMessage();
+                
+            } catch (error) {
+                console.error('Erreur envoi:', error);
+                alert('Erreur lors de l\'envoi. Réessayez ou contactez-nous directement.');
+                
+                // Restaurer le bouton
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        });
+
+        // Fonction d'envoi (à adapter selon votre backend)
+        async function sendNewsSubmission(formData) {
+    try {
+        const response = await fetch('https://formspree.io/f/xpwrjqjw', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Erreur envoi');
+        }
+
+        const result = await response.json();
+        console.log('✅ Email envoyé via Formspree:', result);
+        
+    } catch (error) {
+        console.error('❌ Erreur Formspree:', error);
+        throw error;
+    }
+}
+
+        function showSuccessMessage() {
+            document.getElementById('submitNewsForm').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+            
+            // Fermer automatiquement après 5 secondes
+            setTimeout(() => {
+                closeSubmitModal();
+            }, 5000);
+        }
+
+        function hideSuccessMessage() {
+            document.getElementById('submitNewsForm').style.display = 'flex';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        // Fermeture par clic en dehors
+        document.getElementById('submitModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSubmitModal();
+            }
+        });
+
+        // Fermeture par Échap
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('submitModal').classList.contains('active')) {
+                closeSubmitModal();
+            }
+        });
+    </script>
 </body>
 </html>
