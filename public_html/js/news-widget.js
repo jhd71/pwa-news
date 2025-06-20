@@ -689,6 +689,106 @@ async function updateVisitorsCount() {
     }
 }
 
+// Fonction pour afficher la popup visiteurs avec un graphique dynamique
+function showVisitorsPopup(labels, dataPoints, totalUniqueVisitors) {
+    const existing = document.getElementById('visitorsPopup');
+    if (existing) existing.remove();
+
+    const popup = document.createElement('div');
+    popup.id = 'visitorsPopup';
+    popup.innerHTML = `
+        <div class="visitors-popup-overlay" onclick="document.getElementById('visitorsPopup')?.remove()"></div>
+        <div class="visitors-popup-content">
+            <div class="visitors-popup-header">
+                <span>👥 Visiteurs actifs sur 24h</span>
+                <span class="close-btn" onclick="document.getElementById('visitorsPopup')?.remove()">✕</span>
+            </div>
+            <canvas id="visitorsChart" height="200"></canvas>
+            <div class="visitors-popup-footer">
+                <strong>${totalUniqueVisitors}</strong> visiteurs uniques sur les 24 dernières heures
+            </div>
+        </div>
+        <style>
+        #visitorsPopup {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .visitors-popup-overlay {
+            position: absolute;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+        .visitors-popup-content {
+            position: relative;
+            background: var(--popup-bg, white);
+            color: var(--popup-color, #111);
+            border-radius: 16px;
+            padding: 20px;
+            max-width: 90vw;
+            width: 420px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+        .visitors-popup-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .close-btn {
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .visitors-popup-footer {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        @media (max-width: 480px) {
+            .visitors-popup-content {
+                width: 95vw;
+                padding: 15px;
+            }
+        }
+        :root[data-theme='dark'] {
+            --popup-bg: #1e1e1e;
+            --popup-color: #f1f1f1;
+        }
+        </style>
+    `;
+    document.body.appendChild(popup);
+
+    new Chart(document.getElementById("visitorsChart"), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Visiteurs",
+                data: dataPoints,
+                borderColor: "#e53935",
+                backgroundColor: "rgba(229,57,53,0.1)",
+                pointBackgroundColor: "#e53935",
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+}
+
 // Fonction de nettoyage automatique des visiteurs inactifs
 async function cleanupInactiveVisitors() {
     try {

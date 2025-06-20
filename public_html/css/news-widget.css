@@ -1138,8 +1138,6 @@ color: #4196df;
     min-height: 20px;
 }
 
-/* ===== REMPLACEZ TOUT LE CSS MOBILE DANS news-widget.css PAR CELUI-CI ===== */
-
 /* Correction DÉFINITIVE pour l'input time sur mobile */
 @media (max-width: 768px) {
     
@@ -1294,5 +1292,211 @@ color: #4196df;
             text-align: center !important;
             direction: ltr !important;
         }
+    }
+}
+
+/* ============================================= */
+/*          POPUP STATISTIQUES VISITEURS         */
+/* ============================================= */
+
+/* --- Définition des variables de couleur pour chaque thème --- */
+/* Thème Light (par défaut) */
+:root, [data-theme="light"]  {
+    --popup-bg: #ffffff;
+    --popup-text: #333333;
+    --popup-shadow: rgba(0, 0, 0, 0.15);
+    --summary-bg: #f8f9fa;
+    --summary-text: #495057;
+    --chart-line-color: #007BFF;
+    --chart-area-bg: rgba(0, 123, 255, 0.1);
+    --chart-grid-color: #e9ecef;
+}
+
+/* Thème Dark */
+[data-theme="dark"]  {
+    --popup-bg: #2d3748;
+    --popup-text: #f7fafc;
+    --popup-shadow: rgba(0, 0, 0, 0.4);
+    --summary-bg: #4a5568;
+    --summary-text: #f7fafc;
+    --chart-line-color: #63b3ed;
+    --chart-area-bg: rgba(99, 179, 237, 0.15);
+    --chart-grid-color: #4a5568;
+}
+
+/* Thème Rouge - AMÉLIORÉ pour la lisibilité */
+[data-theme="rouge"]  {
+    --popup-bg: #ffffff;
+    --popup-text: #2d1b1e;
+    --popup-shadow: rgba(195, 36, 51, 0.3);
+    --summary-bg: #fee2e2;
+    --summary-text: #991b1b;
+    --chart-line-color: #dc2626;
+    --chart-area-bg: rgba(220, 38, 38, 0.1);
+    --chart-grid-color: #fecaca;
+}
+
+/* Thème Bleu Ciel */
+[data-theme="bleuciel"]  {
+    --popup-bg: #ffffff;
+    --popup-text: #1e3a8a;
+    --popup-shadow: rgba(59, 130, 246, 0.2);
+    --summary-bg: #dbeafe;
+    --summary-text: #1e40af;
+    --chart-line-color: #3b82f6;
+    --chart-area-bg: rgba(59, 130, 246, 0.1);
+    --chart-grid-color: #bfdbfe;
+}
+
+/* --- Styles de la structure de la popup (indépendants du thème) --- */
+.visitors-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.visitors-popup-overlay.visible {
+    opacity: 1;
+}
+
+.visitors-popup-box {
+    background: var(--popup-bg);
+    color: var(--popup-text);
+    padding: 24px;
+    border-radius: 20px;
+    box-shadow: 
+        0 20px 40px var(--popup-shadow),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+    width: 95vw;
+    max-width: 480px;
+    max-height: 65vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.visitors-popup-overlay.visible .visitors-popup-box {
+    transform: scale(1) translateY(0);
+}
+
+.visitors-popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--chart-grid-color);
+}
+
+.visitors-popup-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--popup-text);
+}
+
+.visitors-popup-title .material-icons {
+    font-size: 1.4rem;
+    color: var(--chart-line-color);
+}
+
+.visitors-popup-close {
+    font-size: 1.8rem;
+    font-weight: 300;
+    line-height: 1;
+    border: none;
+    background: var(--summary-bg);
+    cursor: pointer;
+    color: var(--popup-text);
+    opacity: 0.8;
+    padding: 8px 12px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.visitors-popup-close:hover {
+    opacity: 1;
+    background: var(--chart-line-color);
+    color: white;
+    transform: scale(1.1);
+}
+
+/* Canvas pour le graphique */
+#visitorsChart {
+    margin: 16px 0;
+    border-radius: 12px;
+    background: var(--summary-bg);
+    padding: 8px;
+}
+
+.visitors-popup-summary {
+    margin: 20px 0 0 0;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 16px 20px;
+    background: var(--summary-bg);
+    color: var(--summary-text);
+    border-radius: 16px;
+    border: 2px solid var(--chart-grid-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.visitors-popup-summary strong {
+    font-size: 1.3rem;
+    color: var(--chart-line-color);
+    font-weight: 800;
+}
+
+/* Animation d'apparition plus fluide */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.visitors-popup-overlay.visible .visitors-popup-box {
+    animation: slideInUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .visitors-popup-box {
+        padding: 20px 16px;
+        max-width: 92vw;
+        border-radius: 16px;
+    }
+    
+    .visitors-popup-title {
+        font-size: 1.1rem;
+    }
+    
+    .visitors-popup-summary {
+        font-size: 1rem;
+        padding: 14px 16px;
     }
 }
