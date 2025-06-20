@@ -3455,7 +3455,7 @@ border-color: #ffd230 !important;
 /* Adaptation responsive */
 @media (max-width: 768px) {
     .logo-text {
-        font-size: 2rem;
+        font-size: 1.9rem;
     }
     .separator-text {
         font-size: 1.3rem;
