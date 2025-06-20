@@ -3507,7 +3507,7 @@ border-color: #ffd230 !important;
 /* MOBILE (481px - 768px) - Votre réglage actuel */
 @media (min-width: 481px) and (max-width: 768px) {
     .logo-text {
-        font-size: 1.9rem; /* Votre réglage */
+        font-size: 2.4rem; /* Votre réglage */
         letter-spacing: 1.5px;
         padding: 8px 16px;
     }
