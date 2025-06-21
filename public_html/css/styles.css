@@ -3974,20 +3974,13 @@ border-color: #ffd230 !important;
     transition: all 0.3s ease !important;
 }
 
-/* Force les séparateurs en rouge avec priorité maximale */
-[data-theme="rouge"] .separator,
-[data-theme="rouge"] .separator:before,
-[data-theme="rouge"] .separator:after {
-    background: linear-gradient(90deg, 
+/* Double sécurité avec toutes les propriétés possibles */
+[data-theme="rouge"] .separator {
+    background: #bc3a34 !important;
+    background-color: #bc3a34 !important;
+    background-image: linear-gradient(90deg, 
         rgba(188, 58, 52, 0.3) 0%, 
         rgba(188, 58, 52, 0.8) 50%, 
         rgba(188, 58, 52, 0.3) 100%
     ) !important;
-    background-color: rgba(188, 58, 52, 0.8) !important;
-}
-
-/* Pour les lignes blanches décoratives */
-[data-theme="rouge"] .separator::before,
-[data-theme="rouge"] .separator::after {
-    background-color: rgba(255, 255, 255, 0.3) !important;
 }
