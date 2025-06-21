@@ -3974,19 +3974,13 @@ border-color: #ffd230 !important;
     transition: all 0.3s ease !important;
 }
 
-/* FORCE MAXIMALE pour les séparateurs rouges */
-[data-theme="rouge"] * .separator,
-[data-theme="rouge"] body .separator,
-[data-theme="rouge"] main .separator,
-[data-theme="rouge"] .tile-container .separator,
-[data-theme="rouge"] .separator.separator {
-    background: #bc3a34 !important;
-    background-color: #bc3a34 !important;
+/* Séparateurs avec le bon rouge */
+[data-theme="rouge"] .separator {
+    background: rgb(148, 0, 0) !important;
+    background-color: rgb(148, 0, 0) !important;
     background-image: linear-gradient(90deg, 
-        rgba(188, 58, 52, 0.3) 0%, 
-        rgba(188, 58, 52, 0.8) 50%, 
-        rgba(188, 58, 52, 0.3) 100%
+        rgba(148, 0, 0, 0.3) 0%, 
+        rgba(148, 0, 0, 0.8) 50%, 
+        rgba(148, 0, 0, 0.3) 100%
     ) !important;
-    border: none !important;
-    color: white !important;
 }
