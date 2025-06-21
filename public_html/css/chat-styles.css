@@ -759,7 +759,7 @@ body:has(.chat-container.open) .news-ticker {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.25rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgb(148, 0, 0);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -802,7 +802,7 @@ body:has(.chat-container.open) .news-ticker {
 }
 
 .admin-panel button {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgb(148, 0, 0);
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.3);
   padding: 8px 0px;

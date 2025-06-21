@@ -472,11 +472,11 @@ input:checked + .toggle-slider:before {
 }
 
 [data-theme="rouge"] .settings-menu {
-  background-color: #d32f2f !important;
+  background-color: rgb(148, 0, 0) !important;
 }
 
 [data-theme="rouge"] .settings-header {
-  background-color: #d32f2f !important;
+  background-color: rgb(148, 0, 0) !important;
 }
 
 [data-theme="rouge"] .modal-header,

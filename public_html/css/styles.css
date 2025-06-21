@@ -395,7 +395,7 @@ body {
     max-width: 350px;
     min-width: 280px;
     height: calc(100vh - var(--header-height));
-    background-color: var(--primary-color) !important;
+    background-color: rgb(148, 0, 0) !important;
     transition: left 0.3s ease, transform 0.3s ease; /* Ajout de transform pour assurer la transition */
     z-index: 999;
     box-shadow: 2px 0 5px var(--shadow-color);
@@ -416,7 +416,7 @@ body {
 
 .sidebar-header {
     padding: 15px 20px;
-    background-color: var(--primary-color);
+    background-color: rgb(148, 0, 0);
     color: white;
     display: flex;
     justify-content: space-between;
@@ -2121,7 +2121,7 @@ a:active {
 
 /* Barre de navigation en bas pour thème rouge */
 [data-theme="rouge"] .bottom-nav {
-  background: linear-gradient(to bottom, #c62828, #b71c1c);
+  background: rgb(148, 0, 0);
 }
 
 /* Séparateur pour le thème rouge */
@@ -2135,7 +2135,7 @@ a:active {
 
 /* En-tête */
 [data-theme="rouge"] .app-header {
-  background: linear-gradient(to right, #c62828, #d32f2f);
+  background: rgb(148, 0, 0);
 }
 
 /* Styles des boutons flottants pour tous les thèmes */
@@ -2154,7 +2154,7 @@ a:active {
 [data-theme="rouge"] .weather-show-btn,
 [data-theme="rouge"] .quick-links-show-btn,
 [data-theme="rouge"] .news-button {
-    background: linear-gradient(145deg, #c62828, #d32f2f);
+    background: rgb(148, 0, 0);
 }
 
 [data-theme="bleuciel"] .weather-show-btn,
@@ -2182,7 +2182,7 @@ a:active {
 [data-theme="rouge"] .quick-links-sidebar,
 [data-theme="rouge"] .sidebar,
 [data-theme="rouge"] .settings-menu {
-    background: linear-gradient(145deg, #c62828, #d32f2f) !important;
+    background: rgb(148, 0, 0) !important;
 }
 
 [data-theme="bleuciel"] .weather-sidebar,
@@ -2199,11 +2199,11 @@ a:active {
 
 /* Réglages pour le chat */
 [data-theme="rouge"] .chat-container {
-  background: linear-gradient(145deg, #c62828, #e53935);
+  background: rgb(148, 0, 0);
 }
 
 [data-theme="rouge"] .chat-header {
-  background: rgba(183, 28, 28, 0.3);
+  background: rgb(148, 0, 0);
 }
 
 /* Boutons actifs pour le thème rouge */
@@ -2331,7 +2331,7 @@ background: #d32f2f;
 }
 
 [data-theme="rouge"] .swiper-slide {
-  background: var(--rouge-site) !important; 
+  background: rgb(148, 0, 0) !important; 
 }
 
 [data-theme="rouge"] .slide-title {
@@ -2349,7 +2349,7 @@ background: #d32f2f;
 [data-theme="rouge"] .news-button,
 [data-theme="rouge"] .weather-show-btn,
 [data-theme="rouge"] .quick-links-show-btn {
-  background-color: var(--rouge-fonce) !important;
+  background-color: rgb(148, 0, 0) !important;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3) !important;
 }
 
@@ -3417,7 +3417,7 @@ border-color: #ffd230 !important;
 }
 
 [data-theme="rouge"] body {
-    background: #9d1414 !important;
+    background: #a40014 !important
 }
 
 [data-theme="bleuciel"] body {
@@ -3837,3 +3837,131 @@ border-color: #ffd230 !important;
                 grid-template-columns: 1fr;
             }
         }
+		
+		/* Effet de survol pour le bouton de recherche */
+[data-theme="rouge"] .search-button:hover,
+.theme-rouge .search-button:hover {
+    background: rgb(148, 0, 0) !important;
+    box-shadow: 0 6px 20px rgba(198, 40, 40, 0.4) !important;
+    transform: translateY(-2px) !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Effet de survol pour le bouton météo */
+[data-theme="rouge"] .weather-show-btn:hover,
+.theme-rouge .weather-show-btn:hover {
+    background: rgb(148, 0, 0) !important;
+    box-shadow: 0 6px 20px rgba(198, 40, 40, 0.4) !important;
+    transform: translateY(-2px) !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Effet de survol pour le bouton liens rapides */
+[data-theme="rouge"] .quick-links-show-btn:hover,
+.theme-rouge .quick-links-show-btn:hover {
+    background: rgb(148, 0, 0) !important;
+    box-shadow: 0 6px 20px rgba(198, 40, 40, 0.4) !important;
+    transform: translateY(-2px) !important;
+    transition: all 0.3s ease !important;
+}
+
+/* === EFFETS DE SURVOL POUR TOUS LES THÈMES === */
+
+/* THÈME VIOLET (light) */
+[data-theme="light"] .fuel-button:hover,
+.theme-light .fuel-button:hover {
+    background: #673ab7 !important; /* Violet plus foncé */
+    box-shadow: 0 6px 20px rgba(126, 87, 194, 0.4) !important;
+    transform: translateY(-2px) !important;
+    transition: all 0.3s ease !important;
+}
+
+[data-theme="light"] .search-button:hover,
+.theme-light .search-button:hover {
+    background: #673ab7 !important; /* Violet plus foncé */
+    box-shadow: 0 6px 20px rgba(126, 87, 194, 0.4) !important;
+    transform: translateY(-2px) !important;
+    transition: all 0.3s ease !important;
+}
+
+[data-theme="light"] .weather-show-btn:hover,
+.theme-light .weather-show-btn:hover {
+    background: #673ab7 !important; /* Violet plus foncé */
+    box-shadow: 0 6px 20px rgba(126, 87, 194, 0.4) !important;
+    transform: translateY(-2px) !important;
+    transition: all 0.3s ease !important;
+}
+
+[data-theme="light"] .quick-links-show-btn:hover,
+.theme-light .quick-links-show-btn:hover {
+    background: #673ab7 !important; /* Violet plus foncé */
+    box-shadow: 0 6px 20px rgba(126, 87, 194, 0.4) !important;
+    transform: translateY(-2px) !important;
+    transition: all 0.3s ease !important;
+}
+
+/* THÈME SOMBRE (dark) */
+[data-theme="dark"] .fuel-button:hover,
+.theme-dark .fuel-button:hover {
+    background: #283593 !important; /* Bleu plus foncé */
+    box-shadow: 0 6px 20px rgba(26, 35, 126, 0.4) !important;
+    transform: translateY(-2px) !important;
+    transition: all 0.3s ease !important;
+}
+
+[data-theme="dark"] .search-button:hover,
+.theme-dark .search-button:hover {
+    background: #283593 !important; /* Bleu plus foncé */
+    box-shadow: 0 6px 20px rgba(26, 35, 126, 0.4) !important;
+    transform: translateY(-2px) !important;
+    transition: all 0.3s ease !important;
+}
+
+[data-theme="dark"] .weather-show-btn:hover,
+.theme-dark .weather-show-btn:hover {
+    background: #283593 !important; /* Bleu plus foncé */
+    box-shadow: 0 6px 20px rgba(26, 35, 126, 0.4) !important;
+    transform: translateY(-2px) !important;
+    transition: all 0.3s ease !important;
+}
+
+[data-theme="dark"] .quick-links-show-btn:hover,
+.theme-dark .quick-links-show-btn:hover {
+    background: #283593 !important; /* Bleu plus foncé */
+    box-shadow: 0 6px 20px rgba(26, 35, 126, 0.4) !important;
+    transform: translateY(-2px) !important;
+    transition: all 0.3s ease !important;
+}
+
+/* THÈME BLEU CIEL (bleuciel) */
+[data-theme="bleuciel"] .fuel-button:hover,
+.theme-bleuciel .fuel-button:hover {
+    background: #0277bd !important; /* Bleu ciel plus foncé */
+    box-shadow: 0 6px 20px rgba(79, 179, 232, 0.4) !important;
+    transform: translateY(-2px) !important;
+    transition: all 0.3s ease !important;
+}
+
+[data-theme="bleuciel"] .search-button:hover,
+.theme-bleuciel .search-button:hover {
+    background: #0277bd !important; /* Bleu ciel plus foncé */
+    box-shadow: 0 6px 20px rgba(79, 179, 232, 0.4) !important;
+    transform: translateY(-2px) !important;
+    transition: all 0.3s ease !important;
+}
+
+[data-theme="bleuciel"] .weather-show-btn:hover,
+.theme-bleuciel .weather-show-btn:hover {
+    background: #0277bd !important; /* Bleu ciel plus foncé */
+    box-shadow: 0 6px 20px rgba(79, 179, 232, 0.4) !important;
+    transform: translateY(-2px) !important;
+    transition: all 0.3s ease !important;
+}
+
+[data-theme="bleuciel"] .quick-links-show-btn:hover,
+.theme-bleuciel .quick-links-show-btn:hover {
+    background: #0277bd !important; /* Bleu ciel plus foncé */
+    box-shadow: 0 6px 20px rgba(79, 179, 232, 0.4) !important;
+    transform: translateY(-2px) !important;
+    transition: all 0.3s ease !important;
+}

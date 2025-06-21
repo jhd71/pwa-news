@@ -141,7 +141,7 @@
 /* 3. Mode Rouge */
 [data-theme="rouge"] .weather-sidebar,
 [data-theme="rouge"] .quick-links-sidebar {
-  background: linear-gradient(145deg, #b71c1c, #e53935) !important;
+  background: rgb(148, 0, 0) !important;
   border: 1px solid rgba(255, 255, 255, 0.3) !important;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35) !important;
 }
@@ -530,7 +530,7 @@
 [data-theme="rouge"] .weather-show-btn,
 [data-theme="rouge"] .quick-links-show-btn,
 [data-theme="rouge"] .weather-mobile-btn {
-  background: linear-gradient(145deg, #c62828, #e53935);
+  background: rgb(148, 0, 0);
 }
 
 [data-theme="bleuciel"] .weather-show-btn,
@@ -730,13 +730,22 @@
 /* Thème Rouge - Gradient rouge */
 [data-theme="rouge"] .fuel-button,
 .theme-rouge .fuel-button {
-    background: linear-gradient(145deg, #c62828, #e53935) !important;
+    background: rgb(148, 0, 0) !important;
     color: white !important;
+}
+
+/* Effet de survol pour le bouton de recherche */
+[data-theme="rouge"] .search-button:hover,
+.theme-rouge .search-button:hover {
+    background: rgb(148, 0, 0) !important;
+    box-shadow: 0 6px 20px rgba(198, 40, 40, 0.4);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
 }
 
 [data-theme="rouge"] .fuel-button:hover,
 .theme-rouge .fuel-button:hover {
-    background: linear-gradient(145deg, #b71c1c, #d32f2f) !important;
+    background: rgb(148, 0, 0) !important;
     box-shadow: 0 6px 20px rgba(198, 40, 40, 0.4);
     transform: translateY(-2px);
 }
@@ -837,7 +846,7 @@
 
 [data-theme="rouge"] .search-button,
 .theme-rouge .search-button {
-    background: linear-gradient(145deg, #c62828, #e53935) !important;
+    background: rgb(148, 0, 0) !important;
 }
 
 [data-theme="bleuciel"] .search-button,

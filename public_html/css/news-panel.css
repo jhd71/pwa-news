@@ -135,7 +135,7 @@
 [data-theme="dark"] .news-button,
 [data-theme="rouge"] .news-button,
 [data-theme="light"] .news-button {
-    background-color: var(--primary-color) !important;
+    background-color: rgb(148, 0, 0) !important;
 }
 
 /* Menu des actualités */
@@ -939,7 +939,7 @@
 
 /* Thème rouge pour le news panel */
 [data-theme="rouge"] .news-panel {
-    background: linear-gradient(145deg, #c62828, #e53935);
+    background: rgb(148, 0, 0);
 }
 
 /* Adaptation du thème rouge pour les éléments spécifiques */

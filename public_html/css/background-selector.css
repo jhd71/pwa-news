@@ -466,7 +466,7 @@ body.bg-gradient-morning-mist {
 }
 
 [data-theme="rouge"] .bg-selector-panel {
-    background: linear-gradient(145deg, #bc3a34, #a32f2a);
+    background: rgb(148, 0, 0);
 }
 
 [data-theme="bleuciel"] .bg-selector-panel {
