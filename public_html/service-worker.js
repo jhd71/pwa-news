@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v24'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v25'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -32,6 +32,7 @@ const STATIC_RESOURCES = [
     '/css/donation.css',
 	'/css/news-widget.css',
 	'/css/cinema-widget.css',
+	'/css/football-widget.css',
 
     // Scripts JavaScript
     '/js/app.js',
@@ -62,6 +63,8 @@ const STATIC_RESOURCES = [
     '/js/custom-background-manager.js',
 	'/js/news-widget.js',
 	'/js/cinema-widget.js',
+	'/js/visitor-tracker.js',
+	'/js/football-widget.js',
 	'/js/ios-fixes-safe.js',
     
     // Fichiers de configuration (seulement ceux qui existent)

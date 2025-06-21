@@ -336,6 +336,13 @@ newsDefaultSites.forEach(site => {
 const photosTileElement = this.createTile(photosTile);
 this.tileContainer.appendChild(photosTileElement);
 
+// 🆕 NOUVEAU : Ajouter le widget Football dans les widgets (pas dans les tuiles)
+setTimeout(() => {
+    if (typeof window.addFootballToWidgets === 'function') {
+        window.addFootballToWidgets();
+    }
+}, 500);
+
         // Séparateur Radio
         const separator1 = document.createElement('div');
         separator1.className = 'separator';
@@ -445,13 +452,6 @@ const tvSites = [
     title: '⚽ FC Montceau Bourgogne',
     url: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
     mobileUrl: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
-    isDefault: true,
-    category: 'sports'
-  },
-  {
-    title: '🆚 Foot-Live',
-    url: 'https://www.footmercato.net/live/',
-    mobileUrl: 'https://www.footmercato.net/live/',
     isDefault: true,
     category: 'sports'
   },
