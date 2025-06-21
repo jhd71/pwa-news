@@ -3420,6 +3420,14 @@ border-color: #ffd230 !important;
     background: #1a1a1a !important; /* ← Nouveau fond noir profond */
 }
 
+[data-theme="rouge"] .separator {
+    background: linear-gradient(90deg, 
+        rgba(188, 58, 52, 0.3) 0%, 
+        rgba(188, 58, 52, 0.8) 50%, 
+        rgba(188, 58, 52, 0.3) 100%
+    ) !important;
+}
+
 [data-theme="bleuciel"] body {
     background: #65a1d0 !important;
 }
