@@ -277,8 +277,9 @@
 }
 
 [data-theme="rouge"] .feature-item {
-    background: rgba(211, 47, 47, 0.1);
-    border-left-color: #d32f2f;
+    background: rgba(211, 47, 47, 0.1) !important;
+    border-left-color: #d32f2f !important;
+	color: #000000 !important;
 }
 
 [data-theme="rouge"] .feature-icon {
@@ -409,7 +410,7 @@
     }
     
     .feature-item {
-        font-size: 13px;
+        font-size: 12px;
         padding: 6px 10px;
     }
 }
