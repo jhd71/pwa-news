@@ -3417,7 +3417,7 @@ border-color: #ffd230 !important;
 }
 
 [data-theme="rouge"] body {
-    background: #a40014 !important
+    background: #1a1a1a !important; /* ← Nouveau fond noir profond */
 }
 
 [data-theme="bleuciel"] body {
