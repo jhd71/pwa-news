@@ -3417,7 +3417,15 @@ border-color: #ffd230 !important;
 }
 
 [data-theme="rouge"] body {
-    background: #a40014 !important
+    background: #1a1a1a !important; /* ← Nouveau fond noir profond */
+}
+
+[data-theme="rouge"] .separator {
+    background: linear-gradient(90deg, 
+        rgba(188, 58, 52, 0.3) 0%, 
+        rgba(188, 58, 52, 0.8) 50%, 
+        rgba(188, 58, 52, 0.3) 100%
+    ) !important;
 }
 
 [data-theme="bleuciel"] body {
@@ -3964,4 +3972,21 @@ border-color: #ffd230 !important;
     box-shadow: 0 6px 20px rgba(79, 179, 232, 0.4) !important;
     transform: translateY(-2px) !important;
     transition: all 0.3s ease !important;
+}
+
+/* FORCE MAXIMALE pour les séparateurs rouges - BON ROUGE */
+[data-theme="rouge"] * .separator,
+[data-theme="rouge"] body .separator,
+[data-theme="rouge"] main .separator,
+[data-theme="rouge"] .tile-container .separator,
+[data-theme="rouge"] .separator.separator {
+    background: rgb(148, 0, 0) !important;
+    background-color: rgb(148, 0, 0) !important;
+    background-image: linear-gradient(90deg, 
+        rgba(148, 0, 0, 0.3) 0%, 
+        rgba(148, 0, 0, 0.8) 50%, 
+        rgba(148, 0, 0, 0.3) 100%
+    ) !important;
+    border: none !important;
+    color: white !important;
 }
