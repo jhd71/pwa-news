@@ -36,7 +36,6 @@ class ContentManager {
 	this.fixListModeLayout(); // NOUVELLE LIGNE
 	this.updateActiveNavLinks();
 	this.setupVisualEnhancement();
-	this.setupMobileOptimizations();
 	}
 
     setupEventListeners() {
@@ -1204,72 +1203,6 @@ setupTextContrast() {
 setupVisualEnhancement() {
     // Appliquer l'amélioration visuelle sauvegardée au démarrage
     this.applyVisualEnhancement(this.visualEnhancement);
-}
-
-setupMobileOptimizations() {
-    // ⚠️ NOUVELLE VÉRIFICATION : Exclure complètement news-locale.html
-    if (window.location.pathname.includes('news-locale.html')) {
-        console.log('📰 Page news-locale détectée - optimisations mobiles DÉSACTIVÉES');
-        return; // Sortir complètement de la fonction
-    }
-    
-    // Éviter le double-tap zoom sur les boutons (SAUF sur news-locale.html)
-    document.addEventListener('touchend', function(e) {
-        // Empêcher le double-tap zoom sur les boutons
-        if (e.target.matches('button, .nav-item, .tile')) {
-            e.preventDefault();
-        }
-    }, { passive: false });
-    
-    // Gérer les appuis longs sur les tuiles UNIQUEMENT
-    let touchTimer;
-    let touchStartPos = { x: 0, y: 0 };
-    let hasMoved = false;
-    
-    document.addEventListener('touchstart', function(e) {
-        // Enregistrer la position de départ
-        touchStartPos.x = e.touches[0].clientX;
-        touchStartPos.y = e.touches[0].clientY;
-        hasMoved = false;
-        
-        touchTimer = setTimeout(() => {
-            // Appui long seulement pour les tuiles ET si pas de mouvement
-            if (!hasMoved && e.target.closest('.tile')) {
-                console.log('📱 Appui long détecté sur tuile');
-            }
-        }, 800);
-    }, { passive: true });
-    
-    // Détecter le mouvement pour annuler l'appui long
-    document.addEventListener('touchmove', function(e) {
-        const currentPos = {
-            x: e.touches[0].clientX,
-            y: e.touches[0].clientY
-        };
-        
-        // Si mouvement > 10px, c'est un scroll
-        const deltaX = Math.abs(currentPos.x - touchStartPos.x);
-        const deltaY = Math.abs(currentPos.y - touchStartPos.y);
-        
-        if (deltaX > 10 || deltaY > 10) {
-            hasMoved = true;
-            clearTimeout(touchTimer);
-        }
-    }, { passive: true });
-    
-    document.addEventListener('touchend', function() {
-        clearTimeout(touchTimer);
-    }, { passive: true });
-    
-    // Empêcher les interactions fantômes
-    let lastTouchEnd = 0;
-    document.addEventListener('touchend', function(e) {
-        const now = new Date().getTime();
-        if (now - lastTouchEnd <= 300) {
-            e.preventDefault(); // Empêcher les double-taps fantômes
-        }
-        lastTouchEnd = now;
-    }, { passive: false });
 }
 
 changeFontFamily(family) {
