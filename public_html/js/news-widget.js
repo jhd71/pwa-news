@@ -408,44 +408,45 @@ async function fetchLocalNewsForWidget() {
 
         // Traiter chaque article pour créer un résumé original
         for (const article of articles.slice(0, 5)) { // Limiter à 5 pour le widget
-            try {
-                // ✅ SIMPLE : Vérifier par titre (colonnes existantes uniquement)
-                const { data: existing } = await supabase
-                    .from('local_news')
-                    .select('id')
-                    .eq('title', article.title)
-                    .single();
+    try {
+        // ✅ NOUVEAU : Log pour debug
+        console.log(`🔍 Traitement article: ${article.title} - Source: ${article.source}`);
+        
+        // Vérifier si l'article existe déjà
+        const { data: existing } = await supabase
+            .from('local_news')
+            .select('id')
+            .eq('title', article.title)
+            .single();
 
-                if (!existing) {
-                    // ✅ DEBUG : Ajoutez ces lignes dans fetchLocalNewsForWidget() avant l'insertion
-				const originalSummary = createOriginalSummary(article);
-				console.log('🔍 Contenu généré:', originalSummary);
-				console.log('🔍 Contient un lien:', originalSummary.includes('<a href='));
-                    
-                    // ✅ SIMPLE : Utiliser seulement les colonnes existantes
-                    const { error } = await supabase
-                        .from('local_news')
-                        .insert({
-                            title: article.title,
-                            content: originalSummary,
-                            source: article.source,
-                            is_published: true,
-                            featured: shouldBeFeated(article),
-                            created_at: new Date(article.date || Date.now()).toISOString()
-                        });
+        if (!existing) {
+            // Créer un résumé original basé sur le titre et la source
+            const originalSummary = createOriginalSummary(article);
+            
+            // ✅ CORRECTION : Toujours traiter TOUS les articles
+            const { error } = await supabase
+                .from('local_news')
+                .insert({
+                    title: article.title,
+                    content: originalSummary,
+                    source: article.source,
+                    is_published: true,
+                    featured: false, // ✅ CHANGÉ : Pas de featured automatique
+                    created_at: new Date(article.date || Date.now()).toISOString()
+                });
 
-                    if (!error) {
-                        console.log(`➕ Widget: ${article.title.substring(0, 50)}...`);
-                    } else {
-                        console.warn('❌ Erreur insertion:', error);
-                    }
-                } else {
-                    console.log(`⏭️ Article existant: ${article.title.substring(0, 30)}...`);
-                }
-            } catch (articleError) {
-                console.warn('❌ Erreur traitement article:', articleError);
+            if (!error) {
+                console.log(`➕ Widget: ${article.title.substring(0, 50)}... - Source: ${article.source}`);
+            } else {
+                console.warn('❌ Erreur insertion:', error);
             }
+        } else {
+            console.log(`⏭️ Article existant: ${article.title.substring(0, 30)}...`);
         }
+    } catch (articleError) {
+        console.warn('❌ Erreur traitement article:', articleError);
+    }
+}
 
         // Recharger le widget
         if (newsWidget) {
@@ -459,36 +460,38 @@ async function fetchLocalNewsForWidget() {
     }
 }
 
-// ✅ FONCTION CORRIGÉE - Bouton plus petit et élégant
+// ✅ FONCTION CORRIGÉE - Meilleure séparation et lisibilité
 function createOriginalSummary(article) {
     console.log('🔗 Création du résumé avec lien pour:', article.title);
     
     const summaries = {
-        'Montceau News': `Nouvelle information rapportée par Montceau News concernant les événements locaux de Montceau-les-Mines et environs.`,
-        'Le JSL': `Le Journal de Saône-et-Loire signale cette actualité concernant notre région.`,
-        'L\'Informateur': `L'Informateur de Bourgogne relaie cette information locale importante.`,
-        'Creusot-Infos': `Creusot-Infos rapporte cette actualité du bassin minier du Creusot et Montceau.`,
-        'France Bleu': `France Bleu Bourgogne couvre cette actualité régionale.`,
-        'default': `Actualité locale rapportée par ${article.source}.`
+        'Montceau News': `📍 Nouvelle information rapportée par Montceau News concernant les événements locaux de Montceau-les-Mines et environs.`,
+        'Le JSL': `📰 Le Journal de Saône-et-Loire signale cette actualité concernant notre région.`,
+        'L\'Informateur': `📢 L'Informateur de Bourgogne relaie cette information locale importante.`,
+        'Creusot-Infos': `⚡ Creusot-Infos rapporte cette actualité du bassin minier du Creusot et Montceau.`,
+        'France Bleu': `📻 France Bleu Bourgogne couvre cette actualité régionale.`,
+        'default': `📄 Actualité locale rapportée par ${article.source}.`
     };
 
     let baseSummary = summaries[article.source] || summaries['default'];
     
     // Ajouter contexte selon mots-clés du titre
     if (article.title.toLowerCase().includes('montceau')) {
-        baseSummary += ' Cette information concerne directement Montceau-les-Mines.';
+        baseSummary += '\n\n🏛️ Cette information concerne directement Montceau-les-Mines.';
     } else if (article.title.toLowerCase().includes('saône')) {
-        baseSummary += ' Cette actualité touche le département de Saône-et-Loire.';
+        baseSummary += '\n\n🗺️ Cette actualité touche le département de Saône-et-Loire.';
     } else if (article.title.toLowerCase().includes('chalon')) {
-        baseSummary += ' Cette information concerne Chalon-sur-Saône et sa région.';
+        baseSummary += '\n\n🏙️ Cette information concerne Chalon-sur-Saône et sa région.';
     }
     
-    // ✅ BOUTON PLUS PETIT ET DISCRET
+    // ✅ BOUTON AVEC SÉPARATEUR VISUEL
     baseSummary += `
 
-<div style="margin-top: 15px; text-align: right;">
-    <a href="${article.link}" target="_blank" rel="noopener" style="background: #dc3545; color: white; padding: 6px 12px; text-decoration: none; border-radius: 15px; display: inline-block; font-size: 13px; font-weight: 500;">
-        📖 Lire la suite →
+─────────────────────────────
+
+<div style="margin-top: 15px; text-align: center;">
+    <a href="${article.link}" target="_blank" rel="noopener" style="background: #dc3545; color: white; padding: 8px 16px; text-decoration: none; border-radius: 20px; display: inline-block; font-size: 14px; font-weight: 500; box-shadow: 0 2px 8px rgba(220,53,69,0.3);">
+        📖 Lire la suite sur ${article.source} →
     </a>
 </div>`;
     
@@ -499,21 +502,6 @@ function createOriginalSummary(article) {
 function isLocalSource(source) {
     const localSources = ['Montceau News', 'Le JSL', 'L\'Informateur', 'Creusot-Infos'];
     return localSources.includes(source);
-}
-
-// ✅ NOUVELLE FONCTION - Ajoutez celle-ci APRÈS
-function shouldBeFeated(article) {
-    // Mettre à la une seulement si :
-    // 1. Source locale ET titre contient "Montceau"
-    // 2. OU si c'est un événement important
-    
-    const isLocal = isLocalSource(article.source);
-    const mentionsMontceau = article.title.toLowerCase().includes('montceau');
-    const isImportant = article.title.toLowerCase().includes('urgent') || 
-                       article.title.toLowerCase().includes('important') ||
-                       article.title.toLowerCase().includes('breaking');
-    
-    return (isLocal && mentionsMontceau) || isImportant;
 }
 
 // ✅ FONCTION - Nettoyage automatique ancien contenu
