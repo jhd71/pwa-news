@@ -407,7 +407,7 @@ async function fetchLocalNewsForWidget() {
         console.log(`📡 ${articles.length} articles récupérés depuis l'API`);
 
         // Traiter chaque article pour créer un résumé original
-        for (const article of articles.slice(0, 5)) { // Limiter à 5 pour le widget
+        for (const article of articles) { // ✅ TRAITER TOUS LES ARTICLES
     try {
         // ✅ NOUVEAU : Log pour debug
         console.log(`🔍 Traitement article: ${article.title} - Source: ${article.source}`);
@@ -460,7 +460,7 @@ async function fetchLocalNewsForWidget() {
     }
 }
 
-// ✅ FONCTION CORRIGÉE - Meilleure séparation et lisibilité
+// ✅ FONCTION CORRIGÉE - Séparation claire des actualités
 function createOriginalSummary(article) {
     console.log('🔗 Création du résumé avec lien pour:', article.title);
     
@@ -468,7 +468,7 @@ function createOriginalSummary(article) {
         'Montceau News': `📍 Nouvelle information rapportée par Montceau News concernant les événements locaux de Montceau-les-Mines et environs.`,
         'Le JSL': `📰 Le Journal de Saône-et-Loire signale cette actualité concernant notre région.`,
         'L\'Informateur': `📢 L'Informateur de Bourgogne relaie cette information locale importante.`,
-        'Creusot-Infos': `⚡ Creusot-Infos rapporte cette actualité du bassin minier du Creusot et Montceau.`,
+        'Creusot Infos': `⚡ Creusot-Infos rapporte cette actualité du bassin minier du Creusot et Montceau.`,
         'France Bleu': `📻 France Bleu Bourgogne couvre cette actualité régionale.`,
         'default': `📄 Actualité locale rapportée par ${article.source}.`
     };
@@ -484,16 +484,18 @@ function createOriginalSummary(article) {
         baseSummary += '\n\n🏙️ Cette information concerne Chalon-sur-Saône et sa région.';
     }
     
-    // ✅ BOUTON AVEC SÉPARATEUR VISUEL
+    // ✅ SÉPARATEUR FORT ET BOUTON
     baseSummary += `
 
-─────────────────────────────
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-<div style="margin-top: 15px; text-align: center;">
-    <a href="${article.link}" target="_blank" rel="noopener" style="background: #dc3545; color: white; padding: 8px 16px; text-decoration: none; border-radius: 20px; display: inline-block; font-size: 14px; font-weight: 500; box-shadow: 0 2px 8px rgba(220,53,69,0.3);">
-        📖 Lire la suite sur ${article.source} →
+<div style="margin: 20px 0; text-align: center; padding: 15px; background: rgba(220,53,69,0.1); border-radius: 10px;">
+    <a href="${article.link}" target="_blank" rel="noopener" style="background: #dc3545; color: white; padding: 10px 20px; text-decoration: none; border-radius: 25px; display: inline-block; font-size: 14px; font-weight: 600; box-shadow: 0 3px 10px rgba(220,53,69,0.3); transition: all 0.3s ease;">
+        📖 Lire l'article complet sur ${article.source} →
     </a>
-</div>`;
+</div>
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
     
     return baseSummary;
 }
