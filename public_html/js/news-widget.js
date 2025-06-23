@@ -430,7 +430,7 @@ async function fetchLocalNewsForWidget() {
                             content: originalSummary,
                             source: article.source,
                             is_published: true,
-                            featured: isLocalSource(article.source),
+                            featured: shouldBeFeated(article),
                             created_at: new Date(article.date || Date.now()).toISOString()
                         });
 
@@ -459,7 +459,7 @@ async function fetchLocalNewsForWidget() {
     }
 }
 
-// ✅ FONCTION CORRIGÉE - Créer résumé original avec lien
+// ✅ FONCTION CORRIGÉE - Bouton plus petit et élégant
 function createOriginalSummary(article) {
     console.log('🔗 Création du résumé avec lien pour:', article.title);
     
@@ -483,16 +483,15 @@ function createOriginalSummary(article) {
         baseSummary += ' Cette information concerne Chalon-sur-Saône et sa région.';
     }
     
-    // ✅ LIEN VERS L'ARTICLE ORIGINAL (version HTML simple)
+    // ✅ BOUTON PLUS PETIT ET DISCRET
     baseSummary += `
 
-<div style="margin-top: 20px; text-align: center;">
-    <a href="${article.link}" target="_blank" rel="noopener" style="background: #dc3545; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
-        📖 Lire l'article complet
+<div style="margin-top: 15px; text-align: right;">
+    <a href="${article.link}" target="_blank" rel="noopener" style="background: #dc3545; color: white; padding: 6px 12px; text-decoration: none; border-radius: 15px; display: inline-block; font-size: 13px; font-weight: 500;">
+        📖 Lire la suite →
     </a>
 </div>`;
     
-    console.log('✅ Résumé créé avec lien:', baseSummary.includes('<a href='));
     return baseSummary;
 }
 
@@ -500,6 +499,21 @@ function createOriginalSummary(article) {
 function isLocalSource(source) {
     const localSources = ['Montceau News', 'Le JSL', 'L\'Informateur', 'Creusot-Infos'];
     return localSources.includes(source);
+}
+
+// ✅ NOUVELLE FONCTION - Ajoutez celle-ci APRÈS
+function shouldBeFeated(article) {
+    // Mettre à la une seulement si :
+    // 1. Source locale ET titre contient "Montceau"
+    // 2. OU si c'est un événement important
+    
+    const isLocal = isLocalSource(article.source);
+    const mentionsMontceau = article.title.toLowerCase().includes('montceau');
+    const isImportant = article.title.toLowerCase().includes('urgent') || 
+                       article.title.toLowerCase().includes('important') ||
+                       article.title.toLowerCase().includes('breaking');
+    
+    return (isLocal && mentionsMontceau) || isImportant;
 }
 
 // ✅ FONCTION - Nettoyage automatique ancien contenu
