@@ -33,12 +33,12 @@
 			
 				// URLs des flux RSS
 				const feeds = [
-    { name: 'Montceau News', url: 'https://montceau-news.com/feed/', max: 2 }, // ✅ Changé /rss en /feed/
-    { name: 'L\'Informateur', url: 'https://www.linformateurdebourgogne.com/feed/', max: 2 }, // ✅ Changé http en https
-    { name: 'Le JSL', url: 'https://www.lejsl.com/edition-montceau-les-mines/rss', max: 2 },
-    { name: 'Creusot-Infos', url: 'https://raw.githubusercontent.com/jhd71/scraper-creusot/main/data/articles.json', max: 2, type: 'json' },
-    { name: 'France Bleu', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/infos.xml', max: 2 },
-];
+			{ name: 'Montceau News', url: 'https://montceau-news.com/rss', max: 2 },
+			{ name: 'L\'Informateur', url: 'http://www.linformateurdebourgogne.com/feed/', max: 2 },
+			{ name: 'Le JSL', url: 'https://www.lejsl.com/edition-montceau-les-mines/rss', max: 2 },
+			{ name: 'Creusot-Infos', url: 'https://raw.githubusercontent.com/jhd71/scraper-creusot/main/data/articles.json', max: 2, type: 'json' },
+			{ name: 'France Bleu', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/infos.xml', max: 2 },
+				];
 		
 		// Récupérer les articles de chaque flux avec gestion des promesses
 		const fetchPromises = feeds.map(feed => {
