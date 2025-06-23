@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact - Actu & Média</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;900&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0d1b3f 0%, #1e3a5c 50%, #2c5282 100%);
+      color: #ffffff;
+      font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow-x: hidden;
+      padding: 20px;
+    }
+
+    /* Animation de fond */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="white" opacity="0.1"><animate attributeName="opacity" values="0.1;0.3;0.1" dur="3s" repeatCount="indefinite"/></circle><circle cx="80" cy="30" r="1.5" fill="white" opacity="0.1"><animate attributeName="opacity" values="0.1;0.4;0.1" dur="4s" repeatCount="indefinite"/></circle><circle cx="60" cy="70" r="1" fill="white" opacity="0.1"><animate attributeName="opacity" values="0.1;0.5;0.1" dur="2s" repeatCount="indefinite"/></circle></svg>') repeat;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .container {
+      max-width: 700px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 1;
+      animation: slideUp 0.8s ease-out;
+      overflow: hidden;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .header {
+      text-align: center;
+      padding: 40px 40px 30px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+
+    .back-button:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .logo-placeholder {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(45deg, #4299e1, #3182ce);
+      border-radius: 50%;
+      margin: 0 auto 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 15px;
+      background: linear-gradient(45deg, #ffffff, #e2e8f0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      font-size: 1.1em;
+      opacity: 0.9;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .contact-methods {
+      padding: 30px 40px 40px;
+    }
+
+    .contact-method {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
+      padding: 25px;
+      transition: all 0.3s ease;
+      animation: fadeIn 0.6s ease-out forwards;
+      opacity: 0;
+    }
+
+    .contact-method:nth-child(1) { animation-delay: 0.2s; }
+    .contact-method:nth-child(2) { animation-delay: 0.4s; }
+    .contact-method:nth-child(3) { animation-delay: 0.6s; }
+    .contact-method:nth-child(4) { animation-delay: 0.8s; }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .contact-method:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .contact-method h3 {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.3em;
+      margin-bottom: 15px;
+      color: #e2e8f0;
+      font-weight: 600;
+    }
+
+    .contact-method .icon {
+      background: linear-gradient(45deg, #4299e1, #3182ce);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1em;
+    }
+
+    .contact-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: #4299e1;
+      text-decoration: none;
+      font-size: 1.1em;
+      font-weight: 500;
+      padding: 15px 25px;
+      background: rgba(66, 153, 225, 0.1);
+      border-radius: 25px;
+      border: 1px solid rgba(66, 153, 225, 0.3);
+      transition: all 0.3s ease;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .contact-link:hover {
+      background: rgba(66, 153, 225, 0.2);
+      border-color: rgba(66, 153, 225, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(66, 153, 225, 0.3);
+    }
+
+    .contact-description {
+      margin-bottom: 15px;
+      opacity: 0.8;
+      line-height: 1.5;
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .social-link {
+      width: 50px;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 1.2em;
+    }
+
+    .social-link:hover {
+      background: rgba(66, 153, 225, 0.3);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(66, 153, 225, 0.3);
+    }
+
+    .social-link.facebook:hover {
+      background: rgba(59, 89, 152, 0.5);
+      box-shadow: 0 5px 15px rgba(59, 89, 152, 0.3);
+    }
+
+    .social-link.instagram:hover {
+      background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+      box-shadow: 0 5px 15px rgba(225, 48, 108, 0.3);
+    }
+
+    .footer-note {
+      text-align: center;
+      padding: 20px 40px 30px;
+      font-size: 0.9em;
+      opacity: 0.7;
+      font-style: italic;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .response-time {
+      background: rgba(76, 175, 80, 0.2);
+      border: 1px solid rgba(76, 175, 80, 0.3);
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 10px;
+      font-size: 0.9em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .container {
+        margin: 10px 0;
+      }
+
+      .header {
+        padding: 30px 25px 20px;
+      }
+
+      .contact-methods {
+        padding: 20px 25px 30px;
+      }
+
+      .contact-method {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 2em;
+      }
+
+      .subtitle {
+        font-size: 1em;
+      }
+
+      .contact-method h3 {
+        font-size: 1.1em;
+      }
+
+      .contact-link {
+        font-size: 1em;
+        padding: 12px 20px;
+      }
+
+      .footer-note {
+        padding: 15px 25px 25px;
+        font-size: 0.85em;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header {
+        padding: 25px 20px 15px;
+      }
+
+      .contact-methods {
+        padding: 15px 20px 25px;
+      }
+
+      .contact-method {
+        padding: 18px;
+        margin-bottom: 15px;
+      }
+
+      h1 {
+        font-size: 1.8em;
+      }
+
+      .logo-placeholder {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5em;
+      }
+
+      .social-links {
+        gap: 12px;
+      }
+
+      .social-link {
+        width: 45px;
+        height: 45px;
+        font-size: 1.1em;
+      }
+    }
+
+    /* Animation pour les éléments qui apparaissent */
+    .fade-in-up {
+      animation: fadeInUp 0.8s ease-out forwards;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="javascript:history.back()" class="back-button" title="Retour">
+      <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <div class="header">
+      <div class="logo-placeholder">
+        <i class="fas fa-newspaper"></i>
+      </div>
+      
+      <h1>Contactez-nous</h1>
+      <p class="subtitle">
+        Une question, une suggestion, une actualité à nous partager ?<br>
+        Notre équipe est à votre écoute !
+      </p>
+    </div>
+    
+    <div class="contact-methods">
+      <!-- Email principal -->
+      <div class="contact-method">
+        <h3>
+          <div class="icon">
+            <i class="fas fa-envelope"></i>
+          </div>
+          Email principal
+        </h3>
+        <p class="contact-description">
+          Pour toutes vos questions, suggestions d'actualités ou partenariats
+        </p>
+        <a href="mailto:contact@actuetmedia.fr" class="contact-link">
+          <i class="fas fa-envelope"></i>
+          <span>contact@actuetmedia.fr</span>
+        </a>
+        <div class="response-time">
+          <i class="fas fa-clock"></i>
+          <span>Réponse sous 24h en moyenne</span>
+        </div>
+      </div>
+
+      <!-- Proposer une actualité -->
+      <div class="contact-method">
+        <h3>
+          <div class="icon">
+            <i class="fas fa-newspaper"></i>
+          </div>
+          Proposer une actualité
+        </h3>
+        <p class="contact-description">
+          Vous avez une info locale à partager ? Envoyez-nous un email avec les détails
+        </p>
+        <a href="mailto:contact@actuetmedia.fr?subject=Proposition d'actualité&body=Bonjour,%0D%0A%0D%0AJe souhaite vous proposer une actualité :%0D%0A%0D%0ATitre : %0D%0ADescription : %0D%0ALieu : %0D%0ADate : %0D%0A%0D%0ACordialement" class="contact-link">
+          <i class="fas fa-edit"></i>
+          <span>Envoyer une proposition</span>
+        </a>
+        <div class="response-time">
+          <i class="fas fa-lightbulb"></i>
+          <span>email pré-rempli pour faciliter votre proposition</span>
+        </div>
+      </div>
+
+      <!-- Réseaux sociaux -->
+      <div class="contact-method">
+        <h3>
+          <div class="icon">
+            <i class="fas fa-share-alt"></i>
+          </div>
+          Suivez-nous
+        </h3>
+        <p class="contact-description">
+          Restez connectés pour ne rien manquer de l'actualité locale
+        </p>
+        <div class="social-links">
+          <a href="https://www.facebook.com/actuetmedia" class="social-link facebook" title="Facebook" target="_blank" rel="noopener noreferrer">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="https://www.instagram.com/actu_et_media/" class="social-link instagram" title="Instagram" target="_blank" rel="noopener noreferrer">
+            <i class="fab fa-instagram"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Informations supplémentaires -->
+      <div class="contact-method">
+        <h3>
+          <div class="icon">
+            <i class="fas fa-info-circle"></i>
+          </div>
+          Zone de couverture
+        </h3>
+        <p class="contact-description">
+          <strong>📍 Montceau-les-Mines et ses environs</strong><br>
+          Saône-et-Loire (71) - Bourgogne-Franche-Comté<br>
+          Actualités locales, événements, infos pratiques
+        </p>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      <i class="fas fa-heart" style="color: #e74c3c;"></i>
+      Actu & Média est un projet indépendant et gratuit pour informer notre territoire
+    </div>
+  </div>
+
+  <script>
+    // Animation progressive des éléments
+    document.addEventListener('DOMContentLoaded', function() {
+      const elements = document.querySelectorAll('.contact-method');
+      elements.forEach((el, index) => {
+        setTimeout(() => {
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        }, index * 150);
+      });
+    });
+
+    // Fonction pour ouvrir le modal de soumission (supprimée car non fonctionnelle)
+    
+    // Gestion des clics sur les liens email avec retour haptique
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('a[href^="mailto:"]')) {
+        // Vibration tactile si disponible
+        if (navigator.vibrate) {
+          navigator.vibrate(50);
+        }
+      }
+    });
+
+    // Animation au survol des éléments
+    document.querySelectorAll('.contact-method').forEach(method => {
+      method.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-5px) scale(1.02)';
+      });
+      
+      method.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0) scale(1)';
+      });
+    });
+  </script>
+</body>
+</html>
