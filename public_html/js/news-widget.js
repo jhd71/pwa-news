@@ -414,10 +414,10 @@ async function fetchLocalNewsForWidget() {
         
         // Vérifier si l'article existe déjà
         const { data: existing } = await supabase
-            .from('local_news')
-            .select('id')
-            .eq('title', 'article_inexistant_' + Date.now())
-            .single();
+    .from('local_news')
+    .select('id')
+    .eq('title', article.title)
+    .single();
 
         if (!existing) {
             // Créer un résumé original basé sur le titre et la source
@@ -460,39 +460,49 @@ async function fetchLocalNewsForWidget() {
     }
 }
 
-// ✅ FONCTION CORRIGÉE - Plus de contenu pour éviter l'espace vide
+// ✅ FONCTION CORRIGÉE - Contenu varié selon l'actualité
 function createOriginalSummary(article) {
     console.log('🔗 Création du résumé avec lien pour:', article.title);
     
-    const summaries = {
-        'Montceau News': `📍 Montceau News rapporte cette nouvelle information concernant les événements locaux de Montceau-les-Mines et ses environs. Cette actualité fait partie de notre couverture continue des événements qui touchent notre communauté locale.`,
-        'Le JSL': `📰 Le Journal de Saône-et-Loire, quotidien régional de référence, signale cette actualité importante concernant notre région de Saône-et-Loire. Cette information s'inscrit dans la couverture locale proposée par le JSL.`,
-        'L\'Informateur': `📢 L'Informateur de Bourgogne, média local de proximité, relaie cette information importante pour les habitants de notre région. Cette actualité fait partie de leur couverture des événements locaux significatifs.`,
-        'Creusot Infos': `⚡ Creusot-Infos, spécialiste de l'actualité du bassin minier, rapporte cette information concernant le territoire du Creusot et Montceau-les-Mines. Cette actualité illustre la vie locale de notre bassin minier.`,
-        'France Bleu': `📻 France Bleu Bourgogne, radio de service public régionale, couvre cette actualité qui concerne notre département. Cette information fait partie de leur mission de proximité avec les auditeurs bourguignons.`,
-        'default': `📄 Cette actualité locale nous est rapportée par ${article.source}, contribuant ainsi à l'information de proximité sur notre territoire.`
-    };
-
-    let baseSummary = summaries[article.source] || summaries['default'];
+    // ✅ Textes différents selon le contenu de l'actualité
+    let specificSummary = '';
+    const title = article.title.toLowerCase();
     
-    // Ajouter contexte géographique détaillé
-    if (article.title.toLowerCase().includes('montceau')) {
-        baseSummary += '\n\n🏛️ Cette information concerne directement Montceau-les-Mines, commune de 18 000 habitants située au cœur du bassin minier de Saône-et-Loire, et peut avoir des répercussions sur l\'ensemble de la communauté urbaine.';
-    } else if (article.title.toLowerCase().includes('saône')) {
-        baseSummary += '\n\n🗺️ Cette actualité touche le département de Saône-et-Loire dans son ensemble, concernant potentiellement les 550 000 habitants du département et ses différents territoires.';
-    } else if (article.title.toLowerCase().includes('chalon')) {
-        baseSummary += '\n\n🏙️ Cette information concerne Chalon-sur-Saône et sa région, préfecture du département et pôle économique important de la Saône-et-Loire.';
-    } else if (article.title.toLowerCase().includes('blanzy') || article.title.toLowerCase().includes('saint-vallier') || article.title.toLowerCase().includes('genelard')) {
-        baseSummary += '\n\n🌍 Cette actualité concerne une commune proche de Montceau-les-Mines, dans le périmètre de notre bassin de vie local.';
+    // Analyser le titre pour créer un contenu spécifique
+    if (title.includes('montceau')) {
+        if (title.includes('restaurant') || title.includes('bistrot') || title.includes('café')) {
+            specificSummary = `🍽️ Un nouvel établissement gastronomique fait parler de lui à Montceau-les-Mines. Cette ouverture enrichit l'offre de restauration locale et participe au dynamisme du centre-ville.`;
+        } else if (title.includes('sport') || title.includes('football') || title.includes('basket')) {
+            specificSummary = `⚽ L'actualité sportive montcellienne est en effervescence avec cette nouvelle qui concerne directement nos clubs locaux et nos athlètes de la région.`;
+        } else if (title.includes('flam') || title.includes('festival') || title.includes('concert')) {
+            specificSummary = `🎭 La vie culturelle de Montceau-les-Mines s'enrichit avec cet événement qui promet d'attirer un large public et de dynamiser notre territoire.`;
+        } else {
+            specificSummary = `🏛️ Cette actualité montcellienne concerne directement la vie quotidienne des 18 000 habitants de notre commune et peut avoir des répercussions sur l'ensemble du bassin minier.`;
+        }
+    } else if (title.includes('saint-vallier') || title.includes('blanzy') || title.includes('génelard')) {
+        specificSummary = `🌍 Cette information concerne une commune voisine de Montceau-les-Mines, dans notre bassin de vie local. Les événements de ces communes ont souvent des répercussions sur l'ensemble de notre territoire.`;
+    } else if (title.includes('saône-et-loire')) {
+        specificSummary = `🗺️ Cette actualité départementale peut avoir des implications pour les habitants de Saône-et-Loire, y compris ceux de notre région montcellienne.`;
+    } else if (title.includes('accident') || title.includes('pompiers') || title.includes('secours')) {
+        specificSummary = `🚨 Cette information de sécurité publique nous rappelle l'importance de la vigilance et du travail de nos services d'urgence dans la région.`;
     } else {
-        baseSummary += '\n\n📍 Cette information, bien que d\'origine plus large, peut présenter un intérêt pour les habitants de notre région.';
+        specificSummary = `📰 Cette actualité, bien que d'origine plus large, peut présenter un intérêt pour les habitants de notre région et enrichit notre information locale.`;
     }
     
-    // Ajouter une note éditoriale
-    baseSummary += '\n\nL\'équipe d\'Actu&Média suit cette actualité et vous propose de consulter l\'article complet pour avoir tous les détails et le contexte de cette information.';
+    // Ajouter la source et contexte
+    const sourceContext = {
+        'Montceau News': `Montceau News, média local de référence, suit de près cette actualité.`,
+        'Le JSL': `Le Journal de Saône-et-Loire apporte son éclairage régional sur cette information.`,
+        'L\'Informateur': `L'Informateur de Bourgogne, spécialiste de l'actualité de proximité, couvre cet événement.`,
+        'Creusot Infos': `Creusot-Infos, expert du bassin minier, rapporte cette information du territoire.`,
+        'France Bleu': `France Bleu Bourgogne, radio de service public, informe ses auditeurs de cette actualité.`,
+        'default': `${article.source} couvre cette actualité pour informer la population locale.`
+    };
     
-    // ✅ BOUTON DISCRET
-    baseSummary += `
+    const finalSummary = specificSummary + '\n\n' + (sourceContext[article.source] || sourceContext['default']) + '\n\nL\'équipe d\'Actu&Média vous propose de consulter l\'article complet pour avoir tous les détails.';
+    
+    // ✅ LIEN DISCRET
+    const linkSection = `
 
 ─────────────────────────────
 
@@ -509,7 +519,7 @@ function createOriginalSummary(article) {
     </a>
 </div>`;
     
-    return baseSummary;
+    return finalSummary + linkSection;
 }
 
 // ✅ FONCTION - Identifier sources locales
