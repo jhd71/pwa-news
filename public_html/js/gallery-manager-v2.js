@@ -247,6 +247,9 @@ function initializeCameraButtons() {
     
     if (!captureBtn || !galleryBtn || !photoInput) return;
     
+    // Détecter si on est sur mobile ou PC
+    const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
     // Fonction pour gérer le changement de fichier
     function handleFileSelect(file) {
         if (!file || !file.type.match('image.*')) {
@@ -271,21 +274,41 @@ function initializeCameraButtons() {
     }
     
     // Bouton prendre photo
-    captureBtn.addEventListener('click', function(e) {
+    captureBtn.addEventListener('click', async function(e) {
         e.preventDefault();
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/*';
-        input.capture = 'environment';
         
-        input.onchange = function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                handleFileSelect(file);
+        if (isMobileDevice) {
+            // Sur mobile : utiliser l'input file avec capture
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.capture = 'environment';
+            
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    handleFileSelect(file);
+                }
+            };
+            
+            input.click();
+        } else {
+            // Sur PC : utiliser getUserMedia pour la webcam
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 }
+                    } 
+                });
+                
+                // Créer l'interface de capture webcam
+                createWebcamInterface(stream, handleFileSelect);
+            } catch (error) {
+                console.error('Erreur accès webcam:', error);
+                alert('Impossible d\'accéder à la webcam. Vérifiez les permissions ou utilisez "Choisir une image".');
             }
-        };
-        
-        input.click();
+        }
     });
     
     // Bouton choisir image
@@ -304,6 +327,154 @@ function initializeCameraButtons() {
         
         input.click();
     });
+}
+
+// Nouvelle fonction pour créer l'interface webcam
+function createWebcamInterface(stream, onCapture) {
+    // Créer l'overlay pour la capture webcam
+    const webcamOverlay = document.createElement('div');
+    webcamOverlay.className = 'webcam-overlay';
+    webcamOverlay.innerHTML = `
+        <div class="webcam-container">
+            <video id="webcamVideo" autoplay playsinline></video>
+            <canvas id="webcamCanvas" style="display: none;"></canvas>
+            <div class="webcam-controls">
+                <button id="capturePhotoBtn" class="capture-photo-btn">
+                    <i class="material-icons">camera</i>
+                    Capturer
+                </button>
+                <button id="cancelWebcamBtn" class="cancel-webcam-btn">
+                    <i class="material-icons">close</i>
+                    Annuler
+                </button>
+            </div>
+        </div>
+    `;
+    
+    // Ajouter les styles si ils n'existent pas
+    if (!document.getElementById('webcam-styles')) {
+        const style = document.createElement('style');
+        style.id = 'webcam-styles';
+        style.textContent = `
+            .webcam-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.9);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .webcam-container {
+                background: black;
+                border-radius: 8px;
+                overflow: hidden;
+                max-width: 90vw;
+                max-height: 90vh;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            }
+            
+            #webcamVideo {
+                width: 100%;
+                height: auto;
+                max-height: 70vh;
+                display: block;
+            }
+            
+            .webcam-controls {
+                display: flex;
+                gap: 10px;
+                padding: 15px;
+                background: rgba(0, 0, 0, 0.8);
+                justify-content: center;
+            }
+            
+            .capture-photo-btn, .cancel-webcam-btn {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 16px;
+                font-weight: 500;
+                transition: all 0.3s ease;
+            }
+            
+            .capture-photo-btn {
+                background: var(--primary-color, #dc3545);
+                color: white;
+            }
+            
+            .capture-photo-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+            }
+            
+            .cancel-webcam-btn {
+                background: #6c757d;
+                color: white;
+            }
+            
+            .cancel-webcam-btn:hover {
+                background: #5a6268;
+            }
+        `;
+        
+        document.head.appendChild(style);
+    }
+    
+    document.body.appendChild(webcamOverlay);
+    
+    // Attacher le stream à la vidéo
+    const video = document.getElementById('webcamVideo');
+    video.srcObject = stream;
+    
+    // Gestionnaire pour capturer la photo
+    document.getElementById('capturePhotoBtn').addEventListener('click', () => {
+        const canvas = document.getElementById('webcamCanvas');
+        const context = canvas.getContext('2d');
+        
+        // Définir la taille du canvas
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // Capturer l'image
+        context.drawImage(video, 0, 0);
+        
+        // Convertir en blob
+        canvas.toBlob((blob) => {
+            // Créer un fichier à partir du blob
+            const file = new File([blob], `webcam-${Date.now()}.jpg`, { type: 'image/jpeg' });
+            
+            // Appeler la fonction de callback avec le fichier
+            onCapture(file);
+            
+            // Nettoyer
+            closeWebcam(stream, webcamOverlay);
+        }, 'image/jpeg', 0.9);
+    });
+    
+    // Gestionnaire pour annuler
+    document.getElementById('cancelWebcamBtn').addEventListener('click', () => {
+        closeWebcam(stream, webcamOverlay);
+    });
+}
+
+// Fonction pour fermer la webcam
+function closeWebcam(stream, overlay) {
+    // Arrêter tous les tracks du stream
+    stream.getTracks().forEach(track => track.stop());
+    
+    // Supprimer l'overlay
+    if (overlay && overlay.parentNode) {
+        overlay.remove();
+    }
 }
 
 // ===== GESTION DES MODALS =====

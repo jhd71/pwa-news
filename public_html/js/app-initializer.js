@@ -268,8 +268,8 @@ if (!document.querySelector('#admin-badge-styles')) {
                 width: 36px !important;
                 height: 36px !important;
                 font-size: 16px !important;
-                top: 7px !important;
-                right: 80px !important;
+                top: 16px !important;
+                right: 330px !important;
                 border: 3px solid white !important;
             }
         }
