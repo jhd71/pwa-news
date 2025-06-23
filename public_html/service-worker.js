@@ -83,6 +83,9 @@ const STATIC_RESOURCES = [
     '/images/don_resized_200x80.png',
     '/images/favicon-16x16.png',
     '/images/favicon-32x32.png',
+	'/images/Actu&Media.png',
+	'/images/fond-rouge.jpg',
+	'/images/fond-dark.jpg',
     
     // Icônes principales INFOS
     '/images/INFOS.png',

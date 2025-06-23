@@ -2498,17 +2498,7 @@ button#refreshButton.refresh-button {
 [data-theme="rouge"] .swiper-container,
 [data-theme="rouge"] .welcome-banner,
 [data-theme="rouge"] .welcome-message {
-  /* Ces éléments conservent leurs propres fonds et styles */
-  /* Aucune modification nécessaire, ils devraient déjà se démarquer */
 }
-
-/* Si vous préférez une texture subtile au lieu d'une couleur unie */
-
-[data-theme="rouge"] body {
-  background-color: var(--rouge-background) !important;
-  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXWBgYGHh4d5eXlzc3OLi4ubm5uVlZWPj4+NjY19fX2JiYl/f39ra2uRkZGZmZlpaWmXl5dvb29xcXGTk5NnZ2c4zIgLAAABQklEQVR4Ae3TWVLCQBSEUUlAJqMZBIKB9z+plZVyBgcq2vX+tD+f7rZg8pZ9p3j2upGEudQkBJPE7SQs4kZWChKNL2GsVCW1omFH6VMRshGJTiu1XnykEJ0e+l2JBK1AYdmKjE6RUkllP0geRcIZ0VB/NsIzIrLY+8bvfZM5R+JcQJxFiAaEyhBi4xGRDYiLCHGByK3dNjcRYoQI1hBpiHwPEMm8gQBDAk00dRdJNaLxSIiIgEhPiEwESDcA0hIh0gWG4S5jHaLbLxKYzw7zhU++J5rPGrND5JVrPmsx4uVBo9kuXduE2CPy5w87+F11s6Hh8aBXv4ktAIUXcyXyZiGCfymhTQiT4plNUCMikssMgKKF+CVyhSj8GBnC8YkgXo3scELks8HiwZMbGk2vMYf0VVHjaDMOxRjxTYU+F2P+AFQQNn/QlqmxAAAAAElFTkSuQmCC') !important;
-}
-*/
 
 /* 3. Correction du menu contextuel du chat en mode rouge */
 [data-theme="rouge"] .message-options,
@@ -3413,11 +3403,21 @@ border-color: #ffd230 !important;
 }
 
 [data-theme="dark"] body {
-    background: #161c5b !important;
+	background: none;
+    background-image: url('/images/fond-dark.jpg') !important;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
-[data-theme="rouge"] body {
-    background: #1a1a1a !important; /* ← Nouveau fond noir profond */
+[data-theme="rouge"] body,
+[data-theme="rouge"] html {
+    background-image: url('/images/fond-rouge.jpg') !important;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 [data-theme="rouge"] .separator {
