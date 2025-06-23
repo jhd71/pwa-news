@@ -416,7 +416,7 @@ async function fetchLocalNewsForWidget() {
         const { data: existing } = await supabase
             .from('local_news')
             .select('id')
-            .eq('title', article.title)
+            .eq('title', 'article_inexistant_' + Date.now())
             .single();
 
         if (!existing) {
