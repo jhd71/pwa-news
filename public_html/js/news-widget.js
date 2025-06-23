@@ -386,7 +386,7 @@ function openSpecificNews(newsId) {
     window.location.href = `news-locale.html#news-${newsId}`;
 }
 
-// ✅ SOLUTION SIMPLE - Utilise seulement les colonnes existantes
+// ✅ SOLUTION FINALE - Gestion correcte des titres avec caractères spéciaux
 async function fetchLocalNewsForWidget() {
     try {
         console.log('📰 Récupération actualités locales pour widget...');
@@ -407,46 +407,48 @@ async function fetchLocalNewsForWidget() {
         console.log(`📡 ${articles.length} articles récupérés depuis l'API`);
 
         // Traiter chaque article pour créer un résumé original
-        for (const article of articles) { // ✅ TRAITER TOUS LES ARTICLES
-    try {
-        // ✅ NOUVEAU : Log pour debug
-        console.log(`🔍 Traitement article: ${article.title} - Source: ${article.source}`);
-        
-        // Vérifier si l'article existe déjà
-        const { data: existing } = await supabase
-    .from('local_news')
-    .select('id')
-    .eq('title', article.title)
-    .single();
+        for (const article of articles) { // TRAITER TOUS LES ARTICLES
+            try {
+                console.log(`🔍 Traitement article: ${article.title} - Source: ${article.source}`);
+                
+                // ✅ SOLUTION : Créer un hash simple du titre pour éviter les problèmes de caractères spéciaux
+                const titleHash = btoa(encodeURIComponent(article.title)).substring(0, 32);
+                
+                // Vérifier si l'article existe déjà avec le hash
+                const { data: existing } = await supabase
+                    .from('local_news')
+                    .select('id')
+                    .eq('title', titleHash) // Utiliser le hash au lieu du titre complet
+                    .single();
 
-        if (!existing) {
-            // Créer un résumé original basé sur le titre et la source
-            const originalSummary = createOriginalSummary(article);
-            
-            // ✅ CORRECTION : Toujours traiter TOUS les articles
-            const { error } = await supabase
-                .from('local_news')
-                .insert({
-                    title: article.title,
-                    content: originalSummary,
-                    source: article.source,
-                    is_published: true,
-                    featured: false, // ✅ CHANGÉ : Pas de featured automatique
-                    created_at: new Date(article.date || Date.now()).toISOString()
-                });
+                if (!existing) {
+                    // Créer un résumé original basé sur le titre et la source
+                    const originalSummary = createOriginalSummary(article);
+                    
+                    // ✅ INSERTION avec titre original ET hash pour éviter doublons
+                    const { error } = await supabase
+                        .from('local_news')
+                        .insert({
+                            title: titleHash, // Hash pour éviter doublons
+                            content: `<h2>${article.title}</h2>\n\n${originalSummary}`, // Titre réel dans le contenu
+                            source: article.source,
+                            is_published: true,
+                            featured: false,
+                            created_at: new Date(article.date || Date.now()).toISOString()
+                        });
 
-            if (!error) {
-                console.log(`➕ Widget: ${article.title.substring(0, 50)}... - Source: ${article.source}`);
-            } else {
-                console.warn('❌ Erreur insertion:', error);
+                    if (!error) {
+                        console.log(`➕ Widget: ${article.title.substring(0, 50)}... - Source: ${article.source}`);
+                    } else {
+                        console.warn('❌ Erreur insertion:', error);
+                    }
+                } else {
+                    console.log(`⏭️ Article existant: ${article.title.substring(0, 30)}...`);
+                }
+            } catch (articleError) {
+                console.warn('❌ Erreur traitement article:', articleError);
             }
-        } else {
-            console.log(`⏭️ Article existant: ${article.title.substring(0, 30)}...`);
         }
-    } catch (articleError) {
-        console.warn('❌ Erreur traitement article:', articleError);
-    }
-}
 
         // Recharger le widget
         if (newsWidget) {
