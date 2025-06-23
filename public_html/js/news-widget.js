@@ -460,7 +460,7 @@ async function fetchLocalNewsForWidget() {
     }
 }
 
-// ✅ FONCTION CORRIGÉE - Séparation claire des actualités
+// ✅ FONCTION CORRIGÉE - Boutons responsifs (plus petits sur mobile/PC)
 function createOriginalSummary(article) {
     console.log('🔗 Création du résumé avec lien pour:', article.title);
     
@@ -484,14 +484,29 @@ function createOriginalSummary(article) {
         baseSummary += '\n\n🏙️ Cette information concerne Chalon-sur-Saône et sa région.';
     }
     
-    // ✅ SÉPARATEUR FORT ET BOUTON
+    // ✅ BOUTON RESPONSIVE (plus petit et discret)
     baseSummary += `
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-<div style="margin: 20px 0; text-align: center; padding: 15px; background: rgba(220,53,69,0.1); border-radius: 10px;">
-    <a href="${article.link}" target="_blank" rel="noopener" style="background: #dc3545; color: white; padding: 10px 20px; text-decoration: none; border-radius: 25px; display: inline-block; font-size: 14px; font-weight: 600; box-shadow: 0 3px 10px rgba(220,53,69,0.3); transition: all 0.3s ease;">
-        📖 Lire l'article complet sur ${article.source} →
+<div style="margin: 15px 0; text-align: center;">
+    <a href="${article.link}" target="_blank" rel="noopener" style="
+        background: #dc3545; 
+        color: white; 
+        padding: 8px 16px; 
+        text-decoration: none; 
+        border-radius: 20px; 
+        display: inline-block; 
+        font-size: 13px; 
+        font-weight: 500; 
+        box-shadow: 0 2px 6px rgba(220,53,69,0.3); 
+        transition: all 0.3s ease;
+        max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    " onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(220,53,69,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 6px rgba(220,53,69,0.3)'">
+        📖 Lire la suite →
     </a>
 </div>
 
