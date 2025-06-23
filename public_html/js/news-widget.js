@@ -457,7 +457,7 @@ async function fetchLocalNewsForWidget() {
     }
 }
 
-// ✅ FONCTION CORRIGÉE - Créer résumé original avec lien
+// ✅ FONCTION CORRIGÉE - Avec lien HTML propre
 function createOriginalSummary(article) {
     const summaries = {
         'Montceau News': `Nouvelle information rapportée par Montceau News concernant les événements locaux de Montceau-les-Mines et environs.`,
@@ -479,8 +479,10 @@ function createOriginalSummary(article) {
         baseSummary += ' Cette information concerne Chalon-sur-Saône et sa région.';
     }
     
-    // ✅ AJOUT : Lien cliquable vers l'article complet
-    baseSummary += `\n\n📖 <a href="${article.link}" target="_blank" rel="noopener" style="color: var(--primary-color); font-weight: bold; text-decoration: none;">➤ Lire l'article complet sur ${article.source}</a>`;
+    // ✅ LIEN SIMPLE ET EFFICACE
+    baseSummary += `
+
+<a href="${article.link}" target="_blank" rel="noopener" style="display: inline-block; margin-top: 15px; padding: 10px 20px; background-color: var(--primary-color); color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">📖 Lire l'article complet sur ${article.source}</a>`;
     
     return baseSummary;
 }
