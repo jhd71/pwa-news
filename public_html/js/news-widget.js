@@ -386,7 +386,7 @@ function openSpecificNews(newsId) {
     window.location.href = `news-locale.html#news-${newsId}`;
 }
 
-// ✅ SOLUTION CORRIGÉE - Hash des URLs longues
+// ✅ SOLUTION SIMPLE - Utilise seulement les colonnes existantes
 async function fetchLocalNewsForWidget() {
     try {
         console.log('📰 Récupération actualités locales pour widget...');
@@ -409,28 +409,23 @@ async function fetchLocalNewsForWidget() {
         // Traiter chaque article pour créer un résumé original
         for (const article of articles.slice(0, 5)) { // Limiter à 5 pour le widget
             try {
-                // ✅ CORRECTION : Créer un hash court de l'URL pour éviter l'erreur 400
-                const urlHash = btoa(article.link).substring(0, 50); // Hash base64 tronqué
-                
-                // Vérifier si l'article existe déjà avec le hash
+                // ✅ SIMPLE : Vérifier par titre (colonnes existantes uniquement)
                 const { data: existing } = await supabase
                     .from('local_news')
                     .select('id')
-                    .eq('url_hash', urlHash)
+                    .eq('title', article.title)
                     .single();
 
                 if (!existing) {
                     // Créer un résumé original basé sur le titre et la source
                     const originalSummary = createOriginalSummary(article);
                     
-                    // ✅ CORRECTION : Utiliser url_hash au lieu de source_url longue
+                    // ✅ SIMPLE : Utiliser seulement les colonnes existantes
                     const { error } = await supabase
                         .from('local_news')
                         .insert({
                             title: article.title,
                             content: originalSummary,
-                            url_hash: urlHash, // Hash court au lieu de l'URL complète
-                            source_url: article.link, // URL complète stockée mais pas utilisée pour les requêtes
                             source: article.source,
                             is_published: true,
                             featured: isLocalSource(article.source),
