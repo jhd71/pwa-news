@@ -29,6 +29,43 @@ const SOUND_FILES = {
     'ringtone': '/sounds/ringtone.mp3'       // Sonnerie classique
 };
 
+function getThemeColors() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'rouge';
+    
+    const themes = {
+        'rouge': {
+            primary: '#841b0a',
+            secondary: '#a92317',
+            accent: '#c62828',
+            light: 'rgba(255, 255, 255, 0.9)',
+            dark: 'rgba(255, 255, 255, 0.2)'
+        },
+        'dark': {
+            primary: '#212121',
+            secondary: '#424242',
+            accent: '#616161',
+            light: '#ffffff',
+            dark: 'rgba(255, 255, 255, 0.1)'
+        },
+        'bleuciel': {
+            primary: '#1976d2',
+            secondary: '#42a5f5',
+            accent: '#64b5f6',
+            light: 'rgba(255, 255, 255, 0.9)',
+            dark: 'rgba(255, 255, 255, 0.2)'
+        },
+        'light': {
+            primary: '#7b1fa2',
+            secondary: '#ab47bc',
+            accent: '#ce93d8',
+            light: 'rgba(255, 255, 255, 0.9)',
+            dark: 'rgba(255, 255, 255, 0.2)'
+        }
+    };
+    
+    return themes[currentTheme] || themes['rouge'];
+}
+
 // ✅ ========== FONCTIONS DE PERSISTANCE AJOUTÉES (NOUVELLES) ==========
 
 // Fonctions de sauvegarde et restauration
@@ -153,13 +190,15 @@ function startTimerFromRestore() {
 }
 
 function showRestoreNotification(title, message) {
+    const colors = getThemeColors();
+    
     const notification = document.createElement('div');
     notification.style.cssText = `
         position: fixed;
         top: 20px;
         left: 50%;
         transform: translateX(-50%);
-        background: linear-gradient(145deg, #4CAF50, #45a049);
+        background: linear-gradient(145deg, ${colors.primary}, ${colors.secondary});
         color: white;
         padding: 15px 25px;
         border-radius: 12px;
@@ -167,7 +206,7 @@ function showRestoreNotification(title, message) {
         font-weight: bold;
         box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         text-align: center;
-        border: 2px solid rgba(255,255,255,0.3);
+        border: 2px solid ${colors.dark};
         min-width: 250px;
         animation: slideInDown 0.5s ease;
     `;
@@ -966,8 +1005,8 @@ function createAlarmPopup() {
             alarmStatus.innerHTML = `
                 ✅ Alarme programmée pour ${alarmTime}
                 <button onclick="cancelAlarm()" style="
-                    background: #ff4444; 
-                    color: white; 
+                    background: #f6d34f; 
+                    color: #070100; 
                     border: none; 
                     border-radius: 4px; 
                     padding: 4px 8px; 
@@ -1357,6 +1396,8 @@ function cancelAlarm() {
 
 // ✅ FONCTION MODIFIÉE AVEC PERSISTANCE - Annuler le minuteur
 function cancelTimer() {
+    const colors = getThemeColors();
+    
     console.log('❌ Annulation du minuteur demandée');
     
     // Confirmation sur mobile pour éviter les annulations accidentelles
@@ -1403,14 +1444,14 @@ function cancelTimer() {
         cancelButton.remove();
     }
     
-    // Message de confirmation stylé
+    // Message de confirmation stylé AVEC THÈME
     const confirmation = document.createElement('div');
     confirmation.style.cssText = `
         position: fixed;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background: #ff4444;
+        background: linear-gradient(145deg, ${colors.primary}, ${colors.secondary});
         color: white;
         padding: 20px 25px;
         border-radius: 15px;
@@ -1419,7 +1460,7 @@ function cancelTimer() {
         box-shadow: 0 8px 25px rgba(0,0,0,0.4);
         font-size: 16px;
         text-align: center;
-        border: 2px solid rgba(255,255,255,0.3);
+        border: 2px solid ${colors.dark};
     `;
     confirmation.innerHTML = `
         <div style="font-size: 24px; margin-bottom: 8px;">⏱️</div>
@@ -1503,6 +1544,8 @@ function playTimerSound() {
 
 // ✅ NOUVELLE FONCTION : Bouton STOP pour minuteur
 function createTimerStopButton() {
+    const colors = getThemeColors();
+    
     // Supprimer bouton existant
     const existingButton = document.getElementById('timerStopButton');
     if (existingButton) {
@@ -1513,10 +1556,10 @@ function createTimerStopButton() {
     stopButton.id = 'timerStopButton';
     stopButton.innerHTML = `
         <div class="stop-alarm-overlay">
-            <div class="stop-alarm-content" style="background: linear-gradient(145deg, #FF6B35, #e53935);">
+            <div class="stop-alarm-content" style="background: linear-gradient(145deg, ${colors.primary}, ${colors.secondary}); border: 2px solid ${colors.accent};">
                 <h3>⏱️ MINUTEUR TERMINÉ</h3>
                 <p>Minuteur sonnera pendant 1 minute</p>
-                <button class="stop-alarm-btn" onclick="stopTimerAlarm()">
+                <button class="stop-alarm-btn" onclick="stopTimerAlarm()" style="background: ${colors.light}; color: ${colors.primary};">
                     🛑 ARRÊTER LE MINUTEUR
                 </button>
                 <div class="alarm-timer" id="timerStopTimer">1:00</div>
@@ -1548,6 +1591,8 @@ function createTimerStopButton() {
 
 // ✅ NOUVELLE FONCTION : Arrêter alarme minuteur
 function stopTimerAlarm() {
+    const colors = getThemeColors();
+    
     console.log('🛑 Arrêt du minuteur demandé');
     
     // ✅ NOUVEAU : Arrêter immédiatement le son en cours
@@ -1575,20 +1620,21 @@ function stopTimerAlarm() {
         stopButton.remove();
     }
     
-    // Message de confirmation pour minuteur
+    // Message de confirmation pour minuteur AVEC THÈME
     setTimeout(() => {
         const confirmation = document.createElement('div');
         confirmation.style.cssText = `
             position: fixed;
             top: 10px;
             right: 20px;
-            background: #FF6B35;
+            background: linear-gradient(145deg, ${colors.primary}, ${colors.secondary});
             color: white;
             padding: 15px 20px;
             border-radius: 10px;
             z-index: 10001;
             font-weight: bold;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border: 2px solid ${colors.dark};
         `;
         confirmation.textContent = '✅ Minuteur arrêté avec succès';
         document.body.appendChild(confirmation);
@@ -1616,6 +1662,8 @@ function closeAlarmPopup() {
 
 // Créer bouton STOP pour alarme
 function createStopAlarmButton() {
+    const colors = getThemeColors();
+    
     // Supprimer bouton existant si présent
     const existingButton = document.getElementById('stopAlarmButton');
     if (existingButton) {
@@ -1627,10 +1675,10 @@ function createStopAlarmButton() {
     stopButton.id = 'stopAlarmButton';
     stopButton.innerHTML = `
         <div class="stop-alarm-overlay">
-            <div class="stop-alarm-content">
+            <div class="stop-alarm-content" style="background: linear-gradient(145deg, ${colors.primary}, ${colors.secondary}); border: 2px solid ${colors.accent};">
                 <h3>🚨 ALARME EN COURS</h3>
                 <p>Alarme sonnera pendant 2 minutes</p>
-                <button class="stop-alarm-btn" onclick="stopAlarm()">
+                <button class="stop-alarm-btn" onclick="stopAlarm()" style="background: ${colors.light}; color: ${colors.primary};">
                     🛑 ARRÊTER L'ALARME
                 </button>
                 <div class="alarm-timer" id="alarmTimer">2:00</div>
@@ -1664,6 +1712,8 @@ function createStopAlarmButton() {
 
 // Arrêter l'alarme
 function stopAlarm() {
+    const colors = getThemeColors();
+    
     console.log('🛑 Arrêt de l\'alarme demandé');
     
     // ✅ NOUVEAU : Arrêter immédiatement le son en cours
@@ -1708,20 +1758,21 @@ function stopAlarm() {
     // Supprimer l'indicateur sur l'horloge
     updateClockIndicator();
     
-    // Afficher message de confirmation
+    // Afficher message de confirmation AVEC THÈME
     setTimeout(() => {
         const confirmation = document.createElement('div');
         confirmation.style.cssText = `
             position: fixed;
             top: 20px;
             right: 20px;
-            background: #4CAF50;
+            background: linear-gradient(145deg, ${colors.primary}, ${colors.secondary});
             color: white;
             padding: 15px 20px;
             border-radius: 10px;
             z-index: 10001;
             font-weight: bold;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border: 2px solid ${colors.dark};
         `;
         confirmation.textContent = '✅ Alarme arrêtée avec succès';
         document.body.appendChild(confirmation);
@@ -1735,6 +1786,8 @@ function stopAlarm() {
 }
 
 function updateTimerStatus() {
+    const colors = getThemeColors();
+    
     // Si un minuteur est en cours et que la popup est fermée
     if (timerInterval && !document.getElementById('alarmPopup')) {
         // Créer un petit indicateur flottant
@@ -1749,7 +1802,7 @@ function updateTimerStatus() {
                              window.innerWidth <= 768;
             
             if (isMobile) {
-                // ✅ VERSION MOBILE : 2 boutons séparés
+                // ✅ VERSION MOBILE : 2 boutons séparés AVEC THÈME
                 timerFloating.style.cssText = `
                     position: fixed;
                     top: 120px;
@@ -1766,7 +1819,7 @@ function updateTimerStatus() {
                 
                 timerFloating.innerHTML = `
                     <div style="
-                        background: linear-gradient(145deg, #FF6B35, #e53935);
+                        background: linear-gradient(145deg, ${colors.primary}, ${colors.secondary});
                         color: white;
                         padding: 8px 5px;
                         border-radius: 12px;
@@ -1774,15 +1827,15 @@ function updateTimerStatus() {
                         cursor: pointer;
                         font-size: 14px;
                         text-align: center;
-                        border: 2px solid rgba(255,255,255,0.3);
+                        border: 2px solid ${colors.dark};
                         min-width: 80px;
                     " onclick="createAlarmPopup()">
                         <div style="font-size: 16px; margin-bottom: 2px;" id="timerTimeDisplay">⏱️ --:--</div>
-                        <div style="font-size: 9px; opacity: 0.9; line-height: 1;">Toucher pour ouvrir</div>
+                        <div style="font-size: 12px; opacity: 0.9; line-height: 1;">Toucher pour ouvrir</div>
                     </div>
                     <button style="
-                        background: #ff4444;
-                        color: white;
+                        background: #f6d34f;
+                        color: #000000;
                         border: none;
                         padding: 4px 12px;
                         border-radius: 8px;
@@ -1799,12 +1852,12 @@ function updateTimerStatus() {
                 `;
                 
             } else {
-                // ✅ VERSION DESKTOP : Clic droit classique
+                // ✅ VERSION DESKTOP : Clic droit classique AVEC THÈME
                 timerFloating.style.cssText = `
                     position: fixed;
                     top: 240px;
                     right: 10px;
-                    background: linear-gradient(145deg, #FF6B35, #e53935);
+                    background: linear-gradient(145deg, ${colors.primary}, ${colors.secondary});
                     color: white;
                     padding: 12px 16px;
                     border-radius: 12px;
@@ -1815,7 +1868,7 @@ function updateTimerStatus() {
                     font-size: 14px;
                     text-align: center;
                     user-select: none;
-                    border: 2px solid rgba(255,255,255,0.3);
+                    border: 2px solid ${colors.dark};
                     min-width: 80px;
                 `;
                 
@@ -1849,7 +1902,7 @@ function updateTimerStatus() {
             // Mettre à jour le contenu complet sur desktop
             timerFloating.innerHTML = `
                 <div style="font-size: 16px; margin-bottom: 2px;">${timeText}</div>
-                <div style="font-size: 9px; opacity: 0.9; line-height: 1;">Clic droit = stop</div>
+                <div style="font-size: 12px; opacity: 0.9; line-height: 1;">Clic droit = stop</div>
             `;
         }
         

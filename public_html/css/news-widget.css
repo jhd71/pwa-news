@@ -989,7 +989,7 @@ color: #4196df;
 
 .stop-alarm-btn {
     background: #fff;
-    color: #d32f2f;
+    color: #841b0a;
     border: none;
     padding: 15px 30px;
     border-radius: 30px;
@@ -1046,36 +1046,84 @@ color: #4196df;
     51%, 100% { opacity: 0.7; }
 }
 
-/* ===== THÈMES POUR L'ALARME ===== */
+/* ===== THÈMES POUR L'ALARME - VERSION COMPLÈTE ===== */
 
-/* Thème Dark */
+/* Thème Rouge (défaut) - NOUVELLE COULEUR #841b0a */
+.alarm-popup-content {
+    background: linear-gradient(145deg, #841b0a, #a92317);
+    border: 2px solid #c62828;
+}
+
+.stop-alarm-content {
+    background: linear-gradient(145deg, #841b0a, #a92317);
+    border: 2px solid #c62828;
+}
+
+/* Thème Dark (Sombre) */
 [data-theme="dark"] .alarm-popup-content {
-    background: linear-gradient(145deg, #1a237e, #3f51b5);
+    background: linear-gradient(145deg, #212121, #424242);
+    border: 2px solid #616161;
 }
 
 [data-theme="dark"] .stop-alarm-content {
-    background: linear-gradient(145deg, #1a237e, #3f51b5);
+    background: linear-gradient(145deg, #212121, #424242);
+    border: 2px solid #616161;
 }
 
-/* Thème Light */
-[data-theme="light"] .alarm-popup-content {
-    background: linear-gradient(145deg, #7e57c2, #9c27b0);
+[data-theme="dark"] .alarm-section,
+[data-theme="dark"] .timer-section {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-[data-theme="light"] .stop-alarm-content {
-    background: linear-gradient(145deg, #7e57c2, #9c27b0);
+[data-theme="dark"] .current-time {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Thème Bleu Ciel */
 [data-theme="bleuciel"] .alarm-popup-content {
-    background: linear-gradient(145deg, #0ea5e9, #0284c7);
+    background: linear-gradient(145deg, #1976d2, #42a5f5);
+    border: 2px solid #64b5f6;
 }
 
 [data-theme="bleuciel"] .stop-alarm-content {
-    background: linear-gradient(145deg, #0ea5e9, #0284c7);
+    background: linear-gradient(145deg, #1976d2, #42a5f5);
+    border: 2px solid #64b5f6;
 }
 
-/* ===== AJOUTEZ DANS news-widget.css APRÈS LES STYLES EXISTANTS ===== */
+[data-theme="bleuciel"] .alarm-section,
+[data-theme="bleuciel"] .timer-section {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="bleuciel"] .current-time {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Thème Light (Violet) */
+[data-theme="light"] .alarm-popup-content {
+    background: linear-gradient(145deg, #7b1fa2, #ab47bc);
+    border: 2px solid #ce93d8;
+}
+
+[data-theme="light"] .stop-alarm-content {
+    background: linear-gradient(145deg, #7b1fa2, #ab47bc);
+    border: 2px solid #ce93d8;
+}
+
+[data-theme="light"] .alarm-section,
+[data-theme="light"] .timer-section {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="light"] .current-time {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
 
 /* Conteneur pour les inputs du minuteur */
 .timer-inputs {
@@ -1138,160 +1186,206 @@ color: #4196df;
     min-height: 20px;
 }
 
-/* Correction DÉFINITIVE pour l'input time sur mobile */
+/* ===== AMÉLIORATION SMARTPHONE - AJOUTEZ APRÈS VOTRE @media EXISTANT ===== */
+
 @media (max-width: 768px) {
     
-    /* ✅ Input time - CORRECTION RADICALE */
-    .alarm-section input[type="time"] {
-        /* Reset complet */
-        -webkit-appearance: none !important;
-        -moz-appearance: none !important;
-        appearance: none !important;
-        
-        /* Dimensions et positionnement */
+    /* ===== POPUP RESPONSIVE AMÉLIORÉE ===== */
+    .alarm-popup-overlay {
+        padding: 10px;
+        align-items: flex-start;
+        padding-top: 20px;
+    }
+    
+    .alarm-popup-content {
+        margin: 0 !important;
+        padding: 15px !important;
+        min-width: auto !important;
+        max-width: 95vw !important;
         width: 100% !important;
-        max-width: 250px !important;
-        height: 50px !important;
+        max-height: 85vh;
+        overflow-y: auto;
+        box-sizing: border-box;
+    }
+    
+    /* ===== HEURE ACTUELLE PLUS COMPACT ===== */
+    .current-time {
+        font-size: 1.5em !important;
+        padding: 10px !important;
+        margin-bottom: 15px !important;
+    }
+    
+    /* ===== SECTIONS PLUS COMPACTES ===== */
+    .alarm-section, .timer-section {
+        margin-bottom: 15px !important;
+        padding: 12px !important;
+    }
+    
+    .alarm-section h4, .timer-section h4 {
+        font-size: 16px !important;
+        margin-bottom: 12px !important;
+        text-align: center;
+    }
+    
+    /* ===== BOUTON FERMER PLUS GROS ===== */
+    .alarm-close {
+        font-size: 24px !important;
+        padding: 8px !important;
+        min-width: 40px;
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* ===== INPUTS AMÉLIORÉS POUR TACTILE ===== */
+    .alarm-section input, .timer-section input, 
+    .alarm-section select, .alarm-section button, .timer-section button {
+        width: 100% !important;
+        max-width: 280px !important;
         margin: 0 auto !important;
-        display: block !important;
-        
-        /* Contenu centré */
-        text-align: center !important;
-        text-align-last: center !important;
-        
-        /* Styles visuels */
-        background: rgba(255, 255, 255, 0.2) !important;
-        border: 2px solid rgba(255, 255, 255, 0.4) !important;
-        border-radius: 8px !important;
-        color: white !important;
-        font-family: 'Courier New', monospace !important;
-        font-size: 20px !important;
-        font-weight: bold !important;
-        letter-spacing: 3px !important;
-        padding: 0 !important;
-        box-sizing: border-box !important;
-        
-        /* Centrage forcé du contenu */
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-    
-    /* ✅ SUPER IMPORTANT : Centrage du contenu interne WebKit */
-    .alarm-section input[type="time"]::-webkit-datetime-edit {
-        width: 100% !important;
-        text-align: center !important;
-        text-align-last: center !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-    }
-    
-    .alarm-section input[type="time"]::-webkit-datetime-edit-fields-wrapper {
-        width: 100% !important;
-        text-align: center !important;
-        text-align-last: center !important;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-    
-    .alarm-section input[type="time"]::-webkit-datetime-edit-hour-field,
-    .alarm-section input[type="time"]::-webkit-datetime-edit-minute-field,
-    .alarm-section input[type="time"]::-webkit-datetime-edit-text {
-        text-align: center !important;
-        text-align-last: center !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        color: white !important;
-        font-size: 20px !important;
-        font-weight: bold !important;
-    }
-    
-    /* ✅ FORCER LE CENTRAGE ABSOLU */
-    .alarm-inputs {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-        width: 100% !important;
-        padding: 0 15px !important;
-        gap: 12px !important;
-    }
-    
-    /* ✅ Assurer que le conteneur parent est aussi centré */
-    .alarm-section {
-        text-align: center !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        width: 100% !important;
-    }
-    
-    /* ✅ Focus amélioré */
-    .alarm-section input[type="time"]:focus {
-        outline: 3px solid #FFD230 !important;
-        background: rgba(255, 255, 255, 0.3) !important;
-        border-color: #FFD230 !important;
-    }
-    
-    /* ✅ Tous les autres éléments alignés */
-    .alarm-section select,
-    .alarm-section button,
-    .timer-section select,
-    .timer-section button,
-    #cancelTimerBtn {
-        width: 100% !important;
-        max-width: 250px !important;
-        margin: 0 auto !important;
-        text-align: center !important;
-        box-sizing: border-box !important;
         font-size: 16px !important;
         padding: 12px !important;
-        display: block !important;
+        min-height: 48px;
+        box-sizing: border-box;
+        touch-action: manipulation;
     }
     
-    /* ✅ Timer inputs aussi centrés */
-    .timer-inputs {
+    /* ===== INPUT TIME CENTRÉ PARFAITEMENT ===== */
+    .alarm-section input[type="time"] {
+        height: 54px !important;
+        font-size: 18px !important;
+        font-weight: bold !important;
+        letter-spacing: 2px !important;
+        text-align: center !important;
+        padding: 0 !important;
         display: flex !important;
-        flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
-        width: 100% !important;
-        padding: 0 15px !important;
-        gap: 12px !important;
     }
     
-    .timer-section {
-        text-align: center !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        width: 100% !important;
-    }
-    
-    /* ✅ Popup responsive */
-    .alarm-popup-content {
-        margin: 15px !important;
-        padding: 20px !important;
+    /* ===== STOP ALARM RESPONSIVE ===== */
+    .stop-alarm-content {
+        margin: 15px;
+        padding: 25px !important;
         min-width: auto !important;
         max-width: 90vw !important;
         width: auto !important;
     }
+    
+    .stop-alarm-content h3 {
+        font-size: 1.3em !important;
+        margin-bottom: 12px !important;
+    }
+    
+    .stop-alarm-btn {
+        padding: 18px 35px !important;
+        font-size: 18px !important;
+        width: 100%;
+        max-width: 200px;
+        margin: 0 auto;
+        display: block;
+    }
+    
+    .alarm-timer {
+        font-size: 1.6em !important;
+        padding: 12px !important;
+        margin-top: 15px !important;
+    }
+    
+    /* ===== STATUS ET DISPLAY AMÉLIORÉS ===== */
+    #alarmStatus, #timerDisplay {
+        font-size: 16px !important;
+        padding: 12px !important;
+        margin-top: 12px !important;
+        word-wrap: break-word;
+        text-align: center !important;
+    }
+    
+    /* ===== CONTENEURS CENTRÉS ===== */
+    .alarm-inputs, .timer-inputs {
+        width: 100% !important;
+        padding: 0 10px !important;
+        gap: 15px !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    /* ===== SCROLL SMOOTH POUR POPUP ===== */
+    .alarm-popup-content {
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* ===== AMÉLIORATION TACTILE GÉNÉRALE ===== */
+    .alarm-section button:hover, 
+    .timer-section button:hover,
+    .alarm-close:hover,
+    .stop-alarm-btn:hover {
+        transform: scale(1.02) !important;
+    }
+    
+    .alarm-section button:active, 
+    .timer-section button:active,
+    .alarm-close:active,
+    .stop-alarm-btn:active {
+        transform: scale(0.98) !important;
+    }
 }
 
-/* ✅ STYLES POUR FIREFOX MOBILE */
-@-moz-document url-prefix() {
-    @media (max-width: 768px) {
-        .alarm-section input[type="time"] {
-            -moz-appearance: none !important;
-            text-align: center !important;
-            direction: ltr !important;
-        }
+/* ===== TRÈS PETITS ÉCRANS (iPhone SE, etc.) ===== */
+@media (max-width: 380px) {
+    .alarm-popup-content {
+        padding: 12px !important;
+        max-width: 98vw !important;
+    }
+    
+    .current-time {
+        font-size: 1.3em !important;
+        padding: 8px !important;
+    }
+    
+    .alarm-section, .timer-section {
+        padding: 10px !important;
+        margin-bottom: 12px !important;
+    }
+    
+    .alarm-section h4, .timer-section h4 {
+        font-size: 14px !important;
+    }
+    
+    .alarm-section input, .timer-section input, 
+    .alarm-section select, .alarm-section button, .timer-section button {
+        max-width: 100% !important;
+        font-size: 14px !important;
+        padding: 10px !important;
+    }
+    
+    .alarm-section input[type="time"] {
+        height: 48px !important;
+        font-size: 16px !important;
+    }
+}
+
+/* ===== PAYSAGE SMARTPHONE ===== */
+@media (max-width: 768px) and (orientation: landscape) {
+    .alarm-popup-overlay {
+        padding-top: 10px;
+    }
+    
+    .alarm-popup-content {
+        max-height: 90vh;
+    }
+    
+    .current-time {
+        font-size: 1.4em !important;
+        padding: 8px !important;
+        margin-bottom: 12px !important;
+    }
+    
+    .alarm-section, .timer-section {
+        padding: 8px !important;
+        margin-bottom: 10px !important;
     }
 }
 

@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 			/* Monter la barre d'infos défilante sur iPhone */
 			.ios-device .news-ticker {
-			bottom: 74px !important; /* Ajuste la hauteur selon le footer ou widgets */
+			bottom: 72px !important; /* Ajuste la hauteur selon le footer ou widgets */
 			}
 
             /* Décaler le header fixe pour iOS */
