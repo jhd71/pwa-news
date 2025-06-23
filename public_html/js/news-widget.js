@@ -417,8 +417,10 @@ async function fetchLocalNewsForWidget() {
                     .single();
 
                 if (!existing) {
-                    // Créer un résumé original basé sur le titre et la source
-                    const originalSummary = createOriginalSummary(article);
+                    // ✅ DEBUG : Ajoutez ces lignes dans fetchLocalNewsForWidget() avant l'insertion
+				const originalSummary = createOriginalSummary(article);
+				console.log('🔍 Contenu généré:', originalSummary);
+				console.log('🔍 Contient un lien:', originalSummary.includes('<a href='));
                     
                     // ✅ SIMPLE : Utiliser seulement les colonnes existantes
                     const { error } = await supabase
