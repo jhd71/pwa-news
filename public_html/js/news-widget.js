@@ -386,7 +386,7 @@ function openSpecificNews(newsId) {
     window.location.href = `news-locale.html#news-${newsId}`;
 }
 
-// ✅ SOLUTION OPTIMALE - Utilise vos API existantes pour le widget local
+// ✅ SOLUTION CORRIGÉE - Hash des URLs longues
 async function fetchLocalNewsForWidget() {
     try {
         console.log('📰 Récupération actualités locales pour widget...');
@@ -409,24 +409,28 @@ async function fetchLocalNewsForWidget() {
         // Traiter chaque article pour créer un résumé original
         for (const article of articles.slice(0, 5)) { // Limiter à 5 pour le widget
             try {
-                // Vérifier si l'article existe déjà
+                // ✅ CORRECTION : Créer un hash court de l'URL pour éviter l'erreur 400
+                const urlHash = btoa(article.link).substring(0, 50); // Hash base64 tronqué
+                
+                // Vérifier si l'article existe déjà avec le hash
                 const { data: existing } = await supabase
                     .from('local_news')
                     .select('id')
-                    .eq('source_url', article.link)
+                    .eq('url_hash', urlHash)
                     .single();
 
                 if (!existing) {
                     // Créer un résumé original basé sur le titre et la source
                     const originalSummary = createOriginalSummary(article);
                     
-                    // Ajouter à Supabase avec contenu original
+                    // ✅ CORRECTION : Utiliser url_hash au lieu de source_url longue
                     const { error } = await supabase
                         .from('local_news')
                         .insert({
                             title: article.title,
                             content: originalSummary,
-                            source_url: article.link,
+                            url_hash: urlHash, // Hash court au lieu de l'URL complète
+                            source_url: article.link, // URL complète stockée mais pas utilisée pour les requêtes
                             source: article.source,
                             is_published: true,
                             featured: isLocalSource(article.source),
@@ -435,7 +439,11 @@ async function fetchLocalNewsForWidget() {
 
                     if (!error) {
                         console.log(`➕ Widget: ${article.title.substring(0, 50)}...`);
+                    } else {
+                        console.warn('❌ Erreur insertion:', error);
                     }
+                } else {
+                    console.log(`⏭️ Article existant: ${article.title.substring(0, 30)}...`);
                 }
             } catch (articleError) {
                 console.warn('❌ Erreur traitement article:', articleError);
@@ -451,6 +459,62 @@ async function fetchLocalNewsForWidget() {
 
     } catch (error) {
         console.error('❌ Erreur récupération actualités widget:', error);
+    }
+}
+
+// ✅ FONCTION - Créer résumé original (pas de copie)
+function createOriginalSummary(article) {
+    const summaries = {
+        'Montceau News': `Nouvelle information rapportée par Montceau News concernant les événements locaux de Montceau-les-Mines et environs.`,
+        'Le JSL': `Le Journal de Saône-et-Loire signale cette actualité concernant notre région.`,
+        'L\'Informateur': `L'Informateur de Bourgogne relaie cette information locale importante.`,
+        'Creusot-Infos': `Creusot-Infos rapporte cette actualité du bassin minier du Creusot et Montceau.`,
+        'France Bleu': `France Bleu Bourgogne couvre cette actualité régionale.`,
+        'default': `Actualité locale rapportée par ${article.source}.`
+    };
+
+    let baseSummary = summaries[article.source] || summaries['default'];
+    
+    // Ajouter contexte selon mots-clés du titre
+    if (article.title.toLowerCase().includes('montceau')) {
+        baseSummary += ' Cette information concerne directement Montceau-les-Mines.';
+    } else if (article.title.toLowerCase().includes('saône')) {
+        baseSummary += ' Cette actualité touche le département de Saône-et-Loire.';
+    } else if (article.title.toLowerCase().includes('chalon')) {
+        baseSummary += ' Cette information concerne Chalon-sur-Saône et sa région.';
+    }
+    
+    baseSummary += ` Consultez l'article complet sur ${article.source} pour plus de détails.`;
+    
+    return baseSummary;
+}
+
+// ✅ FONCTION - Identifier sources locales
+function isLocalSource(source) {
+    const localSources = ['Montceau News', 'Le JSL', 'L\'Informateur', 'Creusot-Infos'];
+    return localSources.includes(source);
+}
+
+// ✅ FONCTION - Nettoyage automatique ancien contenu CORRIGÉE
+async function cleanupOldNews() {
+    try {
+        const supabase = window.getSupabaseClient();
+        if (!supabase) return;
+
+        // Supprimer les actualités de plus de 7 jours
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+        const { error } = await supabase
+            .from('local_news')
+            .delete()
+            .lt('created_at', sevenDaysAgo.toISOString());
+
+        if (!error) {
+            console.log('🧹 Nettoyage automatique des anciennes actualités');
+        }
+    } catch (error) {
+        console.warn('❌ Erreur nettoyage:', error);
     }
 }
 
