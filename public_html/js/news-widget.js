@@ -460,36 +460,43 @@ async function fetchLocalNewsForWidget() {
     }
 }
 
-// ✅ VERSION MINIMALISTE - Bouton très discret
+// ✅ FONCTION CORRIGÉE - Plus de contenu pour éviter l'espace vide
 function createOriginalSummary(article) {
     console.log('🔗 Création du résumé avec lien pour:', article.title);
     
     const summaries = {
-        'Montceau News': `📍 Nouvelle information rapportée par Montceau News concernant les événements locaux de Montceau-les-Mines et environs.`,
-        'Le JSL': `📰 Le Journal de Saône-et-Loire signale cette actualité concernant notre région.`,
-        'L\'Informateur': `📢 L'Informateur de Bourgogne relaie cette information locale importante.`,
-        'Creusot Infos': `⚡ Creusot-Infos rapporte cette actualité du bassin minier du Creusot et Montceau.`,
-        'France Bleu': `📻 France Bleu Bourgogne couvre cette actualité régionale.`,
-        'default': `📄 Actualité locale rapportée par ${article.source}.`
+        'Montceau News': `📍 Montceau News rapporte cette nouvelle information concernant les événements locaux de Montceau-les-Mines et ses environs. Cette actualité fait partie de notre couverture continue des événements qui touchent notre communauté locale.`,
+        'Le JSL': `📰 Le Journal de Saône-et-Loire, quotidien régional de référence, signale cette actualité importante concernant notre région de Saône-et-Loire. Cette information s'inscrit dans la couverture locale proposée par le JSL.`,
+        'L\'Informateur': `📢 L'Informateur de Bourgogne, média local de proximité, relaie cette information importante pour les habitants de notre région. Cette actualité fait partie de leur couverture des événements locaux significatifs.`,
+        'Creusot Infos': `⚡ Creusot-Infos, spécialiste de l'actualité du bassin minier, rapporte cette information concernant le territoire du Creusot et Montceau-les-Mines. Cette actualité illustre la vie locale de notre bassin minier.`,
+        'France Bleu': `📻 France Bleu Bourgogne, radio de service public régionale, couvre cette actualité qui concerne notre département. Cette information fait partie de leur mission de proximité avec les auditeurs bourguignons.`,
+        'default': `📄 Cette actualité locale nous est rapportée par ${article.source}, contribuant ainsi à l'information de proximité sur notre territoire.`
     };
 
     let baseSummary = summaries[article.source] || summaries['default'];
     
-    // Ajouter contexte selon mots-clés du titre
+    // Ajouter contexte géographique détaillé
     if (article.title.toLowerCase().includes('montceau')) {
-        baseSummary += '\n\n🏛️ Cette information concerne directement Montceau-les-Mines.';
+        baseSummary += '\n\n🏛️ Cette information concerne directement Montceau-les-Mines, commune de 18 000 habitants située au cœur du bassin minier de Saône-et-Loire, et peut avoir des répercussions sur l\'ensemble de la communauté urbaine.';
     } else if (article.title.toLowerCase().includes('saône')) {
-        baseSummary += '\n\n🗺️ Cette actualité touche le département de Saône-et-Loire.';
+        baseSummary += '\n\n🗺️ Cette actualité touche le département de Saône-et-Loire dans son ensemble, concernant potentiellement les 550 000 habitants du département et ses différents territoires.';
     } else if (article.title.toLowerCase().includes('chalon')) {
-        baseSummary += '\n\n🏙️ Cette information concerne Chalon-sur-Saône et sa région.';
+        baseSummary += '\n\n🏙️ Cette information concerne Chalon-sur-Saône et sa région, préfecture du département et pôle économique important de la Saône-et-Loire.';
+    } else if (article.title.toLowerCase().includes('blanzy') || article.title.toLowerCase().includes('saint-vallier') || article.title.toLowerCase().includes('genelard')) {
+        baseSummary += '\n\n🌍 Cette actualité concerne une commune proche de Montceau-les-Mines, dans le périmètre de notre bassin de vie local.';
+    } else {
+        baseSummary += '\n\n📍 Cette information, bien que d\'origine plus large, peut présenter un intérêt pour les habitants de notre région.';
     }
     
-    // ✅ LIEN SIMPLE ET DISCRET (comme un lien normal)
+    // Ajouter une note éditoriale
+    baseSummary += '\n\nL\'équipe d\'Actu&Média suit cette actualité et vous propose de consulter l\'article complet pour avoir tous les détails et le contexte de cette information.';
+    
+    // ✅ BOUTON DISCRET
     baseSummary += `
 
 ─────────────────────────────
 
-<div style="margin-top: 12px; text-align: right;">
+<div style="margin-top: 15px; text-align: right;">
     <a href="${article.link}" target="_blank" rel="noopener" style="
         color: #dc3545; 
         text-decoration: none; 
@@ -498,7 +505,7 @@ function createOriginalSummary(article) {
         border-bottom: 1px solid #dc3545;
         padding-bottom: 1px;
     " onmouseover="this.style.color='#a02633'" onmouseout="this.style.color='#dc3545'">
-        📖 Lire l'article complet →
+        📖 Lire l'article complet sur ${article.source} →
     </a>
 </div>`;
     
