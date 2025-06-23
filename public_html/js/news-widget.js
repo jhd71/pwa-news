@@ -457,8 +457,10 @@ async function fetchLocalNewsForWidget() {
     }
 }
 
-// ✅ FONCTION CORRIGÉE - Créer résumé original avec lien (VERSION FINALE)
+// ✅ FONCTION CORRIGÉE - Créer résumé original avec lien
 function createOriginalSummary(article) {
+    console.log('🔗 Création du résumé avec lien pour:', article.title);
+    
     const summaries = {
         'Montceau News': `Nouvelle information rapportée par Montceau News concernant les événements locaux de Montceau-les-Mines et environs.`,
         'Le JSL': `Le Journal de Saône-et-Loire signale cette actualité concernant notre région.`,
@@ -479,65 +481,16 @@ function createOriginalSummary(article) {
         baseSummary += ' Cette information concerne Chalon-sur-Saône et sa région.';
     }
     
-    // ✅ LIEN VERS L'ARTICLE ORIGINAL
-    baseSummary += `<br><br><div style="text-align: center; margin-top: 20px;"><a href="${article.link}" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 12px 24px; background: #dc3545; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.2); transition: all 0.3s ease;">📖 Lire l'article complet sur ${article.source}</a></div>`;
+    // ✅ LIEN VERS L'ARTICLE ORIGINAL (version HTML simple)
+    baseSummary += `
+
+<div style="margin-top: 20px; text-align: center;">
+    <a href="${article.link}" target="_blank" rel="noopener" style="background: #dc3545; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+        📖 Lire l'article complet
+    </a>
+</div>`;
     
-    return baseSummary;
-}
-
-// ✅ FONCTION - Identifier sources locales
-function isLocalSource(source) {
-    const localSources = ['Montceau News', 'Le JSL', 'L\'Informateur', 'Creusot-Infos'];
-    return localSources.includes(source);
-}
-
-// ✅ FONCTION - Nettoyage automatique ancien contenu CORRIGÉE
-async function cleanupOldNews() {
-    try {
-        const supabase = window.getSupabaseClient();
-        if (!supabase) return;
-
-        // Supprimer les actualités de plus de 7 jours
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-
-        const { error } = await supabase
-            .from('local_news')
-            .delete()
-            .lt('created_at', sevenDaysAgo.toISOString());
-
-        if (!error) {
-            console.log('🧹 Nettoyage automatique des anciennes actualités');
-        }
-    } catch (error) {
-        console.warn('❌ Erreur nettoyage:', error);
-    }
-}
-
-// ✅ FONCTION - Créer résumé original (pas de copie)
-function createOriginalSummary(article) {
-    const summaries = {
-        'Montceau News': `Nouvelle information rapportée par Montceau News concernant les événements locaux de Montceau-les-Mines et environs.`,
-        'Le JSL': `Le Journal de Saône-et-Loire signale cette actualité concernant notre région.`,
-        'L\'Informateur': `L'Informateur de Bourgogne relaie cette information locale importante.`,
-        'Creusot-Infos': `Creusot-Infos rapporte cette actualité du bassin minier du Creusot et Montceau.`,
-        'France Bleu': `France Bleu Bourgogne couvre cette actualité régionale.`,
-        'default': `Actualité locale rapportée par ${article.source}.`
-    };
-
-    let baseSummary = summaries[article.source] || summaries['default'];
-    
-    // Ajouter contexte selon mots-clés du titre
-    if (article.title.toLowerCase().includes('montceau')) {
-        baseSummary += ' Cette information concerne directement Montceau-les-Mines.';
-    } else if (article.title.toLowerCase().includes('saône')) {
-        baseSummary += ' Cette actualité touche le département de Saône-et-Loire.';
-    } else if (article.title.toLowerCase().includes('chalon')) {
-        baseSummary += ' Cette information concerne Chalon-sur-Saône et sa région.';
-    }
-    
-    baseSummary += ` Consultez l'article complet sur ${article.source} pour plus de détails.`;
-    
+    console.log('✅ Résumé créé avec lien:', baseSummary.includes('<a href='));
     return baseSummary;
 }
 
