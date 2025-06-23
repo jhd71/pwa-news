@@ -386,6 +386,130 @@ function openSpecificNews(newsId) {
     window.location.href = `news-locale.html#news-${newsId}`;
 }
 
+// ✅ SOLUTION OPTIMALE - Utilise vos API existantes pour le widget local
+async function fetchLocalNewsForWidget() {
+    try {
+        console.log('📰 Récupération actualités locales pour widget...');
+        const supabase = window.getSupabaseClient();
+        if (!supabase) {
+            console.warn('❌ Supabase non disponible');
+            return;
+        }
+
+        // Utiliser votre API Vercel existante
+        const response = await fetch('/api/getNews');
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const articles = await response.json();
+        console.log(`📡 ${articles.length} articles récupérés depuis l'API`);
+
+        // Traiter chaque article pour créer un résumé original
+        for (const article of articles.slice(0, 5)) { // Limiter à 5 pour le widget
+            try {
+                // Vérifier si l'article existe déjà
+                const { data: existing } = await supabase
+                    .from('local_news')
+                    .select('id')
+                    .eq('source_url', article.link)
+                    .single();
+
+                if (!existing) {
+                    // Créer un résumé original basé sur le titre et la source
+                    const originalSummary = createOriginalSummary(article);
+                    
+                    // Ajouter à Supabase avec contenu original
+                    const { error } = await supabase
+                        .from('local_news')
+                        .insert({
+                            title: article.title,
+                            content: originalSummary,
+                            source_url: article.link,
+                            source: article.source,
+                            is_published: true,
+                            featured: isLocalSource(article.source),
+                            created_at: new Date(article.date || Date.now()).toISOString()
+                        });
+
+                    if (!error) {
+                        console.log(`➕ Widget: ${article.title.substring(0, 50)}...`);
+                    }
+                }
+            } catch (articleError) {
+                console.warn('❌ Erreur traitement article:', articleError);
+            }
+        }
+
+        // Recharger le widget
+        if (newsWidget) {
+            setTimeout(() => {
+                newsWidget.refresh();
+            }, 1500);
+        }
+
+    } catch (error) {
+        console.error('❌ Erreur récupération actualités widget:', error);
+    }
+}
+
+// ✅ FONCTION - Créer résumé original (pas de copie)
+function createOriginalSummary(article) {
+    const summaries = {
+        'Montceau News': `Nouvelle information rapportée par Montceau News concernant les événements locaux de Montceau-les-Mines et environs.`,
+        'Le JSL': `Le Journal de Saône-et-Loire signale cette actualité concernant notre région.`,
+        'L\'Informateur': `L'Informateur de Bourgogne relaie cette information locale importante.`,
+        'Creusot-Infos': `Creusot-Infos rapporte cette actualité du bassin minier du Creusot et Montceau.`,
+        'France Bleu': `France Bleu Bourgogne couvre cette actualité régionale.`,
+        'default': `Actualité locale rapportée par ${article.source}.`
+    };
+
+    let baseSummary = summaries[article.source] || summaries['default'];
+    
+    // Ajouter contexte selon mots-clés du titre
+    if (article.title.toLowerCase().includes('montceau')) {
+        baseSummary += ' Cette information concerne directement Montceau-les-Mines.';
+    } else if (article.title.toLowerCase().includes('saône')) {
+        baseSummary += ' Cette actualité touche le département de Saône-et-Loire.';
+    } else if (article.title.toLowerCase().includes('chalon')) {
+        baseSummary += ' Cette information concerne Chalon-sur-Saône et sa région.';
+    }
+    
+    baseSummary += ` Consultez l'article complet sur ${article.source} pour plus de détails.`;
+    
+    return baseSummary;
+}
+
+// ✅ FONCTION - Identifier sources locales
+function isLocalSource(source) {
+    const localSources = ['Montceau News', 'Le JSL', 'L\'Informateur', 'Creusot-Infos'];
+    return localSources.includes(source);
+}
+
+// ✅ FONCTION - Nettoyage automatique ancien contenu
+async function cleanupOldNews() {
+    try {
+        const supabase = window.getSupabaseClient();
+        if (!supabase) return;
+
+        // Supprimer les actualités de plus de 7 jours
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+        const { error } = await supabase
+            .from('local_news')
+            .delete()
+            .lt('created_at', sevenDaysAgo.toISOString());
+
+        if (!error) {
+            console.log('🧹 Nettoyage automatique des anciennes actualités');
+        }
+    } catch (error) {
+        console.warn('❌ Erreur nettoyage:', error);
+    }
+}
+
 // Fonction pour mettre à jour l'horloge
 function updateClock() {
     const now = new Date();
@@ -1927,6 +2051,34 @@ window.addEventListener('newsUpdated', function() {
         newsWidget.refresh();
     }
 });
+
+// ✅ AUTOMATISATION INTELLIGENTE
+document.addEventListener('DOMContentLoaded', function() {
+    // Lancement initial après 5 secondes
+    setTimeout(() => {
+        console.log('🚀 Chargement initial actualités widget');
+        fetchLocalNewsForWidget();
+    }, 5000);
+
+    // Puis toutes les 30 minutes (plus fréquent pour widget)
+    setInterval(() => {
+        console.log('🔄 Mise à jour automatique widget (30min)');
+        fetchLocalNewsForWidget();
+    }, 30 * 60 * 1000);
+
+    // Nettoyage quotidien
+    setInterval(() => {
+        cleanupOldNews();
+    }, 24 * 60 * 60 * 1000);
+});
+
+// ✅ BOUTON TEST pour vérifier
+function testWidgetUpdate() {
+    console.log('🧪 Test manuel widget news');
+    fetchLocalNewsForWidget();
+}
+
+window.testWidgetUpdate = testWidgetUpdate;
 
 // ✅ AJOUTER les animations CSS (VERSION CORRIGÉE AVEC CLASSE)
 const animationCSS = `
