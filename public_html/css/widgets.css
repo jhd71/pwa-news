@@ -815,22 +815,41 @@
     }
 }
 
-/* Positionnement Mobile - À droite du bouton carburant */
+/* Fix pour le bouton "Autour de moi" sur mobile */
 @media (max-width: 768px) {
-        .search-button {
+    .search-button {
         position: fixed;
         top: 70px;
-        left: 80%;
-        transform: translateX(-50%);
+        right: 20px; /* Position fixe depuis la droite */
         width: 40px;
         height: 40px;
         z-index: 100;
+        /* Supprimer transform et left */
+        transform: none;
+        left: auto;
+        /* Ajout pour éviter les décalages */
+        will-change: auto;
+        -webkit-transform: none;
+        transition: none;
     }
     
     .search-button .material-icons {
         font-size: 22px;
         color: white !important;
     }
+    
+    /* Ajuster la position du bouton carburant si nécessaire */
+    .fuel-button {
+        right: 70px; /* 20px (marge) + 40px (largeur bouton search) + 10px (espace) */
+    }
+}
+
+/* Empêcher les animations ou transitions qui pourraient causer le décalage */
+.search-button {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 /* Mêmes couleurs que fuel-button pour tous les thèmes */
