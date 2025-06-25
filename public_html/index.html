@@ -128,10 +128,7 @@
 <button class="fuel-button" onclick="contentManager.openFuelPrices()" title="Consulter les prix des carburants à Montceau-les-Mines">
     <span class="material-icons">local_gas_station</span>
 </button>
-<!-- Bouton Autour de moi -->
-<button class="search-button" onclick="window.open('/autour-de-moi.html', '_blank')" title="Autour de moi">
-    <span class="material-icons">near_me</span>
-</button>
+
 <!-- Structure HTML optimisée pour le Swiper et les séparateurs -->
 <div class="swiper-container">
   <div class="swiper">
@@ -396,7 +393,10 @@ document.getElementById('currentYear').textContent = new Date().getFullYear();
 	<button class="weather-show-btn" id="weatherShowBtn" title="Afficher la météo">
   <span class="material-icons">cloudy_snowing</span>
 	</button>
-  
+  <!-- Bouton Autour de moi -->
+<button class="search-button" onclick="window.open('/autour-de-moi.html', '_blank')" title="Autour de moi">
+    <span class="material-icons">near_me</span>
+</button>
 	</div>
 	<!-- Widget liens rapides avec bouton de fermeture -->
 	<div class="quick-links-sidebar" id="quickLinksSidebar">
@@ -942,38 +942,5 @@ document.getElementById('currentYear').textContent = new Date().getFullYear();
             }
         });
     </script>
-	<script>
-// Gestion tactile directe pour le bouton
-document.addEventListener('DOMContentLoaded', () => {
-    const searchBtn = document.querySelector('.search-button');
-    
-    if (searchBtn && isMobile) {
-        // Événements tactiles au lieu de click
-        searchBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            fixButtonPosition();
-            
-            searchBtn.style.transform = 'translate3d(0, 0, 0) scale(0.95)';
-        });
-        
-        searchBtn.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            
-            searchBtn.style.transform = 'translate3d(0, 0, 0) scale(1)';
-            
-            setTimeout(() => {
-                window.open('/autour-de-moi.html', '_blank');
-                setTimeout(fixButtonPosition, 200);
-            }, 100);
-        });
-        
-        // Annuler si on glisse en dehors
-        searchBtn.addEventListener('touchcancel', () => {
-            searchBtn.style.transform = 'translate3d(0, 0, 0) scale(1)';
-            fixButtonPosition();
-        });
-    }
-});
-</script>
 </body>
 </html>
