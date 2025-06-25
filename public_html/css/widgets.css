@@ -783,19 +783,60 @@
 
 /* Widget Recherche locale - Même style que fuel-button */
 .search-button {
+    position: fixed; /* ✅ AJOUT - Fixe sur toutes les tailles */
+    top: 70px;
+    right: 20px; /* ✅ Position à droite comme les autres boutons */
+    width: 50px;
+    height: 50px;
+    background: rgba(220, 38, 38, 0.9);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
     transition: all 0.3s ease;
-    border: none;
-    outline: none;
-    text-decoration: none;
-    padding: 0;
-    border-radius: 50%;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.search-button:hover {
+    background: rgba(220, 38, 38, 1);
+    transform: scale(1.1);
+}
+
+.search-button .material-icons {
+    font-size: 24px;
     color: white !important;
-	z-index: 990;
+}
+
+/* Responsive mobile - ajustements de position */
+@media (max-width: 768px) {
+    .search-button {
+        top: 70px;
+        right: 15px; /* ✅ Un peu plus à gauche sur mobile */
+        width: 40px;
+        height: 40px;
+    }
+    
+    .search-button .material-icons {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 480px) {
+    .search-button {
+        top: 65px;
+        right: 10px;
+        width: 38px;
+        height: 38px;
+    }
+    
+    .search-button .material-icons {
+        font-size: 20px;
+    }
 }
 
 /* Positionnement PC - À droite du bouton carburant */
@@ -818,8 +859,8 @@
 /* Positionnement Mobile - À droite du bouton carburant */
 @media (max-width: 768px) {
     .search-button {
-        position: absolute;
-        top: -60px;
+        position: fixed;
+        top: 70px;
         left: 80%;
         transform: translateX(-50%);
         width: 40px;
