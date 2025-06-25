@@ -29,9 +29,9 @@
 
     /* Thème Sombre */
     [data-theme="dark"] {
-      --primary-color: #202872;
+      --primary-color: #1f2937;
       --primary-light: #374151;
-      --primary-dark: #212872;
+      --primary-dark: #111827;
       --secondary-color: #4b5563;
       --background-start: #0f172a;
       --background-middle: #1e293b;
@@ -70,7 +70,7 @@
     }
 
     body {
-      linear-gradient(135deg, #1e267a 0%, #1e267a 50%, #1e267a 100%);
+      background: linear-gradient(135deg, var(--background-start) 0%, var(--background-middle) 50%, var(--background-end) 100%);
       color: #ffffff;
       font-family: 'Montserrat', sans-serif;
       min-height: 100vh;
@@ -189,6 +189,7 @@
     .weather-temp {
       font-size: 1.8em;
       font-weight: 700;
+      color: var(--primary-light);
     }
 
     .weather-desc {
@@ -446,9 +447,14 @@
     <div class="results-section">
       <div id="resultsContainer">
         <div class="no-results">
-          <i class="fas fa-search" style="font-size: 3em; opacity: 0.5; margin-bottom: 15px;"></i>
-          <h3>Prêt à explorer !</h3>
-          <p>Sélectionnez une catégorie ou recherchez un commerce spécifique</p>
+          <i class="fas fa-search-location" style="font-size: 3em; opacity: 0.5; margin-bottom: 15px;"></i>
+          <h3>Recherche géolocalisée intelligente</h3>
+          <p><strong>1.</strong> Tapez ce que vous cherchez</p>
+          <p><strong>2.</strong> Cliquez sur 🔍 ou appuyez sur Entrée</p>
+          <p><strong>3.</strong> Nous vous géolocaliserons et chercherons près de vous !</p>
+          <div style="margin-top: 15px; opacity: 0.8; font-size: 0.9em;">
+            🌍 <strong>Fonctionne partout</strong> - pas seulement à Montceau !
+          </div>
         </div>
       </div>
     </div>
@@ -468,7 +474,7 @@
       // Récupérer la météo réelle selon la position par défaut (Montceau)
       fetchRealWeather(46.6746, 4.3630);
     }
-    
+
     async function fetchRealWeather(lat, lng) {
       try {
         // Utilisation de votre API WeatherAPI (bien meilleure qu'OpenWeatherMap)
@@ -638,7 +644,7 @@
       container.innerHTML = `
         <div class="search-results">
           <div class="search-header">
-            <i class="fas fa-map-marker-alt" style="color: #22c55e; margin-right: 10px;"></i>
+            <i class="fas fa-map-marker-alt" style="color: var(--primary-light); margin-right: 10px;"></i>
             <h3>Recherche : "${query}"</h3>
           </div>
           
@@ -655,7 +661,7 @@
               display: inline-flex;
               align-items: center;
               gap: 10px;
-              background: linear-gradient(45deg, #4285f4, #3367d6);
+              background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
               color: white;
               padding: 15px 25px;
               border-radius: 25px;
@@ -697,7 +703,7 @@
                   display: inline-flex;
                   align-items: center;
                   gap: 8px;
-                  background: linear-gradient(45deg, #007aff, #0056cc);
+                  background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
                   color: white;
                   padding: 12px 18px;
                   border-radius: 20px;
@@ -715,7 +721,7 @@
                   display: inline-flex;
                   align-items: center;
                   gap: 8px;
-                  background: linear-gradient(45deg, #6b7280, #4b5563);
+                  background: linear-gradient(45deg, var(--secondary-color), var(--primary-dark));
                   color: white;
                   padding: 12px 18px;
                   border-radius: 20px;
@@ -732,8 +738,8 @@
             </div>
           </div>
           
-          <div class="search-tips" style="margin-top: 20px; padding: 15px; background: rgba(34, 197, 94, 0.1); border-radius: 10px; border: 1px solid rgba(34, 197, 94, 0.3);">
-            <h4 style="color: #22c55e; margin-bottom: 10px;">💡 Conseils de recherche :</h4>
+          <div class="search-tips" style="margin-top: 20px; padding: 15px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; border: 1px solid var(--primary-light);">
+            <h4 style="color: var(--primary-light); margin-bottom: 10px;">💡 Conseils de recherche :</h4>
             <ul style="margin: 0; padding-left: 20px; opacity: 0.9;">
               <li>Essayez des termes spécifiques : "boulangerie", "pharmacie de garde"</li>
               <li>Ou des types de cuisine : "restaurant italien", "pizzeria"</li>
