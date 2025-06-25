@@ -820,7 +820,7 @@
     .search-button {
         position: fixed;
         top: 70px;
-        right: 20px; /* Position fixe depuis la droite */
+        right: 60px; /* Position fixe depuis la droite */
         width: 40px;
         height: 40px;
         z-index: 100;
