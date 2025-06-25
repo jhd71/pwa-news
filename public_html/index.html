@@ -129,7 +129,7 @@
     <span class="material-icons">local_gas_station</span>
 </button>
 <!-- Bouton Autour de moi -->
-<button class="search-button" onclick="openLocationPage(event)" title="Autour de moi">
+<button class="search-button" onclick="event.stopPropagation(); "window.open('/autour-de-moi.html', '_blank')" title="Autour de moi">
     <span class="material-icons">near_me</span>
 </button>
 <!-- Structure HTML optimisée pour le Swiper et les séparateurs -->
@@ -942,49 +942,5 @@ document.getElementById('currentYear').textContent = new Date().getFullYear();
             }
         });
     </script>
-	<script>
-function openLocationPage(event) {
-    // Empêcher les comportements par défaut
-    event.preventDefault();
-    event.stopPropagation();
-    
-    // Vibration tactile
-    if (navigator.vibrate) {
-        navigator.vibrate(50);
-    }
-    
-    // Animation de feedback
-    const btn = event.currentTarget;
-    btn.style.transform = 'translateZ(0) scale(0.9)';
-    
-    setTimeout(() => {
-        btn.style.transform = 'translateZ(0) scale(1)';
-        // Ouvrir la page après l'animation
-        window.open('/autour-de-moi.html', '_blank');
-    }, 150);
-}
-
-// ✅ CORRECTION : Restaurer la position au retour de page
-window.addEventListener('pageshow', function(event) {
-    const searchBtn = document.querySelector('.search-button');
-    if (searchBtn) {
-        // Forcer la repositionnement
-        searchBtn.style.position = 'fixed';
-        searchBtn.style.top = '70px';
-        searchBtn.style.right = '20px';
-        searchBtn.style.transform = 'translateZ(0)';
-    }
-});
-
-// ✅ CORRECTION : Repositionner après resize
-window.addEventListener('resize', function() {
-    const searchBtn = document.querySelector('.search-button');
-    if (searchBtn) {
-        searchBtn.style.position = 'fixed';
-        searchBtn.style.top = '70px';
-        searchBtn.style.right = '20px';
-    }
-});
-</script>
 </body>
 </html>
