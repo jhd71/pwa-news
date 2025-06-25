@@ -1292,6 +1292,7 @@ changeTextContrast(contrast) {
             top: 0;
             left: 0;
             right: 0;
+            background: rgb(148, 0, 0);
             color: white;
             padding: 12px;
             z-index: 9999;
