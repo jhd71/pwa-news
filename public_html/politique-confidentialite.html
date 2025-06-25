@@ -12,6 +12,7 @@
             --light-gray: #f5f5f5;
             --border-color: #e0e0e0;
             --link-color: #7c4dff;
+            --success-color: #4caf50;
         }
 
         body {
@@ -94,6 +95,36 @@
             border-radius: 6px;
             margin: 20px 0;
             border-left: 4px solid var(--secondary-color);
+        }
+
+        /* Nouvelle section pour la géolocalisation */
+        .geolocation-section {
+            background-color: #e8f5e9;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--success-color);
+            margin: 20px 0;
+        }
+
+        .geolocation-section h3 {
+            color: var(--success-color);
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .geolocation-icon {
+            font-size: 1.5em;
+        }
+
+        .important-note {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #2196f3;
+            font-weight: 500;
         }
 
         .contact {
@@ -192,29 +223,71 @@
             .email {
                 color: #9f78ff;
             }
+            
+            .geolocation-section {
+                background-color: #2d4a2f;
+            }
+            
+            .geolocation-section h3 {
+                color: #81c784;
+            }
+            
+            .important-note {
+                background-color: #1e3a5f;
+            }
         }
     </style>
-    <meta name="description" content="Consultez la politique de confidentialité du site Actu & Média : collecte, cookies, sécurité, droits RGPD.">
+    <meta name="description" content="Consultez la politique de confidentialité du site Actu & Média : collecte, cookies, sécurité, géolocalisation, droits RGPD.">
 	<link rel="canonical" href="https://actuetmedia.fr/politique-confidentialite" />
 </head>
 <body>
     <div class="container">
         <header>
             <h1>Politique de confidentialité</h1>
-            <div class="updated-date">Dernière mise à jour : 24 avril 2025</div>
+            <div class="updated-date">Dernière mise à jour : 26 décembre 2024</div>
         </header>
 
         <div class="highlight">
-            <p>Chez Actu & Média, nous nous engageons à protéger votre vie privée tout en vous offrant une expérience de qualité. Cette politique explique comment nous collectons et utilisons vos données, particulièrement dans le cadre de notre service de chat.</p>
+            <p>Chez Actu & Média, nous nous engageons à protéger votre vie privée tout en vous offrant une expérience de qualité. Cette politique explique comment nous collectons et utilisons vos données, particulièrement dans le cadre de nos services de chat et de géolocalisation.</p>
         </div>
 
         <div class="section">
             <h2>1. Collecte d'informations</h2>
-            <p>Lorsque vous utilisez notre service de chat, nous collectons les informations suivantes :</p>
+            <p><strong>Service de chat :</strong></p>
             <ul>
                 <li>Pseudonymes choisis par les utilisateurs</li>
                 <li>Adresses IP pour des raisons de sécurité et de modération</li>
                 <li>Messages publiés sur le chat</li>
+            </ul>
+            
+            <p style="margin-top: 15px;"><strong>Navigation générale :</strong></p>
+            <ul>
+                <li>Données de navigation anonymes (pages visitées, durée de visite)</li>
+                <li>Informations techniques (type de navigateur, système d'exploitation)</li>
+            </ul>
+        </div>
+
+        <div class="geolocation-section">
+            <h3><span class="geolocation-icon">📍</span> Géolocalisation - Service "Autour de moi"</h3>
+            
+            <div class="important-note">
+                ⚠️ <strong>Important :</strong> Nous NE collectons PAS et NE stockons PAS vos données de géolocalisation.
+            </div>
+            
+            <p><strong>Comment fonctionne notre service de géolocalisation :</strong></p>
+            <ul>
+                <li>La géolocalisation est utilisée UNIQUEMENT sur votre appareil</li>
+                <li>Vos coordonnées GPS ne sont JAMAIS envoyées à nos serveurs</li>
+                <li>Aucune donnée de position n'est collectée, stockée ou analysée par Actu & Média</li>
+                <li>Les recherches "Autour de moi" sont redirigées directement vers Google Maps</li>
+                <li>Votre position reste privée et n'est jamais partagée avec nous</li>
+            </ul>
+            
+            <p style="margin-top: 15px;"><strong>Votre contrôle total :</strong></p>
+            <ul>
+                <li>Vous pouvez refuser la géolocalisation à tout moment</li>
+                <li>Le service fonctionne aussi sans géolocalisation (utilise Montceau-les-Mines par défaut)</li>
+                <li>Vous pouvez révoquer l'autorisation dans les paramètres de votre navigateur</li>
             </ul>
         </div>
 
@@ -226,15 +299,24 @@
                 <li>Modérer le contenu et assurer la sécurité des utilisateurs</li>
                 <li>Prévenir les abus et le spam</li>
                 <li>Bannir les utilisateurs ne respectant pas nos conditions d'utilisation</li>
+                <li>Améliorer l'expérience utilisateur du site</li>
+            </ul>
+            
+            <p style="margin-top: 15px;"><strong>Nous ne :</strong></p>
+            <ul>
+                <li>Ne vendons jamais vos données personnelles</li>
+                <li>Ne partageons pas vos informations avec des tiers (sauf obligation légale)</li>
+                <li>Ne collectons aucune donnée de géolocalisation</li>
             </ul>
         </div>
 
         <div class="section">
             <h2>3. Conservation des données</h2>
             <ul>
-                <li>Les messages sont conservés pour une durée indéterminée</li>
-                <li>Les adresses IP sont conservées uniquement pendant la durée nécessaire à la modération et à la sécurité</li>
-                <li>Les adresses IP des utilisateurs bannis sont conservées jusqu'à l'expiration de leur bannissement</li>
+                <li>Messages du chat : conservés pour une durée indéterminée</li>
+                <li>Adresses IP : conservées uniquement pendant la durée nécessaire à la modération</li>
+                <li>Adresses IP des utilisateurs bannis : conservées jusqu'à l'expiration du bannissement</li>
+                <li>Données de géolocalisation : AUCUNE conservation (non collectées)</li>
             </ul>
         </div>
 
@@ -254,14 +336,39 @@
 
         <div class="section">
             <h2>5. Cookies et technologies similaires</h2>
-            <p>Notre site utilise des cookies et des technologies similaires pour améliorer votre expérience. Ces cookies permettent notamment de mémoriser votre pseudonyme et vos préférences d'affichage.</p>
-            <p>Des cookies tiers peuvent également être utilisés à des fins de mesure d'audience et de publicité, notamment via Google AdSense.</p>
-            <p>Pour en savoir plus sur les cookies utilisés par Google, consultez leur <a href="https://policies.google.com/technologies/ads?hl=fr" target="_blank" rel="noopener">politique de confidentialité</a>.</p>
+            <p>Notre site utilise des cookies pour améliorer votre expérience :</p>
+            <ul>
+                <li><strong>Cookies essentiels :</strong> pseudonyme du chat, préférences d'affichage, thème choisi</li>
+                <li><strong>Cookies d'analyse :</strong> statistiques de visite anonymes</li>
+                <li><strong>Cookies publicitaires :</strong> Google AdSense (si activé)</li>
+            </ul>
+            
+            <p style="margin-top: 15px;">Pour en savoir plus sur les cookies utilisés par Google, consultez leur <a href="https://policies.google.com/technologies/ads?hl=fr" target="_blank" rel="noopener">politique de confidentialité</a>.</p>
+            
+            <div class="important-note">
+                💡 <strong>Note :</strong> Aucun cookie n'est utilisé pour stocker ou suivre votre géolocalisation.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>6. Sécurité des données</h2>
+            <p>Nous mettons en œuvre des mesures de sécurité appropriées pour protéger vos informations :</p>
+            <ul>
+                <li>Connexions sécurisées (HTTPS)</li>
+                <li>Accès restreint aux données personnelles</li>
+                <li>Surveillance régulière de nos systèmes</li>
+                <li>Aucune collecte de données sensibles (géolocalisation, données de santé, etc.)</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>7. Modifications de cette politique</h2>
+            <p>Nous pouvons mettre à jour cette politique de confidentialité périodiquement. Les modifications seront publiées sur cette page avec une date de mise à jour révisée. Nous vous encourageons à consulter régulièrement cette page.</p>
         </div>
 
         <div class="contact">
-            <h2>6. Contact</h2>
-            <p>Pour toute question concernant cette politique de confidentialité, vous pouvez nous contacter à :</p>
+            <h2>8. Contact</h2>
+            <p>Pour toute question concernant cette politique de confidentialité ou vos données personnelles, vous pouvez nous contacter à :</p>
             <p><a href="mailto:contact@actuetmedia.fr" class="email">contact@actuetmedia.fr</a></p>
         </div>
 
@@ -271,7 +378,7 @@
     </div>
 
     <footer>
-        &copy; 2025 Actu & Média - Tous droits réservés
+        &copy; 2024 Actu & Média - Tous droits réservés
     </footer>
 </body>
 </html>
