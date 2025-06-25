@@ -38,10 +38,12 @@
                         detectSessionInUrl: false
                     },
                     realtime: {
-                        params: {
-                            eventsPerSecond: 10 // Limite pour éviter le spam
-                        }
-                    },
+		params: {
+        eventsPerSecond: 2, // Réduction drastique pour éviter les erreurs
+        heartbeatInterval: 30000, // 30 secondes au lieu de 10
+        reconnectAfterMs: 5000 // Attendre 5 secondes avant de se reconnecter
+    }
+	},
                     global: {
                         headers: {
                             'x-client-info': 'actuetmedia-app'
@@ -144,3 +146,80 @@ console.log('🧪 Test de la fonction getSupabaseClient:', typeof window.getSupa
 
 // ✅ NOUVEAU : Information de debug
 console.log('📊 Supabase Client Manager chargé - Version optimisée pour chat, galerie, visiteurs');
+
+// ✅ NOUVEAU : Gestion des erreurs WebSocket temps réel
+window.setupRealtimeErrorHandling = function() {
+    const client = window.getSupabaseClient();
+    if (!client) return;
+    
+    // Intercepter les erreurs de connexion WebSocket
+    const originalSubscribe = client.channel.bind(client);
+    
+    client.channelWithErrorHandling = function(channelName) {
+        const channel = client.channel(channelName);
+        
+        return {
+            ...channel,
+            subscribe: function(callback) {
+                const originalCallback = callback || function() {};
+                
+                return channel.subscribe((status, err) => {
+                    console.log(`📡 Canal ${channelName} - Statut:`, status);
+                    
+                    if (status === 'CHANNEL_ERROR') {
+                        console.warn(`⚠️ Erreur WebSocket sur ${channelName} - Basculement en mode polling`);
+                        // Ne pas spam les reconnexions
+                        setTimeout(() => {
+                            console.log(`🔄 Tentative de reconnexion pour ${channelName}`);
+                        }, 10000); // Attendre 10 secondes
+                    }
+                    
+                    // Appeler le callback original
+                    originalCallback(status, err);
+                });
+            }
+        };
+    };
+};
+
+// ✅ NOUVEAU : Mode dégradé sans temps réel
+window.enablePollingMode = function() {
+    console.log('🔄 Activation du mode polling (sans WebSocket)');
+    
+    // Désactiver complètement le temps réel
+    window.REALTIME_DISABLED = true;
+    
+    // Fonction de polling pour les visiteurs
+    if (window.updateVisitorCount) {
+        setInterval(async () => {
+            try {
+                const client = window.getSupabaseClient();
+                if (client) {
+                    const { data } = await client
+                        .from('visitors')
+                        .select('*')
+                        .gte('last_seen', new Date(Date.now() - 5 * 60 * 1000).toISOString());
+                    
+                    if (data) {
+                        console.log(`👥 Polling - Visiteurs actifs: ${data.length}`);
+                        window.updateVisitorCount(data.length);
+                    }
+                }
+            } catch (error) {
+                console.warn('⚠️ Erreur polling visiteurs:', error.message);
+            }
+        }, 30000); // Toutes les 30 secondes
+    }
+};
+
+// Auto-activation du mode polling si trop d'erreurs WebSocket
+let websocketErrorCount = 0;
+window.trackWebSocketError = function() {
+    websocketErrorCount++;
+    console.warn(`⚠️ Erreur WebSocket #${websocketErrorCount}`);
+    
+    if (websocketErrorCount >= 5) {
+        console.log('🚨 Trop d\'erreurs WebSocket - Activation du mode polling');
+        window.enablePollingMode();
+    }
+};
