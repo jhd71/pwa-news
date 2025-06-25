@@ -1187,20 +1187,231 @@
     }
 
     function showDefaultMessage() {
-      const container = document.getElementById('resultsContainer');
-      container.innerHTML = `
-        <div class="no-results">
-          <i class="fas fa-search-location" style="font-size: 3em; opacity: 0.5; margin-bottom: 15px;"></i>
-          <h3>Recherche géolocalisée intelligente</h3>
-          <p><strong>1.</strong> Tapez ce que vous cherchez</p>
-          <p><strong>2.</strong> Cliquez sur 🔍 ou appuyez sur Entrée</p>
-          <p><strong>3.</strong> Nous vous géolocaliserons et chercherons près de vous !</p>
-          <div style="margin-top: 15px; opacity: 0.8; font-size: 0.9em;">
-            🌍 <strong>Fonctionne partout</strong> - pas seulement à Montceau !
-          </div>
+  const container = document.getElementById('resultsContainer');
+  container.innerHTML = `
+    <div class="no-results">
+      <i class="fas fa-search-location" style="font-size: 3em; opacity: 0.5; margin-bottom: 15px;"></i>
+      <h3>Recherche géolocalisée intelligente</h3>
+      <p><strong>1.</strong> Tapez ce que vous cherchez</p>
+      <p><strong>2.</strong> Cliquez sur 🔍 ou appuyez sur Entrée</p>
+      <p><strong>3.</strong> Nous vous géolocaliserons et chercherons près de vous !</p>
+      <div style="margin-top: 15px; opacity: 0.8; font-size: 0.9em;">
+        🌍 <strong>Fonctionne partout</strong> - pas seulement à Montceau !
+      </div>
+      
+      <!-- NOUVEAU : Partage de position immédiat -->
+      <div style="margin-top: 25px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 15px; border: 1px solid rgba(255,255,255,0.2);">
+        <h4 style="margin-bottom: 15px; color: var(--primary-light);">📤 Partager ma position actuelle</h4>
+        <p style="margin-bottom: 15px; opacity: 0.9; font-size: 0.9em;">Obtenez votre position et partagez-la instantanément :</p>
+        
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+          <button onclick="shareCurrentLocationWhatsApp()" class="share-position-btn whatsapp" style="
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(45deg, #25d366, #128c7e);
+            color: white;
+            padding: 12px 18px;
+            border-radius: 20px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+          ">
+            <i class="fab fa-whatsapp"></i>
+            <span>WhatsApp</span>
+          </button>
+          
+          <button onclick="shareCurrentLocationSMS()" class="share-position-btn sms" style="
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 12px 18px;
+            border-radius: 20px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+          ">
+            <i class="fas fa-sms"></i>
+            <span>SMS</span>
+          </button>
+          
+          <button onclick="copyCurrentLocationToClipboard()" class="share-position-btn copy" style="
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-dark));
+            color: white;
+            padding: 12px 18px;
+            border-radius: 20px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+          ">
+            <i class="fas fa-copy"></i>
+            <span>Copier</span>
+          </button>
+          
+          <button onclick="getCurrentLocationQuick()" class="share-position-btn locate" style="
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(45deg, #f59e0b, #d97706);
+            color: white;
+            padding: 12px 18px;
+            border-radius: 20px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+          ">
+            <i class="fas fa-crosshairs"></i>
+            <span>Me localiser</span>
+          </button>
         </div>
-      `;
+        
+        <div id="quickLocationStatus" style="margin-top: 10px; text-align: center; font-size: 0.8em; opacity: 0.7;"></div>
+      </div>
+    </div>
+  `;
+}
+
+// NOUVELLES FONCTIONS : Partage de position immédiat
+async function shareCurrentLocationWhatsApp() {
+  const btn = event.target.closest('.whatsapp');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Localisation...</span>';
+  
+  try {
+    const position = await getCurrentPosition();
+    const lat = position.coords.latitude;
+    const lng = position.coords.longitude;
+    
+    shareLocationWhatsApp(lat, lng);
+    
+    btn.innerHTML = '<i class="fab fa-whatsapp"></i> <span>Envoyé !</span>';
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+    }, 2000);
+    
+  } catch (error) {
+    btn.innerHTML = '<i class="fab fa-whatsapp"></i> <span>Erreur</span>';
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+    }, 2000);
+    
+    // Fallback avec position par défaut
+    shareLocationWhatsApp(46.6746, 4.3630);
+  }
+}
+
+async function shareCurrentLocationSMS() {
+  const btn = event.target.closest('.sms');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Localisation...</span>';
+  
+  try {
+    const position = await getCurrentPosition();
+    const lat = position.coords.latitude;
+    const lng = position.coords.longitude;
+    
+    shareLocationSMS(lat, lng);
+    
+    btn.innerHTML = '<i class="fas fa-sms"></i> <span>Envoyé !</span>';
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+    }, 2000);
+    
+  } catch (error) {
+    btn.innerHTML = '<i class="fas fa-sms"></i> <span>Erreur</span>';
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+    }, 2000);
+    
+    // Fallback avec position par défaut
+    shareLocationSMS(46.6746, 4.3630);
+  }
+}
+
+async function copyCurrentLocationToClipboard() {
+  const btn = event.target.closest('.copy');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Localisation...</span>';
+  
+  try {
+    const position = await getCurrentPosition();
+    const lat = position.coords.latitude;
+    const lng = position.coords.longitude;
+    
+    copyLocationToClipboard(lat, lng);
+    
+  } catch (error) {
+    btn.innerHTML = '<i class="fas fa-copy"></i> <span>Erreur</span>';
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+    }, 2000);
+    
+    // Fallback avec position par défaut
+    copyLocationToClipboard(46.6746, 4.3630);
+  }
+}
+
+async function getCurrentLocationQuick() {
+  const btn = event.target.closest('.locate');
+  const originalText = btn.innerHTML;
+  const statusDiv = document.getElementById('quickLocationStatus');
+  
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Localisation...</span>';
+  statusDiv.textContent = 'Recherche de votre position...';
+  
+  try {
+    const position = await getCurrentPosition();
+    const lat = position.coords.latitude;
+    const lng = position.coords.longitude;
+    const accuracy = Math.round(position.coords.accuracy);
+    
+    btn.innerHTML = '<i class="fas fa-check"></i> <span>Trouvée !</span>';
+    btn.style.background = 'linear-gradient(45deg, #22c55e, #16a34a)';
+    
+    statusDiv.innerHTML = `📍 Position : ${lat.toFixed(4)}, ${lng.toFixed(4)}<br>🎯 Précision : ${accuracy}m`;
+    
+    // Stocker la position pour utilisation ultérieure
+    userLocation = { lat, lng };
+    
+    // Vibration tactile
+    if (navigator.vibrate) {
+      navigator.vibrate([50, 100, 50]);
     }
+    
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      btn.style.background = 'linear-gradient(45deg, #f59e0b, #d97706)';
+    }, 3000);
+    
+  } catch (error) {
+    btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> <span>Erreur</span>';
+    btn.style.background = 'linear-gradient(45deg, #ef4444, #dc2626)';
+    
+    statusDiv.textContent = '❌ Impossible de vous localiser. Utilisation de Montceau par défaut.';
+    
+    // Fallback
+    userLocation = { lat: 46.6746, lng: 4.3630 };
+    
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      btn.style.background = 'linear-gradient(45deg, #f59e0b, #d97706)';
+      statusDiv.textContent = '';
+    }, 3000);
+  }
+}
   </script>
 </body>
 </html>
