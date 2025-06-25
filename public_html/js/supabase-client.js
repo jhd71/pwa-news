@@ -143,15 +143,16 @@ console.log('🧪 Test de la fonction getSupabaseClient:', typeof window.getSupa
 // ✅ NOUVEAU : Information de debug
 console.log('📊 Supabase Client Manager chargé - Version optimisée pour chat, galerie, visiteurs');
 
-// ✅ SYSTÈME DE POLLING POUR REMPLACER LE TEMPS RÉEL
+// ✅ SYSTÈME DE POLLING POUR REMPLACER LE TEMPS RÉEL - PLAN GRATUIT SUPABASE
 window.PollingManager = {
     intervals: {},
+    isRunning: false,
     
     // Démarrer le polling pour les visiteurs
     startVisitorPolling: function() {
         if (this.intervals.visitors) return; // Éviter les doublons
         
-        console.log('🔄 Démarrage du polling visiteurs (sans WebSocket)');
+        console.log('🔄 Démarrage du polling visiteurs (remplace WebSocket)');
         
         this.intervals.visitors = setInterval(async () => {
             try {
@@ -166,7 +167,6 @@ window.PollingManager = {
                 if (error) throw error;
                 
                 const count = data ? data.length : 0;
-                console.log(`👥 Polling - ${count} visiteurs actifs`);
                 
                 // Mettre à jour l'affichage si la fonction existe
                 if (window.updateVisitorCount) {
@@ -174,22 +174,29 @@ window.PollingManager = {
                 }
                 
                 // Mettre à jour l'élément HTML directement
-                const visitorElement = document.querySelector('[data-visitor-count]');
-                if (visitorElement) {
-                    visitorElement.textContent = count;
+                const visitorElements = document.querySelectorAll('[data-visitor-count], .visitor-count');
+                visitorElements.forEach(el => {
+                    if (el) el.textContent = count;
+                });
+                
+                // Log discret (pas trop de spam)
+                if (count > 0) {
+                    console.log(`👥 ${count} visiteurs actifs (polling)`);
                 }
                 
             } catch (error) {
                 console.warn('⚠️ Erreur polling visiteurs:', error.message);
             }
-        }, 15000); // Toutes les 15 secondes
+        }, 20000); // Toutes les 20 secondes
     },
     
     // Démarrer le polling pour le chat
     startChatPolling: function() {
         if (this.intervals.chat) return;
         
-        console.log('💬 Démarrage du polling chat (sans WebSocket)');
+        console.log('💬 Démarrage du polling chat (remplace WebSocket)');
+        
+        let lastMessageId = null;
         
         this.intervals.chat = setInterval(async () => {
             try {
@@ -201,19 +208,52 @@ window.PollingManager = {
                     .from('messages')
                     .select('*')
                     .order('created_at', { ascending: false })
-                    .limit(50);
+                    .limit(20);
                 
                 if (error) throw error;
                 
-                // Si une fonction de mise à jour du chat existe
-                if (window.updateChatMessages && data) {
-                    window.updateChatMessages(data);
+                // Vérifier s'il y a de nouveaux messages
+                if (data && data.length > 0) {
+                    const latestMessageId = data[0].id;
+                    
+                    if (lastMessageId && latestMessageId !== lastMessageId) {
+                        console.log('💬 Nouveaux messages détectés');
+                        
+                        // Si une fonction de mise à jour du chat existe
+                        if (window.updateChatMessages) {
+                            window.updateChatMessages(data);
+                        }
+                        
+                        // Déclencher l'événement de nouveau message
+                        if (window.onNewMessage) {
+                            window.onNewMessage(data[0]);
+                        }
+                    }
+                    
+                    lastMessageId = latestMessageId;
                 }
                 
             } catch (error) {
                 console.warn('⚠️ Erreur polling chat:', error.message);
             }
-        }, 5000); // Toutes les 5 secondes pour le chat
+        }, 8000); // Toutes les 8 secondes pour le chat
+    },
+    
+    // Démarrer tous les pollings
+    startAll: function() {
+        if (this.isRunning) return;
+        
+        this.isRunning = true;
+        console.log('🚀 Démarrage du système de polling (plan gratuit Supabase)');
+        
+        this.startVisitorPolling();
+        
+        // Démarrer le chat polling seulement si nécessaire
+        setTimeout(() => {
+            if (document.querySelector('.chat-container, [data-chat], #chat') || window.chatEnabled) {
+                this.startChatPolling();
+            }
+        }, 2000);
     },
     
     // Arrêter tous les pollings
@@ -225,12 +265,13 @@ window.PollingManager = {
                 console.log(`🛑 Polling ${key} arrêté`);
             }
         });
+        this.isRunning = false;
     }
 };
 
 // ✅ FONCTION DE REMPLACEMENT POUR LES SOUSCRIPTIONS TEMPS RÉEL
 window.subscribeToChanges = function(table, callback) {
-    console.log(`📡 Souscription ${table} convertie en polling`);
+    console.log(`📡 Souscription ${table} convertie en polling (plan gratuit)`);
     
     if (table === 'visitors') {
         window.PollingManager.startVisitorPolling();
@@ -238,7 +279,7 @@ window.subscribeToChanges = function(table, callback) {
         window.PollingManager.startChatPolling();
     }
     
-    // Retourner un objet compatible
+    // Retourner un objet compatible avec l'ancienne API
     return {
         unsubscribe: () => {
             console.log(`🔌 Désouscription ${table}`);
@@ -246,18 +287,36 @@ window.subscribeToChanges = function(table, callback) {
     };
 };
 
-// ✅ AUTO-DÉMARRAGE du polling après 3 secondes
-setTimeout(() => {
-    console.log('🚀 Démarrage automatique du polling système');
-    window.PollingManager.startVisitorPolling();
-    
-    // Démarrer le chat polling seulement si nécessaire
-    if (document.querySelector('[data-chat-container]') || window.chatEnabled) {
-        window.PollingManager.startChatPolling();
+// ✅ OVERRIDE des fonctions Supabase temps réel pour éviter les erreurs
+window.addEventListener('DOMContentLoaded', () => {
+    const client = window.getSupabaseClient();
+    if (client && client.channel) {
+        const originalChannel = client.channel.bind(client);
+        
+        client.channel = function(channelName) {
+            console.log(`🚫 Blocage du canal temps réel: ${channelName} (utilisation du polling)`);
+            
+            // Retourner un objet factice qui ne fait rien
+            return {
+                on: () => ({ subscribe: () => ({ unsubscribe: () => {} }) }),
+                subscribe: (callback) => {
+                    if (callback) callback('CLOSED'); // Simuler une fermeture
+                    return { unsubscribe: () => {} };
+                },
+                unsubscribe: () => {}
+            };
+        };
     }
-}, 3000);
+});
+
+// ✅ AUTO-DÉMARRAGE du polling après chargement complet
+setTimeout(() => {
+    window.PollingManager.startAll();
+}, 5000); // 5 secondes après le chargement
 
 // ✅ NETTOYAGE lors du déchargement de la page
 window.addEventListener('beforeunload', () => {
     window.PollingManager.stopAll();
 });
+
+console.log('🔄 Système de polling initialisé (remplace WebSocket pour plan gratuit)');
