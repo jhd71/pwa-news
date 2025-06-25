@@ -817,9 +817,9 @@
 
 /* Positionnement Mobile - À droite du bouton carburant */
 @media (max-width: 768px) {
-        .search-button {
-        position: fixed;
-        top: 70px;
+    .search-button {
+        position: absolute;
+        top: -60px;
         left: 80%;
         transform: translateX(-50%);
         width: 40px;
