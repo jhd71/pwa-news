@@ -2309,8 +2309,8 @@ body.long-press-active .message-options {
   /* Augmenter considérablement la hauteur des listes */
   .banned-words-list, 
   .banned-ips-list {
-    max-height: 400px !important; /* Hauteur maximale augmentée */
-    min-height: 300px !important; /* Hauteur minimale augmentée */
+    max-height: 650px !important; /* Hauteur maximale augmentée */
+    min-height: 650px !important; /* Hauteur minimale augmentée */
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
     border-radius: 10px !important;

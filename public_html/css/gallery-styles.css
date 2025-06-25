@@ -631,7 +631,6 @@
     margin-bottom: 10px;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
-    background: var(--input-bg);
     color: var(--text-color);
     font-size: 16px;
 }
@@ -740,7 +739,6 @@
         background: var(--modal-bg);
         border-radius: var(--radius-lg);
         margin-top: 20px;
-        padding: 15px;
         position: relative;
     }
     
