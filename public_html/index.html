@@ -1036,6 +1036,39 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(fixButtonPosition, 100);
     }
 });
-</script>	
+</script>
+	<script>
+// Gestion tactile directe pour le bouton
+document.addEventListener('DOMContentLoaded', () => {
+    const searchBtn = document.querySelector('.search-button');
+    
+    if (searchBtn && isMobile) {
+        // Événements tactiles au lieu de click
+        searchBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            fixButtonPosition();
+            
+            searchBtn.style.transform = 'translate3d(0, 0, 0) scale(0.95)';
+        });
+        
+        searchBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            
+            searchBtn.style.transform = 'translate3d(0, 0, 0) scale(1)';
+            
+            setTimeout(() => {
+                window.open('/autour-de-moi.html', '_blank');
+                setTimeout(fixButtonPosition, 200);
+            }, 100);
+        });
+        
+        // Annuler si on glisse en dehors
+        searchBtn.addEventListener('touchcancel', () => {
+            searchBtn.style.transform = 'translate3d(0, 0, 0) scale(1)';
+            fixButtonPosition();
+        });
+    }
+});
+</script>
 </body>
 </html>
