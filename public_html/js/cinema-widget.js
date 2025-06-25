@@ -70,7 +70,7 @@ class CinemaWidget {
                     <div style="text-align: center; padding: 10px;">
                         <span class="material-icons" style="font-size: 24px; color: #dc3545; margin-bottom: 8px;">movie_filter</span>
                         <div style="font-weight: 500; margin-bottom: 5px;">Programme temporairement indisponible</div>
-                        <div style="font-size: 13px; color: #000000; line-height: 1.4;">
+                        <div style="font-size: 12px; color: #000000; line-height: 1.4;">
                             Consultez directement :<br>
                             • <a href="https://www.cinemas-panacea.fr/montceau-embarcadere/" target="_blank" style="color: #dc3545;">Site du cinéma</a><br>
                             • <a href="https://www.facebook.com/CinemaEmbarcadere" target="_blank" style="color: #dc3545;">Page Facebook</a>
@@ -605,7 +605,7 @@ displayCinema(movies) {
             let datesText = '';
             if (movie.realDates && movie.realDates.length > 0) {
                 const displayDates = movie.realDates.slice(0, 2).map(d => d.displayName);
-                datesText = `<div class="movie-dates" style="font-size: 13px; color: #000000; margin-top: 2px;">📅 ${displayDates.join(', ')}</div>`;
+                datesText = `<div class="movie-dates" style="font-size: 12px; color: #000000; margin-top: 2px;">📅 ${displayDates.join(', ')}</div>`;
             }
             
             const clickAction = movie.url ? 
@@ -615,9 +615,9 @@ displayCinema(movies) {
             return `
                 <div class="cinema-preview-item" data-movie-id="${movie.id}" ${clickAction} style="cursor: pointer;">
                     <strong>${newBadge}${movie.title}</strong> <em>(${movie.duration})</em><br>
-                    <div class="movie-genre" style="font-size: 13px; color: #000000; font-style: italic;">${movie.genre}</div>
+                    <div class="movie-genre" style="font-size: 12px; color: #000000; font-style: italic;">${movie.genre}</div>
                     ${datesText}
-                    <div class="movie-times" style="font-size: 13px; color: #000000; margin-top: 2px;">🕐 ${timesText}</div>
+                    <div class="movie-times" style="font-size: 12px; color: #000000; margin-top: 2px;">🕐 ${timesText}</div>
                 </div>
             `;
         }).join('');
