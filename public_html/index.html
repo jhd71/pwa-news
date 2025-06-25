@@ -942,5 +942,100 @@ document.getElementById('currentYear').textContent = new Date().getFullYear();
             }
         });
     </script>
+<script>
+// Détection mobile
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+function openLocationPage(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const btn = event.currentTarget;
+    
+    if (isMobile) {
+        // ✅ GESTION MOBILE SPÉCIFIQUE
+        
+        // Vibration tactile
+        if (navigator.vibrate) {
+            navigator.vibrate(50);
+        }
+        
+        // Forcer la position avant animation
+        btn.style.position = 'fixed';
+        btn.style.top = window.innerWidth <= 480 ? '65px' : '70px';
+        btn.style.right = window.innerWidth <= 480 ? '10px' : '15px';
+        
+        // Animation tactile
+        btn.style.transform = 'translate3d(0, 0, 0) scale(0.9)';
+        btn.style.transition = 'transform 0.1s ease';
+        
+        setTimeout(() => {
+            // Restaurer immédiatement
+            btn.style.transform = 'translate3d(0, 0, 0) scale(1)';
+            
+            // Ouvrir après micro-délai
+            setTimeout(() => {
+                window.open('/autour-de-moi.html', '_blank');
+                
+                // Double-vérification position après ouverture
+                setTimeout(() => {
+                    fixButtonPosition();
+                }, 100);
+            }, 50);
+        }, 100);
+        
+    } else {
+        // Gestion desktop normale
+        window.open('/autour-de-moi.html', '_blank');
+    }
+}
+
+// ✅ FONCTION DE CORRECTION POSITION
+function fixButtonPosition() {
+    const searchBtn = document.querySelector('.search-button');
+    if (searchBtn && isMobile) {
+        searchBtn.style.position = 'fixed';
+        searchBtn.style.top = window.innerWidth <= 480 ? '65px' : '70px';
+        searchBtn.style.right = window.innerWidth <= 480 ? '10px' : '15px';
+        searchBtn.style.transform = 'translate3d(0, 0, 0)';
+        searchBtn.style.zIndex = '100';
+    }
+}
+
+// ✅ ÉVÉNEMENTS MOBILE SPÉCIFIQUES
+if (isMobile) {
+    // Au retour de page (mobile)
+    window.addEventListener('pageshow', fixButtonPosition);
+    
+    // Après changement d'orientation
+    window.addEventListener('orientationchange', () => {
+        setTimeout(fixButtonPosition, 200);
+    });
+    
+    // Après resize mobile
+    window.addEventListener('resize', () => {
+        if (isMobile) {
+            setTimeout(fixButtonPosition, 100);
+        }
+    });
+    
+    // Au focus de la fenêtre (retour d'onglet)
+    window.addEventListener('focus', fixButtonPosition);
+    
+    // Après scroll (pour certains mobiles)
+    let scrollTimeout;
+    window.addEventListener('scroll', () => {
+        if (scrollTimeout) clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(fixButtonPosition, 50);
+    });
+}
+
+// ✅ INITIALISATION AU CHARGEMENT
+document.addEventListener('DOMContentLoaded', () => {
+    if (isMobile) {
+        setTimeout(fixButtonPosition, 100);
+    }
+});
+</script>	
 </body>
 </html>
