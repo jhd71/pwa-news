@@ -38,12 +38,8 @@
                         detectSessionInUrl: false
                     },
                     realtime: {
-		params: {
-        eventsPerSecond: 2, // Réduction drastique pour éviter les erreurs
-        heartbeatInterval: 30000, // 30 secondes au lieu de 10
-        reconnectAfterMs: 5000 // Attendre 5 secondes avant de se reconnecter
-    }
-	},
+    enabled: false // DÉSACTIVATION COMPLÈTE du temps réel
+},
                     global: {
                         headers: {
                             'x-client-info': 'actuetmedia-app'
@@ -147,79 +143,121 @@ console.log('🧪 Test de la fonction getSupabaseClient:', typeof window.getSupa
 // ✅ NOUVEAU : Information de debug
 console.log('📊 Supabase Client Manager chargé - Version optimisée pour chat, galerie, visiteurs');
 
-// ✅ NOUVEAU : Gestion des erreurs WebSocket temps réel
-window.setupRealtimeErrorHandling = function() {
-    const client = window.getSupabaseClient();
-    if (!client) return;
+// ✅ SYSTÈME DE POLLING POUR REMPLACER LE TEMPS RÉEL
+window.PollingManager = {
+    intervals: {},
     
-    // Intercepter les erreurs de connexion WebSocket
-    const originalSubscribe = client.channel.bind(client);
-    
-    client.channelWithErrorHandling = function(channelName) {
-        const channel = client.channel(channelName);
+    // Démarrer le polling pour les visiteurs
+    startVisitorPolling: function() {
+        if (this.intervals.visitors) return; // Éviter les doublons
         
-        return {
-            ...channel,
-            subscribe: function(callback) {
-                const originalCallback = callback || function() {};
-                
-                return channel.subscribe((status, err) => {
-                    console.log(`📡 Canal ${channelName} - Statut:`, status);
-                    
-                    if (status === 'CHANNEL_ERROR') {
-                        console.warn(`⚠️ Erreur WebSocket sur ${channelName} - Basculement en mode polling`);
-                        // Ne pas spam les reconnexions
-                        setTimeout(() => {
-                            console.log(`🔄 Tentative de reconnexion pour ${channelName}`);
-                        }, 10000); // Attendre 10 secondes
-                    }
-                    
-                    // Appeler le callback original
-                    originalCallback(status, err);
-                });
-            }
-        };
-    };
-};
-
-// ✅ NOUVEAU : Mode dégradé sans temps réel
-window.enablePollingMode = function() {
-    console.log('🔄 Activation du mode polling (sans WebSocket)');
-    
-    // Désactiver complètement le temps réel
-    window.REALTIME_DISABLED = true;
-    
-    // Fonction de polling pour les visiteurs
-    if (window.updateVisitorCount) {
-        setInterval(async () => {
+        console.log('🔄 Démarrage du polling visiteurs (sans WebSocket)');
+        
+        this.intervals.visitors = setInterval(async () => {
             try {
                 const client = window.getSupabaseClient();
-                if (client) {
-                    const { data } = await client
-                        .from('visitors')
-                        .select('*')
-                        .gte('last_seen', new Date(Date.now() - 5 * 60 * 1000).toISOString());
-                    
-                    if (data) {
-                        console.log(`👥 Polling - Visiteurs actifs: ${data.length}`);
-                        window.updateVisitorCount(data.length);
-                    }
+                if (!client) return;
+                
+                const { data, error } = await client
+                    .from('visitors')
+                    .select('*')
+                    .gte('last_seen', new Date(Date.now() - 5 * 60 * 1000).toISOString());
+                
+                if (error) throw error;
+                
+                const count = data ? data.length : 0;
+                console.log(`👥 Polling - ${count} visiteurs actifs`);
+                
+                // Mettre à jour l'affichage si la fonction existe
+                if (window.updateVisitorCount) {
+                    window.updateVisitorCount(count);
                 }
+                
+                // Mettre à jour l'élément HTML directement
+                const visitorElement = document.querySelector('[data-visitor-count]');
+                if (visitorElement) {
+                    visitorElement.textContent = count;
+                }
+                
             } catch (error) {
                 console.warn('⚠️ Erreur polling visiteurs:', error.message);
             }
-        }, 30000); // Toutes les 30 secondes
+        }, 15000); // Toutes les 15 secondes
+    },
+    
+    // Démarrer le polling pour le chat
+    startChatPolling: function() {
+        if (this.intervals.chat) return;
+        
+        console.log('💬 Démarrage du polling chat (sans WebSocket)');
+        
+        this.intervals.chat = setInterval(async () => {
+            try {
+                const client = window.getSupabaseClient();
+                if (!client) return;
+                
+                // Récupérer les derniers messages
+                const { data, error } = await client
+                    .from('messages')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .limit(50);
+                
+                if (error) throw error;
+                
+                // Si une fonction de mise à jour du chat existe
+                if (window.updateChatMessages && data) {
+                    window.updateChatMessages(data);
+                }
+                
+            } catch (error) {
+                console.warn('⚠️ Erreur polling chat:', error.message);
+            }
+        }, 5000); // Toutes les 5 secondes pour le chat
+    },
+    
+    // Arrêter tous les pollings
+    stopAll: function() {
+        Object.keys(this.intervals).forEach(key => {
+            if (this.intervals[key]) {
+                clearInterval(this.intervals[key]);
+                delete this.intervals[key];
+                console.log(`🛑 Polling ${key} arrêté`);
+            }
+        });
     }
 };
 
-// Auto-activation du mode polling si trop d'erreurs WebSocket
-let websocketErrorCount = 0;
-window.trackWebSocketError = function() {
-    websocketErrorCount++;
-    console.warn(`⚠️ Erreur WebSocket #${websocketErrorCount}`);
+// ✅ FONCTION DE REMPLACEMENT POUR LES SOUSCRIPTIONS TEMPS RÉEL
+window.subscribeToChanges = function(table, callback) {
+    console.log(`📡 Souscription ${table} convertie en polling`);
     
-    if (websocketErrorCount >= 5) {
-        console.log('🚨 Trop d\'erreurs WebSocket - Activation du mode polling');
-        window.enablePollingMode();
+    if (table === 'visitors') {
+        window.PollingManager.startVisitorPolling();
+    } else if (table === 'messages') {
+        window.PollingManager.startChatPolling();
     }
+    
+    // Retourner un objet compatible
+    return {
+        unsubscribe: () => {
+            console.log(`🔌 Désouscription ${table}`);
+        }
+    };
 };
+
+// ✅ AUTO-DÉMARRAGE du polling après 3 secondes
+setTimeout(() => {
+    console.log('🚀 Démarrage automatique du polling système');
+    window.PollingManager.startVisitorPolling();
+    
+    // Démarrer le chat polling seulement si nécessaire
+    if (document.querySelector('[data-chat-container]') || window.chatEnabled) {
+        window.PollingManager.startChatPolling();
+    }
+}, 3000);
+
+// ✅ NETTOYAGE lors du déchargement de la page
+window.addEventListener('beforeunload', () => {
+    window.PollingManager.stopAll();
+});
