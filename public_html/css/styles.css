@@ -416,7 +416,6 @@ body {
 
 .sidebar-header {
     padding: 15px 20px;
-    background-color: rgb(148, 0, 0);
     color: white;
     display: flex;
     justify-content: space-between;
