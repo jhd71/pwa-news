@@ -2198,7 +2198,7 @@ a:active {
 
 /* Réglages pour le chat */
 [data-theme="rouge"] .chat-container {
-  background: rgb(148, 0, 0);
+  background: rgb(148, 0, 0) !important;
 }
 
 [data-theme="rouge"] .chat-header {

@@ -2016,7 +2016,7 @@ body.long-press-active .message-options {
   margin: 10px;
   padding: 12px;
   border-radius: 24px;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgb(106 22 8) !important;
   color: white;
   max-height: 120px;
   overflow-y: auto;
