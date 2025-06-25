@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autour de moi - Actu & Média</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    // Appliquer le thème dès le chargement (AVANT le CSS)
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'rouge';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      console.log('Thème appliqué:', savedTheme); // Debug
+    })();
+  </script>
+  <style>
+    :root {
+      /* Thème Rouge (défaut) */
+      --primary-color: #dc2626;
+      --primary-light: #ef4444;
+      --primary-dark: #b91c1c;
+      --secondary-color: #991b1b;
+      --background-start: #7f1d1d;
+      --background-middle: #991b1b;
+      --background-end: #dc2626;
+      --accent-color: #fef2f2;
+    }
+
+    /* Thème Sombre */
+    [data-theme="dark"] {
+      --primary-color: #1f2937;
+      --primary-light: #374151;
+      --primary-dark: #111827;
+      --secondary-color: #4b5563;
+      --background-start: #0f172a;
+      --background-middle: #1e293b;
+      --background-end: #334155;
+      --accent-color: #f8fafc;
+    }
+
+    /* Thème Bleu Ciel */
+    [data-theme="bleuciel"] {
+      --primary-color: #0ea5e9;
+      --primary-light: #38bdf8;
+      --primary-dark: #0284c7;
+      --secondary-color: #0369a1;
+      --background-start: #0c4a6e;
+      --background-middle: #0369a1;
+      --background-end: #0ea5e9;
+      --accent-color: #f0f9ff;
+    }
+
+    /* Thème Violet */
+    [data-theme="light"] {
+      --primary-color: #7c3aed;
+      --primary-light: #8b5cf6;
+      --primary-dark: #6d28d9;
+      --secondary-color: #5b21b6;
+      --background-start: #4c1d95;
+      --background-middle: #5b21b6;
+      --background-end: #7c3aed;
+      --accent-color: #faf5ff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, var(--background-start) 0%, var(--background-middle) 50%, var(--background-end) 100%);
+      color: #ffffff;
+      font-family: 'Montserrat', sans-serif;
+      min-height: 100vh;
+      padding: 20px;
+      transition: background 0.3s ease;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      animation: slideUp 0.8s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .header {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 25px 30px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+    }
+
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+      background: var(--primary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+    }
+
+    .logo-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .logo-placeholder {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5em;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .logo-text {
+      font-size: 1.5em;
+      font-weight: 700;
+      background: linear-gradient(45deg, #ffffff, var(--accent-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.2em;
+      margin-bottom: 15px;
+      background: linear-gradient(45deg, #ffffff, var(--accent-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .weather-widget {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 15px;
+      margin: 15px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .weather-info {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .weather-temp {
+      font-size: 1.8em;
+      font-weight: 700;
+      color: var(--primary-light);
+    }
+
+    .weather-desc {
+      font-size: 0.9em;
+      opacity: 0.8;
+    }
+
+    .weather-icon {
+      font-size: 2em;
+      opacity: 0.7;
+    }
+
+    .location-status {
+      text-align: center;
+      padding: 15px;
+      margin: 20px 0;
+      background: rgba(76, 175, 80, 0.2);
+      border: 1px solid rgba(76, 175, 80, 0.3);
+      border-radius: 10px;
+      display: none;
+    }
+
+    .location-status.error {
+      background: rgba(244, 67, 54, 0.2);
+      border-color: rgba(244, 67, 54, 0.3);
+    }
+
+    .search-section {
+      padding: 0 30px 20px;
+    }
+
+    .search-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 15px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 25px;
+      color: #ffffff;
+      font-size: 1em;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .search-input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .search-input:focus {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--primary-light);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    }
+
+    .locate-btn {
+      background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .locate-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+    }
+
+    .locate-btn.loading {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .results-section {
+      padding: 0 30px 30px;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 40px;
+      opacity: 0.7;
+    }
+
+    .search-results {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      padding: 25px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .search-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      font-size: 1.3em;
+    }
+
+    .search-header i {
+      color: var(--primary-light);
+    }
+
+    .location-info {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 15px;
+      margin: 15px 0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .maps-button {
+      background: linear-gradient(45deg, var(--primary-color), var(--primary-dark)) !important;
+      border-color: var(--primary-light) !important;
+    }
+
+    .maps-button:hover {
+      box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3) !important;
+    }
+
+    .share-position-btn.whatsapp {
+      background: linear-gradient(45deg, #25d366, #128c7e) !important;
+    }
+
+    .share-position-btn.sms {
+      background: linear-gradient(45deg, var(--primary-color), var(--primary-dark)) !important;
+    }
+
+    .share-position-btn.copy {
+      background: linear-gradient(45deg, var(--secondary-color), var(--primary-dark)) !important;
+    }
+
+    .share-position-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2) !important;
+    }
+
+    .search-tips {
+      background: rgba(255, 255, 255, 0.1) !important;
+      border: 1px solid var(--primary-light) !important;
+    }
+
+    .search-tips h4 {
+      color: var(--primary-light) !important;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body { padding: 15px; }
+      .container { margin: 10px 0; }
+      .header { padding: 25px 20px; }
+      .search-section, .results-section { padding: 0 20px 20px; }
+      h1 { font-size: 1.8em; }
+      
+      .search-bar {
+        gap: 12px;
+      }
+      
+      .search-input {
+        padding: 18px 20px;
+        font-size: 1.1em;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 10px; }
+      .header { padding: 20px 15px; }
+      .search-section, .results-section { padding: 0 15px 15px; }
+      
+      .search-bar {
+        gap: 10px;
+      }
+      
+      .search-input {
+        padding: 16px 18px;
+        font-size: 1em;
+      }
+      
+      .locate-btn { 
+        width: 55px; 
+        height: 55px;
+        font-size: 1.1em;
+      }
+      
+      .logo-header {
+        gap: 12px;
+      }
+      
+      .logo-placeholder {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3em;
+      }
+      
+      .logo-text {
+        font-size: 1.3em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <a href="https://actuetmedia.fr/" class="back-button" title="Retour à l'accueil">
+        <i class="fas fa-arrow-left"></i>
+      </a>
+      
+      <!-- Logo Actu & Média -->
+      <div class="logo-header">
+        <div class="logo-placeholder">
+          <i class="fas fa-newspaper"></i>
+        </div>
+        <div class="logo-text">Actu & Média</div>
+      </div>
+      
+      <h1>📍 Autour de moi</h1>
+      <p style="text-align: center; opacity: 0.9;">Trouvez rapidement commerces et services près de vous</p>
+      
+      <!-- Widget météo intégré -->
+      <div class="weather-widget" id="weatherWidget">
+        <div class="weather-info">
+          <span class="weather-temp" id="weatherTemp">--°</span>
+          <span class="weather-desc" id="weatherDesc">Chargement...</span>
+        </div>
+        <i class="fas fa-cloud weather-icon" id="weatherIcon"></i>
+      </div>
+      
+      <div class="location-status" id="locationStatus">
+        <i class="fas fa-map-marker-alt"></i>
+        <span id="locationText">Localisation en cours...</span>
+      </div>
+    </div>
+    
+    <div class="search-section">
+      <div class="search-bar">
+        <input type="text" class="search-input" id="searchInput" placeholder="Que cherchez-vous ? (ex: boulangerie, restaurant...)">
+        <button class="locate-btn" id="locateBtn" title="Rechercher près de moi">
+          <i class="fas fa-search-location"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="results-section">
+      <div id="resultsContainer">
+        <div class="no-results">
+          <i class="fas fa-search" style="font-size: 3em; opacity: 0.5; margin-bottom: 15px;"></i>
+          <h3>Prêt à explorer !</h3>
+          <p>Sélectionnez une catégorie ou recherchez un commerce spécifique</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let userLocation = null;
+
+    // Initialisation
+    document.addEventListener('DOMContentLoaded', function() {
+      setupEventListeners();
+      loadWeather();
+      showDefaultMessage(); // Afficher les instructions au lieu de se géolocaliser automatiquement
+    });
+    
+    function loadWeather() {
+      // Récupérer la météo réelle selon la position par défaut (Montceau)
+      fetchRealWeather(46.6746, 4.3630);
+    }
+    
+    async function fetchRealWeather(lat, lng) {
+      try {
+        // Utilisation de votre API WeatherAPI (bien meilleure qu'OpenWeatherMap)
+        const API_KEY = '4b79472c165b42f690790252242112';
+        const url = `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${lat},${lng}&lang=fr`;
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (response.ok && data.current) {
+          const temp = Math.round(data.current.temp_c);
+          const description = data.current.condition.text;
+          
+          document.getElementById('weatherTemp').textContent = `${temp}°`;
+          document.getElementById('weatherDesc').textContent = description;
+          
+          // Utilisation de vos GIFs météo du fichier weather-widget.js
+          const weatherGif = getWeatherGif(description);
+          const iconElement = document.getElementById('weatherIcon');
+          
+          // Remplacer l'icône par votre GIF animé
+          if (iconElement) {
+            iconElement.outerHTML = `<img src="${weatherGif}" alt="${description}" id="weatherIcon" style="width: 32px; height: 32px; border-radius: 4px;">`;
+          }
+          
+        } else {
+          throw new Error('Erreur API météo');
+        }
+      } catch (error) {
+        console.log('Erreur météo:', error);
+        // Fallback discret
+        document.getElementById('weatherTemp').textContent = '--°';
+        document.getElementById('weatherDesc').textContent = 'Météo indisponible';
+        const iconElement = document.getElementById('weatherIcon');
+        if (iconElement) {
+          iconElement.outerHTML = '<i class="fas fa-cloud" id="weatherIcon"></i>';
+        }
+      }
+    }
+    
+    // Fonction pour obtenir le GIF météo (adaptée de votre weather-widget.js)
+    function getWeatherGif(condition) {
+      const conditionLower = condition.toLowerCase();
+      
+      if (conditionLower.includes('pluie') || conditionLower.includes('averse'))
+        return "images/weather-gifs/rain.gif";
+      else if (conditionLower.includes('neige'))
+        return "images/weather-gifs/snow.gif";
+      else if (conditionLower.includes('orage'))
+        return "images/weather-gifs/thunderstorm.gif";
+      else if (conditionLower.includes('nuage') || conditionLower.includes('couvert'))
+        return "images/weather-gifs/cloudy.gif";
+      else if (conditionLower.includes('soleil') || conditionLower.includes('ensoleillé') || conditionLower.includes('clair'))
+        return "images/weather-gifs/sunny.gif";
+      else if (conditionLower.includes('brouillard') || conditionLower.includes('brume'))
+        return "images/weather-gifs/fog.gif";
+      else if (conditionLower.includes('partiellement'))
+        return "images/weather-gifs/partly_cloudy.gif";
+      else
+        return "images/weather-gifs/default.gif";
+    }
+
+    function setupEventListeners() {
+      // Bouton de recherche géolocalisée
+      document.getElementById('locateBtn').addEventListener('click', performGeoSearch);
+      
+      // Recherche en appuyant sur Entrée
+      document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          performGeoSearch();
+        }
+      });
+    }
+    
+    // Fonction de recherche géolocalisée
+    async function performGeoSearch() {
+      const query = document.getElementById('searchInput').value.trim();
+      
+      if (query.length === 0) {
+        alert('Veuillez entrer ce que vous cherchez (ex: boulangerie, restaurant...)');
+        return;
+      }
+      
+      console.log('🔍 Recherche géolocalisée pour:', query);
+      
+      // Vibration tactile
+      if (navigator.vibrate) {
+        navigator.vibrate(50);
+      }
+      
+      // Animation du bouton
+      const btn = document.getElementById('locateBtn');
+      btn.classList.add('loading');
+      
+      try {
+        // Étape 1: Géolocalisation
+        const position = await getCurrentPosition();
+        userLocation = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        
+        console.log('📍 Position trouvée:', userLocation);
+        
+        // Étape 2: Recherche Google Places
+        await searchNearbyPlaces(query, userLocation);
+        
+      } catch (error) {
+        console.error('Erreur:', error);
+        
+        // Fallback: recherche avec position par défaut (Montceau)
+        userLocation = { lat: 46.6746, lng: 4.3630 };
+        console.log('🔄 Utilisation position par défaut (Montceau)');
+        
+        await searchNearbyPlaces(query, userLocation);
+      } finally {
+        btn.classList.remove('loading');
+      }
+    }
+    
+    // Fonction pour obtenir la position
+    function getCurrentPosition() {
+      return new Promise((resolve, reject) => {
+        if (!navigator.geolocation) {
+          reject(new Error('Géolocalisation non supportée'));
+          return;
+        }
+        
+        navigator.geolocation.getCurrentPosition(
+          resolve,
+          reject,
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 300000
+          }
+        );
+      });
+    }
+    
+    // Fonction de recherche avec Google Places API
+    async function searchNearbyPlaces(query, location) {
+      try {
+        // Construction de l'URL Google Places Nearby Search
+        // Note: Ceci nécessite une clé API Google Places
+        const radius = 10000; // 10km
+        const language = 'fr';
+        
+        // Pour le moment, simulation avec Google Maps search
+        // En production, vous devrez implémenter Google Places API
+        const googleMapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(query)}/@${location.lat},${location.lng},15z`;
+        
+        // Afficher un message d'information et rediriger
+        showSearchResults(query, location, googleMapsUrl);
+        
+      } catch (error) {
+        console.error('Erreur recherche Places:', error);
+        showErrorMessage('Erreur lors de la recherche. Veuillez réessayer.');
+      }
+    }
+    
+    // Affichage des résultats
+    function showSearchResults(query, location, mapsUrl) {
+      const container = document.getElementById('resultsContainer');
+      
+      container.innerHTML = `
+        <div class="search-results">
+          <div class="search-header">
+            <i class="fas fa-map-marker-alt" style="color: #22c55e; margin-right: 10px;"></i>
+            <h3>Recherche : "${query}"</h3>
+          </div>
+          
+          <div class="location-info">
+            <p><strong>📍 Position actuelle :</strong> ${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}</p>
+            <p><strong>🔍 Rayon de recherche :</strong> 10 km</p>
+          </div>
+          
+          <div class="maps-integration" style="margin: 20px 0; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 15px; border: 1px solid rgba(255,255,255,0.2);">
+            <h4 style="margin-bottom: 15px;">🗺️ Résultats sur Google Maps</h4>
+            <p style="margin-bottom: 15px; opacity: 0.9;">Nous utilisons Google Maps pour vous montrer tous les "${query}" près de vous :</p>
+            
+            <a href="${mapsUrl}" target="_blank" class="maps-button" style="
+              display: inline-flex;
+              align-items: center;
+              gap: 10px;
+              background: linear-gradient(45deg, #4285f4, #3367d6);
+              color: white;
+              padding: 15px 25px;
+              border-radius: 25px;
+              text-decoration: none;
+              font-weight: 600;
+              transition: all 0.3s ease;
+              border: 1px solid rgba(255,255,255,0.2);
+              margin-right: 10px;
+              margin-bottom: 10px;
+            ">
+              <i class="fab fa-google"></i>
+              <span>Voir sur Google Maps</span>
+              <i class="fas fa-external-link-alt" style="font-size: 0.8em;"></i>
+            </a>
+            
+            <!-- Boutons de partage de position -->
+            <div style="margin-top: 15px;">
+              <h5 style="margin-bottom: 10px; opacity: 0.9;">📤 Partager ma position :</h5>
+              <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button onclick="shareLocationWhatsApp(${location.lat}, ${location.lng})" class="share-position-btn whatsapp" style="
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 8px;
+                  background: linear-gradient(45deg, #25d366, #128c7e);
+                  color: white;
+                  padding: 12px 18px;
+                  border-radius: 20px;
+                  border: none;
+                  font-weight: 600;
+                  cursor: pointer;
+                  transition: all 0.3s ease;
+                  font-size: 0.9em;
+                ">
+                  <i class="fab fa-whatsapp"></i>
+                  <span>WhatsApp</span>
+                </button>
+                
+                <button onclick="shareLocationSMS(${location.lat}, ${location.lng})" class="share-position-btn sms" style="
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 8px;
+                  background: linear-gradient(45deg, #007aff, #0056cc);
+                  color: white;
+                  padding: 12px 18px;
+                  border-radius: 20px;
+                  border: none;
+                  font-weight: 600;
+                  cursor: pointer;
+                  transition: all 0.3s ease;
+                  font-size: 0.9em;
+                ">
+                  <i class="fas fa-sms"></i>
+                  <span>SMS</span>
+                </button>
+                
+                <button onclick="copyLocationToClipboard(${location.lat}, ${location.lng})" class="share-position-btn copy" style="
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 8px;
+                  background: linear-gradient(45deg, #6b7280, #4b5563);
+                  color: white;
+                  padding: 12px 18px;
+                  border-radius: 20px;
+                  border: none;
+                  font-weight: 600;
+                  cursor: pointer;
+                  transition: all 0.3s ease;
+                  font-size: 0.9em;
+                ">
+                  <i class="fas fa-copy"></i>
+                  <span>Copier</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="search-tips" style="margin-top: 20px; padding: 15px; background: rgba(34, 197, 94, 0.1); border-radius: 10px; border: 1px solid rgba(34, 197, 94, 0.3);">
+            <h4 style="color: #22c55e; margin-bottom: 10px;">💡 Conseils de recherche :</h4>
+            <ul style="margin: 0; padding-left: 20px; opacity: 0.9;">
+              <li>Essayez des termes spécifiques : "boulangerie", "pharmacie de garde"</li>
+              <li>Ou des types de cuisine : "restaurant italien", "pizzeria"</li>
+              <li>Services : "coiffeur", "garage automobile", "médecin"</li>
+            </ul>
+          </div>
+        </div>
+      `;
+    }
+    
+    function showErrorMessage(message) {
+      const container = document.getElementById('resultsContainer');
+      container.innerHTML = `
+        <div class="no-results">
+          <i class="fas fa-exclamation-triangle" style="font-size: 3em; opacity: 0.5; margin-bottom: 15px; color: #f59e0b;"></i>
+          <h3>Erreur</h3>
+          <p>${message}</p>
+        </div>
+      `;
+    }
+    
+    // Fonctions de partage de position
+    function shareLocationWhatsApp(lat, lng) {
+      const address = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+      const message = `📍 Ma position actuelle :\n${address}\n\n🗺️ Voir sur Google Maps :\nhttps://maps.google.com/?q=${lat},${lng}\n\nEnvoyé via Actu & Média`;
+      
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+      
+      // Vibration tactile
+      if (navigator.vibrate) {
+        navigator.vibrate([50, 100, 50]);
+      }
+    }
+    
+    function shareLocationSMS(lat, lng) {
+      const address = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+      const message = `📍 Ma position: ${address}\n🗺️ https://maps.google.com/?q=${lat},${lng}\n\nVia Actu & Média`;
+      
+      const smsUrl = `sms:?body=${encodeURIComponent(message)}`;
+      window.location.href = smsUrl;
+      
+      // Vibration tactile
+      if (navigator.vibrate) {
+        navigator.vibrate([50, 100, 50]);
+      }
+    }
+    
+    function copyLocationToClipboard(lat, lng) {
+      const address = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+      const message = `📍 Position: ${address}\n🗺️ https://maps.google.com/?q=${lat},${lng}`;
+      
+      navigator.clipboard.writeText(message).then(() => {
+        // Feedback visuel
+        const btn = event.target.closest('.copy');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i> <span>Copié !</span>';
+        btn.style.background = 'linear-gradient(45deg, #22c55e, #16a34a)';
+        
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.background = 'linear-gradient(45deg, #6b7280, #4b5563)';
+        }, 2000);
+        
+        // Vibration tactile
+        if (navigator.vibrate) {
+          navigator.vibrate(50);
+        }
+      }).catch(() => {
+        alert('Impossible de copier. Position : ' + address);
+      });
+    }
+
+    function tryGeolocation() {
+      const locateBtn = document.getElementById('locateBtn');
+      const locationStatus = document.getElementById('locationStatus');
+      const locationText = document.getElementById('locationText');
+      
+      locateBtn.classList.add('loading');
+      locationStatus.style.display = 'block';
+      locationStatus.classList.remove('error');
+      locationText.textContent = 'Localisation en cours...';
+      
+      if (!navigator.geolocation) {
+        showLocationError('Géolocalisation non supportée');
+        return;
+      }
+      
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          userLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+          
+          locateBtn.classList.remove('loading');
+          locationText.textContent = `📍 Position trouvée (précision: ${Math.round(position.coords.accuracy)}m)`;
+          
+          // Recharger la météo avec la vraie position
+          fetchRealWeather(userLocation.lat, userLocation.lng);
+          
+          console.log('Position trouvée:', userLocation); // Debug
+          
+          // Cacher le message après 3 secondes
+          setTimeout(() => {
+            locationStatus.style.display = 'none';
+          }, 3000);
+        },
+        function(error) {
+          let errorMsg = 'Erreur de localisation';
+          switch(error.code) {
+            case error.PERMISSION_DENIED:
+              errorMsg = 'Localisation refusée par l\'utilisateur';
+              break;
+            case error.POSITION_UNAVAILABLE:
+              errorMsg = 'Position indisponible';
+              break;
+            case error.TIMEOUT:
+              errorMsg = 'Timeout de localisation';
+              break;
+          }
+          showLocationError(errorMsg);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000
+        }
+      );
+    }
+
+    function showLocationError(message) {
+      const locateBtn = document.getElementById('locateBtn');
+      const locationStatus = document.getElementById('locationStatus');
+      const locationText = document.getElementById('locationText');
+      
+      locateBtn.classList.remove('loading');
+      locationStatus.style.display = 'block';
+      locationStatus.classList.add('error');
+      locationText.textContent = `❌ ${message}`;
+      
+      // Utiliser position par défaut (centre de Montceau)
+      userLocation = { lat: 46.6746, lng: 4.3630 };
+      
+      setTimeout(() => {
+        locationStatus.style.display = 'none';
+      }, 5000);
+    }
+    
+    function updateCategoriesWithCounts() {
+      if (!userLocation) return;
+      
+      const maxDistance = 15; // 15km maximum
+      const categories = {};
+      
+      // Calculer les distances et grouper par catégorie
+      localBusinesses.forEach(business => {
+        business.distance = calculateDistance(
+          userLocation.lat, userLocation.lng,
+          business.lat, business.lng
+        );
+        
+        // Ne garder que les commerces à moins de 15km
+        if (business.distance <= maxDistance) {
+          if (!categories[business.category]) {
+            categories[business.category] = [];
+          }
+          categories[business.category].push(business);
+        }
+      });
+      
+      // Créer les boutons de catégorie avec le nombre
+      const categoryInfo = {
+        restaurant: { icon: 'fas fa-utensils', name: 'Restaurants' },
+        pharmacy: { icon: 'fas fa-pills', name: 'Pharmacies' },
+        gas_station: { icon: 'fas fa-gas-pump', name: 'Stations' },
+        atm: { icon: 'fas fa-credit-card', name: 'Banques' },
+        supermarket: { icon: 'fas fa-shopping-cart', name: 'Supermarchés' },
+        doctor: { icon: 'fas fa-user-md', name: 'Médecins' },
+        bakery: { icon: 'fas fa-bread-slice', name: 'Boulangeries' },
+        store: { icon: 'fas fa-store', name: 'Commerces' }
+      };
+      
+      const container = document.getElementById('categoriesContainer');
+      const html = Object.keys(categories)
+        .filter(cat => categories[cat].length > 0)
+        .map(category => {
+          const info = categoryInfo[category];
+          const count = categories[category].length;
+          const nearestDistance = Math.min(...categories[category].map(b => b.distance));
+          
+          return `
+            <div class="category-btn" data-category="${category}">
+              <i class="${info.icon}"></i>
+              <span>${info.name}</span>
+              <div class="count-badge">${count}</div>
+              <div style="font-size: 0.7em; opacity: 0.7; margin-top: 4px;">
+                À partir de ${nearestDistance.toFixed(1)}km
+              </div>
+            </div>
+          `;
+        }).join('');
+      
+      if (html) {
+        container.innerHTML = html;
+        
+        // Réattacher les event listeners
+        document.querySelectorAll('.category-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const category = this.dataset.category;
+            selectCategory(category, this);
+          });
+        });
+      } else {
+        container.innerHTML = `
+          <div class="category-loading">
+            <i class="fas fa-search"></i>
+            <span>Aucun commerce trouvé dans un rayon de 15km</span>
+          </div>
+        `;
+      }
+    }
+    
+    // Fonction de partage
+    function shareLocation(name, address) {
+      const message = `📍 ${name}\n${address}\n\nTrouvé via Actu & Média`;
+      
+      if (navigator.share) {
+        // API Web Share (mobile)
+        navigator.share({
+          title: `📍 ${name}`,
+          text: message,
+          url: window.location.href
+        });
+      } else {
+        // Fallback: copier dans le presse-papiers
+        navigator.clipboard.writeText(message).then(() => {
+          // Feedback visuel
+          const btn = event.target.closest('.share-btn');
+          const originalText = btn.innerHTML;
+          btn.innerHTML = '<i class="fas fa-check"></i> Copié !';
+          btn.style.background = 'rgba(76, 175, 80, 0.3)';
+          
+          setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.style.background = '';
+          }, 2000);
+        }).catch(() => {
+          // Si clipboard fail, ouvrir WhatsApp
+          const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+          window.open(whatsappUrl, '_blank');
+        });
+      }
+      
+      // Vibration tactile
+      if (navigator.vibrate) {
+        navigator.vibrate([50, 100, 50]);
+      }
+    }
+
+    function selectCategory(category, buttonElement) {
+      // Désélectionner tous les boutons
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // Sélectionner le bouton cliqué
+      buttonElement.classList.add('active');
+      currentCategory = category;
+      
+      // Vibration tactile
+      if (navigator.vibrate) {
+        navigator.vibrate(50);
+      }
+      
+      filterByCategory(category);
+    }
+
+    function filterByCategory(category) {
+      const businesses = localBusinesses.filter(business => 
+        business.category === category
+      );
+      
+      if (userLocation) {
+        businesses.forEach(business => {
+          business.distance = calculateDistance(
+            userLocation.lat, userLocation.lng,
+            business.lat, business.lng
+          );
+        });
+        
+        businesses.sort((a, b) => a.distance - b.distance);
+      }
+      
+      displayResults(businesses);
+    }
+
+    function searchBusinesses(query) {
+      console.log('Recherche lancée pour:', query); // Debug
+      console.log('Position utilisateur:', userLocation); // Debug
+      
+      // Recherche élargie et plus intelligente
+      const businesses = localBusinesses.filter(business => {
+        const searchText = query.toLowerCase();
+        return (
+          business.name.toLowerCase().includes(searchText) ||
+          business.type.toLowerCase().includes(searchText) ||
+          business.address.toLowerCase().includes(searchText) ||
+          business.category.toLowerCase().includes(searchText) ||
+          // Recherche par mots-clés
+          (searchText.includes('restaurant') && business.category === 'restaurant') ||
+          (searchText.includes('pharmacie') && business.category === 'pharmacy') ||
+          (searchText.includes('supermarché') && business.category === 'supermarket') ||
+          (searchText.includes('boulangerie') && business.category === 'bakery') ||
+          (searchText.includes('station') && business.category === 'gas_station') ||
+          (searchText.includes('banque') && business.category === 'atm') ||
+          (searchText.includes('médecin') && business.category === 'doctor') ||
+          (searchText.includes('docteur') && business.category === 'doctor') ||
+          (searchText.includes('essence') && business.category === 'gas_station') ||
+          (searchText.includes('carburant') && business.category === 'gas_station')
+        );
+      });
+      
+      console.log('Commerces trouvés avant filtrage distance:', businesses.length); // Debug
+      
+      if (userLocation) {
+        businesses.forEach(business => {
+          business.distance = calculateDistance(
+            userLocation.lat, userLocation.lng,
+            business.lat, business.lng
+          );
+        });
+        
+        // Filtrer par distance maximale (50km)
+        const nearbyBusinesses = businesses.filter(business => business.distance <= 50);
+        console.log('Commerces dans un rayon de 50km:', nearbyBusinesses.length); // Debug
+        
+        // Tri par distance
+        nearbyBusinesses.sort((a, b) => a.distance - b.distance);
+        
+        displayResults(nearbyBusinesses);
+      } else {
+        console.log('Pas de géolocalisation, affichage de tous les résultats'); // Debug
+        displayResults(businesses);
+      }
+    }
+
+    function calculateDistance(lat1, lng1, lat2, lng2) {
+      const R = 6371; // Rayon de la Terre en km
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLng = (lng2 - lng1) * Math.PI / 180;
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLng/2) * Math.sin(dLng/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    function displayResults(businesses) {
+      const container = document.getElementById('resultsContainer');
+      
+      console.log('Affichage de', businesses.length, 'résultats'); // Debug
+      
+      if (businesses.length === 0) {
+        container.innerHTML = `
+          <div class="no-results">
+            <i class="fas fa-search" style="font-size: 3em; opacity: 0.5; margin-bottom: 15px;"></i>
+            <h3>Aucun résultat trouvé</h3>
+            <p>Aucun commerce trouvé pour cette recherche dans votre zone</p>
+            <div style="margin-top: 15px; opacity: 0.8; font-size: 0.9em;">
+              💡 Essayez : "restaurant", "pharmacie", "supermarché"
+            </div>
+          </div>
+        `;
+        return;
+      }
+      
+      const html = `
+        <div class="results-grid">
+          ${businesses.map(business => createBusinessCard(business)).join('')}
+        </div>
+      `;
+      
+      container.innerHTML = html;
+    }
+
+    function createBusinessCard(business) {
+      const distanceText = business.distance ? 
+        `<div class="result-distance">📍 ${business.distance.toFixed(1)} km</div>` : '';
+      
+      const phone = business.phone ? business.phone : '';
+      const hours = business.hours ? business.hours : '';
+      
+      const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(business.address)}`;
+      const phoneUrl = phone ? `tel:${phone}` : '#';
+      
+      return `
+        <div class="result-card">
+          <div class="result-header">
+            <div class="result-icon">
+              <i class="${getBusinessIcon(business.category)}"></i>
+            </div>
+            <div>
+              <div class="result-name">${business.name}</div>
+              <div class="result-type">${business.type}</div>
+            </div>
+          </div>
+          
+          ${distanceText}
+          
+          <div class="result-address">
+            <i class="fas fa-map-marker-alt"></i>
+            ${business.address}
+          </div>
+          
+          ${phone ? `<div class="result-address"><i class="fas fa-phone"></i> ${phone}</div>` : ''}
+          ${hours ? `<div class="result-address"><i class="fas fa-clock"></i> ${hours}</div>` : ''}
+          
+          <div class="result-actions">
+            <a href="${googleMapsUrl}" target="_blank" class="action-btn">
+              <i class="fas fa-directions"></i>
+              Y aller
+            </a>
+            ${phone ? `<a href="${phoneUrl}" class="action-btn"><i class="fas fa-phone"></i> Appeler</a>` : ''}
+            <button onclick="shareLocation('${business.name}', '${business.address}')" class="action-btn share-btn">
+              <i class="fas fa-share"></i>
+              Partager
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function getBusinessIcon(category) {
+      const icons = {
+        restaurant: 'fas fa-utensils',
+        pharmacy: 'fas fa-pills',
+        gas_station: 'fas fa-gas-pump',
+        atm: 'fas fa-credit-card',
+        supermarket: 'fas fa-shopping-cart',
+        doctor: 'fas fa-user-md',
+        bakery: 'fas fa-bread-slice',
+        store: 'fas fa-store'
+      };
+      return icons[category] || 'fas fa-store';
+    }
+
+    function showDefaultMessage() {
+      const container = document.getElementById('resultsContainer');
+      container.innerHTML = `
+        <div class="no-results">
+          <i class="fas fa-search-location" style="font-size: 3em; opacity: 0.5; margin-bottom: 15px;"></i>
+          <h3>Recherche géolocalisée intelligente</h3>
+          <p><strong>1.</strong> Tapez ce que vous cherchez</p>
+          <p><strong>2.</strong> Cliquez sur 🔍 ou appuyez sur Entrée</p>
+          <p><strong>3.</strong> Nous vous géolocaliserons et chercherons près de vous !</p>
+          <div style="margin-top: 15px; opacity: 0.8; font-size: 0.9em;">
+            🌍 <strong>Fonctionne partout</strong> - pas seulement à Montceau !
+          </div>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

@@ -7,6 +7,54 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;900&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      /* Thème Rouge (défaut) */
+      --primary-color: #dc2626;
+      --primary-light: #ef4444;
+      --primary-dark: #b91c1c;
+      --secondary-color: #991b1b;
+      --background-start: #7f1d1d;
+      --background-middle: #991b1b;
+      --background-end: #dc2626;
+      --accent-color: #fef2f2;
+    }
+
+    /* Thème Sombre */
+    [data-theme="dark"] {
+      --primary-color: #1f2937;
+      --primary-light: #374151;
+      --primary-dark: #111827;
+      --secondary-color: #4b5563;
+      --background-start: #0f172a;
+      --background-middle: #1e293b;
+      --background-end: #334155;
+      --accent-color: #f8fafc;
+    }
+
+    /* Thème Bleu Ciel */
+    [data-theme="bleuciel"] {
+      --primary-color: #0ea5e9;
+      --primary-light: #38bdf8;
+      --primary-dark: #0284c7;
+      --secondary-color: #0369a1;
+      --background-start: #0c4a6e;
+      --background-middle: #0369a1;
+      --background-end: #0ea5e9;
+      --accent-color: #f0f9ff;
+    }
+
+    /* Thème Violet */
+    [data-theme="light"] {
+      --primary-color: #7c3aed;
+      --primary-light: #8b5cf6;
+      --primary-dark: #6d28d9;
+      --secondary-color: #5b21b6;
+      --background-start: #4c1d95;
+      --background-middle: #5b21b6;
+      --background-end: #7c3aed;
+      --accent-color: #faf5ff;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -14,7 +62,7 @@
     }
 
     body {
-      background: linear-gradient(135deg, #0d1b3f 0%, #1e3a5c 50%, #2c5282 100%);
+      background: linear-gradient(135deg, var(--background-start) 0%, var(--background-middle) 50%, var(--background-end) 100%);
       color: #ffffff;
       font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       min-height: 100vh;
@@ -24,6 +72,7 @@
       position: relative;
       overflow-x: hidden;
       padding: 20px;
+      transition: background 0.3s ease;
     }
 
     /* Animation de fond */
@@ -93,15 +142,15 @@
     }
 
     .back-button:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: var(--primary-color);
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 5px 15px rgba(var(--primary-color), 0.4);
     }
 
     .logo-placeholder {
       width: 80px;
       height: 80px;
-      background: linear-gradient(45deg, #4299e1, #3182ce);
+      background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
       border-radius: 50%;
       margin: 0 auto 25px;
       display: flex;
@@ -119,7 +168,7 @@
     h1 {
       font-size: 2.5em;
       margin-bottom: 15px;
-      background: linear-gradient(45deg, #ffffff, #e2e8f0);
+      background: linear-gradient(45deg, #ffffff, var(--accent-color));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -153,6 +202,7 @@
     .contact-method:nth-child(2) { animation-delay: 0.4s; }
     .contact-method:nth-child(3) { animation-delay: 0.6s; }
     .contact-method:nth-child(4) { animation-delay: 0.8s; }
+    .contact-method:nth-child(5) { animation-delay: 1.0s; }
 
     @keyframes fadeIn {
       to {
@@ -164,7 +214,7 @@
     .contact-method:hover {
       background: rgba(255, 255, 255, 0.08);
       transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 8px 25px rgba(var(--primary-color), 0.2);
     }
 
     .contact-method h3 {
@@ -173,12 +223,12 @@
       gap: 12px;
       font-size: 1.3em;
       margin-bottom: 15px;
-      color: #e2e8f0;
+      color: var(--accent-color);
       font-weight: 600;
     }
 
     .contact-method .icon {
-      background: linear-gradient(45deg, #4299e1, #3182ce);
+      background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
       border-radius: 50%;
       width: 40px;
       height: 40px;
@@ -192,24 +242,24 @@
       display: inline-flex;
       align-items: center;
       gap: 12px;
-      color: #4299e1;
+      color: var(--primary-light);
       text-decoration: none;
       font-size: 1.1em;
       font-weight: 500;
       padding: 15px 25px;
-      background: rgba(66, 153, 225, 0.1);
+      background: rgba(var(--primary-color), 0.1);
       border-radius: 25px;
-      border: 1px solid rgba(66, 153, 225, 0.3);
+      border: 1px solid rgba(var(--primary-color), 0.3);
       transition: all 0.3s ease;
       width: 100%;
       justify-content: center;
     }
 
     .contact-link:hover {
-      background: rgba(66, 153, 225, 0.2);
-      border-color: rgba(66, 153, 225, 0.5);
+      background: rgba(var(--primary-color), 0.2);
+      border-color: var(--primary-light);
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(66, 153, 225, 0.3);
+      box-shadow: 0 5px 15px rgba(var(--primary-color), 0.3);
     }
 
     .contact-description {
@@ -241,9 +291,9 @@
     }
 
     .social-link:hover {
-      background: rgba(66, 153, 225, 0.3);
+      background: var(--primary-color);
       transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(66, 153, 225, 0.3);
+      box-shadow: 0 5px 15px rgba(var(--primary-color), 0.4);
     }
 
     .contact-link.paypal:hover {
@@ -362,25 +412,18 @@
         font-size: 1.1em;
       }
     }
-
-    /* Animation pour les éléments qui apparaissent */
-    .fade-in-up {
-      animation: fadeInUp 0.8s ease-out forwards;
-      opacity: 0;
-      transform: translateY(20px);
-    }
-
-    @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
   </style>
+  <script>
+    // Appliquer le thème dès le chargement
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'rouge';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+  </script>
 </head>
 <body>
   <div class="container">
-    <a href="javascript:history.back()" class="back-button" title="Retour">
+    <a href="https://actuetmedia.fr/" class="back-button" title="Retour à l'accueil">
       <i class="fas fa-arrow-left"></i>
     </a>
 
@@ -515,8 +558,6 @@
       });
     });
 
-    // Fonction pour ouvrir le modal de soumission (supprimée car non fonctionnelle)
-    
     // Gestion des clics sur les liens email avec retour haptique
     document.addEventListener('click', function(e) {
       if (e.target.closest('a[href^="mailto:"]')) {
