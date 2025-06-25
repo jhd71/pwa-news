@@ -84,6 +84,10 @@ class ChatManager {
         this.unreadCount = parseInt(localStorage.getItem('unreadCount') || '0');
         this.deviceBanned = false;
 		this.realtimeChannel = null;
+		this.chatPollingInterval = null;
+		this.lastMessageTime = null;
+		this.pollingCounter = 0;
+		this.isRealtimeEnabled = false;
     }
 
     getDeviceId() {
@@ -1733,80 +1737,123 @@ toggleEmojiPanel() {
 }
 
 	setupRealtimeSubscription() {
-    // Fermer toute souscription existante pour éviter les doublons
+    console.log('💬 Chat configuré en mode polling (plan gratuit Supabase)');
+    
+    // Fermer toute souscription existante
     if (this.realtimeChannel) {
         this.realtimeChannel.unsubscribe();
+        this.realtimeChannel = null;
     }
     
-    // Créer un nouveau canal avec un nom unique pour éviter les conflits
-    const channelId = `public:messages:${Date.now()}`;
-    const channel = this.supabase.channel(channelId);
+    // Désactiver le temps réel, utiliser le polling
+    this.isRealtimeEnabled = false;
     
-    channel
-        .on('postgres_changes', 
-            { event: 'INSERT', schema: 'public', table: 'messages' },
-            (payload) => {
-                console.log('Nouveau message:', payload);
-                this.handleNewMessage(payload.new);
-            }
-        )
-        .on('postgres_changes',
-            { event: 'DELETE', schema: 'public', table: 'messages' },
-            (payload) => {
-                console.log('Message supprimé:', payload);
-                // Utiliser une requête plus précise pour trouver le message
-                const messageElement = this.container.querySelector(`[data-message-id="${payload.old.id}"]`);
-                if (messageElement) {
-                    // Ajouter une animation de disparition
-                    messageElement.classList.add('fade-out');
-                    // Puis supprimer l'élément après l'animation
-                    setTimeout(() => {
-                        if (messageElement.parentNode) {
-                            messageElement.remove();
-                        }
-                    }, 300);
-                }
-            }
-        )
-        .on('postgres_changes',
-    { event: '*', schema: 'public', table: 'banned_ips' },
-    async (payload) => {
-        console.log('Changement dans les bannissements:', payload);
-        
-        // Si l'utilisateur courant est banni, le déconnecter
-        if (this.pseudo && payload.new && payload.new.ip === this.pseudo) {
-            console.log('Vous avez été banni du chat');
-            this.showNotification('Vous avez été banni du chat', 'error');
-            // Vérification immédiate du bannissement et déconnexion
-            await this.checkUserBannedStatus();
-        } else {
-            // Vérifier si un bannissement a été ajouté - vérifier pour tous
-            if (payload.eventType === 'INSERT') {
-                await this.checkUserBannedStatus();
+    // Setup du polling spécifique au chat
+    this.setupChatPolling();
+    
+    // Retourner un objet compatible pour éviter les erreurs
+    return {
+        unsubscribe: () => {
+            console.log('🔌 Arrêt du polling chat');
+            if (this.chatPollingInterval) {
+                clearInterval(this.chatPollingInterval);
+                this.chatPollingInterval = null;
             }
         }
-    }
-)
-        .on('postgres_changes', 
-            { event: '*', schema: 'public', table: 'message_reactions' },
-            (payload) => {
-                console.log('Changement dans les réactions:', payload);
-                if (payload.new && payload.new.message_id) {
-                    this.loadMessageReactions(payload.new.message_id);
-                } else if (payload.old && payload.old.message_id) {
-                    this.loadMessageReactions(payload.old.message_id);
+    };
+}
+
+// NOUVELLE FONCTION : Polling spécifique au chat
+setupChatPolling() {
+    if (this.chatPollingInterval) return;
+    
+    console.log('🔄 Démarrage du polling chat spécifique');
+    
+    let lastMessageId = null;
+    let lastReactionUpdate = null;
+    
+    this.chatPollingInterval = setInterval(async () => {
+        try {
+            // 1. Vérifier les nouveaux messages
+            const { data: messages, error: msgError } = await this.supabase
+                .from('messages')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(20);
+            
+            if (!msgError && messages && messages.length > 0) {
+                const latestMessageId = messages[0].id;
+                
+                // Si nouveau message détecté
+                if (lastMessageId && latestMessageId !== lastMessageId) {
+                    console.log('💬 Nouveau message détecté via polling');
+                    
+                    // Trouver les nouveaux messages
+                    const newMessages = messages.filter(msg => 
+                        new Date(msg.created_at) > new Date(this.lastMessageTime || 0)
+                    );
+                    
+                    // Traiter chaque nouveau message
+                    newMessages.reverse().forEach(msg => {
+                        this.handleNewMessage(msg);
+                    });
+                    
+                    this.lastMessageTime = messages[0].created_at;
+                }
+                
+                lastMessageId = latestMessageId;
+            }
+            
+            // 2. Vérifier les bannissements (moins fréquent)
+            if (this.pollingCounter % 3 === 0) { // Toutes les 3 fois
+                await this.checkUserBannedStatus();
+            }
+            
+            // 3. Vérifier les réactions (moins fréquent)
+            if (this.pollingCounter % 2 === 0) { // Toutes les 2 fois
+                const { data: reactions, error: reactError } = await this.supabase
+                    .from('message_reactions')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .limit(10);
+                
+                if (!reactError && reactions && reactions.length > 0) {
+                    const latestReaction = reactions[0].created_at;
+                    
+                    if (lastReactionUpdate && latestReaction !== lastReactionUpdate) {
+                        console.log('👍 Nouvelles réactions détectées');
+                        // Recharger les réactions des messages visibles
+                        this.refreshVisibleReactions();
+                    }
+                    
+                    lastReactionUpdate = latestReaction;
                 }
             }
-        )
-        .subscribe((status) => {
-            console.log('Statut de la souscription temps réel:', status);
             
-            if (status === 'SUBSCRIBED') {
-                console.log(`Canal realtime ${channelId} connecté avec succès`);
-                // Stocker le canal pour pouvoir le fermer plus tard si nécessaire
-                this.realtimeChannel = channel;
-            }
-        });
+            this.pollingCounter = (this.pollingCounter || 0) + 1;
+            
+        } catch (error) {
+            console.warn('⚠️ Erreur polling chat:', error.message);
+        }
+    }, 8000); // Toutes les 8 secondes
+}
+
+// NOUVELLE FONCTION : Rafraîchir les réactions visibles
+refreshVisibleReactions() {
+    const messageElements = this.container.querySelectorAll('[data-message-id]');
+    messageElements.forEach(element => {
+        const messageId = element.getAttribute('data-message-id');
+        if (messageId) {
+            this.loadMessageReactions(messageId);
+        }
+    });
+}
+
+// MODIFICATION : Ajouter une propriété pour suivre le dernier message
+handleNewMessage(message) {
+    // Votre code existant pour handleNewMessage...
+    // Juste ajouter cette ligne à la fin :
+    this.lastMessageTime = message.created_at;
 }
 
 setupBanChecker() {

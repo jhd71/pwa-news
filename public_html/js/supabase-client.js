@@ -149,46 +149,46 @@ window.PollingManager = {
     isRunning: false,
     
     // Démarrer le polling pour les visiteurs
-    startVisitorPolling: function() {
-        if (this.intervals.visitors) return; // Éviter les doublons
-        
-        console.log('🔄 Démarrage du polling visiteurs (remplace WebSocket)');
-        
-        this.intervals.visitors = setInterval(async () => {
-            try {
-                const client = window.getSupabaseClient();
-                if (!client) return;
-                
-                const { data, error } = await client
-                    .from('visitors')
-                    .select('*')
-                    .gte('last_seen', new Date(Date.now() - 5 * 60 * 1000).toISOString());
-                
-                if (error) throw error;
-                
-                const count = data ? data.length : 0;
-                
-                // Mettre à jour l'affichage si la fonction existe
-                if (window.updateVisitorCount) {
-                    window.updateVisitorCount(count);
-                }
-                
-                // Mettre à jour l'élément HTML directement
-                const visitorElements = document.querySelectorAll('[data-visitor-count], .visitor-count');
-                visitorElements.forEach(el => {
-                    if (el) el.textContent = count;
-                });
-                
-                // Log discret (pas trop de spam)
-                if (count > 0) {
-                    console.log(`👥 ${count} visiteurs actifs (polling)`);
-                }
-                
-            } catch (error) {
-                console.warn('⚠️ Erreur polling visiteurs:', error.message);
+startVisitorPolling: function() {
+    if (this.intervals.visitors) return; // Éviter les doublons
+    
+    console.log('🔄 Démarrage du polling visiteurs (remplace WebSocket)');
+    
+    this.intervals.visitors = setInterval(async () => {
+        try {
+            const client = window.getSupabaseClient();
+            if (!client) return;
+            
+            const { data, error } = await client
+                .from('active_visitors')  // ✅ CORRECTION ICI
+                .select('*')
+                .gte('last_seen', new Date(Date.now() - 5 * 60 * 1000).toISOString());
+            
+            if (error) throw error;
+            
+            const count = data ? data.length : 0;
+            
+            // Mettre à jour l'affichage si la fonction existe
+            if (window.updateVisitorCount) {
+                window.updateVisitorCount(count);
             }
-        }, 20000); // Toutes les 20 secondes
-    },
+            
+            // Mettre à jour l'élément HTML directement
+            const visitorElements = document.querySelectorAll('[data-visitor-count], .visitor-count');
+            visitorElements.forEach(el => {
+                if (el) el.textContent = count;
+            });
+            
+            // Log discret (pas trop de spam)
+            if (count > 0) {
+                console.log(`👥 ${count} visiteurs actifs (polling)`);
+            }
+            
+        } catch (error) {
+            console.warn('⚠️ Erreur polling visiteurs:', error.message);
+        }
+    }, 20000); // Toutes les 20 secondes
+},
     
     // Démarrer le polling pour le chat
     startChatPolling: function() {
