@@ -812,30 +812,40 @@
     color: white !important;
 }
 
-/* Responsive mobile - ajustements de position */
+/* Correction spécifique mobile */
 @media (max-width: 768px) {
     .search-button {
-        top: 70px;
-        right: 15px; /* ✅ Un peu plus à gauche sur mobile */
-        width: 40px;
-        height: 40px;
+        position: fixed !important;
+        top: 70px !important;
+        right: 15px !important;
+        width: 40px !important;
+        height: 40px !important;
+        
+        /* ✅ NOUVELLES PROPRIÉTÉS pour mobile */
+        touch-action: manipulation; /* Évite le zoom au double-tap */
+        -webkit-touch-callout: none; /* Désactive le menu contextuel iOS */
+        -webkit-user-select: none; /* Évite la sélection */
+        user-select: none;
+        transform: translate3d(0, 0, 0); /* Force l'accélération GPU */
+        backface-visibility: hidden; /* Optimise le rendu */
+    }
+    
+    .search-button:active {
+        transform: translate3d(0, 0, 0) scale(0.95) !important;
     }
     
     .search-button .material-icons {
-        font-size: 22px;
+        font-size: 22px !important;
+        pointer-events: none; /* Évite les interférences tactiles */
     }
 }
 
 @media (max-width: 480px) {
     .search-button {
-        top: 65px;
-        right: 10px;
-        width: 38px;
-        height: 38px;
-    }
-    
-    .search-button .material-icons {
-        font-size: 20px;
+        top: 65px !important;
+        right: 10px !important;
+        width: 38px !important;
+        height: 38px !important;
     }
 }
 
