@@ -10,7 +10,7 @@ class FootballWidget {
         return {
             ligue1: { 
                 name: 'Ligue 1', 
-                flag: '🇫🇷',
+                flag: '🇫🇷', // ✅ Emoji drapeau français correct
                 urls: {
                     classements: 'https://www.fotmob.com/fr/leagues/53/table/ligue-1',
                     scores: 'https://www.fotmob.com/fr/leagues/53/matches/ligue-1?group=by-date',
@@ -19,7 +19,7 @@ class FootballWidget {
             },
             ligue2: { 
                 name: 'Ligue 2', 
-                flag: '🇫🇷',
+                flag: '🇫🇷', // ✅ Même emoji pour la cohérence
                 urls: {
                     classements: 'https://www.fotmob.com/fr/leagues/110/table/ligue-2',
                     scores: 'https://www.fotmob.com/fr/leagues/110/matches/ligue-2?group=by-date',

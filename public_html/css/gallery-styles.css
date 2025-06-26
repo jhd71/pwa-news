@@ -25,6 +25,9 @@
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
+	--background-start: #7f1d1d;
+    --background-middle: #991b1b;
+    --background-end: #dc2626;
 }
 
 /* Thème sombre */
@@ -46,6 +49,9 @@
     --footer-bg: rgba(26, 35, 126, 0.95);
     --modal-bg: #1E1E1E;
     --photo-view-bg: #1E1E1E;
+	--background-start: #0f172a;
+    --background-middle: #1a237e;
+    --background-end: #1a237e;
 }
 
 /* Thème rouge */
@@ -67,6 +73,9 @@
     --footer-bg: rgba(211, 47, 47, 0.95);
     --modal-bg: #8a2320;
     --photo-view-bg: #8a2320;
+	--background-start: #7f1d1d;
+    --background-middle: #991b1b;
+    --background-end: #dc2626;
 }
 
 /* Thème bleu ciel */
@@ -88,6 +97,9 @@
     --footer-bg: rgba(79, 179, 232, 0.95);
     --modal-bg: #ffffff;
     --photo-view-bg: white;
+	--background-start: #0c4a6e;
+    --background-middle: #0369a1;
+    --background-end: #0ea5e9;
 }
 
 /* ===== STRUCTURE PRINCIPALE ===== */
@@ -105,7 +117,7 @@
 .gallery-header {
     text-align: center;
     margin-bottom: 30px;
-    background-color: var(--primary-color);
+    background: linear-gradient(135deg, var(--background-start, #7f1d1d) 0%, var(--background-middle, #991b1b) 50%, var(--background-end, #dc2626) 100%);
     padding: 60px;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
@@ -1392,4 +1404,9 @@ body.modal-open {
 /* Thème Bleu Ciel */
 [data-theme="bleuciel"] .comments-header h3 {
     color: #0ea5e9;
+}
+
+/* Correction urgente pour thème light */
+[data-theme="light"] .gallery-header {
+    background: #7b5fbe !important;
 }
