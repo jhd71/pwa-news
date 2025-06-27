@@ -1404,6 +1404,9 @@ color: #4196df;
     --chart-line-color: #007BFF;
     --chart-area-bg: rgba(0, 123, 255, 0.1);
     --chart-grid-color: #e9ecef;
+    --stat-card-bg: #f0f7ff;
+    --stat-card-border: #d1e7ff;
+    --active-color: #28a745;
 }
 
 /* Thème Dark */
@@ -1416,6 +1419,9 @@ color: #4196df;
     --chart-line-color: #63b3ed;
     --chart-area-bg: rgba(99, 179, 237, 0.15);
     --chart-grid-color: #4a5568;
+    --stat-card-bg: #374151;
+    --stat-card-border: #4a5568;
+    --active-color: #34d399;
 }
 
 /* Thème Rouge - AMÉLIORÉ pour la lisibilité */
@@ -1428,6 +1434,9 @@ color: #4196df;
     --chart-line-color: #dc2626;
     --chart-area-bg: rgba(220, 38, 38, 0.1);
     --chart-grid-color: #fecaca;
+    --stat-card-bg: #fef2f2;
+    --stat-card-border: #fecaca;
+    --active-color: #dc2626;
 }
 
 /* Thème Bleu Ciel */
@@ -1440,6 +1449,9 @@ color: #4196df;
     --chart-line-color: #3b82f6;
     --chart-area-bg: rgba(59, 130, 246, 0.1);
     --chart-grid-color: #bfdbfe;
+    --stat-card-bg: #eff6ff;
+    --stat-card-border: #bfdbfe;
+    --active-color: #3b82f6;
 }
 
 /* --- Styles de la structure de la popup (indépendants du thème) --- */
@@ -1473,12 +1485,15 @@ color: #4196df;
         0 20px 40px var(--popup-shadow),
         0 0 0 1px rgba(255, 255, 255, 0.1);
     width: 95vw;
-    max-width: 480px;
-    max-height: 65vh;
+    max-width: 520px;
+    max-height: 85vh;
+    overflow-y: auto;
+    overflow-x: hidden; /* Empêche le débordement horizontal */
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     transform: scale(0.9) translateY(20px);
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative; /* Important pour la stabilité */
 }
 
 .visitors-popup-overlay.visible .visitors-popup-box {
@@ -1489,13 +1504,13 @@ color: #4196df;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
     border-bottom: 2px solid var(--chart-grid-color);
 }
 
 .visitors-popup-title {
-    font-size: 1.25rem;
+    font-size: 1.35rem;
     font-weight: 700;
     display: flex;
     align-items: center;
@@ -1504,7 +1519,7 @@ color: #4196df;
 }
 
 .visitors-popup-title .material-icons {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     color: var(--chart-line-color);
 }
 
@@ -1520,8 +1535,8 @@ color: #4196df;
     padding: 8px 12px;
     border-radius: 50%;
     transition: all 0.2s ease;
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1534,31 +1549,194 @@ color: #4196df;
     transform: scale(1.1);
 }
 
-/* Canvas pour le graphique */
-#visitorsChart {
-    margin: 16px 0;
-    border-radius: 12px;
-    background: var(--summary-bg);
-    padding: 8px;
+/* Nouveau : Cartes de statistiques */
+.visitors-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
 }
 
-.visitors-popup-summary {
-    margin: 20px 0 0 0;
+.visitors-stat-card {
+    background: var(--stat-card-bg);
+    border: 2px solid var(--stat-card-border);
+    border-radius: 16px;
+    padding: 16px;
     text-align: center;
-    font-size: 1.1rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.visitors-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.visitors-stat-card.active {
+    background: linear-gradient(135deg, var(--stat-card-bg), var(--chart-area-bg));
+    border-color: var(--active-color);
+}
+
+.visitors-stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--chart-line-color);
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.visitors-stat-card.active .visitors-stat-value {
+    color: var(--active-color);
+}
+
+.visitors-stat-label {
+    font-size: 0.85rem;
+    color: var(--summary-text);
+    font-weight: 500;
+}
+
+.visitors-stat-icon {
+    font-size: 1rem;
+    margin-right: 4px;
+    vertical-align: middle;
+}
+
+/* Zone du graphique améliorée */
+.visitors-chart-container {
+    background: var(--summary-bg);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 20px;
+    position: relative;
+    min-height: 250px; /* Hauteur minimale fixe */
+}
+
+.visitors-chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.visitors-chart-title {
+    font-size: 0.9rem;
     font-weight: 600;
-    padding: 16px 20px;
+    color: var(--summary-text);
+}
+
+.visitors-chart-legend {
+    display: flex;
+    gap: 16px;
+    font-size: 0.75rem;
+    color: var(--summary-text);
+}
+
+.visitors-chart-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.visitors-chart-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--chart-line-color);
+}
+
+/* Canvas pour le graphique */
+#visitorsChart {
+    border-radius: 8px;
+    touch-action: pan-y;
+    display: block;
+    width: 100% !important;
+    height: 200px !important;
+}
+
+/* Info tooltip mobile */
+.visitors-chart-info {
+    background: var(--popup-bg);
+    border: 1px solid var(--chart-grid-color);
+    border-radius: 12px;
+    padding: 12px;
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: var(--summary-text);
+    display: none;
+}
+
+.visitors-chart-info.show {
+    display: block;
+}
+
+.visitors-chart-info-title {
+    font-weight: 600;
+    color: var(--popup-text);
+    margin-bottom: 4px;
+}
+
+/* Résumé amélioré */
+.visitors-popup-summary {
+    margin: 0;
+    text-align: center;
+    font-size: 0.9rem;
+    padding: 16px;
     background: var(--summary-bg);
     color: var(--summary-text);
     border-radius: 16px;
     border: 2px solid var(--chart-grid-color);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.visitors-popup-summary strong {
-    font-size: 1.3rem;
+.visitors-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.visitors-summary-row:not(:last-child) {
+    border-bottom: 1px solid var(--chart-grid-color);
+}
+
+.visitors-summary-label {
+    font-weight: 500;
+}
+
+.visitors-summary-value {
+    font-weight: 700;
     color: var(--chart-line-color);
-    font-weight: 800;
+}
+
+/* Badge temps réel */
+.visitors-realtime-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--active-color);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 12px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.visitors-realtime-dot {
+    width: 6px;
+    height: 6px;
+    background: white;
+    border-radius: 50%;
+    animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
 }
 
 /* Animation d'apparition plus fluide */
@@ -1574,23 +1752,64 @@ color: #4196df;
 }
 
 .visitors-popup-overlay.visible .visitors-popup-box {
-    animation: slideInUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: slideInUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    transform: scale(1) translateY(0);
 }
 
-/* Responsive */
+/* Responsive Mobile */
 @media (max-width: 480px) {
     .visitors-popup-box {
         padding: 20px 16px;
         max-width: 92vw;
+        max-height: 95vh;
         border-radius: 16px;
     }
     
     .visitors-popup-title {
-        font-size: 1.1rem;
+        font-size: 1.15rem;
+    }
+    
+    .visitors-stats-grid {
+        gap: 10px;
+    }
+    
+    .visitors-stat-card {
+        padding: 14px 10px;
+    }
+    
+    .visitors-stat-value {
+        font-size: 1.75rem;
+    }
+    
+    .visitors-stat-label {
+        font-size: 0.8rem;
+    }
+    
+    .visitors-chart-container {
+        padding: 12px;
+    }
+    
+    #visitorsChart {
+        height: 180px !important;
     }
     
     .visitors-popup-summary {
-        font-size: 1rem;
-        padding: 14px 16px;
+        font-size: 0.85rem;
+        padding: 14px;
+    }
+}
+
+/* Très petits écrans */
+@media (max-width: 360px) {
+    .visitors-stat-value {
+        font-size: 1.5rem;
+    }
+    
+    .visitors-popup-title {
+        font-size: 1.05rem;
+    }
+    
+    .visitors-popup-title .material-icons {
+        font-size: 1.3rem;
     }
 }
