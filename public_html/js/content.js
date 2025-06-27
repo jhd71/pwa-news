@@ -336,12 +336,12 @@ newsDefaultSites.forEach(site => {
 const photosTileElement = this.createTile(photosTile);
 this.tileContainer.appendChild(photosTileElement);
 
-// 🆕 NOUVEAU : Ajouter le widget Football dans les widgets (pas dans les tuiles)
+// 🆕 AJOUTER LE WIDGET FOOTBALL SELON LA TAILLE D'ÉCRAN
 setTimeout(() => {
     if (typeof window.addFootballToWidgets === 'function') {
         window.addFootballToWidgets();
     }
-}, 500);
+}, 800); // ✅ Délai optimisé pour apparition fluide
 
         // Séparateur Radio
         const separator1 = document.createElement('div');
@@ -482,7 +482,7 @@ const tvSites = [
             const tile = this.createTile(site);
             this.tileContainer.appendChild(tile);
         });
-
+		
         // Séparateur Réseaux Sociaux
         const separator3 = document.createElement('div');
         separator3.className = 'separator';

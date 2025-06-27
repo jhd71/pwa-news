@@ -46,7 +46,6 @@ class FootballWidget {
         
         widget.innerHTML = `
             <div class="football-widget-header">
-                <span class="material-icons football-icon">sports_soccer</span>
                 <span class="football-widget-title">⚽ FOOTBALL</span>
                 <div class="league-tabs">
                     <button class="league-tab" data-league="ligue1">L1</button>
@@ -323,38 +322,111 @@ window.createFootballWidget = function() {
     return footballWidget.createWidget();
 };
 
-// Fonction pour intégrer le widget dans la structure existante
+// Fonction pour intégrer le widget selon la taille d'écran
 window.addFootballToWidgets = function() {
-    // Attendre que les widgets soient chargés
     setTimeout(() => {
-        // Chercher le conteneur des widgets
-        const widgetsRow = document.querySelector('.widgets-row');
-        if (!widgetsRow) {
-            console.warn('⚠️ Conteneur widgets-row non trouvé');
-            return;
-        }
-        
         // Vérifier si le widget existe déjà
         if (document.getElementById('footballWidget')) {
             console.log('⚽ Widget Football déjà présent');
             return;
         }
         
-        // Créer le conteneur pour le widget football
-        const footballContainer = document.createElement('div');
-        footballContainer.className = 'football-widget-container';
+        // Fonction pour détecter le mode d'affichage optimal
+        const shouldUseWidgetMode = () => {
+            const width = window.innerWidth;
+            // Mode widget seulement si vraiment large (3 widgets côte à côte)
+            return width >= 1200;
+        };
         
-        // Créer le widget
-        const footballWidget = window.createFootballWidget();
-        footballContainer.appendChild(footballWidget);
+        const addFootballWidget = () => {
+            // Supprimer le widget existant s'il y en a un
+            const existingWidget = document.getElementById('footballWidget');
+            if (existingWidget) {
+                existingWidget.closest('.football-widget-container, .football-widget-container-in-tiles')?.remove();
+            }
+            
+            if (shouldUseWidgetMode()) {
+                // ✅ DESKTOP LARGE : Ajouter dans les widgets en haut
+                addFootballToWidgetsRow();
+            } else {
+                // ✅ MOBILE/TABLET : Ajouter dans les tuiles après Sports
+                addFootballToTiles();
+            }
+        };
         
-        // Ajouter au conteneur des widgets
-        widgetsRow.appendChild(footballContainer);
+        // Ajouter immédiatement
+        addFootballWidget();
         
-        console.log('⚽ Widget Football ajouté avec succès aux widgets');
+        // Écouter les changements de taille d'écran avec debounce
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                addFootballWidget();
+            }, 150);
+        });
         
-    }, 1000); // Délai pour s'assurer que les autres widgets sont chargés
+    }, 800);
 };
+
+// Fonction pour ajouter dans les widgets (DESKTOP)
+function addFootballToWidgetsRow() {
+    const widgetsRow = document.querySelector('.widgets-row');
+    if (!widgetsRow) {
+        console.warn('⚠️ Conteneur widgets-row non trouvé');
+        return;
+    }
+    
+    const footballContainer = document.createElement('div');
+    footballContainer.className = 'football-widget-container';
+    
+    const footballWidget = window.createFootballWidget();
+    footballContainer.appendChild(footballWidget);
+    
+    widgetsRow.appendChild(footballContainer);
+    console.log('⚽ Widget Football ajouté dans widgets-row (DESKTOP)');
+}
+
+// Fonction pour ajouter dans les tuiles (MOBILE)
+function addFootballToTiles() {
+    const tileContainer = document.getElementById('tileContainer');
+    if (!tileContainer) {
+        console.warn('⚠️ Conteneur tuiles non trouvé');
+        return;
+    }
+    
+    // Trouver le séparateur "Réseaux Sociaux"
+    const separators = tileContainer.querySelectorAll('.separator');
+    let socialSeparator = null;
+    
+    separators.forEach(sep => {
+        if (sep.textContent.includes('Réseaux Sociaux')) {
+            socialSeparator = sep;
+        }
+    });
+    
+    if (!socialSeparator) {
+        console.warn('⚠️ Séparateur Réseaux Sociaux non trouvé');
+        return;
+    }
+    
+    // Créer le conteneur pour mobile
+    const footballContainer = document.createElement('div');
+    footballContainer.className = 'football-widget-container-in-tiles';
+    footballContainer.style.cssText = `
+        width: 100%;
+        max-width: 800px;
+        margin: 15px auto;
+        padding: 0 10px;
+    `;
+    
+    const footballWidget = window.createFootballWidget();
+    footballContainer.appendChild(footballWidget);
+    
+    // Insérer AVANT le séparateur "Réseaux Sociaux"
+    socialSeparator.parentNode.insertBefore(footballContainer, socialSeparator);
+    console.log('⚽ Widget Football ajouté avant Réseaux Sociaux (MOBILE)');
+}
 
 // Écouter les changements de thème pour mettre à jour le widget
 document.addEventListener('themeChanged', function(e) {

@@ -38,22 +38,6 @@
     color: var(--primary-color, #dc3545);
 }
 
-.football-icon {
-    font-size: 24px;
-    animation: footballFlicker 3s infinite;
-}
-
-@keyframes footballFlicker {
-    0%, 100% { 
-        transform: scale(1); 
-        opacity: 1; 
-    }
-    50% { 
-        transform: scale(1.1); 
-        opacity: 0.8; 
-    }
-}
-
 .football-widget-title {
     font-size: 18px;
     font-weight: bold;
@@ -324,7 +308,7 @@
 /* ===== RESPONSIVE IDENTIQUE À NEWS/CINÉMA ===== */
 
 /* Desktop */
-@media (min-width: 768px) {
+@media (min-width: 1200px) {
     /* Conteneur parent pour les trois widgets */
     .widgets-row {
         display: flex;
@@ -372,7 +356,7 @@
 }
 
 /* Mobile - Responsive pour 3 onglets */
-@media (max-width: 767px) {
+@media (max-width: 1199px) {
     .football-widget-container {
         position: relative;
         padding: 0 5px;
@@ -445,5 +429,38 @@
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* ===== CORRECTION MOBILE POUR ÉVITER LES TUILES COUPÉES ===== */
+
+.football-widget-container-in-tiles {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 15px 0 !important;
+    padding: 0 !important;
+    grid-column: 1 / -1 !important; /* Prend toute la largeur de la grille */
+}
+
+@media (max-width: 767px) {
+    .football-widget-container-in-tiles .football-widget {
+        margin: 0 10px;
+        max-width: none;
+        width: calc(100% - 20px);
+    }
+}
+
+@media (max-width: 600px) {
+    #tileContainer.grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    
+    .football-widget-container-in-tiles {
+        display: block !important;
+        width: 100vw !important;
+        margin-left: calc(-50vw + 50%) !important;
+        margin-right: calc(-50vw + 50%) !important;
+        padding: 0 10px !important;
+        box-sizing: border-box !important;
     }
 }
