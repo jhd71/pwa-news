@@ -4,381 +4,703 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Politique de confidentialité - Actu & Média</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #7c4dff;
-            --secondary-color: #ff5722;
-            --text-color: #333;
+        /* Variables de thème cohérentes avec le site principal */
+        :root, [data-theme="light"] {
+            --primary-color: #c32433;
+            --secondary-color: #e91e63;
+            --bg-color: #ffffff;
+            --text-color: #333333;
             --light-gray: #f5f5f5;
             --border-color: #e0e0e0;
-            --link-color: #7c4dff;
+            --link-color: #c32433;
+            --header-bg: #2c2c2c;
+            --header-text: #ffffff;
+            --card-shadow: rgba(0, 0, 0, 0.1);
             --success-color: #4caf50;
+            --info-color: #2196f3;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #e53945;
+            --secondary-color: #ff6090;
+            --bg-color: #1a1a1a;
+            --text-color: #f5f5f5;
+            --light-gray: #2a2a2a;
+            --border-color: #404040;
+            --link-color: #ff6090;
+            --header-bg: #0a0a0a;
+            --header-text: #ffffff;
+            --card-shadow: rgba(0, 0, 0, 0.3);
+            --success-color: #81c784;
+            --info-color: #64b5f6;
+        }
+
+        [data-theme="rouge"] {
+            --primary-color: #c32433;
+            --secondary-color: #e91e63;
+            --bg-color: #fff5f5;
+            --text-color: #2d1b1e;
+            --light-gray: #fee2e2;
+            --border-color: #fecaca;
+            --link-color: #c32433;
+            --header-bg: #8b1a1a;
+            --header-text: #ffffff;
+            --card-shadow: rgba(195, 36, 51, 0.15);
+            --success-color: #c32433;
+            --info-color: #e91e63;
+        }
+
+        [data-theme="bleuciel"] {
+            --primary-color: #3b82f6;
+            --secondary-color: #60a5fa;
+            --bg-color: #f0f9ff;
+            --text-color: #1e3a8a;
+            --light-gray: #dbeafe;
+            --border-color: #bfdbfe;
+            --link-color: #3b82f6;
+            --header-bg: #1e40af;
+            --header-text: #ffffff;
+            --card-shadow: rgba(59, 130, 246, 0.15);
+            --success-color: #3b82f6;
+            --info-color: #60a5fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             line-height: 1.6;
             color: var(--text-color);
-            max-width: 800px;
+            background-color: var(--bg-color);
+            transition: all 0.3s ease;
+        }
+
+        /* Header principal comme sur le site */
+        .main-header {
+            background: var(--header-bg);
+            color: var(--header-text);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        /* Style global pour les liens */
-        a {
-            color: var(--link-color);
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             text-decoration: none;
-            word-break: break-word;
-            overflow-wrap: break-word;
+            color: var(--header-text);
         }
 
-        a:hover {
-            text-decoration: underline;
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
         }
 
+        .logo .material-icons {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 2px solid var(--header-text);
+            color: var(--header-text);
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .nav-btn:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn .material-icons {
+            font-size: 1.2rem;
+        }
+
+        /* Contenu principal */
         .container {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 30px;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .content-card {
+            background: var(--bg-color);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px var(--card-shadow);
+            padding: 40px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+        }
+
+        .page-title {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .page-title .material-icons {
+            font-size: 3rem;
+        }
+
+        .updated-date {
+            text-align: center;
+            font-style: italic;
+            color: var(--text-color);
+            opacity: 0.7;
+            font-size: 0.9rem;
             margin-bottom: 30px;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid var(--primary-color);
+        .highlight {
+            background: linear-gradient(135deg, var(--light-gray), transparent);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 30px 0;
+            border-left: 4px solid var(--primary-color);
         }
 
-        h1 {
-            color: var(--primary-color);
-            font-size: 2.2rem;
-            margin-bottom: 10px;
+        .section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: var(--light-gray);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-color);
+            transition: transform 0.2s ease;
+        }
+
+        .section:hover {
+            transform: translateX(5px);
+        }
+
+        /* Section géolocalisation spéciale */
+        .geolocation-section {
+            background: linear-gradient(135deg, var(--light-gray), rgba(76, 175, 80, 0.1));
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid var(--success-color);
+            margin-bottom: 35px;
+            transition: transform 0.2s ease;
+        }
+
+        .geolocation-section:hover {
+            transform: translateX(5px);
+        }
+
+        .geolocation-section h2 {
+            color: var(--success-color);
         }
 
         h2 {
             color: var(--primary-color);
-            font-size: 1.5rem;
-            margin-top: 30px;
+            font-size: 1.6rem;
             margin-bottom: 15px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .updated-date {
-            font-style: italic;
-            color: #757575;
-            font-size: 0.9rem;
-        }
-
-        ul {
-            padding-left: 20px;
-        }
-
-        li {
-            margin-bottom: 8px;
-        }
-
-        .section {
-            margin-bottom: 30px;
-            background-color: var(--light-gray);
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid var(--primary-color);
-        }
-
-        .highlight {
-            background-color: #fff3e0;
-            padding: 15px;
-            border-radius: 6px;
-            margin: 20px 0;
-            border-left: 4px solid var(--secondary-color);
-        }
-
-        /* Nouvelle section pour la géolocalisation */
-        .geolocation-section {
-            background-color: #e8f5e9;
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid var(--success-color);
-            margin: 20px 0;
-        }
-
-        .geolocation-section h3 {
-            color: var(--success-color);
-            margin-top: 0;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .geolocation-icon {
-            font-size: 1.5em;
+        h2 .material-icons {
+            font-size: 1.8rem;
         }
 
-        .important-note {
-            background-color: #e3f2fd;
-            padding: 15px;
-            border-radius: 6px;
-            margin: 15px 0;
-            border-left: 4px solid #2196f3;
-            font-weight: 500;
+        h3 {
+            color: var(--success-color);
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .contact {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            background-color: var(--light-gray);
-            border-radius: 8px;
+        p {
+            margin-bottom: 15px;
+            line-height: 1.8;
         }
 
-        .email {
+        ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            list-style-type: none;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        li:before {
+            content: "•";
             color: var(--primary-color);
             font-weight: bold;
-            text-decoration: none;
+            position: absolute;
+            left: 8px;
+            font-size: 1.2rem;
         }
 
-        .email:hover {
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        a:hover {
             text-decoration: underline;
+            color: var(--secondary-color);
         }
 
-        footer {
+        /* Navigation entre pages légales */
+        .legal-nav {
+            background: var(--light-gray);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
             text-align: center;
-            margin-top: 50px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border-color);
-            font-size: 0.9rem;
-            color: #757575;
         }
 
-        .back-button {
-            display: inline-block;
-            margin-top: 20px;
+        .legal-nav h3 {
+            color: var(--text-color);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .legal-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .legal-link {
+            display: flex;
+            align-items: center;
+            gap: 5px;
             padding: 10px 20px;
-            background-color: var(--primary-color);
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
+            background: var(--bg-color);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            transition: all 0.3s ease;
         }
 
-        .back-button:hover {
-            background-color: #6a40e0;
+        .legal-link:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .legal-link.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Notes importantes */
+        .important-note {
+            background: linear-gradient(135deg, rgba(33, 150, 243, 0.1), transparent);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 4px solid var(--info-color);
+            font-weight: 500;
+            display: flex;
+            align-items: start;
+            gap: 15px;
+        }
+
+        .important-note .material-icons {
+            color: var(--info-color);
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        /* Section contact */
+        .contact-section {
+            text-align: center;
+            padding: 30px;
+            background: var(--light-gray);
+            border-radius: 12px;
+            margin-top: 35px;
+        }
+
+        .contact-section h2 {
+            justify-content: center;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 60px;
+            border-top: 2px solid var(--border-color);
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        /* Sélecteur de thème */
+        .theme-selector {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--header-bg);
+            padding: 10px;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .theme-selector:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-selector .material-icons {
+            color: var(--header-text);
+            font-size: 1.5rem;
         }
 
         /* Responsive */
-        @media (max-width: 600px) {
-            body {
-                padding: 15px;
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
             }
-            
-            .container {
-                padding: 20px;
+
+            .content-card {
+                padding: 25px 20px;
             }
-            
-            h1 {
-                font-size: 1.8rem;
+
+            .page-title {
+                font-size: 2rem;
+                flex-direction: column;
             }
-            
-            h2 {
-                font-size: 1.3rem;
+
+            .legal-links {
+                flex-direction: column;
+            }
+
+            .legal-link {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .nav-buttons {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .section, .geolocation-section {
+                padding: 20px 15px;
+            }
+
+            .important-note {
+                flex-direction: column;
+                text-align: center;
             }
         }
 
-        /* Support du thème sombre */
-        @media (prefers-color-scheme: dark) {
-            body {
-                background-color: #222;
-                color: #f5f5f5;
-            }
-            
+        @media (max-width: 480px) {
             .container {
-                background-color: #333;
+                margin: 20px auto;
+                padding: 0 10px;
             }
-            
-            .section {
-                background-color: #444;
+
+            .content-card {
+                padding: 20px 15px;
             }
-            
-            .highlight {
-                background-color: #3a3222;
+
+            .page-title {
+                font-size: 1.6rem;
             }
-            
-            .contact {
-                background-color: #444;
+
+            h2 {
+                font-size: 1.3rem;
             }
-            
-            h1, h2 {
-                color: #9f78ff;
-            }
-            
-            /* Amélioration du contraste pour le thème sombre */
-            a {
-                color: #9f78ff;
-            }
-            
-            .email {
-                color: #9f78ff;
-            }
-            
-            .geolocation-section {
-                background-color: #2d4a2f;
-            }
-            
-            .geolocation-section h3 {
-                color: #81c784;
-            }
-            
-            .important-note {
-                background-color: #1e3a5f;
+
+            li {
+                padding-left: 20px;
             }
         }
     </style>
     <meta name="description" content="Consultez la politique de confidentialité du site Actu & Média : collecte, cookies, sécurité, géolocalisation, droits RGPD.">
-	<link rel="canonical" href="https://actuetmedia.fr/politique-confidentialite" />
+    <link rel="canonical" href="https://actuetmedia.fr/politique-confidentialite" />
 </head>
 <body>
+    <!-- Header principal -->
+    <header class="main-header">
+        <div class="header-container">
+            <a href="/" class="logo">
+                <span class="material-icons">newspaper</span>
+                <h1>Actu & Média</h1>
+            </a>
+            <div class="nav-buttons">
+                <a href="/" class="nav-btn">
+                    <span class="material-icons">home</span>
+                    <span>Accueil</span>
+                </a>
+                <button class="nav-btn" onclick="toggleTheme()">
+                    <span class="material-icons">palette</span>
+                    <span>Thème</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
     <div class="container">
-        <header>
-            <h1>Politique de confidentialité</h1>
+        <!-- Navigation entre pages légales -->
+        <nav class="legal-nav">
+            <h3>Pages légales</h3>
+            <div class="legal-links">
+                <a href="/mentions-legales" class="legal-link">
+                    <span class="material-icons">gavel</span>
+                    <span>Mentions légales</span>
+                </a>
+                <a href="/conditions-utilisation" class="legal-link">
+                    <span class="material-icons">description</span>
+                    <span>Conditions d'utilisation</span>
+                </a>
+                <a href="/politique-confidentialite" class="legal-link active">
+                    <span class="material-icons">security</span>
+                    <span>Confidentialité</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="content-card">
+            <h1 class="page-title">
+                <span class="material-icons">security</span>
+                Politique de confidentialité
+            </h1>
             <div class="updated-date">Dernière mise à jour : 26 juin 2025</div>
-        </header>
 
-        <div class="highlight">
-            <p>Chez Actu & Média, nous nous engageons à protéger votre vie privée tout en vous offrant une expérience de qualité. Cette politique explique comment nous collectons et utilisons vos données, particulièrement dans le cadre de nos services de chat et de géolocalisation.</p>
-        </div>
-
-        <div class="section">
-            <h2>1. Collecte d'informations</h2>
-            <p><strong>Service de chat :</strong></p>
-            <ul>
-                <li>Pseudonymes choisis par les utilisateurs</li>
-                <li>Adresses IP pour des raisons de sécurité et de modération</li>
-                <li>Messages publiés sur le chat</li>
-            </ul>
-            
-            <p style="margin-top: 15px;"><strong>Navigation générale :</strong></p>
-            <ul>
-                <li>Données de navigation anonymes (pages visitées, durée de visite)</li>
-                <li>Informations techniques (type de navigateur, système d'exploitation)</li>
-            </ul>
-        </div>
-
-        <div class="geolocation-section">
-            <h3><span class="geolocation-icon">📍</span> Géolocalisation - Service "Autour de moi"</h3>
-            
-            <div class="important-note">
-                ⚠️ <strong>Important :</strong> Nous NE collectons PAS et NE stockons PAS vos données de géolocalisation.
+            <div class="highlight">
+                <p>Chez <strong>Actu & Média</strong>, nous nous engageons à protéger votre vie privée tout en vous offrant une expérience de qualité. Cette politique explique comment nous collectons et utilisons vos données, particulièrement dans le cadre de nos services de chat et de géolocalisation.</p>
             </div>
-            
-            <p><strong>Comment fonctionne notre service de géolocalisation :</strong></p>
-            <ul>
-                <li>La géolocalisation est utilisée UNIQUEMENT sur votre appareil</li>
-                <li>Vos coordonnées GPS ne sont JAMAIS envoyées à nos serveurs</li>
-                <li>Aucune donnée de position n'est collectée, stockée ou analysée par Actu & Média</li>
-                <li>Les recherches "Autour de moi" sont redirigées directement vers Google Maps</li>
-                <li>Votre position reste privée et n'est jamais partagée avec nous</li>
-            </ul>
-            
-            <p style="margin-top: 15px;"><strong>Votre contrôle total :</strong></p>
-            <ul>
-                <li>Vous pouvez refuser la géolocalisation à tout moment</li>
-                <li>Le service fonctionne aussi sans géolocalisation (utilise Montceau-les-Mines par défaut)</li>
-                <li>Vous pouvez révoquer l'autorisation dans les paramètres de votre navigateur</li>
-            </ul>
-        </div>
 
-        <div class="section">
-            <h2>2. Utilisation des informations</h2>
-            <p>Les informations collectées sont utilisées uniquement pour :</p>
-            <ul>
-                <li>Permettre le fonctionnement du service de chat</li>
-                <li>Modérer le contenu et assurer la sécurité des utilisateurs</li>
-                <li>Prévenir les abus et le spam</li>
-                <li>Bannir les utilisateurs ne respectant pas nos conditions d'utilisation</li>
-                <li>Améliorer l'expérience utilisateur du site</li>
-            </ul>
-            
-            <p style="margin-top: 15px;"><strong>Nous ne :</strong></p>
-            <ul>
-                <li>Ne vendons jamais vos données personnelles</li>
-                <li>Ne partageons pas vos informations avec des tiers (sauf obligation légale)</li>
-                <li>Ne collectons aucune donnée de géolocalisation</li>
-            </ul>
-        </div>
-
-        <div class="section">
-            <h2>3. Conservation des données</h2>
-            <ul>
-                <li>Messages du chat : conservés pour une durée indéterminée</li>
-                <li>Adresses IP : conservées uniquement pendant la durée nécessaire à la modération</li>
-                <li>Adresses IP des utilisateurs bannis : conservées jusqu'à l'expiration du bannissement</li>
-                <li>Données de géolocalisation : AUCUNE conservation (non collectées)</li>
-            </ul>
-        </div>
-
-        <div class="section">
-            <h2>4. Vos droits</h2>
-            <p>Conformément au RGPD, vous disposez des droits suivants :</p>
-            <ul>
-                <li>Droit d'accès à vos données personnelles</li>
-                <li>Droit de rectification</li>
-                <li>Droit à l'effacement (droit à l'oubli)</li>
-                <li>Droit à la limitation du traitement</li>
-                <li>Droit d'opposition</li>
-                <li>Droit à la portabilité des données</li>
-            </ul>
-            <p>Pour exercer ces droits, contactez-nous à l'adresse indiquée à la fin de cette politique.</p>
-        </div>
-
-        <div class="section">
-            <h2>5. Cookies et technologies similaires</h2>
-            <p>Notre site utilise des cookies pour améliorer votre expérience :</p>
-            <ul>
-                <li><strong>Cookies essentiels :</strong> pseudonyme du chat, préférences d'affichage, thème choisi</li>
-                <li><strong>Cookies d'analyse :</strong> statistiques de visite anonymes</li>
-                <li><strong>Cookies publicitaires :</strong> Google AdSense (si activé)</li>
-            </ul>
-            
-            <p style="margin-top: 15px;">Pour en savoir plus sur les cookies utilisés par Google, consultez leur <a href="https://policies.google.com/technologies/ads?hl=fr" target="_blank" rel="noopener">politique de confidentialité</a>.</p>
-            
-            <div class="important-note">
-                💡 <strong>Note :</strong> Aucun cookie n'est utilisé pour stocker ou suivre votre géolocalisation.
+            <div class="section">
+                <h2>
+                    <span class="material-icons">info</span>
+                    1. Collecte d'informations
+                </h2>
+                <p><strong>Service de chat :</strong></p>
+                <ul>
+                    <li>Pseudonymes choisis par les utilisateurs</li>
+                    <li>Adresses IP pour des raisons de sécurité et de modération</li>
+                    <li>Messages publiés sur le chat</li>
+                </ul>
+                
+                <p style="margin-top: 15px;"><strong>Navigation générale :</strong></p>
+                <ul>
+                    <li>Données de navigation anonymes (pages visitées, durée de visite)</li>
+                    <li>Informations techniques (type de navigateur, système d'exploitation)</li>
+                </ul>
             </div>
-        </div>
 
-        <div class="section">
-            <h2>6. Sécurité des données</h2>
-            <p>Nous mettons en œuvre des mesures de sécurité appropriées pour protéger vos informations :</p>
-            <ul>
-                <li>Connexions sécurisées (HTTPS)</li>
-                <li>Accès restreint aux données personnelles</li>
-                <li>Surveillance régulière de nos systèmes</li>
-                <li>Aucune collecte de données sensibles (géolocalisation, données de santé, etc.)</li>
-            </ul>
-        </div>
+            <div class="geolocation-section">
+                <h2>
+                    <span class="material-icons">location_on</span>
+                    Géolocalisation - Service "Autour de moi"
+                </h2>
+                
+                <div class="important-note">
+                    <span class="material-icons">warning</span>
+                    <div>
+                        <strong>Important :</strong> Nous NE collectons PAS et NE stockons PAS vos données de géolocalisation.
+                    </div>
+                </div>
+                
+                <p><strong>Comment fonctionne notre service de géolocalisation :</strong></p>
+                <ul>
+                    <li>La géolocalisation est utilisée UNIQUEMENT sur votre appareil</li>
+                    <li>Vos coordonnées GPS ne sont JAMAIS envoyées à nos serveurs</li>
+                    <li>Aucune donnée de position n'est collectée, stockée ou analysée par Actu & Média</li>
+                    <li>Les recherches "Autour de moi" sont redirigées directement vers Google Maps</li>
+                    <li>Votre position reste privée et n'est jamais partagée avec nous</li>
+                </ul>
+                
+                <p style="margin-top: 15px;"><strong>Votre contrôle total :</strong></p>
+                <ul>
+                    <li>Vous pouvez refuser la géolocalisation à tout moment</li>
+                    <li>Le service fonctionne aussi sans géolocalisation (utilise Montceau-les-Mines par défaut)</li>
+                    <li>Vous pouvez révoquer l'autorisation dans les paramètres de votre navigateur</li>
+                </ul>
+            </div>
 
-        <div class="section">
-            <h2>7. Modifications de cette politique</h2>
-            <p>Nous pouvons mettre à jour cette politique de confidentialité périodiquement. Les modifications seront publiées sur cette page avec une date de mise à jour révisée. Nous vous encourageons à consulter régulièrement cette page.</p>
-        </div>
+            <div class="section">
+                <h2>
+                    <span class="material-icons">analytics</span>
+                    2. Utilisation des informations
+                </h2>
+                <p>Les informations collectées sont utilisées uniquement pour :</p>
+                <ul>
+                    <li>Permettre le fonctionnement du service de chat</li>
+                    <li>Modérer le contenu et assurer la sécurité des utilisateurs</li>
+                    <li>Prévenir les abus et le spam</li>
+                    <li>Bannir les utilisateurs ne respectant pas nos conditions d'utilisation</li>
+                    <li>Améliorer l'expérience utilisateur du site</li>
+                </ul>
+                
+                <p style="margin-top: 15px;"><strong>Nous ne :</strong></p>
+                <ul>
+                    <li>Ne vendons jamais vos données personnelles</li>
+                    <li>Ne partageons pas vos informations avec des tiers (sauf obligation légale)</li>
+                    <li>Ne collectons aucune donnée de géolocalisation</li>
+                </ul>
+            </div>
 
-        <div class="contact">
-            <h2>8. Contact</h2>
-            <p>Pour toute question concernant cette politique de confidentialité ou vos données personnelles, vous pouvez nous contacter à :</p>
-            <p><a href="mailto:contact@actuetmedia.fr" class="email">contact@actuetmedia.fr</a></p>
-        </div>
+            <div class="section">
+                <h2>
+                    <span class="material-icons">schedule</span>
+                    3. Conservation des données
+                </h2>
+                <ul>
+                    <li>Messages du chat : conservés pour une durée indéterminée</li>
+                    <li>Adresses IP : conservées uniquement pendant la durée nécessaire à la modération</li>
+                    <li>Adresses IP des utilisateurs bannis : conservées jusqu'à l'expiration du bannissement</li>
+                    <li>Données de géolocalisation : AUCUNE conservation (non collectées)</li>
+                </ul>
+            </div>
 
-        <div style="text-align: center; margin-top: 30px;">
-            <a href="/" class="back-button">Retour à l'accueil</a>
+            <div class="section">
+                <h2>
+                    <span class="material-icons">verified_user</span>
+                    4. Vos droits
+                </h2>
+                <p>Conformément au RGPD, vous disposez des droits suivants :</p>
+                <ul>
+                    <li>Droit d'accès à vos données personnelles</li>
+                    <li>Droit de rectification</li>
+                    <li>Droit à l'effacement (droit à l'oubli)</li>
+                    <li>Droit à la limitation du traitement</li>
+                    <li>Droit d'opposition</li>
+                    <li>Droit à la portabilité des données</li>
+                </ul>
+                <p>Pour exercer ces droits, contactez-nous à l'adresse indiquée à la fin de cette politique.</p>
+            </div>
+
+            <div class="section">
+                <h2>
+                    <span class="material-icons">cookie</span>
+                    5. Cookies et technologies similaires
+                </h2>
+                <p>Notre site utilise des cookies pour améliorer votre expérience :</p>
+                <ul>
+                    <li><strong>Cookies essentiels :</strong> pseudonyme du chat, préférences d'affichage, thème choisi</li>
+                    <li><strong>Cookies d'analyse :</strong> statistiques de visite anonymes</li>
+                    <li><strong>Cookies publicitaires :</strong> Google AdSense (si activé)</li>
+                </ul>
+                
+                <p style="margin-top: 15px;">Pour en savoir plus sur les cookies utilisés par Google, consultez leur <a href="https://policies.google.com/technologies/ads?hl=fr" target="_blank" rel="noopener">politique de confidentialité</a>.</p>
+                
+                <div class="important-note">
+                    <span class="material-icons">lightbulb</span>
+                    <div>
+                        <strong>Note :</strong> Aucun cookie n'est utilisé pour stocker ou suivre votre géolocalisation.
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>
+                    <span class="material-icons">lock</span>
+                    6. Sécurité des données
+                </h2>
+                <p>Nous mettons en œuvre des mesures de sécurité appropriées pour protéger vos informations :</p>
+                <ul>
+                    <li>Connexions sécurisées (HTTPS)</li>
+                    <li>Accès restreint aux données personnelles</li>
+                    <li>Surveillance régulière de nos systèmes</li>
+                    <li>Aucune collecte de données sensibles (géolocalisation, données de santé, etc.)</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>
+                    <span class="material-icons">update</span>
+                    7. Modifications de cette politique
+                </h2>
+                <p>Nous pouvons mettre à jour cette politique de confidentialité périodiquement. Les modifications seront publiées sur cette page avec une date de mise à jour révisée. Nous vous encourageons à consulter régulièrement cette page.</p>
+            </div>
+
+            <div class="contact-section">
+                <h2>
+                    <span class="material-icons">email</span>
+                    8. Contact
+                </h2>
+                <p>Pour toute question concernant cette politique de confidentialité ou vos données personnelles, vous pouvez nous contacter à :</p>
+                <p style="margin-top: 15px;"><a href="mailto:contact@actuetmedia.fr" style="font-size: 1.2rem;">contact@actuetmedia.fr</a></p>
+            </div>
         </div>
     </div>
 
-    <footer>
-        &copy; 2025 Actu & Média - Tous droits réservés
+    <footer class="footer">
+        <p>&copy; 2025 Actu & Média - Tous droits réservés</p>
     </footer>
+
+    <!-- Sélecteur de thème flottant -->
+    <div class="theme-selector" onclick="toggleTheme()">
+        <span class="material-icons">palette</span>
+    </div>
+
+    <script>
+        // Gestion des thèmes
+        const themes = ['light', 'dark', 'rouge', 'bleuciel'];
+        let currentThemeIndex = 0;
+
+        // Charger le thème sauvegardé
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            currentThemeIndex = themes.indexOf(savedTheme);
+        }
+
+        function toggleTheme() {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            const newTheme = themes[currentThemeIndex];
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+    </script>
 </body>
 </html>
