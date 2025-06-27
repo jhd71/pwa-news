@@ -595,13 +595,16 @@ displayCinema(movies) {
     const countElement = document.getElementById('cinemaWidgetCount');
 
     if (movies && movies.length > 0) {
-        previewContainer.innerHTML = movies.map(movie => {
+        // NOUVEAU : Trier les films par date
+        const sortedMovies = this.sortMoviesByDate(movies);
+        
+        previewContainer.innerHTML = sortedMovies.map(movie => {
             const newBadge = movie.isNew ? '🆕 ' : '';
             const timesText = movie.times.length > 3 
                 ? `${movie.times.slice(0, 3).join(', ')}...` 
                 : movie.times.join(', ');
             
-            // **NOUVEAU** : Afficher les vraies dates
+            // Afficher les vraies dates
             let datesText = '';
             if (movie.realDates && movie.realDates.length > 0) {
                 const displayDates = movie.realDates.slice(0, 2).map(d => d.displayName);
@@ -630,6 +633,21 @@ displayCinema(movies) {
     }
 }
 
+sortMoviesByDate(movies) {
+    return movies.sort((a, b) => {
+        // Si pas de dates, mettre à la fin
+        if (!a.realDates || a.realDates.length === 0) return 1;
+        if (!b.realDates || b.realDates.length === 0) return -1;
+        
+        // Prendre la première date de chaque film
+        const dateA = a.realDates[0].date;
+        const dateB = b.realDates[0].date;
+        
+        // Trier par date croissante (les plus proches en premier)
+        return dateA - dateB;
+    });
+}
+
     // Méthode de rafraîchissement
     async refresh() {
         console.log('🔄 Rechargement du widget CINÉMA...');
@@ -656,107 +674,163 @@ displayCinema(movies) {
 
     // Initialisation du bouton mobile
     initMobileButton() {
-        const mobileBtn = document.getElementById('cinemaMobileBtn');
-        const modal = document.getElementById('cinemaMobileModal');
-        const modalClose = document.getElementById('cinemaModalClose');
-        const modalContent = document.getElementById('cinemaModalContent');
+    const mobileBtn = document.getElementById('cinemaMobileBtn');
+    const modal = document.getElementById('cinemaMobileModal');
 
-        if (mobileBtn && modal) {
-            mobileBtn.addEventListener('click', async () => {
-                modal.classList.add('show');
-                document.body.style.overflow = 'hidden';
-                
-                if (navigator.vibrate) {
-                    navigator.vibrate(50);
-                }
+    if (mobileBtn && modal) {
+        mobileBtn.addEventListener('click', async () => {
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
 
-                if (!this.isLoaded || !this.cinemaData || this.cinemaData.length === 0) {
-                    modalContent.innerHTML = `
-                        <div class="loading-cinema" style="text-align: center; padding: 40px;">
-                            <span class="material-icons spinning" style="font-size: 48px; margin-bottom: 10px;">hourglass_empty</span>
-                            <br>Chargement du programme...
+            // Améliorer la structure de la modal
+            if (!modal.querySelector('.cinema-modal-header')) {
+                modal.innerHTML = `
+                    <div class="cinema-modal-content">
+                        <div class="cinema-modal-header">
+                            <h3>
+                                <span class="material-icons">movie</span>
+                                CINÉMA L'Embarcadère
+                            </h3>
+                            <button class="cinema-modal-close" id="cinemaModalClose">
+                                <span class="material-icons">close</span>
+                            </button>
                         </div>
-                    `;
-                    
-                    try {
-                        await this.loadCinemaData();
-                        this.updateModalContent(modalContent);
-                    } catch (error) {
-                        modalContent.innerHTML = `
-                            <div style="text-align: center; padding: 40px;">
-                                <span class="material-icons" style="font-size: 48px; color: #dc3545;">movie_filter</span>
-                                <div style="margin: 15px 0; font-weight: 500;">Programme temporairement indisponible</div>
-                                <div style="font-size: 14px; color: #666; line-height: 1.4;">
-                                    Consultez directement :<br>
-                                    <a href="https://www.cinemas-panacea.fr/montceau-embarcadere/" target="_blank" style="color: #dc3545; text-decoration: none;">🌐 Site du cinéma</a><br>
-                                    <a href="https://www.facebook.com/CinemaEmbarcadere" target="_blank" style="color: #dc3545; text-decoration: none;">📘 Page Facebook</a>
-                                </div>
-                            </div>
-                        `;
-                    }
-                } else {
+                        <div id="cinemaModalContent"></div>
+                    </div>
+                `;
+                
+                // Réattacher l'événement de fermeture
+                const newModalClose = modal.querySelector('#cinemaModalClose');
+                if (newModalClose) {
+                    newModalClose.addEventListener('click', () => {
+                        modal.classList.remove('show');
+                        document.body.style.overflow = '';
+                    });
+                }
+            }
+
+            // Récupérer la référence du contenu
+            const modalContent = modal.querySelector('#cinemaModalContent');
+
+            if (!this.isLoaded || !this.cinemaData || this.cinemaData.length === 0) {
+                modalContent.innerHTML = `
+                    <div class="loading-cinema" style="text-align: center; padding: 40px;">
+                        <span class="material-icons spinning" style="font-size: 48px; margin-bottom: 1px;">hourglass_empty</span>
+                        <br>Chargement du programme...
+                    </div>
+                `;
+                
+                try {
+                    await this.loadCinemaData();
+                    this.updateModalContent(modalContent);
+                } catch (error) {
                     this.updateModalContent(modalContent);
                 }
-            });
+            } else {
+                this.updateModalContent(modalContent);
+            }
+        });
 
-            const closeModal = () => {
+        // Fermeture en cliquant en dehors
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
                 modal.classList.remove('show');
                 document.body.style.overflow = '';
-            };
-
-            modalClose.addEventListener('click', closeModal);
-            
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    closeModal();
-                }
-            });
-        }
+            }
+        });
     }
+}
 
     // Mise à jour du contenu modal avec vraies dates (MOBILE)
 updateModalContent(modalContent) {
     if (this.cinemaData && this.cinemaData.length > 0) {
-        modalContent.innerHTML = this.cinemaData.map(movie => {
-            const newBadge = movie.isNew ? '🆕 ' : '';
-            const timesText = movie.times.length > 3 
-                ? `${movie.times.slice(0, 3).join(', ')}...` 
-                : movie.times.join(', ');
+        // NOUVEAU : Trier les films par date
+        const sortedMovies = this.sortMoviesByDate(this.cinemaData);
+        
+        // Contenu des films
+        let htmlContent = sortedMovies.map(movie => {
+            const newBadge = movie.isNew ? '<span style="background: #4caf50; color: white; padding: 2px 6px; border-radius: 4px; font-size: 11px; margin-left: 8px;">NOUVEAU</span>' : '';
             
-            // **NOUVEAU** : Utiliser les vraies dates au lieu des données simulées
-            let datesText = 'Dates à confirmer';
+            // Formatage des dates
+            let datesHTML = '';
             if (movie.realDates && movie.realDates.length > 0) {
-                const displayDates = movie.realDates.slice(0, 3).map(d => d.displayName);
-                datesText = displayDates.join(', ');
+                const datesList = movie.realDates.map(d => {
+                    const isToday = d.isToday;
+                    const className = isToday ? 'today' : '';
+                    return `<span class="cinema-date-badge ${className}">${d.displayName}</span>`;
+                }).join('');
                 
-                // Si plus de 3 dates, ajouter "..."
-                if (movie.realDates.length > 3) {
-                    datesText += '...';
-                }
+                datesHTML = `
+                    <div class="cinema-film-dates">
+                        <div class="cinema-dates-title">📅 Séances</div>
+                        <div>${datesList}</div>
+                    </div>
+                `;
             }
             
-            const clickAction = movie.url ? 
-                `onclick="event.stopPropagation(); window.open('${movie.url}', '_blank')"` : 
-                '';
+            // Formatage des horaires
+            const timesHTML = movie.times.map(time => 
+                `<div class="cinema-time-slot">${time}</div>`
+            ).join('');
             
             return `
-                <div class="cinema-preview-item" data-movie-id="${movie.id}" ${clickAction} style="cursor: pointer; background: rgba(220, 53, 69, 0.1); border-left: 3px solid #dc3545; padding: 8px 12px; margin: 6px 0; border-radius: 0 8px 8px 0; font-size: 13px; transition: all 0.2s ease;">
-                    <strong style="color: #dc3545;">${newBadge}${movie.title}</strong> <em>(${movie.duration})</em><br>
-                    <div style="font-size: 11px; color: #888; font-style: italic; margin-top: 2px;">${movie.genre}</div>
-                    <div style="font-size: 11px; color: #666; margin-top: 2px;">📅 ${datesText}</div>
-                    <div class="movie-times" style="font-size: 12px; color: #666; margin-top: 4px;">🕐 ${timesText}</div>
+                <div class="cinema-film-card" ${movie.url ? `onclick="window.open('${movie.url}', '_blank')"` : ''}>
+                    <div class="cinema-film-title">
+                        ${movie.title}${newBadge}
+                    </div>
+                    
+                    <div class="cinema-film-info">
+                        <div class="cinema-film-info-item">
+                            <span class="material-icons">category</span>
+                            <span>${movie.genre}</span>
+                        </div>
+                        <div class="cinema-film-info-item">
+                            <span class="material-icons">schedule</span>
+                            <span>${movie.duration}</span>
+                        </div>
+                    </div>
+                    
+                    ${datesHTML}
+                    
+                    <div class="cinema-film-times">
+                        ${timesHTML}
+                    </div>
                 </div>
             `;
         }).join('');
+        
+        // Ajouter le bouton directement après les films
+        htmlContent += `
+            <div class="cinema-footer-button">
+                <a href="https://www.cinemas-panacea.fr/montceau-embarcadere/" target="_blank" class="cinema-link-button">
+                    <span class="material-icons">launch</span>
+                    Programme complet & réservations
+                </a>
+            </div>
+        `;
+        
+        modalContent.innerHTML = htmlContent;
+        
     } else {
+        // État vide amélioré
         modalContent.innerHTML = `
-            <div style="text-align: center; padding: 40px;">
-                <span class="material-icons" style="font-size: 48px; color: #dc3545;">movie_filter</span>
-                <div style="margin: 15px 0; font-weight: 500;">Programme temporairement indisponible</div>
-                <div style="font-size: 14px; color: #666; line-height: 1.4;">
-                    Consultez directement :<br>
-                    <a href="https://www.cinemas-panacea.fr/montceau-embarcadere/" target="_blank" style="color: #dc3545; text-decoration: none;">🌐 Site du cinéma</a><br>
-                    <a href="https://www.facebook.com/CinemaEmbarcadere" target="_blank" style="color: #dc3545; text-decoration: none;">📘 Page Facebook</a>
+            <div class="cinema-empty-state">
+                <span class="material-icons">movie_filter</span>
+                <h4>Programme temporairement indisponible</h4>
+                <p>Les horaires du cinéma ne sont pas accessibles pour le moment.</p>
+                <div class="cinema-links">
+                    <a href="https://www.cinemas-panacea.fr/montceau-embarcadere/" target="_blank" class="cinema-link-button">
+                        <span class="material-icons">language</span>
+                        Site officiel
+                    </a>
+                    <a href="https://www.facebook.com/CinemaEmbarcadere" target="_blank" class="cinema-link-button secondary">
+                        <span class="material-icons">facebook</span>
+                        Page Facebook
+                    </a>
                 </div>
             </div>
         `;
