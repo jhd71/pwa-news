@@ -261,60 +261,77 @@
             <span class="material-icons">close</span>
         </button>
     </div>
+    
+    <!-- 1. Fond d'écran -->
+    <div class="menu-item">
+        <a href="#" id="bgSelectorBtn" class="menu-link">
+            <span class="material-icons">wallpaper</span>
+            <span>Fond d'écran</span>
+        </a>
+    </div>
+    
+    <!-- 2. Contact -->
+    <div class="menu-item">
+        <a href="/contact.html">
+            <span class="material-icons">email</span>
+            Contact
+        </a>
+    </div>
+    
+    <!-- 3. Swiss_Transfer -->
     <div class="menu-item">
         <a href="https://www.swisstransfer.com/fr-ch" target="_blank">
             <span class="material-icons">upload</span>
             Swiss_Transfer
         </a>
     </div>
-    <div class="menu-item">
-        <a href="/contact.html">
-    <span class="material-icons">email</span>
-    Contact
-	</a>
-    </div>
-	<div class="menu-item">
-    <a href="/mentions-legales">
-        <span class="material-icons">gavel</span>
-        Mentions légales
-    </a>
-    </div>
-
+    
+    <!-- 4. Confidentialité -->
     <div class="menu-item">
         <a href="/politique-confidentialite">
             <span class="material-icons">security</span>
             Confidentialité
         </a>
     </div>
+    
+    <!-- 5. Conditions d'utilisation -->
     <div class="menu-item">
         <a href="/conditions-utilisation">
-            <span class="material-icons">gavel</span>
+            <span class="material-icons">description</span>
             Conditions d'utilisation
         </a>
     </div>
+    
+    <!-- 6. Mentions légales -->
+    <div class="menu-item">
+        <a href="/mentions-legales">
+            <span class="material-icons">gavel</span>
+            Mentions légales
+        </a>
+    </div>
+    
+    <!-- 7. Installer l'application -->
     <div class="menu-item">
         <button id="menuInstall" class="menu-link">
             <span class="material-icons">download</span>
             <span>Installer l'application</span>
         </button>
     </div>
-	<a href="#" id="bgSelectorBtn" class="menu-link" style="display: flex; align-items: center; text-decoration: none; color: white; padding: 12px 30px;">
-    <span class="material-icons" style="margin-right: 1px; width: 24px; text-align: center; display: inline-flex; justify-content: center;">
-        wallpaper
-    </span>
-    <span>Fond d'écran</span>
-</a>
+    
+    <!-- QR Code -->
     <div class="menu-item qr-code-container">
         <h4>Scannez notre QR code</h4>
         <img src="images/qrcode.png" alt="QR Code" class="sidebar-qr-code">
     </div>
+    
+    <!-- Copyright -->
     <div class="menu-item">
         <div class="copyright-text">
             <span class="material-icons">copyright</span>
             <span><span id="currentYear"></span>
-<script>
-document.getElementById('currentYear').textContent = new Date().getFullYear();
-</script> Actu & Média</span>
+            <script>
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            </script> Actu & Média</span>
         </div>
     </div>
 </aside>
