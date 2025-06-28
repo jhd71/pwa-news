@@ -265,11 +265,11 @@
 }
 
 [data-theme="dark"] .movie-genre {
-    color: #b0b0b0 !important; /* ✅ GENRE LISIBLE */
+    color: #b0b0b0; /* ✅ GENRE LISIBLE */
 }
 
 [data-theme="dark"] .movie-dates {
-    color: #b0b0b0 !important; /* ✅ DATES LISIBLES */
+    color: #aaa; /* ✅ DATES LISIBLES */
 }
 
 [data-theme="dark"] .movie-times {
