@@ -707,7 +707,15 @@
 }
 
 [data-theme="dark"] .cinema-film-info {
-    color: #b0b0b0;
+    color: #e0e0e0; /* Texte blanc pour la lisibilité */
+}
+
+[data-theme="dark"] .cinema-film-info-item {
+    color: #e0e0e0; /* Texte blanc */
+}
+
+[data-theme="dark"] .cinema-film-info-item span {
+    color: #e0e0e0; /* Genre et durée en blanc */
 }
 
 [data-theme="dark"] .cinema-film-info-item .material-icons {
@@ -723,20 +731,21 @@
 }
 
 [data-theme="dark"] .cinema-date-badge {
-    background: #2a2a2a;
-    color: #e0e0e0;
-    border-color: #404040;
+    background: #3a3a3a;
+    color: #ffffff; /* Dates en blanc */
+    border-color: #505050;
 }
 
 [data-theme="dark"] .cinema-date-badge.today {
     background: #5c6bc0;
     border-color: #5c6bc0;
+    color: #ffffff;
 }
 
 [data-theme="dark"] .cinema-time-slot {
-    background: #2a2a2a;
+    background: #3a3a3a;
     border-color: #5c6bc0;
-    color: #7986cb;
+    color: #ffffff; /* Horaires en blanc */
 }
 
 [data-theme="dark"] .cinema-time-slot:active {
