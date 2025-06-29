@@ -83,7 +83,7 @@
     
     /* Ajuster l'espacement pour le premier séparateur */
     .separator:first-of-type {
-        margin-top: 70px !important;
+        margin-top: -30px !important;
     }
     
     /* Style du bouton sur mobile */
@@ -261,7 +261,7 @@
     padding: 12px !important;
     background: #5cb85c !important;
     border-top: 1px solid rgba(255, 255, 255, 0.2);
-    color: white !important;
+    color: #000000 !important;
     font-weight: bold;
     display: flex;
     align-items: center;
@@ -1022,11 +1022,11 @@
 
 /* Bouton d'actualisation en thème rouge */
 [data-theme="rouge"] .refresh-button {
-    background: #388e3c !important;
+    background: #f6d34f !important;
 }
 
 [data-theme="rouge"] .refresh-button:hover {
-    background: #2e7d32 !important;
+    background: #edc427 !important;
 }
 
 /* Modal de partage en thème rouge */

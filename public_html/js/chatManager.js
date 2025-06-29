@@ -3984,25 +3984,54 @@ showAdminPanel() {
     
     <!-- Liste des dernières actualités -->
     <h5 style="margin: 20px 0 10px 0;">Dernières actualités</h5>
-    <div class="recent-news-list" style="${isMobile ? 'max-height: 200px; overflow-y: auto;' : ''}">
+    <div class="recent-news-list" style="${isMobile ? 'max-height: 650px; overflow-y: auto;' : ''}">
         <div class="loading-news">Chargement des actualités...</div>
     </div>
 </div>
 
-<!-- 🆕 SECTION VISITEURS SÉPARÉE -->
+<!-- 🔧 SECTION VISITEURS CORRIGÉE POUR MOBILE -->
 <div class="tab-section" id="visitor-stats-section">
-    <h4>📊 Statistiques visiteurs</h4>
-    <p style="margin-bottom: 20px; color: rgba(255,255,255,0.8);">Accédez aux statistiques détaillées via le compteur de visiteurs.</p>
-    <div style="text-align: center; margin: 20px 0;">
-        <button onclick="document.querySelector('#visitorsCounter').click()" style="background: #4CAF50; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;">
-            📊 Voir les statistiques détaillées
-        </button>
-    </div>
-    <div style="font-size: 12px; color: rgba(255,255,255,0.6); text-align: center; margin-top: 15px;">
-        💡 Seuls les administrateurs peuvent voir les graphiques détaillés
+    <h4 style="color: #ffffff; font-weight: bold; margin-bottom: 15px;">📊 Statistiques visiteurs</h4>
+    
+    <!-- Container avec fond plus visible sur mobile -->
+    <div style="background: rgba(255,255,255,0.15); padding: 20px; border-radius: 12px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.2);">
+        <p style="margin-bottom: 20px; color: #ffffff; font-weight: 500; text-align: center;">
+            Accédez aux statistiques détaillées via le compteur de visiteurs.
+        </p>
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <button onclick="document.querySelector('#visitorsCounter').click()" style="
+                background: linear-gradient(135deg, #4CAF50, #45a049); 
+                color: white; 
+                border: none; 
+                padding: 15px 25px; 
+                border-radius: 10px; 
+                cursor: pointer; 
+                font-weight: bold;
+                font-size: 16px;
+                box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+                border: 2px solid rgba(255,255,255,0.2);
+                width: 100%;
+                max-width: 280px;
+            ">
+                📊 Voir les statistiques détaillées
+            </button>
+        </div>
+        
+        <div style="
+            font-size: 13px; 
+            color: #ffffff; 
+            text-align: center; 
+            margin-top: 15px;
+            background: rgba(255,193,7,0.2);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border-left: 3px solid #FFC107;
+        ">
+            💡 Seuls les administrateurs peuvent voir les graphiques détaillés
+        </div>
     </div>
 </div>
-    </div>
 `;
 
 	
