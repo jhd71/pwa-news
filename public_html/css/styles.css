@@ -3195,9 +3195,9 @@ a:active {
     }
     
     .chat-notification-badge {
-        top: -3px;
-        right: -3px;
-        font-size: 10px;
+        top: 15px;
+        right: 1px;
+        font-size: 13px !important;
         min-width: 16px;
         height: 16px;
     }
