@@ -1384,11 +1384,15 @@ async setupAuthListeners() {
         }
 
                 // Vérifier si l'utilisateur existe déjà
-                const { data: existingUser, error: queryError } = await this.supabase
-                    .from('users')
-                    .select('*')
-                    .eq('pseudo', pseudo)
-                    .single();
+const { data: existingUser, error: queryError } = await this.supabase
+    .from('users')
+    .select('*', {
+        headers: {
+            'Prefer': 'return=representation'
+        }
+    })
+    .eq('pseudo', pseudo)
+    .maybeSingle(); // Changé de .single() à .maybeSingle()
                 
                 console.log('Résultat recherche utilisateur:', existingUser, queryError);
                 
