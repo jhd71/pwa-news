@@ -169,6 +169,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         visitorsElement.style.cursor = 'pointer'; // S'assurer que le curseur montre que c'est cliquable
         
         visitorsElement.addEventListener('click', async function (event) {
+    // ✅ VÉRIFICATION ADMIN
+    const isAdmin = localStorage.getItem('isAdmin') === 'true';
+    const chatPseudo = localStorage.getItem('chatPseudo');
+    
+    if (!isAdmin || chatPseudo !== 'Admin_ActuMedia') {
+        console.log('👥 Statistiques détaillées réservées aux administrateurs');
+        return; // Bloquer l'accès si pas admin
+    }
             event.preventDefault();
             event.stopPropagation();
             event.stopImmediatePropagation(); // Arrêt complet de la propagation

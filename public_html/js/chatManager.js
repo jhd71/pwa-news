@@ -3842,6 +3842,7 @@ showAdminPanel() {
         <button class="tab-btn" data-tab="gallery" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Photos</button>
 		<button class="tab-btn" data-tab="comments" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Commentaires</button>
 		<button class="tab-btn" data-tab="news-admin" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">NEWS Admin</button>
+		<button class="tab-btn" data-tab="visitor-stats" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">📊 Visiteurs</button>
     </div>
     <div class="panel-content" style="${isMobile ? 'padding: 15px; height: calc(100% - 130px); overflow-y: auto; -webkit-overflow-scrolling: touch;' : ''}">
         <!-- Onglet Mots bannis -->
@@ -3987,6 +3988,20 @@ showAdminPanel() {
         <div class="loading-news">Chargement des actualités...</div>
     </div>
 </div>
+
+<!-- 🆕 SECTION VISITEURS SÉPARÉE -->
+<div class="tab-section" id="visitor-stats-section">
+    <h4>📊 Statistiques visiteurs</h4>
+    <p style="margin-bottom: 20px; color: rgba(255,255,255,0.8);">Accédez aux statistiques détaillées via le compteur de visiteurs.</p>
+    <div style="text-align: center; margin: 20px 0;">
+        <button onclick="document.querySelector('#visitorsCounter').click()" style="background: #4CAF50; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;">
+            📊 Voir les statistiques détaillées
+        </button>
+    </div>
+    <div style="font-size: 12px; color: rgba(255,255,255,0.6); text-align: center; margin-top: 15px;">
+        💡 Seuls les administrateurs peuvent voir les graphiques détaillés
+    </div>
+</div>
     </div>
 `;
 
@@ -4062,10 +4077,15 @@ tabBtns.forEach(btn => {
     }
 	
 	 // Charger les actualités si l'onglet NEWS Admin est sélectionné
-	if (btn.dataset.tab === 'news-admin') {
+if (btn.dataset.tab === 'news-admin') {
     this.loadNewsStats();
     this.loadRecentNews();
-	}
+}
+
+// Gestion de l'onglet visiteurs (pas de chargement spécial nécessaire)
+if (btn.dataset.tab === 'visitor-stats') {
+    console.log('Onglet visiteurs sélectionné');
+}
     
 	});
 	});
