@@ -2178,7 +2178,6 @@ body.long-press-active .message-options {
   .admin-panel input,
   .admin-panel textarea,
   .admin-panel select {
-    width: 100% !important;
     padding: 12px !important;
     margin-bottom: 10px !important;
     background: rgba(255,255,255,0.1) !important;
