@@ -1024,9 +1024,32 @@
 [data-theme="rouge"] .refresh-button {
     background: #f6d34f !important;
 }
-
 [data-theme="rouge"] .refresh-button:hover {
     background: #edc427 !important;
+}
+
+/* Bouton d'actualisation en thème dark/sombre */
+[data-theme="dark"] .refresh-button {
+    background: #4CAF50 !important;
+}
+[data-theme="dark"] .refresh-button:hover {
+    background: #45a049 !important;
+}
+
+/* Bouton d'actualisation en thème bleu ciel */
+[data-theme="bleuciel"] .refresh-button {
+    background: #FF9800 !important;
+}
+[data-theme="bleuciel"] .refresh-button:hover {
+    background: #F57C00 !important;
+}
+
+/* Bouton d'actualisation en thème light/violet */
+[data-theme="light"] .refresh-button {
+    background: #2196F3 !important;
+}
+[data-theme="light"] .refresh-button:hover {
+    background: #1976D2 !important;
 }
 
 /* Modal de partage en thème rouge */
