@@ -227,7 +227,7 @@
 [data-theme="dark"] .feature-item {
     background: rgba(26, 35, 126, 0.2);
     border-left-color: #5c6bc0;
-    color: #e0e0e0; /* ✅ TEXTE ITEMS CLAIR */
+    color: #ffffff; /* ✅ TEXTE ITEMS CLAIR */
 }
 
 [data-theme="dark"] .feature-icon {

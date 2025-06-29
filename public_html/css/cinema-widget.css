@@ -248,7 +248,7 @@
 [data-theme="dark"] .cinema-preview-item {
     background: rgba(26, 35, 126, 0.2);
     border-left-color: #5c6bc0;
-    color: #e0e0e0; /* ✅ TEXTE ITEMS CLAIR */
+    color: #e0e0e0 !important; /* ✅ TEXTE ITEMS CLAIR */
 }
 
 [data-theme="dark"] .cinema-preview-item strong {
@@ -261,19 +261,19 @@
 }
 
 [data-theme="dark"] .cinema-widget-tap {
-    color: #ffffff;
+    color: #ffffff !important;
 }
 
 [data-theme="dark"] .movie-genre {
-    color: #b0b0b0; /* ✅ GENRE LISIBLE */
+    color: #ffffff !important; /* ✅ GENRE LISIBLE */
 }
 
 [data-theme="dark"] .movie-dates {
-    color: #aaa; /* ✅ DATES LISIBLES */
+    color: #ffffff !important; /* ✅ DATES LISIBLES */
 }
 
 [data-theme="dark"] .movie-times {
-    color: #ffffff !important /* ✅ HORAIRES LISIBLES */
+    color: #ffffff !important; /* ✅ HORAIRES LISIBLES */
 }
 
 /* Thème Rouge */
