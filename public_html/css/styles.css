@@ -1,6 +1,10 @@
-/* ===== PARTIE 1 : VARIABLES ET RÈGLES DE BASE ===== */
+/* ==========================================================================
+   STYLES.CSS - VERSION NETTOYÉE ET OPTIMISÉE
+   ========================================================================== */
 
-/* VARIABLES PRINCIPALES */
+/* ==========================================================================
+   1. VARIABLES CSS ET CONFIGURATION
+   ========================================================================== */
 :root {
     /* Couleurs principales - thème clair */
     --primary-color: #7E57C2;
@@ -36,7 +40,9 @@
     --safe-area-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* RÈGLES DE BASE */
+/* ==========================================================================
+   2. RESET ET STYLES GLOBAUX
+   ========================================================================== */
 * {
     margin: 0;
     padding: 0;
@@ -60,7 +66,9 @@ body {
     font-size: 24px;
 }
 
-/* TAILLES DE POLICE */
+/* ==========================================================================
+   3. TAILLES DE POLICE DYNAMIQUES
+   ========================================================================== */
 [data-font-size="small"] {
     --tile-title-size: 14px;
     --menu-text-size: 13px;
@@ -85,7 +93,9 @@ body {
     --header-text-size: 24px;
 }
 
-/* ===== PARTIE 2 : THÈMES ===== */
+/* ==========================================================================
+   4. DÉFINITION DES THÈMES
+   ========================================================================== */
 
 /* THÈME SOMBRE (BLEU NUIT) */
 [data-theme="dark"] {
@@ -154,16 +164,18 @@ body {
     background: #65a1d0;
 }
 
-/* TEXTE EN MODE CLAIR */
+/* ==========================================================================
+   5. STYLES COMMUNS AUX THÈMES
+   ========================================================================== */
+
+/* Texte en mode clair */
 [data-theme="light"] .sidebar,
 [data-theme="light"] .settings-menu,
 [data-theme="light"] .modal-content {
     color: white;
 }
 
-/* STYLES COMMUNS POUR TOUS LES THÈMES */
-
-/* Navigation du bas */
+/* Navigation du bas par thème */
 [data-theme="light"] .bottom-nav {
     background: linear-gradient(to bottom, rgba(126, 87, 194, 0.95), rgba(126, 87, 194, 0.98));
     border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -183,12 +195,12 @@ body {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* En-têtes */
+/* En-têtes par thème */
 [data-theme="rouge"] .app-header {
     background: rgb(148, 0, 0);
 }
 
-/* Séparateurs */
+/* Séparateurs par thème */
 [data-theme="light"] .separator {
     background: linear-gradient(90deg, 
         rgba(126, 87, 194, 0.5) 0%, 
@@ -218,7 +230,7 @@ body {
         rgba(14, 165, 233, 0.3) 100%);
 }
 
-/* Boutons flottants */
+/* Boutons flottants par thème */
 [data-theme="light"] .weather-show-btn,
 [data-theme="light"] .quick-links-show-btn,
 [data-theme="light"] .news-button {
@@ -243,7 +255,7 @@ body {
     background: linear-gradient(145deg, #0ea5e9, #38bdf8);
 }
 
-/* Sidebars et menus */
+/* Sidebars et menus par thème */
 [data-theme="light"] .weather-sidebar,
 [data-theme="light"] .quick-links-sidebar,
 [data-theme="light"] .sidebar,
@@ -272,9 +284,11 @@ body {
     background: linear-gradient(145deg, #0ea5e9, #38bdf8);
 }
 
-/* ===== PARTIE 3 : LAYOUT PRINCIPAL ===== */
+/* ==========================================================================
+   6. HEADER ET NAVIGATION
+   ========================================================================== */
 
-/* HEADER */
+/* Header principal */
 .app-header {
     position: fixed;
     top: 0;
@@ -339,7 +353,7 @@ body {
     padding: 8px 15px;
 }
 
-/* BOUTONS DU HEADER */
+/* Boutons du header */
 .menu-button, 
 .settings-button {
     background: none;
@@ -387,7 +401,7 @@ body {
     transform: rotate(15deg) scale(1.1);
 }
 
-/* BOUTONS DE FERMETURE */
+/* Boutons de fermeture */
 .close-btn {
     background: none;
     border: none;
@@ -407,7 +421,9 @@ body {
     margin: -8px;
 }
 
-/* NAVIGATION DU BAS */
+/* ==========================================================================
+   7. NAVIGATION DU BAS
+   ========================================================================== */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -515,7 +531,9 @@ body {
     border-radius: 2px;
 }
 
-/* CONTENU PRINCIPAL */
+/* ==========================================================================
+   8. CONTENU PRINCIPAL ET OVERLAY
+   ========================================================================== */
 main {
     margin-top: calc(var(--header-height) + 10px);
     margin-bottom: calc(var(--bottom-nav-height) + 10px);
@@ -523,7 +541,6 @@ main {
     min-height: calc(100dvh - var(--header-height) - var(--bottom-nav-height));
 }
 
-/* OVERLAY */
 .overlay {
     position: fixed;
     top: 0;
@@ -539,9 +556,9 @@ main {
     display: block;
 }
 
-/* ===== PARTIE 4 : COMPOSANTS ===== */
-
-/* MENU LATÉRAL (SIDEBAR) */
+/* ==========================================================================
+   9. MENU LATÉRAL (SIDEBAR)
+   ========================================================================== */
 .sidebar {
     position: fixed;
     top: var(--header-height);
@@ -698,7 +715,9 @@ main {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* MENU PARAMÈTRES */
+/* ==========================================================================
+   10. MENU PARAMÈTRES
+   ========================================================================== */
 .settings-menu {
     position: fixed;
     top: var(--header-height);
@@ -789,7 +808,9 @@ main {
     margin: 10px 0;
 }
 
-/* TUILES */
+/* ==========================================================================
+   11. TUILES
+   ========================================================================== */
 .tile-container {
     display: grid;
     gap: 8px;
@@ -922,24 +943,15 @@ main {
 }
 
 /* Styles de taille pour les tuiles */
-[data-font-size="small"] .tile .tile-title,
-[data-font-size="small"] .tile .tile-content .tile-title,
-[data-font-size="small"] #tileContainer.list .tile .tile-title,
-[data-font-size="small"] #tileContainer.list .tile .tile-content .tile-title {
+[data-font-size="small"] .tile .tile-title {
     font-size: 0.85rem;
 }
 
-[data-font-size="normal"] .tile .tile-title,
-[data-font-size="normal"] .tile .tile-content .tile-title,
-[data-font-size="normal"] #tileContainer.list .tile .tile-title,
-[data-font-size="normal"] #tileContainer.list .tile .tile-content .tile-title {
+[data-font-size="normal"] .tile .tile-title {
     font-size: 1rem;
 }
 
-[data-font-size="large"] .tile .tile-title,
-[data-font-size="large"] .tile .tile-content .tile-title,
-[data-font-size="large"] #tileContainer.list .tile .tile-title,
-[data-font-size="large"] #tileContainer.list .tile .tile-content .tile-title {
+[data-font-size="large"] .tile .tile-title {
     font-size: 1.2rem;
 }
 
@@ -955,7 +967,9 @@ main {
     min-height: 60px;
 }
 
-/* COULEURS DES TUILES */
+/* ==========================================================================
+   12. COULEURS DES TUILES
+   ========================================================================== */
 .tile:nth-child(30n + 1) { background: linear-gradient(135deg, #667eea, #764ba2); }
 .tile:nth-child(30n + 2) { background: linear-gradient(135deg, #f093fb, #f5576c); }
 .tile:nth-child(30n + 3) { background: linear-gradient(135deg, #4facfe, #00f2fe); }
@@ -1023,7 +1037,9 @@ main {
     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
-/* SÉPARATEURS */
+/* ==========================================================================
+   13. SÉPARATEURS
+   ========================================================================== */
 .separator {
     grid-column: 1 / -1;
     display: flex;
@@ -1039,7 +1055,6 @@ main {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     padding: 10px;
-    margin: 10px 0;
     background-color: #1a237e;
     opacity: var(--tile-opacity, 1);
     transition: opacity 0.3s ease;
@@ -1055,9 +1070,8 @@ main {
     position: relative;
     z-index: 2;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, opacity 0.3s ease;
     opacity: inherit;
-    transition: opacity 0.3s ease;
 }
 
 .separator:hover img {
@@ -1096,7 +1110,9 @@ main {
     opacity: inherit;
 }
 
-/* SWIPER */
+/* ==========================================================================
+   14. SWIPER
+   ========================================================================== */
 .swiper-container {
     width: 100%;
     max-width: 800px;
@@ -1263,7 +1279,9 @@ main {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-/* MENU CONTEXTUEL */
+/* ==========================================================================
+   15. MENU CONTEXTUEL
+   ========================================================================== */
 .tile-menu {
     position: fixed;
     background-color: var(--primary-color);
@@ -1307,7 +1325,9 @@ main {
     color: white;
 }
 
-/* MODAL */
+/* ==========================================================================
+   16. MODAL
+   ========================================================================== */
 .modal {
     position: fixed;
     top: 0;
@@ -1367,27 +1387,13 @@ main {
     font-size: var(--modal-text-size);
 }
 
-/* Corrections pour les modals en thème rouge et sombre */
-[data-theme="dark"] .modal-content .upload-btn span,
-[data-theme="dark"] .modal-content .upload-btn,
-[data-theme="dark"] .modal-content button span,
-[data-theme="dark"] .modal-content .file-btn span,
-[data-theme="dark"] .modal-content .camera-btn span {
-    color: white;
-}
-
-[data-theme="dark"] .custom-backgrounds-section h3 {
-    color: white;
-}
-
+/* Corrections pour les modals */
 [data-theme="dark"] .modal-content,
 [data-theme="dark"] .modal-content p,
 [data-theme="dark"] .modal-content span,
 [data-theme="dark"] .modal-content div,
-[data-theme="dark"] .modal-content label {
-    color: white;
-}
-
+[data-theme="dark"] .modal-content label,
+[data-theme="dark"] .custom-backgrounds-section h3,
 [data-theme="dark"] .upload-section p,
 [data-theme="dark"] .upload-section span,
 [data-theme="dark"] .file-requirements,
@@ -1448,7 +1454,9 @@ main {
     color: white;
 }
 
-/* NOTIFICATIONS CHAT */
+/* ==========================================================================
+   17. NOTIFICATIONS CHAT
+   ========================================================================== */
 .chat-toggle-btn {
     position: relative;
 }
@@ -1545,7 +1553,9 @@ main {
     -webkit-overflow-scrolling: touch;
 }
 
-/* IOS PROMPT */
+/* ==========================================================================
+   18. IOS PROMPT ET INSTALLATION
+   ========================================================================== */
 .ios-prompt {
     position: fixed;
     bottom: calc(20px + var(--safe-area-bottom));
@@ -1580,7 +1590,7 @@ main {
     cursor: pointer;
 }
 
-/* INSTALL APP */
+/* Install App */
 .install-app, 
 #menuInstall {
     display: flex;
@@ -1611,7 +1621,9 @@ main {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* TOAST */
+/* ==========================================================================
+   19. TOAST
+   ========================================================================== */
 .toast {
     position: fixed;
     bottom: 90px;
@@ -1668,7 +1680,9 @@ main {
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
-/* BLOC DE BIENVENUE */
+/* ==========================================================================
+   20. BLOC DE BIENVENUE
+   ========================================================================== */
 .welcome-message {
     margin: 30px auto;
     padding: 20px 24px;
@@ -1790,7 +1804,9 @@ main {
     font-weight: bold;
 }
 
-/* BANNIÈRE DE BIENVENUE DESKTOP */
+/* ==========================================================================
+   21. BANNIÈRE DE BIENVENUE DESKTOP
+   ========================================================================== */
 .welcome-banner {
     background: var(--background-color);
     color: var(--text-color);
@@ -1940,7 +1956,11 @@ main {
     color: var(--rouge-fonce);
 }
 
-/* CORRECTIONS POUR LE THÈME ROUGE - ÉLÉMENTS CHAT */
+/* ==========================================================================
+   22. CORRECTIONS SPÉCIFIQUES THÈME ROUGE
+   ========================================================================== */
+
+/* Éléments chat */
 [data-theme="rouge"] .chat-container,
 [data-theme="rouge"] .chat-widget,
 [data-theme="rouge"] .chat-interface,
@@ -1966,6 +1986,7 @@ main {
     background-color: #d32f2f;
 }
 
+/* Menus et options */
 [data-theme="rouge"] .message-options,
 [data-theme="rouge"] .tile-menu,
 [data-theme="rouge"] .context-menu,
@@ -2005,7 +2026,7 @@ main {
     color: white;
 }
 
-/* CORRECTIONS PANEL ÉMOJIS ET POPOVER */
+/* Panel émojis et popover */
 [data-theme="rouge"] .emoji-panel,
 [data-theme="rouge"] .emoji-container,
 [data-theme="rouge"] .emoji-picker,
@@ -2047,9 +2068,9 @@ main {
     background: rgba(255, 255, 255, 0.1);
 }
 
-/* ===== PARTIE 5 : ANIMATIONS ET TRANSPARENCE ===== */
-
-/* ANIMATIONS */
+/* ==========================================================================
+   23. ANIMATIONS
+   ========================================================================== */
 @keyframes fadeInScale {
     from {
         opacity: 0;
@@ -2166,7 +2187,9 @@ main {
     position: relative;
 }
 
-/* WIDGET DE TRANSPARENCE */
+/* ==========================================================================
+   24. WIDGET DE TRANSPARENCE
+   ========================================================================== */
 .transparency-widget {
     position: relative;
     transition: all 0.3s ease;
@@ -2536,7 +2559,9 @@ main {
     opacity: 1;
 }
 
-/* MODAL DE SOUMISSION D'ACTUALITÉ */
+/* ==========================================================================
+   25. MODAL DE SOUMISSION D'ACTUALITÉ
+   ========================================================================== */
 .submit-news-btn {
     background: linear-gradient(145deg, #28a745, #20c997);
     color: white;
@@ -2882,7 +2907,9 @@ main {
     background: #f8fff9;
 }
 
-/* EFFETS DE SURVOL POUR BOUTONS FLOTTANTS */
+/* ==========================================================================
+   26. EFFETS DE SURVOL POUR BOUTONS FLOTTANTS
+   ========================================================================== */
 
 /* THÈME VIOLET (light) */
 [data-theme="light"] .fuel-button:hover,
@@ -2959,6 +2986,15 @@ a:active {
     transform: scale(0.97);
 }
 
+/* ==========================================================================
+   27. MEDIA QUERIES ET RESPONSIVE
+   ========================================================================== */
+
+/* AFFICHAGE DESKTOP UNIQUEMENT */
+.only-desktop {
+    display: block;
+}
+
 /* DUAL INTELLIGENT - VISIBILITÉ PHOTOS */
 @media (max-width: 767px) {
     .tile[data-category="photos"] {
@@ -2977,43 +3013,6 @@ a:active {
     
     .photos-mobile-btn {
         display: none;
-    }
-}
-
-/* ===== PARTIE 6 : MEDIA QUERIES ET RESPONSIVE ===== */
-
-/* AFFICHAGE DESKTOP UNIQUEMENT */
-.only-desktop {
-    display: block;
-}
-
-@media (max-width: 768px) {
-    .only-desktop {
-        display: none;
-    }
-    
-    /* Widget de transparence mobile */
-    .transparency-panel {
-        width: 100vw;
-        right: -100vw;
-    }
-    
-    .transparency-panel.open {
-        right: 0;
-    }
-    
-    .transparency-controls {
-        padding: 15px 15px 5px 15px;
-        gap: 15px;
-    }
-    
-    .transparency-info {
-        padding: 12px 15px;
-        margin-top: 10px;
-    }
-    
-    .preset-buttons {
-        grid-template-columns: 1fr;
     }
 }
 
@@ -3054,6 +3053,34 @@ a:active {
     /* Espacement entre les groupes de tuiles */
     .tile-container .tile:first-of-type {
         margin-top: 0;
+    }
+    
+    .only-desktop {
+        display: none;
+    }
+    
+    /* Widget de transparence mobile */
+    .transparency-panel {
+        width: 100vw;
+        right: -100vw;
+    }
+    
+    .transparency-panel.open {
+        right: 0;
+    }
+    
+    .transparency-controls {
+        padding: 15px 15px 5px 15px;
+        gap: 15px;
+    }
+    
+    .transparency-info {
+        padding: 12px 15px;
+        margin-top: 10px;
+    }
+    
+    .preset-buttons {
+        grid-template-columns: 1fr;
     }
 }
 

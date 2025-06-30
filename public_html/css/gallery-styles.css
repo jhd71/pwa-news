@@ -1,7 +1,9 @@
-/* gallery-styles.css - Version complètement refaite */
+/* gallery-styles.css - Version nettoyée et optimisée */
+/* PARTIE 1 : VARIABLES ET THÈMES */
 
-/* ===== VARIABLES ET THÈMES ===== */
+/* ===== VARIABLES CSS GLOBALES ===== */
 :root {
+    /* Couleurs principales */
     --primary-color: #7E57C2;
     --accent-color: #9C27B0;
     --background-color: #EFF1FF;
@@ -9,6 +11,8 @@
     --text-color: #333333;
     --text-muted: #666666;
     --border-color: #dddddd;
+    
+    /* Composants UI */
     --input-bg: white;
     --button-bg: #f0f0f0;
     --comment-bg: #f5f5f5;
@@ -19,18 +23,24 @@
     --footer-bg: rgba(255, 255, 255, 0.9);
     --modal-bg: #ffffff;
     --photo-view-bg: white;
+    
+    /* Ombres */
     --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
     --shadow-md: 0 4px 8px rgba(0,0,0,0.15);
     --shadow-lg: 0 8px 16px rgba(0,0,0,0.2);
+    
+    /* Bordures arrondies */
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
-	--background-start: #7f1d1d;
+    
+    /* Dégradés de fond */
+    --background-start: #7f1d1d;
     --background-middle: #991b1b;
     --background-end: #dc2626;
 }
 
-/* Thème sombre */
+/* ===== THÈME SOMBRE ===== */
 [data-theme="dark"] {
     --primary-color: #1a237e;
     --accent-color: #3F51B5;
@@ -49,12 +59,12 @@
     --footer-bg: rgba(26, 35, 126, 0.95);
     --modal-bg: #1E1E1E;
     --photo-view-bg: #1E1E1E;
-	--background-start: #0f172a;
+    --background-start: #0f172a;
     --background-middle: #1a237e;
     --background-end: #1a237e;
 }
 
-/* Thème rouge */
+/* ===== THÈME ROUGE ===== */
 [data-theme="rouge"] {
     --primary-color: #d32f2f;
     --accent-color: #c62828;
@@ -73,12 +83,12 @@
     --footer-bg: rgba(211, 47, 47, 0.95);
     --modal-bg: #8a2320;
     --photo-view-bg: #8a2320;
-	--background-start: #7f1d1d;
+    --background-start: #7f1d1d;
     --background-middle: #991b1b;
     --background-end: #dc2626;
 }
 
-/* Thème bleu ciel */
+/* ===== THÈME BLEU CIEL ===== */
 [data-theme="bleuciel"] {
     --primary-color: #4FB3E8;
     --accent-color: #3F97C7;
@@ -97,12 +107,14 @@
     --footer-bg: rgba(79, 179, 232, 0.95);
     --modal-bg: #ffffff;
     --photo-view-bg: white;
-	--background-start: #0c4a6e;
+    --background-start: #0c4a6e;
     --background-middle: #0369a1;
     --background-end: #0ea5e9;
 }
 
-/* ===== STRUCTURE PRINCIPALE ===== */
+/* PARTIE 2 : STRUCTURE PRINCIPALE ET MISE EN PAGE */
+
+/* ===== CORPS PRINCIPAL ===== */
 .gallery-main {
     padding: 20px;
     padding-top: 80px;
@@ -114,13 +126,23 @@
     min-height: 100vh;
 }
 
+/* ===== EN-TÊTE DE LA GALERIE ===== */
 .gallery-header {
     text-align: center;
     margin-bottom: 30px;
-    background: linear-gradient(135deg, var(--background-start, #7f1d1d) 0%, var(--background-middle, #991b1b) 50%, var(--background-end, #dc2626) 100%);
+    background: linear-gradient(135deg, 
+        var(--background-start) 0%, 
+        var(--background-middle) 50%, 
+        var(--background-end) 100%
+    );
     padding: 60px;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
+}
+
+/* Correction spécifique pour le thème light */
+[data-theme="light"] .gallery-header {
+    background: #7b5fbe !important;
 }
 
 .gallery-header h1 {
@@ -141,7 +163,7 @@
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-/* ===== BOUTONS PRINCIPAUX ===== */
+/* ===== BOUTON PRINCIPAL D'UPLOAD ===== */
 .upload-btn {
     background: white;
     color: var(--primary-color);
@@ -227,6 +249,8 @@
     margin-top: 10px;
 }
 
+/* PARTIE 3 : MODALES ET FORMULAIRES */
+
 /* ===== MODAL D'UPLOAD ===== */
 .upload-modal {
     display: none;
@@ -267,7 +291,7 @@
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    font-size: 20px;
+    font-size: 30px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -279,7 +303,7 @@
     background: rgba(255, 255, 255, 0.4);
 }
 
-/* ===== NOUVELLE MODAL DE VISUALISATION ===== */
+/* ===== MODAL DE VISUALISATION PHOTO ===== */
 .photo-view-modal {
     display: none;
     position: fixed;
@@ -356,16 +380,21 @@
     flex: 1;
     overflow-y: auto;
     padding: 20px;
+    transition: transform 0.2s ease;
 }
 
-/* Section photo */
+.modal-scrollable-content.navigating {
+    transform: scale(0.98);
+}
+
+/* ===== SECTION PHOTO DANS MODAL ===== */
 .photo-section {
     margin-bottom: 30px;
 }
 
 .photo-section img {
     width: 100%;
-    max-height: 600px; /* Augmenté de 400px */
+    max-height: 600px;
     object-fit: contain;
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-md);
@@ -385,6 +414,11 @@
     color: var(--text-color);
 }
 
+/* Spécifique au thème rouge */
+[data-theme="rouge"] .photo-description {
+    color: #ffd230 !important;
+}
+
 .photo-metadata {
     display: flex;
     flex-wrap: wrap;
@@ -394,17 +428,191 @@
     color: var(--text-muted);
 }
 
+[data-theme="rouge"] .photo-metadata {
+    color: #ffd230;
+}
+
 .metadata-item {
     display: flex;
     align-items: center;
     gap: 5px;
 }
 
-/* Boutons d'action photo */
+[data-theme="rouge"] .metadata-item {
+    color: #ffd230;
+}
+
+/* ===== FORMULAIRE D'UPLOAD ===== */
+#photoUploadForm {
+    padding: 20px;
+}
+
+.file-upload-area {
+    margin-bottom: 20px;
+}
+
+.upload-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.capture-btn, .gallery-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: var(--shadow-sm);
+}
+
+.capture-btn:hover, .gallery-btn:hover {
+    transform: translateY(-3px);
+    background: var(--accent-color);
+    box-shadow: var(--shadow-md);
+}
+
+.capture-btn .material-icons, 
+.gallery-btn .material-icons {
+    font-size: 36px;
+    margin-bottom: 8px;
+}
+
+/* Forcer le texte blanc pour les boutons en thème dark */
+[data-theme="dark"] .capture-btn,
+[data-theme="dark"] .gallery-btn,
+[data-theme="dark"] .capture-btn span,
+[data-theme="dark"] .gallery-btn span,
+[data-theme="dark"] .capture-btn .material-icons,
+[data-theme="dark"] .gallery-btn .material-icons,
+[data-theme="dark"] .submit-photo-btn {
+    color: white !important;
+}
+
+[data-theme="dark"] .form-group label {
+    color: white !important;
+}
+
+[data-theme="dark"] .form-group input::placeholder,
+[data-theme="dark"] .form-group textarea::placeholder {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.photo-preview {
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.photo-preview img {
+    max-height: 200px;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.form-group input, 
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: var(--input-bg);
+    color: var(--text-color);
+    font-size: 16px;
+}
+
+/* Background blanc pour les inputs en thème rouge */
+[data-theme="rouge"] .form-group input,
+[data-theme="rouge"] .form-group textarea {
+    background: #ffffff !important;
+    color: #2c3e50 !important;
+    border-color: #ddd !important;
+}
+
+.submit-photo-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.submit-photo-btn::before {
+    content: '📷';
+    font-size: 20px;
+}
+
+.submit-photo-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.submit-photo-btn:active {
+    transform: translateY(0);
+}
+
+/* Adaptation des couleurs selon les thèmes */
+[data-theme="dark"] .submit-photo-btn {
+    background: linear-gradient(135deg, #1d37cd 0%, #0b2579 100%);
+}
+
+[data-theme="rouge"] .submit-photo-btn {
+    background: linear-gradient(135deg, #E53935 0%, #C62828 100%);
+}
+
+[data-theme="bleuciel"] .submit-photo-btn {
+    background: linear-gradient(135deg, #64B5F6 0%, #42A5F5 100%);
+}
+
+/* PARTIE 4 : ACTIONS, COMMENTAIRES ET NAVIGATION */
+
+/* ===== BOUTONS D'ACTION PHOTO ===== */
 .photo-actions {
     display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.navigation-row,
+.actions-row {
+    display: flex;
     gap: 10px;
-    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .action-btn {
@@ -436,7 +644,43 @@
     background: #5a6268;
 }
 
-/* ===== SECTION COMMENTAIRES PC - Collapsed par défaut ===== */
+/* ===== NAVIGATION ENTRE PHOTOS ===== */
+.nav-btn {
+    flex: 1;
+    max-width: 140px;
+    background: var(--primary-color) !important;
+    color: white !important;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    background: var(--accent-color, #9c27b0) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.nav-btn .material-icons {
+    font-size: 20px;
+}
+
+[data-theme="rouge"] .nav-btn {
+    background: #bc3a34 !important;
+    border-color: rgba(255, 210, 48, 0.3);
+}
+
+[data-theme="rouge"] .nav-btn:hover {
+    background: #d32f2f !important;
+    border-color: #FFD230;
+}
+
+/* ===== SECTION COMMENTAIRES ===== */
+.comments-section {
+    margin-top: 30px;
+}
+
+/* État collapsed pour PC */
 @media (min-width: 769px) {
     .comments-section {
         transition: all 0.3s ease;
@@ -447,20 +691,17 @@
         overflow: hidden;
     }
     
-    /* État fermé - cache le contenu */
     .comments-content[style*="display: none"] {
         max-height: 0;
         opacity: 0;
     }
     
-    /* État ouvert */
     .comments-content[style*="display: block"] {
         max-height: 1000px;
         opacity: 1;
     }
 }
 
-/* Bouton Commentaires */
 .comments-action-btn.primary {
     background: white;
     color: var(--primary-color);
@@ -486,6 +727,23 @@
     margin: 0;
     font-size: 20px;
     color: var(--text-color);
+}
+
+/* Couleurs spécifiques par thème */
+[data-theme="light"] .comments-header h3 {
+    color: #7e57c2;
+}
+
+[data-theme="dark"] .comments-header h3 {
+    color: #ffffff;
+}
+
+[data-theme="rouge"] .comments-header h3 {
+    color: #ffd230 !important;
+}
+
+[data-theme="bleuciel"] .comments-header h3 {
+    color: #0ea5e9;
 }
 
 .toggle-comments-btn {
@@ -515,7 +773,7 @@
     margin-bottom: 20px;
 }
 
-/* Forcer le fond blanc et texte noir pour TOUS les commentaires dans TOUS les thèmes */
+/* ===== COMMENTAIRES - STYLE UNIQUE POUR TOUS LES THÈMES ===== */
 .comment {
     background: white !important;
     color: #333 !important;
@@ -524,6 +782,7 @@
     border-radius: var(--radius-md);
     border: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: var(--shadow-sm);
+    animation: fadeIn 0.3s ease;
 }
 
 .comment-header {
@@ -547,7 +806,7 @@
     line-height: 1.5;
 }
 
-/* Forcer pour tous les thèmes */
+/* Forcer le style pour tous les thèmes */
 [data-theme="dark"] .comment,
 [data-theme="rouge"] .comment,
 [data-theme="bleuciel"] .comment {
@@ -556,10 +815,7 @@
 
 [data-theme="dark"] .comment-author,
 [data-theme="rouge"] .comment-author,
-[data-theme="bleuciel"] .comment-author {
-    color: #333 !important;
-}
-
+[data-theme="bleuciel"] .comment-author,
 [data-theme="dark"] .comment-text,
 [data-theme="rouge"] .comment-text,
 [data-theme="bleuciel"] .comment-text {
@@ -572,38 +828,7 @@
     color: #666 !important;
 }
 
-/* Pour la description de la photo - uniquement thème rouge */
-[data-theme="rouge"] .photo-description {
-    color: #ffd230 !important;
-}
-
-/* Pour le titre de la section commentaires - uniquement thème rouge */
-[data-theme="rouge"] .comments-header h3 {
-    color: #ffd230 !important;
-}
-
-/* Si vous voulez aussi appliquer à d'autres éléments dans le thème rouge */
-[data-theme="rouge"] .photo-metadata {
-    color: #ffd230;
-}
-
-[data-theme="rouge"] .metadata-item {
-    color: #ffd230;
-}
-
-/* Pour être sûr que ça fonctionne sur mobile aussi */
-@media (max-width: 768px) {
-    [data-theme="rouge"] .photo-description {
-        color: #ffd230 !important;
-    }
-    
-    [data-theme="rouge"] .comments-header h3 {
-        color: #ffd230 !important;
-    }
-}
-
-
-/* Formulaire de commentaire */
+/* ===== FORMULAIRE DE COMMENTAIRE ===== */
 .comment-form-wrapper {
     margin-top: 20px;
 }
@@ -682,8 +907,202 @@
     box-shadow: var(--shadow-sm);
 }
 
-/* ===== MOBILE RESPONSIVE AMÉLIORÉ ===== */
+/* ===== FIN DE LA PARTIE 4 ===== */
+
+/* PARTIE 5 : NAVIGATION ET ÉLÉMENTS UI */
+
+/* ===== NAVIGATION DU BAS ===== */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background: var(--navbar-bg);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-item {
+    color: white;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.nav-item .material-icons {
+    font-size: 24px;
+    margin-bottom: 4px;
+}
+
+.nav-item.active {
+    color: white;
+    font-weight: bold;
+}
+
+/* Thème super-light - Navigation avec couleurs adaptées */
+[data-theme="super-light"] .nav-item {
+    color: #fafbfc !important;
+}
+
+[data-theme="super-light"] .nav-item.active {
+    color: #fbfcfd !important;
+    background: rgba(99, 102, 241, 0.1) !important;
+    border-radius: 8px !important;
+}
+
+[data-theme="super-light"] .nav-item:hover {
+    color: #ffffff !important;
+    background: rgba(99, 102, 241, 0.05) !important;
+    border-radius: 8px !important;
+}
+
+/* ===== INDICATEURS DE CHARGEMENT ===== */
+.loading-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--primary-color);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ===== MESSAGES ET ÉTATS VIDES ===== */
+.no-photos-message {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--text-muted);
+    background-color: rgba(0, 0, 0, 0.03);
+    border-radius: var(--radius-lg);
+    margin: 20px 0;
+}
+
+/* ===== BOUTON CHARGER PLUS ===== */
+.load-more-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 30px auto 0;
+    padding: 12px 24px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 16px;
+    box-shadow: var(--shadow-md);
+    transition: all 0.2s;
+}
+
+.load-more-btn:hover {
+    transform: translateY(-2px);
+    background: var(--accent-color);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ===== BARRE DE PROGRESSION ===== */
+.upload-progress {
+    margin-top: 20px;
+}
+
+.progress-bar {
+    height: 8px;
+    background: var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: var(--primary-color);
+    transition: width 0.3s;
+}
+
+.progress-text {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    color: var(--text-muted);
+}
+
+/* ===== ICÔNES SPÉCIALES ===== */
+.material-icons.arrow-back-white {
+    color: #fff;
+    font-size: 2.2rem;
+    vertical-align: middle;
+    cursor: pointer;
+    transition: transform 0.15s;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+}
+
+/* ===== ÉTATS DU BODY ===== */
+body.modal-open {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+}
+
+body.comment-form-open {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* PARTIE 6 : RESPONSIVE MOBILE */
+
+/* ===== TABLETTES ET MOBILES (max 768px) ===== */
 @media (max-width: 768px) {
+    /* Structure principale */
     .gallery-main {
         padding: 15px;
         padding-top: 70px;
@@ -703,7 +1122,7 @@
         height: 180px;
     }
     
-    /* Modal mobile */
+    /* Modal de visualisation plein écran */
     .modal-container {
         width: 100%;
         height: 100vh;
@@ -711,7 +1130,6 @@
         border-radius: 0;
     }
     
-    /* Header fixe avec plus d'espace pour la croix */
     .modal-header-fixed {
         border-radius: 0;
         position: fixed;
@@ -719,17 +1137,16 @@
         left: 0;
         right: 0;
         z-index: 100;
-        padding: 15px 60px 15px 20px; /* Plus d'espace à droite pour la croix */
+        padding: 15px 60px 15px 20px;
     }
     
-    /* Croix de fermeture mieux positionnée */
     .close-modal-btn {
-        position: absolute;
-        right: 15px;
-        top: 50%;
+        position: relative;
+        right: 1px;
+        top: 40%;
         transform: translateY(-50%);
-        width: 44px;
-        height: 44px;
+        width: 50px !important;
+        height: 40px !important;
         z-index: 101;
     }
     
@@ -743,10 +1160,10 @@
     }
     
     .photo-section img {
-        max-height: 400px; /* Ajusté pour mobile */
+        max-height: 400px;
     }
     
-    /* Commentaires mobile */
+    /* Section commentaires mobile */
     .comments-section {
         background: var(--modal-bg);
         border-radius: var(--radius-lg);
@@ -754,7 +1171,6 @@
         position: relative;
     }
     
-    /* Boutons d'action en colonne sur mobile */
     .comments-actions {
         flex-direction: column;
     }
@@ -767,10 +1183,10 @@
         max-height: none;
     }
     
-    /* Formulaire mobile amélioré - POSITION FIXE EN HAUT */
+    /* Formulaire de commentaire fixe en haut */
     .comment-form-wrapper {
         position: fixed !important;
-        top: 80px !important; /* Sous le header */
+        top: 80px !important;
         left: 0 !important;
         right: 0 !important;
         bottom: auto !important;
@@ -787,17 +1203,6 @@
         animation: slideDown 0.3s ease-out;
     }
     
-    @keyframes slideDown {
-        from {
-            transform: translateY(-100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateY(0);
-            opacity: 1;
-        }
-    }
-    
     .comment-form {
         position: relative !important;
         margin: 0 !important;
@@ -806,21 +1211,11 @@
         border-radius: 0 0 var(--radius-lg) var(--radius-lg) !important;
     }
     
-    /* Empêcher le scroll du body quand le formulaire est ouvert */
-    body.comment-form-open {
-        overflow: hidden !important;
-        position: fixed !important;
-        width: 100% !important;
-    }
-    
-   /* Fix pour le clavier mobile */
     .comment-form input:focus,
     .comment-form textarea:focus {
         outline: 2px solid var(--primary-color);
         outline-offset: -2px;
     }
-    
-}
     
     /* Modal upload mobile plein écran */
     .upload-modal {
@@ -842,7 +1237,6 @@
         flex-direction: column;
     }
     
-    /* Header modal upload avec croix bien positionnée */
     .upload-modal .modal-header {
         padding: 15px 20px;
         flex-shrink: 0;
@@ -857,7 +1251,6 @@
         text-align: center;
     }
     
-    /* Croix modal upload en haut à droite */
     .upload-modal .close-modal {
         position: absolute;
         right: 15px;
@@ -876,7 +1269,6 @@
         z-index: 10;
     }
     
-    /* Formulaire upload scrollable */
     #photoUploadForm {
         flex: 1;
         overflow-y: auto;
@@ -887,7 +1279,6 @@
         flex-direction: column;
     }
     
-    /* Bouton submit en bas et centré */
     .submit-photo-btn {
         margin-top: auto;
         margin-bottom: 20px;
@@ -925,9 +1316,44 @@
         box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     }
     
+    /* Navigation entre photos mobile */
+    .navigation-row {
+        margin-bottom: 10px;
+    }
+    
+    .nav-btn {
+        font-size: 12px;
+        padding: 8px 12px;
+        flex-direction: row;
+        gap: 6px;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    #prevPhotoBtn {
+        flex-direction: row;
+    }
+    
+    #nextPhotoBtn {
+        flex-direction: row-reverse;
+    }
+    
+    .nav-btn span {
+        font-size: 12px;
+        line-height: 1;
+    }
+    
+    .nav-btn .material-icons {
+        font-size: 22px;
+    }
+    
+    /* Logo responsive */
+    .site-logo {
+        max-height: 70px;
+    }
 }
 
-/* Petits écrans */
+/* ===== PETITS ÉCRANS (max 480px) ===== */
 @media (max-width: 480px) {
     .gallery-header {
         padding: 15px;
@@ -947,466 +1373,4 @@
     }
 }
 
-/* ===== AUTRES STYLES ===== */
-.loading-indicator {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 0;
-}
-
-.spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-radius: 50%;
-    border-top-color: var(--primary-color);
-    animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.no-photos-message {
-    text-align: center;
-    padding: 50px 20px;
-    color: var(--text-muted);
-    background-color: rgba(0, 0, 0, 0.03);
-    border-radius: var(--radius-lg);
-    margin: 20px 0;
-}
-
-.load-more-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin: 30px auto 0;
-    padding: 12px 24px;
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 16px;
-    box-shadow: var(--shadow-md);
-    transition: all 0.2s;
-}
-
-.load-more-btn:hover {
-    transform: translateY(-2px);
-    background: var(--accent-color);
-    box-shadow: var(--shadow-lg);
-}
-
-/* Formulaire d'upload */
-#photoUploadForm {
-    padding: 20px;
-}
-
-.file-upload-area {
-    margin-bottom: 20px;
-}
-
-.upload-buttons {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-.capture-btn, .gallery-btn {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: var(--shadow-sm);
-}
-
-.capture-btn:hover, .gallery-btn:hover {
-    transform: translateY(-3px);
-    background: var(--accent-color);
-    box-shadow: var(--shadow-md);
-}
-
-.capture-btn .material-icons, 
-.gallery-btn .material-icons {
-    font-size: 36px;
-    margin-bottom: 8px;
-}
-
-.photo-preview {
-    min-height: 200px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 2px dashed var(--border-color);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    position: relative;
-    background-color: rgba(0, 0, 0, 0.03);
-}
-
-.photo-preview img {
-    max-height: 200px;
-    max-width: 100%;
-    object-fit: contain;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: var(--text-color);
-}
-
-.form-group input, 
-.form-group textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    background: var(--input-bg);
-    color: var(--text-color);
-    font-size: 16px;
-}
-
-/* Background blanc pour les inputs en thème rouge */
-[data-theme="rouge"] .form-group input,
-[data-theme="rouge"] .form-group textarea {
-    background: #ffffff !important;
-    color: #2c3e50 !important;
-    border-color: #ddd !important;
-}
-
-.submit-photo-btn {
-    width: 100%;
-    padding: 16px;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
-    color: white;
-    border: none;
-    border-radius: 30px;
-    font-weight: bold;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 20px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-
-.submit-photo-btn::before {
-    content: '📷';
-    font-size: 20px;
-}
-
-.submit-photo-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-}
-
-.submit-photo-btn:active {
-    transform: translateY(0);
-}
-
-/* Adaptation selon les thèmes */
-[data-theme="dark"] .submit-photo-btn {
-    background: linear-gradient(135deg, #1d37cd 0%, #0b2579 100%);
-}
-
-[data-theme="rouge"] .submit-photo-btn {
-    background: linear-gradient(135deg, #E53935 0%, #C62828 100%);
-}
-
-[data-theme="bleuciel"] .submit-photo-btn {
-    background: linear-gradient(135deg, #64B5F6 0%, #42A5F5 100%);
-}
-
-.upload-progress {
-    margin-top: 20px;
-}
-
-.progress-bar {
-    height: 8px;
-    background: var(--border-color);
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.progress-bar-fill {
-    height: 100%;
-    background: var(--primary-color);
-    transition: width 0.3s;
-}
-
-.progress-text {
-    display: block;
-    text-align: center;
-    margin-top: 10px;
-    color: var(--text-muted);
-}
-
-/* Navigation du bas */
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 70px;
-    background: var(--navbar-bg);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 100;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.nav-item {
-    color: white;
-    padding: 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-    text-decoration: none;
-    font-size: 14px;
-    transition: all 0.3s ease;
-}
-
-/* Thème super-light - Navigation avec couleurs adaptées */
-[data-theme="super-light"] .nav-item {
-    color: #fafbfc !important;
-}
-
-[data-theme="super-light"] .nav-item.active {
-    color: #fbfcfd !important;
-    background: rgba(99, 102, 241, 0.1) !important;
-    border-radius: 8px !important;
-}
-
-[data-theme="super-light"] .nav-item:hover {
-    color: #ffffff !important;
-    background: rgba(99, 102, 241, 0.05) !important;
-    border-radius: 8px !important;
-}
-
-.nav-item .material-icons {
-    font-size: 24px;
-    margin-bottom: 4px;
-}
-
-.nav-item.active {
-    color: white;
-    font-weight: bold;
-}
-
-/* Correction pour body modal open */
-body.modal-open {
-    overflow: hidden !important;
-    position: fixed !important;
-    width: 100% !important;
-}
-
-/* Animations */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.comment {
-    animation: fadeIn 0.3s ease;
-}
-
-.material-icons.arrow-back-white {
-    color: #fff; /* Blanc */
-    font-size: 2.2rem;      /* Ajuste la taille si tu veux plus gros */
-    vertical-align: middle;
-    cursor: pointer;
-    transition: transform 0.15s;
-    border-radius: 50%;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.18);
-}
-
-
-
-@media (max-width: 768px) {
-    .site-logo {
-        max-height: 70px;
-    }
-}
-
-/* Texte blanc pour les boutons en thème dark */
-[data-theme="dark"] .capture-btn,
-[data-theme="dark"] .gallery-btn,
-[data-theme="dark"] .submit-photo-btn {
-    color: white !important;
-}
-
-/* Si vous voulez aussi les textes des labels du formulaire en blanc */
-[data-theme="dark"] .form-group label {
-    color: white !important;
-}
-
-/* Pour le placeholder des inputs en thème dark */
-[data-theme="dark"] .form-group input::placeholder,
-[data-theme="dark"] .form-group textarea::placeholder {
-    color: rgba(255, 255, 255, 0.7) !important;
-}
-
-/* Texte blanc pour les boutons upload en thème dark */
-[data-theme="dark"] .capture-btn span,
-[data-theme="dark"] .gallery-btn span,
-[data-theme="dark"] .submit-photo-btn {
-    color: white !important;
-}
-
-/* Les icônes Material Icons en blanc aussi */
-[data-theme="dark"] .capture-btn .material-icons,
-[data-theme="dark"] .gallery-btn .material-icons {
-    color: white !important;
-}
-
-/* ===== NAVIGATION ENTRE PHOTOS ===== */
-
-.photo-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.navigation-row,
-.actions-row {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-}
-
-.nav-btn {
-    flex: 1;
-    max-width: 140px;
-    background: var(--primary-color) !important;
-    color: white !important;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.nav-btn:hover {
-    background: var(--accent-color, #9c27b0) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.nav-btn .material-icons {
-    font-size: 20px;
-}
-
-/* Style pour le thème rouge */
-[data-theme="rouge"] .nav-btn {
-    background: #bc3a34 !important;
-    border-color: rgba(255, 210, 48, 0.3);
-}
-
-[data-theme="rouge"] .nav-btn:hover {
-    background: #d32f2f !important;
-    border-color: #FFD230;
-}
-
-/* Responsive mobile */
-@media (max-width: 768px) {
-    .navigation-row {
-        margin-bottom: 10px;
-    }
-    
-    .nav-btn {
-        font-size: 12px;
-        padding: 8px 12px;
-        flex-direction: row; /* Horizontal au lieu de vertical */
-        gap: 6px;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    /* Bouton Précédent : Flèche à GAUCHE du texte */
-    #prevPhotoBtn {
-        flex-direction: row; /* Icône puis texte */
-    }
-    
-    /* Bouton Suivant : Flèche à DROITE du texte */
-    #nextPhotoBtn {
-        flex-direction: row-reverse; /* Texte puis icône */
-    }
-    
-    .nav-btn span {
-        font-size: 12px;
-        line-height: 1;
-    }
-    
-    .nav-btn .material-icons {
-        font-size: 22px;
-    }
-}
-
-/* Animation pour indiquer la navigation */
-.modal-scrollable-content {
-    transition: transform 0.2s ease;
-}
-
-.modal-scrollable-content.navigating {
-    transform: scale(0.98);
-}
-
-/* ===== THÈMES POUR .comments-header h3 ===== */
-
-/* Thème Light (Violet) */
-[data-theme="light"] .comments-header h3 {
-    color: #7e57c2;
-}
-
-/* Thème Dark (Bleu Nuit) */
-[data-theme="dark"] .comments-header h3 {
-    color: #ffffff;
-}
-
-/* Thème Rouge */
-[data-theme="rouge"] .comments-header h3 {
-    color: #d32f2f;
-}
-
-/* Thème Bleu Ciel */
-[data-theme="bleuciel"] .comments-header h3 {
-    color: #0ea5e9;
-}
-
-/* Correction urgente pour thème light */
-[data-theme="light"] .gallery-header {
-    background: #7b5fbe !important;
-}
+/* ===== FIN DU FICHIER CSS ===== */

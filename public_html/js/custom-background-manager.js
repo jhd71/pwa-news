@@ -1672,7 +1672,6 @@ const customBackgroundStyles = `
 .custom-backgrounds-section h3 {
     margin-top: 0;
     margin-bottom: 15px;
-    color: var(--primary-color, #7c4dff);
     font-size: 18px;
     font-weight: 600;
 }

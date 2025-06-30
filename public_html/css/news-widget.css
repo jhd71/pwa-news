@@ -1,5 +1,15 @@
-/* news-widget.css - Styles pour le widget NEWS Actu&Média */
+/* ============================================= */
+/*        NEWS WIDGET CSS - PARTIE 1             */
+/*        Structure de base et conteneur         */
+/* ============================================= */
 
+/* Variables CSS globales */
+:root {
+    --primary-color: #dc3545;
+    --primary-color-rgb: 220, 53, 69;
+}
+
+/* Conteneur principal du widget */
 .news-widget-container {
     max-width: 600px;
     margin: 15px auto;
@@ -7,6 +17,7 @@
     order: 2;
 }
 
+/* Widget principal */
 .local-news-widget {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 15px;
@@ -30,42 +41,74 @@
     transform: scale(0.98);
 }
 
+/* En-tête du widget */
 .news-widget-header {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 12px;
-    color: var(--primary-color, #dc3545);
+    color: var(--primary-color);
 }
 
-/* ===== BOUTONS REPOSITIONNÉS (NEWS WIDGET SEULEMENT) ===== */
+/* Titre du widget */
+.news-widget-title {
+    font-size: 18px;
+    font-weight: bold;
+    flex: 1;
+    color: var(--primary-color);
+}
+
+.news-widget-title-short {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-right: auto;
+}
+
+/* Badge du widget */
+.news-widget-badge {
+    background: var(--primary-color);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* ============================================= */
+/*        NEWS WIDGET CSS - PARTIE 2             */
+/*        Boutons et éléments interactifs        */
+/* ============================================= */
+
+/* Conteneur des boutons dans l'en-tête */
 .news-widget-header .header-buttons {
     display: flex;
     gap: 6px;
-    margin-left: 10px; /* Garde l'ancien comportement pour desktop */
+    margin-left: 10px;
 }
 
-/* ===== RESPONSIVE : Masquer les boutons sur desktop ===== */
+/* Masquer les boutons sur desktop */
 @media (min-width: 768px) {
     .news-widget-header .header-buttons {
-        display: none !important; /* ✅ Masqué sur desktop */
+        display: none !important;
     }
 }
 
-/* Styles des boutons */
+/* Styles généraux des boutons */
 .header-btn {
-    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.15) !important;
-    border: 1px solid var(--primary-color, #dc3545) !important;
+    background: rgba(var(--primary-color-rgb), 0.15) !important;
+    border: 1px solid var(--primary-color) !important;
     border-radius: 8px !important;
     min-width: 50px !important;
     height: 32px !important;
-    width: auto !important; /* ✅ Annule le width: 36px */
+    width: auto !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     cursor: pointer !important;
     transition: all 0.3s ease !important;
-    color: var(--primary-color, #dc3545) !important;
+    color: var(--primary-color) !important;
     font-size: 11px !important;
     font-weight: 600 !important;
     font-family: 'Montserrat', sans-serif !important;
@@ -76,47 +119,17 @@
 }
 
 .header-btn:hover {
-    background: var(--primary-color, #dc3545);
+    background: var(--primary-color);
     color: white;
     transform: scale(1.1);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* ✅ AJOUTEZ CETTE LIGNE */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .header-btn:active {
     transform: scale(0.95);
 }
 
-/* Positionnement mobile */
-@media (max-width: 767px) {
-    .news-widget-header .header-buttons {
-        position: relative !important;
-        display: contents !important; /* ✅ Supprime le conteneur */
-    }
-    
-    .photos-btn {
-        position: absolute !important;
-        bottom: 10px !important; /* ✅ Ajustez cette valeur */
-        left: 15px !important;
-        min-width: 40px !important;
-        height: 24px !important;
-        font-size: 12px !important;
-        z-index: 10 !important;
-    }
-    
-    .cinema-btn {
-        position: absolute !important;
-        bottom: 10px !important; /* ✅ Ajustez cette valeur */
-        right: 15px !important;
-        min-width: 40px !important;
-        height: 24px !important;
-        font-size: 12px !important;
-        z-index: 10 !important;
-    }
-    
-}
-
-
-/* Couleurs spécifiques */
+/* Bouton Photos */
 .photos-btn {
     background: rgba(255, 107, 157, 0.15);
     border-color: #FF6B9D;
@@ -128,45 +141,105 @@
     color: white;
 }
 
+/* Bouton Cinéma */
 .cinema-btn {
-    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.15);
-    border-color: var(--primary-color, #dc3545);
-    color: var(--primary-color, #dc3545);
+    background: rgba(var(--primary-color-rgb), 0.15);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
 }
 
 .cinema-btn:hover {
-    background: var(--primary-color, #dc3545);
+    background: var(--primary-color);
     color: white;
 }
 
-.news-widget-title {
-    font-size: 18px;
-    font-weight: bold;
-    flex: 1;
-    color: var(--primary-color, #dc3545);
+/* Positionnement mobile des boutons */
+@media (max-width: 767px) {
+    .news-widget-header .header-buttons {
+        position: relative !important;
+        display: contents !important;
+    }
+    
+    .photos-btn {
+        position: absolute !important;
+        bottom: 10px !important;
+        left: 15px !important;
+        min-width: 40px !important;
+        height: 24px !important;
+        font-size: 12px !important;
+        z-index: 10 !important;
+    }
+    
+    .cinema-btn {
+        position: absolute !important;
+        bottom: 10px !important;
+        right: 15px !important;
+        min-width: 40px !important;
+        height: 24px !important;
+        font-size: 12px !important;
+        z-index: 10 !important;
+    }
 }
 
-.news-widget-badge {
-    background: var(--primary-color, #dc3545);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: bold;
-    text-transform: uppercase;
-}
+/* ============================================= */
+/*        NEWS WIDGET CSS - PARTIE 3             */
+/*        Prévisualisation et contenu            */
+/* ============================================= */
 
+/* Zone de prévisualisation des actualités */
 .news-widget-preview {
     color: #333;
     font-size: 14px;
     line-height: 1.4;
     margin-bottom: 10px;
     min-height: 120px;
-    max-height: 250px; /* Même hauteur que cinéma */
+    max-height: 250px;
     overflow-y: auto;
-    padding-right: 5px; /* Même padding que cinéma */
+    padding-right: 5px;
 }
 
+/* Scrollbar personnalisée */
+.news-widget-preview::-webkit-scrollbar {
+    width: 4px;
+}
+
+.news-widget-preview::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+}
+
+.news-widget-preview::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 2px;
+    opacity: 0.7;
+}
+
+.news-widget-preview::-webkit-scrollbar-thumb:hover {
+    opacity: 1;
+}
+
+/* Items de prévisualisation */
+.news-preview-item {
+    background: rgba(var(--primary-color-rgb), 0.1);
+    border-left: 3px solid var(--primary-color);
+    padding: 8px 12px;
+    margin: 6px 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 13px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.news-preview-item:hover {
+    background: rgba(var(--primary-color-rgb), 0.2);
+    transform: translateX(2px);
+}
+
+.news-preview-item strong {
+    color: var(--primary-color);
+}
+
+/* Dates des films */
 .movie-dates {
     font-size: 13px;
     color: #888;
@@ -174,41 +247,7 @@
     margin-top: 2px;
 }
 
-[data-theme="dark"] .movie-dates {
-    color: #aaa;
-}
-
-/* Style de la scrollbar pour le widget */
-.news-widget-preview::-webkit-scrollbar {
-    width: 4px; /* Même largeur que cinéma */
-}
-
-.news-widget-preview::-webkit-scrollbar-track {
-    background: rgba(0,0,0,0.1);
-    border-radius: 2px; /* Même style que cinéma */
-}
-
-.news-widget-preview::-webkit-scrollbar-thumb {
-    background: var(--primary-color, #dc3545);
-    border-radius: 2px; /* Même style que cinéma */
-}
-
-.news-widget-preview::-webkit-scrollbar-track {
-    background: rgba(0,0,0,0.1);
-    border-radius: 3px;
-}
-
-.news-widget-preview::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
-    border-radius: 3px;
-    opacity: 0.7;
-}
-
-.news-widget-preview::-webkit-scrollbar-thumb:hover {
-    background: var(--primary-color);
-    opacity: 1;
-}
-
+/* État de chargement */
 .loading-news {
     display: flex;
     align-items: center;
@@ -226,419 +265,86 @@
     to { transform: rotate(360deg); }
 }
 
-.news-preview-item {
-    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.1);
-    border-left: 3px solid var(--primary-color, #dc3545);
-    padding: 8px 12px; /* Même padding que cinéma */
-    margin: 6px 0; /* Même marge que cinéma */
-    border-radius: 0 8px 8px 0;
-    font-size: 13px; /* Même taille que cinéma */
-    transition: all 0.2s ease;
-    cursor: pointer;
-}
-
-.news-preview-item:hover {
-    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.2);
-    transform: translateX(2px);
-}
-
-.news-preview-item strong {
-    color: var(--primary-color, #dc3545);
-}
-
+/* Pied de page du widget */
 .news-widget-footer {
     display: flex;
-	flex-direction: column;
+    flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    color: var(--primary-color, #dc3545);
+    color: var(--primary-color);
     font-weight: 500;
     font-size: 13px;
     margin-top: 10px;
-    border-top: 1px solid rgba(var(--primary-color-rgb, 220, 53, 69), 0.2);
+    border-top: 1px solid rgba(var(--primary-color-rgb), 0.2);
     padding-top: 8px;
 }
 
 .news-widget-tap {
     font-size: 12px;
-	color: #000000;
+    color: #000000;
 }
 
 .news-widget-count {
-    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.1);
+    background: rgba(var(--primary-color-rgb), 0.1);
     padding: 4px 8px;
     border-radius: 8px;
     font-size: 12px;
     font-weight: 600;
 }
 
-/* ===== THÈMES ADAPTÉS ===== */
+/* ============================================= */
+/*        NEWS WIDGET CSS - PARTIE 4             */
+/*        Widgets d'en-tête                      */
+/* ============================================= */
 
-/* Thème Light (Violet) */
-[data-theme="light"] .local-news-widget {
-    background: rgba(255, 255, 255, 0.95);
-    border-color: rgba(126, 87, 194, 0.4);
+/* Conteneur des widgets d'en-tête */
+.header-widgets {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
 }
 
-[data-theme="light"] .news-widget-header,
-[data-theme="light"] .news-widget-title,
-[data-theme="light"] .news-widget-footer {
-    color: #7e57c2;
-}
-
-[data-theme="light"] .news-widget-badge {
-    background: #7e57c2;
-}
-
-[data-theme="light"] .news-preview-item {
-    background: rgba(126, 87, 194, 0.1);
-    border-left-color: #7e57c2;
-}
-
-[data-theme="light"] .news-widget-count {
-    background: rgba(126, 87, 194, 0.1);
-}
-
-/* Thème Dark (Bleu Nuit) */
-[data-theme="dark"] .local-news-widget {
-    background: rgba(40, 40, 40, 0.95);
-    border-color: rgba(26, 35, 126, 0.6);
-    backdrop-filter: blur(15px);
-}
-
-[data-theme="dark"] .news-widget-header,
-[data-theme="dark"] .news-widget-title,
-[data-theme="dark"] .news-widget-footer {
-    color: #ffffff;
-}
-
-[data-theme="dark"] .news-widget-badge {
-    background: #1a237e;
-    border: 1px solid #5c6bc0;
-}
-
-[data-theme="dark"] .news-widget-preview {
-    color: #ffffff;
-}
-
-[data-theme="dark"] .loading-news {
-    color: #b0b0b0;
-}
-
-[data-theme="dark"] .news-preview-item, {
-[data-theme="dark"] .news-widget-tap,
-    background: rgba(26, 35, 126, 0.2);
-    border-left-color: #5c6bc0;
-    color: #ffffff;
-}
-
-[data-theme="dark"] .news-preview-item strong {
-    color: #7986cb;
-}
-
-[data-theme="dark"] .news-widget-count {
-    background: rgba(26, 35, 126, 0.3);
-    color: #ffffff;
-}
-
-[data-theme="dark"] .news-widget-tap {
-    color: #ffffff;
-}
-
-[data-theme="dark"] .news-widget-preview, {
-[data-theme="dark"] .news-widget-footer,
-    color: #ffffff;
-}
-
-[data-theme="dark"] .news-preview-item {
-    color: #ffffff;
-}
-	
-/* Thème Rouge */
-[data-theme="rouge"] .local-news-widget {
-    background: rgba(255, 255, 255, 0.95);
-    border-color: rgba(211, 47, 47, 0.4);
-}
-
-[data-theme="rouge"] .news-widget-header,
-[data-theme="rouge"] .news-widget-title,
-[data-theme="rouge"] .news-widget-footer {
-    color: #d32f2f;
-}
-
-[data-theme="rouge"] .news-widget-badge {
-    background: #d32f2f;
-}
-
-[data-theme="rouge"] .news-preview-item {
-    background: rgba(211, 47, 47, 0.1);
-    border-left-color: #d32f2f;
-	color: #000000;
-}
-
-[data-theme="rouge"] .news-widget-count {
-    background: rgba(211, 47, 47, 0.1);
-    color: #000000;
-}
-
-/* Thème Bleu Ciel */
-[data-theme="bleuciel"] .local-news-widget {
-    background: rgba(255, 255, 255, 0.95);
-    border-color: rgba(14, 165, 233, 0.4);
-}
-
-[data-theme="bleuciel"] .news-widget-header,
-[data-theme="bleuciel"] .news-widget-title,
-[data-theme="bleuciel"] .news-widget-footer {
-    color: #0ea5e9;
-}
-
-[data-theme="bleuciel"] .news-widget-badge {
-    background: #0ea5e9;
-}
-
-[data-theme="bleuciel"] .news-preview-item {
-    background: rgba(14, 165, 233, 0.1);
-    border-left-color: #0ea5e9;
-}
-
-[data-theme="bleuciel"] .news-widget-count {
-    background: rgba(14, 165, 233, 0.1);
-}
-
-@media (max-width: 767px) {
-    .news-widget-container {
-        position: relative;
-        padding: 0 5px;
-        margin: 130px auto 15px auto;
-        order: 2;
-    }
-    
-    .local-news-widget {
-        margin: 0;
-        padding: 12px;
-    }
-    
-    .news-widget-title {
-        font-size: 16px;
-    }
-    
-    .news-widget-footer {
-        flex-direction: column;
-        gap: 5px;
-        text-align: center;
-    }
-}
-	
-/* widget-clock */
-
-.news-widget-title-short {
-    font-size: 16px;
-    font-weight: bold;
-    color: var(--primary-color, #dc3545);
-    margin-right: auto; /* Pousse l'horloge à droite */
-}
-
+/* Widget Horloge */
 .news-widget-clock {
-    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.1);
-    border: 1px solid var(--primary-color, #dc3545);
+    background: rgba(var(--primary-color-rgb), 0.1);
+    border: 1px solid var(--primary-color);
     border-radius: 8px;
-    padding: 6px 10px; /* ✅ Plus de padding */
-    font-size: 12px; /* ✅ Plus gros */
+    padding: 6px 10px;
+    font-size: 12px;
     font-weight: bold;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    min-width: 60px; /* ✅ Plus large */
-    margin-left: auto; /* Horloge à droite */
+    min-width: 60px;
+    margin-left: auto;
 }
 
 .news-widget-clock:hover {
-    background: var(--primary-color, #dc3545);
+    background: var(--primary-color);
     color: white;
     transform: scale(1.05);
 }
 
 .clock-time {
-    font-size: 15px; /* ✅ Plus gros */
+    font-size: 15px;
     font-weight: 700;
     line-height: 1.1;
-	color: #000000;
-}
-
-.clock-date {
-    font-size: 12px; /* ✅ Plus gros */
-    font-weight: 600;
-    line-height: 1.1;
-    opacity: 0.9;
-	color: #000000;
-}
-
-/* ===== THÈMES AVEC TEXTE BLANC POUR SOMBRES ===== */
-
-/* Thème Light (Violet) */
-[data-theme="light"] .news-widget-clock {
-    background: rgba(126, 87, 194, 0.1);
-    border-color: #7e57c2;
-    color: #7e57c2;
-}
-
-[data-theme="light"] .news-widget-clock:hover {
-    background: #7e57c2;
-    color: white;
-}
-
-[data-theme="light"] .news-widget-title-short {
-    color: #7e57c2;
-}
-
-[data-theme="light"] .clock-time,
-[data-theme="light"] .clock-date {
-    color: #9b87ce;
-}
-
-[data-theme="light"] .visitors-count,
-[data-theme="light"] .temp-value,
-[data-theme="light"] .temp-label,
-[data-theme="light"].visitors-label {
-font-size: 14px;
-}
-
-[data-theme="bleuciel"] .visitors-count,
-[data-theme="bleuciel"] .temp-value,
-[data-theme="bleuciel"] .temp-label,
-[data-theme="bleuciel"] .visitors-label {
-font-size: 14px;
-}
-
-[data-theme="bleuciel"] .clock-date {
-    font-size: 12px;
-}
-
-[data-theme="bleuciel"] .clock-time {
-    font-size: 15px;
-}
-
-[data-theme="dark"] .temp-value,
-[data-theme="dark"] .visitors-count,
-[data-theme="dark"] .temp-label,
-[data-theme="dark"] .visitors-label {
-font-size: 14px;
-}
-
-[data-theme="dark"] .clock-date {
-    font-size: 12px;
-}
-
-[data-theme="dark"] .clock-time {
-    font-size: 15px;
-}
-
-/* Thème Dark (Bleu Nuit) - TEXTE BLANC */
-[data-theme="dark"] .news-widget-clock {
-    background: rgba(92, 107, 192, 0.2);
-    border-color: #5c6bc0;
-    color: #ffffffcc;
-}
-
-[data-theme="dark"] .news-widget-clock:hover {
-    background: #5c6bc0;
-    color: white;
-}
-
-[data-theme="dark"] .news-widget-title-short {
-    color: #ffffff;
-}
-
-/* Thème Rouge */
-[data-theme="rouge"] .news-widget-clock {
-    background: rgba(211, 47, 47, 0.1);
-    border-color: #d32f2f;
-    color: #d32f2f;
-}
-
-[data-theme="rouge"] .news-widget-clock:hover {
-    background: #d32f2f;
     color: #000000;
 }
 
-[data-theme="rouge"] .news-widget-title-short {
-    color: #d32f2f;
+.clock-date {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.1;
+    opacity: 0.9;
+    color: #000000;
 }
 
-/* Thème Bleu Ciel */
-[data-theme="bleuciel"] .news-widget-clock {
-    background: rgba(14, 165, 233, 0.1);
-    border-color: #0ea5e9;
-    color: #0ea5e9;
-}
-
-[data-theme="bleuciel"] .news-widget-clock:hover {
-    background: #0ea5e9;
-    color: white;
-}
-
-[data-theme="bleuciel"] .news-widget-title-short {
-    color: #4196df;
-}
-
-/* ===== THÈMES POUR LES BOUTONS HEADER ===== */
-
-/* Thème Light (Violet) */
-[data-theme="light"] .header-btn {
-    background: rgba(126, 87, 194, 0.1);
-    border-color: #7e57c2;
-    color: #7e57c2;
-}
-[data-theme="light"] .header-btn:hover {
-    background: #7e57c2;
-    color: white;
-}
-
-/* Thème Dark (Bleu Nuit) */
-[data-theme="dark"] .header-btn {
-    background: rgba(92, 107, 192, 0.2);
-    border-color: #5c6bc0;
-    color: #ffffffcc !important;
-}
-[data-theme="dark"] .header-btn:hover {
-    background: #5c6bc0;
-    color: white;
-}
-
-/* Thème Rouge */
-[data-theme="rouge"] .header-btn {
-    background: rgba(211, 47, 47, 0.1) !important;
-    border-color: #d32f2f !important;
-    color: #000000 !important;
-}
-[data-theme="rouge"] .header-btn:hover {
-    background: #d32f2f;
-    color: white;
-}
-
-/* Thème Bleu Ciel */
-[data-theme="bleuciel"] .header-btn {
-    background: rgba(14, 165, 233, 0.1);
-    border-color: #0ea5e9;
-    color: #0ea5e9;
-}
-[data-theme="bleuciel"] .header-btn:hover {
-    background: #0ea5e9;
-    color: white;
-}
-
-/* ===== WIDGETS HEADER (TEMPÉRATURE + VISITEURS + HORLOGE) ===== */
-.header-widgets {
-    display: flex;
-    gap: 8px;
-    margin-left: auto; /* Pousse à droite */
-}
-
+/* Widgets Température et Visiteurs */
 .weather-temp,
 .visitors-counter {
-    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.1);
-    border: 1px solid var(--primary-color, #dc3545);
+    background: rgba(var(--primary-color-rgb), 0.1);
+    border: 1px solid var(--primary-color);
     border-radius: 8px;
     padding: 6px 10px;
     font-size: 12px;
@@ -651,7 +357,7 @@ font-size: 14px;
 
 .weather-temp:hover,
 .visitors-counter:hover {
-    background: var(--primary-color, #dc3545);
+    background: var(--primary-color);
     color: white;
     transform: scale(1.05);
 }
@@ -661,7 +367,7 @@ font-size: 14px;
     font-size: 13px;
     font-weight: 700;
     line-height: 1.1;
-    color: var(--primary-color, #dc3545);
+    color: var(--primary-color);
 }
 
 .temp-label,
@@ -670,7 +376,7 @@ font-size: 14px;
     font-weight: 600;
     line-height: 1.1;
     opacity: 0.9;
-    color: var(--primary-color, #dc3545);
+    color: var(--primary-color);
 }
 
 .weather-temp:hover .temp-value,
@@ -680,7 +386,7 @@ font-size: 14px;
     color: white;
 }
 
-/* Responsive mobile */
+/* Responsive mobile pour widgets d'en-tête */
 @media (max-width: 767px) {
     .header-widgets {
         gap: 4px;
@@ -703,13 +409,63 @@ font-size: 14px;
     }
 }
 
-/* ===== THÈMES POUR LES WIDGETS HEADER (TEMPÉRATURE + VISITEURS) ===== */
+/* ============================================= */
+/*        NEWS WIDGET CSS - PARTIE 5             */
+/*        Thèmes de couleurs                     */
+/* ============================================= */
 
-/* Thème Light (Violet) */
+/* ===== THÈME LIGHT (VIOLET) ===== */
+[data-theme="light"] .local-news-widget {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(126, 87, 194, 0.4);
+}
+
+[data-theme="light"] .news-widget-header,
+[data-theme="light"] .news-widget-title,
+[data-theme="light"] .news-widget-title-short,
+[data-theme="light"] .news-widget-footer {
+    color: #7e57c2;
+}
+
+[data-theme="light"] .news-widget-badge {
+    background: #7e57c2;
+}
+
+[data-theme="light"] .news-preview-item {
+    background: rgba(126, 87, 194, 0.1);
+    border-left-color: #7e57c2;
+}
+
+[data-theme="light"] .news-widget-count {
+    background: rgba(126, 87, 194, 0.1);
+}
+
+/* Widgets d'en-tête - Thème Light */
+[data-theme="light"] .news-widget-clock,
 [data-theme="light"] .weather-temp,
-[data-theme="light"] .visitors-counter {
+[data-theme="light"] .visitors-counter,
+[data-theme="light"] .header-btn {
     background: rgba(126, 87, 194, 0.1);
     border-color: #7e57c2;
+    color: #7e57c2;
+}
+
+[data-theme="light"] .news-widget-clock:hover,
+[data-theme="light"] .weather-temp:hover,
+[data-theme="light"] .visitors-counter:hover,
+[data-theme="light"] .header-btn:hover {
+    background: #7e57c2;
+    color: white;
+}
+
+[data-theme="light"] .clock-time,
+[data-theme="light"] .clock-date {
+    color: #9b87ce;
+    font-size: 15px;
+}
+
+[data-theme="light"] .clock-date {
+    font-size: 12px;
 }
 
 [data-theme="light"] .temp-value,
@@ -717,95 +473,192 @@ font-size: 14px;
 [data-theme="light"] .temp-label,
 [data-theme="light"] .visitors-label {
     color: #7e57c2;
-	font-size: 14px;
+    font-size: 14px;
 }
 
-[data-theme="light"] .weather-temp:hover,
-[data-theme="light"] .visitors-counter:hover {
-    background: #7e57c2;
+/* ===== THÈME DARK (BLEU NUIT) ===== */
+[data-theme="dark"] .local-news-widget {
+    background: rgba(40, 40, 40, 0.95);
+    border-color: rgba(26, 35, 126, 0.6);
+    backdrop-filter: blur(15px);
 }
 
-[data-theme="light"] .weather-temp:hover .temp-value,
-[data-theme="light"] .weather-temp:hover .temp-label,
-[data-theme="light"] .visitors-counter:hover .visitors-count,
-[data-theme="light"] .visitors-counter:hover .visitors-label {
-    color: white;
+[data-theme="dark"] .news-widget-header,
+[data-theme="dark"] .news-widget-title,
+[data-theme="dark"] .news-widget-title-short,
+[data-theme="dark"] .news-widget-footer,
+[data-theme="dark"] .news-widget-preview {
+    color: #ffffff;
 }
 
-/* Thème Dark (Bleu Nuit) */
+[data-theme="dark"] .news-widget-badge {
+    background: #1a237e;
+    border: 1px solid #5c6bc0;
+}
+
+[data-theme="dark"] .movie-dates {
+    color: #aaa;
+}
+
+[data-theme="dark"] .loading-news {
+    color: #b0b0b0;
+}
+
+[data-theme="dark"] .news-preview-item {
+    background: rgba(26, 35, 126, 0.2);
+    border-left-color: #5c6bc0;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .news-preview-item strong {
+    color: #7986cb;
+}
+
+[data-theme="dark"] .news-widget-count {
+    background: rgba(26, 35, 126, 0.3);
+    color: #ffffff;
+}
+
+[data-theme="dark"] .news-widget-tap {
+    color: #ffffff;
+}
+
+/* Widgets d'en-tête - Thème Dark */
+[data-theme="dark"] .news-widget-clock,
 [data-theme="dark"] .weather-temp,
-[data-theme="dark"] .visitors-counter {
+[data-theme="dark"] .visitors-counter,
+[data-theme="dark"] .header-btn {
     background: rgba(92, 107, 192, 0.2);
     border-color: #5c6bc0;
+    color: #ffffffcc !important;
+}
+
+[data-theme="dark"] .news-widget-clock:hover,
+[data-theme="dark"] .weather-temp:hover,
+[data-theme="dark"] .visitors-counter:hover,
+[data-theme="dark"] .header-btn:hover {
+    background: #5c6bc0;
+    color: white;
 }
 
 [data-theme="dark"] .temp-value,
 [data-theme="dark"] .visitors-count,
 [data-theme="dark"] .temp-label,
+[data-theme="dark"] .visitors-label,
 [data-theme="dark"] .clock-time,
-[data-theme="dark"] .clock-date,
-[data-theme="dark"] .visitors-label {
+[data-theme="dark"] .clock-date {
     color: #ffffff;
+    font-size: 14px;
 }
 
-[data-theme="dark"] .weather-temp:hover,
-[data-theme="dark"] .visitors-counter:hover { 
-    background: #5c6bc0;
+[data-theme="dark"] .clock-time {
+    font-size: 15px;
 }
 
-[data-theme="dark"] .weather-temp:hover .temp-value,
-[data-theme="dark"] .weather-temp:hover .temp-label,
-[data-theme="dark"] .visitors-counter:hover .visitors-count,
-[data-theme="dark"] .visitors-counter:hover .visitors-label {
-    color: white;
-}
-
-/* Thème Rouge */
-[data-theme="rouge"] .weather-temp,
-[data-theme="rouge"] .visitors-counter {
-    background: rgba(211, 47, 47, 0.1);
-    border-color: #d32f2f;
-}
-
-[data-theme="light"] .clock-date {
+[data-theme="dark"] .clock-date {
     font-size: 12px;
 }
 
-[data-theme="light"] .clock-time {
-    font-size: 15px;
-}	
+/* ===== THÈME ROUGE ===== */
+[data-theme="rouge"] .local-news-widget {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(211, 47, 47, 0.4);
+}
 
-[data-theme="light"] .clock-date:hover .clock-time {
-color: white;
+[data-theme="rouge"] .news-widget-header,
+[data-theme="rouge"] .news-widget-title,
+[data-theme="rouge"] .news-widget-title-short,
+[data-theme="rouge"] .news-widget-footer {
+    color: #d32f2f;
+}
+
+[data-theme="rouge"] .news-widget-badge {
+    background: #d32f2f;
+}
+
+[data-theme="rouge"] .news-preview-item {
+    background: rgba(211, 47, 47, 0.1);
+    border-left-color: #d32f2f;
+    color: #000000;
+}
+
+[data-theme="rouge"] .news-widget-count {
+    background: rgba(211, 47, 47, 0.1);
+    color: #000000;
+}
+
+/* Widgets d'en-tête - Thème Rouge */
+[data-theme="rouge"] .news-widget-clock,
+[data-theme="rouge"] .weather-temp,
+[data-theme="rouge"] .visitors-counter,
+[data-theme="rouge"] .header-btn {
+    background: rgba(211, 47, 47, 0.1) !important;
+    border-color: #d32f2f !important;
+    color: #000000 !important;
+}
+
+[data-theme="rouge"] .news-widget-clock:hover,
+[data-theme="rouge"] .weather-temp:hover,
+[data-theme="rouge"] .visitors-counter:hover,
+[data-theme="rouge"] .header-btn:hover {
+    background: #d32f2f;
+    color: white;
 }
 
 [data-theme="rouge"] .temp-value,
 [data-theme="rouge"] .visitors-count,
 [data-theme="rouge"] .temp-label,
 [data-theme="rouge"] .visitors-label {
-	font-size: 14px;
-	color: #000000;
+    font-size: 14px;
+    color: #000000;
 }
 
-[data-theme="rouge"] .weather-temp:hover,
-[data-theme="rouge"] .visitors-counter:hover {
-    background: #d32f2f;
+/* ===== THÈME BLEU CIEL ===== */
+[data-theme="bleuciel"] .local-news-widget {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(14, 165, 233, 0.4);
 }
 
-[data-theme="rouge"] .weather-temp:hover .temp-value,
-[data-theme="rouge"] .weather-temp:hover .temp-label,
-[data-theme="rouge"] .visitors-counter:hover .visitors-count,
-[data-theme="rouge"] .visitors-counter:hover .visitors-label {
+[data-theme="bleuciel"] .news-widget-header,
+[data-theme="bleuciel"] .news-widget-title,
+[data-theme="bleuciel"] .news-widget-title-short,
+[data-theme="bleuciel"] .news-widget-footer {
+    color: #0ea5e9;
+}
+
+[data-theme="bleuciel"] .news-widget-badge {
+    background: #0ea5e9;
+}
+
+[data-theme="bleuciel"] .news-preview-item {
+    background: rgba(14, 165, 233, 0.1);
+    border-left-color: #0ea5e9;
+}
+
+[data-theme="bleuciel"] .news-widget-count {
+    background: rgba(14, 165, 233, 0.1);
+}
+
+/* Widgets d'en-tête - Thème Bleu Ciel */
+[data-theme="bleuciel"] .news-widget-clock,
+[data-theme="bleuciel"] .weather-temp,
+[data-theme="bleuciel"] .visitors-counter,
+[data-theme="bleuciel"] .header-btn {
+    background: rgba(14, 165, 233, 0.1);
+    border-color: #0ea5e9;
+    color: #0ea5e9;
+}
+
+[data-theme="bleuciel"] .news-widget-clock:hover,
+[data-theme="bleuciel"] .weather-temp:hover,
+[data-theme="bleuciel"] .visitors-counter:hover,
+[data-theme="bleuciel"] .header-btn:hover {
+    background: #0ea5e9;
     color: white;
 }
 
-/* Thème Bleu Ciel */
-[data-theme="bleuciel"] .weather-temp,
-[data-theme="bleuciel"] .visitors-counter {
-    background: rgba(14, 165, 233, 0.1);
-    border-color: #0ea5e9;
-}
-
+[data-theme="bleuciel"] .clock-time,
+[data-theme="bleuciel"] .clock-date,
 [data-theme="bleuciel"] .temp-value,
 [data-theme="bleuciel"] .visitors-count,
 [data-theme="bleuciel"] .temp-label,
@@ -813,27 +666,27 @@ color: white;
     color: #4196df;
 }
 
-[data-theme="bleuciel"] .weather-temp:hover,
-[data-theme="bleuciel"] .visitors-counter:hover {
-    background: #0ea5e9;
+[data-theme="bleuciel"] .visitors-count,
+[data-theme="bleuciel"] .temp-value,
+[data-theme="bleuciel"] .temp-label,
+[data-theme="bleuciel"] .visitors-label {
+    font-size: 14px;
 }
 
-[data-theme="bleuciel"] .weather-temp:hover .temp-value,
-[data-theme="bleuciel"] .weather-temp:hover .temp-label,
-[data-theme="bleuciel"] .visitors-counter:hover .visitors-count,
-[data-theme="bleuciel"] .visitors-counter:hover .visitors-label {
-    color: white;
+[data-theme="bleuciel"] .clock-time {
+    font-size: 15px;
 }
 
-[data-theme="bleuciel"] .clock-time,
 [data-theme="bleuciel"] .clock-date {
-color: #4196df;
+    font-size: 12px;
 }
 
-/* ===== STYLES ALARME & MINUTEUR ===== */
-/* Ajoutez ces styles à la fin de votre news-widget.css */
+/* ============================================= */
+/*        NEWS WIDGET CSS - PARTIE 6             */
+/*        Popups Alarme et Minuteur              */
+/* ============================================= */
 
-/* Popup principale */
+/* Overlay de la popup */
 .alarm-popup-overlay {
     position: fixed;
     top: 0;
@@ -847,8 +700,10 @@ color: #4196df;
     z-index: 10000;
 }
 
+/* Contenu de la popup */
 .alarm-popup-content {
-    background: var(--chat-gradient, linear-gradient(145deg, #c62828, #e53935));
+    background: linear-gradient(145deg, #841b0a, #a92317);
+    border: 2px solid #c62828;
     border-radius: 15px;
     padding: 20px;
     color: white;
@@ -857,6 +712,7 @@ color: #4196df;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
+/* En-tête de l'alarme */
 .alarm-header {
     display: flex;
     justify-content: space-between;
@@ -864,6 +720,7 @@ color: #4196df;
     margin-bottom: 20px;
 }
 
+/* Bouton fermer */
 .alarm-close {
     background: none;
     border: none;
@@ -879,6 +736,7 @@ color: #4196df;
     background: rgba(255, 255, 255, 0.2);
 }
 
+/* Affichage de l'heure actuelle */
 .current-time {
     text-align: center;
     font-size: 2em;
@@ -889,6 +747,7 @@ color: #4196df;
     border-radius: 10px;
 }
 
+/* Sections alarme et minuteur */
 .alarm-section, .timer-section {
     margin-bottom: 20px;
     padding: 15px;
@@ -900,16 +759,21 @@ color: #4196df;
     margin: 0 0 10px 0;
 }
 
-/* ✅ Styles corrigés pour les inputs */
-.alarm-inputs {
+/* Conteneurs des inputs */
+.alarm-inputs, .timer-inputs {
     display: flex;
     flex-direction: column;
     gap: 10px;
     align-items: center;
 }
 
-.alarm-section input, .timer-section input, 
-.alarm-section select, .alarm-section button, .timer-section button {
+/* Styles des inputs et boutons */
+.alarm-section input, 
+.timer-section input, 
+.alarm-section select, 
+.timer-section select,
+.alarm-section button, 
+.timer-section button {
     background: rgba(255, 255, 255, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 5px;
@@ -921,36 +785,44 @@ color: #4196df;
     transition: all 0.3s ease;
 }
 
-/* ✅ Styles pour le select (liste déroulante) */
-.alarm-section select {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-}
-
-/* ✅ Options du select lisibles */
-.alarm-section select option {
+/* Options des selects */
+.alarm-section select option,
+.timer-section select option {
     background: #333;
     color: white;
     padding: 5px;
 }
 
-.alarm-section button, .timer-section button {
+/* Boutons */
+.alarm-section button, 
+.timer-section button {
     cursor: pointer;
     font-weight: bold;
 }
 
-.alarm-section button:hover, .timer-section button:hover {
+.alarm-section button:hover, 
+.timer-section button:hover {
     background: rgba(255, 255, 255, 0.3);
     transform: scale(1.02);
 }
 
+/* Affichages de statut */
 #alarmStatus, #timerDisplay {
     margin-top: 10px;
     font-weight: bold;
     text-align: center;
 }
 
-/* ===== BOUTON STOP ALARME ===== */
+#timerDisplay {
+    margin-top: 15px;
+    font-size: 18px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    min-height: 20px;
+}
+
+/* ===== POPUP STOP ALARME ===== */
 .stop-alarm-overlay {
     position: fixed;
     top: 0;
@@ -966,7 +838,8 @@ color: #4196df;
 }
 
 .stop-alarm-content {
-    background: linear-gradient(145deg, #d32f2f, #f44336);
+    background: linear-gradient(145deg, #841b0a, #a92317);
+    border: 2px solid #c62828;
     border-radius: 20px;
     padding: 30px;
     color: white;
@@ -1046,25 +919,15 @@ color: #4196df;
     51%, 100% { opacity: 0.7; }
 }
 
-/* ===== THÈMES POUR L'ALARME - VERSION COMPLÈTE ===== */
+/* ============================================= */
+/*        NEWS WIDGET CSS - PARTIE 7             */
+/*        Thèmes Alarme et Responsive            */
+/* ============================================= */
 
-/* Thème Rouge (défaut) - NOUVELLE COULEUR #841b0a */
-.alarm-popup-content {
-    background: linear-gradient(145deg, #841b0a, #a92317);
-    border: 2px solid #c62828;
-}
-
-.stop-alarm-content {
-    background: linear-gradient(145deg, #841b0a, #a92317);
-    border: 2px solid #c62828;
-}
+/* ===== THÈMES POUR L'ALARME ===== */
 
 /* Thème Dark (Sombre) */
-[data-theme="dark"] .alarm-popup-content {
-    background: linear-gradient(145deg, #212121, #424242);
-    border: 2px solid #616161;
-}
-
+[data-theme="dark"] .alarm-popup-content,
 [data-theme="dark"] .stop-alarm-content {
     background: linear-gradient(145deg, #212121, #424242);
     border: 2px solid #616161;
@@ -1082,115 +945,60 @@ color: #4196df;
 }
 
 /* Thème Bleu Ciel */
-[data-theme="bleuciel"] .alarm-popup-content {
-    background: linear-gradient(145deg, #1976d2, #42a5f5);
-    border: 2px solid #64b5f6;
-}
-
+[data-theme="bleuciel"] .alarm-popup-content,
 [data-theme="bleuciel"] .stop-alarm-content {
     background: linear-gradient(145deg, #1976d2, #42a5f5);
     border: 2px solid #64b5f6;
 }
 
 [data-theme="bleuciel"] .alarm-section,
-[data-theme="bleuciel"] .timer-section {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
+[data-theme="bleuciel"] .timer-section,
 [data-theme="bleuciel"] .current-time {
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /* Thème Light (Violet) */
-[data-theme="light"] .alarm-popup-content {
-    background: linear-gradient(145deg, #7b1fa2, #ab47bc);
-    border: 2px solid #ce93d8;
-}
-
+[data-theme="light"] .alarm-popup-content,
 [data-theme="light"] .stop-alarm-content {
     background: linear-gradient(145deg, #7b1fa2, #ab47bc);
     border: 2px solid #ce93d8;
 }
 
 [data-theme="light"] .alarm-section,
-[data-theme="light"] .timer-section {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
+[data-theme="light"] .timer-section,
 [data-theme="light"] .current-time {
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Conteneur pour les inputs du minuteur */
-.timer-inputs {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
-}
-
-/* Styles spécifiques pour le select du minuteur */
-.timer-section select {
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 5px;
-    padding: 8px;
-    color: white;
-    width: 200px;
-    text-align: center;
-    font-size: 14px;
-    transition: all 0.3s ease;
-}
-
-/* Options du select minuteur lisibles */
-.timer-section select option {
-    background: #333;
-    color: white;
-    padding: 5px;
-    text-align: center;
-}
-
-/* Bouton du minuteur */
-.timer-section button {
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 5px;
-    padding: 8px;
-    color: white;
-    width: 200px;
-    text-align: center;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.timer-section button:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: scale(1.02);
-}
-
-/* Affichage du minuteur */
-#timerDisplay {
-    margin-top: 15px;
-    font-weight: bold;
-    text-align: center;
-    font-size: 18px;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 10px;
-    border-radius: 8px;
-    min-height: 20px;
-}
-
-/* ===== AMÉLIORATION SMARTPHONE - AJOUTEZ APRÈS VOTRE @media EXISTANT ===== */
-
-@media (max-width: 768px) {
+/* ===== RESPONSIVE GÉNÉRAL ===== */
+@media (max-width: 767px) {
+    .news-widget-container {
+        position: relative;
+        padding: 0 5px;
+        margin: 130px auto 15px auto;
+        order: 2;
+    }
     
-    /* ===== POPUP RESPONSIVE AMÉLIORÉE ===== */
+    .local-news-widget {
+        margin: 0;
+        padding: 12px;
+    }
+    
+    .news-widget-title {
+        font-size: 16px;
+    }
+    
+    .news-widget-footer {
+        flex-direction: column;
+        gap: 5px;
+        text-align: center;
+    }
+}
+
+/* ===== RESPONSIVE POPUP ALARME ===== */
+@media (max-width: 768px) {
     .alarm-popup-overlay {
         padding: 10px;
         align-items: flex-start;
@@ -1208,14 +1016,12 @@ color: #4196df;
         box-sizing: border-box;
     }
     
-    /* ===== HEURE ACTUELLE PLUS COMPACT ===== */
     .current-time {
         font-size: 1.5em !important;
         padding: 10px !important;
         margin-bottom: 15px !important;
     }
     
-    /* ===== SECTIONS PLUS COMPACTES ===== */
     .alarm-section, .timer-section {
         margin-bottom: 15px !important;
         padding: 12px !important;
@@ -1227,7 +1033,6 @@ color: #4196df;
         text-align: center;
     }
     
-    /* ===== BOUTON FERMER PLUS GROS ===== */
     .alarm-close {
         font-size: 24px !important;
         padding: 8px !important;
@@ -1238,9 +1043,9 @@ color: #4196df;
         justify-content: center;
     }
     
-    /* ===== INPUTS AMÉLIORÉS POUR TACTILE ===== */
     .alarm-section input, .timer-section input, 
-    .alarm-section select, .alarm-section button, .timer-section button {
+    .alarm-section select, .timer-section select,
+    .alarm-section button, .timer-section button {
         width: 100% !important;
         max-width: 280px !important;
         margin: 0 auto !important;
@@ -1251,7 +1056,6 @@ color: #4196df;
         touch-action: manipulation;
     }
     
-    /* ===== INPUT TIME CENTRÉ PARFAITEMENT ===== */
     .alarm-section input[type="time"] {
         height: 54px !important;
         font-size: 18px !important;
@@ -1264,7 +1068,6 @@ color: #4196df;
         justify-content: center !important;
     }
     
-    /* ===== STOP ALARM RESPONSIVE ===== */
     .stop-alarm-content {
         margin: 15px;
         padding: 25px !important;
@@ -1293,7 +1096,6 @@ color: #4196df;
         margin-top: 15px !important;
     }
     
-    /* ===== STATUS ET DISPLAY AMÉLIORÉS ===== */
     #alarmStatus, #timerDisplay {
         font-size: 16px !important;
         padding: 12px !important;
@@ -1302,7 +1104,6 @@ color: #4196df;
         text-align: center !important;
     }
     
-    /* ===== CONTENEURS CENTRÉS ===== */
     .alarm-inputs, .timer-inputs {
         width: 100% !important;
         padding: 0 10px !important;
@@ -1311,13 +1112,11 @@ color: #4196df;
         justify-content: center !important;
     }
     
-    /* ===== SCROLL SMOOTH POUR POPUP ===== */
     .alarm-popup-content {
         scroll-behavior: smooth;
         -webkit-overflow-scrolling: touch;
     }
     
-    /* ===== AMÉLIORATION TACTILE GÉNÉRALE ===== */
     .alarm-section button:hover, 
     .timer-section button:hover,
     .alarm-close:hover,
@@ -1333,7 +1132,7 @@ color: #4196df;
     }
 }
 
-/* ===== TRÈS PETITS ÉCRANS (iPhone SE, etc.) ===== */
+/* Très petits écrans */
 @media (max-width: 380px) {
     .alarm-popup-content {
         padding: 12px !important;
@@ -1355,7 +1154,8 @@ color: #4196df;
     }
     
     .alarm-section input, .timer-section input, 
-    .alarm-section select, .alarm-section button, .timer-section button {
+    .alarm-section select, .timer-section select,
+    .alarm-section button, .timer-section button {
         max-width: 100% !important;
         font-size: 14px !important;
         padding: 10px !important;
@@ -1367,7 +1167,7 @@ color: #4196df;
     }
 }
 
-/* ===== PAYSAGE SMARTPHONE ===== */
+/* Paysage smartphone */
 @media (max-width: 768px) and (orientation: landscape) {
     .alarm-popup-overlay {
         padding-top: 10px;
@@ -1390,12 +1190,12 @@ color: #4196df;
 }
 
 /* ============================================= */
-/*          POPUP STATISTIQUES VISITEURS         */
+/*        NEWS WIDGET CSS - PARTIE 8             */
+/*        Popup Statistiques Visiteurs           */
 /* ============================================= */
 
-/* --- Définition des variables de couleur pour chaque thème --- */
-/* Thème Light (par défaut) */
-:root, [data-theme="light"]  {
+/* Variables de couleur pour chaque thème */
+:root, [data-theme="light"] {
     --popup-bg: #ffffff;
     --popup-text: #333333;
     --popup-shadow: rgba(0, 0, 0, 0.15);
@@ -1409,8 +1209,7 @@ color: #4196df;
     --active-color: #28a745;
 }
 
-/* Thème Dark */
-[data-theme="dark"]  {
+[data-theme="dark"] {
     --popup-bg: #2d3748;
     --popup-text: #f7fafc;
     --popup-shadow: rgba(0, 0, 0, 0.4);
@@ -1424,8 +1223,7 @@ color: #4196df;
     --active-color: #34d399;
 }
 
-/* Thème Rouge - AMÉLIORÉ pour la lisibilité */
-[data-theme="rouge"]  {
+[data-theme="rouge"] {
     --popup-bg: #ffffff;
     --popup-text: #2d1b1e;
     --popup-shadow: rgba(195, 36, 51, 0.3);
@@ -1439,8 +1237,7 @@ color: #4196df;
     --active-color: #dc2626;
 }
 
-/* Thème Bleu Ciel */
-[data-theme="bleuciel"]  {
+[data-theme="bleuciel"] {
     --popup-bg: #ffffff;
     --popup-text: #1e3a8a;
     --popup-shadow: rgba(59, 130, 246, 0.2);
@@ -1454,7 +1251,7 @@ color: #4196df;
     --active-color: #3b82f6;
 }
 
-/* --- Styles de la structure de la popup (indépendants du thème) --- */
+/* Structure de la popup */
 .visitors-popup-overlay {
     position: fixed;
     top: 0;
@@ -1488,12 +1285,12 @@ color: #4196df;
     max-width: 520px;
     max-height: 85vh;
     overflow-y: auto;
-    overflow-x: hidden; /* Empêche le débordement horizontal */
+    overflow-x: hidden;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     transform: scale(0.9) translateY(20px);
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    position: relative; /* Important pour la stabilité */
+    position: relative;
 }
 
 .visitors-popup-overlay.visible .visitors-popup-box {
@@ -1549,7 +1346,7 @@ color: #4196df;
     transform: scale(1.1);
 }
 
-/* Nouveau : Cartes de statistiques */
+/* Cartes de statistiques */
 .visitors-stats-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1600,14 +1397,14 @@ color: #4196df;
     vertical-align: middle;
 }
 
-/* Zone du graphique améliorée */
+/* Zone du graphique */
 .visitors-chart-container {
     background: var(--summary-bg);
     border-radius: 16px;
     padding: 16px;
     margin-bottom: 20px;
     position: relative;
-    min-height: 250px; /* Hauteur minimale fixe */
+    min-height: 250px;
 }
 
 .visitors-chart-header {
@@ -1643,7 +1440,6 @@ color: #4196df;
     background: var(--chart-line-color);
 }
 
-/* Canvas pour le graphique */
 #visitorsChart {
     border-radius: 8px;
     touch-action: pan-y;
@@ -1652,7 +1448,6 @@ color: #4196df;
     height: 200px !important;
 }
 
-/* Info tooltip mobile */
 .visitors-chart-info {
     background: var(--popup-bg);
     border: 1px solid var(--chart-grid-color);
@@ -1674,7 +1469,7 @@ color: #4196df;
     margin-bottom: 4px;
 }
 
-/* Résumé amélioré */
+/* Résumé */
 .visitors-popup-summary {
     margin: 0;
     text-align: center;
@@ -1721,11 +1516,6 @@ color: #4196df;
     animation: pulse 2s infinite;
 }
 
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
-}
-
 .visitors-realtime-dot {
     width: 6px;
     height: 6px;
@@ -1734,12 +1524,7 @@ color: #4196df;
     animation: blink 1.5s infinite;
 }
 
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-}
-
-/* Animation d'apparition plus fluide */
+/* Animation d'apparition */
 @keyframes slideInUp {
     from {
         opacity: 0;
@@ -1753,7 +1538,6 @@ color: #4196df;
 
 .visitors-popup-overlay.visible .visitors-popup-box {
     animation: slideInUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    transform: scale(1) translateY(0);
 }
 
 /* Responsive Mobile */
