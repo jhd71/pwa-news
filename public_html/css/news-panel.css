@@ -98,7 +98,7 @@
     /* Style du bouton sur mobile */
     .news-button {
         position: fixed !important;
-        top: 75px !important;
+        top: 70px !important;
         left: 50% !important;
         right: auto !important;
         transform: translateX(-50%);
