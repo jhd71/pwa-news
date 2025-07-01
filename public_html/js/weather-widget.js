@@ -59,7 +59,7 @@ async function loadWeatherData() {
     
     // ✅ NOUVEAU : Ajout de la température actuelle en haut
     let forecastHTML = `
-      <div style="text-align: center; margin-bottom: 15px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+      <div style="text-align: center; margin-bottom: 5px; background: rgba(255,255,255,0.1); border-radius: 10px;">
         <p style="margin: 0 0 5px 0; color: white; font-size: 16px;"><strong>${location.name}</strong></p>
         <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
           <span style="font-size: 24px; font-weight: bold; color: #FFD700;">${Math.round(current.temp_c)}°C</span>

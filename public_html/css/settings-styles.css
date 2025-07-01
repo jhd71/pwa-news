@@ -1,6 +1,15 @@
 /* settings-styles.css - Styles pour le gestionnaire de paramètres */
 
-/* Modale des paramètres */
+/* ===== VARIABLES CSS ===== */
+:root {
+  --header-height: 60px;
+  --bottom-nav-height: 60px;
+  --transition-speed: 0.3s;
+  --border-radius: 8px;
+  --primary-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== MODALES ===== */
 .modal.settings-modal {
   position: fixed;
   top: 0;
@@ -14,7 +23,7 @@
   z-index: 1000;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s, visibility 0.3s;
+  transition: opacity var(--transition-speed), visibility var(--transition-speed);
 }
 
 .modal.settings-modal.show {
@@ -32,7 +41,7 @@
   overflow-y: auto;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   transform: translateY(20px);
-  transition: transform 0.3s;
+  transition: transform var(--transition-speed);
 }
 
 .modal.show .modal-content {
@@ -73,6 +82,7 @@
   background-color: rgba(255, 255, 255, 0.1);
 }
 
+/* ===== CONTENU DES PARAMÈTRES ===== */
 .settings-content {
   padding: 20px;
   color: white !important;
@@ -90,7 +100,7 @@
   color: white !important;
 }
 
-/* Sélecteurs de couleurs */
+/* ===== SÉLECTEURS DE COULEURS ===== */
 .color-picker {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -116,7 +126,7 @@
   padding: 0;
 }
 
-/* Sélecteurs de thème */
+/* ===== SÉLECTEURS DE THÈME ===== */
 .theme-mode {
   display: flex;
   gap: 15px;
@@ -131,14 +141,8 @@
   color: white !important;
 }
 
-/* Tuiles de taille de police */
-.settings-tiles-container {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin: 15px 0;
-}
-
+/* ===== TUILES DE TAILLE DE POLICE ===== */
+.settings-tiles-container,
 .font-size-tiles {
   display: flex;
   justify-content: center;
@@ -157,47 +161,19 @@
   background-color: rgba(255, 255, 255, 0.1);
   cursor: pointer;
   color: white !important;
-  /* Supprimer la transition qui pose problème sur mobile */
   transition: background-color 0.2s;
   -webkit-tap-highlight-color: transparent;
-  /* Stabiliser l'élément */
   position: relative;
   will-change: background-color;
   user-select: none;
   touch-action: manipulation;
 }
 
-/* Style des tuiles selon les thèmes */
-[data-theme="light"] .font-size-tile {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-[data-theme="dark"] .font-size-tile {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="rouge"] .font-size-tile {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
 .font-size-tile.active {
   background-color: rgba(255, 255, 255, 0.2);
   color: white !important;
-  /* Supprimer les transformations et remplacer par border pour l'état actif */
   border: 2px solid rgba(255, 255, 255, 0.8);
-  /* Aucune transformation pour éviter les problèmes sur mobile */
   transform: none !important;
-}
-
-/* Effet de survol UNIQUEMENT pour les appareils non tactiles */
-@media (hover: hover) {
-  .font-size-tile:hover:not(.active) {
-    background-color: rgba(255, 255, 255, 0.15);
-  }
-
-  [data-theme="light"] .font-size-tile:hover:not(.active) {
-    background-color: rgba(0, 0, 0, 0.1);
-  }
 }
 
 .font-size-tile .material-icons {
@@ -206,131 +182,14 @@
   color: white !important;
 }
 
-/* Support spécifique pour les appareils mobiles */
-@media (max-width: 767px) {
-  .settings-menu {
-    position: fixed;
-    top: var(--header-height, 60px);
-    right: 0;
-    width: 85%;
-    max-width: 300px;
-    /* Modification importante ici : supprimer la limitation de hauteur */
-    height: 100vh !important; /* Couvrir toute la hauteur de l'écran */
-    background-color: var(--primary-color);
-    z-index: 10000 !important; /* Garder très élevé comme vous l'aviez */
-    transform: translateX(100%);
-    transition: transform 0.3s ease-out;
-    box-shadow: -3px 0 10px rgba(0, 0, 0, 0.3);
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-    display: flex;
-    flex-direction: column;
-    /* Ajouter une marge inférieure négative pour couvrir la barre de navigation */
-    margin-bottom: -60px; /* Même valeur que --bottom-nav-height */
-  }
-
-  .settings-menu.open {
-    transform: translateX(0);
+/* Effet de survol UNIQUEMENT pour les appareils non tactiles */
+@media (hover: hover) {
+  .font-size-tile:hover:not(.active) {
+    background-color: rgba(255, 255, 255, 0.15);
   }
 }
 
-  /* Style pour l'en-tête du panneau */
-  .settings-header {
-    position: sticky;
-    top: 0;
-    left: 0;
-    right: 0;
-    background-color: var(--primary-color);
-    z-index: 2;
-    padding: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  /* Style pour le contenu */
-  .settings-content {
-    flex: 1;
-    padding: 15px;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  /* Style pour les tuiles sur mobile */
-  .font-size-tiles {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin: 15px 0;
-  }
-
-  .font-size-tile {
-    width: 0;
-    height: auto;
-    aspect-ratio: 1/1;
-    min-height: 48px;
-    border-radius: 8px;
-    /* Aucune transition sur mobile */
-    transition: none !important;
-  }
-
-  /* Indique visuellement l'état actif sans animation */
-  .font-size-tile.active {
-    border: 2px solid white;
-    background-color: rgba(255, 255, 255, 0.3);
-    transform: none !important;
-  }
-
-  /* Indiquer l'état pressé sans animation */
-  .font-size-tile:active {
-    background-color: rgba(255, 255, 255, 0.2);
-    transform: none !important;
-  }
-  
-  /* Style pour le bouton settings actif */
-  .settings-button.active {
-    background-color: rgba(255, 255, 255, 0.2);
-  }
-  
-  /* Style pour le bouton de fermeture */
-  .settings-header .close-btn {
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    cursor: pointer;
-    z-index: 3;
-  }
-  
-  /* Empêcher le défilement du body quand le panneau est ouvert */
-  body.settings-open {
-    overflow: hidden;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-  }
-  
-  /* Overlay quand le panneau est ouvert */
-  body.settings-open::after {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1005;
-    pointer-events: none;
-  }
-}
-
-/* Interrupteurs de type toggle */
+/* ===== INTERRUPTEURS TOGGLE ===== */
 .switch-label {
   display: flex;
   justify-content: space-between;
@@ -389,7 +248,7 @@ input:checked + .toggle-slider:before {
   transform: translateX(24px);
 }
 
-/* Boutons des paramètres */
+/* ===== BOUTONS ===== */
 .settings-buttons {
   display: flex;
   flex-direction: column;
@@ -403,7 +262,7 @@ input:checked + .toggle-slider:before {
   gap: 8px;
   padding: 10px 16px;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--border-radius);
   font-size: 0.95rem;
   font-weight: 500;
   cursor: pointer;
@@ -433,11 +292,7 @@ input:checked + .toggle-slider:before {
   opacity: 0.9;
 }
 
-/* Notifications toast */
-.toast-notification.info {
-  background-color: #17a2b8;
-}
-
+/* ===== NOTIFICATIONS TOAST ===== */
 .toast-notification {
   position: fixed;
   bottom: 20px;
@@ -446,11 +301,11 @@ input:checked + .toggle-slider:before {
   padding: 12px 20px;
   background-color: #333;
   color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: var(--border-radius);
+  box-shadow: var(--primary-shadow);
   z-index: 2000;
   opacity: 0;
-  transition: transform 0.3s, opacity 0.3s;
+  transition: transform var(--transition-speed), opacity var(--transition-speed);
 }
 
 .toast-notification.show {
@@ -466,15 +321,115 @@ input:checked + .toggle-slider:before {
   background-color: #dc3545;
 }
 
-/* Support spécifique pour le thème rouge */
-[data-theme="rouge"] .modal-content {
-  background-color: #d32f2f !important;
+.toast-notification.info {
+  background-color: #17a2b8;
 }
 
-[data-theme="rouge"] .settings-menu {
-  background-color: rgb(148, 0, 0) !important;
+/* ===== STYLES MOBILES ===== */
+@media (max-width: 767px) {
+  .settings-menu {
+    position: fixed;
+    top: var(--header-height);
+    right: 0;
+    width: 85%;
+    max-width: 300px;
+    height: calc(100vh + env(safe-area-inset-bottom, 0px)) !important;
+    background-color: var(--primary-color);
+    z-index: 10000 !important;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-out;
+    box-shadow: -3px 0 10px rgba(0, 0, 0, 0.3);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+  }
+
+  .settings-menu.open {
+    transform: translateX(0);
+  }
+
+  .settings-header {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--primary-color);
+    z-index: 2;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .settings-content {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    min-height: calc(100vh - var(--header-height) - 60px);
+  }
+
+  .font-size-tiles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 15px 0;
+  }
+
+  .font-size-tile {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1/1;
+    min-height: 48px;
+    border-radius: var(--border-radius);
+    transition: none !important;
+  }
+
+  .font-size-tile.active {
+    border: 2px solid white;
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: none !important;
+  }
+
+  .font-size-tile:active {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: none !important;
+  }
+
+  .settings-button.active {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .settings-header .close-btn {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 3;
+  }
+
+  body.settings-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
 }
 
+/* ===== STYLES PAR THÈME ===== */
+
+/* --- Thème Rouge --- */
+[data-theme="rouge"] .modal-content,
+[data-theme="rouge"] .settings-menu,
 [data-theme="rouge"] .settings-header {
   background-color: rgb(148, 0, 0) !important;
 }
@@ -488,6 +443,14 @@ input:checked + .toggle-slider:before {
   color: white !important;
 }
 
+[data-theme="rouge"] .font-size-tile {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="rouge"] .font-size-tile:hover:not(.active) {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
 [data-theme="rouge"] input:checked + .toggle-slider {
   background-color: #b71c1c;
 }
@@ -496,20 +459,9 @@ input:checked + .toggle-slider:before {
   background-color: #b71c1c;
 }
 
-[data-theme="rouge"] .btn.secondary {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: white !important;
-}
-
-/* Support spécifique pour le thème sombre */
-[data-theme="dark"] .modal-content {
-  background-color: #1a237e !important;
-}
-
-[data-theme="dark"] .settings-menu {
-  background-color: #1a237e !important;
-}
-
+/* --- Thème Sombre --- */
+[data-theme="dark"] .modal-content,
+[data-theme="dark"] .settings-menu,
 [data-theme="dark"] .settings-header {
   background-color: #1a237e !important;
 }
@@ -523,6 +475,10 @@ input:checked + .toggle-slider:before {
   color: white !important;
 }
 
+[data-theme="dark"] .font-size-tile {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 [data-theme="dark"] input:checked + .toggle-slider {
   background-color: #283593;
 }
@@ -531,20 +487,9 @@ input:checked + .toggle-slider:before {
   background-color: #283593;
 }
 
-[data-theme="dark"] .btn.secondary {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: white !important;
-}
-
-/* Support spécifique pour le thème clair (violet) */
-[data-theme="light"] .modal-content {
-  background-color: #7E57C2 !important;
-}
-
-[data-theme="light"] .settings-menu {
-  background-color: #7E57C2 !important;
-}
-
+/* --- Thème Clair (Violet) --- */
+[data-theme="light"] .modal-content,
+[data-theme="light"] .settings-menu,
 [data-theme="light"] .settings-header {
   background-color: #7E57C2 !important;
 }
@@ -558,6 +503,14 @@ input:checked + .toggle-slider:before {
   color: white !important;
 }
 
+[data-theme="light"] .font-size-tile {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .font-size-tile:hover:not(.active) {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
 [data-theme="light"] input:checked + .toggle-slider {
   background-color: #673AB7;
 }
@@ -566,65 +519,16 @@ input:checked + .toggle-slider:before {
   background-color: #673AB7;
 }
 
+/* --- Style commun aux boutons secondaires de tous les thèmes --- */
+[data-theme="rouge"] .btn.secondary,
+[data-theme="dark"] .btn.secondary,
 [data-theme="light"] .btn.secondary {
   background-color: rgba(255, 255, 255, 0.2);
   color: white !important;
 }
 
-/* Augmenter le z-index du panneau des paramètres */
-.settings-menu {
-    z-index: 10000 !important; /* Valeur très élevée pour passer au-dessus de tout */
-}
-
-/* Augmenter également le z-index du sidebar menu */
-.sidebar {
-    z-index: 10000 !important;
-}
-
-/* S'assurer que le news-ticker reste en dessous */
-.news-ticker {
-    z-index: 9000;
-}
-
-/* Style pour l'overlay lorsque le panneau des paramètres est ouvert */
-.settings-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 9999; /* Juste en dessous du menu des paramètres */
-  display: none;
-}
-
-.settings-overlay.active {
-  display: block;
-}
-
-/* Empêcher le défilement du body quand le panneau est ouvert */
-body.settings-open {
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
-  height: 100%;
-}
-
-@media (max-width: 767px) {
-  /* Correction pour le safe area sur iOS */
-  .settings-menu {
-    height: calc(100vh + env(safe-area-inset-bottom, 0px)) !important;
-    padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px));
-  }
-  
-  /* S'assurer que le contenu des paramètres remplit l'espace */
-  .settings-content {
-    flex: 1;
-    min-height: calc(100vh - var(--header-height) - 60px); /* 60px pour la hauteur de l'en-tête du menu */
-  }
-}
-
-/* Styles pour les overlays */
+/* ===== OVERLAYS ===== */
+.settings-overlay,
 .menu-overlay {
   position: fixed;
   top: 0;
@@ -632,15 +536,29 @@ body.settings-open {
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 990;
+  z-index: 9999;
   display: none;
 }
 
+.settings-overlay.active,
 .menu-overlay.visible {
   display: block;
 }
 
-/* Empêcher les clics sur les tuiles quand un overlay est visible */
+/* ===== Z-INDEX MANAGEMENT ===== */
+.settings-menu {
+  z-index: 10000 !important;
+}
+
+.sidebar {
+  z-index: 10000 !important;
+}
+
+.news-ticker {
+  z-index: 9000;
+}
+
+/* ===== ÉTATS SPÉCIAUX ===== */
 body.overlay-active .tile {
   pointer-events: none;
 }
