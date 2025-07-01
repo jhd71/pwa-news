@@ -98,7 +98,7 @@
     /* Style du bouton sur mobile */
     .news-button {
         position: fixed !important;
-        top: 70px !important;
+        top: 75px !important;
         left: 50% !important;
         right: auto !important;
         transform: translateX(-50%);
@@ -130,9 +130,9 @@
 @media (max-width: 480px) {
     .news-button {
         padding: 5px 8px !important;
-        border-radius: 6px !important;
+        /* border-radius: 6px !important; */
         font-size: 12px !important;
-        max-width: 120px !important;
+        /* max-width: 120px !important; */
     }
     
     .news-button .material-icons {
