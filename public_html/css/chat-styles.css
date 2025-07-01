@@ -1140,7 +1140,7 @@
 
 /* Section des mots bannis */
 .banned-words-list {
-  max-height: 200px;
+  max-height: 300px;
   overflow-y: auto;
   background: rgba(255, 255, 255, 0.06);
   border-radius: 8px;
@@ -1555,20 +1555,6 @@
 [data-theme="rouge"] .header-buttons button.enabled:hover {
   background: #FFDA5A !important;
   transform: scale(1.1) !important;
-}
-
-/* Indicateur actif */
-[data-theme="rouge"] .sound-btn.enabled::after,
-[data-theme="rouge"] .notifications-btn.enabled::after {
-  content: '' !important;
-  position: absolute !important;
-  top: -3px !important;
-  right: -3px !important;
-  width: 10px !important;
-  height: 10px !important;
-  background-color: #22c55e !important;
-  border-radius: 50% !important;
-  border: 2px solid #FFD230 !important;
 }
 
 /* Boutons de connexion - thème rouge */
