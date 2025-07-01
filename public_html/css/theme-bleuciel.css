@@ -1,74 +1,127 @@
-/* Mettre à jour le fichier theme-bleuciel.css pour avoir des tuiles colorées */
+/* ========================================
+   THEME BLEU CIEL - ACTUETMEDIA.FR
+   Version optimisée et corrigée
+   ======================================== */
 
-/* Styles de base pour le thème bleu ciel */
+/* ========================================
+   PARTIE 1 : VARIABLES ET STYLES DE BASE
+   ======================================== */
+
+/* Variables principales du thème */
 [data-theme="bleuciel"] {
     /* Couleurs principales */
-    --primary-color: #4FB3E8; /* Bleu ciel */
-    --background-color: #F0F8FF; /* Fond bleu très pâle */
+    --primary-color: #4FB3E8;
+    --primary-dark: #3F97C7;
+    --background-color: #F0F8FF;
     --text-color: #333333;
+    --text-light: white;
     --border-color: #E3F2FD;
     --hover-color: rgba(79, 179, 232, 0.1);
     --shadow-color: rgba(0, 0, 0, 0.08);
     --card-background: var(--primary-color);
     
-    /* Variables pour le chat et autres éléments */
-    --chat-gradient: linear-gradient(145deg, #4FB3E8, #3F97C7);
-    --chat-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-    --chat-border: 1px solid rgba(255, 255, 255, 0.1);
-    --info-bubble-bg: linear-gradient(135deg, #3F97C7 0%, #4FB3E8 100%);
+    /* Gradients réutilisables */
+    --primary-gradient: linear-gradient(145deg, #4FB3E8, #3F97C7);
+    --primary-gradient-hover: linear-gradient(145deg, #5BBFF0, #4CA3D3);
     
-    /* Widgets */
-    --weather-gradient: linear-gradient(145deg, #4FB3E8, #3F97C7);
-    --quick-links-gradient: linear-gradient(145deg, #4FB3E8, #3F97C7);
+    /* Ombres */
+    --shadow-small: 0 2px 5px rgba(0, 0, 0, 0.3);
+    --shadow-medium: 0 4px 10px rgba(0, 0, 0, 0.2);
+    --shadow-large: 0 8px 32px rgba(0, 0, 0, 0.15);
+    
+    /* Bordures */
+    --border-light: 1px solid rgba(255, 255, 255, 0.1);
+    --border-medium: 1px solid rgba(255, 255, 255, 0.2);
+    --border-heavy: 1px solid rgba(255, 255, 255, 0.3);
+    
+    /* Widgets spécifiques */
+    --weather-gradient: var(--primary-gradient);
+    --quick-links-gradient: var(--primary-gradient);
+    --chat-gradient: var(--primary-gradient);
+    --chat-shadow: var(--shadow-large);
+    --chat-border: var(--border-light);
+    --info-bubble-bg: linear-gradient(135deg, #3F97C7 0%, #4FB3E8 100%);
 }
 
-/* Pour le texte en mode bleu ciel */
+/* ========================================
+   STYLES DE BASE ET ARRIÈRE-PLAN
+   ======================================== */
+
+/* Arrière-plan principal */
+[data-theme="bleuciel"] body,
+[data-theme="bleuciel"] html {
+    background-color: #6cacde;
+    background-image: none;
+}
+
+/* Texte en mode bleu ciel pour les éléments principaux */
 [data-theme="bleuciel"] .sidebar,
 [data-theme="bleuciel"] .settings-menu,
 [data-theme="bleuciel"] .modal-content {
-    color: white !important;
+    color: var(--text-light);
 }
 
-/* Styles pour les boutons en bleu ciel */
+/* ========================================
+   BOUTONS PRINCIPAUX
+   ======================================== */
+
+/* Boutons de menu et paramètres */
 [data-theme="bleuciel"] .menu-button, 
 [data-theme="bleuciel"] .hamburger-menu,
 [data-theme="bleuciel"] .settings-button, 
 [data-theme="bleuciel"] .gear-icon {
-    background-color: rgba(79, 179, 232, 0.8) !important;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
+    background-color: rgba(79, 179, 232, 0.8);
+    box-shadow: var(--shadow-small);
 }
 
-/* Navigation du bas en bleu ciel */
+/* Boutons spéciaux */
+[data-theme="bleuciel"] .news-button,
+[data-theme="bleuciel"] .weather-show-btn,
+[data-theme="bleuciel"] .quick-links-show-btn,
+[data-theme="bleuciel"] .weather-mobile-btn {
+    background: var(--primary-gradient);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* ========================================
+   NAVIGATION
+   ======================================== */
+
+/* Navigation du bas */
 [data-theme="bleuciel"] .bottom-nav {
     background: linear-gradient(
         to bottom,
         rgba(79, 179, 232, 0.95),
         rgba(63, 151, 199, 0.98)
     );
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: var(--border-light);
 }
 
-/* Chat en bleu ciel */
+/* Navigation items actifs */
+[data-theme="bleuciel"] .nav-item.active {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* App header */
+[data-theme="bleuciel"] .app-header {
+    background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
+}
+
+/* ========================================
+   CHAT
+   ======================================== */
+
+/* Bouton toggle du chat */
 [data-theme="bleuciel"] .chat-toggle {
-    background: linear-gradient(145deg, #4FB3E8, #3F97C7);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    background: var(--chat-gradient);
+    box-shadow: var(--shadow-medium);
 }
 
-/* ---------- IMPORTANT: SUPPRIMÉ LE STYLE BLEU FORCE POUR LES TUILES ---------- */
-/* On supprime ce style pour permettre les couleurs variées
-[data-theme="bleuciel"] .tile {
-    background: linear-gradient(145deg, #4FB3E8, #3F97C7);
-    color: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
+/* ========================================
+   PARTIE 2 : TUILES COLORÉES
+   ======================================== */
 
-[data-theme="bleuciel"] .tile:hover {
-    background: linear-gradient(145deg, #5BBFF0, #4CA3D3);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-*/
-
-/* Restauration des couleurs variées pour les tuiles en thème bleu ciel */
+/* Système de couleurs variées pour les tuiles */
 [data-theme="bleuciel"] .tile:nth-child(30n + 1) { background: linear-gradient(135deg, #9675CD, #7E57C2); }
 [data-theme="bleuciel"] .tile:nth-child(30n + 2) { background: linear-gradient(135deg, #4DB6AC, #26A69A); }
 [data-theme="bleuciel"] .tile:nth-child(30n + 3) { background: linear-gradient(135deg, #7986CB, #5C6BC0); }
@@ -100,7 +153,7 @@
 [data-theme="bleuciel"] .tile:nth-child(30n + 29) { background: linear-gradient(135deg, #546E7A, #37474F); }
 [data-theme="bleuciel"] .tile:nth-child(30n + 0) { background: linear-gradient(135deg, #D84315, #BF360C); }
 
-/* Texte sur tuiles claires pour améliorer la lisibilité */
+/* Amélioration de la lisibilité sur tuiles claires */
 [data-theme="bleuciel"] .tile:nth-child(30n + 2) .tile-title,
 [data-theme="bleuciel"] .tile:nth-child(30n + 6) .tile-title,
 [data-theme="bleuciel"] .tile:nth-child(30n + 9) .tile-title,
@@ -109,7 +162,7 @@
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
 }
 
-/* Effets des tuiles au survol */
+/* Effets au survol des tuiles */
 [data-theme="bleuciel"] .tile-container.grid .tile:hover {
     transform: translateY(-3px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -120,7 +173,182 @@
     box-shadow: -4px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Styles pour les séparateurs en bleu ciel */
+/* Menu contextuel des tuiles */
+[data-theme="bleuciel"] .tile-menu {
+    background: var(--primary-gradient);
+    border: var(--border-medium);
+    box-shadow: var(--shadow-medium);
+}
+
+[data-theme="bleuciel"] .menu-item,
+[data-theme="bleuciel"] .tile-menu button {
+    color: var(--text-light);
+}
+
+[data-theme="bleuciel"] .menu-item:hover,
+[data-theme="bleuciel"] .tile-menu button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ========================================
+   PARTIE 3 : WIDGETS MÉTÉO ET LIENS RAPIDES
+   ======================================== */
+
+/* Conteneurs principaux des widgets */
+[data-theme="bleuciel"] .weather-sidebar,
+[data-theme="bleuciel"] .quick-links-sidebar {
+    background: var(--primary-gradient);
+    border: var(--border-heavy);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+}
+
+/* Titres des widgets */
+[data-theme="bleuciel"] .weather-sidebar h3,
+[data-theme="bleuciel"] .quick-links-sidebar h3,
+[data-theme="bleuciel"] .weather-sidebar p strong {
+    color: var(--text-light);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding-bottom: 8px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
+}
+
+/* Widget météo - Conteneur principal */
+[data-theme="bleuciel"] .weather-container {
+    background: var(--primary-gradient-hover);
+    color: var(--text-light);
+    border: var(--border-color);
+}
+
+/* Jours météo */
+[data-theme="bleuciel"] .weather-day {
+    background: rgba(255, 255, 255, 0.2);
+    border: var(--border-heavy);
+    color: var(--text-light);
+}
+
+[data-theme="bleuciel"] .weather-day h4 {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--text-light);
+    font-weight: bold;
+}
+
+/* Détails météo */
+[data-theme="bleuciel"] .weather-condition {
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+[data-theme="bleuciel"] .temperature-container {
+    background: rgb(60, 99, 141);
+    border-radius: 8px;
+    padding: 6px;
+}
+
+[data-theme="bleuciel"] .weather-details {
+    gap: 6px;
+}
+
+[data-theme="bleuciel"] .weather-detail-item {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+/* Températures min/max avec couleurs spécifiques */
+[data-theme="bleuciel"] .min-temp {
+    color: #91c6f1;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="bleuciel"] .max-temp {
+    color: #FFCC80;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+/* Liens rapides */
+[data-theme="bleuciel"] .quick-link {
+    background: rgba(255, 255, 255, 0.2);
+    border: var(--border-heavy);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+[data-theme="bleuciel"] .quick-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.25);
+}
+
+[data-theme="bleuciel"] .quick-link .material-icons {
+    color: var(--text-light);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="bleuciel"] .quick-link span:not(.material-icons) {
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+/* Boutons de fermeture des widgets */
+[data-theme="bleuciel"] .weather-toggle,
+[data-theme="bleuciel"] .quick-links-toggle {
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: var(--text-light);
+}
+
+[data-theme="bleuciel"] .weather-toggle:hover,
+[data-theme="bleuciel"] .quick-links-toggle:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* ========================================
+   PARTIE 4 : MESSAGES, EMOJIS ET ÉLÉMENTS UI
+   ======================================== */
+
+/* Menus contextuels et options de messages */
+[data-theme="bleuciel"] .message-options,
+[data-theme="bleuciel"] .context-menu,
+[data-theme="bleuciel"] .dropdown-menu,
+[data-theme="bleuciel"] .message-options.mobile-options,
+[data-theme="bleuciel"] .options-content {
+    background: var(--primary-gradient);
+    border: var(--border-medium);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Panels d'emojis */
+[data-theme="bleuciel"] .emoji-panel,
+[data-theme="bleuciel"] .emoji-container,
+[data-theme="bleuciel"] .emoji-picker,
+[data-theme="bleuciel"] .emoji-wrapper {
+    background: var(--primary-gradient);
+    border: var(--border-medium);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="bleuciel"] .emoji-panel-header,
+[data-theme="bleuciel"] .emoji-picker-header,
+[data-theme="bleuciel"] .emoji-container-header {
+    background: rgba(63, 151, 199, 0.9);
+    border-bottom: var(--border-medium);
+}
+
+[data-theme="bleuciel"] .emoji-categories,
+[data-theme="bleuciel"] .emoji-picker-categories,
+[data-theme="bleuciel"] .emoji-container-tabs {
+    background: rgba(63, 151, 199, 0.8);
+    border-top: var(--border-medium);
+}
+
+/* Notifications toast */
+[data-theme="bleuciel"] .toast {
+    background: var(--primary-gradient);
+    color: var(--text-light);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Séparateurs */
 [data-theme="bleuciel"] .separator {
     background: linear-gradient(90deg, 
         rgba(79, 179, 232, 0.3) 0%, 
@@ -131,32 +359,7 @@
     border: 1px solid rgba(79, 179, 232, 0.3);
 }
 
-/* Notification toast en bleu ciel */
-[data-theme="bleuciel"] .toast {
-    background: linear-gradient(145deg, #4FB3E8, #3F97C7);
-    color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Menu contextuel en bleu ciel */
-[data-theme="bleuciel"] .tile-menu {
-    background-color: #4FB3E8 !important;
-    background: linear-gradient(145deg, #4FB3E8, #3F97C7) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="bleuciel"] .menu-item,
-[data-theme="bleuciel"] .tile-menu button {
-    color: white !important;
-}
-
-[data-theme="bleuciel"] .menu-item:hover,
-[data-theme="bleuciel"] .tile-menu button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* Barre de défilement des dernières infos en bleu ciel */
+/* Barre de défilement des actualités */
 [data-theme="bleuciel"] .ticker-tape {
     background-color: rgba(79, 179, 232, 0.1);
     border-top: 1px solid rgba(79, 179, 232, 0.2);
@@ -164,71 +367,72 @@
 }
 
 [data-theme="bleuciel"] .ticker-tape__content {
-    color: #333333;
+    color: var(--text-color);
 }
 
-/* Adaptations pour la météo en bleu ciel */
-[data-theme="bleuciel"] .weather-container {
-    background: linear-gradient(145deg, #5BBFF0, #4CA3D3);
-    color: white;
-    border: 1px solid #E3F2FD;
-}
-
-/* Swiper en bleu ciel */
+/* Swiper/Carousel */
 [data-theme="bleuciel"] .swiper {
     background: rgba(79, 179, 232, 0.9);
 }
 
 [data-theme="bleuciel"] .swiper-pagination-bullet-active {
-    background-color: #4FB3E8 !important;
+    background-color: var(--primary-color);
 }
 
 [data-theme="bleuciel"] .swiper-button-next,
 [data-theme="bleuciel"] .swiper-button-prev {
-    color: #4FB3E8 !important;
+    color: var(--primary-color);
 }
 
-/* Panneau de paramètres en bleu ciel */
+/* ========================================
+   PANNEAU DE PARAMÈTRES
+   ======================================== */
+
 [data-theme="bleuciel"] .settings-menu {
-    background-color: #4FB3E8 !important;
-    border: 1px solid #E3F2FD;
+    background-color: var(--primary-color);
+    border: 1px solid var(--border-color);
 }
 
 [data-theme="bleuciel"] .settings-header {
-    background-color: #4FB3E8;
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--text-light);
 }
 
 [data-theme="bleuciel"] .settings-section h4 {
-    color: white;
+    color: var(--text-light);
 }
 
+/* Options actives dans les paramètres */
 [data-theme="bleuciel"] .font-size-tile.active,
 [data-theme="bleuciel"] .font-family-tile.active,
 [data-theme="bleuciel"] .text-contrast-tile.active {
     background-color: rgba(255, 255, 255, 0.2);
-    color: white;
+    color: var(--text-light);
     border-color: white;
 }
 
-/* Message de bienvenue en bleu ciel */
+/* ========================================
+   PARTIE 5 : MESSAGES DE BIENVENUE ET SONDAGES
+   ======================================== */
+
+/* Message de bienvenue */
 [data-theme="bleuciel"] .welcome-message {
-    background-color: #F0F8FF;
+    background-color: var(--background-color);
     border: 1px solid rgba(79, 179, 232, 0.3);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="bleuciel"] .welcome-icon {
-    background: #4FB3E8;
+    background: var(--primary-color);
 }
 
 [data-theme="bleuciel"] .welcome-message h2,
 [data-theme="bleuciel"] .welcome-intro {
-    color: #4FB3E8;
+    color: var(--primary-color);
 }
 
 [data-theme="bleuciel"] .welcome-description {
-    color: #333333;
+    color: var(--text-color);
 }
 
 [data-theme="bleuciel"] .feature-item {
@@ -236,25 +440,25 @@
 }
 
 [data-theme="bleuciel"] .feature-item .material-icons {
-    color: #4FB3E8;
+    color: var(--primary-color);
 }
 
-/* Bannière de bienvenue en bleu ciel */
+/* Bannière de bienvenue */
 [data-theme="bleuciel"] .welcome-banner {
-    background: #F0F8FF;
+    background: var(--background-color);
 }
 
 [data-theme="bleuciel"] .welcome-banner::before {
-    background: #4FB3E8;
+    background: var(--primary-color);
 }
 
 [data-theme="bleuciel"] .highlight,
 [data-theme="bleuciel"] .tagline {
-    color: #4FB3E8;
+    color: var(--primary-color);
 }
 
 [data-theme="bleuciel"] .description {
-    color: #333333;
+    color: var(--text-color);
 }
 
 [data-theme="bleuciel"] .stat-item {
@@ -262,225 +466,19 @@
 }
 
 [data-theme="bleuciel"] .stat-item .material-icons {
-    color: #4FB3E8;
+    color: var(--primary-color);
 }
 
-/* Corrections pour les messages et menus contextuels */
-[data-theme="bleuciel"] .message-options,
-[data-theme="bleuciel"] .context-menu,
-[data-theme="bleuciel"] .dropdown-menu,
-[data-theme="bleuciel"] .message-options.mobile-options,
-[data-theme="bleuciel"] .options-content {
-    background: #4FB3E8 !important;
-    background-color: #4FB3E8 !important;
-    background-image: linear-gradient(145deg, #4FB3E8, #3F97C7) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
-}
+/* ========================================
+   SYSTÈME DE SONDAGES
+   ======================================== */
 
-/* Corrections pour les panels d'emojis */
-[data-theme="bleuciel"] .emoji-panel,
-[data-theme="bleuciel"] .emoji-container,
-[data-theme="bleuciel"] .emoji-picker,
-[data-theme="bleuciel"] .emoji-wrapper {
-    background: linear-gradient(145deg, #4FB3E8, #3F97C7) !important;
-    background-color: #3F97C7 !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
-}
-
-[data-theme="bleuciel"] .emoji-panel-header,
-[data-theme="bleuciel"] .emoji-picker-header,
-[data-theme="bleuciel"] .emoji-container-header {
-    background: rgba(63, 151, 199, 0.9) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-[data-theme="bleuciel"] .emoji-categories,
-[data-theme="bleuciel"] .emoji-picker-categories,
-[data-theme="bleuciel"] .emoji-container-tabs {
-    background: rgba(63, 151, 199, 0.8) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-/* Style pour les boutons */
-[data-theme="bleuciel"] .news-button,
-[data-theme="bleuciel"] .weather-show-btn,
-[data-theme="bleuciel"] .quick-links-show-btn {
-    background-color: #4FB3E8 !important;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3) !important;
-}
-
-/* App header en bleu ciel */
-[data-theme="bleuciel"] .app-header {
-    background: linear-gradient(to right, #4FB3E8, #3F97C7);
-}
-
-/* Boutons actifs pour le thème bleu ciel */
-[data-theme="bleuciel"] .nav-item.active {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-/* Arrière-plan bleu ciel pour tout le site */
-[data-theme="bleuciel"] body,
-[data-theme="bleuciel"] html {
-    background-color: #6cacde !important;
-    background-image: none !important;
-}
-
-/* Style pour les widgets en bleu ciel */
-[data-theme="bleuciel"] .weather-sidebar,
-[data-theme="bleuciel"] .quick-links-sidebar {
-    background: rgba(79, 179, 232, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-[data-theme="bleuciel"] .weather-sidebar h3,
-[data-theme="bleuciel"] .quick-links-sidebar h3,
-[data-theme="bleuciel"] .weather-sidebar p strong {
-    color: white !important;
-    border-bottom-color: rgba(255, 255, 255, 0.2);
-}
-
-[data-theme="bleuciel"] .weather-day {
-    background: rgba(63, 151, 199, 0.3);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="bleuciel"] .quick-link {
-    background: rgba(63, 151, 199, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="bleuciel"] .quick-link span:not(.material-icons) {
-    color: white !important;
-}
-
-[data-theme="bleuciel"] .quick-link .material-icons {
-    color: white !important;
-}
-
-[data-theme="bleuciel"] .weather-toggle,
-[data-theme="bleuciel"] .quick-links-toggle {
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: white !important;
-}
-
-/* Thème bleu ciel pour les widgets */
-[data-theme="bleuciel"] .weather-sidebar,
-[data-theme="bleuciel"] .quick-links-sidebar {
-    background: linear-gradient(145deg, #4FB3E8, #3F97C7) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25) !important;
-}
-
-[data-theme="bleuciel"] .weather-sidebar h3,
-[data-theme="bleuciel"] .quick-links-sidebar h3,
-[data-theme="bleuciel"] .weather-sidebar p strong {
-    color: white !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
-    padding-bottom: 8px !important;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2) !important;
-    font-weight: bold !important;
-}
-
-[data-theme="bleuciel"] .weather-day {
-    background: rgba(255, 255, 255, 0.2) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    color: white !important;
-}
-
-[data-theme="bleuciel"] .weather-day h4 {
-    background: rgba(255, 255, 255, 0.15) !important;
-    color: white !important;
-    font-weight: bold !important;
-}
-
-[data-theme="bleuciel"] .weather-condition {
-    color: white !important;
-    font-weight: 500 !important;
-}
-
-[data-theme="bleuciel"] .temperature-container {
-    background: rgb(60 99 141) !important;
-    border-radius: 8px !important;
-    padding: 6px !important;
-}
-
-[data-theme="bleuciel"] .weather-details {
-    gap: 6px !important;
-}
-
-[data-theme="bleuciel"] .weather-detail-item {
-    background: rgba(255, 255, 255, 0.15) !important;
-    color: white !important;
-    font-weight: 500 !important;
-}
-
-/* Conserver les couleurs spécifiques pour les températures */
-[data-theme="bleuciel"] .min-temp {
-    color: #91c6f1 !important; /* Bleu clair */
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3) !important;
-}
-
-[data-theme="bleuciel"] .max-temp {
-    color: #FFCC80 !important; /* Orange clair */
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3) !important;
-}
-
-/* Liens rapides en bleu ciel */
-[data-theme="bleuciel"] .quick-link {
-    background: rgba(255, 255, 255, 0.2) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    transition: transform 0.2s, box-shadow 0.2s !important;
-}
-
-[data-theme="bleuciel"] .quick-link:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
-    background: rgba(255, 255, 255, 0.25) !important;
-}
-
-[data-theme="bleuciel"] .quick-link .material-icons {
-    color: white !important;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2) !important;
-}
-
-[data-theme="bleuciel"] .quick-link span:not(.material-icons) {
-    color: white !important;
-    font-weight: 500 !important;
-}
-
-/* Boutons météo et liens rapides en bleu ciel */
-[data-theme="bleuciel"] .weather-show-btn,
-[data-theme="bleuciel"] .quick-links-show-btn,
-[data-theme="bleuciel"] .weather-mobile-btn {
-    background: linear-gradient(145deg, #4FB3E8, #3F97C7) !important;
-}
-
-/* Boutons de fermeture des widgets en bleu ciel */
-[data-theme="bleuciel"] .weather-toggle,
-[data-theme="bleuciel"] .quick-links-toggle {
-    background: rgba(255, 255, 255, 0.3) !important;
-    border: 1px solid rgba(255, 255, 255, 0.5) !important;
-    color: white !important;
-}
-
-[data-theme="bleuciel"] .weather-toggle:hover,
-[data-theme="bleuciel"] .quick-links-toggle:hover {
-    background: rgba(255, 255, 255, 0.5) !important;
-}
-
-/* Ajouter les styles pour le thème bleu ciel dans survey-styles.css */
-
-/* Thème bleu ciel pour l'icône du bouton sondage */
+/* Bouton sondage avec icône contrastée */
 [data-theme="bleuciel"] .survey-btn .material-icons {
-    color: #FFEB3B; /* Jaune pour contraster avec le bleu ciel */
+    color: #FFEB3B;
 }
 
-/* Animation de changement de couleur pour le texte en mode bleu ciel */
+/* Animation du texte du bouton sondage */
 @keyframes textColorChangeBleuciel {
     0% { color: white; }
     50% { color: #FFEB3B; }
@@ -491,40 +489,40 @@
     animation: textColorChangeBleuciel 3s infinite;
 }
 
-/* Thème bleu ciel pour le modal du sondage */
+/* Modal du sondage */
 [data-theme="bleuciel"] .survey-content {
-    background: linear-gradient(145deg, #4FB3E8, #3F97C7);
+    background: var(--primary-gradient);
 }
 
-/* Bouton de fermeture du sondage pour thème bleu ciel */
+/* Bouton de fermeture du sondage */
 [data-theme="bleuciel"] .close-survey {
-    color: white;
+    color: var(--text-light);
 }
 
-/* Style de l'option sélectionnée pour le thème bleu ciel */
+/* Option sélectionnée */
 [data-theme="bleuciel"] .survey-option.selected {
     background: rgba(255, 235, 59, 0.2);
     border-color: #FFEB3B;
 }
 
-/* Bouton de soumission du sondage pour le thème bleu ciel */
+/* Bouton de soumission */
 [data-theme="bleuciel"] .survey-submit {
-    background: linear-gradient(to right, #FFEB3B, #FFF176) !important;
-    color: #333 !important;
+    background: linear-gradient(to right, #FFEB3B, #FFF176);
+    color: #333;
 }
 
 [data-theme="bleuciel"] .survey-submit:hover {
-    background: linear-gradient(to right, #FFF176, #FFEB3B) !important;
+    background: linear-gradient(to right, #FFF176, #FFEB3B);
 }
 
-/* Bouton de retour au site pour le thème bleu ciel */
+/* Bouton de retour */
 [data-theme="bleuciel"] .back-to-survey {
-    background: rgba(255, 255, 255, 0.25) !important;
-    color: white !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    background: rgba(255, 255, 255, 0.25);
+    color: var(--text-light);
+    border: var(--border-heavy);
 }
 
-/* Message de remerciement pour le thème bleu ciel */
+/* Message de remerciement */
 [data-theme="bleuciel"] .thank-you-message h3 {
     color: #FFEB3B;
 }
@@ -533,10 +531,10 @@
     color: #FFEB3B;
 }
 
-/* Barres de résultats pour le thème bleu ciel */
+/* Barres de résultats */
 [data-theme="bleuciel"] .result-fill {
     height: 100%;
     background: linear-gradient(to right, #FFEB3B, #FFF59D);
-    width: 0%; /* Sera défini par JS */
+    width: 0%;
     transition: width 1s ease-in-out;
 }

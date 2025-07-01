@@ -1,12 +1,40 @@
-/* ===== WIDGET CINÉMA - VERSION AMÉLIORÉE COMME NEWS ===== */
+/* ===== WIDGET CINÉMA - VERSION OPTIMISÉE ===== */
 
+/* Variables CSS pour les couleurs */
+:root {
+    --primary-color: #dc3545;
+    --primary-color-rgb: 220, 53, 69;
+}
+
+[data-theme="light"] {
+    --primary-color: #7e57c2;
+    --primary-color-rgb: 126, 87, 194;
+}
+
+[data-theme="dark"] {
+    --primary-color: #1a237e;
+    --primary-color-rgb: 92, 107, 192;
+}
+
+[data-theme="rouge"] {
+    --primary-color: #d32f2f;
+    --primary-color-rgb: 211, 47, 47;
+}
+
+[data-theme="bleuciel"] {
+    --primary-color: #0ea5e9;
+    --primary-color-rgb: 14, 165, 233;
+}
+
+/* Conteneur principal */
 .cinema-widget-container {
     max-width: 600px;
     margin: 15px auto;
     padding: 0 10px;
-    order: 3; /* Après NEWS */
+    order: 3;
 }
 
+/* Widget principal */
 .cinema-widget {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 15px;
@@ -18,6 +46,7 @@
     backdrop-filter: blur(10px);
     position: relative;
     overflow: hidden;
+    animation: cinemaWidgetFadeIn 0.6s ease-out;
 }
 
 .cinema-widget:hover {
@@ -30,12 +59,13 @@
     transform: scale(0.98);
 }
 
+/* Header du widget */
 .cinema-widget-header {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 12px;
-    color: var(--primary-color, #dc3545);
+    color: var(--primary-color);
 }
 
 .cinema-icon {
@@ -43,26 +73,15 @@
     animation: cinemaFlicker 3s infinite;
 }
 
-@keyframes cinemaFlicker {
-    0%, 100% { 
-        transform: scale(1); 
-        opacity: 1; 
-    }
-    50% { 
-        transform: scale(1.1); 
-        opacity: 0.8; 
-    }
-}
-
 .cinema-widget-title {
     font-size: 18px;
     font-weight: bold;
     flex: 1;
-    color: var(--primary-color, #dc3545);
+    color: var(--primary-color);
 }
 
 .cinema-widget-badge {
-    background: var(--primary-color, #dc3545);
+    background: var(--primary-color);
     color: #ffffff;
     padding: 4px 8px;
     border-radius: 12px;
@@ -71,30 +90,31 @@
     text-transform: uppercase;
 }
 
+/* Zone de prévisualisation */
 .cinema-widget-preview {
     color: #333;
     font-size: 14px;
     line-height: 1.4;
     margin-bottom: 10px;
     min-height: 120px;
-    max-height: 250px; /* Même hauteur que NEWS */
+    max-height: 250px;
     overflow-y: auto;
-    padding-right: 5px; /* Même padding que NEWS */
+    padding-right: 5px;
 }
 
-/* Style de la scrollbar pour le widget cinéma - IDENTIQUE À NEWS */
+/* Scrollbar personnalisée */
 .cinema-widget-preview::-webkit-scrollbar {
-    width: 4px; /* Même largeur que NEWS */
+    width: 4px;
 }
 
 .cinema-widget-preview::-webkit-scrollbar-track {
     background: rgba(0,0,0,0.1);
-    border-radius: 2px; /* Même style que NEWS */
+    border-radius: 2px;
 }
 
 .cinema-widget-preview::-webkit-scrollbar-thumb {
-    background: var(--primary-color, #dc3545);
-    border-radius: 2px; /* Même style que NEWS */
+    background: var(--primary-color);
+    border-radius: 2px;
 }
 
 .cinema-widget-preview::-webkit-scrollbar-thumb:hover {
@@ -102,43 +122,28 @@
     opacity: 1;
 }
 
-.loading-cinema {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #666;
-    font-style: italic;
-}
-
-.spinning {
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
+/* Items de prévisualisation */
 .cinema-preview-item {
-    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.1);
-    border-left: 3px solid var(--primary-color, #dc3545);
-    padding: 8px 12px; /* Même padding que NEWS */
-    margin: 6px 0; /* Même marge que NEWS */
+    background: rgba(var(--primary-color-rgb), 0.1);
+    border-left: 3px solid var(--primary-color);
+    padding: 8px 12px;
+    margin: 6px 0;
     border-radius: 0 8px 8px 0;
-    font-size: 13px; /* MÊME TAILLE QUE NEWS */
+    font-size: 13px;
     transition: all 0.2s ease;
     cursor: pointer;
 }
 
 .cinema-preview-item:hover {
-    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.2);
+    background: rgba(var(--primary-color-rgb), 0.2);
     transform: translateX(2px);
 }
 
 .cinema-preview-item strong {
-    color: var(--primary-color, #dc3545);
+    color: var(--primary-color);
 }
 
+/* Détails des films */
 .movie-genre {
     font-size: 12px;
     color: #000000;
@@ -158,32 +163,85 @@
     margin-top: 2px;
 }
 
+/* Footer du widget */
 .cinema-widget-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    color: var(--primary-color, #dc3545);
+    color: var(--primary-color);
     font-weight: 500;
     font-size: 13px;
     margin-top: 10px;
-    border-top: 1px solid rgba(var(--primary-color-rgb, 220, 53, 69), 0.2);
+    border-top: 1px solid rgba(var(--primary-color-rgb), 0.2);
     padding-top: 8px;
 }
 
 .cinema-widget-tap {
     font-size: 12px;
-	color: #000000;
+    color: #000000;
 }
 
 .cinema-widget-count {
-    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.1);
+    background: rgba(var(--primary-color-rgb), 0.1);
     padding: 4px 8px;
     border-radius: 8px;
     font-size: 12px;
     font-weight: 600;
 }
 
-/* ===== THÈMES ADAPTÉS - IDENTIQUES À NEWS ===== */
+/* État de chargement */
+.loading-cinema {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+    font-style: italic;
+}
+
+.spinning {
+    animation: spin 1s linear infinite;
+}
+
+/* ===== ANIMATIONS ===== */
+
+@keyframes cinemaWidgetFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cinemaFlicker {
+    0%, 100% { 
+        transform: scale(1); 
+        opacity: 1; 
+    }
+    50% { 
+        transform: scale(1.1); 
+        opacity: 0.8; 
+    }
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+/* ===== THÈMES ADAPTÉS ===== */
 
 /* Thème Light (Violet) */
 [data-theme="light"] .cinema-widget {
@@ -191,35 +249,16 @@
     border-color: rgba(126, 87, 194, 0.4);
 }
 
-[data-theme="light"] .cinema-widget-header,
-[data-theme="light"] .cinema-widget-title,
-[data-theme="light"] .cinema-widget-footer {
-    color: #7e57c2;
-}
-
 [data-theme="light"] .cinema-widget-badge {
     background: rgba(126, 87, 194, 0.1);
-	color: #7e57c2;
-}
-
-[data-theme="light"] .cinema-preview-item {
-    background: rgba(126, 87, 194, 0.1);
-    border-left-color: #7e57c2;
-}
-
-[data-theme="light"] .cinema-preview-item strong {
     color: #7e57c2;
-}
-
-[data-theme="light"] .cinema-widget-count {
-    background: rgba(126, 87, 194, 0.1);
 }
 
 [data-theme="light"] .movie-dates {
     color: #aaa;
 }
 
-/* Thème Dark (Bleu Nuit) - TEXTE PLUS CLAIR */
+/* Thème Dark (Bleu Nuit) */
 [data-theme="dark"] .cinema-widget {
     background: rgba(40, 40, 40, 0.95);
     border-color: rgba(26, 35, 126, 0.6);
@@ -238,7 +277,7 @@
 }
 
 [data-theme="dark"] .cinema-widget-preview {
-    color: #e0e0e0; /* ✅ TEXTE PRINCIPAL CLAIR */
+    color: #e0e0e0;
 }
 
 [data-theme="dark"] .loading-cinema {
@@ -248,11 +287,11 @@
 [data-theme="dark"] .cinema-preview-item {
     background: rgba(26, 35, 126, 0.2);
     border-left-color: #5c6bc0;
-    color: #e0e0e0 !important; /* ✅ TEXTE ITEMS CLAIR */
+    color: #e0e0e0 !important;
 }
 
 [data-theme="dark"] .cinema-preview-item strong {
-    color: #7986cb; /* ✅ TITRES BIEN VISIBLES */
+    color: #7986cb;
 }
 
 [data-theme="dark"] .cinema-widget-count {
@@ -260,20 +299,11 @@
     color: #ffffff;
 }
 
-[data-theme="dark"] .cinema-widget-tap {
-    color: #ffffff !important;
-}
-
-[data-theme="dark"] .movie-genre {
-    color: #ffffff !important; /* ✅ GENRE LISIBLE */
-}
-
-[data-theme="dark"] .movie-dates {
-    color: #ffffff !important; /* ✅ DATES LISIBLES */
-}
-
+[data-theme="dark"] .cinema-widget-tap,
+[data-theme="dark"] .movie-genre,
+[data-theme="dark"] .movie-dates,
 [data-theme="dark"] .movie-times {
-    color: #ffffff !important; /* ✅ HORAIRES LISIBLES */
+    color: #ffffff !important;
 }
 
 /* Thème Rouge */
@@ -293,18 +323,9 @@
     color: #000000;
 }
 
-[data-theme="rouge"] .cinema-preview-item {
-    background: rgba(211, 47, 47, 0.1);
-    border-left-color: #d32f2f;
-}
-
-[data-theme="rouge"] .cinema-preview-item strong {
-    color: #d32f2f;
-}
-
 [data-theme="rouge"] .cinema-widget-count {
     background: rgba(211, 47, 47, 0.1);
-	color: #000000;
+    color: #000000;
 }
 
 /* Thème Bleu Ciel */
@@ -313,53 +334,17 @@
     border-color: rgba(14, 165, 233, 0.4);
 }
 
-[data-theme="bleuciel"] .cinema-widget-header,
-[data-theme="bleuciel"] .cinema-widget-title,
-[data-theme="bleuciel"] .cinema-widget-footer {
-    color: #0ea5e9;
-}
-
 [data-theme="bleuciel"] .cinema-widget-badge {
     background: #e8f2fa;
     color: #54a3e4;
-}
-
-[data-theme="bleuciel"] .cinema-preview-item {
-    background: rgba(14, 165, 233, 0.1);
-    border-left-color: #0ea5e9;
-}
-
-[data-theme="bleuciel"] .cinema-preview-item strong {
-    color: #0ea5e9;
 }
 
 [data-theme="bleuciel"] .cinema-widget-count {
     background: rgba(14, 165, 233, 0.1);
 }
 
-/* ===== RESPONSIVE MOBILE ===== */
-@media (max-width: 767px) {
-    /* Masquer le widget cinéma sur mobile */
-    .cinema-widget-container {
-        position: absolute !important;
-        left: -9999px !important; /* Masquer hors écran */
-        visibility: hidden !important;
-        /* Le widget existe mais est invisible */
-    }       
-    
-    @keyframes cinemaPulse {
-        0%, 100% { 
-            transform: scale(1); 
-            opacity: 1; 
-        }
-        50% { 
-            transform: scale(1.05); 
-            opacity: 0.9; 
-        }
-    }
-}
+/* ===== MODAL MOBILE ===== */
 
-/* ===== MODAL CINÉMA MOBILE AMÉLIORÉE ===== */
 .cinema-mobile-modal {
     position: fixed;
     top: 0;
@@ -380,7 +365,11 @@
     animation: modalFadeIn 0.3s ease;
 }
 
-/* Contenu de la modal amélioré */
+.cinema-mobile-modal.show .cinema-modal-content {
+    animation: slideUp 0.4s ease-out;
+}
+
+/* Contenu de la modal */
 .cinema-modal-content {
     background: #ffffff;
     border-radius: 20px 20px 0 0;
@@ -394,9 +383,9 @@
     color: #333;
 }
 
-/* Header de la modal amélioré */
+/* Header de la modal */
 .cinema-modal-header {
-    background: #dc3545;
+    background: var(--primary-color);
     color: white;
     padding: 20px;
     border-radius: 20px 20px 0 0;
@@ -440,25 +429,40 @@
 
 .cinema-modal-close:hover {
     background: white;
-    color: #dc3545;
+    color: var(--primary-color);
     transform: rotate(90deg);
 }
 
 /* Contenu scrollable */
 #cinemaModalContent {
     padding: 20px;
-    padding-bottom: 20px; /* Réduire l'espace en bas */
-    overflow-y: auto; /* Scroll automatique */
+    padding-bottom: 20px;
+    overflow-y: auto;
 }
 
-/* Film cards améliorées */
+#cinemaModalContent::-webkit-scrollbar {
+    width: 4px;
+}
+
+#cinemaModalContent::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.1);
+    border-radius: 2px;
+}
+
+#cinemaModalContent::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 2px;
+}
+
+/* ===== CARTES DE FILMS ===== */
+
 .cinema-film-card {
     background: #f8f9fa;
     border-radius: 16px;
     padding: 20px;
     margin-bottom: 16px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border-left: 4px solid #dc3545;
+    border-left: 4px solid var(--primary-color);
     transition: all 0.3s ease;
 }
 
@@ -469,7 +473,7 @@
 .cinema-film-title {
     font-size: 18px;
     font-weight: 700;
-    color: #dc3545;
+    color: var(--primary-color);
     margin-bottom: 8px;
     display: flex;
     align-items: center;
@@ -493,12 +497,12 @@
 
 .cinema-film-info-item .material-icons {
     font-size: 16px;
-    color: #dc3545;
+    color: var(--primary-color);
 }
 
 /* Dates section */
 .cinema-film-dates {
-    background: rgba(220, 53, 69, 0.1);
+    background: rgba(var(--primary-color-rgb), 0.1);
     border-radius: 12px;
     padding: 12px;
     margin-bottom: 12px;
@@ -508,7 +512,7 @@
     font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
-    color: #dc3545;
+    color: var(--primary-color);
     margin-bottom: 8px;
 }
 
@@ -524,9 +528,9 @@
 }
 
 .cinema-date-badge.today {
-    background: #dc3545;
+    background: var(--primary-color);
     color: white;
-    border-color: #dc3545;
+    border-color: var(--primary-color);
     font-weight: 600;
 }
 
@@ -539,8 +543,8 @@
 
 .cinema-time-slot {
     background: white;
-    border: 2px solid #dc3545;
-    color: #dc3545;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
     padding: 8px 16px;
     border-radius: 8px;
     font-size: 15px;
@@ -549,12 +553,12 @@
 }
 
 .cinema-time-slot:active {
-    background: #dc3545;
+    background: var(--primary-color);
     color: white;
     transform: scale(0.95);
 }
 
-/* État vide amélioré */
+/* État vide */
 .cinema-empty-state {
     text-align: center;
     padding: 60px 20px;
@@ -562,7 +566,7 @@
 
 .cinema-empty-state .material-icons {
     font-size: 64px;
-    color: #dc3545;
+    color: var(--primary-color);
     margin-bottom: 20px;
 }
 
@@ -585,15 +589,11 @@
     margin: 0 auto;
 }
 
-/* Bouton de réservation en bas */
+/* Boutons */
 .cinema-footer-button {
     background: #ffffff;
     padding: 16px 20px;
     text-align: center;
-}
-
-[data-theme="dark"] .cinema-footer-button {
-    background: #1a1a1a;
 }
 
 .cinema-link-button {
@@ -601,7 +601,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    background: #dc3545;
+    background: var(--primary-color);
     color: white;
     padding: 14px 24px;
     border-radius: 12px;
@@ -618,75 +618,13 @@
 
 .cinema-link-button.secondary {
     background: white;
-    color: #dc3545;
-    border: 2px solid #dc3545;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
 }
 
-/* ===== THÈMES POUR LA MODAL MOBILE AMÉLIORÉE ===== */
+/* ===== THÈMES MODAL MOBILE ===== */
 
-/* Thème Light (Violet) */
-[data-theme="light"] .cinema-modal-header {
-    background: #7e57c2;
-}
-
-[data-theme="light"] .cinema-modal-close {
-    border-color: white;
-    color: white;
-}
-
-[data-theme="light"] .cinema-modal-close:hover {
-    background: white;
-    color: #7e57c2;
-}
-
-[data-theme="light"] .cinema-film-card {
-    border-left-color: #7e57c2;
-}
-
-[data-theme="light"] .cinema-film-title {
-    color: #7e57c2;
-}
-
-[data-theme="light"] .cinema-film-info-item .material-icons {
-    color: #7e57c2;
-}
-
-[data-theme="light"] .cinema-film-dates {
-    background: rgba(126, 87, 194, 0.1);
-}
-
-[data-theme="light"] .cinema-dates-title {
-    color: #7e57c2;
-}
-
-[data-theme="light"] .cinema-date-badge.today {
-    background: #7e57c2;
-    border-color: #7e57c2;
-}
-
-[data-theme="light"] .cinema-time-slot {
-    border-color: #7e57c2;
-    color: #7e57c2;
-}
-
-[data-theme="light"] .cinema-time-slot:active {
-    background: #7e57c2;
-}
-
-[data-theme="light"] .cinema-empty-state .material-icons {
-    color: #7e57c2;
-}
-
-[data-theme="light"] .cinema-link-button {
-    background: #7e57c2;
-}
-
-[data-theme="light"] .cinema-link-button.secondary {
-    color: #7e57c2;
-    border-color: #7e57c2;
-}
-
-/* Thème Dark (Bleu Nuit) */
+/* Thème Dark */
 [data-theme="dark"] .cinema-modal-content {
     background: #1a1a1a;
     color: #e0e0e0;
@@ -706,16 +644,10 @@
     color: #7986cb;
 }
 
-[data-theme="dark"] .cinema-film-info {
-    color: #e0e0e0; /* Texte blanc pour la lisibilité */
-}
-
-[data-theme="dark"] .cinema-film-info-item {
-    color: #e0e0e0; /* Texte blanc */
-}
-
+[data-theme="dark"] .cinema-film-info,
+[data-theme="dark"] .cinema-film-info-item,
 [data-theme="dark"] .cinema-film-info-item span {
-    color: #e0e0e0; /* Genre et durée en blanc */
+    color: #e0e0e0;
 }
 
 [data-theme="dark"] .cinema-film-info-item .material-icons {
@@ -732,7 +664,7 @@
 
 [data-theme="dark"] .cinema-date-badge {
     background: #3a3a3a;
-    color: #ffffff; /* Dates en blanc */
+    color: #ffffff;
     border-color: #505050;
 }
 
@@ -745,7 +677,7 @@
 [data-theme="dark"] .cinema-time-slot {
     background: #3a3a3a;
     border-color: #5c6bc0;
-    color: #ffffff; /* Horaires en blanc */
+    color: #ffffff;
 }
 
 [data-theme="dark"] .cinema-time-slot:active {
@@ -775,219 +707,20 @@
     border-color: #5c6bc0;
 }
 
-/* Thème Rouge */
-[data-theme="rouge"] .cinema-modal-header {
-    background: #c32433;
+[data-theme="dark"] .cinema-footer-button {
+    background: #1a1a1a;
 }
 
-[data-theme="rouge"] .cinema-film-card {
-    border-left-color: #d32f2f;
-}
+/* ===== RESPONSIVE ===== */
 
-[data-theme="rouge"] .cinema-film-title {
-    color: #d32f2f;
-}
-
-[data-theme="rouge"] .cinema-film-info-item .material-icons {
-    color: #d32f2f;
-}
-
-[data-theme="rouge"] .cinema-film-dates {
-    background: rgba(211, 47, 47, 0.1);
-}
-
-[data-theme="rouge"] .cinema-dates-title {
-    color: #d32f2f;
-}
-
-[data-theme="rouge"] .cinema-date-badge.today {
-    background: #d32f2f;
-    border-color: #d32f2f;
-}
-
-[data-theme="rouge"] .cinema-time-slot {
-    border-color: #d32f2f;
-    color: #d32f2f;
-}
-
-[data-theme="rouge"] .cinema-time-slot:active {
-    background: #d32f2f;
-}
-
-[data-theme="rouge"] .cinema-empty-state .material-icons {
-    color: #d32f2f;
-}
-
-[data-theme="rouge"] .cinema-link-button {
-    background: #d32f2f;
-}
-
-[data-theme="rouge"] .cinema-link-button.secondary {
-    color: #d32f2f;
-    border-color: #d32f2f;
-}
-
-/* Thème Bleu Ciel */
-[data-theme="bleuciel"] .cinema-modal-header {
-    background: #0ea5e9;
-}
-
-[data-theme="bleuciel"] .cinema-film-card {
-    border-left-color: #0ea5e9;
-}
-
-[data-theme="bleuciel"] .cinema-film-title {
-    color: #0ea5e9;
-}
-
-[data-theme="bleuciel"] .cinema-film-info-item .material-icons {
-    color: #0ea5e9;
-}
-
-[data-theme="bleuciel"] .cinema-film-dates {
-    background: rgba(14, 165, 233, 0.1);
-}
-
-[data-theme="bleuciel"] .cinema-dates-title {
-    color: #0ea5e9;
-}
-
-[data-theme="bleuciel"] .cinema-date-badge.today {
-    background: #0ea5e9;
-    border-color: #0ea5e9;
-}
-
-[data-theme="bleuciel"] .cinema-time-slot {
-    border-color: #0ea5e9;
-    color: #0ea5e9;
-}
-
-[data-theme="bleuciel"] .cinema-time-slot:active {
-    background: #0ea5e9;
-}
-
-[data-theme="bleuciel"] .cinema-empty-state .material-icons {
-    color: #0ea5e9;
-}
-
-[data-theme="bleuciel"] .cinema-link-button {
-    background: #0ea5e9;
-}
-
-[data-theme="bleuciel"] .cinema-link-button.secondary {
-    color: #0ea5e9;
-    border-color: #0ea5e9;
-}
-
-/* Desktop */
-@media (min-width: 768px) {
-    /* Conteneur parent pour les deux widgets */
-    .widgets-row {
-        display: flex;
-        max-width: 1200px;
-        margin: 20px auto;
-        gap: 15px;
-        padding: 0 10px;
-    }
-    
-    .news-widget-container,
+/* Mobile */
+@media (max-width: 767px) {
     .cinema-widget-container {
-        flex: 1;
-        margin: 0;
-        max-width: none;
-        display: flex; /* Important pour l'égalisation */
+        position: absolute !important;
+        left: -9999px !important;
+        visibility: hidden !important;
     }
     
-    .local-news-widget,
-    .cinema-widget {
-        flex: 1; /* Prend toute la hauteur disponible */
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .news-widget-preview,
-    .cinema-widget-preview {
-        flex: 1; /* Zone de contenu extensible */
-        min-height: 200px; /* Hauteur minimum */
-    }
-    
-    .cinema-widget-container {
-        order: 2; /* CINÉMA à droite */
-    }
-    
-    .news-widget-container {
-        order: 1; /* NEWS à gauche */
-    }
-    
-    /* Masquer le bouton flottant sur desktop */
-    .cinema-mobile-btn {
-        display: none !important;
-    }
-    
-    /* Masquer la modal sur desktop */
-    .cinema-mobile-modal {
-        display: none !important;
-    }
-}
-
-/* ===== VARIABLES CSS POUR LES COULEURS RGB ===== */
-:root {
-    --primary-color-rgb: 126, 87, 194; /* Violet par défaut */
-}
-
-[data-theme="dark"] {
-    --primary-color-rgb: 92, 107, 192; /* Bleu clair pour dark */
-}
-
-[data-theme="rouge"] {
-    --primary-color-rgb: 211, 47, 47; /* Rouge */
-}
-
-[data-theme="bleuciel"] {
-    --primary-color-rgb: 14, 165, 233; /* Bleu ciel */
-}
-
-/* Animation d'apparition - IDENTIQUE À NEWS */
-.cinema-widget {
-    animation: cinemaWidgetFadeIn 0.6s ease-out;
-}
-
-@keyframes cinemaWidgetFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Animations */
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes slideUp {
-    from {
-        transform: translateY(100%);
-    }
-    to {
-        transform: translateY(0);
-    }
-}
-
-.cinema-mobile-modal.show .cinema-modal-content {
-    animation: slideUp 0.4s ease-out;
-}
-
-/* ===== RESPONSIVE AMÉLIORÉ ===== */
-@media (max-width: 768px) {
     .cinema-modal-content {
         margin-top: 0;
         min-height: 100vh;
@@ -1004,15 +737,14 @@
     #cinemaModalContent {
         flex: 1;
         overflow-y: auto;
-        -webkit-overflow-scrolling: touch; /* Scroll fluide iOS */
+        -webkit-overflow-scrolling: touch;
         display: flex;
         flex-direction: column;
         gap: 16px;
     }
     
-    /* Bouton en bas collé au contenu */
     .cinema-footer-button {
-        position: relative; /* Changé de fixed à relative */
+        position: relative;
         bottom: auto;
         margin-top: 20px;
         background: transparent;
@@ -1020,28 +752,57 @@
         box-shadow: none;
     }
     
-    /* Film cards avec moins d'espace */
     .cinema-film-card {
-        margin-bottom: 12px; /* Réduit de 16px */
-    }
-    
-    /* Scrollbar pour la modal */
-    #cinemaModalContent::-webkit-scrollbar {
-        width: 4px;
-    }
-    
-    #cinemaModalContent::-webkit-scrollbar-track {
-        background: rgba(0,0,0,0.1);
-        border-radius: 2px;
-    }
-    
-    #cinemaModalContent::-webkit-scrollbar-thumb {
-        background: var(--primary-color, #dc3545);
-        border-radius: 2px;
+        margin-bottom: 12px;
     }
 }
 
-/* Responsive très petits écrans */
+/* Desktop */
+@media (min-width: 768px) {
+    .widgets-row {
+        display: flex;
+        max-width: 1200px;
+        margin: 20px auto;
+        gap: 15px;
+        padding: 0 10px;
+    }
+    
+    .news-widget-container,
+    .cinema-widget-container {
+        flex: 1;
+        margin: 0;
+        max-width: none;
+        display: flex;
+    }
+    
+    .local-news-widget,
+    .cinema-widget {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .news-widget-preview,
+    .cinema-widget-preview {
+        flex: 1;
+        min-height: 200px;
+    }
+    
+    .cinema-widget-container {
+        order: 2;
+    }
+    
+    .news-widget-container {
+        order: 1;
+    }
+    
+    .cinema-mobile-btn,
+    .cinema-mobile-modal {
+        display: none !important;
+    }
+}
+
+/* Très petits écrans */
 @media (max-width: 360px) {
     .cinema-modal-header h3 {
         font-size: 18px;
