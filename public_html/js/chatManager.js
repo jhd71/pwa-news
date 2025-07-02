@@ -2199,8 +2199,23 @@ div.innerHTML = `
         // Créer l'identifiant unique pour ce message
         const messageIp = `${this.pseudo}-${Date.now()}`;
         
-        // Obtenir l'IP réelle de l'utilisateur
+        // Obtenir l'IP réelle de l'utilisateur - FORCER la récupération
+        console.log('Récupération de l\'IP pour le message...');
+        
+        // Forcer la mise à jour de l'IP à chaque message pour les tests
+        localStorage.removeItem('last_ip_check_time'); // Forcer le rafraîchissement
+        
         const realIP = await this.getClientRealIP();
+        
+        if (!realIP) {
+            console.warn('Impossible de récupérer l\'IP réelle');
+        } else {
+            console.log(`IP réelle obtenue pour ${this.pseudo}: ${realIP}`);
+            
+            // Stocker l'association pseudo-IP dans plusieurs endroits
+            sessionStorage.setItem(`user_ip_${this.pseudo}`, realIP);
+            localStorage.setItem(`last_ip_${this.pseudo}`, realIP);
+        }
         
         // Construire le message avec l'identifiant et l'IP réelle
         const message = {
@@ -2210,12 +2225,6 @@ div.innerHTML = `
             real_ip: realIP, // Nouvelle propriété
             created_at: new Date().toISOString()
         };
-        
-        // NOUVEAU : Stocker aussi l'IP réelle avec le pseudo pour les bannissements
-        if (realIP) {
-            // Stocker temporairement l'association pseudo-IP
-            sessionStorage.setItem(`user_ip_${this.pseudo}`, realIP);
-        }
         
         // Insérer le message
         const { data: messageData, error } = await this.supabase
@@ -2662,46 +2671,71 @@ async checkRealIPBan() {
 }
 
 // Cette méthode utilise un service externe pour déterminer l'IP publique
+// Cette méthode utilise un service externe pour déterminer l'IP publique
 async getClientRealIP() {
     try {
-        // Vérifier si nous avons une IP récente en cache (moins d'une heure)
+        // Vérifier si nous avons une IP récente en cache (moins de 5 minutes pour les tests)
         const cachedIP = localStorage.getItem('last_known_real_ip');
         const lastCheckTime = parseInt(localStorage.getItem('last_ip_check_time') || '0');
         const cacheAge = Date.now() - lastCheckTime;
         
-        // Si le cache existe et est récent (moins d'une heure), l'utiliser
-        if (cachedIP && cacheAge < 60 * 60 * 1000) {
+        // Réduire le cache à 5 minutes pour les tests
+        if (cachedIP && cacheAge < 5 * 60 * 1000) {
             console.log('Utilisation de l\'IP en cache:', cachedIP);
             return cachedIP;
         }
         
+        console.log('Récupération de l\'IP réelle depuis les services externes...');
+        
         // Essayer plusieurs services pour obtenir l'IP
         const services = [
-            'https://api.ipify.org?format=json',
-            'https://ipinfo.io/json',
-            'https://api.my-ip.io/ip.json'
+            {
+                url: 'https://api.ipify.org?format=json',
+                extract: (data) => data.ip
+            },
+            {
+                url: 'https://ipapi.co/json/',
+                extract: (data) => data.ip
+            },
+            {
+                url: 'https://api.my-ip.io/ip.json',
+                extract: (data) => data.ip
+            },
+            {
+                url: 'https://ipinfo.io/json',
+                extract: (data) => data.ip
+            },
+            {
+                url: 'https://api.ipgeolocation.io/getip',
+                extract: (data) => data.ip
+            }
         ];
         
+        // Essayer chaque service jusqu'à ce qu'un fonctionne
         for (const service of services) {
             try {
-                // Ajouter un timeout pour éviter les attentes trop longues
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 3000);
+                console.log(`Tentative avec ${service.url}`);
                 
-                const response = await fetch(service, { 
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                
+                const response = await fetch(service.url, { 
                     signal: controller.signal,
                     mode: 'cors',
-                    cache: 'no-cache'
+                    cache: 'no-cache',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
                 });
                 
                 clearTimeout(timeoutId);
                 
                 if (response.ok) {
                     const data = await response.json();
-                    const ip = data.ip || data.IPv4 || data.ipAddress || '';
+                    const ip = service.extract(data);
                     
-                    if (ip) {
-                        console.log('IP réelle obtenue via', service, ':', ip);
+                    if (ip && ip.match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/)) {
+                        console.log('IP réelle obtenue via', service.url, ':', ip);
                         
                         // Stocker l'IP en cache local
                         localStorage.setItem('last_known_real_ip', ip);
@@ -2711,22 +2745,76 @@ async getClientRealIP() {
                     }
                 }
             } catch (serviceError) {
-                console.warn(`Erreur avec le service ${service}:`, serviceError);
+                console.warn(`Erreur avec le service ${service.url}:`, serviceError.message);
                 // Continuer avec le service suivant
             }
         }
         
-        // Si tous les services échouent, utiliser une IP en cache même ancienne
+        // Si tous les services échouent mais qu'on a une IP en cache (même ancienne)
         if (cachedIP) {
             console.log('Utilisation de l\'IP en cache (ancienne):', cachedIP);
             return cachedIP;
         }
+        
+        // En dernier recours, utiliser un identifiant unique basé sur le navigateur
+        const fallbackId = this.generateBrowserFingerprint();
+        console.log('Utilisation d\'un identifiant de secours:', fallbackId);
+        return fallbackId;
+        
     } catch (error) {
         console.error('Erreur obtention IP:', error);
+        
+        // En cas d'erreur totale, générer un identifiant unique
+        const fallbackId = this.generateBrowserFingerprint();
+        return fallbackId;
     }
+}
+
+// Nouvelle méthode pour générer une empreinte du navigateur
+generateBrowserFingerprint() {
+    try {
+        const nav = window.navigator;
+        const screen = window.screen;
+        
+        // Créer une empreinte unique basée sur les caractéristiques du navigateur
+        const fingerprint = [
+            nav.userAgent,
+            nav.language,
+            screen.colorDepth,
+            screen.width + 'x' + screen.height,
+            new Date().getTimezoneOffset(),
+            nav.hardwareConcurrency || 'unknown',
+            nav.platform
+        ].join('|');
+        
+        // Hacher l'empreinte pour créer un ID unique
+        let hash = 0;
+        for (let i = 0; i < fingerprint.length; i++) {
+            const char = fingerprint.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // Convert to 32bit integer
+        }
+        
+        return 'FP_' + Math.abs(hash).toString(16);
+    } catch (error) {
+        return 'FP_' + Date.now().toString(16);
+    }
+}
+
+// Fonction de test pour vérifier la récupération d'IP
+async testIPRetrieval() {
+    console.log('=== TEST DE RÉCUPÉRATION D\'IP ===');
     
-    console.warn("Impossible d'obtenir l'IP réelle");
-    return null;
+    // Forcer le rafraîchissement
+    localStorage.removeItem('last_ip_check_time');
+    
+    const ip = await this.getClientRealIP();
+    console.log('IP récupérée:', ip);
+    
+    // Afficher une notification
+    this.showNotification(`Votre IP: ${ip}`, 'info');
+    
+    return ip;
 }
 
 startBanMonitoring() {
@@ -4673,39 +4761,48 @@ async sendImportantNotification(title, body, url, urgent) {
             expiresAt = new Date(Date.now() + duration).toISOString();
         }
         
-        console.log(`Bannissement de l'utilisateur ${pseudo}`);
+        console.log(`=== DÉBUT DU BANNISSEMENT DE ${pseudo} ===`);
         
-        // 1. D'ABORD récupérer l'IP réelle de l'utilisateur depuis ses messages
+        // 1. Chercher l'IP réelle de plusieurs façons
         let userRealIP = null;
         
-        // Chercher dans les messages récents de l'utilisateur
+        // Méthode 1 : Chercher dans les messages récents
+        console.log('Recherche de l\'IP dans les messages...');
         const { data: userMessages, error: messagesError } = await this.supabase
             .from('messages')
             .select('*')
             .eq('pseudo', pseudo)
             .order('created_at', { ascending: false })
-            .limit(10); // Augmenté pour avoir plus de chances de trouver l'IP
+            .limit(20);
             
         if (!messagesError && userMessages && userMessages.length > 0) {
-            // Chercher une IP réelle dans les messages
             for (const msg of userMessages) {
-                if (msg.real_ip) {
+                if (msg.real_ip && msg.real_ip !== 'null' && msg.real_ip !== '') {
                     userRealIP = msg.real_ip;
-                    console.log(`IP réelle trouvée dans les messages: ${userRealIP}`);
+                    console.log(`IP trouvée dans message ID ${msg.id}: ${userRealIP}`);
                     break;
                 }
             }
         }
         
-        // Vérifier aussi dans sessionStorage si disponible
+        // Méthode 2 : Vérifier dans sessionStorage
         if (!userRealIP) {
             userRealIP = sessionStorage.getItem(`user_ip_${pseudo}`);
             if (userRealIP) {
-                console.log(`IP réelle trouvée dans sessionStorage: ${userRealIP}`);
+                console.log(`IP trouvée dans sessionStorage: ${userRealIP}`);
+            }
+        }
+        
+        // Méthode 3 : Vérifier dans localStorage
+        if (!userRealIP) {
+            userRealIP = localStorage.getItem(`last_ip_${pseudo}`);
+            if (userRealIP) {
+                console.log(`IP trouvée dans localStorage: ${userRealIP}`);
             }
         }
         
         // 2. Bannir le pseudo dans banned_ips
+        console.log(`Bannissement du pseudo: ${pseudo}`);
         const { error: pseudoBanError } = await this.supabase
             .from('banned_ips')
             .insert({
@@ -4721,71 +4818,93 @@ async sendImportantNotification(title, body, url, urgent) {
             throw pseudoBanError;
         }
         
-        console.log('Pseudo banni avec succès:', pseudo);
+        console.log('✓ Pseudo banni avec succès');
         
-        // 3. Si une IP réelle a été trouvée, la bannir dans banned_real_ips
-        if (userRealIP) {
-            // Vérification de sécurité : ne pas bannir l'IP de l'administrateur
+        // 3. Bannir l'IP réelle si trouvée
+        if (userRealIP && userRealIP !== 'null' && userRealIP !== '') {
+            // Vérification de sécurité pour l'admin
             const adminRealIP = await this.getClientRealIP();
+            
             if (userRealIP === adminRealIP && this.isAdmin) {
-                console.warn("Tentative de bannissement de l'IP de l'admin détectée et bloquée");
+                console.warn("Protection admin : votre IP n'est pas bannie");
                 this.showNotification("Protection admin : votre IP n'a pas été bannie", "warning");
             } else {
                 console.log(`Bannissement de l'IP réelle: ${userRealIP}`);
                 
-                // Bannir dans banned_real_ips
-                const { error: ipBanError } = await this.supabase
+                // Vérifier si l'IP n'est pas déjà bannie
+                const { data: existingBan } = await this.supabase
                     .from('banned_real_ips')
-                    .insert({
-                        ip: userRealIP,
-                        banned_at: new Date().toISOString(),
-                        expires_at: expiresAt,
-                        reason: `IP de ${pseudo} - ${reason || 'Non spécifié'}`,
-                        banned_by: this.pseudo
-                    });
-                    
-                if (ipBanError) {
-                    console.error('Erreur bannissement IP réelle:', ipBanError);
-                    // Ne pas lancer d'exception, continuer même si l'IP n'a pas pu être bannie
+                    .select('*')
+                    .eq('ip', userRealIP)
+                    .maybeSingle();
+                
+                if (existingBan) {
+                    console.log('Cette IP est déjà bannie, mise à jour...');
+                    // Mettre à jour le bannissement existant
+                    const { error: updateError } = await this.supabase
+                        .from('banned_real_ips')
+                        .update({
+                            banned_at: new Date().toISOString(),
+                            expires_at: expiresAt,
+                            reason: `${reason || 'Non spécifié'} (mis à jour)`,
+                            banned_by: this.pseudo
+                        })
+                        .eq('ip', userRealIP);
+                        
+                    if (updateError) {
+                        console.error('Erreur mise à jour bannissement IP:', updateError);
+                    } else {
+                        console.log('✓ Bannissement IP mis à jour');
+                    }
                 } else {
-                    console.log(`IP réelle ${userRealIP} bannie avec succès`);
-                    this.showNotification(`Utilisateur ${pseudo} et son IP bannis avec succès`, 'success');
+                    // Créer un nouveau bannissement
+                    const { error: ipBanError } = await this.supabase
+                        .from('banned_real_ips')
+                        .insert({
+                            ip: userRealIP,
+                            banned_at: new Date().toISOString(),
+                            expires_at: expiresAt,
+                            reason: `IP de ${pseudo} - ${reason || 'Non spécifié'}`,
+                            banned_by: this.pseudo
+                        });
+                        
+                    if (ipBanError) {
+                        console.error('Erreur bannissement IP:', ipBanError);
+                        this.showNotification(`Erreur bannissement IP: ${ipBanError.message}`, 'error');
+                    } else {
+                        console.log('✓ IP réelle bannie avec succès');
+                        this.showNotification(`${pseudo} et son IP (${userRealIP}) bannis`, 'success');
+                    }
                 }
             }
         } else {
-            console.warn(`Aucune IP réelle trouvée pour ${pseudo} - seul le pseudo a été banni`);
-            this.showNotification(`Utilisateur ${pseudo} banni (IP non trouvée)`, 'warning');
+            console.warn('⚠️ AUCUNE IP RÉELLE TROUVÉE - Seul le pseudo a été banni');
+            this.showNotification(`⚠️ ${pseudo} banni (IP non trouvée)`, 'warning');
         }
         
-        // 4. Supprimer tous les messages de l'utilisateur banni
-        console.log(`Suppression des messages de l'utilisateur ${pseudo}`);
-        const { error: deleteMessagesError } = await this.supabase
+        // 4. Supprimer les messages
+        console.log('Suppression des messages...');
+        const { error: deleteError } = await this.supabase
             .from('messages')
             .delete()
             .eq('pseudo', pseudo);
             
-        if (deleteMessagesError) {
-            console.error('Erreur lors de la suppression des messages:', deleteMessagesError);
-        } else {
-            console.log(`Messages de l'utilisateur ${pseudo} supprimés avec succès`);
+        if (!deleteError) {
+            console.log('✓ Messages supprimés');
         }
         
-        // 5. Forcer la déconnexion si l'utilisateur banni est actuellement connecté
-        if (this.pseudo === pseudo) {
-            await this.logout();
-            window.location.reload();
-        }
-        
-        // 6. Actualiser l'affichage
+        // 5. Actualiser l'interface
         await this.loadExistingMessages();
         await this.loadBannedIPs();
         
-        this.playSound('success');
+        console.log(`=== FIN DU BANNISSEMENT ===`);
         
+        this.playSound('success');
         return true;
+        
     } catch (error) {
         console.error('Erreur bannissement:', error);
-        this.showNotification('Erreur lors du bannissement', 'error');
+        this.showNotification(`Erreur: ${error.message}`, 'error');
         return false;
     }
 }
