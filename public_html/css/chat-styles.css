@@ -945,7 +945,6 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.25rem;
-  background: rgb(148, 0, 0);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -1125,7 +1124,6 @@
 }
 
 .admin-panel button {
-  background: rgb(148, 0, 0);
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.3);
   padding: 8px 16px;
@@ -1163,7 +1161,6 @@
 .banned-word button {
   background: none;
   border: none;
-  color: var(--chat-error);
   cursor: pointer;
   padding: 2px 6px;
   border-radius: 50%;

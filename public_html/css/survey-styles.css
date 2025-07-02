@@ -1,23 +1,44 @@
-/* SECTION 1: STYLES DE BASE POUR LE SONDAGE */
+/* ========================================
+   SURVEY-STYLES.CSS - VERSION COMPLÈTE OPTIMISÉE
+   ======================================== */
+
+/* ========================================
+   SECTION 1: ANIMATIONS
+   ======================================== */
 
 /* Animation pulsante pour le bouton sondage */
 @keyframes surveyPulse {
-    0% { transform: scale(1); }
+    0%, 100% { transform: scale(1); }
     50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
 }
+
+/* Animation de changement de couleur pour le texte */
+@keyframes textColorChange {
+    0%, 100% { color: white; }
+    50% { color: #FFEB3B; }
+}
+
+/* Animation spécifique au thème rouge */
+@keyframes textColorChangeRouge {
+    0%, 100% { color: white; }
+    50% { color: #FFD230; }
+}
+
+/* ========================================
+   SECTION 2: BOUTON SONDAGE
+   ======================================== */
 
 /* Style de base pour le bouton */
 .survey-btn {
     position: relative;
 }
 
-/* Appliquer l'animation au bouton */
+/* Animation du bouton */
 .survey-btn .material-icons {
     animation: surveyPulse 2s infinite;
 }
 
-/* Indicateur visuel pour inciter au clic */
+/* Indicateur visuel (point rouge) */
 .survey-btn::after {
     content: '';
     position: absolute;
@@ -30,61 +51,35 @@
     box-shadow: 0 0 5px rgba(255, 69, 69, 0.5);
 }
 
-/* Thème light (violet) */
-[data-theme="light"] .survey-btn .material-icons {
-    color: #FFEB3B; /* Jaune pour contraster avec le violet */
-}
-
-/* Thème dark (bleu nuit) */
-[data-theme="dark"] .survey-btn .material-icons {
-    color: #FFEB3B; /* Jaune pour contraster avec le bleu */
-}
-
-/* Thème rouge */
-[data-theme="rouge"] .survey-btn .material-icons {
-    color: #FFD230; /* Jaune spécifique au thème rouge */
-}
-
-/* Thème Bleu Ciel */
-[data-theme="bleuciel"] .survey-btn .material-icons {
-    color: #FFEB3B; /* Jaune pour contraster avec le bleu ciel */
-}
-
-/* Animation de changement de couleur pour le texte */
-@keyframes textColorChange {
-    0% { color: white; }
-    50% { color: #FFEB3B; }
-    100% { color: white; }
-}
-
-/* Spécifique au thème rouge */
-@keyframes textColorChangeRouge {
-    0% { color: white; }
-    50% { color: #FFD230; }
-    100% { color: white; }
-}
-
+/* Animation du texte */
 .survey-btn span:not(.material-icons) {
     animation: textColorChange 3s infinite;
 }
 
+/* Couleurs d'icône par thème */
+[data-theme="light"] .survey-btn .material-icons,
+[data-theme="dark"] .survey-btn .material-icons,
+[data-theme="bleuciel"] .survey-btn .material-icons {
+    color: #FFEB3B;
+}
+
+[data-theme="rouge"] .survey-btn .material-icons {
+    color: #FFD230;
+}
+
+/* Animation du texte par thème */
 [data-theme="rouge"] .survey-btn span:not(.material-icons) {
     animation: textColorChangeRouge 3s infinite;
 }
 
-/* Animations spécifiques pour les nouveaux thèmes */
-@keyframes textColorChangeBleuciel {
-    0% { color: white; }
-    50% { color: #FFEB3B; }
-    100% { color: white; }
-}
-
 [data-theme="bleuciel"] .survey-btn span:not(.material-icons) {
-    animation: textColorChangeBleuciel 3s infinite;
+    animation: textColorChange 3s infinite; /* Utilise l'animation standard */
 }
 
+/* ========================================
+   SECTION 3: MODAL DU SONDAGE
+   ======================================== */
 
-/* SECTION 2: MODAL DU SONDAGE */
 .survey-modal {
     display: none;
     position: fixed;
@@ -102,7 +97,7 @@
     display: flex;
 }
 
-/* Style de base pour le contenu (thème clair/violet par défaut) */
+/* Contenu du modal - Style de base */
 .survey-content {
     background: linear-gradient(145deg, #7E57C2, #9575CD);
     width: 90%;
@@ -116,21 +111,20 @@
     overflow-y: auto;
 }
 
-/* Thème dark (bleu nuit) */
+/* Contenu du modal - Thèmes */
 [data-theme="dark"] .survey-content {
     background: linear-gradient(145deg, #1a237e, #283593);
 }
 
-/* Thème rouge */
 [data-theme="rouge"] .survey-content {
     background: linear-gradient(145deg, #bc3a34, #a32f2a);
 }
 
-/* Thème Bleu Ciel */
 [data-theme="bleuciel"] .survey-content {
     background: linear-gradient(145deg, #0ea5e9, #38bdf8);
 }
 
+/* Header du modal */
 .survey-header {
     display: flex;
     justify-content: space-between;
@@ -146,11 +140,11 @@
     color: white;
 }
 
-/* Style de base pour le bouton de fermeture */
+/* Bouton de fermeture */
 .close-survey {
     background: rgba(255, 255, 255, 0.2);
     border: none;
-    color: white; /* Couleur par défaut pour tous les thèmes */
+    color: white;
     width: 36px;
     height: 36px;
     border-radius: 50%;
@@ -163,7 +157,6 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* Style pour la croix elle-même (si vous utilisez × comme caractère) */
 .close-survey::before {
     content: "×";
     font-size: 24px;
@@ -171,50 +164,30 @@
     line-height: 1;
 }
 
-/* Alternative: si vous utilisez une icône Material Design */
 .close-survey .material-icons {
     font-size: 22px;
 }
 
-/* Effet au survol pour tous les thèmes */
 .close-survey:hover {
     background: rgba(255, 255, 255, 0.4);
     transform: scale(1.1);
 }
 
-/* Croix JAUNE spécifiquement pour le thème ROUGE */
+/* Couleur de la croix par thème */
 [data-theme="rouge"] .close-survey {
     color: yellow;
 }
 
-/* Nouveaux thèmes - boutons de fermeture */
+[data-theme="dark"] .close-survey,
+[data-theme="light"] .close-survey,
 [data-theme="bleuciel"] .close-survey {
     color: white;
 }
 
-/* Maintenir la croix BLANCHE pour les thèmes dark et light */
-[data-theme="dark"] .close-survey,
-[data-theme="light"] .close-survey {
-    color: white;
-}
+/* ========================================
+   SECTION 4: QUESTIONS ET OPTIONS
+   ======================================== */
 
-/* Adaptation pour les appareils mobiles */
-@media (max-width: 768px) {
-    .close-survey {
-        width: 40px;
-        height: 40px;
-    }
-    
-    .close-survey::before {
-        font-size: 28px;
-    }
-    
-    .close-survey .material-icons {
-        font-size: 24px;
-    }
-}
-
-/* SECTION 3: QUESTIONS ET OPTIONS */
 .survey-question {
     margin-bottom: 20px;
 }
@@ -248,29 +221,17 @@
     transform: translateX(5px);
 }
 
-/* Style de l'option sélectionnée selon les thèmes */
-/* Thème light (violet) */
-[data-theme="light"] .survey-option.selected {
-    background: rgba(255, 235, 59, 0.2);
-    border-color: #FFEB3B;
-}
-
-/* Thème dark (bleu nuit) */
-[data-theme="dark"] .survey-option.selected {
-    background: rgba(255, 235, 59, 0.2);
-    border-color: #FFEB3B;
-}
-
-/* Thème rouge */
-[data-theme="rouge"] .survey-option.selected {
-    background: rgba(255, 210, 48, 0.3);
-    border-color: #FFD230;
-}
-
-/* Nouveaux thèmes - options sélectionnées */
+/* Option sélectionnée par thème */
+[data-theme="light"] .survey-option.selected,
+[data-theme="dark"] .survey-option.selected,
 [data-theme="bleuciel"] .survey-option.selected {
     background: rgba(255, 235, 59, 0.2);
     border-color: #FFEB3B;
+}
+
+[data-theme="rouge"] .survey-option.selected {
+    background: rgba(255, 210, 48, 0.3);
+    border-color: #FFD230;
 }
 
 .survey-option-icon {
@@ -282,288 +243,16 @@
     justify-content: center;
 }
 
-/* SECTION 4: BOUTON DE SOUMISSION */
-/* Thème light (violet) */
-[data-theme="light"] .survey-submit {
-    background: #FFEB3B;
-    border: none;
-    color: #333;
-    font-weight: bold;
-    padding: 12px 20px;
-    border-radius: 30px;
-    cursor: pointer;
-    margin-top: 10px;
-    width: 100%;
-    transition: all 0.3s ease;
-    display: block;
-}
+/* ========================================
+   SECTION 5: BOUTONS D'ACTION
+   ======================================== */
 
-[data-theme="light"] .survey-submit:hover {
-    background: #FFF176;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-/* Thème dark (bleu nuit) */
-[data-theme="dark"] .survey-submit {
-    background: #FFEB3B;
-    color: #333;
-}
-
-[data-theme="dark"] .survey-submit:hover {
-    background: #FFF176;
-}
-
-/* Thème rouge */
-[data-theme="rouge"] .survey-submit {
-    background: #FFD230;
-    color: #333;
-}
-
-[data-theme="rouge"] .survey-submit:hover {
-    background: #FFDA5A;
-}
-
-/* Nouveaux thèmes - boutons de soumission */
-[data-theme="bleuciel"] .survey-submit {
-    background: #FFEB3B;
-    border: none;
-    color: #333;
-    font-weight: bold;
-    padding: 12px 20px;
-    border-radius: 30px;
-    cursor: pointer;
-    margin-top: 10px;
-    width: 100%;
-    transition: all 0.3s ease;
-    display: block;
-}
-
-[data-theme="bleuciel"] .survey-submit:hover {
-    background: #FFF176;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-/* SECTION 5: MESSAGE DE REMERCIEMENT ET RÉSULTATS */
-.thank-you-message {
-    display: none;
-    text-align: center;
-    padding: 20px;
-}
-
-/* Thème light (violet) */
-[data-theme="light"] .thank-you-message h3 {
-    color: #FFEB3B;
-    margin-bottom: 15px;
-}
-
-[data-theme="light"] .thank-you-icon {
-    font-size: 50px;
-    color: #FFEB3B;
-    margin-bottom: 15px;
-    display: block;
-}
-
-/* Thème dark (bleu nuit) */
-[data-theme="dark"] .thank-you-message h3 {
-    color: #FFEB3B;
-}
-
-/* Thème dark (bleu nuit) */
-[data-theme="dark"] .thank-you-icon {
-    font-size: 50px;
-    color: #FFEB3B;
-    margin-bottom: 15px;
-    display: block;
-}
-
-/* Thème rouge */
-[data-theme="rouge"] .thank-you-message h3 {
-    color: #FFD230;
-}
-
-/* Thème rouge */
-[data-theme="rouge"] .thank-you-icon {
-    font-size: 50px;
-    color: #FFD230;
-    margin-bottom: 15px;
-    display: block;
-}
-
-/* Nouveaux thèmes - messages de remerciement */
-[data-theme="bleuciel"] .thank-you-message h3 {
-    color: #FFEB3B;
-    margin-bottom: 15px;
-}
-
-[data-theme="bleuciel"] .thank-you-icon {
-    font-size: 50px;
-    color: #FFEB3B;
-    margin-bottom: 15px;
-    display: block;
-}
-
-.survey-results {
-    margin-top: 15px;
-}
-
-.result-bar {
-    height: 25px;
-    background: rgba(255, 255, 255, 0.1);
-    margin-bottom: 10px;
-    border-radius: 5px;
-    overflow: hidden;
-    position: relative;
-}
-
-/* Barres de résultats selon les thèmes */
-/* Thème light (violet) */
-[data-theme="light"] .result-fill {
-    height: 100%;
-    background: linear-gradient(to right, #FFEB3B, #FFF59D);
-    width: 0%; /* Sera défini par JS */
-    transition: width 1s ease-in-out;
-}
-
-/* Thème dark (bleu nuit) */
-[data-theme="dark"] .result-fill {
-    height: 100%;
-    background: linear-gradient(to right, #FFEB3B, #FFF59D);
-    width: 0%; /* Sera défini par JS */
-    transition: width 1s ease-in-out;
-}
-
-/* Thème rouge */
-[data-theme="rouge"] .result-fill {
-    height: 100%;
-    background: linear-gradient(to right, #FFEB3B, #FFF59D);
-    width: 0%; /* Sera défini par JS */
-    transition: width 1s ease-in-out;
-}
-
-.result-text {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 10px;
-    font-size: 14px;
-    font-weight: bold;
-    color: white;
-    text-shadow: 
-        -1px -1px 0 #000,  
-        1px -1px 0 #000,
-        -1px 1px 0 #000,
-        1px 1px 0 #000,
-        0 -2px 0 #000,
-        0 2px 0 #000,
-        -2px 0 0 #000,
-        2px 0 0 #000;
-}
-
-/* Thème light (violet) */
-[data-theme="light"] .back-to-survey {
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 15px;
-    transition: background 0.3s;
-}
-
-[data-theme="light"] .back-to-survey:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-/* Thème dark (bleu nuit) */
-[data-theme="dark"] .back-to-survey {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-[data-theme="dark"] .back-to-survey:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-/* Thème rouge */
-[data-theme="rouge"] .back-to-survey {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-[data-theme="rouge"] .back-to-survey:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-/* Nouveaux thèmes - boutons de retour */
-[data-theme="bleuciel"] .back-to-survey {
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 15px;
-    transition: background 0.3s;
-}
-
-[data-theme="bleuciel"] .back-to-survey:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-/* SECTION 6: RESPONSIVITÉ */
-@media (max-width: 768px) {
-    .survey-content {
-        width: 95%;
-        padding: 15px;
-    }
-    
-    .survey-header h2 {
-        font-size: 18px;
-    }
-    
-    .survey-question h3 {
-        font-size: 16px;
-    }
-    
-    .survey-option {
-        padding: 10px;
-    }
-}
-
-/* Amélioration des boutons du sondage */
-
-/* Bouton d'envoi des réponses */
-.survey-submit {
-    display: block !important;
-    width: 80% !important; /* Légèrement plus étroit que 100% */
-    margin: 25px auto 15px !important; /* Marges verticales augmentées et auto pour centrer */
-    padding: 14px 24px !important; /* Padding plus grand pour un bouton plus visible */
-    border-radius: 30px !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    text-align: center !important;
-    cursor: pointer !important;
-    transition: all 0.3s ease !important;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
-    border: none !important;
-    position: relative !important;
-    overflow: hidden !important;
-}
-
-/* Bouton de retour au site */
+/* Styles communs aux boutons */
+.survey-submit,
 .back-to-survey {
     display: block !important;
-    width: 60% !important; /* Plus étroit que le bouton principal */
     margin: 25px auto 15px !important;
-    padding: 12px 20px !important;
     border-radius: 30px !important;
-    font-size: 15px !important;
     font-weight: bold !important;
     text-align: center !important;
     cursor: pointer !important;
@@ -572,6 +261,20 @@
     border: none !important;
     position: relative !important;
     overflow: hidden !important;
+}
+
+/* Bouton de soumission */
+.survey-submit {
+    width: 80% !important;
+    padding: 14px 24px !important;
+    font-size: 16px !important;
+}
+
+/* Bouton de retour */
+.back-to-survey {
+    width: 60% !important;
+    padding: 12px 20px !important;
+    font-size: 15px !important;
 }
 
 /* Effet de brillance sur les boutons */
@@ -598,90 +301,180 @@
     left: 100% !important;
 }
 
-/* Effet au survol des boutons (en plus de l'effet de brillance) */
+/* Effets au survol et au clic */
 .survey-submit:hover,
 .back-to-survey:hover {
     transform: translateY(-3px) !important;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Effet de pression */
 .survey-submit:active,
 .back-to-survey:active {
     transform: translateY(1px) !important;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
 }
 
-/* Styles spécifiques par thème */
-/* Thème light (violet) */
-[data-theme="light"] .survey-submit {
-    background: linear-gradient(to right, #FFEB3B, #FFF176) !important;
-    color: #333 !important;
-}
-
-[data-theme="light"] .back-to-survey {
-    background: rgba(255, 255, 255, 0.25) !important;
-    color: white !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-}
-
-/* Thème dark (bleu nuit) */
-[data-theme="dark"] .survey-submit {
-    background: linear-gradient(to right, #FFEB3B, #FFF176) !important;
-    color: #333 !important;
-}
-
-[data-theme="dark"] .back-to-survey {
-    background: rgba(255, 255, 255, 0.25) !important;
-    color: white !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-}
-
-/* Thème rouge */
-[data-theme="rouge"] .survey-submit {
-    background: linear-gradient(to right, #FFD230, #FFDA5A) !important;
-    color: #333 !important;
-}
-
-[data-theme="rouge"] .back-to-survey {
-    background: rgba(255, 255, 255, 0.25) !important;
-    color: white !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-}
-
-/* Nouveaux thèmes - styles améliorés des boutons */
+/* Styles des boutons par thème */
+/* Bouton de soumission */
+[data-theme="light"] .survey-submit,
+[data-theme="dark"] .survey-submit,
 [data-theme="bleuciel"] .survey-submit {
     background: linear-gradient(to right, #FFEB3B, #FFF176) !important;
     color: #333 !important;
 }
 
+[data-theme="rouge"] .survey-submit {
+    background: linear-gradient(to right, #FFD230, #FFDA5A) !important;
+    color: #333 !important;
+}
+
+/* Bouton de retour */
+[data-theme="light"] .back-to-survey,
+[data-theme="dark"] .back-to-survey,
+[data-theme="rouge"] .back-to-survey,
 [data-theme="bleuciel"] .back-to-survey {
     background: rgba(255, 255, 255, 0.25) !important;
     color: white !important;
     border: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
 
-/* Amélioration du conteneur de boutons (optionnel) */
+/* Conteneur de boutons (optionnel) */
 .survey-buttons-container {
     text-align: center !important;
     margin-top: 20px !important;
 }
 
-/* Correction pour le centrage dans le message de remerciement */
+/* ========================================
+   SECTION 6: MESSAGE DE REMERCIEMENT ET RÉSULTATS
+   ======================================== */
+
 .thank-you-message {
+    display: none !important;
     text-align: center !important;
-    display: flex !important;
+    padding: 20px;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
 }
 
-/* Force le message de remerciement à être caché par défaut */
-.thank-you-message {
-    display: none !important;
+.thank-you-message.visible {
+    display: flex !important;
 }
 
-/* Annule le !important uniquement quand la classe .visible est ajoutée */
-.thank-you-message.visible {
-    display: block !important;
+/* Titre de remerciement par thème */
+[data-theme="light"] .thank-you-message h3,
+[data-theme="dark"] .thank-you-message h3,
+[data-theme="bleuciel"] .thank-you-message h3 {
+    color: #FFEB3B;
+    margin-bottom: 15px;
+}
+
+[data-theme="rouge"] .thank-you-message h3 {
+    color: #FFD230;
+    margin-bottom: 15px;
+}
+
+/* Icône de remerciement par thème */
+.thank-you-icon {
+    font-size: 50px;
+    margin-bottom: 15px;
+    display: block;
+}
+
+[data-theme="light"] .thank-you-icon,
+[data-theme="dark"] .thank-you-icon,
+[data-theme="bleuciel"] .thank-you-icon {
+    color: #FFEB3B;
+}
+
+[data-theme="rouge"] .thank-you-icon {
+    color: #FFD230;
+}
+
+/* Résultats du sondage */
+.survey-results {
+    margin-top: 15px;
+}
+
+.result-bar {
+    height: 25px;
+    background: rgba(255, 255, 255, 0.1);
+    margin-bottom: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Barre de progression des résultats */
+.result-fill {
+    height: 100%;
+    background: linear-gradient(to right, #FFEB3B, #FFF59D);
+    width: 0%; /* Sera défini par JS */
+    transition: width 1s ease-in-out;
+}
+
+/* Texte des résultats */
+.result-text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 
+        -1px -1px 0 #000,  
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000,
+        0 -2px 0 #000,
+        0 2px 0 #000,
+        -2px 0 0 #000,
+        2px 0 0 #000;
+}
+
+/* ========================================
+   SECTION 7: RESPONSIVITÉ
+   ======================================== */
+
+@media (max-width: 768px) {
+    /* Modal */
+    .survey-content {
+        width: 95%;
+        padding: 15px;
+    }
+    
+    /* Header */
+    .survey-header h2 {
+        font-size: 18px;
+    }
+    
+    /* Questions */
+    .survey-question h3 {
+        font-size: 16px;
+    }
+    
+    /* Options */
+    .survey-option {
+        padding: 10px;
+    }
+    
+    /* Bouton de fermeture */
+    .close-survey {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .close-survey::before {
+        font-size: 28px;
+    }
+    
+    .close-survey .material-icons {
+        font-size: 24px;
+    }
 }

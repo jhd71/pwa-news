@@ -120,7 +120,6 @@
     }
     
     .tile[data-category="tv"] .tile-title {
-        font-size: 13px !important;
         line-height: 1.1 !important;
         padding: 0 2px !important;
     }
@@ -144,7 +143,6 @@
     }
     
     .tile[data-category="tv"] .tile-title {
-        font-size: 14px !important;
         line-height: 1.2 !important;
     }
 }
@@ -160,7 +158,6 @@
     }
     
     .tile[data-category="tv"] .tile-title {
-        font-size: 14px !important;
         line-height: 1.2 !important;
     }
 }

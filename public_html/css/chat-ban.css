@@ -1,82 +1,104 @@
+/* ========================================
+   CHAT-BAN.CSS - VERSION NETTOYÉE
+   ======================================== */
+
+/* ========================================
+   1. MESSAGE DE BANNISSEMENT PRINCIPAL
+   ======================================== */
 .chat-banned-message {
-  position: fixed;
-  bottom: 60px;
-  right: 20px;
-  background: linear-gradient(135deg, #d32f2f, #b71c1c);
-  color: white;
-  border-radius: 12px;
-  padding: 20px;
-  text-align: center;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-  max-width: calc(100vw - 40px);
-  width: 280px;
-  z-index: 9999;
-  animation: pulse 1.5s ease-in-out infinite;
-  font-size: 15px;
+    position: fixed;
+    bottom: 60px;
+    right: 20px;
+    background: linear-gradient(135deg, #d32f2f, #b71c1c);
+    color: white;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    max-width: calc(100vw - 40px);
+    width: 280px;
+    z-index: 9999;
+    animation: pulse 1.5s ease-in-out infinite;
+    font-size: 15px;
 }
 
+/* ========================================
+   2. ANIMATIONS
+   ======================================== */
 @keyframes pulse {
-  0%   { transform: scale(1); }
-  50%  { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-					
-.banned-icon {
-  font-size: 36px;
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 50px;
-  height: 50px;
-  margin: 0 auto 10px;
-  background-color: white;
-  border-radius: 50%;
-  color: #d32f2f;
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.05); }
+    100% { transform: scale(1); }
 }
 
-/* Style amélioré pour le bouton Fermer */
+/* ========================================
+   3. ICÔNE DE BANNISSEMENT
+   ======================================== */
+.banned-icon {
+    font-size: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    margin: 0 auto 10px;
+    background-color: white;
+    border-radius: 50%;
+    color: #d32f2f;
+}
+
+/* ========================================
+   4. RAISON DU BANNISSEMENT
+   ======================================== */
+.ban-reason {
+    font-style: italic;
+    opacity: 0.9;
+    margin: 8px 0;
+    font-size: 14px;
+}
+
+/* ========================================
+   5. BOUTON DE FERMETURE
+   ======================================== */
 #dismiss-ban-message {
-  background: rgba(255,255,255,0.2);
-  border: none;
-  padding: 8px 16px;
-  margin-top: 12px;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.2s ease;
-  width: 100%;
-  max-width: 150px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    padding: 8px 16px;
+    margin-top: 12px;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    width: 100%;
+    max-width: 150px;
 }
 
 #dismiss-ban-message:hover {
-  background: rgba(255,255,255,0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 #dismiss-ban-message:active {
-  transform: translateY(0);
+    transform: translateY(0);
 }
-					
+
+/* ========================================
+   6. BANNIÈRE DE BANNISSEMENT
+   ======================================== */
 .chat-banned-banner {
-  background: linear-gradient(135deg, #d32f2f, #b71c1c);
-  color: white;
-  padding: 10px;
-  text-align: center;
-  border-radius: 8px;
-  margin-bottom: 10px;
+    background: linear-gradient(135deg, #d32f2f, #b71c1c);
+    color: white;
+    padding: 10px;
+    text-align: center;
+    border-radius: 8px;
+    margin-bottom: 10px;
 }
 
+/* ========================================
+   7. UTILITAIRES
+   ======================================== */
 .chat-widget.hidden {
-  display: none;
-}
-
-/* Style pour la raison du bannissement */
-.ban-reason {
-  font-style: italic;
-  opacity: 0.9;
-  margin: 8px 0;
-  font-size: 14px;
+    display: none;
 }

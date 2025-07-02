@@ -1351,6 +1351,63 @@ async setupAuthListeners() {
     console.log('Tentative de connexion avec pseudo:', pseudo);
     console.log('ID d\'appareil:', deviceId);
 
+// NOUVEAU : Vérifier si le pseudo est banni
+        const { data: pseudoBan, error: pseudoBanError } = await this.supabase
+            .from('banned_ips')
+            .select('*')
+            .eq('ip', pseudo)
+            .maybeSingle();
+            
+        if (!pseudoBanError && pseudoBan) {
+            // Vérifier si le bannissement est expiré
+            if (!pseudoBan.expires_at || new Date(pseudoBan.expires_at) > new Date()) {
+                console.log(`Pseudo ${pseudo} est banni`);
+                this.showNotification('Ce pseudo est banni du chat', 'error');
+                this.playSound('error');
+                
+                // Stocker le bannissement localement
+                localStorage.setItem('chat_device_banned', 'true');
+                localStorage.setItem('chat_device_banned_until', pseudoBan.expires_at || 'permanent');
+                localStorage.setItem('chat_ban_reason', pseudoBan.reason || 'Pseudo banni');
+                
+                // Afficher le message de bannissement
+                this.showBanNotification(pseudoBan.reason || 'Pseudo banni');
+                
+                return;
+            }
+        }
+        
+        // NOUVEAU : Obtenir et vérifier l'IP réelle AVANT la connexion
+        const currentRealIP = await this.getClientRealIP();
+        if (currentRealIP) {
+            console.log(`Vérification de l'IP réelle au login: ${currentRealIP}`);
+            
+            const { data: ipBan, error: ipBanError } = await this.supabase
+                .from('banned_real_ips')
+                .select('*')
+                .eq('ip', currentRealIP)
+                .maybeSingle();
+                
+            if (!ipBanError && ipBan) {
+                // Vérifier si le bannissement est expiré
+                if (!ipBan.expires_at || new Date(ipBan.expires_at) > new Date()) {
+                    console.log(`IP réelle ${currentRealIP} est bannie`);
+                    this.showNotification('Votre adresse IP est bannie du chat', 'error');
+                    this.playSound('error');
+                    
+                    // Stocker le bannissement localement
+                    localStorage.setItem('chat_device_banned', 'true');
+                    localStorage.setItem('chat_device_banned_until', ipBan.expires_at || 'permanent');
+                    localStorage.setItem('chat_ban_reason', ipBan.reason || 'IP bannie');
+                    
+                    // Afficher le message de bannissement
+                    this.showBanNotification(ipBan.reason || 'IP bannie');
+                    
+                    return;
+                }
+            }
+        }
+		
     if (!pseudo || pseudo.length < 3) {
         this.showNotification('Le pseudo doit faire au moins 3 caractères', 'error');
         this.playSound('error');
@@ -2153,6 +2210,12 @@ div.innerHTML = `
             real_ip: realIP, // Nouvelle propriété
             created_at: new Date().toISOString()
         };
+        
+        // NOUVEAU : Stocker aussi l'IP réelle avec le pseudo pour les bannissements
+        if (realIP) {
+            // Stocker temporairement l'association pseudo-IP
+            sessionStorage.setItem(`user_ip_${this.pseudo}`, realIP);
+        }
         
         // Insérer le message
         const { data: messageData, error } = await this.supabase
@@ -4563,7 +4626,7 @@ async sendImportantNotification(title, body, url, urgent) {
                     <h3>Bannir ${message.pseudo}</h3>
                     <p>IP: ${message.ip}</p>
                     <input type="text" class="ban-reason" placeholder="Raison du ban" style="width: 100%; padding: 10px; margin: 10px 0; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: white;">
-                    <select class="ban-duration" style="width: 100%; padding: 10px; margin: 10px 0; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: white;">
+                    <select class="ban-duration" style="width: 100%; padding: 10px; margin: 10px 0; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;">
                         <option value="">Ban permanent</option>
                         <option value="3600000">1 heure</option>
                         <option value="86400000">24 heures</option>
@@ -4612,7 +4675,37 @@ async sendImportantNotification(title, body, url, urgent) {
         
         console.log(`Bannissement de l'utilisateur ${pseudo}`);
         
-        // 1. Bannir le pseudo dans la table banned_ips
+        // 1. D'ABORD récupérer l'IP réelle de l'utilisateur depuis ses messages
+        let userRealIP = null;
+        
+        // Chercher dans les messages récents de l'utilisateur
+        const { data: userMessages, error: messagesError } = await this.supabase
+            .from('messages')
+            .select('*')
+            .eq('pseudo', pseudo)
+            .order('created_at', { ascending: false })
+            .limit(10); // Augmenté pour avoir plus de chances de trouver l'IP
+            
+        if (!messagesError && userMessages && userMessages.length > 0) {
+            // Chercher une IP réelle dans les messages
+            for (const msg of userMessages) {
+                if (msg.real_ip) {
+                    userRealIP = msg.real_ip;
+                    console.log(`IP réelle trouvée dans les messages: ${userRealIP}`);
+                    break;
+                }
+            }
+        }
+        
+        // Vérifier aussi dans sessionStorage si disponible
+        if (!userRealIP) {
+            userRealIP = sessionStorage.getItem(`user_ip_${pseudo}`);
+            if (userRealIP) {
+                console.log(`IP réelle trouvée dans sessionStorage: ${userRealIP}`);
+            }
+        }
+        
+        // 2. Bannir le pseudo dans banned_ips
         const { error: pseudoBanError } = await this.supabase
             .from('banned_ips')
             .insert({
@@ -4630,62 +4723,41 @@ async sendImportantNotification(title, body, url, urgent) {
         
         console.log('Pseudo banni avec succès:', pseudo);
         
-        // 2. Récupérer les messages récents de l'utilisateur pour trouver son IP
-        const { data: userMessages, error: messagesError } = await this.supabase
-            .from('messages')
-            .select('*')
-            .eq('pseudo', pseudo)
-            .order('created_at', { ascending: false })
-            .limit(5);
-            
-        if (!messagesError && userMessages && userMessages.length > 0) {
-            // Chercher une IP réelle dans les messages récents
-            let userRealIP = null;
-            for (const msg of userMessages) {
-                if (msg.real_ip) {
-                    userRealIP = msg.real_ip;
-                    console.log(`IP réelle trouvée: ${userRealIP}`);
-                    break;
-                }
-            }
-            
-            // Si une IP réelle a été trouvée, la bannir aussi
-            if (userRealIP) {
-                // Vérification de sécurité : ne pas bannir l'IP de l'administrateur
-                const adminRealIP = await this.getClientRealIP();
-                if (userRealIP === adminRealIP && this.isAdmin) {
-                    console.warn("Tentative de bannissement de l'IP de l'admin détectée et bloquée");
-                    this.showNotification("Protection admin : votre IP n'a pas été bannie", "warning");
-                } else {
-                    console.log(`Bannissement de l'IP réelle: ${userRealIP}`);
-                    
-                    // Insérer dans la table banned_real_ips
-                    const { error: ipBanError } = await this.supabase
-                        .from('banned_real_ips')
-                        .insert({
-                            ip: userRealIP,
-                            banned_at: new Date().toISOString(),
-                            expires_at: expiresAt,
-                            reason: `IP de ${pseudo} - ${reason || 'Non spécifié'}`,
-                            banned_by: this.pseudo
-                        });
-                        
-                    if (ipBanError) {
-                        console.error('Erreur bannissement IP réelle:', ipBanError);
-                    } else {
-                        console.log(`IP réelle ${userRealIP} bannie avec succès`);
-                        this.showNotification(`L'IP de ${pseudo} a également été bannie`, 'success');
-                    }
-                }
+        // 3. Si une IP réelle a été trouvée, la bannir dans banned_real_ips
+        if (userRealIP) {
+            // Vérification de sécurité : ne pas bannir l'IP de l'administrateur
+            const adminRealIP = await this.getClientRealIP();
+            if (userRealIP === adminRealIP && this.isAdmin) {
+                console.warn("Tentative de bannissement de l'IP de l'admin détectée et bloquée");
+                this.showNotification("Protection admin : votre IP n'a pas été bannie", "warning");
             } else {
-                console.warn(`Aucune IP réelle trouvée pour ${pseudo}`);
+                console.log(`Bannissement de l'IP réelle: ${userRealIP}`);
+                
+                // Bannir dans banned_real_ips
+                const { error: ipBanError } = await this.supabase
+                    .from('banned_real_ips')
+                    .insert({
+                        ip: userRealIP,
+                        banned_at: new Date().toISOString(),
+                        expires_at: expiresAt,
+                        reason: `IP de ${pseudo} - ${reason || 'Non spécifié'}`,
+                        banned_by: this.pseudo
+                    });
+                    
+                if (ipBanError) {
+                    console.error('Erreur bannissement IP réelle:', ipBanError);
+                    // Ne pas lancer d'exception, continuer même si l'IP n'a pas pu être bannie
+                } else {
+                    console.log(`IP réelle ${userRealIP} bannie avec succès`);
+                    this.showNotification(`Utilisateur ${pseudo} et son IP bannis avec succès`, 'success');
+                }
             }
+        } else {
+            console.warn(`Aucune IP réelle trouvée pour ${pseudo} - seul le pseudo a été banni`);
+            this.showNotification(`Utilisateur ${pseudo} banni (IP non trouvée)`, 'warning');
         }
         
-        // Actualiser les messages pour cacher les messages de l'utilisateur banni
-        await this.loadExistingMessages();
-        
-        // Supprimer tous les messages de l'utilisateur banni
+        // 4. Supprimer tous les messages de l'utilisateur banni
         console.log(`Suppression des messages de l'utilisateur ${pseudo}`);
         const { error: deleteMessagesError } = await this.supabase
             .from('messages')
@@ -4696,10 +4768,18 @@ async sendImportantNotification(title, body, url, urgent) {
             console.error('Erreur lors de la suppression des messages:', deleteMessagesError);
         } else {
             console.log(`Messages de l'utilisateur ${pseudo} supprimés avec succès`);
-            this.showNotification(`Messages de "${pseudo}" supprimés avec succès`, 'success');
         }
         
-        this.showNotification(`Utilisateur "${pseudo}" banni avec succès`, 'success');
+        // 5. Forcer la déconnexion si l'utilisateur banni est actuellement connecté
+        if (this.pseudo === pseudo) {
+            await this.logout();
+            window.location.reload();
+        }
+        
+        // 6. Actualiser l'affichage
+        await this.loadExistingMessages();
+        await this.loadBannedIPs();
+        
         this.playSound('success');
         
         return true;
