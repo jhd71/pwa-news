@@ -1344,116 +1344,147 @@ async setupAuthListeners() {
     
     if (confirmButton) {
         confirmButton.addEventListener('click', async () => {
-    const pseudo = pseudoInput?.value.trim();
-    const adminPassword = adminPasswordInput?.value;
-    const deviceId = this.getDeviceId();
-    
-    console.log('Tentative de connexion avec pseudo:', pseudo);
-    console.log('ID d\'appareil:', deviceId);
-
-// NOUVEAU : Vérifier si le pseudo est banni
-        const { data: pseudoBan, error: pseudoBanError } = await this.supabase
-            .from('banned_ips')
-            .select('*')
-            .eq('ip', pseudo)
-            .maybeSingle();
+            const pseudo = pseudoInput?.value.trim();
+            const adminPassword = adminPasswordInput?.value;
+            const deviceId = this.getDeviceId();
             
-        if (!pseudoBanError && pseudoBan) {
-            // Vérifier si le bannissement est expiré
-            if (!pseudoBan.expires_at || new Date(pseudoBan.expires_at) > new Date()) {
-                console.log(`Pseudo ${pseudo} est banni`);
-                this.showNotification('Ce pseudo est banni du chat', 'error');
+            console.log('Tentative de connexion avec pseudo:', pseudo);
+            console.log('ID d\'appareil:', deviceId);
+
+            if (!pseudo || pseudo.length < 3) {
+                this.showNotification('Le pseudo doit faire au moins 3 caractères', 'error');
                 this.playSound('error');
-                
-                // Stocker le bannissement localement
-                localStorage.setItem('chat_device_banned', 'true');
-                localStorage.setItem('chat_device_banned_until', pseudoBan.expires_at || 'permanent');
-                localStorage.setItem('chat_ban_reason', pseudoBan.reason || 'Pseudo banni');
-                
-                // Afficher le message de bannissement
-                this.showBanNotification(pseudoBan.reason || 'Pseudo banni');
-                
                 return;
             }
-        }
-        
-        // NOUVEAU : Obtenir et vérifier l'IP réelle AVANT la connexion
-        const currentRealIP = await this.getClientRealIP();
-        if (currentRealIP) {
-            console.log(`Vérification de l'IP réelle au login: ${currentRealIP}`);
-            
-            const { data: ipBan, error: ipBanError } = await this.supabase
-                .from('banned_real_ips')
+
+            // NOUVEAU : Vérifier si le pseudo est banni
+            const { data: pseudoBan, error: pseudoBanError } = await this.supabase
+                .from('banned_ips')
                 .select('*')
-                .eq('ip', currentRealIP)
+                .eq('ip', pseudo)
                 .maybeSingle();
                 
-            if (!ipBanError && ipBan) {
+            if (!pseudoBanError && pseudoBan) {
                 // Vérifier si le bannissement est expiré
-                if (!ipBan.expires_at || new Date(ipBan.expires_at) > new Date()) {
-                    console.log(`IP réelle ${currentRealIP} est bannie`);
-                    this.showNotification('Votre adresse IP est bannie du chat', 'error');
+                if (!pseudoBan.expires_at || new Date(pseudoBan.expires_at) > new Date()) {
+                    console.log(`Pseudo ${pseudo} est banni`);
+                    this.showNotification('Ce pseudo est banni du chat', 'error');
                     this.playSound('error');
                     
                     // Stocker le bannissement localement
                     localStorage.setItem('chat_device_banned', 'true');
-                    localStorage.setItem('chat_device_banned_until', ipBan.expires_at || 'permanent');
-                    localStorage.setItem('chat_ban_reason', ipBan.reason || 'IP bannie');
+                    localStorage.setItem('chat_device_banned_until', pseudoBan.expires_at || 'permanent');
+                    localStorage.setItem('chat_ban_reason', pseudoBan.reason || 'Pseudo banni');
                     
                     // Afficher le message de bannissement
-                    this.showBanNotification(ipBan.reason || 'IP bannie');
+                    this.showBanNotification(pseudoBan.reason || 'Pseudo banni');
                     
                     return;
                 }
             }
-        }
-		
-    if (!pseudo || pseudo.length < 3) {
-        this.showNotification('Le pseudo doit faire au moins 3 caractères', 'error');
-        this.playSound('error');
-        return;
-    }
-
-    try {
-        // Vérification simplifiée du bannissement d'appareil
-        const isDeviceBanned = await this.isDeviceBanned();
-        if (isDeviceBanned) {
-            console.log('[DEBUG] APPAREIL BANNI DÉTECTÉ - ACCÈS REFUSÉ');
-            this.showNotification('Votre appareil est banni du chat', 'error');
-            this.playSound('error');
-            return;
-        }
-
-        // Cas administrateur
-        let isAdmin = false;
-        if (pseudo === 'Admin_ActuMedia') {
-            console.log('Tentative connexion admin');
             
-            if (adminPassword !== 'admin2024') {
-                this.showNotification('Mot de passe administrateur incorrect', 'error');
-                this.playSound('error');
-                return;
+            // NOUVEAU : Obtenir et vérifier l'IP réelle AVANT la connexion
+            const currentRealIP = await this.getClientRealIP();
+            if (currentRealIP) {
+                console.log(`Vérification de l'IP réelle au login: ${currentRealIP}`);
+                
+                const { data: ipBan, error: ipBanError } = await this.supabase
+                    .from('banned_real_ips')
+                    .select('*')
+                    .eq('ip', currentRealIP)
+                    .maybeSingle();
+                    
+                if (!ipBanError && ipBan) {
+                    // Vérifier si le bannissement est expiré
+                    if (!ipBan.expires_at || new Date(ipBan.expires_at) > new Date()) {
+                        console.log(`IP réelle ${currentRealIP} est bannie`);
+                        this.showNotification('Votre adresse IP est bannie du chat', 'error');
+                        this.playSound('error');
+                        
+                        // Stocker le bannissement localement
+                        localStorage.setItem('chat_device_banned', 'true');
+                        localStorage.setItem('chat_device_banned_until', ipBan.expires_at || 'permanent');
+                        localStorage.setItem('chat_ban_reason', ipBan.reason || 'IP bannie');
+                        
+                        // Afficher le message de bannissement
+                        this.showBanNotification(ipBan.reason || 'IP bannie');
+                        
+                        return;
+                    }
+                }
             }
             
-            isAdmin = true;
-        } else {
-            console.log('Tentative connexion utilisateur normal');
-        }
+            // NOUVEAU : Vérifier si l'APPAREIL est banni avec le nouveau système de fingerprint
+            const currentDeviceId = this.getOrCreateDeviceFingerprint();
+            if (currentDeviceId) {
+                console.log(`Vérification de l'appareil au login: ${currentDeviceId}`);
+                
+                const { data: deviceBan, error: deviceBanError } = await this.supabase
+                    .from('banned_ips')
+                    .select('*')
+                    .eq('ip', currentDeviceId)
+                    .maybeSingle();
+                    
+                if (!deviceBanError && deviceBan) {
+                    // Vérifier si le bannissement est expiré
+                    if (!deviceBan.expires_at || new Date(deviceBan.expires_at) > new Date()) {
+                        console.log(`Appareil ${currentDeviceId} est banni`);
+                        this.showNotification('Cet appareil est banni du chat', 'error');
+                        this.playSound('error');
+                        
+                        // Stocker le bannissement localement
+                        localStorage.setItem('chat_device_banned', 'true');
+                        localStorage.setItem('chat_device_banned_until', deviceBan.expires_at || 'permanent');
+                        localStorage.setItem('chat_ban_reason', deviceBan.reason || 'Appareil banni');
+                        
+                        // Afficher le message de bannissement
+                        this.showBanNotification(deviceBan.reason || 'Appareil banni');
+                        
+                        return;
+                    }
+                }
+            }
+
+            try {
+                // Vérification simplifiée du bannissement d'appareil (ancienne méthode)
+                const isDeviceBanned = await this.isDeviceBanned();
+                if (isDeviceBanned) {
+                    console.log('[DEBUG] APPAREIL BANNI DÉTECTÉ - ACCÈS REFUSÉ');
+                    this.showNotification('Votre appareil est banni du chat', 'error');
+                    this.playSound('error');
+                    return;
+                }
+
+                // Cas administrateur
+                let isAdmin = false;
+                if (pseudo === 'Admin_ActuMedia') {
+                    console.log('Tentative connexion admin');
+                    
+                    if (adminPassword !== 'admin2024') {
+                        this.showNotification('Mot de passe administrateur incorrect', 'error');
+                        this.playSound('error');
+                        return;
+                    }
+                    
+                    isAdmin = true;
+                } else {
+                    console.log('Tentative connexion utilisateur normal');
+                }
 
                 // Vérifier si l'utilisateur existe déjà
-const { data: existingUser, error: queryError } = await this.supabase
-    .from('users')
-    .select('*', {
-        headers: {
-            'Prefer': 'return=representation'
-        }
-    })
-    .eq('pseudo', pseudo)
-    .maybeSingle(); // Changé de .single() à .maybeSingle()
+                const { data: existingUser, error: queryError } = await this.supabase
+                    .from('users')
+                    .select('*', {
+                        headers: {
+                            'Prefer': 'return=representation'
+                        }
+                    })
+                    .eq('pseudo', pseudo)
+                    .maybeSingle();
                 
                 console.log('Résultat recherche utilisateur:', existingUser, queryError);
                 
-                                // Si l'utilisateur n'existe pas ou erreur "not found", le créer
+                // Si l'utilisateur n'existe pas ou erreur "not found", le créer
                 if (!existingUser || (queryError && queryError.code === 'PGRST116')) {
                     console.log('Création d\'un nouvel utilisateur');
                     
@@ -1483,41 +1514,40 @@ const { data: existingUser, error: queryError } = await this.supabase
                 this.isAdmin = isAdmin;
                 localStorage.setItem('chatPseudo', pseudo);
                 localStorage.setItem('isAdmin', isAdmin);
-				this.startBanMonitoring();
+                this.startBanMonitoring();
 
                 // Actualiser l'interface
-if (document.getElementById('chatToggleBtn')) {
-    this.container.innerHTML = this.getChatHTMLWithoutToggle();
-} else {
-    this.container.innerHTML = this.getChatHTML();
-}
+                if (document.getElementById('chatToggleBtn')) {
+                    this.container.innerHTML = this.getChatHTMLWithoutToggle();
+                } else {
+                    this.container.innerHTML = this.getChatHTML();
+                }
 
-const chatContainer = this.container.querySelector('.chat-container');
-if (chatContainer) {
-    chatContainer.classList.add('open');
-    this.isOpen = true;
-    localStorage.setItem('chatOpen', 'true');
+                const chatContainer = this.container.querySelector('.chat-container');
+                if (chatContainer) {
+                    chatContainer.classList.add('open');
+                    this.isOpen = true;
+                    localStorage.setItem('chatOpen', 'true');
 
-    // Désactiver le scroll global quand le chat est ouvert
-    document.body.classList.add('no-scroll');
+                    // Désactiver le scroll global quand le chat est ouvert
+                    document.body.classList.add('no-scroll');
 
-    // Réactiver le scroll global quand le chat se ferme
-    chatContainer.addEventListener('touchend', () => {
-        document.body.classList.remove('no-scroll');
-    });
-}
+                    // Réactiver le scroll global quand le chat se ferme
+                    chatContainer.addEventListener('touchend', () => {
+                        document.body.classList.remove('no-scroll');
+                    });
+                }
 
-this.setupListeners();
-await this.loadExistingMessages();
-this.playSound('success');
-
+                this.setupListeners();
+                await this.loadExistingMessages();
+                this.playSound('success');
                 
             } catch (error) {
-        console.error('Erreur d\'authentification:', error);
-        this.showNotification('Erreur lors de la connexion: ' + error.message, 'error');
-        this.playSound('error');
-    }
-});
+                console.error('Erreur d\'authentification:', error);
+                this.showNotification('Erreur lors de la connexion: ' + error.message, 'error');
+                this.playSound('error');
+            }
+        });
     }
 }
 
@@ -2217,14 +2247,24 @@ div.innerHTML = `
             localStorage.setItem(`last_ip_${this.pseudo}`, realIP);
         }
         
-        // Construire le message avec l'identifiant et l'IP réelle
-        const message = {
-            pseudo: this.pseudo,
-            content: content,
-            ip: messageIp,
-            real_ip: realIP, // Nouvelle propriété
-            created_at: new Date().toISOString()
-        };
+        // Obtenir l'identifiant unique de l'appareil
+const deviceId = this.getOrCreateDeviceFingerprint();
+
+// Construire le message avec l'identifiant et l'IP réelle
+const message = {
+    pseudo: this.pseudo,
+    content: content,
+    ip: messageIp,
+    real_ip: realIP, // IP réelle (peut changer avec VPN)
+    device_id: deviceId, // Identifiant unique de l'appareil
+    created_at: new Date().toISOString()
+};
+
+// Stocker l'association pour les bannissements
+if (deviceId) {
+    sessionStorage.setItem(`device_${this.pseudo}`, deviceId);
+    localStorage.setItem(`last_device_${this.pseudo}`, deviceId);
+}
         
         // Insérer le message
         const { data: messageData, error } = await this.supabase
@@ -2815,6 +2855,224 @@ async testIPRetrieval() {
     this.showNotification(`Votre IP: ${ip}`, 'info');
     
     return ip;
+}
+
+// Fonction pour afficher les informations de bannissement
+async showBanDebugInfo(pseudo) {
+    console.log('=== INFORMATIONS DE BANNISSEMENT ===');
+    
+    // 1. Afficher votre IP actuelle
+    const myIP = await this.getClientRealIP();
+    console.log(`Votre IP actuelle: ${myIP}`);
+    
+    // 2. Rechercher l'IP du pseudo cible
+    if (pseudo) {
+        console.log(`Recherche d'informations pour: ${pseudo}`);
+        
+        // Chercher dans les messages
+        const { data: messages } = await this.supabase
+            .from('messages')
+            .select('*')
+            .eq('pseudo', pseudo)
+            .order('created_at', { ascending: false })
+            .limit(5);
+            
+        if (messages && messages.length > 0) {
+            console.log(`Messages trouvés: ${messages.length}`);
+            messages.forEach((msg, i) => {
+                console.log(`Message ${i + 1}: IP=${msg.real_ip || 'non définie'}, Device=${msg.device_id || 'non défini'}`);
+            });
+        }
+        
+        // Chercher dans le stockage local
+        const storedIP = sessionStorage.getItem(`user_ip_${pseudo}`) || 
+                        localStorage.getItem(`last_ip_${pseudo}`);
+        if (storedIP) {
+            console.log(`IP stockée localement: ${storedIP}`);
+        }
+        
+        const storedDevice = sessionStorage.getItem(`device_${pseudo}`) || 
+                           localStorage.getItem(`last_device_${pseudo}`);
+        if (storedDevice) {
+            console.log(`Device ID stocké localement: ${storedDevice}`);
+        }
+    }
+    
+    // 3. Afficher les bannissements actuels
+    console.log('\n--- Bannissements actuels ---');
+    
+    const { data: bannedIps } = await this.supabase
+        .from('banned_ips')
+        .select('*')
+        .order('banned_at', { ascending: false })
+        .limit(10);
+        
+    if (bannedIps) {
+        console.log('banned_ips:');
+        bannedIps.forEach(ban => {
+            console.log(`- ${ban.ip} (raison: ${ban.reason}, expire: ${ban.expires_at || 'jamais'})`);
+        });
+    }
+    
+    const { data: bannedRealIps } = await this.supabase
+        .from('banned_real_ips')
+        .select('*')
+        .order('banned_at', { ascending: false })
+        .limit(10);
+        
+    if (bannedRealIps) {
+        console.log('\nbanned_real_ips:');
+        bannedRealIps.forEach(ban => {
+            console.log(`- ${ban.ip} (raison: ${ban.reason}, expire: ${ban.expires_at || 'jamais'})`);
+        });
+    }
+    
+    console.log('=== FIN DES INFORMATIONS ===');
+}
+
+// Fonction pour vérifier si une IP est bannie
+async checkIfIPBanned(ip) {
+    if (!ip) {
+        console.log('Aucune IP fournie');
+        return false;
+    }
+    
+    console.log(`Vérification du bannissement pour: ${ip}`);
+    
+    // Vérifier dans banned_ips (pour les pseudos et device IDs)
+    const { data: banInIps, error: error1 } = await this.supabase
+        .from('banned_ips')
+        .select('*')
+        .eq('ip', ip)
+        .maybeSingle();
+        
+    if (error1) {
+        console.error('Erreur vérification banned_ips:', error1);
+    } else if (banInIps) {
+        console.log('Trouvé dans banned_ips:', banInIps);
+        
+        // Vérifier si le ban est expiré
+        if (banInIps.expires_at && new Date(banInIps.expires_at) < new Date()) {
+            console.log('Le bannissement est expiré');
+            return false;
+        }
+        
+        return true;
+    }
+    
+    // Vérifier dans banned_real_ips
+    const { data: banInRealIps, error: error2 } = await this.supabase
+        .from('banned_real_ips')
+        .select('*')
+        .eq('ip', ip)
+        .maybeSingle();
+        
+    if (error2) {
+        console.error('Erreur vérification banned_real_ips:', error2);
+    } else if (banInRealIps) {
+        console.log('Trouvé dans banned_real_ips:', banInRealIps);
+        
+        // Vérifier si le ban est expiré
+        if (banInRealIps.expires_at && new Date(banInRealIps.expires_at) < new Date()) {
+            console.log('Le bannissement est expiré');
+            return false;
+        }
+        
+        return true;
+    }
+    
+    console.log('Pas de bannissement trouvé');
+    return false;
+}
+
+// Générer ou récupérer un identifiant unique pour cet appareil
+getOrCreateDeviceFingerprint() {
+    // Vérifier si on a déjà un identifiant stocké
+    let deviceId = localStorage.getItem('device_unique_id');
+    
+    if (!deviceId) {
+        // Créer un nouvel identifiant basé sur plusieurs facteurs
+        const nav = window.navigator;
+        const screen = window.screen;
+        
+        // Collecter des informations uniques sur l'appareil
+        const deviceInfo = {
+            userAgent: nav.userAgent,
+            language: nav.language,
+            languages: nav.languages?.join(','),
+            platform: nav.platform,
+            hardwareConcurrency: nav.hardwareConcurrency,
+            deviceMemory: nav.deviceMemory,
+            screenResolution: `${screen.width}x${screen.height}`,
+            screenColorDepth: screen.colorDepth,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            timezoneOffset: new Date().getTimezoneOffset(),
+            cookieEnabled: nav.cookieEnabled,
+            doNotTrack: nav.doNotTrack,
+            plugins: Array.from(nav.plugins || []).map(p => p.name).join(','),
+            canvas: this.getCanvasFingerprint(),
+            webgl: this.getWebGLFingerprint(),
+            timestamp: Date.now()
+        };
+        
+        // Créer un hash de toutes ces informations
+        const infoString = JSON.stringify(deviceInfo);
+        let hash = 0;
+        for (let i = 0; i < infoString.length; i++) {
+            const char = infoString.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash;
+        }
+        
+        // Créer l'identifiant final
+        deviceId = `DEV_${Math.abs(hash).toString(16)}_${Date.now().toString(36)}`;
+        
+        // Stocker dans localStorage (survit aux sessions)
+        localStorage.setItem('device_unique_id', deviceId);
+        
+        // Aussi dans un cookie pour backup
+        document.cookie = `device_id=${deviceId}; max-age=31536000; path=/; SameSite=Strict`;
+        
+        console.log('Nouvel identifiant d\'appareil créé:', deviceId);
+    } else {
+        console.log('Identifiant d\'appareil existant:', deviceId);
+    }
+    
+    return deviceId;
+}
+
+// Obtenir l'empreinte Canvas
+getCanvasFingerprint() {
+    try {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.textBaseline = 'top';
+        ctx.font = '14px Arial';
+        ctx.fillStyle = '#f60';
+        ctx.fillRect(125, 1, 62, 20);
+        ctx.fillStyle = '#069';
+        ctx.fillText('Canvas fingerprint', 2, 15);
+        return canvas.toDataURL().slice(-50);
+    } catch (e) {
+        return 'canvas_error';
+    }
+}
+
+// Obtenir l'empreinte WebGL
+getWebGLFingerprint() {
+    try {
+        const canvas = document.createElement('canvas');
+        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        if (!gl) return 'no_webgl';
+        
+        const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+        if (!debugInfo) return 'no_debug_info';
+        
+        return gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) + '~' + 
+               gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+    } catch (e) {
+        return 'webgl_error';
+    }
 }
 
 startBanMonitoring() {
@@ -4763,11 +5021,12 @@ async sendImportantNotification(title, body, url, urgent) {
         
         console.log(`=== DÉBUT DU BANNISSEMENT DE ${pseudo} ===`);
         
-        // 1. Chercher l'IP réelle de plusieurs façons
+        // 1. Chercher l'IP réelle ET l'identifiant d'appareil
         let userRealIP = null;
+        let userDeviceId = null;
         
-        // Méthode 1 : Chercher dans les messages récents
-        console.log('Recherche de l\'IP dans les messages...');
+        // Chercher dans les messages récents
+        console.log('Recherche de l\'IP et du device ID dans les messages...');
         const { data: userMessages, error: messagesError } = await this.supabase
             .from('messages')
             .select('*')
@@ -4777,28 +5036,32 @@ async sendImportantNotification(title, body, url, urgent) {
             
         if (!messagesError && userMessages && userMessages.length > 0) {
             for (const msg of userMessages) {
-                if (msg.real_ip && msg.real_ip !== 'null' && msg.real_ip !== '') {
+                // Récupérer l'IP
+                if (!userRealIP && msg.real_ip && msg.real_ip !== 'null') {
                     userRealIP = msg.real_ip;
-                    console.log(`IP trouvée dans message ID ${msg.id}: ${userRealIP}`);
-                    break;
+                    console.log(`IP trouvée: ${userRealIP}`);
                 }
+                
+                // Récupérer le device ID
+                if (!userDeviceId && msg.device_id && msg.device_id !== 'null') {
+                    userDeviceId = msg.device_id;
+                    console.log(`Device ID trouvé: ${userDeviceId}`);
+                }
+                
+                // Si on a trouvé les deux, on peut arrêter
+                if (userRealIP && userDeviceId) break;
             }
         }
         
-        // Méthode 2 : Vérifier dans sessionStorage
+        // Chercher dans le stockage local si nécessaire
         if (!userRealIP) {
-            userRealIP = sessionStorage.getItem(`user_ip_${pseudo}`);
-            if (userRealIP) {
-                console.log(`IP trouvée dans sessionStorage: ${userRealIP}`);
-            }
+            userRealIP = sessionStorage.getItem(`user_ip_${pseudo}`) || 
+                        localStorage.getItem(`last_ip_${pseudo}`);
         }
         
-        // Méthode 3 : Vérifier dans localStorage
-        if (!userRealIP) {
-            userRealIP = localStorage.getItem(`last_ip_${pseudo}`);
-            if (userRealIP) {
-                console.log(`IP trouvée dans localStorage: ${userRealIP}`);
-            }
+        if (!userDeviceId) {
+            userDeviceId = sessionStorage.getItem(`device_${pseudo}`) || 
+                          localStorage.getItem(`last_device_${pseudo}`);
         }
         
         // 2. Bannir le pseudo dans banned_ips
@@ -4821,8 +5084,7 @@ async sendImportantNotification(title, body, url, urgent) {
         console.log('✓ Pseudo banni avec succès');
         
         // 3. Bannir l'IP réelle si trouvée
-        if (userRealIP && userRealIP !== 'null' && userRealIP !== '') {
-            // Vérification de sécurité pour l'admin
+        if (userRealIP && userRealIP !== 'null') {
             const adminRealIP = await this.getClientRealIP();
             
             if (userRealIP === adminRealIP && this.isAdmin) {
@@ -4831,58 +5093,46 @@ async sendImportantNotification(title, body, url, urgent) {
             } else {
                 console.log(`Bannissement de l'IP réelle: ${userRealIP}`);
                 
-                // Vérifier si l'IP n'est pas déjà bannie
-                const { data: existingBan } = await this.supabase
+                const { error: ipBanError } = await this.supabase
                     .from('banned_real_ips')
-                    .select('*')
-                    .eq('ip', userRealIP)
-                    .maybeSingle();
-                
-                if (existingBan) {
-                    console.log('Cette IP est déjà bannie, mise à jour...');
-                    // Mettre à jour le bannissement existant
-                    const { error: updateError } = await this.supabase
-                        .from('banned_real_ips')
-                        .update({
-                            banned_at: new Date().toISOString(),
-                            expires_at: expiresAt,
-                            reason: `${reason || 'Non spécifié'} (mis à jour)`,
-                            banned_by: this.pseudo
-                        })
-                        .eq('ip', userRealIP);
-                        
-                    if (updateError) {
-                        console.error('Erreur mise à jour bannissement IP:', updateError);
-                    } else {
-                        console.log('✓ Bannissement IP mis à jour');
-                    }
-                } else {
-                    // Créer un nouveau bannissement
-                    const { error: ipBanError } = await this.supabase
-                        .from('banned_real_ips')
-                        .insert({
-                            ip: userRealIP,
-                            banned_at: new Date().toISOString(),
-                            expires_at: expiresAt,
-                            reason: `IP de ${pseudo} - ${reason || 'Non spécifié'}`,
-                            banned_by: this.pseudo
-                        });
-                        
-                    if (ipBanError) {
-                        console.error('Erreur bannissement IP:', ipBanError);
-                        this.showNotification(`Erreur bannissement IP: ${ipBanError.message}`, 'error');
-                    } else {
-                        console.log('✓ IP réelle bannie avec succès');
-                        this.showNotification(`${pseudo} et son IP (${userRealIP}) bannis`, 'success');
-                    }
+                    .insert({
+                        ip: userRealIP,
+                        banned_at: new Date().toISOString(),
+                        expires_at: expiresAt,
+                        reason: `IP de ${pseudo} - ${reason || 'Non spécifié'}`,
+                        banned_by: this.pseudo
+                    });
+                    
+                if (!ipBanError) {
+                    console.log('✓ IP réelle bannie avec succès');
                 }
             }
-        } else {
-            console.warn('⚠️ AUCUNE IP RÉELLE TROUVÉE - Seul le pseudo a été banni');
-            this.showNotification(`⚠️ ${pseudo} banni (IP non trouvée)`, 'warning');
         }
         
-        // 4. Supprimer les messages
+        // 4. NOUVEAU : Bannir l'identifiant d'appareil si trouvé
+        if (userDeviceId && userDeviceId !== 'null') {
+            console.log(`Bannissement de l'appareil: ${userDeviceId}`);
+            
+            // Bannir dans banned_ips avec un préfixe spécial
+            const { error: deviceBanError } = await this.supabase
+                .from('banned_ips')
+                .insert({
+                    ip: userDeviceId, // On utilise la colonne IP pour stocker le device ID
+                    banned_at: new Date().toISOString(),
+                    expires_at: expiresAt,
+                    reason: `Appareil de ${pseudo} - ${reason || 'Non spécifié'}`,
+                    banned_by: this.pseudo
+                });
+                
+            if (!deviceBanError) {
+                console.log('✓ Appareil banni avec succès');
+                this.showNotification(`${pseudo}, son IP et son appareil ont été bannis`, 'success');
+            }
+        } else {
+            this.showNotification(`${pseudo} et son IP ont été bannis (appareil non identifié)`, 'warning');
+        }
+        
+        // 5. Supprimer les messages
         console.log('Suppression des messages...');
         const { error: deleteError } = await this.supabase
             .from('messages')
@@ -4893,7 +5143,7 @@ async sendImportantNotification(title, body, url, urgent) {
             console.log('✓ Messages supprimés');
         }
         
-        // 5. Actualiser l'interface
+        // 6. Actualiser l'interface
         await this.loadExistingMessages();
         await this.loadBannedIPs();
         
