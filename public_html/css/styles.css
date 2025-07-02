@@ -3111,7 +3111,7 @@ a:active {
     }
     
     .separator-text {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
     }
     
     /* Boutons */
@@ -3241,7 +3241,7 @@ a:active {
 /* TRÈS TRÈS PETITS ÉCRANS - MAX 360PX */
 @media (max-width: 360px) {
     .site-title {
-        font-size: 14px;
+        font-size: 25px;
     }
     
     .menu-button,
