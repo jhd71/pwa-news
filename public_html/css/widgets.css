@@ -695,7 +695,7 @@
 @media (max-width: 767px) {
   .weather-sidebar,
   .quick-links-sidebar {
-    width: 92% !important;
+    width: 98% !important;
     max-width: 380px !important;
     max-height: 98vh !important;
     top: 50% !important;
