@@ -269,7 +269,7 @@ if (!document.querySelector('#admin-badge-styles')) {
                 height: 36px !important;
                 font-size: 16px !important;
                 top: 16px !important;
-                right: 330px !important;
+                right: 215px !important;
                 border: 3px solid white !important;
             }
         }
