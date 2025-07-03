@@ -32,25 +32,20 @@
                 console.log(`🔄 Initialisation du client Supabase partagé (tentative ${initializationAttempts})`);
                 
                 supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-    auth: {
-        autoRefreshToken: true,
-        persistSession: false,
-        detectSessionInUrl: false
-    },
-    realtime: {
-        enabled: false
-    },
-    global: {
-        headers: {
-            'x-client-info': 'actuetmedia-app',
-            'Content-Type': 'application/json',
-            'Prefer': 'return=representation'
-        }
-    },
-    db: {
-        schema: 'public'
-    }
-});
+                    auth: {
+                        autoRefreshToken: true,
+                        persistSession: false, // Pas besoin de session pour votre usage public
+                        detectSessionInUrl: false
+                    },
+                    realtime: {
+    enabled: false // DÉSACTIVATION COMPLÈTE du temps réel
+},
+                    global: {
+                        headers: {
+                            'x-client-info': 'actuetmedia-app'
+                        }
+                    }
+                });
                 
                 console.log('✅ Client Supabase initialisé avec succès');
                 

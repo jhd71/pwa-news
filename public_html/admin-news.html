@@ -1482,6 +1482,22 @@ async checkPendingComments() {
                     document.getElementById('unifiedTitle').value = news.title;
                     document.getElementById('unifiedContent').value = news.content;
                     document.getElementById('unifiedFeatured').checked = news.featured;
+                    
+                    // Gérer l'image existante
+                    if (news.image_url) {
+                        document.getElementById('unifiedImageUrl').value = news.image_url;
+                        document.getElementById('unifiedImageAlt').value = news.image_alt || '';
+                        
+                        // Afficher la preview
+                        showImagePreview(news.image_url, news.image_alt || 'Image de l\'actualité');
+                        document.getElementById('uploadZone').style.display = 'none';
+                        
+                        // Mettre à jour les compteurs
+                        const altCounter = document.getElementById('unifiedImageAltCount');
+                        if (altCounter && news.image_alt) {
+                            altCounter.textContent = `${news.image_alt.length}/100 caractères`;
+                        }
+                    }
 
                     // Passer en mode édition
                     this.editingId = id;
