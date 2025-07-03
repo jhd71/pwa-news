@@ -983,7 +983,21 @@ settingsOverlay.addEventListener('click', (e) => {
                 </div>
             </div>
         </div>
+		<div class="settings-section">
+    <h4>Opacité des tuiles</h4>
+    <button id="transparencyFromSettings" class="settings-btn">
+        🎛️ Régler la transparence
+    </button>
+</div>
+
 `;
+// Activer l’ouverture du panneau transparence depuis les paramètres
+const transparencyBtn = panel.querySelector('#transparencyFromSettings');
+if (transparencyBtn) {
+    transparencyBtn.addEventListener('click', () => {
+        this.showTransparencyPanel();
+    });
+}
 
     document.body.appendChild(panel);
     

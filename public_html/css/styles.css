@@ -420,6 +420,51 @@ body {
     padding: 0;
     margin: -8px;
 }
+   
+   /* Bouton transparency */
+[data-theme="light"] .settings-btn {
+    background: #f5f5f5;
+    color: #222;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+[data-theme="light"] .settings-btn:hover {
+    background: #e0e0e0;
+    color: #000;
+}
+
+/* 🌙 Thèmes sombre / rouge / bleu ciel */
+[data-theme="dark"] .settings-btn,
+[data-theme="rouge"] .settings-btn,
+[data-theme="bleuciel"] .settings-btn {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .settings-btn:hover,
+[data-theme="rouge"] .settings-btn:hover,
+[data-theme="bleuciel"] .settings-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+}
+
+/* Styles de base communs à tous les thèmes */
+.settings-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    margin-top: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    width: 100%;
+    text-align: center;
+}
 
 /* ==========================================================================
    7. NAVIGATION DU BAS
@@ -2226,7 +2271,6 @@ main {
 
 /* En-tête du panneau */
 .transparency-header {
-    background: linear-gradient(135deg, var(--primary-color), var(--accent-color, #9c27b0));
     color: white;
     padding: 20px;
     display: flex;
