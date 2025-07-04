@@ -67,23 +67,28 @@ import notificationManager from '/js/notification-manager.js';
 // 🔒 PROTECTION CONTRE MANIPULATION LOCALSTORAGE
 (function() {
     const originalSetItem = localStorage.setItem;
+    let isAuthenticating = false; // Flag pour autoriser les modifications légitimes
+    
     localStorage.setItem = function(key, value) {
-    if (key === 'isAdmin' || key === 'chatPseudo') {
-        console.warn('🚨 Tentative de modification des données d\'authentification détectée');
-        
-        // Logger l'incident de sécurité
-        if (window.chatManager && typeof window.chatManager.logSecurityEvent === 'function') {
-            window.chatManager.logSecurityEvent('localStorage_manipulation', {
-                attempted_key: key,
-                attempted_value: value,
-                blocked: true
-            });
+        if (key === 'isAdmin' || key === 'chatPseudo') {
+            // Autoriser si c'est pendant l'authentification légitime
+            if (!isAuthenticating) {
+                console.warn('🚨 Tentative de modification des données d\'authentification détectée');
+                return;
+            }
         }
-        
-        return;
-    }
-    return originalSetItem.call(this, key, value);
-};
+        return originalSetItem.call(this, key, value);
+    };
+    
+    // Méthode pour autoriser temporairement les modifications
+    window.allowAuthenticationChange = function(callback) {
+        isAuthenticating = true;
+        try {
+            callback();
+        } finally {
+            isAuthenticating = false;
+        }
+    };
 })();
 
 class ChatManager {
@@ -1575,12 +1580,23 @@ if (pseudo === 'Admin_ActuMedia') {
                     console.log('Utilisateur créé avec succès:', newUser);
                 }
 
-                // Définir les variables de session
-                this.pseudo = pseudo;
-                this.isAdmin = isAdmin;
-                localStorage.setItem('chatPseudo', pseudo);
-                localStorage.setItem('isAdmin', isAdmin);
-                this.startBanMonitoring();
+               // Définir les variables de session
+	this.pseudo = pseudo;
+	this.isAdmin = isAdmin;
+
+	// Autoriser les modifications légitimes
+	if (typeof window.allowAuthenticationChange === 'function') {
+		window.allowAuthenticationChange(() => {
+        localStorage.setItem('chatPseudo', pseudo);
+        localStorage.setItem('isAdmin', isAdmin);
+    });
+	} else {
+    // Fallback si la protection n'est pas chargée
+    localStorage.setItem('chatPseudo', pseudo);
+    localStorage.setItem('isAdmin', isAdmin);
+	}
+
+	this.startBanMonitoring();
 
                 // Actualiser l'interface
                 if (document.getElementById('chatToggleBtn')) {
