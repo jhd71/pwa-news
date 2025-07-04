@@ -68,12 +68,22 @@ import notificationManager from '/js/notification-manager.js';
 (function() {
     const originalSetItem = localStorage.setItem;
     localStorage.setItem = function(key, value) {
-        if (key === 'isAdmin' || key === 'chatPseudo') {
-            console.warn('🚨 Tentative de modification des données d\'authentification détectée');
-            return;
+    if (key === 'isAdmin' || key === 'chatPseudo') {
+        console.warn('🚨 Tentative de modification des données d\'authentification détectée');
+        
+        // Logger l'incident de sécurité
+        if (window.chatManager && typeof window.chatManager.logSecurityEvent === 'function') {
+            window.chatManager.logSecurityEvent('localStorage_manipulation', {
+                attempted_key: key,
+                attempted_value: value,
+                blocked: true
+            });
         }
-        return originalSetItem.call(this, key, value);
-    };
+        
+        return;
+    }
+    return originalSetItem.call(this, key, value);
+};
 })();
 
 class ChatManager {
