@@ -56,7 +56,6 @@
     right: 16px;
     font-size: 24px;
     cursor: pointer;
-    color: var(--text-secondary, #888);
     font-weight: bold;
     width: 32px;
     height: 32px;
@@ -84,7 +83,6 @@
 }
 
 .donation-popup p {
-    color: var(--text-secondary, #666);
     line-height: 1.5;
     margin-bottom: 24px;
     font-size: 0.95rem;
@@ -145,7 +143,7 @@
 }
 
 [data-theme="rouge"] .donation-popup h3 {
-    color: var(--primary-color);
+    color: #f6d34f;
 }
 
 /* THÈME SOMBRE */
