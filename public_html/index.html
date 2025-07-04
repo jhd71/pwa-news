@@ -612,68 +612,15 @@
 <script src="js/background-selector.js"></script>
 <script src="js/custom-background-manager.js"></script>
 <!-- Popup de don -->
-<div id="donationPopup" class="donation-overlay">
+ <div id="donationPopup" class="donation-overlay">
   <div class="donation-popup">
-    <button id="donationClose" class="donation-close" aria-label="Fermer">
-      <span class="material-icons">close</span>
-    </button>
-    
-    <div class="donation-header">
-      <div class="donation-icon">
-        <span class="material-icons">favorite</span>
-      </div>
-      <h3>Soutenez Actu & Média</h3>
-      <p class="donation-subtitle">Votre média local indépendant</p>
-    </div>
-    
-    <div class="donation-content">
-      <div class="donation-features">
-        <div class="feature-item">
-          <span class="material-icons">check_circle</span>
-          <span>100% gratuit</span>
-        </div>
-        <div class="feature-item">
-          <span class="material-icons">check_circle</span>
-          <span>Sans publicité</span>
-        </div>
-        <div class="feature-item">
-          <span class="material-icons">check_circle</span>
-          <span>Indépendant</span>
-        </div>
-      </div>
-      
-      <p class="donation-message">
-        Votre soutien nous aide à continuer d'informer la communauté locale 
-        et à développer de nouvelles fonctionnalités.
-      </p>
-      
-      <div class="donation-amounts">
-        <button class="amount-btn" data-amount="3">3€</button>
-        <button class="amount-btn" data-amount="5">5€</button>
-        <button class="amount-btn popular" data-amount="10">10€</button>
-        <button class="amount-btn" data-amount="20">20€</button>
-        <button class="amount-btn custom" data-amount="custom">Autre</button>
-      </div>
-      
-      <a href="https://www.paypal.com/donate/?hosted_button_id=FKJPST5LWBUGG" 
-         target="_blank" 
-         class="donation-link"
-         id="donationLink">
-        <img src="images/paypal-icon.png" alt="PayPal" class="paypal-icon">
-        <span>Faire un don via PayPal</span>
-        <span class="material-icons">launch</span>
-      </a>
-      
-      <p class="donation-footer">
-        <span class="material-icons">security</span>
-        Transaction sécurisée via PayPal
-      </p>
-    </div>
-    
-    <button class="maybe-later-btn" id="maybeLaterBtn">
-      <span class="material-icons">schedule</span>
-      Plus tard
-    </button>
+    <span id="donationClose" class="donation-close">×</span>
+    <h3>💖 Soutenez Actu & Média</h3>
+    <p>Ce projet est 100% gratuit, indépendant et sans pub.<br>Un petit don aide à le maintenir en vie !</p>
+    <a href="https://www.paypal.com/donate/?hosted_button_id=FKJPST5LWBUGG" target="_blank" class="donation-link">
+      <img src="images/paypal-icon.png" alt="PayPal" style="height:20px;vertical-align:middle;margin-right:7px;">
+      Faire un don via PayPal
+    </a>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -1004,117 +951,5 @@
             }
         });
     </script>
-	<script>
-// Gestion des interactions de la popup de donation
-document.addEventListener('DOMContentLoaded', function() {
-    const donationPopup = document.getElementById('donationPopup');
-    const donationClose = document.getElementById('donationClose');
-    const maybeLaterBtn = document.getElementById('maybeLaterBtn');
-    const donationLink = document.getElementById('donationLink');
-    const amountBtns = document.querySelectorAll('.amount-btn');
-    
-    let selectedAmount = 10; // Montant par défaut
-    
-    // Gestion des boutons de montant
-    amountBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            // Retirer la sélection des autres boutons
-            amountBtns.forEach(b => b.classList.remove('selected'));
-            
-            // Ajouter la sélection à ce bouton
-            this.classList.add('selected');
-            
-            const amount = this.dataset.amount;
-            
-            if (amount === 'custom') {
-                const customAmount = prompt('Entrez le montant de votre choix (en €):');
-                if (customAmount && !isNaN(customAmount) && customAmount > 0) {
-                    selectedAmount = parseFloat(customAmount);
-                    this.textContent = `${selectedAmount}€`;
-                    updateDonationLink();
-                }
-            } else {
-                selectedAmount = parseInt(amount);
-                updateDonationLink();
-            }
-            
-            // Animation de sélection
-            this.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                this.style.transform = 'scale(1)';
-            }, 150);
-        });
-    });
-    
-    // Fonction pour mettre à jour le lien PayPal avec le montant
-    function updateDonationLink() {
-        // Vous pouvez adapter cette URL selon votre configuration PayPal
-        const baseUrl = 'https://www.paypal.com/donate/?hosted_button_id=FKJPST5LWBUGG';
-        // Note: Pour inclure un montant spécifique, vous devrez peut-être créer
-        // plusieurs boutons PayPal ou utiliser l'API PayPal
-        donationLink.href = baseUrl;
-        
-        // Mettre à jour le texte du bouton
-        const linkText = donationLink.querySelector('span:not(.material-icons)');
-        if (linkText) {
-            linkText.textContent = `Donner ${selectedAmount}€ via PayPal`;
-        }
-    }
-    
-    // Fermeture de la popup
-    function closeDonationPopup() {
-        donationPopup.classList.remove('visible');
-        
-        // Mémoriser que l'utilisateur a vu la popup
-        localStorage.setItem('donationPopupSeen', Date.now().toString());
-    }
-    
-    // Gestionnaires de fermeture
-    if (donationClose) {
-        donationClose.addEventListener('click', closeDonationPopup);
-    }
-    
-    if (maybeLaterBtn) {
-        maybeLaterBtn.addEventListener('click', function() {
-            closeDonationPopup();
-            
-            // Vibration tactile si disponible
-            if (navigator.vibrate) {
-                navigator.vibrate(50);
-            }
-        });
-    }
-    
-    // Fermeture par clic en dehors
-    donationPopup.addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeDonationPopup();
-        }
-    });
-    
-    // Fermeture par Escape
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && donationPopup.classList.contains('visible')) {
-            closeDonationPopup();
-        }
-    });
-    
-    // Tracking du clic sur donation
-    if (donationLink) {
-        donationLink.addEventListener('click', function() {
-            console.log(`💖 Donation de ${selectedAmount}€ initiée`);
-            
-            // Optionnel: Analytics ou tracking
-            // gtag('event', 'donation_click', { amount: selectedAmount });
-            
-            // Fermer la popup après un délai
-            setTimeout(closeDonationPopup, 1000);
-        });
-    }
-    
-    // Initialiser le lien avec le montant par défaut
-    updateDonationLink();
-});
-</script>
 </body>
 </html>
