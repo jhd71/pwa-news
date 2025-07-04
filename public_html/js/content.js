@@ -117,12 +117,7 @@ if (menuButton && sidebar) {
                 }
                 this.showSettings();
             });
-        }
-
-        const addSiteBtn = document.getElementById('addSiteBtn');
-        if (addSiteBtn) {
-            addSiteBtn.addEventListener('click', this.showAddSiteDialog.bind(this));
-        }
+        }       
 
 	this.updateActiveNavLinks();
 // AJOUTEZ VOTRE CODE ICI - Gestion des liens actifs dans la navigation du bas
@@ -535,6 +530,21 @@ const tvSites = [
             separator.innerHTML = `<h2 class="separator-text">Sites Perso</h2>`;
             this.tileContainer.appendChild(separator);
 
+            // Ajouter d'abord la tuile "Ajouter un site"
+            const addSiteTile = {
+                title: '➕ Ajouter mon site',
+                url: '#add-site', // URL spéciale pour identifier cette tuile
+                mobileUrl: '#add-site',
+                isDefault: true,
+                category: 'add-site',
+                isAddSite: true // Marqueur spécial
+            };
+            
+            const addTileElement = this.createTile(addSiteTile);
+            addTileElement.classList.add('add-site-tile'); // Classe CSS spéciale
+            this.tileContainer.appendChild(addTileElement);
+
+            // Ensuite charger les sites personnalisés existants
             const saved = localStorage.getItem('customSites');
             if (saved) {
                 const customSites = JSON.parse(saved);
@@ -585,28 +595,33 @@ const tvSites = [
     tile.dataset.mobileSiteUrl = site.mobileUrl || site.url;
         
     // Gestion du clic normal
-	// Remplacez la gestion du clic par :
 	tile.addEventListener('click', () => {
     this.animateTileClick(tile);
     
     // Gestion spéciale pour le sondage
 	if (site.isSurvey) {
-    // Appeler directement la fonction d'ouverture du sondage de survey-manager.js
-    if (typeof window.openSurveyModal !== 'undefined') {
-        window.openSurveyModal();
-    } else {
-        // Fallback : déclencher l'événement comme si on cliquait sur le bouton
-        setTimeout(() => {
-            const surveyModal = document.getElementById('surveyModal');
-            if (surveyModal) {
-                // Déclencher l'ouverture du modal avec toute la logique
-                const event = new CustomEvent('openSurvey');
-                document.dispatchEvent(event);
-            }
-        }, 100);
-    }
-    return;
+        // Appeler directement la fonction d'ouverture du sondage de survey-manager.js
+        if (typeof window.openSurveyModal !== 'undefined') {
+            window.openSurveyModal();
+        } else {
+            // Fallback : déclencher l'événement comme si on cliquait sur le bouton
+            setTimeout(() => {
+                const surveyModal = document.getElementById('surveyModal');
+                if (surveyModal) {
+                    // Déclencher l'ouverture du modal avec toute la logique
+                    const event = new CustomEvent('openSurvey');
+                    document.dispatchEvent(event);
+                }
+            }, 100);
+        }
+        return;
 	}
+
+    // Gestion spéciale pour la tuile "Ajouter un site"
+    if (site.isAddSite) {
+        this.showAddSiteDialog();
+        return;
+    }
 
     // Vérifier si c'est un lien interne ou externe
     const url = site.mobileUrl || site.url;
@@ -698,10 +713,10 @@ const tvSites = [
         const menu = document.createElement('div');
         menu.className = 'tile-menu';
 
-        // Menu interactif réduit (sans l'option "Marquer comme lu")
+        // Menu simplifié sans "Version mobile" 
         menu.innerHTML = `
             ${site.isDefault ? `
-                <button class="menu-item">
+                <button class="menu-item info-item">
                     <span class="material-icons">info</span>
                     Site par défaut
                 </button>
@@ -715,35 +730,20 @@ const tvSites = [
                     Supprimer
                 </button>
             `}
-            <button class="menu-item open-mobile">
-                <span class="material-icons">phone_android</span>
-                Version mobile
-            </button>
-            <button class="menu-item open-desktop">
-                <span class="material-icons">computer</span>
-                Version bureau
+            <button class="menu-item open-site">
+                <span class="material-icons">open_in_new</span>
+                Ouvrir le site
             </button>
             <button class="menu-item share-site">
                 <span class="material-icons">share</span>
                 Partager
             </button>
         `;
+        
         document.body.appendChild(menu);
 
-        // Position du menu
-        const menuRect = menu.getBoundingClientRect();
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-
-        let menuX = Math.min(x, viewportWidth - menuRect.width - 10);
-        let menuY = Math.min(y, viewportHeight - menuRect.height - 10);
-
-        menuX = Math.max(10, menuX);
-        menuY = Math.max(10, menuY);
-
-        menu.style.position = 'fixed';
-        menu.style.left = `${menuX}px`;
-        menu.style.top = `${menuY}px`;
+        // Position intelligente du menu
+        this.positionTileMenu(menu, x, y);
 
         // Gestionnaire d'événements
         menu.addEventListener('click', (e) => {
@@ -756,20 +756,68 @@ const tvSites = [
                 this.editSite(site);
             } else if (button.classList.contains('delete')) {
                 this.deleteSite(site);
-            } else if (button.classList.contains('open-mobile')) {
-                window.open(site.mobileUrl || site.url, '_blank');
-            } else if (button.classList.contains('open-desktop')) {
+            } else if (button.classList.contains('open-site')) {
                 window.open(site.url, '_blank');
             } else if (button.classList.contains('share-site')) {
                 this.shareSite(site);
             }
+            // L'option "info-item" ne fait rien (juste informatif)
         });
 
+        // Fermeture automatique
         document.addEventListener('click', (e) => {
             if (!menu.contains(e.target)) {
                 menu.remove();
             }
         }, { once: true });
+
+        // Fermeture automatique après 5 secondes
+        setTimeout(() => {
+            if (menu && menu.parentNode) {
+                menu.remove();
+            }
+        }, 5000);
+    }
+
+    positionTileMenu(menu, x, y) {
+        const menuRect = menu.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        
+        let menuX = x;
+        let menuY = y;
+
+        // Ajustements pour mobile
+        if (window.innerWidth <= 768) {
+            // Sur mobile, centrer horizontalement et placer au-dessus du doigt
+            menuX = (viewportWidth - menuRect.width) / 2;
+            menuY = Math.max(y - menuRect.height - 20, 20); // 20px au-dessus du point de touch
+            
+            // Si pas assez d'espace au-dessus, placer en dessous
+            if (menuY < 20) {
+                menuY = y + 20;
+            }
+        } else {
+            // Sur desktop, position relative au clic
+            // Éviter que le menu sorte de l'écran à droite
+            if (menuX + menuRect.width > viewportWidth - 10) {
+                menuX = viewportWidth - menuRect.width - 10;
+            }
+            
+            // Éviter que le menu sorte de l'écran en bas
+            if (menuY + menuRect.height > viewportHeight - 10) {
+                menuY = viewportHeight - menuRect.height - 10;
+            }
+            
+            // Éviter que le menu sorte de l'écran à gauche ou en haut
+            menuX = Math.max(10, menuX);
+            menuY = Math.max(10, menuY);
+        }
+
+        menu.style.position = 'fixed';
+        menu.style.left = `${menuX}px`;
+        menu.style.top = `${menuY}px`;
+        menu.style.zIndex = '10000';
     }
 
     editSite(site) {
@@ -1666,26 +1714,170 @@ applyListModeImmediate() {
     }
 
     async showAddSiteDialog() {
-        const title = prompt('Nom du site :');
-        if (!title || title.trim() === '') {
+        // Supprimer toute modal existante
+        const existingModal = document.querySelector('.add-site-modal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+        // Créer la modal moderne
+        const modal = document.createElement('div');
+        modal.className = 'add-site-modal';
+        modal.innerHTML = `
+            <div class="add-site-modal-content">
+                <div class="add-site-header">
+                    <h2>
+                        <span class="material-icons">add_circle</span>
+                        Ajouter mon site
+                    </h2>
+                    <button class="close-add-site" type="button">
+                        <span class="material-icons">close</span>
+                    </button>
+                </div>
+                
+                <form class="add-site-form" id="addSiteForm">
+                    <div class="form-group">
+                        <label for="siteName">
+                            <span class="material-icons">title</span>
+                            Nom du site
+                        </label>
+                        <input 
+                            type="text" 
+                            id="siteName" 
+                            placeholder="Ex: Mon blog, Ma boutique..."
+                            required
+                            maxlength="50"
+                        >
+                        <span class="form-hint">Maximum 50 caractères</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="siteUrl">
+                            <span class="material-icons">link</span>
+                            Adresse du site
+                        </label>
+                        <div class="url-input-container">
+                            <span class="url-prefix">https://</span>
+                            <input 
+                                type="text" 
+                                id="siteUrl" 
+                                placeholder="www.monsite.com"
+                                required
+                            >
+                        </div>
+                        <span class="form-hint">Entrez uniquement le nom de domaine</span>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" onclick="this.closest('.add-site-modal').remove()">
+                            Annuler
+                        </button>
+                        <button type="submit" class="btn-add">
+                            <span class="material-icons">add</span>
+                            Ajouter le site
+                        </button>
+                    </div>
+                </form>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // AJOUTEZ CES LIGNES POUR LE MOBILE ↓
+        // Empêcher le scroll de la page sur mobile
+        if (window.innerWidth <= 768) {
+            document.body.classList.add('modal-open');
+        }
+
+        // Animation d'apparition
+        requestAnimationFrame(() => {
+            modal.classList.add('show');
+        });
+
+        // Gestionnaires d'événements
+        this.setupAddSiteModalEvents(modal);
+    }
+
+    setupAddSiteModalEvents(modal) {
+        const form = modal.querySelector('#addSiteForm');
+        const closeBtn = modal.querySelector('.close-add-site');
+        const nameInput = modal.querySelector('#siteName');
+        const urlInput = modal.querySelector('#siteUrl');
+
+        // Fermeture par bouton X
+        closeBtn.addEventListener('click', () => {
+            this.closeAddSiteModal(modal);
+        });
+
+        // Fermeture par clic en dehors
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                this.closeAddSiteModal(modal);
+            }
+        });
+
+        // Fermeture par Escape
+        const escapeHandler = (e) => {
+            if (e.key === 'Escape') {
+                this.closeAddSiteModal(modal);
+                document.removeEventListener('keydown', escapeHandler);
+            }
+        };
+        document.addEventListener('keydown', escapeHandler);
+
+        // Focus automatique sur le nom
+        setTimeout(() => {
+            nameInput.focus();
+        }, 100);
+
+        // Soumission du formulaire
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.handleAddSiteSubmit(modal, nameInput.value.trim(), urlInput.value.trim());
+        });
+    }
+
+    closeAddSiteModal(modal) {
+        modal.classList.remove('show');
+        
+        // Restaurer le scroll sur mobile
+        if (window.innerWidth <= 768) {
+            document.body.classList.remove('modal-open');
+        }
+        
+        setTimeout(() => {
+            modal.remove();
+        }, 300);
+    }
+
+    handleAddSiteSubmit(modal, name, urlPart) {
+        // Validation
+        if (!name || name.length === 0) {
             this.showToast('Le nom du site est obligatoire');
             return;
         }
 
-        // Message modifié pour indiquer le format attendu
-        let url = prompt('Ajouter votre site (ex : https://www.votresite.com) :');
-        if (!this.validateUrl(url)) {
-            this.showToast('URL invalide. L\'URL doit commencer par https://');
+        if (!urlPart || urlPart.length === 0) {
+            this.showToast('L\'adresse du site est obligatoire');
             return;
         }
 
-        let mobileUrl = prompt('URL version mobile (optionnel, doit commencer par https://) :');
-        if (mobileUrl && !this.validateUrl(mobileUrl)) {
-            this.showToast('URL mobile invalide. L\'URL doit commencer par https://');
+        // Construire l'URL complète
+        let fullUrl = urlPart;
+        
+        // Ajouter https:// si pas présent
+        if (!fullUrl.startsWith('http://') && !fullUrl.startsWith('https://')) {
+            fullUrl = 'https://' + fullUrl;
+        }
+
+        // Validation de l'URL
+        if (!this.validateUrl(fullUrl)) {
+            this.showToast('L\'adresse du site n\'est pas valide');
             return;
         }
 
         try {
+            // Récupérer les sites existants
             let customSites = [];
             const saved = localStorage.getItem('customSites');
             if (saved) {
@@ -1695,24 +1887,34 @@ applyListModeImmediate() {
                 customSites = [];
             }
 
+            // Créer le nouveau site
             const newSite = {
-                title: title.trim(),
-                url: url.trim(),
-                mobileUrl: (mobileUrl || url).trim(),
+                title: name,
+                url: fullUrl,
+                mobileUrl: fullUrl, // Même URL pour mobile (responsive)
                 isDefault: false,
                 category: 'custom',
                 timestamp: Date.now()
             };
 
+            // Ajouter et sauvegarder
             customSites.push(newSite);
             localStorage.setItem('customSites', JSON.stringify(customSites));
+
+            // Recharger les tuiles
             this.setupTiles();
-            this.showToast('Site ajouté avec succès');
+            
+            // Fermer la modal
+            this.closeAddSiteModal(modal);
+            
+            // Message de succès
+            this.showToast(`Site "${name}" ajouté avec succès !`);
+
         } catch (error) {
             console.error('Erreur ajout site:', error);
             this.showToast('Erreur lors de l\'ajout du site');
         }
-    }
+    }	
 
 // 1. Méthode pour créer le curseur de transparence des tuiles
 setupTransparencyControl() {
