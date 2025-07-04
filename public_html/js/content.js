@@ -32,7 +32,7 @@ class ContentManager {
     this.setupTextContrast();
     this.setupTiles();
 	this.autoEnhanceTileVisibility(); // LIGNE EXISTANTE
-	this.setupTransparencyControl(); // NOUVELLE LIGNE
+	// this.setupTransparencyControl(); // DÉSACTIVÉ - bouton maintenant dans les paramètres
 	this.fixListModeLayout(); // NOUVELLE LIGNE
 	this.updateActiveNavLinks();
 	this.setupVisualEnhancement();
@@ -1713,49 +1713,14 @@ applyListModeImmediate() {
             this.showToast('Erreur lors de l\'ajout du site');
         }
     }
-	
-	// AJOUTEZ ces méthodes dans votre classe ContentManager
 
 // 1. Méthode pour créer le curseur de transparence des tuiles
 setupTransparencyControl() {
-    // Créer le bouton widget dans la navigation du bas
-    this.createTransparencyWidget();
+    // Ne plus créer le widget dans la barre du bas
+    // this.createTransparencyWidget(); // DÉSACTIVÉ
     
-    // Appliquer la transparence sauvegardée
+    // Appliquer seulement la transparence sauvegardée
     this.applyTransparencySettings();
-}
-
-// 2. Créer le widget de transparence
-createTransparencyWidget() {
-    // Attendre que le DOM soit prêt
-    setTimeout(() => {
-        // Vérifier si le widget existe déjà
-        if (document.getElementById('transparencyWidget')) {
-            // Le widget existe déjà dans le HTML, juste ajouter l'événement
-            const existingWidget = document.getElementById('transparencyWidget');
-            if (existingWidget) {
-                existingWidget.addEventListener('click', this.showTransparencyPanel.bind(this));
-            }
-            return;
-        }
-        
-        // Si le widget n'existe pas, le créer (code de secours)
-        const widget = document.createElement('button');
-        widget.id = 'transparencyWidget';
-        widget.className = 'nav-item transparency-widget';
-        widget.innerHTML = `
-            <span class="material-icons">opacity</span>
-            <span>Transparence</span>
-        `;
-        
-        const bottomNav = document.querySelector('.bottom-nav');
-        if (bottomNav) {
-            const lastNavItem = bottomNav.lastElementChild;
-            bottomNav.insertBefore(widget, lastNavItem);
-        }
-        
-        widget.addEventListener('click', this.showTransparencyPanel.bind(this));
-    }, 100);
 }
 
 // 3. Afficher le panneau de transparence (VERSION AMÉLIORÉE)

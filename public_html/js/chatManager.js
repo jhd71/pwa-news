@@ -64,6 +64,18 @@ import notificationManager from '/js/notification-manager.js';
     }
 })();
 
+// 🔒 PROTECTION CONTRE MANIPULATION LOCALSTORAGE
+(function() {
+    const originalSetItem = localStorage.setItem;
+    localStorage.setItem = function(key, value) {
+        if (key === 'isAdmin' || key === 'chatPseudo') {
+            console.warn('🚨 Tentative de modification des données d\'authentification détectée');
+            return;
+        }
+        return originalSetItem.call(this, key, value);
+    };
+})();
+
 class ChatManager {
     constructor() {
         // Remplacer la création directe du client Supabase par l'utilisation du client partagé
@@ -627,6 +639,13 @@ class ChatManager {
 		this.handleTouchScrolling();
         // Marquer l'initialisation comme terminée
 		this.startAutoBanCheck();
+		// 🔒 VERIFICATION PERIODIQUE ADMIN
+        if (this.pseudo === 'Admin_ActuMedia' && this.isAdmin) {
+            setInterval(async () => {
+                await this.validateAdminStatus();
+            }, 120000); // Vérification toutes les 2 minutes
+        }
+        
         this.initialized = true;
         console.log("Chat initialisé avec succès");
     } catch (error) {
@@ -1455,19 +1474,56 @@ async setupAuthListeners() {
                     return;
                 }
 
-                // Cas administrateur
-                let isAdmin = false;
-                if (pseudo === 'Admin_ActuMedia') {
-                    console.log('Tentative connexion admin');
-                    
-                    if (adminPassword !== 'admin2024') {
-                        this.showNotification('Mot de passe administrateur incorrect', 'error');
-                        this.playSound('error');
-                        return;
-                    }
-                    
-                    isAdmin = true;
-                } else {
+                // Cas administrateur - 🔒 VERIFICATION RENFORCEE
+let isAdmin = false;
+if (pseudo === 'Admin_ActuMedia') {
+    console.log('Tentative connexion admin');
+    
+    if (adminPassword !== 'xvMwL4eR2zt3ql0J') {
+        this.showNotification('Mot de passe administrateur incorrect', 'error');
+        this.playSound('error');
+        return;
+    }
+    
+    // 🔒 NOUVEAU: Vérification supplémentaire côté serveur
+    try {
+        const { data: adminCheck, error: adminError } = await this.supabase
+            .from('users')
+            .select('is_admin')
+            .eq('pseudo', pseudo)
+            .maybeSingle();
+            
+        if (adminError && adminError.code !== 'PGRST116') {
+            console.error('Erreur vérification admin:', adminError);
+            this.showNotification('Erreur de vérification admin', 'error');
+            return;
+        }
+        
+        // Si l'utilisateur n'existe pas ou n'est pas admin, le créer/mettre à jour
+        if (!adminCheck || !adminCheck.is_admin) {
+            const { error: updateError } = await this.supabase
+                .from('users')
+                .upsert({ 
+                    pseudo: pseudo,
+                    is_admin: true,
+                    last_active: new Date().toISOString()
+                });
+                
+            if (updateError) {
+                console.error('Erreur mise à jour admin:', updateError);
+                this.showNotification('Erreur de mise à jour admin', 'error');
+                return;
+            }
+        }
+        
+        isAdmin = true;
+        console.log('✅ Statut admin vérifié côté serveur');
+    } catch (error) {
+        console.error('Erreur vérification admin:', error);
+        this.showNotification('Erreur de vérification administrative', 'error');
+        return;
+    }
+} else {
                     console.log('Tentative connexion utilisateur normal');
                 }
 
@@ -4220,6 +4276,17 @@ addInputAccessButton() {
 }
 
 showAdminPanel() {
+    // 🔒 PROTECTION RENFORCÉE
+    if (!this.pseudo || this.pseudo !== 'Admin_ActuMedia') {
+        this.showNotification('Accès refusé - Pseudo administrateur requis', 'error');
+        return;
+    }
+    
+    // Vérification en temps réel
+    if (!this.validateAdminStatus()) {
+        return;
+    }
+    
     if (!this.isAdmin) return;
 
     const existingPanel = document.querySelector('.admin-panel');
@@ -5196,6 +5263,46 @@ async checkUserBannedStatus() {
         return false;
     }
 }
+
+// 🔒 VALIDATION ADMIN EN TEMPS RÉEL
+async validateAdminStatus() {
+    if (!this.pseudo || this.pseudo !== 'Admin_ActuMedia') {
+        this.isAdmin = false;
+        localStorage.setItem('isAdmin', 'false');
+        return false;
+    }
+    
+    try {
+        const { data: userData, error } = await this.supabase
+            .from('users')
+            .select('is_admin')
+            .eq('pseudo', this.pseudo)
+            .single();
+            
+        if (error || !userData || !userData.is_admin) {
+            console.warn('🚨 Statut admin révoqué ou invalide');
+            this.isAdmin = false;
+            localStorage.setItem('isAdmin', 'false');
+            
+            const adminPanel = document.querySelector('.admin-panel');
+            if (adminPanel) {
+                adminPanel.remove();
+                this.adminPanelOpen = false;
+            }
+            
+            this.showNotification('Accès administrateur révoqué', 'error');
+            return false;
+        }
+        
+        return true;
+    } catch (error) {
+        console.error('Erreur validation admin:', error);
+        this.isAdmin = false;
+        localStorage.setItem('isAdmin', 'false');
+        return false;
+    }
+}
+
 // Nouvelle méthode pour obtenir l'IP d'un message
 async getMessageIP(message) {
     try {
