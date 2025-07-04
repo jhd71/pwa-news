@@ -1124,7 +1124,6 @@
 }
 
 .admin-panel button {
-  color: white;
   border: 1px solid rgba(255, 255, 255, 0.3);
   padding: 8px 16px;
   border-radius: 6px;
@@ -1818,7 +1817,6 @@ body.admin-panel-open {
   .admin-panel .panel-header {
     position: sticky !important;
     top: 0 !important;
-    background: #1a1a1a !important;
     z-index: 1001 !important;
     padding: 15px !important;
     flex-shrink: 0 !important;
@@ -1834,7 +1832,6 @@ body.admin-panel-open {
   }
   
   .admin-panel .panel-tabs {
-    background: #2a2a2a !important;
     overflow-x: auto !important;
     white-space: nowrap !important;
     padding: 10px !important;
