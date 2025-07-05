@@ -91,6 +91,38 @@ import notificationManager from '/js/notification-manager.js';
     };
 })();
 
+// 🔒 PROTECTION CONTRE MANIPULATION SESSIONSTORAGE
+(function() {
+    const originalSessionSetItem = sessionStorage.setItem;
+    let isNewsAuthenticating = false;
+    
+    sessionStorage.setItem = function(key, value) {
+        if (key.startsWith('newsAdmin')) {
+            if (!isNewsAuthenticating) {
+                console.warn('🚨 Tentative de manipulation du système d\'actualités détectée');
+                if (window.chatManager && typeof window.chatManager.logSecurityEvent === 'function') {
+                    window.chatManager.logSecurityEvent('sessionStorage_manipulation', {
+                        attempted_key: key,
+                        attempted_value: value,
+                        blocked: true
+                    });
+                }
+                return;
+            }
+        }
+        return originalSessionSetItem.call(this, key, value);
+    };
+    
+    window.allowNewsAuthenticationChange = function(callback) {
+        isNewsAuthenticating = true;
+        try {
+            callback();
+        } finally {
+            isNewsAuthenticating = false;
+        }
+    };
+})();
+
 class ChatManager {
     constructor() {
         // Remplacer la création directe du client Supabase par l'utilisation du client partagé
