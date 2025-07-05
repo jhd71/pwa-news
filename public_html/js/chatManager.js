@@ -4692,14 +4692,21 @@ const commentsAdminBtn = panel.querySelector('#openCommentsAdmin');
 const prepareNewsAdminAuth = () => {
     // Vérifier que l'utilisateur est bien admin
     if (this.pseudo === 'Admin_ActuMedia' && this.isAdmin) {
-        // Définir tous les tokens nécessaires
-        sessionStorage.setItem('newsAdminAuth', 'authenticated');
-        sessionStorage.setItem('newsAdminUser', this.pseudo);
-        sessionStorage.setItem('newsAdminTimestamp', Date.now().toString());
+        // Définir tous les tokens nécessaires avec protection
+        if (typeof window.allowNewsAuthenticationChange === 'function') {
+            window.allowNewsAuthenticationChange(() => {
+                sessionStorage.setItem('newsAdminAuth', 'authenticated');
+                sessionStorage.setItem('newsAdminUser', this.pseudo);
+                sessionStorage.setItem('newsAdminTimestamp', Date.now().toString());
+            });
+        } else {
+            sessionStorage.setItem('newsAdminAuth', 'authenticated');
+            sessionStorage.setItem('newsAdminUser', this.pseudo);
+            sessionStorage.setItem('newsAdminTimestamp', Date.now().toString());
+        }
         return true;
     }
     return false;
-};
 
 if (newsAdminBtn) {
     const newNewsBtn = newsAdminBtn.cloneNode(true);
