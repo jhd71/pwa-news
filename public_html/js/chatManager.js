@@ -1556,7 +1556,7 @@ if (pseudo === 'Admin_ActuMedia') {
     console.log('Tentative connexion admin');
     
     const hashedPassword = window.SecurityLogger.hashPassword(adminPassword);
-const expectedHash = '5b1ff307'; // Hash de votre mot de passe
+const expectedHash = '6fe87dd'; // Hash du nouveau mot de passe sécurisé
 
 if (hashedPassword !== expectedHash) {
     this.showNotification('Mot de passe administrateur incorrect', 'error');
