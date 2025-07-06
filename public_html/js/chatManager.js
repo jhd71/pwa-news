@@ -64,32 +64,6 @@ import notificationManager from '/js/notification-manager.js';
     }
 })();
 
-// 🔒 PROTECTION CONTRE MANIPULATION LOCALSTORAGE
-(function() {
-    const originalSetItem = localStorage.setItem;
-    let isAuthenticating = false; // Flag pour autoriser les modifications légitimes
-    
-    localStorage.setItem = function(key, value) {
-        if (key === 'isAdmin' || key === 'chatPseudo') {
-            // Autoriser si c'est pendant l'authentification légitime
-            if (!isAuthenticating) {
-                console.warn('🚨 Tentative de modification des données d\'authentification détectée');
-                return;
-            }
-        }
-        return originalSetItem.call(this, key, value);
-    };
-    
-    // Méthode pour autoriser temporairement les modifications
-    window.allowAuthenticationChange = function(callback) {
-        isAuthenticating = true;
-        try {
-            callback();
-        } finally {
-            isAuthenticating = false;
-        }
-    };
-})();
 
 // 🔒 PROTECTION CONTRE MANIPULATION SESSIONSTORAGE
 (function() {
@@ -122,6 +96,61 @@ import notificationManager from '/js/notification-manager.js';
         }
     };
 })();
+
+// 🔒 PROTECTION CONTRE MANIPULATION LOCALSTORAGE
+(function() {
+    const originalSetItem = localStorage.setItem;
+    let isAuthenticating = false; // Flag pour autoriser les modifications légitimes
+    
+    localStorage.setItem = function(key, value) {
+        if (key === 'isAdmin' || key === 'chatPseudo') {
+            // Autoriser si c'est pendant l'authentification légitime
+            if (!isAuthenticating) {
+                console.warn('🚨 Tentative de modification des données d\'authentification détectée');
+                return;
+            }
+        }
+        return originalSetItem.call(this, key, value);
+    };
+    
+    // Méthode pour autoriser temporairement les modifications
+    window.allowAuthenticationChange = function(callback) {
+        isAuthenticating = true;
+        try {
+            callback();
+        } finally {
+            isAuthenticating = false;
+        }
+    };
+})();
+
+// 🔒 LOGGING DES ÉVÉNEMENTS DE SÉCURITÉ
+class SecurityLogger {
+    static logSecurityEvent(event, details) {
+        const securityLog = {
+            event: event,
+            details: details,
+            timestamp: new Date().toISOString(),
+            user_agent: navigator.userAgent,
+            ip: 'client_side'
+        };
+        console.warn('Événement de sécurité:', securityLog);
+    }
+    
+    // Hash simple pour protection mot de passe
+    static hashPassword(password) {
+        let hash = 0;
+        for (let i = 0; i < password.length; i++) {
+            const char = password.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash;
+        }
+        return Math.abs(hash).toString(16);
+    }
+}
+
+// Rendre disponible globalement
+window.SecurityLogger = SecurityLogger;
 
 class ChatManager {
     constructor() {
@@ -1526,11 +1555,14 @@ let isAdmin = false;
 if (pseudo === 'Admin_ActuMedia') {
     console.log('Tentative connexion admin');
     
-    if (adminPassword !== 'xvMwL4eR2zt3ql0J') {
-        this.showNotification('Mot de passe administrateur incorrect', 'error');
-        this.playSound('error');
-        return;
-    }
+    const hashedPassword = window.SecurityLogger.hashPassword(adminPassword);
+const expectedHash = '5b1ff307'; // Hash de votre mot de passe
+
+if (hashedPassword !== expectedHash) {
+    this.showNotification('Mot de passe administrateur incorrect', 'error');
+    this.playSound('error');
+    return;
+}
     
     // 🔒 NOUVEAU: Vérification supplémentaire côté serveur
     try {
@@ -4707,6 +4739,7 @@ const prepareNewsAdminAuth = () => {
         return true;
     }
     return false;
+};
 
 if (newsAdminBtn) {
     const newNewsBtn = newsAdminBtn.cloneNode(true);
@@ -4860,7 +4893,11 @@ async sendImportantNotification(title, body, url, urgent) {
             throw new Error("Seuls les administrateurs peuvent envoyer des notifications importantes");
         }
         
-        const adminPassword = document.querySelector('#admin-password')?.value || 'admin2024';
+        const adminPassword = document.querySelector('#admin-password')?.value || '';
+        
+        if (!adminPassword) {
+            throw new Error("Mot de passe administrateur requis");
+        }
         
         const response = await fetch("/api/send-important-notification", {
             method: "POST",
