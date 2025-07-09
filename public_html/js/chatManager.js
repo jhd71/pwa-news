@@ -4796,7 +4796,6 @@ if (commentsAdminBtn) {
     });
 
     // Formulaire notification dans showAdminPanel()
-// Dans showAdminPanel(), remplacez le gestionnaire du formulaire de notification :
 panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -4812,24 +4811,28 @@ panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) =
         return;
     }
     
-    // NOUVELLE APPROCHE : Demander le mot de passe si nécessaire
-    let adminPassword;
+    // Vérifier si on a un token valide
+    let adminToken = sessionStorage.getItem('adminNotificationToken');
+    const tokenExpiry = sessionStorage.getItem('adminNotificationTokenExpiry');
     
-    // Vérifier si on a déjà le mot de passe en session
-    const sessionPassword = sessionStorage.getItem('adminNotificationPassword');
-    if (sessionPassword) {
-        adminPassword = sessionPassword;
-    } else {
-        // Demander le mot de passe
-        const passwordPrompt = prompt('Entrez le mot de passe administrateur pour les notifications:');
-        if (!passwordPrompt) {
+    // Vérifier si le token est expiré
+    if (adminToken && tokenExpiry && parseInt(tokenExpiry) < Date.now()) {
+        adminToken = null;
+        sessionStorage.removeItem('adminNotificationToken');
+        sessionStorage.removeItem('adminNotificationTokenExpiry');
+    }
+    
+    // Si pas de token valide, demander le mot de passe
+    if (!adminToken) {
+        const password = prompt('Entrez le mot de passe administrateur :');
+        if (!password) {
             result.textContent = "❌ Mot de passe requis";
             result.style.color = "red";
             return;
         }
         
-        // Vérifier le hash du mot de passe
-        const hashedPassword = this.hashPassword(passwordPrompt);
+        // Vérifier le hash localement d'abord
+        const hashedPassword = window.SecurityLogger.hashPassword(password);
         const expectedHash = '6fe87dd';
         
         if (hashedPassword !== expectedHash) {
@@ -4838,16 +4841,38 @@ panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) =
             return;
         }
         
-        // Stocker temporairement le mot de passe correct
-        adminPassword = passwordPrompt;
-        sessionStorage.setItem('adminNotificationPassword', adminPassword);
+        result.textContent = "🔐 Génération du token...";
+        result.style.color = "white";
         
-        // Le supprimer après 5 minutes
-        setTimeout(() => {
-            sessionStorage.removeItem('adminNotificationPassword');
-        }, 300000);
+        try {
+            // Générer un token
+            const tokenResponse = await fetch("/api/generate-admin-token", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ password })
+            });
+            
+            const tokenData = await tokenResponse.json();
+            
+            if (!tokenResponse.ok || !tokenData.success) {
+                throw new Error(tokenData.error || 'Erreur génération token');
+            }
+            
+            // Stocker le token
+            adminToken = tokenData.token;
+            sessionStorage.setItem('adminNotificationToken', adminToken);
+            sessionStorage.setItem('adminNotificationTokenExpiry', tokenData.expiresAt);
+            
+        } catch (err) {
+            result.textContent = "❌ Erreur authentification : " + err.message;
+            result.style.color = "red";
+            return;
+        }
     }
     
+    // Envoyer la notification avec le token
     result.textContent = "⏳ Envoi en cours...";
     result.style.color = "white";
     
@@ -4856,7 +4881,7 @@ panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) =
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "X-API-Key": adminPassword
+                "X-Admin-Token": adminToken // Utiliser le token au lieu du mot de passe
             },
             body: JSON.stringify({ title, body, url, urgent })
         });
@@ -4879,6 +4904,12 @@ panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) =
             
             this.playSound('success');
         } else {
+            // Si le token est invalide, le supprimer
+            if (responseData.error === 'Non autorisé') {
+                sessionStorage.removeItem('adminNotificationToken');
+                sessionStorage.removeItem('adminNotificationTokenExpiry');
+            }
+            
             result.textContent = "❌ Erreur : " + (responseData.error || "Inconnue");
             result.style.color = "red";
             this.playSound('error');
