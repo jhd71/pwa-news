@@ -4796,6 +4796,7 @@ if (commentsAdminBtn) {
     });
 
     // Formulaire notification dans showAdminPanel()
+// Dans showAdminPanel(), remplacez le gestionnaire du formulaire de notification :
 panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -4815,15 +4816,14 @@ panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) =
     result.style.color = "white";
     
     try {
-        // NOUVELLE APPROCHE : Utiliser directement le mot de passe connu
-        // puisque l'admin est déjà authentifié dans le chat
-        const adminPassword = 'fc35>$wL72iZA^'; // Le vrai mot de passe
+        // Utiliser directement le mot de passe puisque l'admin est déjà authentifié
+        const adminPassword = 'fc35>$wL72iZA^';
         
         const response = await fetch("/api/send-important-notification", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "X-API-Key": adminPassword // Envoyer directement
+                "X-API-Key": adminPassword
             },
             body: JSON.stringify({ title, body, url, urgent })
         });
