@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v25'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v26'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -67,6 +67,7 @@ const STATIC_RESOURCES = [
 	'/js/cinema-widget.js',
 	'/js/visitor-tracker.js',
 	'/js/football-widget.js',
+	'/js/social-share.js',
 	'/js/ios-fixes-safe.js',
     
     // Fichiers de configuration (seulement ceux qui existent)
@@ -85,9 +86,10 @@ const STATIC_RESOURCES = [
     '/images/don_resized_200x80.png',
     '/images/favicon-16x16.png',
     '/images/favicon-32x32.png',
-	'/images/Actu&Media.png',
-	'/images/fond-rouge.jpg',
-	'/images/fond-dark.jpg',
+    '/apple-touch-icon.png',
+    '/images/Actu&Media.png',
+    '/images/fond-rouge.jpg',
+    '/images/fond-dark.jpg',
     
     // Icônes principales INFOS
     '/images/INFOS.png',
@@ -115,6 +117,14 @@ const STATIC_RESOURCES = [
     // Icônes de base (seulement ceux qui existent)
     '/images/icon-144x144.png',
     '/images/icon-192x192.png',
+    '/icons/icon-128x128.png',
+    '/icons/icon-152x152.png',
+    '/icons/icon-384x384.png',
+    
+    // Icônes des raccourcis
+    '/images/chat-icon-96.png',
+    '/images/news-icon-96.png',
+    '/images/weather-icon-96.png',
     
     // Écrans de démarrage iOS (seulement ceux qui existent)
     '/images/splash-320x470.png',

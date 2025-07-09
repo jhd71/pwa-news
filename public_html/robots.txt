@@ -1,5 +1,35 @@
+# Robots.txt pour Actu&Média
+# https://actuetmedia.fr/
+
+# Tous les robots
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /admin/
+Disallow: /*.json$
+Disallow: /redirect/
+Crawl-delay: 1
 
+# Google
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+Crawl-delay: 0
+
+# Google Images
+User-agent: Googlebot-Image
+Allow: /images/
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.png$
+Allow: /*.webp$
+
+# Bing
+User-agent: Bingbot
+Allow: /
+Disallow: /api/
+Crawl-delay: 1
+
+# Sitemaps
 Sitemap: https://actuetmedia.fr/sitemap.xml
+Sitemap: https://actuetmedia.fr/sitemap-news.xml
