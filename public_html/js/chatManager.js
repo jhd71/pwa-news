@@ -4795,7 +4795,7 @@ if (commentsAdminBtn) {
         }
     });
 
-    // Formulaire notification dans showAdminPanel() après
+    // Formulaire notification dans showAdminPanel()
 panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -4815,23 +4815,41 @@ panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) =
     result.style.color = "white";
     
     try {
-        const response = await this.sendImportantNotification(title, body, url, urgent);
+        // NOUVELLE APPROCHE : Utiliser directement le mot de passe connu
+        // puisque l'admin est déjà authentifié dans le chat
+        const adminPassword = 'fc35>$wL72iZA^'; // Le vrai mot de passe
         
-        result.textContent = `✅ Notification envoyée à ${response.sent} appareil(s)`;
-        result.style.color = "#4CAF50";
+        const response = await fetch("/api/send-important-notification", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-API-Key": adminPassword // Envoyer directement
+            },
+            body: JSON.stringify({ title, body, url, urgent })
+        });
         
-        // Réinitialiser le formulaire
-        panel.querySelector('#notif-title').value = '';
-        panel.querySelector('#notif-body').value = '';
-        panel.querySelector('#notif-url').value = '';
-        panel.querySelector('#notif-urgent').checked = false;
+        const responseData = await response.json();
         
-        // Vibrer pour confirmation sur mobile
-        if (navigator.vibrate) {
-            navigator.vibrate(200);
+        if (response.ok && responseData.success) {
+            result.textContent = `✅ Notification envoyée à ${responseData.sent} appareil(s)`;
+            result.style.color = "#4CAF50";
+            
+            // Réinitialiser le formulaire
+            panel.querySelector('#notif-title').value = '';
+            panel.querySelector('#notif-body').value = '';
+            panel.querySelector('#notif-url').value = '';
+            panel.querySelector('#notif-urgent').checked = false;
+            
+            if (navigator.vibrate) {
+                navigator.vibrate(200);
+            }
+            
+            this.playSound('success');
+        } else {
+            result.textContent = "❌ Erreur : " + (responseData.error || "Inconnue");
+            result.style.color = "red";
+            this.playSound('error');
         }
-        
-        this.playSound('success');
     } catch (err) {
         result.textContent = "❌ Erreur : " + err.message;
         result.style.color = "red";

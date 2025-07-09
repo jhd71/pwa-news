@@ -325,8 +325,8 @@
 
     <h1>Notifications</h1>
 
-    <label for="password">Mot de passe admin :</label>
-    <input type="password" id="password" placeholder="Mot de passe" autocomplete="off" />
+<label for="password">Mot de passe admin :</label>
+<input type="password" id="password" placeholder="Mot de passe" autocomplete="off" />
 
     <label for="title">Titre :</label>
     <input type="text" id="title" placeholder="Titre de la notification" />
@@ -352,8 +352,18 @@
     <h3>🕘 3 dernières notifications</h3>
     <div id="historyContent"></div>
   </div>
-
   <script>
+    // FONCTION DE HASH IDENTIQUE
+    function hashPassword(password) {
+        let hash = 0;
+        for (let i = 0; i < password.length; i++) {
+            const char = password.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash;
+        }
+        return Math.abs(hash).toString(16);
+    }
+
     // Gestion du thème
     const themeSwitch = document.getElementById('themeSwitch');
     const htmlElement = document.documentElement;
@@ -386,7 +396,7 @@
     
     themeSwitch.addEventListener('change', switchTheme);
     
-    // Gestion des notifications
+    Gestion des notifications
     const history = [];
 
     document.getElementById('sendBtn').addEventListener('click', sendNotification);
@@ -411,54 +421,61 @@
     }
 
     async function sendNotification() {
-      const password = document.getElementById('password').value;
-      const title = document.getElementById('title').value;
-      const body = document.getElementById('body').value;
-      const url = document.getElementById('url').value.trim() || 'https://actuetmedia.fr/';
-      const urgent = document.getElementById('urgent').checked;
+        const password = document.getElementById('password').value;
+        const title = document.getElementById('title').value;
+        const body = document.getElementById('body').value;
+        const url = document.getElementById('url').value.trim() || 'https://actuetmedia.fr/';
+        const urgent = document.getElementById('urgent').checked;
 
-      if (!password) return showStatus("⛔ Mot de passe requis", "error");
-      if (!title || !body) return showStatus("⛔ Titre et message requis", "error");
+        if (!password) return showStatus("⛔ Mot de passe requis", "error");
+        if (!title || !body) return showStatus("⛔ Titre et message requis", "error");
 
-      previewNotification(); // affichage en live
-      
-      // Montrer que l'envoi est en cours
-      const sendBtn = document.getElementById('sendBtn');
-      const originalText = sendBtn.textContent;
-      sendBtn.textContent = "⏳ Envoi en cours...";
-      sendBtn.disabled = true;
-
-      try {
-        const res = await fetch("/api/send-important-notification", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-API-Key": password
-          },
-          body: JSON.stringify({ title, body, url, urgent })
-        });
-
-        const result = await res.json();
-
-        if (res.ok && result.success) {
-          showStatus(`✅ Notification envoyée à ${result.sent} appareil(s)`, "success");
-          addToHistory(title, body, url, urgent);
-          resetForm();
-          
-          // Vibrer pour confirmation tactile sur mobile
-          if (navigator.vibrate) {
-            navigator.vibrate(200);
-          }
-        } else {
-          showStatus("❌ Erreur : " + (result.error || "Inconnue"), "error");
+        // NOUVELLE VÉRIFICATION : Hasher le mot de passe
+        const hashedPassword = hashPassword(password);
+        const expectedHash = '6fe87dd'; // Hash du nouveau mot de passe
+        
+        if (hashedPassword !== expectedHash) {
+            return showStatus("❌ Mot de passe incorrect", "error");
         }
-      } catch (err) {
-        showStatus("❌ Erreur réseau : " + err.message, "error");
-      } finally {
-        // Restaurer le bouton
-        sendBtn.textContent = originalText;
-        sendBtn.disabled = false;
-      }
+
+        previewNotification();
+        
+        const sendBtn = document.getElementById('sendBtn');
+        const originalText = sendBtn.textContent;
+        sendBtn.textContent = "⏳ Envoi en cours...";
+        sendBtn.disabled = true;
+
+        try {
+            // IMPORTANT : Envoyer le mot de passe EN CLAIR à l'API
+            // (l'API attend le mot de passe original, pas le hash)
+            const res = await fetch("/api/send-important-notification", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-API-Key": password // Envoyer le mot de passe original
+                },
+                body: JSON.stringify({ title, body, url, urgent })
+            });
+
+            const result = await res.json();
+
+            if (res.ok && result.success) {
+                showStatus(`✅ Notification envoyée à ${result.sent} appareil(s)`, "success");
+                addToHistory(title, body, url, urgent);
+                resetForm();
+                
+                if (navigator.vibrate) {
+                    navigator.vibrate(200);
+                }
+            } else {
+                showStatus("❌ Erreur : " + (result.error || "Inconnue"), "error");
+            }
+        } catch (err) {
+            showStatus("❌ Erreur réseau : " + err.message, "error");
+        } finally {
+            sendBtn.textContent = originalText;
+            sendBtn.disabled = false;
+        }
     }
 
     function showStatus(msg, type) {

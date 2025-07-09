@@ -2,25 +2,42 @@
 <html lang="fr">
 <head>
     <script>
-        // Appliquer le thème sauvegardé
+        // NOUVELLE PROTECTION : Vérifier l'authentification au chargement
         (function() {
+            // Récupérer l'authentification depuis sessionStorage
+            const authToken = sessionStorage.getItem('newsAdminAuth');
+            const authUser = sessionStorage.getItem('newsAdminUser');
+            const authTimestamp = sessionStorage.getItem('newsAdminTimestamp');
+        // Vérifier si l'authentification est valide (moins de 5 minutes)
+        const isValid = authToken === 'authenticated' && 
+                       authUser === 'Admin_ActuMedia' &&
+                       authTimestamp && 
+                       (Date.now() - parseInt(authTimestamp) < 300000); // 5 minutes
+        
+        // Si pas d'authentification valide, appliquer le thème et continuer normalement
+        if (!isValid) {
             const savedTheme = localStorage.getItem('theme') || 'rouge';
             document.documentElement.setAttribute('data-theme', savedTheme);
-        })();
-    </script>
-    
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administration NEWS - Actu&Média</title>
-    
-    <!-- Styles -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-client.js"></script>
-    
-    <style>
+        } else {
+            // Si authentifié, appliquer aussi le thème
+            const savedTheme = localStorage.getItem('theme') || 'rouge';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+    })();
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Administration NEWS - Actu&Média</title>
+
+<!-- Styles -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+
+<style>
         :root {
             /* Variables pour les thèmes */
             --primary-color: #7e57c2; /* Violet par défaut */
@@ -1224,30 +1241,42 @@
     </div>
 
     <script>
-        class NewsAdmin {
-            constructor() {
-                this.isAuthenticated = false;
-                this.editingId = null;
-                
-                // Identifiants
-                this.ADMIN_USERNAME = 'Admin_ActuMedia';
-                this.ADMIN_PASSWORD = 'admin2024';
-            }
+    // NOUVELLE CLASSE AVEC HASH DE MOT DE PASSE
+    class NewsAdmin {
+        constructor() {
+            this.isAuthenticated = false;
+            this.editingId = null;
+            
+            // Identifiants
+            this.ADMIN_USERNAME = 'Admin_ActuMedia';
+            // PAS DE MOT DE PASSE EN CLAIR !
+        }
 
-            init() {
-                this.setupEventListeners();
-                this.checkAuthentication();
-                this.setupCharacterCounters();
+        // Fonction de hash identique à celle du chat
+        hashPassword(password) {
+            let hash = 0;
+            for (let i = 0; i < password.length; i++) {
+                const char = password.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
             }
+            return Math.abs(hash).toString(16);
+        }
 
-            setupEventListeners() {
-                document.getElementById('loginForm').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    this.handleLogin();
-                });
-            }
+        init() {
+            this.setupEventListeners();
+            this.checkAuthentication();
+            this.setupCharacterCounters();
+        }
 
-            setupCharacterCounters() {
+        setupEventListeners() {
+            document.getElementById('loginForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.handleLogin();
+            });
+        }
+
+        setupCharacterCounters() {
                 const titleInput = document.getElementById('unifiedTitle');
                 const contentInput = document.getElementById('unifiedContent');
                 const titleCounter = document.getElementById('unifiedTitleCount');
@@ -1270,40 +1299,69 @@
             }
 
             checkAuthentication() {
-                const authToken = sessionStorage.getItem('newsAdminAuth');
-                if (authToken === 'authenticated') {
-                    this.showAdminInterface();
-                }
+            // Vérifier d'abord sessionStorage (depuis le chat)
+            const chatAuth = sessionStorage.getItem('newsAdminAuth');
+            const chatUser = sessionStorage.getItem('newsAdminUser');
+            const chatTimestamp = sessionStorage.getItem('newsAdminTimestamp');
+            
+            if (chatAuth === 'authenticated' && 
+                chatUser === 'Admin_ActuMedia' &&
+                chatTimestamp && 
+                (Date.now() - parseInt(chatTimestamp) < 300000)) {
+                // Authentifié depuis le chat
+                this.showAdminInterface();
+                return;
             }
+            
+            // Sinon vérifier l'authentification locale
+            const authToken = sessionStorage.getItem('newsAdminAuth');
+            if (authToken === 'authenticated') {
+                this.showAdminInterface();
+            }
+        }
 
-            async handleLogin() {
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
+        async handleLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
 
-                if (username === this.ADMIN_USERNAME && password === this.ADMIN_PASSWORD) {
+            if (username === this.ADMIN_USERNAME) {
+                // Hasher le mot de passe
+                const hashedPassword = this.hashPassword(password);
+                const expectedHash = '6fe87dd'; // Hash du nouveau mot de passe
+                
+                if (hashedPassword === expectedHash) {
+                    // Définir l'authentification localement
                     sessionStorage.setItem('newsAdminAuth', 'authenticated');
+                    sessionStorage.setItem('newsAdminUser', username);
+                    sessionStorage.setItem('newsAdminTimestamp', Date.now().toString());
+                    
                     this.showAdminInterface();
                     this.showToast('✅ Connexion réussie !', 'success');
                 } else {
-                    this.showToast('❌ Identifiants incorrects', 'error');
+                    this.showToast('❌ Mot de passe incorrect', 'error');
                 }
+            } else {
+                this.showToast('❌ Identifiant incorrect', 'error');
             }
+        }
 
-            showAdminInterface() {
-                this.isAuthenticated = true;
-                document.getElementById('loginContainer').style.display = 'none';
-                document.getElementById('adminContainer').style.display = 'block';
-                this.loadNews();
-            }
+        showAdminInterface() {
+            this.isAuthenticated = true;
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('adminContainer').style.display = 'block';
+            this.loadNews();
+        }
 
             logout() {
-                sessionStorage.removeItem('newsAdminAuth');
-                this.isAuthenticated = false;
-                document.getElementById('loginContainer').style.display = 'block';
-                document.getElementById('adminContainer').style.display = 'none';
-                this.resetForm();
-                this.showToast('👋 Déconnexion réussie', 'success');
-            }
+            sessionStorage.removeItem('newsAdminAuth');
+            sessionStorage.removeItem('newsAdminUser');
+            sessionStorage.removeItem('newsAdminTimestamp');
+            this.isAuthenticated = false;
+            document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('adminContainer').style.display = 'none';
+            this.resetForm();
+            this.showToast('👋 Déconnexion réussie', 'success');
+        }
 
             async publishNews(publish) {
     if (!this.isAuthenticated) return;
@@ -1610,25 +1668,25 @@ async checkPendingComments() {
         }
 
          // Instance globale
-        const newsAdmin = new NewsAdmin();
+    const newsAdmin = new NewsAdmin();
 
-        // Fonctions globales
-        function logout() {
-            newsAdmin.logout();
-        }
+    // GARDEZ TOUTES VOS FONCTIONS GLOBALES
+    function logout() {
+        newsAdmin.logout();
+    }
 
-        function publishNews(publish) {
-            newsAdmin.publishNews(publish);
-        }
+    function publishNews(publish) {
+        newsAdmin.publishNews(publish);
+    }
 
-        function cancelEdit() {
-            newsAdmin.cancelEdit();
-        }
+    function cancelEdit() {
+        newsAdmin.cancelEdit();
+    }
 
-        // Initialisation
-        document.addEventListener('DOMContentLoaded', () => {
-            newsAdmin.init();
-        });
+    // Initialisation
+    document.addEventListener('DOMContentLoaded', () => {
+        newsAdmin.init();
+    });
 		
 		// ===== SYSTÈME D'UPLOAD D'IMAGES =====
 
