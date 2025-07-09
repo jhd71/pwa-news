@@ -4812,13 +4812,46 @@ panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) =
         return;
     }
     
+    // NOUVELLE APPROCHE : Demander le mot de passe si nécessaire
+    let adminPassword;
+    
+    // Vérifier si on a déjà le mot de passe en session
+    const sessionPassword = sessionStorage.getItem('adminNotificationPassword');
+    if (sessionPassword) {
+        adminPassword = sessionPassword;
+    } else {
+        // Demander le mot de passe
+        const passwordPrompt = prompt('Entrez le mot de passe administrateur pour les notifications:');
+        if (!passwordPrompt) {
+            result.textContent = "❌ Mot de passe requis";
+            result.style.color = "red";
+            return;
+        }
+        
+        // Vérifier le hash du mot de passe
+        const hashedPassword = this.hashPassword(passwordPrompt);
+        const expectedHash = '6fe87dd';
+        
+        if (hashedPassword !== expectedHash) {
+            result.textContent = "❌ Mot de passe incorrect";
+            result.style.color = "red";
+            return;
+        }
+        
+        // Stocker temporairement le mot de passe correct
+        adminPassword = passwordPrompt;
+        sessionStorage.setItem('adminNotificationPassword', adminPassword);
+        
+        // Le supprimer après 5 minutes
+        setTimeout(() => {
+            sessionStorage.removeItem('adminNotificationPassword');
+        }, 300000);
+    }
+    
     result.textContent = "⏳ Envoi en cours...";
     result.style.color = "white";
     
     try {
-        // Utiliser directement le mot de passe puisque l'admin est déjà authentifié
-        const adminPassword = 'fc35>$wL72iZA^';
-        
         const response = await fetch("/api/send-important-notification", {
             method: "POST",
             headers: {
