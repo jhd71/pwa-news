@@ -4795,8 +4795,7 @@ if (commentsAdminBtn) {
         }
     });
 
-    // Formulaire notification dans showAdminPanel()
-// Dans showAdminPanel(), trouvez et remplacez TOUT le bloc panel.querySelector('#notificationForm')
+
 panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -4816,12 +4815,14 @@ panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) =
     result.style.color = "white";
     
     try {
-        // L'admin est déjà authentifié, on utilise directement le mot de passe
+        // SOLUTION SIMPLE : Puisque l'admin est déjà authentifié, utiliser directement le mot de passe
+        const adminPassword = 'fc35>$wL72iZA^';
+        
         const response = await fetch("/api/send-important-notification", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "X-API-Key": "fc35>$wL72iZA^" // Votre mot de passe actuel
+                "X-API-Key": adminPassword
             },
             body: JSON.stringify({ title, body, url, urgent })
         });
@@ -4838,7 +4839,6 @@ panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) =
             panel.querySelector('#notif-url').value = '';
             panel.querySelector('#notif-urgent').checked = false;
             
-            // Vibration pour confirmation
             if (navigator.vibrate) {
                 navigator.vibrate(200);
             }
@@ -4850,7 +4850,6 @@ panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) =
             this.playSound('error');
         }
     } catch (err) {
-        console.error('Erreur envoi notification:', err);
         result.textContent = "❌ Erreur : " + err.message;
         result.style.color = "red";
         this.playSound('error');
