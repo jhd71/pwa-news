@@ -1,10 +1,13 @@
+// api/send-important-notification.js
 import { createClient } from '@supabase/supabase-js';
-import webpush from 'web-push';
-import { isValidToken } from './generate-admin-token.js';
+import webpush            from 'web-push';
 
+/* ──────────────────────────────────────────────── */
+/* 1)  Supabase + VAPID                            */
+/* ──────────────────────────────────────────────── */
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
+  process.env.SUPABASE_SERVICE_ROLE_KEY          // service‑role
 );
 
 webpush.setVapidDetails(
@@ -13,45 +16,38 @@ webpush.setVapidDetails(
   process.env.VAPID_PRIVATE_KEY
 );
 
-export default async function handler(req, res) {
-  // CORS
+/* ──────────────────────────────────────────────── */
+/* 2)  Clé d’API d’administration                  */
+/* ──────────────────────────────────────────────── */
+function checkApiKey (req){
+  const given = req.headers['x-api-key'];
+  return given === process.env.ADMIN_API_KEY;
+}
+
+/* ──────────────────────────────────────────────── */
+/* 3)  Handler HTTP                                */
+/* ──────────────────────────────────────────────── */
+export default async function handler(req, res){
+  // Gestion CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-API-Key, X-Admin-Token');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-API-Key');
   
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
-  if (req.method !== 'POST') {
+  if (req.method !== 'POST')
     return res.status(405).json({ error: 'Méthode non autorisée' });
-  }
 
-  // Vérifier le token OU le mot de passe
-  const token = req.headers['x-admin-token'];
-  const apiKey = req.headers['x-api-key'];
-  
-  let isAuthorized = false;
-  
-  // Vérifier d'abord le token
-  if (token && isValidToken(token)) {
-    isAuthorized = true;
-  }
-  // Sinon vérifier le mot de passe (pour compatibilité)
-  else if (apiKey && apiKey === process.env.ADMIN_API_KEY) {
-    isAuthorized = true;
-  }
-  
-  if (!isAuthorized) {
+  if (!checkApiKey(req))
     return res.status(401).json({ error: 'Non autorisé' });
-  }
 
   try {
+    /* -------- données reçues -------- */
     const { title, body, url = '/', imageUrl, urgent = false } = req.body;
-    
-    if (!title || !body) {
+    if (!title || !body)
       return res.status(400).json({ error: 'Titre et corps requis' });
-    }
 
     /* -------- 1. Construction du payload ------- */
     const notificationPayload = {
