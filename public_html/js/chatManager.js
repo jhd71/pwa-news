@@ -4796,7 +4796,6 @@ if (commentsAdminBtn) {
     });
 
     // Formulaire notification dans showAdminPanel()
-// Dans showAdminPanel(), trouvez et remplacez TOUT le bloc panel.querySelector('#notificationForm')
 panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -4816,41 +4815,24 @@ panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) =
     result.style.color = "white";
     
     try {
-        // L'admin est déjà authentifié, on utilise directement le mot de passe
-        const response = await fetch("/api/send-important-notification", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-API-Key": "fc35>$wL72iZA^" // Votre mot de passe actuel
-            },
-            body: JSON.stringify({ title, body, url, urgent })
-        });
+        const response = await this.sendImportantNotification(title, body, url, urgent);
         
-        const responseData = await response.json();
+        result.textContent = `✅ Notification envoyée à ${response.sent} appareil(s)`;
+        result.style.color = "#4CAF50";
         
-        if (response.ok && responseData.success) {
-            result.textContent = `✅ Notification envoyée à ${responseData.sent} appareil(s)`;
-            result.style.color = "#4CAF50";
-            
-            // Réinitialiser le formulaire
-            panel.querySelector('#notif-title').value = '';
-            panel.querySelector('#notif-body').value = '';
-            panel.querySelector('#notif-url').value = '';
-            panel.querySelector('#notif-urgent').checked = false;
-            
-            // Vibration pour confirmation
-            if (navigator.vibrate) {
-                navigator.vibrate(200);
-            }
-            
-            this.playSound('success');
-        } else {
-            result.textContent = "❌ Erreur : " + (responseData.error || "Inconnue");
-            result.style.color = "red";
-            this.playSound('error');
+        // Réinitialiser le formulaire
+        panel.querySelector('#notif-title').value = '';
+        panel.querySelector('#notif-body').value = '';
+        panel.querySelector('#notif-url').value = '';
+        panel.querySelector('#notif-urgent').checked = false;
+        
+        // Vibrer pour confirmation sur mobile
+        if (navigator.vibrate) {
+            navigator.vibrate(200);
         }
+        
+        this.playSound('success');
     } catch (err) {
-        console.error('Erreur envoi notification:', err);
         result.textContent = "❌ Erreur : " + err.message;
         result.style.color = "red";
         this.playSound('error');
