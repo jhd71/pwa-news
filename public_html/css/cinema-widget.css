@@ -82,7 +82,7 @@
 
 .cinema-widget-badge {
     background: var(--primary-color);
-    color: #ffffff;
+    color: #81b3fa;
     padding: 4px 8px;
     border-radius: 12px;
     font-size: 11px;
@@ -129,7 +129,7 @@
     padding: 8px 12px;
     margin: 6px 0;
     border-radius: 0 8px 8px 0;
-    font-size: 13px;
+    font-size: 14px;
     transition: all 0.2s ease;
     cursor: pointer;
 }
@@ -268,7 +268,7 @@
 [data-theme="dark"] .cinema-widget-header,
 [data-theme="dark"] .cinema-widget-title,
 [data-theme="dark"] .cinema-widget-footer {
-    color: #ffffff;
+    color: #81b3fa;
 }
 
 [data-theme="dark"] .cinema-widget-badge {

@@ -125,7 +125,7 @@
     padding: 8px 12px; /* Même padding que NEWS/CINÉMA */
     margin: 6px 0; /* Même marge que NEWS/CINÉMA */
     border-radius: 0 8px 8px 0;
-    font-size: 13px; /* MÊME TAILLE QUE NEWS/CINÉMA */
+    font-size: 14px; /* MÊME TAILLE QUE NEWS/CINÉMA */
     transition: all 0.2s ease;
     cursor: pointer;
     display: flex;
@@ -213,7 +213,7 @@
 [data-theme="dark"] .football-widget-title,
 [data-theme="dark"] .football-widget-footer,
 [data-theme="dark"] .current-league {
-    color: #a2e7fc;
+    color: #81b3fa;
 }
 
 [data-theme="dark"] .league-tab {
