@@ -4811,18 +4811,52 @@ panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) =
         return;
     }
     
+    // Vérifier si on a déjà le mot de passe en session
+    let adminPassword = sessionStorage.getItem('adminNotificationPassword');
+    
+    // Si pas de mot de passe ou expiré (5 minutes)
+    const passwordTimestamp = sessionStorage.getItem('adminNotificationPasswordTime');
+    if (!adminPassword || !passwordTimestamp || (Date.now() - parseInt(passwordTimestamp) > 300000)) {
+        // Demander le mot de passe
+        const passwordInput = prompt('Entrez le mot de passe pour envoyer des notifications :');
+        
+        if (!passwordInput) {
+            result.textContent = "❌ Mot de passe requis";
+            result.style.color = "red";
+            return;
+        }
+        
+        // Vérifier le hash du mot de passe
+        const hashedPassword = window.SecurityLogger.hashPassword(passwordInput);
+        const expectedHash = '6fe87dd'; // Hash de votre mot de passe
+        
+        if (hashedPassword !== expectedHash) {
+            result.textContent = "❌ Mot de passe incorrect";
+            result.style.color = "red";
+            return;
+        }
+        
+        // Stocker temporairement le mot de passe (5 minutes)
+        adminPassword = passwordInput;
+        sessionStorage.setItem('adminNotificationPassword', adminPassword);
+        sessionStorage.setItem('adminNotificationPasswordTime', Date.now().toString());
+        
+        // Supprimer automatiquement après 5 minutes
+        setTimeout(() => {
+            sessionStorage.removeItem('adminNotificationPassword');
+            sessionStorage.removeItem('adminNotificationPasswordTime');
+        }, 300000);
+    }
+    
     result.textContent = "⏳ Envoi en cours...";
     result.style.color = "white";
     
     try {
-        // SOLUTION SIMPLE : Puisque l'admin est déjà authentifié, utiliser directement le mot de passe
-        const adminPassword = 'fc35>$wL72iZA^';
-        
         const response = await fetch("/api/send-important-notification", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "X-API-Key": adminPassword
+                "X-API-Key": adminPassword // Utilise le mot de passe saisi
             },
             body: JSON.stringify({ title, body, url, urgent })
         });
@@ -4845,11 +4879,19 @@ panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) =
             
             this.playSound('success');
         } else {
-            result.textContent = "❌ Erreur : " + (responseData.error || "Inconnue");
+            // Si non autorisé, supprimer le mot de passe stocké
+            if (response.status === 401) {
+                sessionStorage.removeItem('adminNotificationPassword');
+                sessionStorage.removeItem('adminNotificationPasswordTime');
+                result.textContent = "❌ Mot de passe incorrect, veuillez réessayer";
+            } else {
+                result.textContent = "❌ Erreur : " + (responseData.error || "Inconnue");
+            }
             result.style.color = "red";
             this.playSound('error');
         }
     } catch (err) {
+        console.error('Erreur envoi notification:', err);
         result.textContent = "❌ Erreur : " + err.message;
         result.style.color = "red";
         this.playSound('error');
