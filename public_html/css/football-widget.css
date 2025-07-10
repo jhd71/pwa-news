@@ -213,11 +213,11 @@
 [data-theme="dark"] .football-widget-title,
 [data-theme="dark"] .football-widget-footer,
 [data-theme="dark"] .current-league {
-    color: #ffffff;
+    color: #a2e7fc;
 }
 
 [data-theme="dark"] .league-tab {
-    background: #5c6bc0;
+    background: #81b3fa;
 }
 
 [data-theme="dark"] .football-widget-preview {

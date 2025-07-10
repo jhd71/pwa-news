@@ -105,7 +105,7 @@
 [data-theme="dark"] .weather-sidebar h3,
 [data-theme="dark"] .quick-links-sidebar h3,
 [data-theme="dark"] .weather-sidebar p strong {
-  color: #90caf9;
+  color: #ffffff;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -482,7 +482,7 @@
 }
 
 [data-theme="dark"] .quick-link .material-icons {
-  color: #90caf9;
+  color: #76e4fc;
 }
 
 [data-theme="rouge"] .quick-link span:not(.material-icons) {
