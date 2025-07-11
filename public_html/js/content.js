@@ -2310,36 +2310,6 @@ addVisibilityStyles() {
     document.head.appendChild(style);
 }
 
-// Méthode pour configurer le bouton carburant
-setupFuelButton() {
-    // Chercher le bouton carburant s'il existe
-    const fuelButton = document.querySelector('.fuel-button');
-    if (fuelButton) {
-        fuelButton.addEventListener('click', this.openFuelPrices.bind(this));
-    }
-}
-
-// Fonction pour ouvrir les prix carburant
-openFuelPrices() {
-    try {
-        // Son de clic si disponible
-        if (typeof this.playSound === 'function') {
-            this.playSound('click');
-        }
-        
-        // Ouvrir mon-essence.fr pour Montceau-les-Mines
-        const fuelUrl = 'https://mon-essence.fr/ville/8814-montceau-les-mines';
-        window.open(fuelUrl, '_blank', 'noopener,noreferrer');
-        
-        console.log('🚗 Ouverture des prix carburant pour Montceau-les-Mines');
-        this.showToast('Ouverture des prix carburant...');
-        
-    } catch (error) {
-        console.error('Erreur ouverture prix carburant:', error);
-        this.showToast('Erreur lors de l\'ouverture');
-    }
-}
-
 // Nouvelle méthode pour ouvrir la galerie photos
 openPhotosGallery() {
     try {
