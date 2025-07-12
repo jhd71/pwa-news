@@ -3979,24 +3979,15 @@ a:active {
     }
 }
 
-/* Compensation pour la barre de navigation des navigateurs */
-@media (display-mode: browser) {
-    body {
-        padding-bottom: 60px !important;
-    }
-    
-    .bottom-nav {
-        bottom: 60px !important;
-    }
-}
-
-/* Détection si ce n'est PAS une PWA */
+/* Seulement pour les navigateurs web (pas PWA) */
 @supports not (display-mode: standalone) {
-    body {
-        padding-bottom: 60px !important;
+    /* Ajouter de l'espace en bas du contenu principal seulement */
+    main, .tile-container {
+        padding-bottom: 80px !important;
     }
     
+    /* Garder la barre de navigation en bas fixe */
     .bottom-nav {
-        bottom: 60px !important;
+        bottom: 0 !important;
     }
 }
