@@ -19,8 +19,6 @@ class ThemeManager {
         
         if (savedTheme) {
             this.setTheme(savedTheme, false);
-			// Appliquer la couleur Android au démarrage
-			this.updateAndroidNavBar(savedTheme || 'rouge');
         } else {
             document.documentElement.setAttribute('data-theme', 'rouge');
             localStorage.setItem('theme', 'rouge');
@@ -38,8 +36,7 @@ class ThemeManager {
         
         document.documentElement.setAttribute('data-theme', themeId);
         localStorage.setItem('theme', themeId);
-        // Mettre à jour la couleur de la barre Android
-	this.updateAndroidNavBar(themeId);
+        
         window.dispatchEvent(new CustomEvent('themeChanged', { 
             detail: { theme: themeId }
         }));
@@ -132,27 +129,6 @@ class ThemeManager {
             existingToast.parentNode.removeChild(existingToast);
         }
     }
-	
-	updateAndroidNavBar(themeId) {
-    const metaThemeColor = document.querySelector('meta[name="theme-color"]:not([media])');
-    if (metaThemeColor) {
-        switch(themeId) {
-            case 'rouge':
-                metaThemeColor.content = '#940000';
-                break;
-            case 'dark':
-                metaThemeColor.content = '#1a1f2e';
-                break;
-            case 'bleuciel':
-                metaThemeColor.content = '#0ea5e9';
-                break;
-            case 'light':
-                metaThemeColor.content = '#7e57c2';
-                break;
-        }
-    }
-}
-
 }
 
 // Initialiser le gestionnaire de thèmes au chargement
