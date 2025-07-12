@@ -201,7 +201,7 @@ if (menuButton && sidebar) {
         this.currentTheme = savedTheme;
         
         document.documentElement.setAttribute('data-theme', savedTheme);
-        this.updateThemeColor(savedTheme);
+        
         // Mettre à jour l'icône appropriée
         this.updateThemeIcon();
     }
@@ -1510,7 +1510,7 @@ changeTextContrast(contrast) {
     // Appliquer le thème
     document.documentElement.setAttribute('data-theme', this.currentTheme);
     localStorage.setItem('theme', this.currentTheme);
-    this.updateThemeColor(this.currentTheme);
+    
     // Mettre à jour l'icône et le texte
     this.updateThemeIcon();
     
@@ -1685,44 +1685,6 @@ applyListModeImmediate() {
                 break;
         }
     }
-}
-
-updateThemeColor(theme) {
-    // Log pour debug
-    console.log(`🎨 Tentative de mise à jour theme-color pour : ${theme}`);
-    
-    // Définir les couleurs selon le thème
-    let themeColor = '#940000';
-    
-    switch(theme) {
-        case 'rouge':
-            themeColor = '#940000';
-            break;
-        case 'dark':
-            themeColor = '#1a237e';
-            break;
-        case 'bleuciel':
-            themeColor = '#4FB3E8';
-            break;
-        case 'light':
-            themeColor = '#7e57c2';
-            break;
-    }
-    
-    // Supprimer et recréer les balises theme-color
-    const existingMetas = document.querySelectorAll('meta[name="theme-color"]');
-    existingMetas.forEach(meta => meta.remove());
-    
-    // Ajouter la nouvelle balise
-    const newMeta = document.createElement('meta');
-    newMeta.name = 'theme-color';
-    newMeta.content = themeColor;
-    document.head.appendChild(newMeta);
-    
-    // Notification pour confirmer que ça s'exécute
-    this.showToast(`Couleur système : ${theme === 'rouge' ? 'Rouge' : theme === 'dark' ? 'Bleu nuit' : theme === 'bleuciel' ? 'Bleu ciel' : 'Violet'}`);
-    
-    console.log(`✅ Theme-color défini sur : ${themeColor}`);
 }
 
     shareSite(site) {
