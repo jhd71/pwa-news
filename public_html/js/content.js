@@ -201,7 +201,7 @@ if (menuButton && sidebar) {
         this.currentTheme = savedTheme;
         
         document.documentElement.setAttribute('data-theme', savedTheme);
-        
+        this.updateThemeColor(savedTheme);
         // Mettre à jour l'icône appropriée
         this.updateThemeIcon();
     }
@@ -1510,7 +1510,7 @@ changeTextContrast(contrast) {
     // Appliquer le thème
     document.documentElement.setAttribute('data-theme', this.currentTheme);
     localStorage.setItem('theme', this.currentTheme);
-    
+    this.updateThemeColor(this.currentTheme);
     // Mettre à jour l'icône et le texte
     this.updateThemeIcon();
     
@@ -1685,6 +1685,36 @@ applyListModeImmediate() {
                 break;
         }
     }
+}
+
+updateThemeColor(theme) {
+    // Supprimer toutes les balises theme-color existantes
+    const existingThemeColors = document.querySelectorAll('meta[name="theme-color"]');
+    existingThemeColors.forEach(meta => meta.remove());
+    
+    // Définir les couleurs selon le thème
+    let themeColor = '#940000'; // Rouge par défaut
+    
+    switch(theme) {
+        case 'rouge':
+            themeColor = '#940000';
+            break;
+        case 'dark':
+            themeColor = '#1a237e';
+            break;
+        case 'bleuciel':
+            themeColor = '#4FB3E8';
+            break;
+        case 'light':
+            themeColor = '#7e57c2'; // Violet
+            break;
+    }
+    
+    // Créer et ajouter la nouvelle balise theme-color
+    const metaThemeColor = document.createElement('meta');
+    metaThemeColor.name = 'theme-color';
+    metaThemeColor.content = themeColor;
+    document.head.appendChild(metaThemeColor);
 }
 
     shareSite(site) {
