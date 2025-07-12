@@ -3237,7 +3237,7 @@ a:active {
     }
     
     .modal-title {
-        font-size: 20px;
+        font-size: 16px !important;
     }
     
     .form-actions {
