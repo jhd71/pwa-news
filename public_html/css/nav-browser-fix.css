@@ -1,0 +1,103 @@
+/* ==========================================================================
+   CORRECTION CROSS-BROWSER POUR LA BARRE DE NAVIGATION
+   ========================================================================== */
+
+/* Réinitialiser et forcer les styles de base */
+.bottom-nav {
+    /* Supprimer backdrop-filter qui cause des problèmes */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    
+    /* Couleur de fond solide par défaut */
+    background-color: rgb(148, 0, 0) !important;
+    background-image: none !important;
+}
+
+/* Styles spécifiques pour chaque thème avec priorité maximale */
+html[data-theme="rouge"] .bottom-nav,
+body[data-theme="rouge"] .bottom-nav,
+[data-theme="rouge"] .bottom-nav {
+    background: rgb(148, 0, 0) !important;
+    background-color: rgb(148, 0, 0) !important;
+    background-image: none !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+html[data-theme="dark"] .bottom-nav,
+body[data-theme="dark"] .bottom-nav,
+[data-theme="dark"] .bottom-nav {
+    background: #1a1f2e !important;
+    background-color: #1a1f2e !important;
+    background-image: none !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+html[data-theme="bleuciel"] .bottom-nav,
+body[data-theme="bleuciel"] .bottom-nav,
+[data-theme="bleuciel"] .bottom-nav {
+    background: #0ea5e9 !important;
+    background-color: #0ea5e9 !important;
+    background-image: none !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+html[data-theme="light"] .bottom-nav,
+body[data-theme="light"] .bottom-nav,
+[data-theme="light"] .bottom-nav {
+    background: #7e57c2 !important;
+    background-color: #7e57c2 !important;
+    background-image: none !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Forcer la suppression de tout style hérité */
+.bottom-nav * {
+    background-color: transparent !important;
+}
+
+/* S'assurer que les icônes et textes sont visibles */
+.bottom-nav .nav-item {
+    color: rgba(255, 255, 255, 0.9) !important;
+    background: transparent !important;
+}
+
+.bottom-nav .nav-item:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+}
+
+.bottom-nav .nav-item.active {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+}
+
+/* Fix spécifique pour Firefox */
+@-moz-document url-prefix() {
+    .bottom-nav {
+        background-color: rgb(148, 0, 0) !important;
+    }
+    
+    [data-theme="rouge"] .bottom-nav {
+        background-color: rgb(148, 0, 0) !important;
+    }
+    
+    [data-theme="dark"] .bottom-nav {
+        background-color: #1a1f2e !important;
+    }
+    
+    [data-theme="bleuciel"] .bottom-nav {
+        background-color: #0ea5e9 !important;
+    }
+    
+    [data-theme="light"] .bottom-nav {
+        background-color: #7e57c2 !important;
+    }
+}
+
+/* Fix spécifique pour Chrome/Webkit */
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    .bottom-nav {
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+    }
+}

@@ -478,7 +478,7 @@ body {
     align-items: center;
     z-index: 998;
     background: rgb(148, 0, 0); /* Rouge par défaut */
-    backdrop-filter: blur(10px);
+    /* backdrop-filter: blur(10px); */ /* Désactivé - cause des problèmes */
     padding: 8px 0;
     box-shadow: 0 -2px 5px var(--shadow-color);
 }
