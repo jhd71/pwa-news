@@ -177,19 +177,21 @@ body {
 
 /* Navigation du bas par thème */
 [data-theme="light"] .bottom-nav {
-    background: linear-gradient(to bottom, rgba(126, 87, 194, 0.95), rgba(126, 87, 194, 0.98)) !important;
+    background: linear-gradient(to bottom, rgba(126, 87, 194, 0.95), rgba(126, 87, 194, 0.98));
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
+
 [data-theme="dark"] .bottom-nav {
-    background: linear-gradient(to bottom, rgba(26, 35, 126, 0.95), rgba(26, 35, 126, 0.98)) !important;
+    background: linear-gradient(to bottom, rgba(26, 35, 126, 0.95), rgba(26, 35, 126, 0.98));
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
+
 [data-theme="rouge"] .bottom-nav {
-    background: rgb(148, 0, 0) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgb(148, 0, 0);
 }
+
 [data-theme="bleuciel"] .bottom-nav {
-    background: linear-gradient(to bottom, rgba(14, 165, 233, 0.95), rgba(14, 165, 233, 0.98)) !important;
+    background: linear-gradient(to bottom, rgba(14, 165, 233, 0.95), rgba(14, 165, 233, 0.98));
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -477,8 +479,7 @@ body {
     justify-content: space-around;
     align-items: center;
     z-index: 998;
-    background: rgb(148, 0, 0); /* Rouge par défaut */
-    /* backdrop-filter: blur(10px); */ /* Désactivé - cause des problèmes */
+    backdrop-filter: blur(10px);
     padding: 8px 0;
     box-shadow: 0 -2px 5px var(--shadow-color);
 }
