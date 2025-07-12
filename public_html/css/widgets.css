@@ -501,8 +501,8 @@
   color: white !important;
 }
 
-/* BOUTONS CARBURANT ET RECHERCHE - Style commun */
-.fuel-button,
+/* BOUTONS FORUM ET RECHERCHE - Style commun */
+.forum-button,
 .search-button {
   display: flex;
   align-items: center;
@@ -525,19 +525,19 @@
 }
 
 /* Force l'icône blanche */
-.fuel-button .material-icons,
+.forum-button .material-icons,
 .search-button .material-icons {
   color: white !important;
 }
 
 /* COULEURS PAR THÈME */
 /* Thème Violet (light) */
-[data-theme="light"] .fuel-button,
+[data-theme="light"] .forum-button,
 [data-theme="light"] .search-button {
   background: #7e57c2 !important;
 }
 
-[data-theme="light"] .fuel-button:hover,
+[data-theme="light"] .forum-button:hover,
 [data-theme="light"] .search-button:hover {
   background: #673ab7 !important;
   box-shadow: 0 6px 20px rgba(126, 87, 194, 0.4);
@@ -545,12 +545,12 @@
 }
 
 /* Thème Sombre (dark) */
-[data-theme="dark"] .fuel-button,
+[data-theme="dark"] .forum-button,
 [data-theme="dark"] .search-button {
   background: #1a237e !important;
 }
 
-[data-theme="dark"] .fuel-button:hover,
+[data-theme="dark"] .forum-button:hover,
 [data-theme="dark"] .search-button:hover {
   background: #283593 !important;
   box-shadow: 0 6px 20px rgba(26, 35, 126, 0.4);
@@ -558,12 +558,12 @@
 }
 
 /* Thème Rouge */
-[data-theme="rouge"] .fuel-button,
+[data-theme="rouge"] .forum-button,
 [data-theme="rouge"] .search-button {
   background: rgb(148, 0, 0) !important;
 }
 
-[data-theme="rouge"] .fuel-button:hover,
+[data-theme="rouge"] .forum-button:hover,
 [data-theme="rouge"] .search-button:hover {
   background: rgb(180, 0, 0) !important;
   box-shadow: 0 6px 20px rgba(198, 40, 40, 0.4);
@@ -571,12 +571,12 @@
 }
 
 /* Thème Bleu Ciel */
-[data-theme="bleuciel"] .fuel-button,
+[data-theme="bleuciel"] .forum-button,
 [data-theme="bleuciel"] .search-button {
   background: linear-gradient(145deg, #4FB3E8, #3F97C7) !important;
 }
 
-[data-theme="bleuciel"] .fuel-button:hover,
+[data-theme="bleuciel"] .forum-button:hover,
 [data-theme="bleuciel"] .search-button:hover {
   background: #42a5f5 !important;
   box-shadow: 0 6px 20px rgba(79, 179, 232, 0.4);
@@ -613,8 +613,8 @@
     right: 10px !important;
   }
   
-  /* Boutons carburant et recherche sur desktop */
-  .fuel-button {
+  /* Boutons forum et recherche sur desktop */
+  .forum-button {
     top: 170px;
     left: 10px;
     width: 46px;
@@ -628,7 +628,7 @@
     height: 46px;
   }
   
-  .fuel-button .material-icons,
+  .forum-button .material-icons,
   .search-button .material-icons {
     font-size: 24px;
   }
@@ -728,8 +728,8 @@
     display: none !important;
   }
   
-  /* Boutons carburant et recherche sur mobile */
-  .fuel-button {
+  /* Boutons Forum et recherche sur mobile */
+  .forum-button {
     position: fixed;
     top: 71px;
     left: 20%;
@@ -753,13 +753,13 @@
     transition: none;
   }
   
-  .fuel-button .material-icons,
+  .forum-button .material-icons,
   .search-button .material-icons {
     font-size: 22px;
   }
   
   /* Hover mobile pour boutons */
-  .fuel-button:hover {
+  .forum-button:hover {
     transform: translateX(-50%) translateY(-2px) !important;
   }
   
