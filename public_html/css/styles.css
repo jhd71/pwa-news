@@ -3978,16 +3978,3 @@ a:active {
         font-size: 20px;
     }
 }
-
-/* Seulement pour les navigateurs web (pas PWA) */
-@supports not (display-mode: standalone) {
-    /* Ajouter de l'espace en bas du contenu principal seulement */
-    main, .tile-container {
-        padding-bottom: 80px !important;
-    }
-    
-    /* Garder la barre de navigation en bas fixe */
-    .bottom-nav {
-        bottom: 0 !important;
-    }
-}
