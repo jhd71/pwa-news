@@ -3978,3 +3978,25 @@ a:active {
         font-size: 20px;
     }
 }
+
+/* Compensation pour la barre de navigation des navigateurs */
+@media (display-mode: browser) {
+    body {
+        padding-bottom: 60px !important;
+    }
+    
+    .bottom-nav {
+        bottom: 60px !important;
+    }
+}
+
+/* Détection si ce n'est PAS une PWA */
+@supports not (display-mode: standalone) {
+    body {
+        padding-bottom: 60px !important;
+    }
+    
+    .bottom-nav {
+        bottom: 60px !important;
+    }
+}
