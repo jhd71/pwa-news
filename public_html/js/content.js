@@ -1688,33 +1688,54 @@ applyListModeImmediate() {
 }
 
 updateThemeColor(theme) {
-    // Supprimer toutes les balises theme-color existantes
-    const existingThemeColors = document.querySelectorAll('meta[name="theme-color"]');
+    // Supprimer TOUTES les balises theme-color existantes
+    const existingThemeColors = document.querySelectorAll('meta[name="theme-color"], meta[name="msapplication-navbutton-color"], meta[name="apple-mobile-web-app-status-bar-style"]');
     existingThemeColors.forEach(meta => meta.remove());
     
     // Définir les couleurs selon le thème
-    let themeColor = '#940000'; // Rouge par défaut
+    let themeColor = '#940000';
+    let statusBarStyle = 'black-translucent';
     
     switch(theme) {
         case 'rouge':
             themeColor = '#940000';
+            statusBarStyle = 'black-translucent';
             break;
         case 'dark':
             themeColor = '#1a237e';
+            statusBarStyle = 'black';
             break;
         case 'bleuciel':
             themeColor = '#4FB3E8';
+            statusBarStyle = 'black-translucent';
             break;
         case 'light':
-            themeColor = '#7e57c2'; // Violet
+            themeColor = '#7e57c2';
+            statusBarStyle = 'black-translucent';
             break;
     }
     
-    // Créer et ajouter la nouvelle balise theme-color
-    const metaThemeColor = document.createElement('meta');
-    metaThemeColor.name = 'theme-color';
-    metaThemeColor.content = themeColor;
-    document.head.appendChild(metaThemeColor);
+    // Forcer la mise à jour avec plusieurs méthodes
+    const metaConfigs = [
+        { name: 'theme-color', content: themeColor },
+        { name: 'theme-color', content: themeColor, media: '(prefers-color-scheme: light)' },
+        { name: 'theme-color', content: themeColor, media: '(prefers-color-scheme: dark)' },
+        { name: 'msapplication-navbutton-color', content: themeColor },
+        { name: 'apple-mobile-web-app-status-bar-style', content: statusBarStyle }
+    ];
+    
+    metaConfigs.forEach(config => {
+        const meta = document.createElement('meta');
+        meta.name = config.name;
+        meta.content = config.content;
+        if (config.media) meta.media = config.media;
+        document.head.appendChild(meta);
+    });
+    
+    // Force un reflow du navigateur
+    document.head.offsetHeight;
+    
+    console.log(`🎨 Theme-color mis à jour : ${themeColor} pour le thème ${theme}`);
 }
 
     shareSite(site) {
