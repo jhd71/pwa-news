@@ -1688,54 +1688,41 @@ applyListModeImmediate() {
 }
 
 updateThemeColor(theme) {
-    // Supprimer TOUTES les balises theme-color existantes
-    const existingThemeColors = document.querySelectorAll('meta[name="theme-color"], meta[name="msapplication-navbutton-color"], meta[name="apple-mobile-web-app-status-bar-style"]');
-    existingThemeColors.forEach(meta => meta.remove());
+    // Log pour debug
+    console.log(`🎨 Tentative de mise à jour theme-color pour : ${theme}`);
     
     // Définir les couleurs selon le thème
     let themeColor = '#940000';
-    let statusBarStyle = 'black-translucent';
     
     switch(theme) {
         case 'rouge':
             themeColor = '#940000';
-            statusBarStyle = 'black-translucent';
             break;
         case 'dark':
             themeColor = '#1a237e';
-            statusBarStyle = 'black';
             break;
         case 'bleuciel':
             themeColor = '#4FB3E8';
-            statusBarStyle = 'black-translucent';
             break;
         case 'light':
             themeColor = '#7e57c2';
-            statusBarStyle = 'black-translucent';
             break;
     }
     
-    // Forcer la mise à jour avec plusieurs méthodes
-    const metaConfigs = [
-        { name: 'theme-color', content: themeColor },
-        { name: 'theme-color', content: themeColor, media: '(prefers-color-scheme: light)' },
-        { name: 'theme-color', content: themeColor, media: '(prefers-color-scheme: dark)' },
-        { name: 'msapplication-navbutton-color', content: themeColor },
-        { name: 'apple-mobile-web-app-status-bar-style', content: statusBarStyle }
-    ];
+    // Supprimer et recréer les balises theme-color
+    const existingMetas = document.querySelectorAll('meta[name="theme-color"]');
+    existingMetas.forEach(meta => meta.remove());
     
-    metaConfigs.forEach(config => {
-        const meta = document.createElement('meta');
-        meta.name = config.name;
-        meta.content = config.content;
-        if (config.media) meta.media = config.media;
-        document.head.appendChild(meta);
-    });
+    // Ajouter la nouvelle balise
+    const newMeta = document.createElement('meta');
+    newMeta.name = 'theme-color';
+    newMeta.content = themeColor;
+    document.head.appendChild(newMeta);
     
-    // Force un reflow du navigateur
-    document.head.offsetHeight;
+    // Notification pour confirmer que ça s'exécute
+    this.showToast(`Couleur système : ${theme === 'rouge' ? 'Rouge' : theme === 'dark' ? 'Bleu nuit' : theme === 'bleuciel' ? 'Bleu ciel' : 'Violet'}`);
     
-    console.log(`🎨 Theme-color mis à jour : ${themeColor} pour le thème ${theme}`);
+    console.log(`✅ Theme-color défini sur : ${themeColor}`);
 }
 
     shareSite(site) {
