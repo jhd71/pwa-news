@@ -15,38 +15,45 @@ class ThemeManager {
     }
     
     init() {
-        const savedTheme = localStorage.getItem('theme');
-        
-        if (savedTheme) {
-            this.setTheme(savedTheme, false);
-        } else {
-            document.documentElement.setAttribute('data-theme', 'rouge');
-            localStorage.setItem('theme', 'rouge');
-        }
-        
-        this.setupThemeButton();
-        console.log('ThemeManager avec nouveaux thèmes initialisé');
+    const savedTheme = localStorage.getItem('theme');
+    
+    if (savedTheme) {
+        this.setTheme(savedTheme, false);
+    } else {
+        document.documentElement.setAttribute('data-theme', 'rouge');
+        localStorage.setItem('theme', 'rouge');
+        // NOUVEAU : Appliquer les couleurs au démarrage
+        this.updateThemeColors('rouge');
     }
     
+    this.setupThemeButton();
+    console.log('ThemeManager avec nouveaux thèmes initialisé');
+}
+    
     setTheme(themeId, showToast = true) {
-        if (!this.themes.find(t => t.id === themeId)) {
-            console.error(`Thème inconnu: ${themeId}`);
-            return;
-        }
-        
-        document.documentElement.setAttribute('data-theme', themeId);
-        localStorage.setItem('theme', themeId);
-        
-        window.dispatchEvent(new CustomEvent('themeChanged', { 
-            detail: { theme: themeId }
-        }));
-        
-        if (showToast) {
-            this.showToast(`Thème ${this.getThemeName(themeId)} activé`);
-        }
-        
-        console.log(`Thème appliqué: ${themeId}`);
+    if (!this.themes.find(t => t.id === themeId)) {
+        console.error(`Thème inconnu: ${themeId}`);
+        return;
     }
+    
+    document.documentElement.setAttribute('data-theme', themeId);
+    localStorage.setItem('theme', themeId);
+	// NOUVEAU : Mettre à jour les couleurs de la PWA
+	this.updateThemeColors(themeId);
+    
+    // NOUVEAU : Mettre à jour les couleurs de la PWA
+    this.updateThemeColors(themeId);
+    
+    window.dispatchEvent(new CustomEvent('themeChanged', { 
+        detail: { theme: themeId }
+    }));
+    
+    if (showToast) {
+        this.showToast(`Thème ${this.getThemeName(themeId)} activé`);
+    }
+    
+    console.log(`Thème appliqué: ${themeId}`);
+}
     
     getThemeName(themeId) {
         const theme = this.themes.find(t => t.id === themeId);
@@ -129,6 +136,58 @@ class ThemeManager {
             existingToast.parentNode.removeChild(existingToast);
         }
     }
+	
+	updateThemeColors(themeId) {
+    // Mettre à jour toutes les balises meta theme-color
+    const themeColors = {
+        'rouge': '#940000',
+        'dark': '#1a1f2e',
+        'bleuciel': '#87CEEB',
+        'light': '#6b46c1'
+    };
+    
+    const color = themeColors[themeId] || '#940000';
+    
+    // Mettre à jour la meta theme-color principale
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]:not([media])');
+    if (metaThemeColor) {
+        metaThemeColor.content = color;
+    }
+    
+    // Mettre à jour les theme-color avec media queries
+    const metaThemeColorLight = document.querySelector('meta[name="theme-color"][media*="light"]');
+    if (metaThemeColorLight) {
+        metaThemeColorLight.content = color;
+    }
+    
+    const metaThemeColorDark = document.querySelector('meta[name="theme-color"][media*="dark"]');
+    if (metaThemeColorDark) {
+        metaThemeColorDark.content = color;
+    }
+    
+    // Mettre à jour msapplication-navbutton-color (pour Windows)
+    const metaMsNavColor = document.querySelector('meta[name="msapplication-navbutton-color"]');
+    if (metaMsNavColor) {
+        metaMsNavColor.content = color;
+    }
+    
+    // Mettre à jour msapplication-TileColor (pour Windows)
+    const metaMsTileColor = document.querySelector('meta[name="msapplication-TileColor"]');
+    if (metaMsTileColor) {
+        metaMsTileColor.content = color;
+    }
+    
+    // Pour iOS status bar
+    const metaAppleStatus = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+    if (metaAppleStatus) {
+        // Pour iOS, on utilise black-translucent pour tous les thèmes sauf bleuciel
+        if (themeId === 'bleuciel') {
+            metaAppleStatus.content = 'default';
+        } else {
+            metaAppleStatus.content = 'black-translucent';
+        }
+    }
+}
 }
 
 // Initialiser le gestionnaire de thèmes au chargement
