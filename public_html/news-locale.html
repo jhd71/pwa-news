@@ -239,12 +239,16 @@
         }
         
         .news-article-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: var(--text-color);
-            margin: 0 0 8px 0;
-            line-height: 1.3;
-        }
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--text-color);
+    margin: 0 0 8px 0;
+    line-height: 1.3;
+    display: flex; /* Nouveau */
+    align-items: center; /* Nouveau */
+    flex-wrap: wrap; /* Nouveau - permet au badge de passer à la ligne */
+    gap: 8px; /* Nouveau - espace entre éléments */
+}
         
         .news-article-date {
             color: var(--primary-color);
@@ -255,14 +259,16 @@
         }
         
         .featured-badge {
-            background: #ffd700;
-            color: #333;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: bold;
-            margin-left: 10px;
-        }
+    background: #ffd700;
+    color: #333;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    margin-left: 8px; /* Réduit de 10px à 8px */
+    white-space: nowrap; /* Empêche le retour à la ligne */
+    display: inline-block; /* Meilleur contrôle */
+}
         
         .news-article-content {
             color: var(--text-color);
@@ -825,15 +831,15 @@
             overflow: hidden;
             box-shadow: 0 4px 15px var(--shadow);
             min-height: 100px; /* Hauteur minimum pendant le chargement */
-            background: #f0f0f0; /* Fond gris pendant le chargement */
+            background: transparent; /* Pas de fond */
             position: relative;
         }
 
         .news-image {
-            width: 100%;
-            height: auto;
-            max-height: 400px;
-            object-fit: contain !important; /* Affiche l'image entière */
+    width: 100%;
+    height: auto;
+    max-height: 600px; /* Augmenté de 400px à 600px */
+    object-fit: contain !important; /* Affiche l'image entière */
             display: block;
             transition: transform 0.3s ease, opacity 0.3s ease;
             opacity: 0; /* Invisible au départ */
@@ -867,7 +873,7 @@
 
         @media (max-width: 768px) {
             .news-image {
-                max-height: 250px;
+                max-height: 400px; /* Augmenté de 250px à 400px */
             }
         }
 
