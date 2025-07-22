@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gestionnaire de Dépenses</title>
+    <link rel="manifest" href="./manifest.json">
+    <link rel="stylesheet" href="./styles.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="apple-touch-icon" href="./images/icon-192.png">
+</head>
+<body>
+    <div class="header">
+        <h1>Gestionnaire de Dépenses 💰</h1>
+        <div class="header-buttons">
+            <button class="btn-icon" onclick="showStats()" title="Statistiques">
+                <span class="material-icons">insights</span>
+            </button>
+            <button class="btn-icon" onclick="toggleCalculator()" title="Calculatrice">
+                <span class="material-icons">calculate</span>
+            </button>
+            <button class="btn-icon" onclick="toggleTheme()" title="Changer le thème">
+                <span class="material-icons">brightness_6</span>
+            </button>
+            <button class="btn-icon" onclick="openSettings()" title="Paramètres">
+                <span class="material-icons">settings</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="tabs" id="tabs">
+        <button class="tab active" onclick="switchTab('dashboard')">Tableau de bord</button>
+        <button class="tab" onclick="switchTab('commun')">Commun</button>
+        <button class="add-tab" onclick="addNewTab()">+</button>
+    </div>
+
+    <div class="content">
+        <!-- Tableau de bord -->
+        <div id="dashboard" class="tab-content active">
+            <div class="dashboard" id="dashboard-content">
+                <!-- Les cartes utilisateurs seront générées ici -->
+            </div>
+        </div>
+
+        <!-- Onglet Commun -->
+        <div id="commun" class="tab-content">
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Revenus</h2>
+                    <button class="btn btn-small" onclick="addIncome('commun')">+ Ajouter</button>
+                </div>
+                <div id="commun-incomes" class="items-list">
+                    <div class="empty-state">Aucun revenu ajouté</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Dépenses communes</h2>
+                    <button class="btn btn-small" onclick="addCommonExpense()">+ Ajouter</button>
+                </div>
+                <div id="commun-expenses" class="items-list">
+                    <div class="empty-state">Aucune dépense ajoutée</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAB menu pour actions rapides -->
+    <button class="fab" id="fabButton" onclick="toggleFabMenu()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+    </button>
+    
+    <div class="fab-menu" id="fabMenu">
+        <button class="fab-item" onclick="quickAddIncome()" title="Ajouter un revenu">
+            <span class="fab-label">Revenu</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <path d="M12 2v20M17 7l-5-5-5 5M17 17l-5-5-5 5"/>
+            </svg>
+        </button>
+        <button class="fab-item" onclick="quickAddExpense()" title="Ajouter une dépense">
+            <span class="fab-label">Dépense</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <path d="M12 2v20M7 7l5 5 5-5M7 17l5-5 5 5"/>
+            </svg>
+        </button>
+        <button class="fab-item" onclick="toggleCalculator()" title="Calculatrice">
+            <span class="fab-label">Calculer</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <rect x="4" y="2" width="16" height="20" rx="2"></rect>
+                <line x1="8" y1="6" x2="16" y2="6"></line>
+                <line x1="8" y1="10" x2="16" y2="10"></line>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Modal pour ajouter un onglet -->
+    <div class="modal" id="addTabModal">
+        <div class="modal-content">
+            <div class="modal-header">Ajouter un utilisateur</div>
+            <div class="modal-body">
+                <input type="text" class="input" id="newTabName" placeholder="Nom de l'utilisateur">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" onclick="closeModal('addTabModal')">Annuler</button>
+                <button class="btn" onclick="confirmAddTab()">Ajouter</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour ajouter un revenu -->
+    <div class="modal" id="addIncomeModal">
+        <div class="modal-content">
+            <div class="modal-header">Ajouter un revenu</div>
+            <div class="modal-body">
+                <input type="text" class="input" id="incomeName" placeholder="Description" style="margin-bottom: 0.75rem;">
+                <input type="number" class="input" id="incomeAmount" placeholder="Montant" step="0.01">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" onclick="closeModal('addIncomeModal')">Annuler</button>
+                <button class="btn" onclick="confirmAddIncome()">Ajouter</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour ajouter une dépense -->
+    <div class="modal" id="addExpenseModal">
+        <div class="modal-content">
+            <div class="modal-header">Ajouter une dépense</div>
+            <div class="modal-body">
+                <input type="text" class="input" id="expenseName" placeholder="Description" style="margin-bottom: 0.75rem;">
+                <input type="number" class="input" id="expenseAmount" placeholder="Montant" step="0.01">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" onclick="closeModal('addExpenseModal')">Annuler</button>
+                <button class="btn" onclick="confirmAddExpense()">Ajouter</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour ajouter une dépense commune -->
+    <div class="modal" id="addCommonExpenseModal">
+        <div class="modal-content">
+            <div class="modal-header">Ajouter une dépense commune</div>
+            <div class="modal-body">
+                <input type="text" class="input" id="commonExpenseName" placeholder="Description" style="margin-bottom: 0.75rem;">
+                <input type="number" class="input" id="commonExpenseAmount" placeholder="Montant total" step="0.01">
+                <div style="margin-top: 1rem;">
+                    <label style="font-weight: 600; margin-bottom: 0.5rem; display: block;">Participants :</label>
+                    <div class="participants" id="participantsList">
+                        <!-- Les participants seront générés ici -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" onclick="closeModal('addCommonExpenseModal')">Annuler</button>
+                <button class="btn" onclick="confirmAddCommonExpense()">Ajouter</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal calculatrice -->
+    <div class="modal" id="calculatorModal">
+        <div class="modal-content">
+            <div class="modal-header">Calculatrice</div>
+            <div class="modal-body">
+                <div class="calculator">
+                    <div class="calc-display" id="calcDisplay">0</div>
+                    <div class="calc-buttons">
+                        <button class="calc-btn" onclick="clearCalc()">C</button>
+                        <button class="calc-btn" onclick="appendToCalc('/')">/</button>
+                        <button class="calc-btn" onclick="appendToCalc('*')">×</button>
+                        <button class="calc-btn" onclick="deleteLastCalc()">←</button>
+                        
+                        <button class="calc-btn" onclick="appendToCalc('7')">7</button>
+                        <button class="calc-btn" onclick="appendToCalc('8')">8</button>
+                        <button class="calc-btn" onclick="appendToCalc('9')">9</button>
+                        <button class="calc-btn operator" onclick="appendToCalc('-')">-</button>
+                        
+                        <button class="calc-btn" onclick="appendToCalc('4')">4</button>
+                        <button class="calc-btn" onclick="appendToCalc('5')">5</button>
+                        <button class="calc-btn" onclick="appendToCalc('6')">6</button>
+                        <button class="calc-btn operator" onclick="appendToCalc('+')">+</button>
+                        
+                        <button class="calc-btn" onclick="appendToCalc('1')">1</button>
+                        <button class="calc-btn" onclick="appendToCalc('2')">2</button>
+                        <button class="calc-btn" onclick="appendToCalc('3')">3</button>
+                        <button class="calc-btn" onclick="appendToCalc('.')">.</button>
+                        
+                        <button class="calc-btn" onclick="appendToCalc('0')">0</button>
+                        <button class="calc-btn equal" onclick="calculateResult()">=</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('calculatorModal')">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal paramètres -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">Paramètres</div>
+            <div class="modal-body">
+                <div style="display: grid; gap: 1rem;">
+                    <button class="btn" onclick="exportData()">
+                        <span class="material-icons" style="vertical-align: middle; margin-right: 0.5rem;">download</span>
+                        Exporter les données
+                    </button>
+                    <button class="btn" onclick="importData()">
+                        <span class="material-icons" style="vertical-align: middle; margin-right: 0.5rem;">upload</span>
+                        Importer des données
+                    </button>
+                    <button class="btn btn-danger" onclick="confirmReset()">
+                        <span class="material-icons" style="vertical-align: middle; margin-right: 0.5rem;">delete_forever</span>
+                        Réinitialiser tout
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('settingsModal')">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal statistiques -->
+    <div class="modal" id="statsModal">
+        <div class="modal-content">
+            <div class="modal-header">Statistiques globales</div>
+            <div class="modal-body">
+                <div id="statsContent" style="display: grid; gap: 1rem;">
+                    <!-- Le contenu sera généré dynamiquement -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('statsModal')">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // État global de l'application
+        let appData = {
+            users: {
+                'commun': {
+                    name: 'Commun',
+                    incomes: [],
+                    expenses: []
+                }
+            },
+            commonExpenses: [],
+            currentTab: 'dashboard',
+            theme: 'light'
+        };
+
+        // Variables globales
+        let currentUser = '';
+        let calcExpression = '0';
+        let confirmCallback = null;
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            initPWA();
+            renderApp();
+            // Masquer le FAB au démarrage si on est sur le tableau de bord
+            if (appData.currentTab === 'dashboard') {
+                document.getElementById('fabButton').style.display = 'none';
+            }
+            setInterval(saveData, 5000); // Sauvegarde automatique toutes les 5 secondes
+        });
+
+        // Fonctions de gestion des données
+        function loadData() {
+            const saved = localStorage.getItem('expenseTrackerData');
+            if (saved) {
+                appData = JSON.parse(saved);
+                document.body.setAttribute('data-theme', appData.theme || 'light');
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('expenseTrackerData', JSON.stringify(appData));
+        }
+
+        // Fonctions de rendu
+        function renderApp() {
+            renderTabs();
+            renderDashboard();
+            renderUserTabs();
+            renderCommonTab();
+        }
+
+        function renderTabs() {
+            const tabsContainer = document.getElementById('tabs');
+            tabsContainer.innerHTML = `
+                <button class="tab ${appData.currentTab === 'dashboard' ? 'active' : ''}" onclick="switchTab('dashboard')">Tableau de bord</button>
+            `;
+            
+            // Ajouter les onglets utilisateurs (sauf Commun)
+            for (const userId in appData.users) {
+                if (userId !== 'commun') {
+                    const tab = document.createElement('button');
+                    tab.className = `tab ${appData.currentTab === userId ? 'active' : ''}`;
+                    tab.textContent = appData.users[userId].name;
+                    tab.onclick = () => switchTab(userId);
+                    tabsContainer.appendChild(tab);
+                }
+            }
+            
+            // Ajouter l'onglet Commun en dernier
+            const communTab = document.createElement('button');
+            communTab.className = `tab ${appData.currentTab === 'commun' ? 'active' : ''}`;
+            communTab.textContent = 'Commun';
+            communTab.onclick = () => switchTab('commun');
+            tabsContainer.appendChild(communTab);
+            
+            // Bouton d'ajout tout à la fin
+            const addTab = document.createElement('button');
+            addTab.className = 'add-tab';
+            addTab.textContent = '+';
+            addTab.onclick = addNewTab;
+            tabsContainer.appendChild(addTab);
+        }
+
+        function renderDashboard() {
+            const container = document.getElementById('dashboard-content');
+            container.innerHTML = '';
+            
+            // D'abord, afficher tous les utilisateurs (sauf Commun)
+            for (const userId in appData.users) {
+                if (userId !== 'commun') {
+                    renderUserCard(userId, container);
+                }
+            }
+            
+            // Ensuite, afficher Commun en dernier
+            if (appData.users.commun) {
+                renderUserCard('commun', container);
+            }
+        }
+        
+        function renderUserCard(userId, container) {
+            const user = appData.users[userId];
+            const totalIncome = user.incomes.reduce((sum, item) => sum + item.amount, 0);
+            const totalExpense = user.expenses.reduce((sum, item) => sum + item.amount, 0);
+            
+            // Calculer la part des dépenses communes
+            let commonShare = 0;
+            if (userId !== 'commun') {
+                appData.commonExpenses.forEach(expense => {
+                    if (expense.participants.includes(userId)) {
+                        commonShare += expense.amount / expense.participants.length;
+                    }
+                });
+            }
+            
+            const balance = totalIncome - totalExpense - commonShare;
+            
+            const card = document.createElement('div');
+            card.className = 'user-card';
+            card.innerHTML = `
+                <h3>${user.name}</h3>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-label">Revenus</div>
+                        <div class="stat-value income">+${totalIncome.toFixed(2)}€</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Dépenses</div>
+                        <div class="stat-value expense">-${(totalExpense + commonShare).toFixed(2)}€</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Solde</div>
+                        <div class="stat-value balance">${balance.toFixed(2)}€</div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        }
+
+        function renderUserTabs() {
+            // Créer les contenus d'onglets pour chaque utilisateur
+            const content = document.querySelector('.content');
+            
+            // Supprimer les anciens onglets utilisateurs
+            document.querySelectorAll('.user-tab-content').forEach(el => el.remove());
+            
+            for (const userId in appData.users) {
+                if (userId !== 'commun') {
+                    const tabContent = document.createElement('div');
+                    tabContent.id = userId;
+                    tabContent.className = `tab-content user-tab-content ${appData.currentTab === userId ? 'active' : ''}`;
+                    
+                    tabContent.innerHTML = `
+                        <div class="section">
+                            <div class="section-header">
+                                <h2 class="section-title">Revenus</h2>
+                                <button class="btn btn-small" onclick="addIncome('${userId}')">+ Ajouter</button>
+                            </div>
+                            <div id="${userId}-incomes" class="items-list">
+                                ${renderItems(appData.users[userId].incomes, 'income', userId)}
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-header">
+                                <h2 class="section-title">Dépenses</h2>
+                                <button class="btn btn-small" onclick="addExpense('${userId}')">+ Ajouter</button>
+                            </div>
+                            <div id="${userId}-expenses" class="items-list">
+                                ${renderItems(appData.users[userId].expenses, 'expense', userId)}
+                            </div>
+                        </div>
+                        
+                        <div class="section" style="margin-top: 2rem; text-align: center;">
+                            <button class="btn btn-danger" onclick="deleteUser('${userId}')">
+                                🗑️ Supprimer cet utilisateur
+                            </button>
+                        </div>
+                    `;
+                    
+                    content.appendChild(tabContent);
+                }
+            }
+        }
+
+        function renderCommonTab() {
+            // Rendu des revenus communs
+            const commonIncomes = document.getElementById('commun-incomes');
+            commonIncomes.innerHTML = renderItems(appData.users.commun.incomes, 'income', 'commun');
+            
+            // Rendu des dépenses communes
+            const commonExpenses = document.getElementById('commun-expenses');
+            if (appData.commonExpenses.length === 0) {
+                commonExpenses.innerHTML = '<div class="empty-state">Aucune dépense commune ajoutée</div>';
+            } else {
+                commonExpenses.innerHTML = appData.commonExpenses.map((expense, index) => `
+                    <div class="item">
+                        <div class="item-info">
+                            <div class="item-name">${expense.name}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">
+                                Participants: ${expense.participants.map(p => appData.users[p].name).join(', ')}
+                            </div>
+                        </div>
+                        <div class="item-actions">
+                            <span class="item-amount expense">-${expense.amount.toFixed(2)}€</span>
+                            <button class="btn btn-small btn-danger" onclick="deleteCommonExpense(${index})">×</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function renderItems(items, type, userId) {
+            if (items.length === 0) {
+                return '<div class="empty-state">Aucun élément ajouté</div>';
+            }
+            
+            return items.map((item, index) => `
+                <div class="item">
+                    <div class="item-info">
+                        <div class="item-name">${item.name}</div>
+                    </div>
+                    <div class="item-actions">
+                        <span class="item-amount ${type}">${type === 'income' ? '+' : '-'}${item.amount.toFixed(2)}€</span>
+                        <button class="btn btn-small btn-danger" onclick="deleteItem('${userId}', '${type}s', ${index})">×</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Gestion des onglets
+        function switchTab(tabId) {
+            appData.currentTab = tabId;
+            
+            // Mettre à jour les onglets actifs
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Activer le bon onglet
+            const activeTab = Array.from(document.querySelectorAll('.tab')).find(tab => 
+                tab.textContent === (tabId === 'dashboard' ? 'Tableau de bord' : 
+                                   tabId === 'commun' ? 'Commun' : 
+                                   appData.users[tabId]?.name)
+            );
+            if (activeTab) activeTab.classList.add('active');
+            
+            const activeContent = document.getElementById(tabId);
+            if (activeContent) activeContent.classList.add('active');
+            
+            // Masquer/afficher le FAB selon l'onglet
+            const fabButton = document.getElementById('fabButton');
+            if (tabId === 'dashboard') {
+                fabButton.style.display = 'none';
+            } else {
+                fabButton.style.display = 'flex';
+            }
+            
+            saveData();
+        }
+
+        function addNewTab() {
+            document.getElementById('newTabName').value = '';
+            openModal('addTabModal');
+        }
+
+        function confirmAddTab() {
+            const name = document.getElementById('newTabName').value.trim();
+            if (name) {
+                const userId = 'user_' + Date.now();
+                appData.users[userId] = {
+                    name: name,
+                    incomes: [],
+                    expenses: []
+                };
+                saveData();
+                renderApp();
+                switchTab(userId);
+                closeModal('addTabModal');
+            }
+        }
+
+        // Gestion des revenus
+        function addIncome(userId) {
+            currentUser = userId;
+            document.getElementById('incomeName').value = '';
+            document.getElementById('incomeAmount').value = '';
+            openModal('addIncomeModal');
+        }
+
+        function confirmAddIncome() {
+            const name = document.getElementById('incomeName').value.trim();
+            const amount = parseFloat(document.getElementById('incomeAmount').value);
+            
+            if (name && amount > 0) {
+                appData.users[currentUser].incomes.push({
+                    name: name,
+                    amount: amount,
+                    date: new Date().toISOString()
+                });
+                saveData();
+                renderApp();
+                closeModal('addIncomeModal');
+            }
+        }
+
+        // Gestion des dépenses
+        function addExpense(userId) {
+            currentUser = userId;
+            document.getElementById('expenseName').value = '';
+            document.getElementById('expenseAmount').value = '';
+            openModal('addExpenseModal');
+        }
+
+        function confirmAddExpense() {
+            const name = document.getElementById('expenseName').value.trim();
+            const amount = parseFloat(document.getElementById('expenseAmount').value);
+            
+            if (name && amount > 0) {
+                appData.users[currentUser].expenses.push({
+                    name: name,
+                    amount: amount,
+                    date: new Date().toISOString()
+                });
+                saveData();
+                renderApp();
+                closeModal('addExpenseModal');
+            }
+        }
+
+        // Gestion des dépenses communes
+        function addCommonExpense() {
+            document.getElementById('commonExpenseName').value = '';
+            document.getElementById('commonExpenseAmount').value = '';
+            
+            // Générer la liste des participants
+            const participantsList = document.getElementById('participantsList');
+            participantsList.innerHTML = '';
+            
+            for (const userId in appData.users) {
+                if (userId !== 'commun') {
+                    const checkbox = document.createElement('div');
+                    checkbox.className = 'participant-checkbox';
+                    checkbox.innerHTML = `
+                        <input type="checkbox" id="participant_${userId}" value="${userId}">
+                        <label for="participant_${userId}">${appData.users[userId].name}</label>
+                    `;
+                    participantsList.appendChild(checkbox);
+                }
+            }
+            
+            openModal('addCommonExpenseModal');
+        }
+
+        function confirmAddCommonExpense() {
+            const name = document.getElementById('commonExpenseName').value.trim();
+            const amount = parseFloat(document.getElementById('commonExpenseAmount').value);
+            
+            // Récupérer les participants sélectionnés
+            const participants = [];
+            document.querySelectorAll('#participantsList input[type="checkbox"]:checked').forEach(checkbox => {
+                participants.push(checkbox.value);
+            });
+            
+            if (name && amount > 0 && participants.length > 0) {
+                appData.commonExpenses.push({
+                    name: name,
+                    amount: amount,
+                    participants: participants,
+                    date: new Date().toISOString()
+                });
+                saveData();
+                renderApp();
+                closeModal('addCommonExpenseModal');
+            }
+        }
+
+        // Suppression d'un utilisateur
+        function deleteUser(userId) {
+            const userName = appData.users[userId].name;
+            confirmCallback = () => {
+                // Vérifier si l'utilisateur participe à des dépenses communes
+                const participatesInCommon = appData.commonExpenses.some(expense => 
+                    expense.participants.includes(userId)
+                );
+                
+                if (participatesInCommon) {
+                    alert(`Impossible de supprimer ${userName} car il/elle participe à des dépenses communes. Retirez d'abord sa participation aux dépenses communes.`);
+                    return;
+                }
+                
+                // Supprimer l'utilisateur
+                delete appData.users[userId];
+                
+                // Si on était sur cet onglet, retourner au tableau de bord
+                if (appData.currentTab === userId) {
+                    appData.currentTab = 'dashboard';
+                }
+                
+                saveData();
+                renderApp();
+            };
+            showConfirm(`Êtes-vous sûr de vouloir supprimer l'utilisateur "${userName}" et toutes ses données ?`);
+        }
+
+        // Suppression d'éléments
+        function deleteItem(userId, type, index) {
+            confirmCallback = () => {
+                appData.users[userId][type].splice(index, 1);
+                saveData();
+                renderApp();
+            };
+            showConfirm('Êtes-vous sûr de vouloir supprimer cet élément ?');
+        }
+
+        function deleteCommonExpense(index) {
+            confirmCallback = () => {
+                appData.commonExpenses.splice(index, 1);
+                saveData();
+                renderApp();
+            };
+            showConfirm('Êtes-vous sûr de vouloir supprimer cette dépense commune ?');
+        }
+
+        // Menu FAB
+        let fabMenuOpen = false;
+        
+        function toggleFabMenu() {
+            fabMenuOpen = !fabMenuOpen;
+            const fabMenu = document.getElementById('fabMenu');
+            const fabButton = document.getElementById('fabButton');
+            
+            if (fabMenuOpen) {
+                fabMenu.classList.add('active');
+                fabButton.style.transform = 'rotate(45deg)';
+            } else {
+                fabMenu.classList.remove('active');
+                fabButton.style.transform = 'rotate(0deg)';
+            }
+        }
+        
+        function closeFabMenu() {
+            fabMenuOpen = false;
+            document.getElementById('fabMenu').classList.remove('active');
+            document.getElementById('fabButton').style.transform = 'rotate(0deg)';
+        }
+
+        // Ajout rapide de revenu
+        function quickAddIncome() {
+            closeFabMenu();
+            if (appData.currentTab === 'dashboard' || appData.currentTab === 'commun') {
+                // Si on est sur le tableau de bord ou commun, utiliser le premier utilisateur
+                const firstUser = Object.keys(appData.users).find(id => id !== 'commun');
+                if (firstUser) {
+                    addIncome(firstUser);
+                }
+            } else {
+                addIncome(appData.currentTab);
+            }
+        }
+
+        // Ajout rapide de dépense
+        function quickAddExpense() {
+            closeFabMenu();
+            if (appData.currentTab === 'commun') {
+                addCommonExpense();
+            } else if (appData.currentTab === 'dashboard') {
+                // Si on est sur le tableau de bord, utiliser le premier utilisateur
+                const firstUser = Object.keys(appData.users).find(id => id !== 'commun');
+                if (firstUser) {
+                    addExpense(firstUser);
+                }
+            } else {
+                addExpense(appData.currentTab);
+            }
+        }
+
+        // Fermer le menu FAB en cliquant ailleurs
+        document.addEventListener('click', (e) => {
+            if (fabMenuOpen && !e.target.closest('.fab') && !e.target.closest('.fab-menu')) {
+                closeFabMenu();
+            }
+        });
+
+        // Calculatrice
+        function toggleCalculator() {
+            closeFabMenu();
+            openModal('calculatorModal');
+        }
+
+        function appendToCalc(value) {
+            if (calcExpression === '0' && value !== '.') {
+                calcExpression = value;
+            } else {
+                calcExpression += value;
+            }
+            updateCalcDisplay();
+        }
+
+        function clearCalc() {
+            calcExpression = '0';
+            updateCalcDisplay();
+        }
+
+        function deleteLastCalc() {
+            if (calcExpression.length > 1) {
+                calcExpression = calcExpression.slice(0, -1);
+            } else {
+                calcExpression = '0';
+            }
+            updateCalcDisplay();
+        }
+
+        function calculateResult() {
+            try {
+                const result = eval(calcExpression);
+                calcExpression = result.toString();
+                updateCalcDisplay();
+            } catch (e) {
+                document.getElementById('calcDisplay').textContent = 'Erreur';
+                calcExpression = '0';
+            }
+        }
+
+        function updateCalcDisplay() {
+            const display = document.getElementById('calcDisplay');
+            display.textContent = calcExpression;
+            
+            // Ajuster la taille du texte si nécessaire
+            if (calcExpression.length > 15) {
+                display.style.fontSize = '1rem';
+            } else if (calcExpression.length > 10) {
+                display.style.fontSize = '1.25rem';
+            } else {
+                display.style.fontSize = '1.5rem';
+            }
+        }
+
+        // Gestion du clavier pour la calculatrice
+        function handleCalculatorKeyboard(e) {
+            const modal = document.getElementById('calculatorModal');
+            if (!modal.classList.contains('active')) return;
+            
+            e.preventDefault();
+            
+            // Chiffres
+            if (e.key >= '0' && e.key <= '9') {
+                appendToCalc(e.key);
+            }
+            // Opérateurs
+            else if (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') {
+                appendToCalc(e.key);
+            }
+            // Point décimal
+            else if (e.key === '.' || e.key === ',') {
+                appendToCalc('.');
+            }
+            // Égal
+            else if (e.key === 'Enter' || e.key === '=') {
+                calculateResult();
+            }
+            // Effacer
+            else if (e.key === 'Escape' || e.key === 'c' || e.key === 'C') {
+                clearCalc();
+            }
+            // Supprimer dernier caractère
+            else if (e.key === 'Backspace') {
+                deleteLastCalc();
+            }
+        }
+
+        // Ajouter l'écouteur d'événements au chargement
+        document.addEventListener('keydown', handleCalculatorKeyboard);
+
+        // Thème
+        function toggleTheme() {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', newTheme);
+            appData.theme = newTheme;
+            saveData();
+        }
+
+        // Paramètres
+        function openSettings() {
+            openModal('settingsModal');
+        }
+
+        function exportData() {
+            const dataStr = JSON.stringify(appData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `depenses_export_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            closeModal('settingsModal');
+        }
+
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        try {
+                            const data = JSON.parse(event.target.result);
+                            appData = data;
+                            saveData();
+                            renderApp();
+                            closeModal('settingsModal');
+                            alert('Données importées avec succès !');
+                        } catch (error) {
+                            alert('Erreur lors de l\'importation des données');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        function confirmReset() {
+            confirmCallback = () => {
+                if (confirm('Cette action supprimera TOUTES les données. Êtes-vous vraiment sûr ?')) {
+                    appData = {
+                        users: {
+                            'commun': {
+                                name: 'Commun',
+                                incomes: [],
+                                expenses: []
+                            }
+                        },
+                        commonExpenses: [],
+                        currentTab: 'dashboard',
+                        theme: 'light'
+                    };
+                    saveData();
+                    renderApp();
+                    location.reload(); // Recharger la page pour réinitialiser complètement
+                    closeModal('settingsModal');
+                }
+            };
+            showConfirm('Voulez-vous vraiment réinitialiser toutes les données ?');
+        }
+
+        // Gestion des modals avec historique
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            // Empêcher le scroll du body
+            document.body.style.overflow = 'hidden';
+            // Ajouter un état à l'historique pour gérer le bouton retour
+            history.pushState({ modal: modalId }, '');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            // Réactiver le scroll du body
+            document.body.style.overflow = '';
+            // Si on ferme manuellement, on recule dans l'historique
+            if (history.state && history.state.modal === modalId) {
+                history.back();
+            }
+        }
+
+        function showConfirm(message) {
+            const confirmMessageElement = document.getElementById('confirmMessage');
+            if (confirmMessageElement) {
+                confirmMessageElement.textContent = message;
+                document.getElementById('confirmButton').onclick = () => {
+                    if (confirmCallback) confirmCallback();
+                    closeModal('confirmModal');
+                };
+                openModal('confirmModal');
+            } else {
+                // Fallback si l'élément n'existe pas
+                if (confirm(message) && confirmCallback) {
+                    confirmCallback();
+                }
+            }
+        }
+
+        // Gestion du bouton retour sur Android
+        window.addEventListener('popstate', (e) => {
+            const activeModal = document.querySelector('.modal.active');
+            if (activeModal) {
+                activeModal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Statistiques
+        function showStats() {
+            const statsContent = document.getElementById('statsContent');
+            
+            // Calculer les statistiques globales
+            let totalRevenue = 0;
+            let totalExpenses = 0;
+            let userStats = [];
+            
+            // Statistiques par utilisateur
+            for (const userId in appData.users) {
+                const user = appData.users[userId];
+                const userRevenue = user.incomes.reduce((sum, item) => sum + item.amount, 0);
+                const userExpenses = user.expenses.reduce((sum, item) => sum + item.amount, 0);
+                
+                // Part des dépenses communes
+                let commonShare = 0;
+                if (userId !== 'commun') {
+                    appData.commonExpenses.forEach(expense => {
+                        if (expense.participants.includes(userId)) {
+                            commonShare += expense.amount / expense.participants.length;
+                        }
+                    });
+                }
+                
+                userStats.push({
+                    name: user.name,
+                    revenue: userRevenue,
+                    expenses: userExpenses + commonShare,
+                    balance: userRevenue - userExpenses - commonShare
+                });
+                
+                totalRevenue += userRevenue;
+                totalExpenses += userExpenses + (userId === 'commun' ? 0 : commonShare);
+            }
+            
+            // Total des dépenses communes
+            const totalCommonExpenses = appData.commonExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+            
+            // Générer le HTML
+            statsContent.innerHTML = `
+                <div style="background-color: var(--bg-secondary); padding: 1rem; border-radius: 8px;">
+                    <h3 style="margin-bottom: 1rem;">Vue d'ensemble</h3>
+                    <div style="display: grid; gap: 0.5rem;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Total des revenus :</span>
+                            <span style="color: var(--success); font-weight: bold;">+${totalRevenue.toFixed(2)}€</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Total des dépenses :</span>
+                            <span style="color: var(--danger); font-weight: bold;">-${totalExpenses.toFixed(2)}€</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Dépenses communes :</span>
+                            <span style="color: var(--warning); font-weight: bold;">${totalCommonExpenses.toFixed(2)}€</span>
+                        </div>
+                        <hr style="border-color: var(--border);">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Solde global :</span>
+                            <span style="color: var(--primary); font-weight: bold; font-size: 1.25rem;">${(totalRevenue - totalExpenses).toFixed(2)}€</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="background-color: var(--bg-secondary); padding: 1rem; border-radius: 8px;">
+                    <h3 style="margin-bottom: 1rem;">Par utilisateur</h3>
+                    <div style="display: grid; gap: 0.75rem;">
+                        ${userStats.map(user => `
+                            <div style="padding: 0.5rem; background-color: var(--bg-primary); border-radius: 6px;">
+                                <strong>${user.name}</strong>
+                                <div style="display: grid; grid-template-columns: 1fr auto; gap: 0.25rem; margin-top: 0.5rem; font-size: 0.875rem;">
+                                    <span>Revenus :</span>
+                                    <span style="color: var(--success);">+${user.revenue.toFixed(2)}€</span>
+                                    <span>Dépenses :</span>
+                                    <span style="color: var(--danger);">-${user.expenses.toFixed(2)}€</span>
+                                    <span>Solde :</span>
+                                    <span style="color: var(--primary); font-weight: bold;">${user.balance.toFixed(2)}€</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div style="background-color: var(--bg-secondary); padding: 1rem; border-radius: 8px;">
+                    <h3 style="margin-bottom: 1rem;">Informations</h3>
+                    <div style="font-size: 0.875rem; color: var(--text-secondary);">
+                        <p>Nombre d'utilisateurs : ${Object.keys(appData.users).length - 1}</p>
+                        <p>Nombre de dépenses communes : ${appData.commonExpenses.length}</p>
+                        <p>Dernière sauvegarde : ${new Date().toLocaleString('fr-FR')}</p>
+                    </div>
+                </div>
+            `;
+            
+            openModal('statsModal');
+        }
+            // PWA et installation
+        function initPWA() {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./sw.js').catch(console.error);
+            }
+            
+            // Gestion de l'installation PWA
+            let deferredPrompt;
+            
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                
+                // Créer un bouton d'installation personnalisé
+                const installBtn = document.createElement('button');
+                installBtn.textContent = '📱 Installer l\'app';
+                installBtn.className = 'btn';
+                installBtn.style.position = 'fixed';
+                installBtn.style.bottom = '100px';
+                installBtn.style.right = '20px';
+                installBtn.style.zIndex = '100';
+                installBtn.onclick = async () => {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        installBtn.remove();
+                    }
+                    deferredPrompt = null;
+                };
+                document.body.appendChild(installBtn);
+            });
+        }
+    </script>
+</body>
+</html>
