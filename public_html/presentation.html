@@ -533,6 +533,90 @@
         .theme-btn[data-theme="light"] {
             background: #8b5cf6;
         }
+
+        /* Donation Popup */
+        .donation-overlay {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            animation: fadeIn 0.3s;
+        }
+
+        .donation-popup {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-primary);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: slideIn 0.3s;
+        }
+
+        .donation-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .donation-close:hover {
+            color: var(--danger);
+        }
+
+        .donation-popup h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+        }
+
+        .donation-popup p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .donation-link {
+            display: inline-flex;
+            align-items: center;
+            background: #0070ba;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .donation-link:hover {
+            background: #005ea6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 112, 186, 0.3);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -822,6 +906,19 @@
         </div>
     </footer>
 
+    <!-- Donation Popup -->
+    <div id="donationPopup" class="donation-overlay">
+        <div class="donation-popup">
+            <span id="donationClose" class="donation-close">×</span>
+            <h3>💖 Soutenez Actu & Média</h3>
+            <p>Ce projet est 100% gratuit, indépendant et sans pub.<br>Un petit don aide à le maintenir en vie !</p>
+            <a href="https://www.paypal.com/donate/?hosted_button_id=FKJPST5LWBUGG" target="_blank" class="donation-link">
+                <img src="images/paypal-icon.png" alt="PayPal" style="height:20px;vertical-align:middle;margin-right:7px;">
+                Faire un don via PayPal
+            </a>
+        </div>
+    </div>
+
     <script>
         // Theme management
         function setTheme(theme) {
@@ -882,6 +979,34 @@
                 }
             });
         });
+
+        // Donation popup management
+        const donationPopup = document.getElementById('donationPopup');
+        const donationClose = document.getElementById('donationClose');
+
+        // Show popup after 30 seconds
+        setTimeout(() => {
+            if (!localStorage.getItem('donationShown')) {
+                donationPopup.style.display = 'block';
+                localStorage.setItem('donationShown', 'true');
+                // Reset after 7 days
+                setTimeout(() => {
+                    localStorage.removeItem('donationShown');
+                }, 7 * 24 * 60 * 60 * 1000);
+            }
+        }, 30000);
+
+        // Close popup
+        donationClose.onclick = () => {
+            donationPopup.style.display = 'none';
+        };
+
+        // Close on outside click
+        donationPopup.onclick = (e) => {
+            if (e.target === donationPopup) {
+                donationPopup.style.display = 'none';
+            }
+        };
     </script>
 </body>
 </html>
