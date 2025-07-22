@@ -13,20 +13,20 @@
         }
 
         :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --primary-light: #3b82f6;
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #60a5fa;
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8fafc;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --border: #e2e8f0;
-            --shadow: rgba(0, 0, 0, 0.1);
-            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --gradient-2: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+            --bg-primary: #1f2937;
+            --bg-secondary: #111827;
+            --text-primary: #f9fafb;
+            --text-secondary: #d1d5db;
+            --border: #374151;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --gradient-1: linear-gradient(135deg, #4b5563 0%, #6b7280 100%);
+            --gradient-2: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
         }
 
         body {
@@ -54,7 +54,7 @@
             right: 0;
             bottom: 0;
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff20" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,213.3C1248,235,1344,213,1392,202.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
-            opacity: 0.1;
+            opacity: 1.1;
         }
 
         .hero-content {
@@ -336,7 +336,7 @@
         }
 
         .use-case-card {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: linear-gradient(135deg, #1b2b59 0%, #374c6d 100%);
             padding: 2rem;
             border-radius: 16px;
             text-align: center;
@@ -354,10 +354,11 @@
 
         /* Footer */
         .footer {
-            background: var(--text-primary);
+            background: #222936;
             color: white;
             padding: 3rem 0;
             text-align: center;
+            margin-bottom: 0; /* Ensure no margin */
         }
 
         .footer-content {
@@ -369,6 +370,7 @@
             gap: 2rem;
             justify-content: center;
             margin-top: 1rem;
+            flex-wrap: wrap; /* Allow wrapping on mobile */
         }
 
         .footer-links a {
@@ -382,8 +384,39 @@
             opacity: 1;
         }
 
+        /* Fix for mobile footer */
+        @media (max-width: 768px) {
+            body {
+                padding-bottom: 0;
+                margin-bottom: 0;
+            }
+            
+            .footer {
+                padding: 2rem 1rem 3rem; /* Extra bottom padding */
+            }
+            
+            .footer-links {
+                gap: 1rem;
+                padding: 0 1rem;
+            }
+            
+            .footer-links a {
+                padding: 0.5rem;
+            }
+            
+            /* Ensure last section has proper spacing */
+            .section:last-of-type {
+                padding-bottom: 3rem;
+            }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
+            html, body {
+                overflow-x: hidden;
+                position: relative;
+            }
+            
             .hero h1 {
                 font-size: 2rem;
             }
@@ -404,6 +437,18 @@
             .btn {
                 width: 100%;
                 max-width: 300px;
+            }
+            
+            /* Ensure content is not cut off */
+            .container {
+                padding: 0 1rem 2rem;
+            }
+            
+            /* Safe area for iOS devices */
+            @supports (padding-bottom: env(safe-area-inset-bottom)) {
+                .footer {
+                    padding-bottom: calc(3rem + env(safe-area-inset-bottom));
+                }
             }
         }
 
@@ -445,6 +490,56 @@
         .badge-warning {
             background: var(--warning);
             color: white;
+        }
+        /* Theme Switcher */
+        .theme-switcher {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 0.5rem;
+            box-shadow: 0 4px 12px var(--shadow);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .theme-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .theme-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-btn.active {
+            box-shadow: 0 0 0 3px var(--primary);
+        }
+
+        .theme-btn[data-theme="rouge"] {
+            background: #dc2626;
+        }
+
+        .theme-btn[data-theme="dark"] {
+            background: #4b5563;
+        }
+
+        .theme-btn[data-theme="bleuciel"] {
+            background: #0ea5e9;
+        }
+
+        .theme-btn[data-theme="light"] {
+            background: #8b5cf6;
         }
 
         /* Donation Popup */
@@ -814,30 +909,6 @@
     </div>
 
     <script>
-        // Theme management
-        function setTheme(theme) {
-            if (theme === 'default') {
-                document.body.removeAttribute('data-theme');
-            } else {
-                document.body.setAttribute('data-theme', theme);
-            }
-            
-            // Update active button
-            document.querySelectorAll('.theme-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.querySelector(`.theme-btn[data-theme="${theme}"]`).classList.add('active');
-            
-            // Save preference
-            localStorage.setItem('presentationTheme', theme);
-        }
-
-        // Load saved theme
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('presentationTheme') || 'default';
-            setTheme(savedTheme);
-        });
-
         // Animation on scroll
         const observerOptions = {
             threshold: 0.1,
@@ -888,7 +959,7 @@
                     localStorage.removeItem('donationShown');
                 }, 7 * 24 * 60 * 60 * 1000);
             }
-        }, 30000);
+        }, 20000);
 
         // Close popup
         donationClose.onclick = () => {
