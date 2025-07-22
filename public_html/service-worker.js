@@ -68,7 +68,6 @@ const STATIC_RESOURCES = [
 	'/js/cinema-widget.js',
 	'/js/visitor-tracker.js',
 	'/js/football-widget.js',
-	'/js/social-share.js',
 	'/js/ios-fixes-safe.js',
     
     // Fichiers de configuration (seulement ceux qui existent)
