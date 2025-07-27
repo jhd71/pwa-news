@@ -70,6 +70,7 @@ const STATIC_RESOURCES = [
 	'/js/football-widget.js',
 	'/js/ios-fixes-safe.js',
 	'/js/expense-manager.js',
+	'/js/auth.js',
     
     // Fichiers de configuration (seulement ceux qui existent)
     '/manifest.json',
