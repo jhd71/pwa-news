@@ -519,29 +519,6 @@ const tvSites = [
             this.tileContainer.appendChild(tile);
         });
 
- // Séparateur Applications & Outils
-        const separator4 = document.createElement('div');
-        separator4.className = 'separator';
-        separator4.innerHTML = `<h2 class="separator-text">Applications & Outils</h2>`;
-        this.tileContainer.appendChild(separator4);
-
-        // Section Applications
-        const appSites = [
-            {
-                title: '💰 Gestionnaire de Dépenses',
-                url: '#expense-manager', // URL spéciale pour gérer le clic
-                mobileUrl: '#expense-manager',
-                isDefault: true,
-                category: 'apps',
-                isExpenseManager: true // Marqueur spécial
-            }
-        ];
-
-        appSites.forEach(site => {
-            const tile = this.createTile(site);
-            this.tileContainer.appendChild(tile);
-        });
-		
         // Sites personnalisés
         try {
             // Créer le séparateur même s'il n'y a pas de sites
@@ -637,16 +614,6 @@ const tvSites = [
         return;
 	}
 
-// Gestion spéciale pour le gestionnaire de dépenses
-            if (site.isExpenseManager) {
-                if (typeof openExpenseManager !== 'undefined') {
-                    openExpenseManager();
-                } else {
-                    console.error('La fonction openExpenseManager n\'est pas définie. Assurez-vous que expense-manager.js est chargé.');
-                }
-                return;
-            }
-			
     // Gestion spéciale pour la tuile "Ajouter un site"
     if (site.isAddSite) {
         this.showAddSiteDialog();

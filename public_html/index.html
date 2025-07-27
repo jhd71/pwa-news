@@ -222,9 +222,9 @@ Actu & Média
   <div id="weather-widget">Chargement...</div>
 </div>
 <!-- Bouton Gestionnaire de dépenses -->
-<button class="tool-button" onclick="openExpenseManager()" title="Gestionnaire de dépenses familiales">
+<!-- <button class="tool-button" onclick="openExpenseManager()" title="Gestionnaire de dépenses familiales">
     <span class="material-icons">euro</span>
-</button>
+</button> -->
 <!-- Bouton Autour de moi -->
 <button class="search-button" onclick="window.open('/autour-de-moi.html', '_blank')" title="Autour de moi">
     <span class="material-icons">near_me</span>
@@ -260,11 +260,7 @@ Actu & Média
         <span class="icon">📝</span>
         <span>Proposer</span>
     </button>
-    <!-- Uniquement visible pour les admins -->
-<button class="submit-news-btn" onclick="event.stopPropagation(); showExpenseManagerStatsPopup()" style="display: none;" id="statsButton">
-    <span class="icon">📊</span>
-    <span>€</span>
-</button>
+    
     <!-- Boutons intégrés -->
     <div class="header-buttons">
         <button class="header-btn photos-btn" onclick="event.stopPropagation(); openGalleryPage();" title="Galerie Photos">
@@ -1053,49 +1049,5 @@ Actu & Média
             }
         });
     </script>
-	<script>
-// Fonction pour afficher les stats dans une popup
-function showExpenseManagerStatsPopup() {
-    const stats = getExpenseManagerStats();
-    
-    const modal = document.createElement('div');
-    modal.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: white;
-        padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        z-index: 10000;
-        max-width: 400px;
-        width: 90%;
-    `;
-    
-    modal.innerHTML = `
-        <h3 style="margin-bottom: 1rem;">📊 Stats Gestionnaire de Dépenses</h3>
-        <div style="display: grid; gap: 1rem;">
-            <div style="background: #f0f0f0; padding: 1rem; border-radius: 8px;">
-                <div style="font-size: 2rem; font-weight: bold; color: #2563eb;">${stats.total}</div>
-                <div style="color: #666;">Clics totaux</div>
-            </div>
-            <div style="background: #e8f5e9; padding: 1rem; border-radius: 8px;">
-                <div style="font-size: 1.5rem; font-weight: bold; color: #4caf50;">${stats.today}</div>
-                <div style="color: #666;">Clics aujourd'hui</div>
-            </div>
-        </div>
-        <button onclick="this.parentElement.remove()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer;">Fermer</button>
-    `;
-    
-    document.body.appendChild(modal);
-}
-
-// Afficher le bouton si admin
-if (localStorage.getItem('isAdmin') === 'true') {
-    const btn = document.getElementById('statsButton');
-    if (btn) btn.style.display = 'inline-block';
-}
-</script>
 </body>
 </html>
