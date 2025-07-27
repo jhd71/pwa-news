@@ -261,8 +261,9 @@ Actu & Média
         <span>Proposer</span>
     </button>
     <!-- Uniquement visible pour les admins -->
-<button onclick="showExpenseManagerStatsPopup()" style="display: none;" id="statsButton">
-    📊 Stats Apps
+<button class="submit-news-btn" onclick="event.stopPropagation(); showExpenseManagerStatsPopup()" style="display: none;" id="statsButton">
+    <span class="icon">📊</span>
+    <span>Stats Apps</span>
 </button>
     <!-- Boutons intégrés -->
     <div class="header-buttons">
