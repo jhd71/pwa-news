@@ -203,10 +203,6 @@
 </head>
 <body>
 <header class="app-header">
-<!-- Uniquement visible pour les admins -->
-<button onclick="showExpenseManagerStatsPopup()" style="display: none;" id="statsButton">
-    📊 Stats Apps
-</button>
     <button type="button" id="menuButton" class="menu-button" aria-label="Menu">
         <span class="material-icons">menu</span>
     </button>
@@ -264,7 +260,10 @@ Actu & Média
         <span class="icon">📝</span>
         <span>Proposer</span>
     </button>
-    
+    <!-- Uniquement visible pour les admins -->
+<button onclick="showExpenseManagerStatsPopup()" style="display: none;" id="statsButton">
+    📊 Stats Apps
+</button>
     <!-- Boutons intégrés -->
     <div class="header-buttons">
         <button class="header-btn photos-btn" onclick="event.stopPropagation(); openGalleryPage();" title="Galerie Photos">
