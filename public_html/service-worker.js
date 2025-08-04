@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v28'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v29'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -69,6 +69,7 @@ const STATIC_RESOURCES = [
 	'/js/visitor-tracker.js',
 	'/js/football-widget.js',
 	'/js/ios-fixes-safe.js',
+	'/js/expense-manager.js',
     
     // Fichiers de configuration (seulement ceux qui existent)
     '/manifest.json',
