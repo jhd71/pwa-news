@@ -68,39 +68,11 @@ Accédez à vos dépenses directement depuis votre écran d'accueil !
     
     // Stratégie d'ouverture selon le contexte
     if (isMobile) {
-        // IMPORTANT: Toujours ouvrir dans le navigateur système pour permettre l'installation
-        // même si on est déjà dans une PWA
         if (isStandalone) {
-            // Si on est dans une PWA, forcer l'ouverture dans le navigateur
-            // pour permettre l'installation du gestionnaire de dépenses
-            if (isAndroid) {
-                // Sur Android, créer un lien qui force l'ouverture dans Chrome
-                const a = document.createElement('a');
-                a.href = EXPENSE_URL;
-                a.target = '_system'; // Force l'ouverture dans le navigateur système
-                a.click();
-            } else if (isIOS) {
-                // Sur iOS, on ne peut pas forcer l'ouverture dans Safari depuis une PWA
-                // Donc on affiche des instructions
-                alert(`Pour installer le gestionnaire de dépenses :
-                
-1. Copiez cette adresse : ${EXPENSE_URL}
-2. Ouvrez Safari
-3. Collez l'adresse et validez
-4. Appuyez sur Partager ⬆️ puis "Sur l'écran d'accueil"`);
-                
-                // Copier l'URL dans le presse-papier si possible
-                if (navigator.clipboard) {
-                    navigator.clipboard.writeText(EXPENSE_URL).then(() => {
-                        console.log('URL copiée dans le presse-papier');
-                    });
-                }
-            } else {
-                // Fallback : ouvrir normalement
-                window.open(EXPENSE_URL, '_blank');
-            }
+            // Dans une PWA, ouvrir dans la même fenêtre
+            window.location.href = EXPENSE_URL;
         } else {
-            // Sur mobile web, rediriger normalement
+            // Sur mobile web, rediriger (permettra de lancer la PWA si installée)
             window.location.href = EXPENSE_URL;
             
             // Proposer l'installation après redirection
