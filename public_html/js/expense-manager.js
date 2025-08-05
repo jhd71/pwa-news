@@ -4,96 +4,15 @@
  * Ouvre le gestionnaire de dépenses avec détection intelligente du device
  */
 function openExpenseManager() {
-    // Configuration
-    const EXPENSE_URL = 'https://depenses.actuetmedia.fr/';
-    const IOS_TIP_KEY = 'iosExpenseInstallTipShown';
-    const ANDROID_TIP_KEY = 'androidExpenseInstallTipShown';
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
-    // Détection du device et du navigateur
-    const userAgent = navigator.userAgent;
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
-    const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-    const isAndroid = /Android/.test(userAgent);
-    const isIOSSafari = isIOS && /Safari/.test(userAgent) && !/Chrome|CriOS|FxiOS/.test(userAgent);
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
-                        window.navigator.standalone || 
-                        document.referrer.includes('android-app://');
-    
-    // Logging pour debug
-    console.log('📊 Gestionnaire de dépenses - Ouverture', {
-        mobile: isMobile,
-        ios: isIOS,
-        android: isAndroid,
-        standalone: isStandalone
-    });
-    
-    // Fonction pour afficher les instructions d'installation
-    function showInstallInstructions() {
-        if (isIOSSafari && !localStorage.getItem(IOS_TIP_KEY)) {
-            setTimeout(() => {
-                const message = `
-📱 Installer l'application sur iPhone/iPad :
-
-1. Appuyez sur le bouton Partager ⬆️
-2. Faites défiler et choisissez "Sur l'écran d'accueil"
-3. Appuyez sur "Ajouter"
-
-Vous pourrez ensuite accéder à vos dépenses comme une vraie app !
-                `.trim();
-                
-                if (confirm(message)) {
-                    localStorage.setItem(IOS_TIP_KEY, 'true');
-                }
-            }, 3000);
-        } else if (isAndroid && !localStorage.getItem(ANDROID_TIP_KEY)) {
-            // Vérifier si Chrome affiche déjà sa bannière d'installation
-            setTimeout(() => {
-                if (!document.querySelector('.install-prompt')) {
-                    const message = `
-📱 Installer l'application sur Android :
-
-Une bannière d'installation devrait apparaître en bas de l'écran.
-Sinon : Menu (3 points) → "Installer l'application"
-
-Accédez à vos dépenses directement depuis votre écran d'accueil !
-                    `.trim();
-                    
-                    if (confirm(message)) {
-                        localStorage.setItem(ANDROID_TIP_KEY, 'true');
-                    }
-                }
-            }, 5000);
-        }
-    }
-    
-    // Stratégie d'ouverture selon le contexte
-    if (isMobile) {
-        if (isStandalone) {
-            // Dans une PWA, ouvrir dans la même fenêtre
-            window.location.href = EXPENSE_URL;
-        } else {
-            // Sur mobile web, rediriger (permettra de lancer la PWA si installée)
-            window.location.href = EXPENSE_URL;
-            
-            // Proposer l'installation après redirection
-            showInstallInstructions();
-        }
+    if (isMobile && window.matchMedia('(display-mode: standalone)').matches) {
+        // Si on est dans une PWA sur mobile, ouvrir la page d'installation
+        window.location.href = '/installer-gestionnaire.html';
     } else {
-        // Desktop : ouvrir dans un nouvel onglet
-        const newWindow = window.open(EXPENSE_URL, '_blank', 'noopener,noreferrer');
-        
-        // Gérer le cas où les popups sont bloqués
-        if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-            // Créer une notification stylée au lieu d'une alerte
-            showDesktopNotification();
-        }
+        // Sinon, ouvrir directement
+        window.open('https://depenses.actuetmedia.fr/', '_blank');
     }
-    
-    // Analytics (si disponible)
-    trackEvent('expense_manager_open', {
-        device: isMobile ? 'mobile' : 'desktop',
-        standalone: isStandalone
-    });
 }
 
 /**
