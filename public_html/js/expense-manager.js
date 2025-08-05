@@ -4,15 +4,124 @@
  * Ouvre le gestionnaire de dépenses avec détection intelligente du device
  */
 function openExpenseManager() {
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    // Configuration
+    const EXPENSE_URL = 'https://depenses.actuetmedia.fr/';
+    const IOS_TIP_KEY = 'iosExpenseInstallTipShown';
+    const ANDROID_TIP_KEY = 'androidExpenseInstallTipShown';
     
-    if (isMobile && window.matchMedia('(display-mode: standalone)').matches) {
-        // Si on est dans une PWA sur mobile, ouvrir la page d'installation
-        window.location.href = '/installer-gestionnaire.html';
-    } else {
-        // Sinon, ouvrir directement
-        window.open('https://depenses.actuetmedia.fr/', '_blank');
+    // Détection du device et du navigateur
+    const userAgent = navigator.userAgent;
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+    const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+    const isAndroid = /Android/.test(userAgent);
+    const isIOSSafari = isIOS && /Safari/.test(userAgent) && !/Chrome|CriOS|FxiOS/.test(userAgent);
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                        window.navigator.standalone || 
+                        document.referrer.includes('android-app://');
+    
+    // Logging pour debug
+    console.log('📊 Gestionnaire de dépenses - Ouverture', {
+        mobile: isMobile,
+        ios: isIOS,
+        android: isAndroid,
+        standalone: isStandalone
+    });
+    
+    // Fonction pour afficher les instructions d'installation
+    function showInstallInstructions() {
+        if (isIOSSafari && !localStorage.getItem(IOS_TIP_KEY)) {
+            setTimeout(() => {
+                const message = `
+📱 Installer l'application sur iPhone/iPad :
+
+1. Appuyez sur le bouton Partager ⬆️
+2. Faites défiler et choisissez "Sur l'écran d'accueil"
+3. Appuyez sur "Ajouter"
+
+Vous pourrez ensuite accéder à vos dépenses comme une vraie app !
+                `.trim();
+                
+                if (confirm(message)) {
+                    localStorage.setItem(IOS_TIP_KEY, 'true');
+                }
+            }, 3000);
+        } else if (isAndroid && !localStorage.getItem(ANDROID_TIP_KEY)) {
+            // Vérifier si Chrome affiche déjà sa bannière d'installation
+            setTimeout(() => {
+                if (!document.querySelector('.install-prompt')) {
+                    const message = `
+📱 Installer l'application sur Android :
+
+Une bannière d'installation devrait apparaître en bas de l'écran.
+Sinon : Menu (3 points) → "Installer l'application"
+
+Accédez à vos dépenses directement depuis votre écran d'accueil !
+                    `.trim();
+                    
+                    if (confirm(message)) {
+                        localStorage.setItem(ANDROID_TIP_KEY, 'true');
+                    }
+                }
+            }, 5000);
+        }
     }
+    
+    // Stratégie d'ouverture selon le contexte
+    if (isMobile) {
+        // IMPORTANT: Toujours ouvrir dans le navigateur système pour permettre l'installation
+        // même si on est déjà dans une PWA
+        if (isStandalone) {
+            // Si on est dans une PWA, forcer l'ouverture dans le navigateur
+            // pour permettre l'installation du gestionnaire de dépenses
+            if (isAndroid) {
+                // Sur Android, créer un lien qui force l'ouverture dans Chrome
+                const a = document.createElement('a');
+                a.href = EXPENSE_URL;
+                a.target = '_system'; // Force l'ouverture dans le navigateur système
+                a.click();
+            } else if (isIOS) {
+                // Sur iOS, on ne peut pas forcer l'ouverture dans Safari depuis une PWA
+                // Donc on affiche des instructions
+                alert(`Pour installer le gestionnaire de dépenses :
+                
+1. Copiez cette adresse : ${EXPENSE_URL}
+2. Ouvrez Safari
+3. Collez l'adresse et validez
+4. Appuyez sur Partager ⬆️ puis "Sur l'écran d'accueil"`);
+                
+                // Copier l'URL dans le presse-papier si possible
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(EXPENSE_URL).then(() => {
+                        console.log('URL copiée dans le presse-papier');
+                    });
+                }
+            } else {
+                // Fallback : ouvrir normalement
+                window.open(EXPENSE_URL, '_blank');
+            }
+        } else {
+            // Sur mobile web, rediriger normalement
+            window.location.href = EXPENSE_URL;
+            
+            // Proposer l'installation après redirection
+            showInstallInstructions();
+        }
+    } else {
+        // Desktop : ouvrir dans un nouvel onglet
+        const newWindow = window.open(EXPENSE_URL, '_blank', 'noopener,noreferrer');
+        
+        // Gérer le cas où les popups sont bloqués
+        if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+            // Créer une notification stylée au lieu d'une alerte
+            showDesktopNotification();
+        }
+    }
+    
+    // Analytics (si disponible)
+    trackEvent('expense_manager_open', {
+        device: isMobile ? 'mobile' : 'desktop',
+        standalone: isStandalone
+    });
 }
 
 /**
