@@ -61,28 +61,7 @@
             // Améliorer le bouton dans la barre du bas
             this.enhanceBottomButton();
 			
-			// Arrêter l'animation de fumée après 20 secondes
-	setTimeout(() => {
-    const donateBtn = document.getElementById('donateButton');
-    if (donateBtn) {
-        donateBtn.classList.add('smoke-stopped');
-        console.log('Animation de fumée arrêtée');
-    }
-	}, 20000); // 20 secondes
-
-	// Réactiver la fumée pendant 5 secondes au survol
-	const donateBtn = document.getElementById('donateButton');
-	if (donateBtn) {
-    donateBtn.addEventListener('mouseenter', () => {
-        if (donateBtn.classList.contains('smoke-stopped')) {
-            donateBtn.classList.remove('smoke-stopped');
-            setTimeout(() => {
-                donateBtn.classList.add('smoke-stopped');
-            }, 5000); // Réarrêter après 5 secondes
-        }
-    });
-}
-        }
+			}
 
         setupEventListeners() {
             // Bouton de fermeture
