@@ -582,34 +582,32 @@
 }
 
 /* ========================================
-   BOUTON CAFÉ - STYLES OPTIMISÉS
+   BOUTON CAFÉ - VERSION COLORÉE MODERNE
    ======================================== */
 
 /* Style de base du bouton café */
 #donateButton {
     position: relative;
     transition: all 0.3s ease;
-    /* Fond subtil couleur café */
-    background: linear-gradient(135deg, rgba(121, 85, 72, 0.08), rgba(161, 136, 127, 0.05));
     overflow: visible;
 }
 
-/* Icône café colorée */
+/* Icône café - couleur dynamique selon le thème */
 #donateButton .material-icons {
-    color: #6F4E37;
+    color: var(--primary-color, #e53e3e);
     transition: all 0.3s ease;
     font-size: 20px;
 }
 
-/* Effet au survol */
+/* Effet au survol - plus lumineux */
 #donateButton:hover {
-    background: linear-gradient(135deg, rgba(121, 85, 72, 0.2), rgba(188, 170, 164, 0.15));
+    background: linear-gradient(135deg, rgba(229, 62, 62, 0.1), rgba(255, 107, 107, 0.08));
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 4px 12px rgba(121, 85, 72, 0.2);
+    box-shadow: 0 4px 12px rgba(229, 62, 62, 0.15);
 }
 
 #donateButton:hover .material-icons {
-    color: #5D4037;
+    color: #ff5252;
     transform: rotate(-10deg) scale(1.1);
 }
 
@@ -624,7 +622,7 @@
     animation: coffee-shake 0.5s ease-in-out;
 }
 
-/* Vapeur de café au survol */
+/* Vapeur de café stylisée */
 #donateButton::before {
     content: "";
     position: absolute;
@@ -639,10 +637,10 @@
 }
 
 #donateButton:hover::before {
-    content: "☁";
-    opacity: 0.4;
-    color: #8D6E63;
-    font-size: 14px;
+    content: "♨";
+    opacity: 0.6;
+    color: #ff5252;
+    font-size: 16px;
     animation: steam-rise 2s ease-out infinite;
 }
 
@@ -652,7 +650,7 @@
         opacity: 0;
     }
     30% {
-        opacity: 0.4;
+        opacity: 0.6;
     }
     100% {
         transform: translateX(-50%) translateY(-20px) scale(1.2);
@@ -660,117 +658,160 @@
     }
 }
 
-/* Animation pulse occasionnelle */
+/* Animation pulse occasionnelle - rouge moderne */
 @keyframes pulse-coffee {
     0% {
-        box-shadow: 0 0 0 0 rgba(121, 85, 72, 0.6);
+        box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.6);
     }
     50% {
-        box-shadow: 0 0 0 8px rgba(121, 85, 72, 0);
+        box-shadow: 0 0 0 8px rgba(229, 62, 62, 0);
     }
     100% {
-        box-shadow: 0 0 0 0 rgba(121, 85, 72, 0);
+        box-shadow: 0 0 0 0 rgba(229, 62, 62, 0);
     }
 }
 
 .pulse-animation {
     animation: pulse-coffee 2s ease-out 3;
-    background: linear-gradient(135deg, rgba(121, 85, 72, 0.15), rgba(161, 136, 127, 0.1)) !important;
+    background: linear-gradient(135deg, rgba(229, 62, 62, 0.08), rgba(255, 107, 107, 0.05)) !important;
 }
 
 /* Effet "café chaud" pour visiteurs réguliers */
 #donateButton.coffee-hot {
-    background: linear-gradient(135deg, rgba(121, 85, 72, 0.12), rgba(188, 170, 164, 0.08));
+    background: linear-gradient(135deg, rgba(229, 62, 62, 0.05), rgba(255, 107, 107, 0.03));
 }
 
-#donateButton.coffee-hot::after {
-    content: "☁";
+#donateButton.coffee-hot .material-icons {
+    color: #f44336;
+}
+
+/* Petits coeurs flottants au survol (effet sympathique) */
+#donateButton.coffee-hot:hover::after {
+    content: "❤";
     position: absolute;
-    top: -10px;
-    left: calc(50% - 5px);
+    top: -15px;
+    right: 10px;
     font-size: 10px;
-    color: #8D6E63;
+    color: #ff5252;
     opacity: 0;
-    animation: continuous-steam 4s ease-out infinite;
+    animation: heart-float 1.5s ease-out;
     pointer-events: none;
 }
 
-@keyframes continuous-steam {
-    0%, 100% {
-        transform: translateY(0) translateX(0);
+@keyframes heart-float {
+    0% {
+        transform: translateY(0) scale(0);
         opacity: 0;
     }
-    20% {
-        opacity: 0.3;
-    }
     50% {
-        transform: translateY(-8px) translateX(2px);
-        opacity: 0.2;
+        opacity: 0.8;
     }
-    80% {
-        transform: translateY(-15px) translateX(-2px);
+    100% {
+        transform: translateY(-20px) scale(1);
         opacity: 0;
     }
 }
 
-/* Badge "NOUVEAU" pour première visite */
+/* Badge "NOUVEAU" moderne */
 #donateButton.first-visit::before {
-    content: "NEW";
+    content: "✨";
     position: absolute;
-    top: -8px;
-    right: -8px;
-    background: linear-gradient(135deg, #FF6B6B, #FF8E53);
-    color: white;
-    font-size: 9px;
-    padding: 2px 5px;
-    border-radius: 10px;
-    font-weight: bold;
-    animation: badge-bounce 2s ease-in-out infinite;
+    top: -5px;
+    right: -5px;
+    font-size: 14px;
+    animation: sparkle 2s ease-in-out infinite;
     z-index: 1;
 }
 
-@keyframes badge-bounce {
-    0%, 100% { transform: scale(1) rotate(0deg); }
-    50% { transform: scale(1.1) rotate(5deg); }
+@keyframes sparkle {
+    0%, 100% { 
+        transform: scale(1) rotate(0deg);
+        opacity: 0.8;
+    }
+    50% { 
+        transform: scale(1.2) rotate(180deg);
+        opacity: 1;
+    }
 }
 
 /* Animation "glow" subtile */
 @keyframes subtle-coffee-glow {
     0%, 100% { 
-        box-shadow: 0 2px 4px rgba(121, 85, 72, 0.1);
-        background: linear-gradient(135deg, rgba(121, 85, 72, 0.08), rgba(161, 136, 127, 0.05));
+        box-shadow: 0 2px 4px rgba(229, 62, 62, 0.1);
     }
     50% { 
-        box-shadow: 0 2px 12px rgba(121, 85, 72, 0.25);
-        background: linear-gradient(135deg, rgba(121, 85, 72, 0.12), rgba(161, 136, 127, 0.08));
+        box-shadow: 0 2px 12px rgba(229, 62, 62, 0.2);
     }
 }
 
 /* État actif/pressé */
 #donateButton:active {
     transform: scale(0.98);
-    box-shadow: 0 1px 3px rgba(121, 85, 72, 0.2);
+    box-shadow: 0 1px 3px rgba(229, 62, 62, 0.2);
 }
 
-/* Adaptation mode sombre */
+/* ========================================
+   ADAPTATION PAR THÈME
+   ======================================== */
+
+/* Thème rouge (défaut) */
+[data-theme="rouge"] #donateButton .material-icons {
+    color: #dc3545;
+}
+
+[data-theme="rouge"] #donateButton:hover .material-icons {
+    color: #ff5252;
+}
+
+/* Thème sombre */
 [data-theme="dark"] #donateButton {
-    background: linear-gradient(135deg, rgba(121, 85, 72, 0.2), rgba(161, 136, 127, 0.15));
+    background: rgba(255, 255, 255, 0.05);
 }
 
 [data-theme="dark"] #donateButton:hover {
-    background: linear-gradient(135deg, rgba(121, 85, 72, 0.3), rgba(188, 170, 164, 0.25));
-    box-shadow: 0 4px 12px rgba(121, 85, 72, 0.4);
+    background: rgba(255, 82, 82, 0.15);
+    box-shadow: 0 4px 12px rgba(255, 82, 82, 0.3);
 }
 
 [data-theme="dark"] #donateButton .material-icons {
-    color: #A1887F;
+    color: #ff6b6b;
 }
 
 [data-theme="dark"] #donateButton:hover .material-icons {
-    color: #BCAAA4;
+    color: #ff8787;
 }
 
-/* Responsive mobile */
+/* Thème bleu ciel */
+[data-theme="bleuciel"] #donateButton .material-icons {
+    color: #17a2b8;
+}
+
+[data-theme="bleuciel"] #donateButton:hover {
+    background: linear-gradient(135deg, rgba(23, 162, 184, 0.1), rgba(32, 201, 151, 0.08));
+}
+
+[data-theme="bleuciel"] #donateButton:hover .material-icons {
+    color: #20c997;
+}
+
+/* Thème violet */
+[data-theme="light"] #donateButton .material-icons {
+    color: #6f42c1;
+}
+
+[data-theme="light"] #donateButton:hover {
+    background: linear-gradient(135deg, rgba(111, 66, 193, 0.1), rgba(232, 62, 140, 0.08));
+}
+
+[data-theme="light"] #donateButton:hover .material-icons {
+    color: #e83e8c;
+}
+
+/* ========================================
+   RESPONSIVE & ACCESSIBILITÉ
+   ======================================== */
+
+/* Mobile */
 @media (max-width: 768px) {
     #donateButton {
         padding: 10px;
@@ -780,27 +821,35 @@
         font-size: 22px;
     }
     
-    /* Désactiver certains effets sur mobile pour les performances */
-    #donateButton::before,
-    #donateButton::after {
-        display: none;
+    /* Garder les effets mais simplifiés sur mobile */
+    #donateButton::before {
+        display: none; /* Pas de vapeur sur mobile */
+    }
+    
+    #donateButton:active {
+        transform: scale(0.95);
+        background: rgba(229, 62, 62, 0.1);
     }
 }
 
-/* Accessibilité - Focus visible */
+/* Focus pour accessibilité */
 #donateButton:focus-visible {
-    outline: 2px solid #6F4E37;
+    outline: 2px solid var(--primary-color, #e53e3e);
     outline-offset: 2px;
 }
 
-/* Message tooltip au survol (optionnel) */
-#donateButton[title]::after {
-    content: attr(title);
+/* Tooltip optionnel */
+#donateButton {
+    position: relative;
+}
+
+#donateButton[data-tooltip]::after {
+    content: "Offrez-nous un café ☕";
     position: absolute;
     bottom: 110%;
     left: 50%;
     transform: translateX(-50%) scale(0);
-    background: #5D4037;
+    background: #333;
     color: white;
     padding: 6px 12px;
     border-radius: 6px;
@@ -812,7 +861,22 @@
     z-index: 1000;
 }
 
-#donateButton[title]:hover::after {
+#donateButton:hover[data-tooltip]::after {
     transform: translateX(-50%) scale(1);
     opacity: 0.95;
+}
+
+/* Effet spécial pour les fêtes (activable) */
+.holiday-mode #donateButton::before {
+    content: "🎄";
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    font-size: 12px;
+    animation: rotate 3s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
