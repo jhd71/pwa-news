@@ -880,3 +880,17 @@
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
+
+/* Version gradient arc-en-ciel (très moderne) */
+#donateButton.rainbow {
+    background: linear-gradient(135deg, 
+        rgba(255, 0, 150, 0.1), 
+        rgba(0, 255, 255, 0.1));
+}
+
+#donateButton.rainbow .material-icons {
+    background: linear-gradient(135deg, #ff0096, #00ffff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
