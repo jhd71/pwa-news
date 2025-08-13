@@ -710,16 +710,56 @@ Actu & Média
 <script src="js/background-selector.js"></script>
 <script src="js/custom-background-manager.js"></script>
 <!-- Popup de don -->
- <div id="donationPopup" class="donation-overlay">
-  <div class="donation-popup">
-    <span id="donationClose" class="donation-close">×</span>
-    <h3>💖 Soutenez Actu & Média</h3>
-    <p>Ce projet est 100% gratuit, indépendant et sans pub.<br>Un petit don aide à le maintenir en vie !</p>
-    <a href="https://www.paypal.com/donate/?hosted_button_id=FKJPST5LWBUGG" target="_blank" class="donation-link">
-      <img src="images/paypal-icon.png" alt="PayPal" style="height:20px;vertical-align:middle;margin-right:7px;">
-      Faire un don via PayPal
-    </a>
-  </div>
+<!-- Popup de don améliorée -->
+<div id="donationPopup" class="donation-overlay">
+    <div class="donation-popup">
+        <span id="donationClose" class="donation-close">×</span>
+        
+        <!-- En-tête avec animation -->
+        <div class="donation-header">
+            <span class="donation-emoji">🙏</span>
+            <h3>Aidez Actu & Média à rester indépendant</h3>
+        </div>
+        
+        <!-- Corps du message -->
+        <div class="donation-body">
+            <p class="donation-main-text">
+                <strong>Depuis 8 mois</strong>, nous informons gratuitement 
+                les habitants de Montceau-les-Mines.
+            </p>
+            
+            <div class="donation-features">
+                <div class="feature">✅ Sans publicité</div>
+                <div class="feature">✅ 100% gratuit</div>
+                <div class="feature">✅ Indépendant</div>
+            </div>
+            
+            <p class="donation-appeal">
+                Votre soutien, même modeste, nous aide à maintenir 
+                ce service local essentiel.
+            </p>
+        </div>
+        
+        <!-- Boutons d'action -->
+        <div class="donation-actions">
+            <a href="https://www.paypal.com/donate/?hosted_button_id=FKJPST5LWBUGG" 
+               target="_blank" 
+               class="donation-link primary">
+                <img src="images/paypal-icon.png" alt="PayPal" 
+                     style="height:20px;vertical-align:middle;margin-right:7px;">
+                <span>Faire un don sécurisé</span>
+            </a>
+            
+            <button class="donation-later" onclick="window.donationManager.hidePopup(true)">
+                Plus tard
+            </button>
+        </div>
+        
+        <!-- Footer discret -->
+        <div class="donation-footer">
+            <small>🔒 Paiement 100% sécurisé via PayPal</small>
+        </div>
+    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <div id="submitModal" class="submit-modal">
