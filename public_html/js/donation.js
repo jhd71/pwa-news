@@ -240,6 +240,39 @@
     // Créer une instance globale
     window.donationManager = new DonationManager();
 
+// Amélioration dynamique du bouton
+    function updateDonateButton() {
+        const donateBtn = document.getElementById('donateButton');
+        if (!donateBtn) return;
+        
+        const visits = parseInt(localStorage.getItem('am_visitor_count') || '0');
+        const icon = donateBtn.querySelector('.material-icons');
+        const text = donateBtn.querySelector('span:last-child');
+        
+        // Changer selon le nombre de visites
+        if (visits === 1) {
+            // Première visite : discret
+            if (icon) icon.textContent = 'favorite_border';
+            if (text) text.textContent = 'Soutenir';
+        } else if (visits >= 3 && visits < 10) {
+            // Visiteur qui revient
+            if (icon) icon.textContent = 'favorite';
+            if (text) text.textContent = 'Nous aider';
+        } else if (visits >= 10) {
+            // Visiteur régulier
+            if (icon) icon.textContent = 'volunteer_activism';
+            if (text) text.textContent = 'Faire un don';
+        }
+        
+        // Animation occasionnelle pour attirer l'attention (subtile)
+        if (visits === 5 || visits === 15 || visits === 30) {
+            donateBtn.style.animation = 'subtle-glow 2s ease-in-out 3';
+        }
+    }
+
+    // Appeler la fonction au chargement
+    setTimeout(updateDonateButton, 1000);
+	
     // Ajouter des styles pour l'animation pulse
     const style = document.createElement('style');
     style.textContent = `
