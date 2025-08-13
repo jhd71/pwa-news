@@ -364,7 +364,6 @@
 }
 
 .donation-main-text strong {
-    color: var(--primary-color, #0070ba);
     font-weight: 600;
 }
 
@@ -397,6 +396,7 @@
 .donation-actions {
     display: flex;
     flex-direction: column;
+	align-items: center;
     gap: 10px;
     margin-top: 20px;
 }
