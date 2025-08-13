@@ -587,7 +587,6 @@
 
 #donateButton {
     position: relative;
-    background: rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
 }
 
@@ -651,10 +650,6 @@
 
 /* Mobile */
 @media (max-width: 768px) {
-    #donateButton {
-        background: rgba(0, 0, 0, 0.08);
-    }
-    
     #donateButton:active {
         transform: scale(0.95);
         background: rgba(229, 62, 62, 0.2);
