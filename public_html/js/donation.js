@@ -201,32 +201,33 @@
         }
 
         enhanceBottomButton() {
-            const donateBtn = document.getElementById('donateButton');
-            if (!donateBtn) return;
-
-            const visits = parseInt(localStorage.getItem(CONFIG.storageKeys.visits) || '0');
-            
-            // Après 5 visites, faire pulser le bouton occasionnellement
-            if (visits >= 5 && visits % 3 === 0) {
-                donateBtn.classList.add('pulse-animation');
-                
-                // Retirer l'animation après 5 secondes
-                setTimeout(() => {
-                    donateBtn.classList.remove('pulse-animation');
-                }, 5000);
-            }
-
-            // Changer le texte selon le contexte
-            if (visits === 1) {
-                // Première visite : ne rien changer
-            } else if (visits >= 10) {
-                // Visiteur régulier
-                const span = donateBtn.querySelector('span:last-child');
-                if (span) {
-                    span.textContent = 'Nous soutenir';
-                }
-            }
-        }
+    const donateBtn = document.getElementById('donateButton');
+    if (!donateBtn) return;
+    
+    const visits = parseInt(localStorage.getItem(CONFIG.storageKeys.visits) || '0');
+    
+    // Forcer toujours l'icône café et le texte
+    const icon = donateBtn.querySelector('.material-icons');
+    const text = donateBtn.querySelector('span:last-child');
+    
+    if (icon) icon.textContent = 'local_cafe';
+    if (text) text.textContent = 'Un café ?';
+    
+    // Animation pulse occasionnelle pour attirer l'attention
+    if (visits >= 5 && visits % 3 === 0) {
+        donateBtn.classList.add('pulse-animation');
+        
+        // Retirer l'animation après 5 secondes
+        setTimeout(() => {
+            donateBtn.classList.remove('pulse-animation');
+        }, 5000);
+    }
+    
+    // Ajouter une petite vapeur permanente après 10 visites (classe CSS)
+    if (visits >= 10) {
+        donateBtn.classList.add('coffee-hot');
+    }
+}
 
         // Méthode pour réinitialiser (utile pour les tests)
         reset() {
@@ -239,39 +240,6 @@
 
     // Créer une instance globale
     window.donationManager = new DonationManager();
-
-// Amélioration dynamique du bouton
-    function updateDonateButton() {
-        const donateBtn = document.getElementById('donateButton');
-        if (!donateBtn) return;
-        
-        const visits = parseInt(localStorage.getItem('am_visitor_count') || '0');
-        const icon = donateBtn.querySelector('.material-icons');
-        const text = donateBtn.querySelector('span:last-child');
-        
-        // Changer selon le nombre de visites
-        if (visits === 1) {
-            // Première visite : discret
-            if (icon) icon.textContent = 'favorite_border';
-            if (text) text.textContent = 'Soutenir';
-        } else if (visits >= 3 && visits < 10) {
-            // Visiteur qui revient
-            if (icon) icon.textContent = 'favorite';
-            if (text) text.textContent = 'Nous aider';
-        } else if (visits >= 10) {
-            // Visiteur régulier
-            if (icon) icon.textContent = 'volunteer_activism';
-            if (text) text.textContent = 'Faire un don';
-        }
-        
-        // Animation occasionnelle pour attirer l'attention (subtile)
-        if (visits === 5 || visits === 15 || visits === 30) {
-            donateBtn.style.animation = 'subtle-glow 2s ease-in-out 3';
-        }
-    }
-
-    // Appeler la fonction au chargement
-    setTimeout(updateDonateButton, 1000);
 	
     // Ajouter des styles pour l'animation pulse
     const style = document.createElement('style');
