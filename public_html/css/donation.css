@@ -582,7 +582,7 @@
 }
 
 /* ========================================
-   BOUTON CAFÉ - VERSION COLORÉE MODERNE
+   BOUTON CAFÉ - ICÔNE BLANCHE + FUMÉE ANIMÉE
    ======================================== */
 
 /* Style de base du bouton café */
@@ -590,28 +590,133 @@
     position: relative;
     transition: all 0.3s ease;
     overflow: visible;
+    /* Fond légèrement teinté pour contraste */
+    background: rgba(0, 0, 0, 0.05);
 }
 
-/* Icône café - couleur dynamique selon le thème */
+/* Icône café TOUJOURS BLANCHE */
 #donateButton .material-icons {
-    color: var(--primary-color, #e53e3e);
+    color: #FFFFFF !important;
     transition: all 0.3s ease;
     font-size: 20px;
+    /* Ombre pour visibilité sur fond clair */
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 2;
 }
 
-/* Effet au survol - plus lumineux */
+/* Effet au survol */
 #donateButton:hover {
-    background: linear-gradient(135deg, rgba(229, 62, 62, 0.1), rgba(255, 107, 107, 0.08));
+    background: rgba(229, 62, 62, 0.15);
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 4px 12px rgba(229, 62, 62, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 #donateButton:hover .material-icons {
-    color: #ff5252;
     transform: rotate(-10deg) scale(1.1);
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
 }
 
-/* Animation de la tasse qui remue au survol */
+/* ========================================
+   ANIMATION FUMÉE AUTOMATIQUE
+   ======================================== */
+
+/* Première vague de fumée */
+#donateButton::before {
+    content: "°";
+    position: absolute;
+    top: 2px;
+    left: calc(50% - 3px);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 16px;
+    font-weight: bold;
+    animation: smoke-1 4s ease-out infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Deuxième vague de fumée (décalée) */
+#donateButton::after {
+    content: "°";
+    position: absolute;
+    top: 2px;
+    left: calc(50% + 3px);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+    font-weight: bold;
+    animation: smoke-2 4s ease-out infinite;
+    animation-delay: 1s;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Animation fumée 1 */
+@keyframes smoke-1 {
+    0% {
+        transform: translateY(0) translateX(0) scale(0.5);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.8;
+    }
+    30% {
+        transform: translateY(-8px) translateX(-2px) scale(1);
+        opacity: 0.6;
+    }
+    60% {
+        transform: translateY(-16px) translateX(2px) scale(1.2);
+        opacity: 0.3;
+    }
+    100% {
+        transform: translateY(-24px) translateX(-1px) scale(1.4);
+        opacity: 0;
+    }
+}
+
+/* Animation fumée 2 */
+@keyframes smoke-2 {
+    0% {
+        transform: translateY(0) translateX(0) scale(0.5);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.7;
+    }
+    30% {
+        transform: translateY(-10px) translateX(2px) scale(1);
+        opacity: 0.5;
+    }
+    60% {
+        transform: translateY(-18px) translateX(-3px) scale(1.2);
+        opacity: 0.2;
+    }
+    100% {
+        transform: translateY(-26px) translateX(1px) scale(1.4);
+        opacity: 0;
+    }
+}
+
+/* Troisième particule de fumée (mobile friendly) */
+.coffee-hot::before {
+    animation: smoke-3 4s ease-out infinite !important;
+    animation-delay: 2s !important;
+}
+
+@keyframes smoke-3 {
+    0% {
+        transform: translateY(0) scale(0.3);
+        opacity: 0;
+    }
+    15% {
+        opacity: 0.9;
+    }
+    100% {
+        transform: translateY(-30px) scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* Animation de la tasse au survol */
 @keyframes coffee-shake {
     0%, 100% { transform: rotate(-10deg) scale(1.1); }
     25% { transform: rotate(5deg) scale(1.15); }
@@ -622,275 +727,161 @@
     animation: coffee-shake 0.5s ease-in-out;
 }
 
-/* Vapeur de café stylisée */
-#donateButton::before {
-    content: "";
-    position: absolute;
-    top: -3px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 20px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-}
-
-#donateButton:hover::before {
-    content: "♨";
-    opacity: 0.6;
-    color: #ff5252;
-    font-size: 16px;
-    animation: steam-rise 2s ease-out infinite;
-}
-
-@keyframes steam-rise {
-    0% {
-        transform: translateX(-50%) translateY(0) scale(0.8);
-        opacity: 0;
-    }
-    30% {
-        opacity: 0.6;
-    }
-    100% {
-        transform: translateX(-50%) translateY(-20px) scale(1.2);
-        opacity: 0;
-    }
-}
-
-/* Animation pulse occasionnelle - rouge moderne */
+/* Animation pulse occasionnelle */
 @keyframes pulse-coffee {
     0% {
-        box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.6);
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
     }
     50% {
-        box-shadow: 0 0 0 8px rgba(229, 62, 62, 0);
+        box-shadow: 0 0 0 8px rgba(255, 255, 255, 0);
     }
     100% {
-        box-shadow: 0 0 0 0 rgba(229, 62, 62, 0);
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
     }
 }
 
 .pulse-animation {
     animation: pulse-coffee 2s ease-out 3;
-    background: linear-gradient(135deg, rgba(229, 62, 62, 0.08), rgba(255, 107, 107, 0.05)) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
 }
 
-/* Effet "café chaud" pour visiteurs réguliers */
-#donateButton.coffee-hot {
-    background: linear-gradient(135deg, rgba(229, 62, 62, 0.05), rgba(255, 107, 107, 0.03));
+/* Badge nouveau visiteur */
+#donateButton.first-visit {
+    background: rgba(229, 62, 62, 0.1);
 }
 
-#donateButton.coffee-hot .material-icons {
-    color: #f44336;
-}
-
-/* Petits coeurs flottants au survol (effet sympathique) */
-#donateButton.coffee-hot:hover::after {
-    content: "❤";
-    position: absolute;
-    top: -15px;
-    right: 10px;
-    font-size: 10px;
-    color: #ff5252;
-    opacity: 0;
-    animation: heart-float 1.5s ease-out;
-    pointer-events: none;
-}
-
-@keyframes heart-float {
-    0% {
-        transform: translateY(0) scale(0);
-        opacity: 0;
-    }
-    50% {
-        opacity: 0.8;
-    }
-    100% {
-        transform: translateY(-20px) scale(1);
-        opacity: 0;
-    }
-}
-
-/* Badge "NOUVEAU" moderne */
-#donateButton.first-visit::before {
-    content: "✨";
+/* Petit indicateur "NEW" discret */
+#donateButton.first-visit .material-icons::after {
+    content: "•";
     position: absolute;
     top: -5px;
     right: -5px;
-    font-size: 14px;
-    animation: sparkle 2s ease-in-out infinite;
-    z-index: 1;
+    color: #ff5252;
+    font-size: 12px;
+    animation: blink 2s ease-in-out infinite;
 }
 
-@keyframes sparkle {
-    0%, 100% { 
-        transform: scale(1) rotate(0deg);
-        opacity: 0.8;
-    }
-    50% { 
-        transform: scale(1.2) rotate(180deg);
-        opacity: 1;
-    }
-}
-
-/* Animation "glow" subtile */
-@keyframes subtle-coffee-glow {
-    0%, 100% { 
-        box-shadow: 0 2px 4px rgba(229, 62, 62, 0.1);
-    }
-    50% { 
-        box-shadow: 0 2px 12px rgba(229, 62, 62, 0.2);
-    }
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
 }
 
 /* État actif/pressé */
 #donateButton:active {
     transform: scale(0.98);
-    box-shadow: 0 1px 3px rgba(229, 62, 62, 0.2);
+    background: rgba(255, 255, 255, 0.15);
 }
 
 /* ========================================
-   ADAPTATION PAR THÈME
+   ADAPTATION THÈMES - ICÔNE TOUJOURS BLANCHE
    ======================================== */
-
-/* Thème rouge (défaut) */
-[data-theme="rouge"] #donateButton .material-icons {
-    color: #dc3545;
-}
-
-[data-theme="rouge"] #donateButton:hover .material-icons {
-    color: #ff5252;
-}
 
 /* Thème sombre */
 [data-theme="dark"] #donateButton {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 [data-theme="dark"] #donateButton:hover {
-    background: rgba(255, 82, 82, 0.15);
-    box-shadow: 0 4px 12px rgba(255, 82, 82, 0.3);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
 }
 
 [data-theme="dark"] #donateButton .material-icons {
-    color: #ff6b6b;
+    /* Toujours blanc, moins d'ombre en mode sombre */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
 }
 
-[data-theme="dark"] #donateButton:hover .material-icons {
-    color: #ff8787;
+/* Fumée plus visible en mode sombre */
+[data-theme="dark"] #donateButton::before,
+[data-theme="dark"] #donateButton::after {
+    color: rgba(255, 255, 255, 0.9);
 }
 
 /* Thème bleu ciel */
-[data-theme="bleuciel"] #donateButton .material-icons {
-    color: #17a2b8;
+[data-theme="bleuciel"] #donateButton {
+    background: rgba(23, 162, 184, 0.1);
 }
 
 [data-theme="bleuciel"] #donateButton:hover {
-    background: linear-gradient(135deg, rgba(23, 162, 184, 0.1), rgba(32, 201, 151, 0.08));
-}
-
-[data-theme="bleuciel"] #donateButton:hover .material-icons {
-    color: #20c997;
+    background: rgba(23, 162, 184, 0.2);
 }
 
 /* Thème violet */
-[data-theme="light"] #donateButton .material-icons {
-    color: #6f42c1;
+[data-theme="light"] #donateButton {
+    background: rgba(111, 66, 193, 0.08);
 }
 
 [data-theme="light"] #donateButton:hover {
-    background: linear-gradient(135deg, rgba(111, 66, 193, 0.1), rgba(232, 62, 140, 0.08));
-}
-
-[data-theme="light"] #donateButton:hover .material-icons {
-    color: #e83e8c;
+    background: rgba(111, 66, 193, 0.15);
 }
 
 /* ========================================
-   RESPONSIVE & ACCESSIBILITÉ
+   MOBILE - FUMÉE VISIBLE
    ======================================== */
 
-/* Mobile */
 @media (max-width: 768px) {
     #donateButton {
         padding: 10px;
+        /* Fond plus visible sur mobile */
+        background: rgba(0, 0, 0, 0.08);
     }
     
     #donateButton .material-icons {
         font-size: 22px;
+        /* Ombre plus forte sur mobile pour visibilité */
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) !important;
     }
     
-    /* Garder les effets mais simplifiés sur mobile */
-    #donateButton::before {
-        display: none; /* Pas de vapeur sur mobile */
+    /* Fumée toujours visible sur mobile */
+    #donateButton::before,
+    #donateButton::after {
+        animation-duration: 3s; /* Plus rapide sur mobile */
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 18px;
     }
     
+    /* Effet tap sur mobile */
     #donateButton:active {
         transform: scale(0.95);
-        background: rgba(229, 62, 62, 0.1);
+        background: rgba(229, 62, 62, 0.2);
     }
 }
 
-/* Focus pour accessibilité */
+/* Tablettes */
+@media (min-width: 769px) and (max-width: 1024px) {
+    #donateButton::before,
+    #donateButton::after {
+        font-size: 16px;
+    }
+}
+
+/* ========================================
+   ACCESSIBILITÉ
+   ======================================== */
+
 #donateButton:focus-visible {
-    outline: 2px solid var(--primary-color, #e53e3e);
+    outline: 2px solid #FFFFFF;
     outline-offset: 2px;
 }
 
-/* Tooltip optionnel */
-#donateButton {
-    position: relative;
+/* ========================================
+   ARRÊT DE LA FUMÉE APRÈS 20 SECONDES
+   ======================================== */
+
+#donateButton.smoke-stopped::before,
+#donateButton.smoke-stopped::after {
+    animation: none !important;
+    opacity: 0 !important;
 }
 
-#donateButton[data-tooltip]::after {
-    content: "Offrez-nous un café ☕";
-    position: absolute;
-    bottom: 110%;
-    left: 50%;
-    transform: translateX(-50%) scale(0);
-    background: #333;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    white-space: nowrap;
-    opacity: 0;
-    transition: all 0.3s ease;
-    pointer-events: none;
-    z-index: 1000;
+/* Classe pour réactiver temporairement au survol */
+#donateButton.smoke-stopped:hover::before {
+    animation: smoke-1 2s ease-out 1 !important;
+    opacity: initial !important;
 }
 
-#donateButton:hover[data-tooltip]::after {
-    transform: translateX(-50%) scale(1);
-    opacity: 0.95;
-}
-
-/* Effet spécial pour les fêtes (activable) */
-.holiday-mode #donateButton::before {
-    content: "🎄";
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    font-size: 12px;
-    animation: rotate 3s linear infinite;
-}
-
-@keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-/* Version gradient arc-en-ciel (très moderne) */
-#donateButton.rainbow {
-    background: linear-gradient(135deg, 
-        rgba(255, 0, 150, 0.1), 
-        rgba(0, 255, 255, 0.1));
-}
-
-#donateButton.rainbow .material-icons {
-    background: linear-gradient(135deg, #ff0096, #00ffff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+#donateButton.smoke-stopped:hover::after {
+    animation: smoke-2 2s ease-out 1 !important;
+    animation-delay: 0.5s !important;
+    opacity: initial !important;
 }
