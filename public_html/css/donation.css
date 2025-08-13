@@ -640,9 +640,6 @@
 }
 
 /* Mode sombre */
-[data-theme="dark"] #donateButton {
-    background: rgba(255, 255, 255, 0.1);
-}
 
 [data-theme="dark"] #donateButton:hover {
     background: rgba(255, 255, 255, 0.2);
