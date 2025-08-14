@@ -1795,7 +1795,7 @@ main {
     background: rgba(0, 0, 0, 0.05);
     padding: 8px 16px;
     border-radius: 20px;
-    font-size: 0.95rem;
+    font-size: 14px;
 }
 
 [data-theme="dark"] .feature-item {

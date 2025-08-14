@@ -71,7 +71,7 @@ class FootballWidget {
 		</div>
 			<div class="feature-item" data-action="actualites">
 				<span class="feature-icon">📰</span>
-				<span>Actualités foot</span>
+				<span>Actualités Ligue 1</span>
 			</div>
 			<div class="feature-item" data-action="transferts">
                     <span class="feature-icon">💰</span>
