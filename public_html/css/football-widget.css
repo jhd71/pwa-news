@@ -393,9 +393,9 @@
         gap: 6px;
     }
     
-    .feature-item {
-        font-size: 14px;
-        padding: 6px 10px;
+        .feature-item {
+        font-size: 15px !important;
+        padding: 6px 10px !important;
     }
 }
 
