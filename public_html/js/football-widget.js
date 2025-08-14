@@ -1,9 +1,9 @@
 // js/football-widget.js - Widget Football responsive pour Actu&Média
 class FootballWidget {
     constructor() {
-        this.currentLeague = 'ligue1'; // 🆕 ligue1 par défaut au lieu de live
-        this.updateInterval = null;
-    }
+    this.currentLeague = 'ligue1'; // Changé de 'live' à 'ligue1'
+    this.updateInterval = null;
+	}
 
     // Informations des ligues françaises + LIVE avec URLs CORRECTES
     getLeagues() {
@@ -48,10 +48,10 @@ class FootballWidget {
             <div class="football-widget-header">
                 <span class="football-widget-title">⚽ FOOTBALL</span>
                 <div class="league-tabs">
-                    <button class="league-tab" data-league="ligue1">L1</button>
-                    <button class="league-tab" data-league="ligue2">L2</button>
-                    <button class="league-tab active" data-league="live">LIVE</button>
-                </div>
+				<button class="league-tab active" data-league="ligue1">L1</button>
+				<button class="league-tab" data-league="ligue2">L2</button>
+				<button class="league-tab" data-league="live">LIVE</button>
+			</div>
             </div>
             
             <div class="football-widget-preview" id="footballWidgetPreview">
