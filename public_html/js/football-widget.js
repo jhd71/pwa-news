@@ -59,19 +59,19 @@ class FootballWidget {
                     🌍 Tous les matchs
                 </div>
                 <div class="football-features" id="footballFeatures">
-                    <div class="feature-item" data-action="scores">
-                        <span class="feature-icon">🔴</span>
-                        <span>Matchs en direct</span>
-                    </div>
-                    <div class="feature-item" data-action="actualites">
-                        <span class="feature-icon">📰</span>
-                        <span>Actualités mondiales</span>
-                    </div>
-                    <div class="feature-item" data-action="transferts">
-                        <span class="feature-icon">💰</span>
-                        <span>Derniers transferts</span>
-                    </div>
-                </div>
+			<div class="feature-item" data-action="classements">
+				<span class="feature-icon">📊</span>
+				<span>Classements en direct</span>
+		</div>
+			<div class="feature-item" data-action="scores">
+				<span class="feature-icon">⚽</span>
+				<span>Scores live</span>
+		</div>
+			<div class="feature-item" data-action="actualites">
+				<span class="feature-icon">📰</span>
+				<span>Actualités foot</span>
+			</div>
+			</div>
             </div>
             
             <div class="football-widget-footer">
