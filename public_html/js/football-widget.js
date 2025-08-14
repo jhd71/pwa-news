@@ -58,8 +58,8 @@ class FootballWidget {
             
             <div class="football-widget-preview" id="footballWidgetPreview">
                 <div class="current-league" id="currentLeague">
-                    🌍 Tous les matchs
-                </div>
+					🇫🇷 Ligue 1
+				</div>
                 <div class="football-features" id="footballFeatures">
 			<div class="feature-item" data-action="classements">
 				<span class="feature-icon">📊</span>
