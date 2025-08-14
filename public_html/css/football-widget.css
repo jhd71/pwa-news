@@ -371,7 +371,6 @@
     
 	/* Header avec gradient */
     .football-widget-header {
-        background: rgba(0, 0, 0, 0.1);
         margin: -15px -15px 15px -15px;
         padding: 15px;
         border-radius: 15px 15px 0 0;
