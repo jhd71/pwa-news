@@ -14,7 +14,8 @@ class FootballWidget {
                 urls: {
                     classements: 'https://www.fotmob.com/fr/leagues/53/table/ligue-1',
                     scores: 'https://www.fotmob.com/fr/leagues/53/matches/ligue-1?group=by-date',
-                    actualites: 'https://www.fotmob.com/fr/leagues/53/news/ligue-1'
+                    actualites: 'https://www.fotmob.com/fr/leagues/53/news/ligue-1',
+					transferts: 'https://www.fotmob.com/fr/leagues/53/transfers/ligue-1' // 🆕 Derniers transferts
                 }
             },
             ligue2: { 
@@ -71,6 +72,10 @@ class FootballWidget {
 				<span class="feature-icon">📰</span>
 				<span>Actualités foot</span>
 			</div>
+			<div class="feature-item" data-action="transferts">
+                    <span class="feature-icon">💰</span>
+                    <span>Derniers transferts</span>
+                </div>
 			</div>
             </div>
             
