@@ -81,7 +81,6 @@ class FootballWidget {
             </div>
             
             <div class="football-widget-footer">
-                <span class="football-widget-tap">👆 Classements & résultats en direct</span>
                 <div class="football-widget-count" id="footballWidgetCount">FotMob</div>
             </div>
         `;
