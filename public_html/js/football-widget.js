@@ -24,7 +24,8 @@ class FootballWidget {
                 urls: {
                     classements: 'https://www.fotmob.com/fr/leagues/110/table/ligue-2',
                     scores: 'https://www.fotmob.com/fr/leagues/110/matches/ligue-2?group=by-date',
-                    actualites: 'https://www.fotmob.com/fr/leagues/110/news/ligue-2'
+                    actualites: 'https://www.fotmob.com/fr/leagues/110/news/ligue-2',
+					transferts: 'https://www.fotmob.com/fr/leagues/110/transfers/ligue-2' // 🆕 Derniers transferts
                 }
             },
             live: {
@@ -182,6 +183,10 @@ class FootballWidget {
                 <div class="feature-item" data-action="actualites">
                     <span class="feature-icon">📰</span>
                     <span>Actualités foot</span>
+                </div>
+				<div class="feature-item" data-action="transferts">
+                    <span class="feature-icon">💰</span>
+                    <span>Derniers transferts</span>
                 </div>
             `;
         }
