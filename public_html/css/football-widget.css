@@ -82,7 +82,7 @@
     min-height: 120px;
     max-height: 250px; /* Même hauteur que NEWS/CINÉMA */
     overflow-y: auto;
-    padding-right: 5px; /* Même padding que NEWS/CINÉMA */
+    padding-right: 18px; /* Même padding que NEWS/CINÉMA */
 }
 
 /* Style de la scrollbar - IDENTIQUE À NEWS/CINÉMA */
