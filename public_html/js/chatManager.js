@@ -97,23 +97,21 @@ import notificationManager from '/js/notification-manager.js';
     };
 })();
 
-// 🔒 PROTECTION CONTRE MANIPULATION LOCALSTORAGE
+// 🔒 PROTECTION CONTRE MANIPULATION LOCALSTORAGE (silencieuse)
 (function() {
     const originalSetItem = localStorage.setItem;
-    let isAuthenticating = false; // Flag pour autoriser les modifications légitimes
+    let isAuthenticating = false;
     
     localStorage.setItem = function(key, value) {
         if (key === 'isAdmin' || key === 'chatPseudo') {
-            // Autoriser si c'est pendant l'authentification légitime
             if (!isAuthenticating) {
-                console.warn('🚨 Tentative de modification des données d\'authentification détectée');
+                // Protection active mais silencieuse - pas de console.warn
                 return;
             }
         }
         return originalSetItem.call(this, key, value);
     };
     
-    // Méthode pour autoriser temporairement les modifications
     window.allowAuthenticationChange = function(callback) {
         isAuthenticating = true;
         try {
