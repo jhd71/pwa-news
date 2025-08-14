@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v30'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v31'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -412,29 +412,6 @@ function shouldCache(request, response) {
     return true;
 }
 
-// Fonction pour vérifier si une URL doit être ignorée
-function shouldIgnoreRequest(url) {
-    const ignoredDomains = [
-        'googletagmanager.com',
-        'google-analytics.com',
-        'googleadservices.com',
-        'doubleclick.net',
-        'google.com/gtag',
-        'google.com/recaptcha',
-        'gstatic.com/recaptcha',
-        'facebook.com',
-        'facebook.net',
-        'twitter.com',
-        'linkedin.com',
-        'hotjar.com',
-        'clarity.ms',
-        'segment.io',
-        'mixpanel.com'
-    ];
-    
-    return ignoredDomains.some(domain => url.includes(domain));
-}
-
 // Stratégie de cache améliorée avec meilleure catégorisation des requêtes
 self.addEventListener('fetch', (event) => {
     // Ignorer les requêtes non GET
@@ -446,9 +423,6 @@ self.addEventListener('fetch', (event) => {
 
     // Ignorer les requêtes vers Supabase
     if (event.request.url.includes('supabase.co')) return;
-    
-    // ⚡ Ignorer les services analytics et tracking
-    if (shouldIgnoreRequest(event.request.url)) return;
     
     // Catégoriser la requête
     const requestType = categorizeRequest(event.request);
