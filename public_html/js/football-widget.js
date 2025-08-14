@@ -1,7 +1,7 @@
 // js/football-widget.js - Widget Football responsive pour Actu&Média
 class FootballWidget {
     constructor() {
-        this.currentLeague = 'live'; // 🆕 LIVE par défaut au lieu de ligue1
+        this.currentLeague = 'ligue1'; // 🆕 ligue1 par défaut au lieu de live
         this.updateInterval = null;
     }
 
