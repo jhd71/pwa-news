@@ -27,7 +27,6 @@ class FootballWidget {
             ligue2: { 
                 name: 'Ligue 2', 
                 flag: '🇫🇷',
-                apiId: 'FL2', // Ligue 2 non disponible en gratuit
                 urls: {
                     classements: 'https://www.fotmob.com/fr/leagues/110/table/ligue-2',
                     scores: 'https://www.fotmob.com/fr/leagues/110/matches/ligue-2?group=by-date',
@@ -38,7 +37,6 @@ class FootballWidget {
             live: {
                 name: 'Tous les matchs',
                 flag: '🌍',
-                apiId: 'FL1', // Par défaut sur Ligue 1
                 urls: {
                     scores: 'https://www.fotmob.com/fr',
                     actualites: 'https://www.fotmob.com/fr/news',
@@ -160,14 +158,7 @@ class FootballWidget {
 async loadTodayMatches() {
     try {
         const leagues = this.getLeagues();
-        const leagueId = leagues[this.currentLeague].apiId;
-        
-        // Si c'est la Ligue 2, on ne peut pas avec l'API gratuite
-        if (leagueId === 'FL2') {
-            this.displayMessage('⚠️ Ligue 2 non disponible avec l\'API gratuite');
-            document.getElementById('liveMatchCount').textContent = 'Ligue 2 indisponible';
-            return;
-        }
+        const leagueId = leagues[this.currentLeague].apiId;          
         
         // Utiliser VOTRE proxy API sur Vercel
         const response = await fetch(`/api/football-data?competition=${leagueId}&endpoint=matches`);
