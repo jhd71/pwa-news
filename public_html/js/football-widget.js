@@ -33,7 +33,6 @@ class FootballWidget {
                 flag: '🌍',
                 urls: {
                     classements: 'https://www.fotmob.com/fr', // Matchs en direct
-                    scores: 'https://www.fotmob.com/fr', // Matchs en direct (même lien)
                     actualites: 'https://www.fotmob.com/fr/news', // 🆕 Actualités mondiales
                     transferts: 'https://www.fotmob.com/fr/transfers' // 🆕 Derniers transferts
                 }
