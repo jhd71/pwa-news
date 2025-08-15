@@ -3,11 +3,12 @@ class FootballWidget {
     constructor() {
     this.currentLeague = 'ligue1';
     this.updateInterval = null;
-    // Charger l'état sauvegardé des notifications
     this.notificationsEnabled = localStorage.getItem('footballNotifications') === 'true';
     this.lastScores = {};
     this.checkInterval = null;
     this.liveMatches = [];
+    this.standings = null; // NOUVEAU
+    this.currentView = 'matches'; // NOUVEAU: 'matches' ou 'standings'
 }
 
     // Configuration des ligues avec les IDs de l'API
@@ -40,6 +41,7 @@ class FootballWidget {
                 flag: '🌍',
                 apiId: 'FL1', // Par défaut sur Ligue 1
                 urls: {
+                    classements: 'https://www.fotmob.com/fr',
                     scores: 'https://www.fotmob.com/fr',
                     actualites: 'https://www.fotmob.com/fr/news',
                     transferts: 'https://www.fotmob.com/fr/transfers'
@@ -74,33 +76,48 @@ class FootballWidget {
                 🇫🇷 Ligue 1
             </div>
             
-            <!-- Badge API (visible seulement pour L1) -->
-            <div class="api-badge" id="apiBadge">
+            <!-- Badge API -->
+            <div class="api-badge">
                 <span class="api-indicator">●</span>
                 <span>Données en direct</span>
             </div>
             
-            <!-- Zone des scores -->
-            <div class="live-scores-container" id="liveScoresContainer">
-                <!-- Les scores seront injectés ici -->
+            <!-- Boutons de vue -->
+            <div class="view-switcher">
+                <button class="view-btn active" data-view="matches">
+                    <span>📅</span> Matchs
+                </button>
+                <button class="view-btn" data-view="standings">
+                    <span>🏆</span> Classement
+                </button>
+            </div>
+            
+            <!-- Zone des matchs -->
+            <div class="view-content" id="matchesView">
+                <div class="live-scores-container" id="liveScoresContainer">
+                    <!-- Les scores seront injectés ici -->
+                </div>
+            </div>
+            
+            <!-- Zone du classement (cachée par défaut) -->
+            <div class="view-content" id="standingsView" style="display: none;">
+                <div class="standings-container" id="standingsContainer">
+                    <div class="loading">Chargement du classement...</div>
+                </div>
             </div>
             
             <div class="football-features" id="footballFeatures">
                 <div class="feature-item" data-action="classements">
                     <span class="feature-icon">📊</span>
-                    <span>Classements</span>
+                    <span>Classement complet</span>
                 </div>
                 <div class="feature-item" data-action="scores">
                     <span class="feature-icon">⚽</span>
-                    <span>Scores live</span>
+                    <span>Tous les scores</span>
                 </div>
                 <div class="feature-item" data-action="actualites">
                     <span class="feature-icon">📰</span>
                     <span>Actualités</span>
-                </div>
-                <div class="feature-item" data-action="transferts">
-                    <span class="feature-icon">💰</span>
-                    <span>Transferts</span>
                 </div>
             </div>
         </div>
@@ -111,10 +128,13 @@ class FootballWidget {
         </div>
     `;
     
+    // Configuration des event listeners
     this.setupEventListeners(widget);
+    
+    // Initialiser l'API
     this.initializeAPI();
     
-    // Restaurer l'état du bouton notifications
+    // Restaurer l'état du bouton notifications APRÈS la création du widget
     setTimeout(() => {
         if (this.notificationsEnabled) {
             const notifToggle = widget.querySelector('#notifToggle');
@@ -141,58 +161,20 @@ class FootballWidget {
     // Remplacez TOUTE la méthode loadTodayMatches() par celle-ci :
 async loadTodayMatches() {
     try {
-        const container = document.getElementById('liveScoresContainer');
-        const apiBadge = document.getElementById('apiBadge');
+        const leagues = this.getLeagues();
+        const leagueId = leagues[this.currentLeague].apiId;
         
-        // ONGLET LIGUE 2 - Redirection directe vers FotMob
-        if (this.currentLeague === 'ligue2') {
-            // Masquer le badge API
-            if (apiBadge) apiBadge.style.display = 'none';
-            
-            // Message simple
-            container.innerHTML = `
-                <div class="fotmob-redirect">
-                    <div class="redirect-icon">📱</div>
-                    <div class="redirect-text">Voir la Ligue 2 sur FotMob</div>
-                    <div class="redirect-arrow">→</div>
-                </div>
-            `;
-            
-            document.getElementById('liveMatchCount').textContent = 'Ligue 2 → FotMob';
-            
-            // Ouvrir FotMob après un court délai
-            setTimeout(() => {
-                window.open('https://www.fotmob.com/fr/leagues/110/matches/ligue-2', '_blank');
-            }, 1000);
-            return;
-        }
+        if (leagueId === 'FL2') {
+    this.displayMessage('📱 Ligue 2 → Voir sur FotMob');
+    // Puis ouvrir directement FotMob Ligue 2
+    setTimeout(() => {
+        window.open('https://www.fotmob.com/fr/leagues/110/matches/ligue-2', '_blank');
+    }, 1500);
+    return;
+}
         
-        // ONGLET LIVE - Tous les matchs en cours (toutes compétitions)
-        if (this.currentLeague === 'live') {
-            // Masquer le badge API car on ne charge pas de vraies données
-            if (apiBadge) apiBadge.style.display = 'none';
-            
-            container.innerHTML = `
-                <div class="fotmob-redirect">
-                    <div class="redirect-icon">🔴</div>
-                    <div class="redirect-text">Voir tous les matchs en direct</div>
-                    <div class="redirect-arrow">→</div>
-                </div>
-            `;
-            
-            document.getElementById('liveMatchCount').textContent = 'Matchs LIVE → FotMob';
-            
-            // Ouvrir FotMob matchs en direct
-            setTimeout(() => {
-                window.open('https://www.fotmob.com/fr', '_blank');
-            }, 1000);
-            return;
-        }
-        
-        // ONGLET LIGUE 1 - Charger les vrais matchs via l'API
-        if (apiBadge) apiBadge.style.display = 'flex';
-        
-        const response = await fetch(`/api/football-data?competition=FL1&endpoint=matches`);
+        // Utiliser VOTRE proxy API sur Vercel
+        const response = await fetch(`/api/football-data?competition=${leagueId}&endpoint=matches`);
         
         if (!response.ok) {
             throw new Error(`Erreur HTTP: ${response.status}`);
@@ -200,11 +182,14 @@ async loadTodayMatches() {
         
         const data = await response.json();
         
+        // Vérifier si on a des données
         if (!data.matches) {
             throw new Error('Pas de données de matchs');
         }
         
         this.liveMatches = data.matches;
+        
+        // Afficher les matchs réels
         this.displayLiveMatches();
         
         // Vérifier les buts si notifications activées
@@ -212,20 +197,11 @@ async loadTodayMatches() {
             this.checkForGoals();
         }
         
-        console.log(`⚽ Matchs Ligue 1 chargés`);
+        console.log(`⚽ ${this.liveMatches.length} matchs chargés pour ${leagues[this.currentLeague].name}`);
         
     } catch (error) {
         console.error('Erreur chargement matchs:', error);
-        const container = document.getElementById('liveScoresContainer');
-        if (container) {
-            container.innerHTML = `
-                <div class="error-message">
-                    <span class="error-icon">⚠️</span>
-                    <span>Erreur de chargement</span>
-                </div>
-            `;
-        }
-        document.getElementById('liveMatchCount').textContent = 'Erreur';
+        this.displayError(error.message);
     }
 }
 
@@ -236,11 +212,11 @@ async loadStandings() {
         const leagueId = leagues[this.currentLeague].apiId;
         
         if (leagueId === 'FL2') {
-            console.log('Classement Ligue 2 non disponible');
+            document.getElementById('standingsContainer').innerHTML = 
+                '<div class="info-message">📱 Classement Ligue 2 → Voir sur FotMob</div>';
             return;
         }
         
-        // Appel via votre proxy
         const response = await fetch(`/api/football-data?competition=${leagueId}&endpoint=standings`);
         
         if (!response.ok) {
@@ -250,14 +226,74 @@ async loadStandings() {
         const data = await response.json();
         
         if (data.standings && data.standings[0]) {
-            const table = data.standings[0].table;
-            console.log(`📊 Classement ${leagues[this.currentLeague].name}:`, 
-                table.slice(0, 5).map(team => `${team.position}. ${team.team.name} (${team.points}pts)`));
+            this.standings = data.standings[0].table;
+            this.displayStandings();
         }
         
     } catch (error) {
         console.error('Erreur chargement classement:', error);
+        document.getElementById('standingsContainer').innerHTML = 
+            '<div class="error-message">Erreur de chargement du classement</div>';
     }
+}
+
+// 4. Méthode pour afficher le classement
+displayStandings() {
+    const container = document.getElementById('standingsContainer');
+    if (!container || !this.standings) return;
+    
+    // Prendre le top 5
+    const top5 = this.standings.slice(0, 5);
+    
+    let html = '<div class="standings-table">';
+    
+    top5.forEach((team, index) => {
+        const isFirst = index === 0;
+        const isChampionsLeague = index < 3;
+        const isEuropa = index === 3;
+        
+        html += `
+            <div class="standing-row ${isFirst ? 'first-place' : ''} ${isChampionsLeague ? 'cl-zone' : ''} ${isEuropa ? 'el-zone' : ''}">
+                <span class="position">${team.position}</span>
+                <span class="team-name">
+                    <img src="${team.team.crest}" alt="${team.team.name}" class="team-crest">
+                    ${team.team.shortName || team.team.name}
+                </span>
+                <span class="stats">
+                    <span class="played">${team.playedGames}j</span>
+                    <span class="points">${team.points}pts</span>
+                </span>
+            </div>
+        `;
+    });
+    
+    html += `
+        <div class="standings-footer">
+            <button class="see-more-btn" onclick="window.open('https://www.fotmob.com/fr/leagues/53/table/ligue-1', '_blank')">
+                Voir le classement complet →
+            </button>
+        </div>
+    </div>`;
+    
+    container.innerHTML = html;
+}
+
+// Ajouter cette méthode pour afficher les erreurs proprement
+displayError(errorMessage) {
+    const container = document.getElementById('liveScoresContainer');
+    if (container) {
+        container.innerHTML = `
+            <div class="error-message">
+                <span class="error-icon">⚠️</span>
+                <div class="error-text">
+                    <strong>Impossible de charger les matchs</strong>
+                    <br>
+                    <small>${errorMessage}</small>
+                </div>
+            </div>
+        `;
+    }
+    document.getElementById('liveMatchCount').textContent = 'Erreur de chargement';
 }
 
     // Afficher les matchs en direct
@@ -486,6 +522,35 @@ getMatchTime(match) {
             });
         });
 
+// Gestion des boutons de vue
+    const viewBtns = widget.querySelectorAll('.view-btn');
+    viewBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            
+            const view = btn.dataset.view;
+            if (view === this.currentView) return;
+            
+            // Changer les classes actives
+            viewBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Changer la vue
+            document.getElementById('matchesView').style.display = view === 'matches' ? 'block' : 'none';
+            document.getElementById('standingsView').style.display = view === 'standings' ? 'block' : 'none';
+            
+            this.currentView = view;
+            
+            // Charger le classement si nécessaire
+            if (view === 'standings' && !this.standings) {
+                this.loadStandings();
+            }
+            
+            // Vibration tactile
+            if (navigator.vibrate) navigator.vibrate(30);
+        });
+    });
+	
         // Clic sur les features
         this.setupFeatureEvents(widget);
 
