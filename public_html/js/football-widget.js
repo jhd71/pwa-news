@@ -77,6 +77,7 @@ class FootballWidget {
                     <span>Données en direct</span>
                 </div>
                 
+				
                 <!-- Zone des scores (seulement pour L1) -->
                 <div class="live-scores-container" id="liveScoresContainer" style="display: block;">
                     <div class="loading">Chargement des matchs...</div>
