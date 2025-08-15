@@ -40,7 +40,6 @@ class FootballWidget {
                 flag: '🌍',
                 apiId: 'FL1', // Par défaut sur Ligue 1
                 urls: {
-                    classements: 'https://www.fotmob.com/fr',
                     scores: 'https://www.fotmob.com/fr',
                     actualites: 'https://www.fotmob.com/fr/news',
                     transferts: 'https://www.fotmob.com/fr/transfers'
