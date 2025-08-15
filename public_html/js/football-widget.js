@@ -134,13 +134,6 @@ async loadTodayMatches() {
         const leagues = this.getLeagues();
         const leagueId = leagues[this.currentLeague].apiId;
         
-        // Si c'est la Ligue 2, on ne peut pas avec l'API gratuite
-        if (leagueId === 'FL2') {
-            this.displayMessage('⚠️ Ligue 2 non disponible avec l\'API gratuite');
-            document.getElementById('liveMatchCount').textContent = 'Ligue 2 indisponible';
-            return;
-        }
-        
         // Utiliser VOTRE proxy API sur Vercel
         const response = await fetch(`/api/football-data?competition=${leagueId}&endpoint=matches`);
         
