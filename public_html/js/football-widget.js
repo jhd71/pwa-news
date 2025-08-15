@@ -79,11 +79,7 @@ class FootballWidget {
                     <!-- Les scores seront injectés ici -->
                 </div>
                 
-                <div class="football-features" id="footballFeatures">
-                    <div class="feature-item" data-action="classements">
-                        <span class="feature-icon">📊</span>
-                        <span>Classements en direct</span>
-                    </div>
+                <div class="football-features" id="footballFeatures">                   
                     <div class="feature-item" data-action="scores">
                         <span class="feature-icon">⚽</span>
                         <span>Scores live</span>
