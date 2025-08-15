@@ -1,13 +1,14 @@
 // js/football-widget.js - Widget Football avec API Football-Data.org
 class FootballWidget {
     constructor() {
-        this.currentLeague = 'ligue1';
-        this.updateInterval = null;
-        this.notificationsEnabled = false;
-        this.lastScores = {};
-        this.checkInterval = null;
-        this.liveMatches = [];
-    }
+    this.currentLeague = 'ligue1';
+    this.updateInterval = null;
+    // Charger l'état sauvegardé des notifications
+    this.notificationsEnabled = localStorage.getItem('footballNotifications') === 'true';
+    this.lastScores = {};
+    this.checkInterval = null;
+    this.liveMatches = [];
+}
 
     // Configuration des ligues avec les IDs de l'API
     getLeagues() {
@@ -100,12 +101,22 @@ class FootballWidget {
             </div>
             
             <div class="football-widget-footer">
-                <div class="football-widget-count" id="footballWidgetCount">
-                    <span id="liveMatchCount">Chargement...</span>
-                </div>
+    <span id="liveMatchCount" class="match-count">Chargement...</span>
+    <div class="football-widget-count">FotMob</div>
+	</div>
             </div>
         `;
 
+// Restaurer l'état du bouton notifications
+    setTimeout(() => {
+        if (this.notificationsEnabled) {
+            const notifToggle = widget.querySelector('#notifToggle');
+            if (notifToggle) {
+                notifToggle.classList.add('active');
+            }
+        }
+    }, 100);
+	
         this.setupEventListeners(widget);
         this.initializeAPI(); // Initialiser l'API
         return widget;
@@ -217,76 +228,97 @@ displayError(errorMessage) {
 }
 
     // Afficher les matchs en direct
-    displayLiveMatches() {
-        const container = document.getElementById('liveScoresContainer');
-        if (!container) return;
+displayLiveMatches() {
+    const container = document.getElementById('liveScoresContainer');
+    if (!container) return;
+    
+    // Obtenir la date d'aujourd'hui (sans l'heure)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    // Filtrer les matchs qui sont VRAIMENT aujourd'hui
+    const todayMatches = this.liveMatches.filter(match => {
+        const matchDate = new Date(match.utcDate);
+        return matchDate >= today && matchDate < tomorrow;
+    });
+    
+    // Trier les matchs par heure
+    todayMatches.sort((a, b) => new Date(a.utcDate) - new Date(b.utcDate));
+    
+    if (todayMatches.length === 0) {
+        container.innerHTML = '<div class="no-matches">Aucun match de Ligue 1 aujourd\'hui</div>';
+        document.getElementById('liveMatchCount').textContent = 'Aucun match';
+        return;
+    }
+    
+    // Générer le HTML des matchs
+    let html = '';
+    let liveCount = 0;
+    
+    todayMatches.forEach(match => {
+        const isLive = match.status === 'IN_PLAY' || match.status === 'PAUSED' || match.status === 'HALFTIME';
+        const isFinished = match.status === 'FINISHED';
+        if (isLive) liveCount++;
         
-        // Filtrer les matchs du jour ou en cours
-        const today = new Date().toDateString();
-        const todayMatches = this.liveMatches.filter(match => {
-            const matchDate = new Date(match.utcDate).toDateString();
-            return matchDate === today || match.status === 'IN_PLAY' || match.status === 'PAUSED';
-        });
+        const homeScore = match.score?.fullTime?.home ?? match.score?.halfTime?.home ?? '-';
+        const awayScore = match.score?.fullTime?.away ?? match.score?.halfTime?.away ?? '-';
+        const matchTime = this.getMatchTime(match);
         
-        if (todayMatches.length === 0) {
-            container.innerHTML = '<div class="no-matches">Aucun match aujourd\'hui</div>';
-            document.getElementById('liveMatchCount').textContent = 'Aucun match';
-            return;
-        }
-        
-        // Générer le HTML des matchs
-        let html = '';
-        let liveCount = 0;
-        
-        todayMatches.forEach(match => {
-            const isLive = match.status === 'IN_PLAY' || match.status === 'PAUSED';
-            if (isLive) liveCount++;
-            
-            const homeScore = match.score.fullTime?.home ?? '-';
-            const awayScore = match.score.fullTime?.away ?? '-';
-            const matchTime = this.getMatchTime(match);
-            
-            html += `
-                <div class="live-score ${isLive ? 'match-active' : ''}">
-                    <div class="match-teams">
-                        <span class="team home">${match.homeTeam.shortName || match.homeTeam.name}</span>
-                        <span class="score">${homeScore} - ${awayScore}</span>
-                        <span class="team away">${match.awayTeam.shortName || match.awayTeam.name}</span>
-                    </div>
-                    <div class="match-info">
-                        <span class="match-time">${matchTime}</span>
-                        ${isLive ? '<span class="live-indicator">LIVE</span>' : ''}
-                    </div>
+        html += `
+            <div class="live-score ${isLive ? 'match-active' : ''} ${isFinished ? 'match-finished' : ''}">
+                <div class="match-teams">
+                    <span class="team home">${match.homeTeam.shortName || match.homeTeam.name}</span>
+                    <span class="score">${homeScore} - ${awayScore}</span>
+                    <span class="team away">${match.awayTeam.shortName || match.awayTeam.name}</span>
                 </div>
-            `;
-        });
-        
-        container.innerHTML = html;
-        
-        // Mettre à jour le compteur
-        const countText = liveCount > 0 
-            ? `🔴 ${liveCount} match${liveCount > 1 ? 's' : ''} en direct`
-            : `${todayMatches.length} match${todayMatches.length > 1 ? 's' : ''} aujourd'hui`;
-        document.getElementById('liveMatchCount').textContent = countText;
+                <div class="match-info">
+                    <span class="match-time">${matchTime}</span>
+                    ${isLive ? '<span class="live-indicator">LIVE</span>' : ''}
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+    
+    // Mettre à jour le compteur avec le bon texte
+    let countText;
+    if (liveCount > 0) {
+        countText = `🔴 ${liveCount} match${liveCount > 1 ? 's' : ''} en direct`;
+    } else if (todayMatches.length === 1) {
+        countText = '1 match aujourd\'hui';
+    } else {
+        countText = `${todayMatches.length} matchs aujourd\'hui`;
     }
+    
+    document.getElementById('liveMatchCount').textContent = countText;
+}
 
-    // Obtenir l'heure ou le statut du match
-    getMatchTime(match) {
-        switch(match.status) {
-            case 'IN_PLAY':
-                return match.minute ? `${match.minute}'` : 'En cours';
-            case 'PAUSED':
-                return 'Mi-temps';
-            case 'FINISHED':
-                return 'Terminé';
-            case 'SCHEDULED':
-            case 'TIMED':
-                const date = new Date(match.utcDate);
-                return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-            default:
-                return match.status;
-        }
+// Amélioration de getMatchTime pour plus de détails
+getMatchTime(match) {
+    switch(match.status) {
+        case 'IN_PLAY':
+            return match.minute ? `${match.minute}'` : 'En cours';
+        case 'HALFTIME':
+            return 'Mi-temps';
+        case 'PAUSED':
+            return 'Pause';
+        case 'FINISHED':
+            return 'Terminé';
+        case 'POSTPONED':
+            return 'Reporté';
+        case 'CANCELLED':
+            return 'Annulé';
+        case 'SCHEDULED':
+        case 'TIMED':
+            const date = new Date(match.utcDate);
+            return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+        default:
+            return match.status;
     }
+}
 
     // Vérifier les nouveaux buts
     checkForGoals() {
@@ -365,29 +397,33 @@ displayError(errorMessage) {
         const notifToggle = widget.querySelector('#notifToggle');
         if (notifToggle) {
             notifToggle.addEventListener('click', (e) => {
-                e.stopPropagation();
-                
-                this.notificationsEnabled = !this.notificationsEnabled;
-                notifToggle.classList.toggle('active', this.notificationsEnabled);
-                
-                if (this.notificationsEnabled) {
-                    if ('Notification' in window) {
-                        Notification.requestPermission().then(permission => {
-                            if (permission === 'granted') {
-                                this.showToast('🔔 Notifications activées !');
-                            } else {
-                                this.showToast('⚠️ Autorisez les notifications');
-                                this.notificationsEnabled = false;
-                                notifToggle.classList.remove('active');
-                            }
-                        });
-                    }
+    e.stopPropagation();
+    
+    this.notificationsEnabled = !this.notificationsEnabled;
+    notifToggle.classList.toggle('active', this.notificationsEnabled);
+    
+    // Sauvegarder l'état
+    localStorage.setItem('footballNotifications', this.notificationsEnabled);
+    
+    if (this.notificationsEnabled) {
+        if ('Notification' in window) {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    this.showToast('🔔 Notifications activées !');
                 } else {
-                    this.showToast('🔕 Notifications désactivées');
+                    this.showToast('⚠️ Autorisez les notifications');
+                    this.notificationsEnabled = false;
+                    localStorage.setItem('footballNotifications', 'false');
+                    notifToggle.classList.remove('active');
                 }
-                
-                if (navigator.vibrate) navigator.vibrate(50);
             });
+        }
+    } else {
+        this.showToast('🔕 Notifications désactivées');
+    }
+    
+    if (navigator.vibrate) navigator.vibrate(50);
+});
         }
         
         // Changement de ligue

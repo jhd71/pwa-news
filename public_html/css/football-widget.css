@@ -756,3 +756,62 @@
         min-width: 80px;
     }
 }
+
+/* Footer amélioré avec 2 éléments */
+.football-widget-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.match-count {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    font-weight: 500;
+}
+
+.football-widget-count {
+    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.2);
+    color: var(--primary-color, #dc3545);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.football-widget-count:hover {
+    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.3);
+    transform: scale(1.05);
+}
+
+/* Match terminé en gris */
+.match-finished {
+    opacity: 0.6;
+}
+
+.match-finished .score {
+    color: rgba(255,255,255,0.8) !important;
+}
+
+/* Amélioration mobile */
+@media (max-width: 768px) {
+    .live-scores-container {
+        max-height: 150px;
+    }
+    
+    .live-score {
+        padding: 6px 8px;
+        margin: 5px 0;
+    }
+    
+    .team {
+        font-size: 11px;
+    }
+    
+    .score {
+        font-size: 14px;
+    }
+}
