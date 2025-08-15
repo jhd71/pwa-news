@@ -39,11 +39,10 @@
 }
 
 .football-widget-title {
-    font-size: 18px;
-    font-weight: bold;
-    flex: 1;
-    color: var(--primary-color, #dc3545);
-}
+        color: #ffffff !important;
+        font-weight: bold;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
 
 /* Onglets des ligues DANS LE HEADER - 3 onglets */
 .league-tabs {
