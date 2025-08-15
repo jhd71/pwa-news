@@ -876,3 +876,38 @@
 .football-widget-count:hover::after {
     opacity: 1;
 }
+
+/* Message de chargement */
+.loading {
+    text-align: center;
+    color: rgba(255,255,255,0.6);
+    padding: 20px;
+    font-size: 13px;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+/* Amélioration de l'affichage initial */
+.live-scores-container {
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.live-scores-container:has(.live-score) {
+    display: block;
+    min-height: auto;
+}
+
+/* Fix pour le container vide */
+.live-scores-container:empty::before {
+    content: 'Chargement...';
+    color: rgba(255,255,255,0.5);
+    font-size: 12px;
+    font-style: italic;
+}

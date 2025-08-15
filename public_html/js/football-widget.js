@@ -78,8 +78,8 @@ class FootballWidget {
                 </div>
                 
                 <!-- Zone des scores (seulement pour L1) -->
-                <div class="live-scores-container" id="liveScoresContainer">
-                    <!-- Les scores seront injectés ici -->
+                <div class="live-scores-container" id="liveScoresContainer" style="display: block;">
+                    <div class="loading">Chargement des matchs...</div>
                 </div>
                 
                 <div class="football-features" id="footballFeatures">
@@ -103,28 +103,29 @@ class FootballWidget {
             </div>
             
             <div class="football-widget-footer">
-                <span id="liveMatchCount" class="match-count"></span>
+                <span id="liveMatchCount" class="match-count">Chargement...</span>
                 <div class="football-widget-count">FotMob</div>
             </div>
         `;
 
         this.setupEventListeners(widget);
         
-        // Initialiser seulement si on est sur L1
-        if (this.currentLeague === 'ligue1') {
-            this.initializeAPI();
-            this.showNotificationButton();
-        }
-        
-        // Restaurer l'état du bouton notifications
+        // IMPORTANT : Charger les matchs immédiatement après un court délai
         setTimeout(() => {
+            if (this.currentLeague === 'ligue1') {
+                this.showNotificationButton();
+                this.initializeAPI();
+            }
+            
+            // Restaurer l'état du bouton notifications
             if (this.notificationsEnabled && this.currentLeague === 'ligue1') {
                 const notifToggle = widget.querySelector('#notifToggle');
                 if (notifToggle) {
                     notifToggle.classList.add('active');
+                    notifToggle.style.display = 'block';
                 }
             }
-        }, 100);
+        }, 500); // Délai de 500ms pour laisser le DOM se stabiliser
         
         return widget;
     }
@@ -133,14 +134,61 @@ class FootballWidget {
     async initializeAPI() {
         if (this.currentLeague !== 'ligue1') return;
         
-        await this.loadTodayMatches();
+        // Afficher un message de chargement
+        const container = document.getElementById('liveScoresContainer');
+        if (container) {
+            container.style.display = 'block';
+            container.innerHTML = '<div class="loading">⚽ Chargement des matchs...</div>';
+        }
         
-        // Actualiser toutes les 60 secondes
-        this.updateInterval = setInterval(() => {
-            if (this.currentLeague === 'ligue1') {
-                this.loadTodayMatches();
+        // Essayer de charger avec retry en cas d'échec
+        let retryCount = 0;
+        const maxRetries = 3;
+        
+        const tryLoad = async () => {
+            try {
+                await this.loadTodayMatches();
+                console.log('⚽ Matchs chargés avec succès');
+            } catch (error) {
+                console.error(`Tentative ${retryCount + 1} échouée:`, error);
+                retryCount++;
+                
+                if (retryCount < maxRetries) {
+                    // Réessayer après 2 secondes
+                    setTimeout(() => tryLoad(), 2000);
+                } else {
+                    // Afficher un message d'erreur après 3 tentatives
+                    if (container) {
+                        container.innerHTML = `
+                            <div class="error-message">
+                                <span>⚠️ Impossible de charger les matchs</span>
+                                <br>
+                                <small>Cliquez sur un onglet pour réessayer</small>
+                            </div>
+                        `;
+                    }
+                    document.getElementById('liveMatchCount').textContent = 'Erreur de connexion';
+                }
             }
-        }, 60000);
+        };
+        
+        // Lancer le premier chargement
+        await tryLoad();
+        
+        // Si le chargement initial réussit, configurer l'actualisation automatique
+        if (retryCount < maxRetries) {
+            // Nettoyer l'ancien interval s'il existe
+            if (this.updateInterval) {
+                clearInterval(this.updateInterval);
+            }
+            
+            // Actualiser toutes les 60 secondes
+            this.updateInterval = setInterval(() => {
+                if (this.currentLeague === 'ligue1') {
+                    this.loadTodayMatches();
+                }
+            }, 60000);
+        }
     }
 	
 	// Charger les matchs du jour (seulement L1)
