@@ -192,24 +192,6 @@ async loadTodayMatches() {
     }
 }
 
-// Ajouter cette méthode pour afficher les erreurs proprement
-displayError(errorMessage) {
-    const container = document.getElementById('liveScoresContainer');
-    if (container) {
-        container.innerHTML = `
-            <div class="error-message">
-                <span class="error-icon">⚠️</span>
-                <div class="error-text">
-                    <strong>Impossible de charger les matchs</strong>
-                    <br>
-                    <small>${errorMessage}</small>
-                </div>
-            </div>
-        `;
-    }
-    document.getElementById('liveMatchCount').textContent = 'Erreur de chargement';
-}
-
     // Afficher les matchs en direct
     displayLiveMatches() {
         const container = document.getElementById('liveScoresContainer');
