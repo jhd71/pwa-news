@@ -63,7 +63,7 @@
     
     .league-tab.active {
         background: #ffffff !important;
-        color: #00c853;
+        /* color: #00c853; */
         transform: scale(1.1);
         box-shadow: 0 4px 10px rgba(0,200,83,0.3);
     }
