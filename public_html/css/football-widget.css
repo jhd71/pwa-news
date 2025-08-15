@@ -501,6 +501,18 @@
     transition: all 0.3s ease;
 }
 
+[data-theme="dark"] .live-score {
+    background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+}
+
+[data-theme="rouge"] .live-score {
+    background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+}
+
+[data-theme="bleuciel"] .live-score {
+    background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+}
+
 .live-score.match-active {
     background: linear-gradient(90deg, rgba(255,107,107,0.2), rgba(255,135,135,0.1));
     border-color: #ff6b6b;
