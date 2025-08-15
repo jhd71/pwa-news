@@ -51,7 +51,7 @@
     }
     
     .league-tab {
-        background: rgba(255,255,255,0.2);
+        background: rgba(255, 255, 255, 0.2) !important;
         color: #ffffff;
         padding: 6px 12px;
         border-radius: 20px;
@@ -62,7 +62,7 @@
     }
     
     .league-tab.active {
-        background: #ffffff;
+        background: #ffffff !important;
         color: #00c853;
         transform: scale(1.1);
         box-shadow: 0 4px 10px rgba(0,200,83,0.3);
@@ -180,7 +180,7 @@
 }
 
 [data-theme="light"] .league-tab {
-    background: #7e57c2;
+    background: #7e57c2 !important;
 }
 
 [data-theme="light"] .feature-item {
@@ -211,7 +211,7 @@
 }
 
 [data-theme="dark"] .league-tab {
-    background: #81b3fa;
+    background: #27292e !important;
 }
 
 [data-theme="dark"] .football-widget-preview {
@@ -251,7 +251,7 @@
 }
 
 [data-theme="rouge"] .league-tab {
-    background: #d32f2f;
+    background: #d32f2f !important;
 }
 
 [data-theme="rouge"] .feature-item {
@@ -283,7 +283,7 @@
 }
 
 [data-theme="bleuciel"] .league-tab {
-    background: #0ea5e9;
+    background: #0ea5e9 !important;
 }
 
 [data-theme="bleuciel"] .feature-item {
