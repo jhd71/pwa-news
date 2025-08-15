@@ -49,60 +49,72 @@ class FootballWidget {
     }
 
     createWidget() {
-        const widget = document.createElement('div');
-        widget.className = 'football-widget';
-        widget.id = 'footballWidget';
+    const widget = document.createElement('div');
+    widget.className = 'football-widget';
+    widget.id = 'footballWidget';
+    
+    widget.innerHTML = `
+        <div class="football-widget-header">
+            <span class="football-widget-title">⚽ FOOTBALL</span>
+            
+            <!-- Bouton notifications -->
+            <button class="notif-toggle" id="notifToggle" title="Notifications de buts">
+                🔔
+            </button>
+            
+            <div class="league-tabs">
+                <button class="league-tab active" data-league="ligue1">L1</button>
+                <button class="league-tab" data-league="ligue2">L2</button>
+                <button class="league-tab" data-league="live">LIVE</button>
+            </div>
+        </div>
         
-        widget.innerHTML = `
-            <div class="football-widget-header">
-                <span class="football-widget-title">⚽ FOOTBALL</span>
-                
-                <!-- Bouton notifications -->
-                <button class="notif-toggle" id="notifToggle" title="Notifications de buts">
-                    🔔
-                </button>
-                
-                <div class="league-tabs">
-                    <button class="league-tab active" data-league="ligue1">L1</button>
-                    <button class="league-tab" data-league="ligue2">L2</button>
-                    <button class="league-tab" data-league="live">LIVE</button>
-                </div>
+        <div class="football-widget-preview" id="footballWidgetPreview">
+            <div class="current-league" id="currentLeague">
+                🇫🇷 Ligue 1
             </div>
             
-            <div class="football-widget-preview" id="footballWidgetPreview">
-                <div class="current-league" id="currentLeague">
-                    🇫🇷 Ligue 1
-                </div>
-                
-                <!-- Zone des scores en direct -->
-                <div class="live-scores-container" id="liveScoresContainer">
-                    <!-- Les scores seront injectés ici -->
-                </div>
-                
-                <div class="football-features" id="footballFeatures">                   
-                    <div class="feature-item" data-action="scores">
-                        <span class="feature-icon">⚽</span>
-                        <span>Scores live</span>
-                    </div>
-                    <div class="feature-item" data-action="actualites">
-                        <span class="feature-icon">📰</span>
-                        <span>Actualités Foot</span>
-                    </div>
-                    <div class="feature-item" data-action="transferts">
-                        <span class="feature-icon">💰</span>
-                        <span>Derniers transferts</span>
-                    </div>
-                </div>
+            <!-- Badge API (visible seulement pour L1) -->
+            <div class="api-badge" id="apiBadge">
+                <span class="api-indicator">●</span>
+                <span>Données en direct</span>
             </div>
             
-            <div class="football-widget-footer">
-    <span id="liveMatchCount" class="match-count">Chargement...</span>
-    <div class="football-widget-count">FotMob</div>
-	</div>
+            <!-- Zone des scores -->
+            <div class="live-scores-container" id="liveScoresContainer">
+                <!-- Les scores seront injectés ici -->
             </div>
-        `;
-
-// Restaurer l'état du bouton notifications
+            
+            <div class="football-features" id="footballFeatures">
+                <div class="feature-item" data-action="classements">
+                    <span class="feature-icon">📊</span>
+                    <span>Classements</span>
+                </div>
+                <div class="feature-item" data-action="scores">
+                    <span class="feature-icon">⚽</span>
+                    <span>Scores live</span>
+                </div>
+                <div class="feature-item" data-action="actualites">
+                    <span class="feature-icon">📰</span>
+                    <span>Actualités</span>
+                </div>
+                <div class="feature-item" data-action="transferts">
+                    <span class="feature-icon">💰</span>
+                    <span>Transferts</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="football-widget-footer">
+            <span id="liveMatchCount" class="match-count">Chargement...</span>
+            <div class="football-widget-count">FotMob</div>
+        </div>
+    `;
+    
+    this.setupEventListeners(widget);
+    this.initializeAPI();
+    
+    // Restaurer l'état du bouton notifications
     setTimeout(() => {
         if (this.notificationsEnabled) {
             const notifToggle = widget.querySelector('#notifToggle');
@@ -111,11 +123,9 @@ class FootballWidget {
             }
         }
     }, 100);
-	
-        this.setupEventListeners(widget);
-        this.initializeAPI(); // Initialiser l'API
-        return widget;
-    }
+    
+    return widget;
+}
 
     // Initialiser la connexion API
     async initializeAPI() {
@@ -131,11 +141,58 @@ class FootballWidget {
     // Remplacez TOUTE la méthode loadTodayMatches() par celle-ci :
 async loadTodayMatches() {
     try {
-        const leagues = this.getLeagues();
-        const leagueId = leagues[this.currentLeague].apiId;
+        const container = document.getElementById('liveScoresContainer');
+        const apiBadge = document.getElementById('apiBadge');
         
-        // Utiliser VOTRE proxy API sur Vercel
-        const response = await fetch(`/api/football-data?competition=${leagueId}&endpoint=matches`);
+        // ONGLET LIGUE 2 - Redirection directe vers FotMob
+        if (this.currentLeague === 'ligue2') {
+            // Masquer le badge API
+            if (apiBadge) apiBadge.style.display = 'none';
+            
+            // Message simple
+            container.innerHTML = `
+                <div class="fotmob-redirect">
+                    <div class="redirect-icon">📱</div>
+                    <div class="redirect-text">Voir la Ligue 2 sur FotMob</div>
+                    <div class="redirect-arrow">→</div>
+                </div>
+            `;
+            
+            document.getElementById('liveMatchCount').textContent = 'Ligue 2 → FotMob';
+            
+            // Ouvrir FotMob après un court délai
+            setTimeout(() => {
+                window.open('https://www.fotmob.com/fr/leagues/110/matches/ligue-2', '_blank');
+            }, 1000);
+            return;
+        }
+        
+        // ONGLET LIVE - Tous les matchs en cours (toutes compétitions)
+        if (this.currentLeague === 'live') {
+            // Masquer le badge API car on ne charge pas de vraies données
+            if (apiBadge) apiBadge.style.display = 'none';
+            
+            container.innerHTML = `
+                <div class="fotmob-redirect">
+                    <div class="redirect-icon">🔴</div>
+                    <div class="redirect-text">Voir tous les matchs en direct</div>
+                    <div class="redirect-arrow">→</div>
+                </div>
+            `;
+            
+            document.getElementById('liveMatchCount').textContent = 'Matchs LIVE → FotMob';
+            
+            // Ouvrir FotMob matchs en direct
+            setTimeout(() => {
+                window.open('https://www.fotmob.com/fr', '_blank');
+            }, 1000);
+            return;
+        }
+        
+        // ONGLET LIGUE 1 - Charger les vrais matchs via l'API
+        if (apiBadge) apiBadge.style.display = 'flex';
+        
+        const response = await fetch(`/api/football-data?competition=FL1&endpoint=matches`);
         
         if (!response.ok) {
             throw new Error(`Erreur HTTP: ${response.status}`);
@@ -143,14 +200,11 @@ async loadTodayMatches() {
         
         const data = await response.json();
         
-        // Vérifier si on a des données
         if (!data.matches) {
             throw new Error('Pas de données de matchs');
         }
         
         this.liveMatches = data.matches;
-        
-        // Afficher les matchs réels
         this.displayLiveMatches();
         
         // Vérifier les buts si notifications activées
@@ -158,11 +212,20 @@ async loadTodayMatches() {
             this.checkForGoals();
         }
         
-        console.log(`⚽ ${this.liveMatches.length} matchs chargés pour ${leagues[this.currentLeague].name}`);
+        console.log(`⚽ Matchs Ligue 1 chargés`);
         
     } catch (error) {
         console.error('Erreur chargement matchs:', error);
-        this.displayError(error.message);
+        const container = document.getElementById('liveScoresContainer');
+        if (container) {
+            container.innerHTML = `
+                <div class="error-message">
+                    <span class="error-icon">⚠️</span>
+                    <span>Erreur de chargement</span>
+                </div>
+            `;
+        }
+        document.getElementById('liveMatchCount').textContent = 'Erreur';
     }
 }
 
