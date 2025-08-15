@@ -698,6 +698,22 @@
     animation: blink 1s infinite;
 }
 
+[data-theme="dark"] .notif-toggle {
+    border: 1px solid #ccccce;
+}
+
+[data-theme="rouge"] .notif-toggle {
+    border: 1px solid #c0493e;
+}
+
+[data-theme="bleuciel"] .notif-toggle {
+    border: 1px solid #85bdeb;
+}
+
+[data-theme="light"] .notif-toggle {
+    border: 1px solid #7260b7;
+}	
+
 /* Scrollbar personnalisée pour les scores */
 .live-scores-container::-webkit-scrollbar {
     width: 4px;
@@ -783,7 +799,6 @@
 
 .match-count {
     font-size: 13px;
-    color: rgba(255,255,255,0.7);
     font-weight: 500;
 }
 
