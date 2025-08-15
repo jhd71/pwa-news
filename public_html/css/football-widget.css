@@ -181,7 +181,7 @@
 [data-theme="light"] .football-widget-title,
 [data-theme="light"] .football-widget-footer,
 [data-theme="light"] .current-league {
-    color: #7e57c2;
+    color: #7e57c2 !important;
 }
 
 [data-theme="light"] .league-tab {
@@ -212,7 +212,7 @@
 [data-theme="dark"] .football-widget-title,
 [data-theme="dark"] .football-widget-footer,
 [data-theme="dark"] .current-league {
-    color: #81b3fa;
+    color: #d7d7d8 !important;
 }
 
 [data-theme="dark"] .league-tab {
@@ -252,7 +252,7 @@
 [data-theme="rouge"] .football-widget-title,
 [data-theme="rouge"] .football-widget-footer,
 [data-theme="rouge"] .current-league {
-    color: #d32f2f;
+    color: #d32f2f !important;
 }
 
 [data-theme="rouge"] .league-tab {
@@ -284,7 +284,7 @@
 [data-theme="bleuciel"] .football-widget-title,
 [data-theme="bleuciel"] .football-widget-footer,
 [data-theme="bleuciel"] .current-league {
-    color: #0ea5e9;
+    color: #0ea5e9 !important;
 }
 
 [data-theme="bleuciel"] .league-tab {
