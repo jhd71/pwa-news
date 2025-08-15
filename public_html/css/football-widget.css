@@ -458,3 +458,421 @@
         box-sizing: border-box !important;
     }
 }
+
+/* === STYLES ADDITIONNELS POUR L'API ET LES MATCHS === */
+
+/* Badge API */
+.api-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 11px;
+    color: rgba(0, 230, 118, 0.8);
+    margin: -5px 0 10px 0;
+    transition: all 0.3s ease;
+}
+
+.api-indicator {
+    color: #00e676;
+    animation: pulse 2s infinite;
+    font-size: 8px;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Container des scores */
+.live-scores-container {
+    margin: 10px 0;
+    max-height: 150px;
+    overflow-y: auto;
+    display: none; /* Caché par défaut */
+}
+
+/* Score individuel */
+.live-score {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 8px 10px;
+    margin: 6px 0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.live-score:hover {
+    background: rgba(255,255,255,0.08);
+    transform: translateX(2px);
+}
+
+/* Match en cours */
+.live-score.match-active {
+    background: linear-gradient(90deg, rgba(255,107,107,0.15), rgba(255,135,135,0.08));
+    border-color: rgba(255,107,107,0.5);
+    animation: pulseMatch 2s infinite;
+}
+
+@keyframes pulseMatch {
+    0%, 100% { border-color: rgba(255,107,107,0.5); }
+    50% { border-color: rgba(255,107,107,0.8); }
+}
+
+/* Match terminé */
+.live-score.match-finished {
+    opacity: 0.6;
+}
+
+/* Équipes et score */
+.match-teams {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.team {
+    flex: 1;
+    font-size: 12px;
+    color: rgba(255,255,255,0.9);
+}
+
+.team.home {
+    text-align: left;
+}
+
+.team.away {
+    text-align: right;
+}
+
+.score {
+    font-size: 14px;
+    color: #00e676;
+    padding: 0 8px;
+    font-weight: bold;
+}
+
+/* Infos du match */
+.match-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    color: rgba(255,255,255,0.5);
+}
+
+.match-time {
+    font-weight: 500;
+}
+
+/* Indicateur LIVE */
+.live-indicator {
+    background: #ff1744;
+    color: white;
+    padding: 2px 5px;
+    border-radius: 8px;
+    font-size: 9px;
+    font-weight: bold;
+    animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* Pas de match */
+.no-matches {
+    text-align: center;
+    color: rgba(255,255,255,0.5);
+    padding: 20px;
+    font-style: italic;
+    font-size: 13px;
+}
+
+/* Message d'erreur */
+.error-message {
+    text-align: center;
+    color: rgba(255,87,87,0.8);
+    padding: 15px;
+    background: rgba(255,87,87,0.1);
+    border-radius: 8px;
+    margin: 10px 0;
+    font-size: 12px;
+}
+
+/* Compteur de matchs dans le footer */
+.match-count {
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    font-weight: 500;
+}
+
+/* Footer avec 2 éléments */
+.football-widget-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Bouton notifications */
+.notif-toggle {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.6);
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: auto;
+    margin-right: 8px;
+    display: none; /* Caché par défaut */
+}
+
+.notif-toggle:hover {
+    background: rgba(255,255,255,0.2);
+    transform: scale(1.05);
+}
+
+.notif-toggle.active {
+    background: #00e676;
+    color: #000000;
+    border-color: #00e676;
+}
+
+.notif-toggle.active::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 6px;
+    height: 6px;
+    background: #ff1744;
+    border-radius: 50%;
+    animation: blink 1s infinite;
+}
+
+/* Notification de but */
+.goal-notification {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #ff6b6b, #ff8787);
+    color: white;
+    padding: 25px 35px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+    z-index: 10000;
+    animation: goalAnimation 0.5s ease-out;
+    text-align: center;
+}
+
+.goal-icon {
+    font-size: 40px;
+    display: block;
+    margin-bottom: 10px;
+    animation: rotate 1s ease-in-out;
+}
+
+.goal-title {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.goal-match {
+    font-size: 14px;
+    opacity: 0.95;
+}
+
+@keyframes goalAnimation {
+    0% {
+        transform: translate(-50%, -50%) scale(0) rotate(-180deg);
+        opacity: 0;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.2) rotate(10deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Scrollbar personnalisée pour les scores */
+.live-scores-container::-webkit-scrollbar {
+    width: 3px;
+}
+
+.live-scores-container::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.05);
+    border-radius: 2px;
+}
+
+.live-scores-container::-webkit-scrollbar-thumb {
+    background: #00e676;
+    border-radius: 2px;
+}
+
+/* === ADAPTATIONS THÈMES === */
+
+/* Thème Light */
+[data-theme="light"] .live-score {
+    background: rgba(0,0,0,0.03);
+    border-color: rgba(0,0,0,0.1);
+}
+
+[data-theme="light"] .match-teams,
+[data-theme="light"] .team {
+    color: #333;
+}
+
+[data-theme="light"] .match-info {
+    color: rgba(0,0,0,0.5);
+}
+
+[data-theme="light"] .score {
+    color: #00c853;
+}
+
+[data-theme="light"] .no-matches {
+    color: rgba(0,0,0,0.5);
+}
+
+[data-theme="light"] .api-badge {
+    color: rgba(0,200,83,0.8);
+}
+
+/* Thème Dark */
+[data-theme="dark"] .live-score {
+    background: rgba(255,255,255,0.03);
+}
+
+[data-theme="dark"] .api-badge {
+    color: rgba(129,179,250,0.8);
+}
+
+[data-theme="dark"] .api-indicator {
+    color: #81b3fa;
+}
+
+/* Thème Rouge */
+[data-theme="rouge"] .live-score {
+    background: rgba(211,47,47,0.05);
+    border-color: rgba(211,47,47,0.15);
+}
+
+[data-theme="rouge"] .score {
+    color: #d32f2f;
+}
+
+[data-theme="rouge"] .api-badge {
+    color: rgba(211,47,47,0.8);
+}
+
+[data-theme="rouge"] .api-indicator {
+    color: #d32f2f;
+}
+
+/* Thème Bleu Ciel */
+[data-theme="bleuciel"] .live-score {
+    background: rgba(14,165,233,0.05);
+    border-color: rgba(14,165,233,0.15);
+}
+
+[data-theme="bleuciel"] .score {
+    color: #0ea5e9;
+}
+
+[data-theme="bleuciel"] .api-badge {
+    color: rgba(14,165,233,0.8);
+}
+
+[data-theme="bleuciel"] .api-indicator {
+    color: #0ea5e9;
+}
+
+/* === RESPONSIVE === */
+
+@media (max-width: 768px) {
+    .live-scores-container {
+        max-height: 120px;
+    }
+    
+    .live-score {
+        padding: 6px 8px;
+        margin: 4px 0;
+    }
+    
+    .team {
+        font-size: 11px;
+    }
+    
+    .score {
+        font-size: 13px;
+        padding: 0 6px;
+    }
+    
+    .match-info {
+        font-size: 9px;
+    }
+    
+    .api-badge {
+        font-size: 10px;
+    }
+    
+    .notif-toggle {
+        padding: 3px 6px;
+        font-size: 12px;
+    }
+}
+
+/* Badge FotMob cliquable */
+.football-widget-count {
+    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.1);
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.football-widget-count:hover {
+    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.2);
+    transform: scale(1.05);
+}
+
+.football-widget-count:active {
+    transform: scale(0.95);
+}
+
+/* Petite flèche pour indiquer que c'est un lien */
+.football-widget-count::after {
+    content: ' →';
+    font-size: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.football-widget-count:hover::after {
+    opacity: 1;
+}

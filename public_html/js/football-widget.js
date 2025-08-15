@@ -1,40 +1,45 @@
-// js/football-widget.js - Widget Football responsive pour Actu&Média
+// js/football-widget.js - Widget Football avec API pour Ligue 1
 class FootballWidget {
     constructor() {
-    this.currentLeague = 'ligue1'; // Changé de 'live' à 'ligue1'
-    this.updateInterval = null;
-	}
+        this.currentLeague = 'ligue1';
+        this.updateInterval = null;
+        this.notificationsEnabled = localStorage.getItem('footballNotifications') === 'true';
+        this.lastScores = {};
+        this.checkInterval = null;
+        this.liveMatches = [];
+    }
 
-    // Informations des ligues françaises + LIVE avec URLs CORRECTES
+    // Informations des ligues
     getLeagues() {
         return {
             ligue1: { 
                 name: 'Ligue 1', 
-                flag: '🇫🇷', // ✅ Emoji drapeau français correct
+                flag: '🇫🇷',
+                apiId: 'FL1', // Pour l'API
                 urls: {
                     classements: 'https://www.fotmob.com/fr/leagues/53/table/ligue-1',
                     scores: 'https://www.fotmob.com/fr/leagues/53/matches/ligue-1?group=by-date',
                     actualites: 'https://www.fotmob.com/fr/leagues/53/news/ligue-1',
-					transferts: 'https://www.fotmob.com/fr/leagues/53/transfers/ligue-1' // 🆕 Derniers transferts
+                    transferts: 'https://www.fotmob.com/fr/leagues/53/transfers/ligue-1'
                 }
             },
             ligue2: { 
                 name: 'Ligue 2', 
-                flag: '🇫🇷', // ✅ Même emoji pour la cohérence
+                flag: '🇫🇷',
                 urls: {
                     classements: 'https://www.fotmob.com/fr/leagues/110/table/ligue-2',
                     scores: 'https://www.fotmob.com/fr/leagues/110/matches/ligue-2?group=by-date',
                     actualites: 'https://www.fotmob.com/fr/leagues/110/news/ligue-2',
-					transferts: 'https://www.fotmob.com/fr/leagues/110/transfers/ligue-2' // 🆕 Derniers transferts
+                    transferts: 'https://www.fotmob.com/fr/leagues/110/transfers/ligue-2'
                 }
             },
             live: {
                 name: 'Tous les matchs',
                 flag: '🌍',
                 urls: {
-                    classements: 'https://www.fotmob.com/fr', // Matchs en direct
-                    actualites: 'https://www.fotmob.com/fr/news', // 🆕 Actualités mondiales
-                    transferts: 'https://www.fotmob.com/fr/transfers' // 🆕 Derniers transferts
+                    scores: 'https://www.fotmob.com/fr',
+                    actualites: 'https://www.fotmob.com/fr/news',
+                    transferts: 'https://www.fotmob.com/fr/transfers'
                 }
             }
         };
@@ -48,49 +53,339 @@ class FootballWidget {
         widget.innerHTML = `
             <div class="football-widget-header">
                 <span class="football-widget-title">⚽ FOOTBALL</span>
+                
+                <!-- Bouton notifications (visible seulement sur L1) -->
+                <button class="notif-toggle" id="notifToggle" title="Notifications de buts" style="display: none;">
+                    🔔
+                </button>
+                
                 <div class="league-tabs">
-				<button class="league-tab active" data-league="ligue1">L1</button>
-				<button class="league-tab" data-league="ligue2">L2</button>
-				<button class="league-tab" data-league="live">LIVE</button>
-			</div>
+                    <button class="league-tab active" data-league="ligue1">L1</button>
+                    <button class="league-tab" data-league="ligue2">L2</button>
+                    <button class="league-tab" data-league="live">LIVE</button>
+                </div>
             </div>
             
             <div class="football-widget-preview" id="footballWidgetPreview">
                 <div class="current-league" id="currentLeague">
-					🇫🇷 Ligue 1
-				</div>
-                <div class="football-features" id="footballFeatures">
-			<div class="feature-item" data-action="classements">
-				<span class="feature-icon">📊</span>
-				<span>Classements en direct</span>
-		</div>
-			<div class="feature-item" data-action="scores">
-				<span class="feature-icon">⚽</span>
-				<span>Scores live</span>
-		</div>
-			<div class="feature-item" data-action="actualites">
-				<span class="feature-icon">📰</span>
-				<span>Actualités Foot</span>
-			</div>
-			<div class="feature-item" data-action="transferts">
-                    <span class="feature-icon">💰</span>
-                    <span>Derniers transferts</span>
+                    🇫🇷 Ligue 1
                 </div>
-			</div>
+                
+                <!-- Badge API (visible seulement pour L1) -->
+                <div class="api-badge" id="apiBadge">
+                    <span class="api-indicator">●</span>
+                    <span>Données en direct</span>
+                </div>
+                
+                <!-- Zone des scores (seulement pour L1) -->
+                <div class="live-scores-container" id="liveScoresContainer">
+                    <!-- Les scores seront injectés ici -->
+                </div>
+                
+                <div class="football-features" id="footballFeatures">
+                    <div class="feature-item" data-action="classements">
+                        <span class="feature-icon">📊</span>
+                        <span>Classements en direct</span>
+                    </div>
+                    <div class="feature-item" data-action="scores">
+                        <span class="feature-icon">⚽</span>
+                        <span>Scores live</span>
+                    </div>
+                    <div class="feature-item" data-action="actualites">
+                        <span class="feature-icon">📰</span>
+                        <span>Actualités Foot</span>
+                    </div>
+                    <div class="feature-item" data-action="transferts">
+                        <span class="feature-icon">💰</span>
+                        <span>Derniers transferts</span>
+                    </div>
+                </div>
             </div>
             
             <div class="football-widget-footer">
-                <div class="football-widget-count" id="footballWidgetCount">FotMob</div>
+                <span id="liveMatchCount" class="match-count"></span>
+                <div class="football-widget-count">FotMob</div>
             </div>
         `;
 
         this.setupEventListeners(widget);
+        
+        // Initialiser seulement si on est sur L1
+        if (this.currentLeague === 'ligue1') {
+            this.initializeAPI();
+            this.showNotificationButton();
+        }
+        
+        // Restaurer l'état du bouton notifications
+        setTimeout(() => {
+            if (this.notificationsEnabled && this.currentLeague === 'ligue1') {
+                const notifToggle = widget.querySelector('#notifToggle');
+                if (notifToggle) {
+                    notifToggle.classList.add('active');
+                }
+            }
+        }, 100);
+        
         return widget;
     }
 
-    setupEventListeners(widget) {
+    // Initialiser la connexion API (seulement pour L1)
+    async initializeAPI() {
+        if (this.currentLeague !== 'ligue1') return;
+        
+        await this.loadTodayMatches();
+        
+        // Actualiser toutes les 60 secondes
+        this.updateInterval = setInterval(() => {
+            if (this.currentLeague === 'ligue1') {
+                this.loadTodayMatches();
+            }
+        }, 60000);
+    }
+	
+	// Charger les matchs du jour (seulement L1)
+    async loadTodayMatches() {
+        const container = document.getElementById('liveScoresContainer');
+        const apiBadge = document.getElementById('apiBadge');
+        
+        // Seulement pour Ligue 1
+        if (this.currentLeague !== 'ligue1') {
+            if (container) container.style.display = 'none';
+            if (apiBadge) apiBadge.style.display = 'none';
+            return;
+        }
+        
+        // Afficher les éléments L1
+        if (container) container.style.display = 'block';
+        if (apiBadge) apiBadge.style.display = 'flex';
+        
+        try {
+            const response = await fetch(`/api/football-data?competition=FL1&endpoint=matches`);
+            
+            if (!response.ok) {
+                throw new Error(`Erreur HTTP: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            if (!data.matches) {
+                throw new Error('Pas de données de matchs');
+            }
+            
+            this.liveMatches = data.matches;
+            this.displayLiveMatches();
+            
+            // Vérifier les buts si notifications activées
+            if (this.notificationsEnabled) {
+                this.checkForGoals();
+            }
+            
+            console.log(`⚽ Matchs Ligue 1 chargés`);
+            
+        } catch (error) {
+            console.error('Erreur chargement matchs:', error);
+            if (container) {
+                container.innerHTML = `
+                    <div class="error-message">
+                        <span>⚠️ Erreur de chargement</span>
+                    </div>
+                `;
+            }
+            document.getElementById('liveMatchCount').textContent = 'Erreur';
+        }
+    }
+
+    // Afficher les matchs en direct
+    displayLiveMatches() {
+        const container = document.getElementById('liveScoresContainer');
+        if (!container || this.currentLeague !== 'ligue1') return;
+        
+        // Obtenir la date d'aujourd'hui
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        
+        // Filtrer les matchs d'aujourd'hui
+        const todayMatches = this.liveMatches.filter(match => {
+            const matchDate = new Date(match.utcDate);
+            return matchDate >= today && matchDate < tomorrow;
+        });
+        
+        // Trier par heure
+        todayMatches.sort((a, b) => new Date(a.utcDate) - new Date(b.utcDate));
+        
+        if (todayMatches.length === 0) {
+            container.innerHTML = '<div class="no-matches">Aucun match de Ligue 1 aujourd\'hui</div>';
+            document.getElementById('liveMatchCount').textContent = 'Aucun match aujourd\'hui';
+            return;
+        }
+        
+        // Générer le HTML des matchs
+        let html = '';
+        let liveCount = 0;
+        
+        todayMatches.forEach(match => {
+            const isLive = match.status === 'IN_PLAY' || match.status === 'PAUSED' || match.status === 'HALFTIME';
+            const isFinished = match.status === 'FINISHED';
+            if (isLive) liveCount++;
+            
+            const homeScore = match.score?.fullTime?.home ?? match.score?.halfTime?.home ?? '-';
+            const awayScore = match.score?.fullTime?.away ?? match.score?.halfTime?.away ?? '-';
+            const matchTime = this.getMatchTime(match);
+            
+            html += `
+                <div class="live-score ${isLive ? 'match-active' : ''} ${isFinished ? 'match-finished' : ''}">
+                    <div class="match-teams">
+                        <span class="team home">${match.homeTeam.shortName || match.homeTeam.name}</span>
+                        <span class="score">${homeScore} - ${awayScore}</span>
+                        <span class="team away">${match.awayTeam.shortName || match.awayTeam.name}</span>
+                    </div>
+                    <div class="match-info">
+                        <span class="match-time">${matchTime}</span>
+                        ${isLive ? '<span class="live-indicator">LIVE</span>' : ''}
+                    </div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+        
+        // Mettre à jour le compteur
+        let countText;
+        if (liveCount > 0) {
+            countText = `🔴 ${liveCount} match${liveCount > 1 ? 's' : ''} en direct`;
+        } else {
+            countText = `${todayMatches.length} match${todayMatches.length > 1 ? 's' : ''} aujourd'hui`;
+        }
+        
+        document.getElementById('liveMatchCount').textContent = countText;
+    }
+
+    // Obtenir l'heure ou le statut du match
+    getMatchTime(match) {
+        switch(match.status) {
+            case 'IN_PLAY':
+                return match.minute ? `${match.minute}'` : 'En cours';
+            case 'HALFTIME':
+                return 'Mi-temps';
+            case 'PAUSED':
+                return 'Pause';
+            case 'FINISHED':
+                return 'Terminé';
+            case 'POSTPONED':
+                return 'Reporté';
+            case 'CANCELLED':
+                return 'Annulé';
+            case 'SCHEDULED':
+            case 'TIMED':
+                const date = new Date(match.utcDate);
+                return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+            default:
+                return match.status;
+        }
+    }
+
+    // Vérifier les nouveaux buts
+    checkForGoals() {
+        if (this.currentLeague !== 'ligue1') return;
+        
+        this.liveMatches.forEach(match => {
+            if (match.status !== 'IN_PLAY') return;
+            
+            const matchKey = `${match.homeTeam.id}-${match.awayTeam.id}`;
+            const currentScore = `${match.score.fullTime?.home || 0}-${match.score.fullTime?.away || 0}`;
+            
+            if (this.lastScores[matchKey] && this.lastScores[matchKey] !== currentScore) {
+                this.showGoalNotification({
+                    home: match.homeTeam.name,
+                    away: match.awayTeam.name,
+                    homeScore: match.score.fullTime?.home || 0,
+                    awayScore: match.score.fullTime?.away || 0
+                });
+            }
+            
+            this.lastScores[matchKey] = currentScore;
+        });
+    }
+
+    // Afficher une notification de but
+    showGoalNotification(match) {
+        if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification('⚽ BUT en Ligue 1 !', {
+                body: `${match.home} ${match.homeScore} - ${match.awayScore} ${match.away}`,
+                icon: '/images/football-icon.png',
+                tag: 'goal-notification',
+                requireInteraction: false
+            });
+        }
+        
+        // Notification visuelle
+        const notification = document.createElement('div');
+        notification.className = 'goal-notification';
+        notification.innerHTML = `
+            <span class="goal-icon">⚽</span>
+            <div class="goal-title">BUT !</div>
+            <div class="goal-match">${match.home} ${match.homeScore} - ${match.awayScore} ${match.away}</div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        if (navigator.vibrate) {
+            navigator.vibrate([200, 100, 200]);
+        }
+        
+        setTimeout(() => {
+            notification.style.animation = 'fadeOut 0.5s';
+            setTimeout(() => notification.remove(), 500);
+        }, 5000);
+    }
+
+    // Afficher/masquer le bouton notifications
+    showNotificationButton() {
+        const notifToggle = document.getElementById('notifToggle');
+        if (notifToggle) {
+            notifToggle.style.display = this.currentLeague === 'ligue1' ? 'block' : 'none';
+        }
+    }
+	
+	setupEventListeners(widget) {
         const leagues = this.getLeagues();
         const currentLeagueDisplay = widget.querySelector('#currentLeague');
+        
+        // Gestion du bouton notifications (seulement pour L1)
+        const notifToggle = widget.querySelector('#notifToggle');
+        if (notifToggle) {
+            notifToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                if (this.currentLeague !== 'ligue1') return;
+                
+                this.notificationsEnabled = !this.notificationsEnabled;
+                notifToggle.classList.toggle('active', this.notificationsEnabled);
+                
+                localStorage.setItem('footballNotifications', this.notificationsEnabled);
+                
+                if (this.notificationsEnabled) {
+                    if ('Notification' in window) {
+                        Notification.requestPermission().then(permission => {
+                            if (permission === 'granted') {
+                                this.showToast('🔔 Notifications activées !');
+                            } else {
+                                this.showToast('⚠️ Autorisez les notifications');
+                                this.notificationsEnabled = false;
+                                localStorage.setItem('footballNotifications', 'false');
+                                notifToggle.classList.remove('active');
+                            }
+                        });
+                    }
+                } else {
+                    this.showToast('🔕 Notifications désactivées');
+                }
+                
+                if (navigator.vibrate) navigator.vibrate(50);
+            });
+        }
         
         // Changement de ligue
         const tabs = widget.querySelectorAll('.league-tab');
@@ -98,61 +393,98 @@ class FootballWidget {
             tab.addEventListener('click', (e) => {
                 e.stopPropagation();
                 
-                // Animation tactile
-                if (navigator.vibrate) {
-                    navigator.vibrate(30);
-                }
+                if (navigator.vibrate) navigator.vibrate(30);
                 
-                // Mise à jour visuelle des onglets
                 tabs.forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
                 
-                // Mettre à jour la ligue sélectionnée
                 const league = tab.dataset.league;
                 this.currentLeague = league;
                 
-                // Mettre à jour l'affichage
                 const leagueInfo = leagues[league];
                 currentLeagueDisplay.innerHTML = `${leagueInfo.flag} ${leagueInfo.name}`;
                 
-                // Mettre à jour les features selon la ligue sélectionnée
+                // Gérer l'affichage selon l'onglet
+                const container = document.getElementById('liveScoresContainer');
+                const apiBadge = document.getElementById('apiBadge');
+                const matchCount = document.getElementById('liveMatchCount');
+                
+                if (league === 'ligue1') {
+                    // Afficher les éléments L1
+                    if (container) container.style.display = 'block';
+                    if (apiBadge) apiBadge.style.display = 'flex';
+                    this.showNotificationButton();
+                    this.initializeAPI();
+                } else {
+                    // Masquer pour L2 et LIVE
+                    if (container) container.style.display = 'none';
+                    if (apiBadge) apiBadge.style.display = 'none';
+                    if (notifToggle) notifToggle.style.display = 'none';
+                    if (matchCount) matchCount.textContent = '';
+                    
+                    // Arrêter les mises à jour
+                    if (this.updateInterval) {
+                        clearInterval(this.updateInterval);
+                        this.updateInterval = null;
+                    }
+                }
+                
                 this.updateFeatures(league);
                 
-                // Animation du changement
                 currentLeagueDisplay.style.transform = 'scale(1.1)';
                 setTimeout(() => {
                     currentLeagueDisplay.style.transform = 'scale(1)';
                 }, 200);
-                
-                // Mise à jour du badge
-                const countDisplay = widget.querySelector('#footballWidgetCount');
-                if (countDisplay) {
-                    countDisplay.textContent = 'FotMob';
-                }
-                
-                console.log(`⚽ Ligue sélectionnée: ${leagueInfo.name}`);
             });
         });
 
-        // Clic sur les feature-items - utiliser la nouvelle méthode
+        // Clic sur les feature-items
         this.setupFeatureEvents(widget);
 
-        // Clic sur le widget entier (footer ou zone vide) - ouvre les classements par défaut
-        widget.addEventListener('click', (e) => {
-            // Ne pas déclencher si on clique sur les onglets ou les feature-items
-            if (e.target.closest('.league-tab') || e.target.closest('.feature-item[data-action]')) return;
+        // Clic UNIQUEMENT sur le badge FotMob dans le footer
+        const fotmobBadge = widget.querySelector('.football-widget-count');
+        if (fotmobBadge) {
+            fotmobBadge.addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                // Animation
+                fotmobBadge.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    fotmobBadge.style.transform = 'scale(1)';
+                }, 150);
+                
+                if (navigator.vibrate) navigator.vibrate(50);
+                
+                // Ouvrir FotMob selon l'onglet actuel
+                const currentLeagueInfo = leagues[this.currentLeague];
+                let url;
+                
+                if (this.currentLeague === 'live') {
+                    url = 'https://www.fotmob.com/fr';
+                } else if (this.currentLeague === 'ligue1') {
+                    url = 'https://www.fotmob.com/fr/leagues/53/table/ligue-1';
+                } else if (this.currentLeague === 'ligue2') {
+                    url = 'https://www.fotmob.com/fr/leagues/110/table/ligue-2';
+                }
+                
+                if (url) {
+                    window.open(url, '_blank');
+                    this.showToast('Ouverture FotMob...');
+                }
+            });
             
-            this.openFootballDetails(widget);
-        });
-    }
+            // Ajouter un style pour montrer que c'est cliquable
+            fotmobBadge.style.cursor = 'pointer';
+        }
+		
+    }  // Fin de setupEventListeners   
 
-    // Nouvelle méthode pour mettre à jour les features selon la ligue
+    // Mettre à jour les features selon la ligue
     updateFeatures(league) {
         const featuresContainer = document.getElementById('footballFeatures');
         if (!featuresContainer) return;
 
         if (league === 'live') {
-            // Mode LIVE : Matchs en direct, Actualités mondiales, Derniers transferts
             featuresContainer.innerHTML = `
                 <div class="feature-item" data-action="scores">
                     <span class="feature-icon">🔴</span>
@@ -168,11 +500,10 @@ class FootballWidget {
                 </div>
             `;
         } else {
-            // Mode Ligue 1/2 : features spécifiques
             featuresContainer.innerHTML = `
                 <div class="feature-item" data-action="classements">
                     <span class="feature-icon">📊</span>
-                    <span>Classements en direct</span>
+                    <span>Classements</span>
                 </div>
                 <div class="feature-item" data-action="scores">
                     <span class="feature-icon">⚽</span>
@@ -180,20 +511,18 @@ class FootballWidget {
                 </div>
                 <div class="feature-item" data-action="actualites">
                     <span class="feature-icon">📰</span>
-                    <span>Actualités Foot</span>
+                    <span>Actualités</span>
                 </div>
-				<div class="feature-item" data-action="transferts">
+                <div class="feature-item" data-action="transferts">
                     <span class="feature-icon">💰</span>
-                    <span>Derniers transferts</span>
+                    <span>Transferts</span>
                 </div>
             `;
         }
 
-        // Remettre les événements sur les nouveaux éléments
         this.setupFeatureEvents(featuresContainer);
     }
 
-    // Méthode pour configurer les événements des features
     setupFeatureEvents(container) {
         const leagues = this.getLeagues();
         const featureItems = container.querySelectorAll('.feature-item[data-action]');
@@ -206,38 +535,17 @@ class FootballWidget {
                 const currentLeagueInfo = leagues[this.currentLeague];
                 const url = currentLeagueInfo.urls[action];
                 
-                // Animation de clic sur l'item
+                if (!url) return;
+                
                 item.style.transform = 'scale(0.95)';
                 setTimeout(() => {
                     item.style.transform = 'scale(1)';
                 }, 150);
                 
-                // Animation tactile
-                if (navigator.vibrate) {
-                    navigator.vibrate(50);
-                }
+                if (navigator.vibrate) navigator.vibrate(50);
                 
-                // Ouvrir le lien spécifique
                 window.open(url, '_blank');
-                
-                // Log et notification selon le mode
-                if (this.currentLeague === 'live') {
-                    const actionNames = {
-                        scores: 'Matchs en direct',
-                        actualites: 'Actualités mondiales',
-                        transferts: 'Derniers transferts'
-                    };
-                    console.log(`⚽ Ouverture ${actionNames[action]} - FotMob Live`);
-                    this.showToast(`Ouverture ${actionNames[action]}...`);
-                } else {
-                    const actionNames = {
-                        classements: 'Classements',
-                        scores: 'Scores live',
-                        actualites: 'Actualités'
-                    };
-                    console.log(`⚽ Ouverture ${actionNames[action]} - ${currentLeagueInfo.name}`);
-                    this.showToast(`Ouverture ${actionNames[action]} ${currentLeagueInfo.name}...`);
-                }
+                this.showToast(`Ouverture ${action}...`);
             });
         });
     }
@@ -245,43 +553,25 @@ class FootballWidget {
     openFootballDetails(widget) {
         const leagues = this.getLeagues();
         
-        // Animation de clic sur le widget
         widget.style.transform = 'scale(0.98)';
         setTimeout(() => {
             widget.style.transform = 'scale(1)';
         }, 150);
         
-        // Animation tactile
-        if (navigator.vibrate) {
-            navigator.vibrate(50);
-        }
+        if (navigator.vibrate) navigator.vibrate(50);
         
-        // Ouvrir selon le mode sélectionné
         const currentLeagueInfo = leagues[this.currentLeague];
-        let url, actionName;
+        const url = this.currentLeague === 'live' 
+            ? currentLeagueInfo.urls.scores 
+            : currentLeagueInfo.urls.classements;
         
-        if (this.currentLeague === 'live') {
-            // Mode LIVE : ouvre les matchs en direct par défaut
-            url = currentLeagueInfo.urls.scores;
-            actionName = 'Matchs en direct';
-        } else {
-            // Mode Ligue 1/2 : ouvre les classements par défaut
-            url = currentLeagueInfo.urls.classements;
-            actionName = 'Classements';
+        if (url) {
+            window.open(url, '_blank');
+            this.showToast(`Ouverture ${currentLeagueInfo.name}...`);
         }
-        
-        window.open(url, '_blank');
-        
-        // Log et notification
-        const leagueName = currentLeagueInfo.name;
-        console.log(`⚽ Ouverture ${actionName} - ${leagueName}`);
-        
-        // Afficher une notification discrète
-        this.showToast(`Ouverture ${actionName}...`);
     }
 
     showToast(message) {
-        // Vérifier si une fonction toast existe globalement
         if (typeof window.contentManager !== 'undefined' && 
             window.contentManager.showToast && 
             typeof window.contentManager.showToast === 'function') {
@@ -289,7 +579,6 @@ class FootballWidget {
             return;
         }
         
-        // Sinon, créer une notification simple
         const toast = document.createElement('div');
         toast.style.cssText = `
             position: fixed;
@@ -304,13 +593,11 @@ class FootballWidget {
             z-index: 10000;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             transition: all 0.3s ease;
-            font-family: 'Roboto', sans-serif;
         `;
         toast.textContent = message;
         
         document.body.appendChild(toast);
         
-        // Animation d'apparition
         setTimeout(() => {
             toast.style.opacity = '0';
             toast.style.transform = 'translateX(-50%) translateY(20px)';
@@ -330,42 +617,34 @@ window.createFootballWidget = function() {
     return footballWidget.createWidget();
 };
 
-// Fonction pour intégrer le widget selon la taille d'écran
+// Fonction pour intégrer le widget (reste identique)
 window.addFootballToWidgets = function() {
     setTimeout(() => {
-        // Vérifier si le widget existe déjà
         if (document.getElementById('footballWidget')) {
             console.log('⚽ Widget Football déjà présent');
             return;
         }
         
-        // Fonction pour détecter le mode d'affichage optimal
         const shouldUseWidgetMode = () => {
             const width = window.innerWidth;
-            // Mode widget seulement si vraiment large (3 widgets côte à côte)
             return width >= 1200;
         };
         
         const addFootballWidget = () => {
-            // Supprimer le widget existant s'il y en a un
             const existingWidget = document.getElementById('footballWidget');
             if (existingWidget) {
                 existingWidget.closest('.football-widget-container, .football-widget-container-in-tiles')?.remove();
             }
             
             if (shouldUseWidgetMode()) {
-                // ✅ DESKTOP LARGE : Ajouter dans les widgets en haut
                 addFootballToWidgetsRow();
             } else {
-                // ✅ MOBILE/TABLET : Ajouter dans les tuiles après Sports
                 addFootballToTiles();
             }
         };
         
-        // Ajouter immédiatement
         addFootballWidget();
         
-        // Écouter les changements de taille d'écran avec debounce
         let resizeTimeout;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
@@ -373,11 +652,10 @@ window.addFootballToWidgets = function() {
                 addFootballWidget();
             }, 150);
         });
-        
     }, 800);
 };
 
-// Fonction pour ajouter dans les widgets (DESKTOP)
+// Fonctions helper (restent identiques)
 function addFootballToWidgetsRow() {
     const widgetsRow = document.querySelector('.widgets-row');
     if (!widgetsRow) {
@@ -395,7 +673,6 @@ function addFootballToWidgetsRow() {
     console.log('⚽ Widget Football ajouté dans widgets-row (DESKTOP)');
 }
 
-// Fonction pour ajouter dans les tuiles (MOBILE)
 function addFootballToTiles() {
     const tileContainer = document.getElementById('tileContainer');
     if (!tileContainer) {
@@ -403,7 +680,6 @@ function addFootballToTiles() {
         return;
     }
     
-    // Trouver le séparateur "Réseaux Sociaux"
     const separators = tileContainer.querySelectorAll('.separator');
     let socialSeparator = null;
     
@@ -418,7 +694,6 @@ function addFootballToTiles() {
         return;
     }
     
-    // Créer le conteneur pour mobile
     const footballContainer = document.createElement('div');
     footballContainer.className = 'football-widget-container-in-tiles';
     footballContainer.style.cssText = `
@@ -431,26 +706,21 @@ function addFootballToTiles() {
     const footballWidget = window.createFootballWidget();
     footballContainer.appendChild(footballWidget);
     
-    // Insérer AVANT le séparateur "Réseaux Sociaux"
     socialSeparator.parentNode.insertBefore(footballContainer, socialSeparator);
     console.log('⚽ Widget Football ajouté avant Réseaux Sociaux (MOBILE)');
 }
 
-// Écouter les changements de thème pour mettre à jour le widget
+// Listener pour les changements de thème
 document.addEventListener('themeChanged', function(e) {
     const footballWidget = document.getElementById('footballWidget');
     if (footballWidget) {
-        // Forcer la mise à jour du style
         footballWidget.style.transition = 'all 0.5s ease';
-        
-        // Animation subtile lors du changement de thème
         footballWidget.style.transform = 'scale(1.02)';
         setTimeout(() => {
             footballWidget.style.transform = 'scale(1)';
         }, 300);
-        
         console.log('⚽ Widget Football mis à jour pour le thème:', e.detail.theme);
     }
 });
 
-console.log('⚽ Football Widget RÉEL chargé avec succès (FotMob + Responsive + Thèmes)');
+console.log('⚽ Football Widget avec API Ligue 1 chargé avec succès');
