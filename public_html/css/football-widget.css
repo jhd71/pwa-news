@@ -757,7 +757,7 @@
 }
 
 [data-theme="light"] .api-badge {
-    color: rgba(0,200,83,0.8);
+    color: #775cbd;
 }
 
 /* Thème Dark */
@@ -793,7 +793,7 @@
 
 /* Thème Bleu Ciel */
 [data-theme="bleuciel"] .live-score {
-    background: rgba(14,165,233,0.05);
+    background: rgb(232 242 250);
     border-color: rgba(14,165,233,0.15);
 }
 
@@ -910,4 +910,105 @@
     color: rgba(255,255,255,0.5);
     font-size: 12px;
     font-style: italic;
+}
+
+/* === STYLES MANQUANTS POUR TOUS LES THÈMES === */
+
+/* --- THÈME ROUGE --- */
+[data-theme="rouge"] .match-time {
+    color: rgba(211, 47, 47, 0.7);
+    font-weight: 500;
+}
+
+[data-theme="rouge"] .match-teams,
+[data-theme="rouge"] .team {
+    color: #333;
+}
+
+[data-theme="rouge"] .match-count {
+    color: rgba(211, 47, 47, 0.9);
+    font-weight: 600;
+}
+
+[data-theme="rouge"] .live-indicator {
+    background: #d32f2f;
+}
+
+/* --- THÈME BLEU CIEL --- */
+[data-theme="bleuciel"] .match-time {
+    color: rgba(14, 165, 233, 0.7);
+    font-weight: 500;
+}
+
+[data-theme="bleuciel"] .match-teams,
+[data-theme="bleuciel"] .team {
+    color: #333;
+}
+
+[data-theme="bleuciel"] .match-count {
+    color: rgba(14, 165, 233, 0.9);
+    font-weight: 600;
+}
+
+[data-theme="bleuciel"] .live-indicator {
+    background: #0ea5e9;
+}
+
+/* --- THÈME LIGHT (VIOLET) --- */
+[data-theme="light"] .match-time {
+    color: rgba(126, 87, 194, 0.7);
+    font-weight: 500;
+}
+
+[data-theme="light"] .match-count {
+    color: rgba(126, 87, 194, 0.9);
+    font-weight: 600;
+}
+
+[data-theme="light"] .live-indicator {
+    background: #7e57c2;
+}
+
+/* --- THÈME DARK --- */
+[data-theme="dark"] .match-time {
+    color: rgba(129, 179, 250, 0.7);
+    font-weight: 500;
+}
+
+[data-theme="dark"] .match-teams,
+[data-theme="dark"] .team {
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .match-count {
+    color: rgba(129, 179, 250, 0.9);
+    font-weight: 600;
+}
+
+[data-theme="dark"] .live-indicator {
+    background: #81b3fa;
+    color: #1a1a2e;
+}
+
+/* === AMÉLIORATION GLOBALE === */
+
+/* Match terminé - style différent selon le thème */
+[data-theme="rouge"] .match-finished {
+    opacity: 0.5;
+    background: rgba(211, 47, 47, 0.02);
+}
+
+[data-theme="bleuciel"] .match-finished {
+    opacity: 0.5;
+    background: rgba(14, 165, 233, 0.02);
+}
+
+[data-theme="light"] .match-finished {
+    opacity: 0.5;
+    background: rgba(126, 87, 194, 0.02);
+}
+
+[data-theme="dark"] .match-finished {
+    opacity: 0.5;
+    background: rgba(129, 179, 250, 0.02);
 }

@@ -357,36 +357,89 @@ class FootballWidget {
         });
     }
 
-    // Afficher une notification de but
+    // Afficher une notification de but avec SON
     showGoalNotification(match) {
+        // Notification navigateur
         if ('Notification' in window && Notification.permission === 'granted') {
             new Notification('⚽ BUT en Ligue 1 !', {
                 body: `${match.home} ${match.homeScore} - ${match.awayScore} ${match.away}`,
                 icon: '/images/football-icon.png',
                 tag: 'goal-notification',
-                requireInteraction: false
+                requireInteraction: false,
+                vibrate: [200, 100, 200, 100, 200] // Vibration plus longue pour un but
             });
         }
         
-        // Notification visuelle
+        // Notification visuelle sur la page
         const notification = document.createElement('div');
         notification.className = 'goal-notification';
         notification.innerHTML = `
             <span class="goal-icon">⚽</span>
-            <div class="goal-title">BUT !</div>
+            <div class="goal-title">BUUUUT !</div>
             <div class="goal-match">${match.home} ${match.homeScore} - ${match.awayScore} ${match.away}</div>
         `;
         
         document.body.appendChild(notification);
         
+        // Vibration mobile (pattern spécial but)
         if (navigator.vibrate) {
-            navigator.vibrate([200, 100, 200]);
+            navigator.vibrate([200, 100, 200, 100, 400]);
         }
         
+        // JOUER LE SON DE BUT
+        this.playGoalSound();
+        
+        // Supprimer la notification après 7 secondes (plus long pour un but)
         setTimeout(() => {
             notification.style.animation = 'fadeOut 0.5s';
             setTimeout(() => notification.remove(), 500);
-        }, 5000);
+        }, 7000);
+    }
+    
+    // Méthode pour jouer le son de but
+    playGoalSound() {
+        try {
+            // ✅ SON PRINCIPAL : goal.mp3
+            const audio = new Audio('/sounds/goal.mp3');
+            audio.volume = 0.6; // Volume à 60%
+            
+            // Jouer le son
+            audio.play().catch(error => {
+                console.log('Son de but non joué:', error);
+                
+                // ✅ SON DE SECOURS : notification.mp3 (si goal.mp3 ne marche pas)
+                try {
+                    const fallbackAudio = new Audio('/sounds/notification.mp3');
+                    fallbackAudio.volume = 0.5;
+                    fallbackAudio.play();
+                } catch (e) {
+                    console.log('Aucun son disponible');
+                }
+            });
+            
+            // ✅ ÉCHO/RÉPÉTITION (optionnel) : goal.mp3 rejoué après 500ms
+            // Commentez ces lignes si vous ne voulez pas de répétition
+            setTimeout(() => {
+                const audio2 = new Audio('/sounds/goal.mp3');
+                audio2.volume = 0.4; // Volume plus bas pour l'écho (40%)
+                audio2.play().catch(() => {});
+            }, 500);
+            
+        } catch (error) {
+            console.error('Erreur lecture son:', error);
+        }
+    }
+    
+    // BONUS : Méthode pour tester le son (utile pour debug)
+    testGoalSound() {
+        console.log('🔊 Test du son de but...');
+        this.playGoalSound();
+        this.showGoalNotification({
+            home: 'PSG',
+            away: 'OM',
+            homeScore: 2,
+            awayScore: 1
+        });
     }
 
     // Afficher/masquer le bouton notifications
