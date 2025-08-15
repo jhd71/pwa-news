@@ -40,6 +40,7 @@ class FootballWidget {
                 flag: '🌍',
                 apiId: 'FL1', // Par défaut sur Ligue 1
                 urls: {
+                    classements: 'https://www.fotmob.com/fr',
                     scores: 'https://www.fotmob.com/fr',
                     actualites: 'https://www.fotmob.com/fr/news',
                     transferts: 'https://www.fotmob.com/fr/transfers'
@@ -74,33 +75,48 @@ class FootballWidget {
                 🇫🇷 Ligue 1
             </div>
             
-            <!-- Badge API (visible seulement pour L1) -->
-            <div class="api-badge" id="apiBadge">
+            <!-- Badge API -->
+            <div class="api-badge">
                 <span class="api-indicator">●</span>
                 <span>Données en direct</span>
             </div>
             
-            <!-- Zone des scores -->
-            <div class="live-scores-container" id="liveScoresContainer">
-                <!-- Les scores seront injectés ici -->
+            <!-- Boutons de vue -->
+            <div class="view-switcher">
+                <button class="view-btn active" data-view="matches">
+                    <span>📅</span> Matchs
+                </button>
+                <button class="view-btn" data-view="standings">
+                    <span>🏆</span> Classement
+                </button>
+            </div>
+            
+            <!-- Zone des matchs -->
+            <div class="view-content" id="matchesView">
+                <div class="live-scores-container" id="liveScoresContainer">
+                    <!-- Les scores seront injectés ici -->
+                </div>
+            </div>
+            
+            <!-- Zone du classement (cachée par défaut) -->
+            <div class="view-content" id="standingsView" style="display: none;">
+                <div class="standings-container" id="standingsContainer">
+                    <div class="loading">Chargement du classement...</div>
+                </div>
             </div>
             
             <div class="football-features" id="footballFeatures">
                 <div class="feature-item" data-action="classements">
                     <span class="feature-icon">📊</span>
-                    <span>Classements</span>
+                    <span>Classement complet</span>
                 </div>
                 <div class="feature-item" data-action="scores">
                     <span class="feature-icon">⚽</span>
-                    <span>Scores live</span>
+                    <span>Tous les scores</span>
                 </div>
                 <div class="feature-item" data-action="actualites">
                     <span class="feature-icon">📰</span>
                     <span>Actualités</span>
-                </div>
-                <div class="feature-item" data-action="transferts">
-                    <span class="feature-icon">💰</span>
-                    <span>Transferts</span>
                 </div>
             </div>
         </div>
@@ -111,10 +127,13 @@ class FootballWidget {
         </div>
     `;
     
+    // Configuration des event listeners
     this.setupEventListeners(widget);
+    
+    // Initialiser l'API
     this.initializeAPI();
     
-    // Restaurer l'état du bouton notifications
+    // Restaurer l'état du bouton notifications APRÈS la création du widget
     setTimeout(() => {
         if (this.notificationsEnabled) {
             const notifToggle = widget.querySelector('#notifToggle');
@@ -138,61 +157,21 @@ class FootballWidget {
         }, 60000);
     }
 
-    // Remplacez TOUTE la méthode loadTodayMatches() par celle-ci :
+    // Charger les matchs du jour
 async loadTodayMatches() {
     try {
-        const container = document.getElementById('liveScoresContainer');
-        const apiBadge = document.getElementById('apiBadge');
+        const leagues = this.getLeagues();
+        const leagueId = leagues[this.currentLeague].apiId;
         
-        // ONGLET LIGUE 2 - Redirection directe vers FotMob
-        if (this.currentLeague === 'ligue2') {
-            // Masquer le badge API
-            if (apiBadge) apiBadge.style.display = 'none';
-            
-            // Message simple
-            container.innerHTML = `
-                <div class="fotmob-redirect">
-                    <div class="redirect-icon">📱</div>
-                    <div class="redirect-text">Voir la Ligue 2 sur FotMob</div>
-                    <div class="redirect-arrow">→</div>
-                </div>
-            `;
-            
-            document.getElementById('liveMatchCount').textContent = 'Ligue 2 → FotMob';
-            
-            // Ouvrir FotMob après un court délai
-            setTimeout(() => {
-                window.open('https://www.fotmob.com/fr/leagues/110/matches/ligue-2', '_blank');
-            }, 1000);
+        // Si c'est la Ligue 2, on ne peut pas avec l'API gratuite
+        if (leagueId === 'FL2') {
+            this.displayMessage('⚠️ Ligue 2 non disponible avec l\'API gratuite');
+            document.getElementById('liveMatchCount').textContent = 'Ligue 2 indisponible';
             return;
         }
         
-        // ONGLET LIVE - Tous les matchs en cours (toutes compétitions)
-        if (this.currentLeague === 'live') {
-            // Masquer le badge API car on ne charge pas de vraies données
-            if (apiBadge) apiBadge.style.display = 'none';
-            
-            container.innerHTML = `
-                <div class="fotmob-redirect">
-                    <div class="redirect-icon">🔴</div>
-                    <div class="redirect-text">Voir tous les matchs en direct</div>
-                    <div class="redirect-arrow">→</div>
-                </div>
-            `;
-            
-            document.getElementById('liveMatchCount').textContent = 'Matchs LIVE → FotMob';
-            
-            // Ouvrir FotMob matchs en direct
-            setTimeout(() => {
-                window.open('https://www.fotmob.com/fr', '_blank');
-            }, 1000);
-            return;
-        }
-        
-        // ONGLET LIGUE 1 - Charger les vrais matchs via l'API
-        if (apiBadge) apiBadge.style.display = 'flex';
-        
-        const response = await fetch(`/api/football-data?competition=FL1&endpoint=matches`);
+        // Utiliser VOTRE proxy API sur Vercel
+        const response = await fetch(`/api/football-data?competition=${leagueId}&endpoint=matches`);
         
         if (!response.ok) {
             throw new Error(`Erreur HTTP: ${response.status}`);
@@ -200,11 +179,14 @@ async loadTodayMatches() {
         
         const data = await response.json();
         
+        // Vérifier si on a des données
         if (!data.matches) {
             throw new Error('Pas de données de matchs');
         }
         
         this.liveMatches = data.matches;
+        
+        // Afficher les matchs réels
         this.displayLiveMatches();
         
         // Vérifier les buts si notifications activées
@@ -212,146 +194,103 @@ async loadTodayMatches() {
             this.checkForGoals();
         }
         
-        console.log(`⚽ Matchs Ligue 1 chargés`);
+        console.log(`⚽ ${this.liveMatches.length} matchs chargés pour ${leagues[this.currentLeague].name}`);
         
     } catch (error) {
         console.error('Erreur chargement matchs:', error);
-        const container = document.getElementById('liveScoresContainer');
-        if (container) {
-            container.innerHTML = `
-                <div class="error-message">
-                    <span class="error-icon">⚠️</span>
-                    <span>Erreur de chargement</span>
-                </div>
-            `;
-        }
-        document.getElementById('liveMatchCount').textContent = 'Erreur';
+        this.displayError(error.message);
     }
 }
 
-// Ajouter cette méthode pour récupérer le classement
-async loadStandings() {
-    try {
-        const leagues = this.getLeagues();
-        const leagueId = leagues[this.currentLeague].apiId;
-        
-        if (leagueId === 'FL2') {
-            console.log('Classement Ligue 2 non disponible');
-            return;
-        }
-        
-        // Appel via votre proxy
-        const response = await fetch(`/api/football-data?competition=${leagueId}&endpoint=standings`);
-        
-        if (!response.ok) {
-            throw new Error(`Erreur HTTP: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        
-        if (data.standings && data.standings[0]) {
-            const table = data.standings[0].table;
-            console.log(`📊 Classement ${leagues[this.currentLeague].name}:`, 
-                table.slice(0, 5).map(team => `${team.position}. ${team.team.name} (${team.points}pts)`));
-        }
-        
-    } catch (error) {
-        console.error('Erreur chargement classement:', error);
-    }
-}
-
-    // Afficher les matchs en direct
-displayLiveMatches() {
+// Ajouter cette méthode pour afficher les erreurs proprement
+displayError(errorMessage) {
     const container = document.getElementById('liveScoresContainer');
-    if (!container) return;
-    
-    // Obtenir la date d'aujourd'hui (sans l'heure)
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    
-    // Filtrer les matchs qui sont VRAIMENT aujourd'hui
-    const todayMatches = this.liveMatches.filter(match => {
-        const matchDate = new Date(match.utcDate);
-        return matchDate >= today && matchDate < tomorrow;
-    });
-    
-    // Trier les matchs par heure
-    todayMatches.sort((a, b) => new Date(a.utcDate) - new Date(b.utcDate));
-    
-    if (todayMatches.length === 0) {
-        container.innerHTML = '<div class="no-matches">Aucun match de Ligue 1 aujourd\'hui</div>';
-        document.getElementById('liveMatchCount').textContent = 'Aucun match';
-        return;
-    }
-    
-    // Générer le HTML des matchs
-    let html = '';
-    let liveCount = 0;
-    
-    todayMatches.forEach(match => {
-        const isLive = match.status === 'IN_PLAY' || match.status === 'PAUSED' || match.status === 'HALFTIME';
-        const isFinished = match.status === 'FINISHED';
-        if (isLive) liveCount++;
-        
-        const homeScore = match.score?.fullTime?.home ?? match.score?.halfTime?.home ?? '-';
-        const awayScore = match.score?.fullTime?.away ?? match.score?.halfTime?.away ?? '-';
-        const matchTime = this.getMatchTime(match);
-        
-        html += `
-            <div class="live-score ${isLive ? 'match-active' : ''} ${isFinished ? 'match-finished' : ''}">
-                <div class="match-teams">
-                    <span class="team home">${match.homeTeam.shortName || match.homeTeam.name}</span>
-                    <span class="score">${homeScore} - ${awayScore}</span>
-                    <span class="team away">${match.awayTeam.shortName || match.awayTeam.name}</span>
-                </div>
-                <div class="match-info">
-                    <span class="match-time">${matchTime}</span>
-                    ${isLive ? '<span class="live-indicator">LIVE</span>' : ''}
+    if (container) {
+        container.innerHTML = `
+            <div class="error-message">
+                <span class="error-icon">⚠️</span>
+                <div class="error-text">
+                    <strong>Impossible de charger les matchs</strong>
+                    <br>
+                    <small>${errorMessage}</small>
                 </div>
             </div>
         `;
-    });
-    
-    container.innerHTML = html;
-    
-    // Mettre à jour le compteur avec le bon texte
-    let countText;
-    if (liveCount > 0) {
-        countText = `🔴 ${liveCount} match${liveCount > 1 ? 's' : ''} en direct`;
-    } else if (todayMatches.length === 1) {
-        countText = '1 match aujourd\'hui';
-    } else {
-        countText = `${todayMatches.length} matchs aujourd\'hui`;
     }
-    
-    document.getElementById('liveMatchCount').textContent = countText;
+    document.getElementById('liveMatchCount').textContent = 'Erreur de chargement';
 }
 
-// Amélioration de getMatchTime pour plus de détails
-getMatchTime(match) {
-    switch(match.status) {
-        case 'IN_PLAY':
-            return match.minute ? `${match.minute}'` : 'En cours';
-        case 'HALFTIME':
-            return 'Mi-temps';
-        case 'PAUSED':
-            return 'Pause';
-        case 'FINISHED':
-            return 'Terminé';
-        case 'POSTPONED':
-            return 'Reporté';
-        case 'CANCELLED':
-            return 'Annulé';
-        case 'SCHEDULED':
-        case 'TIMED':
-            const date = new Date(match.utcDate);
-            return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-        default:
-            return match.status;
+    // Afficher les matchs en direct
+    displayLiveMatches() {
+        const container = document.getElementById('liveScoresContainer');
+        if (!container) return;
+        
+        // Filtrer les matchs du jour ou en cours
+        const today = new Date().toDateString();
+        const todayMatches = this.liveMatches.filter(match => {
+            const matchDate = new Date(match.utcDate).toDateString();
+            return matchDate === today || match.status === 'IN_PLAY' || match.status === 'PAUSED';
+        });
+        
+        if (todayMatches.length === 0) {
+            container.innerHTML = '<div class="no-matches">Aucun match aujourd\'hui</div>';
+            document.getElementById('liveMatchCount').textContent = 'Aucun match';
+            return;
+        }
+        
+        // Générer le HTML des matchs
+        let html = '';
+        let liveCount = 0;
+        
+        todayMatches.forEach(match => {
+            const isLive = match.status === 'IN_PLAY' || match.status === 'PAUSED';
+            if (isLive) liveCount++;
+            
+            const homeScore = match.score.fullTime?.home ?? '-';
+            const awayScore = match.score.fullTime?.away ?? '-';
+            const matchTime = this.getMatchTime(match);
+            
+            html += `
+                <div class="live-score ${isLive ? 'match-active' : ''}">
+                    <div class="match-teams">
+                        <span class="team home">${match.homeTeam.shortName || match.homeTeam.name}</span>
+                        <span class="score">${homeScore} - ${awayScore}</span>
+                        <span class="team away">${match.awayTeam.shortName || match.awayTeam.name}</span>
+                    </div>
+                    <div class="match-info">
+                        <span class="match-time">${matchTime}</span>
+                        ${isLive ? '<span class="live-indicator">LIVE</span>' : ''}
+                    </div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+        
+        // Mettre à jour le compteur
+        const countText = liveCount > 0 
+            ? `🔴 ${liveCount} match${liveCount > 1 ? 's' : ''} en direct`
+            : `${todayMatches.length} match${todayMatches.length > 1 ? 's' : ''} aujourd'hui`;
+        document.getElementById('liveMatchCount').textContent = countText;
     }
-}
+
+    // Obtenir l'heure ou le statut du match
+    getMatchTime(match) {
+        switch(match.status) {
+            case 'IN_PLAY':
+                return match.minute ? `${match.minute}'` : 'En cours';
+            case 'PAUSED':
+                return 'Mi-temps';
+            case 'FINISHED':
+                return 'Terminé';
+            case 'SCHEDULED':
+            case 'TIMED':
+                const date = new Date(match.utcDate);
+                return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+            default:
+                return match.status;
+        }
+    }
 
     // Vérifier les nouveaux buts
     checkForGoals() {
