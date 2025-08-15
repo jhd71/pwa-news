@@ -506,11 +506,15 @@
 }
 
 [data-theme="rouge"] .live-score {
-    background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    background: #eee0de;
 }
 
 [data-theme="bleuciel"] .live-score {
-    background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    background: #e8f2fa;
+}
+
+[data-theme="light"] .live-score {
+    background: rgb(234 231 245);
 }
 
 .live-score.match-active {
@@ -556,6 +560,22 @@
 
 .match-time {
     font-weight: 500;
+}
+
+[data-theme="dark"] .match-time {
+    color: white;
+}
+
+[data-theme="rouge"] .match-time {
+    color: black;
+}
+
+[data-theme="bleuciel"] .match-time {
+    color: black;
+}
+
+[data-theme="light"] .match-time {
+    color: black;
 }
 
 .live-indicator {
@@ -692,21 +712,6 @@
 .live-scores-container::-webkit-scrollbar-thumb {
     background: #00e676;
     border-radius: 2px;
-}
-
-/* Adaptation thème clair */
-[data-theme="light"] .live-score {
-    background: rgba(0,0,0,0.05);
-    border-color: rgba(0,0,0,0.1);
-}
-
-[data-theme="light"] .match-info,
-[data-theme="light"] .no-matches {
-    color: rgba(0,0,0,0.6);
-}
-
-[data-theme="light"] .score {
-    color: #00c853;
 }
 
 /* === MESSAGES D'ERREUR === */
