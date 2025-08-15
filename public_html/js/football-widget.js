@@ -134,7 +134,7 @@ class FootballWidget {
 }
 
 // Restaurer l'état du bouton notifications
-    setTimeout(() => {
+    setTimeout() => {
         if (this.notificationsEnabled) {
             const notifToggle = widget.querySelector('#notifToggle');
             if (notifToggle) {
