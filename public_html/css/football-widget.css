@@ -846,3 +846,205 @@
         font-size: 14px;
     }
 }
+
+/* === BADGE API === */
+.api-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 11px;
+    color: rgba(0, 230, 118, 0.8);
+    margin: -5px 0 10px 0;
+}
+
+.api-indicator {
+    color: #00e676;
+    animation: pulse 2s infinite;
+    font-size: 8px;
+}
+
+/* === BOUTONS DE VUE === */
+.view-switcher {
+    display: flex;
+    gap: 8px;
+    margin: 10px 0;
+    background: rgba(255,255,255,0.05);
+    padding: 4px;
+    border-radius: 10px;
+}
+
+.view-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.view-btn.active {
+    background: rgba(0,230,118,0.2);
+    color: #00e676;
+}
+
+.view-btn:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+/* === CLASSEMENT === */
+.standings-container {
+    margin: 10px 0;
+}
+
+.standings-table {
+    background: rgba(255,255,255,0.02);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.standing-row {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.3s ease;
+}
+
+.standing-row:hover {
+    background: rgba(255,255,255,0.05);
+    transform: translateX(2px);
+}
+
+.standing-row.first-place {
+    background: linear-gradient(90deg, rgba(255,215,0,0.1), transparent);
+    border-left: 3px solid #ffd700;
+}
+
+.standing-row.cl-zone {
+    border-left: 3px solid #1976d2;
+}
+
+.standing-row.el-zone {
+    border-left: 3px solid #ff6b6b;
+}
+
+.position {
+    width: 25px;
+    font-weight: bold;
+    color: #00e676;
+    font-size: 14px;
+}
+
+.team-name {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.9);
+}
+
+.team-crest {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.stats {
+    display: flex;
+    gap: 10px;
+    font-size: 12px;
+}
+
+.played {
+    color: rgba(255,255,255,0.5);
+}
+
+.points {
+    color: #00e676;
+    font-weight: bold;
+}
+
+.standings-footer {
+    padding: 10px;
+    text-align: center;
+}
+
+.see-more-btn {
+    background: rgba(0,230,118,0.1);
+    border: 1px solid rgba(0,230,118,0.3);
+    color: #00e676;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.see-more-btn:hover {
+    background: rgba(0,230,118,0.2);
+    transform: scale(1.05);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+    .view-switcher {
+        margin: 8px 0;
+    }
+    
+    .view-btn {
+        font-size: 11px;
+        padding: 5px 8px;
+    }
+    
+    .standing-row {
+        padding: 6px 8px;
+    }
+    
+    .team-crest {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .team-name {
+        font-size: 12px;
+    }
+    
+    .stats {
+        font-size: 11px;
+    }
+}
+
+/* Légende des zones */
+.zones-legend {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 10px;
+    font-size: 10px;
+    color: rgba(255,255,255,0.5);
+}
+
+.zone-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.zone-color {
+    width: 12px;
+    height: 3px;
+    border-radius: 2px;
+}
+
+.zone-color.cl { background: #1976d2; }
+.zone-color.el { background: #ff6b6b; }
+.zone-color.champion { background: #ffd700; }

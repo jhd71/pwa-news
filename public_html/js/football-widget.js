@@ -3,11 +3,12 @@ class FootballWidget {
     constructor() {
     this.currentLeague = 'ligue1';
     this.updateInterval = null;
-    // Charger l'état sauvegardé des notifications
     this.notificationsEnabled = localStorage.getItem('footballNotifications') === 'true';
     this.lastScores = {};
     this.checkInterval = null;
     this.liveMatches = [];
+    this.standings = null; // NOUVEAU
+    this.currentView = 'matches'; // NOUVEAU: 'matches' ou 'standings'
 }
 
     // Configuration des ligues avec les IDs de l'API
@@ -50,62 +51,87 @@ class FootballWidget {
     }
 
     createWidget() {
-        const widget = document.createElement('div');
-        widget.className = 'football-widget';
-        widget.id = 'footballWidget';
+    const widget = document.createElement('div');
+    widget.className = 'football-widget';
+    widget.id = 'footballWidget';
+    
+    widget.innerHTML = `
+        <div class="football-widget-header">
+            <span class="football-widget-title">⚽ FOOTBALL</span>
+            
+            <!-- Bouton notifications -->
+            <button class="notif-toggle" id="notifToggle" title="Notifications de buts">
+                🔔
+            </button>
+            
+            <div class="league-tabs">
+                <button class="league-tab active" data-league="ligue1">L1</button>
+                <button class="league-tab" data-league="ligue2">L2</button>
+                <button class="league-tab" data-league="live">LIVE</button>
+            </div>
+        </div>
         
-        widget.innerHTML = `
-            <div class="football-widget-header">
-                <span class="football-widget-title">⚽ FOOTBALL</span>
-                
-                <!-- Bouton notifications -->
-                <button class="notif-toggle" id="notifToggle" title="Notifications de buts">
-                    🔔
-                </button>
-                
-                <div class="league-tabs">
-                    <button class="league-tab active" data-league="ligue1">L1</button>
-                    <button class="league-tab" data-league="ligue2">L2</button>
-                    <button class="league-tab" data-league="live">LIVE</button>
-                </div>
+        <div class="football-widget-preview" id="footballWidgetPreview">
+            <div class="current-league" id="currentLeague">
+                🇫🇷 Ligue 1
             </div>
             
-            <div class="football-widget-preview" id="footballWidgetPreview">
-                <div class="current-league" id="currentLeague">
-                    🇫🇷 Ligue 1
-                </div>
-                
-                <!-- Zone des scores en direct -->
+            <!-- Badge API -->
+            <div class="api-badge">
+                <span class="api-indicator">●</span>
+                <span>Données en direct</span>
+            </div>
+            
+            <!-- Boutons de vue -->
+            <div class="view-switcher">
+                <button class="view-btn active" data-view="matches">
+                    <span>📅</span> Matchs
+                </button>
+                <button class="view-btn" data-view="standings">
+                    <span>🏆</span> Classement
+                </button>
+            </div>
+            
+            <!-- Zone des matchs -->
+            <div class="view-content" id="matchesView">
                 <div class="live-scores-container" id="liveScoresContainer">
                     <!-- Les scores seront injectés ici -->
                 </div>
-                
-                <div class="football-features" id="footballFeatures">
-                    <div class="feature-item" data-action="classements">
-                        <span class="feature-icon">📊</span>
-                        <span>Classements en direct</span>
-                    </div>
-                    <div class="feature-item" data-action="scores">
-                        <span class="feature-icon">⚽</span>
-                        <span>Scores live</span>
-                    </div>
-                    <div class="feature-item" data-action="actualites">
-                        <span class="feature-icon">📰</span>
-                        <span>Actualités Foot</span>
-                    </div>
-                    <div class="feature-item" data-action="transferts">
-                        <span class="feature-icon">💰</span>
-                        <span>Derniers transferts</span>
-                    </div>
+            </div>
+            
+            <!-- Zone du classement (cachée par défaut) -->
+            <div class="view-content" id="standingsView" style="display: none;">
+                <div class="standings-container" id="standingsContainer">
+                    <div class="loading">Chargement du classement...</div>
                 </div>
             </div>
             
-            <div class="football-widget-footer">
-    <span id="liveMatchCount" class="match-count">Chargement...</span>
-    <div class="football-widget-count">FotMob</div>
-	</div>
+            <div class="football-features" id="footballFeatures">
+                <div class="feature-item" data-action="classements">
+                    <span class="feature-icon">📊</span>
+                    <span>Classement complet</span>
+                </div>
+                <div class="feature-item" data-action="scores">
+                    <span class="feature-icon">⚽</span>
+                    <span>Tous les scores</span>
+                </div>
+                <div class="feature-item" data-action="actualites">
+                    <span class="feature-icon">📰</span>
+                    <span>Actualités</span>
+                </div>
             </div>
-        `;
+        </div>
+        
+        <div class="football-widget-footer">
+            <span id="liveMatchCount" class="match-count">Chargement...</span>
+            <div class="football-widget-count">FotMob</div>
+        </div>
+    `;
+    
+    this.setupEventListeners(widget);
+    this.initializeAPI();
+    return widget;
+}
 
 // Restaurer l'état du bouton notifications
     setTimeout(() => {
@@ -139,12 +165,14 @@ async loadTodayMatches() {
         const leagues = this.getLeagues();
         const leagueId = leagues[this.currentLeague].apiId;
         
-        // Si c'est la Ligue 2, on ne peut pas avec l'API gratuite
         if (leagueId === 'FL2') {
-            this.displayMessage('⚠️ Ligue 2 non disponible avec l\'API gratuite');
-            document.getElementById('liveMatchCount').textContent = 'Ligue 2 indisponible';
-            return;
-        }
+    this.displayMessage('📱 Ligue 2 → Voir sur FotMob');
+    // Puis ouvrir directement FotMob Ligue 2
+    setTimeout(() => {
+        window.open('https://www.fotmob.com/fr/leagues/110/matches/ligue-2', '_blank');
+    }, 1500);
+    return;
+}
         
         // Utiliser VOTRE proxy API sur Vercel
         const response = await fetch(`/api/football-data?competition=${leagueId}&endpoint=matches`);
@@ -185,11 +213,11 @@ async loadStandings() {
         const leagueId = leagues[this.currentLeague].apiId;
         
         if (leagueId === 'FL2') {
-            console.log('Classement Ligue 2 non disponible');
+            document.getElementById('standingsContainer').innerHTML = 
+                '<div class="info-message">📱 Classement Ligue 2 → Voir sur FotMob</div>';
             return;
         }
         
-        // Appel via votre proxy
         const response = await fetch(`/api/football-data?competition=${leagueId}&endpoint=standings`);
         
         if (!response.ok) {
@@ -199,14 +227,56 @@ async loadStandings() {
         const data = await response.json();
         
         if (data.standings && data.standings[0]) {
-            const table = data.standings[0].table;
-            console.log(`📊 Classement ${leagues[this.currentLeague].name}:`, 
-                table.slice(0, 5).map(team => `${team.position}. ${team.team.name} (${team.points}pts)`));
+            this.standings = data.standings[0].table;
+            this.displayStandings();
         }
         
     } catch (error) {
         console.error('Erreur chargement classement:', error);
+        document.getElementById('standingsContainer').innerHTML = 
+            '<div class="error-message">Erreur de chargement du classement</div>';
     }
+}
+
+// 4. Méthode pour afficher le classement
+displayStandings() {
+    const container = document.getElementById('standingsContainer');
+    if (!container || !this.standings) return;
+    
+    // Prendre le top 5
+    const top5 = this.standings.slice(0, 5);
+    
+    let html = '<div class="standings-table">';
+    
+    top5.forEach((team, index) => {
+        const isFirst = index === 0;
+        const isChampionsLeague = index < 3;
+        const isEuropa = index === 3;
+        
+        html += `
+            <div class="standing-row ${isFirst ? 'first-place' : ''} ${isChampionsLeague ? 'cl-zone' : ''} ${isEuropa ? 'el-zone' : ''}">
+                <span class="position">${team.position}</span>
+                <span class="team-name">
+                    <img src="${team.team.crest}" alt="${team.team.name}" class="team-crest">
+                    ${team.team.shortName || team.team.name}
+                </span>
+                <span class="stats">
+                    <span class="played">${team.playedGames}j</span>
+                    <span class="points">${team.points}pts</span>
+                </span>
+            </div>
+        `;
+    });
+    
+    html += `
+        <div class="standings-footer">
+            <button class="see-more-btn" onclick="window.open('https://www.fotmob.com/fr/leagues/53/table/ligue-1', '_blank')">
+                Voir le classement complet →
+            </button>
+        </div>
+    </div>`;
+    
+    container.innerHTML = html;
 }
 
 // Ajouter cette méthode pour afficher les erreurs proprement
@@ -453,6 +523,35 @@ getMatchTime(match) {
             });
         });
 
+// Gestion des boutons de vue
+    const viewBtns = widget.querySelectorAll('.view-btn');
+    viewBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            
+            const view = btn.dataset.view;
+            if (view === this.currentView) return;
+            
+            // Changer les classes actives
+            viewBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Changer la vue
+            document.getElementById('matchesView').style.display = view === 'matches' ? 'block' : 'none';
+            document.getElementById('standingsView').style.display = view === 'standings' ? 'block' : 'none';
+            
+            this.currentView = view;
+            
+            // Charger le classement si nécessaire
+            if (view === 'standings' && !this.standings) {
+                this.loadStandings();
+            }
+            
+            // Vibration tactile
+            if (navigator.vibrate) navigator.vibrate(30);
+        });
+    });
+	
         // Clic sur les features
         this.setupFeatureEvents(widget);
 
