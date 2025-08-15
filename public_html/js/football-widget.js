@@ -128,13 +128,14 @@ class FootballWidget {
         </div>
     `;
     
+    // Configuration des event listeners
     this.setupEventListeners(widget);
+    
+    // Initialiser l'API
     this.initializeAPI();
-    return widget;
-}
-
-// Restaurer l'état du bouton notifications
-    setTimeout() => {
+    
+    // Restaurer l'état du bouton notifications APRÈS la création du widget
+    setTimeout(() => {
         if (this.notificationsEnabled) {
             const notifToggle = widget.querySelector('#notifToggle');
             if (notifToggle) {
@@ -142,11 +143,9 @@ class FootballWidget {
             }
         }
     }, 100);
-	
-        this.setupEventListeners(widget);
-        this.initializeAPI(); // Initialiser l'API
-        return widget;
-    }
+    
+    return widget;
+}
 
     // Initialiser la connexion API
     async initializeAPI() {
