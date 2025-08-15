@@ -429,18 +429,6 @@ class FootballWidget {
             console.error('Erreur lecture son:', error);
         }
     }
-    
-    // BONUS : Méthode pour tester le son (utile pour debug)
-    testGoalSound() {
-        console.log('🔊 Test du son de but...');
-        this.playGoalSound();
-        this.showGoalNotification({
-            home: 'PSG',
-            away: 'OM',
-            homeScore: 2,
-            awayScore: 1
-        });
-    }
 
     // Afficher/masquer le bouton notifications
     showNotificationButton() {
