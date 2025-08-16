@@ -63,6 +63,7 @@
         background: #ffffff;
         transform: scale(1.1);
         box-shadow: 0 4px 10px rgba(0,200,83,0.3);
+		border: 3px solid #fff;
     }
 
 /* === CONTENU === */
@@ -340,7 +341,7 @@
         padding: 5px 10px !important;
         font-size: 12px !important;
         min-width: 35px;
-		font-weight: bold;
+		font-weight: 900;
     }
     
     .feature-item {
