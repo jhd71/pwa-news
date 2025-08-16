@@ -1,5 +1,6 @@
-/* css/football-widget.css - COPIE EXACTE du style des widgets News/Cinéma */
+/* css/football-widget.css - VERSION SIMPLIFIÉE */
 
+/* === CONTENEUR === */
 .football-widget-container {
     max-width: 600px;
     margin: 15px auto;
@@ -7,35 +8,31 @@
     order: 3; /* Après NEWS et CINÉMA */
 }
 
+/* === WIDGET PRINCIPAL === */
 .football-widget {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 15px;
     padding: 15px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     border: 2px solid rgba(255, 255, 255, 0.4);
-    cursor: pointer;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
     position: relative;
     overflow: hidden;
+    animation: footballWidgetFadeIn 0.6s ease-out;
 }
 
 .football-widget:hover {
     transform: translateY(-2px);
     box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
-    background: rgba(255, 255, 255, 1);
 }
 
-.football-widget:active {
-    transform: scale(0.98);
-}
-
+/* === HEADER === */
 .football-widget-header {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 12px;
-    color: var(--primary-color, #dc3545);
 }
 
 .football-widget-title {
@@ -45,58 +42,42 @@
     color: var(--primary-color, #dc3545);
 }
 
-/* Onglets style moderne */
-    .league-tabs {
-        gap: 8px;
-    }
-    
-    .league-tab {
-        background: rgba(255, 255, 255, 0.2) !important;
-        color: #ffffff;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 11px;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.3);
-        transition: all 0.3s ease;
-    }
-    
-    .league-tab.active {
-        background: #ffffff !important;
-        /* color: #00c853; */
-        transform: scale(1.1);
-        box-shadow: 0 4px 10px rgba(0,200,83,0.3);
-    }
+/* === ONGLETS === */
+.league-tabs {
+    display: flex;
+    gap: 5px;
+}
 
+.league-tab {
+    background: var(--primary-color, #dc3545);
+    color: #ffffff;
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    opacity: 0.7;
+}
+
+.league-tab.active,
+.league-tab:hover {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+/* === CONTENU === */
 .football-widget-preview {
     color: #333;
     font-size: 14px;
     line-height: 1.4;
     margin-bottom: 10px;
     min-height: 120px;
-    max-height: 250px; /* Même hauteur que NEWS/CINÉMA */
+    max-height: 250px;
     overflow-y: auto;
-    padding-right: 18px; /* Même padding que NEWS/CINÉMA */
-}
-
-/* Style de la scrollbar - IDENTIQUE À NEWS/CINÉMA */
-.football-widget-preview::-webkit-scrollbar {
-    width: 4px;
-}
-
-.football-widget-preview::-webkit-scrollbar-track {
-    background: rgba(0,0,0,0.1);
-    border-radius: 2px;
-}
-
-.football-widget-preview::-webkit-scrollbar-thumb {
-    background: var(--primary-color, #dc3545);
-    border-radius: 2px;
-}
-
-.football-widget-preview::-webkit-scrollbar-thumb:hover {
-    background: var(--primary-color);
-    opacity: 1;
+    padding-right: 10px;
 }
 
 .current-league {
@@ -107,19 +88,20 @@
     text-align: center;
 }
 
+/* === FEATURES === */
 .football-features {
     display: flex;
     flex-direction: column;
-    gap: 0px;
+    gap: 6px;
 }
 
 .feature-item {
     background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.1);
     border-left: 3px solid var(--primary-color, #dc3545);
-    padding: 8px 12px; /* Même padding que NEWS/CINÉMA */
-    margin: 6px 0; /* Même marge que NEWS/CINÉMA */
+    padding: 10px 12px;
+    margin: 4px 0;
     border-radius: 0 8px 8px 0;
-    font-size: 14px; /* MÊME TAILLE QUE NEWS/CINÉMA */
+    font-size: 14px;
     transition: all 0.2s ease;
     cursor: pointer;
     display: flex;
@@ -129,58 +111,52 @@
 
 .feature-item:hover {
     background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.2);
-    transform: translateX(2px);
+    transform: translateX(3px);
 }
 
 .feature-icon {
-    font-size: 1.1em;
-    width: 22px;
+    font-size: 16px;
+    width: 20px;
     text-align: center;
-    color: var(--primary-color, #dc3545);
 }
 
+/* === FOOTER === */
 .football-widget-footer {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: var(--primary-color, #dc3545);
-    font-weight: 500;
-    font-size: 13px;
+    justify-content: center;
     margin-top: 10px;
-    border-top: 1px solid rgba(var(--primary-color-rgb, 220, 53, 69), 0.2);
     padding-top: 8px;
-}
-
-.football-widget-tap {
-    font-size: 12px;
-    color: #000000;
+    border-top: 1px solid rgba(var(--primary-color-rgb, 220, 53, 69), 0.2);
 }
 
 .football-widget-count {
     background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.1);
-    padding: 4px 8px;
-    border-radius: 8px;
+    padding: 5px 12px;
+    border-radius: 10px;
     font-size: 12px;
     font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-/* ===== THÈMES ADAPTÉS - IDENTIQUES À NEWS/CINÉMA ===== */
+.football-widget-count:hover {
+    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.2);
+    transform: scale(1.05);
+}
 
-/* Thème Light (Violet) */
+/* === THÈME LIGHT (VIOLET) === */
 [data-theme="light"] .football-widget {
     background: rgba(255, 255, 255, 0.95);
     border-color: rgba(126, 87, 194, 0.4);
 }
 
-[data-theme="light"] .football-widget-header,
 [data-theme="light"] .football-widget-title,
-[data-theme="light"] .football-widget-footer,
 [data-theme="light"] .current-league {
     color: #7e57c2;
 }
 
 [data-theme="light"] .league-tab {
-    background: #7e57c2 !important;
+    background: #7e57c2;
 }
 
 [data-theme="light"] .feature-item {
@@ -193,71 +169,63 @@
 }
 
 [data-theme="light"] .football-widget-count {
-    background: rgba(126, 87, 194, 0.1);
+    background: rgba(126, 87, 194, 0.15);
+    color: #7e57c2;
 }
 
-/* Thème Dark (Bleu Nuit) - TEXTE PLUS CLAIR */
+/* === THÈME DARK === */
 [data-theme="dark"] .football-widget {
     background: rgba(40, 40, 40, 0.95);
     border-color: rgba(26, 35, 126, 0.6);
-    backdrop-filter: blur(15px);
 }
 
-[data-theme="dark"] .football-widget-header,
 [data-theme="dark"] .football-widget-title,
-[data-theme="dark"] .football-widget-footer,
 [data-theme="dark"] .current-league {
     color: #81b3fa;
 }
 
 [data-theme="dark"] .league-tab {
-    background: #27292e !important;
+    background: #5c6bc0;
 }
 
 [data-theme="dark"] .football-widget-preview {
-    color: #e0e0e0; /* ✅ TEXTE PRINCIPAL CLAIR */
+    color: #e0e0e0;
 }
 
 [data-theme="dark"] .feature-item {
-    background: rgba(26, 35, 126, 0.2);
+    background: rgba(92, 107, 192, 0.15);
     border-left-color: #5c6bc0;
-    color: #ffffff; /* ✅ TEXTE ITEMS CLAIR */
+    color: #ffffff;
 }
 
 [data-theme="dark"] .feature-icon {
-    color: #7986cb; /* ✅ ICÔNES BIEN VISIBLES */
+    color: #81b3fa;
 }
 
 [data-theme="dark"] .football-widget-count {
-    background: rgba(26, 35, 126, 0.3);
-    color: #ffffff;
+    background: rgba(92, 107, 192, 0.2);
+    color: #81b3fa;
 }
 
-[data-theme="dark"] .football-widget-tap {
-    color: #ffffff;
-}
-
-/* Thème Rouge */
+/* === THÈME ROUGE === */
 [data-theme="rouge"] .football-widget {
     background: rgba(255, 255, 255, 0.95);
     border-color: rgba(211, 47, 47, 0.4);
 }
 
-[data-theme="rouge"] .football-widget-header,
 [data-theme="rouge"] .football-widget-title,
-[data-theme="rouge"] .football-widget-footer,
 [data-theme="rouge"] .current-league {
     color: #d32f2f;
 }
 
 [data-theme="rouge"] .league-tab {
-    background: #d32f2f !important;
+    background: #d32f2f;
 }
 
 [data-theme="rouge"] .feature-item {
-    background: rgba(211, 47, 47, 0.1) !important;
-    border-left-color: #d32f2f !important;
-	color: #000000 !important;
+    background: rgba(211, 47, 47, 0.1);
+    border-left-color: #d32f2f;
+    color: #333;
 }
 
 [data-theme="rouge"] .feature-icon {
@@ -265,25 +233,23 @@
 }
 
 [data-theme="rouge"] .football-widget-count {
-    background: rgba(211, 47, 47, 0.1);
-    color: #000000;
+    background: rgba(211, 47, 47, 0.15);
+    color: #d32f2f;
 }
 
-/* Thème Bleu Ciel */
+/* === THÈME BLEU CIEL === */
 [data-theme="bleuciel"] .football-widget {
     background: rgba(255, 255, 255, 0.95);
     border-color: rgba(14, 165, 233, 0.4);
 }
 
-[data-theme="bleuciel"] .football-widget-header,
 [data-theme="bleuciel"] .football-widget-title,
-[data-theme="bleuciel"] .football-widget-footer,
 [data-theme="bleuciel"] .current-league {
     color: #0ea5e9;
 }
 
 [data-theme="bleuciel"] .league-tab {
-    background: #0ea5e9 !important;
+    background: #0ea5e9;
 }
 
 [data-theme="bleuciel"] .feature-item {
@@ -296,14 +262,12 @@
 }
 
 [data-theme="bleuciel"] .football-widget-count {
-    background: rgba(14, 165, 233, 0.1);
+    background: rgba(14, 165, 233, 0.15);
+    color: #0ea5e9;
 }
 
-/* ===== RESPONSIVE IDENTIQUE À NEWS/CINÉMA ===== */
-
-/* Desktop */
+/* === RESPONSIVE DESKTOP === */
 @media (min-width: 1200px) {
-    /* Conteneur parent pour les trois widgets */
     .widgets-row {
         display: flex;
         max-width: 1200px;
@@ -312,109 +276,133 @@
         padding: 0 10px;
     }
     
-    .news-widget-container,
-    .cinema-widget-container,
     .football-widget-container {
         flex: 1;
         margin: 0;
         max-width: none;
-        display: flex; /* Important pour l'égalisation */
+        display: flex;
     }
     
-    .local-news-widget,
-    .cinema-widget,
     .football-widget {
-        flex: 1; /* Prend toute la hauteur disponible */
+        flex: 1;
         display: flex;
         flex-direction: column;
     }
     
-    .news-widget-preview,
-    .cinema-widget-preview,
     .football-widget-preview {
-        flex: 1; /* Zone de contenu extensible */
-        min-height: 200px; /* Hauteur minimum */
-    }
-    
-    .football-widget-container {
-        order: 3; /* FOOTBALL en troisième */
-    }
-    
-    .news-widget-container {
-        order: 1; /* NEWS à gauche */
-    }
-    
-    .cinema-widget-container {
-        order: 2; /* CINÉMA au centre */
+        flex: 1;
+        min-height: 200px;
     }
 }
 
-/* Mobile - Responsive pour 3 onglets */
-@media (max-width: 1199px) {
-    .football-widget-container {
-        position: relative;
-        padding: 0 5px;
-        margin: 15px auto;
-        order: 3; /* Après NEWS et CINÉMA */
-    }
-    
+/* === RESPONSIVE TABLETTE === */
+@media (min-width: 768px) and (max-width: 1199px) {
     .football-widget {
-        margin: 0;
-        padding: 12px;
+        padding: 18px;
     }
     
     .football-widget-title {
-        font-size: 15px; /* Légèrement réduit pour laisser place aux 3 onglets */
-    }
-    
-    .league-tabs {
-        gap: 3px; /* Encore plus serré sur mobile */
+        font-size: 17px;
     }
     
     .league-tab {
-        padding: 3px 15px;
+        padding: 6px 12px;
         font-size: 12px;
-        min-width: 38px;
+    }
+    
+    .feature-item {
+        padding: 12px 14px;
+        font-size: 15px;
+    }
+}
+
+/* === RESPONSIVE MOBILE === */
+@media (max-width: 767px) {
+    .football-widget-container-in-tiles {
+        width: 100%;
+        margin: 15px 0;
+        padding: 0;
+        grid-column: 1 / -1;
+    }
+    
+    .football-widget {
+        padding: 14px;
+        margin: 0 10px;
+    }
+    
+    .football-widget-title {
+        font-size: 16px;
+    }
+    
+    .league-tabs {
+        gap: 4px;
+    }
+    
+    .league-tab {
+        padding: 5px 10px;
+        font-size: 11px;
+        min-width: 35px;
+    }
+    
+    .feature-item {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+    
+    .feature-icon {
+        font-size: 15px;
     }
     
     .football-widget-footer {
-        flex-direction: column;
-        gap: 5px;
-        text-align: center;
-    }
-    
-    .football-features {
-        gap: 6px;
-    }
-    
-        .feature-item {
-        font-size: 15px !important;
-        padding: 6px 10px !important;
+        padding-top: 10px;
     }
 }
 
-/* ===== VARIABLES CSS POUR LES COULEURS RGB ===== */
+/* === PETITS ÉCRANS === */
+@media (max-width: 400px) {
+    .football-widget {
+        padding: 12px;
+        border-radius: 12px;
+    }
+    
+    .football-widget-title {
+        font-size: 15px;
+    }
+    
+    .league-tab {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+    
+    .feature-item {
+        padding: 8px 10px;
+        font-size: 13px;
+        gap: 8px;
+    }
+}
+
+/* === VARIABLES CSS === */
 :root {
-    --primary-color-rgb: 126, 87, 194; /* Violet par défaut */
+    --primary-color-rgb: 220, 53, 69;
+}
+
+[data-theme="light"] {
+    --primary-color-rgb: 126, 87, 194;
 }
 
 [data-theme="dark"] {
-    --primary-color-rgb: 92, 107, 192; /* Bleu clair pour dark */
+    --primary-color-rgb: 92, 107, 192;
 }
 
 [data-theme="rouge"] {
-    --primary-color-rgb: 211, 47, 47; /* Rouge */
+    --primary-color-rgb: 211, 47, 47;
 }
 
 [data-theme="bleuciel"] {
-    --primary-color-rgb: 14, 165, 233; /* Bleu ciel */
+    --primary-color-rgb: 14, 165, 233;
 }
 
-/* Animation d'apparition - IDENTIQUE À NEWS/CINÉMA */
-.football-widget {
-    animation: footballWidgetFadeIn 0.6s ease-out;
-}
-
+/* === ANIMATIONS === */
 @keyframes footballWidgetFadeIn {
     from {
         opacity: 0;
@@ -426,68 +414,21 @@
     }
 }
 
-/* ===== CORRECTION MOBILE POUR ÉVITER LES TUILES COUPÉES ===== */
-
-.football-widget-container-in-tiles {
-    width: 100% !important;
-    max-width: none !important;
-    margin: 15px 0 !important;
-    padding: 0 !important;
-    grid-column: 1 / -1 !important; /* Prend toute la largeur de la grille */
+/* === SCROLLBAR === */
+.football-widget-preview::-webkit-scrollbar {
+    width: 4px;
 }
 
-@media (max-width: 767px) {
-    .football-widget-container-in-tiles .football-widget {
-        margin: 0 10px;
-        max-width: none;
-        width: calc(100% - 20px);
-    }
+.football-widget-preview::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
 }
 
-@media (max-width: 600px) {
-    #tileContainer.grid {
-        grid-template-columns: repeat(2, 1fr) !important;
-    }
-    
-    .football-widget-container-in-tiles {
-        display: block !important;
-        width: 100vw !important;
-        margin-left: calc(-50vw + 50%) !important;
-        margin-right: calc(-50vw + 50%) !important;
-        padding: 0 10px !important;
-        box-sizing: border-box !important;
-    }
+.football-widget-preview::-webkit-scrollbar-thumb {
+    background: var(--primary-color, #dc3545);
+    border-radius: 2px;
+    opacity: 0.5;
 }
 
-/* Badge FotMob cliquable */
-.football-widget-count {
-    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.1);
-    padding: 4px 10px;
-    border-radius: 10px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-.football-widget-count:hover {
-    background: rgba(var(--primary-color-rgb, 220, 53, 69), 0.2);
-    transform: scale(1.05);
-}
-
-.football-widget-count:active {
-    transform: scale(0.95);
-}
-
-/* Petite flèche pour indiquer que c'est un lien */
-.football-widget-count::after {
-    content: ' →';
-    font-size: 10px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.football-widget-count:hover::after {
+.football-widget-preview::-webkit-scrollbar-thumb:hover {
     opacity: 1;
 }
