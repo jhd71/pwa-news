@@ -90,7 +90,6 @@ class FootballWidget {
             </div>
             
             <div class="football-widget-footer">
-                <span id="liveMatchCount" class="match-count">Chargement...</span>
                 <div class="football-widget-count">FotMob</div>
             </div>
         `;
