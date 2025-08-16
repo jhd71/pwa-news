@@ -328,9 +328,6 @@
     .football-widget {
         padding: 10px !important;
         margin: 0 -20px;
-        border-radius: 0; /* Coins carrés = plus moderne en pleine largeur */
-        border-left: none;
-        border-right: none;
     }
     
     .football-widget-title {
