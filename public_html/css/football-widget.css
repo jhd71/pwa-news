@@ -40,7 +40,6 @@
     font-weight: bold;
     flex: 1;
     color: var(--primary-color, #dc3545);
-	font-weight: bold;
     text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
@@ -84,6 +83,7 @@
     color: var(--primary-color, #dc3545);
     margin-bottom: 12px;
     text-align: center;
+	text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* === FEATURES === */
@@ -345,6 +345,7 @@
     .feature-item {
         padding: 10px 12px;
         font-size: 14px;
+		text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
     
     .feature-icon {
