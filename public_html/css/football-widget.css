@@ -42,31 +42,28 @@
     color: var(--primary-color, #dc3545);
 }
 
-/* === ONGLETS === */
-.league-tabs {
-    display: flex;
-    gap: 5px;
-}
-
-.league-tab {
-    background: var(--primary-color, #dc3545);
-    color: #ffffff;
-    padding: 5px 10px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: bold;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: none;
-    opacity: 0.7;
-}
-
-.league-tab.active,
-.league-tab:hover {
-    opacity: 1;
-    transform: scale(1.05);
-}
+/* Onglets style moderne */
+    .league-tabs {
+        gap: 8px;
+    }
+    
+    .league-tab {
+        background: rgba(255,255,255,0.2);
+        color: #ffffff;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .league-tab.active {
+        background: #ffffff;
+        color: #00c853;
+        transform: scale(1.1);
+        box-shadow: 0 4px 10px rgba(0,200,83,0.3);
+    }
 
 /* === CONTENU === */
 .football-widget-preview {
