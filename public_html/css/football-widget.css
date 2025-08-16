@@ -233,8 +233,8 @@
 }
 
 [data-theme="rouge"] .football-widget-count {
-    background: rgba(211, 47, 47, 0.15);
-    color: #d32f2f;
+    background: rgb(240 225 222);
+    color: #000000;
 }
 
 /* === THÈME BLEU CIEL === */
