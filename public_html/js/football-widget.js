@@ -244,72 +244,106 @@ class FootballWidget {
         }
     }
 
-    // Afficher les matchs en direct
-    displayLiveMatches() {
-        const container = document.getElementById('liveScoresContainer');
-        if (!container || this.currentLeague !== 'ligue1') return;
+    // Version SIMPLIFIÉE - Matchs du jour sans prétendre au "LIVE"
+displayLiveMatches() {
+    const container = document.getElementById('liveScoresContainer');
+    if (!container || this.currentLeague !== 'ligue1') return;
+    
+    // Obtenir la date d'aujourd'hui
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    // Filtrer les matchs d'aujourd'hui
+    const todayMatches = this.liveMatches.filter(match => {
+        const matchDate = new Date(match.utcDate);
+        return matchDate >= today && matchDate < tomorrow;
+    });
+    
+    // Trier par heure
+    todayMatches.sort((a, b) => new Date(a.utcDate) - new Date(b.utcDate));
+    
+    if (todayMatches.length === 0) {
+        container.innerHTML = `
+            <div class="no-matches">
+                <div>Aucun match de Ligue 1 aujourd'hui</div>
+                <button onclick="window.open('https://www.fotmob.com/fr/leagues/53/matches/ligue-1', '_blank')" 
+                        style="margin-top: 10px; padding: 5px 10px; background: rgba(255,255,255,0.1); 
+                               border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; 
+                               color: rgba(255,255,255,0.7); cursor: pointer;">
+                    Voir le calendrier →
+                </button>
+            </div>
+        `;
+        document.getElementById('liveMatchCount').textContent = 'Aucun match';
+        return;
+    }
+    
+    // Générer le HTML simplifié
+    let html = '<div class="matches-today">';
+    
+    todayMatches.forEach(match => {
+        const matchTime = new Date(match.utcDate);
+        const now = new Date();
+        const hasStarted = now > matchTime;
+        const homeScore = match.score?.fullTime?.home ?? '-';
+        const awayScore = match.score?.fullTime?.away ?? '-';
         
-        // Obtenir la date d'aujourd'hui
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        
-        // Filtrer les matchs d'aujourd'hui
-        const todayMatches = this.liveMatches.filter(match => {
-            const matchDate = new Date(match.utcDate);
-            return matchDate >= today && matchDate < tomorrow;
-        });
-        
-        // Trier par heure
-        todayMatches.sort((a, b) => new Date(a.utcDate) - new Date(b.utcDate));
-        
-        if (todayMatches.length === 0) {
-            container.innerHTML = '<div class="no-matches">Aucun match de Ligue 1 aujourd\'hui</div>';
-            document.getElementById('liveMatchCount').textContent = 'Aucun match aujourd\'hui';
-            return;
+        // Statut simple
+        let status;
+        if (match.status === 'FINISHED' || match.status === 'FULL_TIME') {
+            status = 'Terminé';
+        } else if (hasStarted) {
+            status = 'En cours'; // Pas précis mais honnête
+        } else {
+            status = matchTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
         }
         
-        // Générer le HTML des matchs
-        let html = '';
-        let liveCount = 0;
-        
-        todayMatches.forEach(match => {
-            const isLive = match.status === 'IN_PLAY' || match.status === 'PAUSED' || match.status === 'HALFTIME';
-            const isFinished = match.status === 'FINISHED';
-            if (isLive) liveCount++;
-            
-            const homeScore = match.score?.fullTime?.home ?? match.score?.halfTime?.home ?? '-';
-            const awayScore = match.score?.fullTime?.away ?? match.score?.halfTime?.away ?? '-';
-            const matchTime = this.getMatchTime(match);
-            
-            html += `
-                <div class="live-score ${isLive ? 'match-active' : ''} ${isFinished ? 'match-finished' : ''}">
-                    <div class="match-teams">
-                        <span class="team home">${match.homeTeam.shortName || match.homeTeam.name}</span>
-                        <span class="score">${homeScore} - ${awayScore}</span>
-                        <span class="team away">${match.awayTeam.shortName || match.awayTeam.name}</span>
+        html += `
+            <div class="match-card ${hasStarted ? 'match-started' : 'match-scheduled'}">
+                <div class="match-header">
+                    <span class="match-status">${status}</span>
+                </div>
+                <div class="match-teams-simple">
+                    <div class="team-row">
+                        <span class="team-name">${match.homeTeam.shortName || match.homeTeam.name}</span>
+                        <span class="team-score">${homeScore}</span>
                     </div>
-                    <div class="match-info">
-                        <span class="match-time">${matchTime}</span>
-                        ${isLive ? '<span class="live-indicator">LIVE</span>' : ''}
+                    <div class="team-row">
+                        <span class="team-name">${match.awayTeam.shortName || match.awayTeam.name}</span>
+                        <span class="team-score">${awayScore}</span>
                     </div>
                 </div>
-            `;
-        });
-        
-        container.innerHTML = html;
-        
-        // Mettre à jour le compteur
-        let countText;
-        if (liveCount > 0) {
-            countText = `🔴 ${liveCount} match${liveCount > 1 ? 's' : ''} en direct`;
-        } else {
-            countText = `${todayMatches.length} match${todayMatches.length > 1 ? 's' : ''} aujourd'hui`;
-        }
-        
-        document.getElementById('liveMatchCount').textContent = countText;
+            </div>
+        `;
+    });
+    
+    html += `
+        <div class="matches-footer">
+            <small style="color: rgba(255,255,255,0.5); font-size: 10px;">
+                Scores actualisés toutes les 5 min
+            </small>
+            <button onclick="window.open('https://www.fotmob.com/fr/leagues/53/matches/ligue-1', '_blank')" 
+                    style="margin-top: 8px; padding: 4px 8px; background: rgba(0,230,118,0.1); 
+                           border: 1px solid rgba(0,230,118,0.3); border-radius: 6px; 
+                           color: rgba(0,230,118,0.9); cursor: pointer; font-size: 11px;">
+                Scores en temps réel →
+            </button>
+        </div>
+    </div>`;
+    
+    container.innerHTML = html;
+    
+    // Compteur simple
+    const matchText = todayMatches.length === 1 ? '1 match' : `${todayMatches.length} matchs`;
+    document.getElementById('liveMatchCount').textContent = `${matchText} aujourd'hui`;
+    
+    // Désactiver les notifications car pas fiable
+    if (this.notificationsEnabled) {
+        console.log('Notifications désactivées - API trop lente');
     }
+}
 
     // Obtenir l'heure ou le statut du match
     getMatchTime(match) {
