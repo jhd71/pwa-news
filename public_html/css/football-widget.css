@@ -326,8 +326,11 @@
     }
     
     .football-widget {
-        padding: 14px;
-        margin: 0 10px;
+        padding: 10px !important;
+        margin: 0 -20px;
+        border-radius: 0; /* Coins carrés = plus moderne en pleine largeur */
+        border-left: none;
+        border-right: none;
     }
     
     .football-widget-title {
@@ -339,8 +342,8 @@
     }
     
     .league-tab {
-        padding: 5px 10px;
-        font-size: 11px;
+        padding: 5px 10px !important;
+        font-size: 11px !important;
         min-width: 35px;
     }
     
