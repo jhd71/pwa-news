@@ -67,19 +67,7 @@ class FootballWidget {
             <div class="football-widget-preview" id="footballWidgetPreview">
                 <div class="current-league" id="currentLeague">
                     🇫🇷 Ligue 1
-                </div>
-                
-                <!-- Badge API (visible seulement pour L1) -->
-                <div class="api-badge" id="apiBadge">
-                    <span class="api-indicator">●</span>
-                    <span>Données en direct</span>
-                </div>
-                
-				
-                <!-- Zone des scores (seulement pour L1) -->
-                <div class="live-scores-container" id="liveScoresContainer" style="display: block;">
-                    <div class="loading">Chargement des matchs...</div>
-                </div>
+                </div>                
                 
                 <div class="football-features" id="footballFeatures">
                     <div class="feature-item" data-action="classements">
