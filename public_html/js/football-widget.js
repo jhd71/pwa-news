@@ -129,59 +129,7 @@ class FootballWidget {
         
         return widget;
     }
-	
-	// Charger les matchs du jour (seulement L1)
-    async loadTodayMatches() {
-        const container = document.getElementById('liveScoresContainer');
-        const apiBadge = document.getElementById('apiBadge');
-        
-        // Seulement pour Ligue 1
-        if (this.currentLeague !== 'ligue1') {
-            if (container) container.style.display = 'none';
-            if (apiBadge) apiBadge.style.display = 'none';
-            return;
-        }
-        
-        // Afficher les éléments L1
-        if (container) container.style.display = 'block';
-        if (apiBadge) apiBadge.style.display = 'flex';
-        
-        try {
-            const response = await fetch(`/api/football-data?competition=FL1&endpoint=matches`);
-            
-            if (!response.ok) {
-                throw new Error(`Erreur HTTP: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            
-            if (!data.matches) {
-                throw new Error('Pas de données de matchs');
-            }
-            
-            this.liveMatches = data.matches;
-            this.displayLiveMatches();
-            
-            // Vérifier les buts si notifications activées
-            if (this.notificationsEnabled) {
-                this.checkForGoals();
-            }
-            
-            console.log(`⚽ Matchs Ligue 1 chargés`);
-            
-        } catch (error) {
-            console.error('Erreur chargement matchs:', error);
-            if (container) {
-                container.innerHTML = `
-                    <div class="error-message">
-                        <span>⚠️ Erreur de chargement</span>
-                    </div>
-                `;
-            }
-            document.getElementById('liveMatchCount').textContent = 'Erreur';
-        }
-    }
-
+		
     // Version SIMPLIFIÉE - Matchs du jour sans prétendre au "LIVE"
 displayLiveMatches() {
     const container = document.getElementById('liveScoresContainer');
