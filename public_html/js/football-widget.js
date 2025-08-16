@@ -114,7 +114,6 @@ class FootballWidget {
         // IMPORTANT : Charger les matchs immédiatement après un court délai
         setTimeout(() => {
             if (this.currentLeague === 'ligue1') {
-                this.showNotificationButton();
                 this.initializeAPI();
             }
             
