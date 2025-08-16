@@ -6,7 +6,6 @@ class FootballWidget {
         this.notificationsEnabled = localStorage.getItem('footballNotifications') === 'true';
         this.lastScores = {};
         this.checkInterval = null;
-        this.liveMatches = [];
     }
 
     // Informations des ligues
@@ -15,7 +14,6 @@ class FootballWidget {
             ligue1: { 
                 name: 'Ligue 1', 
                 flag: '🇫🇷',
-                apiId: 'FL1', // Pour l'API
                 urls: {
                     classements: 'https://www.fotmob.com/fr/leagues/53/table/ligue-1',
                     scores: 'https://www.fotmob.com/fr/leagues/53/matches/ligue-1?group=by-date',
