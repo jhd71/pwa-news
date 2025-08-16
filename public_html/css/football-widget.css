@@ -40,6 +40,8 @@
     font-weight: bold;
     flex: 1;
     color: var(--primary-color, #dc3545);
+	font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 /* Onglets style moderne */
@@ -60,7 +62,6 @@
     
     .league-tab.active {
         background: #ffffff;
-        color: #00c853;
         transform: scale(1.1);
         box-shadow: 0 4px 10px rgba(0,200,83,0.3);
     }
