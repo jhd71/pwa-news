@@ -45,6 +45,91 @@ class FootballWidget {
         };
     }
 
+    createWidget() {
+        const widget = document.createElement('div');
+        widget.className = 'football-widget';
+        widget.id = 'footballWidget';
+        
+        widget.innerHTML = `
+            <div class="football-widget-header">
+                <span class="football-widget-title">⚽ FOOTBALL</span>
+                
+                <!-- Bouton notifications (visible seulement sur L1) -->
+                <button class="notif-toggle" id="notifToggle" title="Notifications de buts" style="display: none;">
+                    🔔
+                </button>
+                
+                <div class="league-tabs">
+                    <button class="league-tab active" data-league="ligue1">L1</button>
+                    <button class="league-tab" data-league="ligue2">L2</button>
+                    <button class="league-tab" data-league="live">LIVE</button>
+                </div>
+            </div>
+            
+            <div class="football-widget-preview" id="footballWidgetPreview">
+                <div class="current-league" id="currentLeague">
+                    🇫🇷 Ligue 1
+                </div>
+                
+                <!-- Badge API (visible seulement pour L1) -->
+                <div class="api-badge" id="apiBadge">
+                    <span class="api-indicator">●</span>
+                    <span>Données en direct</span>
+                </div>
+                
+				
+                <!-- Zone des scores (seulement pour L1) -->
+                <div class="live-scores-container" id="liveScoresContainer" style="display: block;">
+                    <div class="loading">Chargement des matchs...</div>
+                </div>
+                
+                <div class="football-features" id="footballFeatures">
+                    <div class="feature-item" data-action="classements">
+                        <span class="feature-icon">📊</span>
+                        <span>Classements en direct</span>
+                    </div>
+                    <div class="feature-item" data-action="scores">
+                        <span class="feature-icon">⚽</span>
+                        <span>Scores live</span>
+                    </div>
+                    <div class="feature-item" data-action="actualites">
+                        <span class="feature-icon">📰</span>
+                        <span>Actualités Foot</span>
+                    </div>
+                    <div class="feature-item" data-action="transferts">
+                        <span class="feature-icon">💰</span>
+                        <span>Derniers transferts</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="football-widget-footer">
+                <span id="liveMatchCount" class="match-count">Chargement...</span>
+                <div class="football-widget-count">FotMob</div>
+            </div>
+        `;
+
+        this.setupEventListeners(widget);
+        
+        // IMPORTANT : Charger les matchs immédiatement après un court délai
+        setTimeout(() => {
+            if (this.currentLeague === 'ligue1') {
+                this.initializeAPI();
+            }
+            
+            // Restaurer l'état du bouton notifications
+            if (this.notificationsEnabled && this.currentLeague === 'ligue1') {
+                const notifToggle = widget.querySelector('#notifToggle');
+                if (notifToggle) {
+                    notifToggle.classList.add('active');
+                    notifToggle.style.display = 'block';
+                }
+            }
+        }, 500); // Délai de 500ms pour laisser le DOM se stabiliser
+        
+        return widget;
+    }
+	
 	// Charger les matchs du jour (seulement L1)
     async loadTodayMatches() {
         const container = document.getElementById('liveScoresContainer');
