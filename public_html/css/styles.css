@@ -1788,34 +1788,6 @@ main {
     flex-wrap: wrap;
 }
 
-.feature-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(0, 0, 0, 0.05);
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 14px;
-}
-
-[data-theme="dark"] .feature-item {
-    background: rgba(255, 255, 255, 0.05);
-}
-
-[data-theme="rouge"] .feature-item {
-    color: white;
-    background: rgba(163, 47, 42, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.feature-item .material-icons {
-    font-size: 18px;
-    color: var(--primary-color);
-}
-
-[data-theme="rouge"] .feature-item .material-icons {
-    color: var(--jaune-local);
-}
 
 .welcome-close {
     background: rgba(0, 0, 0, 0.3);
