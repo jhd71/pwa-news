@@ -100,7 +100,6 @@ class FootballWidget {
         // IMPORTANT : Charger les matchs immédiatement après un court délai
         setTimeout(() => {
             if (this.currentLeague === 'ligue1') {
-                this.initializeAPI();
             }
             
             // Restaurer l'état du bouton notifications
@@ -139,15 +138,11 @@ class FootballWidget {
                 
                 // Gérer l'affichage selon l'onglet
                 const container = document.getElementById('liveScoresContainer');
-                const apiBadge = document.getElementById('apiBadge');
                 const matchCount = document.getElementById('liveMatchCount');
                 
                 if (league === 'ligue1') {
                     // Afficher les éléments L1
                     if (container) container.style.display = 'block';
-                    if (apiBadge) apiBadge.style.display = 'flex';
-                    this.showNotificationButton();
-                    this.initializeAPI();
                 } else {
                     // Masquer pour L2 et LIVE
                     if (container) container.style.display = 'none';
