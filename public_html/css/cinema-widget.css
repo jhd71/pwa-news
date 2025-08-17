@@ -77,7 +77,8 @@
     font-size: 18px;
     font-weight: bold;
     flex: 1;
-    color: var(--primary-color);
+    color: var(--primary-color) !important;
+	text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .cinema-widget-badge {
