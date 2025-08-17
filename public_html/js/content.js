@@ -442,8 +442,8 @@ const tvSites = [
   },
   {
     title: '⚽ FC Montceau Bourgogne',
-    url: 'https://scorenco.com/football/competitions/regional-1-herbelin-poule-a-unique-m6rr?r=13851485',
-    mobileUrl: 'https://scorenco.com/football/competitions/regional-1-herbelin-poule-a-unique-m6rr?r=13851485',
+    url: 'https://lbfc.fff.fr/competitions?tab=calendar&id=438243&phase=1&poule=1&type=ch',
+    mobileUrl: 'https://lbfc.fff.fr/competitions?tab=calendar&id=438243&phase=1&poule=1&type=ch',
     isDefault: true,
     category: 'sports'
   },
