@@ -269,7 +269,7 @@
 [data-theme="dark"] .cinema-widget-header,
 [data-theme="dark"] .cinema-widget-title,
 [data-theme="dark"] .cinema-widget-footer {
-    #81b3fa !important;
+    #81b3fa;
 }
 
 [data-theme="dark"] .cinema-widget-badge {
