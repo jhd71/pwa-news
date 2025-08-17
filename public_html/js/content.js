@@ -442,8 +442,8 @@ const tvSites = [
   },
   {
     title: '⚽ FC Montceau Bourgogne',
-    url: 'https://lbfc.fff.fr/competitions?tab=calendar&id=438243&phase=1&poule=1&type=ch',
-    mobileUrl: 'https://lbfc.fff.fr/competitions?tab=calendar&id=438243&phase=1&poule=1&type=ch',
+    url: 'https://epreuves.fff.fr/competition/engagement/438243-regional-1-herbelin/phase/1/1/resultats-et-calendrier',
+    mobileUrl: 'https://epreuves.fff.fr/competition/engagement/438243-regional-1-herbelin/phase/1/1/resultats-et-calendrier',
     isDefault: true,
     category: 'sports'
   },
