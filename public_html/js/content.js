@@ -442,8 +442,8 @@ const tvSites = [
   },
   {
     title: '⚽ FC Montceau Bourgogne',
-    url: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
-    mobileUrl: 'https://www.footmercato.net/club/fc-montceau-bourgogne/classement',
+    url: 'https://scorenco.com/football/competitions/regional-1-herbelin-poule-a-unique-m6rr?r=13851485',
+    mobileUrl: 'https://scorenco.com/football/competitions/regional-1-herbelin-poule-a-unique-m6rr?r=13851485',
     isDefault: true,
     category: 'sports'
   },
