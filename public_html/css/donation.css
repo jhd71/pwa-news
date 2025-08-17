@@ -1,5 +1,5 @@
 /* ========================================
-   DONATION.CSS - VERSION AMÉLIORÉE SIMPLE
+   DONATION.CSS - VERSION AVEC VARIABLES CSS
    ======================================== */
 
 /* ========================================
@@ -12,19 +12,17 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(3px); /* Effet de flou moderne */
+    backdrop-filter: blur(3px);
     z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px; /* Espacement sur les bords */
-    /* État initial : invisible */
+    padding: 20px;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
 }
 
-/* État visible de l'overlay */
 .donation-overlay.visible {
     opacity: 1;
     pointer-events: auto;
@@ -34,17 +32,19 @@
    2. POPUP DE DONATION
    ======================================== */
 .donation-popup {
-    background: var(--background-color, #fff);
-    color: var(--text-color, #181818);
+    background: var(--card-background, #ffffff);
+    color: var(--text-color, #333333);
     padding: 30px;
     border-radius: 16px;
-    max-width: 420px;
+    max-width: 480px;
     width: 90%;
     text-align: center;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
     position: relative;
-    animation: fadeIn 0.4s ease-out;
+    animation: slideInUp 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     border: 1px solid var(--border-color, rgba(0,0,0,0.1));
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 /* ========================================
@@ -64,276 +64,18 @@
     justify-content: center;
     border-radius: 50%;
     transition: all 0.2s ease;
+    z-index: 10;
+    color: var(--text-color, #333);
 }
 
 .donation-close:hover {
-    color: var(--text-color, #000);
     background: var(--hover-background, rgba(0,0,0,0.1));
     transform: scale(1.1);
 }
 
 /* ========================================
-   4. TITRE ET CONTENU
+   4. EN-TÊTE
    ======================================== */
-.donation-popup h3 {
-    color: var(--text-color);
-    margin-bottom: 16px;
-    font-size: 1.4rem;
-    font-weight: 700;
-}
-
-.donation-popup p {
-    line-height: 1.5;
-    margin-bottom: 24px;
-    font-size: 0.95rem;
-}
-
-/* ========================================
-   5. LIEN DE DONATION
-   ======================================== */
-.donation-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 20px;
-    padding: 14px 28px;
-    background: #0070ba;
-    color: white !important;
-    text-decoration: none;
-    border-radius: 10px;
-    font-weight: 600;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 112, 186, 0.3);
-}
-
-.donation-link:hover {
-    background: #005c9d;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(0, 112, 186, 0.4);
-}
-
-.donation-link:active {
-    transform: translateY(0);
-}
-
-/* ========================================
-   6. ANIMATIONS
-   ======================================== */
-@keyframes fadeIn {
-    from { 
-        opacity: 0; 
-        transform: translateY(20px) scale(0.95); 
-    }
-    to { 
-        opacity: 1; 
-        transform: translateY(0) scale(1); 
-    }
-}
-
-/* ========================================
-   7. ADAPTATIONS AUX THÈMES
-   ======================================== */
-
-/* THÈME ROUGE (défaut) */
-[data-theme="rouge"] .donation-popup {
-    background: var(--background-color);
-    border-color: rgba(220, 53, 69, 0.2);
-}
-
-[data-theme="rouge"] .donation-popup h3 {
-    color: #000000;
-}
-
-/* THÈME SOMBRE */
-[data-theme="dark"] .donation-popup {
-    background: #2d3748;
-    color: white;
-    border-color: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-}
-
-[data-theme="dark"] .donation-popup h3 {
-    color: white;
-}
-
-[data-theme="dark"] .donation-popup p {
-    color: #a0aec0;
-}
-
-[data-theme="dark"] .donation-close {
-    color: #a0aec0;
-}
-
-[data-theme="dark"] .donation-close:hover {
-    color: white;
-    background: rgba(255, 255, 255, 0.1);
-}
-
-/* THÈME BLEU CIEL */
-[data-theme="bleuciel"] .donation-popup {
-    background: var(--background-color);
-    border-color: rgba(23, 162, 184, 0.2);
-}
-
-[data-theme="bleuciel"] .donation-popup h3 {
-    color: var(--primary-color);
-}
-
-[data-theme="bleuciel"] .donation-link {
-    background: linear-gradient(135deg, #17a2b8, #20c997);
-}
-
-[data-theme="bleuciel"] .donation-link:hover {
-    background: linear-gradient(135deg, #138a9b, #1ba085);
-}
-
-/* THÈME VIOLET (light) */
-[data-theme="light"] .donation-popup {
-    background: var(--background-color);
-    border-color: rgba(111, 66, 193, 0.2);
-}
-
-[data-theme="light"] .donation-popup h3 {
-    color: var(--primary-color);
-}
-
-[data-theme="light"] .donation-link {
-    background: linear-gradient(135deg, #6f42c1, #e83e8c);
-}
-
-[data-theme="light"] .donation-link:hover {
-    background: linear-gradient(135deg, #5a32a3, #dc1f6b);
-}
-
-/* ========================================
-   8. RESPONSIVE MOBILE
-   ======================================== */
-@media (max-width: 768px) {
-    .donation-overlay {
-        padding: 16px;
-        align-items: flex-start; /* Alignement en haut sur mobile */
-        padding-top: 60px; /* Espace depuis le haut */
-    }
-    
-    .donation-popup {
-        width: 95%;
-        max-width: 100%;
-        padding: 24px 20px;
-        border-radius: 12px;
-        margin: 0;
-    }
-    
-    .donation-popup h3 {
-        font-size: 1.25rem;
-        margin-bottom: 12px;
-    }
-    
-    .donation-popup p {
-        font-size: 0.9rem;
-        margin-bottom: 20px;
-    }
-    
-    .donation-link {
-        padding: 16px 24px;
-        font-size: 1rem;
-        width: 100%;
-        max-width: 280px;
-        margin-top: 16px;
-    }
-    
-    .donation-close {
-        top: -5px;
-        right: 1px;
-        font-size: 22px;
-        width: 28px;
-        height: 28px;
-    }
-}
-
-/* Mobile en mode paysage */
-@media (max-width: 768px) and (orientation: landscape) {
-    .donation-overlay {
-        padding-top: 20px;
-    }
-    
-    .donation-popup {
-        padding: 20px 18px;
-    }
-    
-    .donation-popup h3 {
-        font-size: 1.1rem;
-        margin-bottom: 10px;
-    }
-    
-    .donation-popup p {
-        font-size: 0.85rem;
-        margin-bottom: 16px;
-    }
-}
-
-/* ========================================
-   9. AMÉLIORATIONS TACTILES
-   ======================================== */
-@media (hover: none) and (pointer: coarse) {
-    /* Styles pour écrans tactiles */
-    .donation-link {
-        padding: 18px 32px;
-        font-size: 1.1rem;
-    }
-    
-    .donation-close {
-        width: 44px;
-        height: 44px;
-        font-size: 26px;
-    }
-}
-
-/* ========================================
-   10. ACCESSIBILITÉ
-   ======================================== */
-@media (prefers-reduced-motion: reduce) {
-    .donation-popup {
-        animation: none;
-    }
-    
-    .donation-link {
-        transition: none;
-    }
-    
-    .donation-close {
-        transition: none;
-    }
-}
-
-/* Focus pour navigation au clavier */
-.donation-close:focus,
-.donation-link:focus {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
-}
-
-/* ========================================
-   11. EFFET GLASSMORPHISM (optionnel)
-   ======================================== */
-.donation-popup {
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-}
-
-/* Amélioration pour les écrans haute densité */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-    .donation-popup {
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-    }
-}
-
-/* ========================================
-   12. AMÉLIORATIONS SUPPLÉMENTAIRES
-   ======================================== */
-
-/* En-tête de la popup */
 .donation-header {
     text-align: center;
     margin-bottom: 20px;
@@ -351,7 +93,15 @@
     50% { transform: translateY(-10px); }
 }
 
-/* Corps du message */
+.donation-header h3 {
+    margin-bottom: 10px;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+/* ========================================
+   5. CORPS DU MESSAGE
+   ======================================== */
 .donation-body {
     margin: 20px 0;
 }
@@ -360,7 +110,7 @@
     font-size: 1rem;
     line-height: 1.6;
     margin-bottom: 15px;
-    color: var(--text-color);
+    color: var(--text-color, #333);
 }
 
 .donation-main-text strong {
@@ -369,43 +119,256 @@
 
 /* Features */
 .donation-features {
-    display: flex;
-    justify-content: space-around;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
     margin: 20px 0;
     padding: 15px;
-    background: var(--feature-bg, rgba(0, 112, 186, 0.05));
+    background: var(--feature-background, rgba(0, 0, 0, 0.03));
     border-radius: 8px;
 }
 
 .feature {
     font-size: 0.9rem;
-    color: var(--text-color);
+    color: var(--text-color, #333);
     font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
 }
 
-/* Appel à l'action */
+/* ========================================
+   6. SECTION TRANSPARENCE FINANCIÈRE
+   ======================================== */
+.financial-transparency {
+    background: var(--transparency-bg, rgba(0, 0, 0, 0.03));
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
+}
+
+.financial-transparency h4 {
+    margin-bottom: 15px;
+    font-size: 1.1em;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* Détail des coûts */
+.costs-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.cost-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: var(--cost-item-bg, rgba(255, 255, 255, 0.5));
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.cost-item:hover {
+    background: var(--cost-item-hover, rgba(255, 255, 255, 0.7));
+    transform: translateX(3px);
+}
+
+.cost-label {
+    color: var(--text-color-secondary, #666);
+    font-size: 0.9rem;
+}
+
+.cost-amount {
+    color: var(--text-color, #333);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.cost-total {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: var(--primary-color, #940000);
+    border-radius: 8px;
+    margin-top: 12px;
+}
+
+.cost-total .cost-label,
+.cost-total .cost-amount {
+    color: #fff;
+    font-weight: 700;
+}
+
+/* ========================================
+   7. BARRE DE PROGRESSION
+   ======================================== */
+.donation-progress {
+    margin-top: 20px;
+}
+
+.progress-label {
+    color: var(--text-color, #333);
+    margin-bottom: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 35px !important;
+    background: var(--progress-bg, rgba(0, 0, 0, 0.05)) !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+    position: relative;
+    border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--progress-fill-bg, linear-gradient(90deg, #4CAF50, #66BB6A));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 80px;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-fill::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    to { left: 100%; }
+}
+
+.progress-text {
+    font-weight: bold;
+    font-size: 0.9em;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    z-index: 1;
+    position: relative;
+	margin-top: 0px !important;
+}
+
+.progress-info {
+    color: var(--text-color-secondary, #666);
+    margin-top: 10px;
+    font-size: 0.9em;
+    text-align: center;
+}
+
+.progress-info strong {
+    font-size: 1.1em;
+}
+
+/* ========================================
+   8. MESSAGE D'APPEL
+   ======================================== */
 .donation-appeal {
     text-align: center;
     font-size: 0.95rem;
-    margin: 15px 0;
-    font-style: italic;
-    color: var(--text-color-secondary, #666);
+    margin: 20px 0;
+    padding: 15px;
+    background: var(--appeal-bg, rgba(0, 0, 0, 0.03));
+    border-radius: 8px;
+    line-height: 1.5;
+    color: var(--text-color, #333);
 }
 
-/* Actions */
+.donation-appeal strong {
+    font-weight: 600;
+}
+
+/* ========================================
+   9. MONTANTS SUGGÉRÉS
+   ======================================== */
+.suggested-amounts {
+    margin: 20px 0;
+    padding: 15px;
+    background: var(--suggested-bg, rgba(0, 0, 0, 0.02));
+    border-radius: 10px;
+}
+
+.suggested-title {
+    color: var(--text-color-secondary, #666);
+    margin-bottom: 12px;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.amount-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.amount-btn {
+    padding: 10px 18px;
+    border: 2px solid var(--border-color, #ddd);
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.amount-btn:hover {
+    background: var(--primary-color, #940000);
+    color: white;
+    border-color: var(--primary-color, #940000);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.amount-btn.active {
+    background: var(--primary-color, #940000);
+    color: white;
+    border-color: var(--primary-color, #940000);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* ========================================
+   10. ACTIONS
+   ======================================== */
 .donation-actions {
     display: flex;
     flex-direction: column;
-	align-items: center;
-    gap: 10px;
-    margin-top: 20px;
+    align-items: center;
+    gap: 12px;
+    margin-top: 25px;
 }
 
 .donation-link.primary {
     background: linear-gradient(135deg, #0070ba, #003d82);
-    padding: 16px 24px;
+    color: white !important;
+    text-decoration: none;
+    padding: 16px 32px;
+    border-radius: 10px;
     font-size: 1.05rem;
     font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 112, 186, 0.3);
     position: relative;
     overflow: hidden;
 }
@@ -421,6 +384,11 @@
     transition: left 0.5s;
 }
 
+.donation-link.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 112, 186, 0.4);
+}
+
 .donation-link.primary:hover::before {
     left: 100%;
 }
@@ -429,7 +397,7 @@
     background: transparent;
     color: var(--text-color-secondary, #666);
     border: 1px solid var(--border-color, #ddd);
-    padding: 12px 20px;
+    padding: 12px 24px;
     border-radius: 8px;
     cursor: pointer;
     font-size: 0.95rem;
@@ -437,110 +405,35 @@
 }
 
 .donation-later:hover {
-    background: var(--hover-bg, rgba(0,0,0,0.05));
+    background: var(--hover-background, rgba(0,0,0,0.05));
+    border-color: var(--primary-color, #940000);
 }
 
-/* Footer */
+/* ========================================
+   11. FOOTER
+   ======================================== */
 .donation-footer {
     text-align: center;
     margin-top: 20px;
     padding-top: 15px;
     border-top: 1px solid var(--border-color, rgba(0,0,0,0.1));
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
 .donation-footer small {
     color: var(--text-color-secondary, #888);
     font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
 }
 
 /* ========================================
-   13. VARIANTES PAR NOMBRE DE VISITES
+   12. ANIMATIONS
    ======================================== */
-
-/* Pour les nouveaux visiteurs (moins de 5 visites) */
-.donation-popup.new-visitor .donation-emoji {
-    content: '👋';
-}
-
-.donation-popup.new-visitor h3 {
-    font-size: 1.3rem;
-}
-
-/* Pour les visiteurs réguliers (plus de 10 visites) */
-.donation-popup.regular-visitor .donation-emoji {
-    animation: heartbeat 1.5s ease-in-out infinite;
-}
-
-@keyframes heartbeat {
-    0%, 100% { transform: scale(1); }
-    25% { transform: scale(1.1); }
-    45% { transform: scale(0.9); }
-}
-
-/* ========================================
-   14. COMPTEUR DE DONATEURS (optionnel)
-   ======================================== */
-
-.donation-counter {
-    background: linear-gradient(135deg, #f6d365, #fda085);
-    color: white;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    margin: 15px auto;
-    display: inline-block;
-    font-weight: 600;
-}
-
-.donation-counter .count {
-    font-size: 1.1rem;
-    font-weight: 700;
-}
-
-/* ========================================
-   15. BADGES DE MOTIVATION
-   ======================================== */
-
-.donation-badge {
-    position: absolute;
-    top: -10px;
-    right: 20px;
-    background: #ff4757;
-    color: white;
-    padding: 5px 12px;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    font-weight: bold;
-    transform: rotate(10deg);
-    box-shadow: 0 2px 10px rgba(255, 71, 87, 0.3);
-}
-
-/* ========================================
-   16. MODE SOMBRE AMÉLIORÉ
-   ======================================== */
-
-[data-theme="dark"] .donation-features {
-    background: rgba(255, 255, 255, 0.05);
-}
-
-[data-theme="dark"] .donation-later {
-    border-color: rgba(255, 255, 255, 0.2);
-    color: #a0aec0;
-}
-
-[data-theme="dark"] .donation-later:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-}
-
-/* ========================================
-   17. ANIMATION D'ENTRÉE AMÉLIORÉE
-   ======================================== */
-
-.donation-popup {
-    animation: slideInUp 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
 @keyframes slideInUp {
     from {
         transform: translateY(100px) scale(0.9);
@@ -553,38 +446,177 @@
 }
 
 /* ========================================
-   18. RESPONSIVE AMÉLIORÉ
+   13. ADAPTATIONS SPÉCIFIQUES AUX THÈMES
    ======================================== */
 
-@media (max-width: 480px) {
-    .donation-features {
-        flex-direction: column;
-        gap: 8px;
-        padding: 12px;
+/* THÈME ROUGE */
+[data-theme="rouge"] .donation-popup {
+    --primary-color: #940000;
+    --text-color: #333333;
+    --text-color-secondary: #666666;
+    --border-color: rgba(148, 0, 0, 0.15);
+    --card-background: #ffffff;
+    --feature-background: rgba(148, 0, 0, 0.05);
+    --transparency-bg: rgba(148, 0, 0, 0.03);
+    --progress-fill-bg: linear-gradient(90deg, #4CAF50, #66BB6A);
+    --hover-background: rgba(148, 0, 0, 0.1);
+}
+
+/* THÈME SOMBRE */
+[data-theme="dark"] .donation-popup {
+    --primary-color: rgba(0, 0, 0, 0.2);
+    --text-color: #fff;
+    --text-color-secondary: #ffffffb5;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --card-background: #1e267a;
+    --feature-background: rgba(255, 255, 255, 0.1);
+    --transparency-bg: rgba(255, 255, 255, 0.05);
+    --cost-item-bg: rgba(255, 255, 255, 0.08);
+    --cost-item-hover: rgba(255, 255, 255, 0.12);
+    --progress-bg: rgba(255, 255, 255, 0.1);
+    --progress-fill-bg: linear-gradient(90deg, #4caf50, #26de2e);
+    --hover-background: rgba(255, 255, 255, 0.1);
+    --button-bg: rgba(255, 255, 255, 0.1);
+    --appeal-bg: rgba(255, 255, 255, 0.05);
+    --suggested-bg: rgba(255, 255, 255, 0.03);
+}
+
+/* THÈME BLEU CIEL */
+[data-theme="bleuciel"] .donation-popup {
+    --primary-color: #17a2b8;
+    --text-color: #333333;
+    --text-color-secondary: #5f6f7a;
+    --border-color: rgba(23, 162, 184, 0.15);
+    --card-background: #ffffff;
+    --feature-background: rgba(23, 162, 184, 0.05);
+    --transparency-bg: rgba(23, 162, 184, 0.03);
+    --progress-fill-bg: linear-gradient(90deg, #4caf50, #26de2e);
+    --hover-background: rgba(23, 162, 184, 0.1);
+}
+
+[data-theme="bleuciel"] .cost-total {
+    background: linear-gradient(135deg, #78b5e7, #76a0cd);
+}
+
+/* THÈME VIOLET (light) */
+[data-theme="light"] .donation-popup {
+    --primary-color: #6f42c1;
+    --text-color: #333333;
+    --text-color-secondary: #6c757d;
+    --border-color: rgba(111, 66, 193, 0.15);
+    --card-background: #ffffff;
+    --feature-background: rgba(111, 66, 193, 0.05);
+    --transparency-bg: rgba(111, 66, 193, 0.03);
+    --progress-fill-bg: linear-gradient(90deg, #4caf50, #26de2e);
+    --hover-background: rgba(111, 66, 193, 0.1);
+}
+
+[data-theme="light"] .cost-total {
+    background: linear-gradient(135deg, #6f42c1, #e83e8c);
+}
+
+/* ========================================
+   14. RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+    .donation-overlay {
+        padding: 10px;
     }
     
-    .feature {
-        text-align: center;
+    .donation-popup {
+        width: 95%;
+        max-width: 100%;
+        padding: 20px;
+        border-radius: 12px;
+        max-height: 85vh;
+    }
+    
+    .donation-header h3 {
+        font-size: 1.2rem;
     }
     
     .donation-emoji {
         font-size: 36px;
     }
     
-    .donation-popup h3 {
-        font-size: 1.15rem;
+    .donation-features {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        padding: 12px;
+    }
+    
+    .financial-transparency {
+        padding: 15px;
+    }
+    
+    .financial-transparency h4 {
+        font-size: 1rem;
+    }
+    
+    .cost-item {
+        padding: 6px 10px;
+    }
+    
+    .cost-label,
+    .cost-amount {
+        font-size: 0.85rem;
+    }
+    
+    .progress-bar {
+        height: 30px;
+    }
+    
+    .amount-buttons {
+        gap: 8px;
+    }
+    
+    .amount-btn {
+        padding: 8px 14px;
+        font-size: 0.9rem;
     }
     
     .donation-link.primary {
-        padding: 14px 20px;
+        padding: 14px 24px;
         font-size: 1rem;
+        width: 100%;
+        max-width: 280px;
+    }
+    
+    .donation-close {
+        top: 8px;
+        right: 8px;
+        width: 28px;
+        height: 28px;
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .donation-popup {
+        padding: 15px;
+    }
+    
+    .donation-header h3 {
+        font-size: 1.1rem;
+    }
+    
+    .donation-emoji {
+        font-size: 32px;
+    }
+    
+    .donation-main-text {
+        font-size: 0.9rem;
+    }
+    
+    .donation-appeal {
+        font-size: 0.85rem;
+        padding: 10px;
     }
 }
 
 /* ========================================
-   BOUTON CAFÉ - SANS VOILE BLANC
+   15. BOUTON CAFÉ
    ======================================== */
-
 #donateButton {
     position: relative;
     transition: all 0.3s ease;
@@ -607,7 +639,6 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Animation pulse SANS le voile blanc */
 @keyframes pulse-coffee {
     0% {
         box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.6);
@@ -625,10 +656,8 @@
 
 .pulse-animation {
     animation: pulse-coffee 2s ease-out 3;
-    /* PAS de background ici ! */
 }
 
-/* Animation shake au survol */
 @keyframes coffee-shake {
     0%, 100% { transform: rotate(-10deg) scale(1.1); }
     25% { transform: rotate(5deg) scale(1.15); }
@@ -639,16 +668,29 @@
     animation: coffee-shake 0.5s ease-in-out;
 }
 
-/* Mode sombre */
-
-[data-theme="dark"] #donateButton:hover {
-    background: rgba(255, 255, 255, 0.2);
+/* ========================================
+   16. ACCESSIBILITÉ
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+    .donation-popup,
+    .donation-emoji,
+    .progress-fill::before,
+    #donateButton .material-icons {
+        animation: none !important;
+    }
+    
+    .donation-link,
+    .donation-close,
+    .amount-btn,
+    .cost-item {
+        transition: none !important;
+    }
 }
 
-/* Mobile */
-@media (max-width: 768px) {
-    #donateButton:active {
-        transform: scale(0.95);
-        background: rgba(229, 62, 62, 0.2);
-    }
+.donation-close:focus,
+.donation-link:focus,
+.amount-btn:focus,
+.donation-later:focus {
+    outline: 2px solid var(--primary-color, #940000);
+    outline-offset: 2px;
 }
