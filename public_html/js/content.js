@@ -1490,7 +1490,6 @@ changeTextContrast(contrast) {
 }
 
     toggleTheme() {
-    // Cycle dans l'ordre : rouge -> dark -> bleuciel -> light -> super-light -> ocean -> Coucher de Soleil -> rouge
     switch (this.currentTheme) {
         case 'rouge':
             this.currentTheme = 'dark';
