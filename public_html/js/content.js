@@ -1329,164 +1329,480 @@ changeTextContrast(contrast) {
     }
     
     // Supprimer toute bannière existante
-    const existingBanners = document.querySelectorAll('.install-banner');
+    const existingBanners = document.querySelectorAll('.install-banner-modal');
     existingBanners.forEach(b => b.remove());
     
-    // Créer la bannière
-    const banner = document.createElement('div');
-    banner.className = 'install-banner';
-    banner.innerHTML = `
-        <div class="install-content">
-            <p>Installez Actu&Média sur votre appareil !</p>
-            <button id="installBtnBanner">Installer</button>
-            <button id="closeBannerBtn">✕</button>
+    // Créer la bannière modale
+    const bannerModal = document.createElement('div');
+    bannerModal.className = 'install-banner-modal';
+    bannerModal.innerHTML = `
+        <div class="install-banner-overlay"></div>
+        <div class="install-banner-content">
+            <button class="install-banner-close" id="closeBannerBtn">
+                <span class="material-icons">close</span>
+            </button>
+            
+            <div class="install-banner-icon">
+                <img src="/images/AM-192-v2.png" alt="Actu&Média" />
+            </div>
+            
+            <h2 class="install-banner-title">
+                Installez Actu&Média
+            </h2>
+            
+            <p class="install-banner-description">
+                Accédez rapidement à toute l'actualité locale depuis votre écran d'accueil
+            </p>
+            
+            <div class="install-banner-features">
+                <div class="install-feature">
+                    <span class="material-icons">offline_bolt</span>
+                    <span>Accès rapide</span>
+                </div>
+                <div class="install-feature">
+                    <span class="material-icons">notifications</span>
+                    <span>Notifications</span>
+                </div>
+                <div class="install-feature">
+                    <span class="material-icons">phone_iphone</span>
+                    <span>Comme une app</span>
+                </div>
+            </div>
+            
+            <div class="install-banner-actions">
+                <button class="install-btn-primary" id="installBtnBanner">
+                    <span class="material-icons">download</span>
+                    Installer maintenant
+                </button>
+                <button class="install-btn-secondary" id="laterBtnBanner">
+                    Plus tard
+                </button>
+            </div>
+            
+            <div class="install-banner-footer">
+                <small>Installation gratuite • Sans téléchargement</small>
+            </div>
         </div>
     `;
     
     // Ajouter les styles
     const style = document.createElement('style');
     style.textContent = `
-        .install-banner {
+        /* Overlay de fond */
+        .install-banner-modal {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            background: rgb(148, 0, 0);
-            color: white;
-            padding: 12px;
-            z-index: 9999;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            animation: slideDown 0.5s ease;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-        
-        .install-content {
+            bottom: 0;
+            z-index: 10000;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            max-width: 800px;
-            margin: 0 auto;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
         }
         
-        .install-banner button {
+        .install-banner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+        
+        /* Contenu de la bannière */
+        .install-banner-content {
+            position: relative;
+            background: var(--card-background, white);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-align: center;
+        }
+        
+        /* Bouton fermer */
+        .install-banner-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
             border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
+            background: var(--close-btn-bg, rgba(0, 0, 0, 0.1));
+            color: var(--text-color, #333);
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
         }
         
-        #installBtnBanner {
-            background: white;
-            color: var(--primary-color);
-            font-weight: bold;
+        .install-banner-close:hover {
+            background: var(--close-btn-hover, rgba(0, 0, 0, 0.2));
+            transform: rotate(90deg);
         }
         
-        #closeBannerBtn {
-            background: transparent;
+        /* Icône de l'app */
+        .install-banner-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            animation: bounce 2s infinite;
+        }
+        
+        .install-banner-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* Titre */
+        .install-banner-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color, #940000);
+            margin-bottom: 10px;
+        }
+        
+        /* Description */
+        .install-banner-description {
+            color: var(--text-color, #666);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        
+        /* Features */
+        .install-banner-features {
+            display: flex;
+            justify-content: space-around;
+            margin: 25px 0;
+            padding: 20px;
+            background: var(--features-bg, rgba(0, 0, 0, 0.03));
+            border-radius: 12px;
+        }
+        
+        .install-feature {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-color, #333);
+        }
+        
+        .install-feature .material-icons {
+            font-size: 24px;
+            color: var(--primary-color, #940000);
+        }
+        
+        /* Boutons */
+        .install-banner-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        
+        .install-btn-primary {
+            background: var(--primary-color, #940000);
             color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
         
-        @keyframes slideDown {
-            from { transform: translateY(-100%); }
-            to { transform: translateY(0); }
+        .install-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .install-btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        .install-btn-secondary {
+            background: transparent;
+            color: var(--text-color-secondary, #666);
+            border: 1px solid var(--border-color, #ddd);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .install-btn-secondary:hover {
+            background: var(--hover-bg, rgba(0, 0, 0, 0.05));
+        }
+        
+        /* Footer */
+        .install-banner-footer {
+            margin-top: 15px;
+            color: var(--text-color-secondary, #999);
+            font-size: 0.85rem;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        /* ========================================
+           ADAPTATIONS AUX THÈMES
+           ======================================== */
+        
+        /* Thème Rouge */
+        [data-theme="rouge"] .install-banner-content {
+            --primary-color: #940000;
+            --text-color: #333;
+            --text-color-secondary: #666;
+            --card-background: white;
+            --features-bg: rgba(148, 0, 0, 0.05);
+            --border-color: #ddd;
+            --close-btn-bg: rgba(0, 0, 0, 0.1);
+            --close-btn-hover: rgba(148, 0, 0, 0.2);
+        }
+        
+        /* Thème Sombre */
+        [data-theme="dark"] .install-banner-content {
+            --primary-color: #ff6b6b;
+            --text-color: #e2e8f0;
+            --text-color-secondary: #a0aec0;
+            --card-background: #2d3748;
+            --features-bg: rgba(255, 255, 255, 0.08);
+            --border-color: rgba(255, 255, 255, 0.2);
+            --close-btn-bg: rgba(255, 255, 255, 0.1);
+            --close-btn-hover: rgba(255, 255, 255, 0.2);
+            --hover-bg: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Thème Bleu Ciel */
+        [data-theme="bleuciel"] .install-banner-content {
+            --primary-color: #17a2b8;
+            --text-color: #333;
+            --text-color-secondary: #5f6f7a;
+            --card-background: white;
+            --features-bg: rgba(23, 162, 184, 0.05);
+            --border-color: #ddd;
+            --close-btn-bg: rgba(23, 162, 184, 0.1);
+            --close-btn-hover: rgba(23, 162, 184, 0.2);
+        }
+        
+        [data-theme="bleuciel"] .install-btn-primary {
+            background: linear-gradient(135deg, #17a2b8, #20c997);
+        }
+        
+        /* Thème Violet */
+        [data-theme="light"] .install-banner-content {
+            --primary-color: #6f42c1;
+            --text-color: #333;
+            --text-color-secondary: #6c757d;
+            --card-background: white;
+            --features-bg: rgba(111, 66, 193, 0.05);
+            --border-color: #ddd;
+            --close-btn-bg: rgba(111, 66, 193, 0.1);
+            --close-btn-hover: rgba(111, 66, 193, 0.2);
+        }
+        
+        [data-theme="light"] .install-btn-primary {
+            background: linear-gradient(135deg, #6f42c1, #e83e8c);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .install-banner-content {
+                padding: 25px 20px;
+                max-width: 95%;
+            }
+            
+            .install-banner-icon {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .install-banner-title {
+                font-size: 1.3rem;
+            }
+            
+            .install-banner-description {
+                font-size: 0.9rem;
+            }
+            
+            .install-banner-features {
+                padding: 15px 10px;
+            }
+            
+            .install-feature {
+                font-size: 0.8rem;
+            }
+            
+            .install-feature .material-icons {
+                font-size: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .install-banner-features {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .install-feature {
+                flex-direction: row;
+                justify-content: center;
+                gap: 8px;
+            }
+        }
+        
+        /* Accessibilité */
+        @media (prefers-reduced-motion: reduce) {
+            .install-banner-modal,
+            .install-banner-content,
+            .install-banner-icon {
+                animation: none !important;
+            }
+            
+            .install-banner-close,
+            .install-btn-primary,
+            .install-btn-secondary {
+                transition: none !important;
+            }
         }
     `;
     
     document.head.appendChild(style);
-    document.body.prepend(banner);
+    document.body.appendChild(bannerModal);
     
-    // Référence à l'événement d'installation depuis l'initializer
+    // Référence à l'événement d'installation
     const deferredPrompt = window.pwaInstaller ? window.pwaInstaller.deferredPrompt : null;
     
     // Fonction pour installer l'application
     function installApp() {
         if (deferredPrompt) {
             deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('PWA installée avec succès');
+                    // Tracker l'installation si vous avez des analytics
+                }
+            });
         }
-        
-        const banners = document.querySelectorAll('.install-banner');
-        banners.forEach(b => b.remove());
+        closeBanner();
     }
     
     // Fonction pour fermer la bannière
     function closeBanner() {
-        const banners = document.querySelectorAll('.install-banner');
-        banners.forEach(b => {
-            // Animation de disparition
-            b.style.opacity = '0';
-            b.style.transform = 'translateY(-100%)';
-            
-            // Supprimer après l'animation
+        const banner = document.querySelector('.install-banner-modal');
+        if (banner) {
+            // Animation de fermeture
+            banner.style.animation = 'fadeOut 0.3s ease';
             setTimeout(() => {
-                if (b.parentNode) {
-                    b.parentNode.removeChild(b);
+                if (banner.parentNode) {
+                    banner.parentNode.removeChild(banner);
                 }
             }, 300);
-        });
+        }
         
         // Enregistrer que la bannière a été fermée
         localStorage.setItem('installBannerLastShown', Date.now().toString());
     }
     
-    // Configurer les boutons après un court délai
+    // Configurer les boutons
     setTimeout(() => {
-        // Configurer le bouton d'installation
+        // Bouton d'installation
         const installBtn = document.getElementById('installBtnBanner');
         if (installBtn) {
-            // Remplacer pour supprimer tous les gestionnaires
-            const newInstallBtn = installBtn.cloneNode(true);
-            installBtn.parentNode.replaceChild(newInstallBtn, installBtn);
-            
-            // Configurer le nouveau bouton
-            document.getElementById('installBtnBanner').onclick = function(e) {
+            installBtn.onclick = (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 installApp();
-                return false;
             };
         }
         
-        // Configurer le bouton de fermeture
-        const closeBtn = document.getElementById('closeBannerBtn');
-        if (closeBtn) {
-            // Remplacer pour supprimer tous les gestionnaires
-            const newCloseBtn = closeBtn.cloneNode(true);
-            closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
-            
-            // Configurer le nouveau bouton
-            document.getElementById('closeBannerBtn').onclick = function(e) {
+        // Bouton Plus tard
+        const laterBtn = document.getElementById('laterBtnBanner');
+        if (laterBtn) {
+            laterBtn.onclick = (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 closeBanner();
-                return false;
+            };
+        }
+        
+        // Bouton fermer
+        const closeBtn = document.getElementById('closeBannerBtn');
+        if (closeBtn) {
+            closeBtn.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                closeBanner();
+            };
+        }
+        
+        // Fermer en cliquant sur l'overlay
+        const overlay = document.querySelector('.install-banner-overlay');
+        if (overlay) {
+            overlay.onclick = (e) => {
+                e.preventDefault();
+                closeBanner();
             };
         }
     }, 100);
     
-    // Ajouter un gestionnaire global avec un identifiant unique
-    const handlerId = 'install-banner-handler-' + Date.now();
-    window[handlerId] = function(e) {
-        // Si on clique sur le bouton de fermeture ou un de ses enfants
-        if (e.target && (e.target.id === 'closeBannerBtn' || e.target.closest('#closeBannerBtn'))) {
-            e.preventDefault();
-            e.stopPropagation();
-            closeBanner();
-            // Supprimer ce gestionnaire après utilisation
-            document.removeEventListener('click', window[handlerId], true);
+    // Ajouter l'animation de fermeture au CSS
+    const fadeOutStyle = document.createElement('style');
+    fadeOutStyle.textContent = `
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
         }
-        
-        // Si on clique sur le bouton d'installation ou un de ses enfants
-        if (e.target && (e.target.id === 'installBtnBanner' || e.target.closest('#installBtnBanner'))) {
-            e.preventDefault();
-            e.stopPropagation();
-            installApp();
-            // Supprimer ce gestionnaire après utilisation
-            document.removeEventListener('click', window[handlerId], true);
-        }
-    };
+    `;
+    document.head.appendChild(fadeOutStyle);
     
-    // Ajouter le gestionnaire global en mode capture
-    document.addEventListener('click', window[handlerId], true);
+    // Auto-fermeture après 30 secondes si pas d'interaction
+    setTimeout(() => {
+        const banner = document.querySelector('.install-banner-modal');
+        if (banner) {
+            closeBanner();
+        }
+    }, 30000);
 }
 
     toggleTheme() {
