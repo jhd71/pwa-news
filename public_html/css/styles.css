@@ -2225,13 +2225,13 @@ main {
 /* Panneau de transparence */
 .transparency-panel {
     position: fixed;
-    top: 0;
+    top: 60px; /* Décaler sous le header */
     right: -400px;
     width: 380px;
-    height: 100vh;
+    height: calc(100vh - 60px); /* Ajuster la hauteur */
     background: var(--card-bg);
     box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3);
-    z-index: 10000;
+    z-index: 999; /* Réduire le z-index pour ne pas bloquer le header */
     transition: right 0.3s ease;
     display: flex;
     flex-direction: column;

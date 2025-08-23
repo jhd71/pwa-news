@@ -256,10 +256,10 @@
 .chat-container {
   position: fixed;
   right: 20px;
-  bottom: 100px;
+  bottom: 80px; /* Augmenter pour dégager la nav du bas */
   width: 350px;
-  height: 60vh;
-  max-height: calc(100vh - 180px);
+  height: 55vh; /* Réduire légèrement la hauteur */
+  max-height: calc(100vh - 200px); /* Plus d'espace en haut et bas */
   background: var(--chat-gradient);
   border-radius: 20px;
   box-shadow: var(--chat-shadow);
@@ -269,7 +269,7 @@
   flex-direction: column;
   animation: slideUp 0.3s ease;
   overflow: hidden;
-  z-index: 1100;
+  z-index: 950; /* Réduire pour ne pas bloquer le header */
   -webkit-overflow-scrolling: touch;
   transform: translateZ(0);
   will-change: transform;
