@@ -2313,22 +2313,6 @@ setupTransparencyPanelEvents(panel) {
     const closePanel = () => {
         panel.classList.remove('open');
         if (widget) widget.classList.remove('active');
-        
-        // IMPORTANT: Restaurer le scroll du body
-        document.body.style.overflow = '';
-        document.body.style.position = '';
-        document.body.style.width = '';
-        
-        // IMPORTANT: Supprimer l'overlay sombre si présent
-        const overlay = document.querySelector('.menu-overlay');
-        if (overlay) {
-            overlay.classList.remove('visible');
-            overlay.remove();
-        }
-        document.body.classList.remove('overlay-active');
-        document.body.classList.remove('settings-open');
-        
-        // Nettoyer après animation
         setTimeout(() => panel.remove(), 300);
     };
     
@@ -2363,7 +2347,6 @@ setupTransparencyPanelEvents(panel) {
         document.addEventListener('click', (e) => {
             if (!panel.contains(e.target) && 
                 !e.target.closest('#transparencyWidget') &&
-                !e.target.closest('#transparencyFromSettings') &&
                 window.innerWidth > 768) { // Seulement sur PC
                 closePanel();
             }

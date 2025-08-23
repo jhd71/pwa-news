@@ -99,31 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
             }
-			
-			/* Fix pour le panneau de transparence sur iOS */
-            .ios-device .transparency-panel {
-                top: calc(60px + var(--ios-safe-area-top)) !important;
-                height: calc(100% - 60px - var(--ios-safe-area-top)) !important;
-                z-index: 999 !important;
-            }
-            
-            /* Fix pour le chat sur iOS */
-            .ios-device .chat-container {
-                bottom: 85px !important;
-                height: 50vh !important;
-                max-height: calc(100vh - 220px) !important;
-                z-index: 950 !important;
-            }
-            
-            /* S'assurer que le header reste accessible */
-            .ios-device .app-header {
-                z-index: 1005 !important;
-            }
-            
-            /* Fix pour la navigation du bas quand le chat est ouvert */
-            .ios-device .bottom-nav {
-                z-index: 998 !important;
-            }
         `;
         document.head.appendChild(style);
         
