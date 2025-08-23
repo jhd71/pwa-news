@@ -2314,6 +2314,11 @@ setupTransparencyPanelEvents(panel) {
         panel.classList.remove('open');
         if (widget) widget.classList.remove('active');
         
+        // IMPORTANT: Restaurer le scroll du body
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
+        
         // IMPORTANT: Supprimer l'overlay sombre si présent
         const overlay = document.querySelector('.menu-overlay');
         if (overlay) {
