@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             /* Fix pour les boutons carburant et recherche */
-            .ios-device .fuel-button {
+            .ios-device .tool-button {
                 top: calc(70px + var(--ios-safe-area-top)) !important;
             }
             
