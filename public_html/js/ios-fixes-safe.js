@@ -113,14 +113,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 position: sticky !important;
                 bottom: 0 !important;
                 z-index: 10 !important;
-                background: var(--chat-gradient) !important;
                 padding-bottom: calc(10px + var(--ios-safe-area-bottom)) !important;
             }
 
             /* 6. Ajustements spécifiques pour iPhone avec encoche */
             @supports (padding: env(safe-area-inset-top)) {
                 .ios-device .chat-container.open {
-                    height: calc(100vh - 44px - env(safe-area-inset-top) - 70px - env(safe-area-inset-bottom)) !important;
+                    height: calc(98vh - 44px - env(safe-area-inset-top) - 70px - env(safe-area-inset-bottom)) !important;
                     max-height: calc(100vh - 44px - env(safe-area-inset-top) - 70px - env(safe-area-inset-bottom)) !important;
                 }
             }
