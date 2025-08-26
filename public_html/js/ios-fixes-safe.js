@@ -84,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 bottom: 0 !important;
                 left: 0 !important;
                 right: 0 !important;
-                background: rgba(0, 0, 0, 0.95) !important;
                 backdrop-filter: blur(10px) !important;
                 -webkit-backdrop-filter: blur(10px) !important;
                 padding-bottom: var(--ios-safe-area-bottom) !important;
@@ -97,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .ios-device .tool-button,
             .ios-device .search-button,
             .ios-device .news-button {
-                z-index: 998 !important;
+                z-index: 990 !important;
             }
 
             /* 4. Zone de messages adaptée pour iOS */
