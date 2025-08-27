@@ -1469,7 +1469,7 @@ if (publish && !this.editingId) { // Seulement pour nouvelles publications
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-API-Key': sessionStorage.getItem('newsAdminPassword') || 'defaultkey'
+                'X-API-Key': await this.ensureApiPassword()
             },
             body: JSON.stringify(notificationData)
         });
