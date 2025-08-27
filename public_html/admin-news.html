@@ -1354,8 +1354,14 @@ async ensureApiPassword() {
     // Si pas de mot de passe ou expiré (5 minutes)
     const passwordTimestamp = sessionStorage.getItem('newsAdminPasswordTime');
     if (!adminPassword || !passwordTimestamp || (Date.now() - parseInt(passwordTimestamp) > 300000)) {
-        // Utiliser le mot de passe de connexion comme API key
-        adminPassword = this.lastEnteredPassword || 'admin123'; // Fallback
+        
+        // Si on a le mot de passe de la session de connexion, l'utiliser
+        if (this.lastEnteredPassword) {
+            adminPassword = this.lastEnteredPassword;
+        } else {
+            // Sinon, utiliser le hash comme clé API
+            adminPassword = '6fe87dd'; // Le hash de votre mot de passe
+        }
         
         // Stocker temporairement
         sessionStorage.setItem('newsAdminPassword', adminPassword);
@@ -1469,7 +1475,7 @@ if (publish && !this.editingId) { // Seulement pour nouvelles publications
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-API-Key': 'fc35>$wL72iZA^'
+                'X-API-Key': await this.ensureApiPassword()
             },
             body: JSON.stringify(notificationData)
         });

@@ -19,9 +19,16 @@ webpush.setVapidDetails(
 /* ──────────────────────────────────────────────── */
 /* 2)  Clé d’API d’administration                  */
 /* ──────────────────────────────────────────────── */
-function checkApiKey (req){
-  const given = req.headers['x-api-key'];
-  return given === process.env.ADMIN_API_KEY;
+function checkApiKey(req) {
+    const given = req.headers['x-api-key'];
+    
+    // Accepter soit le mot de passe en clair, soit le hash
+    const validKeys = [
+        process.env.ADMIN_API_KEY,    // Mot de passe depuis .env
+        '6fe87dd'                     // Hash du mot de passe
+    ];
+    
+    return validKeys.includes(given);
 }
 
 /* ──────────────────────────────────────────────── */
