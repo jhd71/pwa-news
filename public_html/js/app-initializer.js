@@ -335,12 +335,54 @@ document.addEventListener('DOMContentLoaded', () => {
 // Rendre disponible globalement
 window.checkAdminNotifications = checkAdminNotifications;
 
+// Fonction pour demander les notifications à tous les visiteurs
+function requestNotificationPermissionForAll() {
+    // Vérifier si les notifications sont supportées
+    if (!('Notification' in window)) {
+        console.log('Notifications non supportées par ce navigateur');
+        return;
+    }
+    
+    // Vérifier si on a déjà une permission définie
+    if (Notification.permission !== 'default') {
+        console.log('🔔 Permission déjà définie:', Notification.permission);
+        return;
+    }
+    
+    // Demander la permission
+    console.log('🔔 Demande de permission automatique pour tous les visiteurs');
+    Notification.requestPermission().then(permission => {
+        console.log('🔔 Résultat permission:', permission);
+        
+        if (permission === 'granted') {
+            // Afficher une notification de bienvenue
+            new Notification('🔔 Actu & Média', {
+                body: 'Vous recevrez maintenant les actualités de Montceau en temps réel !',
+                icon: '/images/AM-192-v2.png',
+                badge: '/images/badge-72x72.png',
+                tag: 'welcome'
+            });
+            
+            console.log('✅ Notifications activées pour ce visiteur');
+        } else if (permission === 'denied') {
+            console.log('❌ Permission refusée par le visiteur');
+        }
+    }).catch(error => {
+        console.error('Erreur demande permission:', error);
+    });
+}
+
 // Application Initialization
 async function initApp() {
     try {
         // Enregistrer le Service Worker
         await registerServiceWorker();
         
+		// NOUVEAU : Demander permission notifications à TOUS les visiteurs
+setTimeout(() => {
+    requestNotificationPermissionForAll();
+}, 8000); // 8 secondes après le chargement de la page
+
         // Initialiser l'installateur PWA
         window.pwaInstaller = new PWAInstaller();
         
