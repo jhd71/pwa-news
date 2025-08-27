@@ -720,6 +720,13 @@ class ChatManager {
             }, 120000); // Vérification toutes les 2 minutes
         }
         
+		// NOUVEAU : Demander automatiquement les permissions de notification après un délai
+if (this.pseudo && !this.deviceBanned) {
+    setTimeout(() => {
+        this.requestInitialNotificationPermission();
+    }, 3000); // 3 secondes après le chargement du chat
+}
+
         this.initialized = true;
         console.log("Chat initialisé avec succès");
     } catch (error) {
@@ -3330,6 +3337,37 @@ showWelcomeNotification() {
             badge: '/images/badge-72x72.png',
             tag: 'welcome'
         });
+    }
+}
+
+async requestInitialNotificationPermission() {
+    try {
+        // Vérifier si les notifications sont supportées
+        if (!('Notification' in window)) {
+            console.log('Notifications non supportées par ce navigateur');
+            return;
+        }
+        
+        // Ne demander que si la permission n'a jamais été définie
+        if (Notification.permission === 'default') {
+            console.log('🔔 Demande automatique de permission pour notifications');
+            
+            const permission = await Notification.requestPermission();
+            console.log('🔔 Permission notifications:', permission);
+            
+            if (permission === 'granted') {
+                this.showWelcomeNotification();
+                this.notificationsEnabled = true;
+                localStorage.setItem('notificationsEnabled', 'true');
+                this.updateNotificationButton();
+            } else if (permission === 'denied') {
+                console.log('🔔 Permission refusée par l\'utilisateur');
+            }
+        } else {
+            console.log('🔔 Permission déjà définie:', Notification.permission);
+        }
+    } catch (error) {
+        console.error('Erreur demande permission notifications:', error);
     }
 }
 
