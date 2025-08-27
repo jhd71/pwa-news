@@ -26,7 +26,7 @@
     <meta name="description" content="Toute l'actualité de Montceau-les-Mines et Saône-et-Loire en temps réel. Infos locales, météo, radio, TV direct, cinéma. Le média local de référence.">
     
     <!-- Mots-clés ciblés -->
-    <meta name="keywords" content="Montceau-les-Mines, actualités Montceau, Saône-et-Loire, 71300, info locale, Montceau News, Le JSL, météo Montceau, cinéma L'Embarcadère, radio locale, actualités 71">
+    <meta name="keywords" content="Montceau-les-Mines actualités, news 71300, Le JSL, Saône-et-Loire infos, Montceau aujourd'hui, événements Montceau, cinéma L'Embarcadère, météo Montceau, petites annonces Montceau, chat local, Creusot Montceau, Blanzy, Saint-Vallier">
     
     <!-- Auteur et copyright -->
     <meta name="author" content="Actu & Média">
@@ -178,6 +178,38 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-client.js"></script>
     
+	<!-- Service Worker pour notifications push -->
+<script>
+// Enregistrement du service worker
+if ('serviceWorker' in navigator && 'PushManager' in window) {
+    navigator.serviceWorker.register('/sw.js')
+    .then(function(registration) {
+        console.log('SW enregistré:', registration);
+        // Demander permission pour notifications
+        requestNotificationPermission();
+    });
+}
+
+function requestNotificationPermission() {
+    if (Notification.permission === 'default') {
+        setTimeout(() => {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    showWelcomeNotification();
+                }
+            });
+        }, 5000); // Attendre 5 secondes après le chargement
+    }
+}
+
+function showWelcomeNotification() {
+    new Notification('🔔 Actu & Média', {
+        body: 'Vous recevrez maintenant les actualités de Montceau en temps réel !',
+        icon: '/images/AM-192-v2.png'
+    });
+}
+</script>
+	
     <!-- === POLICES GOOGLE FONTS === -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;900&family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
