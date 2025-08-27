@@ -1330,6 +1330,8 @@
                 const expectedHash = '6fe87dd'; // Hash du nouveau mot de passe
                 
                 if (hashedPassword === expectedHash) {
+            // Stocker le mot de passe pour les API calls
+            this.lastEnteredPassword = password;
                     // Définir l'authentification localement
                     sessionStorage.setItem('newsAdminAuth', 'authenticated');
                     sessionStorage.setItem('newsAdminUser', username);
@@ -1344,6 +1346,30 @@
                 this.showToast('❌ Identifiant incorrect', 'error');
             }
         }
+
+async ensureApiPassword() {
+    // Vérifier si on a déjà le mot de passe en session
+    let adminPassword = sessionStorage.getItem('newsAdminPassword');
+    
+    // Si pas de mot de passe ou expiré (5 minutes)
+    const passwordTimestamp = sessionStorage.getItem('newsAdminPasswordTime');
+    if (!adminPassword || !passwordTimestamp || (Date.now() - parseInt(passwordTimestamp) > 300000)) {
+        // Utiliser le mot de passe de connexion comme API key
+        adminPassword = this.lastEnteredPassword || 'admin123'; // Fallback
+        
+        // Stocker temporairement
+        sessionStorage.setItem('newsAdminPassword', adminPassword);
+        sessionStorage.setItem('newsAdminPasswordTime', Date.now().toString());
+        
+        // Supprimer automatiquement après 5 minutes
+        setTimeout(() => {
+            sessionStorage.removeItem('newsAdminPassword');
+            sessionStorage.removeItem('newsAdminPasswordTime');
+        }, 300000);
+    }
+    
+    return adminPassword;
+}
 
         showAdminInterface() {
             this.isAuthenticated = true;
@@ -1423,6 +1449,43 @@
                     if (result.error) {
                         throw result.error;
                     }
+
+// 🔔 NOUVEAU: Envoyer notification automatique si publication
+if (publish && !this.editingId) { // Seulement pour nouvelles publications
+    try {
+        console.log('📢 Envoi notification automatique pour nouvelle actualité...');
+        
+        // Préparer les données de notification
+        const notificationData = {
+            title: '📰 Nouvelle actualité - Actu&Média',
+            body: title.length > 80 ? title.substring(0, 77) + '...' : title,
+            url: '/', // Ou '/actualites' si vous avez une page dédiée
+            imageUrl: imageUrl || '/images/AM-192-v2.png',
+            urgent: featured // Urgent si mis à la une
+        };
+        
+        // Envoyer via votre API existante
+        const notifResponse = await fetch('/api/send-important-notification', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-API-Key': sessionStorage.getItem('newsAdminPassword') || 'defaultkey'
+            },
+            body: JSON.stringify(notificationData)
+        });
+        
+        if (notifResponse.ok) {
+            const notifResult = await notifResponse.json();
+            console.log(`✅ Notification envoyée à ${notifResult.sent} abonnés`);
+            this.showToast(`📢 + notification envoyée à ${notifResult.sent} personnes`, 'success');
+        } else {
+            console.warn('⚠️ Notification non envoyée:', notifResponse.status);
+        }
+    } catch (notifError) {
+        console.error('Erreur notification automatique:', notifError);
+        // Ne pas faire échouer la publication pour autant
+    }
+}
 
                     this.resetForm();
                     this.loadNews();
