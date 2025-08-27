@@ -2429,14 +2429,28 @@ if (deviceId) {
 
     // Remplacez votre méthode setupPushNotifications par celle-ci:
     async setupPushNotifications() {
-        try {
-            // Initialiser le gestionnaire de notifications
-            await notificationManager.init({
-                supabase: this.supabase,
-                showNotification: this.showNotification.bind(this),
-                pseudo: this.pseudo,
-                isAdmin: this.isAdmin
-            });
+    try {
+        // NOUVEAU : Demander d'abord la permission de base
+        if (Notification.permission === 'default') {
+            console.log('🔔 Demande de permission pour notifications');
+            const permission = await Notification.requestPermission();
+            console.log('🔔 Permission notifications:', permission);
+            
+            if (permission === 'granted') {
+                this.showWelcomeNotification();
+            } else {
+                this.showNotification('Permission de notification refusée', 'error');
+                return false;
+            }
+        }
+        
+        // Votre code existant continue ici...
+        await notificationManager.init({
+            supabase: this.supabase,
+            showNotification: this.showNotification.bind(this),
+            pseudo: this.pseudo,
+            isAdmin: this.isAdmin
+        });
             
             // Demander la permission et s'abonner
             const subscription = await notificationManager.requestPermissionAndSubscribe();
@@ -3305,6 +3319,18 @@ showSimpleNotification(message, type = 'info') {
             }
         }, 500);
     }, 3000);
+}
+
+showWelcomeNotification() {
+    console.log('🔔 Affichage notification de bienvenue');
+    if (Notification.permission === 'granted') {
+        new Notification('🔔 Actu & Média', {
+            body: 'Vous recevrez maintenant les actualités de Montceau en temps réel !',
+            icon: '/images/AM-192-v2.png',
+            badge: '/images/badge-72x72.png',
+            tag: 'welcome'
+        });
+    }
 }
 
 // Ajoutez cette méthode juste après showSimpleNotification()
