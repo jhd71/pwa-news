@@ -341,6 +341,44 @@ async function initApp() {
         // Enregistrer le Service Worker
         await registerServiceWorker();
         
+		// Enregistrer le Service Worker
+await registerServiceWorker();
+
+// NOUVEAU CODE - Demander permission notifications
+function requestNotificationPermission() {
+    if (!('Notification' in window)) {
+        console.log('Notifications non supportées par ce navigateur');
+        return;
+    }
+    
+    if (Notification.permission === 'default') {
+        console.log('🔔 Demande de permission pour notifications');
+        setTimeout(() => {
+            Notification.requestPermission().then(permission => {
+                console.log('🔔 Permission notifications:', permission);
+                if (permission === 'granted') {
+                    showWelcomeNotification();
+                }
+            });
+        }, 5000);
+    } else {
+        console.log('🔔 Permission notifications déjà définie:', Notification.permission);
+    }
+}
+
+function showWelcomeNotification() {
+    console.log('🔔 Affichage notification de bienvenue');
+    new Notification('🔔 Actu & Média', {
+        body: 'Vous recevrez maintenant les actualités de Montceau en temps réel !',
+        icon: '/images/AM-192-v2.png',
+        badge: '/images/badge-72x72.png',
+        tag: 'welcome'
+    });
+}
+
+// Appeler la fonction
+requestNotificationPermission();
+
         // Initialiser l'installateur PWA
         window.pwaInstaller = new PWAInstaller();
         
