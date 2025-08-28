@@ -819,7 +819,7 @@
 @media (min-width: 601px) and (max-width: 767px), 
        (min-width: 821px) and (max-width: 1024px) {
     .ticker-wrapper {
-        animation: ticker-tablet 20s linear infinite;
+        animation: ticker-tablet 70s linear infinite;
     }
     
     @keyframes ticker-tablet {
