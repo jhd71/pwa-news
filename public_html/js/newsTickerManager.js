@@ -47,10 +47,6 @@ async function loadNewsTickerItems() {
 
       // Ajouter les 3 dernières publications en haut
       const allArticles = [...latestArticles, ...remainingArticles];
-	  
-	  // Remplacez par (limiter à 8 articles sur tablette) :
-	const maxArticles = window.innerWidth >= 768 && window.innerWidth <= 1024 ? 8 : allArticles.length;
-	const limitedArticles = allArticles.slice(0, maxArticles);
       
       // Ajouter les articles dans le ticker
       allArticles.forEach((article, index) => {
