@@ -803,42 +803,6 @@
     }
 }
 
-/* Tablette 8 pouces */
-@media (min-width: 768px) and (max-width: 820px) {
-    .ticker-wrapper {
-        animation: ticker-tablet-8-inch 90s linear infinite;
-    }
-    
-    @keyframes ticker-tablet-8-inch {
-        0% { transform: translateX(100%); }
-        100% { transform: translateX(-500%); }
-    }
-}
-
-@media screen and (max-device-width: 1280px) {
-  .ticker-wrapper {
-    animation: ticker-tablet 60s linear infinite;
-  }
-
-  @keyframes ticker-tablet {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-300%); }
-  }
-}
-
-/* Autres tablettes */
-@media (min-width: 601px) and (max-width: 767px), 
-       (min-width: 821px) and (max-width: 1024px) {
-    .ticker-wrapper {
-        animation: ticker-tablet 70s linear infinite;
-    }
-    
-    @keyframes ticker-tablet {
-        0% { transform: translateX(100%); }
-        100% { transform: translateX(-1500%); }
-    }
-}
-
 /* Mobile */
 @media (max-width: 768px) {
     .ticker-item {
