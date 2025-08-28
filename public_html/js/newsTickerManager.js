@@ -46,7 +46,9 @@ async function loadNewsTickerItems() {
       shuffleArray(remainingArticles); // Mélanger les autres articles
 
       // Ajouter les 3 dernières publications en haut
-      // Remplacez par (limiter à 8 articles sur tablette) :
+      const allArticles = [...latestArticles, ...remainingArticles];
+	  
+	  // Remplacez par (limiter à 8 articles sur tablette) :
 	const maxArticles = window.innerWidth >= 768 && window.innerWidth <= 1024 ? 8 : allArticles.length;
 	const limitedArticles = allArticles.slice(0, maxArticles);
       
