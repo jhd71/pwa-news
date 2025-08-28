@@ -791,96 +791,22 @@
    ANIMATIONS RESPONSIVE DU TICKER
    =================================== */
 
-/* Desktop large */
-@media (min-width: 1024px) {
-    .ticker-wrapper {
-        animation: ticker-desktop 60s linear infinite;
-    }
-    
-    @keyframes ticker-desktop {
-        0% { transform: translateX(100%); }
-        100% { transform: translateX(-300%); }
-    }
+/* Bandeau d’actualités défilant avec vitesse adaptative */
+.ticker-wrapper {
+  display: inline-block;
+  white-space: nowrap;
+  will-change: transform;
+  animation: ticker linear infinite;
+  /* la durée dépend de la largeur de l’écran : 
+     plus l’écran est large, plus la durée augmente */
+  animation-duration: calc(40s * (100vw / 1200));
 }
 
-/* Tablette 8 pouces */
-@media (min-width: 768px) and (max-width: 820px) {
-    .ticker-wrapper {
-        animation: ticker-tablet-8-inch 90s linear infinite;
-    }
-    
-    @keyframes ticker-tablet-8-inch {
-        0% { transform: translateX(100%); }
-        100% { transform: translateX(-500%); }
-    }
+@keyframes ticker {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-300%); }
 }
 
-@media (min-width: 1180px) and (max-width: 1220px) {
-  .ticker-wrapper {
-    animation: ticker-tablet-8inch 60s linear infinite;
-  }
-
-  @keyframes ticker-tablet-8inch {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-300%); }
-  }
-}
-
-/* Autres tablettes */
-@media (min-width: 601px) and (max-width: 767px), 
-       (min-width: 821px) and (max-width: 1024px) {
-    .ticker-wrapper {
-        animation: ticker-tablet 70s linear infinite;
-    }
-    
-    @keyframes ticker-tablet {
-        0% { transform: translateX(100%); }
-        100% { transform: translateX(-1500%); }
-    }
-}
-
-/* Mobile */
-@media (max-width: 768px) {
-    .ticker-item {
-        padding: 10px 20px;
-        padding-right: 25px;
-    }
-    
-    .ticker-item:not(:last-child)::after {
-        right: 10px;
-        margin-left: 5px;
-    }
-}
-
-/* Petits mobiles */
-@media (max-width: 480px) {
-    .ticker-wrapper {
-        animation: ticker-mobile 65s linear infinite;
-    }
-    
-    @keyframes ticker-mobile {
-        0% { transform: translateX(100%); }
-        100% { transform: translateX(-2000%); }
-    }
-    
-    .ticker-item {
-        padding: 10px 15px;
-        padding-right: 20px;
-        font-size: 1.05em;
-    }
-    
-    .ticker-item:not(:last-child)::after {
-        right: 7px;
-    }
-    
-    .ticker-source {
-        font-size: 1.05em;
-    }
-    
-    .ticker-item a {
-        font-size: 1.05em;
-    }
-}
 
 /* ===================================
    THÈMES : TICKER
