@@ -788,11 +788,26 @@
 .ticker-source[data-source="Creusot Infos"]::before { content: "🏭 "; }
 
 /* ===================================
-   ANIMATIONS RESPONSIVE DU TICKER
+   ANIMATIONS RESPONSIVE DU TICKER - CORRIGÉ
    =================================== */
 
+/* Animation de base (fallback) */
+.ticker-wrapper {
+    display: flex;
+    animation: ticker 80s linear infinite; /* Animation par défaut */
+    white-space: nowrap;
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+@keyframes ticker {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-300%); }
+}
+
 /* Desktop large */
-@media (min-width: 1024px) {
+@media (min-width: 1025px) {
     .ticker-wrapper {
         animation: ticker-desktop 60s linear infinite;
     }
@@ -803,41 +818,51 @@
     }
 }
 
-/* Tablette 8 pouces */
+/* Tablette 10 pouces et plus */
+@media (min-width: 821px) and (max-width: 1024px) {
+    .ticker-wrapper {
+        animation: ticker-tablet-10 45s linear infinite;
+    }
+    
+    @keyframes ticker-tablet-10 {
+        0% { transform: translateX(100%); }
+        100% { transform: translateX(-800%); }
+    }
+}
+
+/* Tablette 8 pouces - PRIORITÉ */
 @media (min-width: 768px) and (max-width: 820px) {
     .ticker-wrapper {
-        animation: ticker-tablet-8-inch 90s linear infinite;
+        animation: ticker-tablet-8-inch 35s linear infinite;
     }
     
     @keyframes ticker-tablet-8-inch {
         0% { transform: translateX(100%); }
-        100% { transform: translateX(-500%); }
+        100% { transform: translateX(-1000%); }
     }
 }
 
-/* Autres tablettes */
-@media (min-width: 601px) and (max-width: 767px), 
-       (min-width: 821px) and (max-width: 1024px) {
+/* Tablette portrait/autres */
+@media (min-width: 601px) and (max-width: 767px) {
     .ticker-wrapper {
-        animation: ticker-tablet 70s linear infinite;
+        animation: ticker-tablet-portrait 50s linear infinite;
     }
     
-    @keyframes ticker-tablet {
+    @keyframes ticker-tablet-portrait {
+        0% { transform: translateX(100%); }
+        100% { transform: translateX(-1200%); }
+    }
+}
+
+/* Mobile large */
+@media (min-width: 481px) and (max-width: 600px) {
+    .ticker-wrapper {
+        animation: ticker-mobile-large 55s linear infinite;
+    }
+    
+    @keyframes ticker-mobile-large {
         0% { transform: translateX(100%); }
         100% { transform: translateX(-1500%); }
-    }
-}
-
-/* Mobile */
-@media (max-width: 768px) {
-    .ticker-item {
-        padding: 10px 20px;
-        padding-right: 25px;
-    }
-    
-    .ticker-item:not(:last-child)::after {
-        right: 10px;
-        margin-left: 5px;
     }
 }
 
@@ -850,24 +875,6 @@
     @keyframes ticker-mobile {
         0% { transform: translateX(100%); }
         100% { transform: translateX(-2000%); }
-    }
-    
-    .ticker-item {
-        padding: 10px 15px;
-        padding-right: 20px;
-        font-size: 1.05em;
-    }
-    
-    .ticker-item:not(:last-child)::after {
-        right: 7px;
-    }
-    
-    .ticker-source {
-        font-size: 1.05em;
-    }
-    
-    .ticker-item a {
-        font-size: 1.05em;
     }
 }
 
