@@ -627,6 +627,8 @@ this.tileContainer.appendChild(tvGuideTileElement);
         return;
 	}
 
+	// DEBUG - ajoutez temporairement
+	console.log('Site cliqué:', site.title, 'isTVGuide:', site.isTVGuide);
 	// Gestion spéciale pour le programme TV
 	if (site.isTVGuide) {
     // Ouvrir le widget programme TV
