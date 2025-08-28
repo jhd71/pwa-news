@@ -1,7 +1,7 @@
 class TVGuideWidget {
     constructor() {
         this.currentDate = new Date();
-        this.apiKey = 'k_f41876n3'; // À obtenir sur tv-api.com
+        this.apiKey = 'k_f41876n3';
         this.baseUrl = 'https://tv-api.com/fr/api/programmes';
         this.channels = [
             { id: 'tf1', name: 'TF1' },
@@ -16,31 +16,157 @@ class TVGuideWidget {
         this.programsCache = new Map();
     }
 
-    async fetchPrograms(date, channelId) {
-    try {
-        const dateStr = this.formatDateForAPI(date);
-        const response = await fetch(
-            `/api/tvPrograms?channel=${channelId}&date=${dateStr}`
-        );
-        
-        const data = await response.json();
-        
-        if (response.ok) {
-            return data.programmes;
-        } else {
-            return data.fallback?.programmes || this.getFallbackPrograms();
-        }
-        
-    } catch (error) {
-        console.error('Erreur réseau:', error);
-        return this.getFallbackPrograms();
+    init() {
+        this.createModal();
+        this.setupEventListeners();
     }
-}
+
+    createModal() {
+        const modal = document.createElement('div');
+        modal.id = 'tvGuideModal';
+        modal.className = 'tv-guide-modal';
+        modal.innerHTML = `
+            <div class="tv-guide-content">
+                <div class="tv-guide-header">
+                    <h2>📺 Programme TV</h2>
+                    <div class="tv-guide-controls">
+                        <button id="tvPrevDay" class="tv-nav-btn">
+                            <span class="material-icons">chevron_left</span>
+                        </button>
+                        <span id="tvCurrentDate">${this.formatDate(this.currentDate)}</span>
+                        <button id="tvNextDay" class="tv-nav-btn">
+                            <span class="material-icons">chevron_right</span>
+                        </button>
+                    </div>
+                    <button id="closeTVGuide" class="close-tv-btn">
+                        <span class="material-icons">close</span>
+                    </button>
+                </div>
+                <div class="tv-guide-body">
+                    <div class="tv-time-slots">
+                        <div class="time-header">Horaires</div>
+                        ${this.createTimeSlots()}
+                    </div>
+                    <div class="tv-channels-container">
+                        ${this.createChannelsGrid()}
+                    </div>
+                </div>
+                <div class="tv-guide-footer">
+                    <p>Données TV-API • Cliquez sur un programme pour plus d'infos</p>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+
+    createTimeSlots() {
+        let slots = '';
+        for (let hour = 8; hour <= 23; hour++) {
+            slots += `<div class="time-slot">${hour}:00</div>`;
+        }
+        return slots;
+    }
+
+    createChannelsGrid() {
+        return this.channels.map(channel => `
+            <div class="tv-channel" data-channel="${channel.id}">
+                <div class="channel-name">
+                    <div class="channel-text">${channel.name}</div>
+                </div>
+                <div class="channel-programs" id="programs-${channel.id}">
+                    <div class="loading-programs">Chargement...</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    setupEventListeners() {
+        document.getElementById('closeTVGuide').addEventListener('click', () => {
+            this.closeModal();
+        });
+
+        document.getElementById('tvPrevDay').addEventListener('click', () => {
+            this.changeDate(-1);
+        });
+
+        document.getElementById('tvNextDay').addEventListener('click', () => {
+            this.changeDate(1);
+        });
+
+        document.getElementById('tvGuideModal').addEventListener('click', (e) => {
+            if (e.target.id === 'tvGuideModal') {
+                this.closeModal();
+            }
+        });
+    }
+
+    openModal() {
+        const modal = document.getElementById('tvGuideModal');
+        modal.classList.add('active');
+        document.body.classList.add('tv-guide-open');
+        this.loadAllPrograms();
+    }
+
+    closeModal() {
+        const modal = document.getElementById('tvGuideModal');
+        modal.classList.remove('active');
+        document.body.classList.remove('tv-guide-open');
+    }
+
+    formatDate(date) {
+        const options = { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        };
+        return date.toLocaleDateString('fr-FR', options);
+    }
+
+    formatDateForAPI(date) {
+        return date.toISOString().split('T')[0];
+    }
+
+    formatTime(date) {
+        return date.toLocaleTimeString('fr-FR', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+    }
+
+    getFallbackPrograms() {
+        return [
+            {
+                id: 'fallback-1',
+                debut: new Date().setHours(8, 0),
+                fin: new Date().setHours(8, 30),
+                titre: 'Programme non disponible',
+                genre: 'Information'
+            }
+        ];
+    }
+
+    async fetchPrograms(date, channelId) {
+        try {
+            const dateStr = this.formatDateForAPI(date);
+            const response = await fetch(
+                `/api/tvPrograms?channel=${channelId}&date=${dateStr}`
+            );
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                return data.programmes;
+            } else {
+                return data.fallback?.programmes || this.getFallbackPrograms();
+            }
+        } catch (error) {
+            console.error('Erreur réseau:', error);
+            return this.getFallbackPrograms();
+        }
+    }
 
     async loadAllPrograms() {
-        const loading = document.querySelector('.tv-loading');
-        if (loading) loading.style.display = 'block';
-
         try {
             const promises = this.channels.map(channel => 
                 this.fetchPrograms(this.currentDate, channel.id)
@@ -56,12 +182,8 @@ class TVGuideWidget {
                 
                 this.displayChannelPrograms(channel, programs);
             });
-            
         } catch (error) {
             console.error('Erreur chargement programmes:', error);
-            this.showErrorMessage();
-        } finally {
-            if (loading) loading.style.display = 'none';
         }
     }
 
@@ -72,7 +194,7 @@ class TVGuideWidget {
         container.innerHTML = programs.map(program => {
             const startTime = new Date(program.debut);
             const endTime = new Date(program.fin);
-            const duration = (endTime - startTime) / (1000 * 60); // en minutes
+            const duration = (endTime - startTime) / (1000 * 60);
             
             return `
                 <div class="tv-program" 
@@ -87,230 +209,19 @@ class TVGuideWidget {
         }).join('');
     }
 
-    formatDateForAPI(date) {
-        return date.toISOString().split('T')[0]; // YYYY-MM-DD
-    }
-
-    formatTime(date) {
-        return date.toLocaleTimeString('fr-FR', { 
-            hour: '2-digit', 
-            minute: '2-digit' 
-        });
-    }
-
-    getFallbackPrograms() {
-        // Programmes de secours en cas d'échec API
-        return [
-            {
-                id: 'fallback-1',
-                debut: new Date().setHours(8, 0),
-                fin: new Date().setHours(8, 30),
-                titre: 'Programme non disponible',
-                genre: 'Information'
-            }
-        ];
-    }
-
-    createChannelsGrid() {
-        return this.channels.map(channel => `
-            <div class="tv-channel" data-channel="${channel.id}">
-                <div class="channel-name">
-                    <div class="channel-logo">
-                        <img src="images/channels/${channel.id}.png" 
-                             alt="${channel.name}" 
-                             onerror="this.style.display='none'">
-                    </div>
-                    <div class="channel-text">${channel.name}</div>
-                </div>
-                <div class="channel-programs" id="programs-${channel.id}">
-                    <div class="loading-programs">Chargement...</div>
-                </div>
-            </div>
-        `).join('');
-    }
-
     async changeDate(days) {
         this.currentDate.setDate(this.currentDate.getDate() + days);
         document.getElementById('tvCurrentDate').textContent = this.formatDate(this.currentDate);
-        
-        // Vider le cache pour la nouvelle date
         this.programsCache.clear();
-        
-        // Recharger les programmes
         await this.loadAllPrograms();
     }
-
-    async showProgramDetails(programElement) {
-        const programId = programElement.dataset.programId;
-        
-        try {
-            // Appel API pour les détails du programme
-            const response = await fetch(
-                `${this.baseUrl}/programme/${programId}?key=${this.apiKey}`
-            );
-            
-            const program = await response.json();
-            
-            const detailModal = document.createElement('div');
-            detailModal.className = 'program-detail-modal';
-            detailModal.innerHTML = `
-                <div class="program-detail-content">
-                    <button class="close-detail" onclick="this.parentElement.parentElement.remove()">×</button>
-                    <h3>${program.titre}</h3>
-                    <div class="program-info">
-                        <p><strong>Horaire:</strong> ${this.formatTime(new Date(program.debut))} - ${this.formatTime(new Date(program.fin))}</p>
-                        <p><strong>Genre:</strong> ${program.genre}</p>
-                        <p><strong>Durée:</strong> ${program.duree} minutes</p>
-                        ${program.resume ? `<p><strong>Résumé:</strong> ${program.resume}</p>` : ''}
-                        ${program.realisateur ? `<p><strong>Réalisateur:</strong> ${program.realisateur}</p>` : ''}
-                        ${program.acteurs ? `<p><strong>Acteurs:</strong> ${program.acteurs}</p>` : ''}
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(detailModal);
-            setTimeout(() => detailModal.classList.add('active'), 100);
-            
-        } catch (error) {
-            console.error('Erreur détails programme:', error);
-            this.showBasicDetails(programElement);
-        }
-    }
 }
 
-// Ajoutez ces méthodes à la fin de votre classe TVGuideWidget
-
-init() {
-    this.createModal();
-    this.setupEventListeners();
-}
-
-createModal() {
-    const modal = document.createElement('div');
-    modal.id = 'tvGuideModal';
-    modal.className = 'tv-guide-modal';
-    modal.innerHTML = `
-        <div class="tv-guide-content">
-            <div class="tv-guide-header">
-                <h2>📺 Programme TV</h2>
-                <div class="tv-guide-controls">
-                    <button id="tvPrevDay" class="tv-nav-btn">
-                        <span class="material-icons">chevron_left</span>
-                    </button>
-                    <span id="tvCurrentDate">${this.formatDate(this.currentDate)}</span>
-                    <button id="tvNextDay" class="tv-nav-btn">
-                        <span class="material-icons">chevron_right</span>
-                    </button>
-                </div>
-                <button id="closeTVGuide" class="close-tv-btn">
-                    <span class="material-icons">close</span>
-                </button>
-            </div>
-            <div class="tv-guide-body">
-                <div class="tv-time-slots">
-                    <div class="time-header">Horaires</div>
-                    ${this.createTimeSlots()}
-                </div>
-                <div class="tv-channels-container">
-                    ${this.createChannelsGrid()}
-                </div>
-            </div>
-            <div class="tv-guide-footer">
-                <p>Données TV-API • Cliquez sur un programme pour plus d'infos</p>
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(modal);
-}
-
-createTimeSlots() {
-    let slots = '';
-    for (let hour = 8; hour <= 23; hour++) {
-        slots += `<div class="time-slot">${hour}:00</div>`;
-    }
-    return slots;
-}
-
-setupEventListeners() {
-    // Bouton fermer
-    document.getElementById('closeTVGuide').addEventListener('click', () => {
-        this.closeModal();
-    });
-
-    // Navigation dates
-    document.getElementById('tvPrevDay').addEventListener('click', () => {
-        this.changeDate(-1);
-    });
-
-    document.getElementById('tvNextDay').addEventListener('click', () => {
-        this.changeDate(1);
-    });
-
-    // Fermer en cliquant dehors
-    document.getElementById('tvGuideModal').addEventListener('click', (e) => {
-        if (e.target.id === 'tvGuideModal') {
-            this.closeModal();
-        }
-    });
-}
-
-openModal() {
-    const modal = document.getElementById('tvGuideModal');
-    modal.classList.add('active');
-    document.body.classList.add('tv-guide-open');
-    this.loadAllPrograms(); // Charger les programmes
-}
-
-closeModal() {
-    const modal = document.getElementById('tvGuideModal');
-    modal.classList.remove('active');
-    document.body.classList.remove('tv-guide-open');
-}
-
-formatDate(date) {
-    const options = { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-    };
-    return date.toLocaleDateString('fr-FR', options);
-}
-
-showErrorMessage() {
-    console.error('Erreur lors du chargement des programmes TV');
-}
-
-showBasicDetails(programElement) {
-    const title = programElement.querySelector('.program-title').textContent;
-    const time = programElement.querySelector('.program-time').textContent;
-    
-    const detailModal = document.createElement('div');
-    detailModal.className = 'program-detail-modal';
-    detailModal.innerHTML = `
-        <div class="program-detail-content">
-            <h3>${title}</h3>
-            <p><strong>Horaire :</strong> ${time}</p>
-            <button onclick="this.parentElement.parentElement.remove()">Fermer</button>
-        </div>
-    `;
-    
-    document.body.appendChild(detailModal);
-    setTimeout(() => detailModal.classList.add('active'), 100);
-}
-
-}
-
-// Fonction globale pour ouvrir le widget
+// Fonction globale
 window.openTVGuideWidget = function() {
-    console.log('Ouverture du programme TV');
-    const modal = document.getElementById('tvGuideModal');
-    if (modal) {
-        const tvGuide = window.tvGuideInstance;
-        if (tvGuide) {
-            tvGuide.openModal();
-        }
+    console.log('Programme TV cliqué !');
+    if (window.tvGuideInstance) {
+        window.tvGuideInstance.openModal();
     }
 };
 
