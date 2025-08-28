@@ -833,12 +833,12 @@
 /* Tablette 10 pouces - également ralentie */
 @media (min-width: 821px) and (max-width: 1024px) {
     .ticker-wrapper {
-        animation: ticker-tablet-10-slow 100s linear infinite;
+        animation: ticker-tablet-10-slow 160s linear infinite;
     }
     
     @keyframes ticker-tablet-10-slow {
         0% { transform: translateX(100%); }
-        100% { transform: translateX(-500%); }
+        100% { transform: translateX(-200%); }
     }
 }
 
