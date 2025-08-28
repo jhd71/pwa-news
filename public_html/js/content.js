@@ -418,19 +418,6 @@ const tvSites = [
             this.tileContainer.appendChild(tile);
         });
 
-	// AJOUTEZ LA TUILE PROGRAMME TV ICI
-	const tvGuideTile = {
-		title: '📺 Programme TV',
-		url: '#tv-guide',
-		mobileUrl: '#tv-guide',
-		isDefault: true,
-		category: 'tv',
-		isTVGuide: true
-};
-
-const tvGuideTileElement = this.createTile(tvGuideTile);
-this.tileContainer.appendChild(tvGuideTileElement);
-
         // Séparateur Sports
         const sportsSeparator = document.createElement('div');
         sportsSeparator.className = 'separator';
@@ -626,24 +613,6 @@ this.tileContainer.appendChild(tvGuideTileElement);
         }
         return;
 	}
-
-	// DEBUG - ajoutez temporairement
-	console.log('Site cliqué:', site.title, 'isTVGuide:', site.isTVGuide);
-	// Gestion spéciale pour le programme TV
-	if (site.isTVGuide) {
-    // Ouvrir le widget programme TV
-    if (typeof window.openTVGuideWidget !== 'undefined') {
-        window.openTVGuideWidget();
-    } else {
-        setTimeout(() => {
-            const tvGuideModal = document.getElementById('tvGuideModal');
-            if (tvGuideModal) {
-                tvGuideModal.classList.add('active');
-            }
-        }, 100);
-    }
-    return;
-}
 
     // Gestion spéciale pour la tuile "Ajouter un site"
     if (site.isAddSite) {
