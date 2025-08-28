@@ -821,12 +821,12 @@
 /* Tablette 8 pouces - VERSION TRÈS LENTE */
 @media (min-width: 768px) and (max-width: 820px) {
     .ticker-wrapper {
-        animation: ticker-tablet-8-inch-slow 120s linear infinite;
+        animation: ticker-tablet-8-inch-slow 160s linear infinite;
     }
     
     @keyframes ticker-tablet-8-inch-slow {
         0% { transform: translateX(100%); }
-        100% { transform: translateX(-400%); }
+        100% { transform: translateX(-200%); }
     }
 }
 
