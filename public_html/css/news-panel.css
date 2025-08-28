@@ -818,21 +818,20 @@
     }
 }
 
-/* Masquer sur tablette 8 pouces - VERSION RENFORCÉE */
-@media screen and (min-width: 768px) and (max-width: 820px) {
-    .news-ticker,
-    div.news-ticker,
-    #newsTicker {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        height: 0 !important;
-        overflow: hidden !important;
+/* Tablette 8 pouces - VERSION TRÈS LENTE */
+@media (min-width: 768px) and (max-width: 820px) {
+    .ticker-wrapper {
+        animation: ticker-tablet-8-inch-slow 120s linear infinite;
+    }
+    
+    @keyframes ticker-tablet-8-inch-slow {
+        0% { transform: translateX(100%); }
+        100% { transform: translateX(-400%); }
     }
 }
 
-/* Tablette 10 pouces - gardez cette règle */
-@media (min-width: 821px) and (max-width: 1025px) {
+/* Tablette 10 pouces - également ralentie */
+@media (min-width: 821px) and (max-width: 1024px) {
     .ticker-wrapper {
         animation: ticker-tablet-10-slow 100s linear infinite;
     }
