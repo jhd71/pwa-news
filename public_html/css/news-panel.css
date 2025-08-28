@@ -806,7 +806,7 @@
 /* Tablette 8 pouces */
 @media (min-width: 768px) and (max-width: 820px) {
     .ticker-wrapper {
-        animation: ticker-tablet-8-inch 90s linear infinite;
+        animation: ticker 20s linear infinite;
     }
     
     @keyframes ticker-tablet-8-inch {
@@ -819,7 +819,7 @@
 @media (min-width: 601px) and (max-width: 767px), 
        (min-width: 821px) and (max-width: 1024px) {
     .ticker-wrapper {
-        animation: ticker-tablet 70s linear infinite;
+        animation: animation: ticker 20s linear infinite;
     }
     
     @keyframes ticker-tablet {
