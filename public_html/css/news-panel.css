@@ -787,64 +787,6 @@
 .ticker-source[data-source="France Bleu"]::before { content: "🎙️ "; }
 .ticker-source[data-source="Creusot Infos"]::before { content: "🏭 "; }
 
-/* ===================================
-   ANIMATIONS RESPONSIVE DU TICKER
-   =================================== */
-
-/* Desktop large */
-@media (min-width: 1024px) {
-    .ticker-wrapper {
-        animation: ticker-desktop 60s linear infinite;
-    }
-    
-    @keyframes ticker-desktop {
-        0% { transform: translateX(100%); }
-        100% { transform: translateX(-300%); }
-    }
-}
-
-/* Mobile */
-@media (max-width: 768px) {
-    .ticker-item {
-        padding: 10px 20px;
-        padding-right: 25px;
-    }
-    
-    .ticker-item:not(:last-child)::after {
-        right: 10px;
-        margin-left: 5px;
-    }
-}
-
-/* Petits mobiles */
-@media (max-width: 480px) {
-    .ticker-wrapper {
-        animation: ticker-mobile 65s linear infinite;
-    }
-    
-    @keyframes ticker-mobile {
-        0% { transform: translateX(100%); }
-        100% { transform: translateX(-2000%); }
-    }
-    
-    .ticker-item {
-        padding: 10px 15px;
-        padding-right: 20px;
-        font-size: 1.05em;
-    }
-    
-    .ticker-item:not(:last-child)::after {
-        right: 7px;
-    }
-    
-    .ticker-source {
-        font-size: 1.05em;
-    }
-    
-    .ticker-item a {
-        font-size: 1.05em;
-    }
-}
 
 /* ===================================
    THÈMES : TICKER
