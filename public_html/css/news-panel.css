@@ -1015,3 +1015,22 @@
     background-color: #6b1515;
     animation: blinkRouge 2s infinite ease-in-out;
 }
+
+/* FORCER les animations pour tablettes - PRIORITÉ ABSOLUE */
+.ticker-wrapper[style] {
+    animation: unset !important; /* Annule les styles inline */
+}
+
+/* Tablette 8 pouces - FORCE */
+@media (min-width: 768px) and (max-width: 820px) {
+    .ticker-wrapper {
+        animation: ticker-tablet-8-inch 90s linear infinite !important;
+    }
+}
+
+/* Tablette 10 pouces - FORCE */  
+@media (min-width: 821px) and (max-width: 1024px) {
+    .ticker-wrapper {
+        animation: ticker-tablet 70s linear infinite !important;
+    }
+}
