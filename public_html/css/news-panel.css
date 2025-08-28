@@ -730,7 +730,6 @@
 /* Conteneur interne qui gère le défilement */
 .ticker-wrapper {
     display: flex;
-    animation: ticker 80s linear infinite;
     white-space: nowrap;
     will-change: transform;
     backface-visibility: hidden;
