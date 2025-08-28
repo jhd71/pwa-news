@@ -1,20 +1,28 @@
-class TVGuideWidget {
-    constructor() {
-        this.currentDate = new Date();
-        this.apiKey = 'k_f41876n3';
-        this.baseUrl = 'https://tv-api.com/fr/api/programmes';
-        this.channels = [
-            { id: 'tf1', name: 'TF1' },
-            { id: 'france2', name: 'France 2' },
-            { id: 'france3', name: 'France 3' },
-            { id: 'canalplus', name: 'Canal+' },
-            { id: 'france5', name: 'France 5' },
-            { id: 'm6', name: 'M6' },
-            { id: 'arte', name: 'Arte' },
-            { id: 'c8', name: 'C8' }
-        ];
-        this.programsCache = new Map();
+async fetchPrograms(date, channelId) {
+    try {
+        const dateStr = this.formatDateForAPI(date);
+        
+        // Utiliser l'API publique de Télé-Loisirs
+        const response = await fetch(
+            `https://www.programme-tv.net/programme/chaine/${channelId}/${dateStr}.json`,
+            {
+                method: 'GET',
+                mode: 'cors'
+            }
+        );
+        
+        if (!response.ok) {
+            return this.getFallbackPrograms();
+        }
+        
+        const data = await response.json();
+        return this.convertTVData(data.programmes || []);
+        
+    } catch (error) {
+        console.error('Erreur API TV:', error);
+        return this.getFallbackPrograms();
     }
+}
 
     init() {
         this.createModal();
