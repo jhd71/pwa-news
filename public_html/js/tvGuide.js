@@ -177,3 +177,145 @@ class TVGuideWidget {
         }
     }
 }
+
+// Ajoutez ces méthodes à la fin de votre classe TVGuideWidget
+
+init() {
+    this.createModal();
+    this.setupEventListeners();
+}
+
+createModal() {
+    const modal = document.createElement('div');
+    modal.id = 'tvGuideModal';
+    modal.className = 'tv-guide-modal';
+    modal.innerHTML = `
+        <div class="tv-guide-content">
+            <div class="tv-guide-header">
+                <h2>📺 Programme TV</h2>
+                <div class="tv-guide-controls">
+                    <button id="tvPrevDay" class="tv-nav-btn">
+                        <span class="material-icons">chevron_left</span>
+                    </button>
+                    <span id="tvCurrentDate">${this.formatDate(this.currentDate)}</span>
+                    <button id="tvNextDay" class="tv-nav-btn">
+                        <span class="material-icons">chevron_right</span>
+                    </button>
+                </div>
+                <button id="closeTVGuide" class="close-tv-btn">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <div class="tv-guide-body">
+                <div class="tv-time-slots">
+                    <div class="time-header">Horaires</div>
+                    ${this.createTimeSlots()}
+                </div>
+                <div class="tv-channels-container">
+                    ${this.createChannelsGrid()}
+                </div>
+            </div>
+            <div class="tv-guide-footer">
+                <p>Données TV-API • Cliquez sur un programme pour plus d'infos</p>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+}
+
+createTimeSlots() {
+    let slots = '';
+    for (let hour = 8; hour <= 23; hour++) {
+        slots += `<div class="time-slot">${hour}:00</div>`;
+    }
+    return slots;
+}
+
+setupEventListeners() {
+    // Bouton fermer
+    document.getElementById('closeTVGuide').addEventListener('click', () => {
+        this.closeModal();
+    });
+
+    // Navigation dates
+    document.getElementById('tvPrevDay').addEventListener('click', () => {
+        this.changeDate(-1);
+    });
+
+    document.getElementById('tvNextDay').addEventListener('click', () => {
+        this.changeDate(1);
+    });
+
+    // Fermer en cliquant dehors
+    document.getElementById('tvGuideModal').addEventListener('click', (e) => {
+        if (e.target.id === 'tvGuideModal') {
+            this.closeModal();
+        }
+    });
+}
+
+openModal() {
+    const modal = document.getElementById('tvGuideModal');
+    modal.classList.add('active');
+    document.body.classList.add('tv-guide-open');
+    this.loadAllPrograms(); // Charger les programmes
+}
+
+closeModal() {
+    const modal = document.getElementById('tvGuideModal');
+    modal.classList.remove('active');
+    document.body.classList.remove('tv-guide-open');
+}
+
+formatDate(date) {
+    const options = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    };
+    return date.toLocaleDateString('fr-FR', options);
+}
+
+showErrorMessage() {
+    console.error('Erreur lors du chargement des programmes TV');
+}
+
+showBasicDetails(programElement) {
+    const title = programElement.querySelector('.program-title').textContent;
+    const time = programElement.querySelector('.program-time').textContent;
+    
+    const detailModal = document.createElement('div');
+    detailModal.className = 'program-detail-modal';
+    detailModal.innerHTML = `
+        <div class="program-detail-content">
+            <h3>${title}</h3>
+            <p><strong>Horaire :</strong> ${time}</p>
+            <button onclick="this.parentElement.parentElement.remove()">Fermer</button>
+        </div>
+    `;
+    
+    document.body.appendChild(detailModal);
+    setTimeout(() => detailModal.classList.add('active'), 100);
+}
+
+}
+
+// Fonction globale pour ouvrir le widget
+window.openTVGuideWidget = function() {
+    console.log('Ouverture du programme TV');
+    const modal = document.getElementById('tvGuideModal');
+    if (modal) {
+        const tvGuide = window.tvGuideInstance;
+        if (tvGuide) {
+            tvGuide.openModal();
+        }
+    }
+};
+
+// Initialisation
+document.addEventListener('DOMContentLoaded', function() {
+    window.tvGuideInstance = new TVGuideWidget();
+    window.tvGuideInstance.init();
+});

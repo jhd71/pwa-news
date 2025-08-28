@@ -2715,5 +2715,4 @@ changeVisualEnhancement(mode) {
 
 }
 
-const contentManager = new ContentManager();
-contentManager.init();
+export default ContentManager;
