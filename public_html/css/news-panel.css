@@ -828,13 +828,8 @@
 
 /* Tablette portrait/autres */
 @media (min-width: 601px) and (max-width: 767px) {
-    .ticker-wrapper {
-        animation: ticker-tablet-portrait 50s linear infinite;
-    }
-    
-    @keyframes ticker-tablet-portrait {
-        0% { transform: translateX(100%); }
-        100% { transform: translateX(-1200%); }
+    .news-ticker {
+        display: none !important;
     }
 }
 
