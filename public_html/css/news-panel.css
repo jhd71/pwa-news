@@ -815,6 +815,17 @@
     }
 }
 
+@media screen and (max-device-width: 1280px) {
+  .ticker-wrapper {
+    animation: ticker-tablet 60s linear infinite;
+  }
+
+  @keyframes ticker-tablet {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-300%); }
+  }
+}
+
 /* Autres tablettes */
 @media (min-width: 601px) and (max-width: 767px), 
        (min-width: 821px) and (max-width: 1024px) {
