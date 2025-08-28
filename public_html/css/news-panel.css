@@ -821,7 +821,7 @@
 /* Tablette 8 pouces - VERSION TRÈS LENTE */
 /* Masquer uniquement sur tablette 8 pouces */
 @media (min-width: 768px) and (max-width: 820px) {
-    .news-ticker {
+    .ticker-wrapper {
         display: none !important;
     }
 }
