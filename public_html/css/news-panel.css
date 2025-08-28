@@ -818,11 +818,16 @@
     }
 }
 
-/* Tablette 8 pouces - VERSION TRÈS LENTE */
-/* Masquer le ticker sur tablette 8 pouces seulement */
-@media (min-width: 768px) and (max-width: 820px) {
-    .news-ticker {
+/* Masquer sur tablette 8 pouces - VERSION RENFORCÉE */
+@media screen and (min-width: 768px) and (max-width: 820px) {
+    .news-ticker,
+    div.news-ticker,
+    #newsTicker {
         display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
     }
 }
 
