@@ -819,14 +819,15 @@
 }
 
 /* Tablette 8 pouces - VERSION TRÈS LENTE */
-@media (min-width: 768px) and (max-width: 1025px) {
+/* Masquer le ticker sur tablette 8 pouces seulement */
+@media (min-width: 768px) and (max-width: 820px) {
     .news-ticker {
         display: none !important;
     }
 }
 
-/* Tablette 10 pouces - également ralentie */
-@media (min-width: 821px) and (max-width: 1024px) {
+/* Tablette 10 pouces - gardez cette règle */
+@media (min-width: 821px) and (max-width: 1025px) {
     .ticker-wrapper {
         animation: ticker-tablet-10-slow 100s linear infinite;
     }
