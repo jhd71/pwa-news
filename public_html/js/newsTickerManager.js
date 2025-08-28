@@ -1,18 +1,5 @@
 // Dans newsTickerManager.js, modifiez la fonction loadNewsTickerItems
 async function loadNewsTickerItems() {
-	
-	// Masquer le ticker sur tablette 8 pouces
-if (window.innerWidth >= 768 && window.innerWidth <= 820) {
-    const tickerElement = document.getElementById('newsTicker');
-    const newsTickerContainer = document.querySelector('.news-ticker');
-    
-    if (tickerElement) tickerElement.style.display = 'none';
-    if (newsTickerContainer) newsTickerContainer.style.display = 'none';
-    
-    console.log('Ticker masqué sur tablette 8 pouces');
-    return; // Sortir de la fonction
-}
-
   try {
     console.log("Tentative de récupération des actualités pour le ticker...");
     
