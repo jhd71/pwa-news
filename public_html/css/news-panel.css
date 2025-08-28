@@ -730,6 +730,7 @@
 /* Conteneur interne qui gère le défilement */
 .ticker-wrapper {
     display: flex;
+    animation: ticker 80s linear infinite;
     white-space: nowrap;
     will-change: transform;
     backface-visibility: hidden;
@@ -825,34 +826,6 @@
         0% { transform: translateX(100%); }
         100% { transform: translateX(-1500%); }
     }
-}
-
-/* Portrait */
-@media (min-width: 1180px) and (max-width: 1220px) and (orientation: portrait) {
-  /* Styles spécifiques à ta tablette en portrait */
-  .ticker-wrapper {
-    animation-duration: 50s; /* exemple */
-	
-	@keyframes ticker {
-  0%   { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
-}
-
-  }
-}
-
-/* Paysage */
-@media (min-width: 1900px) and (max-width: 1940px) and (orientation: landscape) {
-  /* Styles spécifiques à ta tablette en paysage */
-  .ticker-wrapper {
-    animation-duration: 80s; /* exemple */
-	
-	@keyframes ticker {
-  0%   { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
-}
-
-  }
 }
 
 /* Mobile */
