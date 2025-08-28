@@ -819,17 +819,33 @@
 }
 
 /* Tablette 8 pouces - VERSION TRÈS LENTE */
-/* Masquer le ticker sur tablettes pour éviter les lags */
-@media (min-width: 768px) and (max-width: 1024px) {
+@media (min-width: 768px) and (max-width: 1025px) {
     .news-ticker {
         display: none !important;
     }
 }
 
+/* Tablette 10 pouces - également ralentie */
+@media (min-width: 821px) and (max-width: 1024px) {
+    .ticker-wrapper {
+        animation: ticker-tablet-10-slow 100s linear infinite;
+    }
+    
+    @keyframes ticker-tablet-10-slow {
+        0% { transform: translateX(100%); }
+        100% { transform: translateX(-500%); }
+    }
+}
+
 /* Tablette portrait/autres */
 @media (min-width: 601px) and (max-width: 767px) {
-    .news-ticker {
-        display: none !important;
+    .ticker-wrapper {
+        animation: ticker-tablet-portrait 50s linear infinite;
+    }
+    
+    @keyframes ticker-tablet-portrait {
+        0% { transform: translateX(100%); }
+        100% { transform: translateX(-1200%); }
     }
 }
 
