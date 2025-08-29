@@ -4,52 +4,62 @@ class RadioPopupWidget {
             {
                 name: 'France Info',
                 url: 'https://icecast.radiofrance.fr/franceinfo-midfi.mp3',
-                logo: 'https://upload.wikimedia.org/wikipedia/fr/thumb/4/41/France_Info_-_Logo_2016.svg/256px-France_Info_-_Logo_2016.svg.png'
+                logo: 'https://www.francetvinfo.fr/image/75h5bsqzk-c02e/1500/843/24914139.jpg',
+                description: 'Info en continu'
             },
             {
                 name: 'France Inter',
                 url: 'https://icecast.radiofrance.fr/franceinter-midfi.mp3',
-                logo: 'https://upload.wikimedia.org/wikipedia/fr/thumb/9/9b/France_Inter_logo.svg/256px-France_Inter_logo.svg.png'
+                logo: 'https://www.radiofrance.fr/s3/cruiser-production/2021/11/d0c3f0b5-9ac0-4ebb-9d0b-5a42d442e5a6/400x400_maxnewsworldthree104665.jpg',
+                description: 'Radio généraliste'
             },
             {
                 name: 'France Bleu Bourgogne',
                 url: 'https://icecast.radiofrance.fr/fbbourgogne-midfi.mp3',
-                logo: 'https://upload.wikimedia.org/wikipedia/fr/thumb/c/c3/France_Bleu_logo_2005.svg/256px-France_Bleu_logo_2005.svg.png'
+                logo: 'https://www.francebleu.fr/s3/cruiser-production/2019/10/2b5a6fc1-e553-485c-b58e-0fa7b7ff4c69/200x200_france_bleu.jpg',
+                description: 'Radio locale'
             },
             {
                 name: 'RTL',
                 url: 'https://streaming.radio.rtl.fr/rtl-1-44-128',
-                logo: 'https://upload.wikimedia.org/wikipedia/fr/thumb/f/f8/RTL_logo_2015.svg/256px-RTL_logo_2015.svg.png'
+                logo: 'https://cdn-profiles.tunein.com/s18223/images/logoq.png?t=1',
+                description: 'Info & divertissement'
             },
             {
                 name: 'NRJ',
                 url: 'https://scdn.nrjaudio.fm/fr/30001/mp3_128.mp3',
-                logo: 'https://upload.wikimedia.org/wikipedia/fr/thumb/f/fb/NRJ_Logo_2016.svg/256px-NRJ_Logo_2016.svg.png'
+                logo: 'https://cdn-profiles.tunein.com/s47/images/logoq.png?t=1',
+                description: 'Hits & musique'
             },
             {
                 name: 'Europe 1',
                 url: 'https://europe1.lmn.fm/europe1.mp3',
-                logo: 'https://upload.wikimedia.org/wikipedia/fr/thumb/b/b0/Europe_1_logo_2008.svg/256px-Europe_1_logo_2008.svg.png'
+                logo: 'https://cdn-profiles.tunein.com/s8439/images/logoq.png?t=1',
+                description: 'Talk & actualités'
             },
             {
                 name: 'RMC',
                 url: 'https://rmc.bfmtv.com/rmcinfo-mp3',
-                logo: 'https://upload.wikimedia.org/wikipedia/fr/thumb/0/06/RMC_logo_2017.svg/256px-RMC_logo_2017.svg.png'
+                logo: 'https://cdn-profiles.tunein.com/s25212/images/logoq.png?t=1',
+                description: 'Sport & info'
             },
             {
                 name: 'Nostalgie',
                 url: 'https://scdn.nrjaudio.fm/fr/30601/mp3_128.mp3',
-                logo: 'https://upload.wikimedia.org/wikipedia/fr/thumb/6/67/Nostalgie_%28logo%29.svg/256px-Nostalgie_%28logo%29.svg.png'
+                logo: 'https://cdn-profiles.tunein.com/s25050/images/logoq.png?t=1',
+                description: 'Oldies & classics'
             },
             {
                 name: 'Chérie FM',
                 url: 'https://scdn.nrjaudio.fm/fr/30201/mp3_128.mp3',
-                logo: 'https://upload.wikimedia.org/wikipedia/fr/thumb/f/f8/Ch%C3%A9rie_FM_logo_2017.svg/256px-Ch%C3%A9rie_FM_logo_2017.svg.png'
+                logo: 'https://cdn-profiles.tunein.com/s25048/images/logoq.png?t=1',
+                description: 'Love songs'
             },
             {
                 name: 'FIP',
                 url: 'https://icecast.radiofrance.fr/fip-midfi.mp3',
-                logo: 'https://upload.wikimedia.org/wikipedia/fr/thumb/0/09/FIP_logo_2005.svg/256px-FIP_logo_2005.svg.png'
+                logo: 'https://www.radiofrance.fr/s3/cruiser-production/2019/10/3fa98c9a-8e52-4743-ac5b-7c4c2c516bd0/200x200_fip.jpg',
+                description: 'Éclectisme musical'
             }
         ];
         
@@ -119,9 +129,17 @@ class RadioPopupWidget {
                     <div class="radio-stations-grid">
                         ${this.stations.map((station, index) => `
                             <div class="radio-station-card" data-index="${index}">
-                                <img src="${station.logo}" alt="${station.name}" class="station-logo"
-                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiByeD0iMTIiIGZpbGw9IiM5NDAwMDAiLz4KPHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIwIDEwQzE0LjQ3NzIgMTAgMTAgMTQuNDc3MiAxMCAyMEMxMCAyNS41MjI4IDE0LjQ3NzIgMzAgMjAgMzBDMjUuNTIyOCAzMCAzMCAyNS41MjI4IDMwIDIwQzMwIDE0LjQ3NzIgMjUuNTIyOCAxMCAyMCAxMFoiIGZpbGw9IndoaXRlIi8+CjwvcGF0aD4KPC9zdmc+Cjwvc3ZnPgo='">
-                                <div class="station-name">${station.name}</div>
+                                <div class="station-logo-container">
+                                    <img src="${station.logo}" alt="${station.name}" class="station-logo"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="logo-fallback" style="display: none;">
+                                        <span class="material-icons">radio</span>
+                                    </div>
+                                </div>
+                                <div class="station-info">
+                                    <div class="station-name">${station.name}</div>
+                                    <div class="station-description">${station.description}</div>
+                                </div>
                             </div>
                         `).join('')}
                     </div>
@@ -153,7 +171,7 @@ class RadioPopupWidget {
                 </div>
                 
                 <div class="radio-popup-footer">
-                    <p>Sélectionnez une station pour commencer l'écoute</p>
+                    <p>🎧 Cliquez sur une station pour l'écouter en direct</p>
                 </div>
             </div>
         `;

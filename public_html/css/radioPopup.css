@@ -243,3 +243,119 @@
         text-align: center;
     }
 }
+
+/* Mise à jour des styles pour les cartes de stations */
+.radio-station-card {
+    background: var(--card-bg);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.radio-station-card:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(148, 0, 0, 0.2);
+}
+
+.radio-station-card.active {
+    border-color: var(--primary-color);
+    background: rgba(148, 0, 0, 0.1);
+    box-shadow: 0 6px 20px rgba(148, 0, 0, 0.3);
+}
+
+.station-logo-container {
+    position: relative;
+    margin-bottom: 8px;
+}
+
+.station-logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.logo-fallback {
+    width: 50px;
+    height: 50px;
+    background: var(--primary-color);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin: 0 auto;
+}
+
+.station-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.station-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-color);
+    line-height: 1.2;
+    margin-bottom: 4px;
+}
+
+.station-description {
+    font-size: 10px;
+    color: var(--text-secondary);
+    font-style: italic;
+    line-height: 1.1;
+}
+
+/* Amélioration des textes dans le lecteur */
+.current-station-details h3 {
+    margin: 0 0 5px 0;
+    color: var(--text-color);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.current-station-details p {
+    margin: 0;
+    color: var(--primary-color);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Mobile responsive amélioré */
+@media (max-width: 768px) {
+    .radio-stations-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    
+    .radio-station-card {
+        min-height: 100px;
+        padding: 10px;
+    }
+    
+    .station-logo, .logo-fallback {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .station-name {
+        font-size: 12px;
+    }
+    
+    .station-description {
+        font-size: 9px;
+    }
+}
