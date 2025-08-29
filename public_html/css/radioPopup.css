@@ -46,15 +46,17 @@
     background: rgba(0, 0, 0, 0.8);
     z-index: 10000;
     opacity: 0;
-    display: none; /* Changé de visibility: hidden à display: none */
+    visibility: hidden;
+    transition: all 0.3s ease;
+    display: flex;
     align-items: center;
     justify-content: center;
-    transition: opacity 0.3s ease;
 }
 
 .radio-popup-overlay.active {
     opacity: 1;
-    display: flex; /* Ajouté */
+    visibility: visible;
+	display: flex; /* Ajouté */
 }
 
 /* Contenu de la popup */
