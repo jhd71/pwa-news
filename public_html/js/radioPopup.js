@@ -4,61 +4,61 @@ class RadioPopupWidget {
             {
                 name: 'France Info',
                 url: 'https://icecast.radiofrance.fr/franceinfo-midfi.mp3',
-                logo: 'https://www.francetvinfo.fr/image/75h5bsqzk-c02e/1500/843/24914139.jpg',
+                logo: 'images/radio-logos/france-info.png',
                 description: 'Info en continu'
             },
             {
                 name: 'France Inter',
                 url: 'https://icecast.radiofrance.fr/franceinter-midfi.mp3',
-                logo: 'https://www.radiofrance.fr/s3/cruiser-production/2021/11/d0c3f0b5-9ac0-4ebb-9d0b-5a42d442e5a6/400x400_maxnewsworldthree104665.jpg',
+                logo: 'images/radio-logos/france-inter.png',
                 description: 'Radio généraliste'
             },
             {
                 name: 'France Bleu Bourgogne',
                 url: 'https://icecast.radiofrance.fr/fbbourgogne-midfi.mp3',
-                logo: 'https://www.francebleu.fr/s3/cruiser-production/2019/10/2b5a6fc1-e553-485c-b58e-0fa7b7ff4c69/200x200_france_bleu.jpg',
+                logo: 'images/radio-logos/france-bleu.png',
                 description: 'Radio locale'
             },
             {
                 name: 'RTL',
-                url: 'https://streaming.radio.rtl.fr/rtl-1-44-128',
-                logo: 'https://cdn-profiles.tunein.com/s18223/images/logoq.png?t=1',
+                url: 'https://streamer-03.rtl.fr/rtl-1-44-128',
+                logo: 'images/radio-logos/rtl.png',
                 description: 'Info & divertissement'
             },
             {
                 name: 'NRJ',
-                url: 'https://scdn.nrjaudio.fm/fr/30001/mp3_128.mp3',
-                logo: 'https://cdn-profiles.tunein.com/s47/images/logoq.png?t=1',
+                url: 'https://streaming.nrjaudio.fm/oumvmk8fnozc?origine=fluxurlradio',
+                logo: 'images/radio-logos/nrj.png',
                 description: 'Hits & musique'
             },
             {
                 name: 'Europe 1',
                 url: 'https://europe1.lmn.fm/europe1.mp3',
-                logo: 'https://cdn-profiles.tunein.com/s8439/images/logoq.png?t=1',
+                logo: 'images/radio-logos/europe1.png',
                 description: 'Talk & actualités'
             },
             {
                 name: 'RMC',
-                url: 'https://rmc.bfmtv.com/rmcinfo-mp3',
-                logo: 'https://cdn-profiles.tunein.com/s25212/images/logoq.png?t=1',
+                url: 'http://audio.bfmtv.com/rmcradio_128.mp3',
+                logo: 'images/radio-logos/rmc.png',
                 description: 'Sport & info'
             },
             {
                 name: 'Nostalgie',
-                url: 'https://scdn.nrjaudio.fm/fr/30601/mp3_128.mp3',
-                logo: 'https://cdn-profiles.tunein.com/s25050/images/logoq.png?t=1',
+                url: 'https://streaming.nrjaudio.fm/oug7girb92oc?origine=fluxradios',
+                logo: 'images/radio-logos/nostalgie.png',
                 description: 'Oldies & classics'
             },
             {
                 name: 'Chérie FM',
-                url: 'https://scdn.nrjaudio.fm/fr/30201/mp3_128.mp3',
-                logo: 'https://cdn-profiles.tunein.com/s25048/images/logoq.png?t=1',
+                url: 'https://streaming.nrjaudio.fm/ouuku85n3nje?origine=fluxradios',
+                logo: 'images/radio-logos/cherie-fm.png',
                 description: 'Love songs'
             },
             {
                 name: 'FIP',
                 url: 'https://icecast.radiofrance.fr/fip-midfi.mp3',
-                logo: 'https://www.radiofrance.fr/s3/cruiser-production/2019/10/3fa98c9a-8e52-4743-ac5b-7c4c2c516bd0/200x200_fip.jpg',
+                logo: 'images/radio-logos/fip.png',
                 description: 'Éclectisme musical'
             }
         ];
