@@ -135,6 +135,9 @@ class RadioPopupWidget {
                                     <div class="logo-fallback" style="display: none;">
                                         <span class="material-icons">radio</span>
                                     </div>
+                                    <div class="play-overlay">
+                                        <span class="material-icons">play_arrow</span>
+                                    </div>
                                 </div>
                                 <div class="station-info">
                                     <div class="station-name">${station.name}</div>
@@ -193,11 +196,11 @@ class RadioPopupWidget {
             }
         });
 
-        // Sélection de station
+        // Sélection de station - clic direct pour play/pause
         document.querySelectorAll('.radio-station-card').forEach(card => {
             card.addEventListener('click', () => {
                 const index = parseInt(card.dataset.index);
-                this.selectStation(index);
+                this.toggleStationPlayback(index);
             });
         });
 
@@ -230,30 +233,66 @@ class RadioPopupWidget {
         document.body.classList.remove('radio-popup-open');
     }
 
-    selectStation(index) {
+    toggleStationPlayback(index) {
         const station = this.stations[index];
-        this.currentStation = station;
+        const card = document.querySelector(`[data-index="${index}"]`);
+        const overlay = card.querySelector('.play-overlay');
+        const overlayIcon = overlay.querySelector('.material-icons');
         
-        // Mettre à jour l'interface
-        document.getElementById('currentStationLogo').src = station.logo;
-        document.getElementById('currentStationName').textContent = station.name;
-        document.getElementById('currentStationStatus').textContent = 'Station sélectionnée';
-        document.getElementById('radioPlayerSection').style.display = 'block';
-        
-        // Marquer la station active
-        document.querySelectorAll('.radio-station-card').forEach(card => {
-            card.classList.remove('active');
-        });
-        document.querySelector(`[data-index="${index}"]`).classList.add('active');
-        
-        // Arrêter l'audio précédent
+        // Si c'est la même station qui joue, toggle play/pause
+        if (this.currentStation && this.currentStation.name === station.name) {
+            if (this.isPlaying) {
+                this.pauseRadio();
+                overlayIcon.textContent = 'play_arrow';
+                card.classList.remove('playing');
+            } else {
+                this.playRadio();
+                overlayIcon.textContent = 'pause';
+                card.classList.add('playing');
+            }
+        } else {
+            // Nouvelle station sélectionnée
+            this.stopCurrentAndPlayNew(index);
+        }
+    }
+
+    stopCurrentAndPlayNew(index) {
+        // Arrêter la station actuelle
         if (this.audio) {
             this.audio.pause();
             this.audio = null;
         }
         
+        // Réinitialiser toutes les cartes
+        document.querySelectorAll('.radio-station-card').forEach(card => {
+            card.classList.remove('active', 'playing');
+            const overlay = card.querySelector('.play-overlay .material-icons');
+            overlay.textContent = 'play_arrow';
+        });
+        
+        // Sélectionner et jouer la nouvelle station
+        const station = this.stations[index];
+        const card = document.querySelector(`[data-index="${index}"]`);
+        
+        this.currentStation = station;
         this.isPlaying = false;
-        this.updatePlayButton();
+        
+        // Mettre à jour l'interface du lecteur
+        document.getElementById('currentStationLogo').src = station.logo;
+        document.getElementById('currentStationName').textContent = station.name;
+        document.getElementById('currentStationStatus').textContent = 'Connexion...';
+        document.getElementById('radioPlayerSection').style.display = 'block';
+        
+        // Marquer comme active
+        card.classList.add('active');
+        
+        // Lancer la lecture
+        this.playRadio();
+        
+        // Mettre à jour l'overlay
+        const overlayIcon = card.querySelector('.play-overlay .material-icons');
+        overlayIcon.textContent = 'pause';
+        card.classList.add('playing');
     }
 
     togglePlayPause() {

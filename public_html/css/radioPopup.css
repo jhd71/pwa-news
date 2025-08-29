@@ -359,3 +359,49 @@
         font-size: 9px;
     }
 }
+
+/* Overlay de lecture sur les logos */
+.station-logo-container {
+    position: relative;
+    margin-bottom: 8px;
+}
+
+.play-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(148, 0, 0, 0.8);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+}
+
+.play-overlay .material-icons {
+    color: white;
+    font-size: 24px;
+}
+
+.radio-station-card:hover .play-overlay {
+    opacity: 1;
+}
+
+.radio-station-card.playing .play-overlay {
+    opacity: 1;
+    background: rgba(40, 167, 69, 0.9);
+}
+
+.radio-station-card.playing {
+    border-color: #28a745;
+    box-shadow: 0 0 15px rgba(40, 167, 69, 0.3);
+}
+
+.radio-station-card.playing .station-name {
+    color: #28a745;
+    font-weight: bold;
+}
