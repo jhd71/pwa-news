@@ -1,6 +1,6 @@
 class TVGuideRSSWidget {
     constructor() {
-        this.rssUrl = 'https://cdn-feedmanager.prod.ladmedia.fr/tele7/tele-7/rss.xml';
+        this.rssUrl = 'https://webnext.fr/templates/webnext_exclusive/views/includes/epg_cache/programme-tv-rss_2025-08-29.xml';
         this.programs = [];
         this.channels = new Set();
     }
