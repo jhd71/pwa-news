@@ -36,7 +36,7 @@ const STATIC_RESOURCES = [
 	'/css/news-widget.css',
 	'/css/cinema-widget.css',
 	'/css/football-widget.css',
-	'/css/radioWidget.css',
+	'/css/radioPopup.css',
 
     // Scripts JavaScript
     '/js/app.js',
@@ -71,7 +71,7 @@ const STATIC_RESOURCES = [
 	'/js/football-widget.js',
 	'/js/ios-fixes-safe.js',
 	'/js/expense-manager.js',
-	'/js/radioWidget.js',
+	'/js/radioPopup.js',
     
     // Fichiers de configuration (seulement ceux qui existent)
     '/manifest.json',
