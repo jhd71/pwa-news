@@ -1,5 +1,41 @@
 /* === POPUP RADIO - VERSION NETTOYÉE === */
 
+/* Variables pour les thèmes - Rouge (défaut) */
+[data-theme="rouge"] {
+    --primary-color: #940000;
+    --text-color: #333333;
+    --text-secondary: #666666;
+    --card-bg: #ffffff;
+    --secondary-bg: #f8f9fa;
+}
+
+/* Thème Sombre */
+[data-theme="dark"] {
+    --primary-color: #ff6b6b;
+    --text-color: #e2e8f0;
+    --text-secondary: #a0aec0;
+    --card-bg: #2d3748;
+    --secondary-bg: #1a202c;
+}
+
+/* Thème Bleu Ciel */
+[data-theme="bleuciel"] {
+    --primary-color: #17a2b8;
+    --text-color: #333333;
+    --text-secondary: #5f6f7a;
+    --card-bg: #ffffff;
+    --secondary-bg: #f0f8ff;
+}
+
+/* Thème Violet */
+[data-theme="light"] {
+    --primary-color: #6f42c1;
+    --text-color: #333333;
+    --text-secondary: #6c757d;
+    --card-bg: #ffffff;
+    --secondary-bg: #f8f9ff;
+}
+
 /* Overlay principal */
 .radio-popup-overlay {
     position: fixed;
