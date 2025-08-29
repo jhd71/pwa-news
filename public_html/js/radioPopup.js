@@ -156,15 +156,6 @@ class RadioPopupWidget {
                             </div>
                         </div>
                         
-                        <div class="radio-controls">
-                            <button id="playPauseBtn" class="control-btn play-pause">
-                                <span class="material-icons">play_arrow</span>
-                            </button>
-                            <button id="stopBtn" class="control-btn stop">
-                                <span class="material-icons">stop</span>
-                            </button>
-                        </div>
-                        
                         <div class="volume-control">
                             <span class="material-icons">volume_up</span>
                             <input type="range" id="volumeSlider" min="0" max="100" value="70" class="volume-slider">
@@ -202,15 +193,6 @@ class RadioPopupWidget {
                 const index = parseInt(card.dataset.index);
                 this.toggleStationPlayback(index);
             });
-        });
-
-        // Contrôles de lecture
-        document.getElementById('playPauseBtn').addEventListener('click', () => {
-            this.togglePlayPause();
-        });
-
-        document.getElementById('stopBtn').addEventListener('click', () => {
-            this.stopRadio();
         });
 
         // Contrôle du volume
