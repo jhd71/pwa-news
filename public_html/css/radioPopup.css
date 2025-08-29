@@ -56,7 +56,6 @@
 .radio-popup-overlay.active {
     opacity: 1;
     visibility: visible;
-	display: flex; /* Ajouté */
 }
 
 /* Contenu de la popup */
