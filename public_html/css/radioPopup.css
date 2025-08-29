@@ -76,7 +76,7 @@
 .radio-popup-body {
     padding: 20px;
     overflow-y: auto;
-    max-height: 500px;
+    max-height: 700px;
 }
 
 /* Grille des stations */
@@ -320,5 +320,19 @@
     .current-station-info {
         flex-direction: column;
         text-align: center;
+    }
+}
+
+/* Mobile - hauteur réduite */
+@media (max-width: 768px) {
+    .radio-popup-body {
+        max-height: 400px;
+    }
+    
+    /* Ou encore plus petit pour les petits écrans */
+    @media (max-height: 600px) {
+        .radio-popup-body {
+            max-height: 300px;
+        }
     }
 }
