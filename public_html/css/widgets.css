@@ -731,9 +731,8 @@
   /* Boutons euro et recherche sur mobile */
   .tool-button {
     position: fixed;
-    top: 71px;
-    left: 20%;
-    transform: translateX(-50%);
+    top: 70px;
+    left: 55px;
     width: 40px;
     height: 40px;
     z-index: 100;
@@ -741,16 +740,12 @@
   
   .search-button {
     position: fixed;
-    top: 71px;
+    top: 70px;
     right: 55px;
     width: 40px;
     height: 40px;
     z-index: 100;
-    transform: none;
     left: auto;
-    will-change: auto;
-    -webkit-transform: none;
-    transition: none;
   }
   
   .tool-button .material-icons,

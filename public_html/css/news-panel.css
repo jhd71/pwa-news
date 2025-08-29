@@ -104,7 +104,7 @@
         transform: translateX(-50%);
         width: auto !important;
         max-width: 250px !important;
-        /* padding: 10px 15px !important; */
+        padding: 10px 15px !important;
         text-align: center !important;
         animation: pulseCenter 2s infinite !important;
         font-weight: 700;
