@@ -205,15 +205,6 @@ class RadioPopupWidget {
 
     openPopup() {
     const popup = document.getElementById('radioPopup');
-    
-    // Forcer l'affichage immédiat de l'overlay
-    popup.style.display = 'flex';
-    popup.style.opacity = '0';
-    
-    // Forcer un reflow avant d'ajouter la classe active
-    popup.offsetHeight;
-    
-    // Maintenant ajouter la classe pour l'animation
     popup.classList.add('active');
     document.body.classList.add('radio-popup-open');
 }
