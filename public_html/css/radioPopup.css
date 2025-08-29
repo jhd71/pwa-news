@@ -43,11 +43,11 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0);  /* Commencer avec transparent */
+    background: rgba(0, 0, 0, 0.8);
     z-index: 10000;
     opacity: 0;
     visibility: hidden;
-    transition: all 0.2s ease-out;  /* Transition plus rapide */
+    transition: opacity 0.15s ease, visibility 0.15s ease;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -56,7 +56,6 @@
 .radio-popup-overlay.active {
     opacity: 1;
     visibility: visible;
-    background: rgba(0, 0, 0, 0.8);  /* Fond sombre seulement quand actif */
 }
 
 /* Contenu de la popup */

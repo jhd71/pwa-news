@@ -204,10 +204,10 @@ class RadioPopupWidget {
     }
 
     openPopup() {
-    const popup = document.getElementById('radioPopup');
-    popup.classList.add('active');
-    document.body.classList.add('radio-popup-open');
-}
+        const popup = document.getElementById('radioPopup');
+        popup.classList.add('active');
+        document.body.classList.add('radio-popup-open');
+    }
 
     closePopup() {
         const popup = document.getElementById('radioPopup');
@@ -225,12 +225,17 @@ class RadioPopupWidget {
         if (this.currentStation && this.currentStation.name === station.name) {
             if (this.isPlaying) {
                 this.pauseRadio();
-                overlayIcon.textContent = 'play_arrow';
-                card.classList.remove('playing');
             } else {
-                this.playRadio();
-                overlayIcon.textContent = 'pause';
-                card.classList.add('playing');
+                // Reprendre la lecture de la même station
+                if (this.audio) {
+                    this.audio.play();
+                    this.isPlaying = true;
+                    overlayIcon.textContent = 'pause';
+                    card.classList.add('playing');
+                    document.getElementById('currentStationStatus').textContent = 'En direct';
+                } else {
+                    this.playRadio();
+                }
             }
         } else {
             // Nouvelle station sélectionnée
@@ -306,6 +311,14 @@ class RadioPopupWidget {
                 
                 this.audio.addEventListener('error', (e) => {
                     document.getElementById('currentStationStatus').textContent = 'Erreur de lecture';
+                    this.isPlaying = false;
+                    // Réinitialiser l'interface en cas d'erreur
+                    const activeCard = document.querySelector('.radio-station-card.active');
+                    if (activeCard) {
+                        const overlayIcon = activeCard.querySelector('.play-overlay .material-icons');
+                        overlayIcon.textContent = 'play_arrow';
+                        activeCard.classList.remove('playing');
+                    }
                     console.error('Erreur audio:', e);
                 });
             }
@@ -314,9 +327,18 @@ class RadioPopupWidget {
             this.isPlaying = true;
             this.updatePlayButton();
             
+            // Mettre à jour l'overlay de la station active
+            const activeCard = document.querySelector('.radio-station-card.active');
+            if (activeCard) {
+                const overlayIcon = activeCard.querySelector('.play-overlay .material-icons');
+                overlayIcon.textContent = 'pause';
+                activeCard.classList.add('playing');
+            }
+            
         } catch (error) {
             console.error('Erreur lecture radio:', error);
             document.getElementById('currentStationStatus').textContent = 'Erreur';
+            this.isPlaying = false;
         }
     }
 
@@ -327,6 +349,14 @@ class RadioPopupWidget {
         this.isPlaying = false;
         this.updatePlayButton();
         document.getElementById('currentStationStatus').textContent = 'En pause';
+        
+        // Mettre à jour l'overlay de la station active
+        const activeCard = document.querySelector('.radio-station-card.active');
+        if (activeCard) {
+            const overlayIcon = activeCard.querySelector('.play-overlay .material-icons');
+            overlayIcon.textContent = 'play_arrow';
+            activeCard.classList.remove('playing');
+        }
     }
 
     stopRadio() {
