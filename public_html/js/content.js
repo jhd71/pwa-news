@@ -336,40 +336,10 @@ setTimeout(() => {
 }, 800); // ✅ Délai optimisé pour apparition fluide
 
         // Séparateur Radio
-        const separator1 = document.createElement('div');
-        separator1.className = 'separator';
-        separator1.innerHTML = `<h2 class="separator-text">Radio</h2>`;
-        this.tileContainer.appendChild(separator1);
-
-        // Section Radio
-        const radioSites = [		
-  {
-    title: 'France Bleu Bourgogne',
-    url: 'https://www.radio-en-ligne.fr/france-bleu-bourgogne',
-    mobileUrl: 'https://www.radio-en-ligne.fr/france-bleu-bourgogne',
-    isDefault: true,
-    category: 'radio'
-  },
-  {
-    title: 'Radios de Bourgogne',
-    url: 'https://ecouterradioenligne.com/region/bourgogne/#prevert-chalon',
-    mobileUrl: 'https://ecouterradioenligne.com/region/bourgogne/#prevert-chalon',
-    isDefault: true,
-    category: 'radio'
-  },
-  {
-    title: 'Radio Sans Pub',
-    url: 'https://www.radio-en-ligne.fr/radio-sans-pub/',
-    mobileUrl: 'https://www.radio-en-ligne.fr/radio-sans-pub/',
-    isDefault: true,
-    category: 'radio'
-  }
-];
-
-        radioSites.forEach(site => {
-            const tile = this.createTile(site);
-            this.tileContainer.appendChild(tile);
-        });
+const separator1 = document.createElement('div');
+separator1.className = 'separator';
+separator1.innerHTML = `<h2 class="separator-text">Radio</h2>`;
+this.tileContainer.appendChild(separator1);
 
         // Séparateur TV
         const separator2 = document.createElement('div');

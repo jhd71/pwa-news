@@ -166,28 +166,26 @@
     height: 50px;
     margin-left: auto;
     margin-right: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* === NOUVEAU : Contrôle de la taille des logos === */
-.station-logo {
-    width: 100%;  /* Prend toute la largeur du conteneur */
-    height: 100%; /* Prend toute la hauteur du conteneur */
+/* Contrôle de la taille des logos DANS LA GRILLE */
+.radio-stations-grid .station-logo {
+    width: 100%;
+    height: 100%;
+    max-width: 50px;  /* Taille max sur desktop */
+    max-height: 50px;
     border-radius: 8px;
-    object-fit: contain; /* CHANGÉ : contain pour garder les proportions */
+    object-fit: contain;  /* Garde les proportions */
     border: 1px solid rgba(0, 0, 0, 0.1);
-    background: white; /* Fond blanc pour les logos transparents */
-    padding: 2px; /* Petit padding pour que le logo ne touche pas les bords */
+    background: white;
+    padding: 2px;
 }
 
-/* Pour les logos trop grands, on les rétrécit */
-.station-logo-container img {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
-}
-
-.logo-fallback {
+/* Fallback quand pas de logo */
+.radio-stations-grid .logo-fallback {
     width: 100%;
     height: 100%;
     background: var(--primary-color);
@@ -196,6 +194,31 @@
     align-items: center;
     justify-content: center;
     color: white;
+}
+
+/* RESPONSIVE - Logos plus petits sur mobile */
+@media (max-width: 768px) {
+    .station-logo-container {
+        width: 40px;  /* Plus petit sur mobile */
+        height: 40px;
+    }
+    
+    .radio-stations-grid .station-logo {
+        max-width: 40px;
+        max-height: 40px;
+    }
+}
+
+@media (max-height: 600px) {
+    .station-logo-container {
+        width: 35px;  /* Encore plus petit sur petits écrans */
+        height: 35px;
+    }
+    
+    .radio-stations-grid .station-logo {
+        max-width: 35px;
+        max-height: 35px;
+    }
 }
 
 .play-overlay {
@@ -526,4 +549,14 @@
     background: #4a5568;
 }
 
-/* === FIN DU FICHIER === */
+/* Style pour empêcher le scroll quand la popup est ouverte */
+body.radio-popup-open {
+    overflow: hidden !important;
+}
+
+@media (max-width: 768px) {
+    body.radio-popup-open {
+        position: fixed !important;
+        width: 100% !important;
+    }
+}

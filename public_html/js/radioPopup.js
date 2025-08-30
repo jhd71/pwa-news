@@ -78,39 +78,33 @@ class RadioPopupWidget {
     }
 
     createRadioTile() {
-        // Trouver la section Radio et ajouter une tuile pour ouvrir le lecteur
-        const radioTiles = document.querySelectorAll('.tile[data-category="radio"]');
-        if (radioTiles.length === 0) return;
-
-        const lastRadioTile = radioTiles[radioTiles.length - 1];
-        
-        const radioTile = {
-            title: '🎵 Lecteur Radio',
-            url: '#radio-popup',
-            mobileUrl: '#radio-popup',
-            isDefault: true,
-            category: 'radio',
-            isRadioPopup: true
-        };
-
-        // Créer la tuile
-        const tileElement = document.createElement('div');
-        tileElement.className = 'tile';
-        tileElement.setAttribute('data-category', 'radio');
-        tileElement.innerHTML = `
-            <div class="tile-content">
-                <div class="tile-title">🎵 Lecteur Radio</div>
-            </div>
-        `;
-
-        // Ajouter le gestionnaire de clic
-        tileElement.addEventListener('click', () => {
-            this.openPopup();
-        });
-
-        // Insérer après la dernière tuile radio
-        lastRadioTile.insertAdjacentElement('afterend', tileElement);
+    // Trouver le séparateur Radio
+    const radioSeparator = Array.from(document.querySelectorAll('.separator'))
+        .find(sep => sep.textContent.includes('Radio'));
+    
+    if (!radioSeparator) {
+        console.warn('Séparateur Radio non trouvé');
+        return;
     }
+
+    // Créer la tuile
+    const tileElement = document.createElement('div');
+    tileElement.className = 'tile';
+    tileElement.setAttribute('data-category', 'radio');
+    tileElement.innerHTML = `
+        <div class="tile-content">
+            <div class="tile-title">🎵 Lecteur Radio</div>
+        </div>
+    `;
+
+    // Ajouter le gestionnaire de clic
+    tileElement.addEventListener('click', () => {
+        this.openPopup();
+    });
+
+    // Insérer juste après le séparateur Radio
+    radioSeparator.insertAdjacentElement('afterend', tileElement);
+}
 
     createPopup() {
         const popup = document.createElement('div');
@@ -204,16 +198,39 @@ class RadioPopupWidget {
     }
 
     openPopup() {
-        const popup = document.getElementById('radioPopup');
-        popup.classList.add('active');
-        document.body.classList.add('radio-popup-open');
+    const popup = document.getElementById('radioPopup');
+    popup.classList.add('active');
+    document.body.classList.add('radio-popup-open');
+    
+    // AJOUT : Empêcher le scroll du body sur mobile
+    if (window.innerWidth <= 768) {
+        document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100%';
+        // Sauvegarder la position de scroll actuelle
+        this.scrollPosition = window.pageYOffset;
+        document.body.style.top = `-${this.scrollPosition}px`;
     }
+}
 
-    closePopup() {
-        const popup = document.getElementById('radioPopup');
-        popup.classList.remove('active');
-        document.body.classList.remove('radio-popup-open');
+closePopup() {
+    const popup = document.getElementById('radioPopup');
+    popup.classList.remove('active');
+    document.body.classList.remove('radio-popup-open');
+    
+    // AJOUT : Restaurer le scroll du body
+    if (window.innerWidth <= 768) {
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
+        document.body.style.top = '';
+        // Restaurer la position de scroll
+        if (this.scrollPosition) {
+            window.scrollTo(0, this.scrollPosition);
+            this.scrollPosition = null;
+        }
     }
+}
 	
 	toggleStationPlayback(index) {
         const station = this.stations[index];
