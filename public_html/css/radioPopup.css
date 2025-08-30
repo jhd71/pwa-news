@@ -158,12 +158,19 @@
     font-weight: bold;
 }
 
-/* Logo et overlay */
+/* === VARIABLES POUR CONTRÔLER LA TAILLE DES IMAGES === */
+:root {
+    --logo-img-size-desktop: 50px;  /* CHANGEZ ICI pour agrandir/réduire sur PC */
+    --logo-img-size-tablet: 40px;   /* CHANGEZ ICI pour tablettes */
+    --logo-img-size-mobile: 35px;   /* CHANGEZ ICI pour mobile */
+}
+
+/* Conteneur du logo */
 .station-logo-container {
     position: relative;
     margin-bottom: 8px;
-    width: 50px;
-    height: 50px;
+    width: var(--logo-img-size-desktop);
+    height: var(--logo-img-size-desktop);
     margin-left: auto;
     margin-right: auto;
     display: flex;
@@ -171,23 +178,26 @@
     justify-content: center;
 }
 
-/* Contrôle de la taille des logos DANS LA GRILLE */
-.radio-stations-grid .station-logo {
-    width: 100%;
-    height: 100%;
-    max-width: 50px;  /* Taille max sur desktop */
-    max-height: 50px;
+/* === CIBLAGE SPÉCIFIQUE DES IMAGES PNG === */
+.station-logo-container img.station-logo {
+    width: var(--logo-img-size-desktop) !important;
+    height: var(--logo-img-size-desktop) !important;
+    min-width: var(--logo-img-size-desktop) !important;
+    min-height: var(--logo-img-size-desktop) !important;
+    max-width: var(--logo-img-size-desktop) !important;
+    max-height: var(--logo-img-size-desktop) !important;
     border-radius: 8px;
-    object-fit: contain;  /* Garde les proportions */
+    object-fit: contain;
     border: 1px solid rgba(0, 0, 0, 0.1);
     background: white;
-    padding: 2px;
+    padding: 3px;
+    display: block;
 }
 
-/* Fallback quand pas de logo */
-.radio-stations-grid .logo-fallback {
-    width: 100%;
-    height: 100%;
+/* Fallback quand pas d'image */
+.logo-fallback {
+    width: var(--logo-img-size-desktop);
+    height: var(--logo-img-size-desktop);
     background: var(--primary-color);
     border-radius: 8px;
     display: flex;
@@ -196,28 +206,47 @@
     color: white;
 }
 
-/* RESPONSIVE - Logos plus petits sur mobile */
+/* === RESPONSIVE - Tablettes === */
 @media (max-width: 768px) {
     .station-logo-container {
-        width: 40px;  /* Plus petit sur mobile */
-        height: 40px;
+        width: var(--logo-img-size-tablet);
+        height: var(--logo-img-size-tablet);
     }
     
-    .radio-stations-grid .station-logo {
-        max-width: 40px;
-        max-height: 40px;
+    .station-logo-container img.station-logo {
+        width: var(--logo-img-size-tablet) !important;
+        height: var(--logo-img-size-tablet) !important;
+        min-width: var(--logo-img-size-tablet) !important;
+        min-height: var(--logo-img-size-tablet) !important;
+        max-width: var(--logo-img-size-tablet) !important;
+        max-height: var(--logo-img-size-tablet) !important;
+    }
+    
+    .logo-fallback {
+        width: var(--logo-img-size-tablet);
+        height: var(--logo-img-size-tablet);
     }
 }
 
-@media (max-height: 600px) {
+/* === RESPONSIVE - Mobile === */
+@media (max-width: 480px) {
     .station-logo-container {
-        width: 35px;  /* Encore plus petit sur petits écrans */
-        height: 35px;
+        width: var(--logo-img-size-mobile);
+        height: var(--logo-img-size-mobile);
     }
     
-    .radio-stations-grid .station-logo {
-        max-width: 35px;
-        max-height: 35px;
+    .station-logo-container img.station-logo {
+        width: var(--logo-img-size-mobile) !important;
+        height: var(--logo-img-size-mobile) !important;
+        min-width: var(--logo-img-size-mobile) !important;
+        min-height: var(--logo-img-size-mobile) !important;
+        max-width: var(--logo-img-size-mobile) !important;
+        max-height: var(--logo-img-size-mobile) !important;
+    }
+    
+    .logo-fallback {
+        width: var(--logo-img-size-mobile);
+        height: var(--logo-img-size-mobile);
     }
 }
 
