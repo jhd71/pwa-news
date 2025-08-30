@@ -218,27 +218,31 @@ class RadioPopupWidget {
     toggleStationPlayback(index) {
         const station = this.stations[index];
         const card = document.querySelector(`[data-index="${index}"]`);
-        const overlay = card.querySelector('.play-overlay');
-        const overlayIcon = overlay.querySelector('.material-icons');
+        const overlayIcon = card.querySelector('.play-overlay .material-icons');
         
-        // Si c'est la même station qui joue, toggle play/pause
+        // Si c'est la même station
         if (this.currentStation && this.currentStation.name === station.name) {
             if (this.isPlaying) {
+                // En cours de lecture -> Pause
                 this.pauseRadio();
             } else {
-                // Reprendre la lecture de la même station
-                if (this.audio) {
-                    this.audio.play();
-                    this.isPlaying = true;
-                    overlayIcon.textContent = 'pause';
-                    card.classList.add('playing');
-                    document.getElementById('currentStationStatus').textContent = 'En direct';
+                // En pause -> Reprendre
+                if (this.audio && !this.audio.ended) {
+                    this.audio.play().then(() => {
+                        this.isPlaying = true;
+                        overlayIcon.textContent = 'pause';
+                        card.classList.add('playing');
+                        document.getElementById('currentStationStatus').textContent = 'En direct';
+                    }).catch(e => {
+                        console.error('Erreur reprise:', e);
+                        this.playRadio(); // Créer un nouvel audio si problème
+                    });
                 } else {
-                    this.playRadio();
+                    this.playRadio(); // Nouveau flux audio
                 }
             }
         } else {
-            // Nouvelle station sélectionnée
+            // Nouvelle station
             this.stopCurrentAndPlayNew(index);
         }
     }

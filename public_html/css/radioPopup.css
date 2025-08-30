@@ -45,17 +45,15 @@
     height: 100%;
     background: rgba(0, 0, 0, 0.8);
     z-index: 10000;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.15s ease, visibility 0.15s ease;
+    transform: translateY(-100%); /* Caché en dehors de l'écran */
+    transition: transform 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .radio-popup-overlay.active {
-    opacity: 1;
-    visibility: visible;
+    transform: translateY(0); /* Glisse vers le bas */
 }
 
 /* Contenu de la popup */
@@ -203,18 +201,26 @@
     cursor: pointer;
 }
 
+/* État par défaut - pas de lecture */
 .play-overlay .material-icons {
     color: white;
     font-size: 24px;
 }
 
-.radio-station-card:hover .play-overlay {
-    opacity: 1;
-}
-
+/* État en lecture */
 .radio-station-card.playing .play-overlay {
     opacity: 1;
-    background: rgba(40, 167, 69, 0.9);
+    background: rgba(40, 167, 69, 0.9); /* Vert pour lecture */
+}
+
+/* État en pause (station sélectionnée mais pas en lecture) */
+.radio-station-card.active:not(.playing) .play-overlay {
+    opacity: 1;
+    background: rgba(255, 193, 7, 0.9); /* Orange pour pause */
+}
+
+.radio-station-card.active:not(.playing) .play-overlay .material-icons {
+    content: 'play_arrow';
 }
 
 /* Infos de la station */
