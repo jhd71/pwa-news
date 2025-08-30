@@ -45,15 +45,15 @@
     height: 100%;
     background: rgba(0, 0, 0, 0.8);
     z-index: 10000;
-    transform: translateY(-100%); /* Caché en dehors de l'écran */
-    transition: transform 0.2s ease;
-    display: flex;
+    display: none; /* CHANGÉ : none au lieu de flex */
     align-items: center;
     justify-content: center;
 }
 
+/* AJOUTEZ ce nouveau bloc juste après : */
 .radio-popup-overlay.active {
-    transform: translateY(0); /* Glisse vers le bas */
+    display: flex; /* Affiche avec flex quand actif */
+    animation: fadeIn 0.2s ease;
 }
 
 /* Contenu de la popup */
@@ -201,26 +201,43 @@
     cursor: pointer;
 }
 
-/* État par défaut - pas de lecture */
+/* Survol normal */
+.radio-station-card:hover .play-overlay {
+    opacity: 1;
+}
+
+/* État par défaut - icône play */
 .play-overlay .material-icons {
     color: white;
     font-size: 24px;
 }
 
-/* État en lecture */
-.radio-station-card.playing .play-overlay {
+/* Station sélectionnée ET en lecture = VERT avec icône PAUSE */
+.radio-station-card.active.playing .play-overlay {
     opacity: 1;
-    background: rgba(40, 167, 69, 0.9); /* Vert pour lecture */
+    background: rgba(40, 167, 69, 0.9); /* Vert */
 }
 
-/* État en pause (station sélectionnée mais pas en lecture) */
+.radio-station-card.active.playing .play-overlay .material-icons::before {
+    content: 'pause'; /* Affiche pause */
+}
+
+/* Station sélectionnée MAIS en pause = ORANGE avec icône PLAY */
+.radio-station-card.active.paused .play-overlay,
 .radio-station-card.active:not(.playing) .play-overlay {
     opacity: 1;
-    background: rgba(255, 193, 7, 0.9); /* Orange pour pause */
+    background: rgba(255, 193, 7, 0.9); /* Orange */
 }
 
-.radio-station-card.active:not(.playing) .play-overlay .material-icons {
-    content: 'play_arrow';
+.radio-station-card.active.paused .play-overlay .material-icons::before,
+.radio-station-card.active:not(.playing) .play-overlay .material-icons::before {
+    content: 'play_arrow'; /* Affiche play */
+}
+
+/* État par défaut - pas de lecture */
+.play-overlay .material-icons {
+    color: white;
+    font-size: 24px;
 }
 
 /* Infos de la station */
@@ -376,5 +393,15 @@
         .radio-popup-body {
             max-height: 300px;
         }
+    }
+}
+
+/* AJOUTEZ cette animation à la fin du fichier CSS : */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
     }
 }
