@@ -341,6 +341,21 @@ setTimeout(() => {
         separator1.innerHTML = `<h2 class="separator-text">Radio</h2>`;
         this.tileContainer.appendChild(separator1);
 
+        // Section Radio
+        const radioTile = {
+            title: '🎵 Lecteur Radio',
+            url: '#radio-popup',
+            mobileUrl: '#radio-popup',
+            isDefault: true,
+            category: 'radio',
+            isRadioPopup: true
+        };
+
+        radioSites.forEach(site => {
+            const tile = this.createTile(site);
+            this.tileContainer.appendChild(tile);
+        });
+
         // Séparateur TV
         const separator2 = document.createElement('div');
         separator2.className = 'separator';
