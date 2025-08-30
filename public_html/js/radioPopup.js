@@ -214,25 +214,25 @@ class RadioPopupWidget {
         popup.classList.remove('active');
         document.body.classList.remove('radio-popup-open');
     }
-
-    toggleStationPlayback(index) {
-    const station = this.stations[index];
-    const card = document.querySelector(`[data-index="${index}"]`);
-    
-    // Si c'est la même station
-    if (this.currentStation && this.currentStation.name === station.name) {
-        if (this.isPlaying) {
-            // En cours de lecture -> Pause
-            this.pauseRadio();
+	
+	toggleStationPlayback(index) {
+        const station = this.stations[index];
+        const card = document.querySelector(`[data-index="${index}"]`);
+        
+        // Si c'est la même station
+        if (this.currentStation && this.currentStation.name === station.name) {
+            if (this.isPlaying) {
+                // En cours de lecture -> Pause
+                this.pauseRadio();
+            } else {
+                // En pause -> Reprendre
+                this.playRadio();
+            }
         } else {
-            // En pause -> Reprendre
-            this.playRadio();
+            // Nouvelle station
+            this.stopCurrentAndPlayNew(index);
         }
-    } else {
-        // Nouvelle station
-        this.stopCurrentAndPlayNew(index);
     }
-}
 
     stopCurrentAndPlayNew(index) {
         // Arrêter la station actuelle
@@ -243,7 +243,7 @@ class RadioPopupWidget {
         
         // Réinitialiser toutes les cartes
         document.querySelectorAll('.radio-station-card').forEach(card => {
-            card.classList.remove('active', 'playing');
+            card.classList.remove('active', 'playing', 'paused');
             const overlay = card.querySelector('.play-overlay .material-icons');
             overlay.textContent = 'play_arrow';
         });
@@ -259,7 +259,7 @@ class RadioPopupWidget {
         document.getElementById('currentStationLogo').src = station.logo;
         document.getElementById('currentStationName').textContent = station.name;
         document.getElementById('currentStationStatus').textContent = 'Connexion...';
-		this.updateStatusStyle('Connexion...'); // AJOUT
+        this.updateStatusStyle('Connexion...');
         document.getElementById('radioPlayerSection').style.display = 'block';
         
         // Marquer comme active
@@ -275,92 +275,90 @@ class RadioPopupWidget {
     }
 
     playRadio() {
-    if (!this.currentStation) return;
+        if (!this.currentStation) return;
 
-    try {
-        if (!this.audio) {
-            this.audio = new Audio(this.currentStation.url);
-            this.audio.volume = this.volume;
-            this.audio.crossOrigin = 'anonymous';
+        try {
+            if (!this.audio) {
+                this.audio = new Audio(this.currentStation.url);
+                this.audio.volume = this.volume;
+                this.audio.crossOrigin = 'anonymous';
+                
+                this.audio.addEventListener('loadstart', () => {
+                    document.getElementById('currentStationStatus').textContent = 'Connexion en cours...';
+                    this.updateStatusStyle('Connexion en cours...');
+                });
+                
+                this.audio.addEventListener('canplay', () => {
+                    document.getElementById('currentStationStatus').textContent = 'En direct';
+                    this.updateStatusStyle('En direct');
+                });
+                
+                this.audio.addEventListener('error', (e) => {
+                    document.getElementById('currentStationStatus').textContent = 'Erreur de lecture';
+                    this.updateStatusStyle('Erreur de lecture');
+                    this.isPlaying = false;
+                    // Réinitialiser l'interface en cas d'erreur
+                    const activeCard = document.querySelector('.radio-station-card.active');
+                    if (activeCard) {
+                        const overlayIcon = activeCard.querySelector('.play-overlay .material-icons');
+                        overlayIcon.textContent = 'play_arrow';
+                        activeCard.classList.remove('playing');
+                        activeCard.classList.add('paused');
+                    }
+                    console.error('Erreur audio:', e);
+                });
+            }
             
-            this.audio.addEventListener('loadstart', () => {
-                document.getElementById('currentStationStatus').textContent = 'Connexion en cours...';
-				this.updateStatusStyle('Connexion en cours...'); // AJOUT
-            });
+            this.audio.play();
+            this.isPlaying = true;
+            document.getElementById('currentStationStatus').textContent = 'En direct';
+            this.updateStatusStyle('En direct');
             
-            this.audio.addEventListener('canplay', () => {
-                document.getElementById('currentStationStatus').textContent = 'En direct';
-				this.updateStatusStyle('En direct'); // AJOUT
-            });
+            // Mettre à jour l'overlay de la station active
+            const activeCard = document.querySelector('.radio-station-card.active');
+            if (activeCard) {
+                const overlayIcon = activeCard.querySelector('.play-overlay .material-icons');
+                overlayIcon.textContent = 'pause';
+                activeCard.classList.add('playing');
+                activeCard.classList.remove('paused');
+            }
             
-            this.audio.addEventListener('error', (e) => {
-                document.getElementById('currentStationStatus').textContent = 'Erreur de lecture';
-				this.updateStatusStyle('Erreur de lecture'); // AJOUT
-                this.isPlaying = false;
-                // Réinitialiser l'interface en cas d'erreur
-                const activeCard = document.querySelector('.radio-station-card.active');
-                if (activeCard) {
-                    const overlayIcon = activeCard.querySelector('.play-overlay .material-icons');
-                    overlayIcon.textContent = 'play_arrow';
-                    activeCard.classList.remove('playing');
-                }
-                console.error('Erreur audio:', e);
-            });
+        } catch (error) {
+            console.error('Erreur lecture radio:', error);
+            document.getElementById('currentStationStatus').textContent = 'Erreur';
+            this.updateStatusStyle('Erreur');
+            this.isPlaying = false;
         }
+    }
+
+    pauseRadio() {
+        if (this.audio) {
+            this.audio.pause();
+        }
+        this.isPlaying = false;
+        document.getElementById('currentStationStatus').textContent = 'En pause';
+        this.updateStatusStyle('En pause');
         
-        this.audio.play();
-        this.isPlaying = true;
-        // SUPPRIMÉ: this.updatePlayButton();
-        document.getElementById('currentStationStatus').textContent = 'En direct';
-        this.updateStatusStyle('En direct'); // AJOUT
-		
         // Mettre à jour l'overlay de la station active
         const activeCard = document.querySelector('.radio-station-card.active');
         if (activeCard) {
             const overlayIcon = activeCard.querySelector('.play-overlay .material-icons');
-            overlayIcon.textContent = 'pause';
-            activeCard.classList.add('playing');
-            activeCard.classList.remove('paused');
+            overlayIcon.textContent = 'play_arrow';
+            activeCard.classList.remove('playing');
+            activeCard.classList.add('paused');
         }
-        
-    } catch (error) {
-        console.error('Erreur lecture radio:', error);
-        document.getElementById('currentStationStatus').textContent = 'Erreur';
-		this.updateStatusStyle('Erreur'); // AJOUT
-        this.isPlaying = false;
     }
-}
-
-    pauseRadio() {
-    if (this.audio) {
-        this.audio.pause();
-    }
-    this.isPlaying = false;
-    // SUPPRIMÉ: this.updatePlayButton();
-    document.getElementById('currentStationStatus').textContent = 'En pause';
-	this.updateStatusStyle('En pause'); // AJOUT
-    
-    // Mettre à jour l'overlay de la station active
-    const activeCard = document.querySelector('.radio-station-card.active');
-    if (activeCard) {
-        const overlayIcon = activeCard.querySelector('.play-overlay .material-icons');
-        overlayIcon.textContent = 'play_arrow';
-        activeCard.classList.remove('playing');
-        activeCard.classList.add('paused');
-    }
-}
 
     stopRadio() {
-    if (this.audio) {
-        this.audio.pause();
-        this.audio.currentTime = 0;
-        this.audio = null;
+        if (this.audio) {
+            this.audio.pause();
+            this.audio.currentTime = 0;
+            this.audio = null;
+        }
+        this.isPlaying = false;
+        document.getElementById('currentStationStatus').textContent = 'Arrêté';
+        this.updateStatusStyle('Arrêté');
     }
-    this.isPlaying = false;
-    // SUPPRIMÉ: this.updatePlayButton();
-    document.getElementById('currentStationStatus').textContent = 'Arrêté';
-	this.updateStatusStyle('Arrêté'); // AJOUT
-}
 
     setVolume(volume) {
         this.volume = volume;
@@ -369,31 +367,35 @@ class RadioPopupWidget {
         }
     }
 
-updateStatusStyle(status) {
-    const statusElement = document.getElementById('currentStationStatus');
-    if (!statusElement) return;
-    
-    // Retirer toutes les classes de statut
-    statusElement.classList.remove('status-live', 'status-paused', 'status-error', 'status-connecting');
-    
-    // Ajouter la classe appropriée
-    switch(status) {
-        case 'En direct':
-            statusElement.classList.add('status-live');
-            break;
-        case 'En pause':
-            statusElement.classList.add('status-paused');
-            break;
-        case 'Erreur':
-        case 'Erreur de lecture':
-            statusElement.classList.add('status-error');
-            break;
-        case 'Connexion...':
-        case 'Connexion en cours...':
-            statusElement.classList.add('status-connecting');
-            break;
+    updateStatusStyle(status) {
+        const statusElement = document.getElementById('currentStationStatus');
+        if (!statusElement) return;
+        
+        // Retirer toutes les classes de statut
+        statusElement.classList.remove('status-live', 'status-paused', 'status-error', 'status-connecting');
+        
+        // Ajouter la classe appropriée
+        switch(status) {
+            case 'En direct':
+                statusElement.classList.add('status-live');
+                break;
+            case 'En pause':
+                statusElement.classList.add('status-paused');
+                break;
+            case 'Arrêté':
+                statusElement.classList.add('status-paused');
+                break;
+            case 'Erreur':
+            case 'Erreur de lecture':
+                statusElement.classList.add('status-error');
+                break;
+            case 'Connexion...':
+            case 'Connexion en cours...':
+                statusElement.classList.add('status-connecting');
+                break;
+        }
     }
-}
+} // FIN DE LA CLASSE - ACCOLADE MANQUANTE AJOUTÉE ICI
 
 // Initialisation
 document.addEventListener('DOMContentLoaded', function() {

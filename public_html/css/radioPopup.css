@@ -1,4 +1,4 @@
-/* === POPUP RADIO - VERSION NETTOYÉE === */
+/* === POPUP RADIO - VERSION COMPLÈTE CORRIGÉE === */
 
 /* Variables pour les thèmes - Rouge (défaut) */
 [data-theme="rouge"] {
@@ -45,14 +45,13 @@
     height: 100%;
     background: rgba(0, 0, 0, 0.8);
     z-index: 10000;
-    display: none; /* CHANGÉ : none au lieu de flex */
+    display: none;
     align-items: center;
     justify-content: center;
 }
 
-/* AJOUTEZ ce nouveau bloc juste après : */
 .radio-popup-overlay.active {
-    display: flex; /* Affiche avec flex quand actif */
+    display: flex;
     animation: fadeIn 0.2s ease;
 }
 
@@ -163,26 +162,40 @@
 .station-logo-container {
     position: relative;
     margin-bottom: 8px;
-}
-
-.station-logo {
     width: 50px;
     height: 50px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* === NOUVEAU : Contrôle de la taille des logos === */
+.station-logo {
+    width: 100%;  /* Prend toute la largeur du conteneur */
+    height: 100%; /* Prend toute la hauteur du conteneur */
     border-radius: 8px;
-    object-fit: cover;
+    object-fit: contain; /* CHANGÉ : contain pour garder les proportions */
     border: 1px solid rgba(0, 0, 0, 0.1);
+    background: white; /* Fond blanc pour les logos transparents */
+    padding: 2px; /* Petit padding pour que le logo ne touche pas les bords */
+}
+
+/* Pour les logos trop grands, on les rétrécit */
+.station-logo-container img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
 }
 
 .logo-fallback {
-    width: 50px;
-    height: 50px;
+    width: 100%;
+    height: 100%;
     background: var(--primary-color);
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    margin: 0 auto;
 }
 
 .play-overlay {
@@ -266,44 +279,6 @@
     animation: pulse 2s infinite;
 }
 
-/* === Amélioration du statut en bas === */
-.current-station-details p {
-    margin: 0;
-    font-size: 14px;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 15px;
-    display: inline-block;
-}
-
-/* Statut "En direct" en vert */
-.current-station-details p:has-text("En direct") {
-    background: rgba(40, 167, 69, 0.2);
-    color: #28a745;
-}
-
-/* Alternative avec JavaScript pour le statut */
-/* Ajoutez ces classes via JS selon le statut */
-.status-live {
-    background: rgba(40, 167, 69, 0.2) !important;
-    color: #28a745 !important;
-}
-
-.status-paused {
-    background: rgba(255, 193, 7, 0.2) !important;
-    color: #ff9800 !important;
-}
-
-.status-error {
-    background: rgba(220, 53, 69, 0.2) !important;
-    color: #dc3545 !important;
-}
-
-.status-connecting {
-    background: rgba(23, 162, 184, 0.2) !important;
-    color: #17a2b8 !important;
-}
-
 /* Infos de la station */
 .station-info {
     flex: 1;
@@ -342,11 +317,14 @@
     margin-bottom: 20px;
 }
 
+/* === NOUVEAU : Logo dans la section lecteur === */
 .current-station-logo {
     width: 60px;
     height: 60px;
     border-radius: 10px;
-    object-fit: cover;
+    object-fit: contain; /* CHANGÉ : contain pour garder les proportions */
+    background: white; /* Fond blanc pour les logos transparents */
+    padding: 3px; /* Petit padding */
     border: 2px solid var(--primary-color);
 }
 
@@ -359,9 +337,32 @@
 
 .current-station-details p {
     margin: 0;
-    color: var(--primary-color);
     font-size: 14px;
     font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 15px;
+    display: inline-block;
+}
+
+/* Classes de statut avec JavaScript */
+.status-live {
+    background: rgba(40, 167, 69, 0.2) !important;
+    color: #28a745 !important;
+}
+
+.status-paused {
+    background: rgba(255, 193, 7, 0.2) !important;
+    color: #ff9800 !important;
+}
+
+.status-error {
+    background: rgba(220, 53, 69, 0.2) !important;
+    color: #dc3545 !important;
+}
+
+.status-connecting {
+    background: rgba(23, 162, 184, 0.2) !important;
+    color: #17a2b8 !important;
 }
 
 /* Contrôle du volume */
@@ -381,9 +382,12 @@
     background: rgba(148, 0, 0, 0.2);
     border-radius: 2px;
     outline: none;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
     appearance: none;
     width: 16px;
     height: 16px;
@@ -392,11 +396,21 @@
     cursor: pointer;
 }
 
+.volume-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+    border: none;
+}
+
 .volume-percentage {
     font-size: 14px;
     font-weight: bold;
     color: var(--primary-color);
     min-width: 35px;
+    text-align: right;
 }
 
 /* Footer */
@@ -410,7 +424,7 @@
 
 /* === RESPONSIVE === */
 
-/* Mobile */
+/* Tablettes */
 @media (max-width: 768px) {
     .radio-popup-content {
         width: 95%;
@@ -427,9 +441,15 @@
         padding: 10px;
     }
     
-    .station-logo, .logo-fallback {
+    /* Logos plus petits sur mobile */
+    .station-logo-container {
         width: 40px;
         height: 40px;
+    }
+    
+    .station-logo, .logo-fallback {
+        width: 100%;
+        height: 100%;
     }
     
     .station-name {
@@ -444,6 +464,12 @@
         flex-direction: column;
         text-align: center;
     }
+    
+    /* Logo plus petit dans le lecteur sur mobile */
+    .current-station-logo {
+        width: 50px;
+        height: 50px;
+    }
 }
 
 /* Mobile - hauteur réduite */
@@ -451,16 +477,22 @@
     .radio-popup-body {
         max-height: 400px;
     }
+}
+
+/* Petits écrans */
+@media (max-height: 600px) {
+    .radio-popup-body {
+        max-height: 300px;
+    }
     
-    /* Ou encore plus petit pour les petits écrans */
-    @media (max-height: 600px) {
-        .radio-popup-body {
-            max-height: 300px;
-        }
+    /* Logos encore plus petits */
+    .station-logo-container {
+        width: 35px;
+        height: 35px;
     }
 }
 
-/* AJOUTEZ cette animation à la fin du fichier CSS : */
+/* === ANIMATIONS === */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -469,3 +501,29 @@
         opacity: 1;
     }
 }
+
+/* === AJUSTEMENTS POUR DIFFÉRENTES TAILLES DE LOGOS === */
+
+/* Si vous voulez forcer une taille spécifique pour certains logos */
+/* Exemple : Pour un logo trop grand */
+.station-logo[alt*="RTL"],
+.station-logo[alt*="Europe 1"] {
+    padding: 4px; /* Plus de padding pour les logos plus grands */
+}
+
+/* Pour les logos carrés qui doivent rester carrés */
+.station-logo[alt*="NRJ"],
+.station-logo[alt*="FIP"] {
+    object-fit: cover; /* Au lieu de contain */
+}
+
+/* === SUPPORT POUR THÈME SOMBRE === */
+[data-theme="dark"] .station-logo {
+    background: #4a5568; /* Fond gris foncé au lieu de blanc */
+}
+
+[data-theme="dark"] .current-station-logo {
+    background: #4a5568;
+}
+
+/* === FIN DU FICHIER === */
