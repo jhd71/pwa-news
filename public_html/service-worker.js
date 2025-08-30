@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v32'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v33'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -117,6 +117,18 @@ const STATIC_RESOURCES = [
     '/images/SPORTS.png',
     '/images/TVenDirect.png',
     
+	// Logos des radios
+	'/images/radio-logos/france-info.png',
+	'/images/radio-logos/france-inter.png',
+	'/images/radio-logos/france-bleu.png',
+	'/images/radio-logos/rtl.png',
+	'/images/radio-logos/nrj.png',
+	'/images/radio-logos/europe1.png',
+	'/images/radio-logos/rmc.png',
+	'/images/radio-logos/nostalgie.png',
+	'/images/radio-logos/cherie-fm.png',
+	'/images/radio-logos/fip.png',
+
     // Icônes de base (seulement ceux qui existent)
     '/images/icon-144x144.png',
     '/images/icon-192x192.png',
