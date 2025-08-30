@@ -342,14 +342,29 @@ setTimeout(() => {
         this.tileContainer.appendChild(separator1);
 
         // Section Radio
-        const radioTile = {
-            title: '🎵 Lecteur Radio',
-            url: '#radio-popup',
-            mobileUrl: '#radio-popup',
-            isDefault: true,
-            category: 'radio',
-            isRadioPopup: true
-        };
+        const radioSites = [		
+  {
+    title: 'France Bleu Bourgogne',
+    url: 'https://www.radio-en-ligne.fr/france-bleu-bourgogne',
+    mobileUrl: 'https://www.radio-en-ligne.fr/france-bleu-bourgogne',
+    isDefault: true,
+    category: 'radio'
+  },
+  {
+    title: 'Radios de Bourgogne',
+    url: 'https://ecouterradioenligne.com/region/bourgogne/#prevert-chalon',
+    mobileUrl: 'https://ecouterradioenligne.com/region/bourgogne/#prevert-chalon',
+    isDefault: true,
+    category: 'radio'
+  },
+  {
+    title: 'Radio Sans Pub',
+    url: 'https://www.radio-en-ligne.fr/radio-sans-pub/',
+    mobileUrl: 'https://www.radio-en-ligne.fr/radio-sans-pub/',
+    isDefault: true,
+    category: 'radio'
+  }
+];
 
         radioSites.forEach(site => {
             const tile = this.createTile(site);
