@@ -20,12 +20,6 @@ class RadioPopupWidget {
                 description: 'Radio généraliste'
             },
             {
-                name: 'France Bleu Bourgogne',
-                url: 'https://icecast.radiofrance.fr/fbbourgogne-midfi.mp3',
-                logo: 'images/radio-logos/france-bleu.png',
-                description: 'Radio locale'
-            },
-            {
                 name: 'RTL',
                 url: 'https://streamer-03.rtl.fr/rtl-1-44-128',
                 logo: 'images/radio-logos/rtl.png',
