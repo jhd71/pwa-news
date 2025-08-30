@@ -120,7 +120,7 @@ const STATIC_RESOURCES = [
 	// Logos des radios
 	'/images/radio-logos/france-info.png',
 	'/images/radio-logos/france-inter.png',
-	'/images/radio-logos/france-bleu.png',
+	'/images/radio-logos/Ici-Bourgogne.png',
 	'/images/radio-logos/rtl.png',
 	'/images/radio-logos/nrj.png',
 	'/images/radio-logos/europe1.png',
@@ -128,6 +128,7 @@ const STATIC_RESOURCES = [
 	'/images/radio-logos/nostalgie.png',
 	'/images/radio-logos/cherie-fm.png',
 	'/images/radio-logos/fip.png',
+	'/images/radio-logos/La-Radio-Sans-pub.png',
 
     // Icônes de base (seulement ceux qui existent)
     '/images/icon-144x144.png',
