@@ -108,8 +108,7 @@ class RadioPopupWidget {
             this.openPopup();
         });
 
-        // Insérer après la dernière tuile radio
-        lastRadioTile.insertAdjacentElement('afterend', tileElement);
+
     }
 
     createPopup() {
