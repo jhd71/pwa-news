@@ -191,53 +191,117 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(148, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.7);
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: all 0.3s ease;
     cursor: pointer;
 }
 
-/* Survol normal */
+/* Survol simple sur toutes les cartes */
 .radio-station-card:hover .play-overlay {
-    opacity: 1;
+    opacity: 0.8;
+    background: rgba(0, 0, 0, 0.7);
 }
 
-/* État par défaut - icône play */
+/* Icône par défaut */
 .play-overlay .material-icons {
     color: white;
-    font-size: 24px;
+    font-size: 28px;
+    transition: transform 0.2s ease;
 }
 
-/* Station sélectionnée ET en lecture = VERT avec icône PAUSE */
+/* Hover effect sur l'icône */
+.radio-station-card:hover .play-overlay .material-icons {
+    transform: scale(1.2);
+}
+
+/* === ÉTAT 1 : Station sélectionnée ET en lecture === */
 .radio-station-card.active.playing .play-overlay {
-    opacity: 1;
-    background: rgba(40, 167, 69, 0.9); /* Vert */
+    opacity: 1 !important;
+    background: rgba(40, 167, 69, 0.9) !important; /* VERT */
 }
 
-.radio-station-card.active.playing .play-overlay .material-icons::before {
-    content: 'pause'; /* Affiche pause */
+.radio-station-card.active.playing .play-overlay .material-icons {
+    font-size: 32px;
 }
 
-/* Station sélectionnée MAIS en pause = ORANGE avec icône PLAY */
+/* Bordure verte pour station en lecture */
+.radio-station-card.active.playing {
+    border: 3px solid #28a745;
+    box-shadow: 0 0 20px rgba(40, 167, 69, 0.4);
+}
+
+/* === ÉTAT 2 : Station sélectionnée MAIS en pause === */
 .radio-station-card.active.paused .play-overlay,
 .radio-station-card.active:not(.playing) .play-overlay {
-    opacity: 1;
-    background: rgba(255, 193, 7, 0.9); /* Orange */
+    opacity: 1 !important;
+    background: rgba(255, 193, 7, 0.9) !important; /* ORANGE */
 }
 
-.radio-station-card.active.paused .play-overlay .material-icons::before,
-.radio-station-card.active:not(.playing) .play-overlay .material-icons::before {
-    content: 'play_arrow'; /* Affiche play */
+/* Bordure orange pour station en pause */
+.radio-station-card.active.paused,
+.radio-station-card.active:not(.playing) {
+    border: 3px solid #ffc107;
+    box-shadow: 0 0 20px rgba(255, 193, 7, 0.4);
 }
 
-/* État par défaut - pas de lecture */
-.play-overlay .material-icons {
-    color: white;
-    font-size: 24px;
+/* === Animation de pulsation pour la station en lecture === */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 20px rgba(40, 167, 69, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(40, 167, 69, 0.6);
+    }
+    100% {
+        box-shadow: 0 0 20px rgba(40, 167, 69, 0.4);
+    }
+}
+
+.radio-station-card.active.playing {
+    animation: pulse 2s infinite;
+}
+
+/* === Amélioration du statut en bas === */
+.current-station-details p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 15px;
+    display: inline-block;
+}
+
+/* Statut "En direct" en vert */
+.current-station-details p:has-text("En direct") {
+    background: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+}
+
+/* Alternative avec JavaScript pour le statut */
+/* Ajoutez ces classes via JS selon le statut */
+.status-live {
+    background: rgba(40, 167, 69, 0.2) !important;
+    color: #28a745 !important;
+}
+
+.status-paused {
+    background: rgba(255, 193, 7, 0.2) !important;
+    color: #ff9800 !important;
+}
+
+.status-error {
+    background: rgba(220, 53, 69, 0.2) !important;
+    color: #dc3545 !important;
+}
+
+.status-connecting {
+    background: rgba(23, 162, 184, 0.2) !important;
+    color: #17a2b8 !important;
 }
 
 /* Infos de la station */
