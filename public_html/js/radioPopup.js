@@ -1,6 +1,12 @@
 class RadioPopupWidget {
     constructor() {
         this.stations = [
+			{
+                name: 'Ici Bourgogne',
+                url: 'https://icecast.radiofrance.fr/fbbourgogne-midfi.mp3',
+                logo: 'images/radio-logos/Ici-Bourgogne.png',
+                description: 'Info Bourgogne'
+            },
             {
                 name: 'France Info',
                 url: 'https://icecast.radiofrance.fr/franceinfo-midfi.mp3',
