@@ -561,50 +561,19 @@ body.radio-popup-open {
     }
 }
 
-/* === CENTRAGE ET AGRANDISSEMENT DE LA TUILE LECTEUR RADIO === */
-
-/* Conteneur spécial pour la tuile radio seule */
-.tile[data-category="radio"]:only-of-type {
-    margin: 0 auto;
-    width: 200px;  /* Plus large que les autres tuiles */
-    min-height: 100px;  /* Plus haute */
-}
-
-/* Animation spéciale pour la tuile radio */
-.tile[data-category="radio"]:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
-
-/* Icône plus grande pour la tuile radio */
-.tile[data-category="radio"] .tile-title {
-    font-size: 1.2em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
 /* Style spécial "NOUVEAU" */
 .tile[data-category="radio"]::after {
-    content: "NOUVEAU";
+    content: 'NOUVEAU';
     position: absolute;
-    top: -8px;
-    right: -8px;
-    background: #ff3333;
+    top: 6px;
+    right: 6px;
+    background: #ef4444;
     color: white;
-    padding: 2px 8px;
+    font-size: 9px;
+    padding: 3px 8px;
     border-radius: 12px;
-    font-size: 10px;
     font-weight: bold;
-    animation: pulse 2s infinite;
-}
-
-/* Version responsive */
-@media (max-width: 768px) {
-    .separator + .tile:only-of-type,
-    .separator + .tile:last-child:nth-child(2) {
-        width: 90%;
-        max-width: 300px;
-    }
+    text-shadow: none;
+    z-index: 3;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
