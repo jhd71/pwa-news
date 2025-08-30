@@ -60,6 +60,12 @@ class RadioPopupWidget {
                 url: 'https://icecast.radiofrance.fr/fip-midfi.mp3',
                 logo: 'images/radio-logos/fip.png',
                 description: 'Éclectisme musical'
+            },
+			{
+                name: 'La Radio Sans pub',
+                url: 'https://stream1.jupinfo.fr:8443/play',
+                logo: 'images/radio-logos/La-Radio-Sans-pub.png',
+                description: '100% Hits 24/24'
             }
         ];
         
