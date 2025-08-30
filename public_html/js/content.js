@@ -342,40 +342,29 @@ setTimeout(() => {
         this.tileContainer.appendChild(separator1);
 
         // Section Radio
-        createRadioTile() {
-        // Trouver la section Radio et ajouter une tuile pour ouvrir le lecteur
-        const radioTiles = document.querySelectorAll('.tile[data-category="radio"]');
-        if (radioTiles.length === 0) return;
-
-        const lastRadioTile = radioTiles[radioTiles.length - 1];
-        
-        const radioTile = {
-            title: '🎵 Lecteur Radio',
-            url: '#radio-popup',
-            mobileUrl: '#radio-popup',
-            isDefault: true,
-            category: 'radio',
-            isRadioPopup: true
-        };
-
-        // Créer la tuile
-        const tileElement = document.createElement('div');
-        tileElement.className = 'tile';
-        tileElement.setAttribute('data-category', 'radio');
-        tileElement.innerHTML = `
-            <div class="tile-content">
-                <div class="tile-title">🎵 Lecteur Radio</div>
-            </div>
-        `;
-
-        // Ajouter le gestionnaire de clic
-        tileElement.addEventListener('click', () => {
-            this.openPopup();
-        });
-
-        // Insérer après la dernière tuile radio
-        lastRadioTile.insertAdjacentElement('afterend', tileElement);
-    }
+        const radioSites = [		
+  {
+    title: 'France Bleu Bourgogne',
+    url: 'https://www.radio-en-ligne.fr/france-bleu-bourgogne',
+    mobileUrl: 'https://www.radio-en-ligne.fr/france-bleu-bourgogne',
+    isDefault: true,
+    category: 'radio'
+  },
+  {
+    title: 'Radios de Bourgogne',
+    url: 'https://ecouterradioenligne.com/region/bourgogne/#prevert-chalon',
+    mobileUrl: 'https://ecouterradioenligne.com/region/bourgogne/#prevert-chalon',
+    isDefault: true,
+    category: 'radio'
+  },
+  {
+    title: 'Radio Sans Pub',
+    url: 'https://www.radio-en-ligne.fr/radio-sans-pub/',
+    mobileUrl: 'https://www.radio-en-ligne.fr/radio-sans-pub/',
+    isDefault: true,
+    category: 'radio'
+  }
+];
 
         radioSites.forEach(site => {
             const tile = this.createTile(site);
