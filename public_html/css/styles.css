@@ -1065,8 +1065,8 @@ main {
     font-weight: 700;
 }
 
-/* Badge "NOUVEAU" pour les brocantes */
-.tile[data-category="events"]:after {
+/* Badge "NOUVEAU" uniquement sur la tuile Lecteur Radio */
+.tile[data-category="radio"]:after {
     content: 'NOUVEAU';
     position: absolute;
     top: 6px;
@@ -1081,6 +1081,7 @@ main {
     z-index: 3;
     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
+
 
 /* ==========================================================================
    13. SÉPARATEURS
