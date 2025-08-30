@@ -94,29 +94,23 @@ class RadioPopupWidget {
         };
 
         // Créer la tuile
-const tileElement = document.createElement('div');
-tileElement.className = 'tile';
-tileElement.setAttribute('data-category', 'radio');
-tileElement.innerHTML = `
-    <div class="tile-content">
-        <div class="tile-title">🎵 Lecteur Radio</div>
-    </div>
-`;
+        const tileElement = document.createElement('div');
+        tileElement.className = 'tile';
+        tileElement.setAttribute('data-category', 'radio');
+        tileElement.innerHTML = `
+            <div class="tile-content">
+                <div class="tile-title">🎵 Lecteur Radio</div>
+            </div>
+        `;
 
-// Ajouter le gestionnaire de clic
-tileElement.addEventListener('click', () => {
-    this.openPopup();
-});
+        // Ajouter le gestionnaire de clic
+        tileElement.addEventListener('click', () => {
+            this.openPopup();
+        });
 
-// 👉 Insérer juste après le séparateur "Radio"
-const separatorRadio = document.querySelector('.separator .separator-text');
-if (separatorRadio) {
-    separatorRadio.parentElement.insertAdjacentElement('afterend', tileElement);
-} else {
-    // fallback : si le séparateur n'existe pas, on ajoute à la fin du container
-    document.querySelector('#tileContainer')?.appendChild(tileElement);
-}
-
+        // Insérer après la dernière tuile radio
+        lastRadioTile.insertAdjacentElement('afterend', tileElement);
+    }
 
     createPopup() {
         const popup = document.createElement('div');
