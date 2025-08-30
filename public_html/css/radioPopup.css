@@ -158,12 +158,19 @@
     font-weight: bold;
 }
 
+/* === CONTRÔLE AJUSTABLE DE LA TAILLE DES LOGOS === */
+:root {
+    --logo-size-desktop: 50px;  /* Modifiez cette valeur pour changer la taille sur PC */
+    --logo-size-tablet: 40px;   /* Modifiez pour tablettes */
+    --logo-size-mobile: 35px;   /* Modifiez pour mobile */
+}
+
 /* Logo et overlay */
 .station-logo-container {
     position: relative;
     margin-bottom: 8px;
-    width: 50px;
-    height: 50px;
+    width: var(--logo-size-desktop);
+    height: var(--logo-size-desktop);
     margin-left: auto;
     margin-right: auto;
     display: flex;
@@ -171,20 +178,20 @@
     justify-content: center;
 }
 
-/* Contrôle de la taille des logos DANS LA GRILLE */
+/* Logos dans la grille */
 .radio-stations-grid .station-logo {
     width: 100%;
     height: 100%;
-    max-width: 50px;  /* Taille max sur desktop */
-    max-height: 50px;
+    max-width: var(--logo-size-desktop);
+    max-height: var(--logo-size-desktop);
     border-radius: 8px;
-    object-fit: contain;  /* Garde les proportions */
+    object-fit: contain;
     border: 1px solid rgba(0, 0, 0, 0.1);
     background: white;
-    padding: 2px;
+    padding: 3px;
 }
 
-/* Fallback quand pas de logo */
+/* Fallback */
 .radio-stations-grid .logo-fallback {
     width: 100%;
     height: 100%;
@@ -196,28 +203,28 @@
     color: white;
 }
 
-/* RESPONSIVE - Logos plus petits sur mobile */
+/* RESPONSIVE */
 @media (max-width: 768px) {
     .station-logo-container {
-        width: 40px;  /* Plus petit sur mobile */
-        height: 40px;
+        width: var(--logo-size-tablet);
+        height: var(--logo-size-tablet);
     }
     
     .radio-stations-grid .station-logo {
-        max-width: 40px;
-        max-height: 40px;
+        max-width: var(--logo-size-tablet);
+        max-height: var(--logo-size-tablet);
     }
 }
 
-@media (max-height: 600px) {
+@media (max-width: 480px) {
     .station-logo-container {
-        width: 35px;  /* Encore plus petit sur petits écrans */
-        height: 35px;
+        width: var(--logo-size-mobile);
+        height: var(--logo-size-mobile);
     }
     
     .radio-stations-grid .station-logo {
-        max-width: 35px;
-        max-height: 35px;
+        max-width: var(--logo-size-mobile);
+        max-height: var(--logo-size-mobile);
     }
 }
 
