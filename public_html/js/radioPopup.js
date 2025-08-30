@@ -78,48 +78,22 @@ class RadioPopupWidget {
     }
 
     createRadioTile() {
-    // Chercher le conteneur radio ou le séparateur
-    let targetElement = document.querySelector('.radio-section-container');
+    // Trouver le séparateur Radio
+    const radioSeparator = Array.from(document.querySelectorAll('.separator'))
+        .find(sep => sep.textContent.includes('Radio'));
     
-    if (!targetElement) {
-        // Fallback : chercher le séparateur Radio
-        targetElement = Array.from(document.querySelectorAll('.separator'))
-            .find(sep => sep.textContent.includes('Radio'));
-        
-        if (!targetElement) {
-            console.warn('Conteneur Radio non trouvé');
-            return;
-        }
+    if (!radioSeparator) {
+        console.warn('Séparateur Radio non trouvé');
+        return;
     }
 
-    // Créer la tuile avec style spécial
+    // Créer la tuile
     const tileElement = document.createElement('div');
-    tileElement.className = 'tile radio-player-tile';
+    tileElement.className = 'tile';
     tileElement.setAttribute('data-category', 'radio');
-    tileElement.style.cssText = `
-        width: 200px;
-        min-height: 90px;
-        background: linear-gradient(135deg, #ff6b6b, #ffd93d);
-        position: relative;
-        transition: all 0.3s ease;
-    `;
-    
     tileElement.innerHTML = `
         <div class="tile-content">
-            <div class="tile-title" style="color: white; font-weight: bold; font-size: 1.1em;">
-                🎵 Lecteur Radio
-            </div>
-            <span style="
-                position: absolute;
-                top: 5px;
-                right: 5px;
-                background: red;
-                color: white;
-                padding: 2px 6px;
-                border-radius: 8px;
-                font-size: 9px;
-                font-weight: bold;
-            ">NOUVEAU</span>
+            <div class="tile-title">🎵 Lecteur Radio</div>
         </div>
     `;
 
@@ -128,12 +102,8 @@ class RadioPopupWidget {
         this.openPopup();
     });
 
-    // Insérer dans le conteneur ou après le séparateur
-    if (targetElement.classList.contains('radio-section-container')) {
-        targetElement.appendChild(tileElement);
-    } else {
-        targetElement.insertAdjacentElement('afterend', tileElement);
-    }
+    // Insérer juste après le séparateur Radio
+    radioSeparator.insertAdjacentElement('afterend', tileElement);
 }
 
     createPopup() {

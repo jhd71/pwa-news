@@ -335,23 +335,11 @@ setTimeout(() => {
     }
 }, 800); // ✅ Délai optimisé pour apparition fluide
 
-       // Séparateur Radio
+        // Séparateur Radio
 const separator1 = document.createElement('div');
 separator1.className = 'separator';
 separator1.innerHTML = `<h2 class="separator-text">Radio</h2>`;
 this.tileContainer.appendChild(separator1);
-
-// Créer un conteneur spécial pour la section radio
-const radioContainer = document.createElement('div');
-radioContainer.className = 'radio-section-container';
-radioContainer.style.cssText = `
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 15px 0;
-    width: 100%;
-`;
-this.tileContainer.appendChild(radioContainer);
 
         // Séparateur TV
         const separator2 = document.createElement('div');

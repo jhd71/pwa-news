@@ -158,19 +158,12 @@
     font-weight: bold;
 }
 
-/* === CONTRÔLE AJUSTABLE DE LA TAILLE DES LOGOS === */
-:root {
-    --logo-size-desktop: 50px;  /* Modifiez cette valeur pour changer la taille sur PC */
-    --logo-size-tablet: 40px;   /* Modifiez pour tablettes */
-    --logo-size-mobile: 35px;   /* Modifiez pour mobile */
-}
-
 /* Logo et overlay */
 .station-logo-container {
     position: relative;
     margin-bottom: 8px;
-    width: var(--logo-size-desktop);
-    height: var(--logo-size-desktop);
+    width: 50px;
+    height: 50px;
     margin-left: auto;
     margin-right: auto;
     display: flex;
@@ -178,20 +171,20 @@
     justify-content: center;
 }
 
-/* Logos dans la grille */
+/* Contrôle de la taille des logos DANS LA GRILLE */
 .radio-stations-grid .station-logo {
     width: 100%;
     height: 100%;
-    max-width: var(--logo-size-desktop);
-    max-height: var(--logo-size-desktop);
+    max-width: 50px;  /* Taille max sur desktop */
+    max-height: 50px;
     border-radius: 8px;
-    object-fit: contain;
+    object-fit: contain;  /* Garde les proportions */
     border: 1px solid rgba(0, 0, 0, 0.1);
     background: white;
-    padding: 3px;
+    padding: 2px;
 }
 
-/* Fallback */
+/* Fallback quand pas de logo */
 .radio-stations-grid .logo-fallback {
     width: 100%;
     height: 100%;
@@ -203,28 +196,28 @@
     color: white;
 }
 
-/* RESPONSIVE */
+/* RESPONSIVE - Logos plus petits sur mobile */
 @media (max-width: 768px) {
     .station-logo-container {
-        width: var(--logo-size-tablet);
-        height: var(--logo-size-tablet);
+        width: 40px;  /* Plus petit sur mobile */
+        height: 40px;
     }
     
     .radio-stations-grid .station-logo {
-        max-width: var(--logo-size-tablet);
-        max-height: var(--logo-size-tablet);
+        max-width: 40px;
+        max-height: 40px;
     }
 }
 
-@media (max-width: 480px) {
+@media (max-height: 600px) {
     .station-logo-container {
-        width: var(--logo-size-mobile);
-        height: var(--logo-size-mobile);
+        width: 35px;  /* Encore plus petit sur petits écrans */
+        height: 35px;
     }
     
     .radio-stations-grid .station-logo {
-        max-width: var(--logo-size-mobile);
-        max-height: var(--logo-size-mobile);
+        max-width: 35px;
+        max-height: 35px;
     }
 }
 
@@ -575,18 +568,6 @@ body.radio-popup-open {
     margin: 0 auto;
     width: 200px;  /* Plus large que les autres tuiles */
     min-height: 100px;  /* Plus haute */
-}
-
-/* Ou si vous voulez centrer toute tuile seule après un séparateur */
-.separator + .tile:only-of-type,
-.separator + .tile:last-child:nth-child(2) {
-    display: block;
-    margin: 15px auto;
-    width: 220px;
-    background: linear-gradient(135deg, var(--primary-color), rgba(var(--primary-color-rgb), 0.7));
-    color: white;
-    font-weight: bold;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Animation spéciale pour la tuile radio */
