@@ -622,7 +622,3 @@ body.radio-popup-open {
     width: 200px !important;
     background: linear-gradient(135deg, #ff6b6b, #feca57) !important;
 }
-
-/* Dans radioPopup.js, modifiez createRadioTile() pour ajouter la classe : */
-// Ligne ~85, après tileElement.className = 'tile';
-tileElement.classList.add('radio-single-tile');

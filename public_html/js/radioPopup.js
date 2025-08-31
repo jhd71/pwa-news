@@ -101,7 +101,7 @@ class RadioPopupWidget {
 
     // Créer la tuile
     const tileElement = document.createElement('div');
-    tileElement.className = 'tile';
+    tileElement.classList.add('radio-single-tile');
     tileElement.setAttribute('data-category', 'radio');
     tileElement.innerHTML = `
         <div class="tile-content">
