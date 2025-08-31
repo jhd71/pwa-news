@@ -17,19 +17,19 @@ class NotepadWidget {
     /* REMPLACEZ la fonction createNotepadTile() dans notepadApp.js (ligne ~18) par : */
 
 createNotepadTile() {
-    // Trouver le séparateur Radio
+    // Trouver le séparateur Espace+
     const radioSeparator = Array.from(document.querySelectorAll('.separator'))
-        .find(sep => sep.textContent.includes('Radio'));
+        .find(sep => sep.textContent.includes('Espace+'));
     
     if (!radioSeparator) return;
 
-    // Trouver la tuile Lecteur Radio
-    const radioTile = document.querySelector('.tile[data-category="radio"]');
+    // Trouver la tuile Lecteur Espace+
+    const radioTile = document.querySelector('.tile[data-category="Espace+"]');
     
     // Créer la tuile Bloc-notes
     const tileElement = document.createElement('div');
     tileElement.className = 'tile notepad-app-tile';
-    tileElement.setAttribute('data-category', 'radio');
+    tileElement.setAttribute('data-category', 'Espace+');
     
     // Adapter le style selon le thème actuel
     const currentTheme = document.documentElement.getAttribute('data-theme') || 'rouge';
