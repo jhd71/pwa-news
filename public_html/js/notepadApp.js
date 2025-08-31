@@ -7,39 +7,37 @@ class NotepadWidget {
     }
 
     init() {
-        // Attendre que les tuiles soient créées
-        setTimeout(() => {
-            this.createNotepadTile();
-            this.createPopup();
-        }, 1500);
-    }
-
-    /* REMPLACEZ la fonction createNotepadTile() dans notepadApp.js (ligne ~18) par : */
+    // Attendre plus longtemps que les tuiles soient créées
+    setTimeout(() => {
+        this.createNotepadTile();
+        this.createPopup();
+    }, 2000); // Augmenté à 2 secondes au lieu de 1.5
+}
 
 createNotepadTile() {
-    // Chercher le séparateur "Espace+" 
+    // Chercher le séparateur Espace+
     const espaceSeparator = Array.from(document.querySelectorAll('.separator'))
         .find(sep => sep && sep.textContent && sep.textContent.includes('Espace+'));
     
     if (!espaceSeparator) {
-        console.warn('Séparateur Espace+ non trouvé, nouvelle tentative dans 1 seconde');
-        // Réessayer après un délai
+        console.warn('Séparateur Espace+ non trouvé, réessai dans 1 seconde');
         setTimeout(() => this.createNotepadTile(), 1000);
         return;
     }
 
     // Vérifier si la tuile existe déjà
     if (document.querySelector('.notepad-app-tile')) {
-        return; // Ne pas créer de doublon
+        console.log('Tuile Bloc-notes déjà présente');
+        return;
     }
 
-    // Trouver la tuile Lecteur Radio qui est maintenant dans Espace+
-    const radioTile = document.querySelector('.tile[data-category="Espace+"]');
+    // Trouver la tuile Lecteur Radio
+    const radioTile = document.querySelector('.tile[data-category="espace"]');
     
     // Créer la tuile Bloc-notes
     const tileElement = document.createElement('div');
     tileElement.className = 'tile notepad-app-tile';
-    tileElement.setAttribute('data-category', 'Espace+'); // Changé de 'radio' à 'Espace+'
+    tileElement.setAttribute('data-category', 'espace');
     
     // Adapter le style selon le thème actuel
     const currentTheme = document.documentElement.getAttribute('data-theme') || 'rouge';
@@ -81,11 +79,13 @@ createNotepadTile() {
         this.openPopup();
     });
 
-    // Insérer après la tuile Radio ou après le séparateur
+    // Insérer la tuile
     if (radioTile) {
         radioTile.insertAdjacentElement('afterend', tileElement);
+        console.log('Tuile Bloc-notes ajoutée après Lecteur Radio');
     } else {
         espaceSeparator.insertAdjacentElement('afterend', tileElement);
+        console.log('Tuile Bloc-notes ajoutée après le séparateur');
     }
     
     // Observer les changements de thème
@@ -184,8 +184,13 @@ updateTileTheme() {
                 <div class="notepad-popup-footer">
                     <p>💾 Les notes sont sauvegardées localement sur votre appareil</p>
                 </div>
-            </div>
-        `;
+            ${window.innerWidth <= 768 ? `
+                <button class="mobile-close-btn" id="mobileCloseBtn">
+                    Fermer le bloc-notes
+                </button>
+            ` : ''}
+        </div>
+    `;
 
         document.body.appendChild(popup);
         this.setupEventListeners();
@@ -193,19 +198,26 @@ updateTileTheme() {
 
     // 3. AMÉLIORATION des event listeners pour auto-save plus intelligent
 setupEventListeners() {
-    // Fermer la popup
-    document.getElementById('closeNotepadPopup').addEventListener('click', () => {
-        // Sauvegarder avant de fermer
-        if (this.currentNoteIndex !== null) {
-            this.saveCurrentNote(true);
-        }
-        this.closePopup();
-    });
+    // Fermer la popup - AMÉLIORÉ
+    const closeBtn = document.getElementById('closeNotepadPopup');
+    if (closeBtn) {
+        // Utiliser touchend pour mobile ET click pour desktop
+        ['click', 'touchend'].forEach(eventType => {
+            closeBtn.addEventListener(eventType, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                // Sauvegarder avant de fermer
+                if (this.currentNoteIndex !== null) {
+                    this.saveCurrentNote(true);
+                }
+                this.closePopup();
+            });
+        });
+    }
 
-    // Fermer en cliquant à l'extérieur
+    // Fermer en cliquant à l'extérieur (desktop uniquement)
     document.getElementById('notepadPopup').addEventListener('click', (e) => {
-        if (e.target.id === 'notepadPopup') {
-            // Sauvegarder avant de fermer
+        if (e.target.id === 'notepadPopup' && window.innerWidth > 768) {
             if (this.currentNoteIndex !== null) {
                 this.saveCurrentNote(true);
             }
@@ -303,16 +315,28 @@ setupEventListeners() {
     }
 
     closePopup() {
-        const popup = document.getElementById('notepadPopup');
-        popup.classList.remove('active');
-        document.body.classList.remove('notepad-popup-open');
-        this.popupOpen = false;
+    const popup = document.getElementById('notepadPopup');
+    if (!popup) return;
+    
+    popup.classList.remove('active');
+    document.body.classList.remove('notepad-popup-open');
+    this.popupOpen = false;
+    
+    // Restaurer le scroll sur mobile
+    if (window.innerWidth <= 768) {
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
         
-        // Restaurer le scroll
-        if (window.innerWidth <= 768) {
-            document.body.style.overflow = '';
-        }
+        // Forcer la fermeture après l'animation
+        setTimeout(() => {
+            popup.style.display = 'none';
+            setTimeout(() => {
+                popup.style.display = ''; // Réinitialiser pour la prochaine ouverture
+            }, 100);
+        }, 300);
     }
+}
 
     loadNotesList() {
         const notesList = document.getElementById('notesList');
@@ -491,8 +515,8 @@ saveCurrentNote(silent = false) {
     `;
     document.body.appendChild(toast);
     
-    // Forcer le reflow pour l'animation
-    toast.offsetHeight;
+    // Forcer le reflow pour l'animation (CORRECTION)
+    void toast.offsetHeight; // AJOUT de "void" pour corriger l'erreur de syntaxe
     
     setTimeout(() => {
         toast.classList.add('show');
@@ -501,7 +525,7 @@ saveCurrentNote(silent = false) {
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 300);
-    }, 2500); // Plus long pour mobile
+    }, 2500);
 }
 
 // Initialisation
