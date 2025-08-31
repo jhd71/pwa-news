@@ -761,7 +761,7 @@
 background: #1e267a !important;
 }
 
-[data-theme="light"] .weather-show-btn, .tool-button, .quick-links-show-btn, .weather-mobile-btn {
+[data-theme="light"] .weather-show-btn, .tool-button, .quick-links-show-btn, .search-button, .weather-mobile-btn {
 background: #775cbd !important;
 }
 
