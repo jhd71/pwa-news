@@ -11,7 +11,6 @@
 
 /* Thème Sombre */
 [data-theme="dark"] {
-    --primary-color: #ff6b6b;
     --text-color: #e2e8f0;
     --text-secondary: #a0aec0;
     --card-bg: #2d3748;
@@ -20,7 +19,6 @@
 
 /* Thème Bleu Ciel */
 [data-theme="bleuciel"] {
-    --primary-color: #17a2b8;
     --text-color: #333333;
     --text-secondary: #5f6f7a;
     --card-bg: #ffffff;
@@ -29,7 +27,6 @@
 
 /* Thème Violet */
 [data-theme="light"] {
-    --primary-color: #6f42c1;
     --text-color: #333333;
     --text-secondary: #6c757d;
     --card-bg: #ffffff;
@@ -161,8 +158,8 @@
 /* === VARIABLES POUR CONTRÔLER LA TAILLE DES IMAGES === */
 :root {
     --logo-img-size-desktop: 80px;  /* CHANGEZ ICI pour agrandir/réduire sur PC */
-    --logo-img-size-tablet: 55px;   /* CHANGEZ ICI pour tablettes */
-    --logo-img-size-mobile: 55px;   /* CHANGEZ ICI pour mobile */
+    --logo-img-size-tablet: 60px;   /* CHANGEZ ICI pour tablettes */
+    --logo-img-size-mobile: 60px;   /* CHANGEZ ICI pour mobile */
 }
 
 /* Conteneur du logo */
@@ -505,11 +502,11 @@
     }
     
     .station-name {
-        font-size: 12px;
+        font-size: 14px;
     }
     
     .station-description {
-        font-size: 9px;
+        font-size: 12px;
     }
     
     .current-station-info {
