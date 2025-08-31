@@ -75,7 +75,7 @@ class RadioPopupWidget {
             },
             {
                 name: 'RMC',
-                url: 'http://audio.bfmtv.com/rmcradio_128.mp3',
+                url: 'https://audio.bfmtv.com/rmcradio_128.mp3',
                 logo: 'images/radio-logos/rmc.png',
                 description: 'Sport & info'
             }           
