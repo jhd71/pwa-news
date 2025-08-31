@@ -573,7 +573,7 @@
 /* Thème Bleu Ciel */
 [data-theme="bleuciel"] .tool-button,
 [data-theme="bleuciel"] .search-button {
-  background: linear-gradient(145deg, #4FB3E8, #3F97C7) !important;
+  background: linear-gradient(145deg, #0ea5e9, #38bdf8);
 }
 
 [data-theme="bleuciel"] .tool-button:hover,
