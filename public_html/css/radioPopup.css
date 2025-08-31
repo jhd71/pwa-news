@@ -159,7 +159,7 @@
 :root {
     --logo-img-size-desktop: 80px;  /* CHANGEZ ICI pour agrandir/réduire sur PC */
     --logo-img-size-tablet: 60px;   /* CHANGEZ ICI pour tablettes */
-    --logo-img-size-mobile: 60px;   /* CHANGEZ ICI pour mobile */
+    --logo-img-size-mobile: 55px;   /* CHANGEZ ICI pour mobile */
 }
 
 /* Conteneur du logo */
@@ -338,7 +338,7 @@
 
 .station-name {
     font-size: 13px;
-    font-weight: 700;
+    font-weight: 500;
     color: var(--text-color);
     line-height: 1.2;
     margin-bottom: 4px;
