@@ -32,11 +32,14 @@ createNotepadTile() {
     if (document.querySelector('.notepad-app-tile')) {
         return; // Ne pas créer de doublon
     }
+
+    // Trouver la tuile Lecteur Radio qui est maintenant dans Espace+
+    const radioTile = document.querySelector('.tile[data-category="Espace+"]');
     
     // Créer la tuile Bloc-notes
     const tileElement = document.createElement('div');
     tileElement.className = 'tile notepad-app-tile';
-    tileElement.setAttribute('data-category', 'espace'); // Changé de 'radio' à 'espace'
+    tileElement.setAttribute('data-category', 'Espace+'); // Changé de 'radio' à 'Espace+'
     
     // Adapter le style selon le thème actuel
     const currentTheme = document.documentElement.getAttribute('data-theme') || 'rouge';
@@ -476,20 +479,29 @@ saveCurrentNote(silent = false) {
     }
 
     showToast(message) {
-        const toast = document.createElement('div');
-        toast.className = 'notepad-toast';
-        toast.textContent = message;
-        document.body.appendChild(toast);
-        
-        setTimeout(() => {
-            toast.classList.add('show');
-        }, 10);
-        
-        setTimeout(() => {
-            toast.classList.remove('show');
-            setTimeout(() => toast.remove(), 300);
-        }, 2000);
-    }
+    // Supprimer les toasts existants
+    const existingToasts = document.querySelectorAll('.notepad-toast');
+    existingToasts.forEach(toast => toast.remove());
+    
+    const toast = document.createElement('div');
+    toast.className = 'notepad-toast';
+    toast.innerHTML = `
+        <span class="toast-icon">${message.includes('✅') ? '✅' : '💾'}</span>
+        <span class="toast-message">${message}</span>
+    `;
+    document.body.appendChild(toast);
+    
+    // Forcer le reflow pour l'animation
+    toast.offsetHeight;
+    
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 10);
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 2500); // Plus long pour mobile
 }
 
 // Initialisation
