@@ -587,7 +587,7 @@ body.radio-popup-open {
 }
 
 /* Style spécial "NOUVEAU" */
-.tile[data-category="radio"]::after {
+.tile[data-category="Espace+"]::after {
     content: 'NOUVEAU';
     position: absolute;
     top: 6px;
