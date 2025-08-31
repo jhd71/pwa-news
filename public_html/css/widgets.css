@@ -758,13 +758,13 @@
 }
 
 [data-theme="dark"] .weather-show-btn, .tool-button, .quick-links-show-btn, .weather-mobile-btn {
-background: #1e267a;
+background: #1e267a !important;
 }
 
 [data-theme="light"] .weather-show-btn, .tool-button, .quick-links-show-btn, .weather-mobile-btn {
-background: #775cbd;
+background: #775cbd !important;
 }
 
 [data-theme="dark"] .app-header {
-background-color: #1e267a;
+background-color: #1e267a !important;
 }
