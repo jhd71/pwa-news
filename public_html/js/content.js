@@ -335,10 +335,10 @@ setTimeout(() => {
     }
 }, 800); // ✅ Délai optimisé pour apparition fluide
 
-        // Séparateur Radio
+        // Séparateur Espace+
 const separator1 = document.createElement('div');
 separator1.className = 'separator';
-separator1.innerHTML = `<h2 class="separator-text">📌 Espace+</h2>`;
+separator1.innerHTML = `<h2 class="separator-text">Espace+</h2>`;
 this.tileContainer.appendChild(separator1);
 
         // Séparateur TV
@@ -2564,7 +2564,7 @@ addVisibilityStyles() {
             --tile-bg-rgb: 220, 53, 69; /* Rouge */
         }
         
-        .tile[data-category="radio"].enhanced-visibility {
+        .tile[data-category="Espace+"].enhanced-visibility {
             --tile-bg-rgb: 255, 193, 7; /* Jaune/Orange */
         }
         
