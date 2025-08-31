@@ -314,9 +314,69 @@
     }
 }
 
-/* Support thème sombre */
+/* === SUPPORT POUR TOUS LES THÈMES === */
+
+/* Thème Rouge (défaut) */
+[data-theme="rouge"] .notepad-popup-content {
+    --notepad-primary: #940000;
+    --notepad-primary-light: rgba(148, 0, 0, 0.1);
+    --notepad-bg: white;
+    --notepad-sidebar-bg: #f8f9fa;
+    --notepad-text: #333333;
+    --notepad-text-secondary: #666666;
+    --notepad-border: #ddd;
+    --notepad-item-bg: white;
+}
+
+[data-theme="rouge"] .notepad-popup-header {
+    background: linear-gradient(135deg, #940000, #c41e3a);
+}
+
+[data-theme="rouge"] .add-note-btn {
+    background: #940000;
+}
+
+[data-theme="rouge"] .add-note-btn:hover {
+    background: #c41e3a;
+}
+
+[data-theme="rouge"] .note-item.active {
+    border-color: #940000;
+    background: linear-gradient(to right, rgba(148, 0, 0, 0.1), transparent);
+}
+
+[data-theme="rouge"] .note-title-input:focus,
+[data-theme="rouge"] .note-content-area:focus {
+    border-color: #940000;
+}
+
+[data-theme="rouge"] .save-btn {
+    background: #940000;
+}
+
+[data-theme="rouge"] .save-btn:hover {
+    background: #7a0000;
+}
+
+[data-theme="rouge"] .notepad-toast {
+    background: #940000;
+}
+
+/* Thème Sombre (dark) */
 [data-theme="dark"] .notepad-popup-content {
+    --notepad-primary: #ff6b6b;
+    --notepad-primary-light: rgba(255, 107, 107, 0.1);
+    --notepad-bg: #2d3748;
+    --notepad-sidebar-bg: #1a202c;
+    --notepad-text: #e2e8f0;
+    --notepad-text-secondary: #a0aec0;
+    --notepad-border: #4a5568;
+    --notepad-item-bg: #2d3748;
     background: #2d3748;
+}
+
+[data-theme="dark"] .notepad-popup-header {
+    background: linear-gradient(135deg, #ff6b6b, #ff8787);
 }
 
 [data-theme="dark"] .notes-sidebar {
@@ -324,14 +384,246 @@
     border-right-color: #4a5568;
 }
 
+[data-theme="dark"] .notes-list-header {
+    border-bottom-color: #4a5568;
+}
+
+[data-theme="dark"] .notes-list-header h3 {
+    color: #e2e8f0;
+}
+
 [data-theme="dark"] .note-item {
     background: #2d3748;
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .note-item.active {
+    border-color: #ff6b6b;
+    background: linear-gradient(to right, rgba(255, 107, 107, 0.1), transparent);
+}
+
+[data-theme="dark"] .note-item-title {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .note-item-preview {
+    color: #a0aec0;
+}
+
+[data-theme="dark"] .note-title-input {
+    color: #e2e8f0;
+    border-bottom-color: #4a5568;
+}
+
+[data-theme="dark"] .note-title-input:focus {
+    border-bottom-color: #ff6b6b;
 }
 
 [data-theme="dark"] .note-content-area {
     background: #2d3748;
     border-color: #4a5568;
     color: #e2e8f0;
+}
+
+[data-theme="dark"] .note-content-area:focus {
+    border-color: #ff6b6b;
+}
+
+[data-theme="dark"] .note-actions {
+    border-top-color: #4a5568;
+}
+
+[data-theme="dark"] .add-note-btn {
+    background: #ff6b6b;
+}
+
+[data-theme="dark"] .add-note-btn:hover {
+    background: #ff8787;
+}
+
+[data-theme="dark"] .save-btn {
+    background: #ff6b6b;
+}
+
+[data-theme="dark"] .save-btn:hover {
+    background: #ff5252;
+}
+
+[data-theme="dark"] .notepad-toast {
+    background: #ff6b6b;
+}
+
+[data-theme="dark"] .notepad-popup-footer {
+    background: #1a202c;
+    color: #a0aec0;
+}
+
+/* Thème Bleu Ciel (bleuciel) */
+[data-theme="bleuciel"] .notepad-popup-content {
+    --notepad-primary: #17a2b8;
+    --notepad-primary-light: rgba(23, 162, 184, 0.1);
+    --notepad-bg: white;
+    --notepad-sidebar-bg: #f0f8ff;
+    --notepad-text: #333333;
+    --notepad-text-secondary: #5f6f7a;
+    --notepad-border: #b8daff;
+    --notepad-item-bg: white;
+}
+
+[data-theme="bleuciel"] .notepad-popup-header {
+    background: linear-gradient(135deg, #17a2b8, #20c997);
+}
+
+[data-theme="bleuciel"] .notes-sidebar {
+    background: #f0f8ff;
+    border-right-color: #b8daff;
+}
+
+[data-theme="bleuciel"] .notes-list-header {
+    border-bottom-color: #b8daff;
+}
+
+[data-theme="bleuciel"] .note-item.active {
+    border-color: #17a2b8;
+    background: linear-gradient(to right, rgba(23, 162, 184, 0.1), transparent);
+}
+
+[data-theme="bleuciel"] .note-title-input:focus,
+[data-theme="bleuciel"] .note-content-area:focus {
+    border-color: #17a2b8;
+}
+
+[data-theme="bleuciel"] .add-note-btn {
+    background: #17a2b8;
+}
+
+[data-theme="bleuciel"] .add-note-btn:hover {
+    background: #138496;
+}
+
+[data-theme="bleuciel"] .save-btn {
+    background: #17a2b8;
+}
+
+[data-theme="bleuciel"] .save-btn:hover {
+    background: #138496;
+}
+
+[data-theme="bleuciel"] .notepad-toast {
+    background: #17a2b8;
+}
+
+[data-theme="bleuciel"] .notepad-popup-footer {
+    background: #f0f8ff;
+    color: #5f6f7a;
+}
+
+[data-theme="bleuciel"] .note-actions {
+    border-top-color: #b8daff;
+}
+
+/* Thème Violet (light) */
+[data-theme="light"] .notepad-popup-content {
+    --notepad-primary: #6f42c1;
+    --notepad-primary-light: rgba(111, 66, 193, 0.1);
+    --notepad-bg: white;
+    --notepad-sidebar-bg: #f8f9ff;
+    --notepad-text: #333333;
+    --notepad-text-secondary: #6c757d;
+    --notepad-border: #dee2e6;
+    --notepad-item-bg: white;
+}
+
+[data-theme="light"] .notepad-popup-header {
+    background: linear-gradient(135deg, #6f42c1, #e83e8c);
+}
+
+[data-theme="light"] .notes-sidebar {
+    background: #f8f9ff;
+    border-right-color: #dee2e6;
+}
+
+[data-theme="light"] .notes-list-header {
+    border-bottom-color: #dee2e6;
+}
+
+[data-theme="light"] .note-item.active {
+    border-color: #6f42c1;
+    background: linear-gradient(to right, rgba(111, 66, 193, 0.1), transparent);
+}
+
+[data-theme="light"] .note-title-input:focus,
+[data-theme="light"] .note-content-area:focus {
+    border-color: #6f42c1;
+}
+
+[data-theme="light"] .add-note-btn {
+    background: #6f42c1;
+}
+
+[data-theme="light"] .add-note-btn:hover {
+    background: #5a32a3;
+}
+
+[data-theme="light"] .save-btn {
+    background: #6f42c1;
+}
+
+[data-theme="light"] .save-btn:hover {
+    background: #5a32a3;
+}
+
+[data-theme="light"] .notepad-toast {
+    background: #6f42c1;
+}
+
+[data-theme="light"] .notepad-popup-footer {
+    background: #f8f9ff;
+    color: #6c757d;
+}
+
+[data-theme="light"] .note-actions {
+    border-top-color: #dee2e6;
+}
+
+/* === AJUSTEMENTS GÉNÉRAUX POUR TOUS LES THÈMES === */
+
+/* Utiliser les variables CSS pour les éléments communs */
+.notepad-popup-content {
+    background: var(--notepad-bg);
+}
+
+.notes-sidebar {
+    background: var(--notepad-sidebar-bg);
+    border-right-color: var(--notepad-border);
+}
+
+.note-item {
+    background: var(--notepad-item-bg);
+}
+
+.note-item-title {
+    color: var(--notepad-text);
+}
+
+.note-item-preview {
+    color: var(--notepad-text-secondary);
+}
+
+.note-title-input {
+    color: var(--notepad-text);
+    border-bottom-color: var(--notepad-border);
+}
+
+.note-content-area {
+    background: var(--notepad-bg);
+    border-color: var(--notepad-border);
+    color: var(--notepad-text);
+}
+
+.notepad-popup-footer {
+    background: var(--notepad-sidebar-bg);
+    color: var(--notepad-text-secondary);
 }
 
 /* Empêcher le scroll du body */

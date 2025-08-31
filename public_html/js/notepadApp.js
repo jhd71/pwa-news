@@ -14,44 +14,111 @@ class NotepadWidget {
         }, 1500);
     }
 
-    createNotepadTile() {
-        // Trouver le séparateur Radio
-        const radioSeparator = Array.from(document.querySelectorAll('.separator'))
-            .find(sep => sep.textContent.includes('Radio'));
-        
-        if (!radioSeparator) return;
+    /* REMPLACEZ la fonction createNotepadTile() dans notepadApp.js (ligne ~18) par : */
 
-        // Trouver la tuile Lecteur Radio
-        const radioTile = document.querySelector('.tile[data-category="radio"]');
-        
-        // Créer la tuile Bloc-notes
-        const tileElement = document.createElement('div');
-        tileElement.className = 'tile';
-        tileElement.setAttribute('data-category', 'radio');
-        tileElement.style.cssText = `
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        `;
-        tileElement.innerHTML = `
-            <div class="tile-content">
-                <div class="tile-title" style="color: white; font-weight: bold;">
-                    📝 Bloc-notes
-                </div>
-            </div>
-        `;
+createNotepadTile() {
+    // Trouver le séparateur Radio
+    const radioSeparator = Array.from(document.querySelectorAll('.separator'))
+        .find(sep => sep.textContent.includes('Radio'));
+    
+    if (!radioSeparator) return;
 
-        // Ajouter le gestionnaire de clic
-        tileElement.addEventListener('click', () => {
-            this.openPopup();
-        });
-
-        // Insérer après la tuile Radio ou après le séparateur
-        if (radioTile) {
-            radioTile.insertAdjacentElement('afterend', tileElement);
-        } else {
-            radioSeparator.insertAdjacentElement('afterend', tileElement);
-        }
+    // Trouver la tuile Lecteur Radio
+    const radioTile = document.querySelector('.tile[data-category="radio"]');
+    
+    // Créer la tuile Bloc-notes
+    const tileElement = document.createElement('div');
+    tileElement.className = 'tile notepad-app-tile';
+    tileElement.setAttribute('data-category', 'radio');
+    
+    // Adapter le style selon le thème actuel
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'rouge';
+    let gradientStyle = '';
+    
+    switch(currentTheme) {
+        case 'rouge':
+            gradientStyle = 'linear-gradient(135deg, #940000, #c41e3a)';
+            break;
+        case 'dark':
+            gradientStyle = 'linear-gradient(135deg, #ff6b6b, #ff8787)';
+            break;
+        case 'bleuciel':
+            gradientStyle = 'linear-gradient(135deg, #17a2b8, #20c997)';
+            break;
+        case 'light':
+            gradientStyle = 'linear-gradient(135deg, #6f42c1, #e83e8c)';
+            break;
+        default:
+            gradientStyle = 'linear-gradient(135deg, #667eea, #764ba2)';
     }
+    
+    tileElement.style.cssText = `
+        background: ${gradientStyle};
+        color: white;
+        position: relative;
+    `;
+    
+    tileElement.innerHTML = `
+        <div class="tile-content">
+            <div class="tile-title" style="color: white; font-weight: bold;">
+                📝 Bloc-notes
+            </div>
+        </div>
+    `;
+
+    // Ajouter le gestionnaire de clic
+    tileElement.addEventListener('click', () => {
+        this.openPopup();
+    });
+
+    // Insérer après la tuile Radio ou après le séparateur
+    if (radioTile) {
+        radioTile.insertAdjacentElement('afterend', tileElement);
+    } else {
+        radioSeparator.insertAdjacentElement('afterend', tileElement);
+    }
+    
+    // Observer les changements de thème pour adapter la tuile
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+                this.updateTileTheme();
+            }
+        });
+    });
+    
+    observer.observe(document.documentElement, { 
+        attributes: true, 
+        attributeFilter: ['data-theme'] 
+    });
+}
+
+updateTileTheme() {
+    const tile = document.querySelector('.notepad-app-tile');
+    if (!tile) return;
+    
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'rouge';
+    let gradientStyle = '';
+    
+    switch(currentTheme) {
+        case 'rouge':
+            gradientStyle = 'linear-gradient(135deg, #940000, #c41e3a)';
+            break;
+        case 'dark':
+            gradientStyle = 'linear-gradient(135deg, #ff6b6b, #ff8787)';
+            break;
+        case 'bleuciel':
+            gradientStyle = 'linear-gradient(135deg, #17a2b8, #20c997)';
+            break;
+        case 'light':
+            gradientStyle = 'linear-gradient(135deg, #6f42c1, #e83e8c)';
+            break;
+        default:
+            gradientStyle = 'linear-gradient(135deg, #667eea, #764ba2)';
+    }
+    
+    tile.style.background = gradientStyle;
+}
 
     createPopup() {
         const popup = document.createElement('div');
