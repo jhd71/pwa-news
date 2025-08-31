@@ -79,7 +79,7 @@
 [data-theme="bleuciel"] .weather-show-btn,
 [data-theme="bleuciel"] .quick-links-show-btn,
 [data-theme="bleuciel"] .weather-mobile-btn {
-    background: var(--primary-gradient);
+    background: linear-gradient(145deg, #0ea5e9, #38bdf8);
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
 }
 
