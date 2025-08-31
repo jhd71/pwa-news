@@ -13,6 +13,12 @@ class RadioPopupWidget {
                 logo: 'images/radio-logos/Radio-Prevert.png',
                 description: 'Chalon Sur Saône'
             },
+			{
+                name: 'La Radio Sans pub',
+                url: 'https://stream1.jupinfo.fr:8443/play',
+                logo: 'images/radio-logos/La-Radio-Sans-pub.png',
+                description: '100% Hits 24/24'
+            },
             {
                 name: 'France Info',
                 url: 'https://icecast.radiofrance.fr/franceinfo-midfi.mp3',
@@ -66,12 +72,6 @@ class RadioPopupWidget {
                 url: 'https://icecast.radiofrance.fr/fip-midfi.mp3',
                 logo: 'images/radio-logos/fip.png',
                 description: 'Éclectisme musical'
-            },
-			{
-                name: 'La Radio Sans pub',
-                url: 'https://stream1.jupinfo.fr:8443/play',
-                logo: 'images/radio-logos/La-Radio-Sans-pub.png',
-                description: '100% Hits 24/24'
             }
         ];
         
