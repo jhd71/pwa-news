@@ -223,7 +223,7 @@
 }
 
 .note-btn {
-    padding: 8px 16px;
+    padding: 4px 3px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
@@ -310,7 +310,7 @@
     
     .note-item {
         min-width: 150px;
-        margin-bottom: 0;
+        margin-bottom: -10px;
     }
 }
 
@@ -375,8 +375,8 @@
     background: #2d3748;
 }
 
-[data-theme="dark"] .notepad-popup-header {
-    background: linear-gradient(135deg, #ff6b6b, #ff8787);
+[data-theme="dark"] .notepad-popup-header, .delete-btn {
+    background: linear-gradient(135deg, #1a237e, #002cad);
 }
 
 [data-theme="dark"] .notes-sidebar {
@@ -398,7 +398,7 @@
 }
 
 [data-theme="dark"] .note-item.active {
-    border-color: #ff6b6b;
+    border-color: #000000;
     background: linear-gradient(to right, rgba(255, 107, 107, 0.1), transparent);
 }
 
@@ -434,7 +434,7 @@
 }
 
 [data-theme="dark"] .add-note-btn {
-    background: #ff6b6b;
+    background: linear-gradient(135deg, #1a237e, #002cad);
 }
 
 [data-theme="dark"] .add-note-btn:hover {
@@ -442,7 +442,7 @@
 }
 
 [data-theme="dark"] .save-btn {
-    background: #ff6b6b;
+    background: linear-gradient(135deg, #1a237e, #002cad);
 }
 
 [data-theme="dark"] .save-btn:hover {
