@@ -526,6 +526,7 @@ saveCurrentNote(silent = false) {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 300);
     }, 2500);
+ }
 }
 
 // Initialisation
