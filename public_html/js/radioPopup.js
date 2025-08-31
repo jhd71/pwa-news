@@ -96,19 +96,19 @@ class RadioPopupWidget {
     }
 
     createRadioTile() {
-    // Trouver le séparateur Radio
+    // Trouver le séparateur Espace+
     const radioSeparator = Array.from(document.querySelectorAll('.separator'))
-        .find(sep => sep.textContent.includes('Radio'));
+        .find(sep => sep.textContent.includes('Espace+'));
     
     if (!radioSeparator) {
-        console.warn('Séparateur Radio non trouvé');
+        console.warn('Séparateur Espace+ non trouvé');
         return;
     }
 
     // Créer la tuile
     const tileElement = document.createElement('div');
     tileElement.className = 'tile';
-    tileElement.setAttribute('data-category', 'radio');
+    tileElement.setAttribute('data-category', 'Espace+');
     tileElement.innerHTML = `
         <div class="tile-content">
             <div class="tile-title">🎵 Lecteur Radio</div>
@@ -120,7 +120,7 @@ class RadioPopupWidget {
         this.openPopup();
     });
 
-    // Insérer juste après le séparateur Radio
+    // Insérer juste après le séparateur Espace+
     radioSeparator.insertAdjacentElement('afterend', tileElement);
 }
 
