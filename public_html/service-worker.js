@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v33'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v34'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -37,6 +37,7 @@ const STATIC_RESOURCES = [
 	'/css/cinema-widget.css',
 	'/css/football-widget.css',
 	'/css/radioPopup.css',
+	'/css/notepadApp.css',
 
     // Scripts JavaScript
     '/js/app.js',
@@ -72,6 +73,7 @@ const STATIC_RESOURCES = [
 	'/js/ios-fixes-safe.js',
 	'/js/expense-manager.js',
 	'/js/radioPopup.js',
+	'/js/notepadApp.js',
     
     // Fichiers de configuration (seulement ceux qui existent)
     '/manifest.json',
