@@ -7,11 +7,12 @@ class NotepadWidget {
     }
 
     init() {
-    // Attendre plus longtemps que les tuiles soient créées
+    this.cleanCorruptedData(); // Nettoyer d'abord
+    
     setTimeout(() => {
         this.createNotepadTile();
         this.createPopup();
-    }, 2000); // Augmenté à 2 secondes au lieu de 1.5
+    }, 2000);
 }
 
 createNotepadTile() {
@@ -130,6 +131,29 @@ updateTileTheme() {
     tile.style.background = gradientStyle;
 }
 
+cleanCorruptedData() {
+    const saved = localStorage.getItem('userNotes');
+    if (saved) {
+        try {
+            const notes = JSON.parse(saved);
+            const cleanNotes = notes.filter(note => 
+                note && typeof note === 'object' && 
+                (note.title || note.content)
+            );
+            
+            if (cleanNotes.length !== notes.length) {
+                console.log('Données corrompues nettoyées');
+                this.notes = cleanNotes;
+                this.saveToLocalStorage();
+            }
+        } catch (e) {
+            console.error('Données corrompues, réinitialisation');
+            this.notes = [];
+            this.saveToLocalStorage();
+        }
+    }
+}
+
     createPopup() {
         const popup = document.createElement('div');
         popup.id = 'notepadPopup';
@@ -183,18 +207,31 @@ updateTileTheme() {
                 
                 <div class="notepad-popup-footer">
                     <p>💾 Les notes sont sauvegardées localement sur votre appareil</p>
-                </div>
-            ${window.innerWidth <= 768 ? `
-                <button class="mobile-close-btn" id="mobileCloseBtn">
-                    Fermer le bloc-notes
-                </button>
-            ` : ''}
+                </div>           
         </div>
     `;
 
         document.body.appendChild(popup);
-        this.setupEventListeners();
+
+  // Ajouter le bouton de fermeture mobile APRÈS la création
+    if (window.innerWidth <= 768) {
+        const mobileCloseBtn = document.createElement('button');
+        mobileCloseBtn.className = 'mobile-close-btn';
+        mobileCloseBtn.id = 'mobileCloseBtn';
+        mobileCloseBtn.textContent = 'Fermer le bloc-notes';
+        popup.querySelector('.notepad-popup-content').appendChild(mobileCloseBtn);
+        
+        // Ajouter directement l'événement
+        mobileCloseBtn.addEventListener('click', () => {
+            if (this.currentNoteIndex !== null) {
+                this.saveCurrentNote(true);
+            }
+            this.closePopup();
+        });
     }
+    
+    this.setupEventListeners();
+}      
 
     // 3. AMÉLIORATION des event listeners pour auto-save plus intelligent
 setupEventListeners() {
@@ -339,29 +376,43 @@ setupEventListeners() {
 }
 
     loadNotesList() {
-        const notesList = document.getElementById('notesList');
-        notesList.innerHTML = '';
-        
-        this.notes.forEach((note, index) => {
-            const noteItem = document.createElement('div');
-            noteItem.className = 'note-item';
-            if (index === this.currentNoteIndex) {
-                noteItem.classList.add('active');
-            }
-            
-            noteItem.innerHTML = `
-                <div class="note-item-title">${note.title || 'Sans titre'}</div>
-                <div class="note-item-preview">${this.truncateText(note.content, 50)}</div>
-                <div class="note-item-date">${this.formatDate(note.date)}</div>
-            `;
-            
-            noteItem.addEventListener('click', () => {
-                this.loadNote(index);
-            });
-            
-            notesList.appendChild(noteItem);
-        });
+    const notesList = document.getElementById('notesList');
+    if (!notesList) return;
+    
+    notesList.innerHTML = '';
+    
+    // Nettoyer les notes corrompues
+    this.notes = this.notes.filter(note => {
+        return note && typeof note === 'object' && 
+               (note.title !== undefined || note.content !== undefined);
+    });
+    
+    if (this.notes.length === 0) {
+        // Aucune note valide, créer une nouvelle
+        this.createNewNote();
+        return;
     }
+    
+    this.notes.forEach((note, index) => {
+        const noteItem = document.createElement('div');
+        noteItem.className = 'note-item';
+        if (index === this.currentNoteIndex) {
+            noteItem.classList.add('active');
+        }
+        
+        noteItem.innerHTML = `
+            <div class="note-item-title">${note.title || 'Sans titre'}</div>
+            <div class="note-item-preview">${this.truncateText(note.content || '', 50)}</div>
+            <div class="note-item-date">${this.formatDate(note.date || new Date().toISOString())}</div>
+        `;
+        
+        noteItem.addEventListener('click', () => {
+            this.loadNote(index);
+        });
+        
+        notesList.appendChild(noteItem);
+    });
+}
 
     // 4. AMÉLIORATION de loadNote pour éviter la perte de données
 loadNote(index) {
