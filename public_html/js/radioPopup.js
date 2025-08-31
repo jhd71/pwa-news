@@ -38,6 +38,12 @@ class RadioPopupWidget {
                 description: 'Info & divertissement'
             },
             {
+                name: 'Allzic - Nouveautes Francaises',
+                url: 'https://allzic23.ice.infomaniak.ch/allzic23.aac',
+                logo: 'images/radio-logos/Allzic-Nouveautes-Francaises.png',
+                description: 'Nouveautes Francaises'
+            },
+			{
                 name: 'NRJ',
                 url: 'https://streaming.nrjaudio.fm/oumvmk8fnozc?origine=fluxurlradio',
                 logo: 'images/radio-logos/nrj.png',
