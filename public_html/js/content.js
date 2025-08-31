@@ -338,7 +338,7 @@ setTimeout(() => {
         // Séparateur Radio
 const separator1 = document.createElement('div');
 separator1.className = 'separator';
-separator1.innerHTML = `<h2 class="separator-text">Radio</h2>`;
+separator1.innerHTML = `<h2 class="separator-text">📌 Espace+</h2>`;
 this.tileContainer.appendChild(separator1);
 
         // Séparateur TV
