@@ -26,10 +26,10 @@ class RadioPopupWidget {
                 description: 'Info en continu'
             },            
             {
-                name: 'Allzic - Nouveautes Francaises',
-                url: 'https://allzic23.ice.infomaniak.ch/allzic23.aac',
-                logo: 'images/radio-logos/Allzic-Nouveautes-Francaises.png',
-                description: 'Nouveautes Francaises'
+                name: 'Skyrock',
+                url: 'https://icecast.skyrock.net/s/natio_aac_128k?tvr_name=tunein16&tvr_section1=64aac',
+                logo: 'images/radio-logos/Skyrock.png',
+                description: 'Skyrock 1er sur le rap'
             },
 			{
                 name: 'NRJ',
@@ -54,6 +54,12 @@ class RadioPopupWidget {
                 url: 'https://icecast.radiofrance.fr/fip-midfi.mp3',
                 logo: 'images/radio-logos/fip.png',
                 description: 'Éclectisme musical'
+            },
+			{
+                name: 'Allzic - Web Radio',
+                url: 'https://allzic23.ice.infomaniak.ch/allzic23.aac',
+                logo: 'images/radio-logos/Allzic-Nouveautes-Francaises.png',
+                description: 'Nouveautes Francaises'
             },
 			{
                 name: 'France Inter',

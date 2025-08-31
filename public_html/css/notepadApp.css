@@ -19,12 +19,14 @@
     animation: fadeIn 0.2s ease;
 }
 
-/* Contenu de la popup */
+/* === AMÉLIORATION DE LA ZONE DE TEXTE === */
+
+/* Contenu de la popup - pleine hauteur */
 .notepad-popup-content {
     background: var(--card-bg, white);
     width: 90%;
-    max-width: 800px;
-    max-height: 80%;
+    max-width: 900px;
+    height: 90%; /* Hauteur fixe au lieu de max-height */
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -65,11 +67,12 @@
     background: rgba(255, 255, 255, 0.3);
 }
 
-/* Corps de la popup */
+/* Corps de la popup - occupe tout l'espace */
 .notepad-popup-body {
     display: flex;
     flex: 1;
     overflow: hidden;
+    height: calc(100% - 120px); /* Hauteur moins header et footer */
 }
 
 /* Sidebar des notes */
@@ -158,12 +161,13 @@
     color: #999;
 }
 
-/* Éditeur de note */
+/* Éditeur de note - meilleure disposition */
 .note-editor {
     flex: 1;
     display: flex;
     flex-direction: column;
     padding: 20px;
+    overflow: hidden; /* Empêche le débordement */
 }
 
 .note-title-input {
@@ -183,6 +187,7 @@
     border-bottom-color: #667eea;
 }
 
+/* Zone de texte améliorée */
 .note-content-area {
     flex: 1;
     width: 100%;
@@ -191,15 +196,12 @@
     border-radius: 8px;
     resize: none;
     font-family: inherit;
-    font-size: 14px;
-    line-height: 1.6;
+    font-size: 16px; /* Plus grand pour mobile */
+    line-height: 1.8; /* Meilleur espacement */
     color: var(--text-color, #333);
     background: var(--card-bg, white);
-}
-
-.note-content-area:focus {
-    outline: none;
-    border-color: #667eea;
+    min-height: 300px; /* Hauteur minimale */
+    overflow-y: auto; /* Scroll si nécessaire */
 }
 
 /* Actions de note */
@@ -282,38 +284,136 @@
     transform: translateY(0);
 }
 
-/* Responsive */
+/* === RESPONSIVE AMÉLIORÉ === */
+
+/* Mobile - pleine page */
 @media (max-width: 768px) {
     .notepad-popup-content {
-        width: 95%;
-        max-height: 90%;
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        border-radius: 0;
     }
     
     .notepad-popup-body {
         flex-direction: column;
+        height: calc(100% - 100px);
     }
     
+    /* Sidebar horizontale sur mobile */
     .notes-sidebar {
         width: 100%;
-        height: 150px;
+        height: 120px;
+        min-height: 120px;
         border-right: none;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 2px solid #ddd;
+        flex-shrink: 0;
     }
     
+    /* Liste horizontale des notes */
     .notes-list {
         display: flex;
+        flex-direction: row;
         overflow-x: auto;
         overflow-y: hidden;
         padding: 10px;
         gap: 10px;
+        height: 60px;
     }
     
     .note-item {
-        min-width: 150px;
-        margin-bottom: -10px;
+        min-width: 120px;
+        max-width: 150px;
+        margin-bottom: 0;
+        height: fit-content;
+    }
+
+/* Éditeur prend tout l'espace restant */
+    .note-editor {
+        flex: 1;
+        padding: 15px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    /* Zone de texte maximisée sur mobile */
+    .note-content-area {
+        flex: 1;
+        font-size: 16px;
+        line-height: 1.8;
+        min-height: 200px;
+        max-height: none;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch; /* Scroll fluide iOS */
+    }
+    
+    /* Titre plus petit pour gagner de l'espace */
+    .note-title-input {
+        padding: 8px;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+    
+    /* Actions en bas fixe */
+    .note-actions {
+        position: sticky;
+        bottom: 0;
+        background: var(--card-bg, white);
+        padding: 10px 0;
+        margin-top: 10px;
+        border-top: 1px solid #eee;
+    }
+    
+    /* Boutons plus accessibles sur mobile */
+    .note-btn {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+    
+    /* Footer plus petit */
+    .notepad-popup-footer {
+        padding: 8px 15px;
+        font-size: 11px;
     }
 }
 
+/* Petits écrans - encore plus d'espace */
+@media (max-height: 600px) {
+    .notes-sidebar {
+        height: 80px;
+        min-height: 80px;
+    }
+    
+    .notepad-popup-header {
+        padding: 10px 15px;
+    }
+    
+    .notepad-popup-header h2 {
+        font-size: 16px;
+    }
+}
+
+/* === FIX POUR LA VISIBILITÉ DU TEXTE === */
+
+/* S'assurer que le texte est visible dans tous les thèmes */
+.note-content-area {
+    color: var(--text-color, #333) !important;
+    caret-color: var(--primary-color, #667eea); /* Curseur visible */
+}
+
+/* Focus amélioré */
+.note-content-area:focus {
+    outline: none;
+    border-color: var(--primary-color, #667eea);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Placeholder plus visible */
+.note-content-area::placeholder {
+    color: var(--text-secondary, #999);
+    opacity: 0.6;
+}
 /* === SUPPORT POUR TOUS LES THÈMES === */
 
 /* Thème Rouge (défaut) */

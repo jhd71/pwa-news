@@ -17,19 +17,22 @@ class NotepadWidget {
     /* REMPLACEZ la fonction createNotepadTile() dans notepadApp.js (ligne ~18) par : */
 
 createNotepadTile() {
-    // Trouver le séparateur Espace+
-    const radioSeparator = Array.from(document.querySelectorAll('.separator'))
+    // Chercher le séparateur "Espace+" (anciennement Radio)
+    const espaceSeparator = Array.from(document.querySelectorAll('.separator'))
         .find(sep => sep.textContent.includes('Espace+'));
     
-    if (!radioSeparator) return;
+    if (!espaceSeparator) {
+        console.warn('Séparateur Espace+ non trouvé');
+        return;
+    }
 
-    // Trouver la tuile Lecteur Espace+
-    const radioTile = document.querySelector('.tile[data-category="Espace+"]');
+    // Trouver la tuile Lecteur Radio qui est maintenant dans Espace+
+    const radioTile = document.querySelector('.tile[data-category="espace"]');
     
     // Créer la tuile Bloc-notes
     const tileElement = document.createElement('div');
     tileElement.className = 'tile notepad-app-tile';
-    tileElement.setAttribute('data-category', 'Espace+');
+    tileElement.setAttribute('data-category', 'espace'); // Changé de 'radio' à 'espace'
     
     // Adapter le style selon le thème actuel
     const currentTheme = document.documentElement.getAttribute('data-theme') || 'rouge';
@@ -75,10 +78,10 @@ createNotepadTile() {
     if (radioTile) {
         radioTile.insertAdjacentElement('afterend', tileElement);
     } else {
-        radioSeparator.insertAdjacentElement('afterend', tileElement);
+        espaceSeparator.insertAdjacentElement('afterend', tileElement);
     }
     
-    // Observer les changements de thème pour adapter la tuile
+    // Observer les changements de thème
     const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
             if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
@@ -181,54 +184,95 @@ updateTileTheme() {
         this.setupEventListeners();
     }
 
-    setupEventListeners() {
-        // Fermer la popup
-        document.getElementById('closeNotepadPopup').addEventListener('click', () => {
-            this.closePopup();
-        });
+    // 3. AMÉLIORATION des event listeners pour auto-save plus intelligent
+setupEventListeners() {
+    // Fermer la popup
+    document.getElementById('closeNotepadPopup').addEventListener('click', () => {
+        // Sauvegarder avant de fermer
+        if (this.currentNoteIndex !== null) {
+            this.saveCurrentNote(true);
+        }
+        this.closePopup();
+    });
 
-        // Fermer en cliquant à l'extérieur
-        document.getElementById('notepadPopup').addEventListener('click', (e) => {
-            if (e.target.id === 'notepadPopup') {
-                this.closePopup();
+    // Fermer en cliquant à l'extérieur
+    document.getElementById('notepadPopup').addEventListener('click', (e) => {
+        if (e.target.id === 'notepadPopup') {
+            // Sauvegarder avant de fermer
+            if (this.currentNoteIndex !== null) {
+                this.saveCurrentNote(true);
             }
-        });
+            this.closePopup();
+        }
+    });
 
-        // Ajouter une nouvelle note
-        document.getElementById('addNoteBtn').addEventListener('click', () => {
-            this.createNewNote();
-        });
+    // Ajouter une nouvelle note
+    document.getElementById('addNoteBtn').addEventListener('click', () => {
+        // Sauvegarder la note actuelle avant d'en créer une nouvelle
+        if (this.currentNoteIndex !== null) {
+            this.saveCurrentNote(true);
+        }
+        this.createNewNote();
+    });
 
-        // Sauvegarder la note
-        document.getElementById('saveNoteBtn').addEventListener('click', () => {
+    // Sauvegarder la note (bouton explicite)
+    document.getElementById('saveNoteBtn').addEventListener('click', () => {
+        this.saveCurrentNote();
+    });
+
+    // Supprimer la note
+    document.getElementById('deleteNoteBtn').addEventListener('click', () => {
+        this.deleteCurrentNote();
+    });
+
+    // Auto-save amélioré pendant la frappe
+    let autoSaveTimer;
+    const autoSave = () => {
+        clearTimeout(autoSaveTimer);
+        autoSaveTimer = setTimeout(() => {
+            if (this.currentNoteIndex !== null) {
+                this.saveCurrentNote(true); // Sauvegarde silencieuse
+                // Afficher un petit indicateur de sauvegarde
+                const dateElement = document.getElementById('noteDate');
+                const originalText = dateElement.textContent;
+                dateElement.textContent = '💾 Sauvegarde automatique...';
+                setTimeout(() => {
+                    dateElement.textContent = originalText;
+                }, 1000);
+            }
+        }, 2000); // Sauvegarde après 2 secondes d'inactivité
+    };
+
+    document.getElementById('noteContent').addEventListener('input', autoSave);
+    document.getElementById('noteTitle').addEventListener('input', autoSave);
+    
+    // Sauvegarder quand on change de note
+    document.getElementById('notesList').addEventListener('click', (e) => {
+        const noteItem = e.target.closest('.note-item');
+        if (noteItem && this.currentNoteIndex !== null) {
+            // Sauvegarder la note actuelle avant de changer
+            this.saveCurrentNote(true);
+        }
+    });
+    
+    // Raccourcis clavier
+    document.addEventListener('keydown', (e) => {
+        // Ctrl+S ou Cmd+S pour sauvegarder
+        if ((e.ctrlKey || e.metaKey) && e.key === 's' && this.popupOpen) {
+            e.preventDefault();
             this.saveCurrentNote();
-        });
-
-        // Supprimer la note
-        document.getElementById('deleteNoteBtn').addEventListener('click', () => {
-            this.deleteCurrentNote();
-        });
-
-        // Auto-save pendant la frappe
-        let autoSaveTimer;
-        document.getElementById('noteContent').addEventListener('input', () => {
-            clearTimeout(autoSaveTimer);
-            autoSaveTimer = setTimeout(() => {
-                if (this.currentNoteIndex !== null) {
-                    this.saveCurrentNote(true); // Silent save
-                }
-            }, 1000);
-        });
-
-        document.getElementById('noteTitle').addEventListener('input', () => {
-            clearTimeout(autoSaveTimer);
-            autoSaveTimer = setTimeout(() => {
-                if (this.currentNoteIndex !== null) {
-                    this.saveCurrentNote(true); // Silent save
-                }
-            }, 1000);
-        });
-    }
+        }
+        
+        // Ctrl+N ou Cmd+N pour nouvelle note
+        if ((e.ctrlKey || e.metaKey) && e.key === 'n' && this.popupOpen) {
+            e.preventDefault();
+            if (this.currentNoteIndex !== null) {
+                this.saveCurrentNote(true);
+            }
+            this.createNewNote();
+        }
+    });
+}
 
     openPopup() {
         const popup = document.getElementById('notepadPopup');
@@ -288,19 +332,30 @@ updateTileTheme() {
         });
     }
 
-    loadNote(index) {
-        if (index < 0 || index >= this.notes.length) return;
-        
-        this.currentNoteIndex = index;
-        const note = this.notes[index];
-        
-        document.getElementById('noteTitle').value = note.title || '';
-        document.getElementById('noteContent').value = note.content || '';
-        document.getElementById('noteDate').textContent = `Modifié le ${this.formatDate(note.date)}`;
-        
-        // Mettre à jour la liste
-        this.updateNotesList();
+    // 4. AMÉLIORATION de loadNote pour éviter la perte de données
+loadNote(index) {
+    if (index < 0 || index >= this.notes.length) return;
+    
+    // Sauvegarder la note actuelle avant de charger une nouvelle
+    if (this.currentNoteIndex !== null && this.currentNoteIndex !== index) {
+        this.saveCurrentNote(true);
     }
+    
+    this.currentNoteIndex = index;
+    const note = this.notes[index];
+    
+    document.getElementById('noteTitle').value = note.title || '';
+    document.getElementById('noteContent').value = note.content || '';
+    document.getElementById('noteDate').textContent = `Modifié le ${this.formatDate(note.date)}`;
+    
+    // Mettre à jour la liste
+    this.updateNotesList();
+    
+    // Focus sur la zone de texte
+    setTimeout(() => {
+        document.getElementById('noteContent').focus();
+    }, 100);
+}
 
     createNewNote() {
         const newNote = {
@@ -323,25 +378,37 @@ updateTileTheme() {
         document.getElementById('noteTitle').focus();
     }
 
-    saveCurrentNote(silent = false) {
-        if (this.currentNoteIndex === null) return;
-        
-        const title = document.getElementById('noteTitle').value;
-        const content = document.getElementById('noteContent').value;
-        
-        this.notes[this.currentNoteIndex] = {
-            title: title,
-            content: content,
-            date: new Date().toISOString()
-        };
-        
-        this.saveToLocalStorage();
-        this.updateNotesList();
-        
-        if (!silent) {
-            this.showToast('Note sauvegardée');
-        }
+    // 2. AMÉLIORATION de la sauvegarde (déjà présente mais améliorée)
+saveCurrentNote(silent = false) {
+    if (this.currentNoteIndex === null) return;
+    
+    const title = document.getElementById('noteTitle').value.trim();
+    const content = document.getElementById('noteContent').value;
+    
+    // Vérifier si la note a changé
+    const currentNote = this.notes[this.currentNoteIndex];
+    if (currentNote.title === title && currentNote.content === content) {
+        // Pas de changement, pas besoin de sauvegarder
+        return;
     }
+    
+    // Mettre à jour la note
+    this.notes[this.currentNoteIndex] = {
+        title: title || 'Sans titre',
+        content: content,
+        date: new Date().toISOString()
+    };
+    
+    this.saveToLocalStorage();
+    this.loadNotesList(); // Rafraîchir la liste
+    
+    // Mettre à jour la date affichée
+    document.getElementById('noteDate').textContent = `Modifié le ${this.formatDate(this.notes[this.currentNoteIndex].date)}`;
+    
+    if (!silent) {
+        this.showToast('✅ Note sauvegardée');
+    }
+}
 
     deleteCurrentNote() {
         if (this.currentNoteIndex === null) return;
