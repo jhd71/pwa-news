@@ -338,8 +338,7 @@
 
 .station-name {
     font-size: 13px;
-    font-weight: 500;
-    color: var(--text-color);
+    font-weight: 700;
     line-height: 1.2;
     margin-bottom: 4px;
 }
