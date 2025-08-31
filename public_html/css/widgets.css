@@ -257,6 +257,7 @@
 .quick-links-show-btn,
 .weather-mobile-btn {
   position: fixed;
+  background: var(--primary-color);
   color: white;
   border: none;
   border-radius: 50%;
@@ -530,6 +531,18 @@
 }
 
 /* COULEURS PAR THÈME */
+/* Thème Violet (light) */
+[data-theme="light"] .tool-button,
+[data-theme="light"] .search-button {
+  background: #7e57c2 !important;
+}
+
+[data-theme="light"] .tool-button:hover,
+[data-theme="light"] .search-button:hover {
+  background: #673ab7 !important;
+  box-shadow: 0 6px 20px rgba(126, 87, 194, 0.4);
+  transform: translateY(-2px);
+}
 
 /* Thème Sombre (dark) */
 [data-theme="dark"] .tool-button,
@@ -755,16 +768,4 @@
     height: 60px !important;
     top: 5px !important;
   }
-}
-
-[data-theme="dark"] .weather-show-btn, .tool-button, .quick-links-show-btn, .weather-mobile-btn {
-background: #1e267a !important;
-}
-
-[data-theme="light"] .weather-show-btn, .tool-button, .quick-links-show-btn, .search-button, .weather-mobile-btn {
-background: #775cbd !important;
-}
-
-[data-theme="dark"] .app-header {
-background-color: #1e267a !important;
 }

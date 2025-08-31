@@ -249,6 +249,12 @@ body {
     background: rgb(148, 0, 0);
 }
 
+[data-theme="bleuciel"] .weather-show-btn,
+[data-theme="bleuciel"] .quick-links-show-btn,
+[data-theme="bleuciel"] .news-button {
+    background: linear-gradient(145deg, #0ea5e9, #38bdf8);
+}
+
 /* Sidebars et menus par thème */
 [data-theme="light"] .weather-sidebar,
 [data-theme="light"] .quick-links-sidebar,
@@ -289,6 +295,7 @@ body {
     left: 0;
     right: 0;
     height: 60px;
+    background-color: var(--primary-color);
     color: white;
     display: flex;
     align-items: center;
