@@ -602,23 +602,3 @@ body.radio-popup-open {
     z-index: 3;
     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
-
-/* Centrage automatique de la tuile radio quand elle est seule */
-.separator:has(+ .tile[data-category="radio"]:only-of-type) + .tile[data-category="radio"] {
-    display: block;
-    margin: 20px auto !important;
-    width: 180px;
-}
-
-/* Alternative si le sélecteur :has() ne fonctionne pas */
-.tile[data-category="radio"] {
-    position: relative;
-}
-
-/* Forcer le centrage avec une classe spéciale */
-.radio-single-tile {
-    display: block !important;
-    margin: 20px auto !important;
-    width: 200px !important;
-    background: linear-gradient(135deg, #ff6b6b, #feca57) !important;
-}
