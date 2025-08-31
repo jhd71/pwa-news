@@ -7,6 +7,12 @@ class RadioPopupWidget {
                 logo: 'images/radio-logos/Ici-Bourgogne.png',
                 description: 'Info Bourgogne'
             },
+			{
+                name: 'France Info',
+                url: 'https://vps.cbad.fr:8443/prevert',
+                logo: 'images/radio-logos/Radio-Prevert.png',
+                description: 'Chalon Sur Saône'
+            },
             {
                 name: 'France Info',
                 url: 'https://icecast.radiofrance.fr/franceinfo-midfi.mp3',

@@ -129,6 +129,7 @@ const STATIC_RESOURCES = [
 	'/images/radio-logos/cherie-fm.png',
 	'/images/radio-logos/fip.png',
 	'/images/radio-logos/La-Radio-Sans-pub.png',
+	'/images/radio-logos/Radio-Prevert.png',
 
     // Icônes de base (seulement ceux qui existent)
     '/images/icon-144x144.png',
