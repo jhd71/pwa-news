@@ -24,19 +24,7 @@ class RadioPopupWidget {
                 url: 'https://icecast.radiofrance.fr/franceinfo-midfi.mp3',
                 logo: 'images/radio-logos/france-info.png',
                 description: 'Info en continu'
-            },
-            {
-                name: 'France Inter',
-                url: 'https://icecast.radiofrance.fr/franceinter-midfi.mp3',
-                logo: 'images/radio-logos/france-inter.png',
-                description: 'Radio généraliste'
-            },
-            {
-                name: 'RTL',
-                url: 'https://streamer-03.rtl.fr/rtl-1-44-128',
-                logo: 'images/radio-logos/rtl.png',
-                description: 'Info & divertissement'
-            },
+            },            
             {
                 name: 'Allzic - Nouveautes Francaises',
                 url: 'https://allzic23.ice.infomaniak.ch/allzic23.aac',
@@ -49,19 +37,7 @@ class RadioPopupWidget {
                 logo: 'images/radio-logos/nrj.png',
                 description: 'Hits & musique'
             },
-            {
-                name: 'Europe 1',
-                url: 'https://europe1.lmn.fm/europe1.mp3',
-                logo: 'images/radio-logos/europe1.png',
-                description: 'Talk & actualités'
-            },
-            {
-                name: 'RMC',
-                url: 'http://audio.bfmtv.com/rmcradio_128.mp3',
-                logo: 'images/radio-logos/rmc.png',
-                description: 'Sport & info'
-            },
-            {
+			{
                 name: 'Nostalgie',
                 url: 'https://streaming.nrjaudio.fm/oug7girb92oc?origine=fluxradios',
                 logo: 'images/radio-logos/nostalgie.png',
@@ -78,7 +54,31 @@ class RadioPopupWidget {
                 url: 'https://icecast.radiofrance.fr/fip-midfi.mp3',
                 logo: 'images/radio-logos/fip.png',
                 description: 'Éclectisme musical'
-            }
+            },
+			{
+                name: 'France Inter',
+                url: 'https://icecast.radiofrance.fr/franceinter-midfi.mp3',
+                logo: 'images/radio-logos/france-inter.png',
+                description: 'Radio généraliste'
+            },
+            {
+                name: 'RTL',
+                url: 'https://streamer-03.rtl.fr/rtl-1-44-128',
+                logo: 'images/radio-logos/rtl.png',
+                description: 'Info & divertissement'
+            },
+            {
+                name: 'Europe 1',
+                url: 'https://europe1.lmn.fm/europe1.mp3',
+                logo: 'images/radio-logos/europe1.png',
+                description: 'Talk & actualités'
+            },
+            {
+                name: 'RMC',
+                url: 'http://audio.bfmtv.com/rmcradio_128.mp3',
+                logo: 'images/radio-logos/rmc.png',
+                description: 'Sport & info'
+            }           
         ];
         
         this.currentStation = null;
