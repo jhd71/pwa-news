@@ -8,7 +8,7 @@ class RadioPopupWidget {
                 description: 'Info Bourgogne'
             },
 			{
-                name: 'France Info',
+                name: 'Radio Prevert',
                 url: 'https://vps.cbad.fr:8443/prevert',
                 logo: 'images/radio-logos/Radio-Prevert.png',
                 description: 'Chalon Sur Saône'
