@@ -257,7 +257,7 @@
 .quick-links-show-btn,
 .weather-mobile-btn {
   position: fixed;
-  background: var(--primary-color);
+  background: var(--primary-color) !important;
   color: white;
   border: none;
   border-radius: 50%;
@@ -768,4 +768,16 @@
     height: 60px !important;
     top: 5px !important;
   }
+}
+
+[data-theme="dark"] .weather-show-btn, .quick-links-show-btn, .weather-mobile-btn {
+background: #1e267a;
+}
+
+[data-theme="light"] .weather-show-btn, .quick-links-show-btn, .weather-mobile-btn {
+background: #775cbd;
+}
+
+[data-theme="dark"] .app-header {
+background-color: #1e267a;
 }
