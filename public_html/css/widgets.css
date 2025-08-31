@@ -530,18 +530,6 @@
 }
 
 /* COULEURS PAR THÈME */
-/* Thème Violet (light) */
-[data-theme="light"] .tool-button,
-[data-theme="light"] .search-button {
-  background: #7e57c2 !important;
-}
-
-[data-theme="light"] .tool-button:hover,
-[data-theme="light"] .search-button:hover {
-  background: #673ab7 !important;
-  box-shadow: 0 6px 20px rgba(126, 87, 194, 0.4);
-  transform: translateY(-2px);
-}
 
 /* Thème Sombre (dark) */
 [data-theme="dark"] .tool-button,
@@ -769,11 +757,11 @@
   }
 }
 
-[data-theme="dark"] .weather-show-btn, .quick-links-show-btn, .weather-mobile-btn {
+[data-theme="dark"] .weather-show-btn, .tool-button, .quick-links-show-btn, .weather-mobile-btn {
 background: #1e267a;
 }
 
-[data-theme="light"] .weather-show-btn, .quick-links-show-btn, .weather-mobile-btn {
+[data-theme="light"] .weather-show-btn, .tool-button, .quick-links-show-btn, .weather-mobile-btn {
 background: #775cbd;
 }
 
