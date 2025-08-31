@@ -257,7 +257,6 @@
 .quick-links-show-btn,
 .weather-mobile-btn {
   position: fixed;
-  background: var(--primary-color) !important;
   color: white;
   border: none;
   border-radius: 50%;
