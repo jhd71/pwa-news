@@ -1241,6 +1241,35 @@
                 }
             }
 
+async forceReload() {
+    try {
+        // Vider le cache
+        this.comments = [];
+        
+        // Recharger sans cache
+        const supabase = window.getSupabaseClient();
+        const timestamp = new Date().getTime();
+        
+        const { data: comments, error } = await supabase
+            .from('news_comments')
+            .select(`*, local_news(id, title)`)
+            .order('created_at', { ascending: false })
+            .limit(1000)
+            .eq('deleted', false); // Si vous avez un champ deleted
+            
+        if (error) throw error;
+        
+        this.comments = comments || [];
+        console.log('Rechargement forcé:', this.comments.length, 'commentaires');
+        
+        this.updateStats();
+        this.filterComments();
+        
+    } catch (error) {
+        console.error('Erreur:', error);
+    }
+}
+
             closeModal() {
                 const modal = document.getElementById('commentModal');
                 modal.classList.remove('show');

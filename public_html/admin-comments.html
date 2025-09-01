@@ -796,7 +796,6 @@ async forceReload() {
         console.error('Erreur:', error);
     }
 }
-
             updateStats() {
                 const pending = this.comments.filter(c => !c.is_approved).length;
                 const approved = this.comments.filter(c => c.is_approved).length;
