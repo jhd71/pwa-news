@@ -3932,8 +3932,3 @@ a:active {
         font-size: 20px;
     }
 }
-
-/* Masquer spécifiquement l'erreur DeepL */
-.console-error-level .console-message-text:contains("message port closed") {
-    display: none !important;
-}
