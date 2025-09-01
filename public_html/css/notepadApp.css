@@ -809,3 +809,31 @@ script[src*="extension"] {
 body.notepad-popup-open {
     overflow: hidden !important;
 }
+
+/* Badge avec effet brillant */
+.tile[data-category="espace"]::after {
+    content: '🎯 NOUVEAU';
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: linear-gradient(45deg, #ff4757, #ff6348, #ff4757);
+    background-size: 200% 200%;
+    color: white;
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-weight: 700;
+    text-transform: uppercase;
+    z-index: 5;
+    box-shadow: 
+        0 4px 15px rgba(255, 71, 87, 0.5),
+        inset 0 -2px 5px rgba(0,0,0,0.2);
+    animation: shine 3s linear infinite;
+    letter-spacing: 1px;
+}
+
+@keyframes shine {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
