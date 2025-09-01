@@ -1,15 +1,28 @@
-// Supprimer les erreurs d'extensions
+// Version plus complète pour filtrer les erreurs d'extensions
 window.addEventListener('error', function(e) {
-    if (e.message && e.message.includes('message port closed')) {
+    const extensionErrors = [
+        'message port closed',
+        'Extension context invalidated',
+        'The message port closed before a response was received',
+        'chrome-extension://',
+        'moz-extension://'
+    ];
+    
+    if (extensionErrors.some(err => e.message && e.message.includes(err))) {
         e.preventDefault();
         e.stopPropagation();
         return false;
     }
 });
 
-// Supprimer les erreurs de promesses non gérées des extensions
 window.addEventListener('unhandledrejection', function(e) {
-    if (e.reason && e.reason.message && e.reason.message.includes('message port closed')) {
+    const extensionErrors = [
+        'message port closed',
+        'Extension context invalidated'
+    ];
+    
+    if (e.reason && e.reason.message && 
+        extensionErrors.some(err => e.reason.message.includes(err))) {
         e.preventDefault();
         return false;
     }
