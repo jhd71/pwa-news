@@ -744,6 +744,22 @@
     border-top-color: #dee2e6;
 }
 
+[data-theme="rouge"] .mobile-close-btn {
+    background: linear-gradient(135deg, #940000, #c41e3a);
+}
+
+[data-theme="dark"] .mobile-close-btn {
+    background: linear-gradient(135deg, #1a237e, #002cad);
+}
+
+[data-theme="bleuciel"] .mobile-close-btn {
+    background: linear-gradient(135deg, #17a2b8, #20c997);
+}
+
+[data-theme="light"] .mobile-close-btn {
+    background: linear-gradient(135deg, #6f42c1, #e83e8c);
+}
+
 /* === AJUSTEMENTS GÉNÉRAUX POUR TOUS LES THÈMES === */
 
 /* Utiliser les variables CSS pour les éléments communs */
