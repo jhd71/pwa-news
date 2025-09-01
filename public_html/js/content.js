@@ -49,7 +49,6 @@ class ContentManager {
     this.setupTextContrast();
     this.setupTiles();
 	this.autoEnhanceTileVisibility(); // LIGNE EXISTANTE
-	// this.setupTransparencyControl(); // DÉSACTIVÉ - bouton maintenant dans les paramètres
 	this.fixListModeLayout(); // NOUVELLE LIGNE
 	this.updateActiveNavLinks();
 	this.setupVisualEnhancement();

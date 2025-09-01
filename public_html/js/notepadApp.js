@@ -223,8 +223,13 @@ class NotepadWidget {
             
             // Ajouter directement l'événement
             mobileCloseBtn.addEventListener('click', () => {
+                // ✅ Sauvegarder seulement si la note n'est pas vide
                 if (this.currentNoteIndex !== null) {
-                    this.saveCurrentNote(true);
+                    const title = document.getElementById('noteTitle')?.value.trim() || '';
+                    const content = document.getElementById('noteContent')?.value.trim() || '';
+                    if (title || content) {
+                        this.saveCurrentNote(true);
+                    }
                 }
                 this.closePopup();
             });
@@ -244,9 +249,13 @@ class NotepadWidget {
                     closeBtn.addEventListener(eventType, (e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        // Sauvegarder avant de fermer
+                        // ✅ Sauvegarder seulement si la note n'est pas vide
                         if (this.currentNoteIndex !== null) {
-                            this.saveCurrentNote(true);
+                            const title = document.getElementById('noteTitle')?.value.trim() || '';
+                            const content = document.getElementById('noteContent')?.value.trim() || '';
+                            if (title || content) {
+                                this.saveCurrentNote(true);
+                            }
                         }
                         this.closePopup();
                     });
@@ -258,8 +267,13 @@ class NotepadWidget {
             if (popup) {
                 popup.addEventListener('click', (e) => {
                     if (e.target.id === 'notepadPopup' && window.innerWidth > 768) {
+                        // ✅ Sauvegarder seulement si la note n'est pas vide
                         if (this.currentNoteIndex !== null) {
-                            this.saveCurrentNote(true);
+                            const title = document.getElementById('noteTitle')?.value.trim() || '';
+                            const content = document.getElementById('noteContent')?.value.trim() || '';
+                            if (title || content) {
+                                this.saveCurrentNote(true);
+                            }
                         }
                         this.closePopup();
                     }
@@ -270,9 +284,13 @@ class NotepadWidget {
             const addNoteBtn = document.getElementById('addNoteBtn');
             if (addNoteBtn) {
                 addNoteBtn.addEventListener('click', () => {
-                    // Sauvegarder la note actuelle avant d'en créer une nouvelle
+                    // ✅ Sauvegarder la note actuelle seulement si elle n'est pas vide
                     if (this.currentNoteIndex !== null) {
-                        this.saveCurrentNote(true);
+                        const title = document.getElementById('noteTitle')?.value.trim() || '';
+                        const content = document.getElementById('noteContent')?.value.trim() || '';
+                        if (title || content) {
+                            this.saveCurrentNote(true);
+                        }
                     }
                     this.createNewNote();
                 });
@@ -478,14 +496,8 @@ class NotepadWidget {
 
     createNewNote() {
         try {
-            const newNote = {
-                title: '',
-                content: '',
-                date: new Date().toISOString()
-            };
-            
-            this.notes.unshift(newNote);
-            this.currentNoteIndex = 0;
+            // ✅ Ne pas créer de note dans le tableau, juste préparer l'interface
+            this.currentNoteIndex = null; // Pas d'index car pas encore sauvegardée
             
             const titleInput = document.getElementById('noteTitle');
             const contentTextarea = document.getElementById('noteContent');
@@ -495,8 +507,8 @@ class NotepadWidget {
             if (contentTextarea) contentTextarea.value = '';
             if (dateElement) dateElement.textContent = 'Nouvelle note';
             
-            this.saveToLocalStorage();
-            this.loadNotesList();
+            // ✅ Pas de sauvegarde automatique d'une note vide
+            this.loadNotesList(); // Rafraîchir la liste (sans la nouvelle note vide)
             
             // Focus sur le titre
             setTimeout(() => {
@@ -509,24 +521,45 @@ class NotepadWidget {
 
     saveCurrentNote(silent = false) {
         try {
-            if (this.currentNoteIndex === null) return;
-            
             const titleInput = document.getElementById('noteTitle');
             const contentTextarea = document.getElementById('noteContent');
             
             if (!titleInput || !contentTextarea) return;
             
             const title = titleInput.value.trim();
-            const content = contentTextarea.value;
+            const content = contentTextarea.value.trim();
             
-            // Vérifier si la note a changé
-            const currentNote = this.notes[this.currentNoteIndex];
-            if (currentNote.title === title && currentNote.content === content) {
-                // Pas de changement, pas besoin de sauvegarder
+            // ✅ Ne pas sauvegarder si la note est complètement vide
+            if (!title && !content) {
+                return; // Sortir sans sauvegarder
+            }
+            
+            // Si c'est une nouvelle note (currentNoteIndex = null), la créer
+            if (this.currentNoteIndex === null) {
+                const newNote = {
+                    title: title || 'Sans titre',
+                    content: content,
+                    date: new Date().toISOString()
+                };
+                
+                this.notes.unshift(newNote);
+                this.currentNoteIndex = 0;
+                this.saveToLocalStorage();
+                this.loadNotesList();
+                
+                if (!silent) {
+                    this.showToast('✅ Nouvelle note sauvegardée');
+                }
                 return;
             }
             
-            // Mettre à jour la note
+            // Vérifier si la note existante a changé
+            const currentNote = this.notes[this.currentNoteIndex];
+            if (currentNote.title === title && currentNote.content === content) {
+                return; // Pas de changement
+            }
+            
+            // Mettre à jour la note existante
             this.notes[this.currentNoteIndex] = {
                 title: title || 'Sans titre',
                 content: content,
@@ -534,7 +567,7 @@ class NotepadWidget {
             };
             
             this.saveToLocalStorage();
-            this.loadNotesList(); // Rafraîchir la liste
+            this.loadNotesList();
             
             // Mettre à jour la date affichée
             const dateElement = document.getElementById('noteDate');
