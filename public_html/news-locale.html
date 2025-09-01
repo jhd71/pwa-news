@@ -1141,51 +1141,88 @@
             }
 
             async loadCommentsPreview(newsId) {
-                // NOUVELLE VÉRIFICATION
-                if (!newsId || newsId === null || newsId === undefined) {
-                    console.warn('❌ ID de news invalide pour charger les commentaires:', newsId);
-                    return;
-                }
-                
-                try {
-                    const supabase = window.getSupabaseClient();
-                    if (!supabase) return;
+    // Vérification de sécurité pour s'assurer que l'ID existe
+    if (!newsId || newsId === null || newsId === undefined) {
+        console.warn('❌ ID de news invalide pour charger les commentaires:', newsId);
+        return;
+    }
 
-                    const { data: comments, error } = await supabase
-                        .from('news_comments')
-                        .select('*')
-                        .eq('news_id', newsId)
-                        .eq('is_approved', true)
-                        .order('created_at', { ascending: false })
-                        .limit(2); // Seulement 2 commentaires en aperçu
+    try {
+        const supabase = window.getSupabaseClient();
+        if (!supabase) return;
 
-                    if (error) throw error;
+        // On exécute deux requêtes en même temps pour gagner du temps :
+        // 1. La première récupère le COMPTE TOTAL de commentaires.
+        // 2. La deuxième récupère le contenu des 2 plus récents pour l'aperçu.
+        const [
+            { count, error: countError },
+            { data: comments, error: commentsError }
+        ] = await Promise.all([
+            supabase
+                .from('news_comments')
+                .select('*', { count: 'exact', head: true }) // Ne récupère que le compte, pas les données
+                .eq('news_id', newsId)
+                .eq('is_approved', true),
+            supabase
+                .from('news_comments')
+                .select('*')
+                .eq('news_id', newsId)
+                .eq('is_approved', true)
+                .order('created_at', { ascending: false })
+                .limit(2) // On garde bien la limite pour l'aperçu
+        ]);
 
-                    const countElement = document.getElementById(`count-${newsId}`);
-                    const previewElement = document.getElementById(`preview-${newsId}`);
-                    
-                    if (countElement) {
-                        countElement.textContent = comments.length;
-                    }
+        // S'il y a une erreur dans l'une des deux requêtes, on arrête
+        if (countError || commentsError) {
+            throw countError || commentsError;
+        }
 
-                    if (previewElement) {
-                        if (comments.length === 0) {
-                            previewElement.innerHTML = '<div class="no-comments-simple">Aucun commentaire pour le moment</div>';
-                        } else {
-                            previewElement.innerHTML = comments.map(comment => `
-                                <div class="comment-simple-item">
-                                    <div class="comment-simple-author">${comment.author_name}</div>
-                                    <div class="comment-simple-content">${comment.content}</div>
-                                    <div class="comment-simple-date">${this.formatDate(comment.created_at)}</div>
-                                </div>
-                            `).join('');
-                        }
-                    }
+        // --- Mise à jour dynamique des éléments sur la page ---
 
-                } catch (error) {
-                    console.error('Erreur chargement commentaires:', error);
-                }
+        // 1. On met à jour la petite pastille avec le nombre total de commentaires
+        const countElement = document.getElementById(`count-${newsId}`);
+        if (countElement) {
+            countElement.textContent = count;
+        }
+
+        // 2. On met à jour le texte du bouton en fonction du nombre de commentaires
+        const articleElement = document.getElementById(`news-${newsId}`);
+        const buttonTextElement = articleElement.querySelector('.comment-btn-simple span:last-child');
+        const buttonIconElement = articleElement.querySelector('.comment-btn-simple span:first-child');
+
+        if (buttonTextElement && buttonIconElement) {
+            if (count === 0) {
+                buttonTextElement.textContent = 'Ajouter un commentaire';
+                buttonIconElement.textContent = 'add_comment'; // Icône "ajouter"
+            } else if (count === 1) {
+                buttonTextElement.textContent = 'Voir le commentaire';
+                buttonIconElement.textContent = 'chat_bubble_outline'; // Icône "voir"
+            } else {
+                buttonTextElement.textContent = `Voir les ${count} commentaires`;
+                buttonIconElement.textContent = 'chat_bubble_outline'; // Icône "voir"
             }
+        }
+
+        // 3. On affiche l'aperçu des 2 commentaires les plus récents
+        const previewElement = document.getElementById(`preview-${newsId}`);
+        if (previewElement) {
+            if (comments.length === 0) {
+                previewElement.innerHTML = '<div class="no-comments-simple">Soyez le premier à commenter !</div>';
+            } else {
+                previewElement.innerHTML = comments.map(comment => `
+                    <div class="comment-simple-item">
+                        <div class="comment-simple-author">${comment.author_name}</div>
+                        <div class="comment-simple-content">${comment.content}</div>
+                        <div class="comment-simple-date">${this.formatDate(comment.created_at)}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+    } catch (error) {
+        console.error(`Erreur lors du chargement de l'aperçu des commentaires pour l'article ${newsId}:`, error);
+    }
+}
 
             openComments(newsId) {
                 console.log('📝 Ouverture des commentaires pour l\'article:', newsId);
