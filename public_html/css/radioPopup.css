@@ -586,19 +586,43 @@ body.radio-popup-open {
     }
 }
 
-/* Style spécial "NOUVEAU" */
+/* Badge effet néon */
 .tile[data-category="Espace+"]::after {
-    content: 'NOUVEAU';
+    content: '⚡ NOUVEAU';
     position: absolute;
-    top: 6px;
-    right: 6px;
-    background: #ef4444;
+    top: -8px;
+    right: -8px;
+    background: #ff1744;
     color: white;
-    font-size: 9px;
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-weight: bold;
-    text-shadow: none;
-    z-index: 3;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    font-size: 10px;
+    padding: 5px 12px;
+    border-radius: 30px;
+    font-weight: 800;
+    text-transform: uppercase;
+    z-index: 10;
+    box-shadow: 
+        0 0 10px #ff1744,
+        0 0 20px #ff1744,
+        0 0 30px #ff1744,
+        0 4px 8px rgba(0,0,0,0.3);
+    animation: neon-glow 1.5s ease-in-out infinite alternate;
+    letter-spacing: 1px;
+    border: 2px solid rgba(255,255,255,0.5);
+}
+
+@keyframes neon-glow {
+    from {
+        box-shadow: 
+            0 0 10px #ff1744,
+            0 0 20px #ff1744,
+            0 0 30px #ff1744,
+            0 4px 8px rgba(0,0,0,0.3);
+    }
+    to {
+        box-shadow: 
+            0 0 15px #ff1744,
+            0 0 30px #ff1744,
+            0 0 45px #ff1744,
+            0 6px 12px rgba(0,0,0,0.4);
+    }
 }
