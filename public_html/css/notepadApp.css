@@ -793,3 +793,8 @@ script[src*="extension"] {
 body.notepad-popup-open {
     overflow: hidden !important;
 }
+
+/* Masquer spécifiquement l'erreur DeepL */
+.console-error-level .console-message-text:contains("message port closed") {
+    display: none !important;
+}
