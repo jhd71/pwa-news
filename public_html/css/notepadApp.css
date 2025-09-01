@@ -147,7 +147,7 @@
     margin-bottom: 10px;
     cursor: pointer;
     transition: all 0.3s;
-    border: 2px solid transparent;
+    border: 2px solid #940000;
 }
 
 .note-item:hover {
