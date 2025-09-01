@@ -3932,8 +3932,3 @@ a:active {
         font-size: 20px;
     }
 }
-
-/* Masquer les erreurs d'extensions dans la console */
-script[src*="extension"] {
-    display: none !important;
-}

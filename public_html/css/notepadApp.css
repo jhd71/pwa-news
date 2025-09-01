@@ -784,6 +784,11 @@
     color: var(--notepad-text-secondary);
 }
 
+/* Masquer les erreurs d'extensions dans la console */
+script[src*="extension"] {
+    display: none !important;
+}
+
 /* Empêcher le scroll du body */
 body.notepad-popup-open {
     overflow: hidden !important;
