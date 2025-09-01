@@ -810,30 +810,39 @@ body.notepad-popup-open {
     overflow: hidden !important;
 }
 
-/* Badge avec effet brillant */
+/* Badge NOUVEAU animé et moderne */
 .tile[data-category="espace"]::after {
-    content: '🎯 NOUVEAU';
+    content: '✨ NOUVEAU';
     position: absolute;
-    top: -5px;
-    right: -5px;
-    background: linear-gradient(45deg, #ff4757, #ff6348, #ff4757);
-    background-size: 200% 200%;
+    top: -8px;
+    right: -8px;
+    background: linear-gradient(135deg, #ff6b6b, #ff8787);
     color: white;
-    font-size: 11px;
-    padding: 5px 12px;
-    border-radius: 50px;
-    font-weight: 700;
-    text-transform: uppercase;
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 800;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     z-index: 5;
     box-shadow: 
-        0 4px 15px rgba(255, 71, 87, 0.5),
-        inset 0 -2px 5px rgba(0,0,0,0.2);
-    animation: shine 3s linear infinite;
-    letter-spacing: 1px;
+        0 4px 8px rgba(255, 107, 107, 0.4),
+        0 2px 4px rgba(0,0,0,0.2);
+    animation: pulse-badge 2s infinite;
+    letter-spacing: 0.5px;
+    border: 2px solid white;
 }
 
-@keyframes shine {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+@keyframes pulse-badge {
+    0%, 100% {
+        transform: scale(1) rotate(-3deg);
+        box-shadow: 
+            0 4px 8px rgba(255, 107, 107, 0.4),
+            0 2px 4px rgba(0,0,0,0.2);
+    }
+    50% {
+        transform: scale(1.05) rotate(-3deg);
+        box-shadow: 
+            0 6px 12px rgba(255, 107, 107, 0.6),
+            0 3px 6px rgba(0,0,0,0.3);
+    }
 }
