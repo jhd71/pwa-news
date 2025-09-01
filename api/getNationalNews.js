@@ -32,7 +32,11 @@ export default async function handler(req, res) {
   { name: 'France Info', url: 'https://www.francetvinfo.fr/titres.rss', max: 1 },
   { name: 'BFMTV', url: 'https://www.bfmtv.com/rss/news-24-7/', max: 1 },
   { name: 'France 3 Bourgogne', url: 'https://france3-regions.francetvinfo.fr/bourgogne-franche-comte/rss', max: 2 }, // 🆕 RÉGIONAL !
-  { name: 'CNEWS', url: 'https://www.cnews.fr/rss.xml', max: 1 }
+  { name: 'CNEWS', url: 'https://www.cnews.fr/rss.xml', max: 1 },
+  { name: 'Le Monde', url: 'https://www.lemonde.fr/rss/une.xml', max: 1 },
+  { name: 'Le Journal de Saône-et-Loire', url: 'https://www.lejsl.com/rss', max: 2 },
+  { name: 'Montceau News', url: 'https://montceau-news.com/feed/', max: 2 },
+  { name: '20 Minutes', url: 'https://www.20minutes.fr/rss/france', max: 1 }
 ];
     
     let articles = [];
