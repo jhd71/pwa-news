@@ -784,13 +784,6 @@
     color: var(--notepad-text-secondary);
 }
 
-/* Masquer les erreurs d'extensions dans la console DevTools */
-.console-error-level .console-message-text:contains("message port closed"),
-.console-error-level .console-message-text:contains("Extension context"),
-.console-message:contains("content.js:1") {
-    display: none !important;
-}
-
 /* Empêcher le scroll du body */
 body.notepad-popup-open {
     overflow: hidden !important;
