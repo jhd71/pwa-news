@@ -33,12 +33,12 @@ class NotepadWidget {
         }
 
         // Trouver la tuile Lecteur Radio
-        const radioTile = document.querySelector('.tile[data-category="espace+"]');
+        const radioTile = document.querySelector('.tile[data-category="espace"]');
         
         // Créer la tuile Bloc-notes
         const tileElement = document.createElement('div');
         tileElement.className = 'tile notepad-app-tile';
-        tileElement.setAttribute('data-category', 'espace+');
+        tileElement.setAttribute('data-category', 'espace');
         
         // Adapter le style selon le thème actuel
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'rouge';
