@@ -1227,6 +1227,9 @@
             openComments(newsId) {
                 console.log('📝 Ouverture des commentaires pour l\'article:', newsId);
                 this.currentNewsId = newsId;
+				
+				// ====> ON AJOUTE LA CLASSE ICI <====
+				document.body.classList.add('no-scroll');
                 
                 const modal = document.getElementById('commentModal');
                 modal.classList.add('show');
@@ -1279,6 +1282,9 @@
             }
 
             closeModal() {
+				// ====> ON RETIRE LA CLASSE ICI <====
+				document.body.classList.remove('no-scroll');
+				
                 const modal = document.getElementById('commentModal');
                 modal.classList.remove('show');
                 // Ne pas réinitialiser currentNewsId immédiatement
