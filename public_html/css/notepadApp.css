@@ -810,39 +810,42 @@ body.notepad-popup-open {
     overflow: hidden !important;
 }
 
-/* Badge NOUVEAU animé et moderne */
-.tile[data-category="Espace+"]::after {
-    content: '✨ NOUVEAU';
+/* Badge "NOUVEAU" pour les brocantes */
+.tile[data-category="Espace+"]:after {
+    content: '⚡ NOUVEAU';
     position: absolute;
-    top: -8px;
-    right: -8px;
-    background: linear-gradient(135deg, #ff6b6b, #ff8787);
+    top: -5px;
+    right: -1px;
     color: white;
     font-size: 10px;
-    padding: 4px 10px;
-    border-radius: 20px;
+    padding: 3px 5px;
+    border-radius: 30px;
     font-weight: 800;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-    z-index: 5;
+    text-transform: uppercase;
+    z-index: 10;
     box-shadow: 
-        0 4px 8px rgba(255, 107, 107, 0.4),
-        0 2px 4px rgba(0,0,0,0.2);
-    animation: pulse-badge 2s infinite;
-    letter-spacing: 0.5px;
-    border: 2px solid white;
+        0 0 10px #ff1744,
+        0 0 20px #ff1744,
+        0 0 30px #ff1744,
+        0 4px 8px rgba(0,0,0,0.3);
+    animation: neon-glow 1.5s ease-in-out infinite alternate;
+    letter-spacing: 1px;
+    border: 2px solid rgba(255,255,255,0.5);
 }
 
-@keyframes pulse-badge {
-    0%, 100% {
-        transform: scale(1) rotate(-3deg);
+@keyframes neon-glow {
+    from {
         box-shadow: 
-            0 4px 8px rgba(255, 107, 107, 0.4),
-            0 2px 4px rgba(0,0,0,0.2);
+            0 0 10px #ff1744,
+            0 0 20px #ff1744,
+            0 0 30px #ff1744,
+            0 4px 8px rgba(0,0,0,0.3);
     }
-    50% {
-        transform: scale(1.05) rotate(-3deg);
+    to {
         box-shadow: 
-            0 6px 12px rgba(255, 107, 107, 0.6),
-            0 3px 6px rgba(0,0,0,0.3);
+            0 0 15px #ff1744,
+            0 0 30px #ff1744,
+            0 0 45px #ff1744,
+            0 6px 12px rgba(0,0,0,0.4);
     }
 }
