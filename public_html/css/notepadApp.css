@@ -811,7 +811,7 @@ body.notepad-popup-open {
 }
 
 /* Badge NOUVEAU animé et moderne */
-.tile[data-category="Espace+"]::after {
+.tile[data-category="Espace"]::after {
     content: '✨ NOUVEAU';
     position: absolute;
     top: -8px;
