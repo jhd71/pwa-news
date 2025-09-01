@@ -585,32 +585,3 @@ body.radio-popup-open {
         width: 100% !important;
     }
 }
-
-/* Badge arc-en-ciel animé */
-.tile[data-category="Espace+"]::after {
-    content: '🌟 NOUVEAU';
-    position: absolute;
-    top: -6px;
-    right: -6px;
-    background: linear-gradient(90deg, 
-        #ff6b6b, #ffd93d, #6bcf7f, #4ecdc4, #a8e6cf, #ff6b6b);
-    background-size: 300% 100%;
-    color: white;
-    font-size: 11px;
-    padding: 5px 13px;
-    border-radius: 25px;
-    font-weight: 800;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-    z-index: 10;
-    box-shadow: 
-        0 6px 15px rgba(0,0,0,0.3),
-        inset 0 -2px 4px rgba(0,0,0,0.2);
-    animation: rainbow 3s linear infinite;
-    letter-spacing: 0.5px;
-    border: 2px solid white;
-}
-
-@keyframes rainbow {
-    0% { background-position: 0% 50%; }
-    100% { background-position: 100% 50%; }
-}
