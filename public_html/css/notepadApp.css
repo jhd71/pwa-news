@@ -336,7 +336,7 @@
     .notes-sidebar {
         width: 100%;
         min-height: 100px; /* Hauteur minimale */
-        max-height: 150px; /* Hauteur maximale */
+        max-height: 200px; /* Hauteur maximale */
         border-right: none;
         border-bottom: 2px solid #ddd;
         flex-shrink: 0;

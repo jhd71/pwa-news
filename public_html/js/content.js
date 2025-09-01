@@ -1,3 +1,20 @@
+// Supprimer les erreurs d'extensions
+window.addEventListener('error', function(e) {
+    if (e.message && e.message.includes('message port closed')) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    }
+});
+
+// Supprimer les erreurs de promesses non gérées des extensions
+window.addEventListener('unhandledrejection', function(e) {
+    if (e.reason && e.reason.message && e.reason.message.includes('message port closed')) {
+        e.preventDefault();
+        return false;
+    }
+});
+
 class ContentManager {
     constructor() {
     this.tileContainer = null;
