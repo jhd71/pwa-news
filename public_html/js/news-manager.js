@@ -66,7 +66,7 @@
             window.swiper.destroy(true, true);
         }
 
-        const slidesPerViewDesktop = 3;
+        const slidesPerViewDesktop = 1;
         const isLoopingEnabled = limitedArticles.length > slidesPerViewDesktop;
         
         console.log(`Swiper Info: ${limitedArticles.length} articles chargés. Boucle ${isLoopingEnabled ? 'activée' : 'désactivée'}.`);
