@@ -586,43 +586,31 @@ body.radio-popup-open {
     }
 }
 
-/* Badge effet néon */
+/* Badge arc-en-ciel animé */
 .tile[data-category="Espace+"]::after {
-    content: '⚡ NOUVEAU';
+    content: '🌟 NOUVEAU';
     position: absolute;
-    top: -8px;
-    right: -8px;
-    background: #ff1744;
+    top: -6px;
+    right: -6px;
+    background: linear-gradient(90deg, 
+        #ff6b6b, #ffd93d, #6bcf7f, #4ecdc4, #a8e6cf, #ff6b6b);
+    background-size: 300% 100%;
     color: white;
-    font-size: 10px;
-    padding: 5px 12px;
-    border-radius: 30px;
+    font-size: 11px;
+    padding: 5px 13px;
+    border-radius: 25px;
     font-weight: 800;
-    text-transform: uppercase;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     z-index: 10;
     box-shadow: 
-        0 0 10px #ff1744,
-        0 0 20px #ff1744,
-        0 0 30px #ff1744,
-        0 4px 8px rgba(0,0,0,0.3);
-    animation: neon-glow 1.5s ease-in-out infinite alternate;
-    letter-spacing: 1px;
-    border: 2px solid rgba(255,255,255,0.5);
+        0 6px 15px rgba(0,0,0,0.3),
+        inset 0 -2px 4px rgba(0,0,0,0.2);
+    animation: rainbow 3s linear infinite;
+    letter-spacing: 0.5px;
+    border: 2px solid white;
 }
 
-@keyframes neon-glow {
-    from {
-        box-shadow: 
-            0 0 10px #ff1744,
-            0 0 20px #ff1744,
-            0 0 30px #ff1744,
-            0 4px 8px rgba(0,0,0,0.3);
-    }
-    to {
-        box-shadow: 
-            0 0 15px #ff1744,
-            0 0 30px #ff1744,
-            0 0 45px #ff1744,
-            0 6px 12px rgba(0,0,0,0.4);
-    }
+@keyframes rainbow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
 }
