@@ -586,39 +586,19 @@ body.radio-popup-open {
     }
 }
 
-/* Badge NOUVEAU animé et moderne */
-.tile[data-category="espace"]::after {
-    content: '✨ NOUVEAU';
+/* Style spécial "NOUVEAU" */
+.tile[data-category="Espace+"]::after {
+    content: 'NOUVEAU';
     position: absolute;
-    top: -8px;
-    right: -8px;
-    background: linear-gradient(135deg, #ff6b6b, #ff8787);
+    top: 6px;
+    right: 6px;
+    background: #ef4444;
     color: white;
-    font-size: 10px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-weight: 800;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-    z-index: 5;
-    box-shadow: 
-        0 4px 8px rgba(255, 107, 107, 0.4),
-        0 2px 4px rgba(0,0,0,0.2);
-    animation: pulse-badge 2s infinite;
-    letter-spacing: 0.5px;
-    border: 2px solid white;
-}
-
-@keyframes pulse-badge {
-    0%, 100% {
-        transform: scale(1) rotate(-3deg);
-        box-shadow: 
-            0 4px 8px rgba(255, 107, 107, 0.4),
-            0 2px 4px rgba(0,0,0,0.2);
-    }
-    50% {
-        transform: scale(1.05) rotate(-3deg);
-        box-shadow: 
-            0 6px 12px rgba(255, 107, 107, 0.6),
-            0 3px 6px rgba(0,0,0,0.3);
-    }
+    font-size: 9px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: bold;
+    text-shadow: none;
+    z-index: 3;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
