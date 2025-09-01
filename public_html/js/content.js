@@ -1,32 +1,85 @@
-// Version plus complète pour filtrer les erreurs d'extensions
-window.addEventListener('error', function(e) {
-    const extensionErrors = [
+// ===== SUPPRESSION COMPLÈTE DES ERREURS D'EXTENSIONS =====
+(function() {
+    'use strict';
+    
+    // Capturer la fonction console.error originale
+    const originalError = console.error;
+    const originalWarn = console.warn;
+    
+    // Liste des erreurs à filtrer
+    const errorFilters = [
         'message port closed',
         'Extension context invalidated',
         'The message port closed before a response was received',
-        'chrome-extension://',
-        'moz-extension://'
+        'chrome-extension',
+        'moz-extension',
+        'Uncaught (in promise)',
+        'Script error'
     ];
     
-    if (extensionErrors.some(err => e.message && e.message.includes(err))) {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-    }
-});
-
-window.addEventListener('unhandledrejection', function(e) {
-    const extensionErrors = [
-        'message port closed',
-        'Extension context invalidated'
-    ];
+    // Remplacer console.error
+    console.error = function(...args) {
+        const message = args.join(' ');
+        const shouldFilter = errorFilters.some(filter => 
+            message.toLowerCase().includes(filter.toLowerCase())
+        );
+        
+        if (!shouldFilter) {
+            originalError.apply(console, args);
+        }
+    };
     
-    if (e.reason && e.reason.message && 
-        extensionErrors.some(err => e.reason.message.includes(err))) {
-        e.preventDefault();
-        return false;
+    // Remplacer console.warn aussi
+    console.warn = function(...args) {
+        const message = args.join(' ');
+        const shouldFilter = errorFilters.some(filter => 
+            message.toLowerCase().includes(filter.toLowerCase())
+        );
+        
+        if (!shouldFilter) {
+            originalWarn.apply(console, args);
+        }
+    };
+    
+    // Capturer toutes les erreurs
+    window.addEventListener('error', function(e) {
+        const shouldFilter = errorFilters.some(filter => 
+            e.message && e.message.toLowerCase().includes(filter.toLowerCase())
+        );
+        
+        if (shouldFilter) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            return false;
+        }
+    }, true);
+    
+    // Capturer les promesses rejetées
+    window.addEventListener('unhandledrejection', function(e) {
+        const message = e.reason ? e.reason.toString() : '';
+        const shouldFilter = errorFilters.some(filter => 
+            message.toLowerCase().includes(filter.toLowerCase())
+        );
+        
+        if (shouldFilter) {
+            e.preventDefault();
+            return false;
+        }
+    }, true);
+    
+    // Supprimer les erreurs du stack trace
+    const originalStackTrace = Error.captureStackTrace;
+    if (originalStackTrace) {
+        Error.captureStackTrace = function(targetObject, constructorOpt) {
+            try {
+                return originalStackTrace.call(this, targetObject, constructorOpt);
+            } catch(e) {
+                // Ignorer les erreurs de stack trace des extensions
+                return null;
+            }
+        };
     }
-});
+})();
 
 class ContentManager {
     constructor() {
