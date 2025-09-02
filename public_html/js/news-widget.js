@@ -446,7 +446,7 @@ function updateClock() {
         // ✅ NOUVEAU : Mettre à jour le titre par défaut de l'horloge
         const clockElement = document.getElementById('newsWidgetClock');
         if (clockElement && !alarmTime) {
-            clockElement.title = 'Horloge • Cliquez pour alarme & minuteur ⏰';
+            clockElement.title = '🕐 Horloge interactive • Cliquez pour alarme & minuteur';
         }
     }
 }

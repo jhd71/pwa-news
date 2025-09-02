@@ -1597,3 +1597,37 @@
         font-size: 1.3rem;
     }
 }
+
+/* Indicateur visuel mobile pour l'horloge */
+@media (max-width: 767px) {
+    .news-widget-clock {
+        position: relative;
+    }
+    
+    /* Petit point coloré visible en permanence sur mobile */
+    .news-widget-clock::before {
+        content: '';
+        position: absolute;
+        top: 1px;
+        right: 1px;
+        width: 8px;
+        height: 8px;
+        background: #4CAF50;
+        border-radius: 50%;
+        animation: pulse-mobile 3s infinite;
+        z-index: 10;
+        border: 1px solid white;
+    }
+    
+    /* Animation plus lente pour mobile */
+    @keyframes pulse-mobile {
+        0%, 100% { 
+            opacity: 0.6; 
+            transform: scale(1);
+        }
+        50% { 
+            opacity: 1; 
+            transform: scale(1.3);
+        }
+    }
+}
