@@ -56,7 +56,7 @@ class RadioPopupWidget {
                 description: 'Le son dancefloor'
             },
 			{
-                name: 'Fréquence Plus, Chalon',
+                name: 'Fréquence Plus',
                 url: 'https://fplus-chalonsursaone.ice.infomaniak.ch/fplus-chalonsursaone-128.mp3',
                 logo: 'images/radio-logos/Frequence-Plus.png',
                 description: 'A plein tubes, Chalon'
