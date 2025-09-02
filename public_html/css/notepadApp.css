@@ -703,9 +703,6 @@
         width: 90%;
         max-width: 300px;
     }
-} 0;
-        height: fit-content;
-    }
     
     /* Section Export/Import mobile */
     .notes-backup-section {
@@ -770,13 +767,13 @@
     }
     
     .notepad-popup-close {
-        width: 44px !important;
-        height: 44px !important;
-        position: absolute;
-        top: 5px;
-        right: 10px;
-        z-index: 10001;
-    }
+    width: 44px !important;
+    height: 44px !important;
+    position: relative;
+    top: -1px;
+    right: -45px;
+    z-index: 10001;
+	}
     
     .notepad-popup-header {
         padding-right: 60px;
@@ -787,7 +784,6 @@
         width: 90%;
         max-width: 300px;
     }
-}
 
 /* Petits écrans */
 @media (max-height: 600px) {
