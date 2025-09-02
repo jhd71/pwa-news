@@ -183,8 +183,11 @@ class RadioPopupWidget {
                 </div>
                 
                 <div class="radio-popup-footer">
-                    <p>🎧 Cliquez sur une station pour l'écouter en direct</p>
-                </div>
+		<p style="font-size: 12px; color: gray; text-align: center;">
+        📻 Les flux proviennent des diffuseurs officiels – Actu & Média n’héberge aucun contenu
+		</p>
+			</div>
+
             </div>
         `;
 
