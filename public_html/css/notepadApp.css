@@ -226,22 +226,36 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: white;
-    border: 2px solid #ddd;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c);
+    background-size: 300% 300%;
+    animation: gradient-shift 3s ease infinite;
+    border: 2px solid white;
+    box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s;
-    color: #666;
+    color: white;
+}
+
+@keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.background-btn .material-icons {
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
 }
 
 .background-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    border-color: #667eea;
-    color: #667eea;
+    transform: scale(1.15) rotate(10deg);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.background-btn:active {
+    transform: scale(1.05) rotate(0deg);
 }
 
 .background-options {
@@ -869,6 +883,19 @@
     background: linear-gradient(135deg, #940000, #c41e3a);
 }
 
+/* Bouton palette thème rouge */
+[data-theme="rouge"] .background-btn {
+    background: linear-gradient(135deg, #940000, #c41e3a, #ff6b6b, #ffa500);
+    background-size: 300% 300%;
+    animation: gradient-shift 3s ease infinite;
+    border: 2px solid white;
+    box-shadow: 0 3px 10px rgba(148, 0, 0, 0.3);
+}
+
+[data-theme="rouge"] .background-btn:hover {
+    box-shadow: 0 5px 15px rgba(148, 0, 0, 0.5);
+}
+
 /* Thème Sombre (dark) */
 [data-theme="dark"] .notepad-popup-content {
     --notepad-primary: #ff6b6b;
@@ -947,14 +974,17 @@
 
 /* Sélecteur d'arrière-plan en mode sombre */
 [data-theme="dark"] .background-btn {
-    background: #4a5568;
-    border-color: #2d3748;
-    color: #e2e8f0;
+    background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+    background-size: 300% 300%;
+    animation: gradient-shift 3s ease infinite;
+    border: 2px solid #4a5568;
+    box-shadow: 0 3px 10px rgba(255, 107, 107, 0.3);
+    color: white;
 }
 
 [data-theme="dark"] .background-btn:hover {
-    border-color: #ff6b6b;
-    color: #ff6b6b;
+    transform: scale(1.15) rotate(10deg);
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.5);
 }
 
 [data-theme="dark"] .background-options {
@@ -1016,6 +1046,19 @@
     background: linear-gradient(135deg, #17a2b8, #20c997);
 }
 
+/* Bouton palette thème bleu ciel */
+[data-theme="bleuciel"] .background-btn {
+    background: linear-gradient(135deg, #17a2b8, #20c997, #48dbfb, #00d2d3);
+    background-size: 300% 300%;
+    animation: gradient-shift 3s ease infinite;
+    border: 2px solid white;
+    box-shadow: 0 3px 10px rgba(23, 162, 184, 0.3);
+}
+
+[data-theme="bleuciel"] .background-btn:hover {
+    box-shadow: 0 5px 15px rgba(23, 162, 184, 0.5);
+}
+
 /* Thème Violet (light) */
 [data-theme="light"] .notepad-popup-content {
     --notepad-primary: #6f42c1;
@@ -1049,6 +1092,19 @@
 
 [data-theme="light"] .mobile-close-btn {
     background: linear-gradient(135deg, #6f42c1, #e83e8c);
+}
+
+/* Bouton palette thème violet */
+[data-theme="light"] .background-btn {
+    background: linear-gradient(135deg, #6f42c1, #e83e8c, #f093fb, #f5576c);
+    background-size: 300% 300%;
+    animation: gradient-shift 3s ease infinite;
+    border: 2px solid white;
+    box-shadow: 0 3px 10px rgba(111, 66, 193, 0.3);
+}
+
+[data-theme="light"] .background-btn:hover {
+    box-shadow: 0 5px 15px rgba(111, 66, 193, 0.5);
 }
 
 /* Utiliser les variables CSS pour les éléments communs */
@@ -1122,7 +1178,7 @@ body.notepad-popup-open {
     overflow: hidden !important;
 }
 
-/* Badge "NOUVEAU" Espace+ */
+/* Badge "NOUVEAU" pour Espace+ */
 .tile[data-category="Espace+"]:after {
     content: '⚡ NOUVEAU';
     position: absolute;
