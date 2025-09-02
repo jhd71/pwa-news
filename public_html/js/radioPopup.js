@@ -56,10 +56,10 @@ class RadioPopupWidget {
                 description: 'Le son dancefloor'
             },
 			{
-                name: 'Allzic - Web Radio',
-                url: 'https://allzic23.ice.infomaniak.ch/allzic23.aac',
-                logo: 'images/radio-logos/Allzic-Nouveautes-Francaises.png',
-                description: 'Nouveautes Francaises'
+                name: 'Fréquence Plus, Chalon',
+                url: 'https://fplus-chalonsursaone.ice.infomaniak.ch/fplus-chalonsursaone-128.mp3',
+                logo: 'images/radio-logos/Frequence-Plus.png',
+                description: 'A plein tubes, Chalon'
             },
 			{
                 name: 'France Inter',

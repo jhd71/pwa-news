@@ -132,7 +132,7 @@ const STATIC_RESOURCES = [
 	'/images/radio-logos/Fun-Radio.png',
 	'/images/radio-logos/La-Radio-Sans-pub.png',
 	'/images/radio-logos/Radio-Prevert.png',
-	'/images/radio-logos/Allzic-Nouveautes-Francaises.png',
+	'/images/radio-logos/Frequence-Plus.png',
 	'/images/radio-logos/Skyrock.png',
 
     // Icônes de base (seulement ceux qui existent)
