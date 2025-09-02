@@ -129,7 +129,7 @@ const STATIC_RESOURCES = [
 	'/images/radio-logos/rmc.png',
 	'/images/radio-logos/nostalgie.png',
 	'/images/radio-logos/cherie-fm.png',
-	'/images/radio-logos/fip.png',
+	'/images/radio-logos/Fun-Radio.png',
 	'/images/radio-logos/La-Radio-Sans-pub.png',
 	'/images/radio-logos/Radio-Prevert.png',
 	'/images/radio-logos/Allzic-Nouveautes-Francaises.png',

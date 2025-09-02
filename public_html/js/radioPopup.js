@@ -50,10 +50,10 @@ class RadioPopupWidget {
                 description: 'Love songs'
             },
             {
-                name: 'FIP',
-                url: 'https://icecast.radiofrance.fr/fip-midfi.mp3',
-                logo: 'images/radio-logos/fip.png',
-                description: 'Éclectisme musical'
+                name: 'Fun Radio',
+                url: 'https://streamer-02.rtl.fr/fun-1-44-128',
+                logo: 'images/radio-logos/Fun-Radio.png',
+                description: 'Le son dancefloor'
             },
 			{
                 name: 'Allzic - Web Radio',
