@@ -1,13 +1,27 @@
-// notepadApp.js - Application Bloc-notes intégrée - VERSION CORRIGÉE
+// notepadApp.js - Application Bloc-notes intégrée avec EXPORT/IMPORT
 class NotepadWidget {
     constructor() {
         this.notes = JSON.parse(localStorage.getItem('userNotes')) || [];
         this.currentNoteIndex = null;
         this.popupOpen = false;
+        this.backgrounds = [
+            { id: 'default', name: 'Défaut', color: '#ffffff', pattern: null },
+            { id: 'yellow', name: 'Jaune', color: '#fff9c4', pattern: null },
+            { id: 'orange', name: 'Orange', color: '#ffe0b2', pattern: null },
+            { id: 'pink', name: 'Rose', color: '#fce4ec', pattern: null },
+            { id: 'purple', name: 'Violet', color: '#e1bee7', pattern: null },
+            { id: 'blue', name: 'Bleu', color: '#bbdefb', pattern: null },
+            { id: 'teal', name: 'Turquoise', color: '#b2dfdb', pattern: null },
+            { id: 'green', name: 'Vert', color: '#c8e6c9', pattern: null },
+            { id: 'gray', name: 'Gris', color: '#eeeeee', pattern: null },
+            { id: 'dots', name: 'Points', color: '#f5f5f5', pattern: 'dots' },
+            { id: 'lines', name: 'Lignes', color: '#fafafa', pattern: 'lines' },
+            { id: 'grid', name: 'Grille', color: '#fff', pattern: 'grid' }
+        ];
     }
 
     init() {
-        this.cleanCorruptedData(); // Nettoyer d'abord
+        this.cleanCorruptedData();
         
         setTimeout(() => {
             this.createNotepadTile();
@@ -26,7 +40,7 @@ class NotepadWidget {
             return;
         }
 
-        // Vérifier si la tuile existe déjà 
+        // Vérifier si la tuile existe déjà
         if (document.querySelector('.notepad-app-tile')) {
             console.log('Tuile Bloc-notes déjà présente');
             return;
@@ -177,6 +191,19 @@ class NotepadWidget {
                             </button>
                         </div>
                         <div class="notes-list" id="notesList"></div>
+                        
+                        <!-- NOUVEAU: Boutons Export/Import -->
+                        <div class="notes-backup-section">
+                            <button class="backup-btn export-btn" id="exportNotesBtn">
+                                <span class="material-icons">download</span>
+                                Exporter
+                            </button>
+                            <button class="backup-btn import-btn" id="importNotesBtn">
+                                <span class="material-icons">upload</span>
+                                Importer
+                            </button>
+                            <input type="file" id="importFileInput" accept=".json" style="display: none;">
+                        </div>
                     </div>
                     
                     <!-- Éditeur de note -->
@@ -186,6 +213,17 @@ class NotepadWidget {
                                class="note-title-input" 
                                placeholder="Titre de la note..."
                                maxlength="50">
+                        
+                        <!-- NOUVEAU: Sélecteur d'arrière-plan -->
+                        <div class="note-background-selector">
+                            <button class="background-btn" id="backgroundToggleBtn" title="Changer l'arrière-plan">
+                                <span class="material-icons">palette</span>
+                            </button>
+                            <div class="background-options" id="backgroundOptions">
+                                <div class="background-options-grid"></div>
+                            </div>
+                        </div>
+                        
                         <textarea id="noteContent" 
                                   class="note-content-area" 
                                   placeholder="Écrivez votre note ici..."></textarea>
@@ -206,7 +244,7 @@ class NotepadWidget {
                 </div>
                 
                 <div class="notepad-popup-footer">
-                    <p>💾 Les notes sont sauvegardées localement sur votre appareil</p>
+                    <p>💾 Les notes sont sauvegardées localement | 📥 Exportez pour les conserver</p>
                 </div>           
         </div>
     `;
@@ -223,7 +261,6 @@ class NotepadWidget {
             
             // Ajouter directement l'événement
             mobileCloseBtn.addEventListener('click', () => {
-                // ✅ Sauvegarder seulement si la note n'est pas vide
                 if (this.currentNoteIndex !== null) {
                     const title = document.getElementById('noteTitle')?.value.trim() || '';
                     const content = document.getElementById('noteContent')?.value.trim() || '';
@@ -236,20 +273,131 @@ class NotepadWidget {
         }
         
         this.setupEventListeners();
-    }      
+        this.initializeBackgroundSelector();
+    }
 
-    // CORRECTION : Gestion d'erreurs pour les event listeners
+    // NOUVELLE FONCTION: Initialiser le sélecteur d'arrière-plan
+    initializeBackgroundSelector() {
+        const grid = document.querySelector('.background-options-grid');
+        const toggleBtn = document.getElementById('backgroundToggleBtn');
+        const options = document.getElementById('backgroundOptions');
+        
+        if (!grid || !toggleBtn || !options) return;
+        
+        // Créer les options d'arrière-plan
+        this.backgrounds.forEach(bg => {
+            const option = document.createElement('div');
+            option.className = 'background-option';
+            option.dataset.bgId = bg.id;
+            option.title = bg.name;
+            
+            // Appliquer le style de l'arrière-plan
+            option.style.background = bg.color;
+            
+            // Ajouter les motifs si nécessaire
+            if (bg.pattern === 'dots') {
+                option.style.backgroundImage = `radial-gradient(circle, #00000015 1px, transparent 1px)`;
+                option.style.backgroundSize = '10px 10px';
+            } else if (bg.pattern === 'lines') {
+                option.style.backgroundImage = `repeating-linear-gradient(45deg, transparent, transparent 10px, #00000008 10px, #00000008 20px)`;
+            } else if (bg.pattern === 'grid') {
+                option.style.backgroundImage = `
+                    repeating-linear-gradient(0deg, #00000008, #00000008 1px, transparent 1px, transparent 20px),
+                    repeating-linear-gradient(90deg, #00000008, #00000008 1px, transparent 1px, transparent 20px)
+                `;
+            }
+            
+            // Ajouter une icône de check pour l'option sélectionnée
+            const checkIcon = document.createElement('span');
+            checkIcon.className = 'material-icons background-check';
+            checkIcon.textContent = 'check';
+            option.appendChild(checkIcon);
+            
+            // Gestionnaire de clic
+            option.addEventListener('click', () => {
+                this.selectBackground(bg.id);
+                options.classList.remove('show');
+            });
+            
+            grid.appendChild(option);
+        });
+        
+        // Toggle du panneau
+        toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            options.classList.toggle('show');
+        });
+        
+        // Fermer le panneau en cliquant ailleurs
+        document.addEventListener('click', (e) => {
+            if (!options.contains(e.target) && e.target !== toggleBtn) {
+                options.classList.remove('show');
+            }
+        });
+    }
+
+    // NOUVELLE FONCTION: Sélectionner un arrière-plan
+    selectBackground(bgId) {
+        const bg = this.backgrounds.find(b => b.id === bgId);
+        if (!bg) return;
+        
+        // Appliquer l'arrière-plan à l'éditeur
+        const noteContent = document.getElementById('noteContent');
+        const noteEditor = document.querySelector('.note-editor');
+        
+        if (noteContent && noteEditor) {
+            // Réinitialiser les styles
+            noteContent.style.background = bg.color;
+            noteEditor.dataset.background = bgId;
+            
+            // Appliquer les motifs
+            if (bg.pattern === 'dots') {
+                noteContent.style.backgroundImage = `radial-gradient(circle, #00000015 1px, transparent 1px)`;
+                noteContent.style.backgroundSize = '10px 10px';
+            } else if (bg.pattern === 'lines') {
+                noteContent.style.backgroundImage = `repeating-linear-gradient(45deg, transparent, transparent 10px, #00000008 10px, #00000008 20px)`;
+            } else if (bg.pattern === 'grid') {
+                noteContent.style.backgroundImage = `
+                    repeating-linear-gradient(0deg, #00000008, #00000008 1px, transparent 1px, transparent 20px),
+                    repeating-linear-gradient(90deg, #00000008, #00000008 1px, transparent 1px, transparent 20px)
+                `;
+            } else {
+                noteContent.style.backgroundImage = 'none';
+            }
+            
+            // Ajuster la couleur du texte pour un meilleur contraste
+            const isDark = this.isColorDark(bg.color);
+            noteContent.style.color = isDark ? '#ffffff' : '#333333';
+        }
+        
+        // Mettre à jour les indicateurs de sélection
+        document.querySelectorAll('.background-option').forEach(opt => {
+            opt.classList.toggle('selected', opt.dataset.bgId === bgId);
+        });
+    }
+
+    // NOUVELLE FONCTION: Déterminer si une couleur est foncée
+    isColorDark(color) {
+        // Convertir la couleur hex en RGB
+        const hex = color.replace('#', '');
+        const r = parseInt(hex.substr(0, 2), 16);
+        const g = parseInt(hex.substr(2, 2), 16);
+        const b = parseInt(hex.substr(4, 2), 16);
+        
+        // Calculer la luminosité
+        const brightness = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+        return brightness < 128;
+    }
+
     setupEventListeners() {
         try {
-            // Fermer la popup - AMÉLIORÉ
+            // Fermer la popup
             const closeBtn = document.getElementById('closeNotepadPopup');
             if (closeBtn) {
-                // Utiliser touchend pour mobile ET click pour desktop
                 ['click', 'touchend'].forEach(eventType => {
                     closeBtn.addEventListener(eventType, (e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        // ✅ Sauvegarder seulement si la note n'est pas vide
                         if (this.currentNoteIndex !== null) {
                             const title = document.getElementById('noteTitle')?.value.trim() || '';
                             const content = document.getElementById('noteContent')?.value.trim() || '';
@@ -267,7 +415,6 @@ class NotepadWidget {
             if (popup) {
                 popup.addEventListener('click', (e) => {
                     if (e.target.id === 'notepadPopup' && window.innerWidth > 768) {
-                        // ✅ Sauvegarder seulement si la note n'est pas vide
                         if (this.currentNoteIndex !== null) {
                             const title = document.getElementById('noteTitle')?.value.trim() || '';
                             const content = document.getElementById('noteContent')?.value.trim() || '';
@@ -284,7 +431,6 @@ class NotepadWidget {
             const addNoteBtn = document.getElementById('addNoteBtn');
             if (addNoteBtn) {
                 addNoteBtn.addEventListener('click', () => {
-                    // ✅ Sauvegarder la note actuelle seulement si elle n'est pas vide
                     if (this.currentNoteIndex !== null) {
                         const title = document.getElementById('noteTitle')?.value.trim() || '';
                         const content = document.getElementById('noteContent')?.value.trim() || '';
@@ -296,7 +442,7 @@ class NotepadWidget {
                 });
             }
 
-            // Sauvegarder la note (bouton explicite)
+            // Sauvegarder la note
             const saveNoteBtn = document.getElementById('saveNoteBtn');
             if (saveNoteBtn) {
                 saveNoteBtn.addEventListener('click', () => {
@@ -312,14 +458,35 @@ class NotepadWidget {
                 });
             }
 
-            // Auto-save amélioré pendant la frappe
+            // NOUVEAU: Export des notes
+            const exportBtn = document.getElementById('exportNotesBtn');
+            if (exportBtn) {
+                exportBtn.addEventListener('click', () => {
+                    this.exportNotes();
+                });
+            }
+
+            // NOUVEAU: Import des notes
+            const importBtn = document.getElementById('importNotesBtn');
+            const fileInput = document.getElementById('importFileInput');
+            
+            if (importBtn && fileInput) {
+                importBtn.addEventListener('click', () => {
+                    fileInput.click();
+                });
+                
+                fileInput.addEventListener('change', (e) => {
+                    this.importNotes(e.target.files[0]);
+                });
+            }
+
+            // Auto-save amélioré
             let autoSaveTimer;
             const autoSave = () => {
                 clearTimeout(autoSaveTimer);
                 autoSaveTimer = setTimeout(() => {
                     if (this.currentNoteIndex !== null) {
-                        this.saveCurrentNote(true); // Sauvegarde silencieuse
-                        // Afficher un petit indicateur de sauvegarde
+                        this.saveCurrentNote(true);
                         const dateElement = document.getElementById('noteDate');
                         if (dateElement) {
                             const originalText = dateElement.textContent;
@@ -329,7 +496,7 @@ class NotepadWidget {
                             }, 1000);
                         }
                     }
-                }, 2000); // Sauvegarde après 2 secondes d'inactivité
+                }, 2000);
             };
 
             const noteContent = document.getElementById('noteContent');
@@ -343,7 +510,6 @@ class NotepadWidget {
                 notesList.addEventListener('click', (e) => {
                     const noteItem = e.target.closest('.note-item');
                     if (noteItem && this.currentNoteIndex !== null) {
-                        // Sauvegarder la note actuelle avant de changer
                         this.saveCurrentNote(true);
                     }
                 });
@@ -351,19 +517,23 @@ class NotepadWidget {
             
             // Raccourcis clavier
             document.addEventListener('keydown', (e) => {
-                // Ctrl+S ou Cmd+S pour sauvegarder
                 if ((e.ctrlKey || e.metaKey) && e.key === 's' && this.popupOpen) {
                     e.preventDefault();
                     this.saveCurrentNote();
                 }
                 
-                // Ctrl+N ou Cmd+N pour nouvelle note
                 if ((e.ctrlKey || e.metaKey) && e.key === 'n' && this.popupOpen) {
                     e.preventDefault();
                     if (this.currentNoteIndex !== null) {
                         this.saveCurrentNote(true);
                     }
                     this.createNewNote();
+                }
+                
+                // NOUVEAU: Raccourci pour export (Ctrl/Cmd + E)
+                if ((e.ctrlKey || e.metaKey) && e.key === 'e' && this.popupOpen) {
+                    e.preventDefault();
+                    this.exportNotes();
                 }
             });
             
@@ -372,7 +542,122 @@ class NotepadWidget {
         }
     }
 
-    // MODIFICATION : Toujours ouvrir sur une note vide
+    // NOUVELLE FONCTION: Exporter les notes
+    exportNotes() {
+        try {
+            // Sauvegarder la note actuelle avant l'export
+            if (this.currentNoteIndex !== null) {
+                const title = document.getElementById('noteTitle')?.value.trim() || '';
+                const content = document.getElementById('noteContent')?.value.trim() || '';
+                if (title || content) {
+                    this.saveCurrentNote(true);
+                }
+            }
+
+            // Créer l'objet d'export avec métadonnées
+            const exportData = {
+                version: '1.0',
+                exportDate: new Date().toISOString(),
+                notesCount: this.notes.length,
+                notes: this.notes
+            };
+
+            // Convertir en JSON
+            const jsonStr = JSON.stringify(exportData, null, 2);
+            
+            // Créer un blob et un lien de téléchargement
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            // Créer un élément de téléchargement
+            const a = document.createElement('a');
+            a.href = url;
+            const date = new Date().toLocaleDateString('fr-FR').replace(/\//g, '-');
+            a.download = `bloc-notes-export-${date}.json`;
+            
+            // Déclencher le téléchargement
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            // Libérer l'URL
+            URL.revokeObjectURL(url);
+            
+            this.showToast(`📥 ${this.notes.length} notes exportées avec succès`);
+        } catch (error) {
+            console.error('Erreur lors de l\'export:', error);
+            this.showToast('❌ Erreur lors de l\'export');
+        }
+    }
+
+    // NOUVELLE FONCTION: Importer les notes
+    importNotes(file) {
+        if (!file) return;
+        
+        const reader = new FileReader();
+        
+        reader.onload = (e) => {
+            try {
+                const importData = JSON.parse(e.target.result);
+                
+                // Vérifier la validité du fichier
+                if (!importData.notes || !Array.isArray(importData.notes)) {
+                    throw new Error('Format de fichier invalide');
+                }
+                
+                // Options d'import
+                const options = confirm(
+                    `📤 Fichier d'import détecté:\n` +
+                    `- ${importData.notesCount || importData.notes.length} notes\n` +
+                    `- Exporté le: ${importData.exportDate ? new Date(importData.exportDate).toLocaleDateString('fr-FR') : 'Date inconnue'}\n\n` +
+                    `Voulez-vous REMPLACER toutes vos notes actuelles?\n` +
+                    `(OK = Remplacer | Annuler = Fusionner avec les notes existantes)`
+                );
+                
+                if (options) {
+                    // Remplacer toutes les notes
+                    this.notes = importData.notes;
+                } else {
+                    // Fusionner avec les notes existantes
+                    const importedNotes = importData.notes;
+                    
+                    // Ajouter un préfixe aux notes importées pour les identifier
+                    importedNotes.forEach(note => {
+                        note.title = `[Importé] ${note.title || 'Sans titre'}`;
+                        note.importDate = new Date().toISOString();
+                    });
+                    
+                    // Ajouter les notes importées au début
+                    this.notes = [...importedNotes, ...this.notes];
+                }
+                
+                // Sauvegarder et rafraîchir
+                this.saveToLocalStorage();
+                this.loadNotesList();
+                
+                // Charger la première note importée
+                if (this.notes.length > 0) {
+                    this.loadNote(0);
+                }
+                
+                this.showToast(`✅ ${importData.notes.length} notes importées avec succès`);
+                
+                // Réinitialiser l'input file
+                document.getElementById('importFileInput').value = '';
+                
+            } catch (error) {
+                console.error('Erreur lors de l\'import:', error);
+                this.showToast('❌ Erreur: Fichier invalide ou corrompu');
+            }
+        };
+        
+        reader.onerror = () => {
+            this.showToast('❌ Erreur lors de la lecture du fichier');
+        };
+        
+        reader.readAsText(file);
+    }
+
     openPopup() {
         try {
             const popup = document.getElementById('notepadPopup');
@@ -382,14 +667,11 @@ class NotepadWidget {
             document.body.classList.add('notepad-popup-open');
             this.popupOpen = true;
             
-            // Empêcher le scroll sur mobile
             if (window.innerWidth <= 768) {
                 document.body.style.overflow = 'hidden';
             }
             
             this.loadNotesList();
-            
-            // ✅ TOUJOURS créer une nouvelle note à l'ouverture
             this.createNewNote();
             
         } catch (error) {
@@ -406,17 +688,15 @@ class NotepadWidget {
             document.body.classList.remove('notepad-popup-open');
             this.popupOpen = false;
             
-            // Restaurer le scroll sur mobile
             if (window.innerWidth <= 768) {
                 document.body.style.overflow = '';
                 document.body.style.position = '';
                 document.body.style.width = '';
                 
-                // Forcer la fermeture après l'animation
                 setTimeout(() => {
                     popup.style.display = 'none';
                     setTimeout(() => {
-                        popup.style.display = ''; // Réinitialiser pour la prochaine ouverture
+                        popup.style.display = '';
                     }, 100);
                 }, 300);
             }
@@ -432,7 +712,6 @@ class NotepadWidget {
             
             notesList.innerHTML = '';
             
-            // Nettoyer les notes corrompues
             this.notes = this.notes.filter(note => {
                 return note && typeof note === 'object' && 
                        (note.title !== undefined || note.content !== undefined);
@@ -445,8 +724,36 @@ class NotepadWidget {
                     noteItem.classList.add('active');
                 }
                 
+                // Appliquer l'arrière-plan de la note à l'aperçu
+                if (note.background) {
+                    const bg = this.backgrounds.find(b => b.id === note.background);
+                    if (bg) {
+                        noteItem.style.background = bg.color;
+                        if (bg.pattern === 'dots') {
+                            noteItem.style.backgroundImage = `radial-gradient(circle, #00000015 1px, transparent 1px)`;
+                            noteItem.style.backgroundSize = '10px 10px';
+                        } else if (bg.pattern === 'lines') {
+                            noteItem.style.backgroundImage = `repeating-linear-gradient(45deg, transparent, transparent 10px, #00000008 10px, #00000008 20px)`;
+                        } else if (bg.pattern === 'grid') {
+                            noteItem.style.backgroundImage = `
+                                repeating-linear-gradient(0deg, #00000008, #00000008 1px, transparent 1px, transparent 20px),
+                                repeating-linear-gradient(90deg, #00000008, #00000008 1px, transparent 1px, transparent 20px)
+                            `;
+                        }
+                        
+                        // Ajuster la couleur du texte
+                        const isDark = this.isColorDark(bg.color);
+                        noteItem.style.color = isDark ? '#ffffff' : '#333333';
+                    }
+                }
+                
+                // Ajouter un indicateur pour les notes importées
+                const isImported = note.title && note.title.includes('[Importé]');
+                
                 noteItem.innerHTML = `
-                    <div class="note-item-title">${note.title || 'Sans titre'}</div>
+                    <div class="note-item-title">
+                        ${isImported ? '📤 ' : ''}${note.title || 'Sans titre'}
+                    </div>
                     <div class="note-item-preview">${this.truncateText(note.content || '', 50)}</div>
                     <div class="note-item-date">${this.formatDate(note.date || new Date().toISOString())}</div>
                 `;
@@ -466,7 +773,6 @@ class NotepadWidget {
         try {
             if (index < 0 || index >= this.notes.length) return;
             
-            // Sauvegarder la note actuelle avant de charger une nouvelle
             if (this.currentNoteIndex !== null && this.currentNoteIndex !== index) {
                 this.saveCurrentNote(true);
             }
@@ -482,10 +788,15 @@ class NotepadWidget {
             if (contentTextarea) contentTextarea.value = note.content || '';
             if (dateElement) dateElement.textContent = `Modifié le ${this.formatDate(note.date)}`;
             
-            // Mettre à jour la liste
+            // Charger l'arrière-plan de la note
+            if (note.background) {
+                this.selectBackground(note.background);
+            } else {
+                this.selectBackground('default');
+            }
+            
             this.updateNotesList();
             
-            // Focus sur la zone de texte
             setTimeout(() => {
                 if (contentTextarea) contentTextarea.focus();
             }, 100);
@@ -496,8 +807,7 @@ class NotepadWidget {
 
     createNewNote() {
         try {
-            // ✅ Ne pas créer de note dans le tableau, juste préparer l'interface
-            this.currentNoteIndex = null; // Pas d'index car pas encore sauvegardée
+            this.currentNoteIndex = null;
             
             const titleInput = document.getElementById('noteTitle');
             const contentTextarea = document.getElementById('noteContent');
@@ -507,10 +817,11 @@ class NotepadWidget {
             if (contentTextarea) contentTextarea.value = '';
             if (dateElement) dateElement.textContent = 'Nouvelle note';
             
-            // ✅ Pas de sauvegarde automatique d'une note vide
-            this.loadNotesList(); // Rafraîchir la liste (sans la nouvelle note vide)
+            // Réinitialiser l'arrière-plan
+            this.selectBackground('default');
             
-            // Focus sur le titre
+            this.loadNotesList();
+            
             setTimeout(() => {
                 if (titleInput) titleInput.focus();
             }, 100);
@@ -529,17 +840,19 @@ class NotepadWidget {
             const title = titleInput.value.trim();
             const content = contentTextarea.value.trim();
             
-            // ✅ Ne pas sauvegarder si la note est complètement vide
+            // Récupérer l'arrière-plan sélectionné
+            const selectedBg = document.querySelector('.note-editor').dataset.background || 'default';
+            
             if (!title && !content) {
-                return; // Sortir sans sauvegarder
+                return;
             }
             
-            // Si c'est une nouvelle note (currentNoteIndex = null), la créer
             if (this.currentNoteIndex === null) {
                 const newNote = {
                     title: title || 'Sans titre',
                     content: content,
-                    date: new Date().toISOString()
+                    date: new Date().toISOString(),
+                    background: selectedBg
                 };
                 
                 this.notes.unshift(newNote);
@@ -553,23 +866,21 @@ class NotepadWidget {
                 return;
             }
             
-            // Vérifier si la note existante a changé
             const currentNote = this.notes[this.currentNoteIndex];
-            if (currentNote.title === title && currentNote.content === content) {
-                return; // Pas de changement
+            if (currentNote.title === title && currentNote.content === content && currentNote.background === selectedBg) {
+                return;
             }
             
-            // Mettre à jour la note existante
             this.notes[this.currentNoteIndex] = {
                 title: title || 'Sans titre',
                 content: content,
-                date: new Date().toISOString()
+                date: new Date().toISOString(),
+                background: selectedBg
             };
             
             this.saveToLocalStorage();
             this.loadNotesList();
             
-            // Mettre à jour la date affichée
             const dateElement = document.getElementById('noteDate');
             if (dateElement) {
                 dateElement.textContent = `Modifié le ${this.formatDate(this.notes[this.currentNoteIndex].date)}`;
@@ -598,7 +909,7 @@ class NotepadWidget {
                 }
                 
                 this.loadNotesList();
-                this.showToast('Note supprimée');
+                this.showToast('🗑️ Note supprimée');
             }
         } catch (error) {
             console.error('Erreur lors de la suppression:', error);
@@ -663,19 +974,16 @@ class NotepadWidget {
 
     showToast(message) {
         try {
-            // Supprimer les toasts existants
             const existingToasts = document.querySelectorAll('.notepad-toast');
             existingToasts.forEach(toast => toast.remove());
             
             const toast = document.createElement('div');
             toast.className = 'notepad-toast';
             toast.innerHTML = `
-                <span class="toast-icon">${message.includes('✅') ? '✅' : '💾'}</span>
                 <span class="toast-message">${message}</span>
             `;
             document.body.appendChild(toast);
             
-            // Forcer le reflow pour l'animation
             void toast.offsetHeight;
             
             setTimeout(() => {
@@ -692,10 +1000,9 @@ class NotepadWidget {
     }
 }
 
-// CORRECTION : Initialisation protégée contre les erreurs
+// Initialisation
 document.addEventListener('DOMContentLoaded', function() {
     try {
-        // Vérifier que l'environnement est prêt
         if (typeof localStorage !== 'undefined') {
             window.notepadInstance = new NotepadWidget();
             window.notepadInstance.init();

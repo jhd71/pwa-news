@@ -1,4 +1,4 @@
-/* notepadApp.css - Styles pour l'application Bloc-notes */
+/* notepadApp.css - Styles pour l'application Bloc-notes avec Export/Import */
 
 /* Overlay principal */
 .notepad-popup-overlay {
@@ -19,14 +19,12 @@
     animation: fadeIn 0.2s ease;
 }
 
-/* === AMÉLIORATION DE LA ZONE DE TEXTE === */
-
 /* Contenu de la popup - pleine hauteur */
 .notepad-popup-content {
     background: var(--card-bg, white);
     width: 90%;
     max-width: 900px;
-    height: 90%; /* Hauteur fixe au lieu de max-height */
+    height: 90%;
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -67,28 +65,12 @@
     background: rgba(255, 255, 255, 0.3);
 }
 
-/* Bouton de fermeture plus grand sur mobile */
-@media (max-width: 768px) {
-    .notepad-popup-close {
-        width: 44px !important;
-        height: 44px !important;
-        position: absolute;
-        top: 5px;
-        right: 10px;
-        z-index: 10001;
-    }
-    
-    .notepad-popup-header {
-        padding-right: 60px; /* Espace pour le bouton */
-    }
-}
-
-/* Corps de la popup - occupe tout l'espace */
+/* Corps de la popup */
 .notepad-popup-body {
     display: flex;
     flex: 1;
     overflow: hidden;
-    height: calc(100% - 120px); /* Hauteur moins header et footer */
+    height: calc(100% - 120px);
 }
 
 /* Sidebar des notes */
@@ -147,7 +129,7 @@
     margin-bottom: 10px;
     cursor: pointer;
     transition: all 0.3s;
-    border: 2px solid #940000;
+    border: 2px solid transparent;
 }
 
 .note-item:hover {
@@ -177,18 +159,164 @@
     color: #999;
 }
 
-/* Éditeur de note - meilleure disposition */
+/* NOUVEAU: Section Export/Import */
+.notes-backup-section {
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    display: flex;
+    gap: 8px;
+    background: var(--secondary-bg, #f8f9fa);
+}
+
+.backup-btn {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s;
+    color: white;
+}
+
+.export-btn {
+    background: linear-gradient(135deg, #48bb78, #38a169);
+}
+
+.export-btn:hover {
+    background: linear-gradient(135deg, #38a169, #2f855a);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(72, 187, 120, 0.3);
+}
+
+.import-btn {
+    background: linear-gradient(135deg, #4299e1, #3182ce);
+}
+
+.import-btn:hover {
+    background: linear-gradient(135deg, #3182ce, #2c5282);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(66, 153, 225, 0.3);
+}
+
+/* Éditeur de note */
 .note-editor {
     flex: 1;
     display: flex;
     flex-direction: column;
     padding: 20px;
-    overflow: hidden; /* Empêche le débordement */
+    overflow: hidden;
+    position: relative;
+}
+
+/* NOUVEAU: Sélecteur d'arrière-plan */
+.note-background-selector {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+}
+
+.background-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    color: #666;
+}
+
+.background-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border-color: #667eea;
+    color: #667eea;
+}
+
+.background-options {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 10px;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.9) translateY(-10px);
+    transition: all 0.3s;
+    z-index: 101;
+}
+
+.background-options.show {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1) translateY(0);
+}
+
+.background-options-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 40px);
+    gap: 8px;
+    width: 192px;
+}
+
+.background-option {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+.background-option:hover {
+    transform: scale(1.1);
+    border-color: #667eea;
+}
+
+.background-option.selected {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.background-check {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #667eea;
+    font-size: 20px;
+    display: none;
+    background: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+}
+
+.background-option.selected .background-check {
+    display: block;
 }
 
 .note-title-input {
     width: 100%;
     padding: 10px;
+    padding-right: 60px; /* Espace pour le bouton palette */
     font-size: 18px;
     font-weight: bold;
     border: none;
@@ -203,7 +331,6 @@
     border-bottom-color: #667eea;
 }
 
-/* Zone de texte améliorée */
 .note-content-area {
     flex: 1;
     width: 100%;
@@ -212,12 +339,19 @@
     border-radius: 8px;
     resize: none;
     font-family: inherit;
-    font-size: 16px; /* Plus grand pour mobile */
-    line-height: 1.8; /* Meilleur espacement */
+    font-size: 16px;
+    line-height: 1.8;
     color: var(--text-color, #333);
     background: var(--card-bg, white);
-    min-height: 300px; /* Hauteur minimale */
-    overflow-y: auto; /* Scroll si nécessaire */
+    min-height: 300px;
+    overflow-y: auto;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.note-content-area:focus {
+    outline: none;
+    border-color: var(--primary-color, #667eea);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 /* Actions de note */
@@ -241,7 +375,7 @@
 }
 
 .note-btn {
-    padding: 4px 5px;
+    padding: 8px 15px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
@@ -279,10 +413,10 @@
     color: var(--text-secondary, #666);
 }
 
-/* Toast amélioré pour mobile */
+/* Toast amélioré */
 .notepad-toast {
     position: fixed;
-    bottom: 80px; /* Plus haut sur mobile */
+    bottom: 80px;
     left: 50%;
     transform: translateX(-50%) translateY(100px);
     background: #4CAF50;
@@ -297,6 +431,7 @@
     align-items: center;
     gap: 8px;
     font-size: 14px;
+    font-weight: 500;
 }
 
 .notepad-toast.show {
@@ -304,19 +439,7 @@
     transform: translateX(-50%) translateY(0);
 }
 
-.toast-icon {
-    font-size: 18px;
-}
-
-@media (max-width: 768px) {
-    .notepad-toast {
-        bottom: 20px;
-        width: 90%;
-        max-width: 300px;
-    }
-}
-
-/* === RESPONSIVE AMÉLIORÉ === */
+/* === RESPONSIVE === */
 
 /* Mobile - pleine page */
 @media (max-width: 768px) {
@@ -330,17 +453,16 @@
     .notepad-popup-body {
         flex-direction: column;
         height: calc(100% - 100px);
-        overflow: hidden; /* Important */
+        overflow: hidden;
     }
     
     .notes-sidebar {
         width: 100%;
-        min-height: 100px; /* Hauteur minimale */
-        max-height: 200px; /* Hauteur maximale */
+        min-height: 150px;
+        max-height: 250px;
         border-right: none;
         border-bottom: 2px solid #ddd;
         flex-shrink: 0;
-        overflow: hidden; /* Empêcher le débordement */
     }
     
     .notes-list {
@@ -350,7 +472,7 @@
         overflow-y: hidden;
         padding: 10px;
         gap: 10px;
-        height: 100%;
+        height: auto;
         -webkit-overflow-scrolling: touch;
     }
     
@@ -360,15 +482,53 @@
         margin-bottom: 0;
         height: fit-content;
     }
+    
+    /* Section Export/Import mobile */
+    .notes-backup-section {
+        position: sticky;
+        bottom: 0;
+        border-top: 2px solid #ddd;
+        background: var(--secondary-bg, #f8f9fa);
+        padding: 8px;
+        gap: 6px;
+    }
+    
+    .backup-btn {
+        font-size: 12px;
+        padding: 10px 8px;
+    }
+    
+    .backup-btn .material-icons {
+        font-size: 18px;
+    }
 
-/* Éditeur prend tout l'espace restant */
     .note-editor {
         flex: 1;
         padding: 15px;
-        overflow-y: auto; /* Permettre le scroll vertical */
+        overflow-y: auto;
         display: flex;
         flex-direction: column;
-        min-height: 0; /* Important pour flex */
+        min-height: 0;
+    }
+    
+    /* Sélecteur d'arrière-plan mobile */
+    .note-background-selector {
+        top: 15px;
+        right: 15px;
+    }
+    
+    .background-btn {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .background-options {
+        right: -10px;
+    }
+    
+    .background-options-grid {
+        grid-template-columns: repeat(3, 40px);
+        width: 144px;
     }
     
     .note-content-area {
@@ -380,14 +540,13 @@
         -webkit-overflow-scrolling: touch;
     }
     
-    /* Titre plus petit pour gagner de l'espace */
     .note-title-input {
         padding: 8px;
+        padding-right: 50px;
         font-size: 16px;
         margin-bottom: 10px;
     }
     
-    /* Actions en bas fixe */
     .note-actions {
         position: sticky;
         bottom: 0;
@@ -397,24 +556,230 @@
         border-top: 1px solid #eee;
     }
     
-    /* Boutons plus accessibles sur mobile */
     .note-btn {
         padding: 10px 15px;
         font-size: 14px;
     }
     
-    /* Footer plus petit */
     .notepad-popup-footer {
         padding: 8px 15px;
         font-size: 11px;
     }
+    
+    .notepad-popup-close {
+        width: 44px !important;
+        height: 44px !important;
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        z-index: 10001;
+    }
+    
+    .notepad-popup-header {
+        padding-right: 60px;
+    }
+    
+    .notepad-toast {
+        bottom: 20px;
+        width: 90%;
+        max-width: 300px;
+    }
+} 0;
+        height: fit-content;
+    }
+    
+    /* Section Export/Import mobile */
+    .notes-backup-section {
+        position: sticky;
+        bottom: 0;
+        border-top: 2px solid #ddd;
+        background: var(--secondary-bg, #f8f9fa);
+        padding: 8px;
+        gap: 6px;
+    }
+    
+    .backup-btn {
+        font-size: 12px;
+        padding: 10px 8px;
+    }
+    
+    .backup-btn .material-icons {
+        font-size: 18px;
+    }
+
+    .note-editor {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
+    
+    /* Sélecteur d'arrière-plan mobile */
+    .note-background-selector {
+        top: 15px;
+        right: 15px;
+    }
+    
+    .background-btn {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .background-options {
+        right: -10px;
+    }
+    
+    .background-options-grid {
+        grid-template-columns: repeat(3, 40px);
+        width: 144px;
+    }
+    
+    .note-content-area {
+        flex: 1;
+        font-size: 16px;
+        line-height: 1.8;
+        min-height: 200px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .note-title-input {
+        padding: 8px;
+        padding-right: 50px;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+    
+    .note-actions {
+        position: sticky;
+        bottom: 0;
+        background: var(--card-bg, white);
+        padding: 10px 0;
+        margin-top: 10px;
+        border-top: 1px solid #eee;
+    }
+    
+    .note-btn {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+    
+    .notepad-popup-footer {
+        padding: 8px 15px;
+        font-size: 11px;
+    }
+    
+    .notepad-popup-close {
+        width: 44px !important;
+        height: 44px !important;
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        z-index: 10001;
+    }
+    
+    .notepad-popup-header {
+        padding-right: 60px;
+    }
+    
+    .notepad-toast {
+        bottom: 20px;
+        width: 90%;
+        max-width: 300px;
+    }
+} 0;
+        height: fit-content;
+    }
+    
+    /* Section Export/Import mobile */
+    .notes-backup-section {
+        position: sticky;
+        bottom: 0;
+        border-top: 2px solid #ddd;
+        background: var(--secondary-bg, #f8f9fa);
+        padding: 8px;
+        gap: 6px;
+    }
+    
+    .backup-btn {
+        font-size: 12px;
+        padding: 10px 8px;
+    }
+    
+    .backup-btn .material-icons {
+        font-size: 18px;
+    }
+
+    .note-editor {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
+    
+    .note-content-area {
+        flex: 1;
+        font-size: 16px;
+        line-height: 1.8;
+        min-height: 200px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .note-title-input {
+        padding: 8px;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+    
+    .note-actions {
+        position: sticky;
+        bottom: 0;
+        background: var(--card-bg, white);
+        padding: 10px 0;
+        margin-top: 10px;
+        border-top: 1px solid #eee;
+    }
+    
+    .note-btn {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+    
+    .notepad-popup-footer {
+        padding: 8px 15px;
+        font-size: 11px;
+    }
+    
+    .notepad-popup-close {
+        width: 44px !important;
+        height: 44px !important;
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        z-index: 10001;
+    }
+    
+    .notepad-popup-header {
+        padding-right: 60px;
+    }
+    
+    .notepad-toast {
+        bottom: 20px;
+        width: 90%;
+        max-width: 300px;
+    }
 }
 
-/* Petits écrans - encore plus d'espace */
+/* Petits écrans */
 @media (max-height: 600px) {
     .notes-sidebar {
-        height: 80px;
-        min-height: 80px;
+        max-height: 150px;
+        min-height: 100px;
     }
     
     .notepad-popup-header {
@@ -424,9 +789,18 @@
     .notepad-popup-header h2 {
         font-size: 16px;
     }
+    
+    .notes-backup-section {
+        padding: 6px;
+    }
+    
+    .backup-btn {
+        font-size: 11px;
+        padding: 8px 6px;
+    }
 }
 
-/* Bouton de fermeture mobile amélioré */
+/* Bouton de fermeture mobile */
 .mobile-close-btn {
     width: 100%;
     padding: 15px;
@@ -440,6 +814,7 @@
     position: sticky;
     bottom: 0;
     z-index: 10;
+    display: none;
 }
 
 .mobile-close-btn:active {
@@ -452,26 +827,6 @@
     }
 }
 
-/* === FIX POUR LA VISIBILITÉ DU TEXTE === */
-
-/* S'assurer que le texte est visible dans tous les thèmes */
-.note-content-area {
-    color: var(--text-color, #333) !important;
-    caret-color: var(--primary-color, #667eea); /* Curseur visible */
-}
-
-/* Focus amélioré */
-.note-content-area:focus {
-    outline: none;
-    border-color: var(--primary-color, #667eea);
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-/* Placeholder plus visible */
-.note-content-area::placeholder {
-    color: var(--text-secondary, #999);
-    opacity: 0.6;
-}
 /* === SUPPORT POUR TOUS LES THÈMES === */
 
 /* Thème Rouge (défaut) */
@@ -490,12 +845,14 @@
     background: linear-gradient(135deg, #940000, #c41e3a);
 }
 
-[data-theme="rouge"] .add-note-btn {
+[data-theme="rouge"] .add-note-btn,
+[data-theme="rouge"] .save-btn {
     background: #940000;
 }
 
-[data-theme="rouge"] .add-note-btn:hover {
-    background: #c41e3a;
+[data-theme="rouge"] .add-note-btn:hover,
+[data-theme="rouge"] .save-btn:hover {
+    background: #7a0000;
 }
 
 [data-theme="rouge"] .note-item.active {
@@ -508,16 +865,8 @@
     border-color: #940000;
 }
 
-[data-theme="rouge"] .save-btn {
-    background: #940000;
-}
-
-[data-theme="rouge"] .save-btn:hover {
-    background: #7a0000;
-}
-
-[data-theme="rouge"] .notepad-toast {
-    background: #940000;
+[data-theme="rouge"] .mobile-close-btn {
+    background: linear-gradient(135deg, #940000, #c41e3a);
 }
 
 /* Thème Sombre (dark) */
@@ -533,7 +882,7 @@
     background: #2d3748;
 }
 
-[data-theme="dark"] .notepad-popup-header, .delete-btn {
+[data-theme="dark"] .notepad-popup-header {
     background: linear-gradient(135deg, #1a237e, #002cad);
 }
 
@@ -556,64 +905,75 @@
 }
 
 [data-theme="dark"] .note-item.active {
-    border-color: #000000;
+    border-color: #ff6b6b;
     background: linear-gradient(to right, rgba(255, 107, 107, 0.1), transparent);
 }
 
-[data-theme="dark"] .note-item-title {
-    color: #e2e8f0;
-}
-
-[data-theme="dark"] .note-item-preview {
-    color: #a0aec0;
-}
-
-[data-theme="dark"] .note-title-input {
-    color: #e2e8f0;
-    border-bottom-color: #4a5568;
-}
-
-[data-theme="dark"] .note-title-input:focus {
-    border-bottom-color: #ff6b6b;
-}
-
+[data-theme="dark"] .note-title-input,
 [data-theme="dark"] .note-content-area {
     background: #2d3748;
-    border-color: #4a5568;
     color: #e2e8f0;
+    border-color: #4a5568;
 }
 
+[data-theme="dark"] .note-title-input:focus,
 [data-theme="dark"] .note-content-area:focus {
     border-color: #ff6b6b;
 }
 
-[data-theme="dark"] .note-actions {
-    border-top-color: #4a5568;
-}
-
-[data-theme="dark"] .add-note-btn {
-    background: linear-gradient(135deg, #1a237e, #002cad);
-}
-
-[data-theme="dark"] .add-note-btn:hover {
-    background: #ff8787;
-}
-
+[data-theme="dark"] .add-note-btn,
 [data-theme="dark"] .save-btn {
     background: linear-gradient(135deg, #1a237e, #002cad);
 }
 
+[data-theme="dark"] .add-note-btn:hover,
 [data-theme="dark"] .save-btn:hover {
     background: #ff5252;
-}
-
-[data-theme="dark"] .notepad-toast {
-    background: #ff6b6b;
 }
 
 [data-theme="dark"] .notepad-popup-footer {
     background: #1a202c;
     color: #a0aec0;
+}
+
+[data-theme="dark"] .notes-backup-section {
+    background: #1a202c;
+    border-top-color: #4a5568;
+}
+
+[data-theme="dark"] .mobile-close-btn {
+    background: linear-gradient(135deg, #1a237e, #002cad);
+}
+
+/* Sélecteur d'arrière-plan en mode sombre */
+[data-theme="dark"] .background-btn {
+    background: #4a5568;
+    border-color: #2d3748;
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .background-btn:hover {
+    border-color: #ff6b6b;
+    color: #ff6b6b;
+}
+
+[data-theme="dark"] .background-options {
+    background: #2d3748;
+    border: 1px solid #4a5568;
+}
+
+[data-theme="dark"] .background-option:hover {
+    border-color: #ff6b6b;
+}
+
+[data-theme="dark"] .background-option.selected {
+    border-color: #ff6b6b;
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+}
+
+[data-theme="dark"] .background-check {
+    color: #ff6b6b;
+    background: #2d3748;
 }
 
 /* Thème Bleu Ciel (bleuciel) */
@@ -637,8 +997,14 @@
     border-right-color: #b8daff;
 }
 
-[data-theme="bleuciel"] .notes-list-header {
-    border-bottom-color: #b8daff;
+[data-theme="bleuciel"] .add-note-btn,
+[data-theme="bleuciel"] .save-btn {
+    background: #17a2b8;
+}
+
+[data-theme="bleuciel"] .add-note-btn:hover,
+[data-theme="bleuciel"] .save-btn:hover {
+    background: #138496;
 }
 
 [data-theme="bleuciel"] .note-item.active {
@@ -646,38 +1012,8 @@
     background: linear-gradient(to right, rgba(23, 162, 184, 0.1), transparent);
 }
 
-[data-theme="bleuciel"] .note-title-input:focus,
-[data-theme="bleuciel"] .note-content-area:focus {
-    border-color: #17a2b8;
-}
-
-[data-theme="bleuciel"] .add-note-btn {
-    background: #17a2b8;
-}
-
-[data-theme="bleuciel"] .add-note-btn:hover {
-    background: #138496;
-}
-
-[data-theme="bleuciel"] .save-btn {
-    background: #17a2b8;
-}
-
-[data-theme="bleuciel"] .save-btn:hover {
-    background: #138496;
-}
-
-[data-theme="bleuciel"] .notepad-toast {
-    background: #17a2b8;
-}
-
-[data-theme="bleuciel"] .notepad-popup-footer {
-    background: #f0f8ff;
-    color: #5f6f7a;
-}
-
-[data-theme="bleuciel"] .note-actions {
-    border-top-color: #b8daff;
+[data-theme="bleuciel"] .mobile-close-btn {
+    background: linear-gradient(135deg, #17a2b8, #20c997);
 }
 
 /* Thème Violet (light) */
@@ -696,13 +1032,14 @@
     background: linear-gradient(135deg, #6f42c1, #e83e8c);
 }
 
-[data-theme="light"] .notes-sidebar {
-    background: #f8f9ff;
-    border-right-color: #dee2e6;
+[data-theme="light"] .add-note-btn,
+[data-theme="light"] .save-btn {
+    background: #6f42c1;
 }
 
-[data-theme="light"] .notes-list-header {
-    border-bottom-color: #dee2e6;
+[data-theme="light"] .add-note-btn:hover,
+[data-theme="light"] .save-btn:hover {
+    background: #5a32a3;
 }
 
 [data-theme="light"] .note-item.active {
@@ -710,57 +1047,9 @@
     background: linear-gradient(to right, rgba(111, 66, 193, 0.1), transparent);
 }
 
-[data-theme="light"] .note-title-input:focus,
-[data-theme="light"] .note-content-area:focus {
-    border-color: #6f42c1;
-}
-
-[data-theme="light"] .add-note-btn {
-    background: #6f42c1;
-}
-
-[data-theme="light"] .add-note-btn:hover {
-    background: #5a32a3;
-}
-
-[data-theme="light"] .save-btn {
-    background: #6f42c1;
-}
-
-[data-theme="light"] .save-btn:hover {
-    background: #5a32a3;
-}
-
-[data-theme="light"] .notepad-toast {
-    background: #6f42c1;
-}
-
-[data-theme="light"] .notepad-popup-footer {
-    background: #f8f9ff;
-    color: #6c757d;
-}
-
-[data-theme="light"] .note-actions {
-    border-top-color: #dee2e6;
-}
-
-[data-theme="rouge"] .mobile-close-btn {
-    background: linear-gradient(135deg, #940000, #c41e3a);
-}
-
-[data-theme="dark"] .mobile-close-btn {
-    background: linear-gradient(135deg, #1a237e, #002cad);
-}
-
-[data-theme="bleuciel"] .mobile-close-btn {
-    background: linear-gradient(135deg, #17a2b8, #20c997);
-}
-
 [data-theme="light"] .mobile-close-btn {
     background: linear-gradient(135deg, #6f42c1, #e83e8c);
 }
-
-/* === AJUSTEMENTS GÉNÉRAUX POUR TOUS LES THÈMES === */
 
 /* Utiliser les variables CSS pour les éléments communs */
 .notepad-popup-content {
@@ -793,6 +1082,7 @@
     background: var(--notepad-bg);
     border-color: var(--notepad-border);
     color: var(--notepad-text);
+    caret-color: var(--primary-color, #667eea);
 }
 
 .notepad-popup-footer {
@@ -800,17 +1090,39 @@
     color: var(--notepad-text-secondary);
 }
 
-/* Masquer les erreurs d'extensions dans la console */
-script[src*="extension"] {
-    display: none !important;
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
-/* Empêcher le scroll du body */
+@keyframes neon-glow {
+    from {
+        box-shadow: 
+            0 0 10px #ff1744,
+            0 0 20px #ff1744,
+            0 0 30px #ff1744,
+            0 4px 8px rgba(0,0,0,0.3);
+    }
+    to {
+        box-shadow: 
+            0 0 15px #ff1744,
+            0 0 30px #ff1744,
+            0 0 45px #ff1744,
+            0 6px 12px rgba(0,0,0,0.4);
+    }
+}
+
+/* Empêcher le scroll du body quand popup ouverte */
 body.notepad-popup-open {
     overflow: hidden !important;
 }
 
-/* Badge "NOUVEAU" pour les brocantes */
+/* Badge "NOUVEAU" Espace+ */
 .tile[data-category="Espace+"]:after {
     content: '⚡ NOUVEAU';
     position: absolute;
@@ -831,21 +1143,4 @@ body.notepad-popup-open {
     animation: neon-glow 1.5s ease-in-out infinite alternate;
     letter-spacing: 1px;
     border: 2px solid rgba(255,255,255,0.5);
-}
-
-@keyframes neon-glow {
-    from {
-        box-shadow: 
-            0 0 10px #ff1744,
-            0 0 20px #ff1744,
-            0 0 30px #ff1744,
-            0 4px 8px rgba(0,0,0,0.3);
-    }
-    to {
-        box-shadow: 
-            0 0 15px #ff1744,
-            0 0 30px #ff1744,
-            0 0 45px #ff1744,
-            0 6px 12px rgba(0,0,0,0.4);
-    }
 }
