@@ -21,30 +21,45 @@ class NotepadWidget {
     }
 
     init() {
-        this.cleanCorruptedData();
-        
-        setTimeout(() => {
+    this.cleanCorruptedData();
+    
+    // Créer immédiatement si le DOM est prêt
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
             this.createNotepadTile();
             this.createPopup();
-        }, 2000);
+        });
+    } else {
+        // Le DOM est déjà chargé
+        this.createNotepadTile();
+        this.createPopup();
     }
+}
 
     createNotepadTile() {
-        // Chercher le séparateur Espace+
-        const espaceSeparator = Array.from(document.querySelectorAll('.separator'))
-            .find(sep => sep && sep.textContent && sep.textContent.includes('Espace+'));
-        
-        if (!espaceSeparator) {
-            console.warn('Séparateur Espace+ non trouvé, réessai dans 1 seconde');
-            setTimeout(() => this.createNotepadTile(), 1000);
-            return;
-        }
+    // Vérifier si la tuile existe déjà
+    if (document.querySelector('.notepad-app-tile')) {
+        console.log('Tuile Bloc-notes déjà présente');
+        return;
+    }
 
-        // Vérifier si la tuile existe déjà
-        if (document.querySelector('.notepad-app-tile')) {
-            console.log('Tuile Bloc-notes déjà présente');
-            return;
-        }
+    // Chercher le séparateur Espace+
+    const espaceSeparator = Array.from(document.querySelectorAll('.separator'))
+        .find(sep => sep && sep.textContent && sep.textContent.includes('Espace+'));
+    
+    if (!espaceSeparator) {
+        // Si pas trouvé, observer le DOM pour l'ajouter dès qu'il apparaît
+        const observer = new MutationObserver(() => {
+            const separator = Array.from(document.querySelectorAll('.separator'))
+                .find(sep => sep && sep.textContent && sep.textContent.includes('Espace+'));
+            if (separator) {
+                observer.disconnect();
+                this.createNotepadTile();
+            }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+        return;
+    }
 
         // Trouver la tuile Lecteur Radio
         const radioTile = document.querySelector('.tile[data-category="notepad"]');

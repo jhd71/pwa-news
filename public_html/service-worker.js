@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v34'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v35'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -38,6 +38,7 @@ const STATIC_RESOURCES = [
 	'/css/football-widget.css',
 	'/css/radioPopup.css',
 	'/css/notepadApp.css',
+	'/css/todoApp.css',
 
     // Scripts JavaScript
     '/js/app.js',
@@ -74,6 +75,7 @@ const STATIC_RESOURCES = [
 	'/js/expense-manager.js',
 	'/js/radioPopup.js',
 	'/js/notepadApp.js',
+	'/js/todoApp.js',
     
     // Fichiers de configuration (seulement ceux qui existent)
     '/manifest.json',
@@ -121,7 +123,7 @@ const STATIC_RESOURCES = [
     
 	// Logos des radios
 	'/images/radio-logos/france-info.png',
-	'/images/radio-logos/RTL2.png',
+	'/images/radio-logos/france-inter.png',
 	'/images/radio-logos/Ici-Bourgogne.png',
 	'/images/radio-logos/rtl.png',
 	'/images/radio-logos/nrj.png',
@@ -836,6 +838,26 @@ self.addEventListener('push', event => {
       });
       const visibleClient = clientsList.find(c => c.visibilityState === 'visible');
 
+if (data.data?.type === 'todo') {
+        // Notification spéciale pour les tâches
+        const todoOptions = {
+          ...options,
+          actions: [
+            { action: 'complete', title: '✓ Terminée' },
+            { action: 'snooze', title: '⏰ Plus tard' }
+          ],
+          requireInteraction: true,
+          vibrate: [200, 100, 200]
+        };
+        
+        await self.registration.showNotification(
+          data.title || '📋 Rappel de tâche',
+          todoOptions
+        );
+        console.log('[SW] Notification Todo affichée');
+        return;
+      }
+	  
       if (visibleClient && data.data?.type === 'chat') {
         visibleClient.postMessage({ type:'PUSH_RECEIVED', data });
         console.log('[SW] App visible → message relayé, pas de notif');
@@ -893,6 +915,17 @@ self.addEventListener('notificationclick', function(event) {
     // Priorité au type de notification
     if (event.notification.data) {
         if (event.notification.data.type === 'chat') {
+			else if (event.notification.data.type === 'todo') {
+        if (event.action === 'complete') {
+            // Marquer comme terminée
+            url = `/?completeTodoTask=${event.notification.data.taskId}`;
+        } else if (event.action === 'snooze') {
+            // Reporter de 1 heure
+            url = `/?snoozeTodoTask=${event.notification.data.taskId}`;
+        } else {
+            url = '/?openTodo=true';
+        }
+    }
             url = '/?action=openchat';
         } else if (event.notification.data.url) {
             url = event.notification.data.url;

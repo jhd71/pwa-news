@@ -62,10 +62,10 @@ class RadioPopupWidget {
                 description: 'A plein tubes, Chalon'
             },
 			{
-                name: 'RTL2',
-                url: 'https://streamer-04.rtl.fr/rtl2-1-44-128',
-                logo: 'images/radio-logos/RTL2.png',
-                description: ' Le Son Pop-Rock'
+                name: 'France Inter',
+                url: 'https://icecast.radiofrance.fr/franceinter-midfi.mp3',
+                logo: 'images/radio-logos/france-inter.png',
+                description: 'Radio généraliste'
             },
             {
                 name: 'RTL',
@@ -94,26 +94,47 @@ class RadioPopupWidget {
     }
 
     init() {
-        // Attendre que les tuiles soient créées
-        setTimeout(() => {
+    // Créer immédiatement si le DOM est prêt
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
             this.createRadioTile();
             this.createPopup();
-        }, 1500);
+        });
+    } else {
+        // Le DOM est déjà chargé
+        this.createRadioTile();
+        this.createPopup();
     }
+}
 
     createRadioTile() {
+    // Vérifier si la tuile existe déjà
+    if (document.querySelector('.radio-app-tile')) {
+        console.log('Tuile Radio déjà présente');
+        return;
+    }
+
     // Trouver le séparateur Espace+
     const radioSeparator = Array.from(document.querySelectorAll('.separator'))
         .find(sep => sep.textContent.includes('Espace+'));
     
     if (!radioSeparator) {
-        console.warn('Séparateur Espace+ non trouvé');
+        // Si pas trouvé, observer le DOM pour l'ajouter dès qu'il apparaît
+        const observer = new MutationObserver(() => {
+            const separator = Array.from(document.querySelectorAll('.separator'))
+                .find(sep => sep.textContent.includes('Espace+'));
+            if (separator) {
+                observer.disconnect();
+                this.createRadioTile();
+            }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
         return;
     }
 
-    // Créer la tuile
+    // Ajouter une classe pour identifier la tuile radio
     const tileElement = document.createElement('div');
-    tileElement.className = 'tile';
+    tileElement.className = 'tile radio-app-tile'; // Ajout de la classe radio-app-tile
     tileElement.setAttribute('data-category', 'Espace+');
     tileElement.innerHTML = `
         <div class="tile-content">
