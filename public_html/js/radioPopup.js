@@ -62,10 +62,10 @@ class RadioPopupWidget {
                 description: 'A plein tubes, Chalon'
             },
 			{
-                name: 'France Inter',
-                url: 'https://icecast.radiofrance.fr/franceinter-midfi.mp3',
-                logo: 'images/radio-logos/france-inter.png',
-                description: 'Radio généraliste'
+                name: 'RTL2',
+                url: 'https://streamer-04.rtl.fr/rtl2-1-44-128',
+                logo: 'images/radio-logos/RTL2.png',
+                description: ' Le Son Pop-Rock'
             },
             {
                 name: 'RTL',

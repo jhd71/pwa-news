@@ -121,7 +121,7 @@ const STATIC_RESOURCES = [
     
 	// Logos des radios
 	'/images/radio-logos/france-info.png',
-	'/images/radio-logos/france-inter.png',
+	'/images/radio-logos/RTL2.png',
 	'/images/radio-logos/Ici-Bourgogne.png',
 	'/images/radio-logos/rtl.png',
 	'/images/radio-logos/nrj.png',
