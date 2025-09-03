@@ -15,7 +15,7 @@ class RadioPopupWidget {
             },
 			{
                 name: 'La Radio Sans pub',
-                url: 'https://stream1.jupinfo.fr:8443/play',
+                url: 'http://live1.jupinfo.fr:8000/play',
                 logo: 'images/radio-logos/La-Radio-Sans-pub.png',
                 description: '100% Hits 24/24'
             },
