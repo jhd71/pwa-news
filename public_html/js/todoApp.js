@@ -1209,8 +1209,7 @@ const dateStr = `${year}-${month}-${dayNum}`;
 	   // Stocker le mois actuel pour la navigation
         container.dataset.month = currentMonth;
         container.dataset.year = currentYear;
-    }
-
+    
     previousMonth() {
         const container = document.getElementById('tasksContainer');
         let month = parseInt(container.dataset.month);
