@@ -1,118 +1,4 @@
 // todoApp.js - Gestionnaire de tâches complet avec planification
-// Gestion des notifications Push
-async function requestNotificationPermission() {
-    if (!('Notification' in window)) {
-        console.log('Les notifications ne sont pas supportées');
-        return false;
-    }
-    
-    if (Notification.permission === 'granted') {
-        return true;
-    }
-    
-    if (Notification.permission !== 'denied') {
-        const permission = await Notification.requestPermission();
-        return permission === 'granted';
-    }
-    
-    return false;
-}
-
-async function subscribeToPush() {
-    try {
-        const registration = await navigator.serviceWorker.ready;
-        
-        // Votre clé publique VAPID depuis votre environnement
-        const vapidPublicKey = 'BNJAn0qV6OEagpKJrvmRfR1U7Og4ql_Qg6alTcaLRuOyYvJj0uGhJHxNLQjzqfIcGiKm6h7UWBRxlPjBCpRSQqg';
-        
-        const subscription = await registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: vapidPublicKey
-        });
-        
-        // Sauvegarder l'abonnement dans Supabase
-        await saveSubscription(subscription);
-        
-        return subscription;
-    } catch (error) {
-        console.error('Erreur lors de l\'abonnement aux notifications:', error);
-        return null;
-    }
-}
-
-async function saveSubscription(subscription) {
-    try {
-        const response = await fetch('/api/save-subscription', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                subscription: subscription,
-                userId: localStorage.getItem('todoUserId') || 'todo_user_' + Date.now()
-            })
-        });
-        
-        if (!response.ok) {
-            throw new Error('Erreur lors de l\'enregistrement');
-        }
-        
-        console.log('✅ Abonnement aux notifications enregistré');
-    } catch (error) {
-        console.error('Erreur:', error);
-    }
-}
-
-async function sendTaskNotification(task, notificationType = 'reminder') {
-    try {
-        let title, body;
-        
-        switch(notificationType) {
-            case 'today':
-                title = '📅 Tâche du jour';
-                body = task.title;
-                break;
-            case 'overdue':
-                title = '⚠️ Tâche en retard!';
-                body = task.title;
-                break;
-            case 'reminder':
-                title = '🔔 Rappel de tâche';
-                body = `${task.title} - ${task.dueTime || 'Aujourd\'hui'}`;
-                break;
-            default:
-                title = '✔ Todo List';
-                body = task.title;
-        }
-        
-        const response = await fetch('/api/send-notification', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                title: title,
-                body: body,
-                userId: localStorage.getItem('todoUserId') || 'todo_user',
-                icon: '/images/todo-icon.png',
-                data: {
-                    url: '/?action=opentodo',
-                    taskId: task.id,
-                    type: 'todo'
-                }
-            })
-        });
-        
-        if (!response.ok) {
-            throw new Error('Erreur envoi notification');
-        }
-        
-        console.log('✅ Notification envoyée pour:', task.title);
-    } catch (error) {
-        console.error('Erreur envoi notification:', error);
-    }
-}
-
 class TodoListWidget {
     constructor() {
         this.tasks = JSON.parse(localStorage.getItem('userTasks')) || [];
@@ -131,21 +17,12 @@ class TodoListWidget {
             this.createTodoTile();
             this.createPopup();
             this.checkAndNotifyBackup();
-            this.updateTileNotifications();
+            this.updateTileNotifications(); // Mise à jour au chargement
             
-            // Initialiser les notifications Push
-            this.initializePushNotifications();
-            
-            // Vérifier les tâches toutes les 5 minutes
+            // Vérifier toutes les 5 minutes même si l'app n'est pas ouverte
             setInterval(() => {
                 this.updateTileNotifications();
-                this.checkTasksWithPushNotifications();
             }, 300000);
-            
-            // Vérifier immédiatement au chargement
-            setTimeout(() => {
-                this.checkTasksWithPushNotifications();
-            }, 2000);
         });
     } else {
         this.createTodoTile();
@@ -153,78 +30,9 @@ class TodoListWidget {
         this.checkAndNotifyBackup();
         this.updateTileNotifications();
         
-        this.initializePushNotifications();
-        
         setInterval(() => {
             this.updateTileNotifications();
-            this.checkTasksWithPushNotifications();
         }, 300000);
-        
-        setTimeout(() => {
-            this.checkTasksWithPushNotifications();
-        }, 2000);
-    }
-}
-
-async initializePushNotifications() {
-    // Créer un ID utilisateur unique pour les todos si pas existant
-    if (!localStorage.getItem('todoUserId')) {
-        localStorage.setItem('todoUserId', 'todo_user_' + Date.now());
-    }
-    
-    // Demander la permission et s'abonner
-    const hasPermission = await requestNotificationPermission();
-    if (hasPermission) {
-        const subscription = await subscribeToPush();
-        if (subscription) {
-            console.log('✅ Notifications Push activées pour Todo List');
-            this.pushNotificationsEnabled = true;
-        }
-    }
-}
-
-async checkTasksWithPushNotifications() {
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    
-    for (const task of this.tasks) {
-        if (!task.completed && task.dueDate) {
-            const taskDate = new Date(task.dueDate + 'T00:00:00');
-            const timeDiff = taskDate - today;
-            const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-            
-            // Tâche du jour - notification à 8h du matin
-            if (daysDiff === 0 && !task.todayNotified) {
-                const now = new Date();
-                if (now.getHours() >= 8) {
-                    await sendTaskNotification(task, 'today');
-                    task.todayNotified = true;
-                    this.saveToLocalStorage();
-                }
-            }
-            
-            // Tâche en retard
-            else if (daysDiff < 0 && !task.overdueNotified) {
-                await sendTaskNotification(task, 'overdue');
-                task.overdueNotified = true;
-                this.saveToLocalStorage();
-            }
-            
-            // Rappel pour tâche avec heure spécifique
-            if (task.dueTime && daysDiff === 0 && !task.timeNotified) {
-                const [hours, minutes] = task.dueTime.split(':');
-                const taskDateTime = new Date(today);
-                taskDateTime.setHours(parseInt(hours), parseInt(minutes));
-                
-                // Envoyer notification 15 minutes avant
-                const reminderTime = new Date(taskDateTime.getTime() - 15 * 60 * 1000);
-                if (now >= reminderTime && now < taskDateTime) {
-                    await sendTaskNotification(task, 'reminder');
-                    task.timeNotified = true;
-                    this.saveToLocalStorage();
-                }
-            }
-        }
     }
 }
 
@@ -1161,14 +969,14 @@ updateTileNotifications() {
         for (let day = 1; day <= lastDayIndex; day++) {
             const date = new Date(currentYear, currentMonth, day);
             // Utiliser l'année, mois et jour locaux pour éviter le décalage UTC
-		const year = date.getFullYear();
-		const month = String(date.getMonth() + 1).padStart(2, '0');
-		const dayNum = String(date.getDate()).padStart(2, '0');
-		const dateStr = `${year}-${month}-${dayNum}`;
+const year = date.getFullYear();
+const month = String(date.getMonth() + 1).padStart(2, '0');
+const dayNum = String(date.getDate()).padStart(2, '0');
+const dateStr = `${year}-${month}-${dayNum}`;
             const dayTasks = tasks.filter(t => {
-		if (!t.dueDate) return false;
-		return t.dueDate === dateStr;
-	});
+    if (!t.dueDate) return false;
+    return t.dueDate === dateStr;
+});
             const isToday = date.toDateString() === today.toDateString();
             
             html += `
@@ -1204,11 +1012,11 @@ updateTileNotifications() {
         
         container.innerHTML = html;
         
-		 // Stocker le mois actuel pour la navigation
-         container.dataset.month = currentMonth;
+        // Stocker le mois actuel pour la navigation
+        container.dataset.month = currentMonth;
         container.dataset.year = currentYear;
-       }  	   
-    
+    }
+
     previousMonth() {
         const container = document.getElementById('tasksContainer');
         let month = parseInt(container.dataset.month);

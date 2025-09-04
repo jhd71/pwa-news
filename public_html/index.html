@@ -1211,37 +1211,5 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     </script>
-	<script>
-// Gestion de l'ouverture automatique de la Todo List via notification
-window.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    if (urlParams.get('action') === 'opentodo') {
-        // Attendre que la Todo List soit chargée
-        setTimeout(() => {
-            if (window.todoInstance && window.todoInstance.openPopup) {
-                window.todoInstance.openPopup();
-                
-                // Si une tâche spécifique est demandée
-                const taskId = urlParams.get('taskId');
-                if (taskId) {
-                    // Optionnel : faire défiler jusqu'à la tâche
-                    setTimeout(() => {
-                        const taskElement = document.querySelector(`[data-task-id="${taskId}"]`);
-                        if (taskElement) {
-                            taskElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            taskElement.classList.add('highlight-task');
-                            setTimeout(() => taskElement.classList.remove('highlight-task'), 3000);
-                        }
-                    }, 500);
-                }
-            }
-        }, 1000);
-        
-        // Nettoyer l'URL
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }
-});
-</script>
 </body>
 </html>

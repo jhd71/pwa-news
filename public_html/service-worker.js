@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v37'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v36'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -38,7 +38,6 @@ const STATIC_RESOURCES = [
 	'/css/football-widget.css',
 	'/css/radioPopup.css',
 	'/css/notepadApp.css',
-	'/css/todoApp.css',
 
     // Scripts JavaScript
     '/js/app.js',
@@ -75,7 +74,6 @@ const STATIC_RESOURCES = [
 	'/js/expense-manager.js',
 	'/js/radioPopup.js',
 	'/js/notepadApp.js',
-	'/js/todoApp.js',
     
     // Fichiers de configuration (seulement ceux qui existent)
     '/manifest.json',
@@ -888,17 +886,12 @@ self.addEventListener('notificationclick', function(event) {
     // Fermer immédiatement la notification
     event.notification.close();
     
-    // URL à ouvrir, avec priorité au type
+    // URL à ouvrir, avec priorité au type chat
     let url = '/';
     
-    // Gestion des différents types de notification
+    // Priorité au type de notification
     if (event.notification.data) {
-        if (event.notification.data.type === 'todo') {
-            url = '/?action=opentodo';
-            if (event.notification.data.taskId) {
-                url += '&taskId=' + event.notification.data.taskId;
-            }
-        } else if (event.notification.data.type === 'chat') {
+        if (event.notification.data.type === 'chat') {
             url = '/?action=openchat';
         } else if (event.notification.data.url) {
             url = event.notification.data.url;
