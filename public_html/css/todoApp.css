@@ -473,7 +473,6 @@
 .calendar-header h3 {
     margin: 0;
     font-size: 20px;
-    color: #333;
 }
 
 .calendar-nav {
@@ -910,11 +909,11 @@
 }
 
 [data-theme="dark"] .board-column {
-    background: #2d3748;
+    background: #6695e8;
 }
 
 [data-theme="dark"] .board-task {
-    background: #4a5568;
+    background: #303747;
     color: #e2e8f0;
 }
 
