@@ -1161,14 +1161,14 @@ updateTileNotifications() {
         for (let day = 1; day <= lastDayIndex; day++) {
             const date = new Date(currentYear, currentMonth, day);
             // Utiliser l'année, mois et jour locaux pour éviter le décalage UTC
-const year = date.getFullYear();
-const month = String(date.getMonth() + 1).padStart(2, '0');
-const dayNum = String(date.getDate()).padStart(2, '0');
-const dateStr = `${year}-${month}-${dayNum}`;
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, '0');
+		const dayNum = String(date.getDate()).padStart(2, '0');
+		const dateStr = `${year}-${month}-${dayNum}`;
             const dayTasks = tasks.filter(t => {
-    if (!t.dueDate) return false;
-    return t.dueDate === dateStr;
-});
+		if (!t.dueDate) return false;
+		return t.dueDate === dateStr;
+	});
             const isToday = date.toDateString() === today.toDateString();
             
             html += `
@@ -1204,11 +1204,10 @@ const dateStr = `${year}-${month}-${dayNum}`;
         
         container.innerHTML = html;
         
-       } 
-	   
-	   // Stocker le mois actuel pour la navigation
-        container.dataset.month = currentMonth;
+		 // Stocker le mois actuel pour la navigation
+         container.dataset.month = currentMonth;
         container.dataset.year = currentYear;
+       }  	   
     
     previousMonth() {
         const container = document.getElementById('tasksContainer');
