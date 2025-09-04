@@ -1018,7 +1018,7 @@ body.todo-popup-open {
 }
 
 /* Badge "NOUVEAU" pour todo-app-tile */
-.tile[data-category="todo-app-tile"]:after {
+.tile[data-category="Espace+"]:after {
     content: '⚡ NOUVEAU';
     position: absolute;
     top: 3px;
