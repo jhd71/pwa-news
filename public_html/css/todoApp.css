@@ -839,160 +839,433 @@
     }
 }
 
-/* === SUPPORT THÈMES === */
-
-/* Thème Rouge */
-[data-theme="rouge"] .todo-popup-header {
-    background: linear-gradient(135deg, #d32f2f, #f44336);
+.todo-popup-bottom-close {
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
 }
 
-[data-theme="rouge"] .view-btn.active {
-    background: #d32f2f;
+.todo-close-bottom-btn {
+    background: #1976d2;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 400px;
 }
 
-[data-theme="rouge"] .column-count {
-    background: #d32f2f;
+.todo-close-bottom-btn:hover {
+    background: #1565c0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
 }
 
-[data-theme="rouge"] .task-modal-header {
-    background: linear-gradient(135deg, #d32f2f, #f44336);
+.todo-close-bottom-btn:active {
+    transform: translateY(0);
 }
 
-/* Thème Dark */
-[data-theme="dark"] .todo-popup-content {
-    background: #2d3748;
-    color: #e2e8f0;
+/* Sur mobile */
+@media (max-width: 768px) {
+    .todo-popup-bottom-close {
+        padding: 10px;
+        position: sticky;
+        bottom: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0.3));
+    }
+    
+    .todo-close-bottom-btn {
+        padding: 15px;
+        font-size: 18px;
+    }
 }
 
-[data-theme="dark"] .todo-popup-header {
-    background: #5195ed;
+/* ========== VARIABLES DE THÈMES ========== */
+:root[data-theme="rouge"] {
+    --todo-primary: #d32f2f;
+    --todo-secondary: #f44336;
+    --todo-accent: #ff5252;
+    --todo-bg: #ffffff;
+    --todo-text: #212121;
+    --todo-text-light: #666666;
+    --todo-border: rgba(211, 47, 47, 0.2);
+    --todo-hover: #ffebee;
+    --todo-shadow: rgba(211, 47, 47, 0.15);
+    --todo-button-bg: #d32f2f;
+    --todo-button-text: #ffffff;
+    --todo-modal-bg: #ffffff;
+    --todo-input-bg: #ffffff;
+    --todo-input-border: #e0e0e0;
 }
 
-[data-theme="dark"] .todo-controls {
-    background: #1a202c;
-    border-bottom-color: #4a5568;
+:root[data-theme="dark"] {
+    --todo-primary: #4e75e7;
+    --todo-secondary: #3e7bf8;
+    --todo-accent: var(--chat-success);
+    --todo-bg: #1e1e1e;
+    --todo-text: var(--info-bubble-text);
+    --todo-text-light: #b3b3b3;
+    --todo-border: rgba(255, 152, 0, 0.3);
+    --todo-hover: #2c2c2c;
+    --todo-shadow: rgba(0, 0, 0, 0.5);
+    --todo-button-bg: var(--swiper-theme-color);
+    --todo-button-text: var(--info-bubble-text);
+    --todo-modal-bg: #2c2c2c;
+    --todo-input-bg: #3a3a3a;
+    --todo-input-border: #4a4a4a;
 }
 
-[data-theme="dark"] .view-switcher {
-    background: #2d3748;
+:root[data-theme="bleuciel"] {
+    --todo-primary: #0288d1;
+    --todo-secondary: #03a9f4;
+    --todo-accent: #29b6f6;
+    --todo-bg: #ffffff;
+    --todo-text: #212121;
+    --todo-text-light: #666666;
+    --todo-border: rgba(2, 136, 209, 0.2);
+    --todo-hover: #e1f5fe;
+    --todo-shadow: rgba(2, 136, 209, 0.15);
+    --todo-button-bg: #0288d1;
+    --todo-button-text: #ffffff;
+    --todo-modal-bg: #ffffff;
+    --todo-input-bg: #ffffff;
+    --todo-input-border: #e0e0e0;
 }
 
-[data-theme="dark"] .view-btn:hover {
-    background: aliceblue;
+:root[data-theme="light"] {
+    --todo-primary: #9878cd;
+    --todo-secondary: #8e6cca;
+    --todo-accent: #ba68c8;
+    --todo-bg: #ffffff;
+    --todo-text: #212121;
+    --todo-text-light: #666666;
+    --todo-border: rgba(123, 31, 162, 0.2);
+    --todo-hover: #f3e5f5;
+    --todo-shadow: rgba(123, 31, 162, 0.15);
+    --todo-button-bg: #775cbd;
+    --todo-button-text: #ffffff;
+    --todo-modal-bg: #ffffff;
+    --todo-input-bg: #ffffff;
+    --todo-input-border: #e0e0e0;
 }
 
-[data-theme="dark"] .view-btn.active {
-    background: #4a5568;
+/* ========== APPLICATION DES THÈMES ========== */
+
+/* Popup principale */
+.todo-popup-content {
+    background: var(--todo-bg) !important;
+    color: var(--todo-text) !important;
+    box-shadow: 0 10px 40px var(--todo-shadow) !important;
 }
 
-[data-theme="dark"] .filter-select {
-    background: #2d3748;
-    border-color: #4a5568;
-    color: #e2e8f0;
+.todo-popup-header {
+    background: linear-gradient(135deg, var(--todo-primary), var(--todo-secondary)) !important;
+    color: var(--todo-button-text) !important;
+    border-bottom: 2px solid var(--todo-border) !important;
 }
 
-[data-theme="dark"] .todo-popup-body {
-    background: #1a202c;
+.todo-popup-header h2 {
+    color: var(--todo-button-text) !important;
 }
 
-[data-theme="dark"] .task-item {
-    background: #2d3748;
-    color: #e2e8f0;
+.todo-popup-close {
+    color: var(--todo-button-text) !important;
+    background: transparent !important;
 }
 
-[data-theme="dark"] .task-title {
-    color: #e2e8f0;
+.todo-popup-close:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
 }
 
-[data-theme="dark"] .task-description {
-    color: #a0aec0;
+/* Contrôles */
+.view-btn {
+    background: var(--todo-hover) !important;
+    color: var(--todo-text) !important;
+    border: 1px solid var(--todo-border) !important;
 }
 
-[data-theme="dark"] .board-column {
-    background: #6695e8;
+.view-btn:hover {
+    background: var(--todo-hover) !important;
+    transform: translateY(-2px);
 }
 
-[data-theme="dark"] .board-task {
-    background: #303747;
-    color: #e2e8f0;
+.view-btn.active {
+    background: var(--todo-primary) !important;
+    color: var(--todo-button-text) !important;
+    border-color: var(--todo-primary) !important;
 }
 
-[data-theme="dark"] .calendar-view {
-    background: #2d3748;
+.filter-select {
+    background: var(--todo-input-bg) !important;
+    color: var(--todo-text) !important;
+    border: 1px solid var(--todo-input-border) !important;
 }
 
-[data-theme="dark"] .calendar-day {
-    border-color: #2d3748;
-    color: #e2e8f0;
+.action-btn {
+    background: var(--todo-button-bg) !important;
+    color: var(--todo-button-text) !important;
+    border: none !important;
 }
 
-[data-theme="dark"] .calendar-day:hover {
-    background: #5a6578;
+.action-btn:hover {
+    background: var(--todo-secondary) !important;
+    box-shadow: 0 4px 12px var(--todo-shadow) !important;
 }
 
-[data-theme="dark"] .calendar-day.today {
-    background: #6695e8;
-    border-color: #673ab7;
+/* Liste des tâches */
+.task-item {
+    background: var(--todo-bg) !important;
+    color: var(--todo-text) !important;
+    border: 1px solid var(--todo-border) !important;
 }
 
-[data-theme="dark"] .task-modal-content {
-    background: #2d3748;
-    color: #e2e8f0;
+.task-item:hover {
+    background: var(--todo-hover) !important;
+    box-shadow: 0 4px 12px var(--todo-shadow) !important;
 }
 
-[data-theme="dark"] .task-modal-header {
-    background: linear-gradient(135deg, #424242, #616161);
+.task-title {
+    color: var(--todo-text) !important;
 }
 
-[data-theme="dark"] .task-modal-body input,
-[data-theme="dark"] .task-modal-body select,
-[data-theme="dark"] .task-modal-body textarea {
-    background: #4a5568;
-    border-color: #2d3748;
-    color: #e2e8f0;
+.task-description {
+    color: var(--todo-text-light) !important;
 }
 
-[data-theme="dark"] .task-modal-footer {
-    background: #1a202c;
+.task-category {
+    background: var(--todo-primary) !important;
+    color: var(--todo-button-text) !important;
 }
 
-[data-theme="dark"] .todo-popup-footer {
-    background: #1a202c;
-    border-top-color: #4a5568;
+.task-date {
+    color: var(--todo-text-light) !important;
 }
 
-/* Thème Bleu Ciel */
-[data-theme="bleuciel"] .todo-popup-header {
-    background: linear-gradient(135deg, #0288d1, #03a9f4);
+.task-btn {
+    background: var(--todo-hover) !important;
+    color: var(--todo-text) !important;
 }
 
-[data-theme="bleuciel"] .view-btn.active {
-    background: #0288d1;
+.task-btn:hover {
+    background: var(--todo-primary) !important;
+    color: var(--todo-button-text) !important;
 }
 
-[data-theme="bleuciel"] .column-count {
-    background: #0288d1;
+.task-btn.delete:hover {
+    background: #f44336 !important;
+    color: white !important;
 }
 
-[data-theme="bleuciel"] .task-modal-header {
-    background: linear-gradient(135deg, #0288d1, #03a9f4);
+/* Modal */
+.task-modal-content {
+    background: var(--todo-modal-bg) !important;
+    color: var(--todo-text) !important;
+    border: 2px solid var(--todo-border) !important;
 }
 
-/* Thème Light */
-[data-theme="light"] .todo-popup-header {
-    background: linear-gradient(135deg, #7b1fa2, #9c27b0);
+.task-modal-header {
+    background: linear-gradient(135deg, var(--todo-primary), var(--todo-secondary)) !important;
+    color: var(--todo-button-text) !important;
 }
 
-[data-theme="light"] .view-btn.active {
-    background: #7b1fa2;
+.task-modal-header h3 {
+    color: var(--todo-button-text) !important;
 }
 
-[data-theme="light"] .column-count {
-    background: #7b1fa2;
+.close-modal {
+    color: var(--todo-button-text) !important;
 }
 
-[data-theme="light"] .task-modal-header {
-    background: linear-gradient(135deg, #7b1fa2, #9c27b0);
+/* Formulaire */
+.form-group label {
+    color: var(--todo-text) !important;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    background: var(--todo-input-bg) !important;
+    color: var(--todo-text) !important;
+    border: 1px solid var(--todo-input-border) !important;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: var(--todo-text-light) !important;
+    opacity: 0.6;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: var(--todo-primary) !important;
+    outline: none !important;
+    box-shadow: 0 0 0 2px var(--todo-shadow) !important;
+}
+
+/* Boutons modal */
+.modal-btn.save-btn {
+    background: var(--todo-primary) !important;
+    color: var(--todo-button-text) !important;
+}
+
+.modal-btn.save-btn:hover {
+    background: var(--todo-secondary) !important;
+}
+
+.modal-btn.cancel-btn {
+    background: var(--todo-hover) !important;
+    color: var(--todo-text) !important;
+    border: 1px solid var(--todo-border) !important;
+}
+
+.modal-btn.cancel-btn:hover {
+    background: var(--todo-border) !important;
+}
+
+/* Footer et stats */
+.todo-popup-footer {
+    background: var(--todo-hover) !important;
+    border-top: 1px solid var(--todo-border) !important;
+}
+
+.stats-bar {
+    color: var(--todo-text) !important;
+}
+
+.stats-bar span {
+    color: var(--todo-text-light) !important;
+}
+
+.auto-save-indicator {
+    color: var(--todo-text-light) !important;
+}
+
+/* Bouton fermer en bas */
+.todo-popup-bottom-close {
+    background: var(--todo-hover) !important;
+    border-top: 1px solid var(--todo-border) !important;
+}
+
+.todo-close-bottom-btn {
+    background: var(--todo-primary) !important;
+    color: var(--todo-button-text) !important;
+}
+
+.todo-close-bottom-btn:hover {
+    background: var(--todo-secondary) !important;
+    box-shadow: 0 4px 12px var(--todo-shadow) !important;
+}
+
+/* Vue tableau */
+.board-column {
+    background: var(--todo-bg) !important;
+    border: 1px solid var(--todo-border) !important;
+}
+
+.column-header {
+    background: linear-gradient(135deg, var(--todo-primary), var(--todo-secondary)) !important;
+    color: var(--todo-button-text) !important;
+}
+
+.column-header h3 {
+    color: var(--todo-button-text) !important;
+}
+
+.board-task {
+    background: var(--todo-bg) !important;
+    color: var(--todo-text) !important;
+    border: 1px solid var(--todo-border) !important;
+}
+
+.board-task:hover {
+    background: var(--todo-hover) !important;
+    box-shadow: 0 4px 8px var(--todo-shadow) !important;
+}
+
+/* Vue calendrier */
+.calendar-header {
+    background: linear-gradient(135deg, var(--todo-primary), var(--todo-secondary)) !important;
+    color: var(--todo-button-text) !important;
+}
+
+.calendar-header h3 {
+    color: var(--todo-button-text) !important;
+}
+
+.calendar-nav {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: var(--todo-button-text) !important;
+}
+
+.calendar-nav:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+}
+
+.calendar-day {
+    background: #ffb74d29 !important;
+    color: var(--todo-text) !important;
+    border: 1px solid var(--todo-border) !important;
+}
+
+.calendar-day:hover {
+    background: var(--todo-hover) !important;
+}
+
+.calendar-day.today {
+    background: var(--todo-primary) !important;
+    color: var(--todo-button-text) !important;
+}
+
+.calendar-day.other-month {
+    opacity: 0.5;
+    background: var(--todo-hover) !important;
+}
+
+/* État vide */
+.empty-state {
+    color: var(--todo-text-light) !important;
+}
+
+/* Toast notifications */
+.todo-toast {
+    background: var(--todo-primary) !important;
+    color: var(--todo-button-text) !important;
+    box-shadow: 0 4px 12px var(--todo-shadow) !important;
+}
+
+/* Badges de priorité */
+.priority-badge.high {
+    background: #ff5252 !important;
+    color: white !important;
+}
+
+.priority-badge.medium {
+    background: var(--todo-accent) !important;
+    color: var(--todo-button-text) !important;
+}
+
+/* Scrollbar pour thème sombre */
+:root[data-theme="dark"] .todo-popup-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+:root[data-theme="dark"] .todo-popup-body::-webkit-scrollbar-track {
+    background: #2c2c2c;
+}
+
+:root[data-theme="dark"] .todo-popup-body::-webkit-scrollbar-thumb {
+    background: #ff9800;
+    border-radius: 4px;
+}
+
+:root[data-theme="dark"] .todo-popup-body::-webkit-scrollbar-thumb:hover {
+    background: #ffa726;
 }
 
 /* Animations */
@@ -1012,6 +1285,18 @@
     100% { background-color: rgba(76, 175, 80, 0.2); }
 }
 
+@keyframes pulse {
+    0% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.05); }
+    100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes highlight {
+    0% { background-color: transparent; }
+    50% { background-color: rgba(255, 152, 0, 0.3); }
+    100% { background-color: transparent; }
+}
+
 /* Empêcher le scroll du body */
 body.todo-popup-open {
     overflow: hidden !important;
@@ -1022,10 +1307,10 @@ body.todo-popup-open {
     content: '⚡ NOUVEAU';
     position: absolute;
     top: 3px;
-    right: 2px;
+    right: 90px;
     color: white;
     font-size: 10px;
-    padding: 3px 5px;
+    /* padding: 3px 5px; */
     border-radius: 30px;
 	background: #940000;
     font-weight: 800;

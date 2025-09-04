@@ -9,6 +9,8 @@ class TodoListWidget {
         this.editingTaskId = null;
         this.lastAutoSave = Date.now();
         this.initAutoSave();
+		this.currentCalendarMonth = new Date().getMonth();
+		this.currentCalendarYear = new Date().getFullYear();
     }
 
     init() {
@@ -17,7 +19,15 @@ class TodoListWidget {
             this.createTodoTile();
             this.createPopup();
             this.checkAndNotifyBackup();
-            this.updateTileNotifications(); // Mise à jour au chargement
+            this.updateTileNotifications();
+            
+            // Démarrer la surveillance des alarmes de tâches
+            startTaskAlarmChecker();
+            
+            // Vérifier immédiatement au chargement
+            setTimeout(() => {
+                checkTaskAlarms();
+            }, 1000);
             
             // Vérifier toutes les 5 minutes même si l'app n'est pas ouverte
             setInterval(() => {
@@ -29,6 +39,14 @@ class TodoListWidget {
         this.createPopup();
         this.checkAndNotifyBackup();
         this.updateTileNotifications();
+        
+        // Démarrer la surveillance des alarmes de tâches
+        startTaskAlarmChecker();
+        
+        // Vérifier immédiatement au chargement
+        setTimeout(() => {
+            checkTaskAlarms();
+        }, 1000);
         
         setInterval(() => {
             this.updateTileNotifications();
@@ -106,7 +124,7 @@ class TodoListWidget {
                 gradientStyle = 'linear-gradient(135deg, #d32f2f, #f44336)';
                 break;
             case 'dark':
-                gradientStyle = 'linear-gradient(135deg, #424242, #616161)';
+                gradientStyle = 'linear-gradient(135deg, #06f914, #ffffff1a)';
                 break;
             case 'bleuciel':
                 gradientStyle = 'linear-gradient(135deg, #0288d1, #03a9f4)';
@@ -248,17 +266,24 @@ class TodoListWidget {
                 </div>
                 
                 <div class="todo-popup-footer">
-                    <div class="stats-bar">
-                        <span id="totalTasks">0 tâches</span>
-                        <span id="completedTasks">0 terminées</span>
-                        <span id="pendingTasks">0 en cours</span>
-                        <span class="auto-save-indicator">
-                            <span class="material-icons">save</span>
-                            Sauvegarde auto
-                        </span>
-                    </div>
-                </div>
-            </div>
+					<div class="stats-bar">
+						<span id="totalTasks">0 tâches</span>
+						<span id="completedTasks">0 terminées</span>
+						<span id="pendingTasks">0 en cours</span>
+						<span class="auto-save-indicator">
+						<span class="material-icons">save</span>
+						Sauvegarde auto
+						</span>
+				</div>
+			</div>
+
+			<!-- Bouton fermer en bas -->
+				<div class="todo-popup-bottom-close">
+					<button class="todo-close-bottom-btn" onclick="window.todoInstance.closePopup()">
+						Fermer le gestionnaire de tâches
+						</button>
+				</div>
+				</div>
             
             <!-- Modal pour ajouter/éditer une tâche -->
             <div id="taskModal" class="task-modal">
@@ -815,7 +840,7 @@ updateTileNotifications() {
             const priorityClass = `priority-${task.priority}`;
             
             html += `
-                <div class="task-item ${task.completed ? 'completed' : ''} ${priorityClass} ${isOverdue ? 'overdue' : ''}">
+                <div class="task-item ${task.completed ? 'completed' : ''} ${priorityClass} ${isOverdue ? 'overdue' : ''}" data-task-id="${task.id}">
                     <div class="task-checkbox">
                         <input type="checkbox" id="check_${task.id}" ${task.completed ? 'checked' : ''} 
                                onchange="window.todoInstance.toggleTaskComplete('${task.id}')">
@@ -928,8 +953,9 @@ updateTileNotifications() {
         container.className = 'tasks-container calendar-view';
         
         const today = new Date();
-        const currentMonth = today.getMonth();
-        const currentYear = today.getFullYear();
+    // Utiliser les variables de classe au lieu de today
+    const currentMonth = this.currentCalendarMonth;
+    const currentYear = this.currentCalendarYear;;
         
         const firstDay = new Date(currentYear, currentMonth, 1);
         const lastDay = new Date(currentYear, currentMonth + 1, 0);
@@ -969,10 +995,10 @@ updateTileNotifications() {
         for (let day = 1; day <= lastDayIndex; day++) {
             const date = new Date(currentYear, currentMonth, day);
             // Utiliser l'année, mois et jour locaux pour éviter le décalage UTC
-const year = date.getFullYear();
-const month = String(date.getMonth() + 1).padStart(2, '0');
-const dayNum = String(date.getDate()).padStart(2, '0');
-const dateStr = `${year}-${month}-${dayNum}`;
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, '0');
+		const dayNum = String(date.getDate()).padStart(2, '0');
+		const dateStr = `${year}-${month}-${dayNum}`;
             const dayTasks = tasks.filter(t => {
     if (!t.dueDate) return false;
     return t.dueDate === dateStr;
@@ -1018,36 +1044,24 @@ const dateStr = `${year}-${month}-${dayNum}`;
     }
 
     previousMonth() {
-        const container = document.getElementById('tasksContainer');
-        let month = parseInt(container.dataset.month);
-        let year = parseInt(container.dataset.year);
-        
-        month--;
-        if (month < 0) {
-            month = 11;
-            year--;
-        }
-        
-        container.dataset.month = month;
-        container.dataset.year = year;
-        this.renderCalendarView(this.getFilteredTasks());
+    this.currentCalendarMonth--;
+    if (this.currentCalendarMonth < 0) {
+        this.currentCalendarMonth = 11;
+        this.currentCalendarYear--;
     }
+    
+    this.renderCalendarView(this.getFilteredTasks());
+}
 
     nextMonth() {
-        const container = document.getElementById('tasksContainer');
-        let month = parseInt(container.dataset.month);
-        let year = parseInt(container.dataset.year);
-        
-        month++;
-        if (month > 11) {
-            month = 0;
-            year++;
-        }
-        
-        container.dataset.month = month;
-        container.dataset.year = year;
-        this.renderCalendarView(this.getFilteredTasks());
+    this.currentCalendarMonth++;
+    if (this.currentCalendarMonth > 11) {
+        this.currentCalendarMonth = 0;
+        this.currentCalendarYear++;
     }
+    
+    this.renderCalendarView(this.getFilteredTasks());
+}
 
     isTaskInProgress(task) {
         // Logique pour déterminer si une tâche est "en cours"
@@ -1232,6 +1246,240 @@ const dateStr = `${year}-${month}-${dayNum}`;
         }, duration);
     }
 }
+
+// ========== SYSTÈME D'ALARME POUR TÂCHES AVEC PERSISTANCE ==========
+
+// Variables globales pour les alarmes de tâches
+let taskAlarms = new Map(); // Stocke les alarmes actives par taskId
+let taskCheckInterval = null;
+
+// Restaurer les alarmes au chargement
+function restoreTaskAlarms() {
+    try {
+        const savedAlarms = localStorage.getItem('taskAlarms');
+        if (savedAlarms) {
+            const alarmsData = JSON.parse(savedAlarms);
+            alarmsData.forEach(alarm => {
+                const alarmTime = new Date(alarm.time);
+                const now = new Date();
+                
+                // Si l'alarme est dans le futur, la reprogrammer
+                if (alarmTime > now) {
+                    const task = JSON.parse(localStorage.getItem('userTasks') || '[]')
+                        .find(t => t.id === alarm.taskId);
+                    if (task) {
+                        scheduleTaskAlarm(task, alarmTime);
+                        taskAlarms.set(task.id, true);
+                    }
+                }
+            });
+            console.log('✅ Alarmes de tâches restaurées');
+        }
+    } catch (error) {
+        console.error('Erreur restauration alarmes:', error);
+    }
+}
+
+// Sauvegarder les alarmes actives
+function saveTaskAlarms() {
+    const alarmsToSave = [];
+    const tasks = JSON.parse(localStorage.getItem('userTasks') || '[]');
+    
+    tasks.forEach(task => {
+        if (taskAlarms.has(task.id) && task.dueDate && task.dueTime) {
+            alarmsToSave.push({
+                taskId: task.id,
+                time: new Date(task.dueDate + 'T' + task.dueTime).toISOString()
+            });
+        }
+    });
+    
+    localStorage.setItem('taskAlarms', JSON.stringify(alarmsToSave));
+}
+
+// Démarrer la surveillance des tâches
+function startTaskAlarmChecker() {
+    if (taskCheckInterval) {
+        clearInterval(taskCheckInterval);
+    }
+    
+    // Restaurer d'abord les alarmes sauvegardées
+    restoreTaskAlarms();
+    
+    taskCheckInterval = setInterval(() => {
+        checkTaskAlarms();
+        saveTaskAlarms(); // Sauvegarder régulièrement
+    }, 30000);
+}
+
+// Vérifier les alarmes de tâches
+function checkTaskAlarms() {
+    const now = new Date();
+    const tasks = JSON.parse(localStorage.getItem('userTasks')) || [];
+    
+    tasks.forEach(task => {
+        if (!task.completed && task.dueDate && task.dueTime) {
+            const taskDateTime = new Date(task.dueDate + 'T' + task.dueTime);
+            const timeDiff = taskDateTime - now;
+            
+            // Si la tâche est dans les 15 prochaines minutes et pas encore notifiée
+            if (timeDiff > 0 && timeDiff <= 15 * 60 * 1000 && !taskAlarms.has(task.id)) {
+                // Programmer l'alarme
+                scheduleTaskAlarm(task, taskDateTime);
+                taskAlarms.set(task.id, true);
+            }
+        }
+    });
+}
+
+// Programmer une alarme pour une tâche
+function scheduleTaskAlarm(task, taskDateTime) {
+    const now = new Date();
+    const timeDiff = taskDateTime - now;
+    
+    if (timeDiff > 0) {
+        setTimeout(() => {
+            triggerTaskAlarm(task);
+        }, timeDiff);
+        
+        console.log(`⏰ Alarme programmée pour "${task.title}" à ${task.dueTime}`);
+    }
+}
+
+// Déclencher l'alarme d'une tâche
+function triggerTaskAlarm(task) {
+    console.log(`🔔 ALARME TÂCHE: ${task.title}`);
+    
+    // Jouer le son
+    playTaskAlarmSound();
+    
+    // Vibration
+    if (navigator.vibrate) {
+        navigator.vibrate([200, 100, 200, 100, 200]);
+    }
+    
+    // Créer notification visuelle
+    createTaskAlarmNotification(task);
+    
+    // Marquer comme notifié
+    task.alarmTriggered = true;
+    const tasks = JSON.parse(localStorage.getItem('userTasks')) || [];
+    const taskIndex = tasks.findIndex(t => t.id === task.id);
+    if (taskIndex !== -1) {
+        tasks[taskIndex] = task;
+        localStorage.setItem('userTasks', JSON.stringify(tasks));
+    }
+}
+
+// Jouer le son d'alarme (utilise vos fichiers sons existants)
+function playTaskAlarmSound() {
+    const audio = new Audio('/sounds/notification.mp3');
+    audio.volume = 0.5;
+    audio.play().catch(() => {
+        // Son synthétique en fallback
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        } catch (e) {
+            console.log('Audio non disponible');
+        }
+    });
+}
+
+// Créer notification visuelle pour tâche
+function createTaskAlarmNotification(task) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, #ff9800, #ff5722);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        z-index: 10003;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        text-align: center;
+        min-width: 300px;
+        animation: pulse 1s infinite;
+    `;
+    
+    notification.innerHTML = `
+        <h3 style="margin: 0 0 15px 0; font-size: 24px;">⏰ C'est l'heure !</h3>
+        <p style="font-size: 18px; font-weight: bold; margin: 10px 0;">${task.title}</p>
+        ${task.description ? `<p style="opacity: 0.9; margin: 10px 0;">${task.description}</p>` : ''}
+        <p style="font-size: 16px; margin: 15px 0;">📅 ${task.dueTime}</p>
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button onclick="openTodoForTask('${task.id}')" style="
+                flex: 1;
+                background: white;
+                color: #ff5722;
+                border: none;
+                padding: 12px;
+                border-radius: 8px;
+                font-weight: bold;
+                cursor: pointer;
+            ">Voir la tâche</button>
+            <button onclick="this.parentElement.parentElement.remove()" style="
+                flex: 1;
+                background: rgba(255,255,255,0.2);
+                color: white;
+                border: 2px solid white;
+                padding: 12px;
+                border-radius: 8px;
+                font-weight: bold;
+                cursor: pointer;
+            ">Fermer</button>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto-fermeture après 30 secondes
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 30000);
+}
+
+// Ouvrir la Todo pour une tâche spécifique
+window.openTodoForTask = function(taskId) {
+    // Fermer la notification
+    const notifications = document.querySelectorAll('div[style*="z-index: 10003"]');
+    notifications.forEach(n => n.remove());
+    
+    // Ouvrir la Todo
+    if (window.todoInstance) {
+        window.todoInstance.openPopup();
+        
+        // Faire défiler jusqu'à la tâche après ouverture
+        setTimeout(() => {
+            const taskElement = document.querySelector(`[data-task-id="${taskId}"]`);
+            if (taskElement) {
+                taskElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                taskElement.style.animation = 'highlight 2s';
+            }
+        }, 500);
+    }
+};
+
+// Sauvegarder les alarmes avant fermeture
+window.addEventListener('beforeunload', function() {
+    saveTaskAlarms();
+});
 
 // Initialisation
 document.addEventListener('DOMContentLoaded', function() {
