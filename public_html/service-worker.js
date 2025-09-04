@@ -38,6 +38,7 @@ const STATIC_RESOURCES = [
 	'/css/football-widget.css',
 	'/css/radioPopup.css',
 	'/css/notepadApp.css',
+	'/css/todoApp.css',
 
     // Scripts JavaScript
     '/js/app.js',
@@ -74,6 +75,7 @@ const STATIC_RESOURCES = [
 	'/js/expense-manager.js',
 	'/js/radioPopup.js',
 	'/js/notepadApp.js',
+	'/js/todoApp.js',
     
     // Fichiers de configuration (seulement ceux qui existent)
     '/manifest.json',
@@ -889,15 +891,19 @@ self.addEventListener('notificationclick', function(event) {
     // URL à ouvrir, avec priorité au type chat
     let url = '/';
     
-    // Priorité au type de notification
-    if (event.notification.data) {
-        if (event.notification.data.type === 'chat') {
-            url = '/?action=openchat';
-        } else if (event.notification.data.url) {
-            url = event.notification.data.url;
+    // Ajouter dans le gestionnaire notificationclick existant
+if (event.notification.data) {
+    if (event.notification.data.type === 'todo') {
+        url = '/?action=opentodo';
+        if (event.notification.data.taskId) {
+            url += '&taskId=' + event.notification.data.taskId;
         }
+    } else if (event.notification.data.type === 'chat') {
+        url = '/?action=openchat';
+    } else if (event.notification.data.url) {
+        url = event.notification.data.url;
     }
-    
+}
     // Ouvrir directement
     event.waitUntil(clients.openWindow(url));
 });
