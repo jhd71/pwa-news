@@ -1204,7 +1204,9 @@ const dateStr = `${year}-${month}-${dayNum}`;
         
         container.innerHTML = html;
         
-        // Stocker le mois actuel pour la navigation
+       } 
+	   
+	   // Stocker le mois actuel pour la navigation
         container.dataset.month = currentMonth;
         container.dataset.year = currentYear;
     }

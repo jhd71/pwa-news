@@ -888,22 +888,23 @@ self.addEventListener('notificationclick', function(event) {
     // Fermer immédiatement la notification
     event.notification.close();
     
-    // URL à ouvrir, avec priorité au type chat
+    // URL à ouvrir, avec priorité au type
     let url = '/';
     
-    // Ajouter dans le gestionnaire notificationclick existant
-if (event.notification.data) {
-    if (event.notification.data.type === 'todo') {
-        url = '/?action=opentodo';
-        if (event.notification.data.taskId) {
-            url += '&taskId=' + event.notification.data.taskId;
+    // Gestion des différents types de notification
+    if (event.notification.data) {
+        if (event.notification.data.type === 'todo') {
+            url = '/?action=opentodo';
+            if (event.notification.data.taskId) {
+                url += '&taskId=' + event.notification.data.taskId;
+            }
+        } else if (event.notification.data.type === 'chat') {
+            url = '/?action=openchat';
+        } else if (event.notification.data.url) {
+            url = event.notification.data.url;
         }
-    } else if (event.notification.data.type === 'chat') {
-        url = '/?action=openchat';
-    } else if (event.notification.data.url) {
-        url = event.notification.data.url;
     }
-}
+    
     // Ouvrir directement
     event.waitUntil(clients.openWindow(url));
 });
