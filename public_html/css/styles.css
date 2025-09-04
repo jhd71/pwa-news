@@ -3933,8 +3933,8 @@ a:active {
     }
 }
 
-/* Badge "NOUVEAU" pour notepad */
-.tile[data-category="notepad"]:after {
+/* Badge "NOUVEAU" pour todoApp */
+.tile[data-category="todoApp"]:after {
     content: '⚡ NOUVEAU';
     position: absolute;
     top: 3px;

@@ -98,7 +98,6 @@
     gap: 5px;
     font-size: 14px;
     transition: all 0.2s;
-    color: #666;
 }
 
 .view-btn:hover {
@@ -317,7 +316,7 @@
     background: transparent;
     border-radius: 4px;
     cursor: pointer;
-    color: #666;
+    color: #6695e8;
     transition: all 0.2s;
 }
 
@@ -449,7 +448,7 @@
     background: transparent;
     border-radius: 4px;
     cursor: pointer;
-    color: #666;
+    color: #6695e8;
     font-size: 18px;
 }
 
