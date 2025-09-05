@@ -277,15 +277,13 @@ class TodoListWidget {
 				</div>
 			</div>
 
-			<!-- Bouton fermer en bas -->
-				<div class="todo-popup-bottom-close">
+			<div class="todo-popup-bottom-close">
 					<button class="todo-close-bottom-btn" onclick="window.todoInstance.closePopup()">
 						Fermer le gestionnaire de tâches
 						</button>
 				</div>
 				</div>
             
-            <!-- Modal pour ajouter/éditer une tâche -->
             <div id="taskModal" class="task-modal">
                 <div class="task-modal-content">
                     <div class="task-modal-header">
@@ -465,7 +463,7 @@ class TodoListWidget {
         this.renderTasks();
         this.updateStats();
         this.checkAndNotifyBackup();
-        this.checkTasksNotifications(); // AJOUT - seule ligne à ajouter
+        this.checkTasksNotifications(); 
     }
 
     closePopup() {
@@ -547,7 +545,6 @@ class TodoListWidget {
             this.tasks.unshift(taskData);
             this.showToast('✅ Tâche ajoutée');
             
-            // Si récurrence, créer les prochaines occurrences
             if (taskData.recurrence !== 'none' && taskData.dueDate) {
                 this.createRecurringTasks(taskData);
             }
@@ -560,7 +557,7 @@ class TodoListWidget {
     }
 
     createRecurringTasks(originalTask) {
-        const maxOccurrences = 10; // Créer 10 occurrences futures max
+        const maxOccurrences = 10;
         const baseDate = new Date(originalTask.dueDate);
         
         for (let i = 1; i <= maxOccurrences; i++) {
@@ -578,7 +575,6 @@ class TodoListWidget {
                     break;
             }
             
-            // Ne pas créer de tâches trop loin dans le futur (max 3 mois)
             if (nextDate > new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)) break;
             
             const recurringTask = {
@@ -626,23 +622,21 @@ class TodoListWidget {
                 
                 if (daysDiff === 0) {
 		this.showToast(`⏰ Tâche du jour: ${task.title}`, 5000);
-		this.playNotificationSound(); // Ajoutez cette ligne
+		this.playNotificationSound();
 		task.notified = true;
 		this.saveToLocalStorage();
 	} else if (daysDiff < 0) {
 		this.showToast(`⚠️ EN RETARD: ${task.title}`, 6000);
-		this.playNotificationSound(); // Ajoutez cette ligne aussi si vous voulez
+		this.playNotificationSound();
 	}
             }
         });
     }
 
     playNotificationSound() {
-    // Essayer d'abord le son personnalisé
-    const audio = new Audio('/sounds/notification.mp3'); // Notez le / au début pour le chemin absolu
+    const audio = new Audio('/sounds/notification.mp3');
     audio.volume = 0.4;
     audio.play().catch(e => {
-        // Si le fichier n'existe pas, utiliser le son synthétique
         console.log('Son personnalisé non trouvé, utilisation du son par défaut');
         try {
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -679,7 +673,6 @@ scheduleTimeNotification(task) {
     if (timeDiff > 0) {
         setTimeout(() => {
             this.showToast(`🔔 C'est l'heure! ${task.title}`, 10000);
-            // Son de notification optionnel
             this.playNotificationSound();
         }, timeDiff);
     }
@@ -703,7 +696,6 @@ updateTileNotifications() {
         }
     });
     
-    // Mettre à jour le contenu de la tuile
     const tileContent = tile.querySelector('.tile-content');
     if (tileContent) {
         let badgeHtml = '';
@@ -771,11 +763,9 @@ updateTileNotifications() {
                 
             case 'all':
             default:
-                // Pas de filtre
                 break;
         }
         
-        // Tri par priorité et date
         filtered.sort((a, b) => {
             if (a.completed !== b.completed) return a.completed ? 1 : -1;
             const priorityOrder = { high: 0, medium: 1, low: 2 };
@@ -953,7 +943,6 @@ updateTileNotifications() {
         container.className = 'tasks-container calendar-view';
         
         const today = new Date();
-    // Utiliser les variables de classe au lieu de today
     const currentMonth = this.currentCalendarMonth;
     const currentYear = this.currentCalendarYear;;
         
@@ -961,7 +950,7 @@ updateTileNotifications() {
         const lastDay = new Date(currentYear, currentMonth + 1, 0);
         const prevLastDay = new Date(currentYear, currentMonth, 0);
         
-        const firstDayIndex = firstDay.getDay() || 7; // Lundi = 1
+        const firstDayIndex = firstDay.getDay() || 7;
         const lastDayIndex = lastDay.getDate();
         const prevLastDayIndex = prevLastDay.getDate();
         
@@ -986,15 +975,12 @@ updateTileNotifications() {
                 <div class="calendar-days">
         `;
         
-        // Jours du mois précédent
         for (let i = firstDayIndex - 2; i >= 0; i--) {
             html += `<div class="calendar-day other-month">${prevLastDayIndex - i}</div>`;
         }
         
-        // Jours du mois actuel
         for (let day = 1; day <= lastDayIndex; day++) {
             const date = new Date(currentYear, currentMonth, day);
-            // Utiliser l'année, mois et jour locaux pour éviter le décalage UTC
 		const year = date.getFullYear();
 		const month = String(date.getMonth() + 1).padStart(2, '0');
 		const dayNum = String(date.getDate()).padStart(2, '0');
@@ -1025,7 +1011,6 @@ updateTileNotifications() {
             `;
         }
         
-        // Jours du mois suivant
         const remainingDays = 42 - (firstDayIndex - 1 + lastDayIndex);
         for (let day = 1; day <= remainingDays; day++) {
             html += `<div class="calendar-day other-month">${day}</div>`;
@@ -1038,7 +1023,6 @@ updateTileNotifications() {
         
         container.innerHTML = html;
         
-        // Stocker le mois actuel pour la navigation
         container.dataset.month = currentMonth;
         container.dataset.year = currentYear;
     }
@@ -1064,8 +1048,6 @@ updateTileNotifications() {
 }
 
     isTaskInProgress(task) {
-        // Logique pour déterminer si une tâche est "en cours"
-        // Par exemple, si elle a une date d'échéance dans les 3 prochains jours
         if (!task.dueDate || task.completed) return false;
         const dueDate = new Date(task.dueDate);
         const today = new Date();
@@ -1142,7 +1124,6 @@ updateTileNotifications() {
             
             URL.revokeObjectURL(url);
             
-            // Mettre à jour la date de dernière sauvegarde
             localStorage.setItem('lastTaskBackup', Date.now().toString());
             
             this.showToast(`📥 ${this.tasks.length} tâches exportées avec succès`);
@@ -1213,7 +1194,6 @@ updateTileNotifications() {
         try {
             localStorage.setItem('userTasks', JSON.stringify(this.tasks));
             
-            // Indicateur visuel de sauvegarde
             const indicator = document.querySelector('.auto-save-indicator');
             if (indicator) {
                 indicator.classList.add('saving');
@@ -1249,49 +1229,46 @@ updateTileNotifications() {
 
 // ========== SYSTÈME D'ALARME POUR TÂCHES AVEC PERSISTANCE ==========
 
-// Variables globales pour les alarmes de tâches
-let taskAlarms = new Map(); // Stocke les alarmes actives par taskId
+let taskAlarms = new Map();
 let taskCheckInterval = null;
 
-// Restaurer les alarmes au chargement
 function restoreTaskAlarms() {
     try {
         const savedAlarms = localStorage.getItem('taskAlarms');
         if (savedAlarms) {
             const alarmsData = JSON.parse(savedAlarms);
+            const now = new Date();
+            
             alarmsData.forEach(alarm => {
                 const alarmTime = new Date(alarm.time);
-                const now = new Date();
                 
-                // Si l'alarme est dans le futur, la reprogrammer
                 if (alarmTime > now) {
-                    const task = JSON.parse(localStorage.getItem('userTasks') || '[]')
-                        .find(t => t.id === alarm.taskId);
-                    if (task) {
+                    const tasks = JSON.parse(localStorage.getItem('userTasks') || '[]');
+                    const task = tasks.find(t => t.id === alarm.taskId);
+                    if (task && !task.completed) {
                         scheduleTaskAlarm(task, alarmTime);
-                        taskAlarms.set(task.id, true);
+                        taskAlarms.set(task.id, true); // Marquer comme programmée en mémoire
                     }
                 }
             });
-            console.log('✅ Alarmes de tâches restaurées');
+            console.log(`✅ ${taskAlarms.size} alarmes de tâches restaurées`);
         }
     } catch (error) {
         console.error('Erreur restauration alarmes:', error);
     }
 }
 
-// Sauvegarder les alarmes actives
+
 function saveTaskAlarms() {
     const alarmsToSave = [];
     const tasks = JSON.parse(localStorage.getItem('userTasks') || '[]');
     const now = new Date();
 
     tasks.forEach(task => {
-        // MODIFICATION CLÉ CI-DESSOUS
         // On sauvegarde TOUTES les tâches non terminées qui ont une date et une heure DANS LE FUTUR.
         if (!task.completed && task.dueDate && task.dueTime) {
             const taskDateTime = new Date(task.dueDate + 'T' + task.dueTime);
-            if (taskDateTime > now) { // On s'assure que l'alarme est bien dans le futur
+            if (taskDateTime > now) {
                 alarmsToSave.push({
                     taskId: task.id,
                     time: taskDateTime.toISOString()
@@ -1303,22 +1280,20 @@ function saveTaskAlarms() {
     localStorage.setItem('taskAlarms', JSON.stringify(alarmsToSave));
 }
 
-// Démarrer la surveillance des tâches
+
 function startTaskAlarmChecker() {
     if (taskCheckInterval) {
         clearInterval(taskCheckInterval);
     }
     
-    // Restaurer d'abord les alarmes sauvegardées
     restoreTaskAlarms();
     
     taskCheckInterval = setInterval(() => {
         checkTaskAlarms();
-        saveTaskAlarms(); // Sauvegarder régulièrement
-    }, 30000);
+        saveTaskAlarms();
+    }, 30000); // 30 secondes
 }
 
-// Vérifier les alarmes de tâches
 function checkTaskAlarms() {
     const now = new Date();
     const tasks = JSON.parse(localStorage.getItem('userTasks')) || [];
@@ -1326,11 +1301,9 @@ function checkTaskAlarms() {
     tasks.forEach(task => {
         if (!task.completed && task.dueDate && task.dueTime) {
             const taskDateTime = new Date(task.dueDate + 'T' + task.dueTime);
-            const timeDiff = taskDateTime - now;
             
-            // Si la tâche est dans les 15 prochaines minutes et pas encore notifiée
-            if (timeDiff > 0 && timeDiff <= 15 * 60 * 1000 && !taskAlarms.has(task.id)) {
-                // Programmer l'alarme
+            // On vérifie que la tâche est dans le futur et pas encore programmée DANS LA SESSION ACTUELLE
+            if (taskDateTime > now && !taskAlarms.has(task.id)) {
                 scheduleTaskAlarm(task, taskDateTime);
                 taskAlarms.set(task.id, true);
             }
@@ -1338,51 +1311,51 @@ function checkTaskAlarms() {
     });
 }
 
-// Programmer une alarme pour une tâche
 function scheduleTaskAlarm(task, taskDateTime) {
     const now = new Date();
     const timeDiff = taskDateTime - now;
     
     if (timeDiff > 0) {
         setTimeout(() => {
-            triggerTaskAlarm(task);
+            // Re-vérifier que la tâche existe toujours et n'est pas complétée avant de sonner
+            const currentTasks = JSON.parse(localStorage.getItem('userTasks') || '[]');
+            const currentTask = currentTasks.find(t => t.id === task.id);
+            if(currentTask && !currentTask.completed) {
+               triggerTaskAlarm(currentTask);
+            }
         }, timeDiff);
         
         console.log(`⏰ Alarme programmée pour "${task.title}" à ${task.dueTime}`);
     }
 }
 
-// Déclencher l'alarme d'une tâche
 function triggerTaskAlarm(task) {
     console.log(`🔔 ALARME TÂCHE: ${task.title}`);
     
-    // Jouer le son
     playTaskAlarmSound();
     
-    // Vibration
     if (navigator.vibrate) {
         navigator.vibrate([200, 100, 200, 100, 200]);
     }
     
-    // Créer notification visuelle
     createTaskAlarmNotification(task);
     
-    // Marquer comme notifié
+    // Marquer comme notifié et nettoyer
     task.alarmTriggered = true;
+    taskAlarms.delete(task.id);
     const tasks = JSON.parse(localStorage.getItem('userTasks')) || [];
     const taskIndex = tasks.findIndex(t => t.id === task.id);
     if (taskIndex !== -1) {
-        tasks[taskIndex] = task;
+        tasks[taskIndex].alarmTriggered = true; 
         localStorage.setItem('userTasks', JSON.stringify(tasks));
     }
+    saveTaskAlarms(); // Mettre à jour la liste des alarmes à sauvegarder
 }
 
-// Jouer le son d'alarme (utilise vos fichiers sons existants)
 function playTaskAlarmSound() {
     const audio = new Audio('/sounds/todo.mp3');
     audio.volume = 0.5;
     audio.play().catch(() => {
-        // Son synthétique en fallback
         try {
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
             const oscillator = audioContext.createOscillator();
@@ -1403,7 +1376,6 @@ function playTaskAlarmSound() {
     });
 }
 
-// Créer notification visuelle pour tâche
 function createTaskAlarmNotification(task) {
     const notification = document.createElement('div');
     notification.style.cssText = `
@@ -1453,7 +1425,6 @@ function createTaskAlarmNotification(task) {
     
     document.body.appendChild(notification);
     
-    // Auto-fermeture après 30 secondes
     setTimeout(() => {
         if (notification.parentElement) {
             notification.remove();
@@ -1461,17 +1432,13 @@ function createTaskAlarmNotification(task) {
     }, 30000);
 }
 
-// Ouvrir la Todo pour une tâche spécifique
 window.openTodoForTask = function(taskId) {
-    // Fermer la notification
     const notifications = document.querySelectorAll('div[style*="z-index: 10003"]');
     notifications.forEach(n => n.remove());
     
-    // Ouvrir la Todo
     if (window.todoInstance) {
         window.todoInstance.openPopup();
         
-        // Faire défiler jusqu'à la tâche après ouverture
         setTimeout(() => {
             const taskElement = document.querySelector(`[data-task-id="${taskId}"]`);
             if (taskElement) {
@@ -1482,20 +1449,23 @@ window.openTodoForTask = function(taskId) {
     }
 };
 
-// Sauvegarder les alarmes avant fermeture
 window.addEventListener('beforeunload', function() {
     saveTaskAlarms();
 });
 
-// Initialisation
+// ======================= CORRECTION FINALE CI-DESSOUS =======================
+// Initialisation avec un délai pour la stabilité
 document.addEventListener('DOMContentLoaded', function() {
-    try {
-        if (typeof localStorage !== 'undefined') {
-            window.todoInstance = new TodoListWidget();
-            window.todoInstance.init();
+    // AJOUT D'UN DÉLAI POUR LA STABILITÉ, COMME DANS NEWS-WIDGET.JS
+    setTimeout(() => {
+        try {
+            if (typeof localStorage !== 'undefined' && !window.todoInstance) {
+                window.todoInstance = new TodoListWidget();
+                window.todoInstance.init();
+                console.log('✅ Todo List initialisée avec un délai.');
+            }
+        } catch (error) {
+            console.error('Erreur lors de l\'initialisation de la Todo List:', error);
         }
-    } catch (error) {
-        console.error('Erreur lors de l\'initialisation de la Todo List:', error);
-    }
+    }, 500); // Un délai de 500ms est souvent suffisant
 });
-	
