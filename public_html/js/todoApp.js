@@ -1258,6 +1258,65 @@ function restoreTaskAlarms() {
     }
 }
 
+// NOUVELLE FONCTION
+// Gère la suppression d'une notification d'alarme (visuellement et dans le localStorage)
+window.dismissTaskAlarm = function(taskId) {
+    // Supprimer du localStorage
+    try {
+        const ringingAlarms = JSON.parse(localStorage.getItem('ringingTaskAlarms') || '[]');
+        const updatedAlarms = ringingAlarms.filter(id => id !== taskId);
+        localStorage.setItem('ringingTaskAlarms', JSON.stringify(updatedAlarms));
+    } catch (e) {
+        console.error("Erreur lors de la suppression de l'alarme active :", e);
+    }
+
+    // Supprimer la popup du DOM
+    const notification = document.getElementById(`task-alarm-${taskId}`);
+    if (notification) {
+        notification.remove();
+    }
+};
+
+/**
+ * AJOUT : Restaure les notifications visuelles pour les alarmes qui sonnaient avant le rechargement
+ */
+function restoreRingingAlarms() {
+    try {
+        const ringingAlarms = JSON.parse(localStorage.getItem('ringingTaskAlarms') || '[]');
+        if (ringingAlarms.length === 0) return;
+
+        console.log(`♻️ Restauration de ${ringingAlarms.length} notification(s) d'alarme.`);
+        const tasks = JSON.parse(localStorage.getItem('userTasks') || '[]');
+
+        ringingAlarms.forEach(taskId => {
+            const task = tasks.find(t => t.id === taskId);
+            if (task) createTaskAlarmNotification(task);
+        });
+    } catch (e) {
+        console.error("Erreur lors de la restauration des alarmes actives :", e);
+        localStorage.setItem('ringingTaskAlarms', '[]');
+    }
+}
+
+
+function restoreTaskAlarms() {
+    try {
+        const savedAlarms = JSON.parse(localStorage.getItem('taskAlarms') || '[]');
+        const now = new Date();
+        savedAlarms.forEach(alarm => {
+            const alarmTime = new Date(alarm.time);
+            if (alarmTime > now) {
+                const task = JSON.parse(localStorage.getItem('userTasks') || '[]').find(t => t.id === alarm.taskId);
+                if (task && !task.completed) {
+                    scheduleTaskAlarm(task, alarmTime);
+                    taskAlarms.set(task.id, true);
+                }
+            }
+        });
+        console.log(`✅ ${taskAlarms.size} alarmes de tâches restaurées.`);
+    } catch (error) { console.error('Erreur restauration alarmes:', error); }
+}
+
 
 function saveTaskAlarms() {
     const alarmsToSave = [];
@@ -1331,6 +1390,17 @@ function scheduleTaskAlarm(task, taskDateTime) {
 
 function triggerTaskAlarm(task) {
     console.log(`🔔 ALARME TÂCHE: ${task.title}`);
+
+    // MODIFICATION 1 : AJOUTER L'ALARME À LA LISTE DES ALARMES ACTIVES
+    try {
+        const ringingAlarms = JSON.parse(localStorage.getItem('ringingTaskAlarms') || '[]');
+        if (!ringingAlarms.includes(task.id)) {
+            ringingAlarms.push(task.id);
+            localStorage.setItem('ringingTaskAlarms', JSON.stringify(ringingAlarms));
+        }
+    } catch (e) {
+        console.error("Erreur lors de la sauvegarde de l'alarme active :", e);
+    }
     
     playTaskAlarmSound();
     
@@ -1340,7 +1410,7 @@ function triggerTaskAlarm(task) {
     
     createTaskAlarmNotification(task);
     
-    // Marquer comme notifié et nettoyer
+    // ... le reste de la fonction reste identique
     task.alarmTriggered = true;
     taskAlarms.delete(task.id);
     const tasks = JSON.parse(localStorage.getItem('userTasks')) || [];
@@ -1349,7 +1419,7 @@ function triggerTaskAlarm(task) {
         tasks[taskIndex].alarmTriggered = true; 
         localStorage.setItem('userTasks', JSON.stringify(tasks));
     }
-    saveTaskAlarms(); // Mettre à jour la liste des alarmes à sauvegarder
+    saveTaskAlarms();
 }
 
 function playTaskAlarmSound() {
@@ -1378,6 +1448,8 @@ function playTaskAlarmSound() {
 
 function createTaskAlarmNotification(task) {
     const notification = document.createElement('div');
+    // MODIFICATION 2 : AJOUTER UN ID UNIQUE À LA NOTIFICATION
+    notification.id = `task-alarm-${task.id}`;
     notification.style.cssText = `
         position: fixed;
         top: 50%;
@@ -1410,7 +1482,8 @@ function createTaskAlarmNotification(task) {
                 font-weight: bold;
                 cursor: pointer;
             ">Voir la tâche</button>
-            <button onclick="this.parentElement.parentElement.remove()" style="
+            
+            <button onclick="dismissTaskAlarm('${task.id}')" style="
                 flex: 1;
                 background: rgba(255,255,255,0.2);
                 color: white;
@@ -1424,13 +1497,31 @@ function createTaskAlarmNotification(task) {
     `;
     
     document.body.appendChild(notification);
-    
+
+    // L'auto-fermeture doit aussi nettoyer la persistance
     setTimeout(() => {
-        if (notification.parentElement) {
-            notification.remove();
-        }
-    }, 30000);
+        dismissTaskAlarm(task.id);
+    }, 30000); // 30 secondes
 }
+
+
+// MODIFICATION 4 : openTodoForTask doit aussi fermer l'alarme
+window.openTodoForTask = function(taskId) {
+    // Ferme et nettoie l'alarme avant d'ouvrir la todo list
+    dismissTaskAlarm(taskId);
+    
+    if (window.todoInstance) {
+        window.todoInstance.openPopup();
+        
+        setTimeout(() => {
+            const taskElement = document.querySelector(`[data-task-id="${taskId}"]`);
+            if (taskElement) {
+                taskElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                taskElement.style.animation = 'highlight 2s';
+            }
+        }, 500);
+    }
+};
 
 window.openTodoForTask = function(taskId) {
     const notifications = document.querySelectorAll('div[style*="z-index: 10003"]');
@@ -1456,16 +1547,18 @@ window.addEventListener('beforeunload', function() {
 // ======================= CORRECTION FINALE CI-DESSOUS =======================
 // Initialisation avec un délai pour la stabilité
 document.addEventListener('DOMContentLoaded', function() {
-    // AJOUT D'UN DÉLAI POUR LA STABILITÉ, COMME DANS NEWS-WIDGET.JS
     setTimeout(() => {
         try {
             if (typeof localStorage !== 'undefined' && !window.todoInstance) {
                 window.todoInstance = new TodoListWidget();
                 window.todoInstance.init();
                 console.log('✅ Todo List initialisée avec un délai.');
+
+                // MODIFICATION 5 : RESTAURER LES POPUPS VISIBLES
+                restoreRingingAlarms();
             }
         } catch (error) {
             console.error('Erreur lors de l\'initialisation de la Todo List:', error);
         }
-    }, 500); // Un délai de 500ms est souvent suffisant
+    }, 500);
 });
