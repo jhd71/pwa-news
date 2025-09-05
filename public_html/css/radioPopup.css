@@ -324,10 +324,6 @@
     }
 }
 
-.radio-station-card.active.playing {
-    animation: pulse 2s infinite;
-}
-
 /* Infos de la station */
 .station-info {
     flex: 1;
