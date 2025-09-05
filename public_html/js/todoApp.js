@@ -1284,16 +1284,22 @@ function restoreTaskAlarms() {
 function saveTaskAlarms() {
     const alarmsToSave = [];
     const tasks = JSON.parse(localStorage.getItem('userTasks') || '[]');
-    
+    const now = new Date();
+
     tasks.forEach(task => {
-        if (taskAlarms.has(task.id) && task.dueDate && task.dueTime) {
-            alarmsToSave.push({
-                taskId: task.id,
-                time: new Date(task.dueDate + 'T' + task.dueTime).toISOString()
-            });
+        // MODIFICATION CLÉ CI-DESSOUS
+        // On sauvegarde TOUTES les tâches non terminées qui ont une date et une heure DANS LE FUTUR.
+        if (!task.completed && task.dueDate && task.dueTime) {
+            const taskDateTime = new Date(task.dueDate + 'T' + task.dueTime);
+            if (taskDateTime > now) { // On s'assure que l'alarme est bien dans le futur
+                alarmsToSave.push({
+                    taskId: task.id,
+                    time: taskDateTime.toISOString()
+                });
+            }
         }
     });
-    
+
     localStorage.setItem('taskAlarms', JSON.stringify(alarmsToSave));
 }
 
