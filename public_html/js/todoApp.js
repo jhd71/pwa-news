@@ -639,7 +639,7 @@ class TodoListWidget {
 
     playNotificationSound() {
     // Essayer d'abord le son personnalisé
-    const audio = new Audio('/sounds/todo.mp3'); // Notez le / au début pour le chemin absolu
+    const audio = new Audio('/sounds/notification.mp3'); // Notez le / au début pour le chemin absolu
     audio.volume = 0.4;
     audio.play().catch(e => {
         // Si le fichier n'existe pas, utiliser le son synthétique
