@@ -146,6 +146,8 @@ class RadioPopupWidget {
         <div class="tile-content">
             <div class="tile-title">🎵 Lecteur Radio</div>
         </div>
+        <div class="radio-tile-indicator" id="radioTileIndicator" style="display: none;"></div>
+        <div class="radio-tile-status" id="radioTileStatus" style="display: none;"></div>
     `;
 
     // Ajouter le gestionnaire de clic
@@ -284,6 +286,8 @@ closePopup() {
             this.scrollPosition = null;
         }
     }
+	// Maintenir l'indicateur si la radio joue toujours
+    this.updateTileIndicator();
 }
 	
 	toggleStationPlayback(index) {
@@ -382,6 +386,8 @@ closePopup() {
             
             this.audio.play();
             this.isPlaying = true;
+			// Mettre à jour l'indicateur de la tuile
+            this.updateTileIndicator();
             document.getElementById('currentStationStatus').textContent = 'En direct';
             this.updateStatusStyle('En direct');
             
@@ -399,6 +405,8 @@ closePopup() {
             document.getElementById('currentStationStatus').textContent = 'Erreur';
             this.updateStatusStyle('Erreur');
             this.isPlaying = false;
+			// Mettre à jour l'indicateur de la tuile
+			this.updateTileIndicator();
         }
     }
 
@@ -407,6 +415,8 @@ closePopup() {
             this.audio.pause();
         }
         this.isPlaying = false;
+		// Masquer l'indicateur de la tuile
+        this.hideTileIndicator();
         document.getElementById('currentStationStatus').textContent = 'En pause';
         this.updateStatusStyle('En pause');
         
@@ -438,6 +448,44 @@ closePopup() {
         }
     }
 
+// Afficher l'indicateur de lecture sur la tuile
+    showTileIndicator(stationName) {
+        const indicator = document.getElementById('radioTileIndicator');
+        const status = document.getElementById('radioTileStatus');
+        
+        if (indicator) {
+            indicator.style.display = 'block';
+        }
+        
+        if (status && stationName) {
+            status.textContent = `▶ ${stationName}`;
+            status.style.display = 'block';
+        }
+    }
+
+    // Masquer l'indicateur de lecture sur la tuile
+    hideTileIndicator() {
+        const indicator = document.getElementById('radioTileIndicator');
+        const status = document.getElementById('radioTileStatus');
+        
+        if (indicator) {
+            indicator.style.display = 'none';
+        }
+        
+        if (status) {
+            status.style.display = 'none';
+        }
+    }
+
+    // Mettre à jour l'indicateur selon l'état
+    updateTileIndicator() {
+        if (this.isPlaying && this.currentStation) {
+            this.showTileIndicator(this.currentStation.name);
+        } else {
+            this.hideTileIndicator();
+        }
+    }
+	
     updateStatusStyle(status) {
         const statusElement = document.getElementById('currentStationStatus');
         if (!statusElement) return;
