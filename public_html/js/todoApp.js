@@ -13,15 +13,6 @@ class TodoListWidget {
 		this.currentCalendarYear = new Date().getFullYear();
     }
 
-// Écouter les changements de thème dès le début
-    const observer = new MutationObserver(() => {
-        this.updateTileTheme();
-    });
-    observer.observe(document.documentElement, { 
-        attributes: true, 
-        attributeFilter: ['data-theme'] 
-    });
-}
 
     init() {
     if (document.readyState === 'loading') {
