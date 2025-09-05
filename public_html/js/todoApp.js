@@ -13,6 +13,16 @@ class TodoListWidget {
 		this.currentCalendarYear = new Date().getFullYear();
     }
 
+// Écouter les changements de thème dès le début
+    const observer = new MutationObserver(() => {
+        this.updateTileTheme();
+    });
+    observer.observe(document.documentElement, { 
+        attributes: true, 
+        attributeFilter: ['data-theme'] 
+    });
+}
+
     init() {
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
@@ -124,7 +134,7 @@ class TodoListWidget {
                 gradientStyle = 'linear-gradient(135deg, #d32f2f, #f44336)';
                 break;
             case 'dark':
-                gradientStyle = 'linear-gradient(135deg, #06f914, #ffffff1a)';
+                gradientStyle = 'linear-gradient(135deg, #ff9800, #ffa726)';
                 break;
             case 'bleuciel':
                 gradientStyle = 'linear-gradient(135deg, #0288d1, #03a9f4)';
