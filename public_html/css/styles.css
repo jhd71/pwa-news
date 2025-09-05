@@ -3932,12 +3932,3 @@ a:active {
         font-size: 20px;
     }
 }
-
-/* Masquer l'icône de remplissage auto de Bitwarden */
-iframe.bitwarden-inline-autofill,
-iframe[src*="bitwarden"],
-svg[style*="fill: rgb(23, 93, 220)"] {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-}
