@@ -13,7 +13,6 @@ class TodoListWidget {
 		this.currentCalendarYear = new Date().getFullYear();
     }
 
-
     init() {
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
