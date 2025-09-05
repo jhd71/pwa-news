@@ -1373,7 +1373,7 @@ function triggerTaskAlarm(task) {
 
 // Jouer le son d'alarme (utilise vos fichiers sons existants)
 function playTaskAlarmSound() {
-    const audio = new Audio('/sounds/notification.mp3');
+    const audio = new Audio('/sounds/todo.mp3');
     audio.volume = 0.5;
     audio.play().catch(() => {
         // Son synthétique en fallback
