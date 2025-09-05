@@ -1463,7 +1463,6 @@ function createTaskAlarmNotification(task) {
         box-shadow: 0 10px 30px rgba(0,0,0,0.4);
         text-align: center;
         min-width: 300px;
-        animation: pulse 1s infinite;
     `;
     
     notification.innerHTML = `
