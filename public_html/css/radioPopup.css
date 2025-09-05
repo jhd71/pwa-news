@@ -631,7 +631,28 @@ body.radio-popup-open {
     z-index: 10;
 }
 
-/* Assurer que la tuile radio a une position relative */
-.radio-app-tile {
+/* Assurer que la tuile radio a une position relative SANS affecter les thèmes */
+.tile.radio-app-tile {
     position: relative !important;
+}
+
+/* S'assurer que les thèmes continuent de fonctionner */
+[data-theme="rouge"] .tile.radio-app-tile,
+[data-theme="dark"] .tile.radio-app-tile,
+[data-theme="bleuciel"] .tile.radio-app-tile,
+[data-theme="light"] .tile.radio-app-tile {
+    position: relative !important;
+}
+
+/* Ajustements pour que l'indicateur soit visible sur tous les thèmes */
+[data-theme="dark"] .radio-tile-indicator {
+    border: 2px solid #2d3748; /* Bordure sombre pour le thème dark */
+}
+
+[data-theme="bleuciel"] .radio-tile-indicator {
+    border: 2px solid #f0f8ff; /* Bordure claire pour le thème bleu ciel */
+}
+
+[data-theme="light"] .radio-tile-indicator {
+    border: 2px solid #f8f9ff; /* Bordure claire pour le thème violet */
 }
