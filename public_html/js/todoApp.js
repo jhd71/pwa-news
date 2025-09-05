@@ -1455,7 +1455,7 @@ function createTaskAlarmNotification(task) {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background: linear-gradient(135deg, #ff9800, #ff5722);
+        background: #b0081a;
         color: white;
         padding: 30px;
         border-radius: 15px;
