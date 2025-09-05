@@ -631,28 +631,33 @@ body.radio-popup-open {
     z-index: 10;
 }
 
-/* Assurer que la tuile radio a une position relative SANS affecter les thèmes */
-.tile.radio-app-tile {
+/* Assurer que la tuile radio a une position relative */
+.radio-app-tile {
     position: relative !important;
 }
 
-/* S'assurer que les thèmes continuent de fonctionner */
-[data-theme="rouge"] .tile.radio-app-tile,
-[data-theme="dark"] .tile.radio-app-tile,
-[data-theme="bleuciel"] .tile.radio-app-tile,
+/* === COULEURS DE THÈME POUR LA TUILE RADIO === */
+
+/* Thème Rouge (par défaut) */
+[data-theme="rouge"] .tile.radio-app-tile {
+    background: linear-gradient(135deg, #940000 0%, #b71c1c 100%) !important;
+    color: white !important;
+}
+
+/* Thème Sombre */
+[data-theme="dark"] .tile.radio-app-tile {
+    background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%) !important;
+    color: #e2e8f0 !important;
+}
+
+/* Thème Bleu Ciel */
+[data-theme="bleuciel"] .tile.radio-app-tile {
+    background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%) !important;
+    color: white !important;
+}
+
+/* Thème Violet/Light */
 [data-theme="light"] .tile.radio-app-tile {
-    position: relative !important;
-}
-
-/* Ajustements pour que l'indicateur soit visible sur tous les thèmes */
-[data-theme="dark"] .radio-tile-indicator {
-    border: 2px solid #2d3748; /* Bordure sombre pour le thème dark */
-}
-
-[data-theme="bleuciel"] .radio-tile-indicator {
-    border: 2px solid #f0f8ff; /* Bordure claire pour le thème bleu ciel */
-}
-
-[data-theme="light"] .radio-tile-indicator {
-    border: 2px solid #f8f9ff; /* Bordure claire pour le thème violet */
+    background: linear-gradient(135deg, #ba68c8 0%, #ab47bc 100%) !important;
+    color: white !important;
 }
