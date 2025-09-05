@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v36'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v37'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -183,6 +183,7 @@ const STATIC_RESOURCES = [
     '/sounds/erreur.mp3',
     '/sounds/success.mp3',
     '/sounds/sent.mp3',
+	'/sounds/todo.mp3',
     '/sounds/ban-alert.mp3'
 ];
 
