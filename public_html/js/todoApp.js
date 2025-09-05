@@ -1498,10 +1498,6 @@ function createTaskAlarmNotification(task) {
     
     document.body.appendChild(notification);
 
-    // L'auto-fermeture doit aussi nettoyer la persistance
-    setTimeout(() => {
-        dismissTaskAlarm(task.id);
-    }, 30000); // 30 secondes
 }
 
 
