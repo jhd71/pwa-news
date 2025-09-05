@@ -62,6 +62,12 @@ class RadioPopupWidget {
                 description: 'A plein tubes, Chalon'
             },
 			{
+                name: 'M Radio',
+                url: 'https://mradio-lyon.ice.infomaniak.ch/mradio-lyon.mp3',
+                logo: 'images/radio-logos/M-Radio.png',
+                description: ' Numéro 1 sur la chanson française'
+            },
+			{
                 name: 'RTL2',
                 url: 'https://streamer-02.rtl.fr/rtl2-1-44-128',
                 logo: 'images/radio-logos/RTL2.png',

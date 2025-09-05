@@ -133,6 +133,7 @@ const STATIC_RESOURCES = [
 	'/images/radio-logos/Radio-Prevert.png',
 	'/images/radio-logos/Frequence-Plus.png',
 	'/images/radio-logos/Skyrock.png',
+	'/images/radio-logos/M-Radio.png',
 
     // Icônes de base (seulement ceux qui existent)
     '/images/icon-144x144.png',
