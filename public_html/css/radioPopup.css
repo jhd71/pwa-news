@@ -416,10 +416,6 @@
     gap: 10px;
 }
 
-.volume-control .material-icons {
-    color: var(--primary-color);
-}
-
 .volume-slider {
     flex: 1;
     height: 4px;
@@ -452,7 +448,6 @@
 .volume-percentage {
     font-size: 14px;
     font-weight: bold;
-    color: var(--primary-color);
     min-width: 35px;
     text-align: right;
 }
@@ -705,7 +700,6 @@ body.radio-popup-open {
 }
 
 .sleep-timer-controls .material-icons {
-    color: var(--primary-color, #940000);
     font-size: 20px;
 }
 
@@ -1020,9 +1014,9 @@ body.radio-popup-open {
 
 /* Bouton minuteur actif */
 .compact-timer-btn.active-timer {
-    background: rgba(255, 152, 0, 0.2) !important;
-    border-color: rgba(255, 152, 0, 0.4) !important;
-    color: #ff9800 !important;
+    background: #FFEB3B !important;
+    border-color: #E91E63 !important;
+    color: #3466a8 !important;
 }
 
 .compact-timer-btn.active-timer .material-icons {

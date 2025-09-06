@@ -333,7 +333,7 @@ class RadioPopupWidget {
     popup.classList.remove('active');
     document.body.classList.remove('radio-popup-open');
     
-    // AJOUT : Restaurer le scroll du body
+    // Restaurer le scroll du body
     if (window.innerWidth <= 768) {
         document.body.style.overflow = '';
         document.body.style.position = '';
@@ -345,19 +345,31 @@ class RadioPopupWidget {
             this.scrollPosition = null;
         }
     }
-	// Maintenir l'indicateur si la radio joue toujours
+    
+    // Maintenir l'indicateur si la radio joue toujours
     this.updateTileIndicator();
-	// Démarrer l'égaliseur visuel
+    
+    // Redémarrer les égaliseurs SEULEMENT si une station joue
+    if (this.isPlaying && this.currentStation) {
+        // S'assurer que les égaliseurs sont arrêtés avant de redémarrer
+        this.stopEqualizer();
+        this.stopCompactEqualizer();
+        
+        // Petite pause pour laisser le temps aux intervals de se nettoyer
+        setTimeout(() => {
+            // Démarrer l'égaliseur visuel
             this.startEqualizer();
             
             // Démarrer le mini-égaliseur compact
             this.startCompactEqualizer();
-            
-            // Créer le widget compact s'il n'existe pas
-            this.createCompactWidget();
-            
-            // Mettre à jour le widget compact
-            this.updateCompactWidget();
+        }, 100);
+    }
+    
+    // Créer le widget compact s'il n'existe pas
+    this.createCompactWidget();
+    
+    // Mettre à jour le widget compact
+    this.updateCompactWidget();
 }
 	
 	toggleStationPlayback(index) {
@@ -385,6 +397,10 @@ class RadioPopupWidget {
             this.audio.pause();
             this.audio = null;
         }
+        
+        // Arrêter l'égaliseur avant de changer de station
+        this.stopEqualizer();
+        this.stopCompactEqualizer();
         
         // Réinitialiser toutes les cartes
         document.querySelectorAll('.radio-station-card').forEach(card => {
@@ -643,30 +659,57 @@ class RadioPopupWidget {
 
     // === ÉGALISEUR VISUEL ===
     startEqualizer() {
-        if (this.equalizerInterval) return;
-        
-        this.isEqualizerActive = true;
-        const bars = document.querySelectorAll('.equalizer-bar');
-        
-        this.equalizerInterval = setInterval(() => {
-            bars.forEach(bar => {
-                const height = Math.random() * 80 + 20; // Entre 20% et 100%
-                bar.style.height = height + '%';
-            });
-        }, 200); // Animation toutes les 200ms
-    }
-
-    stopEqualizer() {
+        // Arrêter l'égaliseur existant s'il y en a un
         if (this.equalizerInterval) {
             clearInterval(this.equalizerInterval);
             this.equalizerInterval = null;
         }
         
+        this.isEqualizerActive = true;
+        const bars = document.querySelectorAll('.equalizer-bar');
+        
+        // Vérifier que les barres existent
+        if (bars.length === 0) {
+            console.log('Aucune barre d\'égaliseur trouvée');
+            return;
+        }
+        
+        this.equalizerInterval = setInterval(() => {
+            // Vérifier que l'égaliseur doit toujours être actif
+            if (this.isEqualizerActive && this.isPlaying) {
+                bars.forEach(bar => {
+                    const height = Math.random() * 80 + 20; // Entre 20% et 100%
+                    bar.style.height = height + '%';
+                });
+            }
+        }, 200);
+    }
+
+    stopEqualizer() {
         this.isEqualizerActive = false;
         
+        if (this.equalizerInterval) {
+            clearInterval(this.equalizerInterval);
+            this.equalizerInterval = null;
+        }
+        
         // Remettre les barres à zéro
-        document.querySelectorAll('.equalizer-bar').forEach(bar => {
+        const bars = document.querySelectorAll('.equalizer-bar');
+        bars.forEach(bar => {
             bar.style.height = '20%';
+        });
+    }
+
+    stopCompactEqualizer() {
+        if (this.compactEqualizerInterval) {
+            clearInterval(this.compactEqualizerInterval);
+            this.compactEqualizerInterval = null;
+        }
+        
+        // Remettre les barres au minimum
+        const bars = document.querySelectorAll('.mini-bar');
+        bars.forEach(bar => {
+            bar.style.height = '30%';
         });
     }
 
@@ -977,10 +1020,17 @@ class RadioPopupWidget {
 
     // === MINI-ÉGALISEUR COMPACT ===
     startCompactEqualizer() {
-        if (this.compactEqualizerInterval) return;
+        // Arrêter l'égaliseur compact existant s'il y en a un
+        if (this.compactEqualizerInterval) {
+            clearInterval(this.compactEqualizerInterval);
+            this.compactEqualizerInterval = null;
+        }
         
         const bars = document.querySelectorAll('.mini-bar');
-        if (bars.length === 0) return;
+        if (bars.length === 0) {
+            console.log('Aucune barre de mini-égaliseur trouvée');
+            return;
+        }
         
         this.compactEqualizerInterval = setInterval(() => {
             if (this.isPlaying) {
@@ -993,7 +1043,7 @@ class RadioPopupWidget {
                     bar.style.height = '30%';
                 });
             }
-        }, 300); // Un peu plus lent que l'égaliseur principal
+        }, 300);
     }
 
     stopCompactEqualizer() {
