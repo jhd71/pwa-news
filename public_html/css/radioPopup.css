@@ -631,49 +631,34 @@ body.radio-popup-open {
     z-index: 10;
 }
 
-/* === PRÉSERVER LES THÈMES POUR LA TUILE RADIO (nth-child) === */
-
 /* Position relative sans affecter les thèmes */
 .tile.radio-app-tile {
     position: relative;
 }
 
-/* S'assurer que les styles de thème existants continuent de fonctionner */
-[data-theme="rouge"] .tile.radio-app-tile:nth-child(30n + 12),
-[data-theme="dark"] .tile.radio-app-tile:nth-child(30n + 12),
-[data-theme="bleuciel"] .tile.radio-app-tile:nth-child(30n + 12),
-[data-theme="light"] .tile.radio-app-tile:nth-child(30n + 12) {
-    position: relative !important;
+/* === COULEURS DE THÈME POUR LA TUILE RADIO === */
+
+/* Thème Rouge (par défaut) */
+[data-theme="rouge"] .tile.radio-app-tile {
+    background: linear-gradient(135deg, #940000 0%, #b71c1c 100%) !important;
+    color: white !important;
 }
 
-/* Ajustements de l'indicateur pour chaque thème */
-[data-theme="dark"] .radio-tile-indicator {
-    border: 2px solid var(--card-bg, #2d3748);
-    box-shadow: 0 0 10px rgba(255, 68, 68, 0.7);
+/* Thème Sombre */
+[data-theme="dark"] .tile.radio-app-tile {
+    background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%) !important;
+    color: #e2e8f0 !important;
 }
 
-[data-theme="bleuciel"] .radio-tile-indicator {
-    border: 2px solid var(--card-bg, #ffffff);
-    box-shadow: 0 0 10px rgba(255, 68, 68, 0.6);
+/* Thème Bleu Ciel */
+[data-theme="bleuciel"] .tile.radio-app-tile {
+    background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%) !important;
+    color: white !important;
 }
 
-[data-theme="light"] .radio-tile-indicator {
-    border: 2px solid var(--card-bg, #ffffff);
-    box-shadow: 0 0 10px rgba(255, 68, 68, 0.6);
+/* Thème Violet/Light */
+[data-theme="light"] .tile.radio-app-tile {
+    background: linear-gradient(135deg, #ba68c8 0%, #ab47bc 100%) !important;
+    color: white !important;
 }
 
-/* Ajustements du texte de statut pour chaque thème */
-[data-theme="dark"] .radio-tile-status {
-    background: rgba(255, 68, 68, 0.95);
-    color: white;
-}
-
-[data-theme="bleuciel"] .radio-tile-status {
-    background: rgba(255, 68, 68, 0.9);
-    color: white;
-}
-
-[data-theme="light"] .radio-tile-status {
-    background: rgba(255, 68, 68, 0.9);
-    color: white;
-}
