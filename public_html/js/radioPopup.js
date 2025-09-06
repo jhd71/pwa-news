@@ -587,12 +587,18 @@ class RadioPopupWidget {
         let timeText;
         if (minutes >= 60) {
             const hours = Math.floor(minutes / 60);
-            timeText = hours === 1 ? '1 heure' : `${hours} heures`;
+            const remainingMinutes = minutes % 60;
+            
+            if (remainingMinutes === 0) {
+                timeText = hours === 1 ? '1 heure' : `${hours} heures`;
+            } else {
+                timeText = `${hours}h${remainingMinutes.toString().padStart(2, '0')}`;
+            }
         } else {
             timeText = `${minutes} min`;
         }
         
-        this.showToast(`Arrêt programmé dans ${timeText}`);
+        this.showToast(`⏰ Arrêt programmé dans ${timeText}`);
     }
 
     cancelSleepTimer() {
@@ -607,9 +613,25 @@ class RadioPopupWidget {
     }
 
     updateSleepTimerDisplay() {
-        const minutes = Math.floor(this.sleepTimeRemaining / 60);
+        const totalMinutes = Math.floor(this.sleepTimeRemaining / 60);
         const seconds = this.sleepTimeRemaining % 60;
-        const timeText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        let timeText;
+        if (totalMinutes >= 60) {
+            // Plus d'une heure : afficher en heures et minutes
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
+            
+            if (minutes === 0) {
+                timeText = `${hours}h`;
+            } else {
+                timeText = `${hours}h${minutes.toString().padStart(2, '0')}`;
+            }
+        } else {
+            // Moins d'une heure : afficher en minutes et secondes
+            timeText = `${totalMinutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
         document.getElementById('sleepTimerText').textContent = timeText;
     }
 
@@ -788,9 +810,26 @@ class RadioPopupWidget {
 
         // Mise à jour minuteur
         if (this.sleepTimeRemaining > 0) {
-            const minutes = Math.floor(this.sleepTimeRemaining / 60);
+            const totalMinutes = Math.floor(this.sleepTimeRemaining / 60);
             const seconds = this.sleepTimeRemaining % 60;
-            timerText.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            let displayText;
+            if (totalMinutes >= 60) {
+                // Plus d'une heure : afficher en heures et minutes
+                const hours = Math.floor(totalMinutes / 60);
+                const minutes = totalMinutes % 60;
+                
+                if (minutes === 0) {
+                    displayText = `${hours}h`;
+                } else {
+                    displayText = `${hours}h${minutes.toString().padStart(2, '0')}`;
+                }
+            } else {
+                // Moins d'une heure : afficher en minutes et secondes
+                displayText = `${totalMinutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
+            timerText.textContent = displayText;
             timerDisplay.style.display = 'flex';
             timerBtn.classList.add('active-timer');
         } else {
