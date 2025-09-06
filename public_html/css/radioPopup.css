@@ -908,12 +908,12 @@ body.radio-popup-open {
     }
     
     .compact-btn {
-        width: 28px;
-        height: 28px;
+        width: 38px;
+        height: 38px;
     }
     
     .compact-btn .material-icons {
-        font-size: 16px;
+        font-size: 25px;
     }
 }
 
@@ -1115,8 +1115,8 @@ body.radio-popup-open {
 
 @media (max-width: 480px) {
     .compact-logo {
-        width: 32px;
-        height: 32px;
+        width: 42px;
+        height: 42px;
     }
     
     .compact-equalizer {
