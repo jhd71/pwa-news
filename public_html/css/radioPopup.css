@@ -755,8 +755,8 @@ body.radio-popup-open {
 /* === WIDGET COMPACT === */
 .radio-compact-widget {
     position: fixed;
-    bottom: 80px; /* Au-dessus de la barre de navigation */
-    right: 20px;
+    bottom: 80px; 
+    left: 20px; /* À gauche pour éviter le conflit avec le chat */
     background: var(--card-bg, white);
     border-radius: 12px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
@@ -764,7 +764,7 @@ body.radio-popup-open {
     border: 2px solid transparent;
     backdrop-filter: blur(10px);
     max-width: 300px;
-    animation: slideInRight 0.3s ease;
+    animation: slideInLeft 0.3s ease; /* Animation depuis la gauche */
 }
 
 .radio-compact-widget.playing {
@@ -876,11 +876,11 @@ body.radio-popup-open {
     transform: translateX(-50%) translateY(0);
 }
 
-/* === ANIMATIONS === */
-@keyframes slideInRight {
+/* Animation depuis la gauche */
+@keyframes slideInLeft {
     from {
         opacity: 0;
-        transform: translateX(100%);
+        transform: translateX(-100%);
     }
     to {
         opacity: 1;
@@ -893,7 +893,7 @@ body.radio-popup-open {
 /* Tablettes */
 @media (max-width: 768px) {
     .radio-compact-widget {
-        right: 10px;
+        left: 10px; /* Garder à gauche */
         bottom: 70px;
         max-width: 250px;
     }
@@ -920,9 +920,9 @@ body.radio-popup-open {
 /* Mobile */
 @media (max-width: 480px) {
     .radio-compact-widget {
-        right: 5px;
-        bottom: 65px;
-        max-width: 220px;
+        left: 5px; /* Garder à gauche */
+        bottom: 100px; /* Votre ajustement */
+        max-width: 230px; /* Votre ajustement */
     }
     
     .equalizer-container {
@@ -966,3 +966,192 @@ body.radio-popup-open {
     --primary-color: #6f42c1;
 }
 
+/* === AMÉLIORATIONS WIDGET COMPACT === */
+
+/* Conteneur logo avec mini-égaliseur */
+.compact-logo-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.compact-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    object-fit: contain;
+    background: white;
+    padding: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Mini égaliseur compact */
+.compact-equalizer {
+    display: none; /* Masqué par défaut */
+    align-items: end;
+    gap: 1px;
+    height: 8px;
+    padding: 1px 3px;
+    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.2);
+    border-radius: 3px;
+}
+
+.mini-bar {
+    width: 2px;
+    height: 30%;
+    background: linear-gradient(to top, var(--primary-color, #940000), #ff6b6b);
+    border-radius: 1px;
+    transition: height 0.2s ease;
+}
+
+/* Indicateur minuteur compact */
+.compact-timer {
+    font-size: 10px;
+    color: #ff9800;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-top: 2px;
+}
+
+/* Bouton minuteur actif */
+.compact-timer-btn.active-timer {
+    background: rgba(255, 152, 0, 0.2) !important;
+    border-color: rgba(255, 152, 0, 0.4) !important;
+    color: #ff9800 !important;
+}
+
+.compact-timer-btn.active-timer .material-icons {
+    animation: timerPulse 2s infinite;
+}
+
+@keyframes timerPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* Menu minuteur rapide */
+.quick-timer-menu {
+    background: var(--card-bg, white);
+    border-radius: 8px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    padding: 8px;
+    animation: slideUpQuick 0.2s ease;
+}
+
+.quick-timer-options {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 120px;
+}
+
+.timer-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    color: var(--text-color, #333);
+}
+
+.timer-option:hover {
+    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.1);
+    transform: translateX(2px);
+}
+
+.timer-option .material-icons {
+    font-size: 16px;
+    color: var(--primary-color, #940000);
+}
+
+/* Option d'annulation */
+.timer-option[data-minutes="0"] .material-icons {
+    color: #dc3545;
+}
+
+.timer-option[data-minutes="0"]:hover {
+    background: rgba(220, 53, 69, 0.1);
+}
+
+@keyframes slideUpQuick {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === RESPONSIVE POUR MINI-ÉGALISEUR === */
+
+@media (max-width: 768px) {
+    .compact-logo {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .compact-equalizer {
+        height: 6px;
+    }
+    
+    .mini-bar {
+        width: 1.5px;
+    }
+    
+    .compact-timer {
+        font-size: 9px;
+    }
+}
+
+@media (max-width: 480px) {
+    .compact-logo {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .compact-equalizer {
+        height: 5px;
+        padding: 1px 2px;
+    }
+    
+    .mini-bar {
+        width: 1px;
+    }
+    
+    .quick-timer-menu {
+        min-width: 100px;
+    }
+    
+    .timer-option {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+}
+
+/* === THÈMES POUR NOUVELLES FONCTIONNALITÉS === */
+
+[data-theme="dark"] .quick-timer-menu {
+    --card-bg: #2d3748;
+    --text-color: #e2e8f0;
+    --primary-color-rgb: 255, 107, 107;
+    --primary-color: #ff6b6b;
+}
+
+[data-theme="bleuciel"] .quick-timer-menu {
+    --primary-color-rgb: 23, 162, 184;
+    --primary-color: #17a2b8;
+}
+
+[data-theme="light"] .quick-timer-menu {
+    --primary-color-rgb: 111, 66, 193;
+    --primary-color: #6f42c1;
+}

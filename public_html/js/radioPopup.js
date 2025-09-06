@@ -104,6 +104,8 @@ class RadioPopupWidget {
         // Égaliseur visuel
         this.equalizerInterval = null;
         this.isEqualizerActive = false;
+		// Mini-égaliseur compact
+        this.compactEqualizerInterval = null;
     }
 
     init() {
@@ -344,6 +346,9 @@ closePopup() {
 	// Démarrer l'égaliseur visuel
             this.startEqualizer();
             
+            // Démarrer le mini-égaliseur compact
+            this.startCompactEqualizer();
+            
             // Créer le widget compact s'il n'existe pas
             this.createCompactWidget();
             
@@ -451,7 +456,8 @@ closePopup() {
             this.updateTileIndicator();
 			// Arrêter l'égaliseur visuel
         this.stopEqualizer();
-        
+        // Arrêter le mini-égaliseur compact
+            this.stopCompactEqualizer();
         // Mettre à jour le widget compact
         this.updateCompactWidget();
             document.getElementById('currentStationStatus').textContent = 'En direct';
@@ -485,7 +491,8 @@ closePopup() {
         this.hideTileIndicator();
 		// Arrêter l'égaliseur visuel
         this.stopEqualizer();
-        
+        // Arrêter le mini-égaliseur compact
+            this.stopCompactEqualizer();
         // Annuler le minuteur d'arrêt
         this.cancelSleepTimer();
         
@@ -624,7 +631,7 @@ closePopup() {
         });
     }
 
-    // === WIDGET COMPACT ===
+    // === WIDGET COMPACT AMÉLIORÉ ===
     createCompactWidget() {
         // Vérifier si le widget existe déjà
         if (document.querySelector('.radio-compact-widget')) {
@@ -635,21 +642,39 @@ closePopup() {
         widget.className = 'radio-compact-widget';
         widget.innerHTML = `
             <div class="compact-widget-content">
+                <!-- Info station avec mini-égaliseur -->
                 <div class="compact-station-info">
-                    <img id="compactStationLogo" src="" alt="" class="compact-logo">
+                    <div class="compact-logo-container">
+                        <img id="compactStationLogo" src="" alt="" class="compact-logo">
+                        <!-- Mini égaliseur intégré -->
+                        <div class="compact-equalizer" id="compactEqualizer">
+                            <div class="mini-bar"></div>
+                            <div class="mini-bar"></div>
+                            <div class="mini-bar"></div>
+                        </div>
+                    </div>
                     <div class="compact-details">
                         <div id="compactStationName">Aucune station</div>
                         <div id="compactStationStatus">Arrêtée</div>
+                        <!-- Indicateur minuteur -->
+                        <div id="compactTimerDisplay" class="compact-timer" style="display: none;">
+                            ⏰ <span id="compactTimerText">--:--</span>
+                        </div>
                     </div>
                 </div>
+                
+                <!-- Contrôles améliorés -->
                 <div class="compact-controls">
-                    <button id="compactPlayPause" class="compact-btn">
+                    <button id="compactPlayPause" class="compact-btn" title="Lecture/Pause">
                         <span class="material-icons">play_arrow</span>
                     </button>
-                    <button id="compactVolume" class="compact-btn">
+                    <button id="compactTimer" class="compact-btn compact-timer-btn" title="Minuteur d'arrêt">
+                        <span class="material-icons">schedule</span>
+                    </button>
+                    <button id="compactVolume" class="compact-btn" title="Volume">
                         <span class="material-icons">volume_up</span>
                     </button>
-                    <button id="compactOpenFull" class="compact-btn">
+                    <button id="compactOpenFull" class="compact-btn" title="Ouvrir">
                         <span class="material-icons">open_in_full</span>
                     </button>
                 </div>
@@ -658,6 +683,7 @@ closePopup() {
 
         document.body.appendChild(widget);
         this.setupCompactWidgetEvents(widget);
+        this.startCompactEqualizer();
     }
 
     setupCompactWidgetEvents(widget) {
@@ -668,6 +694,11 @@ closePopup() {
             } else {
                 this.openPopup(); // Ouvrir pour choisir une station
             }
+        });
+
+        // Minuteur d'arrêt - Menu rapide
+        document.getElementById('compactTimer').addEventListener('click', () => {
+            this.showQuickTimerMenu();
         });
 
         // Volume (cycle entre muet, faible, moyen, fort)
@@ -698,6 +729,10 @@ closePopup() {
         const name = document.getElementById('compactStationName');
         const status = document.getElementById('compactStationStatus');
         const playBtn = document.getElementById('compactPlayPause');
+        const timerDisplay = document.getElementById('compactTimerDisplay');
+        const timerText = document.getElementById('compactTimerText');
+        const timerBtn = document.getElementById('compactTimer');
+        const equalizer = document.getElementById('compactEqualizer');
 
         if (this.currentStation) {
             logo.src = this.currentStation.logo;
@@ -709,11 +744,13 @@ closePopup() {
                 status.className = 'status-live';
                 playBtn.querySelector('.material-icons').textContent = 'pause';
                 widget.classList.add('playing');
+                equalizer.style.display = 'flex'; // Afficher l'égaliseur
             } else {
                 status.textContent = 'En pause';
                 status.className = 'status-paused';
                 playBtn.querySelector('.material-icons').textContent = 'play_arrow';
                 widget.classList.remove('playing');
+                equalizer.style.display = 'none'; // Masquer l'égaliseur
             }
         } else {
             logo.style.display = 'none';
@@ -722,6 +759,19 @@ closePopup() {
             status.className = '';
             playBtn.querySelector('.material-icons').textContent = 'play_arrow';
             widget.classList.remove('playing');
+            equalizer.style.display = 'none';
+        }
+
+        // Mise à jour minuteur
+        if (this.sleepTimeRemaining > 0) {
+            const minutes = Math.floor(this.sleepTimeRemaining / 60);
+            const seconds = this.sleepTimeRemaining % 60;
+            timerText.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            timerDisplay.style.display = 'flex';
+            timerBtn.classList.add('active-timer');
+        } else {
+            timerDisplay.style.display = 'none';
+            timerBtn.classList.remove('active-timer');
         }
 
         this.updateCompactVolumeIcon();
@@ -756,6 +806,113 @@ closePopup() {
         setTimeout(() => {
             toast.classList.remove('show');
         }, 3000);
+    }
+	
+	// === MENU MINUTEUR RAPIDE ===
+    showQuickTimerMenu() {
+        // Supprimer tout menu existant
+        const existingMenu = document.querySelector('.quick-timer-menu');
+        if (existingMenu) {
+            existingMenu.remove();
+            return;
+        }
+
+        const menu = document.createElement('div');
+        menu.className = 'quick-timer-menu';
+        menu.innerHTML = `
+            <div class="quick-timer-options">
+                <div class="timer-option" data-minutes="0">
+                    <span class="material-icons">close</span>
+                    <span>Annuler</span>
+                </div>
+                <div class="timer-option" data-minutes="15">
+                    <span class="material-icons">schedule</span>
+                    <span>15 min</span>
+                </div>
+                <div class="timer-option" data-minutes="30">
+                    <span class="material-icons">schedule</span>
+                    <span>30 min</span>
+                </div>
+                <div class="timer-option" data-minutes="60">
+                    <span class="material-icons">schedule</span>
+                    <span>1 heure</span>
+                </div>
+            </div>
+        `;
+
+        // Positionner le menu au-dessus du widget
+        const widget = document.querySelector('.radio-compact-widget');
+        const rect = widget.getBoundingClientRect();
+        
+        menu.style.position = 'fixed';
+        menu.style.left = rect.left + 'px';
+        menu.style.bottom = (window.innerHeight - rect.top + 10) + 'px';
+        menu.style.zIndex = '10001';
+
+        document.body.appendChild(menu);
+
+        // Gestionnaires d'événements
+        menu.addEventListener('click', (e) => {
+            const option = e.target.closest('.timer-option');
+            if (option) {
+                const minutes = parseInt(option.dataset.minutes);
+                if (minutes > 0) {
+                    this.setSleepTimer(minutes);
+                } else {
+                    this.cancelSleepTimer();
+                }
+                menu.remove();
+            }
+        });
+
+        // Fermer automatiquement après 5 secondes
+        setTimeout(() => {
+            if (menu.parentNode) {
+                menu.remove();
+            }
+        }, 5000);
+
+        // Fermer en cliquant ailleurs
+        setTimeout(() => {
+            document.addEventListener('click', (e) => {
+                if (!menu.contains(e.target) && !e.target.closest('#compactTimer')) {
+                    menu.remove();
+                }
+            }, { once: true });
+        }, 100);
+    }
+
+    // === MINI-ÉGALISEUR COMPACT ===
+    startCompactEqualizer() {
+        if (this.compactEqualizerInterval) return;
+        
+        const bars = document.querySelectorAll('.mini-bar');
+        if (bars.length === 0) return;
+        
+        this.compactEqualizerInterval = setInterval(() => {
+            if (this.isPlaying) {
+                bars.forEach(bar => {
+                    const height = Math.random() * 70 + 30; // Entre 30% et 100%
+                    bar.style.height = height + '%';
+                });
+            } else {
+                bars.forEach(bar => {
+                    bar.style.height = '30%';
+                });
+            }
+        }, 300); // Un peu plus lent que l'égaliseur principal
+    }
+
+    stopCompactEqualizer() {
+        if (this.compactEqualizerInterval) {
+            clearInterval(this.compactEqualizerInterval);
+            this.compactEqualizerInterval = null;
+        }
+        
+        // Remettre les barres au minimum
+        document.querySelectorAll('.mini-bar').forEach(bar => {
+            bar.style.height = '30%';
+        });
     }
 	
     // Mettre à jour l'indicateur selon l'état
