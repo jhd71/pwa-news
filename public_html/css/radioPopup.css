@@ -812,7 +812,7 @@ body.radio-popup-open {
 }
 
 .compact-details div:last-child {
-    font-size: 12px;
+    font-size: 15px;
     color: var(--text-secondary, #666);
 }
 
@@ -1269,7 +1269,7 @@ body.radio-popup-open {
 }
 
 [data-theme="dark"] .compact-details div:last-child {
-    color: #a0aec0;
+    color: #FFEB3B;
 }
 
 /* Minuteur compact en mode sombre */

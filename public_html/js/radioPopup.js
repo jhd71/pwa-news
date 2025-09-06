@@ -106,6 +106,8 @@ class RadioPopupWidget {
         this.isEqualizerActive = false;
 		// Mini-égaliseur compact
         this.compactEqualizerInterval = null;
+		// Synchronisation widget
+        this.widgetSyncInterval = null;
     }
 
     init() {
@@ -599,6 +601,8 @@ class RadioPopupWidget {
         }
         
         this.showToast(`⏰ Arrêt programmé dans ${timeText}`);
+		// Mettre à jour le widget compact
+        this.updateCompactWidget();
     }
 
     cancelSleepTimer() {
@@ -610,6 +614,8 @@ class RadioPopupWidget {
         this.sleepTimeRemaining = 0;
         document.getElementById('sleepTimerDisplay').style.display = 'none';
         document.getElementById('sleepTimerSelect').value = '0';
+		// Mettre à jour le widget compact
+        this.updateCompactWidget();
     }
 
     updateSleepTimerDisplay() {
@@ -722,6 +728,7 @@ class RadioPopupWidget {
         document.body.appendChild(widget);
         this.setupCompactWidgetEvents(widget);
         this.startCompactEqualizer();
+		this.startWidgetSync();
     }
 
     setupCompactWidgetEvents(widget) {
@@ -790,13 +797,13 @@ class RadioPopupWidget {
                 status.className = 'status-live';
                 playBtn.querySelector('.material-icons').textContent = 'pause';
                 widget.classList.add('playing');
-                equalizer.style.display = 'flex'; // Afficher l'égaliseur
+                equalizer.style.display = 'flex';
             } else {
                 status.textContent = 'En pause';
                 status.className = 'status-paused';
                 playBtn.querySelector('.material-icons').textContent = 'play_arrow';
                 widget.classList.remove('playing');
-                equalizer.style.display = 'none'; // Masquer l'égaliseur
+                equalizer.style.display = 'none';
             }
         } else {
             logo.style.display = 'none';
@@ -808,8 +815,8 @@ class RadioPopupWidget {
             equalizer.style.display = 'none';
         }
 
-        // Mise à jour minuteur
-        if (this.sleepTimeRemaining > 0) {
+        // Mise à jour minuteur - AMÉLIORÉE
+        if (this.sleepTimer && this.sleepTimeRemaining > 0) {
             const totalMinutes = Math.floor(this.sleepTimeRemaining / 60);
             const seconds = this.sleepTimeRemaining % 60;
             
@@ -933,9 +940,19 @@ class RadioPopupWidget {
                 const minutes = parseInt(option.dataset.minutes);
                 if (minutes > 0) {
                     this.setSleepTimer(minutes);
+                    // Synchroniser avec la popup principale
+                    const selectElement = document.getElementById('sleepTimerSelect');
+                    if (selectElement) {
+                        selectElement.value = minutes;
+                    }
                 } else {
                     this.cancelSleepTimer();
                     this.showToast('⏰ Minuteur d\'arrêt annulé');
+                    // Synchroniser avec la popup principale
+                    const selectElement = document.getElementById('sleepTimerSelect');
+                    if (selectElement) {
+                        selectElement.value = '0';
+                    }
                 }
                 menu.remove();
             }
@@ -1000,6 +1017,7 @@ class RadioPopupWidget {
                 if (widget.parentNode) {
                     widget.remove();
                 }
+				this.stopWidgetSync();
                 this.stopCompactEqualizer();
             }, 300);
             
@@ -1012,6 +1030,26 @@ class RadioPopupWidget {
         if (!document.querySelector('.radio-compact-widget')) {
             this.createCompactWidget();
             this.updateCompactWidget();
+        }
+    }
+	
+	// === SYNCHRONISATION WIDGET ===
+    startWidgetSync() {
+        // Mettre à jour le widget toutes les secondes s'il existe
+        if (this.widgetSyncInterval) return;
+        
+        this.widgetSyncInterval = setInterval(() => {
+            const widget = document.querySelector('.radio-compact-widget');
+            if (widget) {
+                this.updateCompactWidget();
+            }
+        }, 1000);
+    }
+
+    stopWidgetSync() {
+        if (this.widgetSyncInterval) {
+            clearInterval(this.widgetSyncInterval);
+            this.widgetSyncInterval = null;
         }
     }
 	
