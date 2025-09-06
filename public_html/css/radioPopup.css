@@ -630,3 +630,50 @@ body.radio-popup-open {
     white-space: nowrap;
     z-index: 10;
 }
+
+/* === PRÉSERVER LES THÈMES POUR LA TUILE RADIO (nth-child) === */
+
+/* Position relative sans affecter les thèmes */
+.tile.radio-app-tile {
+    position: relative;
+}
+
+/* S'assurer que les styles de thème existants continuent de fonctionner */
+[data-theme="rouge"] .tile.radio-app-tile:nth-child(30n + 12),
+[data-theme="dark"] .tile.radio-app-tile:nth-child(30n + 12),
+[data-theme="bleuciel"] .tile.radio-app-tile:nth-child(30n + 12),
+[data-theme="light"] .tile.radio-app-tile:nth-child(30n + 12) {
+    position: relative !important;
+}
+
+/* Ajustements de l'indicateur pour chaque thème */
+[data-theme="dark"] .radio-tile-indicator {
+    border: 2px solid var(--card-bg, #2d3748);
+    box-shadow: 0 0 10px rgba(255, 68, 68, 0.7);
+}
+
+[data-theme="bleuciel"] .radio-tile-indicator {
+    border: 2px solid var(--card-bg, #ffffff);
+    box-shadow: 0 0 10px rgba(255, 68, 68, 0.6);
+}
+
+[data-theme="light"] .radio-tile-indicator {
+    border: 2px solid var(--card-bg, #ffffff);
+    box-shadow: 0 0 10px rgba(255, 68, 68, 0.6);
+}
+
+/* Ajustements du texte de statut pour chaque thème */
+[data-theme="dark"] .radio-tile-status {
+    background: rgba(255, 68, 68, 0.95);
+    color: white;
+}
+
+[data-theme="bleuciel"] .radio-tile-status {
+    background: rgba(255, 68, 68, 0.9);
+    color: white;
+}
+
+[data-theme="light"] .radio-tile-status {
+    background: rgba(255, 68, 68, 0.9);
+    color: white;
+}
