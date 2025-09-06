@@ -347,6 +347,27 @@ document.getElementById('setSleepTimeBtn').addEventListener('click', () => {
 document.getElementById('cancelSleepTimeBtn').addEventListener('click', () => {
     this.cancelSleepTimer();
 });
+
+// Rendre le champ horaire entièrement cliquable
+const timeControls = document.getElementById('timeControls');
+timeControls.addEventListener('click', (e) => {
+    // Si on clique sur le conteneur mais pas sur un bouton
+    if (e.target === timeControls || e.target.closest('.sleep-timer-controls') === timeControls) {
+        const timeInput = document.getElementById('sleepTimeInput');
+        timeInput.focus();
+        timeInput.click();
+    }
+});
+
+// Améliorer l'expérience du champ time
+const sleepTimeInput = document.getElementById('sleepTimeInput');
+sleepTimeInput.addEventListener('focus', () => {
+    // Sélectionner tout le contenu au focus pour faciliter la saisie
+    setTimeout(() => {
+        sleepTimeInput.select();
+    }, 50);
+});
+
     }
 
     openPopup() {
@@ -1171,21 +1192,39 @@ setSleepTime(timeString) {
             }
         });
 
-        // Fermer automatiquement après 8 secondes (plus de temps pour voir toutes les options)
-        setTimeout(() => {
-            if (menu.parentNode) {
-                menu.remove();
-            }
-        }, 8000);
+        // Fermer automatiquement après 15 secondes (plus de temps)
+const autoCloseTimer = setTimeout(() => {
+    if (menu.parentNode) {
+        menu.remove();
+    }
+}, 15000);
 
-        // Fermer en cliquant ailleurs
-        setTimeout(() => {
-            document.addEventListener('click', (e) => {
-                if (!menu.contains(e.target) && !e.target.closest('#compactTimer')) {
-                    menu.remove();
-                }
-            }, { once: true });
-        }, 100);
+// Fermer en cliquant ailleurs - AMÉLIORÉ
+const closeHandler = (e) => {
+    if (!menu.contains(e.target) && !e.target.closest('#compactTimer')) {
+        menu.remove();
+        clearTimeout(autoCloseTimer);
+        document.removeEventListener('click', closeHandler);
+    }
+};
+
+// Attendre un peu avant d'ajouter le gestionnaire pour éviter la fermeture immédiate
+setTimeout(() => {
+    document.addEventListener('click', closeHandler);
+}, 200);
+
+// Fermer automatiquement après sélection d'une option
+menu.addEventListener('click', (e) => {
+    const option = e.target.closest('.timer-option');
+    const preset = e.target.closest('.time-preset');
+    const setBtn = e.target.closest('#quickSetTime');
+    
+    if (option || preset || setBtn) {
+        clearTimeout(autoCloseTimer);
+        document.removeEventListener('click', closeHandler);
+        // Le menu se fermera automatiquement après l'action
+    }
+});
 		
 		// Gestionnaires pour les modes
 menu.querySelectorAll('.quick-mode-btn').forEach(btn => {

@@ -1058,7 +1058,7 @@ body.radio-popup-open {
 
 .timer-option:hover {
     background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.1);
-    transform: translateX(2px);
+    /* Suppression du transform qui fait bouger */
 }
 
 .timer-option .material-icons {
@@ -1199,8 +1199,15 @@ body.radio-popup-open {
 
 /* === MENU MINUTEUR ÉTENDU === */
 .quick-timer-options {
-    max-height: 250px; /* Limiter la hauteur */
-    overflow-y: auto; /* Scroll si nécessaire */
+    max-height: 250px;
+    overflow-y: auto;
+    /* Masquer la barre de défilement */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+.quick-timer-options::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
 }
 
 /* Responsive pour le menu étendu */
@@ -1468,7 +1475,7 @@ body.radio-popup-open {
 
 .time-preset:hover {
     background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.2);
-    transform: scale(1.02);
+    /* Suppression du scale qui fait bouger */
 }
 
 /* === RESPONSIVE === */
@@ -1557,4 +1564,84 @@ body.radio-popup-open {
 [data-theme="light"] .time-preset {
     color: #6f42c1;
     border-color: rgba(111, 66, 193, 0.2);
+}
+
+/* === AMÉLIORATIONS UX === */
+
+/* Rendre toute la zone de contrôle horaire cliquable */
+#timeControls {
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.2s ease;
+}
+
+#timeControls:hover {
+    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.02);
+}
+
+/* Améliorer le champ horaire */
+.sleep-time-input {
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.sleep-time-input:hover {
+    border-color: var(--primary-color, #940000);
+}
+
+/* Stabiliser le menu du widget */
+.quick-timer-menu {
+    width: 160px; /* Largeur fixe pour éviter les mouvements */
+    min-height: 200px; /* Hauteur minimum */
+}
+
+/* Stabiliser les options */
+.timer-option {
+    min-height: 35px; /* Hauteur fixe */
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.time-preset {
+    min-height: 30px; /* Hauteur fixe */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+/* Améliorer la visibilité des boutons de mode */
+.timer-mode-btn:hover:not(.active) {
+    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.15);
+    transform: none; /* Pas de mouvement */
+}
+
+.quick-mode-btn:hover:not(.active) {
+    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.15);
+    transform: none; /* Pas de mouvement */
+}
+
+/* Feedback visuel sans mouvement */
+.set-time-btn:hover,
+.quick-set-btn:hover {
+    transform: none; /* Suppression du scale */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive - menu plus compact sur mobile */
+@media (max-width: 480px) {
+    .quick-timer-menu {
+        width: 140px;
+        min-height: 180px;
+    }
+    
+    .timer-option {
+        min-height: 32px;
+        padding: 5px 8px;
+    }
+    
+    .time-preset {
+        min-height: 28px;
+    }
 }
