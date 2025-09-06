@@ -100,6 +100,8 @@ class RadioPopupWidget {
 		// Minuteur d'arrêt
         this.sleepTimer = null;
         this.sleepTimeRemaining = 0;
+		this.sleepMode = 'duration'; // 'duration' ou 'time'
+		this.sleepTargetTime = null;
         
         // Égaliseur visuel
         this.equalizerInterval = null;
@@ -233,22 +235,39 @@ class RadioPopupWidget {
                     
                     <!-- Minuteur d'arrêt -->
                     <div class="sleep-timer-section">
-                        <div class="sleep-timer-controls">
-                            <span class="material-icons">schedule</span>
-                            <input type="time" id="sleepTimerTime" class="sleep-timer-time">
-                            <button id="setSleepTimerBtn" class="set-timer-btn">
-                                <span class="material-icons">alarm_add</span>
-                                Programmer
-                            </button>
-                        </div>
-                        <div class="sleep-timer-display" id="sleepTimerDisplay" style="display: none;">
-                            <span class="material-icons">timer</span>
-                            <span id="sleepTimerText">--:--</span>
-                            <button id="cancelSleepTimer" class="cancel-timer-btn">
-                                <span class="material-icons">close</span>
-                            </button>
-                        </div>
-                    </div>
+							<div class="sleep-timer-mode-toggle">
+							<button id="durationModeBtn" class="timer-mode-btn active">Durée</button>
+							<button id="timeModeBtn" class="timer-mode-btn">Heure précise</button>
+					</div>
+    
+							<div class="sleep-timer-controls" id="durationControls">
+							<span class="material-icons">schedule</span>
+							<select id="sleepTimerSelect" class="sleep-timer-select">
+							<option value="0">Pas d'arrêt automatique</option>
+							<option value="15">Arrêt dans 15 min</option>
+							<option value="30">Arrêt dans 30 min</option>
+							<option value="60">Arrêt dans 1 heure</option>
+							<option value="120">Arrêt dans 2 heures</option>
+							<option value="180">Arrêt dans 3 heures</option>
+							<option value="240">Arrêt dans 4 heures</option>
+			</select>
+					</div>
+    
+			<div class="sleep-timer-controls" id="timeControls" style="display: none;">
+        <span class="material-icons">access_time</span>
+        <input type="time" id="sleepTimeInput" class="sleep-time-input">
+        <button id="setSleepTimeBtn" class="set-time-btn">Programmer</button>
+        <button id="cancelSleepTimeBtn" class="cancel-time-btn" style="display: none;">Annuler</button>
+    </div>
+    
+			<div class="sleep-timer-display" id="sleepTimerDisplay" style="display: none;">
+        <span class="material-icons">timer</span>
+        <span id="sleepTimerText">--:--</span>
+        <button id="cancelSleepTimer" class="cancel-timer-btn">
+            <span class="material-icons">close</span>
+        </button>
+		</div>
+	</div>
                     </div>
                 </div>
                 
@@ -292,11 +311,13 @@ class RadioPopupWidget {
             this.setVolume(volume / 100);
             document.querySelector('.volume-percentage').textContent = volume + '%';
         });
-		// Gestionnaire minuteur d'arrêt par heure
-        document.getElementById('setSleepTimerBtn').addEventListener('click', () => {
-            const timeInput = document.getElementById('sleepTimerTime');
-            if (timeInput.value) {
-                this.setSleepTimerByTime(timeInput.value);
+		// Gestionnaire minuteur d'arrêt
+        document.getElementById('sleepTimerSelect').addEventListener('change', (e) => {
+            const minutes = parseInt(e.target.value);
+            if (minutes > 0) {
+                this.setSleepTimer(minutes);
+            } else {
+                this.cancelSleepTimer();
             }
         });
 
@@ -304,6 +325,28 @@ class RadioPopupWidget {
         document.getElementById('cancelSleepTimer').addEventListener('click', () => {
             this.cancelSleepTimer();
         });
+		
+		// Gestionnaires pour les modes de minuteur
+document.getElementById('durationModeBtn').addEventListener('click', () => {
+    this.switchTimerMode('duration');
+});
+
+document.getElementById('timeModeBtn').addEventListener('click', () => {
+    this.switchTimerMode('time');
+});
+
+// Gestionnaire pour programmer l'heure
+document.getElementById('setSleepTimeBtn').addEventListener('click', () => {
+    const timeInput = document.getElementById('sleepTimeInput');
+    if (timeInput.value) {
+        this.setSleepTime(timeInput.value);
+    }
+});
+
+// Gestionnaire pour annuler l'heure programmée
+document.getElementById('cancelSleepTimeBtn').addEventListener('click', () => {
+    this.cancelSleepTimer();
+});
     }
 
     openPopup() {
@@ -642,62 +685,109 @@ class RadioPopupWidget {
     }
 
     cancelSleepTimer() {
-        if (this.sleepTimer) {
-            clearInterval(this.sleepTimer);
-            this.sleepTimer = null;
-        }
-        
-        this.sleepTimeRemaining = 0;
-        document.getElementById('sleepTimerDisplay').style.display = 'none';
-        document.getElementById('sleepTimerSelect').value = '0';
-		// Mettre à jour le widget compact
-        this.updateCompactWidget();
+    if (this.sleepTimer) {
+        clearInterval(this.sleepTimer);
+        this.sleepTimer = null;
     }
+    
+    this.sleepTimeRemaining = 0;
+    this.sleepTargetTime = null;
+    
+    document.getElementById('sleepTimerDisplay').style.display = 'none';
+    document.getElementById('sleepTimerSelect').value = '0';
+    
+    // Réinitialiser les contrôles de temps
+    document.getElementById('cancelSleepTimeBtn').style.display = 'none';
+    document.getElementById('setSleepTimeBtn').textContent = 'Programmer';
+    document.getElementById('sleepTimeInput').value = '';
+    
+    // Mettre à jour le widget compact
+    this.updateCompactWidget();
+}
 
-	setSleepTimerByTime(timeString) {
-        // Annuler le minuteur précédent
-        this.cancelSleepTimer();
+// === GESTION DES MODES DE MINUTEUR ===
+switchTimerMode(mode) {
+    this.sleepMode = mode;
+    
+    const durationBtn = document.getElementById('durationModeBtn');
+    const timeBtn = document.getElementById('timeModeBtn');
+    const durationControls = document.getElementById('durationControls');
+    const timeControls = document.getElementById('timeControls');
+    
+    if (mode === 'duration') {
+        durationBtn.classList.add('active');
+        timeBtn.classList.remove('active');
+        durationControls.style.display = 'flex';
+        timeControls.style.display = 'none';
+    } else {
+        timeBtn.classList.add('active');
+        durationBtn.classList.remove('active');
+        durationControls.style.display = 'none';
+        timeControls.style.display = 'flex';
         
-        // Parser l'heure (format HH:MM)
-        const [hours, minutes] = timeString.split(':').map(Number);
-        const targetTime = new Date();
-        targetTime.setHours(hours, minutes, 0, 0);
-        
+        // Proposer une heure par défaut (dans 1 heure)
         const now = new Date();
-        
-        // Si l'heure est déjà passée aujourd'hui, programmer pour demain
-        if (targetTime <= now) {
-            targetTime.setDate(targetTime.getDate() + 1);
-        }
-        
-        // Calculer les secondes restantes
-        this.sleepTimeRemaining = Math.floor((targetTime - now) / 1000);
-        
-        // Afficher le minuteur
-        document.getElementById('sleepTimerDisplay').style.display = 'flex';
+        now.setHours(now.getHours() + 1);
+        const timeString = now.toTimeString().slice(0, 5);
+        document.getElementById('sleepTimeInput').value = timeString;
+    }
+}
+
+setSleepTime(timeString) {
+    // Annuler le minuteur précédent
+    this.cancelSleepTimer();
+    
+    const [hours, minutes] = timeString.split(':').map(Number);
+    const now = new Date();
+    const targetTime = new Date();
+    
+    targetTime.setHours(hours, minutes, 0, 0);
+    
+    // Si l'heure est déjà passée aujourd'hui, programmer pour demain
+    if (targetTime <= now) {
+        targetTime.setDate(targetTime.getDate() + 1);
+    }
+    
+    this.sleepTargetTime = targetTime;
+    this.sleepTimeRemaining = Math.floor((targetTime - now) / 1000);
+    
+    if (this.sleepTimeRemaining <= 0) {
+        this.showToast('⚠️ Heure invalide');
+        return;
+    }
+    
+    // Afficher les contrôles
+    document.getElementById('sleepTimerDisplay').style.display = 'flex';
+    document.getElementById('cancelSleepTimeBtn').style.display = 'inline-block';
+    document.getElementById('setSleepTimeBtn').textContent = 'Modifier';
+    
+    this.updateSleepTimerDisplay();
+    
+    // Démarrer le décompte
+    this.sleepTimer = setInterval(() => {
+        this.sleepTimeRemaining--;
         this.updateSleepTimerDisplay();
         
-        // Démarrer le décompte
-        this.sleepTimer = setInterval(() => {
-            this.sleepTimeRemaining--;
-            this.updateSleepTimerDisplay();
-            
-            if (this.sleepTimeRemaining <= 0) {
-                this.stopRadio();
-                this.cancelSleepTimer();
-                this.showToast('Arrêt automatique de la radio');
-            }
-        }, 1000);
-        
-        // Message de confirmation
-        const timeFormatted = timeString;
-        const isToday = targetTime.getDate() === now.getDate();
-        const dayText = isToday ? "aujourd'hui" : "demain";
-        
-        this.showToast(`Arrêt programmé ${dayText} à ${timeFormatted}`);
-        this.updateCompactWidget();
-    }
-	
+        if (this.sleepTimeRemaining <= 0) {
+            this.stopRadio();
+            this.cancelSleepTimer();
+            this.showToast('🔕 Arrêt programmé de la radio');
+        }
+    }, 1000);
+    
+    // Message de confirmation
+    const timeDisplay = targetTime.toLocaleTimeString('fr-FR', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+    });
+    const dateDisplay = targetTime.toLocaleDateString('fr-FR') === now.toLocaleDateString('fr-FR') 
+        ? 'aujourd\'hui' 
+        : 'demain';
+    
+    this.showToast(`⏰ Arrêt programmé ${dateDisplay} à ${timeDisplay}`);
+    this.updateCompactWidget();
+}
+
     updateSleepTimerDisplay() {
         const totalMinutes = Math.floor(this.sleepTimeRemaining / 60);
         const seconds = this.sleepTimeRemaining % 60;
@@ -992,6 +1082,7 @@ class RadioPopupWidget {
 	
 	// === MENU MINUTEUR RAPIDE ===
     showQuickTimerMenu() {
+        // Supprimer tout menu existant
         const existingMenu = document.querySelector('.quick-timer-menu');
         if (existingMenu) {
             existingMenu.remove();
@@ -1000,31 +1091,51 @@ class RadioPopupWidget {
 
         const menu = document.createElement('div');
         menu.className = 'quick-timer-menu';
+        menu.innerHTML = `
+    <div class="quick-timer-options">
+        <div class="timer-mode-header">
+            <button class="quick-mode-btn active" data-mode="duration">Durée</button>
+            <button class="quick-mode-btn" data-mode="time">Heure</button>
+        </div>
         
-        // Générer des options d'heures
-        const now = new Date();
-        const currentHour = now.getHours();
-        const currentMinute = now.getMinutes();
+        <div class="duration-options" id="quickDurationOptions">
+            <div class="timer-option" data-minutes="0">
+                <span class="material-icons">close</span>
+                <span>Annuler</span>
+            </div>
+            <div class="timer-option" data-minutes="15">
+                <span class="material-icons">schedule</span>
+                <span>15 min</span>
+            </div>
+            <div class="timer-option" data-minutes="30">
+                <span class="material-icons">schedule</span>
+                <span>30 min</span>
+            </div>
+            <div class="timer-option" data-minutes="60">
+                <span class="material-icons">schedule</span>
+                <span>1 heure</span>
+            </div>
+            <div class="timer-option" data-minutes="120">
+                <span class="material-icons">schedule</span>
+                <span>2 heures</span>
+            </div>
+        </div>
         
-        let options = '<div class="timer-option" data-action="cancel"><span class="material-icons">close</span><span>Annuler</span></div>';
-        
-        // Ajouter des créneaux de 30 minutes
-        for (let i = 0; i < 8; i++) {
-            const futureTime = new Date(now.getTime() + (30 * i + 30) * 60000);
-            const timeString = futureTime.toTimeString().slice(0, 5);
-            const dayText = futureTime.getDate() !== now.getDate() ? " (demain)" : "";
-            
-            options += `
-                <div class="timer-option" data-time="${timeString}">
-                    <span class="material-icons">schedule</span>
-                    <span>${timeString}${dayText}</span>
-                </div>
-            `;
-        }
-        
-        menu.innerHTML = `<div class="quick-timer-options">${options}</div>`;
+        <div class="time-options" id="quickTimeOptions" style="display: none;">
+            <div class="quick-time-input">
+                <input type="time" id="quickTimeInput" class="quick-time-field">
+                <button id="quickSetTime" class="quick-set-btn">OK</button>
+            </div>
+            <div class="quick-time-presets">
+                <div class="time-preset" data-offset="30">+30min</div>
+                <div class="time-preset" data-offset="60">+1h</div>
+                <div class="time-preset" data-offset="120">+2h</div>
+            </div>
+        </div>
+    </div>
+`;
 
-        // Position et affichage
+        // Positionner le menu au-dessus du widget
         const widget = document.querySelector('.radio-compact-widget');
         const rect = widget.getBoundingClientRect();
         
@@ -1035,25 +1146,37 @@ class RadioPopupWidget {
 
         document.body.appendChild(menu);
 
-        // Gestionnaires d'événements
+        // Gestionnaires d'événements avec feedback amélioré
         menu.addEventListener('click', (e) => {
             const option = e.target.closest('.timer-option');
             if (option) {
-                if (option.dataset.action === 'cancel') {
+                const minutes = parseInt(option.dataset.minutes);
+                if (minutes > 0) {
+                    this.setSleepTimer(minutes);
+                    // Synchroniser avec la popup principale
+                    const selectElement = document.getElementById('sleepTimerSelect');
+                    if (selectElement) {
+                        selectElement.value = minutes;
+                    }
+                } else {
                     this.cancelSleepTimer();
-                    this.showToast('Minuteur d\'arrêt annulé');
-                } else if (option.dataset.time) {
-                    this.setSleepTimerByTime(option.dataset.time);
+                    this.showToast('⏰ Minuteur d\'arrêt annulé');
+                    // Synchroniser avec la popup principale
+                    const selectElement = document.getElementById('sleepTimerSelect');
+                    if (selectElement) {
+                        selectElement.value = '0';
+                    }
                 }
                 menu.remove();
             }
         });
 
-        // Auto-fermeture
+        // Fermer automatiquement après 8 secondes (plus de temps pour voir toutes les options)
         setTimeout(() => {
-            if (menu.parentNode) menu.remove();
+            if (menu.parentNode) {
+                menu.remove();
+            }
         }, 8000);
-    
 
         // Fermer en cliquant ailleurs
         setTimeout(() => {
@@ -1063,6 +1186,45 @@ class RadioPopupWidget {
                 }
             }, { once: true });
         }, 100);
+		
+		// Gestionnaires pour les modes
+menu.querySelectorAll('.quick-mode-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        menu.querySelectorAll('.quick-mode-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        
+        const mode = e.target.dataset.mode;
+        document.getElementById('quickDurationOptions').style.display = mode === 'duration' ? 'block' : 'none';
+        document.getElementById('quickTimeOptions').style.display = mode === 'time' ? 'block' : 'none';
+        
+        if (mode === 'time') {
+            // Proposer une heure par défaut
+            const now = new Date();
+            now.setMinutes(now.getMinutes() + 30);
+            document.getElementById('quickTimeInput').value = now.toTimeString().slice(0, 5);
+        }
+    });
+});
+
+// Gestionnaire pour programmer l'heure
+document.getElementById('quickSetTime').addEventListener('click', () => {
+    const timeValue = document.getElementById('quickTimeInput').value;
+    if (timeValue) {
+        this.setSleepTime(timeValue);
+        menu.remove();
+    }
+});
+
+// Gestionnaires pour les presets de temps
+menu.querySelectorAll('.time-preset').forEach(preset => {
+    preset.addEventListener('click', () => {
+        const offset = parseInt(preset.dataset.offset);
+        const targetTime = new Date();
+        targetTime.setMinutes(targetTime.getMinutes() + offset);
+        this.setSleepTime(targetTime.toTimeString().slice(0, 5));
+        menu.remove();
+    });
+});
     }
 
     // === MINI-ÉGALISEUR COMPACT ===

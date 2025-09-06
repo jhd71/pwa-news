@@ -1299,15 +1299,43 @@ body.radio-popup-open {
     background: #ef4444;
 }
 
-/* Input time et bouton */
-.sleep-timer-controls {
+/* === NOUVEAUX STYLES POUR LE MINUTEUR À HEURE PRÉCISE === */
+
+/* Boutons de mode de minuteur */
+.sleep-timer-mode-toggle {
     display: flex;
-    align-items: center;
-    gap: 10px;
+    gap: 5px;
     margin-bottom: 10px;
+    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.1);
+    border-radius: 8px;
+    padding: 3px;
 }
 
-.sleep-timer-time {
+.timer-mode-btn {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-color, #333);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.timer-mode-btn.active {
+    background: var(--primary-color, #940000);
+    color: white;
+    box-shadow: 0 2px 5px rgba(148, 0, 0, 0.3);
+}
+
+.timer-mode-btn:hover:not(.active) {
+    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.1);
+}
+
+/* Contrôles pour l'heure précise */
+.sleep-time-input {
     flex: 1;
     padding: 8px 12px;
     border: 1px solid rgba(var(--primary-color-rgb, 148, 0, 0), 0.3);
@@ -1315,22 +1343,218 @@ body.radio-popup-open {
     background: var(--card-bg, white);
     color: var(--text-color, #333);
     font-size: 14px;
+    font-family: monospace;
 }
 
-.set-timer-btn {
+.sleep-time-input:focus {
+    outline: none;
+    border-color: var(--primary-color, #940000);
+    box-shadow: 0 0 5px rgba(148, 0, 0, 0.3);
+}
+
+.set-time-btn, .cancel-time-btn {
+    padding: 8px 12px;
+    border: 1px solid var(--primary-color, #940000);
+    border-radius: 6px;
     background: var(--primary-color, #940000);
     color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
     cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.set-time-btn:hover {
+    background: #a50000;
+    transform: scale(1.02);
+}
+
+.cancel-time-btn {
+    background: #dc3545;
+    border-color: #dc3545;
+    margin-left: 5px;
+}
+
+.cancel-time-btn:hover {
+    background: #c82333;
+}
+
+/* === WIDGET COMPACT - MENU MINUTEUR ÉTENDU === */
+
+.timer-mode-header {
     display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 14px;
+    gap: 3px;
+    margin-bottom: 8px;
+    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.1);
+    border-radius: 6px;
+    padding: 2px;
+}
+
+.quick-mode-btn {
+    flex: 1;
+    padding: 6px 8px;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text-color, #333);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
     transition: all 0.2s ease;
 }
 
-.set-timer-btn:hover {
-    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.8);
+.quick-mode-btn.active {
+    background: var(--primary-color, #940000);
+    color: white;
+}
+
+.quick-time-input {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 8px;
+    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.05);
+    border-radius: 6px;
+}
+
+.quick-time-field {
+    flex: 1;
+    padding: 6px 8px;
+    border: 1px solid rgba(var(--primary-color-rgb, 148, 0, 0), 0.3);
+    border-radius: 4px;
+    background: var(--card-bg, white);
+    color: var(--text-color, #333);
+    font-size: 13px;
+    font-family: monospace;
+}
+
+.quick-set-btn {
+    padding: 6px 12px;
+    border: 1px solid var(--primary-color, #940000);
+    border-radius: 4px;
+    background: var(--primary-color, #940000);
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.quick-set-btn:hover {
+    background: #a50000;
+}
+
+.quick-time-presets {
+    display: flex;
+    gap: 5px;
+    justify-content: space-between;
+}
+
+.time-preset {
+    flex: 1;
+    padding: 6px 8px;
+    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.1);
+    border: 1px solid rgba(var(--primary-color-rgb, 148, 0, 0), 0.2);
+    border-radius: 4px;
+    color: var(--primary-color, #940000);
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.time-preset:hover {
+    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.2);
+    transform: scale(1.02);
+}
+
+/* === RESPONSIVE === */
+
+@media (max-width: 768px) {
+    .timer-mode-btn {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+    
+    .sleep-time-input {
+        font-size: 13px;
+        padding: 6px 8px;
+    }
+    
+    .set-time-btn, .cancel-time-btn {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+    
+    .quick-time-field {
+        font-size: 12px;
+        padding: 5px 6px;
+    }
+    
+    .time-preset {
+        font-size: 10px;
+        padding: 5px 6px;
+    }
+}
+
+/* === THÈMES === */
+
+/* Thème sombre */
+[data-theme="dark"] .timer-mode-btn,
+[data-theme="dark"] .quick-mode-btn {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .timer-mode-btn.active,
+[data-theme="dark"] .quick-mode-btn.active {
+    background: #ff6b6b;
+}
+
+[data-theme="dark"] .sleep-time-input,
+[data-theme="dark"] .quick-time-field {
+    background: #4a5568;
+    border-color: rgba(255, 107, 107, 0.3);
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .set-time-btn,
+[data-theme="dark"] .quick-set-btn {
+    background: #ff6b6b;
+    border-color: #ff6b6b;
+}
+
+[data-theme="dark"] .set-time-btn:hover,
+[data-theme="dark"] .quick-set-btn:hover {
+    background: #ff5252;
+}
+
+/* Thème bleu ciel */
+[data-theme="bleuciel"] .timer-mode-btn.active,
+[data-theme="bleuciel"] .quick-mode-btn.active,
+[data-theme="bleuciel"] .set-time-btn,
+[data-theme="bleuciel"] .quick-set-btn {
+    background: #17a2b8;
+    border-color: #17a2b8;
+}
+
+[data-theme="bleuciel"] .time-preset {
+    color: #17a2b8;
+    border-color: rgba(23, 162, 184, 0.2);
+}
+
+/* Thème violet */
+[data-theme="light"] .timer-mode-btn.active,
+[data-theme="light"] .quick-mode-btn.active,
+[data-theme="light"] .set-time-btn,
+[data-theme="light"] .quick-set-btn {
+    background: #6f42c1;
+    border-color: #6f42c1;
+}
+
+[data-theme="light"] .time-preset {
+    color: #6f42c1;
+    border-color: rgba(111, 66, 193, 0.2);
 }
