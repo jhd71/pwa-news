@@ -365,8 +365,8 @@ class RadioPopupWidget {
         }, 100);
     }
     
-    // Créer le widget compact SEULEMENT si une station est active
-    if (this.currentStation && (this.isPlaying || this.audio)) {
+    // Créer le widget compact SEULEMENT si une station joue actuellement
+    if (this.isPlaying && this.currentStation) {
         this.createCompactWidget();
         this.updateCompactWidget();
     }
@@ -511,6 +511,7 @@ class RadioPopupWidget {
     pauseRadio() {
         if (this.audio) {
             this.audio.pause();
+            this.audio = null; // AJOUTER CETTE LIGNE pour nettoyer l'audio
         }
         this.isPlaying = false;
         
@@ -523,11 +524,8 @@ class RadioPopupWidget {
         // Arrêter le mini-égaliseur compact
         this.stopCompactEqualizer();
         
-        // Supprimer le widget en pause (optionnel)
+        // Supprimer le widget quand on met en pause
         this.hideCompactWidget();
-        
-        // Mettre à jour le widget compact
-        this.updateCompactWidget();
         
         document.getElementById('currentStationStatus').textContent = 'En pause';
         this.updateStatusStyle('En pause');
