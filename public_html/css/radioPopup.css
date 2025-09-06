@@ -419,7 +419,7 @@
 .volume-slider {
     flex: 1;
     height: 4px;
-    background: rgba(148, 0, 0, 0.2);
+    background: #FFC107;
     border-radius: 2px;
     outline: none;
     -webkit-appearance: none;
