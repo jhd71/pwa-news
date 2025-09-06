@@ -97,6 +97,13 @@ class RadioPopupWidget {
         this.isPlaying = false;
         this.audio = null;
         this.volume = 0.7;
+		// Minuteur d'arrêt
+        this.sleepTimer = null;
+        this.sleepTimeRemaining = 0;
+        
+        // Égaliseur visuel
+        this.equalizerInterval = null;
+        this.isEqualizerActive = false;
     }
 
     init() {
@@ -204,10 +211,42 @@ class RadioPopupWidget {
                         </div>
                         
                         <div class="volume-control">
-                            <span class="material-icons">volume_up</span>
-                            <input type="range" id="volumeSlider" min="0" max="100" value="70" class="volume-slider">
-                            <span class="volume-percentage">70%</span>
+                        <span class="material-icons">volume_up</span>
+                        <input type="range" id="volumeSlider" min="0" max="100" value="70" class="volume-slider">
+                        <span class="volume-percentage">70%</span>
+                    </div>
+                    
+                    <!-- Égaliseur visuel -->
+                    <div class="equalizer-section">
+                        <div class="equalizer-container" id="equalizerContainer">
+                            <div class="equalizer-bar"></div>
+                            <div class="equalizer-bar"></div>
+                            <div class="equalizer-bar"></div>
+                            <div class="equalizer-bar"></div>
+                            <div class="equalizer-bar"></div>
                         </div>
+                    </div>
+                    
+                    <!-- Minuteur d'arrêt -->
+                    <div class="sleep-timer-section">
+                        <div class="sleep-timer-controls">
+                            <span class="material-icons">schedule</span>
+                            <select id="sleepTimerSelect" class="sleep-timer-select">
+                                <option value="0">Pas d'arrêt automatique</option>
+                                <option value="15">Arrêt dans 15 min</option>
+                                <option value="30">Arrêt dans 30 min</option>
+                                <option value="60">Arrêt dans 1 heure</option>
+                                <option value="120">Arrêt dans 2 heures</option>
+                            </select>
+                        </div>
+                        <div class="sleep-timer-display" id="sleepTimerDisplay" style="display: none;">
+                            <span class="material-icons">timer</span>
+                            <span id="sleepTimerText">--:--</span>
+                            <button id="cancelSleepTimer" class="cancel-timer-btn">
+                                <span class="material-icons">close</span>
+                            </button>
+                        </div>
+                    </div>
                     </div>
                 </div>
                 
@@ -251,6 +290,20 @@ class RadioPopupWidget {
             this.setVolume(volume / 100);
             document.querySelector('.volume-percentage').textContent = volume + '%';
         });
+		// Gestionnaire minuteur d'arrêt
+        document.getElementById('sleepTimerSelect').addEventListener('change', (e) => {
+            const minutes = parseInt(e.target.value);
+            if (minutes > 0) {
+                this.setSleepTimer(minutes);
+            } else {
+                this.cancelSleepTimer();
+            }
+        });
+
+        // Gestionnaire annulation minuteur
+        document.getElementById('cancelSleepTimer').addEventListener('click', () => {
+            this.cancelSleepTimer();
+        });
     }
 
     openPopup() {
@@ -288,6 +341,14 @@ closePopup() {
     }
 	// Maintenir l'indicateur si la radio joue toujours
     this.updateTileIndicator();
+	// Démarrer l'égaliseur visuel
+            this.startEqualizer();
+            
+            // Créer le widget compact s'il n'existe pas
+            this.createCompactWidget();
+            
+            // Mettre à jour le widget compact
+            this.updateCompactWidget();
 }
 	
 	toggleStationPlayback(index) {
@@ -388,6 +449,11 @@ closePopup() {
             this.isPlaying = true;
 			// Mettre à jour l'indicateur de la tuile
             this.updateTileIndicator();
+			// Arrêter l'égaliseur visuel
+        this.stopEqualizer();
+        
+        // Mettre à jour le widget compact
+        this.updateCompactWidget();
             document.getElementById('currentStationStatus').textContent = 'En direct';
             this.updateStatusStyle('En direct');
             
@@ -417,6 +483,14 @@ closePopup() {
         this.isPlaying = false;
 		// Masquer l'indicateur de la tuile
         this.hideTileIndicator();
+		// Arrêter l'égaliseur visuel
+        this.stopEqualizer();
+        
+        // Annuler le minuteur d'arrêt
+        this.cancelSleepTimer();
+        
+        // Mettre à jour le widget compact
+        this.updateCompactWidget();
         document.getElementById('currentStationStatus').textContent = 'En pause';
         this.updateStatusStyle('En pause');
         
@@ -477,6 +551,213 @@ closePopup() {
         }
     }
 
+// === MINUTEUR D'ARRÊT ===
+    setSleepTimer(minutes) {
+        // Annuler le minuteur précédent s'il existe
+        this.cancelSleepTimer();
+        
+        this.sleepTimeRemaining = minutes * 60; // Conversion en secondes
+        
+        // Afficher le minuteur
+        document.getElementById('sleepTimerDisplay').style.display = 'flex';
+        this.updateSleepTimerDisplay();
+        
+        // Démarrer le décompte
+        this.sleepTimer = setInterval(() => {
+            this.sleepTimeRemaining--;
+            this.updateSleepTimerDisplay();
+            
+            if (this.sleepTimeRemaining <= 0) {
+                this.stopRadio();
+                this.cancelSleepTimer();
+                this.showToast('⏰ Arrêt automatique de la radio');
+            }
+        }, 1000);
+        
+        this.showToast(`⏰ Arrêt programmé dans ${minutes} min`);
+    }
+
+    cancelSleepTimer() {
+        if (this.sleepTimer) {
+            clearInterval(this.sleepTimer);
+            this.sleepTimer = null;
+        }
+        
+        this.sleepTimeRemaining = 0;
+        document.getElementById('sleepTimerDisplay').style.display = 'none';
+        document.getElementById('sleepTimerSelect').value = '0';
+    }
+
+    updateSleepTimerDisplay() {
+        const minutes = Math.floor(this.sleepTimeRemaining / 60);
+        const seconds = this.sleepTimeRemaining % 60;
+        const timeText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        document.getElementById('sleepTimerText').textContent = timeText;
+    }
+
+    // === ÉGALISEUR VISUEL ===
+    startEqualizer() {
+        if (this.equalizerInterval) return;
+        
+        this.isEqualizerActive = true;
+        const bars = document.querySelectorAll('.equalizer-bar');
+        
+        this.equalizerInterval = setInterval(() => {
+            bars.forEach(bar => {
+                const height = Math.random() * 80 + 20; // Entre 20% et 100%
+                bar.style.height = height + '%';
+            });
+        }, 200); // Animation toutes les 200ms
+    }
+
+    stopEqualizer() {
+        if (this.equalizerInterval) {
+            clearInterval(this.equalizerInterval);
+            this.equalizerInterval = null;
+        }
+        
+        this.isEqualizerActive = false;
+        
+        // Remettre les barres à zéro
+        document.querySelectorAll('.equalizer-bar').forEach(bar => {
+            bar.style.height = '20%';
+        });
+    }
+
+    // === WIDGET COMPACT ===
+    createCompactWidget() {
+        // Vérifier si le widget existe déjà
+        if (document.querySelector('.radio-compact-widget')) {
+            return;
+        }
+
+        const widget = document.createElement('div');
+        widget.className = 'radio-compact-widget';
+        widget.innerHTML = `
+            <div class="compact-widget-content">
+                <div class="compact-station-info">
+                    <img id="compactStationLogo" src="" alt="" class="compact-logo">
+                    <div class="compact-details">
+                        <div id="compactStationName">Aucune station</div>
+                        <div id="compactStationStatus">Arrêtée</div>
+                    </div>
+                </div>
+                <div class="compact-controls">
+                    <button id="compactPlayPause" class="compact-btn">
+                        <span class="material-icons">play_arrow</span>
+                    </button>
+                    <button id="compactVolume" class="compact-btn">
+                        <span class="material-icons">volume_up</span>
+                    </button>
+                    <button id="compactOpenFull" class="compact-btn">
+                        <span class="material-icons">open_in_full</span>
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(widget);
+        this.setupCompactWidgetEvents(widget);
+    }
+
+    setupCompactWidgetEvents(widget) {
+        // Play/Pause
+        document.getElementById('compactPlayPause').addEventListener('click', () => {
+            if (this.currentStation) {
+                this.toggleStationPlayback(this.stations.findIndex(s => s.name === this.currentStation.name));
+            } else {
+                this.openPopup(); // Ouvrir pour choisir une station
+            }
+        });
+
+        // Volume (cycle entre muet, faible, moyen, fort)
+        document.getElementById('compactVolume').addEventListener('click', () => {
+            const currentVolume = this.volume;
+            let newVolume;
+            
+            if (currentVolume === 0) newVolume = 0.3;
+            else if (currentVolume <= 0.3) newVolume = 0.6;
+            else if (currentVolume <= 0.6) newVolume = 1.0;
+            else newVolume = 0;
+            
+            this.setVolume(newVolume);
+            this.updateCompactVolumeIcon();
+        });
+
+        // Ouvrir popup complète
+        document.getElementById('compactOpenFull').addEventListener('click', () => {
+            this.openPopup();
+        });
+    }
+
+    updateCompactWidget() {
+        const widget = document.querySelector('.radio-compact-widget');
+        if (!widget) return;
+
+        const logo = document.getElementById('compactStationLogo');
+        const name = document.getElementById('compactStationName');
+        const status = document.getElementById('compactStationStatus');
+        const playBtn = document.getElementById('compactPlayPause');
+
+        if (this.currentStation) {
+            logo.src = this.currentStation.logo;
+            logo.style.display = 'block';
+            name.textContent = this.currentStation.name;
+            
+            if (this.isPlaying) {
+                status.textContent = 'En direct';
+                status.className = 'status-live';
+                playBtn.querySelector('.material-icons').textContent = 'pause';
+                widget.classList.add('playing');
+            } else {
+                status.textContent = 'En pause';
+                status.className = 'status-paused';
+                playBtn.querySelector('.material-icons').textContent = 'play_arrow';
+                widget.classList.remove('playing');
+            }
+        } else {
+            logo.style.display = 'none';
+            name.textContent = 'Aucune station';
+            status.textContent = 'Arrêtée';
+            status.className = '';
+            playBtn.querySelector('.material-icons').textContent = 'play_arrow';
+            widget.classList.remove('playing');
+        }
+
+        this.updateCompactVolumeIcon();
+    }
+
+    updateCompactVolumeIcon() {
+        const volumeBtn = document.getElementById('compactVolume');
+        if (!volumeBtn) return;
+
+        const icon = volumeBtn.querySelector('.material-icons');
+        if (this.volume === 0) {
+            icon.textContent = 'volume_off';
+        } else if (this.volume <= 0.3) {
+            icon.textContent = 'volume_down';
+        } else {
+            icon.textContent = 'volume_up';
+        }
+    }
+
+    showToast(message) {
+        // Créer ou mettre à jour un toast simple
+        let toast = document.querySelector('.radio-toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.className = 'radio-toast';
+            document.body.appendChild(toast);
+        }
+
+        toast.textContent = message;
+        toast.classList.add('show');
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+	
     // Mettre à jour l'indicateur selon l'état
     updateTileIndicator() {
         if (this.isPlaying && this.currentStation) {

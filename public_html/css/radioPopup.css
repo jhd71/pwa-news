@@ -658,3 +658,311 @@ body.radio-popup-open {
     background: linear-gradient(135deg, #ba68c8 0%, #ab47bc 100%);
 }
 
+/* === ÉGALISEUR VISUEL === */
+.equalizer-section {
+    margin: 15px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.equalizer-container {
+    display: flex;
+    align-items: end;
+    gap: 3px;
+    height: 40px;
+    padding: 5px 10px;
+    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.1);
+    border-radius: 8px;
+}
+
+.equalizer-bar {
+    width: 4px;
+    height: 20%;
+    background: linear-gradient(to top, var(--primary-color, #940000), #ff6b6b);
+    border-radius: 2px;
+    transition: height 0.2s ease;
+}
+
+.equalizer-bar:nth-child(1) { animation-delay: 0ms; }
+.equalizer-bar:nth-child(2) { animation-delay: 100ms; }
+.equalizer-bar:nth-child(3) { animation-delay: 200ms; }
+.equalizer-bar:nth-child(4) { animation-delay: 300ms; }
+.equalizer-bar:nth-child(5) { animation-delay: 400ms; }
+
+/* === MINUTEUR D'ARRÊT === */
+.sleep-timer-section {
+    margin: 15px 0;
+    padding: 10px;
+    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.05);
+    border-radius: 8px;
+}
+
+.sleep-timer-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.sleep-timer-controls .material-icons {
+    color: var(--primary-color, #940000);
+    font-size: 20px;
+}
+
+.sleep-timer-select {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid rgba(var(--primary-color-rgb, 148, 0, 0), 0.3);
+    border-radius: 6px;
+    background: var(--card-bg, white);
+    color: var(--text-color, #333);
+    font-size: 14px;
+}
+
+.sleep-timer-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(255, 193, 7, 0.2);
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.sleep-timer-display .material-icons {
+    color: #ff9800;
+    font-size: 18px;
+}
+
+.cancel-timer-btn {
+    background: rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    color: #dc3545;
+    border-radius: 4px;
+    padding: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+.cancel-timer-btn:hover {
+    background: rgba(220, 53, 69, 0.2);
+}
+
+/* === WIDGET COMPACT === */
+.radio-compact-widget {
+    position: fixed;
+    bottom: 80px; /* Au-dessus de la barre de navigation */
+    right: 20px;
+    background: var(--card-bg, white);
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    border: 2px solid transparent;
+    backdrop-filter: blur(10px);
+    max-width: 300px;
+    animation: slideInRight 0.3s ease;
+}
+
+.radio-compact-widget.playing {
+    border-color: #28a745;
+    box-shadow: 0 0 20px rgba(40, 167, 69, 0.3);
+}
+
+.compact-widget-content {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+}
+
+.compact-station-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0; /* Pour permettre l'ellipsis */
+}
+
+.compact-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    object-fit: contain;
+    background: white;
+    padding: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.compact-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.compact-details div:first-child {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-color, #333);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.compact-details div:last-child {
+    font-size: 12px;
+    color: var(--text-secondary, #666);
+}
+
+.compact-controls {
+    display: flex;
+    gap: 5px;
+}
+
+.compact-btn {
+    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.1);
+    border: 1px solid rgba(var(--primary-color-rgb, 148, 0, 0), 0.2);
+    color: var(--primary-color, #940000);
+    border-radius: 6px;
+    padding: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    transition: all 0.2s ease;
+}
+
+.compact-btn:hover {
+    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.2);
+    transform: scale(1.05);
+}
+
+.compact-btn .material-icons {
+    font-size: 18px;
+}
+
+/* Classes de statut pour le widget compact */
+.compact-details .status-live {
+    color: #28a745 !important;
+}
+
+.compact-details .status-paused {
+    color: #ff9800 !important;
+}
+
+/* === TOAST SIMPLE === */
+.radio-toast {
+    position: fixed;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    z-index: 10001;
+    opacity: 0;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.radio-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* === ANIMATIONS === */
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* === RESPONSIVE === */
+
+/* Tablettes */
+@media (max-width: 768px) {
+    .radio-compact-widget {
+        right: 10px;
+        bottom: 70px;
+        max-width: 250px;
+    }
+    
+    .compact-widget-content {
+        padding: 8px;
+    }
+    
+    .compact-logo {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .compact-btn {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .compact-btn .material-icons {
+        font-size: 16px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .radio-compact-widget {
+        right: 5px;
+        bottom: 65px;
+        max-width: 220px;
+    }
+    
+    .equalizer-container {
+        height: 30px;
+    }
+    
+    .equalizer-bar {
+        width: 3px;
+    }
+    
+    .sleep-timer-select {
+        font-size: 13px;
+        padding: 6px 10px;
+    }
+}
+
+/* === THÈMES === */
+
+/* Thème sombre */
+[data-theme="dark"] .radio-compact-widget {
+    --card-bg: #2d3748;
+    --text-color: #e2e8f0;
+    --text-secondary: #a0aec0;
+    --primary-color-rgb: 255, 107, 107;
+    --primary-color: #ff6b6b;
+}
+
+[data-theme="dark"] .compact-logo {
+    background: #4a5568;
+}
+
+/* Thème bleu ciel */
+[data-theme="bleuciel"] .radio-compact-widget {
+    --primary-color-rgb: 23, 162, 184;
+    --primary-color: #17a2b8;
+}
+
+/* Thème violet */
+[data-theme="light"] .radio-compact-widget {
+    --primary-color-rgb: 111, 66, 193;
+    --primary-color: #6f42c1;
+}
+
