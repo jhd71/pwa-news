@@ -1094,7 +1094,7 @@ class RadioPopupWidget {
                 this.stopCompactEqualizer();
             }, 300);
             
-            this.showToast('Widget masqué (la radio continue)');
+            this.showToast('Widget masqué');
         }
     }
 
