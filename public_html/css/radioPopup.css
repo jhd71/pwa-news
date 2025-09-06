@@ -920,9 +920,9 @@ body.radio-popup-open {
 /* Mobile */
 @media (max-width: 480px) {
     .radio-compact-widget {
-        left: 10px;
+        left: 40px;
         bottom: 103px;
-        max-width: 330px;
+        max-width: 340px;
     }
 }
     
