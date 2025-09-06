@@ -1298,3 +1298,39 @@ body.radio-popup-open {
 [data-theme="dark"] .compact-close-btn:hover {
     background: #ef4444;
 }
+
+/* Input time et bouton */
+.sleep-timer-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.sleep-timer-time {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid rgba(var(--primary-color-rgb, 148, 0, 0), 0.3);
+    border-radius: 6px;
+    background: var(--card-bg, white);
+    color: var(--text-color, #333);
+    font-size: 14px;
+}
+
+.set-timer-btn {
+    background: var(--primary-color, #940000);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.set-timer-btn:hover {
+    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.8);
+}
