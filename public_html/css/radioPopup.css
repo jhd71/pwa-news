@@ -763,7 +763,7 @@ body.radio-popup-open {
     z-index: 1000;
     border: 2px solid transparent;
     backdrop-filter: blur(10px);
-    max-width: 300px;
+    max-width: 400px;
     animation: slideInLeft 0.3s ease; /* Animation depuis la gauche */
 }
 
@@ -920,7 +920,7 @@ body.radio-popup-open {
 /* Mobile */
 @media (max-width: 480px) {
     .radio-compact-widget {
-        left: 90px;
+        left: 50px;
         bottom: 103px;
         max-width: 330px;
     }
@@ -1223,4 +1223,84 @@ body.radio-popup-open {
     .compact-close-btn .material-icons {
         font-size: 12px;
     }
+}
+
+/* === CORRECTION THÈME SOMBRE POUR WIDGET COMPACT === */
+
+[data-theme="dark"] .radio-compact-widget {
+    background: #2d3748;
+    border: 2px solid #4a5568;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .radio-compact-widget.playing {
+    border-color: #68d391;
+    box-shadow: 0 0 20px rgba(104, 211, 145, 0.4);
+}
+
+/* Boutons plus contrastés en mode sombre */
+[data-theme="dark"] .compact-btn {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: #e2e8f0 !important;
+}
+
+[data-theme="dark"] .compact-btn:hover {
+    background: rgba(255, 255, 255, 0.25) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Bouton minuteur actif en mode sombre */
+[data-theme="dark"] .compact-timer-btn.active-timer {
+    background: rgba(255, 193, 7, 0.3) !important;
+    border-color: rgba(255, 193, 7, 0.6) !important;
+    color: #ffd93d !important;
+}
+
+/* Logo en mode sombre */
+[data-theme="dark"] .compact-logo {
+    background: #4a5568;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Texte en mode sombre */
+[data-theme="dark"] .compact-details div:first-child {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .compact-details div:last-child {
+    color: #a0aec0;
+}
+
+/* Minuteur compact en mode sombre */
+[data-theme="dark"] .compact-timer {
+    color: #ffd93d;
+}
+
+/* Menu minuteur en mode sombre */
+[data-theme="dark"] .quick-timer-menu {
+    background: #2d3748;
+    border: 1px solid #4a5568;
+}
+
+[data-theme="dark"] .timer-option {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .timer-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .timer-option .material-icons {
+    color: #68d391;
+}
+
+/* Bouton fermeture en mode sombre */
+[data-theme="dark"] .compact-close-btn {
+    background: rgba(239, 68, 68, 0.9);
+    border-color: #4a5568;
+}
+
+[data-theme="dark"] .compact-close-btn:hover {
+    background: #ef4444;
 }
