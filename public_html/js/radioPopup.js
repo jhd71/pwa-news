@@ -365,11 +365,11 @@ class RadioPopupWidget {
         }, 100);
     }
     
-    // Créer le widget compact s'il n'existe pas
-    this.createCompactWidget();
-    
-    // Mettre à jour le widget compact
-    this.updateCompactWidget();
+    // Créer le widget compact SEULEMENT si une station est sélectionnée
+    if (this.currentStation) {
+        this.createCompactWidget();
+        this.updateCompactWidget();
+    }
 }
 	
 	toggleStationPlayback(index) {
@@ -545,6 +545,7 @@ class RadioPopupWidget {
             this.audio = null;
         }
         this.isPlaying = false;
+        this.currentStation = null; // Réinitialiser la station
         
         // Masquer l'indicateur de la tuile
         this.hideTileIndicator();
@@ -558,8 +559,8 @@ class RadioPopupWidget {
         // Annuler le minuteur d'arrêt
         this.cancelSleepTimer();
         
-        // Mettre à jour le widget compact
-        this.updateCompactWidget();
+        // Supprimer le widget quand plus de station
+        this.hideCompactWidget();
         
         document.getElementById('currentStationStatus').textContent = 'Arrêté';
         this.updateStatusStyle('Arrêté');
@@ -738,7 +739,12 @@ class RadioPopupWidget {
 
     // === WIDGET COMPACT AMÉLIORÉ ===
     createCompactWidget() {
-        // Vérifier si le widget existe déjà
+        // Ne créer le widget QUE si une station est sélectionnée
+        if (!this.currentStation) {
+            return;
+        }
+        
+        // Vérifier si le widget existe déjà 
         if (document.querySelector('.radio-compact-widget')) {
             return;
         }
