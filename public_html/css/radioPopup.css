@@ -1129,12 +1129,12 @@ body.radio-popup-open {
     }
     
     .quick-timer-menu {
-        min-width: 100px;
+        min-width: 120px;
     }
     
     .timer-option {
         padding: 6px 10px;
-        font-size: 13px;
+        font-size: 15px;
     }
 }
 
