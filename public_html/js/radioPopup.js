@@ -1053,7 +1053,7 @@ class RadioPopupWidget {
         setTimeout(() => {
             if (menu.parentNode) menu.remove();
         }, 8000);
-    }
+    
 
         // Fermer en cliquant ailleurs
         setTimeout(() => {
