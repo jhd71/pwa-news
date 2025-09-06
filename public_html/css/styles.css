@@ -17,7 +17,7 @@
     
     /* Dimensions */
     --header-height: 60px;
-    --bottom-nav-height: 60px;
+    --bottom-nav-height: 90px;
     
     /* Tailles de police */
     --tile-title-size: 16px;
@@ -3022,7 +3022,7 @@ a:active {
     }
     
     .separator:first-of-type {
-        margin-top: 80px;
+        margin-top: 60px;
     }
     
     .tile-container {
