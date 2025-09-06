@@ -472,14 +472,20 @@ class RadioPopupWidget {
             
             this.audio.play();
             this.isPlaying = true;
-			// Mettre à jour l'indicateur de la tuile
+            
+            // Mettre à jour l'indicateur de la tuile
             this.updateTileIndicator();
-			// Arrêter l'égaliseur visuel
-        this.stopEqualizer();
-        // Arrêter le mini-égaliseur compact
-            this.stopCompactEqualizer();
-        // Mettre à jour le widget compact
-        this.updateCompactWidget();
+            
+            // DÉMARRER les égaliseurs (et non les arrêter !)
+            this.startEqualizer();
+            this.startCompactEqualizer();
+            
+            // Créer le widget compact s'il n'existe pas
+            this.createCompactWidget();
+            
+            // Mettre à jour le widget compact
+            this.updateCompactWidget();
+            
             document.getElementById('currentStationStatus').textContent = 'En direct';
             this.updateStatusStyle('En direct');
             
@@ -507,14 +513,15 @@ class RadioPopupWidget {
             this.audio.pause();
         }
         this.isPlaying = false;
-		// Masquer l'indicateur de la tuile
-        this.hideTileIndicator();
-		// Arrêter l'égaliseur visuel
+        
+        // Mettre à jour l'indicateur de la tuile
+        this.updateTileIndicator();
+        
+        // Arrêter l'égaliseur visuel
         this.stopEqualizer();
+        
         // Arrêter le mini-égaliseur compact
-            this.stopCompactEqualizer();
-        // Annuler le minuteur d'arrêt
-        this.cancelSleepTimer();
+        this.stopCompactEqualizer();
         
         // Mettre à jour le widget compact
         this.updateCompactWidget();
@@ -538,6 +545,22 @@ class RadioPopupWidget {
             this.audio = null;
         }
         this.isPlaying = false;
+        
+        // Masquer l'indicateur de la tuile
+        this.hideTileIndicator();
+        
+        // Arrêter l'égaliseur visuel
+        this.stopEqualizer();
+        
+        // Arrêter le mini-égaliseur compact
+        this.stopCompactEqualizer();
+        
+        // Annuler le minuteur d'arrêt
+        this.cancelSleepTimer();
+        
+        // Mettre à jour le widget compact
+        this.updateCompactWidget();
+        
         document.getElementById('currentStationStatus').textContent = 'Arrêté';
         this.updateStatusStyle('Arrêté');
     }
