@@ -294,7 +294,7 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: 90px;
+    height: 60px;
     background-color: var(--primary-color);
     color: white;
     display: flex;
@@ -3022,7 +3022,7 @@ a:active {
     }
     
     .separator:first-of-type {
-        margin-top: 60px;
+        margin-top: 80px;
     }
     
     .tile-container {
