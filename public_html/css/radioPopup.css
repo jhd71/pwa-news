@@ -755,8 +755,8 @@ body.radio-popup-open {
 /* === WIDGET COMPACT === */
 .radio-compact-widget {
     position: fixed;
-    bottom: 80px; 
-    left: 20px; /* À gauche pour éviter le conflit avec le chat */
+    bottom: 110px; 
+    left: 10px; /* À gauche pour éviter le conflit avec le chat */
     background: var(--card-bg, white);
     border-radius: 12px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
@@ -920,10 +920,11 @@ body.radio-popup-open {
 /* Mobile */
 @media (max-width: 480px) {
     .radio-compact-widget {
-        left: 5px; /* Garder à gauche */
-        bottom: 100px; /* Votre ajustement */
-        max-width: 230px; /* Votre ajustement */
+        left: 90px;
+        bottom: 103px;
+        max-width: 330px;
     }
+}
     
     .equalizer-container {
         height: 30px;
@@ -1154,4 +1155,72 @@ body.radio-popup-open {
 [data-theme="light"] .quick-timer-menu {
     --primary-color-rgb: 111, 66, 193;
     --primary-color: #6f42c1;
+}
+
+/* === BOUTON DE FERMETURE DU WIDGET === */
+.compact-close-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(220, 53, 69, 0.9);
+    color: white;
+    border: 2px solid white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.compact-close-btn:hover {
+    background: #dc3545;
+    transform: scale(1.1);
+}
+
+.compact-close-btn .material-icons {
+    font-size: 14px;
+}
+
+/* Ajuster le widget pour le bouton de fermeture */
+.compact-widget-content {
+    position: relative;
+    padding: 10px;
+}
+
+/* === ANIMATION DE SORTIE === */
+@keyframes slideOutLeft {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+}
+
+/* === MENU MINUTEUR ÉTENDU === */
+.quick-timer-options {
+    max-height: 250px; /* Limiter la hauteur */
+    overflow-y: auto; /* Scroll si nécessaire */
+}
+
+/* Responsive pour le menu étendu */
+@media (max-width: 480px) {
+    .quick-timer-options {
+        max-height: 200px;
+    }
+    
+    .compact-close-btn {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .compact-close-btn .material-icons {
+        font-size: 12px;
+    }
 }

@@ -239,6 +239,8 @@ class RadioPopupWidget {
                                 <option value="30">Arrêt dans 30 min</option>
                                 <option value="60">Arrêt dans 1 heure</option>
                                 <option value="120">Arrêt dans 2 heures</option>
+                                <option value="180">Arrêt dans 3 heures</option>
+                                <option value="240">Arrêt dans 4 heures</option>
                             </select>
                         </div>
                         <div class="sleep-timer-display" id="sleepTimerDisplay" style="display: none;">
@@ -324,7 +326,7 @@ class RadioPopupWidget {
     }
 }
 
-closePopup() {
+	closePopup() {
     const popup = document.getElementById('radioPopup');
     popup.classList.remove('active');
     document.body.classList.remove('radio-popup-open');
@@ -529,7 +531,7 @@ closePopup() {
         }
     }
 
-// Afficher l'indicateur de lecture sur la tuile
+	// Afficher l'indicateur de lecture sur la tuile
     showTileIndicator(stationName) {
         const indicator = document.getElementById('radioTileIndicator');
         const status = document.getElementById('radioTileStatus');
@@ -558,7 +560,7 @@ closePopup() {
         }
     }
 
-// === MINUTEUR D'ARRÊT ===
+	// === MINUTEUR D'ARRÊT ===
     setSleepTimer(minutes) {
         // Annuler le minuteur précédent s'il existe
         this.cancelSleepTimer();
@@ -577,11 +579,20 @@ closePopup() {
             if (this.sleepTimeRemaining <= 0) {
                 this.stopRadio();
                 this.cancelSleepTimer();
-                this.showToast('⏰ Arrêt automatique de la radio');
+                this.showToast('Arrêt automatique de la radio');
             }
         }, 1000);
         
-        this.showToast(`⏰ Arrêt programmé dans ${minutes} min`);
+        // Message plus informatif selon la durée
+        let timeText;
+        if (minutes >= 60) {
+            const hours = Math.floor(minutes / 60);
+            timeText = hours === 1 ? '1 heure' : `${hours} heures`;
+        } else {
+            timeText = `${minutes} min`;
+        }
+        
+        this.showToast(`Arrêt programmé dans ${timeText}`);
     }
 
     cancelSleepTimer() {
@@ -642,6 +653,11 @@ closePopup() {
         widget.className = 'radio-compact-widget';
         widget.innerHTML = `
             <div class="compact-widget-content">
+                <!-- Bouton de fermeture -->
+                <button class="compact-close-btn" id="compactCloseBtn" title="Fermer le widget">
+                    <span class="material-icons">close</span>
+                </button>
+                
                 <!-- Info station avec mini-égaliseur -->
                 <div class="compact-station-info">
                     <div class="compact-logo-container">
@@ -687,6 +703,11 @@ closePopup() {
     }
 
     setupCompactWidgetEvents(widget) {
+        // Fermer le widget (sans arrêter la radio)
+        document.getElementById('compactCloseBtn').addEventListener('click', () => {
+            this.hideCompactWidget();
+        });
+
         // Play/Pause
         document.getElementById('compactPlayPause').addEventListener('click', () => {
             if (this.currentStation) {
@@ -713,6 +734,9 @@ closePopup() {
             
             this.setVolume(newVolume);
             this.updateCompactVolumeIcon();
+            
+            // Feedback visuel pour le volume
+            this.showToast(`Volume : ${Math.round(newVolume * 100)}%`);
         });
 
         // Ouvrir popup complète
@@ -837,6 +861,18 @@ closePopup() {
                     <span class="material-icons">schedule</span>
                     <span>1 heure</span>
                 </div>
+                <div class="timer-option" data-minutes="120">
+                    <span class="material-icons">schedule</span>
+                    <span>2 heures</span>
+                </div>
+                <div class="timer-option" data-minutes="180">
+                    <span class="material-icons">schedule</span>
+                    <span>3 heures</span>
+                </div>
+                <div class="timer-option" data-minutes="240">
+                    <span class="material-icons">schedule</span>
+                    <span>4 heures</span>
+                </div>
             </div>
         `;
 
@@ -851,7 +887,7 @@ closePopup() {
 
         document.body.appendChild(menu);
 
-        // Gestionnaires d'événements
+        // Gestionnaires d'événements avec feedback amélioré
         menu.addEventListener('click', (e) => {
             const option = e.target.closest('.timer-option');
             if (option) {
@@ -860,17 +896,18 @@ closePopup() {
                     this.setSleepTimer(minutes);
                 } else {
                     this.cancelSleepTimer();
+                    this.showToast('⏰ Minuteur d\'arrêt annulé');
                 }
                 menu.remove();
             }
         });
 
-        // Fermer automatiquement après 5 secondes
+        // Fermer automatiquement après 8 secondes (plus de temps pour voir toutes les options)
         setTimeout(() => {
             if (menu.parentNode) {
                 menu.remove();
             }
-        }, 5000);
+        }, 8000);
 
         // Fermer en cliquant ailleurs
         setTimeout(() => {
@@ -913,6 +950,30 @@ closePopup() {
         document.querySelectorAll('.mini-bar').forEach(bar => {
             bar.style.height = '30%';
         });
+    }
+	
+	// === GESTION AFFICHAGE WIDGET ===
+    hideCompactWidget() {
+        const widget = document.querySelector('.radio-compact-widget');
+        if (widget) {
+            widget.style.animation = 'slideOutLeft 0.3s ease';
+            setTimeout(() => {
+                if (widget.parentNode) {
+                    widget.remove();
+                }
+                this.stopCompactEqualizer();
+            }, 300);
+            
+            this.showToast('Widget masqué (la radio continue)');
+        }
+    }
+
+    showCompactWidget() {
+        // Recréer le widget s'il a été fermé
+        if (!document.querySelector('.radio-compact-widget')) {
+            this.createCompactWidget();
+            this.updateCompactWidget();
+        }
     }
 	
     // Mettre à jour l'indicateur selon l'état
