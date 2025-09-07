@@ -273,7 +273,7 @@ class RadioPopupWidget {
             toast.classList.remove('show');
         }, 3000);
     }
-}
+
 
 /* ===================================================================== */
 /* RADIO POPUP - JAVASCRIPT ORGANISÉ - PARTIE 2                        */
@@ -1401,7 +1401,7 @@ class RadioPopupWidget {
         });
     }
 
- // === FIN DE LA CLASSE RADIOPOPUPWIDGET ===
+  } // === FIN DE LA CLASSE RADIOPOPUPWIDGET ===
 
 /* ===================================================================== */
 /* INITIALISATION GLOBALE                                               */
