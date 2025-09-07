@@ -892,26 +892,27 @@
     text-decoration: underline;
     font-weight: 600;
     transition: all 0.3s ease;
-}
+		}
 
-.news-article-content a:hover {
+		.news-article-content a:hover {
     color: #333;
     text-decoration: none;
     background-color: rgba(var(--primary-color-rgb), 0.1);
     padding: 2px 4px;
     border-radius: 4px;
-}
+		}
 
-.news-article-content a:visited {
+	.news-article-content a:visited {
     opacity: 0.8;
-}
+		}
 
-/* Style spécial pour les liens externes */
-.news-article-content a[target="_blank"]::after {
+	/* Style spécial pour les liens externes */
+	.news-article-content a[target="_blank"]::after {
     content: " 🔗";
     font-size: 0.8em;
     opacity: 0.6;
-}
+		}
+		
     </style>
 </head>
 <body>
@@ -1010,19 +1011,31 @@
             }
 
 		autoLinkUrls(text) {
-    // Vérifier si le texte contient déjà des balises HTML
+    // Si le texte est null ou undefined, retourner une chaîne vide
+    if (!text) return '';
+    
+    // Si le texte contient déjà des liens HTML, ne pas le modifier
     if (text.includes('<a ') || text.includes('<A ')) {
-        // Si le texte contient déjà des liens HTML, ne pas le modifier
         return text;
     }
     
-    // Sinon, transformer les URLs simples en liens
-    const urlRegex = /(https?:\/\/[^\s<>"]+)/gi;
+    // Regex améliorée pour détecter les URLs
+    const urlRegex = /(https?:\/\/[^\s<>"']+)/gi;
+    
     return text.replace(urlRegex, (url) => {
-        const cleanUrl = url.replace(/[.,!?;:]$/, '');
-        const punctuation = url.slice(cleanUrl.length);
+        // Nettoyer l'URL en enlevant la ponctuation finale
+        let cleanUrl = url;
+        let trailing = '';
         
-        return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer">${cleanUrl}</a>${punctuation}`;
+        // Capturer la ponctuation finale
+        const match = url.match(/([.,!?;:]+)$/);
+        if (match) {
+            cleanUrl = url.substring(0, url.length - match[1].length);
+            trailing = match[1];
+        }
+        
+        // Créer le lien avec des attributs de sécurité
+        return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer">${cleanUrl}</a>${trailing}`;
     });
 }
 
@@ -1112,7 +1125,7 @@
                         ` : ''}
 
 							<div class="news-article-content">
-								${article.content}
+								${this.autoLinkUrls(article.content)}
 							</div>
                         
                         <!-- Section Commentaires Simple -->
