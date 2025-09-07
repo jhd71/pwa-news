@@ -348,27 +348,7 @@ document.getElementById('cancelSleepTimeBtn').addEventListener('click', () => {
     this.cancelSleepTimer();
 });
 
-// Rendre le champ horaire entièrement cliquable
-const timeControls = document.getElementById('timeControls');
-timeControls.addEventListener('click', (e) => {
-    // Si on clique sur le conteneur mais pas sur un bouton
-    if (e.target === timeControls || e.target.closest('.sleep-timer-controls') === timeControls) {
-        const timeInput = document.getElementById('sleepTimeInput');
-        timeInput.focus();
-        timeInput.click();
-    }
-});
-
-// Améliorer l'expérience du champ time
-const sleepTimeInput = document.getElementById('sleepTimeInput');
-sleepTimeInput.addEventListener('focus', () => {
-    // Sélectionner tout le contenu au focus pour faciliter la saisie
-    setTimeout(() => {
-        sleepTimeInput.select();
-    }, 50);
-});
-
-// Rendre tout le champ horaire cliquable - SOLUTION CORRIGÉE
+// Rendre tout le champ horaire cliquable - VERSION CORRIGÉE
 const timeControlsDiv = document.getElementById('timeControls');
 const timeInput = document.getElementById('sleepTimeInput');
 
@@ -382,12 +362,18 @@ timeControlsDiv.addEventListener('click', (e) => {
     }
 });
 
+// Améliorer l'expérience du champ time
+timeInput.addEventListener('focus', () => {
+    // Sélectionner tout le contenu au focus pour faciliter la saisie
+    setTimeout(() => {
+        timeInput.select();
+    }, 50);
+});
+
 // Ajouter un style visuel pour montrer que c'est cliquable
 timeControlsDiv.style.cursor = 'pointer';
 timeControlsDiv.addEventListener('mouseenter', () => {
-    if (timeControlsDiv.style.backgroundColor !== 'rgba(148, 0, 0, 0.05)') {
-        timeControlsDiv.style.backgroundColor = 'rgba(148, 0, 0, 0.05)';
-    }
+    timeControlsDiv.style.backgroundColor = 'rgba(148, 0, 0, 0.05)';
 });
 timeControlsDiv.addEventListener('mouseleave', () => {
     timeControlsDiv.style.backgroundColor = '';
