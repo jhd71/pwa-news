@@ -1011,15 +1011,29 @@
 
 		// AJOUTEZ LA MÉTHODE ICI
 		autoLinkUrls(text) {
-		const urlRegex = /(https?:\/\/[^\s<>"]+)/gi;
+    // D'abord, protéger les liens existants en les remplaçant temporairement
+    const protectedLinks = [];
+    let protectedText = text.replace(/<a[^>]*>.*?<\/a>/gi, (match) => {
+        protectedLinks.push(match);
+        return `__PROTECTED_LINK_${protectedLinks.length - 1}__`;
+    });
     
-		return text.replace(urlRegex, (url) => {
-			const cleanUrl = url.replace(/[.,!?;:]$/, '');
-			const punctuation = url.slice(cleanUrl.length);
+    // Ensuite, transformer les URLs simples en liens
+    const urlRegex = /(https?:\/\/[^\s<>"]+)/gi;
+    protectedText = protectedText.replace(urlRegex, (url) => {
+        const cleanUrl = url.replace(/[.,!?;:]$/, '');
+        const punctuation = url.slice(cleanUrl.length);
         
-			return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer">${cleanUrl}</a>${punctuation}`;
-		});
-	}
+        return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer">${cleanUrl}</a>${punctuation}`;
+    });
+    
+    // Enfin, restaurer les liens protégés
+    protectedLinks.forEach((link, index) => {
+        protectedText = protectedText.replace(`__PROTECTED_LINK_${index}__`, link);
+    });
+    
+    return protectedText;
+}
 
             async loadAllNews() {
                 try {
