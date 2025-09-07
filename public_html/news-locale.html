@@ -886,6 +886,32 @@
             text-align: center;
             border-top: 1px solid rgba(0, 0, 0, 0.1);
         }
+		
+		.news-article-content a {
+    color: var(--primary-color);
+    text-decoration: underline;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.news-article-content a:hover {
+    color: #333;
+    text-decoration: none;
+    background-color: rgba(var(--primary-color-rgb), 0.1);
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.news-article-content a:visited {
+    opacity: 0.8;
+}
+
+/* Style spécial pour les liens externes */
+.news-article-content a[target="_blank"]::after {
+    content: " 🔗";
+    font-size: 0.8em;
+    opacity: 0.6;
+}
     </style>
 </head>
 <body>
