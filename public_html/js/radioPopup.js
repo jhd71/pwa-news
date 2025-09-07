@@ -326,65 +326,66 @@ class RadioPopupWidget {
                         </div>
                         
                         <div class="volume-control">
-                            <span class="material-icons">volume_up</span>
-                            <input type="range" id="volumeSlider" min="0" max="100" value="70" class="volume-slider">
-                            <span class="volume-percentage">70%</span>
+                        <span class="material-icons">volume_up</span>
+                        <input type="range" id="volumeSlider" min="0" max="100" value="70" class="volume-slider">
+                        <span class="volume-percentage">70%</span>
+                    </div>
+                    
+                    <!-- Égaliseur visuel -->
+                    <div class="equalizer-section">
+                        <div class="equalizer-container" id="equalizerContainer">
+                            <div class="equalizer-bar"></div>
+                            <div class="equalizer-bar"></div>
+                            <div class="equalizer-bar"></div>
+                            <div class="equalizer-bar"></div>
+                            <div class="equalizer-bar"></div>
                         </div>
-                        
-                        <!-- Égaliseur visuel -->
-                        <div class="equalizer-section">
-                            <div class="equalizer-container" id="equalizerContainer">
-                                <div class="equalizer-bar"></div>
-                                <div class="equalizer-bar"></div>
-                                <div class="equalizer-bar"></div>
-                                <div class="equalizer-bar"></div>
-                                <div class="equalizer-bar"></div>
-                            </div>
-                        </div>
-                        
-                        <!-- Minuteur d'arrêt -->
-                        <div class="sleep-timer-section">
-                            <div class="sleep-timer-mode-toggle">
-                                <button id="durationModeBtn" class="timer-mode-btn active">Durée</button>
-                                <button id="timeModeBtn" class="timer-mode-btn">Heure précise</button>
-                            </div>
-        
-                            <div class="sleep-timer-controls" id="durationControls">
-                                <span class="material-icons">schedule</span>
-                                <select id="sleepTimerSelect" class="sleep-timer-select">
-                                    <option value="0">Pas d'arrêt automatique</option>
-                                    <option value="15">Arrêt dans 15 min</option>
-                                    <option value="30">Arrêt dans 30 min</option>
-                                    <option value="60">Arrêt dans 1 heure</option>
-                                    <option value="120">Arrêt dans 2 heures</option>
-                                    <option value="180">Arrêt dans 3 heures</option>
-                                    <option value="240">Arrêt dans 4 heures</option>
-                                </select>
-                            </div>
-        
-                            <div class="sleep-timer-controls" id="timeControls" style="display: none;">
-                                <span class="material-icons">access_time</span>
-                                <input type="time" id="sleepTimeInput" class="sleep-time-input">
-                                <button id="setSleepTimeBtn" class="set-time-btn">Programmer</button>
-                                <button id="cancelSleepTimeBtn" class="cancel-time-btn" style="display: none;">Annuler</button>
-                            </div>
-        
-                            <div class="sleep-timer-display" id="sleepTimerDisplay" style="display: none;">
-                                <span class="material-icons">timer</span>
-                                <span id="sleepTimerText">--:--</span>
-                                <button id="cancelSleepTimer" class="cancel-timer-btn">
-                                    <span class="material-icons">close</span>
-                                </button>
-                            </div>
-                        </div>
+                    </div>
+                    
+                    <!-- Minuteur d'arrêt -->
+                    <div class="sleep-timer-section">
+							<div class="sleep-timer-mode-toggle">
+							<button id="durationModeBtn" class="timer-mode-btn active">Durée</button>
+							<button id="timeModeBtn" class="timer-mode-btn">Heure précise</button>
+					</div>
+    
+							<div class="sleep-timer-controls" id="durationControls">
+							<span class="material-icons">schedule</span>
+							<select id="sleepTimerSelect" class="sleep-timer-select">
+							<option value="0">Pas d'arrêt automatique</option>
+							<option value="15">Arrêt dans 15 min</option>
+							<option value="30">Arrêt dans 30 min</option>
+							<option value="60">Arrêt dans 1 heure</option>
+							<option value="120">Arrêt dans 2 heures</option>
+							<option value="180">Arrêt dans 3 heures</option>
+							<option value="240">Arrêt dans 4 heures</option>
+			</select>
+					</div>
+    
+			<div class="sleep-timer-controls" id="timeControls" style="display: none;">
+        <span class="material-icons">access_time</span>
+        <input type="time" id="sleepTimeInput" class="sleep-time-input">
+        <button id="setSleepTimeBtn" class="set-time-btn">Programmer</button>
+        <button id="cancelSleepTimeBtn" class="cancel-time-btn" style="display: none;">Annuler</button>
+    </div>
+    
+			<div class="sleep-timer-display" id="sleepTimerDisplay" style="display: none;">
+        <span class="material-icons">timer</span>
+        <span id="sleepTimerText">--:--</span>
+        <button id="cancelSleepTimer" class="cancel-timer-btn">
+            <span class="material-icons">close</span>
+        </button>
+		</div>
+	</div>
                     </div>
                 </div>
                 
                 <div class="radio-popup-footer">
-                    <p style="font-size: 12px; color: gray; text-align: center;">
-                        📻 Les flux proviennent des diffuseurs officiels – Actu & Média n'héberge aucun contenu
-                    </p>
-                </div>
+		<p style="font-size: 12px; color: gray; text-align: center;">
+        📻 Les flux proviennent des diffuseurs officiels – Actu & Média n’héberge aucun contenu
+		</p>
+			</div>
+
             </div>
         `;
 
