@@ -1,8 +1,22 @@
-/* === POPUP RADIO - VERSION COMPLÈTE CORRIGÉE === */
+/* ===================================================================== */
+/* RADIO POPUP - CSS ORGANISÉ ET OPTIMISÉ - PARTIE 1                   */
+/* Variables, Structure de Base et Popup Principale                     */
+/* ===================================================================== */
 
-/* Variables pour les thèmes - Rouge (défaut) */
+/* === VARIABLES GLOBALES === */
+:root {
+    /* Tailles des logos des stations */
+    --logo-img-size-desktop: 80px;
+    --logo-img-size-tablet: 60px;
+    --logo-img-size-mobile: 55px;
+}
+
+/* === VARIABLES DE THÈMES === */
+
+/* Thème Rouge (défaut) */
 [data-theme="rouge"] {
     --primary-color: #940000;
+    --primary-color-rgb: 148, 0, 0;
     --text-color: #333333;
     --text-secondary: #666666;
     --card-bg: #ffffff;
@@ -11,6 +25,8 @@
 
 /* Thème Sombre */
 [data-theme="dark"] {
+    --primary-color: #ff6b6b;
+    --primary-color-rgb: 255, 107, 107;
     --text-color: #e2e8f0;
     --text-secondary: #a0aec0;
     --card-bg: #2d3748;
@@ -19,6 +35,8 @@
 
 /* Thème Bleu Ciel */
 [data-theme="bleuciel"] {
+    --primary-color: #17a2b8;
+    --primary-color-rgb: 23, 162, 184;
     --text-color: #333333;
     --text-secondary: #5f6f7a;
     --card-bg: #ffffff;
@@ -27,11 +45,15 @@
 
 /* Thème Violet */
 [data-theme="light"] {
+    --primary-color: #6f42c1;
+    --primary-color-rgb: 111, 66, 193;
     --text-color: #333333;
     --text-secondary: #6c757d;
     --card-bg: #ffffff;
     --secondary-bg: #f8f9ff;
 }
+
+/* === STRUCTURE POPUP PRINCIPALE === */
 
 /* Overlay principal */
 .radio-popup-overlay {
@@ -109,7 +131,92 @@
     max-height: 700px;
 }
 
-/* Grille des stations */
+/* Footer */
+.radio-popup-footer {
+    background: var(--secondary-bg);
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* === CONTRÔLE DU SCROLL === */
+body.radio-popup-open {
+    overflow: hidden !important;
+}
+
+@media (max-width: 768px) {
+    body.radio-popup-open {
+        position: fixed !important;
+        width: 100% !important;
+    }
+}
+
+/* === ANIMATIONS DE BASE === */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOutLeft {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes slideUpQuick {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulseIndicator {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes timerPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* ===================================================================== */
+/* RADIO POPUP - CSS ORGANISÉ - PARTIE 2                               */
+/* Grille des Stations et Cartes Radio                                  */
+/* ===================================================================== */
+
+/* === GRILLE DES STATIONS === */
 .radio-stations-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -117,7 +224,7 @@
     margin-bottom: 20px;
 }
 
-/* Cartes de stations */
+/* === CARTES DE STATIONS === */
 .radio-station-card {
     background: var(--card-bg);
     border: 2px solid transparent;
@@ -155,14 +262,37 @@
     font-weight: bold;
 }
 
-/* === VARIABLES POUR CONTRÔLER LA TAILLE DES IMAGES === */
-:root {
-    --logo-img-size-desktop: 80px;  /* CHANGEZ ICI pour agrandir/réduire sur PC */
-    --logo-img-size-tablet: 60px;   /* CHANGEZ ICI pour tablettes */
-    --logo-img-size-mobile: 55px;   /* CHANGEZ ICI pour mobile */
+/* === ÉTATS SPÉCIFIQUES DES CARTES === */
+
+/* Station sélectionnée ET en lecture */
+.radio-station-card.active.playing {
+    border: 3px solid #28a745;
+    box-shadow: 0 0 20px rgba(40, 167, 69, 0.4);
 }
 
-/* Conteneur du logo */
+.radio-station-card.active.playing .play-overlay {
+    opacity: 1 !important;
+    background: rgba(40, 167, 69, 0.9) !important;
+}
+
+.radio-station-card.active.playing .play-overlay .material-icons {
+    font-size: 32px;
+}
+
+/* Station sélectionnée MAIS en pause */
+.radio-station-card.active.paused,
+.radio-station-card.active:not(.playing) {
+    border: 3px solid #ffc107;
+    box-shadow: 0 0 20px rgba(255, 193, 7, 0.4);
+}
+
+.radio-station-card.active.paused .play-overlay,
+.radio-station-card.active:not(.playing) .play-overlay {
+    opacity: 1 !important;
+    background: rgba(255, 193, 7, 0.9) !important;
+}
+
+/* === CONTENEUR LOGO === */
 .station-logo-container {
     position: relative;
     margin-bottom: 8px;
@@ -175,7 +305,7 @@
     justify-content: center;
 }
 
-/* === CIBLAGE SPÉCIFIQUE DES IMAGES PNG === */
+/* === IMAGES DES STATIONS === */
 .station-logo-container img.station-logo {
     width: var(--logo-img-size-desktop) !important;
     height: var(--logo-img-size-desktop) !important;
@@ -203,28 +333,7 @@
     color: white;
 }
 
-/* === RESPONSIVE - Tablettes === */
-@media (max-width: 768px) {
-    .station-logo-container {
-        width: var(--logo-img-size-tablet);
-        height: var(--logo-img-size-tablet);
-    }
-    
-    .station-logo-container img.station-logo {
-        width: var(--logo-img-size-tablet) !important;
-        height: var(--logo-img-size-tablet) !important;
-        min-width: var(--logo-img-size-tablet) !important;
-        min-height: var(--logo-img-size-tablet) !important;
-        max-width: var(--logo-img-size-tablet) !important;
-        max-height: var(--logo-img-size-tablet) !important;
-    }
-    
-    .logo-fallback {
-        width: var(--logo-img-size-tablet);
-        height: var(--logo-img-size-tablet);
-    }
-}
-
+/* === OVERLAY DE LECTURE === */
 .play-overlay {
     position: absolute;
     top: 0;
@@ -241,68 +350,22 @@
     cursor: pointer;
 }
 
-/* Survol simple sur toutes les cartes */
 .radio-station-card:hover .play-overlay {
     opacity: 0.8;
     background: rgba(0, 0, 0, 0.7);
 }
 
-/* Icône par défaut */
 .play-overlay .material-icons {
     color: white;
     font-size: 28px;
     transition: transform 0.2s ease;
 }
 
-/* Hover effect sur l'icône */
 .radio-station-card:hover .play-overlay .material-icons {
     transform: scale(1.2);
 }
 
-/* === ÉTAT 1 : Station sélectionnée ET en lecture === */
-.radio-station-card.active.playing .play-overlay {
-    opacity: 1 !important;
-    background: rgba(40, 167, 69, 0.9) !important; /* VERT */
-}
-
-.radio-station-card.active.playing .play-overlay .material-icons {
-    font-size: 32px;
-}
-
-/* Bordure verte pour station en lecture */
-.radio-station-card.active.playing {
-    border: 3px solid #28a745;
-    box-shadow: 0 0 20px rgba(40, 167, 69, 0.4);
-}
-
-/* === ÉTAT 2 : Station sélectionnée MAIS en pause === */
-.radio-station-card.active.paused .play-overlay,
-.radio-station-card.active:not(.playing) .play-overlay {
-    opacity: 1 !important;
-    background: rgba(255, 193, 7, 0.9) !important; /* ORANGE */
-}
-
-/* Bordure orange pour station en pause */
-.radio-station-card.active.paused,
-.radio-station-card.active:not(.playing) {
-    border: 3px solid #ffc107;
-    box-shadow: 0 0 20px rgba(255, 193, 7, 0.4);
-}
-
-/* === Animation de pulsation pour la station en lecture === */
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 20px rgba(40, 167, 69, 0.4);
-    }
-    50% {
-        box-shadow: 0 0 30px rgba(40, 167, 69, 0.6);
-    }
-    100% {
-        box-shadow: 0 0 20px rgba(40, 167, 69, 0.4);
-    }
-}
-
-/* Infos de la station */
+/* === INFORMATIONS DE LA STATION === */
 .station-info {
     flex: 1;
     display: flex;
@@ -324,7 +387,119 @@
     line-height: 1.1;
 }
 
-/* Section lecteur */
+/* === AJUSTEMENTS SPÉCIFIQUES PAR LOGO === */
+.station-logo[alt*="RTL"],
+.station-logo[alt*="Europe 1"] {
+    padding: 4px;
+}
+
+.station-logo[alt*="NRJ"],
+.station-logo[alt*="FIP"] {
+    object-fit: cover;
+}
+
+/* === SUPPORT THÈME SOMBRE POUR LOGOS === */
+[data-theme="dark"] .station-logo,
+[data-theme="dark"] .logo-fallback {
+    background: #4a5568;
+}
+
+/* === RESPONSIVE POUR STATIONS === */
+
+/* Tablettes */
+@media (max-width: 768px) {
+    .radio-stations-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    
+    .radio-station-card {
+        min-height: 100px;
+        padding: 10px;
+    }
+    
+    .station-logo-container {
+        width: var(--logo-img-size-tablet);
+        height: var(--logo-img-size-tablet);
+    }
+    
+    .station-logo-container img.station-logo {
+        width: var(--logo-img-size-tablet) !important;
+        height: var(--logo-img-size-tablet) !important;
+        min-width: var(--logo-img-size-tablet) !important;
+        min-height: var(--logo-img-size-tablet) !important;
+        max-width: var(--logo-img-size-tablet) !important;
+        max-height: var(--logo-img-size-tablet) !important;
+    }
+    
+    .logo-fallback {
+        width: var(--logo-img-size-tablet);
+        height: var(--logo-img-size-tablet);
+    }
+    
+    .station-name {
+        font-size: 14px;
+    }
+    
+    .station-description {
+        font-size: 12px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .station-logo-container {
+        width: var(--logo-img-size-mobile);
+        height: var(--logo-img-size-mobile);
+    }
+    
+    .station-logo-container img.station-logo {
+        width: var(--logo-img-size-mobile) !important;
+        height: var(--logo-img-size-mobile) !important;
+        min-width: var(--logo-img-size-mobile) !important;
+        min-height: var(--logo-img-size-mobile) !important;
+        max-width: var(--logo-img-size-mobile) !important;
+        max-height: var(--logo-img-size-mobile) !important;
+    }
+    
+    .logo-fallback {
+        width: var(--logo-img-size-mobile);
+        height: var(--logo-img-size-mobile);
+    }
+}
+
+/* Petits écrans */
+@media (max-height: 600px) {
+    .station-logo-container {
+        width: 35px;
+        height: 35px;
+    }
+}
+
+/* === RESPONSIVE POPUP === */
+@media (max-width: 768px) {
+    .radio-popup-content {
+        width: 95%;
+        max-height: 90%;
+    }
+    
+    .radio-popup-body {
+        max-height: 400px;
+    }
+}
+
+@media (max-height: 600px) {
+    .radio-popup-body {
+        max-height: 300px;
+    }
+}
+
+/* ===================================================================== */
+/* RADIO POPUP - CSS ORGANISÉ - PARTIE 3                               */
+/* Section Lecteur, Contrôles et Égaliseur                             */
+/* ===================================================================== */
+
+/* === SECTION LECTEUR === */
 .radio-player-section {
     background: rgba(148, 0, 0, 0.05);
     border-radius: 12px;
@@ -339,14 +514,13 @@
     margin-bottom: 20px;
 }
 
-/* === NOUVEAU : Logo dans la section lecteur === */
 .current-station-logo {
     width: 60px;
     height: 60px;
     border-radius: 10px;
-    object-fit: contain; /* CHANGÉ : contain pour garder les proportions */
-    background: white; /* Fond blanc pour les logos transparents */
-    padding: 3px; /* Petit padding */
+    object-fit: contain;
+    background: white;
+    padding: 3px;
     border: 2px solid var(--primary-color);
 }
 
@@ -366,7 +540,7 @@
     display: inline-block;
 }
 
-/* Classes de statut avec JavaScript */
+/* === CLASSES DE STATUT === */
 .status-live {
     background: rgba(40, 167, 69, 0.2) !important;
     color: #28a745 !important;
@@ -387,7 +561,7 @@
     color: #17a2b8 !important;
 }
 
-/* Contrôle du volume */
+/* === CONTRÔLE DU VOLUME === */
 .volume-control {
     display: flex;
     align-items: center;
@@ -430,207 +604,6 @@
     text-align: right;
 }
 
-/* Footer */
-.radio-popup-footer {
-    background: var(--secondary-bg);
-    padding: 10px 20px;
-    text-align: center;
-    font-size: 12px;
-    color: var(--text-secondary);
-}
-
-/* === RESPONSIVE === */
-
-/* Tablettes */
-@media (max-width: 768px) {
-    .radio-popup-content {
-        width: 95%;
-        max-height: 90%;
-    }
-    
-    .radio-stations-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-    }
-    
-    .radio-station-card {
-        min-height: 100px;
-        padding: 10px;
-    }
-    
-    /* Logos plus petits sur mobile */
-    .station-logo-container {
-        width: 40px;
-        height: 40px;
-    }
-    
-    .station-logo, .logo-fallback {
-        width: 100%;
-        height: 100%;
-    }
-    
-    .station-name {
-        font-size: 14px;
-    }
-    
-    .station-description {
-        font-size: 12px;
-    }
-    
-    .current-station-info {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    /* Logo plus petit dans le lecteur sur mobile */
-    .current-station-logo {
-        width: 50px;
-        height: 50px;
-    }
-}
-
-/* Mobile - hauteur réduite */
-@media (max-width: 768px) {
-    .radio-popup-body {
-        max-height: 400px;
-    }
-}
-
-/* Petits écrans */
-@media (max-height: 600px) {
-    .radio-popup-body {
-        max-height: 300px;
-    }
-    
-    /* Logos encore plus petits */
-    .station-logo-container {
-        width: 35px;
-        height: 35px;
-    }
-}
-
-/* === ANIMATIONS === */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-/* === AJUSTEMENTS POUR DIFFÉRENTES TAILLES DE LOGOS === */
-
-/* Si vous voulez forcer une taille spécifique pour certains logos */
-/* Exemple : Pour un logo trop grand */
-.station-logo[alt*="RTL"],
-.station-logo[alt*="Europe 1"] {
-    padding: 4px; /* Plus de padding pour les logos plus grands */
-}
-
-/* Pour les logos carrés qui doivent rester carrés */
-.station-logo[alt*="NRJ"],
-.station-logo[alt*="FIP"] {
-    object-fit: cover; /* Au lieu de contain */
-}
-
-/* === SUPPORT POUR THÈME SOMBRE === */
-[data-theme="dark"] .station-logo {
-    background: #4a5568; /* Fond gris foncé au lieu de blanc */
-}
-
-[data-theme="dark"] .current-station-logo {
-    background: #4a5568;
-}
-
-/* Style pour empêcher le scroll quand la popup est ouverte */
-body.radio-popup-open {
-    overflow: hidden !important;
-}
-
-@media (max-width: 768px) {
-    body.radio-popup-open {
-        position: fixed !important;
-        width: 100% !important;
-    }
-}
-
-/* === INDICATEUR DE LECTURE SUR LA TUILE === */
-
-/* Indicateur de lecture (point rouge clignotant) */
-.radio-tile-indicator {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 12px;
-    height: 12px;
-    background: #ff4444;
-    border-radius: 50%;
-    border: 3px solid white;
-    box-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
-    animation: pulseIndicator 2s infinite;
-    z-index: 10;
-}
-
-/* Animation de pulsation */
-@keyframes pulseIndicator {
-    0% {
-        opacity: 1;
-        transform: scale(1);
-    }
-    50% {
-        opacity: 0.7;
-        transform: scale(1.1);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-/* Texte d'état sur la tuile */
-.radio-tile-status {
-    position: absolute;
-    bottom: 5px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255, 68, 68, 0.9);
-    color: white;
-    font-size: 11px;
-    padding: 2px 6px;
-    border-radius: 8px;
-    font-weight: bold;
-    white-space: nowrap;
-    z-index: 10;
-}
-
-/* Position relative sans affecter les thèmes */
-.tile.radio-app-tile {
-    position: relative;
-}
-
-/* === COULEURS DE THÈME POUR LA TUILE RADIO === */
-
-/* Thème Rouge (par défaut) */
-[data-theme="rouge"] .tile.radio-app-tile {
-    background: linear-gradient(135deg, #095c9d 0%, #2196F3 100%);
-}
-
-/* Thème Sombre */
-[data-theme="dark"] .tile.radio-app-tile {
-    background: linear-gradient(135deg, #9C27B0 0%, #00BCD4 100%);
-}
-
-/* Thème Bleu Ciel */
-[data-theme="bleuciel"] .tile.radio-app-tile {
-    background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
-}
-
-/* Thème Violet/Light */
-[data-theme="light"] .tile.radio-app-tile {
-    background: linear-gradient(135deg, #ba68c8 0%, #ab47bc 100%);
-}
-
 /* === ÉGALISEUR VISUEL === */
 .equalizer-section {
     margin: 15px 0;
@@ -662,7 +635,60 @@ body.radio-popup-open {
 .equalizer-bar:nth-child(4) { animation-delay: 300ms; }
 .equalizer-bar:nth-child(5) { animation-delay: 400ms; }
 
-/* === MINUTEUR D'ARRÊT === */
+/* === TOAST DE NOTIFICATION === */
+.radio-toast {
+    position: fixed;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    z-index: 10001;
+    opacity: 0;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.radio-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* === RESPONSIVE SECTION LECTEUR === */
+@media (max-width: 768px) {
+    .current-station-info {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .current-station-logo {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .equalizer-container {
+        height: 30px;
+    }
+    
+    .equalizer-bar {
+        width: 3px;
+    }
+}
+
+/* === SUPPORT THÈME SOMBRE POUR LECTEUR === */
+[data-theme="dark"] .current-station-logo {
+    background: #4a5568;
+}
+
+/* ===================================================================== */
+/* RADIO POPUP - CSS ORGANISÉ - PARTIE 4                               */
+/* Minuteur d'Arrêt et Tuile Radio                                     */
+/* ===================================================================== */
+
+/* === SECTION MINUTEUR D'ARRÊT === */
 .sleep-timer-section {
     margin: 15px 0;
     padding: 10px;
@@ -670,6 +696,40 @@ body.radio-popup-open {
     border-radius: 8px;
 }
 
+/* === BOUTONS DE MODE MINUTEUR === */
+.sleep-timer-mode-toggle {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.1);
+    border-radius: 8px;
+    padding: 3px;
+}
+
+.timer-mode-btn {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-color, #333);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.timer-mode-btn.active {
+    background: var(--primary-color, #940000);
+    color: white;
+    box-shadow: 0 2px 5px rgba(148, 0, 0, 0.3);
+}
+
+.timer-mode-btn:hover:not(.active) {
+    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.15);
+}
+
+/* === CONTRÔLES MINUTEUR === */
 .sleep-timer-controls {
     display: flex;
     align-items: center;
@@ -691,6 +751,83 @@ body.radio-popup-open {
     font-size: 14px;
 }
 
+/* === ZONE HORAIRE CLIQUABLE === */
+#timeControls {
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+#timeControls:hover {
+    background-color: rgba(var(--primary-color-rgb, 148, 0, 0), 0.05);
+}
+
+#timeControls .material-icons {
+    pointer-events: none;
+}
+
+/* === CHAMP HEURE PRÉCISE === */
+.sleep-time-input {
+    width: 120px;
+    min-width: 120px;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid rgba(var(--primary-color-rgb, 148, 0, 0), 0.3);
+    border-radius: 6px;
+    background: var(--card-bg, white);
+    color: var(--text-color, #333);
+    font-size: 16px;
+    font-family: monospace;
+    cursor: pointer;
+    font-weight: 600;
+    pointer-events: auto;
+}
+
+.sleep-time-input:hover {
+    border-color: var(--primary-color, #940000);
+}
+
+.sleep-time-input:focus {
+    outline: none;
+    border-color: var(--primary-color, #940000);
+    box-shadow: 0 0 8px rgba(148, 0, 0, 0.3);
+}
+
+/* === BOUTONS MINUTEUR === */
+.set-time-btn, .cancel-time-btn {
+    padding: 8px 12px;
+    border: 1px solid var(--primary-color, #940000);
+    border-radius: 6px;
+    background: var(--primary-color, #940000);
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.set-time-btn:hover {
+    background: #a50000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.cancel-time-btn {
+    background: #dc3545;
+    border-color: #dc3545;
+    margin-left: 5px;
+}
+
+.cancel-time-btn:hover {
+    background: #c82333;
+}
+
+/* === AFFICHAGE MINUTEUR === */
 .sleep-timer-display {
     display: flex;
     align-items: center;
@@ -724,11 +861,128 @@ body.radio-popup-open {
     background: rgba(220, 53, 69, 0.2);
 }
 
-/* === WIDGET COMPACT === */
+/* === TUILE RADIO === */
+.tile.radio-app-tile {
+    position: relative;
+}
+
+/* Indicateur de lecture */
+.radio-tile-indicator {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 12px;
+    height: 12px;
+    background: #ff4444;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+    animation: pulseIndicator 2s infinite;
+    z-index: 10;
+}
+
+/* Texte d'état sur la tuile */
+.radio-tile-status {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 68, 68, 0.9);
+    color: white;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-weight: bold;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+/* === COULEURS THÈME POUR TUILE === */
+[data-theme="rouge"] .tile.radio-app-tile {
+    background: linear-gradient(135deg, #095c9d 0%, #2196F3 100%);
+}
+
+[data-theme="dark"] .tile.radio-app-tile {
+    background: linear-gradient(135deg, #9C27B0 0%, #00BCD4 100%);
+}
+
+[data-theme="bleuciel"] .tile.radio-app-tile {
+    background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
+}
+
+[data-theme="light"] .tile.radio-app-tile {
+    background: linear-gradient(135deg, #ba68c8 0%, #ab47bc 100%);
+}
+
+/* === RESPONSIVE MINUTEUR === */
+@media (max-width: 768px) {
+    .timer-mode-btn {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+    
+    .sleep-time-input {
+        font-size: 13px;
+        padding: 6px 8px;
+    }
+    
+    .set-time-btn, .cancel-time-btn {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+    
+    .sleep-timer-select {
+        font-size: 13px;
+        padding: 6px 10px;
+    }
+}
+
+/* === THÈMES MINUTEUR === */
+[data-theme="dark"] .timer-mode-btn,
+[data-theme="dark"] .sleep-time-input {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .timer-mode-btn.active {
+    background: #ff6b6b;
+}
+
+[data-theme="dark"] .sleep-time-input {
+    background: #4a5568;
+    border-color: rgba(255, 107, 107, 0.3);
+}
+
+[data-theme="dark"] .set-time-btn {
+    background: #ff6b6b;
+    border-color: #ff6b6b;
+}
+
+[data-theme="dark"] .set-time-btn:hover {
+    background: #ff5252;
+}
+
+[data-theme="bleuciel"] .timer-mode-btn.active,
+[data-theme="bleuciel"] .set-time-btn {
+    background: #17a2b8;
+    border-color: #17a2b8;
+}
+
+[data-theme="light"] .timer-mode-btn.active,
+[data-theme="light"] .set-time-btn {
+    background: #6f42c1;
+    border-color: #6f42c1;
+}
+
+/* ===================================================================== */
+/* RADIO POPUP - CSS ORGANISÉ - PARTIE 5                               */
+/* Widget Compact et Mini-Égaliseur                                     */
+/* ===================================================================== */
+
+/* === WIDGET COMPACT PRINCIPAL === */
 .radio-compact-widget {
     position: fixed;
     bottom: 110px; 
-    left: 10px; /* À gauche pour éviter le conflit avec le chat */
+    left: 10px;
     background: var(--card-bg, white);
     border-radius: 12px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
@@ -736,7 +990,7 @@ body.radio-popup-open {
     border: 2px solid transparent;
     backdrop-filter: blur(10px);
     max-width: 400px;
-    animation: slideInLeft 0.3s ease; /* Animation depuis la gauche */
+    animation: slideInLeft 0.3s ease;
 }
 
 .radio-compact-widget.playing {
@@ -745,18 +999,56 @@ body.radio-popup-open {
 }
 
 .compact-widget-content {
+    position: relative;
     display: flex;
     align-items: center;
     padding: 10px;
     gap: 10px;
 }
 
+/* === BOUTON DE FERMETURE === */
+.compact-close-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(220, 53, 69, 0.9);
+    color: white;
+    border: 2px solid white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.compact-close-btn:hover {
+    background: #dc3545;
+    transform: scale(1.1);
+}
+
+.compact-close-btn .material-icons {
+    font-size: 14px;
+}
+
+/* === INFORMATIONS STATION COMPACT === */
 .compact-station-info {
     display: flex;
     align-items: center;
     gap: 8px;
     flex: 1;
-    min-width: 0; /* Pour permettre l'ellipsis */
+    min-width: 0;
+}
+
+.compact-logo-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
 }
 
 .compact-logo {
@@ -788,6 +1080,45 @@ body.radio-popup-open {
     color: var(--text-secondary, #666);
 }
 
+.compact-details .status-live {
+    color: #28a745 !important;
+}
+
+.compact-details .status-paused {
+    color: #ff9800 !important;
+}
+
+/* === MINI-ÉGALISEUR COMPACT === */
+.compact-equalizer {
+    display: none;
+    align-items: end;
+    gap: 1px;
+    height: 8px;
+    padding: 1px 3px;
+    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.2);
+    border-radius: 3px;
+}
+
+.mini-bar {
+    width: 2px;
+    height: 30%;
+    background: linear-gradient(to top, var(--primary-color, #940000), #ff6b6b);
+    border-radius: 1px;
+    transition: height 0.2s ease;
+}
+
+/* === INDICATEUR MINUTEUR COMPACT === */
+.compact-timer {
+    font-size: 10px;
+    color: #ff9800;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-top: 2px;
+}
+
+/* === CONTRÔLES COMPACT === */
 .compact-controls {
     display: flex;
     gap: 5px;
@@ -817,55 +1148,21 @@ body.radio-popup-open {
     font-size: 18px;
 }
 
-/* Classes de statut pour le widget compact */
-.compact-details .status-live {
-    color: #28a745 !important;
+/* === BOUTON MINUTEUR ACTIF === */
+.compact-timer-btn.active-timer {
+    background: #FFEB3B !important;
+    border-color: #E91E63 !important;
+    color: #3466a8 !important;
 }
 
-.compact-details .status-paused {
-    color: #ff9800 !important;
+.compact-timer-btn.active-timer .material-icons {
+    animation: timerPulse 2s infinite;
 }
 
-/* === TOAST SIMPLE === */
-.radio-toast {
-    position: fixed;
-    bottom: 120px;
-    left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 25px;
-    font-size: 14px;
-    z-index: 10001;
-    opacity: 0;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-}
-
-.radio-toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-}
-
-/* Animation depuis la gauche */
-@keyframes slideInLeft {
-    from {
-        opacity: 0;
-        transform: translateX(-100%);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-/* === RESPONSIVE === */
-
-/* Tablettes */
+/* === RESPONSIVE WIDGET COMPACT === */
 @media (max-width: 768px) {
     .radio-compact-widget {
-        left: 10px; /* Garder à gauche */
+        left: 10px;
         bottom: 70px;
         max-width: 250px;
     }
@@ -887,181 +1184,6 @@ body.radio-popup-open {
     .compact-btn .material-icons {
         font-size: 25px;
     }
-}
-    
-    .equalizer-container {
-        height: 30px;
-    }
-    
-    .equalizer-bar {
-        width: 3px;
-    }
-    
-    .sleep-timer-select {
-        font-size: 13px;
-        padding: 6px 10px;
-    }
-}
-
-/* === THÈMES === */
-
-/* Thème sombre */
-[data-theme="dark"] .radio-compact-widget {
-    --card-bg: #2d3748;
-    --text-color: #e2e8f0;
-    --text-secondary: #a0aec0;
-    --primary-color-rgb: 255, 107, 107;
-    --primary-color: #ff6b6b;
-}
-
-[data-theme="dark"] .compact-logo {
-    background: #4a5568;
-}
-
-/* Thème bleu ciel */
-[data-theme="bleuciel"] .radio-compact-widget {
-    --primary-color-rgb: 23, 162, 184;
-    --primary-color: #17a2b8;
-}
-
-/* Thème violet */
-[data-theme="light"] .radio-compact-widget {
-    --primary-color-rgb: 111, 66, 193;
-    --primary-color: #6f42c1;
-}
-
-/* === AMÉLIORATIONS WIDGET COMPACT === */
-
-/* Conteneur logo avec mini-égaliseur */
-.compact-logo-container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-}
-
-.compact-logo {
-    width: 40px;
-    height: 40px;
-    border-radius: 6px;
-    object-fit: contain;
-    background: white;
-    padding: 2px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-/* Mini égaliseur compact */
-.compact-equalizer {
-    display: none; /* Masqué par défaut */
-    align-items: end;
-    gap: 1px;
-    height: 8px;
-    padding: 1px 3px;
-    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.2);
-    border-radius: 3px;
-}
-
-.mini-bar {
-    width: 2px;
-    height: 30%;
-    background: linear-gradient(to top, var(--primary-color, #940000), #ff6b6b);
-    border-radius: 1px;
-    transition: height 0.2s ease;
-}
-
-/* Indicateur minuteur compact */
-.compact-timer {
-    font-size: 10px;
-    color: #ff9800;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    margin-top: 2px;
-}
-
-/* Bouton minuteur actif */
-.compact-timer-btn.active-timer {
-    background: #FFEB3B !important;
-    border-color: #E91E63 !important;
-    color: #3466a8 !important;
-}
-
-.compact-timer-btn.active-timer .material-icons {
-    animation: timerPulse 2s infinite;
-}
-
-@keyframes timerPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
-}
-
-/* Menu minuteur rapide */
-.quick-timer-menu {
-    background: var(--card-bg, white);
-    border-radius: 8px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-    padding: 8px;
-    animation: slideUpQuick 0.2s ease;
-}
-
-.quick-timer-options {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    min-width: 120px;
-}
-
-.timer-option {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 14px;
-    color: var(--text-color, #333);
-}
-
-.timer-option:hover {
-    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.1);
-    /* Suppression du transform qui fait bouger */
-}
-
-.timer-option .material-icons {
-    font-size: 16px;
-    color: var(--primary-color, #940000);
-}
-
-/* Option d'annulation */
-.timer-option[data-minutes="0"] .material-icons {
-    color: #dc3545;
-}
-
-.timer-option[data-minutes="0"]:hover {
-    background: rgba(220, 53, 69, 0.1);
-}
-
-@keyframes slideUpQuick {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* === RESPONSIVE POUR MINI-ÉGALISEUR === */
-
-@media (max-width: 768px) {
-    .compact-logo {
-        width: 35px;
-        height: 35px;
-    }
     
     .compact-equalizer {
         height: 6px;
@@ -1076,86 +1198,38 @@ body.radio-popup-open {
     }
 }
 
-/* === THÈMES POUR NOUVELLES FONCTIONNALITÉS === */
-
-[data-theme="dark"] .quick-timer-menu {
-    --card-bg: #2d3748;
-    --text-color: #e2e8f0;
-    --primary-color-rgb: 255, 107, 107;
-    --primary-color: #ff6b6b;
-}
-
-[data-theme="bleuciel"] .quick-timer-menu {
-    --primary-color-rgb: 23, 162, 184;
-    --primary-color: #17a2b8;
-}
-
-[data-theme="light"] .quick-timer-menu {
-    --primary-color-rgb: 111, 66, 193;
-    --primary-color: #6f42c1;
-}
-
-/* === BOUTON DE FERMETURE DU WIDGET === */
-.compact-close-btn {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: rgba(220, 53, 69, 0.9);
-    color: white;
-    border: 2px solid white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-    z-index: 10;
-}
-
-.compact-close-btn:hover {
-    background: #dc3545;
-    transform: scale(1.1);
-}
-
-.compact-close-btn .material-icons {
-    font-size: 14px;
-}
-
-/* Ajuster le widget pour le bouton de fermeture */
-.compact-widget-content {
-    position: relative;
-    padding: 10px;
-}
-
-/* === ANIMATION DE SORTIE === */
-@keyframes slideOutLeft {
-    from {
-        opacity: 1;
-        transform: translateX(0);
+@media (max-width: 480px) {
+    .radio-compact-widget {
+        left: 40px;
+        bottom: 103px;
+        max-width: 340px;
     }
-    to {
-        opacity: 0;
-        transform: translateX(-100%);
+    
+    .compact-logo {
+        width: 42px;
+        height: 42px;
+    }
+    
+    .compact-equalizer {
+        height: 5px;
+        padding: 1px 2px;
+    }
+    
+    .mini-bar {
+        width: 1px;
+    }
+    
+    .compact-close-btn {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .compact-close-btn .material-icons {
+        font-size: 12px;
     }
 }
 
-/* === MENU MINUTEUR ÉTENDU === */
-.quick-timer-options {
-    max-height: 250px;
-    overflow-y: auto;
-    /* Masquer la barre de défilement */
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE/Edge */
-}
-
-.quick-timer-options::-webkit-scrollbar {
-    display: none; /* Chrome/Safari */
-}
-
-/* === CORRECTION THÈME SOMBRE POUR WIDGET COMPACT === */
-
+/* === THÈMES WIDGET COMPACT === */
 [data-theme="dark"] .radio-compact-widget {
     background: #2d3748;
     border: 2px solid #4a5568;
@@ -1167,7 +1241,6 @@ body.radio-popup-open {
     box-shadow: 0 0 20px rgba(104, 211, 145, 0.4);
 }
 
-/* Boutons plus contrastés en mode sombre */
 [data-theme="dark"] .compact-btn {
     background: rgba(255, 255, 255, 0.15) !important;
     border: 1px solid rgba(255, 255, 255, 0.3) !important;
@@ -1179,20 +1252,17 @@ body.radio-popup-open {
     border-color: rgba(255, 255, 255, 0.5) !important;
 }
 
-/* Bouton minuteur actif en mode sombre */
 [data-theme="dark"] .compact-timer-btn.active-timer {
     background: rgba(255, 193, 7, 0.3) !important;
     border-color: rgba(255, 193, 7, 0.6) !important;
     color: #ffd93d !important;
 }
 
-/* Logo en mode sombre */
 [data-theme="dark"] .compact-logo {
     background: #4a5568;
     border-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Texte en mode sombre */
 [data-theme="dark"] .compact-details div:first-child {
     color: #e2e8f0;
 }
@@ -1201,30 +1271,10 @@ body.radio-popup-open {
     color: #FFEB3B;
 }
 
-/* Minuteur compact en mode sombre */
 [data-theme="dark"] .compact-timer {
     color: #ffd93d;
 }
 
-/* Menu minuteur en mode sombre */
-[data-theme="dark"] .quick-timer-menu {
-    background: #2d3748;
-    border: 1px solid #4a5568;
-}
-
-[data-theme="dark"] .timer-option {
-    color: #e2e8f0;
-}
-
-[data-theme="dark"] .timer-option:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="dark"] .timer-option .material-icons {
-    color: #68d391;
-}
-
-/* Bouton fermeture en mode sombre */
 [data-theme="dark"] .compact-close-btn {
     background: rgba(239, 68, 68, 0.9);
     border-color: #4a5568;
@@ -1234,90 +1284,48 @@ body.radio-popup-open {
     background: #ef4444;
 }
 
-/* === NOUVEAUX STYLES POUR LE MINUTEUR À HEURE PRÉCISE === */
-
-/* Boutons de mode de minuteur */
-.sleep-timer-mode-toggle {
-    display: flex;
-    gap: 5px;
-    margin-bottom: 10px;
-    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.1);
-    border-radius: 8px;
-    padding: 3px;
+[data-theme="bleuciel"] .radio-compact-widget {
+    --primary-color-rgb: 23, 162, 184;
+    --primary-color: #17a2b8;
 }
 
-.timer-mode-btn {
-    flex: 1;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 6px;
-    background: transparent;
-    color: var(--text-color, #333);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
+[data-theme="light"] .radio-compact-widget {
+    --primary-color-rgb: 111, 66, 193;
+    --primary-color: #6f42c1;
 }
 
-.timer-mode-btn.active {
-    background: var(--primary-color, #940000);
-    color: white;
-    box-shadow: 0 2px 5px rgba(148, 0, 0, 0.3);
-}
+/* ===================================================================== */
+/* RADIO POPUP - CSS ORGANISÉ - PARTIE 6 FINALE                        */
+/* Menu Minuteur Rapide et Finitions                                    */
+/* ===================================================================== */
 
-.timer-mode-btn:hover:not(.active) {
-    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.1);
-}
-
-/* Contrôles pour l'heure précise */
-.sleep-time-input {
-    width: 120px; /* Au lieu de flex: 1 */
-    min-width: 120px;
-    padding: 8px 12px;
-    border: 1px solid rgba(var(--primary-color-rgb, 148, 0, 0), 0.3);
-    border-radius: 6px;
+/* === MENU MINUTEUR RAPIDE === */
+.quick-timer-menu {
     background: var(--card-bg, white);
-    color: var(--text-color, #333);
-    font-size: 14px;
-    font-family: monospace;
+    border-radius: 8px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    padding: 8px;
+    animation: slideUpQuick 0.2s ease;
+    width: 160px;
+    min-height: 200px;
 }
 
-.sleep-time-input:focus {
-    outline: none;
-    border-color: var(--primary-color, #940000);
-    box-shadow: 0 0 5px rgba(148, 0, 0, 0.3);
+.quick-timer-options {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 120px;
+    max-height: 250px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
-.set-time-btn, .cancel-time-btn {
-    padding: 8px 12px;
-    border: 1px solid var(--primary-color, #940000);
-    border-radius: 6px;
-    background: var(--primary-color, #940000);
-    color: white;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap;
+.quick-timer-options::-webkit-scrollbar {
+    display: none;
 }
 
-.set-time-btn:hover {
-    background: #a50000;
-    transform: scale(1.02);
-}
-
-.cancel-time-btn {
-    background: #dc3545;
-    border-color: #dc3545;
-    margin-left: 5px;
-}
-
-.cancel-time-btn:hover {
-    background: #c82333;
-}
-
-/* === WIDGET COMPACT - MENU MINUTEUR ÉTENDU === */
-
+/* === HEADER MODE MINUTEUR === */
 .timer-mode-header {
     display: flex;
     gap: 3px;
@@ -1345,6 +1353,43 @@ body.radio-popup-open {
     color: white;
 }
 
+.quick-mode-btn:hover:not(.active) {
+    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.15);
+}
+
+/* === OPTIONS DURÉE === */
+.timer-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    color: var(--text-color, #333);
+    min-height: 35px;
+    box-sizing: border-box;
+}
+
+.timer-option:hover {
+    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.1);
+}
+
+.timer-option .material-icons {
+    font-size: 16px;
+    color: var(--primary-color, #940000);
+}
+
+.timer-option[data-minutes="0"] .material-icons {
+    color: #dc3545;
+}
+
+.timer-option[data-minutes="0"]:hover {
+    background: rgba(220, 53, 69, 0.1);
+}
+
+/* === OPTIONS HEURE PRÉCISE === */
 .quick-time-input {
     display: flex;
     gap: 5px;
@@ -1380,8 +1425,10 @@ body.radio-popup-open {
 
 .quick-set-btn:hover {
     background: #a50000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* === PRESETS TEMPS === */
 .quick-time-presets {
     display: flex;
     gap: 5px;
@@ -1400,185 +1447,28 @@ body.radio-popup-open {
     text-align: center;
     cursor: pointer;
     transition: all 0.2s ease;
+    min-height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
 }
 
 .time-preset:hover {
     background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.2);
-    /* Suppression du scale qui fait bouger */
 }
 
-/* === RESPONSIVE === */
+/* === RESPONSIVE MENU MINUTEUR === */
 
-@media (max-width: 768px) {
-    .timer-mode-btn {
-        padding: 6px 8px;
-        font-size: 12px;
-    }
-    
-    .sleep-time-input {
-        font-size: 13px;
-        padding: 6px 8px;
-    }
-    
-    .set-time-btn, .cancel-time-btn {
-        padding: 6px 8px;
-        font-size: 12px;
-    }
-    
-    .quick-time-field {
-        font-size: 12px;
-        padding: 5px 6px;
-    }
-    
-    .time-preset {
-        font-size: 10px;
-        padding: 5px 6px;
-    }
-}
-
-/* === THÈMES === */
-
-/* Thème sombre */
-[data-theme="dark"] .timer-mode-btn,
-[data-theme="dark"] .quick-mode-btn {
-    color: #e2e8f0;
-}
-
-[data-theme="dark"] .timer-mode-btn.active,
-[data-theme="dark"] .quick-mode-btn.active {
-    background: #ff6b6b;
-}
-
-[data-theme="dark"] .sleep-time-input,
-[data-theme="dark"] .quick-time-field {
-    background: #4a5568;
-    border-color: rgba(255, 107, 107, 0.3);
-    color: #e2e8f0;
-}
-
-[data-theme="dark"] .set-time-btn,
-[data-theme="dark"] .quick-set-btn {
-    background: #ff6b6b;
-    border-color: #ff6b6b;
-}
-
-[data-theme="dark"] .set-time-btn:hover,
-[data-theme="dark"] .quick-set-btn:hover {
-    background: #ff5252;
-}
-
-/* Thème bleu ciel */
-[data-theme="bleuciel"] .timer-mode-btn.active,
-[data-theme="bleuciel"] .quick-mode-btn.active,
-[data-theme="bleuciel"] .set-time-btn,
-[data-theme="bleuciel"] .quick-set-btn {
-    background: #17a2b8;
-    border-color: #17a2b8;
-}
-
-[data-theme="bleuciel"] .time-preset {
-    color: #17a2b8;
-    border-color: rgba(23, 162, 184, 0.2);
-}
-
-/* Thème violet */
-[data-theme="light"] .timer-mode-btn.active,
-[data-theme="light"] .quick-mode-btn.active,
-[data-theme="light"] .set-time-btn,
-[data-theme="light"] .quick-set-btn {
-    background: #6f42c1;
-    border-color: #6f42c1;
-}
-
-[data-theme="light"] .time-preset {
-    color: #6f42c1;
-    border-color: rgba(111, 66, 193, 0.2);
-}
-
-/* === AMÉLIORATIONS UX === */
-
-/* Zone horaire cliquable - VERSION SIMPLIFIÉE */
-#timeControls {
-    cursor: pointer;
-    border-radius: 6px;
-    transition: background-color 0.2s ease;
-    padding: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-
-#timeControls:hover {
-    background-color: rgba(var(--primary-color-rgb, 148, 0, 0), 0.05);
-}
-
-#timeControls .material-icons {
-    pointer-events: none; /* Empêcher l'icône de bloquer les clics */
-}
-
-/* Améliorer le champ horaire */
-.sleep-time-input {
-    cursor: pointer;
-    font-weight: 600;
-    pointer-events: auto;
-}
-
-.sleep-time-input:hover {
-    border-color: var(--primary-color, #940000);
-}
-
-/* Stabiliser le menu du widget */
-.quick-timer-menu {
-    width: 160px; /* Largeur fixe pour éviter les mouvements */
-    min-height: 200px; /* Hauteur minimum */
-}
-
-/* Stabiliser les options */
-.timer-option {
-    min-height: 35px; /* Hauteur fixe */
-    display: flex;
-    align-items: center;
-    box-sizing: border-box;
-}
-
-.time-preset {
-    min-height: 30px; /* Hauteur fixe */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-}
-
-/* Améliorer la visibilité des boutons de mode */
-.timer-mode-btn:hover:not(.active) {
-    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.15);
-    transform: none; /* Pas de mouvement */
-}
-
-.quick-mode-btn:hover:not(.active) {
-    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.15);
-    transform: none; /* Pas de mouvement */
-}
-
-/* Feedback visuel sans mouvement */
-.set-time-btn:hover,
-.quick-set-btn:hover {
-    transform: none; /* Suppression du scale */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* === AMÉLIORATION MENU MOBILE === */
-
-/* Mobile - Menu plus grand et mieux positionné */
+/* Mobile optimisé */
 @media (max-width: 480px) {
     .quick-timer-menu {
-        width: 280px; /* Plus large */
-        max-width: calc(100vw - 20px); /* S'adapter à l'écran */
-        left: 10px !important; /* Position fixe à gauche */
-        bottom: 160px !important; /* Plus haut */
+        width: 280px;
+        max-width: calc(100vw - 20px);
+        left: 10px !important;
+        bottom: 160px !important;
         min-height: 200px;
-        font-size: 16px; /* Texte plus gros pour mobile */
+        font-size: 16px;
     }
     
     .timer-mode-header {
@@ -1586,19 +1476,28 @@ body.radio-popup-open {
     }
     
     .quick-mode-btn {
-        padding: 10px 12px; /* Boutons plus gros */
+        padding: 10px 12px;
         font-size: 14px;
         font-weight: 600;
     }
     
     .timer-option {
-        min-height: 45px; /* Plus haut pour les doigts */
+        min-height: 45px;
         padding: 10px 15px;
         font-size: 16px;
+        border: 1px solid rgba(var(--primary-color-rgb, 148, 0, 0), 0.1);
+        margin-bottom: 2px;
+        border-radius: 8px;
+    }
+    
+    .timer-option:hover,
+    .timer-option:active {
+        background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.15);
+        border-color: rgba(var(--primary-color-rgb, 148, 0, 0), 0.3);
     }
     
     .timer-option .material-icons {
-        font-size: 20px; /* Icônes plus grosses */
+        font-size: 20px;
     }
     
     .timer-option span:last-child {
@@ -1611,9 +1510,9 @@ body.radio-popup-open {
     }
     
     .quick-time-field {
-        font-size: 16px; /* Évite le zoom iOS */
+        font-size: 16px;
         padding: 10px 12px;
-        height: 44px; /* Hauteur tactile recommandée */
+        height: 44px;
     }
     
     .quick-set-btn {
@@ -1628,62 +1527,22 @@ body.radio-popup-open {
     }
     
     .time-preset {
-        min-height: 40px; /* Plus haut pour les doigts */
+        min-height: 40px;
         font-size: 14px;
         padding: 8px 10px;
         font-weight: 600;
     }
-	
-	.compact-logo {
-        width: 42px;
-        height: 42px;
-    }
     
-    .compact-equalizer {
-        height: 5px;
-        padding: 1px 2px;
-    }
-    
-    .mini-bar {
-        width: 1px;
-    }
-	
-	.quick-timer-options {
+    .quick-timer-options {
         max-height: 200px;
     }
     
-    .compact-close-btn {
-        width: 20px;
-        height: 20px;
-    }
-    
-    .compact-close-btn .material-icons {
-        font-size: 12px;
-    }
-	
-	.station-logo-container {
-        width: var(--logo-img-size-mobile);
-        height: var(--logo-img-size-mobile);
-    }
-    
-    .station-logo-container img.station-logo {
-        width: var(--logo-img-size-mobile) !important;
-        height: var(--logo-img-size-mobile) !important;
-        min-width: var(--logo-img-size-mobile) !important;
-        min-height: var(--logo-img-size-mobile) !important;
-        max-width: var(--logo-img-size-mobile) !important;
-        max-height: var(--logo-img-size-mobile) !important;
-    }
-    
-    .logo-fallback {
-        width: var(--logo-img-size-mobile);
-        height: var(--logo-img-size-mobile);
-    }
-	
-	.radio-compact-widget {
-        left: 40px;
-        bottom: 103px;
-        max-width: 340px;
+    /* Feedback tactile */
+    .timer-option:active,
+    .time-preset:active,
+    .quick-set-btn:active {
+        transform: scale(0.98);
+        transition: transform 0.1s;
     }
 }
 
@@ -1705,9 +1564,70 @@ body.radio-popup-open {
     }
 }
 
-/* === AMÉLIORATION ACCESSIBILITÉ === */
+/* === THÈMES POUR MENU MINUTEUR === */
+[data-theme="dark"] .quick-timer-menu {
+    background: #2d3748;
+    border: 1px solid #4a5568;
+}
 
-/* Focus visible pour les éléments interactifs */
+[data-theme="dark"] .quick-mode-btn {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .quick-mode-btn.active {
+    background: #ff6b6b;
+}
+
+[data-theme="dark"] .quick-time-field {
+    background: #4a5568;
+    border-color: rgba(255, 107, 107, 0.3);
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .quick-set-btn {
+    background: #ff6b6b;
+    border-color: #ff6b6b;
+}
+
+[data-theme="dark"] .quick-set-btn:hover {
+    background: #ff5252;
+}
+
+[data-theme="dark"] .timer-option {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .timer-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .timer-option .material-icons {
+    color: #68d391;
+}
+
+[data-theme="bleuciel"] .quick-mode-btn.active,
+[data-theme="bleuciel"] .quick-set-btn {
+    background: #17a2b8;
+    border-color: #17a2b8;
+}
+
+[data-theme="bleuciel"] .time-preset {
+    color: #17a2b8;
+    border-color: rgba(23, 162, 184, 0.2);
+}
+
+[data-theme="light"] .quick-mode-btn.active,
+[data-theme="light"] .quick-set-btn {
+    background: #6f42c1;
+    border-color: #6f42c1;
+}
+
+[data-theme="light"] .time-preset {
+    color: #6f42c1;
+    border-color: rgba(111, 66, 193, 0.2);
+}
+
+/* === AMÉLIORATIONS ACCESSIBILITÉ === */
 .timer-option:focus,
 .time-preset:focus,
 .quick-set-btn:focus {
@@ -1715,37 +1635,6 @@ body.radio-popup-open {
     outline-offset: 2px;
 }
 
-/* Améliorer le contraste sur mobile */
-@media (max-width: 480px) {
-    .timer-option {
-        border: 1px solid rgba(var(--primary-color-rgb, 148, 0, 0), 0.1);
-        margin-bottom: 2px;
-        border-radius: 8px;
-    }
-    
-    .timer-option:hover,
-    .timer-option:active {
-        background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.15);
-        border-color: rgba(var(--primary-color-rgb, 148, 0, 0), 0.3);
-    }
-    
-    /* Feedback tactile */
-    .timer-option:active,
-    .time-preset:active,
-    .quick-set-btn:active {
-        transform: scale(0.98);
-        transition: transform 0.1s;
-    }
-}
-
-/* Améliorer la visibilité du champ horaire */
-.sleep-time-input {
-    min-height: 44px; /* Hauteur tactile */
-    font-size: 16px; /* Évite le zoom iOS */
-}
-
-.sleep-time-input:focus {
-    outline: none;
-    border-color: var(--primary-color, #940000);
-    box-shadow: 0 0 8px rgba(148, 0, 0, 0.3);
-}
+/* ===================================================================== */
+/* FIN DU CSS RADIO ORGANISÉ                                            */
+/* ===================================================================== */
