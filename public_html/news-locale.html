@@ -1009,6 +1009,18 @@
                 });
             }
 
+		// AJOUTEZ LA MÉTHODE ICI
+		autoLinkUrls(text) {
+		const urlRegex = /(https?:\/\/[^\s<>"]+)/gi;
+    
+		return text.replace(urlRegex, (url) => {
+			const cleanUrl = url.replace(/[.,!?;:]$/, '');
+			const punctuation = url.slice(cleanUrl.length);
+        
+			return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer">${cleanUrl}</a>${punctuation}`;
+		});
+	}
+
             async loadAllNews() {
                 try {
                     const supabase = window.getSupabaseClient();
@@ -1033,6 +1045,19 @@
                     this.showError();
                 }
             }
+
+			autoLinkUrls(text) {
+			// Regex pour détecter les URLs
+		const urlRegex = /(https?:\/\/[^\s<>"]+)/gi;
+    
+		return text.replace(urlRegex, (url) => {
+			// Nettoyer l'URL (enlever la ponctuation à la fin)
+        const cleanUrl = url.replace(/[.,!?;:]$/, '');
+        const punctuation = url.slice(cleanUrl.length);
+        
+        return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer">${cleanUrl}</a>${punctuation}`;
+		});
+	}
 
             displayNews(news) {
                 const container = document.getElementById('newsContainer');
@@ -1081,9 +1106,9 @@
                             </div>
                         ` : ''}
 
-                        <div class="news-article-content">
-                            ${article.content}
-                        </div>
+							<div class="news-article-content">
+								${this.autoLinkUrls(article.content)}
+							</div>
                         
                         <!-- Section Commentaires Simple -->
                         <div class="comments-simple">
