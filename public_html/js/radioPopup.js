@@ -1034,7 +1034,7 @@ setSleepTime(timeString) {
             } else {
                 status.textContent = 'En pause';
                 status.className = 'status-paused';
-                playBtn.querySelector('.material-icons').textContent = 'play_arrow';
+                playBtn.querySelector('.material-icons').textContent = 'stop';
                 widget.classList.remove('playing');
                 equalizer.style.display = 'none';
             }
