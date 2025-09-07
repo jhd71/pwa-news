@@ -1496,41 +1496,23 @@ body.radio-popup-open {
 
 /* === AMÉLIORATIONS UX === */
 
-/* Rendre toute la zone de contrôle horaire cliquable */
+/* Zone horaire cliquable - VERSION SIMPLIFIÉE */
 #timeControls {
     cursor: pointer;
     border-radius: 6px;
-    transition: background 0.2s ease;
-    position: relative;
+    transition: background-color 0.2s ease;
+    padding: 2px;
 }
 
 #timeControls:hover {
-    background: rgba(var(--primary-color-rgb, 148, 0, 0), 0.05);
-}
-
-/* Overlay invisible pour capturer les clics */
-#timeControls::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1;
-    cursor: pointer;
-}
-
-/* S'assurer que les vrais contrôles sont au-dessus */
-#timeControls input,
-#timeControls button {
-    position: relative;
-    z-index: 2;
+    background-color: rgba(var(--primary-color-rgb, 148, 0, 0), 0.05);
 }
 
 /* Améliorer le champ horaire */
 .sleep-time-input {
     cursor: pointer;
     font-weight: 600;
+    pointer-events: auto;
 }
 
 .sleep-time-input:hover {

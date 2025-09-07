@@ -368,16 +368,29 @@ sleepTimeInput.addEventListener('focus', () => {
     }, 50);
 });
 
-// Gestionnaire pour rendre tout le champ horaire cliquable
+// Rendre tout le champ horaire cliquable - SOLUTION CORRIGÉE
 const timeControlsDiv = document.getElementById('timeControls');
+const timeInput = document.getElementById('sleepTimeInput');
+
 timeControlsDiv.addEventListener('click', (e) => {
-    // Si on clique sur la zone mais pas sur un élément de contrôle
-    if (e.target === timeControlsDiv || e.target.classList.contains('material-icons')) {
-        const timeInput = document.getElementById('sleepTimeInput');
+    // Si on clique n'importe où dans la zone sauf sur les boutons
+    if (!e.target.closest('button') && !e.target.matches('input[type="time"]')) {
         timeInput.focus();
+        timeInput.click();
         e.preventDefault();
         e.stopPropagation();
     }
+});
+
+// Ajouter un style visuel pour montrer que c'est cliquable
+timeControlsDiv.style.cursor = 'pointer';
+timeControlsDiv.addEventListener('mouseenter', () => {
+    if (timeControlsDiv.style.backgroundColor !== 'rgba(148, 0, 0, 0.05)') {
+        timeControlsDiv.style.backgroundColor = 'rgba(148, 0, 0, 0.05)';
+    }
+});
+timeControlsDiv.addEventListener('mouseleave', () => {
+    timeControlsDiv.style.backgroundColor = '';
 });
     }
 
