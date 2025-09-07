@@ -441,67 +441,48 @@ timeControlsDiv.addEventListener('mouseleave', () => {
 }
 	
 	toggleStationPlayback(index) {
-        const station = this.stations[index];
-        const card = document.querySelector(`[data-index="${index}"]`);
-        
-        // Si c'est la même station
-        if (this.currentStation && this.currentStation.name === station.name) {
-            if (this.isPlaying) {
-                // En cours de lecture -> Pause
-                this.pauseRadio();
-            } else {
-                // En pause -> Reprendre
-                this.playRadio();
-            }
-        } else {
-            // Nouvelle station
-            this.stopCurrentAndPlayNew(index);
-        }
+    const station = this.stations[index];
+    const card = document.querySelector(`[data-index="${index}"]`);
+    
+    // Si c'est la même station ET qu'elle joue -> STOP complet
+    if (this.currentStation && this.currentStation.name === station.name && this.isPlaying) {
+        this.stopRadio();
+        return;
     }
+    
+    // Sinon -> Nouvelle station ou redémarrage
+    this.stopCurrentAndPlayNew(index);
+}
 
     stopCurrentAndPlayNew(index) {
-        // Arrêter la station actuelle
-        if (this.audio) {
-            this.audio.pause();
-            this.audio = null;
-        }
-        
-        // Arrêter l'égaliseur avant de changer de station
-        this.stopEqualizer();
-        this.stopCompactEqualizer();
-        
-        // Réinitialiser toutes les cartes
-document.querySelectorAll('.radio-station-card').forEach(card => {
-    card.classList.remove('active', 'playing', 'paused');
-    const overlay = card.querySelector('.play-overlay .material-icons');
-    overlay.textContent = 'play_arrow';  // Garde play_arrow pour les autres cartes
-});
-        
-        // Sélectionner et jouer la nouvelle station
-        const station = this.stations[index];
-        const card = document.querySelector(`[data-index="${index}"]`);
-        
-        this.currentStation = station;
-        this.isPlaying = false;
-        
-        // Mettre à jour l'interface du lecteur
-        document.getElementById('currentStationLogo').src = station.logo;
-        document.getElementById('currentStationName').textContent = station.name;
-        document.getElementById('currentStationStatus').textContent = 'Connexion...';
-        this.updateStatusStyle('Connexion...');
-        document.getElementById('radioPlayerSection').style.display = 'block';
-        
-        // Marquer comme active
-        card.classList.add('active');
-        
-        // Lancer la lecture
-        this.playRadio();
-        
-        // Mettre à jour l'overlay
-        const overlayIcon = card.querySelector('.play-overlay .material-icons');
-        overlayIcon.textContent = 'pause';
-        card.classList.add('playing');
-    }
+    // Arrêter tout
+    this.stopRadio();
+    
+    // Sélectionner et jouer la nouvelle station
+    const station = this.stations[index];
+    const card = document.querySelector(`[data-index="${index}"]`);
+    
+    this.currentStation = station;
+    this.isPlaying = false;
+    
+    // Mettre à jour l'interface du lecteur
+    document.getElementById('currentStationLogo').src = station.logo;
+    document.getElementById('currentStationName').textContent = station.name;
+    document.getElementById('currentStationStatus').textContent = 'Connexion...';
+    this.updateStatusStyle('Connexion...');
+    document.getElementById('radioPlayerSection').style.display = 'block';
+    
+    // Marquer comme active
+    card.classList.add('active');
+    
+    // Lancer la lecture
+    this.playRadio();
+    
+    // Mettre à jour l'overlay
+    const overlayIcon = card.querySelector('.play-overlay .material-icons');
+    overlayIcon.textContent = 'stop';  // Afficher stop pendant la lecture
+    card.classList.add('playing');
+}
 
     playRadio() {
         if (!this.currentStation) return;
@@ -555,13 +536,13 @@ document.querySelectorAll('.radio-station-card').forEach(card => {
             this.updateStatusStyle('En direct');
             
             // Mettre à jour l'overlay de la station active
-            const activeCard = document.querySelector('.radio-station-card.active');
-            if (activeCard) {
-                const overlayIcon = activeCard.querySelector('.play-overlay .material-icons');
-                overlayIcon.textContent = 'pause';
-                activeCard.classList.add('playing');
-                activeCard.classList.remove('paused');
-            }
+const activeCard = document.querySelector('.radio-station-card.active');
+if (activeCard) {
+    const overlayIcon = activeCard.querySelector('.play-overlay .material-icons');
+    overlayIcon.textContent = 'stop';  // CHANGÉ : stop au lieu de pause
+    activeCard.classList.add('playing');
+    activeCard.classList.remove('paused');
+}
             
         } catch (error) {
             console.error('Erreur lecture radio:', error);
@@ -573,65 +554,41 @@ document.querySelectorAll('.radio-station-card').forEach(card => {
         }
     }
 
-    pauseRadio() {
-        if (this.audio) {
-            this.audio.pause();
-            this.audio = null; // AJOUTER CETTE LIGNE pour nettoyer l'audio
-        }
-        this.isPlaying = false;
-        
-        // Mettre à jour l'indicateur de la tuile
-        this.updateTileIndicator();
-        
-        // Arrêter l'égaliseur visuel
-        this.stopEqualizer();
-        
-        // Arrêter le mini-égaliseur compact
-        this.stopCompactEqualizer();
-        
-        // Supprimer le widget quand on met en pause
-        this.hideCompactWidget();
-        
-        document.getElementById('currentStationStatus').textContent = 'En pause';
-        this.updateStatusStyle('En pause');
-        
-        // Mettre à jour l'overlay de la station active
-const activeCard = document.querySelector('.radio-station-card.active');
-if (activeCard) {
-    const overlayIcon = activeCard.querySelector('.play-overlay .material-icons');
-    overlayIcon.textContent = 'stop';  // CHANGÉ : stop au lieu de play_arrow
-    activeCard.classList.remove('playing');
-    activeCard.classList.add('paused');
-}
-    }
-
     stopRadio() {
-        if (this.audio) {
-            this.audio.pause();
-            this.audio.currentTime = 0;
-            this.audio = null;
-        }
-        this.isPlaying = false;
-        this.currentStation = null; // Réinitialiser la station
-        
-        // Masquer l'indicateur de la tuile
-        this.hideTileIndicator();
-        
-        // Arrêter l'égaliseur visuel
-        this.stopEqualizer();
-        
-        // Arrêter le mini-égaliseur compact
-        this.stopCompactEqualizer();
-        
-        // Annuler le minuteur d'arrêt
-        this.cancelSleepTimer();
-        
-        // Supprimer le widget quand plus de station
-        this.hideCompactWidget();
-        
-        document.getElementById('currentStationStatus').textContent = 'Arrêté';
-        this.updateStatusStyle('Arrêté');
+    if (this.audio) {
+        this.audio.pause();
+        this.audio.currentTime = 0;
+        this.audio = null;
     }
+    this.isPlaying = false;
+    
+    // Réinitialiser toutes les cartes
+    document.querySelectorAll('.radio-station-card').forEach(card => {
+        card.classList.remove('active', 'playing', 'paused');
+        const overlay = card.querySelector('.play-overlay .material-icons');
+        overlay.textContent = 'play_arrow';
+    });
+    
+    this.currentStation = null; // Réinitialiser la station
+    
+    // Masquer l'indicateur de la tuile
+    this.hideTileIndicator();
+    
+    // Arrêter l'égaliseur visuel
+    this.stopEqualizer();
+    
+    // Arrêter le mini-égaliseur compact
+    this.stopCompactEqualizer();
+    
+    // Annuler le minuteur d'arrêt
+    this.cancelSleepTimer();
+    
+    // Supprimer le widget quand plus de station
+    this.hideCompactWidget();
+    
+    document.getElementById('currentStationStatus').textContent = 'Arrêté';
+    this.updateStatusStyle('Arrêté');
+}
 
     setVolume(volume) {
         this.volume = volume;
