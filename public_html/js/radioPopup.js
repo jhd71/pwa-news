@@ -471,11 +471,11 @@ timeControlsDiv.addEventListener('mouseleave', () => {
         this.stopCompactEqualizer();
         
         // Réinitialiser toutes les cartes
-        document.querySelectorAll('.radio-station-card').forEach(card => {
-            card.classList.remove('active', 'playing', 'paused');
-            const overlay = card.querySelector('.play-overlay .material-icons');
-            overlay.textContent = 'play_arrow';
-        });
+document.querySelectorAll('.radio-station-card').forEach(card => {
+    card.classList.remove('active', 'playing', 'paused');
+    const overlay = card.querySelector('.play-overlay .material-icons');
+    overlay.textContent = 'play_arrow';  // Garde play_arrow pour les autres cartes
+});
         
         // Sélectionner et jouer la nouvelle station
         const station = this.stations[index];
@@ -523,19 +523,16 @@ timeControlsDiv.addEventListener('mouseleave', () => {
                 });
                 
                 this.audio.addEventListener('error', (e) => {
-                    document.getElementById('currentStationStatus').textContent = 'Erreur de lecture';
-                    this.updateStatusStyle('Erreur de lecture');
-                    this.isPlaying = false;
-                    // Réinitialiser l'interface en cas d'erreur
-                    const activeCard = document.querySelector('.radio-station-card.active');
-                    if (activeCard) {
-                        const overlayIcon = activeCard.querySelector('.play-overlay .material-icons');
-                        overlayIcon.textContent = 'play_arrow';
-                        activeCard.classList.remove('playing');
-                        activeCard.classList.add('paused');
-                    }
-                    console.error('Erreur audio:', e);
-                });
+    // ... code existant ...
+    const activeCard = document.querySelector('.radio-station-card.active');
+    if (activeCard) {
+        const overlayIcon = activeCard.querySelector('.play-overlay .material-icons');
+        overlayIcon.textContent = 'stop';  // CHANGÉ : stop pour les erreurs aussi
+        activeCard.classList.remove('playing');
+        activeCard.classList.add('paused');
+    }
+    console.error('Erreur audio:', e);
+});
             }
             
             this.audio.play();
@@ -599,13 +596,13 @@ timeControlsDiv.addEventListener('mouseleave', () => {
         this.updateStatusStyle('En pause');
         
         // Mettre à jour l'overlay de la station active
-        const activeCard = document.querySelector('.radio-station-card.active');
-        if (activeCard) {
-            const overlayIcon = activeCard.querySelector('.play-overlay .material-icons');
-            overlayIcon.textContent = 'play_arrow';
-            activeCard.classList.remove('playing');
-            activeCard.classList.add('paused');
-        }
+const activeCard = document.querySelector('.radio-station-card.active');
+if (activeCard) {
+    const overlayIcon = activeCard.querySelector('.play-overlay .material-icons');
+    overlayIcon.textContent = 'stop';  // CHANGÉ : stop au lieu de play_arrow
+    activeCard.classList.remove('playing');
+    activeCard.classList.add('paused');
+}
     }
 
     stopRadio() {
@@ -1034,7 +1031,7 @@ setSleepTime(timeString) {
             } else {
                 status.textContent = 'En pause';
                 status.className = 'status-paused';
-                playBtn.querySelector('.material-icons').textContent = 'stop';
+                playBtn.querySelector('.material-icons').textContent = 'play_arrow';
                 widget.classList.remove('playing');
                 equalizer.style.display = 'none';
             }
