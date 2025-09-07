@@ -1028,7 +1028,7 @@ setSleepTime(timeString) {
             if (this.isPlaying) {
                 status.textContent = 'En direct';
                 status.className = 'status-live';
-                playBtn.querySelector('.material-icons').textContent = 'pause';
+                playBtn.querySelector('.material-icons').textContent = 'stop';
                 widget.classList.add('playing');
                 equalizer.style.display = 'flex';
             } else {
