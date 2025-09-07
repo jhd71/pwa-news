@@ -1,19 +1,25 @@
+/* ===================================================================== */
+/* RADIO POPUP - JAVASCRIPT ORGANISÉ - PARTIE 1                        */
+/* Structure de Base, Constructeur et Initialisation                    */
+/* ===================================================================== */
+
 class RadioPopupWidget {
     constructor() {
+        // === STATIONS DE RADIO ===
         this.stations = [
-			{
+            {
                 name: 'Ici Bourgogne',
                 url: 'https://icecast.radiofrance.fr/fbbourgogne-midfi.mp3',
                 logo: 'images/radio-logos/Ici-Bourgogne.png',
                 description: 'Info Bourgogne'
             },
-			{
+            {
                 name: 'Radio Prevert',
                 url: 'https://vps.cbad.fr:8443/prevert',
                 logo: 'images/radio-logos/Radio-Prevert.png',
                 description: 'Chalon Sur Saône'
             },
-			{
+            {
                 name: 'La Radio Sans pub',
                 url: 'https://stream1.jupinfo.fr:8443/play',
                 logo: 'images/radio-logos/La-Radio-Sans-pub.png',
@@ -24,20 +30,20 @@ class RadioPopupWidget {
                 url: 'https://icecast.radiofrance.fr/franceinfo-midfi.mp3',
                 logo: 'images/radio-logos/france-info.png',
                 description: 'Info en continu'
-            },            
+            },
             {
                 name: 'Skyrock',
                 url: 'https://icecast.skyrock.net/s/natio_aac_128k?tvr_name=tunein16&tvr_section1=64aac',
                 logo: 'images/radio-logos/Skyrock.png',
                 description: 'Skyrock 1er sur le rap'
             },
-			{
+            {
                 name: 'NRJ',
                 url: 'https://streaming.nrjaudio.fm/oumvmk8fnozc?origine=fluxurlradio',
                 logo: 'images/radio-logos/nrj.png',
                 description: 'Hits & musique'
             },
-			{
+            {
                 name: 'Nostalgie',
                 url: 'https://streaming.nrjaudio.fm/oug7girb92oc?origine=fluxradios',
                 logo: 'images/radio-logos/nostalgie.png',
@@ -55,19 +61,19 @@ class RadioPopupWidget {
                 logo: 'images/radio-logos/Fun-Radio.png',
                 description: 'Le son dancefloor'
             },
-			{
+            {
                 name: 'Fréquence Plus',
                 url: 'https://fplus-chalonsursaone.ice.infomaniak.ch/fplus-chalonsursaone-128.mp3',
                 logo: 'images/radio-logos/Frequence-Plus.png',
                 description: 'A plein tubes, Chalon'
             },
-			{
+            {
                 name: 'M Radio',
                 url: 'https://mradio-lyon.ice.infomaniak.ch/mradio-lyon.mp3',
                 logo: 'images/radio-logos/M-Radio.png',
                 description: ' Numéro 1 sur la chanson française'
             },
-			{
+            {
                 name: 'RTL2',
                 url: 'https://streamer-02.rtl.fr/rtl2-1-44-128',
                 logo: 'images/radio-logos/RTL2.png',
@@ -90,88 +96,191 @@ class RadioPopupWidget {
                 url: 'https://audio.bfmtv.com/rmcradio_128.mp3',
                 logo: 'images/radio-logos/rmc.png',
                 description: 'Sport & info'
-            }           
+            }
         ];
         
+        // === ÉTAT DE LA RADIO ===
         this.currentStation = null;
         this.isPlaying = false;
         this.audio = null;
         this.volume = 0.7;
-		// Minuteur d'arrêt
+        
+        // === MINUTEUR D'ARRÊT ===
         this.sleepTimer = null;
         this.sleepTimeRemaining = 0;
-		this.sleepMode = 'duration'; // 'duration' ou 'time'
-		this.sleepTargetTime = null;
+        this.sleepMode = 'duration'; // 'duration' ou 'time'
+        this.sleepTargetTime = null;
         
-        // Égaliseur visuel
+        // === ÉGALISEURS ===
         this.equalizerInterval = null;
         this.isEqualizerActive = false;
-		// Mini-égaliseur compact
         this.compactEqualizerInterval = null;
-		// Synchronisation widget
+        
+        // === SYNCHRONISATION WIDGET ===
         this.widgetSyncInterval = null;
     }
 
+    // === INITIALISATION ===
     init() {
-    // Créer immédiatement si le DOM est prêt
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
+        // Créer immédiatement si le DOM est prêt
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                this.createRadioTile();
+                this.createPopup();
+            });
+        } else {
+            // Le DOM est déjà chargé
             this.createRadioTile();
             this.createPopup();
-        });
-    } else {
-        // Le DOM est déjà chargé
-        this.createRadioTile();
-        this.createPopup();
+        }
     }
-}
 
+    // === CRÉATION DE LA TUILE RADIO ===
     createRadioTile() {
-    // Vérifier si la tuile existe déjà
-    if (document.querySelector('.radio-app-tile')) {
-        console.log('Tuile Radio déjà présente');
-        return;
-    }
+        // Vérifier si la tuile existe déjà
+        if (document.querySelector('.radio-app-tile')) {
+            console.log('Tuile Radio déjà présente');
+            return;
+        }
 
-    // Trouver le séparateur Espace+
-    const radioSeparator = Array.from(document.querySelectorAll('.separator'))
-        .find(sep => sep.textContent.includes('Espace+'));
-    
-    if (!radioSeparator) {
-        // Si pas trouvé, observer le DOM pour l'ajouter dès qu'il apparaît
-        const observer = new MutationObserver(() => {
-            const separator = Array.from(document.querySelectorAll('.separator'))
-                .find(sep => sep.textContent.includes('Espace+'));
-            if (separator) {
-                observer.disconnect();
-                this.createRadioTile();
-            }
+        // Trouver le séparateur Espace+
+        const radioSeparator = Array.from(document.querySelectorAll('.separator'))
+            .find(sep => sep.textContent.includes('Espace+'));
+        
+        if (!radioSeparator) {
+            // Si pas trouvé, observer le DOM pour l'ajouter dès qu'il apparaît
+            const observer = new MutationObserver(() => {
+                const separator = Array.from(document.querySelectorAll('.separator'))
+                    .find(sep => sep.textContent.includes('Espace+'));
+                if (separator) {
+                    observer.disconnect();
+                    this.createRadioTile();
+                }
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+            return;
+        }
+
+        // Créer l'élément tuile
+        const tileElement = document.createElement('div');
+        tileElement.className = 'tile radio-app-tile';
+        tileElement.setAttribute('data-category', 'Espace+');
+        tileElement.innerHTML = `
+            <div class="tile-content">
+                <div class="tile-title">🎵 Lecteur Radio</div>
+            </div>
+            <div class="radio-tile-indicator" id="radioTileIndicator" style="display: none;"></div>
+            <div class="radio-tile-status" id="radioTileStatus" style="display: none;"></div>
+        `;
+
+        // Ajouter le gestionnaire de clic
+        tileElement.addEventListener('click', () => {
+            this.openPopup();
         });
-        observer.observe(document.body, { childList: true, subtree: true });
-        return;
+
+        // Insérer juste après le séparateur Espace+
+        radioSeparator.insertAdjacentElement('afterend', tileElement);
     }
 
-    // Ajouter une classe pour identifier la tuile radio
-    const tileElement = document.createElement('div');
-    tileElement.className = 'tile radio-app-tile'; // Ajout de la classe radio-app-tile
-    tileElement.setAttribute('data-category', 'Espace+');
-    tileElement.innerHTML = `
-        <div class="tile-content">
-            <div class="tile-title">🎵 Lecteur Radio</div>
-        </div>
-        <div class="radio-tile-indicator" id="radioTileIndicator" style="display: none;"></div>
-        <div class="radio-tile-status" id="radioTileStatus" style="display: none;"></div>
-    `;
+    // === GESTION DES INDICATEURS DE LA TUILE ===
+    showTileIndicator(stationName) {
+        const indicator = document.getElementById('radioTileIndicator');
+        const status = document.getElementById('radioTileStatus');
+        
+        if (indicator) {
+            indicator.style.display = 'block';
+        }
+        
+        if (status && stationName) {
+            status.textContent = `▶ ${stationName}`;
+            status.style.display = 'block';
+        }
+    }
 
-    // Ajouter le gestionnaire de clic
-    tileElement.addEventListener('click', () => {
-        this.openPopup();
-    });
+    hideTileIndicator() {
+        const indicator = document.getElementById('radioTileIndicator');
+        const status = document.getElementById('radioTileStatus');
+        
+        if (indicator) {
+            indicator.style.display = 'none';
+        }
+        
+        if (status) {
+            status.style.display = 'none';
+        }
+    }
 
-    // Insérer juste après le séparateur Espace+
-    radioSeparator.insertAdjacentElement('afterend', tileElement);
+    updateTileIndicator() {
+        if (this.isPlaying && this.currentStation) {
+            this.showTileIndicator(this.currentStation.name);
+        } else {
+            this.hideTileIndicator();
+        }
+    }
+
+    // === GESTION DES STYLES DE STATUT ===
+    updateStatusStyle(status) {
+        const statusElement = document.getElementById('currentStationStatus');
+        if (!statusElement) return;
+        
+        // Retirer toutes les classes de statut
+        statusElement.classList.remove('status-live', 'status-paused', 'status-error', 'status-connecting');
+        
+        // Ajouter la classe appropriée
+        switch(status) {
+            case 'En direct':
+                statusElement.classList.add('status-live');
+                break;
+            case 'En pause':
+                statusElement.classList.add('status-paused');
+                break;
+            case 'Arrêté':
+                statusElement.classList.add('status-paused');
+                break;
+            case 'Erreur':
+            case 'Erreur de lecture':
+                statusElement.classList.add('status-error');
+                break;
+            case 'Connexion...':
+            case 'Connexion en cours...':
+                statusElement.classList.add('status-connecting');
+                break;
+        }
+    }
+
+    // === GESTION DU VOLUME ===
+    setVolume(volume) {
+        this.volume = volume;
+        if (this.audio) {
+            this.audio.volume = volume;
+        }
+    }
+
+    // === NOTIFICATIONS TOAST ===
+    showToast(message) {
+        // Créer ou mettre à jour un toast simple
+        let toast = document.querySelector('.radio-toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.className = 'radio-toast';
+            document.body.appendChild(toast);
+        }
+
+        toast.textContent = message;
+        toast.classList.add('show');
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
 }
 
+/* ===================================================================== */
+/* RADIO POPUP - JAVASCRIPT ORGANISÉ - PARTIE 2                        */
+/* Création de la Popup et Gestion des Événements                       */
+/* ===================================================================== */
+
+    // === CRÉATION DE LA POPUP ===
     createPopup() {
         const popup = document.createElement('div');
         popup.id = 'radioPopup';
@@ -217,66 +326,65 @@ class RadioPopupWidget {
                         </div>
                         
                         <div class="volume-control">
-                        <span class="material-icons">volume_up</span>
-                        <input type="range" id="volumeSlider" min="0" max="100" value="70" class="volume-slider">
-                        <span class="volume-percentage">70%</span>
-                    </div>
-                    
-                    <!-- Égaliseur visuel -->
-                    <div class="equalizer-section">
-                        <div class="equalizer-container" id="equalizerContainer">
-                            <div class="equalizer-bar"></div>
-                            <div class="equalizer-bar"></div>
-                            <div class="equalizer-bar"></div>
-                            <div class="equalizer-bar"></div>
-                            <div class="equalizer-bar"></div>
+                            <span class="material-icons">volume_up</span>
+                            <input type="range" id="volumeSlider" min="0" max="100" value="70" class="volume-slider">
+                            <span class="volume-percentage">70%</span>
                         </div>
-                    </div>
-                    
-                    <!-- Minuteur d'arrêt -->
-                    <div class="sleep-timer-section">
-							<div class="sleep-timer-mode-toggle">
-							<button id="durationModeBtn" class="timer-mode-btn active">Durée</button>
-							<button id="timeModeBtn" class="timer-mode-btn">Heure précise</button>
-					</div>
-    
-							<div class="sleep-timer-controls" id="durationControls">
-							<span class="material-icons">schedule</span>
-							<select id="sleepTimerSelect" class="sleep-timer-select">
-							<option value="0">Pas d'arrêt automatique</option>
-							<option value="15">Arrêt dans 15 min</option>
-							<option value="30">Arrêt dans 30 min</option>
-							<option value="60">Arrêt dans 1 heure</option>
-							<option value="120">Arrêt dans 2 heures</option>
-							<option value="180">Arrêt dans 3 heures</option>
-							<option value="240">Arrêt dans 4 heures</option>
-			</select>
-					</div>
-    
-			<div class="sleep-timer-controls" id="timeControls" style="display: none;">
-        <span class="material-icons">access_time</span>
-        <input type="time" id="sleepTimeInput" class="sleep-time-input">
-        <button id="setSleepTimeBtn" class="set-time-btn">Programmer</button>
-        <button id="cancelSleepTimeBtn" class="cancel-time-btn" style="display: none;">Annuler</button>
-    </div>
-    
-			<div class="sleep-timer-display" id="sleepTimerDisplay" style="display: none;">
-        <span class="material-icons">timer</span>
-        <span id="sleepTimerText">--:--</span>
-        <button id="cancelSleepTimer" class="cancel-timer-btn">
-            <span class="material-icons">close</span>
-        </button>
-		</div>
-	</div>
+                        
+                        <!-- Égaliseur visuel -->
+                        <div class="equalizer-section">
+                            <div class="equalizer-container" id="equalizerContainer">
+                                <div class="equalizer-bar"></div>
+                                <div class="equalizer-bar"></div>
+                                <div class="equalizer-bar"></div>
+                                <div class="equalizer-bar"></div>
+                                <div class="equalizer-bar"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Minuteur d'arrêt -->
+                        <div class="sleep-timer-section">
+                            <div class="sleep-timer-mode-toggle">
+                                <button id="durationModeBtn" class="timer-mode-btn active">Durée</button>
+                                <button id="timeModeBtn" class="timer-mode-btn">Heure précise</button>
+                            </div>
+        
+                            <div class="sleep-timer-controls" id="durationControls">
+                                <span class="material-icons">schedule</span>
+                                <select id="sleepTimerSelect" class="sleep-timer-select">
+                                    <option value="0">Pas d'arrêt automatique</option>
+                                    <option value="15">Arrêt dans 15 min</option>
+                                    <option value="30">Arrêt dans 30 min</option>
+                                    <option value="60">Arrêt dans 1 heure</option>
+                                    <option value="120">Arrêt dans 2 heures</option>
+                                    <option value="180">Arrêt dans 3 heures</option>
+                                    <option value="240">Arrêt dans 4 heures</option>
+                                </select>
+                            </div>
+        
+                            <div class="sleep-timer-controls" id="timeControls" style="display: none;">
+                                <span class="material-icons">access_time</span>
+                                <input type="time" id="sleepTimeInput" class="sleep-time-input">
+                                <button id="setSleepTimeBtn" class="set-time-btn">Programmer</button>
+                                <button id="cancelSleepTimeBtn" class="cancel-time-btn" style="display: none;">Annuler</button>
+                            </div>
+        
+                            <div class="sleep-timer-display" id="sleepTimerDisplay" style="display: none;">
+                                <span class="material-icons">timer</span>
+                                <span id="sleepTimerText">--:--</span>
+                                <button id="cancelSleepTimer" class="cancel-timer-btn">
+                                    <span class="material-icons">close</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="radio-popup-footer">
-		<p style="font-size: 12px; color: gray; text-align: center;">
-        📻 Les flux proviennent des diffuseurs officiels – Actu & Média n’héberge aucun contenu
-		</p>
-			</div>
-
+                    <p style="font-size: 12px; color: gray; text-align: center;">
+                        📻 Les flux proviennent des diffuseurs officiels – Actu & Média n'héberge aucun contenu
+                    </p>
+                </div>
             </div>
         `;
 
@@ -284,8 +392,9 @@ class RadioPopupWidget {
         this.setupPopupEventListeners();
     }
 
+    // === CONFIGURATION DES GESTIONNAIRES D'ÉVÉNEMENTS ===
     setupPopupEventListeners() {
-        // Fermer la popup
+        // === FERMETURE DE LA POPUP ===
         document.getElementById('closeRadioPopup').addEventListener('click', () => {
             this.closePopup();
         });
@@ -297,7 +406,7 @@ class RadioPopupWidget {
             }
         });
 
-        // Sélection de station - clic direct pour play/pause
+        // === SÉLECTION DES STATIONS ===
         document.querySelectorAll('.radio-station-card').forEach(card => {
             card.addEventListener('click', () => {
                 const index = parseInt(card.dataset.index);
@@ -305,13 +414,14 @@ class RadioPopupWidget {
             });
         });
 
-        // Contrôle du volume
+        // === CONTRÔLE DU VOLUME ===
         document.getElementById('volumeSlider').addEventListener('input', (e) => {
             const volume = e.target.value;
             this.setVolume(volume / 100);
             document.querySelector('.volume-percentage').textContent = volume + '%';
         });
-		// Gestionnaire minuteur d'arrêt
+
+        // === GESTIONNAIRES MINUTEUR DURÉE ===
         document.getElementById('sleepTimerSelect').addEventListener('change', (e) => {
             const minutes = parseInt(e.target.value);
             if (minutes > 0) {
@@ -321,169 +431,173 @@ class RadioPopupWidget {
             }
         });
 
-        // Gestionnaire annulation minuteur
         document.getElementById('cancelSleepTimer').addEventListener('click', () => {
             this.cancelSleepTimer();
         });
-		
-		// Gestionnaires pour les modes de minuteur
-document.getElementById('durationModeBtn').addEventListener('click', () => {
-    this.switchTimerMode('duration');
-});
 
-document.getElementById('timeModeBtn').addEventListener('click', () => {
-    this.switchTimerMode('time');
-});
+        // === GESTIONNAIRES MODES DE MINUTEUR ===
+        document.getElementById('durationModeBtn').addEventListener('click', () => {
+            this.switchTimerMode('duration');
+        });
 
-// Gestionnaire pour programmer l'heure
-document.getElementById('setSleepTimeBtn').addEventListener('click', () => {
-    const timeInput = document.getElementById('sleepTimeInput');
-    if (timeInput.value) {
-        this.setSleepTime(timeInput.value);
-    }
-});
+        document.getElementById('timeModeBtn').addEventListener('click', () => {
+            this.switchTimerMode('time');
+        });
 
-// Gestionnaire pour annuler l'heure programmée
-document.getElementById('cancelSleepTimeBtn').addEventListener('click', () => {
-    this.cancelSleepTimer();
-});
+        // === GESTIONNAIRES HEURE PRÉCISE ===
+        document.getElementById('setSleepTimeBtn').addEventListener('click', () => {
+            const timeInput = document.getElementById('sleepTimeInput');
+            if (timeInput.value) {
+                this.setSleepTime(timeInput.value);
+            }
+        });
 
-// Rendre tout le champ horaire cliquable - VERSION CORRIGÉE
-const timeControlsDiv = document.getElementById('timeControls');
-const timeInput = document.getElementById('sleepTimeInput');
+        document.getElementById('cancelSleepTimeBtn').addEventListener('click', () => {
+            this.cancelSleepTimer();
+        });
 
-timeControlsDiv.addEventListener('click', (e) => {
-    // Si on clique n'importe où dans la zone sauf sur les boutons
-    if (!e.target.closest('button') && !e.target.matches('input[type="time"]')) {
-        timeInput.focus();
-        timeInput.click();
-        e.preventDefault();
-        e.stopPropagation();
-    }
-});
-
-// Améliorer l'expérience du champ time
-timeInput.addEventListener('focus', () => {
-    // Sélectionner tout le contenu au focus pour faciliter la saisie
-    setTimeout(() => {
-        timeInput.select();
-    }, 50);
-});
-
-// Ajouter un style visuel pour montrer que c'est cliquable
-timeControlsDiv.style.cursor = 'pointer';
-timeControlsDiv.addEventListener('mouseenter', () => {
-    timeControlsDiv.style.backgroundColor = 'rgba(148, 0, 0, 0.05)';
-});
-timeControlsDiv.addEventListener('mouseleave', () => {
-    timeControlsDiv.style.backgroundColor = '';
-});
+        // === ZONE HORAIRE CLIQUABLE ===
+        this.setupTimeControlsClickability();
     }
 
+    // === CONFIGURATION DE LA ZONE HORAIRE CLIQUABLE ===
+    setupTimeControlsClickability() {
+        const timeControlsDiv = document.getElementById('timeControls');
+        const timeInput = document.getElementById('sleepTimeInput');
+
+        // Rendre toute la zone cliquable
+        timeControlsDiv.addEventListener('click', (e) => {
+            if (!e.target.closest('button') && !e.target.matches('input[type="time"]')) {
+                timeInput.focus();
+                timeInput.click();
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        });
+
+        // Améliorer l'expérience du champ time
+        timeInput.addEventListener('focus', () => {
+            setTimeout(() => {
+                timeInput.select();
+            }, 50);
+        });
+
+        // Styles visuels pour montrer que c'est cliquable
+        timeControlsDiv.style.cursor = 'pointer';
+        timeControlsDiv.addEventListener('mouseenter', () => {
+            timeControlsDiv.style.backgroundColor = 'rgba(148, 0, 0, 0.05)';
+        });
+        timeControlsDiv.addEventListener('mouseleave', () => {
+            timeControlsDiv.style.backgroundColor = '';
+        });
+    }
+
+    // === OUVERTURE DE LA POPUP ===
     openPopup() {
-    const popup = document.getElementById('radioPopup');
-    popup.classList.add('active');
-    document.body.classList.add('radio-popup-open');
-    
-    // AJOUT : Empêcher le scroll du body sur mobile
-    if (window.innerWidth <= 768) {
-        document.body.style.overflow = 'hidden';
-        document.body.style.position = 'fixed';
-        document.body.style.width = '100%';
-        // Sauvegarder la position de scroll actuelle
-        this.scrollPosition = window.pageYOffset;
-        document.body.style.top = `-${this.scrollPosition}px`;
-    }
-}
-
-	closePopup() {
-    const popup = document.getElementById('radioPopup');
-    popup.classList.remove('active');
-    document.body.classList.remove('radio-popup-open');
-    
-    // Restaurer le scroll du body
-    if (window.innerWidth <= 768) {
-        document.body.style.overflow = '';
-        document.body.style.position = '';
-        document.body.style.width = '';
-        document.body.style.top = '';
-        // Restaurer la position de scroll
-        if (this.scrollPosition) {
-            window.scrollTo(0, this.scrollPosition);
-            this.scrollPosition = null;
+        const popup = document.getElementById('radioPopup');
+        popup.classList.add('active');
+        document.body.classList.add('radio-popup-open');
+        
+        // Empêcher le scroll du body sur mobile
+        if (window.innerWidth <= 768) {
+            document.body.style.overflow = 'hidden';
+            document.body.style.position = 'fixed';
+            document.body.style.width = '100%';
+            this.scrollPosition = window.pageYOffset;
+            document.body.style.top = `-${this.scrollPosition}px`;
         }
     }
-    
-    // Maintenir l'indicateur si la radio joue toujours
-    this.updateTileIndicator();
-    
-    // Redémarrer les égaliseurs SEULEMENT si une station joue
-    if (this.isPlaying && this.currentStation) {
-        // S'assurer que les égaliseurs sont arrêtés avant de redémarrer
-        this.stopEqualizer();
-        this.stopCompactEqualizer();
+
+    // === FERMETURE DE LA POPUP ===
+    closePopup() {
+        const popup = document.getElementById('radioPopup');
+        popup.classList.remove('active');
+        document.body.classList.remove('radio-popup-open');
         
-        // Petite pause pour laisser le temps aux intervals de se nettoyer
-        setTimeout(() => {
-            // Démarrer l'égaliseur visuel
-            this.startEqualizer();
+        // Restaurer le scroll du body
+        if (window.innerWidth <= 768) {
+            document.body.style.overflow = '';
+            document.body.style.position = '';
+            document.body.style.width = '';
+            document.body.style.top = '';
+            if (this.scrollPosition) {
+                window.scrollTo(0, this.scrollPosition);
+                this.scrollPosition = null;
+            }
+        }
+        
+        // Maintenir l'indicateur si la radio joue toujours
+        this.updateTileIndicator();
+        
+        // Redémarrer les égaliseurs SEULEMENT si une station joue
+        if (this.isPlaying && this.currentStation) {
+            this.stopEqualizer();
+            this.stopCompactEqualizer();
             
-            // Démarrer le mini-égaliseur compact
-            this.startCompactEqualizer();
-        }, 100);
+            setTimeout(() => {
+                this.startEqualizer();
+                this.startCompactEqualizer();
+            }, 100);
+        }
+        
+        // Créer le widget compact SEULEMENT si une station joue
+        if (this.isPlaying && this.currentStation) {
+            this.createCompactWidget();
+            this.updateCompactWidget();
+        }
     }
-    
-    // Créer le widget compact SEULEMENT si une station joue actuellement
-    if (this.isPlaying && this.currentStation) {
-        this.createCompactWidget();
-        this.updateCompactWidget();
-    }
-}
 	
-	toggleStationPlayback(index) {
-    const station = this.stations[index];
-    const card = document.querySelector(`[data-index="${index}"]`);
-    
-    // Si c'est la même station ET qu'elle joue -> STOP complet
-    if (this.currentStation && this.currentStation.name === station.name && this.isPlaying) {
-        this.stopRadio();
-        return;
+	/* ===================================================================== */
+/* RADIO POPUP - JAVASCRIPT ORGANISÉ - PARTIE 3                        */
+/* Lecture Radio et Contrôles Audio                                     */
+/* ===================================================================== */
+
+    // === GESTION DE LA LECTURE (PLAY/STOP) ===
+    toggleStationPlayback(index) {
+        const station = this.stations[index];
+        
+        // Si c'est la même station ET qu'elle joue -> STOP complet
+        if (this.currentStation && this.currentStation.name === station.name && this.isPlaying) {
+            this.stopRadio();
+            return;
+        }
+        
+        // Sinon -> Nouvelle station ou redémarrage
+        this.stopCurrentAndPlayNew(index);
     }
-    
-    // Sinon -> Nouvelle station ou redémarrage
-    this.stopCurrentAndPlayNew(index);
-}
 
+    // === ARRÊT ET NOUVELLE STATION ===
     stopCurrentAndPlayNew(index) {
-    // Arrêter tout
-    this.stopRadio();
-    
-    // Sélectionner et jouer la nouvelle station
-    const station = this.stations[index];
-    const card = document.querySelector(`[data-index="${index}"]`);
-    
-    this.currentStation = station;
-    this.isPlaying = false;
-    
-    // Mettre à jour l'interface du lecteur
-    document.getElementById('currentStationLogo').src = station.logo;
-    document.getElementById('currentStationName').textContent = station.name;
-    document.getElementById('currentStationStatus').textContent = 'Connexion...';
-    this.updateStatusStyle('Connexion...');
-    document.getElementById('radioPlayerSection').style.display = 'block';
-    
-    // Marquer comme active
-    card.classList.add('active');
-    
-    // Lancer la lecture
-    this.playRadio();
-    
-    // Mettre à jour l'overlay
-    const overlayIcon = card.querySelector('.play-overlay .material-icons');
-    overlayIcon.textContent = 'stop';  // Afficher stop pendant la lecture
-    card.classList.add('playing');
-}
+        // Arrêter tout
+        this.stopRadio();
+        
+        // Sélectionner et jouer la nouvelle station
+        const station = this.stations[index];
+        const card = document.querySelector(`[data-index="${index}"]`);
+        
+        this.currentStation = station;
+        this.isPlaying = false;
+        
+        // Mettre à jour l'interface du lecteur
+        document.getElementById('currentStationLogo').src = station.logo;
+        document.getElementById('currentStationName').textContent = station.name;
+        document.getElementById('currentStationStatus').textContent = 'Connexion...';
+        this.updateStatusStyle('Connexion...');
+        document.getElementById('radioPlayerSection').style.display = 'block';
+        
+        // Marquer comme active
+        card.classList.add('active');
+        
+        // Lancer la lecture
+        this.playRadio();
+        
+        // Mettre à jour l'overlay avec icône stop
+        const overlayIcon = card.querySelector('.play-overlay .material-icons');
+        overlayIcon.textContent = 'stop';
+        card.classList.add('playing');
+    }
 
+    // === LECTURE RADIO ===
     playRadio() {
         if (!this.currentStation) return;
 
@@ -493,6 +607,7 @@ timeControlsDiv.addEventListener('mouseleave', () => {
                 this.audio.volume = this.volume;
                 this.audio.crossOrigin = 'anonymous';
                 
+                // === GESTIONNAIRES D'ÉVÉNEMENTS AUDIO ===
                 this.audio.addEventListener('loadstart', () => {
                     document.getElementById('currentStationStatus').textContent = 'Connexion en cours...';
                     this.updateStatusStyle('Connexion en cours...');
@@ -504,301 +619,99 @@ timeControlsDiv.addEventListener('mouseleave', () => {
                 });
                 
                 this.audio.addEventListener('error', (e) => {
-    // ... code existant ...
-    const activeCard = document.querySelector('.radio-station-card.active');
-    if (activeCard) {
-        const overlayIcon = activeCard.querySelector('.play-overlay .material-icons');
-        overlayIcon.textContent = 'stop';  // CHANGÉ : stop pour les erreurs aussi
-        activeCard.classList.remove('playing');
-        activeCard.classList.add('paused');
-    }
-    console.error('Erreur audio:', e);
-});
+                    document.getElementById('currentStationStatus').textContent = 'Erreur de lecture';
+                    this.updateStatusStyle('Erreur de lecture');
+                    this.isPlaying = false;
+                    
+                    // Réinitialiser l'interface en cas d'erreur
+                    const activeCard = document.querySelector('.radio-station-card.active');
+                    if (activeCard) {
+                        const overlayIcon = activeCard.querySelector('.play-overlay .material-icons');
+                        overlayIcon.textContent = 'stop';
+                        activeCard.classList.remove('playing');
+                        activeCard.classList.add('paused');
+                    }
+                    console.error('Erreur audio:', e);
+                });
             }
             
+            // === DÉMARRER LA LECTURE ===
             this.audio.play();
             this.isPlaying = true;
             
             // Mettre à jour l'indicateur de la tuile
             this.updateTileIndicator();
             
-            // DÉMARRER les égaliseurs (et non les arrêter !)
+            // Démarrer les égaliseurs
             this.startEqualizer();
             this.startCompactEqualizer();
             
             // Créer le widget compact s'il n'existe pas
             this.createCompactWidget();
-            
-            // Mettre à jour le widget compact
             this.updateCompactWidget();
             
+            // Mettre à jour le statut
             document.getElementById('currentStationStatus').textContent = 'En direct';
             this.updateStatusStyle('En direct');
             
-            // Mettre à jour l'overlay de la station active
-const activeCard = document.querySelector('.radio-station-card.active');
-if (activeCard) {
-    const overlayIcon = activeCard.querySelector('.play-overlay .material-icons');
-    overlayIcon.textContent = 'stop';  // CHANGÉ : stop au lieu de pause
-    activeCard.classList.add('playing');
-    activeCard.classList.remove('paused');
-}
+            // Mettre à jour l'overlay de la station active avec icône stop
+            const activeCard = document.querySelector('.radio-station-card.active');
+            if (activeCard) {
+                const overlayIcon = activeCard.querySelector('.play-overlay .material-icons');
+                overlayIcon.textContent = 'stop';
+                activeCard.classList.add('playing');
+                activeCard.classList.remove('paused');
+            }
             
         } catch (error) {
             console.error('Erreur lecture radio:', error);
             document.getElementById('currentStationStatus').textContent = 'Erreur';
             this.updateStatusStyle('Erreur');
             this.isPlaying = false;
-			// Mettre à jour l'indicateur de la tuile
-			this.updateTileIndicator();
+            this.updateTileIndicator();
         }
     }
 
+    // === ARRÊT COMPLET DE LA RADIO ===
     stopRadio() {
-    if (this.audio) {
-        this.audio.pause();
-        this.audio.currentTime = 0;
-        this.audio = null;
-    }
-    this.isPlaying = false;
-    
-    // Réinitialiser toutes les cartes
-    document.querySelectorAll('.radio-station-card').forEach(card => {
-        card.classList.remove('active', 'playing', 'paused');
-        const overlay = card.querySelector('.play-overlay .material-icons');
-        overlay.textContent = 'play_arrow';
-    });
-    
-    this.currentStation = null; // Réinitialiser la station
-    
-    // Masquer l'indicateur de la tuile
-    this.hideTileIndicator();
-    
-    // Arrêter l'égaliseur visuel
-    this.stopEqualizer();
-    
-    // Arrêter le mini-égaliseur compact
-    this.stopCompactEqualizer();
-    
-    // Annuler le minuteur d'arrêt
-    this.cancelSleepTimer();
-    
-    // Supprimer le widget quand plus de station
-    this.hideCompactWidget();
-    
-    document.getElementById('currentStationStatus').textContent = 'Arrêté';
-    this.updateStatusStyle('Arrêté');
-}
-
-    setVolume(volume) {
-        this.volume = volume;
         if (this.audio) {
-            this.audio.volume = volume;
+            this.audio.pause();
+            this.audio.currentTime = 0;
+            this.audio = null;
         }
-    }
-
-	// Afficher l'indicateur de lecture sur la tuile
-    showTileIndicator(stationName) {
-        const indicator = document.getElementById('radioTileIndicator');
-        const status = document.getElementById('radioTileStatus');
+        this.isPlaying = false;
         
-        if (indicator) {
-            indicator.style.display = 'block';
-        }
+        // Réinitialiser toutes les cartes
+        document.querySelectorAll('.radio-station-card').forEach(card => {
+            card.classList.remove('active', 'playing', 'paused');
+            const overlay = card.querySelector('.play-overlay .material-icons');
+            overlay.textContent = 'play_arrow';
+        });
         
-        if (status && stationName) {
-            status.textContent = `▶ ${stationName}`;
-            status.style.display = 'block';
-        }
-    }
-
-    // Masquer l'indicateur de lecture sur la tuile
-    hideTileIndicator() {
-        const indicator = document.getElementById('radioTileIndicator');
-        const status = document.getElementById('radioTileStatus');
+        this.currentStation = null;
         
-        if (indicator) {
-            indicator.style.display = 'none';
-        }
+        // Masquer l'indicateur de la tuile
+        this.hideTileIndicator();
         
-        if (status) {
-            status.style.display = 'none';
-        }
-    }
-
-	// === MINUTEUR D'ARRÊT ===
-    setSleepTimer(minutes) {
-        // Annuler le minuteur précédent s'il existe
+        // Arrêter les égaliseurs
+        this.stopEqualizer();
+        this.stopCompactEqualizer();
+        
+        // Annuler le minuteur d'arrêt
         this.cancelSleepTimer();
         
-        this.sleepTimeRemaining = minutes * 60; // Conversion en secondes
+        // Supprimer le widget
+        this.hideCompactWidget();
         
-        // Afficher le minuteur
-        document.getElementById('sleepTimerDisplay').style.display = 'flex';
-        this.updateSleepTimerDisplay();
-        
-        // Démarrer le décompte
-        this.sleepTimer = setInterval(() => {
-            this.sleepTimeRemaining--;
-            this.updateSleepTimerDisplay();
-            
-            if (this.sleepTimeRemaining <= 0) {
-                this.stopRadio();
-                this.cancelSleepTimer();
-                this.showToast('Arrêt automatique de la radio');
-            }
-        }, 1000);
-        
-        // Message plus informatif selon la durée
-        let timeText;
-        if (minutes >= 60) {
-            const hours = Math.floor(minutes / 60);
-            const remainingMinutes = minutes % 60;
-            
-            if (remainingMinutes === 0) {
-                timeText = hours === 1 ? '1 heure' : `${hours} heures`;
-            } else {
-                timeText = `${hours}h${remainingMinutes.toString().padStart(2, '0')}`;
-            }
-        } else {
-            timeText = `${minutes} min`;
-        }
-        
-        this.showToast(`⏰ Arrêt programmé dans ${timeText}`);
-		// Mettre à jour le widget compact
-        this.updateCompactWidget();
+        // Mettre à jour le statut
+        document.getElementById('currentStationStatus').textContent = 'Arrêté';
+        this.updateStatusStyle('Arrêté');
     }
 
-    cancelSleepTimer() {
-    if (this.sleepTimer) {
-        clearInterval(this.sleepTimer);
-        this.sleepTimer = null;
-    }
+    // === GESTION DES ÉGALISEURS ===
     
-    this.sleepTimeRemaining = 0;
-    this.sleepTargetTime = null;
-    
-    document.getElementById('sleepTimerDisplay').style.display = 'none';
-    document.getElementById('sleepTimerSelect').value = '0';
-    
-    // Réinitialiser les contrôles de temps
-    document.getElementById('cancelSleepTimeBtn').style.display = 'none';
-    document.getElementById('setSleepTimeBtn').textContent = 'Programmer';
-    document.getElementById('sleepTimeInput').value = '';
-    
-    // Mettre à jour le widget compact
-    this.updateCompactWidget();
-}
-
-// === GESTION DES MODES DE MINUTEUR ===
-switchTimerMode(mode) {
-    this.sleepMode = mode;
-    
-    const durationBtn = document.getElementById('durationModeBtn');
-    const timeBtn = document.getElementById('timeModeBtn');
-    const durationControls = document.getElementById('durationControls');
-    const timeControls = document.getElementById('timeControls');
-    
-    if (mode === 'duration') {
-        durationBtn.classList.add('active');
-        timeBtn.classList.remove('active');
-        durationControls.style.display = 'flex';
-        timeControls.style.display = 'none';
-    } else {
-        timeBtn.classList.add('active');
-        durationBtn.classList.remove('active');
-        durationControls.style.display = 'none';
-        timeControls.style.display = 'flex';
-        
-        // Proposer une heure par défaut (dans 1 heure)
-        const now = new Date();
-        now.setHours(now.getHours() + 1);
-        const timeString = now.toTimeString().slice(0, 5);
-        document.getElementById('sleepTimeInput').value = timeString;
-    }
-}
-
-setSleepTime(timeString) {
-    // Annuler le minuteur précédent
-    this.cancelSleepTimer();
-    
-    const [hours, minutes] = timeString.split(':').map(Number);
-    const now = new Date();
-    const targetTime = new Date();
-    
-    targetTime.setHours(hours, minutes, 0, 0);
-    
-    // Si l'heure est déjà passée aujourd'hui, programmer pour demain
-    if (targetTime <= now) {
-        targetTime.setDate(targetTime.getDate() + 1);
-    }
-    
-    this.sleepTargetTime = targetTime;
-    this.sleepTimeRemaining = Math.floor((targetTime - now) / 1000);
-    
-    if (this.sleepTimeRemaining <= 0) {
-        this.showToast('⚠️ Heure invalide');
-        return;
-    }
-    
-    // Afficher les contrôles
-    document.getElementById('sleepTimerDisplay').style.display = 'flex';
-    document.getElementById('cancelSleepTimeBtn').style.display = 'inline-block';
-    document.getElementById('setSleepTimeBtn').textContent = 'Modifier';
-    
-    this.updateSleepTimerDisplay();
-    
-    // Démarrer le décompte
-    this.sleepTimer = setInterval(() => {
-        this.sleepTimeRemaining--;
-        this.updateSleepTimerDisplay();
-        
-        if (this.sleepTimeRemaining <= 0) {
-            this.stopRadio();
-            this.cancelSleepTimer();
-            this.showToast('🔕 Arrêt programmé de la radio');
-        }
-    }, 1000);
-    
-    // Message de confirmation
-    const timeDisplay = targetTime.toLocaleTimeString('fr-FR', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-    });
-    const dateDisplay = targetTime.toLocaleDateString('fr-FR') === now.toLocaleDateString('fr-FR') 
-        ? 'aujourd\'hui' 
-        : 'demain';
-    
-    this.showToast(`⏰ Arrêt programmé ${dateDisplay} à ${timeDisplay}`);
-    this.updateCompactWidget();
-}
-
-    updateSleepTimerDisplay() {
-        const totalMinutes = Math.floor(this.sleepTimeRemaining / 60);
-        const seconds = this.sleepTimeRemaining % 60;
-        
-        let timeText;
-        if (totalMinutes >= 60) {
-            // Plus d'une heure : afficher en heures et minutes
-            const hours = Math.floor(totalMinutes / 60);
-            const minutes = totalMinutes % 60;
-            
-            if (minutes === 0) {
-                timeText = `${hours}h`;
-            } else {
-                timeText = `${hours}h${minutes.toString().padStart(2, '0')}`;
-            }
-        } else {
-            // Moins d'une heure : afficher en minutes et secondes
-            timeText = `${totalMinutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        }
-        
-        document.getElementById('sleepTimerText').textContent = timeText;
-    }
-
-    // === ÉGALISEUR VISUEL ===
+    // Égaliseur principal
     startEqualizer() {
-        // Arrêter l'égaliseur existant s'il y en a un
         if (this.equalizerInterval) {
             clearInterval(this.equalizerInterval);
             this.equalizerInterval = null;
@@ -807,14 +720,12 @@ setSleepTime(timeString) {
         this.isEqualizerActive = true;
         const bars = document.querySelectorAll('.equalizer-bar');
         
-        // Vérifier que les barres existent
         if (bars.length === 0) {
             console.log('Aucune barre d\'égaliseur trouvée');
             return;
         }
         
         this.equalizerInterval = setInterval(() => {
-            // Vérifier que l'égaliseur doit toujours être actif
             if (this.isEqualizerActive && this.isPlaying) {
                 bars.forEach(bar => {
                     const height = Math.random() * 80 + 20; // Entre 20% et 100%
@@ -839,6 +750,33 @@ setSleepTime(timeString) {
         });
     }
 
+    // === MINI-ÉGALISEUR COMPACT ===
+    startCompactEqualizer() {
+        if (this.compactEqualizerInterval) {
+            clearInterval(this.compactEqualizerInterval);
+            this.compactEqualizerInterval = null;
+        }
+        
+        const bars = document.querySelectorAll('.mini-bar');
+        if (bars.length === 0) {
+            console.log('Aucune barre de mini-égaliseur trouvée');
+            return;
+        }
+        
+        this.compactEqualizerInterval = setInterval(() => {
+            if (this.isPlaying) {
+                bars.forEach(bar => {
+                    const height = Math.random() * 70 + 30; // Entre 30% et 100%
+                    bar.style.height = height + '%';
+                });
+            } else {
+                bars.forEach(bar => {
+                    bar.style.height = '30%';
+                });
+            }
+        }, 300);
+    }
+
     stopCompactEqualizer() {
         if (this.compactEqualizerInterval) {
             clearInterval(this.compactEqualizerInterval);
@@ -846,13 +784,194 @@ setSleepTime(timeString) {
         }
         
         // Remettre les barres au minimum
-        const bars = document.querySelectorAll('.mini-bar');
-        bars.forEach(bar => {
+        document.querySelectorAll('.mini-bar').forEach(bar => {
             bar.style.height = '30%';
         });
     }
+	
+	/* ===================================================================== */
+/* RADIO POPUP - JAVASCRIPT ORGANISÉ - PARTIE 4                        */
+/* Minuteur d'Arrêt et Gestion du Temps                                 */
+/* ===================================================================== */
 
-    // === WIDGET COMPACT AMÉLIORÉ ===
+    // === GESTION DES MODES DE MINUTEUR ===
+    switchTimerMode(mode) {
+        this.sleepMode = mode;
+        
+        const durationBtn = document.getElementById('durationModeBtn');
+        const timeBtn = document.getElementById('timeModeBtn');
+        const durationControls = document.getElementById('durationControls');
+        const timeControls = document.getElementById('timeControls');
+        
+        if (mode === 'duration') {
+            durationBtn.classList.add('active');
+            timeBtn.classList.remove('active');
+            durationControls.style.display = 'flex';
+            timeControls.style.display = 'none';
+        } else {
+            timeBtn.classList.add('active');
+            durationBtn.classList.remove('active');
+            durationControls.style.display = 'none';
+            timeControls.style.display = 'flex';
+            
+            // Proposer une heure par défaut (dans 1 heure)
+            const now = new Date();
+            now.setHours(now.getHours() + 1);
+            const timeString = now.toTimeString().slice(0, 5);
+            document.getElementById('sleepTimeInput').value = timeString;
+        }
+    }
+
+    // === MINUTEUR PAR DURÉE ===
+    setSleepTimer(minutes) {
+        // Annuler le minuteur précédent s'il existe
+        this.cancelSleepTimer();
+        
+        this.sleepTimeRemaining = minutes * 60; // Conversion en secondes
+        
+        // Afficher le minuteur
+        document.getElementById('sleepTimerDisplay').style.display = 'flex';
+        this.updateSleepTimerDisplay();
+        
+        // Démarrer le décompte
+        this.sleepTimer = setInterval(() => {
+            this.sleepTimeRemaining--;
+            this.updateSleepTimerDisplay();
+            
+            if (this.sleepTimeRemaining <= 0) {
+                this.stopRadio();
+                this.cancelSleepTimer();
+                this.showToast('Arrêt automatique de la radio');
+            }
+        }, 1000);
+        
+        // Message informatif selon la durée
+        let timeText;
+        if (minutes >= 60) {
+            const hours = Math.floor(minutes / 60);
+            const remainingMinutes = minutes % 60;
+            
+            if (remainingMinutes === 0) {
+                timeText = hours === 1 ? '1 heure' : `${hours} heures`;
+            } else {
+                timeText = `${hours}h${remainingMinutes.toString().padStart(2, '0')}`;
+            }
+        } else {
+            timeText = `${minutes} min`;
+        }
+        
+        this.showToast(`⏰ Arrêt programmé dans ${timeText}`);
+        this.updateCompactWidget();
+    }
+
+    // === MINUTEUR À HEURE PRÉCISE ===
+    setSleepTime(timeString) {
+        // Annuler le minuteur précédent
+        this.cancelSleepTimer();
+        
+        const [hours, minutes] = timeString.split(':').map(Number);
+        const now = new Date();
+        const targetTime = new Date();
+        
+        targetTime.setHours(hours, minutes, 0, 0);
+        
+        // Si l'heure est déjà passée aujourd'hui, programmer pour demain
+        if (targetTime <= now) {
+            targetTime.setDate(targetTime.getDate() + 1);
+        }
+        
+        this.sleepTargetTime = targetTime;
+        this.sleepTimeRemaining = Math.floor((targetTime - now) / 1000);
+        
+        if (this.sleepTimeRemaining <= 0) {
+            this.showToast('⚠️ Heure invalide');
+            return;
+        }
+        
+        // Afficher les contrôles
+        document.getElementById('sleepTimerDisplay').style.display = 'flex';
+        document.getElementById('cancelSleepTimeBtn').style.display = 'inline-block';
+        document.getElementById('setSleepTimeBtn').textContent = 'Modifier';
+        
+        this.updateSleepTimerDisplay();
+        
+        // Démarrer le décompte
+        this.sleepTimer = setInterval(() => {
+            this.sleepTimeRemaining--;
+            this.updateSleepTimerDisplay();
+            
+            if (this.sleepTimeRemaining <= 0) {
+                this.stopRadio();
+                this.cancelSleepTimer();
+                this.showToast('🔕 Arrêt programmé de la radio');
+            }
+        }, 1000);
+        
+        // Message de confirmation
+        const timeDisplay = targetTime.toLocaleTimeString('fr-FR', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+        const dateDisplay = targetTime.toLocaleDateString('fr-FR') === now.toLocaleDateString('fr-FR') 
+            ? 'aujourd\'hui' 
+            : 'demain';
+        
+        this.showToast(`⏰ Arrêt programmé ${dateDisplay} à ${timeDisplay}`);
+        this.updateCompactWidget();
+    }
+
+    // === ANNULATION DU MINUTEUR ===
+    cancelSleepTimer() {
+        if (this.sleepTimer) {
+            clearInterval(this.sleepTimer);
+            this.sleepTimer = null;
+        }
+        
+        this.sleepTimeRemaining = 0;
+        this.sleepTargetTime = null;
+        
+        document.getElementById('sleepTimerDisplay').style.display = 'none';
+        document.getElementById('sleepTimerSelect').value = '0';
+        
+        // Réinitialiser les contrôles de temps
+        document.getElementById('cancelSleepTimeBtn').style.display = 'none';
+        document.getElementById('setSleepTimeBtn').textContent = 'Programmer';
+        document.getElementById('sleepTimeInput').value = '';
+        
+        // Mettre à jour le widget compact
+        this.updateCompactWidget();
+    }
+
+    // === AFFICHAGE DU TEMPS RESTANT ===
+    updateSleepTimerDisplay() {
+        const totalMinutes = Math.floor(this.sleepTimeRemaining / 60);
+        const seconds = this.sleepTimeRemaining % 60;
+        
+        let timeText;
+        if (totalMinutes >= 60) {
+            // Plus d'une heure : afficher en heures et minutes
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
+            
+            if (minutes === 0) {
+                timeText = `${hours}h`;
+            } else {
+                timeText = `${hours}h${minutes.toString().padStart(2, '0')}`;
+            }
+        } else {
+            // Moins d'une heure : afficher en minutes et secondes
+            timeText = `${totalMinutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        document.getElementById('sleepTimerText').textContent = timeText;
+    }
+	
+	/* ===================================================================== */
+/* RADIO POPUP - JAVASCRIPT ORGANISÉ - PARTIE 5                        */
+/* Widget Compact et Gestion                                             */
+/* ===================================================================== */
+
+    // === CRÉATION DU WIDGET COMPACT ===
     createCompactWidget() {
         // Ne créer le widget QUE si une station est sélectionnée
         if (!this.currentStation) {
@@ -896,7 +1015,7 @@ setSleepTime(timeString) {
                 
                 <!-- Contrôles améliorés -->
                 <div class="compact-controls">
-                    <button id="compactPlayPause" class="compact-btn" title="Lecture/Pause">
+                    <button id="compactPlayPause" class="compact-btn" title="Lecture/Stop">
                         <span class="material-icons">play_arrow</span>
                     </button>
                     <button id="compactTimer" class="compact-btn compact-timer-btn" title="Minuteur d'arrêt">
@@ -915,16 +1034,17 @@ setSleepTime(timeString) {
         document.body.appendChild(widget);
         this.setupCompactWidgetEvents(widget);
         this.startCompactEqualizer();
-		this.startWidgetSync();
+        this.startWidgetSync();
     }
 
+    // === CONFIGURATION DES ÉVÉNEMENTS DU WIDGET ===
     setupCompactWidgetEvents(widget) {
         // Fermer le widget (sans arrêter la radio)
         document.getElementById('compactCloseBtn').addEventListener('click', () => {
             this.hideCompactWidget();
         });
 
-        // Play/Pause
+        // Play/Stop
         document.getElementById('compactPlayPause').addEventListener('click', () => {
             if (this.currentStation) {
                 this.toggleStationPlayback(this.stations.findIndex(s => s.name === this.currentStation.name));
@@ -961,6 +1081,7 @@ setSleepTime(timeString) {
         });
     }
 
+    // === MISE À JOUR DU WIDGET COMPACT ===
     updateCompactWidget() {
         const widget = document.querySelector('.radio-compact-widget');
         if (!widget) return;
@@ -986,7 +1107,7 @@ setSleepTime(timeString) {
                 widget.classList.add('playing');
                 equalizer.style.display = 'flex';
             } else {
-                status.textContent = 'En pause';
+                status.textContent = 'Arrêtée';
                 status.className = 'status-paused';
                 playBtn.querySelector('.material-icons').textContent = 'play_arrow';
                 widget.classList.remove('playing');
@@ -1002,14 +1123,13 @@ setSleepTime(timeString) {
             equalizer.style.display = 'none';
         }
 
-        // Mise à jour minuteur - AMÉLIORÉE
+        // Mise à jour minuteur
         if (this.sleepTimer && this.sleepTimeRemaining > 0) {
             const totalMinutes = Math.floor(this.sleepTimeRemaining / 60);
             const seconds = this.sleepTimeRemaining % 60;
             
             let displayText;
             if (totalMinutes >= 60) {
-                // Plus d'une heure : afficher en heures et minutes
                 const hours = Math.floor(totalMinutes / 60);
                 const minutes = totalMinutes % 60;
                 
@@ -1019,7 +1139,6 @@ setSleepTime(timeString) {
                     displayText = `${hours}h${minutes.toString().padStart(2, '0')}`;
                 }
             } else {
-                // Moins d'une heure : afficher en minutes et secondes
                 displayText = `${totalMinutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             }
             
@@ -1034,6 +1153,7 @@ setSleepTime(timeString) {
         this.updateCompactVolumeIcon();
     }
 
+    // === MISE À JOUR DE L'ICÔNE VOLUME ===
     updateCompactVolumeIcon() {
         const volumeBtn = document.getElementById('compactVolume');
         if (!volumeBtn) return;
@@ -1048,24 +1168,57 @@ setSleepTime(timeString) {
         }
     }
 
-    showToast(message) {
-        // Créer ou mettre à jour un toast simple
-        let toast = document.querySelector('.radio-toast');
-        if (!toast) {
-            toast = document.createElement('div');
-            toast.className = 'radio-toast';
-            document.body.appendChild(toast);
+    // === GESTION DE L'AFFICHAGE DU WIDGET ===
+    hideCompactWidget() {
+        const widget = document.querySelector('.radio-compact-widget');
+        if (widget) {
+            widget.style.animation = 'slideOutLeft 0.3s ease';
+            setTimeout(() => {
+                if (widget.parentNode) {
+                    widget.remove();
+                }
+                this.stopWidgetSync();
+                this.stopCompactEqualizer();
+            }, 300);
+            
+            this.showToast('Widget masqué');
         }
+    }
 
-        toast.textContent = message;
-        toast.classList.add('show');
+    showCompactWidget() {
+        // Recréer le widget s'il a été fermé
+        if (!document.querySelector('.radio-compact-widget')) {
+            this.createCompactWidget();
+            this.updateCompactWidget();
+        }
+    }
 
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
+    // === SYNCHRONISATION DU WIDGET ===
+    startWidgetSync() {
+        // Mettre à jour le widget toutes les secondes s'il existe
+        if (this.widgetSyncInterval) return;
+        
+        this.widgetSyncInterval = setInterval(() => {
+            const widget = document.querySelector('.radio-compact-widget');
+            if (widget) {
+                this.updateCompactWidget();
+            }
+        }, 1000);
+    }
+
+    stopWidgetSync() {
+        if (this.widgetSyncInterval) {
+            clearInterval(this.widgetSyncInterval);
+            this.widgetSyncInterval = null;
+        }
     }
 	
-	// === MENU MINUTEUR RAPIDE ===
+	/* ===================================================================== */
+/* RADIO POPUP - JAVASCRIPT ORGANISÉ - PARTIE 6 FINALE                 */
+/* Menu Minuteur Rapide et Initialisation                               */
+/* ===================================================================== */
+
+    // === MENU MINUTEUR RAPIDE ===
     showQuickTimerMenu() {
         // Supprimer tout menu existant
         const existingMenu = document.querySelector('.quick-timer-menu');
@@ -1077,74 +1230,80 @@ setSleepTime(timeString) {
         const menu = document.createElement('div');
         menu.className = 'quick-timer-menu';
         menu.innerHTML = `
-    <div class="quick-timer-options">
-        <div class="timer-mode-header">
-            <button class="quick-mode-btn active" data-mode="duration">Durée</button>
-            <button class="quick-mode-btn" data-mode="time">Heure</button>
-        </div>
-        
-        <div class="duration-options" id="quickDurationOptions">
-            <div class="timer-option" data-minutes="0">
-                <span class="material-icons">close</span>
-                <span>Annuler</span>
+            <div class="quick-timer-options">
+                <div class="timer-mode-header">
+                    <button class="quick-mode-btn active" data-mode="duration">Durée</button>
+                    <button class="quick-mode-btn" data-mode="time">Heure</button>
+                </div>
+                
+                <div class="duration-options" id="quickDurationOptions">
+                    <div class="timer-option" data-minutes="0">
+                        <span class="material-icons">close</span>
+                        <span>Annuler</span>
+                    </div>
+                    <div class="timer-option" data-minutes="15">
+                        <span class="material-icons">schedule</span>
+                        <span>15 min</span>
+                    </div>
+                    <div class="timer-option" data-minutes="30">
+                        <span class="material-icons">schedule</span>
+                        <span>30 min</span>
+                    </div>
+                    <div class="timer-option" data-minutes="60">
+                        <span class="material-icons">schedule</span>
+                        <span>1 heure</span>
+                    </div>
+                    <div class="timer-option" data-minutes="120">
+                        <span class="material-icons">schedule</span>
+                        <span>2 heures</span>
+                    </div>
+                </div>
+                
+                <div class="time-options" id="quickTimeOptions" style="display: none;">
+                    <div class="quick-time-input">
+                        <input type="time" id="quickTimeInput" class="quick-time-field">
+                        <button id="quickSetTime" class="quick-set-btn">OK</button>
+                    </div>
+                    <div class="quick-time-presets">
+                        <div class="time-preset" data-offset="30">+30min</div>
+                        <div class="time-preset" data-offset="60">+1h</div>
+                        <div class="time-preset" data-offset="120">+2h</div>
+                    </div>
+                </div>
             </div>
-            <div class="timer-option" data-minutes="15">
-                <span class="material-icons">schedule</span>
-                <span>15 min</span>
-            </div>
-            <div class="timer-option" data-minutes="30">
-                <span class="material-icons">schedule</span>
-                <span>30 min</span>
-            </div>
-            <div class="timer-option" data-minutes="60">
-                <span class="material-icons">schedule</span>
-                <span>1 heure</span>
-            </div>
-            <div class="timer-option" data-minutes="120">
-                <span class="material-icons">schedule</span>
-                <span>2 heures</span>
-            </div>
-        </div>
-        
-        <div class="time-options" id="quickTimeOptions" style="display: none;">
-            <div class="quick-time-input">
-                <input type="time" id="quickTimeInput" class="quick-time-field">
-                <button id="quickSetTime" class="quick-set-btn">OK</button>
-            </div>
-            <div class="quick-time-presets">
-                <div class="time-preset" data-offset="30">+30min</div>
-                <div class="time-preset" data-offset="60">+1h</div>
-                <div class="time-preset" data-offset="120">+2h</div>
-            </div>
-        </div>
-    </div>
-`;
+        `;
 
-        // Positionner le menu - AMÉLIORÉ POUR MOBILE
-const widget = document.querySelector('.radio-compact-widget');
-const rect = widget.getBoundingClientRect();
+        // === POSITIONNEMENT DU MENU ===
+        const widget = document.querySelector('.radio-compact-widget');
+        const rect = widget.getBoundingClientRect();
 
-menu.style.position = 'fixed';
-menu.style.zIndex = '10001';
+        menu.style.position = 'fixed';
+        menu.style.zIndex = '10001';
 
-// Positionnement adaptatif selon la taille d'écran
-if (window.innerWidth <= 480) {
-    // Mobile : position fixe optimisée
-    menu.style.left = '10px';
-    menu.style.bottom = '160px';
-    menu.style.right = 'auto';
-    menu.style.top = 'auto';
-} else {
-    // Desktop : au-dessus du widget comme avant
-    menu.style.left = rect.left + 'px';
-    menu.style.bottom = (window.innerHeight - rect.top + 10) + 'px';
-    menu.style.right = 'auto';
-    menu.style.top = 'auto';
-}
+        // Positionnement adaptatif selon la taille d'écran
+        if (window.innerWidth <= 480) {
+            // Mobile : position fixe optimisée
+            menu.style.left = '10px';
+            menu.style.bottom = '160px';
+            menu.style.right = 'auto';
+            menu.style.top = 'auto';
+        } else {
+            // Desktop : au-dessus du widget
+            menu.style.left = rect.left + 'px';
+            menu.style.bottom = (window.innerHeight - rect.top + 10) + 'px';
+            menu.style.right = 'auto';
+            menu.style.top = 'auto';
+        }
 
-document.body.appendChild(menu);
+        document.body.appendChild(menu);
 
-        // Gestionnaires d'événements avec feedback amélioré
+        // === CONFIGURATION DES GESTIONNAIRES D'ÉVÉNEMENTS ===
+        this.setupQuickTimerMenuEvents(menu);
+    }
+
+    // === GESTIONNAIRES D'ÉVÉNEMENTS DU MENU RAPIDE ===
+    setupQuickTimerMenuEvents(menu) {
+        // Gestionnaires pour les options de durée
         menu.addEventListener('click', (e) => {
             const option = e.target.closest('.timer-option');
             if (option) {
@@ -1169,206 +1328,91 @@ document.body.appendChild(menu);
             }
         });
 
-        // Fermer automatiquement après 15 secondes (plus de temps)
-const autoCloseTimer = setTimeout(() => {
-    if (menu.parentNode) {
-        menu.remove();
-    }
-}, 15000);
-
-// Fermer en cliquant ailleurs - AMÉLIORÉ
-const closeHandler = (e) => {
-    if (!menu.contains(e.target) && !e.target.closest('#compactTimer')) {
-        menu.remove();
-        clearTimeout(autoCloseTimer);
-        document.removeEventListener('click', closeHandler);
-    }
-};
-
-// Attendre un peu avant d'ajouter le gestionnaire pour éviter la fermeture immédiate
-setTimeout(() => {
-    document.addEventListener('click', closeHandler);
-}, 200);
-
-// Fermer automatiquement après sélection d'une option
-menu.addEventListener('click', (e) => {
-    const option = e.target.closest('.timer-option');
-    const preset = e.target.closest('.time-preset');
-    const setBtn = e.target.closest('#quickSetTime');
-    
-    if (option || preset || setBtn) {
-        clearTimeout(autoCloseTimer);
-        document.removeEventListener('click', closeHandler);
-        // Le menu se fermera automatiquement après l'action
-    }
-});
-		
-		// Gestionnaires pour les modes
-menu.querySelectorAll('.quick-mode-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        menu.querySelectorAll('.quick-mode-btn').forEach(b => b.classList.remove('active'));
-        e.target.classList.add('active');
-        
-        const mode = e.target.dataset.mode;
-        document.getElementById('quickDurationOptions').style.display = mode === 'duration' ? 'block' : 'none';
-        document.getElementById('quickTimeOptions').style.display = mode === 'time' ? 'block' : 'none';
-        
-        if (mode === 'time') {
-            // Proposer une heure par défaut
-            const now = new Date();
-            now.setMinutes(now.getMinutes() + 30);
-            document.getElementById('quickTimeInput').value = now.toTimeString().slice(0, 5);
-        }
-    });
-});
-
-// Gestionnaire pour programmer l'heure
-document.getElementById('quickSetTime').addEventListener('click', () => {
-    const timeValue = document.getElementById('quickTimeInput').value;
-    if (timeValue) {
-        this.setSleepTime(timeValue);
-        menu.remove();
-    }
-});
-
-// Gestionnaires pour les presets de temps
-menu.querySelectorAll('.time-preset').forEach(preset => {
-    preset.addEventListener('click', () => {
-        const offset = parseInt(preset.dataset.offset);
-        const targetTime = new Date();
-        targetTime.setMinutes(targetTime.getMinutes() + offset);
-        this.setSleepTime(targetTime.toTimeString().slice(0, 5));
-        menu.remove();
-    });
-});
-    }
-
-    // === MINI-ÉGALISEUR COMPACT ===
-    startCompactEqualizer() {
-        // Arrêter l'égaliseur compact existant s'il y en a un
-        if (this.compactEqualizerInterval) {
-            clearInterval(this.compactEqualizerInterval);
-            this.compactEqualizerInterval = null;
-        }
-        
-        const bars = document.querySelectorAll('.mini-bar');
-        if (bars.length === 0) {
-            console.log('Aucune barre de mini-égaliseur trouvée');
-            return;
-        }
-        
-        this.compactEqualizerInterval = setInterval(() => {
-            if (this.isPlaying) {
-                bars.forEach(bar => {
-                    const height = Math.random() * 70 + 30; // Entre 30% et 100%
-                    bar.style.height = height + '%';
-                });
-            } else {
-                bars.forEach(bar => {
-                    bar.style.height = '30%';
-                });
+        // === GESTION DE LA FERMETURE AUTOMATIQUE ===
+        const autoCloseTimer = setTimeout(() => {
+            if (menu.parentNode) {
+                menu.remove();
             }
-        }, 300);
-    }
+        }, 15000);
 
-    stopCompactEqualizer() {
-        if (this.compactEqualizerInterval) {
-            clearInterval(this.compactEqualizerInterval);
-            this.compactEqualizerInterval = null;
-        }
-        
-        // Remettre les barres au minimum
-        document.querySelectorAll('.mini-bar').forEach(bar => {
-            bar.style.height = '30%';
+        // Fermer en cliquant ailleurs
+        const closeHandler = (e) => {
+            if (!menu.contains(e.target) && !e.target.closest('#compactTimer')) {
+                menu.remove();
+                clearTimeout(autoCloseTimer);
+                document.removeEventListener('click', closeHandler);
+            }
+        };
+
+        // Attendre avant d'ajouter le gestionnaire
+        setTimeout(() => {
+            document.addEventListener('click', closeHandler);
+        }, 200);
+
+        // Fermer automatiquement après sélection d'une option
+        menu.addEventListener('click', (e) => {
+            const option = e.target.closest('.timer-option');
+            const preset = e.target.closest('.time-preset');
+            const setBtn = e.target.closest('#quickSetTime');
+            
+            if (option || preset || setBtn) {
+                clearTimeout(autoCloseTimer);
+                document.removeEventListener('click', closeHandler);
+            }
+        });
+
+        // === GESTIONNAIRES POUR LES MODES ===
+        menu.querySelectorAll('.quick-mode-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                menu.querySelectorAll('.quick-mode-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                const mode = e.target.dataset.mode;
+                document.getElementById('quickDurationOptions').style.display = mode === 'duration' ? 'block' : 'none';
+                document.getElementById('quickTimeOptions').style.display = mode === 'time' ? 'block' : 'none';
+                
+                if (mode === 'time') {
+                    // Proposer une heure par défaut
+                    const now = new Date();
+                    now.setMinutes(now.getMinutes() + 30);
+                    document.getElementById('quickTimeInput').value = now.toTimeString().slice(0, 5);
+                }
+            });
+        });
+
+        // === GESTIONNAIRE POUR PROGRAMMER L'HEURE ===
+        document.getElementById('quickSetTime').addEventListener('click', () => {
+            const timeValue = document.getElementById('quickTimeInput').value;
+            if (timeValue) {
+                this.setSleepTime(timeValue);
+                menu.remove();
+            }
+        });
+
+        // === GESTIONNAIRES POUR LES PRESETS DE TEMPS ===
+        menu.querySelectorAll('.time-preset').forEach(preset => {
+            preset.addEventListener('click', () => {
+                const offset = parseInt(preset.dataset.offset);
+                const targetTime = new Date();
+                targetTime.setMinutes(targetTime.getMinutes() + offset);
+                this.setSleepTime(targetTime.toTimeString().slice(0, 5));
+                menu.remove();
+            });
         });
     }
-	
-	// === GESTION AFFICHAGE WIDGET ===
-    hideCompactWidget() {
-        const widget = document.querySelector('.radio-compact-widget');
-        if (widget) {
-            widget.style.animation = 'slideOutLeft 0.3s ease';
-            setTimeout(() => {
-                if (widget.parentNode) {
-                    widget.remove();
-                }
-				this.stopWidgetSync();
-                this.stopCompactEqualizer();
-            }, 300);
-            
-            this.showToast('Widget masqué');
-        }
-    }
 
-    showCompactWidget() {
-        // Recréer le widget s'il a été fermé
-        if (!document.querySelector('.radio-compact-widget')) {
-            this.createCompactWidget();
-            this.updateCompactWidget();
-        }
-    }
-	
-	// === SYNCHRONISATION WIDGET ===
-    startWidgetSync() {
-        // Mettre à jour le widget toutes les secondes s'il existe
-        if (this.widgetSyncInterval) return;
-        
-        this.widgetSyncInterval = setInterval(() => {
-            const widget = document.querySelector('.radio-compact-widget');
-            if (widget) {
-                this.updateCompactWidget();
-            }
-        }, 1000);
-    }
+} // === FIN DE LA CLASSE RADIOPOPUPWIDGET ===
 
-    stopWidgetSync() {
-        if (this.widgetSyncInterval) {
-            clearInterval(this.widgetSyncInterval);
-            this.widgetSyncInterval = null;
-        }
-    }
-	
-    // Mettre à jour l'indicateur selon l'état
-    updateTileIndicator() {
-        if (this.isPlaying && this.currentStation) {
-            this.showTileIndicator(this.currentStation.name);
-        } else {
-            this.hideTileIndicator();
-        }
-    }
-	
-    updateStatusStyle(status) {
-        const statusElement = document.getElementById('currentStationStatus');
-        if (!statusElement) return;
-        
-        // Retirer toutes les classes de statut
-        statusElement.classList.remove('status-live', 'status-paused', 'status-error', 'status-connecting');
-        
-        // Ajouter la classe appropriée
-        switch(status) {
-            case 'En direct':
-                statusElement.classList.add('status-live');
-                break;
-            case 'En pause':
-                statusElement.classList.add('status-paused');
-                break;
-            case 'Arrêté':
-                statusElement.classList.add('status-paused');
-                break;
-            case 'Erreur':
-            case 'Erreur de lecture':
-                statusElement.classList.add('status-error');
-                break;
-            case 'Connexion...':
-            case 'Connexion en cours...':
-                statusElement.classList.add('status-connecting');
-                break;
-        }
-    }
-} // FIN DE LA CLASSE - ACCOLADE MANQUANTE AJOUTÉE ICI
+/* ===================================================================== */
+/* INITIALISATION GLOBALE                                               */
+/* ===================================================================== */
 
-// Initialisation
+// Initialisation automatique quand le DOM est prêt
 document.addEventListener('DOMContentLoaded', function() {
     window.radioPopupInstance = new RadioPopupWidget();
     window.radioPopupInstance.init();
 });
+
+/* ===================================================================== */
+/* FIN DU JAVASCRIPT RADIO ORGANISÉ                                     */
+/* ===================================================================== */
