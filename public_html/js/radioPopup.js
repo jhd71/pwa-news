@@ -368,6 +368,17 @@ sleepTimeInput.addEventListener('focus', () => {
     }, 50);
 });
 
+// Gestionnaire pour rendre tout le champ horaire cliquable
+const timeControlsDiv = document.getElementById('timeControls');
+timeControlsDiv.addEventListener('click', (e) => {
+    // Si on clique sur la zone mais pas sur un élément de contrôle
+    if (e.target === timeControlsDiv || e.target.classList.contains('material-icons')) {
+        const timeInput = document.getElementById('sleepTimeInput');
+        timeInput.focus();
+        e.preventDefault();
+        e.stopPropagation();
+    }
+});
     }
 
     openPopup() {
@@ -1156,16 +1167,29 @@ setSleepTime(timeString) {
     </div>
 `;
 
-        // Positionner le menu au-dessus du widget
-        const widget = document.querySelector('.radio-compact-widget');
-        const rect = widget.getBoundingClientRect();
-        
-        menu.style.position = 'fixed';
-        menu.style.left = rect.left + 'px';
-        menu.style.bottom = (window.innerHeight - rect.top + 10) + 'px';
-        menu.style.zIndex = '10001';
+        // Positionner le menu - AMÉLIORÉ POUR MOBILE
+const widget = document.querySelector('.radio-compact-widget');
+const rect = widget.getBoundingClientRect();
 
-        document.body.appendChild(menu);
+menu.style.position = 'fixed';
+menu.style.zIndex = '10001';
+
+// Positionnement adaptatif selon la taille d'écran
+if (window.innerWidth <= 480) {
+    // Mobile : position fixe optimisée
+    menu.style.left = '10px';
+    menu.style.bottom = '160px';
+    menu.style.right = 'auto';
+    menu.style.top = 'auto';
+} else {
+    // Desktop : au-dessus du widget comme avant
+    menu.style.left = rect.left + 'px';
+    menu.style.bottom = (window.innerHeight - rect.top + 10) + 'px';
+    menu.style.right = 'auto';
+    menu.style.top = 'auto';
+}
+
+document.body.appendChild(menu);
 
         // Gestionnaires d'événements avec feedback amélioré
         menu.addEventListener('click', (e) => {
