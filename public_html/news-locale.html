@@ -1181,11 +1181,6 @@ processContent(text) {
                     this.preloadImages();
                 }, 100);
 				
-				 // Ajoutez ceci pour déboguer
-    news.forEach(article => {
-        console.log('Contenu brut:', article.content);
-        console.log('Contenu traité:', this.processContent(article.content));
-    });
             }
 
             async preloadImages() {
