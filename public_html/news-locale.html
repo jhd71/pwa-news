@@ -1009,30 +1009,21 @@
                 });
             }
 
-		// AJOUTEZ LA MÉTHODE ICI
 		autoLinkUrls(text) {
-    // D'abord, protéger les liens existants en les remplaçant temporairement
-    const protectedLinks = [];
-    let protectedText = text.replace(/<a[^>]*>.*?<\/a>/gi, (match) => {
-        protectedLinks.push(match);
-        return `__PROTECTED_LINK_${protectedLinks.length - 1}__`;
-    });
+    // Vérifier si le texte contient déjà des balises HTML
+    if (text.includes('<a ') || text.includes('<A ')) {
+        // Si le texte contient déjà des liens HTML, ne pas le modifier
+        return text;
+    }
     
-    // Ensuite, transformer les URLs simples en liens
+    // Sinon, transformer les URLs simples en liens
     const urlRegex = /(https?:\/\/[^\s<>"]+)/gi;
-    protectedText = protectedText.replace(urlRegex, (url) => {
+    return text.replace(urlRegex, (url) => {
         const cleanUrl = url.replace(/[.,!?;:]$/, '');
         const punctuation = url.slice(cleanUrl.length);
         
         return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer">${cleanUrl}</a>${punctuation}`;
     });
-    
-    // Enfin, restaurer les liens protégés
-    protectedLinks.forEach((link, index) => {
-        protectedText = protectedText.replace(`__PROTECTED_LINK_${index}__`, link);
-    });
-    
-    return protectedText;
 }
 
             async loadAllNews() {
