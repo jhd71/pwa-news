@@ -25,7 +25,7 @@
 
 /* Thème Sombre */
 [data-theme="dark"] {
-    --primary-color: #ff6b6b;
+    --primary-color: #212b7e;
     --primary-color-rgb: 255, 107, 107;
     --text-color: #e2e8f0;
     --text-secondary: #a0aec0;
