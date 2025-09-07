@@ -1027,15 +1027,37 @@
     });
 }
 
-// AJOUTEZ CETTE NOUVELLE FONCTION ICI
 processContent(text) {
     if (!text) return '';
     
-    // Permettre une syntaxe simple : [texte](url)
-    text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+    // D'abord, décoder les entités HTML si nécessaire
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = text;
+    text = textarea.value;
     
-    // Puis traiter les URLs non formatées
-    return this.autoLinkUrls(text);
+    // Convertir la syntaxe [texte](url) en liens HTML
+    text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, linkText, url) => {
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer">${linkText}</a>`;
+    });
+    
+    // Ensuite traiter les URLs simples qui ne sont pas déjà dans des balises <a>
+    // Diviser le texte pour ne pas traiter les URLs déjà dans des liens
+    const parts = text.split(/(<a[^>]*>.*?<\/a>)/gi);
+    
+    const processedParts = parts.map(part => {
+        // Si c'est déjà un lien, ne pas le modifier
+        if (part.match(/<a[^>]*>.*?<\/a>/i)) {
+            return part;
+        }
+        // Sinon, convertir les URLs simples
+        return part.replace(/(https?:\/\/[^\s<>"]+)/gi, (url) => {
+            const cleanUrl = url.replace(/[.,!?;:]$/, '');
+            const punctuation = url.slice(cleanUrl.length);
+            return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer">${cleanUrl}</a>${punctuation}`;
+        });
+    });
+    
+    return processedParts.join('');
 }
 
             async loadAllNews() {
