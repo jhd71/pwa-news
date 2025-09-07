@@ -1020,7 +1020,6 @@ body.radio-popup-open {
     padding: 8px 12px;
     border-radius: 6px;
     cursor: pointer;
-	justify-content: center;
     transition: all 0.2s ease;
     font-size: 14px;
     color: var(--text-color, #333);
@@ -1504,6 +1503,10 @@ body.radio-popup-open {
     border-radius: 6px;
     transition: background-color 0.2s ease;
     padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }
 
 #timeControls:hover {
