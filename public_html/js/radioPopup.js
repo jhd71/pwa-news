@@ -509,43 +509,43 @@ class RadioPopupWidget {
     }
 
     // === FERMETURE DE LA POPUP ===
-    closePopup() {
-        const popup = document.getElementById('radioPopup');
-        popup.classList.remove('active');
-        document.body.classList.remove('radio-popup-open');
-        
-        // Restaurer le scroll du body
-        if (window.innerWidth <= 768) {
-            document.body.style.overflow = '';
-            document.body.style.position = '';
-            document.body.style.width = '';
-            document.body.style.top = '';
-            if (this.scrollPosition) {
-                window.scrollTo(0, this.scrollPosition);
-                this.scrollPosition = null;
-            }
-        }
-        
-        // Maintenir l'indicateur si la radio joue toujours
-        this.updateTileIndicator();
-        
-        // Redémarrer les égaliseurs SEULEMENT si une station joue
-        if (this.isPlaying && this.currentStation) {
-            this.stopEqualizer();
-            this.stopCompactEqualizer();
-            
-            setTimeout(() => {
-                this.startEqualizer();
-                this.startCompactEqualizer();
-            }, 100);
-        }
-        
-        // Créer le widget compact SEULEMENT si une station joue
-        if (this.isPlaying && this.currentStation) {
-            this.createCompactWidget();
-            this.updateCompactWidget();
+closePopup() {
+    const popup = document.getElementById('radioPopup');
+    popup.classList.remove('active');
+    document.body.classList.remove('radio-popup-open');
+    
+    // Restaurer le scroll du body
+    if (window.innerWidth <= 768) {
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
+        document.body.style.top = '';
+        if (this.scrollPosition) {
+            window.scrollTo(0, this.scrollPosition);
+            this.scrollPosition = null;
         }
     }
+    
+    // Maintenir l'indicateur si la radio joue toujours
+    this.updateTileIndicator();
+    
+    // Redémarrer les égaliseurs SEULEMENT si une station joue
+    if (this.isPlaying && this.currentStation) {
+        this.stopEqualizer();
+        this.stopCompactEqualizer();
+        
+        setTimeout(() => {
+            this.startEqualizer();
+            this.startCompactEqualizer();
+        }, 100);
+    }
+    
+    // Créer le widget compact SEULEMENT si une station est en cours (playing ou paused)
+    if (this.currentStation) {
+        this.createCompactWidget();
+        this.updateCompactWidget();
+    }
+}
 	
 	/* ===================================================================== */
 /* RADIO POPUP - JAVASCRIPT ORGANISÉ - PARTIE 3                        */
@@ -673,40 +673,53 @@ class RadioPopupWidget {
     }
 
     // === ARRÊT COMPLET DE LA RADIO ===
-    stopRadio() {
-        if (this.audio) {
-            this.audio.pause();
-            this.audio.currentTime = 0;
-            this.audio = null;
-        }
-        this.isPlaying = false;
-        
-        // Réinitialiser toutes les cartes
-        document.querySelectorAll('.radio-station-card').forEach(card => {
-            card.classList.remove('active', 'playing', 'paused');
-            const overlay = card.querySelector('.play-overlay .material-icons');
-            overlay.textContent = 'play_arrow';
-        });
-        
-        this.currentStation = null;
-        
-        // Masquer l'indicateur de la tuile
-        this.hideTileIndicator();
-        
-        // Arrêter les égaliseurs
-        this.stopEqualizer();
-        this.stopCompactEqualizer();
-        
-        // Annuler le minuteur d'arrêt
-        this.cancelSleepTimer();
-        
-        // Supprimer le widget
-        this.hideCompactWidget();
-        
-        // Mettre à jour le statut
-        document.getElementById('currentStationStatus').textContent = 'Arrêté';
+	stopRadio() {
+    if (this.audio) {
+        this.audio.pause();
+        this.audio.currentTime = 0;
+        this.audio = null;
+    }
+    this.isPlaying = false;
+    
+    // Réinitialiser toutes les cartes
+    document.querySelectorAll('.radio-station-card').forEach(card => {
+        card.classList.remove('active', 'playing', 'paused');
+        const overlay = card.querySelector('.play-overlay .material-icons');
+        overlay.textContent = 'play_arrow';
+    });
+    
+    this.currentStation = null;
+    
+    // Masquer l'indicateur de la tuile
+    this.hideTileIndicator();
+    
+    // Arrêter les égaliseurs
+    this.stopEqualizer();
+    this.stopCompactEqualizer();
+    
+    // Annuler le minuteur d'arrêt
+    this.cancelSleepTimer();
+    
+    // Supprimer le widget
+    this.hideCompactWidget();
+    
+    // Mettre à jour le statut dans la popup
+    const statusElement = document.getElementById('currentStationStatus');
+    if (statusElement) {
+        statusElement.textContent = 'Arrêté';
         this.updateStatusStyle('Arrêté');
     }
+    
+    // Masquer la section lecteur dans la popup
+    const playerSection = document.getElementById('radioPlayerSection');
+    if (playerSection) {
+        playerSection.style.display = 'none';
+    }
+    
+    // Forcer la mise à jour de tous les indicateurs
+    this.updateTileIndicator();
+    this.updateCompactWidget();
+	}
 
     // === GESTION DES ÉGALISEURS ===
     
@@ -1082,76 +1095,72 @@ class RadioPopupWidget {
     }
 
     // === MISE À JOUR DU WIDGET COMPACT ===
-    updateCompactWidget() {
-        const widget = document.querySelector('.radio-compact-widget');
-        if (!widget) return;
+updateCompactWidget() {
+    const widget = document.querySelector('.radio-compact-widget');
+    if (!widget) return;
 
-        const logo = document.getElementById('compactStationLogo');
-        const name = document.getElementById('compactStationName');
-        const status = document.getElementById('compactStationStatus');
-        const playBtn = document.getElementById('compactPlayPause');
-        const timerDisplay = document.getElementById('compactTimerDisplay');
-        const timerText = document.getElementById('compactTimerText');
-        const timerBtn = document.getElementById('compactTimer');
-        const equalizer = document.getElementById('compactEqualizer');
+    const logo = document.getElementById('compactStationLogo');
+    const name = document.getElementById('compactStationName');
+    const status = document.getElementById('compactStationStatus');
+    const playBtn = document.getElementById('compactPlayPause');
+    const timerDisplay = document.getElementById('compactTimerDisplay');
+    const timerText = document.getElementById('compactTimerText');
+    const timerBtn = document.getElementById('compactTimer');
+    const equalizer = document.getElementById('compactEqualizer');
 
-        if (this.currentStation) {
-            logo.src = this.currentStation.logo;
-            logo.style.display = 'block';
-            name.textContent = this.currentStation.name;
-            
-            if (this.isPlaying) {
-                status.textContent = 'En direct';
-                status.className = 'status-live';
-                playBtn.querySelector('.material-icons').textContent = 'stop';
-                widget.classList.add('playing');
-                equalizer.style.display = 'flex';
-            } else {
-                status.textContent = 'Arrêtée';
-                status.className = 'status-paused';
-                playBtn.querySelector('.material-icons').textContent = 'play_arrow';
-                widget.classList.remove('playing');
-                equalizer.style.display = 'none';
-            }
-        } else {
-            logo.style.display = 'none';
-            name.textContent = 'Aucune station';
-            status.textContent = 'Arrêtée';
-            status.className = '';
-            playBtn.querySelector('.material-icons').textContent = 'play_arrow';
-            widget.classList.remove('playing');
-            equalizer.style.display = 'none';
-        }
-
-        // Mise à jour minuteur
-        if (this.sleepTimer && this.sleepTimeRemaining > 0) {
-            const totalMinutes = Math.floor(this.sleepTimeRemaining / 60);
-            const seconds = this.sleepTimeRemaining % 60;
-            
-            let displayText;
-            if (totalMinutes >= 60) {
-                const hours = Math.floor(totalMinutes / 60);
-                const minutes = totalMinutes % 60;
-                
-                if (minutes === 0) {
-                    displayText = `${hours}h`;
-                } else {
-                    displayText = `${hours}h${minutes.toString().padStart(2, '0')}`;
-                }
-            } else {
-                displayText = `${totalMinutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            }
-            
-            timerText.textContent = displayText;
-            timerDisplay.style.display = 'flex';
-            timerBtn.classList.add('active-timer');
-        } else {
-            timerDisplay.style.display = 'none';
-            timerBtn.classList.remove('active-timer');
-        }
-
-        this.updateCompactVolumeIcon();
+    if (this.currentStation && this.isPlaying) {
+        logo.src = this.currentStation.logo;
+        logo.style.display = 'block';
+        name.textContent = this.currentStation.name;
+        status.textContent = 'En direct';
+        status.className = 'status-live';
+        playBtn.querySelector('.material-icons').textContent = 'stop';
+        widget.classList.add('playing');
+        equalizer.style.display = 'flex';
+    } else if (this.currentStation && !this.isPlaying) {
+        logo.src = this.currentStation.logo;
+        logo.style.display = 'block';
+        name.textContent = this.currentStation.name;
+        status.textContent = 'Arrêtée';
+        status.className = 'status-paused';
+        playBtn.querySelector('.material-icons').textContent = 'play_arrow';
+        widget.classList.remove('playing');
+        equalizer.style.display = 'none';
+    } else {
+        // Aucune station sélectionnée - masquer le widget
+        this.hideCompactWidget();
+        return;
     }
+
+    // Mise à jour minuteur
+    if (this.sleepTimer && this.sleepTimeRemaining > 0) {
+        const totalMinutes = Math.floor(this.sleepTimeRemaining / 60);
+        const seconds = this.sleepTimeRemaining % 60;
+        
+        let displayText;
+        if (totalMinutes >= 60) {
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
+            
+            if (minutes === 0) {
+                displayText = `${hours}h`;
+            } else {
+                displayText = `${hours}h${minutes.toString().padStart(2, '0')}`;
+            }
+        } else {
+            displayText = `${totalMinutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        timerText.textContent = displayText;
+        timerDisplay.style.display = 'flex';
+        timerBtn.classList.add('active-timer');
+    } else {
+        timerDisplay.style.display = 'none';
+        timerBtn.classList.remove('active-timer');
+    }
+
+    this.updateCompactVolumeIcon();
+}
 
     // === MISE À JOUR DE L'ICÔNE VOLUME ===
     updateCompactVolumeIcon() {
@@ -1169,21 +1178,24 @@ class RadioPopupWidget {
     }
 
     // === GESTION DE L'AFFICHAGE DU WIDGET ===
-    hideCompactWidget() {
-        const widget = document.querySelector('.radio-compact-widget');
-        if (widget) {
-            widget.style.animation = 'slideOutLeft 0.3s ease';
-            setTimeout(() => {
-                if (widget.parentNode) {
-                    widget.remove();
-                }
-                this.stopWidgetSync();
-                this.stopCompactEqualizer();
-            }, 300);
-            
+	hideCompactWidget() {
+    const widget = document.querySelector('.radio-compact-widget');
+    if (widget) {
+        widget.style.animation = 'slideOutLeft 0.3s ease';
+        setTimeout(() => {
+            if (widget.parentNode) {
+                widget.remove();
+            }
+            this.stopWidgetSync();
+            this.stopCompactEqualizer();
+        }, 300);
+        
+        // Ne pas afficher le toast "Widget masqué" quand la radio s'arrête
+        if (this.isPlaying || this.currentStation) {
             this.showToast('Widget masqué');
-        }
-    }
+			}
+		}
+	}
 
     showCompactWidget() {
         // Recréer le widget s'il a été fermé
