@@ -4484,13 +4484,13 @@ showAdminPanel() {
                 <input type="text" placeholder="Nouveau mot à bannir">
                 <button class="add-word-btn">Ajouter</button>
             </div>
-            <div class="banned-words-list" style="${isMobile ? 'max-height: 300px; min-height: 200px;' : ''}"></div>
+            <div class="banned-words-list" style="${isMobile ? 'max-height: none; min-height: 200px;' : ''}"></div>
         </div>
 
         <!-- Onglet IPs bannies -->
         <div class="tab-section" id="banned-ips-section">
             <h4>IPs bannies</h4>
-            <div class="banned-ips-list" style="${isMobile ? 'max-height: 300px; min-height: 200px;' : ''}">
+            <div class="banned-ips-list" style="${isMobile ? 'max-height: none; min-height: 200px;' : ''}">
                 <div class="loading-ips">Chargement des IPs bannies...</div>
             </div>
         </div>
@@ -4554,7 +4554,7 @@ showAdminPanel() {
         <div class="tab-section" id="gallery-section">
             <h4>Gestion des photos</h4>
             <div class="gallery-admin-controls">
-                <div class="photos-list" style="${isMobile ? 'max-height: 300px; min-height: 200px; overflow-y: auto;' : ''}">
+                <div class="photos-list" style="${isMobile ? 'max-height: none; min-height: 200px; overflow-y: auto;' : ''}">
                     <div class="loading-photos">Chargement des photos...</div>
                 </div>
             </div>
@@ -4571,10 +4571,10 @@ showAdminPanel() {
     
     <!-- Zone d'affichage des commentaires -->
     <div class="comments-display">
-        <div class="photo-comments-list" style="${isMobile ? 'max-height: 300px; min-height: 200px; overflow-y: auto;' : ''}">
+        <div class="photo-comments-list" style="${isMobile ? 'max-height: none; min-height: 200px; overflow-y: auto;' : ''}">
             <div class="loading-comments">Chargement des commentaires photos...</div>
         </div>
-        <div class="news-comments-list" style="display: none; ${isMobile ? 'max-height: 300px; min-height: 200px; overflow-y: auto;' : ''}">
+        <div class="news-comments-list" style="display: none; ${isMobile ? 'max-height: none; min-height: 200px; overflow-y: auto;' : ''}">
             <div class="loading-comments">Chargement des commentaires actualités...</div>
         </div>
     </div>
