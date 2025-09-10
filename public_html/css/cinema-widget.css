@@ -632,6 +632,30 @@
     border: 2px solid var(--primary-color);
 }
 
+.cinema-link-button.secondary {
+    background: white;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+
+.cinema-link-button.secondary:active {
+    background: var(--primary-color);
+    color: white;
+    transform: scale(0.95);
+}
+
+/* Styles pour les thèmes */
+[data-theme="dark"] .cinema-link-button.secondary {
+    background: #2a2a2a;
+    color: #7986cb;
+    border-color: #5c6bc0;
+}
+
+[data-theme="dark"] .cinema-link-button.secondary:active {
+    background: #5c6bc0;
+    color: white;
+}
+
 /* ===== THÈMES MODAL MOBILE ===== */
 
 /* Thème Dark */

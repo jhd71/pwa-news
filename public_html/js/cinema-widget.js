@@ -806,7 +806,7 @@ updateModalContent(modalContent) {
         // Ajouter les boutons directement après les films
 htmlContent += `
     <div class="cinema-footer-buttons">
-        <button onclick="window.location.href='/'" class="cinema-link-button secondary">
+        <button onclick="goBackHome()" class="cinema-link-button secondary">
             <span class="material-icons">home</span>
             Retour à l'accueil
         </button>
@@ -864,3 +864,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Export pour usage externe
 window.CinemaWidget = CinemaWidget;
+
+// Fonction pour retourner à l'accueil depuis la modal cinéma
+function goBackHome() {
+    // Fermer la modal d'abord
+    const modal = document.getElementById('cinemaMobileModal');
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+    
+    // Vibration tactile si disponible
+    if (navigator.vibrate) {
+        navigator.vibrate(50);
+    }
+    
+    // Vérifier si on est dans une PWA ou navigateur
+    if (window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
+        // PWA - naviguer vers l'accueil
+        window.location.href = '/';
+    } else {
+        // Navigateur normal - utiliser l'historique
+        if (document.referrer && document.referrer.includes(window.location.hostname)) {
+            window.history.back();
+        } else {
+            window.location.href = '/';
+        }
+    }
+}
+
+// Export global de la fonction
+window.goBackHome = goBackHome;
