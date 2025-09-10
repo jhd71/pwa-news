@@ -803,15 +803,19 @@ updateModalContent(modalContent) {
             `;
         }).join('');
         
-        // Ajouter le bouton directement après les films
-        htmlContent += `
-            <div class="cinema-footer-button">
-                <a href="https://www.cinemas-panacea.fr/montceau-embarcadere/" target="_blank" class="cinema-link-button">
-                    <span class="material-icons">launch</span>
-                    Programme complet & réservations
-                </a>
-            </div>
-        `;
+        // Ajouter les boutons directement après les films
+htmlContent += `
+    <div class="cinema-footer-buttons">
+        <button onclick="window.location.href='/'" class="cinema-link-button secondary">
+            <span class="material-icons">home</span>
+            Retour à l'accueil
+        </button>
+        <a href="https://www.cinemas-panacea.fr/montceau-embarcadere/" target="_blank" class="cinema-link-button">
+            <span class="material-icons">launch</span>
+            Programme complet & réservations
+        </a>
+    </div>
+`;
         
         modalContent.innerHTML = htmlContent;
         

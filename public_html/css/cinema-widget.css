@@ -591,6 +591,15 @@
 }
 
 /* Boutons */
+.cinema-footer-buttons {
+    background: #ffffff;
+    padding: 16px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
 .cinema-footer-button {
     background: #ffffff;
     padding: 16px 20px;
