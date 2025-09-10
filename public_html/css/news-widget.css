@@ -181,6 +181,54 @@
     }
 }
 
+/* Bouton retour accueil pour modal cinéma */
+.cinema-footer-button-home {
+    background: #ffffff;
+    padding: 16px 20px 8px 20px;
+    text-align: center;
+}
+
+.cinema-home-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: white;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    padding: 14px 24px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 300px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.cinema-home-button:active {
+    background: var(--primary-color);
+    color: white;
+    transform: scale(0.95);
+}
+
+/* Styles pour les thèmes */
+[data-theme="dark"] .cinema-home-button {
+    background: #2a2a2a;
+    color: #7986cb;
+    border-color: #5c6bc0;
+}
+
+[data-theme="dark"] .cinema-home-button:active {
+    background: #5c6bc0;
+    color: white;
+}
+
+[data-theme="dark"] .cinema-footer-button-home {
+    background: #1a1a1a;
+}
+
 /* ============================================= */
 /*        NEWS WIDGET CSS - PARTIE 3             */
 /*        Prévisualisation et contenu            */

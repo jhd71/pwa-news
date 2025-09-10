@@ -509,57 +509,13 @@ function openCinemaModal() {
         // Copier le contenu du widget cinéma
         const cinemaWidgetPreview = document.getElementById('cinemaWidgetPreview');
         if (cinemaWidgetPreview) {
-            // Créer le contenu avec le bouton retour
             modalContent.innerHTML = `
                 ${cinemaWidgetPreview.innerHTML}
-                <div class="cinema-footer-buttons" style="
-                    background: #ffffff;
-                    padding: 16px 20px;
-                    text-align: center;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 12px;
-                    margin-top: 20px;
-                ">
-                    <button onclick="goBackHome()" class="cinema-link-button secondary" style="
-                        display: inline-flex;
-                        align-items: center;
-                        justify-content: center;
-                        gap: 8px;
-                        background: white;
-                        color: var(--primary-color, #dc3545);
-                        border: 2px solid var(--primary-color, #dc3545);
-                        padding: 14px 24px;
-                        border-radius: 12px;
-                        text-decoration: none;
-                        font-weight: 600;
-                        transition: all 0.3s ease;
-                        width: 100%;
-                        max-width: 300px;
-                        cursor: pointer;
-                        font-size: 16px;
-                    ">
+                <div class="cinema-footer-button-home">
+                    <button onclick="goBackHome()" class="cinema-home-button">
                         <span class="material-icons">home</span>
                         <span>Retour à l'accueil</span>
                     </button>
-                    <a href="https://www.cinemas-panacea.fr/montceau-embarcadere/" target="_blank" class="cinema-link-button" style="
-                        display: inline-flex;
-                        align-items: center;
-                        justify-content: center;
-                        gap: 8px;
-                        background: var(--primary-color, #dc3545);
-                        color: white;
-                        padding: 14px 24px;
-                        border-radius: 12px;
-                        text-decoration: none;
-                        font-weight: 600;
-                        transition: all 0.3s ease;
-                        width: 100%;
-                        max-width: 300px;
-                    ">
-                        <span class="material-icons">launch</span>
-                        <span>Programme complet & réservations</span>
-                    </a>
                 </div>
             `;
         }
