@@ -509,7 +509,59 @@ function openCinemaModal() {
         // Copier le contenu du widget cinéma
         const cinemaWidgetPreview = document.getElementById('cinemaWidgetPreview');
         if (cinemaWidgetPreview) {
-            modalContent.innerHTML = cinemaWidgetPreview.innerHTML;
+            // Créer le contenu avec le bouton retour
+            modalContent.innerHTML = `
+                ${cinemaWidgetPreview.innerHTML}
+                <div class="cinema-footer-buttons" style="
+                    background: #ffffff;
+                    padding: 16px 20px;
+                    text-align: center;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                    margin-top: 20px;
+                ">
+                    <button onclick="goBackHome()" class="cinema-link-button secondary" style="
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 8px;
+                        background: white;
+                        color: var(--primary-color, #dc3545);
+                        border: 2px solid var(--primary-color, #dc3545);
+                        padding: 14px 24px;
+                        border-radius: 12px;
+                        text-decoration: none;
+                        font-weight: 600;
+                        transition: all 0.3s ease;
+                        width: 100%;
+                        max-width: 300px;
+                        cursor: pointer;
+                        font-size: 16px;
+                    ">
+                        <span class="material-icons">home</span>
+                        <span>Retour à l'accueil</span>
+                    </button>
+                    <a href="https://www.cinemas-panacea.fr/montceau-embarcadere/" target="_blank" class="cinema-link-button" style="
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 8px;
+                        background: var(--primary-color, #dc3545);
+                        color: white;
+                        padding: 14px 24px;
+                        border-radius: 12px;
+                        text-decoration: none;
+                        font-weight: 600;
+                        transition: all 0.3s ease;
+                        width: 100%;
+                        max-width: 300px;
+                    ">
+                        <span class="material-icons">launch</span>
+                        <span>Programme complet & réservations</span>
+                    </a>
+                </div>
+            `;
         }
         
         // Événements de fermeture
@@ -2107,6 +2159,34 @@ if (!document.head.querySelector('style[data-alarm-styles]')) {
 
 document.head.insertAdjacentHTML('beforeend', animationCSS);
 
+// Fonction pour retourner à l'accueil depuis la modal cinéma
+function goBackHome() {
+    // Fermer la modal d'abord
+    const modal = document.getElementById('cinemaMobileModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+    
+    // Vibration tactile si disponible
+    if (navigator.vibrate) {
+        navigator.vibrate(50);
+    }
+    
+    // Vérifier si on est dans une PWA ou navigateur
+    if (window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
+        // PWA - naviguer vers l'accueil
+        window.location.href = '/';
+    } else {
+        // Navigateur normal - utiliser l'historique
+        if (document.referrer && document.referrer.includes(window.location.hostname)) {
+            window.history.back();
+        } else {
+            window.location.href = '/';
+        }
+    }
+}
+
 // ===== EXPORTS GLOBAUX =====
 window.debugVisitors = debugVisitors;
 window.openSpecificNews = openSpecificNews;
@@ -2130,6 +2210,7 @@ window.playTimerSound = playTimerSound;
 window.createTimerStopButton = createTimerStopButton;
 window.stopTimerAlarm = stopTimerAlarm;
 window.cancelTimer = cancelTimer;
+window.goBackHome = goBackHome;
 
 // Export pour usage externe
 window.NewsWidget = NewsWidget;
