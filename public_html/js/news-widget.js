@@ -2129,18 +2129,13 @@ function goBackHome() {
         navigator.vibrate(50);
     }
     
-    // Vérifier si on est dans une PWA ou navigateur
-    if (window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
-        // PWA - naviguer vers l'accueil
-        window.location.href = '/';
-    } else {
-        // Navigateur normal - utiliser l'historique
-        if (document.referrer && document.referrer.includes(window.location.hostname)) {
-            window.history.back();
-        } else {
-            window.location.href = '/';
-        }
-    }
+    // Navigation directe et sûre vers l'accueil
+    const homeUrl = `${window.location.protocol}//${window.location.host}/`;
+    
+    console.log('Redirection vers accueil:', homeUrl);
+    
+    // Utiliser replace pour éviter les problèmes d'historique
+    window.location.replace(homeUrl);
 }
 
 // ===== EXPORTS GLOBAUX =====
