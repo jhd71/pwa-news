@@ -1,15 +1,30 @@
-/* ============================================= */
-/*        NEWS WIDGET CSS - PARTIE 1             */
-/*        Structure de base et conteneur         */
-/* ============================================= */
+/* =============================================
+   NEWS WIDGET CSS - PARTIE 1
+   Variables globales et structure de base
+   ============================================= */
 
-/* Variables CSS globales */
+/* ===== VARIABLES CSS GLOBALES ===== */
 :root {
     --primary-color: #dc3545;
     --primary-color-rgb: 220, 53, 69;
 }
 
-/* Conteneur principal du widget */
+/* Variables pour les popups visiteurs par thème */
+:root, [data-theme="light"] {
+    --popup-bg: #ffffff;
+    --popup-text: #333333;
+    --popup-shadow: rgba(0, 0, 0, 0.15);
+    --summary-bg: #f8f9fa;
+    --summary-text: #495057;
+    --chart-line-color: #007BFF;
+    --chart-area-bg: rgba(0, 123, 255, 0.1);
+    --chart-grid-color: #e9ecef;
+    --stat-card-bg: #f0f7ff;
+    --stat-card-border: #d1e7ff;
+    --active-color: #28a745;
+}
+
+/* ===== CONTENEURS PRINCIPAUX ===== */
 .news-widget-container {
     max-width: 600px;
     margin: 15px auto;
@@ -41,7 +56,7 @@
     transform: scale(0.98);
 }
 
-/* En-tête du widget */
+/* ===== EN-TÊTE DU WIDGET ===== */
 .news-widget-header {
     display: flex;
     align-items: center;
@@ -50,7 +65,6 @@
     color: var(--primary-color);
 }
 
-/* Titre du widget */
 .news-widget-title {
     font-size: 18px;
     font-weight: bold;
@@ -65,7 +79,6 @@
     margin-right: auto;
 }
 
-/* Badge du widget */
 .news-widget-badge {
     background: var(--primary-color);
     color: white;
@@ -76,12 +89,22 @@
     text-transform: uppercase;
 }
 
-/* ============================================= */
-/*        NEWS WIDGET CSS - PARTIE 2             */
-/*        Boutons et éléments interactifs        */
-/* ============================================= */
+/* ===== ANIMATIONS DE BASE ===== */
+.spinning {
+    animation: spin 1s linear infinite;
+}
 
-/* Conteneur des boutons dans l'en-tête */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* =============================================
+   NEWS WIDGET CSS - PARTIE 2
+   Boutons et éléments interactifs
+   ============================================= */
+
+/* ===== BOUTONS HEADER ===== */
 .news-widget-header .header-buttons {
     display: flex;
     gap: 6px;
@@ -153,7 +176,39 @@
     color: white;
 }
 
-/* Positionnement mobile des boutons */
+/* ===== BOUTON RETOUR ACCUEIL CINÉMA ===== */
+.cinema-footer-button-home {
+    background: #ffffff;
+    padding: 16px 20px 8px 20px;
+    text-align: center;
+}
+
+.cinema-home-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: white;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    padding: 14px 24px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 300px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.cinema-home-button:active {
+    background: var(--primary-color);
+    color: white;
+    transform: scale(0.95);
+}
+
+/* ===== POSITIONNEMENT MOBILE BOUTONS ===== */
 @media (max-width: 767px) {
     .news-widget-header .header-buttons {
         position: relative !important;
@@ -181,12 +236,12 @@
     }
 }
 
-/* ============================================= */
-/*        NEWS WIDGET CSS - PARTIE 3             */
-/*        Prévisualisation et contenu            */
-/* ============================================= */
+/* =============================================
+   NEWS WIDGET CSS - PARTIE 3
+   Contenu et prévisualisation
+   ============================================= */
 
-/* Zone de prévisualisation des actualités */
+/* ===== ZONE DE PRÉVISUALISATION ===== */
 .news-widget-preview {
     color: #333;
     font-size: 14px;
@@ -218,7 +273,7 @@
     opacity: 1;
 }
 
-/* Items de prévisualisation */
+/* ===== ITEMS DE PRÉVISUALISATION ===== */
 .news-preview-item {
     background: rgba(var(--primary-color-rgb), 0.1);
     border-left: 3px solid var(--primary-color);
@@ -239,7 +294,7 @@
     color: var(--primary-color);
 }
 
-/* Dates des films */
+/* ===== ÉTATS ET CONTENU ===== */
 .movie-dates {
     font-size: 13px;
     color: #888;
@@ -247,7 +302,6 @@
     margin-top: 2px;
 }
 
-/* État de chargement */
 .loading-news {
     display: flex;
     align-items: center;
@@ -256,16 +310,7 @@
     font-style: italic;
 }
 
-.spinning {
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-/* Pied de page du widget */
+/* ===== PIED DE PAGE ===== */
 .news-widget-footer {
     display: flex;
     flex-direction: column;
@@ -292,19 +337,19 @@
     font-weight: 600;
 }
 
-/* ============================================= */
-/*        NEWS WIDGET CSS - PARTIE 4             */
-/*        Widgets d'en-tête                      */
-/* ============================================= */
+/* =============================================
+   NEWS WIDGET CSS - PARTIE 4
+   Widgets d'en-tête (horloge, météo, visiteurs)
+   ============================================= */
 
-/* Conteneur des widgets d'en-tête */
+/* ===== CONTENEUR WIDGETS HEADER ===== */
 .header-widgets {
     display: flex;
     gap: 8px;
     margin-left: auto;
 }
 
-/* Widget Horloge */
+/* ===== WIDGET HORLOGE ===== */
 .news-widget-clock {
     background: rgba(var(--primary-color-rgb), 0.1);
     border: 1px solid var(--primary-color);
@@ -340,7 +385,7 @@
     color: #000000;
 }
 
-/* Widgets Température et Visiteurs */
+/* ===== WIDGETS TEMPÉRATURE ET VISITEURS ===== */
 .weather-temp,
 .visitors-counter {
     background: rgba(var(--primary-color-rgb), 0.1);
@@ -386,7 +431,7 @@
     color: white;
 }
 
-/* Responsive mobile pour widgets d'en-tête */
+/* ===== RESPONSIVE MOBILE WIDGETS ===== */
 @media (max-width: 767px) {
     .header-widgets {
         gap: 4px;
@@ -407,286 +452,46 @@
     .visitors-label {
         font-size: 11px;
     }
+    
+    /* Indicateur visuel mobile pour l'horloge */
+    .news-widget-clock {
+        position: relative;
+    }
+    
+    /* Petit point coloré visible en permanence sur mobile */
+    .news-widget-clock::before {
+        content: '';
+        position: absolute;
+        top: 1px;
+        right: 1px;
+        width: 8px;
+        height: 8px;
+        background: #4CAF50;
+        border-radius: 50%;
+        animation: pulse-mobile 3s infinite;
+        z-index: 10;
+        border: 1px solid white;
+    }
+    
+    /* Animation plus lente pour mobile */
+    @keyframes pulse-mobile {
+        0%, 100% { 
+            opacity: 0.6; 
+            transform: scale(1);
+        }
+        50% { 
+            opacity: 1; 
+            transform: scale(1.3);
+        }
+    }
 }
 
-/* ============================================= */
-/*        NEWS WIDGET CSS - PARTIE 5             */
-/*        Thèmes de couleurs                     */
-/* ============================================= */
+/* =============================================
+   NEWS WIDGET CSS - PARTIE 5
+   Popups Alarme et Minuteur
+   ============================================= */
 
-/* ===== THÈME LIGHT (VIOLET) ===== */
-[data-theme="light"] .local-news-widget {
-    background: rgba(255, 255, 255, 0.95);
-    border-color: rgba(126, 87, 194, 0.4);
-}
-
-[data-theme="light"] .news-widget-header,
-[data-theme="light"] .news-widget-title,
-[data-theme="light"] .news-widget-title-short,
-[data-theme="light"] .news-widget-footer {
-    color: #7e57c2;
-}
-
-[data-theme="light"] .news-widget-badge {
-    background: #7e57c2;
-}
-
-[data-theme="light"] .news-preview-item {
-    background: rgba(126, 87, 194, 0.1);
-    border-left-color: #7e57c2;
-}
-
-[data-theme="light"] .news-widget-count {
-    background: rgba(126, 87, 194, 0.1);
-}
-
-/* Widgets d'en-tête - Thème Light */
-[data-theme="light"] .news-widget-clock,
-[data-theme="light"] .weather-temp,
-[data-theme="light"] .visitors-counter,
-[data-theme="light"] .header-btn {
-    background: rgba(126, 87, 194, 0.1);
-    border-color: #7e57c2;
-    color: #7e57c2;
-}
-
-[data-theme="light"] .news-widget-clock:hover,
-[data-theme="light"] .weather-temp:hover,
-[data-theme="light"] .visitors-counter:hover,
-[data-theme="light"] .header-btn:hover {
-    background: #7e57c2;
-    color: white;
-}
-
-[data-theme="light"] .clock-time,
-[data-theme="light"] .clock-date {
-    color: #9b87ce;
-    font-size: 15px;
-}
-
-[data-theme="light"] .clock-date {
-    font-size: 12px;
-}
-
-[data-theme="light"] .temp-value,
-[data-theme="light"] .visitors-count,
-[data-theme="light"] .temp-label,
-[data-theme="light"] .visitors-label {
-    color: #7e57c2;
-    font-size: 14px;
-}
-
-/* ===== THÈME DARK (BLEU NUIT) ===== */
-[data-theme="dark"] .local-news-widget {
-    background: rgba(40, 40, 40, 0.95);
-    border-color: rgba(26, 35, 126, 0.6);
-    backdrop-filter: blur(15px);
-}
-
-[data-theme="dark"] .news-widget-header,
-[data-theme="dark"] .news-widget-title,
-[data-theme="dark"] .news-widget-title-short,
-[data-theme="dark"] .news-widget-footer,
-[data-theme="dark"] .news-widget-preview {
-    color: #ffffff;
-}
-
-[data-theme="dark"] .news-widget-badge {
-    background: #1a237e;
-    border: 1px solid #5c6bc0;
-}
-
-[data-theme="dark"] .movie-dates {
-    color: #aaa;
-}
-
-[data-theme="dark"] .loading-news {
-    color: #b0b0b0;
-}
-
-[data-theme="dark"] .news-preview-item {
-    background: rgba(26, 35, 126, 0.2);
-    border-left-color: #5c6bc0;
-    color: #ffffff;
-}
-
-[data-theme="dark"] .news-preview-item strong {
-    color: #f6d34f;
-}
-
-[data-theme="dark"] .news-widget-count {
-    background: rgba(26, 35, 126, 0.3);
-    color: #ffffff;
-}
-
-[data-theme="dark"] .news-widget-tap {
-    color: #ffffff;
-}
-
-/* Widgets d'en-tête - Thème Dark */
-[data-theme="dark"] .news-widget-clock,
-[data-theme="dark"] .weather-temp,
-[data-theme="dark"] .visitors-counter,
-[data-theme="dark"] .header-btn {
-    background: rgba(92, 107, 192, 0.2);
-    border-color: #5c6bc0;
-    color: #ffffffcc !important;
-}
-
-[data-theme="dark"] .news-widget-clock:hover,
-[data-theme="dark"] .weather-temp:hover,
-[data-theme="dark"] .visitors-counter:hover,
-[data-theme="dark"] .header-btn:hover {
-    background: #5c6bc0;
-    color: white;
-}
-
-[data-theme="dark"] .temp-value,
-[data-theme="dark"] .visitors-count,
-[data-theme="dark"] .temp-label,
-[data-theme="dark"] .visitors-label,
-[data-theme="dark"] .clock-time,
-[data-theme="dark"] .clock-date {
-    color: #ffffff;
-    font-size: 14px;
-}
-
-[data-theme="dark"] .clock-time {
-    font-size: 15px;
-}
-
-[data-theme="dark"] .clock-date {
-    font-size: 12px;
-}
-
-/* ===== THÈME ROUGE ===== */
-[data-theme="rouge"] .local-news-widget {
-    background: rgba(255, 255, 255, 0.95);
-    border-color: rgba(211, 47, 47, 0.4);
-}
-
-[data-theme="rouge"] .news-widget-header,
-[data-theme="rouge"] .news-widget-title,
-[data-theme="rouge"] .news-widget-title-short,
-[data-theme="rouge"] .news-widget-footer {
-    color: #d32f2f;
-}
-
-[data-theme="rouge"] .news-widget-badge {
-    background: #d32f2f;
-}
-
-[data-theme="rouge"] .news-preview-item {
-    background: rgba(211, 47, 47, 0.1);
-    border-left-color: #d32f2f;
-    color: #000000;
-}
-
-[data-theme="rouge"] .news-widget-count {
-    background: rgba(211, 47, 47, 0.1);
-    color: #000000;
-}
-
-/* Widgets d'en-tête - Thème Rouge */
-[data-theme="rouge"] .news-widget-clock,
-[data-theme="rouge"] .weather-temp,
-[data-theme="rouge"] .visitors-counter,
-[data-theme="rouge"] .header-btn {
-    background: rgba(211, 47, 47, 0.1) !important;
-    border-color: #d32f2f !important;
-    color: #000000 !important;
-}
-
-[data-theme="rouge"] .news-widget-clock:hover,
-[data-theme="rouge"] .weather-temp:hover,
-[data-theme="rouge"] .visitors-counter:hover,
-[data-theme="rouge"] .header-btn:hover {
-    background: #d32f2f;
-    color: white;
-}
-
-[data-theme="rouge"] .temp-value,
-[data-theme="rouge"] .visitors-count,
-[data-theme="rouge"] .temp-label,
-[data-theme="rouge"] .visitors-label {
-    font-size: 14px;
-    color: #000000;
-}
-
-/* ===== THÈME BLEU CIEL ===== */
-[data-theme="bleuciel"] .local-news-widget {
-    background: rgba(255, 255, 255, 0.95);
-    border-color: rgba(14, 165, 233, 0.4);
-}
-
-[data-theme="bleuciel"] .news-widget-header,
-[data-theme="bleuciel"] .news-widget-title,
-[data-theme="bleuciel"] .news-widget-title-short,
-[data-theme="bleuciel"] .news-widget-footer {
-    color: #0ea5e9;
-}
-
-[data-theme="bleuciel"] .news-widget-badge {
-    background: #0ea5e9;
-}
-
-[data-theme="bleuciel"] .news-preview-item {
-    background: rgba(14, 165, 233, 0.1);
-    border-left-color: #0ea5e9;
-}
-
-[data-theme="bleuciel"] .news-widget-count {
-    background: rgba(14, 165, 233, 0.1);
-}
-
-/* Widgets d'en-tête - Thème Bleu Ciel */
-[data-theme="bleuciel"] .news-widget-clock,
-[data-theme="bleuciel"] .weather-temp,
-[data-theme="bleuciel"] .visitors-counter,
-[data-theme="bleuciel"] .header-btn {
-    background: rgba(14, 165, 233, 0.1);
-    border-color: #0ea5e9;
-    color: #0ea5e9;
-}
-
-[data-theme="bleuciel"] .news-widget-clock:hover,
-[data-theme="bleuciel"] .weather-temp:hover,
-[data-theme="bleuciel"] .visitors-counter:hover,
-[data-theme="bleuciel"] .header-btn:hover {
-    background: #0ea5e9;
-    color: white;
-}
-
-[data-theme="bleuciel"] .clock-time,
-[data-theme="bleuciel"] .clock-date,
-[data-theme="bleuciel"] .temp-value,
-[data-theme="bleuciel"] .visitors-count,
-[data-theme="bleuciel"] .temp-label,
-[data-theme="bleuciel"] .visitors-label {
-    color: #4196df;
-}
-
-[data-theme="bleuciel"] .visitors-count,
-[data-theme="bleuciel"] .temp-value,
-[data-theme="bleuciel"] .temp-label,
-[data-theme="bleuciel"] .visitors-label {
-    font-size: 14px;
-}
-
-[data-theme="bleuciel"] .clock-time {
-    font-size: 15px;
-}
-
-[data-theme="bleuciel"] .clock-date {
-    font-size: 12px;
-}
-
-/* ============================================= */
-/*        NEWS WIDGET CSS - PARTIE 6             */
-/*        Popups Alarme et Minuteur              */
-/* ============================================= */
-
-/* Overlay de la popup */
+/* ===== OVERLAY ET STRUCTURE POPUP ===== */
 .alarm-popup-overlay {
     position: fixed;
     top: 0;
@@ -700,7 +505,6 @@
     z-index: 10000;
 }
 
-/* Contenu de la popup */
 .alarm-popup-content {
     background: linear-gradient(145deg, #841b0a, #a92317);
     border: 2px solid #c62828;
@@ -712,7 +516,7 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
-/* En-tête de l'alarme */
+/* ===== EN-TÊTE ET BOUTONS ===== */
 .alarm-header {
     display: flex;
     justify-content: space-between;
@@ -720,7 +524,6 @@
     margin-bottom: 20px;
 }
 
-/* Bouton fermer */
 .alarm-close {
     background: none;
     border: none;
@@ -736,7 +539,7 @@
     background: rgba(255, 255, 255, 0.2);
 }
 
-/* Affichage de l'heure actuelle */
+/* ===== AFFICHAGE HEURE ACTUELLE ===== */
 .current-time {
     text-align: center;
     font-size: 2em;
@@ -747,7 +550,7 @@
     border-radius: 10px;
 }
 
-/* Sections alarme et minuteur */
+/* ===== SECTIONS ALARME ET MINUTEUR ===== */
 .alarm-section, .timer-section {
     margin-bottom: 20px;
     padding: 15px;
@@ -759,7 +562,7 @@
     margin: 0 0 10px 0;
 }
 
-/* Conteneurs des inputs */
+/* ===== CONTENEURS INPUTS ===== */
 .alarm-inputs, .timer-inputs {
     display: flex;
     flex-direction: column;
@@ -767,7 +570,7 @@
     align-items: center;
 }
 
-/* Styles des inputs et boutons */
+/* ===== STYLES INPUTS ET BOUTONS ===== */
 .alarm-section input, 
 .timer-section input, 
 .alarm-section select, 
@@ -785,7 +588,6 @@
     transition: all 0.3s ease;
 }
 
-/* Options des selects */
 .alarm-section select option,
 .timer-section select option {
     background: #333;
@@ -793,7 +595,6 @@
     padding: 5px;
 }
 
-/* Boutons */
 .alarm-section button, 
 .timer-section button {
     cursor: pointer;
@@ -806,7 +607,7 @@
     transform: scale(1.02);
 }
 
-/* Affichages de statut */
+/* ===== AFFICHAGES DE STATUT ===== */
 #alarmStatus, #timerDisplay {
     margin-top: 10px;
     font-weight: bold;
@@ -892,7 +693,7 @@
     animation: blink 1s infinite;
 }
 
-/* ===== ANIMATIONS ===== */
+/* ===== ANIMATIONS POPUP ALARME ===== */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -919,339 +720,12 @@
     51%, 100% { opacity: 0.7; }
 }
 
-/* ============================================= */
-/*        NEWS WIDGET CSS - PARTIE 7             */
-/*        Thèmes Alarme et Responsive            */
-/* ============================================= */
+/* =============================================
+   NEWS WIDGET CSS - PARTIE 6
+   Popup Statistiques Visiteurs
+   ============================================= */
 
-/* ===== THÈMES POUR L'ALARME ===== */
-
-/* Thème Dark (Sombre) */
-[data-theme="dark"] .alarm-popup-content,
-[data-theme="dark"] .stop-alarm-content {
-    background: linear-gradient(145deg, #212121, #424242);
-    border: 2px solid #616161;
-}
-
-[data-theme="dark"] .alarm-section,
-[data-theme="dark"] .timer-section {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="dark"] .current-time {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Thème Bleu Ciel */
-[data-theme="bleuciel"] .alarm-popup-content,
-[data-theme="bleuciel"] .stop-alarm-content {
-    background: linear-gradient(145deg, #1976d2, #42a5f5);
-    border: 2px solid #64b5f6;
-}
-
-[data-theme="bleuciel"] .alarm-section,
-[data-theme="bleuciel"] .timer-section,
-[data-theme="bleuciel"] .current-time {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-/* Thème Light (Violet) */
-[data-theme="light"] .alarm-popup-content,
-[data-theme="light"] .stop-alarm-content {
-    background: linear-gradient(145deg, #7b1fa2, #ab47bc);
-    border: 2px solid #ce93d8;
-}
-
-[data-theme="light"] .alarm-section,
-[data-theme="light"] .timer-section,
-[data-theme="light"] .current-time {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-/* ===== RESPONSIVE GÉNÉRAL ===== */
-@media (max-width: 767px) {
-    .news-widget-container {
-        position: relative;
-        padding: 0 5px;
-        margin: 130px auto 15px auto;
-        order: 2;
-    }
-    
-    .local-news-widget {
-        margin: 0;
-        padding: 12px;
-    }
-    
-    .news-widget-title {
-        font-size: 16px;
-    }
-    
-    .news-widget-footer {
-        flex-direction: column;
-        gap: 5px;
-        text-align: center;
-    }
-}
-
-/* ===== RESPONSIVE POPUP ALARME ===== */
-@media (max-width: 768px) {
-    .alarm-popup-overlay {
-        padding: 10px;
-        align-items: flex-start;
-        padding-top: 20px;
-    }
-    
-    .alarm-popup-content {
-        margin: 0 !important;
-        padding: 15px !important;
-        min-width: auto !important;
-        max-width: 95vw !important;
-        width: 100% !important;
-        max-height: 85vh;
-        overflow-y: auto;
-        box-sizing: border-box;
-    }
-    
-    .current-time {
-        font-size: 1.5em !important;
-        padding: 10px !important;
-        margin-bottom: 15px !important;
-    }
-    
-    .alarm-section, .timer-section {
-        margin-bottom: 15px !important;
-        padding: 12px !important;
-    }
-    
-    .alarm-section h4, .timer-section h4 {
-        font-size: 16px !important;
-        margin-bottom: 12px !important;
-        text-align: center;
-    }
-    
-    .alarm-close {
-        font-size: 24px !important;
-        padding: 8px !important;
-        min-width: 40px;
-        min-height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .alarm-section input, .timer-section input, 
-    .alarm-section select, .timer-section select,
-    .alarm-section button, .timer-section button {
-        width: 100% !important;
-        max-width: 280px !important;
-        margin: 0 auto !important;
-        font-size: 16px !important;
-        padding: 12px !important;
-        min-height: 48px;
-        box-sizing: border-box;
-        touch-action: manipulation;
-    }
-    
-    .alarm-section input[type="time"] {
-        height: 54px !important;
-        font-size: 18px !important;
-        font-weight: bold !important;
-        letter-spacing: 2px !important;
-        text-align: center !important;
-        padding: 0 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-    
-    .stop-alarm-content {
-        margin: 15px;
-        padding: 25px !important;
-        min-width: auto !important;
-        max-width: 90vw !important;
-        width: auto !important;
-    }
-    
-    .stop-alarm-content h3 {
-        font-size: 1.3em !important;
-        margin-bottom: 12px !important;
-    }
-    
-    .stop-alarm-btn {
-        padding: 18px 35px !important;
-        font-size: 18px !important;
-        width: 100%;
-        max-width: 200px;
-        margin: 0 auto;
-        display: block;
-    }
-    
-    .alarm-timer {
-        font-size: 1.6em !important;
-        padding: 12px !important;
-        margin-top: 15px !important;
-    }
-    
-    #alarmStatus, #timerDisplay {
-        font-size: 16px !important;
-        padding: 12px !important;
-        margin-top: 12px !important;
-        word-wrap: break-word;
-        text-align: center !important;
-    }
-    
-    .alarm-inputs, .timer-inputs {
-        width: 100% !important;
-        padding: 0 10px !important;
-        gap: 15px !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-    
-    .alarm-popup-content {
-        scroll-behavior: smooth;
-        -webkit-overflow-scrolling: touch;
-    }
-    
-    .alarm-section button:hover, 
-    .timer-section button:hover,
-    .alarm-close:hover,
-    .stop-alarm-btn:hover {
-        transform: scale(1.02) !important;
-    }
-    
-    .alarm-section button:active, 
-    .timer-section button:active,
-    .alarm-close:active,
-    .stop-alarm-btn:active {
-        transform: scale(0.98) !important;
-    }
-}
-
-/* Très petits écrans */
-@media (max-width: 380px) {
-    .alarm-popup-content {
-        padding: 12px !important;
-        max-width: 98vw !important;
-    }
-    
-    .current-time {
-        font-size: 1.3em !important;
-        padding: 8px !important;
-    }
-    
-    .alarm-section, .timer-section {
-        padding: 10px !important;
-        margin-bottom: 12px !important;
-    }
-    
-    .alarm-section h4, .timer-section h4 {
-        font-size: 14px !important;
-    }
-    
-    .alarm-section input, .timer-section input, 
-    .alarm-section select, .timer-section select,
-    .alarm-section button, .timer-section button {
-        max-width: 100% !important;
-        font-size: 14px !important;
-        padding: 10px !important;
-    }
-    
-    .alarm-section input[type="time"] {
-        height: 48px !important;
-        font-size: 16px !important;
-    }
-}
-
-/* Paysage smartphone */
-@media (max-width: 768px) and (orientation: landscape) {
-    .alarm-popup-overlay {
-        padding-top: 10px;
-    }
-    
-    .alarm-popup-content {
-        max-height: 90vh;
-    }
-    
-    .current-time {
-        font-size: 1.4em !important;
-        padding: 8px !important;
-        margin-bottom: 12px !important;
-    }
-    
-    .alarm-section, .timer-section {
-        padding: 8px !important;
-        margin-bottom: 10px !important;
-    }
-}
-
-/* ============================================= */
-/*        NEWS WIDGET CSS - PARTIE 8             */
-/*        Popup Statistiques Visiteurs           */
-/* ============================================= */
-
-/* Variables de couleur pour chaque thème */
-:root, [data-theme="light"] {
-    --popup-bg: #ffffff;
-    --popup-text: #333333;
-    --popup-shadow: rgba(0, 0, 0, 0.15);
-    --summary-bg: #f8f9fa;
-    --summary-text: #495057;
-    --chart-line-color: #007BFF;
-    --chart-area-bg: rgba(0, 123, 255, 0.1);
-    --chart-grid-color: #e9ecef;
-    --stat-card-bg: #f0f7ff;
-    --stat-card-border: #d1e7ff;
-    --active-color: #28a745;
-}
-
-[data-theme="dark"] {
-    --popup-bg: #2d3748;
-    --popup-text: #f7fafc;
-    --popup-shadow: rgba(0, 0, 0, 0.4);
-    --summary-bg: #4a5568;
-    --summary-text: #f7fafc;
-    --chart-line-color: #63b3ed;
-    --chart-area-bg: rgba(99, 179, 237, 0.15);
-    --chart-grid-color: #4a5568;
-    --stat-card-bg: #374151;
-    --stat-card-border: #4a5568;
-    --active-color: #34d399;
-}
-
-[data-theme="rouge"] {
-    --popup-bg: #ffffff;
-    --popup-text: #2d1b1e;
-    --popup-shadow: rgba(195, 36, 51, 0.3);
-    --summary-bg: #fee2e2;
-    --summary-text: #991b1b;
-    --chart-line-color: #dc2626;
-    --chart-area-bg: rgba(220, 38, 38, 0.1);
-    --chart-grid-color: #fecaca;
-    --stat-card-bg: #fef2f2;
-    --stat-card-border: #fecaca;
-    --active-color: #dc2626;
-}
-
-[data-theme="bleuciel"] {
-    --popup-bg: #ffffff;
-    --popup-text: #1e3a8a;
-    --popup-shadow: rgba(59, 130, 246, 0.2);
-    --summary-bg: #dbeafe;
-    --summary-text: #1e40af;
-    --chart-line-color: #3b82f6;
-    --chart-area-bg: rgba(59, 130, 246, 0.1);
-    --chart-grid-color: #bfdbfe;
-    --stat-card-bg: #eff6ff;
-    --stat-card-border: #bfdbfe;
-    --active-color: #3b82f6;
-}
-
-/* Structure de la popup */
+/* ===== STRUCTURE POPUP VISITEURS ===== */
 .visitors-popup-overlay {
     position: fixed;
     top: 0;
@@ -1297,6 +771,7 @@
     transform: scale(1) translateY(0);
 }
 
+/* ===== HEADER POPUP VISITEURS ===== */
 .visitors-popup-header {
     display: flex;
     justify-content: space-between;
@@ -1346,7 +821,7 @@
     transform: scale(1.1);
 }
 
-/* Cartes de statistiques */
+/* ===== CARTES STATISTIQUES ===== */
 .visitors-stats-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1397,7 +872,7 @@
     vertical-align: middle;
 }
 
-/* Zone du graphique */
+/* ===== ZONE GRAPHIQUE ===== */
 .visitors-chart-container {
     background: var(--summary-bg);
     border-radius: 16px;
@@ -1448,6 +923,7 @@
     height: 200px !important;
 }
 
+/* ===== INFOS ET RÉSUMÉ ===== */
 .visitors-chart-info {
     background: var(--popup-bg);
     border: 1px solid var(--chart-grid-color);
@@ -1469,7 +945,6 @@
     margin-bottom: 4px;
 }
 
-/* Résumé */
 .visitors-popup-summary {
     margin: 0;
     text-align: center;
@@ -1501,7 +976,7 @@
     color: var(--chart-line-color);
 }
 
-/* Badge temps réel */
+/* ===== BADGE TEMPS RÉEL ===== */
 .visitors-realtime-badge {
     display: inline-flex;
     align-items: center;
@@ -1524,7 +999,7 @@
     animation: blink 1.5s infinite;
 }
 
-/* Animation d'apparition */
+/* ===== ANIMATIONS VISITEURS ===== */
 @keyframes slideInUp {
     from {
         opacity: 0;
@@ -1540,131 +1015,216 @@
     animation: slideInUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-/* Responsive Mobile */
-@media (max-width: 480px) {
-    .visitors-popup-box {
-        padding: 20px 16px;
-        max-width: 92vw;
-        max-height: 95vh;
-        border-radius: 16px;
-    }
-    
-    .visitors-popup-title {
-        font-size: 1.15rem;
-    }
-    
-    .visitors-stats-grid {
-        gap: 10px;
-    }
-    
-    .visitors-stat-card {
-        padding: 14px 10px;
-    }
-    
-    .visitors-stat-value {
-        font-size: 1.75rem;
-    }
-    
-    .visitors-stat-label {
-        font-size: 0.8rem;
-    }
-    
-    .visitors-chart-container {
-        padding: 12px;
-    }
-    
-    #visitorsChart {
-        height: 180px !important;
-    }
-    
-    .visitors-popup-summary {
-        font-size: 0.85rem;
-        padding: 14px;
-    }
+/* =============================================
+   NEWS WIDGET CSS - PARTIE 7
+   Thèmes de couleurs
+   ============================================= */
+
+/* ===== THÈME LIGHT (VIOLET) ===== */
+[data-theme="light"] .local-news-widget {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(126, 87, 194, 0.4);
 }
 
-/* Très petits écrans */
-@media (max-width: 360px) {
-    .visitors-stat-value {
-        font-size: 1.5rem;
-    }
-    
-    .visitors-popup-title {
-        font-size: 1.05rem;
-    }
-    
-    .visitors-popup-title .material-icons {
-        font-size: 1.3rem;
-    }
+[data-theme="light"] .news-widget-header,
+[data-theme="light"] .news-widget-title,
+[data-theme="light"] .news-widget-title-short,
+[data-theme="light"] .news-widget-footer {
+    color: #7e57c2;
 }
 
-/* Indicateur visuel mobile pour l'horloge */
-@media (max-width: 767px) {
-    .news-widget-clock {
-        position: relative;
-    }
-    
-    /* Petit point coloré visible en permanence sur mobile */
-    .news-widget-clock::before {
-        content: '';
-        position: absolute;
-        top: 1px;
-        right: 1px;
-        width: 8px;
-        height: 8px;
-        background: #4CAF50;
-        border-radius: 50%;
-        animation: pulse-mobile 3s infinite;
-        z-index: 10;
-        border: 1px solid white;
-    }
-    
-    /* Animation plus lente pour mobile */
-    @keyframes pulse-mobile {
-        0%, 100% { 
-            opacity: 0.6; 
-            transform: scale(1);
-        }
-        50% { 
-            opacity: 1; 
-            transform: scale(1.3);
-        }
-    }
+[data-theme="light"] .news-widget-badge {
+    background: #7e57c2;
 }
 
-/* Bouton retour accueil pour modal cinéma */
-.cinema-footer-button-home {
-    background: #ffffff;
-    padding: 16px 20px 8px 20px;
-    text-align: center;
+[data-theme="light"] .news-preview-item {
+    background: rgba(126, 87, 194, 0.1);
+    border-left-color: #7e57c2;
 }
 
-.cinema-home-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    background: white;
-    color: var(--primary-color);
-    border: 2px solid var(--primary-color);
-    padding: 14px 24px;
-    border-radius: 12px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    width: 100%;
-    max-width: 300px;
-    cursor: pointer;
-    font-size: 16px;
+[data-theme="light"] .news-widget-count {
+    background: rgba(126, 87, 194, 0.1);
 }
 
-.cinema-home-button:active {
-    background: var(--primary-color);
+/* Widgets d'en-tête - Thème Light */
+[data-theme="light"] .news-widget-clock,
+[data-theme="light"] .weather-temp,
+[data-theme="light"] .visitors-counter,
+[data-theme="light"] .header-btn {
+    background: rgba(126, 87, 194, 0.1);
+    border-color: #7e57c2;
+    color: #7e57c2;
+}
+
+[data-theme="light"] .news-widget-clock:hover,
+[data-theme="light"] .weather-temp:hover,
+[data-theme="light"] .visitors-counter:hover,
+[data-theme="light"] .header-btn:hover {
+    background: #7e57c2;
     color: white;
-    transform: scale(0.95);
 }
 
-/* Styles pour les thèmes */
+[data-theme="light"] .clock-time,
+[data-theme="light"] .clock-date {
+    color: #9b87ce;
+    font-size: 15px;
+}
+
+[data-theme="light"] .clock-date {
+    font-size: 12px;
+}
+
+[data-theme="light"] .temp-value,
+[data-theme="light"] .visitors-count,
+[data-theme="light"] .temp-label,
+[data-theme="light"] .visitors-label {
+    color: #7e57c2;
+    font-size: 14px;
+}
+
+/* Alarme - Thème Light */
+[data-theme="light"] .alarm-popup-content,
+[data-theme="light"] .stop-alarm-content {
+    background: linear-gradient(145deg, #7b1fa2, #ab47bc);
+    border: 2px solid #ce93d8;
+}
+
+[data-theme="light"] .alarm-section,
+[data-theme="light"] .timer-section,
+[data-theme="light"] .current-time {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Bouton cinéma - Thème Light */
+[data-theme="light"] .cinema-home-button {
+    background: white;
+    color: #7e57c2;
+    border-color: #7e57c2;
+}
+
+[data-theme="light"] .cinema-home-button:active {
+    background: #7e57c2;
+    color: white;
+}
+
+/* ===== THÈME DARK (BLEU NUIT) ===== */
+[data-theme="dark"] .local-news-widget {
+    background: rgba(40, 40, 40, 0.95);
+    border-color: rgba(26, 35, 126, 0.6);
+    backdrop-filter: blur(15px);
+}
+
+[data-theme="dark"] .news-widget-header,
+[data-theme="dark"] .news-widget-title,
+[data-theme="dark"] .news-widget-title-short,
+[data-theme="dark"] .news-widget-footer,
+[data-theme="dark"] .news-widget-preview {
+    color: #ffffff;
+}
+
+[data-theme="dark"] .news-widget-badge {
+    background: #1a237e;
+    border: 1px solid #5c6bc0;
+}
+
+[data-theme="dark"] .movie-dates {
+    color: #aaa;
+}
+
+[data-theme="dark"] .loading-news {
+    color: #b0b0b0;
+}
+
+[data-theme="dark"] .news-preview-item {
+    background: rgba(26, 35, 126, 0.2);
+    border-left-color: #5c6bc0;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .news-preview-item strong {
+    color: #f6d34f;
+}
+
+[data-theme="dark"] .news-widget-count {
+    background: rgba(26, 35, 126, 0.3);
+    color: #ffffff;
+}
+
+[data-theme="dark"] .news-widget-tap {
+    color: #ffffff;
+}
+
+/* Widgets d'en-tête - Thème Dark */
+[data-theme="dark"] .news-widget-clock,
+[data-theme="dark"] .weather-temp,
+[data-theme="dark"] .visitors-counter,
+[data-theme="dark"] .header-btn {
+    background: rgba(92, 107, 192, 0.2);
+    border-color: #5c6bc0;
+    color: #ffffffcc;
+}
+
+[data-theme="dark"] .news-widget-clock:hover,
+[data-theme="dark"] .weather-temp:hover,
+[data-theme="dark"] .visitors-counter:hover,
+[data-theme="dark"] .header-btn:hover {
+    background: #5c6bc0;
+    color: white;
+}
+
+[data-theme="dark"] .temp-value,
+[data-theme="dark"] .visitors-count,
+[data-theme="dark"] .temp-label,
+[data-theme="dark"] .visitors-label,
+[data-theme="dark"] .clock-time,
+[data-theme="dark"] .clock-date {
+    color: #ffffff;
+    font-size: 14px;
+}
+
+[data-theme="dark"] .clock-time {
+    font-size: 15px;
+}
+
+[data-theme="dark"] .clock-date {
+    font-size: 12px;
+}
+
+/* Variables visiteurs - Thème Dark */
+[data-theme="dark"] {
+    --popup-bg: #2d3748;
+    --popup-text: #f7fafc;
+    --popup-shadow: rgba(0, 0, 0, 0.4);
+    --summary-bg: #4a5568;
+    --summary-text: #f7fafc;
+    --chart-line-color: #63b3ed;
+    --chart-area-bg: rgba(99, 179, 237, 0.15);
+    --chart-grid-color: #4a5568;
+    --stat-card-bg: #374151;
+    --stat-card-border: #4a5568;
+    --active-color: #34d399;
+}
+
+/* Alarme - Thème Dark */
+[data-theme="dark"] .alarm-popup-content,
+[data-theme="dark"] .stop-alarm-content {
+    background: linear-gradient(145deg, #212121, #424242);
+    border: 2px solid #616161;
+}
+
+[data-theme="dark"] .alarm-section,
+[data-theme="dark"] .timer-section {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .current-time {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Bouton cinéma - Thème Dark */
 [data-theme="dark"] .cinema-home-button {
     background: #2a2a2a;
     color: #7986cb;
@@ -1678,4 +1238,182 @@
 
 [data-theme="dark"] .cinema-footer-button-home {
     background: #1a1a1a;
+}
+
+/* ===== THÈME ROUGE ===== */
+[data-theme="rouge"] .local-news-widget {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(211, 47, 47, 0.4);
+}
+
+[data-theme="rouge"] .news-widget-header,
+[data-theme="rouge"] .news-widget-title,
+[data-theme="rouge"] .news-widget-title-short,
+[data-theme="rouge"] .news-widget-footer {
+    color: #d32f2f;
+}
+
+[data-theme="rouge"] .news-widget-badge {
+    background: #d32f2f;
+}
+
+[data-theme="rouge"] .news-preview-item {
+    background: rgba(211, 47, 47, 0.1);
+    border-left-color: #d32f2f;
+    color: #000000;
+}
+
+[data-theme="rouge"] .news-widget-count {
+    background: rgba(211, 47, 47, 0.1);
+    color: #000000;
+}
+
+/* Widgets d'en-tête - Thème Rouge */
+[data-theme="rouge"] .news-widget-clock,
+[data-theme="rouge"] .weather-temp,
+[data-theme="rouge"] .visitors-counter,
+[data-theme="rouge"] .header-btn {
+    background: rgba(211, 47, 47, 0.1);
+    border-color: #d32f2f;
+    color: #000000;
+}
+
+[data-theme="rouge"] .news-widget-clock:hover,
+[data-theme="rouge"] .weather-temp:hover,
+[data-theme="rouge"] .visitors-counter:hover,
+[data-theme="rouge"] .header-btn:hover {
+    background: #d32f2f;
+    color: white;
+}
+
+[data-theme="rouge"] .temp-value,
+[data-theme="rouge"] .visitors-count,
+[data-theme="rouge"] .temp-label,
+[data-theme="rouge"] .visitors-label {
+    font-size: 14px;
+    color: #000000;
+}
+
+/* Variables visiteurs - Thème Rouge */
+[data-theme="rouge"] {
+    --popup-bg: #ffffff;
+    --popup-text: #2d1b1e;
+    --popup-shadow: rgba(195, 36, 51, 0.3);
+    --summary-bg: #fee2e2;
+    --summary-text: #991b1b;
+    --chart-line-color: #dc2626;
+    --chart-area-bg: rgba(220, 38, 38, 0.1);
+    --chart-grid-color: #fecaca;
+    --stat-card-bg: #fef2f2;
+    --stat-card-border: #fecaca;
+    --active-color: #dc2626;
+}
+
+/* ===== THÈME BLEU CIEL ===== */
+[data-theme="bleuciel"] .local-news-widget {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(14, 165, 233, 0.4);
+}
+
+[data-theme="bleuciel"] .news-widget-header,
+[data-theme="bleuciel"] .news-widget-title,
+[data-theme="bleuciel"] .news-widget-title-short,
+[data-theme="bleuciel"] .news-widget-footer {
+    color: #0ea5e9;
+}
+
+[data-theme="bleuciel"] .news-widget-badge {
+    background: #0ea5e9;
+}
+
+[data-theme="bleuciel"] .news-preview-item {
+    background: rgba(14, 165, 233, 0.1);
+    border-left-color: #0ea5e9;
+}
+
+[data-theme="bleuciel"] .news-widget-count {
+    background: rgba(14, 165, 233, 0.1);
+}
+
+/* Widgets d'en-tête - Thème Bleu Ciel */
+[data-theme="bleuciel"] .news-widget-clock,
+[data-theme="bleuciel"] .weather-temp,
+[data-theme="bleuciel"] .visitors-counter,
+[data-theme="bleuciel"] .header-btn {
+    background: rgba(14, 165, 233, 0.1);
+    border-color: #0ea5e9;
+    color: #0ea5e9;
+}
+
+[data-theme="bleuciel"] .news-widget-clock:hover,
+[data-theme="bleuciel"] .weather-temp:hover,
+[data-theme="bleuciel"] .visitors-counter:hover,
+[data-theme="bleuciel"] .header-btn:hover {
+    background: #0ea5e9;
+    color: white;
+}
+
+[data-theme="bleuciel"] .clock-time,
+[data-theme="bleuciel"] .clock-date,
+[data-theme="bleuciel"] .temp-value,
+[data-theme="bleuciel"] .visitors-count,
+[data-theme="bleuciel"] .temp-label,
+[data-theme="bleuciel"] .visitors-label {
+    color: #4196df;
+}
+
+[data-theme="bleuciel"] .visitors-count,
+[data-theme="bleuciel"] .temp-value,
+[data-theme="bleuciel"] .temp-label,
+[data-theme="bleuciel"] .visitors-label {
+    font-size: 14px;
+}
+
+[data-theme="bleuciel"] .clock-time {
+    font-size: 15px;
+}
+
+[data-theme="bleuciel"] .clock-date {
+    font-size: 12px;
+}
+
+/* Variables visiteurs - Thème Bleu Ciel */
+[data-theme="bleuciel"] {
+    --popup-bg: #ffffff;
+    --popup-text: #1e3a8a;
+    --popup-shadow: rgba(59, 130, 246, 0.2);
+    --summary-bg: #dbeafe;
+    --summary-text: #1e40af;
+    --chart-line-color: #3b82f6;
+    --chart-area-bg: rgba(59, 130, 246, 0.1);
+    --chart-grid-color: #bfdbfe;
+    --stat-card-bg: #eff6ff;
+    --stat-card-border: #bfdbfe;
+    --active-color: #3b82f6;
+}
+
+/* Alarme - Thème Bleu Ciel */
+[data-theme="bleuciel"] .alarm-popup-content,
+[data-theme="bleuciel"] .stop-alarm-content {
+    background: linear-gradient(145deg, #1976d2, #42a5f5);
+    border: 2px solid #64b5f6;
+}
+
+[data-theme="bleuciel"] .alarm-section,
+[data-theme="bleuciel"] .timer-section,
+[data-theme="bleuciel"] .current-time {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Bouton cinéma - Thème Bleu Ciel */
+[data-theme="bleuciel"] .cinema-home-button {
+    background: white;
+    color: #0ea5e9;
+    border-color: #0ea5e9;
+}
+
+[data-theme="bleuciel"] .cinema-home-button:active {
+    background: #0ea5e9;
+    color: white;
 }
