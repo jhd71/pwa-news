@@ -1,15 +1,30 @@
 /* ============================================= */
 /*        NEWS WIDGET CSS - PARTIE 1             */
-/*        Structure de base et conteneur         */
+/*        Variables globales et Base             */
 /* ============================================= */
 
-/* Variables CSS globales */
+/* ===== VARIABLES CSS GLOBALES ===== */
 :root {
     --primary-color: #dc3545;
     --primary-color-rgb: 220, 53, 69;
 }
 
-/* Conteneur principal du widget */
+/* Variables pour popup statistiques */
+:root, [data-theme="light"] {
+    --popup-bg: #ffffff;
+    --popup-text: #333333;
+    --popup-shadow: rgba(0, 0, 0, 0.15);
+    --summary-bg: #f8f9fa;
+    --summary-text: #495057;
+    --chart-line-color: #007BFF;
+    --chart-area-bg: rgba(0, 123, 255, 0.1);
+    --chart-grid-color: #e9ecef;
+    --stat-card-bg: #f0f7ff;
+    --stat-card-border: #d1e7ff;
+    --active-color: #28a745;
+}
+
+/* ===== CONTENEUR PRINCIPAL ===== */
 .news-widget-container {
     max-width: 600px;
     margin: 15px auto;
@@ -17,7 +32,7 @@
     order: 2;
 }
 
-/* Widget principal */
+/* ===== WIDGET PRINCIPAL ===== */
 .local-news-widget {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 15px;
@@ -41,7 +56,12 @@
     transform: scale(0.98);
 }
 
-/* En-tête du widget */
+/* ============================================= */
+/*        NEWS WIDGET CSS - PARTIE 2             */
+/*        En-tête et éléments structurels        */
+/* ============================================= */
+
+/* ===== EN-TÊTE DU WIDGET ===== */
 .news-widget-header {
     display: flex;
     align-items: center;
@@ -50,7 +70,7 @@
     color: var(--primary-color);
 }
 
-/* Titre du widget */
+/* ===== TITRES ===== */
 .news-widget-title {
     font-size: 18px;
     font-weight: bold;
@@ -65,7 +85,7 @@
     margin-right: auto;
 }
 
-/* Badge du widget */
+/* ===== BADGE ===== */
 .news-widget-badge {
     background: var(--primary-color);
     color: white;
@@ -76,26 +96,132 @@
     text-transform: uppercase;
 }
 
+/* ===== PIED DE PAGE ===== */
+.news-widget-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--primary-color);
+    font-weight: 500;
+    font-size: 13px;
+    margin-top: 10px;
+    border-top: 1px solid rgba(var(--primary-color-rgb), 0.2);
+    padding-top: 8px;
+}
+
+.news-widget-tap {
+    font-size: 12px;
+    color: #000000;
+}
+
+.news-widget-count {
+    background: rgba(var(--primary-color-rgb), 0.1);
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
 /* ============================================= */
-/*        NEWS WIDGET CSS - PARTIE 2             */
-/*        Boutons et éléments interactifs        */
+/*        NEWS WIDGET CSS - PARTIE 3             */
+/*        Zone de contenu et prévisualisation    */
 /* ============================================= */
 
-/* Conteneur des boutons dans l'en-tête */
+/* ===== ZONE DE PRÉVISUALISATION ===== */
+.news-widget-preview {
+    color: #333;
+    font-size: 14px;
+    line-height: 1.4;
+    margin-bottom: 10px;
+    min-height: 120px;
+    max-height: 250px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* ===== SCROLLBAR PERSONNALISÉE ===== */
+.news-widget-preview::-webkit-scrollbar {
+    width: 4px;
+}
+
+.news-widget-preview::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+}
+
+.news-widget-preview::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 2px;
+    opacity: 0.7;
+}
+
+.news-widget-preview::-webkit-scrollbar-thumb:hover {
+    opacity: 1;
+}
+
+/* ===== ITEMS DE PRÉVISUALISATION ===== */
+.news-preview-item {
+    background: rgba(var(--primary-color-rgb), 0.1);
+    border-left: 3px solid var(--primary-color);
+    padding: 8px 12px;
+    margin: 6px 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.news-preview-item:hover {
+    background: rgba(var(--primary-color-rgb), 0.2);
+    transform: translateX(2px);
+}
+
+.news-preview-item strong {
+    color: var(--primary-color);
+}
+
+/* ===== ÉLÉMENTS SPÉCIFIQUES ===== */
+.movie-dates {
+    font-size: 13px;
+    color: #888;
+    font-style: italic;
+    margin-top: 2px;
+}
+
+/* ===== ÉTAT DE CHARGEMENT ===== */
+.loading-news {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+    font-style: italic;
+}
+
+.spinning {
+    animation: spin 1s linear infinite;
+}
+
+/* ============================================= */
+/*        NEWS WIDGET CSS - PARTIE 4             */
+/*        Boutons et Widgets d'en-tête           */
+/* ============================================= */
+
+/* ===== CONTENEUR DES BOUTONS HEADER ===== */
 .news-widget-header .header-buttons {
     display: flex;
     gap: 6px;
     margin-left: 10px;
 }
 
-/* Masquer les boutons sur desktop */
+/* Masquer sur desktop */
 @media (min-width: 768px) {
     .news-widget-header .header-buttons {
         display: none !important;
     }
 }
 
-/* Styles généraux des boutons */
+/* ===== STYLES GÉNÉRAUX DES BOUTONS ===== */
 .header-btn {
     background: rgba(var(--primary-color-rgb), 0.15) !important;
     border: 1px solid var(--primary-color) !important;
@@ -129,7 +255,7 @@
     transform: scale(0.95);
 }
 
-/* Bouton Photos */
+/* ===== BOUTONS SPÉCIFIQUES ===== */
 .photos-btn {
     background: rgba(255, 107, 157, 0.15);
     border-color: #FF6B9D;
@@ -141,7 +267,6 @@
     color: white;
 }
 
-/* Bouton Cinéma */
 .cinema-btn {
     background: rgba(var(--primary-color-rgb), 0.15);
     border-color: var(--primary-color);
@@ -153,151 +278,7 @@
     color: white;
 }
 
-/* Positionnement mobile des boutons */
-@media (max-width: 767px) {
-    .news-widget-header .header-buttons {
-        position: relative !important;
-        display: contents !important;
-    }
-    
-    .photos-btn {
-        position: absolute !important;
-        bottom: 10px !important;
-        left: 15px !important;
-        min-width: 40px !important;
-        height: 24px !important;
-        font-size: 12px !important;
-        z-index: 10 !important;
-    }
-    
-    .cinema-btn {
-        position: absolute !important;
-        bottom: 10px !important;
-        right: 15px !important;
-        min-width: 40px !important;
-        height: 24px !important;
-        font-size: 12px !important;
-        z-index: 10 !important;
-    }
-}
-
-/* ============================================= */
-/*        NEWS WIDGET CSS - PARTIE 3             */
-/*        Prévisualisation et contenu            */
-/* ============================================= */
-
-/* Zone de prévisualisation des actualités */
-.news-widget-preview {
-    color: #333;
-    font-size: 14px;
-    line-height: 1.4;
-    margin-bottom: 10px;
-    min-height: 120px;
-    max-height: 250px;
-    overflow-y: auto;
-    padding-right: 5px;
-}
-
-/* Scrollbar personnalisée */
-.news-widget-preview::-webkit-scrollbar {
-    width: 4px;
-}
-
-.news-widget-preview::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 2px;
-}
-
-.news-widget-preview::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
-    border-radius: 2px;
-    opacity: 0.7;
-}
-
-.news-widget-preview::-webkit-scrollbar-thumb:hover {
-    opacity: 1;
-}
-
-/* Items de prévisualisation */
-.news-preview-item {
-    background: rgba(var(--primary-color-rgb), 0.1);
-    border-left: 3px solid var(--primary-color);
-    padding: 8px 12px;
-    margin: 6px 0;
-    border-radius: 0 8px 8px 0;
-    font-size: 14px;
-    transition: all 0.2s ease;
-    cursor: pointer;
-}
-
-.news-preview-item:hover {
-    background: rgba(var(--primary-color-rgb), 0.2);
-    transform: translateX(2px);
-}
-
-.news-preview-item strong {
-    color: var(--primary-color);
-}
-
-/* Dates des films */
-.movie-dates {
-    font-size: 13px;
-    color: #888;
-    font-style: italic;
-    margin-top: 2px;
-}
-
-/* État de chargement */
-.loading-news {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #666;
-    font-style: italic;
-}
-
-.spinning {
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-/* Pied de page du widget */
-.news-widget-footer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    color: var(--primary-color);
-    font-weight: 500;
-    font-size: 13px;
-    margin-top: 10px;
-    border-top: 1px solid rgba(var(--primary-color-rgb), 0.2);
-    padding-top: 8px;
-}
-
-.news-widget-tap {
-    font-size: 12px;
-    color: #000000;
-}
-
-.news-widget-count {
-    background: rgba(var(--primary-color-rgb), 0.1);
-    padding: 4px 8px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-/* ============================================= */
-/*        NEWS WIDGET CSS - PARTIE 4             */
-/*        Widgets d'en-tête                      */
-/* ============================================= */
-
-/* Conteneur des widgets d'en-tête */
+/* ===== WIDGETS D'EN-TÊTE ===== */
 .header-widgets {
     display: flex;
     gap: 8px;
@@ -386,27 +367,36 @@
     color: white;
 }
 
-/* Responsive mobile pour widgets d'en-tête */
-@media (max-width: 767px) {
-    .header-widgets {
-        gap: 4px;
-    }
-    
-    .weather-temp,
-    .visitors-counter {
-        min-width: 40px;
-        padding: 4px 6px;
-    }
-    
-    .temp-value,
-    .visitors-count {
-        font-size: 14px;
-    }
-    
-    .temp-label,
-    .visitors-label {
-        font-size: 11px;
-    }
+/* Bouton retour cinéma */
+.cinema-footer-button-home {
+    background: #ffffff;
+    padding: 16px 20px 8px 20px;
+    text-align: center;
+}
+
+.cinema-home-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: white;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    padding: 14px 24px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 300px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.cinema-home-button:active {
+    background: var(--primary-color);
+    color: white;
+    transform: scale(0.95);
 }
 
 /* ============================================= */
@@ -414,7 +404,9 @@
 /*        Thèmes de couleurs                     */
 /* ============================================= */
 
-/* ===== THÈME LIGHT (VIOLET) ===== */
+/* ========================================= */
+/*           THÈME LIGHT (VIOLET)           */
+/* ========================================= */
 [data-theme="light"] .local-news-widget {
     background: rgba(255, 255, 255, 0.95);
     border-color: rgba(126, 87, 194, 0.4);
@@ -440,7 +432,6 @@
     background: rgba(126, 87, 194, 0.1);
 }
 
-/* Widgets d'en-tête - Thème Light */
 [data-theme="light"] .news-widget-clock,
 [data-theme="light"] .weather-temp,
 [data-theme="light"] .visitors-counter,
@@ -476,7 +467,23 @@
     font-size: 14px;
 }
 
-/* ===== THÈME DARK (BLEU NUIT) ===== */
+/* ========================================= */
+/*           THÈME DARK (BLEU NUIT)         */
+/* ========================================= */
+[data-theme="dark"] {
+    --popup-bg: #2d3748;
+    --popup-text: #f7fafc;
+    --popup-shadow: rgba(0, 0, 0, 0.4);
+    --summary-bg: #4a5568;
+    --summary-text: #f7fafc;
+    --chart-line-color: #63b3ed;
+    --chart-area-bg: rgba(99, 179, 237, 0.15);
+    --chart-grid-color: #4a5568;
+    --stat-card-bg: #374151;
+    --stat-card-border: #4a5568;
+    --active-color: #34d399;
+}
+
 [data-theme="dark"] .local-news-widget {
     background: rgba(40, 40, 40, 0.95);
     border-color: rgba(26, 35, 126, 0.6);
@@ -523,7 +530,6 @@
     color: #ffffff;
 }
 
-/* Widgets d'en-tête - Thème Dark */
 [data-theme="dark"] .news-widget-clock,
 [data-theme="dark"] .weather-temp,
 [data-theme="dark"] .visitors-counter,
@@ -559,7 +565,38 @@
     font-size: 12px;
 }
 
-/* ===== THÈME ROUGE ===== */
+[data-theme="dark"] .cinema-home-button {
+    background: #2a2a2a;
+    color: #7986cb;
+    border-color: #5c6bc0;
+}
+
+[data-theme="dark"] .cinema-home-button:active {
+    background: #5c6bc0;
+    color: white;
+}
+
+[data-theme="dark"] .cinema-footer-button-home {
+    background: #1a1a1a;
+}
+
+/* ========================================= */
+/*              THÈME ROUGE                  */
+/* ========================================= */
+[data-theme="rouge"] {
+    --popup-bg: #ffffff;
+    --popup-text: #2d1b1e;
+    --popup-shadow: rgba(195, 36, 51, 0.3);
+    --summary-bg: #fee2e2;
+    --summary-text: #991b1b;
+    --chart-line-color: #dc2626;
+    --chart-area-bg: rgba(220, 38, 38, 0.1);
+    --chart-grid-color: #fecaca;
+    --stat-card-bg: #fef2f2;
+    --stat-card-border: #fecaca;
+    --active-color: #dc2626;
+}
+
 [data-theme="rouge"] .local-news-widget {
     background: rgba(255, 255, 255, 0.95);
     border-color: rgba(211, 47, 47, 0.4);
@@ -587,7 +624,6 @@
     color: #000000;
 }
 
-/* Widgets d'en-tête - Thème Rouge */
 [data-theme="rouge"] .news-widget-clock,
 [data-theme="rouge"] .weather-temp,
 [data-theme="rouge"] .visitors-counter,
@@ -613,7 +649,23 @@
     color: #000000;
 }
 
-/* ===== THÈME BLEU CIEL ===== */
+/* ========================================= */
+/*            THÈME BLEU CIEL                */
+/* ========================================= */
+[data-theme="bleuciel"] {
+    --popup-bg: #ffffff;
+    --popup-text: #1e3a8a;
+    --popup-shadow: rgba(59, 130, 246, 0.2);
+    --summary-bg: #dbeafe;
+    --summary-text: #1e40af;
+    --chart-line-color: #3b82f6;
+    --chart-area-bg: rgba(59, 130, 246, 0.1);
+    --chart-grid-color: #bfdbfe;
+    --stat-card-bg: #eff6ff;
+    --stat-card-border: #bfdbfe;
+    --active-color: #3b82f6;
+}
+
 [data-theme="bleuciel"] .local-news-widget {
     background: rgba(255, 255, 255, 0.95);
     border-color: rgba(14, 165, 233, 0.4);
@@ -639,7 +691,6 @@
     background: rgba(14, 165, 233, 0.1);
 }
 
-/* Widgets d'en-tête - Thème Bleu Ciel */
 [data-theme="bleuciel"] .news-widget-clock,
 [data-theme="bleuciel"] .weather-temp,
 [data-theme="bleuciel"] .visitors-counter,
@@ -686,7 +737,7 @@
 /*        Popups Alarme et Minuteur              */
 /* ============================================= */
 
-/* Overlay de la popup */
+/* ===== POPUP ALARME - STRUCTURE ===== */
 .alarm-popup-overlay {
     position: fixed;
     top: 0;
@@ -700,7 +751,6 @@
     z-index: 10000;
 }
 
-/* Contenu de la popup */
 .alarm-popup-content {
     background: linear-gradient(145deg, #841b0a, #a92317);
     border: 2px solid #c62828;
@@ -712,7 +762,6 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
-/* En-tête de l'alarme */
 .alarm-header {
     display: flex;
     justify-content: space-between;
@@ -720,7 +769,6 @@
     margin-bottom: 20px;
 }
 
-/* Bouton fermer */
 .alarm-close {
     background: none;
     border: none;
@@ -736,7 +784,7 @@
     background: rgba(255, 255, 255, 0.2);
 }
 
-/* Affichage de l'heure actuelle */
+/* ===== AFFICHAGE HEURE ===== */
 .current-time {
     text-align: center;
     font-size: 2em;
@@ -747,7 +795,7 @@
     border-radius: 10px;
 }
 
-/* Sections alarme et minuteur */
+/* ===== SECTIONS ALARME ET MINUTEUR ===== */
 .alarm-section, .timer-section {
     margin-bottom: 20px;
     padding: 15px;
@@ -759,7 +807,6 @@
     margin: 0 0 10px 0;
 }
 
-/* Conteneurs des inputs */
 .alarm-inputs, .timer-inputs {
     display: flex;
     flex-direction: column;
@@ -767,7 +814,7 @@
     align-items: center;
 }
 
-/* Styles des inputs et boutons */
+/* ===== INPUTS ET BOUTONS ===== */
 .alarm-section input, 
 .timer-section input, 
 .alarm-section select, 
@@ -785,7 +832,6 @@
     transition: all 0.3s ease;
 }
 
-/* Options des selects */
 .alarm-section select option,
 .timer-section select option {
     background: #333;
@@ -793,7 +839,6 @@
     padding: 5px;
 }
 
-/* Boutons */
 .alarm-section button, 
 .timer-section button {
     cursor: pointer;
@@ -806,7 +851,7 @@
     transform: scale(1.02);
 }
 
-/* Affichages de statut */
+/* ===== AFFICHAGES DE STATUT ===== */
 #alarmStatus, #timerDisplay {
     margin-top: 10px;
     font-weight: bold;
@@ -892,41 +937,8 @@
     animation: blink 1s infinite;
 }
 
-/* ===== ANIMATIONS ===== */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-30px) scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-}
-
-@keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0.7; }
-}
-
-/* ============================================= */
-/*        NEWS WIDGET CSS - PARTIE 7             */
-/*        Thèmes Alarme et Responsive            */
-/* ============================================= */
-
-/* ===== THÈMES POUR L'ALARME ===== */
-
-/* Thème Dark (Sombre) */
+/* ===== THÈMES POUR POPUPS ALARME ===== */
+/* Thème Dark */
 [data-theme="dark"] .alarm-popup-content,
 [data-theme="dark"] .stop-alarm-content {
     background: linear-gradient(145deg, #212121, #424242);
@@ -958,7 +970,7 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Thème Light (Violet) */
+/* Thème Light */
 [data-theme="light"] .alarm-popup-content,
 [data-theme="light"] .stop-alarm-content {
     background: linear-gradient(145deg, #7b1fa2, #ab47bc);
@@ -972,8 +984,378 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* ===== RESPONSIVE GÉNÉRAL ===== */
+/* ============================================= */
+/*        NEWS WIDGET CSS - PARTIE 7             */
+/*        Popup Statistiques Visiteurs           */
+/* ============================================= */
+
+/* ===== STRUCTURE POPUP VISITEURS ===== */
+.visitors-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.visitors-popup-overlay.visible {
+    opacity: 1;
+}
+
+.visitors-popup-box {
+    background: var(--popup-bg);
+    color: var(--popup-text);
+    padding: 24px;
+    border-radius: 20px;
+    box-shadow: 
+        0 20px 40px var(--popup-shadow),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+    width: 95vw;
+    max-width: 520px;
+    max-height: 85vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+}
+
+.visitors-popup-overlay.visible .visitors-popup-box {
+    transform: scale(1) translateY(0);
+}
+
+/* ===== EN-TÊTE POPUP ===== */
+.visitors-popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--chart-grid-color);
+}
+
+.visitors-popup-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--popup-text);
+}
+
+.visitors-popup-title .material-icons {
+    font-size: 1.5rem;
+    color: var(--chart-line-color);
+}
+
+.visitors-popup-close {
+    font-size: 1.8rem;
+    font-weight: 300;
+    line-height: 1;
+    border: none;
+    background: var(--summary-bg);
+    cursor: pointer;
+    color: var(--popup-text);
+    opacity: 0.8;
+    padding: 8px 12px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.visitors-popup-close:hover {
+    opacity: 1;
+    background: var(--chart-line-color);
+    color: white;
+    transform: scale(1.1);
+}
+
+/* ===== CARTES DE STATISTIQUES ===== */
+.visitors-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.visitors-stat-card {
+    background: var(--stat-card-bg);
+    border: 2px solid var(--stat-card-border);
+    border-radius: 16px;
+    padding: 16px;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.visitors-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.visitors-stat-card.active {
+    background: linear-gradient(135deg, var(--stat-card-bg), var(--chart-area-bg));
+    border-color: var(--active-color);
+}
+
+.visitors-stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--chart-line-color);
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.visitors-stat-card.active .visitors-stat-value {
+    color: var(--active-color);
+}
+
+.visitors-stat-label {
+    font-size: 0.85rem;
+    color: var(--summary-text);
+    font-weight: 500;
+}
+
+.visitors-stat-icon {
+    font-size: 1rem;
+    margin-right: 4px;
+    vertical-align: middle;
+}
+
+/* ===== ZONE GRAPHIQUE ===== */
+.visitors-chart-container {
+    background: var(--summary-bg);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 20px;
+    position: relative;
+    min-height: 250px;
+}
+
+.visitors-chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.visitors-chart-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--summary-text);
+}
+
+.visitors-chart-legend {
+    display: flex;
+    gap: 16px;
+    font-size: 0.75rem;
+    color: var(--summary-text);
+}
+
+.visitors-chart-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.visitors-chart-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--chart-line-color);
+}
+
+#visitorsChart {
+    border-radius: 8px;
+    touch-action: pan-y;
+    display: block;
+    width: 100% !important;
+    height: 200px !important;
+}
+
+.visitors-chart-info {
+    background: var(--popup-bg);
+    border: 1px solid var(--chart-grid-color);
+    border-radius: 12px;
+    padding: 12px;
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: var(--summary-text);
+    display: none;
+}
+
+.visitors-chart-info.show {
+    display: block;
+}
+
+.visitors-chart-info-title {
+    font-weight: 600;
+    color: var(--popup-text);
+    margin-bottom: 4px;
+}
+
+/* ===== RÉSUMÉ ===== */
+.visitors-popup-summary {
+    margin: 0;
+    text-align: center;
+    font-size: 0.9rem;
+    padding: 16px;
+    background: var(--summary-bg);
+    color: var(--summary-text);
+    border-radius: 16px;
+    border: 2px solid var(--chart-grid-color);
+}
+
+.visitors-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.visitors-summary-row:not(:last-child) {
+    border-bottom: 1px solid var(--chart-grid-color);
+}
+
+.visitors-summary-label {
+    font-weight: 500;
+}
+
+.visitors-summary-value {
+    font-weight: 700;
+    color: var(--chart-line-color);
+}
+
+/* ===== BADGE TEMPS RÉEL ===== */
+.visitors-realtime-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--active-color);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 12px;
+    animation: pulse 2s infinite;
+}
+
+.visitors-realtime-dot {
+    width: 6px;
+    height: 6px;
+    background: white;
+    border-radius: 50%;
+    animation: blink 1.5s infinite;
+}
+
+/* ============================================= */
+/*        NEWS WIDGET CSS - PARTIE 8             */
+/*        Animations                             */
+/* ============================================= */
+
+/* ===== ANIMATIONS GÉNÉRALES ===== */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.7; }
+}
+
+/* ===== ANIMATION POPUP VISITEURS ===== */
+.visitors-popup-overlay.visible .visitors-popup-box {
+    animation: slideInUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* ===== INDICATEUR HORLOGE MOBILE ===== */
 @media (max-width: 767px) {
+    .news-widget-clock {
+        position: relative;
+    }
+    
+    .news-widget-clock::before {
+        content: '';
+        position: absolute;
+        top: 1px;
+        right: 1px;
+        width: 8px;
+        height: 8px;
+        background: #4CAF50;
+        border-radius: 50%;
+        animation: pulse-mobile 3s infinite;
+        z-index: 10;
+        border: 1px solid white;
+    }
+    
+    @keyframes pulse-mobile {
+        0%, 100% { 
+            opacity: 0.6; 
+            transform: scale(1);
+        }
+        50% { 
+            opacity: 1; 
+            transform: scale(1.3);
+        }
+    }
+}
+
+/* ============================================= */
+/*        NEWS WIDGET CSS - PARTIE 9             */
+/*        Media Queries et Responsive            */
+/* ============================================= */
+
+/* ===== RESPONSIVE GÉNÉRAL MOBILE ===== */
+@media (max-width: 767px) {
+    /* Conteneur principal */
     .news-widget-container {
         position: relative;
         padding: 0 5px;
@@ -995,6 +1377,53 @@
         gap: 5px;
         text-align: center;
     }
+    
+    /* Positionnement des boutons */
+    .news-widget-header .header-buttons {
+        position: relative !important;
+        display: contents !important;
+    }
+    
+    .photos-btn {
+        position: absolute !important;
+        bottom: 10px !important;
+        left: 15px !important;
+        min-width: 40px !important;
+        height: 24px !important;
+        font-size: 12px !important;
+        z-index: 10 !important;
+    }
+    
+    .cinema-btn {
+        position: absolute !important;
+        bottom: 10px !important;
+        right: 15px !important;
+        min-width: 40px !important;
+        height: 24px !important;
+        font-size: 12px !important;
+        z-index: 10 !important;
+    }
+    
+    /* Widgets d'en-tête */
+    .header-widgets {
+        gap: 4px;
+    }
+    
+    .weather-temp,
+    .visitors-counter {
+        min-width: 40px;
+        padding: 4px 6px;
+    }
+    
+    .temp-value,
+    .visitors-count {
+        font-size: 14px;
+    }
+    
+    .temp-label,
+    .visitors-label {
+        font-size: 11px;
+    }
 }
 
 /* ===== RESPONSIVE POPUP ALARME ===== */
@@ -1014,6 +1443,8 @@
         max-height: 85vh;
         overflow-y: auto;
         box-sizing: border-box;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
     }
     
     .current-time {
@@ -1112,11 +1543,6 @@
         justify-content: center !important;
     }
     
-    .alarm-popup-content {
-        scroll-behavior: smooth;
-        -webkit-overflow-scrolling: touch;
-    }
-    
     .alarm-section button:hover, 
     .timer-section button:hover,
     .alarm-close:hover,
@@ -1132,415 +1558,7 @@
     }
 }
 
-/* Très petits écrans */
-@media (max-width: 380px) {
-    .alarm-popup-content {
-        padding: 12px !important;
-        max-width: 98vw !important;
-    }
-    
-    .current-time {
-        font-size: 1.3em !important;
-        padding: 8px !important;
-    }
-    
-    .alarm-section, .timer-section {
-        padding: 10px !important;
-        margin-bottom: 12px !important;
-    }
-    
-    .alarm-section h4, .timer-section h4 {
-        font-size: 14px !important;
-    }
-    
-    .alarm-section input, .timer-section input, 
-    .alarm-section select, .timer-section select,
-    .alarm-section button, .timer-section button {
-        max-width: 100% !important;
-        font-size: 14px !important;
-        padding: 10px !important;
-    }
-    
-    .alarm-section input[type="time"] {
-        height: 48px !important;
-        font-size: 16px !important;
-    }
-}
-
-/* Paysage smartphone */
-@media (max-width: 768px) and (orientation: landscape) {
-    .alarm-popup-overlay {
-        padding-top: 10px;
-    }
-    
-    .alarm-popup-content {
-        max-height: 90vh;
-    }
-    
-    .current-time {
-        font-size: 1.4em !important;
-        padding: 8px !important;
-        margin-bottom: 12px !important;
-    }
-    
-    .alarm-section, .timer-section {
-        padding: 8px !important;
-        margin-bottom: 10px !important;
-    }
-}
-
-/* ============================================= */
-/*        NEWS WIDGET CSS - PARTIE 8             */
-/*        Popup Statistiques Visiteurs           */
-/* ============================================= */
-
-/* Variables de couleur pour chaque thème */
-:root, [data-theme="light"] {
-    --popup-bg: #ffffff;
-    --popup-text: #333333;
-    --popup-shadow: rgba(0, 0, 0, 0.15);
-    --summary-bg: #f8f9fa;
-    --summary-text: #495057;
-    --chart-line-color: #007BFF;
-    --chart-area-bg: rgba(0, 123, 255, 0.1);
-    --chart-grid-color: #e9ecef;
-    --stat-card-bg: #f0f7ff;
-    --stat-card-border: #d1e7ff;
-    --active-color: #28a745;
-}
-
-[data-theme="dark"] {
-    --popup-bg: #2d3748;
-    --popup-text: #f7fafc;
-    --popup-shadow: rgba(0, 0, 0, 0.4);
-    --summary-bg: #4a5568;
-    --summary-text: #f7fafc;
-    --chart-line-color: #63b3ed;
-    --chart-area-bg: rgba(99, 179, 237, 0.15);
-    --chart-grid-color: #4a5568;
-    --stat-card-bg: #374151;
-    --stat-card-border: #4a5568;
-    --active-color: #34d399;
-}
-
-[data-theme="rouge"] {
-    --popup-bg: #ffffff;
-    --popup-text: #2d1b1e;
-    --popup-shadow: rgba(195, 36, 51, 0.3);
-    --summary-bg: #fee2e2;
-    --summary-text: #991b1b;
-    --chart-line-color: #dc2626;
-    --chart-area-bg: rgba(220, 38, 38, 0.1);
-    --chart-grid-color: #fecaca;
-    --stat-card-bg: #fef2f2;
-    --stat-card-border: #fecaca;
-    --active-color: #dc2626;
-}
-
-[data-theme="bleuciel"] {
-    --popup-bg: #ffffff;
-    --popup-text: #1e3a8a;
-    --popup-shadow: rgba(59, 130, 246, 0.2);
-    --summary-bg: #dbeafe;
-    --summary-text: #1e40af;
-    --chart-line-color: #3b82f6;
-    --chart-area-bg: rgba(59, 130, 246, 0.1);
-    --chart-grid-color: #bfdbfe;
-    --stat-card-bg: #eff6ff;
-    --stat-card-border: #bfdbfe;
-    --active-color: #3b82f6;
-}
-
-/* Structure de la popup */
-.visitors-popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-}
-
-.visitors-popup-overlay.visible {
-    opacity: 1;
-}
-
-.visitors-popup-box {
-    background: var(--popup-bg);
-    color: var(--popup-text);
-    padding: 24px;
-    border-radius: 20px;
-    box-shadow: 
-        0 20px 40px var(--popup-shadow),
-        0 0 0 1px rgba(255, 255, 255, 0.1);
-    width: 95vw;
-    max-width: 520px;
-    max-height: 85vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    transform: scale(0.9) translateY(20px);
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    position: relative;
-}
-
-.visitors-popup-overlay.visible .visitors-popup-box {
-    transform: scale(1) translateY(0);
-}
-
-.visitors-popup-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 2px solid var(--chart-grid-color);
-}
-
-.visitors-popup-title {
-    font-size: 1.35rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--popup-text);
-}
-
-.visitors-popup-title .material-icons {
-    font-size: 1.5rem;
-    color: var(--chart-line-color);
-}
-
-.visitors-popup-close {
-    font-size: 1.8rem;
-    font-weight: 300;
-    line-height: 1;
-    border: none;
-    background: var(--summary-bg);
-    cursor: pointer;
-    color: var(--popup-text);
-    opacity: 0.8;
-    padding: 8px 12px;
-    border-radius: 50%;
-    transition: all 0.2s ease;
-    width: 42px;
-    height: 42px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.visitors-popup-close:hover {
-    opacity: 1;
-    background: var(--chart-line-color);
-    color: white;
-    transform: scale(1.1);
-}
-
-/* Cartes de statistiques */
-.visitors-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.visitors-stat-card {
-    background: var(--stat-card-bg);
-    border: 2px solid var(--stat-card-border);
-    border-radius: 16px;
-    padding: 16px;
-    text-align: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.visitors-stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-}
-
-.visitors-stat-card.active {
-    background: linear-gradient(135deg, var(--stat-card-bg), var(--chart-area-bg));
-    border-color: var(--active-color);
-}
-
-.visitors-stat-value {
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--chart-line-color);
-    line-height: 1;
-    margin-bottom: 4px;
-}
-
-.visitors-stat-card.active .visitors-stat-value {
-    color: var(--active-color);
-}
-
-.visitors-stat-label {
-    font-size: 0.85rem;
-    color: var(--summary-text);
-    font-weight: 500;
-}
-
-.visitors-stat-icon {
-    font-size: 1rem;
-    margin-right: 4px;
-    vertical-align: middle;
-}
-
-/* Zone du graphique */
-.visitors-chart-container {
-    background: var(--summary-bg);
-    border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 20px;
-    position: relative;
-    min-height: 250px;
-}
-
-.visitors-chart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-}
-
-.visitors-chart-title {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--summary-text);
-}
-
-.visitors-chart-legend {
-    display: flex;
-    gap: 16px;
-    font-size: 0.75rem;
-    color: var(--summary-text);
-}
-
-.visitors-chart-legend-item {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.visitors-chart-legend-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--chart-line-color);
-}
-
-#visitorsChart {
-    border-radius: 8px;
-    touch-action: pan-y;
-    display: block;
-    width: 100% !important;
-    height: 200px !important;
-}
-
-.visitors-chart-info {
-    background: var(--popup-bg);
-    border: 1px solid var(--chart-grid-color);
-    border-radius: 12px;
-    padding: 12px;
-    margin-top: 12px;
-    font-size: 0.85rem;
-    color: var(--summary-text);
-    display: none;
-}
-
-.visitors-chart-info.show {
-    display: block;
-}
-
-.visitors-chart-info-title {
-    font-weight: 600;
-    color: var(--popup-text);
-    margin-bottom: 4px;
-}
-
-/* Résumé */
-.visitors-popup-summary {
-    margin: 0;
-    text-align: center;
-    font-size: 0.9rem;
-    padding: 16px;
-    background: var(--summary-bg);
-    color: var(--summary-text);
-    border-radius: 16px;
-    border: 2px solid var(--chart-grid-color);
-}
-
-.visitors-summary-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-}
-
-.visitors-summary-row:not(:last-child) {
-    border-bottom: 1px solid var(--chart-grid-color);
-}
-
-.visitors-summary-label {
-    font-weight: 500;
-}
-
-.visitors-summary-value {
-    font-weight: 700;
-    color: var(--chart-line-color);
-}
-
-/* Badge temps réel */
-.visitors-realtime-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--active-color);
-    color: white;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    margin-top: 12px;
-    animation: pulse 2s infinite;
-}
-
-.visitors-realtime-dot {
-    width: 6px;
-    height: 6px;
-    background: white;
-    border-radius: 50%;
-    animation: blink 1.5s infinite;
-}
-
-/* Animation d'apparition */
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-.visitors-popup-overlay.visible .visitors-popup-box {
-    animation: slideInUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-/* Responsive Mobile */
+/* ===== RESPONSIVE POPUP VISITEURS ===== */
 @media (max-width: 480px) {
     .visitors-popup-box {
         padding: 20px 16px;
@@ -1583,8 +1601,44 @@
     }
 }
 
-/* Très petits écrans */
+/* ===== TRÈS PETITS ÉCRANS ===== */
+@media (max-width: 380px) {
+    /* Popup alarme */
+    .alarm-popup-content {
+        padding: 12px !important;
+        max-width: 98vw !important;
+    }
+    
+    .current-time {
+        font-size: 1.3em !important;
+        padding: 8px !important;
+    }
+    
+    .alarm-section, .timer-section {
+        padding: 10px !important;
+        margin-bottom: 12px !important;
+    }
+    
+    .alarm-section h4, .timer-section h4 {
+        font-size: 14px !important;
+    }
+    
+    .alarm-section input, .timer-section input, 
+    .alarm-section select, .timer-section select,
+    .alarm-section button, .timer-section button {
+        max-width: 100% !important;
+        font-size: 14px !important;
+        padding: 10px !important;
+    }
+    
+    .alarm-section input[type="time"] {
+        height: 48px !important;
+        font-size: 16px !important;
+    }
+}
+
 @media (max-width: 360px) {
+    /* Popup visiteurs */
     .visitors-stat-value {
         font-size: 1.5rem;
     }
@@ -1598,84 +1652,24 @@
     }
 }
 
-/* Indicateur visuel mobile pour l'horloge */
-@media (max-width: 767px) {
-    .news-widget-clock {
-        position: relative;
+/* ===== PAYSAGE SMARTPHONE ===== */
+@media (max-width: 768px) and (orientation: landscape) {
+    .alarm-popup-overlay {
+        padding-top: 10px;
     }
     
-    /* Petit point coloré visible en permanence sur mobile */
-    .news-widget-clock::before {
-        content: '';
-        position: absolute;
-        top: 1px;
-        right: 1px;
-        width: 8px;
-        height: 8px;
-        background: #4CAF50;
-        border-radius: 50%;
-        animation: pulse-mobile 3s infinite;
-        z-index: 10;
-        border: 1px solid white;
+    .alarm-popup-content {
+        max-height: 90vh;
     }
     
-    /* Animation plus lente pour mobile */
-    @keyframes pulse-mobile {
-        0%, 100% { 
-            opacity: 0.6; 
-            transform: scale(1);
-        }
-        50% { 
-            opacity: 1; 
-            transform: scale(1.3);
-        }
+    .current-time {
+        font-size: 1.4em !important;
+        padding: 8px !important;
+        margin-bottom: 12px !important;
     }
-}
-
-/* Bouton retour accueil pour modal cinéma */
-.cinema-footer-button-home {
-    background: #ffffff;
-    padding: 16px 20px 8px 20px;
-    text-align: center;
-}
-
-.cinema-home-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    background: white;
-    color: var(--primary-color);
-    border: 2px solid var(--primary-color);
-    padding: 14px 24px;
-    border-radius: 12px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    width: 100%;
-    max-width: 300px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.cinema-home-button:active {
-    background: var(--primary-color);
-    color: white;
-    transform: scale(0.95);
-}
-
-/* Styles pour les thèmes */
-[data-theme="dark"] .cinema-home-button {
-    background: #2a2a2a;
-    color: #7986cb;
-    border-color: #5c6bc0;
-}
-
-[data-theme="dark"] .cinema-home-button:active {
-    background: #5c6bc0;
-    color: white;
-}
-
-[data-theme="dark"] .cinema-footer-button-home {
-    background: #1a1a1a;
+    
+    .alarm-section, .timer-section {
+        padding: 8px !important;
+        margin-bottom: 10px !important;
+    }
 }
