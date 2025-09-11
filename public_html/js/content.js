@@ -2182,7 +2182,7 @@ applyListModeImmediate() {
             console.error('Erreur ajout site:', error);
             this.showToast('Erreur lors de l\'ajout du site');
         }
-    }	
+    }
 
 // 8. CORRECTION POUR LE MODE LISTE PC
 fixListModeLayout() {
