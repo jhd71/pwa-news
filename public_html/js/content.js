@@ -323,22 +323,22 @@ newsDefaultSites.forEach(site => {
     this.tileContainer.appendChild(tile);
 });
 
-// AJOUTER LA TUILE PHOTOS SIMPLE
-const photosTileElement = this.createTile(photosTile);
-this.tileContainer.appendChild(photosTileElement);
-
 // 🆕 AJOUTER LE WIDGET FOOTBALL SELON LA TAILLE D'ÉCRAN
 setTimeout(() => {
     if (typeof window.addFootballToWidgets === 'function') {
         window.addFootballToWidgets();
     }
-}, 800); // ✅ Délai optimisé pour apparition fluide
+}, 800);
 
-        // Séparateur Espace+
+// Séparateur Espace+
 const separator1 = document.createElement('div');
 separator1.className = 'separator';
 separator1.innerHTML = `<h2 class="separator-text">Espace+</h2>`;
 this.tileContainer.appendChild(separator1);
+
+// DÉPLACÉ ICI - TUILE PHOTOS DANS ESPACE+
+const photosTileElement = this.createTile(photosTile);
+this.tileContainer.appendChild(photosTileElement);
 
         // Séparateur TV
         const separator2 = document.createElement('div');
