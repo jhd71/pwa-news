@@ -553,14 +553,27 @@ class BackgroundSelector {
             });
         });
         
-        // Fermer le panneau quand on clique en dehors
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('.bg-selector-panel-content') || 
-                e.target.closest('#bgSelectorBtn')) {
-                return; // Clic à l'intérieur du panneau ou sur le bouton, ne rien faire
-            }
-            this.closePanel();
-        });
+        // Fermer le panneau quand on clique en dehors (sur mobile seulement si on clique dans la zone visible du site)
+	document.addEventListener('click', (e) => {
+    const panel = document.getElementById('bgSelectorPanel');
+    if (!panel || !panel.classList.contains('open')) return;
+    
+    // Vérifier si le clic est dans le panneau ou sur le bouton d'ouverture
+    if (e.target.closest('.bg-selector-panel') || 
+        e.target.closest('#bgSelectorBtn')) {
+        return;
+    }
+    
+    // Sur mobile, ne fermer que si on clique dans la partie visible du site (en haut)
+    if (window.innerWidth <= 768) {
+        const panelTop = parseInt(window.getComputedStyle(panel).top);
+        if (e.clientY >= panelTop) {
+            return; // Ne pas fermer si on clique en dessous du début du panneau
+        }
+    }
+    
+    this.closePanel();
+	});
         
         // Écouter la touche Echap pour fermer le panneau
         document.addEventListener('keydown', (e) => {
@@ -591,23 +604,41 @@ class BackgroundSelector {
     }
     
     openPanel() {
-        const panel = document.getElementById('bgSelectorPanel');
-        if (panel) {
-            panel.classList.add('open');
-            this.updateSelectedThumbnail();
-            // Mettre à jour les fonds personnalisés
-            setTimeout(() => {
-                this.updateCustomBackgrounds();
-            }, 100);
-        }
+    const panel = document.getElementById('bgSelectorPanel');
+    if (panel) {
+        // Supprimer tout overlay existant avant d'ouvrir
+        const existingOverlays = document.querySelectorAll('.modal-backdrop, .overlay, .backdrop');
+        existingOverlays.forEach(overlay => overlay.remove());
+        
+        panel.classList.add('open');
+        this.updateSelectedThumbnail();
+        
+        // Mettre à jour les fonds personnalisés
+        setTimeout(() => {
+            this.updateCustomBackgrounds();
+        }, 100);
     }
+}
     
     closePanel() {
-        const panel = document.getElementById('bgSelectorPanel');
-        if (panel) {
-            panel.classList.remove('open');
-        }
+    const panel = document.getElementById('bgSelectorPanel');
+    if (panel) {
+        panel.classList.remove('open');
+        
+        // Enlever tout overlay ou assombrissement
+        const overlays = document.querySelectorAll('.modal-backdrop, .overlay, .backdrop');
+        overlays.forEach(overlay => {
+            overlay.remove();
+        });
+        
+        // Réactiver le body
+        document.body.style.overflow = '';
+        document.body.classList.remove('modal-open', 'has-modal');
+        
+        // Forcer le focus sur le body pour enlever tout état résiduel
+        document.body.focus();
     }
+}
     
     setBackground(bgClass) {
         // Supprimer toutes les classes de fond

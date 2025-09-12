@@ -196,7 +196,7 @@ body.bg-gradient-morning-mist { --bg-image: linear-gradient(135deg, #F0F8FF, #E6
 
 .bg-selector-panel {
     position: fixed;
-    top: 400px;
+    top: 0;
     right: calc(-1 * var(--panel-width));
     bottom: 0;
     width: var(--panel-width);
@@ -542,11 +542,17 @@ body[class*="bg-solid-cream"] {
         --panel-width: 100vw;
     }
     
+    /* Panel qui laisse voir le haut du site */
+    .bg-selector-panel {
+        top: 300px !important;  /* Laisse voir 300px du site */
+        height: calc(100vh - 300px) !important;  /* Ajuste la hauteur */
+    }
+    
     .bg-selector-panel-content {
         width: 100% !important;
         margin: 0 !important;
         border-radius: 0 !important;
-        height: 100vh !important;
+        height: 100% !important;  /* Utilise toute la hauteur disponible */
     }
     
     .add-custom-bg-btn {
@@ -570,6 +576,11 @@ body[class*="bg-solid-cream"] {
 }
 
 @media (max-width: 480px) {
+    /* Pour les très petits écrans */
+    .bg-selector-panel {
+        top: 250px !important;  /* Un peu moins d'espace visible */
+    }
+    
     .backgrounds-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 8px;
