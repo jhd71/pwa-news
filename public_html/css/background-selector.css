@@ -196,7 +196,7 @@ body.bg-gradient-morning-mist { --bg-image: linear-gradient(135deg, #F0F8FF, #E6
 
 .bg-selector-panel {
     position: fixed;
-    top: 0;
+    top: 400px;
     right: calc(-1 * var(--panel-width));
     bottom: 0;
     width: var(--panel-width);
