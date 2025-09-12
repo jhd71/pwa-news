@@ -1,41 +1,57 @@
 <!DOCTYPE html>
 <html lang="fr" data-theme="light" data-font-size="normal">
 <head>
-    <!-- === OPTIMISATION PERFORMANCE : Script critique === -->
-    <script>
-        // Application immédiate du thème pour éviter le flash
-        (function() {
-            const savedTheme = localStorage.getItem('theme') || 'rouge';
+<script>
+    // Appliquer le thème sauvegardé dès le début du chargement
+    (function() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
             document.documentElement.setAttribute('data-theme', savedTheme);
-        })();
-    </script>
+        } else {
+            document.documentElement.setAttribute('data-theme', 'rouge');
+        }
+    })();
+</script>
 
-    <!-- === META TAGS ESSENTIELS === -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- === SECTION SEO OPTIMISÉE === -->
     
-    <!-- === SEO OPTIMISÉ === -->
+    <!-- Méta-informations essentielles -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    
+    <!-- Titre optimisé (60 caractères max) -->
     <title>Actu&Média Montceau | Actualités locales, météo, info 71300</title>
+    
+    <!-- Description optimisée (155 caractères max) -->
     <meta name="description" content="Toute l'actualité de Montceau-les-Mines et Saône-et-Loire en temps réel. Infos locales, météo, radio, TV direct, cinéma. Le média local de référence.">
-    <meta name="keywords" content="Montceau-les-Mines actualités, news 71300, Le JSL, Saône-et-Loire infos, Montceau aujourd'hui, événements Montceau, cinéma L'Embarcadère, météo Montceau">
+    
+    <!-- Mots-clés ciblés -->
+    <meta name="keywords" content="Montceau-les-Mines actualités, news 71300, Le JSL, Saône-et-Loire infos, Montceau aujourd'hui, événements Montceau, cinéma L'Embarcadère, météo Montceau, petites annonces Montceau, chat local, Creusot Montceau, Blanzy, Saint-Vallier">
+    
+    <!-- Auteur et copyright -->
     <meta name="author" content="Actu & Média">
     <meta name="copyright" content="Actu & Média 2025">
+    
+    <!-- Langue et région -->
     <meta name="language" content="fr-FR">
     <meta name="geo.region" content="FR-BFC">
     <meta name="geo.placename" content="Montceau-les-Mines">
     <meta name="geo.position" content="46.6739;4.3629">
     <meta name="ICBM" content="46.6739, 4.3629">
     
-    <!-- === ROBOTS ET INDEXATION === -->
+    <!-- Robots et indexation -->
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="googlebot" content="index, follow">
     <meta name="bingbot" content="index, follow">
+    
+    <!-- Vérification Google -->
     <meta name="google-site-verification" content="74sCYbSwcWjU7BQ8Mxhboe9IiRzajIbyy6C1hyuAr3U">
     
-    <!-- === CANONICAL ET ALTERNATE === -->
+    <!-- Canonical URL -->
     <link rel="canonical" href="https://actuetmedia.fr/">
-    <link rel="alternate" href="https://actuetmedia.fr/" hreflang="fr-FR">
+    
+    <!-- Alternate pour mobile -->
+    <link rel="alternate" media="only screen and (max-width: 640px)" href="https://actuetmedia.fr/">
     
     <!-- === OPEN GRAPH (Facebook, LinkedIn) === -->
     <meta property="og:type" content="website">
@@ -43,12 +59,11 @@
     <meta property="og:locale" content="fr_FR">
     <meta property="og:url" content="https://actuetmedia.fr/">
     <meta property="og:title" content="Actu & Média - L'actualité de Montceau-les-Mines en temps réel">
-    <meta property="og:description" content="Toute l'info locale de Montceau-les-Mines et environs : actualités, météo, événements, cinéma, radio et TV en direct.">
+    <meta property="og:description" content="Toute l'info locale de Montceau-les-Mines et environs : actualités, météo, événements, cinéma, radio et TV en direct. Votre média de proximité.">
     <meta property="og:image" content="https://actuetmedia.fr/images/og-image-1200x630.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Actu & Média - Le média local de Montceau-les-Mines">
-    <meta property="og:image:type" content="image/jpeg">
     
     <!-- === TWITTER CARD === -->
     <meta name="twitter:card" content="summary_large_image">
@@ -60,46 +75,7 @@
     <meta name="twitter:image" content="https://actuetmedia.fr/images/twitter-card-1200x600.jpg">
     <meta name="twitter:image:alt" content="Actu & Média Montceau">
     
-    <!-- === PWA & MANIFEST === -->
-    <link rel="manifest" href="/manifest.json">
-    <meta name="application-name" content="Actu&Média">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#940000">
-    <meta name="msapplication-navbutton-color" content="#940000">
-    <meta name="msapplication-starturl" content="/">
-    <meta name="msapplication-TileColor" content="#940000">
-    
-    <!-- === APPLE / iOS === -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Actu&Média">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="format-detection" content="telephone=no">
-    
-    <!-- === FAVICONS ET ICÔNES === -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="/images/AM-192-v2.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="/images/AM-512-v2.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="/images/AM-192-v2.png">
-    <meta name="msapplication-TileImage" content="/images/AM-192-v2.png">
-    
-    <!-- === PERFORMANCE & PRELOAD === -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-    
-    <!-- === SÉCURITÉ CSP === -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://formspree.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://formspree.io https://*.supabase.co">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
-    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
-    <meta name="referrer" content="strict-origin-when-cross-origin">
-	
-	<!-- === SCHEMA.ORG / JSON-LD AMÉLIORÉ === -->
+    <!-- === SCHEMA.ORG / JSON-LD === -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -116,21 +92,11 @@
           "url": "https://actuetmedia.fr/images/AM-512-v2.png",
           "width": 512,
           "height": 512
-        },
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "Montceau-les-Mines",
-          "postalCode": "71300",
-          "addressRegion": "Saône-et-Loire",
-          "addressCountry": "FR"
         }
       },
       "potentialAction": {
         "@type": "SearchAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": "https://actuetmedia.fr/search?q={search_term_string}"
-        },
+        "target": "https://actuetmedia.fr/search?q={search_term_string}",
         "query-input": "required name=search_term_string"
       },
       "sameAs": [
@@ -141,7 +107,7 @@
     }
     </script>
     
-    <!-- === LOCAL BUSINESS SCHEMA CORRIGÉ === -->
+    <!-- === LOCAL BUSINESS SCHEMA === -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -149,7 +115,6 @@
       "name": "Actu & Média",
       "url": "https://actuetmedia.fr/",
       "logo": "https://actuetmedia.fr/images/AM-512-v2.png",
-      "foundingDate": "2024",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Montceau-les-Mines",
@@ -165,42 +130,60 @@
           "longitude": 4.3629
         },
         "geoRadius": "20000"
-      },
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "contactType": "customer service",
-        "email": "contact@actuetmedia.fr",
-        "availableLanguage": "French"
       }
     }
     </script>
-
-    <!-- === BREADCRUMB SCHEMA === -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [{
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Accueil",
-        "item": "https://actuetmedia.fr/"
-      }]
-    }
-    </script>
     
-    <!-- === POLICES GOOGLE FONTS OPTIMISÉES === -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;900&family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Roboto+Condensed:wght@400;700&display=swap" as="style">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;900&family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    <!-- === PWA & MANIFEST === -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="application-name" content="Actu&Média">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#940000">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#940000">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#940000">
+    <meta name="msapplication-navbutton-color" content="#940000">
+    <meta name="msapplication-starturl" content="/">
+    <meta name="msapplication-TileColor" content="#940000">
+    
+    <!-- === APPLE / iOS === -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Actu&Média">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    
+    <!-- === FAVICONS ET ICÔNES === -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/AM-192-v2.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/images/AM-512-v2.png">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="/images/AM-192-v2.png">
+    <meta name="msapplication-TileImage" content="/images/AM-192-v2.png">
+    
+    <!-- === PERFORMANCE & PRELOAD === -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    
+    <!-- === SÉCURITÉ === -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    
+    <!-- === BIBLIOTHÈQUES EXTERNES === -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+	
+    <!-- === POLICES GOOGLE FONTS === -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;900&family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    
-    <!-- === BIBLIOTHÈQUES EXTERNES AVEC INTÉGRITÉ === -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" integrity="sha384-sMfJCLCJYLN9eiPVQ2pVBqY8aGXEZ5wMZRPHI7Y9ktulXCXLlV4pJXK7mNgKqXFo" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" integrity="sha384-sYmT3LnYnDmH0KN6W9pAYoNztX5HkFbpz3j3R4KXv3qJZCK2cNZ7LgYKDX2xVl5t" crossorigin="anonymous" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-    
-    <!-- === FEUILLES DE STYLE LOCALES === -->
-    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- === FEUILLES DE STYLE === -->
     <link rel="stylesheet" href="css/chat-styles.css">
     <link rel="stylesheet" href="css/news-panel.css">
     <link rel="stylesheet" href="css/widgets.css">
@@ -217,613 +200,708 @@
     <link rel="stylesheet" href="css/cinema-widget.css">
     <link rel="stylesheet" href="css/gallery-styles.css">
     <link rel="stylesheet" href="css/football-widget.css">
-    <link rel="stylesheet" href="css/radioPopup.css">
-    <link rel="stylesheet" href="css/notepadApp.css">
-    <link rel="stylesheet" href="css/todoApp.css">
-    
-    <!-- === SCRIPT SUPABASE === -->
-    <script src="js/supabase-client.js" defer></script>
+	<link rel="stylesheet" href="css/styles.css">
+	<link rel="stylesheet" href="css/radioPopup.css">
+	<link rel="stylesheet" href="css/notepadApp.css">
+	<link rel="stylesheet" href="css/todoApp.css">
 </head>
-
 <body>
-    <!-- === HEADER OPTIMISÉ === -->
-    <header class="app-header" role="banner">
-        <button type="button" id="menuButton" class="menu-button" aria-label="Ouvrir le menu" aria-expanded="false">
-            <span class="material-icons" aria-hidden="true">menu</span>
-        </button>
-        
-        <h1 class="site-title logo-text">Actu & Média</h1>
-        
-        <button type="button" id="settingsButton" class="settings-button" aria-label="Paramètres">
-            <span class="material-icons" aria-hidden="true">settings</span>
-        </button>
-    </header>
+<header class="app-header">
+    <button type="button" id="menuButton" class="menu-button" aria-label="Menu">
+        <span class="material-icons">menu</span>
+    </button>
+    <button type="button" id="settingsButton" class="settings-button" aria-label="Paramètres">
+        <span class="material-icons">settings</span>
+    </button>   
+    <h1 class="site-title logo-text">
+Actu & Média
+</h1>
+</header>
+<!-- Widget météo avec bouton de fermeture -->
+<div class="weather-sidebar" id="weatherSidebar">
+  <button class="weather-toggle" title="Masquer la météo">
+    <span class="material-icons">close</span>
+  </button>
+  <!-- <h3>Météo locale</h3> -->
+  <div id="weather-widget">Chargement...</div>
+</div>
+<!-- Bouton Gestionnaire de dépenses -->
+<button class="tool-button" onclick="openExpenseManager()" title="Gestionnaire de dépenses familiales">
+    <span class="material-icons">euro</span>
+</button>
+<!-- Bouton Autour de moi -->
+<button class="search-button" onclick="window.open('/autour-de-moi.html', '_blank')" title="Autour de moi">
+    <span class="material-icons">near_me</span>
+</button>
+<!-- Structure HTML optimisée pour le Swiper et les séparateurs -->
+<div class="swiper-container">
+  <div class="swiper">
+    <div class="swiper-wrapper" id="swiperWrapper">
+      <!-- Les actualités seront injectées ici par JS -->
+      <div class="swiper-slide">
+        <div class="slide-content">
+          <p>Chargement des actualités...</p>
+        </div>
+      </div>
+    </div>
+    <!-- Pagination -->
+    <div class="swiper-pagination"></div>
+    <!-- Flèches de navigation -->
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
+  </div>
+</div>
 
-    <!-- === WIDGET MÉTÉO SIDEBAR === -->
-    <aside class="weather-sidebar" id="weatherSidebar" role="complementary" aria-label="Météo locale">
-        <button class="weather-toggle" title="Masquer la météo" aria-label="Fermer le widget météo">
-            <span class="material-icons" aria-hidden="true">close</span>
-        </button>
-        <div id="weather-widget" aria-live="polite">Chargement...</div>
-    </aside>
-
-    <!-- === BOUTONS D'OUTILS === -->
-    <div class="floating-tools" role="toolbar" aria-label="Outils rapides">
-        <button class="tool-button" onclick="openExpenseManager()" title="Gestionnaire de dépenses familiales" aria-label="Ouvrir le gestionnaire de dépenses">
-            <span class="material-icons" aria-hidden="true">euro</span>
-        </button>
-        <button class="search-button" onclick="window.open('/autour-de-moi.html', '_blank')" title="Autour de moi" aria-label="Rechercher autour de moi">
-            <span class="material-icons" aria-hidden="true">near_me</span>
-        </button>
+<!-- Conteneur pour les deux widgets côte à côte -->
+<div class="widgets-row">
+    <!-- Widget NEWS Actu&Média -->
+    <div class="news-widget-container">
+        <div class="local-news-widget" id="localNewsWidget" onclick="openLocalNewsPage()">
+            <div class="news-widget-header">
+    
+    <!-- Bouton Proposer avec stopPropagation -->
+    <button class="submit-news-btn" onclick="event.stopPropagation(); openSubmitModal();">
+        <span class="icon">📝</span>
+        <span>Proposer</span>
+    </button>
+    
+    <!-- Boutons intégrés -->
+    <div class="header-buttons">
+        <button class="header-btn photos-btn" onclick="event.stopPropagation(); openGalleryPage();" title="Galerie Photos">
+    <span class="material-icons" style="font-size: 16px; margin-right: 4px;">photo_library</span>
+    Photos
+</button>
+<button class="header-btn cinema-btn" onclick="event.stopPropagation(); openCinemaModal();" title="Programme Cinéma">
+    <span class="material-icons" style="font-size: 16px; margin-right: 4px;">movie</span>
+    Cinéma
+</button>
+    </div>
+    
+    <!-- Zone widgets utiles -->
+    <div class="header-widgets">
+        <div class="weather-temp" id="weatherTemp" onclick="openWeatherDetails()" title="Cliquez pour plus d'infos météo">
+            <div class="temp-value" id="tempValue">--°</div>
+            <div class="temp-label">Météo</div>
+        </div>
+        
+        <div class="visitors-counter" id="visitorsCounter" title="Visiteurs actuellement connectés">
+            <div class="visitors-count" id="visitorsCount">--</div>
+            <div class="visitors-label">En ligne</div>
+        </div>
+        
+        <div class="news-widget-clock" id="newsWidgetClock" onclick="event.stopPropagation(); openTimeWidget();" title="Cliquez pour plus d'infos">
+            <div class="clock-time" id="clockTime">--:--</div>
+            <div class="clock-date" id="clockDate">---</div>
+        </div>
+    </div>
+</div>
+            
+            <div class="news-widget-preview" id="newsWidgetPreview">
+                <div class="loading-news">
+                    <span class="material-icons spinning">hourglass_empty</span>
+                    Chargement des actualités...
+                </div>
+            </div>
+            
+            <div class="news-widget-footer">
+                <span class="news-widget-tap">👆 Touchez pour lire toutes les actualités</span>
+                <div class="news-widget-count" id="newsWidgetCount">0 news</div>
+            </div>
+        </div>
     </div>
 
-    <!-- === CARROUSEL D'ACTUALITÉS === -->
-    <section class="swiper-container" aria-label="Actualités à la une">
-        <div class="swiper">
-            <div class="swiper-wrapper" id="swiperWrapper">
-                <div class="swiper-slide">
-                    <div class="slide-content">
-                        <p>Chargement des actualités...</p>
-                    </div>
+    <!-- Widget CINÉMA -->
+    <div class="cinema-widget-container">
+        <div class="cinema-widget" id="cinemaWidget" onclick="openCinemaPage()">
+            <div class="cinema-widget-header">
+                <span class="cinema-widget-title">🎬 CINÉMA L'Embarcadère</span>
+                <span class="cinema-widget-badge">Panacéa</span>
+            </div>
+            
+            <div class="cinema-widget-preview" id="cinemaWidgetPreview">
+                <div class="loading-cinema">
+                    <span class="material-icons spinning">hourglass_empty</span>
+                    Chargement du programme...
                 </div>
             </div>
-            <div class="swiper-pagination" role="tablist" aria-label="Pagination des actualités"></div>
-            <button class="swiper-button-prev" aria-label="Actualité précédente"></button>
-            <button class="swiper-button-next" aria-label="Actualité suivante"></button>
+            
+            <div class="cinema-widget-footer">
+                <span class="cinema-widget-tap">👆 Programme complet & réservations</span>
+                <span class="cinema-widget-count" id="cinemaWidgetCount">0 films</span>
+            </div>
         </div>
-    </section>
+    </div>
+</div>
 
-    <!-- === WIDGETS PRINCIPAUX === -->
-    <section class="widgets-row" role="region" aria-label="Widgets principaux">
-        <!-- Widget NEWS Actu&Média -->
-        <article class="news-widget-container">
-            <div class="local-news-widget" id="localNewsWidget" onclick="openLocalNewsPage()" role="button" tabindex="0" aria-label="Ouvrir toutes les actualités">
-                <header class="news-widget-header">
-                    <button class="submit-news-btn" onclick="event.stopPropagation(); openSubmitModal();" aria-label="Proposer une actualité">
-                        <span aria-hidden="true">📝</span>
-                        <span>Proposer</span>
-                    </button>
-                    
-                    <div class="header-buttons">
-                        <button class="header-btn photos-btn" onclick="event.stopPropagation(); openGalleryPage();" title="Galerie Photos" aria-label="Ouvrir la galerie photos">
-                            <span class="material-icons" aria-hidden="true">photo_library</span>
-                            Photos
-                        </button>
-                        <button class="header-btn cinema-btn" onclick="event.stopPropagation(); openCinemaModal();" title="Programme Cinéma" aria-label="Voir le programme cinéma">
-                            <span class="material-icons" aria-hidden="true">movie</span>
-                            Cinéma
-                        </button>
-                    </div>
-                    
-                    <div class="header-widgets">
-                        <div class="weather-temp" id="weatherTemp" onclick="event.stopPropagation(); openWeatherDetails();" title="Cliquez pour plus d'infos météo" role="button" tabindex="0">
-                            <div class="temp-value" id="tempValue" aria-live="polite">--°</div>
-                            <div class="temp-label">Météo</div>
-                        </div>
-                        
-                        <div class="visitors-counter" id="visitorsCounter" title="Visiteurs actuellement connectés">
-                            <div class="visitors-count" id="visitorsCount" aria-live="polite">--</div>
-                            <div class="visitors-label">En ligne</div>
-                        </div>
-                        
-                        <div class="news-widget-clock" id="newsWidgetClock" onclick="event.stopPropagation(); openTimeWidget();" title="Cliquez pour plus d'infos" role="button" tabindex="0">
-                            <time class="clock-time" id="clockTime">--:--</time>
-                            <time class="clock-date" id="clockDate">---</time>
-                        </div>
-                    </div>
-                </header>
-                
-                <div class="news-widget-preview" id="newsWidgetPreview" aria-live="polite">
-                    <div class="loading-news">
-                        <span class="material-icons spinning" aria-hidden="true">hourglass_empty</span>
-                        Chargement des actualités...
-                    </div>
-                </div>
-                
-                <footer class="news-widget-footer">
-                    <span class="news-widget-tap">👆 Touchez pour lire toutes les actualités</span>
-                    <div class="news-widget-count" id="newsWidgetCount" aria-live="polite">0 news</div>
-                </footer>
-            </div>
-        </article>
-
-        <!-- Widget CINÉMA -->
-        <article class="cinema-widget-container">
-            <div class="cinema-widget" id="cinemaWidget" onclick="openCinemaPage()" role="button" tabindex="0" aria-label="Ouvrir le programme cinéma">
-                <header class="cinema-widget-header">
-                    <span class="cinema-widget-title">🎬 CINÉMA L'Embarcadère</span>
-                    <span class="cinema-widget-badge">Panacéa</span>
-                </header>
-                
-                <div class="cinema-widget-preview" id="cinemaWidgetPreview" aria-live="polite">
-                    <div class="loading-cinema">
-                        <span class="material-icons spinning" aria-hidden="true">hourglass_empty</span>
-                        Chargement du programme...
-                    </div>
-                </div>
-                
-                <footer class="cinema-widget-footer">
-                    <span class="cinema-widget-tap">👆 Programme complet & réservations</span>
-                    <span class="cinema-widget-count" id="cinemaWidgetCount" aria-live="polite">0 films</span>
-                </footer>
-            </div>
-        </article>
-    </section>
-	
-	<!-- === MENU LATÉRAL === -->
-    <nav id="sidebar" class="sidebar" role="navigation" aria-label="Menu principal" aria-hidden="true">
-        <header class="sidebar-header">
-            <h2>Menu</h2>
-            <button type="button" class="close-btn" aria-label="Fermer le menu">
-                <span class="material-icons" aria-hidden="true">close</span>
+<!-- Modal cinéma mobile -->
+<div class="cinema-mobile-modal" id="cinemaMobileModal">
+    <div class="cinema-modal-content">
+        <div class="cinema-modal-header">
+            <h3>🎬 CINÉMA L'Embarcadère</h3>
+            <button class="cinema-modal-close" id="cinemaModalClose">
+    ✕
+</button>
+        </div>
+        <div id="cinemaModalContent">
+            <!-- Le contenu du widget sera copié ici -->
+        </div>
+        <div style="text-align: center; margin-top: 15px;">
+            <button onclick="window.open('https://www.cinemas-panacea.fr/montceau-embarcadere/horaires/', '_blank')" 
+                    style="background: var(--primary-color); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">
+                📅 Programme complet & réservations
             </button>
-        </header>
-        
-        <ul class="menu-list" role="list">
-            <li class="menu-item">
-                <a href="#" id="bgSelectorBtn" class="menu-link" aria-label="Changer le fond d'écran">
-                    <span class="material-icons" aria-hidden="true">wallpaper</span>
-                    <span>Fond d'écran</span>
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="/contact.html" aria-label="Page de contact">
-                    <span class="material-icons" aria-hidden="true">email</span>
-                    Contact
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="https://www.swisstransfer.com/fr-ch" target="_blank" rel="noopener noreferrer" aria-label="Swiss Transfer - nouvelle fenêtre">
-                    <span class="material-icons" aria-hidden="true">upload</span>
-                    Swiss Transfer
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="/politique-confidentialite" aria-label="Politique de confidentialité">
-                    <span class="material-icons" aria-hidden="true">security</span>
-                    Confidentialité
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="/conditions-utilisation" aria-label="Conditions d'utilisation">
-                    <span class="material-icons" aria-hidden="true">description</span>
-                    Conditions d'utilisation
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="/mentions-legales" aria-label="Mentions légales">
-                    <span class="material-icons" aria-hidden="true">gavel</span>
-                    Mentions légales
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <button id="menuInstall" class="menu-link" aria-label="Installer l'application">
-                    <span class="material-icons" aria-hidden="true">download</span>
-                    <span>Installer l'application</span>
-                </button>
-            </li>
-        </ul>
-        
-        <div class="menu-item qr-code-container">
-            <h4>Scannez notre QR code</h4>
-            <img src="images/qrcode.png" alt="QR Code pour accéder au site" class="sidebar-qr-code" loading="lazy">
         </div>
-        
-        <footer class="menu-item">
-            <div class="copyright-text">
-                <span class="material-icons" aria-hidden="true">copyright</span>
-                <span><span id="currentYear"></span> Actu & Média</span>
-            </div>
-        </footer>
-    </nav>
+    </div>
+</div>
 
-    <!-- === MODAL CINÉMA MOBILE === -->
-    <dialog class="cinema-mobile-modal" id="cinemaMobileModal" aria-labelledby="cinemaModalTitle" aria-describedby="cinemaModalDesc">
-        <div class="cinema-modal-content">
-            <header class="cinema-modal-header">
-                <h3 id="cinemaModalTitle">🎬 CINÉMA L'Embarcadère</h3>
-                <button class="cinema-modal-close" id="cinemaModalClose" aria-label="Fermer">✕</button>
-            </header>
-            <div id="cinemaModalContent" role="region" aria-label="Contenu du programme cinéma">
-                <!-- Le contenu du widget sera copié ici -->
-            </div>
-            <footer style="text-align: center; margin-top: 15px;">
-                <button onclick="window.open('https://www.cinemas-panacea.fr/montceau-embarcadere/horaires/', '_blank')" 
-                        class="btn-primary"
-                        aria-label="Ouvrir le programme complet dans une nouvelle fenêtre">
-                    📅 Programme complet & réservations
-                </button>
-            </footer>
+<!-- Menu latéral -->
+<aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+        <h2>Menu</h2>
+        <button type="button" class="close-btn" aria-label="Fermer">
+            <span class="material-icons">close</span>
+        </button>
+    </div>
+    
+    <!-- 1. Fond d'écran -->
+    <div class="menu-item">
+        <a href="#" id="bgSelectorBtn" class="menu-link">
+            <span class="material-icons">wallpaper</span>
+            <span>Fond d'écran</span>
+        </a>
+    </div>
+    
+    <!-- 2. Contact -->
+    <div class="menu-item">
+        <a href="/contact.html">
+            <span class="material-icons">email</span>
+            Contact
+        </a>
+    </div>
+    
+    <!-- 3. Swiss_Transfer -->
+    <div class="menu-item">
+        <a href="https://www.swisstransfer.com/fr-ch" target="_blank">
+            <span class="material-icons">upload</span>
+            Swiss_Transfer
+        </a>
+    </div>
+    
+    <!-- 4. Confidentialité -->
+    <div class="menu-item">
+        <a href="/politique-confidentialite">
+            <span class="material-icons">security</span>
+            Confidentialité
+        </a>
+    </div>
+    
+    <!-- 5. Conditions d'utilisation -->
+    <div class="menu-item">
+        <a href="/conditions-utilisation">
+            <span class="material-icons">description</span>
+            Conditions d'utilisation
+        </a>
+    </div>
+    
+    <!-- 6. Mentions légales -->
+    <div class="menu-item">
+        <a href="/mentions-legales">
+            <span class="material-icons">gavel</span>
+            Mentions légales
+        </a>
+    </div>
+    
+    <!-- 7. Installer l'application -->
+    <div class="menu-item">
+        <button id="menuInstall" class="menu-link">
+            <span class="material-icons">download</span>
+            <span>Installer l'application</span>
+        </button>
+    </div>
+    
+    <!-- QR Code -->
+    <div class="menu-item qr-code-container">
+        <h4>Scannez notre QR code</h4>
+        <img src="images/qrcode.png" alt="QR Code" class="sidebar-qr-code">
+    </div>
+    
+    <!-- Copyright -->
+    <div class="menu-item">
+        <div class="copyright-text">
+            <span class="material-icons">copyright</span>
+            <span><span id="currentYear"></span>
+            <script>
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            </script> Actu & Média</span>
         </div>
-    </dialog>
+    </div>
+</aside>
 
-    <!-- === CONTENU PRINCIPAL === -->
-    <main role="main" aria-label="Contenu principal">
-        <div id="tileContainer" class="tile-container grid" role="grid" aria-label="Grille des services"></div>
-    </main>
+	<!-- Conteneur principal des tuiles -->
+	<main>
+    <div id="tileContainer" class="tile-container grid"></div>
+	</main>
 
-    <!-- === TICKER D'ACTUALITÉS === -->
-    <aside class="news-ticker" role="marquee" aria-label="Fil d'actualités">
-        <div class="ticker-wrapper" id="newsTicker" aria-live="polite">
-            <div class="ticker-item">Chargement des actualités...</div>
-        </div>
-    </aside>
-
-    <!-- === BARRE DE NAVIGATION DU BAS === -->
-    <nav class="bottom-nav" role="navigation" aria-label="Navigation secondaire">
-        <button class="nav-item" id="darkModeToggle" aria-label="Basculer le mode sombre">
-            <span class="material-icons" aria-hidden="true">dark_mode</span>
-            <span>Sombre</span>
-        </button>
-        <button class="nav-item" id="layoutToggle" aria-label="Changer la disposition">
-            <span class="material-icons" aria-hidden="true">grid_view</span>
-            <span>Vue</span>
-        </button>
-        <button class="nav-item" id="donateButton" aria-label="Faire un don">
-            <span class="material-icons" aria-hidden="true">local_cafe</span>
-            <span>Un café ?</span>
-        </button>
-        <button class="nav-item chat-toggle-btn" id="chatToggleBtn" aria-label="Ouvrir le chat">
-            <span class="material-icons" aria-hidden="true">chat</span>
-            <span>Chat</span>
-            <span class="chat-notification-badge hidden" aria-live="polite">0</span>
-        </button>
-    </nav>
-	
-	<!-- === BOUTONS D'ACTIONS === -->
-    <section class="button-group" role="group" aria-label="Actions rapides">
-        <button id="newsButton" class="news-button" aria-label="Afficher les infos en direct">
-            <span class="material-icons" aria-hidden="true">feed</span>
-            <span>Infos en direct</span>
-        </button>
-        <button class="weather-show-btn" id="weatherShowBtn" title="Afficher la météo" aria-label="Réafficher le widget météo">
-            <span class="material-icons" aria-hidden="true">cloudy_snowing</span>
-        </button>
-    </section>
-
-    <!-- === WIDGET LIENS RAPIDES === -->
-    <aside class="quick-links-sidebar" id="quickLinksSidebar" role="complementary" aria-label="Liens rapides">
-        <button class="quick-links-toggle" title="Masquer les liens rapides" aria-label="Fermer les liens rapides">
-            <span class="material-icons" aria-hidden="true">close</span>
-        </button>
-        <h3>Liens rapides</h3>
-        <nav class="links-grid" role="navigation">
-            <a href="#" class="quick-link emergency-link" onclick="showEmergencyNumbers(event)" aria-label="Numéros d'urgence">
-                <span class="material-icons" aria-hidden="true">phone_in_talk</span>
-                <span class="quick-link-label">Urgence</span>
-            </a>
-            <a href="https://www.montceaulesmines.fr/" class="quick-link" target="_blank" rel="noopener noreferrer" aria-label="Site de la ville de Montceau">
-                <span class="material-icons" aria-hidden="true">location_city</span>
-                <span>Ville de Montceau</span>
-            </a>
-            <a href="https://www.inforoute71.fr/" class="quick-link" target="_blank" rel="noopener noreferrer" aria-label="Informations routières">
-                <span class="material-icons" aria-hidden="true">directions_car</span>
-                <span>Info Routes</span>
-            </a>
-            <a href="https://www.ter.sncf.com/bourgogne-franche-comte" class="quick-link" target="_blank" rel="noopener noreferrer" aria-label="Horaires des trains TER">
-                <span class="material-icons" aria-hidden="true">train</span>
-                <span>Horaires TER</span>
-            </a>
-            <a href="https://www.doctolib.fr/medecin-generaliste/montceau-les-mines" class="quick-link" target="_blank" rel="noopener noreferrer" aria-label="Prendre rendez-vous médecin">
-                <span class="material-icons" aria-hidden="true">medical_services</span>
-                <span>Médecins</span>
-            </a>
-            <a href="https://www.impots.gouv.fr/" class="quick-link" target="_blank" rel="noopener noreferrer" aria-label="Site des impôts">
-                <span class="material-icons" aria-hidden="true">receipt_long</span>
-                <span>Impôts</span>
-            </a>
-            <a href="https://www.service-public.fr/" class="quick-link" target="_blank" rel="noopener noreferrer" aria-label="Service public">
-                <span class="material-icons" aria-hidden="true">public</span>
-                <span>Service Public</span>
-            </a>
-        </nav>
-    </aside>
-
-    <!-- === BOUTON RÉAFFICHER LIENS RAPIDES === -->
-    <button class="quick-links-show-btn" id="quickLinksShowBtn" title="Afficher les liens rapides" aria-label="Réafficher les liens rapides">
-        <span class="material-icons" aria-hidden="true">dashboard_customize</span>
+	<!-- Ticker d'actualités -->
+	<div class="news-ticker">
+  <div class="ticker-wrapper" id="newsTicker">
+    <div class="ticker-item">Chargement des actualités...</div>
+  </div>
+	</div>
+	<!-- Barre de navigation du bas -->
+	<nav class="bottom-nav">
+    <button class="nav-item" id="darkModeToggle">
+        <span class="material-icons">dark_mode</span>
+        <span>Sombre</span>
     </button>
+    <button class="nav-item" id="layoutToggle">
+        <span class="material-icons">grid_view</span>
+        <span>Vue</span>
+    </button>
+    <button class="nav-item" id="donateButton">
+		<span class="material-icons">local_cafe</span>
+		<span>Un café ?</span>
+	</button>
+    <!-- Bouton de chat existant -->
+    <button class="nav-item chat-toggle-btn" id="chatToggleBtn">
+        <span class="material-icons">chat</span>
+        <span>Chat</span>
+        <span class="chat-notification-badge hidden">0</span>
+    </button>
+	</nav>
+	<!-- Scripts essentiels (chargement rapide) -->
+	<script src="js/ios-fixes-safe.js"></script>
+	<script src="js/ios-install.js"></script>
+	<script src="js/ban-manager.js"></script>
 
-    <!-- === PANEL DES ACTUALITÉS === -->
-    <aside class="news-panel" id="newsPanel" role="complementary" aria-label="Panel des actualités" aria-hidden="true">
-        <header class="panel-header">
-            <h3>Actualités en direct</h3>
-            <button class="close-panel" aria-label="Fermer le panel">
-                <span class="material-icons" aria-hidden="true">close</span>
-            </button>
-        </header>
-        <div class="panel-content" id="newsPanelContent" role="feed" aria-live="polite">
-            <!-- Les actualités seront injectées ici -->
+	<!-- Scripts de fonctionnalités -->
+	<script src="js/welcome-manager.js"></script>
+	<script src="js/expense-manager.js"></script>
+	<script src="js/news-manager.js"></script>
+	<script src="js/newsTickerManager.js"></script>
+	<script src="js/newsPanel.js"></script>
+	<script src="js/weather-widget.js"></script>
+	<script src="js/quick-links.js"></script>
+	<script src="js/tablet-fixes.js"></script>
+	<script src="js/chat-keyboard-fix.js"></script>
+	<script src="js/ban-check.js"></script>
+	<script src="js/theme-manager.js"></script>
+	<script src="js/donation.js"></script>
+	<script src="js/survey-manager.js"></script>
+	<script src="js/news-widget.js"></script>
+	<script src="js/cinema-widget.js"></script>
+	<script src="js/visitor-tracker.js"></script>
+	<script src="js/football-widget.js"></script>
+	<script src="js/radioPopup.js"></script>
+	<script src="js/notepadApp.js"></script>
+	<script src="js/todoApp.js"></script>
+
+	<!-- Script d'initialisation principal -->
+	<script type="module" src="js/app-initializer.js"></script>
+
+	<!-- Bouton Infos en direct -->
+	<div class="button-group" style="display: flex; justify-content: center; gap: 10px; margin: 20px 0;">
+  <!-- Bouton existant -->
+  <button id="newsButton" class="news-button">
+    <span class="material-icons">feed</span>
+    <span>Infos en direct</span>
+  </button>
+  <!-- Bouton pour réafficher le widget (en dehors du sidebar) -->
+	<button class="weather-show-btn" id="weatherShowBtn" title="Afficher la météo">
+  <span class="material-icons">cloudy_snowing</span>
+	</button>
+  
+	</div>
+	<!-- Widget liens rapides avec bouton de fermeture -->
+	<div class="quick-links-sidebar" id="quickLinksSidebar">
+  <button class="quick-links-toggle" title="Masquer les liens rapides">
+    <span class="material-icons">close</span>
+  </button>
+  <h3>Liens rapides</h3>
+  <div class="links-grid">
+  <a href="#" class="quick-link emergency-link" onclick="showEmergencyNumbers(event)">
+  <span class="material-icons">phone_in_talk</span>
+  <span class="quick-link-label">Urgence</span>
+</a>
+    <a href="https://www.montceaulesmines.fr/" class="quick-link" target="_blank">
+      <span class="material-icons">location_city</span>
+      <span>Ville de Montceau</span>
+    </a>
+    <a href="https://www.inforoute71.fr/" class="quick-link" target="_blank">
+      <span class="material-icons">directions_car</span>
+      <span>Info Routes</span>
+    </a>
+    <a href="https://www.ter.sncf.com/bourgogne-franche-comte" class="quick-link" target="_blank">
+      <span class="material-icons">train</span>
+      <span>Horaires TER</span>
+    </a>
+    <a href="https://www.doctolib.fr/medecin-generaliste/montceau-les-mines" class="quick-link" target="_blank">
+      <span class="material-icons">medical_services</span>
+      <span>Médecins</span>
+    </a>
+    <a href="https://www.impots.gouv.fr/" class="quick-link" target="_blank">
+      <span class="material-icons">receipt_long</span>
+      <span>Impôts</span>
+    </a>
+    <a href="https://www.service-public.fr/" class="quick-link" target="_blank">
+      <span class="material-icons">public</span>
+      <span>Service Public</span>
+    </a>
+  </div>
+</div>
+
+<!-- Bouton pour réafficher le widget des liens rapides -->
+<button class="quick-links-show-btn" id="quickLinksShowBtn" title="Afficher les liens rapides">
+  <span class="material-icons">dashboard_customize</span>
+</button>
+<!-- Menu déroulant des actualités -->
+<div class="news-panel" id="newsPanel">
+  <div class="panel-header">
+    <h3>Actualités en direct</h3>
+    <button class="close-panel">
+      <span class="material-icons">close</span>
+    </button>
+  </div>
+  <div class="panel-content" id="newsPanelContent">
+    <!-- Les actualités vont ici -->
+  </div>
+  <!-- Bouton de fermeture flottant (visible uniquement sur mobile) -->
+<button class="mobile-close-panel" id="mobileClosePanel">
+  <span class="material-icons">keyboard_arrow_down</span>
+  <span>Fermer</span>
+</button>
+  <button class="refresh-button" id="refreshButton">
+    <span class="material-icons">refresh</span> 
+    Actualiser les infos
+  </button>
+</div>
+<div class="survey-modal" id="surveyModal">
+    <div class="survey-content">
+        <div class="survey-header">
+            <h2>Aidez-nous à améliorer Actu&Média</h2>
+            <button class="close-survey" id="closeSurvey"></button>
         </div>
-        <button class="mobile-close-panel" id="mobileClosePanel" aria-label="Fermer le panel">
-            <span class="material-icons" aria-hidden="true">keyboard_arrow_down</span>
-            <span>Fermer</span>
-        </button>
-        <button class="refresh-button" id="refreshButton" aria-label="Actualiser les informations">
-            <span class="material-icons" aria-hidden="true">refresh</span>
-            Actualiser les infos
-        </button>
-    </aside>
-
-    <!-- === MODAL SONDAGE === -->
-    <dialog class="survey-modal" id="surveyModal" aria-labelledby="surveyTitle" aria-describedby="surveyDesc">
-        <div class="survey-content">
-            <header class="survey-header">
-                <h2 id="surveyTitle">Aidez-nous à améliorer Actu&Média</h2>
-                <button class="close-survey" id="closeSurvey" aria-label="Fermer le sondage"></button>
-            </header>
-            
-            <form id="surveyQuestions" role="form">
-                <!-- Question 1 -->
-                <fieldset class="survey-question" data-question="preference">
-                    <legend>Quelle rubrique préférez-vous sur Actu&Média ?</legend>
-                    <div class="survey-options" role="radiogroup">
-                        <label class="survey-option" data-value="actualites">
-                            <input type="radio" name="preference" value="actualites" class="sr-only">
-                            <div class="survey-option-icon">
-                                <span class="material-icons" aria-hidden="true">newspaper</span>
-                            </div>
-                            <span>Actualités locales</span>
-                        </label>
-                        <label class="survey-option" data-value="sports">
-                            <input type="radio" name="preference" value="sports" class="sr-only">
-                            <div class="survey-option-icon">
-                                <span class="material-icons" aria-hidden="true">sports_soccer</span>
-                            </div>
-                            <span>Sports</span>
-                        </label>
-                        <label class="survey-option" data-value="radio">
-                            <input type="radio" name="preference" value="radio" class="sr-only">
-                            <div class="survey-option-icon">
-                                <span class="material-icons" aria-hidden="true">radio</span>
-                            </div>
-                            <span>Radio</span>
-                        </label>
-                        <label class="survey-option" data-value="tv">
-                            <input type="radio" name="preference" value="tv" class="sr-only">
-                            <div class="survey-option-icon">
-                                <span class="material-icons" aria-hidden="true">tv</span>
-                            </div>
-                            <span>TV en direct</span>
-                        </label>
-                        <label class="survey-option" data-value="meteo">
-                            <input type="radio" name="preference" value="meteo" class="sr-only">
-                            <div class="survey-option-icon">
-                                <span class="material-icons" aria-hidden="true">cloud</span>
-                            </div>
-                            <span>Météo</span>
-                        </label>
-                    </div>
-                </fieldset>
-                
-                <!-- Question 2 -->
-                <fieldset class="survey-question" data-question="nouvelle_fonctionnalite">
-                    <legend>Quelle nouvelle fonctionnalité souhaiteriez-vous voir sur le site ?</legend>
-                    <div class="survey-options" role="radiogroup">
-                        <label class="survey-option" data-value="agenda">
-                            <input type="radio" name="nouvelle_fonctionnalite" value="agenda" class="sr-only">
-                            <div class="survey-option-icon">
-                                <span class="material-icons" aria-hidden="true">event</span>
-                            </div>
-                            <span>Agenda des événements locaux</span>
-                        </label>
-                        <label class="survey-option" data-value="petites_annonces">
-                            <input type="radio" name="nouvelle_fonctionnalite" value="petites_annonces" class="sr-only">
-                            <div class="survey-option-icon">
-                                <span class="material-icons" aria-hidden="true">sell</span>
-                            </div>
-                            <span>Petites annonces gratuites</span>
-                        </label>
-                        <label class="survey-option" data-value="tribune">
-                            <input type="radio" name="nouvelle_fonctionnalite" value="tribune" class="sr-only">
-                            <div class="survey-option-icon">
-                                <span class="material-icons" aria-hidden="true">forum</span>
-                            </div>
-                            <span>Tribune libre/Blog citoyen</span>
-                        </label>
-                        <label class="survey-option" data-value="alertes">
-                            <input type="radio" name="nouvelle_fonctionnalite" value="alertes" class="sr-only">
-                            <div class="survey-option-icon">
-                                <span class="material-icons" aria-hidden="true">notifications_active</span>
-                            </div>
-                            <span>Alertes locales (travaux, urgences...)</span>
-                        </label>
-                        <label class="survey-option" data-value="carte">
-                            <input type="radio" name="nouvelle_fonctionnalite" value="carte" class="sr-only">
-                            <div class="survey-option-icon">
-                                <span class="material-icons" aria-hidden="true">map</span>
-                            </div>
-                            <span>Carte interactive des commerces et services</span>
-                        </label>
-                    </div>
-                </fieldset>
-                
-                <!-- Question 3 -->
-                <fieldset class="survey-question" data-question="frequence">
-                    <legend>À quelle fréquence visitez-vous Actu&Média ?</legend>
-                    <div class="survey-options" role="radiogroup">
-                        <label class="survey-option" data-value="quotidien">
-                            <input type="radio" name="frequence" value="quotidien" class="sr-only">
-                            <div class="survey-option-icon">
-                                <span class="material-icons" aria-hidden="true">today</span>
-                            </div>
-                            <span>Tous les jours</span>
-                        </label>
-                        <label class="survey-option" data-value="hebdomadaire">
-                            <input type="radio" name="frequence" value="hebdomadaire" class="sr-only">
-                            <div class="survey-option-icon">
-                                <span class="material-icons" aria-hidden="true">view_week</span>
-                            </div>
-                            <span>Plusieurs fois par semaine</span>
-                        </label>
-                        <label class="survey-option" data-value="mensuel">
-                            <input type="radio" name="frequence" value="mensuel" class="sr-only">
-                            <div class="survey-option-icon">
-                                <span class="material-icons" aria-hidden="true">calendar_month</span>
-                            </div>
-                            <span>Quelques fois par mois</span>
-                        </label>
-                        <label class="survey-option" data-value="occasionnel">
-                            <input type="radio" name="frequence" value="occasionnel" class="sr-only">
-                            <div class="survey-option-icon">
-                                <span class="material-icons" aria-hidden="true">calendar_today</span>
-                            </div>
-                            <span>Occasionnellement</span>
-                        </label>
-                        <label class="survey-option" data-value="premiere">
-                            <input type="radio" name="frequence" value="premiere" class="sr-only">
-                            <div class="survey-option-icon">
-                                <span class="material-icons" aria-hidden="true">new_releases</span>
-                            </div>
-                            <span>C'est ma première visite</span>
-                        </label>
-                    </div>
-                </fieldset>
-                
-                <button type="submit" class="survey-submit" id="surveySubmit">Envoyer mes réponses</button>
-            </form>
-            
-            <!-- Message de remerciement et résultats -->
-            <div class="thank-you-message" id="thankYouMessage" style="display: none;" role="status">
-                <span class="thank-you-icon" aria-hidden="true">🎉</span>
-                <h3>Merci pour votre participation !</h3>
-                <p>Votre avis est précieux pour améliorer Actu&Média.</p>
-                
-                <div class="survey-results">
-                    <h4>Résultats actuels du sondage</h4>
-                    <div id="surveyResults" role="region" aria-live="polite">
-                        <!-- Les résultats seront injectés ici par JavaScript -->
-                    </div>
-                </div>
-                
-                <button class="back-to-survey" id="closeSurveyAfterSubmit">Retour au site</button>
-            </div>
-        </div>
-    </dialog>
-	
-	<!-- === POPUP DE DON AVEC TRANSPARENCE FINANCIÈRE === -->
-    <dialog class="donation-overlay" id="donationPopup" aria-labelledby="donationTitle" aria-describedby="donationDesc">
-        <div class="donation-popup">
-            <button id="donationClose" class="donation-close" aria-label="Fermer la fenêtre de don">×</button>
-            
-            <header class="donation-header">
-                <span class="donation-emoji" aria-hidden="true">🙏</span>
-                <h3 id="donationTitle">Soutenez Actu & Média</h3>
-            </header>
-            
-            <div class="donation-body" id="donationDesc">
-                <p class="donation-main-text">
-                    <strong>Depuis 8 mois</strong>, ce site bénévole informe gratuitement 
-                    les habitants de Montceau-les-Mines.
-                </p>
-                
-                <div class="donation-features" role="list">
-                    <div class="feature" role="listitem">✅ Sans publicité</div>
-                    <div class="feature" role="listitem">✅ 100% gratuit</div>
-                    <div class="feature" role="listitem">✅ Indépendant</div>
-                    <div class="feature" role="listitem">✅ Créé bénévolement</div>
-                </div>
-
-                <section class="financial-transparency">
-                    <h4>💰 Nos frais annuels réels</h4>
-                    <table class="costs-breakdown" role="table" aria-label="Détail des coûts">
-                        <tbody>
-                            <tr class="cost-item">
-                                <td class="cost-label">Hébergement serveur</td>
-                                <td class="cost-amount">120€/an</td>
-                            </tr>
-                            <tr class="cost-item">
-                                <td class="cost-label">Nom de domaine .fr</td>
-                                <td class="cost-amount">15€/an</td>
-                            </tr>
-                            <tr class="cost-item">
-                                <td class="cost-label">Maintenance technique</td>
-                                <td class="cost-amount">65€/an</td>
-                            </tr>
-                            <tr class="cost-total">
-                                <td class="cost-label"><strong>Total annuel</strong></td>
-                                <td class="cost-amount"><strong>200€</strong></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div class="donation-progress" role="progressbar" aria-valuenow="5" aria-valuemin="0" aria-valuemax="200" aria-label="Progression des dons">
-                        <p class="progress-label">Objectif 2025 : 200€</p>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 2.5%;">
-                                <span class="progress-text">5€ / 200€</span>
-                            </div>
+        
+        <div id="surveyQuestions">
+            <!-- Question 1 -->
+            <div class="survey-question" data-question="preference">
+                <h3>Quelle rubrique préférez-vous sur Actu&Média ?</h3>
+                <div class="survey-options">
+                    <div class="survey-option" data-value="actualites">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">newspaper</span>
                         </div>
-                        <p class="progress-info">Collecté : <strong>5€</strong> (2.5%)</p>
+                        <span>Actualités locales</span>
                     </div>
-                </section>
-                
-                <p class="donation-appeal">
-                    Ce site est créé et maintenu <strong>bénévolement</strong> avec passion.
-                    Votre soutien, même 1€, compte énormément pour couvrir les frais techniques
-                    et permettre la continuité de ce service local.
-                </p>
-
-                <div class="suggested-amounts">
-                    <p class="suggested-title">Montant suggéré :</p>
-                    <div class="amount-buttons" role="group" aria-label="Montants suggérés">
-                        <button class="amount-btn" onclick="handleAmountClick(1)" aria-label="Donner 1 euro">1€</button>
-                        <button class="amount-btn" onclick="handleAmountClick(5)" aria-label="Donner 5 euros">5€</button>
-                        <button class="amount-btn active" onclick="handleAmountClick(10)" aria-pressed="true" aria-label="Donner 10 euros">10€</button>
-                        <button class="amount-btn" onclick="handleAmountClick(20)" aria-label="Donner 20 euros">20€</button>
-                        <button class="amount-btn" onclick="handleAmountClick('other')" aria-label="Autre montant">Autre</button>
+                    <div class="survey-option" data-value="sports">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">sports_soccer</span>
+                        </div>
+                        <span>Sports</span>
+                    </div>
+                    <div class="survey-option" data-value="radio">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">radio</span>
+                        </div>
+                        <span>Radio</span>
+                    </div>
+                    <div class="survey-option" data-value="tv">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">tv</span>
+                        </div>
+                        <span>TV en direct</span>
+                    </div>
+                    <div class="survey-option" data-value="meteo">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">cloud</span>
+                        </div>
+                        <span>Météo</span>
                     </div>
                 </div>
             </div>
             
-            <div class="donation-actions">
-                <a href="https://www.paypal.com/donate/?hosted_button_id=FKJPST5LWBUGG" 
-                   target="_blank" 
-                   rel="noopener noreferrer"
-                   class="donation-link primary"
-                   onclick="trackDonationClick()"
-                   aria-label="Faire un don sécurisé via PayPal">
-                    <img src="images/paypal-icon.png" alt="" role="presentation" loading="lazy">
-                    <span>Faire un don sécurisé</span>
-                </a>
-                
-                <button class="donation-later" onclick="window.donationManager.hidePopup(true)">
-                    Plus tard
-                </button>
+            <!-- Question 2 -->
+            <div class="survey-question" data-question="nouvelle_fonctionnalite">
+                <h3>Quelle nouvelle fonctionnalité souhaiteriez-vous voir sur le site ?</h3>
+                <div class="survey-options">
+                    <div class="survey-option" data-value="agenda">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">event</span>
+                        </div>
+                        <span>Agenda des événements locaux</span>
+                    </div>
+                    <div class="survey-option" data-value="petites_annonces">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">sell</span>
+                        </div>
+                        <span>Petites annonces gratuites</span>
+                    </div>
+                    <div class="survey-option" data-value="tribune">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">forum</span>
+                        </div>
+                        <span>Tribune libre/Blog citoyen</span>
+                    </div>
+                    <div class="survey-option" data-value="alertes">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">notifications_active</span>
+                        </div>
+                        <span>Alertes locales (travaux, urgences...)</span>
+                    </div>
+                    <div class="survey-option" data-value="carte">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">map</span>
+                        </div>
+                        <span>Carte interactive des commerces et services</span>
+                    </div>
+                </div>
             </div>
             
-            <footer class="donation-footer">
-                <small>🔒 Paiement 100% sécurisé via PayPal</small>
-                <small>📊 Transparence totale sur l'utilisation des dons</small>
-            </footer>
+            <!-- Question 3 -->
+            <div class="survey-question" data-question="frequence">
+                <h3>À quelle fréquence visitez-vous Actu&Média ?</h3>
+                <div class="survey-options">
+                    <div class="survey-option" data-value="quotidien">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">today</span>
+                        </div>
+                        <span>Tous les jours</span>
+                    </div>
+                    <div class="survey-option" data-value="hebdomadaire">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">view_week</span>
+                        </div>
+                        <span>Plusieurs fois par semaine</span>
+                    </div>
+                    <div class="survey-option" data-value="mensuel">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">calendar_month</span>
+                        </div>
+                        <span>Quelques fois par mois</span>
+                    </div>
+                    <div class="survey-option" data-value="occasionnel">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">calendar_today</span>
+                        </div>
+                        <span>Occasionnellement</span>
+                    </div>
+                    <div class="survey-option" data-value="premiere">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">new_releases</span>
+                        </div>
+                        <span>C'est ma première visite</span>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="survey-submit" id="surveySubmit">Envoyer mes réponses</button>
         </div>
-    </dialog>
+        
+        <!-- Message de remerciement et résultats -->
+        <div class="thank-you-message" id="thankYouMessage" style="display: none;">
+            <span class="thank-you-icon">🎉</span>
+            <h3>Merci pour votre participation !</h3>
+            <p>Votre avis est précieux pour améliorer Actu&Média.</p>
+            
+            <div class="survey-results">
+                <h4>Résultats actuels du sondage</h4>
+                <div id="surveyResults">
+                    <!-- Les résultats seront injectés ici par JavaScript -->
+                </div>
+            </div>
+            
+            <button class="back-to-survey" id="closeSurveyAfterSubmit">Retour au site</button>
+        </div>
+    </div>
+</div>
+<script src="js/background-selector.js"></script>
+<script src="js/custom-background-manager.js"></script>
+<!-- Popup de don avec transparence financière -->
+<div id="donationPopup" class="donation-overlay">
+    <div class="donation-popup">
+        <span id="donationClose" class="donation-close">×</span>
+        
+        <!-- En-tête avec animation -->
+        <div class="donation-header">
+            <span class="donation-emoji">🙏</span>
+            <h3>Soutenez Actu & Média</h3>
+        </div>
+        
+        <!-- Corps du message -->
+        <div class="donation-body">
+            <p class="donation-main-text">
+                <strong>Depuis 8 mois</strong>, ce site bénévole informe gratuitement 
+                les habitants de Montceau-les-Mines.
+            </p>
+            
+            <div class="donation-features">
+                <div class="feature">✅ Sans publicité</div>
+                <div class="feature">✅ 100% gratuit</div>
+                <div class="feature">✅ Indépendant</div>
+                <div class="feature">✅ Créé bénévolement</div>
+            </div>
 
-    <!-- === MODAL DE SOUMISSION D'ACTUALITÉ === -->
-    <dialog id="submitModal" class="submit-modal" aria-labelledby="submitTitle" aria-describedby="submitDesc">
+            <!-- Section transparence financière -->
+            <div class="financial-transparency">
+                <h4>💰 Nos frais annuels réels</h4>
+                <div class="costs-breakdown">
+                    <div class="cost-item">
+                        <span class="cost-label">Hébergement serveur</span>
+                        <span class="cost-amount">120€/an</span>
+                    </div>
+                    <div class="cost-item">
+                        <span class="cost-label">Nom de domaine .fr</span>
+                        <span class="cost-amount">15€/an</span>
+                    </div>
+                    <div class="cost-item">
+                        <span class="cost-label">Maintenance technique</span>
+                        <span class="cost-amount">65€/an</span>
+                    </div>
+                    <div class="cost-total">
+                        <span class="cost-label"><strong>Total annuel</strong></span>
+                        <span class="cost-amount"><strong>200€</strong></span>
+                    </div>
+                </div>
+
+                <!-- Barre de progression -->
+                <div class="donation-progress">
+                    <p class="progress-label">Objectif 2025 : 200€</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 2.5%;">
+                            <span class="progress-text">5€ / 200€</span>
+                        </div>
+                    </div>
+                    <p class="progress-info">Collecté : <strong>5€</strong> (2.5%)</p>
+                </div>
+            </div>
+            
+            <p class="donation-appeal">
+                Ce site est créé et maintenu <strong>bénévolement</strong> avec passion.
+                Votre soutien, même 1€, compte énormément pour couvrir les frais techniques
+                et permettre la continuité de ce service local.
+            </p>
+
+            <!-- Montants suggérés -->
+            <div class="suggested-amounts">
+                <p class="suggested-title">Montant suggéré :</p>
+                <div class="amount-buttons">
+                    <button class="amount-btn" onclick="handleAmountClick(1)">1€</button>
+                    <button class="amount-btn" onclick="handleAmountClick(5)">5€</button>
+                    <button class="amount-btn active" onclick="handleAmountClick(10)">10€</button>
+                    <button class="amount-btn" onclick="handleAmountClick(20)">20€</button>
+                    <button class="amount-btn" onclick="handleAmountClick('other')">Autre</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Boutons d'action -->
+        <div class="donation-actions">
+            <a href="https://www.paypal.com/donate/?hosted_button_id=FKJPST5LWBUGG" 
+               target="_blank" 
+               class="donation-link primary"
+               onclick="trackDonationClick()">
+                <img src="images/paypal-icon.png" alt="PayPal" 
+                     style="height:20px;vertical-align:middle;">
+                <span>Faire un don sécurisé</span>
+            </a>
+            
+            <button class="donation-later" onclick="window.donationManager.hidePopup(true)">
+                Plus tard
+            </button>
+        </div>
+        
+        <!-- Footer avec transparence -->
+        <div class="donation-footer">
+            <small>🔒 Paiement 100% sécurisé via PayPal</small>
+            <small>📊 Transparence totale sur l'utilisation des dons</small>
+        </div>
+    </div>
+</div>
+
+<script>
+// Gestion des montants suggérés
+function handleAmountClick(amount) {
+    // Retirer la classe active de tous les boutons
+    document.querySelectorAll('.amount-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Ajouter la classe active au bouton cliqué
+    event.target.classList.add('active');
+    
+    // Ici vous pourriez potentiellement pré-remplir le montant sur PayPal
+    // ou stocker la préférence
+    console.log('Montant sélectionné:', amount + '€');
+    
+    // Vibration tactile si disponible
+    if (navigator.vibrate) {
+        navigator.vibrate(50);
+    }
+}
+
+// Tracker les clics sur le bouton de don
+function trackDonationClick() {
+    console.log('Clic sur le bouton de don');
+    // Vous pouvez ajouter ici des analytics ou du tracking
+    
+    // Fermer la popup après un délai
+    setTimeout(() => {
+        if (window.donationManager) {
+            window.donationManager.hidePopup(false);
+        }
+    }, 1000);
+}
+
+// Fonction pour mettre à jour la barre de progression
+function updateDonationProgress(collected, goal) {
+    const percentage = (collected / goal) * 100;
+    const progressFill = document.querySelector('.progress-fill');
+    const progressText = document.querySelector('.progress-text');
+    const progressInfo = document.querySelector('.progress-info');
+    
+    if (progressFill) {
+        progressFill.style.width = Math.max(percentage, 2.5) + '%'; // Minimum 2.5% pour la visibilité
+        progressText.textContent = `${collected}€ / ${goal}€`;
+        progressInfo.innerHTML = `Collecté : <strong>${collected}€</strong> (${percentage.toFixed(1)}%)`;
+    }
+}
+
+// Exemple d'utilisation pour mettre à jour les montants
+// updateDonationProgress(5, 200); // 5€ collectés sur 200€
+
+// Animation au chargement de la popup
+document.addEventListener('DOMContentLoaded', function() {
+    const popup = document.querySelector('.donation-popup');
+    if (popup) {
+        // Animer la barre de progression au chargement
+        setTimeout(() => {
+            const progressFill = document.querySelector('.progress-fill');
+            if (progressFill) {
+                progressFill.style.transition = 'width 1.5s cubic-bezier(0.4, 0, 0.2, 1)';
+            }
+        }, 500);
+    }
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div id="submitModal" class="submit-modal">
         <div class="submit-modal-content">
-            <header class="modal-header">
-                <h2 class="modal-title" id="submitTitle">
-                    <span aria-hidden="true">📝</span>
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <span>📝</span>
                     Proposer une actualité
                 </h2>
-                <button class="close-modal" onclick="closeSubmitModal()" aria-label="Fermer">×</button>
-            </header>
+                <button class="close-modal" onclick="closeSubmitModal()">×</button>
+            </div>
 
-            <form id="submitNewsForm" class="submit-form" novalidate>
+            <form id="submitNewsForm" class="submit-form">
                 <!-- Type d'actualité -->
-                <fieldset class="form-group">
-                    <legend class="form-label">
-                        <span aria-hidden="true">🎯</span>
+                <div class="form-group">
+                    <label class="form-label">
+                        <span>🎯</span>
                         Type d'actualité
-                    </legend>
-                    <div class="news-types" role="radiogroup">
+                    </label>
+                    <div class="news-types">
                         <label class="news-type">
                             <input type="radio" name="newsType" value="actualite" checked>
                             <span>📰 Actualité</span>
@@ -849,13 +927,13 @@
                             <span>📋 Autre</span>
                         </label>
                     </div>
-                </fieldset>
+                </div>
 
                 <!-- Titre -->
                 <div class="form-group">
                     <label class="form-label" for="newsTitle">
-                        <span aria-hidden="true">📢</span>
-                        Titre de l'actualité <span aria-label="requis">*</span>
+                        <span>📢</span>
+                        Titre de l'actualité
                     </label>
                     <input 
                         type="text" 
@@ -865,17 +943,15 @@
                         placeholder="Ex: Ouverture d'un nouveau commerce..."
                         required
                         maxlength="100"
-                        aria-required="true"
-                        aria-describedby="titleHint"
                     >
-                    <span class="form-hint" id="titleHint">Maximum 100 caractères</span>
+                    <span class="form-hint">Maximum 100 caractères</span>
                 </div>
 
                 <!-- Contenu -->
                 <div class="form-group">
                     <label class="form-label" for="newsContent">
-                        <span aria-hidden="true">📝</span>
-                        Description / Contenu <span aria-label="requis">*</span>
+                        <span>📝</span>
+                        Description / Contenu
                     </label>
                     <textarea 
                         id="newsContent" 
@@ -884,16 +960,14 @@
                         placeholder="Décrivez votre actualité, événement ou information..."
                         required
                         maxlength="1000"
-                        aria-required="true"
-                        aria-describedby="contentHint"
                     ></textarea>
-                    <span class="form-hint" id="contentHint">Maximum 1000 caractères</span>
+                    <span class="form-hint">Maximum 1000 caractères</span>
                 </div>
 
                 <!-- Lieu (optionnel) -->
                 <div class="form-group">
                     <label class="form-label" for="newsLocation">
-                        <span aria-hidden="true">📍</span>
+                        <span>📍</span>
                         Lieu (optionnel)
                     </label>
                     <input 
@@ -908,7 +982,7 @@
                 <!-- Date (optionnel) -->
                 <div class="form-group">
                     <label class="form-label" for="newsDate">
-                        <span aria-hidden="true">📅</span>
+                        <span>📅</span>
                         Date de l'événement (optionnel)
                     </label>
                     <input 
@@ -922,7 +996,7 @@
                 <!-- Upload fichier -->
                 <div class="form-group">
                     <label class="form-label">
-                        <span aria-hidden="true">📎</span>
+                        <span>📎</span>
                         Photo ou document (optionnel)
                     </label>
                     <div class="file-upload">
@@ -932,21 +1006,20 @@
                             name="file" 
                             accept="image/*,.pdf,.doc,.docx"
                             onchange="handleFileSelect(this)"
-                            aria-describedby="fileHint"
                         >
                         <label for="newsFile" class="file-upload-label" id="fileLabel">
-                            <span aria-hidden="true">📎</span>
+                            <span>📎</span>
                             <span>Cliquez pour ajouter un fichier</span>
                         </label>
                     </div>
-                    <span class="form-hint" id="fileHint">Images, PDF, Word - Max 5MB</span>
+                    <span class="form-hint">Images, PDF, Word - Max 5MB</span>
                 </div>
 
                 <!-- Contact -->
                 <div class="form-group">
                     <label class="form-label" for="newsContact">
-                        <span aria-hidden="true">📧</span>
-                        Votre email (pour vous recontacter) <span aria-label="requis">*</span>
+                        <span>📧</span>
+                        Votre email (pour vous recontacter)
                     </label>
                     <input 
                         type="email" 
@@ -955,16 +1028,14 @@
                         class="form-input" 
                         placeholder="votre.email@exemple.fr"
                         required
-                        aria-required="true"
-                        aria-describedby="emailHint"
                     >
-                    <span class="form-hint" id="emailHint">Votre email ne sera pas publié</span>
+                    <span class="form-hint">Votre email ne sera pas publié</span>
                 </div>
 
                 <!-- Nom (optionnel) -->
                 <div class="form-group">
                     <label class="form-label" for="newsAuthor">
-                        <span aria-hidden="true">👤</span>
+                        <span>👤</span>
                         Votre nom/pseudo (optionnel)
                     </label>
                     <input 
@@ -987,127 +1058,55 @@
                 </div>
             </form>
 
-            <!-- Message de succès -->
-            <div id="successMessage" class="success-message" style="display: none;" role="status" aria-live="polite">
-                <div class="success-icon" aria-hidden="true">✅</div>
+            <!-- Message de succès (caché par défaut) -->
+            <div id="successMessage" class="success-message" style="display: none;">
+                <div class="success-icon">✅</div>
                 <h3 class="success-title">Merci pour votre contribution !</h3>
                 <div class="success-text">
                     <p>Votre proposition d'actualité a bien été envoyée à l'équipe d'Actu&Média.</p>
-                    <p>Nous l'examinerons rapidement et vous recontacterons si nécessaire.</p>
+                    <p>Nous la examinerons rapidement et vous recontacterons si nécessaire.</p>
                     <p><strong>Continuez à faire vivre l'actualité locale !</strong></p>
                 </div>
             </div>
         </div>
-    </dialog>
-	
-	<!-- === SCRIPTS JAVASCRIPT OPTIMISÉS === -->
-    
-    <!-- Scripts de gestion des modals et interactions -->
+    </div>
+
     <script>
-        // Configuration de base et initialisation immédiate
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialisation de l'année courante
-            const yearElement = document.getElementById('currentYear');
-            if (yearElement) {
-                yearElement.textContent = new Date().getFullYear();
-            }
-            
-            // Configuration de la navigation accessible
-            setupAccessibleNavigation();
-            
-            // Initialisation des observateurs de performance
-            if ('IntersectionObserver' in window) {
-                initLazyLoading();
-            }
-        });
-
-        // Fonction pour la navigation accessible
-        function setupAccessibleNavigation() {
-            // Gestion du menu avec ARIA
-            const menuButton = document.getElementById('menuButton');
-            const sidebar = document.getElementById('sidebar');
-            
-            if (menuButton && sidebar) {
-                menuButton.addEventListener('click', function() {
-                    const isOpen = sidebar.classList.contains('open');
-                    sidebar.classList.toggle('open');
-                    menuButton.setAttribute('aria-expanded', !isOpen);
-                    sidebar.setAttribute('aria-hidden', isOpen);
-                });
-            }
-            
-            // Fermeture au clic sur Escape
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closeAllModals();
-                }
-            });
-        }
-
-        // Fonction pour fermer toutes les modals
-        function closeAllModals() {
-            const modals = document.querySelectorAll('dialog[open]');
-            modals.forEach(modal => modal.close());
-            document.body.style.overflow = '';
-        }
-
-        // Lazy loading pour les images
-        function initLazyLoading() {
-            const images = document.querySelectorAll('img[loading="lazy"]');
-            const imageObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        img.src = img.dataset.src || img.src;
-                        observer.unobserve(img);
-                    }
-                });
-            });
-            
-            images.forEach(img => imageObserver.observe(img));
-        }
-
-        // === GESTION DU FORMULAIRE DE SOUMISSION ===
+        // Gestion de la modal
         function openSubmitModal() {
-            const modal = document.getElementById('submitModal');
-            if (modal) {
-                modal.showModal();
-                document.body.style.overflow = 'hidden';
-                
-                // Vibration tactile si disponible
-                if ('vibrate' in navigator) {
-                    navigator.vibrate(50);
-                }
+            document.getElementById('submitModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Vibration tactile si disponible
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
             }
         }
 
         function closeSubmitModal() {
-            const modal = document.getElementById('submitModal');
-            if (modal) {
-                modal.close();
-                document.body.style.overflow = '';
-                
-                // Reset du formulaire
-                const form = document.getElementById('submitNewsForm');
-                if (form) form.reset();
-                resetFileLabel();
-                hideSuccessMessage();
-            }
+            document.getElementById('submitModal').classList.remove('active');
+            document.body.style.overflow = '';
+            
+            // Reset du formulaire
+            document.getElementById('submitNewsForm').reset();
+            resetFileLabel();
+            hideSuccessMessage();
         }
 
-        // Gestion des types d'actualité avec accessibilité
+        // Gestion des types d'actualité
         document.addEventListener('DOMContentLoaded', function() {
-            const newsTypes = document.querySelectorAll('input[name="newsType"]');
-            
-            newsTypes.forEach(radio => {
+            const newsTypes = document.querySelectorAll('.news-type');
+            const radios = document.querySelectorAll('input[name="newsType"]');
+
+            radios.forEach(radio => {
                 radio.addEventListener('change', function() {
-                    // Mise à jour visuelle
-                    document.querySelectorAll('.news-type').forEach(label => {
-                        label.classList.remove('selected');
-                    });
+                    newsTypes.forEach(type => type.classList.remove('selected'));
                     this.closest('.news-type').classList.add('selected');
                 });
             });
+
+            // Sélectionner le premier par défaut
+            document.querySelector('.news-type').classList.add('selected');
         });
 
         // Gestion de l'upload de fichier
@@ -1116,14 +1115,7 @@
             const file = input.files[0];
             
             if (file) {
-                // Vérification de la taille du fichier
-                if (file.size > 5 * 1024 * 1024) {
-                    alert('Le fichier ne doit pas dépasser 5MB');
-                    input.value = '';
-                    return;
-                }
-                
-                label.innerHTML = `<span aria-hidden="true">✅</span><span>${file.name}</span>`;
+                label.innerHTML = `<span>✅</span><span>${file.name}</span>`;
                 label.classList.add('file-selected');
             } else {
                 resetFileLabel();
@@ -1132,34 +1124,25 @@
 
         function resetFileLabel() {
             const label = document.getElementById('fileLabel');
-            if (label) {
-                label.innerHTML = '<span aria-hidden="true">📎</span><span>Cliquez pour ajouter un fichier</span>';
-                label.classList.remove('file-selected');
-            }
+            label.innerHTML = '<span>📎</span><span>Cliquez pour ajouter un fichier</span>';
+            label.classList.remove('file-selected');
         }
 
-        // Soumission du formulaire avec validation
-        document.getElementById('submitNewsForm')?.addEventListener('submit', async function(e) {
+        // Soumission du formulaire
+        document.getElementById('submitNewsForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const submitBtn = this.querySelector('.btn-submit');
+            const submitBtn = document.querySelector('.btn-submit');
             const originalText = submitBtn.innerHTML;
-            
-            // Validation côté client
-            if (!this.checkValidity()) {
-                this.reportValidity();
-                return;
-            }
             
             // Désactiver le bouton et afficher loading
             submitBtn.disabled = true;
             submitBtn.innerHTML = '⏳ Envoi en cours...';
-            submitBtn.setAttribute('aria-busy', 'true');
             
             try {
                 const formData = new FormData(this);
                 
-                // Envoi via Formspree
+                // Simuler l'envoi (remplacer par votre logique)
                 await sendNewsSubmission(formData);
                 
                 // Afficher le message de succès
@@ -1172,181 +1155,61 @@
                 // Restaurer le bouton
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalText;
-                submitBtn.setAttribute('aria-busy', 'false');
             }
         });
 
-        // Fonction d'envoi optimisée
+        // Fonction d'envoi (à adapter selon votre backend)
         async function sendNewsSubmission(formData) {
-            try {
-                const response = await fetch('https://formspree.io/f/xpwrjqjw', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Erreur HTTP: ${response.status}`);
-                }
-
-                const result = await response.json();
-                console.log('✅ Email envoyé via Formspree:', result);
-                
-            } catch (error) {
-                console.error('❌ Erreur Formspree:', error);
-                throw error;
+    try {
+        const response = await fetch('https://formspree.io/f/xpwrjqjw', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
             }
+        });
+
+        if (!response.ok) {
+            throw new Error('Erreur envoi');
         }
 
+        const result = await response.json();
+        console.log('✅ Email envoyé via Formspree:', result);
+        
+    } catch (error) {
+        console.error('❌ Erreur Formspree:', error);
+        throw error;
+    }
+}
+
         function showSuccessMessage() {
-            const form = document.getElementById('submitNewsForm');
-            const successMsg = document.getElementById('successMessage');
+            document.getElementById('submitNewsForm').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
             
-            if (form && successMsg) {
-                form.style.display = 'none';
-                successMsg.style.display = 'block';
-                
-                // Fermer automatiquement après 5 secondes
-                setTimeout(() => {
-                    closeSubmitModal();
-                }, 5000);
-            }
+            // Fermer automatiquement après 5 secondes
+            setTimeout(() => {
+                closeSubmitModal();
+            }, 5000);
         }
 
         function hideSuccessMessage() {
-            const form = document.getElementById('submitNewsForm');
-            const successMsg = document.getElementById('successMessage');
-            
-            if (form && successMsg) {
-                form.style.display = 'flex';
-                successMsg.style.display = 'none';
-            }
+            document.getElementById('submitNewsForm').style.display = 'flex';
+            document.getElementById('successMessage').style.display = 'none';
         }
 
-        // === GESTION DES DONATIONS ===
-        function handleAmountClick(amount) {
-            // Retirer la classe active de tous les boutons
-            document.querySelectorAll('.amount-btn').forEach(btn => {
-                btn.classList.remove('active');
-                btn.setAttribute('aria-pressed', 'false');
-            });
-            
-            // Ajouter la classe active au bouton cliqué
-            if (event && event.target) {
-                event.target.classList.add('active');
-                event.target.setAttribute('aria-pressed', 'true');
+        // Fermeture par clic en dehors
+        document.getElementById('submitModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSubmitModal();
             }
-            
-            // Vibration tactile si disponible
-            if ('vibrate' in navigator) {
-                navigator.vibrate(50);
-            }
-            
-            console.log('Montant sélectionné:', amount + '€');
-        }
-
-        function trackDonationClick() {
-            // Analytics ou tracking
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'click', {
-                    'event_category': 'donation',
-                    'event_label': 'paypal'
-                });
-            }
-            
-            // Fermer la popup après un délai
-            setTimeout(() => {
-                if (window.donationManager) {
-                    window.donationManager.hidePopup(false);
-                }
-            }, 1000);
-        }
-
-        function updateDonationProgress(collected, goal) {
-            const percentage = Math.min((collected / goal) * 100, 100);
-            const progressFill = document.querySelector('.progress-fill');
-            const progressText = document.querySelector('.progress-text');
-            const progressInfo = document.querySelector('.progress-info');
-            
-            if (progressFill) {
-                progressFill.style.width = Math.max(percentage, 2.5) + '%';
-                progressText.textContent = `${collected}€ / ${goal}€`;
-                progressInfo.innerHTML = `Collecté : <strong>${collected}€</strong> (${percentage.toFixed(1)}%)`;
-                
-                // Mise à jour ARIA
-                const progressBar = document.querySelector('.donation-progress');
-                if (progressBar) {
-                    progressBar.setAttribute('aria-valuenow', collected);
-                }
-            }
-        }
-
-        // === OPTIMISATION PERFORMANCE ===
-        // Service Worker pour PWA
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => console.log('SW registered:', registration))
-                    .catch(error => console.log('SW registration failed:', error));
-            });
-        }
-
-        // Gestion du mode offline
-        window.addEventListener('online', () => {
-            console.log('Connexion rétablie');
-            // Recharger les données si nécessaire
         });
 
-        window.addEventListener('offline', () => {
-            console.log('Mode hors ligne');
-            // Afficher un message à l'utilisateur
+        // Fermeture par Échap
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('submitModal').classList.contains('active')) {
+                closeSubmitModal();
+            }
         });
     </script>
-
-    <!-- === SCRIPTS EXTERNES AVEC DEFER === -->
-    <script src="js/
-	*.js" defer></script>
-    <script src="js/ios-install.js" defer></script>
-    <script src="js/ban-manager.js" defer></script>
-    <script src="js/welcome-manager.js" defer></script>
-    <script src="js/expense-manager.js" defer></script>
-    <script src="js/news-manager.js" defer></script>
-    <script src="js/newsTickerManager.js" defer></script>
-    <script src="js/newsPanel.js" defer></script>
-    <script src="js/weather-widget.js" defer></script>
-    <script src="js/quick-links.js" defer></script>
-    <script src="js/tablet-fixes.js" defer></script>
-    <script src="js/chat-keyboard-fix.js" defer></script>
-    <script src="js/ban-check.js" defer></script>
-    <script src="js/theme-manager.js" defer></script>
-    <script src="js/donation.js" defer></script>
-    <script src="js/survey-manager.js" defer></script>
-    <script src="js/news-widget.js" defer></script>
-    <script src="js/cinema-widget.js" defer></script>
-    <script src="js/visitor-tracker.js" defer></script>
-    <script src="js/football-widget.js" defer></script>
-    <script src="js/radioPopup.js" defer></script>
-    <script src="js/notepadApp.js" defer></script>
-    <script src="js/todoApp.js" defer></script>
-    <script src="js/background-selector.js" defer></script>
-    <script src="js/custom-background-manager.js" defer></script>
-	<script src="js/gallery-manager-v2.js" defer></script>
-	<script src="js/chatManager.js" defer></script>
-	<script src="js/ios-fixes-safe.js" defer></script>
-	<script src="js/notification-manager.js" defer></script>
-	<script src="js/settingsManager.js" defer></script>
-	<script src="js/sounds.js" defer></script>
-	<script src="js/utils.js" defer></script>
-    
-    <!-- Script d'initialisation principal (module) -->
-    <script type="module" src="js/app-initializer.js"></script>
-    
-    <!-- Chart.js pour les graphiques (chargement différé) -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-
 </body>
 </html>
-	
-	
