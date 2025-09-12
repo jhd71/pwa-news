@@ -509,31 +509,48 @@ class BackgroundSelector {
     
     setupEventListeners() {
         const openBtn = document.getElementById('bgSelectorBtn');
-        if (openBtn) {
-            openBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    this.openPanel();
-    
-    // Fermer la sidebar
-    const sidebar = document.querySelector('.sidebar');
-    if (sidebar && sidebar.classList.contains('open')) {
-        sidebar.classList.remove('open');
-    }
-    
-    // Supprimer immédiatement tout overlay
-    setTimeout(() => {
-        const overlays = document.querySelectorAll('.modal-backdrop, .overlay, .backdrop, .sidebar-overlay');
-        overlays.forEach(overlay => {
-            overlay.style.display = 'none';
-            overlay.style.opacity = '0';
-            setTimeout(() => overlay.remove(), 50);
-        });
+if (openBtn) {
+    openBtn.addEventListener('click', (e) => {
+        e.preventDefault();
         
-        // Enlever les classes d'assombrissement du body
-        document.body.classList.remove('modal-open', 'has-modal', 'sidebar-open');
-        document.body.style.filter = '';
-    }, 100);
-});
+        // Fermer la sidebar
+        const sidebar = document.querySelector('.sidebar');
+        if (sidebar && sidebar.classList.contains('open')) {
+            sidebar.classList.remove('open');
+        }
+        
+        // Ouvrir le panneau
+        this.openPanel();
+        
+        // Nettoyer TOUS les overlays immédiatement et complètement
+        setTimeout(() => {
+            // Méthode plus agressive pour trouver et supprimer TOUS les overlays
+            const allDivs = document.querySelectorAll('div');
+            allDivs.forEach(div => {
+                // Vérifier si c'est un overlay par ses styles
+                const styles = window.getComputedStyle(div);
+                if (styles.position === 'fixed' && 
+                    styles.zIndex > 1000 && 
+                    (styles.backgroundColor.includes('rgba(0') || 
+                     div.className.includes('overlay') ||
+                     div.className.includes('backdrop'))) {
+                    div.remove();
+                }
+            });
+            
+            // Nettoyer aussi par classes spécifiques
+            document.querySelectorAll('.modal-backdrop, .overlay, .backdrop, .sidebar-overlay, .menu-overlay').forEach(el => {
+                el.remove();
+            });
+            
+            // Nettoyer complètement le body
+            document.body.classList.remove('modal-open', 'has-modal', 'sidebar-open', 'menu-open');
+            document.body.style.cssText = document.body.style.cssText.replace(/pointer-events[^;]+;?/g, '');
+            document.body.style.filter = '';
+            document.body.style.overflow = '';
+        }, 100);
+    });
+}
         }
         
         const closeBtn = document.getElementById('closeBgSelector');
@@ -620,12 +637,11 @@ class BackgroundSelector {
     openPanel() {
     const panel = document.getElementById('bgSelectorPanel');
     if (panel) {
-        // Supprimer tout overlay existant avant d'ouvrir
-        const existingOverlays = document.querySelectorAll('.modal-backdrop, .overlay, .backdrop');
-        existingOverlays.forEach(overlay => overlay.remove());
-        
         panel.classList.add('open');
         this.updateSelectedThumbnail();
+        
+        // Supprimer l'overlay du menu immédiatement
+        this.removeMenuOverlay();
         
         // Mettre à jour les fonds personnalisés
         setTimeout(() => {
@@ -639,21 +655,55 @@ class BackgroundSelector {
     if (panel) {
         panel.classList.remove('open');
         
-        // Enlever tout overlay ou assombrissement
-        const overlays = document.querySelectorAll('.modal-backdrop, .overlay, .backdrop');
-        overlays.forEach(overlay => {
-            overlay.remove();
+        // Nettoyer TOUS les overlays de la même manière agressive
+        const allDivs = document.querySelectorAll('div');
+        allDivs.forEach(div => {
+            const styles = window.getComputedStyle(div);
+            if (styles.position === 'fixed' && 
+                styles.zIndex > 1000 && 
+                (styles.backgroundColor.includes('rgba(0') || 
+                 div.className.includes('overlay') ||
+                 div.className.includes('backdrop'))) {
+                div.remove();
+            }
         });
         
-        // Réactiver le body
-        document.body.style.overflow = '';
-        document.body.classList.remove('modal-open', 'has-modal');
+        // Nettoyer par classes
+        document.querySelectorAll('.modal-backdrop, .overlay, .backdrop, .sidebar-overlay, .menu-overlay').forEach(el => {
+            el.remove();
+        });
         
-        // Forcer le focus sur le body pour enlever tout état résiduel
-        document.body.focus();
+        // Réinitialiser complètement le body
+        document.body.className = document.body.className.replace(/\b(modal-open|has-modal|sidebar-open|menu-open)\b/g, '').trim();
+        document.body.style.overflow = '';
+        document.body.style.filter = '';
+        document.body.style.pointerEvents = '';
     }
 }
     
+	removeMenuOverlay() {
+    // Cibler spécifiquement l'overlay du menu sidebar
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+        // Chercher l'overlay associé au menu
+        const menuOverlay = sidebar.previousElementSibling;
+        if (menuOverlay && (menuOverlay.classList.contains('overlay') || 
+            menuOverlay.style.backgroundColor.includes('rgba'))) {
+            menuOverlay.remove();
+        }
+    }
+    
+    // Nettoyer tous les overlays par classe
+    document.querySelectorAll('.sidebar-overlay, .menu-overlay, .overlay').forEach(el => {
+        el.style.transition = 'none';
+        el.style.opacity = '0';
+        el.remove();
+    });
+    
+    // Enlever les classes du body qui maintiennent l'overlay
+    document.body.classList.remove('menu-open', 'sidebar-open');
+}
+
     setBackground(bgClass) {
     // Supprimer toutes les classes de fond
     document.body.className = document.body.className
@@ -665,6 +715,8 @@ class BackgroundSelector {
     if (bgClass && bgClass !== 'none') {
         document.body.classList.add('has-bg-image');
         document.body.classList.add(bgClass);
+		// Supprimer l'overlay du menu quand on sélectionne un fond
+		this.removeMenuOverlay();
     }
     
     // IMPORTANT : Enlever immédiatement tout overlay/assombrissement
