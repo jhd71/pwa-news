@@ -508,131 +508,130 @@ class BackgroundSelector {
     }
     
     setupEventListeners() {
-        const openBtn = document.getElementById('bgSelectorBtn');
-if (openBtn) {
-    openBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        // Fermer la sidebar
-        const sidebar = document.querySelector('.sidebar');
-        if (sidebar && sidebar.classList.contains('open')) {
-            sidebar.classList.remove('open');
-        }
-        
-        // Ouvrir le panneau
-        this.openPanel();
-        
-        // Nettoyer TOUS les overlays immédiatement et complètement
-        setTimeout(() => {
-            // Méthode plus agressive pour trouver et supprimer TOUS les overlays
-            const allDivs = document.querySelectorAll('div');
-            allDivs.forEach(div => {
-                // Vérifier si c'est un overlay par ses styles
-                const styles = window.getComputedStyle(div);
-                if (styles.position === 'fixed' && 
-                    styles.zIndex > 1000 && 
-                    (styles.backgroundColor.includes('rgba(0') || 
-                     div.className.includes('overlay') ||
-                     div.className.includes('backdrop'))) {
-                    div.remove();
-                }
-            });
+    const openBtn = document.getElementById('bgSelectorBtn');
+    if (openBtn) {
+        openBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             
-            // Nettoyer aussi par classes spécifiques
-            document.querySelectorAll('.modal-backdrop, .overlay, .backdrop, .sidebar-overlay, .menu-overlay').forEach(el => {
-                el.remove();
-            });
-            
-            // Nettoyer complètement le body
-            document.body.classList.remove('modal-open', 'has-modal', 'sidebar-open', 'menu-open');
-            document.body.style.cssText = document.body.style.cssText.replace(/pointer-events[^;]+;?/g, '');
-            document.body.style.filter = '';
-            document.body.style.overflow = '';
-        }, 100);
-    });
-}
-        }
-        
-        const closeBtn = document.getElementById('closeBgSelector');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', () => {
-                this.closePanel();
-            });
-        }
-        
-        // Ajouter l'écouteur pour le bouton flottant
-        const floatingCloseBtn = document.getElementById('floatingCloseBtn');
-        if (floatingCloseBtn) {
-            floatingCloseBtn.addEventListener('click', () => {
-                this.closePanel();
-            });
-        }
-        
-        const resetBtn = document.getElementById('resetBgBtn');
-        if (resetBtn) {
-            resetBtn.addEventListener('click', () => {
-                this.resetBackground();
-            });
-        }
-        
-        const thumbnails = document.querySelectorAll('.bg-thumbnail');
-        thumbnails.forEach(thumb => {
-            thumb.addEventListener('click', () => {
-                const bgClass = thumb.dataset.bg;
-                this.setBackground(bgClass);
-                this.selectThumbnail(thumb);
-            });
-        });
-        
-        // Fermer le panneau quand on clique en dehors (sur mobile seulement si on clique dans la zone visible du site)
-	document.addEventListener('click', (e) => {
-    const panel = document.getElementById('bgSelectorPanel');
-    if (!panel || !panel.classList.contains('open')) return;
-    
-    // Vérifier si le clic est dans le panneau ou sur le bouton d'ouverture
-    if (e.target.closest('.bg-selector-panel') || 
-        e.target.closest('#bgSelectorBtn')) {
-        return;
-    }
-    
-    // Sur mobile, ne fermer que si on clique dans la partie visible du site (en haut)
-    if (window.innerWidth <= 768) {
-        const panelTop = parseInt(window.getComputedStyle(panel).top);
-        if (e.clientY >= panelTop) {
-            return; // Ne pas fermer si on clique en dessous du début du panneau
-        }
-    }
-    
-    this.closePanel();
-	});
-        
-        // Écouter la touche Echap pour fermer le panneau
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                this.closePanel();
+            // Fermer la sidebar
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar && sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
             }
-        });
-        
-        window.addEventListener('themeChanged', (e) => {
-            this.updateSelectedThumbnail();
-        });
-
-        // Gestionnaire pour le bouton d'ajout de fond personnalisé
-        const addCustomBtn = document.getElementById('addCustomBgBtn');
-        if (addCustomBtn) {
-            addCustomBtn.addEventListener('click', () => {
-                // Fermer le panneau de fond d'écran
-                this.closePanel();
-                
-                // Ouvrir la modal de fond personnalisé après un délai
-                setTimeout(() => {
-                    if (window.customBackgroundManager) {
-                        window.customBackgroundManager.openModal();
+            
+            // Ouvrir le panneau
+            this.openPanel();
+            
+            // Nettoyer TOUS les overlays immédiatement et complètement
+            setTimeout(() => {
+                // Méthode plus agressive pour trouver et supprimer TOUS les overlays
+                const allDivs = document.querySelectorAll('div');
+                allDivs.forEach(div => {
+                    // Vérifier si c'est un overlay par ses styles
+                    const styles = window.getComputedStyle(div);
+                    if (styles.position === 'fixed' && 
+                        styles.zIndex > 1000 && 
+                        (styles.backgroundColor.includes('rgba(0') || 
+                         div.className.includes('overlay') ||
+                         div.className.includes('backdrop'))) {
+                        div.remove();
                     }
-                }, 300);
-            });
-        }
+                });
+                
+                // Nettoyer aussi par classes spécifiques
+                document.querySelectorAll('.modal-backdrop, .overlay, .backdrop, .sidebar-overlay, .menu-overlay').forEach(el => {
+                    el.remove();
+                });
+                
+                // Nettoyer complètement le body
+                document.body.classList.remove('modal-open', 'has-modal', 'sidebar-open', 'menu-open');
+                document.body.style.cssText = document.body.style.cssText.replace(/pointer-events[^;]+;?/g, '');
+                document.body.style.filter = '';
+                document.body.style.overflow = '';
+            }, 100);
+        });
     }
+    
+    const closeBtn = document.getElementById('closeBgSelector');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            this.closePanel();
+        });
+    }
+    
+    // Ajouter l'écouteur pour le bouton flottant
+    const floatingCloseBtn = document.getElementById('floatingCloseBtn');
+    if (floatingCloseBtn) {
+        floatingCloseBtn.addEventListener('click', () => {
+            this.closePanel();
+        });
+    }
+    
+    const resetBtn = document.getElementById('resetBgBtn');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            this.resetBackground();
+        });
+    }
+    
+    const thumbnails = document.querySelectorAll('.bg-thumbnail');
+    thumbnails.forEach(thumb => {
+        thumb.addEventListener('click', () => {
+            const bgClass = thumb.dataset.bg;
+            this.setBackground(bgClass);
+            this.selectThumbnail(thumb);
+        });
+    });
+    
+    // Fermer le panneau quand on clique en dehors
+    document.addEventListener('click', (e) => {
+        const panel = document.getElementById('bgSelectorPanel');
+        if (!panel || !panel.classList.contains('open')) return;
+        
+        // Vérifier si le clic est dans le panneau ou sur le bouton d'ouverture
+        if (e.target.closest('.bg-selector-panel') || 
+            e.target.closest('#bgSelectorBtn')) {
+            return;
+        }
+        
+        // Sur mobile, ne fermer que si on clique dans la partie visible du site (en haut)
+        if (window.innerWidth <= 768) {
+            const panelTop = parseInt(window.getComputedStyle(panel).top);
+            if (e.clientY >= panelTop) {
+                return; // Ne pas fermer si on clique en dessous du début du panneau
+            }
+        }
+        
+        this.closePanel();
+    });
+    
+    // Écouter la touche Echap pour fermer le panneau
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            this.closePanel();
+        }
+    });
+    
+    window.addEventListener('themeChanged', (e) => {
+        this.updateSelectedThumbnail();
+    });
+
+    // Gestionnaire pour le bouton d'ajout de fond personnalisé
+    const addCustomBtn = document.getElementById('addCustomBgBtn');
+    if (addCustomBtn) {
+        addCustomBtn.addEventListener('click', () => {
+            // Fermer le panneau de fond d'écran
+            this.closePanel();
+            
+            // Ouvrir la modal de fond personnalisé après un délai
+            setTimeout(() => {
+                if (window.customBackgroundManager) {
+                    window.customBackgroundManager.openModal();
+                }
+            }, 300);
+        });
+    }
+}
     
     openPanel() {
     const panel = document.getElementById('bgSelectorPanel');
