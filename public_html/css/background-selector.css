@@ -196,13 +196,13 @@ body.bg-gradient-morning-mist { --bg-image: linear-gradient(135deg, #F0F8FF, #E6
 
 .bg-selector-panel {
     position: fixed;
-    top: 0;
+    top: 0;  /* Remettre à 0 pour PC */
     right: calc(-1 * var(--panel-width));
     bottom: 0;
     width: var(--panel-width);
     background-color: var(--primary-color);
     box-shadow: -3px 0 10px rgba(0, 0, 0, 0.2);
-    z-index: var(--z-index-panel) !important;
+    z-index: 99999 !important;  /* Augmenter le z-index */
     transition: right var(--panel-transition);
     overflow-y: auto;
     overflow-x: hidden;
@@ -542,10 +542,12 @@ body[class*="bg-solid-cream"] {
         --panel-width: 100vw;
     }
     
-    /* Panel qui laisse voir le haut du site */
+    /* Panel qui couvre les icônes du bas */
     .bg-selector-panel {
-        top: 300px !important;  /* Laisse voir 300px du site */
-        height: calc(100vh - 300px) !important;  /* Ajuste la hauteur */
+        top: 200px !important;  /* Réduit pour voir plus de fonds */
+        height: calc(100vh - 200px) !important;
+        bottom: 0 !important;  /* S'assure de couvrir jusqu'en bas */
+        z-index: 99999 !important;
     }
     
     .bg-selector-panel-content {
@@ -569,9 +571,15 @@ body[class*="bg-solid-cream"] {
         height: 70px;
     }
     
+    /* Le bouton de fermeture flottant plus visible */
     .floating-close-btn {
-        bottom: 15px;
-        right: 15px;
+        bottom: 80px !important;  /* Remonter au-dessus des icônes */
+        right: 20px !important;
+        width: 60px !important;
+        height: 60px !important;
+        background: rgba(0, 0, 0, 0.7) !important;
+        font-size: 30px !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important;
     }
 }
 
