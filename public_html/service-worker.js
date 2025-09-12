@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v37'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v38'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -38,6 +38,7 @@ const STATIC_RESOURCES = [
 	'/css/football-widget.css',
 	'/css/radioPopup.css',
 	'/css/notepadApp.css',
+	'/css/todoApp.css',
 
     // Scripts JavaScript
     '/js/app.js',
@@ -74,6 +75,7 @@ const STATIC_RESOURCES = [
 	'/js/expense-manager.js',
 	'/js/radioPopup.js',
 	'/js/notepadApp.js',
+	'/js/todoApp.js',
     
     // Fichiers de configuration (seulement ceux qui existent)
     '/manifest.json',
