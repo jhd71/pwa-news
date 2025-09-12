@@ -641,24 +641,37 @@ class BackgroundSelector {
 }
     
     setBackground(bgClass) {
-        // Supprimer toutes les classes de fond
-        document.body.className = document.body.className
-            .split(' ')
-            .filter(cls => !cls.startsWith('bg-') && cls !== 'has-bg-image')
-            .join(' ');
-        
-        // Ajouter la nouvelle classe
-        if (bgClass && bgClass !== 'none') {
-            document.body.classList.add('has-bg-image');
-            document.body.classList.add(bgClass);
-        }
-        
-        // Sauvegarder le choix
-        localStorage.setItem(this.storageKey, bgClass || 'none');
-        
-        // Afficher une notification
-        this.showToast('Fond d\'écran modifié');
+    // Supprimer toutes les classes de fond
+    document.body.className = document.body.className
+        .split(' ')
+        .filter(cls => !cls.startsWith('bg-') && cls !== 'has-bg-image')
+        .join(' ');
+    
+    // Ajouter la nouvelle classe
+    if (bgClass && bgClass !== 'none') {
+        document.body.classList.add('has-bg-image');
+        document.body.classList.add(bgClass);
     }
+    
+    // IMPORTANT : Enlever immédiatement tout overlay/assombrissement
+    const overlays = document.querySelectorAll('.modal-backdrop, .overlay, .backdrop, .sidebar-overlay');
+    overlays.forEach(overlay => {
+        overlay.style.display = 'none';
+        overlay.style.opacity = '0';
+        setTimeout(() => overlay.remove(), 100);
+    });
+    
+    // Réactiver le body pour enlever tout effet d'assombrissement
+    document.body.style.filter = '';
+    document.body.style.opacity = '';
+    document.body.classList.remove('modal-open', 'has-modal', 'sidebar-open');
+    
+    // Sauvegarder le choix
+    localStorage.setItem(this.storageKey, bgClass || 'none');
+    
+    // Afficher une notification
+    this.showToast('Fond d\'écran modifié');
+}
     
     resetBackground() {
     // Réinitialiser les fonds d'écran classiques
