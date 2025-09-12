@@ -511,15 +511,29 @@ class BackgroundSelector {
         const openBtn = document.getElementById('bgSelectorBtn');
         if (openBtn) {
             openBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.openPanel();
-                
-                // Fermer la sidebar
-                const sidebar = document.querySelector('.sidebar');
-                if (sidebar && sidebar.classList.contains('open')) {
-                    sidebar.classList.remove('open');
-                }
-            });
+    e.preventDefault();
+    this.openPanel();
+    
+    // Fermer la sidebar
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar && sidebar.classList.contains('open')) {
+        sidebar.classList.remove('open');
+    }
+    
+    // Supprimer immédiatement tout overlay
+    setTimeout(() => {
+        const overlays = document.querySelectorAll('.modal-backdrop, .overlay, .backdrop, .sidebar-overlay');
+        overlays.forEach(overlay => {
+            overlay.style.display = 'none';
+            overlay.style.opacity = '0';
+            setTimeout(() => overlay.remove(), 50);
+        });
+        
+        // Enlever les classes d'assombrissement du body
+        document.body.classList.remove('modal-open', 'has-modal', 'sidebar-open');
+        document.body.style.filter = '';
+    }, 100);
+});
         }
         
         const closeBtn = document.getElementById('closeBgSelector');
