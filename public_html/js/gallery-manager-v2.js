@@ -248,7 +248,7 @@ function initializeCameraButtons() {
     if (!captureBtn || !galleryBtn || !photoInput) return;
     
     // Détecter si on est sur mobile ou PC
-    const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isMobileDevice = isMobile();
     
     // Fonction pour gérer le changement de fichier
     function handleFileSelect(file) {
