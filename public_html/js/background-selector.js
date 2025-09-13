@@ -574,18 +574,34 @@ class BackgroundSelector {
             el.remove();
         });
         
-        // IMPORTANT : Réinitialiser complètement les styles et événements
+        // Réinitialiser complètement les styles
         document.body.className = document.body.className.replace(/\b(modal-open|has-modal|sidebar-open|menu-open)\b/g, '').trim();
         document.body.style.overflow = '';
         document.body.style.filter = '';
         document.body.style.pointerEvents = '';
         document.body.style.zIndex = '';
         
-        // Réactiver les tuiles spécifiquement
+        // Réactiver TOUTES les tuiles
         const tiles = document.querySelectorAll('.tile');
         tiles.forEach(tile => {
             tile.style.pointerEvents = 'auto';
             tile.style.zIndex = '';
+            
+            // IMPORTANT : Réinitialiser les événements des tuiles popup
+            const titleText = tile.querySelector('.tile-title')?.textContent || '';
+            
+            // Si c'est une tuile qui ouvre une popup, forcer la réactivation
+            if (titleText.includes('Bloc-notes') || 
+                titleText.includes('Lecteur Radio') || 
+                titleText.includes('Todo List') ||
+                titleText.includes('📻') ||
+                titleText.includes('📝') ||
+                titleText.includes('✅')) {
+                
+                // Cloner la tuile pour réinitialiser ses événements
+                const newTile = tile.cloneNode(true);
+                tile.parentNode.replaceChild(newTile, tile);
+            }
         });
         
         // Réactiver le conteneur de tuiles
@@ -598,7 +614,32 @@ class BackgroundSelector {
         // Forcer le recalcul du layout
         panel.offsetHeight;
         document.body.offsetHeight;
+        
+        // Réinitialiser les gestionnaires d'événements des popups
+        setTimeout(() => {
+            this.reinitializePopupHandlers();
+        }, 100);
     }
+}
+
+// Nouvelle méthode pour réinitialiser les popups
+reinitializePopupHandlers() {
+    // Réinitialiser le gestionnaire du Bloc-notes
+    if (typeof window.initNotepadApp === 'function') {
+        window.initNotepadApp();
+    }
+    
+    // Réinitialiser le gestionnaire du Lecteur Radio
+    if (typeof window.initRadioPopup === 'function') {
+        window.initRadioPopup();
+    }
+    
+    // Réinitialiser le gestionnaire Todo List
+    if (typeof window.initTodoApp === 'function') {
+        window.initTodoApp();
+    }
+    
+    console.log('Gestionnaires de popups réinitialisés');
 }
     
 	removeMenuOverlay() {
