@@ -1985,44 +1985,71 @@ applyListModeImmediate() {
 reinitializeTileEvents() {
     const tiles = document.querySelectorAll('.tile');
     tiles.forEach(tile => {
-        const site = {
-            title: tile.querySelector('.tile-title')?.textContent || '',
-            url: tile.dataset.siteUrl || '',
-            mobileUrl: tile.dataset.mobileSiteUrl || ''
-        };
+        // Récupérer les infos de la tuile
+        const titleElement = tile.querySelector('.tile-title');
+        if (!titleElement) return;
         
-        // Réattacher les événements click
+        const title = titleElement.textContent;
+        const url = tile.dataset.siteUrl || '';
+        
+        // Cloner la tuile pour réinitialiser ses événements
         const newTile = tile.cloneNode(true);
         
+        // Supprimer tous les anciens listeners
+        const oldListeners = tile.cloneNode(true);
+        
+        // Réattacher le bon listener selon le type de tuile
         newTile.addEventListener('click', () => {
             this.animateTileClick(newTile);
             
-            // Logique spéciale pour les popups
-            if (site.title.includes('Bloc-notes') || site.title.includes('📝')) {
+            // Vérifier le type de tuile par le titre
+            if (title.includes('Bloc-notes') || title.includes('📝')) {
                 if (typeof openNotepadApp === 'function') {
                     openNotepadApp();
+                } else {
+                    console.log('Fonction openNotepadApp non trouvée');
                 }
-            } else if (site.title.includes('Lecteur Radio') || site.title.includes('📻')) {
+            } 
+            else if (title.includes('Lecteur Radio') || title.includes('📻')) {
                 if (typeof openRadioPopup === 'function') {
                     openRadioPopup();
+                } else {
+                    console.log('Fonction openRadioPopup non trouvée');
                 }
-            } else if (site.title.includes('Todo List') || site.title.includes('✅')) {
+            } 
+            else if (title.includes('Todo List') || title.includes('✅') || title.includes('Todo')) {
                 if (typeof openTodoApp === 'function') {
                     openTodoApp();
+                } else {
+                    console.log('Fonction openTodoApp non trouvée');
                 }
-            } else {
-                // Comportement normal des tuiles
-                const url = site.mobileUrl || site.url;
-                if (url.startsWith('http')) {
-                    window.open(url, '_blank');
-                } else if (url) {
-                    window.location.href = url;
+            }
+            else if (title.includes('Sondage')) {
+                if (typeof window.openSurveyModal !== 'undefined') {
+                    window.openSurveyModal();
+                }
+            }
+            else if (title.includes('Ajouter mon site')) {
+                this.showAddSiteDialog();
+            }
+            else {
+                // Comportement normal pour les autres tuiles
+                const tileUrl = newTile.dataset.siteUrl || newTile.dataset.mobileSiteUrl;
+                if (tileUrl && tileUrl.startsWith('http')) {
+                    window.open(tileUrl, '_blank');
+                } else if (tileUrl) {
+                    window.location.href = tileUrl;
                 }
             }
         });
         
-        tile.parentNode.replaceChild(newTile, tile);
+        // Remplacer l'ancienne tuile par la nouvelle
+        if (tile.parentNode) {
+            tile.parentNode.replaceChild(newTile, tile);
+        }
     });
+    
+    console.log('✅ Événements des tuiles réinitialisés');
 }
 
     async showAddSiteDialog() {

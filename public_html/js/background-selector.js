@@ -617,12 +617,11 @@ class BackgroundSelector {
         
         // Réinitialiser les gestionnaires d'événements des popups
         setTimeout(() => {
-        // Réinitialiser les événements des tuiles popup
-        if (window.contentManager && typeof window.contentManager.reinitializeTileEvents === 'function') {
-            window.contentManager.reinitializeTileEvents();
-        }
-    }, 100);
-}
+    if (window.contentManager && typeof window.contentManager.reinitializeTileEvents === 'function') {
+        window.contentManager.reinitializeTileEvents();
+    }
+		}, 150);
+	}
 }
 
 // Nouvelle méthode pour réinitialiser les popups
@@ -708,12 +707,13 @@ reinitializePopupHandlers() {
     // Afficher une notification
     this.showToast('Fond d\'écran modifié');
 	
-	setTimeout(() => {
-        if (window.contentManager && typeof window.contentManager.reinitializeTileEvents === 'function') {
-            window.contentManager.reinitializeTileEvents();
-        }
-    }, 200);
-}
+
+		setTimeout(() => {
+    if (window.contentManager && typeof window.contentManager.reinitializeTileEvents === 'function') {
+        window.contentManager.reinitializeTileEvents();
+		}
+		}, 200);
+	}
     
     resetBackground() {
     // Réinitialiser les fonds d'écran classiques
