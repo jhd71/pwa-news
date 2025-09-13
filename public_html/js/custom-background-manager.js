@@ -177,10 +177,10 @@ class CustomBackgroundManager {
         const positionYSlider = document.getElementById('positionYSlider');
         const resetPositionBtn = document.getElementById('resetPosition');
 		const chooseFileBtn = document.getElementById('chooseFileBtn');
-    const takePictureBtn = document.getElementById('takePictureBtn');
-    const switchCameraBtn = document.getElementById('switchCameraBtn');
-    const captureBtn = document.getElementById('captureBtn');
-    const closeCameraBtn = document.getElementById('closeCameraBtn');
+		const takePictureBtn = document.getElementById('takePictureBtn');
+		const switchCameraBtn = document.getElementById('switchCameraBtn');
+		const captureBtn = document.getElementById('captureBtn');
+		const closeCameraBtn = document.getElementById('closeCameraBtn');
 
     if (chooseFileBtn) {
     chooseFileBtn.addEventListener('click', (e) => {
