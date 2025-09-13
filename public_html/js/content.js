@@ -1981,7 +1981,6 @@ applyListModeImmediate() {
         }
     }
 
-// Ajouter cette méthode dans ContentManager
 reinitializeTileEvents() {
     const tiles = document.querySelectorAll('.tile');
     tiles.forEach(tile => {
@@ -1996,34 +1995,20 @@ reinitializeTileEvents() {
             
             // Bloc-notes
             if (title.includes('Bloc-notes') || title.includes('📝')) {
-                // Essayer plusieurs méthodes
                 if (typeof window.openNotepadApp === 'function') {
                     window.openNotepadApp();
-                } else {
-                    // Déclencher l'événement directement sur le bouton original si il existe
-                    const notepadBtn = document.querySelector('[onclick*="openNotepadApp"]');
-                    if (notepadBtn) notepadBtn.click();
-                    else console.log('Bloc-notes non disponible');
                 }
             }
             // Radio
             else if (title.includes('Lecteur Radio') || title.includes('📻')) {
                 if (typeof window.openRadioPopup === 'function') {
                     window.openRadioPopup();
-                } else {
-                    const radioBtn = document.querySelector('[onclick*="openRadioPopup"]');
-                    if (radioBtn) radioBtn.click();
-                    else console.log('Radio non disponible');
                 }
             }
             // Todo List
             else if (title.includes('Todo List') || title.includes('✅')) {
                 if (typeof window.openTodoApp === 'function') {
                     window.openTodoApp();
-                } else {
-                    const todoBtn = document.querySelector('[onclick*="openTodoApp"]');
-                    if (todoBtn) todoBtn.click();
-                    else console.log('Todo List non disponible');
                 }
             }
             // Autres tuiles...

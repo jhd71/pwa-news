@@ -1557,3 +1557,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 500);
 });
+
+// Exposer la fonction globalement pour content.js
+window.openTodoApp = function() {
+    if (window.todoInstance) {
+        window.todoInstance.openPopup();
+    }
+};
