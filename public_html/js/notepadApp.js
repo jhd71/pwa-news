@@ -1028,10 +1028,3 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Erreur lors de l\'initialisation du bloc-notes:', error);
     }
 });
-
-// Exposer la fonction globalement pour content.js
-window.openNotepadApp = function() {
-    if (window.notepadInstance) {
-        window.notepadInstance.openPopup();
-    }
-};

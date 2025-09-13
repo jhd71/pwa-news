@@ -1981,63 +1981,6 @@ applyListModeImmediate() {
         }
     }
 
-reinitializeTileEvents() {
-    const tiles = document.querySelectorAll('.tile');
-    tiles.forEach(tile => {
-        const titleElement = tile.querySelector('.tile-title');
-        if (!titleElement) return;
-        
-        const title = titleElement.textContent;
-        const newTile = tile.cloneNode(true);
-        
-        newTile.addEventListener('click', () => {
-            this.animateTileClick(newTile);
-            
-            // Bloc-notes
-            if (title.includes('Bloc-notes') || title.includes('📝')) {
-                if (typeof window.openNotepadApp === 'function') {
-                    window.openNotepadApp();
-                }
-            }
-            // Radio
-            else if (title.includes('Lecteur Radio') || title.includes('📻')) {
-                if (typeof window.openRadioPopup === 'function') {
-                    window.openRadioPopup();
-                }
-            }
-            // Todo List
-            else if (title.includes('Todo List') || title.includes('✅')) {
-                if (typeof window.openTodoApp === 'function') {
-                    window.openTodoApp();
-                }
-            }
-            // Autres tuiles...
-            else if (title.includes('Sondage')) {
-                if (typeof window.openSurveyModal === 'function') {
-                    window.openSurveyModal();
-                }
-            }
-            else if (title.includes('Ajouter mon site')) {
-                this.showAddSiteDialog();
-            }
-            else {
-                const tileUrl = newTile.dataset.siteUrl || newTile.dataset.mobileSiteUrl;
-                if (tileUrl && tileUrl.startsWith('http')) {
-                    window.open(tileUrl, '_blank');
-                } else if (tileUrl) {
-                    window.location.href = tileUrl;
-                }
-            }
-        });
-        
-        if (tile.parentNode) {
-            tile.parentNode.replaceChild(newTile, tile);
-        }
-    });
-    
-    console.log('✅ Événements des tuiles réinitialisés');
-}
-
     async showAddSiteDialog() {
         // Supprimer toute modal existante
         const existingModal = document.querySelector('.add-site-modal');

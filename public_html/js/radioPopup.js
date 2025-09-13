@@ -1425,13 +1425,6 @@ document.addEventListener('DOMContentLoaded', function() {
     window.radioPopupInstance.init();
 });
 
-// Exposer la fonction globalement pour content.js
-window.openRadioPopup = function() {
-    if (window.radioPopupInstance) {
-        window.radioPopupInstance.openPopup();
-    }
-};
-
 /* ===================================================================== */
 /* FIN DU JAVASCRIPT RADIO ORGANISÉ                                     */
 /* ===================================================================== */

@@ -212,17 +212,6 @@ body.bg-gradient-morning-mist { --bg-image: linear-gradient(135deg, #F0F8FF, #E6
     right: 0;
 }
 
-/* S'assurer que le panneau fermé ne bloque pas les clics */
-.bg-selector-panel:not(.open) {
-    pointer-events: none !important;
-    visibility: hidden !important;
-}
-
-.bg-selector-panel.open {
-    pointer-events: auto !important;
-    visibility: visible !important;
-}
-
 /* Contenu du panneau */
 .bg-selector-panel-content {
     padding: 15px 10px 15px 15px;

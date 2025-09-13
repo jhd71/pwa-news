@@ -556,7 +556,7 @@ class BackgroundSelector {
     if (panel) {
         panel.classList.remove('open');
         
-        // Nettoyer TOUS les overlays
+        // Nettoyer TOUS les overlays de la même manière agressive
         const allDivs = document.querySelectorAll('div');
         allDivs.forEach(div => {
             const styles = window.getComputedStyle(div);
@@ -574,74 +574,12 @@ class BackgroundSelector {
             el.remove();
         });
         
-        // Réinitialiser complètement les styles
+        // Réinitialiser complètement le body
         document.body.className = document.body.className.replace(/\b(modal-open|has-modal|sidebar-open|menu-open)\b/g, '').trim();
         document.body.style.overflow = '';
         document.body.style.filter = '';
         document.body.style.pointerEvents = '';
-        document.body.style.zIndex = '';
-        
-        // Réactiver TOUTES les tuiles
-        const tiles = document.querySelectorAll('.tile');
-        tiles.forEach(tile => {
-            tile.style.pointerEvents = 'auto';
-            tile.style.zIndex = '';
-            
-            // IMPORTANT : Réinitialiser les événements des tuiles popup
-            const titleText = tile.querySelector('.tile-title')?.textContent || '';
-            
-            // Si c'est une tuile qui ouvre une popup, forcer la réactivation
-            if (titleText.includes('Bloc-notes') || 
-                titleText.includes('Lecteur Radio') || 
-                titleText.includes('Todo List') ||
-                titleText.includes('📻') ||
-                titleText.includes('📝') ||
-                titleText.includes('✅')) {
-                
-                // Cloner la tuile pour réinitialiser ses événements
-                const newTile = tile.cloneNode(true);
-                tile.parentNode.replaceChild(newTile, tile);
-            }
-        });
-        
-        // Réactiver le conteneur de tuiles
-        const tileContainer = document.getElementById('tileContainer');
-        if (tileContainer) {
-            tileContainer.style.pointerEvents = 'auto';
-            tileContainer.style.zIndex = '';
-        }
-        
-        // Forcer le recalcul du layout
-        panel.offsetHeight;
-        document.body.offsetHeight;
-        
-        // Réinitialiser les gestionnaires d'événements des popups
-        setTimeout(() => {
-    if (window.contentManager && typeof window.contentManager.reinitializeTileEvents === 'function') {
-        window.contentManager.reinitializeTileEvents();
     }
-		}, 150);
-	}
-}
-
-// Nouvelle méthode pour réinitialiser les popups
-reinitializePopupHandlers() {
-    // Réinitialiser le gestionnaire du Bloc-notes
-    if (typeof window.initNotepadApp === 'function') {
-        window.initNotepadApp();
-    }
-    
-    // Réinitialiser le gestionnaire du Lecteur Radio
-    if (typeof window.initRadioPopup === 'function') {
-        window.initRadioPopup();
-    }
-    
-    // Réinitialiser le gestionnaire Todo List
-    if (typeof window.initTodoApp === 'function') {
-        window.initTodoApp();
-    }
-    
-    console.log('Gestionnaires de popups réinitialisés');
 }
     
 	removeMenuOverlay() {
@@ -678,10 +616,11 @@ reinitializePopupHandlers() {
     if (bgClass && bgClass !== 'none') {
         document.body.classList.add('has-bg-image');
         document.body.classList.add(bgClass);
-        this.removeMenuOverlay();
+		// Supprimer l'overlay du menu quand on sélectionne un fond
+		this.removeMenuOverlay();
     }
     
-    // Enlever immédiatement tout overlay/assombrissement
+    // IMPORTANT : Enlever immédiatement tout overlay/assombrissement
     const overlays = document.querySelectorAll('.modal-backdrop, .overlay, .backdrop, .sidebar-overlay');
     overlays.forEach(overlay => {
         overlay.style.display = 'none';
@@ -689,31 +628,17 @@ reinitializePopupHandlers() {
         setTimeout(() => overlay.remove(), 100);
     });
     
-    // Réactiver le body ET les tuiles
+    // Réactiver le body pour enlever tout effet d'assombrissement
     document.body.style.filter = '';
     document.body.style.opacity = '';
-    document.body.style.pointerEvents = '';
     document.body.classList.remove('modal-open', 'has-modal', 'sidebar-open');
-    
-    // IMPORTANT : Réactiver spécifiquement les tuiles
-    const tiles = document.querySelectorAll('.tile');
-    tiles.forEach(tile => {
-        tile.style.pointerEvents = 'auto';
-    });
     
     // Sauvegarder le choix
     localStorage.setItem(this.storageKey, bgClass || 'none');
     
     // Afficher une notification
     this.showToast('Fond d\'écran modifié');
-	
-
-		setTimeout(() => {
-    if (window.contentManager && typeof window.contentManager.reinitializeTileEvents === 'function') {
-        window.contentManager.reinitializeTileEvents();
-		}
-		}, 200);
-	}
+}
     
     resetBackground() {
     // Réinitialiser les fonds d'écran classiques
