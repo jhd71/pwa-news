@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v38'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v39'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -28,7 +28,6 @@ const STATIC_RESOURCES = [
     '/css/survey-styles.css',
     '/css/theme-bleuciel.css',
     '/css/tv-tiles-fix.css',
-    '/css/background-selector.css',
     '/css/font-settings.css',
     '/css/tile-enhancements.css',
     '/css/gallery-styles.css',
@@ -43,7 +42,6 @@ const STATIC_RESOURCES = [
     // Scripts JavaScript
     '/js/app.js',
     '/js/app-initializer.js',
-    '/js/background-selector.js',
     '/js/ban-check.js',
     '/js/ban-manager.js',
     '/js/chat-keyboard-fix.js',
@@ -66,7 +64,6 @@ const STATIC_RESOURCES = [
     '/js/weather-widget.js',
     '/js/gallery-manager-v2.js',
     '/js/welcome-manager.js',
-    '/js/custom-background-manager.js',
 	'/js/news-widget.js',
 	'/js/cinema-widget.js',
 	'/js/visitor-tracker.js',
