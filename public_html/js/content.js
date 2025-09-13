@@ -1981,6 +1981,50 @@ applyListModeImmediate() {
         }
     }
 
+// Ajouter cette méthode dans ContentManager
+reinitializeTileEvents() {
+    const tiles = document.querySelectorAll('.tile');
+    tiles.forEach(tile => {
+        const site = {
+            title: tile.querySelector('.tile-title')?.textContent || '',
+            url: tile.dataset.siteUrl || '',
+            mobileUrl: tile.dataset.mobileSiteUrl || ''
+        };
+        
+        // Réattacher les événements click
+        const newTile = tile.cloneNode(true);
+        
+        newTile.addEventListener('click', () => {
+            this.animateTileClick(newTile);
+            
+            // Logique spéciale pour les popups
+            if (site.title.includes('Bloc-notes') || site.title.includes('📝')) {
+                if (typeof openNotepadApp === 'function') {
+                    openNotepadApp();
+                }
+            } else if (site.title.includes('Lecteur Radio') || site.title.includes('📻')) {
+                if (typeof openRadioPopup === 'function') {
+                    openRadioPopup();
+                }
+            } else if (site.title.includes('Todo List') || site.title.includes('✅')) {
+                if (typeof openTodoApp === 'function') {
+                    openTodoApp();
+                }
+            } else {
+                // Comportement normal des tuiles
+                const url = site.mobileUrl || site.url;
+                if (url.startsWith('http')) {
+                    window.open(url, '_blank');
+                } else if (url) {
+                    window.location.href = url;
+                }
+            }
+        });
+        
+        tile.parentNode.replaceChild(newTile, tile);
+    });
+}
+
     async showAddSiteDialog() {
         // Supprimer toute modal existante
         const existingModal = document.querySelector('.add-site-modal');

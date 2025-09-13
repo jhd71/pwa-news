@@ -617,9 +617,12 @@ class BackgroundSelector {
         
         // Réinitialiser les gestionnaires d'événements des popups
         setTimeout(() => {
-            this.reinitializePopupHandlers();
-        }, 100);
-    }
+        // Réinitialiser les événements des tuiles popup
+        if (window.contentManager && typeof window.contentManager.reinitializeTileEvents === 'function') {
+            window.contentManager.reinitializeTileEvents();
+        }
+    }, 100);
+}
 }
 
 // Nouvelle méthode pour réinitialiser les popups
