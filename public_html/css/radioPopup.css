@@ -885,7 +885,7 @@ body.radio-popup-open {
 .radio-tile-status {
     position: absolute;
     bottom: 5px;
-    left: 50%;
+    left: 80%;
     transform: translateX(-50%);
     background: rgba(255, 68, 68, 0.9);
     color: white;
