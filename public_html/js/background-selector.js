@@ -707,6 +707,12 @@ reinitializePopupHandlers() {
     
     // Afficher une notification
     this.showToast('Fond d\'écran modifié');
+	
+	setTimeout(() => {
+        if (window.contentManager && typeof window.contentManager.reinitializeTileEvents === 'function') {
+            window.contentManager.reinitializeTileEvents();
+        }
+    }, 200);
 }
     
     resetBackground() {
