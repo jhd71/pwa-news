@@ -769,7 +769,7 @@ startAutoBanCheck() {
                 }, 1500);
             }
         }
-    }, 15000); // Vérification toutes les 15 secondes
+    }, 30000); // Vérification toutes les 30 secondes
 }
 
     async loadBannedWords() {
@@ -2077,7 +2077,7 @@ setupChatPolling() {
         } catch (error) {
             console.warn('⚠️ Erreur polling chat:', error.message);
         }
-    }, 8000); // Toutes les 8 secondes
+    }, 10000); // ✅ Modifié à 10 secondes
 }
 
 // NOUVELLE FONCTION : Rafraîchir les réactions visibles
