@@ -1985,47 +1985,50 @@ applyListModeImmediate() {
 reinitializeTileEvents() {
     const tiles = document.querySelectorAll('.tile');
     tiles.forEach(tile => {
-        // Récupérer les infos de la tuile
         const titleElement = tile.querySelector('.tile-title');
         if (!titleElement) return;
         
         const title = titleElement.textContent;
-        const url = tile.dataset.siteUrl || '';
-        
-        // Cloner la tuile pour réinitialiser ses événements
         const newTile = tile.cloneNode(true);
         
-        // Supprimer tous les anciens listeners
-        const oldListeners = tile.cloneNode(true);
-        
-        // Réattacher le bon listener selon le type de tuile
         newTile.addEventListener('click', () => {
             this.animateTileClick(newTile);
             
-            // Vérifier le type de tuile par le titre
+            // Bloc-notes
             if (title.includes('Bloc-notes') || title.includes('📝')) {
-                if (typeof openNotepadApp === 'function') {
-                    openNotepadApp();
+                // Essayer plusieurs méthodes
+                if (typeof window.openNotepadApp === 'function') {
+                    window.openNotepadApp();
                 } else {
-                    console.log('Fonction openNotepadApp non trouvée');
-                }
-            } 
-            else if (title.includes('Lecteur Radio') || title.includes('📻')) {
-                if (typeof openRadioPopup === 'function') {
-                    openRadioPopup();
-                } else {
-                    console.log('Fonction openRadioPopup non trouvée');
-                }
-            } 
-            else if (title.includes('Todo List') || title.includes('✅') || title.includes('Todo')) {
-                if (typeof openTodoApp === 'function') {
-                    openTodoApp();
-                } else {
-                    console.log('Fonction openTodoApp non trouvée');
+                    // Déclencher l'événement directement sur le bouton original si il existe
+                    const notepadBtn = document.querySelector('[onclick*="openNotepadApp"]');
+                    if (notepadBtn) notepadBtn.click();
+                    else console.log('Bloc-notes non disponible');
                 }
             }
+            // Radio
+            else if (title.includes('Lecteur Radio') || title.includes('📻')) {
+                if (typeof window.openRadioPopup === 'function') {
+                    window.openRadioPopup();
+                } else {
+                    const radioBtn = document.querySelector('[onclick*="openRadioPopup"]');
+                    if (radioBtn) radioBtn.click();
+                    else console.log('Radio non disponible');
+                }
+            }
+            // Todo List
+            else if (title.includes('Todo List') || title.includes('✅')) {
+                if (typeof window.openTodoApp === 'function') {
+                    window.openTodoApp();
+                } else {
+                    const todoBtn = document.querySelector('[onclick*="openTodoApp"]');
+                    if (todoBtn) todoBtn.click();
+                    else console.log('Todo List non disponible');
+                }
+            }
+            // Autres tuiles...
             else if (title.includes('Sondage')) {
-                if (typeof window.openSurveyModal !== 'undefined') {
+                if (typeof window.openSurveyModal === 'function') {
                     window.openSurveyModal();
                 }
             }
@@ -2033,7 +2036,6 @@ reinitializeTileEvents() {
                 this.showAddSiteDialog();
             }
             else {
-                // Comportement normal pour les autres tuiles
                 const tileUrl = newTile.dataset.siteUrl || newTile.dataset.mobileSiteUrl;
                 if (tileUrl && tileUrl.startsWith('http')) {
                     window.open(tileUrl, '_blank');
@@ -2043,7 +2045,6 @@ reinitializeTileEvents() {
             }
         });
         
-        // Remplacer l'ancienne tuile par la nouvelle
         if (tile.parentNode) {
             tile.parentNode.replaceChild(newTile, tile);
         }
