@@ -319,19 +319,6 @@ function showSimpleNotification(message) {
     }
 }
 
-// Dans app-initializer.js, ajouter à la fin de l'initialisation :
-document.addEventListener('DOMContentLoaded', () => {
-    // ... votre code existant ...
-    
-    // Vérifier les notifications admin après le chargement
-    setTimeout(() => {
-        checkAdminNotifications();
-        
-        // Vérifier toutes les 3 minutes
-        setInterval(checkAdminNotifications, 180000);
-    }, 5000);
-});
-
 // Rendre disponible globalement
 window.checkAdminNotifications = checkAdminNotifications;
 
@@ -427,6 +414,14 @@ setTimeout(() => {
         
         // Configurer le bouton du chat
         setupChatButton();
+        
+    // Vérifier les notifications admin après le chargement initial de l'app
+        setTimeout(() => {
+            checkAdminNotifications();
+            
+            // Lancer la vérification en boucle toutes les 3 minutes
+            setInterval(checkAdminNotifications, 180000);
+        }, 5000); // On attend 5 secondes pour être sûr que tout est chargé
         
     } catch (error) {
         console.error('Erreur d\'initialisation:', error);
