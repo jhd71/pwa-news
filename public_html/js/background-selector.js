@@ -556,7 +556,7 @@ class BackgroundSelector {
     if (panel) {
         panel.classList.remove('open');
         
-        // Nettoyer TOUS les overlays de la même manière agressive
+        // Nettoyer TOUS les overlays
         const allDivs = document.querySelectorAll('div');
         allDivs.forEach(div => {
             const styles = window.getComputedStyle(div);
@@ -574,11 +574,30 @@ class BackgroundSelector {
             el.remove();
         });
         
-        // Réinitialiser complètement le body
+        // IMPORTANT : Réinitialiser complètement les styles et événements
         document.body.className = document.body.className.replace(/\b(modal-open|has-modal|sidebar-open|menu-open)\b/g, '').trim();
         document.body.style.overflow = '';
         document.body.style.filter = '';
         document.body.style.pointerEvents = '';
+        document.body.style.zIndex = '';
+        
+        // Réactiver les tuiles spécifiquement
+        const tiles = document.querySelectorAll('.tile');
+        tiles.forEach(tile => {
+            tile.style.pointerEvents = 'auto';
+            tile.style.zIndex = '';
+        });
+        
+        // Réactiver le conteneur de tuiles
+        const tileContainer = document.getElementById('tileContainer');
+        if (tileContainer) {
+            tileContainer.style.pointerEvents = 'auto';
+            tileContainer.style.zIndex = '';
+        }
+        
+        // Forcer le recalcul du layout
+        panel.offsetHeight;
+        document.body.offsetHeight;
     }
 }
     
@@ -616,11 +635,10 @@ class BackgroundSelector {
     if (bgClass && bgClass !== 'none') {
         document.body.classList.add('has-bg-image');
         document.body.classList.add(bgClass);
-		// Supprimer l'overlay du menu quand on sélectionne un fond
-		this.removeMenuOverlay();
+        this.removeMenuOverlay();
     }
     
-    // IMPORTANT : Enlever immédiatement tout overlay/assombrissement
+    // Enlever immédiatement tout overlay/assombrissement
     const overlays = document.querySelectorAll('.modal-backdrop, .overlay, .backdrop, .sidebar-overlay');
     overlays.forEach(overlay => {
         overlay.style.display = 'none';
@@ -628,10 +646,17 @@ class BackgroundSelector {
         setTimeout(() => overlay.remove(), 100);
     });
     
-    // Réactiver le body pour enlever tout effet d'assombrissement
+    // Réactiver le body ET les tuiles
     document.body.style.filter = '';
     document.body.style.opacity = '';
+    document.body.style.pointerEvents = '';
     document.body.classList.remove('modal-open', 'has-modal', 'sidebar-open');
+    
+    // IMPORTANT : Réactiver spécifiquement les tuiles
+    const tiles = document.querySelectorAll('.tile');
+    tiles.forEach(tile => {
+        tile.style.pointerEvents = 'auto';
+    });
     
     // Sauvegarder le choix
     localStorage.setItem(this.storageKey, bgClass || 'none');
