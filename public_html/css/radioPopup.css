@@ -1100,7 +1100,7 @@ body.radio-popup-open {
 }
 
 .mini-bar {
-    width: 4px;
+    width: 3px;
     height: 30%;
     background: linear-gradient(to top, var(--primary-color, #940000), #ff6b6b);
     border-radius: 1px;
@@ -1216,7 +1216,7 @@ body.radio-popup-open {
     }
     
     .mini-bar {
-        width: 4px;
+        width: 2px;
     }
     
     .compact-close-btn {
