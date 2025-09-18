@@ -860,9 +860,11 @@
         animation: ticker-mobile-large 55s linear infinite;
     }
     
-    @keyframes ticker-mobile-large {
-        0% { transform: translateX(100%); }
-        100% { transform: translateX(-1500%); }
+    /* Masquer ticker sur tablette 8.4 pouces (600px de large) */
+    @media (min-height: 800px) {
+        .news-ticker {
+            display: none !important;
+        }
     }
 }
 
