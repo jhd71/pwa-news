@@ -727,18 +727,11 @@
     padding: 0 10px;
 }
 
-/* Masquer définitivement sur tablettes */
-@media screen and (min-width: 768px) {
-    .news-ticker,
-    .news-ticker *,
-    div[class*="ticker"],
-    div[class*="news-ticker"] {
+/* Tablette 8.4 pouces - résolution exacte 1200x1920 */
+@media screen and (min-width: 1200px) and (max-width: 1200px) and (min-height: 1920px),
+       screen and (min-width: 1920px) and (max-width: 1920px) and (min-height: 1200px) {
+    .news-ticker {
         display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        height: 0px !important;
-        max-height: 0px !important;
-        min-height: 0px !important;
     }
 }
 
