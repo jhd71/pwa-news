@@ -313,13 +313,6 @@
    RESPONSIVE : PANEL
    =================================== */
 
-/* Tablettes larges comme la vôtre (1200px) */
-@media (min-width: 1000px) and (max-width: 1300px) {
-    .news-ticker {
-        display: none !important;
-    }
-}
-
 /* Mobile */
 @media (max-width: 768px) {
     .news-panel {
@@ -1028,4 +1021,11 @@
 [data-theme="rouge"] .new-article {
     background-color: #6b1515;
     animation: blinkRouge 2s infinite ease-in-out;
+}
+
+/* Tablettes larges comme la vôtre (1200px) */
+@media (min-width: 1000px) and (max-width: 1300px) {
+    .news-ticker {
+        display: none !important;
+    }
 }
