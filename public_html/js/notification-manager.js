@@ -186,8 +186,8 @@ class NotificationManager {
                     
                 if (!error) return true;
             } catch (supabaseError) {
-                console.warn('Erreur Supabase, utilisation du fallback API');
-            }
+    console.log('Utilisation du fallback API pour les notifications');
+}
         }
         
         // Fallback sur l'API
