@@ -1,22 +1,5 @@
 // newsPanel.js
 document.addEventListener('DOMContentLoaded', function() {
-  
-  // Masquer le ticker sur tablettes au chargement de la page
-  function hideTickerOnTablets() {
-    const ticker = document.querySelector('.news-ticker');
-    if (ticker && window.innerWidth >= 768) {
-      ticker.style.display = 'none';
-      ticker.style.visibility = 'hidden';
-      ticker.style.opacity = '0';
-    }
-  }
-
-  // Exécuter au chargement
-  hideTickerOnTablets();
-
-  // Exécuter lors du redimensionnement
-  window.addEventListener('resize', hideTickerOnTablets);
-
   const newsButton = document.getElementById('newsButton');
   const newsPanel = document.getElementById('newsPanel');
   const closePanel = newsPanel?.querySelector('.close-panel');
