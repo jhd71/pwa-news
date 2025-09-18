@@ -1023,9 +1023,23 @@
     animation: blinkRouge 2s infinite ease-in-out;
 }
 
-/* Tablettes larges comme la vôtre (1200px) */
-@media (min-width: 1000px) and (max-width: 1300px) {
+/* FORCE - Masquer ticker sur tablette 8.4 pouces spécifiquement */
+@media screen and (min-width: 1200px) and (max-width: 1200px),
+       screen and (min-width: 1920px) and (max-width: 1920px) {
     .news-ticker {
         display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+    }
+}
+
+/* Backup - Si la résolution exacte ne marche pas */
+@media screen and (min-width: 1150px) and (max-width: 1250px) {
+    .news-ticker {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
     }
 }
