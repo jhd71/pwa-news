@@ -841,8 +841,9 @@
         100% { transform: translateX(-1000%); }
     }
 	
-	/* Masquer complètement le ticker sur tablettes 8+ pouces */
-@media (min-width: 768px) and (max-width: 1250px) {
+	/* Masquer le ticker sur tablettes moyennes et grandes */
+@media (min-width: 768px) and (max-width: 1300px) and (orientation: portrait),
+       (min-width: 768px) and (max-width: 1920px) and (orientation: landscape) {
     .news-ticker {
         display: none !important;
     }
