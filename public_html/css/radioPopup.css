@@ -407,7 +407,7 @@ body.radio-popup-open {
 /* === RESPONSIVE POUR STATIONS === */
 
 /* === TABLETTE 8 POUCES SPÉCIFIQUE === */
-@media (min-width: 768px) and (max-width: 820px) {
+@media (min-width: 768px) and (max-width: 1250px) {
     /* Widget compact radio */
     .radio-compact-widget {
         bottom: 80px;
