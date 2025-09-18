@@ -174,37 +174,48 @@ class NotificationManager {
 
     // Supprime l'abonnement de la base de données
     async deleteSubscription(subscription) {
-        try {
-            if (this.supabase) {
-                await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo });
+    try {
+        if (this.supabase) {
+            // Essayer de supprimer via Supabase
+            try {
+                await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo }).catch(() => {});
                 
                 const { error } = await this.supabase
                     .from('push_subscriptions')
                     .delete()
                     .eq('pseudo', this.pseudo);
                     
-                if (error) throw error;
-                return true;
-            } else {
-                // Fallback sur l'API
-                const response = await fetch(this.subscriptionEndpoint, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        endpoint: subscription.endpoint,
-                        userId: this.pseudo
-                    })
-                });
-                
-                return response.ok;
+                if (!error) return true;
+            } catch (supabaseError) {
+                console.warn('Erreur Supabase, utilisation du fallback API');
             }
-        } catch (error) {
-            console.error('Erreur lors de la suppression de l\'abonnement:', error);
-            return false;
         }
+        
+        // Fallback sur l'API
+        try {
+            const response = await fetch(this.subscriptionEndpoint, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    endpoint: subscription?.endpoint || '',
+                    userId: this.pseudo || 'anonymous'
+                })
+            });
+            
+            return response.ok;
+        } catch (fetchError) {
+            console.warn('Erreur API:', fetchError);
+            // Retourner true pour ne pas bloquer l'interface
+            return true;
+        }
+    } catch (error) {
+        console.error('Erreur lors de la suppression de l\'abonnement:', error);
+        // Retourner true pour ne pas bloquer l'interface
+        return true;
     }
+}
 
     // Méthode pour envoyer une notification push
     async sendPushNotification(message) {
