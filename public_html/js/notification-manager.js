@@ -175,8 +175,7 @@ class NotificationManager {
     // Supprime l'abonnement de la base de données
     async deleteSubscription(subscription) {
     try {
-        if (this.supabase) {
-            // Essayer de supprimer via Supabase
+        if (this.supabase && this.pseudo) {
             try {
                 await this.supabase.rpc('set_current_user', { user_pseudo: this.pseudo }).catch(() => {});
                 
@@ -204,15 +203,13 @@ class NotificationManager {
                 })
             });
             
-            return response.ok;
+            return true; // On retourne toujours true pour ne pas bloquer
         } catch (fetchError) {
-            console.warn('Erreur API:', fetchError);
-            // Retourner true pour ne pas bloquer l'interface
+            console.warn('Erreur API fallback:', fetchError);
             return true;
         }
     } catch (error) {
         console.error('Erreur lors de la suppression de l\'abonnement:', error);
-        // Retourner true pour ne pas bloquer l'interface
         return true;
     }
 }
