@@ -313,6 +313,13 @@
    RESPONSIVE : PANEL
    =================================== */
 
+/* Tablettes larges comme la vôtre (1200px) */
+@media (min-width: 1000px) and (max-width: 1300px) {
+    .news-ticker {
+        display: none !important;
+    }
+}
+
 /* Mobile */
 @media (max-width: 768px) {
     .news-panel {
@@ -725,15 +732,6 @@
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
     padding: 0 10px;
-}
-
-/* Masquer le ticker sur tablettes (solution universelle) */
-@media (min-width: 768px) and (max-width: 1920px) and (min-height: 1000px) {
-    .news-ticker {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-    }
 }
 
 /* Conteneur interne qui gère le défilement */
