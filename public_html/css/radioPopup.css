@@ -490,6 +490,10 @@ body.radio-popup-open {
         font-size: 13px;
     }
     
+	.compact-equalizer {
+		height: 6px;
+    }	
+	
     /* Contrôles du lecteur */
     .current-station-logo {
         width: 65px;
