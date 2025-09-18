@@ -406,6 +406,83 @@ body.radio-popup-open {
 
 /* === RESPONSIVE POUR STATIONS === */
 
+/* === TABLETTE 8 POUCES SPÉCIFIQUE === */
+@media (min-width: 768px) and (max-width: 820px) {
+    /* Widget compact radio */
+    .radio-compact-widget {
+        bottom: 80px;
+        left: 15px;
+        max-width: 380px;
+    }
+    
+    .compact-widget-content {
+        padding: 12px;
+    }
+    
+    .compact-logo {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .compact-btn {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .compact-btn .material-icons {
+        font-size: 20px;
+    }
+    
+    /* Popup radio */
+    .radio-popup-content {
+        width: 85%;
+        max-width: 500px;
+    }
+    
+    /* Grille des stations */
+    .radio-stations-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+    }
+    
+    .radio-station-card {
+        min-height: 110px;
+        padding: 10px;
+    }
+    
+    /* Logos des stations */
+    .station-logo-container {
+        width: 65px;
+        height: 65px;
+    }
+    
+    .station-logo-container img.station-logo {
+        width: 65px !important;
+        height: 65px !important;
+        min-width: 65px !important;
+        min-height: 65px !important;
+        max-width: 65px !important;
+        max-height: 65px !important;
+    }
+    
+    .logo-fallback {
+        width: 65px;
+        height: 65px;
+    }
+    
+    /* Contrôles du lecteur */
+    .current-station-logo {
+        width: 55px;
+        height: 55px;
+    }
+    
+    /* Menu minuteur */
+    .quick-timer-menu {
+        width: 200px;
+        bottom: 140px !important;
+    }
+}
+
 /* Tablettes */
 @media (max-width: 768px) {
     .radio-stations-grid {

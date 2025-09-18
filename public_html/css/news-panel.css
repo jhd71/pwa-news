@@ -840,6 +840,13 @@
         0% { transform: translateX(100%); }
         100% { transform: translateX(-1000%); }
     }
+	
+	/* Masquer complètement le ticker sur tablette 8 pouces */
+@media (min-width: 768px) and (max-width: 820px) {
+    .news-ticker {
+        display: none !important;
+    }
+}
 }
 
 /* Tablette portrait/autres */
