@@ -406,79 +406,99 @@ body.radio-popup-open {
 
 /* === RESPONSIVE POUR STATIONS === */
 
-/* === TABLETTE 8 POUCES SPÉCIFIQUE === */
-@media (min-width: 768px) and (max-width: 1250px) {
-    /* Widget compact radio */
+/* === TABLETTE 8.4 POUCES SPÉCIFIQUE (600x841) === */
+@media screen and (min-width: 600px) and (max-width: 600px) and (min-height: 800px) {
+    /* Widget compact radio AGRANDI */
     .radio-compact-widget {
-        bottom: 80px;
+        bottom: 20px;
         left: 15px;
-        max-width: 380px;
+        max-width: 450px;
+        min-width: 400px;
     }
     
     .compact-widget-content {
-        padding: 12px;
+        padding: 15px;
+        gap: 15px;
     }
     
     .compact-logo {
-        width: 45px;
-        height: 45px;
+        width: 60px;
+        height: 60px;
     }
     
     .compact-btn {
-        width: 36px;
-        height: 36px;
+        width: 48px;
+        height: 48px;
     }
     
     .compact-btn .material-icons {
-        font-size: 20px;
+        font-size: 26px;
+    }
+    
+    /* Texte plus grand */
+    .compact-details div:first-child {
+        font-size: 18px;
+        font-weight: 700;
+    }
+    
+    .compact-details div:last-child {
+        font-size: 15px;
     }
     
     /* Popup radio */
     .radio-popup-content {
-        width: 85%;
-        max-width: 500px;
+        width: 90%;
+        max-width: 520px;
     }
     
-    /* Grille des stations */
+    /* Grille des stations - 3 colonnes pour tablette */
     .radio-stations-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 12px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
     }
     
     .radio-station-card {
-        min-height: 110px;
-        padding: 10px;
+        min-height: 130px;
+        padding: 12px;
     }
     
-    /* Logos des stations */
+    /* Logos des stations plus grands */
     .station-logo-container {
-        width: 65px;
-        height: 65px;
+        width: 75px;
+        height: 75px;
     }
     
     .station-logo-container img.station-logo {
-        width: 65px !important;
-        height: 65px !important;
-        min-width: 65px !important;
-        min-height: 65px !important;
-        max-width: 65px !important;
-        max-height: 65px !important;
+        width: 75px !important;
+        height: 75px !important;
+        min-width: 75px !important;
+        min-height: 75px !important;
+        max-width: 75px !important;
+        max-height: 75px !important;
     }
     
     .logo-fallback {
-        width: 65px;
-        height: 65px;
+        width: 75px;
+        height: 75px;
+    }
+    
+    .station-name {
+        font-size: 16px;
+    }
+    
+    .station-description {
+        font-size: 13px;
     }
     
     /* Contrôles du lecteur */
     .current-station-logo {
-        width: 55px;
-        height: 55px;
+        width: 65px;
+        height: 65px;
     }
     
     /* Menu minuteur */
     .quick-timer-menu {
-        width: 200px;
+        width: 220px;
         bottom: 140px !important;
     }
 }
