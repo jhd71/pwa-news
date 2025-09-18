@@ -488,11 +488,7 @@ body.radio-popup-open {
     
     .station-description {
         font-size: 13px;
-    }
-    
-	.compact-equalizer {
-		height: 6px;
-    }	
+    }    
 	
     /* Contrôles du lecteur */
     .current-station-logo {
