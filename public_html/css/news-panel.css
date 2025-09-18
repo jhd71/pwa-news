@@ -727,6 +727,21 @@
     padding: 0 10px;
 }
 
+/* Masquer définitivement sur tablettes */
+@media screen and (min-width: 768px) {
+    .news-ticker,
+    .news-ticker *,
+    div[class*="ticker"],
+    div[class*="news-ticker"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0px !important;
+        max-height: 0px !important;
+        min-height: 0px !important;
+    }
+}
+
 /* Conteneur interne qui gère le défilement */
 .ticker-wrapper {
     display: flex;
@@ -1021,25 +1036,4 @@
 [data-theme="rouge"] .new-article {
     background-color: #6b1515;
     animation: blinkRouge 2s infinite ease-in-out;
-}
-
-/* FORCE - Masquer ticker sur tablette 8.4 pouces spécifiquement */
-@media screen and (min-width: 1200px) and (max-width: 1200px),
-       screen and (min-width: 1920px) and (max-width: 1920px) {
-    .news-ticker {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        height: 0 !important;
-        overflow: hidden !important;
-    }
-}
-
-/* Backup - Si la résolution exacte ne marche pas */
-@media screen and (min-width: 1150px) and (max-width: 1250px) {
-    .news-ticker {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-    }
 }
