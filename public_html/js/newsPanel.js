@@ -1,5 +1,11 @@
 // newsPanel.js
 document.addEventListener('DOMContentLoaded', function() {
+	// Affichage temporaire des dimensions d'écran
+console.log('Dimensions écran:', window.innerWidth, 'x', window.innerHeight);
+const debugDiv = document.createElement('div');
+debugDiv.style.cssText = 'position:fixed;top:10px;right:10px;background:red;color:white;padding:10px;z-index:9999;';
+debugDiv.textContent = `${window.innerWidth}x${window.innerHeight}`;
+document.body.appendChild(debugDiv);
   const newsButton = document.getElementById('newsButton');
   const newsPanel = document.getElementById('newsPanel');
   const closePanel = newsPanel?.querySelector('.close-panel');

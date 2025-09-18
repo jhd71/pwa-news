@@ -727,14 +727,6 @@
     padding: 0 10px;
 }
 
-/* Tablette 8.4 pouces - résolution exacte 1200x1920 */
-@media screen and (min-width: 1200px) and (max-width: 1200px) and (min-height: 1920px),
-       screen and (min-width: 1920px) and (max-width: 1920px) and (min-height: 1200px) {
-    .news-ticker {
-        display: none !important;
-    }
-}
-
 /* Conteneur interne qui gère le défilement */
 .ticker-wrapper {
     display: flex;
