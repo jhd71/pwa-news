@@ -283,6 +283,13 @@ setupTVIcons() {
     category: 'news'
   },
   {
+    title: 'Infos-Dijon',
+    url: 'https://www.infos-dijon.com/news/faits-divers/faits-divers-en-cote-d-or/',
+    mobileUrl: 'https://www.infos-dijon.com/news/faits-divers/faits-divers-en-cote-d-or//',
+    isDefault: true,
+    category: 'news'
+  },
+  {
     title: 'Faits Divers Saône-et-Loire',
     url: 'https://faitsdivers365.fr/bourgogne-franche-comte/saone-et-loire/',
     mobileUrl: 'https://faitsdivers365.fr/bourgogne-franche-comte/saone-et-loire/',
