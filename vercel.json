@@ -10,25 +10,6 @@
       "use": "@vercel/static"
     }
   ],
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "https://actuetmedia.fr"
-        },
-        {
-          "key": "Access-Control-Allow-Methods",
-          "value": "GET, POST, OPTIONS"
-        },
-        {
-          "key": "Access-Control-Allow-Headers",
-          "value": "Content-Type"
-        }
-      ]
-    }
-  ],
   "routes": [
     {
       "src": "^/redirect/(.*)$",
@@ -70,11 +51,11 @@
       "src": "^/presentation$",
       "dest": "/public_html/presentation.html"
     },
-    {
-      "src": "/presentation\\.html$",
-      "status": 301,
-      "headers": { "Location": "/presentation" }
-    },
+	{
+	 "src": "/presentation\\.html$",
+     "status": 301,
+     "headers": { "Location": "/presentation" }
+	},
     {
       "src": "^/$",
       "dest": "/public_html/index.html"

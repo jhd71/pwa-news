@@ -2875,59 +2875,103 @@ async checkRealIPBan() {
     }
 }
 
+// Cette méthode utilise un service externe pour déterminer l'IP publique
+// Cette méthode utilise un service externe pour déterminer l'IP publique
 async getClientRealIP() {
     try {
-        // Vérifier le cache
+        // Vérifier si nous avons une IP récente en cache (moins de 5 minutes pour les tests)
         const cachedIP = localStorage.getItem('last_known_real_ip');
         const lastCheckTime = parseInt(localStorage.getItem('last_ip_check_time') || '0');
         const cacheAge = Date.now() - lastCheckTime;
         
+        // Réduire le cache à 5 minutes pour les tests
         if (cachedIP && cacheAge < 5 * 60 * 1000) {
             console.log('Utilisation de l\'IP en cache:', cachedIP);
             return cachedIP;
         }
         
-        console.log('Récupération de l\'IP réelle...');
+        console.log('Récupération de l\'IP réelle depuis les services externes...');
         
-        // NOUVELLE MÉTHODE : Utiliser votre propre API
-        try {
-            const response = await fetch('/api/get-ip', {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
-            
-            if (response.ok) {
-                const data = await response.json();
-                if (data.success && data.ip) {
-                    console.log('IP réelle obtenue via API Vercel:', data.ip);
-                    
-                    // Stocker en cache
-                    localStorage.setItem('last_known_real_ip', data.ip);
-                    localStorage.setItem('last_ip_check_time', Date.now().toString());
-                    
-                    return data.ip;
-                }
+        // Essayer plusieurs services pour obtenir l'IP
+        const services = [
+            {
+                url: 'https://api.ipify.org?format=json',
+                extract: (data) => data.ip
+            },
+            {
+                url: 'https://ipapi.co/json/',
+                extract: (data) => data.ip
+            },
+            {
+                url: 'https://api.my-ip.io/ip.json',
+                extract: (data) => data.ip
+            },
+            {
+                url: 'https://ipinfo.io/json',
+                extract: (data) => data.ip
+            },
+            {
+                url: 'https://api.ipgeolocation.io/getip',
+                extract: (data) => data.ip
             }
-        } catch (error) {
-            console.warn('Erreur avec l\'API Vercel:', error.message);
+        ];
+        
+        // Essayer chaque service jusqu'à ce qu'un fonctionne
+        for (const service of services) {
+            try {
+                console.log(`Tentative avec ${service.url}`);
+                
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                
+                const response = await fetch(service.url, { 
+                    signal: controller.signal,
+                    mode: 'cors',
+                    cache: 'no-cache',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const ip = service.extract(data);
+                    
+                    if (ip && ip.match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/)) {
+                        console.log('IP réelle obtenue via', service.url, ':', ip);
+                        
+                        // Stocker l'IP en cache local
+                        localStorage.setItem('last_known_real_ip', ip);
+                        localStorage.setItem('last_ip_check_time', Date.now().toString());
+                        
+                        return ip;
+                    }
+                }
+            } catch (serviceError) {
+                console.warn(`Erreur avec le service ${service.url}:`, serviceError.message);
+                // Continuer avec le service suivant
+            }
         }
         
-        // Fallback si l'API échoue
+        // Si tous les services échouent mais qu'on a une IP en cache (même ancienne)
         if (cachedIP) {
             console.log('Utilisation de l\'IP en cache (ancienne):', cachedIP);
             return cachedIP;
         }
         
-        // En dernier recours
+        // En dernier recours, utiliser un identifiant unique basé sur le navigateur
         const fallbackId = this.generateBrowserFingerprint();
         console.log('Utilisation d\'un identifiant de secours:', fallbackId);
         return fallbackId;
         
     } catch (error) {
         console.error('Erreur obtention IP:', error);
-        return this.generateBrowserFingerprint();
+        
+        // En cas d'erreur totale, générer un identifiant unique
+        const fallbackId = this.generateBrowserFingerprint();
+        return fallbackId;
     }
 }
 
@@ -3189,11 +3233,8 @@ getWebGLFingerprint() {
         const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
         if (!debugInfo) return 'no_debug_info';
         
-        // Utiliser RENDERER au lieu de UNMASKED_RENDERER_WEBGL pour Firefox
-        const vendor = gl.getParameter(gl.VENDOR);
-        const renderer = gl.getParameter(gl.RENDERER);
-        
-        return vendor + '~' + renderer;
+        return gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) + '~' + 
+               gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
     } catch (e) {
         return 'webgl_error';
     }
