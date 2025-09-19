@@ -641,8 +641,8 @@
 #donateButton::before {
     content: '';
     position: absolute;
-    top: -20px; /* plus haut que la tasse */
-    left: 50%;
+    top: -10px; /* plus haut que la tasse */
+    left: 49%;
     transform: translateX(-50%);
     width: 10px;
     height: 30px;
@@ -663,7 +663,7 @@
 /* Position pour mobile */
 @media (max-width: 768px) {
     #donateButton::before {
-        left: 41%;
+        left: 44%;
     }
 }
 
