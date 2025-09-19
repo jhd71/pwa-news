@@ -7,10 +7,10 @@
     
     // Configuration
     const CONFIG = {
-        minVisitsBeforeShow: 3,        // Nombre minimum de visites avant d'afficher
-        delayBeforeShow: 120000,       // Délai avant affichage (2 minutes)
-        cooldownPeriod: 30,             // Jours entre deux affichages
-        maxDismissals: 3,              // Nombre max de fermetures avant arrêt définitif
+    minVisitsBeforeShow: 2,        // Réduit de 3 à 2
+    delayBeforeShow: 90000,        // Réduit à 1min30
+    cooldownPeriod: 21,            // Réduit à 3 semaines
+    maxDismissals: 3,              // Nombre max de fermetures avant arrêt définitif
         storageKeys: {
             visits: 'am_visitor_count',
             lastShown: 'am_donation_last_shown',
@@ -228,6 +228,48 @@
     if (visits >= 10) {
         donateBtn.classList.add('coffee-hot');
     }
+}
+
+showContextualReminder(context) {
+    const visits = parseInt(localStorage.getItem(CONFIG.storageKeys.visits) || '0');
+    const hasDonated = localStorage.getItem(CONFIG.storageKeys.hasDonated) === 'true';
+    
+    if (hasDonated || visits < 2) return;
+    
+    let message = '';
+    switch(context) {
+        case 'radio':
+            message = '🎵 Vous écoutez souvent notre radio ? Un petit café aide à maintenir le service !';
+            break;
+        case 'news':
+            message = '📰 Ces infos locales vous sont utiles ? Soutenez-nous avec un café !';
+            break;
+        case 'weather':
+            message = '🌤️ La météo locale est pratique ? Un don aide à garder le site gratuit !';
+            break;
+    }
+    
+    if (message) {
+        this.showToastMessage(message);
+    }
+}
+
+showToastMessage(message) {
+    const toast = document.createElement('div');
+    toast.className = 'donation-toast';
+    toast.innerHTML = `
+        <div class="toast-content">
+            ${message}
+            <button onclick="window.donationManager.showPopup('contextual'); this.parentElement.parentElement.remove();">
+                ☕ Faire un don
+            </button>
+            <button onclick="this.parentElement.parentElement.remove();">✕</button>
+        </div>
+    `;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => toast.classList.add('show'), 100);
+    setTimeout(() => toast.remove(), 8000);
 }
 
         // Méthode pour réinitialiser (utile pour les tests)

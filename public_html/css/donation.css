@@ -615,10 +615,14 @@
 }
 
 /* ========================================
-   15. BOUTON CAFÉ
+   15. BOUTON CAFÉ AMÉLIORÉ
    ======================================== */
 #donateButton {
+    background: linear-gradient(135deg, #FF6B35, #D2691E) !important;
+    border: 2px solid #FFD700 !important;
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4) !important;
     position: relative;
+    overflow: visible;
     transition: all 0.3s ease;
 }
 
@@ -633,29 +637,30 @@
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
+#donateButton::before {
+    content: '☕';
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #FFD700;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    animation: steam 2s ease-in-out infinite;
+}
+
+@keyframes steam {
+    0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+    50% { transform: translateY(-3px) rotate(5deg); opacity: 1; }
+}
+
 #donateButton:hover {
-    background: rgba(229, 62, 62, 0.15);
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-@keyframes pulse-coffee {
-    0% {
-        box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.6);
-        transform: scale(1);
-    }
-    50% {
-        box-shadow: 0 0 0 8px rgba(229, 62, 62, 0);
-        transform: scale(1.02);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(229, 62, 62, 0);
-        transform: scale(1);
-    }
-}
-
-.pulse-animation {
-    animation: pulse-coffee 2s ease-out 3;
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.6) !important;
 }
 
 @keyframes coffee-shake {
@@ -666,6 +671,47 @@
 
 #donateButton:hover .material-icons {
     animation: coffee-shake 0.5s ease-in-out;
+}
+
+/* Badge "Merci" après certaines actions */
+#donateButton.grateful::after {
+    content: 'Merci ! 🙏';
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #4CAF50;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    white-space: nowrap;
+    animation: thankYouPulse 3s ease-in-out;
+    z-index: 10;
+}
+
+@keyframes thankYouPulse {
+    0%, 100% { opacity: 0; transform: translateX(-50%) translateY(-5px); }
+    20%, 80% { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.pulse-animation {
+    animation: pulse-coffee 2s ease-out 3;
+}
+
+@keyframes pulse-coffee {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.6);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(255, 107, 53, 0);
+        transform: scale(1.02);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 107, 53, 0);
+        transform: scale(1);
+    }
 }
 
 /* ========================================
@@ -693,4 +739,42 @@
 .donation-later:focus {
     outline: 2px solid var(--primary-color, #940000);
     outline-offset: 2px;
+}
+
+.donation-toast {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background: var(--primary-color);
+    color: white;
+    padding: 15px;
+    border-radius: 12px;
+    max-width: 300px;
+    transform: translateX(350px);
+    transition: transform 0.3s ease;
+    z-index: 1001;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.donation-toast.show {
+    transform: translateX(0);
+}
+
+.toast-content button {
+    margin: 5px 3px 0 0;
+    padding: 4px 8px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.toast-content button:first-of-type {
+    background: #FFD700;
+    color: #333;
+}
+
+.toast-content button:last-of-type {
+    background: rgba(255,255,255,0.2);
+    color: white;
 }
