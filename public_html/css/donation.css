@@ -622,7 +622,7 @@
     border: 2px solid #FFD700 !important;
     box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4) !important;
     position: relative;
-    overflow: visible;
+	overflow: visible;
     transition: all 0.3s ease;
 }
 
@@ -651,6 +651,8 @@
     justify-content: center;
     font-size: 12px;
     animation: steam 2s ease-in-out infinite;
+    z-index: 1;
+    transform-origin: center center;
 }
 
 @keyframes steam {
