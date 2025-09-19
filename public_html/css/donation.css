@@ -642,7 +642,7 @@
     content: '';
     position: absolute;
     top: -10px; /* plus haut que la tasse */
-    left: 49%;
+    left: 50%;
     transform: translateX(-50%);
     width: 10px;
     height: 30px;
