@@ -75,64 +75,61 @@
     <meta name="twitter:image" content="https://actuetmedia.fr/images/twitter-card-1200x600.jpg">
     <meta name="twitter:image:alt" content="Actu & Média Montceau">
     
-    <!-- === SCHEMA.ORG / JSON-LD === -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Actu & Média",
-      "alternateName": "Actu&Média Montceau",
-      "url": "https://actuetmedia.fr/",
-      "description": "Le média local de référence pour l'actualité de Montceau-les-Mines et la Saône-et-Loire",
-      "publisher": {
-        "@type": "Organization",
-        "name": "Actu & Média",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://actuetmedia.fr/images/AM-512-v2.png",
-          "width": 512,
-          "height": 512
-        }
-      },
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://actuetmedia.fr/search?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      },
-      "sameAs": [
-        "https://www.facebook.com/actuetmedia",
-        "https://x.com/ActuetMedia",
-        "https://www.instagram.com/actu_et_media/"
-      ]
+    <!-- === SCHEMA.ORG / JSON-LD === --> 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Actu & Média",
+  "alternateName": "Actu&Média Montceau",
+  "url": "https://actuetmedia.fr/",
+  "description": "Le média local de référence pour l'actualité de Montceau-les-Mines et la Saône-et-Loire",
+  "publisher": {
+    "@type": "WebSite",
+    "name": "Actu & Média",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://actuetmedia.fr/images/AM-512-v2.png",
+      "width": 512,
+      "height": 512
     }
-    </script>
-    
-    <!-- === LOCAL BUSINESS SCHEMA === -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "NewsMediaOrganization",
-      "name": "Actu & Média",
-      "url": "https://actuetmedia.fr/",
-      "logo": "https://actuetmedia.fr/images/AM-512-v2.png",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Montceau-les-Mines",
-        "postalCode": "71300",
-        "addressRegion": "Saône-et-Loire",
-        "addressCountry": "FR"
-      },
-      "areaServed": {
-        "@type": "GeoCircle",
-        "geoMidpoint": {
-          "@type": "GeoCoordinates",
-          "latitude": 46.6739,
-          "longitude": 4.3629
-        },
-        "geoRadius": "20000"
-      }
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://actuetmedia.fr/search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  },
+  "sameAs": [
+    "https://www.facebook.com/actuetmedia",
+    "https://x.com/ActuetMedia",
+    "https://www.instagram.com/actu_et_media/"
+  ]
+}
+</script>
+
+<!-- === LOCAL PROJECT SCHEMA === -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "Actu & Média",
+  "url": "https://actuetmedia.fr/",
+  "logo": "https://actuetmedia.fr/images/AM-512-v2.png",
+  "about": "Actualités locales, radios, outils et informations pratiques pour Montceau-les-Mines et la Saône-et-Loire",
+  "inLanguage": "fr",
+  "contentLocation": {
+    "@type": "Place",
+    "name": "Montceau-les-Mines",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Montceau-les-Mines",
+      "postalCode": "71300",
+      "addressRegion": "Saône-et-Loire",
+      "addressCountry": "FR"
     }
-    </script>
+  }
+}
+</script>
     
     <!-- === PWA & MANIFEST === -->
     <link rel="manifest" href="/manifest.json">
