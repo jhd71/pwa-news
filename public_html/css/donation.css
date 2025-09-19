@@ -641,7 +641,7 @@
     content: '☕';
     position: absolute;
     top: -8px;
-    right: -8px;
+    left: 49%; /* Position PC par défaut */
     background: #FFD700;
     border-radius: 50%;
     width: 20px;
@@ -652,7 +652,20 @@
     font-size: 12px;
     animation: steam 2s ease-in-out infinite;
     z-index: 1;
-    transform-origin: center center;
+}
+
+/* Position pour tablette */
+@media (min-width: 769px) and (max-width: 1024px) {
+    #donateButton::before {
+        left: 46%;
+    }
+}
+
+/* Position pour mobile */
+@media (max-width: 768px) {
+    #donateButton::before {
+        left: 43%;
+    }
 }
 
 @keyframes steam {
