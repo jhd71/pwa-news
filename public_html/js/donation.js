@@ -290,55 +290,6 @@ window.updateDonationProgress = function(collected, goal) {
     }
 };
 
-    // Ajouter des styles pour l'animation pulse
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes pulse-donation {
-            0% {
-                box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.7);
-                transform: scale(1);
-            }
-            50% {
-                box-shadow: 0 0 0 10px rgba(229, 62, 62, 0);
-                transform: scale(1.05);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(229, 62, 62, 0);
-                transform: scale(1);
-            }
-        }
-        
-        .pulse-animation {
-            animation: pulse-donation 2s ease-in-out 3;
-        }
-        
-        /* Amélioration du bouton dans la barre du bas */
-        #donateButton {
-            position: relative;
-            transition: all 0.3s ease;
-        }
-        
-        #donateButton:hover {
-            transform: translateY(-2px);
-            background: rgba(229, 62, 62, 0.1);
-        }
-        
-        /* Badge "Nouveau" pour les nouveaux visiteurs */
-        #donateButton.new-visitor::after {
-            content: "NEW";
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #e53e3e;
-            color: white;
-            font-size: 9px;
-            padding: 2px 4px;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-    `;
-    document.head.appendChild(style);
-
 })();
 
 // Fonction helper pour les tests (à retirer en production)
