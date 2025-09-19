@@ -663,7 +663,7 @@
 /* Position pour mobile */
 @media (max-width: 768px) {
     #donateButton::before {
-        left: 44%;
+        left: 50%;
     }
 }
 
