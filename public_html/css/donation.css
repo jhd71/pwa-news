@@ -641,7 +641,7 @@
     content: '☕';
     position: absolute;
     top: -8px;
-    left: 49%; /* Position PC par défaut */
+    left: 48%; /* Position PC par défaut */
     background: #FFD700;
     border-radius: 50%;
     width: 20px;
