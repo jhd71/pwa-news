@@ -83,13 +83,13 @@
                 donateBtn.addEventListener('click', () => this.showPopup('manual'));
             }
 
-            // Lien PayPal
-            const paypalLink = document.querySelector('.donation-link');
-            if (paypalLink) {
-                paypalLink.addEventListener('click', () => {
-                    this.trackDonation();
-                });
-            }
+            // Lien Buy Me a Coffee
+			const donationLink = document.querySelector('.donation-link');
+            if (donationLink) {
+		donationLink.addEventListener('click', () => {
+			this.trackDonation();
+		});
+	}
 
             // Échap pour fermer
             document.addEventListener('keydown', (e) => {

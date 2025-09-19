@@ -715,7 +715,7 @@ Actu & Média
         <!-- En-tête avec animation -->
         <div class="donation-header">
             <span class="donation-emoji">🙏</span>
-            <h3>Soutenez Actu & Média</h3>
+            <h3><h3>Offrez un café à Actu & Média</h3></h3>
         </div>
         
         <!-- Corps du message -->
@@ -764,38 +764,37 @@ Actu & Média
 			</div>
 		<p class="progress-info">Collecté : <strong>6€</strong> (3%)</p>
 	</div>
-
             </div>
             
             <p class="donation-appeal">
-                Ce site est créé et maintenu <strong>bénévolement</strong> avec passion.
-                Votre soutien, même 1€, compte énormément pour couvrir les frais techniques
-                et permettre la continuité de ce service local.
-            </p>
+    Ce site est créé et maintenu <strong>bénévolement</strong> avec passion.
+    Votre café, même 1€, compte énormément pour couvrir les frais techniques
+    et permettre la continuité de ce service local.
+	</p>
 
             <!-- Montants suggérés -->
-            <div class="suggested-amounts">
-                <p class="suggested-title">Montant suggéré :</p>
-                <div class="amount-buttons">
-                    <button class="amount-btn" onclick="handleAmountClick(1)">1€</button>
-                    <button class="amount-btn" onclick="handleAmountClick(5)">5€</button>
-                    <button class="amount-btn active" onclick="handleAmountClick(10)">10€</button>
-                    <button class="amount-btn" onclick="handleAmountClick(20)">20€</button>
-                    <button class="amount-btn" onclick="handleAmountClick('other')">Autre</button>
-                </div>
-            </div>
+	<div class="suggested-amounts">
+    <p class="suggested-title">Choisir mon café :</p>
+    <div class="amount-buttons">
+        <button class="amount-btn" onclick="handleAmountClick(1)">☕ 1€</button>
+        <button class="amount-btn" onclick="handleAmountClick(3)">☕☕ 3€</button>
+        <button class="amount-btn active" onclick="handleAmountClick(5)">☕☕☕ 5€</button>
+        <button class="amount-btn" onclick="handleAmountClick(10)">🍰 10€</button>
+        <button class="amount-btn" onclick="handleAmountClick('other')">Autre</button>
+		</div>
+	</div>
         </div>
         
         <!-- Boutons d'action -->
         <div class="donation-actions">
-            <a href="https://www.paypal.com/donate/?hosted_button_id=FKJPST5LWBUGG" 
-               target="_blank" 
-               class="donation-link primary"
-               onclick="trackDonationClick()">
-                <img src="images/paypal-icon.png" alt="PayPal" 
-                     style="height:20px;vertical-align:middle;">
-                <span>Faire un don sécurisé</span>
-            </a>
+            <a href="https://www.buymeacoffee.com/actuetmedia" 
+   target="_blank" 
+   class="donation-link primary"
+   onclick="trackDonationClick()">
+    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" 
+         style="height:20px;vertical-align:middle;">
+    <span>Offrir un café</span>
+</a>
             
             <button class="donation-later" onclick="window.donationManager.hidePopup(true)">
                 Plus tard
@@ -804,77 +803,12 @@ Actu & Média
         
         <!-- Footer avec transparence -->
         <div class="donation-footer">
-            <small>🔒 Paiement 100% sécurisé via PayPal</small>
-            <small>📊 Transparence totale sur l'utilisation des dons</small>
-        </div>
+    <small>🔒 Paiement 100% sécurisé via Buy Me a Coffee</small>
+    <small>📊 Transparence totale sur l'utilisation des dons</small>
+</div>
     </div>
 </div>
 
-<script>
-// Gestion des montants suggérés
-function handleAmountClick(amount) {
-    // Retirer la classe active de tous les boutons
-    document.querySelectorAll('.amount-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    
-    // Ajouter la classe active au bouton cliqué
-    event.target.classList.add('active');
-    
-    // Ici vous pourriez potentiellement pré-remplir le montant sur PayPal
-    // ou stocker la préférence
-    console.log('Montant sélectionné:', amount + '€');
-    
-    // Vibration tactile si disponible
-    if (navigator.vibrate) {
-        navigator.vibrate(50);
-    }
-}
-
-// Tracker les clics sur le bouton de don
-function trackDonationClick() {
-    console.log('Clic sur le bouton de don');
-    // Vous pouvez ajouter ici des analytics ou du tracking
-    
-    // Fermer la popup après un délai
-    setTimeout(() => {
-        if (window.donationManager) {
-            window.donationManager.hidePopup(false);
-        }
-    }, 1000);
-}
-
-// Fonction pour mettre à jour la barre de progression
-function updateDonationProgress(collected, goal) {
-    const percentage = (collected / goal) * 100;
-    const progressFill = document.querySelector('.progress-fill');
-    const progressText = document.querySelector('.progress-text');
-    const progressInfo = document.querySelector('.progress-info');
-    
-    if (progressFill) {
-        progressFill.style.width = Math.max(percentage, 2.5) + '%'; // Minimum 2.5% pour la visibilité
-        progressText.textContent = `${collected}€ / ${goal}€`;
-        progressInfo.innerHTML = `Collecté : <strong>${collected}€</strong> (${percentage.toFixed(1)}%)`;
-    }
-}
-
-// Exemple d'utilisation pour mettre à jour les montants
-// updateDonationProgress(5, 200); // 5€ collectés sur 200€
-
-// Animation au chargement de la popup
-document.addEventListener('DOMContentLoaded', function() {
-    const popup = document.querySelector('.donation-popup');
-    if (popup) {
-        // Animer la barre de progression au chargement
-        setTimeout(() => {
-            const progressFill = document.querySelector('.progress-fill');
-            if (progressFill) {
-                progressFill.style.transition = 'width 1.5s cubic-bezier(0.4, 0, 0.2, 1)';
-            }
-        }, 500);
-    }
-});
-</script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <div id="submitModal" class="submit-modal">
         <div class="submit-modal-content">
