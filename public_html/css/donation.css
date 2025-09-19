@@ -656,7 +656,7 @@
 /* Position pour tablette */
 @media (min-width: 769px) and (max-width: 1024px) {
     #donateButton::before {
-        left: 46%;
+        left: 48%;
     }
 }
 
