@@ -1105,11 +1105,11 @@ body.radio-popup-open {
 
 /* === BOUTON DE FERMETURE === */
 .compact-close-btn {
-    position: absolute;
+    /*position: absolute;
     top: -8px;
     right: -8px;
     width: 24px;
-    height: 24px;
+    height: 24px;*/
     border-radius: 50%;
     background: rgba(220, 53, 69, 0.9);
     color: white;
@@ -1298,7 +1298,7 @@ body.radio-popup-open {
 @media (max-width: 480px) {
     .radio-compact-widget {
         left: 40px;
-        bottom: 103px;
+        bottom: 110px;
         max-width: 340px;
     }
     
