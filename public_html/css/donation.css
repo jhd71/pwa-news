@@ -618,7 +618,7 @@
    15. BOUTON CAFÉ AMÉLIORÉ
    ======================================== */
 #donateButton {
-    background: linear-gradient(135deg, #FF6B35, #D2691E) !important;
+    /*background: linear-gradient(135deg, #FF6B35, #D2691E) !important;*/
     border: 2px solid #FFD700 !important;
     box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4) !important;
     position: relative;
@@ -664,7 +664,7 @@
 /* Position pour mobile */
 @media (max-width: 768px) {
     #donateButton::before {
-        left: 43%;
+        left: 41%;
     }
 }
 
