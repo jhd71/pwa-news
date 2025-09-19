@@ -242,6 +242,54 @@
     // Créer une instance globale
     window.donationManager = new DonationManager();
 	
+	// Gestion des montants suggérés
+window.handleAmountClick = function(amount) {
+    // Retirer la classe active de tous les boutons
+    document.querySelectorAll('.amount-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Ajouter la classe active au bouton cliqué
+    event.target.classList.add('active');
+    
+    console.log('Montant sélectionné:', amount + '€');
+    
+    // Vibration tactile si disponible
+    if (navigator.vibrate) {
+        navigator.vibrate(50);
+    }
+};
+
+// Tracker les clics sur le bouton de don
+window.trackDonationClick = function() {
+    console.log('Clic sur le bouton de don');
+    
+    if (window.donationManager) {
+        window.donationManager.trackDonation();
+    }
+    
+    // Fermer la popup après un délai
+    setTimeout(() => {
+        if (window.donationManager) {
+            window.donationManager.hidePopup(false);
+        }
+    }, 1000);
+};
+
+// Fonction pour mettre à jour la barre de progression
+window.updateDonationProgress = function(collected, goal) {
+    const percentage = (collected / goal) * 100;
+    const progressFill = document.querySelector('.progress-fill');
+    const progressText = document.querySelector('.progress-text');
+    const progressInfo = document.querySelector('.progress-info');
+    
+    if (progressFill) {
+        progressFill.style.width = Math.max(percentage, 2.5) + '%';
+        progressText.textContent = `${collected}€ / ${goal}€`;
+        progressInfo.innerHTML = `Collecté : <strong>${collected}€</strong> (${percentage.toFixed(1)}%)`;
+    }
+};
+
     // Ajouter des styles pour l'animation pulse
     const style = document.createElement('style');
     style.textContent = `
