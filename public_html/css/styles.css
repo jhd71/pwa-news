@@ -182,7 +182,7 @@ body {
 }
 
 [data-theme="dark"] .bottom-nav {
-    background: #01041f;
+    background: linear-gradient(to bottom, rgba(26, 35, 126, 0.95), rgba(26, 35, 126, 0.98));
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -240,13 +240,13 @@ body {
 [data-theme="dark"] .weather-show-btn,
 [data-theme="dark"] .quick-links-show-btn,
 [data-theme="dark"] .news-button {
-    background: #0b0f1c;
+    background: linear-gradient(145deg, #1a237e, #283593);
 }
 
 [data-theme="rouge"] .weather-show-btn,
 [data-theme="rouge"] .quick-links-show-btn,
 [data-theme="rouge"] .news-button {
-    background: rgb(148, 0, 0) !important;
+    background: rgb(148, 0, 0);
 }
 
 [data-theme="bleuciel"] .weather-show-btn,
@@ -267,7 +267,7 @@ body {
 [data-theme="dark"] .quick-links-sidebar,
 [data-theme="dark"] .sidebar,
 [data-theme="dark"] .settings-menu {
-    background-color: #040713 !important;
+    background-color: var(--primary-color);
 }
 
 [data-theme="rouge"] .weather-sidebar,
@@ -295,7 +295,7 @@ body {
     left: 0;
     right: 0;
     height: 60px;
-    /*background-color: var(--primary-color);*/
+    background-color: var(--primary-color);
     color: white;
     display: flex;
     align-items: center;
@@ -516,7 +516,7 @@ body {
 }
 
 .nav-item.active {
-    /*background-color: rgba(255, 255, 255, 0.2);*/
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 .nav-item.active::after {

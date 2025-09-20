@@ -535,7 +535,7 @@ input:checked + .toggle-slider:before {
 [data-theme="dark"] .modal-content,
 [data-theme="dark"] .settings-menu,
 [data-theme="dark"] .settings-header {
-  background-color: #040713 !important;
+  background-color: #1a237e !important;
 }
 
 [data-theme="dark"] .modal-header,

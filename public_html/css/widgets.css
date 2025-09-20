@@ -110,7 +110,7 @@
 }
 
 [data-theme="dark"] .weather-day {
-  background: #0b0f1c !important;
+  background: rgba(30, 40, 140, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: white;
 }
@@ -547,7 +547,7 @@
 /* Thème Sombre (dark) */
 [data-theme="dark"] .tool-button,
 [data-theme="dark"] .search-button {
-  background: #0b0f1c !important;
+  background: #1a237e !important;
 }
 
 [data-theme="dark"] .tool-button:hover,
