@@ -1345,7 +1345,7 @@ updateCompactWidget() {
             if (menu.parentNode) {
                 menu.remove();
             }
-        }, 15000);
+        }, 30000);
 
         // Fermer en cliquant ailleurs
         const closeHandler = (e) => {
