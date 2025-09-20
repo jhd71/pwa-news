@@ -63,7 +63,7 @@
 [data-theme="light"] .weather-sidebar h3,
 [data-theme="light"] .weather-sidebar p strong,
 [data-theme="light"] .quick-links-sidebar h3 {
-  color: #7e57c2 !important;
+  color: #ffffff !important;
   border-bottom: 1px solid rgba(126, 87, 194, 0.2);
 }
 
@@ -213,8 +213,8 @@
 /* Styles des boutons de fermeture par thème */
 [data-theme="light"] .weather-toggle,
 [data-theme="light"] .quick-links-toggle {
-  background: rgba(126, 87, 194, 0.2);
-  border: 1px solid rgba(126, 87, 194, 0.3);
+  background: #673AB7;
+  border: 1px solid rgb(172 157 218);
   color: #7e57c2 !important;
 }
 
