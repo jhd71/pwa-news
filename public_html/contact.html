@@ -268,49 +268,11 @@
       line-height: 1.5;
     }
 
-    .social-links {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin-top: 20px;
-    }
-
-    .social-link {
-      width: 50px;
-      height: 50px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #ffffff;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      font-size: 1.2em;
-    }
-
-    .social-link:hover {
-      background: var(--primary-color);
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(var(--primary-color), 0.4);
-    }
-
-    .contact-link.paypal:hover {
-      background: rgba(0, 48, 135, 0.3);
-      border-color: rgba(0, 48, 135, 0.5);
-      box-shadow: 0 5px 15px rgba(0, 48, 135, 0.3);
-    }
-
-    .social-link.facebook:hover {
-      background: rgba(59, 89, 152, 0.5);
-      box-shadow: 0 5px 15px rgba(59, 89, 152, 0.3);
-    }
-
-    .social-link.instagram:hover {
-      background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
-      box-shadow: 0 5px 15px rgba(225, 48, 108, 0.3);
-    }
+    .contact-link.coffee:hover {
+	background: rgba(255, 221, 87, 0.3);
+	border-color: rgba(255, 221, 87, 0.5);
+	box-shadow: 0 5px 15px rgba(255, 221, 87, 0.3);
+	}
 
     .footer-note {
       text-align: center;
@@ -482,47 +444,43 @@
         </div>
       </div>
 
-      <!-- Réseaux sociaux -->
-      <div class="contact-method">
-        <h3>
-          <div class="icon">
-            <i class="fas fa-share-alt"></i>
-          </div>
-          Suivez-nous
-        </h3>
-        <p class="contact-description">
-          Restez connectés pour ne rien manquer de l'actualité locale
-        </p>
-        <div class="social-links">
-          <a href="https://www.facebook.com/actuetmedia" class="social-link facebook" title="Facebook" target="_blank" rel="noopener noreferrer">
-            <i class="fab fa-facebook-f"></i>
-          </a>
-          <a href="https://www.instagram.com/actu_et_media/" class="social-link instagram" title="Instagram" target="_blank" rel="noopener noreferrer">
-            <i class="fab fa-instagram"></i>
-          </a>
-        </div>
-      </div>
+      <!-- Partager le site -->
+		<div class="contact-method">
+		<h3>
+			<div class="icon">
+			<i class="fas fa-share-alt"></i>
+			</div>
+			Partagez Actu & Média
+		</h3>
+			<p class="contact-description">
+			Aidez-nous à faire connaître l'actualité locale en partageant le site avec vos proches
+		</p>
+			<a href="#" onclick="navigator.share ? navigator.share({title:'Actu & Média', url:'https://actuetmedia.fr'}) : navigator.clipboard.writeText('https://actuetmedia.fr')" class="contact-link">
+			<i class="fas fa-share"></i>
+			<span>Partager le site</span>
+		</a>
+	</div>
 
       <!-- Soutenir le projet -->
-      <div class="contact-method">
-        <h3>
-          <div class="icon">
-            <i class="fas fa-heart"></i>
-          </div>
-          Soutenir le projet
-        </h3>
-        <p class="contact-description">
-          Actu & Média est 100% gratuit et indépendant. Votre soutien nous aide à continuer !
-        </p>
-        <a href="https://www.paypal.com/donate/?hosted_button_id=FKJPST5LWBUGG" class="contact-link paypal" target="_blank" rel="noopener noreferrer">
-          <i class="fab fa-paypal"></i>
-          <span>Faire un don via PayPal</span>
-        </a>
-        <div class="response-time">
-          <i class="fas fa-gift"></i>
-          <span>Chaque don, même petit, fait la différence ❤️</span>
-        </div>
-      </div>
+		<div class="contact-method">
+		<h3>
+			<div class="icon">
+				<i class="fas fa-coffee"></i>
+			</div>
+			Offrir un café
+			</h3>
+			<p class="contact-description">
+			Actu & Média est 100% gratuit et indépendant. Offrez-nous un café pour nous soutenir !
+			</p>
+			<a href="https://www.buymeacoffee.com/actuetmedia" class="contact-link coffee" target="_blank" rel="noopener noreferrer">
+				<i class="fas fa-coffee"></i>
+				<span>Offrir un café via Buy Me a Coffee</span>
+				</a>
+				<div class="response-time">
+					<i class="fas fa-heart"></i>
+					<span>Chaque café, même petit, fait la différence ☕</span>
+					</div>
+				</div>
 
       <!-- Informations supplémentaires -->
       <div class="contact-method">
