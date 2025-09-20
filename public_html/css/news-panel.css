@@ -147,7 +147,7 @@
 [data-theme="dark"] .news-button,
 [data-theme="rouge"] .news-button,
 [data-theme="light"] .news-button {
-    background-color: rgb(148, 0, 0) !important;
+    background-color: #0b0f1c !important;
 }
 
 /* ===================================
@@ -970,7 +970,7 @@
 
 /* Panel - Thème Dark */
 [data-theme="dark"] .news-panel {
-    background: linear-gradient(145deg, #1a237e, #283593);
+    background: #0b0f1c !important;
 }
 
 /* Panel - Thème Light */
