@@ -246,7 +246,7 @@ body {
 [data-theme="rouge"] .weather-show-btn,
 [data-theme="rouge"] .quick-links-show-btn,
 [data-theme="rouge"] .news-button {
-    background: rgb(148, 0, 0);
+    background: rgb(148, 0, 0) !important;
 }
 
 [data-theme="bleuciel"] .weather-show-btn,
