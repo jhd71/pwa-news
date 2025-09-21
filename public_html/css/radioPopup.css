@@ -1546,9 +1546,9 @@ body.radio-popup-open {
 
 @media (max-width: 480px) {
     .radio-compact-widget {
-        left: 40px;
+        left: 10px;
         bottom: 110px;
-        max-width: 340px;
+        max-width: 420px;
     }
     
     .compact-logo {
