@@ -121,19 +121,42 @@ class RadioPopupWidget {
     }
 
     // === INITIALISATION ===
-    init() {
-        // Créer immédiatement si le DOM est prêt
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                this.createRadioTile();
-                this.createPopup();
-            });
-        } else {
-            // Le DOM est déjà chargé
+init() {
+    // Créer immédiatement si le DOM est prêt
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
             this.createRadioTile();
             this.createPopup();
-        }
+            this.setupNetworkDetection();
+        });
+    } else {
+        // Le DOM est déjà chargé
+        this.createRadioTile();
+        this.createPopup();
+        this.setupNetworkDetection();
     }
+}
+
+// === DÉTECTION RÉSEAU ===
+setupNetworkDetection() {
+    // Détection perte/retour de connexion réseau
+    window.addEventListener('online', () => {
+        if (this.isPlaying && this.audio) {
+            console.log('Connexion réseau rétablie');
+            // Vérifier si la lecture fonctionne toujours
+            setTimeout(() => {
+                if (this.audio && this.audio.paused && this.isPlaying) {
+                    console.log('Reconnexion après perte réseau...');
+                    // Sauvegarder la station actuelle
+                    const currentStationIndex = this.stations.findIndex(s => s.name === this.currentStation.name);
+                    if (currentStationIndex >= 0) {
+                        this.stopCurrentAndPlayNew(currentStationIndex);
+                    }
+                }
+            }, 1000);
+        }
+    });
+}
 
     // === CRÉATION DE LA TUILE RADIO ===
     createRadioTile() {
@@ -885,23 +908,26 @@ playRadio() {
         });
     }
 
-    // === MINI-ÉGALISEUR COMPACT ===
-    startCompactEqualizer() {
-        if (this.compactEqualizerInterval) {
-            clearInterval(this.compactEqualizerInterval);
-            this.compactEqualizerInterval = null;
-        }
-        
+		// === MINI-ÉGALISEUR COMPACT ===
+	startCompactEqualizer() {
+    if (this.compactEqualizerInterval) {
+        clearInterval(this.compactEqualizerInterval);
+        this.compactEqualizerInterval = null;
+    }
+    
+		// Attendre que le widget soit créé
+    setTimeout(() => {
         const bars = document.querySelectorAll('.mini-bar');
         if (bars.length === 0) {
-            console.log('Aucune barre de mini-égaliseur trouvée');
+            // Réessayer silencieusement plus tard
+            setTimeout(() => this.startCompactEqualizer(), 500);
             return;
         }
         
         this.compactEqualizerInterval = setInterval(() => {
             if (this.isPlaying) {
                 bars.forEach(bar => {
-                    const height = Math.random() * 70 + 30; // Entre 30% et 100%
+                    const height = Math.random() * 70 + 30;
                     bar.style.height = height + '%';
                 });
             } else {
@@ -910,7 +936,8 @@ playRadio() {
                 });
             }
         }, 300);
-    }
+    }, 100);
+}
 
     stopCompactEqualizer() {
         if (this.compactEqualizerInterval) {
