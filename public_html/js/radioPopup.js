@@ -598,27 +598,95 @@ closePopup() {
     }
 
     // === LECTURE RADIO ===
-    playRadio() {
-        if (!this.currentStation) return;
+playRadio() {
+    if (!this.currentStation) return;
 
+    // Variables pour la gestion de la reconnexion
+    let retryCount = 0;
+    const maxRetries = 10;
+    let retryTimeout = null;
+    let isIntentionallyStopped = false;
+
+    const attemptConnection = () => {
         try {
-            if (!this.audio) {
-                this.audio = new Audio(this.currentStation.url);
-                this.audio.volume = this.volume;
-                this.audio.crossOrigin = 'anonymous';
+            // Nettoyer l'audio précédent
+            if (this.audio) {
+                this.audio.pause();
+                this.audio.src = '';
+                this.audio.load();
+                this.audio = null;
+            }
+
+            this.audio = new Audio(this.currentStation.url);
+            this.audio.volume = this.volume;
+            this.audio.crossOrigin = 'anonymous';
+            
+            // === GESTIONNAIRES D'ÉVÉNEMENTS AUDIO ===
+            this.audio.addEventListener('loadstart', () => {
+                document.getElementById('currentStationStatus').textContent = 'Connexion en cours...';
+                this.updateStatusStyle('Connexion en cours...');
+            });
+            
+            this.audio.addEventListener('canplay', () => {
+                document.getElementById('currentStationStatus').textContent = 'En direct';
+                this.updateStatusStyle('En direct');
+                retryCount = 0; // Réinitialiser le compteur après succès
+            });
+
+            // Gestionnaire pour reprise après pause
+            this.audio.addEventListener('pause', () => {
+                if (this.isPlaying && !isIntentionallyStopped) {
+                    console.log('Pause détectée, tentative de reprise...');
+                    setTimeout(() => {
+                        if (this.isPlaying && !isIntentionallyStopped && this.audio) {
+                            this.audio.play().catch(e => {
+                                console.log('Reprise échouée:', e);
+                            });
+                        }
+                    }, 1000);
+                }
+            });
+
+            // Gestionnaire pour les interruptions de réseau
+            this.audio.addEventListener('stalled', () => {
+                console.log('Flux audio bloqué, reconnexion...');
+                if (this.isPlaying && !isIntentionallyStopped) {
+                    retryTimeout = setTimeout(() => {
+                        attemptConnection();
+                    }, 2000);
+                }
+            });
+
+            this.audio.addEventListener('waiting', () => {
+                document.getElementById('currentStationStatus').textContent = 'Mise en mémoire tampon...';
+                this.updateStatusStyle('Connexion...');
+            });
+            
+            this.audio.addEventListener('error', (e) => {
+                console.error('Erreur audio:', e);
                 
-                // === GESTIONNAIRES D'ÉVÉNEMENTS AUDIO ===
-                this.audio.addEventListener('loadstart', () => {
-                    document.getElementById('currentStationStatus').textContent = 'Connexion en cours...';
-                    this.updateStatusStyle('Connexion en cours...');
-                });
+                if (!this.isPlaying || isIntentionallyStopped) {
+                    document.getElementById('currentStationStatus').textContent = 'Arrêté';
+                    this.updateStatusStyle('Arrêté');
+                    return;
+                }
+
+                retryCount++;
                 
-                this.audio.addEventListener('canplay', () => {
-                    document.getElementById('currentStationStatus').textContent = 'En direct';
-                    this.updateStatusStyle('En direct');
-                });
-                
-                this.audio.addEventListener('error', (e) => {
+                if (retryCount <= maxRetries) {
+                    document.getElementById('currentStationStatus').textContent = `Reconnexion (${retryCount}/${maxRetries})...`;
+                    this.updateStatusStyle('Connexion...');
+                    
+                    // Délai progressif entre les tentatives
+                    const delay = Math.min(1000 * Math.pow(1.5, retryCount - 1), 10000);
+                    
+                    retryTimeout = setTimeout(() => {
+                        if (this.isPlaying && !isIntentionallyStopped) {
+                            console.log(`Tentative de reconnexion ${retryCount}...`);
+                            attemptConnection();
+                        }
+                    }, delay);
+                } else {
                     document.getElementById('currentStationStatus').textContent = 'Erreur de lecture';
                     this.updateStatusStyle('Erreur de lecture');
                     this.isPlaying = false;
@@ -631,49 +699,103 @@ closePopup() {
                         activeCard.classList.remove('playing');
                         activeCard.classList.add('paused');
                     }
-                    console.error('Erreur audio:', e);
-                });
-            }
+                }
+            });
+
+            // Surveillance périodique de l'état de lecture
+            const watchdog = setInterval(() => {
+                if (!this.isPlaying || isIntentionallyStopped || !this.audio) {
+                    clearInterval(watchdog);
+                    return;
+                }
+
+                // Vérifier si la lecture est vraiment active
+                if (this.audio.paused && this.isPlaying) {
+                    console.log('Lecture interrompue détectée, relance...');
+                    this.audio.play().catch(() => {
+                        // Si la reprise échoue, reconnecter
+                        if (this.isPlaying && !isIntentionallyStopped) {
+                            attemptConnection();
+                        }
+                    });
+                }
+            }, 5000); // Vérifier toutes les 5 secondes
+
+            // Stocker la référence pour pouvoir l'arrêter
+            this.watchdogInterval = watchdog;
             
             // === DÉMARRER LA LECTURE ===
-            this.audio.play();
-            this.isPlaying = true;
-            
-            // Mettre à jour l'indicateur de la tuile
-            this.updateTileIndicator();
-            
-            // Démarrer les égaliseurs
-            this.startEqualizer();
-            this.startCompactEqualizer();
-            
-            // Créer le widget compact s'il n'existe pas
-            this.createCompactWidget();
-            this.updateCompactWidget();
-            
-            // Mettre à jour le statut
-            document.getElementById('currentStationStatus').textContent = 'En direct';
-            this.updateStatusStyle('En direct');
-            
-            // Mettre à jour l'overlay de la station active avec icône stop
-            const activeCard = document.querySelector('.radio-station-card.active');
-            if (activeCard) {
-                const overlayIcon = activeCard.querySelector('.play-overlay .material-icons');
-                overlayIcon.textContent = 'stop';
-                activeCard.classList.add('playing');
-                activeCard.classList.remove('paused');
-            }
+            this.audio.play().then(() => {
+                this.isPlaying = true;
+                
+                // Mettre à jour l'indicateur de la tuile
+                this.updateTileIndicator();
+                
+                // Démarrer les égaliseurs
+                this.startEqualizer();
+                this.startCompactEqualizer();
+                
+                // Créer le widget compact s'il n'existe pas
+                this.createCompactWidget();
+                this.updateCompactWidget();
+                
+                // Mettre à jour le statut
+                document.getElementById('currentStationStatus').textContent = 'En direct';
+                this.updateStatusStyle('En direct');
+                
+                // Mettre à jour l'overlay de la station active avec icône stop
+                const activeCard = document.querySelector('.radio-station-card.active');
+                if (activeCard) {
+                    const overlayIcon = activeCard.querySelector('.play-overlay .material-icons');
+                    overlayIcon.textContent = 'stop';
+                    activeCard.classList.add('playing');
+                    activeCard.classList.remove('paused');
+                }
+            }).catch((error) => {
+                console.error('Erreur démarrage lecture:', error);
+                if (retryCount <= maxRetries && this.isPlaying && !isIntentionallyStopped) {
+                    retryTimeout = setTimeout(() => {
+                        attemptConnection();
+                    }, 2000);
+                }
+            });
             
         } catch (error) {
-            console.error('Erreur lecture radio:', error);
+            console.error('Erreur création audio:', error);
             document.getElementById('currentStationStatus').textContent = 'Erreur';
             this.updateStatusStyle('Erreur');
             this.isPlaying = false;
             this.updateTileIndicator();
         }
-    }
+    };
+
+    // Fonction pour arrêter proprement les tentatives
+    this.stopRetrying = () => {
+        isIntentionallyStopped = true;
+        if (retryTimeout) {
+            clearTimeout(retryTimeout);
+            retryTimeout = null;
+        }
+        if (this.watchdogInterval) {
+            clearInterval(this.watchdogInterval);
+            this.watchdogInterval = null;
+        }
+    };
+
+    // Démarrer la première tentative
+    attemptConnection();
+}
 
     // === ARRÊT COMPLET DE LA RADIO ===
 	stopRadio() {
+    if (this.stopRetrying) {
+        this.stopRetrying();
+    }
+    if (this.watchdogInterval) {
+        clearInterval(this.watchdogInterval);
+        this.watchdogInterval = null;
+    }
+    
     if (this.audio) {
         this.audio.pause();
         this.audio.currentTime = 0;
