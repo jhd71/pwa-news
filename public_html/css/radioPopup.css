@@ -870,6 +870,15 @@ body.radio-popup-open {
         rgba(255, 107, 107, 0.2) 100%);
 }
 
+/* Notes de musique plus visibles en mode sombre */
+[data-theme="dark"] .equalizer-container::before,
+[data-theme="dark"] .equalizer-container::after {
+    color: #FFD700;  /* Doré brillant */
+    opacity: 0.9;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+    font-weight: bold;
+}
+
 [data-theme="dark"] .equalizer-bar {
     background: linear-gradient(to top, 
         #2196F3 0%, 
@@ -884,6 +893,87 @@ body.radio-popup-open {
         #4FC3F7 60%,
         #81C784 100%);
     box-shadow: 0 -1px 3px rgba(33, 150, 243, 0.6);
+}
+
+/* Thème Rouge (défaut) */
+[data-theme="rouge"] .equalizer-container::before,
+[data-theme="rouge"] .equalizer-container::after {
+    color: #940000;
+    opacity: 0.7;
+    text-shadow: 0 0 3px rgba(148, 0, 0, 0.3);
+}
+
+/* Thème Bleu Ciel */
+[data-theme="bleuciel"] .equalizer-container::before,
+[data-theme="bleuciel"] .equalizer-container::after {
+    color: #0288D1;  /* Bleu foncé */
+    opacity: 0.8;
+    text-shadow: 0 0 4px rgba(2, 136, 209, 0.4);
+    font-weight: bold;
+}
+
+/* Barres égaliseur bleu ciel */
+[data-theme="bleuciel"] .equalizer-bar {
+    background: linear-gradient(to top, 
+        #0288D1 0%, 
+        #4FC3F7 50%,
+        #81D4FA 100%);
+    box-shadow: 0 -2px 10px rgba(79, 195, 247, 0.4);
+}
+
+[data-theme="bleuciel"] .mini-bar {
+    background: linear-gradient(to top, 
+        #0288D1 0%, 
+        #29B6F6 60%,
+        #4FC3F7 100%);
+}
+
+/* Thème Violet (light) */
+[data-theme="light"] .equalizer-container::before,
+[data-theme="light"] .equalizer-container::after {
+    color: #7B1FA2;  /* Violet foncé */
+    opacity: 0.8;
+    text-shadow: 0 0 4px rgba(123, 31, 162, 0.3);
+    font-weight: bold;
+}
+
+/* Barres égaliseur violet */
+[data-theme="light"] .equalizer-bar {
+    background: linear-gradient(to top, 
+        #6f42c1 0%, 
+        #AB47BC 50%,
+        #CE93D8 100%);
+    box-shadow: 0 -2px 10px rgba(171, 71, 188, 0.4);
+}
+
+[data-theme="light"] .mini-bar {
+    background: linear-gradient(to top, 
+        #6f42c1 0%, 
+        #9C27B0 60%,
+        #BA68C8 100%);
+}
+
+/* === ÉGALISEUR COMPACT PAR THÈME === */
+
+/* Rouge */
+[data-theme="rouge"] .compact-equalizer {
+    background: linear-gradient(90deg, 
+        rgba(148, 0, 0, 0.1) 0%, 
+        rgba(148, 0, 0, 0.2) 100%);
+}
+
+/* Bleu ciel */
+[data-theme="bleuciel"] .compact-equalizer {
+    background: linear-gradient(90deg, 
+        rgba(23, 162, 184, 0.1) 0%, 
+        rgba(23, 162, 184, 0.2) 100%);
+}
+
+/* Violet */
+[data-theme="light"] .compact-equalizer {
+    background: linear-gradient(90deg, 
+        rgba(111, 66, 193, 0.1) 0%, 
+        rgba(111, 66, 193, 0.2) 100%);
 }
 
 /* ===================================================================== */
