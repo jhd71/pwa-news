@@ -1,0 +1,151 @@
+/* ==========================================================================
+   COULEURS DES TUILES VARIÉES PAR THÈME - CODE COMPLET
+   ========================================================================== */
+
+/* THÈME ROUGE - Palette chaleureuse (positions 1-30) */
+[data-theme="rouge"] .tile:nth-child(30n + 1) { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+[data-theme="rouge"] .tile:nth-child(30n + 2) { background: linear-gradient(135deg, #f59e0b, #d97706); }
+[data-theme="rouge"] .tile:nth-child(30n + 3) { background: linear-gradient(135deg, #ef4444, #dc2626); }
+[data-theme="rouge"] .tile:nth-child(30n + 4) { background: linear-gradient(135deg, #f97316, #ea580c); }
+[data-theme="rouge"] .tile:nth-child(30n + 5) { background: linear-gradient(135deg, #eab308, #ca8a04); }
+[data-theme="rouge"] .tile:nth-child(30n + 6) { background: linear-gradient(135deg, #ec4899, #db2777); }
+[data-theme="rouge"] .tile:nth-child(30n + 7) { background: linear-gradient(135deg, #f87171, #ef4444); }
+[data-theme="rouge"] .tile:nth-child(30n + 8) { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+[data-theme="rouge"] .tile:nth-child(30n + 9) { background: linear-gradient(135deg, #fb7185, #f43f5e); }
+[data-theme="rouge"] .tile:nth-child(30n + 10) { background: linear-gradient(135deg, #fb923c, #f97316); }
+[data-theme="rouge"] .tile:nth-child(30n + 11) { background: linear-gradient(135deg, #be123c, #991b1b); }
+[data-theme="rouge"] .tile:nth-child(30n + 12) { background: linear-gradient(135deg, #ea580c, #c2410c); }
+[data-theme="rouge"] .tile:nth-child(30n + 13) { background: linear-gradient(135deg, #fca5a5, #f87171); }
+[data-theme="rouge"] .tile:nth-child(30n + 14) { background: linear-gradient(135deg, #fdba74, #fb923c); }
+[data-theme="rouge"] .tile:nth-child(30n + 15) { background: linear-gradient(135deg, #fcd34d, #fbbf24); }
+[data-theme="rouge"] .tile:nth-child(30n + 16) { background: linear-gradient(135deg, #f9a8d4, #f472b6); }
+[data-theme="rouge"] .tile:nth-child(30n + 17) { background: linear-gradient(135deg, #fee2e2, #fca5a5); }
+[data-theme="rouge"] .tile:nth-child(30n + 18) { background: linear-gradient(135deg, #fed7aa, #fdba74); }
+[data-theme="rouge"] .tile:nth-child(30n + 19) { background: linear-gradient(135deg, #fde68a, #fcd34d); }
+[data-theme="rouge"] .tile:nth-child(30n + 20) { background: linear-gradient(135deg, #fbcfe8, #f9a8d4); }
+[data-theme="rouge"] .tile:nth-child(30n + 21) { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+[data-theme="rouge"] .tile:nth-child(30n + 22) { background: linear-gradient(135deg, #f59e0b, #d97706); }
+[data-theme="rouge"] .tile:nth-child(30n + 23) { background: linear-gradient(135deg, #ef4444, #dc2626); }
+[data-theme="rouge"] .tile:nth-child(30n + 24) { background: linear-gradient(135deg, #f97316, #ea580c); }
+[data-theme="rouge"] .tile:nth-child(30n + 25) { background: linear-gradient(135deg, #eab308, #ca8a04); }
+[data-theme="rouge"] .tile:nth-child(30n + 26) { background: linear-gradient(135deg, #ec4899, #db2777); }
+[data-theme="rouge"] .tile:nth-child(30n + 27) { background: linear-gradient(135deg, #f87171, #ef4444); }
+[data-theme="rouge"] .tile:nth-child(30n + 28) { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+[data-theme="rouge"] .tile:nth-child(30n + 29) { background: linear-gradient(135deg, #fb7185, #f43f5e); }
+[data-theme="rouge"] .tile:nth-child(30n + 0) { background: linear-gradient(135deg, #fb923c, #f97316); }
+
+/* THÈME SOMBRE - Palette sombre avec accents colorés (positions 1-30) */
+[data-theme="dark"] .tile:nth-child(30n + 1) { background: linear-gradient(135deg, #4f46e5, #3730a3); }
+[data-theme="dark"] .tile:nth-child(30n + 2) { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+[data-theme="dark"] .tile:nth-child(30n + 3) { background: linear-gradient(135deg, #10b981, #059669); }
+[data-theme="dark"] .tile:nth-child(30n + 4) { background: linear-gradient(135deg, #f59e0b, #d97706); }
+[data-theme="dark"] .tile:nth-child(30n + 5) { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+[data-theme="dark"] .tile:nth-child(30n + 6) { background: linear-gradient(135deg, #ec4899, #db2777); }
+[data-theme="dark"] .tile:nth-child(30n + 7) { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+[data-theme="dark"] .tile:nth-child(30n + 8) { background: linear-gradient(135deg, #14b8a6, #0d9488); }
+[data-theme="dark"] .tile:nth-child(30n + 9) { background: linear-gradient(135deg, #f97316, #ea580c); }
+[data-theme="dark"] .tile:nth-child(30n + 10) { background: linear-gradient(135deg, #a855f7, #9333ea); }
+[data-theme="dark"] .tile:nth-child(30n + 11) { background: linear-gradient(135deg, #ef4444, #dc2626); }
+[data-theme="dark"] .tile:nth-child(30n + 12) { background: linear-gradient(135deg, #22d3ee, #06b6d4); }
+[data-theme="dark"] .tile:nth-child(30n + 13) { background: linear-gradient(135deg, #34d399, #10b981); }
+[data-theme="dark"] .tile:nth-child(30n + 14) { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+[data-theme="dark"] .tile:nth-child(30n + 15) { background: linear-gradient(135deg, #c084fc, #8b5cf6); }
+[data-theme="dark"] .tile:nth-child(30n + 16) { background: linear-gradient(135deg, #f472b6, #ec4899); }
+[data-theme="dark"] .tile:nth-child(30n + 17) { background: linear-gradient(135deg, #818cf8, #6366f1); }
+[data-theme="dark"] .tile:nth-child(30n + 18) { background: linear-gradient(135deg, #2dd4bf, #14b8a6); }
+[data-theme="dark"] .tile:nth-child(30n + 19) { background: linear-gradient(135deg, #fb923c, #f97316); }
+[data-theme="dark"] .tile:nth-child(30n + 20) { background: linear-gradient(135deg, #d946ef, #a855f7); }
+[data-theme="dark"] .tile:nth-child(30n + 21) { background: linear-gradient(135deg, #4f46e5, #3730a3); }
+[data-theme="dark"] .tile:nth-child(30n + 22) { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+[data-theme="dark"] .tile:nth-child(30n + 23) { background: linear-gradient(135deg, #10b981, #059669); }
+[data-theme="dark"] .tile:nth-child(30n + 24) { background: linear-gradient(135deg, #f59e0b, #d97706); }
+[data-theme="dark"] .tile:nth-child(30n + 25) { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+[data-theme="dark"] .tile:nth-child(30n + 26) { background: linear-gradient(135deg, #ec4899, #db2777); }
+[data-theme="dark"] .tile:nth-child(30n + 27) { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+[data-theme="dark"] .tile:nth-child(30n + 28) { background: linear-gradient(135deg, #14b8a6, #0d9488); }
+[data-theme="dark"] .tile:nth-child(30n + 29) { background: linear-gradient(135deg, #f97316, #ea580c); }
+[data-theme="dark"] .tile:nth-child(30n + 0) { background: linear-gradient(135deg, #a855f7, #9333ea); }
+
+/* THÈME BLEU CIEL - Palette fraîche et naturelle (positions 1-30) */
+[data-theme="bleuciel"] .tile:nth-child(30n + 1) { background: linear-gradient(135deg, #0ea5e9, #0284c7); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 2) { background: linear-gradient(135deg, #10b981, #059669); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 3) { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 4) { background: linear-gradient(135deg, #14b8a6, #0d9488); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 5) { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 6) { background: linear-gradient(135deg, #22c55e, #16a34a); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 7) { background: linear-gradient(135deg, #38bdf8, #0ea5e9); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 8) { background: linear-gradient(135deg, #34d399, #10b981); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 9) { background: linear-gradient(135deg, #60a5fa, #3b82f6); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 10) { background: linear-gradient(135deg, #2dd4bf, #14b8a6); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 11) { background: linear-gradient(135deg, #0369a1, #075985); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 12) { background: linear-gradient(135deg, #047857, #065f46); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 13) { background: linear-gradient(135deg, #0891b2, #0e7490); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 14) { background: linear-gradient(135deg, #0f766e, #134e4a); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 15) { background: linear-gradient(135deg, #1d4ed8, #1e40af); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 16) { background: linear-gradient(135deg, #15803d, #166534); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 17) { background: linear-gradient(135deg, #7dd3fc, #38bdf8); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 18) { background: linear-gradient(135deg, #6ade87, #34d399); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 19) { background: linear-gradient(135deg, #93c5fd, #60a5fa); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 20) { background: linear-gradient(135deg, #5eead4, #2dd4bf); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 21) { background: linear-gradient(135deg, #0ea5e9, #0284c7); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 22) { background: linear-gradient(135deg, #10b981, #059669); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 23) { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 24) { background: linear-gradient(135deg, #14b8a6, #0d9488); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 25) { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 26) { background: linear-gradient(135deg, #22c55e, #16a34a); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 27) { background: linear-gradient(135deg, #38bdf8, #0ea5e9); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 28) { background: linear-gradient(135deg, #34d399, #10b981); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 29) { background: linear-gradient(135deg, #60a5fa, #3b82f6); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 0) { background: linear-gradient(135deg, #2dd4bf, #14b8a6); }
+
+/* THÈME VIOLET - Palette mystique et créative (positions 1-30) */
+[data-theme="light"] .tile:nth-child(30n + 1) { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
+[data-theme="light"] .tile:nth-child(30n + 2) { background: linear-gradient(135deg, #ec4899, #db2777); }
+[data-theme="light"] .tile:nth-child(30n + 3) { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+[data-theme="light"] .tile:nth-child(30n + 4) { background: linear-gradient(135deg, #f472b6, #ec4899); }
+[data-theme="light"] .tile:nth-child(30n + 5) { background: linear-gradient(135deg, #a855f7, #9333ea); }
+[data-theme="light"] .tile:nth-child(30n + 6) { background: linear-gradient(135deg, #f97316, #ea580c); }
+[data-theme="light"] .tile:nth-child(30n + 7) { background: linear-gradient(135deg, #c084fc, #a855f7); }
+[data-theme="light"] .tile:nth-child(30n + 8) { background: linear-gradient(135deg, #fb7185, #f43f5e); }
+[data-theme="light"] .tile:nth-child(30n + 9) { background: linear-gradient(135deg, #d946ef, #c026d3); }
+[data-theme="light"] .tile:nth-child(30n + 10) { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+[data-theme="light"] .tile:nth-child(30n + 11) { background: linear-gradient(135deg, #5b21b6, #4c1d95); }
+[data-theme="light"] .tile:nth-child(30n + 12) { background: linear-gradient(135deg, #be185d, #9d174d); }
+[data-theme="light"] .tile:nth-child(30n + 13) { background: linear-gradient(135deg, #6d28d9, #5b21b6); }
+[data-theme="light"] .tile:nth-child(30n + 14) { background: linear-gradient(135deg, #db2777, #be185d); }
+[data-theme="light"] .tile:nth-child(30n + 15) { background: linear-gradient(135deg, #9333ea, #7e22ce); }
+[data-theme="light"] .tile:nth-child(30n + 16) { background: linear-gradient(135deg, #ea580c, #c2410c); }
+[data-theme="light"] .tile:nth-child(30n + 17) { background: linear-gradient(135deg, #ddd6fe, #c084fc); }
+[data-theme="light"] .tile:nth-child(30n + 18) { background: linear-gradient(135deg, #fbb6ce, #fb7185); }
+[data-theme="light"] .tile:nth-child(30n + 19) { background: linear-gradient(135deg, #f3e8ff, #d946ef); }
+[data-theme="light"] .tile:nth-child(30n + 20) { background: linear-gradient(135deg, #fef3c7, #fbbf24); }
+[data-theme="light"] .tile:nth-child(30n + 21) { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
+[data-theme="light"] .tile:nth-child(30n + 22) { background: linear-gradient(135deg, #ec4899, #db2777); }
+[data-theme="light"] .tile:nth-child(30n + 23) { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+[data-theme="light"] .tile:nth-child(30n + 24) { background: linear-gradient(135deg, #f472b6, #ec4899); }
+[data-theme="light"] .tile:nth-child(30n + 25) { background: linear-gradient(135deg, #a855f7, #9333ea); }
+[data-theme="light"] .tile:nth-child(30n + 26) { background: linear-gradient(135deg, #f97316, #ea580c); }
+[data-theme="light"] .tile:nth-child(30n + 27) { background: linear-gradient(135deg, #c084fc, #a855f7); }
+[data-theme="light"] .tile:nth-child(30n + 28) { background: linear-gradient(135deg, #fb7185, #f43f5e); }
+[data-theme="light"] .tile:nth-child(30n + 29) { background: linear-gradient(135deg, #d946ef, #c026d3); }
+[data-theme="light"] .tile:nth-child(30n + 0) { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+
+/* Ombres renforcées pour couleurs claires dans tous les thèmes */
+[data-theme="rouge"] .tile:nth-child(30n + 17) .tile-title,
+[data-theme="rouge"] .tile:nth-child(30n + 18) .tile-title,
+[data-theme="rouge"] .tile:nth-child(30n + 19) .tile-title,
+[data-theme="rouge"] .tile:nth-child(30n + 20) .tile-title,
+[data-theme="bleuciel"] .tile:nth-child(30n + 17) .tile-title,
+[data-theme="bleuciel"] .tile:nth-child(30n + 18) .tile-title,
+[data-theme="bleuciel"] .tile:nth-child(30n + 19) .tile-title,
+[data-theme="bleuciel"] .tile:nth-child(30n + 20) .tile-title,
+[data-theme="light"] .tile:nth-child(30n + 17) .tile-title,
+[data-theme="light"] .tile:nth-child(30n + 18) .tile-title,
+[data-theme="light"] .tile:nth-child(30n + 19) .tile-title,
+[data-theme="light"] .tile:nth-child(30n + 20) .tile-title {
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 8px rgba(0, 0, 0, 0.6),
+        1px 1px 2px rgba(0, 0, 0, 1);
+    font-weight: 700;
+}
