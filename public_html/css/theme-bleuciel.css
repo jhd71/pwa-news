@@ -104,7 +104,7 @@
 
 /* App header */
 [data-theme="bleuciel"] .app-header {
-    background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
+    background: #55a4e4;
 }
 
 /* ========================================
