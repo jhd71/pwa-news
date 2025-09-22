@@ -38,7 +38,6 @@ const STATIC_RESOURCES = [
 	'/css/radioPopup.css',
 	'/css/notepadApp.css',
 	'/css/todoApp.css',
-	'/css/theme-tiles.css',
 
     // Scripts JavaScript
     '/js/app.js',
@@ -90,7 +89,6 @@ const STATIC_RESOURCES = [
     '/images/favicon-16x16.png',
     '/images/favicon-32x32.png',
     '/apple-touch-icon.png',
-    '/images/Actu&Media.png',
     '/images/fond-rouge.jpg',
     '/images/fond-dark.jpg',
     
