@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v39'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v40'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -81,8 +81,6 @@ const STATIC_RESOURCES = [
     '/favicon.ico',
     
     // Images principales et logos (seulement ceux confirmés)
-    '/images/Actu&Media.png',
-    '/images/ActualitesLocales.png',
     '/images/AM-192-v2.png',
     '/images/AM-512-v2.png',
     '/images/badge-72x72.png',
@@ -107,16 +105,11 @@ const STATIC_RESOURCES = [
     '/images/INFOS-maskable-512.png',
     
     // Icônes spécialisées
-    '/images/Football.png',
     '/images/no-image.png',
     '/images/paypal-icon.png',
     '/images/qrcode.png',
-    '/images/Radio.png',
-    '/images/ReseauxSociaux.png',
     '/images/screenshot-mobile.png',
     '/images/screenshot-wide.png',
-    '/images/SPORTS.png',
-    '/images/TVenDirect.png',
     
 	// Logos des radios
 	'/images/radio-logos/france-info.png',

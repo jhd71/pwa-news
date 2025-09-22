@@ -33,10 +33,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Structure pour stocker les résultats du sondage
     let surveyData = {
-        preference: {},
-        nouvelle_fonctionnalite: {},
-        frequence: {}
-    };
+    utilisation: {},
+    satisfaction: {},
+    evolution: {}
+	};
     
     // Fonction pour obtenir un identifiant d'appareil stable
     function getDeviceId() {
@@ -508,29 +508,31 @@ window.openSurveyModal = openSurveyModal;
         resultHeader.textContent = questionLabel;
         surveyResults.appendChild(resultHeader);
         
-        // Labels pour les valeurs
-        const valueLabels = {
-            // Preference
-            'actualites': 'Actualités locales',
-            'sports': 'Sports',
-            'radio': 'Radio',
-            'tv': 'TV en direct',
-            'meteo': 'Météo',
-            
-            // Nouvelles fonctionnalités
-            'agenda': 'Agenda événements',
-            'petites_annonces': 'Petites annonces',
-            'tribune': 'Tribune libre',
-            'alertes': 'Alertes locales',
-            'carte': 'Carte interactive',
-            
-            // Fréquence
-            'quotidien': 'Tous les jours',
-            'hebdomadaire': 'Plusieurs fois/semaine',
-            'mensuel': 'Quelques fois/mois',
-            'occasionnel': 'Occasionnellement',
-            'premiere': 'Première visite'
-        };
+        // Labels pour les valeurs - SONDAGE 2025
+		const valueLabels = {
+    // Question 1: Utilisation actuelle
+    'actualites': 'Actualités locales',
+    'radio': 'Widget radio/musique',
+    'chat': 'Chat communautaire',
+    'depenses': 'Gestionnaire de dépenses',
+    'minuteur': 'Minuteur/alarmes',
+    'meteo': 'Météo locale',
+    
+    // Question 2: Satisfaction
+    'tres_utile': 'Très utile au quotidien',
+    'utile_occasionnel': 'Utile occasionnellement',
+    'plutot_pratique': 'Plutôt pratique',
+    'peu_interet': 'Peu d\'intérêt',
+    'decouvre': 'Je découvre le site',
+    
+    // Question 3: Évolution souhaitée
+    'exclusives': 'Plus d\'actualités exclusives',
+    'agenda': 'Agenda événements local',
+    'petites_annonces': 'Petites annonces gratuites',
+    'forum': 'Forum/tribune citoyenne',
+    'app_mobile': 'Application mobile dédiée',
+    'partenariats': 'Partenariats commerces locaux'
+		};
         
         // Créer les barres de résultats
         Object.entries(questionData).forEach(([value, count]) => {

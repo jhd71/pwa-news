@@ -77,7 +77,7 @@
     
     <!-- === SCHEMA.ORG / JSON-LD === --> 
 <script type="application/ld+json">
-{
+  {
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "Actu & Média",
@@ -85,7 +85,7 @@
   "url": "https://actuetmedia.fr/",
   "description": "Le média local de référence pour l'actualité de Montceau-les-Mines et la Saône-et-Loire",
   "publisher": {
-    "@type": "WebSite",
+    "@type": "Organization",
     "name": "Actu & Média",
     "logo": {
       "@type": "ImageObject",
@@ -98,12 +98,7 @@
     "@type": "SearchAction",
     "target": "https://actuetmedia.fr/search?q={search_term_string}",
     "query-input": "required name=search_term_string"
-  },
-  "sameAs": [
-    "https://www.facebook.com/actuetmedia",
-    "https://x.com/ActuetMedia",
-    "https://www.instagram.com/actu_et_media/"
-  ]
+  }
 }
 </script>
 
@@ -567,14 +562,14 @@ Actu & Média
 <div class="survey-modal" id="surveyModal">
     <div class="survey-content">
         <div class="survey-header">
-            <h2>Aidez-nous à améliorer Actu&Média</h2>
+            <h2>Sondage 2025 - Votre avis compte !</h2>
             <button class="close-survey" id="closeSurvey"></button>
         </div>
         
         <div id="surveyQuestions">
-            <!-- Question 1 -->
-            <div class="survey-question" data-question="preference">
-                <h3>Quelle rubrique préférez-vous sur Actu&Média ?</h3>
+            <!-- Question 1 : Utilisation actuelle -->
+            <div class="survey-question" data-question="utilisation">
+                <h3>Quelles fonctionnalités d'Actu & Média utilisez-vous le plus ?</h3>
                 <div class="survey-options">
                     <div class="survey-option" data-value="actualites">
                         <div class="survey-option-icon">
@@ -582,42 +577,91 @@ Actu & Média
                         </div>
                         <span>Actualités locales</span>
                     </div>
-                    <div class="survey-option" data-value="sports">
-                        <div class="survey-option-icon">
-                            <span class="material-icons">sports_soccer</span>
-                        </div>
-                        <span>Sports</span>
-                    </div>
                     <div class="survey-option" data-value="radio">
                         <div class="survey-option-icon">
                             <span class="material-icons">radio</span>
                         </div>
-                        <span>Radio</span>
+                        <span>Widget radio/musique</span>
                     </div>
-                    <div class="survey-option" data-value="tv">
+                    <div class="survey-option" data-value="chat">
                         <div class="survey-option-icon">
-                            <span class="material-icons">tv</span>
+                            <span class="material-icons">chat</span>
                         </div>
-                        <span>TV en direct</span>
+                        <span>Chat communautaire</span>
+                    </div>
+                    <div class="survey-option" data-value="depenses">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">euro</span>
+                        </div>
+                        <span>Gestionnaire de dépenses</span>
+                    </div>
+                    <div class="survey-option" data-value="minuteur">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">timer</span>
+                        </div>
+                        <span>Minuteur/alarmes</span>
                     </div>
                     <div class="survey-option" data-value="meteo">
                         <div class="survey-option-icon">
                             <span class="material-icons">cloud</span>
                         </div>
-                        <span>Météo</span>
+                        <span>Météo locale</span>
                     </div>
                 </div>
             </div>
             
-            <!-- Question 2 -->
-            <div class="survey-question" data-question="nouvelle_fonctionnalite">
-                <h3>Quelle nouvelle fonctionnalité souhaiteriez-vous voir sur le site ?</h3>
+            <!-- Question 2 : Satisfaction -->
+            <div class="survey-question" data-question="satisfaction">
+                <h3>Comment évaluez-vous l'utilité d'Actu & Média pour votre quotidien ?</h3>
                 <div class="survey-options">
+                    <div class="survey-option" data-value="tres_utile">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">star</span>
+                        </div>
+                        <span>Très utile au quotidien</span>
+                    </div>
+                    <div class="survey-option" data-value="utile_occasionnel">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">thumb_up</span>
+                        </div>
+                        <span>Utile occasionnellement</span>
+                    </div>
+                    <div class="survey-option" data-value="plutot_pratique">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">check_circle</span>
+                        </div>
+                        <span>Plutôt pratique</span>
+                    </div>
+                    <div class="survey-option" data-value="peu_interet">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">sentiment_neutral</span>
+                        </div>
+                        <span>Peu d'intérêt</span>
+                    </div>
+                    <div class="survey-option" data-value="decouvre">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">visibility</span>
+                        </div>
+                        <span>Je découvre le site</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 3 : Évolution souhaitée -->
+            <div class="survey-question" data-question="evolution">
+                <h3>Quelle amélioration prioriseriez-vous pour 2025 ?</h3>
+                <div class="survey-options">
+                    <div class="survey-option" data-value="exclusives">
+                        <div class="survey-option-icon">
+                            <span class="material-icons">bolt</span>
+                        </div>
+                        <span>Plus d'actualités exclusives</span>
+                    </div>
                     <div class="survey-option" data-value="agenda">
                         <div class="survey-option-icon">
                             <span class="material-icons">event</span>
                         </div>
-                        <span>Agenda des événements locaux</span>
+                        <span>Agenda événements local</span>
                     </div>
                     <div class="survey-option" data-value="petites_annonces">
                         <div class="survey-option-icon">
@@ -625,60 +669,23 @@ Actu & Média
                         </div>
                         <span>Petites annonces gratuites</span>
                     </div>
-                    <div class="survey-option" data-value="tribune">
+                    <div class="survey-option" data-value="forum">
                         <div class="survey-option-icon">
                             <span class="material-icons">forum</span>
                         </div>
-                        <span>Tribune libre/Blog citoyen</span>
+                        <span>Forum/tribune citoyenne</span>
                     </div>
-                    <div class="survey-option" data-value="alertes">
+                    <div class="survey-option" data-value="app_mobile">
                         <div class="survey-option-icon">
-                            <span class="material-icons">notifications_active</span>
+                            <span class="material-icons">smartphone</span>
                         </div>
-                        <span>Alertes locales (travaux, urgences...)</span>
+                        <span>Application mobile dédiée</span>
                     </div>
-                    <div class="survey-option" data-value="carte">
+                    <div class="survey-option" data-value="partenariats">
                         <div class="survey-option-icon">
-                            <span class="material-icons">map</span>
+                            <span class="material-icons">handshake</span>
                         </div>
-                        <span>Carte interactive des commerces et services</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Question 3 -->
-            <div class="survey-question" data-question="frequence">
-                <h3>À quelle fréquence visitez-vous Actu&Média ?</h3>
-                <div class="survey-options">
-                    <div class="survey-option" data-value="quotidien">
-                        <div class="survey-option-icon">
-                            <span class="material-icons">today</span>
-                        </div>
-                        <span>Tous les jours</span>
-                    </div>
-                    <div class="survey-option" data-value="hebdomadaire">
-                        <div class="survey-option-icon">
-                            <span class="material-icons">view_week</span>
-                        </div>
-                        <span>Plusieurs fois par semaine</span>
-                    </div>
-                    <div class="survey-option" data-value="mensuel">
-                        <div class="survey-option-icon">
-                            <span class="material-icons">calendar_month</span>
-                        </div>
-                        <span>Quelques fois par mois</span>
-                    </div>
-                    <div class="survey-option" data-value="occasionnel">
-                        <div class="survey-option-icon">
-                            <span class="material-icons">calendar_today</span>
-                        </div>
-                        <span>Occasionnellement</span>
-                    </div>
-                    <div class="survey-option" data-value="premiere">
-                        <div class="survey-option-icon">
-                            <span class="material-icons">new_releases</span>
-                        </div>
-                        <span>C'est ma première visite</span>
+                        <span>Partenariats commerces locaux</span>
                     </div>
                 </div>
             </div>
@@ -690,7 +697,7 @@ Actu & Média
         <div class="thank-you-message" id="thankYouMessage" style="display: none;">
             <span class="thank-you-icon">🎉</span>
             <h3>Merci pour votre participation !</h3>
-            <p>Votre avis est précieux pour améliorer Actu&Média.</p>
+            <p>Votre avis nous aide à faire évoluer Actu & Média en 2025.</p>
             
             <div class="survey-results">
                 <h4>Résultats actuels du sondage</h4>

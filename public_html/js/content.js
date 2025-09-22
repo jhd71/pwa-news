@@ -291,8 +291,8 @@ setupTVIcons() {
   },
   {
     title: 'Infos Dijon',
-    url: 'https://www.infos-dijon.com/news/faits-divers/faits-divers-en-cote-d-or/',
-    mobileUrl: 'https://www.infos-dijon.com/news/faits-divers/faits-divers-en-cote-d-or//',
+    url: 'https://www.infos-dijon.com/news/faits-divers/',
+    mobileUrl: 'https://www.infos-dijon.com/news/faits-divers/',
     isDefault: true,
     category: 'news'
   },
