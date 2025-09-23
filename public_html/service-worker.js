@@ -39,7 +39,6 @@ const STATIC_RESOURCES = [
 	'/css/radioPopup.css',
 	'/css/notepadApp.css',
 	'/css/todoApp.css',
-	'/css/theme-tiles.css',
 
     // Scripts JavaScript
     '/js/app.js',

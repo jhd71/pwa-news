@@ -27,6 +27,10 @@
     --header-text-size: 20px;
     --modal-text-size: 16px;
     
+    /* Variables pour transparence */
+    --tile-opacity: 1;
+    --background-color-rgb: 248, 249, 250;
+    
     /* Variables locales pour thème rouge */
     --rouge-site: #bc3a34;
     --rouge-fonce: #a32f2a;
@@ -964,6 +968,59 @@ main {
 }
 
 /* ==========================================================================
+   12. COULEURS DES TUILES
+   ========================================================================== */
+.tile:nth-child(30n + 1) { background: linear-gradient(135deg, #667eea, #764ba2); }
+.tile:nth-child(30n + 2) { background: linear-gradient(135deg, #f093fb, #f5576c); }
+.tile:nth-child(30n + 3) { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+.tile:nth-child(30n + 4) { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+.tile:nth-child(30n + 5) { background: linear-gradient(135deg, #fa709a, #fee140); }
+.tile:nth-child(30n + 6) { background: linear-gradient(135deg, #30cfd0, #91a7ff); }
+.tile:nth-child(30n + 7) { background: linear-gradient(135deg, #a8edea, #fed6e3); }
+.tile:nth-child(30n + 8) { background: linear-gradient(135deg, #ff9a9e, #fecfef); }
+.tile:nth-child(30n + 9) { background: linear-gradient(135deg, #ffecd2, #fcb69f); }
+.tile:nth-child(30n + 10) { background: linear-gradient(135deg, #ff8a80, #ea4c89); }
+.tile:nth-child(30n + 11) { background: linear-gradient(135deg, #ffd89b, #fd8b6a); }
+.tile:nth-child(30n + 12) { background: linear-gradient(135deg, #ff6b9d, #c92a49); }
+.tile:nth-child(30n + 13) { background: linear-gradient(135deg, #667eea, #764ba2); }
+.tile:nth-child(30n + 14) { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+.tile:nth-child(30n + 15) { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+.tile:nth-child(30n + 16) { background: linear-gradient(135deg, #56ab2f, #a8e6cf); }
+.tile:nth-child(30n + 17) { background: linear-gradient(135deg, #30cfd0, #c43bad); }
+.tile:nth-child(30n + 18) { background: linear-gradient(135deg, #667eea, #764ba2); }
+.tile:nth-child(30n + 19) { background: linear-gradient(135deg, #ff9a9e, #fad0c4); }
+.tile:nth-child(30n + 20) { background: linear-gradient(135deg, #ffecd2, #fcb69f); }
+.tile:nth-child(30n + 21) { background: linear-gradient(135deg, #ff5722, #ff8a65); }
+.tile:nth-child(30n + 22) { background: linear-gradient(135deg, #e91e63, #f48fb1); }
+.tile:nth-child(30n + 23) { background: linear-gradient(135deg, #a1c4fd, #c2e9fb); }
+.tile:nth-child(30n + 24) { background: linear-gradient(135deg, #d299c2, #fef9d7); }
+.tile:nth-child(30n + 25) { background: linear-gradient(135deg, #89f7fe, #66a6ff); }
+.tile:nth-child(30n + 26) { background: linear-gradient(135deg, #fdbb2d, #22c1c3); }
+.tile:nth-child(30n + 27) { background: linear-gradient(135deg, #e96443, #904e95); }
+.tile:nth-child(30n + 28) { background: linear-gradient(135deg, #96deda, #50c9c3); }
+.tile:nth-child(30n + 29) { background: linear-gradient(135deg, #f38ba8, #fde2e7); }
+.tile:nth-child(30n + 0) { background: linear-gradient(135deg, #6a11cb, #2575fc); }
+
+/* Ombres renforcées pour couleurs claires */
+.tile:nth-child(30n + 3) .tile-title,
+.tile:nth-child(30n + 4) .tile-title,
+.tile:nth-child(30n + 7) .tile-title,
+.tile:nth-child(30n + 9) .tile-title,
+.tile:nth-child(30n + 16) .tile-title,
+.tile:nth-child(30n + 20) .tile-title,
+.tile:nth-child(30n + 23) .tile-title,
+.tile:nth-child(30n + 24) .tile-title,
+.tile:nth-child(30n + 26) .tile-title,
+.tile:nth-child(30n + 28) .tile-title,
+.tile:nth-child(30n + 29) .tile-title {
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 8px rgba(0, 0, 0, 0.6),
+        1px 1px 2px rgba(0, 0, 0, 1);
+    font-weight: 700;
+}
+
+/* ==========================================================================
    13. SÉPARATEURS
    ========================================================================== */
 .separator {
@@ -1020,6 +1077,20 @@ main {
 
 .separator::after {
     right: 20px;
+}
+
+/* Classes de transparence pour les séparateurs */
+.separator.force-transparency {
+    opacity: var(--tile-opacity, 1);
+    transition: opacity 0.3s ease;
+}
+
+.separator.force-transparency:hover {
+    opacity: 1;
+}
+
+.separator.force-transparency img {
+    opacity: inherit;
 }
 
 /* ==========================================================================
@@ -2866,7 +2937,52 @@ a:active {
 }
 
 /* ========================================
-   ANIMATION DE PULSATION UNIFIÉE add site
+   COULEURS SELON LES THÈMES - PLUS VISIBLES
+   ======================================== */
+
+/* THÈME ROUGE (défaut) */
+[data-theme="rouge"] .tile.add-site-tile {
+    background: linear-gradient(135deg, #dc3545, #fd7e14) !important;
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.5) !important;
+}
+
+[data-theme="rouge"] .tile.add-site-tile:hover {
+    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.6) !important;
+}
+
+/* THÈME SOMBRE - Plus coloré ! */
+[data-theme="dark"] .tile.add-site-tile {
+    background: linear-gradient(135deg, #28a745, #17a2b8) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.5) !important;
+}
+
+[data-theme="dark"] .tile.add-site-tile:hover {
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.6) !important;
+}
+
+/* THÈME BLEU CIEL */
+[data-theme="bleuciel"] .tile.add-site-tile {
+    background: linear-gradient(135deg, #17a2b8, #20c997) !important;
+    box-shadow: 0 4px 15px rgba(23, 162, 184, 0.5) !important;
+}
+
+[data-theme="bleuciel"] .tile.add-site-tile:hover {
+    box-shadow: 0 8px 25px rgba(23, 162, 184, 0.6) !important;
+}
+
+/* THÈME VIOLET (light) */
+[data-theme="light"] .tile.add-site-tile {
+    background: linear-gradient(135deg, #6f42c1, #e83e8c) !important;
+    box-shadow: 0 4px 15px rgba(111, 66, 193, 0.5) !important;
+}
+
+[data-theme="light"] .tile.add-site-tile:hover {
+    box-shadow: 0 8px 25px rgba(111, 66, 193, 0.6) !important;
+}
+
+/* ========================================
+   ANIMATION DE PULSATION UNIFIÉE
    ======================================== */
 
 .tile.add-site-tile {
@@ -2882,6 +2998,48 @@ a:active {
         transform: scale(1.02);
         filter: brightness(1.1);
     }
+}
+
+/* ========================================
+   STYLES POUR LE MODE LISTE
+   ======================================== */
+
+/* THÈME ROUGE - Mode liste */
+[data-theme="rouge"] .tile-container.list .tile.add-site-tile {
+    background: linear-gradient(90deg, #dc3545, #fd7e14) !important;
+}
+
+/* THÈME SOMBRE - Mode liste */
+[data-theme="dark"] .tile-container.list .tile.add-site-tile {
+    background: linear-gradient(90deg, #28a745, #17a2b8) !important;
+}
+
+/* THÈME BLEU CIEL - Mode liste */
+[data-theme="bleuciel"] .tile-container.list .tile.add-site-tile {
+    background: linear-gradient(90deg, #17a2b8, #20c997) !important;
+}
+
+/* THÈME VIOLET - Mode liste */
+[data-theme="light"] .tile-container.list .tile.add-site-tile {
+    background: linear-gradient(90deg, #6f42c1, #e83e8c) !important;
+}
+
+/* ========================================
+   CORRECTION POUR LA TRANSPARENCE
+   ======================================== */
+
+/* Force la tuile à rester visible même avec la transparence globale */
+.tile.add-site-tile {
+    opacity: 1 !important;
+}
+
+/* Si le système de transparence globale affecte cette tuile */
+.tile.add-site-tile:not(.slideshow-tile) {
+    opacity: 1 !important;
+}
+
+.tile.add-site-tile.enhanced-visibility {
+    opacity: 1 !important;
 }
 
 /* ========================================
@@ -3333,50 +3491,4 @@ a:active {
     .tile-menu .menu-item .material-icons {
         font-size: 20px;
     }
-}
-
-/* nouveau sondage sur la tuile */
-.survey-tile {
-    position: relative;
-}
-
-.survey-tile::after {
-    content: "NOUVEAU";
-    position: absolute;
-    top: -1px;
-    right: -1px;
-    background: #ff4444;
-    color: white;
-    font-size: 11px;
-    padding: 2px 6px;
-    border-radius: 8px;
-    font-weight: bold;
-    z-index: 2;
-    animation: newBadgePulse 2s infinite;
-}
-
-@keyframes newBadgePulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-}
-
-.survey-tile::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.3),
-        transparent
-    );
-    animation: shine 3s infinite;
-}
-
-@keyframes shine {
-    0% { left: -100%; }
-    100% { left: 100%; }
 }
