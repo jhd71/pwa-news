@@ -69,6 +69,10 @@ class NotepadWidget {
         tileElement.className = 'tile notepad-app-tile';
         tileElement.setAttribute('data-category', 'notepad');
         
+        // Adapter le style selon le thème actuel
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'rouge';
+        let gradientStyle = '';
+        
         tileElement.style.cssText = `
             background: ${gradientStyle};
             color: white;
