@@ -1,171 +1,1149 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="rouge">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Actu & Média — C’est quoi ?</title>
+  <title>À propos - Actu & Média</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;900&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script>
+    // Appliquer le thème sauvegardé dès le chargement
+    (function() {
+        const savedTheme = localStorage.getItem('theme') || 'rouge';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+  </script>
   <style>
+    :root {
+      /* Thème Rouge (défaut) */
+      --primary-color: #dc2626;
+      --primary-light: #ffffff;
+      --primary-dark: #b91c1c;
+      --secondary-color: #991b1b;
+      --background-start: #7f1d1d;
+      --background-middle: #991b1b;
+      --background-end: #dc2626;
+      --accent-color: #fef2f2;
+      --text-light: #ffffff;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --border-color: rgba(220, 38, 38, 0.2);
+    }
+
+    /* Thème Sombre */
+    [data-theme="dark"] {
+      --primary-color: #1f2937;
+      --primary-light: #fbfcfd;
+      --primary-dark: #111827;
+      --secondary-color: #4b5563;
+      --background-start: #0f172a;
+      --background-middle: #1e293b;
+      --background-end: #334155;
+      --accent-color: #f8fafc;
+      --text-light: #ffffff;
+      --card-bg: rgb(219 143 31);
+      --border-color: rgba(75, 85, 99, 0.3);
+    }
+
+    /* Thème Bleu Ciel */
+    [data-theme="bleuciel"] {
+      --primary-color: #0ea5e9;
+      --primary-light: #ffffff;
+      --primary-dark: #0284c7;
+      --secondary-color: #0369a1;
+      --background-start: #0c4a6e;
+      --background-middle: #0369a1;
+      --background-end: #0ea5e9;
+      --accent-color: #f0f9ff;
+      --text-light: #ffffff;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --border-color: rgba(14, 165, 233, 0.2);
+    }
+
+    /* Thème Violet */
+    [data-theme="light"] {
+      --primary-color: #7c3aed;
+      --primary-light: #ffffff;
+      --primary-dark: #6d28d9;
+      --secondary-color: #5b21b6;
+      --background-start: #4c1d95;
+      --background-middle: #5b21b6;
+      --background-end: #7c3aed;
+      --accent-color: #faf5ff;
+      --text-light: #ffffff;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --border-color: rgba(124, 58, 237, 0.2);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #f5f6fa;
+      font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, var(--background-start) 0%, var(--background-middle) 50%, var(--background-end) 100%);
       margin: 0;
       padding: 0;
       color: #2f3640;
       line-height: 1.6;
+      min-height: 100vh;
+      transition: background 0.3s ease;
     }
 
+    /* Animation de fond */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="white" opacity="0.1"><animate attributeName="opacity" values="0.1;0.3;0.1" dur="3s" repeatCount="indefinite"/></circle><circle cx="80" cy="30" r="1.5" fill="white" opacity="0.1"><animate attributeName="opacity" values="0.1;0.4;0.1" dur="4s" repeatCount="indefinite"/></circle><circle cx="60" cy="70" r="1" fill="white" opacity="0.1"><animate attributeName="opacity" values="0.1;0.5;0.1" dur="2s" repeatCount="indefinite"/></circle></svg>') repeat;
+      animation: float 20s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+
+    /* Header */
     header {
-      background: linear-gradient(135deg, #273c75, #e84118);
-      color: white;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-light);
       text-align: center;
       padding: 40px 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .logo-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
     }
 
     header h1 {
       margin: 0;
-      font-size: 2.2rem;
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(45deg, var(--text-light), var(--accent-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     header p {
       font-size: 1.2rem;
-      margin-top: 8px;
+      margin-top: 10px;
+      opacity: 0.9;
     }
 
     .back-home {
-      display: inline-block;
-      margin-top: 15px;
-      padding: 10px 18px;
-      background: #fff;
-      color: #273c75;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+      padding: 12px 24px;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-light);
       text-decoration: none;
-      font-weight: bold;
-      border-radius: 8px;
-      transition: background 0.3s;
+      font-weight: 600;
+      border-radius: 25px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
     }
 
     .back-home:hover {
-      background: #e6e9ef;
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
 
-    section {
-      max-width: 900px;
-      margin: 20px auto;
-      background: white;
-      border-radius: 12px;
-      padding: 20px 30px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    /* Sélecteur de thème */
+    .theme-selector {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    h2 {
-      color: #e84118;
-      margin-bottom: 10px;
-      border-left: 6px solid #273c75;
-      padding-left: 10px;
+    .theme-btn {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      margin: 2px;
+      transition: all 0.3s ease;
+      font-size: 14px;
+      font-weight: 500;
     }
 
-    ul {
+    .theme-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .theme-btn.active {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    /* Container principal */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Sections */
+    .section-card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 25px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--border-color);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      animation: slideUp 0.6s ease-out forwards;
+      opacity: 0;
+    }
+
+    .section-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--primary-color);
+    }
+
+    .section-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: white;
+    }
+
+    .section-header h2 {
+      color: var(--primary-color);
       margin: 0;
-      padding-left: 20px;
+      font-size: 1.5rem;
+      font-weight: 600;
     }
 
-    li {
-      margin-bottom: 8px;
+    /* Listes de fonctionnalités */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
     }
 
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 15px;
+      background: rgba(var(--primary-color), 0.05);
+      border-radius: 12px;
+      border-left: 4px solid var(--primary-color);
+      transition: all 0.3s ease;
+    }
+
+    .feature-item:hover {
+      background: rgba(var(--primary-color), 0.1);
+      transform: translateX(5px);
+    }
+
+    .feature-icon {
+      width: 35px;
+      height: 35px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .feature-text {
+      font-weight: 500;
+      color: #2d3748;
+    }
+
+    /* Section hero */
+    .hero-section {
+      text-align: center;
+      padding: 40px 30px;
+      background: var(--card-bg);
+      border-radius: 20px;
+      margin-bottom: 30px;
+      border: 1px solid var(--border-color);
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 20px;
+      background: rgba(var(--primary-color), 0.05);
+      border-radius: 15px;
+      border: 1px solid var(--border-color);
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      display: block;
+    }
+
+    .stat-label {
+      color: #64748b;
+      font-weight: 500;
+      margin-top: 5px;
+    }
+
+    /* Footer */
     footer {
       text-align: center;
-      padding: 15px;
-      background: #273c75;
-      color: white;
-      margin-top: 30px;
-      font-size: 0.9rem;
-      border-top: 4px solid #e84118;
+      padding: 30px 20px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-light);
+      margin-top: 40px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
     }
+
+    .footer-content {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .footer-link {
+      color: var(--text-light);
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .footer-link:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+
+      header {
+        padding: 30px 15px;
+      }
+
+      header h1 {
+        font-size: 2rem;
+      }
+
+      header p {
+        font-size: 1rem;
+      }
+
+      .section-card {
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .hero-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+
+      .theme-selector {
+        position: relative;
+        top: auto;
+        right: auto;
+        margin: 20px auto;
+        display: flex;
+        justify-content: center;
+      }
+
+      .footer-links {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .section-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+      }
+
+      .feature-item {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px 15px;
+      }
+    }
+
+    /* Animation des cartes au scroll */
+    .section-card:nth-child(1) { animation-delay: 0.1s; }
+    .section-card:nth-child(2) { animation-delay: 0.2s; }
+    .section-card:nth-child(3) { animation-delay: 0.3s; }
+    .section-card:nth-child(4) { animation-delay: 0.4s; }
+    .section-card:nth-child(5) { animation-delay: 0.5s; }
+    .section-card:nth-child(6) { animation-delay: 0.6s; }
+    .section-card:nth-child(7) { animation-delay: 0.7s; }
+    .section-card:nth-child(8) { animation-delay: 0.8s; }
   </style>
 </head>
 <body>
+  <!-- Sélecteur de thème -->
+  <div class="theme-selector">
+    <button class="theme-btn" data-theme="rouge">Rouge</button>
+    <button class="theme-btn" data-theme="dark">Sombre</button>
+    <button class="theme-btn" data-theme="bleuciel">Bleu</button>
+    <button class="theme-btn" data-theme="light">Violet</button>
+  </div>
+
   <header>
-    <h1>Actu & Média, c’est quoi ?</h1>
-    <p>Présentation du projet bénévole et de ses fonctionnalités</p>
-    <a href="/" class="back-home">⬅ Retour à l’accueil</a>
-  </header>
+    <div class="logo-container">
+      <div class="logo-icon">
+        <span class="material-icons">newspaper</span>
+      </div>
+    </div>
 
-  <section>
-    <h2>📰 Actualités & Information</h2>
-    <ul>
-      <li>Carrousel d'actualités avec pagination Swiper</li>
-      <li>Widget news avec aperçu et compteur</li>
-      <li>Ticker défilant en bas (masqué sur tablettes)</li>
-      <li>Panel latéral d'actualités avec boutons de partage</li>
-      <li>Système de soumission d'actualités par les citoyens</li>
-    </ul>
-  </section>
+    <!-- Zone de couverture -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-icon">
+          <span class="material-icons">place</span>
+        </div>
+        <h2>Zone de Couverture</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">location_city</span>
+          </div>
+          <div class="feature-text">Montceau-les-Mines et ses environs</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">map</span>
+          </div>
+          <div class="feature-text">Saône-et-Loire (71) - Bourgogne-Franche-Comté</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">groups</span>
+          </div>
+          <div class="feature-text">Communauté urbaine Creusot Montceau</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">explore</span>
+          </div>
+          <div class="feature-text">Villages environnants : Blanzy, Saint-Vallier...</div>
+        </div>
+      </div>
+    </div>
 
-  <section>
-    <h2>🎬 Médias & Divertissement</h2>
-    <ul>
-      <li>Widget radio avec lecteur intégré, minuteur d'arrêt et égaliseur</li>
-      <li>Widget cinéma L'Embarcadère avec programmation</li>
-      <li>Widget football avec résultats et scores</li>
-      <li>Galerie photos communautaire</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>🛠️ Services Pratiques</h2>
-    <ul>
-      <li>Widget météo responsive avec températures et prévisions sur 3 jours</li>
-      <li>Liens rapides (urgences, services publics, transport, etc.)</li>
-      <li>Gestionnaire de dépenses familiales</li>
-      <li>Page "Autour de moi" pour services locaux</li>
-      <li>Bloc-notes et todo-list intégrés</li>
-      <li>Ajout de sites personnalisés (tuile configurable)</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>💬 Communication & Social</h2>
-    <ul>
-      <li>Chat communautaire modéré temps réel</li>
-      <li>Compteur visiteurs en direct</li>
-      <li>Sondages interactifs</li>
-      <li>Notifications push</li>
-      <li>Système de donation Buy Me a Coffee</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>⚙️ Technique</h2>
-    <ul>
-      <li>PWA installable sur mobile/desktop</li>
-      <li>4 thèmes (Rouge, Sombre, Bleu ciel, Violet)</li>
-      <li>Responsive design optimisé</li>
-      <li>Contact structuré avec templates email</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>🔒 Modération & Sécurité</h2>
-    <ul>
-      <li>Système de bannissement IP/device</li>
-      <li>Vérification d'identité pour admin</li>
-      <li>Sécurité anti-spam et modération</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>📌 Tuiles principales</h2>
-    <ul>
-      <li>📰 Actualités locales : fil d’infos régionales</li>
-      <li>📺 Espace+ : TV en direct</li>
-      <li>⚽ Sport : football, basket, rugby, résultats en temps réel</li>
-      <li>🌐 Réseaux sociaux : accès rapide aux plateformes</li>
-      <li>👤 Site perso : Ajouter votre site personnel</li>
-    </ul>
-  </section>
+    <!-- Engagement communautaire -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-icon">
+          <span class="material-icons">volunteer_activism</span>
+        </div>
+        <h2>Engagement Communautaire</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">transparency</span>
+          </div>
+          <div class="feature-text">Transparence totale sur les coûts de fonctionnement</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">balance</span>
+          </div>
+          <div class="feature-text">Indépendance éditoriale garantie</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">eco</span>
+          </div>
+          <div class="feature-text">Projet éco-responsable - hébergement vert</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">diversity_3</span>
+          </div>
+          <div class="feature-text">Ouvert à tous les citoyens de la région</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">feedback</span>
+          </div>
+          <div class="feature-text">Évolution basée sur les retours utilisateurs</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">handshake</span>
+          </div>
+          <div class="feature-text">Partenariats avec acteurs locaux</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <footer>
-    © 2025 Actu & Média — Projet bénévole indépendant
+    <div class="footer-content">
+      <div class="footer-links">
+        <a href="/contact.html" class="footer-link">Contact</a>
+        <a href="/mentions-legales" class="footer-link">Mentions légales</a>
+        <a href="/politique-confidentialite" class="footer-link">Confidentialité</a>
+        <a href="https://depenses.actuetmedia.fr/" class="footer-link" target="_blank">Gestionnaire dépenses</a>
+      </div>
+      <p>&copy; 2025 Actu & Média - Projet bénévole indépendant</p>
+      <p>Créé avec passion pour la communauté de Montceau-les-Mines</p>
+    </div>
   </footer>
+
+  <script>
+    // Gestion des thèmes
+    const themeButtons = document.querySelectorAll('.theme-btn');
+    const currentTheme = localStorage.getItem('theme') || 'rouge';
+
+    // Marquer le thème actuel
+    themeButtons.forEach(btn => {
+      if (btn.dataset.theme === currentTheme) {
+        btn.classList.add('active');
+      }
+      
+      btn.addEventListener('click', () => {
+        const theme = btn.dataset.theme;
+        
+        // Retirer la classe active de tous les boutons
+        themeButtons.forEach(b => b.classList.remove('active'));
+        
+        // Ajouter la classe active au bouton cliqué
+        btn.classList.add('active');
+        
+        // Appliquer le thème
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        
+        // Vibration tactile si disponible
+        if (navigator.vibrate) {
+          navigator.vibrate(50);
+        }
+      });
+    });
+
+    // Animation des cartes au scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    // Observer toutes les cartes
+    document.querySelectorAll('.section-card').forEach(card => {
+      observer.observe(card);
+    });
+
+    // Smooth scroll pour les liens internes
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Parallax léger pour l'arrière-plan
+    window.addEventListener('scroll', () => {
+      const scrolled = window.pageYOffset;
+      const parallax = document.querySelector('body::before');
+      if (parallax) {
+        const speed = scrolled * 0.5;
+        parallax.style.transform = `translateY(${speed}px)`;
+      }
+    });
+  </script>
+</body>
+</html>
+    <h1>Actu & Média</h1>
+    <p>La plateforme locale complète de Montceau-les-Mines</p>
+    <a href="/" class="back-home">
+      <span class="material-icons">arrow_back</span>
+      Retour à l'accueil
+    </a>
+  </header>
+
+  <div class="container">
+    <!-- Section Hero -->
+    <div class="hero-section section-card">
+      <h2>Un projet bénévole au service de la communauté</h2>
+      <p>Depuis 8 mois, Actu & Média rassemble toutes les informations locales et services pratiques dont vous avez besoin au quotidien. Créé bénévolement par passion pour l'information locale, ce site 100% gratuit et sans publicité évolue constamment grâce aux retours de ses utilisateurs.</p>
+      
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-number">100%</span>
+          <span class="stat-label">Gratuit & Sans pub</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">30+</span>
+          <span class="stat-label">Fonctionnalités</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">4</span>
+          <span class="stat-label">Thèmes disponibles</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">24/7</span>
+          <span class="stat-label">Disponible</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actualités & Information -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-icon">
+          <span class="material-icons">feed</span>
+        </div>
+        <h2>Actualités & Information</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">view_carousel</span>
+          </div>
+          <div class="feature-text">Carrousel d'actualités avec pagination interactive</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">preview</span>
+          </div>
+          <div class="feature-text">Widget news avec aperçu et compteur en temps réel</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">text_rotation_none</span>
+          </div>
+          <div class="feature-text">Ticker défilant en bas (optimisé tablettes)</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">share</span>
+          </div>
+          <div class="feature-text">Panel latéral avec boutons de partage</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">edit_note</span>
+          </div>
+          <div class="feature-text">Système de soumission d'actualités citoyennes</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">refresh</span>
+          </div>
+          <div class="feature-text">Actualisation automatique des contenus</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Médias & Divertissement -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-icon">
+          <span class="material-icons">play_circle</span>
+        </div>
+        <h2>Médias & Divertissement</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">radio</span>
+          </div>
+          <div class="feature-text">Radio web avec égaliseur et minuteur d'arrêt</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">movie</span>
+          </div>
+          <div class="feature-text">Cinéma L'Embarcadère - programmation en temps réel</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">sports_soccer</span>
+          </div>
+          <div class="feature-text">Widget football avec résultats et scores live</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">photo_library</span>
+          </div>
+          <div class="feature-text">Galerie photos communautaire interactive</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">tv</span>
+          </div>
+          <div class="feature-text">TV en direct - chaînes locales et nationales</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Services Pratiques -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-icon">
+          <span class="material-icons">build</span>
+        </div>
+        <h2>Services Pratiques</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">wb_sunny</span>
+          </div>
+          <div class="feature-text">Météo responsive - prévisions 3 jours</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">euro</span>
+          </div>
+          <div class="feature-text">Gestionnaire de dépenses familiales complet</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">timer</span>
+          </div>
+          <div class="feature-text">Minuteur et alarmes intégrés (clic sur horloge)</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">emergency</span>
+          </div>
+          <div class="feature-text">Liens urgence - appel direct pompiers/police/SAMU</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">near_me</span>
+          </div>
+          <div class="feature-text">Page "Autour de moi" - services locaux</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">note</span>
+          </div>
+          <div class="feature-text">Bloc-notes et todo-list synchronisés</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">add_box</span>
+          </div>
+          <div class="feature-text">Ajout de sites personnalisés (tuile configurable)</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">link</span>
+          </div>
+          <div class="feature-text">Liens rapides (services publics, transport, etc.)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Communication & Social -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-icon">
+          <span class="material-icons">forum</span>
+        </div>
+        <h2>Communication & Social</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">chat</span>
+          </div>
+          <div class="feature-text">Chat communautaire modéré en temps réel</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">visibility</span>
+          </div>
+          <div class="feature-text">Compteur visiteurs en direct</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">poll</span>
+          </div>
+          <div class="feature-text">Sondages interactifs avec résultats en direct</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">notifications</span>
+          </div>
+          <div class="feature-text">Notifications push pour actualités importantes</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">local_cafe</span>
+          </div>
+          <div class="feature-text">Système de soutien Buy Me a Coffee</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Technique & Confort -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-icon">
+          <span class="material-icons">settings</span>
+        </div>
+        <h2>Technique & Confort</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">install_mobile</span>
+          </div>
+          <div class="feature-text">PWA installable sur mobile et desktop</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">palette</span>
+          </div>
+          <div class="feature-text">4 thèmes (Rouge, Sombre, Bleu ciel, Violet)</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">responsive_layout</span>
+          </div>
+          <div class="feature-text">Design responsive optimisé toutes tailles</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">email</span>
+          </div>
+          <div class="feature-text">Contact structuré avec templates email</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">cached</span>
+          </div>
+          <div class="feature-text">Cache intelligent pour performances optimales</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">offline_bolt</span>
+          </div>
+          <div class="feature-text">Fonctionnement hors ligne pour contenus essentiels</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modération & Sécurité -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-icon">
+          <span class="material-icons">security</span>
+        </div>
+        <h2>Modération & Sécurité</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">block</span>
+          </div>
+          <div class="feature-text">Système de bannissement IP/device avancé</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">verified_user</span>
+          </div>
+          <div class="feature-text">Vérification d'identité pour administrateurs</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">shield</span>
+          </div>
+          <div class="feature-text">Protection anti-spam et modération active</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">privacy_tip</span>
+          </div>
+          <div class="feature-text">Respect de la vie privée - données minimales</div>
+        </div>
+      </div>
+	  </div>
+    </div>
+
+    <!-- Zone de couverture -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-icon">
+          <span class="material-icons">place</span>
+        </div>
+        <h2>Zone de Couverture</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">location_city</span>
+          </div>
+          <div class="feature-text">Montceau-les-Mines et ses environs</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">map</span>
+          </div>
+          <div class="feature-text">Saône-et-Loire (71) - Bourgogne-Franche-Comté</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">groups</span>
+          </div>
+          <div class="feature-text">Communauté urbaine Creusot Montceau</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">explore</span>
+          </div>
+          <div class="feature-text">Villages environnants : Blanzy, Saint-Vallier...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Engagement communautaire -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-icon">
+          <span class="material-icons">volunteer_activism</span>
+        </div>
+        <h2>Engagement Communautaire</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">transparency</span>
+          </div>
+          <div class="feature-text">Transparence totale sur les coûts de fonctionnement</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">balance</span>
+          </div>
+          <div class="feature-text">Indépendance éditoriale garantie</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">eco</span>
+          </div>
+          <div class="feature-text">Projet éco-responsable - hébergement vert</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">diversity_3</span>
+          </div>
+          <div class="feature-text">Ouvert à tous les citoyens de la région</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">feedback</span>
+          </div>
+          <div class="feature-text">Évolution basée sur les retours utilisateurs</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <span class="material-icons">handshake</span>
+          </div>
+          <div class="feature-text">Partenariats avec acteurs locaux</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-links">
+        <a href="/contact.html" class="footer-link">Contact</a>
+        <a href="/mentions-legales" class="footer-link">Mentions légales</a>
+        <a href="/politique-confidentialite" class="footer-link">Confidentialité</a>
+        <a href="https://depenses.actuetmedia.fr/" class="footer-link" target="_blank">Gestionnaire dépenses</a>
+      </div>
+      <p>&copy; 2025 Actu & Média - Projet bénévole indépendant</p>
+      <p>Créé avec passion pour la communauté de Montceau-les-Mines</p>
+    </div>
+  </footer>
+
+  <script>
+    // Gestion des thèmes
+    const themeButtons = document.querySelectorAll('.theme-btn');
+    const currentTheme = localStorage.getItem('theme') || 'rouge';
+
+    // Marquer le thème actuel
+    themeButtons.forEach(btn => {
+      if (btn.dataset.theme === currentTheme) {
+        btn.classList.add('active');
+      }
+      
+      btn.addEventListener('click', () => {
+        const theme = btn.dataset.theme;
+        
+        // Retirer la classe active de tous les boutons
+        themeButtons.forEach(b => b.classList.remove('active'));
+        
+        // Ajouter la classe active au bouton cliqué
+        btn.classList.add('active');
+        
+        // Appliquer le thème
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        
+        // Vibration tactile si disponible
+        if (navigator.vibrate) {
+          navigator.vibrate(50);
+        }
+      });
+    });
+
+    // Animation des cartes au scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    // Observer toutes les cartes
+    document.querySelectorAll('.section-card').forEach(card => {
+      observer.observe(card);
+    });
+
+    // Smooth scroll pour les liens internes
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  </script>
 </body>
 </html>

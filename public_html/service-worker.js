@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v40'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v41'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -17,6 +17,7 @@ const STATIC_RESOURCES = [
 	'/autour-de-moi.html',
 	'/contact.html',
 	'/presentation.html',
+	'/a-propos.html',
     
     // Feuilles de style CSS
     '/css/styles.css',
