@@ -8,12 +8,17 @@ Disallow: /api/
 Disallow: /admin/
 Disallow: /*.json$
 Disallow: /redirect/
+Disallow: /js/
+Disallow: /css/
 Crawl-delay: 1
 
 # Google
 User-agent: Googlebot
 Allow: /
 Disallow: /api/
+Disallow: /admin/
+Allow: /css/
+Allow: /js/
 Crawl-delay: 0
 
 # Google Images
@@ -23,13 +28,14 @@ Allow: /*.jpg$
 Allow: /*.jpeg$
 Allow: /*.png$
 Allow: /*.webp$
+Allow: /*.svg$
 
 # Bing
 User-agent: Bingbot
 Allow: /
 Disallow: /api/
+Disallow: /admin/
 Crawl-delay: 1
 
 # Sitemaps
 Sitemap: https://actuetmedia.fr/sitemap.xml
-Sitemap: https://actuetmedia.fr/sitemap-news.xml
