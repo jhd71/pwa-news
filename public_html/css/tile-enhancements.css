@@ -395,3 +395,117 @@
     transform-style: flat !important;
     perspective: none !important;
 }
+
+/* ========================================
+   13. AMÉLIORATION DE LA LISIBILITÉ DU TEXTE
+   ======================================== */
+
+/* Texte blanc par défaut avec ombre forte pour tous les thèmes */
+.tile .tile-title {
+    color: #ffffff !important;
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        1px 1px 2px rgba(0, 0, 0, 0.8),
+        0 0 8px rgba(0, 0, 0, 0.6),
+        0 0 3px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Overlay sombre subtil pour améliorer le contraste sur TOUTES les tuiles */
+.tile::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse at center, 
+        rgba(0, 0, 0, 0.15) 0%, 
+        rgba(0, 0, 0, 0.35) 100%);
+    pointer-events: none;
+    z-index: 1;
+    border-radius: inherit;
+}
+
+/* S'assurer que le contenu reste au-dessus de l'overlay */
+.tile .tile-content {
+    z-index: 3 !important;
+}
+
+/* Tuiles spécifiquement claires - texte noir avec contour blanc */
+[data-theme="rouge"] .tile:nth-child(30n + 13) .tile-title,
+[data-theme="rouge"] .tile:nth-child(30n + 14) .tile-title,
+[data-theme="rouge"] .tile:nth-child(30n + 17) .tile-title,
+[data-theme="rouge"] .tile:nth-child(30n + 29) .tile-title,
+[data-theme="bleuciel"] .tile:nth-child(30n + 7) .tile-title,
+[data-theme="bleuciel"] .tile:nth-child(30n + 17) .tile-title,
+[data-theme="bleuciel"] .tile:nth-child(30n + 19) .tile-title,
+[data-theme="light"] .tile:nth-child(30n + 14) .tile-title,
+[data-theme="light"] .tile:nth-child(30n + 16) .tile-title,
+[data-theme="light"] .tile:nth-child(30n + 17) .tile-title,
+[data-theme="light"] .tile:nth-child(30n + 18) .tile-title,
+[data-theme="light"] .tile:nth-child(30n + 19) .tile-title {
+    color: #1a1a1a !important;
+    font-weight: 700 !important;
+    text-shadow: 
+        1px 1px 3px rgba(255, 255, 255, 0.9),
+        0 0 5px rgba(255, 255, 255, 0.8),
+        2px 2px 6px rgba(255, 255, 255, 0.7) !important;
+    -webkit-text-stroke: 0.3px rgba(0, 0, 0, 0.2);
+}
+
+/* Amélioration spécifique pour le contraste élevé */
+.high-contrast .tile .tile-title,
+[data-text-contrast="high"] .tile .tile-title {
+    text-shadow: 
+        3px 3px 6px rgba(0, 0, 0, 1),
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        1px 1px 2px rgba(0, 0, 0, 0.8),
+        0 0 10px rgba(0, 0, 0, 0.7) !important;
+    font-weight: 700 !important;
+}
+
+/* Contraste très élevé */
+.very-high-contrast .tile .tile-title,
+[data-text-contrast="very-high"] .tile .tile-title {
+    text-shadow: 
+        4px 4px 8px rgba(0, 0, 0, 1),
+        3px 3px 6px rgba(0, 0, 0, 1),
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 15px rgba(0, 0, 0, 0.8) !important;
+    font-weight: 800 !important;
+    -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.3);
+}
+
+/* Augmenter l'opacité de l'overlay pour les tuiles trop claires */
+[data-theme="rouge"] .tile:nth-child(30n + 13)::after,
+[data-theme="rouge"] .tile:nth-child(30n + 14)::after,
+[data-theme="rouge"] .tile:nth-child(30n + 17)::after,
+[data-theme="rouge"] .tile:nth-child(30n + 29)::after,
+[data-theme="bleuciel"] .tile:nth-child(30n + 7)::after,
+[data-theme="bleuciel"] .tile:nth-child(30n + 17)::after,
+[data-theme="bleuciel"] .tile:nth-child(30n + 19)::after {
+    background: radial-gradient(ellipse at center, 
+        rgba(0, 0, 0, 0.25) 0%, 
+        rgba(0, 0, 0, 0.45) 100%);
+}
+
+/* Mode liste - adapter les styles */
+.tile-container.list .tile .tile-title {
+    padding: 0 10px;
+}
+
+/* Animation de pulsation pour attirer l'attention sur le texte */
+@keyframes textPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.9; }
+}
+
+/* Tuiles spéciales (sondage, ajout de site) - texte toujours blanc */
+.survey-tile .tile-title,
+.add-site-tile .tile-title {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 1),
+        0 0 6px rgba(0, 0, 0, 0.8) !important;
+}
