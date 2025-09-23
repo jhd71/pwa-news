@@ -1,4 +1,7 @@
-/* Améliorations des tuiles pour Actu & Média - Version nettoyée et corrigée */
+/* ========================================
+   TILE-ENHANCEMENT.CSS - VERSION RÉORGANISÉE
+   Améliorations des tuiles pour Actu & Média
+   ======================================== */
 
 /* ========================================
    1. STYLES DE BASE DES TUILES
@@ -10,31 +13,234 @@
     border-radius: 12px !important;
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.08) !important;
     transition: all 0.6s ease !important;
-    
-    /* Animation d'apparition */
     animation: tilesAppear 0.7s ease forwards;
     animation-delay: calc(var(--tile-index, 0) * 0.07s);
     opacity: 0;
 }
 
-/* Effet de survol */
+/* Contenu des tuiles */
+.tile-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 5 !important;
+    padding: 12px 8px !important;
+}
+
+/* ========================================
+   2. VISIBILITÉ DU TEXTE - SYSTÈME PRINCIPAL
+   ======================================== */
+
+/* Texte blanc par défaut avec ombres fortes */
+.tile .tile-title {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.3px;
+    position: relative;
+    z-index: 10 !important;
+    transition: transform 0.5s ease;
+    text-shadow: 
+        4px 4px 10px rgba(0, 0, 0, 1),
+        3px 3px 8px rgba(0, 0, 0, 1),
+        2px 2px 6px rgba(0, 0, 0, 0.95),
+        1px 1px 4px rgba(0, 0, 0, 0.9),
+        0px 0px 20px rgba(0, 0, 0, 0.85) !important;
+}
+
+/* Overlay sombre pour améliorer le contraste */
+.tile::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.25) 0%,
+        rgba(0, 0, 0, 0.45) 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+    border-radius: inherit;
+}
+
+/* ========================================
+   3. SYSTÈME DE TAILLES DE TEXTE
+   ======================================== */
+
+/* Taille SMALL */
+[data-font-size="small"] .tile-title {
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+[data-font-size="small"] .tile-container.list .tile-title {
+    font-size: 11px;
+}
+
+/* Taille NORMAL */
+[data-font-size="normal"] .tile-title {
+    font-size: 16px;
+    line-height: 1.3;
+}
+
+[data-font-size="normal"] .tile-container.list .tile-title {
+    font-size: 14px;
+}
+
+/* Taille LARGE */
+[data-font-size="large"] .tile-title {
+    font-size: 20px;
+    line-height: 1.4;
+}
+
+[data-font-size="large"] .tile-container.list .tile-title {
+    font-size: 17px;
+}
+PARTIE 2 : CATÉGORIES SPÉCIFIQUES
+/* ========================================
+   4. TUILES TV - STYLES SPÉCIAUX
+   ======================================== */
+
+/* Structure des tuiles TV */
+.tile[data-category="tv"] {
+    min-width: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tile[data-category="tv"] .tile-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding-top: 30px !important;
+    padding-bottom: 0 !important;
+}
+
+/* Texte des tuiles TV - RENFORCEMENT MAXIMUM */
+.tile[data-category="tv"] .tile-title,
+.tile.live-content .tile-title,
+#tileContainer .tile[data-category="tv"] .tile-title {
+    color: #ffffff !important;
+    font-weight: 900 !important;
+    text-align: center;
+    max-width: 90%;
+    text-shadow: 
+        5px 5px 12px rgba(0, 0, 0, 1) !important,
+        4px 4px 10px rgba(0, 0, 0, 1) !important,
+        3px 3px 8px rgba(0, 0, 0, 0.95) !important,
+        2px 2px 6px rgba(0, 0, 0, 0.9) !important,
+        1px 1px 4px rgba(0, 0, 0, 0.85) !important,
+        0px 0px 30px rgba(0, 0, 0, 0.8) !important;
+    -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.8) !important;
+    paint-order: stroke fill !important;
+}
+
+/* Overlay renforcé pour les tuiles TV */
+.tile[data-category="tv"]::after,
+.tile.live-content::after {
+    background: radial-gradient(
+        ellipse at center,
+        rgba(0, 0, 0, 0.45) 0%,
+        rgba(0, 0, 0, 0.65) 100%
+    ) !important;
+}
+
+/* Badge DIRECT */
+.tile.live-content .tile-content::before {
+    content: 'DIRECT';
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    font-size: 10px;
+    color: white;
+    background-color: #ff3d3d;
+    padding: 2px 8px;
+    border-radius: 12px;
+    z-index: 20;
+    font-weight: bold;
+    border: 1px solid white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* ========================================
+   5. AUTRES CATÉGORIES
+   ======================================== */
+
+/* Actualités Locales */
+[data-category="news"] .tile-title {
+    color: #ffffff !important;
+    text-shadow: 
+        4px 4px 8px rgba(0, 0, 0, 1),
+        3px 3px 6px rgba(0, 0, 0, 0.95),
+        0 0 15px rgba(0, 0, 0, 0.85) !important;
+}
+
+/* Réseaux sociaux */
+[data-category="social"] .tile-title {
+    color: #ffffff !important;
+    text-shadow: 
+        4px 4px 8px rgba(0, 0, 0, 1),
+        3px 3px 6px rgba(0, 0, 0, 0.95),
+        0 0 15px rgba(0, 0, 0, 0.85) !important;
+}
+
+/* Espace+ */
+.tile[data-category="photos"] .tile-title,
+.tile[data-category="events"] .tile-title {
+    color: #ffffff !important;
+    text-shadow: 
+        4px 4px 8px rgba(0, 0, 0, 1),
+        3px 3px 6px rgba(0, 0, 0, 0.95),
+        0 0 15px rgba(0, 0, 0, 0.85) !important;
+}
+
+/* Sports */
+[data-category="sports"] .tile-title {
+    color: #ffffff !important;
+    text-shadow: 
+        4px 4px 8px rgba(0, 0, 0, 1),
+        3px 3px 6px rgba(0, 0, 0, 0.95),
+        0 0 15px rgba(0, 0, 0, 0.85) !important;
+}
+PARTIE 3 : EFFETS ET INTERACTIONS
+/* ========================================
+   6. EFFETS HOVER ET INTERACTIONS
+   ======================================== */
+
+/* Effet de survol général */
 .tile:hover {
     transform: translateY(-3px) !important;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25) !important;
     filter: brightness(1.05) !important;
     z-index: 5 !important;
 }
 
+/* Survol du texte */
+.tile:hover .tile-title {
+    transform: scale(1.05);
+    text-shadow: 
+        5px 5px 12px rgba(0, 0, 0, 1),
+        3px 3px 8px rgba(0, 0, 0, 1),
+        0 0 25px rgba(0, 0, 0, 0.9) !important;
+}
+
 /* Effet de clic */
-.tile:active, 
+.tile:active,
 .tile.tile-click {
     transform: scale(0.98) !important;
 }
 
-/* ========================================
-   2. EFFET DE BRILLANCE AU SURVOL
-   ======================================== */
-
+/* Effet de brillance */
 .tile::before {
     content: '';
     position: absolute;
@@ -64,132 +270,6 @@
 }
 
 /* ========================================
-   3. CONTENU DES TUILES
-   ======================================== */
-
-.tile-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    position: relative;
-    z-index: 2;
-    padding: 12px 8px !important;
-}
-
-/* Style du titre - SANS font-size !important */
-.tile-title {
-    font-weight: 600;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-    letter-spacing: 0.3px;
-    position: relative;
-    transition: transform 0.5s ease;
-}
-
-.tile:hover .tile-title {
-    transform: scale(1.05);
-}
-
-/* ========================================
-   4. SYSTÈME DE TAILLES DE TEXTE
-   ======================================== */
-
-/* Taille SMALL */
-[data-font-size="small"] .tile-title {
-    font-size: 12px;
-    line-height: 1.2;
-}
-
-[data-font-size="small"] .tile-container.list .tile-title {
-    font-size: 11px;
-}
-
-/* Taille NORMAL (par défaut) */
-[data-font-size="normal"] .tile-title {
-    font-size: 16px;
-    line-height: 1.3;
-}
-
-[data-font-size="normal"] .tile-container.list .tile-title {
-    font-size: 14px;
-}
-
-/* Taille LARGE */
-[data-font-size="large"] .tile-title {
-    font-size: 20px;
-    line-height: 1.4;
-}
-
-[data-font-size="large"] .tile-container.list .tile-title {
-    font-size: 17px;
-}
-
-/* ========================================
-   5. STYLES SPÉCIFIQUES AUX TUILES TV
-   ======================================== */
-
-.tile[data-category="tv"] {
-    min-width: 0;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.tile[data-category="tv"] .tile-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    padding-top: 30px !important;
-    padding-bottom: 0 !important;
-}
-
-.tile[data-category="tv"] .tile-title {
-    width: 100%;
-    font-weight: 600;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-    position: relative;
-    top: 0;
-}
-
-/* Mode grille - TV peut avoir plusieurs lignes */
-.tile-container.grid .tile[data-category="tv"] .tile-title {
-    white-space: normal;
-    text-overflow: initial;
-    overflow: visible;
-    text-align: center;
-    max-width: 90%;
-}
-
-/* ========================================
-   6. BADGE "DIRECT"
-   ======================================== */
-
-.tile.live-content .tile-content::before {
-    content: 'DIRECT';
-    position: absolute;
-    left: 8px;
-    top: 8px;
-    font-size: 10px;
-    color: white;
-    background-color: #ff3d3d;
-    padding: 2px 8px;
-    border-radius: 12px;
-    z-index: 3;
-    font-weight: bold;
-    border: 1px solid white;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-/* ========================================
    7. MODE LISTE
    ======================================== */
 
@@ -215,7 +295,7 @@
     align-items: center;
     justify-content: center;
     line-height: 1.2 !important;
-    /* font-size géré par data-font-size */
+    padding: 0 15px;
 }
 
 /* Badge DIRECT en mode liste */
@@ -224,83 +304,107 @@
     left: 15px;
     top: 50%;
     transform: translateY(-50%) !important;
-    z-index: 5;
     font-size: 9px !important;
     padding: 1px 6px !important;
 }
+PARTIE 4 : THÈMES ET RESPONSIVE
+/* ========================================
+   8. ADAPTATIONS PAR THÈME
+   ======================================== */
 
-/* Tuiles TV en mode liste */
-.tile-container.list .tile[data-category="tv"] {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 0 !important;
+/* Thème Rouge */
+[data-theme="rouge"] .tile .tile-title {
+    color: #ffffff !important;
+    text-shadow: 
+        4px 4px 10px rgba(0, 0, 0, 1),
+        3px 3px 8px rgba(0, 0, 0, 0.95),
+        2px 2px 6px rgba(0, 0, 0, 0.9),
+        0 0 20px rgba(0, 0, 0, 0.85) !important;
+    font-weight: 700 !important;
 }
 
-.tile-container.list .tile[data-category="tv"] .tile-content {
-    justify-content: flex-start !important;
-    padding-left: 80px !important;
-    padding-right: 20px !important;
-    width: 100%;
+/* Thème Sombre */
+[data-theme="dark"] .tile .tile-title {
+    color: #ffffff !important;
+    text-shadow: 
+        4px 4px 10px rgba(0, 0, 0, 1),
+        3px 3px 8px rgba(0, 0, 0, 0.95),
+        2px 2px 6px rgba(0, 0, 0, 0.9),
+        0 0 20px rgba(0, 0, 0, 0.85) !important;
+    font-weight: 700 !important;
 }
 
-.tile-container.list .tile[data-category="tv"] .tile-title {
-    justify-content: flex-start !important;
-    text-align: left !important;
-    width: auto;
-    margin-left: 10px !important;
-    margin-right: 20px;
+/* Thème Bleu Ciel */
+[data-theme="bleuciel"] .tile .tile-title {
+    color: #ffffff !important;
+    text-shadow: 
+        4px 4px 10px rgba(0, 0, 0, 1),
+        3px 3px 8px rgba(0, 0, 0, 0.95),
+        2px 2px 6px rgba(0, 0, 0, 0.9),
+        0 0 20px rgba(0, 0, 0, 0.85) !important;
+    font-weight: 700 !important;
+}
+
+/* Thème Violet */
+[data-theme="light"] .tile .tile-title {
+    color: #ffffff !important;
+    text-shadow: 
+        4px 4px 10px rgba(0, 0, 0, 1),
+        3px 3px 8px rgba(0, 0, 0, 0.95),
+        2px 2px 6px rgba(0, 0, 0, 0.9),
+        0 0 20px rgba(0, 0, 0, 0.85) !important;
+    font-weight: 700 !important;
 }
 
 /* ========================================
-   8. RESPONSIVE MOBILE
+   9. CONTRASTES ÉLEVÉS
+   ======================================== */
+
+/* Contraste élevé */
+[data-text-contrast="high"] .tile .tile-title,
+.high-contrast .tile .tile-title {
+    text-shadow: 
+        5px 5px 10px rgba(0, 0, 0, 1),
+        4px 4px 8px rgba(0, 0, 0, 1),
+        3px 3px 6px rgba(0, 0, 0, 1),
+        0 0 20px rgba(0, 0, 0, 0.9) !important;
+    font-weight: 800 !important;
+    -webkit-text-stroke: 0.3px rgba(0, 0, 0, 0.5);
+}
+
+/* Contraste très élevé */
+[data-text-contrast="very-high"] .tile .tile-title,
+.very-high-contrast .tile .tile-title {
+    text-shadow: 
+        6px 6px 12px rgba(0, 0, 0, 1),
+        5px 5px 10px rgba(0, 0, 0, 1),
+        4px 4px 8px rgba(0, 0, 0, 1),
+        3px 3px 6px rgba(0, 0, 0, 1),
+        0 0 25px rgba(0, 0, 0, 1) !important;
+    font-weight: 900 !important;
+    -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.7);
+}
+
+/* ========================================
+   10. RESPONSIVE MOBILE
    ======================================== */
 
 @media (max-width: 768px) {
-    /* Ajustement des tailles sur mobile */
-    [data-font-size="small"] .tile-title {
-        font-size: 11px;
-    }
+    [data-font-size="small"] .tile-title { font-size: 11px; }
+    [data-font-size="normal"] .tile-title { font-size: 14px; }
+    [data-font-size="large"] .tile-title { font-size: 18px; }
     
-    [data-font-size="small"] .tile-container.list .tile-title {
-        font-size: 10px;
-    }
-    
-    [data-font-size="normal"] .tile-title {
-        font-size: 14px;
-    }
-    
-    [data-font-size="normal"] .tile-container.list .tile-title {
-        font-size: 13px;
-    }
-    
-    [data-font-size="large"] .tile-title {
-        font-size: 18px;
-    }
-    
-    [data-font-size="large"] .tile-container.list .tile-title {
-        font-size: 16px;
-    }
-    
-    /* Tuiles TV sur mobile */
     .tile[data-category="tv"] .tile-content {
         padding-top: 30px !important;
     }
     
-    .tile[data-category="tv"] {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    /* Badge DIRECT sur mobile */
     .tile.live-content .tile-content::before {
         top: 6px;
     }
 }
-
+PARTIE 5 : ANIMATIONS ET ÉLÉMENTS AUXILIAIRES
 /* ========================================
-   9. ANIMATIONS
+   11. ANIMATIONS
    ======================================== */
 
 @keyframes tilesAppear {
@@ -337,7 +441,7 @@
 }
 
 /* ========================================
-   10. MENU CONTEXTUEL
+   12. MENU CONTEXTUEL
    ======================================== */
 
 .tile-menu {
@@ -369,7 +473,7 @@
 }
 
 /* ========================================
-   11. NOTIFICATIONS TOAST
+   13. NOTIFICATIONS TOAST
    ======================================== */
 
 .toast {
@@ -382,276 +486,14 @@
 }
 
 /* ========================================
-   12. ÉLÉMENTS DÉSACTIVÉS
+   14. SÉPARATEURS
    ======================================== */
 
-/* Indicateur de nouveau contenu - désactivé */
-.tile.has-new-content::after {
-    display: none !important;
+.separator {
+    background: rgba(0, 0, 0, 0.3) !important;
+    backdrop-filter: blur(5px);
 }
 
-/* Désactivation des animations 3D */
-.tile-container.grid .tile {
-    transform-style: flat !important;
-    perspective: none !important;
-}
-
-/* ========================================
-   13. AMÉLIORATION DE LA LISIBILITÉ DU TEXTE
-   ======================================== */
-
-/* Texte blanc par défaut avec ombre forte pour tous les thèmes */
-.tile .tile-title {
-    color: #ffffff !important;
-    text-shadow: 
-        2px 2px 4px rgba(0, 0, 0, 0.9),
-        1px 1px 2px rgba(0, 0, 0, 0.8),
-        0 0 8px rgba(0, 0, 0, 0.6),
-        0 0 3px rgba(0, 0, 0, 0.5) !important;
-}
-
-/* Overlay sombre subtil pour améliorer le contraste sur TOUTES les tuiles */
-.tile::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(ellipse at center, 
-        rgba(0, 0, 0, 0.15) 0%, 
-        rgba(0, 0, 0, 0.35) 100%);
-    pointer-events: none;
-    z-index: 1;
-    border-radius: inherit;
-}
-
-/* S'assurer que le contenu reste au-dessus de l'overlay */
-.tile .tile-content {
-    z-index: 3 !important;
-}
-
-/* Tuiles spécifiquement claires - texte noir avec contour blanc */
-[data-theme="rouge"] .tile:nth-child(30n + 13) .tile-title,
-[data-theme="rouge"] .tile:nth-child(30n + 14) .tile-title,
-[data-theme="rouge"] .tile:nth-child(30n + 17) .tile-title,
-[data-theme="rouge"] .tile:nth-child(30n + 29) .tile-title,
-[data-theme="bleuciel"] .tile:nth-child(30n + 7) .tile-title,
-[data-theme="bleuciel"] .tile:nth-child(30n + 17) .tile-title,
-[data-theme="bleuciel"] .tile:nth-child(30n + 19) .tile-title,
-[data-theme="light"] .tile:nth-child(30n + 14) .tile-title,
-[data-theme="light"] .tile:nth-child(30n + 16) .tile-title,
-[data-theme="light"] .tile:nth-child(30n + 17) .tile-title,
-[data-theme="light"] .tile:nth-child(30n + 18) .tile-title,
-[data-theme="light"] .tile:nth-child(30n + 19) .tile-title {
-    color: #1a1a1a !important;
-    font-weight: 700 !important;
-    text-shadow: 
-        1px 1px 3px rgba(255, 255, 255, 0.9),
-        0 0 5px rgba(255, 255, 255, 0.8),
-        2px 2px 6px rgba(255, 255, 255, 0.7) !important;
-    -webkit-text-stroke: 0.3px rgba(0, 0, 0, 0.2);
-}
-
-/* Amélioration spécifique pour le contraste élevé */
-.high-contrast .tile .tile-title,
-[data-text-contrast="high"] .tile .tile-title {
-    text-shadow: 
-        3px 3px 6px rgba(0, 0, 0, 1),
-        2px 2px 4px rgba(0, 0, 0, 0.9),
-        1px 1px 2px rgba(0, 0, 0, 0.8),
-        0 0 10px rgba(0, 0, 0, 0.7) !important;
-    font-weight: 700 !important;
-}
-
-/* Contraste très élevé */
-.very-high-contrast .tile .tile-title,
-[data-text-contrast="very-high"] .tile .tile-title {
-    text-shadow: 
-        4px 4px 8px rgba(0, 0, 0, 1),
-        3px 3px 6px rgba(0, 0, 0, 1),
-        2px 2px 4px rgba(0, 0, 0, 0.9),
-        0 0 15px rgba(0, 0, 0, 0.8) !important;
-    font-weight: 800 !important;
-    -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.3);
-}
-
-/* Augmenter l'opacité de l'overlay pour les tuiles trop claires */
-[data-theme="rouge"] .tile:nth-child(30n + 13)::after,
-[data-theme="rouge"] .tile:nth-child(30n + 14)::after,
-[data-theme="rouge"] .tile:nth-child(30n + 17)::after,
-[data-theme="rouge"] .tile:nth-child(30n + 29)::after,
-[data-theme="bleuciel"] .tile:nth-child(30n + 7)::after,
-[data-theme="bleuciel"] .tile:nth-child(30n + 17)::after,
-[data-theme="bleuciel"] .tile:nth-child(30n + 19)::after {
-    background: radial-gradient(ellipse at center, 
-        rgba(0, 0, 0, 0.25) 0%, 
-        rgba(0, 0, 0, 0.45) 100%);
-}
-
-/* Mode liste - adapter les styles */
-.tile-container.list .tile .tile-title {
-    padding: 0 10px;
-}
-
-/* Animation de pulsation pour attirer l'attention sur le texte */
-@keyframes textPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.9; }
-}
-
-/* Tuiles spéciales (sondage, ajout de site) - texte toujours blanc */
-.survey-tile .tile-title,
-.add-site-tile .tile-title {
-    color: #ffffff !important;
-    font-weight: 700 !important;
-    text-shadow: 
-        2px 2px 4px rgba(0, 0, 0, 1),
-        0 0 6px rgba(0, 0, 0, 0.8) !important;
-}
-
-/* ========================================
-   14. CORRECTION TEXTE TUILES TV - TOUS THÈMES
-   ======================================== */
-
-/* Forcer le texte blanc sur TOUTES les tuiles TV peu importe le thème */
-[data-theme="rouge"] .tile[data-category="tv"] .tile-title,
-[data-theme="bleuciel"] .tile[data-category="tv"] .tile-title,
-[data-theme="light"] .tile[data-category="tv"] .tile-title,
-[data-theme="dark"] .tile[data-category="tv"] .tile-title {
-    color: #ffffff !important;
-    text-shadow: 
-        2px 2px 5px rgba(0, 0, 0, 0.9),
-        1px 1px 3px rgba(0, 0, 0, 0.8),
-        0 0 8px rgba(0, 0, 0, 0.7) !important;
-    font-weight: 600 !important;
-}
-
-/* Renforcer l'overlay sombre sur les tuiles TV pour améliorer le contraste */
-.tile[data-category="tv"]::after {
-    background: linear-gradient(135deg, 
-        rgba(0, 0, 0, 0.3) 0%, 
-        rgba(0, 0, 0, 0.5) 100%) !important;
-}
-
-/* Tuiles TV avec badge DIRECT - texte encore plus contrasté */
-.tile[data-category="tv"].live-content .tile-title {
-    text-shadow: 
-        3px 3px 6px rgba(0, 0, 0, 1),
-        2px 2px 4px rgba(0, 0, 0, 0.9),
-        0 0 10px rgba(0, 0, 0, 0.8) !important;
-    font-weight: 700 !important;
-}
-
-/* Mode liste - tuiles TV */
-.tile-container.list .tile[data-category="tv"] .tile-title {
-    color: #ffffff !important;
-}
-
-/* Correction supplémentaire pour les tuiles TV dans les thèmes clairs */
-[data-theme="rouge"] .tile[data-category="tv"],
-[data-theme="bleuciel"] .tile[data-category="tv"],
-[data-theme="light"] .tile[data-category="tv"] {
-    /* Assombrir légèrement le fond pour un meilleur contraste */
-    filter: brightness(0.9);
-}
-
-/* Au survol, rétablir la luminosité normale */
-[data-theme="rouge"] .tile[data-category="tv"]:hover,
-[data-theme="bleuciel"] .tile[data-category="tv"]:hover,
-[data-theme="light"] .tile[data-category="tv"]:hover {
-    filter: brightness(1.05) !important;
-}
-
-/* ========================================
-   15. SOLUTION COMPLÈTE VISIBILITÉ TEXTE
-   ======================================== */
-
-/* RESET - Texte blanc par défaut sur TOUTES les tuiles */
-.tile .tile-title {
-    color: #ffffff !important;
-    text-shadow: 
-        3px 3px 6px rgba(0, 0, 0, 1),
-        2px 2px 4px rgba(0, 0, 0, 0.9),
-        1px 1px 2px rgba(0, 0, 0, 0.8),
-        0 0 10px rgba(0, 0, 0, 0.7) !important;
-    font-weight: 600 !important;
-    z-index: 10 !important;
-}
-
-/* Overlay sombre sur TOUTES les tuiles pour garantir la lisibilité */
-.tile::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0.2) 0%,
-        rgba(0, 0, 0, 0.4) 100%
-    );
-    pointer-events: none;
-    z-index: 1;
-    border-radius: inherit;
-}
-
-/* S'assurer que le contenu est au-dessus */
-.tile .tile-content {
-    z-index: 5 !important;
-    position: relative;
-}
-
-/* ========================================
-   TUILES ESPACE+ (Bloc-notes, Lecteur Radio, Todo List)
-   ======================================== */
-
-/* Forcer le texte blanc sur les tuiles Espace+ */
-.tile[data-category="photos"] .tile-title,
-.tile[data-category="events"] .tile-title,
-.tile:has(.tile-title:contains("Bloc-notes")) .tile-title,
-.tile:has(.tile-title:contains("Lecteur Radio")) .tile-title,
-.tile:has(.tile-title:contains("Todo List")) .tile-title {
-    color: #ffffff !important;
-    text-shadow: 
-        3px 3px 7px rgba(0, 0, 0, 1),
-        2px 2px 5px rgba(0, 0, 0, 0.95),
-        0 0 12px rgba(0, 0, 0, 0.8) !important;
-    font-weight: 700 !important;
-}
-
-/* ========================================
-   TUILES TV - TOUS THÈMES
-   ======================================== */
-
-/* Texte blanc forcé pour TOUTES les tuiles TV */
-.tile[data-category="tv"] .tile-title,
-.tile.live-content .tile-title {
-    color: #ffffff !important;
-    text-shadow: 
-        3px 3px 7px rgba(0, 0, 0, 1),
-        2px 2px 5px rgba(0, 0, 0, 0.95),
-        1px 1px 3px rgba(0, 0, 0, 0.9),
-        0 0 12px rgba(0, 0, 0, 0.8) !important;
-    font-weight: 700 !important;
-}
-
-/* Overlay renforcé pour les tuiles TV */
-.tile[data-category="tv"]::after,
-.tile.live-content::after {
-    background: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0.35) 0%,
-        rgba(0, 0, 0, 0.5) 100%
-    ) !important;
-}
-
-/* ========================================
-   SÉPARATEURS
-   ======================================== */
-
-/* Texte des séparateurs toujours lisible */
 .separator h2,
 .separator-text {
     color: #ffffff !important;
@@ -661,289 +503,15 @@
     font-weight: 600 !important;
 }
 
-/* Fond sombre pour les séparateurs */
-.separator {
-    background: rgba(0, 0, 0, 0.3) !important;
-    backdrop-filter: blur(5px);
-}
-
 /* ========================================
-   CORRECTIONS PAR THÈME
+   15. ÉLÉMENTS DÉSACTIVÉS
    ======================================== */
 
-/* Thème Bleu Ciel - Renforcement */
-[data-theme="bleuciel"] .tile .tile-title {
-    text-shadow: 
-        3px 3px 6px rgba(0, 0, 0, 1),
-        2px 2px 4px rgba(0, 0, 0, 0.95),
-        0 0 10px rgba(0, 0, 0, 0.8) !important;
+.tile.has-new-content::after {
+    display: none !important;
 }
 
-/* Thème Violet/Light - Renforcement */
-[data-theme="light"] .tile .tile-title {
-    text-shadow: 
-        3px 3px 6px rgba(0, 0, 0, 1),
-        2px 2px 4px rgba(0, 0, 0, 0.95),
-        0 0 10px rgba(0, 0, 0, 0.8) !important;
-}
-
-/* Thème Rouge - Renforcement */
-[data-theme="rouge"] .tile .tile-title {
-    text-shadow: 
-        3px 3px 6px rgba(0, 0, 0, 1),
-        2px 2px 4px rgba(0, 0, 0, 0.95),
-        0 0 10px rgba(0, 0, 0, 0.8) !important;
-}
-
-/* ========================================
-   MODE LISTE - Adaptations
-   ======================================== */
-
-.tile-container.list .tile .tile-title {
-    color: #ffffff !important;
-    padding: 0 15px;
-}
-
-/* ========================================
-   HOVER EFFECTS
-   ======================================== */
-
-.tile:hover .tile-title {
-    text-shadow: 
-        4px 4px 8px rgba(0, 0, 0, 1),
-        2px 2px 4px rgba(0, 0, 0, 1),
-        0 0 15px rgba(0, 0, 0, 0.9) !important;
-}
-
-/* ========================================
-   CONTRASTE ÉLEVÉ - Si activé
-   ======================================== */
-
-[data-text-contrast="high"] .tile .tile-title,
-.high-contrast .tile .tile-title {
-    text-shadow: 
-        4px 4px 8px rgba(0, 0, 0, 1),
-        3px 3px 6px rgba(0, 0, 0, 1),
-        2px 2px 4px rgba(0, 0, 0, 0.95),
-        0 0 15px rgba(0, 0, 0, 0.9) !important;
-    font-weight: 800 !important;
-    -webkit-text-stroke: 0.3px rgba(0, 0, 0, 0.5);
-}
-
-[data-text-contrast="very-high"] .tile .tile-title,
-.very-high-contrast .tile .tile-title {
-    text-shadow: 
-        5px 5px 10px rgba(0, 0, 0, 1),
-        4px 4px 8px rgba(0, 0, 0, 1),
-        3px 3px 6px rgba(0, 0, 0, 1),
-        2px 2px 4px rgba(0, 0, 0, 1),
-        0 0 20px rgba(0, 0, 0, 1) !important;
-    font-weight: 900 !important;
-    -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.7);
-}
-
-/* ========================================
-   16. CORRECTIONS SPÉCIFIQUES TUILES PROBLÉMATIQUES
-   ======================================== */
-
-/* FORCER LE TEXTE BLANC sur les tuiles problématiques identifiées */
-
-/* Tuile YouTube dans tous les thèmes */
-.tile[data-category="social"]:has(.tile-title:contains("YouTube")) .tile-title,
-.tile:has(.tile-title:contains("🔴 YouTube")) .tile-title {
-    color: #ffffff !important;
-    text-shadow: 
-        3px 3px 7px rgba(0, 0, 0, 1),
-        2px 2px 5px rgba(0, 0, 0, 0.95),
-        1px 1px 3px rgba(0, 0, 0, 0.9),
-        0 0 15px rgba(0, 0, 0, 0.85) !important;
-    font-weight: 700 !important;
-}
-
-/* Tuile Infos Dijon */
-.tile:has(.tile-title:contains("Infos Dijon")) .tile-title {
-    color: #ffffff !important;
-    text-shadow: 
-        3px 3px 7px rgba(0, 0, 0, 1),
-        2px 2px 5px rgba(0, 0, 0, 0.95),
-        0 0 12px rgba(0, 0, 0, 0.85) !important;
-    font-weight: 700 !important;
-}
-
-/* RENFORCEMENT SPÉCIAL pour les tuiles TV */
-.tile[data-category="tv"] .tile-title,
-.tile.live-content .tile-title {
-    color: #ffffff !important;
-    text-shadow: 
-        4px 4px 8px rgba(0, 0, 0, 1),
-        3px 3px 6px rgba(0, 0, 0, 1),
-        2px 2px 4px rgba(0, 0, 0, 0.95),
-        1px 1px 2px rgba(0, 0, 0, 0.9),
-        0 0 20px rgba(0, 0, 0, 0.85) !important;
-    font-weight: 800 !important;
-    letter-spacing: 0.5px;
-}
-
-/* Overlay plus fort pour les tuiles TV */
-.tile[data-category="tv"]::after {
-    background: linear-gradient(
-        135deg,
-        rgba(0, 0, 0, 0.4) 0%,
-        rgba(0, 0, 0, 0.6) 100%
-    ) !important;
-}
-
-/* ========================================
-   SOLUTION ALTERNATIVE : Ciblage par position
-   ======================================== */
-
-/* Actualités Locales - Forcer le blanc sur toutes */
-[data-category="news"] .tile-title {
-    color: #ffffff !important;
-    text-shadow: 
-        3px 3px 6px rgba(0, 0, 0, 1),
-        2px 2px 4px rgba(0, 0, 0, 0.9),
-        0 0 10px rgba(0, 0, 0, 0.8) !important;
-}
-
-/* Réseaux sociaux - Forcer le blanc */
-[data-category="social"] .tile-title {
-    color: #ffffff !important;
-    text-shadow: 
-        3px 3px 6px rgba(0, 0, 0, 1),
-        2px 2px 4px rgba(0, 0, 0, 0.9),
-        0 0 10px rgba(0, 0, 0, 0.8) !important;
-}
-
-/* ========================================
-   CORRECTIONS PAR THÈME SPÉCIFIQUE
-   ======================================== */
-
-/* Thème Bleu Ciel - Forcer le blanc sur TOUTES les tuiles */
-[data-theme="bleuciel"] .tile .tile-title {
-    color: #ffffff !important;
-    text-shadow: 
-        4px 4px 8px rgba(0, 0, 0, 1),
-        3px 3px 6px rgba(0, 0, 0, 0.95),
-        2px 2px 4px rgba(0, 0, 0, 0.9),
-        0 0 15px rgba(0, 0, 0, 0.85) !important;
-    font-weight: 700 !important;
-}
-
-/* Thème Rouge - Forcer le blanc sur TOUTES les tuiles */
-[data-theme="rouge"] .tile .tile-title {
-    color: #ffffff !important;
-    text-shadow: 
-        4px 4px 8px rgba(0, 0, 0, 1),
-        3px 3px 6px rgba(0, 0, 0, 0.95),
-        2px 2px 4px rgba(0, 0, 0, 0.9),
-        0 0 15px rgba(0, 0, 0, 0.85) !important;
-    font-weight: 700 !important;
-}
-
-/* ========================================
-   BADGE NOUVEAU sur tuile Sondage
-   ======================================== */
-
-/* S'assurer que le badge NOUVEAU reste visible */
-.survey-tile::before,
-.tile:has(.tile-title:contains("Sondage"))::before {
-    content: 'NOUVEAU';
-    position: absolute;
-    left: 8px;
-    top: 8px;
-    font-size: 10px;
-    color: white !important;
-    background-color: #ff3d3d;
-    padding: 2px 8px;
-    border-radius: 12px;
-    z-index: 10;
-    font-weight: bold;
-    border: 1px solid white;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-}
-
-/* ========================================
-   EFFET HOVER AMÉLIORÉ
-   ======================================== */
-
-.tile:hover .tile-title {
-    color: #ffffff !important;
-    text-shadow: 
-        5px 5px 10px rgba(0, 0, 0, 1),
-        3px 3px 6px rgba(0, 0, 0, 1),
-        0 0 20px rgba(0, 0, 0, 0.9) !important;
-    transform: scale(1.02);
-}
-
-/* ========================================
-   17. FIX DÉFINITIF OMBRES TUILES TV
-   ======================================== */
-
-/* FORCER les ombres sur TOUTES les tuiles TV avec !important sur chaque propriété */
-.tile[data-category="tv"] .tile-title,
-.tile.live-content .tile-title,
-#tileContainer .tile[data-category="tv"] .tile-title {
-    color: #ffffff !important;
-    text-shadow: 
-        4px 4px 10px rgba(0, 0, 0, 1) !important,
-        3px 3px 8px rgba(0, 0, 0, 1) !important,
-        2px 2px 6px rgba(0, 0, 0, 0.95) !important,
-        1px 1px 4px rgba(0, 0, 0, 0.9) !important,
-        0px 0px 20px rgba(0, 0, 0, 0.85) !important;
-    font-weight: 800 !important;
-    -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.8) !important;
-    paint-order: stroke fill !important;
-}
-
-/* Overlay sombre renforcé spécifiquement pour les tuiles TV */
-.tile[data-category="tv"]::after,
-.tile.live-content::after {
-    content: '' !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    background: radial-gradient(
-        ellipse at center,
-        rgba(0, 0, 0, 0.45) 0%,
-        rgba(0, 0, 0, 0.65) 100%
-    ) !important;
-    pointer-events: none !important;
-    z-index: 1 !important;
-    border-radius: inherit !important;
-}
-
-/* S'assurer que le texte est au-dessus de l'overlay */
-.tile[data-category="tv"] .tile-content {
-    z-index: 10 !important;
-    position: relative !important;
-}
-
-/* Ciblage spécifique par nom de chaîne TV */
-.tile:has(.tile-title:contains("France 3")) .tile-title,
-.tile:has(.tile-title:contains("BFMTV")) .tile-title,
-.tile:has(.tile-title:contains("CNews")) .tile-title,
-.tile:has(.tile-title:contains("FranceTV")) .tile-title {
-    text-shadow: 
-        5px 5px 12px rgba(0, 0, 0, 1) !important,
-        3px 3px 8px rgba(0, 0, 0, 1) !important,
-        0px 0px 25px rgba(0, 0, 0, 0.9) !important;
-}
-
-/* Reset complet et forcé pour TOUS les thèmes sur les tuiles TV */
-[data-theme="rouge"] .tile[data-category="tv"] .tile-title,
-[data-theme="dark"] .tile[data-category="tv"] .tile-title,
-[data-theme="bleuciel"] .tile[data-category="tv"] .tile-title,
-[data-theme="light"] .tile[data-category="tv"] .tile-title {
-    color: #ffffff !important;
-    text-shadow: 
-        5px 5px 12px rgba(0, 0, 0, 1) !important,
-        4px 4px 10px rgba(0, 0, 0, 1) !important,
-        3px 3px 8px rgba(0, 0, 0, 0.95) !important,
-        2px 2px 6px rgba(0, 0, 0, 0.9) !important,
-        1px 1px 4px rgba(0, 0, 0, 0.85) !important,
-        0px 0px 30px rgba(0, 0, 0, 0.8) !important;
-    font-weight: 900 !important;
+.tile-container.grid .tile {
+    transform-style: flat !important;
+    perspective: none !important;
 }
