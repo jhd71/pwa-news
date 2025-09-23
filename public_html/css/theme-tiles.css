@@ -151,17 +151,22 @@
 }
 
 .tile-title {
-    background: rgba(0, 0, 0, 0.4);
-    padding: 8px 12px;
-    border-radius: 8px;
-    color: #ffffff;
+    text-shadow: 
+        /* Ombre principale forte */
+        2px 2px 6px rgba(0, 0, 0, 0.8),
+        /* Contour subtil */
+        0 0 4px rgba(0, 0, 0, 0.9),
+        /* Ombre additionnelle pour la profondeur */
+        1px 1px 2px rgba(0, 0, 0, 1),
+        /* Halo léger */
+        0 0 8px rgba(0, 0, 0, 0.6);
     font-weight: 700;
-    backdrop-filter: blur(2px);
+    color: #ffffff;
 }
 
 .tile-content {
-    background: rgba(0, 0, 0, 0.25);
-    padding: 6px 10px;
-    border-radius: 6px;
-    margin-top: 5px;
+    text-shadow: 
+        1px 1px 3px rgba(0, 0, 0, 0.7),
+        0 0 6px rgba(0, 0, 0, 0.5);
+    font-weight: 600;
 }
