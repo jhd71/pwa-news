@@ -118,7 +118,7 @@
 [data-theme="light"] .tile:nth-child(30n + 17) { background: linear-gradient(135deg, #ddd6fe, #c084fc); }
 [data-theme="light"] .tile:nth-child(30n + 18) { background: linear-gradient(135deg, #fbb6ce, #fb7185); }
 [data-theme="light"] .tile:nth-child(30n + 19) { background: linear-gradient(135deg, #f3e8ff, #d946ef); }
-[data-theme="light"] .tile:nth-child(30n + 20) { background: linear-gradient(135deg, #fef3c7, #fbbf24); }
+[data-theme="light"] .tile:nth-child(30n + 20) { background: linear-gradient(135deg, #9C27B0, #5e18db); }
 [data-theme="light"] .tile:nth-child(30n + 21) { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
 [data-theme="light"] .tile:nth-child(30n + 22) { background: linear-gradient(135deg, #ec4899, #db2777); }
 [data-theme="light"] .tile:nth-child(30n + 23) { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
