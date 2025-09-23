@@ -741,3 +741,137 @@
     font-weight: 900 !important;
     -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.7);
 }
+
+/* ========================================
+   16. CORRECTIONS SPÉCIFIQUES TUILES PROBLÉMATIQUES
+   ======================================== */
+
+/* FORCER LE TEXTE BLANC sur les tuiles problématiques identifiées */
+
+/* Tuile YouTube dans tous les thèmes */
+.tile[data-category="social"]:has(.tile-title:contains("YouTube")) .tile-title,
+.tile:has(.tile-title:contains("🔴 YouTube")) .tile-title {
+    color: #ffffff !important;
+    text-shadow: 
+        3px 3px 7px rgba(0, 0, 0, 1),
+        2px 2px 5px rgba(0, 0, 0, 0.95),
+        1px 1px 3px rgba(0, 0, 0, 0.9),
+        0 0 15px rgba(0, 0, 0, 0.85) !important;
+    font-weight: 700 !important;
+}
+
+/* Tuile Infos Dijon */
+.tile:has(.tile-title:contains("Infos Dijon")) .tile-title {
+    color: #ffffff !important;
+    text-shadow: 
+        3px 3px 7px rgba(0, 0, 0, 1),
+        2px 2px 5px rgba(0, 0, 0, 0.95),
+        0 0 12px rgba(0, 0, 0, 0.85) !important;
+    font-weight: 700 !important;
+}
+
+/* RENFORCEMENT SPÉCIAL pour les tuiles TV */
+.tile[data-category="tv"] .tile-title,
+.tile.live-content .tile-title {
+    color: #ffffff !important;
+    text-shadow: 
+        4px 4px 8px rgba(0, 0, 0, 1),
+        3px 3px 6px rgba(0, 0, 0, 1),
+        2px 2px 4px rgba(0, 0, 0, 0.95),
+        1px 1px 2px rgba(0, 0, 0, 0.9),
+        0 0 20px rgba(0, 0, 0, 0.85) !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.5px;
+}
+
+/* Overlay plus fort pour les tuiles TV */
+.tile[data-category="tv"]::after {
+    background: linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0.4) 0%,
+        rgba(0, 0, 0, 0.6) 100%
+    ) !important;
+}
+
+/* ========================================
+   SOLUTION ALTERNATIVE : Ciblage par position
+   ======================================== */
+
+/* Actualités Locales - Forcer le blanc sur toutes */
+[data-category="news"] .tile-title {
+    color: #ffffff !important;
+    text-shadow: 
+        3px 3px 6px rgba(0, 0, 0, 1),
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 10px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Réseaux sociaux - Forcer le blanc */
+[data-category="social"] .tile-title {
+    color: #ffffff !important;
+    text-shadow: 
+        3px 3px 6px rgba(0, 0, 0, 1),
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 10px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* ========================================
+   CORRECTIONS PAR THÈME SPÉCIFIQUE
+   ======================================== */
+
+/* Thème Bleu Ciel - Forcer le blanc sur TOUTES les tuiles */
+[data-theme="bleuciel"] .tile .tile-title {
+    color: #ffffff !important;
+    text-shadow: 
+        4px 4px 8px rgba(0, 0, 0, 1),
+        3px 3px 6px rgba(0, 0, 0, 0.95),
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 15px rgba(0, 0, 0, 0.85) !important;
+    font-weight: 700 !important;
+}
+
+/* Thème Rouge - Forcer le blanc sur TOUTES les tuiles */
+[data-theme="rouge"] .tile .tile-title {
+    color: #ffffff !important;
+    text-shadow: 
+        4px 4px 8px rgba(0, 0, 0, 1),
+        3px 3px 6px rgba(0, 0, 0, 0.95),
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 15px rgba(0, 0, 0, 0.85) !important;
+    font-weight: 700 !important;
+}
+
+/* ========================================
+   BADGE NOUVEAU sur tuile Sondage
+   ======================================== */
+
+/* S'assurer que le badge NOUVEAU reste visible */
+.survey-tile::before,
+.tile:has(.tile-title:contains("Sondage"))::before {
+    content: 'NOUVEAU';
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    font-size: 10px;
+    color: white !important;
+    background-color: #ff3d3d;
+    padding: 2px 8px;
+    border-radius: 12px;
+    z-index: 10;
+    font-weight: bold;
+    border: 1px solid white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* ========================================
+   EFFET HOVER AMÉLIORÉ
+   ======================================== */
+
+.tile:hover .tile-title {
+    color: #ffffff !important;
+    text-shadow: 
+        5px 5px 10px rgba(0, 0, 0, 1),
+        3px 3px 6px rgba(0, 0, 0, 1),
+        0 0 20px rgba(0, 0, 0, 0.9) !important;
+    transform: scale(1.02);
+}
