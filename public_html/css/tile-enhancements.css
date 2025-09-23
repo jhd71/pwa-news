@@ -562,3 +562,182 @@
 [data-theme="light"] .tile[data-category="tv"]:hover {
     filter: brightness(1.05) !important;
 }
+
+/* ========================================
+   15. SOLUTION COMPLÈTE VISIBILITÉ TEXTE
+   ======================================== */
+
+/* RESET - Texte blanc par défaut sur TOUTES les tuiles */
+.tile .tile-title {
+    color: #ffffff !important;
+    text-shadow: 
+        3px 3px 6px rgba(0, 0, 0, 1),
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        1px 1px 2px rgba(0, 0, 0, 0.8),
+        0 0 10px rgba(0, 0, 0, 0.7) !important;
+    font-weight: 600 !important;
+    z-index: 10 !important;
+}
+
+/* Overlay sombre sur TOUTES les tuiles pour garantir la lisibilité */
+.tile::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.2) 0%,
+        rgba(0, 0, 0, 0.4) 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+    border-radius: inherit;
+}
+
+/* S'assurer que le contenu est au-dessus */
+.tile .tile-content {
+    z-index: 5 !important;
+    position: relative;
+}
+
+/* ========================================
+   TUILES ESPACE+ (Bloc-notes, Lecteur Radio, Todo List)
+   ======================================== */
+
+/* Forcer le texte blanc sur les tuiles Espace+ */
+.tile[data-category="photos"] .tile-title,
+.tile[data-category="events"] .tile-title,
+.tile:has(.tile-title:contains("Bloc-notes")) .tile-title,
+.tile:has(.tile-title:contains("Lecteur Radio")) .tile-title,
+.tile:has(.tile-title:contains("Todo List")) .tile-title {
+    color: #ffffff !important;
+    text-shadow: 
+        3px 3px 7px rgba(0, 0, 0, 1),
+        2px 2px 5px rgba(0, 0, 0, 0.95),
+        0 0 12px rgba(0, 0, 0, 0.8) !important;
+    font-weight: 700 !important;
+}
+
+/* ========================================
+   TUILES TV - TOUS THÈMES
+   ======================================== */
+
+/* Texte blanc forcé pour TOUTES les tuiles TV */
+.tile[data-category="tv"] .tile-title,
+.tile.live-content .tile-title {
+    color: #ffffff !important;
+    text-shadow: 
+        3px 3px 7px rgba(0, 0, 0, 1),
+        2px 2px 5px rgba(0, 0, 0, 0.95),
+        1px 1px 3px rgba(0, 0, 0, 0.9),
+        0 0 12px rgba(0, 0, 0, 0.8) !important;
+    font-weight: 700 !important;
+}
+
+/* Overlay renforcé pour les tuiles TV */
+.tile[data-category="tv"]::after,
+.tile.live-content::after {
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.35) 0%,
+        rgba(0, 0, 0, 0.5) 100%
+    ) !important;
+}
+
+/* ========================================
+   SÉPARATEURS
+   ======================================== */
+
+/* Texte des séparateurs toujours lisible */
+.separator h2,
+.separator-text {
+    color: #ffffff !important;
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 8px rgba(0, 0, 0, 0.7) !important;
+    font-weight: 600 !important;
+}
+
+/* Fond sombre pour les séparateurs */
+.separator {
+    background: rgba(0, 0, 0, 0.3) !important;
+    backdrop-filter: blur(5px);
+}
+
+/* ========================================
+   CORRECTIONS PAR THÈME
+   ======================================== */
+
+/* Thème Bleu Ciel - Renforcement */
+[data-theme="bleuciel"] .tile .tile-title {
+    text-shadow: 
+        3px 3px 6px rgba(0, 0, 0, 1),
+        2px 2px 4px rgba(0, 0, 0, 0.95),
+        0 0 10px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Thème Violet/Light - Renforcement */
+[data-theme="light"] .tile .tile-title {
+    text-shadow: 
+        3px 3px 6px rgba(0, 0, 0, 1),
+        2px 2px 4px rgba(0, 0, 0, 0.95),
+        0 0 10px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Thème Rouge - Renforcement */
+[data-theme="rouge"] .tile .tile-title {
+    text-shadow: 
+        3px 3px 6px rgba(0, 0, 0, 1),
+        2px 2px 4px rgba(0, 0, 0, 0.95),
+        0 0 10px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* ========================================
+   MODE LISTE - Adaptations
+   ======================================== */
+
+.tile-container.list .tile .tile-title {
+    color: #ffffff !important;
+    padding: 0 15px;
+}
+
+/* ========================================
+   HOVER EFFECTS
+   ======================================== */
+
+.tile:hover .tile-title {
+    text-shadow: 
+        4px 4px 8px rgba(0, 0, 0, 1),
+        2px 2px 4px rgba(0, 0, 0, 1),
+        0 0 15px rgba(0, 0, 0, 0.9) !important;
+}
+
+/* ========================================
+   CONTRASTE ÉLEVÉ - Si activé
+   ======================================== */
+
+[data-text-contrast="high"] .tile .tile-title,
+.high-contrast .tile .tile-title {
+    text-shadow: 
+        4px 4px 8px rgba(0, 0, 0, 1),
+        3px 3px 6px rgba(0, 0, 0, 1),
+        2px 2px 4px rgba(0, 0, 0, 0.95),
+        0 0 15px rgba(0, 0, 0, 0.9) !important;
+    font-weight: 800 !important;
+    -webkit-text-stroke: 0.3px rgba(0, 0, 0, 0.5);
+}
+
+[data-text-contrast="very-high"] .tile .tile-title,
+.very-high-contrast .tile .tile-title {
+    text-shadow: 
+        5px 5px 10px rgba(0, 0, 0, 1),
+        4px 4px 8px rgba(0, 0, 0, 1),
+        3px 3px 6px rgba(0, 0, 0, 1),
+        2px 2px 4px rgba(0, 0, 0, 1),
+        0 0 20px rgba(0, 0, 0, 1) !important;
+    font-weight: 900 !important;
+    -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.7);
+}
