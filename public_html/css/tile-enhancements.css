@@ -509,3 +509,56 @@
         2px 2px 4px rgba(0, 0, 0, 1),
         0 0 6px rgba(0, 0, 0, 0.8) !important;
 }
+
+/* ========================================
+   14. CORRECTION TEXTE TUILES TV - TOUS THÈMES
+   ======================================== */
+
+/* Forcer le texte blanc sur TOUTES les tuiles TV peu importe le thème */
+[data-theme="rouge"] .tile[data-category="tv"] .tile-title,
+[data-theme="bleuciel"] .tile[data-category="tv"] .tile-title,
+[data-theme="light"] .tile[data-category="tv"] .tile-title,
+[data-theme="dark"] .tile[data-category="tv"] .tile-title {
+    color: #ffffff !important;
+    text-shadow: 
+        2px 2px 5px rgba(0, 0, 0, 0.9),
+        1px 1px 3px rgba(0, 0, 0, 0.8),
+        0 0 8px rgba(0, 0, 0, 0.7) !important;
+    font-weight: 600 !important;
+}
+
+/* Renforcer l'overlay sombre sur les tuiles TV pour améliorer le contraste */
+.tile[data-category="tv"]::after {
+    background: linear-gradient(135deg, 
+        rgba(0, 0, 0, 0.3) 0%, 
+        rgba(0, 0, 0, 0.5) 100%) !important;
+}
+
+/* Tuiles TV avec badge DIRECT - texte encore plus contrasté */
+.tile[data-category="tv"].live-content .tile-title {
+    text-shadow: 
+        3px 3px 6px rgba(0, 0, 0, 1),
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 10px rgba(0, 0, 0, 0.8) !important;
+    font-weight: 700 !important;
+}
+
+/* Mode liste - tuiles TV */
+.tile-container.list .tile[data-category="tv"] .tile-title {
+    color: #ffffff !important;
+}
+
+/* Correction supplémentaire pour les tuiles TV dans les thèmes clairs */
+[data-theme="rouge"] .tile[data-category="tv"],
+[data-theme="bleuciel"] .tile[data-category="tv"],
+[data-theme="light"] .tile[data-category="tv"] {
+    /* Assombrir légèrement le fond pour un meilleur contraste */
+    filter: brightness(0.9);
+}
+
+/* Au survol, rétablir la luminosité normale */
+[data-theme="rouge"] .tile[data-category="tv"]:hover,
+[data-theme="bleuciel"] .tile[data-category="tv"]:hover,
+[data-theme="light"] .tile[data-category="tv"]:hover {
+    filter: brightness(1.05) !important;
+}
