@@ -103,6 +103,7 @@ const STATIC_RESOURCES = [
     '/images/INFOS-maskable-144.png',
     '/images/INFOS-maskable-192.png',
     '/images/INFOS-maskable-512.png',
+	'/images/Actu&Media.png',
     
     // Icônes spécialisées
     '/images/no-image.png',
