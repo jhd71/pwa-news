@@ -69,27 +69,6 @@ class NotepadWidget {
         tileElement.className = 'tile notepad-app-tile';
         tileElement.setAttribute('data-category', 'notepad');
         
-        // Adapter le style selon le thème actuel
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'rouge';
-        let gradientStyle = '';
-        
-        switch(currentTheme) {
-            case 'rouge':
-                gradientStyle = 'linear-gradient(135deg, #940000, #c41e3a)';
-                break;
-            case 'dark':
-                gradientStyle = 'linear-gradient(135deg, #ff6b6b, #ff8787)';
-                break;
-            case 'bleuciel':
-                gradientStyle = 'linear-gradient(135deg, #17a2b8, #20c997)';
-                break;
-            case 'light':
-                gradientStyle = 'linear-gradient(135deg, #6f42c1, #e83e8c)';
-                break;
-            default:
-                gradientStyle = 'linear-gradient(135deg, #667eea, #764ba2)';
-        }
-        
         tileElement.style.cssText = `
             background: ${gradientStyle};
             color: white;

@@ -27,10 +27,6 @@
     --header-text-size: 20px;
     --modal-text-size: 16px;
     
-    /* Variables pour transparence */
-    --tile-opacity: 1;
-    --background-color-rgb: 248, 249, 250;
-    
     /* Variables locales pour thème rouge */
     --rouge-site: #bc3a34;
     --rouge-fonce: #a32f2a;
@@ -1077,20 +1073,6 @@ main {
 
 .separator::after {
     right: 20px;
-}
-
-/* Classes de transparence pour les séparateurs */
-.separator.force-transparency {
-    opacity: var(--tile-opacity, 1);
-    transition: opacity 0.3s ease;
-}
-
-.separator.force-transparency:hover {
-    opacity: 1;
-}
-
-.separator.force-transparency img {
-    opacity: inherit;
 }
 
 /* ==========================================================================
@@ -2937,52 +2919,7 @@ a:active {
 }
 
 /* ========================================
-   COULEURS SELON LES THÈMES - PLUS VISIBLES
-   ======================================== */
-
-/* THÈME ROUGE (défaut) */
-[data-theme="rouge"] .tile.add-site-tile {
-    background: linear-gradient(135deg, #dc3545, #fd7e14) !important;
-    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.5) !important;
-}
-
-[data-theme="rouge"] .tile.add-site-tile:hover {
-    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.6) !important;
-}
-
-/* THÈME SOMBRE - Plus coloré ! */
-[data-theme="dark"] .tile.add-site-tile {
-    background: linear-gradient(135deg, #28a745, #17a2b8) !important;
-    border-color: rgba(255, 255, 255, 0.4) !important;
-    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.5) !important;
-}
-
-[data-theme="dark"] .tile.add-site-tile:hover {
-    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.6) !important;
-}
-
-/* THÈME BLEU CIEL */
-[data-theme="bleuciel"] .tile.add-site-tile {
-    background: linear-gradient(135deg, #17a2b8, #20c997) !important;
-    box-shadow: 0 4px 15px rgba(23, 162, 184, 0.5) !important;
-}
-
-[data-theme="bleuciel"] .tile.add-site-tile:hover {
-    box-shadow: 0 8px 25px rgba(23, 162, 184, 0.6) !important;
-}
-
-/* THÈME VIOLET (light) */
-[data-theme="light"] .tile.add-site-tile {
-    background: linear-gradient(135deg, #6f42c1, #e83e8c) !important;
-    box-shadow: 0 4px 15px rgba(111, 66, 193, 0.5) !important;
-}
-
-[data-theme="light"] .tile.add-site-tile:hover {
-    box-shadow: 0 8px 25px rgba(111, 66, 193, 0.6) !important;
-}
-
-/* ========================================
-   ANIMATION DE PULSATION UNIFIÉE
+   ANIMATION DE PULSATION UNIFIÉE add site
    ======================================== */
 
 .tile.add-site-tile {
@@ -2998,48 +2935,6 @@ a:active {
         transform: scale(1.02);
         filter: brightness(1.1);
     }
-}
-
-/* ========================================
-   STYLES POUR LE MODE LISTE
-   ======================================== */
-
-/* THÈME ROUGE - Mode liste */
-[data-theme="rouge"] .tile-container.list .tile.add-site-tile {
-    background: linear-gradient(90deg, #dc3545, #fd7e14) !important;
-}
-
-/* THÈME SOMBRE - Mode liste */
-[data-theme="dark"] .tile-container.list .tile.add-site-tile {
-    background: linear-gradient(90deg, #28a745, #17a2b8) !important;
-}
-
-/* THÈME BLEU CIEL - Mode liste */
-[data-theme="bleuciel"] .tile-container.list .tile.add-site-tile {
-    background: linear-gradient(90deg, #17a2b8, #20c997) !important;
-}
-
-/* THÈME VIOLET - Mode liste */
-[data-theme="light"] .tile-container.list .tile.add-site-tile {
-    background: linear-gradient(90deg, #6f42c1, #e83e8c) !important;
-}
-
-/* ========================================
-   CORRECTION POUR LA TRANSPARENCE
-   ======================================== */
-
-/* Force la tuile à rester visible même avec la transparence globale */
-.tile.add-site-tile {
-    opacity: 1 !important;
-}
-
-/* Si le système de transparence globale affecte cette tuile */
-.tile.add-site-tile:not(.slideshow-tile) {
-    opacity: 1 !important;
-}
-
-.tile.add-site-tile.enhanced-visibility {
-    opacity: 1 !important;
 }
 
 /* ========================================

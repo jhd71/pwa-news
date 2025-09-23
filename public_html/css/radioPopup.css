@@ -1190,23 +1190,6 @@ body.radio-popup-open {
     z-index: 10;
 }
 
-/* === COULEURS THÈME POUR TUILE === */
-[data-theme="rouge"] .tile.radio-app-tile {
-    background: linear-gradient(135deg, #095c9d 0%, #2196F3 100%);
-}
-
-[data-theme="dark"] .tile.radio-app-tile {
-    background: linear-gradient(135deg, #9C27B0 0%, #00BCD4 100%);
-}
-
-[data-theme="bleuciel"] .tile.radio-app-tile {
-    background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
-}
-
-[data-theme="light"] .tile.radio-app-tile {
-    background: linear-gradient(135deg, #ba68c8 0%, #ab47bc 100%);
-}
-
 /* === RESPONSIVE MINUTEUR === */
 @media (max-width: 768px) {
     .timer-mode-btn {

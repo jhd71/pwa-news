@@ -13,7 +13,7 @@
 [data-theme="rouge"] .tile:nth-child(30n + 8) { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
 [data-theme="rouge"] .tile:nth-child(30n + 9) { background: linear-gradient(135deg, #fb7185, #f43f5e); }
 [data-theme="rouge"] .tile:nth-child(30n + 10) { background: linear-gradient(135deg, #fb923c, #f97316); }
-[data-theme="rouge"] .tile:nth-child(30n + 11) { background: linear-gradient(135deg, #be123c, #991b1b); }
+[data-theme="rouge"] .tile:nth-child(30n + 11) { background: linear-gradient(135deg, #6a1407, #ed0353); }
 [data-theme="rouge"] .tile:nth-child(30n + 12) { background: linear-gradient(135deg, #ea580c, #c2410c); }
 [data-theme="rouge"] .tile:nth-child(30n + 13) { background: linear-gradient(135deg, #fca5a5, #f87171); }
 [data-theme="rouge"] .tile:nth-child(30n + 14) { background: linear-gradient(135deg, #fdba74, #fb923c); }
