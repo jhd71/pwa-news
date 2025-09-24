@@ -1,0 +1,191 @@
+/* Correction pour centrage du texte dans les tuiles TV */
+.tile[data-category="tv"] {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    /* NOUVEAU: Hauteur augmentée pour éviter la coupure du texte */
+    min-height: 100px !important;
+    height: auto !important;
+}
+
+.tile[data-category="tv"] .tile-content {
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important; /* NOUVEAU: Colonne pour empiler les éléments */
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    /* MODIFIÉ: Plus d'espace en bas pour le texte sur 2 lignes */
+    padding: 28px 8px 12px 8px !important;
+    position: relative !important;
+}
+
+.tile[data-category="tv"] .tile-title {
+    width: 100% !important;
+    text-align: center !important;
+    /* MODIFIÉ: Block au lieu de flex pour permettre les retours à la ligne */
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 4px !important;
+    /* NOUVEAU: Gestion des retours à la ligne */
+    line-height: 1.2 !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    hyphens: auto !important;
+    /* NOUVEAU: Centrage vertical dans l'espace disponible */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-grow: 1 !important;
+}
+
+/* Positionnement du badge DIRECT */
+.tile.live-content .tile-content::before {
+    position: absolute !important;
+    top: 6px !important; /* MODIFIÉ: Un peu plus bas */
+    left: 6px !important; /* MODIFIÉ: Un peu plus à droite */
+    transform: none !important;
+    z-index: 10 !important;
+    /* NOUVEAU: Badge légèrement plus petit */
+    font-size: 10px !important;
+    padding: 2px 6px !important;
+}
+
+/* MODE LISTE - Centrage vertical pour toutes les tuiles */
+.tile-container.list .tile {
+    display: flex !important;
+    align-items: center !important;
+    height: 50px !important;
+}
+
+.tile-container.list .tile .tile-content {
+    display: flex !important;
+    align-items: center !important;
+    height: 100% !important;
+    padding: 0 10px !important;
+}
+
+/* === CORRECTION PRINCIPALE === */
+/* Spécifiquement pour les tuiles TV en mode liste - CENTRAGE FORCÉ */
+.tile-container.list .tile[data-category="tv"] {
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.tile-container.list .tile[data-category="tv"] .tile-content {
+    padding: 0 60px 0 60px !important; /* Espace symétrique pour le badge DIRECT */
+    justify-content: center !important;
+    text-align: center !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+
+.tile-container.list .tile[data-category="tv"] .tile-title {
+    justify-content: center !important;
+    text-align: center !important;
+    width: 100% !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    /* NOUVEAU: Gestion du texte en mode liste */
+    line-height: 1.2 !important;
+}
+
+.tile-container.list .tile.live-content .tile-content::before {
+    position: absolute !important;
+    top: 50% !important;
+    left: 10px !important;
+    transform: translateY(-50%) !important;
+    z-index: 10 !important;
+}
+
+/* Centrage vertical pour tous les textes en mode liste */
+.tile-container.list .tile .tile-title {
+    margin: 0 !important;
+}
+
+/* === RESPONSIVE POUR LES TUILES TV === */
+
+/* Mobile */
+@media (max-width: 767px) {
+    .tile[data-category="tv"] {
+        min-height: 95px !important;
+    }
+    
+    .tile[data-category="tv"] .tile-content {
+        padding: 26px 6px 10px 6px !important;
+    }
+    
+    .tile[data-category="tv"] .tile-title {
+        line-height: 1.1 !important;
+        padding: 0 2px !important;
+    }
+    
+    .tile.live-content .tile-content::before {
+        font-size: 9px !important;
+        padding: 1px 4px !important;
+        top: 4px !important;
+        left: 4px !important;
+    }
+}
+
+/* Tablette */
+@media (min-width: 768px) and (max-width: 1100px) {
+    .tile[data-category="tv"] {
+        min-height: 105px !important;
+    }
+    
+    .tile[data-category="tv"] .tile-content {
+        padding: 30px 8px 12px 8px !important;
+    }
+    
+    .tile[data-category="tv"] .tile-title {
+        line-height: 1.2 !important;
+    }
+}
+
+/* Desktop */
+@media (min-width: 1101px) {
+    .tile[data-category="tv"] {
+        min-height: 100px !important;
+    }
+    
+    .tile[data-category="tv"] .tile-content {
+        padding: 28px 8px 12px 8px !important;
+    }
+    
+    .tile[data-category="tv"] .tile-title {
+        line-height: 1.2 !important;
+    }
+}
+
+/* === AMÉLIORATION SPÉCIFIQUE POUR LE MODE AMÉLIORATION VISUELLE === */
+/* Quand l'amélioration visuelle est activée, optimiser aussi les tuiles TV */
+.visual-enhancement-mode .tile[data-category="tv"] {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+}
+
+.visual-enhancement-mode .tile[data-category="tv"]:hover {
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4) !important;
+    transform: translateY(-8px) scale(1.03) !important;
+}
+
+.visual-enhancement-mode .tile[data-category="tv"] .tile-title {
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 6px rgba(0, 0, 0, 0.7),
+        1px 1px 2px rgba(0, 0, 0, 1) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.2px !important;
+}
+
+/* === GRILLE ADAPTATIVE === */
+/* S'assurer que la grille s'adapte aux nouvelles hauteurs des tuiles TV */
+
+#tileContainer.grid .tile[data-category="tv"] {
+    grid-row: span 1 !important;
+}
