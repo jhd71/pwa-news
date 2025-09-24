@@ -968,56 +968,283 @@ main {
 }
 
 /* ==========================================================================
-   12. COULEURS DES TUILES
+   COULEURS DES TUILES AMÉLIORÉES PAR THÈME - VERSION 2.0
    ========================================================================== */
-.tile:nth-child(30n + 1) { background: linear-gradient(135deg, #667eea, #764ba2); }
-.tile:nth-child(30n + 2) { background: linear-gradient(135deg, #f093fb, #f5576c); }
-.tile:nth-child(30n + 3) { background: linear-gradient(135deg, #4facfe, #00f2fe); }
-.tile:nth-child(30n + 4) { background: linear-gradient(135deg, #43e97b, #38f9d7); }
-.tile:nth-child(30n + 5) { background: linear-gradient(135deg, #fa709a, #fee140); }
-.tile:nth-child(30n + 6) { background: linear-gradient(135deg, #30cfd0, #91a7ff); }
-.tile:nth-child(30n + 7) { background: linear-gradient(135deg, #a8edea, #fed6e3); }
-.tile:nth-child(30n + 8) { background: linear-gradient(135deg, #ff9a9e, #fecfef); }
-.tile:nth-child(30n + 9) { background: linear-gradient(135deg, #ffecd2, #fcb69f); }
-.tile:nth-child(30n + 10) { background: linear-gradient(135deg, #ff8a80, #ea4c89); }
-.tile:nth-child(30n + 11) { background: linear-gradient(135deg, #ffd89b, #fd8b6a); }
-.tile:nth-child(30n + 12) { background: linear-gradient(135deg, #ff6b9d, #c92a49); }
-.tile:nth-child(30n + 13) { background: linear-gradient(135deg, #667eea, #764ba2); }
-.tile:nth-child(30n + 14) { background: linear-gradient(135deg, #4facfe, #00f2fe); }
-.tile:nth-child(30n + 15) { background: linear-gradient(135deg, #43e97b, #38f9d7); }
-.tile:nth-child(30n + 16) { background: linear-gradient(135deg, #56ab2f, #a8e6cf); }
-.tile:nth-child(30n + 17) { background: linear-gradient(135deg, #30cfd0, #c43bad); }
-.tile:nth-child(30n + 18) { background: linear-gradient(135deg, #667eea, #764ba2); }
-.tile:nth-child(30n + 19) { background: linear-gradient(135deg, #ff9a9e, #fad0c4); }
-.tile:nth-child(30n + 20) { background: linear-gradient(135deg, #ffecd2, #fcb69f); }
-.tile:nth-child(30n + 21) { background: linear-gradient(135deg, #ff5722, #ff8a65); }
-.tile:nth-child(30n + 22) { background: linear-gradient(135deg, #e91e63, #f48fb1); }
-.tile:nth-child(30n + 23) { background: linear-gradient(135deg, #a1c4fd, #c2e9fb); }
-.tile:nth-child(30n + 24) { background: linear-gradient(135deg, #d299c2, #fef9d7); }
-.tile:nth-child(30n + 25) { background: linear-gradient(135deg, #89f7fe, #66a6ff); }
-.tile:nth-child(30n + 26) { background: linear-gradient(135deg, #fdbb2d, #22c1c3); }
-.tile:nth-child(30n + 27) { background: linear-gradient(135deg, #e96443, #904e95); }
-.tile:nth-child(30n + 28) { background: linear-gradient(135deg, #96deda, #50c9c3); }
-.tile:nth-child(30n + 29) { background: linear-gradient(135deg, #f38ba8, #fde2e7); }
-.tile:nth-child(30n + 0) { background: linear-gradient(135deg, #6a11cb, #2575fc); }
 
-/* Ombres renforcées pour couleurs claires */
-.tile:nth-child(30n + 3) .tile-title,
-.tile:nth-child(30n + 4) .tile-title,
-.tile:nth-child(30n + 7) .tile-title,
-.tile:nth-child(30n + 9) .tile-title,
-.tile:nth-child(30n + 16) .tile-title,
-.tile:nth-child(30n + 20) .tile-title,
-.tile:nth-child(30n + 23) .tile-title,
-.tile:nth-child(30n + 24) .tile-title,
-.tile:nth-child(30n + 26) .tile-title,
-.tile:nth-child(30n + 28) .tile-title,
-.tile:nth-child(30n + 29) .tile-title {
+/* ========================================
+   THÈME ROUGE - Palette rouge/orange/jaune
+   ======================================== */
+[data-theme="rouge"] .tile:nth-child(30n + 1) { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+[data-theme="rouge"] .tile:nth-child(30n + 2) { background: linear-gradient(135deg, #ea580c, #c2410c); }
+[data-theme="rouge"] .tile:nth-child(30n + 3) { background: linear-gradient(135deg, #f59e0b, #d97706); }
+[data-theme="rouge"] .tile:nth-child(30n + 4) { background: linear-gradient(135deg, #eab308, #ca8a04); }
+[data-theme="rouge"] .tile:nth-child(30n + 5) { background: linear-gradient(135deg, #dc2626, #7c2d12); }
+[data-theme="rouge"] .tile:nth-child(30n + 6) { background: linear-gradient(135deg, #b91c1c, #dc2626); }
+[data-theme="rouge"] .tile:nth-child(30n + 7) { background: linear-gradient(135deg, #f97316, #ea580c); }
+[data-theme="rouge"] .tile:nth-child(30n + 8) { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+[data-theme="rouge"] .tile:nth-child(30n + 9) { background: linear-gradient(135deg, #facc15, #eab308); }
+[data-theme="rouge"] .tile:nth-child(30n + 10) { background: linear-gradient(135deg, #991b1b, #7c2d12); }
+[data-theme="rouge"] .tile:nth-child(30n + 11) { background: linear-gradient(135deg, #c2410c, #9a3412); }
+[data-theme="rouge"] .tile:nth-child(30n + 12) { background: linear-gradient(135deg, #d97706, #b45309); }
+[data-theme="rouge"] .tile:nth-child(30n + 13) { background: linear-gradient(135deg, #ca8a04, #a16207); }
+[data-theme="rouge"] .tile:nth-child(30n + 14) { background: linear-gradient(135deg, #ef4444, #dc2626); }
+[data-theme="rouge"] .tile:nth-child(30n + 15) { background: linear-gradient(135deg, #f97316, #c2410c); }
+[data-theme="rouge"] .tile:nth-child(30n + 16) { background: linear-gradient(135deg, #fbbf24, #d97706); }
+[data-theme="rouge"] .tile:nth-child(30n + 17) { background: linear-gradient(135deg, #facc15, #ca8a04); }
+[data-theme="rouge"] .tile:nth-child(30n + 18) { background: linear-gradient(135deg, #dc2626, #991b1b); }
+[data-theme="rouge"] .tile:nth-child(30n + 19) { background: linear-gradient(135deg, #ea580c, #c2410c); }
+[data-theme="rouge"] .tile:nth-child(30n + 20) { background: linear-gradient(135deg, #f59e0b, #d97706); }
+[data-theme="rouge"] .tile:nth-child(30n + 21) { background: linear-gradient(135deg, #eab308, #ca8a04); }
+[data-theme="rouge"] .tile:nth-child(30n + 22) { background: linear-gradient(135deg, #b91c1c, #7c2d12); }
+[data-theme="rouge"] .tile:nth-child(30n + 23) { background: linear-gradient(135deg, #c2410c, #9a3412); }
+[data-theme="rouge"] .tile:nth-child(30n + 24) { background: linear-gradient(135deg, #d97706, #b45309); }
+[data-theme="rouge"] .tile:nth-child(30n + 25) { background: linear-gradient(135deg, #ca8a04, #a16207); }
+[data-theme="rouge"] .tile:nth-child(30n + 26) { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+[data-theme="rouge"] .tile:nth-child(30n + 27) { background: linear-gradient(135deg, #fb923c, #ea580c); }
+[data-theme="rouge"] .tile:nth-child(30n + 28) { background: linear-gradient(135deg, #fcd34d, #f59e0b); }
+[data-theme="rouge"] .tile:nth-child(30n + 29) { background: linear-gradient(135deg, #fde047, #eab308); }
+[data-theme="rouge"] .tile:nth-child(30n + 0) { background: linear-gradient(135deg, #7c2d12, #451a03); }
+
+/* ========================================
+   THÈME SOMBRE - Palette bleu foncé/indigo/violet
+   ======================================== */
+[data-theme="dark"] .tile:nth-child(30n + 1) { background: linear-gradient(135deg, #1e293b, #0f172a); }
+[data-theme="dark"] .tile:nth-child(30n + 2) { background: linear-gradient(135deg, #1e40af, #1d4ed8); }
+[data-theme="dark"] .tile:nth-child(30n + 3) { background: linear-gradient(135deg, #3730a3, #4338ca); }
+[data-theme="dark"] .tile:nth-child(30n + 4) { background: linear-gradient(135deg, #581c87, #6b21a8); }
+[data-theme="dark"] .tile:nth-child(30n + 5) { background: linear-gradient(135deg, #0f172a, #334155); }
+[data-theme="dark"] .tile:nth-child(30n + 6) { background: linear-gradient(135deg, #1d4ed8, #2563eb); }
+[data-theme="dark"] .tile:nth-child(30n + 7) { background: linear-gradient(135deg, #4338ca, #4f46e5); }
+[data-theme="dark"] .tile:nth-child(30n + 8) { background: linear-gradient(135deg, #6b21a8, #7c3aed); }
+[data-theme="dark"] .tile:nth-child(30n + 9) { background: linear-gradient(135deg, #334155, #475569); }
+[data-theme="dark"] .tile:nth-child(30n + 10) { background: linear-gradient(135deg, #2563eb, #3b82f6); }
+[data-theme="dark"] .tile:nth-child(30n + 11) { background: linear-gradient(135deg, #4f46e5, #6366f1); }
+[data-theme="dark"] .tile:nth-child(30n + 12) { background: linear-gradient(135deg, #7c3aed, #8b5cf6); }
+[data-theme="dark"] .tile:nth-child(30n + 13) { background: linear-gradient(135deg, #475569, #64748b); }
+[data-theme="dark"] .tile:nth-child(30n + 14) { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
+[data-theme="dark"] .tile:nth-child(30n + 15) { background: linear-gradient(135deg, #6366f1, #818cf8); }
+[data-theme="dark"] .tile:nth-child(30n + 16) { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
+[data-theme="dark"] .tile:nth-child(30n + 17) { background: linear-gradient(135deg, #0c4a6e, #075985); }
+[data-theme="dark"] .tile:nth-child(30n + 18) { background: linear-gradient(135deg, #1e3a8a, #1d4ed8); }
+[data-theme="dark"] .tile:nth-child(30n + 19) { background: linear-gradient(135deg, #312e81, #3730a3); }
+[data-theme="dark"] .tile:nth-child(30n + 20) { background: linear-gradient(135deg, #4c1d95, #581c87); }
+[data-theme="dark"] .tile:nth-child(30n + 21) { background: linear-gradient(135deg, #075985, #0369a1); }
+[data-theme="dark"] .tile:nth-child(30n + 22) { background: linear-gradient(135deg, #1d4ed8, #2563eb); }
+[data-theme="dark"] .tile:nth-child(30n + 23) { background: linear-gradient(135deg, #3730a3, #4338ca); }
+[data-theme="dark"] .tile:nth-child(30n + 24) { background: linear-gradient(135deg, #581c87, #6b21a8); }
+[data-theme="dark"] .tile:nth-child(30n + 25) { background: linear-gradient(135deg, #0369a1, #0284c7); }
+[data-theme="dark"] .tile:nth-child(30n + 26) { background: linear-gradient(135deg, #2563eb, #3b82f6); }
+[data-theme="dark"] .tile:nth-child(30n + 27) { background: linear-gradient(135deg, #4338ca, #4f46e5); }
+[data-theme="dark"] .tile:nth-child(30n + 28) { background: linear-gradient(135deg, #6b21a8, #7c3aed); }
+[data-theme="dark"] .tile:nth-child(30n + 29) { background: linear-gradient(135deg, #0284c7, #0ea5e9); }
+[data-theme="dark"] .tile:nth-child(30n + 0) { background: linear-gradient(135deg, #0f172a, #020617); }
+
+/* ========================================
+   THÈME BLEU CIEL - Palette bleu/turquoise/vert
+   ======================================== */
+[data-theme="bleuciel"] .tile:nth-child(30n + 1) { background: linear-gradient(135deg, #0ea5e9, #0284c7); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 2) { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 3) { background: linear-gradient(135deg, #059669, #047857); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 4) { background: linear-gradient(135deg, #0d9488, #0f766e); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 5) { background: linear-gradient(135deg, #0284c7, #0369a1); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 6) { background: linear-gradient(135deg, #0891b2, #0e7490); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 7) { background: linear-gradient(135deg, #047857, #065f46); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 8) { background: linear-gradient(135deg, #0f766e, #134e4a); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 9) { background: linear-gradient(135deg, #0369a1, #075985); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 10) { background: linear-gradient(135deg, #0e7490, #155e75); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 11) { background: linear-gradient(135deg, #065f46, #064e3b); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 12) { background: linear-gradient(135deg, #134e4a, #0f3c39); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 13) { background: linear-gradient(135deg, #38bdf8, #0ea5e9); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 14) { background: linear-gradient(135deg, #22d3ee, #06b6d4); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 15) { background: linear-gradient(135deg, #10b981, #059669); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 16) { background: linear-gradient(135deg, #14b8a6, #0d9488); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 17) { background: linear-gradient(135deg, #60a5fa, #3b82f6); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 18) { background: linear-gradient(135deg, #67e8f9, #22d3ee); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 19) { background: linear-gradient(135deg, #34d399, #10b981); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 20) { background: linear-gradient(135deg, #2dd4bf, #14b8a6); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 21) { background: linear-gradient(135deg, #93c5fd, #60a5fa); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 22) { background: linear-gradient(135deg, #a5f3fc, #67e8f9); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 23) { background: linear-gradient(135deg, #6ee7b7, #34d399); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 24) { background: linear-gradient(135deg, #5eead4, #2dd4bf); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 25) { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 26) { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 27) { background: linear-gradient(135deg, #10b981, #059669); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 28) { background: linear-gradient(135deg, #14b8a6, #0d9488); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 29) { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+[data-theme="bleuciel"] .tile:nth-child(30n + 0) { background: linear-gradient(135deg, #0c4a6e, #082f49); }
+
+/* ========================================
+   THÈME VIOLET - Palette violet/rose/magenta
+   ======================================== */
+[data-theme="light"] .tile:nth-child(30n + 1) { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
+[data-theme="light"] .tile:nth-child(30n + 2) { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+[data-theme="light"] .tile:nth-child(30n + 3) { background: linear-gradient(135deg, #a855f7, #9333ea); }
+[data-theme="light"] .tile:nth-child(30n + 4) { background: linear-gradient(135deg, #c026d3, #a21caf); }
+[data-theme="light"] .tile:nth-child(30n + 5) { background: linear-gradient(135deg, #db2777, #be185d); }
+[data-theme="light"] .tile:nth-child(30n + 6) { background: linear-gradient(135deg, #e11d48, #be123c); }
+[data-theme="light"] .tile:nth-child(30n + 7) { background: linear-gradient(135deg, #6d28d9, #5b21b6); }
+[data-theme="light"] .tile:nth-child(30n + 8) { background: linear-gradient(135deg, #7c3aed, #6b21a8); }
+[data-theme="light"] .tile:nth-child(30n + 9) { background: linear-gradient(135deg, #9333ea, #7e22ce); }
+[data-theme="light"] .tile:nth-child(30n + 10) { background: linear-gradient(135deg, #a21caf, #86198f); }
+[data-theme="light"] .tile:nth-child(30n + 11) { background: linear-gradient(135deg, #be185d, #9d174d); }
+[data-theme="light"] .tile:nth-child(30n + 12) { background: linear-gradient(135deg, #be123c, #9f1239); }
+[data-theme="light"] .tile:nth-child(30n + 13) { background: linear-gradient(135deg, #a78bfa, #8b5cf6); }
+[data-theme="light"] .tile:nth-child(30n + 14) { background: linear-gradient(135deg, #c084fc, #a855f7); }
+[data-theme="light"] .tile:nth-child(30n + 15) { background: linear-gradient(135deg, #d946ef, #c026d3); }
+[data-theme="light"] .tile:nth-child(30n + 16) { background: linear-gradient(135deg, #f472b6, #db2777); }
+[data-theme="light"] .tile:nth-child(30n + 17) { background: linear-gradient(135deg, #fb7185, #e11d48); }
+[data-theme="light"] .tile:nth-child(30n + 18) { background: linear-gradient(135deg, #c4b5fd, #a78bfa); }
+[data-theme="light"] .tile:nth-child(30n + 19) { background: linear-gradient(135deg, #ddd6fe, #c4b5fd); }
+[data-theme="light"] .tile:nth-child(30n + 20) { background: linear-gradient(135deg, #f3e8ff, #ddd6fe); }
+[data-theme="light"] .tile:nth-child(30n + 21) { background: linear-gradient(135deg, #fce7f3, #f3e8ff); }
+[data-theme="light"] .tile:nth-child(30n + 22) { background: linear-gradient(135deg, #5b21b6, #4c1d95); }
+[data-theme="light"] .tile:nth-child(30n + 23) { background: linear-gradient(135deg, #6b21a8, #581c87); }
+[data-theme="light"] .tile:nth-child(30n + 24) { background: linear-gradient(135deg, #7e22ce, #701a75); }
+[data-theme="light"] .tile:nth-child(30n + 25) { background: linear-gradient(135deg, #86198f, #701a75); }
+[data-theme="light"] .tile:nth-child(30n + 26) { background: linear-gradient(135deg, #9d174d, #831843); }
+[data-theme="light"] .tile:nth-child(30n + 27) { background: linear-gradient(135deg, #9f1239, #881337); }
+[data-theme="light"] .tile:nth-child(30n + 28) { background: linear-gradient(135deg, #ec4899, #db2777); }
+[data-theme="light"] .tile:nth-child(30n + 29) { background: linear-gradient(135deg, #f97316, #ea580c); }
+[data-theme="light"] .tile:nth-child(30n + 0) { background: linear-gradient(135deg, #4c1d95, #3730a3); }
+
+/* ========================================
+   AMÉLIORATION DES TEXTES PAR THÈME
+   ======================================== */
+
+/* Ombres portées renforcées pour tous les thèmes */
+.tile-title {
     text-shadow: 
-        2px 2px 4px rgba(0, 0, 0, 0.9),
+        2px 2px 4px rgba(0, 0, 0, 0.8),
         0 0 8px rgba(0, 0, 0, 0.6),
         1px 1px 2px rgba(0, 0, 0, 1);
     font-weight: 700;
+    letter-spacing: 0.3px;
+    color: white;
+}
+
+/* Thème Rouge - Textes avec contour doré */
+[data-theme="rouge"] .tile-title {
+    text-shadow: 
+        -2px -2px 0 #000,
+        2px -2px 0 #000,
+        -2px 2px 0 #000,
+        2px 2px 0 #000,
+        -2px 0 0 #000,
+        2px 0 0 #000,
+        0 -2px 0 #000,
+        0 2px 0 #000,
+        0 0 8px rgba(255, 215, 0, 0.5);
+    color: #ffffff;
+    font-weight: 800;
+}
+
+/* Thème Sombre - Textes avec lueur bleue */
+[data-theme="dark"] .tile-title {
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 12px rgba(59, 130, 246, 0.5),
+        1px 1px 2px rgba(0, 0, 0, 1),
+        -1px -1px 0 rgba(0, 0, 0, 0.8);
+    color: #e2e8f0;
+    font-weight: 750;
+}
+
+/* Thème Bleu Ciel - Textes avec lueur turquoise */
+[data-theme="bleuciel"] .tile-title {
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.8),
+        0 0 10px rgba(6, 182, 212, 0.6),
+        1px 1px 2px rgba(0, 0, 0, 0.9),
+        -1px -1px 0 rgba(0, 0, 0, 0.7);
+    color: #f0f9ff;
+    font-weight: 750;
+}
+
+/* Thème Violet - Textes avec lueur violette */
+[data-theme="light"] .tile-title {
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.8),
+        0 0 10px rgba(168, 85, 247, 0.6),
+        1px 1px 2px rgba(0, 0, 0, 0.9),
+        -1px -1px 0 rgba(0, 0, 0, 0.7);
+    color: #faf5ff;
+    font-weight: 750;
+}
+
+/* ========================================
+   COULEURS SPÉCIALES POUR TUILES CLAIRES
+   ======================================== */
+
+/* Renforcement du contraste pour les tuiles aux couleurs claires */
+[data-theme="light"] .tile:nth-child(30n + 20) .tile-title,
+[data-theme="light"] .tile:nth-child(30n + 21) .tile-title {
+    text-shadow: 
+        3px 3px 6px rgba(0, 0, 0, 1),
+        0 0 12px rgba(0, 0, 0, 0.8),
+        2px 2px 4px rgba(0, 0, 0, 1),
+        -2px -2px 0 rgba(0, 0, 0, 0.9);
+    color: #1f2937;
+    font-weight: 900;
+}
+
+[data-theme="bleuciel"] .tile:nth-child(30n + 21) .tile-title,
+[data-theme="bleuciel"] .tile:nth-child(30n + 22) .tile-title,
+[data-theme="bleuciel"] .tile:nth-child(30n + 23) .tile-title,
+[data-theme="bleuciel"] .tile:nth-child(30n + 24) .tile-title {
+    text-shadow: 
+        3px 3px 6px rgba(0, 0, 0, 1),
+        0 0 12px rgba(0, 0, 0, 0.8),
+        2px 2px 4px rgba(0, 0, 0, 1),
+        -2px -2px 0 rgba(0, 0, 0, 0.9);
+    color: #0c4a6e;
+    font-weight: 900;
+}
+
+/* ========================================
+   EFFETS DE SURVOL AMÉLIORÉS
+   ======================================== */
+
+.tile:hover .tile-title {
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+}
+
+/* Thème Rouge - Effet de survol doré */
+[data-theme="rouge"] .tile:hover .tile-title {
+    text-shadow: 
+        -2px -2px 0 #000,
+        2px -2px 0 #000,
+        -2px 2px 0 #000,
+        2px 2px 0 #000,
+        -2px 0 0 #000,
+        2px 0 0 #000,
+        0 -2px 0 #000,
+        0 2px 0 #000,
+        0 0 15px rgba(255, 215, 0, 0.8);
+}
+
+/* Thème Sombre - Effet de survol bleu renforcé */
+[data-theme="dark"] .tile:hover .tile-title {
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 20px rgba(59, 130, 246, 0.8),
+        1px 1px 2px rgba(0, 0, 0, 1);
+}
+
+/* Thème Bleu Ciel - Effet de survol turquoise renforcé */
+[data-theme="bleuciel"] .tile:hover .tile-title {
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.8),
+        0 0 18px rgba(6, 182, 212, 0.9),
+        1px 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+/* Thème Violet - Effet de survol violet renforcé */
+[data-theme="light"] .tile:hover .tile-title {
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.8),
+        0 0 18px rgba(168, 85, 247, 0.9),
+        1px 1px 2px rgba(0, 0, 0, 0.9);
 }
 
 /* ==========================================================================
