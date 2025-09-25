@@ -430,7 +430,7 @@
 .tile.survey-tile::after {
     content: 'NOUVEAU';
     position: absolute;
-    top: 5px;  /* Changé de -8px à 5px */
+    top: 0px;  /* Changé de -8px à 5px */
     right: 5px; /* Changé de -8px à 5px */
     background: linear-gradient(135deg, #ff6b6b, #ff4757);
     color: white;
