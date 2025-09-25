@@ -1,9 +1,5 @@
 /* ========================================
-   SURVEY-STYLES.CSS - VERSION NETTOYÉE
-   ======================================== */
-
-/* ========================================
-   SECTION 1: MODAL DU SONDAGE
+   SURVEY-STYLES.CSS - VERSION COMPLÈTE OPTIMISÉE
    ======================================== */
 
 .survey-modal {
@@ -111,7 +107,7 @@
 }
 
 /* ========================================
-   SECTION 2: QUESTIONS ET OPTIONS
+   SECTION 4: QUESTIONS ET OPTIONS
    ======================================== */
 
 .survey-question {
@@ -170,7 +166,7 @@
 }
 
 /* ========================================
-   SECTION 3: BOUTONS D'ACTION
+   SECTION 5: BOUTONS D'ACTION
    ======================================== */
 
 /* Styles communs aux boutons */
@@ -271,7 +267,7 @@
 }
 
 /* ========================================
-   SECTION 4: MESSAGE DE REMERCIEMENT ET RÉSULTATS
+   SECTION 6: MESSAGE DE REMERCIEMENT ET RÉSULTATS
    ======================================== */
 
 .thank-you-message {
@@ -279,6 +275,7 @@
     text-align: center !important;
     padding: 20px;
     flex-direction: column !important;
+    align-items: center !important;
     justify-content: center !important;
 }
 
@@ -364,184 +361,7 @@
 }
 
 /* ========================================
-   CORRECTION POSITIONNEMENT BADGE "NOUVEAU"
-   À ajouter/remplacer dans survey-styles.css
-   ======================================== */
-
-/* Assurer que la tuile a un position relative pour le badge */
-.tile.survey-tile.has-new-survey {
-    position: relative !important;
-    animation: newSurveyPulse 2s ease-in-out infinite;
-    overflow: visible !important;
-    z-index: 10 !important;
-    
-    /* Effet de brillance */
-    background-image: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.2),
-        transparent
-    );
-    background-size: 200px 100%;
-    background-repeat: no-repeat;
-    animation: 
-        newSurveyPulse 2s ease-in-out infinite,
-        newSurveyShimmer 3s ease-in-out infinite;
-}
-
-/* Badge "Nouveau" - POSITION CORRIGÉE */
-.tile.survey-tile.has-new-survey::before {
-    content: 'NOUVEAU';
-    display: block !important;
-    position: absolute !important;
-    top: -8px !important;
-    right: -8px !important;
-    background: linear-gradient(45deg, #ff4757, #ff3742);
-    color: white;
-    font-size: 10px;
-    font-weight: 800;
-    padding: 4px 8px;
-    border-radius: 12px;
-    z-index: 15 !important; /* Z-index plus élevé */
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-    box-shadow: 
-        0 2px 8px rgba(255, 71, 87, 0.6),
-        0 0 0 2px white;
-    animation: badgePulse 1.5s ease-in-out infinite;
-    transform-origin: center;
-    pointer-events: none; /* IMPORTANT : Empêche les interactions avec le badge */
-    white-space: nowrap;
-}
-
-/* Animation du badge - STABILISÉE */
-@keyframes badgePulse {
-    0%, 100% { 
-        transform: scale(1) rotate(0deg);
-        opacity: 1;
-    }
-    50% { 
-        transform: scale(1.1) rotate(-2deg);
-        opacity: 0.9;
-    }
-}
-
-/* Animation renforcée au survol - BADGE RESTE EN PLACE */
-.tile.survey-tile.has-new-survey:hover {
-    animation-play-state: paused;
-    transform: scale(1.05) translateY(-3px);
-    box-shadow: 0 12px 30px rgba(255, 215, 0, 0.6);
-}
-
-/* Badge RESTE VISIBLE au survol */
-.tile.survey-tile.has-new-survey:hover::before {
-    transform: scale(1.2) rotate(-5deg) !important;
-    animation-play-state: paused;
-    right: -8px !important; /* Force la position */
-    top: -8px !important;
-    z-index: 20 !important;
-}
-
-/* ========================================
-   CORRECTION SPÉCIFIQUE MODE LISTE
-   ======================================== */
-
-/* Style pour mode liste - POSITION FIXÉE */
-.tile-container.list .tile.survey-tile.has-new-survey {
-    position: relative !important;
-    border-left: 4px solid #FFD230;
-    animation: newSurveyPulse 2s ease-in-out infinite;
-    overflow: visible !important;
-}
-
-.tile-container.list .tile.survey-tile.has-new-survey::before {
-    top: -6px !important;
-    right: 10px !important; /* Position fixe à droite */
-    transform: none !important;
-    position: absolute !important;
-    z-index: 20 !important;
-    pointer-events: none !important;
-}
-
-/* Au survol en mode liste - BADGE RESTE EN PLACE */
-.tile-container.list .tile.survey-tile.has-new-survey:hover {
-    transform: translateX(8px) scale(1.02);
-    box-shadow: -6px 6px 25px rgba(255, 215, 0, 0.6);
-}
-
-.tile-container.list .tile.survey-tile.has-new-survey:hover::before {
-    right: 10px !important; /* Reste à sa place */
-    top: -6px !important;
-    transform: scale(1.1) !important;
-    z-index: 25 !important;
-}
-
-/* ========================================
-   ADAPTATIONS PAR THÈME - CORRIGÉES
-   ======================================== */
-
-[data-theme="rouge"] .tile.survey-tile.has-new-survey::before {
-    background: linear-gradient(45deg, #FFD230, #FFC107) !important;
-    color: #333 !important;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
-}
-
-[data-theme="dark"] .tile.survey-tile.has-new-survey::before {
-    background: linear-gradient(45deg, #FFEB3B, #FFF176) !important;
-    color: #333 !important;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
-}
-
-[data-theme="bleuciel"] .tile.survey-tile.has-new-survey::before {
-    background: linear-gradient(45deg, #00E676, #4CAF50) !important;
-    color: white !important;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8) !important;
-}
-
-[data-theme="light"] .tile.survey-tile.has-new-survey::before {
-    background: linear-gradient(45deg, #E91E63, #F06292) !important;
-    color: white !important;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8) !important;
-}
-
-/* ========================================
-   RESPONSIVE MOBILE - CORRIGÉ
-   ======================================== */
-
-@media (max-width: 768px) {
-    .tile.survey-tile.has-new-survey::before {
-        font-size: 9px !important;
-        padding: 3px 6px !important;
-        top: -6px !important;
-        right: -6px !important;
-        z-index: 20 !important;
-    }
-    
-    .tile-container.list .tile.survey-tile.has-new-survey::before {
-        top: -4px !important;
-        right: 8px !important;
-        font-size: 8px !important;
-        padding: 2px 5px !important;
-    }
-    
-    .tile.survey-tile.has-new-survey {
-        animation-duration: 2.5s; /* Plus lent sur mobile */
-    }
-}
-
-/* ========================================
-   SÉCURITÉ - EMPÊCHER LES DÉBORDEMENTS
-   ======================================== */
-
-/* S'assurer que le badge ne sort jamais de l'écran */
-.tile.survey-tile.has-new-survey::before {
-    max-width: 80px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    box-sizing: border-box;
-}
-
-/* ========================================
-   SECTION 6: RESPONSIVITÉ
+   SECTION 7: RESPONSIVITÉ
    ======================================== */
 
 @media (max-width: 768px) {
@@ -578,17 +398,5 @@
     
     .close-survey .material-icons {
         font-size: 24px;
-    }
-    
-    /* Badge nouveau sondage sur mobile */
-    .tile.survey-tile.has-new-survey::before {
-        font-size: 9px;
-        padding: 3px 6px;
-        top: -6px;
-        right: -6px;
-    }
-    
-    .tile.survey-tile.has-new-survey {
-        animation-duration: 2.5s; /* Plus lent sur mobile */
     }
 }
