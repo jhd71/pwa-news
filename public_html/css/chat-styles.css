@@ -1970,7 +1970,7 @@ body.admin-panel-open {
     left: 10px !important;
     right: 10px !important;
     height: auto !important;
-    max-height: none !important;
+    max-height: 75% !important;
     overflow-y: auto !important;
     z-index: 1200 !important;
     grid-template-columns: repeat(auto-fit, minmax(40px, 1fr)) !important;
