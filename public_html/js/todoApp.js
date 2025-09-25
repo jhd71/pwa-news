@@ -124,7 +124,7 @@ class TodoListWidget {
                 gradientStyle = 'linear-gradient(135deg, #d32f2f, #f44336)';
                 break;
             case 'dark':
-                gradientStyle = 'linear-gradient(135deg, #ff9800, #ffa726)';
+                gradientStyle = 'linear-gradient(135deg, #03a9f400, rgb(34 125 137));
                 break;
             case 'bleuciel':
                 gradientStyle = 'linear-gradient(135deg, #0288d1, #03a9f4)';
