@@ -1008,7 +1008,7 @@ main {
 /* ========================================
    THÈME SOMBRE - Palette bleu foncé/indigo/violet
    ======================================== */
-[data-theme="dark"] .tile:nth-child(30n + 1) { background: linear-gradient(135deg, #1e293b, #0f172a); }
+[data-theme="dark"] .tile:nth-child(30n + 1) { background: linear-gradient(135deg, #1a29bf, #0c2051); }
 [data-theme="dark"] .tile:nth-child(30n + 2) { background: linear-gradient(135deg, #1e40af, #1d4ed8); }
 [data-theme="dark"] .tile:nth-child(30n + 3) { background: linear-gradient(135deg, #3730a3, #4338ca); }
 [data-theme="dark"] .tile:nth-child(30n + 4) { background: linear-gradient(135deg, #581c87, #6b21a8); }
@@ -1095,8 +1095,8 @@ main {
 [data-theme="light"] .tile:nth-child(30n + 17) { background: linear-gradient(135deg, #fb7185, #e11d48); }
 [data-theme="light"] .tile:nth-child(30n + 18) { background: linear-gradient(135deg, #c4b5fd, #a78bfa); }
 [data-theme="light"] .tile:nth-child(30n + 19) { background: linear-gradient(135deg, #ddd6fe, #c4b5fd); }
-[data-theme="light"] .tile:nth-child(30n + 20) { background: linear-gradient(135deg, #f3e8ff, #ddd6fe); }
-[data-theme="light"] .tile:nth-child(30n + 21) { background: linear-gradient(135deg, #fce7f3, #f3e8ff); }
+[data-theme="light"] .tile:nth-child(30n + 20) { background: linear-gradient(135deg, #7a00ff, #8a7bcf); }
+[data-theme="light"] .tile:nth-child(30n + 21) { background: linear-gradient(135deg, #E91E63, #673AB7); }
 [data-theme="light"] .tile:nth-child(30n + 22) { background: linear-gradient(135deg, #5b21b6, #4c1d95); }
 [data-theme="light"] .tile:nth-child(30n + 23) { background: linear-gradient(135deg, #6b21a8, #581c87); }
 [data-theme="light"] .tile:nth-child(30n + 24) { background: linear-gradient(135deg, #7e22ce, #701a75); }
