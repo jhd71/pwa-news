@@ -128,7 +128,7 @@ class NotepadWidget {
                 gradientStyle = 'linear-gradient(135deg, #940000, #c41e3a)';
                 break;
             case 'dark':
-                gradientStyle = 'linear-gradient(135deg, #ff6b6b, #ff8787)';
+                gradientStyle = 'linear-gradient(135deg, #460cad, #1727cd)';
                 break;
             case 'bleuciel':
                 gradientStyle = 'linear-gradient(135deg, #17a2b8, #20c997)';
