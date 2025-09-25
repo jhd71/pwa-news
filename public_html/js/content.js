@@ -555,6 +555,13 @@ const tvSites = [
             <div class="tile-title">${site.title}</div>
         </div>
     `;
+<!-- Tuile Sondage -->
+<div class="tile sondage">
+    <span class="badge-nouveau">Nouveau</span>
+    <div class="tile-content">
+        <div class="tile-title">📊 Sondage</div>
+    </div>
+</div>
 
     // Stockage de l'URL pour faciliter l'accès
     tile.dataset.siteUrl = site.url;
