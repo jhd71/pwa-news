@@ -2964,7 +2964,7 @@ a:active {
     /* Settings menu */
     .settings-menu {
         width: 100%;
-        max-width: 50%;
+        max-width: 70%;
         min-width: unset;
     }
     
