@@ -401,28 +401,91 @@
     }
 }
 
-/* Style du badge "Nouveau" */
-.badge-nouveau {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    background: #ff4757;
-    color: white;
-    font-size: 0.7rem;
-    font-weight: bold;
-    padding: 2px 6px;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    animation: pulse 1.5s infinite;
-}
+/* ========================================
+   TUILE SONDAGE - EFFET SPÉCIAL
+   ======================================== */
 
-/* Animation pour attirer l'œil */
-@keyframes pulse {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.1); opacity: 0.8; }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-.tile {
+/* Tuile sondage avec effet spécial */
+.tile.survey-tile {
     position: relative;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    animation: surveyPulse 3s ease-in-out infinite;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    overflow: visible !important;
+}
+
+/* Animation de pulsation douce */
+@keyframes surveyPulse {
+    0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    50% { 
+        transform: scale(1.02);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+    }
+}
+
+/* Badge NOUVEAU sur la tuile sondage */
+.tile.survey-tile::after {
+    content: 'NOUVEAU';
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 20px;
+    box-shadow: 0 3px 10px rgba(255, 71, 87, 0.5);
+    animation: badgeBounce 2s ease-in-out infinite;
+    z-index: 10;
+}
+
+/* Animation du badge */
+@keyframes badgeBounce {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-3px) rotate(5deg); }
+}
+
+/* Effet au survol de la tuile sondage */
+.tile.survey-tile:hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 12px 30px rgba(102, 126, 234, 0.8) !important;
+    animation-play-state: paused;
+}
+
+/* Texte de la tuile sondage plus visible */
+.tile.survey-tile .tile-title {
+    color: white !important;
+    font-weight: bold !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Adaptation selon les thèmes */
+[data-theme="rouge"] .tile.survey-tile {
+    background: linear-gradient(135deg, #c71e1e 0%, #940000 100%) !important;
+}
+
+[data-theme="dark"] .tile.survey-tile {
+    background: linear-gradient(135deg, #4a69bd 0%, #1e3799 100%) !important;
+}
+
+[data-theme="bleuciel"] .tile.survey-tile {
+    background: linear-gradient(135deg, #00d2ff 0%, #0ea5e9 100%) !important;
+}
+
+/* Mobile - réduction de l'animation */
+@media (max-width: 768px) {
+    .tile.survey-tile {
+        animation-duration: 4s;
+    }
+    
+    .tile.survey-tile::after {
+        top: -5px;
+        right: -5px;
+        font-size: 0.6rem;
+        padding: 3px 8px;
+    }
 }
