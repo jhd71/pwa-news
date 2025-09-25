@@ -417,6 +417,6 @@
 }
 
 /* La tuile doit être en position relative pour placer le badge */
-.tile.sondage {
+.tile.survey {
     position: relative;
 }
