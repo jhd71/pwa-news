@@ -3,28 +3,6 @@
    ======================================== */
 
 /* ========================================
-   SECTION 1: ANIMATIONS
-   ======================================== */
-
-/* Animation pulsante pour le bouton sondage */
-@keyframes surveyPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-}
-
-/* Animation de changement de couleur pour le texte */
-@keyframes textColorChange {
-    0%, 100% { color: white; }
-    50% { color: #FFEB3B; }
-}
-
-/* Animation spécifique au thème rouge */
-@keyframes textColorChangeRouge {
-    0%, 100% { color: white; }
-    50% { color: #FFD230; }
-}
-
-/* ========================================
    SECTION 2: BOUTON SONDAGE
    ======================================== */
 
@@ -476,5 +454,156 @@
     
     .close-survey .material-icons {
         font-size: 24px;
+    }
+}
+
+/* ========================================
+   SECTION 8: BADGE "NOUVEAU" ET ANIMATION TUILE
+   À ajouter à la fin de survey-styles.css
+   ======================================== */
+
+/* Animation pulsante pour la tuile sondage avec nouveau contenu */
+@keyframes newSurveyPulse {
+    0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    50% { 
+        transform: scale(1.03);
+        box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+    }
+}
+
+/* Animation de brillance pour la tuile */
+@keyframes newSurveyShimmer {
+    0% { 
+        background-position: -200px 0; 
+    }
+    100% { 
+        background-position: 200px 0; 
+    }
+}
+
+/* Style pour tuile avec nouveau sondage */
+.tile.survey-tile.has-new-survey {
+    position: relative;
+    animation: newSurveyPulse 2s ease-in-out infinite;
+    overflow: visible !important;
+    
+    /* Effet de brillance */
+    background-image: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    background-size: 200px 100%;
+    background-repeat: no-repeat;
+    animation: 
+        newSurveyPulse 2s ease-in-out infinite,
+        newSurveyShimmer 3s ease-in-out infinite;
+}
+
+/* Badge "Nouveau" */
+.tile.survey-tile::before {
+    content: '';
+    display: none; /* Caché par défaut */
+}
+
+.tile.survey-tile.has-new-survey::before {
+    content: 'NOUVEAU';
+    display: block;
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: linear-gradient(45deg, #ff4757, #ff3742);
+    color: white;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 4px 8px;
+    border-radius: 12px;
+    z-index: 10;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    box-shadow: 
+        0 2px 8px rgba(255, 71, 87, 0.6),
+        0 0 0 2px white;
+    animation: badgePulse 1.5s ease-in-out infinite;
+    transform-origin: center;
+}
+
+/* Animation du badge */
+@keyframes badgePulse {
+    0%, 100% { 
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+    50% { 
+        transform: scale(1.1) rotate(-2deg);
+        opacity: 0.9;
+    }
+}
+
+/* Adaptations par thème pour le badge */
+[data-theme="rouge"] .tile.survey-tile.has-new-survey::before {
+    background: linear-gradient(45deg, #FFD230, #FFC107);
+    color: #333;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .tile.survey-tile.has-new-survey::before {
+    background: linear-gradient(45deg, #FFEB3B, #FFF176);
+    color: #333;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="bleuciel"] .tile.survey-tile.has-new-survey::before {
+    background: linear-gradient(45deg, #00E676, #4CAF50);
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+[data-theme="light"] .tile.survey-tile.has-new-survey::before {
+    background: linear-gradient(45deg, #E91E63, #F06292);
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Animation renforcée au survol */
+.tile.survey-tile.has-new-survey:hover {
+    animation-play-state: paused;
+    transform: scale(1.05) translateY(-3px);
+    box-shadow: 0 12px 30px rgba(255, 215, 0, 0.6);
+}
+
+/* Badge plus visible au survol */
+.tile.survey-tile.has-new-survey:hover::before {
+    transform: scale(1.2) rotate(-5deg);
+    animation-play-state: paused;
+}
+
+/* Style pour mode liste */
+.tile-container.list .tile.survey-tile.has-new-survey {
+    border-left: 4px solid #FFD230;
+    animation: newSurveyPulse 2s ease-in-out infinite;
+}
+
+.tile-container.list .tile.survey-tile.has-new-survey::before {
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    position: absolute;
+}
+
+/* Responsive pour mobile */
+@media (max-width: 768px) {
+    .tile.survey-tile.has-new-survey::before {
+        font-size: 9px;
+        padding: 3px 6px;
+        top: -6px;
+        right: -6px;
+    }
+    
+    .tile.survey-tile.has-new-survey {
+        animation-duration: 2.5s; /* Plus lent sur mobile */
     }
 }
