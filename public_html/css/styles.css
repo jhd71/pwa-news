@@ -1108,22 +1108,26 @@ main {
 [data-theme="light"] .tile:nth-child(30n + 0) { background: linear-gradient(135deg, #4c1d95, #3730a3); }
 
 /* ========================================
-   AMÉLIORATION DES TEXTES PAR THÈME
+   TEXTE BLANC UNIFORME POUR TOUTES LES TUILES
+   Remplace la section "AMÉLIORATION DES TEXTES PAR THÈME"
    ======================================== */
 
-/* Ombres portées renforcées pour tous les thèmes */
+/* Style de base uniforme - TEXTE BLANC POUR TOUS */
 .tile-title {
-    text-shadow: 
-        2px 2px 4px rgba(0, 0, 0, 0.8),
-        0 0 8px rgba(0, 0, 0, 0.6),
-        1px 1px 2px rgba(0, 0, 0, 1);
+    color: white !important; /* Force le blanc partout */
     font-weight: 700;
     letter-spacing: 0.3px;
-    color: white;
+    /* Ombre noire forte pour la lisibilité sur tous les fonds */
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 8px rgba(0, 0, 0, 0.7),
+        1px 1px 2px rgba(0, 0, 0, 1),
+        -1px -1px 0 rgba(0, 0, 0, 0.8);
 }
 
-/* Thème Rouge - Textes avec contour doré */
+/* Thème Rouge - Texte blanc avec ombre noire renforcée + lueur dorée */
 [data-theme="rouge"] .tile-title {
+    color: white !important;
     text-shadow: 
         -2px -2px 0 #000,
         2px -2px 0 #000,
@@ -1133,71 +1137,109 @@ main {
         2px 0 0 #000,
         0 -2px 0 #000,
         0 2px 0 #000,
-        0 0 8px rgba(255, 215, 0, 0.5);
-    color: #ffffff;
+        0 0 8px rgba(255, 215, 0, 0.6);
     font-weight: 800;
 }
 
-/* Thème Sombre - Textes avec lueur bleue */
+/* Thème Sombre - Texte blanc avec lueur bleue */
 [data-theme="dark"] .tile-title {
+    color: white !important;
     text-shadow: 
         2px 2px 4px rgba(0, 0, 0, 0.9),
         0 0 12px rgba(59, 130, 246, 0.5),
         1px 1px 2px rgba(0, 0, 0, 1),
         -1px -1px 0 rgba(0, 0, 0, 0.8);
-    color: #e2e8f0;
     font-weight: 750;
 }
 
-/* Thème Bleu Ciel - Textes avec lueur turquoise */
+/* Thème Bleu Ciel - Texte blanc avec lueur turquoise */
 [data-theme="bleuciel"] .tile-title {
+    color: white !important;
     text-shadow: 
-        2px 2px 4px rgba(0, 0, 0, 0.8),
+        2px 2px 4px rgba(0, 0, 0, 0.9),
         0 0 10px rgba(6, 182, 212, 0.6),
-        1px 1px 2px rgba(0, 0, 0, 0.9),
-        -1px -1px 0 rgba(0, 0, 0, 0.7);
-    color: #f0f9ff;
+        1px 1px 2px rgba(0, 0, 0, 1),
+        -1px -1px 0 rgba(0, 0, 0, 0.8);
     font-weight: 750;
 }
 
-/* Thème Violet - Textes avec lueur violette */
+/* Thème Violet - Texte blanc avec lueur violette */
 [data-theme="light"] .tile-title {
+    color: white !important;
     text-shadow: 
-        2px 2px 4px rgba(0, 0, 0, 0.8),
+        2px 2px 4px rgba(0, 0, 0, 0.9),
         0 0 10px rgba(168, 85, 247, 0.6),
-        1px 1px 2px rgba(0, 0, 0, 0.9),
-        -1px -1px 0 rgba(0, 0, 0, 0.7);
-    color: #faf5ff;
+        1px 1px 2px rgba(0, 0, 0, 1),
+        -1px -1px 0 rgba(0, 0, 0, 0.8);
     font-weight: 750;
 }
 
 /* ========================================
-   COULEURS SPÉCIALES POUR TUILES CLAIRES
+   SUPPRESSION DES RÈGLES SPÉCIALES
+   Plus besoin de couleurs spéciales pour tuiles claires
    ======================================== */
 
-/* Renforcement du contraste pour les tuiles aux couleurs claires */
-[data-theme="light"] .tile:nth-child(30n + 20) .tile-title,
-[data-theme="light"] .tile:nth-child(30n + 21) .tile-title {
-    text-shadow: 
-        3px 3px 6px rgba(0, 0, 0, 1),
-        0 0 12px rgba(0, 0, 0, 0.8),
-        2px 2px 4px rgba(0, 0, 0, 1),
-        -2px -2px 0 rgba(0, 0, 0, 0.9);
-    color: #1f2937;
-    font-weight: 900;
-}
+/* SUPPRIMÉ : Plus de texte noir pour les tuiles claires */
+/* Maintenant TOUT est en blanc avec des ombres renforcées */
 
+/* ========================================
+   RENFORCEMENT POUR TUILES TRÈS CLAIRES
+   Ombre noire extra-forte pour garantir la lisibilité
+   ======================================== */
+
+/* Pour les tuiles aux fonds les plus clairs */
+[data-theme="light"] .tile:nth-child(30n + 18) .tile-title,
+[data-theme="light"] .tile:nth-child(30n + 19) .tile-title,
+[data-theme="light"] .tile:nth-child(30n + 20) .tile-title,
+[data-theme="light"] .tile:nth-child(30n + 21) .tile-title,
 [data-theme="bleuciel"] .tile:nth-child(30n + 21) .tile-title,
 [data-theme="bleuciel"] .tile:nth-child(30n + 22) .tile-title,
 [data-theme="bleuciel"] .tile:nth-child(30n + 23) .tile-title,
 [data-theme="bleuciel"] .tile:nth-child(30n + 24) .tile-title {
+    color: white !important;
+    /* Ombre noire ULTRA-RENFORCÉE pour les fonds clairs */
     text-shadow: 
         3px 3px 6px rgba(0, 0, 0, 1),
-        0 0 12px rgba(0, 0, 0, 0.8),
+        0 0 15px rgba(0, 0, 0, 0.9),
         2px 2px 4px rgba(0, 0, 0, 1),
-        -2px -2px 0 rgba(0, 0, 0, 0.9);
-    color: #0c4a6e;
+        -2px -2px 0 rgba(0, 0, 0, 1),
+        -3px -3px 0 rgba(0, 0, 0, 0.8),
+        3px 3px 0 rgba(0, 0, 0, 0.8);
     font-weight: 900;
+}
+
+/* ========================================
+   EFFETS DE SURVOL UNIFORMES
+   ======================================== */
+
+.tile:hover .tile-title {
+    color: white !important;
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+}
+
+/* Effets de survol par thème (gardent le blanc) */
+[data-theme="rouge"] .tile:hover .tile-title {
+    text-shadow: 
+        -2px -2px 0 #000,
+        2px -2px 0 #000,
+        -2px 2px 0 #000,
+        2px 2px 0 #000,
+        -2px 0 0 #000,
+        2px 0 0 #000,
+        0 -2px 0 #000,
+        0 2px 0 #000,
+        0 0 15px rgba(255, 215, 0, 0.8);
+}
+
+[data-theme="dark"] .tile:hover .tile-title,
+[data-theme="bleuciel"] .tile:hover .tile-title,
+[data-theme="light"] .tile:hover .tile-title {
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 1),
+        0 0 20px rgba(0, 0, 0, 0.8),
+        1px 1px 2px rgba(0, 0, 0, 1),
+        -1px -1px 0 rgba(0, 0, 0, 0.9);
 }
 
 /* ========================================
