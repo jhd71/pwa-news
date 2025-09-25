@@ -400,3 +400,23 @@
         font-size: 24px;
     }
 }
+
+/* Style du badge "Nouveau" */
+.badge-nouveau {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #e63946; /* rouge vif */
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 3px 7px;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    text-transform: uppercase;
+}
+
+/* La tuile doit être en position relative pour placer le badge */
+.tile.sondage {
+    position: relative;
+}
