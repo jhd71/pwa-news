@@ -1,61 +1,9 @@
 /* ========================================
-   SURVEY-STYLES.CSS - VERSION COMPLÈTE OPTIMISÉE
+   SURVEY-STYLES.CSS - VERSION NETTOYÉE
    ======================================== */
 
 /* ========================================
-   SECTION 2: BOUTON SONDAGE
-   ======================================== */
-
-/* Style de base pour le bouton */
-.survey-btn {
-    position: relative;
-}
-
-/* Animation du bouton */
-.survey-btn .material-icons {
-    animation: surveyPulse 2s infinite;
-}
-
-/* Indicateur visuel (point rouge) */
-.survey-btn::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 10px;
-    height: 10px;
-    background-color: #FF4545;
-    border-radius: 50%;
-    box-shadow: 0 0 5px rgba(255, 69, 69, 0.5);
-}
-
-/* Animation du texte */
-.survey-btn span:not(.material-icons) {
-    animation: textColorChange 3s infinite;
-}
-
-/* Couleurs d'icône par thème */
-[data-theme="light"] .survey-btn .material-icons,
-[data-theme="dark"] .survey-btn .material-icons,
-[data-theme="bleuciel"] .survey-btn .material-icons {
-    color: #FFEB3B;
-}
-
-[data-theme="rouge"] .survey-btn .material-icons {
-    color: #FFD230;
-}
-
-/* Animation du texte par thème */
-[data-theme="rouge"] .survey-btn span:not(.material-icons) {
-    animation: textColorChangeRouge 3s infinite;
-}
-
-[data-theme="bleuciel"] .survey-btn span:not(.material-icons) {
-    animation: textColorChange 3s infinite; /* Utilise l'animation standard */
-}
-
-/* ========================================
-   SECTION 3: MODAL DU SONDAGE
+   SECTION 1: MODAL DU SONDAGE
    ======================================== */
 
 .survey-modal {
@@ -163,7 +111,7 @@
 }
 
 /* ========================================
-   SECTION 4: QUESTIONS ET OPTIONS
+   SECTION 2: QUESTIONS ET OPTIONS
    ======================================== */
 
 .survey-question {
@@ -222,7 +170,7 @@
 }
 
 /* ========================================
-   SECTION 5: BOUTONS D'ACTION
+   SECTION 3: BOUTONS D'ACTION
    ======================================== */
 
 /* Styles communs aux boutons */
@@ -323,7 +271,7 @@
 }
 
 /* ========================================
-   SECTION 6: MESSAGE DE REMERCIEMENT ET RÉSULTATS
+   SECTION 4: MESSAGE DE REMERCIEMENT ET RÉSULTATS
    ======================================== */
 
 .thank-you-message {
@@ -331,7 +279,6 @@
     text-align: center !important;
     padding: 20px;
     flex-direction: column !important;
-    /*align-items: center !important;*/
     justify-content: center !important;
 }
 
@@ -417,49 +364,7 @@
 }
 
 /* ========================================
-   SECTION 7: RESPONSIVITÉ
-   ======================================== */
-
-@media (max-width: 768px) {
-    /* Modal */
-    .survey-content {
-        width: 95%;
-        padding: 15px;
-    }
-    
-    /* Header */
-    .survey-header h2 {
-        font-size: 18px;
-    }
-    
-    /* Questions */
-    .survey-question h3 {
-        font-size: 16px;
-    }
-    
-    /* Options */
-    .survey-option {
-        padding: 10px;
-    }
-    
-    /* Bouton de fermeture */
-    .close-survey {
-        width: 40px;
-        height: 40px;
-    }
-    
-    .close-survey::before {
-        font-size: 28px;
-    }
-    
-    .close-survey .material-icons {
-        font-size: 24px;
-    }
-}
-
-/* ========================================
-   SECTION 8: BADGE "NOUVEAU" ET ANIMATION TUILE
-   À ajouter à la fin de survey-styles.css
+   SECTION 5: BADGE "NOUVEAU" ET ANIMATIONS TUILE
    ======================================== */
 
 /* Animation pulsante pour la tuile sondage avec nouveau contenu */
@@ -594,8 +499,47 @@
     position: absolute;
 }
 
-/* Responsive pour mobile */
+/* ========================================
+   SECTION 6: RESPONSIVITÉ
+   ======================================== */
+
 @media (max-width: 768px) {
+    /* Modal */
+    .survey-content {
+        width: 95%;
+        padding: 15px;
+    }
+    
+    /* Header */
+    .survey-header h2 {
+        font-size: 18px;
+    }
+    
+    /* Questions */
+    .survey-question h3 {
+        font-size: 16px;
+    }
+    
+    /* Options */
+    .survey-option {
+        padding: 10px;
+    }
+    
+    /* Bouton de fermeture */
+    .close-survey {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .close-survey::before {
+        font-size: 28px;
+    }
+    
+    .close-survey .material-icons {
+        font-size: 24px;
+    }
+    
+    /* Badge nouveau sondage sur mobile */
     .tile.survey-tile.has-new-survey::before {
         font-size: 9px;
         padding: 3px 6px;
