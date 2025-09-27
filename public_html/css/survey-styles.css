@@ -1085,33 +1085,47 @@
 
 /* Badge NOUVEAU sur la tuile quiz */
 /* Le sélecteur a changé pour n'appliquer le style que si la classe .quiz-nouveau est présente */
+/* Style par défaut (desktop) */
 .tile.quiz-tile.quiz-nouveau::after {
-    /* --- Affichage et Contenu --- */
     display: block !important;
     content: 'Nouveau !';
-    
-    /* --- Positionnement en diagonale --- */
     position: absolute !important;
     top: 18px;
     right: -32px;
     width: 140px;
     transform: rotate(45deg);
-    
-    /* --- Style visuel --- */
     background: linear-gradient(45deg, #ffd700, #ffb800);
     color: #4a2d05;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    
-    /* --- Texte --- */
     padding: 6px 0;
     font-size: 0.75rem;
     font-weight: 800;
     text-align: center;
     text-transform: uppercase;
-
-    /* --- Animation et superposition --- */
     z-index: 2;
     animation: pulseGlow 2.5s ease-in-out infinite;
+}
+
+/* Version tablette */
+@media (max-width: 768px) {
+  .tile.quiz-tile.quiz-nouveau::after {
+    top: 12px;
+    right: -24px;
+    width: 110px;
+    font-size: 0.65rem;
+    padding: 4px 0;
+  }
+}
+
+/* Version mobile */
+@media (max-width: 480px) {
+  .tile.quiz-tile.quiz-nouveau::after {
+    top: 8px;
+    right: -18px;
+    width: 90px;
+    font-size: 0.55rem;
+    padding: 3px 0;
+  }
 }
 
 /* L'animation ne change pas */
