@@ -1120,7 +1120,7 @@
 /* Version mobile */
 @media (max-width: 480px) {
   .tile.quiz-tile.quiz-nouveau::after {
-    top: 8px;
+    top: 15px;
     right: -18px;
     width: 90px;
     font-size: 0.55rem;
