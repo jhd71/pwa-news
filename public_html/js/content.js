@@ -8,7 +8,15 @@ class ContentManager {
     this.deferredPrompt = null;
 	this.visualEnhancement = localStorage.getItem('visualEnhancement') || 'enhanced';
 }
-
+	
+	getCurrentWeek() {
+        const now = new Date();
+        const start = new Date(now.getFullYear(), 0, 1);
+        const diff = now - start;
+        const oneWeek = 1000 * 60 * 60 * 24 * 7;
+        return Math.floor(diff / oneWeek);
+    }
+	
     init() {
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.setup());
@@ -317,6 +325,16 @@ const photosTile = {
     isSlideshow: false // Plus de diaporama
 };
 
+// NOUVELLE TUILE QUIZ
+const quizTile = {
+    title: "🎯 Quiz Hebdo",
+    url: "#quiz",
+    mobileUrl: "#quiz",
+    isDefault: true,
+    category: "quiz",
+    isQuiz: true
+};
+
 // Créer les tuiles d'actualités
 newsDefaultSites.forEach(site => {
     const tile = this.createTile(site);
@@ -339,6 +357,10 @@ this.tileContainer.appendChild(separator1);
 // DÉPLACÉ ICI - TUILE PHOTOS DANS ESPACE+
 const photosTileElement = this.createTile(photosTile);
 this.tileContainer.appendChild(photosTileElement);
+
+// AJOUTER LA TUILE QUIZ DANS ESPACE+
+const quizTileElement = this.createTile(quizTile);
+this.tileContainer.appendChild(quizTileElement);
 
         // Séparateur TV
         const separator2 = document.createElement('div');
@@ -544,6 +566,27 @@ const tvSites = [
     tile.classList.add('survey-tile');
 	}
 	
+	// Marquer spécialement la tuile quiz
+        if (site.isQuiz) {
+            tile.classList.add('quiz-tile');
+            tile.id = 'quizTile';
+
+            // ==========================================================
+            // AJOUT : LOGIQUE POUR AFFICHER LE BADGE "NOUVEAU"
+            // ==========================================================
+            try {
+                const lastQuizWeek = localStorage.getItem('lastQuizWeek');
+                const currentWeek = this.getCurrentWeek().toString();
+
+                // Si la semaine sauvegardée est différente de la semaine actuelle, le quiz est "nouveau"
+                if (lastQuizWeek !== currentWeek) {
+                    tile.classList.add('quiz-nouveau');
+                }
+            } catch (e) {
+                console.error("Erreur lors de la vérification de la semaine du quiz", e);
+            }			
+	}
+
     // Ajouter des classes conditionnelles pour les designs spéciaux
     if (site.isLive && site.category === 'tv') {
         tile.classList.add('live-content');
@@ -582,6 +625,27 @@ const tvSites = [
         }
         return;
 	}
+
+// Gestion spéciale pour le quiz
+if (site.isQuiz) {
+    // Vérifier si le quiz est déjà chargé
+    if (typeof window.quizLocal !== 'undefined' && window.quizLocal) {
+        window.quizLocal.openQuizModal();
+    } else {
+        // Charger le script une seule fois
+        if (!document.querySelector('script[src="js/quiz-local.js"]')) {
+            const script = document.createElement('script');
+            script.src = 'js/quiz-local.js';
+            script.onload = () => {
+                if (window.quizLocal) {
+                    window.quizLocal.openQuizModal();
+                }
+            };
+            document.head.appendChild(script);
+        }
+    }
+    return;
+}
 
     // Gestion spéciale pour la tuile "Ajouter un site"
     if (site.isAddSite) {

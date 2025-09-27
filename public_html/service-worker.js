@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v42'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v43'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -74,6 +74,7 @@ const STATIC_RESOURCES = [
 	'/js/radioPopup.js',
 	'/js/notepadApp.js',
 	'/js/todoApp.js',
+	'/js/quiz-local.js',
     
     // Fichiers de configuration (seulement ceux qui existent)
     '/manifest.json',
