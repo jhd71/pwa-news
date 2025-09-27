@@ -21,7 +21,7 @@ class RadioPopupWidget {
             },
             {
                 name: 'La Radio Sans pub',
-                url: 'https://stream1.jupinfo.fr:8443/play',
+                url: 'https://live1.jupinfo.fr:8443/play',
                 logo: 'images/radio-logos/La-Radio-Sans-pub.png',
                 description: '100% Hits 24/24'
             },
@@ -43,6 +43,12 @@ class RadioPopupWidget {
                 logo: 'images/radio-logos/nrj.png',
                 description: 'Hits & musique'
             },
+			{
+                name: 'Fun Radio',
+                url: 'https://streamer-02.rtl.fr/fun-1-44-128',
+                logo: 'images/radio-logos/Fun-Radio.png',
+                description: 'Le son dancefloor'
+            },
             {
                 name: 'Nostalgie',
                 url: 'https://streaming.nrjaudio.fm/oug7girb92oc?origine=fluxradios',
@@ -54,13 +60,7 @@ class RadioPopupWidget {
                 url: 'https://streaming.nrjaudio.fm/ouuku85n3nje?origine=fluxradios',
                 logo: 'images/radio-logos/cherie-fm.png',
                 description: 'Love songs'
-            },
-            {
-                name: 'Fun Radio',
-                url: 'https://streamer-02.rtl.fr/fun-1-44-128',
-                logo: 'images/radio-logos/Fun-Radio.png',
-                description: 'Le son dancefloor'
-            },
+            },           
             {
                 name: 'Fréquence Plus',
                 url: 'https://fplus-chalonsursaone.ice.infomaniak.ch/fplus-chalonsursaone-128.mp3',
@@ -73,11 +73,23 @@ class RadioPopupWidget {
                 logo: 'images/radio-logos/M-Radio.png',
                 description: ' Numéro 1 sur la chanson française'
             },
+			{
+                name: 'Cerise FM',
+                url: 'https://stream.rcs.revma.com/q90fb3dwnwzuv.mp3',
+                logo: 'images/radio-logos/Cerise-FM.png',
+                description: 'Les tubes dhier, les hits daujourdhui'
+            },
+			{
+                name: 'Alouette FM',
+                url: 'https://alouette-poitiers.ice.infomaniak.ch/alouette-poitiers-128.mp3',
+                logo: 'images/radio-logos/Alouette-FM.png',
+                description: 'Toujours plus de Hits'
+            },
             {
                 name: 'RTL2',
                 url: 'https://streamer-02.rtl.fr/rtl2-1-44-128',
                 logo: 'images/radio-logos/RTL2.png',
-                description: ' Le Son Pop-Rock'
+                description: 'Le Son Pop-Rock'
             },
             {
                 name: 'RTL',
