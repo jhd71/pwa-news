@@ -375,10 +375,67 @@
             color: #6b7280;
             font-size: 0.875rem;
         }
+		
+		/* Boutons de retour */
+		.return-home-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		padding: 12px 24px;
+		background: linear-gradient(135deg, #dc2626, #991b1b);
+		color: white;
+		text-decoration: none;
+		font-weight: 600;
+		border-radius: 50px;
+		box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+		transition: all 0.3s ease;
+		margin: 20px 0;
+		}
+
+		.return-home-btn:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+		background: linear-gradient(135deg, #ef4444, #dc2626);
+		}
+
+		.return-home-btn .material-icons {
+		font-size: 20px;
+		}
+
+		/* Conteneur pour centrer le bouton */
+		.button-container {
+		text-align: center;
+		padding: 20px 0;
+		}
+
+		/* Version fixe du bouton */
+		.fixed-return-btn {
+		position: fixed;
+		top: 20px;
+		left: 20px;
+		z-index: 1000;
+		background: rgba(220, 38, 38, 0.95);
+		backdrop-filter: blur(10px);
+		}
+
+		@media (max-width: 768px) {
+		.fixed-return-btn {
+        top: 10px;
+        left: 10px;
+        padding: 10px 16px;
+        font-size: 14px;
+    }
+}
     </style>
 </head>
 
 <body>
+    <!-- Bouton de retour fixe en haut -->
+    <a href="/" class="return-home-btn fixed-return-btn">
+        <span class="material-icons">home</span>
+        <span>Retour à Actu & Média</span>
+    </a>
+
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
@@ -394,9 +451,9 @@
                     <span class="material-icons">mail</span>
                     Nous contacter
                 </a>
-            </div>
-        </div>
-    </section>
+            </div>						    
+			</div>
+	</section>
 
     <!-- Features Section -->
     <section id="features" class="section">
@@ -678,22 +735,30 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <h3>💰 Gestionnaire de Dépenses</h3>
-                <p>L'application open source pour gérer vos finances en toute simplicité</p>
-            </div>
-            <div class="footer-links">
-                <a href="https://depenses.actuetmedia.fr/">Application</a>
-                <a href="#features">Fonctionnalités</a>
-                <a href="#installation">Installation</a>
-                <a href="https://actuetmedia.fr/contact.html" target="_blank">Contact</a>
-            </div>
-            <p style="margin-top: 2rem; opacity: 0.6;">© 2024 - Fait avec ❤️ pour simplifier la vie | <a href="https://actuetmedia.fr" target="_blank" style="color: white; opacity: 0.8;">ActuEtMédia</a></p>
+		<!-- Footer -->
+		<footer class="footer">
+		<div class="container">
+        <!-- Bouton de retour en haut du footer -->
+        <div class="button-container">
+            <a href="/" class="return-home-btn">
+                <span class="material-icons">home</span>
+                <span>Retour à Actu & Média</span>
+            </a>
         </div>
-    </footer>
+        
+        <div class="footer-content">
+            <h3>💰 Gestionnaire de Dépenses</h3>
+            <p>L'application open source pour gérer vos finances en toute simplicité</p>
+        </div>
+        <div class="footer-links">
+            <a href="https://depenses.actuetmedia.fr/">Application</a>
+            <a href="#features">Fonctionnalités</a>
+            <a href="#installation">Installation</a>
+            <a href="https://actuetmedia.fr/contact.html" target="_blank">Contact</a>
+        </div>
+        <p style="margin-top: 2rem; opacity: 0.6;">© 2024 - Fait avec ❤️ pour simplifier la vie | <a href="https://actuetmedia.fr" target="_blank" style="color: white; opacity: 0.8;">ActuEtMédia</a></p>
+		</div>
+	</footer>
 
     <!-- Donation Popup -->
 <div id="donationPopup" class="donation-overlay">
