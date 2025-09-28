@@ -3761,3 +3761,21 @@ a:active {
         font-size: 20px;
     }
 }
+
+/* Bouton Facebook */
+.tool-button.facebook-btn {
+  background-color: #1877f2; /* Bleu Facebook */
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.tool-button.facebook-btn svg {
+  width: 28px;   /* augmenté */
+  height: 28px;  /* augmenté */
+  fill: white;
+}

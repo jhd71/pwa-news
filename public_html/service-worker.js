@@ -16,7 +16,7 @@ const STATIC_RESOURCES = [
 	'/news-locale.html',
 	'/autour-de-moi.html',
 	'/contact.html',
-	'/presentation.html',
+	'/gestionnaire-depenses-info.html',
 	'/a-propos.html',
     
     // Feuilles de style CSS

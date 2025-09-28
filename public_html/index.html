@@ -211,10 +211,14 @@ Actu & Média
   <!-- <h3>Météo locale</h3> -->
   <div id="weather-widget">Chargement...</div>
 </div>
-<!-- Bouton Gestionnaire de dépenses -->
-<button class="tool-button" onclick="openExpenseManager()" title="Gestionnaire de dépenses familiales">
-    <span class="material-icons">euro</span>
+<!-- Bouton Page Facebook -->
+<button class="tool-button facebook-btn" onclick="window.open('https://www.facebook.com/actuetmedia.fr/', '_blank')" title="Page Facebook Actu & Média">
+  <!-- Icône Facebook -->
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path fill="white" d="M15.12 8.29H13.5c-.24 0-.5.32-.5.77v1.69h2.12l-.32 2.48h-1.8V21h-2.62v-7.77H9v-2.48h1.88V8.86c0-1.9 1.14-2.94 2.81-2.94.8 0 1.49.06 1.7.09v2.28h-.27z"/>
+  </svg>
 </button>
+
 <!-- Bouton Autour de moi -->
 <button class="search-button" onclick="window.open('/autour-de-moi.html', '_blank')" title="Autour de moi">
     <span class="material-icons">near_me</span>
@@ -348,14 +352,22 @@ Actu & Média
             <span class="material-icons">close</span>
         </button>
     </div>
-
+    
     <!-- A propos -->
     <div class="menu-item">
         <a href="/a-propos.html">
             <span class="material-icons">info</span>
-            Actu & Média, c’est quoi ?
+            Actu & Média, c'est quoi ?
         </a>
     </div>
+    
+    <!-- NOUVEAU - Gestionnaire de dépenses -->
+    <div class="menu-item">
+    <a href="/gestionnaire-depenses-info.html">
+        <span class="material-icons">account_balance_wallet</span>
+        Gestionnaire de dépenses
+    </a>
+</div>
     
     <!-- 1. Contact -->
     <div class="menu-item">
