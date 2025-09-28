@@ -501,7 +501,7 @@
   color: white !important;
 }
 
-/* BOUTONS euro ET RECHERCHE - Style commun */
+/* BOUTONS facebook ET RECHERCHE - Style commun */
 .tool-button,
 .search-button {
   display: flex;
@@ -613,7 +613,7 @@
     right: 10px !important;
   }
   
-  /* Boutons euro et recherche sur desktop */
+  /* Boutons facebook et recherche sur desktop */
   .tool-button {
     top: 170px;
     left: 10px;
@@ -728,7 +728,7 @@
     display: none !important;
   }
   
-  /* Boutons euro et recherche sur mobile */
+  /* Boutons facebook et recherche sur mobile */
   .tool-button {
     position: fixed;
     top: 70px;
@@ -751,15 +751,6 @@
   .tool-button .material-icons,
   .search-button .material-icons {
     font-size: 22px;
-  }
-  
-  /* Hover mobile pour boutons */
-  .tool-button:hover {
-    transform: translateX(-50%) translateY(-2px) !important;
-  }
-  
-  .search-button:hover {
-    transform: translateY(-2px) !important;
   }
   
   /* Position des GIFs météo sur mobile */
