@@ -268,24 +268,34 @@ hashPassword(password) {
 }
 
         async init() {
-    // Vérification simple sans redirection
-    const chatPseudo = localStorage.getItem('chatPseudo');
-    const isAdmin = localStorage.getItem('isAdmin');
-    
-    console.log('Utilisateur:', chatPseudo, 'Admin:', isAdmin);
-    
-    // Si pas admin, afficher un avertissement mais charger quand même
-    if (chatPseudo !== 'Admin_ActuMedia' || isAdmin !== 'true') {
-        console.warn('⚠️ Mode lecture seule - Pas de droits admin détectés');
-        // Optionnel : désactiver les boutons
-        document.querySelectorAll('button').forEach(btn => {
-            if (btn.textContent.includes('Approuver') || btn.textContent.includes('Supprimer')) {
-                btn.style.display = 'none';
+    // Vérifier l'authentification AVANT de charger
+    if (!this.checkAuthentication()) {
+        // Si pas authentifié, demander le mot de passe
+        const password = prompt('Mot de passe administrateur requis :');
+        if (password) {
+            const hashedPassword = this.hashPassword(password);
+            const expectedHash = '6fe87dd'; // Hash de fc35>$wL72iZA^
+            
+            if (hashedPassword === expectedHash) {
+                // Authentification réussie
+                sessionStorage.setItem('newsAdminAuth', 'authenticated');
+                sessionStorage.setItem('newsAdminUser', 'Admin_ActuMedia');
+                sessionStorage.setItem('newsAdminTimestamp', Date.now().toString());
+                console.log('✅ Authentification réussie');
+            } else {
+                alert('❌ Mot de passe incorrect');
+                window.location.href = 'index.html';
+                return;
             }
-        });
+        } else {
+            // Pas de mot de passe fourni
+            window.location.href = 'index.html';
+            return;
+        }
     }
     
-    // Charger les commentaires dans tous les cas
+    // Si on arrive ici, l'utilisateur est authentifié
+    console.log('✅ Utilisateur authentifié, chargement des commentaires...');
     await this.loadComments();
 }
 
@@ -306,21 +316,7 @@ hashPassword(password) {
         return true;
     }
     
-    // Méthode 3 : Demander le mot de passe
-    const password = prompt('Mot de passe administrateur requis :');
-    if (password) {
-        const hashedPassword = this.hashPassword(password);
-        const expectedHash = '6fe87dd'; // Hash de votre mot de passe
-        
-        if (hashedPassword === expectedHash) {
-            // Stocker l'authentification
-            sessionStorage.setItem('newsAdminAuth', 'authenticated');
-            sessionStorage.setItem('newsAdminUser', 'Admin_ActuMedia');
-            sessionStorage.setItem('newsAdminTimestamp', Date.now().toString());
-            return true;
-        }
-    }
-    
+    // Si aucune authentification trouvée
     return false;
 }
 
