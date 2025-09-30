@@ -13,6 +13,7 @@ const STATIC_RESOURCES = [
     '/500.html',
 	'/admin-news.html',
 	'/admin-comments.html',
+	'/admin-comments-photos.html',
 	'/news-locale.html',
 	'/autour-de-moi.html',
 	'/contact.html',
