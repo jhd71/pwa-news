@@ -173,12 +173,11 @@ function setupChatButton() {
 }
 
 async function checkAdminNotifications() {
-    // Vérifier si l'utilisateur est admin
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
     const pseudo = localStorage.getItem('chatPseudo');
     
     if (!isAdmin || pseudo !== 'Admin_ActuMedia') {
-        return; // Pas admin, on sort
+        return;
     }
 
     try {
@@ -186,45 +185,24 @@ async function checkAdminNotifications() {
         if (!supabase) return;
 
         // Compter les commentaires NEWS en attente
-        const { count: newsCount, error: newsError } = await supabase
+        const { count: newsCount } = await supabase
             .from('news_comments')
             .select('*', { count: 'exact', head: true })
             .eq('is_approved', false);
 
-        // Compter les commentaires PHOTOS en attente (après avoir ajouté is_approved)
-        const { count: photosCount, error: photosError } = await supabase
+        // Compter les commentaires PHOTOS en attente  
+        const { count: photosCount } = await supabase
             .from('photo_comments')
             .select('*', { count: 'exact', head: true })
             .eq('is_approved', false);
 
-        // Calculer le total
+        // Total
         const totalCount = (newsCount || 0) + (photosCount || 0);
 
         if (totalCount > 0) {
-            // Ajouter un badge avec le nombre total exact
             addNotificationBadgeToNewsWidget(totalCount);
-            
-            // Notification native avec détails
-            const lastNotified = localStorage.getItem('lastCommentNotification');
-            const now = Date.now();
-            
-            if (!lastNotified || (now - parseInt(lastNotified)) > 3600000) { // 1 heure
-                let message = `${totalCount} commentaire(s) en attente`;
-                
-                // Ajouter les détails
-                if (newsCount > 0 && photosCount > 0) {
-                    message += ` (${newsCount} news, ${photosCount} photos)`;
-                } else if (newsCount > 0) {
-                    message += ` (news)`;
-                } else if (photosCount > 0) {
-                    message += ` (photos)`;
-                }
-                
-                showSimpleNotification(message);
-                localStorage.setItem('lastCommentNotification', now.toString());
-            }
+            console.log(`📊 ${totalCount} commentaire(s) en attente (${newsCount} news, ${photosCount} photos)`);
         } else {
-            // Supprimer le badge s'il n'y a plus de commentaires
             removeNotificationBadgeFromNewsWidget();
         }
     } catch (error) {

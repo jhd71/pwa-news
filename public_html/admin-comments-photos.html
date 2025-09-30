@@ -257,35 +257,33 @@
         }
 
         async init() {
-    console.log('=== Vérification authentification ===');
-    
-    const chatPseudo = localStorage.getItem('chatPseudo');
-    const isAdmin = localStorage.getItem('isAdmin');
-    
-    console.log('chatPseudo:', chatPseudo);
-    console.log('isAdmin:', isAdmin);
-    
-    // Vérifier aussi sessionStorage
-    console.log('newsAdminAuth:', sessionStorage.getItem('newsAdminAuth'));
-    console.log('newsAdminUser:', sessionStorage.getItem('newsAdminUser'));
-    
     if (!this.checkAuthentication()) {
-        console.error('Non authentifié - Pas de redirection pour debug');
-        // Commenter la redirection pour le moment
-        // window.location.href = 'index.html';
-        // return;
+        window.location.href = 'index.html'; // Réactiver la redirection
+        return;
     }
     
-    console.log('Chargement des commentaires...');
     await this.loadComments();
 }
 
         checkAuthentication() {
-            // Using the same robust check from your news admin pages
-            const newsAuthToken = sessionStorage.getItem('newsAdminAuth');
-            const newsAuthUser = sessionStorage.getItem('newsAdminUser');
-            return (newsAuthToken === 'authenticated' && newsAuthUser === this.ADMIN_USERNAME);
-        }
+    // Vérifier le statut admin du chat (votre cas)
+    const chatPseudo = localStorage.getItem('chatPseudo');
+    const isAdmin = localStorage.getItem('isAdmin') === 'true';
+    
+    if (chatPseudo === 'Admin_ActuMedia' && isAdmin) {
+        return true; // Vous êtes admin, tout va bien
+    }
+    
+    // Vérifier l'authentification NEWS (depuis admin-news.html)
+    const newsAuthToken = sessionStorage.getItem('newsAdminAuth');
+    const newsAuthUser = sessionStorage.getItem('newsAdminUser');
+    
+    if (newsAuthToken === 'authenticated' && newsAuthUser === 'Admin_ActuMedia') {
+        return true;
+    }
+    
+    return false;
+}
 
         async loadComments() {
     try {
