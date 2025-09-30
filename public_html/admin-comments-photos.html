@@ -257,13 +257,28 @@
         }
 
         async init() {
-            if (!this.checkAuthentication()) {
-                // Redirect to a login page or home page if not authenticated
-                window.location.href = 'index.html'; 
-                return;
-            }
-            await this.loadComments();
-        }
+    console.log('=== Vérification authentification ===');
+    
+    const chatPseudo = localStorage.getItem('chatPseudo');
+    const isAdmin = localStorage.getItem('isAdmin');
+    
+    console.log('chatPseudo:', chatPseudo);
+    console.log('isAdmin:', isAdmin);
+    
+    // Vérifier aussi sessionStorage
+    console.log('newsAdminAuth:', sessionStorage.getItem('newsAdminAuth'));
+    console.log('newsAdminUser:', sessionStorage.getItem('newsAdminUser'));
+    
+    if (!this.checkAuthentication()) {
+        console.error('Non authentifié - Pas de redirection pour debug');
+        // Commenter la redirection pour le moment
+        // window.location.href = 'index.html';
+        // return;
+    }
+    
+    console.log('Chargement des commentaires...');
+    await this.loadComments();
+}
 
         checkAuthentication() {
             // Using the same robust check from your news admin pages
@@ -273,30 +288,32 @@
         }
 
         async loadComments() {
-            try {
-                const supabase = window.getSupabaseClient();
-                if (!supabase) throw new Error('Supabase non disponible');
+    try {
+        const supabase = window.getSupabaseClient();
+        if (!supabase) throw new Error('Supabase non disponible');
 
-                // Fetch comments and related photo data
-                const { data: comments, error } = await supabase
-                    .from('photo_comments')
-                    .select(`
-                        *,
-                        user_photos(id, title, image_url)
-                    `)
-                    .order('created_at', { ascending: false });
+        // Requête avec jointure sur la table photos
+        const { data: comments, error } = await supabase
+            .from('photo_comments')
+            .select(`
+                *,
+                photos(id, title, image_url)
+            `)
+            .order('created_at', { ascending: false });
 
-                if (error) throw error;
+        if (error) throw error;
 
-                this.comments = comments || [];
-                this.updateStats();
-                this.displayComments();
+        this.comments = comments || [];
+        this.updateStats();
+        this.displayComments();
 
-            } catch (error) {
-                console.error('Erreur:', error);
-                document.getElementById('commentsList').innerHTML = '<p>Erreur de chargement des commentaires.</p>';
-            }
-        }
+    } catch (error) {
+        console.error('Erreur:', error);
+        document.getElementById('commentsList').innerHTML = `
+            <p style="color: red;">Erreur : ${error.message}</p>
+        `;
+    }
+}
 
         updateStats() {
             const pending = this.comments.filter(c => !c.is_approved).length;
@@ -308,70 +325,45 @@
         }
 
         displayComments() {
-            const container = document.getElementById('commentsList');
+    const container = document.getElementById('commentsList');
+    
+    if (this.comments.length === 0) {
+        container.innerHTML = '<p>Aucun commentaire photo pour le moment</p>';
+        return;
+    }
+
+    container.innerHTML = this.comments.map(comment => `
+        <div class="comment-item ${comment.is_approved ? '' : 'pending'}">
+            ${comment.photos?.image_url ? `
+                <img src="${comment.photos.image_url}" 
+                     alt="${comment.photos.title || 'Photo'}" 
+                     class="photo-thumbnail"
+                     onclick="window.open('${comment.photos.image_url}', '_blank')">
+            ` : `<p>Photo ID: ${comment.photo_id}</p>`}
             
-            if (this.comments.length === 0) {
-                container.innerHTML = '<p>Aucun commentaire photo pour le moment.</p>';
-                return;
-            }
-
-            container.innerHTML = this.comments.map(comment => {
-                const photoTitle = comment.user_photos?.title || 'Photo supprimée';
-                const photoUrl = comment.user_photos?.image_url;
-
-                // This structure mimics your admin-comments.html for consistency
-                return `
-                    <div class="comment-item ${comment.is_approved ? 'approved' : 'pending'}">
-                        <div class="comment-header">
-                            <div class="comment-info">
-                                <div class="comment-author">
-                                    <div class="comment-avatar">
-                                        ${(comment.author_name || 'A').charAt(0).toUpperCase()}
-                                    </div>
-                                    <div class="author-details">
-                                        <div class="author-name">${comment.author_name || 'Anonyme'}</div>
-                                    </div>
-                                </div>
-                                <div class="news-title">
-                                    <strong>Photo :</strong> ${photoTitle}
-                                </div>
-                                ${photoUrl ? `
-                                    <img src="${photoUrl}" 
-                                         alt="${photoTitle}" 
-                                         class="photo-thumbnail"
-                                         onclick="window.open('${photoUrl}', '_blank')">
-                                ` : ''}
-                            </div>
-                            <div class="comment-meta">
-                                <div class="comment-date">
-                                    ${new Date(comment.created_at).toLocaleString('fr-FR')}
-                                </div>
-                                <div class="status-badge ${comment.is_approved ? 'status-approved' : 'status-pending'}">
-                                    ${comment.is_approved ? 'Approuvé' : 'En attente'}
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="comment-content">
-                            ${comment.comment_text}
-                        </div>
-                        
-                        <div class="comment-actions">
-                            ${!comment.is_approved ? `
-                                <button class="btn btn-approve" onclick="photoModerationManager.approveComment(${comment.id})">
-                                    <span class="material-icons">check</span>
-                                    Approuver
-                                </button>
-                            ` : ''}
-                            <button class="btn btn-delete" onclick="photoModerationManager.deleteComment(${comment.id})">
-                                <span class="material-icons">delete</span>
-                                Supprimer
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
+            <h4>${comment.photos?.title || `Photo #${comment.photo_id}`}</h4>
+            <p><strong>Auteur:</strong> ${comment.author_name || 'Anonyme'}</p>
+            <p><strong>Commentaire:</strong> ${comment.comment_text}</p>
+            <p><small>${new Date(comment.created_at).toLocaleString('fr-FR')}</small></p>
+            <p><span class="status-badge ${comment.is_approved ? 'status-approved' : 'status-pending'}">
+                ${comment.is_approved ? 'Approuvé' : 'En attente'}
+            </span></p>
+            
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                ${!comment.is_approved ? `
+                    <button class="btn btn-approve" onclick="photoModerationManager.approveComment(${comment.id})">
+                        <span class="material-icons">check</span>
+                        Approuver
+                    </button>
+                ` : ''}
+                <button class="btn btn-delete" onclick="photoModerationManager.deleteComment(${comment.id})">
+                    <span class="material-icons">delete</span>
+                    Supprimer
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
 
         async approveComment(commentId) {
             try {

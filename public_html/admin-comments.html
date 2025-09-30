@@ -741,30 +741,25 @@
         const supabase = window.getSupabaseClient();
         if (!supabase) throw new Error('Supabase non disponible');
 
-        // AJOUT : Récupérer TOUS les commentaires sans limite
+        // CORRECTION : La table user_photos n'existe peut-être pas
+        // Remplacer par la requête simple sans jointure
         const { data: comments, error } = await supabase
-            .from('news_comments')
-            .select(`
-                *,
-                local_news(id, title)
-            `)
-            .order('created_at', { ascending: false })
-            .limit(1000); // AJOUT : Limite explicite haute
+            .from('photo_comments')
+            .select('*')
+            .order('created_at', { ascending: false });
 
         if (error) throw error;
 
         this.comments = comments || [];
-        
-        // DEBUG : Vérifier le nombre de commentaires
-        console.log('Nombre de commentaires chargés:', this.comments.length);
-        console.log('Commentaires:', this.comments);
-        
         this.updateStats();
-        this.filterComments();
+        this.displayComments();
 
     } catch (error) {
-        console.error('Erreur lors du chargement des commentaires:', error);
-        this.showError();
+        console.error('Erreur:', error);
+        // Ajouter plus de détails sur l'erreur
+        document.getElementById('commentsList').innerHTML = `
+            <p style="color: red;">Erreur : ${error.message}</p>
+        `;
     }
 }
 
@@ -824,74 +819,36 @@ async forceReload() {
                 this.displayComments(filtered);
             }
 
-            displayComments(comments) {
+            displayComments() {
     const container = document.getElementById('commentsList');
-    if (!container) return;
-
-    // DEBUG
-    console.log('Affichage de', comments.length, 'commentaires');
-
-    if (!comments || comments.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <div class="material-icons empty-icon">chat_bubble_outline</div>
-                <h3>Aucun commentaire</h3>
-                <p>Aucun commentaire ne correspond aux filtres sélectionnés.</p>
-            </div>
-        `;
+    
+    if (this.comments.length === 0) {
+        container.innerHTML = '<p>Aucun commentaire photo pour le moment</p>';
         return;
     }
 
-    // CORRECTION : S'assurer que local_news existe
-    container.innerHTML = comments.map(comment => {
-        const newsTitle = comment.local_news?.title || 'Actualité supprimée';
-        
-        return `
-            <div class="comment-item ${comment.is_approved ? 'approved' : 'pending'}">
-                <div class="comment-header">
-                    <div class="comment-info">
-                        <div class="comment-author">
-                            <div class="comment-avatar">
-                                ${(comment.author_name || 'Anonyme').charAt(0).toUpperCase()}
-                            </div>
-                            <div class="author-details">
-                                <div class="author-name">${comment.author_name || 'Anonyme'}</div>
-                                ${comment.author_email ? `<div class="author-email">${comment.author_email}</div>` : ''}
-                            </div>
-                        </div>
-                        <div class="news-title">
-                            <strong>Actualité :</strong> ${newsTitle}
-                        </div>
-                    </div>
-                    <div class="comment-meta">
-                        <div class="comment-date">
-                            ${this.formatDate(comment.created_at)}
-                        </div>
-                        <div class="status-badge ${comment.is_approved ? 'status-approved' : 'status-pending'}">
-                            ${comment.is_approved ? 'Approuvé' : 'En attente'}
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="comment-content">
-                    ${comment.content}
-                </div>
-                
-                <div class="comment-actions">
-                    ${!comment.is_approved ? `
-                        <button class="btn btn-approve" onclick="moderationManager.approveComment(${comment.id})">
-                            <span class="material-icons">check</span>
-                            Approuver
-                        </button>
-                    ` : ''}
-                    <button class="btn btn-delete" onclick="moderationManager.deleteComment(${comment.id})">
-                        <span class="material-icons">delete</span>
-                        Supprimer
+    container.innerHTML = this.comments.map(comment => `
+        <div class="comment-item ${comment.is_approved ? '' : 'pending'}">
+            <h4>Photo ID: ${comment.photo_id}</h4>
+            <p><strong>${comment.author_name || 'Anonyme'}</strong></p>
+            <p>${comment.comment_text}</p>
+            <p><small>${new Date(comment.created_at).toLocaleString('fr-FR')}</small></p>
+            <p><small>Statut : ${comment.is_approved ? 'Approuvé' : 'En attente'}</small></p>
+            
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                ${!comment.is_approved ? `
+                    <button class="btn btn-approve" onclick="photoModerationManager.approveComment(${comment.id})">
+                        <span class="material-icons">check</span>
+                        Approuver
                     </button>
-                </div>
+                ` : ''}
+                <button class="btn btn-delete" onclick="photoModerationManager.deleteComment(${comment.id})">
+                    <span class="material-icons">delete</span>
+                    Supprimer
+                </button>
             </div>
-        `;
-    }).join('');
+        </div>
+    `).join('');
 }
 
             async approveComment(commentId) {
