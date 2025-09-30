@@ -980,7 +980,7 @@
   /* Empêche le retour à la ligne */
   white-space: nowrap;
   /* Ajoute un peu de padding pour le scroll */
-  padding-bottom: 2px;
+  padding-bottom: 25px;
 }
 
 /* Scrollbar personnalisée pour les onglets */
@@ -1049,7 +1049,7 @@
   
   /* Option : Rendre les onglets plus compacts sur PC si nécessaire */
   .admin-panel .tab-btn {
-    padding: 0.75rem 1rem; /* Réduit le padding si besoin */
+    padding: 1.75rem 1rem; /* Réduit le padding si besoin */
     font-size: 0.9rem; /* Texte légèrement plus petit */
   }
 }

@@ -298,38 +298,51 @@ if (!document.querySelector('#admin-badge-styles')) {
     // Ajouter le clic pour ouvrir admin-comments
 badge.addEventListener('click', async (e) => {
     e.stopPropagation();
+    e.preventDefault(); // AJOUT : Empêcher le comportement par défaut
     
-    // Vérifier quel type de commentaires il y a
-    const supabase = window.getSupabaseClient();
-    
-    const { count: newsCount } = await supabase
-        .from('news_comments')
-        .select('*', { count: 'exact', head: true })
-        .eq('is_approved', false);
+    try {
+        const supabase = window.getSupabaseClient();
         
-    const { count: photosCount } = await supabase
-        .from('photo_comments')
-        .select('*', { count: 'exact', head: true })
-        .eq('is_approved', false);
-    
-    // Préparer l'authentification
-    sessionStorage.setItem('newsAdminAuth', 'authenticated');
-    sessionStorage.setItem('newsAdminUser', 'Admin_ActuMedia');
-    sessionStorage.setItem('newsAdminTimestamp', Date.now().toString());
-    
-    // Ouvrir la page appropriée ou demander
-    if (newsCount > 0 && photosCount > 0) {
-        // Les deux ont des commentaires, demander
-        const choice = confirm(`Vous avez:\n- ${newsCount} commentaires NEWS\n- ${photosCount} commentaires PHOTOS\n\nOK pour NEWS, Annuler pour PHOTOS`);
-        if (choice) {
-            window.open('admin-comments.html', '_blank');
-        } else {
-            window.open('admin-comments-photos.html', '_blank');
+        // Compter les commentaires de chaque type
+        const { count: newsCount } = await supabase
+            .from('news_comments')
+            .select('*', { count: 'exact', head: true })
+            .eq('is_approved', false);
+            
+        const { count: photosCount } = await supabase
+            .from('photo_comments')
+            .select('*', { count: 'exact', head: true })
+            .eq('is_approved', false);
+        
+        // Préparer l'authentification
+        sessionStorage.setItem('newsAdminAuth', 'authenticated');
+        sessionStorage.setItem('newsAdminUser', 'Admin_ActuMedia');
+        sessionStorage.setItem('newsAdminTimestamp', Date.now().toString());
+        
+        // CHANGEMENT : Utiliser window.location.href au lieu de window.open
+        if (newsCount > 0 && photosCount > 0) {
+            // Les deux ont des commentaires
+            const choice = confirm(
+                `Vous avez :\n` +
+                `- ${newsCount} commentaire(s) NEWS\n` +
+                `- ${photosCount} commentaire(s) PHOTOS\n\n` +
+                `OK = Modérer NEWS\n` +
+                `Annuler = Modérer PHOTOS`
+            );
+            if (choice) {
+                window.location.href = 'admin-comments.html'; // CHANGÉ
+            } else {
+                window.location.href = 'admin-comments-photos.html'; // CHANGÉ
+            }
+        } else if (newsCount > 0) {
+            window.location.href = 'admin-comments.html'; // CHANGÉ
+        } else if (photosCount > 0) {
+            window.location.href = 'admin-comments-photos.html'; // CHANGÉ
         }
-    } else if (newsCount > 0) {
-        window.open('admin-comments.html', '_blank');
-    } else if (photosCount > 0) {
-        window.open('admin-comments-photos.html', '_blank');
+    } catch (error) {
+        console.error('Erreur:', error);
+        // En cas d'erreur, ouvrir admin-comments par défaut
+        window.location.href = 'admin-comments.html'; // CHANGÉ
     }
 });
 
