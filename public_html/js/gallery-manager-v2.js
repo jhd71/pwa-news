@@ -798,6 +798,7 @@ async function loadComments() {
             .from('photo_comments')
             .select('*')
             .eq('photo_id', currentPhotoId)
+            .eq('is_approved', true)  // ← AJOUTEZ CETTE LIGNE
             .order('created_at', { ascending: false });
             
         if (error) throw error;
@@ -945,7 +946,8 @@ async function submitComment(event) {
             .insert([{
                 photo_id: currentPhotoId,
                 author_name: author,
-                comment_text: text
+                comment_text: text,
+                is_approved: false  // ← AJOUTEZ CETTE LIGNE
             }]);
             
         if (error) throw error;
@@ -953,6 +955,9 @@ async function submitComment(event) {
         // Succès
         textInput.value = '';
         hideCommentForm();
+        
+        // OPTIONNEL : Ajouter un message pour informer l'utilisateur
+        alert('Votre commentaire a été envoyé et sera visible après validation.');
         
         // Recharger les commentaires
         loadComments();

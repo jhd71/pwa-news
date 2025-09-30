@@ -172,8 +172,6 @@ function setupChatButton() {
     }
 }
 
-// Dans app-initializer.js - Ajouter cette fonction simple
-
 async function checkAdminNotifications() {
     // Vérifier si l'utilisateur est admin
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
@@ -193,7 +191,7 @@ async function checkAdminNotifications() {
             .select('*', { count: 'exact', head: true })
             .eq('is_approved', false);
 
-        // Compter les commentaires PHOTOS en attente
+        // Compter les commentaires PHOTOS en attente (après avoir ajouté is_approved)
         const { count: photosCount, error: photosError } = await supabase
             .from('photo_comments')
             .select('*', { count: 'exact', head: true })
