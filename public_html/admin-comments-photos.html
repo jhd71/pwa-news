@@ -256,37 +256,49 @@
             this.ADMIN_USERNAME = 'Admin_ActuMedia';
         }
 
+// Fonction de hash identique à admin-news
+hashPassword(password) {
+    let hash = 0;
+    for (let i = 0; i < password.length; i++) {
+        const char = password.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+    }
+    return Math.abs(hash).toString(16);
+}
+
         async init() {
-    if (!this.checkAuthentication()) {
-        window.location.href = 'index.html'; // Réactiver la redirection
-        return;
+    // Vérification simple sans redirection
+    const chatPseudo = localStorage.getItem('chatPseudo');
+    const isAdmin = localStorage.getItem('isAdmin');
+    
+    console.log('Utilisateur:', chatPseudo, 'Admin:', isAdmin);
+    
+    // Si pas admin, afficher un avertissement mais charger quand même
+    if (chatPseudo !== 'Admin_ActuMedia' || isAdmin !== 'true') {
+        console.warn('⚠️ Mode lecture seule - Pas de droits admin détectés');
+        // Optionnel : désactiver les boutons
+        document.querySelectorAll('button').forEach(btn => {
+            if (btn.textContent.includes('Approuver') || btn.textContent.includes('Supprimer')) {
+                btn.style.display = 'none';
+            }
+        });
     }
     
+    // Charger les commentaires dans tous les cas
     await this.loadComments();
 }
 
         checkAuthentication() {
-    // Méthode 1 : Vérifier le token dans l'URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlToken = urlParams.get('token');
-    const storedToken = sessionStorage.getItem('adminToken');
+    // Méthode 1 : Vérifier si on vient d'admin-news
+    const newsAuthToken = sessionStorage.getItem('newsAdminAuth');
+    const newsAuthUser = sessionStorage.getItem('newsAdminUser');
     
-    if (urlToken && urlToken === storedToken) {
-        // Token valide, décoder et vérifier
-        try {
-            const decoded = atob(urlToken);
-            const [timestamp, user] = decoded.split(':');
-            
-            // Vérifier que le token a moins de 5 minutes
-            if (user === 'Admin_ActuMedia' && (Date.now() - parseInt(timestamp) < 300000)) {
-                return true;
-            }
-        } catch (e) {
-            console.error('Token invalide');
-        }
+    if (newsAuthToken === 'authenticated' && newsAuthUser === 'Admin_ActuMedia') {
+        return true;
     }
     
-    // Méthode 2 : Vérifier localStorage (pour Chrome/votre navigateur principal)
+    // Méthode 2 : Vérifier le statut admin du chat
     const chatPseudo = localStorage.getItem('chatPseudo');
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
     
@@ -294,12 +306,19 @@
         return true;
     }
     
-    // Méthode 3 : Session storage NEWS
-    const newsAuthToken = sessionStorage.getItem('newsAdminAuth');
-    const newsAuthUser = sessionStorage.getItem('newsAdminUser');
-    
-    if (newsAuthToken === 'authenticated' && newsAuthUser === 'Admin_ActuMedia') {
-        return true;
+    // Méthode 3 : Demander le mot de passe
+    const password = prompt('Mot de passe administrateur requis :');
+    if (password) {
+        const hashedPassword = this.hashPassword(password);
+        const expectedHash = '6fe87dd'; // Hash de votre mot de passe
+        
+        if (hashedPassword === expectedHash) {
+            // Stocker l'authentification
+            sessionStorage.setItem('newsAdminAuth', 'authenticated');
+            sessionStorage.setItem('newsAdminUser', 'Admin_ActuMedia');
+            sessionStorage.setItem('newsAdminTimestamp', Date.now().toString());
+            return true;
+        }
     }
     
     return false;
