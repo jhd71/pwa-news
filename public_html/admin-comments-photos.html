@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <script>
+        // Appliquer le thème sauvegardé
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'rouge';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modération Photos - Actu&Média</title>
+    
+    <!-- Styles -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    
+    <style>
+        /* Copier tous les styles de admin-comments.html */
+        :root {
+            --primary-color: #7e57c2;
+            --primary-bg: linear-gradient(135deg, #7e57c2, #9575cd);
+            --text-color: #333;
+            --bg-color: #f5f7fa;
+            --card-bg: white;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --border-color: #e1e5e9;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #5c6bc0;
+            --primary-bg: linear-gradient(135deg, #1a237e, #3f51b5);
+            --text-color: #e0e0e0;
+            --bg-color: #121212;
+            --card-bg: #2d2d2d;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --border-color: #404040;
+        }
+
+        [data-theme="rouge"] {
+            --primary-color: #d32f2f;
+            --primary-bg: linear-gradient(135deg, #d32f2f, #f44336);
+            --bg-color: #fff5f5;
+            --border-color: #ffcdd2;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .admin-header {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px var(--shadow);
+            text-align: center;
+            position: relative;
+        }
+
+        .admin-header h1 {
+            margin: 0;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 24px;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .comments-section {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+
+        .comment-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .comment-item.pending {
+            border-left: 4px solid var(--warning-color);
+            background: rgba(255, 193, 7, 0.05);
+        }
+
+        .photo-thumbnail {
+            width: 150px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .btn {
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-approve {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-delete {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-color);
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success-color);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 6px;
+            box-shadow: 0 4px 15px var(--shadow);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            font-size: 14px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <a href="index.html" class="back-btn">
+                <span class="material-icons">arrow_back</span>
+                Retour Accueil
+            </a>
+            <h1>
+                <span class="material-icons">photo_library</span>
+                Modération Commentaires Photos
+            </h1>
+        </div>
+
+        <!-- Statistiques -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number" id="pendingCount">0</div>
+                <div class="stat-label">En attente</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="approvedCount">0</div>
+                <div class="stat-label">Approuvés</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalCount">0</div>
+                <div class="stat-label">Total</div>
+            </div>
+        </div>
+
+        <!-- Liste des commentaires -->
+        <div class="comments-section">
+            <h3>Commentaires Photos</h3>
+            <div id="commentsList" class="comments-list">
+                <div class="loading">
+                    <p>Chargement des commentaires photos...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class PhotoCommentsModerationManager {
+            constructor() {
+                this.comments = [];
+                this.ADMIN_USERNAME = 'Admin_ActuMedia';
+            }
+
+            async init() {
+                if (!this.checkAuthentication()) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+                await this.loadComments();
+            }
+
+            checkAuthentication() {
+                const chatPseudo = localStorage.getItem('chatPseudo');
+                const isAdmin = localStorage.getItem('isAdmin') === 'true';
+                return (chatPseudo === 'Admin_ActuMedia' && isAdmin);
+            }
+
+            async loadComments() {
+                try {
+                    const supabase = window.getSupabaseClient();
+                    if (!supabase) throw new Error('Supabase non disponible');
+
+                    const { data: comments, error } = await supabase
+                        .from('photo_comments')
+                        .select(`
+                            *,
+                            user_photos(id, title, image_url)
+                        `)
+                        .order('created_at', { ascending: false });
+
+                    if (error) throw error;
+
+                    this.comments = comments || [];
+                    this.updateStats();
+                    this.displayComments();
+
+                } catch (error) {
+                    console.error('Erreur:', error);
+                }
+            }
+
+            updateStats() {
+                const pending = this.comments.filter(c => !c.is_approved).length;
+                const approved = this.comments.filter(c => c.is_approved).length;
+                
+                document.getElementById('pendingCount').textContent = pending;
+                document.getElementById('approvedCount').textContent = approved;
+                document.getElementById('totalCount').textContent = this.comments.length;
+            }
+
+            displayComments() {
+                const container = document.getElementById('commentsList');
+                
+                if (this.comments.length === 0) {
+                    container.innerHTML = '<p>Aucun commentaire photo</p>';
+                    return;
+                }
+
+                container.innerHTML = this.comments.map(comment => `
+                    <div class="comment-item ${comment.is_approved ? '' : 'pending'}">
+                        ${comment.user_photos?.image_url ? `
+                            <img src="${comment.user_photos.image_url}" 
+                                 alt="${comment.user_photos.title}" 
+                                 class="photo-thumbnail"
+                                 onclick="window.open('${comment.user_photos.image_url}', '_blank')">
+                        ` : ''}
+                        <h4>${comment.user_photos?.title || 'Photo supprimée'}</h4>
+                        <p><strong>${comment.author_name}</strong></p>
+                        <p>${comment.comment_text}</p>
+                        <p><small>${new Date(comment.created_at).toLocaleString('fr-FR')}</small></p>
+                        
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                            ${!comment.is_approved ? `
+                                <button class="btn btn-approve" onclick="photoModerationManager.approveComment(${comment.id})">
+                                    <span class="material-icons">check</span>
+                                    Approuver
+                                </button>
+                            ` : ''}
+                            <button class="btn btn-delete" onclick="photoModerationManager.deleteComment(${comment.id})">
+                                <span class="material-icons">delete</span>
+                                Supprimer
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            async approveComment(commentId) {
+                try {
+                    const supabase = window.getSupabaseClient();
+                    const { error } = await supabase
+                        .from('photo_comments')
+                        .update({ is_approved: true })
+                        .eq('id', commentId);
+
+                    if (error) throw error;
+
+                    this.showToast('Commentaire photo approuvé !');
+                    await this.loadComments();
+
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    this.showToast('Erreur lors de l\'approbation', 'error');
+                }
+            }
+
+            async deleteComment(commentId) {
+                if (!confirm('Supprimer définitivement ce commentaire ?')) return;
+
+                try {
+                    const supabase = window.getSupabaseClient();
+                    const { error } = await supabase
+                        .from('photo_comments')
+                        .delete()
+                        .eq('id', commentId);
+
+                    if (error) throw error;
+
+                    this.showToast('Commentaire supprimé');
+                    await this.loadComments();
+
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    this.showToast('Erreur lors de la suppression', 'error');
+                }
+            }
+
+            showToast(message, type = 'success') {
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.textContent = message;
+                if (type === 'error') {
+                    toast.style.background = '#dc3545';
+                }
+                document.body.appendChild(toast);
+
+                setTimeout(() => toast.classList.add('show'), 100);
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+        }
+
+        const photoModerationManager = new PhotoCommentsModerationManager();
+        document.addEventListener('DOMContentLoaded', () => {
+            photoModerationManager.init();
+        });
+    </script>
+</body>
+</html>

@@ -187,22 +187,42 @@ async function checkAdminNotifications() {
         const supabase = window.getSupabaseClient();
         if (!supabase) return;
 
-        // Compter les commentaires en attente
-        const { count, error } = await supabase
+        // Compter les commentaires NEWS en attente
+        const { count: newsCount, error: newsError } = await supabase
             .from('news_comments')
             .select('*', { count: 'exact', head: true })
             .eq('is_approved', false);
 
-        if (!error && count > 0) {
-            // Ajouter un badge au widget NEWS
-            addNotificationBadgeToNewsWidget(count);
+        // Compter les commentaires PHOTOS en attente
+        const { count: photosCount, error: photosError } = await supabase
+            .from('photo_comments')
+            .select('*', { count: 'exact', head: true })
+            .eq('is_approved', false);
+
+        // Calculer le total
+        const totalCount = (newsCount || 0) + (photosCount || 0);
+
+        if (totalCount > 0) {
+            // Ajouter un badge avec le nombre total exact
+            addNotificationBadgeToNewsWidget(totalCount);
             
-            // Optionnel : notification native une seule fois
+            // Notification native avec détails
             const lastNotified = localStorage.getItem('lastCommentNotification');
             const now = Date.now();
             
             if (!lastNotified || (now - parseInt(lastNotified)) > 3600000) { // 1 heure
-                showSimpleNotification(`${count} commentaire(s) en attente de modération`);
+                let message = `${totalCount} commentaire(s) en attente`;
+                
+                // Ajouter les détails
+                if (newsCount > 0 && photosCount > 0) {
+                    message += ` (${newsCount} news, ${photosCount} photos)`;
+                } else if (newsCount > 0) {
+                    message += ` (news)`;
+                } else if (photosCount > 0) {
+                    message += ` (photos)`;
+                }
+                
+                showSimpleNotification(message);
                 localStorage.setItem('lastCommentNotification', now.toString());
             }
         } else {
@@ -278,17 +298,42 @@ if (!document.querySelector('#admin-badge-styles')) {
 }
 
     // Ajouter le clic pour ouvrir admin-comments
-    badge.addEventListener('click', (e) => {
-        e.stopPropagation();
+badge.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    
+    // Vérifier quel type de commentaires il y a
+    const supabase = window.getSupabaseClient();
+    
+    const { count: newsCount } = await supabase
+        .from('news_comments')
+        .select('*', { count: 'exact', head: true })
+        .eq('is_approved', false);
         
-        // Préparer l'authentification
-        sessionStorage.setItem('newsAdminAuth', 'authenticated');
-        sessionStorage.setItem('newsAdminUser', 'Admin_ActuMedia');
-        sessionStorage.setItem('newsAdminTimestamp', Date.now().toString());
-        
-        // Ouvrir la page de modération
+    const { count: photosCount } = await supabase
+        .from('photo_comments')
+        .select('*', { count: 'exact', head: true })
+        .eq('is_approved', false);
+    
+    // Préparer l'authentification
+    sessionStorage.setItem('newsAdminAuth', 'authenticated');
+    sessionStorage.setItem('newsAdminUser', 'Admin_ActuMedia');
+    sessionStorage.setItem('newsAdminTimestamp', Date.now().toString());
+    
+    // Ouvrir la page appropriée ou demander
+    if (newsCount > 0 && photosCount > 0) {
+        // Les deux ont des commentaires, demander
+        const choice = confirm(`Vous avez:\n- ${newsCount} commentaires NEWS\n- ${photosCount} commentaires PHOTOS\n\nOK pour NEWS, Annuler pour PHOTOS`);
+        if (choice) {
+            window.open('admin-comments.html', '_blank');
+        } else {
+            window.open('admin-comments-photos.html', '_blank');
+        }
+    } else if (newsCount > 0) {
         window.open('admin-comments.html', '_blank');
-    });
+    } else if (photosCount > 0) {
+        window.open('admin-comments-photos.html', '_blank');
+    }
+});
 
     newsWidget.appendChild(badge);
     
