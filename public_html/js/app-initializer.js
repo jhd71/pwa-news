@@ -276,12 +276,11 @@ if (!document.querySelector('#admin-badge-styles')) {
     // Ajouter le clic pour ouvrir admin-comments
 badge.addEventListener('click', async (e) => {
     e.stopPropagation();
-    e.preventDefault(); // AJOUT : Empêcher le comportement par défaut
+    e.preventDefault();
     
     try {
         const supabase = window.getSupabaseClient();
         
-        // Compter les commentaires de chaque type
         const { count: newsCount } = await supabase
             .from('news_comments')
             .select('*', { count: 'exact', head: true })
@@ -292,14 +291,11 @@ badge.addEventListener('click', async (e) => {
             .select('*', { count: 'exact', head: true })
             .eq('is_approved', false);
         
-        // Préparer l'authentification
-        sessionStorage.setItem('newsAdminAuth', 'authenticated');
-        sessionStorage.setItem('newsAdminUser', 'Admin_ActuMedia');
-        sessionStorage.setItem('newsAdminTimestamp', Date.now().toString());
+        // Créer un token temporaire
+        const token = btoa(Date.now() + ':Admin_ActuMedia');
+        sessionStorage.setItem('adminToken', token);
         
-        // CHANGEMENT : Utiliser window.location.href au lieu de window.open
         if (newsCount > 0 && photosCount > 0) {
-            // Les deux ont des commentaires
             const choice = confirm(
                 `Vous avez :\n` +
                 `- ${newsCount} commentaire(s) NEWS\n` +
@@ -308,19 +304,17 @@ badge.addEventListener('click', async (e) => {
                 `Annuler = Modérer PHOTOS`
             );
             if (choice) {
-                window.location.href = 'admin-comments.html'; // CHANGÉ
+                window.location.href = `admin-comments.html?token=${token}`;
             } else {
-                window.location.href = 'admin-comments-photos.html'; // CHANGÉ
+                window.location.href = `admin-comments-photos.html?token=${token}`;
             }
         } else if (newsCount > 0) {
-            window.location.href = 'admin-comments.html'; // CHANGÉ
+            window.location.href = `admin-comments.html?token=${token}`;
         } else if (photosCount > 0) {
-            window.location.href = 'admin-comments-photos.html'; // CHANGÉ
+            window.location.href = `admin-comments-photos.html?token=${token}`;
         }
     } catch (error) {
         console.error('Erreur:', error);
-        // En cas d'erreur, ouvrir admin-comments par défaut
-        window.location.href = 'admin-comments.html'; // CHANGÉ
     }
 });
 

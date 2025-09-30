@@ -266,15 +266,35 @@
 }
 
         checkAuthentication() {
-    // Vérifier le statut admin du chat (votre cas)
+    // Méthode 1 : Vérifier le token dans l'URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlToken = urlParams.get('token');
+    const storedToken = sessionStorage.getItem('adminToken');
+    
+    if (urlToken && urlToken === storedToken) {
+        // Token valide, décoder et vérifier
+        try {
+            const decoded = atob(urlToken);
+            const [timestamp, user] = decoded.split(':');
+            
+            // Vérifier que le token a moins de 5 minutes
+            if (user === 'Admin_ActuMedia' && (Date.now() - parseInt(timestamp) < 300000)) {
+                return true;
+            }
+        } catch (e) {
+            console.error('Token invalide');
+        }
+    }
+    
+    // Méthode 2 : Vérifier localStorage (pour Chrome/votre navigateur principal)
     const chatPseudo = localStorage.getItem('chatPseudo');
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
     
     if (chatPseudo === 'Admin_ActuMedia' && isAdmin) {
-        return true; // Vous êtes admin, tout va bien
+        return true;
     }
     
-    // Vérifier l'authentification NEWS (depuis admin-news.html)
+    // Méthode 3 : Session storage NEWS
     const newsAuthToken = sessionStorage.getItem('newsAdminAuth');
     const newsAuthUser = sessionStorage.getItem('newsAdminUser');
     
