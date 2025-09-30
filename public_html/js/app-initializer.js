@@ -187,22 +187,38 @@ async function checkAdminNotifications() {
         const supabase = window.getSupabaseClient();
         if (!supabase) return;
 
-        // Compter les commentaires en attente
-        const { count, error } = await supabase
+        // ✅ NOUVEAU : Compter les commentaires PHOTOS en attente
+        const { count: photoComments, error: photoError } = await supabase
+            .from('photo_comments')
+            .select('*', { count: 'exact', head: true })
+            .eq('is_approved', false);      
+
+        // Compter les commentaires NEWS en attente
+        const { count: newsComments, error: newsError } = await supabase
             .from('news_comments')
             .select('*', { count: 'exact', head: true })
             .eq('is_approved', false);
 
-        if (!error && count > 0) {
+        // ✅ Total de tous les commentaires
+        const totalComments = (photoComments || 0) + (newsComments || 0);
+
+        if (totalComments > 0) {
             // Ajouter un badge au widget NEWS
-            addNotificationBadgeToNewsWidget(count);
+            addNotificationBadgeToNewsWidget(totalComments, {
+                photos: photoComments || 0,
+                news: newsComments || 0
+            });
             
-            // Optionnel : notification native une seule fois
+            // Notification native une seule fois
             const lastNotified = localStorage.getItem('lastCommentNotification');
             const now = Date.now();
             
             if (!lastNotified || (now - parseInt(lastNotified)) > 3600000) { // 1 heure
-                showSimpleNotification(`${count} commentaire(s) en attente de modération`);
+                let message = '';
+                if (photoComments > 0) message += `${photoComments} photo(s), `;
+                if (newsComments > 0) message += `${newsComments} news`;
+                
+                showSimpleNotification(`Commentaires en attente : ${message.replace(/, $/, '')}`);
                 localStorage.setItem('lastCommentNotification', now.toString());
             }
         } else {
@@ -214,7 +230,7 @@ async function checkAdminNotifications() {
     }
 }
 
-function addNotificationBadgeToNewsWidget(count) {
+function addNotificationBadgeToNewsWidget(count, details) {
     const newsWidget = document.querySelector('.news-widget-container');
     if (!newsWidget) return;
 
@@ -222,60 +238,67 @@ function addNotificationBadgeToNewsWidget(count) {
     const oldBadge = newsWidget.querySelector('.admin-notification-badge');
     if (oldBadge) oldBadge.remove();
 
+    // ✅ Créer le message détaillé
+    let detailMessage = 'Commentaires en attente : ';
+    const parts = [];
+    if (details.photos > 0) parts.push(`${details.photos} photo(s)`);
+    if (details.news > 0) parts.push(`${details.news} actualité(s)`);
+    detailMessage += parts.join(', ');
+
     // Créer nouveau badge
     const badge = document.createElement('div');
     badge.className = 'admin-notification-badge';
     badge.textContent = count > 9 ? '9+' : count;
-    badge.title = `${count} commentaire(s) en attente de modération - Cliquez pour modérer`;
+    badge.title = detailMessage + ' - Cliquez pour modérer';
     
     badge.style.cssText = `
-    position: absolute;
-    top: -12px;
-    right: -12px;
-    background: #ff4444;
-    color: white;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    font-size: 14px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 100;
-    box-shadow: 0 4px 12px rgba(255, 68, 68, 0.6);
-    animation: pulse 2s infinite;
-    border: 2px solid white;
-`;
+        position: absolute;
+        top: -12px;
+        right: -12px;
+        background: #ff4444;
+        color: white;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 100;
+        box-shadow: 0 4px 12px rgba(255, 68, 68, 0.6);
+        animation: pulse 2s infinite;
+        border: 2px solid white;
+    `;
 
     // Ajouter animation CSS
-if (!document.querySelector('#admin-badge-styles')) {
-    const style = document.createElement('style');
-    style.id = 'admin-badge-styles';
-    style.textContent = `
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
-            50% { transform: scale(1.1); box-shadow: 0 2px 12px rgba(255,68,68,0.6); }
-            100% { transform: scale(1); box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
-        }
-        .news-widget-container {
-            position: relative;
-        }
-        
-        @media (max-width: 768px) {
-            .admin-notification-badge {
-                width: 36px !important;
-                height: 36px !important;
-                font-size: 16px !important;
-                top: 16px !important;
-                right: 215px !important;
-                border: 3px solid white !important;
+    if (!document.querySelector('#admin-badge-styles')) {
+        const style = document.createElement('style');
+        style.id = 'admin-badge-styles';
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+                50% { transform: scale(1.1); box-shadow: 0 2px 12px rgba(255,68,68,0.6); }
+                100% { transform: scale(1); box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
             }
-        }
-    `;
-    document.head.appendChild(style);
-}
+            .news-widget-container {
+                position: relative;
+            }
+            
+            @media (max-width: 768px) {
+                .admin-notification-badge {
+                    width: 36px !important;
+                    height: 36px !important;
+                    font-size: 16px !important;
+                    top: 16px !important;
+                    right: 215px !important;
+                    border: 3px solid white !important;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
 
     // Ajouter le clic pour ouvrir admin-comments
     badge.addEventListener('click', (e) => {
