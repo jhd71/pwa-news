@@ -973,7 +973,7 @@ main {
 
 /* ========================================
    THÈME ROUGE - Palette rouge/orange/jaune
-   ======================================== */
+   ======================================== *//*
 [data-theme="rouge"] .tile:nth-child(30n + 1) { background: linear-gradient(135deg, #1f1f1f, #1f1f1f); }
 [data-theme="rouge"] .tile:nth-child(30n + 2) { background: linear-gradient(135deg, #ea580c, #c2410c); }
 [data-theme="rouge"] .tile:nth-child(30n + 3) { background: linear-gradient(135deg, #f59e0b, #d97706); }
@@ -1003,7 +1003,7 @@ main {
 [data-theme="rouge"] .tile:nth-child(30n + 27) { background: linear-gradient(135deg, #fb923c, #ea580c); }
 [data-theme="rouge"] .tile:nth-child(30n + 28) { background: linear-gradient(135deg, #fcd34d, #f59e0b); }
 [data-theme="rouge"] .tile:nth-child(30n + 29) { background: linear-gradient(135deg, #e43739, #841b0a); }
-[data-theme="rouge"] .tile:nth-child(30n + 0) { background: linear-gradient(135deg, #3f1c8e, #3f1c8e); }
+[data-theme="rouge"] .tile:nth-child(30n + 0) { background: linear-gradient(135deg, #3f1c8e, #3f1c8e); }*/
 
 /* ========================================
    THÈME SOMBRE - Palette bleu foncé/indigo/violet
