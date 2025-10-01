@@ -663,10 +663,6 @@ body.radio-popup-open {
 }
 
 /* === CLASSES DE STATUT === */
-.status-live {
-    background: rgba(40, 167, 69, 0.2) !important;
-    color: #28a745 !important;
-}
 
 .status-paused {
     background: rgba(255, 193, 7, 0.2) !important;
@@ -1357,7 +1353,26 @@ body.radio-popup-open {
 }
 
 .compact-details .status-live {
-    color: #f00 !important;
+    color: #4CAF50; /* Un vert matériel et agréable */
+    font-weight: bold;
+    /* Animation de pulsation */
+    animation: pulseLive 2s infinite ease-in-out;
+}
+
+/* Définition de l'animation */
+@keyframes pulseLive {
+    0% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
 }
 
 .compact-details .status-paused {
@@ -1528,10 +1543,10 @@ body.radio-popup-open {
 }
 
 @media (max-width: 480px) {
-    .radio-compact-widget {
-        left: 40px;
+        .radio-compact-widget {
+        left: 4px;
         bottom: 110px;
-        max-width: 340px;
+        max-width: 395px;
     }
     
     .compact-logo {
