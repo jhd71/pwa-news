@@ -43,7 +43,7 @@ class RadioPopupWidget {
                 logo: 'images/radio-logos/europe1.png',
                 description: 'Talk & actualités'
             },
-            }
+            {
                 name: 'RMC',
                 url: 'https://audio.bfmtv.com/rmcradio_128.mp3',
                 logo: 'images/radio-logos/rmc.png',
