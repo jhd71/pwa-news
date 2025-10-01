@@ -1544,7 +1544,7 @@ body.radio-popup-open {
 
 @media (max-width: 480px) {
         .radio-compact-widget {
-        left: 4px;
+        left: 10px;
         bottom: 110px;
         max-width: 395px;
     }
