@@ -10,33 +10,34 @@ class App {
     }
 
     async initManagers() {
+    try {
+        // Initialiser Content Manager et Chat Manager en parallèle
+        this.contentManager = new ContentManager();
+        this.chatManager = new ChatManager();
+
+        await Promise.all([
+            this.contentManager.init(),
+            this.chatManager.init()
+        ]);
+
+        console.log('Content Manager et Chat Manager initialisés');
+        
+        // Initialiser PollManager si présent
         try {
-            // Initialiser Content Manager
-            this.contentManager = new ContentManager();
-            await this.contentManager.init();
-            console.log('Content Manager initialisé');
-
-            // Initialiser Chat Manager
-            this.chatManager = new ChatManager();
-            await this.chatManager.init();
-            console.log('Chat Manager initialisé');
-            
-            // Initialiser PollManager si présent
-            try {
-                const PollManager = (await import('./pollManager.js')).default;
-                this.pollManager = new PollManager("pollTile");
-                await this.pollManager.init();
-                console.log("Poll Manager initialisé");
-            } catch (error) {
-                console.warn('PollManager non disponible:', error);
-            }
-
-            // Service Worker et PWA
-            this.setupServiceWorker();
+            const PollManager = (await import('./pollManager.js')).default;
+            this.pollManager = new PollManager("pollTile");
+            await this.pollManager.init();
+            console.log("Poll Manager initialisé");
         } catch (error) {
-            console.error('Erreur initialisation managers:', error);
+            console.warn('PollManager non disponible:', error);
         }
+
+        // Service Worker et PWA
+        this.setupServiceWorker();
+    } catch (error) {
+        console.error('Erreur initialisation managers:', error);
     }
+}
 
     async setupServiceWorker() {
         if ('serviceWorker' in navigator) {

@@ -68,6 +68,23 @@ export function throttle(func, limit) {
 }
 
 /**
+ * Observe un élément jusqu'à ce qu'il soit visible, puis exécute un callback.
+ * @param {HTMLElement} element - L'élément à observer.
+ * @param {Function} callback - La fonction à appeler une fois l'élément visible.
+ */
+export function onElementVisible(element, callback) {
+    const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                callback();
+                obs.unobserve(element); // Arrête d'observer après la première fois
+            }
+        });
+    });
+    observer.observe(element);
+}
+
+/**
  * Valide une URL
  * @param {string} url - L'URL à valider
  * @returns {boolean} - true si l'URL est valide
