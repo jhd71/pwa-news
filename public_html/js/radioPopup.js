@@ -31,6 +31,24 @@ class RadioPopupWidget {
                 logo: 'images/radio-logos/france-info.png',
                 description: 'Info en continu'
             },
+			{
+                name: 'RTL',
+                url: 'https://streamer-03.rtl.fr/rtl-1-44-128',
+                logo: 'images/radio-logos/rtl.png',
+                description: 'Info & divertissement'
+            },
+            {
+                name: 'Europe 1',
+                url: 'https://europe1.lmn.fm/europe1.mp3',
+                logo: 'images/radio-logos/europe1.png',
+                description: 'Talk & actualités'
+            },
+            }
+                name: 'RMC',
+                url: 'https://audio.bfmtv.com/rmcradio_128.mp3',
+                logo: 'images/radio-logos/rmc.png',
+                description: 'Sport & info'
+            },
             {
                 name: 'Skyrock',
                 url: 'https://icecast.skyrock.net/s/natio_aac_128k?tvr_name=tunein16&tvr_section1=64aac',
@@ -91,23 +109,11 @@ class RadioPopupWidget {
                 logo: 'images/radio-logos/RTL2.png',
                 description: 'Le Son Pop-Rock'
             },
-            {
-                name: 'RTL',
-                url: 'https://streamer-03.rtl.fr/rtl-1-44-128',
-                logo: 'images/radio-logos/rtl.png',
-                description: 'Info & divertissement'
-            },
-            {
-                name: 'Europe 1',
-                url: 'https://europe1.lmn.fm/europe1.mp3',
-                logo: 'images/radio-logos/europe1.png',
-                description: 'Talk & actualités'
-            },
-            {
-                name: 'RMC',
-                url: 'https://audio.bfmtv.com/rmcradio_128.mp3',
-                logo: 'images/radio-logos/rmc.png',
-                description: 'Sport & info'
+			{
+                name: 'Alouette Nouveaux Talents',
+                url: 'https://alouettenouveauxtalents.ice.infomaniak.ch/alouettenouveauxtalents-128.mp3',
+                logo: 'images/Alouette-Nouveaux-Talents.png',
+                description: ' 1ère Radio Régionale de France'
             }
         ];
         

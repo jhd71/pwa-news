@@ -131,6 +131,7 @@ const STATIC_RESOURCES = [
 	'/images/radio-logos/M-Radio.png',
 	'/images/radio-logos/Cerise-FM.png',
 	'/images/radio-logos/Alouette-FM.png',
+	'/images/radio-logos/Alouette-Nouveaux-Talents.png',
 
     // Icônes de base (seulement ceux qui existent)
     '/images/icon-144x144.png',
