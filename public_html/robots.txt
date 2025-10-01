@@ -1,41 +1,27 @@
 # Robots.txt pour Actu&Média
 # https://actuetmedia.fr/
 
-# Tous les robots
+# Règle générale pour tous les robots respectueux.
+# Il est crucial d'autoriser l'accès aux CSS et JS pour une bonne indexation.
+# Comme "Allow" est le comportement par défaut, il suffit de ne pas les bloquer.
 User-agent: *
-Allow: /
+
+# Interdire l'accès aux zones non pertinentes pour l'indexation.
 Disallow: /api/
 Disallow: /admin/
-Disallow: /*.json$
 Disallow: /redirect/
-Disallow: /js/
-Disallow: /css/
-Crawl-delay: 1
 
-# Google
-User-agent: Googlebot
-Allow: /
-Disallow: /api/
-Disallow: /admin/
-Allow: /css/
-Allow: /js/
-Crawl-delay: 0
+# Optionnel: Si vous souhaitez bloquer les fichiers .json pour tous les robots.
+Disallow: /*.json$
 
-# Google Images
-User-agent: Googlebot-Image
-Allow: /images/
-Allow: /*.jpg$
-Allow: /*.jpeg$
-Allow: /*.png$
-Allow: /*.webp$
-Allow: /*.svg$
 
-# Bing
+# Bing et d'autres robots respectent le Crawl-delay.
+# C'est utile si vous voulez limiter la charge sur votre serveur.
+# (Google l'ignore).
 User-agent: Bingbot
-Allow: /
-Disallow: /api/
-Disallow: /admin/
 Crawl-delay: 1
 
-# Sitemaps
+
+# Indiquer l'emplacement du sitemap à tous les robots.
+# Il est de bonne pratique de le mettre à la fin.
 Sitemap: https://actuetmedia.fr/sitemap.xml
