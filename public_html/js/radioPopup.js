@@ -588,18 +588,23 @@ closePopup() {
 /* ===================================================================== */
 
     // === GESTION DE LA LECTURE (PLAY/STOP) ===
-    toggleStationPlayback(index) {
-        const station = this.stations[index];
-        
-        // Si c'est la même station ET qu'elle joue -> STOP complet
-        if (this.currentStation && this.currentStation.name === station.name && this.isPlaying) {
+toggleStationPlayback(index) {
+    const station = this.stations[index];
+
+    // Si on clique sur la station en cours
+    if (this.currentStation && this.currentStation.name === station.name) {
+        // Si elle joue VRAIMENT (état interne ET état réel de l'audio), on arrête tout.
+        if (this.isPlaying && this.audio && !this.audio.paused) {
             this.stopRadio();
-            return;
+        } else {
+            // Sinon (état désynchronisé ou en pause), on force la relance de cette station.
+            this.stopCurrentAndPlayNew(index);
         }
-        
-        // Sinon -> Nouvelle station ou redémarrage
+    } else {
+        // Si c'est une nouvelle station, on la lance.
         this.stopCurrentAndPlayNew(index);
     }
+}
 
     // === ARRÊT ET NOUVELLE STATION ===
     stopCurrentAndPlayNew(index) {
@@ -721,20 +726,27 @@ playRadio() {
                             attemptConnection();
                         }
                     }, delay);
-                } else {
-                    document.getElementById('currentStationStatus').textContent = 'Erreur de lecture';
-                    this.updateStatusStyle('Erreur de lecture');
-                    this.isPlaying = false;
-                    
-                    // Réinitialiser l'interface en cas d'erreur
-                    const activeCard = document.querySelector('.radio-station-card.active');
-                    if (activeCard) {
-                        const overlayIcon = activeCard.querySelector('.play-overlay .material-icons');
-                        overlayIcon.textContent = 'stop';
-                        activeCard.classList.remove('playing');
-                        activeCard.classList.add('paused');
-                    }
-                }
+                // ... dans l'event listener 'error'
+} else {
+    document.getElementById('currentStationStatus').textContent = 'Erreur de lecture';
+    this.updateStatusStyle('Erreur de lecture');
+    this.isPlaying = false; // Très important
+    
+    // Réinitialiser l'interface en cas d'erreur
+    const activeCard = document.querySelector('.radio-station-card.active');
+    if (activeCard) {
+        const overlayIcon = activeCard.querySelector('.play-overlay .material-icons');
+        overlayIcon.textContent = 'play_arrow'; // On affiche l'icône de lecture
+        activeCard.classList.remove('playing');
+        activeCard.classList.add('paused');
+    }
+    
+    // Forcer la mise à jour des widgets pour qu'ils reflètent l'état "Arrêté"
+    this.updateTileIndicator();
+    this.updateCompactWidget();
+    this.stopEqualizer();
+    this.stopCompactEqualizer();
+}
             });
 
             // Surveillance périodique de l'état de lecture
@@ -1268,8 +1280,9 @@ updateCompactWidget() {
     const timerText = document.getElementById('compactTimerText');
     const timerBtn = document.getElementById('compactTimer');
     const equalizer = document.getElementById('compactEqualizer');
+	const isActuallyPlaying = this.currentStation && this.isPlaying && this.audio && !this.audio.paused;
 
-    if (this.currentStation && this.isPlaying) {
+    if (isActuallyPlaying) {
         logo.src = this.currentStation.logo;
         logo.style.display = 'block';
         name.textContent = this.currentStation.name;
@@ -1278,7 +1291,7 @@ updateCompactWidget() {
         playBtn.querySelector('.material-icons').textContent = 'stop';
         widget.classList.add('playing');
         equalizer.style.display = 'flex';
-    } else if (this.currentStation && !this.isPlaying) {
+    } else if (this.currentStation) { // Si une station est sélectionnée mais ne joue pas
         logo.src = this.currentStation.logo;
         logo.style.display = 'block';
         name.textContent = this.currentStation.name;
