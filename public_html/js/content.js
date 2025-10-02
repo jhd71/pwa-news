@@ -579,7 +579,7 @@ const tvSites = [
 	}
 	
 	// Marquer spécialement la tuile Petites Annonces
-if (site.action === 'petites-annonces') {
+if (site.url === 'petites-annonces.html' || site.category === 'annonces') {
     tile.classList.add('annonces-tile');
     
     // Logique pour afficher le badge "Nouveau"
