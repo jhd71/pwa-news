@@ -578,26 +578,35 @@ const tvSites = [
     tile.classList.add('survey-tile');
 	}
 	
-	// Marquer spécialement la tuile quiz
-        if (site.isQuiz) {
-            tile.classList.add('quiz-tile');
-            tile.id = 'quizTile';
+	// Marquer spécialement la tuile Petites Annonces
+if (site.action === 'petites-annonces') {
+    tile.classList.add('annonces-tile');
+    
+    // Logique pour afficher le badge "Nouveau"
+    try {
+        const annoncesDiscovered = localStorage.getItem('annoncesDiscovered');
+        const currentDate = new Date().getTime();
+        const BADGE_DURATION = 14 * 24 * 60 * 60 * 1000; // 14 jours
+        
+        // Si jamais découvert, ou découvert il y a moins de 14 jours
+        if (!annoncesDiscovered || (currentDate - parseInt(annoncesDiscovered)) < BADGE_DURATION) {
+            tile.classList.add('annonces-nouveau');
+            
+            // Enregistrer la première découverte
+            if (!annoncesDiscovered) {
+                localStorage.setItem('annoncesDiscovered', currentDate.toString());
+            }
+        }
+    } catch (e) {
+        console.error("Erreur badge annonces:", e);
+    }
+}
 
-            // ==========================================================
-            // AJOUT : LOGIQUE POUR AFFICHER LE BADGE "NOUVEAU"
-            // ==========================================================
-            try {
-                const lastQuizWeek = localStorage.getItem('lastQuizWeek');
-                const currentWeek = this.getCurrentWeek().toString();
-
-                // Si la semaine sauvegardée est différente de la semaine actuelle, le quiz est "nouveau"
-                if (lastQuizWeek !== currentWeek) {
-                    tile.classList.add('quiz-nouveau');
-                }
-            } catch (e) {
-                console.error("Erreur lors de la vérification de la semaine du quiz", e);
-            }			
-	}
+// Marquer la tuile quiz (SANS badge maintenant)
+if (site.isQuiz) {
+    tile.classList.add('quiz-tile');
+    tile.id = 'quizTile';
+}
 
     // Ajouter des classes conditionnelles pour les designs spéciaux
     if (site.isLive && site.category === 'tv') {
