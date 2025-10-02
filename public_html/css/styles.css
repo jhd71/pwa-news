@@ -973,37 +973,37 @@ main {
 
 /* ========================================
    THÈME ROUGE - Palette rouge/orange/jaune
-   ======================================== *//*
-[data-theme="rouge"] .tile:nth-child(30n + 1) { background: linear-gradient(135deg, #1f1f1f, #1f1f1f); }
+   ======================================== */
+[data-theme="rouge"] .tile:nth-child(30n + 1) { background: linear-gradient(135deg, #dc2626, #b91c1c); }
 [data-theme="rouge"] .tile:nth-child(30n + 2) { background: linear-gradient(135deg, #ea580c, #c2410c); }
 [data-theme="rouge"] .tile:nth-child(30n + 3) { background: linear-gradient(135deg, #f59e0b, #d97706); }
-[data-theme="rouge"] .tile:nth-child(30n + 4) { background: linear-gradient(212deg, #801a0a, #801a0a4a); }
+[data-theme="rouge"] .tile:nth-child(30n + 4) { background: linear-gradient(135deg, #eab308, #ca8a04); }
 [data-theme="rouge"] .tile:nth-child(30n + 5) { background: linear-gradient(135deg, #dc2626, #7c2d12); }
 [data-theme="rouge"] .tile:nth-child(30n + 6) { background: linear-gradient(135deg, #b91c1c, #dc2626); }
-[data-theme="rouge"] .tile:nth-child(30n + 7) { background: linear-gradient(135deg, #8b010e, #4b0018); }
-[data-theme="rouge"] .tile:nth-child(30n + 8) { background: linear-gradient(135deg, #a1001e, #b50021); }
+[data-theme="rouge"] .tile:nth-child(30n + 7) { background: linear-gradient(135deg, #f97316, #ea580c); }
+[data-theme="rouge"] .tile:nth-child(30n + 8) { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
 [data-theme="rouge"] .tile:nth-child(30n + 9) { background: linear-gradient(135deg, #facc15, #eab308); }
 [data-theme="rouge"] .tile:nth-child(30n + 10) { background: linear-gradient(135deg, #991b1b, #7c2d12); }
-[data-theme="rouge"] .tile:nth-child(30n + 11) { background: linear-gradient(1deg, #a30002, #830000); }
+[data-theme="rouge"] .tile:nth-child(30n + 11) { background: linear-gradient(135deg, #c2410c, #9a3412); }
 [data-theme="rouge"] .tile:nth-child(30n + 12) { background: linear-gradient(135deg, #d97706, #b45309); }
 [data-theme="rouge"] .tile:nth-child(30n + 13) { background: linear-gradient(135deg, #ca8a04, #a16207); }
 [data-theme="rouge"] .tile:nth-child(30n + 14) { background: linear-gradient(135deg, #c91b1b, #7b0606); }
 [data-theme="rouge"] .tile:nth-child(30n + 15) { background: linear-gradient(135deg, #f97316, #c2410c); }
-[data-theme="rouge"] .tile:nth-child(30n + 16) { background: linear-gradient(1deg, #99150b, #750800); }
-[data-theme="rouge"] .tile:nth-child(30n + 17) { background: linear-gradient(135deg, #041030, #041030); }
-[data-theme="rouge"] .tile:nth-child(30n + 18) { background: linear-gradient(135deg, #ff0000, #000000); }
-[data-theme="rouge"] .tile:nth-child(30n + 19) { background: linear-gradient(180deg, #000000, #841b0a); }
+[data-theme="rouge"] .tile:nth-child(30n + 16) { background: linear-gradient(135deg, #fbbf24, #d97706); }
+[data-theme="rouge"] .tile:nth-child(30n + 17) { background: linear-gradient(135deg, #facc15, #ca8a04); }
+[data-theme="rouge"] .tile:nth-child(30n + 18) { background: linear-gradient(135deg, #dc2626, #991b1b); }
+[data-theme="rouge"] .tile:nth-child(30n + 19) { background: linear-gradient(135deg, #ea580c, #c2410c); }
 [data-theme="rouge"] .tile:nth-child(30n + 20) { background: linear-gradient(135deg, #f59e0b, #d97706); }
 [data-theme="rouge"] .tile:nth-child(30n + 21) { background: linear-gradient(135deg, #eab308, #ca8a04); }
 [data-theme="rouge"] .tile:nth-child(30n + 22) { background: linear-gradient(135deg, #b91c1c, #7c2d12); }
-[data-theme="rouge"] .tile:nth-child(30n + 23) { background: linear-gradient(135deg, #ff0202, #652712); }
+[data-theme="rouge"] .tile:nth-child(30n + 23) { background: linear-gradient(135deg, #c2410c, #9a3412); }
 [data-theme="rouge"] .tile:nth-child(30n + 24) { background: linear-gradient(135deg, #d97706, #b45309); }
 [data-theme="rouge"] .tile:nth-child(30n + 25) { background: linear-gradient(135deg, #ca8a04, #a16207); }
 [data-theme="rouge"] .tile:nth-child(30n + 26) { background: linear-gradient(135deg, #ef4444, #b91c1c); }
 [data-theme="rouge"] .tile:nth-child(30n + 27) { background: linear-gradient(135deg, #fb923c, #ea580c); }
 [data-theme="rouge"] .tile:nth-child(30n + 28) { background: linear-gradient(135deg, #fcd34d, #f59e0b); }
-[data-theme="rouge"] .tile:nth-child(30n + 29) { background: linear-gradient(135deg, #e43739, #841b0a); }
-[data-theme="rouge"] .tile:nth-child(30n + 0) { background: linear-gradient(135deg, #3f1c8e, #3f1c8e); }*/
+[data-theme="rouge"] .tile:nth-child(30n + 29) { background: linear-gradient(135deg, #fde047, #eab308); }
+[data-theme="rouge"] .tile:nth-child(30n + 0) { background: linear-gradient(135deg, #7c2d12, #451a03); }
 
 /* ========================================
    THÈME SOMBRE - Palette bleu foncé/indigo/violet
