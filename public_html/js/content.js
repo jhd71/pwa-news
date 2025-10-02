@@ -362,6 +362,18 @@ this.tileContainer.appendChild(photosTileElement);
 const quizTileElement = this.createTile(quizTile);
 this.tileContainer.appendChild(quizTileElement);
 
+// NOUVELLE TUILE PETITES ANNONCES
+const annoncesTile = {
+    title: "🏪 Petites Annonces",
+    url: "petites-annonces.html",
+    mobileUrl: "petites-annonces.html",
+    isDefault: true,
+    category: "annonces"
+};
+
+const annoncesTileElement = this.createTile(annoncesTile);
+this.tileContainer.appendChild(annoncesTileElement);
+
         // Séparateur TV
         const separator2 = document.createElement('div');
         separator2.className = 'separator';

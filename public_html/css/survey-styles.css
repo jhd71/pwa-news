@@ -1080,13 +1080,11 @@
 }
 
 /* ========================================
-   CORRECTION DU BADGE POUR LA TUILE QUIZ
+   BADGE "NOUVEAU !" SUR LA TUILE PETITES ANNONCES
    ======================================== */
 
-/* Badge NOUVEAU sur la tuile quiz */
-/* Le sélecteur a changé pour n'appliquer le style que si la classe .quiz-nouveau est présente */
 /* Style par défaut (desktop) */
-.tile.quiz-tile.quiz-nouveau::after {
+.tile.annonces-tile.annonces-nouveau::after {
     display: block !important;
     content: 'Nouveau !';
     position: absolute !important;
@@ -1108,27 +1106,27 @@
 
 /* Version tablette */
 @media (max-width: 768px) {
-  .tile.quiz-tile.quiz-nouveau::after {
-    top: 12px;
-    right: -24px;
-    width: 110px;
-    font-size: 0.65rem;
-    padding: 4px 0;
-  }
+    .tile.annonces-tile.annonces-nouveau::after {
+        top: 12px;
+        right: -24px;
+        width: 110px;
+        font-size: 0.65rem;
+        padding: 4px 0;
+    }
 }
 
 /* Version mobile */
 @media (max-width: 480px) {
-  .tile.quiz-tile.quiz-nouveau::after {
-    top: 15px;
-    right: -18px;
-    width: 90px;
-    font-size: 0.65rem;
-    padding: 3px 0;
-  }
+    .tile.annonces-tile.annonces-nouveau::after {
+        top: 15px;
+        right: -18px;
+        width: 90px;
+        font-size: 0.65rem;
+        padding: 3px 0;
+    }
 }
 
-/* L'animation ne change pas */
+/* Animation du badge */
 @keyframes pulseGlow {
     0%, 100% {
         box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);

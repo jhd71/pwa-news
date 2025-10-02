@@ -49,6 +49,11 @@
                 
                 console.log('✅ Client Supabase initialisé avec succès');
                 
+				window.supabaseReady = true;
+const event = new Event('supabaseReady');
+window.dispatchEvent(event);
+console.log("🚀 Événement 'supabaseReady' DÉCLENCHÉ !"); // log de confirmation
+
                 // Reset le compteur en cas de succès
                 initializationAttempts = 0;
                 

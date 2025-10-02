@@ -172,6 +172,7 @@ function setupChatButton() {
     }
 }
 
+// DANS app-initializer.js
 async function checkAdminNotifications() {
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
     const pseudo = localStorage.getItem('chatPseudo');
@@ -196,21 +197,30 @@ async function checkAdminNotifications() {
             .select('*', { count: 'exact', head: true })
             .eq('is_approved', false);
 
+        // ▼▼▼ AJOUTEZ CETTE PARTIE ▼▼▼
+        // Compter les ANNONCES en attente
+        const { count: annoncesCount } = await supabase
+            .from('classified_ads')
+            .select('*', { count: 'exact', head: true })
+            .eq('is_approved', false);
+        // ▲▲▲ FIN DE L'AJOUT ▲▲▲
+
         // Total
-        const totalCount = (newsCount || 0) + (photosCount || 0);
+        const totalCount = (newsCount || 0) + (photosCount || 0) + (annoncesCount || 0); // <-- MODIFIEZ CETTE LIGNE
 
         if (totalCount > 0) {
-            addNotificationBadgeToNewsWidget(totalCount);
-            console.log(`📊 ${totalCount} commentaire(s) en attente (${newsCount} news, ${photosCount} photos)`);
+            // On passe tous les comptes à la fonction pour un titre plus détaillé
+            addNotificationBadgeToNewsWidget(totalCount, newsCount, photosCount, annoncesCount);
+            console.log(`📊 ${totalCount} item(s) en attente (${newsCount} news, ${photosCount} photos, ${annoncesCount} annonces)`);
         } else {
             removeNotificationBadgeFromNewsWidget();
         }
     } catch (error) {
-        console.error('Erreur vérification commentaires:', error);
+        console.error('Erreur vérification notifications admin:', error);
     }
 }
 
-function addNotificationBadgeToNewsWidget(count) {
+function addNotificationBadgeToNewsWidget(totalCount, newsCount, photosCount, annoncesCount) {
     const newsWidget = document.querySelector('.news-widget-container');
     if (!newsWidget) return;
 
@@ -221,8 +231,14 @@ function addNotificationBadgeToNewsWidget(count) {
     // Créer nouveau badge
     const badge = document.createElement('div');
     badge.className = 'admin-notification-badge';
-    badge.textContent = count > 9 ? '9+' : count;
-    badge.title = `${count} commentaire(s) en attente de modération - Cliquez pour modérer`;
+    badge.textContent = totalCount > 9 ? '9+' : totalCount;
+
+    // Créer un titre détaillé
+    let titleDetails = [];
+    if (newsCount > 0) titleDetails.push(`${newsCount} commentaire(s) NEWS`);
+    if (photosCount > 0) titleDetails.push(`${photosCount} commentaire(s) PHOTOS`);
+    if (annoncesCount > 0) titleDetails.push(`${annoncesCount} annonce(s)`);
+    badge.title = `${titleDetails.join('\n')} en attente de modération. Cliquez pour gérer.`;
     
     badge.style.cssText = `
     position: absolute;
@@ -280,41 +296,57 @@ badge.addEventListener('click', async (e) => {
     
     try {
         const supabase = window.getSupabaseClient();
+        if (!supabase) return;
         
+        // --- On récupère les 3 compteurs ---
+
+        // 1. Commentaires NEWS
         const { count: newsCount } = await supabase
             .from('news_comments')
             .select('*', { count: 'exact', head: true })
             .eq('is_approved', false);
             
+        // 2. Commentaires PHOTOS
         const { count: photosCount } = await supabase
             .from('photo_comments')
             .select('*', { count: 'exact', head: true })
             .eq('is_approved', false);
         
-        // Créer un token temporaire
-        const token = btoa(Date.now() + ':Admin_ActuMedia');
-        sessionStorage.setItem('adminToken', token);
-        
-        if (newsCount > 0 && photosCount > 0) {
-            const choice = confirm(
-                `Vous avez :\n` +
-                `- ${newsCount} commentaire(s) NEWS\n` +
-                `- ${photosCount} commentaire(s) PHOTOS\n\n` +
-                `OK = Modérer NEWS\n` +
-                `Annuler = Modérer PHOTOS`
-            );
-            if (choice) {
-                window.location.href = `admin-comments.html?token=${token}`;
-            } else {
-                window.location.href = `admin-comments-photos.html?token=${token}`;
-            }
-        } else if (newsCount > 0) {
-            window.location.href = `admin-comments.html?token=${token}`;
-        } else if (photosCount > 0) {
-            window.location.href = `admin-comments-photos.html?token=${token}`;
+        // 3. ANNONCES (le nouveau)
+        const { count: annoncesCount } = await supabase
+            .from('classified_ads')
+            .select('*', { count: 'exact', head: true })
+            .eq('is_approved', false);
+
+        // --- Logique de redirection améliorée ---
+
+        // Cas 1 : S'il n'y a QUE des annonces en attente
+        if (annoncesCount > 0 && newsCount === 0 && photosCount === 0) {
+            window.location.href = `admin-annonces.html`;
+        } 
+        // Cas 2 : S'il n'y a QUE des commentaires de news
+        else if (newsCount > 0 && photosCount === 0 && annoncesCount === 0) {
+            window.location.href = `admin-comments.html`;
         }
+        // Cas 3 : S'il n'y a QUE des commentaires de photos
+        else if (photosCount > 0 && newsCount === 0 && annoncesCount === 0) {
+            // Note: Assurez-vous que le nom du fichier est correct
+            window.location.href = `admin-comments-photos.html`;
+        }
+        // Cas 4 : S'il y a PLUSIEURS types de notifications en attente
+        else {
+            // On ouvre le panel admin général qui montre tous les compteurs
+            if (window.chatManager && typeof window.chatManager.showAdminPanel === 'function') {
+                window.chatManager.showAdminPanel();
+            } else {
+                // Fallback si le chat n'est pas prêt, on va à la page la plus prioritaire
+                if(annoncesCount > 0) window.location.href = `admin-annonces.html`;
+                else if(newsCount > 0) window.location.href = `admin-comments.html`;
+            }
+        }
+
     } catch (error) {
-        console.error('Erreur:', error);
+        console.error('Erreur lors du clic sur le badge de notification:', error);
     }
 });
 

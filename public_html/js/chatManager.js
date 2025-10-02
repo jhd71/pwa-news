@@ -183,7 +183,6 @@ class ChatManager {
             localStorage.setItem('chat_device_id', deviceId);
             console.log('Nouvel identifiant d\'appareil généré:', deviceId);
         } else {
-            console.log('Identifiant d\'appareil existant:', deviceId);
         }
         return deviceId;
     }
@@ -194,8 +193,6 @@ class ChatManager {
             console.warn('Impossible de définir l\'utilisateur RLS: pseudo non défini');
             return false;
         }
-        
-        console.log(`Définition de l'utilisateur courant pour RLS: ${this.pseudo}`);
         
         // Vérifier d'abord si nous sommes admin
         if (this.isAdmin) {
@@ -235,7 +232,6 @@ class ChatManager {
                 await new Promise(resolve => setTimeout(resolve, 200));
             } else {
                 success = true;
-                console.log('Utilisateur RLS défini avec succès');
             }
         }
         
@@ -350,7 +346,6 @@ class ChatManager {
         const realIP = await this.getClientRealIP();
         
         if (realIP) {
-            console.log(`Vérification bannissement pour IP réelle: ${realIP}`);
             
             // Vérifie si l'IP est dans la table des IPs bannies
             const { data: ipBan, error: ipBanError } = await this.supabase
@@ -362,7 +357,6 @@ class ChatManager {
             if (!ipBanError && ipBan) {
                 // Vérifier si le bannissement est expiré
                 if (!ipBan.expires_at || new Date(ipBan.expires_at) > new Date()) {
-                    console.log(`IP réelle bannie: ${realIP}`);
                     
                     // Vérifier si le CSS est déjà chargé
                     if (!document.getElementById('chat-ban-css')) {
@@ -407,78 +401,49 @@ class ChatManager {
                                 checkButton.disabled = true;
                                 
                                 try {
-                                    // Vérifier dans la base de données si l'IP est toujours bannie
-                                    const { data, error } = await this.supabase
-                                        .from('banned_real_ips')
-                                        .select('*')
-                                        .eq('ip', realIP)
-                                        .maybeSingle();
-                                        
-                                    if (error || !data) {
-                                        // Si plus banni ou erreur, supprimer le bannissement
-                                        banDiv.innerHTML = `
-                                            <div class="banned-icon" style="color: #4CAF50;">✓</div>
-                                            <h2 style="margin-top: 5px; margin-bottom: 10px; font-size: 20px; font-weight: bold; color: #4CAF50;">Votre bannissement a été levé</h2>
-                                            <p style="margin: 0 0 15px 0;">Vous pouvez à nouveau utiliser le chat.</p>
-                                            <button id="refresh-page" style="background: #4CAF50; border: none; padding: 8px 15px; color: white; border-radius: 5px; cursor: pointer;">Actualiser la page</button>
-                                        `;
-                                        
-                                        // Créer un cookie pour indiquer que le bannissement a été levé
-                                        document.cookie = "chat_ban_lifted=true; path=/; max-age=60";
-                                        
-                                        // Supprimer les informations de bannissement local
-                                        localStorage.removeItem('chat_device_banned');
-                                        localStorage.removeItem('chat_device_banned_until');
-                                        localStorage.removeItem('chat_ban_reason');
-                                        localStorage.removeItem('chat_ban_dismissed');
-                                        
-                                        // Ajouter un gestionnaire pour actualiser la page
-                                        setTimeout(() => {
-                                            document.getElementById('refresh-page')?.addEventListener('click', () => {
-                                                window.location.reload();
-                                            });
-                                        }, 100);
-                                    } else {
-                                        // Vérifier si le bannissement a expiré
-                                        if (data.expires_at && new Date(data.expires_at) < new Date()) {
-                                            // Le bannissement a expiré
-                                            banDiv.innerHTML = `
-                                                <div class="banned-icon" style="color: #4CAF50;">✓</div>
-                                                <h2 style="margin-top: 5px; margin-bottom: 10px; font-size: 20px; font-weight: bold; color: #4CAF50;">Votre bannissement a expiré</h2>
-                                                <p style="margin: 0 0 15px 0;">Vous pouvez à nouveau utiliser le chat.</p>
-                                                <button id="refresh-page" style="background: #4CAF50; border: none; padding: 8px 15px; color: white; border-radius: 5px; cursor: pointer;">Actualiser la page</button>
-                                            `;
-                                            
-                                            // Créer un cookie pour indiquer que le bannissement a été levé
-                                            document.cookie = "chat_ban_lifted=true; path=/; max-age=60";
-                                            
-                                            // Supprimer les informations de bannissement local
-                                            localStorage.removeItem('chat_device_banned');
-                                            localStorage.removeItem('chat_device_banned_until');
-                                            localStorage.removeItem('chat_ban_reason');
-                                            localStorage.removeItem('chat_ban_dismissed');
-                                            
-                                            // Ajouter un gestionnaire pour actualiser la page
-                                            setTimeout(() => {
-                                                document.getElementById('refresh-page')?.addEventListener('click', () => {
-                                                    window.location.reload();
-                                                });
-                                            }, 100);
-                                        } else {
-                                            // Si toujours banni, afficher un message
-                                            checkButton.innerHTML = 'Vérifier si débanni';
-                                            checkButton.disabled = false;
-                                            
-                                            this.showNotification("Vous êtes toujours banni du chat", "error");
-                                        }
-                                    }
-                                } catch (error) {
-                                    console.error("Erreur lors de la vérification du bannissement:", error);
-                                    checkButton.innerHTML = 'Vérifier si débanni';
-                                    checkButton.disabled = false;
-                                    
-                                    this.showNotification("Erreur lors de la vérification", "error");
-                                }
+    const { data, error } = await this.supabase
+        .from('banned_real_ips')
+        .select('*')
+        .eq('ip', realIP)
+        .maybeSingle();
+    
+    // Vérifier si débanni OU si le ban a expiré
+    const isUnbanned = error || !data || 
+                      (data.expires_at && new Date(data.expires_at) < new Date());
+    
+    if (isUnbanned) {
+        // Afficher le message de succès
+        banDiv.innerHTML = `
+            <div class="banned-icon" style="color: #4CAF50;">✓</div>
+            <h2 style="margin-top: 5px; margin-bottom: 10px; font-size: 20px; font-weight: bold; color: #4CAF50;">Votre accès au chat a été rétabli</h2>
+            <p style="margin: 0 0 15px 0;">Vous pouvez à nouveau utiliser le chat.</p>
+            <button id="refresh-page" style="background: #4CAF50; border: none; padding: 8px 15px; color: white; border-radius: 5px; cursor: pointer;">Actualiser la page</button>
+        `;
+        
+        // Nettoyer les données locales
+        localStorage.removeItem('chat_device_banned');
+        localStorage.removeItem('chat_device_banned_until');
+        localStorage.removeItem('chat_ban_reason');
+        localStorage.removeItem('chat_ban_dismissed');
+        
+        // Bouton recharger
+        setTimeout(() => {
+            document.getElementById('refresh-page')?.addEventListener('click', () => {
+                window.location.reload();
+            });
+        }, 100);
+    } else {
+        // Toujours banni
+        checkButton.innerHTML = 'Vérifier si débanni';
+        checkButton.disabled = false;
+        this.showNotification("Vous êtes toujours banni du chat", "error");
+    }
+} catch (error) {
+    console.error("Erreur vérification bannissement:", error);
+    checkButton.innerHTML = 'Vérifier si débanni';
+    checkButton.disabled = false;
+    this.showNotification("Erreur lors de la vérification", "error");
+}
                             });
                         }
                     }, 100);
@@ -1447,9 +1412,6 @@ async setupAuthListeners() {
             const pseudo = pseudoInput?.value.trim();
             const adminPassword = adminPasswordInput?.value;
             const deviceId = this.getDeviceId();
-            
-            console.log('Tentative de connexion avec pseudo:', pseudo);
-            console.log('ID d\'appareil:', deviceId);
 
             if (!pseudo || pseudo.length < 3) {
                 this.showNotification('Le pseudo doit faire au moins 3 caractères', 'error');
@@ -2093,8 +2055,7 @@ refreshVisibleReactions() {
 
 // MODIFICATION : Ajouter une propriété pour suivre le dernier message
 handleNewMessage(message) {
-    // Votre code existant pour handleNewMessage...
-    // Juste ajouter cette ligne à la fin :
+
     this.lastMessageTime = message.created_at;
 }
 
@@ -2426,7 +2387,6 @@ if (deviceId) {
             
         if (error) throw error;
         
-        // Le reste de votre code existant...
         return true;
     } catch (error) {
         console.error('Erreur sendMessage:', error);
@@ -2434,7 +2394,6 @@ if (deviceId) {
     }
 }
 
-    // Remplacez votre méthode setupPushNotifications par celle-ci:
     async setupPushNotifications() {
     try {
         // NOUVEAU : Demander d'abord la permission de base
@@ -2451,7 +2410,6 @@ if (deviceId) {
             }
         }
         
-        // Votre code existant continue ici...
         await notificationManager.init({
             supabase: this.supabase,
             showNotification: this.showNotification.bind(this),
@@ -2718,7 +2676,6 @@ optimizeForLowEndDevices() {
     try {
         // Extraire le pseudo de l'IP (format: pseudo-timestamp)
         const pseudo = ip.split('-')[0];
-        console.log(`Vérification bannissement pour pseudo: ${pseudo}`);
         
         // Requête plus simple et directe
         const { data, error } = await this.supabase
@@ -3518,10 +3475,7 @@ createBanStatusButton() {
                 localStorage.removeItem('chat_device_banned');
                 localStorage.removeItem('chat_device_banned_until');
                 localStorage.removeItem('chat_ban_reason');
-                localStorage.removeItem('chat_ban_dismissed');
-                
-                // Créer un cookie pour indiquer que le bannissement a été levé
-                document.cookie = "chat_ban_lifted=true; path=/; max-age=60";
+                localStorage.removeItem('chat_ban_dismissed');                
                 
                 // Afficher une notification de succès
                 const successNotif = document.createElement('div');
@@ -3862,9 +3816,7 @@ async checkAndClearExpiredBans(forceCleanup = false) {
                 localStorage.removeItem('chat_device_banned_until');
                 localStorage.removeItem('chat_ban_reason');
                 localStorage.removeItem('chat_ban_dismissed');
-                
-                // Créer un cookie pour indiquer que le bannissement a été levé
-                document.cookie = "chat_ban_lifted=true; path=/; max-age=60";
+
             }
         }
         
@@ -3934,10 +3886,7 @@ async cleanBanDatabase() {
         localStorage.removeItem('chat_device_banned');
         localStorage.removeItem('chat_device_banned_until');
         localStorage.removeItem('chat_ban_reason');
-        localStorage.removeItem('chat_ban_dismissed');
-        
-        // 5. Ajouter un cookie pour indiquer que le bannissement a été levé
-        document.cookie = "chat_ban_lifted=true; path=/; max-age=60";
+        localStorage.removeItem('chat_ban_dismissed');       
         
         // 6. Afficher une notification de succès
         this.showNotification("Protection admin : vos bannissements ont été nettoyés", "success");
@@ -4096,9 +4045,7 @@ showBanNotification(reason = '') {
         
         // Stocker que le message a été fermé, mais garder l'information de bannissement
         localStorage.setItem('chat_ban_dismissed', 'true');
-    });
-    
-    // ... le reste de votre code pour le bouton "Vérifier si débanni"
+    });    
     
     // Empêcher l'accès au chat
     const chatElements = document.querySelectorAll('.chat-widget, .chat-toggle-btn, #chatToggleBtn');
@@ -4473,6 +4420,7 @@ showAdminPanel() {
         <button class="tab-btn" data-tab="admin-tools" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Outils</button>
         <button class="tab-btn" data-tab="gallery" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Photos</button>
 		<button class="tab-btn" data-tab="comments" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Commentaires</button>
+		<button class="tab-btn" data-tab="annonces" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">📢 Annonces</button>
 		<button class="tab-btn" data-tab="news-admin" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">NEWS Admin</button>
 		<button class="tab-btn" data-tab="visitor-stats" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">📊 Visiteurs</button>
     </div>
@@ -4580,6 +4528,18 @@ showAdminPanel() {
     </div>
 </div>
 
+<!-- affichage des Annonces -->
+<div class="tab-section" id="annonces-section">
+    <h4>📢 Modération des Annonces</h4>
+    <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; text-align: center;">
+        <div style="font-size: 24px; font-weight: bold; color: #FFC107;" id="pendingAnnoncesCount">0</div>
+        <div style="font-size: 12px; color: #aaa;">Annonces en attente</div>
+    </div>
+    <button id="openAnnoncesAdmin" style="background: #2196F3; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 20px;">
+        Gérer les Annonces
+    </button>
+</div>
+
 <!-- Onglet NEWS Admin -->
 <div class="tab-section" id="news-admin-section">
     <h4>📰 Administration NEWS</h4>
@@ -4683,8 +4643,9 @@ if (isMobile) {
     this.loadBannedIPs();
 
 	// Charger les stats NEWS par défaut
-this.loadNewsStats();
-this.loadRecentNews();
+	this.loadNewsStats();
+	this.loadRecentNews();
+	this.loadAnnoncesStats();
 
 // 🆕 AJOUTEZ ICI : Initialiser l'affichage par défaut des commentaires
 const photosList = panel.querySelector('.photo-comments-list');
@@ -4734,9 +4695,24 @@ tabBtns.forEach(btn => {
     
     // Charger les commentaires si l'onglet Commentaires est sélectionné
     if (btn.dataset.tab === 'comments') {
-        this.loadPhotoComments();
-    }
+    this.loadPhotoComments();
+	}
 	
+	// Charger les commentaires si l'onglet Annonces est sélectionné
+	if (btn.dataset.tab === 'annonces') {
+    this.loadAnnoncesStats();
+    
+    // Rafraîchir automatiquement si l'onglet reste ouvert
+    const refreshInterval = setInterval(() => {
+        const annoncesTab = document.querySelector('.tab-btn[data-tab="annonces"]');
+        if (annoncesTab && annoncesTab.classList.contains('active')) {
+            this.loadAnnoncesStats();
+        } else {
+            clearInterval(refreshInterval); // Arrêter si on change d'onglet
+        }
+    }, 30000);
+}
+
 	 // Charger les actualités si l'onglet NEWS Admin est sélectionné
 if (btn.dataset.tab === 'news-admin') {
     this.loadNewsStats();
@@ -4808,7 +4784,6 @@ if (newsAdminBtn) {
     newsAdminBtn.parentNode.replaceChild(newNewsBtn, newsAdminBtn);
     
     newNewsBtn.addEventListener('click', (e) => {
-        console.log('OUVERTURE ADMIN-NEWS.HTML');
         e.preventDefault();
         e.stopPropagation();
         
@@ -4825,7 +4800,6 @@ if (commentsAdminBtn) {
     commentsAdminBtn.parentNode.replaceChild(newCommentsBtn, commentsAdminBtn);
     
     newCommentsBtn.addEventListener('click', (e) => {
-        console.log('OUVERTURE ADMIN-COMMENTS.HTML');
         e.preventDefault();
         e.stopPropagation();
         
@@ -5005,6 +4979,20 @@ panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) =
             }
         }, 300);
     }
+	
+	const annoncesAdminBtn = panel.querySelector('#openAnnoncesAdmin');
+	if (annoncesAdminBtn) {
+    annoncesAdminBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (prepareNewsAdminAuth()) { // On réutilise la même fonction d'authentification
+            window.open('admin-annonces.html', '_blank');
+        } else {
+            this.showNotification('Accès refusé - Admin requis', 'error');
+			}
+		});
+	}
 }
 
 async sendImportantNotification(title, body, url, urgent) {
@@ -5309,14 +5297,11 @@ async sendImportantNotification(title, body, url, urgent) {
             expiresAt = new Date(Date.now() + duration).toISOString();
         }
         
-        console.log(`=== DÉBUT DU BANNISSEMENT DE ${pseudo} ===`);
-        
         // 1. Chercher l'IP réelle ET l'identifiant d'appareil
         let userRealIP = null;
         let userDeviceId = null;
         
         // Chercher dans les messages récents
-        console.log('Recherche de l\'IP et du device ID dans les messages...');
         const { data: userMessages, error: messagesError } = await this.supabase
             .from('messages')
             .select('*')
@@ -5329,13 +5314,11 @@ async sendImportantNotification(title, body, url, urgent) {
                 // Récupérer l'IP
                 if (!userRealIP && msg.real_ip && msg.real_ip !== 'null') {
                     userRealIP = msg.real_ip;
-                    console.log(`IP trouvée: ${userRealIP}`);
                 }
                 
                 // Récupérer le device ID
                 if (!userDeviceId && msg.device_id && msg.device_id !== 'null') {
                     userDeviceId = msg.device_id;
-                    console.log(`Device ID trouvé: ${userDeviceId}`);
                 }
                 
                 // Si on a trouvé les deux, on peut arrêter
@@ -5436,8 +5419,6 @@ async sendImportantNotification(title, body, url, urgent) {
         // 6. Actualiser l'interface
         await this.loadExistingMessages();
         await this.loadBannedIPs();
-        
-        console.log(`=== FIN DU BANNISSEMENT ===`);
         
         this.playSound('success');
         return true;
@@ -5943,9 +5924,7 @@ photos.forEach(photo => {
 // Méthode pour charger les commentaires des photos
 async loadPhotoComments() {
     try {
-        console.log("🖼️ CHARGEMENT COMMENTAIRES PHOTOS");
         
-        // 🆕 AJOUTEZ ICI : Nettoyer TOUS les conteneurs
         const photosList = document.querySelector('.photo-comments-list');
         const newsList = document.querySelector('.news-comments-list');
         
@@ -6339,12 +6318,25 @@ async loadRecentNews() {
     }
 }
 
+	async loadAnnoncesStats() {
+    try {
+        const { count: pendingAnnonces } = await this.supabase
+            .from('classified_ads')
+            .select('*', { count: 'exact', head: true })
+            .eq('is_approved', false);
+            
+        const pendingEl = document.getElementById('pendingAnnoncesCount');
+        if (pendingEl) pendingEl.textContent = pendingAnnonces || 0;
+        
+    } catch (error) {
+        console.error('Erreur chargement stats annonces:', error);
+    }
+}
+
 // Charger les commentaires d'actualités
 async loadNewsComments() {
     try {
-        console.log("📰 CHARGEMENT COMMENTAIRES ACTUALITÉS");
         
-        // 🆕 AJOUTEZ ICI : Nettoyer TOUS les conteneurs
         const photosList = document.querySelector('.photo-comments-list');
         const newsList = document.querySelector('.news-comments-list');
         

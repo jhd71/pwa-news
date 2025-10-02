@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'rouge';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modération Annonces - Actu&Média</title>
+    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    
+    <style>
+    :root {
+        --primary-color: #d32f2f;
+        --primary-bg: linear-gradient(135deg, #d32f2f, #f44336);
+        --text-color: #333;
+        --bg-color: #f5f7fa;
+        --card-bg: white;
+        --shadow: rgba(0, 0, 0, 0.1);
+        --border-color: #e1e5e9;
+        --success-color: #28a745;
+        --warning-color: #ffc107;
+        --danger-color: #dc3545;
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background: var(--bg-color); color: var(--text-color); }
+    .admin-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    
+    /* ▼▼▼ AJOUT : Positionnement pour le bouton retour ▼▼▼ */
+    .admin-header { background: var(--card-bg); border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 20px var(--shadow); text-align: center; position: relative; }
+    
+    .admin-header h1 { margin: 0; color: var(--primary-color); display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 24px; }
+    
+    /* ▼▼▼ AJOUT : Styles pour le bouton retour ▼▼▼ */
+    .back-btn {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+    .back-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px var(--shadow);
+    }
+    /* ▲▲▲ FIN DES AJOUTS POUR LE BOUTON ▲▲▲ */
+
+    .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
+    .stat-card { background: var(--card-bg); border-radius: 10px; padding: 20px; text-align: center; box-shadow: 0 2px 10px var(--shadow); }
+    .stat-number { font-size: 32px; font-weight: bold; color: var(--primary-color); }
+    .stat-label { opacity: 0.8; font-size: 14px; }
+    .pending-badge { background: var(--warning-color); color: #333; padding: 2px 8px; border-radius: 4px;}
+    .approved-badge { background: var(--success-color); color: white; padding: 2px 8px; border-radius: 4px;}
+    .annonce-list { display: flex; flex-direction: column; gap: 15px; }
+    .annonce-item { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 20px; transition: all 0.3s ease; }
+    .annonce-item.pending { border-left: 4px solid var(--warning-color); }
+    .annonce-item.approved { border-left: 4px solid var(--success-color); }
+    .annonce-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+    .annonce-title { font-size: 1.2em; font-weight: 600; color: var(--primary-color); }
+    .annonce-author { font-size: 0.9em; color: #555; }
+    .annonce-content { line-height: 1.6; margin: 15px 0; }
+    .annonce-details { display: flex; gap: 20px; font-size: 0.9em; padding: 10px; background: #f9f9f9; border-radius: 8px; }
+    .annonce-actions { display: flex; gap: 10px; margin-top: 15px; }
+    .btn { border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+    .btn-approve { background: var(--success-color); color: white; }
+    .btn-delete { background: var(--danger-color); color: white; }
+    .loading, .empty-state { text-align: center; padding: 40px; }
+    .toast { position: fixed; top: 20px; right: 20px; background: var(--success-color); color: white; padding: 12px 16px; border-radius: 6px; box-shadow: 0 4px 15px var(--shadow); z-index: 1000; transform: translateX(400px); transition: transform 0.3s ease; }
+    .toast.show { transform: translateX(0); }
+    .toast.error { background: var(--danger-color); }
+</style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+    
+    <a href="index.html" class="back-btn" style="text-decoration: none;">
+    <span class="material-icons">home</span>
+    Retour à l'accueil
+	</a>
+    <h1><span class="material-icons">storefront</span>Modération des Petites Annonces</h1>
+    <p>Gérez les annonces déposées par les utilisateurs</p>
+</div>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number pending-badge" id="pendingAdCount">0</div>
+                <div class="stat-label">En attente</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number approved-badge" id="approvedAdCount">0</div>
+                <div class="stat-label">Approuvées</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalAdCount">0</div>
+                <div class="stat-label">Total</div>
+            </div>
+        </div>
+
+        <div id="annoncesList" class="annonce-list">
+            <div class="loading"><span class="material-icons">hourglass_empty</span> Chargement...</div>
+        </div>
+    </div>
+
+    <script>
+        class AnnoncesModerationManager {
+            constructor() {
+                this.annonces = [];
+                // Identifiants admin (identiques à vos autres pages admin)
+                this.ADMIN_USERNAME = 'Admin_ActuMedia';
+            }
+
+            // Copié de admin-comments.html
+            hashPassword(password) {
+                let hash = 0;
+                for (let i = 0; i < password.length; i++) {
+                    const char = password.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash;
+                }
+                return Math.abs(hash).toString(16);
+            }
+
+            // Copié de admin-comments.html
+            checkAuthentication() {
+                const newsAuthToken = sessionStorage.getItem('newsAdminAuth');
+                const newsAuthUser = sessionStorage.getItem('newsAdminUser');
+                if (newsAuthToken === 'authenticated' && newsAuthUser === this.ADMIN_USERNAME) return true;
+                
+                const chatPseudo = localStorage.getItem('chatPseudo');
+                const isAdmin = localStorage.getItem('isAdmin') === 'true';
+                if (chatPseudo === this.ADMIN_USERNAME && isAdmin) return true;
+
+                const storedPassword = sessionStorage.getItem('newsAdminPassword');
+                if (storedPassword) {
+                    const hashedPassword = this.hashPassword(storedPassword);
+                    const expectedHash = '6fe87dd'; 
+                    if (hashedPassword === expectedHash) return true;
+                }
+                return false;
+            }
+
+			async setCurrentUserForRLS() {
+				try {
+			const chatPseudo = localStorage.getItem('chatPseudo');
+			if (!chatPseudo || localStorage.getItem('isAdmin') !== 'true') {
+				console.warn('Utilisateur non admin, RLS non défini.');
+				return false;
+			}
+
+        const { error } = await window.getSupabaseClient().rpc('set_current_user', { 
+            user_pseudo: chatPseudo 
+        });
+
+        if (error) throw error;
+        console.log('✅ RLS user set for admin page');
+        return true;
+
+    } catch (error) {
+        console.error('Erreur RLS sur la page admin:', error);
+        return false;
+    }
+}
+
+            async init() {
+    if (!this.checkAuthentication()) {
+        alert("Accès refusé. Veuillez vous connecter en tant qu'administrateur.");
+        window.location.href = 'index.html';
+        return;
+    }
+
+    await this.setCurrentUserForRLS();
+
+    await this.loadAnnonces();
+}
+
+            async loadAnnonces() {
+                try {
+                    const supabase = window.getSupabaseClient();
+                    if (!supabase) throw new Error('Supabase non disponible');
+
+                    // Pour la modération, on récupère TOUTES les annonces
+                    const { data, error } = await supabase
+                        .from('classified_ads')
+                        .select('*')
+                        .order('created_at', { ascending: false });
+
+                    if (error) throw error;
+
+                    this.annonces = data || [];
+                    this.updateStats();
+                    this.displayAnnonces();
+                } catch (error) {
+                    console.error('Erreur chargement annonces:', error);
+                    document.getElementById('annoncesList').innerHTML = `<p style="color: red;">Erreur : ${error.message}</p>`;
+                }
+            }
+
+            updateStats() {
+                const pending = this.annonces.filter(a => !a.is_approved).length;
+                const approved = this.annonces.filter(a => a.is_approved).length;
+                document.getElementById('pendingAdCount').textContent = pending;
+                document.getElementById('approvedAdCount').textContent = approved;
+                document.getElementById('totalAdCount').textContent = this.annonces.length;
+            }
+
+            displayAnnonces() {
+                const container = document.getElementById('annoncesList');
+                if (this.annonces.length === 0) {
+                    container.innerHTML = '<div class="empty-state">Aucune annonce à modérer.</div>';
+                    return;
+                }
+
+                container.innerHTML = this.annonces.map(ad => `
+                    <div class="annonce-item ${ad.is_approved ? 'approved' : 'pending'}">
+                        <div class="annonce-header">
+                            <div>
+                                <div class="annonce-title">${this.escapeHtml(ad.title)}</div>
+                                <div class="annonce-author">Par: ${this.escapeHtml(ad.author_name)}</div>
+                            </div>
+                            <span class="${ad.is_approved ? 'approved-badge' : 'pending-badge'}">
+                                ${ad.is_approved ? 'Approuvée' : 'En attente'}
+                            </span>
+                        </div>
+                        <div class="annonce-content">${this.escapeHtml(ad.description)}</div>
+                        <div class="annonce-details">
+                            <span><strong>Catégorie:</strong> ${ad.category}</span>
+                            <span><strong>Prix:</strong> ${ad.price ? ad.price + ' €' : 'Gratuit/Échange'}</span>
+                            <span><strong>Lieu:</strong> ${ad.location}</span>
+                        </div>
+                        <div class="annonce-actions">
+                            ${!ad.is_approved ? `
+                                <button class="btn btn-approve" onclick="moderationManager.approveAd(${ad.id})">
+                                    <span class="material-icons">check_circle</span> Approuver
+                                </button>
+                            ` : ''}
+                            <button class="btn btn-delete" onclick="moderationManager.deleteAd(${ad.id})">
+                                <span class="material-icons">delete_forever</span> Supprimer
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            async approveAd(adId) {
+                try {
+                    const supabase = window.getSupabaseClient();
+                    // En approuvant, on la publie aussi
+                    const { error } = await supabase
+                        .from('classified_ads')
+                        .update({ is_approved: true, is_published: true })
+                        .eq('id', adId);
+                    if (error) throw error;
+                    this.showToast('✅ Annonce approuvée et publiée !');
+                    await this.loadAnnonces();
+                } catch (error) {
+                    this.showToast('❌ Erreur lors de l\'approbation', 'error');
+                }
+            }
+
+            async deleteAd(adId) {
+                if (!confirm('Supprimer définitivement cette annonce ?')) return;
+                try {
+                    const supabase = window.getSupabaseClient();
+                    const { error } = await supabase
+                        .from('classified_ads')
+                        .delete()
+                        .eq('id', adId);
+                    if (error) throw error;
+                    this.showToast('🗑️ Annonce supprimée.');
+                    await this.loadAnnonces();
+                } catch (error) {
+                    this.showToast('❌ Erreur lors de la suppression', 'error');
+                }
+            }
+
+            escapeHtml(unsafe) {
+                return unsafe
+                     .replace(/&/g, "&amp;")
+                     .replace(/</g, "&lt;")
+                     .replace(/>/g, "&gt;")
+                     .replace(/"/g, "&quot;")
+                     .replace(/'/g, "&#039;");
+            }
+
+            showToast(message, type = 'success') {
+                const existing = document.querySelector('.toast');
+                if (existing) existing.remove();
+                const toast = document.createElement('div');
+                toast.className = `toast ${type === 'error' ? 'error' : ''}`;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.classList.add('show'), 100);
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+        }
+
+        const moderationManager = new AnnoncesModerationManager();
+        document.addEventListener('DOMContentLoaded', () => moderationManager.init());
+    </script>
+</body>
+</html>

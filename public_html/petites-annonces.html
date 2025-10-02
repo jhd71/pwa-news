@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'rouge';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Petites annonces locales à Montceau-les-Mines. Achetez, vendez, échangez entre voisins.">
+    <title>Petites Annonces - Actu&Média</title>
+    
+    <!-- Fonts et icônes -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/petites-annonces.css">
+</head>
+<body>
+    <!-- En-tête -->
+    <header class="app-header">
+        <a href="index.html" class="back-button" id="backButton">
+    <span class="material-icons">arrow_back</span>
+</a>
+        <h1 class="site-title">Petites Annonces</h1>
+    </header>
+
+    <!-- Contenu principal -->
+    <div class="annonces-container">
+        <!-- En-tête de la page -->
+        <div class="annonces-header">
+            <h1>🏪 Petites Annonces Locales</h1>
+            <p>Achetez, vendez, échangez entre voisins à Montceau-les-Mines</p>
+            <button class="add-annonce-btn" id="addAnnonceBtn">
+                <span class="material-icons">add_circle</span>
+                Déposer une annonce
+            </button>
+        </div>
+
+        <!-- Filtres -->
+        <div class="filters-section">
+            <div class="filters-row">
+                <div class="filter-group">
+                    <label for="categoryFilter">Catégorie</label>
+                    <select id="categoryFilter">
+                        <option value="all">Toutes les catégories</option>
+                        <option value="vente">Vente</option>
+                        <option value="achat">Recherche</option>
+                        <option value="don">Don</option>
+                        <option value="echange">Échange</option>
+                        <option value="services">Services</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grille des annonces -->
+        <div id="annoncesGrid" class="annonces-grid">
+            <div class="loading">
+                <span class="material-icons" style="font-size: 48px;">hourglass_empty</span>
+                <p>Chargement des annonces...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal création d'annonce -->
+    <div id="createModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Déposer une annonce</h2>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <form id="annonceForm">
+                <div class="form-group">
+                    <label for="category">Catégorie *</label>
+                    <select name="category" id="category" required>
+                        <option value="">-- Choisir une catégorie --</option>
+                        <option value="vente">Vente</option>
+                        <option value="achat">Recherche</option>
+                        <option value="don">Don</option>
+                        <option value="echange">Échange</option>
+                        <option value="services">Services</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="title">Titre de l'annonce *</label>
+                    <input type="text" name="title" id="title" 
+                           placeholder="Ex: Vélo de ville en bon état" 
+                           required maxlength="100">
+                    <span class="form-hint">Maximum 100 caractères</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description *</label>
+                    <textarea name="description" id="description" 
+                              placeholder="Décrivez votre annonce en détail..." 
+                              required maxlength="1000"></textarea>
+                    <span class="form-hint">Maximum 1000 caractères</span>
+                </div>
+
+				<div class="form-group">
+		<label for="annonceImage">Photo (optionnelle)</label>
+				<div class="upload-buttons">
+        <button type="button" id="captureAnnonceBtn" class="capture-btn">
+            <span class="material-icons">camera_alt</span>
+            <span>Prendre une photo</span>
+        </button>
+			<button type="button" id="galleryAnnonceBtn" class="gallery-btn">
+				<span class="material-icons">photo_library</span>
+				<span>Choisir une image</span>
+				</button>
+			</div>
+				<input type="file" id="annonceImage" accept="image/*" style="display: none;">
+				<div id="annoncePreview" class="photo-preview" style="margin-top: 10px;"></div>
+			</div>
+
+                <div class="form-group">
+                    <label for="price">Prix (optionnel)</label>
+                    <input type="number" name="price" id="price" 
+                           placeholder="0.00" min="0" step="0.01">
+                    <span class="form-hint">Laissez vide si don ou échange</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="author_name">Votre nom ou pseudo *</label>
+                    <input type="text" name="author_name" id="author_name" 
+                           placeholder="Comment voulez-vous être identifié ?" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="author_email">Votre email *</label>
+                    <input type="email" name="author_email" id="author_email" 
+                           placeholder="votre@email.fr" required>
+                    <span class="form-hint">Ne sera pas affiché publiquement</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="author_phone">Téléphone (optionnel)</label>
+                    <input type="tel" name="author_phone" id="author_phone" 
+                           placeholder="06 12 34 56 78">
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Ville *</label>
+                    <input type="text" name="location" id="location" 
+                           value="Montceau-les-Mines" required>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    Publier mon annonce
+                </button>
+            </form>
+        </div>
+    </div>
+
+<div id="detailsModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Titre de l'annonce</h2>
+            <button class="close-modal" id="closeDetailsModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="modalImageContainer">
+                </div>
+            <div class="modal-details-grid">
+                <div class="modal-detail-item">
+                    <span class="material-icons">sell</span>
+                    <strong id="modalPrice">Prix</strong>
+                </div>
+                <div class="modal-detail-item">
+                    <span class="material-icons">place</span>
+                    <strong id="modalLocation">Lieu</strong>
+                </div>
+            </div>
+            <p id="modalDescription">Description de l'annonce...</p>
+            <div class="modal-contact">
+                <h3>Contacter l'annonceur</h3>
+                <p id="modalContactEmail"><span class="material-icons">email</span> </p>
+                <p id="modalContactPhone"><span class="material-icons">phone</span> </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Navigation du bas -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <span class="material-icons">home</span>
+            <span>Accueil</span>
+        </a>
+        <a href="petites-annonces.html" class="nav-item active">
+            <span class="material-icons">store</span>
+            <span>Annonces</span>
+        </a>
+    </nav>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    <script src="js/annonces-manager.js"></script>
+</body>
+</html>

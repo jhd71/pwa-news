@@ -1,24 +1,26 @@
-const CACHE_NAME = 'infos-pwa-v45'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v46'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
     '/',
-    '/index.html',
-    '/photos-gallery.html',
-    '/mentions-legales.html',
-    '/politique-confidentialite.html',
-    '/conditions-utilisation.html',
-    '/notification.html',
     '/404.html',
-    '/500.html',
-	'/admin-news.html',
-	'/admin-comments.html',
+	'/500.html',
+	'/a-propos.html',
+	'/admin-annonces.html',
 	'/admin-comments-photos.html',
-	'/news-locale.html',
+	'/admin-comments.html',
+	'/admin-news.html',
 	'/autour-de-moi.html',
 	'/contact.html',
 	'/gestionnaire-depenses-info.html',
-	'/a-propos.html',
+	'/index.html',
+	'/mentions-legales.html',
+	'/news-locale.html',
+	'/notification.html',
+	'/petites-annonces.html',
+	'/photos-gallery.html',
+	'/politique-confidentialite.html',
+	'/conditions-utilisation.html',
     
     // Feuilles de style CSS
     '/css/styles.css',
@@ -40,6 +42,7 @@ const STATIC_RESOURCES = [
 	'/css/radioPopup.css',
 	'/css/notepadApp.css',
 	'/css/todoApp.css',
+	'/css/petites-annonces.css',
 
     // Scripts JavaScript
     '/js/app.js',
@@ -76,6 +79,7 @@ const STATIC_RESOURCES = [
 	'/js/notepadApp.js',
 	'/js/todoApp.js',
 	'/js/quiz-local.js',
+	'/js/annonces-manager.js',
     
     // Fichiers de configuration (seulement ceux qui existent)
     '/manifest.json',
