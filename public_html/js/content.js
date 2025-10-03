@@ -369,7 +369,6 @@ const annoncesTile = {
     mobileUrl: "petites-annonces.html",
     isDefault: true,
     category: "annonces"
-	isNew: true  // ← AJOUTEZ CETTE LIGNE
 };
 
 const annoncesTileElement = this.createTile(annoncesTile);
