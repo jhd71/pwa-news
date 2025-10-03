@@ -777,3 +777,28 @@
         grid-template-columns: 1fr;
     }
 }
+
+.tile {
+    position: relative;
+}
+
+.new-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: linear-gradient(135deg, #FF6B6B, #FF3838);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 0 2px 8px rgba(255, 59, 59, 0.4);
+    animation: pulse-badge 2s infinite;
+    z-index: 10;
+}
+
+@keyframes pulse-badge {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
