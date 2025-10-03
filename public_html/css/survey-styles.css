@@ -568,70 +568,7 @@
     }
 }
 
-/* ========================================
-   TUILE SONDAGE - EFFET SPÉCIAL
-   ======================================== */
-
-/* Tuile sondage avec effet spécial */
-.tile.survey-tile {
-    position: relative;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-    animation: surveyPulse 3s ease-in-out infinite;
-    border: 2px solid rgba(255, 255, 255, 0.3) !important;
-    overflow: hidden !important; /* Changé de visible à hidden */
-}
-
-/* Animation de pulsation douce SANS box-shadow */
-@keyframes surveyPulse {
-    0%, 100% { 
-        transform: scale(1);
-        /* Box-shadow retirée pour éviter le débordement */
-    }
-    50% { 
-        transform: scale(1.02);
-        /* Box-shadow retirée pour éviter le débordement */
-    }
-}
-
-/* Badge NOUVEAU sur la tuile sondage */
-.tile.survey-tile::after {
-    content: 'NOUVEAU';
-    position: absolute;
-    top: 0px;  /* Changé de -8px à 5px */
-    right: 5px; /* Changé de -8px à 5px */
-    background: linear-gradient(135deg, #ff6b6b, #ff4757);
-    color: white;
-    font-size: 0.65rem;
-    font-weight: bold;
-    padding: 4px 10px;
-    border-radius: 20px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); /* Ombre réduite */
-    animation: badgeBounce 2s ease-in-out infinite;
-    z-index: 10;
-}
-
-/* Animation du badge */
-@keyframes badgeBounce {
-    0%, 100% { transform: translateY(0) rotate(-5deg); }
-    50% { transform: translateY(-3px) rotate(5deg); }
-}
-
-/* Effet au survol de la tuile sondage */
-.tile.survey-tile:hover {
-    transform: scale(1.05) !important;
-    /* Box-shadow retirée pour éviter le débordement */
-    animation-play-state: paused;
-    filter: brightness(1.1); /* Ajout d'un effet de luminosité à la place */
-}
-
-/* Texte de la tuile sondage plus visible */
-.tile.survey-tile .tile-title {
-    color: white !important;
-    font-weight: bold !important;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-/* Adaptation selon les thèmes */
+/* TUILE SONDAGE Adaptation selon les thèmes */
 [data-theme="rouge"] .tile.survey-tile {
     background: linear-gradient(135deg, #c71e1e 0%, #940000 100%) !important;
 }

@@ -368,7 +368,8 @@ const annoncesTile = {
     url: "petites-annonces.html",
     mobileUrl: "petites-annonces.html",
     isDefault: true,
-    category: "annonces"
+    category: "annonces",
+	isNew: true  // ← badge nouveau
 };
 
 const annoncesTileElement = this.createTile(annoncesTile);
@@ -586,6 +587,7 @@ const tvSites = [
     // Structure HTML de la tuile
     tile.innerHTML = `
         <div class="tile-content">
+            ${site.isNew ? '<span class="new-badge">NOUVEAU</span>' : ''}
             <div class="tile-title">${site.title}</div>
         </div>
     `;

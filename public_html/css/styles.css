@@ -1105,7 +1105,7 @@ main {
 [data-theme="light"] .tile:nth-child(30n + 27) { background: linear-gradient(135deg, #9f1239, #881337); }
 [data-theme="light"] .tile:nth-child(30n + 28) { background: linear-gradient(135deg, #ec4899, #db2777); }
 [data-theme="light"] .tile:nth-child(30n + 29) { background: linear-gradient(135deg, #f97316, #ea580c); }
-[data-theme="light"] .tile:nth-child(30n + 0) { background: linear-gradient(135deg, #4c1d95, #3730a3); }
+[data-theme="light"] .tile:nth-child(30n + 0) { background: linear-gradient(135deg, #f97316, #ea580c); }
 
 /* ========================================
    TEXTE BLANC UNIFORME POUR TOUTES LES TUILES
