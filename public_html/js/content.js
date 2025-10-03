@@ -369,7 +369,7 @@ const annoncesTile = {
     mobileUrl: "petites-annonces.html",
     isDefault: true,
     category: "annonces"
-	isNew: true  // ← AJOUTEZ CETTE LIGNE pour un badge
+	isNew: true  // ← AJOUTEZ CETTE LIGNE
 };
 
 const annoncesTileElement = this.createTile(annoncesTile);
@@ -584,13 +584,12 @@ const tvSites = [
         tile.classList.add('live-content');
     }
     
-    // Structure HTML de la tuile pour un badge nouveau
+    // Structure HTML de la tuile
     tile.innerHTML = `
-    <div class="tile-content">
-        <div class="tile-title">${site.title}</div>
-        ${site.isNew ? '<span class="new-badge">Nouveau</span>' : ''}
-    </div>
-`;
+        <div class="tile-content">
+            <div class="tile-title">${site.title}</div>
+        </div>
+    `;
 
     // Stockage de l'URL pour faciliter l'accès
     tile.dataset.siteUrl = site.url;
