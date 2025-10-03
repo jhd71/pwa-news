@@ -2006,6 +2006,21 @@ setupChatPolling() {
                 }
                 
                 lastMessageId = latestMessageId;
+                
+                // ✅ AJOUTEZ CE NOUVEAU BLOC ICI
+                // 1.5 Vérifier les suppressions
+                const displayedMessages = this.container.querySelectorAll('[data-message-id]');
+                const messageIdsFromDB = new Set(messages.map(m => m.id));
+                
+                displayedMessages.forEach(element => {
+                    const messageId = element.getAttribute('data-message-id');
+                    if (!messageIdsFromDB.has(messageId)) {
+                        // Message supprimé dans la base mais encore affiché
+                        console.log(`Message ${messageId} supprimé sur un autre appareil`);
+                        element.classList.add('fade-out');
+                        setTimeout(() => element.remove(), 300);
+                    }
+                });
             }
             
             // 2. Vérifier les bannissements (moins fréquent)
