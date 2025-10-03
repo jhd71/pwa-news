@@ -441,18 +441,7 @@ function requestNotificationPermissionForAll() {
         console.log('Content Manager initialisé');
 
         // Initialiser ChatManager
-        console.log('Chargement de ChatManager...');
-		
-		console.log('Chargement de ChatManager...');
-
-		// Activer immédiatement le bouton de chat
-	const chatToggleBtn = document.getElementById('chatToggleBtn');
-	if (chatToggleBtn) {
-    chatToggleBtn.disabled = false;
-    chatToggleBtn.classList.remove('chat-loading');
-    chatToggleBtn.title = 'Ouvrir le chat';
-    console.log('✅ Bouton de chat activé immédiatement');
-	}
+        console.log('Chargement de ChatManager...');				
 
         const chatModule = await import('./chatManager.js');
         window.chatManager = new chatModule.default();
