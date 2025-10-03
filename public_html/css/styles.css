@@ -1653,11 +1653,31 @@ main {
     color: white;
 }
 
+[data-theme="light"] .modal-content .upload-btn span,
+[data-theme="light"] .modal-content .upload-btn,
+[data-theme="light"] .modal-content button span,
+[data-theme="light"] .modal-content .file-btn span,
+[data-theme="light"] .modal-content .camera-btn span {
+    color: #d71f00;
+    font-weight: bold;
+    border-color: #ffd230;
+}
+
 [data-theme="rouge"] .modal-content .upload-btn span,
 [data-theme="rouge"] .modal-content .upload-btn,
 [data-theme="rouge"] .modal-content button span,
 [data-theme="rouge"] .modal-content .file-btn span,
 [data-theme="rouge"] .modal-content .camera-btn span {
+    color: #d71f00;
+    font-weight: bold;
+    border-color: #ffd230;
+}
+
+[data-theme="bleuciel"] .modal-content .upload-btn span,
+[data-theme="bleuciel"] .modal-content .upload-btn,
+[data-theme="bleuciel"] .modal-content button span,
+[data-theme="bleuciel"] .modal-content .file-btn span,
+[data-theme="bleuciel"] .modal-content .camera-btn span {
     color: #d71f00;
     font-weight: bold;
     border-color: #ffd230;
