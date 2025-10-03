@@ -243,13 +243,6 @@ class ChatManager {
 }
 	
     async init() {
-    // Activer le bouton de chat dès le début du chargement
-    const chatToggleBtn = document.getElementById('chatToggleBtn');
-    if (chatToggleBtn) {
-        chatToggleBtn.disabled = false;
-        chatToggleBtn.classList.remove('chat-loading');
-        chatToggleBtn.title = 'Ouvrir le chat';
-    }
     
     try {
         // VÉRIFICATION CRITIQUE: Bannissement local

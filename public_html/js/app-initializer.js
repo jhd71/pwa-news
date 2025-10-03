@@ -419,16 +419,16 @@ function requestNotificationPermissionForAll() {
     });
 }
 
-// Application Initialization
-async function initApp() {
+		// Application Initialization
+	async function initApp() {
     try {
         // Enregistrer le Service Worker
         await registerServiceWorker();
         
 		// NOUVEAU : Demander permission notifications à TOUS les visiteurs
-setTimeout(() => {
+	setTimeout(() => {
     requestNotificationPermissionForAll();
-}, 8000); // 8 secondes après le chargement de la page
+	}, 8000); // 8 secondes après le chargement de la page
 
         // Initialiser l'installateur PWA
         window.pwaInstaller = new PWAInstaller();
@@ -442,6 +442,18 @@ setTimeout(() => {
 
         // Initialiser ChatManager
         console.log('Chargement de ChatManager...');
+		
+		console.log('Chargement de ChatManager...');
+
+		// Activer immédiatement le bouton de chat
+	const chatToggleBtn = document.getElementById('chatToggleBtn');
+	if (chatToggleBtn) {
+    chatToggleBtn.disabled = false;
+    chatToggleBtn.classList.remove('chat-loading');
+    chatToggleBtn.title = 'Ouvrir le chat';
+    console.log('✅ Bouton de chat activé immédiatement');
+	}
+
         const chatModule = await import('./chatManager.js');
         window.chatManager = new chatModule.default();
         
