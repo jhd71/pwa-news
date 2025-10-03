@@ -412,21 +412,6 @@
   background: #45a049;
 }
 
-.chat-toggle-btn.chat-loading {
-    opacity: 0.5;
-    cursor: wait !important;
-    pointer-events: none;
-}
-
-.chat-toggle-btn.chat-loading .material-icons {
-    animation: pulse 1.5s ease-in-out infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 1; }
-}
-
 /* ==========================================================================
    8. ZONE DES MESSAGES
    ========================================================================== */
