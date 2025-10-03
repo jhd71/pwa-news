@@ -783,7 +783,7 @@
    ======================================== */
 
 /* Style par défaut (desktop) */
-.tile.annonces-tile.annonces-nouveau::after {
+.tile:nth-child(30n + 15) {
     display: block !important;
     content: 'Nouveau !';
     position: absolute !important;
@@ -805,7 +805,7 @@
 
 /* Version tablette */
 @media (max-width: 768px) {
-    .tile.annonces-tile.annonces-nouveau::after {
+    .tile:nth-child(30n + 15)::after {
         top: 12px;
         right: -24px;
         width: 110px;
@@ -816,7 +816,7 @@
 
 /* Version mobile */
 @media (max-width: 480px) {
-    .tile.annonces-tile.annonces-nouveau::after {
+    ..tile:nth-child(30n + 15)::after {
         top: 15px;
         right: -18px;
         width: 90px;

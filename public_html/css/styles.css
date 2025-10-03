@@ -988,7 +988,7 @@ main {
 [data-theme="rouge"] .tile:nth-child(30n + 12) { background: linear-gradient(135deg, #d97706, #b45309); }
 [data-theme="rouge"] .tile:nth-child(30n + 13) { background: linear-gradient(135deg, #ca8a04, #a16207); }
 [data-theme="rouge"] .tile:nth-child(30n + 14) { background: linear-gradient(135deg, #c91b1b, #7b0606); }
-[data-theme="rouge"] .tile:nth-child(30n + 15) { background: linear-gradient(135deg, #f97316, #c2410c); }
+[data-theme="rouge"] .tile:nth-child(30n + 15) { background: linear-gradient(135deg, #69000f, #f71100); }
 [data-theme="rouge"] .tile:nth-child(30n + 16) { background: linear-gradient(135deg, #fbbf24, #d97706); }
 [data-theme="rouge"] .tile:nth-child(30n + 17) { background: linear-gradient(135deg, #facc15, #ca8a04); }
 [data-theme="rouge"] .tile:nth-child(30n + 18) { background: linear-gradient(135deg, #dc2626, #991b1b); }
