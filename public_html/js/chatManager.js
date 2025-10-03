@@ -243,6 +243,14 @@ class ChatManager {
 }
 	
     async init() {
+    // Activer le bouton de chat dès le début du chargement
+    const chatToggleBtn = document.getElementById('chatToggleBtn');
+    if (chatToggleBtn) {
+        chatToggleBtn.disabled = false;
+        chatToggleBtn.classList.remove('chat-loading');
+        chatToggleBtn.title = 'Ouvrir le chat';
+    }
+    
     try {
         // VÉRIFICATION CRITIQUE: Bannissement local
         // Vérifier d'abord si l'appareil est banni localement
@@ -1115,15 +1123,7 @@ getChatHTMLWithoutToggle() {
 }
 
     setupListeners() {
-    const chatToggleBtn = document.getElementById('chatToggleBtn');
-	
-	// Activer le bouton maintenant qu'il est prêt
-    if (chatToggleBtn) {
-        chatToggleBtn.disabled = false;
-        chatToggleBtn.classList.remove('chat-loading');
-        chatToggleBtn.title = '';
-    }
-	
+    const chatToggleBtn = document.getElementById('chatToggleBtn');	
     const closeBtn = this.container.querySelector('.close-chat');
     const chatContainer = this.container.querySelector('.chat-container');
     const toggle = this.container.querySelector('.chat-toggle');
