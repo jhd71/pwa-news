@@ -1116,6 +1116,14 @@ getChatHTMLWithoutToggle() {
 
     setupListeners() {
     const chatToggleBtn = document.getElementById('chatToggleBtn');
+	
+	// Activer le bouton maintenant qu'il est prêt
+    if (chatToggleBtn) {
+        chatToggleBtn.disabled = false;
+        chatToggleBtn.classList.remove('chat-loading');
+        chatToggleBtn.title = '';
+    }
+	
     const closeBtn = this.container.querySelector('.close-chat');
     const chatContainer = this.container.querySelector('.chat-container');
     const toggle = this.container.querySelector('.chat-toggle');
