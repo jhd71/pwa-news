@@ -2387,6 +2387,16 @@ if (deviceId) {
             
         if (error) throw error;
         
+        // ✅ AJOUT : Afficher immédiatement le message dans l'interface
+        if (messageData) {
+            const messagesContainer = this.container.querySelector('.chat-messages');
+            if (messagesContainer) {
+                const messageElement = this.createMessageElement(messageData);
+                messagesContainer.appendChild(messageElement);
+                this.scrollToBottom();
+            }
+        }
+        
         return true;
     } catch (error) {
         console.error('Erreur sendMessage:', error);
@@ -5161,11 +5171,14 @@ async sendImportantNotification(title, body, url, urgent) {
     async deleteMessage(messageId) {
     try {
         console.log(`Tentative de suppression du message ${messageId}...`);
+        console.log(`Utilisateur: ${this.pseudo}, Admin: ${this.isAdmin}`);
         
         // 1. Définir l'utilisateur courant pour les vérifications RLS
         const rlsSuccess = await this.setCurrentUserForRLS();
+        console.log(`RLS setup résultat: ${rlsSuccess}`);
+        
         if (!rlsSuccess) {
-            throw new Error("Échec de l'authentification RLS");
+            console.error("⚠️ ÉCHEC RLS - La suppression risque d'être bloquée");
         }
         
         // 2. Vérifier d'abord si le message existe et appartient à l'utilisateur
@@ -5192,11 +5205,14 @@ async sendImportantNotification(title, body, url, urgent) {
             messageElement.style.pointerEvents = 'none';
         }
         
-        // ✅ 5. Supprimer de la base ET attendre confirmation
+        // ✅ 5. Supprimer de la base de données
         const { error: deleteError } = await this.supabase
             .from('messages')
             .delete()
             .eq('id', messageId);
+            
+        // 🔍 AJOUTEZ CETTE LIGNE
+        console.log('Résultat DELETE:', { error: deleteError });
             
         if (deleteError) {
             // Restaurer l'apparence si erreur
@@ -5207,31 +5223,13 @@ async sendImportantNotification(title, body, url, urgent) {
             throw deleteError;
         }
         
-        // ✅ 6. ATTENDRE un court délai pour la synchronisation
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // ✅ 6. Si pas d'erreur, le message est supprimé - on peut l'enlever visuellement
+        console.log(`Message ${messageId} supprimé avec succès`);
+        this.showNotification('Message supprimé', 'success');
         
-        // ✅ 7. Vérifier que le message est vraiment supprimé
-        const { data: checkData } = await this.supabase
-            .from('messages')
-            .select('id')
-            .eq('id', messageId)
-            .single();
-            
-        if (!checkData) {
-            // Message vraiment supprimé, suppression visuelle
-            if (messageElement) {
-                messageElement.classList.add('fade-out');
-                setTimeout(() => messageElement.remove(), 300);
-            }
-            this.showNotification('Message supprimé', 'success');
-            console.log(`Message ${messageId} supprimé avec succès`);
-        } else {
-            // Message encore présent, restaurer l'apparence
-            if (messageElement) {
-                messageElement.style.opacity = '1';
-                messageElement.style.pointerEvents = 'auto';
-            }
-            throw new Error("La suppression n'a pas été confirmée");
+        if (messageElement) {
+            messageElement.classList.add('fade-out');
+            setTimeout(() => messageElement.remove(), 300);
         }
         
         return true;

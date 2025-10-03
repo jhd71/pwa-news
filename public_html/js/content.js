@@ -577,36 +577,6 @@ const tvSites = [
 	if (site.isSurvey) {
     tile.classList.add('survey-tile');
 	}
-	
-	// Marquer spécialement la tuile Petites Annonces
-if (site.url === 'petites-annonces.html' || site.category === 'annonces') {
-    tile.classList.add('annonces-tile');
-    
-    // Logique pour afficher le badge "Nouveau"
-    try {
-        const annoncesDiscovered = localStorage.getItem('annoncesDiscovered');
-        const currentDate = new Date().getTime();
-        const BADGE_DURATION = 14 * 24 * 60 * 60 * 1000; // 14 jours
-        
-        // Si jamais découvert, ou découvert il y a moins de 14 jours
-        if (!annoncesDiscovered || (currentDate - parseInt(annoncesDiscovered)) < BADGE_DURATION) {
-            tile.classList.add('annonces-nouveau');
-            
-            // Enregistrer la première découverte
-            if (!annoncesDiscovered) {
-                localStorage.setItem('annoncesDiscovered', currentDate.toString());
-            }
-        }
-    } catch (e) {
-        console.error("Erreur badge annonces:", e);
-    }
-}
-
-// Marquer la tuile quiz (SANS badge maintenant)
-if (site.isQuiz) {
-    tile.classList.add('quiz-tile');
-    tile.id = 'quizTile';
-}
 
     // Ajouter des classes conditionnelles pour les designs spéciaux
     if (site.isLive && site.category === 'tv') {
