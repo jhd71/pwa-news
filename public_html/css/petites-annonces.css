@@ -778,7 +778,7 @@
     }
 }
 
-.new-badge {
+.tile:nth-child(30n + 15) .new-badge {
     position: absolute;
     top: 8px;
     right: 8px;
