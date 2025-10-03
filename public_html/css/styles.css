@@ -1658,7 +1658,7 @@ main {
 [data-theme="rouge"] .modal-content button span,
 [data-theme="rouge"] .modal-content .file-btn span,
 [data-theme="rouge"] .modal-content .camera-btn span {
-    color: #ffd230;
+    color: #d71f00;
     font-weight: bold;
     border-color: #ffd230;
 }
