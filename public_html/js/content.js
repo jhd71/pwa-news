@@ -335,6 +335,15 @@ const quizTile = {
     isQuiz: true
 };
 
+// NOUVELLE TUILE MEMORY
+const memoryTile = {
+    title: "🎮 Memory Game",
+    url: "memory-game.html",
+    mobileUrl: "memory-game.html",
+    isDefault: true,
+    category: "game"
+};
+
 // Créer les tuiles d'actualités
 newsDefaultSites.forEach(site => {
     const tile = this.createTile(site);
@@ -361,6 +370,10 @@ this.tileContainer.appendChild(photosTileElement);
 // AJOUTER LA TUILE QUIZ DANS ESPACE+
 const quizTileElement = this.createTile(quizTile);
 this.tileContainer.appendChild(quizTileElement);
+
+// AJOUTER LA TUILE MEMORY DANS ESPACE+
+const memoryTileElement = this.createTile(memoryTile);
+this.tileContainer.appendChild(memoryTileElement);
 
 // NOUVELLE TUILE PETITES ANNONCES
 const annoncesTile = {

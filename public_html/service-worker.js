@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v46'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v47'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -21,6 +21,7 @@ const STATIC_RESOURCES = [
 	'/photos-gallery.html',
 	'/politique-confidentialite.html',
 	'/conditions-utilisation.html',
+	'/memory-game.html',
     
     // Feuilles de style CSS
     '/css/styles.css',
@@ -43,6 +44,7 @@ const STATIC_RESOURCES = [
 	'/css/notepadApp.css',
 	'/css/todoApp.css',
 	'/css/petites-annonces.css',
+	'/css/memory-game.css',
 
     // Scripts JavaScript
     '/js/app.js',
@@ -80,6 +82,7 @@ const STATIC_RESOURCES = [
 	'/js/todoApp.js',
 	'/js/quiz-local.js',
 	'/js/annonces-manager.js',
+	'/js/memory-game.js',
     
     // Fichiers de configuration (seulement ceux qui existent)
     '/manifest.json',

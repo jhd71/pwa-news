@@ -1,0 +1,501 @@
+/* ========================================
+   VARIABLES THÈMES
+   ======================================== */
+
+:root {
+    /* Thème Rouge (défaut) */
+    --primary-color: #dc2626;
+    --primary-dark: #b91c1c;
+    --background: #fef2f2;
+    --card-bg: white;
+    --text-color: #333;
+    --border-color: #fee2e2;
+    --shadow: rgba(220, 38, 38, 0.1);
+}
+
+[data-theme="dark"] {
+    --primary-color: #60a5fa;
+    --primary-dark: #3b82f6;
+    --background: #1e293b;
+    --card-bg: #334155;
+    --text-color: #e2e8f0;
+    --border-color: #475569;
+    --shadow: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="bleuciel"] {
+    --primary-color: #0ea5e9;
+    --primary-dark: #0284c7;
+    --background: #f0f9ff;
+    --card-bg: white;
+    --text-color: #333;
+    --border-color: #e0f2fe;
+    --shadow: rgba(14, 165, 233, 0.1);
+}
+
+[data-theme="light"] {
+    --primary-color: #7c3aed;
+    --primary-dark: #6d28d9;
+    --background: #faf5ff;
+    --card-bg: white;
+    --text-color: #333;
+    --border-color: #f3e8ff;
+    --shadow: rgba(124, 58, 237, 0.1);
+}
+
+/* ========================================
+   RESET & BASE
+   ======================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--background);
+    color: var(--text-color);
+    min-height: 100vh;
+    padding-bottom: 20px;
+    transition: background 0.3s ease;
+}
+
+/* ========================================
+   HEADER
+   ======================================== */
+
+.game-header {
+    background: var(--primary-color);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 10px var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.back-button {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background 0.3s ease;
+}
+
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.game-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.theme-toggle {
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background 0.3s ease;
+}
+
+.theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* ========================================
+   GAME CONTAINER
+   ======================================== */
+
+.game-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 0 15px;
+}
+
+/* ========================================
+   STATS PANEL
+   ======================================== */
+
+.stats-panel {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.stat-item {
+    background: var(--card-bg);
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 8px var(--shadow);
+    border: 1px solid var(--border-color);
+}
+
+.stat-item .material-icons {
+    font-size: 32px;
+    color: var(--primary-color);
+}
+
+.stat-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    opacity: 0.7;
+}
+
+.stat-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* ========================================
+   DIFFICULTY PANEL
+   ======================================== */
+
+.difficulty-panel {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.difficulty-btn {
+    flex: 1;
+    padding: 12px;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.difficulty-btn:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.difficulty-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.difficulty-btn .material-icons {
+    font-size: 20px;
+}
+
+/* ========================================
+   GAME BOARD
+   ======================================== */
+
+.game-board {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 20px;
+    perspective: 1000px;
+}
+
+.game-board.easy {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.game-board.medium {
+    grid-template-columns: repeat(5, 1fr);
+}
+
+.game-board.hard {
+    grid-template-columns: repeat(6, 1fr);
+}
+
+/* ========================================
+   CARDS
+   ======================================== */
+
+.card {
+    aspect-ratio: 1;
+    position: relative;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+}
+
+.card.flipped {
+    transform: rotateY(180deg);
+}
+
+.card.matched {
+    opacity: 0.6;
+    cursor: default;
+    pointer-events: none;
+}
+
+/* IMPORTANT : Forcer les cartes matchées à rester retournées */
+.card.matched .card-back {
+    transform: rotateY(0deg) !important;
+    z-index: 2;
+}
+
+.card.matched .card-front {
+    transform: rotateY(180deg) !important;
+    z-index: 1;
+}
+
+.card.matched:hover {
+    transform: rotateY(180deg) !important;
+}
+
+.card-front,
+.card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px var(--shadow);
+}
+
+.card-front {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+}
+
+.card-front .material-icons {
+    font-size: 28px;
+    color: var(--primary-color);
+}
+
+.card-back {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    transform: rotateY(180deg);
+}
+
+.card-back .material-icons {
+    font-size: 48px;
+    color: white;
+}
+
+/* ========================================
+   ACTIONS
+   ======================================== */
+
+.actions-panel {
+    display: flex;
+    justify-content: center;
+}
+
+.action-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px var(--shadow);
+}
+
+.action-btn .material-icons {
+    font-size: 24px;
+}
+
+/* ========================================
+   MODAL
+   ======================================== */
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.4s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.win-animation {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 20px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 1.5s infinite;
+}
+
+.win-animation .material-icons {
+    font-size: 60px;
+    color: white;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.modal-content h2 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    font-size: 2rem;
+}
+
+.win-stats {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 20px 0;
+}
+
+.win-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.win-stat .material-icons {
+    font-size: 32px;
+    color: var(--primary-color);
+}
+
+.win-stat span:last-child {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.modal-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.modal-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.modal-btn.secondary {
+    background: transparent;
+    color: var(--text-color);
+    border: 2px solid var(--border-color);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+    .game-header h1 {
+        font-size: 1.2rem;
+    }
+
+    .stats-panel {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .difficulty-panel {
+        flex-direction: column;
+    }
+
+    .card-back .material-icons {
+        font-size: 32px;
+    }
+
+    .modal-content {
+        padding: 30px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-board {
+        gap: 8px;
+    }
+
+    .card-front .material-icons {
+        font-size: 20px;
+    }
+
+    .card-back .material-icons {
+        font-size: 24px;
+    }
+}
