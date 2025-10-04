@@ -346,42 +346,54 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   function showWeatherWidget() {
-    console.log("Affichage du widget météo");
-    
-    if (weatherSidebar) {
-      if (!window.weatherDataLoaded) {
-        loadWeatherData();
-        window.weatherDataLoaded = true;
-      }
-      
-      weatherSidebar.style.display = 'block';
-      weatherSidebar.style.visibility = 'visible';
-      weatherSidebar.style.opacity = '1';
-      weatherSidebar.classList.remove('hidden');
-      weatherSidebar.classList.add('visible');
-      
-      adjustWeatherWidgetPosition();
-      manageButtonsVisibility(false);
+  console.log("Affichage du widget météo");
+  
+  if (weatherSidebar) {
+    if (!window.weatherDataLoaded) {
+      loadWeatherData();
+      window.weatherDataLoaded = true;
     }
+    
+    weatherSidebar.style.display = 'block';
+    weatherSidebar.style.visibility = 'visible';
+    weatherSidebar.style.opacity = '1';
+    weatherSidebar.classList.remove('hidden');
+    weatherSidebar.classList.add('visible');
+    
+    // ✅ BLOQUER LE SCROLL SUR MOBILE
+    if (getDeviceType() === 'mobile') {
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+    }
+    
+    adjustWeatherWidgetPosition();
+    manageButtonsVisibility(false);
   }
+}
   
   function hideWeatherWidget() {
-    console.log("Masquage du widget météo");
+  console.log("Masquage du widget météo");
+  
+  if (weatherSidebar) {
+    weatherSidebar.style.opacity = '0';
+    weatherSidebar.classList.add('hidden');
+    weatherSidebar.classList.remove('visible');
     
-    if (weatherSidebar) {
-      weatherSidebar.style.opacity = '0';
-      weatherSidebar.classList.add('hidden');
-      weatherSidebar.classList.remove('visible');
-      
-      setTimeout(() => {
-        weatherSidebar.style.display = 'none';
-        weatherSidebar.style.visibility = 'hidden';
-        window.weatherDataLoaded = false;
-      }, 300);
-      
-      manageButtonsVisibility(true);
-    }
+    // ✅ RÉACTIVER LE SCROLL
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.width = '';
+    
+    setTimeout(() => {
+      weatherSidebar.style.display = 'none';
+      weatherSidebar.style.visibility = 'hidden';
+      window.weatherDataLoaded = false;
+    }, 300);
+    
+    manageButtonsVisibility(true);
   }
+}
   
   function adjustWeatherWidgetPosition() {
     const deviceType = getDeviceType();
