@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v47'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v49'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -22,6 +22,8 @@ const STATIC_RESOURCES = [
 	'/politique-confidentialite.html',
 	'/conditions-utilisation.html',
 	'/memory-game.html',
+	'/simon-says.html',
+	'/snake-game.html',
     
     // Feuilles de style CSS
     '/css/styles.css',
@@ -45,6 +47,8 @@ const STATIC_RESOURCES = [
 	'/css/todoApp.css',
 	'/css/petites-annonces.css',
 	'/css/memory-game.css',
+	'/css/simon-says.css',
+	'/css/snake-game.css',
 
     // Scripts JavaScript
     '/js/app.js',
@@ -83,6 +87,8 @@ const STATIC_RESOURCES = [
 	'/js/quiz-local.js',
 	'/js/annonces-manager.js',
 	'/js/memory-game.js',
+	'/js/simon-says.js',
+	'/js/snake-game.js',
     
     // Fichiers de configuration (seulement ceux qui existent)
     '/manifest.json',

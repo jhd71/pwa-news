@@ -626,32 +626,15 @@ class ChatManager {
             this.updateUnreadBadgeAndBubble();
         }
         
-        // Pour gérer spécifiquement les problèmes de PWA
-        if (/Mobi|Android/i.test(navigator.userAgent)) {
-            // Détecter si nous sommes dans une PWA
-            const isPWA = window.matchMedia('(display-mode: standalone)').matches || 
-                         window.navigator.standalone;
-                         
-            if (isPWA) {
-                console.log("Mode PWA détecté - Activation des ajustements spécifiques");
-                
-                // Ajouter le bouton d'accès à la zone de saisie
-                this.accessButton = this.addInputAccessButton();
-                
-                // Gérer la visibilité du clavier
-                this.handleKeyboardVisibility();
-                
-                // Gérer l'apparition du clavier
-                this.handleKeyboardAppearance();
-                
-                // Observer les changements d'orientation
-                window.addEventListener('orientationchange', () => {
-                    setTimeout(() => {
-                        this.ensureChatInputVisible();
-                    }, 500);
-                });
-            }
-        }
+        // Ajustements clavier pour PWA mobile
+if (/Mobi|Android/i.test(navigator.userAgent)) {
+    const isPWA = window.matchMedia('(display-mode: standalone)').matches || 
+                 window.navigator.standalone;
+    if (isPWA) {
+        this.handleKeyboardVisibility();
+        this.handleKeyboardAppearance();
+    }
+}
         
         // Configurer les vérifications de bannissement si l'utilisateur est connecté
         if (this.pseudo) {
@@ -1789,26 +1772,8 @@ extractPseudoFromEmail(email) {
         const success = await this.sendMessage(messageContent);
         
         if (success) {
-            this.playSound('message');
-            // Montrer le bouton d'accès après l'envoi
-        if (this.accessButton) {
-            this.accessButton.style.display = 'block';
-            
-            // Le cacher automatiquement après 5 secondes
-            setTimeout(() => {
-                this.accessButton.style.display = 'none';
-            }, 5000);
-        }
-            // Appels multiples pour s'assurer que la zone de saisie reste visible
-            this.ensureChatInputVisible(); // Immédiatement
-            
-            // Répéter avec différents délais
-            [300, 800, 1500, 3000].forEach(delay => {
-                setTimeout(() => {
-                    this.ensureChatInputVisible();
-                }, delay);
-            });
-        } else {
+    this.playSound('message');
+} else {
             this.playSound('error');
         }
     }
@@ -4223,50 +4188,6 @@ updateUnreadBadgeAndBubble() {
            (window.innerWidth <= 768);
 }
 
-	ensureChatInputVisible() {
-    if (/Mobi|Android/i.test(navigator.userAgent)) {
-        // Obtenir les éléments nécessaires
-        const chatContainer = this.container.querySelector('.chat-container');
-        const chatInput = this.container.querySelector('.chat-input');
-        const messagesContainer = this.container.querySelector('.chat-messages');
-        
-        if (chatInput && chatContainer) {
-            console.log("Tentative de rendre la zone de saisie visible");
-            
-            // 1. D'abord, assurer que le conteneur du chat est à sa hauteur maximale
-            chatContainer.style.height = '80vh';
-            
-            // 2. Repositionner les messages pour qu'ils laissent de la place pour l'input
-            if (messagesContainer) {
-                messagesContainer.style.maxHeight = 'calc(100% - 80px)';
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }
-            
-            // 3. Forcer le conteneur à se redessiner (redraw)
-            chatContainer.style.opacity = '0.99';
-            setTimeout(() => {
-                chatContainer.style.opacity = '1';
-                
-                // 4. Forcer le scroll tout en bas
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                
-                // 5. Technique spéciale pour les PWA sur Android
-                if (window.matchMedia('(display-mode: standalone)').matches) {
-                    // Fixer la position de la zone d'entrée
-                    chatInput.style.position = 'sticky';
-                    chatInput.style.bottom = '0';
-                    chatInput.style.zIndex = '1000';
-                    
-                    // Scroll doux vers la zone d'entrée
-                    chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
-                }
-                
-                console.log("Ajustement de visibilité effectué");
-            }, 50);
-        }
-    }
-}
-
 handleKeyboardVisibility() {
     if (!/Mobi|Android|iPad|tablet/i.test(navigator.userAgent)) return;
     
@@ -4332,72 +4253,6 @@ handleKeyboardVisibility() {
             chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
         }, 300);
     });
-}
-
-// 3. Et celle-ci en troisième
-addInputAccessButton() {
-    // Ne l'ajouter que sur mobile
-    if (!/Mobi|Android/i.test(navigator.userAgent)) return;
-    
-    // Vérifier si on est dans une PWA
-    const isPWA = window.matchMedia('(display-mode: standalone)').matches || 
-                 window.navigator.standalone;
-    
-    if (!isPWA) return;
-    
-    // Supprimer le bouton existant s'il y en a un
-    const existingButton = document.getElementById('chat-input-access');
-    if (existingButton) existingButton.remove();
-    
-    // Créer le bouton d'accès
-    const accessButton = document.createElement('button');
-    accessButton.id = 'chat-input-access';
-    accessButton.textContent = '⬆️ Zone de saisie';
-    accessButton.style.cssText = `
-        position: fixed;
-        bottom: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: var(--chat-success, #4CAF50);
-        color: white;
-        border: none;
-        border-radius: 20px;
-        padding: 8px 15px;
-        z-index: 2000;
-        font-weight: bold;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-        display: none;
-    `;
-    
-    document.body.appendChild(accessButton);
-    
-    // Afficher le bouton après l'envoi d'un message
-    accessButton.addEventListener('click', () => {
-        const chatInput = this.container.querySelector('.chat-input');
-        if (chatInput) {
-            // Fermer le clavier s'il est ouvert
-            document.activeElement?.blur();
-            
-            // Attendre que le clavier se ferme
-            setTimeout(() => {
-                // Ajuster la position du chat container
-                const chatContainer = this.container.querySelector('.chat-container');
-                if (chatContainer) {
-                    chatContainer.style.height = '65vh';
-                    chatContainer.style.bottom = '15vh';
-                }
-                
-                // Faire défiler jusqu'à la zone de saisie
-                chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
-                
-                // Cacher le bouton après utilisation
-                accessButton.style.display = 'none';
-            }, 300);
-        }
-    });
-    
-    // Montrer le bouton après l'envoi d'un message
-    return accessButton;
 }
 
 showAdminPanel() {

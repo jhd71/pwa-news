@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="rouge">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simon Says - Actu & Média</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/simon-says.css">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'rouge';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="game-header">
+        <a href="/" class="back-button">
+            <span class="material-icons">arrow_back</span>
+        </a>
+        <h1>🎵 Simon Says</h1>
+        <div class="theme-toggle" id="themeToggle">
+            <span class="material-icons">palette</span>
+        </div>
+    </header>
+
+    <!-- Game Container -->
+    <div class="game-container">
+        <!-- Stats Panel -->
+        <div class="stats-panel">
+            <div class="stat-item">
+                <span class="material-icons">military_tech</span>
+                <div class="stat-content">
+                    <span class="stat-label">Score</span>
+                    <span class="stat-value" id="currentScore">0</span>
+                </div>
+            </div>
+            <div class="stat-item">
+                <span class="material-icons">emoji_events</span>
+                <div class="stat-content">
+                    <span class="stat-label">Record</span>
+                    <span class="stat-value" id="bestScore">0</span>
+                </div>
+            </div>
+            <div class="stat-item">
+                <span class="material-icons">speed</span>
+                <div class="stat-content">
+                    <span class="stat-label">Niveau</span>
+                    <span class="stat-value" id="level">1</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Difficulty Selection -->
+        <div class="difficulty-panel">
+            <button class="difficulty-btn active" data-difficulty="easy">
+    <span class="material-icons">sentiment_satisfied</span>
+    <div>
+        Facile
+        <small style="display: block; font-size: 0.75rem; opacity: 0.7;">Lent</small>
+    </div>
+	</button>
+	<button class="difficulty-btn" data-difficulty="medium">
+    <span class="material-icons">sentiment_neutral</span>
+    <div>
+        Moyen
+        <small style="display: block; font-size: 0.75rem; opacity: 0.7;">Normal</small>
+    </div>
+	</button>
+	<button class="difficulty-btn" data-difficulty="hard">
+    <span class="material-icons">sentiment_very_dissatisfied</span>
+    <div>
+        Difficile
+        <small style="display: block; font-size: 0.75rem; opacity: 0.7;">Rapide</small>
+    </div>
+	</button>
+        </div>
+
+        <!-- Game Info -->
+        <div class="game-info" id="gameInfo">
+            Appuyez sur Démarrer pour jouer
+        </div>
+
+        <!-- Simon Board -->
+        <div class="simon-board">
+            <div class="simon-button" data-color="green" data-sound="0">
+                <span class="material-icons">music_note</span>
+            </div>
+            <div class="simon-button" data-color="red" data-sound="1">
+                <span class="material-icons">music_note</span>
+            </div>
+            <div class="simon-button" data-color="yellow" data-sound="2">
+                <span class="material-icons">music_note</span>
+            </div>
+            <div class="simon-button" data-color="blue" data-sound="3">
+                <span class="material-icons">music_note</span>
+            </div>
+            <div class="simon-center">
+                <button class="start-btn" id="startBtn">
+                    <span class="material-icons">play_arrow</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls-panel">
+            <button class="control-btn" id="soundToggle">
+                <span class="material-icons">volume_up</span>
+                Son activé
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal Game Over -->
+    <div class="modal" id="gameOverModal">
+        <div class="modal-content">
+            <div class="game-over-animation">
+                <span class="material-icons">error</span>
+            </div>
+            <h2>Game Over !</h2>
+            <p id="gameOverMessage">Séquence incorrecte</p>
+            <div class="final-stats">
+                <div class="final-stats">
+    <div class="final-stat">
+        <span class="material-icons">military_tech</span>
+        <div>
+            <div class="final-stat-label">Score final</div>
+            <div class="final-stat-value" id="finalScore">0</div>
+        </div>
+    </div>
+    <div class="final-stat">
+        <span class="material-icons">emoji_events</span>
+        <div>
+            <div class="final-stat-label">Record</div>
+            <div class="final-stat-value" id="modalBestScore">0</div>
+        </div>
+    </div>
+</div>
+
+<!-- Sélection difficulté dans le modal -->
+<div class="modal-difficulty">
+    <p style="margin: 15px 0 10px 0; font-weight: 600; opacity: 0.8;">Choisir la difficulté :</p>
+    <div class="modal-difficulty-btns">
+        <button class="modal-difficulty-btn" data-difficulty="easy">
+            <span class="material-icons">sentiment_satisfied</span>
+            Facile
+        </button>
+        <button class="modal-difficulty-btn" data-difficulty="medium">
+            <span class="material-icons">sentiment_neutral</span>
+            Moyen
+        </button>
+        <button class="modal-difficulty-btn" data-difficulty="hard">
+            <span class="material-icons">sentiment_very_dissatisfied</span>
+            Difficile
+        </button>
+    </div>
+</div>
+
+<button class="modal-btn" id="playAgainBtn">
+                <span class="material-icons">replay</span>
+                Rejouer
+            </button>
+            <button class="modal-btn secondary" id="closeModalBtn">
+                Retour à l'accueil
+            </button>
+        </div>
+    </div>
+
+    <script src="js/simon-says.js"></script>
+</body>
+</html>

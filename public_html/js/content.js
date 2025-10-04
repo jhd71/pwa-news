@@ -344,6 +344,15 @@ const memoryTile = {
     category: "game"
 };
 
+// TUILE SIMON SAYS
+const simonTile = {
+    title: "🎵 Simon Says",
+    url: "simon-says.html",
+    mobileUrl: "simon-says.html",
+    isDefault: true,
+    category: "game"
+};
+
 // Créer les tuiles d'actualités
 newsDefaultSites.forEach(site => {
     const tile = this.createTile(site);
@@ -363,30 +372,52 @@ separator1.className = 'separator';
 separator1.innerHTML = `<h2 class="separator-text">Espace+</h2>`;
 this.tileContainer.appendChild(separator1);
 
-// DÉPLACÉ ICI - TUILE PHOTOS DANS ESPACE+
+// TUILE PHOTOS DANS ESPACE+
 const photosTileElement = this.createTile(photosTile);
 this.tileContainer.appendChild(photosTileElement);
 
-// AJOUTER LA TUILE QUIZ DANS ESPACE+
-const quizTileElement = this.createTile(quizTile);
-this.tileContainer.appendChild(quizTileElement);
-
-// AJOUTER LA TUILE MEMORY DANS ESPACE+
-const memoryTileElement = this.createTile(memoryTile);
-this.tileContainer.appendChild(memoryTileElement);
-
-// NOUVELLE TUILE PETITES ANNONCES
+// NOUVELLE TUILE PETITES ANNONCES DANS ESPACE+
 const annoncesTile = {
     title: "🏪 Petites Annonces",
     url: "petites-annonces.html",
     mobileUrl: "petites-annonces.html",
     isDefault: true,
     category: "annonces",
-	isNew: true  // ← badge nouveau
+    isNew: true
 };
 
 const annoncesTileElement = this.createTile(annoncesTile);
 this.tileContainer.appendChild(annoncesTileElement);
+
+// SÉPARATEUR JEUX
+const separatorGames = document.createElement('div');
+separatorGames.className = 'separator';
+separatorGames.innerHTML = `<h2 class="separator-text">🎮 Jeux</h2>`;
+this.tileContainer.appendChild(separatorGames);
+
+// TUILE QUIZ
+const quizTileElement = this.createTile(quizTile);
+this.tileContainer.appendChild(quizTileElement);
+
+// TUILE MEMORY
+const memoryTileElement = this.createTile(memoryTile);
+this.tileContainer.appendChild(memoryTileElement);
+
+// TUILE SIMON SAYS
+const simonTileElement = this.createTile(simonTile);
+this.tileContainer.appendChild(simonTileElement);
+
+// TUILE SNAKE
+const snakeTile = {
+    title: "🐍 Snake",
+    url: "snake-game.html",
+    mobileUrl: "snake-game.html",
+    isDefault: true,
+    category: "game"
+};
+
+const snakeTileElement = this.createTile(snakeTile);
+this.tileContainer.appendChild(snakeTileElement);
 
         // Séparateur TV
         const separator2 = document.createElement('div');

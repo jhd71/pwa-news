@@ -1,0 +1,718 @@
+/* ========================================
+   VARIABLES THÈMES
+   ======================================== */
+
+:root {
+    --primary-color: #dc2626;
+    --primary-dark: #b91c1c;
+    --background: #fef2f2;
+    --card-bg: white;
+    --text-color: #333;
+    --border-color: #fee2e2;
+    --shadow: rgba(220, 38, 38, 0.1);
+}
+
+[data-theme="dark"] {
+    --primary-color: #60a5fa;
+    --primary-dark: #3b82f6;
+    --background: #1e293b;
+    --card-bg: #334155;
+    --text-color: #e2e8f0;
+    --border-color: #475569;
+    --shadow: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="bleuciel"] {
+    --primary-color: #0ea5e9;
+    --primary-dark: #0284c7;
+    --background: #f0f9ff;
+    --card-bg: white;
+    --text-color: #333;
+    --border-color: #e0f2fe;
+    --shadow: rgba(14, 165, 233, 0.1);
+}
+
+[data-theme="light"] {
+    --primary-color: #7c3aed;
+    --primary-dark: #6d28d9;
+    --background: #faf5ff;
+    --card-bg: white;
+    --text-color: #333;
+    --border-color: #f3e8ff;
+    --shadow: rgba(124, 58, 237, 0.1);
+}
+
+/* ========================================
+   BASE
+   ======================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--background);
+    color: var(--text-color);
+    min-height: 100vh;
+    padding-bottom: 20px;
+    transition: background 0.3s ease;
+}
+
+/* ========================================
+   HEADER
+   ======================================== */
+
+.game-header {
+    background: var(--primary-color);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 10px var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.back-button {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background 0.3s ease;
+}
+
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.game-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.theme-toggle {
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background 0.3s ease;
+}
+
+.theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* ========================================
+   GAME CONTAINER
+   ======================================== */
+
+.game-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 0 15px;
+}
+
+/* ========================================
+   STATS PANEL
+   ======================================== */
+
+.stats-panel {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.stat-item {
+    background: var(--card-bg);
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 8px var(--shadow);
+    border: 1px solid var(--border-color);
+	justify-content: center;
+}
+
+.stat-item .material-icons {
+    font-size: 32px;
+    color: var(--primary-color);
+}
+
+.stat-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    opacity: 0.7;
+}
+
+.stat-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* ========================================
+   DIFFICULTY PANEL
+   ======================================== */
+
+.difficulty-panel {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.difficulty-btn {
+    flex: 1;
+    padding: 12px;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.difficulty-btn:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.difficulty-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.difficulty-btn .material-icons {
+    font-size: 20px;
+}
+
+/* ========================================
+   GAME INFO
+   ======================================== */
+
+.game-info {
+    background: var(--card-bg);
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: var(--primary-color);
+    box-shadow: 0 2px 8px var(--shadow);
+    border: 1px solid var(--border-color);
+}
+
+/* ========================================
+   SIMON BOARD
+   ======================================== */
+
+.simon-board {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1;
+    margin: 0 auto 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 10px;
+    padding: 10px;
+}
+
+.simon-button {
+    border-radius: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    user-select: none;
+}
+
+.simon-button .material-icons {
+    font-size: 48px;
+    color: rgba(255, 255, 255, 0.3);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.simon-button:hover .material-icons {
+    opacity: 1;
+}
+
+.simon-button[data-color="green"] {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.simon-button[data-color="red"] {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.simon-button[data-color="yellow"] {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.simon-button[data-color="blue"] {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.simon-button:active,
+.simon-button.active {
+    transform: scale(0.95);
+    filter: brightness(1.5);
+    box-shadow: 0 0 30px currentColor;
+}
+
+.simon-button.disabled {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+/* Centre du Simon */
+.simon-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 120px;
+    background: var(--card-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 25px var(--shadow);
+    border: 3px solid var(--border-color);
+}
+
+.start-btn {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: none;
+    background: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.start-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px var(--shadow);
+}
+
+.start-btn .material-icons {
+    font-size: 40px;
+}
+
+.start-btn.playing {
+    background: #6b7280;
+    cursor: default;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* ========================================
+   CONTROLS
+   ======================================== */
+
+.controls-panel {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.control-btn {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    color: var(--text-color);
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.control-btn:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.control-btn.muted {
+    opacity: 0.5;
+}
+
+.control-btn.muted .material-icons {
+    content: 'volume_off';
+}
+
+/* ========================================
+   MODAL
+   ======================================== */
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 600px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.4s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.game-over-animation {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 20px;
+    background: #ef4444;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: shake 0.5s ease;
+}
+
+.game-over-animation .material-icons {
+    font-size: 60px;
+    color: white;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+.modal-content h2 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    font-size: 2rem;
+}
+
+.modal-content p {
+    color: var(--text-color);
+    margin-bottom: 20px;
+    opacity: 0.8;
+}
+
+.final-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.final-stat {
+    background: rgba(var(--primary-color), 0.05);
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+	justify-content: center;
+}
+
+.final-stat .material-icons {
+    font-size: 32px;
+    color: var(--primary-color);
+}
+
+.final-stat-label {
+    font-size: 0.85rem;
+    opacity: 0.7;
+}
+
+.final-stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.modal-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.modal-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.modal-btn.secondary {
+    background: transparent;
+    color: var(--text-color);
+    border: 2px solid var(--border-color);
+}
+
+/* Difficulté dans le modal */
+.modal-difficulty {
+    margin: 20px 0;
+}
+
+.modal-difficulty p {
+    margin: 15px 0 10px 0;
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+.modal-difficulty-btns {
+    display: flex;
+    gap: 8px;
+}
+
+.modal-difficulty-btn {
+    flex: 1;
+    padding: 10px 8px;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.3s ease;
+}
+
+.modal-difficulty-btn:hover {
+    border-color: var(--primary-color);
+}
+
+.modal-difficulty-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.modal-difficulty-btn .material-icons {
+    font-size: 20px;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+    .game-container {
+        padding: 0 10px;
+        margin: 15px auto;
+    }
+
+    .game-header h1 {
+        font-size: 1.2rem;
+    }
+
+/* AJOUTER CES LIGNES POUR LE MODAL */
+    .modal-content {
+        padding: 25px 20px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .game-over-animation {
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 15px;
+    }
+
+    .game-over-animation .material-icons {
+        font-size: 40px;
+    }
+
+    .modal-content h2 {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+    }
+
+    .modal-content p {
+        margin-bottom: 15px;
+        font-size: 0.9rem;
+    }
+
+    .final-stats {
+        margin: 15px 0;
+        gap: 10px;
+    }
+
+    .final-stat {
+        padding: 10px;
+    }
+
+    .final-stat .material-icons {
+        font-size: 24px;
+    }
+
+    .final-stat-value {
+        font-size: 1.2rem;
+    }
+
+    .modal-btn {
+        padding: 12px 20px;
+        margin-top: 10px;
+    }
+	
+    .stats-panel {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .difficulty-panel {
+        flex-direction: column;
+    }
+
+    .simon-board {
+        max-width: calc(100vw - 40px);
+        width: 100%;
+        padding: 8px;
+        gap: 8px;
+    }
+
+    .simon-button {
+        border-radius: 15px;
+    }
+
+    .simon-button .material-icons {
+        font-size: 32px;
+    }
+
+    .simon-center {
+        width: 90px;
+        height: 90px;
+    }
+
+    .start-btn {
+        width: 65px;
+        height: 65px;
+    }
+
+    .start-btn .material-icons {
+        font-size: 28px;
+    }
+
+    .modal-difficulty-btns {
+        flex-direction: column;
+    }
+
+    .modal-difficulty-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-container {
+        padding: 0 8px;
+    }
+
+    .simon-board {
+        max-width: calc(100vw - 30px);
+        padding: 6px;
+        gap: 6px;
+    }
+
+    .simon-button {
+        border-radius: 12px;
+    }
+
+    .simon-button .material-icons {
+        font-size: 24px;
+    }
+
+    .simon-center {
+        width: 75px;
+        height: 75px;
+    }
+
+    .start-btn {
+        width: 55px;
+        height: 55px;
+    }
+
+    .start-btn .material-icons {
+        font-size: 24px;
+    }
+
+    .final-stats {
+        grid-template-columns: 1fr;
+    }
+}
