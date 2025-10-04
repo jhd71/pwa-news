@@ -112,28 +112,34 @@ document.addEventListener('DOMContentLoaded', function() {
         weatherHTML += `</div>`;
       }
       
-      // ====== MÉTÉO ACTUELLE ======
-      const animatedGif = getAnimatedGif(current.condition.text);
-      
-      weatherHTML += `
-        <div class="weather-current">
-          <div style="text-align: center; margin-bottom: 10px;">
-            <h3 style="margin: 0; color: white; font-size: 18px;">${location.name}</h3>
-            <p style="margin: 2px 0; color: rgba(255,255,255,0.8); font-size: 12px;">
-              Actualisé à ${new Date(current.last_updated).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'})}
-            </p>
-          </div>
-          
-          <div style="display: flex; align-items: center; justify-content: space-around; background: rgba(255,255,255,0.1); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
-            <div style="text-align: center;">
-              <div style="font-size: 42px; font-weight: bold; color: #FFD700;">${Math.round(current.temp_c)}°C</div>
-              <div style="color: white; margin-top: 5px;">${current.condition.text}</div>
-              <div style="color: rgba(255,255,255,0.7); font-size: 13px; margin-top: 3px;">
-                Ressenti ${Math.round(current.feelslike_c)}°C
-              </div>
-            </div>
-            <img src="${animatedGif}" alt="${current.condition.text}" style="width: 80px; height: 80px;">
-          </div>
+		// ====== MÉTÉO ACTUELLE ======
+		// Obtenir l'heure actuelle pour trouver les bonnes données horaires
+	const now = new Date();
+	const currentHour = now.getHours();
+	const currentHourData = forecast[0].hour[currentHour];
+
+		// Utiliser l'icône de l'API pour l'heure actuelle (correcte jour/nuit)
+	const currentIcon = currentHourData ? currentHourData.condition.icon : current.condition.icon;
+
+	weatherHTML += `
+  <div class="weather-current">
+    <div style="text-align: center; margin-bottom: 10px;">
+      <h3 style="margin: 0; color: white; font-size: 18px;">${location.name}</h3>
+      <p style="margin: 2px 0; color: rgba(255,255,255,0.8); font-size: 12px;">
+        Actualisé à ${new Date(current.last_updated).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'})}
+      </p>
+    </div>
+    
+    <div style="display: flex; align-items: center; justify-content: space-around; background: rgba(255,255,255,0.1); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
+      <div style="text-align: center;">
+        <div style="font-size: 42px; font-weight: bold; color: #FFD700;">${Math.round(current.temp_c)}°C</div>
+        <div style="color: white; margin-top: 5px;">${current.condition.text}</div>
+        <div style="color: rgba(255,255,255,0.7); font-size: 13px; margin-top: 3px;">
+          Ressenti ${Math.round(current.feelslike_c)}°C
+        </div>
+      </div>
+      <img src="${currentIcon}" alt="${current.condition.text}" style="width: 64px; height: 64px;">
+    </div>
           
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px;">
             <div class="weather-detail-box">
