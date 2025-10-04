@@ -378,12 +378,11 @@ this.tileContainer.appendChild(photosTileElement);
 
 // NOUVELLE TUILE PETITES ANNONCES DANS ESPACE+
 const annoncesTile = {
-    title: "🏪 Petites Annonces",
+    title: "🏪<br>Petites Annonces",
     url: "petites-annonces.html",
     mobileUrl: "petites-annonces.html",
     isDefault: true,
     category: "annonces",
-    isNew: true
 };
 
 const annoncesTileElement = this.createTile(annoncesTile);

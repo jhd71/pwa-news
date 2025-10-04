@@ -915,16 +915,6 @@
     animation: pulseEffect 2s infinite ease-in-out;
 }
 
-/* Badge "Nouveau" */
-.new-badge {
-    background-color: #8c0a0a;
-    color: #ffffff;
-    padding: 0.2em 0.5em;
-    font-size: 0.8em;
-    border-radius: 3px;
-    font-weight: normal;
-}
-
 /* Articles récents dans la barre de défilement */
 .new-article {
     background-color: #7a040e;
