@@ -257,7 +257,7 @@ setupTVIcons() {
         // Séparateur Actualités
         const separator0 = document.createElement('div');
         separator0.className = 'separator';
-        separator0.innerHTML = `<h2 class="separator-text">Actualités Locales</h2>`;
+        separator0.innerHTML = `<h2 class="separator-text">📰 Actualités Locales</h2>`;
         this.tileContainer.appendChild(separator0);
         
         // Actualités locales
@@ -369,7 +369,7 @@ setTimeout(() => {
 // Séparateur Espace+
 const separator1 = document.createElement('div');
 separator1.className = 'separator';
-separator1.innerHTML = `<h2 class="separator-text">Espace+</h2>`;
+separator1.innerHTML = `<h2 class="separator-text">✨ Espace+</h2>`;
 this.tileContainer.appendChild(separator1);
 
 // TUILE PHOTOS DANS ESPACE+
@@ -422,7 +422,7 @@ this.tileContainer.appendChild(snakeTileElement);
         // Séparateur TV
         const separator2 = document.createElement('div');
         separator2.className = 'separator';
-        separator2.innerHTML = `<h2 class="separator-text">TV en Direct</h2>`;
+        separator2.innerHTML = `<h2 class="separator-text">📺 TV en Direct</h2>`;
         this.tileContainer.appendChild(separator2);
 
         // Section TV
@@ -469,7 +469,7 @@ const tvSites = [
         // Séparateur Sports
         const sportsSeparator = document.createElement('div');
         sportsSeparator.className = 'separator';
-        sportsSeparator.innerHTML = `<h2 class="separator-text">Sports</h2>`;
+        sportsSeparator.innerHTML = `<h2 class="separator-text">⚽ Sports</h2>`;
         this.tileContainer.appendChild(sportsSeparator);
 
         // Section Sports
@@ -526,7 +526,7 @@ const tvSites = [
         // Séparateur Réseaux Sociaux
         const separator3 = document.createElement('div');
         separator3.className = 'separator';
-        separator3.innerHTML = `<h2 class="separator-text">Réseaux Sociaux</h2>`;
+        separator3.innerHTML = `<h2 class="separator-text">💬 Réseaux Sociaux</h2>`;
         this.tileContainer.appendChild(separator3);
 
         // Section Réseaux Sociaux
@@ -572,7 +572,7 @@ const tvSites = [
             // Créer le séparateur même s'il n'y a pas de sites
             const separator = document.createElement('div');
             separator.className = 'separator';
-            separator.innerHTML = `<h2 class="separator-text">Sites Perso</h2>`;
+            separator.innerHTML = `<h2 class="separator-text">⭐ Sites Perso</h2>`;
             this.tileContainer.appendChild(separator);
 
             // Ajouter d'abord la tuile "Ajouter un site"
