@@ -39,40 +39,45 @@ document.addEventListener('DOMContentLoaded', function() {
   // ====== ALERTES MÉTÉO-FRANCE ======
   async function fetchMeteoFranceAlerts() {
     try {
-      const url = `https://public.opendatasoft.com/api/records/1.0/search/?dataset=risques-meteorologiques-copy&q=&facet=nom_dept&refine.nom_dept=SA%C3%94NE-ET-LOIRE`;
-      
-      const response = await fetch(url);
-      if (!response.ok) return null;
-      
-      const data = await response.json();
-      
-      if (data.records && data.records.length > 0) {
-        const record = data.records[0].fields;
+        // Nouvelle URL de l'API Météo-France vigilance
+        const url = `https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/vigilance-meteorologique-de-meteo-france/records?where=nom_dept%3D%22SAONE-ET-LOIRE%22&limit=1`;
         
-        // Vérifier les vigilances orange (3) et rouge (4)
-        const alerts = [];
-        const vigilanceFields = ['vent', 'pluie_inondation', 'orage', 'inondation', 'neige', 'canicule', 'grand_froid', 'avalanches'];
+        const response = await fetch(url);
         
-        vigilanceFields.forEach(field => {
-          const niveau = record[`vig_${field}`];
-          if (niveau >= 3) {
-            alerts.push({
-              type: field.replace(/_/g, ' '),
-              niveau: niveau,
-              couleur: niveau === 4 ? '#d32f2f' : '#ff6f00'
+        if (!response.ok) {
+            console.log('⚠️ Alertes Météo-France non disponibles (erreur API)');
+            return null;
+        }
+        
+        const data = await response.json();
+        
+        if (data.results && data.results.length > 0) {
+            const record = data.results[0];
+            const alerts = [];
+            
+            // Vérifier les différents types de vigilance
+            const vigilanceFields = ['vent', 'pluie_inondation', 'orage', 'inondation', 'neige', 'canicule', 'grand_froid', 'avalanches'];
+            
+            vigilanceFields.forEach(field => {
+                const niveau = record[`vig_${field}`];
+                if (niveau >= 3) {
+                    alerts.push({
+                        type: field.replace(/_/g, ' '),
+                        niveau: niveau,
+                        couleur: niveau === 4 ? '#d32f2f' : '#ff6f00'
+                    });
+                }
             });
-          }
-        });
+            
+            return alerts.length > 0 ? alerts : null;
+        }
         
-        return alerts.length > 0 ? alerts : null;
-      }
-      
-      return null;
+        return null;
     } catch (error) {
-      console.error("Erreur alertes Météo-France:", error);
-      return null;
+        console.log('ℹ️ Alertes Météo-France non disponibles:', error.message);
+        return null; // Continuer sans alertes plutôt que de planter
     }
-  }
+}
   
   // ====== CHARGEMENT DES DONNÉES ======
   async function loadWeatherData() {
