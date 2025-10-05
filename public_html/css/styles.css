@@ -3073,6 +3073,7 @@ a:active {
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
         padding-left: 0px;
+		padding-bottom: 60px;
     }
 
     /* Vue liste */

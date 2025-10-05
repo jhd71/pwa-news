@@ -1958,6 +1958,7 @@ applyListModeImmediate() {
             display: flex !important;
             flex-direction: column !important;
             gap: 8px !important;
+			padding-bottom: 60px;
             transition: none !important; /* Pas de transition */
         }
         
