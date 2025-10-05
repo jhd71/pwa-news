@@ -167,7 +167,6 @@
   position: fixed;
   right: 20px;
   bottom: 80px;
-  z-index: 10000 !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
