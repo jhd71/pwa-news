@@ -295,7 +295,7 @@ body {
 }
 
 .separator-text {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     padding: 8px 15px;
 }
 
@@ -3035,7 +3035,7 @@ a:active {
     }
     
     .separator-text {
-        font-size: 1.2rem;
+        font-size: 1.0rem;
     }
     
     /* Boutons */
