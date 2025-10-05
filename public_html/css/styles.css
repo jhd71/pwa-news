@@ -1641,7 +1641,7 @@ main {
 .modal-header h2, 
 .modal-header span,
 .modal-header button {
-    color: white;
+    color: white !important;
 }
 
 #commentForm button {

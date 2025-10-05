@@ -266,7 +266,6 @@
 }
 
 .modal-content {
-    background: var(--card-bg);
     max-width: 600px;
     margin: 20px auto;
     border-radius: var(--radius-lg);
