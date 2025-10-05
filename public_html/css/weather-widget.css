@@ -284,11 +284,25 @@
   transform: scale(1) !important;
 }
 
+/* Thème Violet (Light) */
+[data-theme="light"] .weather-show-btn,
+[data-theme="light"] .weather-mobile-btn {
+  background: linear-gradient(145deg, #7E57C2, #9575CD);
+}
+
+/* Thème Sombre (Dark) */
+[data-theme="dark"] .weather-show-btn,
+[data-theme="dark"] .weather-mobile-btn {
+  background: linear-gradient(145deg, #1a237e, #283593);
+}
+
+/* Thème Rouge */
 [data-theme="rouge"] .weather-show-btn,
 [data-theme="rouge"] .weather-mobile-btn {
   background: rgb(148, 0, 0);
 }
 
+/* Thème Bleu Ciel */
 [data-theme="bleuciel"] .weather-show-btn,
 [data-theme="bleuciel"] .weather-mobile-btn {
   background: linear-gradient(145deg, #0277bd, #03a9f4);
