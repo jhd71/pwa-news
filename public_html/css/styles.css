@@ -2826,7 +2826,7 @@ main {
 /* COULEURS PAR THÈME */
 [data-theme="light"] .tool-button,
 [data-theme="light"] .search-button {
-  background: #7e57c2 !important;
+  background: #6e48af !important;
 }
 
 [data-theme="light"] .tool-button:hover,

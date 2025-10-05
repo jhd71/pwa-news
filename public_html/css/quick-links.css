@@ -209,11 +209,6 @@
   transform: scale(1) !important;
 }
 
-/* Thème Sombre (Dark) */
-[data-theme="dark"] .quick-links-show-btn {
-  background: linear-gradient(145deg, #1a237e, #283593);
-}
-
 /* Thème Rouge */
 [data-theme="rouge"] .quick-links-show-btn {
   background: rgb(148, 0, 0);
