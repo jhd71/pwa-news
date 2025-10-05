@@ -676,22 +676,18 @@ async function fetchTemperatureOptimized() {
 }
 
 // Fonction pour récupérer les VRAIS visiteurs (version corrigée)
+// ✅ GARDER - Fonction de comptage simple
 async function updateVisitorsCount() {
     try {
         if (window.getSupabaseClient) {
             const supabase = window.getSupabaseClient();
             
-            // Utiliser un device ID persistant ou en créer un une seule fois
             let deviceId = localStorage.getItem('deviceId');
             if (!deviceId) {
                 deviceId = 'visitor_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                 localStorage.setItem('deviceId', deviceId);
-                console.log('👤 Nouveau visiteur créé:', deviceId);
-            } else {
-                console.log('👤 Visiteur existant:', deviceId);
             }
             
-            // Mettre à jour le timestamp de ce visiteur (UPSERT)
             await supabase
                 .from('active_visitors')
                 .upsert({
@@ -702,14 +698,12 @@ async function updateVisitorsCount() {
                     onConflict: 'device_id'
                 });
             
-            // Nettoyer les visiteurs inactifs (plus de 5 minutes)
             const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
             await supabase
                 .from('active_visitors')
                 .delete()
                 .lt('last_seen', fiveMinutesAgo);
             
-            // Compter les visiteurs actifs
             const { count } = await supabase
                 .from('active_visitors')
                 .select('*', { count: 'exact', head: true })
@@ -717,177 +711,57 @@ async function updateVisitorsCount() {
             
             if (count !== null) {
                 visitorsCount = count;
-                document.getElementById('visitorsCount').textContent = visitorsCount;
-                console.log(`👥 Vrais visiteurs actifs: ${visitorsCount}`);
-                return;
+                const element = document.getElementById('visitorsCount');
+                if (element) {
+                    element.textContent = visitorsCount;
+                }
             }
         }
-        
-        throw new Error('Aucune méthode de comptage disponible');
-        
     } catch (error) {
-        console.log('❌ Impossible de récupérer les vrais visiteurs:', error);
-        // Masquer le widget visiteurs au lieu d'afficher des fausses données
-        const visitorsWidget = document.getElementById('visitorsCounter');
-        if (visitorsWidget) {
-            visitorsWidget.style.display = 'none';
-            console.log('👥 Widget visiteurs masqué');
-        }
+        console.log('Erreur comptage visiteurs:', error);
     }
 }
 
-// Fonction pour afficher la popup visiteurs avec un graphique dynamique
-function showVisitorsPopup(labels, dataPoints, totalUniqueVisitors) {
-    const existing = document.getElementById('visitorsPopup');
-    if (existing) existing.remove();
-
-    const popup = document.createElement('div');
-    popup.id = 'visitorsPopup';
-    popup.innerHTML = `
-        <div class="visitors-popup-overlay" onclick="document.getElementById('visitorsPopup')?.remove()"></div>
-        <div class="visitors-popup-content">
-            <div class="visitors-popup-header">
-                <span>👥 Visiteurs actifs sur 24h</span>
-                <span class="close-btn" onclick="document.getElementById('visitorsPopup')?.remove()">✕</span>
-            </div>
-            <canvas id="visitorsChart" height="200"></canvas>
-            <div class="visitors-popup-footer">
-                <strong>${totalUniqueVisitors}</strong> visiteurs uniques sur les 24 dernières heures
-            </div>
-        </div>
-        <style>
-        #visitorsPopup {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .visitors-popup-overlay {
-            position: absolute;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-        }
-        .visitors-popup-content {
-            position: relative;
-            background: var(--popup-bg, white);
-            color: var(--popup-color, #111);
-            border-radius: 16px;
-            padding: 20px;
-            max-width: 90vw;
-            width: 420px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-        }
-        .visitors-popup-header {
-            display: flex;
-            justify-content: space-between;
-            font-weight: bold;
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-        .close-btn {
-            cursor: pointer;
-            font-size: 18px;
-        }
-        .visitors-popup-footer {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 14px;
-        }
-        @media (max-width: 480px) {
-            .visitors-popup-content {
-                width: 95vw;
-                padding: 15px;
-            }
-        }
-        :root[data-theme='dark'] {
-            --popup-bg: #1e1e1e;
-            --popup-color: #f1f1f1;
-        }
-        </style>
-    `;
-    document.body.appendChild(popup);
-
-    new Chart(document.getElementById("visitorsChart"), {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: "Visiteurs",
-                data: dataPoints,
-                borderColor: "#e53935",
-                backgroundColor: "rgba(229,57,53,0.1)",
-                pointBackgroundColor: "#e53935",
-                tension: 0.3
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: { beginAtZero: true, ticks: { stepSize: 1 } }
-            },
-            plugins: {
-                legend: { display: false }
-            }
-        }
-    });
-}
-
-// Fonction de nettoyage automatique des visiteurs inactifs
+// ✅ GARDER - Nettoyage
 async function cleanupInactiveVisitors() {
     try {
         if (window.getSupabaseClient) {
             const supabase = window.getSupabaseClient();
             const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
             
-            const { count } = await supabase
+            await supabase
                 .from('active_visitors')
                 .delete()
                 .lt('last_seen', tenMinutesAgo);
-            
-            if (count > 0) {
-                console.log(`🧹 ${count} visiteurs inactifs supprimés`);
-            }
         }
     } catch (error) {
-        console.log('Erreur nettoyage visiteurs:', error);
+        console.log('Erreur nettoyage:', error);
     }
 }
 
-// Fonction de debug pour vérifier les visiteurs
+// ✅ GARDER - Debug
 async function debugVisitors() {
     try {
         if (window.getSupabaseClient) {
             const supabase = window.getSupabaseClient();
             
-            // Tous les visiteurs
             const { data: allVisitors } = await supabase
                 .from('active_visitors')
                 .select('*')
                 .order('last_seen', { ascending: false });
             
-            console.log('📊 TOUS LES VISITEURS:', allVisitors);
+            console.log('📊 VISITEURS:', allVisitors);
             
-            // Visiteurs actifs (5 dernières minutes)
             const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
             const { data: activeVisitors } = await supabase
                 .from('active_visitors')
                 .select('*')
-                .gte('last_seen', fiveMinutesAgo)
-                .order('last_seen', { ascending: false });
+                .gte('last_seen', fiveMinutesAgo);
             
-            console.log('🟢 VISITEURS ACTIFS (5 min):', activeVisitors);
-            console.log(`📈 Total actifs: ${activeVisitors?.length || 0}`);
-            
-            // Votre device ID
-            const deviceId = localStorage.getItem('deviceId');
-            console.log('👤 Votre device ID:', deviceId);
+            console.log('🟢 ACTIFS:', activeVisitors?.length || 0);
         }
     } catch (error) {
-        console.error('❌ Erreur debug:', error);
+        console.error('Erreur debug:', error);
     }
 }
 

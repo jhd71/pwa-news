@@ -67,7 +67,6 @@
     align-items: center;
     gap: 10px;
     margin-bottom: 12px;
-    color: var(--primary-color);
 }
 
 /* ===== TITRES ===== */
@@ -322,8 +321,7 @@
 }
 
 /* Widgets Température et Visiteurs */
-.weather-temp,
-.visitors-counter {
+.weather-temp {
     background: rgba(var(--primary-color-rgb), 0.1);
     border: 1px solid var(--primary-color);
     border-radius: 8px;
@@ -336,23 +334,20 @@
     min-width: 50px;
 }
 
-.weather-temp:hover,
-.visitors-counter:hover {
+.weather-temp:hover {
     background: var(--primary-color);
     color: white;
     transform: scale(1.05);
 }
 
-.temp-value,
-.visitors-count {
+.temp-value {
     font-size: 13px;
     font-weight: 700;
     line-height: 1.1;
     color: var(--primary-color);
 }
 
-.temp-label,
-.visitors-label {
+.temp-label {
     font-size: 9px;
     font-weight: 600;
     line-height: 1.1;
@@ -361,9 +356,7 @@
 }
 
 .weather-temp:hover .temp-value,
-.weather-temp:hover .temp-label,
-.visitors-counter:hover .visitors-count,
-.visitors-counter:hover .visitors-label {
+.weather-temp:hover .temp-label, {
     color: white;
 }
 
@@ -434,7 +427,6 @@
 
 [data-theme="light"] .news-widget-clock,
 [data-theme="light"] .weather-temp,
-[data-theme="light"] .visitors-counter,
 [data-theme="light"] .header-btn {
     background: rgba(126, 87, 194, 0.1);
     border-color: #7e57c2;
@@ -443,7 +435,6 @@
 
 [data-theme="light"] .news-widget-clock:hover,
 [data-theme="light"] .weather-temp:hover,
-[data-theme="light"] .visitors-counter:hover,
 [data-theme="light"] .header-btn:hover {
     background: #7e57c2;
     color: white;
@@ -460,9 +451,7 @@
 }
 
 [data-theme="light"] .temp-value,
-[data-theme="light"] .visitors-count,
-[data-theme="light"] .temp-label,
-[data-theme="light"] .visitors-label {
+[data-theme="light"] .temp-label {
     color: #7e57c2;
     font-size: 14px;
 }
@@ -532,7 +521,6 @@
 
 [data-theme="dark"] .news-widget-clock,
 [data-theme="dark"] .weather-temp,
-[data-theme="dark"] .visitors-counter,
 [data-theme="dark"] .header-btn {
     background: rgba(92, 107, 192, 0.2);
     border-color: #5c6bc0;
@@ -541,16 +529,13 @@
 
 [data-theme="dark"] .news-widget-clock:hover,
 [data-theme="dark"] .weather-temp:hover,
-[data-theme="dark"] .visitors-counter:hover,
 [data-theme="dark"] .header-btn:hover {
     background: #5c6bc0;
     color: white;
 }
 
 [data-theme="dark"] .temp-value,
-[data-theme="dark"] .visitors-count,
 [data-theme="dark"] .temp-label,
-[data-theme="dark"] .visitors-label,
 [data-theme="dark"] .clock-time,
 [data-theme="dark"] .clock-date {
     color: #ffffff;
@@ -602,13 +587,6 @@
     border-color: rgba(211, 47, 47, 0.4);
 }
 
-[data-theme="rouge"] .news-widget-header,
-[data-theme="rouge"] .news-widget-title,
-[data-theme="rouge"] .news-widget-title-short,
-[data-theme="rouge"] .news-widget-footer {
-    color: #d32f2f;
-}
-
 [data-theme="rouge"] .news-widget-badge {
     background: #d32f2f;
 }
@@ -626,7 +604,6 @@
 
 [data-theme="rouge"] .news-widget-clock,
 [data-theme="rouge"] .weather-temp,
-[data-theme="rouge"] .visitors-counter,
 [data-theme="rouge"] .header-btn {
     background: rgba(211, 47, 47, 0.1) !important;
     border-color: #d32f2f !important;
@@ -635,16 +612,13 @@
 
 [data-theme="rouge"] .news-widget-clock:hover,
 [data-theme="rouge"] .weather-temp:hover,
-[data-theme="rouge"] .visitors-counter:hover,
 [data-theme="rouge"] .header-btn:hover {
     background: #d32f2f;
     color: white;
 }
 
 [data-theme="rouge"] .temp-value,
-[data-theme="rouge"] .visitors-count,
-[data-theme="rouge"] .temp-label,
-[data-theme="rouge"] .visitors-label {
+[data-theme="rouge"] .temp-label {
     font-size: 14px;
     color: #000000;
 }
@@ -693,7 +667,6 @@
 
 [data-theme="bleuciel"] .news-widget-clock,
 [data-theme="bleuciel"] .weather-temp,
-[data-theme="bleuciel"] .visitors-counter,
 [data-theme="bleuciel"] .header-btn {
     background: rgba(14, 165, 233, 0.1);
     border-color: #0ea5e9;
@@ -702,7 +675,6 @@
 
 [data-theme="bleuciel"] .news-widget-clock:hover,
 [data-theme="bleuciel"] .weather-temp:hover,
-[data-theme="bleuciel"] .visitors-counter:hover,
 [data-theme="bleuciel"] .header-btn:hover {
     background: #0ea5e9;
     color: white;
@@ -711,16 +683,12 @@
 [data-theme="bleuciel"] .clock-time,
 [data-theme="bleuciel"] .clock-date,
 [data-theme="bleuciel"] .temp-value,
-[data-theme="bleuciel"] .visitors-count,
-[data-theme="bleuciel"] .temp-label,
-[data-theme="bleuciel"] .visitors-label {
+[data-theme="bleuciel"] .temp-label {
     color: #4196df;
 }
 
-[data-theme="bleuciel"] .visitors-count,
 [data-theme="bleuciel"] .temp-value,
-[data-theme="bleuciel"] .temp-label,
-[data-theme="bleuciel"] .visitors-label {
+[data-theme="bleuciel"] .temp-label {
     font-size: 14px;
 }
 
@@ -984,338 +952,6 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* ============================================= */
-/*        NEWS WIDGET CSS - PARTIE 7             */
-/*        Popup Statistiques Visiteurs           */
-/* ============================================= */
-
-/* ===== STRUCTURE POPUP VISITEURS ===== */
-.visitors-popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-}
-
-.visitors-popup-overlay.visible {
-    opacity: 1;
-}
-
-.visitors-popup-box {
-    background: var(--popup-bg);
-    color: var(--popup-text);
-    padding: 24px;
-    border-radius: 20px;
-    box-shadow: 
-        0 20px 40px var(--popup-shadow),
-        0 0 0 1px rgba(255, 255, 255, 0.1);
-    width: 95vw;
-    max-width: 520px;
-    max-height: 85vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    transform: scale(0.9) translateY(20px);
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    position: relative;
-}
-
-.visitors-popup-overlay.visible .visitors-popup-box {
-    transform: scale(1) translateY(0);
-}
-
-/* ===== EN-TÊTE POPUP ===== */
-.visitors-popup-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 2px solid var(--chart-grid-color);
-}
-
-.visitors-popup-title {
-    font-size: 1.35rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--popup-text);
-}
-
-.visitors-popup-title .material-icons {
-    font-size: 1.5rem;
-    color: var(--chart-line-color);
-}
-
-.visitors-popup-close {
-    font-size: 1.8rem;
-    font-weight: 300;
-    line-height: 1;
-    border: none;
-    background: var(--summary-bg);
-    cursor: pointer;
-    color: var(--popup-text);
-    opacity: 0.8;
-    padding: 8px 12px;
-    border-radius: 50%;
-    transition: all 0.2s ease;
-    width: 42px;
-    height: 42px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.visitors-popup-close:hover {
-    opacity: 1;
-    background: var(--chart-line-color);
-    color: white;
-    transform: scale(1.1);
-}
-
-/* ===== CARTES DE STATISTIQUES ===== */
-.visitors-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.visitors-stat-card {
-    background: var(--stat-card-bg);
-    border: 2px solid var(--stat-card-border);
-    border-radius: 16px;
-    padding: 16px;
-    text-align: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.visitors-stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-}
-
-.visitors-stat-card.active {
-    background: linear-gradient(135deg, var(--stat-card-bg), var(--chart-area-bg));
-    border-color: var(--active-color);
-}
-
-.visitors-stat-value {
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--chart-line-color);
-    line-height: 1;
-    margin-bottom: 4px;
-}
-
-.visitors-stat-card.active .visitors-stat-value {
-    color: var(--active-color);
-}
-
-.visitors-stat-label {
-    font-size: 0.85rem;
-    color: var(--summary-text);
-    font-weight: 500;
-}
-
-.visitors-stat-icon {
-    font-size: 1rem;
-    margin-right: 4px;
-    vertical-align: middle;
-}
-
-/* ===== ZONE GRAPHIQUE ===== */
-.visitors-chart-container {
-    background: var(--summary-bg);
-    border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 20px;
-    position: relative;
-    min-height: 250px;
-}
-
-.visitors-chart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-}
-
-.visitors-chart-title {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--summary-text);
-}
-
-.visitors-chart-legend {
-    display: flex;
-    gap: 16px;
-    font-size: 0.75rem;
-    color: var(--summary-text);
-}
-
-.visitors-chart-legend-item {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.visitors-chart-legend-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--chart-line-color);
-}
-
-#visitorsChart {
-    border-radius: 8px;
-    touch-action: pan-y;
-    display: block;
-    width: 100% !important;
-    height: 200px !important;
-}
-
-.visitors-chart-info {
-    background: var(--popup-bg);
-    border: 1px solid var(--chart-grid-color);
-    border-radius: 12px;
-    padding: 12px;
-    margin-top: 12px;
-    font-size: 0.85rem;
-    color: var(--summary-text);
-    display: none;
-}
-
-.visitors-chart-info.show {
-    display: block;
-}
-
-.visitors-chart-info-title {
-    font-weight: 600;
-    color: var(--popup-text);
-    margin-bottom: 4px;
-}
-
-/* ===== RÉSUMÉ ===== */
-.visitors-popup-summary {
-    margin: 0;
-    text-align: center;
-    font-size: 0.9rem;
-    padding: 16px;
-    background: var(--summary-bg);
-    color: var(--summary-text);
-    border-radius: 16px;
-    border: 2px solid var(--chart-grid-color);
-}
-
-.visitors-summary-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-}
-
-.visitors-summary-row:not(:last-child) {
-    border-bottom: 1px solid var(--chart-grid-color);
-}
-
-.visitors-summary-label {
-    font-weight: 500;
-}
-
-.visitors-summary-value {
-    font-weight: 700;
-    color: var(--chart-line-color);
-}
-
-/* ===== BADGE TEMPS RÉEL ===== */
-.visitors-realtime-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--active-color);
-    color: white;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    margin-top: 12px;
-    animation: pulse 2s infinite;
-}
-
-.visitors-realtime-dot {
-    width: 6px;
-    height: 6px;
-    background: white;
-    border-radius: 50%;
-    animation: blink 1.5s infinite;
-}
-
-/* ============================================= */
-/*        NEWS WIDGET CSS - PARTIE 8             */
-/*        Animations                             */
-/* ============================================= */
-
-/* ===== ANIMATIONS GÉNÉRALES ===== */
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-30px) scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-}
-
-@keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0.7; }
-}
-
-/* ===== ANIMATION POPUP VISITEURS ===== */
-.visitors-popup-overlay.visible .visitors-popup-box {
-    animation: slideInUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
 /* ===== INDICATEUR HORLOGE MOBILE ===== */
 @media (max-width: 767px) {
     .news-widget-clock {
@@ -1409,19 +1045,16 @@
         gap: 4px;
     }
     
-    .weather-temp,
-    .visitors-counter {
+    .weather-temp {
         min-width: 40px;
         padding: 4px 6px;
     }
     
-    .temp-value,
-    .visitors-count {
+    .temp-value {
         font-size: 14px;
     }
     
-    .temp-label,
-    .visitors-label {
+    .temp-label {
         font-size: 11px;
     }
 }
@@ -1558,49 +1191,6 @@
     }
 }
 
-/* ===== RESPONSIVE POPUP VISITEURS ===== */
-@media (max-width: 480px) {
-    .visitors-popup-box {
-        padding: 20px 16px;
-        max-width: 92vw;
-        max-height: 95vh;
-        border-radius: 16px;
-    }
-    
-    .visitors-popup-title {
-        font-size: 1.15rem;
-    }
-    
-    .visitors-stats-grid {
-        gap: 10px;
-    }
-    
-    .visitors-stat-card {
-        padding: 14px 10px;
-    }
-    
-    .visitors-stat-value {
-        font-size: 1.75rem;
-    }
-    
-    .visitors-stat-label {
-        font-size: 0.8rem;
-    }
-    
-    .visitors-chart-container {
-        padding: 12px;
-    }
-    
-    #visitorsChart {
-        height: 180px !important;
-    }
-    
-    .visitors-popup-summary {
-        font-size: 0.85rem;
-        padding: 14px;
-    }
-}
-
 /* ===== TRÈS PETITS ÉCRANS ===== */
 @media (max-width: 380px) {
     /* Popup alarme */
@@ -1637,21 +1227,6 @@
     }
 }
 
-@media (max-width: 360px) {
-    /* Popup visiteurs */
-    .visitors-stat-value {
-        font-size: 1.5rem;
-    }
-    
-    .visitors-popup-title {
-        font-size: 1.05rem;
-    }
-    
-    .visitors-popup-title .material-icons {
-        font-size: 1.3rem;
-    }
-}
-
 /* ===== PAYSAGE SMARTPHONE ===== */
 @media (max-width: 768px) and (orientation: landscape) {
     .alarm-popup-overlay {
@@ -1672,4 +1247,65 @@
         padding: 8px !important;
         margin-bottom: 10px !important;
     }
+}
+
+/* Stylisation du compteur visiteurs (même style que l'horloge) */
+.visitors-counter {
+    background: rgba(var(--primary-color-rgb), 0.1);
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 50px;
+}
+
+.visitors-counter:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.2);
+}
+
+.visitors-counter:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Valeur et label */
+.visitors-count {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.visitors-label {
+    font-size: 12px;
+}
+
+/* Adaptation aux thèmes avec RGB */
+[data-theme="rouge"] .visitors-counter {
+    --primary-color-rgb: 220, 38, 38;
+}
+
+[data-theme="dark"] .visitors-counter {
+    --primary-color-rgb: 96, 165, 250;
+}
+
+[data-theme="bleuciel"] .visitors-counter {
+    --primary-color-rgb: 14, 165, 233;
+}
+
+[data-theme="light"] .visitors-counter {
+    --primary-color-rgb: 124, 58, 237;
+}
+
+/* Animation au clic */
+.visitors-counter.clicked {
+    animation: clickPulse 0.3s ease;
+}
+
+@keyframes clickPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.95); }
+    100% { transform: scale(1); }
 }

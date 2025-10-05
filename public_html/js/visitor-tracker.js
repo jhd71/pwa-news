@@ -1,450 +1,575 @@
-// visitor-tracker-active.js - Compteur visiteurs ACTIFS en temps réel
-document.addEventListener('DOMContentLoaded', async () => {
-    const supabase = window.getSupabaseClient();
-    if (!supabase) {
-        console.error("Supabase client n'est pas initialisé.");
-        return;
+// ============================================
+// VISITOR TRACKER - Version améliorée
+// ============================================
+
+class VisitorTracker {
+    constructor() {
+        this.supabase = null;
+        this.deviceId = null;
+        this.heartbeatInterval = null;
+        this.displayInterval = null;
+        this.channel = null;
+        this.chartInstance = null;
+        this.currentView = '24h'; // '24h' ou '7d'
+        
+        this.init();
     }
 
-    // Générer ou récupérer un ID unique pour ce visiteur
-    let deviceId = localStorage.getItem('visitor_device_id');
-    if (!deviceId) {
-        deviceId = 'visitor_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        localStorage.setItem('visitor_device_id', deviceId);
+    async init() {
+        this.supabase = window.getSupabaseClient();
+        if (!this.supabase) {
+            console.error("Supabase non initialisé");
+            return;
+        }
+
+        this.deviceId = this.getOrCreateDeviceId();
+        
+        // Démarrage
+        await this.recordVisit();
+        this.startHeartbeat();
+        this.startDisplayUpdates();
+        this.setupRealtimeListener();
+        this.attachClickEvent();
+        
+        // Nettoyage périodique
+        setTimeout(() => this.cleanOldData(), 5000);
+        
+        // Cleanup à la fermeture
+        window.addEventListener('beforeunload', () => this.cleanup());
+        
+        console.log('✅ Visitor Tracker initialisé');
     }
 
-    // Fonction pour compter les visiteurs ACTIFS (5 dernières minutes)
-    const getActiveVisitors = async () => {
+    getOrCreateDeviceId() {
+        let id = localStorage.getItem('visitor_device_id');
+        if (!id) {
+            id = `visitor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            localStorage.setItem('visitor_device_id', id);
+        }
+        return id;
+    }
+
+    // ============================================
+    // GESTION DES DONNÉES
+    // ============================================
+
+    async getActiveVisitors() {
         try {
             const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
             
-            const { data: visitors, error } = await supabase
+            const { data, error } = await this.supabase
                 .from('visitor_history')
                 .select('device_id')
                 .gte('created_at', fiveMinutesAgo);
 
-            if (error) {
-                console.error('Erreur lors de la récupération des visiteurs actifs:', error);
-                return 0;
-            }
-
-            // Compter les visiteurs uniques actifs
-            const uniqueDevices = new Set(visitors.map(v => v.device_id));
-            return uniqueDevices.size;
+            if (error) throw error;
+            
+            return new Set(data.map(v => v.device_id)).size;
         } catch (err) {
-            console.error('Erreur:', err);
+            console.error('Erreur getActiveVisitors:', err);
             return 0;
         }
-    };
+    }
 
-    // Fonction pour compter les visiteurs sur 24h (pour la popup)
-    const getUniqueVisitors24h = async () => {
+    async getVisitors24h() {
         try {
             const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
             
-            const { data: visitors, error } = await supabase
+            const { data, error } = await this.supabase
                 .from('visitor_history')
-                .select('device_id')
+                .select('device_id, created_at')
                 .gte('created_at', twentyFourHoursAgo);
 
-            if (error) {
-                console.error('Erreur lors de la récupération des visiteurs 24h:', error);
-                return 0;
-            }
-
-            const uniqueDevices = new Set(visitors.map(v => v.device_id));
-            return uniqueDevices.size;
-        } catch (err) {
-            console.error('Erreur:', err);
-            return 0;
-        }
-    };
-
-    // Fonction pour mettre à jour l'affichage du compteur (visiteurs actifs)
-    const updateVisitorDisplay = async () => {
-        const count = await getActiveVisitors();
-        const visitorsCountElement = document.getElementById('visitorsCount');
-        
-        if (visitorsCountElement) {
-            if (count === 0) {
-                visitorsCountElement.textContent = '--';
-            } else {
-                visitorsCountElement.textContent = count;
-            }
+            if (error) throw error;
             
-            console.log(`🔄 Visiteurs actifs: ${count} (dernières 5 minutes)`);
-        }
-    };
-
-    // Fonction pour enregistrer une visite (heartbeat)
-    const recordVisit = async () => {
-        try {
-            const { data, error } = await supabase
-                .from('visitor_history')
-                .insert([
-                    {
-                        device_id: deviceId,
-                        created_at: new Date().toISOString()
-                    }
-                ]);
-
-            if (error) {
-                console.error('Erreur lors de l\'enregistrement de la visite:', error);
-            } else {
-                console.log('💓 Heartbeat envoyé');
-                // Mettre à jour immédiatement après enregistrement
-                await updateVisitorDisplay();
-            }
+            return {
+                unique: new Set(data.map(v => v.device_id)).size,
+                total: data.length,
+                data: data
+            };
         } catch (err) {
-            console.error('Erreur:', err);
+            console.error('Erreur getVisitors24h:', err);
+            return { unique: 0, total: 0, data: [] };
         }
-    };
+    }
 
-    // Enregistrer la visite immédiatement
-    await recordVisit();
+    async getVisitors7d() {
+        try {
+            const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+            
+            const { data, error } = await this.supabase
+                .from('visitor_history')
+                .select('device_id, created_at')
+                .gte('created_at', sevenDaysAgo);
 
-    // 🚀 HEARTBEAT : Envoyer un signal toutes les 30 secondes pour rester "actif"
-    const heartbeatInterval = setInterval(async () => {
-        await recordVisit();
-    }, 30000); // 30 secondes
+            if (error) throw error;
+            
+            return {
+                unique: new Set(data.map(v => v.device_id)).size,
+                total: data.length,
+                data: data
+            };
+        } catch (err) {
+            console.error('Erreur getVisitors7d:', err);
+            return { unique: 0, total: 0, data: [] };
+        }
+    }
 
-    // Mettre à jour l'affichage toutes les 10 secondes
-    setInterval(updateVisitorDisplay, 10000);
+    async recordVisit() {
+        try {
+            const { error } = await this.supabase
+                .from('visitor_history')
+                .insert([{
+                    device_id: this.deviceId,
+                    created_at: new Date().toISOString()
+                }]);
 
-    // 🚀 TEMPS RÉEL : Écouter les nouvelles insertions
-    const channel = supabase
-        .channel('visitor_updates')
-        .on(
-            'postgres_changes',
-            {
-                event: 'INSERT',
-                schema: 'public',
-                table: 'visitor_history'
-            },
-            (payload) => {
-                console.log('🔴 Activité détectée !', payload);
-                // Mettre à jour immédiatement
-                updateVisitorDisplay();
-            }
-        )
-        .subscribe();
+            if (error) throw error;
+            
+            console.log('💚 Heartbeat envoyé');
+            await this.updateDisplay();
+        } catch (err) {
+            console.error('Erreur recordVisit:', err);
+        }
+    }
 
-    console.log('🎯 Compteur visiteurs ACTIFS en temps réel activé');
-
-    // Nettoyer les anciennes données au démarrage (garder seulement 24h)
-    const cleanOldData = async () => {
+    async cleanOldData() {
         const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
         
         try {
-            const { error } = await supabase
+            const { error } = await this.supabase
                 .from('visitor_history')
                 .delete()
                 .lt('created_at', twentyFourHoursAgo);
 
-            if (error) {
-                console.error('Erreur lors du nettoyage:', error);
-            } else {
-                console.log('🧹 Anciennes données nettoyées');
-            }
+            if (!error) console.log('🧹 Données nettoyées');
         } catch (err) {
             console.error('Erreur nettoyage:', err);
         }
-    };
+    }
 
-    // Nettoyer au démarrage
-    setTimeout(cleanOldData, 5000);
+    // ============================================
+    // AFFICHAGE
+    // ============================================
 
-    // Fonction pour la popup (affiche les stats 24h)
-    function attachVisitorClickEvent() {
-        const visitorsElement = document.getElementById('visitorsCounter');
+    async updateDisplay() {
+        const count = await this.getActiveVisitors();
+        const element = document.getElementById('visitorsCount');
         
-        if (!visitorsElement) {
-            console.log('⏳ visitorsCounter pas encore trouvé, nouvelle tentative dans 500ms...');
-            setTimeout(attachVisitorClickEvent, 500);
+        if (element) {
+            element.textContent = count === 0 ? '--' : count;
+        }
+    }
+
+    startHeartbeat() {
+        this.heartbeatInterval = setInterval(() => {
+            this.recordVisit();
+        }, 30000); // 30 secondes
+    }
+
+    startDisplayUpdates() {
+        this.displayInterval = setInterval(() => {
+            this.updateDisplay();
+        }, 10000); // 10 secondes
+    }
+
+    setupRealtimeListener() {
+        this.channel = this.supabase
+            .channel('visitor_updates')
+            .on('postgres_changes', {
+                event: 'INSERT',
+                schema: 'public',
+                table: 'visitor_history'
+            }, () => {
+                console.log('🔴 Nouvelle activité détectée');
+                this.updateDisplay();
+            })
+            .subscribe();
+    }
+
+    // ============================================
+    // POPUP STATISTIQUES
+    // ============================================
+
+    attachClickEvent() {
+        const element = document.getElementById('visitorsCounter');
+        
+        if (!element) {
+            setTimeout(() => this.attachClickEvent(), 500);
             return;
         }
         
-        console.log('✅ visitorsCounter trouvé ! Ajout de l\'événement click');
-        
-        visitorsElement.style.cursor = 'pointer'; // S'assurer que le curseur montre que c'est cliquable
-        
-        visitorsElement.addEventListener('click', async function (event) {
-    // ✅ VÉRIFICATION ADMIN
-    const isAdmin = localStorage.getItem('isAdmin') === 'true';
-    const chatPseudo = localStorage.getItem('chatPseudo');
-    
-    if (!isAdmin || chatPseudo !== 'Admin_ActuMedia') {
-        console.log('👥 Statistiques détaillées réservées aux administrateurs');
-        return; // Bloquer l'accès si pas admin
+        element.style.cursor = 'pointer';
+        element.addEventListener('click', (e) => this.handleClick(e), true);
     }
-            event.preventDefault();
-            event.stopPropagation();
-            event.stopImmediatePropagation(); // Arrêt complet de la propagation
-            
-            console.log('🎯 Clic sur le compteur de visiteurs détecté !');
-            
-            const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-            const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
 
-            // Récupérer les données 24h pour le graphique
-            let { data: visitors24h, error } = await supabase
-                .from('visitor_history')
-                .select('created_at, device_id')
-                .gte('created_at', twentyFourHoursAgo)
-                .order('created_at', { ascending: true });
+    async handleClick(event) {
+        // Vérification admin
+        const isAdmin = localStorage.getItem('isAdmin') === 'true';
+        const chatPseudo = localStorage.getItem('chatPseudo');
+        
+        if (!isAdmin || chatPseudo !== 'Admin_ActuMedia') {
+            console.log('❌ Accès réservé aux admins');
+            return;
+        }
 
-            // Récupérer les visiteurs actifs (5 min)
-            let { data: visitorsActive } = await supabase
-                .from('visitor_history')
-                .select('device_id')
-                .gte('created_at', fiveMinutesAgo);
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        
+        await this.showStatsModal();
+    }
 
-            if (error) {
-                alert("Erreur lors de la récupération de l'historique des visiteurs.");
-                console.error(error);
-                return;
-            }
+    async showStatsModal() {
+        // Récupérer toutes les données
+        const [active, stats24h, stats7d] = await Promise.all([
+            this.getActiveVisitors(),
+            this.getVisitors24h(),
+            this.getVisitors7d()
+        ]);
 
-            // Préparation des données pour le graphique (par heure)
-            let hours = [];
-            let hourMap = {};
-            
-            for (let i = 0; i < 24; i++) {
-                let d = new Date(Date.now() - (23 - i) * 60 * 60 * 1000);
-                let hour = d.getHours().toString().padStart(2, '0') + 'h';
-                hours.push(hour);
-                hourMap[hour] = new Set();
-            }
+        // Calculer les statistiques
+        const avgPerHour = Math.round(stats24h.unique / 24);
+        const activityRate = stats24h.unique > 0 ? Math.round((active / stats24h.unique) * 100) : 0;
+        const avgPerDay = Math.round(stats7d.unique / 7);
+        
+        // Créer la modal
+        const modal = this.createModal();
+        const box = this.createModalBox(active, stats24h, stats7d, avgPerHour, activityRate, avgPerDay);
+        
+        modal.appendChild(box);
+        document.body.appendChild(modal);
+        
+        // Bloquer le scroll
+        document.body.style.overflow = 'hidden';
+        
+        // Animation
+        requestAnimationFrame(() => modal.classList.add('visible'));
+        
+        // Event listeners
+        this.setupModalEvents(modal);
+        
+        // Créer le graphique
+        setTimeout(() => {
+            this.createChart(this.currentView === '24h' ? stats24h.data : stats7d.data);
+        }, 100);
+    }
 
-            // Grouper les visiteurs par heure
-            visitors24h.forEach(v => {
-                let d = new Date(v.created_at);
-                let hour = d.getHours().toString().padStart(2, '0') + 'h';
-                if (hourMap[hour]) {
-                    hourMap[hour].add(v.device_id);
-                }
-            });
+    createModal() {
+        const modal = document.createElement('div');
+        modal.className = 'visitors-popup-overlay';
+        return modal;
+    }
 
-            let dataPoints = hours.map(hour => hourMap[hour] ? hourMap[hour].size : 0);
-
-            // Calculs
-            const visiteurs24h = new Set(visitors24h.map(v => v.device_id)).size;
-            const visiteursActifs = new Set(visitorsActive.map(v => v.device_id)).size;
-            const maxVisiteurs = Math.max(...dataPoints);
-            const totalVisites = visitors24h.length;
-
-            // Création de la popup améliorée
-            const modal = document.createElement('div');
-            modal.className = 'visitors-popup-overlay';
-            
-            const box = document.createElement('div');
-            box.className = 'visitors-popup-box';
-
-            // Contenu HTML amélioré
-            box.innerHTML = `
-                <div class="visitors-popup-header">
-                    <div class="visitors-popup-title">
-                        <span class="material-icons">analytics</span>
-                        <span>Statistiques visiteurs</span>
-                    </div>
-                    <button class="visitors-popup-close">×</button>
+    createModalBox(active, stats24h, stats7d, avgPerHour, activityRate, avgPerDay) {
+        const box = document.createElement('div');
+        box.className = 'visitors-popup-box';
+        
+        box.innerHTML = `
+            <div class="visitors-popup-header">
+                <div class="visitors-popup-title">
+                    <span class="material-icons">analytics</span>
+                    <span>Statistiques visiteurs</span>
                 </div>
+                <button class="visitors-popup-close">×</button>
+            </div>
 
-                <!-- Cartes de stats principales -->
+            <div class="visitors-popup-content">
+                <!-- Stats principales -->
                 <div class="visitors-stats-grid">
                     <div class="visitors-stat-card active">
                         <div class="visitors-stat-value">
-                            <span class="visitors-stat-icon">🟢</span>${visiteursActifs}
+                            <span class="visitors-stat-icon">🟢</span>${active}
                         </div>
-                        <div class="visitors-stat-label">Actifs maintenant</div>
-                    </div>
-                    <div class="visitors-stat-card">
-                        <div class="visitors-stat-value">${visiteurs24h}</div>
-                        <div class="visitors-stat-label">Visiteurs 24h</div>
-                    </div>
-                    <div class="visitors-stat-card">
-                        <div class="visitors-stat-value">${maxVisiteurs}</div>
-                        <div class="visitors-stat-label">Pic horaire</div>
-                    </div>
-                    <div class="visitors-stat-card">
-                        <div class="visitors-stat-value">${totalVisites}</div>
-                        <div class="visitors-stat-label">Visites totales</div>
-                    </div>
-                </div>
-
-                <!-- Zone du graphique -->
-                <div class="visitors-chart-container">
-                    <div class="visitors-chart-header">
-                        <div class="visitors-chart-title">Évolution sur 24 heures</div>
-                        <div class="visitors-chart-legend">
-                            <div class="visitors-chart-legend-item">
-                                <div class="visitors-chart-legend-dot"></div>
-                                <span>Visiteurs/h</span>
-                            </div>
-                        </div>
-                    </div>
-                    <canvas id="visitorsChart" height="200"></canvas>
-                    <div class="visitors-chart-info" id="chartInfo">
-                        <div class="visitors-chart-info-title">💡 Astuce mobile</div>
-                        Glissez sur le graphique pour voir les détails
-                    </div>
-                </div>
-
-                <!-- Résumé détaillé -->
-                <div class="visitors-popup-summary">
-                    <div class="visitors-summary-row">
-                        <span class="visitors-summary-label">Moyenne par heure</span>
-                        <span class="visitors-summary-value">${Math.round(visiteurs24h / 24)}</span>
-                    </div>
-                    <div class="visitors-summary-row">
-                        <span class="visitors-summary-label">Taux d'activité</span>
-                        <span class="visitors-summary-value">${Math.round((visiteursActifs / visiteurs24h) * 100)}%</span>
-                    </div>
-                    <div style="text-align: center;">
-                        <div class="visitors-realtime-badge">
-                            <div class="visitors-realtime-dot"></div>
+                        <div class="visitors-stat-label">En ligne</div>
+                        <div class="visitors-stat-trend up">
+                            <span class="material-icons">trending_up</span>
                             Temps réel
                         </div>
                     </div>
+
+                    <div class="visitors-stat-card">
+                        <div class="visitors-stat-value">${stats24h.unique}</div>
+                        <div class="visitors-stat-label">Visiteurs 24h</div>
+                        <div class="visitors-stat-trend">
+                            ${stats24h.total} visites
+                        </div>
+                    </div>
+
+                    <div class="visitors-stat-card">
+                        <div class="visitors-stat-value">${stats7d.unique}</div>
+                        <div class="visitors-stat-label">Visiteurs 7j</div>
+                        <div class="visitors-stat-trend">
+                            ${avgPerDay}/jour
+                        </div>
+                    </div>
+
+                    <div class="visitors-stat-card">
+                        <div class="visitors-stat-value">${activityRate}%</div>
+                        <div class="visitors-stat-label">Taux d'activité</div>
+                        <div class="visitors-stat-trend ${activityRate > 10 ? 'up' : ''}">
+                            <span class="material-icons">${activityRate > 10 ? 'trending_up' : 'remove'}</span>
+                            Actifs/Total
+                        </div>
+                    </div>
                 </div>
-            `;
 
-            // Assemblage
-            modal.appendChild(box);
-            document.body.appendChild(modal);
-            
-            // Animation d'apparition
-            requestAnimationFrame(() => {
-                modal.classList.add('visible');
-            });
+                <!-- Graphique -->
+                <div class="visitors-chart-container">
+                    <div class="visitors-chart-header">
+                        <div class="visitors-chart-title">Évolution des visites</div>
+                        <div class="visitors-chart-tabs">
+                            <button class="visitors-chart-tab active" data-view="24h">24h</button>
+                            <button class="visitors-chart-tab" data-view="7d">7 jours</button>
+                        </div>
+                    </div>
+                    <canvas id="visitorsChart" height="200"></canvas>
+                </div>
 
-            // Logique de fermeture
-            const closeBtn = box.querySelector('.visitors-popup-close');
-            const closeModal = () => {
-                modal.classList.remove('visible');
-                modal.addEventListener('transitionend', () => modal.remove(), { once: true });
-            };
-            
-            closeBtn.onclick = closeModal;
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) closeModal();
-            });
+                <!-- Stats additionnelles -->
+                <div class="visitors-additional-stats">
+                    <div class="visitors-stat-item">
+                        <div class="visitors-stat-item-icon">
+                            <span class="material-icons">schedule</span>
+                        </div>
+                        <div class="visitors-stat-item-content">
+                            <div class="visitors-stat-item-label">Moyenne/heure</div>
+                            <div class="visitors-stat-item-value">${avgPerHour}</div>
+                        </div>
+                    </div>
 
-            // Configuration du graphique améliorée pour mobile
-            const canvas = box.querySelector('#visitorsChart');
-            const ctx = canvas.getContext('2d');
-            
-            const computedStyle = getComputedStyle(box);
-            const chartLineColor = computedStyle.getPropertyValue('--chart-line-color').trim();
-            const chartAreaBg = computedStyle.getPropertyValue('--chart-area-bg').trim();
-            const chartGridColor = computedStyle.getPropertyValue('--chart-grid-color').trim();
-            const chartLabelColor = computedStyle.getPropertyValue('--popup-text').trim();
+                    <div class="visitors-stat-item">
+                        <div class="visitors-stat-item-icon">
+                            <span class="material-icons">today</span>
+                        </div>
+                        <div class="visitors-stat-item-content">
+                            <div class="visitors-stat-item-label">Moyenne/jour</div>
+                            <div class="visitors-stat-item-value">${avgPerDay}</div>
+                        </div>
+                    </div>
+                </div>
 
-            // Afficher l'info mobile sur petits écrans
-            if (window.innerWidth <= 480) {
-                const chartInfo = box.querySelector('#chartInfo');
-                chartInfo.classList.add('show');
-                setTimeout(() => {
-                    chartInfo.classList.remove('show');
-                }, 3000);
+                <!-- Badge temps réel -->
+                <div style="text-align: center; margin-top: 16px;">
+                    <div class="visitors-realtime-badge">
+                        <div class="visitors-realtime-dot"></div>
+                        Mise à jour en temps réel
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        return box;
+    }
+
+    setupModalEvents(modal) {
+        const closeBtn = modal.querySelector('.visitors-popup-close');
+        const tabs = modal.querySelectorAll('.visitors-chart-tab');
+        
+        const closeModal = () => {
+            modal.classList.remove('visible');
+            document.body.style.overflow = '';
+            setTimeout(() => modal.remove(), 300);
+            if (this.chartInstance) {
+                this.chartInstance.destroy();
+                this.chartInstance = null;
             }
+        };
+        
+        closeBtn.onclick = closeModal;
+        modal.onclick = (e) => {
+            if (e.target === modal) closeModal();
+        };
+        
+        tabs.forEach(tab => {
+            tab.onclick = async () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                this.currentView = tab.dataset.view;
+                
+                const data = this.currentView === '24h' 
+                    ? (await this.getVisitors24h()).data
+                    : (await this.getVisitors7d()).data;
+                
+                this.updateChart(data);
+            };
+        });
+    }
 
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: hours,
-                    datasets: [{
-                        label: 'Visiteurs',
-                        data: dataPoints,
-                        fill: true,
-                        borderColor: chartLineColor || '#007BFF',
-                        backgroundColor: chartAreaBg || 'rgba(0,123,255,0.1)',
-                        tension: 0.4,
-                        pointRadius: window.innerWidth > 480 ? 4 : 2,
-                        pointBackgroundColor: chartLineColor || '#007BFF',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
-                        borderWidth: 3,
-                        pointHoverRadius: 6,
-                        pointHoverBorderWidth: 3
-                    }]
+    async createChart(data) {
+        const canvas = document.getElementById('visitorsChart');
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        const { labels, dataPoints } = this.prepareChartData(data);
+        
+        if (this.chartInstance) {
+            this.chartInstance.destroy();
+        }
+        
+        this.chartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Visiteurs',
+                    data: dataPoints,
+                    fill: true,
+                    borderColor: '#007BFF',
+                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    tension: 0.4,
+                    pointRadius: window.innerWidth > 480 ? 4 : 2,
+                    pointBackgroundColor: '#007BFF',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    borderWidth: 3,
+                    pointHoverRadius: 7,
+                    pointHoverBorderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        mode: 'nearest',
-                        axis: 'x',
-                        intersect: false
-                    },
-                    plugins: { 
-                        legend: { display: false },
-                        tooltip: {
-                            enabled: true,
-                            backgroundColor: 'rgba(0,0,0,0.85)',
-                            titleColor: 'white',
-                            bodyColor: 'white',
-                            cornerRadius: 8,
-                            padding: 12,
-                            displayColors: false,
-                            titleFont: { size: 14, weight: 'bold' },
-                            bodyFont: { size: 13 },
-                            callbacks: {
-                                title: function(context) {
-                                    return 'Heure : ' + context[0].label;
-                                },
-                                label: function(context) {
-                                    return 'Visiteurs : ' + context.parsed.y;
-                                }
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                        titleColor: 'white',
+                        bodyColor: 'white',
+                        cornerRadius: 8,
+                        padding: 12,
+                        displayColors: false,
+                        titleFont: { size: 14, weight: 'bold' },
+                        bodyFont: { size: 13 },
+                        callbacks: {
+                            title: (context) => {
+                                return this.currentView === '24h' 
+                                    ? `Heure : ${context[0].label}`
+                                    : `Jour : ${context[0].label}`;
+                            },
+                            label: (context) => {
+                                return `Visiteurs : ${context.parsed.y}`;
                             }
                         }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false, drawBorder: false },
+                        ticks: {
+                            color: '#666',
+                            font: { size: window.innerWidth > 480 ? 11 : 9 },
+                            maxRotation: 0,
+                            autoSkip: true,
+                            maxTicksLimit: window.innerWidth > 480 ? 12 : 6
+                        }
                     },
-                    scales: {
-                        x: {
-                            grid: { 
-                                display: false,
-                                drawBorder: false
-                            },
-                            ticks: { 
-                                color: chartLabelColor || '#666',
-                                font: { 
-                                    size: window.innerWidth > 480 ? 11 : 10
-                                },
-                                maxRotation: 0,
-                                autoSkip: true,
-                                maxTicksLimit: window.innerWidth > 480 ? 12 : 8
-                            }
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)',
+                            drawBorder: false
                         },
-                        y: {
-                            beginAtZero: true,
-                            grid: { 
-                                color: chartGridColor || '#e0e0e0',
-                                drawBorder: false,
-                                lineWidth: 1
-                            },
-                            ticks: {
-                                stepSize: 1,
-                                precision: 0,
-                                color: chartLabelColor || '#666',
-                                font: { size: 11 },
-                                padding: 8
-                            },
-                            suggestedMax: Math.max(...dataPoints, 3) + 1
+                        ticks: {
+                            stepSize: 1,
+                            precision: 0,
+                            color: '#666',
+                            font: { size: 11 },
+                            padding: 8
                         }
                     }
                 }
-            });
-        }, true); // Le 'true' force la capture de l'événement
+            }
+        });
     }
 
-    // Lancer la recherche de l'élément
-    attachVisitorClickEvent();
+    updateChart(data) {
+        if (!this.chartInstance) return;
+        
+        const { labels, dataPoints } = this.prepareChartData(data);
+        
+        this.chartInstance.data.labels = labels;
+        this.chartInstance.data.datasets[0].data = dataPoints;
+        this.chartInstance.update();
+    }
 
-    // Nettoyer à la fermeture
-    window.addEventListener('beforeunload', () => {
-        clearInterval(heartbeatInterval);
-        if (channel) {
-            supabase.removeChannel(channel);
+    prepareChartData(data) {
+        if (this.currentView === '24h') {
+            return this.prepare24hData(data);
+        } else {
+            return this.prepare7dData(data);
         }
-    });
+    }
+
+    prepare24hData(data) {
+        const hours = [];
+        const hourMap = {};
+        
+        for (let i = 0; i < 24; i++) {
+            const d = new Date(Date.now() - (23 - i) * 60 * 60 * 1000);
+            const hour = d.getHours().toString().padStart(2, '0') + 'h';
+            hours.push(hour);
+            hourMap[hour] = new Set();
+        }
+        
+        data.forEach(v => {
+            const d = new Date(v.created_at);
+            const hour = d.getHours().toString().padStart(2, '0') + 'h';
+            if (hourMap[hour]) {
+                hourMap[hour].add(v.device_id);
+            }
+        });
+        
+        return {
+            labels: hours,
+            dataPoints: hours.map(h => hourMap[h].size)
+        };
+    }
+
+    prepare7dData(data) {
+        const days = [];
+        const dayMap = {};
+        
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+            const day = d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric' });
+            const key = d.toDateString();
+            days.push(day);
+            dayMap[key] = new Set();
+        }
+        
+        data.forEach(v => {
+            const key = new Date(v.created_at).toDateString();
+            if (dayMap[key]) {
+                dayMap[key].add(v.device_id);
+            }
+        });
+        
+        return {
+            labels: days,
+            dataPoints: Object.values(dayMap).map(set => set.size)
+        };
+    }
+
+    // ============================================
+    // CLEANUP
+    // ============================================
+
+    cleanup() {
+        if (this.heartbeatInterval) clearInterval(this.heartbeatInterval);
+        if (this.displayInterval) clearInterval(this.displayInterval);
+        if (this.channel) this.supabase.removeChannel(this.channel);
+        if (this.chartInstance) this.chartInstance.destroy();
+    }
+}
+
+// Initialisation
+document.addEventListener('DOMContentLoaded', () => {
+    window.visitorTracker = new VisitorTracker();
 });

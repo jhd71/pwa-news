@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v50'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v51'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -49,6 +49,7 @@ const STATIC_RESOURCES = [
 	'/css/memory-game.css',
 	'/css/simon-says.css',
 	'/css/snake-game.css',
+	'/css/visitor-tracker.css',
 
     // Scripts JavaScript
     '/js/app.js',
