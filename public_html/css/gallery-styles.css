@@ -1139,11 +1139,11 @@ body.comment-form-open {
     }
     
     .close-modal-btn {
-        position: relative;
-        right: 1px;
-        top: 40%;
+        position: fixed;
+        right: 10px;
+        top: 3%;
         transform: translateY(-50%);
-        width: 50px !important;
+        width: 40px !important;
         height: 40px !important;
         z-index: 101;
     }
