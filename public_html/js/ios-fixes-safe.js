@@ -1,13 +1,6 @@
-// Détection iOS améliorée
+// Détection iOS
 function isiOS() {
-    // Ne pas activer dans Chrome DevTools en mode desktop
-    if (window.chrome && window.chrome.webstore) {
-        return false;
-    }
-    
-    return /iPad|iPhone|iPod/.test(navigator.userAgent) && 
-           !window.MSStream &&
-           ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 }
 
 // Application des fixes iOS au chargement du DOM
@@ -67,10 +60,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             .ios-device .chat-container.open {
+                /* Limiter la hauteur pour ne pas cacher la nav du bas */
                 height: calc(100vh - var(--ios-safe-area-top) - var(--ios-safe-area-bottom) - 140px) !important;
                 max-height: calc(100vh - var(--ios-safe-area-top) - var(--ios-safe-area-bottom) - 140px) !important;
+                
+                /* Position ajustée pour iOS */
                 bottom: calc(70px + var(--ios-safe-area-bottom)) !important;
+                
+                /* S'assurer que le chat ne dépasse pas en haut */
                 top: auto !important;
+                
+                /* Sur mobile iOS */
                 width: 100% !important;
                 right: 0 !important;
                 left: 0 !important;
@@ -199,108 +199,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				bottom: 110px;
 				max-width: 384px;
 				}
-			}
-
-            /* ========== NOUVEAUX FIXES - POPUPS ET MODALS ========== */
-
-            /* 17. Fix popup statistiques visiteurs sur iOS */
-            .ios-device .visitors-popup-overlay {
-                position: fixed !important;
-                top: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
-                bottom: 0 !important;
-                z-index: 10000 !important;
-                padding-top: var(--ios-safe-area-top) !important;
-                padding-bottom: var(--ios-safe-area-bottom) !important;
-            }
-
-            .ios-device .visitors-popup-box {
-                max-height: calc(90vh - var(--ios-safe-area-top) - var(--ios-safe-area-bottom)) !important;
-                margin-top: var(--ios-safe-area-top) !important;
-                margin-bottom: var(--ios-safe-area-bottom) !important;
-            }
-
-            /* 18. Fix popup alarme/minuteur sur iOS */
-            .ios-device .alarm-popup-overlay,
-            .ios-device .stop-alarm-overlay {
-                position: fixed !important;
-                top: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
-                bottom: 0 !important;
-                z-index: 10001 !important;
-                padding-top: var(--ios-safe-area-top) !important;
-                padding-bottom: var(--ios-safe-area-bottom) !important;
-            }
-
-            .ios-device .alarm-popup-content,
-            .ios-device .stop-alarm-content {
-                max-height: calc(85vh - var(--ios-safe-area-top) - var(--ios-safe-area-bottom)) !important;
-                overflow-y: auto !important;
-                -webkit-overflow-scrolling: touch !important;
-                margin-top: calc(20px + var(--ios-safe-area-top)) !important;
-            }
-
-            /* 19. Fix inputs alarme pour éviter zoom iOS */
-            .ios-device .alarm-section input,
-            .ios-device .timer-section input,
-            .ios-device .alarm-section select,
-            .ios-device .timer-section select {
-                font-size: 16px !important;
-                -webkit-text-size-adjust: 100% !important;
-            }
-
-            /* 20. Fix modal "Ajouter un site" sur iOS */
-            .ios-device .add-site-modal {
-                position: fixed !important;
-                top: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
-                bottom: 0 !important;
-                z-index: 10000 !important;
-                padding: 0 !important;
-            }
-
-            .ios-device .add-site-modal-content {
-                margin-top: var(--ios-safe-area-top) !important;
-                max-height: calc(90vh - var(--ios-safe-area-top) - var(--ios-safe-area-bottom)) !important;
-                border-radius: 0 0 16px 16px !important;
-            }
-
-            /* 21. Fix inputs modal pour éviter zoom iOS */
-            .ios-device .add-site-modal input {
-                font-size: 16px !important;
-                -webkit-text-size-adjust: 100% !important;
-            }
-
-            /* 22. Fix menu contextuel tuiles sur iOS */
-            .ios-device .tile-menu {
-                position: fixed !important;
-                z-index: 1000 !important;
-                max-width: calc(90vw - 20px) !important;
-            }
-
-            /* 23. Empêcher le scroll quand une popup est ouverte */
-            .ios-device.popup-open {
-                overflow: hidden !important;
-                position: fixed !important;
-                width: 100% !important;
-                height: 100% !important;
-            }
-
-            /* 24. Fix widget visiteurs dans le header */
-            .ios-device .visitors-counter {
-                top: var(--ios-safe-area-top) !important;
-            }
-
-            /* 25. Protection contre le clavier pour toutes les popups */
-            .ios-device.keyboard-visible .visitors-popup-box,
-            .ios-device.keyboard-visible .alarm-popup-content,
-            .ios-device.keyboard-visible .add-site-modal-content {
-                max-height: calc(50vh - var(--ios-safe-area-top)) !important;
-                transition: max-height 0.3s ease !important;
-            }
+			}		
 				
             /* Fix pour les autres éléments iOS existants */
             .ios-device .weather-sidebar.visible,
@@ -343,77 +242,44 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         document.head.appendChild(style);
         
-        console.log('iOS fixes appliqués - Header, Chat, Popups et Settings ajustés');
-        
-        // Gestion de l'état popup-open pour bloquer le scroll
-        const managePopupState = () => {
-            const checkPopups = () => {
-                const hasOpenPopup = 
-                    document.querySelector('.visitors-popup-overlay.visible') ||
-                    document.querySelector('.alarm-popup-overlay') ||
-                    document.querySelector('.stop-alarm-overlay') ||
-                    document.querySelector('.add-site-modal.show');
-                
-                if (hasOpenPopup) {
-                    document.body.classList.add('popup-open');
-                } else {
-                    document.body.classList.remove('popup-open');
-                }
-            };
-
-            const popupObserver = new MutationObserver(checkPopups);
-            popupObserver.observe(document.body, {
-                attributes: true,
-                attributeFilter: ['class'],
-                subtree: false
-            });
-        };
-
-        setTimeout(managePopupState, 2000);
-        
+        console.log('iOS fixes appliqués - Header, Chat et Settings button ajustés');
+        		
         // Fix pour restaurer l'état des widgets sur iOS
         setTimeout(() => {
-            try {
-                const weatherHidden = localStorage.getItem('weatherWidgetHidden');
-                const weatherWidget = document.querySelector('.weather-sidebar');
-                
-                if (weatherWidget && weatherHidden !== 'true') {
-                    weatherWidget.classList.remove('visible');
-                    weatherWidget.style.display = 'none';
-                    console.log('Widget météo configuré pour iOS');
-                }
-                
-                const quickLinksHidden = localStorage.getItem('quickLinksHidden');
-                const quickLinksWidget = document.querySelector('.quick-links-sidebar');
-                
-                if (quickLinksWidget && quickLinksHidden !== 'true') {
-                    quickLinksWidget.classList.remove('visible');
-                    quickLinksWidget.style.display = 'none';
-                    console.log('Widget liens rapides configuré pour iOS');
-                }
-                
-                const weatherShowBtn = document.getElementById('weatherShowBtn');
-                const quickLinksShowBtn = document.getElementById('quickLinksShowBtn');
-                
-                if (weatherShowBtn) {
-                    weatherShowBtn.style.display = 'flex';
-                    weatherShowBtn.style.opacity = '1';
-                }
-                
-                if (quickLinksShowBtn) {
-                    quickLinksShowBtn.style.display = 'flex';
-                    quickLinksShowBtn.style.opacity = '1';
-                }
-            } catch (error) {
-                console.error('Erreur configuration widgets iOS:', error);
+            const weatherHidden = localStorage.getItem('weatherWidgetHidden');
+            const weatherWidget = document.querySelector('.weather-sidebar');
+            
+            if (weatherWidget && weatherHidden !== 'true') {
+                weatherWidget.classList.remove('visible');
+                weatherWidget.style.display = 'none';
+                console.log('Widget météo configuré pour iOS');
+            }
+            
+            const quickLinksHidden = localStorage.getItem('quickLinksHidden');
+            const quickLinksWidget = document.querySelector('.quick-links-sidebar');
+            
+            if (quickLinksWidget && quickLinksHidden !== 'true') {
+                quickLinksWidget.classList.remove('visible');
+                quickLinksWidget.style.display = 'none';
+                console.log('Widget liens rapides configuré pour iOS');
+            }
+            
+            const weatherShowBtn = document.getElementById('weatherShowBtn');
+            const quickLinksShowBtn = document.getElementById('quickLinksShowBtn');
+            
+            if (weatherShowBtn) {
+                weatherShowBtn.style.display = 'flex';
+                weatherShowBtn.style.opacity = '1';
+            }
+            
+            if (quickLinksShowBtn) {
+                quickLinksShowBtn.style.display = 'flex';
+                quickLinksShowBtn.style.opacity = '1';
             }
         }, 1000);
         
         // Gestion spéciale du chat sur iOS
         const observeChatState = () => {
-            let attempts = 0;
-            const maxAttempts = 20;
-            
             const chatObserver = new MutationObserver((mutations) => {
                 mutations.forEach((mutation) => {
                     if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
@@ -428,16 +294,10 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             const checkAndObserve = setInterval(() => {
-                attempts++;
-                
                 const chatContainer = document.querySelector('.chat-container');
                 if (chatContainer) {
                     chatObserver.observe(chatContainer, { attributes: true });
                     clearInterval(checkAndObserve);
-                    console.log('Observer chat configuré pour iOS');
-                } else if (attempts >= maxAttempts) {
-                    clearInterval(checkAndObserve);
-                    console.log('Chat container non trouvé - timeout atteint');
                 }
             }, 500);
         };
@@ -456,8 +316,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.body.classList.remove('keyboard-visible');
             }
         });
-    } else {
-        console.log('iOS non détecté - fixes non appliqués');
     }
 });
 
