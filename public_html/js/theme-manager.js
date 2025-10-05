@@ -39,16 +39,14 @@ class ThemeManager {
     // ✅ Masquer TOUS les widgets pendant la transition
     const newsWidget = document.querySelector('.local-news-widget');
     const footballWidget = document.querySelector('.football-widget');
+    const cinemaWidget = document.querySelector('.cinema-widget');
     
-    if (newsWidget) {
-        newsWidget.style.opacity = '0';
-        newsWidget.style.transition = 'opacity 0.15s ease';
-    }
-    
-    if (footballWidget) {
-        footballWidget.style.opacity = '0';
-        footballWidget.style.transition = 'opacity 0.15s ease';
-    }
+    [newsWidget, footballWidget, cinemaWidget].forEach(widget => {
+        if (widget) {
+            widget.style.opacity = '0';
+            widget.style.transition = 'opacity 0.15s ease';
+        }
+    });
     
     // Créer un overlay pour masquer le flash
     const overlay = document.createElement('div');
@@ -87,14 +85,13 @@ class ThemeManager {
             this.showToast(`Thème ${this.getThemeName(themeId)} activé`);
         }
         
-        // ✅ Réafficher les widgets après le changement
+        // ✅ Réafficher TOUS les widgets après le changement
         setTimeout(() => {
-            if (newsWidget) {
-                newsWidget.style.opacity = '1';
-            }
-            if (footballWidget) {
-                footballWidget.style.opacity = '1';
-            }
+            [newsWidget, footballWidget, cinemaWidget].forEach(widget => {
+                if (widget) {
+                    widget.style.opacity = '1';
+                }
+            });
         }, 50);
         
         // Fade out de l'overlay
