@@ -81,41 +81,36 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // ====== CHARGEMENT DES DONNÉES ======
   async function loadWeatherData() {
-    console.log("Chargement des données météo améliorées");
-    
-    const weatherWidget = document.getElementById('weather-widget');
-    if (!weatherWidget) return;
-    
     try {
-      // Récupérer météo actuelle + prévisions horaires
-      const url = `https://api.weatherapi.com/v1/forecast.json?key=${WEATHER_API_KEY}&q=${CITY}&days=2&lang=fr&aqi=yes`;
-      
-      const response = await fetch(url);
-      if (!response.ok) throw new Error("Erreur : " + response.status);
-      
-      const data = await response.json();
-      const location = data.location;
-      const current = data.current;
-      const forecast = data.forecast.forecastday;
-      
-      // Récupérer les alertes Météo-France
-      const alerts = null; // ✅ Pas d'alertes pour le moment
-      
-      let weatherHTML = '';
-      
-      // ====== ALERTES VIGILANCE ======
-      if (alerts && alerts.length > 0) {
-        weatherHTML += `<div class="weather-alerts">`;
-        alerts.forEach(alert => {
-          weatherHTML += `
-            <div class="alert-item" style="background: ${alert.couleur}; color: white; padding: 8px; border-radius: 8px; margin-bottom: 8px; font-weight: bold; text-align: center;">
-              <span class="material-icons" style="vertical-align: middle;">warning</span>
-              Vigilance ${alert.niveau === 4 ? 'ROUGE' : 'ORANGE'} : ${alert.type.toUpperCase()}
-            </div>
-          `;
-        });
-        weatherHTML += `</div>`;
-      }
+        // L'URL inclut déjà les alertes avec &alerts=yes
+        const url = `https://api.weatherapi.com/v1/forecast.json?key=${WEATHER_API_KEY}&q=${CITY}&days=2&lang=fr&aqi=yes&alerts=yes`;
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        // Récupérer les alertes WeatherAPI
+        const alerts = data.alerts?.alert || [];
+        
+        let weatherHTML = '';
+        
+        // Afficher les alertes si présentes
+        if (alerts.length > 0) {
+            weatherHTML += `<div class="weather-alerts">`;
+            alerts.forEach(alert => {
+                const severity = alert.severity === 'Extreme' ? 'ROUGE' : 
+                                alert.severity === 'Severe' ? 'ORANGE' : 'JAUNE';
+                const color = alert.severity === 'Extreme' ? '#d32f2f' : 
+                             alert.severity === 'Severe' ? '#ff6f00' : '#ffc107';
+                
+                weatherHTML += `
+                    <div class="alert-item" style="background: ${color}; color: white; padding: 8px; border-radius: 8px; margin-bottom: 8px; font-weight: bold; text-align: center;">
+                        <span class="material-icons" style="vertical-align: middle;">warning</span>
+                        Vigilance ${severity} : ${alert.event}
+                    </div>
+                `;
+            });
+            weatherHTML += `</div>`;
+        }
       
       // ====== MÉTÉO ACTUELLE ======
 		// Utiliser l'icône de l'API qui gère automatiquement jour/nuit
