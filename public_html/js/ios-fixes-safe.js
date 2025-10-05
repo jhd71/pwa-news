@@ -1,6 +1,13 @@
-// Détection iOS
+// Détection iOS améliorée
 function isiOS() {
-    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    // Ne pas activer dans Chrome DevTools en mode desktop
+    if (window.chrome && window.chrome.webstore) {
+        return false;
+    }
+    
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && 
+           !window.MSStream &&
+           ('ontouchstart' in window || navigator.maxTouchPoints > 0);
 }
 
 // Application des fixes iOS au chargement du DOM
@@ -340,7 +347,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Gestion de l'état popup-open pour bloquer le scroll
         const managePopupState = () => {
-            const popupObserver = new MutationObserver(() => {
+            const checkPopups = () => {
                 const hasOpenPopup = 
                     document.querySelector('.visitors-popup-overlay.visible') ||
                     document.querySelector('.alarm-popup-overlay') ||
@@ -352,54 +359,61 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     document.body.classList.remove('popup-open');
                 }
-            });
+            };
 
+            const popupObserver = new MutationObserver(checkPopups);
             popupObserver.observe(document.body, {
-                childList: true,
-                subtree: true,
                 attributes: true,
-                attributeFilter: ['class', 'style']
+                attributeFilter: ['class'],
+                subtree: false
             });
         };
 
-        managePopupState();
-        		
+        setTimeout(managePopupState, 2000);
+        
         // Fix pour restaurer l'état des widgets sur iOS
         setTimeout(() => {
-            const weatherHidden = localStorage.getItem('weatherWidgetHidden');
-            const weatherWidget = document.querySelector('.weather-sidebar');
-            
-            if (weatherWidget && weatherHidden !== 'true') {
-                weatherWidget.classList.remove('visible');
-                weatherWidget.style.display = 'none';
-                console.log('Widget météo configuré pour iOS');
-            }
-            
-            const quickLinksHidden = localStorage.getItem('quickLinksHidden');
-            const quickLinksWidget = document.querySelector('.quick-links-sidebar');
-            
-            if (quickLinksWidget && quickLinksHidden !== 'true') {
-                quickLinksWidget.classList.remove('visible');
-                quickLinksWidget.style.display = 'none';
-                console.log('Widget liens rapides configuré pour iOS');
-            }
-            
-            const weatherShowBtn = document.getElementById('weatherShowBtn');
-            const quickLinksShowBtn = document.getElementById('quickLinksShowBtn');
-            
-            if (weatherShowBtn) {
-                weatherShowBtn.style.display = 'flex';
-                weatherShowBtn.style.opacity = '1';
-            }
-            
-            if (quickLinksShowBtn) {
-                quickLinksShowBtn.style.display = 'flex';
-                quickLinksShowBtn.style.opacity = '1';
+            try {
+                const weatherHidden = localStorage.getItem('weatherWidgetHidden');
+                const weatherWidget = document.querySelector('.weather-sidebar');
+                
+                if (weatherWidget && weatherHidden !== 'true') {
+                    weatherWidget.classList.remove('visible');
+                    weatherWidget.style.display = 'none';
+                    console.log('Widget météo configuré pour iOS');
+                }
+                
+                const quickLinksHidden = localStorage.getItem('quickLinksHidden');
+                const quickLinksWidget = document.querySelector('.quick-links-sidebar');
+                
+                if (quickLinksWidget && quickLinksHidden !== 'true') {
+                    quickLinksWidget.classList.remove('visible');
+                    quickLinksWidget.style.display = 'none';
+                    console.log('Widget liens rapides configuré pour iOS');
+                }
+                
+                const weatherShowBtn = document.getElementById('weatherShowBtn');
+                const quickLinksShowBtn = document.getElementById('quickLinksShowBtn');
+                
+                if (weatherShowBtn) {
+                    weatherShowBtn.style.display = 'flex';
+                    weatherShowBtn.style.opacity = '1';
+                }
+                
+                if (quickLinksShowBtn) {
+                    quickLinksShowBtn.style.display = 'flex';
+                    quickLinksShowBtn.style.opacity = '1';
+                }
+            } catch (error) {
+                console.error('Erreur configuration widgets iOS:', error);
             }
         }, 1000);
         
         // Gestion spéciale du chat sur iOS
         const observeChatState = () => {
+            let attempts = 0;
+            const maxAttempts = 20;
+            
             const chatObserver = new MutationObserver((mutations) => {
                 mutations.forEach((mutation) => {
                     if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
@@ -414,10 +428,16 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             const checkAndObserve = setInterval(() => {
+                attempts++;
+                
                 const chatContainer = document.querySelector('.chat-container');
                 if (chatContainer) {
                     chatObserver.observe(chatContainer, { attributes: true });
                     clearInterval(checkAndObserve);
+                    console.log('Observer chat configuré pour iOS');
+                } else if (attempts >= maxAttempts) {
+                    clearInterval(checkAndObserve);
+                    console.log('Chat container non trouvé - timeout atteint');
                 }
             }, 500);
         };
@@ -436,6 +456,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.body.classList.remove('keyboard-visible');
             }
         });
+    } else {
+        console.log('iOS non détecté - fixes non appliqués');
     }
 });
 
