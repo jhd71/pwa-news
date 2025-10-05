@@ -155,7 +155,7 @@
     width: 350px;
     max-width: 90%;
     height: calc(100vh - var(--header-height));
-    background-color: var(--primary-color);
+    background-color: #4279b8;
     color: white;
     z-index: 998;
     box-shadow: -2px 0 5px var(--shadow-color);
