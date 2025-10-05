@@ -171,27 +171,39 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
 
     <!-- === FEUILLES DE STYLE === -->
-    <link rel="stylesheet" href="css/chat-styles.css">
-    <link rel="stylesheet" href="css/news-panel.css">
-    <link rel="stylesheet" href="css/widgets.css">
-    <link rel="stylesheet" href="css/settings-styles.css">
-    <link rel="stylesheet" href="css/chat-ban.css">
-    <link rel="stylesheet" href="css/survey-styles.css">
-    <link rel="stylesheet" href="css/tile-enhancements.css">
-    <link rel="stylesheet" href="css/tv-tiles-fix.css">
-    <link rel="stylesheet" href="css/font-settings.css">
-    <link rel="stylesheet" href="css/theme-bleuciel.css">
-    <link rel="stylesheet" href="css/donation.css">
-    <link rel="stylesheet" href="css/news-widget.css">
-    <link rel="stylesheet" href="css/cinema-widget.css">
-    <link rel="stylesheet" href="css/gallery-styles.css">
-    <link rel="stylesheet" href="css/football-widget.css">
-	<link rel="stylesheet" href="css/styles.css">
-	<link rel="stylesheet" href="css/radioPopup.css">
-	<link rel="stylesheet" href="css/notepadApp.css">
-	<link rel="stylesheet" href="css/todoApp.css">
-	<link rel="stylesheet" href="css/petites-annonces.css">
-	<link rel="stylesheet" href="css/visitor-tracker.css">
+<!-- CSS Global et thèmes -->
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/theme-bleuciel.css">
+<link rel="stylesheet" href="css/font-settings.css">
+
+<!-- Widgets principaux -->
+<link rel="stylesheet" href="css/quick-links.css">
+<link rel="stylesheet" href="css/weather-widget.css">
+<link rel="stylesheet" href="css/visitor-tracker.css">
+<link rel="stylesheet" href="css/news-widget.css">
+
+<!-- Widgets secondaires -->
+<link rel="stylesheet" href="css/cinema-widget.css">
+<link rel="stylesheet" href="css/football-widget.css">
+<link rel="stylesheet" href="css/gallery-styles.css">
+<link rel="stylesheet" href="css/news-panel.css">
+
+<!-- Outils et applications -->
+<link rel="stylesheet" href="css/radioPopup.css">
+<link rel="stylesheet" href="css/notepadApp.css">
+<link rel="stylesheet" href="css/todoApp.css">
+<link rel="stylesheet" href="css/petites-annonces.css">
+
+<!-- Interface utilisateur -->
+<link rel="stylesheet" href="css/chat-styles.css">
+<link rel="stylesheet" href="css/chat-ban.css">
+<link rel="stylesheet" href="css/settings-styles.css">
+<link rel="stylesheet" href="css/survey-styles.css">
+
+<!-- Améliorations et corrections -->
+<link rel="stylesheet" href="css/tile-enhancements.css">
+<link rel="stylesheet" href="css/tv-tiles-fix.css">
+<link rel="stylesheet" href="css/donation.css">
 </head>
 <body>
 <header class="app-header">
@@ -477,34 +489,44 @@ Actu & Média
         <span class="chat-notification-badge hidden">0</span>
     </button>
 	</nav>
-	<!-- Scripts essentiels (chargement rapide) -->
+	<!-- Scripts essentiels (avant tout) -->
+	<script src="js/theme-manager.js"></script>
+	<script src="js/ban-manager.js"></script>
+	<script src="js/ban-check.js"></script>
+
+	<!-- Scripts de correction plateforme -->
 	<script src="js/ios-fixes-safe.js"></script>
 	<script src="js/ios-install.js"></script>
-	<script src="js/ban-manager.js"></script>
+	<script src="js/tablet-fixes.js"></script>
+	<script src="js/chat-keyboard-fix.js"></script>
 
-	<!-- Scripts de fonctionnalités -->
-	<script src="js/welcome-manager.js"></script>
-	<script src="js/expense-manager.js"></script>
+	<!-- Widgets principaux (ordre cohérent avec les CSS) -->
+	<script src="js/quick-links.js"></script>
+	<script src="js/weather-widget.js"></script>
+	<script src="js/visitor-tracker.js"></script>
+
+	<!-- Widgets actualités (groupés ensemble) -->
 	<script src="js/news-manager.js"></script>
 	<script src="js/newsTickerManager.js"></script>
 	<script src="js/newsPanel.js"></script>
-	<script src="js/weather-widget.js"></script>
-	<script src="js/quick-links.js"></script>
-	<script src="js/tablet-fixes.js"></script>
-	<script src="js/chat-keyboard-fix.js"></script>
-	<script src="js/ban-check.js"></script>
-	<script src="js/theme-manager.js"></script>
-	<script src="js/donation.js"></script>
-	<script src="js/survey-manager.js"></script>
 	<script src="js/news-widget.js"></script>
+
+	<!-- Widgets secondaires -->
 	<script src="js/cinema-widget.js"></script>
-	<script src="js/visitor-tracker.js"></script>
 	<script src="js/football-widget.js"></script>
+
+	<!-- Applications -->
 	<script src="js/radioPopup.js"></script>
 	<script src="js/notepadApp.js"></script>
 	<script src="js/todoApp.js"></script>
 
-	<!-- Script d'initialisation principal -->
+	<!-- Gestionnaires et fonctionnalités -->
+	<script src="js/welcome-manager.js"></script>
+	<script src="js/expense-manager.js"></script>
+	<script src="js/donation.js"></script>
+	<script src="js/survey-manager.js"></script>
+
+	<!-- Script d'initialisation principal (toujours en dernier) -->
 	<script type="module" src="js/app-initializer.js"></script>
 
 	<!-- Bouton Infos en direct -->

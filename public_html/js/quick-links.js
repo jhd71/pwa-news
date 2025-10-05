@@ -84,33 +84,44 @@ class QuickLinksWidget {
   showWidget() {
     // Cacher l'autre widget (communication inter-widget)
     if (window.weatherWidget) {
-      window.weatherWidget.hideWidget();
+        window.weatherWidget.hideWidget();
     }
     
     // Afficher le widget liens rapides
     if (this.sidebar) {
-      // D'abord, positionner correctement
-      this.adjustPosition();
-      
-      // Puis afficher
-      this.sidebar.style.display = 'block';
-      this.sidebar.style.visibility = 'visible';
-      this.sidebar.style.opacity = '1';
-      this.sidebar.classList.remove('hidden');
-      this.sidebar.classList.add('visible');
-      
-      // Masquer le bouton d'affichage
-      if (this.showBtn) {
-        this.showBtn.classList.remove('visible');
-      }
-      
-      // Corriger les couleurs de texte en mode sombre
-      this.fixDarkThemeText();
-      
-      // Sauvegarder l'état
-      localStorage.setItem('quickLinksHidden', 'false');
+        // D'abord, positionner correctement
+        this.adjustPosition();
+        
+        // Puis afficher
+        this.sidebar.style.display = 'block';
+        this.sidebar.style.visibility = 'visible';
+        this.sidebar.style.opacity = '1';
+        this.sidebar.classList.remove('hidden');
+        this.sidebar.classList.add('visible');
+        
+        // ✅ NOUVEAU : Fermer en cliquant à côté
+        const closeOnOverlay = (e) => {
+            // Si on clique directement sur le sidebar (pas sur le contenu)
+            if (e.target === this.sidebar) {
+                this.hideWidget();
+                this.sidebar.removeEventListener('click', closeOnOverlay);
+            }
+        };
+        
+        this.sidebar.addEventListener('click', closeOnOverlay);
+        
+        // Masquer le bouton d'affichage
+        if (this.showBtn) {
+            this.showBtn.classList.remove('visible');
+        }
+        
+        // Corriger les couleurs de texte en mode sombre
+        this.fixDarkThemeText();
+        
+        // Sauvegarder l'état
+        localStorage.setItem('quickLinksHidden', 'false');
     }
-  }
+}
   
   hideWidget() {
     if (this.sidebar) {

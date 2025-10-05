@@ -230,60 +230,6 @@ body {
         rgba(14, 165, 233, 0.3) 100%);
 }
 
-/* Boutons flottants par thème */
-[data-theme="light"] .weather-show-btn,
-[data-theme="light"] .quick-links-show-btn,
-[data-theme="light"] .news-button {
-    background: linear-gradient(145deg, #7E57C2, #9575CD);
-}
-
-[data-theme="dark"] .weather-show-btn,
-[data-theme="dark"] .quick-links-show-btn,
-[data-theme="dark"] .news-button {
-    background: linear-gradient(145deg, #1a237e, #283593);
-}
-
-[data-theme="rouge"] .weather-show-btn,
-[data-theme="rouge"] .quick-links-show-btn,
-[data-theme="rouge"] .news-button {
-    background: rgb(148, 0, 0);
-}
-
-[data-theme="bleuciel"] .weather-show-btn,
-[data-theme="bleuciel"] .quick-links-show-btn,
-[data-theme="bleuciel"] .news-button {
-    background: linear-gradient(145deg, #0ea5e9, #38bdf8);
-}
-
-/* Sidebars et menus par thème */
-[data-theme="light"] .weather-sidebar,
-[data-theme="light"] .quick-links-sidebar,
-[data-theme="light"] .sidebar,
-[data-theme="light"] .settings-menu {
-    background-color: var(--primary-color);
-}
-
-[data-theme="dark"] .weather-sidebar,
-[data-theme="dark"] .quick-links-sidebar,
-[data-theme="dark"] .sidebar,
-[data-theme="dark"] .settings-menu {
-    background-color: var(--primary-color);
-}
-
-[data-theme="rouge"] .weather-sidebar,
-[data-theme="rouge"] .quick-links-sidebar,
-[data-theme="rouge"] .sidebar,
-[data-theme="rouge"] .settings-menu {
-    background: rgb(148, 0, 0);
-}
-
-[data-theme="bleuciel"] .weather-sidebar,
-[data-theme="bleuciel"] .quick-links-sidebar,
-[data-theme="bleuciel"] .sidebar,
-[data-theme="bleuciel"] .settings-menu {
-    background: linear-gradient(145deg, #0ea5e9, #38bdf8);
-}
-
 /* ==========================================================================
    6. HEADER ET NAVIGATION
    ========================================================================== */
@@ -2847,6 +2793,84 @@ main {
     color: white;
 }
 
+/* ===== BOUTONS FACEBOOK ET RECHERCHE ===== */
+.tool-button,
+.search-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  outline: none;
+  text-decoration: none;
+  padding: 0;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  color: white !important;
+  z-index: 990;
+  position: fixed;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Force l'icône blanche */
+.tool-button .material-icons,
+.search-button .material-icons {
+  color: white !important;
+}
+
+/* COULEURS PAR THÈME */
+[data-theme="light"] .tool-button,
+[data-theme="light"] .search-button {
+  background: #7e57c2 !important;
+}
+
+[data-theme="light"] .tool-button:hover,
+[data-theme="light"] .search-button:hover {
+  background: #673ab7 !important;
+  box-shadow: 0 6px 20px rgba(126, 87, 194, 0.4);
+  transform: translateY(-2px);
+}
+
+[data-theme="dark"] .tool-button,
+[data-theme="dark"] .search-button {
+  background: #1a237e !important;
+}
+
+[data-theme="dark"] .tool-button:hover,
+[data-theme="dark"] .search-button:hover {
+  background: #283593 !important;
+  box-shadow: 0 6px 20px rgba(26, 35, 126, 0.4);
+  transform: translateY(-2px);
+}
+
+[data-theme="rouge"] .tool-button,
+[data-theme="rouge"] .search-button {
+  background: rgb(148, 0, 0) !important;
+}
+
+[data-theme="rouge"] .tool-button:hover,
+[data-theme="rouge"] .search-button:hover {
+  background: rgb(180, 0, 0) !important;
+  box-shadow: 0 6px 20px rgba(198, 40, 40, 0.4);
+  transform: translateY(-2px);
+}
+
+[data-theme="bleuciel"] .tool-button,
+[data-theme="bleuciel"] .search-button {
+  background: linear-gradient(145deg, #0ea5e9, #38bdf8);
+}
+
+[data-theme="bleuciel"] .tool-button:hover,
+[data-theme="bleuciel"] .search-button:hover {
+  background: #42a5f5 !important;
+  box-shadow: 0 6px 20px rgba(79, 179, 232, 0.4);
+  transform: translateY(-2px);
+}
+
 /* Effets pression pour mobile */
 .weather-show-btn:active,
 .quick-links-show-btn:active,
@@ -2861,6 +2885,57 @@ a:active {
 /* ==========================================================================
    27. MEDIA QUERIES ET RESPONSIVE
    ========================================================================== */
+
+/* BOUTONS FACEBOOK ET RECHERCHE - RESPONSIVE */
+
+/* Desktop (1101px+) */
+@media (min-width: 1101px) {
+  .tool-button {
+    top: 170px;
+    left: 10px;
+    width: 46px;
+    height: 46px;
+  }
+  
+  .search-button {
+    top: 170px;
+    right: 10px;
+    width: 46px;
+    height: 46px;
+  }
+  
+  .tool-button .material-icons,
+  .search-button .material-icons {
+    font-size: 24px;
+  }
+}
+
+/* Mobile (767px et moins) */
+@media (max-width: 767px) {
+  .tool-button {
+    position: fixed;
+    top: 70px;
+    left: 55px;
+    width: 40px;
+    height: 40px;
+    z-index: 100;
+  }
+  
+  .search-button {
+    position: fixed;
+    top: 70px;
+    right: 55px;
+    width: 40px;
+    height: 40px;
+    z-index: 100;
+    left: auto;
+  }
+  
+  .tool-button .material-icons,
+  .search-button .material-icons {
+    font-size: 22px;
+  }
+}
 
 /* AFFICHAGE DESKTOP UNIQUEMENT */
 .only-desktop {

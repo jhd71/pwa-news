@@ -1,56 +1,70 @@
-const CACHE_NAME = 'infos-pwa-v51'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v53'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
     '/',
     '/404.html',
-	'/500.html',
-	'/a-propos.html',
-	'/admin-annonces.html',
-	'/admin-comments-photos.html',
-	'/admin-comments.html',
-	'/admin-news.html',
-	'/autour-de-moi.html',
-	'/contact.html',
-	'/gestionnaire-depenses-info.html',
-	'/index.html',
-	'/mentions-legales.html',
-	'/news-locale.html',
-	'/notification.html',
-	'/petites-annonces.html',
-	'/photos-gallery.html',
-	'/politique-confidentialite.html',
-	'/conditions-utilisation.html',
-	'/memory-game.html',
-	'/simon-says.html',
-	'/snake-game.html',
+    '/500.html',
+    '/a-propos.html',
+    '/admin-annonces.html',
+    '/admin-comments-photos.html',
+    '/admin-comments.html',
+    '/admin-news.html',
+    '/autour-de-moi.html',
+    '/contact.html',
+    '/gestionnaire-depenses-info.html',
+    '/index.html',
+    '/mentions-legales.html',
+    '/news-locale.html',
+    '/notification.html',
+    '/petites-annonces.html',
+    '/photos-gallery.html',
+    '/politique-confidentialite.html',
+    '/conditions-utilisation.html',
+    '/memory-game.html',
+    '/simon-says.html',
+    '/snake-game.html',
     
-    // Feuilles de style CSS
+    // Feuilles de style CSS - Réorganisées
+    // CSS Global et thèmes
     '/css/styles.css',
-    '/css/chat-styles.css',
+    '/css/theme-bleuciel.css',
+    '/css/font-settings.css',
+    
+    // Widgets principaux
+    '/css/quick-links.css',
+    '/css/weather-widget.css',
+    '/css/visitor-tracker.css',
+    '/css/news-widget.css',
+    
+    // Widgets secondaires
+    '/css/cinema-widget.css',
+    '/css/football-widget.css',
+    '/css/gallery-styles.css',
     '/css/news-panel.css',
+    
+    // Outils et applications
+    '/css/radioPopup.css',
+    '/css/notepadApp.css',
+    '/css/todoApp.css',
+    '/css/petites-annonces.css',
+    
+    // Jeux
+    '/css/memory-game.css',
+    '/css/simon-says.css',
+    '/css/snake-game.css',
+    
+    // Interface utilisateur
+    '/css/chat-styles.css',
     '/css/chat-ban.css',
-    '/css/widgets.css',
     '/css/settings-styles.css',
     '/css/survey-styles.css',
-    '/css/theme-bleuciel.css',
-    '/css/tv-tiles-fix.css',
-    '/css/font-settings.css',
+    
+    // Améliorations et corrections
     '/css/tile-enhancements.css',
-    '/css/gallery-styles.css',
+    '/css/tv-tiles-fix.css',
     '/css/donation.css',
-	'/css/news-widget.css',
-	'/css/cinema-widget.css',
-	'/css/football-widget.css',
-	'/css/radioPopup.css',
-	'/css/notepadApp.css',
-	'/css/todoApp.css',
-	'/css/petites-annonces.css',
-	'/css/memory-game.css',
-	'/css/simon-says.css',
-	'/css/snake-game.css',
-	'/css/visitor-tracker.css',
-
+    
     // Scripts JavaScript
     '/js/app.js',
     '/js/app-initializer.js',
@@ -76,128 +90,132 @@ const STATIC_RESOURCES = [
     '/js/weather-widget.js',
     '/js/gallery-manager-v2.js',
     '/js/welcome-manager.js',
-	'/js/news-widget.js',
-	'/js/cinema-widget.js',
-	'/js/visitor-tracker.js',
-	'/js/football-widget.js',
-	'/js/ios-fixes-safe.js',
-	'/js/expense-manager.js',
-	'/js/radioPopup.js',
-	'/js/notepadApp.js',
-	'/js/todoApp.js',
-	'/js/quiz-local.js',
-	'/js/annonces-manager.js',
-	'/js/memory-game.js',
-	'/js/simon-says.js',
-	'/js/snake-game.js',
+    '/js/news-widget.js',
+    '/js/cinema-widget.js',
+    '/js/visitor-tracker.js',
+    '/js/football-widget.js',
+    '/js/ios-fixes-safe.js',
+    '/js/expense-manager.js',
+    '/js/radioPopup.js',
+    '/js/notepadApp.js',
+    '/js/todoApp.js',
+    '/js/quiz-local.js',
+    '/js/annonces-manager.js',
+    '/js/memory-game.js',
+    '/js/simon-says.js',
+    '/js/snake-game.js',
     
-    // Fichiers de configuration (seulement ceux qui existent)
-    '/manifest.json',
-    '/robots.txt',
-    '/sitemap.xml',
-    '/favicon.ico',
-    
-    // Images principales et logos (seulement ceux confirmés)
-    '/images/AM-192-v2.png',
-    '/images/AM-512-v2.png',
-    '/images/badge-72x72.png',
-    '/images/default-news.jpg',
-    '/images/don_resized_200x80.png',
-    '/images/favicon-16x16.png',
-    '/images/favicon-32x32.png',
-    '/apple-touch-icon.png',
-    '/images/fond-rouge.jpg',
-    '/images/fond-dark.jpg',
-    
-    // Icônes principales INFOS
-    '/images/INFOS.png',
-    '/images/INFOS-96.png',
-    '/images/INFOS-144.png',
-    '/images/INFOS-192.png',
-    '/images/INFOS-512.png',
-    '/images/INFOS-maskable-96.png',
-    '/images/INFOS-maskable-144.png',
-    '/images/INFOS-maskable-192.png',
-    '/images/INFOS-maskable-512.png',
-	'/images/Actu&Media.png',
-    
-    // Icônes spécialisées
-    '/images/no-image.png',
-    '/images/paypal-icon.png',
-    '/images/qrcode.png',
-    '/images/screenshot-mobile.png',
-    '/images/screenshot-wide.png',
-    
-	// Logos des radios
-	'/images/radio-logos/france-info.png',
-	'/images/radio-logos/Ici-Bourgogne.png',
-	'/images/radio-logos/rtl.png',
-	'/images/radio-logos/nrj.png',
-	'/images/radio-logos/europe1.png',
-	'/images/radio-logos/rmc.png',
-	'/images/radio-logos/nostalgie.png',
-	'/images/radio-logos/cherie-fm.png',
-	'/images/radio-logos/Fun-Radio.png',
-	'/images/radio-logos/La-Radio-Sans-pub.png',
-	'/images/radio-logos/Radio-Prevert.png',
-	'/images/radio-logos/Frequence-Plus.png',
-	'/images/radio-logos/Skyrock.png',
-	'/images/radio-logos/M-Radio.png',
-	'/images/radio-logos/Cerise-FM.png',
-	'/images/radio-logos/Alouette-FM.png',
-	'/images/radio-logos/Alouette-Nouveaux-Talents.png',
+    // Fichiers de configuration
+'/manifest.json',
+'/robots.txt',
+'/sitemap.xml',
+'/favicon.ico',
 
-    // Icônes de base (seulement ceux qui existent)
-    '/images/icon-144x144.png',
-    '/images/icon-192x192.png',
-    '/icons/icon-128x128.png',
-    '/icons/icon-152x152.png',
-    '/icons/icon-384x384.png',
-    
-    // Icônes des raccourcis
-    '/images/chat-icon-96.png',
-    '/images/news-icon-96.png',
-    '/images/weather-icon-96.png',
-    
-    // Écrans de démarrage iOS (seulement ceux qui existent)
-    '/images/splash-320x470.png',
-    '/images/splash-480x640.png',
-    '/images/splash-512x512.png',
-    '/images/splash-640x1136.png',
-    '/images/splash-720x960.png',
-    '/images/splash-750x1334.png',
-    '/images/splash-960x1280.png',
-    '/images/splash-1125x2436.png',
-    '/images/splash-1242x2688.png',
-    '/images/splash-1280x1920.png',
-    '/images/splash-1536x2048.png',
-    '/images/splash-1668x2388.png',
-    '/images/splash-2048x2732.png',
-    
-    // GIFs météo
-    '/images/weather-gifs/cloudy.gif',
-    '/images/weather-gifs/default.gif',
-    '/images/weather-gifs/fog.gif',
-    '/images/weather-gifs/partly_cloudy.gif',
-    '/images/weather-gifs/rain.gif',
-    '/images/weather-gifs/snow.gif',
-    '/images/weather-gifs/sunny.gif',
-    '/images/weather-gifs/thunderstorm.gif',
-    
-    // Sons
-    '/sounds/message.mp3',
-	'/sounds/modern.mp3',
-	'/sounds/college.mp3',
-	'/sounds/pixel.mp3',
-	'/sounds/suara.mp3',
-	'/sounds/ringtone.mp3',
-    '/sounds/notification.mp3',
-    '/sounds/click.mp3',
-    '/sounds/erreur.mp3',
-    '/sounds/success.mp3',
-    '/sounds/sent.mp3',
-	'/sounds/todo.mp3',
-    '/sounds/ban-alert.mp3'
+// === IMAGES ET ICÔNES ===
+
+// Logos et images principales
+'/images/AM-192-v2.png',
+'/images/AM-512-v2.png',
+'/images/Actu&Media.png',
+'/images/badge-72x72.png',
+'/images/default-news.jpg',
+'/images/don_resized_200x80.png',
+'/images/favicon-16x16.png',
+'/images/favicon-32x32.png',
+'/apple-touch-icon.png',
+
+// Images de fond
+'/images/fond-rouge.jpg',
+'/images/fond-dark.jpg',
+
+// Icônes INFOS (toutes tailles)
+'/images/INFOS.png',
+'/images/INFOS-96.png',
+'/images/INFOS-144.png',
+'/images/INFOS-192.png',
+'/images/INFOS-512.png',
+'/images/INFOS-maskable-96.png',
+'/images/INFOS-maskable-144.png',
+'/images/INFOS-maskable-192.png',
+'/images/INFOS-maskable-512.png',
+
+// Icônes de base PWA
+'/images/icon-144x144.png',
+'/images/icon-192x192.png',
+'/icons/icon-128x128.png',
+'/icons/icon-152x152.png',
+'/icons/icon-384x384.png',
+
+// Icônes des raccourcis
+'/images/chat-icon-96.png',
+'/images/news-icon-96.png',
+'/images/weather-icon-96.png',
+
+// Images utilitaires
+'/images/no-image.png',
+'/images/paypal-icon.png',
+'/images/qrcode.png',
+'/images/screenshot-mobile.png',
+'/images/screenshot-wide.png',
+
+// Écrans de démarrage iOS
+'/images/splash-320x470.png',
+'/images/splash-480x640.png',
+'/images/splash-512x512.png',
+'/images/splash-640x1136.png',
+'/images/splash-720x960.png',
+'/images/splash-750x1334.png',
+'/images/splash-960x1280.png',
+'/images/splash-1125x2436.png',
+'/images/splash-1242x2688.png',
+'/images/splash-1280x1920.png',
+'/images/splash-1536x2048.png',
+'/images/splash-1668x2388.png',
+'/images/splash-2048x2732.png',
+
+// === LOGOS DES RADIOS ===
+'/images/radio-logos/france-info.png',
+'/images/radio-logos/Ici-Bourgogne.png',
+'/images/radio-logos/rtl.png',
+'/images/radio-logos/nrj.png',
+'/images/radio-logos/europe1.png',
+'/images/radio-logos/rmc.png',
+'/images/radio-logos/nostalgie.png',
+'/images/radio-logos/cherie-fm.png',
+'/images/radio-logos/Fun-Radio.png',
+'/images/radio-logos/La-Radio-Sans-pub.png',
+'/images/radio-logos/Radio-Prevert.png',
+'/images/radio-logos/Frequence-Plus.png',
+'/images/radio-logos/Skyrock.png',
+'/images/radio-logos/M-Radio.png',
+'/images/radio-logos/Cerise-FM.png',
+'/images/radio-logos/Alouette-FM.png',
+'/images/radio-logos/Alouette-Nouveaux-Talents.png',
+
+// === GIFs MÉTÉO ===
+'/images/weather-gifs/cloudy.gif',
+'/images/weather-gifs/default.gif',
+'/images/weather-gifs/fog.gif',
+'/images/weather-gifs/partly_cloudy.gif',
+'/images/weather-gifs/rain.gif',
+'/images/weather-gifs/snow.gif',
+'/images/weather-gifs/sunny.gif',
+'/images/weather-gifs/thunderstorm.gif',
+
+// === SONS ===
+'/sounds/message.mp3',
+'/sounds/modern.mp3',
+'/sounds/college.mp3',
+'/sounds/pixel.mp3',
+'/sounds/suara.mp3',
+'/sounds/ringtone.mp3',
+'/sounds/notification.mp3',
+'/sounds/click.mp3',
+'/sounds/erreur.mp3',
+'/sounds/success.mp3',
+'/sounds/sent.mp3',
+'/sounds/todo.mp3',
+'/sounds/ban-alert.mp3'
 ];
 
 const EXTERNAL_RESOURCES = [

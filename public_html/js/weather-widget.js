@@ -351,30 +351,38 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   function showWeatherWidget() {
-  console.log("Affichage du widget météo");
-  
-  if (weatherSidebar) {
-    if (!window.weatherDataLoaded) {
-      loadWeatherData();
-      window.weatherDataLoaded = true;
+    console.log("Affichage du widget météo");
+    
+    if (weatherSidebar) {
+        if (!window.weatherDataLoaded) {
+            loadWeatherData();
+            window.weatherDataLoaded = true;
+        }
+        
+        weatherSidebar.style.display = 'block';
+        weatherSidebar.style.visibility = 'visible';
+        weatherSidebar.style.opacity = '1';
+        weatherSidebar.classList.remove('hidden');
+        weatherSidebar.classList.add('visible');
+        
+        if (getDeviceType() === 'mobile') {
+            document.body.style.overflow = 'hidden';
+            document.body.style.position = 'fixed';
+            document.body.style.width = '100%';
+        }
+        
+        // ✅ NOUVEAU : Fermer en cliquant sur l'overlay
+        weatherSidebar.addEventListener('click', function closeOnOverlay(e) {
+            // Si on clique directement sur le sidebar (pas sur le contenu)
+            if (e.target === weatherSidebar) {
+                hideWeatherWidget();
+                weatherSidebar.removeEventListener('click', closeOnOverlay);
+            }
+        });
+        
+        adjustWeatherWidgetPosition();
+        manageButtonsVisibility(false);
     }
-    
-    weatherSidebar.style.display = 'block';
-    weatherSidebar.style.visibility = 'visible';
-    weatherSidebar.style.opacity = '1';
-    weatherSidebar.classList.remove('hidden');
-    weatherSidebar.classList.add('visible');
-    
-    // ✅ BLOQUER LE SCROLL SUR MOBILE
-    if (getDeviceType() === 'mobile') {
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.width = '100%';
-    }
-    
-    adjustWeatherWidgetPosition();
-    manageButtonsVisibility(false);
-  }
 }
   
   function hideWeatherWidget() {

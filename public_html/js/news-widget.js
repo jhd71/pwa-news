@@ -1807,8 +1807,14 @@ function openWeatherDetails() {
         navigator.vibrate(50);
     }
     
-    window.open('https://www.google.com/search?q=météo+montceau+les+mines+détaillée', '_blank', 'noopener,noreferrer');
-    console.log('🌡️ Météo détaillée ouverte');
+    // Ouvrir VOTRE widget météo au lieu de Google
+    if (typeof window.showWeatherWidget === 'function') {
+        window.showWeatherWidget();
+    } else {
+        console.warn('Widget météo non disponible');
+    }
+    
+    console.log('Ouverture du widget météo interne');
 }
 
 // Initialisation des widgets (version corrigée)
