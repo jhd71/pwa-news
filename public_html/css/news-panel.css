@@ -143,13 +143,6 @@
     }
 }
 
-/* Assurer que le bouton conserve sa couleur rouge */
-[data-theme="dark"] .news-button,
-[data-theme="rouge"] .news-button,
-[data-theme="light"] .news-button {
-    background-color: rgb(148, 0, 0) !important;
-}
-
 /* ===================================
    PARTIE 2 : PANEL DES ACTUALITÉS
    =================================== */
