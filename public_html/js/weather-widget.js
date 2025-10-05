@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const forecast = data.forecast.forecastday;
       
       // Récupérer les alertes Météo-France
-      const alerts = await fetchMeteoFranceAlerts();
+      const alerts = null; // ✅ Pas d'alertes pour le moment
       
       let weatherHTML = '';
       
