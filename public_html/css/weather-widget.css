@@ -49,7 +49,7 @@
 
 /* Thème Violet (Light) */
 [data-theme="light"] .weather-sidebar {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgb(103 58 183);
   border: 1px solid rgba(126, 87, 194, 0.2);
 }
 
@@ -233,7 +233,7 @@
 [data-theme="light"] .weather-toggle {
   background: #673AB7;
   border: 1px solid rgb(172 157 218);
-  color: #7e57c2 !important;
+  color: #ffffff !important;
 }
 
 [data-theme="dark"] .weather-toggle {
@@ -459,4 +459,118 @@
     height: 60px !important;
     top: 5px !important;
   }
+}
+
+/* ===== NOUVEAU WIDGET MÉTÉO - STYLES MANQUANTS ===== */
+
+/* Section météo actuelle */
+.weather-current {
+    margin-bottom: 15px;
+}
+
+/* Boîtes de détails météo */
+.weather-detail-box {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Prévisions horaires */
+.hourly-forecast {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    scrollbar-width: thin;
+}
+
+.hourly-forecast::-webkit-scrollbar {
+    height: 6px;
+}
+
+.hourly-forecast::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.hour-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+    min-width: 80px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+/* ===== ADAPTATIONS PAR THÈME ===== */
+
+/* Thème Light (Violet) */
+[data-theme="light"] .weather-current,
+[data-theme="light"] .weather-detail-box,
+[data-theme="light"] .hour-card {
+    color: #333 !important;
+}
+
+[data-theme="light"] .weather-detail-box {
+    background: #D1C4E9 !important;
+}
+
+[data-theme="light"] .hour-card {
+    background: #7E57C2 !important;
+    border: 1px solid rgba(126, 87, 194, 0.2);
+}
+
+[data-theme="light"] .hourly-forecast::-webkit-scrollbar-thumb {
+    background: rgba(126, 87, 194, 0.3);
+}
+
+/* Thème Dark */
+[data-theme="dark"] .weather-current,
+[data-theme="dark"] .weather-detail-box,
+[data-theme="dark"] .hour-card {
+    color: white !important;
+}
+
+[data-theme="dark"] .weather-detail-box {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme="dark"] .hour-card {
+    background: rgba(30, 40, 140, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Thème Rouge */
+[data-theme="rouge"] .weather-current,
+[data-theme="rouge"] .weather-detail-box,
+[data-theme="rouge"] .hour-card {
+    color: white !important;
+}
+
+[data-theme="rouge"] .weather-detail-box {
+    background: rgba(255, 255, 255, 0.15) !important;
+}
+
+[data-theme="rouge"] .hour-card {
+    background: rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Thème Bleu Ciel */
+[data-theme="bleuciel"] .weather-current,
+[data-theme="bleuciel"] .weather-detail-box,
+[data-theme="bleuciel"] .hour-card {
+    color: white !important;
+}
+
+[data-theme="bleuciel"] .weather-detail-box {
+    background: rgba(255, 255, 255, 0.15) !important;
+}
+
+[data-theme="bleuciel"] .hour-card {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }

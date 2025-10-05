@@ -36,23 +36,75 @@ class ThemeManager {
         return;
     }
     
-    document.documentElement.setAttribute('data-theme', themeId);
-    localStorage.setItem('theme', themeId);
-	// NOUVEAU : Mettre à jour les couleurs de la PWA
-	this.updateThemeColors(themeId);
+    // ✅ Masquer TOUS les widgets pendant la transition
+    const newsWidget = document.querySelector('.local-news-widget');
+    const footballWidget = document.querySelector('.football-widget');
     
-    // NOUVEAU : Mettre à jour les couleurs de la PWA
-    this.updateThemeColors(themeId);
-    
-    window.dispatchEvent(new CustomEvent('themeChanged', { 
-        detail: { theme: themeId }
-    }));
-    
-    if (showToast) {
-        this.showToast(`Thème ${this.getThemeName(themeId)} activé`);
+    if (newsWidget) {
+        newsWidget.style.opacity = '0';
+        newsWidget.style.transition = 'opacity 0.15s ease';
     }
     
-    console.log(`Thème appliqué: ${themeId}`);
+    if (footballWidget) {
+        footballWidget.style.opacity = '0';
+        footballWidget.style.transition = 'opacity 0.15s ease';
+    }
+    
+    // Créer un overlay pour masquer le flash
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: black;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        z-index: 99999;
+        pointer-events: none;
+    `;
+    document.body.appendChild(overlay);
+    
+    // Fade vers noir
+    requestAnimationFrame(() => {
+        overlay.style.opacity = '0.3';
+    });
+    
+    // Changer le thème après un court délai
+    setTimeout(() => {
+        document.documentElement.setAttribute('data-theme', themeId);
+        localStorage.setItem('theme', themeId);
+        
+        // Mettre à jour les couleurs de la PWA
+        this.updateThemeColors(themeId);
+        
+        window.dispatchEvent(new CustomEvent('themeChanged', { 
+            detail: { theme: themeId }
+        }));
+        
+        if (showToast) {
+            this.showToast(`Thème ${this.getThemeName(themeId)} activé`);
+        }
+        
+        // ✅ Réafficher les widgets après le changement
+        setTimeout(() => {
+            if (newsWidget) {
+                newsWidget.style.opacity = '1';
+            }
+            if (footballWidget) {
+                footballWidget.style.opacity = '1';
+            }
+        }, 50);
+        
+        // Fade out de l'overlay
+        setTimeout(() => {
+            overlay.style.opacity = '0';
+            setTimeout(() => overlay.remove(), 200);
+        }, 100);
+        
+        console.log(`Thème appliqué: ${themeId}`);
+    }, 200);
 }
     
     getThemeName(themeId) {

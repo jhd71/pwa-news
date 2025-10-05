@@ -42,7 +42,7 @@
 
 /* Thème Violet (Light) */
 [data-theme="light"] .quick-links-sidebar {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgb(96 64 178);
   border: 1px solid rgba(126, 87, 194, 0.2);
 }
 
@@ -52,12 +52,12 @@
 }
 
 [data-theme="light"] .quick-link {
-  background: rgba(240, 240, 250, 0.5);
+  background: rgb(206 197 231);
   border: 1px solid rgba(126, 87, 194, 0.1);
 }
 
 [data-theme="light"] .quick-link span:not(.material-icons) {
-  color: #333 !important;
+  color: #000000 !important;
 }
 
 [data-theme="light"] .quick-link .material-icons {
@@ -159,7 +159,7 @@
 [data-theme="light"] .quick-links-toggle {
   background: #673AB7;
   border: 1px solid rgb(172 157 218);
-  color: #7e57c2 !important;
+  color: #fefefe !important;
 }
 
 [data-theme="dark"] .quick-links-toggle {
