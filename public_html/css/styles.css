@@ -3055,6 +3055,7 @@ a:active {
     main {
         margin-top: var(--header-height);
         padding-top: 0px;
+		padding-bottom: 60px !important;
     }
     
     /* Correction pour l'espacement des séparateurs sur mobile */
