@@ -60,8 +60,7 @@
             
             // Améliorer le bouton dans la barre du bas
             this.enhanceBottomButton();
-			
-			}
+        }
 
         setupEventListeners() {
             // Bouton de fermeture
@@ -83,13 +82,13 @@
                 donateBtn.addEventListener('click', () => this.showPopup('manual'));
             }
 
-            // Lien Buy Me a Coffee
-			const donationLink = document.querySelector('.donation-link');
+            // Lien Tipeee
+            const donationLink = document.querySelector('.donation-link');
             if (donationLink) {
-		donationLink.addEventListener('click', () => {
-			this.trackDonation();
-		});
-	}
+                donationLink.addEventListener('click', () => {
+                    this.trackDonation();
+                });
+            }
 
             // Échap pour fermer
             document.addEventListener('keydown', (e) => {
@@ -198,37 +197,37 @@
                 });
             }
             
-            console.log('Clic sur le lien de donation');
+            console.log('Clic sur le lien de donation Tipeee');
         }
 
         enhanceBottomButton() {
-    const donateBtn = document.getElementById('donateButton');
-    if (!donateBtn) return;
-    
-    const visits = parseInt(localStorage.getItem(CONFIG.storageKeys.visits) || '0');
-    
-    // Forcer toujours l'icône café et le texte
-    const icon = donateBtn.querySelector('.material-icons');
-    const text = donateBtn.querySelector('span:last-child');
-    
-    if (icon) icon.textContent = 'local_cafe';
-    if (text) text.textContent = 'Un café ?';
-    
-    // Animation pulse occasionnelle pour attirer l'attention
-    if (visits >= 5 && visits % 3 === 0) {
-        donateBtn.classList.add('pulse-animation');
-        
-        // Retirer l'animation après 5 secondes
-        setTimeout(() => {
-            donateBtn.classList.remove('pulse-animation');
-        }, 5000);
-    }
-    
-    // Ajouter une petite vapeur permanente après 10 visites (classe CSS)
-    if (visits >= 10) {
-        donateBtn.classList.add('coffee-hot');
-    }
-}
+            const donateBtn = document.getElementById('donateButton');
+            if (!donateBtn) return;
+            
+            const visits = parseInt(localStorage.getItem(CONFIG.storageKeys.visits) || '0');
+            
+            // Forcer toujours l'icône café et le texte
+            const icon = donateBtn.querySelector('.material-icons');
+            const text = donateBtn.querySelector('span:last-child');
+            
+            if (icon) icon.textContent = 'local_cafe';
+            if (text) text.textContent = 'Un café ?';
+            
+            // Animation pulse occasionnelle pour attirer l'attention
+            if (visits >= 5 && visits % 3 === 0) {
+                donateBtn.classList.add('pulse-animation');
+                
+                // Retirer l'animation après 5 secondes
+                setTimeout(() => {
+                    donateBtn.classList.remove('pulse-animation');
+                }, 5000);
+            }
+            
+            // Ajouter une petite vapeur permanente après 10 visites (classe CSS)
+            if (visits >= 10) {
+                donateBtn.classList.add('coffee-hot');
+            }
+        }
 
         // Méthode pour réinitialiser (utile pour les tests)
         reset() {
@@ -241,54 +240,27 @@
 
     // Créer une instance globale
     window.donationManager = new DonationManager();
-	
-	// Gestion des montants suggérés
-window.handleAmountClick = function(amount) {
-    // Retirer la classe active de tous les boutons
-    document.querySelectorAll('.amount-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    
-    // Ajouter la classe active au bouton cliqué
-    event.target.classList.add('active');
-    
-    console.log('Montant sélectionné:', amount + '€');
-    
-    // Vibration tactile si disponible
-    if (navigator.vibrate) {
-        navigator.vibrate(50);
-    }
-};
 
-// Tracker les clics sur le bouton de don
-window.trackDonationClick = function() {
-    console.log('Clic sur le bouton de don');
-    
-    if (window.donationManager) {
-        window.donationManager.trackDonation();
-    }
-    
-    // Fermer la popup après un délai
-    setTimeout(() => {
+    // Tracker les clics sur le bouton de don
+    window.trackDonationClick = function() {
+        console.log('Clic sur le bouton de don Tipeee');
+        
         if (window.donationManager) {
-            window.donationManager.hidePopup(false);
+            window.donationManager.trackDonation();
         }
-    }, 1000);
-};
-
-// Fonction pour mettre à jour la barre de progression
-window.updateDonationProgress = function(collected, goal) {
-    const percentage = (collected / goal) * 100;
-    const progressFill = document.querySelector('.progress-fill');
-    const progressText = document.querySelector('.progress-text');
-    const progressInfo = document.querySelector('.progress-info');
-    
-    if (progressFill) {
-        progressFill.style.width = Math.max(percentage, 2.5) + '%';
-        progressText.textContent = `${collected}€ / ${goal}€`;
-        progressInfo.innerHTML = `Collecté : <strong>${collected}€</strong> (${percentage.toFixed(1)}%)`;
-    }
-};
+        
+        // Vibration tactile
+        if (navigator.vibrate) {
+            navigator.vibrate(50);
+        }
+        
+        // Fermer la popup après un délai
+        setTimeout(() => {
+            if (window.donationManager) {
+                window.donationManager.hidePopup(false);
+            }
+        }, 1000);
+    };
 
 })();
 

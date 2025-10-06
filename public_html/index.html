@@ -478,10 +478,10 @@ Actu & Média
         <span class="material-icons">grid_view</span>
         <span>Vue</span>
     </button>
-    <button class="nav-item" id="donateButton">
-		<span class="material-icons">local_cafe</span>
-		<span>Un café ?</span>
-	</button>
+   <button class="nav-item" id="donateButton">
+    <span class="material-icons">local_cafe</span>
+    <span>Un café ?</span>
+</button>
     <!-- Bouton de chat existant -->
     <button class="nav-item chat-toggle-btn" id="chatToggleBtn">
         <span class="material-icons">chat</span>
@@ -765,14 +765,14 @@ Actu & Média
         <!-- En-tête avec animation -->
         <div class="donation-header">
             <span class="donation-emoji">🙏</span>
-            <h3><h3>Offrez un café à Actu & Média</h3></h3>
+            <h3>Soutenez Actu & Média</h3>
         </div>
         
         <!-- Corps du message -->
         <div class="donation-body">
             <p class="donation-main-text">
-                <strong>Depuis 8 mois</strong>, ce site bénévole informe gratuitement 
-                les habitants de Montceau-les-Mines.
+               <strong>Depuis 10 mois</strong>, ce site gratuit et sans pub informe 
+quotidiennement Montceau-les-Mines et ses environs.
             </p>
             
             <div class="donation-features">
@@ -787,7 +787,7 @@ Actu & Média
                 <h4>💰 Nos frais annuels réels</h4>
                 <div class="costs-breakdown">
                     <div class="cost-item">
-                        <span class="cost-label">Hébergement serveur</span>
+                        <span class="cost-label">Hébergement & infrastructure</span>
                         <span class="cost-amount">120€/an</span>
                     </div>
                     <div class="cost-item">
@@ -795,7 +795,7 @@ Actu & Média
                         <span class="cost-amount">15€/an</span>
                     </div>
                     <div class="cost-item">
-                        <span class="cost-label">Maintenance technique</span>
+                        <span class="cost-label">Maintenance & outils</span>
                         <span class="cost-amount">65€/an</span>
                     </div>
                     <div class="cost-total">
@@ -804,47 +804,33 @@ Actu & Média
                     </div>
                 </div>
 
-                <!-- Barre de progression -->
-					<div class="donation-progress">
-					<p class="progress-label">Objectif 2025 : 200€</p>
-					<div class="progress-bar">
-					<div class="progress-fill" style="width: 3%;">
-						<span class="progress-text">6€ / 200€</span>
+                <!-- Barre de progression - DÉSACTIVÉE (info visible sur Tipeee)
+				<div class="donation-progress">
+				<p class="progress-label">Objectif 2025 : 200€</p>
+				<div class="progress-bar">
+				<div class="progress-fill" style="width: 3%;">
+				<span class="progress-text">6€ / 200€</span>
 				</div>
-			</div>
-		<p class="progress-info">Collecté : <strong>6€</strong> (3%)</p>
-	</div>
+				</div>
+				<p class="progress-info">Collecté : <strong>6€</strong> (3%)</p>
+				</div>
+				-->
             </div>
             
             <p class="donation-appeal">
-    Ce site est créé et maintenu <strong>bénévolement</strong> avec passion.
-    Votre café, même 1€, compte énormément pour couvrir les frais techniques
-    et permettre la continuité de ce service local.
-	</p>
-
-            <!-- Montants suggérés -->
-	<div class="suggested-amounts">
-    <p class="suggested-title">Choisir mon café :</p>
-    <div class="amount-buttons">
-        <button class="amount-btn" onclick="handleAmountClick(1)">☕ 1€</button>
-        <button class="amount-btn" onclick="handleAmountClick(3)">☕☕ 3€</button>
-        <button class="amount-btn active" onclick="handleAmountClick(5)">☕☕☕ 5€</button>
-        <button class="amount-btn" onclick="handleAmountClick(10)">🍰 10€</button>
-        <button class="amount-btn" onclick="handleAmountClick('other')">Autre</button>
-		</div>
-	</div>
+                Votre contribution, <strong>même 1€</strong>, m'aide à maintenir ce service local 
+                gratuit et sans publicité. Tout surplus servira à améliorer le site.
+            </p>
         </div>
         
         <!-- Boutons d'action -->
         <div class="donation-actions">
-            <a href="https://www.buymeacoffee.com/actuetmedia" 
-   target="_blank" 
-   class="donation-link primary"
-   onclick="trackDonationClick()">
-    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" 
-         style="height:20px;vertical-align:middle;">
-    <span>Offrir un café</span>
-</a>
+            <a href="https://fr.tipeee.com/actuetmedia" 
+               target="_blank" 
+               class="donation-link primary"
+               onclick="trackDonationClick()">
+                <span>💙 Soutenir sur Tipeee</span>
+            </a>
             
             <button class="donation-later" onclick="window.donationManager.hidePopup(true)">
                 Plus tard
@@ -853,9 +839,9 @@ Actu & Média
         
         <!-- Footer avec transparence -->
         <div class="donation-footer">
-    <small>🔒 Paiement 100% sécurisé via Buy Me a Coffee</small>
-    <small>📊 Transparence totale sur l'utilisation des dons</small>
-</div>
+            <small>🔒 Paiement sécurisé via Tipeee (PayPal & CB)</small>
+            <small>📊 Transparence totale sur l'utilisation des dons</small>
+        </div>
     </div>
 </div>
 
