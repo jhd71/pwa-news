@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v53'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v54'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -123,10 +123,6 @@ const STATIC_RESOURCES = [
 '/images/favicon-16x16.png',
 '/images/favicon-32x32.png',
 '/apple-touch-icon.png',
-
-// Images de fond
-'/images/fond-rouge.jpg',
-'/images/fond-dark.jpg',
 
 // Icônes INFOS (toutes tailles)
 '/images/INFOS.png',

@@ -110,12 +110,7 @@ body {
 }
 
 [data-theme="dark"] body {
-    background: none;
-    background-image: url('/images/fond-dark.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
 }
 
 /* THÈME ROUGE */
@@ -133,11 +128,7 @@ body {
 
 [data-theme="rouge"] body,
 [data-theme="rouge"] html {
-    background-image: url('/images/fond-rouge.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+    background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 50%, #dc2626 100%);
 }
 
 [data-theme="rouge"] main,
