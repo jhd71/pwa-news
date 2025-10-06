@@ -42,18 +42,7 @@ async init() {
         console.error('❌ Bouton addAnnonceBtn introuvable');
     }
 
-const backBtn = document.getElementById('backButton');
-        if (backBtn) {
-            backBtn.addEventListener('click', function(event) {
-                // Empêche le comportement par défaut et stoppe d'autres scripts
-                event.preventDefault(); 
-                // Force la redirection vers l'URL spécifiée dans le href
-                window.location.href = this.href; 
-            });
-        } else {
-             console.error('❌ Bouton backButton introuvable');
-        }
-		
+
     // Fermer modal création
     const closeBtn = document.getElementById('closeModal');
     if (closeBtn) {
