@@ -23,7 +23,7 @@
 <body>
     <!-- En-tête -->
     <header class="app-header">
-        <a href="index.html" class="back-button" id="backButton">
+        <a href="/" class="back-button">
     <span class="material-icons">arrow_back</span>
 </a>
         <h1 class="site-title">Petites Annonces</h1>
@@ -207,22 +207,5 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-client.js"></script>
     <script src="js/annonces-manager.js"></script>
-	<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const backBtn = document.querySelector('.back-button');
-    if (backBtn) {
-        // Retirer tous les écouteurs existants en clonant l'élément
-        const newBackBtn = backBtn.cloneNode(true);
-        backBtn.parentNode.replaceChild(newBackBtn, backBtn);
-        
-        // Ajouter le nouvel écouteur
-        newBackBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            window.location.href = '/';
-        });
-    }
-});
-</script>
 </body>
 </html>
