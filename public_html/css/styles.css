@@ -1676,8 +1676,7 @@ main {
 [data-theme="light"] .modal-content button span,
 [data-theme="light"] .modal-content .file-btn span,
 [data-theme="light"] .modal-content .camera-btn span {
-    color: #775cbd;
-    font-weight: bold;
+    color: #EDE7F6 !important;
     border-color: #ffd230;
 }
 
@@ -1686,8 +1685,7 @@ main {
 [data-theme="rouge"] .modal-content button span,
 [data-theme="rouge"] .modal-content .file-btn span,
 [data-theme="rouge"] .modal-content .camera-btn span {
-    color: #000000;
-    font-weight: bold;
+    color: #ffffff !important;
     border-color: #ffd230;
 }
 
@@ -1696,9 +1694,66 @@ main {
 [data-theme="bleuciel"] .modal-content button span,
 [data-theme="bleuciel"] .modal-content .file-btn span,
 [data-theme="bleuciel"] .modal-content .camera-btn span {
-    color: #54a3e4;
-    font-weight: bold;
+    color: #e3f3ff !important;
     border-color: #ffd230;
+}
+
+/* ===== MODAL ANNONCES - ADAPTATIONS THÈMES ===== */
+
+/* Thème Rouge (défaut) */
+[data-theme="rouge"] .modal-content a {
+    color: #ffeb3b;
+}
+
+[data-theme="rouge"] .modal-content button {
+    background: #dc3545;
+}
+
+[data-theme="rouge"] .modal-content span,
+[data-theme="rouge"] .modal-content div {
+    color: #333;
+}
+
+/* Thème Dark */
+[data-theme="dark"] .modal-content a {
+    color: #90caf9;
+}
+
+[data-theme="dark"] .modal-content button {
+    background: #1976d2;
+}
+
+[data-theme="dark"] .modal-content span,
+[data-theme="dark"] .modal-content div {
+    color: #e2e8f0 !important;
+}
+
+/* Thème Bleu Ciel */
+[data-theme="bleuciel"] .modal-content a {
+    color: #0277bd;
+}
+
+[data-theme="bleuciel"] .modal-content button {
+    background: #0ea5e9;
+}
+
+[data-theme="bleuciel"] .modal-content span,
+[data-theme="bleuciel"] .modal-content div {
+    color: #333;
+}
+
+/* Thème Light (Violet) */
+[data-theme="light"] .modal-content a {
+    color: #7c3aed;
+}
+
+[data-theme="light"] .modal-content button {
+    background: #673AB7;
+}
+
+[data-theme="light"] .modal-content span,
+[data-theme="light"] .modal-content div {
+    color: #333;
 }
 
 .modal-content a,
