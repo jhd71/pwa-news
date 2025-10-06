@@ -119,14 +119,14 @@
         }
 
         .admin-header {
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 20px var(--shadow);
-            text-align: center;
-            position: relative;
-        }
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 20px var(--shadow);
+    text-align: center;
+    position: relative;
+}
 
         .admin-header h1 {
             margin: 0;
@@ -156,73 +156,93 @@
 		}
 
         .logout-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px var(--shadow);
-        }
+    background: #c82333;
+    transform: translateY(-2px);
+}
 		
-		.header-buttons {
-    position: absolute;
-    top: 15px;
-    right: 15px;
+		/* Boutons header - nouvelle structure */
+.header-buttons {
     display: flex;
+    justify-content: center;
     gap: 10px;
-    align-items: center;
-	}
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
 
-		.admin-btn {
+.admin-btn {
     background: var(--primary-color);
     color: white;
     border: none;
-    padding: 8px 12px;
-    border-radius: 6px;
+    padding: 10px 16px;
+    border-radius: 8px;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     font-size: 14px;
     transition: all 0.3s ease;
     text-decoration: none;
     font-family: inherit;
+    font-weight: 500;
+}
+
+/* Boutons spécifiques */
+.home-btn {
+    background: #007bff;
 }
 
 .comments-btn {
     background: #28a745;
-    padding: 8px 8px !important;
-    font-size: 13px;
-    gap: 4px;
+    position: relative;
+}
+
+.photos-btn {
+    background: #9c27b0;
 }
 
 .comments-btn-container {
     position: relative;
 }
 
+/* Badge commentaires */
 .comments-badge {
     position: absolute;
-    top: 40px;
-    right: -5px;
+    top: -8px;
+    right: -8px;
     background: #dc3545;
     color: white;
     border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    font-size: 20px;
+    width: 22px;
+    height: 22px;
+    font-size: 11px;
     font-weight: bold;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 100;
-    border: 2px solid white;
+    border: 2px solid var(--card-bg);
 }
 
 .admin-btn:hover {
-    transform: translateY(-1px);
+    transform: translateY(-2px);
     box-shadow: 0 4px 12px var(--shadow);
 }
 
+/* Bouton déconnexion */
 .logout-btn {
-    white-space: nowrap;
-    min-width: auto;
-    width: auto;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    transition: all 0.3s ease;
 }
 
 .admin-header {
@@ -591,8 +611,37 @@
             .quick-title {
                 font-size: 18px;
             }
+			
+			.admin-header {
+        padding: 15px 10px 70px 10px;
+    }
+    
+    .header-buttons {
+        margin-top: 20px;
+        gap: 8px;
+    }
+    
+    .admin-btn {
+        padding: 10px 12px;
+        font-size: 13px;
+        flex: 1;
+        min-width: 0;
+        justify-content: center;
+    }
+    
+    /* Cacher le texte sur très petits écrans, garder icône */
+    .btn-text {
+        display: none;
+    }
         }
 
+ /* Afficher le texte sur écrans moyens */
+    @media (min-width: 400px) {
+        .btn-text {
+            display: inline;
+        }
+    }
+	
         /* Login form */
         .login-container {
             max-width: 400px;
@@ -793,12 +842,6 @@
 		
 		/* ===== OPTIMISATION LAYOUT ADMIN ===== */
 
-/* Réduction de l'en-tête admin */
-.admin-header {
-    padding: 15px; /* Réduit de 20px à 15px */
-    margin-bottom: 15px; /* Réduit de 20px à 15px */
-}
-
 .admin-header h1 {
     font-size: 20px; /* Réduit de 24px à 20px */
     margin: 0;
@@ -841,10 +884,6 @@
 /* ===== MOBILE OPTIMISATIONS ===== */
 @media (max-width: 768px) {
     /* En-tête encore plus compact sur mobile */
-    .admin-header {
-        padding: 70px;
-        margin-bottom: 10px;
-    }
     
     .admin-header h1 {
         font-size: 18px;
@@ -877,10 +916,25 @@
         max-height: 60vh; /* Utilise 60% de la hauteur de l'écran */
     }
     
-    /* Logout button plus petit */
+    /* Déconnexion en bas sur mobile */
     .logout-btn {
-        padding: 6px 10px;
-        font-size: 12px;
+        position: absolute;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        right: auto;
+        top: auto;
+        width: calc(100% - 20px);
+        max-width: 200px;
+        justify-content: center;
+    }
+    
+    .comments-badge {
+        top: -6px;
+        right: -6px;
+        width: 18px;
+        height: 18px;
+        font-size: 10px;
     }
     
     /* Réduction des form-group */
@@ -1099,28 +1153,36 @@
     <!-- Interface d'administration -->
     <div class="admin-container" id="adminContainer" style="display: none;">
         <div class="admin-header">
-    <div class="header-buttons">
-    <div class="comments-btn-container">
-        <a href="admin-comments.html" class="admin-btn comments-btn">
-            <span class="material-icons">moderation</span>
-            Commentaires
-            <span id="commentsBadge" class="comments-badge" style="display: none;">0</span>
-        </a>
-    </div>
-    <a href="admin-comments-photos.html" class="admin-btn" style="background: #9c27b0;">
-        <span class="material-icons">photo_library</span>
-        Photos
-    </a>
-    <button class="admin-btn logout-btn" onclick="logout()">
-        <span class="material-icons">logout</span>
-        Déconnexion
-    </button>
-</div>
     <h1>
         <span class="material-icons">newspaper</span>
         Administration NEWS Actu&Média
     </h1>
     <p>Gestion des actualités locales de Montceau-les-Mines et environs</p>
+    
+    <!-- Boutons réorganisés -->
+    <div class="header-buttons">
+        <a href="https://actuetmedia.fr/" class="admin-btn home-btn">
+            <span class="material-icons">home</span>
+            <span class="btn-text">Accueil</span>
+        </a>
+        
+        <a href="admin-comments.html" class="admin-btn comments-btn">
+            <span class="material-icons">comment</span>
+            <span class="btn-text">Commentaires</span>
+            <span id="commentsBadge" class="comments-badge" style="display: none;">0</span>
+        </a>
+        
+        <a href="admin-comments-photos.html" class="admin-btn photos-btn">
+            <span class="material-icons">photo_library</span>
+            <span class="btn-text">Photos</span>
+        </a>
+    </div>
+    
+    <!-- Déconnexion séparé -->
+    <button class="logout-btn" onclick="logout()">
+        <span class="material-icons">logout</span>
+        <span class="btn-text">Déconnexion</span>
+    </button>
 </div>
             
             <!-- Section Publication Unifiée -->
