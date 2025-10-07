@@ -171,36 +171,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
 
     <!-- === FEUILLES DE STYLE === -->
-<!-- CSS Global et thèmes -->
+
+<!-- ⚡ CSS CRITIQUES - CHARGEMENT PRIORITAIRE -->
 <link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/news-panel.css">
 <link rel="stylesheet" href="css/theme-bleuciel.css">
 <link rel="stylesheet" href="css/font-settings.css">
 
-<!-- Widgets principaux -->
+<!-- 📱 Widgets principaux (visibles immédiatement) -->
 <link rel="stylesheet" href="css/quick-links.css">
 <link rel="stylesheet" href="css/weather-widget.css">
 <link rel="stylesheet" href="css/visitor-tracker.css">
 <link rel="stylesheet" href="css/news-widget.css">
 
-<!-- Widgets secondaires -->
+<!-- 🎬 Widgets secondaires (contenu enrichi) -->
 <link rel="stylesheet" href="css/cinema-widget.css">
 <link rel="stylesheet" href="css/football-widget.css">
 <link rel="stylesheet" href="css/gallery-styles.css">
-<link rel="stylesheet" href="css/news-panel.css">
 
-<!-- Outils et applications -->
+<!-- 🛠️ Outils et applications -->
 <link rel="stylesheet" href="css/radioPopup.css">
 <link rel="stylesheet" href="css/notepadApp.css">
 <link rel="stylesheet" href="css/todoApp.css">
 <link rel="stylesheet" href="css/petites-annonces.css">
 
-<!-- Interface utilisateur -->
+<!-- 💬 Interface utilisateur -->
 <link rel="stylesheet" href="css/chat-styles.css">
 <link rel="stylesheet" href="css/chat-ban.css">
 <link rel="stylesheet" href="css/settings-styles.css">
 <link rel="stylesheet" href="css/survey-styles.css">
 
-<!-- Améliorations et corrections -->
+<!-- 🎨 Améliorations et corrections -->
 <link rel="stylesheet" href="css/tile-enhancements.css">
 <link rel="stylesheet" href="css/tv-tiles-fix.css">
 <link rel="stylesheet" href="css/donation.css">
@@ -231,7 +232,7 @@ Actu & Média
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
     <path fill="white" d="M15.12 8.29H13.5c-.24 0-.5.32-.5.77v1.69h2.12l-.32 2.48h-1.8V21h-2.62v-7.77H9v-2.48h1.88V8.86c0-1.9 1.14-2.94 2.81-2.94.8 0 1.49.06 1.7.09v2.28h-.27z"/>
   </svg>
-</button>
+</button> -->
 
 <!-- Bouton Autour de moi -->
 <button class="search-button" onclick="window.open('/autour-de-moi.html', '_blank')" title="Autour de moi">
@@ -490,44 +491,44 @@ Actu & Média
     </button>
 	</nav>
 	<!-- Scripts essentiels (avant tout) -->
-	<script src="js/theme-manager.js"></script>
-	<script src="js/ban-manager.js"></script>
-	<script src="js/ban-check.js"></script>
+<script src="js/theme-manager.js"></script>
+<script src="js/ban-manager.js"></script>
+<script src="js/ban-check.js"></script>
 
-	<!-- Scripts de correction plateforme -->
-	<script src="js/ios-fixes-safe.js"></script>
-	<script src="js/ios-install.js"></script>
-	<script src="js/tablet-fixes.js"></script>
-	<script src="js/chat-keyboard-fix.js"></script>
+<!-- Scripts de correction plateforme -->
+<script src="js/ios-fixes-safe.js"></script>
+<script src="js/ios-install.js"></script>
+<script src="js/tablet-fixes.js"></script>
+<script src="js/chat-keyboard-fix.js"></script>
 
-	<!-- Widgets principaux (ordre cohérent avec les CSS) -->
-	<script src="js/quick-links.js"></script>
-	<script src="js/weather-widget.js"></script>
-	<script src="js/visitor-tracker.js"></script>
+<!-- Widgets principaux (ordre cohérent avec les CSS) -->
+<script src="js/quick-links.js"></script>
+<script src="js/weather-widget.js"></script>
+<script src="js/visitor-tracker.js"></script>
 
-	<!-- Widgets actualités (groupés ensemble) -->
-	<script src="js/news-manager.js"></script>
-	<script src="js/newsTickerManager.js"></script>
-	<script src="js/newsPanel.js"></script>
-	<script src="js/news-widget.js"></script>
+<!-- Widgets actualités (groupés ensemble) -->
+<script src="js/news-manager.js"></script>
+<script src="js/newsTickerManager.js"></script>
+<script src="js/newsPanel.js"></script>
+<script src="js/news-widget.js"></script>
 
-	<!-- Widgets secondaires -->
-	<script src="js/cinema-widget.js"></script>
-	<script src="js/football-widget.js"></script>
+<!-- Widgets secondaires -->
+<script src="js/cinema-widget.js"></script>
+<script src="js/football-widget.js"></script>
 
-	<!-- Applications -->
-	<script src="js/radioPopup.js"></script>
-	<script src="js/notepadApp.js"></script>
-	<script src="js/todoApp.js"></script>
+<!-- Applications -->
+<script src="js/radioPopup.js"></script>
+<script src="js/notepadApp.js"></script>
+<script src="js/todoApp.js"></script>
 
-	<!-- Gestionnaires et fonctionnalités -->
-	<script src="js/welcome-manager.js"></script>
-	<script src="js/expense-manager.js"></script>
-	<script src="js/donation.js"></script>
-	<script src="js/survey-manager.js"></script>
+<!-- Gestionnaires et fonctionnalités -->
+<script src="js/welcome-manager.js"></script>
+<script src="js/expense-manager.js"></script>
+<script src="js/donation.js"></script>
+<script src="js/survey-manager.js"></script>
 
-	<!-- Script d'initialisation principal (toujours en dernier) -->
-	<script type="module" src="js/app-initializer.js"></script>
+<!-- Script d'initialisation principal (toujours en dernier) -->
+<script type="module" src="js/app-initializer.js"></script>
 
 	<!-- Bouton Infos en direct -->
 	<div class="button-group" style="display: flex; justify-content: center; gap: 10px; margin: 20px 0;">
@@ -757,92 +758,33 @@ Actu & Média
     </div>
 </div>
 
-<!-- Popup de don avec transparence financière -->
+<!-- Popup de don optimisée -->
 <div id="donationPopup" class="donation-overlay">
-    <div class="donation-popup">
-        <span id="donationClose" class="donation-close">×</span>
-        
-        <!-- En-tête avec animation -->
-        <div class="donation-header">
-            <span class="donation-emoji">🙏</span>
-            <h3>Soutenez Actu & Média</h3>
-        </div>
-        
-        <!-- Corps du message -->
-        <div class="donation-body">
-            <p class="donation-main-text">
-               <strong>Depuis 10 mois</strong>, ce site gratuit et sans pub informe 
-quotidiennement Montceau-les-Mines et ses environs.
-            </p>
-            
-            <div class="donation-features">
-                <div class="feature">✅ Sans publicité</div>
-                <div class="feature">✅ 100% gratuit</div>
-                <div class="feature">✅ Indépendant</div>
-                <div class="feature">✅ Créé bénévolement</div>
-            </div>
-
-            <!-- Section transparence financière -->
-            <div class="financial-transparency">
-                <h4>💰 Nos frais annuels réels</h4>
-                <div class="costs-breakdown">
-                    <div class="cost-item">
-                        <span class="cost-label">Hébergement & infrastructure</span>
-                        <span class="cost-amount">120€/an</span>
-                    </div>
-                    <div class="cost-item">
-                        <span class="cost-label">Nom de domaine .fr</span>
-                        <span class="cost-amount">15€/an</span>
-                    </div>
-                    <div class="cost-item">
-                        <span class="cost-label">Maintenance & outils</span>
-                        <span class="cost-amount">65€/an</span>
-                    </div>
-                    <div class="cost-total">
-                        <span class="cost-label"><strong>Total annuel</strong></span>
-                        <span class="cost-amount"><strong>200€</strong></span>
-                    </div>
-                </div>
-
-                <!-- Barre de progression - DÉSACTIVÉE (info visible sur Tipeee)
-				<div class="donation-progress">
-				<p class="progress-label">Objectif 2025 : 200€</p>
-				<div class="progress-bar">
-				<div class="progress-fill" style="width: 3%;">
-				<span class="progress-text">6€ / 200€</span>
-				</div>
-				</div>
-				<p class="progress-info">Collecté : <strong>6€</strong> (3%)</p>
-				</div>
-				-->
-            </div>
-            
-            <p class="donation-appeal">
-                Votre contribution, <strong>même 1€</strong>, m'aide à maintenir ce service local 
-                gratuit et sans publicité. Tout surplus servira à améliorer le site.
-            </p>
-        </div>
-        
-        <!-- Boutons d'action -->
-        <div class="donation-actions">
-            <a href="https://fr.tipeee.com/actuetmedia" 
-               target="_blank" 
-               class="donation-link primary"
-               onclick="trackDonationClick()">
-                <span>💙 Soutenir sur Tipeee</span>
-            </a>
-            
-            <button class="donation-later" onclick="window.donationManager.hidePopup(true)">
-                Plus tard
-            </button>
-        </div>
-        
-        <!-- Footer avec transparence -->
-        <div class="donation-footer">
-            <small>🔒 Paiement sécurisé via Tipeee (PayPal & CB)</small>
-            <small>📊 Transparence totale sur l'utilisation des dons</small>
-        </div>
+  <div class="donation-popup">
+    <span id="donationClose" class="donation-close">×</span>
+    
+    <div class="donation-header">
+      <span class="donation-emoji">🙏</span>
+      <h3>Soutenez Actu & Média</h3>
     </div>
+    
+    <p><strong>Depuis 10 mois</strong>, ce site gratuit et sans pub informe quotidiennement Montceau-les-Mines et ses environs.</p>
+    
+    <p>✅ Sans publicité • ✅ 100% gratuit • ✅ Indépendant</p>
+    
+    <p>Votre contribution, <strong>même 1€</strong>, aide à maintenir ce service local gratuit.</p>
+    
+    <a href="https://fr.tipeee.com/actuetmedia" 
+       target="_blank" 
+       class="donation-link primary"
+       onclick="trackDonationClick()">
+      💙 Soutenir sur Tipeee
+    </a>
+    
+    <button class="donation-later" onclick="window.donationManager.hidePopup(true)">
+      Plus tard
+    </button>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
