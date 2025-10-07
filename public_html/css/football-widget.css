@@ -68,7 +68,6 @@
 
 /* === CONTENU === */
 .football-widget-preview {
-    color: #333;
     font-size: 14px;
     line-height: 1.4;
     margin-bottom: 10px;
@@ -76,6 +75,8 @@
     max-height: 250px;
     overflow-y: auto;
     padding-right: 10px;
+    color: var(--primary-color);
+    font-weight: bold;
 }
 
 .current-league {
