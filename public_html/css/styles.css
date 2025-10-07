@@ -110,7 +110,7 @@ body {
 }
 
 [data-theme="dark"] body {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%) #252d7a;
 }
 
 /* THÈME ROUGE */
@@ -128,7 +128,7 @@ body {
 
 [data-theme="rouge"] body,
 [data-theme="rouge"] html {
-    background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 50%, #dc2626 100%);
+    background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 50%, #dc2626 100%) #841b0a;
 }
 
 [data-theme="rouge"] main,
@@ -2934,13 +2934,7 @@ main {
   transform: translateZ(0);
 }
 
-/* Force l'icône blanche */
-.tool-button .material-icons,
-.search-button .material-icons {
-  color: white !important;
-}
-
-/* COULEURS PAR THÈME */
+/* COULEURS PAR THÈME - SANS EFFETS HOVER */
 [data-theme="light"] .tool-button,
 [data-theme="light"] .search-button {
   background: #6e48af !important;
@@ -2948,9 +2942,7 @@ main {
 
 [data-theme="light"] .tool-button:hover,
 [data-theme="light"] .search-button:hover {
-  background: #673ab7 !important;
-  box-shadow: 0 6px 20px rgba(126, 87, 194, 0.4);
-  transform: translateY(-2px);
+  /* Supprimé : background, box-shadow, transform */
 }
 
 [data-theme="dark"] .tool-button,
@@ -2960,9 +2952,7 @@ main {
 
 [data-theme="dark"] .tool-button:hover,
 [data-theme="dark"] .search-button:hover {
-  background: #283593 !important;
-  box-shadow: 0 6px 20px rgba(26, 35, 126, 0.4);
-  transform: translateY(-2px);
+  /* Supprimé : background, box-shadow, transform */
 }
 
 [data-theme="rouge"] .tool-button,
@@ -2972,9 +2962,7 @@ main {
 
 [data-theme="rouge"] .tool-button:hover,
 [data-theme="rouge"] .search-button:hover {
-  background: rgb(180, 0, 0) !important;
-  box-shadow: 0 6px 20px rgba(198, 40, 40, 0.4);
-  transform: translateY(-2px);
+  /* Supprimé : background, box-shadow, transform */
 }
 
 [data-theme="bleuciel"] .tool-button,
@@ -2984,20 +2972,7 @@ main {
 
 [data-theme="bleuciel"] .tool-button:hover,
 [data-theme="bleuciel"] .search-button:hover {
-  background: #42a5f5 !important;
-  box-shadow: 0 6px 20px rgba(79, 179, 232, 0.4);
-  transform: translateY(-2px);
-}
-
-/* Effets pression pour mobile */
-.weather-show-btn:active,
-.quick-links-show-btn:active,
-.weather-mobile-btn:active,
-.quick-link:active,
-button:active,
-a:active {
-    opacity: 0.7;
-    transform: scale(0.97);
+  /* Supprimé : background, box-shadow, transform */
 }
 
 /* ==========================================================================
