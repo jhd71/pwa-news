@@ -5,7 +5,7 @@
 :root {
     --primary-color: #dc2626;
     --primary-dark: #b91c1c;
-    --background: #fef2f2;
+    --background: #8d2a20;
     --card-bg: white;
     --text-color: #333;
     --border-color: #fee2e2;
@@ -40,16 +40,6 @@
     --text-color: #333;
     --border-color: #f3e8ff;
     --shadow: rgba(124, 58, 237, 0.1);
-}
-
-[data-theme="rouge"] {
-    --primary-color: #60a5fa;
-    --primary-dark: #3b82f6;
-    --background: #1e293b;
-    --card-bg: #334155;
-    --text-color: #e2e8f0;
-    --border-color: #475569;
-    --shadow: rgba(0, 0, 0, 0.3);
 }
 
 /* ========================================
