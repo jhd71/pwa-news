@@ -1248,7 +1248,8 @@ if (chatContainer) {
 
         if (adminBtn && this.isAdmin) {
             adminBtn.addEventListener('click', () => {
-                this.showAdminPanel();
+                await this.loadBannedWords();
+				this.refreshBannedWordsList(panel); // ✅ Garde le panel ouvert
                 this.playSound('click');
             });
         }
@@ -4600,6 +4601,7 @@ showAdminPanel() {
 
 	
 	document.body.appendChild(panel);
+	this.attachRemoveWordListeners(panel);
 
 // Ajouter une classe au body pour désactiver le scroll
 if (isMobile) {
@@ -4840,11 +4842,12 @@ if (addWordBtn && wordInput) {
             }
             
             this.bannedWords.add(word);
-            this.showNotification(`✅ Mot "${word}" ajouté`, 'success');
-            wordInput.value = '';
-            
-            // Recharger le panel
-            this.showAdminPanel();
+	this.showNotification(`✅ Mot "${word}" ajouté`, 'success');
+	wordInput.value = '';
+
+	// Recharger uniquement la liste des mots bannis
+	await this.loadBannedWords();
+	this.refreshBannedWordsList(panel);
             
         } catch (error) {
             console.error('Erreur ajout mot:', error);
@@ -4860,60 +4863,6 @@ if (addWordBtn && wordInput) {
         }
     });
 }
-
-// 🔧 SUPPRIMER UN MOT BANNI (VIA API)
-panel.querySelectorAll('.banned-word-item').forEach(item => {
-    const removeBtn = item.querySelector('button');
-    if (removeBtn) {
-        removeBtn.addEventListener('click', async () => {
-            const word = item.dataset.word;
-            
-            if (!confirm(`Supprimer le mot "${word}" ?`)) {
-                return;
-            }
-            
-            console.log(`🗑️ Suppression du mot banni via API: ${word}`);
-            
-            try {
-                // Récupérer le mot de passe admin stocké
-                const adminPassword = sessionStorage.getItem('adminNotificationPassword');
-                
-                if (!adminPassword) {
-                    this.showNotification('Session admin expirée', 'error');
-                    return;
-                }
-                
-                const response = await fetch('/api/manage-banned-words', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Admin-Password': adminPassword
-                    },
-                    body: JSON.stringify({
-                        action: 'remove',
-                        word: word
-                    })
-                });
-                
-                const result = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(result.error || 'Erreur lors de la suppression');
-                }
-                
-                this.bannedWords.delete(word);
-                this.showNotification(`✅ Mot "${word}" supprimé`, 'success');
-                
-                // Recharger le panel
-                this.showAdminPanel();
-                
-            } catch (error) {
-                console.error('Erreur suppression mot:', error);
-                this.showNotification('Erreur: ' + error.message, 'error');
-            }
-        });
-    }
-});
 
 panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -6483,6 +6432,90 @@ async deleteNewsComment(commentId) {
         console.error('Erreur suppression:', error);
         this.showNotification('Erreur suppression', 'error');
     }
+}
+
+// 🔧 Rafraîchir la liste des mots bannis dans le panel
+refreshBannedWordsList(panel) {
+    const bannedWordsContainer = panel.querySelector('.banned-words-list');
+    if (!bannedWordsContainer) return;
+    
+    const isMobile = window.innerWidth <= 768;
+    
+    // Régénérer la liste HTML
+    bannedWordsContainer.innerHTML = Array.from(this.bannedWords).sort().map(word => `
+        <div class="banned-word-item" 
+             data-word="${word}"
+             style="display: flex; justify-content: space-between; align-items: center; padding: ${isMobile ? '12px 10px' : '8px 10px'}; background: rgba(255, 255, 255, 0.1); border-radius: 8px; margin-bottom: 8px;">
+            <span style="color: white; font-size: ${isMobile ? '16px' : '14px'};">${word}</span>
+            <button class="remove-word-btn" 
+                    data-word="${word}"
+                    style="background: #F44336; color: white; border: none; border-radius: 50%; width: ${isMobile ? '36px' : '28px'}; height: ${isMobile ? '36px' : '28px'}; cursor: pointer; font-size: ${isMobile ? '20px' : '16px'}; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                ×
+            </button>
+        </div>
+    `).join('');
+    
+    // Mettre à jour le compteur
+    const countElement = panel.querySelector('.banned-words-list + p');
+    if (countElement) {
+        countElement.textContent = `Total: ${this.bannedWords.size} mots bannis`;
+    }
+    
+    // Réattacher les gestionnaires de suppression
+    this.attachRemoveWordListeners(panel);
+}
+
+// 🔧 Attacher les gestionnaires de suppression de mots
+attachRemoveWordListeners(panel) {
+    panel.querySelectorAll('.remove-word-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const word = btn.dataset.word;
+            
+            if (!confirm(`Supprimer le mot "${word}" ?`)) {
+                return;
+            }
+            
+            console.log(`🗑️ Suppression du mot banni via API: ${word}`);
+            
+            try {
+                // Récupérer le mot de passe admin stocké
+                const adminPassword = sessionStorage.getItem('adminNotificationPassword');
+                
+                if (!adminPassword) {
+                    this.showNotification('Session admin expirée', 'error');
+                    return;
+                }
+                
+                const response = await fetch('/api/manage-banned-words', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Admin-Password': adminPassword
+                    },
+                    body: JSON.stringify({
+                        action: 'remove',
+                        word: word
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(result.error || 'Erreur lors de la suppression');
+                }
+                
+                this.bannedWords.delete(word);
+                this.showNotification(`✅ Mot "${word}" supprimé`, 'success');
+                
+                // Rafraîchir uniquement la liste (ne ferme pas le panel)
+                this.refreshBannedWordsList(panel);
+                
+            } catch (error) {
+                console.error('Erreur suppression mot:', error);
+                this.showNotification('Erreur: ' + error.message, 'error');
+            }
+        });
+    });
 }
 }
 export default ChatManager;
