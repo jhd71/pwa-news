@@ -1,4 +1,4 @@
-// ban-check.js - Système de gestion des bannissements pour le chat
+// ban-check.js - Système de gestion des bannissements pour le chat (Compatible RLS)
 
 (function() {
     // Variables globales
@@ -43,34 +43,34 @@
     }
     
     // Fonction pour initialiser Supabase correctement
-function initializeSupabase() {
-    try {
-        // Utiliser la fonction partagée getSupabaseClient si disponible
-        if (window.getSupabaseClient && typeof window.getSupabaseClient === 'function') {
-            supabaseClient = window.getSupabaseClient();
-            console.log("Client Supabase créé à partir de getSupabaseClient");
+    function initializeSupabase() {
+        try {
+            // Utiliser la fonction partagée getSupabaseClient si disponible
+            if (window.getSupabaseClient && typeof window.getSupabaseClient === 'function') {
+                supabaseClient = window.getSupabaseClient();
+                console.log("Client Supabase créé à partir de getSupabaseClient");
+            }
+            // Fallback vers chatManager si disponible
+            else if (window.chatManager && window.chatManager.supabase) {
+                supabaseClient = window.chatManager.supabase;
+                console.log("Utilisation du client Supabase de chatManager");
+            } 
+            // Dernier recours : créer une nouvelle instance
+            else if (window.supabase) {
+                supabaseClient = window.supabase.createClient(
+                    'https://ekjgfiyhkythqcnmhzea.supabase.co',
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4'
+                );
+                console.warn("Client Supabase créé à partir de window.supabase - envisagez d'utiliser getSupabaseClient");
+            }
+            else {
+                console.warn("Supabase non disponible - les vérifications en base de données seront ignorées");
+            }
+        } catch (error) {
+            console.error("Erreur d'initialisation de Supabase:", error);
+            supabaseClient = null;
         }
-        // Fallback vers chatManager si disponible
-        else if (window.chatManager && window.chatManager.supabase) {
-            supabaseClient = window.chatManager.supabase;
-            console.log("Utilisation du client Supabase de chatManager");
-        } 
-        // Dernier recours : créer une nouvelle instance
-        else if (window.supabase) {
-            supabaseClient = window.supabase.createClient(
-                'https://ekjgfiyhkythqcnmhzea.supabase.co',
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4'
-            );
-            console.warn("Client Supabase créé à partir de window.supabase - envisagez d'utiliser getSupabaseClient");
-        }
-        else {
-            console.warn("Supabase non disponible - les vérifications en base de données seront ignorées");
-        }
-    } catch (error) {
-        console.error("Erreur d'initialisation de Supabase:", error);
-        supabaseClient = null;
     }
-}
     
     // Fonction pour créer le bouton de vérification flottant
     function createStatusButton() {
@@ -201,7 +201,7 @@ function initializeSupabase() {
         });
     }
     
-    // Fonction principale pour vérifier le statut du bannissement
+    // ✅ FONCTION MODIFIÉE - Compatible RLS (lecture seule)
     async function checkBanStatus() {
         // Mettre à jour l'apparence du bouton
         if (statusButton) {
@@ -226,7 +226,9 @@ function initializeSupabase() {
             
             // Vérifier si supabaseClient est correctement initialisé
             if (supabaseClient && typeof supabaseClient.from === 'function') {
-                // Vérifier dans banned_ips
+                const now = new Date().toISOString();
+                
+                // ✅ Vérifier dans banned_ips (avec filtre sur expiration)
                 if (pseudo) {
                     const { data: ipBanData, error: ipBanError } = await supabaseClient
                         .from('banned_ips')
@@ -235,20 +237,15 @@ function initializeSupabase() {
                         .maybeSingle();
                     
                     if (!ipBanError && ipBanData) {
-                        // Vérifier si le bannissement a expiré
-                        if (ipBanData.expires_at && new Date(ipBanData.expires_at) < new Date()) {
-                            // Supprimer le bannissement expiré
-                            await supabaseClient
-                                .from('banned_ips')
-                                .delete()
-                                .eq('ip', pseudo);
-                        } else {
+                        // ✅ Vérifier côté client si le bannissement a expiré
+                        if (!ipBanData.expires_at || new Date(ipBanData.expires_at) > new Date()) {
                             isBannedInDatabase = true;
                         }
+                        // ⚠️ NE PLUS supprimer directement - sera nettoyé par l'API admin
                     }
                 }
                 
-                // Vérifier dans banned_real_ips
+                // ✅ Vérifier dans banned_real_ips (avec filtre sur expiration)
                 if (!isBannedInDatabase && realIP) {
                     const { data: realIpBanData, error: realIpBanError } = await supabaseClient
                         .from('banned_real_ips')
@@ -257,16 +254,11 @@ function initializeSupabase() {
                         .maybeSingle();
                     
                     if (!realIpBanError && realIpBanData) {
-                        // Vérifier si le bannissement a expiré
-                        if (realIpBanData.expires_at && new Date(realIpBanData.expires_at) < new Date()) {
-                            // Supprimer le bannissement expiré
-                            await supabaseClient
-                                .from('banned_real_ips')
-                                .delete()
-                                .eq('ip', realIP);
-                        } else {
+                        // ✅ Vérifier côté client si le bannissement a expiré
+                        if (!realIpBanData.expires_at || new Date(realIpBanData.expires_at) > new Date()) {
                             isBannedInDatabase = true;
                         }
+                        // ⚠️ NE PLUS supprimer directement - sera nettoyé par l'API admin
                     }
                 }
             } else {
@@ -281,7 +273,7 @@ function initializeSupabase() {
                 isBannedInDatabase = false;
             }
             
-            // Si l'utilisateur n'est plus banni, mettre à jour le stockage local
+            // ✅ Si l'utilisateur n'est plus banni, mettre à jour le stockage local
             if (!isBannedInDatabase) {
                 // Supprimer toutes les informations de bannissement
                 localStorage.removeItem('chat_device_banned');

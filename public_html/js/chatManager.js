@@ -876,50 +876,42 @@ list.innerHTML = words.map(w => `
 
 async unbanIP(ip) {
     try {
-        console.log(`Tentative de débannissement de l'IP: ${ip}`);
+        console.log(`🔓 Tentative de débannissement de l'IP: ${ip}`);
         
         // Animation de suppression visuelle
         const ipElement = document.querySelector(`.banned-ip[data-ip="${ip}"]`);
         if (ipElement) {
             ipElement.classList.add('removing');
-            // Attendre légèrement pour l'animation
             await new Promise(resolve => setTimeout(resolve, 300));
         }
         
-        // Essayer de définir l'utilisateur courant pour RLS
-        try {
-            await this.setCurrentUserForRLS();
-        } catch (error) {
-            console.warn("Erreur lors de la définition de l'utilisateur pour RLS, continue quand même:", error);
+        // ✅ APPEL À L'API CÔTÉ SERVEUR
+        const adminPassword = sessionStorage.getItem('adminNotificationPassword');
+        
+        if (!adminPassword) {
+            this.showNotification("Mot de passe admin requis", "error");
+            return false;
         }
         
-        // 1. Supprimer de la table banned_ips
-        console.log(`Suppression de l'IP ${ip} de la table banned_ips`);
-        const { data: deleteData, error: deleteError } = await this.supabase
-            .from('banned_ips')
-            .delete()
-            .eq('ip', ip);
+        const response = await fetch('/api/ban-management', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Admin-Password': adminPassword
+            },
+            body: JSON.stringify({
+                action: 'unban',
+                ip: ip
+            })
+        });
 
-        if (deleteError) {
-            console.warn('Erreur lors de la suppression de banned_ips:', deleteError);
-        } else {
-            console.log('Suppression réussie de banned_ips');
-        }
+        const result = await response.json();
         
-        // 2. Supprimer aussi de banned_real_ips
-        console.log(`Suppression de l'IP ${ip} de la table banned_real_ips`);
-        const { data: deleteRealData, error: deleteRealError } = await this.supabase
-            .from('banned_real_ips')
-            .delete()
-            .eq('ip', ip);
-            
-        if (deleteRealError) {
-            console.warn('Erreur lors de la suppression de banned_real_ips:', deleteRealError);
-        } else {
-            console.log('Suppression réussie de banned_real_ips');
+        if (!response.ok) {
+            throw new Error(result.error || 'Erreur débannissement');
         }
 
-        // Notification de succès
+        console.log('✅ Débannissement réussi:', result);
         this.showNotification(`IP ${ip} débannie avec succès`, 'success');
         
         // Attendre avant de recharger la liste
@@ -930,8 +922,15 @@ async unbanIP(ip) {
         
         return true;
     } catch (error) {
-        console.error('Erreur unbanIP:', error);
+        console.error('❌ Erreur unbanIP:', error);
         this.showNotification('Erreur lors du débannissement: ' + error.message, 'error');
+        
+        // Restaurer l'opacité normale
+        const ipElement = document.querySelector(`.banned-ip[data-ip="${ip}"]`);
+        if (ipElement) {
+            ipElement.style.opacity = '1';
+        }
+        
         return false;
     }
 }
@@ -5160,140 +5159,56 @@ async sendImportantNotification(title, body, url, urgent) {
             return false;
         }
         
-        // Convertir la durée
-        let expiresAt = null;
-        if (duration) {
-            expiresAt = new Date(Date.now() + duration).toISOString();
+        // ✅ APPEL À L'API CÔTÉ SERVEUR
+        const adminPassword = sessionStorage.getItem('adminNotificationPassword');
+        
+        if (!adminPassword) {
+            this.showNotification("Mot de passe admin requis", "error");
+            return false;
         }
         
-        // 1. Chercher l'IP réelle ET l'identifiant d'appareil
-        let userRealIP = null;
-        let userDeviceId = null;
+        console.log(`📡 Appel API pour bannir: ${pseudo}`);
         
-        // Chercher dans les messages récents
-        const { data: userMessages, error: messagesError } = await this.supabase
-            .from('messages')
-            .select('*')
-            .eq('pseudo', pseudo)
-            .order('created_at', { ascending: false })
-            .limit(20);
-            
-        if (!messagesError && userMessages && userMessages.length > 0) {
-            for (const msg of userMessages) {
-                // Récupérer l'IP
-                if (!userRealIP && msg.real_ip && msg.real_ip !== 'null') {
-                    userRealIP = msg.real_ip;
-                }
-                
-                // Récupérer le device ID
-                if (!userDeviceId && msg.device_id && msg.device_id !== 'null') {
-                    userDeviceId = msg.device_id;
-                }
-                
-                // Si on a trouvé les deux, on peut arrêter
-                if (userRealIP && userDeviceId) break;
-            }
-        }
-        
-        // Chercher dans le stockage local si nécessaire
-        if (!userRealIP) {
-            userRealIP = sessionStorage.getItem(`user_ip_${pseudo}`) || 
-                        localStorage.getItem(`last_ip_${pseudo}`);
-        }
-        
-        if (!userDeviceId) {
-            userDeviceId = sessionStorage.getItem(`device_${pseudo}`) || 
-                          localStorage.getItem(`last_device_${pseudo}`);
-        }
-        
-        // 2. Bannir le pseudo dans banned_ips
-        console.log(`Bannissement du pseudo: ${pseudo}`);
-        const { error: pseudoBanError } = await this.supabase
-            .from('banned_ips')
-            .insert({
+        const response = await fetch('/api/ban-management', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Admin-Password': adminPassword
+            },
+            body: JSON.stringify({
+                action: 'ban',
                 ip: pseudo,
-                banned_at: new Date().toISOString(),
-                expires_at: expiresAt,
-                reason: reason || 'Non spécifié',
-                banned_by: this.pseudo
-            });
+                reason: reason,
+                duration: duration
+            })
+        });
+
+        const result = await response.json();
         
-        if (pseudoBanError) {
-            console.error('Erreur bannissement du pseudo:', pseudoBanError);
-            throw pseudoBanError;
+        if (!response.ok) {
+            throw new Error(result.error || 'Erreur bannissement');
         }
-        
-        console.log('✓ Pseudo banni avec succès');
-        
-        // 3. Bannir l'IP réelle si trouvée
-        if (userRealIP && userRealIP !== 'null') {
-            const adminRealIP = await this.getClientRealIP();
-            
-            if (userRealIP === adminRealIP && this.isAdmin) {
-                console.warn("Protection admin : votre IP n'est pas bannie");
-                this.showNotification("Protection admin : votre IP n'a pas été bannie", "warning");
-            } else {
-                console.log(`Bannissement de l'IP réelle: ${userRealIP}`);
-                
-                const { error: ipBanError } = await this.supabase
-                    .from('banned_real_ips')
-                    .insert({
-                        ip: userRealIP,
-                        banned_at: new Date().toISOString(),
-                        expires_at: expiresAt,
-                        reason: `IP de ${pseudo} - ${reason || 'Non spécifié'}`,
-                        banned_by: this.pseudo
-                    });
-                    
-                if (!ipBanError) {
-                    console.log('✓ IP réelle bannie avec succès');
-                }
-            }
-        }
-        
-        // 4. NOUVEAU : Bannir l'identifiant d'appareil si trouvé
-        if (userDeviceId && userDeviceId !== 'null') {
-            console.log(`Bannissement de l'appareil: ${userDeviceId}`);
-            
-            // Bannir dans banned_ips avec un préfixe spécial
-            const { error: deviceBanError } = await this.supabase
-                .from('banned_ips')
-                .insert({
-                    ip: userDeviceId, // On utilise la colonne IP pour stocker le device ID
-                    banned_at: new Date().toISOString(),
-                    expires_at: expiresAt,
-                    reason: `Appareil de ${pseudo} - ${reason || 'Non spécifié'}`,
-                    banned_by: this.pseudo
-                });
-                
-            if (!deviceBanError) {
-                console.log('✓ Appareil banni avec succès');
-                this.showNotification(`${pseudo}, son IP et son appareil ont été bannis`, 'success');
-            }
-        } else {
-            this.showNotification(`${pseudo} et son IP ont été bannis (appareil non identifié)`, 'warning');
-        }
-        
-        // 5. Supprimer les messages
-        console.log('Suppression des messages...');
+
+        console.log('✅ Bannissement réussi:', result);
+
+        // Supprimer les messages de l'utilisateur (lecture/écriture autorisée)
         const { error: deleteError } = await this.supabase
             .from('messages')
             .delete()
             .eq('pseudo', pseudo);
             
-        if (!deleteError) {
-            console.log('✓ Messages supprimés');
+        if (deleteError) {
+            console.warn('⚠️ Erreur suppression messages:', deleteError);
         }
-        
-        // 6. Actualiser l'interface
+
+        this.showNotification(`${pseudo} a été banni`, 'success');
         await this.loadExistingMessages();
         await this.loadBannedIPs();
-        
         this.playSound('success');
-        return true;
         
+        return true;
     } catch (error) {
-        console.error('Erreur bannissement:', error);
+        console.error('❌ Erreur bannissement:', error);
         this.showNotification(`Erreur: ${error.message}`, 'error');
         return false;
     }
