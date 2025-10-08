@@ -4601,7 +4601,6 @@ showAdminPanel() {
 
 	
 	document.body.appendChild(panel);
-	this.attachRemoveWordListeners(panel);
 
 // Ajouter une classe au body pour désactiver le scroll
 if (isMobile) {
