@@ -722,34 +722,25 @@ startAutoBanCheck() {
 }
 
     async loadBannedWords() {
-        try {
-            const { data: words, error } = await this.supabase
-                .from('banned_words')
-                .select('*')
-                .order('added_at', { ascending: true });
+    try {
+        const { data: words, error } = await this.supabase
+            .from('banned_words')
+            .select('*')
+            .order('added_at', { ascending: true });
 
-            if (!error && words) {
-                this.bannedWords = new Set(words.map(w => w.word.toLowerCase()));
-                const list = document.querySelector('.banned-words-list');
-                if (list) {
-                    const isMobile = window.innerWidth <= 768;
-list.innerHTML = words.map(w => `
-    <div class="banned-word" style="${isMobile ? 'display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; margin-bottom: 8px; background: rgba(255, 255, 255, 0.12); border-radius: 10px;' : ''}">
-        ${w.word}
-        <button class="remove-word" data-word="${w.word}" style="${isMobile ? 'position: relative; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 22px; background: rgba(255, 70, 70, 0.2); border-radius: 50%; color: #ff4c4c;' : ''}">×</button>
-    </div>
-`).join('');
-
-                    list.querySelectorAll('.remove-word').forEach(btn => {
-                        btn.addEventListener('click', () => this.removeBannedWord(btn.dataset.word));
-                    });
-                }
-            }
-        } catch (error) {
-            console.error('Erreur loadBannedWords:', error);
-            this.bannedWords = new Set();
+        if (!error && words) {
+            // ✅ Charger seulement les données dans le Set
+            this.bannedWords = new Set(words.map(w => w.word.toLowerCase()));
+            
+            // ✅ Ne PAS générer de HTML ici
+            // Si le panel admin est ouvert, il se chargera via refreshBannedWordsList()
+            console.log(`✅ ${this.bannedWords.size} mots bannis chargés`);
         }
+    } catch (error) {
+        console.error('Erreur loadBannedWords:', error);
+        this.bannedWords = new Set();
     }
+}
 	
 	async loadBannedIPs() {
     try {
@@ -5059,30 +5050,6 @@ async sendImportantNotification(title, body, url, urgent) {
         throw error;
     }
 }
-
-    async addBannedWord(word) {
-        const { error } = await this.supabase
-            .from('banned_words')
-            .insert({ word: word });
-
-        if (!error) {
-            this.bannedWords.add(word);
-            this.showNotification('Mot ajouté avec succès', 'success');
-        }
-    }
-
-    async removeBannedWord(word) {
-        const { error } = await this.supabase
-            .from('banned_words')
-            .delete()
-            .eq('word', word);
-
-        if (!error) {
-            this.bannedWords.delete(word);
-            this.showNotification('Mot supprimé avec succès', 'success');
-            await this.loadBannedWords();
-        }
-    }
 
     showMessageOptions(message, x, y) {
     console.log('showMessageOptions appelé:', message);
