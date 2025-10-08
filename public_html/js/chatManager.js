@@ -1248,8 +1248,7 @@ if (chatContainer) {
 
         if (adminBtn && this.isAdmin) {
             adminBtn.addEventListener('click', () => {
-                await this.loadBannedWords();
-				this.refreshBannedWordsList(panel); // ✅ Garde le panel ouvert
+                this.showAdminPanel();
                 this.playSound('click');
             });
         }
