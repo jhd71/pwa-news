@@ -509,81 +509,10 @@ class ChatManager {
         }
         
         // Vérifier si l'appareil est banni dans la base de données (ancien système)
-        // ✅ VÉRIFICATIONS COMPLÈTES DE BANNISSEMENT (NOUVEAU SYSTÈME)
-            const currentDeviceId = this.getOrCreateDeviceFingerprint();
-            const currentRealIP = await this.getClientRealIP();
-
-            console.log('🔍 Vérification bannissement au login:', {
-                pseudo,
-                deviceId: currentDeviceId,
-                realIP: currentRealIP
-            });
-
-            // 1️⃣ Vérifier si le PSEUDO est banni
-            const { data: pseudoBan } = await this.supabase
-                .from('banned_ips')
-                .select('*')
-                .eq('ip', pseudo)
-                .maybeSingle();
-
-            if (pseudoBan && (!pseudoBan.expires_at || new Date(pseudoBan.expires_at) > new Date())) {
-                console.log('🚫 Pseudo banni:', pseudo);
-                this.showNotification('Ce pseudo est banni du chat', 'error');
-                this.playSound('error');
-                
-                localStorage.setItem('chat_device_banned', 'true');
-                localStorage.setItem('chat_device_banned_until', pseudoBan.expires_at || 'permanent');
-                localStorage.setItem('chat_ban_reason', pseudoBan.reason || 'Pseudo banni');
-                
-                this.showBanNotification(pseudoBan.reason || 'Pseudo banni');
-                return;
-            }
-
-            // 2️⃣ Vérifier si l'APPAREIL est banni
-            if (currentDeviceId) {
-                const { data: deviceBan } = await this.supabase
-                    .from('banned_ips')
-                    .select('*')
-                    .eq('ip', currentDeviceId)
-                    .maybeSingle();
-                    
-                if (deviceBan && (!deviceBan.expires_at || new Date(deviceBan.expires_at) > new Date())) {
-                    console.log('🚫 Appareil banni:', currentDeviceId);
-                    this.showNotification('Cet appareil est banni du chat', 'error');
-                    this.playSound('error');
-                    
-                    localStorage.setItem('chat_device_banned', 'true');
-                    localStorage.setItem('chat_device_banned_until', deviceBan.expires_at || 'permanent');
-                    localStorage.setItem('chat_ban_reason', deviceBan.reason || 'Appareil banni');
-                    
-                    this.showBanNotification(deviceBan.reason || 'Appareil banni');
-                    return;
-                }
-            }
-
-            // 3️⃣ Vérifier si l'IP RÉELLE est bannie
-            if (currentRealIP) {
-                const { data: ipBan } = await this.supabase
-                    .from('banned_real_ips')
-                    .select('*')
-                    .eq('ip', currentRealIP)
-                    .maybeSingle();
-                    
-                if (ipBan && (!ipBan.expires_at || new Date(ipBan.expires_at) > new Date())) {
-                    console.log('🚫 IP réelle bannie:', currentRealIP);
-                    this.showNotification('Votre adresse IP est bannie du chat', 'error');
-                    this.playSound('error');
-                    
-                    localStorage.setItem('chat_device_banned', 'true');
-                    localStorage.setItem('chat_device_banned_until', ipBan.expires_at || 'permanent');
-                    localStorage.setItem('chat_ban_reason', ipBan.reason || 'IP bannie');
-                    
-                    this.showBanNotification(ipBan.reason || 'IP bannie');
-                    return;
-                }
-            }
-
-            console.log('✅ Aucun bannissement détecté, connexion autorisée');
+        const isDeviceBanned = await this.isDeviceBanned();
+        if (isDeviceBanned) {
+            console.log('Appareil banni détecté (base de données)');
+            this.showNotification('Votre appareil est banni du chat', 'error');
             
             // Stocker localement pour référence future
             localStorage.setItem('device_banned_until', 'permanent');
@@ -1580,14 +1509,81 @@ async setupAuthListeners() {
             }
 
             try {
-                // Vérification simplifiée du bannissement d'appareil (ancienne méthode)
-                const isDeviceBanned = await this.isDeviceBanned();
-                if (isDeviceBanned) {
-                    console.log('[DEBUG] APPAREIL BANNI DÉTECTÉ - ACCÈS REFUSÉ');
-                    this.showNotification('Votre appareil est banni du chat', 'error');
+                // ✅ VÉRIFICATIONS COMPLÈTES DE BANNISSEMENT (NOUVEAU SYSTÈME)
+            const currentDeviceId = this.getOrCreateDeviceFingerprint();
+            const currentRealIP = await this.getClientRealIP();
+
+            console.log('🔍 Vérification bannissement au login:', {
+                pseudo,
+                deviceId: currentDeviceId,
+                realIP: currentRealIP
+            });
+
+            // 1️⃣ Vérifier si le PSEUDO est banni
+            const { data: pseudoBan } = await this.supabase
+                .from('banned_ips')
+                .select('*')
+                .eq('ip', pseudo)
+                .maybeSingle();
+
+            if (pseudoBan && (!pseudoBan.expires_at || new Date(pseudoBan.expires_at) > new Date())) {
+                console.log('🚫 Pseudo banni:', pseudo);
+                this.showNotification('Ce pseudo est banni du chat', 'error');
+                this.playSound('error');
+                
+                localStorage.setItem('chat_device_banned', 'true');
+                localStorage.setItem('chat_device_banned_until', pseudoBan.expires_at || 'permanent');
+                localStorage.setItem('chat_ban_reason', pseudoBan.reason || 'Pseudo banni');
+                
+                this.showBanNotification(pseudoBan.reason || 'Pseudo banni');
+                return;
+            }
+
+            // 2️⃣ Vérifier si l'APPAREIL est banni
+            if (currentDeviceId) {
+                const { data: deviceBan } = await this.supabase
+                    .from('banned_ips')
+                    .select('*')
+                    .eq('ip', currentDeviceId)
+                    .maybeSingle();
+                    
+                if (deviceBan && (!deviceBan.expires_at || new Date(deviceBan.expires_at) > new Date())) {
+                    console.log('🚫 Appareil banni:', currentDeviceId);
+                    this.showNotification('Cet appareil est banni du chat', 'error');
                     this.playSound('error');
+                    
+                    localStorage.setItem('chat_device_banned', 'true');
+                    localStorage.setItem('chat_device_banned_until', deviceBan.expires_at || 'permanent');
+                    localStorage.setItem('chat_ban_reason', deviceBan.reason || 'Appareil banni');
+                    
+                    this.showBanNotification(deviceBan.reason || 'Appareil banni');
                     return;
                 }
+            }
+
+            // 3️⃣ Vérifier si l'IP RÉELLE est bannie
+            if (currentRealIP) {
+                const { data: ipBan } = await this.supabase
+                    .from('banned_real_ips')
+                    .select('*')
+                    .eq('ip', currentRealIP)
+                    .maybeSingle();
+                    
+                if (ipBan && (!ipBan.expires_at || new Date(ipBan.expires_at) > new Date())) {
+                    console.log('🚫 IP réelle bannie:', currentRealIP);
+                    this.showNotification('Votre adresse IP est bannie du chat', 'error');
+                    this.playSound('error');
+                    
+                    localStorage.setItem('chat_device_banned', 'true');
+                    localStorage.setItem('chat_device_banned_until', ipBan.expires_at || 'permanent');
+                    localStorage.setItem('chat_ban_reason', ipBan.reason || 'IP bannie');
+                    
+                    this.showBanNotification(ipBan.reason || 'IP bannie');
+                    return;
+                }
+            }
+
+            console.log('✅ Aucun bannissement détecté, connexion autorisée');
 
                 // Cas administrateur - 🔒 VERIFICATION RENFORCEE
 let isAdmin = false;
