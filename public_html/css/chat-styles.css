@@ -1259,7 +1259,7 @@
 .remove-ban {
   background: none;
   border: none;
-  color: var(--chat-error);
+  color: #050505;
   width: 24px;
   height: 24px;
   border-radius: 50%;
