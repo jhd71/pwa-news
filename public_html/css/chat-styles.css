@@ -1018,6 +1018,7 @@
   /* Empêche le texte de se couper */
   white-space: nowrap;
   min-width: fit-content;
+  font-weight: bold;
 }
 
 /* Sur desktop, augmenter la largeur max du panel si nécessaire */
