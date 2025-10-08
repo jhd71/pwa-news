@@ -717,9 +717,7 @@
 /* Mobile */
 @media (max-width: 767px) {
     .cinema-widget-container {
-        position: absolute !important;
-        left: -9999px !important;
-        visibility: hidden !important;
+        display: none !important;
     }
     
     .cinema-modal-content {

@@ -1,6 +1,22 @@
 <!DOCTYPE html>
 <html lang="fr" data-theme="light" data-font-size="normal">
 <head>
+<style>
+    /* Masquer widgets sur mobile dès le chargement */
+    @media (max-width: 767px) {
+        .cinema-widget-container {
+            display: none !important;
+        }
+    }
+</style>
+<style>
+    /* Désactiver TOUTES les transitions pendant le changement de thème */
+    .theme-transitioning,
+    .theme-transitioning * {
+        transition: none !important;
+        animation: none !important;
+    }
+</style>
 <script>
     // Appliquer le thème sauvegardé dès le début du chargement
     (function() {

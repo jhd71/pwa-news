@@ -36,13 +36,23 @@ class ThemeManager {
         return;
     }
     
+    // NOUVEAU : Désactiver les transitions pendant le changement
+    document.documentElement.classList.add('theme-transitioning');
+    
+    // Forcer un repaint
+    document.documentElement.offsetHeight;
+    
+    // Changer le thème
     document.documentElement.setAttribute('data-theme', themeId);
     localStorage.setItem('theme', themeId);
-	// NOUVEAU : Mettre à jour les couleurs de la PWA
-	this.updateThemeColors(themeId);
-    
-    // NOUVEAU : Mettre à jour les couleurs de la PWA
     this.updateThemeColors(themeId);
+    
+    // Réactiver les transitions après un court délai
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            document.documentElement.classList.remove('theme-transitioning');
+        });
+    });
     
     window.dispatchEvent(new CustomEvent('themeChanged', { 
         detail: { theme: themeId }
