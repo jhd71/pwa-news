@@ -876,32 +876,26 @@ list.innerHTML = words.map(w => `
 
 async unbanIP(ip) {
     try {
-        console.log(`🔓 Tentative de débannissement de l'IP: ${ip}`);
+        console.log(`🔓 Débannissement de: ${ip}`);
         
-        // Animation de suppression visuelle
         const ipElement = document.querySelector(`.banned-ip[data-ip="${ip}"]`);
         if (ipElement) {
             ipElement.classList.add('removing');
             await new Promise(resolve => setTimeout(resolve, 300));
         }
         
-        // ✅ VÉRIFIER/DEMANDER LE MOT DE PASSE ADMIN
+        // ✅ Récupérer le mot de passe (stocké à la connexion)
         let adminPassword = sessionStorage.getItem('adminNotificationPassword');
-        const passwordTimestamp = sessionStorage.getItem('adminNotificationPasswordTime');
         
-        // Si pas de mot de passe OU expiré (5 minutes)
-        if (!adminPassword || !passwordTimestamp || (Date.now() - parseInt(passwordTimestamp) > 300000)) {
-            // Demander le mot de passe
-            const passwordInput = prompt('Entrez le mot de passe administrateur pour débannir cette IP :');
+        if (!adminPassword) {
+            const passwordInput = prompt('Entrez le mot de passe administrateur :');
             
             if (!passwordInput) {
                 this.showNotification("Débannissement annulé", "error");
-                // Restaurer l'apparence
                 if (ipElement) ipElement.classList.remove('removing');
                 return false;
             }
             
-            // Vérifier le hash du mot de passe
             const hashedPassword = window.SecurityLogger.hashPassword(passwordInput);
             const expectedHash = '6fe87dd';
             
@@ -911,18 +905,11 @@ async unbanIP(ip) {
                 return false;
             }
             
-            // Stocker temporairement
             adminPassword = passwordInput;
             sessionStorage.setItem('adminNotificationPassword', adminPassword);
             sessionStorage.setItem('adminNotificationPasswordTime', Date.now().toString());
-            
-            setTimeout(() => {
-                sessionStorage.removeItem('adminNotificationPassword');
-                sessionStorage.removeItem('adminNotificationPasswordTime');
-            }, 300000);
         }
         
-        // ✅ APPEL À L'API CÔTÉ SERVEUR
         const response = await fetch('/api/ban-management', {
             method: 'POST',
             headers: {
@@ -940,24 +927,20 @@ async unbanIP(ip) {
         if (!response.ok) {
             if (response.status === 401) {
                 sessionStorage.removeItem('adminNotificationPassword');
-                sessionStorage.removeItem('adminNotificationPasswordTime');
-                this.showNotification("❌ Mot de passe incorrect", "error");
+                this.showNotification("❌ Session expirée", "error");
             } else {
-                throw new Error(result.error || 'Erreur débannissement');
+                throw new Error(result.error || 'Erreur');
             }
             if (ipElement) ipElement.classList.remove('removing');
             return false;
         }
 
-        console.log('✅ Débannissement réussi:', result);
-        this.showNotification(`IP ${ip} débannie avec succès`, 'success');
-        
-        await new Promise(resolve => setTimeout(resolve, 300));
+        this.showNotification(`IP ${ip} débannie`, 'success');
         await this.loadBannedIPs();
         
         return true;
     } catch (error) {
-        console.error('❌ Erreur unbanIP:', error);
+        console.error('❌ Erreur:', error);
         this.showNotification('Erreur: ' + error.message, 'error');
         
         const ipElement = document.querySelector(`.banned-ip[data-ip="${ip}"]`);
@@ -1541,42 +1524,49 @@ if (pseudo === 'Admin_ActuMedia') {
     console.log('Tentative connexion admin');
     
     const hashedPassword = window.SecurityLogger.hashPassword(adminPassword);
-const expectedHash = '6fe87dd'; // Hash du nouveau mot de passe sécurisé
+    const expectedHash = '6fe87dd'; // Hash du mot de passe sécurisé
 
-if (hashedPassword !== expectedHash) {
-    this.showNotification('Mot de passe administrateur incorrect', 'error');
-    this.playSound('error');
-    return;
-}
+    if (hashedPassword !== expectedHash) {
+        this.showNotification('Mot de passe administrateur incorrect', 'error');
+        this.playSound('error');
+        return;
+    }
+    
+    // ✅ NOUVEAU : Stocker le mot de passe admin pour les opérations futures
+    if (typeof window.allowNewsAuthenticationChange === 'function') {
+        window.allowNewsAuthenticationChange(() => {
+            sessionStorage.setItem('adminNotificationPassword', adminPassword);
+            sessionStorage.setItem('adminNotificationPasswordTime', Date.now().toString());
+        });
+    } else {
+        sessionStorage.setItem('adminNotificationPassword', adminPassword);
+        sessionStorage.setItem('adminNotificationPasswordTime', Date.now().toString());
+    }
+    
+    // Auto-expiration après 2 heures (au lieu de 5 minutes)
+    setTimeout(() => {
+        sessionStorage.removeItem('adminNotificationPassword');
+        sessionStorage.removeItem('adminNotificationPasswordTime');
+        console.log('🔒 Session admin expirée');
+    }, 7200000); // 2 heures
     
     // 🔒 NOUVEAU: Vérification supplémentaire côté serveur
     try {
-        const { data: adminCheck, error: adminError } = await this.supabase
+        const { data: userData, error: userError } = await this.supabase
             .from('users')
             .select('is_admin')
             .eq('pseudo', pseudo)
-            .maybeSingle();
+            .single();
             
-        if (adminError && adminError.code !== 'PGRST116') {
-            console.error('Erreur vérification admin:', adminError);
-            this.showNotification('Erreur de vérification admin', 'error');
-            return;
-        }
-        
-        // Si l'utilisateur n'existe pas ou n'est pas admin, le créer/mettre à jour
-        if (!adminCheck || !adminCheck.is_admin) {
+        if (!userError && userData && !userData.is_admin) {
+            // Mettre à jour le statut admin
             const { error: updateError } = await this.supabase
                 .from('users')
-                .upsert({ 
-                    pseudo: pseudo,
-                    is_admin: true,
-                    last_active: new Date().toISOString()
-                });
+                .update({ is_admin: true })
+                .eq('pseudo', pseudo);
                 
             if (updateError) {
-                console.error('Erreur mise à jour admin:', updateError);
-                this.showNotification('Erreur de mise à jour admin', 'error');
-                return;
+                console.warn('Erreur mise à jour statut admin:', updateError);
             }
         }
         
@@ -1588,8 +1578,8 @@ if (hashedPassword !== expectedHash) {
         return;
     }
 } else {
-                    console.log('Tentative connexion utilisateur normal');
-                }
+    console.log('Tentative connexion utilisateur normal');
+}
 
                 // Vérifier si l'utilisateur existe déjà
                 const { data: existingUser, error: queryError } = await this.supabase
@@ -5184,54 +5174,40 @@ async sendImportantNotification(title, body, url, urgent) {
 
     async banUser(userIdentifier, reason = '', duration = null) {
     try {
-        // Extraire le pseudo
         const pseudo = userIdentifier.includes('-') ? userIdentifier.split('-')[0] : userIdentifier;
         
-        // Vérification de sécurité : ne pas bannir l'administrateur
         if (pseudo === this.pseudo && this.isAdmin) {
-            console.warn("Tentative de bannissement de soi-même détectée et bloquée");
             this.showNotification("Vous ne pouvez pas vous bannir vous-même", "error");
             return false;
         }
         
-        // ✅ VÉRIFIER/DEMANDER LE MOT DE PASSE ADMIN
+        // ✅ Récupérer le mot de passe (stocké à la connexion)
         let adminPassword = sessionStorage.getItem('adminNotificationPassword');
-        const passwordTimestamp = sessionStorage.getItem('adminNotificationPasswordTime');
         
-        // Si pas de mot de passe OU expiré (5 minutes)
-        if (!adminPassword || !passwordTimestamp || (Date.now() - parseInt(passwordTimestamp) > 300000)) {
-            // Demander le mot de passe
-            const passwordInput = prompt('Entrez le mot de passe administrateur pour bannir cet utilisateur :');
+        // ⚠️ Demander uniquement si pas connecté en admin OU session expirée
+        if (!adminPassword) {
+            const passwordInput = prompt('Entrez le mot de passe administrateur :');
             
             if (!passwordInput) {
                 this.showNotification("Bannissement annulé", "error");
                 return false;
             }
             
-            // Vérifier le hash du mot de passe
             const hashedPassword = window.SecurityLogger.hashPassword(passwordInput);
-            const expectedHash = '6fe87dd'; // Hash de votre mot de passe
+            const expectedHash = '6fe87dd';
             
             if (hashedPassword !== expectedHash) {
                 this.showNotification("❌ Mot de passe incorrect", "error");
                 return false;
             }
             
-            // Stocker temporairement le mot de passe (5 minutes)
             adminPassword = passwordInput;
             sessionStorage.setItem('adminNotificationPassword', adminPassword);
             sessionStorage.setItem('adminNotificationPasswordTime', Date.now().toString());
-            
-            // Supprimer automatiquement après 5 minutes
-            setTimeout(() => {
-                sessionStorage.removeItem('adminNotificationPassword');
-                sessionStorage.removeItem('adminNotificationPasswordTime');
-            }, 300000);
         }
         
-        console.log(`📡 Appel API pour bannir: ${pseudo}`);
+        console.log(`📡 Bannissement de: ${pseudo}`);
         
-        // ✅ APPEL À L'API CÔTÉ SERVEUR
         const response = await fetch('/api/ban-management', {
             method: 'POST',
             headers: {
@@ -5249,29 +5225,19 @@ async sendImportantNotification(title, body, url, urgent) {
         const result = await response.json();
         
         if (!response.ok) {
-            // Si erreur 401, supprimer le mot de passe stocké
             if (response.status === 401) {
                 sessionStorage.removeItem('adminNotificationPassword');
                 sessionStorage.removeItem('adminNotificationPasswordTime');
-                this.showNotification("❌ Mot de passe incorrect, veuillez réessayer", "error");
+                this.showNotification("❌ Session expirée, reconnectez-vous", "error");
             } else {
                 throw new Error(result.error || 'Erreur bannissement');
             }
             return false;
         }
 
-        console.log('✅ Bannissement réussi:', result);
-
-        // Supprimer les messages de l'utilisateur
-        const { error: deleteError } = await this.supabase
-            .from('messages')
-            .delete()
-            .eq('pseudo', pseudo);
-            
-        if (deleteError) {
-            console.warn('⚠️ Erreur suppression messages:', deleteError);
-        }
-
+        // Supprimer les messages
+        await this.supabase.from('messages').delete().eq('pseudo', pseudo);
+        
         this.showNotification(`${pseudo} a été banni`, 'success');
         await this.loadExistingMessages();
         await this.loadBannedIPs();
@@ -5279,7 +5245,7 @@ async sendImportantNotification(title, body, url, urgent) {
         
         return true;
     } catch (error) {
-        console.error('❌ Erreur bannissement:', error);
+        console.error('❌ Erreur:', error);
         this.showNotification(`Erreur: ${error.message}`, 'error');
         return false;
     }
