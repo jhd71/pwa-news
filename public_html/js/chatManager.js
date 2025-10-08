@@ -4590,25 +4590,24 @@ showAdminPanel() {
 `;
 
 	
-	document.body.appendChild(panel);
+document.body.appendChild(panel);
 
 // Ajouter une classe au body pour désactiver le scroll
 if (isMobile) {
     document.body.classList.add('admin-panel-open');
 }
-    
-    // Ajouter une classe au body pour désactiver le scroll
-    if (isMobile) {
-        document.body.classList.add('admin-panel-open');
-    }
-    
-    this.loadBannedWords();
-    this.loadBannedIPs();
 
-	// Charger les stats NEWS par défaut
-	this.loadNewsStats();
-	this.loadRecentNews();
-	this.loadAnnoncesStats();
+// ✅ Charger les données ET afficher les mots bannis
+this.loadBannedWords().then(() => {
+    this.refreshBannedWordsList(panel);
+});
+
+this.loadBannedIPs();
+
+// Charger les stats NEWS par défaut
+this.loadNewsStats();
+this.loadRecentNews();
+this.loadAnnoncesStats();
 
 // 🆕 AJOUTEZ ICI : Initialiser l'affichage par défaut des commentaires
 const photosList = panel.querySelector('.photo-comments-list');
