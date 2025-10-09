@@ -5365,7 +5365,7 @@ showReportDialog(contentType, contentId, contentAuthor, contentText) {
             </div>
             
             <label style="display: block; margin: 15px 0 5px 0; font-weight: bold;">Raison du signalement :</label>
-            <select id="report-category" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; font-size: 14px;">
+            <select id="report-category" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); font-size: 14px;">
                 <option value="spam">🚫 Spam / Publicité</option>
                 <option value="insulte">😡 Insultes / Harcèlement</option>
                 <option value="inapproprié">⚠️ Contenu inapproprié</option>
