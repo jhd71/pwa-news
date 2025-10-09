@@ -5059,7 +5059,7 @@ panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) =
 	}
 	
 	// 🚩 Gestionnaires pour les filtres de signalements
-panel.querySelectorAll('.filter-btn').forEach(btn => {
+panel.querySelectorAll('.filter-reports-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         // Mettre à jour les styles des boutons
         panel.querySelectorAll('.filter-btn').forEach(b => {
@@ -6214,7 +6214,6 @@ if (!commentsList) {
     }
 }
 
-// Méthode pour supprimer un commentaire
 // Méthode pour supprimer un commentaire
 async deletePhotoComment(commentId) {
     try {
