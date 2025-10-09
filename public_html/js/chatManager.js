@@ -25,11 +25,11 @@ import notificationManager from '/js/notification-manager.js';
     // Attendre que le DOM soit chargé
     document.addEventListener('DOMContentLoaded', function() {
         // Vérifier si le CSS est déjà chargé
-        if (!document.getElementById('chat-styles.css')) {
+        if (!document.getElementById('chat-ban-css')) {
             const link = document.createElement('link');
-            link.id = 'chat-styles.css';
+            link.id = 'chat-ban-css';
             link.rel = 'stylesheet';
-            link.href = '/css/chat-styles.css'; // Assurez-vous que ce fichier existe
+            link.href = '/css/chat-ban.css'; // Assurez-vous que ce fichier existe
             document.head.appendChild(link);
         }
         
