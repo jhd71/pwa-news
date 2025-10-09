@@ -6944,10 +6944,15 @@ async loadReports(filter = 'pending') {
         // Définir RLS
         await this.setCurrentUserForRLS();
         
-        // Récupérer TOUS les signalements d'abord
+        // ✅ AJOUTER un timestamp pour forcer le rafraîchissement
+        const timestamp = Date.now();
+        console.log(`🕐 Timestamp: ${timestamp}`);
+        
+        // Récupérer TOUS les signalements avec un filtre qui force le refresh
         const { data: allReports, error } = await this.supabase
             .from('reports')
             .select('*')
+            .gte('created_at', '2020-01-01')  // ✅ Force Supabase à recharger
             .order('created_at', { ascending: false });
         
         if (error) {
@@ -6957,6 +6962,14 @@ async loadReports(filter = 'pending') {
         }
         
         console.log(`📦 Total de signalements dans la base: ${allReports?.length || 0}`);
+        
+        // Afficher TOUS les signalements avec leur statut
+        if (allReports && allReports.length > 0) {
+            console.log('📊 Détails de tous les signalements:');
+            allReports.forEach(r => {
+                console.log(`  - ID: ${r.id.substring(0, 8)}... | Status: "${r.status}" | Content: ${r.content_text?.substring(0, 30)}`);
+            });
+        }
         
         // Filtrer côté client
         let reports = allReports || [];
@@ -6985,6 +6998,8 @@ async loadReports(filter = 'pending') {
             const countBadge = document.getElementById('pending-reports-count');
             if (countBadge) countBadge.textContent = reports.length;
         }
+        
+        console.log(`✅ Affichage de ${reports.length} signalements avec le filtre "${filter}"`);
         
     } catch (error) {
         console.error('❌ Erreur loadReports:', error);
@@ -7125,22 +7140,21 @@ document.querySelectorAll('.delete-content-btn').forEach(btn => {
             const success = await this.deleteReportedContent(contentType, contentId, reportId);
             
             if (success) {
-                console.log('✅ Suppression terminée, attente de 1 seconde avant rechargement...');
-                
-                // ✅ AJOUTER UN DÉLAI POUR LAISSER SUPABASE SE SYNCHRONISER
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                
-                console.log('🔄 Rechargement de la liste...');
-                
-                // Recharger avec le filtre actif
-                const activeFilter = document.querySelector('.filter-reports-btn.active');
-                const currentFilter = activeFilter ? activeFilter.dataset.status : 'pending';
-                
-                await this.loadReports(currentFilter);
-                await this.updateReportsCount();
-                
-                console.log('✅ Rechargement terminé');
-            }
+    console.log('✅ Suppression terminée, attente de 2 secondes avant rechargement...');
+    
+    // ✅ AUGMENTER à 2 secondes
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    console.log('🔄 Rechargement de la liste...');
+    
+    const activeFilter = document.querySelector('.filter-reports-btn.active');
+    const currentFilter = activeFilter ? activeFilter.dataset.status : 'pending';
+    
+    await this.loadReports(currentFilter);
+    await this.updateReportsCount();
+    
+    console.log('✅ Rechargement terminé');
+}
         }
     });
 });
@@ -7186,7 +7200,18 @@ document.querySelectorAll('.dismiss-report-btn').forEach(btn => {
 // 🚩 Mettre à jour le statut d'un signalement
 async updateReportStatus(reportId, status, action, notes) {
     try {
-        const { error } = await this.supabase
+        console.log(`📝 Mise à jour signalement ${reportId} vers statut "${status}"`);
+        
+        // Définir l'utilisateur pour RLS
+        const rlsSuccess = await this.setCurrentUserForRLS();
+        console.log(`🔐 RLS défini: ${rlsSuccess ? 'OK' : 'ERREUR'}`);
+        
+        if (!rlsSuccess) {
+            console.warn('⚠️ RLS non défini, mise à jour risque d\'échouer');
+        }
+        
+        // ✅ UTILISER .select() pour forcer un RETURNING
+        const { data, error } = await this.supabase
             .from('reports')
             .update({
                 status: status,
@@ -7195,16 +7220,23 @@ async updateReportStatus(reportId, status, action, notes) {
                 admin_notes: notes,
                 reviewed_at: new Date().toISOString()
             })
-            .eq('id', reportId);
+            .eq('id', reportId)
+            .select()  // ✅ CRITIQUE : Force un RETURNING
+            .single(); // ✅ Retourne directement l'objet
         
-        if (error) throw error;
+        if (error) {
+            console.error('❌ Erreur UPDATE:', error);
+            throw error;
+        }
         
         console.log(`✅ Signalement ${reportId} marqué comme ${status}`);
+        console.log('📊 Nouvelle valeur confirmée:', data);
+        
         return true;
         
     } catch (error) {
         console.error('Erreur mise à jour signalement:', error);
-        this.showNotification('Erreur de mise à jour', 'error');
+        this.showNotification('Erreur: ' + error.message, 'error');
         return false;
     }
 }
