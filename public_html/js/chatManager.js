@@ -6514,18 +6514,35 @@ async loadReports(status = 'pending') {
         // Définir l'utilisateur pour RLS
         await this.setCurrentUserForRLS();
         
-        // Construire la requête
-        let query = this.supabase
-            .from('reports')
-            .select('*')
-            .order('created_at', { ascending: false });
-        
-        // Filtrer par statut si nécessaire
-        if (status !== 'all') {
-            query = query.eq('status', status);
-        }
-        
-        const { data: reports, error } = await query;
+        // Construire la requête avec le bon filtre
+let query = this.supabase
+    .from('reports')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+// ✅ CRITIQUE : Appliquer le filtre CORRECTEMENT
+if (filter === 'pending') {
+    query = query.eq('status', 'pending');
+    console.log('🔍 Filtre appliqué: SEULEMENT status = pending');
+} else if (filter === 'reviewed') {
+    query = query.neq('status', 'pending');
+    console.log('🔍 Filtre appliqué: TOUS sauf pending');
+}
+
+// 🆕 AJOUTER UN LOG DE LA REQUÊTE
+console.log('🔎 Requête SQL construite:', query);
+
+const { data: reports, error } = await query;
+
+// 🆕 AJOUTER DES LOGS DÉTAILLÉS
+console.log('📊 Résultat brut de Supabase:');
+if (reports && reports.length > 0) {
+    reports.forEach(r => {
+        console.log(`  - ID: ${r.id.substring(0, 8)}... | Status: ${r.status} | Content: ${r.content_text?.substring(0, 30)}`);
+    });
+} else {
+    console.log('  Aucun signalement retourné');
+}
         
         if (error) {
             console.error('Erreur chargement signalements:', error);
@@ -6927,8 +6944,14 @@ async loadReports(filter = 'pending') {
         
         container.innerHTML = '<div class="loading-reports">Chargement...</div>';
         
-        // Définir l'utilisateur pour RLS
-        await this.setCurrentUserForRLS();
+        // ✅ CRITIQUE : Définir l'utilisateur pour RLS AVANT la requête
+        console.log('🔐 Définition de l\'utilisateur RLS...');
+        const rlsSuccess = await this.setCurrentUserForRLS();
+        console.log(`🔐 RLS défini: ${rlsSuccess ? 'OK' : 'ERREUR'}`);
+        
+        if (!rlsSuccess) {
+            console.warn('⚠️ RLS non défini, les résultats peuvent être incorrects');
+        }
         
         // Construire la requête avec le bon filtre
         let query = this.supabase
@@ -7130,14 +7153,26 @@ document.querySelectorAll('.delete-content-btn').forEach(btn => {
         const contentId = btn.dataset.id;
         
         if (confirm(`Supprimer ce ${contentType} ?`)) {
+            console.log('🔄 Début suppression...');
+            
             const success = await this.deleteReportedContent(contentType, contentId, reportId);
             
             if (success) {
-                // ✅ Recharger avec le filtre actif
+                console.log('✅ Suppression terminée, attente de 1 seconde avant rechargement...');
+                
+                // ✅ AJOUTER UN DÉLAI POUR LAISSER SUPABASE SE SYNCHRONISER
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                console.log('🔄 Rechargement de la liste...');
+                
+                // Recharger avec le filtre actif
                 const activeFilter = document.querySelector('.filter-reports-btn.active');
                 const currentFilter = activeFilter ? activeFilter.dataset.status : 'pending';
-                this.loadReports(currentFilter);
-                this.updateReportsCount();
+                
+                await this.loadReports(currentFilter);
+                await this.updateReportsCount();
+                
+                console.log('✅ Rechargement terminé');
             }
         }
     });
