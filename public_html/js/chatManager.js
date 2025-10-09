@@ -2238,7 +2238,12 @@ div.innerHTML = `
   <div class="message-reactions" data-message-id="${message.id}"></div>
   <button class="add-reaction" title="Ajouter une réaction">
     <span class="material-icons">add_reaction</span>
-  </button>
+</button>
+${message.pseudo !== this.pseudo ? `
+<button class="report-message" title="Signaler ce message" data-message-id="${message.id}">
+    <span class="material-icons">flag</span>
+</button>
+` : ''}
 `;
 
   // Gestion des réactions
@@ -2310,7 +2315,19 @@ div.innerHTML = `
 	// Charger les réactions existantes
   this.loadMessageReactions(message.id);
 
-    return div;
+    // 🚩 Gestionnaire de signalement
+  const reportBtn = div.querySelector('.report-message');
+  if (reportBtn) {
+    reportBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.showReportDialog('message', message.id, message.pseudo, message.content);
+    });
+  }
+
+  // Charger les réactions existantes
+  this.loadMessageReactions(message.id);
+
+  return div;
 }
 
     async loadExistingMessages() {
@@ -4386,6 +4403,7 @@ showAdminPanel() {
 		<button class="tab-btn" data-tab="annonces" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">📢 Annonces</button>
 		<button class="tab-btn" data-tab="news-admin" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">NEWS Admin</button>
 		<button class="tab-btn" data-tab="visitor-stats" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">📊 Visiteurs</button>
+		<button class="tab-btn" data-tab="reports" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">🚩 Signalements (<span id="pending-reports-count">0</span>)</button>
     </div>
     <div class="panel-content" style="${isMobile ? 'padding: 15px; height: calc(100% - 130px); overflow-y: auto; -webkit-overflow-scrolling: touch;' : ''}">
         <!-- Onglet Mots bannis -->
@@ -4544,6 +4562,20 @@ showAdminPanel() {
     </div>
 </div>
 
+<!-- 🚩 SECTION SIGNALEMENTS -->
+<div class="tab-section" id="reports-section">
+    <h4>🚩 Gestion des signalements</h4>
+    
+    <div class="reports-filters" style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <button class="filter-btn active" data-filter="pending" style="flex: 1; padding: 10px; border-radius: 8px; border: none; cursor: pointer; background: #F44336; color: white;">En attente</button>
+        <button class="filter-btn" data-filter="reviewed" style="flex: 1; padding: 10px; border-radius: 8px; border: none; cursor: pointer; background: rgba(255,255,255,0.2); color: white;">Traités</button>
+        <button class="filter-btn" data-filter="all" style="flex: 1; padding: 10px; border-radius: 8px; border: none; cursor: pointer; background: rgba(255,255,255,0.2); color: white;">Tous</button>
+    </div>
+    
+    <div class="reports-list" style="${isMobile ? 'max-height: none; overflow-y: auto;' : ''}">
+        <div class="loading-reports">Chargement des signalements...</div>
+    </div>
+</div>
 <!-- 🔧 SECTION VISITEURS CORRIGÉE POUR MOBILE -->
 <div class="tab-section" id="visitor-stats-section">
     <h4 style="color: #ffffff; font-weight: bold; margin-bottom: 15px;">📊 Statistiques visiteurs</h4>
@@ -4679,6 +4711,11 @@ tabBtns.forEach(btn => {
 if (btn.dataset.tab === 'news-admin') {
     this.loadNewsStats();
     this.loadRecentNews();
+}
+
+// Charger les signalements si l'onglet Reports est sélectionné
+if (btn.dataset.tab === 'reports') {
+    this.loadReports('pending');
 }
 
 // Gestion de l'onglet visiteurs (pas de chargement spécial nécessaire)
@@ -5013,6 +5050,23 @@ panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) =
 			}
 		});
 	}
+	
+	// 🚩 Gestionnaires pour les filtres de signalements
+panel.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Mettre à jour les styles des boutons
+        panel.querySelectorAll('.filter-btn').forEach(b => {
+            b.style.background = 'rgba(255,255,255,0.2)';
+            b.classList.remove('active');
+        });
+        btn.style.background = '#F44336';
+        btn.classList.add('active');
+        
+        // Charger les signalements avec le filtre
+        const filter = btn.dataset.filter;
+        this.loadReports(filter);
+    });
+});
 }
 
 async sendImportantNotification(title, body, url, urgent) {
@@ -5262,6 +5316,130 @@ async sendImportantNotification(title, body, url, urgent) {
             dialog.remove();
         });
     }
+
+showReportDialog(contentType, contentId, contentAuthor, contentText) {
+    // Vérifier si l'utilisateur est connecté
+    if (!this.pseudo) {
+        this.showNotification('Vous devez être connecté pour signaler', 'error');
+        return;
+    }
+    
+    // Ne pas permettre de se signaler soi-même
+    if (contentAuthor === this.pseudo) {
+        this.showNotification('Vous ne pouvez pas vous signaler vous-même', 'error');
+        return;
+    }
+    
+    const dialog = document.createElement('div');
+    dialog.className = 'report-dialog';
+    dialog.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    `;
+    
+    dialog.innerHTML = `
+        <div class="report-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7);"></div>
+        <div class="report-content" style="position: relative; background: var(--chat-gradient); padding: 30px; border-radius: 15px; max-width: 500px; width: 90%; color: white; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);">
+            <h3 style="margin-top: 0;">🚩 Signaler ce ${contentType === 'message' ? 'message' : 'contenu'}</h3>
+            <div class="report-preview" style="background: rgba(0, 0, 0, 0.3); padding: 10px; border-radius: 8px; margin: 15px 0; font-style: italic;">
+                "${contentText.substring(0, 100)}${contentText.length > 100 ? '...' : ''}"
+            </div>
+            
+            <label style="display: block; margin: 15px 0 5px 0; font-weight: bold;">Raison du signalement :</label>
+            <select id="report-category" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; font-size: 14px;">
+                <option value="spam">🚫 Spam / Publicité</option>
+                <option value="insulte">😡 Insultes / Harcèlement</option>
+                <option value="inapproprié">⚠️ Contenu inapproprié</option>
+                <option value="désinformation">📰 Désinformation</option>
+                <option value="autre">❓ Autre</option>
+            </select>
+            
+            <label style="display: block; margin: 15px 0 5px 0; font-weight: bold;">Détails (optionnel) :</label>
+            <textarea id="report-details" placeholder="Expliquez pourquoi vous signalez ce contenu..." style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; min-height: 80px; font-family: inherit; resize: vertical;"></textarea>
+            
+            <div class="report-buttons" style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="cancel-report" style="flex: 1; padding: 12px; border-radius: 8px; border: none; cursor: pointer; background: rgba(255, 255, 255, 0.2); color: white; font-weight: bold;">Annuler</button>
+                <button class="confirm-report" style="flex: 1; padding: 12px; border-radius: 8px; border: none; cursor: pointer; background: #F44336; color: white; font-weight: bold;">📤 Envoyer</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(dialog);
+    
+    // Gestionnaire fermeture
+    dialog.querySelector('.cancel-report').addEventListener('click', () => dialog.remove());
+    dialog.querySelector('.report-overlay').addEventListener('click', () => dialog.remove());
+    
+    // Gestionnaire envoi
+    dialog.querySelector('.confirm-report').addEventListener('click', async () => {
+        const category = dialog.querySelector('#report-category').value;
+        const details = dialog.querySelector('#report-details').value;
+        
+        const success = await this.submitReport(
+            contentType, 
+            contentId, 
+            contentAuthor, 
+            contentText, 
+            category, 
+            details
+        );
+        
+        if (success) {
+            dialog.remove();
+        }
+    });
+}
+
+async submitReport(contentType, contentId, contentAuthor, contentText, category, details) {
+    try {
+        // Obtenir l'IP du rapporteur
+        const reporterIP = await this.getClientRealIP();
+        
+        const response = await fetch('/api/submit-report', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                contentType: contentType,
+                contentId: contentId,
+                contentAuthor: contentAuthor,
+                contentText: contentText,
+                reportedBy: this.pseudo,
+                category: category,
+                reason: details || `Signalé comme: ${category}`,
+                reporterIP: reporterIP
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (!response.ok) {
+            if (response.status === 400) {
+                this.showNotification('Vous avez déjà signalé ce contenu', 'error');
+            } else {
+                throw new Error(result.error || 'Erreur lors du signalement');
+            }
+            return false;
+        }
+        
+        this.showNotification('✅ Signalement envoyé avec succès', 'success');
+        this.playSound('success');
+        return true;
+        
+    } catch (error) {
+        console.error('Erreur signalement:', error);
+        this.showNotification('Erreur: ' + error.message, 'error');
+        return false;
+    }
+}
 
     async banUser(userIdentifier, reason = '', duration = null) {
     try {
@@ -6480,6 +6658,277 @@ attachRemoveWordListeners(panel) {
             }
         });
     });
+}
+
+// 🚩 Charger les signalements
+async loadReports(filter = 'pending') {
+    try {
+        console.log(`📋 Chargement des signalements: ${filter}`);
+        
+        const container = document.querySelector('.reports-list');
+        if (!container) return;
+        
+        container.innerHTML = '<div class="loading-reports">Chargement des signalements...</div>';
+        
+        // Construire la requête selon le filtre
+        let query = this.supabase
+            .from('reports')
+            .select('*')
+            .order('created_at', { ascending: false });
+        
+        if (filter === 'pending') {
+            query = query.eq('status', 'pending');
+        } else if (filter === 'reviewed') {
+            query = query.in('status', ['reviewed', 'resolved', 'dismissed']);
+        }
+        // Si filter === 'all', pas de filtre supplémentaire
+        
+        const { data: reports, error } = await query;
+        
+        if (error) {
+            console.error('Erreur chargement signalements:', error);
+            container.innerHTML = `<div class="error">Erreur: ${error.message}</div>`;
+            return;
+        }
+        
+        // Mettre à jour le compteur
+        const pendingCount = reports.filter(r => r.status === 'pending').length;
+        const countElement = document.getElementById('pending-reports-count');
+        if (countElement) {
+            countElement.textContent = pendingCount;
+        }
+        
+        if (!reports || reports.length === 0) {
+            container.innerHTML = '<div class="no-data">Aucun signalement</div>';
+            return;
+        }
+        
+        // Afficher les signalements
+        container.innerHTML = reports.map(report => this.createReportCard(report)).join('');
+        
+        // Ajouter les gestionnaires d'événements
+        this.setupReportActions();
+        
+    } catch (error) {
+        console.error('Erreur loadReports:', error);
+        const container = document.querySelector('.reports-list');
+        if (container) {
+            container.innerHTML = `<div class="error">Erreur: ${error.message}</div>`;
+        }
+    }
+}
+
+// 🚩 Créer une carte de signalement
+createReportCard(report) {
+    const isPending = report.status === 'pending';
+    const isMobile = window.innerWidth <= 768;
+    
+    // Emoji selon la catégorie
+    const categoryEmoji = {
+        'spam': '🚫',
+        'insulte': '😡',
+        'inapproprié': '⚠️',
+        'désinformation': '📰',
+        'autre': '❓'
+    };
+    
+    // Couleur selon le statut
+    const statusColor = {
+        'pending': '#F44336',
+        'reviewed': '#FFC107',
+        'resolved': '#4CAF50',
+        'dismissed': '#9E9E9E'
+    };
+    
+    return `
+        <div class="report-card" data-report-id="${report.id}" style="background: rgba(30, 30, 30, 0.8); border-radius: 10px; padding: 15px; margin-bottom: 15px; border-left: 4px solid ${statusColor[report.status] || '#FFA726'};">
+            
+            <!-- En-tête -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span style="background: ${statusColor[report.status] || '#FFA726'}; color: white; padding: 5px 10px; border-radius: 5px; font-size: 12px; font-weight: bold;">
+                    ${categoryEmoji[report.category] || '❓'} ${report.category.toUpperCase()}
+                </span>
+                <span style="font-size: 12px; color: #aaa;">
+                    ${new Date(report.created_at).toLocaleString('fr-FR')}
+                </span>
+            </div>
+            
+            <!-- Contenu signalé -->
+            <div style="background: rgba(0, 0, 0, 0.3); padding: 10px; border-radius: 8px; margin: 10px 0;">
+                <strong style="color: #FFA726;">Contenu signalé (${report.content_type}):</strong>
+                <p style="margin: 5px 0; font-style: italic; color: #ddd;">"${report.content_text || 'Contenu non disponible'}"</p>
+                <small style="color: #aaa;">Auteur: <strong>${report.content_author}</strong></small>
+            </div>
+            
+            <!-- Raison du signalement -->
+            <div style="margin: 10px 0;">
+                <strong style="color: #4CAF50;">Raison:</strong>
+                <p style="margin: 5px 0; color: #ddd;">${report.reason || 'Non spécifiée'}</p>
+            </div>
+            
+            <!-- Informations du rapporteur -->
+            <div style="margin: 10px 0;">
+                <small style="color: #aaa;">
+                    Signalé par: <strong>${report.reported_by}</strong>
+                    ${report.reporter_ip ? ` (IP: ${report.reporter_ip})` : ''}
+                </small>
+            </div>
+            
+            <!-- Actions (si en attente) -->
+            ${isPending ? `
+                <div class="report-actions" style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                    <button class="ban-author-btn" 
+                            data-report-id="${report.id}"
+                            data-author="${report.content_author}" 
+                            style="flex: 1; min-width: ${isMobile ? '100%' : '140px'}; padding: 10px; border-radius: 8px; border: none; cursor: pointer; background: #F44336; color: white; font-weight: bold;">
+                        🚫 Bannir l'auteur
+                    </button>
+                    <button class="delete-content-btn" 
+                            data-report-id="${report.id}"
+                            data-type="${report.content_type}" 
+                            data-id="${report.content_id}"
+                            style="flex: 1; min-width: ${isMobile ? '100%' : '140px'}; padding: 10px; border-radius: 8px; border: none; cursor: pointer; background: #FF9800; color: white; font-weight: bold;">
+                        🗑️ Supprimer contenu
+                    </button>
+                    <button class="dismiss-report-btn" 
+                            data-report-id="${report.id}"
+                            style="flex: 1; min-width: ${isMobile ? '100%' : '140px'}; padding: 10px; border-radius: 8px; border: none; cursor: pointer; background: #4CAF50; color: white; font-weight: bold;">
+                        ✅ Ignorer
+                    </button>
+                </div>
+            ` : `
+                <div style="background: rgba(76, 175, 80, 0.2); padding: 10px; border-radius: 8px; margin-top: 10px;">
+                    <small style="color: #4CAF50;">
+                        ✓ Traité par <strong>${report.reviewed_by || 'Admin'}</strong>
+                        ${report.reviewed_at ? ` le ${new Date(report.reviewed_at).toLocaleString('fr-FR')}` : ''}
+                        ${report.admin_action ? ` - Action: <strong>${report.admin_action}</strong>` : ''}
+                    </small>
+                    ${report.admin_notes ? `<p style="margin: 5px 0 0 0; font-size: 12px; color: #aaa;">Note: ${report.admin_notes}</p>` : ''}
+                </div>
+            `}
+        </div>
+    `;
+}
+
+// 🚩 Configurer les actions sur les signalements
+setupReportActions() {
+    // Bannir l'auteur
+    document.querySelectorAll('.ban-author-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const reportId = btn.dataset.reportId;
+            const author = btn.dataset.author;
+            
+            if (confirm(`Bannir l'utilisateur ${author} ?`)) {
+                // Utiliser la fonction de bannissement existante
+                const success = await this.banUser(author, 'Signalé par la communauté', null);
+                
+                if (success) {
+                    // Marquer le signalement comme traité
+                    await this.updateReportStatus(reportId, 'resolved', 'banned', `Utilisateur ${author} banni`);
+                    this.loadReports('pending'); // Recharger
+                }
+            }
+        });
+    });
+    
+    // Supprimer le contenu
+    document.querySelectorAll('.delete-content-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const reportId = btn.dataset.reportId;
+            const contentType = btn.dataset.type;
+            const contentId = btn.dataset.id;
+            
+            if (confirm(`Supprimer ce ${contentType} ?`)) {
+                const success = await this.deleteReportedContent(contentType, contentId);
+                
+                if (success) {
+                    await this.updateReportStatus(reportId, 'resolved', 'deleted', 'Contenu supprimé');
+                    this.loadReports('pending');
+                }
+            }
+        });
+    });
+    
+    // Ignorer le signalement
+    document.querySelectorAll('.dismiss-report-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const reportId = btn.dataset.reportId;
+            
+            if (confirm('Ignorer ce signalement ?')) {
+                await this.updateReportStatus(reportId, 'dismissed', 'ignored', 'Signalement ignoré');
+                this.loadReports('pending');
+            }
+        });
+    });
+}
+
+// 🚩 Mettre à jour le statut d'un signalement
+async updateReportStatus(reportId, status, action, notes) {
+    try {
+        const { error } = await this.supabase
+            .from('reports')
+            .update({
+                status: status,
+                reviewed_by: this.pseudo,
+                admin_action: action,
+                admin_notes: notes,
+                reviewed_at: new Date().toISOString()
+            })
+            .eq('id', reportId);
+        
+        if (error) throw error;
+        
+        console.log(`✅ Signalement ${reportId} marqué comme ${status}`);
+        return true;
+        
+    } catch (error) {
+        console.error('Erreur mise à jour signalement:', error);
+        this.showNotification('Erreur de mise à jour', 'error');
+        return false;
+    }
+}
+
+// 🚩 Supprimer le contenu signalé
+async deleteReportedContent(contentType, contentId) {
+    try {
+        let tableName;
+        
+        switch(contentType) {
+            case 'message':
+                tableName = 'messages';
+                break;
+            case 'photo':
+                tableName = 'photos';
+                break;
+            case 'comment':
+                tableName = 'photo_comments';
+                break;
+            default:
+                throw new Error('Type de contenu invalide');
+        }
+        
+        const { error } = await this.supabase
+            .from(tableName)
+            .delete()
+            .eq('id', contentId);
+        
+        if (error) throw error;
+        
+        console.log(`✅ Contenu ${contentType} supprimé: ${contentId}`);
+        this.showNotification('Contenu supprimé avec succès', 'success');
+        
+        // Recharger les messages si c'était un message
+        if (contentType === 'message') {
+            await this.loadExistingMessages();
+        }
+        
+        return true;
+        
+    } catch (error) {
+        console.error('Erreur suppression contenu:', error);
+        this.showNotification('Erreur de suppression', 'error');
+        return false;
+    }
 }
 }
 export default ChatManager;
