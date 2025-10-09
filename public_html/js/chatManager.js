@@ -29,7 +29,7 @@ import notificationManager from '/js/notification-manager.js';
             const link = document.createElement('link');
             link.id = 'chat-ban-css';
             link.rel = 'stylesheet';
-            link.href = '/css/chat-ban.css'; // Assurez-vous que ce fichier existe
+            link.href = '/css/chat-styles.css'; // Assurez-vous que ce fichier existe
             document.head.appendChild(link);
         }
         
