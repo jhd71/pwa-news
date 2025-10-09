@@ -5064,17 +5064,19 @@ panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) =
 	// 🚩 Gestionnaires pour les filtres de signalements
 panel.querySelectorAll('.filter-reports-btn').forEach(btn => {
     btn.addEventListener('click', () => {
+        console.log('🔘 Clic sur filtre:', btn.dataset.status);
+        
         // Mettre à jour les styles des boutons
-        panel.querySelectorAll('.filter-btn').forEach(b => {
+        panel.querySelectorAll('.filter-reports-btn').forEach(b => {
             b.style.background = 'rgba(255,255,255,0.2)';
             b.classList.remove('active');
         });
-        btn.style.background = '#F44336';
+        btn.style.background = '#FFC107';
         btn.classList.add('active');
         
         // Charger les signalements avec le filtre
-        const filter = btn.dataset.filter;
-        this.loadReports(filter);
+        const status = btn.dataset.status;
+        this.loadReports(status);
     });
 });
 }
@@ -6915,54 +6917,83 @@ attachRemoveWordListeners(panel) {
 // 🚩 Charger les signalements
 async loadReports(filter = 'pending') {
     try {
-        console.log(`📋 Chargement des signalements: ${filter}`);
+        console.log(`📋 Chargement des signalements avec filtre: ${filter}`);
         
         const container = document.querySelector('.reports-list');
-        if (!container) return;
+        if (!container) {
+            console.error('Container .reports-list non trouvé');
+            return;
+        }
         
-        container.innerHTML = '<div class="loading-reports">Chargement des signalements...</div>';
+        container.innerHTML = '<div class="loading-reports">Chargement...</div>';
         
-        // Construire la requête selon le filtre
+        // Définir l'utilisateur pour RLS
+        await this.setCurrentUserForRLS();
+        
+        // Construire la requête avec le bon filtre
         let query = this.supabase
             .from('reports')
             .select('*')
             .order('created_at', { ascending: false });
         
+        // ✅ CRITIQUE : Appliquer le filtre CORRECTEMENT
         if (filter === 'pending') {
             query = query.eq('status', 'pending');
+            console.log('🔍 Filtre appliqué: SEULEMENT status = pending');
         } else if (filter === 'reviewed') {
-            query = query.in('status', ['reviewed', 'resolved', 'dismissed']);
+            query = query.neq('status', 'pending');
+            console.log('🔍 Filtre appliqué: TOUS sauf pending');
         }
-        // Si filter === 'all', pas de filtre supplémentaire
+        // Si filter === 'all', on ne filtre pas
         
         const { data: reports, error } = await query;
         
         if (error) {
-            console.error('Erreur chargement signalements:', error);
+            console.error('❌ Erreur chargement signalements:', error);
             container.innerHTML = `<div class="error">Erreur: ${error.message}</div>`;
             return;
         }
         
-        // Mettre à jour le compteur
-        const pendingCount = reports.filter(r => r.status === 'pending').length;
-        const countElement = document.getElementById('pending-reports-count');
-        if (countElement) {
-            countElement.textContent = pendingCount;
+        console.log(`✅ ${reports?.length || 0} signalements chargés (filtre: ${filter})`);
+        
+        // Afficher les signalements par statut
+        if (reports && reports.length > 0) {
+            console.log('📊 Répartition par statut:');
+            const statusCount = {};
+            reports.forEach(r => {
+                statusCount[r.status] = (statusCount[r.status] || 0) + 1;
+            });
+            console.log(statusCount);
         }
         
         if (!reports || reports.length === 0) {
             container.innerHTML = '<div class="no-data">Aucun signalement</div>';
+            
+            // Mettre à jour le compteur si on affiche les "pending"
+            if (filter === 'pending') {
+                const countBadge = document.getElementById('pending-reports-count');
+                if (countBadge) countBadge.textContent = '0';
+            }
+            
             return;
         }
         
+        // Mettre à jour le compteur si on affiche les "pending"
+        if (filter === 'pending') {
+            const pendingCount = reports.filter(r => r.status === 'pending').length;
+            const countBadge = document.getElementById('pending-reports-count');
+            if (countBadge) countBadge.textContent = pendingCount;
+        }
+        
         // Afficher les signalements
+        const isMobile = window.innerWidth <= 768;
         container.innerHTML = reports.map(report => this.createReportCard(report)).join('');
         
         // Ajouter les gestionnaires d'événements
         this.setupReportActions();
         
     } catch (error) {
-        console.error('Erreur loadReports:', error);
+        console.error('❌ Erreur loadReports:', error);
         const container = document.querySelector('.reports-list');
         if (container) {
             container.innerHTML = `<div class="error">Erreur: ${error.message}</div>`;
@@ -7070,56 +7101,64 @@ createReportCard(report) {
 // 🚩 Configurer les actions sur les signalements
 setupReportActions() {
     // Bannir l'auteur
-    document.querySelectorAll('.ban-author-btn').forEach(btn => {
-        btn.addEventListener('click', async () => {
-            const reportId = btn.dataset.reportId;
-            const author = btn.dataset.author;
+document.querySelectorAll('.ban-author-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        const reportId = btn.dataset.reportId;
+        const author = btn.dataset.author;
+        
+        if (confirm(`Bannir l'utilisateur ${author} ?`)) {
+            const success = await this.banUser(author, 'Signalé par la communauté', null);
             
-            if (confirm(`Bannir l'utilisateur ${author} ?`)) {
-                // Utiliser la fonction de bannissement existante
-                const success = await this.banUser(author, 'Signalé par la communauté', null);
+            if (success) {
+                await this.updateReportStatus(reportId, 'resolved', 'banned', `Utilisateur ${author} banni`);
                 
-                if (success) {
-                    // Marquer le signalement comme traité
-                    await this.updateReportStatus(reportId, 'resolved', 'banned', `Utilisateur ${author} banni`);
-                    this.loadReports('pending'); // Recharger
-					this.updateReportsCount();
-                }
+                // ✅ Recharger avec le filtre actif
+                const activeFilter = document.querySelector('.filter-reports-btn.active');
+                const currentFilter = activeFilter ? activeFilter.dataset.status : 'pending';
+                this.loadReports(currentFilter);
+                this.updateReportsCount();
             }
-        });
+        }
     });
+});
     
     // Supprimer le contenu
-    document.querySelectorAll('.delete-content-btn').forEach(btn => {
-        btn.addEventListener('click', async () => {
-            const reportId = btn.dataset.reportId;
-            const contentType = btn.dataset.type;
-            const contentId = btn.dataset.id;
+document.querySelectorAll('.delete-content-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        const reportId = btn.dataset.reportId;
+        const contentType = btn.dataset.type;
+        const contentId = btn.dataset.id;
+        
+        if (confirm(`Supprimer ce ${contentType} ?`)) {
+            const success = await this.deleteReportedContent(contentType, contentId, reportId);
             
-            if (confirm(`Supprimer ce ${contentType} ?`)) {
-                const success = await this.deleteReportedContent(contentType, contentId, reportId);
-                
-                if (success) {
-    // Le statut est déjà mis à jour dans deleteReportedContent
-    this.loadReports('pending');
-    this.updateReportsCount(); // ✅ Mettre à jour le compteur
-}
+            if (success) {
+                // ✅ Recharger avec le filtre actif
+                const activeFilter = document.querySelector('.filter-reports-btn.active');
+                const currentFilter = activeFilter ? activeFilter.dataset.status : 'pending';
+                this.loadReports(currentFilter);
+                this.updateReportsCount();
             }
-        });
+        }
     });
+});
     
     // Ignorer le signalement
-    document.querySelectorAll('.dismiss-report-btn').forEach(btn => {
-        btn.addEventListener('click', async () => {
-            const reportId = btn.dataset.reportId;
+document.querySelectorAll('.dismiss-report-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        const reportId = btn.dataset.reportId;
+        
+        if (confirm('Ignorer ce signalement ?')) {
+            await this.updateReportStatus(reportId, 'dismissed', 'ignored', 'Signalement ignoré');
             
-            if (confirm('Ignorer ce signalement ?')) {
-                await this.updateReportStatus(reportId, 'dismissed', 'ignored', 'Signalement ignoré');
-                this.loadReports('pending');
-				this.updateReportsCount();
-            }
-        });
+            // ✅ Recharger avec le filtre actif
+            const activeFilter = document.querySelector('.filter-reports-btn.active');
+            const currentFilter = activeFilter ? activeFilter.dataset.status : 'pending';
+            this.loadReports(currentFilter);
+            this.updateReportsCount();
+        }
     });
+});
 	
 	// Supprimer un signalement (pour onglets Traités et Tous)
     document.querySelectorAll('.delete-report-btn').forEach(btn => {
