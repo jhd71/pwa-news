@@ -6893,6 +6893,220 @@ attachRemoveWordListeners(panel) {
 async loadReports(filter = 'pending') {
     try {
         console.log(`📋 Chargement des signalements: ${filter}`);
+
+        const container = document.querySelector('.reports-list');
+        if (!container) return;
+
+        container.innerHTML = '<div class="loading-reports">Chargement des signalements...</div>';
+
+        // ÉTAPE CRUCIALE : S'assurer que les RLS peuvent s'appliquer
+        await this.setCurrentUserForRLS();
+
+        // Construire la requête selon le filtre
+        let query = this.supabase
+            .from('reports')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (filter === 'pending') {
+            query = query.eq('status', 'pending');
+        } else if (filter === 'reviewed') {
+            query = query.in('status', ['reviewed', 'resolved', 'dismissed']);
+        }
+        // Si filter === 'all', pas de filtre supplémentaire
+
+        const { data: reports, error } = await query;
+
+        if (error) {
+            console.error('Erreur chargement signalements:', error);
+            container.innerHTML = `<div class="error">Erreur: ${error.message}</div>`;
+            return;
+        }
+
+        // Mettre à jour le compteur de signalements en attente
+        const pendingCount = reports.filter(r => r.status === 'pending').length;
+        const countElement = document.getElementById('pending-reports-count');
+        if (countElement) {
+            countElement.textContent = pendingCount;
+        }
+
+        if (!reports || reports.length === 0) {
+            container.innerHTML = '<div class="no-data">Aucun signalement à afficher</div>';
+            return;
+        }
+
+        // Afficher les signalements
+        container.innerHTML = reports.map(report => this.createReportCard(report)).join('');
+
+        // Attacher les gestionnaires d'événements pour les boutons
+        this.setupReportActions();
+
+    } catch (error) {
+        console.error('Erreur dans loadReports:', error);
+        const container = document.querySelector('.reports-list');
+        if (container) {
+            container.innerHTML = `<div class="error">Erreur lors du chargement: ${error.message}</div>`;
+        }
+    }
+}
+
+// 🚩 Créer la carte HTML pour un signalement
+createReportCard(report) {
+    const isPending = report.status === 'pending';
+    const isMobile = window.innerWidth <= 768;
+
+    const categoryEmoji = {
+        'spam': '🚫', 'insulte': '😡', 'inapproprié': '⚠️',
+        'désinformation': '📰', 'autre': '❓'
+    };
+
+    const statusColor = {
+        'pending': '#F44336', 'reviewed': '#FFC107', 'resolved': '#4CAF50', 'dismissed': '#9E9E9E'
+    };
+
+    return `
+        <div class="report-card" data-report-id="${report.id}" style="background: rgba(30, 30, 30, 0.8); border-radius: 10px; padding: 15px; margin-bottom: 15px; border-left: 4px solid ${statusColor[report.status] || '#FFA726'};">
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span style="background: ${statusColor[report.status] || '#FFA726'}; color: white; padding: 5px 10px; border-radius: 5px; font-size: 12px; font-weight: bold;">
+                    ${categoryEmoji[report.category] || '❓'} ${report.category.toUpperCase()}
+                </span>
+                <span style="font-size: 12px; color: #aaa;">${new Date(report.created_at).toLocaleString('fr-FR')}</span>
+            </div>
+
+            <div style="background: rgba(0, 0, 0, 0.3); padding: 10px; border-radius: 8px; margin: 10px 0;">
+                <strong style="color: #FFA726;">Contenu signalé (${report.content_type}):</strong>
+                <p style="margin: 5px 0; font-style: italic; color: #ddd;">"${this.escapeHtml(report.content_text || 'Contenu non disponible')}"</p>
+                <small style="color: #aaa;">Auteur: <strong>${this.escapeHtml(report.content_author)}</strong></small>
+            </div>
+
+            ${report.reason ? `
+            <div style="margin: 10px 0;">
+                <strong style="color: #4CAF50;">Raison fournie:</strong>
+                <p style="margin: 5px 0; color: #ddd;">${this.escapeHtml(report.reason)}</p>
+            </div>
+            ` : ''}
+
+            <div style="margin: 10px 0;">
+                <small style="color: #aaa;">
+                    Signalé par: <strong>${this.escapeHtml(report.reported_by)}</strong>
+                    ${report.reporter_ip ? ` (IP: ${report.reporter_ip})` : ''}
+                </small>
+            </div>
+
+            ${isPending ? `
+                <div class="report-actions" style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                    <button class="ban-author-btn" data-report-id="${report.id}" data-author="${this.escapeHtml(report.content_author)}" style="flex: 1; min-width: ${isMobile ? 'calc(50% - 5px)' : '140px'}; padding: 10px; border-radius: 8px; border: none; cursor: pointer; background: #F44336; color: white; font-weight: bold;">🚫 Bannir</button>
+                    <button class="delete-content-btn" data-report-id="${report.id}" data-type="${report.content_type}" data-id="${report.content_id}" style="flex: 1; min-width: ${isMobile ? 'calc(50% - 5px)' : '140px'}; padding: 10px; border-radius: 8px; border: none; cursor: pointer; background: #FF9800; color: white; font-weight: bold;">🗑️ Supprimer</button>
+                    <button class="dismiss-report-btn" data-report-id="${report.id}" style="width: 100%; margin-top: 5px; padding: 10px; border-radius: 8px; border: none; cursor: pointer; background: #4CAF50; color: white; font-weight: bold;">✅ Ignorer</button>
+                </div>
+            ` : `
+                <div style="background: rgba(76, 175, 80, 0.2); padding: 10px; border-radius: 8px; margin-top: 10px;">
+                    <small style="color: #4CAF50;">
+                        ✓ Traité par <strong>${report.reviewed_by || 'Admin'}</strong>
+                        ${report.reviewed_at ? ` le ${new Date(report.reviewed_at).toLocaleString('fr-FR')}` : ''}
+                        ${report.admin_action ? ` - Action: <strong>${report.admin_action}</strong>` : ''}
+                    </small>
+                </div>
+            `}
+        </div>
+    `;
+}
+
+// 🚩 Configurer les actions sur les boutons des signalements
+setupReportActions() {
+    document.querySelectorAll('.ban-author-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const reportId = btn.dataset.reportId;
+            const author = btn.dataset.author;
+            if (confirm(`Bannir l'utilisateur ${author} et supprimer tous ses messages ?`)) {
+                const success = await this.banUser(author, 'Signalé par la communauté');
+                if (success) {
+                    await this.updateReportStatus(reportId, 'resolved', 'banned', `Utilisateur ${author} banni.`);
+                    this.loadReports('pending');
+                }
+            }
+        });
+    });
+
+    document.querySelectorAll('.delete-content-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const reportId = btn.dataset.reportId;
+            const contentType = btn.dataset.type;
+            const contentId = btn.dataset.id;
+            if (confirm(`Supprimer ce ${contentType} ?`)) {
+                const success = await this.deleteReportedContent(contentType, contentId);
+                if (success) {
+                    await this.updateReportStatus(reportId, 'resolved', 'deleted', `Contenu (ID: ${contentId}) supprimé.`);
+                    this.loadReports('pending');
+                }
+            }
+        });
+    });
+
+    document.querySelectorAll('.dismiss-report-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const reportId = btn.dataset.reportId;
+            if (confirm('Ignorer ce signalement ?')) {
+                await this.updateReportStatus(reportId, 'dismissed', 'ignored', 'Aucune action requise.');
+                this.loadReports('pending');
+            }
+        });
+    });
+}
+
+// 🚩 Mettre à jour le statut d'un signalement dans la BDD
+async updateReportStatus(reportId, status, action, notes) {
+    try {
+        const { error } = await this.supabase
+            .from('reports')
+            .update({
+                status: status,
+                reviewed_by: this.pseudo,
+                admin_action: action,
+                admin_notes: notes,
+                reviewed_at: new Date().toISOString()
+            })
+            .eq('id', reportId);
+
+        if (error) throw error;
+        this.showNotification('Signalement mis à jour', 'success');
+        return true;
+    } catch (error) {
+        console.error('Erreur mise à jour signalement:', error);
+        this.showNotification('Erreur de mise à jour', 'error');
+        return false;
+    }
+}
+
+// 🚩 Supprimer un contenu signalé de la BDD
+async deleteReportedContent(contentType, contentId) {
+    try {
+        let tableName;
+        switch(contentType) {
+            case 'message': tableName = 'messages'; break;
+            // Ajoutez d'autres cas si vous signalez autre chose (photos, etc.)
+            default: throw new Error('Type de contenu invalide pour la suppression');
+        }
+
+        const { error } = await this.supabase.from(tableName).delete().eq('id', contentId);
+        if (error) throw error;
+
+        this.showNotification('Contenu supprimé avec succès', 'success');
+        if (contentType === 'message') await this.loadExistingMessages();
+        return true;
+
+    } catch (error) {
+        console.error('Erreur suppression contenu:', error);
+        this.showNotification('Erreur de suppression', 'error');
+        return false;
+    }
+}
+
+// 🚩 Charger les signalements
+async loadReports(filter = 'pending') {
+    try {
+        console.log(`📋 Chargement des signalements: ${filter}`);
         
         const container = document.querySelector('.reports-list');
         if (!container) return;
