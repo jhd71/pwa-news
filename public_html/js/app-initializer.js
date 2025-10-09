@@ -172,7 +172,6 @@ function setupChatButton() {
     }
 }
 
-// DANS app-initializer.js
 async function checkAdminNotifications() {
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
     const pseudo = localStorage.getItem('chatPseudo');
@@ -185,42 +184,35 @@ async function checkAdminNotifications() {
         const supabase = window.getSupabaseClient();
         if (!supabase) return;
 
-        // Compter les commentaires NEWS en attente
+        // 1. Compter les commentaires NEWS en attente
         const { count: newsCount } = await supabase
             .from('news_comments')
             .select('*', { count: 'exact', head: true })
             .eq('is_approved', false);
 
-        // Compter les commentaires PHOTOS en attente  
+        // 2. Compter les commentaires PHOTOS en attente  
         const { count: photosCount } = await supabase
             .from('photo_comments')
             .select('*', { count: 'exact', head: true })
             .eq('is_approved', false);
 
-        // Compter les ANNONCES en attente
+        // 3. ANNONCES
         const { count: annoncesCount } = await supabase
             .from('classified_ads')
             .select('*', { count: 'exact', head: true })
             .eq('is_approved', false);
-			
-		// 3. ANNONCES (le nouveau)
-		const { count: annoncesCount } = await supabase
-			.from('classified_ads')
-			.select('*', { count: 'exact', head: true })
-			.eq('is_approved', false);
 
-		// 4. SIGNALEMENTS
-		const { count: reportsCount } = await supabase
-			.from('reports')
-			.select('*', { count: 'exact', head: true })
-			.eq('status', 'pending');
+        // 4. SIGNALEMENTS
+        const { count: reportsCount } = await supabase
+            .from('reports')
+            .select('*', { count: 'exact', head: true })
+            .eq('status', 'pending');
 
-		// Total
-		const totalCount = (newsCount || 0) + (photosCount || 0) + (annoncesCount || 0) + (reportsCount || 0);
+        // Total
+        const totalCount = (newsCount || 0) + (photosCount || 0) + (annoncesCount || 0) + (reportsCount || 0);
 
         if (totalCount > 0) {
-            // On passe tous les comptes à la fonction pour un titre plus détaillé
-            addNotificationBadgeToNewsWidget(totalCount, newsCount, photosCount, annoncesCount);
+            addNotificationBadgeToNewsWidget(totalCount, newsCount, photosCount, annoncesCount, reportsCount);
             console.log(`📊 ${totalCount} item(s) en attente (${newsCount} news, ${photosCount} photos, ${annoncesCount} annonces, ${reportsCount} signalements)`);
         } else {
             removeNotificationBadgeFromNewsWidget();
@@ -312,24 +304,30 @@ badge.addEventListener('click', async (e) => {
         // --- On récupère les 3 compteurs ---
 
         // 1. Commentaires NEWS
-        const { count: newsCount } = await supabase
-            .from('news_comments')
-            .select('*', { count: 'exact', head: true })
-            .eq('is_approved', false);
-            
-        // 2. Commentaires PHOTOS
-        const { count: photosCount } = await supabase
-            .from('photo_comments')
-            .select('*', { count: 'exact', head: true })
-            .eq('is_approved', false);
-        
-        // 3. ANNONCES (le nouveau)
-        const { count: annoncesCount } = await supabase
-            .from('classified_ads')
-            .select('*', { count: 'exact', head: true })
-            .eq('is_approved', false);
+const { count: newsCount } = await supabase
+    .from('news_comments')
+    .select('*', { count: 'exact', head: true })
+    .eq('is_approved', false);
+    
+// 2. Commentaires PHOTOS
+const { count: photosCount } = await supabase
+    .from('photo_comments')
+    .select('*', { count: 'exact', head: true })
+    .eq('is_approved', false);
 
-        // --- Logique de redirection améliorée ---
+// 3. ANNONCES
+const { count: annoncesCount } = await supabase
+    .from('classified_ads')
+    .select('*', { count: 'exact', head: true })
+    .eq('is_approved', false);
+
+// 4. SIGNALEMENTS
+const { count: reportsCount } = await supabase
+    .from('reports')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'pending');
+
+// --- Logique de redirection améliorée ---
 
         // Cas 1 : S'il n'y a QUE des annonces en attente
         if (annoncesCount > 0 && newsCount === 0 && photosCount === 0) {
