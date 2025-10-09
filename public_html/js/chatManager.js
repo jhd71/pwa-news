@@ -5365,7 +5365,7 @@ showReportDialog(contentType, contentId, contentAuthor, contentText) {
             </div>
             
             <label style="display: block; margin: 15px 0 5px 0; font-weight: bold;">Raison du signalement :</label>
-            <select id="report-category" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); color: white; font-size: 14px;">
+            <select id="report-category" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; font-size: 14px;">
                 <option value="spam">🚫 Spam / Publicité</option>
                 <option value="insulte">😡 Insultes / Harcèlement</option>
                 <option value="inapproprié">⚠️ Contenu inapproprié</option>
@@ -5374,7 +5374,7 @@ showReportDialog(contentType, contentId, contentAuthor, contentText) {
             </select>
             
             <label style="display: block; margin: 15px 0 5px 0; font-weight: bold;">Détails (optionnel) :</label>
-            <textarea id="report-details" placeholder="Expliquez pourquoi vous signalez ce contenu..." style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; min-height: 80px; font-family: inherit; resize: vertical;"></textarea>
+            <textarea id="report-details" placeholder="Expliquez pourquoi vous signalez ce contenu..." style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); color: white; min-height: 80px; font-family: inherit; resize: vertical;"></textarea>
             
             <div class="report-buttons" style="display: flex; gap: 10px; margin-top: 20px;">
                 <button class="cancel-report" style="flex: 1; padding: 12px; border-radius: 8px; border: none; cursor: pointer; background: rgba(255, 255, 255, 0.2); color: white; font-weight: bold;">Annuler</button>
