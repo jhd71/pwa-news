@@ -6934,93 +6934,60 @@ attachRemoveWordListeners(panel) {
 // 🚩 Charger les signalements
 async loadReports(filter = 'pending') {
     try {
-        console.log(`📋 Chargement des signalements avec filtre: ${filter}`);
+        console.log(`📋 [NOUVELLE VERSION] Chargement avec filtre: ${filter}`);
         
         const container = document.querySelector('.reports-list');
-        if (!container) {
-            console.error('Container .reports-list non trouvé');
-            return;
-        }
+        if (!container) return;
         
         container.innerHTML = '<div class="loading-reports">Chargement...</div>';
         
-        // ✅ CRITIQUE : Définir l'utilisateur pour RLS AVANT la requête
-        console.log('🔐 Définition de l\'utilisateur RLS...');
-        const rlsSuccess = await this.setCurrentUserForRLS();
-        console.log(`🔐 RLS défini: ${rlsSuccess ? 'OK' : 'ERREUR'}`);
+        // Définir RLS
+        await this.setCurrentUserForRLS();
         
-        if (!rlsSuccess) {
-            console.warn('⚠️ RLS non défini, les résultats peuvent être incorrects');
-        }
-        
-        // Construire la requête avec le bon filtre
-        let query = this.supabase
+        // Récupérer TOUS les signalements d'abord
+        const { data: allReports, error } = await this.supabase
             .from('reports')
             .select('*')
             .order('created_at', { ascending: false });
         
-        // ✅ CRITIQUE : Appliquer le filtre CORRECTEMENT
-        if (filter === 'pending') {
-            query = query.eq('status', 'pending');
-            console.log('🔍 Filtre appliqué: SEULEMENT status = pending');
-        } else if (filter === 'reviewed') {
-            query = query.neq('status', 'pending');
-            console.log('🔍 Filtre appliqué: TOUS sauf pending');
-        }
-        // Si filter === 'all', on ne filtre pas
-        
-        const { data: reports, error } = await query;
-        
         if (error) {
-            console.error('❌ Erreur chargement signalements:', error);
+            console.error('❌ Erreur:', error);
             container.innerHTML = `<div class="error">Erreur: ${error.message}</div>`;
             return;
         }
         
-        console.log(`✅ ${reports?.length || 0} signalements chargés (filtre: ${filter})`);
+        console.log(`📦 Total de signalements dans la base: ${allReports?.length || 0}`);
         
-        // Afficher les signalements par statut
-        if (reports && reports.length > 0) {
-            console.log('📊 Répartition par statut:');
-            const statusCount = {};
-            reports.forEach(r => {
-                statusCount[r.status] = (statusCount[r.status] || 0) + 1;
-            });
-            console.log(statusCount);
+        // Filtrer côté client
+        let reports = allReports || [];
+        if (filter === 'pending') {
+            reports = reports.filter(r => r.status === 'pending');
+            console.log(`🔍 Filtré: ${reports.length} en pending`);
+        } else if (filter === 'reviewed') {
+            reports = reports.filter(r => r.status !== 'pending');
+            console.log(`🔍 Filtré: ${reports.length} traités`);
         }
         
-        if (!reports || reports.length === 0) {
+        // Afficher
+        if (reports.length === 0) {
             container.innerHTML = '<div class="no-data">Aucun signalement</div>';
-            
-            // Mettre à jour le compteur si on affiche les "pending"
             if (filter === 'pending') {
                 const countBadge = document.getElementById('pending-reports-count');
                 if (countBadge) countBadge.textContent = '0';
             }
-            
             return;
         }
         
-        // Mettre à jour le compteur si on affiche les "pending"
-        if (filter === 'pending') {
-            const pendingCount = reports.filter(r => r.status === 'pending').length;
-            const countBadge = document.getElementById('pending-reports-count');
-            if (countBadge) countBadge.textContent = pendingCount;
-        }
-        
-        // Afficher les signalements
-        const isMobile = window.innerWidth <= 768;
         container.innerHTML = reports.map(report => this.createReportCard(report)).join('');
-        
-        // Ajouter les gestionnaires d'événements
         this.setupReportActions();
+        
+        if (filter === 'pending') {
+            const countBadge = document.getElementById('pending-reports-count');
+            if (countBadge) countBadge.textContent = reports.length;
+        }
         
     } catch (error) {
         console.error('❌ Erreur loadReports:', error);
-        const container = document.querySelector('.reports-list');
-        if (container) {
-            container.innerHTML = `<div class="error">Erreur: ${error.message}</div>`;
-        }
     }
 }
 
