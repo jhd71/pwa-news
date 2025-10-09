@@ -6467,6 +6467,229 @@ async loadRecentNews() {
     }
 }
 
+// Charger les signalements
+async loadReports(status = 'pending') {
+    try {
+        console.log('📋 Chargement des signalements:', status);
+        
+        const container = document.querySelector('.reports-list');
+        if (!container) {
+            console.error('Container .reports-list non trouvé');
+            return;
+        }
+        
+        container.innerHTML = '<div class="loading-reports">Chargement...</div>';
+        
+        // Définir l'utilisateur pour RLS
+        await this.setCurrentUserForRLS();
+        
+        // Construire la requête
+        let query = this.supabase
+            .from('reports')
+            .select('*')
+            .order('created_at', { ascending: false });
+        
+        // Filtrer par statut si nécessaire
+        if (status !== 'all') {
+            query = query.eq('status', status);
+        }
+        
+        const { data: reports, error } = await query;
+        
+        if (error) {
+            console.error('Erreur chargement signalements:', error);
+            container.innerHTML = `<div class="error">Erreur: ${error.message}</div>`;
+            return;
+        }
+        
+        console.log(`✅ ${reports?.length || 0} signalements chargés`);
+        
+        if (!reports || reports.length === 0) {
+            container.innerHTML = '<div class="no-data">Aucun signalement</div>';
+            
+            // Mettre à jour le compteur
+            const countBadge = document.getElementById('pending-reports-count');
+            if (countBadge) countBadge.textContent = '0';
+            
+            return;
+        }
+        
+        // Mettre à jour le compteur si on affiche les "pending"
+        if (status === 'pending') {
+            const countBadge = document.getElementById('pending-reports-count');
+            if (countBadge) countBadge.textContent = reports.length;
+        }
+        
+        // Afficher les signalements
+        const isMobile = window.innerWidth <= 768;
+        container.innerHTML = reports.map(report => `
+            <div class="report-card" data-id="${report.id}" style="background: rgba(30, 30, 30, 0.8); border-radius: 10px; padding: 15px; margin-bottom: 15px; border-left: 4px solid ${report.status === 'pending' ? '#FFC107' : '#4CAF50'};">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                            <span style="background: rgba(255,193,7,0.3); padding: 4px 8px; border-radius: 4px; font-size: 12px; color: #FFC107;">
+                                ${report.content_type.toUpperCase()}
+                            </span>
+                            <span style="background: rgba(244,67,54,0.3); padding: 4px 8px; border-radius: 4px; font-size: 12px; color: #F44336;">
+                                ${report.category}
+                            </span>
+                        </div>
+                        <div style="font-weight: bold; color: #ddd; margin-bottom: 4px;">
+                            Signalé par: ${report.reported_by}
+                        </div>
+                        <div style="font-size: 12px; color: #aaa;">
+                            ${new Date(report.created_at).toLocaleString('fr-FR')}
+                        </div>
+                    </div>
+                    ${report.status === 'pending' ? `
+                    <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                        <button class="view-report-content" data-id="${report.id}" data-type="${report.content_type}" data-content-id="${report.content_id}" style="background: #2196F3; color: white; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-size: 13px;">
+                            👁️ Voir
+                        </button>
+                        <button class="ban-report-author" data-id="${report.id}" data-author="${report.content_author}" style="background: #F44336; color: white; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-size: 13px;">
+                            🚫 Bannir
+                        </button>
+                        <button class="dismiss-report" data-id="${report.id}" style="background: #4CAF50; color: white; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-size: 13px;">
+                            ✓ OK
+                        </button>
+                    </div>
+                    ` : ''}
+                </div>
+                
+                <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+                    <div style="font-weight: bold; margin-bottom: 5px; color: #FFC107;">Contenu signalé :</div>
+                    <div style="color: white; word-break: break-word;">${report.content_text || 'Contenu supprimé'}</div>
+                    <div style="margin-top: 8px; font-size: 12px; color: #aaa;">Auteur: ${report.content_author}</div>
+                </div>
+                
+                ${report.reason ? `
+                <div style="background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px; font-size: 13px; color: #ddd;">
+                    <strong>Raison:</strong> ${report.reason}
+                </div>
+                ` : ''}
+                
+                ${report.status !== 'pending' ? `
+                <div style="margin-top: 10px; padding: 8px; background: rgba(76, 175, 80, 0.2); border-radius: 6px; font-size: 12px; color: #4CAF50;">
+                    ✅ Traité ${report.reviewed_at ? 'le ' + new Date(report.reviewed_at).toLocaleString('fr-FR') : ''}
+                    ${report.reviewed_by ? 'par ' + report.reviewed_by : ''}
+                </div>
+                ` : ''}
+            </div>
+        `).join('');
+        
+        // Ajouter les gestionnaires d'événements
+        this.attachReportHandlers(container);
+        
+    } catch (error) {
+        console.error('Erreur loadReports:', error);
+        const container = document.querySelector('.reports-list');
+        if (container) {
+            container.innerHTML = `<div class="error">Erreur: ${error.message}</div>`;
+        }
+    }
+}
+
+// Attacher les gestionnaires d'événements aux boutons de signalements
+attachReportHandlers(container) {
+    // Bouton "Voir le contenu"
+    container.querySelectorAll('.view-report-content').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const contentType = btn.dataset.type;
+            const contentId = btn.dataset.contentId;
+            this.viewReportedContent(contentType, contentId);
+        });
+    });
+    
+    // Bouton "Bannir l'auteur"
+    container.querySelectorAll('.ban-report-author').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const reportId = btn.dataset.id;
+            const author = btn.dataset.author;
+            
+            if (confirm(`Bannir ${author} ?`)) {
+                await this.banUserFromReport(author, reportId);
+            }
+        });
+    });
+    
+    // Bouton "Marquer comme traité"
+    container.querySelectorAll('.dismiss-report').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const reportId = btn.dataset.id;
+            await this.dismissReport(reportId);
+        });
+    });
+}
+
+// Voir le contenu signalé
+async viewReportedContent(contentType, contentId) {
+    try {
+        let content;
+        
+        if (contentType === 'message') {
+            const messageEl = document.querySelector(`[data-message-id="${contentId}"]`);
+            if (messageEl) {
+                messageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                messageEl.style.border = '2px solid #FFC107';
+                setTimeout(() => {
+                    messageEl.style.border = '';
+                }, 3000);
+            } else {
+                this.showNotification('Message introuvable (peut-être supprimé)', 'error');
+            }
+        }
+        // Ajouter d'autres types de contenu ici (photo, news, etc.)
+        
+    } catch (error) {
+        console.error('Erreur visualisation contenu:', error);
+        this.showNotification('Erreur: ' + error.message, 'error');
+    }
+}
+
+// Bannir l'auteur du contenu signalé
+async banUserFromReport(author, reportId) {
+    try {
+        // Utiliser la fonction banUser existante
+        const success = await this.banUser(author, 'Signalement validé');
+        
+        if (success) {
+            // Marquer le signalement comme traité
+            await this.dismissReport(reportId);
+            this.showNotification(`${author} banni avec succès`, 'success');
+        }
+    } catch (error) {
+        console.error('Erreur bannissement:', error);
+        this.showNotification('Erreur: ' + error.message, 'error');
+    }
+}
+
+// Marquer un signalement comme traité
+async dismissReport(reportId) {
+    try {
+        await this.setCurrentUserForRLS();
+        
+        const { error } = await this.supabase
+            .from('reports')
+            .update({
+                status: 'reviewed',
+                reviewed_at: new Date().toISOString(),
+                reviewed_by: this.pseudo
+            })
+            .eq('id', reportId);
+        
+        if (error) throw error;
+        
+        this.showNotification('✅ Signalement traité', 'success');
+        
+        // Recharger les signalements
+        this.loadReports('pending');
+        
+    } catch (error) {
+        console.error('Erreur dismissReport:', error);
+        this.showNotification('Erreur: ' + error.message, 'error');
+    }
+}
+
 // Charger les commentaires d'actualités
 async loadNewsComments() {
     try {
