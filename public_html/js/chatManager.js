@@ -4562,20 +4562,6 @@ showAdminPanel() {
     </div>
 </div>
 
-<!-- 🚩 SECTION SIGNALEMENTS -->
-<div class="tab-section" id="reports-section">
-    <h4>🚩 Gestion des signalements</h4>
-    
-    <div class="reports-filters" style="display: flex; gap: 10px; margin-bottom: 20px;">
-        <button class="filter-btn active" data-filter="pending" style="flex: 1; padding: 10px; border-radius: 8px; border: none; cursor: pointer; background: #F44336; color: white;">En attente</button>
-        <button class="filter-btn" data-filter="reviewed" style="flex: 1; padding: 10px; border-radius: 8px; border: none; cursor: pointer; background: rgba(255,255,255,0.2); color: white;">Traités</button>
-        <button class="filter-btn" data-filter="all" style="flex: 1; padding: 10px; border-radius: 8px; border: none; cursor: pointer; background: rgba(255,255,255,0.2); color: white;">Tous</button>
-    </div>
-    
-    <div class="reports-list" style="${isMobile ? 'max-height: none; overflow-y: auto;' : ''}">
-        <div class="loading-reports">Chargement des signalements...</div>
-    </div>
-</div>
 <!-- 🔧 SECTION VISITEURS CORRIGÉE POUR MOBILE -->
 <div class="tab-section" id="visitor-stats-section">
     <h4 style="color: #ffffff; font-weight: bold; margin-bottom: 15px;">📊 Statistiques visiteurs</h4>
@@ -4617,6 +4603,27 @@ showAdminPanel() {
         ">
             💡 Seuls les administrateurs peuvent voir les graphiques détaillés
         </div>
+    </div>
+</div>
+
+<!-- ✅ NOUVELLE SECTION : Signalements -->
+<div class="tab-section" id="reports-section">
+    <h4>🚩 Signalements en attente</h4>
+    
+    <div style="margin-bottom: 20px;">
+        <button class="filter-reports-btn active" data-status="pending" style="background: #FFC107; color: black; border: none; padding: 8px 15px; border-radius: 20px; margin-right: 10px; cursor: pointer;">
+            ⏳ En attente
+        </button>
+        <button class="filter-reports-btn" data-status="reviewed" style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 15px; border-radius: 20px; margin-right: 10px; cursor: pointer;">
+            ✅ Traités
+        </button>
+        <button class="filter-reports-btn" data-status="all" style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer;">
+            📋 Tous
+        </button>
+    </div>
+    
+    <div class="reports-list" style="${isMobile ? 'max-height: none; min-height: 200px; overflow-y: auto;' : ''}">
+        <div class="loading-reports">Chargement des signalements...</div>
     </div>
 </div>
 `;
