@@ -57,8 +57,9 @@
 /* Texte en mode bleu ciel pour les éléments principaux */
 [data-theme="bleuciel"] .sidebar,
 [data-theme="bleuciel"] .settings-menu,
+[data-theme="bleuciel"] .sidebar.open,
 [data-theme="bleuciel"] .modal-content {
-    color: var(--text-light);
+	background-color: #6cacde;
 }
 
 /* ========================================
@@ -344,12 +345,12 @@
    ======================================== */
 
 [data-theme="bleuciel"] .settings-menu {
-    background-color: var(--primary-color);
+    background-color: #57a7e6;
     border: 1px solid var(--border-color);
 }
 
 [data-theme="bleuciel"] .settings-header {
-    background-color: var(--primary-color);
+    background-color: #57a7e6;
     color: var(--text-light);
 }
 
