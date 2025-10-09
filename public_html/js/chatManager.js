@@ -4643,6 +4643,9 @@ this.loadBannedWords().then(() => {
 
 this.loadBannedIPs();
 
+// Charger le compteur des signalements
+this.updateReportsCount();
+
 // Charger les stats NEWS par défaut
 this.loadNewsStats();
 this.loadRecentNews();
@@ -6360,6 +6363,26 @@ async deleteGalleryPhoto(photoId) {
     }
 }
 
+// Mettre à jour le compteur de signalements
+async updateReportsCount() {
+    try {
+        const { count: pendingCount } = await this.supabase
+            .from('reports')
+            .select('*', { count: 'exact', head: true })
+            .eq('status', 'pending');
+        
+        const countElement = document.getElementById('pending-reports-count');
+        if (countElement) {
+            countElement.textContent = pendingCount || 0;
+        }
+        
+        console.log(`📊 ${pendingCount || 0} signalement(s) en attente`);
+        
+    } catch (error) {
+        console.error('Erreur compteur signalements:', error);
+    }
+}
+
 // Charger les statistiques NEWS
 async loadNewsStats() {
     try {
@@ -7026,14 +7049,19 @@ createReportCard(report) {
                     </button>
                 </div>
             ` : `
-                <div style="background: rgba(76, 175, 80, 0.2); padding: 10px; border-radius: 8px; margin-top: 10px;">
-                    <small style="color: #4CAF50;">
-                        ✓ Traité par <strong>${report.reviewed_by || 'Admin'}</strong>
-                        ${report.reviewed_at ? ` le ${new Date(report.reviewed_at).toLocaleString('fr-FR')}` : ''}
-                        ${report.admin_action ? ` - Action: <strong>${report.admin_action}</strong>` : ''}
-                    </small>
-                    ${report.admin_notes ? `<p style="margin: 5px 0 0 0; font-size: 12px; color: #aaa;">Note: ${report.admin_notes}</p>` : ''}
-                </div>
+    <div style="background: rgba(76, 175, 80, 0.2); padding: 10px; border-radius: 8px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <small style="color: #4CAF50;">
+                ✓ Traité par <strong>${report.reviewed_by || 'Admin'}</strong>
+                ${report.reviewed_at ? ` le ${new Date(report.reviewed_at).toLocaleString('fr-FR')}` : ''}
+                ${report.admin_action ? ` - Action: <strong>${report.admin_action}</strong>` : ''}
+            </small>
+            ${report.admin_notes ? `<p style="margin: 5px 0 0 0; font-size: 12px; color: #aaa;">Note: ${report.admin_notes}</p>` : ''}
+        </div>
+        <button class="delete-report-btn" data-report-id="${report.id}" style="background: #F44336; color: white; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-size: 12px; min-width: auto;">
+            🗑️ Supprimer
+        </button>
+    </div>
             `}
         </div>
     `;
@@ -7055,6 +7083,7 @@ setupReportActions() {
                     // Marquer le signalement comme traité
                     await this.updateReportStatus(reportId, 'resolved', 'banned', `Utilisateur ${author} banni`);
                     this.loadReports('pending'); // Recharger
+					this.updateReportsCount();
                 }
             }
         });
@@ -7068,12 +7097,13 @@ setupReportActions() {
             const contentId = btn.dataset.id;
             
             if (confirm(`Supprimer ce ${contentType} ?`)) {
-                const success = await this.deleteReportedContent(contentType, contentId);
+                const success = await this.deleteReportedContent(contentType, contentId, reportId);
                 
                 if (success) {
-                    await this.updateReportStatus(reportId, 'resolved', 'deleted', 'Contenu supprimé');
-                    this.loadReports('pending');
-                }
+    // Le statut est déjà mis à jour dans deleteReportedContent
+    this.loadReports('pending');
+    this.updateReportsCount(); // ✅ Mettre à jour le compteur
+}
             }
         });
     });
@@ -7086,6 +7116,27 @@ setupReportActions() {
             if (confirm('Ignorer ce signalement ?')) {
                 await this.updateReportStatus(reportId, 'dismissed', 'ignored', 'Signalement ignoré');
                 this.loadReports('pending');
+				this.updateReportsCount();
+            }
+        });
+    });
+	
+	// Supprimer un signalement (pour onglets Traités et Tous)
+    document.querySelectorAll('.delete-report-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const reportId = btn.dataset.reportId;
+            
+            if (confirm('Supprimer définitivement ce signalement ?')) {
+                const success = await this.deleteReport(reportId);
+                
+                if (success) {
+                    // Déterminer quel filtre est actif
+                    const activeFilter = document.querySelector('.filter-reports-btn.active');
+                    const currentFilter = activeFilter ? activeFilter.dataset.status : 'pending';
+                    
+                    this.loadReports(currentFilter);
+                    this.updateReportsCount();
+                }
             }
         });
     });
@@ -7118,8 +7169,10 @@ async updateReportStatus(reportId, status, action, notes) {
 }
 
 // 🚩 Supprimer le contenu signalé
-async deleteReportedContent(contentType, contentId) {
+async deleteReportedContent(contentType, contentId, reportId) {
     try {
+        console.log(`🗑️ Suppression du ${contentType} ID: ${contentId}`);
+        
         let tableName;
         
         switch(contentType) {
@@ -7136,15 +7189,27 @@ async deleteReportedContent(contentType, contentId) {
                 throw new Error('Type de contenu invalide');
         }
         
+        // Définir l'utilisateur pour RLS
+        await this.setCurrentUserForRLS();
+        
+        // Supprimer le contenu
         const { error } = await this.supabase
             .from(tableName)
             .delete()
             .eq('id', contentId);
         
-        if (error) throw error;
+        if (error) {
+            console.error(`Erreur suppression ${contentType}:`, error);
+            throw error;
+        }
         
         console.log(`✅ Contenu ${contentType} supprimé: ${contentId}`);
         this.showNotification('Contenu supprimé avec succès', 'success');
+        
+        // ✅ NOUVEAU : Marquer automatiquement le signalement comme traité
+        if (reportId) {
+            await this.updateReportStatus(reportId, 'resolved', 'deleted', 'Contenu supprimé');
+        }
         
         // Recharger les messages si c'était un message
         if (contentType === 'message') {
@@ -7155,9 +7220,36 @@ async deleteReportedContent(contentType, contentId) {
         
     } catch (error) {
         console.error('Erreur suppression contenu:', error);
-        this.showNotification('Erreur de suppression', 'error');
+        this.showNotification('Erreur de suppression: ' + error.message, 'error');
         return false;
     }
 }
+
+// 🗑️ Supprimer définitivement un signalement
+async deleteReport(reportId) {
+    try {
+        console.log(`🗑️ Suppression du signalement ID: ${reportId}`);
+        
+        await this.setCurrentUserForRLS();
+        
+        const { error } = await this.supabase
+            .from('reports')
+            .delete()
+            .eq('id', reportId);
+        
+        if (error) throw error;
+        
+        console.log(`✅ Signalement ${reportId} supprimé`);
+        this.showNotification('Signalement supprimé', 'success');
+        
+        return true;
+        
+    } catch (error) {
+        console.error('Erreur suppression signalement:', error);
+        this.showNotification('Erreur: ' + error.message, 'error');
+        return false;
+    }
+}
+
 }
 export default ChatManager;

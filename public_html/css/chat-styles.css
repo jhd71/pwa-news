@@ -1663,7 +1663,6 @@ body.admin-panel-open {
     bottom: 0 !important;
     z-index: 1500 !important;
     padding: 10px !important;
-    background: var(--chat-input-bg) !important;
     border-radius: 0 0 20px 20px !important;
     box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.2) !important;
     margin-top: auto !important;

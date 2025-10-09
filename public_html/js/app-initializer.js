@@ -197,21 +197,31 @@ async function checkAdminNotifications() {
             .select('*', { count: 'exact', head: true })
             .eq('is_approved', false);
 
-        // ▼▼▼ AJOUTEZ CETTE PARTIE ▼▼▼
         // Compter les ANNONCES en attente
         const { count: annoncesCount } = await supabase
             .from('classified_ads')
             .select('*', { count: 'exact', head: true })
             .eq('is_approved', false);
-        // ▲▲▲ FIN DE L'AJOUT ▲▲▲
+			
+		// 3. ANNONCES (le nouveau)
+		const { count: annoncesCount } = await supabase
+			.from('classified_ads')
+			.select('*', { count: 'exact', head: true })
+			.eq('is_approved', false);
 
-        // Total
-        const totalCount = (newsCount || 0) + (photosCount || 0) + (annoncesCount || 0); // <-- MODIFIEZ CETTE LIGNE
+		// 4. SIGNALEMENTS
+		const { count: reportsCount } = await supabase
+			.from('reports')
+			.select('*', { count: 'exact', head: true })
+			.eq('status', 'pending');
+
+		// Total
+		const totalCount = (newsCount || 0) + (photosCount || 0) + (annoncesCount || 0) + (reportsCount || 0);
 
         if (totalCount > 0) {
             // On passe tous les comptes à la fonction pour un titre plus détaillé
             addNotificationBadgeToNewsWidget(totalCount, newsCount, photosCount, annoncesCount);
-            console.log(`📊 ${totalCount} item(s) en attente (${newsCount} news, ${photosCount} photos, ${annoncesCount} annonces)`);
+            console.log(`📊 ${totalCount} item(s) en attente (${newsCount} news, ${photosCount} photos, ${annoncesCount} annonces, ${reportsCount} signalements)`);
         } else {
             removeNotificationBadgeFromNewsWidget();
         }
@@ -220,7 +230,7 @@ async function checkAdminNotifications() {
     }
 }
 
-function addNotificationBadgeToNewsWidget(totalCount, newsCount, photosCount, annoncesCount) {
+	function addNotificationBadgeToNewsWidget(totalCount, newsCount, photosCount, annoncesCount, reportsCount = 0) {
     const newsWidget = document.querySelector('.news-widget-container');
     if (!newsWidget) return;
 
@@ -238,6 +248,7 @@ function addNotificationBadgeToNewsWidget(totalCount, newsCount, photosCount, an
     if (newsCount > 0) titleDetails.push(`${newsCount} commentaire(s) NEWS`);
     if (photosCount > 0) titleDetails.push(`${photosCount} commentaire(s) PHOTOS`);
     if (annoncesCount > 0) titleDetails.push(`${annoncesCount} annonce(s)`);
+	if (reportsCount > 0) titleDetails.push(`${reportsCount} signalement(s)`);
     badge.title = `${titleDetails.join('\n')} en attente de modération. Cliquez pour gérer.`;
     
     badge.style.cssText = `
