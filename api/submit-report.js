@@ -1,5 +1,5 @@
 // ============================================================
-// API : Soumettre un signalement de message
+// API : Soumettre un signalement (Messages, Photos, News, etc.)
 // ============================================================
 
 import { createClient } from '@supabase/supabase-js';
@@ -22,13 +22,33 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { messageId, reportedBy, reason, messageContent, messagePseudo } = req.body;
+        const { 
+            contentType,      // 'message', 'photo', 'news', etc.
+            contentId, 
+            contentAuthor, 
+            contentText, 
+            reportedBy, 
+            category,         // 'spam', 'inappropriate', etc.
+            reason,           // Détails du signalement
+            reporterIP 
+        } = req.body;
 
-        // Validation des données
-        if (!messageId || !reportedBy || !reason) {
+        // ✅ LOG DES DONNÉES REÇUES
+        console.log('📥 Signalement reçu:', {
+            contentType,
+            contentId,
+            contentAuthor,
+            reportedBy,
+            category,
+            reporterIP
+        });
+
+        // Validation des données obligatoires
+        if (!contentType || !contentId || !reportedBy || !category) {
+            console.log('❌ Validation échouée');
             return res.status(400).json({ 
                 error: 'Données manquantes',
-                details: 'messageId, reportedBy et reason sont requis'
+                details: 'contentType, contentId, reportedBy et category sont requis'
             });
         }
 
@@ -40,56 +60,52 @@ export default async function handler(req, res) {
             }
         });
 
-        // Vérifier si le message existe toujours
-        const { data: message, error: messageError } = await supabase
-            .from('messages')
-            .select('*')
-            .eq('id', messageId)
-            .single();
-
-        if (messageError || !message) {
-            return res.status(404).json({ 
-                error: 'Message non trouvé',
-                details: 'Le message a peut-être été supprimé'
-            });
-        }
-
-        // Vérifier si l'utilisateur a déjà signalé ce message
+        // Vérifier si l'utilisateur a déjà signalé ce contenu
         const { data: existingReport, error: checkError } = await supabase
             .from('reports')
             .select('id')
-            .eq('message_id', messageId)
+            .eq('content_type', contentType)
+            .eq('content_id', contentId)
             .eq('reported_by', reportedBy)
             .maybeSingle();
 
         if (checkError) {
-            console.error('Erreur vérification signalement existant:', checkError);
+            console.error('⚠️ Erreur vérification doublon:', checkError);
+            // Ne pas bloquer si erreur de vérification
         }
 
         if (existingReport) {
-            return res.status(409).json({ 
+            console.log('⚠️ Signalement déjà existant');
+            return res.status(400).json({ 
                 error: 'Déjà signalé',
-                details: 'Vous avez déjà signalé ce message'
+                details: 'Vous avez déjà signalé ce contenu'
             });
         }
 
         // Créer le signalement
+        const reportData = {
+            content_type: contentType,
+            content_id: contentId,
+            content_author: contentAuthor || 'Inconnu',
+            content_text: contentText || '',
+            reported_by: reportedBy,
+            category: category,
+            reason: reason || `Signalé comme: ${category}`,
+            reporter_ip: reporterIP || 'unknown',
+            status: 'pending',
+            created_at: new Date().toISOString()
+        };
+
+        console.log('💾 Insertion du signalement:', reportData);
+
         const { data: report, error: insertError } = await supabase
             .from('reports')
-            .insert({
-                message_id: messageId,
-                reported_by: reportedBy,
-                reason: reason,
-                message_content: messageContent || message.content,
-                message_pseudo: messagePseudo || message.pseudo,
-                status: 'pending',
-                created_at: new Date().toISOString()
-            })
+            .insert(reportData)
             .select()
             .single();
 
         if (insertError) {
-            console.error('Erreur insertion signalement:', insertError);
+            console.error('❌ Erreur insertion:', insertError);
             throw insertError;
         }
 
