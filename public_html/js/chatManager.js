@@ -7197,45 +7197,39 @@ document.querySelectorAll('.dismiss-report-btn').forEach(btn => {
     });
 }
 
-// 🚩 Mettre à jour le statut d'un signalement
+// 🚩 Mettre à jour le statut d'un signalement via Edge Function
 async updateReportStatus(reportId, status, action, notes) {
     try {
-        console.log(`📝 Mise à jour signalement ${reportId} vers statut "${status}"`);
+        console.log(`📝 Mise à jour signalement ${reportId} vers "${status}" via API`);
         
-        // Définir l'utilisateur pour RLS
-        const rlsSuccess = await this.setCurrentUserForRLS();
-        console.log(`🔐 RLS défini: ${rlsSuccess ? 'OK' : 'ERREUR'}`);
-        
-        if (!rlsSuccess) {
-            console.warn('⚠️ RLS non défini, mise à jour risque d\'échouer');
-        }
-        
-        // ✅ UTILISER .select() pour forcer un RETURNING
-        const { data, error } = await this.supabase
-            .from('reports')
-            .update({
-                status: status,
-                reviewed_by: this.pseudo,
-                admin_action: action,
-                admin_notes: notes,
-                reviewed_at: new Date().toISOString()
+        const response = await fetch('/api/update-report-status', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                reportId,
+                status,
+                action,
+                notes,
+                adminPseudo: this.pseudo
             })
-            .eq('id', reportId)
-            .select()  // ✅ CRITIQUE : Force un RETURNING
-            .single(); // ✅ Retourne directement l'objet
+        });
+
+        const result = await response.json();
         
-        if (error) {
-            console.error('❌ Erreur UPDATE:', error);
-            throw error;
+        if (!response.ok) {
+            console.error('❌ Erreur API:', result.error);
+            throw new Error(result.error || 'Erreur mise à jour');
         }
         
         console.log(`✅ Signalement ${reportId} marqué comme ${status}`);
-        console.log('📊 Nouvelle valeur confirmée:', data);
+        console.log('📊 Nouvelle valeur confirmée:', result.data);
         
         return true;
         
     } catch (error) {
-        console.error('Erreur mise à jour signalement:', error);
+        console.error('❌ Erreur mise à jour:', error);
         this.showNotification('Erreur: ' + error.message, 'error');
         return false;
     }
