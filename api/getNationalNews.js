@@ -31,8 +31,6 @@ export default async function handler(req, res) {
 		const feeds = [
     { name: 'France 3 Bourgogne', url: 'https://france3-regions.francetvinfo.fr/bourgogne-franche-comte/rss', max: 2 },
 	{ name: 'France Bleu Bourgogne', url: 'https://www.francebleu.fr/rss/bourgogne/a-la-une.xml', max:2 },
-	{ name: 'France Bleu Bourgogne', url: 'https://www.lejsl.com/saone-et-loire/rss', max: 1 },
-	{ name: 'France Bleu Bourgogne', url: 'https://www.lejsl.com/edition-montceau-les-mines/rss', max: 1 },
 	{ name: 'France Bleu Bourgogne', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/sports.xml', max: 1 },
     { name: 'France Bleu Bourgogne', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/infos.xml', max: 1 }
 ];
