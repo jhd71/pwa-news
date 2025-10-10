@@ -78,7 +78,13 @@ export default async function handler(req, res) {
         
         const fetchedArticles = feedData.items.slice(0, feed.max).map(item => {
           // Extraction d'image améliorée
-          let image = "/images/default-news.jpg";
+          // Image par défaut selon la source
+		let image = "/images/default-news.jpg";
+		if (feed.name === "ARS Bourgogne-Franche-Comté") {
+			image = "/images/default-sante.jpg";
+		} else if (feed.name === "Informateur de Bourgogne") {
+			image = "/images/default-local.jpg";
+		}
           
           // 1. Enclosure (format standard)
           if (item.enclosure?.url) {
