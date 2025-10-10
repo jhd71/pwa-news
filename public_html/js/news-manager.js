@@ -15,7 +15,7 @@
     try {
         console.log('Début du chargement des actualités (PC/Tablette)');
         
-        const response = await fetch('/api/getNationalNews');
+        const response = await fetch('/api/getNationalNews?t=' + Date.now()); // ✅ Bypass cache
         
         if (!response.ok) {
             throw new Error(`Erreur HTTP: ${response.status}`);
@@ -29,7 +29,9 @@
             return;
         }
         
-        const limitedArticles = articles.slice(0, 10);
+        // Mélanger pour avoir de la variété
+        const shuffled = articles.sort(() => Math.random() - 0.5);
+        const limitedArticles = shuffled.slice(0, 12); // ✅ Augmenté à 12 articles
         
         limitedArticles.forEach(article => {
 
