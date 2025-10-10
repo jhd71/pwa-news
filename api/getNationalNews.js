@@ -30,11 +30,11 @@ export default async function handler(req, res) {
 		// Limiter à quelques flux fiables
 		const feeds = [
     { name: 'France 3 Bourgogne', url: 'https://france3-regions.francetvinfo.fr/bourgogne-franche-comte/rss', max: 2 },
-	{ name: 'France Bleu Bourgogne', url: 'https://www.francebleu.fr/rss/bourgogne/a-la-une.xml', max: 2 },
-	{ name: 'France Bleu Bourgogne', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/culture.xml', max: 2 },
-	{ name: 'France Bleu Bourgogne', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/vie-quotidienne.xml', max: 2 },
-	{ name: 'France Bleu Bourgogne', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/sports.xml', max: 2 },
-    { name: 'France Bleu Bourgogne', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/infos.xml', max: 2 }
+	{ name: 'France Bleu Bourgogne', url: 'https://www.francebleu.fr/rss/bourgogne/a-la-une.xml', max:2 },
+	{ name: 'France Bleu Bourgogne', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/culture.xml', max: 1 },
+	{ name: 'France Bleu Bourgogne', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/vie-quotidienne.xml', max: 1 },
+	{ name: 'France Bleu Bourgogne', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/sports.xml', max: 1 },
+    { name: 'France Bleu Bourgogne', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/infos.xml', max: 1 }
 ];
     
     let articles = [];
