@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v56'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v57'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -119,8 +119,6 @@ const STATIC_RESOURCES = [
 '/images/Actu&Media.png',
 '/images/badge-72x72.png',
 '/images/default-news.jpg',
-'/images/default-sante.jpg',
-'/images/default-local.jpg',
 '/images/don_resized_200x80.png',
 '/images/favicon-16x16.png',
 '/images/favicon-32x32.png',
@@ -151,7 +149,6 @@ const STATIC_RESOURCES = [
 
 // Images utilitaires
 '/images/no-image.png',
-'/images/paypal-icon.png',
 '/images/qrcode.png',
 '/images/screenshot-mobile.png',
 '/images/screenshot-wide.png',
