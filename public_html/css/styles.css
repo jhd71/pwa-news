@@ -172,10 +172,18 @@ body {
 background-color: #5b45ad;
 }
 
+/* Menu en mode rouge */
 [data-theme="rouge"] .sidebar.open,
 [data-theme="rouge"] .sidebar {
 
 background-color: rgb(148, 0, 0);
+}
+
+/* Menu en mode Sombre */
+[data-theme="dark"] .sidebar.open,
+[data-theme="dark"] .sidebar {
+
+background-color: rgb(30 38 122);
 }
 
 /* Navigation du bas par thème */
