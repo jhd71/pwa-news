@@ -3863,11 +3863,14 @@ main {
     .swiper-button-prev {
         width: 36px;
         height: 36px;
+        background: rgba(255, 255, 255, 0.5); /* ✅ AJOUTEZ - Plus transparent */
+        opacity: 0.7; /* ✅ AJOUTEZ - Légèrement transparent */
     }
     
     .swiper-button-next:after,
     .swiper-button-prev:after {
         font-size: 16px;
+        color: var(--primary-color); /* ✅ AJOUTEZ - Garde la couleur des flèches */
     }
     
     .separator:first-of-type {
