@@ -6,15 +6,6 @@
     const swiperContainer = document.querySelector('.swiper-container');
     
     if (!swiperWrapper || !swiperContainer) return;
-
-    // === VÉRIFICATION MOBILE ===
-    // Si la largeur de l'écran est de 767px ou moins, on arrête tout.
-    if (window.matchMedia('(max-width: 767px)').matches) {
-        console.log('Mode mobile détecté, le Swiper est désactivé.');
-        swiperContainer.style.display = 'none'; // On s'assure qu'il est bien caché
-        return; // On quitte la fonction, le reste du code ne s'exécutera pas.
-    }
-    // ===========================
     
     // Assurer la visibilité du conteneur (uniquement sur tablette/PC maintenant)
     swiperContainer.style.display = 'block';
@@ -24,7 +15,7 @@
     try {
         console.log('Début du chargement des actualités (PC/Tablette)');
         
-        const response = await fetch('/api/getNationalNews.js');
+        const response = await fetch('/api/getNationalNews');
         
         if (!response.ok) {
             throw new Error(`Erreur HTTP: ${response.status}`);
@@ -41,16 +32,16 @@
         const limitedArticles = articles.slice(0, 10);
         
         limitedArticles.forEach(article => {
-            // ... (votre code pour créer les slides reste le même)
+
             if (article.title && article.link) {
                 const slide = document.createElement('div');
                 slide.className = 'swiper-slide';
                 let slideHTML = `<a href="${article.link}" target="_blank">`;
                 if (article.image && article.image !== "images/default-news.jpg") {
-                    slideHTML += `<img src="${article.image}" alt="${article.title}" loading="lazy">`;
-                } else {
-                    slideHTML += `<img src="images/default-news.jpg" alt="Image par défaut" loading="lazy">`;
-                }
+				slideHTML += `<img src="${article.image}" alt="${article.title}" loading="lazy" style="object-position: center 30%;">`;
+			} else {
+				slideHTML += `<img src="images/default-news.jpg" alt="Image par défaut" loading="lazy" style="object-position: center center;">`;
+			}
                 slideHTML += `
                     <div class="slide-content">
                         <div class="slide-title">${article.title}</div>

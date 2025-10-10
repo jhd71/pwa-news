@@ -3728,7 +3728,7 @@ main {
     width: 100%;
     height: 100%; /* ✅ CHANGÉ de 220px à 100% */
     object-fit: cover; /* ✅ Garde le recadrage */
-    object-position: center 35%; /* ✅ CHANGÉ : favorise le haut de l'image */
+    object-position: center 30%; /* ✅ CHANGÉ : favorise le haut de l'image */
     display: block;
     z-index: 1;
     max-height: none; /* ✅ ENLEVÉ max-height qui limitait */
@@ -3844,16 +3844,30 @@ main {
     font-weight: bold;
 }
 
-/* MASQUER LE SWIPER SUR MOBILE */
+/* AFFICHER LE SWIPER SUR MOBILE */
 @media (max-width: 767px) {
     .swiper-container {
-        display: flex; /* ✅ CHANGÉ de none à flex */
-        margin-top: 80px; /* ✅ Espacement adapté mobile */
+        display: flex; /* ✅ CHANGÉ */
+        margin-top: 80px;
         width: 95%;
+        margin-left: auto;
+        margin-right: auto;
     }
     
     .swiper {
-        height: 250px; /* ✅ Hauteur adaptée pour mobile */
+        height: 250px;
+        border-radius: 10px;
+    }
+    
+    .swiper-button-next,
+    .swiper-button-prev {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .swiper-button-next:after,
+    .swiper-button-prev:after {
+        font-size: 16px;
     }
     
     .separator:first-of-type {
