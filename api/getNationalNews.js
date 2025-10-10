@@ -25,7 +25,16 @@ export default async function handler(req, res) {
       return res.status(200).json(memoryCache.data);
     }
     
-    const parser = new Parser();
+    const parser = new Parser({
+      customFields: {
+        item: [
+          ['media:content', 'media:content'],
+          ['media:thumbnail', 'media:thumbnail'],
+          ['content:encoded', 'content:encoded'],
+          ['description', 'description']
+        ]
+      }
+    });
     
 		// Limiter à quelques flux fiables
 		const feeds = [
@@ -69,32 +78,46 @@ export default async function handler(req, res) {
         
         const fetchedArticles = feedData.items.slice(0, feed.max).map(item => {
           // Extraction d'image améliorée
-          let image = "/images/default-news.jpg"; // Image par défaut
+          let image = "/images/default-news.jpg";
           
-          // 1. Vérifier enclosure
-          if (item.enclosure && item.enclosure.url) {
+          // 1. Enclosure (format standard)
+          if (item.enclosure?.url) {
             image = item.enclosure.url;
-          } 
-          // 2. Vérifier media:content
-          else if (item['media:content'] && item['media:content'].url) {
-            image = item['media:content'].url;
           }
-          // 3. Vérifier media:thumbnail
-          else if (item['media:thumbnail'] && item['media:thumbnail'].url) {
-            image = item['media:thumbnail'].url;
+          // 2. Media:content
+          else if (item['media:content']) {
+            if (Array.isArray(item['media:content'])) {
+              image = item['media:content'][0]?.$?.url || item['media:content'][0]?.url;
+            } else {
+              image = item['media:content']?.$ ?.url || item['media:content']?.url;
+            }
           }
-          // 4. Chercher dans le contenu HTML
-          else if (item.content || item['content:encoded']) {
-            const content = item.content || item['content:encoded'];
-            const imgMatch = content.match(/<img[^>]+src=["']([^"']+)["']/i);
-            if (imgMatch && imgMatch[1]) {
+          // 3. Media:thumbnail
+          else if (item['media:thumbnail']) {
+            if (Array.isArray(item['media:thumbnail'])) {
+              image = item['media:thumbnail'][0]?.$ ?.url || item['media:thumbnail'][0]?.url;
+            } else {
+              image = item['media:thumbnail']?.$ ?.url || item['media:thumbnail']?.url;
+            }
+          }
+          // 4. Extraire du contenu HTML (content:encoded)
+          else if (item['content:encoded']) {
+            const imgMatch = item['content:encoded'].match(/<img[^>]+src=["']([^"']+)["']/i);
+            if (imgMatch?.[1]) {
               image = imgMatch[1];
             }
           }
-          // 5. Chercher dans la description
+          // 5. Extraire du contenu HTML (content)
+          else if (item.content) {
+            const imgMatch = item.content.match(/<img[^>]+src=["']([^"']+)["']/i);
+            if (imgMatch?.[1]) {
+              image = imgMatch[1];
+            }
+          }
+          // 6. Extraire de la description
           else if (item.description) {
             const imgMatch = item.description.match(/<img[^>]+src=["']([^"']+)["']/i);
-            if (imgMatch && imgMatch[1]) {
+            if (imgMatch?.[1]) {
               image = imgMatch[1];
             }
           }
