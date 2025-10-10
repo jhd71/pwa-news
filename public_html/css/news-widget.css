@@ -1359,7 +1359,7 @@
     .news-widget-container {
         position: relative;
         padding: 0 5px;
-        margin: 20px auto 15px auto;
+        margin: -8px auto 15px auto;
         order: 2;
     }
     

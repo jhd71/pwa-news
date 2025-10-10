@@ -3848,7 +3848,7 @@ main {
 @media (max-width: 767px) {
     .swiper-container {
         display: flex; /* ✅ CHANGÉ */
-        margin-top: 140px;
+        margin-top: 130px;
         width: 98%;
         margin-left: auto;
         margin-right: auto;
