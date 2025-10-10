@@ -3906,6 +3906,10 @@ main {
     .only-desktop {
         display: none;
     }
+	
+	.slide-source {
+    margin: 10;
+    }
 }
 
 /* TABLETTES - 750PX À 1199PX */
@@ -3930,6 +3934,10 @@ main {
     
     .separator {
         margin: 10px 0;
+    }
+	
+		.slide-source {
+    margin: 10;
     }
 }
 
