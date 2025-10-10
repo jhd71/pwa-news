@@ -1,6 +1,45 @@
 // api/getNationalNews.js
 import Parser from 'rss-parser';
 
+import Parser from 'rss-parser';
+
+// Fonction pour scraper l'image depuis la page
+async function scrapeImageFromPage(url) {
+  try {
+    const response = await fetch(url, {
+      headers: { 
+        'User-Agent': 'Mozilla/5.0 (compatible; NewsApp/1.0)'
+      },
+      signal: AbortSignal.timeout(3000) // Timeout de 3 secondes
+    });
+    
+    if (!response.ok) return null;
+    
+    const html = await response.text();
+    
+    // Chercher les images dans différents formats
+    const patterns = [
+      /<meta property="og:image" content="([^"]+)"/i,
+      /<meta name="twitter:image" content="([^"]+)"/i,
+      /<meta property="og:image:secure_url" content="([^"]+)"/i,
+      /<img[^>]+class="[^"]*wp-post-image[^"]*"[^>]+src="([^"]+)"/i,
+      /<article[^>]*>[\s\S]*?<img[^>]+src="([^"]+)"/i
+    ];
+    
+    for (const pattern of patterns) {
+      const match = html.match(pattern);
+      if (match && match[1]) {
+        return match[1];
+      }
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Erreur scraping image:', error.message);
+    return null;
+  }
+}
+
 // Cache en mémoire
 let memoryCache = {
   data: null,
@@ -38,10 +77,10 @@ export default async function handler(req, res) {
     
 		// Limiter à quelques flux fiables
 		const feeds = [
-    { name: 'France 3 Bourgogne', url: 'https://france3-regions.francetvinfo.fr/bourgogne-franche-comte/rss', max: 2 },
+	{ name: 'Informateur de Bourgogne', url: 'https://linformateurdebourgogne.com/feed/', max: 2 },	
 	{ name: 'Montceau News', url: 'https://montceau-news.com/feed/', max: 2 },
+    { name: 'France 3 Bourgogne', url: 'https://france3-regions.francetvinfo.fr/bourgogne-franche-comte/rss', max: 2 },
 	{ name: 'lejsl montceau-les-mines', url: 'https://www.lejsl.com/edition-montceau-les-mines/rss', max: 2 },
-	{ name: 'Informateur de Bourgogne', url: 'https://linformateurdebourgogne.com/feed/', max: 2 },
 	{ name: 'lejsl Saône-et-Loire', url: 'https://www.lejsl.com/saone-et-loire/rss', max: 2 },
     { name: 'France Bleu infos', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/infos.xml', max: 2 },
 	{ name: 'ARS Bourgogne-Franche-Comté', url: 'https://www.bourgogne-franche-comte.ars.sante.fr/rss.xml', max: 2 },
@@ -76,15 +115,10 @@ export default async function handler(req, res) {
     const feedData = await parser.parseString(data);
         console.log(`✅ ${feed.name}: ${feedData.items.length} articles trouvés`);
         
-        const fetchedArticles = feedData.items.slice(0, feed.max).map(item => {
+        const fetchedArticles = await Promise.all(
+        feedData.items.slice(0, feed.max).map(async (item) => {
           // Extraction d'image améliorée
-          // Image par défaut selon la source
-		let image = "/images/default-news.jpg";
-		if (feed.name === "ARS Bourgogne-Franche-Comté") {
-			image = "/images/default-sante.jpg";
-		} else if (feed.name === "Informateur de Bourgogne") {
-			image = "/images/default-local.jpg";
-		}
+          let image = "/images/default-news.jpg";
           
           // 1. Enclosure (format standard)
           if (item.enclosure?.url) {
@@ -95,15 +129,15 @@ export default async function handler(req, res) {
             if (Array.isArray(item['media:content'])) {
               image = item['media:content'][0]?.$?.url || item['media:content'][0]?.url;
             } else {
-              image = item['media:content']?.$ ?.url || item['media:content']?.url;
+              image = item['media:content']?.$?.url || item['media:content']?.url;
             }
           }
           // 3. Media:thumbnail
           else if (item['media:thumbnail']) {
             if (Array.isArray(item['media:thumbnail'])) {
-              image = item['media:thumbnail'][0]?.$ ?.url || item['media:thumbnail'][0]?.url;
+              image = item['media:thumbnail'][0]?.$?.url || item['media:thumbnail'][0]?.url;
             } else {
-              image = item['media:thumbnail']?.$ ?.url || item['media:thumbnail']?.url;
+              image = item['media:thumbnail']?.$?.url || item['media:thumbnail']?.url;
             }
           }
           // 4. Extraire du contenu HTML (content:encoded)
@@ -128,13 +162,24 @@ export default async function handler(req, res) {
             }
           }
           
+          // 7. SI TOUJOURS PAS D'IMAGE : Scraper la page
+          if (image === "/images/default-news.jpg" && item.link) {
+            console.log(`🔍 Scraping image pour: ${feed.name}`);
+            const scrapedImage = await scrapeImageFromPage(item.link);
+            if (scrapedImage) {
+              image = scrapedImage;
+              console.log(`✅ Image trouvée par scraping`);
+            }
+          }
+          
           return {
             title: item.title,
             link: item.link,
             image,
             source: feed.name
           };
-        });
+        })
+      );
         
         articles = [...articles, ...fetchedArticles];
       } catch (error) {
