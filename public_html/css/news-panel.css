@@ -82,13 +82,6 @@
         font-size: 18px;
     }
 }
-
-/* Mobile */
-@media (max-width: 767px) {
-    /* Masquer le carrousel sur mobile */
-    .swiper-container {
-        display: none !important;
-    }
     
     /* Ajuster l'espacement pour le premier séparateur */
     .separator:first-of-type {
