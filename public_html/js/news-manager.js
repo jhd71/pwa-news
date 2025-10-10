@@ -68,7 +68,7 @@
             autoplay: { delay: 5000, disableOnInteraction: false },
             pagination: { el: '.swiper-pagination', clickable: true },
             navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-            slidesPerView: 1.2,
+            slidesPerView: 1,  // ✅ UNE SEULE image visible
             spaceBetween: 15,
             centeredSlides: true,
             breakpoints: {
