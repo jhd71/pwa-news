@@ -87,6 +87,43 @@ export default async function handler(req, res) {
     
     let articles = [];
     
+    // ========== CREUSOT INFOS (scraper GitHub) ==========
+    try {
+        console.log('📡 Récupération de Creusot Infos (scraper)...');
+        
+        const creusotUrl = 'https://raw.githubusercontent.com/jhd71/scraper-creusot/main/data/articles.json';
+        
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        
+        const creusotResponse = await fetch(creusotUrl, {
+            headers: { 'User-Agent': 'Mozilla/5.0 (compatible; NewsApp/1.0)' },
+            signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (creusotResponse.ok) {
+            const creusotData = await creusotResponse.json();
+            console.log(`✅ Creusot Infos: ${creusotData.length} articles trouvés`);
+            
+            // Prendre les 2 premiers articles
+            const formattedCreusot = creusotData.slice(0, 2).map(article => ({
+                title: article.title,
+                link: article.link,
+                image: article.image || "/images/default-news.jpg",
+                source: 'Creusot Infos'
+            }));
+            
+            articles = [...articles, ...formattedCreusot];
+            console.log(`✅ ${formattedCreusot.length} articles Creusot Infos ajoutés`);
+        }
+    } catch (error) {
+        console.error('❌ Erreur avec Creusot Infos:', error.message);
+        // Continuer avec les autres flux
+    }
+    // ====================================================
+    
     // Approche séquentielle pour plus de fiabilité
     for (const feed of feeds) {
   try {
