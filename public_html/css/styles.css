@@ -3728,7 +3728,7 @@ main {
     width: 100%;
     height: 100%; /* ✅ CHANGÉ de 220px à 100% */
     object-fit: cover; /* ✅ Garde le recadrage */
-    object-position: center center; /* ✅ CHANGÉ de center 30% à center center */
+    object-position: center 35%; /* ✅ CHANGÉ : favorise le haut de l'image */
     display: block;
     z-index: 1;
     max-height: none; /* ✅ ENLEVÉ max-height qui limitait */
@@ -3847,7 +3847,13 @@ main {
 /* MASQUER LE SWIPER SUR MOBILE */
 @media (max-width: 767px) {
     .swiper-container {
-        display: none;
+        display: flex; /* ✅ CHANGÉ de none à flex */
+        margin-top: 80px; /* ✅ Espacement adapté mobile */
+        width: 95%;
+    }
+    
+    .swiper {
+        height: 250px; /* ✅ Hauteur adaptée pour mobile */
     }
     
     .separator:first-of-type {

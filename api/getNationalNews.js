@@ -1,7 +1,6 @@
 // api/getNationalNews.js
 import Parser from 'rss-parser';
 
-
 // Fonction pour scraper l'image depuis la page
 async function scrapeImageFromPage(url) {
   try {
