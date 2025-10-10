@@ -1372,175 +1372,6 @@ main {
 }
 
 /* ==========================================================================
-   14. SWIPER
-   ========================================================================== */
-.swiper-container {
-    width: 100%;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 120px;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: center;
-    padding: 0;
-    box-sizing: border-box;
-    position: relative;
-    z-index: 2;
-}
-
-.swiper {
-    width: 100%;
-    max-width: 800px;
-    height: 300px;
-    border-radius: 15px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    overflow: hidden;
-    position: relative;
-    background-color: var(--primary-color);
-    margin: 0 auto;
-}
-
-.swiper-slide {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.swiper-slide a {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    position: relative;
-    color: white;
-    text-decoration: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.swiper-slide img {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
-    object-position: center 30%;
-    display: block;
-    z-index: 1;
-    max-height: 200px;
-}
-
-.slide-content {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 15px;
-    background: none;
-    text-shadow: 3px 3px 6px rgba(0, 0, 0, 1);
-    z-index: 2;
-    height: auto;
-    min-height: 80px;
-}
-
-.slide-title {
-    color: white;
-    font-weight: bold;
-    font-size: 16px;
-    margin: 0 0 5px 0;
-    padding: 0;
-    text-align: center;
-    line-height: 1.4;
-}
-
-.slide-source {
-    font-size: 14px;
-    color: #ffcc00;
-    font-weight: bold;
-    opacity: 1;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 1);
-}
-
-.swiper-button-next,
-.swiper-button-prev {
-    top: 50%;
-    transform: translateY(-50%);
-    background: white;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.swiper-button-next:after,
-.swiper-button-prev:after {
-    font-size: 20px;
-}
-
-.swiper-button-next:hover,
-.swiper-button-prev:hover {
-    opacity: 1;
-}
-
-.swiper-pagination {
-    position: absolute;
-    bottom: 8px;
-    left: 0;
-    right: 0;
-    z-index: 10;
-}
-
-.swiper-pagination-bullet {
-    background: rgba(255, 255, 255, 0.6);
-}
-
-.swiper-pagination-bullet-active {
-    background: white;
-}
-
-[data-theme="dark"] .swiper {
-    background: rgba(26, 35, 126, 0.9);
-}
-
-[data-theme="light"] .swiper {
-    background: rgba(126, 87, 194, 0.9);
-}
-
-[data-theme="rouge"] .swiper {
-    background: var(--rouge-site);
-}
-
-[data-theme="rouge"] .swiper-slide {
-    background: rgb(148, 0, 0);
-}
-
-[data-theme="rouge"] .slide-title {
-    color: white;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-[data-theme="rouge"] .slide-source {
-    color: var(--jaune-local);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    font-weight: bold;
-}
-
-[data-theme="rouge"] .swiper-slide p {
-    color: white;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-/* ==========================================================================
    15. MENU CONTEXTUEL
    ========================================================================== */
 .tile-menu {
@@ -3056,51 +2887,6 @@ main {
     }
 }
 
-/* MASQUER LE SWIPER SUR MOBILE */
-@media (max-width: 767px) {
-    .swiper-container {
-        display: none;
-    }
-    
-    .separator:first-of-type {
-        margin-top: 60px;
-    }
-    
-    .tile-container {
-        width: 95%;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    
-    /* Correction pour éviter le chevauchement du widget avec le header */
-    main {
-        margin-top: var(--header-height);
-        padding-top: 0px;
-		padding-bottom: 60px !important;
-    }
-    
-    /* Correction pour l'espacement des séparateurs sur mobile */
-    .separator {
-        margin: 20px 0 8px 0;
-        padding: 10px;
-    }
-    
-    /* Premier séparateur après le widget NEWS */
-    .tile-container .separator:first-child {
-        margin-top: 1px;
-        margin-bottom: 8px;
-    }
-    
-    /* Espacement entre les groupes de tuiles */
-    .tile-container .tile:first-of-type {
-        margin-top: 0;
-    }
-    
-    .only-desktop {
-        display: none;
-    }
-}
-
 /* MOBILE - MAX 600PX */
 @media (max-width: 600px) {
     /* Header et Logo */
@@ -3268,72 +3054,6 @@ main {
         width: 36px;
         height: 36px;
         min-width: 36px;
-    }
-}
-
-/* TABLETTES - 750PX À 1199PX */
-@media (min-width: 750px) and (max-width: 1199px) {
-    .swiper-container {
-        margin-bottom: 15px;
-        width: 90%;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    
-    .tile-container {
-        width: 90%;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    
-    .separator {
-        margin: 10px 0;
-    }
-}
-
-/* DESKTOP - MIN 1200PX */
-@media (min-width: 1200px) {
-    .swiper-container {
-        width: calc(100% - 190px);
-        max-width: 800px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    
-    .swiper {
-        max-width: 800px;
-        height: 200px;
-    }
-
-    .tile-container {
-        width: calc(100% - 190px);
-        margin-left: auto;
-        margin-right: auto;
-        max-width: 1400px;
-    }
-    
-    .tile-container.grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    }
-    
-    /* Pour les grands écrans avec widgets */
-    .swiper-container {
-        width: calc(100% - 580px);
-        max-width: 800px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    
-    .tile-container {
-        width: calc(100% - 580px);
-        margin-left: auto;
-        margin-right: auto;
-        max-width: 1200px;
-    }
-    
-    /* Bannière de bienvenue responsive */
-    .welcome-message {
-        max-width: 1100px;
     }
 }
 
@@ -3949,5 +3669,298 @@ main {
     
     .tile-menu .menu-item .material-icons {
         font-size: 20px;
+    }
+}
+
+/* ==========================================================================
+   14. SWIPER
+   ========================================================================== */
+.swiper-container {
+    width: 100%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 120px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 2;
+}
+
+.swiper {
+    width: 100%;
+    max-width: 800px;
+    height: 300px;
+    border-radius: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    position: relative;
+    background-color: var(--primary-color);
+    margin: 0 auto;
+}
+
+.swiper-slide {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000; /* ✅ Fond noir pour les espaces vides */
+}
+
+.swiper-slide a {
+    display: block; /* ✅ CHANGÉ de flex à block */
+    width: 100%;
+    height: 100%;
+    position: relative;
+    color: white;
+    text-decoration: none;
+}
+
+.swiper-slide img {
+    width: 100%;
+    height: 100%; /* ✅ CHANGÉ de 220px à 100% */
+    object-fit: cover; /* ✅ Garde le recadrage */
+    object-position: center center; /* ✅ CHANGÉ de center 30% à center center */
+    display: block;
+    z-index: 1;
+    max-height: none; /* ✅ ENLEVÉ max-height qui limitait */
+}
+
+.slide-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); /* ✅ AJOUTÉ gradient */
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 1);
+    z-index: 2;
+    height: auto;
+    min-height: 80px;
+}
+
+.slide-title {
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0 0 5px 0;
+    padding: 0;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.slide-source {
+    font-size: 14px;
+    color: #ffcc00;
+    font-weight: bold;
+    opacity: 1;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 1);
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9); /* ✅ Légère transparence */
+    border-radius: 50%;
+    width: 44px; /* ✅ Légèrement plus grand */
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color); /* ✅ Couleur des flèches */
+    transition: all 0.3s ease;
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+    background: white;
+    transform: translateY(-50%) scale(1.1); /* ✅ Effet de zoom au hover */
+}
+
+.swiper-pagination {
+    position: absolute;
+    bottom: 8px;
+    left: 0;
+    right: 0;
+    z-index: 10;
+}
+
+.swiper-pagination-bullet {
+    background: rgba(255, 255, 255, 0.6);
+    width: 10px;
+    height: 10px;
+    margin: 0 5px;
+}
+
+.swiper-pagination-bullet-active {
+    background: white;
+    width: 12px;
+    height: 12px;
+}
+
+/* THÈMES */
+[data-theme="dark"] .swiper {
+    background: rgba(26, 35, 126, 0.9);
+}
+
+[data-theme="light"] .swiper {
+    background: rgba(126, 87, 194, 0.9);
+}
+
+[data-theme="rouge"] .swiper {
+    background: var(--rouge-site);
+}
+
+[data-theme="rouge"] .swiper-slide {
+    background: rgb(148, 0, 0);
+}
+
+[data-theme="rouge"] .slide-title {
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+[data-theme="rouge"] .slide-source {
+    color: var(--jaune-local);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    font-weight: bold;
+}
+
+/* MASQUER LE SWIPER SUR MOBILE */
+@media (max-width: 767px) {
+    .swiper-container {
+        display: none;
+    }
+    
+    .separator:first-of-type {
+        margin-top: 60px;
+    }
+    
+    .tile-container {
+        width: 95%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    main {
+        margin-top: var(--header-height);
+        padding-top: 0px;
+        padding-bottom: 60px !important;
+    }
+    
+    .separator {
+        margin: 20px 0 8px 0;
+        padding: 10px;
+    }
+    
+    .tile-container .separator:first-child {
+        margin-top: 1px;
+        margin-bottom: 8px;
+    }
+    
+    .tile-container .tile:first-of-type {
+        margin-top: 0;
+    }
+    
+    .only-desktop {
+        display: none;
+    }
+}
+
+/* TABLETTES - 750PX À 1199PX */
+@media (min-width: 750px) and (max-width: 1199px) {
+    .swiper-container {
+        margin-bottom: 15px;
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .swiper {
+        height: 280px; /* ✅ Hauteur adaptée pour tablette */
+    }
+    
+    .tile-container {
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .separator {
+        margin: 10px 0;
+    }
+}
+
+/* DESKTOP - MIN 1200PX */
+@media (min-width: 1200px) {
+    .swiper-container {
+        width: calc(100% - 190px);
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .swiper {
+        max-width: 800px;
+        height: 300px; /* ✅ CHANGÉ de 200px à 300px pour plus de visibilité */
+    }
+
+    .tile-container {
+        width: calc(100% - 190px);
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 1400px;
+    }
+    
+    .tile-container.grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+    
+    .swiper-container {
+        width: calc(100% - 580px);
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .tile-container {
+        width: calc(100% - 580px);
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 1200px;
+    }
+    
+    .welcome-message {
+        max-width: 1100px;
+    }
+}
+
+/* RESPONSIVE POUR LES BIENVENUES */
+@media (max-width: 992px) {
+    .welcome-features {
+        gap: 16px;
+    }
+    
+    .feature-item {
+        padding: 6px 12px;
+        font-size: 0.9rem;
     }
 }

@@ -72,48 +72,56 @@ class VisitorTracker {
     }
 
     async getVisitors24h() {
-        try {
-            const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-            
-            const { data, error } = await this.supabase
-                .from('visitor_history')
-                .select('device_id, created_at')
-                .gte('created_at', twentyFourHoursAgo);
+    try {
+        const now = new Date();
+        const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
+        
+        const { data, error } = await this.supabase
+            .from('visitor_history')
+            .select('device_id, created_at')
+            .gte('created_at', twentyFourHoursAgo);
 
-            if (error) throw error;
-            
-            return {
-                unique: new Set(data.map(v => v.device_id)).size,
-                total: data.length,
-                data: data
-            };
-        } catch (err) {
-            console.error('Erreur getVisitors24h:', err);
-            return { unique: 0, total: 0, data: [] };
-        }
+        if (error) throw error;
+        
+        // Compter les visiteurs uniques
+        const uniqueDevices = new Set(data.map(v => v.device_id));
+        
+        return {
+            unique: uniqueDevices.size,
+            total: data.length,
+            data: data
+        };
+    } catch (err) {
+        console.error('Erreur getVisitors24h:', err);
+        return { unique: 0, total: 0, data: [] };
     }
+}
 
     async getVisitors7d() {
-        try {
-            const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-            
-            const { data, error } = await this.supabase
-                .from('visitor_history')
-                .select('device_id, created_at')
-                .gte('created_at', sevenDaysAgo);
+    try {
+        const now = new Date();
+        const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+        
+        const { data, error } = await this.supabase
+            .from('visitor_history')
+            .select('device_id, created_at')
+            .gte('created_at', sevenDaysAgo);
 
-            if (error) throw error;
-            
-            return {
-                unique: new Set(data.map(v => v.device_id)).size,
-                total: data.length,
-                data: data
-            };
-        } catch (err) {
-            console.error('Erreur getVisitors7d:', err);
-            return { unique: 0, total: 0, data: [] };
-        }
+        if (error) throw error;
+        
+        // Compter les visiteurs uniques
+        const uniqueDevices = new Set(data.map(v => v.device_id));
+        
+        return {
+            unique: uniqueDevices.size,
+            total: data.length,
+            data: data
+        };
+    } catch (err) {
+        console.error('Erreur getVisitors7d:', err);
+        return { unique: 0, total: 0, data: [] };
     }
+}
 
     async recordVisit() {
         try {
@@ -229,9 +237,20 @@ class VisitorTracker {
         ]);
 
         // Calculer les statistiques
-        const avgPerHour = Math.round(stats24h.unique / 24);
-        const activityRate = stats24h.unique > 0 ? Math.round((active / stats24h.unique) * 100) : 0;
-        const avgPerDay = Math.round(stats7d.unique / 7);
+const avgPerHour = Math.round(stats24h.total / 24); // Visites par heure (pas uniques)
+const activityRate = stats24h.unique > 0 ? Math.round((active / stats24h.unique) * 100) : 0;
+const avgPerDay = Math.round(stats7d.total / 7); // Visites par jour (pas uniques)
+
+// Vérifier la cohérence des données
+console.log('📊 Stats debug:', {
+    'Actifs maintenant': active,
+    'Uniques 24h': stats24h.unique,
+    'Total visites 24h': stats24h.total,
+    'Uniques 7j': stats7d.unique,
+    'Total visites 7j': stats7d.total,
+    'Moyenne/heure': avgPerHour,
+    'Moyenne/jour': avgPerDay
+});
         
         // Créer la modal
         const modal = this.createModal();
@@ -297,12 +316,12 @@ class VisitorTracker {
                     </div>
 
                     <div class="visitors-stat-card">
-                        <div class="visitors-stat-value">${stats7d.unique}</div>
-                        <div class="visitors-stat-label">Visiteurs 7j</div>
-                        <div class="visitors-stat-trend">
-                            ${avgPerDay}/jour
-                        </div>
-                    </div>
+    <div class="visitors-stat-value">${stats7d.total}</div>
+    <div class="visitors-stat-label">Visites 7j</div>
+    <div class="visitors-stat-trend">
+        ${stats7d.unique} uniques
+    </div>
+</div>
 
                     <div class="visitors-stat-card">
                         <div class="visitors-stat-value">${activityRate}%</div>
@@ -333,9 +352,9 @@ class VisitorTracker {
                             <span class="material-icons">schedule</span>
                         </div>
                         <div class="visitors-stat-item-content">
-                            <div class="visitors-stat-item-label">Moyenne/heure</div>
-                            <div class="visitors-stat-item-value">${avgPerHour}</div>
-                        </div>
+    <div class="visitors-stat-item-label">Visites/jour</div>
+    <div class="visitors-stat-item-value">${avgPerDay}</div>
+</div>
                     </div>
 
                     <div class="visitors-stat-item">
