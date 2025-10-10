@@ -30,9 +30,9 @@ export default async function handler(req, res) {
 		// Limiter à quelques flux fiables
 		const feeds = [
     { name: 'France 3 Bourgogne', url: 'https://france3-regions.francetvinfo.fr/bourgogne-franche-comte/rss', max: 2 },
+	{ name: 'Montceau News', url: 'https://montceau-news.com/feed/', max: 2 },
 	{ name: 'lejsl montceau-les-mines', url: 'https://www.lejsl.com/edition-montceau-les-mines/rss', max: 2 },
 	{ name: 'Informateur de Bourgogne', url: 'https://linformateurdebourgogne.com/feed/', max: 2 },
-	{ name: 'Montceau-News', url: 'https://rss.app/feeds/FfnChoM7nUR14Z7q.xml', max: 2 },
 	{ name: 'lejsl Saône-et-Loire', url: 'https://www.lejsl.com/saone-et-loire/rss', max: 2 },
     { name: 'France Bleu infos', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/infos.xml', max: 2 },
 	{ name: 'ARS Bourgogne-Franche-Comté', url: 'https://www.bourgogne-franche-comte.ars.sante.fr/rss.xml', max: 2 },
