@@ -29,17 +29,12 @@ export default async function handler(req, res) {
     
 		// Limiter à quelques flux fiables
 		const feeds = [
-    { name: 'France Info', url: 'https://www.francetvinfo.fr/titres.rss', max: 1 },
-    { name: 'BFMTV', url: 'https://www.bfmtv.com/rss/news-24-7/', max: 1 },
     { name: 'France 3 Bourgogne', url: 'https://france3-regions.francetvinfo.fr/bourgogne-franche-comte/rss', max: 2 },
-    { name: 'CNEWS', url: 'https://www.cnews.fr/rss.xml', max: 1 },
-    
-    // ✅ NOUVELLES SOURCES
-    { name: 'Le Monde', url: 'https://www.lemonde.fr/rss/une.xml', max: 1 },
-    { name: 'Le Figaro', url: 'https://www.lefigaro.fr/rss/figaro_actualites.xml', max: 1 },
-    { name: 'Libération', url: 'https://www.liberation.fr/arc/outboundfeeds/rss/', max: 1 },
-    { name: 'France Bleu Bourgogne', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/infos.xml', max: 2 },
-    { name: '20 Minutes', url: 'https://www.20minutes.fr/feeds/rss-une.xml', max: 1 }
+	{ name: 'France Bleu Bourgogne', url: 'https://www.francebleu.fr/rss/bourgogne/a-la-une.xml', max: 2 },
+	{ name: 'France Bleu Bourgogne', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/culture.xml', max: 2 },
+	{ name: 'France Bleu Bourgogne', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/vie-quotidienne.xml', max: 2 },
+	{ name: 'France Bleu Bourgogne', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/sports.xml', max: 2 },
+    { name: 'France Bleu Bourgogne', url: 'https://www.francebleu.fr/rss/bourgogne/rubrique/infos.xml', max: 2 }
 ];
     
     let articles = [];
