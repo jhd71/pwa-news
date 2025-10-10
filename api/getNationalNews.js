@@ -68,13 +68,35 @@ export default async function handler(req, res) {
         console.log(`✅ ${feed.name}: ${feedData.items.length} articles trouvés`);
         
         const fetchedArticles = feedData.items.slice(0, feed.max).map(item => {
-          // Extraction d'image simplifiée
+          // Extraction d'image améliorée
           let image = "/images/default-news.jpg"; // Image par défaut
           
+          // 1. Vérifier enclosure
           if (item.enclosure && item.enclosure.url) {
             image = item.enclosure.url;
-          } else if (item['media:content'] && item['media:content'].url) {
+          } 
+          // 2. Vérifier media:content
+          else if (item['media:content'] && item['media:content'].url) {
             image = item['media:content'].url;
+          }
+          // 3. Vérifier media:thumbnail
+          else if (item['media:thumbnail'] && item['media:thumbnail'].url) {
+            image = item['media:thumbnail'].url;
+          }
+          // 4. Chercher dans le contenu HTML
+          else if (item.content || item['content:encoded']) {
+            const content = item.content || item['content:encoded'];
+            const imgMatch = content.match(/<img[^>]+src=["']([^"']+)["']/i);
+            if (imgMatch && imgMatch[1]) {
+              image = imgMatch[1];
+            }
+          }
+          // 5. Chercher dans la description
+          else if (item.description) {
+            const imgMatch = item.description.match(/<img[^>]+src=["']([^"']+)["']/i);
+            if (imgMatch && imgMatch[1]) {
+              image = imgMatch[1];
+            }
           }
           
           return {
