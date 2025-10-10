@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             /* Ajustement spécifique pour le widget local-news sur iPhone */
             .ios-device .local-news-widget {
-                margin-top: 21vh !important;
+                margin-top: 1vh !important;
             }
 
             /* Monter la barre d'infos défilante sur iPhone */
