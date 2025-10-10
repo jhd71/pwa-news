@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v57'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v58'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -284,7 +284,7 @@ const OFFLINE_HTML = `<!DOCTYPE html>
 </html>`;
 
 // Configuration du timeout pour les requêtes réseau
-const NETWORK_TIMEOUT = 5000; // 5 secondes
+const NETWORK_TIMEOUT = 8000; // 8 secondes pour laisser plus de temps
 
 // Installation
 self.addEventListener('install', event => {
@@ -646,12 +646,39 @@ function handleImageRequest(event) {
 function handleApiRequest(event) {
     event.respondWith(
         (async () => {
+            const cache = await caches.open(API_CACHE_NAME);
+            
+            // Pour getNationalNews, essayer le cache d'abord si récent (< 10 min)
+            if (event.request.url.includes('getNationalNews')) {
+                const cachedResponse = await cache.match(event.request);
+                if (cachedResponse) {
+                    const cachedDate = new Date(cachedResponse.headers.get('date'));
+                    const now = new Date();
+                    const ageInMinutes = (now - cachedDate) / (1000 * 60);
+                    
+                    // Si le cache a moins de 10 minutes, l'utiliser
+                    if (ageInMinutes < 10) {
+                        console.log('[SW] Utilisation du cache récent pour getNationalNews');
+                        
+                        // Mettre à jour en arrière-plan
+                        fetchWithTimeout(event.request, NETWORK_TIMEOUT)
+                            .then(response => {
+                                if (response.ok) {
+                                    cache.put(event.request, response.clone());
+                                }
+                            })
+                            .catch(() => {});
+                        
+                        return cachedResponse;
+                    }
+                }
+            }
+            
             try {
-                // D'abord essayer le réseau avec timeout
+                // Essayer le réseau
                 const response = await fetchWithTimeout(event.request, NETWORK_TIMEOUT);
                 
-                // Mettre en cache pour une utilisation hors ligne future
-                const cache = await caches.open(API_CACHE_NAME);
+                // Mettre en cache
                 try {
                     cache.put(event.request, response.clone());
                 } catch (cacheError) {
@@ -662,16 +689,13 @@ function handleApiRequest(event) {
             } catch (error) {
                 console.error('[ServiceWorker] Erreur API:', error);
                 
-                // En cas d'échec, essayer de servir depuis le cache API
-                const cache = await caches.open(API_CACHE_NAME);
+                // Fallback sur le cache même s'il est vieux
                 const cachedResponse = await cache.match(event.request);
                 
                 if (cachedResponse) {
-                    // Ajouter un en-tête pour indiquer que c'est une réponse mise en cache
                     const headers = new Headers(cachedResponse.headers);
                     headers.append('X-Cache', 'HIT');
                     
-                    // Créer une nouvelle réponse avec l'en-tête ajouté
                     return new Response(cachedResponse.body, {
                         status: cachedResponse.status,
                         statusText: cachedResponse.statusText,
@@ -679,7 +703,6 @@ function handleApiRequest(event) {
                     });
                 }
                 
-                // Si pas en cache, retourner une réponse d'erreur formatée
                 return new Response(JSON.stringify({
                     error: 'Réseau indisponible',
                     offline: true,
