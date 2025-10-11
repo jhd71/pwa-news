@@ -31,7 +31,7 @@
         
         // Mélanger pour avoir de la variété
         const shuffled = articles.sort(() => Math.random() - 0.5);
-        const limitedArticles = shuffled.slice(0, 12); // ✅ Augmenté à 12 articles
+        const limitedArticles = shuffled.slice(0, 16); // ✅ Au lieu de 12
         
         limitedArticles.forEach(article => {
 

@@ -112,7 +112,8 @@ export default async function handler(req, res) {
                 title: article.title,
                 link: article.link,
                 image: article.image && 
-                       !article.image.includes('logo.png') && // ✅ Garder seulement le filtre logo
+                       !article.image.includes('logo.png') && 
+                       !article.image.includes('98554_1_full.jpg') && // ✅ Exclure l'image politique générique
                        article.image.length > 10
                     ? article.image 
                     : "/images/default-news.jpg",
