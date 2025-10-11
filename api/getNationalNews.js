@@ -112,8 +112,7 @@ export default async function handler(req, res) {
                 title: article.title,
                 link: article.link,
                 image: article.image && 
-                       !article.image.includes('logo.png') && 
-                       !article.image.includes('bourgogne-infos.com') && // ✅ Exclure bourgogne-infos aussi
+                       !article.image.includes('logo.png') && // ✅ Garder seulement le filtre logo
                        article.image.length > 10
                     ? article.image 
                     : "/images/default-news.jpg",
