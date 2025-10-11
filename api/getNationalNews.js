@@ -111,7 +111,12 @@ export default async function handler(req, res) {
             const formattedCreusot = creusotData.slice(0, 2).map(article => ({
                 title: article.title,
                 link: article.link,
-                image: article.image || "/images/default-news.jpg",
+                image: article.image && 
+                       !article.image.includes('logo.png') && 
+                       !article.image.includes('bourgogne-infos.com') && // ✅ Exclure bourgogne-infos aussi
+                       article.image.length > 10
+                    ? article.image 
+                    : "/images/default-news.jpg",
                 source: 'Creusot Infos'
             }));
             
