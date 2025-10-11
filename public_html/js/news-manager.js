@@ -83,8 +83,31 @@
 
     } catch (error) {
         console.error('Erreur chargement actualités:', error);
+        
         if (swiperWrapper) {
-            swiperWrapper.innerHTML = '<div class="swiper-slide"><div class="slide-content"><p>Erreur chargement.</p></div></div>';
+            // Message plus informatif avec réessai automatique
+            swiperWrapper.innerHTML = `
+                <div class="swiper-slide">
+                    <div class="slide-content" style="text-align: center; padding: 40px 20px;">
+                        <p style="font-size: 18px; margin-bottom: 15px;">⏳ Chargement des actualités...</p>
+                        <p style="font-size: 14px; opacity: 0.8;">Patientez quelques instants</p>
+                    </div>
+                </div>
+            `;
+            
+            // Réessayer UNE SEULE fois après 3 secondes
+            if (!window.newsRetryAttempted) {  // ✅ PROTECTION contre boucle infinie
+                window.newsRetryAttempted = true;
+                setTimeout(() => {
+                    console.log('🔄 Nouvelle tentative de chargement des actualités...');
+                    loadTopNews();
+                }, 3000);
+            } else {
+                // Si le réessai échoue aussi, afficher un message d'erreur
+                setTimeout(() => {
+                    swiperWrapper.innerHTML = '<div class="swiper-slide"><div class="slide-content"><p>Impossible de charger les actualités. Actualisez la page.</p></div></div>';
+                }, 3000);
+            }
         }
     }
 }

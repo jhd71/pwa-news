@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v59'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v60'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -284,7 +284,7 @@ const OFFLINE_HTML = `<!DOCTYPE html>
 </html>`;
 
 // Configuration du timeout pour les requêtes réseau
-const NETWORK_TIMEOUT = 8000; // 8 secondes pour laisser plus de temps
+const NETWORK_TIMEOUT = 15000; // 15 secondes pour les API lentes
 
 // Installation
 self.addEventListener('install', event => {
@@ -675,8 +675,11 @@ function handleApiRequest(event) {
             }
             
             try {
+                // Timeout plus long pour getNationalNews (beaucoup de flux RSS)
+                const timeout = event.request.url.includes('getNationalNews') ? 20000 : NETWORK_TIMEOUT;
+                
                 // Essayer le réseau
-                const response = await fetchWithTimeout(event.request, NETWORK_TIMEOUT);
+                const response = await fetchWithTimeout(event.request, timeout);
                 
                 // Mettre en cache
                 try {
