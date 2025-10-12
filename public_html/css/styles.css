@@ -3937,6 +3937,12 @@ main {
 	
 }
 
+/* Animation du spinner de chargement */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 /* TABLETTES - 750PX À 1199PX */
 @media (min-width: 750px) and (max-width: 1199px) {
     .swiper-container {

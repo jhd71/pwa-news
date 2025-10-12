@@ -255,13 +255,16 @@ Actu & Média
 <div class="swiper-container">
   <div class="swiper">
     <div class="swiper-wrapper" id="swiperWrapper">
-      <!-- Les actualités seront injectées ici par JS -->
-      <div class="swiper-slide">
-        <div class="slide-content">
-          <p>Chargement des actualités...</p>
-        </div>
-      </div>
+  <!-- Les actualités seront injectées ici par JS -->
+  <div class="swiper-slide" style="display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.3);">
+    <div class="slide-content" style="text-align: center; padding: 40px 20px;">
+      <!-- Spinner animé -->
+      <div style="margin: 0 auto 20px; width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid white; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+      <p style="color: white; font-size: 18px; font-weight: bold; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">⏳ Chargement des actualités...</p>
+      <p style="color: rgba(255,255,255,0.8); font-size: 14px; margin-top: 10px;">Veuillez patienter</p>
     </div>
+  </div>
+</div>
     <!-- Pagination -->
     <div class="swiper-pagination"></div>
     <!-- Flèches de navigation -->
