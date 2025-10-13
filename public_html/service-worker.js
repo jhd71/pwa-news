@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v61'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v62'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -64,6 +64,7 @@ const STATIC_RESOURCES = [
     '/css/tile-enhancements.css',
     '/css/tv-tiles-fix.css',
     '/css/donation.css',
+	'/css/seo-section.css',
     
     // Scripts JavaScript
     '/js/app.js',

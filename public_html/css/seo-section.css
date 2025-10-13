@@ -1,0 +1,40 @@
+/* Texte SEO responsive et accessible */
+.seo-section {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto 20px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.seo-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  color: #ffffff !important;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.seo-section p {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 15px;
+  color: #ffffff !important;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+@media (max-width: 768px) {
+  .seo-section {
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .seo-section h2 {
+    font-size: 1.3rem;
+  }
+  
+  .seo-section p {
+    font-size: 0.9rem;
+  }
+}
