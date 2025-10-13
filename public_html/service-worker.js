@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v60'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v61'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
