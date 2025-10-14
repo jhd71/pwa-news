@@ -4653,6 +4653,9 @@ showAdminPanel() {
 	
 document.body.appendChild(panel);
 
+// ✅ Charger les données APRÈS l'ajout du panel au DOM
+this.loadSubmissionsForPanel();
+
 // Ajouter une classe au body pour désactiver le scroll
 if (isMobile) {
     document.body.classList.add('admin-panel-open');
@@ -5090,6 +5093,24 @@ panel.querySelector('#notificationForm')?.addEventListener('submit', async (e) =
 		});
 	}
 	
+	// 📝 Gestionnaire pour le bouton Propositions
+
+if (submissionsAdminBtn) {
+    const newSubmissionsBtn = submissionsAdminBtn.cloneNode(true);
+    submissionsAdminBtn.parentNode.replaceChild(newSubmissionsBtn, submissionsAdminBtn);
+    
+    newSubmissionsBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (prepareNewsAdminAuth()) {
+            window.open('admin-submissions.html', '_blank');
+        } else {
+            this.showNotification('Accès refusé - Admin requis', 'error');
+        }
+    });
+}
+
 	// 🚩 Gestionnaires pour les filtres de signalements
 panel.querySelectorAll('.filter-reports-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -6836,24 +6857,45 @@ async loadNewsComments() {
 
 async loadSubmissionsForPanel() {
     const container = document.querySelector('.recent-submissions-list');
-    if (!container) return;
+    if (!container) {
+        console.warn('⚠️ Container .recent-submissions-list non trouvé');
+        return;
+    }
     
     try {
+        console.log('📝 Chargement des propositions...');
+        
         const supabase = window.getSupabaseClient();
         if (!supabase) throw new Error('Supabase non disponible');
         
+        // Afficher un indicateur de chargement
+        container.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.7); padding: 20px;">⏳ Chargement...</p>';
+        
         // Compter les propositions en attente
-        const { count: pendingCount } = await supabase
+        const { count: pendingCount, error: countError } = await supabase
             .from('news_submissions')
             .select('*', { count: 'exact', head: true })
             .eq('status', 'pending');
         
-        // Mettre à jour le compteur
+        if (countError) {
+            console.error('❌ Erreur comptage:', countError);
+            throw countError;
+        }
+        
+        console.log(`📊 ${pendingCount || 0} propositions en attente`);
+        
+        // Mettre à jour les compteurs
         const countElement = document.getElementById('pendingSubmissionsCount');
-        if (countElement) countElement.textContent = pendingCount || 0;
+        if (countElement) {
+            countElement.textContent = pendingCount || 0;
+            console.log('✅ Compteur principal mis à jour');
+        }
         
         const countBadge = document.getElementById('pending-submissions-count');
-        if (countBadge) countBadge.textContent = pendingCount || 0;
+        if (countBadge) {
+            countBadge.textContent = pendingCount || 0;
+            console.log('✅ Badge mis à jour');
+        }
         
         // Récupérer les dernières propositions
         const { data: submissions, error } = await supabase
@@ -6862,13 +6904,20 @@ async loadSubmissionsForPanel() {
             .order('created_at', { ascending: false })
             .limit(5);
         
-        if (error) throw error;
+        if (error) {
+            console.error('❌ Erreur récupération:', error);
+            throw error;
+        }
         
         if (!submissions || submissions.length === 0) {
             container.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.5); padding: 20px;">Aucune proposition pour le moment</p>';
+            console.log('ℹ️ Aucune proposition trouvée');
             return;
         }
         
+        console.log(`✅ ${submissions.length} propositions récupérées`);
+        
+        // Afficher les propositions
         container.innerHTML = submissions.map(sub => `
             <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 3px solid ${sub.status === 'pending' ? '#FFC107' : '#4CAF50'};">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
@@ -6886,9 +6935,11 @@ async loadSubmissionsForPanel() {
             </div>
         `).join('');
         
+        console.log('✅ Affichage terminé');
+        
     } catch (error) {
-        console.error('Erreur chargement propositions:', error);
-        container.innerHTML = '<p style="color: #ff5252; text-align: center;">Erreur de chargement</p>';
+        console.error('❌ Erreur loadSubmissionsForPanel:', error);
+        container.innerHTML = '<p style="color: #ff5252; text-align: center; padding: 20px;">❌ Erreur de chargement</p>';
     }
 }
 
