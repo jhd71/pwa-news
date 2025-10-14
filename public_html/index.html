@@ -1146,9 +1146,12 @@ Actu & Média
         // Fonction d'envoi (à adapter selon votre backend)
         async function sendNewsSubmission(formData) {
     try {
-        // Vérifier que Supabase est disponible
-        if (!window.supabaseClient) {
-            throw new Error('Supabase non initialisé');
+        // ✅ CORRECTION : On appelle la fonction pour obtenir le client
+        const supabase = window.getSupabaseClient();
+
+        // On vérifie que le client a bien été retourné
+        if (!supabase) {
+            throw new Error('Supabase non initialisé ou connexion impossible.');
         }
 
         // Extraire les données du formulaire
@@ -1160,14 +1163,14 @@ Actu & Média
             event_date: formData.get('eventDate') || null,
             contact_email: formData.get('contact'),
             author: formData.get('author') || 'Anonyme',
-            status: 'pending',
-            created_at: new Date().toISOString()
+            status: 'pending'
+            // Le champ 'created_at' est géré par la base de données, pas besoin de l'envoyer
         };
 
         console.log('📤 Envoi vers Supabase:', newsData);
 
-        // Insérer dans Supabase
-        const { data, error } = await window.supabaseClient
+        // Insérer dans Supabase en utilisant notre variable 'supabase'
+        const { data, error } = await supabase
             .from('news_submissions')
             .insert([newsData])
             .select();
@@ -1182,6 +1185,8 @@ Actu & Média
         
     } catch (error) {
         console.error('❌ Erreur envoi:', error);
+        // Affiche une alerte plus explicite à l'utilisateur
+        alert(`Une erreur est survenue : ${error.message}. Veuillez réessayer.`);
         throw error;
     }
 }
