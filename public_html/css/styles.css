@@ -3490,7 +3490,6 @@ main {
         flex-direction: column;
         position: sticky; /* Reste visible même si on scroll */
         bottom: 0;
-        background: var(--background-color);
         padding-top: 16px;
         margin-top: 24px;
     }
