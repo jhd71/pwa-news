@@ -207,13 +207,19 @@ async function checkAdminNotifications() {
             .from('reports')
             .select('*', { count: 'exact', head: true })
             .eq('status', 'pending');
+            
+        // 5. PROPOSITIONS D'ACTUALITÉS
+        const { count: submissionsCount } = await supabase
+            .from('news_submissions')
+            .select('*', { count: 'exact', head: true })
+            .eq('status', 'pending');
 
         // Total
-        const totalCount = (newsCount || 0) + (photosCount || 0) + (annoncesCount || 0) + (reportsCount || 0);
+        const totalCount = (newsCount || 0) + (photosCount || 0) + (annoncesCount || 0) + (reportsCount || 0) + (submissionsCount || 0);
 
         if (totalCount > 0) {
-            addNotificationBadgeToNewsWidget(totalCount, newsCount, photosCount, annoncesCount, reportsCount);
-            console.log(`📊 ${totalCount} item(s) en attente (${newsCount} news, ${photosCount} photos, ${annoncesCount} annonces, ${reportsCount} signalements)`);
+            addNotificationBadgeToNewsWidget(totalCount, newsCount, photosCount, annoncesCount, reportsCount, submissionsCount);
+            console.log(`📊 ${totalCount} item(s) en attente (${newsCount} news, ${photosCount} photos, ${annoncesCount} annonces, ${reportsCount} signalements, ${submissionsCount} propositions)`);
         } else {
             removeNotificationBadgeFromNewsWidget();
         }
@@ -222,7 +228,7 @@ async function checkAdminNotifications() {
     }
 }
 
-	function addNotificationBadgeToNewsWidget(totalCount, newsCount, photosCount, annoncesCount, reportsCount = 0) {
+	function addNotificationBadgeToNewsWidget(totalCount, newsCount, photosCount, annoncesCount, reportsCount = 0, submissionsCount = 0) {
     const newsWidget = document.querySelector('.news-widget-container');
     if (!newsWidget) return;
 
@@ -237,10 +243,11 @@ async function checkAdminNotifications() {
 
     // Créer un titre détaillé
     let titleDetails = [];
+    if (submissionsCount > 0) titleDetails.push(`${submissionsCount} proposition(s) d'actu`);
     if (newsCount > 0) titleDetails.push(`${newsCount} commentaire(s) NEWS`);
     if (photosCount > 0) titleDetails.push(`${photosCount} commentaire(s) PHOTOS`);
     if (annoncesCount > 0) titleDetails.push(`${annoncesCount} annonce(s)`);
-	if (reportsCount > 0) titleDetails.push(`${reportsCount} signalement(s)`);
+    if (reportsCount > 0) titleDetails.push(`${reportsCount} signalement(s)`);
     badge.title = `${titleDetails.join('\n')} en attente de modération. Cliquez pour gérer.`;
     
     badge.style.cssText = `
@@ -264,104 +271,50 @@ async function checkAdminNotifications() {
     border: 2px solid white;
 `;
 
-    // Ajouter animation CSS
-if (!document.querySelector('#admin-badge-styles')) {
-    const style = document.createElement('style');
-    style.id = 'admin-badge-styles';
-    style.textContent = `
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
-            50% { transform: scale(1.1); box-shadow: 0 2px 12px rgba(255,68,68,0.6); }
-            100% { transform: scale(1); box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
-        }
-        .news-widget-container {
-            position: relative;
-        }
+    // Ajouter animation CSS (votre code existant est parfait)
+    // ...
+
+    // Ajouter le clic pour ouvrir la bonne page admin
+    badge.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        e.preventDefault();
         
-        @media (max-width: 768px) {
-            .admin-notification-badge {
-                width: 36px !important;
-                height: 36px !important;
-                font-size: 16px !important;
-                top: 16px !important;
-                right: 215px !important;
-                border: 3px solid white !important;
-            }
-        }
-    `;
-    document.head.appendChild(style);
-}
+        try {
+            const supabase = window.getSupabaseClient();
+            if (!supabase) return;
+            
+            // On récupère tous les compteurs pour être sûr de la redirection
+            const { count: newsCount } = await supabase.from('news_comments').select('*', { count: 'exact', head: true }).eq('is_approved', false);
+            const { count: photosCount } = await supabase.from('photo_comments').select('*', { count: 'exact', head: true }).eq('is_approved', false);
+            const { count: annoncesCount } = await supabase.from('classified_ads').select('*', { count: 'exact', head: true }).eq('is_approved', false);
+            const { count: reportsCount } = await supabase.from('reports').select('*', { count: 'exact', head: true }).eq('status', 'pending');
+            const { count: submissionsCount } = await supabase.from('news_submissions').select('*', { count: 'exact', head: true }).eq('status', 'pending');
 
-    // Ajouter le clic pour ouvrir admin-comments
-badge.addEventListener('click', async (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    
-    try {
-        const supabase = window.getSupabaseClient();
-        if (!supabase) return;
-        
-        // --- On récupère les 3 compteurs ---
-
-        // 1. Commentaires NEWS
-const { count: newsCount } = await supabase
-    .from('news_comments')
-    .select('*', { count: 'exact', head: true })
-    .eq('is_approved', false);
-    
-// 2. Commentaires PHOTOS
-const { count: photosCount } = await supabase
-    .from('photo_comments')
-    .select('*', { count: 'exact', head: true })
-    .eq('is_approved', false);
-
-// 3. ANNONCES
-const { count: annoncesCount } = await supabase
-    .from('classified_ads')
-    .select('*', { count: 'exact', head: true })
-    .eq('is_approved', false);
-
-// 4. SIGNALEMENTS
-const { count: reportsCount } = await supabase
-    .from('reports')
-    .select('*', { count: 'exact', head: true })
-    .eq('status', 'pending');
-
-// --- Logique de redirection améliorée ---
-
-        // Cas 1 : S'il n'y a QUE des annonces en attente
-        if (annoncesCount > 0 && newsCount === 0 && photosCount === 0) {
-            window.location.href = `admin-annonces.html`;
-        } 
-        // Cas 2 : S'il n'y a QUE des commentaires de news
-        else if (newsCount > 0 && photosCount === 0 && annoncesCount === 0) {
-            window.location.href = `admin-comments.html`;
-        }
-        // Cas 3 : S'il n'y a QUE des commentaires de photos
-        else if (photosCount > 0 && newsCount === 0 && annoncesCount === 0) {
-            // Note: Assurez-vous que le nom du fichier est correct
-            window.location.href = `admin-comments-photos.html`;
-        }
-        // Cas 4 : S'il y a PLUSIEURS types de notifications en attente
-        else {
-            // On ouvre le panel admin général qui montre tous les compteurs
-            if (window.chatManager && typeof window.chatManager.showAdminPanel === 'function') {
-                window.chatManager.showAdminPanel();
+            // Logique de redirection améliorée
+            if (submissionsCount > 0 && annoncesCount === 0 && newsCount === 0 && photosCount === 0 && reportsCount === 0) {
+                window.location.href = `admin-submissions.html`; // Page à créer
+            } else if (annoncesCount > 0 && newsCount === 0 && photosCount === 0 && reportsCount === 0) {
+                window.location.href = `admin-annonces.html`;
+            } else if (newsCount > 0 && photosCount === 0 && annoncesCount === 0 && reportsCount === 0) {
+                window.location.href = `admin-comments.html`;
+            } else if (photosCount > 0 && newsCount === 0 && annoncesCount === 0 && reportsCount === 0) {
+                window.location.href = `admin-comments-photos.html`;
             } else {
-                // Fallback si le chat n'est pas prêt, on va à la page la plus prioritaire
-                if(annoncesCount > 0) window.location.href = `admin-annonces.html`;
-                else if(newsCount > 0) window.location.href = `admin-comments.html`;
+                if (window.chatManager && typeof window.chatManager.showAdminPanel === 'function') {
+                    window.chatManager.showAdminPanel();
+                } else {
+                    if(submissionsCount > 0) window.location.href = `admin-submissions.html`;
+                    else if(annoncesCount > 0) window.location.href = `admin-annonces.html`;
+                    else if(newsCount > 0) window.location.href = `admin-comments.html`;
+                }
             }
+        } catch (error) {
+            console.error('Erreur lors du clic sur le badge de notification:', error);
         }
-
-    } catch (error) {
-        console.error('Erreur lors du clic sur le badge de notification:', error);
-    }
-});
+    });
 
     newsWidget.appendChild(badge);
     
-    // S'assurer que le widget a position: relative
     if (getComputedStyle(newsWidget).position === 'static') {
         newsWidget.style.position = 'relative';
     }
