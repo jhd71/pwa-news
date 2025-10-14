@@ -1289,8 +1289,7 @@ if (this.isTablet()) {
         });
     }
 }
-    // Remplacer le code existant par celui-ci
-// Remplacer le code existant par celui-ci
+
 const chatMessages = this.container.querySelector('.chat-messages');
 if (chatMessages) {
     // Empêcher la propagation des événements tactiles en dehors du chat
@@ -4404,6 +4403,7 @@ showAdminPanel() {
 		<button class="tab-btn" data-tab="news-admin" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">NEWS Admin</button>
 		<button class="tab-btn" data-tab="visitor-stats" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">📊 Visiteurs</button>
 		<button class="tab-btn" data-tab="reports" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">🚩 Signalements (<span id="pending-reports-count">0</span>)</button>
+		<button class="tab-btn" data-tab="submissions" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">📝 Propositions (<span id="pending-submissions-count">0</span>)</button>
     </div>
     <div class="panel-content" style="${isMobile ? 'padding: 15px; height: calc(100% - 130px); overflow-y: auto; -webkit-overflow-scrolling: touch;' : ''}">
         <!-- Onglet Mots bannis -->
@@ -4559,6 +4559,28 @@ showAdminPanel() {
     <h5 style="margin: 20px 0 10px 0;">Dernières actualités</h5>
     <div class="recent-news-list" style="${isMobile ? 'max-height: 650px; overflow-y: auto;' : ''}">
         <div class="loading-news">Chargement des actualités...</div>
+    </div>
+</div>
+
+<!-- Onglet Propositions -->
+<div class="tab-section" id="submissions-section">
+    <h4>📝 Propositions d'Actualités</h4>
+    
+    <!-- Statistiques -->
+    <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px;">
+        <div style="font-size: 24px; font-weight: bold; color: #FFC107;" id="pendingSubmissionsCount">0</div>
+        <div style="font-size: 12px; color: #aaa;">Propositions en attente</div>
+    </div>
+    
+    <!-- Bouton d'accès -->
+    <button id="openSubmissionsAdmin" style="background: #2196F3; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; margin-bottom: 20px;">
+        📋 Gérer les Propositions
+    </button>
+    
+    <!-- Liste des dernières propositions -->
+    <h5 style="margin: 20px 0 10px 0;">Dernières propositions</h5>
+    <div class="recent-submissions-list" style="${isMobile ? 'max-height: 400px; overflow-y: auto;' : ''}">
+        <div class="loading-submissions">Chargement des propositions...</div>
     </div>
 </div>
 
@@ -4733,6 +4755,11 @@ if (btn.dataset.tab === 'visitor-stats') {
     console.log('Onglet visiteurs sélectionné');
 }
     
+	// Charger les propositions si l'onglet Propositions est sélectionné
+if (btn.dataset.tab === 'submissions') {
+    this.loadSubmissionsForPanel();
+}
+    
 	});
 	});
 
@@ -4764,6 +4791,9 @@ if (btn.dataset.tab === 'visitor-stats') {
 
 const newsAdminBtn = panel.querySelector('#openNewsAdmin');
 const commentsAdminBtn = panel.querySelector('#openCommentsAdmin');
+
+const submissionsAdminBtn = panel.querySelector('#openSubmissionsAdmin');
+const annoncesAdminBtn = panel.querySelector('#openAnnoncesAdmin');
 
 // Configuration des gestionnaires NEWS avec authentification
 
@@ -6802,6 +6832,64 @@ async loadNewsComments() {
         if (container) {
             container.innerHTML = `<div class="error">Erreur: ${error.message}</div>`;
         }
+    }
+}
+
+async loadSubmissionsForPanel() {
+    const container = document.querySelector('.recent-submissions-list');
+    if (!container) return;
+    
+    try {
+        const supabase = window.getSupabaseClient();
+        if (!supabase) throw new Error('Supabase non disponible');
+        
+        // Compter les propositions en attente
+        const { count: pendingCount } = await supabase
+            .from('news_submissions')
+            .select('*', { count: 'exact', head: true })
+            .eq('status', 'pending');
+        
+        // Mettre à jour le compteur
+        const countElement = document.getElementById('pendingSubmissionsCount');
+        if (countElement) countElement.textContent = pendingCount || 0;
+        
+        const countBadge = document.getElementById('pending-submissions-count');
+        if (countBadge) countBadge.textContent = pendingCount || 0;
+        
+        // Récupérer les dernières propositions
+        const { data: submissions, error } = await supabase
+            .from('news_submissions')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(5);
+        
+        if (error) throw error;
+        
+        if (!submissions || submissions.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.5); padding: 20px;">Aucune proposition pour le moment</p>';
+            return;
+        }
+        
+        container.innerHTML = submissions.map(sub => `
+            <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 3px solid ${sub.status === 'pending' ? '#FFC107' : '#4CAF50'};">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                    <strong style="flex: 1;">${this.escapeHtml(sub.title)}</strong>
+                    <span style="background: ${sub.status === 'pending' ? '#FFC107' : '#4CAF50'}; padding: 2px 8px; border-radius: 10px; font-size: 10px; color: white;">${sub.status === 'pending' ? 'En attente' : 'Traité'}</span>
+                </div>
+                <div style="font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 8px;">
+                    📅 ${new Date(sub.created_at).toLocaleDateString('fr-FR')} • 
+                    👤 ${this.escapeHtml(sub.author || 'Anonyme')} • 
+                    📍 ${this.escapeHtml(sub.location || 'Non précisé')}
+                </div>
+                <div style="font-size: 13px; color: rgba(255,255,255,0.8); margin-top: 5px; max-height: 60px; overflow: hidden;">
+                    ${this.escapeHtml(sub.content.substring(0, 150))}${sub.content.length > 150 ? '...' : ''}
+                </div>
+            </div>
+        `).join('');
+        
+    } catch (error) {
+        console.error('Erreur chargement propositions:', error);
+        container.innerHTML = '<p style="color: #ff5252; text-align: center;">Erreur de chargement</p>';
     }
 }
 
