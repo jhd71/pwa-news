@@ -271,8 +271,6 @@ async function checkAdminNotifications() {
     border: 2px solid white;
 `;
 
-    // Ajouter animation CSS (votre code existant est parfait)
-    // ...
 
     // Ajouter le clic pour ouvrir la bonne page admin
     badge.addEventListener('click', async (e) => {
