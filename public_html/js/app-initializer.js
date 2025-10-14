@@ -292,7 +292,7 @@ async function checkAdminNotifications() {
 
             // Logique de redirection améliorée
             if (submissionsCount > 0 && annoncesCount === 0 && newsCount === 0 && photosCount === 0 && reportsCount === 0) {
-                window.location.href = `admin-submissions.html`; // Page à créer
+                window.location.href = `admin-submissions.html`;
             } else if (annoncesCount > 0 && newsCount === 0 && photosCount === 0 && reportsCount === 0) {
                 window.location.href = `admin-annonces.html`;
             } else if (newsCount > 0 && photosCount === 0 && annoncesCount === 0 && reportsCount === 0) {

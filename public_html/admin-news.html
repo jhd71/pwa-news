@@ -200,6 +200,10 @@
     background: #9c27b0;
 }
 
+.submissions-btn {
+    background: #ff9800;
+}
+
 .comments-btn-container {
     position: relative;
 }
@@ -1161,23 +1165,29 @@
     
     <!-- Boutons réorganisés -->
     <div class="header-buttons">
-        <a href="https://actuetmedia.fr/" class="admin-btn home-btn">
-            <span class="material-icons">home</span>
-            <span class="btn-text">Accueil</span>
-        </a>
-        
-        <a href="admin-comments.html" class="admin-btn comments-btn">
-            <span class="material-icons">comment</span>
-            <span class="btn-text">Commentaires</span>
-            <span id="commentsBadge" class="comments-badge" style="display: none;">0</span>
-        </a>
-        
-        <a href="admin-comments-photos.html" class="admin-btn photos-btn">
-            <span class="material-icons">photo_library</span>
-            <span class="btn-text">Photos</span>
-        </a>
-    </div>
+    <a href="https://actuetmedia.fr/" class="admin-btn home-btn">
+        <span class="material-icons">home</span>
+        <span class="btn-text">Accueil</span>
+    </a>
     
+    <a href="admin-comments.html" class="admin-btn comments-btn">
+        <span class="material-icons">comment</span>
+        <span class="btn-text">Commentaires</span>
+        <span id="commentsBadge" class="comments-badge" style="display: none;">0</span>
+    </a>
+    
+    <a href="admin-comments-photos.html" class="admin-btn photos-btn">
+        <span class="material-icons">photo_library</span>
+        <span class="btn-text">Photos</span>
+    </a>
+    
+    <a href="admin-submissions.html" class="admin-btn submissions-btn">
+        <span class="material-icons">inbox</span>
+        <span class="btn-text">Propositions</span>
+        <span id="submissionsBadge" class="comments-badge" style="display: none;">0</span>
+    </a>
+</div>
+
     <!-- Déconnexion séparé -->
     <button class="logout-btn" onclick="logout()">
         <span class="material-icons">logout</span>
@@ -1656,6 +1666,22 @@ async checkPendingComments() {
                 badge.style.display = 'flex';
             } else {
                 badge.style.display = 'none';
+            }
+        }
+        
+        // Vérifier aussi les propositions
+        const { count: submissionsCount } = await supabase
+            .from('news_submissions')
+            .select('*', { count: 'exact', head: true })
+            .eq('status', 'pending');
+            
+        const submissionsBadge = document.getElementById('submissionsBadge');
+        if (submissionsBadge) {
+            if (submissionsCount > 0) {
+                submissionsBadge.textContent = submissionsCount;
+                submissionsBadge.style.display = 'flex';
+            } else {
+                submissionsBadge.style.display = 'none';
             }
         }
     } catch (error) {
