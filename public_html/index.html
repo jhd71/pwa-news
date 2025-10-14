@@ -227,6 +227,91 @@
 <!-- 🎨 seo-section -->
 <link rel="stylesheet" href="css/seo-section.css">
 
+<!-- 🔧 CORRECTION THÈME SOMBRE - MODAL PROPOSITION -->
+<style>
+/* Correction du champ d'upload de fichier en thème sombre */
+
+/* Style de base pour tous les inputs de la modal */
+.submit-modal .form-input,
+.submit-modal .form-textarea,
+.submit-modal input[type="file"],
+.submit-modal .file-upload-label {
+    background: var(--card-bg, #ffffff);
+    color: var(--text-color, #333);
+    border: 1px solid var(--border-color, #e1e5e9);
+}
+
+/* Forcer le style pour le thème sombre */
+[data-theme="dark"] .submit-modal .form-input,
+[data-theme="dark"] .submit-modal .form-textarea,
+[data-theme="dark"] .submit-modal input[type="file"],
+[data-theme="dark"] .submit-modal .file-upload-label {
+    background: #2d2d2d !important;
+    color: #e0e0e0 !important;
+    border-color: #404040 !important;
+}
+
+/* Style du label du fichier */
+.submit-modal .file-upload-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px;
+    border: 2px dashed var(--border-color, #ccc);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.submit-modal .file-upload-label:hover {
+    border-color: var(--primary-color, #d32f2f);
+    background: rgba(211, 47, 47, 0.05);
+}
+
+[data-theme="dark"] .submit-modal .file-upload-label:hover {
+    background: rgba(92, 107, 192, 0.1);
+}
+
+/* Fichier sélectionné */
+.submit-modal .file-upload-label.file-selected {
+    background: rgba(76, 175, 80, 0.1);
+    border-color: #4CAF50;
+    color: #4CAF50 !important;
+}
+
+/* Cache l'input file natif */
+.submit-modal input[type="file"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Correction pour les autres thèmes */
+[data-theme="bleuciel"] .submit-modal .form-input,
+[data-theme="bleuciel"] .submit-modal .form-textarea,
+[data-theme="bleuciel"] .submit-modal .file-upload-label {
+    background: #f0f8ff;
+    color: #1565c0;
+    border-color: #90caf9;
+}
+
+[data-theme="light"] .submit-modal .form-input,
+[data-theme="light"] .submit-modal .form-textarea,
+[data-theme="light"] .submit-modal .file-upload-label {
+    background: #faf5ff;
+    color: #6a1b9a;
+    border-color: #ce93d8;
+}
+
+/* Hints en thème sombre */
+[data-theme="dark"] .submit-modal .form-hint {
+    color: #aaa !important;
+}
+</style>
+
 <!-- ✅ AJOUTEZ CE CSS ICI -->
     <style>
     /* Texte SEO responsive et accessible */
