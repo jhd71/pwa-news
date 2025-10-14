@@ -446,10 +446,32 @@
                         </div>
 
                         <div class="submission-content">
-                            ${this.escapeHtml(sub.content)}
-                        </div>
+				${this.escapeHtml(sub.content)}
+			</div>
 
-                        <div class="submission-actions">
+				${sub.file_url ? `
+					<div style="margin: 15px 0; padding: 15px; background: rgba(0,0,0,0.05); border-radius: 8px;">
+			<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+				<span class="material-icons" style="color: var(--primary-color);">attach_file</span>
+				<strong>Fichier joint :</strong>
+			</div>
+				${sub.file_url.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? `
+				<img src="${sub.file_url}" alt="Image jointe" 
+                 style="max-width: 100%; max-height: 400px; border-radius: 8px; cursor: pointer;"
+                 onclick="window.open('${sub.file_url}', '_blank')">
+        ` : `
+            <a href="${sub.file_url}" target="_blank" 
+               style="display: inline-flex; align-items: center; gap: 5px; padding: 10px 15px; 
+                      background: var(--primary-color); color: white; text-decoration: none; 
+                      border-radius: 6px;">
+                <span class="material-icons">download</span>
+                Télécharger le fichier
+				</a>
+			`}
+		</div>
+	` : ''}
+
+<div class="submission-actions">
                             ${sub.status === 'pending' ? `
                                 <button class="btn btn-create-news" onclick="submissionsManager.createNewsFromSubmission(${sub.id})">
                                     <span class="material-icons">add_circle</span> Créer l'actualité

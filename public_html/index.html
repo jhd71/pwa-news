@@ -1143,15 +1143,46 @@ Actu & Média
             }
         });
 
-        // Fonction d'envoi (à adapter selon votre backend)
         async function sendNewsSubmission(formData) {
     try {
-        // ✅ CORRECTION : On appelle la fonction pour obtenir le client
         const supabase = window.getSupabaseClient();
 
-        // On vérifie que le client a bien été retourné
         if (!supabase) {
             throw new Error('Supabase non initialisé ou connexion impossible.');
+        }
+
+        let fileUrl = null;
+        const file = formData.get('file');
+
+        // Si un fichier a été uploadé, on l'envoie vers Supabase Storage
+        if (file && file.size > 0) {
+            console.log('📤 Upload du fichier:', file.name);
+            
+            // Créer un nom de fichier unique
+            const timestamp = Date.now();
+            const fileExtension = file.name.split('.').pop();
+            const fileName = `submission-${timestamp}.${fileExtension}`;
+            
+            // Upload vers Supabase Storage dans le bucket 'news-submissions'
+            const { data: uploadData, error: uploadError } = await supabase.storage
+                .from('news-submissions')
+                .upload(fileName, file, {
+                    cacheControl: '3600',
+                    upsert: false
+                });
+            
+            if (uploadError) {
+                console.error('❌ Erreur upload fichier:', uploadError);
+                throw new Error(`Erreur upload fichier: ${uploadError.message}`);
+            }
+            
+            // Récupérer l'URL publique du fichier
+            const { data: urlData } = supabase.storage
+                .from('news-submissions')
+                .getPublicUrl(fileName);
+            
+            fileUrl = urlData.publicUrl;
+            console.log('✅ Fichier uploadé:', fileUrl);
         }
 
         // Extraire les données du formulaire
@@ -1163,13 +1194,13 @@ Actu & Média
             event_date: formData.get('eventDate') || null,
             contact_email: formData.get('contact'),
             author: formData.get('author') || 'Anonyme',
+            file_url: fileUrl, // URL du fichier uploadé
             status: 'pending'
-            // Le champ 'created_at' est géré par la base de données, pas besoin de l'envoyer
         };
 
         console.log('📤 Envoi vers Supabase:', newsData);
 
-        // Insérer dans Supabase en utilisant notre variable 'supabase'
+        // Insérer dans Supabase
         const { data, error } = await supabase
             .from('news_submissions')
             .insert([newsData])
@@ -1185,7 +1216,6 @@ Actu & Média
         
     } catch (error) {
         console.error('❌ Erreur envoi:', error);
-        // Affiche une alerte plus explicite à l'utilisateur
         alert(`Une erreur est survenue : ${error.message}. Veuillez réessayer.`);
         throw error;
     }
