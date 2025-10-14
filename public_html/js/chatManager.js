@@ -4793,7 +4793,6 @@ const newsAdminBtn = panel.querySelector('#openNewsAdmin');
 const commentsAdminBtn = panel.querySelector('#openCommentsAdmin');
 
 const submissionsAdminBtn = panel.querySelector('#openSubmissionsAdmin');
-const annoncesAdminBtn = panel.querySelector('#openAnnoncesAdmin');
 
 // Configuration des gestionnaires NEWS avec authentification
 
