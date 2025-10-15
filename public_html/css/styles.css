@@ -2420,6 +2420,7 @@ main {
     margin-bottom: 25px;
     padding-bottom: 15px;
     border-bottom: 2px solid #e9ecef;
+	background: linear-gradient(145deg, #4CAF50, #4CAF50);
 }
 
 [data-theme="dark"] .modal-header {
