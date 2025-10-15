@@ -887,6 +887,7 @@
     font-weight: bold;
     cursor: pointer;
     transition: all 0.2s;
+	background: linear-gradient(145deg, #4CAF50, #4CAF50);
 }
 
 .cancel-btn {
