@@ -620,7 +620,7 @@
 }
 
 [data-theme="bleuciel"] .modal-header h2 {
-    color: #0ea5e9 !important;
+    color: #000000 !important;
 }
 
 /* THÈME VIOLET */
@@ -629,7 +629,7 @@
 }
 
 [data-theme="light"] .modal-header h2 {
-    color: #7e57c2 !important;
+    color: #000000 !important;
 }
 
 /* THÈME ROUGE */
