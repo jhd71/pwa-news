@@ -32,11 +32,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const selectedAnswers = {};
     
     // Structure pour stocker les résultats du sondage
-    let surveyData = {
-        preference: {},
-        nouvelle_fonctionnalite: {},
-        frequence: {}
-    };
+let surveyData = {
+    frequence: {},
+    contenu: {},
+    recommandation: {}
+};
     
     // Fonction pour obtenir un identifiant d'appareil stable
     function getDeviceId() {
@@ -298,11 +298,11 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("Données récupérées:", data);
             
             // Réinitialiser les données du sondage
-            surveyData = {
-                preference: {},
-                nouvelle_fonctionnalite: {},
-                frequence: {}
-            };
+surveyData = {
+    frequence: {},
+    contenu: {},
+    recommandation: {}
+};
             
             // Organiser les données par question et réponse
             if (data && data.length > 0) {
@@ -498,39 +498,40 @@ window.openSurveyModal = openSurveyModal;
         hasAnyData = true;
         
         // Label pour la question
-        const questionLabel = {
-            'preference': 'Rubriques préférées',
-            'nouvelle_fonctionnalite': 'Fonctionnalités souhaitées',
-            'frequence': 'Fréquence de visite'
-        }[question] || question;
+const questionLabel = {
+    'frequence': 'Fréquence d\'utilisation',
+    'contenu': 'Contenu préféré',
+    'recommandation': 'Recommandation'
+}[question] || question;
         
         const resultHeader = document.createElement('h5');
         resultHeader.textContent = questionLabel;
         surveyResults.appendChild(resultHeader);
         
         // Labels pour les valeurs
-        const valueLabels = {
-            // Preference
-            'actualites': 'Actualités locales',
-            'sports': 'Sports',
-            'radio': 'Radio',
-            'tv': 'TV en direct',
-            'meteo': 'Météo',
-            
-            // Nouvelles fonctionnalités
-            'agenda': 'Agenda événements',
-            'petites_annonces': 'Petites annonces',
-            'tribune': 'Tribune libre',
-            'alertes': 'Alertes locales',
-            'carte': 'Carte interactive',
-            
-            // Fréquence
-            'quotidien': 'Tous les jours',
-            'hebdomadaire': 'Plusieurs fois/semaine',
-            'mensuel': 'Quelques fois/mois',
-            'occasionnel': 'Occasionnellement',
-            'premiere': 'Première visite'
-        };
+const valueLabels = {
+    // Fréquence
+    'quotidien': 'Tous les jours',
+    'hebdomadaire': 'Plusieurs fois par semaine',
+    'occasionnel': 'Occasionnellement',
+    'rare': 'Rarement',
+    'premiere': 'Première visite',
+    
+    // Contenu
+    'actualites_locales': 'Actualités locales',
+    'evenements': 'Événements & sorties',
+    'pratique': 'Infos pratiques',
+    'culture': 'Culture & loisirs',
+    'meteo': 'Météo & services',
+    'tout': 'Tout m\'intéresse',
+    
+    // Recommandation
+    'certainement': 'Oui, certainement',
+    'probablement': 'Probablement oui',
+    'peut_etre': 'Peut-être',
+    'probablement_pas': 'Probablement pas',
+    'non': 'Non'
+};
         
         // Créer les barres de résultats
         Object.entries(questionData).forEach(([value, count]) => {
