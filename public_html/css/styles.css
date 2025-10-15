@@ -2434,6 +2434,10 @@ main {
 	border-radius: 10px;
 }
 
+[data-theme="light"] .modal-header {
+    background: linear-gradient(145deg, #6040b1b5, #6040b1d1);
+}
+
 .modal-title {
     font-size: 24px;
     font-weight: 700;
