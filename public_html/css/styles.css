@@ -2421,14 +2421,17 @@ main {
     padding-bottom: 15px;
     border-bottom: 2px solid #e9ecef;
 	background: linear-gradient(145deg, #4CAF50, #4CAF50);
+	border-radius: 10px;
 }
 
 [data-theme="dark"] .modal-header {
     border-bottom-color: #4a5568;
+	border-radius: 10px;
 }
 
 [data-theme="rouge"] .modal-header {
     border-bottom-color: #dc3545;
+	border-radius: 10px;
 }
 
 .modal-title {
