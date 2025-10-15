@@ -16,67 +16,67 @@ if (typeof window.QuizLocal === 'undefined') {
                 week: this.getCurrentWeek(),
                 title: "Quiz de la semaine",
                 questions: [
-                    {
-                        question: "Quelle est la population approximative de Montceau-les-Mines?",
-                        options: ["15 000 habitants", "19 000 habitants", "25 000 habitants", "30 000 habitants"],
-                        correct: 1,
-                        points: 10
-                    },
-                    {
-                        question: "Dans quel département se trouve Montceau-les-Mines?",
-                        options: ["Côte-d'Or", "Saône-et-Loire", "Nièvre", "Yonne"],
-                        correct: 1,
-                        points: 10
-                    },
-                    {
-                        question: "Quel est le nom du maire actuel de Montceau?",
-                        options: ["Marie Durand", "Jean Martin", "Marie-Claude Jarrot", "Pierre Dubois"],
-                        correct: 2,
-                        points: 10
-                    },
-                    {
-                        question: "Quelle rivière traverse Montceau-les-Mines?",
-                        options: ["La Saône", "La Bourbince", "La Loire", "L'Arroux"],
-                        correct: 1,
-                        points: 10
-                    },
-                    {
-                        question: "Quel sport est particulièrement populaire à Montceau?",
-                        options: ["Le tennis", "Le rugby", "Le football", "Le handball"],
-                        correct: 2,
-                        points: 10
-                    },
-                    {
-                        question: "Quelle était l'activité historique principale de Montceau?",
-                        options: ["L'agriculture", "Le textile", "L'extraction minière", "La métallurgie"],
-                        correct: 2,
-                        points: 10
-                    },
-                    {
-                        question: "En quelle année les dernières mines ont-elles fermé?",
-                        options: ["1992", "2000", "1985", "2008"],
-                        correct: 0,
-                        points: 10
-                    },
-                    {
-                        question: "Quel est le nom du lac proche de Montceau?",
-                        options: ["Lac du Plessis", "Lac de Torcy", "Lac du Creusot", "Lac de Chalon"],
-                        correct: 0,
-                        points: 10
-                    },
-                    {
-                        question: "Combien de communes compte la communauté urbaine?",
-                        options: ["27", "34", "42", "51"],
-                        correct: 1,
-                        points: 10
-                    },
-                    {
-                        question: "Quel célèbre musée se trouve à Montceau?",
-                        options: ["Musée des Beaux-Arts", "Musée de la Mine", "Musée de la Photographie", "Musée du Vin"],
-                        correct: 1,
-                        points: 10
-                    }
-                ]
+    {
+        question: "Quelle est la capitale de l'Espagne ?",
+        options: ["Barcelone", "Madrid", "Séville", "Valence"],
+        correct: 1,
+        points: 10
+    },
+    {
+        question: "Combien de jours compte une année bissextile ?",
+        options: ["364 jours", "365 jours", "366 jours", "367 jours"],
+        correct: 2,
+        points: 10
+    },
+    {
+        question: "Quel artiste a peint 'La Joconde' ?",
+        options: ["Pablo Picasso", "Vincent Van Gogh", "Léonard de Vinci", "Michel-Ange"],
+        correct: 2,
+        points: 10
+    },
+    {
+        question: "Quelle est la planète la plus proche du Soleil ?",
+        options: ["Vénus", "Mercure", "Mars", "Terre"],
+        correct: 1,
+        points: 10
+    },
+    {
+        question: "En quelle année a eu lieu la Révolution française ?",
+        options: ["1789", "1799", "1804", "1815"],
+        correct: 0,
+        points: 10
+    },
+    {
+        question: "Quel est l'animal emblème de la Bourgogne ?",
+        options: ["Le coq", "L'escargot", "Le taureau", "Le lion"],
+        correct: 1,
+        points: 10
+    },
+    {
+        question: "Combien de joueurs composent une équipe de football sur le terrain ?",
+        options: ["9 joueurs", "10 joueurs", "11 joueurs", "12 joueurs"],
+        correct: 2,
+        points: 10
+    },
+    {
+        question: "Quel océan borde la côte ouest de la France ?",
+        options: ["L'océan Indien", "L'océan Pacifique", "L'océan Atlantique", "La mer Méditerranée"],
+        correct: 2,
+        points: 10
+    },
+    {
+        question: "Quelle est la langue la plus parlée au monde ?",
+        options: ["L'anglais", "L'espagnol", "Le mandarin", "L'hindi"],
+        correct: 2,
+        points: 10
+    },
+    {
+        question: "Quel célèbre monument parisien mesure 330 mètres de haut ?",
+        options: ["L'Arc de Triomphe", "Notre-Dame", "La Tour Eiffel", "Le Sacré-Cœur"],
+        correct: 2,
+        points: 10
+    }
+]
             };
         }
         
