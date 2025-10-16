@@ -252,23 +252,22 @@ async function checkAdminNotifications() {
     
     badge.style.cssText = `
     position: absolute;
-    top: -12px;
-    right: -12px;
+    top: -8px;
     background: #ff4444;
     color: white;
     border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    font-size: 14px;
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
     font-weight: bold;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 100;
-    box-shadow: 0 4px 12px rgba(255, 68, 68, 0.6);
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(255, 68, 68, 0.8), 0 0 0 3px rgba(255,255,255,0.9);
     animation: pulse 2s infinite;
-    border: 2px solid white;
+    border: 3px solid white;
 `;
 
 
@@ -440,8 +439,8 @@ function requestNotificationPermissionForAll() {
         setTimeout(() => {
             checkAdminNotifications();
             
-            // Lancer la vérification en boucle toutes les 3 minutes
-            setInterval(checkAdminNotifications, 180000);
+            // Pour vérifier toutes les 30 secondes au lieu de 3 minutes
+			setInterval(checkAdminNotifications, 30000); // 30000 ms = 30 secondes
         }, 5000); // On attend 5 secondes pour être sûr que tout est chargé
         
     } catch (error) {

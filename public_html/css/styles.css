@@ -2420,7 +2420,7 @@ main {
     margin-bottom: 25px;
     padding-bottom: 15px;
     border-bottom: 2px solid #e9ecef;
-	background: linear-gradient(145deg, #4CAF50, #4CAF50);
+	background: none;
 	border-radius: 10px;
 }
 
@@ -2436,6 +2436,18 @@ main {
 
 [data-theme="light"] .modal-header {
     background: linear-gradient(145deg, #6040b1b5, #6040b1d1);
+}
+
+[data-theme="rouge"] .modal-header {
+    background: linear-gradient(145deg, #a32f2a, #a32f2a);
+}
+
+[data-theme="bleuciel"] .modal-header {
+    background: linear-gradient(145deg, #6cabdd, #6cabdd);
+}
+
+[data-theme="dark"] .modal-header {
+    background: linear-gradient(145deg, #32333b, #32333b);
 }
 
 .modal-title {

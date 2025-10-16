@@ -179,7 +179,7 @@
 
 /* Thème ROUGE (par défaut) */
 [data-theme="rouge"] .saint-widget-footer {
-    background: rgb(248 244 244);
+    background: #f6d34f;
     border-color: #d32f2f;
 }
 

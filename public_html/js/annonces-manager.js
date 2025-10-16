@@ -1,10 +1,12 @@
 // js/annonces-manager.js
 class AnnoncesManager {
     constructor() {
-        this.annonces = [];
-        this.currentFilter = 'all';
-        this.supabase = null;
-    }
+    this.annonces = [];
+    this.currentFilter = 'all';
+    this.currentTab = 'all';
+    this.currentEventFilter = 'all-events';
+    this.supabase = null;
+}
 
     // Nouvelle fonction init() robuste
 async init() {
@@ -32,16 +34,21 @@ async init() {
 }
 
     setupEventListeners() {
+    // Bouton déposer une annonce
     const addBtn = document.getElementById('addAnnonceBtn');
-    
     if (addBtn) {
         addBtn.addEventListener('click', () => {
-            this.openCreateModal();
+            this.openCreateModal('annonce');
         });
-    } else {
-        console.error('❌ Bouton addAnnonceBtn introuvable');
     }
-
+    
+    // Bouton ajouter un événement
+    const addEventBtn = document.getElementById('addEventBtn');
+    if (addEventBtn) {
+        addEventBtn.addEventListener('click', () => {
+            this.openCreateModal('evenement');
+        });
+    }
 
     // Fermer modal création
     const closeBtn = document.getElementById('closeModal');
@@ -58,17 +65,14 @@ async init() {
         });
     }
 
-    // Clic en dehors du modal création
+    // Clic en dehors des modals
     const modal = document.getElementById('createModal');
     if (modal) {
         modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                this.closeCreateModal();
-            }
+            if (e.target === modal) this.closeCreateModal();
         });
     }
 
-    // Clic en dehors du modal détails
     const detailsModal = document.getElementById('detailsModal');
     if (detailsModal) {
         detailsModal.addEventListener('click', (e) => {
@@ -79,25 +83,141 @@ async init() {
         });
     }
 
-    // Formulaire de création
+    // Formulaire
     const form = document.getElementById('annonceForm');
     if (form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             this.handleSubmit(e);
         });
-    }
-
-    // Filtre par catégorie
-    const categoryFilter = document.getElementById('categoryFilter');
-    if (categoryFilter) {
-        categoryFilter.addEventListener('change', (e) => {
-            this.currentFilter = e.target.value;
-            this.filterAnnonces();
+        
+        // Basculer entre annonce et événement
+        const pubTypeInputs = form.querySelectorAll('input[name="pub_type"]');
+        pubTypeInputs.forEach(input => {
+            input.addEventListener('change', (e) => {
+                this.toggleFormFields(e.target.value);
+            });
         });
     }
 
-    // === GESTION UPLOAD IMAGE ===
+    // Onglets de navigation
+const tabs = document.querySelectorAll('.tab-btn');
+tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        // Mettre à jour l'interface des onglets
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        // Mettre à jour la propriété currentTab
+        this.currentTab = tab.dataset.tab;
+        
+        // Réinitialiser les filtres quand on change d'onglet
+        if (this.currentTab === 'annonces') {
+            document.getElementById('categoryFilter').value = 'all-annonces';
+            this.currentFilter = 'all-annonces';
+        } else if (this.currentTab === 'evenements') {
+            document.getElementById('eventTypeFilter').value = 'all-events';
+            this.currentEventFilter = 'all-events';
+        }
+        
+        // Appliquer le filtrage
+        this.filterContent();
+    });
+});
+
+    // Filtres
+const categoryFilter = document.getElementById('categoryFilter');
+if (categoryFilter) {
+    categoryFilter.addEventListener('change', (e) => {
+        this.currentFilter = e.target.value;
+        this.filterContent(); // Appeler filterContent, pas filterAnnonces
+    });
+}
+
+const eventTypeFilter = document.getElementById('eventTypeFilter');
+if (eventTypeFilter) {
+    eventTypeFilter.addEventListener('change', (e) => {
+        this.currentEventFilter = e.target.value;
+        this.filterContent(); // Appeler filterContent
+    });
+}
+
+    // Gestion upload image
+    this.setupImageUpload();
+}
+
+toggleFormFields(type) {
+    const annonceCategory = document.getElementById('annonceCategory');
+    const eventType = document.getElementById('eventType');
+    const eventFields = document.getElementById('eventFields');
+    const priceField = document.getElementById('priceField');
+    
+    if (type === 'evenement') {
+        annonceCategory.style.display = 'none';
+        eventType.style.display = 'block';
+        eventFields.style.display = 'block';
+        priceField.style.display = 'none';
+        
+        // Rendre les champs événement requis
+        document.getElementById('event_date').required = true;
+        document.getElementById('event_category').required = true;
+        document.getElementById('category').required = false;
+    } else {
+        annonceCategory.style.display = 'block';
+        eventType.style.display = 'none';
+        eventFields.style.display = 'none';
+        priceField.style.display = 'block';
+        
+        // Rendre les champs annonce requis
+        document.getElementById('event_date').required = false;
+        document.getElementById('event_category').required = false;
+        document.getElementById('category').required = true;
+    }
+}
+
+filterContent() {
+    const tab = this.currentTab || 'all';
+    let filtered = [...this.annonces];
+	
+    
+    // Gérer l'affichage des filtres selon l'onglet
+    if (tab === 'all') {
+        // TOUT VOIR : aucun filtre visible
+        document.getElementById('annonceFilters').style.display = 'none';
+        document.getElementById('eventFilters').style.display = 'none';
+        // Pas de filtrage, on affiche tout
+        
+    } else if (tab === 'annonces') {
+        // PETITES ANNONCES : afficher seulement le filtre de catégories
+        document.getElementById('annonceFilters').style.display = 'block';
+        document.getElementById('eventFilters').style.display = 'none';
+        
+        // Filtrer pour exclure les événements
+        filtered = filtered.filter(a => a.category !== 'evenement');
+        
+        // Appliquer le filtre de catégorie si sélectionné
+        if (this.currentFilter && this.currentFilter !== 'all-annonces') {
+            filtered = filtered.filter(a => a.category === this.currentFilter);
+        }
+        
+    } else if (tab === 'evenements') {
+        // ÉVÉNEMENTS : afficher seulement le filtre d'événements
+        document.getElementById('annonceFilters').style.display = 'none';
+        document.getElementById('eventFilters').style.display = 'block';
+        
+        // Filtrer pour ne garder que les événements
+        filtered = filtered.filter(a => a.category === 'evenement');
+        
+        // Appliquer le filtre de type d'événement si sélectionné
+        if (this.currentEventFilter && this.currentEventFilter !== 'all-events') {
+            filtered = filtered.filter(a => a.event_category === this.currentEventFilter);
+        }
+    }
+    
+    this.displayAnnonces(filtered);
+}
+
+setupImageUpload() {
     const captureBtn = document.getElementById('captureAnnonceBtn');
     const galleryBtn = document.getElementById('galleryAnnonceBtn');
     const imageInput = document.getElementById('annonceImage');
@@ -131,7 +251,6 @@ async init() {
                         </button>
                     `;
                     
-                    // Bouton supprimer
                     preview.querySelector('.remove-photo-btn').addEventListener('click', () => {
                         imageInput.value = '';
                         preview.innerHTML = '';
@@ -143,13 +262,20 @@ async init() {
     }
 }
 
-    openCreateModal() {
-        const modal = document.getElementById('createModal');
-        if (modal) {
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
+    openCreateModal(type = 'annonce') {
+    const modal = document.getElementById('createModal');
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        
+        // Pré-sélectionner le bon type
+        const radio = document.querySelector(`input[name="pub_type"][value="${type}"]`);
+        if (radio) {
+            radio.checked = true;
+            this.toggleFormFields(type);
         }
     }
+}
 
     closeCreateModal() {
         const modal = document.getElementById('createModal');
@@ -168,8 +294,8 @@ async init() {
     async handleSubmit(event) {
     const form = event.target;
     const formData = new FormData(form);
+    const pubType = formData.get('pub_type');
     
-    // Récupérer l'image
     const imageFile = document.getElementById('annonceImage').files[0];
     let imageUrl = null;
     
@@ -180,7 +306,7 @@ async init() {
 
         // Upload image si présente
         if (imageFile) {
-            const fileName = `annonce-${Date.now()}.${imageFile.name.split('.').pop()}`;
+            const fileName = `${pubType}-${Date.now()}.${imageFile.name.split('.').pop()}`;
             const { data: uploadData, error: uploadError } = await this.supabase.storage
                 .from('annonces-images')
                 .upload(fileName, imageFile);
@@ -194,12 +320,17 @@ async init() {
             imageUrl = urlData.publicUrl;
         }
 
-        // Convertir FormData en objet
+        // Préparer les données
         const data = {
             title: formData.get('title'),
             description: formData.get('description'),
-            category: formData.get('category'),
-            price: formData.get('price') ? parseFloat(formData.get('price')) : null,
+            category: pubType === 'evenement' ? 'evenement' : formData.get('category'),
+            event_category: pubType === 'evenement' ? formData.get('event_category') : null,
+            event_date: formData.get('event_date') || null,
+            event_time: formData.get('event_time') || null,
+            event_end_date: formData.get('event_end_date') || null,
+            organizer: formData.get('organizer') || null,
+            price: pubType === 'annonce' && formData.get('price') ? parseFloat(formData.get('price')) : null,
             author_name: formData.get('author_name'),
             author_email: formData.get('author_email'),
             author_phone: formData.get('author_phone') || null,
@@ -216,7 +347,11 @@ async init() {
 
         if (error) throw error;
 
-        this.showToast('Annonce envoyée ! Elle sera publiée après modération.', 'success');
+        const message = pubType === 'evenement' 
+            ? 'Événement envoyé ! Il sera publié après modération.' 
+            : 'Annonce envoyée ! Elle sera publiée après modération.';
+            
+        this.showToast(message, 'success');
         this.closeCreateModal();
         await this.loadAnnonces();
 
@@ -227,28 +362,29 @@ async init() {
         const submitBtn = form.querySelector('.submit-btn');
         if (submitBtn) {
             submitBtn.disabled = false;
-            submitBtn.textContent = 'Publier mon annonce';
+            submitBtn.textContent = 'Publier';
         }
     }
 }
 
 async loadAnnonces() {
     try {
-        // Version utilisant la Vue
-		const { data, error } = await this.supabase
-    .from('public_ads') // On utilise la vue qui contient déjà les filtres
-    .select('*')
-    .order('created_at', { ascending: false });
+        const { data, error } = await this.supabase
+            .from('public_ads')
+            .select('*')
+            .order('created_at', { ascending: false });
 
         if (error) {
             console.error('Erreur Supabase:', error);
             throw error;
         }
 
-        console.log('Annonces chargées:', data); // Ce log devrait maintenant afficher vos annonces
+        console.log('Annonces chargées:', data);
         this.annonces = data || [];
-        this.displayAnnonces();
-
+        
+        // Utiliser filterContent() au lieu de displayAnnonces() directement
+        this.filterContent();
+        
     } catch (error) {
         console.error('Erreur chargement annonces:', error);
         this.showError();
@@ -264,51 +400,98 @@ async loadAnnonces() {
     }
 
     displayAnnonces(annonces = this.annonces) {
-        const grid = document.getElementById('annoncesGrid');
-        if (!grid) return;
+    const grid = document.getElementById('annoncesGrid');
+    if (!grid) return;
 
-        if (annonces.length === 0) {
-            grid.innerHTML = `
-                <div class="loading">
-                    <span class="material-icons" style="font-size: 48px;">inventory_2</span>
-                    <p>Aucune annonce disponible pour le moment</p>
-                </div>
-            `;
-            return;
-        }
+    if (annonces.length === 0) {
+        grid.innerHTML = `
+            <div class="loading">
+                <span class="material-icons" style="font-size: 48px;">inventory_2</span>
+                <p>Aucun contenu disponible pour le moment</p>
+            </div>
+        `;
+        return;
+    }
 
-        grid.innerHTML = annonces.map(annonce => `
-            <div class="annonce-card" onclick="annoncesManager.showAnnonceDetails(${annonce.id})">
+    grid.innerHTML = annonces.map(annonce => {
+        const isEvent = annonce.category === 'evenement';
+        
+        return `
+            <div class="annonce-card ${isEvent ? 'event-card' : ''}" onclick="annoncesManager.showAnnonceDetails(${annonce.id})">
                 ${annonce.image_url ? `
                     <img src="${annonce.image_url}" alt="${annonce.title}" class="annonce-image">
                 ` : `
                     <div class="annonce-image" style="display: flex; align-items: center; justify-content: center; background: #f0f0f0;">
-                        <span class="material-icons" style="font-size: 48px; color: #ccc;">image</span>
+                        <span class="material-icons" style="font-size: 48px; color: #ccc;">${isEvent ? 'event' : 'image'}</span>
                     </div>
                 `}
                 <div class="annonce-content">
-                    <span class="annonce-category">${this.getCategoryLabel(annonce.category)}</span>
+                    <span class="annonce-category">${this.getCategoryLabel(annonce.category, annonce.event_category)}</span>
                     <h3 class="annonce-title">${annonce.title}</h3>
-                    ${annonce.price ? `<div class="annonce-price">${annonce.price} €</div>` : ''}
+                    
+                    ${isEvent && annonce.event_date ? `
+                        <div class="event-date">
+                            <span class="material-icons">event</span>
+                            ${this.formatEventDate(annonce.event_date, annonce.event_time, annonce.event_end_date)}
+                        </div>
+                    ` : ''}
+                    
+                    ${!isEvent && annonce.price ? `<div class="annonce-price">${annonce.price} €</div>` : ''}
+                    
+                    ${isEvent && annonce.organizer ? `
+                        <div class="event-organizer">Par ${annonce.organizer}</div>
+                    ` : ''}
+                    
                     <div class="annonce-location">
                         <span class="material-icons" style="font-size: 16px;">place</span>
                         ${annonce.location}
                     </div>
                 </div>
             </div>
-        `).join('');
-    }
+        `;
+    }).join('');
+}
 
-    getCategoryLabel(category) {
-        const labels = {
-            'vente': 'Vente',
-            'achat': 'Recherche',
-            'don': 'Don',
-            'echange': 'Échange',
-            'services': 'Services'
-        };
-        return labels[category] || category;
+    formatEventDate(startDate, time, endDate) {
+    const start = new Date(startDate);
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    let dateStr = start.toLocaleDateString('fr-FR', options);
+    
+    if (time) {
+        dateStr += ` à ${time}`;
     }
+    
+    if (endDate && endDate !== startDate) {
+        const end = new Date(endDate);
+        dateStr += ` - ${end.toLocaleDateString('fr-FR', options)}`;
+    }
+    
+    return dateStr;
+}
+
+getCategoryLabel(category, eventCategory = null) {
+    if (category === 'evenement') {
+        const eventLabels = {
+            'marche': '🛍️ Marché / Brocante',
+            'concert': '🎵 Concert / Spectacle',
+            'sport': '⚽ Sport / Loisirs',
+            'fete': '🎉 Fête / Célébration',
+            'culture': '🎨 Culture / Exposition',
+            'solidarite': '🤝 Solidarité',
+            'autre': '📌 Événement'
+        };
+        return eventLabels[eventCategory] || '📅 Événement';
+    }
+    
+    const labels = {
+        'vente': 'Vente',
+        'achat': 'Recherche',
+        'don': 'Don',
+        'echange': 'Échange',
+        'services': 'Services'
+    };
+    return labels[category] || category;
+}
 
     showAnnonceDetails(id) {
     const annonce = this.annonces.find(a => a.id === id);

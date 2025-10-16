@@ -4399,7 +4399,7 @@ showAdminPanel() {
         <button class="tab-btn" data-tab="admin-tools" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Outils</button>
         <button class="tab-btn" data-tab="gallery" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Photos</button>
 		<button class="tab-btn" data-tab="comments" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">Commentaires</button>
-		<button class="tab-btn" data-tab="annonces" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">📢 Annonces</button>
+		<button class="tab-btn" data-tab="annonces" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">📢 Annonces <span id="annonces-tab-badge" style="display: none; background: #ff4444; color: white; padding: 2px 6px; border-radius: 10px; font-size: 11px; margin-left: 5px;"></span></button>
 		<button class="tab-btn" data-tab="news-admin" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">NEWS Admin</button>
 		<button class="tab-btn" data-tab="visitor-stats" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">📊 Visiteurs</button>
 		<button class="tab-btn" data-tab="reports" style="${isMobile ? 'min-width: auto; padding: 10px 15px; margin-right: 5px; border-radius: 20px;' : ''}">🚩 Signalements (<span id="pending-reports-count">0</span>)</button>
@@ -4728,16 +4728,20 @@ tabBtns.forEach(btn => {
 	}
 	
 	// Charger les commentaires si l'onglet Annonces est sélectionné
-	if (btn.dataset.tab === 'annonces') {
-    this.loadAnnoncesStats();
+	// Dans le gestionnaire de clic des onglets
+if (btn.dataset.tab === 'annonces') {
+    this.loadAnnoncesStats(); // Cette ligne devrait déjà exister
     
-    // Rafraîchir automatiquement si l'onglet reste ouvert
-    const refreshInterval = setInterval(() => {
+    // NOUVEAU : Rafraîchir régulièrement si l'onglet reste ouvert
+    if (this.annoncesRefreshInterval) {
+        clearInterval(this.annoncesRefreshInterval);
+    }
+    this.annoncesRefreshInterval = setInterval(() => {
         const annoncesTab = document.querySelector('.tab-btn[data-tab="annonces"]');
         if (annoncesTab && annoncesTab.classList.contains('active')) {
             this.loadAnnoncesStats();
         } else {
-            clearInterval(refreshInterval); // Arrêter si on change d'onglet
+            clearInterval(this.annoncesRefreshInterval);
         }
     }, 30000);
 }
@@ -6538,8 +6542,20 @@ async loadRecentNews() {
             .select('*', { count: 'exact', head: true })
             .eq('is_approved', false);
             
+        // Mettre à jour le compteur dans la section
         const pendingEl = document.getElementById('pendingAnnoncesCount');
         if (pendingEl) pendingEl.textContent = pendingAnnonces || 0;
+        
+        // NOUVEAU : Mettre à jour le badge sur l'onglet
+        const tabBadge = document.getElementById('annonces-tab-badge');
+        if (tabBadge) {
+            if (pendingAnnonces > 0) {
+                tabBadge.textContent = pendingAnnonces;
+                tabBadge.style.display = 'inline-block';
+            } else {
+                tabBadge.style.display = 'none';
+            }
+        }
         
     } catch (error) {
         console.error('Erreur chargement stats annonces:', error);
