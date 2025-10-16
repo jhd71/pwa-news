@@ -527,7 +527,7 @@ getCategoryLabel(category, eventCategory = null) {
     // Image
     const imageContainer = document.getElementById('modalImageContainer');
     if (annonce.image_url) {
-        imageContainer.innerHTML = `<img src="${annonce.image_url}" alt="${annonce.title}" style="width: 100%; max-height: 300px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">`;
+        imageContainer.innerHTML = `<img src="${annonce.image_url}" alt="${annonce.title}" style="width: 100%; max-height: 700px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">`;
     } else {
         imageContainer.innerHTML = '';
     }
