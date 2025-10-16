@@ -227,6 +227,9 @@
 <!-- 🎨 seo-section -->
 <link rel="stylesheet" href="css/seo-section.css">
 
+<!-- 🎉 Événements saisonniers -->
+<link rel="stylesheet" href="css/seasonal-events.css">
+
 <!-- 🔧 CORRECTION THÈME SOMBRE - MODAL PROPOSITION -->
 <style>
 /* 🔧 FIX RAPIDE : Input file en thème sombre */
@@ -361,60 +364,65 @@ Actu & Média
 <!-- Conteneur pour les deux widgets côte à côte -->
 <div class="widgets-row">
     <!-- Widget NEWS Actu&Média -->
-    <div class="news-widget-container">
-        <div class="local-news-widget" id="localNewsWidget" onclick="openLocalNewsPage()">
-            <div class="news-widget-header">
-    
-    <!-- Bouton Proposer avec stopPropagation -->
-    <button class="submit-news-btn" onclick="event.stopPropagation(); openSubmitModal();">
-        <span class="icon">📝</span>
-        <span>Proposer</span>
-    </button>
-    
-    <!-- Boutons intégrés -->
-    <div class="header-buttons">
-        <button class="header-btn photos-btn" onclick="event.stopPropagation(); openGalleryPage();" title="Galerie Photos">
-    <span class="material-icons" style="font-size: 16px; margin-right: 4px;">photo_library</span>
-    Photos
-</button>
-<button class="header-btn cinema-btn" onclick="event.stopPropagation(); openCinemaModal();" title="Programme Cinéma">
-    <span class="material-icons" style="font-size: 16px; margin-right: 4px;">movie</span>
-    Cinéma
-</button>
-    </div>
-    
-    <!-- Zone widgets utiles -->
-    <div class="header-widgets">
-        <div class="weather-temp" id="weatherTemp" onclick="openWeatherDetails()" title="Cliquez pour plus d'infos météo">
-            <div class="temp-value" id="tempValue">--°</div>
-            <div class="temp-label">Météo</div>
+<div class="news-widget-container">
+    <div class="local-news-widget" id="localNewsWidget" onclick="openLocalNewsPage()">
+        <div class="news-widget-header">
+
+            <!-- Boutons intégrés -->
+            <div class="header-buttons">
+                <button class="header-btn photos-btn" onclick="event.stopPropagation(); openGalleryPage();" title="Galerie Photos">
+                    <span class="material-icons" style="font-size: 16px; margin-right: 4px;">photo_library</span>
+                    Photos
+                </button>
+                <button class="header-btn cinema-btn" onclick="event.stopPropagation(); openCinemaModal();" title="Programme Cinéma">
+                    <span class="material-icons" style="font-size: 16px; margin-right: 4px;">movie</span>
+                    Cinéma
+                </button>
+            </div>
+
+            <!-- Bouton Proposer avec stopPropagation -->
+            <button class="submit-news-btn" onclick="event.stopPropagation(); openSubmitModal();">
+                <span class="icon">📝</span>
+                <span>Proposer</span>
+            </button>
+
+            <!-- Zone widgets utiles -->
+            <div class="header-widgets">
+                <div class="weather-temp" id="weatherTemp" onclick="openWeatherDetails()" title="Cliquez pour plus d'infos météo">
+                    <div class="temp-value" id="tempValue">--°</div>
+                    <div class="temp-label">Météo</div>
+                </div>
+
+                <div class="visitors-counter" id="visitorsCounter" title="Visiteurs actuellement connectés">
+                    <div class="visitors-count" id="visitorsCount">--</div>
+                    <div class="visitors-label">En ligne</div>
+                </div>
+
+                <div class="news-widget-clock" id="newsWidgetClock" onclick="event.stopPropagation(); openTimeWidget();" title="Cliquez pour plus d'infos">
+                    <div class="clock-time" id="clockTime">--:--</div>
+                    <div class="clock-date" id="clockDate">---</div>
+                </div>
+            </div>
         </div>
-        
-        <div class="visitors-counter" id="visitorsCounter" title="Visiteurs actuellement connectés">
-            <div class="visitors-count" id="visitorsCount">--</div>
-            <div class="visitors-label">En ligne</div>
+
+        <div class="news-widget-preview" id="newsWidgetPreview">
+            <div class="loading-news">
+                <span class="material-icons spinning">hourglass_empty</span>
+                Chargement des actualités...
+            </div>
         </div>
-        
-        <div class="news-widget-clock" id="newsWidgetClock" onclick="event.stopPropagation(); openTimeWidget();" title="Cliquez pour plus d'infos">
-            <div class="clock-time" id="clockTime">--:--</div>
-            <div class="clock-date" id="clockDate">---</div>
+
+        <div class="news-widget-footer">
+            <span class="news-widget-tap">👆 Touchez pour lire toutes les actualités</span>
+
+            <!-- 🎂 Saint du jour dans le footer -->
+            <div class="saint-widget-footer" id="saintWidget" onclick="event.stopPropagation(); openSaintPopup();" title="Cliquez pour voir le saint du jour">
+                <div class="saint-value-footer" id="saintValue">--</div>
+                <div class="saint-label-footer" id="saintLabel">Saint</div>
+            </div>
         </div>
     </div>
 </div>
-            
-            <div class="news-widget-preview" id="newsWidgetPreview">
-                <div class="loading-news">
-                    <span class="material-icons spinning">hourglass_empty</span>
-                    Chargement des actualités...
-                </div>
-            </div>
-            
-            <div class="news-widget-footer">
-                <span class="news-widget-tap">👆 Touchez pour lire toutes les actualités</span>
-                <div class="news-widget-count" id="newsWidgetCount">0 news</div>
-            </div>
-        </div>
-    </div>
 
     <!-- Widget CINÉMA -->
     <div class="cinema-widget-container">
@@ -645,6 +653,9 @@ Actu & Média
 
 <!-- Script d'initialisation principal (toujours en dernier) -->
 <script type="module" src="js/app-initializer.js"></script>
+
+<!-- Événements saisonniers -->
+<script src="js/seasonal-events.js"></script>
 
 	<!-- Bouton Infos en direct -->
 	<div class="button-group" style="display: flex; justify-content: center; gap: 10px; margin: 20px 0;">

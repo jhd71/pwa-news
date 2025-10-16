@@ -261,73 +261,67 @@ class NewsWidget {
 
     // Charger et afficher les actualités
     async loadNews() {
-        try {
-            const supabase = window.getSupabaseClient();
-            if (!supabase) {
-                throw new Error('Client Supabase non disponible');
-            }
-
-            // Récupérer toutes les actualités publiées (pas de limite)
-            const { data: news, error } = await supabase
-                .from('local_news')
-                .select('id, title, content, created_at, featured')
-                .eq('is_published', true)
-                .order('featured', { ascending: false })
-                .order('created_at', { ascending: false });
-
-            if (error) {
-                throw error;
-            }
-
-            const previewContainer = document.getElementById('newsWidgetPreview');
-            const countElement = document.getElementById('newsWidgetCount');
-
-            if (news && news.length > 0) {
-                
-                // Afficher les actualités avec liens spécifiques
-                previewContainer.innerHTML = news.map(item => {
-                    const featuredIcon = item.featured ? '⭐ ' : '';
-                    const shortContent = this.truncateText(item.content, 60); // Réduit pour plus d'actualités
-                    return `
-                        <div class="news-preview-item" data-news-id="${item.id}" onclick="openSpecificNews(${item.id})" style="cursor: pointer;">
-                            <strong>${featuredIcon}${item.title}</strong><br>
-                            <span style="font-size: 13px;">${shortContent}...</span>
-                        </div>
-                    `;
-                }).join('');
-
-                // Compter toutes les actualités publiées
-                const { count } = await supabase
-                    .from('local_news')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('is_published', true);
-
-                countElement.textContent = `${count || news.length} news`;
-                this.isLoaded = true;
-                console.log(`✅ Widget NEWS chargé: ${news.length} actualités affichées`);
-            } else {
-                // Aucune actualité
-                this.showEmptyState();
-            }
-        } catch (error) {
-            console.error('❌ Erreur lors du chargement des actualités:', error);
-            this.showError('Erreur de chargement');
+    try {
+        const supabase = window.getSupabaseClient();
+        if (!supabase) {
+            throw new Error('Client Supabase non disponible');
         }
+
+        // Récupérer toutes les actualités publiées (pas de limite)
+        const { data: news, error } = await supabase
+            .from('local_news')
+            .select('id, title, content, created_at, featured')
+            .eq('is_published', true)
+            .order('featured', { ascending: false })
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            throw error;
+        }
+
+        const previewContainer = document.getElementById('newsWidgetPreview');
+
+        if (news && news.length > 0) {
+            
+            // Afficher les actualités avec liens spécifiques
+            previewContainer.innerHTML = news.map(item => {
+                const featuredIcon = item.featured ? '⭐ ' : '';
+                const shortContent = this.truncateText(item.content, 60);
+                return `
+                    <div class="news-preview-item" data-news-id="${item.id}" onclick="openSpecificNews(${item.id})" style="cursor: pointer;">
+                        <strong>${featuredIcon}${item.title}</strong><br>
+                        <span style="font-size: 13px;">${shortContent}...</span>
+                    </div>
+                `;
+            }).join('');
+
+            // ✅ SUPPRIMÉ : Plus besoin de mettre à jour newsWidgetCount
+            
+            this.isLoaded = true;
+            console.log(`✅ Widget NEWS chargé: ${news.length} actualités affichées`);
+        } else {
+            // Aucune actualité
+            this.showEmptyState();
+        }
+    } catch (error) {
+        console.error('❌ Erreur lors du chargement des actualités:', error);
+        this.showError('Erreur de chargement');
     }
+}
 
     // Afficher l'état vide
     showEmptyState() {
-        const previewContainer = document.getElementById('newsWidgetPreview');
-        const countElement = document.getElementById('newsWidgetCount');
-        
-        previewContainer.innerHTML = `
-            <div class="news-preview-item">
-                <strong>📝 Premières actualités bientôt disponibles</strong><br>
-                Les actualités locales de Montceau-les-Mines et environs apparaîtront ici.
-            </div>
-        `;
-        countElement.textContent = '0 news';
-    }
+    const previewContainer = document.getElementById('newsWidgetPreview');
+    
+    previewContainer.innerHTML = `
+        <div class="news-preview-item">
+            <strong>📰 Premières actualités bientôt disponibles</strong><br>
+            Les actualités locales de Montceau-les-Mines et environs apparaîtront ici.
+        </div>
+    `;
+    
+    // ✅ SUPPRIMÉ : Plus de compteur de news
+}
 
     // Afficher une erreur
     showError(message) {
@@ -673,6 +667,499 @@ async function fetchTemperatureOptimized() {
             weatherWidget.style.display = 'none';
         }
     }
+}
+
+// ===== SAINT DU JOUR =====
+async function fetchSaintDuJour() {
+    try {
+        const today = new Date();
+        const saintName = getSaintFromLocalDB(today.getMonth() + 1, today.getDate());
+        updateSaintDisplay(saintName);
+        console.log(`🎂 Saint du jour : ${saintName}`);
+    } catch (error) {
+        console.log('⚠️ Erreur saint du jour:', error);
+    }
+}
+
+// ===== POPUP BONNE FÊTE =====
+function openSaintPopup() {
+    if (event) {
+        event.stopPropagation();
+    }
+    
+    if (navigator.vibrate) {
+        navigator.vibrate(50);
+    }
+    
+    const saintWidget = document.getElementById('saintWidget');
+    const saintName = saintWidget ? saintWidget.dataset.fullName : 'tous les saints';
+    
+    showSaintPopup(saintName);
+}
+
+function showSaintPopup(saintName) {
+    const colors = getThemeColors();
+    const today = new Date();
+    
+    // Supprimer popup existante
+    const existing = document.getElementById('saintPopup');
+    if (existing) existing.remove();
+    
+    // Créer la popup
+    const popup = document.createElement('div');
+    popup.id = 'saintPopup';
+    popup.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        backdrop-filter: blur(5px);
+        animation: fadeIn 0.3s ease;
+        padding: 10px;
+        overflow-y: auto;
+    `;
+    
+    popup.innerHTML = `
+        <div class="saint-popup-content" style="
+            background: linear-gradient(145deg, ${colors.primary}, ${colors.secondary});
+            border: 3px solid ${colors.accent};
+            border-radius: 20px;
+            padding: 25px;
+            max-width: 500px;
+            width: 95%;
+            max-height: 90vh;
+            color: white;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            animation: slideInUp 0.4s ease;
+            overflow-y: auto;
+        ">
+            <!-- En-tête -->
+            <div style="margin-bottom: 20px;">
+                <div style="font-size: 50px; margin-bottom: 15px;">🎂</div>
+                <h2 style="margin: 0 0 10px 0; font-size: 22px; font-weight: bold;">
+                    Bonne fête ${saintName} !
+                </h2>
+                <p style="margin: 10px 0; font-size: 14px; opacity: 0.95;">
+                    Aujourd'hui : ${today.toLocaleDateString('fr-FR', { 
+                        weekday: 'long', 
+                        day: 'numeric', 
+                        month: 'long' 
+                    })}
+                </p>
+            </div>
+            
+            <!-- Calendrier -->
+            <div id="saintCalendar" style="
+                background: rgba(255,255,255,0.15);
+                border-radius: 15px;
+                padding: 15px;
+                margin: 20px 0;
+            ">
+                <!-- Le calendrier sera injecté ici -->
+            </div>
+            
+            <button onclick="closeSaintPopup()" style="
+                background: white;
+                color: ${colors.primary};
+                border: none;
+                padding: 12px 30px;
+                border-radius: 25px;
+                font-size: 16px;
+                font-weight: bold;
+                cursor: pointer;
+                margin-top: 10px;
+                transition: all 0.3s ease;
+            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                Fermer
+            </button>
+        </div>
+    `;
+    
+    // Fermer au clic sur l'overlay
+    popup.onclick = (e) => {
+        if (e.target === popup) {
+            closeSaintPopup();
+        }
+    };
+    
+    // Empêcher la fermeture au clic sur le contenu
+    const content = popup.querySelector('.saint-popup-content');
+    content.onclick = (e) => {
+        e.stopPropagation();
+    };
+    
+    document.body.appendChild(popup);
+    
+    // Générer le calendrier
+    generateSaintCalendar(today);
+    
+    console.log(`🎂 Popup calendrier des saints ouverte`);
+}
+
+// ===== GÉNÉRATION DU CALENDRIER =====
+let currentCalendarMonth = new Date().getMonth();
+let currentCalendarYear = new Date().getFullYear();
+
+function generateSaintCalendar(date) {
+    const month = date.getMonth();
+    const year = date.getFullYear();
+    
+    currentCalendarMonth = month;
+    currentCalendarYear = year;
+    
+    const today = new Date();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay();
+    
+    const monthNames = [
+        'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+        'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+    ];
+    
+    const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+    
+    const colors = getThemeColors();
+    
+    let calendarHTML = `
+        <!-- Navigation du mois -->
+        <div style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 0 5px;
+        ">
+            <button onclick="changeCalendarMonth(-1)" style="
+                background: rgba(255,255,255,0.2);
+                border: 1px solid rgba(255,255,255,0.3);
+                color: white;
+                border-radius: 50%;
+                width: 35px;
+                height: 35px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                font-size: 18px;
+                transition: all 0.3s ease;
+            " onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                ◀
+            </button>
+            
+            <h3 style="
+                margin: 0;
+                font-size: 18px;
+                font-weight: bold;
+            ">
+                ${monthNames[month]} ${year}
+            </h3>
+            
+            <button onclick="changeCalendarMonth(1)" style="
+                background: rgba(255,255,255,0.2);
+                border: 1px solid rgba(255,255,255,0.3);
+                color: white;
+                border-radius: 50%;
+                width: 35px;
+                height: 35px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                font-size: 18px;
+                transition: all 0.3s ease;
+            " onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                ▶
+            </button>
+        </div>
+        
+        <!-- Grille des jours -->
+        <div style="
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-bottom: 10px;
+        ">
+    `;
+    
+    // En-têtes des jours
+    dayNames.forEach(day => {
+        calendarHTML += `
+            <div style="
+                font-size: 11px;
+                font-weight: bold;
+                padding: 5px 2px;
+                opacity: 0.8;
+            ">${day}</div>
+        `;
+    });
+    
+    // Cases vides avant le premier jour
+    for (let i = 0; i < startingDayOfWeek; i++) {
+        calendarHTML += `<div style="min-height: 50px;"></div>`;
+    }
+    
+    // Jours du mois
+    for (let day = 1; day <= daysInMonth; day++) {
+        const saintName = getSaintFromLocalDB(month + 1, day);
+        const isToday = (
+            day === today.getDate() && 
+            month === today.getMonth() && 
+            year === today.getFullYear()
+        );
+        
+        const cellStyle = isToday 
+            ? `background: rgba(255,255,255,0.4); border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.3);`
+            : `background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2);`;
+        
+        calendarHTML += `
+            <div style="
+                ${cellStyle}
+                border-radius: 8px;
+                padding: 8px 4px;
+                min-height: 50px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: all 0.2s ease;
+                cursor: pointer;
+            " 
+            onmouseover="this.style.background='rgba(255,255,255,0.35)'; this.style.transform='scale(1.05)'"
+            onmouseout="this.style.background='${isToday ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.15)'}'; this.style.transform='scale(1)'"
+            title="${saintName}">
+                <div style="
+                    font-size: 14px;
+                    font-weight: bold;
+                    margin-bottom: 3px;
+                ">${day}</div>
+                <div style="
+                    font-size: 9px;
+                    line-height: 1.1;
+                    text-align: center;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    max-width: 100%;
+                    opacity: 0.9;
+                ">${saintName}</div>
+            </div>
+        `;
+    }
+    
+    calendarHTML += `</div>`;
+    
+    // Légende
+    calendarHTML += `
+        <div style="
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.3);
+            font-size: 12px;
+            opacity: 0.9;
+        ">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <div style="
+                    width: 15px;
+                    height: 15px;
+                    background: rgba(255,255,255,0.4);
+                    border: 2px solid white;
+                    border-radius: 3px;
+                "></div>
+                <span>Aujourd'hui</span>
+            </div>
+        </div>
+    `;
+    
+    const calendarDiv = document.getElementById('saintCalendar');
+    if (calendarDiv) {
+        calendarDiv.innerHTML = calendarHTML;
+    }
+}
+
+function changeCalendarMonth(direction) {
+    currentCalendarMonth += direction;
+    
+    if (currentCalendarMonth < 0) {
+        currentCalendarMonth = 11;
+        currentCalendarYear--;
+    } else if (currentCalendarMonth > 11) {
+        currentCalendarMonth = 0;
+        currentCalendarYear++;
+    }
+    
+    const newDate = new Date(currentCalendarYear, currentCalendarMonth, 1);
+    generateSaintCalendar(newDate);
+}
+
+function closeSaintPopup() {
+    const popup = document.getElementById('saintPopup');
+    if (popup) {
+        popup.style.animation = 'fadeOut 0.3s ease';
+        setTimeout(() => {
+            if (popup.parentNode) {
+                popup.parentNode.removeChild(popup);
+            }
+        }, 300);
+    }
+}
+
+function updateSaintDisplay(saintName) {
+    // ✅ NOUVEAUX IDs pour le footer
+    const saintElement = document.getElementById('saintValue');
+    const saintLabel = document.getElementById('saintLabel');
+    const saintWidget = document.getElementById('saintWidget');
+    
+    if (saintElement && saintLabel) {
+        // Afficher le nom complet
+        saintElement.textContent = saintName;
+        saintLabel.textContent = 'Bonne fête';
+        
+        // Stocker le nom complet pour la popup
+        if (saintWidget) {
+            saintWidget.dataset.fullName = saintName;
+        }
+        
+        console.log(`🎂 Saint du jour mis à jour : ${saintName}`);
+    } else {
+        console.error('❌ Éléments saint introuvables dans le footer');
+    }
+}
+
+// Base de données complète des saints
+function getSaintFromLocalDB(month, day) {
+    const saints = {
+        // JANVIER
+        '1-1': 'Marie', '1-2': 'Basile', '1-3': 'Geneviève', '1-4': 'Odilon',
+        '1-5': 'Édouard', '1-6': 'Mélaine', '1-7': 'Raymond', '1-8': 'Lucien',
+        '1-9': 'Alix', '1-10': 'Guillaume', '1-11': 'Paulin', '1-12': 'Tatiana',
+        '1-13': 'Yvette', '1-14': 'Nina', '1-15': 'Rémi', '1-16': 'Marcel',
+        '1-17': 'Roseline', '1-18': 'Prisca', '1-19': 'Marius', '1-20': 'Sébastien',
+        '1-21': 'Agnès', '1-22': 'Vincent', '1-23': 'Barnard', '1-24': 'François',
+        '1-25': 'Paul', '1-26': 'Paule', '1-27': 'Angèle', '1-28': 'Thomas',
+        '1-29': 'Gildas', '1-30': 'Martine', '1-31': 'Marcelle',
+        
+        // FÉVRIER
+        '2-1': 'Ella', '2-2': 'Théophane', '2-3': 'Blaise', '2-4': 'Véronique',
+        '2-5': 'Agathe', '2-6': 'Gaston', '2-7': 'Eugénie', '2-8': 'Jacqueline',
+        '2-9': 'Apolline', '2-10': 'Arnaud', '2-11': 'Héloïse', '2-12': 'Félix',
+        '2-13': 'Béatrice', '2-14': 'Valentin', '2-15': 'Claude', '2-16': 'Julienne',
+        '2-17': 'Alexis', '2-18': 'Bernadette', '2-19': 'Gabin', '2-20': 'Aimée',
+        '2-21': 'Damien', '2-22': 'Isabelle', '2-23': 'Lazare', '2-24': 'Modeste',
+        '2-25': 'Roméo', '2-26': 'Nestor', '2-27': 'Honorine', '2-28': 'Romain',
+        '2-29': 'Auguste',
+        
+        // MARS
+        '3-1': 'Aubin', '3-2': 'Charles', '3-3': 'Guénolé', '3-4': 'Casimir',
+        '3-5': 'Olive', '3-6': 'Colette', '3-7': 'Félicité', '3-8': 'Jean',
+        '3-9': 'Françoise', '3-10': 'Vivien', '3-11': 'Rosine', '3-12': 'Justine',
+        '3-13': 'Rodrigue', '3-14': 'Mathilde', '3-15': 'Louise', '3-16': 'Bénédicte',
+        '3-17': 'Patrick', '3-18': 'Cyrille', '3-19': 'Joseph', '3-20': 'Herbert',
+        '3-21': 'Clémence', '3-22': 'Léa', '3-23': 'Victorien', '3-24': 'Catherine',
+        '3-25': 'Humbert', '3-26': 'Larissa', '3-27': 'Habib', '3-28': 'Gontran',
+        '3-29': 'Gwladys', '3-30': 'Amédée', '3-31': 'Benjamin',
+        
+        // AVRIL
+        '4-1': 'Hugues', '4-2': 'Sandrine', '4-3': 'Richard', '4-4': 'Isidore',
+        '4-5': 'Irène', '4-6': 'Marcellin', '4-7': 'Jean-Baptiste', '4-8': 'Julie',
+        '4-9': 'Gautier', '4-10': 'Fulbert', '4-11': 'Stanislas', '4-12': 'Jules',
+        '4-13': 'Ida', '4-14': 'Maxime', '4-15': 'Paterne', '4-16': 'Benoît-Joseph',
+        '4-17': 'Anicet', '4-18': 'Parfait', '4-19': 'Emma', '4-20': 'Odette',
+        '4-21': 'Anselme', '4-22': 'Alexandre', '4-23': 'Georges', '4-24': 'Fidèle',
+        '4-25': 'Marc', '4-26': 'Alida', '4-27': 'Zita', '4-28': 'Valérie',
+        '4-29': 'Catherine', '4-30': 'Robert',
+        
+        // MAI
+        '5-1': 'Fête du Travail', '5-2': 'Boris', '5-3': 'Philippe', '5-4': 'Sylvain',
+        '5-5': 'Judith', '5-6': 'Prudence', '5-7': 'Gisèle', '5-8': 'Victoire 1945',
+        '5-9': 'Pacôme', '5-10': 'Solange', '5-11': 'Estelle', '5-12': 'Achille',
+        '5-13': 'Rolande', '5-14': 'Matthias', '5-15': 'Denise', '5-16': 'Honoré',
+        '5-17': 'Pascal', '5-18': 'Éric', '5-19': 'Yves', '5-20': 'Bernardin',
+        '5-21': 'Constantin', '5-22': 'Émile', '5-23': 'Didier', '5-24': 'Donatien',
+        '5-25': 'Sophie', '5-26': 'Bérenger', '5-27': 'Augustin', '5-28': 'Germain',
+        '5-29': 'Aymar', '5-30': 'Ferdinand', '5-31': 'Pétronille',
+        
+        // JUIN
+        '6-1': 'Justin', '6-2': 'Blandine', '6-3': 'Kévin', '6-4': 'Clotilde',
+        '6-5': 'Igor', '6-6': 'Norbert', '6-7': 'Gilbert', '6-8': 'Médard',
+        '6-9': 'Diane', '6-10': 'Landry', '6-11': 'Barnabé', '6-12': 'Guy',
+        '6-13': 'Antoine', '6-14': 'Élisée', '6-15': 'Germaine', '6-16': 'Jean-François',
+        '6-17': 'Hervé', '6-18': 'Léonce', '6-19': 'Romuald', '6-20': 'Silvère',
+        '6-21': 'Rodolphe', '6-22': 'Alban', '6-23': 'Audrey', '6-24': 'Jean-Baptiste',
+        '6-25': 'Prosper', '6-26': 'Anthelme', '6-27': 'Fernand', '6-28': 'Irénée',
+        '6-29': 'Pierre', '6-30': 'Martial',
+        
+        // JUILLET
+        '7-1': 'Thierry', '7-2': 'Martinien', '7-3': 'Thomas', '7-4': 'Florent',
+        '7-5': 'Antoine', '7-6': 'Mariette', '7-7': 'Raoul', '7-8': 'Thibault',
+        '7-9': 'Amandine', '7-10': 'Ulrich', '7-11': 'Benoît', '7-12': 'Olivier',
+        '7-13': 'Henri', '7-14': 'Fête Nationale', '7-15': 'Donald', '7-16': 'Carmen',
+        '7-17': 'Charlotte', '7-18': 'Frédéric', '7-19': 'Arsène', '7-20': 'Marina',
+        '7-21': 'Victor', '7-22': 'Marie-Madeleine', '7-23': 'Brigitte', '7-24': 'Christine',
+        '7-25': 'Jacques', '7-26': 'Anne', '7-27': 'Nathalie', '7-28': 'Samson',
+        '7-29': 'Marthe', '7-30': 'Juliette', '7-31': 'Ignace',
+        
+        // AOÛT
+        '8-1': 'Alphonse', '8-2': 'Julien', '8-3': 'Lydie', '8-4': 'Jean-Marie',
+        '8-5': 'Abel', '8-6': 'Transfiguration', '8-7': 'Gaëtan', '8-8': 'Dominique',
+        '8-9': 'Amour', '8-10': 'Laurent', '8-11': 'Claire', '8-12': 'Clarisse',
+        '8-13': 'Hippolyte', '8-14': 'Évrard', '8-15': 'Marie', '8-16': 'Armel',
+        '8-17': 'Hyacinthe', '8-18': 'Hélène', '8-19': 'Jean', '8-20': 'Bernard',
+        '8-21': 'Christophe', '8-22': 'Fabrice', '8-23': 'Rose', '8-24': 'Barthélémy',
+        '8-25': 'Louis', '8-26': 'Natacha', '8-27': 'Monique', '8-28': 'Augustin',
+        '8-29': 'Sabine', '8-30': 'Fiacre', '8-31': 'Aristide',
+        
+        // SEPTEMBRE
+        '9-1': 'Gilles', '9-2': 'Ingrid', '9-3': 'Grégoire', '9-4': 'Rosalie',
+        '9-5': 'Raïssa', '9-6': 'Bertrand', '9-7': 'Reine', '9-8': 'Nativité',
+        '9-9': 'Alain', '9-10': 'Inès', '9-11': 'Adelphe', '9-12': 'Apollinaire',
+        '9-13': 'Aimé', '9-14': 'Croix', '9-15': 'Roland', '9-16': 'Édith',
+        '9-17': 'Renaud', '9-18': 'Nadège', '9-19': 'Émilie', '9-20': 'Davy',
+        '9-21': 'Matthieu', '9-22': 'Maurice', '9-23': 'Constant', '9-24': 'Thècle',
+        '9-25': 'Hermann', '9-26': 'Côme', '9-27': 'Vincent', '9-28': 'Venceslas',
+        '9-29': 'Michel', '9-30': 'Jérôme',
+        
+        // OCTOBRE
+        '10-1': 'Thérèse', '10-2': 'Léger', '10-3': 'Gérard', '10-4': 'François',
+        '10-5': 'Fleur', '10-6': 'Bruno', '10-7': 'Serge', '10-8': 'Pélagie',
+        '10-9': 'Denis', '10-10': 'Ghislain', '10-11': 'Firmin', '10-12': 'Wilfried',
+        '10-13': 'Géraud', '10-14': 'Juste', '10-15': 'Thérèse', '10-16': 'Edwige',
+        '10-17': 'Baudouin', '10-18': 'Luc', '10-19': 'René', '10-20': 'Adeline',
+        '10-21': 'Céline', '10-22': 'Élodie', '10-23': 'Jean', '10-24': 'Florentin',
+        '10-25': 'Crépin', '10-26': 'Dimitri', '10-27': 'Émeline', '10-28': 'Simon',
+        '10-29': 'Narcisse', '10-30': 'Bienvenue', '10-31': 'Quentin',
+        
+        // NOVEMBRE
+        '11-1': 'Toussaint', '11-2': 'Défunts', '11-3': 'Hubert', '11-4': 'Charles',
+        '11-5': 'Sylvie', '11-6': 'Bertille', '11-7': 'Carine', '11-8': 'Geoffroy',
+        '11-9': 'Théodore', '11-10': 'Léon', '11-11': 'Martin', '11-12': 'Christian',
+        '11-13': 'Brice', '11-14': 'Sidoine', '11-15': 'Albert', '11-16': 'Marguerite',
+        '11-17': 'Élisabeth', '11-18': 'Aude', '11-19': 'Tanguy', '11-20': 'Edmond',
+        '11-21': 'Rufus', '11-22': 'Cécile', '11-23': 'Clément', '11-24': 'Flora',
+        '11-25': 'Catherine', '11-26': 'Delphine', '11-27': 'Séverin', '11-28': 'Jacques',
+        '11-29': 'Saturnin', '11-30': 'André',
+        
+        // DÉCEMBRE
+        '12-1': 'Florence', '12-2': 'Viviane', '12-3': 'Xavier', '12-4': 'Barbara',
+        '12-5': 'Gérald', '12-6': 'Nicolas', '12-7': 'Ambroise', '12-8': 'Immaculée',
+        '12-9': 'Pierre', '12-10': 'Romaric', '12-11': 'Daniel', '12-12': 'Jeanne',
+        '12-13': 'Lucie', '12-14': 'Odile', '12-15': 'Ninon', '12-16': 'Alice',
+        '12-17': 'Gaël', '12-18': 'Gatien', '12-19': 'Urbain', '12-20': 'Théophile',
+        '12-21': 'Pierre', '12-22': 'Françoise', '12-23': 'Armand', '12-24': 'Adèle',
+        '12-25': 'Noël', '12-26': 'Étienne', '12-27': 'Jean', '12-28': 'Innocents',
+        '12-29': 'David', '12-30': 'Roger', '12-31': 'Sylvestre'
+    };
+    
+    const key = `${month}-${day}`;
+    return saints[key] || 'Tous les saints';
 }
 
 // Fonction pour récupérer les VRAIS visiteurs (version corrigée)
@@ -1819,11 +2306,13 @@ function openWeatherDetails() {
 
 // Initialisation des widgets (version corrigée)
 function initHeaderWidgets() {
-    fetchTemperatureOptimized(); // ✅ Au lieu de fetchTemperature()
+    fetchTemperatureOptimized();
     updateVisitorsCount();
+    fetchSaintDuJour(); // 🆕 AJOUT
     
-    setInterval(fetchTemperatureOptimized, 300000); // ✅ Changez ici aussi
+    setInterval(fetchTemperatureOptimized, 300000);
     setInterval(updateVisitorsCount, 45000);
+    setInterval(fetchSaintDuJour, 3600000); // 🆕 AJOUT - Mise à jour toutes les heures
     setInterval(cleanupInactiveVisitors, 120000);
 }
 
@@ -2042,6 +2531,9 @@ window.createTimerStopButton = createTimerStopButton;
 window.stopTimerAlarm = stopTimerAlarm;
 window.cancelTimer = cancelTimer;
 window.goBackHome = goBackHome;
+window.openSaintPopup = openSaintPopup;
+window.closeSaintPopup = closeSaintPopup;
+window.changeCalendarMonth = changeCalendarMonth;
 
 // Export pour usage externe
 window.NewsWidget = NewsWidget;

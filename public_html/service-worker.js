@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v63'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v64'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -54,6 +54,7 @@ const STATIC_RESOURCES = [
     '/css/memory-game.css',
     '/css/simon-says.css',
     '/css/snake-game.css',
+	'/css/seasonal-events.css',
     
     // Interface utilisateur
     '/css/chat-styles.css',
@@ -106,6 +107,7 @@ const STATIC_RESOURCES = [
     '/js/memory-game.js',
     '/js/simon-says.js',
     '/js/snake-game.js',
+    '/js/seasonal-events.js',
     
     // Fichiers de configuration
 '/manifest.json',

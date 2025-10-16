@@ -123,6 +123,186 @@
     font-weight: 600;
 }
 
+/* ===== SAINT DU JOUR DANS LE FOOTER ===== */
+.saint-widget-footer {
+    background: rgba(var(--primary-color-rgb), 0.15);
+    border: 2px solid var(--primary-color);
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 80px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.saint-widget-footer:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+.saint-value-footer {
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.3;
+    color: var(--primary-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px;
+    width: 100%;
+}
+
+.saint-label-footer {
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.2;
+    opacity: 0.95;
+    color: var(--primary-color);
+    margin-top: 2px;
+}
+
+.saint-widget-footer:hover .saint-value-footer,
+.saint-widget-footer:hover .saint-label-footer {
+    color: white;
+}
+
+/* ===== THÈMES POUR SAINT FOOTER ===== */
+
+/* Thème ROUGE (par défaut) */
+[data-theme="rouge"] .saint-widget-footer {
+    background: rgb(248 244 244);
+    border-color: #d32f2f;
+}
+
+[data-theme="rouge"] .saint-value-footer,
+[data-theme="rouge"] .saint-label-footer {
+    color: #000;
+}
+
+[data-theme="rouge"] .saint-widget-footer:hover {
+    background: #d32f2f;
+    color: white;
+}
+
+[data-theme="rouge"] .saint-widget-footer:hover .saint-value-footer,
+[data-theme="rouge"] .saint-widget-footer:hover .saint-label-footer {
+    color: white;
+}
+
+/* Thème DARK */
+[data-theme="dark"] .saint-widget-footer {
+    background: rgba(92, 107, 192, 0.25);
+    border-color: #5c6bc0;
+}
+
+[data-theme="dark"] .saint-value-footer,
+[data-theme="dark"] .saint-label-footer {
+    color: #ffffff;
+}
+
+[data-theme="dark"] .saint-widget-footer:hover {
+    background: #5c6bc0;
+    color: white;
+}
+
+[data-theme="dark"] .saint-widget-footer:hover .saint-value-footer,
+[data-theme="dark"] .saint-widget-footer:hover .saint-label-footer {
+    color: white;
+}
+
+/* Thème BLEU CIEL */
+[data-theme="bleuciel"] .saint-widget-footer {
+    background: rgba(14, 165, 233, 0.15);
+    border-color: #0ea5e9;
+}
+
+[data-theme="bleuciel"] .saint-value-footer,
+[data-theme="bleuciel"] .saint-label-footer {
+    color: #0ea5e9;
+}
+
+[data-theme="bleuciel"] .saint-widget-footer:hover {
+    background: #0ea5e9;
+    color: white;
+}
+
+[data-theme="bleuciel"] .saint-widget-footer:hover .saint-value-footer,
+[data-theme="bleuciel"] .saint-widget-footer:hover .saint-label-footer {
+    color: white;
+}
+
+/* Thème LIGHT (Violet) */
+[data-theme="light"] .saint-widget-footer {
+    background: rgba(126, 87, 194, 0.15);
+    border-color: #7e57c2;
+}
+
+[data-theme="light"] .saint-value-footer,
+[data-theme="light"] .saint-label-footer {
+    color: #7e57c2;
+}
+
+[data-theme="light"] .saint-widget-footer:hover {
+    background: #7e57c2;
+    color: white;
+}
+
+[data-theme="light"] .saint-widget-footer:hover .saint-value-footer,
+[data-theme="light"] .saint-widget-footer:hover .saint-label-footer {
+    color: white;
+}
+
+/* Mobile responsive */
+@media (max-width: 767px) {
+    .saint-widget-footer {
+        min-width: 70px;
+        padding: 5px 10px;
+    }
+    
+    .saint-value-footer {
+        font-size: 13px;
+        max-width: 100px;
+    }
+    
+    .saint-label-footer {
+        font-size: 9px;
+    }
+	
+	.news-widget-tap {
+        display: none;
+    }
+    
+    .news-widget-footer {
+        justify-content: center;
+        padding-top: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .saint-widget-footer {
+        min-width: 65px;
+        padding: 4px 8px;
+    }
+    
+    .saint-value-footer {
+        font-size: 14px;
+        max-width: 90px;
+    }
+    
+    .saint-label-footer {
+        font-size: 10px;
+    }
+}
+
 /* ============================================= */
 /*        NEWS WIDGET CSS - PARTIE 3             */
 /*        Zone de contenu et prévisualisation    */
@@ -1671,5 +1851,77 @@
     .alarm-section, .timer-section {
         padding: 8px !important;
         margin-bottom: 10px !important;
+    }
+}
+
+/* ===== ANIMATIONS POUR POPUP SAINT ===== */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ===== RESPONSIVE POPUP CALENDRIER ===== */
+@media (max-width: 768px) {
+    .saint-popup-content {
+        padding: 20px 15px !important;
+        max-width: 95% !important;
+    }
+    
+    #saintCalendar {
+        padding: 10px !important;
+    }
+    
+    #saintCalendar h3 {
+        font-size: 16px !important;
+    }
+    
+    #saintCalendar button {
+        width: 30px !important;
+        height: 30px !important;
+        font-size: 16px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .saint-popup-content {
+        padding: 15px 10px !important;
+    }
+    
+    #saintCalendar {
+        padding: 8px !important;
+    }
+    
+    #saintCalendar h3 {
+        font-size: 14px !important;
+    }
+    
+    /* Jours du calendrier plus petits sur mobile */
+    #saintCalendar > div > div {
+        min-height: 40px !important;
+        padding: 5px 2px !important;
+    }
+    
+    #saintCalendar > div > div > div:first-child {
+        font-size: 12px !important;
+    }
+    
+    #saintCalendar > div > div > div:last-child {
+        font-size: 8px !important;
     }
 }
