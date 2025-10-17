@@ -1626,23 +1626,6 @@ main {
 .quick-link i {
     color: white;
 }
-
-.modal-content button {
-	right: 20px;
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid white;
-    font-size: 24px;
-    cursor: pointer;
-    color: white;
-    padding: 8px;
-    border-radius: 50%;
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-}
 	
 /*.modal-content i.fa,
 .modal-content i.fas,
