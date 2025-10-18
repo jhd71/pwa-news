@@ -1,4 +1,4 @@
-// seasonal-events.js - Gestion des événements saisonniers COMPLET
+// seasonal-events.js - Gestion des événements saisonniers AMÉLIORÉ
 
 class SeasonalEvents {
     constructor() {
@@ -11,7 +11,8 @@ class SeasonalEvents {
                 emoji: '🎊',
                 animation: 'firework',
                 position: 'top-right',
-                message: 'Bonne année !'
+                message: 'Bonne année !',
+                particles: 'confetti'
             },
             {
                 name: 'Épiphanie',
@@ -35,10 +36,11 @@ class SeasonalEvents {
                 name: 'Saint-Valentin',
                 startOffset: 7,
                 date: { month: 2, day: 14 },
-                emoji: '💝',
+                emoji: '💕',
                 animation: 'heartbeat',
                 position: 'top-left',
-                message: 'Joyeuse Saint-Valentin'
+                message: 'Joyeuse Saint-Valentin',
+                particles: 'hearts'
             },
             {
                 name: 'Mardi Gras',
@@ -47,7 +49,8 @@ class SeasonalEvents {
                 animation: 'wiggle',
                 position: 'bottom-right',
                 message: 'Joyeux Mardi Gras !',
-                isCalculated: true // Date variable
+                isCalculated: true,
+                particles: 'confetti'
             },
             
             // PRINTEMPS
@@ -88,13 +91,32 @@ class SeasonalEvents {
                 message: '8 Mai 1945'
             },
             {
+                name: 'Ascension',
+                startOffset: 3,
+                emoji: '☁️',
+                animation: 'float',
+                position: 'top-right',
+                message: 'Jeudi de l\'Ascension',
+                isCalculated: true
+            },
+            {
                 name: 'Fête des Mères',
                 startOffset: 5,
                 emoji: '💐',
                 animation: 'bloom',
                 position: 'top-left',
                 message: 'Bonne fête Maman !',
-                isCalculated: true // Dernier dimanche de mai
+                isCalculated: true,
+                particles: 'hearts'
+            },
+            {
+                name: 'Pentecôte',
+                startOffset: 3,
+                emoji: '🕊️',
+                animation: 'float',
+                position: 'top-left',
+                message: 'Joyeuse Pentecôte',
+                isCalculated: true
             },
             {
                 name: 'Fête des Pères',
@@ -103,7 +125,7 @@ class SeasonalEvents {
                 animation: 'bounce',
                 position: 'top-right',
                 message: 'Bonne fête Papa !',
-                isCalculated: true // 3e dimanche de juin
+                isCalculated: true
             },
             
             // ÉTÉ
@@ -123,7 +145,8 @@ class SeasonalEvents {
                 emoji: '🇫🇷',
                 animation: 'wave',
                 position: 'top-right',
-                message: 'Joyeux 14 Juillet !'
+                message: 'Joyeux 14 Juillet !',
+                particles: 'confetti'
             },
             
             // AUTOMNE
@@ -143,7 +166,8 @@ class SeasonalEvents {
                 emoji: '🎃',
                 animation: 'spooky',
                 position: 'bottom-left',
-                message: 'Joyeux Halloween !'
+                message: 'Joyeux Halloween !',
+                particles: 'leaves'
             },
             {
                 name: 'Toussaint',
@@ -172,7 +196,8 @@ class SeasonalEvents {
                 emoji: '🎄',
                 animation: 'snow',
                 position: 'bottom-right',
-                message: 'Joyeux Noël !'
+                message: 'Joyeux Noël !',
+                particles: 'snowflakes'
             },
             {
                 name: 'Réveillon',
@@ -181,15 +206,96 @@ class SeasonalEvents {
                 emoji: '🎆',
                 animation: 'firework',
                 position: 'top-right',
-                message: 'Bon réveillon !'
+                message: 'Bon réveillon !',
+                particles: 'confetti'
+            },
+            
+            // ÉVÉNEMENTS LOCAUX CHALON-SUR-SAÔNE
+            {
+                name: 'Carnaval de Chalon',
+                startOffset: 7,
+                date: { month: 3, day: 15 }, // Ajustez la date selon le vrai carnaval
+                emoji: '🎪',
+                animation: 'wiggle',
+                position: 'bottom-right',
+                message: 'Carnaval de Chalon !',
+                particles: 'confetti'
             }
         ];
+        
+        this.storageKey = 'seasonalEvents_seen';
     }
 
     init() {
         this.checkAndDisplayEvent();
         // Vérifier toutes les heures
         setInterval(() => this.checkAndDisplayEvent(), 3600000);
+        
+        // Réinitialiser à minuit
+        this.scheduleMiddleightReset();
+    }
+
+    scheduleMiddleightReset() {
+        const now = new Date();
+        const night = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() + 1, // Demain
+            0, 0, 0 // Minuit
+        );
+        const msToMidnight = night.getTime() - now.getTime();
+        
+        setTimeout(() => {
+            this.resetDailyView();
+            // Replanifier pour la prochaine nuit
+            this.scheduleMiddleightReset();
+        }, msToMidnight);
+    }
+
+    resetDailyView() {
+        const today = this.getTodayKey();
+        const seenData = this.getSeenData();
+        
+        // Supprimer les anciennes entrées
+        Object.keys(seenData).forEach(key => {
+            if (key !== today) {
+                delete seenData[key];
+            }
+        });
+        
+        localStorage.setItem(this.storageKey, JSON.stringify(seenData));
+        
+        // Réafficher l'événement du jour
+        this.checkAndDisplayEvent();
+    }
+
+    getTodayKey() {
+        const today = new Date();
+        return `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+    }
+
+    getSeenData() {
+        const data = localStorage.getItem(this.storageKey);
+        return data ? JSON.parse(data) : {};
+    }
+
+    markAsSeen(eventName) {
+        const seenData = this.getSeenData();
+        const todayKey = this.getTodayKey();
+        
+        if (!seenData[todayKey]) {
+            seenData[todayKey] = {};
+        }
+        
+        seenData[todayKey][eventName] = true;
+        localStorage.setItem(this.storageKey, JSON.stringify(seenData));
+    }
+
+    hasSeenToday(eventName) {
+        const seenData = this.getSeenData();
+        const todayKey = this.getTodayKey();
+        
+        return seenData[todayKey] && seenData[todayKey][eventName];
     }
 
     checkAndDisplayEvent() {
@@ -197,7 +303,8 @@ class SeasonalEvents {
         const currentEvent = this.getCurrentEvent(today);
         
         if (currentEvent) {
-            this.displayEvent(currentEvent);
+            const hasSeenToday = this.hasSeenToday(currentEvent.name);
+            this.displayEvent(currentEvent, !hasSeenToday);
         } else {
             // Supprimer l'événement si la période est passée
             const existing = document.getElementById('seasonalEvent');
@@ -206,7 +313,6 @@ class SeasonalEvents {
     }
 
     getCurrentEvent(today) {
-        // Chercher l'événement prioritaire
         for (let event of this.events) {
             if (this.isEventActive(event, today)) {
                 return event;
@@ -243,13 +349,23 @@ class SeasonalEvents {
                 mardiGras.setDate(easter.getDate() - 47);
                 return mardiGras;
             
+            case 'Ascension':
+                const easterAsc = this.calculateEaster(year);
+                const ascension = new Date(easterAsc);
+                ascension.setDate(easterAsc.getDate() + 39);
+                return ascension;
+            
+            case 'Pentecôte':
+                const easterPent = this.calculateEaster(year);
+                const pentecote = new Date(easterPent);
+                pentecote.setDate(easterPent.getDate() + 49);
+                return pentecote;
+            
             case 'Fête des Mères':
-                // Dernier dimanche de mai
-                return this.getLastSundayOfMonth(year, 4); // Mai = mois 4 (0-indexed)
+                return this.getLastSundayOfMonth(year, 4);
             
             case 'Fête des Pères':
-                // 3e dimanche de juin
-                return this.getNthSundayOfMonth(year, 5, 3); // Juin = mois 5, 3e dimanche
+                return this.getNthSundayOfMonth(year, 5, 3);
             
             default:
                 return null;
@@ -287,31 +403,60 @@ class SeasonalEvents {
         return new Date(year, month, firstSunday + (n - 1) * 7);
     }
 
-    displayEvent(event) {
+    displayEvent(event, showPopup) {
         const existing = document.getElementById('seasonalEvent');
         if (existing) existing.remove();
 
         const eventDiv = document.createElement('div');
         eventDiv.id = 'seasonalEvent';
         eventDiv.className = `seasonal-event ${event.position} ${event.animation}`;
+        
+        // Mode discret si déjà vu
+        if (!showPopup) {
+            eventDiv.classList.add('discrete-mode');
+        }
+        
         eventDiv.innerHTML = `
             <div class="seasonal-emoji" title="${event.message}">${event.emoji}</div>
+            <button class="hide-event-btn" title="Ne plus montrer aujourd'hui">×</button>
         `;
 
-        // Clic pour afficher le message
-        eventDiv.onclick = () => {
+        // Clic sur l'emoji pour afficher le message
+        eventDiv.querySelector('.seasonal-emoji').onclick = () => {
             this.showEventMessage(event);
+            if (event.particles) {
+                this.createParticles(event.particles);
+            }
+        };
+        
+        // Bouton pour masquer
+        eventDiv.querySelector('.hide-event-btn').onclick = (e) => {
+            e.stopPropagation();
+            this.markAsSeen(event.name);
+            eventDiv.remove();
         };
 
         document.body.appendChild(eventDiv);
         
-        console.log(`🎉 Événement actif : ${event.name} - ${event.message}`);
+        // Afficher le popup automatiquement si première fois
+        if (showPopup) {
+            setTimeout(() => {
+                this.showEventMessage(event);
+                if (event.particles) {
+                    this.createParticles(event.particles);
+                }
+                this.markAsSeen(event.name);
+            }, 1000);
+        }
+        
+        console.log(`🎉 Événement actif : ${event.name}`);
     }
 
     showEventMessage(event) {
         const colors = this.getThemeColors();
         
         const message = document.createElement('div');
+        message.className = 'seasonal-message-popup';
         message.style.cssText = `
             position: fixed;
             top: 50%;
@@ -319,30 +464,87 @@ class SeasonalEvents {
             transform: translate(-50%, -50%);
             background: linear-gradient(145deg, ${colors.primary}, ${colors.secondary});
             color: white;
-            padding: 25px 35px;
+            padding: 30px 40px;
             border-radius: 20px;
             z-index: 10002;
             font-weight: bold;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
             text-align: center;
             border: 3px solid ${colors.accent};
-            min-width: 250px;
-            animation: popIn 0.5s ease;
+            min-width: 280px;
+            animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         `;
         
         message.innerHTML = `
-            <div style="font-size: 50px; margin-bottom: 15px;">${event.emoji}</div>
-            <div style="font-size: 20px; margin-bottom: 10px;">${event.message}</div>
-            <div style="font-size: 14px; opacity: 0.9;">Cliquez pour fermer</div>
+            <div style="font-size: 60px; margin-bottom: 15px;">${event.emoji}</div>
+            <div style="font-size: 22px; margin-bottom: 15px;">${event.message}</div>
+            <button style="
+                background: rgba(255,255,255,0.2);
+                border: 2px solid white;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 10px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: bold;
+                transition: all 0.3s;
+            " onmouseover="this.style.background='rgba(255,255,255,0.3)'" 
+               onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                Fermer
+            </button>
         `;
         
-        message.onclick = () => message.remove();
+        message.querySelector('button').onclick = () => message.remove();
         
         document.body.appendChild(message);
         
         setTimeout(() => {
             if (message.parentNode) message.remove();
-        }, 5000);
+        }, 8000);
+    }
+
+    createParticles(type) {
+        const container = document.createElement('div');
+        container.className = 'particles-container';
+        document.body.appendChild(container);
+        
+        const particleCount = 50;
+        
+        for (let i = 0; i < particleCount; i++) {
+            setTimeout(() => {
+                const particle = document.createElement('div');
+                particle.className = `particle particle-${type}`;
+                
+                // Position aléatoire
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                particle.style.animationDuration = (3 + Math.random() * 2) + 's';
+                
+                // Emoji selon le type
+                switch(type) {
+                    case 'hearts':
+                        particle.textContent = ['❤️', '💕', '💖', '💗'][Math.floor(Math.random() * 4)];
+                        break;
+                    case 'confetti':
+                        particle.textContent = ['🎊', '🎉', '✨', '⭐'][Math.floor(Math.random() * 4)];
+                        break;
+                    case 'snowflakes':
+                        particle.textContent = ['❄️', '⛄', '☃️'][Math.floor(Math.random() * 3)];
+                        break;
+                    case 'leaves':
+                        particle.textContent = ['🍂', '🍁', '🎃'][Math.floor(Math.random() * 3)];
+                        break;
+                }
+                
+                container.appendChild(particle);
+                
+                // Supprimer après l'animation
+                setTimeout(() => particle.remove(), 5000);
+            }, i * 100);
+        }
+        
+        // Supprimer le container après toutes les animations
+        setTimeout(() => container.remove(), 10000);
     }
 
     getThemeColors() {
