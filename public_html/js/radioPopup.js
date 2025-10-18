@@ -614,34 +614,61 @@ toggleStationPlayback(index) {
 
     // === ARRÊT ET NOUVELLE STATION ===
     stopCurrentAndPlayNew(index) {
-        // Arrêter tout
-        this.stopRadio();
-        
-        // Sélectionner et jouer la nouvelle station
-        const station = this.stations[index];
-        const card = document.querySelector(`[data-index="${index}"]`);
-        
-        this.currentStation = station;
-        this.isPlaying = false;
-        
-        // Mettre à jour l'interface du lecteur
-        document.getElementById('currentStationLogo').src = station.logo;
-        document.getElementById('currentStationName').textContent = station.name;
-        document.getElementById('currentStationStatus').textContent = 'Connexion...';
-        this.updateStatusStyle('Connexion...');
-        document.getElementById('radioPlayerSection').style.display = 'block';
-        
-        // Marquer comme active
-        card.classList.add('active');
-        
-        // Lancer la lecture
-        this.playRadio();
-        
-        // Mettre à jour l'overlay avec icône stop
-        const overlayIcon = card.querySelector('.play-overlay .material-icons');
-        overlayIcon.textContent = 'stop';
-        card.classList.add('playing');
+    // Arrêter seulement l'audio, SANS réinitialiser currentStation
+    if (this.stopRetrying) {
+        this.stopRetrying();
     }
+    if (this.watchdogInterval) {
+        clearInterval(this.watchdogInterval);
+        this.watchdogInterval = null;
+    }
+    
+    if (this.audio) {
+        this.audio.pause();
+        this.audio.currentTime = 0;
+        this.audio = null;
+    }
+    this.isPlaying = false;
+    
+    // Réinitialiser les cartes de stations
+    document.querySelectorAll('.radio-station-card').forEach(card => {
+        card.classList.remove('active', 'playing', 'paused');
+        const overlay = card.querySelector('.play-overlay .material-icons');
+        overlay.textContent = 'play_arrow';
+    });
+    
+    // Arrêter les égaliseurs
+    this.stopEqualizer();
+    this.stopCompactEqualizer();
+    
+    // Annuler le minuteur d'arrêt
+    this.cancelSleepTimer();
+    
+    // Sélectionner et jouer la nouvelle station
+    const station = this.stations[index];
+    const card = document.querySelector(`[data-index="${index}"]`);
+    
+    this.currentStation = station;
+    this.isPlaying = false;
+    
+    // Mettre à jour l'interface du lecteur
+    document.getElementById('currentStationLogo').src = station.logo;
+    document.getElementById('currentStationName').textContent = station.name;
+    document.getElementById('currentStationStatus').textContent = 'Connexion...';
+    this.updateStatusStyle('Connexion...');
+    document.getElementById('radioPlayerSection').style.display = 'block';
+    
+    // Marquer comme active
+    card.classList.add('active');
+    
+    // Lancer la lecture
+    this.playRadio();
+    
+    // Mettre à jour l'overlay avec icône stop
+    const overlayIcon = card.querySelector('.play-overlay .material-icons');
+    overlayIcon.textContent = 'stop';
+    card.classList.add('playing');
+}
 
     // === LECTURE RADIO ===
 playRadio() {
@@ -840,7 +867,7 @@ playRadio() {
 }
 
     // === ARRÊT COMPLET DE LA RADIO ===
-	stopRadio() {
+	stopRadio(resetStation = true) {
     if (this.stopRetrying) {
         this.stopRetrying();
     }
@@ -863,7 +890,10 @@ playRadio() {
         overlay.textContent = 'play_arrow';
     });
     
-    this.currentStation = null;
+    // Réinitialiser currentStation SEULEMENT si demandé
+    if (resetStation) {
+        this.currentStation = null;
+    }
     
     // Masquer l'indicateur de la tuile
     this.hideTileIndicator();
@@ -875,8 +905,12 @@ playRadio() {
     // Annuler le minuteur d'arrêt
     this.cancelSleepTimer();
     
-    // Supprimer le widget
-    this.hideCompactWidget();
+    // Mettre à jour ou masquer le widget selon le contexte
+    if (resetStation) {
+        this.hideCompactWidget();
+    } else {
+        this.updateCompactWidget();
+    }
     
     // Mettre à jour le statut dans la popup
     const statusElement = document.getElementById('currentStationStatus');
@@ -885,16 +919,17 @@ playRadio() {
         this.updateStatusStyle('Arrêté');
     }
     
-    // Masquer la section lecteur dans la popup
-    const playerSection = document.getElementById('radioPlayerSection');
-    if (playerSection) {
-        playerSection.style.display = 'none';
+    // Masquer la section lecteur SEULEMENT si on réinitialise tout
+    if (resetStation) {
+        const playerSection = document.getElementById('radioPlayerSection');
+        if (playerSection) {
+            playerSection.style.display = 'none';
+        }
     }
     
-    // Forcer la mise à jour de tous les indicateurs
+    // Mettre à jour l'indicateur de la tuile
     this.updateTileIndicator();
-    this.updateCompactWidget();
-	}
+}
 
     // === GESTION DES ÉGALISEURS ===
     
