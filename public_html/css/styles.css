@@ -4045,10 +4045,9 @@ main {
 }
 
 /* ========================================
-   TUILE PETITES ANNONCES - VISIBLE ET ATTRACTIVE
+   Badge TUILE PETITES ANNONCES
    ======================================== */
-
-/* Badge TUILE PETITES ANNONCES */
+   
 .tile[data-category="annonces"]::after {
     content: "🆕 NOUVEAU";
     position: absolute;
