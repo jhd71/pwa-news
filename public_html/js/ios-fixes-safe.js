@@ -193,14 +193,21 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
 			/* 16. Widget radio */
-            @media (min-width: 768px) {
-				.radio-compact-widget {
-				left: 4px;
+			.ios-device .radio-compact-widget {
+				left: 25px;
 				bottom: 110px;
 				max-width: 384px;
+				}			
+
+			/* 17. Swiper */				
+			.ios-device .swiper-container {
+				display: flex;
+				margin-top: 130px;
+				width: 98%;
+				margin-left: auto;
+				margin-right: auto;
 				}
-			}		
-				
+						
             /* Fix pour les autres éléments iOS existants */
             .ios-device .weather-sidebar.visible,
             .ios-device .quick-links-sidebar.visible {

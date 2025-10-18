@@ -378,7 +378,7 @@ this.tileContainer.appendChild(photosTileElement);
 
 // NOUVELLE TUILE PETITES ANNONCES DANS ESPACE+
 const annoncesTile = {
-    title: "🏪<br>Petites Annonces",
+    title: "PETITES ANNONCES",
     url: "petites-annonces.html",
     mobileUrl: "petites-annonces.html",
     isDefault: true,
@@ -613,7 +613,7 @@ const tvSites = [
 
     createTile(site) {
     const tile = document.createElement('div');
-    tile.className = 'tile';
+tile.className = 'tile';
     
     // Ajouter l'attribut data-category pour faciliter le ciblage CSS
     tile.setAttribute('data-category', site.category || 'default');

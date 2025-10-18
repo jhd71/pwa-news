@@ -1026,7 +1026,7 @@ main {
 [data-theme="rouge"] .tile:nth-child(30n + 27) { background: linear-gradient(135deg, #fb923c, #ea580c); }
 [data-theme="rouge"] .tile:nth-child(30n + 28) { background: linear-gradient(135deg, #fcd34d, #f59e0b); }
 [data-theme="rouge"] .tile:nth-child(30n + 29) { background: linear-gradient(135deg, #fde047, #eab308); }
-[data-theme="rouge"] .tile:nth-child(30n + 0) { background: linear-gradient(135deg, #7c2d12, #451a03); }
+[data-theme="rouge"] .tile:nth-child(30n + 0) { background: linear-gradient(135deg, #710000, #c90000); }
 
 /* ========================================
    THÈME SOMBRE - Palette bleu foncé/indigo/violet
@@ -4041,5 +4041,43 @@ main {
     .feature-item {
         padding: 6px 12px;
         font-size: 0.9rem;
+    }
+}
+
+/* ========================================
+   TUILE PETITES ANNONCES - VISIBLE ET ATTRACTIVE
+   ======================================== */
+
+/* Badge TUILE PETITES ANNONCES */
+.tile[data-category="annonces"]::after {
+    content: "🆕 NOUVEAU";
+    position: absolute;
+    top: 2px;
+    right: 11px;
+    background: #FF0000;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.65rem;
+    font-weight: bold;
+    animation: pulse 2s infinite;
+    z-index: 10;
+}
+/* Animation simple du badge */
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+/* Mobile - ajustements */
+@media (max-width: 768px) {
+    .tile[data-category="annonces"]::after {
+        top: 4px;
+        right: 8px;
+        font-size: 0.6rem;
+        padding: 3px 8px;
+    }
+
+    .tile.annonces .tile-title {
+        font-size: 0.95rem !important;
     }
 }
