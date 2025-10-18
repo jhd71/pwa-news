@@ -940,8 +940,8 @@
     }
 
     .modal-content {
-        padding: 0px;
-        margin: 0px;
+        padding: 10px;
+        margin: 1px;
     }
 
     .modal-header h2 {
