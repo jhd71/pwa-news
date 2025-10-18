@@ -573,8 +573,17 @@ class SeasonalEvents {
 
 // Initialiser
 const seasonalEvents = new SeasonalEvents();
-document.addEventListener('DOMContentLoaded', () => {
+
+// Initialisation immédiate ou au chargement du DOM
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('🎉 Initialisation des événements saisonniers...');
+        seasonalEvents.init();
+    });
+} else {
+    // Le DOM est déjà chargé
+    console.log('🎉 Initialisation immédiate des événements saisonniers...');
     seasonalEvents.init();
-});
+}
 
 window.seasonalEvents = seasonalEvents;
