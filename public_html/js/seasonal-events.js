@@ -209,11 +209,11 @@ class SeasonalEvents {
                 message: 'Bon réveillon !',
                 particles: 'confetti'
             },
-            // 🧪 ÉVÉNEMENT DE TEST (à supprimer après)
+            // 🧪 TEST TOUJOURS ACTIF
             {
                 name: 'Test Événements',
-                startOffset: 5,
-                date: { month: 10, day: 19 }, // AUJOURD'HUI
+                startOffset: 365, // Actif toute l'année
+                date: { month: 1, day: 1 }, // 1er janvier
                 emoji: '🧪',
                 animation: 'bounce',
                 position: 'bottom-right',
