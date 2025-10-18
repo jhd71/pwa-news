@@ -209,7 +209,17 @@ class SeasonalEvents {
                 message: 'Bon réveillon !',
                 particles: 'confetti'
             },
-            
+            // 🧪 ÉVÉNEMENT DE TEST (à supprimer après)
+            {
+                name: 'Test Événements',
+                startOffset: 5,
+                date: { month: 10, day: 19 }, // AUJOURD'HUI
+                emoji: '🧪',
+                animation: 'bounce',
+                position: 'bottom-right',
+                message: 'Test réussi ! 🎉',
+                particles: 'confetti'
+            },
             // ÉVÉNEMENTS LOCAUX CHALON-SUR-SAÔNE
             {
                 name: 'Carnaval de Chalon',
