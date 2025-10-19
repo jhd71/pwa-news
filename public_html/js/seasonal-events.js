@@ -209,11 +209,11 @@ class SeasonalEvents {
                 message: 'Bon réveillon !',
                 particles: 'confetti'
             },
-            // 🧪 TEST TOUJOURS ACTIF
+            // 🧪 TEST TOUJOURS ACTIF (jusqu'en 2099)
             {
                 name: 'Test Événements',
-                startOffset: 365, // Actif toute l'année
-                date: { month: 1, day: 1 }, // 1er janvier
+                startOffset: 27375, // 75 ans avant = toujours actif
+                date: { month: 12, day: 31 }, // 31 décembre 2099
                 emoji: '🧪',
                 animation: 'bounce',
                 position: 'bottom-right',
