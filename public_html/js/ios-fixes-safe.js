@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
 			/* 16. Widget radio */
 			.ios-device .radio-compact-widget {
-				left: 25px;
+				left: 7px;
 				bottom: 110px;
 				max-width: 384px;
 				}			
