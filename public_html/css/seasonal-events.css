@@ -329,7 +329,7 @@
     }
     
     .bottom-left, .bottom-right {
-        bottom: 70px;
+        bottom: 150px; /* Remonté pour éviter la barre de navigation */
     }
     
     .bottom-left { left: 10px; }
