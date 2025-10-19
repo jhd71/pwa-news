@@ -427,9 +427,8 @@ class SeasonalEvents {
         }
         
         eventDiv.innerHTML = `
-            <div class="seasonal-emoji" title="${event.message}">${event.emoji}</div>
-            <button class="hide-event-btn" title="Ne plus montrer aujourd'hui">×</button>
-        `;
+    <div class="seasonal-emoji" title="${event.message}">${event.emoji}</div>
+`;
 
         // Clic sur l'emoji pour afficher le message
         eventDiv.querySelector('.seasonal-emoji').onclick = () => {
@@ -437,14 +436,7 @@ class SeasonalEvents {
             if (event.particles) {
                 this.createParticles(event.particles);
             }
-        };
-        
-        // Bouton pour masquer
-        eventDiv.querySelector('.hide-event-btn').onclick = (e) => {
-            e.stopPropagation();
-            this.markAsSeen(event.name);
-            eventDiv.remove();
-        };
+        };               
 
         document.body.appendChild(eventDiv);
         
