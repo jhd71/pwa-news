@@ -209,17 +209,7 @@ class SeasonalEvents {
                 message: 'Bon réveillon !',
                 particles: 'confetti'
             },
-            // 🧪 TEST TOUJOURS ACTIF (jusqu'en 2099)
-            {
-                name: 'Test Événements',
-                startOffset: 27375, // 75 ans avant = toujours actif
-                date: { month: 12, day: 31 }, // 31 décembre 2099
-                emoji: '🧪',
-                animation: 'bounce',
-                position: 'bottom-right',
-                message: 'Test réussi ! 🎉',
-                particles: 'confetti'
-            },
+            
             // ÉVÉNEMENTS LOCAUX CHALON-SUR-SAÔNE
             {
                 name: 'Carnaval de Chalon',
