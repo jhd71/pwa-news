@@ -309,18 +309,27 @@ class SeasonalEvents {
     }
 
     checkAndDisplayEvent() {
-        const today = new Date();
-        const currentEvent = this.getCurrentEvent(today);
+    const today = new Date();
+    const currentEvent = this.getCurrentEvent(today);
+    
+    if (currentEvent) {
+        const hasSeenToday = this.hasSeenToday(currentEvent.name);
         
-        if (currentEvent) {
-            const hasSeenToday = this.hasSeenToday(currentEvent.name);
-            this.displayEvent(currentEvent, !hasSeenToday);
-        } else {
-            // Supprimer l'événement si la période est passée
+        // Si l'utilisateur a cliqué "Ne plus montrer aujourd'hui", ne rien afficher du tout
+        if (hasSeenToday) {
             const existing = document.getElementById('seasonalEvent');
             if (existing) existing.remove();
+            return;
         }
+        
+        // Afficher l'événement (première visite du jour)
+        this.displayEvent(currentEvent, true);
+    } else {
+        // Supprimer l'événement si la période est passée
+        const existing = document.getElementById('seasonalEvent');
+        if (existing) existing.remove();
     }
+}
 
     getCurrentEvent(today) {
         for (let event of this.events) {
@@ -441,15 +450,15 @@ class SeasonalEvents {
         document.body.appendChild(eventDiv);
         
         // Afficher le popup automatiquement si première fois
-        if (showPopup) {
-            setTimeout(() => {
-                this.showEventMessage(event);
-                if (event.particles) {
-                    this.createParticles(event.particles);
-                }
-                this.markAsSeen(event.name);
-            }, 1000);
+if (showPopup) {
+    setTimeout(() => {
+        this.showEventMessage(event);
+        if (event.particles) {
+            this.createParticles(event.particles);
         }
+        this.markAsSeen(event.name);
+    }, 5000); // 5 secondes au lieu de 1
+}
         
         console.log(`🎉 Événement actif : ${event.name}`);
     }
