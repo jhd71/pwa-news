@@ -457,7 +457,7 @@ if (showPopup) {
             this.createParticles(event.particles);
         }
         this.markAsSeen(event.name);
-    }, 5000); // 5 secondes au lieu de 1
+    }, 10000); // 10 secondes au lieu de 5
 }
         
         console.log(`🎉 Événement actif : ${event.name}`);
