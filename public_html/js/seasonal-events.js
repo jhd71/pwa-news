@@ -463,32 +463,34 @@ class SeasonalEvents {
     }
 
     showEventMessage(event) {
-        const colors = this.getThemeColors();
-        
-        const message = document.createElement('div');
-        message.className = 'seasonal-message-popup';
-        message.style.cssText = `
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(145deg, ${colors.primary}, ${colors.secondary});
-            color: white;
-            padding: 30px 40px;
-            border-radius: 20px;
-            z-index: 10002;
-            font-weight: bold;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            text-align: center;
-            border: 3px solid ${colors.accent};
-            min-width: 280px;
-            animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        `;
-        
-        message.innerHTML = `
-            <div style="font-size: 60px; margin-bottom: 15px;">${event.emoji}</div>
-            <div style="font-size: 22px; margin-bottom: 15px;">${event.message}</div>
-            <button style="
+    const colors = this.getThemeColors();
+    
+    const message = document.createElement('div');
+    message.className = 'seasonal-message-popup';
+    message.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(145deg, ${colors.primary}, ${colors.secondary});
+        color: white;
+        padding: 30px 40px;
+        border-radius: 20px;
+        z-index: 10002;
+        font-weight: bold;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        text-align: center;
+        border: 3px solid ${colors.accent};
+        min-width: 280px;
+        max-width: 90%;
+        animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    `;
+    
+    message.innerHTML = `
+        <div style="font-size: 60px; margin-bottom: 15px;">${event.emoji}</div>
+        <div style="font-size: 22px; margin-bottom: 20px;">${event.message}</div>
+        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+            <button class="popup-btn-close" style="
                 background: rgba(255,255,255,0.2);
                 border: 2px solid white;
                 color: white;
@@ -498,20 +500,55 @@ class SeasonalEvents {
                 font-size: 14px;
                 font-weight: bold;
                 transition: all 0.3s;
-            " onmouseover="this.style.background='rgba(255,255,255,0.3)'" 
-               onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+            ">
                 Fermer
             </button>
-        `;
-        
-        message.querySelector('button').onclick = () => message.remove();
-        
-        document.body.appendChild(message);
-        
-        setTimeout(() => {
-            if (message.parentNode) message.remove();
-        }, 8000);
-    }
+            <button class="popup-btn-hide" style="
+                background: rgba(255,255,255,0.3);
+                border: 2px solid white;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 10px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: bold;
+                transition: all 0.3s;
+            ">
+                Ne plus montrer aujourd'hui
+            </button>
+        </div>
+    `;
+    
+    // Bouton Fermer - ferme juste le popup
+    message.querySelector('.popup-btn-close').onclick = () => {
+        message.remove();
+    };
+    
+    // Effets hover pour le bouton Fermer
+    const closeBtn = message.querySelector('.popup-btn-close');
+    closeBtn.onmouseover = () => closeBtn.style.background = 'rgba(255,255,255,0.3)';
+    closeBtn.onmouseout = () => closeBtn.style.background = 'rgba(255,255,255,0.2)';
+    
+    // Bouton Ne plus montrer - masque l'emoji pour la journée
+    message.querySelector('.popup-btn-hide').onclick = () => {
+        message.remove();
+        this.markAsSeen(event.name);
+        const eventDiv = document.getElementById('seasonalEvent');
+        if (eventDiv) eventDiv.remove();
+    };
+    
+    // Effets hover pour le bouton Ne plus montrer
+    const hideBtn = message.querySelector('.popup-btn-hide');
+    hideBtn.onmouseover = () => hideBtn.style.background = 'rgba(255,100,100,0.5)';
+    hideBtn.onmouseout = () => hideBtn.style.background = 'rgba(255,255,255,0.3)';
+    
+    document.body.appendChild(message);
+    
+    // Fermeture automatique après 10 secondes (popup seulement)
+    setTimeout(() => {
+        if (message.parentNode) message.remove();
+    }, 10000);
+}
 
     createParticles(type) {
         const container = document.createElement('div');

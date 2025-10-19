@@ -20,27 +20,25 @@
     position: absolute;
     top: -5px;
     right: -5px;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(255, 0, 0, 0.8);
     color: white;
-    border: none;
+    border: 2px solid white;
     border-radius: 50%;
-    width: 25px;
-    height: 25px;
-    font-size: 18px;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    font-weight: bold;
     cursor: pointer;
-    display: none;
+    display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s;
-    z-index: 10;
-}
-
-.seasonal-event:hover .hide-event-btn {
-    display: flex;
+    z-index: 10003; /* Au-dessus du popup */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
 .hide-event-btn:hover {
-    background: rgba(255, 0, 0, 0.8);
+    background: rgba(255, 0, 0, 1);
     transform: scale(1.2);
 }
 
