@@ -26,6 +26,14 @@ document.addEventListener('DOMContentLoaded', function() {
             /* Monter la barre d'infos défilante sur iPhone */
             .ios-device .news-ticker {
                 bottom: 70px !important;
+                font-size: 0.85rem !important; /* ✅ Réduire taille police */
+                line-height: 1.2 !important; /* ✅ Réduire hauteur de ligne */
+            }
+
+            /* Réduire aussi les éléments internes de la news-ticker */
+            .ios-device .news-ticker .ticker-item {
+                font-size: 0.85rem !important;
+                padding: 8px 12px !important;
             }
 
             /* Décaler le header fixe pour iOS */
@@ -39,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             /* Ajuster le bouton paramètres qui a aussi position:fixed */
             .ios-device .settings-button {
-                top: calc(3px + var(--ios-safe-area-top)) !important;
+                top: calc(10px + var(--ios-safe-area-top)) !important; /* ✅ 3px → 10px */
             }
             
             /* Ajouter un padding au body pour compenser le header décalé */
@@ -202,7 +210,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			/* 17. Swiper */				
 			.ios-device .swiper-container {
 				display: flex;
-				margin-top: 130px;
+				margin-top: 85px; /* ✅ Réduit de 130px à 85px */
 				width: 98%;
 				margin-left: auto;
 				margin-right: auto;
