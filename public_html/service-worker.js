@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v64'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v65'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -83,7 +83,6 @@ const STATIC_RESOURCES = [
     '/js/newsTickerManager.js',
     '/js/notification-manager.js',
     '/js/quick-links.js',
-    '/js/settingsManager.js',
     '/js/sounds.js',
     '/js/supabase-client.js',
     '/js/survey-manager.js',

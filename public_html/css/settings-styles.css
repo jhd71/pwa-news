@@ -634,3 +634,35 @@ input:checked + .toggle-slider:before {
 body.overlay-active .tile {
   pointer-events: none;
 }
+
+/* Bouton vider le cache */
+.btn-clear-cache {
+    width: 100%;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.btn-clear-cache:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(220, 53, 69, 0.4);
+}
+
+.btn-clear-cache:active {
+    transform: translateY(0);
+}
+
+.btn-clear-cache .material-icons {
+    font-size: 20px;
+}

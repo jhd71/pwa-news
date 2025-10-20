@@ -1097,6 +1097,17 @@ settingsOverlay.addEventListener('click', (e) => {
                 </div>
             </div>
         </div>
+		
+		<div class="settings-section">
+    <h4>🗑️ Cache et Données</h4>
+    <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 15px;">
+        Si vous ne voyez pas les dernières modifications, videz le cache.
+    </p>
+    <button id="clearCacheBtn" class="btn-clear-cache">
+        <span class="material-icons">delete_sweep</span>
+        Vider le cache et recharger
+    </button>
+</div>
 
 `;
 
@@ -1226,6 +1237,15 @@ panel.querySelectorAll('.visual-enhancement-tile').forEach(tile => {
     });
 });
 
+// Bouton Vider le cache
+const clearCacheBtn = panel.querySelector('#clearCacheBtn');
+if (clearCacheBtn) {
+    clearCacheBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.clearCacheAndReload();
+    });
+}
+
     // Empêcher que des clics sur le panneau lui-même ferment celui-ci
     panel.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -1258,6 +1278,72 @@ panel.querySelectorAll('.visual-enhancement-tile').forEach(tile => {
     setTimeout(() => {
         document.addEventListener('click', outsideClickHandler);
     }, 100);
+}
+
+clearCacheAndReload() {
+    if (!confirm('⚠️ Cela va vider le cache et recharger la page.\n\nContinuer ?')) {
+        return;
+    }
+
+    console.log('🗑️ Début du nettoyage du cache...');
+
+    // 1. Vider localStorage (sauf certaines données importantes)
+    const savedTheme = localStorage.getItem('theme');
+    const savedLayout = localStorage.getItem('layout');
+    const savedFontSize = localStorage.getItem('fontSize');
+    const savedFontFamily = localStorage.getItem('fontFamily');
+    const savedTextContrast = localStorage.getItem('textContrast');
+    const savedVisualEnhancement = localStorage.getItem('visualEnhancement');
+
+    try {
+        localStorage.clear();
+        // Restaurer les paramètres essentiels
+        if (savedTheme) localStorage.setItem('theme', savedTheme);
+        if (savedLayout) localStorage.setItem('layout', savedLayout);
+        if (savedFontSize) localStorage.setItem('fontSize', savedFontSize);
+        if (savedFontFamily) localStorage.setItem('fontFamily', savedFontFamily);
+        if (savedTextContrast) localStorage.setItem('textContrast', savedTextContrast);
+        if (savedVisualEnhancement) localStorage.setItem('visualEnhancement', savedVisualEnhancement);
+        console.log('✅ localStorage vidé');
+    } catch (e) {
+        console.error('❌ Erreur localStorage:', e);
+    }
+
+    // 2. Vider sessionStorage
+    try {
+        sessionStorage.clear();
+        console.log('✅ sessionStorage vidé');
+    } catch (e) {
+        console.error('❌ Erreur sessionStorage:', e);
+    }
+
+    // 3. Désinstaller le Service Worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+            registrations.forEach(registration => {
+                registration.unregister();
+                console.log('✅ Service Worker désinstallé');
+            });
+        });
+    }
+
+    // 4. Vider le cache du navigateur
+    if ('caches' in window) {
+        caches.keys().then(cacheNames => {
+            cacheNames.forEach(cacheName => {
+                caches.delete(cacheName);
+                console.log(`✅ Cache ${cacheName} supprimé`);
+            });
+        });
+    }
+
+    // 5. Afficher un message
+    this.showToast('🗑️ Cache vidé ! Rechargement...');
+
+    // 6. Recharger la page après 1 seconde
+    setTimeout(() => {
+        window.location.reload(true);
+    }, 1000);
 }
 
 changeFontSize(size) {
