@@ -355,20 +355,30 @@ getDaysRemainingNumber(approvedDate) {
 }
 
             async deleteAd(adId) {
-                if (!confirm('Supprimer définitivement cette annonce ?')) return;
-                try {
-                    const supabase = window.getSupabaseClient();
-                    const { error } = await supabase
-                        .from('classified_ads')
-                        .delete()
-                        .eq('id', adId);
-                    if (error) throw error;
-                    this.showToast('🗑️ Annonce supprimée.');
-                    await this.loadAnnonces();
-                } catch (error) {
-                    this.showToast('❌ Erreur lors de la suppression', 'error');
-                }
-            }
+    if (!confirm('Supprimer définitivement cette annonce ?')) return;
+    
+    try {
+        const supabase = window.getSupabaseClient();
+        
+        const { error } = await supabase
+            .from('classified_ads')
+            .delete()
+            .eq('id', adId);
+        
+        if (error) throw error;
+        
+        this.showToast('🗑️ Annonce supprimée.');
+        
+        // ✅ AJOUT : Délai avant rechargement pour s'assurer que la BDD est à jour
+        setTimeout(() => {
+            this.loadAnnonces();
+        }, 500);
+        
+    } catch (error) {
+        console.error('Erreur suppression:', error);
+        this.showToast('❌ Erreur lors de la suppression', 'error');
+    }
+}
 
 async deleteExpiredAds() {
     if (!confirm('Supprimer toutes les annonces expirées (plus de 30 jours) ?')) return;
@@ -390,7 +400,11 @@ async deleteExpiredAds() {
         if (error) throw error;
         
         this.showToast('🗑️ Annonces expirées supprimées');
-        await this.loadAnnonces();
+        
+        // ✅ AJOUT : Délai avant rechargement
+        setTimeout(() => {
+            this.loadAnnonces();
+        }, 500);
         
     } catch (error) {
         console.error('Erreur suppression:', error);
