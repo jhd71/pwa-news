@@ -273,23 +273,36 @@ export class SettingsManager {
                     </section>
 
                     <section class="settings-section">
-                        <h4>Données</h4>
-                        <div class="settings-buttons">
-                            <button id="exportSettings" class="btn primary">
-                                <span class="material-icons">download</span>
-                                Exporter les paramètres
-                            </button>
-                            <button id="importSettings" class="btn secondary">
-                                <span class="material-icons">upload</span>
-                                Importer les paramètres
-                            </button>
-                            <button id="resetSettings" class="btn danger">
-                                <span class="material-icons">refresh</span>
-                                Réinitialiser
-                            </button>
-                        </div>
-                        <input type="file" id="importInput" accept=".json" hidden>
-                    </section>
+    <h4>Données</h4>
+    <div class="settings-buttons">
+        <button id="exportSettings" class="btn primary">
+            <span class="material-icons">download</span>
+            Exporter les paramètres
+        </button>
+        <button id="importSettings" class="btn secondary">
+            <span class="material-icons">upload</span>
+            Importer les paramètres
+        </button>
+        <button id="resetSettings" class="btn danger">
+            <span class="material-icons">refresh</span>
+            Réinitialiser
+        </button>
+    </div>
+    <input type="file" id="importInput" accept=".json" hidden>
+</section>
+
+<section class="settings-section">
+    <h4>🗑️ Cache et Données</h4>
+    <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 15px;">
+        Si vous ne voyez pas les dernières modifications du site, videz le cache.
+    </p>
+    <div class="settings-buttons">
+        <button id="clearCacheBtn" class="btn danger">
+            <span class="material-icons">delete_sweep</span>
+            Vider le cache et recharger
+        </button>
+    </div>
+</section>
                 </div>
             </div>
         `;
@@ -393,6 +406,12 @@ export class SettingsManager {
                 closeModal();
             }
         });
+		
+		// Vider le cache
+const clearCacheBtn = modal.querySelector('#clearCacheBtn');
+if (clearCacheBtn) {
+    clearCacheBtn.addEventListener('click', () => this.clearCacheAndReload());
+}
     }
 
     /**
@@ -448,6 +467,67 @@ export class SettingsManager {
         setTimeout(() => location.reload(), 1000);
     }
 
+/**
+     * Vide le cache, le localStorage, le Service Worker et recharge la page
+     */
+    clearCacheAndReload() {
+        // Confirmation
+        if (!confirm('⚠️ Cela va vider le cache et recharger la page.\n\nContinuer ?')) {
+            return;
+        }
+
+        console.log('🗑️ Début du nettoyage du cache...');
+
+        // 1. Vider localStorage (sauf les paramètres qu'on va restaurer)
+        const savedSettings = localStorage.getItem('settings');
+        try {
+            localStorage.clear();
+            // Restaurer les paramètres
+            if (savedSettings) {
+                localStorage.setItem('settings', savedSettings);
+            }
+            console.log('✅ localStorage vidé');
+        } catch (e) {
+            console.error('❌ Erreur localStorage:', e);
+        }
+
+        // 2. Vider sessionStorage
+        try {
+            sessionStorage.clear();
+            console.log('✅ sessionStorage vidé');
+        } catch (e) {
+            console.error('❌ Erreur sessionStorage:', e);
+        }
+
+        // 3. Désinstaller le Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                registrations.forEach(registration => {
+                    registration.unregister();
+                    console.log('✅ Service Worker désinstallé');
+                });
+            });
+        }
+
+        // 4. Vider le cache du navigateur
+        if ('caches' in window) {
+            caches.keys().then(cacheNames => {
+                cacheNames.forEach(cacheName => {
+                    caches.delete(cacheName);
+                    console.log(`✅ Cache ${cacheName} supprimé`);
+                });
+            });
+        }
+
+        // 5. Afficher un message
+        showToast('🗑️ Cache vidé ! Rechargement...', 2000, 'success');
+
+        // 6. Recharger la page après 1 seconde
+        setTimeout(() => {
+            window.location.reload(true);
+        }, 1000);
+    }
+	
     /**
      * Retourne le thème actuel
      * @returns {string} Le mode de thème ('light' ou 'dark')
