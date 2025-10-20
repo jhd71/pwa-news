@@ -121,7 +121,7 @@ class RadioPopupWidget {
         this.currentStation = null;
         this.isPlaying = false;
         this.audio = null;
-        this.volume = 0.7;
+        this.volume = 0.3;  // Volume par défaut à 30%
         
         // === MINUTEUR D'ARRÊT ===
         this.sleepTimer = null;
@@ -373,10 +373,10 @@ class RadioPopupWidget {
                         </div>
                         
                         <div class="volume-control">
-                            <span class="material-icons">volume_up</span>
-                            <input type="range" id="volumeSlider" min="0" max="100" value="70" class="volume-slider">
-                            <span class="volume-percentage">70%</span>
-                        </div>
+								<span class="material-icons">volume_up</span>
+								<input type="range" id="volumeSlider" min="0" max="100" value="30" class="volume-slider">
+								<span class="volume-percentage">30%</span>
+						</div>
                         
                         <!-- Contrôle Chromecast -->
                         <div class="cast-control" id="castControl" style="display: none;">
