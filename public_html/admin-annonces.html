@@ -143,10 +143,11 @@
     <script>
         class AnnoncesModerationManager {
             constructor() {
-                this.annonces = [];
-                // Identifiants admin (identiques à vos autres pages admin)
-                this.ADMIN_USERNAME = 'Admin_ActuMedia';
-            }
+    this.annonces = [];
+    this.isProcessing = false; // ✅ AJOUT
+    // Identifiants admin (identiques à vos autres pages admin)
+    this.ADMIN_USERNAME = 'Admin_ActuMedia';
+}
 
             // Copié de admin-comments.html
             hashPassword(password) {
@@ -326,16 +327,31 @@ getDaysRemainingNumber(approvedDate) {
     return Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24));
 }
             async approveAd(adId) {
+    // ✅ Empêcher les double-clics
+    if (this.isProcessing) {
+        console.log('⏳ Traitement en cours, veuillez patienter...');
+        return;
+    }
+    
+    this.isProcessing = true;
+    
     try {
         const supabase = window.getSupabaseClient();
         
-        // Ajouter la date d'approbation
+        // Désactiver visuellement le bouton
+        const btn = document.querySelector(`button[onclick="moderationManager.approveAd(${adId})"]`);
+        if (btn) {
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+            btn.innerHTML = '<span class="material-icons">hourglass_empty</span> Traitement...';
+        }
+        
         const { error } = await supabase
             .from('classified_ads')
             .update({ 
                 is_approved: true, 
                 is_published: true,
-                approved_at: new Date().toISOString() // 📅 Date d'approbation
+                approved_at: new Date().toISOString()
             })
             .eq('id', adId);
         
@@ -343,22 +359,36 @@ getDaysRemainingNumber(approvedDate) {
         
         this.showToast('✅ Annonce approuvée et publiée !');
         
-        // Recharger APRÈS un petit délai pour s'assurer que la BDD est à jour
+        // Recharger après un délai
         setTimeout(() => {
+            this.isProcessing = false;
             this.loadAnnonces();
         }, 500);
         
     } catch (error) {
         console.error('Erreur approbation:', error);
         this.showToast('❌ Erreur lors de l\'approbation', 'error');
+        this.isProcessing = false;
     }
 }
 
             async deleteAd(adId) {
     if (!confirm('Supprimer définitivement cette annonce ?')) return;
     
+    // ✅ Protection anti-double-clic
+    if (this.isProcessing) return;
+    this.isProcessing = true;
+    
     try {
         const supabase = window.getSupabaseClient();
+        
+        // Désactiver le bouton
+        const btn = document.querySelector(`button[onclick="moderationManager.deleteAd(${adId})"]`);
+        if (btn) {
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+            btn.innerHTML = '<span class="material-icons">hourglass_empty</span> Suppression...';
+        }
         
         const { error } = await supabase
             .from('classified_ads')
@@ -369,14 +399,15 @@ getDaysRemainingNumber(approvedDate) {
         
         this.showToast('🗑️ Annonce supprimée.');
         
-        // ✅ AJOUT : Délai avant rechargement pour s'assurer que la BDD est à jour
         setTimeout(() => {
+            this.isProcessing = false;
             this.loadAnnonces();
         }, 500);
         
     } catch (error) {
         console.error('Erreur suppression:', error);
         this.showToast('❌ Erreur lors de la suppression', 'error');
+        this.isProcessing = false;
     }
 }
 
