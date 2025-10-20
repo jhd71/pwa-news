@@ -87,6 +87,18 @@
     .toast { position: fixed; top: 20px; right: 20px; background: var(--success-color); color: white; padding: 12px 16px; border-radius: 6px; box-shadow: 0 4px 15px var(--shadow); z-index: 1000; transform: translateX(400px); transition: transform 0.3s ease; }
     .toast.show { transform: translateX(0); }
     .toast.error { background: var(--danger-color); }
+	
+	/* Mise en avant des annonces bientôt expirées */
+.annonce-item.expiring-soon {
+    border-left: 4px solid var(--warning-color) !important;
+    background: rgba(255, 193, 7, 0.05);
+}
+
+.annonce-item.expired {
+    border-left: 4px solid var(--danger-color) !important;
+    background: rgba(220, 53, 69, 0.05);
+    opacity: 0.7;
+}
 </style>
 </head>
 <body>
@@ -106,6 +118,13 @@
                 <div class="stat-number pending-badge" id="pendingAdCount">0</div>
                 <div class="stat-label">En attente</div>
             </div>
+			<div class="stat-card">
+    <button onclick="moderationManager.deleteExpiredAds()" 
+            style="background: var(--danger-color); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 5px; justify-content: center;">
+        <span class="material-icons">delete_sweep</span>
+        Supprimer expirées
+    </button>
+</div>
             <div class="stat-card">
                 <div class="stat-number approved-badge" id="approvedAdCount">0</div>
                 <div class="stat-label">Approuvées</div>
@@ -224,14 +243,19 @@
             }
 
             displayAnnonces() {
-                const container = document.getElementById('annoncesList');
-                if (this.annonces.length === 0) {
-                    container.innerHTML = '<div class="empty-state">Aucune annonce à modérer.</div>';
-                    return;
-                }
+    const container = document.getElementById('annoncesList');
+    if (this.annonces.length === 0) {
+        container.innerHTML = '<div class="empty-state">Aucune annonce à modérer.</div>';
+        return;
+    }
 
-                container.innerHTML = this.annonces.map(ad => `
-                    <div class="annonce-item ${ad.is_approved ? 'approved' : 'pending'}">
+    container.innerHTML = this.annonces.map(ad => {
+        // ✅ AJOUTEZ CES 2 LIGNES ICI
+        const daysRemaining = ad.approved_at ? this.getDaysRemainingNumber(ad.approved_at) : 999;
+        const expiringClass = daysRemaining <= 0 ? 'expired' : daysRemaining <= 7 ? 'expiring-soon' : '';
+        
+        return `
+            <div class="annonce-item ${ad.is_approved ? 'approved' : 'pending'} ${expiringClass}">
                         <div class="annonce-header">
                             <div>
                                 <div class="annonce-title">${this.escapeHtml(ad.title)}</div>
@@ -243,10 +267,14 @@
                         </div>
                         <div class="annonce-content">${this.escapeHtml(ad.description)}</div>
                         <div class="annonce-details">
-                            <span><strong>Catégorie:</strong> ${ad.category}</span>
-                            <span><strong>Prix:</strong> ${ad.price ? ad.price + ' €' : 'Gratuit/Échange'}</span>
-                            <span><strong>Lieu:</strong> ${ad.location}</span>
-                        </div>
+    <span><strong>Catégorie:</strong> ${ad.category}</span>
+    <span><strong>Prix:</strong> ${ad.price ? ad.price + ' €' : 'Gratuit/Échange'}</span>
+    <span><strong>Lieu:</strong> ${ad.location}</span>
+    ${ad.approved_at ? `
+        <span><strong>📅 Approuvée le:</strong> ${this.formatDate(ad.approved_at)}</span>
+        <span><strong>⏳ Expire dans:</strong> ${this.getDaysRemaining(ad.approved_at)} jours</span>
+    ` : ''}
+</div>
                         <div class="annonce-actions">
                             ${!ad.is_approved ? `
                                 <button class="btn btn-approve" onclick="moderationManager.approveAd(${ad.id})">
@@ -261,21 +289,69 @@
                 `).join('');
             }
             
+			formatDate(dateString) {
+    if (!dateString) return 'Non approuvée';
+    const date = new Date(dateString);
+    const options = { 
+        day: '2-digit', 
+        month: '2-digit', 
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    };
+    return date.toLocaleDateString('fr-FR', options);
+}
+
+getDaysRemaining(approvedDate) {
+    if (!approvedDate) return '—';
+    
+    const approved = new Date(approvedDate);
+    const expiresAt = new Date(approved.getTime() + 30 * 24 * 60 * 60 * 1000); // +30 jours
+    const now = new Date();
+    const remaining = Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24));
+    
+    if (remaining <= 0) return '⚠️ Expirée';
+    if (remaining <= 7) return `⚠️ ${remaining}`;
+    return remaining;
+}
+
+getDaysRemainingNumber(approvedDate) {
+    if (!approvedDate) return 999;
+    
+    const approved = new Date(approvedDate);
+    const expiresAt = new Date(approved.getTime() + 30 * 24 * 60 * 60 * 1000);
+    const now = new Date();
+    
+    return Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24));
+}
             async approveAd(adId) {
-                try {
-                    const supabase = window.getSupabaseClient();
-                    // En approuvant, on la publie aussi
-                    const { error } = await supabase
-                        .from('classified_ads')
-                        .update({ is_approved: true, is_published: true })
-                        .eq('id', adId);
-                    if (error) throw error;
-                    this.showToast('✅ Annonce approuvée et publiée !');
-                    await this.loadAnnonces();
-                } catch (error) {
-                    this.showToast('❌ Erreur lors de l\'approbation', 'error');
-                }
-            }
+    try {
+        const supabase = window.getSupabaseClient();
+        
+        // Ajouter la date d'approbation
+        const { error } = await supabase
+            .from('classified_ads')
+            .update({ 
+                is_approved: true, 
+                is_published: true,
+                approved_at: new Date().toISOString() // 📅 Date d'approbation
+            })
+            .eq('id', adId);
+        
+        if (error) throw error;
+        
+        this.showToast('✅ Annonce approuvée et publiée !');
+        
+        // Recharger APRÈS un petit délai pour s'assurer que la BDD est à jour
+        setTimeout(() => {
+            this.loadAnnonces();
+        }, 500);
+        
+    } catch (error) {
+        console.error('Erreur approbation:', error);
+        this.showToast('❌ Erreur lors de l\'approbation', 'error');
+    }
+}
 
             async deleteAd(adId) {
                 if (!confirm('Supprimer définitivement cette annonce ?')) return;
@@ -292,6 +368,34 @@
                     this.showToast('❌ Erreur lors de la suppression', 'error');
                 }
             }
+
+async deleteExpiredAds() {
+    if (!confirm('Supprimer toutes les annonces expirées (plus de 30 jours) ?')) return;
+    
+    try {
+        const supabase = window.getSupabaseClient();
+        
+        // Calculer la date limite (30 jours avant aujourd'hui)
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        
+        // Supprimer les annonces approuvées il y a plus de 30 jours
+        const { data, error } = await supabase
+            .from('classified_ads')
+            .delete()
+            .lt('approved_at', thirtyDaysAgo.toISOString())
+            .not('approved_at', 'is', null);
+        
+        if (error) throw error;
+        
+        this.showToast('🗑️ Annonces expirées supprimées');
+        await this.loadAnnonces();
+        
+    } catch (error) {
+        console.error('Erreur suppression:', error);
+        this.showToast('❌ Erreur lors de la suppression', 'error');
+    }
+}
 
             escapeHtml(unsafe) {
                 return unsafe
