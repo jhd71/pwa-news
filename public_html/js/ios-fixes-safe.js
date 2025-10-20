@@ -210,7 +210,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			/* 17. Swiper */				
 			.ios-device .swiper-container {
 				display: flex;
-				/* margin-top: 85px; */
 				width: 98%;
 				margin-left: auto;
 				margin-right: auto;
