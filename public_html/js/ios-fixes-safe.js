@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
             /* Réduire aussi les éléments internes de la news-ticker */
             .ios-device .news-ticker .ticker-item {
                 font-size: 0.85rem !important;
-                padding: 8px 12px !important;
+                padding: 10px 12px !important;
             }
 
             /* Décaler le header fixe pour iOS */
@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
 			/* 16. Widget radio */
 			.ios-device .radio-compact-widget {
-				left: 7px;
+				left: 37px;
 				bottom: 110px;
 				max-width: 384px;
 				}			
