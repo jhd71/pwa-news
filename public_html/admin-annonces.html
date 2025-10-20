@@ -250,44 +250,45 @@
     }
 
     container.innerHTML = this.annonces.map(ad => {
-        // ✅ AJOUTEZ CES 2 LIGNES ICI
+        // Calculer les jours restants et la classe CSS
         const daysRemaining = ad.approved_at ? this.getDaysRemainingNumber(ad.approved_at) : 999;
         const expiringClass = daysRemaining <= 0 ? 'expired' : daysRemaining <= 7 ? 'expiring-soon' : '';
         
         return `
             <div class="annonce-item ${ad.is_approved ? 'approved' : 'pending'} ${expiringClass}">
-                        <div class="annonce-header">
-                            <div>
-                                <div class="annonce-title">${this.escapeHtml(ad.title)}</div>
-                                <div class="annonce-author">Par: ${this.escapeHtml(ad.author_name)}</div>
-                            </div>
-                            <span class="${ad.is_approved ? 'approved-badge' : 'pending-badge'}">
-                                ${ad.is_approved ? 'Approuvée' : 'En attente'}
-                            </span>
-                        </div>
-                        <div class="annonce-content">${this.escapeHtml(ad.description)}</div>
-                        <div class="annonce-details">
-    <span><strong>Catégorie:</strong> ${ad.category}</span>
-    <span><strong>Prix:</strong> ${ad.price ? ad.price + ' €' : 'Gratuit/Échange'}</span>
-    <span><strong>Lieu:</strong> ${ad.location}</span>
-    ${ad.approved_at ? `
-        <span><strong>📅 Approuvée le:</strong> ${this.formatDate(ad.approved_at)}</span>
-        <span><strong>⏳ Expire dans:</strong> ${this.getDaysRemaining(ad.approved_at)} jours</span>
-    ` : ''}
-</div>
-                        <div class="annonce-actions">
-                            ${!ad.is_approved ? `
-                                <button class="btn btn-approve" onclick="moderationManager.approveAd(${ad.id})">
-                                    <span class="material-icons">check_circle</span> Approuver
-                                </button>
-                            ` : ''}
-                            <button class="btn btn-delete" onclick="moderationManager.deleteAd(${ad.id})">
-                                <span class="material-icons">delete_forever</span> Supprimer
-                            </button>
-                        </div>
+                <div class="annonce-header">
+                    <div>
+                        <div class="annonce-title">${this.escapeHtml(ad.title)}</div>
+                        <div class="annonce-author">Par: ${this.escapeHtml(ad.author_name)}</div>
                     </div>
-                `).join('');
-            }
+                    <span class="${ad.is_approved ? 'approved-badge' : 'pending-badge'}">
+                        ${ad.is_approved ? 'Approuvée' : 'En attente'}
+                    </span>
+                </div>
+                <div class="annonce-content">${this.escapeHtml(ad.description)}</div>
+                <div class="annonce-details">
+                    <span><strong>Catégorie:</strong> ${ad.category}</span>
+                    <span><strong>Prix:</strong> ${ad.price ? ad.price + ' €' : 'Gratuit/Échange'}</span>
+                    <span><strong>Lieu:</strong> ${ad.location}</span>
+                    ${ad.approved_at ? `
+                        <span><strong>📅 Approuvée le:</strong> ${this.formatDate(ad.approved_at)}</span>
+                        <span><strong>⏳ Expire dans:</strong> ${this.getDaysRemaining(ad.approved_at)} jours</span>
+                    ` : ''}
+                </div>
+                <div class="annonce-actions">
+                    ${!ad.is_approved ? `
+                        <button class="btn btn-approve" onclick="moderationManager.approveAd(${ad.id})">
+                            <span class="material-icons">check_circle</span> Approuver
+                        </button>
+                    ` : ''}
+                    <button class="btn btn-delete" onclick="moderationManager.deleteAd(${ad.id})">
+                        <span class="material-icons">delete_forever</span> Supprimer
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
             
 			formatDate(dateString) {
     if (!dateString) return 'Non approuvée';
@@ -306,7 +307,7 @@ getDaysRemaining(approvedDate) {
     if (!approvedDate) return '—';
     
     const approved = new Date(approvedDate);
-    const expiresAt = new Date(approved.getTime() + 30 * 24 * 60 * 60 * 1000); // +30 jours
+    const expiresAt = new Date(approved.getTime() + 30 * 24 * 60 * 60 * 1000);
     const now = new Date();
     const remaining = Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24));
     
