@@ -207,44 +207,41 @@ document.addEventListener('DOMContentLoaded', function() {
 				max-width: 384px;
 				}			
 
-			/* ========================================
-			   17. SWIPER - VERSION ULTRA-FORCÉE iOS
-			  ======================================== */
+						/* ========================================
+			   17. SWIPER - VERSION AJUSTÉE iOS
+			   ======================================== */
 
-			/* A. FORCER sur TOUS les niveaux avec max de spécificité */
 			body.ios-device .swiper-container,
 			html body.ios-device .swiper-container,
 			.ios-device .swiper-container {
 				display: flex !important;
-				margin-top: 85px !important;
+				margin-top: 120px !important; /* ✅ 85px → 120px */
 				width: 98% !important;
 				margin-left: auto !important;
 				margin-right: auto !important;
 				padding-top: 0 !important;
-				border: 5px solid lime !important; /* ✅ VISIBLE */
-				box-shadow: 0 0 0 10px rgba(0, 255, 0, 0.5) !important; /* ✅ HALO VERT */
+				border: 5px solid lime !important;
+				box-shadow: 0 0 0 10px rgba(0, 255, 0, 0.5) !important;
 			}
 
-			/* B. S'assurer que le parent ne l'écrase pas */
 			body.ios-device div.swiper-container[class*="swiper"] {
-				margin-top: 85px !important;
+				margin-top: 120px !important; /* ✅ 85px → 120px */
 				border: 5px solid lime !important;
 			}
 
-			/* C. Cibler aussi par attribut au cas où */
 			.ios-device [class~="swiper-container"] {
-				margin-top: 85px !important;
+				margin-top: 120px !important; /* ✅ 85px → 120px */
 				border: 5px solid lime !important;
 			}
 
-			/* D. Swiper interne */
+			/* Swiper interne */
 			.ios-device .swiper-container > .swiper {
 				margin-top: 0 !important;
 				padding-top: 0 !important;
 				border: 3px solid yellow !important;
 			}
 
-			/* E. Wrapper */
+			/* Wrapper */
 			.ios-device .swiper-wrapper {
 				margin-top: 0 !important;
 				padding-top: 0 !important;
@@ -291,7 +288,39 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         `;
         document.head.appendChild(style);
+        // DEBUG : Vérifier et forcer le style après chargement
+if (isiOS()) {
+    setTimeout(() => {
+        const swiperContainer = document.querySelector('.swiper-container');
         
+        if (swiperContainer) {
+            const styles = window.getComputedStyle(swiperContainer);
+            
+            console.log('🔍 DEBUG SWIPER iOS:');
+            console.log('  - .swiper-container trouvé: true');
+            console.log('  - margin-top AVANT: ' + styles.marginTop);
+            console.log('  - border AVANT: ' + styles.border);
+            
+            // ✅ FORCER en JavaScript si le CSS ne marche pas
+            if (styles.marginTop !== '120px') {
+                console.log('⚠️ Le CSS ne fonctionne pas, application JS...');
+                swiperContainer.style.setProperty('margin-top', '120px', 'important');
+                swiperContainer.style.setProperty('border', '5px solid lime', 'important');
+                
+                // Vérifier après
+                setTimeout(() => {
+                    const newStyles = window.getComputedStyle(swiperContainer);
+                    console.log('  - margin-top APRÈS JS: ' + newStyles.marginTop);
+                    console.log('  - border APRÈS JS: ' + newStyles.border);
+                }, 500);
+            } else {
+                console.log('✅ CSS appliqué correctement');
+            }
+        } else {
+            console.log('❌ .swiper-container NON TROUVÉ');
+        }
+    }, 2500); // Attendre 2.5 secondes
+}
         console.log('iOS fixes appliqués - Header, Chat et Settings button ajustés');
         		
         // Fix pour restaurer l'état des widgets sur iOS
