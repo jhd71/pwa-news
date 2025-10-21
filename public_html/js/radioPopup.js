@@ -1588,7 +1588,16 @@ document.getElementById('radioPlayerSection').style.display = 'block';
 
 // === INITIALISATION DU SDK CHROMECAST ===
 initializeCast() {
-    // ✅ AJOUT : Initialiser le compteur si nécessaire
+    // ✅ Désactiver complètement Cast sur iOS/Safari (pas de Chromecast sur iPhone)
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    
+    if (isIOS || isSafari) {
+        console.log('📱 Cast désactivé sur iOS/Safari (non supporté)');
+        return; // Sortir immédiatement
+    }
+    
+    // ✅ Initialiser le compteur si nécessaire
     if (typeof this.castInitAttempts === 'undefined') {
         this.castInitAttempts = 0;
         this.castInitialized = false;
