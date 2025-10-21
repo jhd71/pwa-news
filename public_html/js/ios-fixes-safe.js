@@ -207,25 +207,52 @@ document.addEventListener('DOMContentLoaded', function() {
 				max-width: 384px;
 				}			
 
-			/* 17. Swiper */				
-			@supports (-webkit-touch-callout: none) {
+						/* ========================================
+			   17. SWIPER - CORRECTION iOS COMPLÈTE
+			   ======================================== */
+
+			/* A. Conteneur principal */
 			.ios-device .swiper-container {
-				display: flex;
-				width: 98%;
-				margin-left: auto;
-				margin-right: auto;
-
-			/* ⬇️ Baisse légèrement le swiper sur iPhone */
-				transform: translateY(50px);
-				padding-top: 10px;
-
-			/* 🧭 Améliore le scroll et le rendu Safari */
-				touch-action: pan-y !important;
-				-webkit-overflow-scrolling: touch;
+				display: flex !important;
+				margin-top: 85px !important;
+				width: 98% !important;
+				margin-left: auto !important;
+				margin-right: auto !important;
+				padding-top: 0 !important;
 			}
-		}
+
+			/* B. Swiper interne (enfant direct) */
+			.ios-device .swiper-container > .swiper {
+				margin-top: 0 !important;
+				padding-top: 0 !important;
+				width: 100% !important;
+			}
+
+			/* C. Wrapper des slides */
+			.ios-device .swiper-wrapper {
+				margin-top: 0 !important;
+				padding-top: 0 !important;
+			}
+
+			/* D. Slides individuelles */
+			.ios-device .swiper-slide {
+				margin-top: 0 !important;
+				padding-top: 0 !important;
+			}
+
+			/* E. Boutons de navigation - Ajustement pour iOS */
+			.ios-device .swiper-button-prev,
+			.ios-device .swiper-button-next {
+				top: 50% !important;
+				transform: translateY(-50%) !important;
+			}
+
+			/* F. Pagination */
+			.ios-device .swiper-pagination {
+				bottom: 10px !important;
+			}
 						
-            /* Fix pour les autres éléments iOS existants */
+            /* 18 Fix pour les autres éléments iOS existants */
             .ios-device .weather-sidebar.visible,
             .ios-device .quick-links-sidebar.visible {
                 display: block !important;
