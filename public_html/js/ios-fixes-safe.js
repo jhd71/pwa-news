@@ -209,21 +209,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
 			/* 17. Swiper */				
 			@supports (-webkit-touch-callout: none) {
-  .ios-device .swiper-container {
-    display: flex;
-    width: 98%;
-    margin-left: auto;
-    margin-right: auto;
+			.ios-device .swiper-container {
+				display: flex;
+				width: 98%;
+				margin-left: auto;
+				margin-right: auto;
 
-    /* ⬇️ Baisse légèrement le swiper sur iPhone */
-    transform: translateY(50px);
-    padding-top: 10px;
+			/* ⬇️ Baisse légèrement le swiper sur iPhone */
+				transform: translateY(50px);
+				padding-top: 10px;
 
-    /* 🧭 Améliore le scroll et le rendu Safari */
-    touch-action: pan-y !important;
-    -webkit-overflow-scrolling: touch;
-  }
-}
+			/* 🧭 Améliore le scroll et le rendu Safari */
+				touch-action: pan-y !important;
+				-webkit-overflow-scrolling: touch;
+			}
+		}
 						
             /* Fix pour les autres éléments iOS existants */
             .ios-device .weather-sidebar.visible,
