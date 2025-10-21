@@ -208,18 +208,18 @@ document.addEventListener('DOMContentLoaded', function() {
 				}			
 
 			/* 17. Swiper */				
-			/* ✅ Fix spécifique iPhone pour le Swiper */
-@supports (-webkit-touch-callout: none) {
+			@supports (-webkit-touch-callout: none) {
   .ios-device .swiper-container {
     display: flex;
     width: 98%;
     margin-left: auto;
     margin-right: auto;
-    
-    /* ✅ Décale le Swiper sous les boutons */
-    margin-top: 55px !important;
 
-    /* ✅ Améliore le défilement sur Safari mobile */
+    /* ⬇️ Baisse légèrement le swiper sur iPhone */
+    transform: translateY(50px);
+    padding-top: 10px;
+
+    /* 🧭 Améliore le scroll et le rendu Safari */
     touch-action: pan-y !important;
     -webkit-overflow-scrolling: touch;
   }
