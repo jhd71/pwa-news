@@ -208,12 +208,22 @@ document.addEventListener('DOMContentLoaded', function() {
 				}			
 
 			/* 17. Swiper */				
-			.ios-device .swiper-container {
-				display: flex;
-				width: 98%;
-				margin-left: auto;
-				margin-right: auto;
-				}
+			/* ✅ Fix spécifique iPhone pour le Swiper */
+@supports (-webkit-touch-callout: none) {
+  .ios-device .swiper-container {
+    display: flex;
+    width: 98%;
+    margin-left: auto;
+    margin-right: auto;
+    
+    /* ✅ Décale le Swiper sous les boutons */
+    margin-top: 55px !important;
+
+    /* ✅ Améliore le défilement sur Safari mobile */
+    touch-action: pan-y !important;
+    -webkit-overflow-scrolling: touch;
+  }
+}
 						
             /* Fix pour les autres éléments iOS existants */
             .ios-device .weather-sidebar.visible,
