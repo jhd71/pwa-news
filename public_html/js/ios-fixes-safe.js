@@ -207,50 +207,38 @@ document.addEventListener('DOMContentLoaded', function() {
 				max-width: 384px;
 				}			
 
-						/* ========================================
-			   17. SWIPER - CORRECTION iOS COMPLÈTE
-			   ======================================== */
+				/* ========================================
+   17. SWIPER - VERSION DEBUG iOS
+   ======================================== */
 
-			/* A. Conteneur principal */
-			.ios-device .swiper-container {
-				display: flex !important;
-				margin-top: 130px !important;
-				width: 98% !important;
-				margin-left: auto !important;
-				margin-right: auto !important;
-				padding-top: 0 !important;
-			}
+/* Log de debug */
+console.log('🔧 Application des styles Swiper iOS...');
 
-			/* B. Swiper interne (enfant direct) */
-			.ios-device .swiper-container > .swiper {
-				margin-top: 0 !important;
-				padding-top: 0 !important;
-				width: 100% !important;
-			}
+/* A. Conteneur principal */
+.ios-device .swiper-container {
+    display: flex !important;
+    margin-top: 85px !important;
+    width: 98% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-top: 0 !important;
+    border: 3px solid lime !important; /* ✅ VISIBLE */
+    box-shadow: 0 0 0 5px rgba(0, 255, 0, 0.3) !important; /* ✅ HALO VERT */
+}
 
-			/* C. Wrapper des slides */
-			.ios-device .swiper-wrapper {
-				margin-top: 0 !important;
-				padding-top: 0 !important;
-			}
+/* B. Swiper interne */
+.ios-device .swiper-container > .swiper {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    border: 2px solid yellow !important; /* ✅ VISIBLE */
+}
 
-			/* D. Slides individuelles */
-			.ios-device .swiper-slide {
-				margin-top: 0 !important;
-				padding-top: 0 !important;
-			}
-
-			/* E. Boutons de navigation - Ajustement pour iOS */
-			.ios-device .swiper-button-prev,
-			.ios-device .swiper-button-next {
-				top: 50% !important;
-				transform: translateY(-50%) !important;
-			}
-
-			/* F. Pagination */
-			.ios-device .swiper-pagination {
-				bottom: 10px !important;
-			}
+/* C. Wrapper */
+.ios-device .swiper-wrapper {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    border: 2px solid orange !important; /* ✅ VISIBLE */
+}
 						
             /* 18 Fix pour les autres éléments iOS existants */
             .ios-device .weather-sidebar.visible,
@@ -292,7 +280,35 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         `;
         document.head.appendChild(style);
+        // Juste après document.head.appendChild(style);
+// Ajouter ce code de debug :
+
+if (isiOS()) {
+    // Attendre que le DOM soit chargé
+    setTimeout(() => {
+        const swiperContainer = document.querySelector('.swiper-container');
+        const swiper = document.querySelector('.swiper');
+        const swiperWrapper = document.querySelector('.swiper-wrapper');
         
+        console.log('🔍 DEBUG SWIPER iOS:');
+        console.log('  - .swiper-container trouvé:', !!swiperContainer);
+        console.log('  - .swiper trouvé:', !!swiper);
+        console.log('  - .swiper-wrapper trouvé:', !!swiperWrapper);
+        
+        if (swiperContainer) {
+            const styles = window.getComputedStyle(swiperContainer);
+            console.log('  - margin-top actuel:', styles.marginTop);
+            console.log('  - border actuel:', styles.border);
+            console.log('  - display actuel:', styles.display);
+        }
+        
+        if (swiper) {
+            const styles = window.getComputedStyle(swiper);
+            console.log('  - .swiper margin-top:', styles.marginTop);
+        }
+        
+    }, 2000); // Attendre 2 secondes que tout soit chargé
+}
         console.log('iOS fixes appliqués - Header, Chat et Settings button ajustés');
         		
         // Fix pour restaurer l'état des widgets sur iOS
