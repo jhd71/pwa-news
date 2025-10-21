@@ -1583,33 +1583,60 @@ document.getElementById('radioPlayerSection').style.display = 'block';
     }
 
     /* ===================================================================== */
-    /* CHROMECAST - INTÉGRATION GOOGLE CAST                                 */
-    /* ===================================================================== */
+/* CHROMECAST - INTÉGRATION GOOGLE CAST                                 */
+/* ===================================================================== */
 
-    // === INITIALISATION DU SDK CHROMECAST ===
-    initializeCast() {
-        console.log('🎬 Début initialisation Cast...');
-        
-        if (!window.chrome || !window.chrome.cast || !window.cast) {
-            console.log('⏳ En attente du SDK Google Cast...');
-            setTimeout(() => this.initializeCast(), 1000);
-            return;
-        }
-
-        console.log('✅ SDK Google Cast détecté');
-
-        if (window.cast && window.cast.framework) {
-            console.log('🚀 Initialisation directe du Cast');
-            this.setupCast();
-        } else {
-            window['__onGCastApiAvailable'] = (isAvailable) => {
-                console.log('📡 Cast API Available:', isAvailable);
-                if (isAvailable) {
-                    this.setupCast();
-                }
-            };
-        }
+// === INITIALISATION DU SDK CHROMECAST ===
+initializeCast() {
+    // ✅ AJOUT : Initialiser le compteur si nécessaire
+    if (typeof this.castInitAttempts === 'undefined') {
+        this.castInitAttempts = 0;
+        this.castInitialized = false;
     }
+    
+    // ✅ AJOUT : Protection contre les tentatives multiples
+    if (this.castInitialized) {
+        console.log('⚠️ Cast déjà initialisé, abandon');
+        return;
+    }
+    
+    // ✅ AJOUT : Limiter à 5 tentatives maximum
+    const MAX_ATTEMPTS = 5;
+    if (this.castInitAttempts >= MAX_ATTEMPTS) {
+        console.log('⚠️ Cast: Nombre max de tentatives atteint (' + MAX_ATTEMPTS + '), abandon');
+        console.log('💡 Cast non disponible - Lecture en mode normal uniquement');
+        return;
+    }
+    
+    this.castInitAttempts++;
+    console.log('🎬 Début initialisation Cast... (Tentative ' + this.castInitAttempts + '/' + MAX_ATTEMPTS + ')');
+    
+    if (!window.chrome || !window.chrome.cast || !window.cast) {
+        console.log('⏳ En attente du SDK Google Cast... (Tentative ' + this.castInitAttempts + '/' + MAX_ATTEMPTS + ')');
+        
+        // ✅ Réessayer seulement si on n'a pas atteint le max
+        if (this.castInitAttempts < MAX_ATTEMPTS) {
+            setTimeout(() => this.initializeCast(), 2000); // ✅ Augmenté à 2 secondes
+        }
+        return;
+    }
+    
+    console.log('✅ SDK Google Cast détecté');
+    
+    if (window.cast && window.cast.framework) {
+        console.log('🚀 Initialisation directe du Cast');
+        this.castInitialized = true; // ✅ Marquer comme initialisé
+        this.setupCast();
+    } else {
+        window['__onGCastApiAvailable'] = (isAvailable) => {
+            console.log('📡 Cast API Available:', isAvailable);
+            if (isAvailable) {
+                this.castInitialized = true; // ✅ Marquer comme initialisé
+                this.setupCast();
+            }
+        };
+    }
+}
 
     setupCast() {
         const context = cast.framework.CastContext.getInstance();
