@@ -207,38 +207,49 @@ document.addEventListener('DOMContentLoaded', function() {
 				max-width: 384px;
 				}			
 
-				/* ========================================
-   17. SWIPER - VERSION DEBUG iOS
-   ======================================== */
+			/* ========================================
+			   17. SWIPER - VERSION ULTRA-FORCÉE iOS
+			  ======================================== */
 
-/* Log de debug */
-console.log('🔧 Application des styles Swiper iOS...');
+			/* A. FORCER sur TOUS les niveaux avec max de spécificité */
+			body.ios-device .swiper-container,
+			html body.ios-device .swiper-container,
+			.ios-device .swiper-container {
+				display: flex !important;
+				margin-top: 85px !important;
+				width: 98% !important;
+				margin-left: auto !important;
+				margin-right: auto !important;
+				padding-top: 0 !important;
+				border: 5px solid lime !important; /* ✅ VISIBLE */
+				box-shadow: 0 0 0 10px rgba(0, 255, 0, 0.5) !important; /* ✅ HALO VERT */
+			}
 
-/* A. Conteneur principal */
-.ios-device .swiper-container {
-    display: flex !important;
-    margin-top: 85px !important;
-    width: 98% !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    padding-top: 0 !important;
-    border: 3px solid lime !important; /* ✅ VISIBLE */
-    box-shadow: 0 0 0 5px rgba(0, 255, 0, 0.3) !important; /* ✅ HALO VERT */
-}
+			/* B. S'assurer que le parent ne l'écrase pas */
+			body.ios-device div.swiper-container[class*="swiper"] {
+				margin-top: 85px !important;
+				border: 5px solid lime !important;
+			}
 
-/* B. Swiper interne */
-.ios-device .swiper-container > .swiper {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-    border: 2px solid yellow !important; /* ✅ VISIBLE */
-}
+			/* C. Cibler aussi par attribut au cas où */
+			.ios-device [class~="swiper-container"] {
+				margin-top: 85px !important;
+				border: 5px solid lime !important;
+			}
 
-/* C. Wrapper */
-.ios-device .swiper-wrapper {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-    border: 2px solid orange !important; /* ✅ VISIBLE */
-}
+			/* D. Swiper interne */
+			.ios-device .swiper-container > .swiper {
+				margin-top: 0 !important;
+				padding-top: 0 !important;
+				border: 3px solid yellow !important;
+			}
+
+			/* E. Wrapper */
+			.ios-device .swiper-wrapper {
+				margin-top: 0 !important;
+				padding-top: 0 !important;
+				border: 2px solid orange !important;
+			}
 						
             /* 18 Fix pour les autres éléments iOS existants */
             .ios-device .weather-sidebar.visible,
@@ -280,35 +291,7 @@ console.log('🔧 Application des styles Swiper iOS...');
             }
         `;
         document.head.appendChild(style);
-        // Juste après document.head.appendChild(style);
-// Ajouter ce code de debug :
-
-if (isiOS()) {
-    // Attendre que le DOM soit chargé
-    setTimeout(() => {
-        const swiperContainer = document.querySelector('.swiper-container');
-        const swiper = document.querySelector('.swiper');
-        const swiperWrapper = document.querySelector('.swiper-wrapper');
         
-        console.log('🔍 DEBUG SWIPER iOS:');
-        console.log('  - .swiper-container trouvé:', !!swiperContainer);
-        console.log('  - .swiper trouvé:', !!swiper);
-        console.log('  - .swiper-wrapper trouvé:', !!swiperWrapper);
-        
-        if (swiperContainer) {
-            const styles = window.getComputedStyle(swiperContainer);
-            console.log('  - margin-top actuel:', styles.marginTop);
-            console.log('  - border actuel:', styles.border);
-            console.log('  - display actuel:', styles.display);
-        }
-        
-        if (swiper) {
-            const styles = window.getComputedStyle(swiper);
-            console.log('  - .swiper margin-top:', styles.marginTop);
-        }
-        
-    }, 2000); // Attendre 2 secondes que tout soit chargé
-}
         console.log('iOS fixes appliqués - Header, Chat et Settings button ajustés');
         		
         // Fix pour restaurer l'état des widgets sur iOS
