@@ -220,32 +220,26 @@ document.addEventListener('DOMContentLoaded', function() {
 				margin-left: auto !important;
 				margin-right: auto !important;
 				padding-top: 0 !important;
-				border: 5px solid lime !important;
-				box-shadow: 0 0 0 10px rgba(0, 255, 0, 0.5) !important;
 			}
 
 			body.ios-device div.swiper-container[class*="swiper"] {
 				margin-top: 120px !important; /* ✅ 85px → 120px */
-				border: 5px solid lime !important;
 			}
 
 			.ios-device [class~="swiper-container"] {
 				margin-top: 120px !important; /* ✅ 85px → 120px */
-				border: 5px solid lime !important;
 			}
 
 			/* Swiper interne */
 			.ios-device .swiper-container > .swiper {
 				margin-top: 0 !important;
 				padding-top: 0 !important;
-				border: 3px solid yellow !important;
 			}
 
 			/* Wrapper */
 			.ios-device .swiper-wrapper {
 				margin-top: 0 !important;
 				padding-top: 0 !important;
-				border: 2px solid orange !important;
 			}
 						
             /* 18 Fix pour les autres éléments iOS existants */
@@ -288,39 +282,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         `;
         document.head.appendChild(style);
-        // DEBUG : Vérifier et forcer le style après chargement
-if (isiOS()) {
-    setTimeout(() => {
-        const swiperContainer = document.querySelector('.swiper-container');
         
-        if (swiperContainer) {
-            const styles = window.getComputedStyle(swiperContainer);
-            
-            console.log('🔍 DEBUG SWIPER iOS:');
-            console.log('  - .swiper-container trouvé: true');
-            console.log('  - margin-top AVANT: ' + styles.marginTop);
-            console.log('  - border AVANT: ' + styles.border);
-            
-            // ✅ FORCER en JavaScript si le CSS ne marche pas
-            if (styles.marginTop !== '120px') {
-                console.log('⚠️ Le CSS ne fonctionne pas, application JS...');
-                swiperContainer.style.setProperty('margin-top', '120px', 'important');
-                swiperContainer.style.setProperty('border', '5px solid lime', 'important');
-                
-                // Vérifier après
-                setTimeout(() => {
-                    const newStyles = window.getComputedStyle(swiperContainer);
-                    console.log('  - margin-top APRÈS JS: ' + newStyles.marginTop);
-                    console.log('  - border APRÈS JS: ' + newStyles.border);
-                }, 500);
-            } else {
-                console.log('✅ CSS appliqué correctement');
-            }
-        } else {
-            console.log('❌ .swiper-container NON TROUVÉ');
-        }
-    }, 2500); // Attendre 2.5 secondes
-}
         console.log('iOS fixes appliqués - Header, Chat et Settings button ajustés');
         		
         // Fix pour restaurer l'état des widgets sur iOS
