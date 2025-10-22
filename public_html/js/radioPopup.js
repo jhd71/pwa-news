@@ -746,12 +746,14 @@ document.getElementById('radioPlayerSection').style.display = 'block';
                 });
                 
                 this.audio.addEventListener('error', (e) => {
-    console.error('Erreur audio:', e);
-    
-    // Ne rien faire si on est en train de caster
+    // ✅ Vérifier le Cast EN PREMIER
     if (this.isCasting) {
+        console.log('🎵 Audio local ignoré (Cast en cours)');
         return;
     }
+    
+    // ✅ Afficher l'erreur SEULEMENT si pas de Cast
+    console.error('❌ Erreur audio:', e);
     
     if (!this.isPlaying || isIntentionallyStopped) {
         document.getElementById('currentStationStatus').textContent = 'Arrêté';
