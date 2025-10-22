@@ -111,7 +111,7 @@ class RadioPopupWidget {
             },
             {
                 name: 'Alouette Nouveaux Talents',
-                url: 'https://alouetteouveauxtalents.ice.infomaniak.ch/alouettenouveauxtalents-128.mp3',
+                url: 'https://alouettenouveauxtalents.ice.infomaniak.ch/alouettenouveauxtalents-128.mp3',
                 logo: 'images/radio-logos/Alouette-Nouveaux-Talents.png',
                 description: ' 1ère Radio Régionale de France'
             }
