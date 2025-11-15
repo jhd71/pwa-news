@@ -389,6 +389,42 @@
             text-decoration: underline;
         }
 
+        /* Bouton Retour à l'accueil */
+        .back-home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #667eea;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1em;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .back-home-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            background: white;
+        }
+
+        .back-home-btn-container {
+            margin: 20px 0;
+        }
+
+        .back-home-btn-top {
+            text-align: left;
+        }
+
+        .back-home-btn-bottom {
+            text-align: center;
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .hero h1 {
@@ -411,11 +447,28 @@
             .main-content {
                 padding: 20px;
             }
+
+            .back-home-btn {
+                font-size: 0.9em;
+                padding: 10px 20px;
+            }
+
+            .back-home-btn-top {
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Bouton Retour à l'accueil (en haut) -->
+        <div class="back-home-btn-container back-home-btn-top">
+            <a href="https://actuetmedia.fr/" class="back-home-btn">
+                <span style="font-size: 1.2em;">🏠</span>
+                Retour à l'accueil
+            </a>
+        </div>
+
         <!-- Hero Section -->
         <div class="hero">
             <h1>🎬 JHD Player Pro</h1>
@@ -665,37 +718,117 @@
             </p>
         </div>
 
-        <!-- Footer -->
-        <footer>
-            <p style="font-size: 1.2em; margin-bottom: 15px;"><strong>JHD Player Pro</strong> - Un projet de <a href="https://actuetmedia.fr" target="_blank">Actu & Média</a></p>
-            <p>Développé avec ❤️ pour la communauté</p>
-            <p style="margin-top: 20px;">
-                <a href="https://actuetmedia.fr" target="_blank">🌐 Retour au site principal</a> • 
-                <a href="mailto:contact@actuetmedia.fr" class="contact-link">
-          <i class="fas fa-envelope"></i>
-          <span>contact@actuetmedia.fr</span>
-        </a> • 
-                <a href="https://fr.tipeee.com/actuetmedia" target="_blank">💝 Faire un don</a>
-            </p>
-            <p style="margin-top: 20px; color: #999; font-size: 0.9em;">
-                © 2024-2025 Actu & Média - Tous droits réservés
-            </p>
-            <p style="margin-top: 15px; color: #999; font-size: 0.85em;">
-                JHD Player Pro est un lecteur multimédia légal. L'utilisateur est responsable du contenu qu'il choisit de lire.
-            </p>
-        </footer>
-    </div>
-	<script>
-function showJhdInfo() {
-    alert(
-        "JHD Player Pro sera bientôt disponible en téléchargement.\n\n" +
-        "Le logiciel est encore en phase de tests sur quelques machines.\n" +
-        "Si vous êtes intéressé pour le tester ou être prévenu de la sortie,\n" +
-        "contactez-moi via le site Actu & Média."
-    );
-    return false; // empêche le lien de naviguer
-}
-</script>
+        <!-- Bouton Retour à l'accueil (en bas) -->
+        <div class="back-home-btn-container back-home-btn-bottom">
+            <a href="https://actuetmedia.fr/" class="back-home-btn">
+                <span style="font-size: 1.2em;">🏠</span>
+                Retour à l'accueil
+            </a>
+        </div>
 
+        <!-- Footer -->
+<footer>
+    <div style="max-width: 800px; margin: 0 auto;">
+        <!-- Titre principal -->
+        <p style="font-size: 1.3em; margin-bottom: 10px;">
+            <strong style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                JHD Player Pro
+            </strong>
+        </p>
+        <p style="color: #666; margin-bottom: 30px; font-size: 1.05em;">
+            Un projet de <a href="https://actuetmedia.fr" target="_blank" style="color: #667eea; text-decoration: none; font-weight: bold;">Actu & Média</a>
+        </p>
+        
+        <!-- Liens principaux avec style -->
+        <div style="
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 30px 0;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-radius: 15px;
+        ">
+            <a href="https://actuetmedia.fr" target="_blank" style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: #667eea;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 1em;
+                transition: all 0.3s ease;
+            " onmouseover="this.style.transform='translateY(-2px)'; this.style.color='#764ba2'" onmouseout="this.style.transform='translateY(0)'; this.style.color='#667eea'">
+                <span style="font-size: 1.3em;">🏠</span>
+                <span>Accueil</span>
+            </a>
+            
+            <a href="mailto:contact@actuetmedia.fr" style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: #667eea;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 1em;
+                transition: all 0.3s ease;
+            " onmouseover="this.style.transform='translateY(-2px)'; this.style.color='#764ba2'" onmouseout="this.style.transform='translateY(0)'; this.style.color='#667eea'">
+                <span style="font-size: 1.3em;">✉️</span>
+                <span>Contact</span>
+            </a>
+            
+            <a href="https://fr.tipeee.com/actuetmedia" target="_blank" style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: #667eea;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 1em;
+                transition: all 0.3s ease;
+            " onmouseover="this.style.transform='translateY(-2px)'; this.style.color='#764ba2'" onmouseout="this.style.transform='translateY(0)'; this.style.color='#667eea'">
+                <span style="font-size: 1.3em;">💝</span>
+                <span>Faire un don</span>
+            </a>
+        </div>
+        
+        <!-- Texte développé avec amour -->
+        <p style="color: #666; margin: 20px 0; font-size: 1em;">
+            Développé avec <span style="color: #e74c3c; font-size: 1.2em;">❤️</span> pour la communauté de Montceau-les-Mines
+        </p>
+        
+        <!-- Copyright -->
+        <p style="margin-top: 25px; color: #999; font-size: 0.9em;">
+            © 2024-2025 Actu & Média - Tous droits réservés
+        </p>
+        
+        <!-- Disclaimer légal -->
+        <p style="
+            margin-top: 20px;
+            padding: 15px 20px;
+            background: rgba(255, 152, 0, 0.1);
+            border-radius: 10px;
+            color: #666;
+            font-size: 0.85em;
+            line-height: 1.6;
+        ">
+            ⚖️ JHD Player Pro est un lecteur multimédia légal. L'utilisateur est seul responsable du contenu qu'il choisit de lire.
+        </p>
+    </div>
+</footer>
+    </div>
+    
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script>
+        function showJhdInfo() {
+            alert(
+                "JHD Player Pro sera bientôt disponible en téléchargement.\n\n" +
+                "Le logiciel est encore en phase de tests sur plusieurs configurations.\n\n" +
+                "Restez connecté sur Actu&Média pour être informé de sa sortie officielle !\n\n" +
+                "Merci de votre patience ! 🎬"
+            );
+        }
+    </script>
 </body>
 </html>
