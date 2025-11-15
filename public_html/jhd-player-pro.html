@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JHD Player Pro - Lecteur multimédia avancé et gratuit</title>
-    <meta name="description" content="Découvrez JHD Player Pro, le lecteur multimédia avancé gratuit et open-source pour vos contenus streaming. Développé bénévolement par Actu&Média.">
-    <meta name="keywords" content="lecteur multimédia, player, streaming, gratuit, open source, Windows, M3U, EPG">
+    <meta name="description" content="Découvrez JHD Player Pro, le lecteur multimédia avancé gratuit pour vos contenus streaming. Développé bénévolement par Actu&Média.">
+	<meta name="keywords" content="lecteur multimédia, player, streaming, gratuit, Windows, M3U, EPG">
     <meta name="author" content="Actu & Média">
     
     <!-- Open Graph -->
     <meta property="og:title" content="JHD Player Pro - Lecteur multimédia avancé">
-    <meta property="og:description" content="Lecteur multimédia complet et gratuit pour Windows. 100% gratuit, sans publicité, open source.">
+    <meta property="og:description" content="Lecteur multimédia complet et gratuit pour Windows. 100% gratuit, sans publicité.">
     <meta property="og:url" content="https://actuetmedia.fr/jhd-player-pro.html">
     <meta property="og:type" content="website">
     
@@ -423,10 +423,10 @@
             <div class="version">Version 1.1</div>
             
             <div class="badges">
-                <span class="badge free">✅ 100% Gratuit</span>
-                <span class="badge opensource">🔓 Open Source</span>
-                <span class="badge benevolat">❤️ Développé bénévolement</span>
-            </div>
+		<span class="badge free">✅ 100% Gratuit</span>
+		<span class="badge benevolat">❤️ Développé bénévolement</span>
+			</div>
+
         </div>
 
         <!-- Disclaimer Légal -->
@@ -614,14 +614,15 @@
             </div>
             
             <div class="download-buttons">
-                <a href="#" class="btn btn-primary" onclick="alert('Lien de téléchargement à venir prochainement !'); return false;">
-                    <span style="font-size: 1.5em;">⬇️</span>
-                    Télécharger pour Windows
-                </a>
-                <a href="#" class="btn btn-secondary" onclick="alert('Lien GitHub à venir prochainement !'); return false;">
-                    <span style="font-size: 1.5em;">📂</span>
-                    Voir sur GitHub
-                </a>
+    <a href="#" class="btn btn-primary" onclick="return showJhdInfo();">
+        <span style="font-size: 1.5em;">⬇️</span>
+        Télécharger pour Windows
+    </a>
+				<p style="margin-top: 10px; font-size: 0.9em; opacity: 0.8;">
+				⚖️ JHD Player Pro est un logiciel gratuit mais non libre de droit.
+				La redistribution de l'installateur en dehors du site officiel
+				<strong>Actu & Média</strong> est interdite sans autorisation préalable.
+			</p>
             </div>
             <p style="margin-top: 30px; font-size: 0.95em; opacity: 0.8;">
                 🔒 Téléchargement sécurisé et sans virus • Windows 10/11 • Version 1.1
@@ -635,10 +636,11 @@
                 Cette application est développée <strong>bénévolement</strong> depuis <strong>plus de 8 mois</strong> par Hervé, développeur passionné et créateur d'<a href="https://actuetmedia.fr" target="_blank">Actu&Média</a>.
             </p>
             <div class="highlight">
-                <p style="margin: 0; font-size: 1.1em;">
-                    🎁 <strong>100% gratuit</strong> • ❌ <strong>Sans publicité</strong> • 🔓 <strong>Open Source</strong>
-                </p>
-            </div>
+			<p style="margin: 0; font-size: 1.1em;">
+				🎁 <strong>100% gratuit</strong> • ❌ <strong>Sans publicité</strong> • ❤️ <strong>Projet bénévole</strong>
+			</p>
+		</div>
+
             <p style="margin-top: 20px;">
                 Le développement de cette application représente des <strong>centaines d'heures de travail</strong>. Si vous appréciez ce projet et souhaitez soutenir son évolution future, vos dons sont les bienvenus !
             </p>
@@ -683,5 +685,17 @@
             </p>
         </footer>
     </div>
+	<script>
+function showJhdInfo() {
+    alert(
+        "JHD Player Pro sera bientôt disponible en téléchargement.\n\n" +
+        "Le logiciel est encore en phase de tests sur quelques machines.\n" +
+        "Si vous êtes intéressé pour le tester ou être prévenu de la sortie,\n" +
+        "contactez-moi via le site Actu & Média."
+    );
+    return false; // empêche le lien de naviguer
+}
+</script>
+
 </body>
 </html>
