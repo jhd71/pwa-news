@@ -1305,5 +1305,113 @@ Actu & Média
             }
         });
     </script>
+	<!-- POPUP JHD PLAYER PRO -->
+<div id="jhdPopup" style="
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    max-width: 350px;
+    z-index: 9999;
+    display: none;
+    animation: slideUp 0.5s ease;
+">
+    <!-- Bouton fermer -->
+    <button onclick="document.getElementById('jhdPopup').style.display='none'" style="
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        font-size: 1.5em;
+        cursor: pointer;
+        color: #999;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+    ">×</button>
+    
+    <!-- Contenu -->
+    <div style="text-align: center; margin-bottom: 15px; font-size: 3em;">
+        🎬
+    </div>
+    <div style="text-align: center; margin-bottom: 10px;">
+        <div style="font-size: 1.3em; font-weight: bold; color: #333; margin-bottom: 5px;">
+            Découvrez JHD Player Pro
+        </div>
+        <div style="font-size: 0.95em; color: #666; line-height: 1.5;">
+            Notre lecteur multimédia gratuit et open source
+        </div>
+    </div>
+    
+    <!-- Badges -->
+    <div style="display: flex; justify-content: center; gap: 8px; margin: 15px 0; flex-wrap: wrap;">
+        <span style="background: #4CAF50; color: white; padding: 4px 10px; border-radius: 15px; font-size: 0.8em;">✅ Gratuit</span>
+        <span style="background: #2196F3; color: white; padding: 4px 10px; border-radius: 15px; font-size: 0.8em;">🔓 Open Source</span>
+    </div>
+    
+    <!-- Disclaimer -->
+    <div style="
+        background: #fff3cd;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 0.75em;
+        color: #856404;
+        margin: 12px 0;
+        border-left: 3px solid #ff9800;
+    ">
+        ⚠️ Lecteur uniquement • Aucun contenu fourni
+    </div>
+    
+    <!-- Bouton -->
+    <a href="jhd-player-pro.html" style="
+        display: block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 12px 25px;
+        border-radius: 25px;
+        text-align: center;
+        text-decoration: none;
+        font-weight: bold;
+        margin-top: 15px;
+        transition: transform 0.3s ease;
+    " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        En savoir plus →
+    </a>
+</div>
+
+<style>
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+
+<script>
+// Afficher le popup après 30 secondes
+setTimeout(function() {
+    // Vérifier si l'utilisateur n'a pas déjà fermé le popup aujourd'hui
+    const popupClosed = localStorage.getItem('jhdPopupClosed');
+    const today = new Date().toDateString();
+    
+    if (popupClosed !== today) {
+        document.getElementById('jhdPopup').style.display = 'block';
+    }
+}, 30000); // 30 secondes
+
+// Sauvegarder la fermeture du popup
+document.getElementById('jhdPopup').querySelector('button').addEventListener('click', function() {
+    localStorage.setItem('jhdPopupClosed', new Date().toDateString());
+});
+</script>
 </body>
 </html>
