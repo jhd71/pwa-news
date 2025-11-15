@@ -388,7 +388,20 @@ const annoncesTile = {
 const annoncesTileElement = this.createTile(annoncesTile);
 this.tileContainer.appendChild(annoncesTileElement);
 
-// SÉPARATEUR JEUX
+// ✨ NOUVELLE TUILE JHD PLAYER PRO DANS ESPACE+ ✨
+const jhdPlayerTile = {
+    title: "🎬 JHD Player Pro",
+    url: "jhd-player-pro.html",
+    mobileUrl: "jhd-player-pro.html",
+    isDefault: true,
+    category: "apps",
+    specialStyle: 'jhd-player'
+};
+
+const jhdPlayerTileElement = this.createTile(jhdPlayerTile);
+this.tileContainer.appendChild(jhdPlayerTileElement);
+
+// SÉPARATEUR JEUX (ligne suivante existante)
 const separatorGames = document.createElement('div');
 separatorGames.className = 'separator';
 separatorGames.innerHTML = `<h2 class="separator-text">🎮 Jeux</h2>`;

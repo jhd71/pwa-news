@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JHD Player Pro - Lecteur multimédia avancé et gratuit</title>
+    <meta name="description" content="Découvrez JHD Player Pro, le lecteur multimédia avancé gratuit et open-source pour vos contenus streaming. Développé bénévolement par Actu&Média.">
+    <meta name="keywords" content="lecteur multimédia, player, streaming, gratuit, open source, Windows, M3U, EPG">
+    <meta name="author" content="Actu & Média">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="JHD Player Pro - Lecteur multimédia avancé">
+    <meta property="og:description" content="Lecteur multimédia complet et gratuit pour Windows. 100% gratuit, sans publicité, open source.">
+    <meta property="og:url" content="https://actuetmedia.fr/jhd-player-pro.html">
+    <meta property="og:type" content="website">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header avec animation */
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .tagline {
+            font-size: 1.5em;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .hero .version {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        /* Badges */
+        .badges {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .badge.free {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .badge.opensource {
+            background: #2196F3;
+            color: white;
+        }
+
+        .badge.benevolat {
+            background: #FF9800;
+            color: white;
+        }
+
+        /* Disclaimer légal */
+        .legal-disclaimer {
+            background: #fff3cd;
+            border-left: 5px solid #ff9800;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .legal-disclaimer h3 {
+            color: #ff9800;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .legal-disclaimer ul {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+        }
+
+        .legal-disclaimer li {
+            padding: 8px 0;
+            line-height: 1.8;
+        }
+
+        .legal-disclaimer strong {
+            color: #333;
+        }
+
+        .legal-disclaimer .important {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255, 152, 0, 0.1);
+            border-radius: 5px;
+            font-weight: bold;
+            color: #d32f2f;
+        }
+
+        /* Section principale */
+        .main-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section h2 {
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            color: #667eea;
+            border-left: 5px solid #667eea;
+            padding-left: 20px;
+        }
+
+        /* Grille de fonctionnalités */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            border-color: #667eea;
+        }
+
+        .feature-card .icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        /* Thèmes */
+        .themes {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .theme-preview {
+            width: 150px;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .theme-preview:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-rouge { background: linear-gradient(135deg, #940000 0%, #710000 100%); }
+        .theme-rouge-sang { background: linear-gradient(135deg, #8B0000 0%, #600000 100%); }
+        .theme-dark { background: linear-gradient(135deg, #2c3e50 0%, #1a1a1a 100%); }
+        .theme-bleuciel { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .theme-light { background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%); color: #333; }
+
+        /* Spécifications techniques */
+        .tech-specs {
+            background: #f5f7fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .tech-item h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .tech-item p {
+            margin: 5px 0;
+        }
+
+        /* Box de téléchargement */
+        .download-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin: 40px 0;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .download-box h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .download-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 18px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #667eea;
+            transform: translateY(-5px);
+        }
+
+        /* Box de don */
+        .donation-box {
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            color: white;
+            padding: 50px 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin: 40px 0;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .donation-box h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .donation-box p {
+            font-size: 1.1em;
+            margin: 15px 0;
+            line-height: 1.8;
+        }
+
+        .donation-box a {
+            color: #6879e2;
+        }
+
+        .highlight {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .donation-box ul {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+            max-width: 500px;
+            margin: 20px auto;
+        }
+
+        .donation-box li {
+            padding: 8px 0;
+            font-size: 1.05em;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 20px;
+            margin-top: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        footer a {
+            color: #667eea;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2em;
+            }
+
+            .hero .tagline {
+                font-size: 1.1em;
+            }
+
+            .section h2 {
+                font-size: 1.6em;
+            }
+
+            .download-box h2,
+            .donation-box h2 {
+                font-size: 1.8em;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1>🎬 JHD Player Pro</h1>
+            <p class="tagline">Lecteur multimédia avancé • Gratuit • Sans publicité</p>
+            <div class="version">Version 1.1</div>
+            
+            <div class="badges">
+                <span class="badge free">✅ 100% Gratuit</span>
+                <span class="badge opensource">🔓 Open Source</span>
+                <span class="badge benevolat">❤️ Développé bénévolement</span>
+            </div>
+        </div>
+
+        <!-- Disclaimer Légal -->
+        <div class="legal-disclaimer">
+            <h3>⚠️ Avertissement Important - Légalité et Utilisation</h3>
+            
+            <p><strong>JHD Player Pro est un lecteur multimédia uniquement.</strong></p>
+            
+            <ul>
+                <li>✅ <strong>L'application est 100% légale</strong> - C'est un simple lecteur vidéo</li>
+                <li>❌ <strong>Nous ne fournissons AUCUN contenu de streaming</strong></li>
+                <li>❌ <strong>Nous ne fournissons AUCUN serveur</strong></li>
+                <li>❌ <strong>Nous ne fournissons AUCUN abonnement</strong></li>
+                <li>🔑 <strong>Vous devez avoir vos propres sources de contenu légales</strong></li>
+            </ul>
+            
+            <p style="margin-top: 15px;"><strong>Responsabilité de l'utilisateur :</strong></p>
+            <ul>
+                <li>• Vous êtes seul responsable du contenu que vous regardez</li>
+                <li>• Vous devez respecter les droits d'auteur et les lois de votre pays</li>
+                <li>• L'utilisation de contenu illégal est strictement interdite</li>
+                <li>• Le développeur ne peut être tenu responsable de l'utilisation de contenu illégal</li>
+            </ul>
+            
+            <p class="important">
+                ⚖️ Cette application est comme VLC, Windows Media Player ou tout autre lecteur multimédia : 
+                c'est un OUTIL LÉGAL pour lire du contenu dont VOUS êtes responsable.
+            </p>
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="main-content">
+            <!-- Fonctionnalités principales -->
+            <div class="section">
+                <h2>✨ Fonctionnalités Principales</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="icon">📺</div>
+                        <h3>Lecture TV Direct</h3>
+                        <p>Regardez vos chaînes en direct avec guide TV (EPG) intégré. Navigation fluide et intuitive.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="icon">🎬</div>
+                        <h3>Films & Séries</h3>
+                        <p>Bibliothèque complète avec métadonnées, affiches, synopsis et notes. Interface style Netflix.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="icon">📥</div>
+                        <h3>Téléchargement</h3>
+                        <p>Téléchargez vos contenus pour les regarder hors ligne. Gestion de file d'attente intégrée.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="icon">⏺️</div>
+                        <h3>Enregistrement Live</h3>
+                        <p>Enregistrez vos émissions préférées. Planificateur d'enregistrements automatiques inclus.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="icon">📡</div>
+                        <h3>Google Cast</h3>
+                        <p>Diffusez votre contenu sur votre TV via Chromecast. Contrôle depuis l'application.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="icon">🎨</div>
+                        <h3>5 Thèmes Élégants</h3>
+                        <p>Rouge, Rouge Sang, Dark, Bleu Ciel, Light. Changez de thème instantanément.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="icon">⭐</div>
+                        <h3>Favoris & Historique</h3>
+                        <p>Marquez vos contenus préférés. Retrouvez facilement ce que vous avez regardé récemment.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="icon">🔍</div>
+                        <h3>Recherche Puissante</h3>
+                        <p>Trouvez instantanément ce que vous cherchez. Recherche en temps réel.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="icon">🖥️</div>
+                        <h3>System Tray</h3>
+                        <p>Continuez vos téléchargements ou enregistrements en arrière-plan.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="icon">🌐</div>
+                        <h3>Multi-sources</h3>
+                        <p>Gérez plusieurs sources de streaming différentes. Basculez facilement entre vos connexions.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="icon">🔐</div>
+                        <h3>Sécurité & Vie Privée</h3>
+                        <p>Aucune collecte de données. Aucune publicité. Votre vie privée est respectée à 100%.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="icon">🚀</div>
+                        <h3>Performance</h3>
+                        <p>Application rapide et légère. Consommation minimale de ressources. Lecture fluide garantie.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thèmes -->
+            <div class="section">
+                <h2>🎨 5 Thèmes Élégants</h2>
+                <p style="font-size: 1.1em; color: #666; margin-bottom: 20px;">Personnalisez votre expérience avec nos 5 thèmes soigneusement conçus :</p>
+                <div class="themes">
+                    <div class="theme-preview theme-rouge">
+                        <div style="font-size: 2em; margin-bottom: 10px;">🔴</div>
+                        <div>Rouge Passion</div>
+                    </div>
+                    <div class="theme-preview theme-rouge-sang">
+                        <div style="font-size: 2em; margin-bottom: 10px;">🩸</div>
+                        <div>Rouge Sang</div>
+                    </div>
+                    <div class="theme-preview theme-dark">
+                        <div style="font-size: 2em; margin-bottom: 10px;">🌙</div>
+                        <div>Dark Mode</div>
+                    </div>
+                    <div class="theme-preview theme-bleuciel">
+                        <div style="font-size: 2em; margin-bottom: 10px;">🌊</div>
+                        <div>Bleu Ciel</div>
+                    </div>
+                    <div class="theme-preview theme-light">
+                        <div style="font-size: 2em; margin-bottom: 10px;">☀️</div>
+                        <div>Light Mode</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spécifications Techniques -->
+            <div class="section">
+                <h2>⚙️ Spécifications Techniques</h2>
+                <div class="tech-specs">
+                    <div class="tech-grid">
+                        <div class="tech-item">
+                            <h4>💻 Système</h4>
+                            <p><strong>Plateforme :</strong> Windows 10/11</p>
+                            <p><strong>Architecture :</strong> x64</p>
+                            <p><strong>Taille :</strong> ~150 MB</p>
+                        </div>
+                        <div class="tech-item">
+                            <h4>🛠️ Technologies</h4>
+                            <p><strong>Framework :</strong> Electron</p>
+                            <p><strong>Backend :</strong> Node.js</p>
+                            <p><strong>Frontend :</strong> HTML5/CSS3/JS</p>
+                        </div>
+                        <div class="tech-item">
+                            <h4>📦 Formats Supportés</h4>
+                            <p><strong>Playlists :</strong> M3U, M3U8</p>
+                            <p><strong>Vidéo :</strong> MP4, MKV, AVI</p>
+                            <p><strong>Protocoles :</strong> HLS, RTMP, HTTP</p>
+                            <p><strong>API :</strong> Support connexions serveurs</p>
+                        </div>
+                        <div class="tech-item">
+                            <h4>🎯 Prérequis</h4>
+                            <p><strong>RAM :</strong> 4 GB minimum</p>
+                            <p><strong>Espace :</strong> 500 MB libre</p>
+                            <p><strong>Connexion :</strong> Internet requis</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Box de téléchargement -->
+        <div class="download-box">
+            <h2>📥 Téléchargez JHD Player Pro</h2>
+            <p style="font-size: 1.2em; opacity: 0.95; margin-bottom: 20px;">
+                Profitez dès maintenant de toutes ces fonctionnalités gratuitement !
+            </p>
+            
+            <div style="background: rgba(255, 255, 255, 0.15); padding: 15px; border-radius: 10px; margin: 20px auto; max-width: 700px; font-size: 0.9em;">
+                <strong>⚠️ Important :</strong> JHD Player Pro est un lecteur multimédia uniquement (comme VLC). 
+                Nous ne fournissons AUCUN contenu ni serveur. Vous devez avoir vos propres sources de contenu légales. 
+                Vous êtes seul responsable du contenu que vous regardez.
+            </div>
+            
+            <div class="download-buttons">
+                <a href="#" class="btn btn-primary" onclick="alert('Lien de téléchargement à venir prochainement !'); return false;">
+                    <span style="font-size: 1.5em;">⬇️</span>
+                    Télécharger pour Windows
+                </a>
+                <a href="#" class="btn btn-secondary" onclick="alert('Lien GitHub à venir prochainement !'); return false;">
+                    <span style="font-size: 1.5em;">📂</span>
+                    Voir sur GitHub
+                </a>
+            </div>
+            <p style="margin-top: 30px; font-size: 0.95em; opacity: 0.8;">
+                🔒 Téléchargement sécurisé et sans virus • Windows 10/11 • Version 1.1
+            </p>
+        </div>
+
+        <!-- Box de don -->
+        <div class="donation-box">
+            <h2>❤️ Soutenez le Développement</h2>
+            <p>
+                Cette application est développée <strong>bénévolement</strong> depuis <strong>plus de 8 mois</strong> par Hervé, développeur passionné et créateur d'<a href="https://actuetmedia.fr" target="_blank">Actu&Média</a>.
+            </p>
+            <div class="highlight">
+                <p style="margin: 0; font-size: 1.1em;">
+                    🎁 <strong>100% gratuit</strong> • ❌ <strong>Sans publicité</strong> • 🔓 <strong>Open Source</strong>
+                </p>
+            </div>
+            <p style="margin-top: 20px;">
+                Le développement de cette application représente des <strong>centaines d'heures de travail</strong>. Si vous appréciez ce projet et souhaitez soutenir son évolution future, vos dons sont les bienvenus !
+            </p>
+            <p style="font-size: 1.1em; margin-top: 20px;">
+                <strong>Vos dons permettront :</strong>
+            </p>
+            <ul style="list-style: none; padding: 0; font-size: 1.05em; margin-top: 15px; text-align: center;">
+                <li>✅ D'ajouter de nouvelles fonctionnalités</li>
+                <li>✅ D'améliorer les performances</li>
+                <li>✅ De corriger les bugs rapidement</li>
+                <li>✅ De maintenir le projet à jour</li>
+                <li>✅ De développer d'autres projets gratuits</li>
+            </ul>
+            <div class="download-buttons" style="margin-top: 30px;">
+                <a href="https://fr.tipeee.com/actuetmedia" class="btn btn-primary" target="_blank">
+                    <span style="font-size: 1.5em;">💝</span>
+                    Faire un Don sur Tipeee
+                </a>
+            </div>
+            <p style="margin-top: 20px; font-size: 0.95em; opacity: 0.9;">
+                Chaque don, même modeste, est une immense motivation ! Merci du fond du cœur ! 🙏
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p style="font-size: 1.2em; margin-bottom: 15px;"><strong>JHD Player Pro</strong> - Un projet de <a href="https://actuetmedia.fr" target="_blank">Actu & Média</a></p>
+            <p>Développé avec ❤️ pour la communauté</p>
+            <p style="margin-top: 20px;">
+                <a href="https://actuetmedia.fr" target="_blank">🌐 Retour au site principal</a> • 
+                <a href="mailto:contact@actuetmedia.fr" class="contact-link">
+          <i class="fas fa-envelope"></i>
+          <span>contact@actuetmedia.fr</span>
+        </a> • 
+                <a href="https://fr.tipeee.com/actuetmedia" target="_blank">💝 Faire un don</a>
+            </p>
+            <p style="margin-top: 20px; color: #999; font-size: 0.9em;">
+                © 2024-2025 Actu & Média - Tous droits réservés
+            </p>
+            <p style="margin-top: 15px; color: #999; font-size: 0.85em;">
+                JHD Player Pro est un lecteur multimédia légal. L'utilisateur est responsable du contenu qu'il choisit de lire.
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
