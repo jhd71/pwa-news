@@ -17,6 +17,706 @@
         animation: none !important;
     }
 </style>
+
+<!-- 🎨 CSS MODERNE INTÉGRÉ - DESIGN 2025 -->
+<style>
+/* ================================
+   🌟 DESIGN MODERNE - GLASSMORPHISM
+   ================================ */
+
+/* Animation de fade-in au chargement */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Animation de spin pour le loading */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Animation de pulse douce */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+/* ================================
+   🎯 HEADER MODERNISÉ
+   ================================ */
+.app-header {
+    background: linear-gradient(135deg, rgba(148, 0, 0, 0.95) 0%, rgba(89, 0, 0, 0.95) 100%);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 15px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    animation: fadeIn 0.6s ease-out;
+}
+
+.site-title {
+    font-size: 1.8rem;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.menu-button,
+.settings-button {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.menu-button:hover,
+.settings-button:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+}
+
+/* ================================
+   🎪 SWIPER CAROUSEL MODERNE
+   ================================ */
+.swiper-container {
+    margin: 20px auto;
+    max-width: 1200px;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.swiper-slide {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.4) 100%);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    overflow: hidden;
+    position: relative;
+}
+
+.swiper-slide::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.6) 100%);
+    pointer-events: none;
+}
+
+.slide-content {
+    position: relative;
+    z-index: 1;
+    padding: 40px;
+}
+
+.slide-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    line-height: 1.3;
+}
+
+.slide-description {
+    font-size: 1.1rem;
+    opacity: 0.95;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    line-height: 1.6;
+}
+
+.swiper-pagination-bullet {
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 1;
+    transition: all 0.3s ease;
+}
+
+.swiper-pagination-bullet-active {
+    background: white;
+    width: 30px;
+    border-radius: 10px;
+}
+
+/* ================================
+   📰 WIDGETS ROW MODERNE
+   ================================ */
+.widgets-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 15px;
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+.news-widget-container,
+.cinema-widget-container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.news-widget-container:hover,
+.cinema-widget-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.local-news-widget,
+.cinema-widget {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.news-widget-header,
+.cinema-widget-header {
+    background: linear-gradient(135deg, rgba(148, 0, 0, 0.9) 0%, rgba(89, 0, 0, 0.9) 100%);
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.header-btn,
+.submit-news-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.header-btn:hover,
+.submit-news-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+}
+
+.header-widgets {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.weather-temp,
+.visitors-counter,
+.news-widget-clock {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    padding: 10px 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.weather-temp:hover,
+.visitors-counter:hover,
+.news-widget-clock:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+.temp-value,
+.visitors-count,
+.clock-time {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.temp-label,
+.visitors-label,
+.clock-date {
+    font-size: 0.75rem;
+    opacity: 0.9;
+    color: white;
+}
+
+.news-widget-preview,
+.cinema-widget-preview {
+    padding: 20px;
+    min-height: 150px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.news-widget-footer,
+.cinema-widget-footer {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.news-widget-tap,
+.cinema-widget-tap {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.saint-widget-footer {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.saint-widget-footer:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
+}
+
+/* ================================
+   📝 SECTION SEO MODERNE
+   ================================ */
+.seo-section {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 40px;
+    background: linear-gradient(135deg, rgba(148, 0, 0, 0.15) 0%, rgba(89, 0, 0, 0.15) 100%);
+    backdrop-filter: blur(30px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+    animation: fadeInUp 0.8s ease-out 0.6s both;
+}
+
+.seo-section h2 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: #ffffff !important;
+    text-shadow: 0 3px 15px rgba(0, 0, 0, 0.4);
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.seo-section p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 15px;
+    color: #ffffff !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.seo-section strong {
+    font-weight: 700;
+    color: #ffffff;
+}
+
+/* ================================
+   🎯 TUILES (TILES) MODERNISÉES
+   ================================ */
+.tile-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 15px;
+    animation: fadeInUp 0.8s ease-out 0.8s both;
+}
+
+.tile-container.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+/* Effet glassmorphism sur les tuiles */
+main .tile {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+main .tile:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.25);
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.15) !important;
+}
+
+main .tile .tile-icon {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    transition: all 0.3s ease;
+}
+
+main .tile:hover .tile-icon {
+    transform: scale(1.1) rotate(-5deg);
+}
+
+main .tile .tile-label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* ================================
+   🎪 TICKER MODERNE
+   ================================ */
+.news-ticker {
+    background: linear-gradient(135deg, rgba(148, 0, 0, 0.95) 0%, rgba(89, 0, 0, 0.95) 100%);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.2);
+    animation: slideInRight 0.8s ease-out 1s both;
+}
+
+/* ================================
+   🔘 BOTTOM NAV MODERNE
+   ================================ */
+.bottom-nav {
+    background: linear-gradient(135deg, rgba(20, 20, 20, 0.95) 0%, rgba(10, 10, 10, 0.95) 100%);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3);
+    padding: 10px 0;
+}
+
+.nav-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-3px);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav-item .material-icons {
+    transition: all 0.3s ease;
+}
+
+.nav-item:hover .material-icons {
+    transform: scale(1.1);
+}
+
+/* ================================
+   🎨 SIDEBAR MODERNE
+   ================================ */
+.sidebar {
+    background: linear-gradient(135deg, rgba(20, 20, 20, 0.98) 0%, rgba(10, 10, 10, 0.98) 100%);
+    backdrop-filter: blur(30px);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 4px 0 40px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-header {
+    background: linear-gradient(135deg, rgba(148, 0, 0, 0.9) 0%, rgba(89, 0, 0, 0.9) 100%);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.menu-item a,
+.menu-item button {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    margin: 5px 10px;
+    padding: 12px 15px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.menu-item a:hover,
+.menu-item button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(5px);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ================================
+   🌟 BOUTONS FLOTTANTS MODERNES
+   ================================ */
+.tool-button,
+.search-button,
+.weather-show-btn,
+.quick-links-show-btn {
+    background: linear-gradient(135deg, rgba(148, 0, 0, 0.95) 0%, rgba(89, 0, 0, 0.95) 100%);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tool-button:hover,
+.search-button:hover,
+.weather-show-btn:hover,
+.quick-links-show-btn:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 15px 45px rgba(148, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* ================================
+   📱 RESPONSIVE MODERNE
+   ================================ */
+@media (max-width: 768px) {
+    .seo-section {
+        padding: 25px 20px;
+        margin: 20px 15px;
+    }
+    
+    .seo-section h2 {
+        font-size: 1.6rem;
+    }
+    
+    .seo-section p {
+        font-size: 1rem;
+    }
+    
+    .widgets-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .news-widget-header,
+    .cinema-widget-header {
+        padding: 15px;
+    }
+    
+    .header-widgets {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+/* ================================
+   🎭 EFFETS SPÉCIAUX
+   ================================ */
+
+/* Effet de brillance au survol */
+.tile::before,
+.news-widget-container::before,
+.cinema-widget-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.tile:hover::before,
+.news-widget-container:hover::before,
+.cinema-widget-container:hover::before {
+    left: 100%;
+}
+
+/* Effet de pulse sur les notifications */
+@keyframes pulse-notification {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+.chat-notification-badge {
+    animation: pulse-notification 2s infinite;
+}
+
+/* Transition douce pour tous les éléments interactifs */
+* {
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Scrollbar moderne */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(148, 0, 0, 0.6);
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 0, 0, 0.8);
+}
+
+/* ================================
+   🌙 THÈME SOMBRE AMÉLIORÉ
+   ================================ */
+[data-theme="dark"] .seo-section {
+    background: linear-gradient(135deg, rgba(50, 50, 50, 0.5) 0%, rgba(30, 30, 30, 0.5) 100%);
+}
+
+[data-theme="dark"] .news-widget-container,
+[data-theme="dark"] .cinema-widget-container {
+    background: rgba(30, 30, 30, 0.6);
+}
+
+[data-theme="dark"] main .tile {
+    background: rgba(40, 40, 40, 0.6) !important;
+}
+
+[data-theme="dark"] main .tile:hover {
+    background: rgba(50, 50, 50, 0.7) !important;
+}
+
+/* ================================
+   ✨ ANIMATIONS D'ENTRÉE SÉQUENTIELLES
+   ================================ */
+.tile-container .tile {
+    animation: fadeInUp 0.6s ease-out both;
+}
+
+.tile-container .tile:nth-child(1) { animation-delay: 0.1s; }
+.tile-container .tile:nth-child(2) { animation-delay: 0.15s; }
+.tile-container .tile:nth-child(3) { animation-delay: 0.2s; }
+.tile-container .tile:nth-child(4) { animation-delay: 0.25s; }
+.tile-container .tile:nth-child(5) { animation-delay: 0.3s; }
+.tile-container .tile:nth-child(6) { animation-delay: 0.35s; }
+.tile-container .tile:nth-child(7) { animation-delay: 0.4s; }
+.tile-container .tile:nth-child(8) { animation-delay: 0.45s; }
+
+/* ================================
+   🎨 BOUTON MODERNE "INFOS EN DIRECT"
+   ================================ */
+.news-button {
+    background: linear-gradient(135deg, rgba(148, 0, 0, 0.95) 0%, rgba(89, 0, 0, 0.95) 100%);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 32px rgba(148, 0, 0, 0.3);
+}
+
+.news-button:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 15px 45px rgba(148, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.news-button .material-icons {
+    font-size: 1.5rem;
+}
+
+/* ================================
+   🎯 QUICK LINKS ET WEATHER SIDEBAR
+   ================================ */
+.quick-links-sidebar,
+.weather-sidebar {
+    background: linear-gradient(135deg, rgba(20, 20, 20, 0.98) 0%, rgba(10, 10, 10, 0.98) 100%);
+    backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+}
+
+.quick-link {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.quick-link:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-3px);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.emergency-link {
+    background: rgba(255, 50, 50, 0.2);
+    border-color: rgba(255, 50, 50, 0.3);
+}
+
+.emergency-link:hover {
+    background: rgba(255, 50, 50, 0.3);
+    border-color: rgba(255, 50, 50, 0.5);
+}
+</style>
+
 <script>
     // Appliquer le thème sauvegardé dès le début du chargement
     (function() {
@@ -262,50 +962,6 @@
     border-color: #404040;
 }
 </style>
-
-<!-- ✅ AJOUTEZ CE CSS ICI -->
-    <style>
-    /* Texte SEO responsive et accessible */
-    .seo-section {
-      padding: 20px;
-      max-width: 1200px;
-      margin: 0 auto 20px;
-      text-align: center;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 12px;
-      backdrop-filter: blur(10px);
-    }
-
-    .seo-section h2 {
-      font-size: 1.8rem;
-      margin-bottom: 15px;
-      color: #ffffff !important;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    }
-
-    .seo-section p {
-      font-size: 1rem;
-      line-height: 1.6;
-      margin-bottom: 15px;
-      color: #ffffff !important;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-    }
-
-    @media (max-width: 768px) {
-      .seo-section {
-        padding: 15px;
-        margin-bottom: 15px;
-      }
-      
-      .seo-section h2 {
-        font-size: 1.3rem;
-      }
-      
-      .seo-section p {
-        font-size: 0.9rem;
-      }
-    }
-    </style>
  
   <!-- Google Cast SDK -->
 <!-- Charger Cast UNIQUEMENT sur Desktop/Android (pas iOS) -->
@@ -584,9 +1240,9 @@ Actu & Média
 
 <!-- ✅ TEXTE SEO ICI (version propre avec classe CSS) -->
 <section class="seo-section">
-  <h2>Actu & Média : L'information locale de Montceau-les-Mines</h2>
+  <h2>🌟 Actu & Média : Votre média local de Montceau-les-Mines</h2>
   
-  <p>Bienvenue sur Actu & Média, votre source d'<strong>actualités locales de Montceau-les-Mines</strong>, 
+  <p>Bienvenue sur <strong>Actu & Média</strong>, votre source d'<strong>actualités locales de Montceau-les-Mines</strong>, 
   du Creusot et de la Saône-et-Loire (71). Retrouvez chaque jour les dernières infos de votre région, 
   la météo locale, le programme du cinéma L'Embarcadère, des petites annonces gratuites et bien plus.</p>
   
@@ -799,320 +1455,256 @@ Actu & Média
         <div class="survey-options">
             <div class="survey-option" data-value="actualites_locales">
                 <div class="survey-option-icon">
-                    <span class="material-icons">article</span>
+                    <span class="material-icons">newspaper</span>
                 </div>
                 <span>Actualités locales</span>
             </div>
-            <div class="survey-option" data-value="evenements">
+            <div class="survey-option" data-value="meteo_sports">
                 <div class="survey-option-icon">
-                    <span class="material-icons">celebration</span>
+                    <span class="material-icons">cloud</span>
                 </div>
-                <span>Événements & sorties</span>
+                <span>Météo / Sports</span>
             </div>
-            <div class="survey-option" data-value="pratique">
+            <div class="survey-option" data-value="cinema_culture">
                 <div class="survey-option-icon">
-                    <span class="material-icons">lightbulb</span>
+                    <span class="material-icons">movie</span>
                 </div>
-                <span>Infos pratiques</span>
+                <span>Cinéma / Culture</span>
             </div>
-            <div class="survey-option" data-value="culture">
+            <div class="survey-option" data-value="radio_tv">
                 <div class="survey-option-icon">
-                    <span class="material-icons">theater_comedy</span>
+                    <span class="material-icons">radio</span>
                 </div>
-                <span>Culture & loisirs</span>
+                <span>Radio / TV</span>
             </div>
-            <div class="survey-option" data-value="meteo">
+            <div class="survey-option" data-value="outils_pratiques">
                 <div class="survey-option-icon">
-                    <span class="material-icons">wb_sunny</span>
+                    <span class="material-icons">build</span>
                 </div>
-                <span>Météo & services</span>
+                <span>Outils pratiques</span>
             </div>
-            <div class="survey-option" data-value="tout">
+            <div class="survey-option" data-value="chat_communaute">
                 <div class="survey-option-icon">
-                    <span class="material-icons">apps</span>
+                    <span class="material-icons">chat</span>
                 </div>
-                <span>Tout m'intéresse</span>
+                <span>Chat / Communauté</span>
             </div>
         </div>
     </div>
     
-    <!-- Question 3 : Recommandation -->
-    <div class="survey-question" data-question="recommandation">
-        <h3>Recommanderiez-vous Actu & Média à vos proches ?</h3>
-        <div class="survey-options">
-            <div class="survey-option" data-value="certainement">
+    <!-- Question 3 : Note globale -->
+    <div class="survey-question" data-question="satisfaction">
+        <h3>Comment évaluez-vous Actu & Média ?</h3>
+        <div class="survey-options rating-options">
+            <div class="survey-option" data-value="5">
                 <div class="survey-option-icon">
-                    <span class="material-icons">favorite</span>
+                    <span>⭐⭐⭐⭐⭐</span>
                 </div>
-                <span>Oui, certainement</span>
+                <span>Excellent</span>
             </div>
-            <div class="survey-option" data-value="probablement">
+            <div class="survey-option" data-value="4">
                 <div class="survey-option-icon">
-                    <span class="material-icons">thumb_up</span>
+                    <span>⭐⭐⭐⭐</span>
                 </div>
-                <span>Probablement oui</span>
+                <span>Très bien</span>
             </div>
-            <div class="survey-option" data-value="peut_etre">
+            <div class="survey-option" data-value="3">
                 <div class="survey-option-icon">
-                    <span class="material-icons">help_outline</span>
+                    <span>⭐⭐⭐</span>
                 </div>
-                <span>Peut-être</span>
+                <span>Bien</span>
             </div>
-            <div class="survey-option" data-value="probablement_pas">
+            <div class="survey-option" data-value="2">
                 <div class="survey-option-icon">
-                    <span class="material-icons">thumb_down</span>
+                    <span>⭐⭐</span>
                 </div>
-                <span>Probablement pas</span>
+                <span>Moyen</span>
             </div>
-            <div class="survey-option" data-value="non">
+            <div class="survey-option" data-value="1">
                 <div class="survey-option-icon">
-                    <span class="material-icons">cancel</span>
+                    <span>⭐</span>
                 </div>
-                <span>Non</span>
+                <span>À améliorer</span>
             </div>
         </div>
     </div>
     
-    <button class="survey-submit" id="surveySubmit">Envoyer mes réponses</button>
-</div>
-        
-        <!-- Message de remerciement et résultats -->
-        <div class="thank-you-message" id="thankYouMessage" style="display: none;">
-            <span class="thank-you-icon">🎉</span>
-            <h3>Merci pour votre participation !</h3>
-            <p>Votre avis nous aide à faire évoluer Actu & Média en 2025.</p>
-            
-            <div class="survey-results">
-                <h4>Résultats actuels du sondage</h4>
-                <div id="surveyResults">
-                    <!-- Les résultats seront injectés ici par JavaScript -->
-                </div>
-            </div>
-            
-            <button class="back-to-survey" id="closeSurveyAfterSubmit">Retour au site</button>
+    <!-- Question 4 : Commentaires libres -->
+    <div class="survey-question" data-question="commentaires">
+        <h3>Des suggestions pour nous améliorer ? (Optionnel)</h3>
+        <textarea 
+            id="surveyComments" 
+            class="survey-textarea" 
+            placeholder="Partagez vos idées, suggestions ou remarques..."
+            maxlength="500"
+        ></textarea>
+        <div class="char-counter">
+            <span id="charCount">0</span> / 500 caractères
         </div>
     </div>
-</div>
-
-<!-- Popup de don optimisée -->
-<div id="donationPopup" class="donation-overlay">
-  <div class="donation-popup">
-    <span id="donationClose" class="donation-close">×</span>
     
-    <div class="donation-header">
-      <span class="donation-emoji">🙏</span>
-      <h3>Soutenez Actu & Média</h3>
-    </div>
-    
-    <p><strong>Depuis 10 mois</strong>, ce site gratuit et sans pub informe quotidiennement Montceau-les-Mines et ses environs.</p>
-    
-    <p>✅ Sans publicité • ✅ 100% gratuit • ✅ Indépendant</p>
-    
-    <p>Votre contribution, <strong>même 1€</strong>, aide à maintenir ce service local gratuit.</p>
-    
-    <a href="https://fr.tipeee.com/actuetmedia" 
-       target="_blank" 
-       class="donation-link primary"
-       onclick="trackDonationClick()">
-      💙 Soutenir sur Tipeee
-    </a>
-    
-    <button class="donation-later" onclick="window.donationManager.hidePopup(true)">
-      Plus tard
+    <!-- Bouton de soumission -->
+    <button class="submit-survey-btn" id="submitSurvey">
+        <span class="material-icons">send</span>
+        Envoyer mes réponses
     </button>
-  </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<div id="submitModal" class="submit-modal">
+        <!-- Message de confirmation -->
+        <div id="surveyThankYou" class="survey-thank-you" style="display: none;">
+            <div class="thank-you-icon">
+                <span class="material-icons">check_circle</span>
+            </div>
+            <h2>Merci pour votre participation !</h2>
+            <p>Vos réponses nous aident à améliorer Actu & Média pour toute la communauté de Montceau-les-Mines.</p>
+            <button class="close-survey-btn" onclick="document.getElementById('surveyModal').style.display='none'">
+                Fermer
+            </button>
+        </div>
+    </div>
+</div>
+
+    <!-- Modal de soumission d'actualité -->
+    <div class="submit-modal" id="submitModal">
         <div class="submit-modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">
-                    <span>📝</span>
-                    Proposer une actualité
-                </h2>
-                <button class="close-modal" onclick="closeSubmitModal()">×</button>
+                <h2>📰 Proposer une actualité</h2>
+                <button class="modal-close" onclick="closeSubmitModal()">✕</button>
             </div>
-
-            <form id="submitNewsForm" class="submit-form">
-                <!-- Type d'actualité -->
-                <div class="form-group">
-                    <label class="form-label">
-                        <span>🎯</span>
-                        Type d'actualité
+            
+            <form id="submitNewsForm">
+                <!-- Types d'actualité -->
+                <div class="news-types">
+                    <label class="news-type">
+                        <input type="radio" name="newsType" value="info" checked>
+                        <div class="type-card">
+                            <span class="type-icon">ℹ️</span>
+                            <span class="type-label">Information</span>
+                        </div>
                     </label>
-                    <div class="news-types">
-                        <label class="news-type">
-                            <input type="radio" name="newsType" value="actualite" checked>
-                            <span>📰 Actualité</span>
-                        </label>
-                        <label class="news-type">
-                            <input type="radio" name="newsType" value="evenement">
-                            <span>🎪 Événement</span>
-                        </label>
-                        <label class="news-type">
-                            <input type="radio" name="newsType" value="pratique">
-                            <span>💡 Info pratique</span>
-                        </label>
-                        <label class="news-type">
-                            <input type="radio" name="newsType" value="insolite">
-                            <span>🤔 Insolite</span>
-                        </label>
-                        <label class="news-type">
-                            <input type="radio" name="newsType" value="photo">
-                            <span>📸 Photo/Vidéo</span>
-                        </label>
-                        <label class="news-type">
-                            <input type="radio" name="newsType" value="autre">
-                            <span>📋 Autre</span>
-                        </label>
-                    </div>
+                    
+                    <label class="news-type">
+                        <input type="radio" name="newsType" value="event">
+                        <div class="type-card">
+                            <span class="type-icon">📅</span>
+                            <span class="type-label">Événement</span>
+                        </div>
+                    </label>
+                    
+                    <label class="news-type">
+                        <input type="radio" name="newsType" value="alert">
+                        <div class="type-card">
+                            <span class="type-icon">⚠️</span>
+                            <span class="type-label">Alerte</span>
+                        </div>
+                    </label>
+                    
+                    <label class="news-type">
+                        <input type="radio" name="newsType" value="good_plan">
+                        <div class="type-card">
+                            <span class="type-icon">💡</span>
+                            <span class="type-label">Bon plan</span>
+                        </div>
+                    </label>
                 </div>
 
                 <!-- Titre -->
                 <div class="form-group">
-                    <label class="form-label" for="newsTitle">
-                        <span>📢</span>
-                        Titre de l'actualité
+                    <label>
+                        <span class="material-icons">title</span>
+                        Titre de l'actualité *
                     </label>
-                    <input 
-                        type="text" 
-                        id="newsTitle" 
-                        name="title" 
-                        class="form-input" 
-                        placeholder="Ex: Ouverture d'un nouveau commerce..."
-                        required
-                        maxlength="100"
-                    >
-                    <span class="form-hint">Maximum 100 caractères</span>
+                    <input type="text" name="title" required 
+                           placeholder="Ex: Nouvelle boulangerie sur la place du marché">
                 </div>
 
-                <!-- Contenu -->
+                <!-- Description -->
                 <div class="form-group">
-                    <label class="form-label" for="newsContent">
-                        <span>📝</span>
-                        Description / Contenu
+                    <label>
+                        <span class="material-icons">description</span>
+                        Description détaillée *
                     </label>
-                    <textarea 
-                        id="newsContent" 
-                        name="content" 
-                        class="form-textarea" 
-                        placeholder="Décrivez votre actualité, événement ou information..."
-                        required
-                        maxlength="1000"
-                    ></textarea>
-                    <span class="form-hint">Maximum 1000 caractères</span>
+                    <textarea name="content" required rows="5" 
+                              placeholder="Décrivez votre actualité en détail..."></textarea>
                 </div>
 
-                <!-- Lieu (optionnel) -->
+                <!-- Localisation -->
                 <div class="form-group">
-                    <label class="form-label" for="newsLocation">
-                        <span>📍</span>
+                    <label>
+                        <span class="material-icons">location_on</span>
                         Lieu (optionnel)
                     </label>
-                    <input 
-                        type="text" 
-                        id="newsLocation" 
-                        name="location" 
-                        class="form-input" 
-                        placeholder="Ex: Place André Malraux, Centre-ville..."
-                    >
+                    <input type="text" name="location" 
+                           placeholder="Ex: Centre-ville de Montceau">
                 </div>
 
-                <!-- Date (optionnel) -->
+                <!-- Date événement -->
                 <div class="form-group">
-                    <label class="form-label" for="newsDate">
-                        <span>📅</span>
+                    <label>
+                        <span class="material-icons">event</span>
                         Date de l'événement (optionnel)
                     </label>
-                    <input 
-                        type="datetime-local" 
-                        id="newsDate" 
-                        name="eventDate" 
-                        class="form-input"
-                    >
+                    <input type="date" name="eventDate">
                 </div>
 
-                <!-- Upload fichier -->
+                <!-- Contact -->
                 <div class="form-group">
-                    <label class="form-label">
-                        <span>📎</span>
-                        Photo ou document (optionnel)
+                    <label>
+                        <span class="material-icons">email</span>
+                        Votre email de contact *
+                    </label>
+                    <input type="email" name="contact" required 
+                           placeholder="votreemail@exemple.com">
+                </div>
+
+                <!-- Photo/Fichier -->
+                <div class="form-group">
+                    <label>
+                        <span class="material-icons">attach_file</span>
+                        Photo ou fichier (optionnel)
                     </label>
                     <div class="file-upload">
-                        <input 
-                            type="file" 
-                            id="newsFile" 
-                            name="file" 
-                            accept="image/*,.pdf,.doc,.docx"
-                            onchange="handleFileSelect(this)"
-                        >
+                        <input type="file" id="newsFile" name="file" 
+                               accept="image/*,.pdf" onchange="handleFileSelect(this)">
                         <label for="newsFile" class="file-upload-label" id="fileLabel">
                             <span>📎</span>
                             <span>Cliquez pour ajouter un fichier</span>
                         </label>
                     </div>
-                    <span class="form-hint">Images, PDF, Word - Max 5MB</span>
-                </div>
-
-                <!-- Contact -->
-                <div class="form-group">
-                    <label class="form-label" for="newsContact">
-                        <span>📧</span>
-                        Votre email (pour vous recontacter)
-                    </label>
-                    <input 
-                        type="email" 
-                        id="newsContact" 
-                        name="contact" 
-                        class="form-input" 
-                        placeholder="votre.email@exemple.fr"
-                        required
-                    >
-                    <span class="form-hint">Votre email ne sera pas publié</span>
                 </div>
 
                 <!-- Nom (optionnel) -->
                 <div class="form-group">
-                    <label class="form-label" for="newsAuthor">
-                        <span>👤</span>
-                        Votre nom/pseudo (optionnel)
+                    <label>
+                        <span class="material-icons">person</span>
+                        Votre nom (optionnel)
                     </label>
-                    <input 
-                        type="text" 
-                        id="newsAuthor" 
-                        name="author" 
-                        class="form-input" 
-                        placeholder="Pour vous créditer si publié"
-                    >
+                    <input type="text" name="author" 
+                           placeholder="Laissez vide pour rester anonyme">
                 </div>
 
-                <!-- Actions -->
-                <div class="form-actions">
-                    <button type="button" class="btn btn-cancel" onclick="closeSubmitModal()">
+                <!-- Boutons -->
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeSubmitModal()">
                         Annuler
                     </button>
-                    <button type="submit" class="btn btn-submit">
-                        📤 Envoyer ma proposition
+                    <button type="submit" class="btn-submit">
+                        📤 Envoyer la proposition
                     </button>
                 </div>
             </form>
 
-            <!-- Message de succès (caché par défaut) -->
-            <div id="successMessage" class="success-message" style="display: none;">
-                <div class="success-icon">✅</div>
-                <h3 class="success-title">Merci pour votre contribution !</h3>
-                <div class="success-text">
-                    <p>Votre proposition d'actualité a bien été envoyée à l'équipe d'Actu&Média.</p>
-                    <p>Nous la examinerons rapidement et vous recontacterons si nécessaire.</p>
-                    <p><strong>Continuez à faire vivre l'actualité locale !</strong></p>
-                </div>
+            <!-- Message de succès (masqué par défaut) -->
+            <div id="successMessage" style="display: none; text-align: center; padding: 40px 20px;">
+                <div style="font-size: 60px; margin-bottom: 20px;">✅</div>
+                <h3 style="color: #4caf50; margin-bottom: 10px;">Proposition envoyée avec succès !</h3>
+                <p>Merci pour votre contribution. Notre équipe va examiner votre proposition.</p>
+                <p style="font-size: 0.9rem; opacity: 0.8;">Cette fenêtre va se fermer automatiquement...</p>
             </div>
         </div>
     </div>
 
     <script>
-        // Gestion de la modal
         function openSubmitModal() {
             document.getElementById('submitModal').classList.add('active');
             document.body.style.overflow = 'hidden';
