@@ -2324,23 +2324,6 @@ fixListModeLayout() {
     observer.observe(tileContainer, { attributes: true });
 }
 
-// 9. Mettre à jour les styles du mode liste
-updateListModeStylesFast() {
-    const tileContainer = document.getElementById('tileContainer');
-    if (!tileContainer) return;
-    
-    // Application immédiate selon le mode
-    if (tileContainer.classList.contains('list')) {
-        this.applyListModeImmediate();
-    } else {
-        // Mode grille - supprimer les styles de liste
-        const existingStyle = document.getElementById('listModeFixStyle');
-        if (existingStyle) {
-            existingStyle.remove();
-        }
-    }
-}
-
 	updateActiveNavLinks() {
         document.querySelectorAll('.bottom-nav .nav-item').forEach(navItem => {
             const link = navItem.getAttribute('href');
