@@ -154,7 +154,6 @@
 .tile-content {
     padding: 10px;
     text-align: center;
-    width: 100%;
     pointer-events: none;
     position: relative;
     z-index: 2;
