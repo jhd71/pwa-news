@@ -1,16 +1,10 @@
 /* ========================================
    FONT-SETTINGS.CSS - VERSION NETTOYÉE
+   N'affecte QUE les paramètres, pas les tuiles principales
    ======================================== */
 
 /* ========================================
-   1. STYLES DE BASE POUR LES TITRES
-   ======================================== */
-.tile .tile-title {
-    transition: all 0.3s ease;
-}
-
-/* ========================================
-   2. POLICES DE CARACTÈRES
+   1. POLICES DE CARACTÈRES - POUR LES TUILES PRINCIPALES
    ======================================== */
 .system-font .tile-title {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
@@ -29,33 +23,44 @@
 }
 
 /* ========================================
-   3. NIVEAUX DE CONTRASTE
+   2. NIVEAUX DE CONTRASTE - POUR LES TUILES PRINCIPALES
    ======================================== */
 .normal-contrast .tile-title {
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
+    text-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.6),
+        0 4px 16px rgba(0, 0, 0, 0.4),
+        0 1px 2px rgba(0, 0, 0, 0.8) !important;
     font-weight: 600 !important;
 }
 
 .high-contrast .tile-title {
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5), 0 0 1px rgba(0, 0, 0, 0.3) !important;
+    text-shadow: 
+        0 2px 10px rgba(0, 0, 0, 0.7),
+        0 4px 20px rgba(0, 0, 0, 0.5),
+        0 1px 3px rgba(0, 0, 0, 0.9) !important;
     font-weight: 700 !important;
     letter-spacing: 0.5px !important;
 }
 
 .very-high-contrast .tile-title {
-    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7), 0 0 2px rgba(0, 0, 0, 0.5) !important;
-    font-weight: 700 !important;
+    text-shadow: 
+        0 3px 12px rgba(0, 0, 0, 0.8),
+        0 6px 24px rgba(0, 0, 0, 0.6),
+        0 1px 4px rgba(0, 0, 0, 1) !important;
+    font-weight: 800 !important;
     letter-spacing: 0.6px !important;
     -webkit-text-stroke: 0.3px rgba(255, 255, 255, 0.3) !important;
 }
 
 /* ========================================
-   4. CONTENEURS DE TUILES (TOUS TYPES)
+   3. CONTENEURS DE TUILES DE PARAMÈTRES (DANS LE MENU UNIQUEMENT)
    ======================================== */
-.font-family-tiles,
-.text-contrast-tiles,
-.font-size-tiles,
-.visual-enhancement-tiles {
+.settings-menu .font-family-tiles,
+.settings-menu .text-contrast-tiles,
+.settings-menu .visual-enhancement-tiles,
+.settings-content .font-family-tiles,
+.settings-content .text-contrast-tiles,
+.settings-content .visual-enhancement-tiles {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
@@ -63,11 +68,14 @@
 }
 
 /* ========================================
-   5. STYLES COMMUNS POUR TOUTES LES TUILES
+   4. TUILES DE SÉLECTION DANS LES PARAMÈTRES (UNIQUEMENT)
    ======================================== */
-.font-family-tile,
-.text-contrast-tile,
-.visual-enhancement-tile {
+.settings-menu .font-family-tile,
+.settings-menu .text-contrast-tile,
+.settings-menu .visual-enhancement-tile,
+.settings-content .font-family-tile,
+.settings-content .text-contrast-tile,
+.settings-content .visual-enhancement-tile {
     flex: 1 0 calc(50% - 10px);
     background-color: rgba(255, 255, 255, 0.1);
     padding: 15px 10px;
@@ -82,24 +90,30 @@
     min-height: 40px;
 }
 
-/* État actif pour toutes les tuiles */
-.font-family-tile.active,
-.text-contrast-tile.active,
-.visual-enhancement-tile.active {
+/* État actif pour les tuiles de paramètres */
+.settings-menu .font-family-tile.active,
+.settings-menu .text-contrast-tile.active,
+.settings-menu .visual-enhancement-tile.active,
+.settings-content .font-family-tile.active,
+.settings-content .text-contrast-tile.active,
+.settings-content .visual-enhancement-tile.active {
     background-color: rgba(255, 255, 255, 0.3);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-/* Effet hover pour toutes les tuiles */
-.font-family-tile:hover,
-.text-contrast-tile:hover,
-.visual-enhancement-tile:hover {
+/* Effet hover pour les tuiles de paramètres */
+.settings-menu .font-family-tile:hover,
+.settings-menu .text-contrast-tile:hover,
+.settings-menu .visual-enhancement-tile:hover,
+.settings-content .font-family-tile:hover,
+.settings-content .text-contrast-tile:hover,
+.settings-content .visual-enhancement-tile:hover {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
 /* ========================================
-   6. TEXTE D'INTRODUCTION DES PARAMÈTRES
+   5. TEXTE D'INTRODUCTION DES PARAMÈTRES
    ======================================== */
 .settings-intro {
     font-size: 14px;
@@ -110,24 +124,24 @@
 }
 
 /* ========================================
-   7. MODE OPTIMISATION VISUELLE
+   6. MODE OPTIMISATION VISUELLE
+   Ne s'applique QUE si explicitement activé
    ======================================== */
-/* Styles pour les tuiles principales en mode optimisation */
-.visual-enhancement-mode .tile {
+body.visual-enhancement-mode .tile {
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25) !important;
     border: 1px solid rgba(0, 0, 0, 0.15) !important;
     backdrop-filter: blur(5px) brightness(1.1) !important;
     -webkit-backdrop-filter: blur(5px) brightness(1.1) !important;
 }
 
-.visual-enhancement-mode .tile:hover {
+body.visual-enhancement-mode .tile:hover {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
     transform: translateY(-8px) scale(1.03) !important;
     border: 1px solid rgba(0, 0, 0, 0.25) !important;
 }
 
 /* Texte ultra-contrasté en mode optimisation */
-.visual-enhancement-mode .tile-title {
+body.visual-enhancement-mode .tile-title {
     text-shadow: 
         2px 2px 4px rgba(0, 0, 0, 0.8),
         0 0 6px rgba(0, 0, 0, 0.6),
@@ -138,13 +152,13 @@
 }
 
 /* Séparateurs en mode optimisation */
-.visual-enhancement-mode .separator {
+body.visual-enhancement-mode .separator {
     background: rgba(0, 0, 0, 0.1) !important;
     border: 1px solid rgba(0, 0, 0, 0.15) !important;
     backdrop-filter: blur(3px) !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
 }
 
-.visual-enhancement-mode .separator img {
+body.visual-enhancement-mode .separator img {
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3)) !important;
 }
