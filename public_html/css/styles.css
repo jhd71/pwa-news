@@ -832,7 +832,80 @@ main {
 }
 
 /* ==========================================================================
-   15. MENU CONTEXTUEL
+   11. SÉPARATEURS
+   ========================================================================== */
+.separator {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 35px;
+    margin: 20px 0;
+    border-radius: 12px;
+    position: relative;
+    text-align: center;
+    font-weight: 600;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    padding: 10px;
+    background-color: #1a237e;
+    opacity: var(--tile-opacity, 1);
+    transition: opacity 0.3s ease;
+}
+
+.separator:hover {
+    opacity: 1;
+}
+
+.separator img {
+    height: 50px;
+    width: auto;
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: inherit;
+}
+
+.separator:hover img {
+    transform: scale(1.1);
+}
+
+.separator::before,
+.separator::after {
+    content: '';
+    position: absolute;
+    height: 0.5px;
+    width: calc(50% - 100px);
+    background-color: rgba(255, 255, 255, 0.3);
+    top: 50%;
+}
+
+.separator::before {
+    left: 20px;
+}
+
+.separator::after {
+    right: 20px;
+}
+
+/* Classes de transparence pour les séparateurs */
+.separator.force-transparency {
+    opacity: var(--tile-opacity, 1);
+    transition: opacity 0.3s ease;
+}
+
+.separator.force-transparency:hover {
+    opacity: 1;
+}
+
+.separator.force-transparency img {
+    opacity: inherit;
+}
+
+/* ==========================================================================
+   12. MENU CONTEXTUEL
    ========================================================================== */
 .tile-menu {
     position: fixed;
@@ -878,7 +951,7 @@ main {
 }
 
 /* ==========================================================================
-   16. MODAL
+   13. MODAL
    ========================================================================== */
 .modal {
     position: fixed;
@@ -1072,17 +1145,9 @@ main {
 .quick-link i {
     color: white;
 }
-	
-/*.modal-content i.fa,
-.modal-content i.fas,
-.modal-content i.far,
-.modal-content i.fab,
-.modal-content .material-icons {
-    color: white;
-}*/
 
 /* ==========================================================================
-   17. NOTIFICATIONS CHAT
+   14. NOTIFICATIONS CHAT
    ========================================================================== */
 .chat-toggle-btn {
     position: relative;
@@ -1181,7 +1246,7 @@ main {
 }
 
 /* ==========================================================================
-   18. IOS PROMPT ET INSTALLATION
+   15. IOS PROMPT ET INSTALLATION
    ========================================================================== */
 .ios-prompt {
     position: fixed;
@@ -1249,7 +1314,7 @@ main {
 }
 
 /* ==========================================================================
-   19. TOAST
+   16. TOAST
    ========================================================================== */
 .toast {
     position: fixed;
@@ -1308,7 +1373,7 @@ main {
 }
 
 /* ==========================================================================
-   20. BLOC DE BIENVENUE
+   17. BLOC DE BIENVENUE
    ========================================================================== */
 .welcome-message {
     margin: 30px auto;
@@ -1404,7 +1469,7 @@ main {
 }
 
 /* ==========================================================================
-   21. BANNIÈRE DE BIENVENUE DESKTOP
+   18. BANNIÈRE DE BIENVENUE DESKTOP
    ========================================================================== */
 .welcome-banner {
     background: var(--background-color);
@@ -1556,7 +1621,7 @@ main {
 }
 
 /* ==========================================================================
-   22. CORRECTIONS SPÉCIFIQUES THÈME ROUGE
+   19. CORRECTIONS SPÉCIFIQUES THÈME ROUGE
    ========================================================================== */
 
 /* Éléments chat */
@@ -1668,7 +1733,7 @@ main {
 }
 
 /* ==========================================================================
-   23. ANIMATIONS
+   20. ANIMATIONS
    ========================================================================== */
 @keyframes fadeInScale {
     from {
@@ -1754,14 +1819,6 @@ main {
 }
 
 /* Application des animations */
-.tile-container.grid .tile {
-    animation: fadeInScale 0.3s ease forwards;
-}
-
-.tile-container.list .tile {
-    animation: slideInRight 0.3s ease forwards;
-}
-
 .toast {
     animation: slideUp 0.4s ease, pulse 1.5s infinite;
 }
@@ -1774,20 +1831,8 @@ main {
     animation: bounce 2s infinite;
 }
 
-/* Animation des tuiles en transition */
-.tile.transparency-transition {
-    transition: opacity 0.5s ease, transform 0.3s ease;
-}
-
-.tile.transparency-transition:hover {
-    opacity: 1;
-    transform: scale(1.02);
-    z-index: 10;
-    position: relative;
-}
-
 /* ==========================================================================
-   25. MODAL DE SOUMISSION D'ACTUALITÉ
+   21. MODAL DE SOUMISSION D'ACTUALITÉ
    ========================================================================== */
 .submit-news-btn {
     background: linear-gradient(145deg, #28a745, #20c997);
@@ -2155,7 +2200,7 @@ main {
 }
 
 /* ==========================================================================
-   26. EFFETS DE SURVOL POUR BOUTONS FLOTTANTS
+   22. EFFETS DE SURVOL POUR BOUTONS FLOTTANTS
    ========================================================================== */
 
 /* THÈME VIOLET (light) */
@@ -2287,7 +2332,7 @@ main {
 }
 
 /* ==========================================================================
-   27. MEDIA QUERIES ET RESPONSIVE
+   23. MEDIA QUERIES ET RESPONSIVE
    ========================================================================== */
 
 /* BOUTONS FACEBOOK ET RECHERCHE - RESPONSIVE */
@@ -2423,36 +2468,6 @@ main {
         min-width: unset;
     }
     
-    /* Tuiles */
-    .tile-container {
-        gap: 10px;
-    }
-
-    /* Vue grille */
-    .tile-container.grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-        padding-left: 0px;
-		padding-bottom: 60px;
-    }
-
-    /* Vue liste */
-    .tile-container.list {
-        gap: 4px;
-    }
-    
-    .tile-container.list .tile {
-        height: 45px;
-        margin: 3px 0;
-        text-align: left;
-        padding-left: 0px;
-    }
-
-    /* Style commun aux tuiles */
-    .tile {
-        margin: 4px 0;
-    }
-    
     /* Autres éléments */
     .paypal-donate {
         display: none;
@@ -2515,10 +2530,6 @@ main {
     
     .separator:first-of-type {
         margin-top: 55px;
-    }
-    
-    .tile-container {
-        padding: 0 5px;
     }
 }
 
@@ -3152,7 +3163,7 @@ main {
 }
 
 /* ==========================================================================
-   14. SWIPER
+   24. SWIPER
    ========================================================================== */
 .swiper-container {
     width: 100%;
@@ -3191,11 +3202,11 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #000; /* ✅ Fond noir pour les espaces vides */
+    background: #000;
 }
 
 .swiper-slide a {
-    display: block; /* ✅ CHANGÉ de flex à block */
+    display: block;
     width: 100%;
     height: 100%;
     position: relative;
@@ -3205,12 +3216,12 @@ main {
 
 .swiper-slide img {
     width: 100%;
-    height: 100%; /* ✅ CHANGÉ de 220px à 100% */
-    object-fit: cover; /* ✅ Garde le recadrage */
-    object-position: center 30%; /* ✅ CHANGÉ : favorise le haut de l'image */
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
     display: block;
     z-index: 1;
-    max-height: none; /* ✅ ENLEVÉ max-height qui limitait */
+    max-height: none;
 }
 
 .slide-content {
@@ -3220,8 +3231,8 @@ main {
     right: 0;
     padding: 15px 15px 30px 15px;
     background: linear-gradient(to top, 
-        rgba(0,0,0,0.95) 0%,    /* ✅ Plus opaque en bas */
-        rgba(0,0,0,0.85) 30%,   /* ✅ Opacité progressive */
+        rgba(0,0,0,0.95) 0%,
+        rgba(0,0,0,0.85) 30%,
         rgba(0,0,0,0.6) 70%,
         transparent 100%
     );
@@ -3243,7 +3254,7 @@ main {
         2px 2px 4px rgba(0, 0, 0, 0.9),
         -1px -1px 2px rgba(0, 0, 0, 0.9),
         1px -1px 2px rgba(0, 0, 0, 0.9),
-        -1px 1px 2px rgba(0, 0, 0, 0.9); /* ✅ Ombre multiple pour contraste maximum */
+        -1px 1px 2px rgba(0, 0, 0, 0.9);
 }
 
 .slide-source {
@@ -3258,21 +3269,21 @@ main {
         2px 2px 4px rgba(0, 0, 0, 1),
         -1px -1px 2px rgba(0, 0, 0, 1),
         1px -1px 2px rgba(0, 0, 0, 1),
-        -1px 1px 2px rgba(0, 0, 0, 1); /* ✅ Ombre multiple */
+        -1px 1px 2px rgba(0, 0, 0, 1);
 }
 
 .swiper-button-next,
 .swiper-button-prev {
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.9); /* ✅ Légère transparence */
+    background: rgba(255, 255, 255, 0.9);
     border-radius: 50%;
-    width: 44px; /* ✅ Légèrement plus grand */
+    width: 44px;
     height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--primary-color); /* ✅ Couleur des flèches */
+    color: var(--primary-color);
     transition: all 0.3s ease;
 }
 
@@ -3285,12 +3296,12 @@ main {
 .swiper-button-next:hover,
 .swiper-button-prev:hover {
     background: white;
-    transform: translateY(-50%) scale(1.1); /* ✅ Effet de zoom au hover */
+    transform: translateY(-50%) scale(1.1);
 }
 
 .swiper-pagination {
     position: absolute;
-    bottom: 3px; /* ✅ Réduire de 8px à 3px pour coller au bas */
+    bottom: 3px;
     left: 0;
     right: 0;
     z-index: 10;
@@ -3340,7 +3351,7 @@ main {
 /* AFFICHER LE SWIPER SUR MOBILE */
 @media (max-width: 767px) {
     .swiper-container {
-        display: flex; /* ✅ CHANGÉ */
+        display: flex;
         margin-top: 130px;
         width: 98%;
         margin-left: auto;
@@ -3356,24 +3367,18 @@ main {
     .swiper-button-prev {
         width: 36px;
         height: 36px;
-        background: rgba(255, 255, 255, 0.5); /* ✅ AJOUTEZ - Plus transparent */
-        opacity: 0.7; /* ✅ AJOUTEZ - Légèrement transparent */
+        background: rgba(255, 255, 255, 0.5);
+        opacity: 0.7;
     }
     
     .swiper-button-next:after,
     .swiper-button-prev:after {
         font-size: 16px;
-        color: var(--primary-color); /* ✅ AJOUTEZ - Garde la couleur des flèches */
+        color: var(--primary-color);
     }
     
     .separator:first-of-type {
         margin-top: 60px;
-    }
-    
-    .tile-container {
-        width: 95%;
-        margin-left: auto;
-        margin-right: auto;
     }
     
     main {
@@ -3387,19 +3392,9 @@ main {
         padding: 10px;
     }
     
-    .tile-container .separator:first-child {
-        margin-top: 1px;
-        margin-bottom: 8px;
-    }
-    
-    .tile-container .tile:first-of-type {
-        margin-top: 0;
-    }
-    
     .only-desktop {
         display: none;
     }
-	
 }
 
 /* Animation du spinner de chargement */
@@ -3419,19 +3414,8 @@ main {
     }
     
     .swiper {
-        height: 280px; /* ✅ Hauteur adaptée pour tablette */
+        height: 280px;
     }
-    
-    .tile-container {
-        width: 90%;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    
-    .separator {
-        margin: 10px 0;
-    }
-	
 }
 
 /* DESKTOP - MIN 1200PX */
@@ -3445,20 +3429,9 @@ main {
     
     .swiper {
         max-width: 800px;
-        height: 300px; /* ✅ CHANGÉ de 200px à 300px pour plus de visibilité */
+        height: 300px;
     }
 
-    .tile-container {
-        width: calc(100% - 190px);
-        margin-left: auto;
-        margin-right: auto;
-        max-width: 1400px;
-    }
-    
-    .tile-container.grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    }
-    
     .swiper-container {
         width: calc(100% - 580px);
         max-width: 800px;
@@ -3466,63 +3439,7 @@ main {
         margin-right: auto;
     }
     
-    .tile-container {
-        width: calc(100% - 580px);
-        margin-left: auto;
-        margin-right: auto;
-        max-width: 1200px;
-    }
-    
     .welcome-message {
         max-width: 1100px;
-    }
-}
-
-/* RESPONSIVE POUR LES BIENVENUES */
-@media (max-width: 992px) {
-    .welcome-features {
-        gap: 16px;
-    }
-    
-    .feature-item {
-        padding: 6px 12px;
-        font-size: 0.9rem;
-    }
-}
-
-/* ========================================
-   Badge TUILE PETITES ANNONCES
-   ======================================== */
-   
-.tile[data-category="annonces"]::after {
-    content: "🆕 NOUVEAU";
-    position: absolute;
-    top: 2px;
-    right: 11px;
-    background: #FF0000;
-    color: white;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 0.65rem;
-    font-weight: bold;
-    animation: pulse 2s infinite;
-    z-index: 10;
-}
-/* Animation simple du badge */
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-}
-/* Mobile - ajustements */
-@media (max-width: 768px) {
-    .tile[data-category="annonces"]::after {
-        top: 4px;
-        right: 8px;
-        font-size: 0.6rem;
-        padding: 3px 8px;
-    }
-
-    .tile.annonces .tile-title {
-        font-size: 0.95rem !important;
     }
 }
