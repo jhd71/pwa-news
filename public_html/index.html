@@ -496,6 +496,48 @@
     <!-- Script principal -->
     <script src="js/main-app.js"></script>
     
+	<!-- Scripts essentiels (avant tout) -->
+<script src="js/theme-manager.js"></script>
+<script src="js/ban-manager.js"></script>
+<script src="js/ban-check.js"></script>
+
+<!-- Scripts de correction plateforme -->
+<script src="js/ios-fixes-safe.js"></script>
+<script src="js/ios-install.js"></script>
+<script src="js/tablet-fixes.js"></script>
+<script src="js/chat-keyboard-fix.js"></script>
+
+<!-- Widgets principaux (ordre cohérent avec les CSS) -->
+<script src="js/quick-links.js"></script>
+<script src="js/weather-widget.js"></script>
+<script src="js/visitor-tracker.js"></script>
+
+<!-- Widgets actualités (groupés ensemble) -->
+<script src="js/news-manager.js"></script>
+<script src="js/newsTickerManager.js"></script>
+<script src="js/newsPanel.js"></script>
+<script src="js/news-widget.js"></script>
+
+<!-- Widgets secondaires -->
+<script src="js/cinema-widget.js"></script>
+<script src="js/football-widget.js"></script>
+
+<!-- Applications -->
+<script src="js/radioPopup.js"></script>
+<script src="js/notepadApp.js"></script>
+<script src="js/todoApp.js"></script>
+
+<!-- Gestionnaires et fonctionnalités -->
+<script src="js/welcome-manager.js"></script>
+<script src="js/expense-manager.js"></script>
+<script src="js/donation.js"></script>
+<script src="js/survey-manager.js"></script>
+
+<!-- Script d'initialisation principal (toujours en dernier) -->
+<script type="module" src="js/app-initializer.js"></script>
+
+<!-- Événements saisonniers -->
+<script src="js/seasonal-events.js"></script>
     <!-- Scripts année copyright -->
     <script>
         document.getElementById('currentYear').textContent = new Date().getFullYear();
