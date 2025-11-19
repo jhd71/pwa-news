@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v65'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v66'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -31,6 +31,7 @@ const STATIC_RESOURCES = [
     '/css/styles.css',
     '/css/theme-bleuciel.css',
     '/css/font-settings.css',
+	'/css/tiles-liquid-glass.css',
     
     // Widgets principaux
     '/css/quick-links.css',
