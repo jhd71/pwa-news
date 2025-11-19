@@ -216,7 +216,127 @@
    7. COULEURS PAR THÈME AVEC EFFET LIQUID GLASS
    ========================================================================== */
 
-
+/* ==================== THÈME ROUGE ==================== */
+[data-theme="rouge"] .tile:nth-child(30n + 1) { 
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.6), rgba(185, 28, 28, 0.5));
+    box-shadow: 0 8px 32px rgba(220, 38, 38, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 2) { 
+    background: linear-gradient(135deg, rgba(234, 88, 12, 0.6), rgba(194, 65, 12, 0.5));
+    box-shadow: 0 8px 32px rgba(234, 88, 12, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 3) { 
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.6), rgba(217, 119, 6, 0.5));
+    box-shadow: 0 8px 32px rgba(245, 158, 11, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 4) { 
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.6), rgba(202, 138, 4, 0.5));
+    box-shadow: 0 8px 32px rgba(234, 179, 8, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 5) { 
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.6), rgba(124, 45, 18, 0.5));
+    box-shadow: 0 8px 32px rgba(220, 38, 38, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 6) { 
+    background: linear-gradient(135deg, rgba(185, 28, 28, 0.6), rgba(220, 38, 38, 0.5));
+    box-shadow: 0 8px 32px rgba(185, 28, 28, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 7) { 
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.6), rgba(234, 88, 12, 0.5));
+    box-shadow: 0 8px 32px rgba(249, 115, 22, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 8) { 
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.6), rgba(245, 158, 11, 0.5));
+    box-shadow: 0 8px 32px rgba(251, 191, 36, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 9) { 
+    background: linear-gradient(135deg, rgba(250, 204, 21, 0.6), rgba(234, 179, 8, 0.5));
+    box-shadow: 0 8px 32px rgba(250, 204, 21, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 10) { 
+    background: linear-gradient(135deg, rgba(153, 27, 27, 0.6), rgba(124, 45, 18, 0.5));
+    box-shadow: 0 8px 32px rgba(153, 27, 27, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 11) { 
+    background: linear-gradient(135deg, rgba(135, 19, 0, 0.7), rgba(135, 13, 3, 0.6));
+    box-shadow: 0 8px 32px rgba(135, 19, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 12) { 
+    background: linear-gradient(135deg, rgba(217, 119, 6, 0.6), rgba(180, 83, 9, 0.5));
+    box-shadow: 0 8px 32px rgba(217, 119, 6, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 13) { 
+    background: linear-gradient(135deg, rgba(202, 138, 4, 0.6), rgba(161, 98, 7, 0.5));
+    box-shadow: 0 8px 32px rgba(202, 138, 4, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 14) { 
+    background: linear-gradient(135deg, rgba(201, 27, 27, 0.6), rgba(123, 6, 6, 0.5));
+    box-shadow: 0 8px 32px rgba(201, 27, 27, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 15) { 
+    background: linear-gradient(135deg, rgba(105, 0, 15, 0.7), rgba(247, 17, 0, 0.6));
+    box-shadow: 0 8px 32px rgba(247, 17, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 16) { 
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.6), rgba(217, 119, 6, 0.5));
+    box-shadow: 0 8px 32px rgba(251, 191, 36, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 17) { 
+    background: linear-gradient(135deg, rgba(250, 204, 21, 0.6), rgba(202, 138, 4, 0.5));
+    box-shadow: 0 8px 32px rgba(250, 204, 21, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 18) { 
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.6), rgba(153, 27, 27, 0.5));
+    box-shadow: 0 8px 32px rgba(220, 38, 38, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 19) { 
+    background: linear-gradient(135deg, rgba(234, 88, 12, 0.6), rgba(194, 65, 12, 0.5));
+    box-shadow: 0 8px 32px rgba(234, 88, 12, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 20) { 
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.6), rgba(217, 119, 6, 0.5));
+    box-shadow: 0 8px 32px rgba(245, 158, 11, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 21) { 
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.6), rgba(202, 138, 4, 0.5));
+    box-shadow: 0 8px 32px rgba(234, 179, 8, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 22) { 
+    background: linear-gradient(135deg, rgba(185, 28, 28, 0.6), rgba(124, 45, 18, 0.5));
+    box-shadow: 0 8px 32px rgba(185, 28, 28, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 23) { 
+    background: linear-gradient(135deg, rgba(194, 65, 12, 0.6), rgba(154, 52, 18, 0.5));
+    box-shadow: 0 8px 32px rgba(194, 65, 12, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 24) { 
+    background: linear-gradient(135deg, rgba(217, 119, 6, 0.6), rgba(180, 83, 9, 0.5));
+    box-shadow: 0 8px 32px rgba(217, 119, 6, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 25) { 
+    background: linear-gradient(135deg, rgba(202, 138, 4, 0.6), rgba(161, 98, 7, 0.5));
+    box-shadow: 0 8px 32px rgba(202, 138, 4, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 26) { 
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.6), rgba(185, 28, 28, 0.5));
+    box-shadow: 0 8px 32px rgba(239, 68, 68, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 27) { 
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.6), rgba(234, 88, 12, 0.5));
+    box-shadow: 0 8px 32px rgba(251, 146, 60, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 28) { 
+    background: linear-gradient(135deg, rgba(252, 211, 77, 0.6), rgba(245, 158, 11, 0.5));
+    box-shadow: 0 8px 32px rgba(252, 211, 77, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 29) { 
+    background: linear-gradient(135deg, rgba(253, 224, 71, 0.6), rgba(234, 179, 8, 0.5));
+    box-shadow: 0 8px 32px rgba(253, 224, 71, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+[data-theme="rouge"] .tile:nth-child(30n + 0) { 
+    background: linear-gradient(135deg, rgba(113, 0, 0, 0.7), rgba(201, 0, 0, 0.6));
+    box-shadow: 0 8px 32px rgba(201, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
 
 /* Effet de survol amélioré pour le thème rouge */
 [data-theme="rouge"] .tile:hover {
