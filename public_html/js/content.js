@@ -2315,7 +2315,7 @@ fixListModeLayout() {
             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                 // Application immédiate sans délai
                 requestAnimationFrame(() => {
-                    this.updateListModeStylesFast();
+                    
                 });
             }
         });
