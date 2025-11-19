@@ -7,8 +7,7 @@ class ThemeManager {
             { id: 'rouge', name: 'Rouge', icon: 'palette' },
             { id: 'dark', name: 'Sombre', icon: 'dark_mode' },
             { id: 'bleuciel', name: 'Bleu Ciel', icon: 'water_drop' },
-            { id: 'light', name: 'Violet', icon: 'color_lens' },
-            { id: 'glass', name: 'Liquid Glass', icon: 'water' }
+            { id: 'light', name: 'Violet', icon: 'color_lens' }
         ];
         
         this.init();
