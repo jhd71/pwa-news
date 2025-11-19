@@ -6,7 +6,6 @@ class ThemeManager {
         this.themes = [
             { id: 'rouge', name: 'Rouge', icon: 'palette' },
             { id: 'dark', name: 'Sombre', icon: 'dark_mode' },
-            { id: 'bleuciel', name: 'Bleu Ciel', icon: 'water_drop' },
             { id: 'light', name: 'Violet', icon: 'color_lens' }
         ];
         
@@ -152,7 +151,6 @@ class ThemeManager {
     const themeColors = {
         'rouge': '#940000',
         'dark': '#1a1f2e',
-        'bleuciel': '#87CEEB',
         'light': '#6b46c1'
     };
     
@@ -190,12 +188,7 @@ class ThemeManager {
     // Pour iOS status bar
     const metaAppleStatus = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
     if (metaAppleStatus) {
-        // Pour iOS, on utilise black-translucent pour tous les thèmes sauf bleuciel
-        if (themeId === 'bleuciel') {
-            metaAppleStatus.content = 'default';
-        } else {
-            metaAppleStatus.content = 'black-translucent';
-        }
+        metaAppleStatus.content = 'black-translucent';
     }
 }
 }
