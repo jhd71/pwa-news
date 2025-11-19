@@ -914,9 +914,6 @@
 }
 
 @media (max-width: 480px) {
-    .tile-container.grid {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    }
     
     .tile {
         border-radius: 14px;
