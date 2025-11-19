@@ -39,7 +39,6 @@ class ContentManager {
     this.setupFontFamily();
     this.setupTextContrast();
     this.setupTiles();
-	this.fixListModeLayout(); // NOUVELLE LIGNE
 	this.updateActiveNavLinks();
 	this.setupVisualEnhancement();
 	}
