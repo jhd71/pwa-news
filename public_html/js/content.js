@@ -1957,7 +1957,10 @@ changeTextContrast(contrast) {
         case 'bleuciel':
             this.currentTheme = 'light';
             break;
-        case 'light':          
+        case 'light':
+            this.currentTheme = 'glass';
+            break;
+        case 'glass':          
         default:
             this.currentTheme = 'rouge'; // ✅ Retour au rouge (défaut)
             break;
@@ -1973,11 +1976,12 @@ changeTextContrast(contrast) {
     // Afficher une notification
     let themeName = '';
     switch(this.currentTheme) {
-        case 'rouge': themeName = 'rouge'; break;
-        case 'dark': themeName = 'sombre'; break;
-        case 'bleuciel': themeName = 'bleu ciel'; break;       
-        case 'light': themeName = 'violet'; break;
-        default: themeName = 'rouge'; break;
+        case 'rouge': themeName = 'Rouge'; break;
+        case 'dark': themeName = 'Sombre'; break;
+        case 'bleuciel': themeName = 'Bleu Ciel'; break;       
+        case 'light': themeName = 'Violet'; break;
+        case 'glass': themeName = 'Liquid Glass'; break;
+        default: themeName = 'Rouge'; break;
     }
     
     this.showToast(`Thème ${themeName} activé`);
@@ -2051,22 +2055,29 @@ setLayoutFast(layout) {
         
         // Configurer l'icône et le texte en fonction du thème ACTUEL
         switch (this.currentTheme) {
-            case 'dark':
-                if (icon) icon.textContent = 'dark_mode';
-                if (text) text.textContent = 'Sombre';
-                break;
             case 'rouge':
                 if (icon) icon.textContent = 'palette';
                 if (text) text.textContent = 'Rouge';
+                break;
+            case 'dark':
+                if (icon) icon.textContent = 'dark_mode';
+                if (text) text.textContent = 'Sombre';
                 break;
             case 'bleuciel':
                 if (icon) icon.textContent = 'water_drop';
                 if (text) text.textContent = 'Bleu Ciel';
                 break;           
             case 'light':
-            default:
-                if (icon) icon.textContent = 'light_mode';
+                if (icon) icon.textContent = 'color_lens';
                 if (text) text.textContent = 'Violet';
+                break;
+            case 'glass':
+                if (icon) icon.textContent = 'water';
+                if (text) text.textContent = 'Liquid Glass';
+                break;
+            default:
+                if (icon) icon.textContent = 'palette';
+                if (text) text.textContent = 'Rouge';
                 break;
         }
     }
