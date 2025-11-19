@@ -39,7 +39,6 @@ class ContentManager {
     this.setupFontFamily();
     this.setupTextContrast();
     this.setupTiles();
-	this.autoEnhanceTileVisibility(); // LIGNE EXISTANTE
 	this.fixListModeLayout(); // NOUVELLE LIGNE
 	this.updateActiveNavLinks();
 	this.setupVisualEnhancement();
@@ -2359,7 +2358,12 @@ updateListModeStylesFast() {
         });
     }
 
-	// Méthode pour améliorer automatiquement la visibilité des tuiles
+	// ========================================
+// DÉSACTIVÉ - Conflit avec Liquid Glass CSS
+// ========================================
+
+/*
+// Méthode pour améliorer automatiquement la visibilité des tuiles
 autoEnhanceTileVisibility() {
     // Appliquer les améliorations visuelles à toutes les tuiles
     const tiles = document.querySelectorAll('.tile');
@@ -2381,218 +2385,12 @@ addVisibilityStyles() {
     const style = document.createElement('style');
     style.id = 'visibility-styles';
     style.textContent = `
-        /* ========================================
-           AMÉLIORATION AUTOMATIQUE DE LA VISIBILITÉ DES TUILES
-           ======================================== */
-        
-        .tile.enhanced-visibility {
-            /* Fond semi-transparent avec flou */
-            backdrop-filter: blur(10px) brightness(1.1);
-            -webkit-backdrop-filter: blur(10px) brightness(1.1);
-            
-            /* Bordure subtile */
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            
-            /* Ombre pour détacher du fond - AMÉLIORÉE */
-            box-shadow: 
-                0 6px 25px rgba(0, 0, 0, 0.4),
-                0 3px 12px rgba(0, 0, 0, 0.3);
-            
-            /* Fond de secours plus opaque */
-            background-color: rgba(var(--tile-bg-rgb), 0.85) !important;
-            
-            /* Transition fluide */
-            transition: all 0.3s ease;
-        }
-        
-        .tile.enhanced-visibility:hover {
-            /* Plus visible au survol */
-            backdrop-filter: blur(15px) brightness(1.2);
-            -webkit-backdrop-filter: blur(15px) brightness(1.2);
-            box-shadow: 
-                0 12px 40px rgba(0, 0, 0, 0.5),
-                0 6px 20px rgba(0, 0, 0, 0.4);
-            transform: translateY(-3px) scale(1.02);
-        }
-        
-        /* Texte ENCORE PLUS contrasté */
-        .tile.enhanced-visibility .tile-title {
-            text-shadow: 
-                2px 2px 4px rgba(0, 0, 0, 0.9),
-                0 0 8px rgba(0, 0, 0, 0.7),
-                1px 1px 2px rgba(0, 0, 0, 1);
-            font-weight: 700;
-            letter-spacing: 0.3px;
-        }
-        
-        /* ========================================
-           COULEURS DE FOND PAR THÈME ET CATÉGORIE
-           ======================================== */
-        
-        /* THÈME ROUGE */
-        [data-theme="rouge"] .tile[data-category="news"].enhanced-visibility {
-            --tile-bg-rgb: 220, 38, 38; /* Rouge intense */
-        }
-        [data-theme="rouge"] .tile[data-category="photos"].enhanced-visibility {
-            --tile-bg-rgb: 234, 88, 12; /* Orange */
-        }
-        [data-theme="rouge"] .tile[data-category="tv"].enhanced-visibility {
-            --tile-bg-rgb: 245, 158, 11; /* Jaune-orange */
-        }
-        [data-theme="rouge"] .tile[data-category="sports"].enhanced-visibility {
-            --tile-bg-rgb: 234, 179, 8; /* Jaune */
-        }
-        [data-theme="rouge"] .tile[data-category="social"].enhanced-visibility {
-            --tile-bg-rgb: 194, 65, 12; /* Orange foncé */
-        }
-        [data-theme="rouge"] .tile[data-category="custom"].enhanced-visibility {
-            --tile-bg-rgb: 185, 28, 28; /* Rouge foncé */
-        }
-        [data-theme="rouge"] .tile[data-category="add-site"].enhanced-visibility {
-            --tile-bg-rgb: 220, 53, 69; /* Rouge vibrant */
-        }
-        
-        /* THÈME SOMBRE */
-        [data-theme="dark"] .tile[data-category="news"].enhanced-visibility {
-            --tile-bg-rgb: 30, 41, 59; /* Bleu foncé */
-        }
-        [data-theme="dark"] .tile[data-category="photos"].enhanced-visibility {
-            --tile-bg-rgb: 30, 64, 175; /* Bleu */
-        }
-        [data-theme="dark"] .tile[data-category="tv"].enhanced-visibility {
-            --tile-bg-rgb: 55, 48, 163; /* Indigo */
-        }
-        [data-theme="dark"] .tile[data-category="sports"].enhanced-visibility {
-            --tile-bg-rgb: 88, 28, 135; /* Violet */
-        }
-        [data-theme="dark"] .tile[data-category="social"].enhanced-visibility {
-            --tile-bg-rgb: 37, 99, 235; /* Bleu vif */
-        }
-        [data-theme="dark"] .tile[data-category="custom"].enhanced-visibility {
-            --tile-bg-rgb: 67, 56, 202; /* Indigo vif */
-        }
-        [data-theme="dark"] .tile[data-category="add-site"].enhanced-visibility {
-            --tile-bg-rgb: 124, 58, 237; /* Violet vif */
-        }
-        
-        /* THÈME BLEU CIEL */
-        [data-theme="bleuciel"] .tile[data-category="news"].enhanced-visibility {
-            --tile-bg-rgb: 14, 165, 233; /* Bleu ciel */
-        }
-        [data-theme="bleuciel"] .tile[data-category="photos"].enhanced-visibility {
-            --tile-bg-rgb: 6, 182, 212; /* Turquoise */
-        }
-        [data-theme="bleuciel"] .tile[data-category="tv"].enhanced-visibility {
-            --tile-bg-rgb: 5, 150, 105; /* Vert émeraude */
-        }
-        [data-theme="bleuciel"] .tile[data-category="sports"].enhanced-visibility {
-            --tile-bg-rgb: 13, 148, 136; /* Teal */
-        }
-        [data-theme="bleuciel"] .tile[data-category="social"].enhanced-visibility {
-            --tile-bg-rgb: 59, 130, 246; /* Bleu */
-        }
-        [data-theme="bleuciel"] .tile[data-category="custom"].enhanced-visibility {
-            --tile-bg-rgb: 34, 211, 238; /* Cyan */
-        }
-        [data-theme="bleuciel"] .tile[data-category="add-site"].enhanced-visibility {
-            --tile-bg-rgb: 16, 185, 129; /* Vert */
-        }
-        
-        /* THÈME VIOLET */
-        [data-theme="light"] .tile[data-category="news"].enhanced-visibility {
-            --tile-bg-rgb: 124, 58, 237; /* Violet */
-        }
-        [data-theme="light"] .tile[data-category="photos"].enhanced-visibility {
-            --tile-bg-rgb: 139, 92, 246; /* Violet clair */
-        }
-        [data-theme="light"] .tile[data-category="tv"].enhanced-visibility {
-            --tile-bg-rgb: 168, 85, 247; /* Violet vif */
-        }
-        [data-theme="light"] .tile[data-category="sports"].enhanced-visibility {
-            --tile-bg-rgb: 192, 38, 211; /* Magenta */
-        }
-        [data-theme="light"] .tile[data-category="social"].enhanced-visibility {
-            --tile-bg-rgb: 219, 39, 119; /* Rose */
-        }
-        [data-theme="light"] .tile[data-category="custom"].enhanced-visibility {
-            --tile-bg-rgb: 225, 29, 72; /* Rouge-rose */
-        }
-        [data-theme="light"] .tile[data-category="add-site"].enhanced-visibility {
-            --tile-bg-rgb: 147, 51, 234; /* Violet foncé */
-        }
-        
-        /* ========================================
-           COULEURS SPÉCIALES POUR LA TUILE "AJOUTER UN SITE"
-           ======================================== */
-        
-        /* Toujours très visible quelque soit le thème */
-        .tile.add-site-tile.enhanced-visibility {
-            border: 2px dashed rgba(255, 255, 255, 0.6) !important;
-            animation: shimmer-enhanced 2.5s infinite;
-        }
-        
-        .tile.add-site-tile.enhanced-visibility:hover {
-            border-color: rgba(255, 255, 255, 0.9) !important;
-            transform: translateY(-3px) scale(1.05);
-        }
-        
-        @keyframes shimmer-enhanced {
-            0% { 
-                box-shadow: 
-                    0 6px 25px rgba(0, 0, 0, 0.4),
-                    0 0 0 rgba(255, 255, 255, 0.3);
-            }
-            50% { 
-                box-shadow: 
-                    0 8px 30px rgba(0, 0, 0, 0.5),
-                    0 0 20px rgba(255, 255, 255, 0.6);
-            }
-            100% { 
-                box-shadow: 
-                    0 6px 25px rgba(0, 0, 0, 0.4),
-                    0 0 0 rgba(255, 255, 255, 0.3);
-            }
-        }
-        
-        /* ========================================
-           COMPATIBILITÉ MODE LISTE
-           ======================================== */
-        
-        .tile-container.list .tile.enhanced-visibility {
-            box-shadow: 
-                -4px 4px 15px rgba(0, 0, 0, 0.3),
-                -2px 2px 8px rgba(0, 0, 0, 0.2);
-        }
-        
-        .tile-container.list .tile.enhanced-visibility:hover {
-            box-shadow: 
-                -6px 6px 25px rgba(0, 0, 0, 0.4),
-                -3px 3px 12px rgba(0, 0, 0, 0.3);
-            transform: translateX(8px) scale(1.02);
-        }
-        
-        /* ========================================
-           RESPONSIVE MOBILE
-           ======================================== */
-        
-        @media (max-width: 768px) {
-            .tile.enhanced-visibility {
-                box-shadow: 
-                    0 4px 15px rgba(0, 0, 0, 0.3),
-                    0 2px 6px rgba(0, 0, 0, 0.2);
-            }
-            
-            .tile.enhanced-visibility:hover {
-                box-shadow: 
-                    0 6px 20px rgba(0, 0, 0, 0.4),
-                    0 3px 10px rgba(0, 0, 0, 0.3);
-                transform: translateY(-2px) scale(1.01);
-            }
-        }
+        ... TOUT LE CONTENU ...
     `;
     
     document.head.appendChild(style);
 }
+*/
 
 // Nouvelle méthode pour ouvrir la galerie photos
 openPhotosGallery() {
