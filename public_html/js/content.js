@@ -487,21 +487,21 @@ const tvSites = [
     category: 'sports'
   },
   {
-    title: '⚽ FC Montceau',
+    title: '⚽ FCMB',
     url: 'https://epreuves.fff.fr/competition/engagement/438243-regional-1-herbelin/phase/1/1/resultats-et-calendrier',
     mobileUrl: 'https://epreuves.fff.fr/competition/engagement/438243-regional-1-herbelin/phase/1/1/resultats-et-calendrier',
     isDefault: true,
     category: 'sports'
   },
   {
-    title: '🏀 ELAN Chalon',
+    title: '🏀ELAN Chalon',
     url: 'https://scorenco.com/basket/clubs/elan-chalon-basket-2m40/1-4xe3',
     mobileUrl: 'https://www.elanchalon.com/',
     isDefault: true,
     category: 'sports'
   },
   {
-    title: '🏉 RC Montceau',
+    title: '🏉 RCMB',
     url: 'https://scorenco.com/rugby/clubs/rc-montceau-bourgogne-2m2t',
     mobileUrl: 'https://scorenco.com/rugby/clubs/rc-montceau-bourgogne-2m2t',
     isDefault: true,
