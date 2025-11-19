@@ -1989,7 +1989,6 @@ changeTextContrast(contrast) {
     const nextLayout = currentLayout === 'grid' ? 'list' : 'grid';
     
     // Changement immédiat sans recréer les tuiles
-    this.setLayoutFast(nextLayout);
     this.showToast(`Vue : ${nextLayout === 'grid' ? 'grille' : 'liste'}`);
 }
 
@@ -2019,11 +2018,7 @@ setLayoutFast(layout) {
     
     // Forcer le navigateur à recalculer immédiatement
     this.tileContainer.offsetHeight; // Force reflow
-    
-    // Appliquer les corrections spécifiques au mode liste sans délai
-    if (layout === 'list') {
-        this.applyListModeImmediate();
-    }
+
 }
 
     updateLayoutIcon(layout) {
@@ -2302,48 +2297,6 @@ setLayoutFast(layout) {
         }
     }
 
-// 8. CORRECTION POUR LE MODE LISTE PC
-fixListModeLayout() {
-    const tileContainer = document.getElementById('tileContainer');
-    if (!tileContainer) return;
-    
-    // Application immédiate du bon mode
-    const currentLayout = localStorage.getItem('layout') || 'grid';
-    if (currentLayout === 'list') {
-        this.applyListModeImmediate();
-    }
-    
-    // Observer les changements MAIS sans délai
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                // Application immédiate sans délai
-                requestAnimationFrame(() => {
-                    this.updateListModeStylesFast();
-                });
-            }
-        });
-    });
-    
-    observer.observe(tileContainer, { attributes: true });
-}
-
-// 9. Mettre à jour les styles du mode liste
-updateListModeStylesFast() {
-    const tileContainer = document.getElementById('tileContainer');
-    if (!tileContainer) return;
-    
-    // Application immédiate selon le mode
-    if (tileContainer.classList.contains('list')) {
-        this.applyListModeImmediate();
-    } else {
-        // Mode grille - supprimer les styles de liste
-        const existingStyle = document.getElementById('listModeFixStyle');
-        if (existingStyle) {
-            existingStyle.remove();
-        }
-    }
-}
 
 	updateActiveNavLinks() {
         document.querySelectorAll('.bottom-nav .nav-item').forEach(navItem => {
