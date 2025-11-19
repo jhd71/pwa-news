@@ -316,7 +316,7 @@ setupTVIcons() {
 
 // TUILE PHOTOS SIMPLE
 const photosTile = {
-    title: "📸 Galerie Photos", 
+    title: "Galerie Photos", 
     url: "photos-gallery.html",
     mobileUrl: "photos-gallery.html",
     isDefault: true,
@@ -326,7 +326,7 @@ const photosTile = {
 
 // NOUVELLE TUILE QUIZ
 const quizTile = {
-    title: "🎯 Quiz Hebdo",
+    title: "Quiz Hebdo",
     url: "#quiz",
     mobileUrl: "#quiz",
     isDefault: true,
@@ -336,7 +336,7 @@ const quizTile = {
 
 // NOUVELLE TUILE MEMORY
 const memoryTile = {
-    title: "🎮 Memory Game",
+    title: "Memory Game",
     url: "memory-game.html",
     mobileUrl: "memory-game.html",
     isDefault: true,
@@ -345,7 +345,7 @@ const memoryTile = {
 
 // TUILE SIMON SAYS
 const simonTile = {
-    title: "🎵 Simon Says",
+    title: "Simon Says",
     url: "simon-says.html",
     mobileUrl: "simon-says.html",
     isDefault: true,
@@ -487,21 +487,21 @@ const tvSites = [
     category: 'sports'
   },
   {
-    title: '⚽ FC Montceau Bourgogne',
+    title: '⚽ FC Montceau',
     url: 'https://epreuves.fff.fr/competition/engagement/438243-regional-1-herbelin/phase/1/1/resultats-et-calendrier',
     mobileUrl: 'https://epreuves.fff.fr/competition/engagement/438243-regional-1-herbelin/phase/1/1/resultats-et-calendrier',
     isDefault: true,
     category: 'sports'
   },
   {
-    title: '🏀 ELAN Chalon Basket',
+    title: '🏀 ELAN Chalon',
     url: 'https://scorenco.com/basket/clubs/elan-chalon-basket-2m40/1-4xe3',
     mobileUrl: 'https://www.elanchalon.com/',
     isDefault: true,
     category: 'sports'
   },
   {
-    title: '🏉 RC Montceau Bourgogne',
+    title: '🏉 RC Montceau',
     url: 'https://scorenco.com/rugby/clubs/rc-montceau-bourgogne-2m2t',
     mobileUrl: 'https://scorenco.com/rugby/clubs/rc-montceau-bourgogne-2m2t',
     isDefault: true,
