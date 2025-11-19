@@ -63,8 +63,6 @@ const STATIC_RESOURCES = [
     '/css/survey-styles.css',
     
     // Améliorations et corrections
-    '/css/tile-enhancements.css',
-    '/css/tv-tiles-fix.css',
     '/css/donation.css',
 	'/css/seo-section.css',
     
