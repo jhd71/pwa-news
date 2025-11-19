@@ -110,7 +110,7 @@ body {
 }
 
 [data-theme="dark"] body {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%) #252d7a;
+    background: #000000;
 }
 
 /* THÈME ROUGE */
