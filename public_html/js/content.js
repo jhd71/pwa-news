@@ -39,6 +39,7 @@ class ContentManager {
     this.setupFontFamily();
     this.setupTextContrast();
     this.setupTiles();
+	this.fixListModeLayout(); // NOUVELLE LIGNE
 	this.updateActiveNavLinks();
 	this.setupVisualEnhancement();
 	}
@@ -2296,6 +2297,31 @@ setLayoutFast(layout) {
         }
     }
 
+// 8. CORRECTION POUR LE MODE LISTE PC
+fixListModeLayout() {
+    const tileContainer = document.getElementById('tileContainer');
+    if (!tileContainer) return;
+    
+    // Application immédiate du bon mode
+    const currentLayout = localStorage.getItem('layout') || 'grid';
+    if (currentLayout === 'list') {
+        this.applyListModeImmediate();
+    }
+    
+    // Observer les changements MAIS sans délai
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                // Application immédiate sans délai
+                requestAnimationFrame(() => {
+                    this.updateListModeStylesFast();
+                });
+            }
+        });
+    });
+    
+    observer.observe(tileContainer, { attributes: true });
+}
 
 	updateActiveNavLinks() {
         document.querySelectorAll('.bottom-nav .nav-item').forEach(navItem => {
