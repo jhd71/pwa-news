@@ -1989,6 +1989,7 @@ changeTextContrast(contrast) {
     const nextLayout = currentLayout === 'grid' ? 'list' : 'grid';
     
     // Changement immédiat sans recréer les tuiles
+    this.setLayoutFast(nextLayout);
     this.showToast(`Vue : ${nextLayout === 'grid' ? 'grille' : 'liste'}`);
 }
 
