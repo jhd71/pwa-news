@@ -831,68 +831,35 @@ main {
     margin: 10px 0;
 }
 
-/* ==========================================================================
-   11. TUILES
-   ========================================================================== */
-.tile-container {
-    display: grid;
-    gap: 8px;
-    padding: 8px 12px;
-    margin: 0 auto;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
+/* ============================================
+   10. GRILLE DE TUILES
+   ============================================ */
 
-.tile-container.grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+.tiles-container {
     max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-lg) var(--spacing-md);
+    animation: fadeInUp 0.8s ease-out 0.8s both;
 }
 
-.tile-container.list {
-    grid-template-columns: 1fr;
-    max-width: 800px;
-    gap: 6px;
-}
-
-.tile-container.grid .tile {
-    height: 80px;
-}
-
-.tile-container.list .tile {
-    height: 40px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 10px 15px;
-}
-
-.tile-container.grid .tile:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.tile-container.list .tile:hover {
-    transform: translateX(10px);
-    box-shadow: -4px 4px 8px rgba(0, 0, 0, 0.2);
+.tiles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: var(--spacing-md);
 }
 
 .tile {
-    background-color: var(--card-background);
-    border-radius: 12px;
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    text-align: center;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-tap-highlight-color: transparent;
-    box-shadow: 0 2px 5px var(--shadow-color);
-    height: 80px;
-    overflow: hidden;
+    transition: all var(--transition-normal);
+    box-shadow: var(--shadow-sm);
     position: relative;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    transform-origin: center;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    opacity: var(--tile-opacity, 1);
+    overflow: hidden;
 }
 
 .tile::before {
@@ -900,69 +867,41 @@ main {
     position: absolute;
     top: 0;
     left: -100%;
-    width: 50%;
+    width: 100%;
     height: 100%;
-    background: linear-gradient(
-        to right,
-        transparent 0%,
-        rgba(255, 255, 255, 0.1) 50%,
-        transparent 100%
-    );
-    transform: skewX(-25deg);
-    transition: left 0.5s ease;
-    pointer-events: none;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.1), 
+        transparent);
+    transition: left var(--transition-slow);
 }
 
 .tile:hover::before {
-    left: 150%;
-}
-
-[data-theme="dark"] .tile {
-    opacity: 0.85;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-}
-
-[data-theme="dark"] .tile:hover {
-    opacity: 1;
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    left: 100%;
 }
 
 .tile:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    filter: brightness(1.05);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    opacity: 1;
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: var(--shadow-md);
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.15);
 }
 
-.tile:active {
-    transform: scale(0.98);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: all 0.1s ease;
+.tile-icon {
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-sm);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    transition: all var(--transition-normal);
 }
 
-.tile-content {
-    padding: 10px;
-    text-align: center;
-    width: 100%;
-    pointer-events: none;
+.tile:hover .tile-icon {
+    transform: scale(1.1) rotate(-5deg);
 }
 
-.tile-title {
-    font-size: var(--tile-title-size);
+.tile-label {
     font-weight: 600;
-    color: white;
-    text-align: center;
-    width: 100%;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-    line-height: 1.2;
-    padding: 0 8px;
-    transition: transform 0.3s ease;
-}
-
-.tile:hover .tile-title {
-    transform: scale(1.05);
+    font-size: 0.95rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* Styles de taille pour les tuiles */
