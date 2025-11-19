@@ -2337,40 +2337,6 @@ fixListModeLayout() {
         });
     }
 
-	// ========================================
-// DÉSACTIVÉ - Conflit avec Liquid Glass CSS
-// ========================================
-
-/*
-// Méthode pour améliorer automatiquement la visibilité des tuiles
-autoEnhanceTileVisibility() {
-    // Appliquer les améliorations visuelles à toutes les tuiles
-    const tiles = document.querySelectorAll('.tile');
-    
-    tiles.forEach(tile => {
-        // Ajouter une classe pour le style amélioré
-        tile.classList.add('enhanced-visibility');
-    });
-    
-    // Ajouter les styles CSS si ils n'existent pas
-    this.addVisibilityStyles();
-}
-
-// Ajouter les styles CSS directement via JavaScript
-addVisibilityStyles() {
-    // Vérifier si les styles existent déjà
-    if (document.getElementById('visibility-styles')) return;
-    
-    const style = document.createElement('style');
-    style.id = 'visibility-styles';
-    style.textContent = `
-        ... TOUT LE CONTENU ...
-    `;
-    
-    document.head.appendChild(style);
-}
-*/
-
 // Nouvelle méthode pour ouvrir la galerie photos
 openPhotosGallery() {
     try {
