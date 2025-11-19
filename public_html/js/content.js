@@ -494,7 +494,7 @@ const tvSites = [
     category: 'sports'
   },
   {
-    title: '🏀ELAN Chalon',
+    title: '🏀 ELAN Chalon',
     url: 'https://scorenco.com/basket/clubs/elan-chalon-basket-2m40/1-4xe3',
     mobileUrl: 'https://www.elanchalon.com/',
     isDefault: true,

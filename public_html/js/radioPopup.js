@@ -208,7 +208,7 @@ class RadioPopupWidget {
         tileElement.setAttribute('data-category', 'Espace+');
         tileElement.innerHTML = `
             <div class="tile-content">
-                <div class="tile-title">🎵 Lecteur Radio</div>
+                <div class="tile-title">Lecteur Radio</div>
             </div>
             <div class="radio-tile-indicator" id="radioTileIndicator" style="display: none;"></div>
             <div class="radio-tile-status" id="radioTileStatus" style="display: none;"></div>
