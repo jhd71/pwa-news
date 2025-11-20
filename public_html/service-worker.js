@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infos-pwa-v67'; // Incrémenté pour forcer la mise à jour
+const CACHE_NAME = 'infos-pwa-v68'; // Incrémenté pour forcer la mise à jour
 const API_CACHE_NAME = 'infos-api-cache-v1';
 
 const STATIC_RESOURCES = [
@@ -24,7 +24,6 @@ const STATIC_RESOURCES = [
     '/conditions-utilisation.html',
     '/memory-game.html',
     '/simon-says.html',
-    '/snake-game.html',
     
     // Feuilles de style CSS - Réorganisées
     // CSS Global et thèmes
@@ -48,14 +47,11 @@ const STATIC_RESOURCES = [
     
     // Outils et applications
     '/css/radioPopup.css',
-    '/css/notepadApp.css',
-    '/css/todoApp.css',
     '/css/petites-annonces.css',
     
     // Jeux
     '/css/memory-game.css',
     '/css/simon-says.css',
-    '/css/snake-game.css',
 	'/css/seasonal-events.css',
     
     // Interface utilisateur
@@ -99,13 +95,10 @@ const STATIC_RESOURCES = [
     '/js/ios-fixes-safe.js',
     '/js/expense-manager.js',
     '/js/radioPopup.js',
-    '/js/notepadApp.js',
-    '/js/todoApp.js',
     '/js/quiz-local.js',
     '/js/annonces-manager.js',
     '/js/memory-game.js',
     '/js/simon-says.js',
-    '/js/snake-game.js',
     '/js/seasonal-events.js',
     
     // Fichiers de configuration
