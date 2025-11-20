@@ -324,16 +324,6 @@ const photosTile = {
     isSlideshow: false // Plus de diaporama
 };
 
-// NOUVELLE TUILE QUIZ
-const quizTile = {
-    title: "Quiz Hebdo",
-    url: "#quiz",
-    mobileUrl: "#quiz",
-    isDefault: true,
-    category: "quiz",
-    isQuiz: true
-};
-
 // NOUVELLE TUILE MEMORY
 const memoryTile = {
     title: "Memory Game",
@@ -392,10 +382,6 @@ const separatorGames = document.createElement('div');
 separatorGames.className = 'separator';
 separatorGames.innerHTML = `<h2 class="separator-text">🎮 Jeux</h2>`;
 this.tileContainer.appendChild(separatorGames);
-
-// TUILE QUIZ
-const quizTileElement = this.createTile(quizTile);
-this.tileContainer.appendChild(quizTileElement);
 
 // TUILE MEMORY
 const memoryTileElement = this.createTile(memoryTile);
@@ -518,14 +504,6 @@ const tvSites = [
         // Section Réseaux Sociaux
         const socialSites = [
   {
-    title: '📊 Sondage Actu & Média',
-    url: '#survey', // URL spéciale pour le sondage
-    mobileUrl: '#survey',
-    isDefault: true,
-    category: 'social',
-    isSurvey: true // Marqueur spécial
-  },
-  {
     title: '🔴 YouTube',
     url: 'https://www.youtube.com/feed/trending',
     mobileUrl: 'https://www.youtube.com/feed/trending',
@@ -604,10 +582,6 @@ tile.className = 'tile';
     
     // Ajouter l'attribut data-category pour faciliter le ciblage CSS
     tile.setAttribute('data-category', site.category || 'default');
-    // Marquer spécialement la tuile sondage
-	if (site.isSurvey) {
-    tile.classList.add('survey-tile');
-	}
 
     // Ajouter des classes conditionnelles pour les designs spéciaux
     if (site.isLive && site.category === 'tv') {
@@ -629,46 +603,6 @@ tile.className = 'tile';
     // Gestion du clic normal
 	tile.addEventListener('click', () => {
     this.animateTileClick(tile);
-    
-    // Gestion spéciale pour le sondage
-	if (site.isSurvey) {
-        // Appeler directement la fonction d'ouverture du sondage de survey-manager.js
-        if (typeof window.openSurveyModal !== 'undefined') {
-            window.openSurveyModal();
-        } else {
-            // Fallback : déclencher l'événement comme si on cliquait sur le bouton
-            setTimeout(() => {
-                const surveyModal = document.getElementById('surveyModal');
-                if (surveyModal) {
-                    // Déclencher l'ouverture du modal avec toute la logique
-                    const event = new CustomEvent('openSurvey');
-                    document.dispatchEvent(event);
-                }
-            }, 100);
-        }
-        return;
-	}
-
-// Gestion spéciale pour le quiz
-if (site.isQuiz) {
-    // Vérifier si le quiz est déjà chargé
-    if (typeof window.quizLocal !== 'undefined' && window.quizLocal) {
-        window.quizLocal.openQuizModal();
-    } else {
-        // Charger le script une seule fois
-        if (!document.querySelector('script[src="js/quiz-local.js"]')) {
-            const script = document.createElement('script');
-            script.src = 'js/quiz-local.js';
-            script.onload = () => {
-                if (window.quizLocal) {
-                    window.quizLocal.openQuizModal();
-                }
-            };
-            document.head.appendChild(script);
-        }
-    }
-    return;
-}
 
     // Gestion spéciale pour la tuile "Ajouter un site"
     if (site.isAddSite) {

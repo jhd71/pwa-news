@@ -57,7 +57,6 @@ const STATIC_RESOURCES = [
     '/css/chat-styles.css',
     '/css/chat-ban.css',
     '/css/settings-styles.css',
-    '/css/survey-styles.css',
     
     // Améliorations et corrections
     '/css/donation.css',
@@ -92,9 +91,7 @@ const STATIC_RESOURCES = [
     '/js/visitor-tracker.js',
     '/js/football-widget.js',
     '/js/ios-fixes-safe.js',
-    '/js/expense-manager.js',
     '/js/radioPopup.js',
-    '/js/quiz-local.js',
     '/js/annonces-manager.js',
     '/js/memory-game.js',
     '/js/simon-says.js',

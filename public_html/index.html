@@ -214,7 +214,6 @@
 <link rel="stylesheet" href="css/chat-styles.css">
 <link rel="stylesheet" href="css/chat-ban.css">
 <link rel="stylesheet" href="css/settings-styles.css">
-<link rel="stylesheet" href="css/survey-styles.css">
 
 <!-- 🎨 Améliorations et corrections -->
 <link rel="stylesheet" href="css/donation.css">
@@ -505,14 +504,6 @@ Actu & Média
         </a>
     </div>
     
-    <!-- NOUVEAU - Gestionnaire de dépenses -->
-    <div class="menu-item">
-    <a href="/gestionnaire-depenses-info.html">
-        <span class="material-icons">account_balance_wallet</span>
-        Gestionnaire de dépenses
-    </a>
-</div>
-    
     <!-- 1. Contact -->
     <div class="menu-item">
         <a href="/contact.html">
@@ -657,7 +648,6 @@ Actu & Média
 
 <!-- Gestionnaires et fonctionnalités -->
 <script src="js/welcome-manager.js"></script>
-<script src="js/expense-manager.js"></script>
 <script src="js/donation.js"></script>
 <script src="js/survey-manager.js"></script>
 
@@ -742,151 +732,6 @@ Actu & Média
     <span class="material-icons">refresh</span> 
     Actualiser les infos
   </button>
-</div>
-<div class="survey-modal" id="surveyModal">
-    <div class="survey-content">
-        <div class="survey-header">
-            <h2>Sondage 2025 - Votre avis compte !</h2>
-            <button class="close-survey" id="closeSurvey"></button>
-        </div>
-        
-        <div id="surveyQuestions">
-    <!-- Question 1 : Fréquence d'utilisation -->
-    <div class="survey-question" data-question="frequence">
-        <h3>À quelle fréquence consultez-vous Actu & Média ?</h3>
-        <div class="survey-options">
-            <div class="survey-option" data-value="quotidien">
-                <div class="survey-option-icon">
-                    <span class="material-icons">today</span>
-                </div>
-                <span>Tous les jours</span>
-            </div>
-            <div class="survey-option" data-value="hebdomadaire">
-                <div class="survey-option-icon">
-                    <span class="material-icons">date_range</span>
-                </div>
-                <span>Plusieurs fois par semaine</span>
-            </div>
-            <div class="survey-option" data-value="occasionnel">
-                <div class="survey-option-icon">
-                    <span class="material-icons">event</span>
-                </div>
-                <span>Occasionnellement</span>
-            </div>
-            <div class="survey-option" data-value="rare">
-                <div class="survey-option-icon">
-                    <span class="material-icons">event_busy</span>
-                </div>
-                <span>Rarement</span>
-            </div>
-            <div class="survey-option" data-value="premiere">
-                <div class="survey-option-icon">
-                    <span class="material-icons">star</span>
-                </div>
-                <span>Première visite</span>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Question 2 : Contenu préféré -->
-    <div class="survey-question" data-question="contenu">
-        <h3>Quel type de contenu vous intéresse le plus ?</h3>
-        <div class="survey-options">
-            <div class="survey-option" data-value="actualites_locales">
-                <div class="survey-option-icon">
-                    <span class="material-icons">article</span>
-                </div>
-                <span>Actualités locales</span>
-            </div>
-            <div class="survey-option" data-value="evenements">
-                <div class="survey-option-icon">
-                    <span class="material-icons">celebration</span>
-                </div>
-                <span>Événements & sorties</span>
-            </div>
-            <div class="survey-option" data-value="pratique">
-                <div class="survey-option-icon">
-                    <span class="material-icons">lightbulb</span>
-                </div>
-                <span>Infos pratiques</span>
-            </div>
-            <div class="survey-option" data-value="culture">
-                <div class="survey-option-icon">
-                    <span class="material-icons">theater_comedy</span>
-                </div>
-                <span>Culture & loisirs</span>
-            </div>
-            <div class="survey-option" data-value="meteo">
-                <div class="survey-option-icon">
-                    <span class="material-icons">wb_sunny</span>
-                </div>
-                <span>Météo & services</span>
-            </div>
-            <div class="survey-option" data-value="tout">
-                <div class="survey-option-icon">
-                    <span class="material-icons">apps</span>
-                </div>
-                <span>Tout m'intéresse</span>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Question 3 : Recommandation -->
-    <div class="survey-question" data-question="recommandation">
-        <h3>Recommanderiez-vous Actu & Média à vos proches ?</h3>
-        <div class="survey-options">
-            <div class="survey-option" data-value="certainement">
-                <div class="survey-option-icon">
-                    <span class="material-icons">favorite</span>
-                </div>
-                <span>Oui, certainement</span>
-            </div>
-            <div class="survey-option" data-value="probablement">
-                <div class="survey-option-icon">
-                    <span class="material-icons">thumb_up</span>
-                </div>
-                <span>Probablement oui</span>
-            </div>
-            <div class="survey-option" data-value="peut_etre">
-                <div class="survey-option-icon">
-                    <span class="material-icons">help_outline</span>
-                </div>
-                <span>Peut-être</span>
-            </div>
-            <div class="survey-option" data-value="probablement_pas">
-                <div class="survey-option-icon">
-                    <span class="material-icons">thumb_down</span>
-                </div>
-                <span>Probablement pas</span>
-            </div>
-            <div class="survey-option" data-value="non">
-                <div class="survey-option-icon">
-                    <span class="material-icons">cancel</span>
-                </div>
-                <span>Non</span>
-            </div>
-        </div>
-    </div>
-    
-    <button class="survey-submit" id="surveySubmit">Envoyer mes réponses</button>
-</div>
-        
-        <!-- Message de remerciement et résultats -->
-        <div class="thank-you-message" id="thankYouMessage" style="display: none;">
-            <span class="thank-you-icon">🎉</span>
-            <h3>Merci pour votre participation !</h3>
-            <p>Votre avis nous aide à faire évoluer Actu & Média en 2025.</p>
-            
-            <div class="survey-results">
-                <h4>Résultats actuels du sondage</h4>
-                <div id="surveyResults">
-                    <!-- Les résultats seront injectés ici par JavaScript -->
-                </div>
-            </div>
-            
-            <button class="back-to-survey" id="closeSurveyAfterSubmit">Retour au site</button>
-        </div>
-    </div>
 </div>
 
 <!-- Popup de don optimisée -->
