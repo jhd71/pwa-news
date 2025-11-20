@@ -136,12 +136,6 @@ class TodoListWidget {
                 gradientStyle = 'linear-gradient(135deg, #5e35b1, #673ab7)';
         }
         
-        tileElement.style.cssText = `
-            background: ${gradientStyle};
-            color: white;
-            position: relative;
-        `;
-        
         // Compter les tâches du jour
         const todayTasks = this.getTasksForToday().length;
         const urgentTasks = this.tasks.filter(t => t.priority === 'high' && !t.completed).length;
