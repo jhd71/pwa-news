@@ -79,7 +79,6 @@ const STATIC_RESOURCES = [
     '/js/quick-links.js',
     '/js/sounds.js',
     '/js/supabase-client.js',
-    '/js/survey-manager.js',
     '/js/tablet-fixes.js',
     '/js/theme-manager.js',
     '/js/utils.js',
