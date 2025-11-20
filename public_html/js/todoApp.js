@@ -141,10 +141,6 @@ class TodoListWidget {
         const urgentTasks = this.tasks.filter(t => t.priority === 'high' && !t.completed).length;
         
         tileElement.innerHTML = `
-            <div class="tile-content">
-                <div class="tile-title" style="color: white; font-weight: bold;">
-                    ✓ Todo List
-                </div>
                 ${todayTasks > 0 ? `<div style="font-size: 11px; margin-top: 5px; opacity: 0.9;">${todayTasks} tâche(s) aujourd'hui</div>` : ''}
                 ${urgentTasks > 0 ? `<div style="position: absolute; top: 5px; right: 5px; background: #ff5252; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold;">${urgentTasks}</div>` : ''}
             </div>
