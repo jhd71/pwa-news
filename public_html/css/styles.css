@@ -3162,162 +3162,108 @@ main {
     }
 }
 
-/* ==========================================================================
-   24. SWIPER
-   ========================================================================== */
-.swiper-container {
-    width: 100%;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 120px;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: center;
-    padding: 0;
-    box-sizing: border-box;
-    position: relative;
-    z-index: 2;
+/* ============================================
+   7. CARROUSEL SWIPER
+   ============================================ */
+
+.swiper-section {
+    max-width: 1200px;
+    margin: var(--spacing-lg) auto;
+    padding: 0 var(--spacing-md);
+    animation: fadeInUp 0.8s ease-out 0.2s both;
 }
 
 .swiper {
-    width: 100%;
-    max-width: 800px;
-    height: 300px;
-    border-radius: 15px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    border-radius: var(--radius-2xl);
     overflow: hidden;
-    position: relative;
-    background-color: var(--primary-color);
-    margin: 0 auto;
+    box-shadow: var(--shadow-lg);
 }
 
 .swiper-slide {
+    background: linear-gradient(135deg, 
+        rgba(0, 0, 0, 0.7) 0%, 
+        rgba(0, 0, 0, 0.4) 100%);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-2xl);
     position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    padding: 0;
-    margin: 0;
+    min-height: 400px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #000;
 }
 
-.swiper-slide a {
-    display: block;
-    width: 100%;
-    height: 100%;
-    position: relative;
-    color: white;
-    text-decoration: none;
-}
-
-.swiper-slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 30%;
-    display: block;
-    z-index: 1;
-    max-height: none;
-}
-
-.slide-content {
+.swiper-slide::before {
+    content: '';
     position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 15px 15px 30px 15px;
-    background: linear-gradient(to top, 
-        rgba(0,0,0,0.95) 0%,
-        rgba(0,0,0,0.85) 30%,
-        rgba(0,0,0,0.6) 70%,
-        transparent 100%
-    );
-    text-shadow: 3px 3px 6px rgba(0, 0, 0, 1);
-    z-index: 2;
-    height: auto;
-    min-height: 80px;
+    background: linear-gradient(180deg, 
+        transparent 0%, 
+        rgba(0, 0, 0, 0.6) 100%);
+    pointer-events: none;
 }
 
-.slide-title {
-    color: white;
-    font-weight: bold;
-    font-size: 16px;
-    margin: 0 0 5px 0;
-    padding: 0;
+.loading-slide {
     text-align: center;
-    line-height: 1.4;
-    text-shadow: 
-        2px 2px 4px rgba(0, 0, 0, 0.9),
-        -1px -1px 2px rgba(0, 0, 0, 0.9),
-        1px -1px 2px rgba(0, 0, 0, 0.9),
-        -1px 1px 2px rgba(0, 0, 0, 0.9);
 }
 
-.slide-source {
-    font-size: 14px;
-    color: #ffcc00;
-    font-weight: bold;
-    opacity: 1;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    text-shadow: 
-        2px 2px 4px rgba(0, 0, 0, 1),
-        -1px -1px 2px rgba(0, 0, 0, 1),
-        1px -1px 2px rgba(0, 0, 0, 1),
-        -1px 1px 2px rgba(0, 0, 0, 1);
+.loading-content {
+    position: relative;
+    z-index: 1;
+    padding: var(--spacing-2xl);
 }
 
-.swiper-button-next,
-.swiper-button-prev {
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.9);
+.spinner {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto var(--spacing-lg);
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid white;
     border-radius: 50%;
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--primary-color);
-    transition: all 0.3s ease;
+    animation: spin 1s linear infinite;
 }
 
-.swiper-button-next:after,
-.swiper-button-prev:after {
-    font-size: 20px;
-    font-weight: bold;
+.loading-text {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-sm);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
 }
 
-.swiper-button-next:hover,
-.swiper-button-prev:hover {
-    background: white;
-    transform: translateY(-50%) scale(1.1);
-}
-
-.swiper-pagination {
-    position: absolute;
-    bottom: 3px;
-    left: 0;
-    right: 0;
-    z-index: 10;
+.loading-subtext {
+    font-size: 0.9rem;
+    opacity: 0.8;
 }
 
 .swiper-pagination-bullet {
-    background: rgba(255, 255, 255, 0.6);
-    width: 10px;
-    height: 10px;
-    margin: 0 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 1;
+    transition: all var(--transition-normal);
 }
 
 .swiper-pagination-bullet-active {
     background: white;
-    width: 12px;
-    height: 12px;
+    width: 30px;
+    border-radius: 10px;
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+    color: white;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: all var(--transition-normal);
+}
+
+.swiper-button-prev:hover,
+.swiper-button-next:hover {
+    background: rgba(0, 0, 0, 0.5);
+    transform: scale(1.1);
 }
 
 /* THÈMES */
