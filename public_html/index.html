@@ -1,1148 +1,405 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="light" data-font-size="normal">
+<html lang="fr">
 <head>
-<style>
-    /* Masquer widgets sur mobile dès le chargement */
-    @media (max-width: 767px) {
-        .cinema-widget-container {
-            display: none !important;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Actu & Média - Besoin de votre soutien</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-</style>
-<style>
-    /* Désactiver TOUTES les transitions pendant le changement de thème */
-    .theme-transitioning,
-    .theme-transitioning * {
-        transition: none !important;
-        animation: none !important;
+
+    body {
+      background: linear-gradient(135deg, #0d1b3f 0%, #1e3a5c 50%, #2c5282 100%);
+      color: #ffffff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow-x: hidden;
     }
-</style>
-<script>
-    // Appliquer le thème sauvegardé dès le début du chargement
-    (function() {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            document.documentElement.setAttribute('data-theme', savedTheme);
-        } else {
-            document.documentElement.setAttribute('data-theme', 'rouge');
-        }
-    })();
-</script>
 
-    <!-- === SECTION SEO OPTIMISÉE === -->
-    
-    <!-- Méta-informations essentielles -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
-    
-    <!-- Titre optimisé (60 caractères max) -->
-    <title>Actu&Média Montceau | Actualités locales, météo, info 71300</title>
-    
-    <!-- Description optimisée (155 caractères max) -->
-    <meta name="description" content="Toute l'actualité de Montceau-les-Mines et Saône-et-Loire en temps réel. Infos locales, météo, radio, TV direct, cinéma. Le média local de référence.">
-    
-    <!-- Mots-clés ciblés -->
-    <meta name="keywords" content="Montceau-les-Mines actualités, news 71300, Le JSL, Saône-et-Loire infos, Montceau aujourd'hui, événements Montceau, cinéma L'Embarcadère, météo Montceau, petites annonces Montceau, chat local, Creusot Montceau, Blanzy, Saint-Vallier">
-    
-    <!-- Auteur et copyright -->
-    <meta name="author" content="Actu & Média">
-    <meta name="copyright" content="Actu & Média 2025">
-    
-    <!-- Langue et région -->
-    <meta name="language" content="fr-FR">
-    <meta name="geo.region" content="FR-BFC">
-    <meta name="geo.placename" content="Montceau-les-Mines">
-    <meta name="geo.position" content="46.6739;4.3629">
-    <meta name="ICBM" content="46.6739, 4.3629">
-    
-    <!-- Robots et indexation -->
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-    <meta name="googlebot" content="index, follow">
-    <meta name="bingbot" content="index, follow">
-    
-    <!-- Vérification Google -->
-    <meta name="google-site-verification" content="74sCYbSwcWjU7BQ8Mxhboe9IiRzajIbyy6C1hyuAr3U">
-    
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://actuetmedia.fr/">
-    
-    <!-- Alternate pour mobile -->
-    <link rel="alternate" media="only screen and (max-width: 640px)" href="https://actuetmedia.fr/">
-    
-    <!-- === OPEN GRAPH (Facebook, LinkedIn) === -->
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Actu & Média">
-    <meta property="og:locale" content="fr_FR">
-    <meta property="og:url" content="https://actuetmedia.fr/">
-    <meta property="og:title" content="Actu & Média - L'actualité de Montceau-les-Mines en temps réel">
-    <meta property="og:description" content="Toute l'info locale de Montceau-les-Mines et environs : actualités, météo, événements, cinéma, radio et TV en direct. Votre média de proximité.">
-    <meta property="og:image" content="https://actuetmedia.fr/images/og-image-1200x630.jpg">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Actu & Média - Le média local de Montceau-les-Mines">
-    
-    <!-- === TWITTER CARD === -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@ActuetMedia">
-    <meta name="twitter:creator" content="@ActuetMedia">
-    <meta name="twitter:url" content="https://actuetmedia.fr/">
-    <meta name="twitter:title" content="Actu & Média | Info Montceau-les-Mines">
-    <meta name="twitter:description" content="L'actualité de Montceau-les-Mines en temps réel. Info locale, météo, événements.">
-    <meta name="twitter:image" content="https://actuetmedia.fr/images/twitter-card-1200x600.jpg">
-    <meta name="twitter:image:alt" content="Actu & Média Montceau">
-    
-    <!-- === SCHEMA.ORG / JSON-LD === --> 
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "Actu & Média",
-  "alternateName": "Actu&Média Montceau",
-  "url": "https://actuetmedia.fr/",
-  "description": "Le média local de référence pour l'actualité de Montceau-les-Mines et la Saône-et-Loire",
-  "publisher": {
-    "@type": "Organization",
-    "name": "Actu & Média",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://actuetmedia.fr/images/AM-512-v2.png",
-      "width": 512,
-      "height": 512
+    /* Animation de fond */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="white" opacity="0.1"><animate attributeName="opacity" values="0.1;0.3;0.1" dur="3s" repeatCount="indefinite"/></circle><circle cx="80" cy="30" r="1.5" fill="white" opacity="0.1"><animate attributeName="opacity" values="0.1;0.4;0.1" dur="4s" repeatCount="indefinite"/></circle><circle cx="60" cy="70" r="1" fill="white" opacity="0.1"><animate attributeName="opacity" values="0.1;0.5;0.1" dur="2s" repeatCount="indefinite"/></circle></svg>') repeat;
+      animation: float 20s ease-in-out infinite;
     }
-  }
-}
-</script>
 
-<!-- === LOCAL PROJECT SCHEMA === -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Blog",
-  "name": "Actu & Média",
-  "url": "https://actuetmedia.fr/",
-  "logo": "https://actuetmedia.fr/images/AM-512-v2.png",
-  "about": "Actualités locales, radios, outils et informations pratiques pour Montceau-les-Mines et la Saône-et-Loire",
-  "inLanguage": "fr",
-  "contentLocation": {
-    "@type": "Place",
-    "name": "Montceau-les-Mines",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Montceau-les-Mines",
-      "postalCode": "71300",
-      "addressRegion": "Saône-et-Loire",
-      "addressCountry": "FR"
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
     }
-  }
-}
-</script>
-    
-    <!-- === PWA & MANIFEST === -->
-    <link rel="manifest" href="/manifest.json">
-    <meta name="application-name" content="Actu&Média">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#940000">
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#940000">
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#940000">
-    <meta name="msapplication-navbutton-color" content="#940000">
-    <meta name="msapplication-starturl" content="/">
-    <meta name="msapplication-TileColor" content="#940000">
-    
-    <!-- === APPLE / iOS === -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Actu&Média">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="format-detection" content="telephone=no">
-    
-    <!-- === FAVICONS ET ICÔNES === -->
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="/images/AM-192-v2.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="/images/AM-512-v2.png">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="/images/AM-192-v2.png">
-    <meta name="msapplication-TileImage" content="/images/AM-192-v2.png">
-    
-    <!-- === PERFORMANCE & PRELOAD === -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-    
-    <!-- === SÉCURITÉ === -->
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
-    <meta name="referrer" content="strict-origin-when-cross-origin">
-    
-    <!-- === BIBLIOTHÈQUES EXTERNES === -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-client.js"></script>
-	
-    <!-- === POLICES GOOGLE FONTS === -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;900&family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
 
-    <!-- === FEUILLES DE STYLE === -->
-
-<!-- ⚡ CSS CRITIQUES - CHARGEMENT PRIORITAIRE -->
-<link rel="stylesheet" href="css/styles.css">
-<link rel="stylesheet" href="css/themes-liquid-glass.css">
-<link rel="stylesheet" href="css/news-panel.css">
-<link rel="stylesheet" href="css/theme-bleuciel.css">
-<link rel="stylesheet" href="css/font-settings.css">
-
-<!-- 📱 Widgets principaux (visibles immédiatement) -->
-<link rel="stylesheet" href="css/quick-links.css">
-<link rel="stylesheet" href="css/weather-widget.css">
-<link rel="stylesheet" href="css/visitor-tracker.css">
-<link rel="stylesheet" href="css/news-widget.css">
-
-<!-- 🎬 Widgets secondaires (contenu enrichi) -->
-<link rel="stylesheet" href="css/cinema-widget.css">
-<link rel="stylesheet" href="css/football-widget.css">
-<link rel="stylesheet" href="css/gallery-styles.css">
-
-<!-- 🛠️ Outils et applications -->
-<link rel="stylesheet" href="css/radioPopup.css">
-<link rel="stylesheet" href="css/petites-annonces.css">
-
-<!-- 💬 Interface utilisateur -->
-<link rel="stylesheet" href="css/chat-styles.css">
-<link rel="stylesheet" href="css/chat-ban.css">
-<link rel="stylesheet" href="css/settings-styles.css">
-
-<!-- 🎨 Améliorations et corrections -->
-<link rel="stylesheet" href="css/donation.css">
-
-<!-- 🎨 seo-section -->
-<link rel="stylesheet" href="css/seo-section.css">
-
-<!-- 🎉 Événements saisonniers -->
-<link rel="stylesheet" href="css/seasonal-events.css">
-
-<!-- 🔧 CORRECTION THÈME SOMBRE - MODAL PROPOSITION -->
-<style>
-/* 🔧 FIX RAPIDE : Input file en thème sombre */
-[data-theme="dark"] .file-upload-label,
-[data-theme="dark"] input[type="file"] {
-    background: #2d2d2d !important;
-    color: #e0e0e0 !important;
-    border-color: #404040 !important;
-}
-
-.file-upload input[type="file"] {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-}
-
-.file-upload-label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 15px;
-    border: 2px dashed #ccc;
-    border-radius: 8px;
-    cursor: pointer;
-    background: white;
-    color: #333;
-}
-
-[data-theme="dark"] .file-upload-label {
-    background: #2d2d2d;
-    color: #e0e0e0;
-    border-color: #404040;
-}
-</style>
-
-<!-- ✅ AJOUTEZ CE CSS ICI -->
-    <style>
-    /* Texte SEO responsive et accessible */
-    .seo-section {
-      padding: 20px;
-      max-width: 1200px;
-      margin: 0 auto 20px;
-      text-align: center;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 12px;
+    .container {
+      max-width: 650px;
+      width: 90%;
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(10px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      animation: slideUp 0.8s ease-out;
     }
 
-    .seo-section h2 {
-      font-size: 1.8rem;
-      margin-bottom: 15px;
-      color: #ffffff !important;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    .seo-section p {
-      font-size: 1rem;
+    .logo-placeholder {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(45deg, #4299e1, #3182ce);
+      border-radius: 50%;
+      margin: 0 auto 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    h1 {
+      font-size: 2.2em;
+      margin-bottom: 10px;
+      background: linear-gradient(45deg, #ffffff, #e2e8f0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      font-size: 1.05em;
+      margin-bottom: 10px;
+      opacity: 0.9;
       line-height: 1.6;
+    }
+
+    .subtitle-strong {
+      font-size: 1.05em;
+      margin-bottom: 25px;
+      line-height: 1.6;
+      color: #fefcbf;
+      font-weight: 500;
+    }
+
+    .info-badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin: 10px 0 20px;
+      font-size: 0.85em;
+    }
+
+    .info-badge {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(4px);
+    }
+
+    .goal-text {
+      font-size: 0.95em;
+      margin-top: 10px;
+      opacity: 0.85;
+    }
+
+    .progress-container {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      margin: 25px 0 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #4299e1, #3182ce, #2c5282);
+      border-radius: 2px;
+      animation: loading 3s ease-in-out infinite;
+    }
+
+    @keyframes loading {
+      0% { width: 0%; }
+      50% { width: 40%; }
+      100% { width: 70%; }
+    }
+
+    .contact-section {
+      margin-top: 30px;
+      padding: 25px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .contact-title {
+      font-size: 1.3em;
       margin-bottom: 15px;
-      color: #ffffff !important;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+      color: #e2e8f0;
+      font-weight: 600;
     }
 
+    .email-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: #4299e1;
+      text-decoration: none;
+      font-size: 1.1em;
+      font-weight: 500;
+      padding: 12px 25px;
+      background: rgba(66, 153, 225, 0.1);
+      border-radius: 25px;
+      border: 1px solid rgba(66, 153, 225, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .email-link:hover {
+      background: rgba(66, 153, 225, 0.2);
+      border-color: rgba(66, 153, 225, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(66, 153, 225, 0.3);
+    }
+
+    .update-note {
+      margin-top: 30px;
+      font-size: 0.9em;
+      opacity: 0.7;
+      font-style: italic;
+    }
+
+    .coffee-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: #ffdd57;
+      text-decoration: none;
+      font-size: 1.1em;
+      font-weight: 500;
+      padding: 12px 25px;
+      background: rgba(255, 221, 87, 0.1);
+      border-radius: 25px;
+      border: 1px solid rgba(255, 221, 87, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .coffee-link:hover {
+      background: rgba(255, 221, 87, 0.2);
+      border-color: rgba(255, 221, 87, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 221, 87, 0.3);
+    }
+
+    .support-note {
+      font-size: 0.9em;
+      opacity: 0.8;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
+    /* Responsive pour le nouveau lien */
     @media (max-width: 768px) {
-      .seo-section {
-        padding: 15px;
-        margin-bottom: 15px;
+      .container {
+        width: 95%;
+        padding: 30px 20px;
+        margin: 20px 0;
       }
-      
-      .seo-section h2 {
-        font-size: 1.3rem;
-      }
-      
-      .seo-section p {
-        font-size: 0.9rem;
-      }
-    }
-    </style>
- 
-  <!-- Google Cast SDK -->
-<!-- Charger Cast UNIQUEMENT sur Desktop/Android (pas iOS) -->
-<script>
-    // Détecter iOS
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    
-    // Ne charger Cast QUE sur non-iOS
-    if (!isIOS) {
-        const castScript = document.createElement('script');
-        castScript.src = 'https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1';
-        document.head.appendChild(castScript);
-        console.log('✅ SDK Cast chargé (Desktop/Android)');
-    } else {
-        console.log('📱 SDK Cast non chargé (iOS/Safari)');
-    }
-</script>
 
+      h1 {
+        font-size: 1.8em;
+      }
+
+      .subtitle,
+      .subtitle-strong {
+        font-size: 1em;
+      }
+
+      .contact-title {
+        font-size: 1.1em;
+      }
+
+      .email-link,
+      .coffee-link {
+        font-size: 1em;
+        padding: 10px 20px;
+        flex-direction: column;
+        gap: 5px;
+        text-align: center;
+      }
+
+      .info-badges {
+        gap: 6px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+
+      .container {
+        padding: 25px 15px;
+      }
+
+      h1 {
+        font-size: 1.6em;
+      }
+
+      .logo-placeholder {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5em;
+      }
+
+      .contact-section {
+        padding: 20px 15px;
+      }
+    }
+
+    /* Animation d'entrée pour les éléments */
+    .fade-in {
+      animation: fadeIn 1s ease-out forwards;
+      opacity: 0;
+    }
+
+    .fade-in:nth-child(1) { animation-delay: 0.2s; }
+    .fade-in:nth-child(2) { animation-delay: 0.4s; }
+    .fade-in:nth-child(3) { animation-delay: 0.6s; }
+    .fade-in:nth-child(4) { animation-delay: 0.8s; }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
 </head>
 <body>
-<header class="app-header">
-    <button type="button" id="menuButton" class="menu-button" aria-label="Menu">
-        <span class="material-icons">menu</span>
-    </button>
-    <button type="button" id="settingsButton" class="settings-button" aria-label="Paramètres">
-        <span class="material-icons">settings</span>
-    </button>   
-    <h1 class="site-title logo-text">
-Actu & Média
-</h1>
-</header>
-<!-- Widget météo avec bouton de fermeture -->
-<div class="weather-sidebar" id="weatherSidebar">
-  <button class="weather-toggle" title="Masquer la météo">
-    <span class="material-icons">close</span>
-  </button>
-  <!-- <h3>Météo locale</h3> -->
-  <div id="weather-widget">Chargement...</div>
-</div>
-<!-- Bouton Page Facebook -->
-<button class="tool-button facebook-btn" onclick="window.open('https://www.facebook.com/actuetmedia.fr/', '_blank')" title="Page Facebook Actu & Média">
-  <img src="/images/facebook-icon-white.png" alt="Facebook" class="fb-icon">
-</button>
-
-<!-- Bouton Autour de moi -->
-<button class="search-button" onclick="window.open('/autour-de-moi.html', '_blank')" title="Autour de moi">
-    <span class="material-icons">near_me</span>
-</button>
-<!-- Structure HTML optimisée pour le Swiper et les séparateurs -->
-<div class="swiper-container">
-  <div class="swiper">
-    <div class="swiper-wrapper" id="swiperWrapper">
-  <!-- Les actualités seront injectées ici par JS -->
-  <div class="swiper-slide" style="display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.3);">
-    <div class="slide-content" style="text-align: center; padding: 40px 20px;">
-      <!-- Spinner animé -->
-      <div style="margin: 0 auto 20px; width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid white; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-      <p style="color: white; font-size: 18px; font-weight: bold; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">⏳ Chargement des actualités...</p>
-      <p style="color: rgba(255,255,255,0.8); font-size: 14px; margin-top: 10px;">Veuillez patienter</p>
+  <div class="container">
+    <div class="logo-placeholder fade-in">
+      <i class="fas fa-newspaper"></i>
     </div>
+    
+    <h1 class="fade-in">Actu & Média</h1>
+
+    <p class="subtitle fade-in">
+      Actu &amp; Média est un projet local 100&nbsp;% bénévole, sans aucune publicité.
+      Après plus de 11 mois de travail (parfois jusqu’à 10&nbsp;heures par jour) et
+      <strong>0 don reçu</strong>, je ne peux plus financer seul le site.
+    </p>
+
+    <p class="subtitle-strong fade-in">
+      Si l’objectif de <strong>150&nbsp;€</strong> (hébergement, nom de domaine et taxes)
+      n’est pas atteint d’ici <strong>fin décembre 2025</strong>, le site devra
+      malheureusement fermer.
+    </p>
+
+    <div class="info-badges fade-in">
+      <div class="info-badge">
+        <i class="fas fa-hand-holding-heart"></i>
+        <span>Projet bénévole</span>
+      </div>
+      <div class="info-badge">
+        <i class="fas fa-ban"></i>
+        <span>Aucune publicité</span>
+      </div>
+      <div class="info-badge">
+        <i class="fas fa-clock"></i>
+        <span>11 mois de travail</span>
+      </div>
+      <div class="info-badge">
+        <i class="fas fa-euro-sign"></i>
+        <span>Objectif : 150&nbsp;€</span>
+      </div>
+    </div>
+
+    <div class="progress-container fade-in">
+      <div class="progress-bar"></div>
+    </div>
+    <p class="goal-text fade-in">
+      Chaque euro est utilisé uniquement pour l’hébergement, le nom de domaine et les taxes.
+      Même 1&nbsp;€ fait une vraie différence.
+    </p>
+
+    <div class="contact-section fade-in">
+      <h3 class="contact-title">
+        <i class="fas fa-heart"></i> Soutenir Actu &amp; Média
+      </h3>
+      <p style="font-size: 0.9em; opacity: 0.85; margin-bottom: 15px;">
+        Si vous appréciez le site et les informations proposées, vous pouvez m’aider à le garder en ligne.
+      </p>
+      <a href="https://fr.tipeee.com/actuetmedia" class="coffee-link" target="_blank" rel="noopener noreferrer">
+        <i class="fas fa-heart"></i>
+        <span>Soutenir sur Tipeee</span>
+      </a>
+      <p class="support-note">
+        Vous ne pouvez pas faire de don ? Un simple partage du lien du site ou un message de soutien,
+        c’est déjà énorme. Merci&nbsp;💙
+      </p>
+    </div>
+
+    <div class="contact-section fade-in">
+      <h3 class="contact-title">
+        <i class="fas fa-envelope"></i> Me contacter
+      </h3>
+      <a href="mailto:contact@actuetmedia.fr" class="email-link">
+        <i class="fas fa-envelope"></i>
+        <span>contact@actuetmedia.fr</span>
+      </a>
+    </div>
+
+    <p class="update-note fade-in">
+      <i class="fas fa-clock"></i> Dernière mise à jour : Novembre 2025
+    </p>
   </div>
-</div>
-    <!-- Pagination -->
-    <div class="swiper-pagination"></div>
-    <!-- Flèches de navigation -->
-    <div class="swiper-button-prev"></div>
-    <div class="swiper-button-next"></div>
-  </div>
-</div>
 
-<!-- Conteneur pour les deux widgets côte à côte -->
-<div class="widgets-row">
-    <!-- Widget NEWS Actu&Média -->
-<div class="news-widget-container">
-    <div class="local-news-widget" id="localNewsWidget" onclick="openLocalNewsPage()">
-        <div class="news-widget-header">
-
-            <!-- Boutons intégrés -->
-            <div class="header-buttons">
-                <button class="header-btn photos-btn" onclick="event.stopPropagation(); openGalleryPage();" title="Galerie Photos">
-                    <span class="material-icons" style="font-size: 16px; margin-right: 4px;">photo_library</span>
-                    Photos
-                </button>
-                <button class="header-btn cinema-btn" onclick="event.stopPropagation(); openCinemaModal();" title="Programme Cinéma">
-                    <span class="material-icons" style="font-size: 16px; margin-right: 4px;">movie</span>
-                    Cinéma
-                </button>
-            </div>
-
-            <!-- Bouton Proposer avec stopPropagation -->
-            <button class="submit-news-btn" onclick="event.stopPropagation(); openSubmitModal();">
-                <span class="icon">📝</span>
-                <span>Proposer</span>
-            </button>
-
-            <!-- Zone widgets utiles -->
-            <div class="header-widgets">
-                <div class="weather-temp" id="weatherTemp" onclick="openWeatherDetails()" title="Cliquez pour plus d'infos météo">
-                    <div class="temp-value" id="tempValue">--°</div>
-                    <div class="temp-label">Météo</div>
-                </div>
-
-                <div class="visitors-counter" id="visitorsCounter" title="Visiteurs actuellement connectés">
-                    <div class="visitors-count" id="visitorsCount">--</div>
-                    <div class="visitors-label">En ligne</div>
-                </div>
-
-                <div class="news-widget-clock" id="newsWidgetClock" onclick="event.stopPropagation(); openTimeWidget();" title="Cliquez pour plus d'infos">
-                    <div class="clock-time" id="clockTime">--:--</div>
-                    <div class="clock-date" id="clockDate">---</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="news-widget-preview" id="newsWidgetPreview">
-            <div class="loading-news">
-                <span class="material-icons spinning">hourglass_empty</span>
-                Chargement des actualités...
-            </div>
-        </div>
-
-        <div class="news-widget-footer">
-            <span class="news-widget-tap">👆 Touchez pour lire toutes les actualités</span>
-
-            <!-- 🎂 Saint du jour dans le footer -->
-            <div class="saint-widget-footer" id="saintWidget" onclick="event.stopPropagation(); openSaintPopup();" title="Cliquez pour voir le saint du jour">
-                <div class="saint-value-footer" id="saintValue">--</div>
-                <div class="saint-label-footer" id="saintLabel">Saint</div>
-            </div>
-        </div>
-    </div>
-</div>
-
-    <!-- Widget CINÉMA -->
-    <div class="cinema-widget-container">
-        <div class="cinema-widget" id="cinemaWidget" onclick="openCinemaPage()">
-            <div class="cinema-widget-header">
-                <span class="cinema-widget-title">🎬 CINÉMA L'Embarcadère</span>
-                <span class="cinema-widget-badge">Panacéa</span>
-            </div>
-            
-            <div class="cinema-widget-preview" id="cinemaWidgetPreview">
-                <div class="loading-cinema">
-                    <span class="material-icons spinning">hourglass_empty</span>
-                    Chargement du programme...
-                </div>
-            </div>
-            
-            <div class="cinema-widget-footer">
-                <span class="cinema-widget-tap">👆 Programme complet & réservations</span>
-                <span class="cinema-widget-count" id="cinemaWidgetCount">0 films</span>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal cinéma mobile -->
-<div class="cinema-mobile-modal" id="cinemaMobileModal">
-    <div class="cinema-modal-content">
-        <div class="cinema-modal-header">
-            <h3>🎬 CINÉMA L'Embarcadère</h3>
-            <button class="cinema-modal-close" id="cinemaModalClose">
-    ✕
-</button>
-        </div>
-        <div id="cinemaModalContent">
-            <!-- Le contenu du widget sera copié ici -->
-        </div>
-        <div style="text-align: center; margin-top: 15px;">
-            <button onclick="window.open('https://www.cinemas-panacea.fr/montceau-embarcadere/horaires/', '_blank')" 
-                    style="background: var(--primary-color); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">
-                📅 Programme complet & réservations
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- Menu latéral --> 
-<aside id="sidebar" class="sidebar">
-    <div class="sidebar-header">
-        <h2>Menu</h2>
-        <button type="button" class="close-btn" aria-label="Fermer">
-            <span class="material-icons">close</span>
-        </button>
-    </div>
-    
-	<!-- Petites Annonces -->
-<div class="menu-item">
-    <a href="/petites-annonces.html">
-        <span class="material-icons">store</span>
-        Petites Annonces
-    </a>
-</div>
-
-    <!-- A propos -->
-    <div class="menu-item">
-        <a href="/a-propos.html">
-            <span class="material-icons">info</span>
-            Actu & Média, c'est quoi ?
-        </a>
-    </div>
-    
-    <!-- 1. Contact -->
-    <div class="menu-item">
-        <a href="/contact.html">
-            <span class="material-icons">email</span>
-            Contact
-        </a>
-    </div>
-    
-    <!-- 2. Swiss_Transfer -->
-    <div class="menu-item">
-        <a href="https://www.swisstransfer.com/fr-ch" target="_blank">
-            <span class="material-icons">upload</span>
-            Swiss_Transfer
-        </a>
-    </div>
-    
-    <!-- 3. Confidentialité -->
-    <div class="menu-item">
-        <a href="/politique-confidentialite">
-            <span class="material-icons">security</span>
-            Confidentialité
-        </a>
-    </div>
-    
-    <!-- 4. Conditions d'utilisation -->
-    <div class="menu-item">
-        <a href="/conditions-utilisation">
-            <span class="material-icons">description</span>
-            Conditions d'utilisation
-        </a>
-    </div>
-    
-    <!-- 5. Mentions légales -->
-    <div class="menu-item">
-        <a href="/mentions-legales">
-            <span class="material-icons">gavel</span>
-            Mentions légales
-        </a>
-    </div>
-    
-    <!-- 6. Installer l'application -->
-    <div class="menu-item">
-        <button id="menuInstall" class="menu-link">
-            <span class="material-icons">download</span>
-            <span>Installer l'application</span>
-        </button>
-    </div>
-    
-    <!-- QR Code -->
-    <div class="menu-item qr-code-container">
-        <h4>Scannez notre QR code</h4>
-        <img src="images/qrcode.png" alt="QR Code" class="sidebar-qr-code">
-    </div>
-    
-    <!-- Copyright -->
-    <div class="menu-item">
-        <div class="copyright-text">
-            <span class="material-icons">copyright</span>
-            <span><span id="currentYear"></span>
-            <script>
-            document.getElementById('currentYear').textContent = new Date().getFullYear();
-            </script> Actu & Média</span>
-        </div>
-    </div>
-</aside>
-
-<!-- ✅ TEXTE SEO ICI (version propre avec classe CSS) -->
-<section class="seo-section">
-  <h2>Actu & Média : L'information locale de Montceau-les-Mines</h2>
-  
-  <p>Bienvenue sur Actu & Média, votre source d'<strong>actualités locales de Montceau-les-Mines</strong>, 
-  du Creusot et de la Saône-et-Loire (71). Retrouvez chaque jour les dernières infos de votre région, 
-  la météo locale, le programme du cinéma L'Embarcadère, des petites annonces gratuites et bien plus.</p>
-  
-  <p>Notre <strong>site d'information local</strong> est 100% gratuit, sans publicité et créé bénévolement 
-  pour la communauté de Montceau-les-Mines et ses environs : Blanzy, Saint-Vallier, Sanvignes, etc.</p>
-  
-  <p><strong>Montceau-les-Mines aujourd'hui :</strong> suivez l'actu en temps réel, participez au chat 
-  communautaire, consultez les événements locaux et restez connecté à votre ville !</p>
-</section>
-
-	<!-- Conteneur principal des tuiles -->
-	<main>
-    <div id="tileContainer" class="tile-container grid"></div>
-	</main>
-
-	<!-- Ticker d'actualités -->
-	<div class="news-ticker">
-  <div class="ticker-wrapper" id="newsTicker">
-    <div class="ticker-item">Chargement des actualités...</div>
-  </div>
-	</div>
-	<!-- Barre de navigation du bas -->
-	<nav class="bottom-nav">
-    <button class="nav-item" id="darkModeToggle">
-        <span class="material-icons">dark_mode</span>
-        <span>Sombre</span>
-    </button>
-    <button class="nav-item" id="layoutToggle">
-        <span class="material-icons">grid_view</span>
-        <span>Vue</span>
-    </button>
-   <button class="nav-item" id="donateButton">
-    <span class="material-icons">local_cafe</span>
-    <span>Un café ?</span>
-</button>
-    <!-- Bouton de chat existant -->
-    <button class="nav-item chat-toggle-btn" id="chatToggleBtn">
-        <span class="material-icons">chat</span>
-        <span>Chat</span>
-        <span class="chat-notification-badge hidden">0</span>
-    </button>
-	</nav>
-	<!-- Scripts essentiels (avant tout) -->
-<script src="js/theme-manager.js"></script>
-<script src="js/ban-manager.js"></script>
-<script src="js/ban-check.js"></script>
-
-<!-- Scripts de correction plateforme -->
-<script src="js/ios-fixes-safe.js"></script>
-<script src="js/ios-install.js"></script>
-<script src="js/tablet-fixes.js"></script>
-<script src="js/chat-keyboard-fix.js"></script>
-
-<!-- Widgets principaux (ordre cohérent avec les CSS) -->
-<script src="js/quick-links.js"></script>
-<script src="js/weather-widget.js"></script>
-<script src="js/visitor-tracker.js"></script>
-
-<!-- Widgets actualités (groupés ensemble) -->
-<script src="js/news-manager.js"></script>
-<script src="js/newsTickerManager.js"></script>
-<script src="js/newsPanel.js"></script>
-<script src="js/news-widget.js"></script>
-
-<!-- Widgets secondaires -->
-<script src="js/cinema-widget.js"></script>
-<script src="js/football-widget.js"></script>
-
-<!-- Applications -->
-<script src="js/radioPopup.js"></script>
-
-<!-- Gestionnaires et fonctionnalités -->
-<script src="js/welcome-manager.js"></script>
-<script src="js/donation.js"></script>
-
-<!-- Script d'initialisation principal (toujours en dernier) -->
-<script type="module" src="js/app-initializer.js"></script>
-
-<!-- Événements saisonniers -->
-<script src="js/seasonal-events.js"></script>
-
-	<!-- Bouton Infos en direct -->
-	<div class="button-group" style="display: flex; justify-content: center; gap: 10px; margin: 20px 0;">
-  <!-- Bouton existant -->
-  <button id="newsButton" class="news-button">
-    <span class="material-icons">feed</span>
-    <span>Infos en direct</span>
-  </button>
-  <!-- Bouton pour réafficher le widget (en dehors du sidebar) -->
-	<button class="weather-show-btn" id="weatherShowBtn" title="Afficher la météo">
-  <span class="material-icons">cloudy_snowing</span>
-	</button>
-  
-	</div>
-	<!-- Widget liens rapides avec bouton de fermeture -->
-	<div class="quick-links-sidebar" id="quickLinksSidebar">
-  <button class="quick-links-toggle" title="Masquer les liens rapides">
-    <span class="material-icons">close</span>
-  </button>
-  <h3>Liens rapides</h3>
-  <div class="links-grid">
-  <a href="#" class="quick-link emergency-link" onclick="showEmergencyNumbers(event)">
-  <span class="material-icons">phone_in_talk</span>
-  <span class="quick-link-label">Urgence</span>
-</a>
-    <a href="https://www.montceaulesmines.fr/" class="quick-link" target="_blank">
-      <span class="material-icons">location_city</span>
-      <span>Ville de Montceau</span>
-    </a>
-    <a href="https://www.inforoute71.fr/" class="quick-link" target="_blank">
-      <span class="material-icons">directions_car</span>
-      <span>Info Routes</span>
-    </a>
-    <a href="https://www.ter.sncf.com/bourgogne-franche-comte" class="quick-link" target="_blank">
-      <span class="material-icons">train</span>
-      <span>Horaires TER</span>
-    </a>
-    <a href="https://www.doctolib.fr/medecin-generaliste/montceau-les-mines" class="quick-link" target="_blank">
-      <span class="material-icons">medical_services</span>
-      <span>Médecins</span>
-    </a>
-    <a href="https://www.impots.gouv.fr/" class="quick-link" target="_blank">
-      <span class="material-icons">receipt_long</span>
-      <span>Impôts</span>
-    </a>
-    <a href="https://www.service-public.fr/" class="quick-link" target="_blank">
-      <span class="material-icons">public</span>
-      <span>Service Public</span>
-    </a>
-  </div>
-</div>
-
-<!-- Bouton pour réafficher le widget des liens rapides -->
-<button class="quick-links-show-btn" id="quickLinksShowBtn" title="Afficher les liens rapides">
-  <span class="material-icons">dashboard_customize</span>
-</button>
-<!-- Menu déroulant des actualités -->
-<div class="news-panel" id="newsPanel">
-  <div class="panel-header">
-    <h3>Actualités en direct</h3>
-    <button class="close-panel">
-      <span class="material-icons">close</span>
-    </button>
-  </div>
-  <div class="panel-content" id="newsPanelContent">
-    <!-- Les actualités vont ici -->
-  </div>
-  <!-- Bouton de fermeture flottant (visible uniquement sur mobile) -->
-<button class="mobile-close-panel" id="mobileClosePanel">
-  <span class="material-icons">keyboard_arrow_down</span>
-  <span>Fermer</span>
-</button>
-  <button class="refresh-button" id="refreshButton">
-    <span class="material-icons">refresh</span> 
-    Actualiser les infos
-  </button>
-</div>
-
-<!-- Popup de don optimisée -->
-<div id="donationPopup" class="donation-overlay">
-  <div class="donation-popup">
-    <span id="donationClose" class="donation-close">×</span>
-    
-    <div class="donation-header">
-      <span class="donation-emoji">🙏</span>
-      <h3>Soutenez Actu & Média</h3>
-    </div>
-    
-    <p><strong>Depuis 10 mois</strong>, ce site gratuit et sans pub informe quotidiennement Montceau-les-Mines et ses environs.</p>
-    
-    <p>✅ Sans publicité • ✅ 100% gratuit • ✅ Indépendant</p>
-    
-    <p>Votre contribution, <strong>même 1€</strong>, aide à maintenir ce service local gratuit.</p>
-    
-    <a href="https://fr.tipeee.com/actuetmedia" 
-       target="_blank" 
-       class="donation-link primary"
-       onclick="trackDonationClick()">
-      💙 Soutenir sur Tipeee
-    </a>
-    
-    <button class="donation-later" onclick="window.donationManager.hidePopup(true)">
-      Plus tard
-    </button>
-  </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<div id="submitModal" class="submit-modal">
-        <div class="submit-modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">
-                    <span>📝</span>
-                    Proposer une actualité
-                </h2>
-                <button class="close-modal" onclick="closeSubmitModal()">×</button>
-            </div>
-
-            <form id="submitNewsForm" class="submit-form">
-                <!-- Type d'actualité -->
-                <div class="form-group">
-                    <label class="form-label">
-                        <span>🎯</span>
-                        Type d'actualité
-                    </label>
-                    <div class="news-types">
-                        <label class="news-type">
-                            <input type="radio" name="newsType" value="actualite" checked>
-                            <span>📰 Actualité</span>
-                        </label>
-                        <label class="news-type">
-                            <input type="radio" name="newsType" value="evenement">
-                            <span>🎪 Événement</span>
-                        </label>
-                        <label class="news-type">
-                            <input type="radio" name="newsType" value="pratique">
-                            <span>💡 Info pratique</span>
-                        </label>
-                        <label class="news-type">
-                            <input type="radio" name="newsType" value="insolite">
-                            <span>🤔 Insolite</span>
-                        </label>
-                        <label class="news-type">
-                            <input type="radio" name="newsType" value="photo">
-                            <span>📸 Photo/Vidéo</span>
-                        </label>
-                        <label class="news-type">
-                            <input type="radio" name="newsType" value="autre">
-                            <span>📋 Autre</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Titre -->
-                <div class="form-group">
-                    <label class="form-label" for="newsTitle">
-                        <span>📢</span>
-                        Titre de l'actualité
-                    </label>
-                    <input 
-                        type="text" 
-                        id="newsTitle" 
-                        name="title" 
-                        class="form-input" 
-                        placeholder="Ex: Ouverture d'un nouveau commerce..."
-                        required
-                        maxlength="100"
-                    >
-                    <span class="form-hint">Maximum 100 caractères</span>
-                </div>
-
-                <!-- Contenu -->
-                <div class="form-group">
-                    <label class="form-label" for="newsContent">
-                        <span>📝</span>
-                        Description / Contenu
-                    </label>
-                    <textarea 
-                        id="newsContent" 
-                        name="content" 
-                        class="form-textarea" 
-                        placeholder="Décrivez votre actualité, événement ou information..."
-                        required
-                        maxlength="1000"
-                    ></textarea>
-                    <span class="form-hint">Maximum 1000 caractères</span>
-                </div>
-
-                <!-- Lieu (optionnel) -->
-                <div class="form-group">
-                    <label class="form-label" for="newsLocation">
-                        <span>📍</span>
-                        Lieu (optionnel)
-                    </label>
-                    <input 
-                        type="text" 
-                        id="newsLocation" 
-                        name="location" 
-                        class="form-input" 
-                        placeholder="Ex: Place André Malraux, Centre-ville..."
-                    >
-                </div>
-
-                <!-- Date (optionnel) -->
-                <div class="form-group">
-                    <label class="form-label" for="newsDate">
-                        <span>📅</span>
-                        Date de l'événement (optionnel)
-                    </label>
-                    <input 
-                        type="datetime-local" 
-                        id="newsDate" 
-                        name="eventDate" 
-                        class="form-input"
-                    >
-                </div>
-
-                <!-- Upload fichier -->
-                <div class="form-group">
-                    <label class="form-label">
-                        <span>📎</span>
-                        Photo ou document (optionnel)
-                    </label>
-                    <div class="file-upload">
-                        <input 
-                            type="file" 
-                            id="newsFile" 
-                            name="file" 
-                            accept="image/*,.pdf,.doc,.docx"
-                            onchange="handleFileSelect(this)"
-                        >
-                        <label for="newsFile" class="file-upload-label" id="fileLabel">
-                            <span>📎</span>
-                            <span>Cliquez pour ajouter un fichier</span>
-                        </label>
-                    </div>
-                    <span class="form-hint">Images, PDF, Word - Max 5MB</span>
-                </div>
-
-                <!-- Contact -->
-                <div class="form-group">
-                    <label class="form-label" for="newsContact">
-                        <span>📧</span>
-                        Votre email (pour vous recontacter)
-                    </label>
-                    <input 
-                        type="email" 
-                        id="newsContact" 
-                        name="contact" 
-                        class="form-input" 
-                        placeholder="votre.email@exemple.fr"
-                        required
-                    >
-                    <span class="form-hint">Votre email ne sera pas publié</span>
-                </div>
-
-                <!-- Nom (optionnel) -->
-                <div class="form-group">
-                    <label class="form-label" for="newsAuthor">
-                        <span>👤</span>
-                        Votre nom/pseudo (optionnel)
-                    </label>
-                    <input 
-                        type="text" 
-                        id="newsAuthor" 
-                        name="author" 
-                        class="form-input" 
-                        placeholder="Pour vous créditer si publié"
-                    >
-                </div>
-
-                <!-- Actions -->
-                <div class="form-actions">
-                    <button type="button" class="btn btn-cancel" onclick="closeSubmitModal()">
-                        Annuler
-                    </button>
-                    <button type="submit" class="btn btn-submit">
-                        📤 Envoyer ma proposition
-                    </button>
-                </div>
-            </form>
-
-            <!-- Message de succès (caché par défaut) -->
-            <div id="successMessage" class="success-message" style="display: none;">
-                <div class="success-icon">✅</div>
-                <h3 class="success-title">Merci pour votre contribution !</h3>
-                <div class="success-text">
-                    <p>Votre proposition d'actualité a bien été envoyée à l'équipe d'Actu&Média.</p>
-                    <p>Nous la examinerons rapidement et vous recontacterons si nécessaire.</p>
-                    <p><strong>Continuez à faire vivre l'actualité locale !</strong></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Gestion de la modal
-        function openSubmitModal() {
-            document.getElementById('submitModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-            
-            // Vibration tactile si disponible
-            if (navigator.vibrate) {
-                navigator.vibrate(50);
-            }
-        }
-
-        function closeSubmitModal() {
-            document.getElementById('submitModal').classList.remove('active');
-            document.body.style.overflow = '';
-            
-            // Reset du formulaire
-            document.getElementById('submitNewsForm').reset();
-            resetFileLabel();
-            hideSuccessMessage();
-        }
-
-        // Gestion des types d'actualité
-        document.addEventListener('DOMContentLoaded', function() {
-            const newsTypes = document.querySelectorAll('.news-type');
-            const radios = document.querySelectorAll('input[name="newsType"]');
-
-            radios.forEach(radio => {
-                radio.addEventListener('change', function() {
-                    newsTypes.forEach(type => type.classList.remove('selected'));
-                    this.closest('.news-type').classList.add('selected');
-                });
-            });
-
-            // Sélectionner le premier par défaut
-            document.querySelector('.news-type').classList.add('selected');
-        });
-
-        // Gestion de l'upload de fichier
-        function handleFileSelect(input) {
-            const label = document.getElementById('fileLabel');
-            const file = input.files[0];
-            
-            if (file) {
-                label.innerHTML = `<span>✅</span><span>${file.name}</span>`;
-                label.classList.add('file-selected');
-            } else {
-                resetFileLabel();
-            }
-        }
-
-        function resetFileLabel() {
-            const label = document.getElementById('fileLabel');
-            label.innerHTML = '<span>📎</span><span>Cliquez pour ajouter un fichier</span>';
-            label.classList.remove('file-selected');
-        }
-
-        // Soumission du formulaire
-        document.getElementById('submitNewsForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const submitBtn = document.querySelector('.btn-submit');
-            const originalText = submitBtn.innerHTML;
-            
-            // Désactiver le bouton et afficher loading
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '⏳ Envoi en cours...';
-            
-            try {
-                const formData = new FormData(this);
-                
-                // Simuler l'envoi (remplacer par votre logique)
-                await sendNewsSubmission(formData);
-                
-                // Afficher le message de succès
-                showSuccessMessage();
-                
-            } catch (error) {
-                console.error('Erreur envoi:', error);
-                alert('Erreur lors de l\'envoi. Réessayez ou contactez-nous directement.');
-                
-                // Restaurer le bouton
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
-            }
-        });
-
-        async function sendNewsSubmission(formData) {
-    try {
-        const supabase = window.getSupabaseClient();
-
-        if (!supabase) {
-            throw new Error('Supabase non initialisé ou connexion impossible.');
-        }
-
-        let fileUrl = null;
-        const file = formData.get('file');
-
-        // Si un fichier a été uploadé, on l'envoie vers Supabase Storage
-        if (file && file.size > 0) {
-            console.log('📤 Upload du fichier:', file.name);
-            
-            // Créer un nom de fichier unique
-            const timestamp = Date.now();
-            const fileExtension = file.name.split('.').pop();
-            const fileName = `submission-${timestamp}.${fileExtension}`;
-            
-            // Upload vers Supabase Storage dans le bucket 'news-submissions'
-            const { data: uploadData, error: uploadError } = await supabase.storage
-                .from('news-submissions')
-                .upload(fileName, file, {
-                    cacheControl: '3600',
-                    upsert: false
-                });
-            
-            if (uploadError) {
-                console.error('❌ Erreur upload fichier:', uploadError);
-                throw new Error(`Erreur upload fichier: ${uploadError.message}`);
-            }
-            
-            // Récupérer l'URL publique du fichier
-            const { data: urlData } = supabase.storage
-                .from('news-submissions')
-                .getPublicUrl(fileName);
-            
-            fileUrl = urlData.publicUrl;
-            console.log('✅ Fichier uploadé:', fileUrl);
-        }
-
-        // Extraire les données du formulaire
-        const newsData = {
-            type: formData.get('newsType'),
-            title: formData.get('title'),
-            content: formData.get('content'),
-            location: formData.get('location') || null,
-            event_date: formData.get('eventDate') || null,
-            contact_email: formData.get('contact'),
-            author: formData.get('author') || 'Anonyme',
-            file_url: fileUrl, // URL du fichier uploadé
-            status: 'pending'
-        };
-
-        console.log('📤 Envoi vers Supabase:', newsData);
-
-        // Insérer dans Supabase
-        const { data, error } = await supabase
-            .from('news_submissions')
-            .insert([newsData])
-            .select();
-
-        if (error) {
-            console.error('❌ Erreur Supabase:', error);
-            throw new Error(error.message);
-        }
-
-        console.log('✅ Proposition envoyée avec succès:', data);
-        return data;
-        
-    } catch (error) {
-        console.error('❌ Erreur envoi:', error);
-        alert(`Une erreur est survenue : ${error.message}. Veuillez réessayer.`);
-        throw error;
-    }
-}
-
-        function showSuccessMessage() {
-            document.getElementById('submitNewsForm').style.display = 'none';
-            document.getElementById('successMessage').style.display = 'block';
-            
-            // Fermer automatiquement après 5 secondes
-            setTimeout(() => {
-                closeSubmitModal();
-            }, 5000);
-        }
-
-        function hideSuccessMessage() {
-            document.getElementById('submitNewsForm').style.display = 'flex';
-            document.getElementById('successMessage').style.display = 'none';
-        }
-
-        // Fermeture par clic en dehors
-        document.getElementById('submitModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeSubmitModal();
-            }
-        });
-
-        // Fermeture par Échap
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && document.getElementById('submitModal').classList.contains('active')) {
-                closeSubmitModal();
-            }
-        });
-    </script>
+  <script>
+    // Animation progressive des éléments (sécurité au cas où le CSS ne suffirait pas)
+    document.addEventListener('DOMContentLoaded', function() {
+      const elements = document.querySelectorAll('.fade-in');
+      elements.forEach((el, index) => {
+        setTimeout(() => {
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        }, index * 200);
+      });
+    });
+  </script>
 </body>
 </html>
