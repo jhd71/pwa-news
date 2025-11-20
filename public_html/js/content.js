@@ -405,18 +405,6 @@ this.tileContainer.appendChild(memoryTileElement);
 const simonTileElement = this.createTile(simonTile);
 this.tileContainer.appendChild(simonTileElement);
 
-// TUILE SNAKE
-const snakeTile = {
-    title: "🐍 Snake",
-    url: "snake-game.html",
-    mobileUrl: "snake-game.html",
-    isDefault: true,
-    category: "game"
-};
-
-const snakeTileElement = this.createTile(snakeTile);
-this.tileContainer.appendChild(snakeTileElement);
-
         // Séparateur TV
         const separator2 = document.createElement('div');
         separator2.className = 'separator';
