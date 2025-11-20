@@ -600,127 +600,163 @@ main {
     display: block;
 }
 
-/* ============================================
-   5. SIDEBAR / MENU LATÉRAL
-   ============================================ */
-
+/* ==========================================================================
+   9. MENU LATÉRAL (SIDEBAR)
+   ========================================================================== */
 .sidebar {
     position: fixed;
-    top: 0;
-    left: -320px;
-    width: 320px;
-    height: 100vh;
-    background: linear-gradient(135deg, 
-        rgba(20, 20, 20, 0.98) 0%, 
-        rgba(10, 10, 10, 0.98) 100%);
-    backdrop-filter: blur(30px);
-    border-right: 1px solid var(--border-color);
-    box-shadow: 4px 0 40px rgba(0, 0, 0, 0.3);
-    z-index: 2000;
-    transition: left var(--transition-normal);
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
+    top: var(--header-height);
+    left: -280px;
+    width: 30%;
+    max-width: 350px;
+    min-width: 280px;
+    height: calc(100vh - var(--header-height));
+    background-color: rgb(148, 0, 0);
+    transition: left 0.3s ease, transform 0.3s ease;
+    z-index: 999;
+    box-shadow: 2px 0 5px var(--shadow-color);
+    transform: translateX(0);
 }
 
-.sidebar.active {
+.sidebar.open {
     left: 0;
+    transform: translateX(0);
+}
+
+.sidebar:not(.open) {
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: left 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
 }
 
 .sidebar-header {
+    padding: 15px 20px;
+    color: white;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: var(--spacing-lg);
-    background: linear-gradient(135deg, 
-        var(--primary-color) 0%, 
-        var(--primary-dark) 100%);
-    border-bottom: 1px solid var(--border-color);
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.sidebar-header h2 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: white;
-}
-
-.close-button {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: var(--radius-md);
-    padding: var(--spacing-sm);
-    cursor: pointer;
-    transition: all var(--transition-normal);
-    color: white;
-}
-
-.close-button:hover {
-    background: rgba(255, 255, 255, 0.25);
-    transform: scale(1.05);
-}
-
-.sidebar-nav {
-    flex: 1;
-    padding: var(--spacing-md);
+.sidebar-content {
+    padding: 10px 0;
 }
 
 .menu-item {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-    padding: var(--spacing-md);
-    margin-bottom: var(--spacing-sm);
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid transparent;
-    border-radius: var(--radius-md);
-    color: var(--text-primary);
-    text-decoration: none;
-    transition: all var(--transition-normal);
-    cursor: pointer;
-    width: 100%;
-    text-align: left;
+    padding: 5px 15px;
 }
 
-.menu-item:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateX(5px);
-    border-color: var(--border-color);
+.menu-item a, 
+.menu-link,
+.install-app {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    color: white;
+    text-decoration: none;
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-size: var(--menu-text-size);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.menu-item a::before, 
+.menu-link::before,
+.install-app::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 100%
+    );
+    transform: skewX(-25deg);
+    transition: left 0.5s ease;
+}
+
+.menu-item a:hover::before,
+.menu-link:hover::before,
+.install-app:hover::before {
+    left: 150%;
+}
+
+.menu-item a span:not(.material-icons),
+.menu-link span:not(.material-icons),
+.install-app span:not(.material-icons) {
+    transition: transform 0.3s ease;
+}
+
+.menu-item a:hover span:not(.material-icons),
+.menu-link:hover span:not(.material-icons),
+.install-app:hover span:not(.material-icons) {
+    transform: scale(1.05);
 }
 
 .menu-item .material-icons {
-    font-size: 1.5rem;
-    color: var(--primary-color);
+    width: 24px;
+    display: flex;
+    justify-content: center;
+    transition: transform 0.3s ease;
 }
 
-.sidebar-footer {
-    padding: var(--spacing-lg);
-    border-top: 1px solid var(--border-color);
+.menu-item a:hover,
+.menu-link:hover,
+#menuInstall:hover {
+    background-color: var(--hover-color);
+    transform: translateX(5px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.qr-code-section {
-    text-align: center;
-    margin-bottom: var(--spacing-lg);
+.menu-item a:hover .material-icons,
+.menu-link:hover .material-icons,
+#menuInstall:hover .material-icons {
+    transform: scale(1.1);
 }
 
-.qr-code-section h4 {
-    font-size: 0.9rem;
-    margin-bottom: var(--spacing-sm);
-    color: var(--text-secondary);
-}
-
-.qr-code {
-    max-width: 150px;
-    height: auto;
-    border-radius: var(--radius-md);
-}
-
-.copyright {
+.copyright-text {
     display: flex;
     align-items: center;
+    padding: 15px;
+    color: white;
+    margin-top: auto;
+    gap: 12px;
+}
+
+.copyright-text .material-icons {
+    width: 24px;
+    display: flex;
     justify-content: center;
-    gap: var(--spacing-sm);
-    font-size: 0.85rem;
-    color: var(--text-secondary);
+}
+
+/* QR Code dans le menu */
+.qr-code-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    padding: 10px;
+}
+
+.qr-code-container h4 {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #fff;
+}
+
+.sidebar-qr-code {
+    max-width: 180px;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 /* ==========================================================================
