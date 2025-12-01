@@ -1,5 +1,5 @@
 // api/cinema-horaires.js
-// Fonction Vercel pour récupérer les horaires du cinéma sans problème CORS
+// Fonction Vercel pour récupérer les horaires du cinéma Le Capitole sans problème CORS
 
 export default async function handler(req, res) {
   // Autoriser uniquement votre domaine
@@ -18,8 +18,8 @@ export default async function handler(req, res) {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   
   try {
-    // Récupérer la page du cinéma
-    const response = await fetch('https://www.cinemas-panacea.fr/montceau-embarcadere/horaires/', {
+    // Récupérer la page du cinéma Le Capitole
+    const response = await fetch('https://www.cinemacapitole-montceau.fr/horaires/', {
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; ActuMedia/1.0)',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',

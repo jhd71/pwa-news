@@ -1,4 +1,4 @@
-// cinema-widget.js - Gestionnaire du widget CINÉMA (VERSION COMPLÈTE ET CORRIGÉE)
+// cinema-widget.js - Gestionnaire du widget CINÉMA (VERSION CAPITOLE)
 
 class CinemaWidget {
     constructor() {
@@ -10,14 +10,14 @@ class CinemaWidget {
 
     // Initialiser le widget
     init() {
-        console.log('🎬 Initialisation du widget CINÉMA');
+        console.log('🎬 Initialisation du widget CINÉMA Le Capitole');
         this.loadCinemaData();
     }
 
     // Charger les données cinéma - Version réaliste
     async loadCinemaData() {
         try {
-            console.log('🎬 Récupération des données depuis Panacéa...');
+            console.log('🎬 Récupération des données depuis Le Capitole...');
             
             // Afficher immédiatement un état de chargement
             this.showLoadingState();
@@ -72,8 +72,8 @@ class CinemaWidget {
                         <div style="font-weight: 500; margin-bottom: 5px;">Programme temporairement indisponible</div>
                         <div style="font-size: 12px; color: #000000; line-height: 1.4;">
                             Consultez directement :<br>
-                            • <a href="https://www.cinemas-panacea.fr/montceau-embarcadere/" target="_blank" style="color: #dc3545;">Site du cinéma</a><br>
-                            • <a href="https://www.facebook.com/CinemaEmbarcadere" target="_blank" style="color: #dc3545;">Page Facebook</a>
+                            • <a href="https://www.cinemacapitole-montceau.fr/horaires/" target="_blank" style="color: #dc3545;">Site du cinéma</a><br>
+                            • <a href="https://www.facebook.com/profile.php?id=61569755554498" target="_blank" style="color: #dc3545;">Page Facebook</a>
                         </div>
                     </div>
                 </div>
@@ -162,7 +162,7 @@ async fetchFromVercelAPI() {
 
     // Fetch avec proxy - Version améliorée
     async fetchWithProxy(proxyUrl) {
-        const targetUrl = 'https://www.cinemas-panacea.fr/montceau-embarcadere/horaires/';
+        const targetUrl = 'https://www.cinemacapitole-montceau.fr/horaires/';
         const fullUrl = proxyUrl + encodeURIComponent(targetUrl);
         
         const response = await fetch(fullUrl, {
@@ -201,20 +201,22 @@ async fetchFromVercelAPI() {
         throw new Error('Pas d\'API alternative configurée');
     }
 
-    // Parser amélioré et plus robuste
+    // Parser amélioré et plus robuste pour Le Capitole
     parseHoraires(doc) {
     const films = [];
     const filmsSeen = new Map();
     
     try {
-        // Sélecteurs plus précis pour le site Panacéa
+        // Sélecteurs pour le site Le Capitole (même plateforme que Panacéa)
         const selectors = [
             '.film-item',
             '.movie-item', 
             '.seance-item',
             '[data-film]',
             'article.film',
-            '.program-item'
+            '.program-item',
+            '.film-card',
+            '.movie-card'
         ];
         
         let filmElements = [];
@@ -264,7 +266,8 @@ async fetchFromVercelAPI() {
                     'programme complet',
                     'réservations',
                     'horaires',
-                    'cinéma'
+                    'cinéma',
+                    'le capitole'
                 ];
 
                 const titleLower = title.toLowerCase();
@@ -325,7 +328,7 @@ async fetchFromVercelAPI() {
                 let filmUrl = null;
                 if (linkElement) {
                     const href = linkElement.getAttribute('href');
-                    filmUrl = href.startsWith('http') ? href : 'https://www.cinemas-panacea.fr' + href;
+                    filmUrl = href.startsWith('http') ? href : 'https://www.cinemacapitole-montceau.fr' + href;
                 }
                 
                 // Vérifier si nouveau
@@ -374,7 +377,7 @@ async fetchFromVercelAPI() {
     }
 }
 
-    // **NOUVELLE MÉTHODE** : Extraire les vraies dates du site Panacéa
+    // **NOUVELLE MÉTHODE** : Extraire les vraies dates du site Le Capitole
 extractRealDates(element) {
     const dates = [];
     const seenDates = new Set(); // Pour éviter les doublons
@@ -667,7 +670,7 @@ sortMoviesByDate(movies) {
             
             setTimeout(() => {
                 widget.style.transform = 'translateY(-2px)';
-                window.open('https://www.cinemas-panacea.fr/montceau-embarcadere/horaires/', '_blank');
+                window.open('https://www.cinemacapitole-montceau.fr/horaires/', '_blank');
             }, 150);
         }
     }
@@ -693,7 +696,7 @@ sortMoviesByDate(movies) {
                         <div class="cinema-modal-header">
                             <h3>
                                 <span class="material-icons">movie</span>
-                                CINÉMA L'Embarcadère
+                                CINÉMA Le Capitole
                             </h3>
                             <button class="cinema-modal-close" id="cinemaModalClose">
                                 <span class="material-icons">close</span>
@@ -806,7 +809,7 @@ updateModalContent(modalContent) {
         // Ajouter le bouton directement après les films
         htmlContent += `
             <div class="cinema-footer-button">
-                <a href="https://www.cinemas-panacea.fr/montceau-embarcadere/" target="_blank" class="cinema-link-button">
+                <a href="https://www.cinemacapitole-montceau.fr/horaires/" target="_blank" class="cinema-link-button">
                     <span class="material-icons">launch</span>
                     Programme complet & réservations
                 </a>
@@ -823,11 +826,11 @@ updateModalContent(modalContent) {
                 <h4>Programme temporairement indisponible</h4>
                 <p>Les horaires du cinéma ne sont pas accessibles pour le moment.</p>
                 <div class="cinema-links">
-                    <a href="https://www.cinemas-panacea.fr/montceau-embarcadere/" target="_blank" class="cinema-link-button">
+                    <a href="https://www.cinemacapitole-montceau.fr/horaires/" target="_blank" class="cinema-link-button">
                         <span class="material-icons">language</span>
                         Site officiel
                     </a>
-                    <a href="https://www.facebook.com/CinemaEmbarcadere" target="_blank" class="cinema-link-button secondary">
+                    <a href="https://www.facebook.com/profile.php?id=61569755554498" target="_blank" class="cinema-link-button secondary">
                         <span class="material-icons">facebook</span>
                         Page Facebook
                     </a>
