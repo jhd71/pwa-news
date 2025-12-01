@@ -72,8 +72,8 @@ class CinemaWidget {
                         <div style="font-weight: 500; margin-bottom: 5px;">Programme temporairement indisponible</div>
                         <div style="font-size: 12px; color: #000000; line-height: 1.4;">
                             Consultez directement :<br>
-                            • <a href="https://www.cinemas-panacea.fr/montceau-embarcadere/" target="_blank" style="color: #dc3545;">Site du cinéma</a><br>
-                            • <a href="https://www.facebook.com/CinemaEmbarcadere" target="_blank" style="color: #dc3545;">Page Facebook</a>
+                            • <a href="https://www.cinemacapitole-montceau.fr/horaires/" target="_blank" style="color: #dc3545;">Site du cinéma</a><br>
+                            • <a href="https://www.facebook.com/CapitolePanacea/" target="_blank" style="color: #dc3545;">Page Facebook</a>
                         </div>
                     </div>
                 </div>
@@ -162,7 +162,7 @@ async fetchFromVercelAPI() {
 
     // Fetch avec proxy - Version améliorée
     async fetchWithProxy(proxyUrl) {
-        const targetUrl = 'https://www.cinemas-panacea.fr/montceau-embarcadere/horaires/';
+        const targetUrl = 'https://www.cinemacapitole-montceau.fr/horaires/';
         const fullUrl = proxyUrl + encodeURIComponent(targetUrl);
         
         const response = await fetch(fullUrl, {
