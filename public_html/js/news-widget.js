@@ -532,7 +532,7 @@ function openCinemaModal() {
         
     } else {
         console.warn('Modal cinéma introuvable');
-        window.open('https://www.cinemas-panacea.fr/montceau-embarcadere/horaires/', '_blank');
+        window.open('https://www.cinemacapitole-montceau.fr/horaires/', '_blank');
     }
 }
 
