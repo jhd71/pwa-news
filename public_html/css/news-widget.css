@@ -487,7 +487,7 @@
     font-weight: 600;
     line-height: 1.1;
     opacity: 0.9;
-    color: #000000;
+    color: #ffffff;
 }
 
 /* Widgets Température et Visiteurs */
@@ -601,22 +601,22 @@
 [data-theme="light"] .weather-temp,
 [data-theme="light"] .visitors-counter,
 [data-theme="light"] .header-btn {
-    background: rgba(126, 87, 194, 0.1);
-    border-color: #7e57c2;
-    color: #7e57c2;
+    background: rgb(109 81 183) !important;
+    border-color: #7e57c2 !important;
+    color: #ffffff !important;
 }
 
 [data-theme="light"] .news-widget-clock:hover,
 [data-theme="light"] .weather-temp:hover,
 [data-theme="light"] .visitors-counter:hover,
 [data-theme="light"] .header-btn:hover {
-    background: #7e57c2;
-    color: white;
+    background: #7e57c2 !important;
+    color: white !important;
 }
 
 [data-theme="light"] .clock-time,
 [data-theme="light"] .clock-date {
-    color: #9b87ce;
+    color: #ffffff;
     font-size: 15px;
 }
 
@@ -628,7 +628,7 @@
 [data-theme="light"] .visitors-count,
 [data-theme="light"] .temp-label,
 [data-theme="light"] .visitors-label {
-    color: #7e57c2;
+    color: #ffffff;
     font-size: 14px;
 }
 
@@ -847,9 +847,9 @@
 [data-theme="bleuciel"] .weather-temp,
 [data-theme="bleuciel"] .visitors-counter,
 [data-theme="bleuciel"] .header-btn {
-    background: rgba(14, 165, 233, 0.1);
-    border-color: #0ea5e9;
-    color: #0ea5e9;
+    background: rgb(76 149 213) !important;
+    border-color: #0ea5e9 !important;
+    color: #ffffff !important;
 }
 
 [data-theme="bleuciel"] .news-widget-clock:hover,
@@ -866,7 +866,7 @@
 [data-theme="bleuciel"] .visitors-count,
 [data-theme="bleuciel"] .temp-label,
 [data-theme="bleuciel"] .visitors-label {
-    color: #4196df;
+    color: #ffffff;
 }
 
 [data-theme="bleuciel"] .visitors-count,
