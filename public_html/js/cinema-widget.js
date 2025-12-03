@@ -244,7 +244,7 @@ class CinemaWidget {
                         <div style="font-weight: 600; font-size: 16px; color: #333; margin-bottom: 4px;">
                             ${movie.title}
                         </div>
-                        <div style="display: flex; gap: 12px; font-size: 12px; color: #666; margin-bottom: 10px;">
+                        <div style="display: flex; gap: 12px; font-size: 12px; margin-bottom: 10px;">
                             <span>🎭 ${movie.genre}</span>
                             <span>⏱️ ${movie.duration}</span>
                         </div>
