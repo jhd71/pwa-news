@@ -479,7 +479,7 @@
     font-size: 15px;
     font-weight: 700;
     line-height: 1.1;
-    color: #000000;
+    color: #ffffff;
 }
 
 .clock-date {
@@ -694,8 +694,8 @@
 [data-theme="dark"] .weather-temp,
 [data-theme="dark"] .visitors-counter,
 [data-theme="dark"] .header-btn {
-    background: rgba(92, 107, 192, 0.2);
-    border-color: #5c6bc0;
+    background: rgb(91 103 184) !important;
+    border-color: #5c6bc0 !important;
     color: #ffffffcc !important;
 }
 
@@ -784,9 +784,9 @@
 [data-theme="rouge"] .weather-temp,
 [data-theme="rouge"] .visitors-counter,
 [data-theme="rouge"] .header-btn {
-    background: rgba(211, 47, 47, 0.1) !important;
-    border-color: #d32f2f !important;
-    color: #000000 !important;
+    background: rgb(183 60 47) !important;
+    border-color: #b83c30 !important;
+    color: #ffffff !important;
 }
 
 [data-theme="rouge"] .news-widget-clock:hover,
@@ -802,7 +802,7 @@
 [data-theme="rouge"] .temp-label,
 [data-theme="rouge"] .visitors-label {
     font-size: 14px;
-    color: #000000;
+    color: #ffffff;
 }
 
 /* ========================================= */
