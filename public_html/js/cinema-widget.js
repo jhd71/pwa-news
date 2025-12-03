@@ -1,4 +1,6 @@
-// cinema-widget.js - Widget CINÉMA Le Capitole (Version API JSON)
+// cinema-widget.js - Widget CINÉMA Le Capitole (Version Information)
+// Note: Le site du Capitole utilise JavaScript dynamique (Webedia Movies Pro)
+// et ne peut pas être scrapé automatiquement sans service payant
 
 class CinemaWidget {
     constructor() {
@@ -8,162 +10,54 @@ class CinemaWidget {
 
     init() {
         console.log('🎬 Initialisation du widget CINÉMA Le Capitole');
-        this.loadCinemaData();
+        this.displayInfoWidget();
     }
 
-    async loadCinemaData() {
-        try {
-            console.log('🎬 Récupération des données depuis Le Capitole...');
-            this.showLoadingState();
-            
-            const films = await this.fetchFromAPI();
-            
-            if (films && films.length > 0) {
-                this.cinemaData = films;
-                this.displayCinema(films);
-                console.log(`✅ ${films.length} films chargés`);
-            } else {
-                this.showUnavailableState();
-            }
-        } catch (error) {
-            console.error('❌ Erreur:', error);
-            this.showUnavailableState();
-        }
-    }
-
-    showLoadingState() {
+    displayInfoWidget() {
         const preview = document.getElementById('cinemaWidgetPreview');
         const count = document.getElementById('cinemaWidgetCount');
-        
-        if (preview) {
-            preview.innerHTML = `
-                <div class="loading-cinema">
-                    <span class="material-icons spinning">hourglass_empty</span>
-                    Chargement du programme...
-                </div>
-            `;
-        }
-        if (count) count.textContent = 'Chargement...';
-    }
 
-    showUnavailableState() {
-        const preview = document.getElementById('cinemaWidgetPreview');
-        const count = document.getElementById('cinemaWidgetCount');
-        
         if (preview) {
             preview.innerHTML = `
-                <div class="cinema-unavailable">
-                    <div style="text-align: center; padding: 10px;">
-                        <span class="material-icons" style="font-size: 24px; color: #dc3545; margin-bottom: 8px;">movie_filter</span>
-                        <div style="font-weight: 500; margin-bottom: 5px;">Programme temporairement indisponible</div>
-                        <div style="font-size: 12px; color: #000000; line-height: 1.4;">
-                            Consultez directement :<br>
-                            • <a href="https://www.cinemacapitole-montceau.fr/horaires/" target="_blank" style="color: #dc3545;">Site du cinéma</a><br>
-                            • <a href="https://www.allocine.fr/seance/salle_gen_csalle=G0FNC.html" target="_blank" style="color: #dc3545;">AlloCiné</a>
-                        </div>
+                <div class="cinema-info-widget" style="text-align: center; padding: 10px;">
+                    <div style="font-size: 24px; margin-bottom: 8px;">🎬</div>
+                    <div style="font-weight: 600; color: #333; margin-bottom: 6px;">Ouverture du Capitole !</div>
+                    <div style="font-size: 12px; color: #666; line-height: 1.5; margin-bottom: 10px;">
+                        Le nouveau cinéma de Montceau-les-Mines<br>
+                        4 salles • 589 places • Son Dolby Atmos
+                    </div>
+                    <div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">
+                        <a href="https://www.cinemacapitole-montceau.fr/horaires/" target="_blank" 
+                           style="display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; 
+                                  background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%); 
+                                  color: white; border-radius: 20px; font-size: 11px; text-decoration: none;
+                                  font-weight: 500; box-shadow: 0 2px 4px rgba(220,53,69,0.3);">
+                            <span class="material-icons" style="font-size: 14px;">movie</span>
+                            Programme
+                        </a>
+                        <a href="https://www.allocine.fr/seance/salle_gen_csalle=G0FNC.html" target="_blank"
+                           style="display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px;
+                                  background: #f8f9fa; color: #333; border-radius: 20px; font-size: 11px; 
+                                  text-decoration: none; font-weight: 500; border: 1px solid #dee2e6;">
+                            <span class="material-icons" style="font-size: 14px;">theaters</span>
+                            AlloCiné
+                        </a>
                     </div>
                 </div>
             `;
         }
-        if (count) count.textContent = 'Indisponible';
+        
+        if (count) {
+            count.textContent = 'Voir le programme';
+            count.style.cursor = 'pointer';
+        }
+        
         this.isLoaded = true;
-    }
-
-    async fetchFromAPI() {
-        try {
-            // Appeler notre API Vercel qui retourne du JSON
-            const response = await fetch('/api/cinema-horaires', {
-                method: 'GET',
-                headers: { 'Accept': 'application/json' }
-            });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
-            }
-            
-            const data = await response.json();
-            
-            if (data.success && data.films && data.films.length > 0) {
-                console.log(`📍 Source: ${data.source}`);
-                return this.formatFilms(data.films);
-            }
-            
-            return [];
-        } catch (error) {
-            console.warn('API Vercel échouée:', error.message);
-            return [];
-        }
-    }
-
-    formatFilms(films) {
-        const today = new Date();
-        const tomorrow = new Date(today);
-        tomorrow.setDate(today.getDate() + 1);
-        
-        return films.map((film, index) => ({
-            id: index + 1,
-            title: film.title,
-            duration: film.duration || 'Non spécifié',
-            genre: film.genre || 'Film',
-            times: film.times || [],
-            isNew: false,
-            url: null,
-            realDates: [
-                {
-                    date: today,
-                    dateString: today.toISOString().split('T')[0],
-                    displayName: 'Aujourd\'hui',
-                    isToday: true,
-                    isTomorrow: false
-                },
-                {
-                    date: tomorrow,
-                    dateString: tomorrow.toISOString().split('T')[0],
-                    displayName: 'Demain',
-                    isToday: false,
-                    isTomorrow: true
-                }
-            ]
-        }));
-    }
-
-    displayCinema(movies) {
-        const preview = document.getElementById('cinemaWidgetPreview');
-        const count = document.getElementById('cinemaWidgetCount');
-
-        if (movies && movies.length > 0) {
-            preview.innerHTML = movies.slice(0, 5).map(movie => {
-                const timesText = movie.times.length > 3 
-                    ? `${movie.times.slice(0, 3).join(', ')}...` 
-                    : movie.times.join(', ');
-                
-                let datesText = '';
-                if (movie.realDates && movie.realDates.length > 0) {
-                    const displayDates = movie.realDates.slice(0, 2).map(d => d.displayName);
-                    datesText = `<div style="font-size: 12px; color: #000000; margin-top: 2px;">📅 ${displayDates.join(', ')}</div>`;
-                }
-                
-                return `
-                    <div class="cinema-preview-item" style="cursor: pointer; padding: 8px; border-bottom: 1px solid #eee;">
-                        <strong>${movie.title}</strong> <em>(${movie.duration})</em><br>
-                        <div style="font-size: 12px; color: #666; font-style: italic;">${movie.genre}</div>
-                        ${datesText}
-                        <div style="font-size: 12px; color: #000000; margin-top: 2px;">🕐 ${timesText}</div>
-                    </div>
-                `;
-            }).join('');
-
-            count.textContent = `${movies.length} films`;
-            this.isLoaded = true;
-        } else {
-            this.showUnavailableState();
-        }
     }
 
     async refresh() {
         console.log('🔄 Rechargement...');
-        this.showLoadingState();
-        await this.loadCinemaData();
+        this.displayInfoWidget();
     }
 
     openCinemaPage() {
@@ -183,7 +77,7 @@ class CinemaWidget {
         const modal = document.getElementById('cinemaMobileModal');
 
         if (mobileBtn && modal) {
-            mobileBtn.addEventListener('click', async () => {
+            mobileBtn.addEventListener('click', () => {
                 modal.classList.add('show');
                 document.body.style.overflow = 'hidden';
                 if (navigator.vibrate) navigator.vibrate(50);
@@ -211,17 +105,6 @@ class CinemaWidget {
                 }
 
                 const modalContent = modal.querySelector('#cinemaModalContent');
-
-                if (!this.isLoaded || !this.cinemaData.length) {
-                    modalContent.innerHTML = `
-                        <div style="text-align: center; padding: 40px;">
-                            <span class="material-icons spinning" style="font-size: 48px;">hourglass_empty</span>
-                            <br>Chargement...
-                        </div>
-                    `;
-                    await this.loadCinemaData();
-                }
-                
                 this.updateModalContent(modalContent);
             });
 
@@ -235,74 +118,60 @@ class CinemaWidget {
     }
 
     updateModalContent(modalContent) {
-        if (this.cinemaData && this.cinemaData.length > 0) {
-            let html = this.cinemaData.map(movie => {
-                let datesHTML = '';
-                if (movie.realDates && movie.realDates.length > 0) {
-                    const datesList = movie.realDates.map(d => {
-                        const cls = d.isToday ? 'today' : '';
-                        return `<span class="cinema-date-badge ${cls}">${d.displayName}</span>`;
-                    }).join('');
-                    datesHTML = `
-                        <div class="cinema-film-dates">
-                            <div class="cinema-dates-title">📅 Séances</div>
-                            <div>${datesList}</div>
-                        </div>
-                    `;
-                }
+        modalContent.innerHTML = `
+            <div class="cinema-welcome-card" style="text-align: center; padding: 30px 20px;">
+                <div style="font-size: 64px; margin-bottom: 16px;">🎬</div>
+                <h2 style="color: #dc3545; margin: 0 0 8px 0; font-size: 22px;">Le Capitole</h2>
+                <p style="color: #666; margin: 0 0 20px 0; font-size: 14px;">
+                    Le nouveau cinéma de Montceau-les-Mines
+                </p>
                 
-                const timesHTML = movie.times.map(t => 
-                    `<div class="cinema-time-slot">${t}</div>`
-                ).join('');
-                
-                return `
-                    <div class="cinema-film-card">
-                        <div class="cinema-film-title">${movie.title}</div>
-                        <div class="cinema-film-info">
-                            <div class="cinema-film-info-item">
-                                <span class="material-icons">category</span>
-                                <span>${movie.genre}</span>
-                            </div>
-                            <div class="cinema-film-info-item">
-                                <span class="material-icons">schedule</span>
-                                <span>${movie.duration}</span>
-                            </div>
-                        </div>
-                        ${datesHTML}
-                        <div class="cinema-film-times">${timesHTML}</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 24px;">
+                    <div style="background: #f8f9fa; padding: 10px 16px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 20px; font-weight: bold; color: #dc3545;">4</div>
+                        <div style="font-size: 11px; color: #666;">Salles</div>
                     </div>
-                `;
-            }).join('');
-            
-            html += `
-                <div class="cinema-footer-button">
-                    <a href="https://www.cinemacapitole-montceau.fr/horaires/" target="_blank" class="cinema-link-button">
-                        <span class="material-icons">launch</span>
-                        Programme complet & réservations
-                    </a>
-                </div>
-            `;
-            
-            modalContent.innerHTML = html;
-        } else {
-            modalContent.innerHTML = `
-                <div class="cinema-empty-state">
-                    <span class="material-icons">movie_filter</span>
-                    <h4>Programme temporairement indisponible</h4>
-                    <p>Les horaires ne sont pas accessibles pour le moment.</p>
-                    <div class="cinema-links">
-                        <a href="https://www.cinemacapitole-montceau.fr/horaires/" target="_blank" class="cinema-link-button">
-                            <span class="material-icons">language</span>
-                            Site officiel
-                        </a>
-                        <a href="https://www.allocine.fr/seance/salle_gen_csalle=G0FNC.html" target="_blank" class="cinema-link-button secondary">
-                            <span class="material-icons">theaters</span>
-                            AlloCiné
-                        </a>
+                    <div style="background: #f8f9fa; padding: 10px 16px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 20px; font-weight: bold; color: #dc3545;">589</div>
+                        <div style="font-size: 11px; color: #666;">Places</div>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 10px 16px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 20px; font-weight: bold; color: #dc3545;">4K</div>
+                        <div style="font-size: 11px; color: #666;">Laser</div>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 10px 16px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 20px; font-weight: bold; color: #dc3545;">🔊</div>
+                        <div style="font-size: 11px; color: #666;">Dolby Atmos</div>
                     </div>
                 </div>
-            `;
-        }
+                
+                <div style="background: linear-gradient(135deg, #fff5f5 0%, #ffe3e3 100%); padding: 16px; border-radius: 12px; margin-bottom: 20px;">
+                    <div style="font-size: 13px; color: #666; margin-bottom: 4px;">📍 Adresse</div>
+                    <div style="font-size: 14px; color: #333; font-weight: 500;">30 Quai Jules Chagot</div>
+                    <div style="font-size: 13px; color: #666;">71300 Montceau-les-Mines</div>
+                </div>
+            </div>
+            
+            <div class="cinema-footer-button" style="padding: 0 20px 20px;">
+                <a href="https://www.cinemacapitole-montceau.fr/horaires/" target="_blank" 
+                   style="display: flex; align-items: center; justify-content: center; gap: 8px;
+                          background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%);
+                          color: white; padding: 14px 20px; border-radius: 12px; text-decoration: none;
+                          font-weight: 600; font-size: 15px; margin-bottom: 10px;
+                          box-shadow: 0 4px 12px rgba(220,53,69,0.3);">
+                    <span class="material-icons">movie</span>
+                    Voir le programme complet
+                </a>
+                <a href="https://www.allocine.fr/seance/salle_gen_csalle=G0FNC.html" target="_blank"
+                   style="display: flex; align-items: center; justify-content: center; gap: 8px;
+                          background: white; color: #333; padding: 12px 20px; border-radius: 12px;
+                          text-decoration: none; font-weight: 500; font-size: 14px;
+                          border: 2px solid #dee2e6;">
+                    <span class="material-icons">theaters</span>
+                    Voir sur AlloCiné
+                </a>
+            </div>
+        `;
     }
 }
 
