@@ -494,6 +494,9 @@ function openCinemaModal() {
     const modalContent = document.getElementById('cinemaModalContent');
     
     if (modal && modalContent) {
+        // ✅ NOUVEAU : Ajouter #cinema à l'URL pour intercepter le bouton retour
+        history.pushState({ cinemaModal: true }, '', '#cinema');
+        
         // Afficher la modal
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
@@ -518,15 +521,13 @@ function openCinemaModal() {
         const modalClose = document.getElementById('cinemaModalClose');
         if (modalClose) {
             modalClose.onclick = () => {
-                modal.style.display = 'none';
-                document.body.style.overflow = '';
+                closeCinemaModal();
             };
         }
         
         modal.onclick = (e) => {
             if (e.target === modal) {
-                modal.style.display = 'none';
-                document.body.style.overflow = '';
+                closeCinemaModal();
             }
         };
         
@@ -535,6 +536,30 @@ function openCinemaModal() {
         window.open('https://www.cinemacapitole-montceau.fr/horaires/', '_blank');
     }
 }
+
+// ✅ NOUVELLE FONCTION : Fermer la modal cinéma
+function closeCinemaModal() {
+    const modal = document.getElementById('cinemaMobileModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+        
+        // Retirer le hash de l'URL si on est sur #cinema
+        if (window.location.hash === '#cinema') {
+            history.back();
+        }
+    }
+}
+
+// ✅ NOUVEAU : Écouter le bouton retour du téléphone
+window.addEventListener('popstate', function(e) {
+    const modal = document.getElementById('cinemaMobileModal');
+    if (modal && modal.style.display === 'flex') {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+        console.log('🎬 Modal cinéma fermée via bouton retour');
+    }
+});
 
 // Variables globales pour la météo et les visiteurs
 let currentTemp = '--°';
@@ -2515,6 +2540,7 @@ window.openTimeWidget = openTimeWidget;
 window.initClock = initClock;
 window.openGalleryPage = openGalleryPage;
 window.openCinemaModal = openCinemaModal;
+window.closeCinemaModal = closeCinemaModal;
 window.openWeatherDetails = openWeatherDetails;
 window.initHeaderWidgets = initHeaderWidgets;
 window.createAlarmPopup = createAlarmPopup;

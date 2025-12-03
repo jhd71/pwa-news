@@ -177,26 +177,8 @@ class CinemaWidget {
         const mobileBtn = document.getElementById('cinemaMobileBtn');
         const modal = document.getElementById('cinemaMobileModal');
 
-        // Fonction pour fermer la modal
-        const closeModal = () => {
-            if (modal && modal.classList.contains('show')) {
-                modal.classList.remove('show');
-                document.body.style.overflow = '';
-            }
-        };
-
-        // Écouter le changement de hash (bouton retour)
-        window.addEventListener('hashchange', () => {
-            if (!window.location.hash.includes('cinema')) {
-                closeModal();
-            }
-        });
-
         if (mobileBtn && modal) {
             mobileBtn.addEventListener('click', async () => {
-                // Ajouter #cinema à l'URL pour intercepter le bouton retour
-                window.location.hash = 'cinema';
-                
                 modal.classList.add('show');
                 document.body.style.overflow = 'hidden';
                 if (navigator.vibrate) navigator.vibrate(50);
@@ -218,8 +200,8 @@ class CinemaWidget {
                     `;
                     
                     modal.querySelector('#cinemaModalClose')?.addEventListener('click', () => {
-                        // Retirer le hash en revenant en arrière
-                        history.back();
+                        modal.classList.remove('show');
+                        document.body.style.overflow = '';
                     });
                 }
 
@@ -240,8 +222,8 @@ class CinemaWidget {
 
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
-                    // Retirer le hash en revenant en arrière
-                    history.back();
+                    modal.classList.remove('show');
+                    document.body.style.overflow = '';
                 }
             });
         }
