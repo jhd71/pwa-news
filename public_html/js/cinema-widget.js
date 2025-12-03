@@ -130,7 +130,7 @@ class CinemaWidget {
         const count = document.getElementById('cinemaWidgetCount');
 
         if (movies && movies.length > 0) {
-            preview.innerHTML = movies.slice(0, 5).map(movie => {
+            preview.innerHTML = movies.map(movie => {
                 const timesText = movie.times.length > 3 
                     ? `${movie.times.slice(0, 3).join(', ')}...` 
                     : movie.times.join(', ');
