@@ -97,7 +97,7 @@ class CinemaWidget {
             preview.innerHTML = `
                 <div class="cinema-info-widget" style="text-align: center; padding: 10px;">
                     <div style="font-size: 24px; margin-bottom: 8px;">🎬</div>
-                    <div style="font-weight: 600; color: #333; margin-bottom: 6px;">Le Capitole</div>
+                    <div style="font-weight: 600; margin-bottom: 6px;">Le Capitole</div>
                     <div style="font-size: 12px; line-height: 1.5; margin-bottom: 10px;">
                         4 salles • 589 places • Dolby Atmos
                     </div>
@@ -138,8 +138,8 @@ class CinemaWidget {
                 return `
                 <a href="${movie.link || 'https://www.cinemacapitole-montceau.fr/horaires/'}" target="_blank" 
                    class="cinema-preview-item" style="cursor: pointer; padding: 8px; border-bottom: 1px solid #eee; display: block; text-decoration: none;">
-                    <strong style="color: #333;">${movie.title}</strong> 
-                    <em style=" font-size: 12px;">(${movie.duration})</em><br>
+                    <strong>${movie.title}</strong> 
+                    <em style="font-size: 12px;">(${movie.duration})</em><br>
                     <div style="font-size: 11px; font-style: italic;">${movie.genre}</div>
                     <div style="font-size: 12px; color: #dc3545; margin-top: 4px; font-weight: 500;">
                         🕐 ${timesText}
@@ -241,7 +241,7 @@ class CinemaWidget {
                 return `
                     <div style="background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px;
                                 box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                        <div style="font-weight: 600; font-size: 16px; color: #333; margin-bottom: 4px;">
+                        <div style="font-weight: 600; font-size: 16px; margin-bottom: 4px;">
                             ${movie.title}
                         </div>
                         <div style="display: flex; gap: 12px; font-size: 12px; margin-bottom: 10px;">
@@ -273,8 +273,8 @@ class CinemaWidget {
             modalContent.innerHTML = `
                 <div style="text-align: center; padding: 40px 20px;">
                     <div style="font-size: 64px; margin-bottom: 16px;">🎬</div>
-                    <h3 style="color: #333; margin: 0 0 8px 0;">Le Capitole</h3>
-                    <p style=" margin: 0 0 20px 0; font-size: 14px;">
+                    <h3 style="margin: 0 0 8px 0;">Le Capitole</h3>
+                    <p style="margin: 0 0 20px 0; font-size: 14px;">
                         Le nouveau cinéma de Montceau-les-Mines
                     </p>
                     
