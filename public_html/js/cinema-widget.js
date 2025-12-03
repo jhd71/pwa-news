@@ -82,7 +82,7 @@ class CinemaWidget {
             preview.innerHTML = `
                 <div class="loading-cinema" style="text-align: center; padding: 20px;">
                     <span class="material-icons spinning" style="font-size: 24px; color: #dc3545;">hourglass_empty</span>
-                    <div style="margin-top: 8px; color: #666; font-size: 13px;">Chargement du programme...</div>
+                    <div style="margin-top: 8px; font-size: 13px;">Chargement du programme...</div>
                 </div>
             `;
         }
@@ -98,7 +98,7 @@ class CinemaWidget {
                 <div class="cinema-info-widget" style="text-align: center; padding: 10px;">
                     <div style="font-size: 24px; margin-bottom: 8px;">🎬</div>
                     <div style="font-weight: 600; color: #333; margin-bottom: 6px;">Le Capitole</div>
-                    <div style="font-size: 12px; color: #666; line-height: 1.5; margin-bottom: 10px;">
+                    <div style="font-size: 12px; line-height: 1.5; margin-bottom: 10px;">
                         4 salles • 589 places • Dolby Atmos
                     </div>
                     <div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">
@@ -139,7 +139,7 @@ class CinemaWidget {
                 <a href="${movie.link || 'https://www.cinemacapitole-montceau.fr/horaires/'}" target="_blank" 
                    class="cinema-preview-item" style="cursor: pointer; padding: 8px; border-bottom: 1px solid #eee; display: block; text-decoration: none;">
                     <strong style="color: #333;">${movie.title}</strong> 
-                    <em style="color: #666; font-size: 12px;">(${movie.duration})</em><br>
+                    <em style=" font-size: 12px;">(${movie.duration})</em><br>
                     <div style="font-size: 11px; font-style: italic;">${movie.genre}</div>
                     <div style="font-size: 12px; color: #dc3545; margin-top: 4px; font-weight: 500;">
                         🕐 ${timesText}
@@ -274,18 +274,18 @@ class CinemaWidget {
                 <div style="text-align: center; padding: 40px 20px;">
                     <div style="font-size: 64px; margin-bottom: 16px;">🎬</div>
                     <h3 style="color: #333; margin: 0 0 8px 0;">Le Capitole</h3>
-                    <p style="color: #666; margin: 0 0 20px 0; font-size: 14px;">
+                    <p style=" margin: 0 0 20px 0; font-size: 14px;">
                         Le nouveau cinéma de Montceau-les-Mines
                     </p>
                     
                     <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 24px;">
                         <div style="background: #f8f9fa; padding: 12px 20px; border-radius: 12px;">
                             <div style="font-size: 24px; font-weight: bold; color: #dc3545;">4</div>
-                            <div style="font-size: 11px; color: #666;">Salles</div>
+                            <div style="font-size: 11px;">Salles</div>
                         </div>
                         <div style="background: #f8f9fa; padding: 12px 20px; border-radius: 12px;">
                             <div style="font-size: 24px; font-weight: bold; color: #dc3545;">589</div>
-                            <div style="font-size: 11px; color: #666;">Places</div>
+                            <div style="font-size: 11px;">Places</div>
                         </div>
                     </div>
                     
@@ -299,7 +299,7 @@ class CinemaWidget {
                     </a>
                     <br>
                     <a href="https://www.allocine.fr/seance/salle_gen_csalle=G0FNC.html" target="_blank"
-                       style="color: #666; font-size: 13px; text-decoration: underline;">
+                       style="font-size: 13px; text-decoration: underline;">
                         ou consulter AlloCiné
                     </a>
                 </div>
