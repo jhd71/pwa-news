@@ -1546,16 +1546,6 @@
         z-index: 10 !important;
     }
     
-    .cinema-btn {
-        position: absolute !important;
-        bottom: 10px !important;
-        right: 15px !important;
-        min-width: 40px !important;
-        height: 24px !important;
-        font-size: 12px !important;
-        z-index: 10 !important;
-    }
-    
     /* Widgets d'en-tête */
     .header-widgets {
         gap: 4px;
@@ -1575,6 +1565,112 @@
     .temp-label,
     .visitors-label {
         font-size: 11px;
+    }
+}
+
+@media (max-width: 767px) {
+    .cinema-btn {
+        position: absolute !important;
+        bottom: 10px !important;
+        right: 10px !important;
+        min-width: auto !important;
+        height: auto !important;
+        padding: 8px 14px !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        z-index: 10 !important;
+        background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 20px !important;
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4) !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 5px !important;
+        animation: cinemaBtnPulse 2s infinite !important;
+    }
+    
+    .cinema-btn:active {
+        transform: scale(0.95) !important;
+        box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3) !important;
+    }
+    
+    .cinema-btn .material-icons {
+        font-size: 16px !important;
+    }
+    
+    /* ===== THÈME ROUGE ===== */
+    [data-theme="rouge"] .cinema-btn {
+        background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%) !important;
+        box-shadow: 0 4px 15px rgba(211, 47, 47, 0.4) !important;
+        animation: cinemaBtnPulseRouge 2s infinite !important;
+    }
+    
+    /* ===== THÈME BLEU CIEL ===== */
+    [data-theme="bleuciel"] .cinema-btn {
+        background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important;
+        box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4) !important;
+        animation: cinemaBtnPulseBleuciel 2s infinite !important;
+    }
+    
+    /* ===== THÈME LIGHT (Violet) ===== */
+    [data-theme="light"] .cinema-btn {
+        background: linear-gradient(135deg, #7e57c2 0%, #5e35b1 100%) !important;
+        box-shadow: 0 4px 15px rgba(126, 87, 194, 0.4) !important;
+        animation: cinemaBtnPulseLight 2s infinite !important;
+    }
+    
+    /* ===== THÈME DARK ===== */
+    [data-theme="dark"] .cinema-btn {
+        background: linear-gradient(135deg, #5c6bc0 0%, #3949ab 100%) !important;
+        box-shadow: 0 4px 15px rgba(92, 107, 192, 0.5) !important;
+        animation: cinemaBtnPulseDark 2s infinite !important;
+    }
+}
+
+/* ===== ANIMATIONS PULSE PAR THÈME ===== */
+@keyframes cinemaBtnPulse {
+    0%, 100% {
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+    }
+    50% {
+        box-shadow: 0 4px 20px rgba(220, 53, 69, 0.7), 0 0 10px rgba(220, 53, 69, 0.3);
+    }
+}
+
+@keyframes cinemaBtnPulseRouge {
+    0%, 100% {
+        box-shadow: 0 4px 15px rgba(211, 47, 47, 0.4);
+    }
+    50% {
+        box-shadow: 0 4px 20px rgba(211, 47, 47, 0.7), 0 0 10px rgba(211, 47, 47, 0.3);
+    }
+}
+
+@keyframes cinemaBtnPulseBleuciel {
+    0%, 100% {
+        box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);
+    }
+    50% {
+        box-shadow: 0 4px 20px rgba(14, 165, 233, 0.7), 0 0 10px rgba(14, 165, 233, 0.3);
+    }
+}
+
+@keyframes cinemaBtnPulseLight {
+    0%, 100% {
+        box-shadow: 0 4px 15px rgba(126, 87, 194, 0.4);
+    }
+    50% {
+        box-shadow: 0 4px 20px rgba(126, 87, 194, 0.7), 0 0 10px rgba(126, 87, 194, 0.3);
+    }
+}
+
+@keyframes cinemaBtnPulseDark {
+    0%, 100% {
+        box-shadow: 0 4px 15px rgba(92, 107, 192, 0.5);
+    }
+    50% {
+        box-shadow: 0 4px 20px rgba(92, 107, 192, 0.8), 0 0 12px rgba(92, 107, 192, 0.4);
     }
 }
 
