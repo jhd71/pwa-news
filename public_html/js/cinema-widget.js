@@ -182,6 +182,9 @@ class CinemaWidget {
                 modal.classList.add('show');
                 document.body.style.overflow = 'hidden';
                 if (navigator.vibrate) navigator.vibrate(50);
+                
+                // Ajouter une entrée dans l'historique pour gérer le bouton retour
+                history.pushState({ cinemaModalOpen: true }, '');
 
                 if (!modal.querySelector('.cinema-modal-header')) {
                     modal.innerHTML = `
@@ -202,6 +205,10 @@ class CinemaWidget {
                     modal.querySelector('#cinemaModalClose')?.addEventListener('click', () => {
                         modal.classList.remove('show');
                         document.body.style.overflow = '';
+                        // Retirer l'entrée de l'historique si on ferme avec la croix
+                        if (history.state?.cinemaModalOpen) {
+                            history.back();
+                        }
                     });
                 }
 
@@ -222,6 +229,18 @@ class CinemaWidget {
 
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
+                    modal.classList.remove('show');
+                    document.body.style.overflow = '';
+                    // Retirer l'entrée de l'historique si on ferme en cliquant dehors
+                    if (history.state?.cinemaModalOpen) {
+                        history.back();
+                    }
+                }
+            });
+            
+            // Écouter le bouton retour du téléphone
+            window.addEventListener('popstate', (e) => {
+                if (modal.classList.contains('show')) {
                     modal.classList.remove('show');
                     document.body.style.overflow = '';
                 }
