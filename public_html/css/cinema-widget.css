@@ -180,12 +180,12 @@
 }
 
 .cinema-preview-item strong {
-    color: var(--primary-color);
+    color: var(--primary-color) !important;
 }
 
 /* Thème dark : titre en jaune doré */
 [data-theme="dark"] .cinema-preview-item strong {
-    color: #f6d34f;
+    color: #f6d34f !important;
 }
 
 /* ===== DÉTAILS DES FILMS ===== */

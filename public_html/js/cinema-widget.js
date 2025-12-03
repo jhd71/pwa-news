@@ -140,7 +140,7 @@ class CinemaWidget {
                    class="cinema-preview-item" style="cursor: pointer; padding: 8px; border-bottom: 1px solid #eee; display: block; text-decoration: none;">
                     <strong style="color: #333;">${movie.title}</strong> 
                     <em style="color: #666; font-size: 12px;">(${movie.duration})</em><br>
-                    <div style="font-size: 11px; color: #888; font-style: italic;">${movie.genre}</div>
+                    <div style="font-size: 11px; font-style: italic;">${movie.genre}</div>
                     <div style="font-size: 12px; color: #dc3545; margin-top: 4px; font-weight: 500;">
                         🕐 ${timesText}
                     </div>
@@ -211,7 +211,7 @@ class CinemaWidget {
                     modalContent.innerHTML = `
                         <div style="text-align: center; padding: 40px;">
                             <span class="material-icons spinning" style="font-size: 48px; color: #dc3545;">hourglass_empty</span>
-                            <div style="margin-top: 12px; color: #666;">Chargement...</div>
+                            <div style="margin-top: 12px;">Chargement...</div>
                         </div>
                     `;
                     await this.loadCinemaData();
