@@ -21,8 +21,8 @@ class CinemaWidget {
             preview.innerHTML = `
                 <div class="cinema-info-widget" style="text-align: center; padding: 10px;">
                     <div style="font-size: 24px; margin-bottom: 8px;">🎬</div>
-                    <div style="font-weight: 600; color: #333; margin-bottom: 6px;">Ouverture du Capitole !</div>
-                    <div style="font-size: 12px; color: #666; line-height: 1.5; margin-bottom: 10px;">
+                    <div style="font-weight: 600; margin-bottom: 6px;">Ouverture du Capitole !</div>
+                    <div style="font-size: 12px; line-height: 1.5; margin-bottom: 10px;">
                         Le nouveau cinéma de Montceau-les-Mines<br>
                         4 salles • 589 places • Son Dolby Atmos
                     </div>
