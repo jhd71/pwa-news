@@ -29,10 +29,10 @@ class CinemaWidget {
             }
             
             const data = await response.json();
-            console.log(`📍 Source: ${data.source}`);
-            console.log(`📅 Dernière mise à jour: ${data.scraped_at_fr || data.scraped_at}`);
+            console.log(`📍 Source: ${data.cinema?.nom || 'Le Capitole'}`);
+            console.log(`📅 Dernière mise à jour: ${data.dateUpdate || data.date}`);
             
-            if (data.success && data.films && data.films.length > 0) {
+            if (data.films && data.films.length > 0) {
                 this.cinemaData = this.formatFilms(data.films);
                 this.displayCinema(this.cinemaData);
                 console.log(`✅ ${data.films.length} films chargés`);
@@ -53,11 +53,12 @@ class CinemaWidget {
         
         return films.map((film, index) => ({
             id: index + 1,
-            title: film.title,
-            duration: film.duration || 'Non spécifié',
+            title: film.titre,
+            duration: film.duree || 'Non spécifié',
             genre: film.genre || 'Film',
-            poster: film.poster || null,
-            times: film.times || [],
+            poster: film.affiche || null,
+            times: film.horaires || [],
+            link: film.lien || null,
             realDates: [
                 {
                     date: today,
