@@ -177,19 +177,25 @@ class CinemaWidget {
         const mobileBtn = document.getElementById('cinemaMobileBtn');
         const modal = document.getElementById('cinemaMobileModal');
 
-        // Écouter le bouton retour du téléphone (TOUJOURS, même si modal pas encore créée)
-        window.addEventListener('popstate', (e) => {
-            const modalElement = document.getElementById('cinemaMobileModal');
-            if (modalElement && modalElement.classList.contains('show')) {
-                modalElement.classList.remove('show');
+        // Fonction pour fermer la modal
+        const closeModal = () => {
+            if (modal && modal.classList.contains('show')) {
+                modal.classList.remove('show');
                 document.body.style.overflow = '';
+            }
+        };
+
+        // Écouter le changement de hash (bouton retour)
+        window.addEventListener('hashchange', () => {
+            if (!window.location.hash.includes('cinema')) {
+                closeModal();
             }
         });
 
         if (mobileBtn && modal) {
             mobileBtn.addEventListener('click', async () => {
-                // Ajouter une entrée dans l'historique AVANT d'afficher la modal
-                history.pushState({ cinemaModalOpen: true }, '', window.location.href);
+                // Ajouter #cinema à l'URL pour intercepter le bouton retour
+                window.location.hash = 'cinema';
                 
                 modal.classList.add('show');
                 document.body.style.overflow = 'hidden';
@@ -212,12 +218,8 @@ class CinemaWidget {
                     `;
                     
                     modal.querySelector('#cinemaModalClose')?.addEventListener('click', () => {
-                        modal.classList.remove('show');
-                        document.body.style.overflow = '';
-                        // Retirer l'entrée de l'historique si on ferme avec la croix
-                        if (history.state?.cinemaModalOpen) {
-                            history.back();
-                        }
+                        // Retirer le hash en revenant en arrière
+                        history.back();
                     });
                 }
 
@@ -238,20 +240,8 @@ class CinemaWidget {
 
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
-                    modal.classList.remove('show');
-                    document.body.style.overflow = '';
-                    // Retirer l'entrée de l'historique si on ferme en cliquant dehors
-                    if (history.state?.cinemaModalOpen) {
-                        history.back();
-                    }
-                }
-            });
-            
-            // Écouter le bouton retour du téléphone
-            window.addEventListener('popstate', (e) => {
-                if (modal.classList.contains('show')) {
-                    modal.classList.remove('show');
-                    document.body.style.overflow = '';
+                    // Retirer le hash en revenant en arrière
+                    history.back();
                 }
             });
         }
