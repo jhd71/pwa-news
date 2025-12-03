@@ -141,7 +141,7 @@ class CinemaWidget {
                     <strong>${movie.title}</strong> 
                     <em style="font-size: 12px;">(${movie.duration})</em><br>
                     <div style="font-size: 11px; font-style: italic;">${movie.genre}</div>
-                    <div style="font-size: 12px; color: #dc3545; margin-top: 4px; font-weight: 500;">
+                    <div style="font-size: 13px; color: #dc3545; margin-top: 4px; font-weight: 700;">
                         🕐 ${timesText}
                     </div>
                 </a>
