@@ -177,14 +177,23 @@ class CinemaWidget {
         const mobileBtn = document.getElementById('cinemaMobileBtn');
         const modal = document.getElementById('cinemaMobileModal');
 
+        // Écouter le bouton retour du téléphone (TOUJOURS, même si modal pas encore créée)
+        window.addEventListener('popstate', (e) => {
+            const modalElement = document.getElementById('cinemaMobileModal');
+            if (modalElement && modalElement.classList.contains('show')) {
+                modalElement.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        });
+
         if (mobileBtn && modal) {
             mobileBtn.addEventListener('click', async () => {
+                // Ajouter une entrée dans l'historique AVANT d'afficher la modal
+                history.pushState({ cinemaModalOpen: true }, '', window.location.href);
+                
                 modal.classList.add('show');
                 document.body.style.overflow = 'hidden';
                 if (navigator.vibrate) navigator.vibrate(50);
-                
-                // Ajouter une entrée dans l'historique pour gérer le bouton retour
-                history.pushState({ cinemaModalOpen: true }, '');
 
                 if (!modal.querySelector('.cinema-modal-header')) {
                     modal.innerHTML = `
