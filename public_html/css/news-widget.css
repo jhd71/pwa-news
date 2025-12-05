@@ -847,7 +847,7 @@
 [data-theme="bleuciel"] .weather-temp,
 [data-theme="bleuciel"] .visitors-counter,
 [data-theme="bleuciel"] .header-btn {
-    background: #0ea5e9;
+    background: #0ea5e9 !important;
     border-color: #0ea5e9 !important;
     color: #ffffff !important;
 }
