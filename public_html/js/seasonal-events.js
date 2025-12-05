@@ -1,113 +1,228 @@
-// seasonal-events.js - Gestion des événements saisonniers AMÉLIORÉ
+// seasonal-events.js - Gestion des événements saisonniers AMÉLIORÉ V2
 
 class SeasonalEvents {
     constructor() {
         this.events = [
-            // HIVER
+            // ═══════════════════════════════════════════════════════════════
+            // JANVIER
+            // ═══════════════════════════════════════════════════════════════
             {
                 name: 'Nouvel An',
                 startOffset: 5,
                 date: { month: 1, day: 1 },
                 emoji: '🎊',
+                secondaryEmoji: '🥂',
                 animation: 'firework',
                 position: 'top-right',
-                message: 'Bonne année !',
-                particles: 'confetti'
+                message: 'Bonne année 2025 !',
+                subMessage: 'Que cette nouvelle année vous apporte bonheur et santé',
+                particles: 'confetti',
+                theme: 'gold'
             },
             {
                 name: 'Épiphanie',
                 startOffset: 2,
                 date: { month: 1, day: 6 },
                 emoji: '👑',
+                secondaryEmoji: '🥧',
                 animation: 'shine',
                 position: 'top-left',
-                message: 'Galette des rois'
+                message: 'Vive les Rois !',
+                subMessage: 'Qui aura la fève ?',
+                theme: 'gold'
             },
+            {
+                name: 'Blue Monday',
+                startOffset: 1,
+                date: { month: 1, day: 20 },
+                emoji: '💙',
+                animation: 'pulse',
+                position: 'bottom-left',
+                message: 'Blue Monday',
+                subMessage: 'Gardez le sourire !',
+                theme: 'blue'
+            },
+
+            // ═══════════════════════════════════════════════════════════════
+            // FÉVRIER
+            // ═══════════════════════════════════════════════════════════════
             {
                 name: 'Chandeleur',
                 startOffset: 3,
                 date: { month: 2, day: 2 },
                 emoji: '🥞',
+                secondaryEmoji: '🕯️',
                 animation: 'flip',
                 position: 'bottom-left',
-                message: 'C\'est la Chandeleur !'
+                message: 'C\'est la Chandeleur !',
+                subMessage: 'À vos poêles !',
+                theme: 'warm'
             },
             {
                 name: 'Saint-Valentin',
                 startOffset: 7,
                 date: { month: 2, day: 14 },
                 emoji: '💕',
+                secondaryEmoji: '🌹',
                 animation: 'heartbeat',
                 position: 'top-left',
                 message: 'Joyeuse Saint-Valentin',
-                particles: 'hearts'
+                subMessage: 'L\'amour est dans l\'air',
+                particles: 'hearts',
+                theme: 'love'
             },
             {
                 name: 'Mardi Gras',
                 startOffset: 5,
                 emoji: '🎭',
+                secondaryEmoji: '🎪',
                 animation: 'wiggle',
                 position: 'bottom-right',
                 message: 'Joyeux Mardi Gras !',
+                subMessage: 'Sortez les déguisements !',
                 isCalculated: true,
-                particles: 'confetti'
+                particles: 'confetti',
+                theme: 'carnival'
             },
-            
-            // PRINTEMPS
+
+            // ═══════════════════════════════════════════════════════════════
+            // MARS
+            // ═══════════════════════════════════════════════════════════════
             {
-                name: 'Pâques',
-                startOffset: 7,
-                emoji: '🐰',
-                animation: 'hop',
-                position: 'bottom-left',
-                message: 'Joyeuses Pâques !',
-                isCalculated: true
+                name: 'Journée de la Femme',
+                startOffset: 2,
+                date: { month: 3, day: 8 },
+                emoji: '👩',
+                secondaryEmoji: '💜',
+                animation: 'bloom',
+                position: 'top-left',
+                message: 'Journée de la Femme',
+                subMessage: 'Célébrons les femmes !',
+                particles: 'hearts',
+                theme: 'purple'
             },
+            {
+                name: 'Saint-Patrick',
+                startOffset: 3,
+                date: { month: 3, day: 17 },
+                emoji: '☘️',
+                secondaryEmoji: '🍀',
+                animation: 'bounce',
+                position: 'bottom-left',
+                message: 'Happy St. Patrick\'s Day!',
+                subMessage: 'Sláinte !',
+                particles: 'clovers',
+                theme: 'green'
+            },
+            {
+                name: 'Printemps',
+                startOffset: 3,
+                date: { month: 3, day: 20 },
+                emoji: '🌸',
+                secondaryEmoji: '🦋',
+                animation: 'bloom',
+                position: 'top-right',
+                message: 'C\'est le Printemps !',
+                subMessage: 'La nature se réveille',
+                particles: 'petals',
+                theme: 'spring'
+            },
+
+            // ═══════════════════════════════════════════════════════════════
+            // AVRIL
+            // ═══════════════════════════════════════════════════════════════
             {
                 name: 'Poisson d\'Avril',
                 startOffset: 1,
                 date: { month: 4, day: 1 },
                 emoji: '🐟',
+                secondaryEmoji: '😜',
                 animation: 'swim',
                 position: 'bottom-right',
-                message: 'Poisson d\'Avril !'
+                message: 'Poisson d\'Avril !',
+                subMessage: 'Attention aux blagues !',
+                particles: 'fish',
+                theme: 'blue'
             },
+            {
+                name: 'Pâques',
+                startOffset: 7,
+                emoji: '🐰',
+                secondaryEmoji: '🥚',
+                animation: 'hop',
+                position: 'bottom-left',
+                message: 'Joyeuses Pâques !',
+                subMessage: 'Bonne chasse aux œufs !',
+                isCalculated: true,
+                particles: 'eggs',
+                theme: 'pastel'
+            },
+            {
+                name: 'Journée de la Terre',
+                startOffset: 2,
+                date: { month: 4, day: 22 },
+                emoji: '🌍',
+                secondaryEmoji: '🌱',
+                animation: 'rotate',
+                position: 'top-left',
+                message: 'Journée de la Terre',
+                subMessage: 'Protégeons notre planète',
+                particles: 'leaves',
+                theme: 'green'
+            },
+
+            // ═══════════════════════════════════════════════════════════════
+            // MAI
+            // ═══════════════════════════════════════════════════════════════
             {
                 name: 'Fête du Travail',
                 startOffset: 2,
                 date: { month: 5, day: 1 },
                 emoji: '🌺',
+                secondaryEmoji: '💐',
                 animation: 'grow',
                 position: 'top-left',
-                message: 'Bon 1er Mai'
+                message: 'Bon 1er Mai !',
+                subMessage: 'Du muguet porte-bonheur',
+                particles: 'petals',
+                theme: 'spring'
             },
             {
                 name: 'Victoire 1945',
                 startOffset: 1,
                 date: { month: 5, day: 8 },
                 emoji: '🇫🇷',
+                secondaryEmoji: '🕊️',
                 animation: 'wave',
                 position: 'top-right',
-                message: '8 Mai 1945'
+                message: '8 Mai 1945',
+                subMessage: 'Devoir de mémoire',
+                theme: 'france'
             },
             {
                 name: 'Ascension',
                 startOffset: 3,
                 emoji: '☁️',
+                secondaryEmoji: '✨',
                 animation: 'float',
                 position: 'top-right',
                 message: 'Jeudi de l\'Ascension',
-                isCalculated: true
+                subMessage: 'Bon week-end prolongé !',
+                isCalculated: true,
+                theme: 'sky'
             },
             {
                 name: 'Fête des Mères',
                 startOffset: 5,
                 emoji: '💐',
+                secondaryEmoji: '❤️',
                 animation: 'bloom',
                 position: 'top-left',
                 message: 'Bonne fête Maman !',
+                subMessage: 'Merci pour tout',
                 isCalculated: true,
-                particles: 'hearts'
+                particles: 'hearts',
+                theme: 'love'
             },
             {
                 name: 'Pentecôte',
@@ -116,138 +231,371 @@ class SeasonalEvents {
                 animation: 'float',
                 position: 'top-left',
                 message: 'Joyeuse Pentecôte',
-                isCalculated: true
+                subMessage: 'Bon lundi férié !',
+                isCalculated: true,
+                theme: 'sky'
             },
+
+            // ═══════════════════════════════════════════════════════════════
+            // JUIN
+            // ═══════════════════════════════════════════════════════════════
             {
                 name: 'Fête des Pères',
                 startOffset: 5,
                 emoji: '👨‍👧‍👦',
+                secondaryEmoji: '🎁',
                 animation: 'bounce',
                 position: 'top-right',
                 message: 'Bonne fête Papa !',
-                isCalculated: true
+                subMessage: 'Super héros du quotidien',
+                isCalculated: true,
+                particles: 'confetti',
+                theme: 'blue'
             },
-            
-            // ÉTÉ
             {
                 name: 'Fête de la Musique',
                 startOffset: 3,
                 date: { month: 6, day: 21 },
                 emoji: '🎵',
+                secondaryEmoji: '🎸',
                 animation: 'dance',
                 position: 'bottom-left',
-                message: 'Fête de la Musique'
+                message: 'Fête de la Musique !',
+                subMessage: 'Faites du bruit !',
+                particles: 'notes',
+                theme: 'music'
             },
+            {
+                name: 'Été',
+                startOffset: 3,
+                date: { month: 6, day: 21 },
+                emoji: '☀️',
+                secondaryEmoji: '🏖️',
+                animation: 'shine',
+                position: 'top-right',
+                message: 'C\'est l\'Été !',
+                subMessage: 'Vive les vacances !',
+                particles: 'sun',
+                theme: 'summer'
+            },
+
+            // ═══════════════════════════════════════════════════════════════
+            // JUILLET
+            // ═══════════════════════════════════════════════════════════════
             {
                 name: 'Fête Nationale',
                 startOffset: 5,
                 date: { month: 7, day: 14 },
                 emoji: '🇫🇷',
+                secondaryEmoji: '🎆',
                 animation: 'wave',
                 position: 'top-right',
                 message: 'Joyeux 14 Juillet !',
-                particles: 'confetti'
+                subMessage: 'Vive la France !',
+                particles: 'fireworks',
+                theme: 'france'
             },
-            
-            // AUTOMNE
+
+            // ═══════════════════════════════════════════════════════════════
+            // AOÛT
+            // ═══════════════════════════════════════════════════════════════
+            {
+                name: 'Assomption',
+                startOffset: 2,
+                date: { month: 8, day: 15 },
+                emoji: '⛪',
+                secondaryEmoji: '🌟',
+                animation: 'float',
+                position: 'top-left',
+                message: 'Bonne fête de l\'Assomption',
+                subMessage: 'Jour férié',
+                theme: 'sky'
+            },
+            {
+                name: 'Étoiles Filantes',
+                startOffset: 3,
+                date: { month: 8, day: 12 },
+                emoji: '🌠',
+                secondaryEmoji: '✨',
+                animation: 'shooting',
+                position: 'top-right',
+                message: 'Nuit des Étoiles !',
+                subMessage: 'Faites un vœu',
+                particles: 'stars',
+                theme: 'night'
+            },
+
+            // ═══════════════════════════════════════════════════════════════
+            // SEPTEMBRE
+            // ═══════════════════════════════════════════════════════════════
             {
                 name: 'Rentrée',
                 startOffset: 3,
                 date: { month: 9, day: 1 },
                 emoji: '🎒',
+                secondaryEmoji: '📚',
                 animation: 'swing',
                 position: 'bottom-left',
-                message: 'Bonne rentrée !'
+                message: 'Bonne rentrée !',
+                subMessage: 'C\'est reparti !',
+                theme: 'school'
+            },
+            {
+                name: 'Automne',
+                startOffset: 3,
+                date: { month: 9, day: 22 },
+                emoji: '🍂',
+                secondaryEmoji: '🍁',
+                animation: 'fall',
+                position: 'top-right',
+                message: 'C\'est l\'Automne !',
+                subMessage: 'Les feuilles tombent',
+                particles: 'leaves',
+                theme: 'autumn'
+            },
+            {
+                name: 'Journées du Patrimoine',
+                startOffset: 2,
+                date: { month: 9, day: 21 },
+                emoji: '🏰',
+                secondaryEmoji: '🗝️',
+                animation: 'shine',
+                position: 'bottom-right',
+                message: 'Journées du Patrimoine',
+                subMessage: 'Découvrez l\'histoire',
+                theme: 'gold'
+            },
+
+            // ═══════════════════════════════════════════════════════════════
+            // OCTOBRE
+            // ═══════════════════════════════════════════════════════════════
+            {
+                name: 'Octobre Rose',
+                startOffset: 31,
+                date: { month: 10, day: 31 },
+                emoji: '🎀',
+                secondaryEmoji: '💗',
+                animation: 'pulse',
+                position: 'top-left',
+                message: 'Octobre Rose',
+                subMessage: 'Ensemble contre le cancer',
+                theme: 'pink'
             },
             {
                 name: 'Halloween',
                 startOffset: 10,
                 date: { month: 10, day: 31 },
                 emoji: '🎃',
+                secondaryEmoji: '👻',
                 animation: 'spooky',
                 position: 'bottom-left',
                 message: 'Joyeux Halloween !',
-                particles: 'leaves'
+                subMessage: 'Des bonbons ou un sort ?',
+                particles: 'bats',
+                theme: 'halloween'
             },
+
+            // ═══════════════════════════════════════════════════════════════
+            // NOVEMBRE
+            // ═══════════════════════════════════════════════════════════════
             {
                 name: 'Toussaint',
                 startOffset: 2,
                 date: { month: 11, day: 1 },
                 emoji: '🕯️',
+                secondaryEmoji: '💐',
                 animation: 'flicker',
                 position: 'top-left',
-                message: 'Toussaint'
+                message: 'Toussaint',
+                subMessage: 'En mémoire de nos proches',
+                theme: 'candle'
             },
             {
                 name: 'Armistice 1918',
                 startOffset: 1,
                 date: { month: 11, day: 11 },
                 emoji: '🇫🇷',
+                secondaryEmoji: '🕊️',
                 animation: 'wave',
                 position: 'top-right',
-                message: '11 Novembre 1918'
+                message: '11 Novembre 1918',
+                subMessage: 'Devoir de mémoire',
+                theme: 'france'
             },
-            
-            // HIVER (fin d'année)
+            {
+                name: 'Beaujolais Nouveau',
+                startOffset: 2,
+                date: { month: 11, day: 21 },
+                emoji: '🍷',
+                secondaryEmoji: '🍇',
+                animation: 'swing',
+                position: 'bottom-right',
+                message: 'Le Beaujolais est arrivé !',
+                subMessage: 'Santé !',
+                theme: 'wine'
+            },
+            {
+                name: 'Black Friday',
+                startOffset: 3,
+                emoji: '🛒',
+                secondaryEmoji: '💰',
+                animation: 'bounce',
+                position: 'bottom-left',
+                message: 'Black Friday !',
+                subMessage: 'C\'est les soldes !',
+                isCalculated: true,
+                theme: 'dark'
+            },
+
+            // ═══════════════════════════════════════════════════════════════
+            // DÉCEMBRE
+            // ═══════════════════════════════════════════════════════════════
+            {
+                name: 'Avent',
+                startOffset: 1,
+                date: { month: 12, day: 1 },
+                emoji: '🎄',
+                secondaryEmoji: '📆',
+                animation: 'twinkle',
+                position: 'top-left',
+                message: 'Début de l\'Avent !',
+                subMessage: 'Ouvrez la première case',
+                particles: 'snowflakes',
+                theme: 'christmas'
+            },
+            {
+                name: 'Saint-Nicolas',
+                startOffset: 2,
+                date: { month: 12, day: 6 },
+                emoji: '🎅',
+                secondaryEmoji: '🍬',
+                animation: 'bounce',
+                position: 'bottom-right',
+                message: 'Saint-Nicolas',
+                subMessage: 'Pour les enfants sages',
+                theme: 'christmas'
+            },
+            {
+                name: 'Hiver',
+                startOffset: 2,
+                date: { month: 12, day: 21 },
+                emoji: '❄️',
+                secondaryEmoji: '⛄',
+                animation: 'snow',
+                position: 'top-right',
+                message: 'C\'est l\'Hiver !',
+                subMessage: 'Au chaud !',
+                particles: 'snowflakes',
+                theme: 'winter'
+            },
             {
                 name: 'Noël',
                 startOffset: 20,
                 date: { month: 12, day: 25 },
                 emoji: '🎄',
-                animation: 'snow',
+                secondaryEmoji: '🎁',
+                animation: 'twinkle',
                 position: 'bottom-right',
                 message: 'Joyeux Noël !',
-                particles: 'snowflakes'
+                subMessage: 'Magie des fêtes',
+                particles: 'snowflakes',
+                theme: 'christmas'
             },
             {
                 name: 'Réveillon',
                 startOffset: 3,
                 date: { month: 12, day: 31 },
                 emoji: '🎆',
+                secondaryEmoji: '🥳',
                 animation: 'firework',
                 position: 'top-right',
                 message: 'Bon réveillon !',
-                particles: 'confetti'
+                subMessage: 'À l\'année prochaine !',
+                particles: 'fireworks',
+                theme: 'newyear'
             },
-            
-            // ÉVÉNEMENTS LOCAUX CHALON-SUR-SAÔNE
+
+            // ═══════════════════════════════════════════════════════════════
+            // ÉVÉNEMENTS LOCAUX BOURGOGNE
+            // ═══════════════════════════════════════════════════════════════
             {
                 name: 'Carnaval de Chalon',
                 startOffset: 7,
-                date: { month: 3, day: 15 }, // Ajustez la date selon le vrai carnaval
+                date: { month: 3, day: 9 },
                 emoji: '🎪',
+                secondaryEmoji: '🎭',
                 animation: 'wiggle',
                 position: 'bottom-right',
                 message: 'Carnaval de Chalon !',
-                particles: 'confetti'
+                subMessage: 'Défilé et confettis',
+                particles: 'confetti',
+                theme: 'carnival'
+            },
+            {
+                name: 'Paulée de la Côte Chalonnaise',
+                startOffset: 3,
+                date: { month: 4, day: 7 },
+                emoji: '🍷',
+                secondaryEmoji: '🥂',
+                animation: 'swing',
+                position: 'bottom-left',
+                message: 'Paulée de la Côte Chalonnaise',
+                subMessage: 'Fête des vignerons',
+                theme: 'wine'
             }
         ];
         
         this.storageKey = 'seasonalEvents_seen';
+        this.themeColors = {
+            gold: { primary: '#FFD700', secondary: '#FFA500', accent: '#FF8C00', bg: 'linear-gradient(135deg, #1a1a2e 0%, #2d1810 100%)' },
+            love: { primary: '#FF1493', secondary: '#FF69B4', accent: '#FFB6C1', bg: 'linear-gradient(135deg, #2d1f2f 0%, #4a1942 100%)' },
+            carnival: { primary: '#FF6B35', secondary: '#9B5DE5', accent: '#00F5D4', bg: 'linear-gradient(135deg, #1a1a2e 0%, #2e1065 100%)' },
+            green: { primary: '#00D084', secondary: '#00B371', accent: '#7ED321', bg: 'linear-gradient(135deg, #0d2818 0%, #1a4028 100%)' },
+            spring: { primary: '#FF9FF3', secondary: '#FECA57', accent: '#48DBFB', bg: 'linear-gradient(135deg, #2d2040 0%, #1a3a2e 100%)' },
+            blue: { primary: '#0984E3', secondary: '#74B9FF', accent: '#81ECEC', bg: 'linear-gradient(135deg, #0c1a2e 0%, #1a3a5c 100%)' },
+            purple: { primary: '#A55EEA', secondary: '#8854D0', accent: '#D980FA', bg: 'linear-gradient(135deg, #1a1030 0%, #2d1f4a 100%)' },
+            france: { primary: '#0055A4', secondary: '#FFFFFF', accent: '#EF4135', bg: 'linear-gradient(135deg, #0c1a2e 0%, #1a1a2e 100%)' },
+            sky: { primary: '#87CEEB', secondary: '#E0F6FF', accent: '#FFFFFF', bg: 'linear-gradient(135deg, #1a2a3a 0%, #2a4a6a 100%)' },
+            summer: { primary: '#FF9F43', secondary: '#FECA57', accent: '#FF6B6B', bg: 'linear-gradient(135deg, #2a2010 0%, #4a3010 100%)' },
+            music: { primary: '#9B59B6', secondary: '#E056FD', accent: '#686DE0', bg: 'linear-gradient(135deg, #1a1030 0%, #2a1040 100%)' },
+            school: { primary: '#F39C12', secondary: '#E67E22', accent: '#D35400', bg: 'linear-gradient(135deg, #1a1a10 0%, #2a2010 100%)' },
+            autumn: { primary: '#D35400', secondary: '#E67E22', accent: '#F39C12', bg: 'linear-gradient(135deg, #2a1a10 0%, #3a2010 100%)' },
+            pink: { primary: '#FF6B9D', secondary: '#FF8AC4', accent: '#FFB3D9', bg: 'linear-gradient(135deg, #2d1020 0%, #4a1a30 100%)' },
+            halloween: { primary: '#FF6B00', secondary: '#8B00FF', accent: '#00FF00', bg: 'linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 100%)' },
+            candle: { primary: '#FFD700', secondary: '#FF8C00', accent: '#FF4500', bg: 'linear-gradient(135deg, #1a1008 0%, #2a1810 100%)' },
+            wine: { primary: '#722F37', secondary: '#9B2335', accent: '#C41E3A', bg: 'linear-gradient(135deg, #1a0a10 0%, #2a1018 100%)' },
+            dark: { primary: '#2C3E50', secondary: '#34495E', accent: '#95A5A6', bg: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)' },
+            christmas: { primary: '#C41E3A', secondary: '#228B22', accent: '#FFD700', bg: 'linear-gradient(135deg, #1a0a0a 0%, #0a1a0a 100%)' },
+            winter: { primary: '#A5F3FC', secondary: '#E0F2FE', accent: '#FFFFFF', bg: 'linear-gradient(135deg, #0a1a2a 0%, #1a2a3a 100%)' },
+            newyear: { primary: '#FFD700', secondary: '#C0C0C0', accent: '#FFFFFF', bg: 'linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 100%)' },
+            pastel: { primary: '#FFB5E8', secondary: '#B5DEFF', accent: '#E7FFAC', bg: 'linear-gradient(135deg, #2a2030 0%, #302a40 100%)' },
+            night: { primary: '#191970', secondary: '#483D8B', accent: '#FFD700', bg: 'linear-gradient(135deg, #000010 0%, #0a0a2a 100%)' },
+            warm: { primary: '#FF6B35', secondary: '#F7931E', accent: '#FFD700', bg: 'linear-gradient(135deg, #2a1810 0%, #3a2018 100%)' }
+        };
     }
 
     init() {
+        this.injectStyles();
         this.checkAndDisplayEvent();
-        // Vérifier toutes les heures
         setInterval(() => this.checkAndDisplayEvent(), 3600000);
-        
-        // Réinitialiser à minuit
         this.scheduleMiddleightReset();
+    }
+
+    injectStyles() {
+        if (!document.getElementById('seasonal-dynamic-styles')) {
+            const style = document.createElement('style');
+            style.id = 'seasonal-dynamic-styles';
+            document.head.appendChild(style);
+        }
     }
 
     scheduleMiddleightReset() {
         const now = new Date();
-        const night = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate() + 1, // Demain
-            0, 0, 0 // Minuit
-        );
+        const night = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
         const msToMidnight = night.getTime() - now.getTime();
         
         setTimeout(() => {
             this.resetDailyView();
-            // Replanifier pour la prochaine nuit
             this.scheduleMiddleightReset();
         }, msToMidnight);
     }
@@ -256,16 +604,11 @@ class SeasonalEvents {
         const today = this.getTodayKey();
         const seenData = this.getSeenData();
         
-        // Supprimer les anciennes entrées
         Object.keys(seenData).forEach(key => {
-            if (key !== today) {
-                delete seenData[key];
-            }
+            if (key !== today) delete seenData[key];
         });
         
         localStorage.setItem(this.storageKey, JSON.stringify(seenData));
-        
-        // Réafficher l'événement du jour
         this.checkAndDisplayEvent();
     }
 
@@ -283,10 +626,7 @@ class SeasonalEvents {
         const seenData = this.getSeenData();
         const todayKey = this.getTodayKey();
         
-        if (!seenData[todayKey]) {
-            seenData[todayKey] = {};
-        }
-        
+        if (!seenData[todayKey]) seenData[todayKey] = {};
         seenData[todayKey][eventName] = true;
         localStorage.setItem(this.storageKey, JSON.stringify(seenData));
     }
@@ -294,38 +634,32 @@ class SeasonalEvents {
     hasSeenToday(eventName) {
         const seenData = this.getSeenData();
         const todayKey = this.getTodayKey();
-        
         return seenData[todayKey] && seenData[todayKey][eventName];
     }
 
     checkAndDisplayEvent() {
-    const today = new Date();
-    const currentEvent = this.getCurrentEvent(today);
-    
-    if (currentEvent) {
-        const hasSeenToday = this.hasSeenToday(currentEvent.name);
+        const today = new Date();
+        const currentEvent = this.getCurrentEvent(today);
         
-        // Si l'utilisateur a cliqué "Ne plus montrer aujourd'hui", ne rien afficher du tout
-        if (hasSeenToday) {
+        if (currentEvent) {
+            const hasSeenToday = this.hasSeenToday(currentEvent.name);
+            
+            if (hasSeenToday) {
+                const existing = document.getElementById('seasonalEvent');
+                if (existing) existing.remove();
+                return;
+            }
+            
+            this.displayEvent(currentEvent, true);
+        } else {
             const existing = document.getElementById('seasonalEvent');
             if (existing) existing.remove();
-            return;
         }
-        
-        // Afficher l'événement (première visite du jour)
-        this.displayEvent(currentEvent, true);
-    } else {
-        // Supprimer l'événement si la période est passée
-        const existing = document.getElementById('seasonalEvent');
-        if (existing) existing.remove();
     }
-}
 
     getCurrentEvent(today) {
         for (let event of this.events) {
-            if (this.isEventActive(event, today)) {
-                return event;
-            }
+            if (this.isEventActive(event, today)) return event;
         }
         return null;
     }
@@ -341,9 +675,7 @@ class SeasonalEvents {
     }
 
     getEventDate(event, year) {
-        if (event.isCalculated) {
-            return this.calculateSpecialDate(event.name, year);
-        }
+        if (event.isCalculated) return this.calculateSpecialDate(event.name, year);
         return new Date(year, event.date.month - 1, event.date.day);
     }
 
@@ -351,31 +683,28 @@ class SeasonalEvents {
         switch (eventName) {
             case 'Pâques':
                 return this.calculateEaster(year);
-            
             case 'Mardi Gras':
                 const easter = this.calculateEaster(year);
                 const mardiGras = new Date(easter);
                 mardiGras.setDate(easter.getDate() - 47);
                 return mardiGras;
-            
             case 'Ascension':
                 const easterAsc = this.calculateEaster(year);
                 const ascension = new Date(easterAsc);
                 ascension.setDate(easterAsc.getDate() + 39);
                 return ascension;
-            
             case 'Pentecôte':
                 const easterPent = this.calculateEaster(year);
                 const pentecote = new Date(easterPent);
                 pentecote.setDate(easterPent.getDate() + 49);
                 return pentecote;
-            
             case 'Fête des Mères':
                 return this.getLastSundayOfMonth(year, 4);
-            
             case 'Fête des Pères':
                 return this.getNthSundayOfMonth(year, 5, 3);
-            
+            case 'Black Friday':
+                // 4ème vendredi de novembre
+                return this.getNthFridayOfMonth(year, 10, 4);
             default:
                 return null;
         }
@@ -412,204 +741,166 @@ class SeasonalEvents {
         return new Date(year, month, firstSunday + (n - 1) * 7);
     }
 
+    getNthFridayOfMonth(year, month, n) {
+        const firstDay = new Date(year, month, 1);
+        const firstFriday = firstDay.getDay() <= 5 ? 6 - firstDay.getDay() : 6;
+        return new Date(year, month, firstFriday + (n - 1) * 7);
+    }
+
     displayEvent(event, showPopup) {
         const existing = document.getElementById('seasonalEvent');
         if (existing) existing.remove();
 
+        const theme = this.themeColors[event.theme] || this.themeColors.gold;
+        
         const eventDiv = document.createElement('div');
         eventDiv.id = 'seasonalEvent';
         eventDiv.className = `seasonal-event ${event.position} ${event.animation}`;
         
-        // Mode discret si déjà vu
-        if (!showPopup) {
-            eventDiv.classList.add('discrete-mode');
-        }
+        if (!showPopup) eventDiv.classList.add('discrete-mode');
         
+        // Double emoji avec effet de profondeur
         eventDiv.innerHTML = `
-    <div class="seasonal-emoji" title="${event.message}">${event.emoji}</div>
-`;
+            <div class="seasonal-emoji-container" title="${event.message}">
+                <div class="seasonal-emoji-shadow">${event.emoji}</div>
+                <div class="seasonal-emoji-main">${event.emoji}</div>
+                ${event.secondaryEmoji ? `<div class="seasonal-emoji-secondary">${event.secondaryEmoji}</div>` : ''}
+            </div>
+        `;
 
-        // Clic sur l'emoji pour afficher le message
-        eventDiv.querySelector('.seasonal-emoji').onclick = () => {
+        eventDiv.querySelector('.seasonal-emoji-container').onclick = () => {
             this.showEventMessage(event);
-            if (event.particles) {
-                this.createParticles(event.particles);
-            }
-        };               
+            if (event.particles) this.createParticles(event.particles, theme);
+        };
 
         document.body.appendChild(eventDiv);
         
-        // Afficher le popup automatiquement si première fois
-if (showPopup) {
-    setTimeout(() => {
-        this.showEventMessage(event);
-        if (event.particles) {
-            this.createParticles(event.particles);
+        if (showPopup) {
+            setTimeout(() => {
+                this.showEventMessage(event);
+                if (event.particles) this.createParticles(event.particles, theme);
+                this.markAsSeen(event.name);
+            }, 8000);
         }
-        this.markAsSeen(event.name);
-    }, 10000); // 10 secondes au lieu de 5
-}
         
         console.log(`🎉 Événement actif : ${event.name}`);
     }
 
     showEventMessage(event) {
-    const colors = this.getThemeColors();
-    
-    const message = document.createElement('div');
-    message.className = 'seasonal-message-popup';
-    message.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: linear-gradient(145deg, ${colors.primary}, ${colors.secondary});
-        color: white;
-        padding: 30px 40px;
-        border-radius: 20px;
-        z-index: 10002;
-        font-weight: bold;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-        text-align: center;
-        border: 3px solid ${colors.accent};
-        min-width: 280px;
-        max-width: 90%;
-        animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    `;
-    
-    message.innerHTML = `
-        <div style="font-size: 60px; margin-bottom: 15px;">${event.emoji}</div>
-        <div style="font-size: 22px; margin-bottom: 20px;">${event.message}</div>
-        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-            <button class="popup-btn-close" style="
-                background: rgba(255,255,255,0.2);
-                border: 2px solid white;
-                color: white;
-                padding: 10px 20px;
-                border-radius: 10px;
-                cursor: pointer;
-                font-size: 14px;
-                font-weight: bold;
-                transition: all 0.3s;
-            ">
-                Fermer
-            </button>
-            <button class="popup-btn-hide" style="
-                background: rgba(255,255,255,0.3);
-                border: 2px solid white;
-                color: white;
-                padding: 10px 20px;
-                border-radius: 10px;
-                cursor: pointer;
-                font-size: 14px;
-                font-weight: bold;
-                transition: all 0.3s;
-            ">
-                Ne plus montrer aujourd'hui
-            </button>
-        </div>
-    `;
-    
-    // Bouton Fermer - ferme juste le popup
-    message.querySelector('.popup-btn-close').onclick = () => {
-        message.remove();
-    };
-    
-    // Effets hover pour le bouton Fermer
-    const closeBtn = message.querySelector('.popup-btn-close');
-    closeBtn.onmouseover = () => closeBtn.style.background = 'rgba(255,255,255,0.3)';
-    closeBtn.onmouseout = () => closeBtn.style.background = 'rgba(255,255,255,0.2)';
-    
-    // Bouton Ne plus montrer - masque l'emoji pour la journée
-    message.querySelector('.popup-btn-hide').onclick = () => {
-        message.remove();
-        this.markAsSeen(event.name);
-        const eventDiv = document.getElementById('seasonalEvent');
-        if (eventDiv) eventDiv.remove();
-    };
-    
-    // Effets hover pour le bouton Ne plus montrer
-    const hideBtn = message.querySelector('.popup-btn-hide');
-    hideBtn.onmouseover = () => hideBtn.style.background = 'rgba(255,100,100,0.5)';
-    hideBtn.onmouseout = () => hideBtn.style.background = 'rgba(255,255,255,0.3)';
-    
-    document.body.appendChild(message);
-    
-    // Fermeture automatique après 10 secondes (popup seulement)
-    setTimeout(() => {
-        if (message.parentNode) message.remove();
-    }, 10000);
-}
+        // Supprimer popup existant
+        const existingPopup = document.querySelector('.seasonal-message-popup');
+        if (existingPopup) existingPopup.remove();
+        
+        const theme = this.themeColors[event.theme] || this.themeColors.gold;
+        
+        const message = document.createElement('div');
+        message.className = 'seasonal-message-popup';
+        message.innerHTML = `
+            <div class="seasonal-popup-bg"></div>
+            <div class="seasonal-popup-content">
+                <div class="seasonal-popup-glow"></div>
+                <div class="seasonal-popup-emojis">
+                    <span class="popup-emoji-left">${event.secondaryEmoji || event.emoji}</span>
+                    <span class="popup-emoji-main">${event.emoji}</span>
+                    <span class="popup-emoji-right">${event.secondaryEmoji || event.emoji}</span>
+                </div>
+                <h2 class="seasonal-popup-title">${event.message}</h2>
+                ${event.subMessage ? `<p class="seasonal-popup-subtitle">${event.subMessage}</p>` : ''}
+                <div class="seasonal-popup-buttons">
+                    <button class="popup-btn popup-btn-close">
+                        <span>✨</span> Fermer
+                    </button>
+                    <button class="popup-btn popup-btn-hide">
+                        <span>🙈</span> Masquer aujourd'hui
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        // Appliquer les couleurs du thème
+        const style = document.createElement('style');
+        style.textContent = `
+            .seasonal-message-popup {
+                --popup-primary: ${theme.primary};
+                --popup-secondary: ${theme.secondary};
+                --popup-accent: ${theme.accent};
+                --popup-bg: ${theme.bg};
+            }
+        `;
+        message.appendChild(style);
+        
+        // Événements
+        message.querySelector('.popup-btn-close').onclick = () => message.remove();
+        message.querySelector('.popup-btn-hide').onclick = () => {
+            message.remove();
+            this.markAsSeen(event.name);
+            const eventDiv = document.getElementById('seasonalEvent');
+            if (eventDiv) eventDiv.remove();
+        };
+        
+        // Fermer en cliquant sur le fond
+        message.querySelector('.seasonal-popup-bg').onclick = () => message.remove();
+        
+        document.body.appendChild(message);
+        
+        // Auto-fermeture après 12 secondes
+        setTimeout(() => {
+            if (message.parentNode) message.remove();
+        }, 12000);
+    }
 
-    createParticles(type) {
+    createParticles(type, theme) {
         const container = document.createElement('div');
         container.className = 'particles-container';
         document.body.appendChild(container);
         
-        const particleCount = 50;
+        const particleCount = 60;
+        const particleEmojis = {
+            hearts: ['❤️', '💕', '💖', '💗', '💝', '💘'],
+            confetti: ['🎊', '🎉', '✨', '⭐', '🌟', '💫'],
+            snowflakes: ['❄️', '❅', '❆', '🌨️', '⛄'],
+            leaves: ['🍂', '🍁', '🍃', '🌿'],
+            petals: ['🌸', '🌺', '🌷', '💮', '🏵️'],
+            eggs: ['🥚', '🐣', '🐰', '🌷', '🌸'],
+            fish: ['🐟', '🐠', '🐡', '🦈', '💦'],
+            clovers: ['☘️', '🍀', '💚', '✨'],
+            notes: ['🎵', '🎶', '🎼', '🎤', '🎸'],
+            stars: ['⭐', '🌟', '✨', '💫', '🌠'],
+            bats: ['🦇', '👻', '💀', '🕷️', '🕸️'],
+            fireworks: ['🎆', '🎇', '✨', '💥', '🌟'],
+            sun: ['☀️', '🌞', '🌻', '✨', '💛']
+        };
+        
+        const emojis = particleEmojis[type] || particleEmojis.confetti;
         
         for (let i = 0; i < particleCount; i++) {
             setTimeout(() => {
                 const particle = document.createElement('div');
                 particle.className = `particle particle-${type}`;
-                
-                // Position aléatoire
                 particle.style.left = Math.random() * 100 + '%';
                 particle.style.animationDelay = Math.random() * 2 + 's';
-                particle.style.animationDuration = (3 + Math.random() * 2) + 's';
-                
-                // Emoji selon le type
-                switch(type) {
-                    case 'hearts':
-                        particle.textContent = ['❤️', '💕', '💖', '💗'][Math.floor(Math.random() * 4)];
-                        break;
-                    case 'confetti':
-                        particle.textContent = ['🎊', '🎉', '✨', '⭐'][Math.floor(Math.random() * 4)];
-                        break;
-                    case 'snowflakes':
-                        particle.textContent = ['❄️', '⛄', '☃️'][Math.floor(Math.random() * 3)];
-                        break;
-                    case 'leaves':
-                        particle.textContent = ['🍂', '🍁', '🎃'][Math.floor(Math.random() * 3)];
-                        break;
-                }
+                particle.style.animationDuration = (3 + Math.random() * 3) + 's';
+                particle.style.fontSize = (20 + Math.random() * 15) + 'px';
+                particle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
                 
                 container.appendChild(particle);
-                
-                // Supprimer après l'animation
-                setTimeout(() => particle.remove(), 5000);
-            }, i * 100);
+                setTimeout(() => particle.remove(), 6000);
+            }, i * 80);
         }
         
-        // Supprimer le container après toutes les animations
-        setTimeout(() => container.remove(), 10000);
-    }
-
-    getThemeColors() {
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'rouge';
-        
-        const themes = {
-            'rouge': { primary: '#841b0a', secondary: '#a92317', accent: '#c62828' },
-            'dark': { primary: '#212121', secondary: '#424242', accent: '#616161' },
-            'bleuciel': { primary: '#1976d2', secondary: '#42a5f5', accent: '#64b5f6' },
-            'light': { primary: '#7b1fa2', secondary: '#ab47bc', accent: '#ce93d8' }
-        };
-        
-        return themes[currentTheme] || themes['rouge'];
+        setTimeout(() => container.remove(), 12000);
     }
 }
 
 // Initialiser
 const seasonalEvents = new SeasonalEvents();
 
-// Initialisation immédiate ou au chargement du DOM
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         console.log('🎉 Initialisation des événements saisonniers...');
         seasonalEvents.init();
     });
 } else {
-    // Le DOM est déjà chargé
     console.log('🎉 Initialisation immédiate des événements saisonniers...');
     seasonalEvents.init();
 }
