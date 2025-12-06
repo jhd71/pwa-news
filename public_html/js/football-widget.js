@@ -12,7 +12,7 @@ class FootballWidget {
                 flag: '🇫🇷',
                 urls: {
                     classements: 'https://www.fotmob.com/fr/leagues/53/table/ligue-1',
-                    scores: 'https://www.fotmob.com/fr/leagues/53/matches/ligue-1',
+                    scores: 'https://www.fotmob.com/fr/leagues/53/fixtures/ligue-1?group=by-date',
                     actualites: 'https://www.fotmob.com/fr/leagues/53/news/ligue-1',
                     transferts: 'https://www.fotmob.com/fr/leagues/53/transfers/ligue-1'
                 }
@@ -22,7 +22,7 @@ class FootballWidget {
                 flag: '🇫🇷',
                 urls: {
                     classements: 'https://www.fotmob.com/fr/leagues/110/table/ligue-2',
-                    scores: 'https://www.fotmob.com/fr/leagues/110/matches/ligue-2',
+                    scores: 'https://www.fotmob.com/fr/leagues/110/fixtures/ligue-2?group=by-date',
                     actualites: 'https://www.fotmob.com/fr/leagues/110/news/ligue-2',
                     transferts: 'https://www.fotmob.com/fr/leagues/110/transfers/ligue-2'
                 }
