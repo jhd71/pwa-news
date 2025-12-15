@@ -138,6 +138,26 @@ if (menuButton && sidebar) {
             navItem.classList.remove('active');
         }
     });
+	
+	// 🆕 AJOUTER : Gestionnaire pour le bouton photos mobile
+    const photosMobileBtn = document.getElementById('photosMobileBtn');
+    if (photosMobileBtn) {
+        photosMobileBtn.addEventListener('click', () => {
+            // Animation de clic
+            photosMobileBtn.style.transform = 'scale(0.9)';
+            
+            // Vibration si disponible
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+            
+            // Retour à la taille normale et ouverture
+            setTimeout(() => {
+                photosMobileBtn.style.transform = 'scale(1)';
+                this.openPhotosGallery();
+            }, 150);
+        });
+    }
 
         // Installation PWA
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -293,11 +313,47 @@ setupTVIcons() {
 	}
 	];
 
+
+// TUILE PHOTOS SIMPLE
+const photosTile = {
+    title: "Galerie Photos", 
+    url: "photos-gallery.html",
+    mobileUrl: "photos-gallery.html",
+    isDefault: true,
+    category: "photos",
+    isSlideshow: false // Plus de diaporama
+};
+
+// NOUVELLE TUILE MEMORY
+const memoryTile = {
+    title: "Memory Game",
+    url: "memory-game.html",
+    mobileUrl: "memory-game.html",
+    isDefault: true,
+    category: "game"
+};
+
+// TUILE SIMON SAYS
+const simonTile = {
+    title: "Simon Says",
+    url: "simon-says.html",
+    mobileUrl: "simon-says.html",
+    isDefault: true,
+    category: "game"
+};
+
 // Créer les tuiles d'actualités
 newsDefaultSites.forEach(site => {
     const tile = this.createTile(site);
     this.tileContainer.appendChild(tile);
 });
+
+// 🆕 AJOUTER LE WIDGET FOOTBALL SELON LA TAILLE D'ÉCRAN
+setTimeout(() => {
+    if (typeof window.addFootballToWidgets === 'function') {
+        window.addFootballToWidgets();
+    }
+}, 800);
 
 // Séparateur Espace+
 const separator1 = document.createElement('div');
@@ -305,11 +361,35 @@ separator1.className = 'separator';
 separator1.innerHTML = `<h2 class="separator-text">✨ Espace+</h2>`;
 this.tileContainer.appendChild(separator1);
 
+// TUILE PHOTOS DANS ESPACE+
+const photosTileElement = this.createTile(photosTile);
+this.tileContainer.appendChild(photosTileElement);
+
+// NOUVELLE TUILE PETITES ANNONCES DANS ESPACE+
+const annoncesTile = {
+    title: "PETITES ANNONCES",
+    url: "petites-annonces.html",
+    mobileUrl: "petites-annonces.html",
+    isDefault: true,
+    category: "annonces",
+};
+
+const annoncesTileElement = this.createTile(annoncesTile);
+this.tileContainer.appendChild(annoncesTileElement);
+
 // SÉPARATEUR JEUX
 const separatorGames = document.createElement('div');
 separatorGames.className = 'separator';
 separatorGames.innerHTML = `<h2 class="separator-text">🎮 Jeux</h2>`;
 this.tileContainer.appendChild(separatorGames);
+
+// TUILE MEMORY
+const memoryTileElement = this.createTile(memoryTile);
+this.tileContainer.appendChild(memoryTileElement);
+
+// TUILE SIMON SAYS
+const simonTileElement = this.createTile(simonTile);
+this.tileContainer.appendChild(simonTileElement);
 
         // Séparateur TV
         const separator2 = document.createElement('div');
@@ -411,6 +491,42 @@ const tvSites = [
 ];
 
         sportsSites.forEach(site => {
+            const tile = this.createTile(site);
+            this.tileContainer.appendChild(tile);
+        });
+		
+        // Séparateur Réseaux Sociaux
+        const separator3 = document.createElement('div');
+        separator3.className = 'separator';
+        separator3.innerHTML = `<h2 class="separator-text">💬 Réseaux Sociaux</h2>`;
+        this.tileContainer.appendChild(separator3);
+
+        // Section Réseaux Sociaux
+        const socialSites = [
+  {
+    title: '🔴 YouTube',
+    url: 'https://www.youtube.com/feed/trending',
+    mobileUrl: 'https://www.youtube.com/feed/trending',
+    isDefault: true,
+    category: 'social'
+  },
+  {
+    title: '🟢 Twitch',
+    url: 'https://www.twitch.tv/',
+    mobileUrl: 'https://www.twitch.tv/',
+    isDefault: true,
+    category: 'social'
+  },
+  {
+    title: '⚫ TikTok',
+    url: 'https://www.tiktok.com/discover?lang=fr',
+    mobileUrl: 'https://www.tiktok.com/?lang=fr',
+    isDefault: true,
+    category: 'social'
+  }
+];
+
+        socialSites.forEach(site => {
             const tile = this.createTile(site);
             this.tileContainer.appendChild(tile);
         });
@@ -2142,6 +2258,41 @@ fixListModeLayout() {
             }
         });
     }
+
+// Nouvelle méthode pour ouvrir la galerie photos
+openPhotosGallery() {
+    try {
+        // Animation du bouton
+        const photosMobileBtn = document.getElementById('photosMobileBtn');
+        if (photosMobileBtn) {
+            photosMobileBtn.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                photosMobileBtn.style.transform = 'scale(1)';
+            }, 150);
+        }
+        
+        // Vibration
+        if (navigator.vibrate) {
+            navigator.vibrate(50);
+        }
+        
+        // Ouvrir la galerie photos
+        const photosUrl = 'photos-gallery.html'; // Adaptez selon votre URL
+        
+        if (photosUrl.startsWith('http')) {
+            window.open(photosUrl, '_blank');
+        } else {
+            window.location.href = photosUrl;
+        }
+        
+        console.log('📸 Ouverture de la galerie photos');
+        this.showToast && this.showToast('Ouverture de la galerie photos...');
+        
+    } catch (error) {
+        console.error('Erreur ouverture galerie photos:', error);
+        this.showToast && this.showToast('Erreur lors de l\'ouverture');
+    }
+}
 
 changeVisualEnhancement(mode) {
         console.log("Changement d'amélioration visuelle vers:", mode);

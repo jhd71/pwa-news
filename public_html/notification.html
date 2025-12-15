@@ -1,0 +1,577 @@
+
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Notifications Actu&Média</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    /* GARDEZ TOUT VOTRE CSS EXISTANT ICI - NE PAS MODIFIER */
+    :root {
+      /* Variables pour le mode clair */
+      --bg-color: #f5f5f5;
+      --card-bg: white;
+      --text-color: #333;
+      --heading-color: #1e3a8a;
+      --input-border: #ccc;
+      --btn-bg: #1e3a8a;
+      --btn-color: white;
+      --btn-hover: #2d4bb7;
+      --preview-bg: #f0f0f0;
+      --preview-border: #ccc;
+      --success-bg: #d4edda;
+      --success-color: #155724;
+      --error-bg: #f8d7da;
+      --error-color: #721c24;
+      --entry-bg: #f9f9f9;
+      --entry-border: #aaa;
+      --switch-bg: #ccc;
+      --switch-dot: white;
+      --switch-active: #1e3a8a;
+      --box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+[data-theme="dark"] {
+  /* Variables pour le mode sombre */
+  --bg-color: #121212;
+  --card-bg: #1e1e1e;
+  --text-color: #e0e0e0;
+  --heading-color: #8ba3e0;
+  --input-border: #444;
+  --btn-bg: #3a56b0;
+  --btn-color: white;
+  --btn-hover: #4a66c0;
+  --preview-bg: #252525;
+  --preview-border: #555;
+  --success-bg: #1e4620;
+  --success-color: #a3e4b5;
+  --error-bg: #4e1c1c;
+  --error-color: #f5c2c7;
+  --entry-bg: #252525;
+  --entry-border: #666;
+  --switch-bg: #555;
+  --switch-dot: #ddd;
+  --switch-active: #4a66c0;
+  --box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+* {
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+body {
+  font-family: -apple-system, system-ui, sans-serif;
+  background: var(--bg-color);
+  padding: 15px;
+  color: var(--text-color);
+  margin: 0;
+  min-height: 100vh;
+}
+
+.container {
+  background: var(--card-bg);
+  border-radius: 8px;
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  box-shadow: var(--box-shadow);
+}
+
+h1, h3 {
+  color: var(--heading-color);
+  text-align: center;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+  color: var(--text-color);
+}
+
+input, textarea {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 12px;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  box-sizing: border-box;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+}
+
+textarea {
+  resize: vertical;
+  height: 80px;
+}
+
+button {
+  background: var(--btn-bg);
+  color: var(--btn-color);
+  border: none;
+  width: 100%;
+  padding: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background: var(--btn-hover);
+}
+
+.checkbox-group {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+.checkbox-group input[type="checkbox"] {
+  margin: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.checkbox-group label {
+  margin: 0;
+  white-space: nowrap;
+}
+
+#previewBox {
+  background: var(--preview-bg);
+  padding: 15px;
+  margin-top: 15px;
+  display: none;
+  border-left: 4px solid var(--preview-border);
+  border-radius: 4px;
+}
+
+#status {
+  display: none;
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 4px;
+}
+
+.success { 
+  background: var(--success-bg); 
+  color: var(--success-color);
+}
+
+.error { 
+  background: var(--error-bg); 
+  color: var(--error-color);
+}
+
+.notif-entry {
+  margin-top: 15px;
+  padding: 12px;
+  background: var(--entry-bg);
+  border-left: 4px solid var(--entry-border);
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Theme Switcher */
+.theme-switch-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.theme-switch {
+  display: inline-block;
+  height: 24px;
+  position: relative;
+  width: 50px;
+}
+
+.theme-switch input {
+  display: none;
+}
+
+.slider {
+  background-color: var(--switch-bg);
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  background-color: var(--switch-dot);
+  bottom: 4px;
+  content: "";
+  height: 16px;
+  left: 4px;
+  position: absolute;
+  transition: .4s;
+  width: 16px;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--switch-active);
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.theme-icon {
+  margin-right: 10px;
+  font-size: 20px;
+  vertical-align: middle;
+}
+
+/* Header Bar */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.app-title {
+  display: flex;
+  align-items: center;
+  color: var(--heading-color);
+  font-weight: bold;
+}
+
+.app-title .material-icons {
+  margin-right: 8px;
+}
+
+/* Responsive fixes */
+@media (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+  
+  .container {
+    padding: 15px;
+  }
+  
+  h1 {
+    font-size: 24px;
+    margin-top: 5px;
+  }
+  
+  .checkbox-group label {
+    font-size: 14px;
+  }
+  
+  input, textarea, button {
+    padding: 10px;
+    font-size: 16px; /* iOS minimum size to prevent zooming */
+  }
+  
+  #previewBox, #status, .notif-entry {
+    padding: 10px;
+  }
+  
+  .theme-switch-wrapper {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+  }
+  
+  .app-title {
+    font-size: 18px;
+  }
+}
+
+/* iOS specific fixes */
+@supports (-webkit-touch-callout: none) {
+  input, textarea, button {
+    font-size: 16px;
+  }
+  
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="app-title">
+        <span class="material-icons">notifications_active</span>
+        <span>Actu&Média</span>
+      </div>
+      <div class="theme-switch-wrapper">
+        <span class="material-icons theme-icon">brightness_4</span>
+        <label class="theme-switch">
+          <input type="checkbox" id="themeSwitch">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+<h1>Notifications</h1>
+
+<label for="password">Mot de passe admin :</label>
+<input type="password" id="password" placeholder="Mot de passe" autocomplete="off" />
+
+<label for="title">Titre :</label>
+<input type="text" id="title" placeholder="Titre de la notification" />
+
+<label for="body">Message :</label>
+<textarea id="body" placeholder="Contenu de la notification"></textarea>
+
+<label for="url">URL de destination (facultatif) :</label>
+<input type="text" id="url" placeholder="https://actuetmedia.fr/" />
+
+<div class="checkbox-group">
+  <input type="checkbox" id="urgent" />
+  <label for="urgent">
+    Notification urgente (vibreur, son, persistante)
+  </label>
+</div>
+
+<button id="sendBtn">📤 Envoyer la notification</button>
+<div id="status"></div>
+
+<div id="previewBox"></div>
+
+<h3>🕘 3 dernières notifications</h3>
+<div id="historyContent"></div>
+  </div>
+  <script>
+    // FONCTION DE HASH IDENTIQUE À CELLE DU CHAT
+    function hashPassword(password) {
+        let hash = 0;
+        for (let i = 0; i < password.length; i++) {
+            const char = password.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash;
+        }
+        return Math.abs(hash).toString(16);
+    }
+
+    // Gestion du thème
+    const themeSwitch = document.getElementById('themeSwitch');
+    const htmlElement = document.documentElement;
+    
+    // Vérifier si un thème est enregistré
+    const savedTheme = localStorage.getItem('theme');
+    
+    // Appliquer le thème sauvegardé ou le thème du système
+    if (savedTheme) {
+      htmlElement.setAttribute('data-theme', savedTheme);
+      themeSwitch.checked = savedTheme === 'dark';
+    } else {
+      // Utiliser le thème préféré du système
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        htmlElement.setAttribute('data-theme', 'dark');
+        themeSwitch.checked = true;
+      }
+    }
+    
+    // Fonction pour changer le thème
+    function switchTheme(e) {
+      if (e.target.checked) {
+        htmlElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        htmlElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+      }
+    }
+    
+    themeSwitch.addEventListener('change', switchTheme);
+    
+    // Gestion des notifications
+    const history = [];
+
+    document.getElementById('sendBtn').addEventListener('click', sendNotification);
+
+    function previewNotification() {
+      const title = document.getElementById('title').value || "Aperçu notification";
+      const body = document.getElementById('body').value || "Ceci est un exemple";
+      const url = document.getElementById('url').value.trim();
+      const urgent = document.getElementById('urgent').checked;
+
+      const preview = document.getElementById('previewBox');
+      preview.style.display = "block";
+
+      preview.innerHTML = `
+        <strong>${title}</strong><br>
+        ${body}<br>
+        ${url ? `<small>🔗 <a href="${url}" target="_blank" style="color: var(--heading-color);">${url}</a></small><br>` : ""}
+        <em style="color:${urgent ? 'red' : 'gray'};">
+          ${urgent ? "🔴 Notification urgente" : "Notification normale"}
+        </em>
+      `;
+    }
+
+    async function sendNotification() {
+      const password = document.getElementById('password').value;
+      const title = document.getElementById('title').value;
+      const body = document.getElementById('body').value;
+      const url = document.getElementById('url').value.trim() || 'https://actuetmedia.fr/';
+      const urgent = document.getElementById('urgent').checked;
+
+      if (!password) return showStatus("⛔ Mot de passe requis", "error");
+      if (!title || !body) return showStatus("⛔ Titre et message requis", "error");
+
+      // NOUVELLE VÉRIFICATION : Hasher le mot de passe
+      const hashedPassword = hashPassword(password);
+      const expectedHash = '6fe87dd'; // Hash du nouveau mot de passe
+      
+      if (hashedPassword !== expectedHash) {
+          return showStatus("❌ Mot de passe incorrect", "error");
+      }
+
+      previewNotification(); // affichage en live
+      
+      // Montrer que l'envoi est en cours
+      const sendBtn = document.getElementById('sendBtn');
+      const originalText = sendBtn.textContent;
+      sendBtn.textContent = "⏳ Envoi en cours...";
+      sendBtn.disabled = true;
+
+      try {
+        // IMPORTANT : Envoyer le mot de passe EN CLAIR à l'API
+        const res = await fetch("/api/send-important-notification", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-API-Key": password // Le mot de passe original
+          },
+          body: JSON.stringify({ title, body, url, urgent })
+        });
+
+        const result = await res.json();
+
+        if (res.ok && result.success) {
+          showStatus(`✅ Notification envoyée à ${result.sent} appareil(s)`, "success");
+          addToHistory(title, body, url, urgent);
+          resetForm();
+          
+          // Vibrer pour confirmation tactile sur mobile
+          if (navigator.vibrate) {
+            navigator.vibrate(200);
+          }
+        } else {
+          showStatus("❌ Erreur : " + (result.error || "Inconnue"), "error");
+        }
+      } catch (err) {
+        showStatus("❌ Erreur réseau : " + err.message, "error");
+      } finally {
+        // Restaurer le bouton
+        sendBtn.textContent = originalText;
+        sendBtn.disabled = false;
+      }
+    }
+
+    function showStatus(msg, type) {
+      const s = document.getElementById('status');
+      s.textContent = msg;
+      s.className = type;
+      s.style.display = "block";
+      
+      // Faire défiler jusqu'au message de statut
+      s.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      
+      // Faire disparaître le message après 5 secondes
+      setTimeout(() => {
+        s.style.opacity = '0';
+        setTimeout(() => {
+          s.style.display = 'none';
+          s.style.opacity = '1';
+        }, 500);
+      }, 5000);
+    }
+
+    function resetForm() {
+      document.getElementById('title').value = '';
+      document.getElementById('body').value = '';
+      document.getElementById('url').value = '';
+      document.getElementById('urgent').checked = false;
+      document.getElementById('previewBox').style.display = 'none';
+    }
+
+    function addToHistory(title, body, url, urgent) {
+      history.unshift({ title, body, url, urgent, date: new Date().toLocaleString() });
+      if (history.length > 3) history.pop();
+
+      const div = document.getElementById('historyContent');
+      div.innerHTML = history.map(h =>
+        `<div class="notif-entry">
+          <strong>${h.title}</strong><br>
+          ${h.body}<br>
+          ${h.url ? `<small>🔗 <a href="${h.url}" target="_blank" style="color: var(--heading-color);">${h.url}</a></small><br>` : ""}
+          <em style="color:${h.urgent ? 'red' : 'gray'};">${h.urgent ? "🔴 Urgente" : "Notification normale"}</em><br>
+          <small>${h.date}</small>
+        </div>`
+      ).join('');
+    }
+    
+    // Prévisualisation en direct
+    ['title', 'body', 'url', 'urgent'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('input', previewNotification);
+        el.addEventListener('change', previewNotification); // pour la case à cocher
+      }
+    });
+    
+    // Restaurer l'historique depuis localStorage si disponible
+    try {
+      const savedHistory = localStorage.getItem('notificationHistory');
+      if (savedHistory) {
+        const parsedHistory = JSON.parse(savedHistory);
+        if (Array.isArray(parsedHistory) && parsedHistory.length > 0) {
+          history.push(...parsedHistory.slice(0, 3));
+          const div = document.getElementById('historyContent');
+          div.innerHTML = history.map(h =>
+            `<div class="notif-entry">
+              <strong>${h.title}</strong><br>
+              ${h.body}<br>
+              ${h.url ? `<small>🔗 <a href="${h.url}" target="_blank" style="color: var(--heading-color);">${h.url}</a></small><br>` : ""}
+              <em style="color:${h.urgent ? 'red' : 'gray'};">${h.urgent ? "🔴 Urgente" : "Notification normale"}</em><br>
+              <small>${h.date}</small>
+            </div>`
+          ).join('');
+        }
+      }
+    } catch (e) {
+      console.error('Erreur lors de la restauration de l\'historique:', e);
+    }
+    
+    // Sauvegarder l'historique dans localStorage quand il change
+    const originalAddToHistory = addToHistory;
+    addToHistory = function(title, body, url, urgent) {
+      originalAddToHistory(title, body, url, urgent);
+      try {
+        localStorage.setItem('notificationHistory', JSON.stringify(history));
+      } catch (e) {
+        console.error('Erreur lors de la sauvegarde de l\'historique:', e);
+      }
+    };
+    
+    // Optimisations pour mobile
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      document.querySelectorAll('input, textarea, button').forEach(el => {
+        el.style.fontSize = '16px';
+      });
+    }
+  </script>
+</body>
+</html>

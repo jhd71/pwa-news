@@ -1,0 +1,1373 @@
+/* gallery-styles.css - Version nettoyée et optimisée */
+/* PARTIE 1 : VARIABLES ET THÈMES */
+
+/* ===== VARIABLES CSS GLOBALES ===== */
+:root {
+    /* Couleurs principales */
+    --primary-color: #7E57C2;
+    --accent-color: #9C27B0;
+    --background-color: #EFF1FF;
+    --card-bg: white;
+    --text-color: #333333;
+    --text-muted: #666666;
+    --border-color: #dddddd;
+    
+    /* Composants UI */
+    --input-bg: white;
+    --button-bg: #f0f0f0;
+    --comment-bg: #f5f5f5;
+    --header-text-color: #FFFFFF;
+    --photo-title-color: #333333;
+    --card-text-color: #333333;
+    --navbar-bg: rgba(255, 255, 255, 0.9);
+    --footer-bg: rgba(255, 255, 255, 0.9);
+    --modal-bg: #ffffff;
+    --photo-view-bg: white;
+    
+    /* Ombres */
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 8px rgba(0,0,0,0.15);
+    --shadow-lg: 0 8px 16px rgba(0,0,0,0.2);
+    
+    /* Bordures arrondies */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    
+    /* Dégradés de fond */
+    --background-start: #7f1d1d;
+    --background-middle: #991b1b;
+    --background-end: #dc2626;
+}
+
+/* ===== THÈME SOMBRE ===== */
+[data-theme="dark"] {
+    --primary-color: #1a237e;
+    --accent-color: #3F51B5;
+    --background-color: #121212;
+    --card-bg: #2a2a2a;
+    --text-color: #FFFFFF;
+    --text-muted: #aaaaaa;
+    --border-color: #444444;
+    --input-bg: #333333;
+    --button-bg: #333333;
+    --comment-bg: #333333;
+    --header-text-color: #FFFFFF;
+    --photo-title-color: #FFFFFF;
+    --card-text-color: #FFFFFF;
+    --navbar-bg: rgba(26, 35, 126, 0.95);
+    --footer-bg: rgba(26, 35, 126, 0.95);
+    --modal-bg: #1E1E1E;
+    --photo-view-bg: #1E1E1E;
+    --background-start: #0f172a;
+    --background-middle: #1a237e;
+    --background-end: #1a237e;
+}
+
+/* ===== THÈME ROUGE ===== */
+[data-theme="rouge"] {
+    --primary-color: #841b0a;
+    --accent-color: #c62828;
+    --background-color: #8a2320;
+    --card-bg: #ac2925;
+    --text-color: #FFFFFF;
+    --text-muted: #f0f0f0;
+    --border-color: rgba(255, 255, 255, 0.2);
+    --input-bg: rgba(255, 255, 255, 0.1);
+    --button-bg: #a32f2a;
+    --comment-bg: #b92e29;
+    --header-text-color: #FFFFFF;
+    --photo-title-color: #FFFFFF;
+    --card-text-color: #FFFFFF;
+    --navbar-bg: rgba(211, 47, 47, 0.95);
+    --footer-bg: rgba(211, 47, 47, 0.95);
+    --modal-bg: #8a2320;
+    --photo-view-bg: #8a2320;
+    --background-start: #7f1d1d;
+    --background-middle: #991b1b;
+    --background-end: #dc2626;
+}
+
+/* ===== THÈME BLEU CIEL ===== */
+[data-theme="bleuciel"] {
+    --primary-color: #4FB3E8;
+    --accent-color: #3F97C7;
+    --background-color: #F0F8FF;
+    --card-bg: white;
+    --text-color: #333333;
+    --text-muted: #666666;
+    --border-color: #E3F2FD;
+    --input-bg: white;
+    --button-bg: #4FB3E8;
+    --comment-bg: #F0F8FF;
+    --header-text-color: #FFFFFF;
+    --photo-title-color: #333333;
+    --card-text-color: #333333;
+    --navbar-bg: rgba(79, 179, 232, 0.95);
+    --footer-bg: rgba(79, 179, 232, 0.95);
+    --modal-bg: #ffffff;
+    --photo-view-bg: white;
+    --background-start: #0c4a6e;
+    --background-middle: #0369a1;
+    --background-end: #0ea5e9;
+}
+
+/* PARTIE 2 : STRUCTURE PRINCIPALE ET MISE EN PAGE */
+
+/* ===== CORPS PRINCIPAL ===== */
+.gallery-main {
+    padding: 20px;
+    padding-top: 80px;
+    padding-bottom: 90px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    min-height: 100vh;
+}
+
+/* ===== EN-TÊTE DE LA GALERIE ===== */
+.gallery-header {
+    text-align: center;
+    margin-bottom: 30px;
+    background: linear-gradient(135deg, 
+        var(--background-start) 0%, 
+        var(--background-middle) 50%, 
+        var(--background-end) 100%
+    );
+    padding: 60px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+/* Correction spécifique pour le thème light */
+[data-theme="light"] .gallery-header {
+    background: #7b5fbe !important;
+}
+
+.gallery-header h1 {
+    color: var(--header-text-color);
+    margin: 0;
+    font-size: 28px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.gallery-intro {
+    max-width: 600px;
+    margin: 15px auto;
+    color: var(--header-text-color);
+    opacity: 0.9;
+    text-align: center;
+    font-size: 16px;
+    line-height: 1.5;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== BOUTON PRINCIPAL D'UPLOAD ===== */
+.upload-btn {
+    background: white;
+    color: var(--primary-color);
+    border: none;
+    border-radius: 30px;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 25px auto;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-md);
+}
+
+.upload-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ===== GRILLE DE PHOTOS ===== */
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.photo-card {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--card-bg);
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+    position: relative;
+    cursor: pointer;
+}
+
+.photo-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+}
+
+.photo-img-container {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+}
+
+.photo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.photo-card:hover .photo-img {
+    transform: scale(1.05);
+}
+
+.photo-info {
+    padding: 15px;
+    color: var(--card-text-color);
+}
+
+.photo-title {
+    font-size: 18px;
+    margin: 0 0 10px;
+    color: var(--photo-title-color);
+    font-weight: bold;
+}
+
+.photo-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: 10px;
+}
+
+/* PARTIE 3 : MODALES ET FORMULAIRES */
+
+/* ===== MODAL D'UPLOAD ===== */
+.upload-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.modal-content {
+    max-width: 600px;
+    margin: 60px auto;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    color: var(--text-color);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px;
+    color: white;
+}
+
+.close-modal {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.close-modal:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* ===== MODAL DE VISUALISATION PHOTO ===== */
+.photo-view-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1100;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1;
+}
+
+.modal-container {
+    position: relative;
+    z-index: 2;
+    width: 90%;
+    max-width: 800px;
+    height: 90vh;
+    margin: 5vh auto;
+    background: var(--modal-bg);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header-fixed {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--primary-color);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.modal-header-fixed h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.close-modal-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.close-modal-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.modal-scrollable-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    transition: transform 0.2s ease;
+}
+
+.modal-scrollable-content.navigating {
+    transform: scale(0.98);
+}
+
+/* ===== SECTION PHOTO DANS MODAL ===== */
+.photo-section {
+    margin-bottom: 30px;
+}
+
+.photo-section img {
+    width: 100%;
+    max-height: 600px;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    margin-bottom: 20px;
+}
+
+.photo-info-section {
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: var(--radius-md);
+}
+
+.photo-description {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    color: var(--text-color);
+}
+
+/* Spécifique au thème rouge */
+[data-theme="rouge"] .photo-description {
+    color: #ffd230 !important;
+}
+
+.photo-metadata {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+[data-theme="rouge"] .photo-metadata {
+    color: #ffd230;
+}
+
+.metadata-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+[data-theme="rouge"] .metadata-item {
+    color: #ffd230;
+}
+
+/* ===== FORMULAIRE D'UPLOAD ===== */
+#photoUploadForm {
+    padding: 20px;
+}
+
+.file-upload-area {
+    margin-bottom: 20px;
+}
+
+.upload-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.capture-btn, .gallery-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: var(--shadow-sm);
+}
+
+.capture-btn:hover, .gallery-btn:hover {
+    transform: translateY(-3px);
+    background: var(--accent-color);
+    box-shadow: var(--shadow-md);
+}
+
+.capture-btn .material-icons, 
+.gallery-btn .material-icons {
+    font-size: 36px;
+    margin-bottom: 8px;
+}
+
+/* Forcer le texte blanc pour les boutons en thème dark */
+[data-theme="dark"] .capture-btn,
+[data-theme="dark"] .gallery-btn,
+[data-theme="dark"] .capture-btn span,
+[data-theme="dark"] .gallery-btn span,
+[data-theme="dark"] .capture-btn .material-icons,
+[data-theme="dark"] .gallery-btn .material-icons,
+[data-theme="dark"] .submit-photo-btn {
+    color: white !important;
+}
+
+[data-theme="dark"] .form-group label {
+    color: white !important;
+}
+
+[data-theme="dark"] .form-group input::placeholder,
+[data-theme="dark"] .form-group textarea::placeholder {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.photo-preview {
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.photo-preview img {
+    max-height: 200px;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.form-group input, 
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: var(--input-bg);
+    color: var(--text-color);
+    font-size: 16px;
+}
+
+/* Background blanc pour les inputs en thème rouge */
+[data-theme="rouge"] .form-group input,
+[data-theme="rouge"] .form-group textarea {
+    background: #ffffff !important;
+    color: #2c3e50 !important;
+    border-color: #ddd !important;
+}
+
+.submit-photo-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.submit-photo-btn::before {
+    content: '📷';
+    font-size: 20px;
+}
+
+.submit-photo-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.submit-photo-btn:active {
+    transform: translateY(0);
+}
+
+/* Adaptation des couleurs selon les thèmes */
+[data-theme="dark"] .submit-photo-btn {
+    background: linear-gradient(135deg, #1d37cd 0%, #0b2579 100%);
+}
+
+[data-theme="rouge"] .submit-photo-btn {
+    background: linear-gradient(135deg, #E53935 0%, #C62828 100%);
+}
+
+[data-theme="bleuciel"] .submit-photo-btn {
+    background: linear-gradient(135deg, #64B5F6 0%, #42A5F5 100%);
+}
+
+/* PARTIE 4 : ACTIONS, COMMENTAIRES ET NAVIGATION */
+
+/* ===== BOUTONS D'ACTION PHOTO ===== */
+.photo-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.navigation-row,
+.actions-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.action-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    box-shadow: var(--shadow-sm);
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    background: var(--accent-color);
+}
+
+.secondary-btn {
+    background: #6c757d;
+}
+
+.secondary-btn:hover {
+    background: #5a6268;
+}
+
+/* ===== NAVIGATION ENTRE PHOTOS ===== */
+.nav-btn {
+    flex: 1;
+    max-width: 140px;
+    background: var(--primary-color) !important;
+    color: white !important;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    background: var(--accent-color, #9c27b0) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.nav-btn .material-icons {
+    font-size: 20px;
+}
+
+[data-theme="rouge"] .nav-btn {
+    background: #bc3a34 !important;
+    border-color: rgba(255, 210, 48, 0.3);
+}
+
+[data-theme="rouge"] .nav-btn:hover {
+    background: #d32f2f !important;
+    border-color: #FFD230;
+}
+
+/* ===== SECTION COMMENTAIRES ===== */
+.comments-section {
+    margin-top: 30px;
+}
+
+/* État collapsed pour PC */
+@media (min-width: 769px) {
+    .comments-section {
+        transition: all 0.3s ease;
+    }
+    
+    .comments-content {
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+    
+    .comments-content[style*="display: none"] {
+        max-height: 0;
+        opacity: 0;
+    }
+    
+    .comments-content[style*="display: block"] {
+        max-height: 1000px;
+        opacity: 1;
+    }
+}
+
+.comments-action-btn.primary {
+    background: white;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+
+.comments-action-btn.secondary {
+    background: var(--primary-color);
+    color: white !important;
+    border: 2px solid var(--primary-color);
+}
+
+.comments-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.comments-header h3 {
+    margin: 0;
+    font-size: 20px;
+    color: var(--text-color);
+}
+
+/* Couleurs spécifiques par thème */
+[data-theme="light"] .comments-header h3 {
+    color: #7e57c2;
+}
+
+[data-theme="dark"] .comments-header h3 {
+    color: #ffffff;
+}
+
+[data-theme="rouge"] .comments-header h3 {
+    color: #ffd230 !important;
+}
+
+[data-theme="bleuciel"] .comments-header h3 {
+    color: #0ea5e9;
+}
+
+.toggle-comments-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--button-bg);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.toggle-comments-btn:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.comments-content {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.comments-list {
+    margin-bottom: 20px;
+}
+
+/* ===== COMMENTAIRES - STYLE UNIQUE POUR TOUS LES THÈMES ===== */
+.comment {
+    background: white !important;
+    color: #333 !important;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-sm);
+    animation: fadeIn 0.3s ease;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.comment-author {
+    font-weight: bold;
+    color: #333 !important;
+}
+
+.comment-date {
+    font-size: 12px;
+    color: #666 !important;
+}
+
+.comment-text {
+    color: #333 !important;
+    line-height: 1.5;
+}
+
+/* Forcer le style pour tous les thèmes */
+[data-theme="dark"] .comment,
+[data-theme="rouge"] .comment,
+[data-theme="bleuciel"] .comment {
+    background: white !important;
+}
+
+[data-theme="dark"] .comment-author,
+[data-theme="rouge"] .comment-author,
+[data-theme="bleuciel"] .comment-author,
+[data-theme="dark"] .comment-text,
+[data-theme="rouge"] .comment-text,
+[data-theme="bleuciel"] .comment-text {
+    color: #333 !important;
+}
+
+[data-theme="dark"] .comment-date,
+[data-theme="rouge"] .comment-date,
+[data-theme="bleuciel"] .comment-date {
+    color: #666 !important;
+}
+
+/* ===== FORMULAIRE DE COMMENTAIRE ===== */
+.comment-form-wrapper {
+    margin-top: 20px;
+}
+
+.show-comment-form-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.show-comment-form-btn:hover {
+    background: var(--accent-color);
+}
+
+.comment-form {
+    margin-top: 15px;
+    padding: 20px;
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+}
+
+.comment-form input,
+.comment-form textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 16px;
+}
+
+.comment-form textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.form-actions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+	background: linear-gradient(145deg, #4CAF50, #4CAF50);
+}
+
+.cancel-btn {
+    background: var(--button-bg);
+    color: var(--text-color);
+}
+
+.submit-btn {
+    background: var(--primary-color);
+    color: white;
+}
+
+.form-actions button:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ===== FIN DE LA PARTIE 4 ===== */
+
+/* PARTIE 5 : NAVIGATION ET ÉLÉMENTS UI */
+
+/* ===== NAVIGATION DU BAS ===== */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background: var(--navbar-bg);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-item {
+    color: white;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.nav-item .material-icons {
+    font-size: 24px;
+    margin-bottom: 4px;
+}
+
+.nav-item.active {
+    color: white;
+    font-weight: bold;
+}
+
+/* Thème super-light - Navigation avec couleurs adaptées */
+[data-theme="super-light"] .nav-item {
+    color: #fafbfc !important;
+}
+
+[data-theme="super-light"] .nav-item.active {
+    color: #fbfcfd !important;
+    background: rgba(99, 102, 241, 0.1) !important;
+    border-radius: 8px !important;
+}
+
+[data-theme="super-light"] .nav-item:hover {
+    color: #ffffff !important;
+    background: rgba(99, 102, 241, 0.05) !important;
+    border-radius: 8px !important;
+}
+
+/* ===== INDICATEURS DE CHARGEMENT ===== */
+.loading-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--primary-color);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ===== MESSAGES ET ÉTATS VIDES ===== */
+.no-photos-message {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--text-muted);
+    background-color: rgba(0, 0, 0, 0.03);
+    border-radius: var(--radius-lg);
+    margin: 20px 0;
+}
+
+/* ===== BOUTON CHARGER PLUS ===== */
+.load-more-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 30px auto 0;
+    padding: 12px 24px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 16px;
+    box-shadow: var(--shadow-md);
+    transition: all 0.2s;
+}
+
+.load-more-btn:hover {
+    transform: translateY(-2px);
+    background: var(--accent-color);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ===== BARRE DE PROGRESSION ===== */
+.upload-progress {
+    margin-top: 20px;
+}
+
+.progress-bar {
+    height: 8px;
+    background: var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: var(--primary-color);
+    transition: width 0.3s;
+}
+
+.progress-text {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* ===== ICÔNES SPÉCIALES ===== */
+.material-icons.arrow-back-white {
+    color: #fff;
+    font-size: 2.2rem;
+    vertical-align: middle;
+    cursor: pointer;
+    transition: transform 0.15s;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+}
+
+/* ===== ÉTATS DU BODY ===== */
+body.modal-open {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+}
+
+body.comment-form-open {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* PARTIE 6 : RESPONSIVE MOBILE */
+
+/* ===== TABLETTES ET MOBILES (max 768px) ===== */
+@media (max-width: 768px) {
+    /* Structure principale */
+    .gallery-main {
+        padding: 15px;
+        padding-top: 70px;
+        padding-bottom: 80px;
+    }
+    
+    .gallery-header h1 {
+        font-size: 22px;
+    }
+    
+    .photo-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .photo-img-container {
+        height: 180px;
+    }
+    
+    /* Modal de visualisation plein écran */
+    .modal-container {
+        width: 100%;
+        height: 100vh;
+        margin: 0;
+        border-radius: 0;
+    }
+    
+    .modal-header-fixed {
+        border-radius: 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        padding: 15px 60px 15px 20px;
+    }
+    
+    .close-modal-btn {
+        position: fixed;
+        right: 10px;
+        top: 3%;
+        transform: translateY(-50%);
+        width: 40px !important;
+        height: 40px !important;
+        z-index: 101;
+    }
+    
+    .modal-scrollable-content {
+        padding: 15px;
+        padding-top: 80px;
+        padding-bottom: 20px;
+        height: 100vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .photo-section img {
+        max-height: 400px;
+    }
+    
+    /* Section commentaires mobile */
+    .comments-section {
+        background: var(--modal-bg);
+        border-radius: var(--radius-lg);
+        margin-top: 20px;
+        position: relative;
+    }
+    
+    .comments-actions {
+        flex-direction: column;
+    }
+    
+    .view-comments-btn, .write-comment-btn {
+        width: 100%;
+    }
+    
+    .comments-content {
+        max-height: none;
+    }
+    
+    /* Formulaire de commentaire fixe en haut */
+    .comment-form-wrapper {
+        position: fixed !important;
+        top: 80px !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: auto !important;
+        z-index: 1000 !important;
+        background: var(--modal-bg) !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+        margin: 0 !important;
+        max-height: calc(100vh - 80px) !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    .comment-form-wrapper[style*="display: block"] {
+        animation: slideDown 0.3s ease-out;
+    }
+    
+    .comment-form {
+        position: relative !important;
+        margin: 0 !important;
+        padding: 20px !important;
+        padding-bottom: 30px !important;
+        border-radius: 0 0 var(--radius-lg) var(--radius-lg) !important;
+    }
+    
+    .comment-form input:focus,
+    .comment-form textarea:focus {
+        outline: 2px solid var(--primary-color);
+        outline-offset: -2px;
+    }
+    
+    /* Modal upload mobile plein écran */
+    .upload-modal {
+        padding: 0;
+    }
+    
+    .upload-modal .modal-content {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: 0;
+        width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .upload-modal .modal-header {
+        padding: 15px 20px;
+        flex-shrink: 0;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .upload-modal .modal-header h2 {
+        margin: 0;
+        text-align: center;
+    }
+    
+    .upload-modal .close-modal {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        border-radius: 50%;
+        color: white;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+    }
+    
+    #photoUploadForm {
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 20px;
+        padding-bottom: 100px;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .submit-photo-btn {
+        margin-top: auto;
+        margin-bottom: 20px;
+        padding: 16px 32px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 30px;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .submit-photo-btn:active {
+        transform: scale(0.98);
+    }
+    
+    /* Boutons upload mobile */
+    .upload-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .capture-btn, .gallery-btn {
+        width: 100%;
+        padding: 15px;
+    }
+    
+    /* Progress bar mobile */
+    .upload-progress {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 20px;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Navigation entre photos mobile */
+    .navigation-row {
+        margin-bottom: 10px;
+    }
+    
+    .nav-btn {
+        font-size: 12px;
+        padding: 8px 12px;
+        flex-direction: row;
+        gap: 6px;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    #prevPhotoBtn {
+        flex-direction: row;
+    }
+    
+    #nextPhotoBtn {
+        flex-direction: row-reverse;
+    }
+    
+    .nav-btn span {
+        font-size: 12px;
+        line-height: 1;
+    }
+    
+    .nav-btn .material-icons {
+        font-size: 22px;
+    }
+    
+    /* Logo responsive */
+    .site-logo {
+        max-height: 70px;
+    }
+}
+
+/* ===== PETITS ÉCRANS (max 480px) ===== */
+@media (max-width: 480px) {
+    .gallery-header {
+        padding: 15px;
+    }
+    
+    .gallery-header h1 {
+        font-size: 20px;
+    }
+    
+    .upload-btn {
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+    
+    .modal-header-fixed h2 {
+        font-size: 18px;
+    }
+}
+
+/* ===== FIN DU FICHIER CSS ===== */
