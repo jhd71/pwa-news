@@ -196,23 +196,10 @@
 <link rel="stylesheet" href="css/font-settings.css">
 
 <!-- 📱 Widgets principaux (visibles immédiatement) -->
-<link rel="stylesheet" href="css/quick-links.css">
+
 <link rel="stylesheet" href="css/weather-widget.css">
-<link rel="stylesheet" href="css/visitor-tracker.css">
+
 <link rel="stylesheet" href="css/news-widget.css">
-
-<!-- 🎬 Widgets secondaires (contenu enrichi) -->
-<link rel="stylesheet" href="css/cinema-widget.css">
-<link rel="stylesheet" href="css/football-widget.css">
-<link rel="stylesheet" href="css/gallery-styles.css">
-
-<!-- 🛠️ Outils et applications -->
-<link rel="stylesheet" href="css/radioPopup.css">
-<link rel="stylesheet" href="css/petites-annonces.css">
-
-<!-- 💬 Interface utilisateur -->
-<link rel="stylesheet" href="css/chat-styles.css">
-<link rel="stylesheet" href="css/chat-ban.css">
 <link rel="stylesheet" href="css/settings-styles.css">
 
 <!-- 🎨 Améliorations et corrections -->
@@ -220,9 +207,6 @@
 
 <!-- 🎨 seo-section -->
 <link rel="stylesheet" href="css/seo-section.css">
-
-<!-- 🎉 Événements saisonniers -->
-<link rel="stylesheet" href="css/seasonal-events.css">
 
 <!-- 🔧 CORRECTION THÈME SOMBRE - MODAL PROPOSITION -->
 <style>
@@ -341,15 +325,9 @@ Actu & Média
   <!-- <h3>Météo locale</h3> -->
   <div id="weather-widget">Chargement...</div>
 </div>
-<!-- Bouton Page Facebook -->
-<button class="tool-button facebook-btn" onclick="window.open('https://www.facebook.com/actuetmedia.fr/', '_blank')" title="Page Facebook Actu & Média">
-  <img src="/images/facebook-icon-white.png" alt="Facebook" class="fb-icon">
-</button>
 
-<!-- Bouton Autour de moi -->
-<button class="search-button" onclick="window.open('/autour-de-moi.html', '_blank')" title="Autour de moi">
-    <span class="material-icons">near_me</span>
-</button>
+
+
 <!-- Structure HTML optimisée pour le Swiper et les séparateurs -->
 <div class="swiper-container">
   <div class="swiper">
@@ -381,21 +359,12 @@ Actu & Média
 
             <!-- Boutons intégrés -->
             <div class="header-buttons">
-                <button class="header-btn photos-btn" onclick="event.stopPropagation(); openGalleryPage();" title="Galerie Photos">
-                    <span class="material-icons" style="font-size: 16px; margin-right: 4px;">photo_library</span>
-                    Photos
-                </button>
+
                 <button class="header-btn cinema-btn" onclick="event.stopPropagation(); openCinemaModal();" title="Programme Cinéma">
                     <span class="material-icons" style="font-size: 16px; margin-right: 4px;">movie</span>
                     Cinéma
                 </button>
             </div>
-
-            <!-- Bouton Proposer avec stopPropagation -->
-            <button class="submit-news-btn" onclick="event.stopPropagation(); openSubmitModal();">
-                <span class="icon">📝</span>
-                <span>Proposer</span>
-            </button>
 
             <!-- Zone widgets utiles -->
             <div class="header-widgets">
@@ -403,34 +372,11 @@ Actu & Média
                     <div class="temp-value" id="tempValue">--°</div>
                     <div class="temp-label">Météo</div>
                 </div>
-
-                <div class="visitors-counter" id="visitorsCounter" title="Visiteurs actuellement connectés">
-                    <div class="visitors-count" id="visitorsCount">--</div>
-                    <div class="visitors-label">En ligne</div>
-                </div>
-
-                <div class="news-widget-clock" id="newsWidgetClock" onclick="event.stopPropagation(); openTimeWidget();" title="Cliquez pour plus d'infos">
-                    <div class="clock-time" id="clockTime">--:--</div>
-                    <div class="clock-date" id="clockDate">---</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="news-widget-preview" id="newsWidgetPreview">
-            <div class="loading-news">
-                <span class="material-icons spinning">hourglass_empty</span>
-                Chargement des actualités...
             </div>
         </div>
 
         <div class="news-widget-footer">
             <span class="news-widget-tap">👆 Touchez pour lire toutes les actualités</span>
-
-            <!-- 🎂 Saint du jour dans le footer -->
-            <div class="saint-widget-footer" id="saintWidget" onclick="event.stopPropagation(); openSaintPopup();" title="Cliquez pour voir le saint du jour">
-                <div class="saint-value-footer" id="saintValue">--</div>
-                <div class="saint-label-footer" id="saintLabel">Saint</div>
-            </div>
         </div>
     </div>
 </div>
@@ -488,13 +434,7 @@ Actu & Média
         </button>
     </div>
     
-	<!-- Petites Annonces -->
-<div class="menu-item">
-    <a href="/petites-annonces.html">
-        <span class="material-icons">store</span>
-        Petites Annonces
-    </a>
-</div>
+	
 
     <!-- A propos -->
     <div class="menu-item">
@@ -626,12 +566,12 @@ Actu & Média
 <script src="js/ios-fixes-safe.js"></script>
 <script src="js/ios-install.js"></script>
 <script src="js/tablet-fixes.js"></script>
-<script src="js/chat-keyboard-fix.js"></script>
+
 
 <!-- Widgets principaux (ordre cohérent avec les CSS) -->
-<script src="js/quick-links.js"></script>
+
 <script src="js/weather-widget.js"></script>
-<script src="js/visitor-tracker.js"></script>
+
 
 <!-- Widgets actualités (groupés ensemble) -->
 <script src="js/news-manager.js"></script>
@@ -641,10 +581,6 @@ Actu & Média
 
 <!-- Widgets secondaires -->
 <script src="js/cinema-widget.js"></script>
-<script src="js/football-widget.js"></script>
-
-<!-- Applications -->
-<script src="js/radioPopup.js"></script>
 
 <!-- Gestionnaires et fonctionnalités -->
 <script src="js/welcome-manager.js"></script>
@@ -652,9 +588,6 @@ Actu & Média
 
 <!-- Script d'initialisation principal (toujours en dernier) -->
 <script type="module" src="js/app-initializer.js"></script>
-
-<!-- Événements saisonniers -->
-<script src="js/seasonal-events.js"></script>
 
 	<!-- Bouton Infos en direct -->
 	<div class="button-group" style="display: flex; justify-content: center; gap: 10px; margin: 20px 0;">
@@ -669,48 +602,8 @@ Actu & Média
 	</button>
   
 	</div>
-	<!-- Widget liens rapides avec bouton de fermeture -->
-	<div class="quick-links-sidebar" id="quickLinksSidebar">
-  <button class="quick-links-toggle" title="Masquer les liens rapides">
-    <span class="material-icons">close</span>
-  </button>
-  <h3>Liens rapides</h3>
-  <div class="links-grid">
-  <a href="#" class="quick-link emergency-link" onclick="showEmergencyNumbers(event)">
-  <span class="material-icons">phone_in_talk</span>
-  <span class="quick-link-label">Urgence</span>
-</a>
-    <a href="https://www.montceaulesmines.fr/" class="quick-link" target="_blank">
-      <span class="material-icons">location_city</span>
-      <span>Ville de Montceau</span>
-    </a>
-    <a href="https://www.inforoute71.fr/" class="quick-link" target="_blank">
-      <span class="material-icons">directions_car</span>
-      <span>Info Routes</span>
-    </a>
-    <a href="https://www.ter.sncf.com/bourgogne-franche-comte" class="quick-link" target="_blank">
-      <span class="material-icons">train</span>
-      <span>Horaires TER</span>
-    </a>
-    <a href="https://www.doctolib.fr/medecin-generaliste/montceau-les-mines" class="quick-link" target="_blank">
-      <span class="material-icons">medical_services</span>
-      <span>Médecins</span>
-    </a>
-    <a href="https://www.impots.gouv.fr/" class="quick-link" target="_blank">
-      <span class="material-icons">receipt_long</span>
-      <span>Impôts</span>
-    </a>
-    <a href="https://www.service-public.fr/" class="quick-link" target="_blank">
-      <span class="material-icons">public</span>
-      <span>Service Public</span>
-    </a>
-  </div>
-</div>
 
-<!-- Bouton pour réafficher le widget des liens rapides -->
-<button class="quick-links-show-btn" id="quickLinksShowBtn" title="Afficher les liens rapides">
-  <span class="material-icons">dashboard_customize</span>
-</button>
+
 <!-- Menu déroulant des actualités -->
 <div class="news-panel" id="newsPanel">
   <div class="panel-header">
@@ -763,386 +656,7 @@ Actu & Média
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<div id="submitModal" class="submit-modal">
-        <div class="submit-modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">
-                    <span>📝</span>
-                    Proposer une actualité
-                </h2>
-                <button class="close-modal" onclick="closeSubmitModal()">×</button>
-            </div>
 
-            <form id="submitNewsForm" class="submit-form">
-                <!-- Type d'actualité -->
-                <div class="form-group">
-                    <label class="form-label">
-                        <span>🎯</span>
-                        Type d'actualité
-                    </label>
-                    <div class="news-types">
-                        <label class="news-type">
-                            <input type="radio" name="newsType" value="actualite" checked>
-                            <span>📰 Actualité</span>
-                        </label>
-                        <label class="news-type">
-                            <input type="radio" name="newsType" value="evenement">
-                            <span>🎪 Événement</span>
-                        </label>
-                        <label class="news-type">
-                            <input type="radio" name="newsType" value="pratique">
-                            <span>💡 Info pratique</span>
-                        </label>
-                        <label class="news-type">
-                            <input type="radio" name="newsType" value="insolite">
-                            <span>🤔 Insolite</span>
-                        </label>
-                        <label class="news-type">
-                            <input type="radio" name="newsType" value="photo">
-                            <span>📸 Photo/Vidéo</span>
-                        </label>
-                        <label class="news-type">
-                            <input type="radio" name="newsType" value="autre">
-                            <span>📋 Autre</span>
-                        </label>
-                    </div>
-                </div>
 
-                <!-- Titre -->
-                <div class="form-group">
-                    <label class="form-label" for="newsTitle">
-                        <span>📢</span>
-                        Titre de l'actualité
-                    </label>
-                    <input 
-                        type="text" 
-                        id="newsTitle" 
-                        name="title" 
-                        class="form-input" 
-                        placeholder="Ex: Ouverture d'un nouveau commerce..."
-                        required
-                        maxlength="100"
-                    >
-                    <span class="form-hint">Maximum 100 caractères</span>
-                </div>
-
-                <!-- Contenu -->
-                <div class="form-group">
-                    <label class="form-label" for="newsContent">
-                        <span>📝</span>
-                        Description / Contenu
-                    </label>
-                    <textarea 
-                        id="newsContent" 
-                        name="content" 
-                        class="form-textarea" 
-                        placeholder="Décrivez votre actualité, événement ou information..."
-                        required
-                        maxlength="1000"
-                    ></textarea>
-                    <span class="form-hint">Maximum 1000 caractères</span>
-                </div>
-
-                <!-- Lieu (optionnel) -->
-                <div class="form-group">
-                    <label class="form-label" for="newsLocation">
-                        <span>📍</span>
-                        Lieu (optionnel)
-                    </label>
-                    <input 
-                        type="text" 
-                        id="newsLocation" 
-                        name="location" 
-                        class="form-input" 
-                        placeholder="Ex: Place André Malraux, Centre-ville..."
-                    >
-                </div>
-
-                <!-- Date (optionnel) -->
-                <div class="form-group">
-                    <label class="form-label" for="newsDate">
-                        <span>📅</span>
-                        Date de l'événement (optionnel)
-                    </label>
-                    <input 
-                        type="datetime-local" 
-                        id="newsDate" 
-                        name="eventDate" 
-                        class="form-input"
-                    >
-                </div>
-
-                <!-- Upload fichier -->
-                <div class="form-group">
-                    <label class="form-label">
-                        <span>📎</span>
-                        Photo ou document (optionnel)
-                    </label>
-                    <div class="file-upload">
-                        <input 
-                            type="file" 
-                            id="newsFile" 
-                            name="file" 
-                            accept="image/*,.pdf,.doc,.docx"
-                            onchange="handleFileSelect(this)"
-                        >
-                        <label for="newsFile" class="file-upload-label" id="fileLabel">
-                            <span>📎</span>
-                            <span>Cliquez pour ajouter un fichier</span>
-                        </label>
-                    </div>
-                    <span class="form-hint">Images, PDF, Word - Max 5MB</span>
-                </div>
-
-                <!-- Contact -->
-                <div class="form-group">
-                    <label class="form-label" for="newsContact">
-                        <span>📧</span>
-                        Votre email (pour vous recontacter)
-                    </label>
-                    <input 
-                        type="email" 
-                        id="newsContact" 
-                        name="contact" 
-                        class="form-input" 
-                        placeholder="votre.email@exemple.fr"
-                        required
-                    >
-                    <span class="form-hint">Votre email ne sera pas publié</span>
-                </div>
-
-                <!-- Nom (optionnel) -->
-                <div class="form-group">
-                    <label class="form-label" for="newsAuthor">
-                        <span>👤</span>
-                        Votre nom/pseudo (optionnel)
-                    </label>
-                    <input 
-                        type="text" 
-                        id="newsAuthor" 
-                        name="author" 
-                        class="form-input" 
-                        placeholder="Pour vous créditer si publié"
-                    >
-                </div>
-
-                <!-- Actions -->
-                <div class="form-actions">
-                    <button type="button" class="btn btn-cancel" onclick="closeSubmitModal()">
-                        Annuler
-                    </button>
-                    <button type="submit" class="btn btn-submit">
-                        📤 Envoyer ma proposition
-                    </button>
-                </div>
-            </form>
-
-            <!-- Message de succès (caché par défaut) -->
-            <div id="successMessage" class="success-message" style="display: none;">
-                <div class="success-icon">✅</div>
-                <h3 class="success-title">Merci pour votre contribution !</h3>
-                <div class="success-text">
-                    <p>Votre proposition d'actualité a bien été envoyée à l'équipe d'Actu&Média.</p>
-                    <p>Nous la examinerons rapidement et vous recontacterons si nécessaire.</p>
-                    <p><strong>Continuez à faire vivre l'actualité locale !</strong></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Gestion de la modal
-        function openSubmitModal() {
-            document.getElementById('submitModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-            
-            // Vibration tactile si disponible
-            if (navigator.vibrate) {
-                navigator.vibrate(50);
-            }
-        }
-
-        function closeSubmitModal() {
-            document.getElementById('submitModal').classList.remove('active');
-            document.body.style.overflow = '';
-            
-            // Reset du formulaire
-            document.getElementById('submitNewsForm').reset();
-            resetFileLabel();
-            hideSuccessMessage();
-        }
-
-        // Gestion des types d'actualité
-        document.addEventListener('DOMContentLoaded', function() {
-            const newsTypes = document.querySelectorAll('.news-type');
-            const radios = document.querySelectorAll('input[name="newsType"]');
-
-            radios.forEach(radio => {
-                radio.addEventListener('change', function() {
-                    newsTypes.forEach(type => type.classList.remove('selected'));
-                    this.closest('.news-type').classList.add('selected');
-                });
-            });
-
-            // Sélectionner le premier par défaut
-            document.querySelector('.news-type').classList.add('selected');
-        });
-
-        // Gestion de l'upload de fichier
-        function handleFileSelect(input) {
-            const label = document.getElementById('fileLabel');
-            const file = input.files[0];
-            
-            if (file) {
-                label.innerHTML = `<span>✅</span><span>${file.name}</span>`;
-                label.classList.add('file-selected');
-            } else {
-                resetFileLabel();
-            }
-        }
-
-        function resetFileLabel() {
-            const label = document.getElementById('fileLabel');
-            label.innerHTML = '<span>📎</span><span>Cliquez pour ajouter un fichier</span>';
-            label.classList.remove('file-selected');
-        }
-
-        // Soumission du formulaire
-        document.getElementById('submitNewsForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const submitBtn = document.querySelector('.btn-submit');
-            const originalText = submitBtn.innerHTML;
-            
-            // Désactiver le bouton et afficher loading
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '⏳ Envoi en cours...';
-            
-            try {
-                const formData = new FormData(this);
-                
-                // Simuler l'envoi (remplacer par votre logique)
-                await sendNewsSubmission(formData);
-                
-                // Afficher le message de succès
-                showSuccessMessage();
-                
-            } catch (error) {
-                console.error('Erreur envoi:', error);
-                alert('Erreur lors de l\'envoi. Réessayez ou contactez-nous directement.');
-                
-                // Restaurer le bouton
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
-            }
-        });
-
-        async function sendNewsSubmission(formData) {
-    try {
-        const supabase = window.getSupabaseClient();
-
-        if (!supabase) {
-            throw new Error('Supabase non initialisé ou connexion impossible.');
-        }
-
-        let fileUrl = null;
-        const file = formData.get('file');
-
-        // Si un fichier a été uploadé, on l'envoie vers Supabase Storage
-        if (file && file.size > 0) {
-            console.log('📤 Upload du fichier:', file.name);
-            
-            // Créer un nom de fichier unique
-            const timestamp = Date.now();
-            const fileExtension = file.name.split('.').pop();
-            const fileName = `submission-${timestamp}.${fileExtension}`;
-            
-            // Upload vers Supabase Storage dans le bucket 'news-submissions'
-            const { data: uploadData, error: uploadError } = await supabase.storage
-                .from('news-submissions')
-                .upload(fileName, file, {
-                    cacheControl: '3600',
-                    upsert: false
-                });
-            
-            if (uploadError) {
-                console.error('❌ Erreur upload fichier:', uploadError);
-                throw new Error(`Erreur upload fichier: ${uploadError.message}`);
-            }
-            
-            // Récupérer l'URL publique du fichier
-            const { data: urlData } = supabase.storage
-                .from('news-submissions')
-                .getPublicUrl(fileName);
-            
-            fileUrl = urlData.publicUrl;
-            console.log('✅ Fichier uploadé:', fileUrl);
-        }
-
-        // Extraire les données du formulaire
-        const newsData = {
-            type: formData.get('newsType'),
-            title: formData.get('title'),
-            content: formData.get('content'),
-            location: formData.get('location') || null,
-            event_date: formData.get('eventDate') || null,
-            contact_email: formData.get('contact'),
-            author: formData.get('author') || 'Anonyme',
-            file_url: fileUrl, // URL du fichier uploadé
-            status: 'pending'
-        };
-
-        console.log('📤 Envoi vers Supabase:', newsData);
-
-        // Insérer dans Supabase
-        const { data, error } = await supabase
-            .from('news_submissions')
-            .insert([newsData])
-            .select();
-
-        if (error) {
-            console.error('❌ Erreur Supabase:', error);
-            throw new Error(error.message);
-        }
-
-        console.log('✅ Proposition envoyée avec succès:', data);
-        return data;
-        
-    } catch (error) {
-        console.error('❌ Erreur envoi:', error);
-        alert(`Une erreur est survenue : ${error.message}. Veuillez réessayer.`);
-        throw error;
-    }
-}
-
-        function showSuccessMessage() {
-            document.getElementById('submitNewsForm').style.display = 'none';
-            document.getElementById('successMessage').style.display = 'block';
-            
-            // Fermer automatiquement après 5 secondes
-            setTimeout(() => {
-                closeSubmitModal();
-            }, 5000);
-        }
-
-        function hideSuccessMessage() {
-            document.getElementById('submitNewsForm').style.display = 'flex';
-            document.getElementById('successMessage').style.display = 'none';
-        }
-
-        // Fermeture par clic en dehors
-        document.getElementById('submitModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeSubmitModal();
-            }
-        });
-
-        // Fermeture par Échap
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && document.getElementById('submitModal').classList.contains('active')) {
-                closeSubmitModal();
-            }
-        });
-    </script>
 </body>
 </html>
