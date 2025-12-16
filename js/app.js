@@ -280,7 +280,7 @@ async function initCinema() {
         const data = await response.json();
         
         if (data.films && data.films.length > 0) {
-            renderCinema(data.films.slice(0, 4)); // Max 4 films
+            renderCinema(data.films.slice(0, 14)); // Max 14 films
             console.log(`🎬 ${data.films.length} films chargés`);
         } else {
             showCinemaFallback();
