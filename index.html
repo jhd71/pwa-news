@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Actu & Média - Montceau-les-Mines</title>
+    
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Fond animé -->
+    <div class="background-gradient"></div>
+    
+    <!-- Header -->
+    <header class="header glass">
+        <div class="header-left">
+            <span class="logo">📰</span>
+            <h1>Actu & Média</h1>
+        </div>
+        <div class="header-right">
+            <div class="weather-widget" id="weatherWidget">
+                <span class="weather-icon">🌤️</span>
+                <span class="weather-temp" id="weatherTemp">--°</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- News Ticker / Swiper -->
+    <section class="news-ticker-section glass">
+        <div class="news-ticker-header">
+            <span class="material-icons pulse">fiber_new</span>
+            <span>Infos en direct</span>
+        </div>
+        <div class="news-ticker-container" id="newsTicker">
+            <div class="news-ticker-loading">
+                <span class="material-icons spinning">sync</span>
+                Chargement des actualités...
+            </div>
+        </div>
+        <div class="news-ticker-nav">
+            <button class="ticker-nav-btn" id="tickerPrev">
+                <span class="material-icons">chevron_left</span>
+            </button>
+            <div class="ticker-dots" id="tickerDots"></div>
+            <button class="ticker-nav-btn" id="tickerNext">
+                <span class="material-icons">chevron_right</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Tuiles Sites Locaux -->
+    <section class="tiles-section">
+        <h2 class="section-title">
+            <span class="material-icons">language</span>
+            Sites d'actualités locales
+        </h2>
+        <div class="tiles-grid">
+            <a href="https://www.lejsl.com/edition-montceau-les-mines" target="_blank" class="tile glass">
+                <div class="tile-icon">📰</div>
+                <div class="tile-name">Le JSL</div>
+                <div class="tile-subtitle">Montceau</div>
+            </a>
+            <a href="https://montceau-news.com/" target="_blank" class="tile glass">
+                <div class="tile-icon">🏙️</div>
+                <div class="tile-name">Montceau News</div>
+                <div class="tile-subtitle">Local</div>
+            </a>
+            <a href="https://www.creusot-infos.com" target="_blank" class="tile glass">
+                <div class="tile-icon">🏭</div>
+                <div class="tile-name">Creusot Infos</div>
+                <div class="tile-subtitle">Bassin minier</div>
+            </a>
+            <a href="https://linformateurdebourgogne.com/" target="_blank" class="tile glass">
+                <div class="tile-icon">📋</div>
+                <div class="tile-name">L'Informateur</div>
+                <div class="tile-subtitle">Bourgogne</div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Widget Cinéma -->
+    <section class="cinema-section glass">
+        <div class="cinema-header">
+            <div class="cinema-title">
+                <span class="material-icons">movie</span>
+                <span>Cinéma Le Capitole</span>
+            </div>
+            <a href="https://www.cinemacapitole-montceau.fr/horaires/" target="_blank" class="cinema-link">
+                Voir tout
+                <span class="material-icons">arrow_forward</span>
+            </a>
+        </div>
+        <div class="cinema-content" id="cinemaContent">
+            <div class="cinema-loading">
+                <span class="material-icons spinning">theaters</span>
+                <span>Chargement du programme...</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer glass">
+        <p>© 2025 Actu & Média - Montceau-les-Mines</p>
+        <p class="footer-sub">Fait avec ❤️ par ActuetMedia</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/app.js"></script>
+</body>
+</html>
