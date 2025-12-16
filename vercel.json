@@ -32,31 +32,6 @@
       "dest": "/public_html/photos-gallery.html"
     },
     {
-      "src": "^/notification$",
-      "dest": "/public_html/notification.html"
-    },
-    {
-      "src": "^/mentions-legales$",
-      "dest": "/public_html/mentions-legales.html"
-    },
-    {
-      "src": "^/conditions-utilisation$",
-      "dest": "/public_html/conditions-utilisation.html"
-    },
-    {
-      "src": "^/politique-confidentialite$",
-      "dest": "/public_html/politique-confidentialite.html"
-    },
-    {
-      "src": "^/presentation$",
-      "dest": "/public_html/presentation.html"
-    },
-	{
-	 "src": "/presentation\\.html$",
-     "status": 301,
-     "headers": { "Location": "/presentation" }
-	},
-    {
       "src": "^/$",
       "dest": "/public_html/index.html"
     },
