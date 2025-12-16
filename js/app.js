@@ -66,6 +66,7 @@ async function initWeather() {
                 weatherTomorrow.innerHTML = `
                     <span>Demain</span>
                     <span style="font-weight:600;">${iconTomorrow} ${tempTomorrow}°</span>
+					console.log('Code Météo:', data.daily.weathercode[1], 'Emoji:', iconTomorrow);
                 `;
             }
         }
