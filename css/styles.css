@@ -136,13 +136,21 @@ body {
 }
 
 .weather-icon {
-    font-size: 1.25rem;
+    font-size: 2.2rem;
+    animation: floatWeather 3s ease-in-out infinite;
+}
+
+@keyframes floatWeather {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+    100% { transform: translateY(0); }
 }
 
 .weather-temp {
     font-weight: 600;
     font-size: 1rem;
 }
+
 
 /* ============================================
    NEWS TICKER / SWIPER

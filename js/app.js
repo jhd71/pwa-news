@@ -34,30 +34,43 @@ document.addEventListener('DOMContentLoaded', () => {
 // MÉTÉO
 // ============================================
 async function initWeather() {
-    const weatherWidget = document.getElementById('weatherWidget');
     const weatherTemp = document.getElementById('weatherTemp');
+    const weatherIcon = document.getElementById('weatherIcon');
+    const weatherTomorrow = document.getElementById('weatherTomorrow');
 
     try {
-        // Coordonnées de Montceau-les-Mines
         const latitude = 46.6667;
         const longitude = 4.3667;
 
         const response = await fetch(
-            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&temperature_unit=celsius`
+            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&daily=temperature_2m_max,weathercode&timezone=Europe/Paris`
         );
 
         if (!response.ok) throw new Error('Erreur météo');
 
         const data = await response.json();
 
-        const temp = Math.round(data.current_weather.temperature);
-        const weatherCode = data.current_weather.weathercode;
-        const icon = getWeatherEmojiFromCode(weatherCode);
+        // Aujourd’hui
+        const tempToday = Math.round(data.current_weather.temperature);
+        const iconToday = getWeatherEmojiFromCode(data.current_weather.weathercode);
 
-        weatherWidget.querySelector('.weather-icon').textContent = icon;
-        weatherTemp.textContent = `${temp}°`;
+        weatherTemp.textContent = `${tempToday}°`;
+        weatherIcon.textContent = iconToday;
 
-        console.log(`🌤️ Météo Open-Meteo: ${temp}°C`);
+        // Demain (J+1)
+        if (data.daily && data.daily.temperature_2m_max) {
+            const tempTomorrow = Math.round(data.daily.temperature_2m_max[1]);
+            const iconTomorrow = getWeatherEmojiFromCode(data.daily.weathercode[1]);
+
+            if (weatherTomorrow) {
+                weatherTomorrow.innerHTML = `
+                    <span style="opacity:.7;">Demain</span>
+                    <span>${iconTomorrow} ${tempTomorrow}°</span>
+                `;
+            }
+        }
+
+        console.log('🌤️ Météo + J+1 chargées');
     } catch (error) {
         console.error('❌ Erreur météo:', error);
         weatherTemp.textContent = '--°';
