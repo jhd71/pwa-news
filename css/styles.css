@@ -184,6 +184,11 @@ body {
     font-family: "Segoe UI Emoji", "Apple Color Emoji", sans-serif; /* Force la police emoji */
 }
 
+/* Force l'utilisation des polices Emoji pour le widget météo */
+.weather-widget, .weather-tomorrow {
+    font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+}
+
 /* ============================================
    NEWS TICKER / SWIPER
    ============================================ */

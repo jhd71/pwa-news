@@ -78,38 +78,19 @@ console.log('Code Météo:', data.daily.weathercode[1], 'Emoji:', iconTomorrow);
     }
 }
 
-// N'oubliez pas de lancer la fonction !
-document.addEventListener('DOMContentLoaded', initWeather);
-
-// Votre fonction helper (inchangée)
 function getWeatherEmojiFromCode(code) {
-    // Codes WMO (World Meteorological Organization)
+    if (code === 0) return '☀️';
+    if ([1, 2, 3].includes(code)) return '⛅';
     
-    // 0 : Ciel dégagé
-    if (code === 0) return '☀️'; 
+    // REMPLACEZ ICI : On utilise un nuage classique pour le brouillard (45, 48)
+    // au lieu de l'emoji complexe '🌫️' qui fait un carré chez vous.
+    if ([45, 48].includes(code)) return '☁️'; 
     
-    // 1-3 : Partiellement nuageux
-    if ([1, 2, 3].includes(code)) return '🌥️'; 
-    
-    // 45, 48 : Brouillard
-    if ([45, 48].includes(code)) return '🌫️'; 
-    
-    // 51-67 : Bruine et Pluie
-    if ([51, 53, 55, 61, 63, 65, 66, 67].includes(code)) return '🌧️'; 
-    
-    // 71-77 : Neige
-    if ([71, 73, 75, 77].includes(code)) return '❄️'; 
-    
-    // 80-82 : Averses de pluie
-    if ([80, 81, 82].includes(code)) return '🌦️'; 
-    
-    // 85-86 : Averses de neige
-    if ([85, 86].includes(code)) return '🌨️'; 
-    
-    // 95-99 : Orages
-    if ([95, 96, 99].includes(code)) return '⛈️'; 
-    
-    // Par défaut
+    if ([51, 53, 55, 61, 63, 65].includes(code)) return '🌧️';
+    if ([66, 67].includes(code)) return '🌧️';
+    if ([71, 73, 75, 77].includes(code)) return '❄️';
+    if ([80, 81, 82].includes(code)) return '🌦️';
+    if ([95, 96, 99].includes(code)) return '⛈️';
     return '🌤️';
 }
 
