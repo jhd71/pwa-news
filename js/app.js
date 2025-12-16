@@ -41,22 +41,28 @@ document.addEventListener('DOMContentLoaded', () => {
 async function initWeather() {
     const weatherWidget = document.getElementById('weatherWidget');
     const weatherTemp = document.getElementById('weatherTemp');
-    
+
     try {
+        // Coordonnées de Montceau-les-Mines
+        const latitude = 46.6667;
+        const longitude = 4.3667;
+
         const response = await fetch(
-            `https://api.openweathermap.org/data/2.5/weather?q=${CONFIG.weather.city}&units=${CONFIG.weather.units}&appid=${CONFIG.weather.apiKey}&lang=fr`
+            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&temperature_unit=celsius`
         );
-        
+
         if (!response.ok) throw new Error('Erreur météo');
-        
+
         const data = await response.json();
-        const temp = Math.round(data.main.temp);
-        const icon = getWeatherEmoji(data.weather[0].icon);
-        
+
+        const temp = Math.round(data.current_weather.temperature);
+        const weatherCode = data.current_weather.weathercode;
+        const icon = getWeatherEmojiFromCode(weatherCode);
+
         weatherWidget.querySelector('.weather-icon').textContent = icon;
         weatherTemp.textContent = `${temp}°`;
-        
-        console.log(`🌤️ Météo: ${temp}°C`);
+
+        console.log(`🌤️ Météo Open-Meteo: ${temp}°C`);
     } catch (error) {
         console.error('❌ Erreur météo:', error);
         weatherTemp.textContent = '--°';
@@ -76,6 +82,19 @@ function getWeatherEmoji(iconCode) {
         '50d': '🌫️', '50n': '🌫️'
     };
     return iconMap[iconCode] || '🌤️';
+}
+
+function getWeatherEmojiFromCode(code) {
+    if (code === 0) return '☀️';
+    if ([1, 2].includes(code)) return '⛅';
+    if (code === 3) return '☁️';
+    if ([45, 48].includes(code)) return '🌫️';
+    if ([51, 53, 55, 61, 63, 65].includes(code)) return '🌧️';
+    if ([66, 67].includes(code)) return '🌧️';
+    if ([71, 73, 75, 77].includes(code)) return '❄️';
+    if ([80, 81, 82].includes(code)) return '🌦️';
+    if ([95, 96, 99].includes(code)) return '⛈️';
+    return '🌤️';
 }
 
 // ============================================
