@@ -5,7 +5,7 @@
 // Configuration
 const CONFIG = {
     weather: {
-        apiKey: '989d61ec89b67b8a5d5b247f4634ee13', // OpenWeatherMap
+        apiKey: '4b79472c165b42f690790252242112', // OpenWeatherMap
         city: 'Montceau-les-Mines',
         units: 'metric'
     },
