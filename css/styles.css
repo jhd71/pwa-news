@@ -146,36 +146,9 @@ body {
     100% { transform: translateY(0); }
 }
 
-/* Animation pour la météo du lendemain */
-#weatherTomorrow span:last-child {
-    animation: floatWeather 3s ease-in-out infinite;
-}
-
 .weather-temp {
     font-weight: 600;
     font-size: 1rem;
-}
-
-/* Ajoute ceci à ton CSS MÉTÉO existant */
-
-/* Météo du lendemain */
-#weatherTomorrow {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-    opacity: 0.85;
-    gap: 2px;
-}
-#weatherTomorrow span:last-child {
-    font-weight: 500;
-    font-size: 1rem;
-}
-
-/* Force les emojis pour le widget météo */
-.weather-widget span {
-    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", "Twemoji Mozilla", sans-serif;
 }
 
 /* ============================================
