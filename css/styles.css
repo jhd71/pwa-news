@@ -175,6 +175,15 @@ body {
     letter-spacing: 1px;
 }
 
+/* Dans votre CSS */
+#weatherTomorrow span:last-child {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px; /* Espace entre l'icône et le texte */
+    font-family: "Segoe UI Emoji", "Apple Color Emoji", sans-serif; /* Force la police emoji */
+}
+
 /* ============================================
    NEWS TICKER / SWIPER
    ============================================ */
