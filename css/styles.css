@@ -2,6 +2,7 @@
    ACTU & MÉDIA - Style Liquid Glass v2
    ============================================ */
 
+/* Mode sombre (par défaut) */
 :root {
     --primary: #6366f1;
     --primary-light: #818cf8;
@@ -18,6 +19,23 @@
     --text-muted: rgba(255, 255, 255, 0.5);
     --danger: #ef4444;
     --success: #10b981;
+}
+
+/* Mode clair */
+[data-theme="light"] {
+    --primary: #4f46e5;
+    --primary-light: #6366f1;
+    --accent: #ec4899;
+    --bg-dark: #f0f4f8;
+    --bg-gradient-1: #e2e8f0;
+    --bg-gradient-2: #cbd5e1;
+    --bg-gradient-3: #94a3b8;
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.9);
+    --glass-shadow: rgba(0, 0, 0, 0.1);
+    --text-primary: #1e293b;
+    --text-secondary: rgba(30, 41, 59, 0.8);
+    --text-muted: rgba(30, 41, 59, 0.5);
 }
 
 * {
@@ -99,6 +117,81 @@ body {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     letter-spacing: -0.5px;
+}
+
+/* Bouton thème */
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 1rem;
+}
+
+.theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.theme-toggle:active {
+    transform: scale(0.95);
+}
+
+.theme-toggle .material-icons {
+    font-size: 1.4rem;
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover .material-icons {
+    transform: rotate(20deg);
+}
+
+/* Ajustement mode clair */
+[data-theme="light"] .theme-toggle {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .theme-toggle:hover {
+    background: rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .news-item {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] .news-item:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .cinema-film {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] .cinema-film:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .weather-bar {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .ticker-nav-btn {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .ticker-nav-btn:hover {
+    background: rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .install-btn-secondary {
+    background: rgba(0, 0, 0, 0.08);
 }
 
 /* ============================================

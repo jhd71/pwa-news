@@ -25,6 +25,7 @@ let deferredPrompt = null;
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 Actu & Média - Initialisation');
     
+    initTheme();
     initWeather();
     initNews();
     initCinema();
@@ -99,6 +100,59 @@ function getWeatherEmoji(code) {
     if ([80, 81, 82].includes(code)) return '🌦️';
     if ([95, 96, 99].includes(code)) return '⛈️';
     return '🌤️';
+}
+
+// ============================================
+// THÈME CLAIR/SOMBRE
+// ============================================
+function initTheme() {
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    
+    // Charger le thème sauvegardé ou détecter la préférence système
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    // Appliquer le thème initial
+    if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+    } else if (!prefersDark) {
+        document.documentElement.setAttribute('data-theme', 'light');
+        updateThemeIcon('light');
+    } else {
+        updateThemeIcon('dark');
+    }
+    
+    // Écouter le clic sur le bouton
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            
+            console.log(`🎨 Thème: ${newTheme}`);
+        });
+    }
+    
+    // Écouter les changements de préférence système
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!localStorage.getItem('theme')) {
+            const newTheme = e.matches ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+    });
+}
+
+function updateThemeIcon(theme) {
+    const themeIcon = document.getElementById('themeIcon');
+    if (themeIcon) {
+        themeIcon.textContent = theme === 'light' ? 'dark_mode' : 'light_mode';
+    }
 }
 
 // ============================================
