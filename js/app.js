@@ -60,13 +60,12 @@ async function initWeather() {
         if (data.daily && data.daily.temperature_2m_max && data.daily.temperature_2m_max.length > 1) {
             const tempTomorrow = Math.round(data.daily.temperature_2m_max[1]); // Index 1 = Demain
             const iconTomorrow = getWeatherEmojiFromCode(data.daily.weathercode[1]);
-
+console.log('Code Météo:', data.daily.weathercode[1], 'Emoji:', iconTomorrow);
             if (weatherTomorrow) {
                 // J'ai enlevé le style="opacity" car on le gère en CSS maintenant
                 weatherTomorrow.innerHTML = `
                     <span>Demain</span>
                     <span style="font-weight:600;">${iconTomorrow} ${tempTomorrow}°</span>
-					console.log('Code Météo:', data.daily.weathercode[1], 'Emoji:', iconTomorrow);
                 `;
             }
         }
