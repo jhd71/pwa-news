@@ -31,8 +31,19 @@
         </div>
         <div class="header-right">
     <div class="weather-widget" id="weatherWidget">
-        <span class="weather-icon" id="weatherIcon">🌤️</span>
-        <span class="weather-temp" id="weatherTemp">--°</span>
+        <!-- Partie Aujourd'hui -->
+        <div class="weather-today">
+            <span class="weather-icon" id="weatherIcon">🌤️</span>
+            <span class="weather-temp" id="weatherTemp">--°</span>
+        </div>
+        
+        <!-- Séparateur visuel -->
+        <div class="weather-separator"></div>
+
+        <!-- Partie Demain (C'est ce qu'il manquait) -->
+        <div class="weather-tomorrow" id="weatherTomorrow">
+            <!-- Le JS va injecter le contenu ici -->
+        </div>
     </div>
 </div>
     </header>

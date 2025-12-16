@@ -122,33 +122,57 @@ body {
 .weather-widget {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem; /* Espacement entre aujourd'hui et demain */
     padding: 0.5rem 1rem;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 50px;
     cursor: pointer;
     transition: all 0.3s ease;
+    backdrop-filter: blur(5px); /* Optionnel : effet flou sympa */
 }
 
 .weather-widget:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.02);
+}
+
+/* Groupe Aujourd'hui */
+.weather-today {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .weather-icon {
-    font-size: 2.2rem;
-    animation: floatWeather 3s ease-in-out infinite;
-}
-
-@keyframes floatWeather {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
-    100% { transform: translateY(0); }
+    font-size: 1.4rem;
 }
 
 .weather-temp {
-    font-weight: 600;
-    font-size: 1rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+/* Barre de séparation verticale */
+.weather-separator {
+    width: 1px;
+    height: 25px;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Groupe Demain */
+.weather-tomorrow {
+    display: flex;
+    flex-direction: column; /* Pour mettre "Demain" au dessus de la temp */
+    align-items: center;
+    font-size: 0.8rem;
+    line-height: 1.1;
+}
+
+/* Ciblage des éléments créés par le JS dans weatherTomorrow */
+.weather-tomorrow span:first-child {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 /* ============================================

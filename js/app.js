@@ -30,15 +30,13 @@ document.addEventListener('DOMContentLoaded', () => {
     initServiceWorker();
 });
 
-// ============================================
-// MÉTÉO
-// ============================================
 async function initWeather() {
     const weatherTemp = document.getElementById('weatherTemp');
     const weatherIcon = document.getElementById('weatherIcon');
     const weatherTomorrow = document.getElementById('weatherTomorrow');
 
     try {
+        // Vos coordonnées
         const latitude = 46.6667;
         const longitude = 4.3667;
 
@@ -50,33 +48,40 @@ async function initWeather() {
 
         const data = await response.json();
 
-        // Aujourd’hui
+        // --- Aujourd’hui ---
         const tempToday = Math.round(data.current_weather.temperature);
         const iconToday = getWeatherEmojiFromCode(data.current_weather.weathercode);
 
         weatherTemp.textContent = `${tempToday}°`;
         weatherIcon.textContent = iconToday;
 
-        // Demain (J+1)
-        if (data.daily && data.daily.temperature_2m_max) {
-            const tempTomorrow = Math.round(data.daily.temperature_2m_max[1]);
+        // --- Demain (J+1) ---
+        // Vérification des données daily
+        if (data.daily && data.daily.temperature_2m_max && data.daily.temperature_2m_max.length > 1) {
+            const tempTomorrow = Math.round(data.daily.temperature_2m_max[1]); // Index 1 = Demain
             const iconTomorrow = getWeatherEmojiFromCode(data.daily.weathercode[1]);
 
             if (weatherTomorrow) {
+                // J'ai enlevé le style="opacity" car on le gère en CSS maintenant
                 weatherTomorrow.innerHTML = `
-                    <span style="opacity:.7;">Demain</span>
-                    <span>${iconTomorrow} ${tempTomorrow}°</span>
+                    <span>Demain</span>
+                    <span style="font-weight:600;">${iconTomorrow} ${tempTomorrow}°</span>
                 `;
             }
         }
 
-        console.log('🌤️ Météo + J+1 chargées');
+        console.log('🌤️ Météo chargée avec succès');
+
     } catch (error) {
         console.error('❌ Erreur météo:', error);
-        weatherTemp.textContent = '--°';
+        if(weatherTemp) weatherTemp.textContent = '--';
     }
 }
 
+// N'oubliez pas de lancer la fonction !
+document.addEventListener('DOMContentLoaded', initWeather);
+
+// Votre fonction helper (inchangée)
 function getWeatherEmojiFromCode(code) {
     if (code === 0) return '☀️';
     if ([1, 2].includes(code)) return '⛅';
